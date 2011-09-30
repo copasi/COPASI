@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.250 $
+#   $Revision: 1.251 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2011/09/23 18:39:01 $
+#   $Date: 2011/09/30 16:39:11 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.250 $ $Author: shoops $ $Date: 2011/09/23 18:39:01 $
+# $Revision: 1.251 $ $Author: shoops $ $Date: 2011/09/30 16:39:11 $
 ######################################################################
 
 LIB = UI
@@ -55,6 +55,7 @@ HEADERS	+= \
   CQFittingWidget.h \
   CQFunctionsWidget.h \
   CQGlobalQuantitiesWidget.h \
+  CQLayoutsWidget.h \
   CQLyapWidget.h \
   CQLyapResultWidget.h \
   CQMatrixDialog.h \
@@ -135,11 +136,12 @@ HEADERS	+= \
   CQFunctionDM.h \
   CQGlobalQuantityDM.h \
   CQIcons.h \
-  CQLayoutsWidget.h \
+  CQLayoutsDM.h \
   CQMathMatrixWidget.h \
   CQMessageBox.h \
   CQMmlScrollView.h \
   CQPlotDM.h \
+  CQPushButtonDelegate.h \
   CQReactionDM.h \
   CQReportDM.h \
   CQReportListItem.h \
@@ -160,7 +162,6 @@ HEADERS	+= \
   CTabWidget.h \
   DataModelGUI.h \
   DataModel.txt.h \
-  FunctionItemWidget.h \
   listviews.h \
   MyLineEdit.h \
   ObjectBrowserDialog.h \
@@ -202,6 +203,7 @@ SOURCES	+= \
   CQFittingWidget.cpp \
   CQFunctionsWidget.cpp \
   CQGlobalQuantitiesWidget.cpp \
+  CQLayoutsWidget.cpp \
   CQLyapWidget.cpp \
   CQLyapResultWidget.cpp \
   CQMatrixDialog.cpp \
@@ -283,11 +285,12 @@ SOURCES	+= \
   CQFunctionDM.cpp \
   CQGlobalQuantityDM.cpp \
   CQIcons.cpp \
-  CQLayoutsWidget.cpp \
+  CQLayoutsDM.cpp \
   CQMathMatrixWidget.cpp \
   CQMessageBox.cpp \
   CQMmlScrollView.cpp \
   CQPlotDM.cpp \
+  CQPushButtonDelegate.cpp \
   CQReactionDM.cpp \
   CQReportDM.cpp \
   CQReportListItem.cpp \
@@ -305,7 +308,6 @@ SOURCES	+= \
   CScanContainerWidget.cpp \
   CTabWidget.cpp \
   DataModelGUI.cpp \
-  FunctionItemWidget.cpp \
   listviews.cpp \
   MyLineEdit.cpp \
   ObjectBrowserDialog.cpp \
@@ -348,6 +350,7 @@ FORMS += CQFittingResultTab1.ui
 FORMS += CQFittingWidget.ui
 FORMS += CQFunctionsWidget.ui
 FORMS += CQGlobalQuantitiesWidget.ui
+FORMS += CQLayoutsWidget.ui
 FORMS += CQLyapWidget.ui
 FORMS += CQLyapResultWidget.ui
 FORMS += CQMatrixDialog.ui

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/11 21:21:13 $
+//   $Author: shoops $
+//   $Date: 2011/09/30 16:39:00 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,142 +16,69 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#ifndef CQLAYOUTS_WIDGET_H
-#define CQLAYOUTS_WIDGET_H
+#ifndef COPASI_CQLayoutsWidget
+#define COPASI_CQLayoutsWidget
 
-#include <map>
+#include <QtCore/QVariant>
 
-#include <qtoolbutton.h>
+#include "copasi/UI/ui_CQLayoutsWidget.h"
 
-#include "copasi/UI/CopasiTableWidget.h"
-
-#ifdef USE_CRENDER_EXTENSION
 class CQNewMainWindow;
-#else
 class CQLayoutMainWindow;
-#endif // USE_CRENDER_EXTENSION
 class CLayout;
+class CQLayoutsDM;
+class CQSortFilterProxyModel;
+class CQPushButtonDelegate;
 
-class CQLayoutsWidget : public CopasiTableWidget
+class CQLayoutsWidget : public CopasiWidget, public Ui::CQLayoutsWidget
 {
   Q_OBJECT
 
+#ifdef USE_CRENDER_EXTENSION
+  typedef CQNewMainWindow LayoutWindow;
+#else
+  typedef CQLayoutMainWindow LayoutWindow;
+#endif // USE_CRENDER_EXTENSION
+
+  typedef std::map< std::string, LayoutWindow * > LayoutWindowMap;
+
 public:
-  CQLayoutsWidget(QWidget *parent, const char * name = 0, Qt::WFlags f = 0)
-      : CopasiTableWidget(parent, false, name, f)
-  {init();}
+  CQLayoutsWidget(QWidget *parent);
+  virtual ~CQLayoutsWidget();
+
+  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+  virtual bool leave();
 
   void deleteLayoutWindows();
 
-protected:
-#ifdef COPASI_AUTOLAYOUT
+private:
+  CQLayoutsDM * mpLayoutsDM;
+  CQSortFilterProxyModel * mpProxyModel;
+  LayoutWindowMap mLayoutWindowMap;
+  CQPushButtonDelegate * mpPushButtonDelegate;
+
+  void deleteSelectedLayouts();
+  void updateDeleteBtns();
+  virtual bool enterProtected();
+
+  void showButtons();
+
   /**
    * This creates a new layout window.
    */
-#ifdef USE_CRENDER_EXTENSION
-  CQNewMainWindow* createLayoutWindow(int row, CLayout* pLayout);
-#else
-  CQLayoutMainWindow* createLayoutWindow(int row, CLayout* pLayout);
-#endif // USE_CRENDER_EXTENSION
-
-#endif // COPASI_AUTOLAYOUT
-
-  /**
-   * shows units for the quantities
-   */
-  virtual void updateHeaderUnits();
-
-  /**
-   * This initializes the widget
-   */
-  virtual void init();
-
-  /**
-   * returns a list of objects that should be displayed
-   */
-  virtual std::vector<const CCopasiObject*> getObjects() const;
-
-  /**
-   * fills one table row with the data from one object
-   */
-  virtual void tableLineFromObject(const CCopasiObject* obj, size_t row);
-
-  /**
-   * reads the contents of one row of the table and writes it to the object
-   */
-  virtual void tableLineToObject(size_t row, CCopasiObject* obj);
-
-  /**
-   * creates a new object
-   */
-  virtual CCopasiObject* createNewObject(const std::string & name);
-
-  /**
-   * deletes objects. Performs all additional tasks, like asking the user, ...
-   */
-  virtual void deleteObjects(const std::vector<std::string> & keys);
-
-  /**
-   * this is used to fill a row of the table when a new object is added to the table.
-   * it fills only the data columns, not the name. It should not fill column exc.
-   */
-  virtual void defaultTableLineContent(size_t row, size_t exc);
-
-  /**
-   * the prefix that is used to construct new object names
-   */
-  virtual QString defaultObjectName() const;
-
-  /**
-   * This method provides a hook for derived classes to act on changes in
-   * the table.
-   * @param size_t row
-   * @param size_t col
-   */
-  virtual void valueChanged(size_t row, size_t col);
-
-protected:
-
-  /**
-   * map that stores the layout windows for each layout.
-   */
-#ifdef USE_CRENDER_EXTENSION
-  std::map<std::string, CQNewMainWindow*> mLayoutWindowMap;
-#else
-  std::map<std::string, CQLayoutMainWindow*> mLayoutWindowMap;
-#endif // USE_CRENDER_EXTENSION
-
-#ifdef COPASI_AUTOLAYOUT
-#ifdef USE_CRENDER_EXTENSION
-  virtual bool enterProtected();
-#endif // USE_CRENDER_EXTENSION
-#endif // COPASI_AUTOLAYOUT
+  LayoutWindow * createLayoutWindow(int row, CLayout* pLayout);
 
 protected slots:
-  void slotDoubleClicked(int row, int col, int m, const QPoint & n);
-  void slot_show(int row);
-#ifdef COPASI_AUTOLAYOUT
-#ifdef USE_CRENDER_EXTENSION
-  void slotBtnNewClicked();
-#endif // USE_CRENDER_EXTENSION
-#endif // COPASI_AUTOLAYOUT
+  virtual void slotBtnNewClicked();
+  virtual void slotBtnDeleteClicked();
+  virtual void slotBtnClearClicked();
+  virtual void slotSelectionChanged(const QItemSelection& selected,
+                                    const QItemSelection& deselected);
+  virtual void slotDoubleClicked(const QModelIndex proxyIndex);
+  virtual void dataChanged(const QModelIndex& topLeft,
+                           const QModelIndex& bottomRight);
+  virtual void slotFilterChanged();
+  void slotShowLayout(int row);
 };
 
-class CQShowLayoutButton : public QToolButton
-{
-  Q_OBJECT
-
-public:
-  CQShowLayoutButton(unsigned int row, QWidget* pParent = NULL, const char* name = "");
-
-signals:
-  void signal_show(int row);
-
-protected:
-  unsigned int mRow;
-
-protected slots:
-  void slot_clicked();
-};
-
-#endif // CQLAYOUT_WIDGETS_H
+#endif // COPASI_CQLayoutsWidget

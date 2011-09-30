@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/11 21:21:10 $
+//   $Author: shoops $
+//   $Date: 2011/09/30 16:39:00 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,10 @@
 #include <iostream>
 
 #include "CQMessageBox.h"
+#include "CQLayoutsDM.h"
+#include "CQSortFilterProxyModel.h"
+#include "CQPushButtonDelegate.h"
+
 #include "listviews.h"
 #include "qtUtilities.h"
 #include "copasi/layout/CLayout.h"
@@ -37,270 +41,203 @@
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
+
 #ifdef USE_CRENDER_EXTENSION
-#include "copasi/layoutUI/CQNewMainWindow.h"
+# include "copasi/layoutUI/CQNewMainWindow.h"
 #else
-#include "copasi/layoutUI/CQLayoutMainWindow.h"
+# include "copasi/layoutUI/CQLayoutMainWindow.h"
 #endif // USE_CRENDER_EXTENSION
+
 #ifdef COPASI_AUTOLAYOUT
-#include "copasi/layoutUI/CQAutolayoutWizard.h"
+# include "copasi/layoutUI/CQAutolayoutWizard.h"
 #endif // COPASI_AUTOLAYOUT
 
-#define COL_MARK         0
-#define COL_NAME         1
-#define COL_SHOW         2
 
-std::vector<const CCopasiObject*> CQLayoutsWidget::getObjects() const
+CQLayoutsWidget::CQLayoutsWidget(QWidget* parent)
+    : CopasiWidget(parent)
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CListOfLayouts* pListOfLayouts = (*CCopasiRootContainer::getDatamodelList())[0]->getListOfLayouts();
-  std::vector<const CCopasiObject*> ret;
+  setupUi(this);
 
-  size_t i, imax = pListOfLayouts->size();
+#ifndef COPASI_AUTOLAYOUT
+  mpBtnNew->hide();
+#endif
+
+  // Create Source Data Model.
+  mpLayoutsDM = new CQLayoutsDM(this);
+
+  // Create the Proxy Model for sorting/filtering and set its properties.
+  mpProxyModel = new CQSortFilterProxyModel();
+  mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
+  mpProxyModel->setFilterKeyColumn(-1);
+  mpProxyModel->setSourceModel(mpLayoutsDM);
+
+  mpTblLayouts->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+  mpTblLayouts->verticalHeader()->hide();
+  mpTblLayouts->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
+  mpTblLayouts->setModel(mpProxyModel);
+
+  mpPushButtonDelegate = new CQPushButtonDelegate(QIcon(), QString(), this);
+
+  mpTblLayouts->setItemDelegateForColumn(COL_SHOW, mpPushButtonDelegate);
+
+  // Connect the table widget
+  connect(mpLayoutsDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
+          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
+  connect(mpLayoutsDM, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
+          this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
+  connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
+          this, SLOT(slotFilterChanged()));
+  connect(mpPushButtonDelegate, SIGNAL(clicked(int)), this, SLOT(slotShowLayout(int)));
+}
+
+// virtual
+CQLayoutsWidget::~CQLayoutsWidget()
+{}
+
+// virtual
+bool CQLayoutsWidget::update(ListViews::ObjectType /* objectType */, ListViews::Action /* action */, const std::string & /* key */)
+{
+  if (!mIgnoreUpdates)
+    {
+      enterProtected();
+    }
+
+  return true;
+}
+
+// virtual
+bool CQLayoutsWidget::leave()
+{
+  return true;
+}
+
+void CQLayoutsWidget::deleteLayoutWindows()
+{
+  LayoutWindowMap::iterator it = mLayoutWindowMap.begin(), endit = mLayoutWindowMap.end();
+
+  while (it != endit)
+    {
+      delete it->second;
+      ++it;
+    }
+
+  mLayoutWindowMap.clear();
+}
+
+void CQLayoutsWidget::deleteSelectedLayouts()
+{
+  const QItemSelectionModel * pSelectionModel = mpTblLayouts->selectionModel();
+
+  QModelIndexList mappedSelRows;
+  size_t i, imax = mpLayoutsDM->rowCount();
+
+  for (i = 0; i < imax; i++)
+    {
+      if (pSelectionModel->isRowSelected((int) i, QModelIndex()))
+        {
+          mappedSelRows.append(mpProxyModel->mapToSource(mpProxyModel->index((int) i, 0)));
+        }
+    }
+
+  if (mappedSelRows.empty()) return;
+
+  // We need to make sure that we remove the window mapped for each layout
+  QModelIndexList::const_iterator it = mappedSelRows.begin();
+  QModelIndexList::const_iterator end = mappedSelRows.end();
+
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CListOfLayouts * pListOfLayouts = (*CCopasiRootContainer::getDatamodelList())[0]->getListOfLayouts();
+
+  for (; it != end; ++it)
+    {
+      LayoutWindowMap::iterator itWindow = mLayoutWindowMap.find((*pListOfLayouts)[it->row()]->getKey());
+
+      if (itWindow != mLayoutWindowMap.end())
+        {
+          mLayoutWindowMap.erase(itWindow);
+          delete itWindow->second;
+        }
+    }
+
+  mpLayoutsDM->removeRows(mappedSelRows);
+}
+
+
+void CQLayoutsWidget::updateDeleteBtns()
+{
+  mpBtnDelete->setEnabled(mpTblLayouts->selectionModel()->selectedRows().size() > 0);
+  mpBtnClear->setEnabled(mpProxyModel->rowCount() > 0);
+}
+
+// virtual
+bool CQLayoutsWidget::enterProtected()
+{
+  if (mpTblLayouts->selectionModel() != NULL)
+    {
+      disconnect(mpTblLayouts->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+                 this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+    }
+
+
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CListOfLayouts * pListOfLayouts = (*CCopasiRootContainer::getDatamodelList())[0]->getListOfLayouts();
+  mpLayoutsDM->setListOfLayouts(pListOfLayouts);
+
+  // check if we have at least a compartment
+  // that we can lay out.
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+
+  if (pDataModel != NULL &&
+      pDataModel->getModel() != NULL &&
+      pDataModel->getModel()->getCompartments().size() > 0)
+    {
+      mpBtnNew->setEnabled(true);
+    }
+  else
+    {
+      mpBtnNew->setEnabled(false);
+    }
+
+  // We need to make sure that we have a window mapped for each layout
+  CListOfLayouts::const_iterator it = pListOfLayouts->begin();
+  CListOfLayouts::const_iterator end = pListOfLayouts->end();
+
+  for (; it != end; ++it)
+    {
+      LayoutWindowMap::iterator pos = mLayoutWindowMap.find((*it)->getKey());
+
+      // if this layout does not have an entry in the layout window map, add one
+      if (pos == mLayoutWindowMap.end())
+        {
+          mLayoutWindowMap.insert(std::pair<std::string, LayoutWindow*>((*it)->getKey(), NULL));
+        }
+
+    }
+
+  connect(mpTblLayouts->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+          this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+
+  dataChanged(QModelIndex(), QModelIndex());
+
+  return true;
+}
+
+
+void CQLayoutsWidget::showButtons()
+{
+  int i, imax = mpLayoutsDM->rowCount();
 
   for (i = 0; i < imax; ++i)
-    ret.push_back((*pListOfLayouts)[i]);
-
-  return ret;
-}
-
-void CQLayoutsWidget::init()
-{
-#ifdef COPASI_AUTOLAYOUT
-  this->btnNew->setText("layout wizard ...");
-  this->btnNew->setEnabled(false);
-#endif // COPASI_AUTOLAYOUT
-  this->btnNew->hide();
-  mOT = ListViews::LAYOUT;
-  numCols = 3;
-  table->setNumCols((int) numCols);
-
-  //Setting table headers
-  Q3Header *tableHeader = table->horizontalHeader();
-  tableHeader->setLabel(COL_MARK, "Status");
-  tableHeader->setLabel(COL_NAME, "Name");
-  tableHeader->setLabel(COL_SHOW, "Show");
-}
-
-void CQLayoutsWidget::updateHeaderUnits()
-{
-  // no units, so we do nothing
-}
-
-void CQLayoutsWidget::tableLineFromObject(const CCopasiObject* obj, size_t row)
-{
-  if (!obj) return;
-
-  const CLayout * pLayout = static_cast< const CLayout * >(obj);
-
-  // Name
-  table->setText((int) row, COL_NAME, FROM_UTF8(pLayout->getObjectName()));
-  CQShowLayoutButton* pButton = new CQShowLayoutButton((int) row, NULL);
-  pButton->setText("Show");
-  table->setCellWidget((int) row, COL_SHOW, pButton);
-  connect(pButton, SIGNAL(signal_show(int)), this, SLOT(slot_show(int)));
-#ifdef USE_CRENDER_EXTENSION
-  std::map<std::string, CQNewMainWindow*>::iterator pos = this->mLayoutWindowMap.find(obj->getKey());
-#else
-  std::map<std::string, CQLayoutMainWindow*>::iterator pos = this->mLayoutWindowMap.find(obj->getKey());
-#endif  // USE_CRENDER_EXTENSION
-  // if this layout does not have an entry in the layout window map, add one
-  if (pos == this->mLayoutWindowMap.end())
     {
-#ifdef USE_CRENDER_EXTENSION
-      this->mLayoutWindowMap.insert(std::pair<std::string, CQNewMainWindow*>(obj->getKey(), NULL));
-#else
-      this->mLayoutWindowMap.insert(std::pair<std::string, CQLayoutMainWindow*>(obj->getKey(), NULL));
-#endif // USE_CRENDER_EXTENSION
+      this->mpTblLayouts->openPersistentEditor(mpProxyModel->index(i, COL_SHOW, QModelIndex()));
     }
 }
 
-void CQLayoutsWidget::tableLineToObject(size_t /*row*/, CCopasiObject* /*obj*/)
-{
-  // I don't know what this is supposed to do, but right now it does nothing
-  //if (!obj) return;
-  //CLayout * pLayout = static_cast< CLayout * >(obj);
-}
 
-void CQLayoutsWidget::defaultTableLineContent(size_t /*row*/, size_t /*exc*/)
-{
-  // nothin to do here
-}
-
-QString CQLayoutsWidget::defaultObjectName() const
-{
-  return "layout";
-}
-
-CCopasiObject* CQLayoutsWidget::createNewObject(const std::string & /*name*/)
-{
-  /*
-   * Can't create layouts yet.
-  std::string nname = name;
-  int i = 0;
-  CLayout* playout;
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  while (!(pLayout = (*CCopasiRootContainer::getDatamodelList())[0]->createLayout(nname)))
-    {
-      i++;
-      nname = name + "_";
-      nname += TO_UTF8(QString::number(i));
-    }
-
-  return pLayout;
-  */
-  return NULL;
-}
-
-void CQLayoutsWidget::deleteObjects(const std::vector<std::string> & keys)
-{
-  if (keys.size() == 0)
-    return;
-
-  QString layoutList = "Are you sure you want to delete listed LAYOUT(S) ?\n";
-
-  size_t i, imax = keys.size();
-
-  for (i = 0; i < imax; i++) //all compartments
-    {
-      CLayout* pLayout =
-        dynamic_cast< CLayout *>(CCopasiRootContainer::getKeyFactory()->get(keys[i]));
-
-      layoutList.append(FROM_UTF8(pLayout->getObjectName()));
-      layoutList.append(", ");
-    }
-
-  layoutList.remove(layoutList.length() - 2, 2);
-
-  QString msg = layoutList;
-
-  C_INT32 choice = 0;
-
-  switch (choice)
-    {
-      case 0:                    // Yes or Enter
-      {
-        assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-
-        for (i = 0; i < imax; i++)
-          {
-            (*CCopasiRootContainer::getDatamodelList())[0]->removeLayout(keys[i]);
-#ifdef USE_CRENDER_EXTENSION
-            std::map<std::string, CQNewMainWindow*>::iterator pos = this->mLayoutWindowMap.find(keys[i]);
-#else
-            std::map<std::string, CQLayoutMainWindow*>::iterator pos = this->mLayoutWindowMap.find(keys[i]);
-#endif // USE_CRENDER_EXTENSION
-
-            if (pos != this->mLayoutWindowMap.end() && pos->second != NULL)
-              {
-                // close the window
-                pos->second->close();
-              }
-          }
-
-        for (i = 0; i < imax; i++)
-          protectedNotify(ListViews::LAYOUT, ListViews::DELETE, keys[i]);
-
-        mChanged = true;
-        break;
-      }
-
-      default:                    // No or Escape
-        break;
-    }
-}
-
-void CQLayoutsWidget::valueChanged(size_t /*row*/, size_t /*col*/)
-{
-  /*
-   * Does nothing at the moment.
-  switch (col)
-    {
-    default:
-      break;
-    }
-  */
-  return;
-}
-
-/**
- * We overwrite the slotDoubleClicked from CopasiTableWidget since we don't
- * want to switch to another folder in the ListView but we want to open or display a layout window.
- */
-void CQLayoutsWidget::slotDoubleClicked(int row, int C_UNUSED(col),
-                                        int C_UNUSED(m), const QPoint & C_UNUSED(n))
-{
-  if (row >= table->numRows() || row < 0) return;
-
-  if (mRO && (row == table->numRows() - 1)) return;
-
-  std::string key = mKeys[row];
-  bool flagNew = false;
-
-  if (mFlagNew[row])
-    {
-      saveTable();
-      fillTable();
-      return;
-      //TODO: When double clicking on a new object the object should be created.
-    }
-
-  if (mFlagDelete[row])
-    {
-      return;
-    }
-
-  if (row == table->numRows() - 1) //new Object
-    {
-      //we have no default way to create a layout at the moment
-      /*      flagNew = true;
-            resizeTable(table->numRows() + 1);
-            mFlagNew[row] = true;
-            table->setText(row, 1, createNewName(defaultObjectName()));
-            defaultTableLineContent(row, 0);*/
-    }
-
-  saveTable();
-
-  if (flagNew)
-    {
-      key = mKeys[row];
-    }
-
-  fillTable();
-
-  this->slot_show(row);
-}
-
-#ifdef COPASI_AUTOLAYOUT
-/**
- * This creates a new layout window and return a pointer to it.
- * In case of an error, NULL is returned.
- */
-#ifdef USE_CRENDER_EXTENSION
-CQNewMainWindow* CQLayoutsWidget::createLayoutWindow(int row, CLayout* pLayout)
-#else
-CQLayoutMainWindow* CQLayoutsWidget::createLayoutWindow(int row, CLayout* pLayout)
-#endif // USE_CRENDER_EXTENSION
-{
-
-  if (pLayout == NULL || row < 0) return NULL;
-
-#ifdef USE_CRENDER_EXTENSION
-  CQNewMainWindow* pWin = new CQNewMainWindow((*CCopasiRootContainer::getDatamodelList())[0]);
-  pWin->slotLayoutChanged(row);
-#else
-  CQLayoutMainWindow* pWin = new CQLayoutMainWindow(pLayout);
-#endif // USE_CRENDER_EXTENSION
-  pWin->setWindowTitle(pLayout->getObjectName().c_str());
-  pWin->resize(900, 600);
-  this->mLayoutWindowMap[pLayout->getKey()] = pWin;
-  return pWin;
-}
-
-#ifdef USE_CRENDER_EXTENSION
+// virtual
 void CQLayoutsWidget::slotBtnNewClicked()
 {
+#ifdef COPASI_AUTOLAYOUT
   CLayout* pLayout = new CLayout("COPASI autolayout");
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   const CModel* pModel = pDataModel->getModel();
@@ -311,10 +248,15 @@ void CQLayoutsWidget::slotBtnNewClicked()
     {
       // add the layout to the datamodel
       std::map<std::string, std::string> m;
-      pDataModel->getListOfLayouts()->addLayout(pLayout, m);
+
+      CListOfLayouts * pListOfLayouts = pDataModel->getListOfLayouts();
+      pListOfLayouts->addLayout(pLayout, m);
+
       // update the table
-      fillTable();
-      CQNewMainWindow* pWin = this->createLayoutWindow(pDataModel->getListOfLayouts()->size() - 1, pLayout);
+      mpLayoutsDM->insertRows(pListOfLayouts->size() - 1, 1);
+      dataChanged(QModelIndex(), QModelIndex());
+
+      CQNewMainWindow* pWin = createLayoutWindow(pListOfLayouts->size() - 1, pLayout);
       assert(pWin != NULL);
 
       if (pWin != NULL)
@@ -334,89 +276,124 @@ void CQLayoutsWidget::slotBtnNewClicked()
     {
       delete pLayout;
     }
-}
-
-/**
- * This is called when the widget is displayed.
- * Here we need to make sure that the button for
- * the layout wizard is disabled if there are no model
- * elements.
- */
-bool CQLayoutsWidget::enterProtected()
-{
-  // check if we have at least a copartment
-  // that we can lay out.
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-
-  if (pDataModel != NULL && pDataModel->getModel() != NULL &&
-      pDataModel->getModel()->getCompartments().size() > 0
-     )
-    {
-      this->btnNew->setEnabled(true);
-    }
-  else
-    {
-      this->btnNew->setEnabled(false);
-    }
-
-  // call the method of the base class
-  return this->CopasiTableWidget::enterProtected();
-}
-
-#endif // USE_CRENDER_EXTENSION
 
 #endif // COPASI_AUTOLAYOUT
+}
 
-void CQLayoutsWidget::slot_show(int row)
+// virtual
+void CQLayoutsWidget::slotBtnDeleteClicked()
 {
-  std::string key = mKeys[row];
-  CLayout* pLayout = dynamic_cast<CLayout*>(CCopasiRootContainer::getKeyFactory()->get(key));
+  if (mpTblLayouts->hasFocus())
+    {deleteSelectedLayouts();}
+}
+
+
+// virtual
+void CQLayoutsWidget::slotBtnClearClicked()
+{
+  int ret = QMessageBox::question(this, tr("Confirm Delete"), "Delete all Layouts?",
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+
+  if (ret == QMessageBox::Yes)
+    {
+      mpLayoutsDM->clear();
+      deleteLayoutWindows();
+    }
+}
+
+// virtual
+void CQLayoutsWidget::slotSelectionChanged(const QItemSelection & /* selected */,
+    const QItemSelection & /* deselected */)
+{
+  updateDeleteBtns();
+}
+
+
+// virtual
+void CQLayoutsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
+{
+  QModelIndex index = mpProxyModel->mapToSource(proxyIndex);
+
+  int row = index.row();
+
+  if (row >= mpLayoutsDM->rowCount() || row < 0) return;
+
+  slotShowLayout(row);
+}
+
+// virtual
+void CQLayoutsWidget::dataChanged(const QModelIndex & /* topLeft */,
+                                  const QModelIndex & /* bottomRight */)
+{
+  mpTblLayouts->resizeColumnsToContents();
+  updateDeleteBtns();
+  showButtons();
+}
+
+// virtual
+void CQLayoutsWidget::slotFilterChanged()
+{
+  QRegExp regExp(mpLEFilter->text(), Qt::CaseInsensitive, QRegExp::RegExp);
+  mpProxyModel->setFilterRegExp(regExp);
+}
+
+
+/**
+ * This creates a new layout window and return a pointer to it.
+ * In case of an error, NULL is returned.
+ */
+CQLayoutsWidget::LayoutWindow * CQLayoutsWidget::createLayoutWindow(int row, CLayout* pLayout)
+{
+  if (pLayout == NULL || row < 0) return NULL;
+
+#ifdef USE_CRENDER_EXTENSION
+  LayoutWindow * pWin = new CQNewMainWindow((*CCopasiRootContainer::getDatamodelList())[0]);
+  pWin->slotLayoutChanged(row);
+#else
+  LayoutWindow * pWin = new CQLayoutMainWindow(pLayout);
+#endif // USE_CRENDER_EXTENSION
+
+  pWin->setWindowTitle(pLayout->getObjectName().c_str());
+  pWin->resize(900, 600);
+  mLayoutWindowMap[pLayout->getKey()] = pWin;
+
+  return pWin;
+}
+
+void CQLayoutsWidget::slotShowLayout(int row)
+{
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CListOfLayouts* pListOfLayouts = (*CCopasiRootContainer::getDatamodelList())[0]->getListOfLayouts();
+
+  CLayout* pLayout = (* pListOfLayouts)[row];
+  std::string Key = pLayout->getKey();
 
   if (pLayout != NULL)
     {
       // check if we already have a widget for the layout
       // if yes, open it, else create one and add it to the map
-      bool createNew = false;
-#ifdef USE_CRENDER_EXTENSION
-      std::map<std::string, CQNewMainWindow*>::iterator pos = this->mLayoutWindowMap.find(key);
-#else
-      std::map<std::string, CQLayoutMainWindow*>::iterator pos = this->mLayoutWindowMap.find(key);
-#endif // USE_CRENDER_EXTENSION
+      LayoutWindow * pLayoutWindow = NULL;
 
-      if (pos != this->mLayoutWindowMap.end())
+      LayoutWindowMap::iterator pos = mLayoutWindowMap.find(Key);
+
+      if (pos != mLayoutWindowMap.end())
         {
-          if (pos->second == NULL)
-            {
-              createNew = true;
-            }
-          else
-            {
-#ifdef USE_CRENDER_EXTENSION
-              pos->second->slotLayoutChanged(row);
-#endif // USE_CRENDER_EXTENSION
-              pos->second->show();
-              pos->second->showNormal();
-              pos->second->setActiveWindow();
-            }
-        }
-      else
-        {
-          createNew = true;
+          pLayoutWindow = pos->second;
         }
 
-      if (createNew)
+      if (pLayoutWindow == NULL)
+        {
+          pLayoutWindow = createLayoutWindow(row, pLayout);
+        }
+
+      if (pLayoutWindow != NULL)
         {
 #ifdef USE_CRENDER_EXTENSION
-          CQNewMainWindow* pWin = new CQNewMainWindow((*CCopasiRootContainer::getDatamodelList())[0]);
-          pWin->slotLayoutChanged(row);
-#else
-          CQLayoutMainWindow* pWin = new CQLayoutMainWindow(pLayout);
+          pLayoutWindow->slotLayoutChanged(row);
 #endif // USE_CRENDER_EXTENSION
-          pWin->setWindowTitle(pLayout->getObjectName().c_str());
-          pWin->resize(900, 600);
-          pWin->show();
-
-          this->mLayoutWindowMap[key] = pWin;
+          pLayoutWindow->show();
+          pLayoutWindow->showNormal();
+          pLayoutWindow->setActiveWindow();
         }
     }
   else
@@ -425,30 +402,3 @@ void CQLayoutsWidget::slot_show(int row)
     }
 }
 
-void CQShowLayoutButton::slot_clicked()
-{
-  emit signal_show(this->mRow);
-}
-
-CQShowLayoutButton::CQShowLayoutButton(unsigned int row, QWidget* pParent, const char* name): QToolButton(pParent, name), mRow(row)
-{
-  this->setTextLabel("Show");
-  connect(this, SIGNAL(clicked()), this, SLOT(slot_clicked()));
-}
-
-void CQLayoutsWidget::deleteLayoutWindows()
-{
-#ifdef USE_CRENDER_EXTENSION
-  std::map<std::string, CQNewMainWindow*>::iterator it = this->mLayoutWindowMap.begin(), endit = this->mLayoutWindowMap.end();
-#else
-  std::map<std::string, CQLayoutMainWindow*>::iterator it = this->mLayoutWindowMap.begin(), endit = this->mLayoutWindowMap.end();
-#endif // USE_CRENDER_EXTENSION
-
-  while (it != endit)
-    {
-      delete it->second;
-      ++it;
-    }
-
-  this->mLayoutWindowMap.clear();
-}
