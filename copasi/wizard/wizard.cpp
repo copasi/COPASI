@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/wizard.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/24 16:32:35 $
+//   $Date: 2011/09/30 16:51:09 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,7 +25,7 @@
 
 #include <iostream>
 
-// #include <qvariant.h>
+// #include <QtCore/QVariant>
 // #include <iostream>
 // #include <qmessagebox.h>
 // #include <qdir.h>
