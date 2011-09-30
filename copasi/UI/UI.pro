@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.252 $
+#   $Revision: 1.253 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2011/09/30 16:49:14 $
+#   $Date: 2011/09/30 17:52:38 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.252 $ $Author: shoops $ $Date: 2011/09/30 16:49:14 $
+# $Revision: 1.253 $ $Author: shoops $ $Date: 2011/09/30 17:52:38 $
 ######################################################################
 
 LIB = UI
@@ -61,6 +61,7 @@ HEADERS	+= \
   CQMatrixDialog.h \
   CQMCAWidget.h \
   CQLNAWidget.h \
+  CQMathMatrixWidget.h \
   CQMergingData.h \
   CQModelValue.h \
   CQModelWidget.h \
@@ -136,7 +137,6 @@ HEADERS	+= \
   CQGlobalQuantityDM.h \
   CQIcons.h \
   CQLayoutsDM.h \
-  CQMathMatrixWidget.h \
   CQMessageBox.h \
   CQMmlScrollView.h \
   CQPlotDM.h \
@@ -208,6 +208,7 @@ SOURCES	+= \
   CQMatrixDialog.cpp \
   CQMCAWidget.cpp \
   CQLNAWidget.cpp \
+  CQMathMatrixWidget.cpp \
   CQMergingData.cpp \
   CQModelValue.cpp \
   CQModelWidget.cpp \
@@ -284,7 +285,6 @@ SOURCES	+= \
   CQGlobalQuantityDM.cpp \
   CQIcons.cpp \
   CQLayoutsDM.cpp \
-  CQMathMatrixWidget.cpp \
   CQMessageBox.cpp \
   CQMmlScrollView.cpp \
   CQPlotDM.cpp \
@@ -352,6 +352,7 @@ FORMS += CQLayoutsWidget.ui
 FORMS += CQLyapWidget.ui
 FORMS += CQLyapResultWidget.ui
 FORMS += CQMatrixDialog.ui
+FORMS += CQMathMatrixWidget.ui
 FORMS += CQMCAWidget.ui
 FORMS += CQLNAWidget.ui
 FORMS += CQMergingData.ui

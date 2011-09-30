@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<comment> Begin CVS Header </comment>
+<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMathMatrixWidget.ui,v $ </comment>
+<comment>   $Revision: 1.1 $ </comment>
+<comment>   $Name:  $ </comment>
+<comment>   $Author: shoops $ </comment>
+<comment>   $Date: 2011/09/30 17:52:38 $ </comment>
+<comment> End CVS Header </comment>
+
+<comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+ <class>CQMathMatrixWidget</class>
+ <widget class="QWidget" name="CQMathMatrixWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>495</width>
+    <height>150</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QTabWidget" name="mpTabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="CQArrayAnnotationsWidget" name="mpArrayWidget1">
+      <attribute name="title">
+       <string>Stoichiometry Matrix</string>
+      </attribute>
+     </widget>
+     <widget class="CQArrayAnnotationsWidget" name="mpArrayWidget2">
+      <attribute name="title">
+       <string>Reduced Stoichiometry Matrix</string>
+      </attribute>
+     </widget>
+     <widget class="CQArrayAnnotationsWidget" name="mpArrayWidget3">
+      <attribute name="title">
+       <string>Link Matrix</string>
+      </attribute>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CQArrayAnnotationsWidget</class>
+   <extends>QWidget</extends>
+   <header>copasi/UI/CQArrayAnnotationsWidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

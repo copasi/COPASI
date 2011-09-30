@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMathMatrixWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2009/10/13 12:16:55 $
+//   $Author: shoops $
+//   $Date: 2011/09/30 17:52:38 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -42,64 +47,25 @@
  *  Constructs a CQMathMatrixWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CQMathMatrixWidget::CQMathMatrixWidget(QWidget* parent, const char* name, Qt::WFlags fl)
-    : CopasiWidget(parent, name, fl)
+CQMathMatrixWidget::CQMathMatrixWidget(QWidget* parent)
+    : CopasiWidget(parent)
 {
-  if (!name)
-    setName("CQMathMatrixWidget");
+  setupUi(this);
 
-  setCaption("CQMathMatrixWidget");
-
-  mWidgetLayout = new Q3GridLayout(this, 1, 1, 11, 6, "CQMathMatrixWidgetLayout");
-
-  // **********  Label **************
-  //mLabelTitle = new QLabel(this, "MatrixLabel");
-  //mLabelTitle->setText("Matrices");
-  //mLabelTitle->setAlignment(int(Qt::AlignVCenter
-  //                              | Qt::AlignLeft));
-  //mLabelTitle->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-  //mWidgetLayout->addWidget(mLabelTitle, 0, 0);
-
-  // tab widget
-  mpTab = new QTabWidget(this, "TabWidget");
-  mWidgetLayout->addMultiCellWidget(mpTab, 0, 2, 0, 2);
-
-  // 1
-  mArrayWidget1 = new CQArrayAnnotationsWidget(mpTab, "ArrayWidget1");
-  //mArrayWidget1->setColorCoding(new CColorScale1());
-  //CColorScaleAverage * tcs = new CColorScaleAverage();
   CColorScaleSimple * tcs = new CColorScaleSimple();
-  mArrayWidget1->setColorCoding(tcs);
+  mpArrayWidget1->setColorCoding(tcs);
   tcs->setMinMax(-1.5, 1.5);
-  //tcs->setMinMax(-1,1);
-  //tcs->setSymmetric(true);
-  //tcs->setFactor(3.0);
-  mArrayWidget1->setColorScalingAutomatic(false);
-  mpTab->addTab(mArrayWidget1, "Stoichiometry Matrix");
+  mpArrayWidget1->setColorScalingAutomatic(false);
 
-  // 2
-  mArrayWidget2 = new CQArrayAnnotationsWidget(mpTab, "ArrayWidget2");
-  //mArrayWidge2->setColorCoding(new CColorScale1());
   tcs = new CColorScaleSimple();
-  mArrayWidget2->setColorCoding(tcs);
+  mpArrayWidget2->setColorCoding(tcs);
   tcs->setMinMax(-1.5, 1.5);
-  //tcs2->setMinMax(-1,1);
-  //tcs2->setSymmetric(true);
-  //tcs2->setFactor(3.0);
-  mArrayWidget2->setColorScalingAutomatic(false);
-  mpTab->addTab(mArrayWidget2, "Reduced Stoichiometry Matrix");
+  mpArrayWidget2->setColorScalingAutomatic(false);
 
-  // 3
-  mArrayWidget3 = new CQArrayAnnotationsWidget(mpTab, "ArrayWidget3");
-  //mArrayWidge2->setColorCoding(new CColorScale1());
   tcs = new CColorScaleSimple();
-  mArrayWidget3->setColorCoding(tcs);
+  mpArrayWidget3->setColorCoding(tcs);
   tcs->setMinMax(-1.5, 1.5);
-  //tcs2->setMinMax(-1,1);
-  //tcs2->setSymmetric(true);
-  //tcs2->setFactor(3.0);
-  mArrayWidget3->setColorScalingAutomatic(false);
-  mpTab->addTab(mArrayWidget3, "Link Matrix");
+  mpArrayWidget3->setColorScalingAutomatic(false);
 }
 
 /*
@@ -114,29 +80,26 @@ void CQMathMatrixWidget::loadMatrices()
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   const CModel* pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 
-  //mpResult = pProblem->getResultAnnotated();
-  //mpScaledResult = pProblem->getScaledResultAnnotated();
-
   const CArrayAnnotation * tmp;
 
   tmp = dynamic_cast<const CArrayAnnotation *>
         (pModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)")));
-  mArrayWidget1->setArrayAnnotation(tmp);
+  mpArrayWidget1->setArrayAnnotation(tmp);
 
   tmp = dynamic_cast<const CArrayAnnotation *>
         (pModel->getObject(CCopasiObjectName("Array=Reduced stoichiometry(ann)")));
-  mArrayWidget2->setArrayAnnotation(tmp);
+  mpArrayWidget2->setArrayAnnotation(tmp);
 
   tmp = dynamic_cast<const CArrayAnnotation *>
         (pModel->getObject(CCopasiObjectName("Array=Link matrix(ann)")));
-  mArrayWidget3->setArrayAnnotation(tmp);
+  mpArrayWidget3->setArrayAnnotation(tmp);
 }
 
 void CQMathMatrixWidget::clearArrays()
 {
-  mArrayWidget1->setArrayAnnotation(NULL);
-  mArrayWidget2->setArrayAnnotation(NULL);
-  mArrayWidget3->setArrayAnnotation(NULL);
+  mpArrayWidget1->setArrayAnnotation(NULL);
+  mpArrayWidget2->setArrayAnnotation(NULL);
+  mpArrayWidget3->setArrayAnnotation(NULL);
 }
 
 //*************************************
