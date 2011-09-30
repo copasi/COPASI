@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DefaultplotDialog.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:10 $
+//   $Author: shoops $
+//   $Date: 2011/09/30 16:39:41 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,7 @@
 
 #include "DefaultplotDialog.h"
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 #include "UI/qtUtilities.h"
 #include "utilities/CCopasiTask.h"
 #include "report/COutputAssistant.h"

@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.h,v $
- $Revision: 1.27 $
+ $Revision: 1.28 $
  $Name:  $
  $Author: shoops $
- $Date: 2011/03/07 19:37:47 $
+ $Date: 2011/09/30 16:39:39 $
  End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,15 +24,8 @@
 #define TASKWIDGET_H
 
 #include "copasi.h"
-#include <qvariant.h>
+#include <QtCore/QVariant>
 #include <qwidget.h>
-//Added by qt3to4:
-/*
-#include <Q3GridLayout>
-#include <Q3HBoxLayout>
-#include <Q3VBoxLayout>
-#include <Q3Frame>
- */
 #include <QGridLayout>
 #include <QTableWidget>
 #include <QLabel>
@@ -41,16 +34,11 @@
 #include "UI/copasiWidget.h"
 
 class CQTaskThread;
-//class Q3VBoxLayout;
-//class Q3HBoxLayout;
-//class Q3GridLayout;
 class QCheckBox;
 class QComboBox;
-//class Q3Frame;
 class QLabel;
 class QLineEdit;
 class QPushButton;
-//class Q3Table;
 class QSpacerItem;
 
 class CQTaskHeaderWidget;
@@ -115,16 +103,6 @@ protected:
   //of the derived classes. They handle the "executable" checkbox
   bool loadCommon();
   bool saveCommon();
-
-  //these methods should be called by the constructor, loadTask(), or saveTask() methods
-  //of the derived classes. They handle the method parameters table
-  // void addMethodSelectionBox(const unsigned C_INT32 * validMethods, unsigned int row);
-  // void addMethodParameterTable(unsigned int row);
-
-  //convenience functions
-  // void addHeaderToGrid(unsigned int row);
-//    bool addHLineToGrid(Q3GridLayout* grid, unsigned int row, unsigned int maxcol);
-  // bool addHLineToGrid(QGridLayout* grid, unsigned int row, unsigned int maxcol);
 
   bool loadMethod();
   bool saveMethod();

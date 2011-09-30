@@ -19,7 +19,7 @@
 #ifndef CQFITTINGRESULT_H
 #define CQFITTINGRESULT_H
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 
 #include "ui_CQFittingResult.h"
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:17 $
+//   $Date: 2011/09/30 16:39:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
 #ifndef CQOPTIMIZATIONWIDGET_H
 #define CQOPTIMIZATIONWIDGET_H
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 #include "TaskWidget.h"
 
 #include "ui_CQOptimizationWidget.h"

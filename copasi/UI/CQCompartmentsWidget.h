@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentsWidget.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:21 $
+//   $Date: 2011/09/30 16:39:39 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,10 +19,12 @@
 #ifndef CQCompartmentsWidget_h
 #define CQCompartmentsWidget_h
 
-#include "CQComboDelegate.h"
-#include "CQSortFilterProxyModel.h"
-#include "ui_CQCompartmentsWidget.h"
-#include "CQCompartmentDM.h"
+#include <QtCore/QVariant>
+
+#include "copasi/UI/CQComboDelegate.h"
+#include "copasi/UI/CQSortFilterProxyModel.h"
+#include "copasi/UI/ui_CQCompartmentsWidget.h"
+#include "copasi/UI/CQCompartmentDM.h"
 
 class CQCompartmentsWidget : public CopasiWidget, public Ui::CQCompartmentsWidget
 {
@@ -30,7 +32,7 @@ class CQCompartmentsWidget : public CopasiWidget, public Ui::CQCompartmentsWidge
 
 public:
   CQCompartmentsWidget(QWidget* parent = 0, const char* name = 0);
-  ~CQCompartmentsWidget();
+  virtual ~CQCompartmentsWidget();
 
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();

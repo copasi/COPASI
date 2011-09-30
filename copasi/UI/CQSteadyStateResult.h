@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSteadyStateResult.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:16 $
+//   $Date: 2011/09/30 16:39:39 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
 #ifndef COPASI_CQSteadyStateResult
 #define COPASI_CQSteadyStateResult
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 #include "copasiWidget.h"
 #include "ui_CQSteadyStateResult.h"
 

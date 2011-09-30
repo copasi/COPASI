@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressItemBar.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:06 $
+//   $Author: shoops $
+//   $Date: 2011/09/30 16:39:42 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
 #ifndef CQPROGRESSITEMBAR_H
 #define CQPROGRESSITEMBAR_H
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 #include <QLabel>
 #include "CQProgressItem.h"
 #include "ui_CQProgressItemBar.h"

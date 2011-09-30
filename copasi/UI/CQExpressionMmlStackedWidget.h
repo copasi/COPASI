@@ -19,7 +19,7 @@
 #ifndef CQEXPRESSIONMML_STACKEDWIDGET_H
 #define CQEXPRESSIONMML_STACKEDWIDGET_H
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 
 #include "copasi/UI/ui_CQExpressionMmlStackedWidget.h"
 

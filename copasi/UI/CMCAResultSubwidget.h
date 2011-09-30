@@ -22,7 +22,7 @@
 #ifndef CMCARESULTSUBWIDGET_H
 #define CMCARESULTSUBWIDGET_H
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 
 #include "ui_CMCAResultSubwidget.h"
 

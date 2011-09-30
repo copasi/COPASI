@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMoietiesTaskWidget.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:19 $
+//   $Date: 2011/09/30 16:39:41 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
 #ifndef CQMOIETIESTASKWIDGET_H
 #define CQMOIETIESTASKWIDGET_H
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 
 #include "ui_CQMoietiesTaskWidget.h"
 #include "TaskWidget.h"

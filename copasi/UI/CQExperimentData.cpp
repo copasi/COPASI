@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:08 $
+//   $Author: shoops $
+//   $Date: 2011/09/30 16:39:42 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,7 @@
 
 #include "CQExperimentData.h"
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 #include <algorithm>
 #include <limits>
 #include <math.h>

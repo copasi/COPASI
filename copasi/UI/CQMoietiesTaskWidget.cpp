@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMoietiesTaskWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:08 $
+//   $Author: shoops $
+//   $Date: 2011/09/30 16:39:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,7 +12,7 @@
 // All rights reserved.
 
 #include <qcheckbox.h>
-#include <qvariant.h>
+#include <QtCore/QVariant>
 
 #include "copasi/UI/CQTaskBtnWidget.h"
 #include "copasi/UI/CQTaskHeaderWidget.h"

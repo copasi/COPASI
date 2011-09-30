@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/19 14:03:08 $
+//   $Date: 2011/09/30 16:39:38 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
 #ifndef CQCOMPARTMENT_H
 #define CQCOMPARTMENT_H
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 
 #include "copasi/UI/ui_CQCompartment.h"
 

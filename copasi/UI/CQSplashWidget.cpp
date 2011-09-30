@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSplashWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:07 $
+//   $Author: shoops $
+//   $Date: 2011/09/30 16:39:42 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,7 @@
 
 #include "CQSplashWidget.h"
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 #include "qtUtilities.h"
 #include "AboutDialog.h"
 

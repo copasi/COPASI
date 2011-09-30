@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.h,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:17 $
+//   $Date: 2011/09/30 16:39:41 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,16 +19,9 @@
 #ifndef CQFITTINGITEMWIDGET_H
 #define CQFITTINGITEMWIDGET_H
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 
 #include "ui_CQFittingItemWidget.h"
-
-/*
-//Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3GridLayout>
-#include <Q3VBoxLayout>
- */
 
 #include <QHBoxLayout>
 #include <QGridLayout>

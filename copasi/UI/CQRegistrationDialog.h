@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQRegistrationDialog.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:18 $
+//   $Date: 2011/09/30 16:39:39 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
 #ifndef CQREGISTRATIONDIALOG_H
 #define CQREGISTRATIONDIALOG_H
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 //Added by qt3to4:
 #include <Q3GridLayout>
 #include <Q3HBoxLayout>

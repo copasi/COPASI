@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:19 $
+//   $Date: 2011/09/30 16:39:39 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
 #ifndef CQEVENTWIDGET1_H
 #define CQEVENTWIDGET1_H
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 
 #include "ui_CQEventWidget1.h"
 

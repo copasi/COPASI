@@ -21,7 +21,7 @@
 
 #include "ui_CQProgressItem.h"
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 
 #include <QtCore/QVariant>
 #include <QtGui/QAction>

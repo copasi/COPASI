@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentsWidget.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/16 18:13:45 $
+//   $Date: 2011/09/30 16:39:42 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -110,7 +110,6 @@ void CQCompartmentsWidget::deleteSelectedCompartments()
 
 void CQCompartmentsWidget::slotBtnClearClicked()
 {
-
   int ret = QMessageBox::question(this, tr("Confirm Delete"), "Delete all Compartments?",
                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 

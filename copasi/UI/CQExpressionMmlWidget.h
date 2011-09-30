@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExpressionMmlWidget.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:18 $
+//   $Date: 2011/09/30 16:39:39 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,13 +19,11 @@
 #ifndef CQEXPRESSIONMMLWIDGET_H
 #define CQEXPRESSIONMMLWIDGET_H
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 
 #include "ui_CQExpressionMmlWidget.h"
 
 #include <QStackedWidget>
-//#include <Qt3Support/Q3WidgetStack>
-#include <QtCore/QVariant>
 #include <QtGui/QAction>
 #include <QtGui/QApplication>
 #include <QtGui/QButtonGroup>
@@ -36,7 +34,6 @@
 #include <QtGui/QToolButton>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
-//#include <Qt3Support/Q3WidgetStack>
 
 #include "CQExpressionWidget.h"
 #include "CQMmlScrollView.h"

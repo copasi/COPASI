@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/CQBaseWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/08/22 21:39:53 $
+//   $Date: 2011/09/30 16:33:34 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 #include <qpushbutton.h>
 #include <qlabel.h>
 #include <qslider.h>

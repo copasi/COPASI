@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSplashWidget.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:25 $
+//   $Date: 2011/09/30 16:39:39 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,9 @@
 #ifndef CQSPLASHWIDGET_H
 #define CQSPLASHWIDGET_H
 
-#include "copasiWidget.h"
+#include <QtCore/QVariant>
+
+#include "copasi/UI/copasiWidget.h"
 #include "ui_CQSplashWidget.h"
 
 class CQSplashWidget : public CopasiWidget, public Ui::CQSplashWidget

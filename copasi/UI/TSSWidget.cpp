@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TSSWidget.cpp,v $
-$Revision: 1.19 $
+$Revision: 1.20 $
 $Name:  $
 $Author: shoops $
-$Date: 2010/09/02 14:30:56 $
+$Date: 2011/09/30 16:39:37 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,7 @@ End CVS Header */
 
 #include <q3filedialog.h>
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 #include <qcheckbox.h>
 #include <q3frame.h>
 #include <qlabel.h>

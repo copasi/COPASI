@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQBaseDataModel.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/08/16 18:46:32 $
+//   $Date: 2011/09/30 16:39:43 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,7 +42,7 @@ bool CQBaseDataModel::insertRow()
 
 bool CQBaseDataModel::removeRow(int position)
 {
-  if (position >= 0 && (position < rowCount() - 1) && !isDefaultRow(index(position, 0)))
+  if (0 <= position && position < rowCount() && !isDefaultRow(index(position, 0)))
     return removeRows(position, 1);
   else
     return false;
@@ -50,7 +50,7 @@ bool CQBaseDataModel::removeRow(int position)
 
 bool CQBaseDataModel::clear()
 {
-  return removeRows(0, rowCount() - 1);
+  return removeRows(0, rowCount());
 }
 
 bool CQBaseDataModel::isDefaultRow(const QModelIndex& i) const

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskMethodWidget.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:20 $
+//   $Date: 2011/09/30 16:39:41 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
 #ifndef COPASI_CQTaskMethodWidget
 #define COPASI_CQTaskMethodWidget
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 
 #include "copasi/UI/ui_CQTaskMethodWidget.h"
 

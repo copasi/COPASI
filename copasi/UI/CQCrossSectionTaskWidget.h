@@ -18,7 +18,7 @@
 #ifndef CQCROSSSECTIONTASKWIDGET_H
 #define CQCROSSSECTIONTASKWIDGET_H
 
-//#include <qvariant.h>
+//#include <QtCore/QVariant>
 
 #include "ui_CQCrossSectionTaskWidget.h"
 

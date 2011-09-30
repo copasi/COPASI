@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/19 15:46:13 $
+//   $Date: 2011/09/30 16:39:40 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
 #ifndef CQDIFFERENTIALEQUATIONS_H
 #define CQDIFFERENTIALEQUATIONS_H
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 #include <QPixmap>
 #include <QLabel>
 

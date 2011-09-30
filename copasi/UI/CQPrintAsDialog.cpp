@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQPrintAsDialog.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:20 $
+//   $Date: 2011/09/30 16:39:40 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 
 #include "CQPrintAsDialog.h"
 #include "CQPrintAsDialog.ui.h"

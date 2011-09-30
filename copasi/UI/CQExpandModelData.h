@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpandModelData.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:05 $
+//   $Author: shoops $
+//   $Date: 2011/09/30 16:39:42 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
 #ifndef CQEXPANDMODELDATA_H
 #define CQEXPANDMODELDATA_H
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 #include <string>
 #include <vector>
 

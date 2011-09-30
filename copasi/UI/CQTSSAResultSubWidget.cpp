@@ -13,7 +13,7 @@
 
 #include "CQTSSAResultSubWidget.h"
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 #include <qmessagebox.h>
 #include <q3filedialog.h>
 #include <qregexp.h>

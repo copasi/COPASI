@@ -21,7 +21,7 @@
 
 #include "ui_CQMoietiesTaskResult.h"
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 //Added by qt3to4:
 #include <QPixmap>
 //#include <Q3GridLayout>

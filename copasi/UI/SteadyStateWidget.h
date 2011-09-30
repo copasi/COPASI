@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.h,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:18 $
+//   $Date: 2011/09/30 16:39:40 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,7 +27,7 @@
 
 #include "ui_SteadyStateWidget.h"
 
-//#include <qvariant.h>
+//#include <QtCore/QVariant>
 //#include <qwidget.h>
 #include "UI/TaskWidget.h"
 //Added by qt3to4:

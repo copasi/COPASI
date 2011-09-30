@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQRDFTreeView.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:27 $
+//   $Date: 2011/09/30 16:36:11 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,7 @@
 #define CQRDFTreeView_h
 
 #include <map>
-#include <qvariant.h>
+#include <QtCore/QVariant>
 
 #include "copasi/MIRIAMUI/ui_CQRDFTreeView.h"
 #include "copasi/UI/copasiWidget.h"

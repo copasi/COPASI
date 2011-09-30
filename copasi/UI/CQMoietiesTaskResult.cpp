@@ -18,7 +18,7 @@
 
 #include "CQMoietiesTaskResult.h"
 
-//#include <qvariant.h>
+//#include <QtCore/QVariant>
 //#include "CQMoietiesTaskResult.ui.h"
 
 //#include <q3table.h>

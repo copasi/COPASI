@@ -18,7 +18,7 @@
 
 #include "CQProgressItem.h"
 
-//#include <qvariant.h>
+//#include <QtCore/QVariant>
 //#include "CQProgressItem.ui.h"
 /*
  *  Constructs a CQProgressItem as a child of 'parent', with the

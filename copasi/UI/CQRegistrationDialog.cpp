@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQRegistrationDialog.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:24 $
+//   $Date: 2011/09/30 16:39:39 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,7 +18,7 @@
 
 #include "CQRegistrationDialog.h"
 
-#include <qvariant.h>
+#include <QtCore/QVariant>
 #include "CQRegistrationDialog.ui.h"
 /*
  *  Constructs a CQRegistrationDialog as a child of 'parent', with the
