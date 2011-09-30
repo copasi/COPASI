@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.134 $
+//   $Revision: 1.135 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/29 16:19:25 $
+//   $Date: 2011/09/30 16:51:35 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,30 +64,30 @@
 
 #ifdef USE_CRENDER_EXTENSION
 
-#include <copasi/layout/CLLocalRenderInformation.h>
-#include <copasi/layout/CLGlobalRenderInformation.h>
-#include <copasi/layout/CLRenderInformationBase.h>
-#include <copasi/layout/CLLocalStyle.h>
-#include <copasi/layout/CLGlobalStyle.h>
-#include <copasi/layout/CLColorDefinition.h>
-#include <copasi/layout/CLGradientBase.h>
-#include <copasi/layout/CLLinearGradient.h>
-#include <copasi/layout/CLRadialGradient.h>
-#include <copasi/layout/CLLineEnding.h>
-#include <copasi/layout/CLRenderPoint.h>
-#include <copasi/layout/CLRenderCubicBezier.h>
-#include <copasi/layout/CLGroup.h>
-#include <copasi/layout/CLTransformation2D.h>
-#include <copasi/layout/CLImage.h>
-#include <copasi/layout/CLGraphicalPrimitive1D.h>
-#include <copasi/layout/CLText.h>
-#include <copasi/layout/CLRenderCurve.h>
-#include <copasi/layout/CLGraphicalPrimitive2D.h>
-#include <copasi/layout/CLRectangle.h>
-#include <copasi/layout/CLEllipse.h>
-#include <copasi/layout/CLPolygon.h>
-#include <copasi/layout/CLGradientStop.h>
-#include <copasi/layout/CLLineEnding.h>
+#include "copasi/layout/CLLocalRenderInformation.h"
+#include "copasi/layout/CLGlobalRenderInformation.h"
+#include "copasi/layout/CLRenderInformationBase.h"
+#include "copasi/layout/CLLocalStyle.h"
+#include "copasi/layout/CLGlobalStyle.h"
+#include "copasi/layout/CLColorDefinition.h"
+#include "copasi/layout/CLGradientBase.h"
+#include "copasi/layout/CLLinearGradient.h"
+#include "copasi/layout/CLRadialGradient.h"
+#include "copasi/layout/CLLineEnding.h"
+#include "copasi/layout/CLRenderPoint.h"
+#include "copasi/layout/CLRenderCubicBezier.h"
+#include "copasi/layout/CLGroup.h"
+#include "copasi/layout/CLTransformation2D.h"
+#include "copasi/layout/CLImage.h"
+#include "copasi/layout/CLGraphicalPrimitive1D.h"
+#include "copasi/layout/CLText.h"
+#include "copasi/layout/CLRenderCurve.h"
+#include "copasi/layout/CLGraphicalPrimitive2D.h"
+#include "copasi/layout/CLRectangle.h"
+#include "copasi/layout/CLEllipse.h"
+#include "copasi/layout/CLPolygon.h"
+#include "copasi/layout/CLGradientStop.h"
+#include "copasi/layout/CLLineEnding.h"
 
 #endif /* USE_CRENDER_EXTENSION */
 
