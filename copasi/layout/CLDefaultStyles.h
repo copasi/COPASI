@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLDefaultStyles.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:47 $
+//   $Date: 2011/09/30 16:35:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,10 +14,10 @@
 #ifndef CLDEFAULT_STYLES_H__
 #define CLDEFAULT_STYLES_H__
 
-#include <copasi/copasi.h>
+#include "copasi/copasi.h"
 
-#include <copasi/utilities/CCopasiVector.h>
-#include <copasi/layout/CLGlobalRenderInformation.h>
+#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/layout/CLGlobalRenderInformation.h"
 
 extern CCopasiVector<CLGlobalRenderInformation>* DEFAULT_STYLES;
 

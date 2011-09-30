@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/14 16:24:10 $
+//   $Author: shoops $
+//   $Date: 2011/09/30 16:35:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,9 +21,9 @@
 #include <set>
 #include <utility>
 
-#include <copasi/layout/utility_classes.h>
-#include <copasi/layout/CLRGBAColor.h>
-#include <copasi/utilities/CCopasiVector.h>
+#include "copasi/layout/utility_classes.h"
+#include "copasi/layout/CLRGBAColor.h"
+#include "copasi/utilities/CCopasiVector.h"
 
 class CLBoundingBox;
 class CLCurve;

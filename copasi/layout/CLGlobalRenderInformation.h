@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlobalRenderInformation.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/26 16:10:42 $
+//   $Date: 2011/09/30 16:35:21 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,10 +16,10 @@
 
 #include <string>
 
-#include <copasi/layout/CLRenderInformationBase.h>
-#include <copasi/layout/CLGlobalStyle.h>
+#include "copasi/layout/CLRenderInformationBase.h"
+#include "copasi/layout/CLGlobalStyle.h"
 
-#include <copasi/utilities/CCopasiVector.h>
+#include "copasi/utilities/CCopasiVector.h"
 
 class CCopasiContainer;
 class GlobalRenderInformation;

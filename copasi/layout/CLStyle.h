@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLStyle.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:46 $
+//   $Date: 2011/09/30 16:35:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,10 +17,10 @@
 #include <set>
 #include <string>
 
-#include <copasi/layout/CLBase.h>
-#include <copasi/layout/CLGroup.h>
+#include "copasi/layout/CLBase.h"
+#include "copasi/layout/CLGroup.h"
 
-#include <copasi/report/CCopasiContainer.h>
+#include "copasi/report/CCopasiContainer.h"
 
 class Style;
 

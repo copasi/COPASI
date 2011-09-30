@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000091.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/11 11:55:16 $
+//   $Author: shoops $
+//   $Date: 2011/09/30 16:37:14 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,14 +15,14 @@
 
 #include <sstream>
 #include "utilities.hpp"
-#include <copasi/CopasiDataModel/CCopasiDataModel.h>
-#include <copasi/model/CModel.h>
-#include <copasi/model/CMetab.h>
-#include <copasi/model/CCompartment.h>
-#include <copasi/model/CModelValue.h>
-#include <copasi/model/CReaction.h>
-#include <copasi/function/CEvaluationNode.h>
-#include <copasi/function/CExpression.h>
+#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/function/CEvaluationNode.h"
+#include "copasi/function/CExpression.h"
 
 #include <sbml/SBMLDocument.h>
 #include <sbml/Model.h>

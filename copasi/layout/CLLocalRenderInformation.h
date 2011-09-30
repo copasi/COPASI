@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLocalRenderInformation.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:47 $
+//   $Date: 2011/09/30 16:35:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,8 +14,8 @@
 #ifndef CLLocalRenderInformation_H__
 #define CLLocalRenderInformation_H__
 
-#include <copasi/layout/CLRenderInformationBase.h>
-#include <copasi/layout/CLLocalStyle.h>
+#include "copasi/layout/CLRenderInformationBase.h"
+#include "copasi/layout/CLLocalStyle.h"
 
 class CCopasiContainer;
 class LocalRenderInformation;

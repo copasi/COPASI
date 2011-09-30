@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/05/04 14:29:34 $
+//   $Author: shoops $
+//   $Date: 2011/09/30 16:35:56 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,9 @@ class CReaction;
 class CMetab;
 
 #ifdef COPASI_AUTOLAYOUT
+#include "copasi/copasi.h"
+#include "copasi/layout/CLReactionGlyph.h"
+
 class CCompartment;
 class CCopasiObject;
 class CLayout;
@@ -209,7 +212,10 @@ private slots:
   /**
    * Creates a CLMetabReferenceGlyph for the given endpoints.
    */
-  static CLMetabReferenceGlyph* createMetabReferenceGlyph(const std::string& modelobjectkey, const std::string& metabglyphkey, CLMetabReferenceGlyph::Role role, double x1, double y1, double x2, double y2);
+  static CLMetabReferenceGlyph* createMetabReferenceGlyph(const std::string& modelobjectkey,
+      const std::string& metabglyphkey,
+      CLMetabReferenceGlyph::Role role,
+      double x1, double y1, double x2, double y2);
 
 protected slots:
   /**

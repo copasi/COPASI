@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderFlattener.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:46 $
+//   $Date: 2011/09/30 16:35:21 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,10 +20,10 @@
 #include <typeinfo>
 #include <algorithm>
 
-#include <copasi/layout/CLLocalStyle.h>
-#include <copasi/layout/CLGlobalStyle.h>
-#include <copasi/layout/CLRenderInformationBase.h>
-#include <copasi/utilities/CCopasiMessage.h>
+#include "copasi/layout/CLLocalStyle.h"
+#include "copasi/layout/CLGlobalStyle.h"
+#include "copasi/layout/CLRenderInformationBase.h"
+#include "copasi/utilities/CCopasiMessage.h"
 
 /**
  * static method that takes a const reference to a global render

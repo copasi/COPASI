@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderCurve.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:47 $
+//   $Date: 2011/09/30 16:35:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,8 +24,8 @@
 #include "CLRenderPoint.h"
 #include "CLRenderCubicBezier.h"
 
-#include <copasi/report/CCopasiRootContainer.h>
-#include <copasi/report/CKeyFactory.h>
+#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/report/CKeyFactory.h"
 
 /**
  * Constructor.

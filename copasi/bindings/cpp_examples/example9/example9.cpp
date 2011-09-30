@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example9/example9.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 15:06:43 $
+//   $Date: 2011/09/30 16:34:15 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,13 +25,13 @@
 #include <vector>
 
 #define COPASI_MAIN
-#include <copasi/copasi.h>
-#include <copasi/report/CCopasiRootContainer.h>
-#include <copasi/CopasiDataModel/CCopasiDataModel.h>
-#include <copasi/model/CModel.h>
-#include <copasi/model/CModelValue.h>
-#include <copasi/utilities/CAnnotatedMatrix.h>
-#include <copasi/steadystate/CSteadyStateTask.h>
+#include "copasi/copasi.h"
+#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/utilities/CAnnotatedMatrix.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
 
 const char* MODEL_STRING = \
                            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"

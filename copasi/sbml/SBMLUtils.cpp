@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLUtils.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:57:03 $
+//   $Date: 2011/09/30 16:36:58 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,7 +26,7 @@
 
 #include "SBMLUtils.h"
 
-#include <copasi/utilities/CCopasiMessage.h>
+#include "copasi/utilities/CCopasiMessage.h"
 
 //static
 std::string SBMLUtils::getIdFromSBase(const SBase* pS)

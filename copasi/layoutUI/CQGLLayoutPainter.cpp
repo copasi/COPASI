@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutPainter.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/14 16:24:10 $
+//   $Author: shoops $
+//   $Date: 2011/09/30 16:35:56 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,18 +19,18 @@
 
 
 // SBML includes
-#include <copasi/model/CModel.h>
-#include <copasi/CopasiDataModel/CCopasiDataModel.h>
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CCopasiDataModel.h"
 
 #include "CQFontRenderer.h"
-#include <copasi/layout/CLLayoutRenderer.h>
-#include <copasi/layout/CLDefaultStyles.h>
-#include <copasi/layout/CLLocalRenderInformation.h>
-#include <copasi/layout/CLGlobalRenderInformation.h>
-#include <copasi/layout/CListOfLayouts.h>
-#include <copasi/layoutUI/CQQtImageTexturizer.h>
-#include <copasi/layoutUI/CQFontRenderer.h>
-#include <copasi/utilities/CCopasiMessage.h>
+#include "copasi/layout/CLLayoutRenderer.h"
+#include "copasi/layout/CLDefaultStyles.h"
+#include "copasi/layout/CLLocalRenderInformation.h"
+#include "copasi/layout/CLGlobalRenderInformation.h"
+#include "copasi/layout/CListOfLayouts.h"
+#include "copasi/layoutUI/CQQtImageTexturizer.h"
+#include "copasi/layoutUI/CQFontRenderer.h"
+#include "copasi/utilities/CCopasiMessage.h"
 
 #define GL_GLEXT_PROTOTYPES
 #include "CQGLLayoutPainter.h"
@@ -63,13 +63,13 @@
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #undef GL_GLEXT_LEGACY
-#include <copasi/GL/glext.h>
+#include "copasi/GL/glext.h"
 #else
 #define GLX_GLXEXT_LEGACY
 #include <GL/gl.h>
 #include <GL/glu.h>
 // I am including a new glext with the source code
-#include <copasi/GL/glext.h>
+#include "copasi/GL/glext.h"
 #ifndef _WIN32
 #include <GL/glx.h>
 #endif // _WIN32

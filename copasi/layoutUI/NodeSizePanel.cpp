@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/NodeSizePanel.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/03 13:53:00 $
+//   $Author: shoops $
+//   $Date: 2011/09/30 16:35:56 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -19,7 +24,7 @@
 #include <assert.h>
 
 // global copasi headers
-#include <copasi/copasi.h>
+#include "copasi/copasi.h"
 
 // local copasi headers
 #include "NodeSizePanel.h"

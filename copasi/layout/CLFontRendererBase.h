@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLFontRendererBase.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/24 16:33:18 $
+//   $Date: 2011/09/30 16:35:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,11 +29,11 @@
 #else
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <copasi/GL/glext.h>
+#include "copasi/GL/glext.h"
 #endif // __APPLE__
 
 
-#include <copasi/layout/CLText.h>
+#include "copasi/layout/CLText.h"
 
 struct CLTextTextureSpec;
 struct CLFontSpec;

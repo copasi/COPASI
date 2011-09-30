@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/05/04 14:29:34 $
+//   $Author: shoops $
+//   $Date: 2011/09/30 16:35:56 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,7 +46,7 @@
 #include <string.h>
 
 // COPASI includes
-#include <copasi/report/CCopasiRootContainer.h>
+#include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/layout/CLayout.h"

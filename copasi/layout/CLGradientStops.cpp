@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGradientStops.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:46 $
+//   $Date: 2011/09/30 16:35:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,8 +16,8 @@
 #include <math.h>
 #include <assert.h>
 
-#include <copasi/layout/CLGradientStop.h>
-#include <copasi/layout/CLRelAbsVector.h>
+#include "copasi/layout/CLGradientStop.h"
+#include "copasi/layout/CLRelAbsVector.h"
 
 CLGradientStops::CLGradientStops(const CLGradientBase* pGradient, const std::map<std::string, CLRGBAColor>& colormap)
     : mSpreadMethod(pGradient->getSpreadMethod()), mColorData(NULL), mIndex(0), mHelp(0.0)

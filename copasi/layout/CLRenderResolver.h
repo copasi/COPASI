@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderResolver.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Author: shoops $
+//   $Date: 2011/09/30 16:35:20 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,8 +17,8 @@
 #include <map>
 #include <string>
 
-#include <copasi/layout/CLGlobalRenderInformation.h>
-#include <copasi/layout/CLLocalRenderInformation.h>
+#include "copasi/layout/CLGlobalRenderInformation.h"
+#include "copasi/layout/CLLocalRenderInformation.h"
 
 class CLRenderInformationBase;
 class CLStyle;

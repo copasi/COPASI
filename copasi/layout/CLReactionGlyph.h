@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:46 $
+//   $Date: 2011/09/30 16:35:21 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,7 +65,7 @@ public:
   static const std::string RoleName[];
 
   /**
-   * XML type names of the roles. This is used in the xml
+   * XML type names of the roles. This is used in the XML
    * importer and exporter
    */
   static const std::string XMLRole[];
@@ -116,9 +116,9 @@ public:
   {return RoleName[mRole];};
 
   /**
-   * This method writes the information of the copasi layout object into the
-   * corresponding sbml object
-   * layoutmap contains a map from copasi layout objects to libsbml layout objects.
+   * This method writes the information of the COPASI layout object into the
+   * corresponding SBML object
+   * layoutmap contains a map from COPASI layout objects to libsbml layout objects.
    * this is needed for resolving the reference to the metab glyph.
    */
   virtual void exportToSBML(SpeciesReferenceGlyph * g,
@@ -177,9 +177,9 @@ public:
   void setCurve(const CLCurve & c) {mCurve = c;};
 
   /**
-   * This method writes the information of the copasi layout object into the
-   * corresponding sbml object
-   * layoutmap contains a map from copasi layout objects to libsbml layout objects.
+   * This method writes the information of the COPASI layout object into the
+   * corresponding SBML object
+   * layoutmap contains a map from COPASI layout objects to libsbml layout objects.
    * the exported metab reference glyphs will be added.
    */
   virtual void exportToSBML(ReactionGlyph * g,

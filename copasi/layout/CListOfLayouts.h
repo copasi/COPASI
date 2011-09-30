@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/26 16:10:42 $
+//   $Date: 2011/09/30 16:35:21 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,14 +27,14 @@
 #include "CLayout.h"
 
 #ifdef USE_CRENDER_EXTENSION
-#include <copasi/layout/CLGlobalRenderInformation.h>
+#include "copasi/layout/CLGlobalRenderInformation.h"
 #endif /* USE_CRENDER_EXTENSION */
 
 class ListOf;
 
 /**
  * this class stores a list of layouts. It should also keep the maps
- * that translate from sbml IDs to copas keys
+ * that translate from sbml IDs to COPASI keys
  */
 class CListOfLayouts : public CCopasiVector<CLayout>
 {

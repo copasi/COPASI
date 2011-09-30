@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:46 $
+//   $Date: 2011/09/30 16:35:21 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,7 @@
 #include <string>
 #include <map>
 
-#include <copasi/utilities/CCopasiVector.h>
+#include "copasi/utilities/CCopasiVector.h"
 #ifdef USE_CRENDER_EXTENSION
 #include "CLLocalStyle.h"
 #include "CLGradientBase.h"

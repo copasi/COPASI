@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example10/example10.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 15:06:42 $
+//   $Date: 2011/09/30 16:34:02 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,19 +28,19 @@
 // Alternatively, you can define the symbols that are defined in copasi.h yourself.
 // For that, check copasi.h
 #define COPASI_MAIN
-#include <copasi/copasi.h>
+#include "copasi/copasi.h"
 
 
-#include <copasi/report/CCopasiRootContainer.h>
-#include <copasi/CopasiDataModel/CCopasiDataModel.h>
-#include <copasi/model/CModel.h>
-#include <copasi/model/CReaction.h>
-#include <copasi/utilities/CAnnotatedMatrix.h>
-#include <copasi/steadystate/CMCATask.h>
-#include <copasi/steadystate/CMCAProblem.h>
-#include <copasi/steadystate/CMCAMethod.h>
-#include <copasi/steadystate/CSteadyStateTask.h>
-#include <copasi/steadystate/CSteadyStateMethod.h>
+#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/utilities/CAnnotatedMatrix.h"
+#include "copasi/steadystate/CMCATask.h"
+#include "copasi/steadystate/CMCAProblem.h"
+#include "copasi/steadystate/CMCAMethod.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
+#include "copasi/steadystate/CSteadyStateMethod.h"
 
 int main(int argc, char** argv)
 {

@@ -6,7 +6,7 @@
 //   $Date: 2008/04/11 15:21:36 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,7 +22,7 @@
 #include "CUnitInterfaceSBML.h"
 #include <sbml/Model.h>
 
-#include <copasi/copasi.h>
+#include "copasi/copasi.h"
 
 CUnitInterfaceSBML::CUnitInterfaceSBML(Model * model, bool unitsFromModel) :
     mpModel(model),

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CCellDesignerImporter.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/05/04 14:26:51 $
+//   $Author: shoops $
+//   $Date: 2011/09/30 16:36:58 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,7 +23,7 @@
 #include <sbml/layout/Point.h>
 #include <sbml/layout/render/Text.h>
 
-#include <copasi/utilities/CCopasiNode.h>
+#include "copasi/utilities/CCopasiNode.h"
 
 class ColorDefinition;
 class GraphicalObject;

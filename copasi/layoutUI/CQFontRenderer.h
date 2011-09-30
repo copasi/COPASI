@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQFontRenderer.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/24 16:33:19 $
+//   $Date: 2011/09/30 16:35:56 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,8 +23,8 @@
 #include <list>
 #include <utility>
 
-#include <copasi/layout/CLText.h>
-#include <copasi/layout/CLFontRendererBase.h>
+#include "copasi/layout/CLText.h"
+#include "copasi/layout/CLFontRendererBase.h"
 
 struct CLTextTextureSpec;
 

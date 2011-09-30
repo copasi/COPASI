@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQFontRenderer.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/11 21:21:15 $
+//   $Author: shoops $
+//   $Date: 2011/09/30 16:35:56 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,10 +36,10 @@
 #else
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <copasi/GL/glext.h>
+#include "copasi/GL/glext.h"
 #endif // __APPLE__
 
-#include <copasi/layout/utility_classes.h>
+#include "copasi/layout/utility_classes.h"
 
 /**
  * Static instance of CQFontRenderer for use in a static function that can be
