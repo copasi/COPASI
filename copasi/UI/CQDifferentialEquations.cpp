@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:39:41 $
+//   $Date: 2011/09/30 17:07:40 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,17 +69,6 @@ CQDifferentialEquations::~CQDifferentialEquations()
 
 void CQDifferentialEquations::init()
 {
-  // mpScrollView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  // mpScrollView->setResizePolicy(Q3ScrollView::AutoOneFit);
-  // mpScrollView->setWidgetResizable(true);
-
-  /*
-  mpMMLWidget = new QtMmlWidget(mpScrollView->viewport());
-  mpMMLWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  mpMMLWidget->show();
-
-  mpScrollView->addChild(mpMMLWidget);
-  */
   comboBoxFunctions->setCurrentIndex(1);
 }
 
