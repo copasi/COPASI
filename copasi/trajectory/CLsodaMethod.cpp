@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.65 $
+//   $Revision: 1.66 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 15:06:39 $
+//   $Date: 2011/10/03 12:25:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -160,9 +160,56 @@ bool CLsodaMethod::elevateChildren()
 // virtual
 void CLsodaMethod::stateChanged()
 {
-  mMethodState = *mpCurrentState;
-  mTime = mMethodState.getTime();
-  mLsodaStatus = 1;
+  if (!mNoODE)
+    {
+      // Compare the independent state variables
+      // This an be done directly by comparing mMethodState and *mpCurrentState
+      C_FLOAT64 *pMethod = mY;
+      C_FLOAT64 *pMethodEnd = pMethod + mData.dim;
+      C_FLOAT64 *pCurrent = mpCurrentState->beginIndependent();
+
+      for (; pMethod != pMethodEnd; ++pMethod, ++pCurrent)
+        {
+          // We may need to use the absolute and relative tolerance
+          if (*pMethod != *pCurrent)
+            {
+              mLsodaStatus = 1;
+              mMethodState = *mpCurrentState;
+              mTime = mMethodState.getTime();
+
+              break;
+            }
+        }
+
+      if (mLsodaStatus != 1)
+        {
+          // Compare the rates of the independent state variables
+          // we need to call evalF for mMethodState and *mpCurrentState and compare the returned rates.
+          CVector< C_FLOAT64 > MethodRate(mData.dim);
+          CVector< C_FLOAT64 > CurrentRate(mData.dim);
+
+          evalF(&mTime, mY, MethodRate.array());
+
+          mMethodState = *mpCurrentState;
+          mTime = mMethodState.getTime();
+
+          evalF(&mTime, mY, CurrentRate.array());
+
+          pMethod = MethodRate.array();
+          pMethodEnd = pMethod + mData.dim;
+          pCurrent = CurrentRate.array();
+
+          for (; pMethod != pMethodEnd; ++pMethod, ++pCurrent)
+            {
+              // We may need to use the absolute and relative tolerance
+              if (*pMethod != *pCurrent)
+                {
+                  mLsodaStatus = 1;
+                  break;
+                }
+            }
+        }
+    }
 
   destroyRootMask();
   mRootMasking = NONE;
@@ -269,7 +316,8 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
                 Status = ROOT;
               }
 
-            // We do have to continue to check the root masking state.
+            // The break statement is intentionally missing since we
+            // have to continue to check the root masking state.
           default:
 
             switch (mRootMasking)
@@ -312,6 +360,8 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
                   // We have to restart the integrator
                   mLsodaStatus = 1;
                 }
+
+                break;
               }
 
             break;
