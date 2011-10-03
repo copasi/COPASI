@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayoutEngine.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/11 21:21:14 $
+//   $Author: shoops $
+//   $Date: 2011/10/03 12:25:41 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
 
 
 
-CLayoutEngine::CLayoutEngine(CAbstractLayoutInterface * l, bool so)
+CLayoutEngine::CLayoutEngine(CAbstractLayoutInterface * l, bool /* so */)
     : mpLayout(l),
     mSecondOrder(false)
 {
@@ -271,7 +271,7 @@ void CLayoutEngine::stepIntegration()
 void CLayoutEngine::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);}
 
-void CLayoutEngine::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
+void CLayoutEngine::evalF(const C_FLOAT64 * /* t */, const C_FLOAT64 * /* y */, C_FLOAT64 * ydot)
 {
   //std::cout << *t << "  " << y << " " << &mVariables[0] << std::endl;
 
