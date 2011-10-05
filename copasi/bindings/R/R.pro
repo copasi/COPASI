@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/R/R.pro,v $ 
-#   $Revision: 1.3.2.5 $ 
+#   $Revision: 1.3.2.6 $ 
 #   $Name:  $ 
 #   $Author: gauges $ 
-#   $Date: 2011/09/15 14:30:59 $ 
+#   $Date: 2011/10/05 15:19:06 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -137,7 +137,11 @@ isEmpty(R_BIN) | !exists($$R_BIN){
 
 PKG_CPPFLAGS=$$join(DEFINES, " -D", -D)
 PKG_CPPFLAGS += $$join(INCLUDEPATH, " -I", -I) 
-
+# In order to build a debug version, it would also be good to pass the optimization flags to the build command
+# Also if COPASI was configured for a certain architecture, especially on Mac OS X, that information should also be passed to the build command.
+# Build flags for R packages can also be set in a file called .R/Makevars in ones home directory, the directory can even contain several Makevars
+# files which are specific for a certain platform, e.g. Makevars.win64 
+  
 message($$DEFINES)
 
 
