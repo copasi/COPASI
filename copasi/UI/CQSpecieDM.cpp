@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.cpp,v $
-//   $Revision: 1.11.2.7 $
+//   $Revision: 1.11.2.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/27 17:28:12 $
+//   $Date: 2011/10/07 17:09:00 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,7 +30,8 @@
 CQSpecieDM::CQSpecieDM(QObject *parent):
     CQBaseDataModel(parent),
     mFlagConc(true),
-    mpSpecies(NULL)
+    mpSpecies(NULL),
+    mNotify(true)
 {
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::REACTIONS]));
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
@@ -329,15 +330,17 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
         {
           if (index.column() == COL_TYPE_SPECIES)
             {
-              if (index.data().toString() != QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[value.toInt()]])))
-                insertRow();
-              else
+              if (index.data().toString() == QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[value.toInt()]])))
                 return false;
             }
-          else if (index.data() != value)
-            insertRow();
-          else
-            return false;
+          else if (index.data() == value)
+            {
+              return false;
+            }
+
+          mNotify = false;
+          insertRow();
+          mNotify = true;
         }
       else
         {
@@ -441,7 +444,15 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
       //Save Key
       std::string key = mpSpecies->getKey();
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, key);
+
+      if (defaultRow)
+        {
+          emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, key);
+        }
+      else
+        {
+          emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, key);
+        }
     }
 
   return true;
@@ -460,7 +471,11 @@ bool CQSpecieDM::insertRows(int position, int rows, const QModelIndex&)
     {
       mpSpecies =
         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createMetabolite(TO_UTF8(createNewName("species", COL_NAME_SPECIES)), "", 1.0, CModelEntity::REACTIONS);
-      emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, mpSpecies->getKey());
+
+      if (mNotify)
+        {
+          emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, mpSpecies->getKey());
+        }
     }
 
   endInsertRows();
