@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/08/22 21:39:54 $
+//   $Date: 2011/10/07 11:56:32 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -93,21 +93,30 @@ public:
 
 protected slots:
 
-  void selectionTableChanged(int row, int col);
+  void slotRowSelectionChanged(int row);
+
+  void slotColumnSelectionChanged(int col);
+
+  void slotCurrentSelectionIndexChanged(int row, int index);
+
+  void slotContentCellClicked(int row, int col);
+
+  void slotContentDoubleClicked();
 
   void changeContents();
-
-  void tableDoubleClicked();
 
   void setColumnSize(int col, int size0, int size);
 
 protected:
-
-  void fillTable(size_t rowIndex, size_t colIndex,
-                 CCopasiAbstractArray::index_type & index);
-  void fillTable(size_t rowIndex,
-                 CCopasiAbstractArray::index_type & index);
   void fillTable();
+
+  void fillTableN(size_t rowIndex, size_t colIndex,
+                  const CCopasiAbstractArray::index_type & index);
+
+  void fillTable1(size_t rowIndex,
+                  const CCopasiAbstractArray::index_type & index);
+
+  void fillTable0();
 
   void createBarChart();
 
@@ -117,25 +126,6 @@ protected:
    *  only for dimensionality > 2
    */
   void initSelectionTable();
-
-  /**
-   *  get the active item from the combo box in the specified
-   *  row in the mpSelectionTable
-   */
-  C_INT32 currentItem(C_INT32 row);
-
-  /**
-   *  set the active item of the combo box in the specified
-   *  row in the mpSelectionTable
-   */
-  void setCurrentItem(C_INT32 row, C_INT32 index);
-
-  /**
-   *  store the current state of all the combo boxes
-   */
-  void storeCurrentCombos();
-
-  //void clearWidget();
 
   /**
    * indicates whether 3d bar chart is activated
@@ -160,17 +150,15 @@ protected:
 
   size_t mRowIndex;
   size_t mColIndex;
-  CCopasiAbstractArray::index_type mIndex;
+  CCopasiAbstractArray::index_type mSelectionIndex;
+
+  CCopasiAbstractArray::index_type mSelectedCell;
+
   bool mBarChartFilled;
   bool mOneDimensional;
 
   QStringList mComboEntries;
   CQComboDelegate* mpComboDelegate;
-
-  /**
-   * the current active item of all the combo boxes
-   */
-  std::vector<C_INT32> combos;
 };
 
 #endif

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/08/22 21:39:54 $
+//   $Date: 2011/10/07 11:56:32 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,12 +57,11 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
     mAutomaticColorScaling(false),
     mRowIndex(C_INVALID_INDEX),
     mColIndex(C_INVALID_INDEX),
-    mIndex(),
+    mSelectedCell(),
     mBarChartFilled(false),
     mOneDimensional(false),
     mComboEntries(),
-    mpComboDelegate(NULL),
-    combos()
+    mpComboDelegate(NULL)
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in constructor -- \n";
@@ -71,7 +70,7 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
   setupUi(this);
 
   //Setting values for Combo Box
-  mpComboDelegate = new CQComboDelegate(&mComboEntries, this);
+  mpComboDelegate = new CQComboDelegate(NULL, this);
   mpSelectionTable->setItemDelegateForColumn(1, mpComboDelegate);
 
   // The bar charts are temporary disabled
@@ -94,9 +93,11 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* 
       connect(mpButton, SIGNAL(clicked()), this, SLOT(changeContents()));
     }
 
-  connect(mpContentTable, SIGNAL(cellDoubleClicked(int, int)), this, SLOT(tableDoubleClicked()));
-  connect(mpSelectionTable, SIGNAL(cellChanged(int, int)), this, SLOT(selectionTableChanged(int, int)));
+  connect(mpContentTable, SIGNAL(cellDoubleClicked(int, int)), this, SLOT(slotContentDoubleClicked()));
+  connect(mpContentTable, SIGNAL(cellClicked(int, int)), this, SLOT(slotContentCellClicked(int, int)));
   connect(mpContentTable->horizontalHeader(), SIGNAL(sectionResized(int, int, int)), this, SLOT(setColumnSize(int, int, int)));
+
+  connect(mpComboDelegate, SIGNAL(currentIndexChanged(int, int)), this, SLOT(slotCurrentSelectionIndexChanged(int, int)));
 }
 
 CQArrayAnnotationsWidget::~CQArrayAnnotationsWidget()
@@ -138,66 +139,93 @@ void CQArrayAnnotationsWidget::setArrayAnnotation(const CArrayAnnotation * pArra
 
   if (!mpArray)
     {
+      mSelectedCell.clear();
       clearWidget();
       return;
     }
 
-  CCopasiAbstractArray::index_type index; index.resize(mpArray->dimensionality());
+  QStringList Items;
+  size_t i = 0, imax = mpArray->dimensionality();
 
-  if (mpArray->dimensionality() == 0)
+  for (; i != imax; i++)
     {
-      mpSelectionTable->hide();
-      fillTable();
-
-      return;
+      Items.append(FROM_UTF8(mpArray->getDimensionDescription(i)));
     }
 
-  if (mpArray->dimensionality() == 1)
+  mpComboRows->blockSignals(true);
+  mpComboRows->clear();
+  mpComboRows->addItems(Items);
+  mpComboRows->blockSignals(false);
+
+  mpComboColumns->blockSignals(true);
+  mpComboColumns->clear();
+  mpComboColumns->addItems(Items);
+  mpComboColumns->blockSignals(false);
+
+  mSelectionIndex.resize(imax);
+  CCopasiAbstractArray::index_type::iterator it = mSelectionIndex.begin();
+  CCopasiAbstractArray::index_type::iterator end = mSelectionIndex.end();
+
+  mSelectedCell.resize(imax);
+  CCopasiAbstractArray::index_type::iterator itCell = mSelectedCell.begin();
+
+  for (; it != end; ++it)
     {
-      mpSelectionTable->setRowCount(1);
-      mpSelectionTable->setColumnCount(2);
-
-      QTableWidgetItem *pItem = new QTableWidgetItem("Rows: ");
-      // pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-      // pItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-      mpSelectionTable->setItem(0, 0, pItem);
-
-      pItem = new QTableWidgetItem(FROM_UTF8(mpArray->getDimensionDescription(0)));
-      mpSelectionTable->setItem(0, 1, pItem);
-
-      fillTable(0, index);
-    }
-  else if (mpArray->dimensionality() == 2)
-    {
-      mpSelectionTable->setRowCount(2);
-      mpSelectionTable->setColumnCount(2);
-
-      QTableWidgetItem *pItem = new QTableWidgetItem("Rows: ");
-      mpSelectionTable->setItem(0, 0, pItem);
-
-      pItem = new QTableWidgetItem(FROM_UTF8(mpArray->getDimensionDescription(0)));
-      mpSelectionTable->setItem(0, 1, pItem);
-
-      pItem = new QTableWidgetItem("Columns: ");
-      mpSelectionTable->setItem(1, 0, pItem);
-
-      pItem = new QTableWidgetItem(FROM_UTF8(mpArray->getDimensionDescription(1)));
-      mpSelectionTable->setItem(1, 1, pItem);
-
-      fillTable(0, 1, index);
-    }
-  else
-    {
-      initSelectionTable();
-      fillTable(0, 1, index);
+      *it = 0;
+      *itCell = 0;
     }
 
-  mpSelectionTable->show();
 
-  mpSelectionTable->resizeColumnsToContents();
-  mpSelectionTable->resizeRowsToContents();
+  switch (imax)
+    {
+      case 0:
+        mpLblRows->hide();
+        mpComboRows->hide();
+        mpLblColumns->hide();
+        mpComboColumns->hide();
+        mpLblOther->hide();
+        mpSelectionTable->hide();
 
-  mpSelectionTable->setMaximumHeight(mpSelectionTable->verticalHeader()->sectionSize(0) *(mpArray->dimensionality() + 1));
+        mRowIndex = C_INVALID_INDEX;
+        mColIndex = C_INVALID_INDEX;
+
+        fillTable0();
+        break;
+
+      case 1:
+        mpLblRows->show();
+        mpComboRows->show();
+        mpLblColumns->hide();
+        mpComboColumns->hide();
+        mpLblOther->hide();
+        mpSelectionTable->hide();
+
+        slotRowSelectionChanged(0);
+        break;
+
+      case 2:
+        mpLblRows->show();
+        mpComboRows->show();
+        mpLblColumns->show();
+        mpComboColumns->show();
+        mpLblOther->hide();
+        mpSelectionTable->hide();
+
+        slotRowSelectionChanged(0);
+        break;
+
+      default:
+        mpLblRows->show();
+        mpComboRows->show();
+        mpLblColumns->show();
+        mpComboColumns->show();
+        mpLblOther->hide();
+        mpSelectionTable->hide();
+
+        // TODO CRITICAL We need to fill the selection table.
+        slotRowSelectionChanged(0);
+        break;
+    }
 }
 
 void CQArrayAnnotationsWidget::initSelectionTable()
@@ -218,57 +246,22 @@ void CQArrayAnnotationsWidget::initSelectionTable()
       mpSelectionTable->setItem((int) i, 0, pItem);
 
       //combo box
-      vectorOfStrings2QStringList(mpArray->getAnnotationsString(i), mComboEntries);
-      mComboEntries.prepend("In columns");
-      mComboEntries.prepend("In rows");
+      QStringList ComboEntries;
+      vectorOfStrings2QStringList(mpArray->getAnnotationsString(i), ComboEntries);
 
-      pItem = new QTableWidgetItem(FROM_UTF8(mpArray->getDimensionDescription(i)));
-      mpSelectionTable->setItem((int) i, 0, pItem);
-
-
-      //set first combobox to "In rows", second to "In columns" and all other to the
-      //first object in the annotations list
-      switch (i)
-        {
-          case 0:
-            pItem = new QTableWidgetItem("In rows");
-            break;
-
-          case 1:
-            pItem = new QTableWidgetItem("In columns");
-            break;
-
-          default:
-            pItem = new QTableWidgetItem(mComboEntries[2]);
-            break;
-        }
-
+      pItem = new QTableWidgetItem(ComboEntries[mSelectionIndex[i]]);
+      pItem->setData(Qt::EditRole, ComboEntries);
       mpSelectionTable->setItem((int) i, 1, pItem);
     }
 
   mpSelectionTable->resizeColumnsToContents();
 
-  storeCurrentCombos();
-}
+  mpSelectionTable->show();
 
-void CQArrayAnnotationsWidget::storeCurrentCombos()
-{
-#ifdef DEBUG_UI
-  qDebug() << "-- in storeCurrentCombos -- \n";
-#endif
+  mpSelectionTable->resizeColumnsToContents();
+  mpSelectionTable->resizeRowsToContents();
 
-  size_t i, imax = mpArray->dimensionality();
-  combos.resize(imax);
-
-  for (i = 0; i < imax; ++i)
-    {
-      int tmp = currentItem((int) i);
-
-      if (tmp >= 2)
-        combos[i] = 2;
-      else
-        combos[i] = tmp;
-    }
+  mpSelectionTable->setMaximumHeight(mpSelectionTable->verticalHeader()->sectionSize(0) *(mpArray->dimensionality() + 1));
 }
 
 void CQArrayAnnotationsWidget::clearWidget()
@@ -303,125 +296,83 @@ void CQArrayAnnotationsWidget::setLegendEnabled(bool b)
     mpSelectionTable->hide();
 }
 
-C_INT32 CQArrayAnnotationsWidget::currentItem(C_INT32 row)
+void CQArrayAnnotationsWidget::slotRowSelectionChanged(int row)
 {
-#ifdef DEBUG_UI
-  qDebug() << "-- in currentItem -- \n";
-#endif
-
-  Q3ComboTableItem * item = dynamic_cast<Q3ComboTableItem*>
-                            (mpSelectionTable->item(row, 1));
-
-  if (!item) return - 1;
-
-  return item->currentItem();
-}
-
-void CQArrayAnnotationsWidget::setCurrentItem(C_INT32 row, C_INT32 index)
-{
-#ifdef DEBUG_UI
-  qDebug() << "-- in setCurrentItem -- \n";
-#endif
-
-  storeCurrentCombos();
-  Q3ComboTableItem * item = dynamic_cast<Q3ComboTableItem*>
-                            (mpSelectionTable->item(row, 1));
-
-  if (!item) return;
-
-  item->setCurrentItem(index);
-}
-
-//slot
-void CQArrayAnnotationsWidget::selectionTableChanged(int row, int col)
-{
-#ifdef DEBUG_UI
-  qDebug() << "-- in selectionTableChanged -- \n";
-#endif
-
-  if (col != 1) return;
-
-  C_INT32 newValue = currentItem(row);
-
-  //no combobox
-  if (-1 == newValue) goto finish;
-
-  //no change
-  if (newValue == combos[row]) goto finish;
-
-  //neither "row" nor "column"
-  if ((newValue >= 2) && (combos[row] >= 2)) goto finish;
-
-  if (newValue == 0) //new value is "row"
+  // Assure that row and column dimension are not the same
+  if (mpComboColumns->currentIndex() == row)
     {
-      //find out which line was "row" before
-      size_t i, imax = mpArray->dimensionality();
+      mpComboColumns->blockSignals(true);
+      mpComboColumns->setCurrentIndex(row == 0 ? 1 : 0);
+      mpComboColumns->blockSignals(false);
 
-      for (i = 0; i < imax; ++i)
-        if (combos[i] == 0)
-          setCurrentItem((int) i, combos[row]);
+      mpSelectionTable->showRow(mColIndex);
+      mColIndex = mpComboColumns->currentIndex();
+      mpSelectionTable->hideRow(mColIndex);
     }
 
-  if (newValue == 1) //new value is "column"
-    {
-      //find out which line was "col" before
-      size_t i, imax = mpArray->dimensionality();
+  mpSelectionTable->showRow(mRowIndex);
+  mRowIndex = row;
+  mpSelectionTable->hideRow(mRowIndex);
 
-      for (i = 0; i < imax; ++i)
-        if (combos[i] == 1)
-          setCurrentItem((int) i, combos[row]);
-    }
-
-  if (newValue >= 2) //new value is neither "col" nor "row"
-    {
-      //find a line which was neither "col" nor "row"  before
-      size_t i, imax = mpArray->dimensionality();
-
-      for (i = 0; i < imax; ++i)
-        if (combos[i] >= 2)
-          {
-            setCurrentItem((int) i, combos[row]);
-            break;
-          }
-    }
-
-finish:
-  //call fillTable()
-  {
-    CCopasiAbstractArray::index_type index; index.resize(mpArray->dimensionality());
-    size_t rowindex = 0, colindex = 0;
-    size_t i, imax = mpArray->dimensionality();
-
-    for (i = 0; i < imax; ++i)
-      {
-        int tmp = currentItem((int) i);
-
-        //set index
-        if (tmp < 2)  //row or column
-          index[i] = 0;
-        else
-          index[i] = tmp - 2;
-
-        //set rowindex
-        if (0 == tmp)
-          rowindex = i;
-
-        //set colindex
-        if (1 == tmp)
-          colindex = i;
-      }
-
-    fillTable(rowindex, colindex, index);
-  }
-
-  storeCurrentCombos();
+  fillTable();
 }
 
-void CQArrayAnnotationsWidget::fillTable(size_t rowIndex, size_t colIndex,
-    CCopasiAbstractArray::index_type & index)
+void CQArrayAnnotationsWidget::slotColumnSelectionChanged(int col)
+{
+  // Assure that row and column dimension are not the same
+  if (mpComboRows->currentIndex() == col)
+    {
+      mpComboRows->blockSignals(true);
+      mpComboRows->setCurrentIndex(col == 0 ? 1 : 0);
+      mpComboRows->blockSignals(false);
+
+      mpSelectionTable->showRow(mRowIndex);
+      mRowIndex = mpComboRows->currentIndex();
+      mpSelectionTable->hideRow(mRowIndex);
+    }
+
+
+  mpSelectionTable->showRow(mColIndex);
+  mColIndex = col;
+  mpSelectionTable->hideRow(mColIndex);
+
+  fillTable();
+}
+
+void CQArrayAnnotationsWidget::slotCurrentSelectionIndexChanged(int row, int index)
+{
+  mSelectionIndex[row] = index;
+  fillTable();
+}
+
+
+void CQArrayAnnotationsWidget::fillTable()
+{
+  if (!mpArray) return;
+
+  switch (mpArray->dimensionality())
+    {
+      case 0:
+        fillTable0();
+        break;
+
+      case 1:
+        fillTable1(mRowIndex, mSelectionIndex);
+        break;
+
+      default:
+        fillTableN(mRowIndex, mColIndex, mSelectionIndex);
+        break;
+    }
+
+  return;
+}
+
+void CQArrayAnnotationsWidget::fillTableN(size_t rowIndex, size_t colIndex,
+    const CCopasiAbstractArray::index_type & index)
 {
 #ifdef DEBUG_UI
-  qDebug() << "-- in fillTable A -- \n";
+  qDebug() << "-- in fillTable0 A -- \n";
 #endif
 
   if (!mpArray) return;
@@ -456,6 +407,9 @@ void CQArrayAnnotationsWidget::fillTable(size_t rowIndex, size_t colIndex,
 #endif
     }
 
+
+  CCopasiAbstractArray::index_type Index = index;
+
   //automatic color scaling
   if (mAutomaticColorScaling)
     {
@@ -464,9 +418,9 @@ void CQArrayAnnotationsWidget::fillTable(size_t rowIndex, size_t colIndex,
       for (i = 0; i < imax; ++i)
         for (j = 0; j < jmax; ++j)
           {
-            index[rowIndex] = i;
-            index[colIndex] = j;
-            mpColorScale->passValue((*mpArray->array())[index]);
+            Index[rowIndex] = i;
+            Index[colIndex] = j;
+            mpColorScale->passValue((*mpArray->array())[Index]);
           }
 
       mpColorScale->finishAutomaticParameterCalculation();
@@ -476,21 +430,17 @@ void CQArrayAnnotationsWidget::fillTable(size_t rowIndex, size_t colIndex,
   for (i = 0; i < imax; ++i)
     for (j = 0; j < jmax; ++j)
       {
-        index[rowIndex] = i;
-        index[colIndex] = j;
+        Index[rowIndex] = i;
+        Index[colIndex] = j;
 
-        QTableWidgetItem * pItem = new QTableWidgetItem(QString::number((*mpArray->array())[index]));
+        QTableWidgetItem * pItem = new QTableWidgetItem(QString::number((*mpArray->array())[Index]));
         mpContentTable->setItem((int) i, (int) j, pItem);
 
         if (mpColorScale != NULL)
           {
-            pItem->setBackground(QBrush(mpColorScale->getColor((*mpArray->array())[index])));
+            pItem->setBackground(QBrush(mpColorScale->getColor((*mpArray->array())[Index])));
           }
       }
-
-  mRowIndex = rowIndex;
-  mColIndex = colIndex;
-  mIndex = index;
 
   mOneDimensional = false;
 
@@ -502,11 +452,11 @@ void CQArrayAnnotationsWidget::fillTable(size_t rowIndex, size_t colIndex,
     fillBarChart();
 }
 
-void CQArrayAnnotationsWidget::fillTable(size_t rowIndex,
-    CCopasiAbstractArray::index_type & index)
+void CQArrayAnnotationsWidget::fillTable1(size_t rowIndex,
+    const CCopasiAbstractArray::index_type & index)
 {
 #ifdef DEBUG_UI
-  qDebug() << "-- in fillTable B -- \n";
+  qDebug() << "-- in fillTable0 B -- \n";
 #endif
 
   if (!mpArray) return;
@@ -520,6 +470,8 @@ void CQArrayAnnotationsWidget::fillTable(size_t rowIndex,
 
   size_t i, imax = mpArray->size()[rowIndex];
 
+  CCopasiAbstractArray::index_type Index = index;
+
   //automatic color scaling
   if (mAutomaticColorScaling)
     {
@@ -527,8 +479,8 @@ void CQArrayAnnotationsWidget::fillTable(size_t rowIndex,
 
       for (i = 0; i < imax; ++i)
         {
-          index[rowIndex] = i;
-          mpColorScale->passValue((*mpArray->array())[index]);
+          Index[rowIndex] = i;
+          mpColorScale->passValue((*mpArray->array())[Index]);
         }
 
       mpColorScale->finishAutomaticParameterCalculation();
@@ -539,23 +491,19 @@ void CQArrayAnnotationsWidget::fillTable(size_t rowIndex,
 
   for (i = 0; i < imax; ++i)
     {
-      index[rowIndex] = i;
+      Index[rowIndex] = i;
       QTableWidgetItem * pItem = new QTableWidgetItem(FROM_UTF8(rowdescr[i]));
       mpContentTable->setVerticalHeaderItem((int) i, pItem);
 
-      pItem = new QTableWidgetItem(QString::number((*mpArray->array())[index]));
+      pItem = new QTableWidgetItem(QString::number((*mpArray->array())[Index]));
       mpContentTable->setItem((int) i, 0, pItem);
 
       if (mpColorScale != NULL)
         {
-          pItem->setBackground(QBrush(mpColorScale->getColor((*mpArray->array())[index])));
+          pItem->setBackground(QBrush(mpColorScale->getColor((*mpArray->array())[Index])));
         }
 
     }
-
-  mRowIndex = rowIndex;
-  mColIndex = 1;
-  mIndex = index;
 
   mOneDimensional = true;
 
@@ -566,10 +514,10 @@ void CQArrayAnnotationsWidget::fillTable(size_t rowIndex,
     fillBarChart();
 }
 
-void CQArrayAnnotationsWidget::fillTable()
+void CQArrayAnnotationsWidget::fillTable0()
 {
 #ifdef DEBUG_UI
-  qDebug() << "-- in fillTable C -- \n";
+  qDebug() << "-- in fillTable0 C -- \n";
 #endif
 
   if (!mpArray) return;
@@ -821,10 +769,16 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
   return;
 }
 
-void CQArrayAnnotationsWidget::tableDoubleClicked()
+void CQArrayAnnotationsWidget::slotContentCellClicked(int row, int col)
+{
+  mSelectedCell[mRowIndex] = row;
+  mSelectedCell[mColIndex] = col;
+}
+
+void CQArrayAnnotationsWidget::slotContentDoubleClicked()
 {
 #ifdef DEBUG_UI
-  qDebug() << "-- in tableDoubleClicked -- \n";
+  qDebug() << "-- in slotContentDoubleClicked -- \n";
 #endif
 
   if (mpPlot3d && mpPlot3d->isSliderActive())
@@ -876,13 +830,13 @@ void CQArrayAnnotationsWidget::fillBarChart()
   mBarChartFilled = true;
 
 #ifdef DEBUG_UI
-  qDebug() << "mRowIndex = " << mRowIndex << " - mIndex.size() = " << mIndex.size();
+  qDebug() << "mRowIndex = " << mRowIndex << " - mIndex.size() = " << mSelectedCell.size();
 #endif
 
-  assert(mRowIndex < mIndex.size());
+  assert(mRowIndex < mSelectedCell.size());
 
   if (!mOneDimensional)
-    assert(mColIndex < mIndex.size());
+    assert(mColIndex < mSelectedCell.size());
 
   mpContentTable->setRowCount((int) mpArray->size()[mRowIndex]);
 
@@ -917,25 +871,25 @@ void CQArrayAnnotationsWidget::fillBarChart()
         data[i] = new double[rows];
 
       //minValue and maxValue help to figure out the min and max value
-      mIndex[mRowIndex] = 0;
+      mSelectedCell[mRowIndex] = 0;
 
       if (!mOneDimensional)
-        mIndex[mColIndex] = 0;
+        mSelectedCell[mColIndex] = 0;
 
-      double maxValue = (double)(*mpArray->array())[mIndex];
-      double minValue = (double)(*mpArray->array())[mIndex];
+      double maxValue = (double)(*mpArray->array())[mSelectedCell];
+      double minValue = (double)(*mpArray->array())[mSelectedCell];
 
       //fill array data with values and figure out min/max value
       for (i = 0; i < imax; ++i)
         for (j = 0; j < jmax; ++j)
           {
-            mIndex[mRowIndex] = i;
+            mSelectedCell[mRowIndex] = i;
 
             if (!mOneDimensional)
-              mIndex[mColIndex] = j;
+              mSelectedCell[mColIndex] = j;
 
-            if (isnan((double)(*mpArray->array())[mIndex]) ||
-                !finite((double)(*mpArray->array())[mIndex]))
+            if (isnan((double)(*mpArray->array())[mSelectedCell]) ||
+                !finite((double)(*mpArray->array())[mSelectedCell]))
               {
                 data[j][i] = 0;
 
@@ -945,13 +899,13 @@ void CQArrayAnnotationsWidget::fillBarChart()
               }
             else
               {
-                data[j][i] = (double)(*mpArray->array())[mIndex];
+                data[j][i] = (double)(*mpArray->array())[mSelectedCell];
 
-                if ((double)(*mpArray->array())[mIndex] > maxValue)
-                  maxValue = (double)(*mpArray->array())[mIndex];
+                if ((double)(*mpArray->array())[mSelectedCell] > maxValue)
+                  maxValue = (double)(*mpArray->array())[mSelectedCell];
 
-                if ((double)(*mpArray->array())[mIndex] < minValue)
-                  minValue = (double)(*mpArray->array())[mIndex];
+                if ((double)(*mpArray->array())[mSelectedCell] < minValue)
+                  minValue = (double)(*mpArray->array())[mSelectedCell];
               }
           }
 
