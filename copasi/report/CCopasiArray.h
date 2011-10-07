@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiArray.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/16 18:09:32 $
+//   $Date: 2011/10/07 11:57:11 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,9 +19,11 @@
 #ifndef COPASIARRAY_H
 #define COPASIARRAY_H
 
-#include <utilities/CMatrix.h>
 #include <vector>
-#include "copasi.h"
+
+#include "copasi/copasi.h"
+
+#include "copasi/utilities/CMatrix.h"
 
 /**
  * This abstract class defines the interface for an n-dimensional array of floats
