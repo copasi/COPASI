@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPushButtonDelegate.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:39:00 $
+//   $Date: 2011/10/07 11:55:48 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,7 +40,7 @@ public:
 
 protected slots:
   void slotButtonClicked();
-  void slotButtonDeleted(QObject * pObject);
+  void slotEditorDeleted(QObject * pObject);
 
 signals:
   void clicked(int);

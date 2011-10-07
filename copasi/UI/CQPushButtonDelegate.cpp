@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPushButtonDelegate.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:39:00 $
+//   $Date: 2011/10/07 11:55:48 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,7 +48,7 @@ QWidget * CQPushButtonDelegate::createEditor(QWidget * parent,
   mRowToEditor[SourceIndex.row()] = pEditor;
 
   connect(pEditor, SIGNAL(clicked(bool)), this, SLOT(slotButtonClicked()));
-  connect(pEditor, SIGNAL(destroyed(QObject *)), this, SLOT(slotButtonDeleted(QObject *)));
+  connect(pEditor, SIGNAL(destroyed(QObject *)), this, SLOT(slotEditorDeleted(QObject *)));
 
   return pEditor;
 }
@@ -84,7 +84,7 @@ void CQPushButtonDelegate::slotButtonClicked()
   if (pEditor) emit clicked(mRowToEditor.key(pEditor));
 }
 
-void CQPushButtonDelegate::slotButtonDeleted(QObject * pObject)
+void CQPushButtonDelegate::slotEditorDeleted(QObject * pObject)
 {
   mRowToEditor.erase(mRowToEditor.key(static_cast<QPushButton *>(pObject)));
 }
