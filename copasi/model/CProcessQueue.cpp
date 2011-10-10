@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.22.2.2 $
+//   $Revision: 1.22.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/26 22:08:59 $
+//   $Date: 2011/10/10 18:03:24 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -303,8 +303,8 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
       if (rootsFound())
         {
           // We have to deal with both types of found roots.
-          mpMathModel->processRoots(mTime, true, mRootsFound);
-          mpMathModel->processRoots(mTime, false, mRootsFound);
+          mpMathModel->processRoots(mTime, true, false, mRootsFound);
+          mpMathModel->processRoots(mTime, false, false, mRootsFound);
         }
 
       // Note, applying the events may have added new events to the queue.

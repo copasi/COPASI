@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.188.2.4 $
+//   $Revision: 1.188.2.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/08/08 12:25:18 $
+//   $Author: shoops $
+//   $Date: 2011/10/10 18:03:24 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1508,7 +1508,7 @@ private:
   bool mIsAutonomous;
 
   /**
-   * A Boolean vakue indicationg whether we need to rebuild the initial
+   * A Boolean value indicating whether we need to rebuild the initial
    * value refresh sequence
    */
   bool mBuildInitialSequence;
@@ -1551,10 +1551,12 @@ public:
    * events and schedule them if needed.
    * @param const C_FLOAT64 & time
    * @param const bool & equality
+   * @param const bool & correct
    * @param const CVector< C_INT > & roots
    */
   void processRoots(const C_FLOAT64 & time,
                     const bool & equality,
+                    const bool & correct,
                     const CVector< C_INT > & roots);
 
   /**

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.395.2.5 $
+//   $Revision: 1.395.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 15:27:12 $
+//   $Date: 2011/10/10 18:03:24 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -293,7 +293,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
                                       CReadConfig::SEARCH);
     }
 
-  catch (CCopasiException Exception)
+  catch (CCopasiException & Exception)
     {
       if ((MCReadConfig + 1) == Exception.getMessage().getNumber())
         Notes = "";
@@ -308,7 +308,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
       Fail = configBuffer.getVariable("TimeUnit", "string", &tmp,
                                       CReadConfig::LOOP);
     }
-  catch (CCopasiException Exception)
+  catch (CCopasiException & Exception)
     {
       if ((MCReadConfig + 1) == Exception.getMessage().getNumber())
         tmp = ""; //unknown?
@@ -323,7 +323,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
       Fail = configBuffer.getVariable("ConcentrationUnit", "string", &tmp,
                                       CReadConfig::LOOP);
     }
-  catch (CCopasiException Exception)
+  catch (CCopasiException & Exception)
     {
       if ((MCReadConfig + 1) == Exception.getMessage().getNumber())
         tmp = "";  //unknown?
@@ -338,7 +338,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
       Fail = configBuffer.getVariable("VolumeUnit", "string", &tmp,
                                       CReadConfig::LOOP);
     }
-  catch (CCopasiException Exception)
+  catch (CCopasiException & Exception)
     {
       if ((MCReadConfig + 1) == Exception.getMessage().getNumber())
         tmp = ""; //unknown?
@@ -2181,6 +2181,7 @@ bool CModel::setQuantityUnit(const CModel::QuantityUnit & unit)
         mQuantityUnit = number;
         mQuantity2NumberFactor = 1.0;
         success = false;
+        break;
     }
 
   mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
@@ -4192,9 +4193,10 @@ bool CModel::processQueue(const C_FLOAT64 & time,
 
 void CModel::processRoots(const C_FLOAT64 & time,
                           const bool & equality,
+                          const bool & correct,
                           const CVector< C_INT > & roots)
 {
-  return mpMathModel->processRoots(time, equality, roots);
+  return mpMathModel->processRoots(time, equality, correct, roots);
 }
 
 const C_FLOAT64 & CModel::getProcessQueueExecutionTime() const

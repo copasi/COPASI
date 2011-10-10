@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.108.2.4 $
+//   $Revision: 1.108.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/11 20:03:29 $
+//   $Date: 2011/10/10 18:03:24 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -317,7 +317,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 16);
     }
 
-  catch (CCopasiException Exception)
+  catch (CCopasiException & Exception)
     {
       mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
       mpTrajectoryProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
@@ -411,7 +411,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
             pModel->setState(*mpCurrentState);
             pModel->updateSimulatedValues(mUpdateMoieties);
 
-            pModel->processRoots(*mpCurrentTime, true, mpTrajectoryMethod->getRoots());
+            pModel->processRoots(*mpCurrentTime, true, true, mpTrajectoryMethod->getRoots());
 
             if (*mpCurrentTime == pModel->getProcessQueueExecutionTime() &&
                 mpTrajectoryProblem->getOutputEvent())
@@ -422,7 +422,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
             // TODO Provide a call back method for resolving simultaneous assignments.
             StateChanged |= pModel->processQueue(*mpCurrentTime, true, NULL);
 
-            pModel->processRoots(*mpCurrentTime, false, mpTrajectoryMethod->getRoots());
+            pModel->processRoots(*mpCurrentTime, false, true, mpTrajectoryMethod->getRoots());
 
             // If the root happens to coincide with end of the step we have to return and
             // inform the integrator of eventual state changes.
