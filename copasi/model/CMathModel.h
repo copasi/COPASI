@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 17:34:31 $
+//   $Date: 2011/10/10 16:35:49 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,10 +90,12 @@ public:
    * events and schedule them if needed.
    * @param const C_FLOAT64 & time
    * @param const bool & equality
+   * @param const bool & correct
    * @param const CVector< C_INT > & roots
    */
   void processRoots(const C_FLOAT64 & time,
                     const bool & equality,
+                    const bool & correct,
                     const CVector< C_INT > & roots);
 
   /**

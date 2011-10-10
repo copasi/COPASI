@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:30:51 $
+//   $Date: 2011/10/10 16:35:50 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -225,6 +225,7 @@ bool CMathModel::processQueue(const C_FLOAT64 & time,
 
 void CMathModel::processRoots(const C_FLOAT64 & time,
                               const bool & equality,
+                              const bool & correct,
                               const CVector< C_INT > & foundRoots)
 {
   // Apply all needed refresh calls to calculate the current root values.
@@ -247,15 +248,18 @@ void CMathModel::processRoots(const C_FLOAT64 & time,
 
   CMathTrigger::CRootFinder **ppRootFinder = mRootIndex2RootFinder.array();
 
-  // We reevaluate the state of the non found roots, which should be save.
-  while (pFoundRoot != pFoundRootEnd)
+  if (correct)
     {
-      if (*pFoundRoot < 1)
+      while (pFoundRoot != pFoundRootEnd)
         {
-          (*ppRootFinder)->calculateInitialTrue();
-        }
+          // We reevaluate the state of the non found roots, which should be save.
+          if (*pFoundRoot < 1 && (*ppRootFinder)->isEquality() == equality)
+            {
+              (*ppRootFinder)->calculateInitialTrue();
+            }
 
-      ++pFoundRoot; ++ppRootFinder;
+          ++pFoundRoot; ++ppRootFinder;
+        }
     }
 
   pFoundRoot = foundRoots.array();
@@ -328,17 +332,17 @@ void CMathModel::applyInitialValues()
   // We need to schedule events which fire at t > t_0
 
   // The roots which are checked for inequality with a current root value
-  // zero are the candidates. We should toggle them if their time derivitative
+  // zero are the candidates. We should toggle them if their time derivative
   // is positive.
 
-  // The time derivitives of the roots can be calculated as:
+  // The time derivative of the roots can be calculated as:
   // Dr_i/Dt = sum_j (dr_i/dx_j dx_j/dt) + dr_i/dt
   // dx_j/dt are the rates of the state variables
   CVector< C_INT > InitialRoots;
 
   if (determineInitialRoots(InitialRoots))
     {
-      processRoots(mpModel->getInitialTime(), false, InitialRoots);
+      processRoots(mpModel->getInitialTime(), false, false, InitialRoots);
     }
 }
 
