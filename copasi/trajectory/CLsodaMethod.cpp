@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.62.2.5 $
+//   $Revision: 1.62.2.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/03 11:35:05 $
+//   $Date: 2011/10/10 18:05:55 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -160,7 +160,7 @@ bool CLsodaMethod::elevateChildren()
 // virtual
 void CLsodaMethod::stateChanged()
 {
-  if (!mNoODE)
+  if (!mNoODE && mLsodaStatus != 1)
     {
       // Compare the independent state variables
       // This an be done directly by comparing mMethodState and *mpCurrentState
@@ -209,6 +209,11 @@ void CLsodaMethod::stateChanged()
                 }
             }
         }
+    }
+  else
+    {
+      mMethodState = *mpCurrentState;
+      mTime = mMethodState.getTime();
     }
 
   destroyRootMask();
@@ -316,7 +321,8 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
                 Status = ROOT;
               }
 
-            // We do have to continue to check the root masking state.
+            // The break statement is intentionally missing since we
+            // have to continue to check the root masking state.
           default:
 
             switch (mRootMasking)
@@ -359,6 +365,8 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
                   // We have to restart the integrator
                   mLsodaStatus = 1;
                 }
+
+                break;
               }
 
             break;
