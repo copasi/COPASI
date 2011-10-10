@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.67 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/03 12:25:58 $
+//   $Date: 2011/10/10 16:39:38 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -160,7 +160,7 @@ bool CLsodaMethod::elevateChildren()
 // virtual
 void CLsodaMethod::stateChanged()
 {
-  if (!mNoODE)
+  if (!mNoODE && mLsodaStatus != 1)
     {
       // Compare the independent state variables
       // This an be done directly by comparing mMethodState and *mpCurrentState
@@ -209,6 +209,11 @@ void CLsodaMethod::stateChanged()
                 }
             }
         }
+    }
+  else
+    {
+      mMethodState = *mpCurrentState;
+      mTime = mMethodState.getTime();
     }
 
   destroyRootMask();
