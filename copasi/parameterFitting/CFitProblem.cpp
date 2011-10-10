@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.66.2.15 $
+//   $Revision: 1.66.2.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/06/01 17:56:51 $
+//   $Date: 2011/10/10 18:07:38 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -342,6 +342,7 @@ bool CFitProblem::setCallBack(CProcessReport * pCallBack)
 bool CFitProblem::initialize()
 {
   mHaveStatistics = false;
+  mStoreResults = false;
 
   if (!COptProblem::initialize())
     {
@@ -886,7 +887,7 @@ bool CFitProblem::calculate()
         }
     }
 
-  catch (CCopasiException)
+  catch (CCopasiException &)
     {
       // We do not want to clog the message cue.
       CCopasiMessage::getLastMessage();
@@ -1105,7 +1106,9 @@ bool CFitProblem::setResidualsRequired(const bool & required)
 }
 
 const CVector< C_FLOAT64 > & CFitProblem::getResiduals() const
-{return mResiduals;}
+{
+  return mResiduals;
+}
 
 bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
                                       const C_FLOAT64 & resolution)
@@ -1183,7 +1186,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
           dyp.resize(imax, jmax);
         }
 
-      catch (CCopasiException Exception)
+      catch (CCopasiException & Exception)
         {
           CalculateFIM = false;
         }
@@ -1642,7 +1645,7 @@ bool CFitProblem::calculateCrossValidation()
         }
     }
 
-  catch (CCopasiException)
+  catch (CCopasiException &)
     {
       // We do not want to clog the message cue.
       CCopasiMessage::getLastMessage();
