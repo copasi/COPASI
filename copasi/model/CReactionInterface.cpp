@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/07/05 19:24:02 $
+//   $Date: 2011/10/11 17:53:00 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -847,11 +847,28 @@ std::vector<std::string> CReactionInterface::getExpandedMetabList(CFunctionParam
 
   for (i = 0; i < imax; ++i)
     {
-      if (role == CFunctionParameter::MODIFIER) jmax = 1;
-      else jmax = (C_INT32)mults[i];
+      if (role == CFunctionParameter::MODIFIER)
+        {
+          jmax = 1;
+        }
+      else
+        {
+          C_FLOAT64 Multiplicity = mults[i];
+
+          if (Multiplicity == floor(Multiplicity + 0.5))
+            {
+              jmax = (size_t) Multiplicity;
+            }
+          else
+            {
+              jmax = 1;
+            }
+        }
 
       for (j = 0; j < jmax; ++j)
-        ret.push_back(names[i]);
+        {
+          ret.push_back(names[i]);
+        }
     }
 
   return ret;
