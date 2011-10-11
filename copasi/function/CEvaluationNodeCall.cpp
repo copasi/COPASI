@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:18:21 $
+//   $Date: 2011/10/11 14:50:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,14 +53,13 @@ CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
     mQuotesRequired(false),
     mBooleanRequired(false)
 {
-  std::string::size_type len = mData.length();
+  mData = unQuote(mData);
 
-  if (len > 1 && mData[0] == '"' && mData[len - 1] == '"')
+  // We force quoting if the round trip unquote, quote does not recover the original input
+  if (mData != data && quote(mData) != data)
     {
       mQuotesRequired = true;
     }
-
-  mData = unQuote(mData);
 
   switch (subType)
     {
