@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/16 18:06:53 $
+//   $Date: 2011/10/11 14:48:22 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -205,7 +205,7 @@ std::string::size_type CEvaluationTree::getErrorPosition() const
 const std::vector< CEvaluationNode * > & CEvaluationTree::getNodeList() const
 {
   if (!mpNodeList)
-    const_cast<CEvaluationTree *>(this)->mpNodeList = new std::vector< CEvaluationNode * >;
+    const_cast<CEvaluationTree *>(this)->mpNodeList = new std::vector< CEvaluationNode * >();
 
   return *mpNodeList;
 }
@@ -351,7 +351,7 @@ bool CEvaluationTree::setRoot(CEvaluationNode* pRootNode)
 
   mpRoot = pRootNode;
 
-  mpNodeList = new std::vector< CEvaluationNode * >;
+  mpNodeList = new std::vector< CEvaluationNode * >();
 
   return this->updateTree();
 }
@@ -361,6 +361,8 @@ bool CEvaluationTree::updateTree()
   if (mpRoot == NULL)
     {
       CEvaluationLexer::freeNodeList(mpNodeList);
+      mpNodeList = NULL;
+
       return false;
     }
 
