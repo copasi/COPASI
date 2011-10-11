@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.67.2.3 $
+//   $Revision: 1.67.2.4 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/04/01 15:05:36 $
+//   $Author: shoops $
+//   $Date: 2011/10/11 15:04:57 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,6 +76,7 @@ CEvaluationTree::create(CEvaluationTree::Type type)
 
       default:
         fatalError();
+        break;
     }
 
   return pNew;
@@ -107,6 +108,7 @@ CEvaluationTree::copy(const CEvaluationTree & src)
 
       default:
         fatalError();
+        break;
     }
 
   return pNew;
@@ -198,7 +200,7 @@ std::string::size_type CEvaluationTree::getErrorPosition() const
 const std::vector< CEvaluationNode * > & CEvaluationTree::getNodeList() const
 {
   if (!mpNodeList)
-    const_cast<CEvaluationTree *>(this)->mpNodeList = new std::vector< CEvaluationNode * >;
+    const_cast<CEvaluationTree *>(this)->mpNodeList = new std::vector< CEvaluationNode * >();
 
   return *mpNodeList;
 }
@@ -338,11 +340,14 @@ bool CEvaluationTree::setRoot(CEvaluationNode* pRootNode)
   if (pRootNode == NULL) return false;
 
   if (mpNodeList != NULL)
-    CEvaluationLexer::freeNodeList(mpNodeList);
+    {
+      CEvaluationLexer::freeNodeList(mpNodeList);
+      mpNodeList = NULL;
+    }
 
   mpRoot = pRootNode;
 
-  mpNodeList = new std::vector< CEvaluationNode * >;
+  mpNodeList = new std::vector< CEvaluationNode * >();
 
   return this->updateTree();
 }
