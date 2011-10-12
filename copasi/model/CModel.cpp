@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.407 $
+//   $Revision: 1.408 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/10 16:35:50 $
+//   $Date: 2011/10/12 13:37:30 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -567,22 +567,26 @@ void CModel::setCompileFlag(bool flag)
 
 bool CModel::compileIfNecessary(CProcessReport* pProcessReport)
 {
+  bool success = true;
+
   if (mCompileIsNecessary)
     {
       mpCompileHandler = pProcessReport;
 
       try
         {
-          compile();
+          success &= compile();
         }
 
       catch (...)
-        {}
+        {
+          success = false;
+        }
 
       mpCompileHandler = NULL;
     }
 
-  return true;
+  return success;
 }
 
 bool CModel::forceCompile(CProcessReport* pProcessReport)
