@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.395.2.6 $
+//   $Revision: 1.395.2.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/10 18:03:24 $
+//   $Date: 2011/10/12 13:34:11 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -575,19 +575,23 @@ bool CModel::compileIfNecessary(CProcessReport* pProcessReport)
       return true;
     }
 
+  bool success = true;
+
   mpCompileHandler = pProcessReport;
 
   try
     {
-      compile();
+      success &= compile();
     }
 
   catch (...)
-    {}
+    {
+      success = false;
+    }
 
   mpCompileHandler = NULL;
 
-  return true;
+  return success;
 }
 
 bool CModel::forceCompile(CProcessReport* pProcessReport)
