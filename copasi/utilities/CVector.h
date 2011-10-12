@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:34:54 $
+//   $Date: 2011/10/12 13:35:21 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -210,7 +210,15 @@ public:
       {
         try
           {
-            CVectorCore< CType >::mVector = new CType[CVectorCore< CType >::mSize];
+            // We need to detect size_t overflow
+            if ((C_FLOAT64) CVectorCore< CType >::mSize *(C_FLOAT64) sizeof(CType) >= (C_FLOAT64) std::numeric_limits< size_t >::max())
+              {
+                CVectorCore< CType >::mVector = NULL;
+              }
+            else
+              {
+                CVectorCore< CType >::mVector = new CType[CVectorCore< CType >::mSize];
+              }
           }
 
         catch (...)

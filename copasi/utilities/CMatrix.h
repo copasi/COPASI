@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:34:55 $
+//   $Date: 2011/10/12 13:35:21 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -164,7 +164,15 @@ public:
           {
             try
               {
-                mArray = new CType[rows * cols];
+                // We need to detect size_t overflow
+                if ((C_FLOAT64) rows *(C_FLOAT64) cols *(C_FLOAT64) sizeof(CType) >= (C_FLOAT64) std::numeric_limits< size_t >::max())
+                  {
+                    mArray = NULL;
+                  }
+                else
+                  {
+                    mArray = new CType[rows * cols];
+                  }
               }
 
             catch (...)
