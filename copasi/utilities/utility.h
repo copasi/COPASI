@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $
-   $Date: 2011/04/01 15:06:38 $
+   $Date: 2011/10/13 17:21:00 $
    End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -115,6 +115,27 @@ template <class CType> CType toEnum(const char * attribute,
 
   for (int i = 0; *enumNames; i++, enumNames++)
     if (!strcmp(attribute, *enumNames)) return static_cast< CType >(i);
+
+  return enumDefault;
+}
+
+/**
+  * Convert an attribute to enum. If attribute is ""
+  * or no matching name is found the parameter enumDefault is returned.
+  * Note: enumNames must be zero terminated.
+  * @param const std::string & attribute
+  * @param const std::string * enumNames
+  * @param const CType & enumDefault
+  * @return CType enum
+  */
+template <class CType> CType toEnum(const std::string & attribute,
+                                    const std::string * enumNames,
+                                    const CType & enumDefault)
+{
+  if (attribute == "") return enumDefault;
+
+  for (int i = 0; *enumNames != ""; i++, enumNames++)
+    if (attribute == *enumNames) return static_cast< CType >(i);
 
   return enumDefault;
 }
