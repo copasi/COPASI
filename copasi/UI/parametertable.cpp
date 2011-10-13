@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:08 $
+//   $Author: shoops $
+//   $Date: 2011/10/13 17:25:10 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -272,6 +272,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
           default :
             qUsage = "unknown";
             color = QColor(255, 20, 20);
+            break;
         }
 
       // add first column
