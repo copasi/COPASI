@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.h,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/07 11:56:32 $
+//   $Date: 2011/10/13 17:24:47 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,20 +23,14 @@
 #ifndef CQARRAYANN_H
 #define CQARRAYANN_H
 
+#include <QtCore/QVariant>
+
 #include "copasi/UI/ui_CQArrayAnnotationsWidget.h"
-
-// #include <QLabel>
-// #include <QPushButton>
-// #include <QStackedWidget>
-
-// #include <vector>
+#include "copasi/UI/CColorScale.h"
 
 #include "copasi/utilities/CAnnotatedMatrix.h"
-#include "utilities/CAnnotatedMatrix.h"
-#include "mathematics.h"
-#include "CColorScale.h"
+#include "copasi/mathematics.h"
 
-class Q3Table;
 class QLabel;
 
 class CQBarChart;
