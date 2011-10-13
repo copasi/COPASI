@@ -19,31 +19,12 @@
 #ifndef CQMOIETIESTASKRESULT_H
 #define CQMOIETIESTASKRESULT_H
 
-#include "ui_CQMoietiesTaskResult.h"
-
 #include <QtCore/QVariant>
-//Added by qt3to4:
-#include <QPixmap>
-//#include <Q3GridLayout>
-#include <QLabel>
+
+#include "copasi/UI/ui_CQMoietiesTaskResult.h"
 
 class QSignalMapper;
 class CMoietiesTask;
-/*
-#include <Qt3Support/Q3Header>
-#include <Qt3Support/Q3MimeSourceFactory>
-#include <Qt3Support/Q3Table>
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <Qt3Support/Q3ButtonGroup>
-#include <Qt3Support/Q3GridLayout>
- */
-#include <QtGui/QLabel>
-#include <QtGui/QPushButton>
-#include <QtGui/QTabWidget>
-#include "CQArrayAnnotationsWidget.h"
-#include "copasiWidget.h"
 
 class CQMoietiesTaskResult : public CopasiWidget, public Ui::CQMoietiesTaskResult
 {
@@ -61,8 +42,7 @@ public:
 
 protected:
   virtual bool enterProtected();
-  QPixmap mToolBtn;
-  QSignalMapper * mpToolBtnMap;
+
   CMoietiesTask * mpMoietiesTask;
 
 protected slots:
