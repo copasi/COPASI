@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPushButtonDelegate.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/07 11:55:48 $
+//   $Date: 2011/10/13 17:23:14 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,15 +12,22 @@
 // All rights reserved.
 
 #include <QtGui/QPushButton>
+#include <QtGui/QToolButton>
 #include <QtGui/QSortFilterProxyModel>
 
 #include "CQPushButtonDelegate.h"
 
-CQPushButtonDelegate::CQPushButtonDelegate(const QIcon & icon, const QString & text, QObject *parent):
+#include <iostream>
+
+CQPushButtonDelegate::CQPushButtonDelegate(const QIcon & icon,
+    const QString & text,
+    const ButtonType & buttonType,
+    QObject *parent):
     QStyledItemDelegate(parent),
     mIcon(icon),
     mText(text),
-    mRowToEditor()
+    mButtonType(buttonType),
+    mEditorToRow()
 {}
 
 CQPushButtonDelegate::~CQPushButtonDelegate()
@@ -39,13 +46,30 @@ QWidget * CQPushButtonDelegate::createEditor(QWidget * parent,
       pModel = SourceIndex.model();
     }
 
-  QMap< int , QWidget * >::iterator it = mRowToEditor.find(SourceIndex.row());
+  QAbstractButton * pEditor;
 
-  if (it != mRowToEditor.end()) return  it.data();
+  switch (mButtonType)
+    {
+      case PushButton:
+        pEditor = new QPushButton(mIcon, mText, parent);
+        break;
 
-  QPushButton * pEditor = new QPushButton(mIcon, mText, parent);
+      case ToolButton:
+        pEditor = new QToolButton(parent);
 
-  mRowToEditor[SourceIndex.row()] = pEditor;
+        if (mIcon.isNull())
+          {
+            pEditor->setText(mText);
+          }
+        else
+          {
+            pEditor->setIcon(mIcon);
+          }
+
+        break;
+    }
+
+  mEditorToRow[pEditor] = SourceIndex.row();
 
   connect(pEditor, SIGNAL(clicked(bool)), this, SLOT(slotButtonClicked()));
   connect(pEditor, SIGNAL(destroyed(QObject *)), this, SLOT(slotEditorDeleted(QObject *)));
@@ -79,12 +103,20 @@ void CQPushButtonDelegate::updateEditorGeometry(QWidget * pEditor,
 
 void CQPushButtonDelegate::slotButtonClicked()
 {
-  QPushButton * pEditor = dynamic_cast< QPushButton *>(sender());
+  QAbstractButton * pEditor = dynamic_cast< QAbstractButton *>(sender());
 
-  if (pEditor) emit clicked(mRowToEditor.key(pEditor));
+  if (pEditor)
+    {
+      QMap< QWidget * , int >::const_iterator found = mEditorToRow.find(pEditor);
+
+      if (found != mEditorToRow.end())
+        {
+          emit clicked(found.data());
+        }
+    }
 }
 
 void CQPushButtonDelegate::slotEditorDeleted(QObject * pObject)
 {
-  mRowToEditor.erase(mRowToEditor.key(static_cast<QPushButton *>(pObject)));
+  mEditorToRow.erase(static_cast< QWidget * >(pObject));
 }

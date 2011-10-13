@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPushButtonDelegate.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/07 11:55:48 $
+//   $Date: 2011/10/13 17:23:14 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,7 +21,9 @@ class CQPushButtonDelegate: public QStyledItemDelegate
   Q_OBJECT
 
 public:
-  CQPushButtonDelegate(const QIcon & icon, const QString & text, QObject *parent = 0);
+  enum ButtonType {PushButton, ToolButton};
+
+  CQPushButtonDelegate(const QIcon & icon, const QString & text, const ButtonType & buttonType, QObject *parent = 0);
   virtual ~CQPushButtonDelegate();
 
   virtual QWidget *createEditor(QWidget * parent,
@@ -48,9 +50,9 @@ signals:
 private:
   QIcon mIcon;
   QString mText;
+  ButtonType mButtonType;
 
-  mutable QMap< int , QWidget * > mRowToEditor;
-
+  mutable QMap< QWidget * , int > mEditorToRow;
 };
 
 #endif // COPASI_CQPushButtonDelegate

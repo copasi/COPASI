@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQComboDelegate.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/07 11:55:21 $
+//   $Date: 2011/10/13 17:23:14 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,6 +46,8 @@ public:
                                     const QStyleOptionViewItem & option,
                                     const QModelIndex & index) const;
 
+  void setItems(int row, const QStringList* pComboItems);
+
 protected slots:
   void slotCurrentIndexChanged(int index);
   void slotEditorDeleted(QObject * pObject);
@@ -57,8 +59,8 @@ signals:
 private:
   const QStringList* mpComboItems;
 
-  mutable QMap< int , QWidget * > mRowToEditor;
-
+  mutable QMap< QWidget * , int > mEditorToRow;
+  mutable QMap< int, const QStringList * > mRowToItems;
 };
 
 class CQIndexComboDelegate : public CQComboDelegate
