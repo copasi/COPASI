@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentSelection.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:08 $
+//   $Author: shoops $
+//   $Date: 2011/10/13 20:28:40 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,16 +11,16 @@
 // of Manchester.
 // All rights reserved.
 
-#include <QComboBox>
-#include <QCheckBox>
+#include "CQExperimentSelection.h"
+
+#include <QtGui/QComboBox>
 
 #include "copasi.h"
 
-#include "UI/qtUtilities.h"
+#include "qtUtilities.h"
 
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CExperiment.h"
-#include "CQExperimentSelection.h"
 
 /*
  *  Constructs a CQExperimentSelection as a child of 'parent', with the
@@ -51,26 +51,24 @@ void CQExperimentSelection::slotBtnOK()
 {
   mpBox->clear();
 
-  QCheckBox * pCheckBox;
-  bool AllChecked = true;
-  bool NoneChecked = true;
-  size_t i, imax = mpTable->numRows();
-
-  for (i = 0; i < imax; i++)
+  if (mpList->selectedItems().count() != mpList->count())
     {
-      pCheckBox = static_cast<QCheckBox *>(mpTable->cellWidget((int) i, 0));
+      QListWidgetItem * pItem;
+      QStringList Items;
+      int i, imax = mpList->count();
 
-      if (pCheckBox->isChecked())
+      for (i = 0; i != imax; ++i)
         {
-          mpBox->insertItem(mpBox->count(), pCheckBox->text());
-          NoneChecked = false;
-        }
-      else
-        AllChecked = false;
-    }
+          pItem = mpList->item(i);
 
-  if (AllChecked || NoneChecked)
-    mpBox->clear();
+          if (pItem->isSelected())
+            {
+              Items.append(pItem->text());
+            }
+        }
+
+      mpBox->addItems(Items);
+    }
 
   accept();
 }
@@ -82,60 +80,49 @@ void CQExperimentSelection::slotBtnCancel()
 
 void CQExperimentSelection::slotBtnAll()
 {
-  size_t i, imax = mpTable->numRows();
-
-  for (i = 0; i < imax; i++)
-    static_cast<QCheckBox *>(mpTable->cellWidget((int) i, 0))->setChecked(true);
+  mpList->selectAll();
 }
 
 void CQExperimentSelection::slotBtnNone()
 {
-  size_t i, imax = mpTable->numRows();
-
-  for (i = 0; i < imax; i++)
-    static_cast<QCheckBox *>(mpTable->cellWidget((int) i, 0))->setChecked(false);
+  mpList->clearSelection();
 }
 
 void CQExperimentSelection::load(QComboBox * pBox, const CExperimentSet * pExperimentSet)
 {
   mpBox = pBox;
+  mpList->clear();
 
-  QCheckBox * pCheckBox;
-  QString Name;
-
+  QStringList Items;
   size_t i, imax = pExperimentSet->getExperimentCount();
-  size_t j, jmax = mpBox->count();
-  mpTable->setNumRows((int) imax);
-  bool All = (jmax == 0);
 
   for (i = 0; i < imax; i++)
     {
-      Name = FROM_UTF8(pExperimentSet->getExperiment(i)->getObjectName());
-      pCheckBox = new QCheckBox(Name, this);
-      pCheckBox->setChecked(false);
+      Items.append(FROM_UTF8(pExperimentSet->getExperiment(i)->getObjectName()));
+    }
 
-      if (All)
-        pCheckBox->setChecked(true);
-      else
-        for (j = 0; j < jmax; j++)
-          if (mpBox->itemText((int) j) == Name)
-            {
-              pCheckBox->setChecked(true);
-              break;
-            }
+  mpList->addItems(Items);
 
-      mpTable->setCellWidget((int) i, 0, pCheckBox);
+  int j, jmax = mpBox->count();
+
+  if (jmax == 0)
+    {
+      slotBtnAll();
+      return;
+    }
+
+  for (j = 0; j < jmax; j++)
+    {
+      QList< QListWidgetItem * > Found = mpList->findItems(mpBox->itemText(j), Qt::MatchExactly);
+
+      if (Found.size() > 0)
+        {
+          Found[0]->setSelected(true);
+        }
     }
 }
 
 void CQExperimentSelection::init()
 {
   mpBox = NULL;
-
-  mpTable->horizontalHeader()->hide();
-  mpTable->verticalHeader()->hide();
-  mpTable->setTopMargin(0);
-  mpTable->setLeftMargin(0);
-  mpTable->setFocusStyle(Q3Table::FollowStyle);
-  mpTable->setColumnStretchable(0, true);
 }
