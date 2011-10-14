@@ -2596,21 +2596,6 @@ if test x"${JUNIT_PATH}" != x""; then
 fi
 
 
-
-
-# Check whether --with-copasi-license was given.
-if test "${with_copasi_license+set}" = set; then
-  withval=$with_copasi_license; COPASI_LICENSE=$withval
-fi
-
-
-if test x"${COPASI_LICENSE}" = x"DE" -o x"${COPASI_LICENSE}" = x"COM"; then
-  QMAKE_ARG="$QMAKE_ARG USE_LICENSE=$COPASI_LICENSE"
-else
-  QMAKE_ARG="$QMAKE_ARG USE_LICENSE=US"
-fi
-
-
 # Check whether --enable-lex-yacc was given.
 if test "${enable_lex_yacc+set}" = set; then
   enableval=$enable_lex_yacc; ENABLE_LEX_YACC=$enable_lex_yacc
