@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentsWidget.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:39:39 $
+//   $Date: 2011/10/14 16:17:46 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,10 +21,11 @@
 
 #include <QtCore/QVariant>
 
+#include "copasi/UI/ui_CQCompartmentsWidget.h"
+
+#include "copasi/UI/CQCompartmentDM.h"
 #include "copasi/UI/CQComboDelegate.h"
 #include "copasi/UI/CQSortFilterProxyModel.h"
-#include "copasi/UI/ui_CQCompartmentsWidget.h"
-#include "copasi/UI/CQCompartmentDM.h"
 
 class CQCompartmentsWidget : public CopasiWidget, public Ui::CQCompartmentsWidget
 {

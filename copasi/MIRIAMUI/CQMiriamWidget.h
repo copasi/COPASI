@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:36:11 $
+//   $Date: 2011/10/14 16:17:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,17 +19,17 @@
 #ifndef CQMIRIAMWIDGET_H
 #define CQMIRIAMWIDGET_H
 
-#include <QWidget>
 #include <QtCore/QVariant>
 
-#include "UI/CQSortFilterProxyModel.h"
-#include "UI/CQComboDelegate.h"
+#include "copasi/MIRIAMUI/ui_CQMiriamWidget.h"
 
-#include "ui_CQMiriamWidget.h"
-#include "CQCreatorDM.h"
-#include "CQReferenceDM.h"
-#include "CQBiologicalDescriptionDM.h"
-#include "CQModifiedDM.h"
+#include "copasi/MIRIAMUI/CQCreatorDM.h"
+#include "copasi/MIRIAMUI/CQReferenceDM.h"
+#include "copasi/MIRIAMUI/CQBiologicalDescriptionDM.h"
+#include "copasi/MIRIAMUI/CQModifiedDM.h"
+
+#include "copasi/UI/CQSortFilterProxyModel.h"
+#include "copasi/UI/CQComboDelegate.h"
 
 class CMIRIAMInfo;
 

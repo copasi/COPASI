@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportsWidget.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:23 $
+//   $Date: 2011/10/14 16:17:46 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,9 +19,12 @@
 #ifndef CQReportsWidget_h
 #define CQReportsWidget_h
 
-#include "CQSortFilterProxyModel.h"
-#include "ui_CQReportsWidget.h"
-#include "CQReportDM.h"
+#include <QtCore/QVariant>
+
+#include "copasi/UI/ui_CQReportsWidget.h"
+
+#include "copasi/UI/CQSortFilterProxyModel.h"
+#include "copasi/UI/CQReportDM.h"
 
 class CQReportsWidget : public CopasiWidget, public Ui::CQReportsWidget
 {

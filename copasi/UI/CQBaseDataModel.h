@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQBaseDataModel.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:54 $
+//   $Date: 2011/10/14 16:17:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,10 +19,9 @@
 #ifndef CQBaseDataModel_H
 #define CQBaseDataModel_H
 
-#include <QTableView>
-#include <QAbstractTableModel>
+#include <QtCore/QAbstractTableModel>
 
-#include "listviews.h"
+#include "copasi/UI/listviews.h"
 
 #define COL_ROW_NUMBER   0
 

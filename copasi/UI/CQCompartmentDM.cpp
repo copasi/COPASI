@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentDM.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/16 18:13:45 $
+//   $Date: 2011/10/14 16:17:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,14 +18,18 @@
 
 #include <QString>
 
+#include "CQCompartmentDM.h"
+
+#include "CQMessageBox.h"
+#include "qtUtilities.h"
+
+#include "copasi.h"
+
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "model/CCompartment.h"
+#include "model/CModel.h"
 #include "function/CExpression.h"
-
-#include "CQMessageBox.h"
-#include "CQCompartmentDM.h"
-#include "qtUtilities.h"
 
 CQCompartmentDM::CQCompartmentDM(QObject *parent)
     : CQBaseDataModel(parent)

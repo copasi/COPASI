@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:21 $
+//   $Date: 2011/10/14 16:17:46 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,10 +19,13 @@
 #ifndef CQEventsWidget_h
 #define CQEventsWidget_h
 
-#include "CQSpinBoxDelegate.h"
-#include "CQSortFilterProxyModel.h"
-#include "ui_CQEventsWidget.h"
-#include "CQEventDM.h"
+#include <QtCore/QVariant>
+
+#include "copasi/UI/ui_CQEventsWidget.h"
+
+#include "copasi/UI/CQSortFilterProxyModel.h"
+#include "copasi/UI/CQSpinBoxDelegate.h"
+#include "copasi/UI/CQEventDM.h"
 
 class CQEventsWidget : public CopasiWidget, public Ui::CQEventsWidget
 {

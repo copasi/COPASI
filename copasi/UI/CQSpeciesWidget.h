@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesWidget.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/07 16:25:26 $
+//   $Date: 2011/10/14 16:17:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,10 +21,11 @@
 
 #include <QtCore/QVariant>
 
-#include "CQSortFilterProxyModel.h"
-#include "CQComboDelegate.h"
-#include "ui_CQSpeciesWidget.h"
-#include "CQSpecieDM.h"
+#include "copasi/UI/ui_CQSpeciesWidget.h"
+
+#include "copasi/UI/CQSortFilterProxyModel.h"
+#include "copasi/UI/CQComboDelegate.h"
+#include "copasi/UI/CQSpecieDM.h"
 
 class CQSpeciesWidget : public CopasiWidget, public Ui::CQSpeciesWidget
 {

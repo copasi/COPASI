@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPlotsWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/13 19:21:57 $
+//   $Date: 2011/10/14 16:17:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,19 +16,22 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include <QHeaderView>
-#include <QClipboard>
+#include "CQPlotsWidget.h"
+
+#include <QtGui/QHeaderView>
+#include <QtGui/QClipboard>
+#include <QtGui/QKeyEvent>
+
+#include "copasi.h"
+
+#include "qtUtilities.h"
+#include "CQMessageBox.h"
 
 #include "model/CModel.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotSpecification.h"
-
-#include "CQPlotsWidget.h"
-#include "qtUtilities.h"
-#include "copasi.h"
-#include "CQMessageBox.h"
 
 /*
  *  Constructs a CQPlotsWidget which is a child of 'parent', with the

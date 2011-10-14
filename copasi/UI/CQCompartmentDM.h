@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentDM.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:49 $
+//   $Date: 2011/10/14 16:17:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,8 +19,7 @@
 #ifndef CQCompartmentDM_H
 #define CQCompartmentDM_H
 
-#include "model/CModel.h"
-#include "CQBaseDataModel.h"
+#include "copasi/UI/CQBaseDataModel.h"
 
 #define COL_NAME_COMPARTMENTS         1
 #define COL_TYPE_COMPARTMENTS         2

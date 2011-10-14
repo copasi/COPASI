@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQGlobalQuantitiesWidget.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:24 $
+//   $Date: 2011/10/14 16:17:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,10 +19,13 @@
 #ifndef CQGlobalQuantitiesWidget_h
 #define CQGlobalQuantitiesWidget_h
 
-#include "CQComboDelegate.h"
-#include "CQSortFilterProxyModel.h"
-#include "ui_CQGlobalQuantitiesWidget.h"
-#include "CQGlobalQuantityDM.h"
+#include <QtCore/QVariant>
+
+#include "copasi/UI/ui_CQGlobalQuantitiesWidget.h"
+
+#include "copasi/UI/CQComboDelegate.h"
+#include "copasi/UI/CQSortFilterProxyModel.h"
+#include "copasi/UI/CQGlobalQuantityDM.h"
 
 class CQGlobalQuantitiesWidget : public CopasiWidget, public Ui::CQGlobalQuantitiesWidget
 {
