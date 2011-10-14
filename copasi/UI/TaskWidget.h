@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.h,v $
- $Revision: 1.28 $
+ $Revision: 1.29 $
  $Name:  $
  $Author: shoops $
- $Date: 2011/09/30 16:39:39 $
+ $Date: 2011/10/14 15:07:45 $
  End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,15 +23,16 @@
 #ifndef TASKWIDGET_H
 #define TASKWIDGET_H
 
-#include "copasi.h"
 #include <QtCore/QVariant>
-#include <qwidget.h>
-#include <QGridLayout>
-#include <QTableWidget>
-#include <QLabel>
 
-#include "utilities/CCopasiMethod.h"
-#include "UI/copasiWidget.h"
+#include <QtGui/QGridLayout>
+#include <QtGui/QTableWidget>
+#include <QtGui/QLabel>
+
+#include "copasi/copasi.h"
+
+#include "copasi/utilities/CCopasiMethod.h"
+#include "copasi/UI/copasiWidget.h"
 
 class CQTaskThread;
 class QCheckBox;
