@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingWidget.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:39:41 $
+//   $Date: 2011/10/14 15:10:06 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,39 +21,11 @@
 
 #include <QtCore/QVariant>
 
-#include "ui_CQFittingWidget.h"
-
-#include <QHBoxLayout>
-
-/*
-//Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3GridLayout>
-#include <QPixmap>
-#include <Q3VBoxLayout>
-#include "TaskWidget.h"
+#include "copasi/UI/ui_CQFittingWidget.h"
 
 class CExperimentSet;
 class CQFittingItemWidget;
 class CCrossValidationSet;
-
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <Qt3Support/Q3ButtonGroup>
-#include <Qt3Support/Q3GridLayout>
-#include <QtGui/QPushButton>
-#include <QtGui/QSpacerItem>
-#include <QtGui/QTabWidget>
-#include <Qt3Support/Q3VBoxLayout>
-#include <QtGui/QWidget>
- */
-
-class CExperimentSet;
-class CQFittingItemWidget;
-class CCrossValidationSet;
-
-#include "TaskWidget.h"
 
 class CQFittingWidget : public TaskWidget, public Ui::CQFittingWidget
 {

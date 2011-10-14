@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingWidget.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:08 $
+//   $Author: shoops $
+//   $Date: 2011/10/14 15:10:06 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,8 +20,6 @@
 
 #include <qlabel.h>
 #include <qtoolbutton.h>
-//Added by qt3to4:
-//#include <Q3HBoxLayout>
 
 #include "UI/CQTaskBtnWidget.h"
 #include "UI/CQTaskHeaderWidget.h"

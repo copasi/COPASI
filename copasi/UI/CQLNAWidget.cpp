@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLNAWidget.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/05/24 17:33:45 $
+//   $Author: shoops $
+//   $Date: 2011/10/14 15:10:06 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,17 +18,12 @@
 
 #include "CQLNAWidget.h"
 
-#include <qmessagebox.h>
-//#include <q3table.h>
-
-#include <QHeaderView>
-
 #include "CLNAResultWidget.h"
-#include "UI/CQTaskBtnWidget.h"
-#include "UI/CQTaskHeaderWidget.h"
+#include "CQTaskBtnWidget.h"
+#include "CQTaskHeaderWidget.h"
 #include "CQTaskMethodWidget.h"
-#include "UI/CProgressBar.h"
-#include "UI/qtUtilities.h"
+#include "CProgressBar.h"
+#include "qtUtilities.h"
 
 #include "steadystate/CSteadyStateTask.h"
 #include "lna/CLNATask.h"
