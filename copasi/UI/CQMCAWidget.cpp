@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMCAWidget.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:21 $
+//   $Date: 2011/10/14 15:25:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,17 +18,12 @@
 
 #include "CQMCAWidget.h"
 
-#include <qmessagebox.h>
-//#include <q3table.h>
-
-#include <QHeaderView>
-
 #include "CMCAResultWidget.h"
-#include "UI/CQTaskBtnWidget.h"
-#include "UI/CQTaskHeaderWidget.h"
+#include "CQTaskBtnWidget.h"
+#include "CQTaskHeaderWidget.h"
 #include "CQTaskMethodWidget.h"
-#include "UI/CProgressBar.h"
-#include "UI/qtUtilities.h"
+#include "CProgressBar.h"
+#include "qtUtilities.h"
 
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CMCATask.h"

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMathMatrixWidget.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 17:52:38 $
+//   $Date: 2011/10/14 15:25:30 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,8 +25,8 @@
 
 #include <QtCore/QVariant>
 
-#include "copasi/UI/copasiWidget.h"
 #include "copasi/UI/ui_CQMathMatrixWidget.h"
+#include "copasi/UI/copasiWidget.h"
 
 class CArrayAnnotation;
 

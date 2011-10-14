@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.h,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/07/20 16:06:21 $
+//   $Date: 2011/10/14 15:24:29 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -26,10 +31,10 @@
 
 #ifndef COPASI_WIDGET_H
 #define COPASI_WIDGET_H
-#include <qwidget.h>
-//Added by qt3to4:
-#include <QResizeEvent>
-#include "UI/listviews.h"
+
+#include <QtGui/QWidget>
+
+#include "copasi/UI/listviews.h"
 
 class DataModelGUI;
 class QResizeEvent;

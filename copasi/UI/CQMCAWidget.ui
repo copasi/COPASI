@@ -1,10 +1,10 @@
 <ui version="4.0" >
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMCAWidget.ui,v $ </comment>
-<comment>   $Revision: 1.4 $ </comment>
+<comment>   $Revision: 1.5 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/09/16 12:57:40 $ </comment>
+<comment>   $Date: 2011/10/14 15:26:29 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -84,7 +84,7 @@
   <tabstop>mpCheckSteadyState</tabstop>
  </tabstops>
  <includes>
-  <include location="local" >TaskWidget.h</include>
+  <include location="local" >copasi/UI/TaskWidget.h</include>
  </includes>
  <resources/>
  <connections>
