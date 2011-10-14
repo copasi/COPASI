@@ -1,10 +1,10 @@
 <ui version="4.0" >
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskHeaderWidget.ui,v $ </comment>
-<comment>   $Revision: 1.8 $ </comment>
+<comment>   $Revision: 1.9 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/09/16 12:57:39 $ </comment>
+<comment>   $Date: 2011/10/14 15:08:32 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -90,9 +90,7 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <includes>
-  <include location="global" >string</include>
- </includes>
+ <includes/>
  <resources/>
  <connections>
   <connection>
