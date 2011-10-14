@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapWidget.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:39:37 $
+//   $Date: 2011/10/14 15:25:00 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,28 +21,7 @@
 
 #include <QtCore/QVariant>
 
-#include "ui_CQLyapWidget.h"
-/*
-#include <Qt3Support/Q3MimeSourceFactory>
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <Qt3Support/Q3ButtonGroup>
-#include <QtGui/QCheckBox>
-#include <Qt3Support/Q3Frame>
-#include <Qt3Support/Q3GridLayout>
-#include <Qt3Support/Q3HBoxLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <Qt3Support/Q3VBoxLayout>
-//Added by qt3to4:
-#include <Q3GridLayout>
-#include <Q3HBoxLayout>
-#include <Q3VBoxLayout>
-#include <QLabel>
-#include <Q3Frame>
- */
-#include "TaskWidget.h"
+#include "copasi/UI/ui_CQLyapWidget.h"
 
 class CQLyapWidget : public TaskWidget, public Ui::CQLyapWidget
 {
