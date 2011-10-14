@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.300 $
+//   $Revision: 1.301 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/14 17:30:44 $
+//   $Date: 2011/10/14 17:38:24 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2045,9 +2045,6 @@ void CopasiUI3Window::slotMergeModels()
     }
 }
 #endif
-
-bool CopasiUI3Window::slotRegistration()
-{return true;}
 
 #ifdef COPASI_SBW_INTEGRATION
 // Create 2 custom events, one containing the filename to an SBML document to be loaded

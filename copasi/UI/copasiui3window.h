@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.100 $
+//   $Revision: 1.101 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/14 17:30:45 $
+//   $Date: 2011/10/14 17:38:24 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -155,7 +155,6 @@ protected slots:
   void listViewsFolderChanged(const QModelIndex & index);
   void slotOpenRecentFile(QAction * pAction);
   void slotOpenRecentSBMLFile(QAction * pAction);
-  bool slotRegistration();
   void slotCheckModel();
   void slotApplyInitialState();
   void slotUpdateInitialState();
