@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationResult.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:24 $
+//   $Date: 2011/10/14 16:38:31 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,17 +16,18 @@
 // and The University of Manchester.
 // All rights reserved.
 
+#include "CQOptimizationResult.h"
+
+#include "CopasiFileDialog.h"
+#include "CQMessageBox.h"
+#include "qtUtilities.h"
+
 #include "copasi.h"
-#include "qregexp.h"
 
 #include "optimization/COptTask.h"
 #include "optimization/COptProblem.h"
 #include "optimization/COptItem.h"
 #include "report/CCopasiRootContainer.h"
-#include "UI/CopasiFileDialog.h"
-#include "UI/CQMessageBox.h"
-#include "UI/qtUtilities.h"
-#include "CQOptimizationResult.h"
 #include "commandline/CLocaleString.h"
 #include "model/CModel.h"
 
@@ -51,23 +52,7 @@ CQOptimizationResult::~CQOptimizationResult()
 }
 
 void CQOptimizationResult::init()
-{
-  size_t i, imax;
-
-  // Set up the parameters table
-  mpParameters->setNumCols(mpParameters->numCols() + 1);
-  mpParameters->horizontalHeader()->setLabel(mpParameters->numCols() - 1, tr("Parameter"));
-  mpParameters->setNumCols(mpParameters->numCols() + 1);
-  mpParameters->horizontalHeader()->setLabel(mpParameters->numCols() - 1, tr("Value"));
-  mpParameters->setNumCols(mpParameters->numCols() + 1);
-  mpParameters->horizontalHeader()->setLabel(mpParameters->numCols() - 1, tr("Gradient"));
-  mpParameters->setNumRows(0);
-  mpParameters->setNumCols(3);
-  mpParameters->setReadOnly(true);
-
-  for (i = 0, imax = mpParameters->numCols(); i != imax; i++)
-    mpParameters->adjustColumn((int) i);
-}
+{}
 
 bool CQOptimizationResult::update(ListViews::ObjectType /* objectType */,
                                   ListViews::Action /* action */,
@@ -117,7 +102,9 @@ bool CQOptimizationResult::enterProtected()
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
-  mpParameters->setNumRows((int) imax);
+  mpParameters->setRowCount((int) imax);
+  QTableWidgetItem * pItem;
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -128,17 +115,21 @@ bool CQOptimizationResult::enterProtected()
         pDataModel->getDataObject(Items[i]->getObjectCN());
 
       if (pObject)
-        mpParameters->setText((int) i, 0, FROM_UTF8(pObject->getObjectDisplayName()));
+        pItem = new QTableWidgetItem(FROM_UTF8(pObject->getObjectDisplayName()));
       else
-        mpParameters->setText((int) i, 0, "Not Found");
+        pItem = new QTableWidgetItem("Not Found");
+
+      mpParameters->setItem((int) i, 0, pItem);
 
       const C_FLOAT64 & Solution = Solutions[i];
-      mpParameters->setText((int) i, 1, QString::number(Solution));
-      mpParameters->setText((int) i, 2, QString::number(Gradients[i]));
+      pItem = new QTableWidgetItem(QString::number(Solution));
+      mpParameters->setItem((int) i, 1,  pItem);
+      pItem = new QTableWidgetItem(QString::number(Gradients[i]));
+      mpParameters->setItem((int) i, 2,  pItem);
     }
 
-  for (i = 0, imax = mpParameters->numCols(); i != imax; i++)
-    mpParameters->adjustColumn((int) i);
+  mpParameters->resizeColumnsToContents();
+  mpParameters->resizeRowsToContents();
 
   return true;
 }

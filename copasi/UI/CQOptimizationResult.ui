@@ -2,17 +2,18 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationResult.ui,v $ </comment>
-<comment>   $Revision: 1.8 $ </comment>
+<comment>   $Revision: 1.9 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/09/16 12:57:41 $ </comment>
+<comment>   $Date: 2011/10/14 16:38:31 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+ <comment> All rights reserved. </comment>
  <class>CQOptimizationResult</class>
  <widget class="CopasiWidget" name="CQOptimizationResult">
   <property name="geometry">
@@ -141,30 +142,31 @@ p, li { white-space: pre-wrap; }
     </layout>
    </item>
    <item>
-    <widget class="Q3Table" name="mpParameters">
-     <property name="numRows">
-      <number>0</number>
+    <widget class="QTableWidget" name="mpParameters">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
      </property>
-     <property name="numCols">
-      <number>0</number>
-     </property>
+     <column>
+      <property name="text">
+       <string>Parameter</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Value</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Gradient</string>
+      </property>
+     </column>
     </widget>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3Table</class>
-   <extends>Q3Frame</extends>
-   <header>q3table.h</header>
-  </customwidget>
   <customwidget>
    <class>CopasiWidget</class>
    <extends>QWidget</extends>
@@ -173,7 +175,7 @@ p, li { white-space: pre-wrap; }
   </customwidget>
  </customwidgets>
  <includes>
-  <include location="local" >copasi/UI/copasiWidget.h</include>
+  <include location="local">copasi/UI/copasiWidget.h</include>
  </includes>
  <resources/>
  <connections>

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationResult.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:39:37 $
+//   $Date: 2011/10/14 16:38:31 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,8 +20,8 @@
 #define CQOPTIMIZATIONRESULT_H
 
 #include <QtCore/QVariant>
-#include "copasiWidget.h"
-#include "ui_CQOptimizationResult.h"
+
+#include "copasi/UI/ui_CQOptimizationResult.h"
 
 class COptTask;
 class COptProblem;
