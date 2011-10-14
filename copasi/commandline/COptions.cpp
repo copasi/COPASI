@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:26:18 $
+//   $Date: 2011/10/14 17:31:11 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -202,12 +202,6 @@ void COptions::init(C_INT argc, char *argv[])
   setValue("ExportC", Options.ExportC);
   setValue("ExportXPPAUT", Options.ExportXPPAUT);
   setValue("ExportBerkeleyMadonna", Options.ExportBerkeleyMadonna);
-
-#ifdef COPASI_LICENSE_COM
-  setValue("RegisteredEmail", Options.RegisteredEmail);
-  setValue("RegisteredUser", Options.RegisteredUser);
-  setValue("RegistrationCode", Options.RegistrationCode);
-#endif // COPASI_LICENSE_COM
 
   delete pPreParser;
 

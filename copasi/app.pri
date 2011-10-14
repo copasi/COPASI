@@ -13,11 +13,6 @@
 
 macx:debug {
     COPASI_LIBS_SE += commandline
-#ifdef COPASI_LICENSE_COM
-    contains(USE_LICENSE, COM) {
-      COPASI_LIBS_SE += commercial
-    }
-#endif // COPASI_LICENSE_COM
 
     COPASI_LIBS_SE += compareExpressions
     COPASI_LIBS_SE += copasiDM

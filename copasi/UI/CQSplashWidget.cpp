@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSplashWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:39:42 $
+//   $Date: 2011/10/14 17:30:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,6 @@
 
 #include "CQSplashWidget.h"
 
-#include <QtCore/QVariant>
 #include "qtUtilities.h"
 #include "AboutDialog.h"
 
@@ -53,9 +52,6 @@ void CQSplashWidget::init()
 void CQSplashWidget::slotViewLicense()
 {
   QString FixedTitle = "COPASI ";
-#ifdef COPASI_LICENSE_COM
-  FixedTitle += "(commercial) ";
-#endif // COPASI_LICENSE_COM
   FixedTitle += FROM_UTF8(CVersion::VERSION.getVersion());
 
   AboutDialog* aboutDialog = new AboutDialog(this, CCopasiRootContainer::getLicenseHTML(), 76, 30);

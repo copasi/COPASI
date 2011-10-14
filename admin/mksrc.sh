@@ -327,20 +327,6 @@ if test x"\${JUNIT_PATH}" != x""; then
 fi
 
 
-
-dnl Handle COPASI license
-AC_ARG_WITH([copasi-license],
-  AS_HELP_STRING([--with-copasi-license],
-                 [Specify whether to use the German (DE), US (US) or Commercial (COM) license.]),
-  [COPASI_LICENSE=\$withval])
-
-if test x"\${COPASI_LICENSE}" = x"DE" -o x"\${COPASI_LICENSE}" = x"COM"; then
-  QMAKE_ARG="\$QMAKE_ARG USE_LICENSE=\$COPASI_LICENSE"
-else
-  QMAKE_ARG="\$QMAKE_ARG USE_LICENSE=US"
-fi
-
-
 AC_ARG_ENABLE([lex-yacc],
   AS_HELP_STRING([--enable-lex-yacc],
                  [Specify whether to compile lex and yacc sources (default: no).]),
@@ -482,12 +468,6 @@ aclocal
 autoconf
 automake
 rm -rf autom4te.cache
-
-#remove any reference to commercial license code
-CleanFiles=`find . -type f -exec grep -Hq '#ifdef COPASI_LICENSE_COM' {} \; -exec echo {} \; | sort -u`
-for file in $CleanFiles; do
-  gawk -- ' BEGIN {keep = 1} $0 ~ "#ifdef COPASI_LICENSE_COM" {keep = 0} {if (keep == 1) {print $0}} $0 ~ "#endif // COPASI_LICENSE_COM" {keep = 1}' $file > $$.tmp && mv $$.tmp $file;
-done;
 
 #remove any reference to CROSSVALIDATION
 CleanFiles=`find . -type f -exec grep -Hq '#ifdef COPASI_CROSSVALIDATION' {} \; -exec echo {} \; | sort -u`

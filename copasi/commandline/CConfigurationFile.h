@@ -1,12 +1,12 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.h,v $
-  $Revision: 1.7 $
+  $Revision: 1.8 $
   $Name:  $
   $Author: shoops $
-  $Date: 2010/08/12 20:06:32 $
+  $Date: 2011/10/14 17:31:11 $
   End CVS Header */
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,9 +27,6 @@
 #include "MIRIAM/CMIRIAMResource.h"
 #include "xml/CCopasiXMLInterface.h"
 
-#ifdef COPASI_LICENSE_COM
-class CRegistration;
-#endif // COPASI_LICENSE_COM
 class CMIRIAMResources;
 
 class CRecentFiles : public CCopasiParameterGroup
@@ -276,13 +273,6 @@ private:
    * A pointer to the application which handles opening URLs
    */
   std::string * mpWebBrowser;
-
-#ifdef COPASI_LICENSE_COM
-  /**
-   * A pointer to the registration information
-   */
-  CRegistration * mpRegistration;
-#endif // COPASI_LICENSE_COM;
 };
 
 #endif // COPASI_CConfigurationFile

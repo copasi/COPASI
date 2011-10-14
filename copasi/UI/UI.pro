@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.253 $
+#   $Revision: 1.254 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2011/09/30 17:52:38 $
+#   $Date: 2011/10/14 17:30:45 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.253 $ $Author: shoops $ $Date: 2011/09/30 17:52:38 $
+# $Revision: 1.254 $ $Author: shoops $ $Date: 2011/10/14 17:30:45 $
 ######################################################################
 
 LIB = UI
@@ -436,17 +436,6 @@ include(../lib.pri)
 CONFIG += qt 
 
 include(../common.pri)
-
-#ifdef COPASI_LICENSE_COM
-contains(USE_LICENSE, COM) {
-# FORMS3 += CQRegistrationDialog.ui
-
-  HEADERS += CQRegistrationDialog.h \
-             CQRegistrationDialog.ui.h
-
-  SOURCES += CQRegistrationDialog.cpp
-}
-#endif // COPASI_LICENSE_COM
 
 #The following line was inserted by qt3to4
 QT += xml qt3support opengl webkit

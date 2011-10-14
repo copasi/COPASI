@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
-#   $Revision: 1.69 $
+#   $Revision: 1.70 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2011/05/25 15:12:16 $
+#   $Date: 2011/10/14 17:31:12 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.69 $ $Author: shoops $ $Date: 2011/05/25 15:12:16 $
+# $Revision: 1.70 $ $Author: shoops $ $Date: 2011/10/14 17:31:12 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -31,12 +31,6 @@ include(common.pri)
 # First build the SE libs
 
 COPASISE_DIRS =  commandline
-
-#ifdef COPASI_LICENSE_COM
-contains(USE_LICENSE, COM) {
-  COPASISE_DIRS += commercial
-}
-#endif // COPASI_LICENSE_COM
 
 COPASISE_DIRS += CopasiDataModel
 COPASISE_DIRS += compareExpressions
@@ -52,6 +46,7 @@ COPASISE_DIRS += moieties
 COPASISE_DIRS += MIRIAM
 COPASISE_DIRS += odepack++
 COPASISE_DIRS += optimization
+// COPASISE_DIRS += oscillation
 COPASISE_DIRS += parameterFitting
 COPASISE_DIRS += plot
 COPASISE_DIRS += randomGenerator

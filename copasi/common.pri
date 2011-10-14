@@ -1,6 +1,6 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.129 $ 
+#   $Revision: 1.130 $ 
 #   $Name:  $ 
 # End CVS Header 
 
@@ -19,7 +19,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.129 $ $Author: ssahle $ $Date: 2011/08/05 14:06:13 $  
+# $Revision: 1.130 $ $Author: shoops $ $Date: 2011/10/14 17:31:12 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -59,14 +59,6 @@ CONFIG += thread
 contains(CONFIG, qt) {
     QT += webkit
 }
-
-#ifdef COPASI_LICENSE_COM
-# COPASI License to use
-DEFINES -= COPASI_LICENSE_US
-DEFINES -= COPASI_LICENSE_DE
-DEFINES -= COPASI_LICENSE_COM
-DEFINES += COPASI_LICENSE_$$USE_LICENSE
-#endif // COPASI_LICENSE_COM
 
 INCLUDEPATH += ../..
 QMAKE_CFLAGS   += $$(CFLAGS)

@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/COPASISE/COPASISE.pro,v $
-#   $Revision: 1.34 $
+#   $Revision: 1.35 $
 #   $Name:  $
-#   $Author: jpahle $
-#   $Date: 2011/05/24 17:30:48 $
+#   $Author: shoops $
+#   $Date: 2011/10/14 17:31:11 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -32,12 +32,6 @@ DISTFILES = COPASISE.pro
 include(../../common.pri)
 
 COPASI_LIBS += commandline
-
-#ifdef COPASI_LICENSE_COM
-contains(USE_LICENSE, COM) {
-  COPASI_LIBS += commercial
-}
-#endif // COPASI_LICENSE_COM
 
 COPASI_LIBS += compareExpressions
 COPASI_LIBS += copasiDM

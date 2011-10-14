@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQParameterTable.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/13 19:21:59 $
+//   $Date: 2011/10/14 17:30:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,7 @@
 
 #include <stdlib.h>
 
-#include "parametertable.h"
+#include "CQParameterTable.h"
 #include "model/CReactionInterface.h"
 #include "model/CModel.h"
 #include "model/CMetabNameInterface.h"

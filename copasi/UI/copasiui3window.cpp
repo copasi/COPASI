@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.299 $
+//   $Revision: 1.300 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/19 15:45:58 $
+//   $Date: 2011/10/14 17:30:44 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -187,16 +187,6 @@ CopasiUI3Window * CopasiUI3Window::create()
 
   pWindow = new CopasiUI3Window;
 
-#ifdef COPASI_LICENSE_COM
-
-  if (pWindow != NULL &&
-      !pWindow->checkRegistration())
-    {
-      pdelete(pWindow);
-    }
-
-#endif // COPASI_LICENSE_COM
-
 #ifdef COPASI_SBW_INTEGRATION
 
   if (pWindow != NULL &&
@@ -273,9 +263,6 @@ CopasiUI3Window::CopasiUI3Window():
 
   // Set the window caption/title
   FixedTitle = "COPASI ";
-#ifdef COPASI_LICENSE_COM
-  FixedTitle += "(commercial) ";
-#endif // COPASI_LICENSE_COM
   FixedTitle += FROM_UTF8(CVersion::VERSION.getVersion());
   updateTitle();
 
@@ -537,10 +524,6 @@ void CopasiUI3Window::createMenuBar()
   mpTools->addAction(mpaUpdateMIRIAM);
   mpTools->addAction("&Preferences", this, SLOT(slotPreferences()));
   mpTools->addAction(mpaFontSelectionDialog);
-
-#ifdef COPASI_LICENSE_COM
-  mpTools->addAction("&Registration", this, SLOT(slotRegistration()));
-#endif // COPASI_LICENSE_COM
 
   //*******  help menu *****************
 
@@ -2063,62 +2046,8 @@ void CopasiUI3Window::slotMergeModels()
 }
 #endif
 
-#ifdef COPASI_LICENSE_COM
-
-#include "CQRegistrationDialog.h"
-#include "commercial/CRegistration.h"
-
-bool CopasiUI3Window::checkRegistration()
-{
-  CRegistration * pRegistration =
-    elevate< CRegistration, CCopasiParameterGroup >(CCopasiRootContainer::getConfiguration()->assertGroup("Registration"));
-
-  bool RegistrationChanged = false;
-  std::string RegistrationValue;
-
-  if (!COptions::compareValue("RegistrationCode", std::string("")))
-    {
-      COptions::getValue("RegistrationCode", RegistrationValue);
-      pRegistration->setRegistrationCode(RegistrationValue);
-      RegistrationChanged = true;
-    }
-
-  if (!COptions::compareValue("RegisteredEmail", std::string("")))
-    {
-      COptions::getValue("RegisteredEmail", RegistrationValue);
-      pRegistration->setRegisteredEmail(RegistrationValue);
-      RegistrationChanged = true;
-    }
-
-  if (!COptions::compareValue("RegisteredUser", std::string("")))
-    {
-      COptions::getValue("RegisteredUser", RegistrationValue);
-      pRegistration->setRegisteredUser(RegistrationValue);
-      RegistrationChanged = true;
-    }
-
-  if ((!RegistrationChanged && !pRegistration->isValidSignature()) ||
-      !pRegistration->isValidRegistration())
-    return slotRegistration();
-
-  return true;
-}
-
-bool CopasiUI3Window::slotRegistration()
-{
-  CQRegistrationDialog *pDialog = new CQRegistrationDialog(this);
-
-  if (pDialog->exec() == QDialog::Accepted)
-    return true;
-  else
-    return false;
-}
-#endif // COPASI_LICENSE_COM
-
-#ifndef COPASI_LICENSE_COM
 bool CopasiUI3Window::slotRegistration()
 {return true;}
-#endif // not COPASI_LICENSE_COM
 
 #ifdef COPASI_SBW_INTEGRATION
 // Create 2 custom events, one containing the filename to an SBML document to be loaded

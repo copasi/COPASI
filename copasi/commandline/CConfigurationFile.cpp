@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
-$Revision: 1.17 $
+$Revision: 1.18 $
 $Name:  $
 $Author: shoops $
-$Date: 2010/08/12 20:06:32 $
+$Date: 2011/10/14 17:31:11 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,10 +19,6 @@ End CVS Header */
 
 #include "CConfigurationFile.h"
 #include "COptions.h"
-
-#ifdef COPASI_LICENSE_COM
-# include "commercial/CRegistration.h"
-#endif // COPASI_LICENSE_COM
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CVersion.h"
@@ -114,9 +110,6 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
     mpRecentMIRIAMResources(NULL),
     mpApplicationFont(NULL),
     mpWebBrowser(NULL)
-#ifdef COPASI_LICENSE_COM
-    , mpRegistration(NULL)
-#endif // COPASI_LICENSE_COM
 {initializeParameter();}
 
 CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
@@ -127,9 +120,6 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
     mpRecentMIRIAMResources(NULL),
     mpApplicationFont(NULL),
     mpWebBrowser(NULL)
-#ifdef COPASI_LICENSE_COM
-    , mpRegistration(NULL)
-#endif // COPASI_LICENSE_COM
 {initializeParameter();}
 
 CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
@@ -140,9 +130,6 @@ CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
     mpRecentMIRIAMResources(NULL),
     mpApplicationFont(NULL),
     mpWebBrowser(NULL)
-#ifdef COPASI_LICENSE_COM
-    , mpRegistration(NULL)
-#endif // COPASI_LICENSE_COM
 {initializeParameter();}
 
 CConfigurationFile::~CConfigurationFile()
@@ -168,11 +155,6 @@ bool CConfigurationFile::elevateChildren()
 
   if (!mpRecentMIRIAMResources) success = false;
 
-#ifdef COPASI_LICENSE_COM
-  mpRegistration =
-    elevate<CRegistration, CCopasiParameterGroup>(getGroup("Registration"));
-#endif // COPASI_LICENSE_COM
-
   return success;
 }
 
@@ -186,10 +168,6 @@ void CConfigurationFile::initializeParameter()
 
   mpWebBrowser =
     assertParameter("Application for opening URLs", CCopasiParameter::STRING, std::string(""))->getValue().pSTRING;
-
-#ifdef COPASI_LICENSE_COM
-  assertGroup("Registration");
-#endif // COPASI_LICENSE_COM
 
   assertGroup("MIRIAM Resources");
 
@@ -286,9 +264,6 @@ CConfigurationFile::CXML::CXML():
 {
   mConfiguration.assertGroup("Recent Files");
   mConfiguration.assertGroup("Recent SBML Files");
-#ifdef COPASI_LICENSE_COM
-  mConfiguration.assertGroup("Registration");
-#endif // COPASI_LICENSE_COM
   mConfiguration.assertGroup("MIRIAM Resources");
 }
 
