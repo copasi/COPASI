@@ -26,10 +26,6 @@
 class CFitTask;
 class CFitProblem;
 
-#include "CQArrayAnnotationsWidget.h"
-#include "CQFittingResultTab1.h"
-#include "copasiWidget.h"
-
 class CQFittingResult : public CopasiWidget, public Ui::CQFittingResult
 {
   Q_OBJECT

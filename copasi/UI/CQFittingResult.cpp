@@ -20,11 +20,8 @@
 
 #include "copasi.h"
 
-#include "q3header.h"
-#include "qregexp.h"
-
-#include "UI/CopasiFileDialog.h"
-#include "UI/CQMessageBox.h"
+#include "CopasiFileDialog.h"
+#include "CQMessageBox.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "parameterFitting/CFitTask.h"
@@ -60,108 +57,8 @@ CQFittingResult::~CQFittingResult()
 
 void CQFittingResult::init()
 {
-  size_t i, imax;
-
-  // Set up the parameters table
-  mpParameters->setNumCols(mpParameters->numCols() + 1);
-  mpParameters->horizontalHeader()->setLabel(mpParameters->numCols() - 1, tr("Parameter"));
-  mpParameters->setNumCols(mpParameters->numCols() + 1);
-  mpParameters->horizontalHeader()->setLabel(mpParameters->numCols() - 1, tr("Value"));
-  mpParameters->setNumCols(mpParameters->numCols() + 1);
-  mpParameters->horizontalHeader()->setLabel(mpParameters->numCols() - 1, tr("Std. Deviation"));
-  mpParameters->setNumCols(mpParameters->numCols() + 1);
-  mpParameters->horizontalHeader()->setLabel(mpParameters->numCols() - 1, tr("Coeff. of Variation [%]"));
-  mpParameters->setNumCols(mpParameters->numCols() + 1);
-  mpParameters->horizontalHeader()->setLabel(mpParameters->numCols() - 1, tr("Gradient"));
-  mpParameters->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)5, 0, 0, mpParameters->sizePolicy().hasHeightForWidth()));
-  mpParameters->setNumRows(0);
-  mpParameters->setNumCols(5);
-  mpParameters->setReadOnly(true);
-
-  for (i = 0, imax = mpParameters->numCols(); i != imax; i++)
-    mpParameters->adjustColumn((int) i);
-
-  // Set up the experiments table
-  mpExperiments->setNumCols(mpExperiments->numCols() + 1);
-  mpExperiments->horizontalHeader()->setLabel(mpExperiments->numCols() - 1, tr("Experiment"));
-  mpExperiments->setNumCols(mpExperiments->numCols() + 1);
-  mpExperiments->horizontalHeader()->setLabel(mpExperiments->numCols() - 1, tr("Objective Value"));
-  mpExperiments->setNumCols(mpExperiments->numCols() + 1);
-  mpExperiments->horizontalHeader()->setLabel(mpExperiments->numCols() - 1, tr("Root Mean Square"));
-  mpExperiments->setNumCols(mpExperiments->numCols() + 1);
-  mpExperiments->horizontalHeader()->setLabel(mpExperiments->numCols() - 1, tr("Error Mean"));
-  mpExperiments->setNumCols(mpExperiments->numCols() + 1);
-  mpExperiments->horizontalHeader()->setLabel(mpExperiments->numCols() - 1, tr("Error Mean Std. Deviation"));
-  mpExperiments->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)5, 0, 0, mpExperiments->sizePolicy().hasHeightForWidth()));
-  mpExperiments->setNumRows(0);
-  mpExperiments->setNumCols(5);
-  mpExperiments->setReadOnly(true);
-
-  for (i = 0, imax = mpExperiments->numCols(); i != imax; i++)
-    mpExperiments->adjustColumn((int) i);
-
-  // Set up the experiments table
-  mpValues->setNumCols(mpValues->numCols() + 1);
-  mpValues->horizontalHeader()->setLabel(mpValues->numCols() - 1, tr("Fitted Value"));
-  mpValues->setNumCols(mpValues->numCols() + 1);
-  mpValues->horizontalHeader()->setLabel(mpValues->numCols() - 1, tr("Objective Value"));
-  mpValues->setNumCols(mpValues->numCols() + 1);
-  mpValues->horizontalHeader()->setLabel(mpValues->numCols() - 1, tr("Root Mean Square"));
-  mpValues->setNumCols(mpValues->numCols() + 1);
-  mpValues->horizontalHeader()->setLabel(mpValues->numCols() - 1, tr("Error Mean"));
-  mpValues->setNumCols(mpValues->numCols() + 1);
-  mpValues->horizontalHeader()->setLabel(mpValues->numCols() - 1, tr("Error Mean Std. Deviation"));
-  mpValues->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)5, 0, 0, mpValues->sizePolicy().hasHeightForWidth()));
-  mpValues->setNumRows(0);
-  mpValues->setNumCols(5);
-  mpValues->setReadOnly(true);
-
-  for (i = 0, imax = mpValues->numCols(); i != imax; i++)
-    mpValues->adjustColumn((int) i);
-
   mpCorrelations->setLegendEnabled(false);
   mpFisherInformation->setLegendEnabled(false);
-
-#ifdef COPASI_CROSSVALIDATION
-  // Set up the cross validation table
-  mpCrossValidations->setNumCols(mpCrossValidations->numCols() + 1);
-  mpCrossValidations->horizontalHeader()->setLabel(mpCrossValidations->numCols() - 1, tr("CV Experiment"));
-  mpCrossValidations->setNumCols(mpCrossValidations->numCols() + 1);
-  mpCrossValidations->horizontalHeader()->setLabel(mpCrossValidations->numCols() - 1, tr("Objective Value"));
-  mpCrossValidations->setNumCols(mpCrossValidations->numCols() + 1);
-  mpCrossValidations->horizontalHeader()->setLabel(mpCrossValidations->numCols() - 1, tr("Root Mean Square"));
-  mpCrossValidations->setNumCols(mpCrossValidations->numCols() + 1);
-  mpCrossValidations->horizontalHeader()->setLabel(mpCrossValidations->numCols() - 1, tr("Error Mean"));
-  mpCrossValidations->setNumCols(mpCrossValidations->numCols() + 1);
-  mpCrossValidations->horizontalHeader()->setLabel(mpCrossValidations->numCols() - 1, tr("Error Mean Std. Deviation"));
-  mpCrossValidations->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)5, 0, 0, mpExperiments->sizePolicy().hasHeightForWidth()));
-  mpCrossValidations->setNumRows(0);
-  mpCrossValidations->setNumCols(5);
-  mpCrossValidations->setReadOnly(true);
-
-  for (i = 0, imax = mpExperiments->numCols(); i != imax; i++)
-    mpCrossValidations->adjustColumn(i);
-
-  // Set up the experiments table
-  mpCrossValidationValues->setNumCols(mpCrossValidationValues->numCols() + 1);
-  mpCrossValidationValues->horizontalHeader()->setLabel(mpCrossValidationValues->numCols() - 1, tr("CV Fitted Value"));
-  mpCrossValidationValues->setNumCols(mpCrossValidationValues->numCols() + 1);
-  mpCrossValidationValues->horizontalHeader()->setLabel(mpCrossValidationValues->numCols() - 1, tr("Objective Value"));
-  mpCrossValidationValues->setNumCols(mpCrossValidationValues->numCols() + 1);
-  mpCrossValidationValues->horizontalHeader()->setLabel(mpCrossValidationValues->numCols() - 1, tr("Root Mean Square"));
-  mpCrossValidationValues->setNumCols(mpCrossValidationValues->numCols() + 1);
-  mpCrossValidationValues->horizontalHeader()->setLabel(mpCrossValidationValues->numCols() - 1, tr("Error Mean"));
-  mpCrossValidationValues->setNumCols(mpCrossValidationValues->numCols() + 1);
-  mpCrossValidationValues->horizontalHeader()->setLabel(mpCrossValidationValues->numCols() - 1, tr("Error Mean Std. Deviation"));
-  mpCrossValidationValues->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)5, 0, 0, mpValues->sizePolicy().hasHeightForWidth()));
-  mpCrossValidationValues->setNumRows(0);
-  mpCrossValidationValues->setNumCols(5);
-  mpCrossValidationValues->setReadOnly(true);
-
-  for (i = 0, imax = mpValues->numCols(); i != imax; i++)
-    mpCrossValidationValues->adjustColumn(i);
-
-#endif // COPASI_CROSSVALIDATION
 
 #ifndef COPASI_CROSSVALIDATION
   pdelete(mpCrossValidations);
@@ -221,6 +118,7 @@ bool CQFittingResult::enterProtected()
     }
 
   size_t i, imax;
+  QTableWidgetItem * pItem;
 
   // Loop over the optimization items
   const std::vector< COptItem * > & Items = mpProblem->getOptItemList();
@@ -233,7 +131,7 @@ bool CQFittingResult::enterProtected()
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
-  mpParameters->setNumRows((int) imax);
+  mpParameters->setRowCount((int) imax);
 
   for (i = 0; i != imax; i++)
     {
@@ -248,21 +146,27 @@ bool CQFittingResult::enterProtected()
           if (Experiments != "")
             Experiments = "; {" + Experiments + "}";
 
-          mpParameters->setText((int) i, 0, FROM_UTF8(pObject->getObjectDisplayName() + Experiments));
+          pItem = new QTableWidgetItem(FROM_UTF8(pObject->getObjectDisplayName() + Experiments));
         }
       else
-        mpParameters->setText((int) i, 0, "Not Found");
+        pItem = new QTableWidgetItem("Not Found");
+
+      mpParameters->setItem((int) i, 0, pItem);
 
       const C_FLOAT64 & Solution = Solutions[i];
-      mpParameters->setText((int) i, 1, QString::number(Solution));
+      pItem = new QTableWidgetItem(QString::number(Solution));
+      mpParameters->setItem((int) i, 1, pItem);
       const C_FLOAT64 & StdDeviation = StdDeviations[i];
-      mpParameters->setText((int) i, 2, QString::number(StdDeviation));
-      mpParameters->setText((int) i, 3, QString::number(fabs(100.0 * StdDeviation / Solution)));
-      mpParameters->setText((int) i, 4, QString::number(Gradients[i]));
+      pItem = new QTableWidgetItem(QString::number(StdDeviation));
+      mpParameters->setItem((int) i, 2, pItem);
+      pItem = new QTableWidgetItem(QString::number(fabs(100.0 * StdDeviation / Solution)));
+      mpParameters->setItem((int) i, 3, pItem);
+      pItem = new QTableWidgetItem(QString::number(Gradients[i]));
+      mpParameters->setItem((int) i, 4, pItem);
     }
 
-  for (i = 0, imax = mpParameters->numCols(); i != imax; i++)
-    mpParameters->adjustColumn((int) i);
+  mpParameters->resizeColumnsToContents();
+  mpParameters->resizeRowsToContents();
 
   // Loop over the experiments
   const CExperimentSet & Experiments = mpProblem->getExperiementSet();
@@ -272,21 +176,25 @@ bool CQFittingResult::enterProtected()
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
-  mpExperiments->setNumRows((int) imax);
+  mpExperiments->setRowCount((int) imax);
 
   for (i = 0; i != imax; i++)
     {
       const CExperiment & Experiment = * Experiments.getExperiment(i);
-      mpExperiments->setText((int) i, 0, FROM_UTF8(Experiment.getObjectName()));
-      mpExperiments->setText((int) i, 1, QString::number(Experiment.getObjectiveValue()));
-      mpExperiments->setText((int) i, 2, QString::number(Experiment.getRMS()));
-
-      mpExperiments->setText((int) i, 3, QString::number(Experiment.getErrorMean()));
-      mpExperiments->setText((int) i, 4, QString::number(Experiment.getErrorMeanSD()));
+      pItem = new QTableWidgetItem(FROM_UTF8(Experiment.getObjectName()));
+      mpExperiments->setItem((int) i, 0, pItem);
+      pItem = new QTableWidgetItem(QString::number(Experiment.getObjectiveValue()));
+      mpExperiments->setItem((int) i, 1, pItem);
+      pItem = new QTableWidgetItem(QString::number(Experiment.getRMS()));
+      mpExperiments->setItem((int) i, 2, pItem);
+      pItem = new QTableWidgetItem(QString::number(Experiment.getErrorMean()));
+      mpExperiments->setItem((int) i, 3, pItem);
+      pItem = new QTableWidgetItem(QString::number(Experiment.getErrorMeanSD()));
+      mpExperiments->setItem((int) i, 4, pItem);
     }
 
-  for (i = 0, imax = mpExperiments->numCols(); i != imax; i++)
-    mpExperiments->adjustColumn((int) i);
+  mpExperiments->resizeColumnsToContents();
+  mpExperiments->resizeRowsToContents();
 
   // Loop over the dependent objects
   imax = Experiments.getDependentObjects().size();
@@ -294,26 +202,31 @@ bool CQFittingResult::enterProtected()
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
-  mpValues->setNumRows((int) imax);
+  mpValues->setRowCount((int) imax);
 
   for (i = 0; i != imax; i++)
     {
       const CCopasiObject * pObject = Experiments.getDependentObjects()[i];
 
       if (pObject)
-        mpValues->setText((int) i, 0, FROM_UTF8(pObject->getObjectDisplayName()));
+        pItem = new QTableWidgetItem(FROM_UTF8(pObject->getObjectDisplayName()));
       else
-        mpValues->setText((int) i, 0, "Not Found");
+        pItem = new QTableWidgetItem("Not Found");
 
-      mpValues->setText((int) i, 1, QString::number(Experiments.getDependentObjectiveValues()[i]));
-      mpValues->setText((int) i, 2, QString::number(Experiments.getDependentRMS()[i]));
+      mpValues->setItem((int) i, 0, pItem);
 
-      mpValues->setText((int) i, 3, QString::number(Experiments.getDependentErrorMean()[i]));
-      mpValues->setText((int) i, 4, QString::number(Experiments.getDependentErrorMeanSD()[i]));
+      pItem = new QTableWidgetItem(QString::number(Experiments.getDependentObjectiveValues()[i]));
+      mpValues->setItem((int) i, 1, pItem);
+      pItem = new QTableWidgetItem(QString::number(Experiments.getDependentRMS()[i]));
+      mpValues->setItem((int) i, 2, pItem);
+      pItem = new QTableWidgetItem(QString::number(Experiments.getDependentErrorMean()[i]));
+      mpValues->setItem((int) i, 3, pItem);
+      pItem = new QTableWidgetItem(QString::number(Experiments.getDependentErrorMeanSD()[i]));
+      mpValues->setItem((int) i, 4, pItem);
     }
 
-  for (i = 0, imax = mpValues->numCols(); i != imax; i++)
-    mpValues->adjustColumn((int) i);
+  mpValues->resizeColumnsToContents();
+  mpValues->resizeRowsToContents();
 
   // Fill correlation matrix
   imax = Items.size();
@@ -345,21 +258,25 @@ bool CQFittingResult::enterProtected()
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
-  mpCrossValidations->setNumRows(imax);
+  mpCrossValidations->setRowCount(imax);
 
   for (i = 0; i != imax; i++)
     {
       const CExperiment & Experiment = * CrossValidations.getExperiment(i);
-      mpCrossValidations->setText(i, 0, FROM_UTF8(Experiment.getObjectName()));
-      mpCrossValidations->setText(i, 1, QString::number(Experiment.getObjectiveValue()));
-      mpCrossValidations->setText(i, 2, QString::number(Experiment.getRMS()));
-
-      mpCrossValidations->setText(i, 3, QString::number(Experiment.getErrorMean()));
-      mpCrossValidations->setText(i, 4, QString::number(Experiment.getErrorMeanSD()));
+      pItem = new QTableWidgetItem(FROM_UTF8(Experiment.getObjectName()));
+      mpCrossValidations->setItem(i, 0, pItem);
+      pItem = new QTableWidgetItem(QString::number(Experiment.getObjectiveValue()));
+      mpCrossValidations->setItem(i, 1, pItem);
+      pItem = new QTableWidgetItem(QString::number(Experiment.getRMS()));
+      mpCrossValidations->setItem(i, 2, pItem);
+      pItem = new QTableWidgetItem(QString::number(Experiment.getErrorMean()));
+      mpCrossValidations->setItem(i, 3, pItem);
+      pItem = new QTableWidgetItem(QString::number(Experiment.getErrorMeanSD()));
+      mpCrossValidations->setItem(i, 4, pItem);
     }
 
-  for (i = 0, imax = mpCrossValidations->numCols(); i != imax; i++)
-    mpCrossValidations->adjustColumn(i);
+  mpCrossValidations->resizeColumnsToContents();
+  mpCrossValidations->resizeRowsToContents();
 
   // Loop over the dependent objects
   imax = CrossValidations.getDependentObjects().size();
@@ -367,26 +284,30 @@ bool CQFittingResult::enterProtected()
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
-  mpCrossValidationValues->setNumRows(imax);
+  mpCrossValidationValues->setRowCount(imax);
 
   for (i = 0; i != imax; i++)
     {
       const CCopasiObject * pObject = CrossValidations.getDependentObjects()[i];
 
       if (pObject)
-        mpCrossValidationValues->setText(i, 0, FROM_UTF8(pObject->getObjectDisplayName()));
+        pItem = new QTableWidgetItem(FROM_UTF8(pObject->getObjectDisplayName()));
       else
-        mpCrossValidationValues->setText(i, 0, "Not Found");
+        pItem = new QTableWidgetItem("Not Found");
 
-      mpCrossValidationValues->setText(i, 1, QString::number(CrossValidations.getDependentObjectiveValues()[i]));
-      mpCrossValidationValues->setText(i, 2, QString::number(CrossValidations.getDependentRMS()[i]));
-
-      mpCrossValidationValues->setText(i, 3, QString::number(CrossValidations.getDependentErrorMean()[i]));
-      mpCrossValidationValues->setText(i, 4, QString::number(CrossValidations.getDependentErrorMeanSD()[i]));
+      mpCrossValidationValues->setItem(i, 0, pItem);
+      pItem = new QTableWidgetItem(QString::number(CrossValidations.getDependentObjectiveValues()[i]));
+      mpCrossValidationValues->setItem(i, 1, pItem);
+      pItem = new QTableWidgetItem(QString::number(CrossValidations.getDependentRMS()[i]));
+      mpCrossValidationValues->setItem(i, 2, pItem);
+      pItem = new QTableWidgetItem(QString::number(CrossValidations.getDependentErrorMean()[i]));
+      mpCrossValidationValues->setItem(i, 3, pItem);
+      pItem = new QTableWidgetItem(QString::number(CrossValidations.getDependentErrorMeanSD()[i]));
+      mpCrossValidationValues->setItem(i, 4, pItem);
     }
 
-  for (i = 0, imax = mpCrossValidationValues->numCols(); i != imax; i++)
-    mpCrossValidationValues->adjustColumn(i);
+  mpCrossValidationValues->resizeColumnsToContents();
+  mpCrossValidationValues->resizeRowsToContents();
 
 #endif // COPASI_CROSSVALIDATION
 
