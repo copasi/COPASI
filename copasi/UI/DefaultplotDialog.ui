@@ -1,18 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DefaultplotDialog.ui,v $ </comment>
-<comment>   $Revision: 1.4 $ </comment>
+<comment>   $Revision: 1.5 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/09/16 12:57:39 $ </comment>
+<comment>   $Date: 2011/10/17 19:56:19 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+ <comment> All rights reserved. </comment>
  <class>DefaultPlotDialog</class>
  <widget class="QDialog" name="DefaultPlotDialog">
   <property name="geometry">
@@ -27,8 +28,8 @@
    <string>Form1</string>
   </property>
   <layout class="QGridLayout">
-   <item row="0" column="0" rowspan="3">
-    <widget class="Q3ListBox" name="listBox">
+   <item row="0" column="0" rowspan="4">
+    <widget class="QListWidget" name="listBox">
      <item>
       <property name="text">
        <string>New Item</string>
@@ -49,10 +50,7 @@
    <item row="1" column="1">
     <widget class="QLineEdit" name="lineEditTitle"/>
    </item>
-   <item row="2" column="1">
-    <widget class="Q3TextEdit" name="textEdit"/>
-   </item>
-   <item row="3" column="0" colspan="2">
+   <item row="4" column="0" colspan="2">
     <layout class="QHBoxLayout">
      <item>
       <spacer name="spacerButtons">
@@ -86,31 +84,12 @@
      </item>
     </layout>
    </item>
+   <item row="2" column="1">
+    <widget class="QTextBrowser" name="textEdit"/>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3ListBox</class>
-   <extends>Q3Frame</extends>
-   <header>q3listbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>Q3TextEdit</class>
-   <extends>Q3Frame</extends>
-   <header>q3textedit.h</header>
-  </customwidget>
- </customwidgets>
- <includes>
-  <include location="global">vector</include>
-  <include location="local">copasi.h</include>
- </includes>
  <resources/>
  <connections>
   <connection>

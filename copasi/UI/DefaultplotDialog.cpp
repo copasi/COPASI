@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DefaultplotDialog.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:39:41 $
+//   $Date: 2011/10/17 19:56:22 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 
 #include "DefaultplotDialog.h"
 
-#include <QtCore/QVariant>
-#include "UI/qtUtilities.h"
+#include "qtUtilities.h"
+
 #include "utilities/CCopasiTask.h"
 #include "report/COutputAssistant.h"
 #include "report/CCopasiRootContainer.h"
@@ -72,23 +72,28 @@ void DefaultPlotDialog::setTask(CCopasiTask * t)
 
   std::vector<C_INT32>::const_iterator it, itEnd = mList.end();
 
+  QStringList Items;
+
   for (it = mList.begin(); it != itEnd; ++it)
     {
       QString Name = FROM_UTF8(COutputAssistant::getItemName(*it));
 
       if (!Name.startsWith("--")) Name = "   " + Name;
 
-      listBox->insertItem(Name);
+      Items.append(Name);
     }
 
-  listBox->setSelected(0, true);
+  listBox->insertItems(0, Items);
+
+  listBox->item(0)->setSelected(true);
 }
 
 void DefaultPlotDialog::slotSelect()
 {
   if (!mpTask) return;
 
-  C_INT32 i = listBox->currentItem();
+  int i = listBox->currentRow();
+
   mIndex = mList[i];
   lineEditTitle->setText(FROM_UTF8(COutputAssistant::getItemName(mIndex)));
   textEdit->setText(FROM_UTF8(COutputAssistant::getItem(mIndex).description));

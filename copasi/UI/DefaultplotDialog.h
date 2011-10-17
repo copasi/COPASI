@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DefaultplotDialog.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:18 $
+//   $Date: 2011/10/17 19:56:22 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,12 +14,12 @@
 #ifndef DEFAULTPLOTDIALOG_H
 #define DEFAULTPLOTDIALOG_H
 
-#include <QVariant>
-#include <QDialog>
-#include <vector>
-#include "copasi.h"
+#include <QtCore/QVariant>
+#include "copasi/UI/ui_DefaultplotDialog.h"
 
-#include "ui_DefaultplotDialog.h"
+#include <vector>
+
+#include "copasi/copasi.h"
 
 class CCopasiProblem;
 class CCopasiTask;
@@ -39,7 +39,7 @@ public slots:
 
 protected:
   CCopasiTask* mpTask;
-  std::vector<C_INT32> mList;
+  std::vector< C_INT32 > mList;
   int mIndex;
 
 protected slots:
