@@ -14,27 +14,14 @@
 #ifndef CQTSSARESULTSUBWIDGET_H
 #define CQTSSARESULTSUBWIDGET_H
 
-#include <QPixmap>
-#include <QtGui/QDialog>
 #include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <Qt3Support/Q3ButtonGroup>
-#include <QtGui/QPushButton>
-#include <QtGui/QSpacerItem>
-#include <QtGui/QTabWidget>
-#include <QtGui/QWidget>
-#include <QToolButton>
 
+#include "copasi/UI/ui_CQTSSAResultSubWidget.h"
 
-#include "ui_CQTSSAResultSubWidget.h"
-
-#include "CQArrayAnnotationsWidget.h"
-#include "CQTSSATimeScaleWidget.h"
-
-#include "tssanalysis/CTSSATask.h"
-#include "tssanalysis/CTSSAProblem.h"
-#include "model/CModel.h"
+class CTSSATask;
+class CTSSAProblem;
+class CTSSAMethod;
+class CModel;
 
 class CQTSSAResultSubWidget : public CopasiWidget, public Ui::CQTSSAResultSubWidget
 {

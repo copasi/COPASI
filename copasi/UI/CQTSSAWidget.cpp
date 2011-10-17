@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:20 $
+//   $Date: 2011/10/17 16:21:34 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,11 +19,6 @@
 #include "CQTSSAWidget.h"
 
 #include "copasi.h"
-
-//#include <q3table.h>
-#include <qcombobox.h>
-//#include <q3header.h>
-#include <qtabwidget.h>
 
 #include "CQTSSAResultSubWidget.h"
 #include "CQTSSAResultWidget.h"

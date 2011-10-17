@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSATimeScaleWidget.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:09 $
+//   $Author: shoops $
+//   $Date: 2011/10/17 16:21:13 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,8 +22,6 @@
 #include <qbitmap.h>
 #include <qcolor.h>
 #include <qtooltip.h>
-//Added by qt3to4:
-//#include <Q3VBoxLayout>
 #include <QVBoxLayout>
 #include <QPaintEvent>
 
@@ -40,7 +38,6 @@ CQTSSATimeScaleWidget::CQTSSATimeScaleWidget(QWidget* parent, const char* name, 
     setObjectName("CQTSSATimeScaleWidget");
 
   mpVLayout = new QVBoxLayout(this);
-  //mpVLayout = new Q3VBoxLayout(this);
   mpPaintWidget = new PaintWidget(this, "PaintWidget");
   mpPaintWidget->setMinimumHeight(200);
   mpSlider = new QSlider(Qt::Horizontal, this);

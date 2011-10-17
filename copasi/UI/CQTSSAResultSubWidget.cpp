@@ -12,16 +12,14 @@
 // All rights reserved.
 
 #include "CQTSSAResultSubWidget.h"
+#include "CQMessageBox.h"
 
-#include <QtCore/QVariant>
-#include <qmessagebox.h>
-#include <q3filedialog.h>
-#include <qregexp.h>
+#include "qtUtilities.h"
+#include "CopasiFileDialog.h"
 
-#include "UI/qtUtilities.h"
-#include "UI/CopasiFileDialog.h"
 #include "report/CCopasiRootContainer.h"
-
+#include "tssanalysis/CTSSATask.h"
+#include "tssanalysis/CTSSAProblem.h"
 #include "utilities/CAnnotatedMatrix.h"
 #include "commandline/CLocaleString.h"
 
@@ -240,8 +238,6 @@ void CQTSSAResultSubWidget::displayResult()
   pModel = pProblem->getModel();
 
   pMethod = dynamic_cast<CTSSAMethod*>(pTSSATask->getMethod());
-
-  QString a = FROM_UTF8(pModel->getTimeUnitName());
 
   mpLabel->setNum((double)pProblem->getStepNumber());
 

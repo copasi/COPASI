@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSensResultWidget.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/08/01 17:11:34 $
+//   $Author: shoops $
+//   $Date: 2011/10/17 16:20:36 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,85 +59,20 @@ CQSensResultWidget::~CQSensResultWidget()
 
 void CQSensResultWidget::init()
 {
-  /*
-    if (!name)
-      setName("CQSensResultWidget");
-
-    setCaption("CQSensResultWidget");
-
-    mWidgetLayout = new Q3GridLayout(this, 1, 1, 11, 6, "CQSensResultWidgetLayout");
-
-    // **********  Label **************
-    mLabelTitle = new QLabel(this, "SensLabel");
-    mLabelTitle->setText("Sensitivities");
-    mLabelTitle->setAlignment(int(Qt::AlignVCenter
-                                  | Qt::AlignLeft));
-    mLabelTitle->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    mWidgetLayout->addWidget(mLabelTitle, 0, 0);
-
-    // tab widget
-    mpTab = new QTabWidget(this, "TabWidget");
-    mWidgetLayout->addMultiCellWidget(mpTab, 1, 2, 0, 2);
-
-    // unscaled array
-    mArrayWidget = new CQArrayAnnotationsWidget(mpTab, "ArrayWidget");
-    //mArrayWidget->setColorCoding(new CColorScale1());
-    //CColorScaleAverage * tcs = new CColorScaleAverage();
-    CColorScaleBiLog * tcs = new CColorScaleBiLog();
-    mArrayWidget->setColorCoding(tcs);
-    //tcs->setMinMax(-1,1);
-    //tcs->setSymmetric(true);
-    //tcs->setFactor(3.0);
-    mArrayWidget->setColorScalingAutomatic(true);
-    mpTab->addTab(mArrayWidget, "unscaled");
-
-    //scaled array
-    mArrayWidgetScaled = new CQArrayAnnotationsWidget(mpTab, "ArrayWidget2");
-    //mArrayWidgetScaled->setColorCoding(new CColorScale1());
-    CColorScaleAverage* tcs2 = new CColorScaleAverage();
-    mArrayWidgetScaled->setColorCoding(tcs2);
-    //tcs2->setMinMax(-1,1);
-    //tcs2->setSymmetric(true);
-    tcs2->setFactor(3.0);
-    mArrayWidgetScaled->setColorScalingAutomatic(true);
-    mpTab->addTab(mArrayWidgetScaled, "scaled");
-
-    //scaled array
-    mArrayWidgetCollapsed = new CQArrayAnnotationsWidget(mpTab, "ArrayWidget3");
-    //mArrayWidgetScaled->setColorCoding(new CColorScale1());
-    CColorScaleAverage* tcs3 = new CColorScaleAverage();
-    mArrayWidgetCollapsed->setColorCoding(tcs3);
-    //tcs3->setMinMax(-1,1);
-    //tcs3->setSymmetric(true);
-    tcs3->setFactor(3.0);
-    mArrayWidgetCollapsed->setColorScalingAutomatic(true);
-    mpTab->addTab(mArrayWidgetCollapsed, "summarized");
-  */
   // unscaled array
-  //mArrayWidget->setColorCoding(new CColorScale1());
-  //CColorScaleAverage * tcs = new CColorScaleAverage();
   CColorScaleBiLog * tcs = new CColorScaleBiLog();
   mArrayWidget->setColorCoding(tcs);
-  //tcs->setMinMax(-1,1);
-  //tcs->setSymmetric(true);
-  //tcs->setFactor(3.0);
   mArrayWidget->setColorScalingAutomatic(true);
 
   //scaled array
-  //mArrayWidgetScaled->setColorCoding(new CColorScale1());
   CColorScaleAverage* tcs2 = new CColorScaleAverage();
   mArrayWidgetScaled->setColorCoding(tcs2);
-  //tcs2->setMinMax(-1,1);
-  //tcs2->setSymmetric(true);
   tcs2->setFactor(3.0);
   mArrayWidgetScaled->setColorScalingAutomatic(true);
 
   //scaled array
-  //mArrayWidgetScaled->setColorCoding(new CColorScale1());
   CColorScaleAverage* tcs3 = new CColorScaleAverage();
   mArrayWidgetCollapsed->setColorCoding(tcs3);
-  //tcs3->setMinMax(-1,1);
-  //tcs3->setSymmetric(true);
   tcs3->setFactor(3.0);
   mArrayWidgetCollapsed->setColorScalingAutomatic(true);
 }
