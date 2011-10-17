@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.h,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:21 $
+//   $Date: 2011/10/17 14:58:05 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,9 @@
 #ifndef CQREPORTDEFINITION_H
 #define CQREPORTDEFINITION_H
 
-#include "ui_CQReportDefinition.h"
+#include <QtCore/QVariant>
+
+#include "copasi/UI/ui_CQReportDefinition.h"
 
 class CReportDefinition;
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportListItem.cpp,v $
-$Revision: 1.8 $
+$Revision: 1.9 $
 $Name:  $
 $Author: shoops $
-$Date: 2011/03/14 19:20:59 $
+$Date: 2011/10/17 14:58:06 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,17 +24,15 @@ End CVS Header */
 #include "report/CCopasiStaticString.h"
 #include "report/CCopasiRootContainer.h"
 
-CQReportListItem::CQReportListItem(Q3ListBox * pListBox,
-                                   const std::string & cn):
-    Q3ListBoxText(pListBox, ""),
+CQReportListItem::CQReportListItem(const std::string & cn):
+    QListWidgetItem(),
     mCN(cn)
 {
   refreshText();
 }
 
-CQReportListItem::CQReportListItem(Q3ListBox * pListBox,
-                                   const CCopasiObject * pObject):
-    Q3ListBoxText(pListBox, ""),
+CQReportListItem::CQReportListItem(const CCopasiObject * pObject):
+    QListWidgetItem(),
     mCN("")
 {
   if (pObject)
@@ -50,9 +48,6 @@ CQReportListItem::CQReportListItem(Q3ListBox * pListBox,
 }
 
 CQReportListItem::~CQReportListItem() {}
-
-void CQReportListItem::setText(const QString & text)
-{Q3ListBoxText::setText(text);}
 
 const CCopasiObjectName & CQReportListItem::getCN() const {return mCN;};
 

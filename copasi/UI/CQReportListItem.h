@@ -1,10 +1,15 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportListItem.h,v $
- $Revision: 1.3 $
+ $Revision: 1.4 $
  $Name:  $
  $Author: shoops $
- $Date: 2008/12/18 19:57:10 $
+ $Date: 2011/10/17 14:58:06 $
  End CVS Header */
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -18,32 +23,28 @@
 #ifndef COPASI_CQReportListItem
 #define COPASI_CQReportListItem
 
-#include <q3listbox.h>
+#include <QtGui/QListWidgetItem>
 #include "report/CCopasiObjectName.h"
 
 class CCopasiObject;
 
-class CQReportListItem : public Q3ListBoxText
-  {
-    // Operations
-  public:
-    CQReportListItem(Q3ListBox * listbox,
-                     const std::string & cn);
+class CQReportListItem : public QListWidgetItem
+{
+  // Operations
+public:
+  CQReportListItem(const std::string & cn);
 
-    CQReportListItem(Q3ListBox * listbox,
-                     const CCopasiObject * pObject);
+  CQReportListItem(const CCopasiObject * pObject);
 
-    ~CQReportListItem();
+  ~CQReportListItem();
 
-    void setText(const QString & text);
+  const CCopasiObjectName & getCN() const;
 
-    const CCopasiObjectName & getCN() const;
+  void refreshText();
 
-    void refreshText();
-
-    // Attributes
-  private:
-    CRegisteredObjectName mCN;
-  };
+  // Attributes
+private:
+  CRegisteredObjectName mCN;
+};
 
 #endif // COPASI_CQReportListItem
