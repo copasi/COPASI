@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQUpdatesWidget.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/08/22 21:38:34 $
+//   $Author: gauges $
+//   $Date: 2011/10/17 12:33:46 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,13 +23,16 @@
 #ifndef CQUPDATESWIDGET_H
 #define CQUPDATESWIDGET_H
 
-#include <map>
 
-#include "UI/copasiWidget.h"
-#include "mathematics.h"
 //Added by qt3to4:
 #include <QGridLayout>
 #include <QLabel>
+
+#include <map>
+#include <vector>
+
+#include "UI/copasiWidget.h"
+#include "mathematics.h"
 
 class QLabel;
 class QTabWidget;
