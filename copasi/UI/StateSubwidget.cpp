@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/08/01 17:11:34 $
+//   $Author: shoops $
+//   $Date: 2011/10/17 16:22:04 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,7 +60,6 @@ StateSubwidget::~StateSubwidget()
 void StateSubwidget::init()
 {
   topLabel->setText("");
-  displayOptimizationTab(false);
 
   mpModel = NULL;
   mpTask = NULL;
@@ -68,50 +67,33 @@ void StateSubwidget::init()
   setFramework(mFramework);
 }
 
-void StateSubwidget::displayOptimizationTab(bool displayOptTab)
-{
-  if (displayOptTab)
-    {
-      mpTabWidget->insertTab(0, mpOptimizationPage, "OptimizationResults");
-      mpTabWidget->setCurrentIndex(0);
-    }
-  else
-    mpTabWidget->removeTab(mpTabWidget->indexOf(mpOptimizationPage));
-}
-
 void StateSubwidget::loadMetabolites()
 {
   // Fill the table
   CCopasiVectorN< CMetab >::const_iterator it = mpModel->getMetabolites().begin();
   CCopasiVectorN< CMetab >::const_iterator end = mpModel->getMetabolites().end();
-  C_INT32 i = 0;
+  int i = 0;
 
-  mpTblMetabolites->setNumRows((int) mpModel->getMetabolites().size());
+  mpTblMetabolites->setRowCount((int) mpModel->getMetabolites().size());
 
   for (; it != end; ++it)
     if ((*it)->getStatus() == CModelEntity::ODE ||
         ((*it)->getStatus() == CModelEntity::REACTIONS && (*it)->isUsed()))
       {
-        mpTblMetabolites->setText(i, 0, FROM_UTF8(CMetabNameInterface::getDisplayName(mpModel, **it)));
-        mpTblMetabolites->setText(i, 1, FROM_UTF8(CModelEntity::StatusName[(*it)->getStatus()]));
-        mpTblMetabolites->setText(i, 2, QString::number((*it)->getConcentration()));
-        mpTblMetabolites->setText(i, 3, QString::number((*it)->getValue()));
-        mpTblMetabolites->setText(i, 4, QString::number((*it)->getConcentrationRate()));
-        mpTblMetabolites->setText(i, 5, QString::number((*it)->getRate()));
-        mpTblMetabolites->setText(i, 6, QString::number((*it)->getTransitionTime()));
+        mpTblMetabolites->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(CMetabNameInterface::getDisplayName(mpModel, **it))));
+        mpTblMetabolites->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(CModelEntity::StatusName[(*it)->getStatus()])));
+        mpTblMetabolites->setItem(i, 2, new QTableWidgetItem(QString::number((*it)->getConcentration())));
+        mpTblMetabolites->setItem(i, 3, new QTableWidgetItem(QString::number((*it)->getValue())));
+        mpTblMetabolites->setItem(i, 4, new QTableWidgetItem(QString::number((*it)->getConcentrationRate())));
+        mpTblMetabolites->setItem(i, 5, new QTableWidgetItem(QString::number((*it)->getRate())));
+        mpTblMetabolites->setItem(i, 6, new QTableWidgetItem(QString::number((*it)->getTransitionTime())));
 
         i++;
       }
 
-  mpTblMetabolites->setNumRows(i);
-
-  mpTblMetabolites->adjustColumn(0);
-  mpTblMetabolites->adjustColumn(1);
-  mpTblMetabolites->adjustColumn(2);
-  mpTblMetabolites->adjustColumn(3);
-  mpTblMetabolites->adjustColumn(4);
-  mpTblMetabolites->adjustColumn(5);
-  mpTblMetabolites->adjustColumn(6);
+  mpTblMetabolites->setRowCount(i);
+  mpTblMetabolites->resizeColumnsToContents();
+  mpTblMetabolites->resizeRowsToContents();
 }
 
 void StateSubwidget::loadCompartments()
@@ -120,24 +102,21 @@ void StateSubwidget::loadCompartments()
   CCopasiVectorN< CCompartment >::const_iterator end = mpModel->getCompartments().end();
   C_INT32 i = 0;
 
-  mpTblCompartments->setNumRows((int) mpModel->getCompartments().size());
+  mpTblCompartments->setRowCount((int) mpModel->getCompartments().size());
 
   for (; it != end; ++it)
     if ((*it)->getStatus() == CModelEntity::ODE)
       {
-        mpTblCompartments->setText(i, 0, FROM_UTF8((*it)->getObjectName()));
-        mpTblCompartments->setText(i, 1, FROM_UTF8(CModelEntity::StatusName[(*it)->getStatus()]));
-        mpTblCompartments->setText(i, 2, QString::number((*it)->getValue()));
-        mpTblCompartments->setText(i, 3, QString::number((*it)->getRate()));
+        mpTblCompartments->setItem(i, 0, new QTableWidgetItem(FROM_UTF8((*it)->getObjectName())));
+        mpTblCompartments->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(CModelEntity::StatusName[(*it)->getStatus()])));
+        mpTblCompartments->setItem(i, 2, new QTableWidgetItem(QString::number((*it)->getValue())));
+        mpTblCompartments->setItem(i, 3, new QTableWidgetItem(QString::number((*it)->getRate())));
         i++;
       }
 
-  mpTblCompartments->setNumRows(i);
-
-  mpTblCompartments->adjustColumn(0);
-  mpTblCompartments->adjustColumn(1);
-  mpTblCompartments->adjustColumn(2);
-  mpTblCompartments->adjustColumn(3);
+  mpTblCompartments->setRowCount(i);
+  mpTblCompartments->resizeColumnsToContents();
+  mpTblCompartments->resizeRowsToContents();
 }
 
 void StateSubwidget::loadReactions()
@@ -147,22 +126,20 @@ void StateSubwidget::loadReactions()
   CCopasiVectorN< CReaction >::const_iterator end = mpModel->getReactions().end();
   C_INT32 i = 0;
 
-  mpTblReactions->setNumRows((int) mpModel->getReactions().size());
+  mpTblReactions->setRowCount((int) mpModel->getReactions().size());
 
   for (; it != end; ++it)
     {
-      mpTblReactions->setText(i, 0, FROM_UTF8((*it)->getObjectName()));
-      mpTblReactions->setText(i, 1, QString::number((*it)->getFlux()));
-      mpTblReactions->setText(i, 2, QString::number((*it)->getParticleFlux()));
-      mpTblReactions->setText(i, 3, FROM_UTF8(CChemEqInterface::getChemEqString(mpModel, **it, false)));
+      mpTblReactions->setItem(i, 0, new QTableWidgetItem(FROM_UTF8((*it)->getObjectName())));
+      mpTblReactions->setItem(i, 1, new QTableWidgetItem(QString::number((*it)->getFlux())));
+      mpTblReactions->setItem(i, 2, new QTableWidgetItem(QString::number((*it)->getParticleFlux())));
+      mpTblReactions->setItem(i, 3, new QTableWidgetItem(FROM_UTF8(CChemEqInterface::getChemEqString(mpModel, **it, false))));
 
       i++;
     }
 
-  mpTblReactions->adjustColumn(0);
-  mpTblReactions->adjustColumn(1);
-  mpTblReactions->adjustColumn(2);
-  mpTblReactions->adjustColumn(3);
+  mpTblReactions->resizeColumnsToContents();
+  mpTblReactions->resizeRowsToContents();
 }
 
 void StateSubwidget::loadModelValues()
@@ -171,24 +148,21 @@ void StateSubwidget::loadModelValues()
   CCopasiVectorN< CModelValue >::const_iterator end = mpModel->getModelValues().end();
   C_INT32 i = 0;
 
-  mpTblModelValues->setNumRows((int) mpModel->getModelValues().size());
+  mpTblModelValues->setRowCount((int) mpModel->getModelValues().size());
 
   for (; it != end; ++it)
     if ((*it)->getStatus() == CModelEntity::ODE)
       {
-        mpTblModelValues->setText(i, 0, FROM_UTF8((*it)->getObjectName()));
-        mpTblModelValues->setText(i, 1, FROM_UTF8(CModelEntity::StatusName[(*it)->getStatus()]));
-        mpTblModelValues->setText(i, 2, QString::number((*it)->getValue()));
-        mpTblModelValues->setText(i, 3, QString::number((*it)->getRate()));
+        mpTblModelValues->setItem(i, 0, new QTableWidgetItem(FROM_UTF8((*it)->getObjectName())));
+        mpTblModelValues->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(CModelEntity::StatusName[(*it)->getStatus()])));
+        mpTblModelValues->setItem(i, 2, new QTableWidgetItem(QString::number((*it)->getValue())));
+        mpTblModelValues->setItem(i, 3, new QTableWidgetItem(QString::number((*it)->getRate())));
         i++;
       }
 
-  mpTblModelValues->setNumRows(i);
-
-  mpTblModelValues->adjustColumn(0);
-  mpTblModelValues->adjustColumn(1);
-  mpTblModelValues->adjustColumn(2);
-  mpTblModelValues->adjustColumn(3);
+  mpTblModelValues->setRowCount(i);
+  mpTblModelValues->resizeColumnsToContents();
+  mpTblModelValues->resizeRowsToContents();
 }
 
 void StateSubwidget::loadJacobian()
@@ -206,18 +180,16 @@ void StateSubwidget::loadJacobian()
   const CVector< C_FLOAT64 > & eigen_r = mpTask->getEigenValues().getR();
 
   size_t i, imax = eigen_i.size();
-  tableEigenValues->setNumRows((int) imax);
+  tableEigenValues->setRowCount((int) imax);
 
   for (i = 0; i < imax; ++i)
     {
-      tableEigenValues->setText((int) i, 0, QString::number(eigen_r[i]));
-      tableEigenValues->setText((int) i, 1, QString::number(eigen_i[i]));
+      tableEigenValues->setItem((int) i, 0, new QTableWidgetItem(QString::number(eigen_r[i])));
+      tableEigenValues->setItem((int) i, 1, new QTableWidgetItem(QString::number(eigen_i[i])));
     }
 
-  size_t j;
-
-  for (j = 0; j < 2; ++j)
-    tableEigenValues->adjustColumn((int) j);
+  tableEigenValues->resizeColumnsToContents();
+  tableEigenValues->resizeRowsToContents();
 
   //JacobianX
 
@@ -234,16 +206,16 @@ void StateSubwidget::loadJacobian()
   const CVector< C_FLOAT64 > & eigen_rX = mpTask->getEigenValuesReduced().getR();
 
   imax = eigen_iX.size();
-  tableEigenValuesX->setNumRows((int) imax);
+  tableEigenValuesX->setRowCount((int) imax);
 
   for (i = 0; i < imax; ++i)
     {
-      tableEigenValuesX->setText((int) i, 0, QString::number(eigen_rX[i]));
-      tableEigenValuesX->setText((int) i, 1, QString::number(eigen_iX[i]));
+      tableEigenValuesX->setItem((int) i, 0, new QTableWidgetItem(QString::number(eigen_rX[i])));
+      tableEigenValuesX->setItem((int) i, 1, new QTableWidgetItem(QString::number(eigen_iX[i])));
     }
 
-  for (j = 0; j < 2; ++j)
-    tableEigenValuesX->adjustColumn((int) j);
+  tableEigenValuesX->resizeColumnsToContents();
+  tableEigenValuesX->resizeRowsToContents();
 
   //stability report
   stabilityTextEdit->setReadOnly(true);
@@ -297,23 +269,17 @@ void StateSubwidget::showUnits()
   if (!QuantityRateUnits.isEmpty())
     QuantityRateUnits = "\n(" + QuantityRateUnits + ")";
 
-  mpTblCompartments->horizontalHeader()->setLabel(2, "Volume" + VolumeUnits);
+  mpTblCompartments->horizontalHeaderItem(2)->setText("Volume" + VolumeUnits);
+  mpTblCompartments->horizontalHeaderItem(3)->setText("Rate" + VolumeRateUnits);
 
-  mpTblCompartments->horizontalHeader()->setLabel(3, "Rate" + VolumeRateUnits);
+  mpTblMetabolites->horizontalHeaderItem(2)->setText("Concentration" + ConcentrationUnits);
+  mpTblMetabolites->horizontalHeaderItem(3)->setText("Particle Numbers");
+  mpTblMetabolites->horizontalHeaderItem(4)->setText("Rate" + ConcentrationRateUnits);
+  mpTblMetabolites->horizontalHeaderItem(5)->setText("Rate" + FrequencyUnits);
+  mpTblMetabolites->horizontalHeaderItem(6)->setText("Transition Time" + TimeUnits);
 
-  mpTblMetabolites->horizontalHeader()->setLabel(2, "Concentration" + ConcentrationUnits);
-
-  mpTblMetabolites->horizontalHeader()->setLabel(3, "Particle Numbers");
-
-  mpTblMetabolites->horizontalHeader()->setLabel(4, "Rate" + ConcentrationRateUnits);
-
-  mpTblMetabolites->horizontalHeader()->setLabel(5, "Rate" + FrequencyUnits);
-
-  mpTblMetabolites->horizontalHeader()->setLabel(6, "Transition Time" + TimeUnits);
-
-  mpTblReactions->horizontalHeader()->setLabel(1, "Flux" + QuantityRateUnits);
-
-  mpTblReactions->horizontalHeader()->setLabel(2, "Particle Flux" + FrequencyUnits);
+  mpTblReactions->horizontalHeaderItem(1)->setText("Flux" + QuantityRateUnits);
+  mpTblReactions->horizontalHeaderItem(2)->setText("Particle Flux" + FrequencyUnits);
 }
 
 bool StateSubwidget::loadAll(const CSteadyStateTask * pTask)
@@ -399,16 +365,16 @@ void StateSubwidget::clear()
 {
   topLabel->setText("No result available, please execute the steady-state task.");
 
-  mpTblMetabolites->setNumRows(0);
-  mpTblCompartments->setNumRows(0);
-  mpTblModelValues->setNumRows(0);
-  mpTblReactions->setNumRows(0);
+  mpTblMetabolites->setRowCount(0);
+  mpTblCompartments->setRowCount(0);
+  mpTblModelValues->setRowCount(0);
+  mpTblReactions->setRowCount(0);
 
   mpJacobianAnnotationWidget->setArrayAnnotation(NULL);
   mpJacobianXAnnotationWidget->setArrayAnnotation(NULL);
 
-  tableEigenValues->setNumRows(0);
-  tableEigenValuesX->setNumRows(0);
+  tableEigenValues->setRowCount(0);
+  tableEigenValuesX->setRowCount(0);
 
   stabilityTextEdit->setText("");
   protocolTextEdit->setText("");
