@@ -129,7 +129,7 @@ p, li { white-space: pre-wrap; }
   <customwidget>
    <class>CQArrayAnnotationsWidget</class>
    <extends>QWidget</extends>
-   <header>CQArrayAnnotationsWidget.h</header>
+   <header>copasi/UI/CQArrayAnnotationsWidget.h</header>
   </customwidget>
   <customwidget>
    <class>CopasiWidget</class>

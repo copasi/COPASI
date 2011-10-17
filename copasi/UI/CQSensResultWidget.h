@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSensResultWidget.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:23 $
+//   $Date: 2011/10/17 16:20:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,11 +23,11 @@
 #ifndef CQSENSRESULT_H
 #define CQSENSRESULT_H
 
-#include "ui_CQSensResultWidget.h"
+#include <QtCore/QVariant>
 
-#include "CQArrayAnnotationsWidget.h"
-#include "utilities/CAnnotatedMatrix.h"
-#include "mathematics.h"
+#include "copasi/UI/ui_CQSensResultWidget.h"
+
+class CArrayAnnotation;
 
 class CQSensResultWidget : public CopasiWidget, public Ui::CQSensResultWidget
 {
@@ -48,7 +48,6 @@ protected slots:
 
 protected:
   virtual bool enterProtected();
-  //bool loadFromBackend();
   void clearArrays();
 
   const CArrayAnnotation * mpResult;

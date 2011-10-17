@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:39:38 $
+//   $Date: 2011/10/17 16:21:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,26 +20,12 @@
 #define CQTSSAWIDGET_H
 
 #include <QtCore/QVariant>
-#include "TaskWidget.h"
 
-#include "ui_CQTSSAWidget.h"
+#include "copasi/UI/ui_CQTSSAWidget.h"
 
 class CTSSAProblem;
 class CQValidatorInt;
 class CQValidatorDouble;
-/*
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QCheckBox>
-#include <QtGui/QFrame>
-#include <QtGui/QGridLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QVBoxLayout>
-#include "TaskWidget.h"
- */
 
 #define TSSAMAX 10000000
 
