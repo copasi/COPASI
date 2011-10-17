@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/05/24 17:30:51 $
+//   $Author: shoops $
+//   $Date: 2011/10/17 19:55:03 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,9 +70,6 @@ const char * CCopasiMethod::SubTypeName[] =
   "MCA Method (Reder)",
   "Scan Framework",
   "Wolf Method",
-#ifdef COPASI_TSS
-  "Time Scale Separation Method",
-#endif // COPASI_TSS
   "Sensitivities Method",
 #ifdef COPASI_SSA
   "Stoichiometric Stability Analysis",
@@ -121,9 +118,6 @@ const char * CCopasiMethod::XMLSubType[] =
   "MCAMethod(Reder)",
   "ScanFramework",
   "WolfMethod",
-#ifdef COPASI_TSS
-  "TimeScaleSeparationMethod",
-#endif // COPASI_TSS
   "SensitivitiesMethod",
 #ifdef COPASI_SSA
   "StoichiometricStabilityAnalysis",

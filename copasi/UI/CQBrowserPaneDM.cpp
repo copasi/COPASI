@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQBrowserPaneDM.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/13 19:22:00 $
+//   $Date: 2011/10/17 19:55:41 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -331,10 +331,6 @@ void CQBrowserPaneDM::load()
   findNodeFromId(2221)->setKey((*mpCopasiDM->getTaskList())["Moieties"]->getKey());
   findNodeFromId(23)->setKey((*mpCopasiDM->getTaskList())["Time-Course"]->getKey());
   findNodeFromId(24)->setKey((*mpCopasiDM->getTaskList())["Metabolic Control Analysis"]->getKey());
-
-#ifdef COPASI_TSS
-  findNodeFromId(25)->setKey((*mpCopasiDM->getTaskList())["Time Scale Separation"]->getKey());
-#endif
 
   findNodeFromId(27)->setKey((*mpCopasiDM->getTaskList())["Time Scale Separation Analysis"]->getKey());
   findNodeFromId(26)->setKey((*mpCopasiDM->getTaskList())["Lyapunov Exponents"]->getKey());

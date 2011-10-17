@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.175 $
+//   $Revision: 1.176 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/23 18:39:01 $
+//   $Date: 2011/10/17 19:55:40 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,10 +67,6 @@ class CQSensResultWidget;
 class CQSteadyStateResult;
 class CQTrajectoryWidget;
 class CQReportsWidget;
-
-#ifdef COPASI_TSS
-class TSSWidget;
-#endif // COPASI_TSS
 
 class CQTSSAWidget;
 class CQTSSAResultWidget;
@@ -231,10 +227,6 @@ private:
   SteadyStateWidget *steadystateWidget;
   CQReportsWidget *mpReportsWidget;
   CQReportDefinition *tableDefinition1;
-
-#ifdef COPASI_TSS
-  TSSWidget *tssWidget;
-#endif // COPASI_TSS
 
   CQTimeSeriesWidget *timeSeriesWidget;
   CQTrajectoryWidget *trajectoryWidget;

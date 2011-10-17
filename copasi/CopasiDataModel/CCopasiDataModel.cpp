@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.160 $
+//   $Revision: 1.161 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/16 18:05:15 $
+//   $Date: 2011/10/17 19:56:01 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,9 +50,6 @@
 #include "lna/CLNAProblem.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
-#ifdef COPASI_TSS
-# include "tss/CTSSTask.h"
-#endif
 #include "sensitivities/CSensTask.h"
 #include "tssanalysis/CTSSATask.h"
 #include "crosssection/CCrossSectionTask.h"
@@ -1034,12 +1031,6 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
       case CCopasiTask::lyap:
         pTask = new CLyapTask(mData.pTaskList);
         break;
-
-#ifdef COPASI_TSS
-      case CCopasiTask::tss:
-        pTask = new CTSSTask(mData.pTaskList);
-        break;
-#endif // COPASI_TSS
 
       case CCopasiTask::sens:
         pTask = new CSensTask(mData.pTaskList);

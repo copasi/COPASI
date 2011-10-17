@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.99 $
+//   $Revision: 1.100 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/13 19:21:57 $
+//   $Date: 2011/10/17 19:55:40 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,10 +45,6 @@
 #include "lna/CLNATask.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "tssanalysis/CTSSATask.h"
-
-#ifdef COPASI_TSS
-#include "tss/CTSSTask.h"
-#endif
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"

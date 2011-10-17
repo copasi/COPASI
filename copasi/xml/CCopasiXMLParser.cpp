@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.233 $
+//   $Revision: 1.234 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:51:35 $
+//   $Date: 2011/10/17 19:55:22 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,9 +49,6 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CMCATask.h"
 #include "lna/CLNATask.h"
-#ifdef COPASI_TSS
-#include "tss/CTSSTask.h"
-#endif
 #include "tssanalysis/CTSSATask.h"
 #include "scan/CScanTask.h"
 #include "elementaryFluxModes/CEFMTask.h"
@@ -8395,11 +8392,6 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
             case CCopasiTask::sens:
               mCommon.pCurrentTask = new CSensTask(mCommon.pTaskList);
               break;
-#ifdef COPASI_TSS
-            case CCopasiTask::tss:
-              mCommon.pCurrentTask = new CTSSTask(mCommon.pTaskList);
-              break;
-#endif // COPASI_TSS
             case CCopasiTask::tssAnalysis:
               mCommon.pCurrentTask = new CTSSATask(mCommon.pTaskList);
               break;

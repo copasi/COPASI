@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModel.txt.h,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2011/08/05 14:22:30 $
+//   $Author: shoops $
+//   $Date: 2011/10/17 19:55:40 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,9 +51,6 @@ static char DataModeltxt[] =
   "23:231:Result\n"
   "2:24:Metabolic Control Analysis\n"
   "24:241:Result\n"
-#ifdef COPASI_TSS
-  "2:25:Time Scale Separation\n"
-#endif
   "2:26:Lyapunov Exponents\n"
   "26:261:Result\n"
   "2:27:Time Scale Separation Analysis\n"

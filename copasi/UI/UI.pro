@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.254 $
+#   $Revision: 1.255 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2011/10/14 17:30:45 $
+#   $Date: 2011/10/17 19:54:49 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.254 $ $Author: shoops $ $Date: 2011/10/14 17:30:45 $
+# $Revision: 1.255 $ $Author: shoops $ $Date: 2011/10/17 19:54:49 $
 ######################################################################
 
 LIB = UI
@@ -173,8 +173,7 @@ HEADERS	+= \
   ScanWidget.h \
   SensWidgetComboBox.h \
   SliderDialog.h \
-  TaskWidget.h \
-  TSSWidget.h
+  TaskWidget.h
 
 ### Source files that belong to widgets generated from uic4 forms
 SOURCES	+= \
@@ -318,13 +317,7 @@ SOURCES	+= \
   ScanWidget.cpp \
   SensWidgetComboBox.cpp \
   SliderDialog.cpp \
-  TaskWidget.cpp \
-  TSSWidget.cpp
-
-!contains(DEFINES, COPASI_TSS) {
-  HEADERS -= TSSWidget.h
-  SOURCES -= TSSWidget.cpp
-}
+  TaskWidget.cpp
 
 FORMS += CMCAResultSubwidget.ui
 FORMS += CLNAResultSubwidget.ui

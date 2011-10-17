@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/tss.pro,v $
-#   $Revision: 1.14 $
+#   $Revision: 1.15 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2011/03/07 19:34:15 $
+#   $Date: 2011/10/17 19:54:31 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,23 +21,13 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.14 $ $Author: shoops $ $Date: 2011/03/07 19:34:15 $
+# $Revision: 1.15 $ $Author: shoops $ $Date: 2011/10/17 19:54:31 $
 ######################################################################
 
 LIB = tss
 DISTFILES = tss.pro
 
 # Input
-contains(DEFINES, COPASI_TSS) {
-  HEADERS += CTSSMethod.h
-  HEADERS += CTSSProblem.h
-  HEADERS += CTSSTask.h
-
-  SOURCES += CTSSMethod.cpp
-  SOURCES += CTSSProblem.cpp
-  SOURCES += CTSSTask.cpp
-}
-
 HEADERS += CODEExporter.h
 HEADERS += CODEExporterC.h
 HEADERS += CODEExporterBM.h

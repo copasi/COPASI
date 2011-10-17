@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/05/24 17:30:51 $
+//   $Author: shoops $
+//   $Date: 2011/10/17 19:55:03 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,9 +61,6 @@ public:
     mca,
     lyap,
     tssAnalysis,
-#ifdef COPASI_TSS
-    tss,
-#endif // COPASI_TSS
     sens,
     moieties,
     crosssection,

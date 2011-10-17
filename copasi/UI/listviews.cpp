@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.296 $
+//   $Revision: 1.297 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/23 18:39:01 $
+//   $Date: 2011/10/17 19:55:40 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,9 +81,6 @@
 #ifdef COPASI_DEBUG
 #include "CQUpdatesWidget.h"
 #endif //COPASI_DEBUG
-#ifdef COPASI_TSS
-# include "TSSWidget.h"
-#endif
 #include "listviews.h"
 #include "qtUtilities.h"
 #include "CQFittingWidget.h"
@@ -177,9 +174,6 @@ ListViews::ListViews(QWidget *parent, const char *name):
     steadystateWidget(NULL),
     mpReportsWidget(NULL),
     tableDefinition1(NULL),
-#ifdef COPASI_TSS
-    tssWidget(NULL),
-#endif
     timeSeriesWidget(NULL),
     trajectoryWidget(NULL),
     tssaWidget(NULL),
@@ -431,13 +425,6 @@ void ListViews::ConstructNodeWidgets()
 
   tableDefinition1->hide();
 
-#ifdef COPASI_TSS
-
-  if (!tssWidget) tssWidget = new TSSWidget(this);
-
-  tssWidget->hide();
-#endif
-
   if (!sensWidget) sensWidget = new SensitivitiesWidget(this);
 
   sensWidget->hide();
@@ -621,11 +608,6 @@ CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
       case 241:
         return mpCMCAResultWidget;
         break;
-#ifdef COPASI_TSS
-      case 25:
-        return tssWidget;
-        break;
-#endif
       case 26:
         return lyapWidget;
         break;
