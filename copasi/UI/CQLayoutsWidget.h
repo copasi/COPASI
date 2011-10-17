@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:39:00 $
+//   $Author: gauges $
+//   $Date: 2011/10/17 12:17:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,8 @@
 #define COPASI_CQLayoutsWidget
 
 #include <QtCore/QVariant>
+
+#include <map>
 
 #include "copasi/UI/ui_CQLayoutsWidget.h"
 
