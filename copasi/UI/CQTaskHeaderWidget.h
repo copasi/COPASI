@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskHeaderWidget.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:39:38 $
+//   $Author: gauges $
+//   $Date: 2011/10/17 12:24:43 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,6 +15,8 @@
 #define COPASI_CQTaskHeaderWidget
 
 #include <QtCore/QVariant>
+
+#include <string>
 
 #include "copasi/UI/ui_CQTaskHeaderWidget.h"
 
