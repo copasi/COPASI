@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserDialog.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:47 $
+//   $Date: 2011/10/18 12:21:36 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,8 +49,6 @@ public:
 
 protected:
 
-  virtual void closeEvent(QCloseEvent* e);
-
   QPushButton* clearButton;
   QPushButton* toggleViewButton;
   QPushButton* cancelButton;
@@ -64,8 +62,5 @@ public slots:
   void cancelClicked();
   void okClicked();
   void toggleViewClicked();
-
-private:
-  void cleanup();
 };
 #endif // OBJECTBROWSERDIALOG_H

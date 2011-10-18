@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/16 18:13:46 $
+//   $Date: 2011/10/18 12:21:36 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,7 +25,7 @@ Author: Liang Xu
 Version : 1.xx  <first>
 Description:
 Date: 04/03
-Comment : Copasi Object Browser:
+Comment : COPASI Object Browser:
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
@@ -83,8 +83,6 @@ ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, Qt::
 
   if (!name)
     setObjectName("ObjectBrowser");
-
-  ObjectBrowserLayout->setObjectName("ObjectBrowserLayout");
 
   if (state == 0)
     ObjectBrowserLayout = new QGridLayout(this);

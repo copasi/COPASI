@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.301 $
+//   $Revision: 1.302 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/14 17:38:24 $
+//   $Date: 2011/10/18 12:21:35 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1183,6 +1183,8 @@ void CopasiUI3Window::slotShowObjectBrowserDialog(bool flag)
         delete mpObjectBrowser;
 
       mpObjectBrowser = new ObjectBrowserDialog(this, 0, false, 1);
+      connect(mpObjectBrowser, SIGNAL(destroyed(QObject *)), this, SLOT(slotObjectBrowserDialogWasClosed()));
+
       mpObjectBrowser->show();
     }
   else

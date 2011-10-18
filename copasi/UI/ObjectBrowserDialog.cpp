@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserDialog.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:10 $
+//   $Author: shoops $
+//   $Date: 2011/10/18 12:21:36 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,19 +56,15 @@ ObjectBrowserDialog::ObjectBrowserDialog(QWidget* parent, const char* name, bool
   ObjectBrowserDialogLayout->setSpacing(6);
   ObjectBrowserDialogLayout->setObjectName(QString::fromUtf8("ObjectBrowserDialogLayout"));
 
-  //  objectBrowserWidget = new ObjectBrowserWidget(this, NULL, 0, 1);
   objectBrowserWidget = new ObjectBrowserWidget(this);
-  ObjectBrowserDialogLayout->addWidget(objectBrowserWidget, 0, 0, 0, 3);
+  ObjectBrowserDialogLayout->addWidget(objectBrowserWidget, 0, 0, 1, 2);
 
   Line1 = new QFrame(this);
   Line1->setObjectName("Line1");
   Line1->setFrameShape(QFrame::HLine);
   Line1->setFrameShadow(QFrame::Sunken);
   Line1->setFrameShape(QFrame::HLine);
-  ObjectBrowserDialogLayout->addWidget(Line1, 1, 1, 0, 3);
-
-  //  spacer = new QSpacerItem(131, 31, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  //  ObjectBrowserDialogLayout->addItem(spacer, 2, 1);
+  ObjectBrowserDialogLayout->addWidget(Line1, 1, 0, 1, 2);
 
   if (state == 0)
     {
@@ -112,7 +108,7 @@ ObjectBrowserDialog::ObjectBrowserDialog(QWidget* parent, const char* name, bool
       okButton->setText("Close");
       okButton->setDefault(true);
       okButton->setAutoDefault(true);
-      ObjectBrowserDialogLayout->addWidget(okButton, 2, 3);
+      ObjectBrowserDialogLayout->addWidget(okButton, 2, 1, 1, 1);
 
       connect(okButton, SIGNAL(clicked()), this, SLOT(okClicked()));
 
@@ -127,33 +123,7 @@ ObjectBrowserDialog::ObjectBrowserDialog(QWidget* parent, const char* name, bool
 }
 
 ObjectBrowserDialog::~ObjectBrowserDialog()
-{
-  /*  CopasiUI3Window* uiWindowParent = dynamic_cast<CopasiUI3Window*>(this->parent());
-    if (uiWindowParent)
-      {
-        uiWindowParent->slotObjectBrowserDialogWasClosed();
-      }*/
-  cleanup();
-}
-
-void ObjectBrowserDialog::closeEvent(QCloseEvent* e)
-{
-  QDialog::closeEvent(e);
-
-  //the code to notify the parent window explicitly is now only called if the
-  //dialog is closed by the user, not if it is deleted.
-  CopasiUI3Window* uiWindowParent = dynamic_cast<CopasiUI3Window*>(this->parent());
-
-  if (uiWindowParent)
-    {
-      uiWindowParent->slotObjectBrowserDialogWasClosed();
-    }
-}
-
-void ObjectBrowserDialog::cleanup()
-{
-  return;
-}
+{}
 
 void ObjectBrowserDialog::setOutputVector(std::vector< const CCopasiObject * > * pObjectVector)
 {
@@ -163,14 +133,12 @@ void ObjectBrowserDialog::setOutputVector(std::vector< const CCopasiObject * > *
 void ObjectBrowserDialog::cancelClicked()
 {
   close();
-  //  QDialog::done(QDialog::Accepted);
 }
 
 void ObjectBrowserDialog::okClicked()
 {
   objectBrowserWidget->commitClicked();
   done(QDialog::Accepted);
-  //  QDialog::done(QDialog::Accepted);
 }
 
 void ObjectBrowserDialog::toggleViewClicked()
