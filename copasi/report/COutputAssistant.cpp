@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-//   $Revision: 1.20.4.1 $
+//   $Revision: 1.20.4.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 19:05:31 $
+//   $Author: ssahle $
+//   $Date: 2011/10/18 14:25:08 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -37,6 +37,7 @@
 #include "parameterFitting/CFitProblem.h"
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CExperiment.h"
+#include "scan/CScanProblem.h"
 
 //******* COutputAssistant **********************************
 
@@ -159,6 +160,22 @@ const CDefaultOutputDescription & COutputAssistant::getItem(C_INT32 id)
     return it->second;
 }
 
+/**
+ numbering scheme:
+
+ 0-99: time course plots
+200-299: plots with scan parameter on x-axis
+
+above 1000: reports
+
+1000-1099: reports with time and some other variables
+1200-1299: reports with scan parameters and some other variables
+
+the meaning of the last two digits should be the same in all those cases.
+
+Currently special plots, e.g. for parameter estimation use numbers within the ranges mentioned above. This should be changed.
+**/
+
 //static
 bool COutputAssistant::initialize()
 {
@@ -279,6 +296,82 @@ bool COutputAssistant::initialize()
   tmp.second.mTaskType = CCopasiTask::unset;
   mMap.insert(tmp);
 
+  // *****************************************************************
+
+  //concentrations plot
+  tmp.first = 200;
+  tmp.second.name = "Scan of Concentrations, Volumes, and Global Quantity Values";
+  tmp.second.description = "A plot of the variable species concentrations, variable compartment volumes, and variable global quantity values vs. innermost scan parameter.";
+  tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::scan;
+  mMap.insert(tmp);
+
+  //particle numbers plot
+  tmp.first = 201;
+  tmp.second.name = "Scan of Particle Numbers, Volumes, and Global Quantity Values";
+  tmp.second.description = "A plot of the variable species particle numbers, variable compartment volumes, and variable global quantity values vs. innermost scan parameter.";
+  tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::scan;
+  mMap.insert(tmp);
+
+  //complete concentrations plot
+  tmp.first = 202;
+  tmp.second.name = "Scan of Complete Concentrations, Volumes, and Global Quantity Values";
+  tmp.second.description = "A plot of all the species concentrations, compartment volumes, and all global quantity values vs. innermost scan parameter (includes fixed ones).";
+  tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::scan;
+  mMap.insert(tmp);
+
+  //complete particle numbers plot
+  tmp.first = 203;
+  tmp.second.name = "Scan of Complete Particle Numbers, Volumes, and Global Quantity Values";
+  tmp.second.description = "A plot of all the species particle numbers, compartment volumes, and global quantity values vs. innermost scan parameter (includes fixed ones).";
+  tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::scan;
+  mMap.insert(tmp);
+
+  //concentration rate plot
+  tmp.first = 204;
+  tmp.second.name = "Scan of Concentration Rates, Volume Rates, and Global Quantity Rates";
+  tmp.second.description = "A plot of the rate of change of concentrations of species, compartment volume, and global quantities, which are determined by ODEs or reactions vs. innermost scan parameter.";
+  tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::scan;
+  mMap.insert(tmp);
+
+  //particle rate plot
+  tmp.first = 205;
+  tmp.second.name = "Scan of Particle Number Rates, Volume Rates, and Global Quantity Rates";
+  tmp.second.description = "A plot of the rate of change of particle numbers of all species, compartment volume, and global quantities, which are determined by ODEs or reactions vs. innermost scan parameter.";
+  tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::scan;
+  mMap.insert(tmp);
+
+  //reaction particle flux
+  tmp.first = 206;
+  tmp.second.name = "Scan of Reaction Fluxes";
+  tmp.second.description = "A plot of the fluxes of all reactions vs. innermost scan parameter, in concentration/time unit.";
+  tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::scan;
+  mMap.insert(tmp);
+
+  //reaction particle flux
+  tmp.first = 207;
+  tmp.second.name = "Scan of Reaction Event Fluxes";
+  tmp.second.description = "A plot of the fluxes of all reactions vs. innermost scan parameter, in reaction events/time unit.";
+  tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::scan;
+  mMap.insert(tmp);
+
+  //eigenvalues plot
+  tmp.first = 250;
+  tmp.second.name = "Eigenvalues vs. scan parameter";
+  tmp.second.description = "A plot of the real and imaginary parts of the eigenvalues of the Jacobian as a function of the innermost scan parameter.";
+  tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::scan;
+  mMap.insert(tmp);
+
+  // *****************************************************************
+
   //now the reports
   tmp.first = 999;
   tmp.second.name = "-- Reports";
@@ -358,6 +451,85 @@ bool COutputAssistant::initialize()
   tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
+  //concentrations report
+  tmp.first = 1200;
+  tmp.second.name = "Scan Parameters, Time, Concentrations, Volumes, and Global Quantity Values";
+  tmp.second.description = "A table of scan parameters, time, variable species concentrations, variable compartment volumes, and variable global quantity values.";
+  tmp.second.isPlot = false; //report
+  tmp.second.mTaskType = CCopasiTask::scan;
+  mMap.insert(tmp);
+
+  tmp.first = 1201;
+  tmp.second.name = "Scan Parameters, Time, Particle Numbers, Volumes, and Global Quantity Values";
+  tmp.second.description = "A table of scan parameters, time, variable species particle numbers, variable compartment volumes, and variable global quantity values.";
+  tmp.second.isPlot = false; //report
+  tmp.second.mTaskType = CCopasiTask::scan;
+  mMap.insert(tmp);
+
+  tmp.first = 1202;
+  tmp.second.name = "Scan Parameters, Time, Complete Concentrations, Volumes, and Global Quantity Values";
+  tmp.second.description = "A table of scan parameters, time, all species concentrations, all compartment volumes, and all global quantity values (includes fixed ones).";
+  tmp.second.isPlot = false; //report
+  tmp.second.mTaskType = CCopasiTask::scan;
+  mMap.insert(tmp);
+
+  tmp.first = 1203;
+  tmp.second.name = "Scan Parameters, Time, Complete Particle Numbers, Volumes, and Global Quantity Values";
+  tmp.second.description = "A table of scan parameters, time, all species particle numbers, all compartment volumes, and all global quantity values (includes fixed ones).";
+  tmp.second.isPlot = false; //report
+  tmp.second.mTaskType = CCopasiTask::scan;
+  mMap.insert(tmp);
+
+  tmp.first = 1204;
+  tmp.second.name = "Scan Parameters, Time, Concentration Rates, Volume Rates, and Global Quantity Rates";
+  tmp.second.description = "A table of scan parameters, time and the rate of change of concentrations of species, compartment volumes, and global quantities which are determined by reactions or ODEs.";
+  tmp.second.isPlot = false; //report
+  tmp.second.mTaskType = CCopasiTask::scan;
+  mMap.insert(tmp);  //not possible at the moment
+
+  tmp.first = 1205;
+  tmp.second.name = "Scan Parameters, Time, Particle Numbers Rates, Volume Rates, and Global Quantity Rates";
+  tmp.second.description = "A table of scan parameters, time and the rate of change of particle numbers of species, compartment volumes, and global quantities which are determined by reactions or ODEs.";
+  tmp.second.isPlot = false; //report
+  tmp.second.mTaskType = CCopasiTask::scan;
+  mMap.insert(tmp);
+
+  tmp.first = 1206;
+  tmp.second.name = "Scan Parameters, Time and Reaction Fluxes";
+  tmp.second.description = "A table of scan parameters and the fluxes of all reactions and time, in concentration/time unit.";
+  tmp.second.isPlot = false; //report
+  tmp.second.mTaskType = CCopasiTask::scan;
+  mMap.insert(tmp);
+
+  tmp.first = 1207;
+  tmp.second.name = "Scan Parameters, Time and Reaction Event Fluxes";
+  tmp.second.description = "A table of scan parameters and the fluxes of all reactions and time, in reaction events/time unit.";
+  tmp.second.isPlot = false; //report
+  tmp.second.mTaskType = CCopasiTask::scan;
+  mMap.insert(tmp);
+
+  tmp.first = 1208;
+  tmp.second.name = "Scan Parameters, Time and all Variable Values (Concentration Units)";
+  tmp.second.description = "This table includes scan parameters and all values which change over a time course. Species are measured in concentration unit and fluxes are in concentration/time unit.";
+  tmp.second.isPlot = false; //report
+  tmp.second.mTaskType = CCopasiTask::scan;
+  mMap.insert(tmp);
+
+  tmp.first = 1209;
+  tmp.second.name = "Scan Parameters, Time and all Variable Values (Particle Number Units)";
+  tmp.second.description = "This table includes scan parameters and all values which change over a time course. Species are measured in particle numbers and fluxes are in events/time unit.";
+  tmp.second.isPlot = false; //report
+  tmp.second.mTaskType = CCopasiTask::scan;
+  mMap.insert(tmp);
+
+  //eigenvalues report
+  tmp.first = 1250;
+  tmp.second.name = "Scan Parameters and Eigenvalues";
+  tmp.second.description = "This table includes scan parameters and the real and imaginary parts of the eigenvalues of the reduced system's Jacobian.";
+  tmp.second.isPlot = false;
+  tmp.second.mTaskType = CCopasiTask::scan;
+  mMap.insert(tmp);
+
   tmp.first = 1999;
   tmp.second.name = "Empty";
   tmp.second.description = "A table with nothing in it.";
@@ -389,7 +561,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
     }
 
   bool isReport = (id >= 1000);
-  C_INT32 idMod = id % 1000;
+  C_INT32 idMod = id % 200;
 
   const CCopasiObject* pTime = pModel->getObject(CCopasiObjectName("Reference=Time"));
 
@@ -516,6 +688,14 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
           CObjectLists::getListOfConstObjects(CObjectLists::METAB_TRANSITION_TIME, pModel);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         break;
+      case 50:
+        data1 =
+          CObjectLists::getListOfConstObjects(CObjectLists::REDUCED_JACOBIAN_EV_RE, pModel);
+        tmpdata =
+          CObjectLists::getListOfConstObjects(CObjectLists::REDUCED_JACOBIAN_EV_IM, pModel);
+        data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+        break;
+
       case 10:  // :TODO: Implement me!
       {
         CPlotSpecification * pPlotSpecification = NULL;
@@ -578,7 +758,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
           }
 
         pPlotSpecification =
-          createPlot(getItemName(id), data2, data1, getItem(id).mTaskType, pDataModel);
+          createPlot(getItemName(id), data2, false, data1, getItem(id).mTaskType, pDataModel);
 
         if (pPlotSpecification != NULL)
           {
@@ -636,7 +816,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
               }
 
             pPlotSpecification =
-              createPlot(pExperiment->getObjectName(), data2, data1, getItem(id).mTaskType, pDataModel);
+              createPlot(pExperiment->getObjectName(), data2, false, data1, getItem(id).mTaskType, pDataModel);
 
             if (pPlotSpecification != NULL)
               {
@@ -789,7 +969,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
         data1.push_back(pFitProblem->getObject(CCopasiObjectName("Reference=Best Value")));
 
         pPlotSpecification =
-          createPlot("Progress of Fit" , data2, data1, getItem(id).mTaskType, pDataModel);
+          createPlot("Progress of Fit" , data2, false, data1, getItem(id).mTaskType, pDataModel);
 
         if (pPlotSpecification != NULL)
           {
@@ -811,9 +991,40 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
       break;
     }
 
+
   if (isReport)
     {
-      data1.insert(data1.begin(), pTime);
+      data1.insert(data1.begin(), pTime); //in any case, add time to the report
+
+      if (id >= 1200 and id < 1300) //we need to add the scan parameters
+        {
+          tmpdata.clear();
+          CScanProblem* pSP = dynamic_cast<CScanProblem*>(task->getProblem());
+
+          if (pSP) //we really have a scan problem
+            {
+              size_t num_scanitems = pSP->getNumberOfScanItems();
+              size_t i;
+
+              for (i = 0; i < num_scanitems; ++i)
+                {
+                  std::string tmpString = * pSP->getScanItem(i)->getValue("Object").pCN;
+
+                  if (tmpString.size()) //the scan item references an object, this is the scan parameter
+                    {
+                      CCopasiDataModel* pDataModel = pSP->getObjectDataModel();
+                      assert(pDataModel != NULL);
+                      const CCopasiObject * tmpObject = pDataModel->getObject(tmpString);
+
+                      if (tmpObject)
+                        tmpdata.push_back(tmpObject);
+                    }
+                }
+
+              data1.insert(data1.begin(), tmpdata.begin(), tmpdata.end());
+            }
+        }
+
       CReportDefinition* pReportDef = createTable(getItemName(id), data1, getItem(id).description, getItem(id).mTaskType, pDataModel);
 
       if (activate && pReportDef)
@@ -826,8 +1037,43 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
     }
   else //plot
     {
-      data2 = pTime;
-      return createPlot(getItemName(id), data2, data1, getItem(id).mTaskType, pDataModel);
+      bool logX = false;
+
+      if (id >= 200 and id < 300) //we need to find the inner scan item for the x-axis
+        {
+          data2 = NULL;
+          CScanProblem* pSP = dynamic_cast<CScanProblem*>(task->getProblem());
+
+          if (pSP) //we really have a scan problem
+            {
+              size_t num_scanitems = pSP->getNumberOfScanItems();
+              size_t i;
+
+              for (i = 0; i < num_scanitems; ++i)
+                {
+                  std::string tmpString = * pSP->getScanItem(i)->getValue("Object").pCN;
+
+                  if (tmpString.size()) //the scan item references an object, this is the scan parameter
+                    {
+                      CCopasiDataModel* pDataModel = pSP->getObjectDataModel();
+                      assert(pDataModel != NULL);
+                      const CCopasiObject * tmpObject = pDataModel->getObject(tmpString);
+
+                      if (tmpObject)
+                        {
+                          data2 = tmpObject; //we only keep the last scan parameter we find, this is the innermost loop.
+                          logX = pSP->getScanItem(i)->getValue("log").pBOOL;
+                        }
+                    }
+                }
+            }
+        }
+      else //time is on the x-axis
+        {
+          data2 = pTime;
+        }
+
+      return createPlot(getItemName(id), data2, logX, data1, getItem(id).mTaskType, pDataModel);
     }
 
   return NULL;
@@ -838,6 +1084,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 //static
 CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
     const CCopasiObject* x,
+    bool logX,
     const std::vector<const CCopasiObject*> & y,
     const CCopasiTask::Type & /* taskType */,
     CCopasiDataModel* pDataModel)
@@ -883,6 +1130,7 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
       plItem->addChannel(name2);
     }
 
+  pPl->setLogX(logX);
   return pPl;
 }
 
