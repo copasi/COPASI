@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.255 $
+#   $Revision: 1.256 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2011/10/17 19:54:49 $
+#   $Date: 2011/10/18 18:31:10 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.255 $ $Author: shoops $ $Date: 2011/10/17 19:54:49 $
+# $Revision: 1.256 $ $Author: shoops $ $Date: 2011/10/18 18:31:10 $
 ######################################################################
 
 LIB = UI
@@ -68,7 +68,6 @@ HEADERS	+= \
   CQMoietiesTaskWidget.h \
   CQMoietiesTaskResult.h \
   CQNotes.h \
-  objectdebug.h \
   CQOptimizationWidget.h \
   CQOptimizationResult.h \
   CQOscillationTaskWidget.h \
@@ -249,7 +248,6 @@ SOURCES	+= \
   CUpDownSubwidget.cpp \
   DefaultplotDialog.cpp \
   FunctionWidget1.cpp \
-  objectdebug.cpp \
   SensitivitiesWidget.cpp \
   SliderSettingsDialog.cpp \
   StateSubwidget.cpp \
@@ -387,7 +385,6 @@ FORMS += CScanWidgetTask.ui
 FORMS += CUpDownSubwidget.ui
 FORMS += DefaultplotDialog.ui
 FORMS += FunctionWidget1.ui
-FORMS += objectdebug.ui
 FORMS += SensitivitiesWidget.ui
 FORMS += SliderSettingsDialog.ui
 FORMS += StateSubwidget.ui
