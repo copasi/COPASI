@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-//   $Revision: 1.32.4.2 $
+//   $Revision: 1.32.4.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2011/04/21 22:30:37 $
+//   $Date: 2011/10/18 14:21:43 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -470,6 +470,8 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
         list.push_back(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES);
         list.push_back(CObjectLists::REACTION_CONC_FLUXES);
         list.push_back(CObjectLists::REACTION_PART_FLUXES);
+        list.push_back(CObjectLists::REDUCED_JACOBIAN_EV_RE);
+        list.push_back(CObjectLists::REDUCED_JACOBIAN_EV_IM);
         break;
 
       case(CSensProblem::TimeSeries):
