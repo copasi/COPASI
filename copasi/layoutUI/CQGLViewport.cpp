@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLViewport.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.8.4.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/02/03 13:53:00 $
+//   $Date: 2011/10/19 14:56:48 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -153,6 +158,16 @@ void CQGLViewport::resetView()
   this->mpNetworkPainter->resetView();
   this->updateScrollbars();
 }
+
+/**
+ * Make the diagram fit the screen.
+ */
+void CQGLViewport::fitToScreen()
+{
+  this->mpNetworkPainter->fitToScreen();
+  this->updateScrollbars();
+}
+
 
 void CQGLViewport::updateWidget()
 {

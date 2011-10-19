@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.53.2.2 $
+//   $Revision: 1.53.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/14 13:34:25 $
+//   $Author: gauges $
+//   $Date: 2011/10/19 14:56:48 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -136,6 +136,11 @@ private slots:
 public slots:
 #endif // USE_CRENDER_EXTENSION
   void slotResetView();
+
+  /**
+   * Make the layout fit the screen.
+   */
+  void slotFitToScreen();
   void loadData();
   void saveImage();
   void mapLabelsToCircles();

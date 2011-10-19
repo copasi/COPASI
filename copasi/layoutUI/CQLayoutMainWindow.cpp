@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.102.2.6 $
+//   $Revision: 1.102.2.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/29 19:46:41 $
+//   $Author: gauges $
+//   $Date: 2011/10/19 14:56:48 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -972,6 +972,37 @@ bool CQLayoutMainWindow::maybeSave()
   //    return false;
 
   return true;
+}
+
+
+/**
+ * Make the layout fit the screen.
+ */
+void CQLayoutMainWindow::slotFitToScreen()
+{
+#ifndef USE_CRENDER_EXTENSION
+  disconnect(mpZoomMenu, SIGNAL(triggered(QAction*)), this, SLOT(slotZoomItemActivated(QAction*)));
+  QList<QAction*> actions = this->mpZoomActionGroup->actions();
+  QList<QAction*>::iterator it = actions.begin(), endit = actions.end();
+
+  while (it != endit)
+    {
+      if ((*it)->isChecked())
+        {
+          (*it)->setChecked(false);
+          // only one item can be checked
+          break;
+        }
+
+      ++it;
+    }
+
+  connect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
+  disconnect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
+  this->mpZoomComboBox->clearEditText();
+  connect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
+#endif // USE_CRENDER_EXTENSION
+  this->mpGLViewport->fitToScreen();
 }
 
 void CQLayoutMainWindow::slotResetView()

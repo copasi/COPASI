@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutViewer.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.2.1 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2010/03/10 12:33:51 $
+//   $Date: 2011/10/19 14:56:47 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -148,6 +148,16 @@ void CQGLLayoutViewer::resetView()
   // TODO disconnect the scrollbar listeners
   // so that the display is only redrawn once
   this->mpLayoutPainter->resetView();
+  this->updateScrollbars();
+}
+
+/**
+ * Calculates the ratio that is needed to fit the diagram on the current viewport
+ * and sets this as the zoom factor.
+ */
+void CQGLLayoutViewer::fitToScreen()
+{
+  this->mpLayoutPainter->fitToScreen();
   this->updateScrollbars();
 }
 

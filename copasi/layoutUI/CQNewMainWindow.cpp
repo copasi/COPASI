@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.1.2.17 $
+//   $Revision: 1.1.2.18 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/29 19:46:41 $
+//   $Author: gauges $
+//   $Date: 2011/10/19 14:56:48 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -206,6 +206,7 @@ void CQNewMainWindow::createMenus()
   // view menu
   mpViewMenu = menuBar()->addMenu(tr("View"));
   mpViewMenu->addAction(tr("Reset View"), this, SLOT(slotResetView()));
+  mpViewMenu->addAction(tr("Fit to Screen"), this, SLOT(slotFitToScreen()));
   this->mpZoomMenu = this->mpViewMenu->addMenu(tr("Zoom"));
   this->mpZoomActionGroup = new QActionGroup(this);
   QAction* pAction = this->mpZoomActionGroup->addAction("1%");
@@ -390,6 +391,17 @@ void CQNewMainWindow::slotResetView()
   this->mpLayoutViewer->setZoomFactor(1.0);
   this->mpAnimationWindow->slotResetView();
 }
+
+/**
+ * This slot is called when the "Fit To Screen" menu item
+ * is activated.
+ */
+void CQNewMainWindow::slotFitToScreen()
+{
+  this->mpLayoutViewer->fitToScreen();
+  this->mpAnimationWindow->slotFitToScreen();
+}
+
 
 void CQNewMainWindow::slotLayoutChanged(int index)
 {
