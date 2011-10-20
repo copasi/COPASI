@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutPainter.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:35:56 $
+//   $Date: 2011/10/20 14:06:21 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -291,6 +291,37 @@ void CQGLLayoutPainter::resetView()
   this->setZoomFactor(1.0);
   this->setCurrentPosition(this->minX(), this->minY());
 }
+
+/**
+ * Calculates the ratio that is needed to fit the diagram on the current viewport
+ * and sets this as the zoom factor.
+ * The method returns the new zoom factor.
+ */
+double CQGLLayoutPainter::fitToScreen()
+{
+  double zoom = 1.0;
+  double width = this->mMaxX - this->mMinX;
+  double height = this->mMaxY - this->mMinY;
+  double wRatio = this->mViewportWidth / width;
+  double hRatio = this->mViewportHeight / height;
+
+  if (wRatio > hRatio)
+    {
+      zoom = hRatio;
+    }
+  else
+    {
+      zoom = wRatio;
+    }
+
+  this->setZoomFactor(zoom);
+  this->setCurrentPosition(this->mMinX, this->mMinY);
+  return zoom;
+}
+
+
+
+
 
 double CQGLLayoutPainter::minX() const
 {

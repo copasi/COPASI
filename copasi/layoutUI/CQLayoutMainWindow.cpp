@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.104 $
+//   $Revision: 1.105 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 15:06:38 $
+//   $Date: 2011/10/20 14:06:21 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,6 +67,10 @@
 #endif
 
 using namespace std;
+
+const char* const CQLayoutMainWindow::ZOOM_FACTOR_STRINGS[] = {"1%", "2%", "3%", "4%", "5%", "10%", "20%", "30%", "40%", "50%", "100%", "150%", "200%", "300%", "400%", "500%", "1000%"};
+const double CQLayoutMainWindow::ZOOM_FACTORS[] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
+
 
 #ifndef USE_CRENDER_EXTENSION
 CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout):
@@ -170,27 +174,25 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget* pParent):
   this->mpZoomComboBox = new QComboBox(NULL);
   this->mpZoomComboBox->setWindowTitle("zoom box");
   this->mpToolbar->addWidget(this->mpZoomComboBox);
-  QStringList l;
-  l.push_back("1%");
-  l.push_back("2%");
-  l.push_back("3%");
-  l.push_back("4%");
-  l.push_back("5%");
-  l.push_back("10%");
-  l.push_back("20%");
-  l.push_back("30%");
-  l.push_back("40%");
-  l.push_back("50%");
-  l.push_back("100%");
-  l.push_back("150%");
-  l.push_back("200%");
-  l.push_back("300%");
-  l.push_back("400%");
-  l.push_back("500%");
-  this->mpZoomComboBox->addItems(l);
-  this->mpZoomComboBox->setCurrentIndex(10);
+
+  int defaultIndex = -1;
+  unsigned int i, iMax = sizeof(CQLayoutMainWindow::ZOOM_FACTOR_STRINGS) / sizeof(char*);
+
+  for (i = 0; i < iMax; ++i)
+    {
+      this->mpZoomComboBox->addItem(QString(CQLayoutMainWindow::ZOOM_FACTOR_STRINGS[i]));
+
+      if (std::string(CQLayoutMainWindow::ZOOM_FACTOR_STRINGS[i]) == std::string("100%"))
+        {
+          defaultIndex = i;
+        }
+    }
+
+  // set 100% as the default zoom factor
+  assert(defaultIndex != -1);
+  this->mpZoomComboBox->setCurrentIndex(defaultIndex);
   this->mpZoomComboBox->setEditable(FALSE);
-  connect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
+  connect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
   connect(this->mpGLViewport->getPainter() , SIGNAL(signalZoomIn()), this, SLOT(slotZoomIn()));
   connect(this->mpGLViewport->getPainter() , SIGNAL(signalZoomOut()), this, SLOT(slotZoomOut()));
 #endif // USE_CRENDER_EXTENSION
@@ -974,6 +976,52 @@ bool CQLayoutMainWindow::maybeSave()
   return true;
 }
 
+
+/**
+ * Make the layout fit the screen.
+ * Return the new zoom factor.
+ */
+double CQLayoutMainWindow::slotFitToScreen()
+{
+  double zoom = this->mpGLViewport->fitToScreen();
+#ifndef USE_CRENDER_EXTENSION
+  disconnect(mpZoomMenu, SIGNAL(triggered(QAction*)), this, SLOT(slotZoomItemActivated(QAction*)));
+  QList<QAction*> actions = this->mpZoomActionGroup->actions();
+  QList<QAction*>::iterator it = actions.begin(), endit = actions.end();
+
+  while (it != endit)
+    {
+      if ((*it)->isChecked())
+        {
+          (*it)->setChecked(false);
+          // only one item can be checked
+          break;
+        }
+
+      ++it;
+    }
+
+  connect(mpZoomMenu, SIGNAL(triggered(QAction*)), this, SLOT(slotZoomItemActivated(QAction*)));
+
+  disconnect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
+  // add a new entry for the zoom factor only if there isn't one already
+  unsigned int n = sizeof(CQLayoutMainWindow::ZOOM_FACTOR_STRINGS) / sizeof(char*);
+
+  if (this->mpZoomComboBox > n)
+    {
+      this->mpZoomComboBox->setItemText(0, QString("%1").arg(zoom*100).append("%"));
+    }
+  else
+    {
+      this->mpZoomComboBox->insertItem(0, QString("%1").arg(zoom*100).append("%"));
+    }
+
+  this->mpZoomComboBox->setCurrentIndex(0);
+  connect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
+#endif // USE_CRENDER_EXTENSION
+  return zoom;
+}
+
 void CQLayoutMainWindow::slotResetView()
 {
 #ifndef USE_CRENDER_EXTENSION
@@ -982,11 +1030,16 @@ void CQLayoutMainWindow::slotResetView()
   this->mpZoomActionGroup->actions().at(10)->setChecked(true);
   connect(mpZoomMenu, SIGNAL(triggered(QAction*)), this, SLOT(slotZoomItemActivated(QAction*)));
   // update toolbar
-  disconnect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
+  disconnect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
   this->mpZoomComboBox->setCurrentIndex(10);
-  connect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
+  connect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
 #endif // USE_CRENDER_EXTENSION
   this->mpGLViewport->resetView();
+}
+
+void CQLayoutMainWindow::setZoomFactor(double zoom)
+{
+  this->mpGLViewport->setZoomFactor(zoom);
 }
 
 void CQLayoutMainWindow::setZoomFactor(QString s)
@@ -995,18 +1048,35 @@ void CQLayoutMainWindow::setZoomFactor(QString s)
   // create a number from the text
   double n = s.toDouble();
   n /= 100.0;
-  this->mpGLViewport->setZoomFactor(n);
+  this->setZoomFactor(n);
 }
 
 #ifndef USE_CRENDER_EXTENSION
 void CQLayoutMainWindow::slotActivated(int index)
 {
-  // update menu items
-  if (index >= 0 && index < 15)
+  // check if the number of entries in the combobox are greater than the number of
+  // zoom items
+  // If that is the case, remove the first one and reduce the index by 1
+  unsigned int n = sizeof(CQLayoutMainWindow::ZOOM_FACTOR_STRINGS) / sizeof(char*);
+
+  if (this->mpZoomComboBox->count() > n && index != 0)
     {
-      QAction* pAction = this->mpZoomActionGroup->actions().at(index);
-      pAction->setChecked(true);
-      this->setZoomFactor(pAction->text());
+      --index;
+      disconnect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
+      this->mpZoomComboBox->removeItem(0);
+      this->mpZoomComboBox->setCurrentIndex(index);
+      connect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
+    }
+
+  // update menu items
+  if (this->mpZoomComboBox->count() == n)
+    {
+      if (index >= 0 && index < n)
+        {
+          QAction* pAction = this->mpZoomActionGroup->actions().at(index);
+          pAction->setChecked(true);
+          this->setZoomFactor(pAction->text());
+        }
     }
 }
 
@@ -1014,12 +1084,27 @@ void CQLayoutMainWindow::slotZoomItemActivated(QAction* pAction)
 {
   // if the item is not checked, uncheck all other and check this one
   // set the zoom factor
+
+  // check if the number of zoom factors in the combobox is greater than
+  // the number of items in the zoom combo box
+  //
+  // if so, delete the first entry from the list
+  // the item that has been added by fitToScreen.
+  const size_t n = sizeof(CQLayoutMainWindow::ZOOM_FACTOR_STRINGS) / sizeof(char*);
+
+  if ((size_t)this->mpZoomComboBox->count() > n)
+    {
+      disconnect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
+      this->mpZoomComboBox->removeItem(0);
+      connect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
+    }
+
   QString text = pAction->text();
   this->setZoomFactor(text);
   // update toolbar
-  disconnect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
+  disconnect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
   this->mpZoomComboBox->setCurrentIndex(this->mpZoomComboBox->findText(text));
-  connect(this->mpZoomComboBox, SIGNAL(activated(int)), this, SLOT(slotActivated(int)));
+  connect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
 }
 
 void CQLayoutMainWindow::slotZoomIn()

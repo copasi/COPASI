@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:35:56 $
+//   $Date: 2011/10/20 14:06:22 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,6 +95,13 @@ public slots:
 
 private slots:
   void slotResetView();
+
+  /**
+   * This slot is called when the "Fit To Screen" menu item
+   * is activated.
+   */
+  void slotFitToScreen();
+
   void slotRenderInfoChanged(int index);
   void slotZoomChanged(int index);
   void slotZoomMenuItemActivated(QAction*);
