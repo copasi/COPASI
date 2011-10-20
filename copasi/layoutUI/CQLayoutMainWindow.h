@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.h,v $
-//   $Revision: 1.53.2.3 $
+//   $Revision: 1.53.2.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/10/19 14:56:48 $
+//   $Date: 2011/10/20 11:12:46 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,12 +105,17 @@ public:
   void addItemInAnimation(std::string s);
   void removeItemInAnimation(std::string s);
 
+  static const char* const ZOOM_FACTOR_STRINGS[];
+  static const double ZOOM_FACTORS[];
+
+
 protected:
 #ifndef USE_CRENDER_EXTENSION
   void closeEvent(QCloseEvent *event);
 #endif // USE_CRENDER_EXTENSION
 public:
   void setZoomFactor(QString s);
+  void setZoomFactor(double zoom);
 
 private slots:
   void loadSBMLFile();
@@ -140,7 +145,7 @@ public slots:
   /**
    * Make the layout fit the screen.
    */
-  void slotFitToScreen();
+  double slotFitToScreen();
   void loadData();
   void saveImage();
   void mapLabelsToCircles();

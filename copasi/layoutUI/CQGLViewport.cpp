@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLViewport.cpp,v $
-//   $Revision: 1.8.4.1 $
+//   $Revision: 1.8.4.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/10/19 14:56:48 $
+//   $Date: 2011/10/20 11:12:45 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,11 +161,13 @@ void CQGLViewport::resetView()
 
 /**
  * Make the diagram fit the screen.
+ * Returns the new zoom value.
  */
-void CQGLViewport::fitToScreen()
+double CQGLViewport::fitToScreen()
 {
-  this->mpNetworkPainter->fitToScreen();
+  double zoom = this->mpNetworkPainter->fitToScreen();
   this->updateScrollbars();
+  return zoom;
 }
 
 

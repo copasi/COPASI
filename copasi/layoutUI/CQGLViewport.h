@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLViewport.h,v $
-//   $Revision: 1.8.4.1 $
+//   $Revision: 1.8.4.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/10/19 14:56:48 $
+//   $Date: 2011/10/20 11:12:45 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,8 +67,9 @@ public:
 
   /**
    * Make the diagram fit the screen.
+   * Returns the new zoom factor.
    */
-  void fitToScreen();
+  double fitToScreen();
 
   /**
    * Returns whether the layout window is in circle (animation mode) or not.

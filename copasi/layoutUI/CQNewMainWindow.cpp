@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.1.2.18 $
+//   $Revision: 1.1.2.19 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/10/19 14:56:48 $
+//   $Date: 2011/10/20 11:12:46 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -398,8 +398,57 @@ void CQNewMainWindow::slotResetView()
  */
 void CQNewMainWindow::slotFitToScreen()
 {
-  this->mpLayoutViewer->fitToScreen();
-  this->mpAnimationWindow->slotFitToScreen();
+  double zoom = 1.0;
+
+  if (this->mMode == CQNewMainWindow::ANIMATION_MODE)
+    {
+      zoom = this->mpAnimationWindow->slotFitToScreen();
+      // set the zoom factor on the other GL window
+      this->mpLayoutViewer->setZoomFactor(zoom);
+    }
+  else
+    {
+      zoom = this->mpLayoutViewer->fitToScreen();
+      // set the zoom factor on the other GL window
+      this->mpAnimationWindow->setZoomFactor(zoom);
+
+    }
+
+  // uncheck the zoom entry in the menu
+  QList<QAction*> actions = this->mpZoomActionGroup->actions();
+  QList<QAction*>::iterator it = actions.begin(), endit = actions.end();
+
+  while (it != endit)
+    {
+      if ((*it)->isChecked())
+        {
+          (*it)->setChecked(false);
+          // only one can be checked
+          break;
+        }
+
+      ++it;
+    }
+
+  // add a new entry for the current zoom factor to the zoom dropdown list
+  disconnect(this->mpZoomDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotZoomChanged(int)));
+  // add a new entry for the zoom factor
+  QString s = QString("%1").arg(zoom * 100);
+  s.append("%");
+  const size_t n = sizeof(CQNewMainWindow::ZOOM_FACTOR_STRINGS) / sizeof(char*);
+
+  if ((size_t)this->mpZoomDropdown->count() > n)
+    {
+      this->mpZoomDropdown->setItemText(0, s);
+    }
+  else
+    {
+      this->mpZoomDropdown->insertItem(0, s);
+    }
+
+  this->mpZoomDropdown->setCurrentIndex(0);
+  connect(this->mpZoomDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotZoomChanged(int)));
+
 }
 
 
@@ -643,6 +692,22 @@ void CQNewMainWindow::addDefaultRenderInfoItemsToList()
 
 void CQNewMainWindow::slotZoomChanged(int index)
 {
+  // check if the number of zoom factors in the combobox is greater than
+  // the numbers of items in the zoom combo box
+  //
+  // if so, delete the first entry from the list and reduce the index by 1 because the first entry must be
+  // the item that has been added by fitToScreen.
+  const size_t n = sizeof(CQNewMainWindow::ZOOM_FACTOR_STRINGS) / sizeof(char*);
+
+  if ((size_t)this->mpZoomDropdown->count() > n && index != 0)
+    {
+      --index;
+      disconnect(this->mpZoomDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotZoomChanged(int)));
+      this->mpZoomDropdown->removeItem(0);
+      this->mpZoomDropdown->setCurrentIndex(index);
+      connect(this->mpZoomDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotZoomChanged(int)));
+    }
+
   this->mpLayoutViewer->setZoomFactor(CQNewMainWindow::ZOOM_FACTORS[index]);
   // also change the zoom factor for the animation window
   this->mpAnimationWindow->setZoomFactor(this->mpZoomDropdown->currentText());
@@ -657,6 +722,20 @@ void CQNewMainWindow::slotZoomChanged(int index)
 void CQNewMainWindow::slotZoomMenuItemActivated(QAction* pAction)
 {
   int index = this->mpZoomActionGroup->actions().indexOf(pAction);
+  // check if the number of zoom factors in the combobox is greater than
+  // the number of items in the combobox
+  //
+  // if so, delete the first entry from the list because this
+  // item that has been added by fitToScreen.
+  const size_t n = sizeof(CQNewMainWindow::ZOOM_FACTOR_STRINGS) / sizeof(char*);
+
+  if ((size_t)this->mpZoomDropdown->count() > n)
+    {
+      disconnect(this->mpZoomDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotZoomChanged(int)));
+      this->mpZoomDropdown->removeItem(0);
+      connect(this->mpZoomDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotZoomChanged(int)));
+    }
+
   this->mpLayoutViewer->setZoomFactor(CQNewMainWindow::ZOOM_FACTORS[index]);
   // also change the zoom factor for the animation window
   this->mpAnimationWindow->setZoomFactor(this->mpZoomDropdown->currentText());

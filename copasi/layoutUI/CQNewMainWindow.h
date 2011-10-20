@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.h,v $
-//   $Revision: 1.1.2.6 $
+//   $Revision: 1.1.2.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/10/19 14:56:48 $
+//   $Date: 2011/10/20 11:12:46 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual

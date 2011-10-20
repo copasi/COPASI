@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.160.2.6 $
+//   $Revision: 1.160.2.7 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/10/19 14:56:47 $
+//   $Date: 2011/10/20 11:12:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -3101,8 +3101,9 @@ void CQGLNetworkPainter::resetView()
 /**
  * Calculates the ratio that is needed to fit the diagram on the current viewport
  * and sets this as the zoom factor.
+ * The new zoom factor is returned.
  */
-void CQGLNetworkPainter::fitToScreen()
+double CQGLNetworkPainter::fitToScreen()
 {
   double zoom = 1.0;
   const CLPoint& min = this->getGraphMin();
@@ -3126,6 +3127,7 @@ void CQGLNetworkPainter::fitToScreen()
 
   this->setZoomFactor(zoom);
   this->setCurrentPosition(this->getGraphMin().getX(), this->getGraphMin().getY());
+  return zoom;
 }
 
 void CQGLNetworkPainter::pauseAnimation()

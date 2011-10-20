@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutViewer.h,v $
-//   $Revision: 1.1.2.1 $
+//   $Revision: 1.1.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/10/19 14:56:47 $
+//   $Date: 2011/10/20 11:12:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,8 +87,9 @@ public:
   /**
    * Calculates the ratio that is needed to fit the diagram on the current viewport
    * and sets this as the zoom factor.
+   * The methods returns the new zoom factor.
    */
-  void fitToScreen();
+  double fitToScreen();
 
 protected:
   virtual void resizeEvent(QResizeEvent* e);
