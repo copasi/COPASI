@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.120 $
+//   $Revision: 1.121 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/06/02 17:15:47 $
+//   $Date: 2011/10/20 13:05:48 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -556,7 +556,7 @@ bool COptProblem::calculate()
       mCalculateValue = *mpParmMaximize ? -mpObjectiveExpression->calcValue() : mpObjectiveExpression->calcValue();
     }
 
-  catch (CCopasiException)
+  catch (CCopasiException & Exception)
     {
       // We do not want to clog the message cue.
       CCopasiMessage::getLastMessage();

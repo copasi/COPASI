@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/11 14:50:37 $
+//   $Date: 2011/10/20 13:06:04 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -104,10 +104,13 @@ const C_FLOAT64 & CEvaluationNodeCall::value() const
       case EXPRESSION:
         return mValue = mpExpression->calcValue();
         break;
+
       default:
         return mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
         break;
     }
+
+  return mValue;
 }
 
 bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
