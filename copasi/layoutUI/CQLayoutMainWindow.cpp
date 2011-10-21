@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.102.2.8 $
+//   $Revision: 1.102.2.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/10/20 11:12:45 $
+//   $Date: 2011/10/21 15:13:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1007,7 +1007,7 @@ double CQLayoutMainWindow::slotFitToScreen()
   // add a new entry for the zoom factor only if there isn't one already
   unsigned int n = sizeof(CQLayoutMainWindow::ZOOM_FACTOR_STRINGS) / sizeof(char*);
 
-  if (this->mpZoomComboBox > n)
+  if (this->mpZoomComboBox->count() > n)
     {
       this->mpZoomComboBox->setItemText(0, QString("%1").arg(zoom*100).append("%"));
     }
