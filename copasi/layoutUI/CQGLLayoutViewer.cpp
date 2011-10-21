@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutViewer.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/20 14:06:22 $
+//   $Date: 2011/10/21 11:34:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -99,7 +99,13 @@ void CQGLLayoutViewer::updateScrollbars()
       int oldMaximum = this->mpVerticalScrollbar->maximum();
       int newMaximum = (int)(graphHeight - rectangleHeight);
       int oldValue = this->mpVerticalScrollbar->value();
-      int newValue = (int)((double)oldValue * (double)newMaximum / (double)oldMaximum);
+      int newValue = 0;
+
+      if (oldValue != 0 && oldMaximum != NULL)
+        {
+          newValue = (int)((double) oldValue * (double) newMaximum / (double) oldMaximum);
+        }
+
       this->mpVerticalScrollbar->setRange(0, newMaximum);
       this->mpVerticalScrollbar->setValue(newValue);
       this->mpLayoutPainter->setCurrentPositionY((double)(minY + newValue / zoom));
@@ -118,7 +124,13 @@ void CQGLLayoutViewer::updateScrollbars()
       int oldMaximum = this->mpHorizontalScrollbar->maximum();
       int newMaximum = (int)(graphWidth - rectangleWidth);
       int oldValue = this->mpHorizontalScrollbar->value();
-      int newValue = (int)((double)oldValue * (double)newMaximum / (double)oldMaximum);
+      int newValue = 0;
+
+      if (oldValue != 0 && oldMaximum != 0)
+        {
+          newValue = (int)((double) oldValue * (double) newMaximum / (double) oldMaximum);
+        }
+
       this->mpHorizontalScrollbar->setRange(0, newMaximum);
       this->mpHorizontalScrollbar->setValue(newValue);
       this->mpLayoutPainter->setCurrentPositionX((double)(minX + newValue / zoom));

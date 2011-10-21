@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/20 14:06:22 $
+//   $Date: 2011/10/21 11:34:24 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -770,8 +770,6 @@ void CQNewMainWindow::slotZoomMenuItemActivated(QAction* pAction)
     }
 
   this->mpLayoutViewer->setZoomFactor(CQNewMainWindow::ZOOM_FACTORS[index]);
-  // also change the zoom factor for the animation window
-  this->mpAnimationWindow->setZoomFactor(this->mpZoomDropdown->currentText());
   // also set the zoom factor in the combobox
   disconnect(this->mpZoomDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotZoomChanged(int)));
 
@@ -781,6 +779,9 @@ void CQNewMainWindow::slotZoomMenuItemActivated(QAction* pAction)
     }
 
   connect(this->mpZoomDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotZoomChanged(int)));
+
+  // also change the zoom factor for the animation window
+  this->mpAnimationWindow->setZoomFactor(this->mpZoomDropdown->currentText());
 }
 
 void CQNewMainWindow::change_style(bool defaultStyle)
