@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/19 14:03:08 $
+//   $Date: 2011/10/21 17:46:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,14 @@
 // and The University of Manchester.
 // All rights reserved.
 
+#include "CQCompartment.h"
+
 #include "CQExpressionWidget.h"
+#include "CQMessageBox.h"
+#include "qtUtilities.h"
+
+#include "CTabWidget.h"
+
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "model/CMetab.h"
@@ -26,11 +33,6 @@
 #include "report/CKeyFactory.h"
 #include "report/CCopasiRootContainer.h"
 
-#include "UI/CQMessageBox.h"
-#include "UI/qtUtilities.h"
-
-#include "CQCompartment.h"
-#include "CTabWidget.h"
 
 /*
  *  Constructs a CQCompartment which is a child of 'parent', with the

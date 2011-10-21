@@ -23,23 +23,6 @@
 
 #include "copasi/UI/ui_CQExpressionMmlStackedWidget.h"
 
-#include <QStackedWidget>
-
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QGridLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QHeaderView>
-#include <QtGui/QSpacerItem>
-#include <QtGui/QToolButton>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QWidget>
-
-#include "copasi/UI/CQExpressionWidget.h"
-#include "copasi/UI/CQMmlScrollView.h"
-
 class CQExpressionMmlStackedWidget : public QStackedWidget, public Ui::CQExpressionMmlStackedWidget
 {
   Q_OBJECT

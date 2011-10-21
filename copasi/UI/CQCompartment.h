@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.h,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:39:38 $
+//   $Date: 2011/10/21 17:46:25 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,9 +23,9 @@
 
 #include "copasi/UI/ui_CQCompartment.h"
 
-class CQExpressionWidget;
+#include <vector>
+
 class CCompartment;
-class CExpression;
 
 class CQCompartment : public CopasiWidget, public Ui::CQCompartment
 {

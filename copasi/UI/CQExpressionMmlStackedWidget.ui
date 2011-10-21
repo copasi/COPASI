@@ -8,6 +8,11 @@
 <comment>   $Date: 2009/07/14 11:09:51 $ </comment>
 <comment> End CVS Header </comment>
 
+<comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
 <comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
 <comment> and The University of Manchester. </comment>
@@ -147,7 +152,7 @@
   <customwidget>
    <class>CQExpressionWidget</class>
    <extends>QTextEdit</extends>
-   <header>CQExpressionWidget.h</header>
+   <header>copasi/UI/CQExpressionWidget.h</header>
    <slots>
     <signal>valid(bool)</signal>
     <slot>slotSelectObject()</slot>
@@ -156,7 +161,7 @@
   <customwidget>
    <class>CQMmlScrollView</class>
    <extends>QFrame</extends>
-   <header>CQMmlScrollView.h</header>
+   <header>copasi/UI/CQMmlScrollView.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
