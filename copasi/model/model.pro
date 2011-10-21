@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/model.pro,v $
-#   $Revision: 1.36 $
+#   $Revision: 1.37 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2011/04/01 17:34:31 $
+#   $Date: 2011/10/21 17:45:15 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.36 $ $Author: shoops $ $Date: 2011/04/01 17:34:31 $
+# $Revision: 1.37 $ $Author: shoops $ $Date: 2011/10/21 17:45:15 $
 ######################################################################
 
 LIB = model
@@ -45,6 +45,9 @@ HEADERS += CAnnotation.h \
            CModelAnalyzer.h \
            CModelExpansion.h \
            CModelMerging.h \
+           CModelParameter.h \
+           CModelParameterGroup.h \
+           CModelParameterSet.h \
            CModelValue.h \
            CMoiety.h \
            CObjectLists.h \
@@ -71,6 +74,9 @@ SOURCES += CAnnotation.cpp \
            CModelAnalyzer.cpp \
            CModelExpansion.cpp \
            CModelMerging.cpp \
+           CModelParameter.cpp \
+           CModelParameterGroup.cpp \
+           CModelParameterSet.cpp \
            CModelValue.cpp \
            CMoiety.cpp \
            CObjectLists.cpp \
