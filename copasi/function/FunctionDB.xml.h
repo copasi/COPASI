@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/FunctionDB.xml.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2007/06/19 15:55:17 $
+//   $Date: 2011/10/21 17:45:50 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -529,6 +534,28 @@ static char FunctionDBxml[] =
   "<ParameterDescription key=\"FunctionParameter_254\" name=\"Keq\" order=\"5\" role=\"constant\"/>\n"
   "</ListOfParameterDescriptions>\n"
   "</Function>\n"
+  "<Function key=\"Function_37\" name=\"Bi (irreversible)\" type=\"PreDefined\" reversible=\"false\">\n"
+  "  <MiriamAnnotation>\n"
+  "<rdf:RDF xmlns:CopasiMT=\"http://www.copasi.org/RDF/MiriamTerms#\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n"
+  "<rdf:Description rdf:about=\"#Function_37\">\n"
+  "<CopasiMT:is rdf:resource=\"urn:miriam:obo.sbo:SBO:0000151\"/>\n"
+  "</rdf:Description>\n"
+  "</rdf:RDF>\n"
+  "  </MiriamAnnotation>\n"
+  "  <Comment>\n"
+  "    enzymatic rate law for irreversible non-modulated non-interacting bireactant enzymes\n"
+  "  </Comment>\n"
+  "  <Expression>\n"
+  "    vmax*A*B/(Kma*Kmb + A*Kmb + B*Kma + A*B)\n"
+  "  </Expression>\n"
+  "  <ListOfParameterDescriptions>\n"
+  "    <ParameterDescription key=\"FunctionParameter_255\" name=\"vmax\" order=\"0\" role=\"constant\"/>\n"
+  "    <ParameterDescription key=\"FunctionParameter_256\" name=\"A\" order=\"1\" role=\"substrate\"/>\n"
+  "    <ParameterDescription key=\"FunctionParameter_257\" name=\"B\" order=\"2\" role=\"substrate\"/>\n"
+  "    <ParameterDescription key=\"FunctionParameter_258\" name=\"Kma\" order=\"3\" role=\"constant\"/>\n"
+  "    <ParameterDescription key=\"FunctionParameter_259\" name=\"Kmb\" order=\"4\" role=\"constant\"/>\n"
+  "  </ListOfParameterDescriptions>\n"
+  "</Function>\n"
   "</ListOfFunctions>\n"
   "</COPASI>\n"
-;
+  ;
