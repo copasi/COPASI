@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DefaultplotDialog.h,v $
-//   $Revision: 1.6.2.3 $
+//   $Revision: 1.6.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/13 21:47:02 $
+//   $Author: ssahle $
+//   $Date: 2011/10/24 15:28:11 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,18 +35,25 @@ public:
 
 public slots:
   virtual void setTask(CCopasiTask * t);
-  virtual void newSlot();
 
 protected:
+
+  void fillList();
+
   CCopasiTask* mpTask;
   std::vector<C_INT32> mList;
   int mIndex;
 
 protected slots:
 
-
+  ///connected to create button
   virtual void slotCreate();
+
+  ///called when selection in listbox is changed
   virtual void slotSelect();
+
+  ///connected to check box
+  virtual void slotToggleAll(bool flag);
 
 
 };

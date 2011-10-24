@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DefaultplotDialog.cpp,v $
-//   $Revision: 1.5.2.3 $
+//   $Revision: 1.5.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/13 21:46:52 $
+//   $Author: ssahle $
+//   $Date: 2011/10/24 15:28:11 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,7 @@
 
 #include "DefaultplotDialog.h"
 
-#include <qvariant.h>
+//#include <qvariant.h>
 #include "UI/qtUtilities.h"
 #include "utilities/CCopasiTask.h"
 #include "report/COutputAssistant.h"
@@ -31,6 +31,9 @@ DefaultPlotDialog::DefaultPlotDialog(QWidget* parent, const char* name, bool mod
 {
   setupUi(this);
 
+  //set window header
+  //this->resize(640, 480);
+  this->setCaption("Output definition assistant");
 }
 
 /*
@@ -57,16 +60,18 @@ void DefaultPlotDialog::slotCreate()
 
 void DefaultPlotDialog::setTask(CCopasiTask * t)
 {
-  //set window header
-  //this->resize(640, 480);
-  this->setCaption("Output definition assistant");
-
   mpTask = t;
 
-  if (!mpTask->getProblem()) return;
+  fillList();
+}
 
-  //todo check
-  mList = COutputAssistant::getListOfDefaultOutputDescriptions(mpTask->getProblem());
+void DefaultPlotDialog::fillList()
+{
+  if (checkBox->isChecked())
+    mList = COutputAssistant::getListOfDefaultOutputDescriptions(NULL); //this gets the complete list
+  else
+    mList = COutputAssistant::getListOfDefaultOutputDescriptions(mpTask); //only the items fitting the task
+
   listBox->clear();
 
   std::vector<C_INT32>::const_iterator it, itEnd = mList.end();
@@ -77,17 +82,18 @@ void DefaultPlotDialog::setTask(CCopasiTask * t)
 
       if (!Name.startsWith("--")) Name = "   " + Name;
 
-      listBox->insertItem(Name);
+      listBox->addItem(Name);
     }
 
-  listBox->setSelected(0, true);
+  //listBox->setSelected(0, true);
+  listBox->setCurrentRow(0);
 }
 
 void DefaultPlotDialog::slotSelect()
 {
   if (!mpTask) return;
 
-  C_INT32 i = listBox->currentItem();
+  C_INT32 i = listBox->currentRow();//currentItem();
   mIndex = mList[i];
   lineEditTitle->setText(FROM_UTF8(COutputAssistant::getItemName(mIndex)));
   textEdit->setText(FROM_UTF8(COutputAssistant::getItem(mIndex).description));
@@ -95,5 +101,9 @@ void DefaultPlotDialog::slotSelect()
   createButton->setEnabled(!lineEditTitle->text().startsWith("-- "));
 }
 
-void DefaultPlotDialog::newSlot()
-{}
+//virtual
+void DefaultPlotDialog::slotToggleAll(bool /*flag*/)
+{
+  fillList();
+}
+
