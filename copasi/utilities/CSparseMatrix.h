@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSparseMatrix.h,v $
-//   $Revision: 1.5.22.1 $
+//   $Revision: 1.5.22.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 19:13:22 $
+//   $Author: gauges $
+//   $Date: 2011/10/24 19:09:58 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,6 +25,7 @@
 #define COPASI_CSparseMatrix
 
 #include <vector>
+#include <cstddef>
 
 class CCompressedColumnFormat;
 class CSparseMatrix;
