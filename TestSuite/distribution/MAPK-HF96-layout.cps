@@ -1577,10 +1577,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="526.915" y="81.9409"/>
-                    <End x="447.248" y="133.142"/>
-                    <BasePoint1 x="510.09" y="92.75409999999999"/>
-                    <BasePoint2 x="472.243" y="132.629"/>
+                    <Start x="447.248" y="133.142"/>
+                    <End x="526.915" y="81.9409"/>
+                    <BasePoint1 x="472.243" y="132.629"/>
+                    <BasePoint2 x="510.09" y="92.75409999999999"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -1589,10 +1589,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="487.112" y="177.647"/>
-                    <End x="447.248" y="133.142"/>
-                    <BasePoint1 x="473.768" y="162.749"/>
-                    <BasePoint2 x="472.243" y="132.629"/>
+                    <Start x="447.248" y="133.142"/>
+                    <End x="487.112" y="177.647"/>
+                    <BasePoint1 x="472.243" y="132.629"/>
+                    <BasePoint2 x="473.768" y="162.749"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -1625,10 +1625,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="343.672" y="221.531"/>
-                    <End x="452.248" y="291.142"/>
-                    <BasePoint1 x="360.509" y="232.326"/>
-                    <BasePoint2 x="431.259" y="277.561"/>
+                    <Start x="452.248" y="291.142"/>
+                    <End x="343.672" y="221.531"/>
+                    <BasePoint1 x="431.259" y="277.561"/>
+                    <BasePoint2 x="360.509" y="232.326"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -1673,10 +1673,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="526.265" y="362.155"/>
-                    <End x="600.248" y="301.142"/>
-                    <BasePoint1 x="541.6950000000001" y="349.43"/>
-                    <BasePoint2 x="575.669" y="296.574"/>
+                    <Start x="600.248" y="301.142"/>
+                    <End x="526.265" y="362.155"/>
+                    <BasePoint1 x="575.669" y="296.574"/>
+                    <BasePoint2 x="541.6950000000001" y="349.43"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -1685,10 +1685,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="577.063" y="221.14"/>
-                    <End x="600.248" y="301.142"/>
-                    <BasePoint1 x="582.63" y="240.35"/>
-                    <BasePoint2 x="575.669" y="296.574"/>
+                    <Start x="600.248" y="301.142"/>
+                    <End x="577.063" y="221.14"/>
+                    <BasePoint1 x="575.669" y="296.574"/>
+                    <BasePoint2 x="582.63" y="240.35"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -1721,10 +1721,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="720.337" y="176.604"/>
-                    <End x="627.248" y="129.142"/>
-                    <BasePoint1 x="702.519" y="167.52"/>
-                    <BasePoint2 x="649.503" y="140.532"/>
+                    <Start x="627.248" y="129.142"/>
+                    <End x="720.337" y="176.604"/>
+                    <BasePoint1 x="649.503" y="140.532"/>
+                    <BasePoint2 x="702.519" y="167.52"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -1769,10 +1769,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="184.299" y="511.889"/>
-                    <End x="327.248" y="468.142"/>
-                    <BasePoint1 x="203.423" y="506.037"/>
-                    <BasePoint2 x="330.227" y="443.32"/>
+                    <Start x="327.248" y="468.142"/>
+                    <End x="184.299" y="511.889"/>
+                    <BasePoint1 x="330.227" y="443.32"/>
+                    <BasePoint2 x="203.423" y="506.037"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -1781,10 +1781,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="465.758" y="398.295"/>
-                    <End x="327.248" y="468.142"/>
-                    <BasePoint1 x="447.9" y="407.3"/>
-                    <BasePoint2 x="330.227" y="443.32"/>
+                    <Start x="327.248" y="468.142"/>
+                    <End x="465.758" y="398.295"/>
+                    <BasePoint1 x="330.227" y="443.32"/>
+                    <BasePoint2 x="447.9" y="407.3"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -1817,10 +1817,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="349.422" y="559.585"/>
-                    <End x="377.248" y="514.1420000000001"/>
-                    <BasePoint1 x="359.866" y="542.528"/>
-                    <BasePoint2 x="364.056" y="535.378"/>
+                    <Start x="377.248" y="514.1420000000001"/>
+                    <End x="349.422" y="559.585"/>
+                    <BasePoint1 x="364.056" y="535.378"/>
+                    <BasePoint2 x="359.866" y="542.528"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -1865,10 +1865,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="482.47" y="632.494"/>
-                    <End x="392.248" y="695.1420000000001"/>
-                    <BasePoint1 x="466.042" y="643.901"/>
-                    <BasePoint2 x="414.842" y="705.8440000000001"/>
+                    <Start x="392.248" y="695.1420000000001"/>
+                    <End x="482.47" y="632.494"/>
+                    <BasePoint1 x="414.842" y="705.8440000000001"/>
+                    <BasePoint2 x="466.042" y="643.901"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -1877,10 +1877,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="483.089" y="855.048"/>
-                    <End x="392.248" y="695.1420000000001"/>
-                    <BasePoint1 x="473.21" y="837.658"/>
-                    <BasePoint2 x="414.842" y="705.8440000000001"/>
+                    <Start x="392.248" y="695.1420000000001"/>
+                    <End x="483.089" y="855.048"/>
+                    <BasePoint1 x="414.842" y="705.8440000000001"/>
+                    <BasePoint2 x="473.21" y="837.658"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -1913,10 +1913,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="162.613" y="729.663"/>
-                    <End x="229.248" y="686.1420000000001"/>
-                    <BasePoint1 x="179.358" y="718.726"/>
-                    <BasePoint2 x="208.277" y="699.751"/>
+                    <Start x="229.248" y="686.1420000000001"/>
+                    <End x="162.613" y="729.663"/>
+                    <BasePoint1 x="208.277" y="699.751"/>
+                    <BasePoint2 x="179.358" y="718.726"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -1961,10 +1961,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="502.402" y="590.143"/>
-                    <End x="524.248" y="485.142"/>
-                    <BasePoint1 x="506.476" y="570.563"/>
-                    <BasePoint2 x="503.793" y="499.516"/>
+                    <Start x="524.248" y="485.142"/>
+                    <End x="502.402" y="590.143"/>
+                    <BasePoint1 x="503.793" y="499.516"/>
+                    <BasePoint2 x="506.476" y="570.563"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -1973,10 +1973,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="509.631" y="405.123"/>
-                    <End x="524.248" y="485.142"/>
-                    <BasePoint1 x="513.225" y="424.798"/>
-                    <BasePoint2 x="503.793" y="499.516"/>
+                    <Start x="524.248" y="485.142"/>
+                    <End x="509.631" y="405.123"/>
+                    <BasePoint1 x="503.793" y="499.516"/>
+                    <BasePoint2 x="513.225" y="424.798"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -2009,10 +2009,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="657.958" y="526.932"/>
-                    <End x="721.248" y="436.142"/>
-                    <BasePoint1 x="669.395" y="510.525"/>
-                    <BasePoint2 x="706.875" y="456.597"/>
+                    <Start x="721.248" y="436.142"/>
+                    <End x="657.958" y="526.932"/>
+                    <BasePoint1 x="706.875" y="456.597"/>
+                    <BasePoint2 x="669.395" y="510.525"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -2057,10 +2057,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="784.0119999999999" y="605.044"/>
-                    <End x="680.248" y="712.1420000000001"/>
-                    <BasePoint1 x="770.095" y="619.408"/>
-                    <BasePoint2 x="658.605" y="724.655"/>
+                    <Start x="680.248" y="712.1420000000001"/>
+                    <End x="784.0119999999999" y="605.044"/>
+                    <BasePoint1 x="658.605" y="724.655"/>
+                    <BasePoint2 x="770.095" y="619.408"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -2069,10 +2069,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="512.646" y="857.414"/>
-                    <End x="680.248" y="712.1420000000001"/>
-                    <BasePoint1 x="527.759" y="844.314"/>
-                    <BasePoint2 x="658.605" y="724.655"/>
+                    <Start x="680.248" y="712.1420000000001"/>
+                    <End x="512.646" y="857.414"/>
+                    <BasePoint1 x="658.605" y="724.655"/>
+                    <BasePoint2 x="527.759" y="844.314"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -2105,10 +2105,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="660.865" y="776.398"/>
-                    <End x="573.248" y="696.1420000000001"/>
-                    <BasePoint1 x="646.117" y="762.889"/>
-                    <BasePoint2 x="591.599" y="713.121"/>
+                    <Start x="573.248" y="696.1420000000001"/>
+                    <End x="660.865" y="776.398"/>
+                    <BasePoint1 x="591.599" y="713.121"/>
+                    <BasePoint2 x="646.117" y="762.889"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -2153,10 +2153,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1104.62" y="777.092"/>
-                    <End x="921.248" y="678.1420000000001"/>
-                    <BasePoint1 x="1087.02" y="767.5940000000001"/>
-                    <BasePoint2 x="945.546" y="684.025"/>
+                    <Start x="921.248" y="678.1420000000001"/>
+                    <End x="1104.62" y="777.092"/>
+                    <BasePoint1 x="945.546" y="684.025"/>
+                    <BasePoint2 x="1087.02" y="767.5940000000001"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -2165,10 +2165,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="831.432" y="603.889"/>
-                    <End x="921.248" y="678.1420000000001"/>
-                    <BasePoint1 x="846.846" y="616.633"/>
-                    <BasePoint2 x="945.546" y="684.025"/>
+                    <Start x="921.248" y="678.1420000000001"/>
+                    <End x="831.432" y="603.889"/>
+                    <BasePoint1 x="945.546" y="684.025"/>
+                    <BasePoint2 x="846.846" y="616.633"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -2201,10 +2201,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="912.514" y="757.271"/>
-                    <End x="996.248" y="678.1420000000001"/>
-                    <BasePoint1 x="927.05" y="743.535"/>
-                    <BasePoint2 x="978.059" y="695.292"/>
+                    <Start x="996.248" y="678.1420000000001"/>
+                    <End x="912.514" y="757.271"/>
+                    <BasePoint1 x="978.059" y="695.292"/>
+                    <BasePoint2 x="927.05" y="743.535"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -2249,10 +2249,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1243.15" y="678.559"/>
-                    <End x="1349.25" y="715.1420000000001"/>
-                    <BasePoint1 x="1262.06" y="685.079"/>
-                    <BasePoint2 x="1339.09" y="692.297"/>
+                    <Start x="1349.25" y="715.1420000000001"/>
+                    <End x="1243.15" y="678.559"/>
+                    <BasePoint1 x="1339.09" y="692.297"/>
+                    <BasePoint2 x="1262.06" y="685.079"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -2261,10 +2261,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1410.27" y="687.776"/>
-                    <End x="1349.25" y="715.1420000000001"/>
-                    <BasePoint1 x="1392.02" y="695.96"/>
-                    <BasePoint2 x="1339.09" y="692.297"/>
+                    <Start x="1349.25" y="715.1420000000001"/>
+                    <End x="1410.27" y="687.776"/>
+                    <BasePoint1 x="1339.09" y="692.297"/>
+                    <BasePoint2 x="1392.02" y="695.96"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -2297,10 +2297,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1310.46" y="882.989"/>
-                    <End x="1264.25" y="818.1420000000001"/>
-                    <BasePoint1 x="1298.85" y="866.702"/>
-                    <BasePoint2 x="1278.82" y="838.453"/>
+                    <Start x="1264.25" y="818.1420000000001"/>
+                    <End x="1310.46" y="882.989"/>
+                    <BasePoint1 x="1278.82" y="838.453"/>
+                    <BasePoint2 x="1298.85" y="866.702"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -2345,10 +2345,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1161.15" y="655.994"/>
-                    <End x="1019.25" y="564.1420000000001"/>
-                    <BasePoint1 x="1144.36" y="645.126"/>
-                    <BasePoint2 x="1012.4" y="588.187"/>
+                    <Start x="1019.25" y="564.1420000000001"/>
+                    <End x="1161.15" y="655.994"/>
+                    <BasePoint1 x="1012.4" y="588.187"/>
+                    <BasePoint2 x="1144.36" y="645.126"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -2357,10 +2357,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="859.247" y="585.329"/>
-                    <End x="1019.25" y="564.1420000000001"/>
-                    <BasePoint1 x="879.073" y="582.703"/>
-                    <BasePoint2 x="1012.4" y="588.187"/>
+                    <Start x="1019.25" y="564.1420000000001"/>
+                    <End x="859.247" y="585.329"/>
+                    <BasePoint1 x="1012.4" y="588.187"/>
+                    <BasePoint2 x="879.073" y="582.703"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -2393,10 +2393,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1009.51" y="433.482"/>
-                    <End x="923.248" y="504.142"/>
-                    <BasePoint1 x="994.043" y="446.155"/>
-                    <BasePoint2 x="942.6130000000001" y="488.331"/>
+                    <Start x="923.248" y="504.142"/>
+                    <End x="1009.51" y="433.482"/>
+                    <BasePoint1 x="942.6130000000001" y="488.331"/>
+                    <BasePoint2 x="994.043" y="446.155"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -2441,10 +2441,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1206.55" y="526.8200000000001"/>
-                    <End x="1305.25" y="544.1420000000001"/>
-                    <BasePoint1 x="1226.25" y="530.277"/>
-                    <BasePoint2 x="1311.52" y="568.342"/>
+                    <Start x="1305.25" y="544.1420000000001"/>
+                    <End x="1206.55" y="526.8200000000001"/>
+                    <BasePoint1 x="1311.52" y="568.342"/>
+                    <BasePoint2 x="1226.25" y="530.277"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -2453,10 +2453,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1445.21" y="667.197"/>
-                    <End x="1305.25" y="544.1420000000001"/>
-                    <BasePoint1 x="1430.19" y="653.991"/>
-                    <BasePoint2 x="1311.52" y="568.342"/>
+                    <Start x="1305.25" y="544.1420000000001"/>
+                    <End x="1445.21" y="667.197"/>
+                    <BasePoint1 x="1311.52" y="568.342"/>
+                    <BasePoint2 x="1430.19" y="653.991"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
@@ -2489,10 +2489,10 @@
               <Curve>
                 <ListOfCurveSegments>
                   <CurveSegment xsi:type="CubicBezier">
-                    <Start x="1369.05" y="435.14"/>
-                    <End x="1365.25" y="622.1420000000001"/>
-                    <BasePoint1 x="1368.64" y="455.136"/>
-                    <BasePoint2 x="1365.85" y="597.149"/>
+                    <Start x="1365.25" y="622.1420000000001"/>
+                    <End x="1369.05" y="435.14"/>
+                    <BasePoint1 x="1365.85" y="597.149"/>
+                    <BasePoint2 x="1368.64" y="455.136"/>
                   </CurveSegment>
                 </ListOfCurveSegments>
               </Curve>
