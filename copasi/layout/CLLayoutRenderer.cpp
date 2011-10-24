@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.5.2.17 $
+//   $Revision: 1.5.2.18 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/05/31 13:35:15 $
+//   $Date: 2011/10/24 11:39:14 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -419,9 +419,9 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
         }
 
       // close the circle
-      pCircleData[i*3] = pCircleData[0];
-      pCircleData[i*3+1] = pCircleData[1];
-      pCircleData[i*3+2] = pCircleData[2];
+      pCircleData[i*3] = pCircleData[3];
+      pCircleData[i*3+1] = pCircleData[4];
+      pCircleData[i*3+2] = pCircleData[5];
     }
 
   for (i = 0; i < iMax; ++i)
@@ -500,7 +500,7 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
                   glBegin(GL_TRIANGLE_FAN);
                   glVertex3f(0.0, 0.0, 0.0);
 
-                  for (j = 0; j <= NUM_CIRCLE_SEGMENTS; ++j)
+                  for (j = 0; j <= NUM_CIRCLE_SEGMENTS + 1; ++j)
                     {
                       glVertex3d(pCircleData[3*j], pCircleData[3*j+1], pCircleData[3*j+2]);
                     }
@@ -513,7 +513,7 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
                   glBegin(GL_TRIANGLE_FAN);
                   glVertex3d(0.0, 0.0, 0.0);
 
-                  for (j = 0; j <= NUM_CIRCLE_SEGMENTS; ++j)
+                  for (j = 0; j <= NUM_CIRCLE_SEGMENTS + 1; ++j)
                     {
                       glVertex3d(pCircleData[3*j], pCircleData[3*j+1], pCircleData[3*j+2]);
                     }
@@ -526,7 +526,7 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
                   glBegin(GL_TRIANGLE_FAN);
                   glVertex3d(0.0, 0.0, 0.0);
 
-                  for (j = 0; j <= NUM_CIRCLE_SEGMENTS; ++j)
+                  for (j = 0; j <= NUM_CIRCLE_SEGMENTS + 1; ++j)
                     {
                       glVertex3d(pCircleData[3*j], pCircleData[3*j+1], pCircleData[3*j+2]);
                     }
@@ -539,7 +539,7 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
                   glBegin(GL_TRIANGLE_FAN);
                   glVertex3d(0.0, 0.0, 0.0);
 
-                  for (j = 0; j <= NUM_CIRCLE_SEGMENTS; ++j)
+                  for (j = 0; j <= NUM_CIRCLE_SEGMENTS + 1; ++j)
                     {
                       glVertex3d(pCircleData[3*j], pCircleData[3*j+1], pCircleData[3*j+2]);
                     }
@@ -599,7 +599,7 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
                   glVertex3d(0.0, 0.0, 0.0);
                   size_t j;
 
-                  for (j = 0; j <= NUM_CIRCLE_SEGMENTS; ++j)
+                  for (j = 0; j <= NUM_CIRCLE_SEGMENTS + 1; ++j)
                     {
                       glVertex3d(pCircleData[3*j], pCircleData[3*j+1], pCircleData[3*j+2]);
                     }
@@ -632,7 +632,7 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
                   glVertex3d(0.0, 0.0, 0.0);
                   size_t j;
 
-                  for (j = 0; j <= NUM_CIRCLE_SEGMENTS; ++j)
+                  for (j = 0; j <= NUM_CIRCLE_SEGMENTS + 1; ++j)
                     {
                       glVertex3d(pCircleData[3*j], pCircleData[3*j+1], pCircleData[3*j+2]);
                     }
@@ -680,7 +680,7 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
               glVertex3d(0.0, 0.0, 0.0);
               size_t j;
 
-              for (j = 0; j <= NUM_CIRCLE_SEGMENTS; ++j)
+              for (j = 0; j <= NUM_CIRCLE_SEGMENTS + 1; ++j)
                 {
                   glVertex3d(pCircleData[3*j], pCircleData[3*j+1], pCircleData[3*j+2]);
                 }
@@ -4357,6 +4357,118 @@ void CLLayoutRenderer::clear_cached_data()
   this->mTextMap.clear();
 }
 
+/**
+ * Calculates the intersection point between two lines in 2D.
+ * The intersection point is returned.
+ * If the lines are parallel, a point with two NaN values is returned.
+ * All numbers <= ALMOST_ZERO are considered to be 0.
+ */
+std::pair<double, double> CLLayoutRenderer::calculate_intersection_point_2d(double p1x, double p1y, double sx, double sy, double p2x, double p2y, double tx, double ty)
+{
+  std::pair<double, double> result = std::pair<double, double>(std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN());
+
+  if (fabs(sx) <= ALMOST_ZERO)
+    {
+      // two options -> a) tx is also 0.0 -> parallel lines
+      //                b) intersection is at  p1x,??
+      if (fabs(tx) > ALMOST_ZERO)
+        {
+          result = std::pair<double, double>(p1x, (p1x - p2x) * (ty / tx) + p2y);
+        }
+    }
+  else if (fabs(sy) <= ALMOST_ZERO)
+    {
+      // two options a) ty is also 0.0 -> parallel lines
+      //             b) intersection at ??,p1y
+
+      if (fabs(tx) > ALMOST_ZERO)
+        {
+          if (fabs(ty) > ALMOST_ZERO)
+            {
+              result = std::pair<double, double>((p1y - p2y) * (tx / ty) - p2x, p1y);
+            }
+        }
+      else
+        {
+          result = std::pair<double, double>(p2x, p1y);
+        }
+
+    }
+  else if (fabs(tx) <= ALMOST_ZERO)
+    {
+      // intersection is at p2x,??
+      if (fabs(sy) > ALMOST_ZERO)
+        {
+          result = std::pair<double, double>(p2x, (p2x - p1x) * (sy / sx) + p1y);
+        }
+    }
+  else if (fabs(ty) <= ALMOST_ZERO)
+    {
+      // intersection at  ??,p2y
+      result = std::pair<double, double>((p2y - p1y) * (sx / sy) - p1x, p2y);
+    }
+  else
+    {
+      // most general case
+      // two options a) lines are parallel
+      //             b) intersection at
+      //
+      //  check if the lines are parallel
+      if (fabs(fabs((sx*tx + sy*ty) / (sqrt(sx*sx + sy*sy)*sqrt(tx*tx + ty*ty))) - 1) > ALMOST_ZERO)
+        {
+          double ss = sy / sx;
+          double st = ty / tx;
+          double ys = p1y - p1x * ss;
+          double yt = p2y - p2x * st;
+          // if not, the intersection is at
+          double x = (ss - st) / (yt - ys);
+          double y = ss * x + ys;
+          result = std::pair<double, double>(x, y);
+        }
+    }
+
+  return result;
+}
+
+/**
+ * Calculates wether 2d segments intersect within the length of the segments.
+ * Calls calculate_intersection_point_2d.
+ */
+bool CLLayoutRenderer::segments_intersect_2d(double p1x1, double p1y1, double p1x2, double p1y2, double p2x1, double p2y1, double p2x2, double p2y2)
+{
+  bool result = false;
+  // calculate the slope deltas from the endpoints
+  double sx = p1x2 - p1x1;
+  double sy = p1y2 - p1y1;
+  double tx = p2x2 - p2x1;
+  double ty = p2y2 - p2y1;
+
+  // check that the segments have a length
+  if ((fabs(sx) > ALMOST_ZERO || fabs(sy) > ALMOST_ZERO) && (fabs(tx) > ALMOST_ZERO || fabs(ty) > ALMOST_ZERO))
+    {
+      std::pair<double, double> p = CLLayoutRenderer::calculate_intersection_point_2d(p1x1, p1y1, sx, sy, p2x1, p2y1, tx, ty);
+
+      // check for NaN results -> no intersection
+      if (p.first == p.first && p.second == p.second)
+        {
+          double max_x1 = (p1x1 > p1x2) ? p1x1 : p1x2;
+          double max_x2 = (p2x1 > p2x2) ? p2x1 : p2x2;
+          double max_y1 = (p1y1 > p1y2) ? p1y1 : p1y2;
+          double max_y2 = (p2y1 > p2y2) ? p2y1 : p2y2;
+
+          double min_x1 = (p1x1 <= p1x2) ? p1x1 : p1x2;
+          double min_x2 = (p2x1 <= p2x2) ? p2x1 : p2x2;
+          double min_y1 = (p1y1 <= p1y2) ? p1y1 : p1y2;
+          double min_y2 = (p2y1 <= p2y2) ? p2y1 : p2y2;
+          result = (p.first >= min_x1 && p.first >= min_x2 && p.first <= max_x1 && p.first <= max_x2 &&
+                    p.second >= min_y1 && p.second >= min_y2 && p.second <= max_y1 && p.second <= max_y2);
+        }
+    }
+
+  return result;
+}
+
+
 CLPoint* CLLayoutRenderer::calculate_intersection(double p1x, double p1y, double p1z, double sx, double sy, double sz,
     double p2x, double p2y, double p2z, double tx, double ty, double tz)
 {
@@ -5567,6 +5679,236 @@ void CLLayoutRenderer::drawSelectionBox(double x, double y, double width, double
 }
 
 /**
+ * Checks if the given curve segment would be visible in the box determined by lx,ly,rx,ry.
+ * If the curve in any way intersects the box, true is returned.
+ */
+bool CLLayoutRenderer::is_curve_segment_visible(const CLLineSegment& segment, double lx, double ly, double rx, double ry, bool partial)
+{
+  bool result = false;
+  CLPoint start, end, b1, b2;
+  start = segment.getStart();
+  double x, y;
+  x = start.getX();
+  y = start.getY();
+
+  if (partial)
+    {
+      // if the point is in the viewport, we draw the whole curve
+      if (x >= lx && x <= rx && y >= ly && y <= ry)
+        {
+          result = true;
+        }
+    }
+  else
+    {
+      if (x < lx || y < ly || x > rx || y > ry)
+        {
+          result = false;
+        }
+    }
+
+  end = segment.getEnd();
+  x = end.getX();
+  y = end.getY();
+
+  if (partial)
+    {
+      // if the point is in the viewport, we draw the whole curve
+      if (x >= lx && x <= rx && y >= ly && y <= ry)
+        {
+          result = true;
+        }
+    }
+  else
+    {
+      if (x < lx || y < ly || x > rx || y > ry)
+        {
+          result = false;
+        }
+    }
+
+  if (segment.isBezier())
+    {
+      b1 = segment.getBase1();
+      x = b1.getX();
+      y = b1.getY();
+
+      if (partial)
+        {
+          // if the point is in the viewport, we draw the whole curve
+          if (x >= lx && x <= rx && y >= ly && y <= ry)
+            {
+              result = true;
+            }
+        }
+      else
+        {
+          if (x < lx || y < ly || x > rx || y > ry)
+            {
+              result = false;
+            }
+        }
+
+      b2 = segment.getBase2();
+      x = b2.getX();
+      y = b2.getY();
+
+      if (partial)
+        {
+          // if the point is in the viewport, we draw the whole curve
+          if (x >= lx && x <= rx && y >= ly && y <= ry)
+            {
+              result = true;
+            }
+        }
+      else
+        {
+          if (x < lx || y < ly || x > rx || y > ry)
+            {
+              result = false;
+            }
+        }
+
+      // with bezier curves it can happen that all
+      // base points are outside the view port, but
+      // the curve still intersects the viewport.
+      //
+      // One simple strategy would be to calculate additional curve points
+      // and check if those are within the bounding box.
+      // Since we do not want to calculate too many points, we need some measure
+      // as to how many points would be necessary.
+      //
+      // A strategy that might work is to consider the size of the trapezoid around
+      // the bezier as well as the size of the viewport.
+      // The smaller the viewport, the more points we need to make sure we find one
+      // that is within the viewport. Conversly, the larger the trapezoid, the more
+      // points we need to find one that is within the viewport.
+
+      if (!result)
+        {
+          // as a measure of the size of the trapezoid, we use the longest distance of
+          // start-end, start-bp1, end-bp2
+          //
+          // actually since we are only dealing with 2D data right now, I probably should not
+          // consider the Z values for the calculation of the length, but on
+          // the other hand, it shouldn't hurt either.
+          double maxL = pow(start.getX() - end.getX(), 2) + pow(start.getY() - end.getY(), 2) + pow(start.getZ() - end.getZ(), 2);
+          double temp = pow(start.getX() - b1.getX(), 2) + pow(start.getY() - b1.getY(), 2) + pow(start.getZ() - b1.getZ(), 2);
+          maxL = (temp > maxL) ? temp : maxL;
+          temp = pow(end.getX() - b2.getX(), 2) + pow(end.getY() - b2.getY(), 2) + pow(end.getZ() - b2.getZ(), 2);
+          maxL = (temp > maxL) ? temp : maxL;
+          maxL = sqrt(maxL);
+          double minV = (fabs(lx - rx) > fabs(ly - ry)) ? fabs(lx - rx) : fabs(ly - ry);
+          // we multiply the ratio with a constant to get the number of points that
+          // we need to calculate
+          unsigned int numPoints = floor(maxL / minV * 6.0);
+
+          // the 10000 cutoff is just a safety net
+          if (numPoints != 0 && fabs(minV) != std::numeric_limits<double>::infinity() && numPoints < 10000)
+            {
+              // now we calculate the points
+              // we have to include the start and end point
+              numPoints += 2;
+              GLdouble* pData = new GLdouble[3*numPoints];
+              CLLayoutRenderer::calculate_cubicbezier(start.getX(), start.getY(), start.getZ(),
+                                                      b1.getX(), b1.getY(), b1.getZ(),
+                                                      b2.getX(), b2.getY(), b2.getZ(),
+                                                      end.getX(), end.getY(), end.getZ(),
+                                                      numPoints, pData);
+              // we don't need to test the start and endpoint again
+              CLLineSegment temp_ls;
+              temp_ls.setIsBezier(false);
+              CLPoint p(pData[0], pData[1]
+#ifdef USE_CRENDER_EXTENSION
+                        , pData[2]
+#endif // USE_CRENDER_EXTENSION
+                       );
+              temp_ls.setStart(p);
+
+              for (unsigned int i = 1; i < numPoints; ++i)
+                {
+                  p.setX(pData[3*i]);
+                  p.setY(pData[3*i+1]);
+#ifdef USE_CRENDER_EXTENSION
+                  p.setZ(pData[3*i+2]);
+#endif // USE_CRENDER_EXTENSION
+                  temp_ls.setEnd(p);
+
+                  if (CLLayoutRenderer::is_curve_segment_visible(temp_ls, lx, ly, rx, ry, partial))
+                    {
+                      result = true;
+                      break;
+                    }
+
+                  temp_ls.setStart(temp_ls.getEnd());
+                }
+
+              delete[] pData;
+            }
+        }
+
+    }
+  // if we have a line segment and so far it would not be drawn
+  // we check if the end points lie outside the boundingbox, but
+  // the line crosses anyway
+  else if (!result)
+    {
+      std::vector<std::pair<CLPoint, CLPoint> > edge;
+      edge.push_back(std::pair<CLPoint, CLPoint>(CLPoint(lx, ly), CLPoint(rx, ly)));
+      edge.push_back(std::pair<CLPoint, CLPoint>(CLPoint(lx, ly), CLPoint(lx, ry)));
+      edge.push_back(std::pair<CLPoint, CLPoint>(CLPoint(rx, ry), CLPoint(rx, ly)));
+      edge.push_back(std::pair<CLPoint, CLPoint>(CLPoint(rx, ry), CLPoint(lx, ry)));
+      // check if the segment crosses the viewport border
+      std::vector<std::pair<CLPoint, CLPoint> >::const_iterator edge_it = edge.begin(), edge_endit = edge.end();
+
+      while (edge_it != edge_endit)
+        {
+          // we pass the edge points in first because these are usually parallel to the x or y
+          // axis, so this makes checking for intersections easier since the slopes for the
+          // first line segment are considered first.
+          if (CLLayoutRenderer::segments_intersect_2d(edge_it->first.getX(), edge_it->first.getY(), edge_it->second.getX(), edge_it->second.getY(),
+              start.getX(), start.getY(), end.getX(), end.getY()))
+            {
+              result = true;
+              break;
+            }
+
+          ++edge_it;
+        }
+    }
+
+  return result;
+}
+
+
+/**
+ * Checks if the given curve would be visible in the box determined by lx,ly,rx,ry.
+ * If the curve in any way intersects the box, true is returned.
+ */
+bool CLLayoutRenderer::is_curve_visible(const CLCurve& curve, double lx, double ly, double rx, double ry, bool partial)
+{
+  bool result = false;
+
+  if (!partial)
+    {
+      result = true;
+    }
+
+  size_t k, kMax = curve.getNumCurveSegments();
+  const CLLineSegment* pLS = NULL;
+
+  for (k = 0; k < kMax && !result; ++k)
+    {
+      pLS = curve.getSegmentAt(k);
+      assert(pLS != NULL);
+      result = CLLayoutRenderer::is_curve_segment_visible(*pLS, lx, ly, rx, ry, partial);
+    }
+
+  return result;
+}
+
+
+/**
  * Returns all objects that are within a given bounding box.
  */
 std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double lx, double ly, double rx, double ry, bool partial)
@@ -5578,10 +5920,7 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
       CLGraphicalObject* pGO = NULL;
       CLReactionGlyph* pRG = NULL;
       CLMetabReferenceGlyph* pSRG = NULL;
-      const CLCurve* pCurve = NULL;
-      const CLLineSegment* pLS = NULL;
       const CLBoundingBox* pBB = NULL;
-      size_t k, kMax;
       size_t j, jMax;
       double x, y;
       size_t i, iMax = this->mpLayout->getListOfCompartmentGlyphs().size();
@@ -5678,107 +6017,8 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
           // we have to look at all points of the curve if there is one
           if (pRG->getCurve().getNumCurveSegments() != 0)
             {
-              pCurve = &pRG->getCurve();
-              assert(pCurve != NULL);
-              kMax = pCurve->getNumCurveSegments();
-              bool drawn = false;
 
-              if (!partial)
-                {
-                  drawn = true;
-                }
-
-              for (k = 0; k < kMax; ++k)
-                {
-                  pLS = pCurve->getSegmentAt(k);
-                  assert(pLS != NULL);
-                  x = pLS->getStart().getX();
-                  y = pLS->getStart().getY();
-
-                  if (partial)
-                    {
-                      // if the point is in the viewport, we draw the whole curve
-                      if (x >= lx && x <= rx && y >= ly && y <= ry)
-                        {
-                          drawn = true;
-                          break;
-                        }
-                    }
-                  else
-                    {
-                      if (x < lx || y < ly || x > rx || y > ry)
-                        {
-                          drawn = false;
-                          break;
-                        }
-                    }
-
-                  x = pLS->getEnd().getX();
-                  y = pLS->getEnd().getY();
-
-                  if (partial)
-                    {
-                      // if the point is in the viewport, we draw the whole curve
-                      if (x >= lx && x <= rx && y >= ly && y <= ry)
-                        {
-                          drawn = true;
-                          break;
-                        }
-                    }
-                  else
-                    {
-                      if (x < lx || y < ly || x > rx || y > ry)
-                        {
-                          drawn = false;
-                          break;
-                        }
-                    }
-
-                  if (pLS->isBezier())
-                    {
-                      x = pLS->getBase1().getX();
-                      y = pLS->getBase1().getY();
-
-                      if (partial)
-                        {
-                          // if the point is in the viewport, we draw the whole curve
-                          if (x >= lx && x <= rx && y >= ly && y <= ry)
-                            {
-                              drawn = true;
-                              break;
-                            }
-                        }
-                      else
-                        {
-                          if (x < lx || y < ly || x > rx || y > ry)
-                            {
-                              drawn = false;
-                              break;
-                            }
-                        }
-
-                      x = pLS->getBase2().getX();
-                      y = pLS->getBase2().getY();
-
-                      if (partial)
-                        {
-                          // if the point is in the viewport, we draw the whole curve
-                          if (x >= lx && x <= rx && y >= ly && y <= ry)
-                            {
-                              drawn = true;
-                              break;
-                            }
-                        }
-                      else
-                        {
-                          if (x < lx || y < ly || x > rx || y > ry)
-                            {
-                              drawn = false;
-                              break;
-                            }
-                        }
-                    }
-                }
+              bool drawn = CLLayoutRenderer::is_curve_visible(pRG->getCurve(), lx, ly, rx, ry, partial);
 
               if (drawn)
                 {
@@ -5834,107 +6074,7 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
               // we have to look at all points of the curve if there is one
               if (pSRG->getCurve().getNumCurveSegments() != 0)
                 {
-                  pCurve = &pSRG->getCurve();
-                  assert(pCurve != NULL);
-                  kMax = pCurve->getNumCurveSegments();
-                  bool drawn = false;
-
-                  if (!partial)
-                    {
-                      drawn = true;
-                    }
-
-                  for (k = 0; k < kMax; ++k)
-                    {
-                      pLS = pCurve->getSegmentAt(k);
-                      assert(pLS != NULL);
-                      x = pLS->getStart().getX();
-                      y = pLS->getStart().getY();
-
-                      if (partial)
-                        {
-                          // if the point is in the viewport, we draw the whole curve
-                          if (x >= lx && x <= rx && y >= ly && y <= ry)
-                            {
-                              drawn = true;
-                              break;
-                            }
-                        }
-                      else
-                        {
-                          if (x < lx || y < ly || x > rx || y > ry)
-                            {
-                              drawn = false;
-                              break;
-                            }
-                        }
-
-                      x = pLS->getEnd().getX();
-                      y = pLS->getEnd().getY();
-
-                      if (partial)
-                        {
-                          // if the point is in the viewport, we draw the whole curve
-                          if (x >= lx && x <= rx && y >= ly && y <= ry)
-                            {
-                              drawn = true;
-                              break;
-                            }
-                        }
-                      else
-                        {
-                          if (x < lx || y < ly || x > rx || y > ry)
-                            {
-                              drawn = false;
-                              break;
-                            }
-                        }
-
-                      if (pLS->isBezier())
-                        {
-                          x = pLS->getBase1().getX();
-                          y = pLS->getBase1().getY();
-
-                          if (partial)
-                            {
-                              // if the point is in the viewport, we draw the whole curve
-                              if (x >= lx && x <= rx && y >= ly && y <= ry)
-                                {
-                                  drawn = true;
-                                  break;
-                                }
-                            }
-                          else
-                            {
-                              if (x < lx || y < ly || x > rx || y > ry)
-                                {
-                                  drawn = false;
-                                  break;
-                                }
-                            }
-
-                          x = pLS->getBase2().getX();
-                          y = pLS->getBase2().getY();
-
-                          // if the point is in the viewport, we draw the whole curve
-                          if (partial)
-                            {
-                              if (x >= lx && x <= rx && y >= ly && y <= ry)
-                                {
-                                  drawn = true;
-                                  break;
-                                }
-                            }
-                          else
-                            {
-                              if (x < lx || y < ly || x > rx || y > ry)
-                                {
-                                  drawn = false;
-                                  break;
-                                }
-                            }
-                        }
-                    }
+                  bool drawn = CLLayoutRenderer::is_curve_visible(pSRG->getCurve(), lx, ly, rx, ry, partial);
 
                   if (drawn)
                     {

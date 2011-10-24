@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.h,v $
-//   $Revision: 1.4.2.4 $
+//   $Revision: 1.4.2.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 19:01:27 $
+//   $Author: gauges $
+//   $Date: 2011/10/24 11:39:17 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -442,6 +442,19 @@ public:
    * calculates the distance between two layout points.
    */
   static double distance(const CLPoint& p1, const CLPoint& p2);
+
+  /**
+   * Checks if the given curve would be visible in the box determined by lx,ly,rx,ry.
+   * If the curve in any way intersects the box, true is returned.
+   */
+  static bool is_curve_visible(const CLCurve& curve, double lx, double ly, double rx, double ry, bool partial);
+
+  /**
+   * Checks if the given curve segment would be visible in the box determined by lx,ly,rx,ry.
+   * If the curve in any way intersects the box, true is returned.
+   */
+  static bool is_curve_segment_visible(const CLLineSegment& segment, double lx, double ly, double rx, double ry, bool partial);
+
 
   /**
    * reverts the direction of the given curve.
@@ -899,6 +912,20 @@ protected:
    */
   static CLPoint* calculate_intersection(double p1x, double p1y, double p1z, double sx, double sy, double sz,
                                          double p2x, double p2y, double p2z, double tx, double ty, double tz);
+
+  /**
+   * Calculates the intersection point between two lines in 2D.
+   * The intersection point is returned.
+   * If the lines are parallel, a point with two NaN values is returned.
+   * All numbers <= ALMOST_ZERO are considered to be 0.
+   */
+  static std::pair<double, double> calculate_intersection_point_2d(double p1x, double p1y, double sx, double sy, double p2x, double p2y, double tx, double ty);
+
+  /**
+   * Calculates wether 2d segments intersect within the length of the segments.
+   * Calls calculate_intersection_point_2d.
+   */
+  static bool segments_intersect_2d(double p1x1, double p1y1, double p1x2, double p1y2, double p2x1, double p2y1, double p2x2, double p2y2);
 
   /**
    * Calculates if the point given as x,y is close enough to the given line segment
