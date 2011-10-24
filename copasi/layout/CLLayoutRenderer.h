@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:35:20 $
+//   $Author: gauges $
+//   $Date: 2011/10/24 11:42:01 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,9 +21,9 @@
 #include <set>
 #include <utility>
 
-#include "copasi/layout/utility_classes.h"
-#include "copasi/layout/CLRGBAColor.h"
-#include "copasi/utilities/CCopasiVector.h"
+#include <copasi/layout/utility_classes.h>
+#include <copasi/layout/CLRGBAColor.h>
+#include <copasi/utilities/CCopasiVector.h>
 
 class CLBoundingBox;
 class CLCurve;
@@ -182,8 +182,8 @@ protected:
   // a class that can create a texture from a jpeg or png image file
   CLImageTexturizer* mpImageTexturizer;
 
-#ifdef ELEMENTARY_MODE_DISPLAY
-  std::set<const CLGraphicalObject*> mHighlightedObjects;
+#ifdef COPASI_DEBUG
+  std::set<const CCopasiObject*> mHighlightedModelObjects;
 
   // flag that determines whether non-highlighted objects
   // are placed in a fog or if highlighted objects are highlighted
@@ -205,7 +205,7 @@ protected:
   // Maybe all this dynamic function initialization should
   // be moved to some global place
   void(*mpGlFogCoordfEXT)(GLfloat);
-#endif // ELEMENTARY_MODE_DISPLAY
+#endif // COPASI_DEBUG
 
 
 public:
@@ -444,6 +444,19 @@ public:
   static double distance(const CLPoint& p1, const CLPoint& p2);
 
   /**
+   * Checks if the given curve would be visible in the box determined by lx,ly,rx,ry.
+   * If the curve in any way intersects the box, true is returned.
+   */
+  static bool is_curve_visible(const CLCurve& curve, double lx, double ly, double rx, double ry, bool partial);
+
+  /**
+   * Checks if the given curve segment would be visible in the box determined by lx,ly,rx,ry.
+   * If the curve in any way intersects the box, true is returned.
+   */
+  static bool is_curve_segment_visible(const CLLineSegment& segment, double lx, double ly, double rx, double ry, bool partial);
+
+
+  /**
    * reverts the direction of the given curve.
    * The result is returned as a new curve object and
    * the caller has to make sure that the memory for the
@@ -466,24 +479,24 @@ public:
    */
   void setImageTexturizer(CLImageTexturizer* pTexturizer);
 
-#ifdef ELEMENTARY_MODE_DISPLAY
+#ifdef COPASI_DEBUG
   // the following methods are used to highlight elements in the diagram
   // based on their association to model elements
 
   /**
    * Sets the list of model objects that are to be highlighted in the diagram.
    */
-  void setHighlightedObjects(const std::set<const CLGraphicalObject*>& highlightedObjects);
+  void setHighlightedModelObjects(const std::set<const CCopasiObject*>& highlightedObjects);
 
   /**
    * Returns a const reference to the set of highlighted model objects.
    */
-  const std::set<const CLGraphicalObject*>& getHighlightedObjects() const;
+  const std::set<const CCopasiObject*>& getHighlightedModelObjects() const;
 
   /**
    * Returns a reference to the set of highlighted model objects.
    */
-  std::set<const CLGraphicalObject*>& getHighlightedObjects();
+  std::set<const CCopasiObject*>& getHighlightedModelObjects();
 
   /**
    * Sets the highlight color.
@@ -525,7 +538,7 @@ public:
    */
   bool getHighlightFlag() const;
 
-#endif // ELEMENTARY_MODE_DISPLAY
+#endif // COPASI_DEBUG
 
 protected:
   /**
@@ -901,6 +914,20 @@ protected:
                                          double p2x, double p2y, double p2z, double tx, double ty, double tz);
 
   /**
+   * Calculates the intersection point between two lines in 2D.
+   * The intersection point is returned.
+   * If the lines are parallel, a point with two NaN values is returned.
+   * All numbers <= ALMOST_ZERO are considered to be 0.
+   */
+  static std::pair<double, double> calculate_intersection_point_2d(double p1x, double p1y, double sx, double sy, double p2x, double p2y, double tx, double ty);
+
+  /**
+   * Calculates wether 2d segments intersect within the length of the segments.
+   * Calls calculate_intersection_point_2d.
+   */
+  static bool segments_intersect_2d(double p1x1, double p1y1, double p1x2, double p1y2, double p2x1, double p2y1, double p2x2, double p2y2);
+
+  /**
    * Calculates if the point given as x,y is close enough to the given line segment
    * to count as a hit.
    */
@@ -942,9 +969,7 @@ protected:
    */
   void initialize_gl_extension_functions();
 
-#ifdef __APPLE__
   void * MyNSGLGetProcAddress(const char *name);
-#endif // __APPLE__  
 };
 
 #endif // CLLAYOUTRENDERER_H__
