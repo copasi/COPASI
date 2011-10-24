@@ -1,10 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTree.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.21.4.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2009/10/13 17:30:39 $
+   $Author: gauges $
+   $Date: 2011/10/24 18:53:57 $
    End CVS Header */
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -27,6 +32,7 @@
 
 #include <iterator>
 #include <set>
+#include <cstddef>
 
 template < class _Node > class CCopasiTree;
 
