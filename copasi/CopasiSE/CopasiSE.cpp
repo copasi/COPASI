@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/14 17:31:12 $
+//   $Date: 2011/10/25 11:29:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -455,7 +455,7 @@ int main(int argc, char *argv[])
         }
     }
 
-  catch (CCopasiException Exception)
+  catch (CCopasiException & Exception)
     {
       std::cerr << "Unhandled Exception:" << std::endl;
       std::cerr << Exception.getMessage().getText() << std::endl;
