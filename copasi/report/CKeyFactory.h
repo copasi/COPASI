@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.h,v $
-  $Revision: 1.14 $
+  $Revision: 1.15 $
   $Name:  $
   $Author: shoops $
-  $Date: 2011/03/07 19:32:38 $
+  $Date: 2011/10/25 11:30:39 $
   End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -138,7 +138,7 @@ public:
   bool remove(const std::string & key);
 
   /**
-   * Retreive the object referred by key from the key map.
+   * Retrieve the object referred by key from the key map.
    * @param const std::string & key
    * @return CCopasiObject * pObject
    */
