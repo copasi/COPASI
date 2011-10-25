@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/16 18:05:15 $
+//   $Date: 2011/10/25 17:17:22 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -172,11 +172,11 @@ public:
   /**
    * Retrieve the object with the given CN
    * @param const std::vector< CCopasiContainer * > &listOfContainer
-   * @param const CCopasiObjectName& CN
+   * @param const CCopasiObjectName& objName
    * @return CObjectInterface * pObject
    */
   CObjectInterface * ObjectFromCN(const std::vector< CCopasiContainer * > & listOfContainer,
-                                  const CCopasiObjectName & CN) const;
+                                  const CCopasiObjectName & objName) const;
 
   /**
    * Retrieve the data object with the given CN
