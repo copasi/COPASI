@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/FunctionDB.xml.h,v $
-//   $Revision: 1.7.24.1 $
+//   $Revision: 1.7.24.2 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2011/10/21 13:33:06 $
+//   $Date: 2011/10/25 16:09:18 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -186,7 +186,23 @@ static char FunctionDBxml[] =
   "<ParameterDescription key=\"FunctionParameter_74\" name=\"Keq\" order=\"6\" role=\"constant\"/>\n"
   "</ListOfParameterDescriptions>\n"
   "</Function>\n"
+
   "<Function key=\"Function_13\" name=\"Mass action (irreversible)\" type=\"MassAction\" reversible=\"false\">\n"
+  "  <MiriamAnnotation>\n"
+  "   <rdf:RDF xmlns:CopasiMT=\"http://www.copasi.org/RDF/MiriamTerms#\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n"
+  "   <rdf:Description rdf:about=\"#Function_13\">\n"
+  "   <CopasiMT:is rdf:resource=\"urn:miriam:obo.sbo:SBO:0000041\"/>\n"
+  "   </rdf:Description>\n"
+  "   </rdf:RDF>\n"
+  "  </MiriamAnnotation>\n"
+  "  <Comment>\n"
+  "<b xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+  "mass action rate law for first order irreversible reactions\n"
+  "</b>\n"
+  "<p>\n"
+  "Reaction scheme where the products are created from the reactants and the change of a product quantity is proportional to the product of reactant activities. The reaction scheme does not include any reverse process that creates the reactants from the products. The change of a product quantity is proportional to the quantity of one reactant.\n"
+  "</p>\n"
+  "  </Comment>\n"
   "<Expression>\n"
   "k1*PRODUCT&lt;substrate_i&gt;\n"
   "</Expression>"
@@ -195,7 +211,23 @@ static char FunctionDBxml[] =
   "<ParameterDescription key=\"FunctionParameter_76\" name=\"substrate\" order=\"1\" role=\"substrate\" minOccurs=\"1\" maxOccurs=\"unbounded\"/>\n"
   "</ListOfParameterDescriptions>\n"
   "</Function>\n"
+
   "<Function key=\"Function_14\" name=\"Mass action (reversible)\" type=\"MassAction\" reversible=\"true\">\n"
+  "  <MiriamAnnotation>\n"
+  "   <rdf:RDF xmlns:CopasiMT=\"http://www.copasi.org/RDF/MiriamTerms#\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n"
+  "   <rdf:Description rdf:about=\"#Function_14\">\n"
+  "   <CopasiMT:is rdf:resource=\"urn:miriam:obo.sbo:SBO:0000042\"/>\n"
+  "   </rdf:Description>\n"
+  "   </rdf:RDF>\n"
+  "  </MiriamAnnotation>\n"
+  "  <Comment>\n"
+  "<b xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+  "mass action rate law for reversible reactions\n"
+  "</b>\n"
+  "<p>\n"
+  "Reaction scheme where the products are created from the reactants and the change of a product quantity is proportional to the product of reactant activities. The reaction scheme does include a reverse process that creates the reactants from the products.\n"
+  "</p>\n"
+  "  </Comment>\n"
   "<Expression>\n"
   "k1*PRODUCT&lt;substrate_i&gt;-k2*PRODUCT&lt;product_j&gt;\n"
   "</Expression>"
@@ -206,6 +238,7 @@ static char FunctionDBxml[] =
   "<ParameterDescription key=\"FunctionParameter_80\" name=\"product\" order=\"3\" role=\"product\" minOccurs=\"1\" maxOccurs=\"unbounded\"/>\n"
   "</ListOfParameterDescriptions>\n"
   "</Function>\n"
+
   "<Function key=\"Function_15\" name=\"Mixed activation (irrev)\" type=\"PreDefined\" reversible=\"false\">\n"
   "<Expression>\n"
   "V*substrate*Activator/(Kms*(Kas+Activator)+substrate*(Kac+Activator))\n"
