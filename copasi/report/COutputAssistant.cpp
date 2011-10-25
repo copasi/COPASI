@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-//   $Revision: 1.20.4.3 $
+//   $Revision: 1.20.4.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2011/10/24 15:31:13 $
+//   $Author: shoops $
+//   $Date: 2011/10/25 14:45:02 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -989,7 +989,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
     {
       data1.insert(data1.begin(), pTime); //in any case, add time to the report
 
-      if (id >= 1200 and id < 1300) //we need to add the scan parameters
+      if (1200 <= id && id < 1300) //we need to add the scan parameters
         {
           tmpdata.clear();
           CScanProblem* pSP = dynamic_cast<CScanProblem*>(task->getProblem());
@@ -1032,7 +1032,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
     {
       bool logX = false;
 
-      if (id >= 200 and id < 300) //we need to find the inner scan item for the x-axis
+      if (1200 <= id && id < 300) //we need to find the inner scan item for the x-axis
         {
           data2 = NULL;
           CScanProblem* pSP = dynamic_cast<CScanProblem*>(task->getProblem());
