@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/CRandom.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.22.4.1 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/03 21:15:17 $
+//   $Date: 2011/10/25 11:37:11 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,6 +22,11 @@
 
 #include <time.h>
 #include <sys/timeb.h>
+#ifdef WIN32
+# include <Windows.h>
+#else
+# include <sys/syscall.h>
+#endif // WIN32
 #include <math.h>
 #include <algorithm>
 #include <string.h>
@@ -29,6 +34,7 @@
 #include "copasi.h"
 #include "CRandom.h"
 #include "utilities/CCopasiMessage.h"
+#include "utilities/CopasiTime.h"
 
 const std::string CRandom::TypeName[] =
 {
@@ -125,58 +131,31 @@ void CRandom::setModulus(const unsigned C_INT32 & modulus)
   mModulusInv1 = 1.0 / (mModulus + 1.0);
 }
 
-#ifdef Darwin
-#include <mach/mach_init.h>
-/*
- * References to host objects are returned by:
- *      mach_host_self() - trap
- *
- * extern mach_port_t mach_host_self(void);
- */
-
-#include <mach/mach_host.h>
-/*
- *      Get service port for a processor set.
- *      Available to all.
- *
- * extern kern_return_t host_get_clock_service(host_t host,
- *                                             clock_id_t clock_id,
- *                                             clock_serv_t *clock_serv);
- */
-
-#include <mach/clock.h>
-/**
- *      Get the clock time.
- *      Available to all.
- *
- * extern kern_return_t clock_get_time(clock_serv_t clock_serv,
- *                                     mach_timespec_t *cur_time);
- */
-
-int ftime(struct timeb * pTime);
-
-int ftime(struct timeb * pTime)
-{
-  mach_port_t host = mach_host_self();
-  clock_serv_t clock_serv;
-  host_get_clock_service(host, 1, & clock_serv);
-
-  mach_timespec_t time;
-  clock_get_time(clock_serv, &time);
-
-  pTime->time = time.tv_sec;
-  pTime->millitm = time.tv_nsec / 1000;
-
-  return 0;
-}
-#endif // __MacOsX__
-
 unsigned C_INT32 CRandom::getSystemSeed()
 {
-  struct timeb init_time;
-  ftime(&init_time);
+  unsigned C_INT32 ThreadId = 0;
 
-  return ((((unsigned C_INT32) init_time.time) & 0xffff) + 1) * 1000 + init_time.millitm;
+#ifdef WIN32
+  ThreadId = (unsigned C_INT32)(GetCurrentThreadId() & 0xffffffffUL);
+#elif defined(SYS_thread_selfid)
+  ThreadId = (unsigned C_INT32)(syscall(SYS_thread_selfid) & 0xffffffffUL);
+#elif defined(SYS_gettid)
+  ThreadId = (unsigned C_INT32)(syscall(SYS_gettid) & 0xffffffffUL);
+#elif defined(SYS_getthrid)
+  ThreadId = (unsigned C_INT32)(syscall(SYS_getthrid) & 0xffffffffUL);
+#endif
+
+  // Invert Byte order so that we do not have accidental cancellations since both time and thread id are incremented.
+  ThreadId = (ThreadId & 0x000000ffUL) << 24 | (ThreadId & 0x0000ff00UL) << 8 |
+             (ThreadId & 0x00ff0000UL) >> 8 | (ThreadId & 0xff000000UL) >> 24;
+
+  unsigned C_INT32 Time = (unsigned C_INT32)(CCopasiTimeVariable::getCurrentWallTime().getMicroSeconds() & 0xffffffffUL);
+
+
+  // We use XOR so that we do not favor set or unset bits.
+  unsigned C_INT32 Seed = ThreadId ^ Time;
+
+  return Seed;
 }
 
 void CRandom::initialize(unsigned C_INT32 C_UNUSED(seed))
