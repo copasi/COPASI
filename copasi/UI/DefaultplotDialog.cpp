@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DefaultplotDialog.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/17 19:56:22 $
+//   $Date: 2011/10/25 17:15:43 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,16 +58,18 @@ void DefaultPlotDialog::slotCreate()
 
 void DefaultPlotDialog::setTask(CCopasiTask * t)
 {
-  //set window header
-  //this->resize(640, 480);
-  this->setWindowTitle("Output definition assistant");
-
   mpTask = t;
 
-  if (!mpTask->getProblem()) return;
+  fillList();
+}
 
-  //todo check
-  mList = COutputAssistant::getListOfDefaultOutputDescriptions(mpTask->getProblem());
+void DefaultPlotDialog::fillList()
+{
+  if (mpCheckAll->isChecked())
+    mList = COutputAssistant::getListOfDefaultOutputDescriptions(NULL); //this gets the complete list
+  else
+    mList = COutputAssistant::getListOfDefaultOutputDescriptions(mpTask); //only the items fitting the task
+
   listBox->clear();
 
   std::vector<C_INT32>::const_iterator it, itEnd = mList.end();
@@ -101,5 +103,9 @@ void DefaultPlotDialog::slotSelect()
   createButton->setEnabled(!lineEditTitle->text().startsWith("-- "));
 }
 
-void DefaultPlotDialog::newSlot()
-{}
+//virtual
+void DefaultPlotDialog::slotToggleAll(bool /*flag*/)
+{
+  fillList();
+}
+

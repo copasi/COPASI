@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.h,v $
-  $Revision: 1.7 $
+  $Revision: 1.8 $
   $Name:  $
   $Author: shoops $
-  $Date: 2011/10/20 13:05:22 $
+  $Date: 2011/10/25 17:15:31 $
   End CVS Header */
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,7 +30,6 @@
 
 #include "utilities/CCopasiTask.h"
 
-class CCopasiProblem;
 class CPlotSpecification;
 class CReportDefinition;
 class CCopasiObject;
@@ -40,14 +39,20 @@ class CDefaultOutputDescription
 {
 public:
 
-  CDefaultOutputDescription()
-      : name(""), description(""), isPlot(true), mTaskType(CCopasiTask::steadyState) {}
+  CDefaultOutputDescription():
+      name(""),
+      description(""),
+      isPlot(true),
+      mTaskType(CCopasiTask::steadyState),
+      mSecondaryTask(CCopasiTask::unset)
+  {}
 
   //C_INT32 id;
   std::string name;
   std::string description;
   bool isPlot;
   CCopasiTask::Type mTaskType;
+  CCopasiTask::Type mSecondaryTask;
 };
 
 class COutputAssistant
@@ -60,7 +65,7 @@ public:
    *  If problem=NULL (default) all indices in the map are returned.
    */
   static
-  std::vector<C_INT32> getListOfDefaultOutputDescriptions(const CCopasiProblem * problem = NULL);
+  std::vector<C_INT32> getListOfDefaultOutputDescriptions(const CCopasiTask * task = NULL);
 
   /**
    *  get an index of a default output report that is

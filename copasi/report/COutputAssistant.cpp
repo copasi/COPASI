@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/20 13:05:22 $
+//   $Date: 2011/10/25 17:15:31 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,46 +47,37 @@ const std::string COutputAssistant::emptyString("");
 const CDefaultOutputDescription COutputAssistant::emptyItem;
 
 //static
-std::vector<C_INT32> COutputAssistant::getListOfDefaultOutputDescriptions(const CCopasiProblem * problem)
+std::vector<C_INT32> COutputAssistant::getListOfDefaultOutputDescriptions(const CCopasiTask * task)
 {
   //initializes the map on first call only
   initialize();
 
   std::vector<C_INT32> ret;
 
-  problem = NULL; //DEBUG only!!!
+  //problem = NULL; //DEBUG only!!!
 
-  if (!problem) //generate full list
+  //if (!problem) //generate full list
+  //  {
+
+  Map::const_iterator it, itEnd = mMap.end();
+
+  for (it = mMap.begin(); it != itEnd; ++it)
     {
-      Map::const_iterator it, itEnd = mMap.end();
+      if (!task) //if no task is specified add all descriptions
+        {
+          ret.push_back(it->first);
+        }
+      else if (task->getType() == it->second.mTaskType || it->second.mTaskType == CCopasiTask::unset)
+        //add descriptions with matching task type
+        {
+          //if (secondaryTask matches) TODO
+          ret.push_back(it->first);
+        }
 
-      for (it = mMap.begin(); it != itEnd; ++it)
-        ret.push_back(it->first);
-
-      return ret;
-    }
-
-  const CModel* pModel = problem->getModel();
-
-  if (!pModel) return ret;
-
-  //TODO use CObjectLists::existsFixedMetab()
-
-  const CTrajectoryProblem* tp = dynamic_cast<const CTrajectoryProblem*>(problem);
-
-  if (tp)
-    {
-      return ret;
-    }
-
-  const CSteadyStateProblem* ssp = dynamic_cast<const CSteadyStateProblem*>(problem);
-
-  if (ssp)
-    {
-      return ret;
     }
 
   return ret;
+
 }
 
 //static
@@ -368,6 +359,7 @@ bool COutputAssistant::initialize()
   tmp.second.description = "A plot of the real and imaginary parts of the eigenvalues of the Jacobian as a function of the innermost scan parameter.";
   tmp.second.isPlot = true;
   tmp.second.mTaskType = CCopasiTask::scan;
+  tmp.second.mSecondaryTask = CCopasiTask::steadyState;
   mMap.insert(tmp);
 
   // *****************************************************************
@@ -528,6 +520,7 @@ bool COutputAssistant::initialize()
   tmp.second.description = "This table includes scan parameters and the real and imaginary parts of the eigenvalues of the reduced system's Jacobian.";
   tmp.second.isPlot = false;
   tmp.second.mTaskType = CCopasiTask::scan;
+  tmp.second.mSecondaryTask = CCopasiTask::steadyState;
   mMap.insert(tmp);
 
   tmp.first = 1999;
@@ -998,7 +991,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
     {
       data1.insert(data1.begin(), pTime); //in any case, add time to the report
 
-      if (id >= 1200 and id < 1300) //we need to add the scan parameters
+      if (1200 <= id && id < 1300) //we need to add the scan parameters
         {
           tmpdata.clear();
           CScanProblem* pSP = dynamic_cast<CScanProblem*>(task->getProblem());
@@ -1041,7 +1034,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
     {
       bool logX = false;
 
-      if (id >= 200 and id < 300) //we need to find the inner scan item for the x-axis
+      if (200 <= id && id < 300) //we need to find the inner scan item for the x-axis
         {
           data2 = NULL;
           CScanProblem* pSP = dynamic_cast<CScanProblem*>(task->getProblem());

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/12 13:35:21 $
+//   $Date: 2011/10/25 17:15:55 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,7 @@
 
 #include <iostream>
 #include <string.h>
+#include <limits>
 
 #include "copasi.h"
 #include "utilities/CCopasiMessage.h"
