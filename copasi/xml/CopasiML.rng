@@ -501,6 +501,11 @@
         </list>
       </element>
     </optional>
+    <optional>
+      <element name="ListOfModelParameterSets">
+        <ref name="listOfModelParameterSets.datatype"/>
+      </element>
+    </optional>
   </define>
 
   <define name="listOfCompartments.datatype">
@@ -623,6 +628,66 @@
     </optional>
   </define>
 
+  <define name="listOfModelParameterSets.datatype">
+    <oneOrMore>
+      <element name="ModelParameterSet">
+        <ref name="modelParameterSet.datatype"/>
+      </element>
+    </oneOrMore>
+  </define>
+  
+  <define name="modelParameterSet.datatype">
+    <ref name="name.attribute"/>
+    <optional>
+      <ref name="miriamAnnotation.element"/>
+    </optional>
+    <optional>
+      <ref name="comment.element"/>
+    </optional>
+    <oneOrMore>
+      <element name="ModelParameterGroup">
+        <ref name="modelParameterGroup.datatype"/>
+      </element>
+    </oneOrMore>
+  </define>
+  
+  <define name="modelParameterGroup.datatype">
+    <zeroOrMore>
+      <choice>
+        <element name="ModelParameterGroup">
+          <attribute name="cn">
+            <data type="string"/>
+          </attribute>
+          <ref name="modelParameterGroup.datatype"/>
+        </element>
+        <element name="ModelParameter">
+          <ref name="modelParameter.datatype"/>
+        </element>
+      </choice>
+    </zeroOrMore>
+  </define>
+  
+  <define name="modelParameter.datatype">
+    <attribute name="cn">
+      <data type="string"/>
+    </attribute>
+    <attribute name="value">
+      <data type="double"/>
+    </attribute>
+    <attribute name="type">
+      <choice>
+        <value type="string">Model</value>
+        <value type="string">Compartment</value>
+        <value type="string">Species</value>
+        <value type="string">ModelValue</value>
+        <value type="string">ReactionParameter</value>
+      </choice>
+    </attribute>
+    <optional>
+      <ref name="initialExpression.element"/>
+    </optional>
+  </define>
+  
   <define name="listOfReactions.datatype">
     <oneOrMore>
       <element name="Reaction">
