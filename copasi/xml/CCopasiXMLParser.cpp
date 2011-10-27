@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.234 $
+//   $Revision: 1.235 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/17 19:55:22 $
+//   $Date: 2011/10/27 17:27:54 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1767,6 +1767,8 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
         if (strcmp(pszName, "Model"))
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Model", mParser.getCurrentLineNumber());
+
+        mCommon.pModel->setCompileFlag(true);
 
         mParser.popElementHandler();
         mCurrentElement = START_ELEMENT;
