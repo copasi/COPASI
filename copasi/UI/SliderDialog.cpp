@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.89 $
+//   $Revision: 1.90 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/07/24 11:47:04 $
+//   $Author: shoops $
+//   $Date: 2011/10/27 14:31:51 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -832,6 +832,9 @@ void SliderDialog::updateAllSliders()
   // with a call to ListView::refreshInitialValues
   if (mCurrentFolderId == C_INVALID_INDEX) return;
 
+  // we call getCSlidersForCurrentFolderId to make sure that
+  // sliders to deleted objects are not updated (bug 1709)
+  this->getCSlidersForCurrentFolderId();
   bool autoModify = mpAutoModifyRangesCheckBox->isChecked();
   std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
   size_t i, maxCount = v.size();
