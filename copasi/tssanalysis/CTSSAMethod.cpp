@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.27.2.4 $
+//   $Revision: 1.27.2.5 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2011/10/28 12:52:07 $
+//   $Author: nsimus $
+//   $Date: 2011/10/28 14:01:29 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -143,6 +143,8 @@ void CTSSAMethod::start(const CState * C_UNUSED(initialState))
 //virtual
 bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
+
+
   if (!CCopasiMethod::isValidProblem(pProblem)) return false;
 
   const CTSSAProblem * pTP = dynamic_cast<const CTSSAProblem *>(pProblem);
@@ -169,34 +171,37 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
           case tssILDM:
           case tssILDMModified:
 
-            //CCopasiMessage(CCopasiMessage::ERROR, "This method is not applicable for a system with more than one compartment.");
             CCopasiMessage(CCopasiMessage::ERROR, MCTSSAMethod + 16);
             return false;
 
           case tssCSP:
-          {
-            size_t i, imax;
 
-            imax = pModel->getCompartments().size();
-
-            const CCompartment* comp = pModel->getCompartments()[0];
-
-            for (i = 0; i < imax; ++i)
+            if (0)
               {
-                const CCompartment* compi = pModel->getCompartments()[i];
+                size_t i, imax;
 
-                if (comp->getInitialValue() != compi->getInitialValue())
+                imax = pModel->getCompartments().size();
+
+                const CCompartment* comp = pModel->getCompartments()[0];
+
+                for (i = 0; i < imax; ++i)
                   {
-                    //      CCopasiMessage(CCopasiMessage::ERROR, "In this version of Copasi the CSP Method only supports  compartments with equal size.");
-                    CCopasiMessage(CCopasiMessage::ERROR, MCTSSAMethod + 17);
-                    return false;
+                    const CCompartment* compi = pModel->getCompartments()[i];
+
+                    if (comp->getInitialValue() != compi->getInitialValue())
+                      {
+                        CCopasiMessage(CCopasiMessage::ERROR, MCTSSAMethod + 17);
+                        return false;
+
+                      }
 
                   }
 
+                break;
               }
+            else
+              return true;
 
-            break;
-          }
           default:
             fatalError();
         }
@@ -357,13 +362,7 @@ bool CTSSAMethod::elevateChildren()
 
 void CTSSAMethod::integrationStep(const double & deltaT)
 {
-  mLsodaStatus = 1;
-  mState = 1;
-  mJType = 2;
-  mErrorMsg.str("");
-  mLSODA.setOstream(mErrorMsg);
-
-  if (!mData.dim) //just do nothing if there are no variables
+  if (mData.dim == 0) //just do nothing if there are no variables
     {
       mTime = mTime + deltaT;
       mpState->setTime(mTime);
@@ -373,6 +372,7 @@ void CTSSAMethod::integrationStep(const double & deltaT)
     }
 
   C_FLOAT64 EndTime = mTime + deltaT;
+
   C_INT ITOL = 2; // mRtol scalar, mAtol vector
   C_INT one = 1;
   C_INT DSize = (C_INT) mDWork.size();
@@ -394,24 +394,28 @@ void CTSSAMethod::integrationStep(const double & deltaT)
          mIWork.array(), // 14. the int work array
          &ISize, // 15. the int work array size
          NULL, // 16. evaluate J (not given)
-         &mJType);        // 17. the type of Jacobian calculate (2)
+         &mJType);        // 17. the type of jacobian calculate (2)
 
-  //if (mLsodaStatus == -1)
-  //  mLsodaStatus = 2;
+  // Why did we ignore this error?
+  // if (mLsodaStatus == -1) mLsodaStatus = 2;
 
   if ((mLsodaStatus <= 0))
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
+    }
 
+  if (mLsodaStatus == 3)
+    {
+      // It is sufficient to switch to 2. Eventual state changes due to events
+      // are indicated via the method stateChanged()
+      mLsodaStatus = 2;
     }
 
   mpState->setTime(mTime);
-  mpModel->setState(*mpState);
   *mpCurrentState = *mpState;
 
-  return;
+  return ;
 }
-
 /**
 MAT_ANAL_MOD:  mathematical analysis of matrices mTdInverse for post-analysis
  */
@@ -619,8 +623,8 @@ void CTSSAMethod::mat_anal_fast_space_thomas(C_INT & slow)
   C_INT fast;
   fast = dim - slow;
 
-  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor()
-                          / mpModel->getCompartments()[0]->getInitialValue();
+  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
+  //C_FLOAT64 number2conc = 1.;
 
   //this is an ugly hack that only makes sense if all metabs are in the same compartment
   //at the moment is is the only case the algorithm deals with
@@ -1768,8 +1772,8 @@ void CTSSAMethod::calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64 * Y1)
   for (i = 0, imax = indep; i < imax; i++)
     tmp[i] = mpModel->getMetabolitesX()[i]->getValue();
 
-  C_FLOAT64 conc2number = 1.; // mpModel->getQuantity2NumberFactor()
-  // * mpModel->getCompartments()[0]->getInitialValue();
+  C_FLOAT64 conc2number =  mpModel->getQuantity2NumberFactor() * mpModel->getCompartments()[0]->getInitialValue();
+  //C_FLOAT64 conc2number = 1.;
 
   /* write new concentrations in the current state */
   for (i = 0, imax = indep; i < imax; i++)
@@ -1780,8 +1784,9 @@ void CTSSAMethod::calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64 * Y1)
   // TO REMOVE:  mpModel->applyAssignments();
   mpModel->calculateDerivativesX(Y1);
 
-  C_FLOAT64 number2conc = 1.; // mpModel->getNumber2QuantityFactor()
-  // / mpModel->getCompartments()[0]->getInitialValue();
+  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
+  //C_FLOAT64 number2conc = 1.;
+
 
   for (i = 0; i < imax; ++i)
     Y1[i] *= number2conc;
@@ -1791,6 +1796,46 @@ void CTSSAMethod::calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64 * Y1)
     mpModel->getMetabolitesX()[i]->setValue(tmp[i]);
 
   //mpState->setUpdateDependentRequired(true);
+  mpModel->updateSimulatedValues(mReducedModel);
+
+  return;
+}
+
+
+void CTSSAMethod::calculateDerivatives(C_FLOAT64 * X1, C_FLOAT64 * Y1)
+{
+  C_INT i, imax;
+  C_INT nmetab;
+
+  nmetab = mData.dim;
+
+  CVector<C_FLOAT64> tmp;
+  tmp.resize(nmetab);
+
+  /* make copy of the current state concentrations */
+  for (i = 0, imax = nmetab; i < imax; i++)
+    tmp[i] = mpModel->getMetabolites()[i]->getValue();
+
+  C_FLOAT64 conc2number = mpModel->getQuantity2NumberFactor() * mpModel->getCompartments()[0]->getInitialValue();
+  //C_FLOAT64 conc2number = 1.;
+
+  /* write new concentrations in the current state */
+  for (i = 0, imax = nmetab; i < imax; i++)
+    mpModel->getMetabolites()[i]->setValue(X1[i]*conc2number);
+
+  mpModel->updateSimulatedValues(mReducedModel);
+  mpModel->calculateDerivatives(Y1);
+
+  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
+  //C_FLOAT64 number2conc = 1.;
+
+  for (i = 0; i < imax; ++i)
+    Y1[i] *= number2conc;
+
+  /* write back concentrations of the current state*/
+  for (i = 0, imax = nmetab; i < imax; i++)
+    mpModel->getMetabolites()[i]->setValue(tmp[i]);
+
   mpModel->updateSimulatedValues(mReducedModel);
 
   return;
@@ -1962,21 +2007,19 @@ void CTSSAMethod::integrationMethodStart(const CState * initialState)
   pdelete(mpState);
   mpState = new CState(*initialState);
   mY = mpState->beginIndependent();
-  mTime = mpState->getTime();
 
-  mReducedModel = true; /* * getValue("Integrate Reduced Model").pBOOL; */
+
+  mTime = mpState->getTime();
 
   if (mReducedModel)
     {
-      //mpState->setUpdateDependentRequired(true);
-      mData.dim = (C_INT) mpState->getNumIndependent();
+      mData.dim = mpState->getNumIndependent();
     }
   else
     {
-      //mpState->setUpdateDependentRequired(false);
-      // mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentMetabs();
-      mData.dim = (C_INT)(mpState->getNumIndependent() + mpModel->getNumDependentReactionMetabs());
+      mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentReactionMetabs();
     }
+
 
   mYdot.resize(mData.dim);
   // mY_initial.resize(mData.dim);

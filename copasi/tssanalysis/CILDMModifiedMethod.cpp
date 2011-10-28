@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.cpp,v $
-//   $Revision: 1.16.2.3 $
+//   $Revision: 1.16.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/02/16 18:33:45 $
+//   $Author: nsimus $
+//   $Date: 2011/10/28 14:01:29 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -77,6 +77,9 @@ void CILDMModifiedMethod::initializeParameter()
   initializeIntegrationsParameter();
 
   assertParameter("Deuflhard Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
+  mReducedModel = true;
+
+  //mData.dim = mpState->getNumIndependent();
 
   createAnnotationsM();
   emptyVectors();
@@ -84,6 +87,7 @@ void CILDMModifiedMethod::initializeParameter()
 
 void CILDMModifiedMethod::start(const CState * initialState)
 {
+  mReducedModel = true;
 
   integrationMethodStart(initialState);
 
@@ -134,8 +138,8 @@ void CILDMModifiedMethod::step(const double & deltaT)
   C_INT flag_jacob;
   flag_jacob = 1;  // Set flag_jacob=0 to print Jacobian
 
-  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor()
-                          / mpModel->getCompartments()[0]->getInitialValue();
+  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
+  //C_FLOAT64 number2conc = 1.;
 
   //this is an ugly hack that only makes sense if all metabs are in the same compartment
   //at the moment is is the only case the algorithm deals with
@@ -554,6 +558,7 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
     }
 
   C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
+  //C_FLOAT64 number2conc = 1.;
 
   dxdt.resize(dim);
 
@@ -672,6 +677,7 @@ void CILDMModifiedMethod::newton_new(C_INT *index_metab, C_INT & slow, C_INT & i
   info = 0;
 
   C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
+  //C_FLOAT64 number2conc = 1.;
 
   for (i = 0; i < fast; i++)
     {
@@ -876,8 +882,8 @@ void CILDMModifiedMethod::newton_for_timestep(C_INT metabolite_number, C_FLOAT64
 
   info = 0;
 
-  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor()
-                          / mpModel->getCompartments()[0]->getInitialValue();
+  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
+  //C_FLOAT62number2conc = 1.;
 
   //this is an ugly hack that only makes sense if all metabs are in the same compartment
   //at the moment is is the only case the algorithm deals with
@@ -1052,6 +1058,8 @@ bool CILDMModifiedMethod::setAnnotationM(size_t step)
   if (step == 0) return false;
 
   if (mVec_mVslow.size() == 0) return false;
+
+  if (step > mVec_mVslow.size()) return false;
 
   if (step > mVec_SlowModes.size()) return false;
 

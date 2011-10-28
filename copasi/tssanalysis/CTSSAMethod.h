@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.h,v $
-//   $Revision: 1.10.2.4 $
+//   $Revision: 1.10.2.5 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2011/10/28 12:52:07 $
+//   $Author: nsimus $
+//   $Date: 2011/10/28 14:01:29 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -421,6 +421,8 @@ protected:
    *
    **/
   void calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64 * Y1);
+
+  void calculateDerivatives(C_FLOAT64 * X1, C_FLOAT64 * Y1);
 
   /**
     * This is not very elegant solution. But I don't know the better one.
