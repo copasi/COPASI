@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.h,v $
-//   $Revision: 1.9.2.2 $
+//   $Revision: 1.9.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/02/16 18:33:45 $
+//   $Author: nsimus $
+//   $Date: 2011/10/28 13:58:35 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -261,7 +261,8 @@ public:
   /**
    * evaluate Jacobian for the current y
    **/
-  void calculateJacobianX(C_INT & n, CVector<C_FLOAT64> & y, CMatrix <C_FLOAT64> & J);
+  //void calculateJacobianX(C_INT & n, CVector<C_FLOAT64> & y, CMatrix <C_FLOAT64> & J);
+  void calculateJacobian(C_INT & n, CVector<C_FLOAT64> & y, CMatrix <C_FLOAT64> & J);
 
   /**
    * find  the new number of fast  according to the time-scale separation ratio

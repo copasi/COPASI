@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.32.2.5 $
+//   $Revision: 1.32.2.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/02/16 18:33:45 $
+//   $Author: nsimus $
+//   $Date: 2011/10/28 13:58:35 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -80,7 +80,9 @@ void CILDMMethod::initializeParameter()
   initializeIntegrationsParameter();
 
   assertParameter("Deuflhard Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
+  mReducedModel = true;
 
+  //mData.dim = mpState->getNumIndependent();
 
   createAnnotationsM();
   emptyVectors();
@@ -128,8 +130,8 @@ void CILDMMethod::step(const double & deltaT)
 
   /* the vector mY is the current state of the system*/
 
-  C_FLOAT64 number2conc = 1.;  //= mpModel->getNumber2QuantityFactor()
-  // / mpModel->getCompartments()[0]->getInitialValue();
+  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
+  //C_FLOAT62 number2conc = 1.;
 
   //this is an ugly hack that only makes sense if all metabs are in the same compartment
   //at the moment is is the only case the algorithm deals with
@@ -871,6 +873,8 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
 
 void CILDMMethod::start(const CState * initialState)
 {
+  mReducedModel = true;
+
 
   integrationMethodStart(initialState);
 
@@ -916,8 +920,9 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
 
   /* the vector mY is the current state of the system*/
 
-  C_FLOAT64 number2conc =  1.; // mpModel->getNumber2QuantityFactor()
-  // / mpModel->getCompartments()[0]->getInitialValue();
+  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
+  //C_FLOAT62 number2conc = 1.;
+
 
   //this is an ugly hack that only makes sense if all metabs are in the same compartment
   //at the moment is is the only case the algorithm deals with
@@ -1298,6 +1303,8 @@ bool CILDMMethod::setAnnotationM(size_t step)
   if (step == 0) return false;
 
   if (mVec_mVslow.size() == 0) return false;
+
+  if (step > mVec_mVslow.size()) return false;
 
   if (step > mVec_SlowModes.size()) return false;
 
