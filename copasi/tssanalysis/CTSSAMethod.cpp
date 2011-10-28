@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.27.2.5 $
+//   $Revision: 1.27.2.6 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2011/10/28 14:01:29 $
+//   $Date: 2011/10/28 14:35:02 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -160,6 +160,12 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (pModel == NULL)
     return false;
 
+  if (pModel->getMetabolites().size() == 0)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 3);
+      return false;
+    }
+
   if (pModel->getCompartments().size() != 1)
     {
       CCopasiMethod::SubType subType;
@@ -175,32 +181,7 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
             return false;
 
           case tssCSP:
-
-            if (0)
-              {
-                size_t i, imax;
-
-                imax = pModel->getCompartments().size();
-
-                const CCompartment* comp = pModel->getCompartments()[0];
-
-                for (i = 0; i < imax; ++i)
-                  {
-                    const CCompartment* compi = pModel->getCompartments()[i];
-
-                    if (comp->getInitialValue() != compi->getInitialValue())
-                      {
-                        CCopasiMessage(CCopasiMessage::ERROR, MCTSSAMethod + 17);
-                        return false;
-
-                      }
-
-                  }
-
-                break;
-              }
-            else
-              return true;
+            return true;
 
           default:
             fatalError();
@@ -251,7 +232,7 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
 
 C_FLOAT64 CTSSAMethod::returnCurrentTime(int step)
 {
-  if (mCurrentTime.size() > step)
+  if ((int) mCurrentTime.size() > step)
     return mCurrentTime[step];
   else
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();
