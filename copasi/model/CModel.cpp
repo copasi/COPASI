@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.395.2.7 $
+//   $Revision: 1.395.2.8 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/12 13:34:11 $
+//   $Author: nsimus $
+//   $Date: 2011/10/28 14:05:55 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1867,7 +1867,8 @@ void CModel::calculateElasticityMatrix(const C_FLOAT64 & factor,
 
 void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                const C_FLOAT64 & derivationFactor,
-                               const C_FLOAT64 & /* resolution */)
+                               const C_FLOAT64 & /* resolution */,
+                               const bool &userDefinedOrder)
 {
   C_FLOAT64 DerivationFactor = std::max(derivationFactor, 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon());
 
@@ -1942,24 +1943,30 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
   //  jacobian = Jacobian;
   //  return;
 
-  // :TODO: this can be incorporated into the above avoiding a temporary matrix.
-
-  // We need to bring the jacobian into the expected order, i.e.,
-  // convert it to the user defined order
-  size_t * pPermRow = mJacobianPivot.array();
-  size_t * pPermEnd = pPermRow + mJacobianPivot.size();
-  size_t * pPermCol;
-
-  C_FLOAT64 * pTo;
-  pTo = jacobian.array();
-
-  for (; pPermRow < pPermEnd; ++pPermRow)
+  if (userDefinedOrder)
     {
-      pJacobian = Jacobian.array() + *pPermRow * Dim;
 
-      for (pPermCol = mJacobianPivot.array(); pPermCol < pPermEnd; ++pPermCol, ++pTo)
-        *pTo = *(pJacobian + *pPermCol);
+      // :TODO: this can be incorporated into the above avoiding a temporary matrix.
+
+      // We need to bring the jacobian into the expected order, i.e.,
+      // convert it to the user defined order
+      size_t * pPermRow = mJacobianPivot.array();
+      size_t * pPermEnd = pPermRow + mJacobianPivot.size();
+      size_t * pPermCol;
+
+      C_FLOAT64 * pTo;
+      pTo = jacobian.array();
+
+      for (; pPermRow < pPermEnd; ++pPermRow)
+        {
+          pJacobian = Jacobian.array() + *pPermRow * Dim;
+
+          for (pPermCol = mJacobianPivot.array(); pPermCol < pPermEnd; ++pPermCol, ++pTo)
+            *pTo = *(pJacobian + *pPermCol);
+        }
     }
+  else
+    jacobian = Jacobian;
 
   // DebugFile << jacobian << std::endl;
 }
