@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSATimeScaleWidget.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.3.2.1 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2010/06/28 11:59:19 $
+//   $Author: ssahle $
+//   $Date: 2011/10/28 15:09:17 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,8 +22,7 @@
 #include <qwidget.h>
 #include <qlayout.h>
 //Added by qt3to4:
-#include <QPaintEvent>
-//#include <Q3VBoxLayout>
+//#include <QPaintEvent>
 #include <QVBoxLayout>
 #include "utilities/CVector.h"
 #include <qslider.h>
@@ -64,10 +63,14 @@ public slots:
   void changedInterval();
 
 private:
-  //Q3VBoxLayout * mpVLayout;
+
+
   QVBoxLayout * mpVLayout;
   PaintWidget * mpPaintWidget;
   QSlider * mpSlider;
 };
+
+
+
 
 #endif // CQTSSATIMESCALEWIDGET_H

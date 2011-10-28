@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSATimeScaleWidget.cpp,v $
-//   $Revision: 1.5.2.2 $
+//   $Revision: 1.5.2.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 19:12:57 $
+//   $Author: ssahle $
+//   $Date: 2011/10/28 15:09:17 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,14 +18,15 @@
 
 #include "CQTSSATimeScaleWidget.h"
 
-#include <math.h>
+#include <cmath>
 #include <qbitmap.h>
 #include <qcolor.h>
 #include <qtooltip.h>
-//Added by qt3to4:
-//#include <Q3VBoxLayout>
 #include <QVBoxLayout>
 #include <QPaintEvent>
+
+
+
 
 /*
  *  Constructs a CScanWidgetRepeat as a child of 'parent', with the
@@ -38,7 +39,6 @@ CQTSSATimeScaleWidget::CQTSSATimeScaleWidget(QWidget* parent, const char* name, 
     setName("CQTSSATimeScaleWidget");
 
   mpVLayout = new QVBoxLayout(this);
-  //mpVLayout = new Q3VBoxLayout(this);
   mpPaintWidget = new PaintWidget(this, "PaintWidget");
   mpPaintWidget->setMinimumHeight(200);
   mpSlider = new QSlider(Qt::Horizontal, this);
@@ -102,10 +102,6 @@ void CQTSSATimeScaleWidget::clearWidget()
 
 //******************************************************************
 
-/*
- *  Constructs a CScanWidgetRepeat as a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
- */
 PaintWidget::PaintWidget(QWidget* parent, const char* name, Qt::WFlags fl)
     : QWidget(parent, name, fl),
     mSelection(0)
@@ -144,6 +140,8 @@ void PaintWidget::paintEvent(QPaintEvent *)
 
   for (j = 0; j < mVector.size(); ++j)
     {
+      if (fabs(mVector[j]) == std::numeric_limits<C_FLOAT64>::infinity())
+        continue;
 
       if ((int)(log10(fabs(mVector[j])) + 1) > maxScaleValue)
         maxScaleValue = (int)(log10(fabs(mVector[j])) + 1);

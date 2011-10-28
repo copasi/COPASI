@@ -2,10 +2,10 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultSubWidget.ui,v $ </comment>
-<comment>   $Revision: 1.14.2.2 $ </comment>
+<comment>   $Revision: 1.14.2.3 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: ssahle $ </comment>
-<comment>   $Date: 2011/10/28 13:01:02 $ </comment>
+<comment>   $Date: 2011/10/28 15:09:17 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -188,13 +188,7 @@ p, li { white-space: pre-wrap; }
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QComboBox" name="mpBox1">
-       <item>
-        <property name="text">
-         <string>elw kjhlkrjweqhrtlkerjh tkwejrhtkjhl</string>
-        </property>
-       </item>
-      </widget>
+      <widget class="QComboBox" name="mpBox1"/>
      </item>
      <item>
       <spacer name="horizontalSpacer_2">
