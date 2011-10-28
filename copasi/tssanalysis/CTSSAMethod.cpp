@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.27.2.3 $
+//   $Revision: 1.27.2.4 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2011/03/22 10:58:50 $
+//   $Author: ssahle $
+//   $Date: 2011/10/28 12:52:07 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -243,6 +243,15 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   return true;
 }
+
+C_FLOAT64 CTSSAMethod::returnCurrentTime(int step)
+{
+  if (mCurrentTime.size() > step)
+    return mCurrentTime[step];
+  else
+    return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+};
+
 
 void CTSSAMethod::initializeParameter()
 {return;}

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.h,v $
-//   $Revision: 1.10.2.3 $
+//   $Revision: 1.10.2.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/02/16 18:33:45 $
+//   $Author: ssahle $
+//   $Date: 2011/10/28 12:52:07 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -472,7 +472,7 @@ public:
   /**
   *return required time-value from timevector
   **/
-  C_FLOAT64 returnCurrentTime(int step) {return mCurrentTime[step];};
+  C_FLOAT64 returnCurrentTime(int step);
 
   /**
   * upgrade all vectors with values from actually calculalion for current step
