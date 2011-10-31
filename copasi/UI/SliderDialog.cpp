@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.83.4.13 $
+//   $Revision: 1.83.4.14 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/10/31 10:16:04 $
+//   $Date: 2011/10/31 15:27:52 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,7 @@
 #include <QMouseEvent>
 #include <QEvent>
 #include <QMenu>
+#include <QShowEvent>
 #include <QScrollArea>
 
 #include "SliderDialog.h"
@@ -533,6 +534,7 @@ void SliderDialog::fillSliderBox()
   if (mpParentWindow == NULL)
     return;
 
+  this->deleteInvalidSliders();
   std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
 
   if (mCurrentFolderId != C_INVALID_INDEX)
@@ -816,41 +818,9 @@ void SliderDialog::updateAllSliders()
   if (mCurrentFolderId == C_INVALID_INDEX) return;
 
   bool autoModify = mpAutoModifyRangesCheckBox->isChecked();
+  this->deleteInvalidSliders();
   std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
   std::vector<QWidget*>::iterator wit = v.begin(), wendit = v.end();
-  bool sliderDeleted = false;
-  CopasiSlider* pCopasiSlider = NULL;
-
-  while (wit != wendit)
-    {
-      pCopasiSlider = dynamic_cast<CopasiSlider*>(*wit);
-
-      if (pCopasiSlider)
-        {
-          if (pCopasiSlider->isValid())
-            {
-              pCopasiSlider->updateValue(autoModify, false);
-            }
-          else
-            {
-              // we need to remove the slider
-              this->removeSlider(pCopasiSlider);
-              wit = v.erase(wit);
-              wendit = v.end();
-              sliderDeleted = true;
-              continue;
-            }
-        }
-
-      ++wit;
-    }
-
-  if (sliderDeleted)
-    {
-      CQMessageBox::information(NULL, "Invalid Slider",
-                                "One or more sliders are invalid and have been deleted!",
-                                QMessageBox::Ok, QMessageBox::NoButton);
-    }
 
   if (!v.empty())
     {
@@ -861,6 +831,7 @@ void SliderDialog::updateAllSliders()
       // they actually display the updated values
       wit = v.begin();
       wendit = v.end();
+      CopasiSlider* pCopasiSlider = NULL;
 
       while (wit != wendit)
         {
@@ -868,6 +839,7 @@ void SliderDialog::updateAllSliders()
 
           if (pCopasiSlider)
             {
+              pCopasiSlider->updateValue(autoModify, false);
               pCopasiSlider->updateSliderData();
             }
 
@@ -1120,6 +1092,45 @@ void SliderDialog::setFramework(int framework)
   if (changed == true)
     {
       this->update();
+    }
+}
+
+void SliderDialog::showEvent(QShowEvent* pEvent)
+{
+  // make sure only valid sliders are shown
+  this->deleteInvalidSliders();
+  this->QDialog::showEvent(pEvent);
+}
+
+void SliderDialog::deleteInvalidSliders()
+{
+  std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
+  std::vector<QWidget*>::iterator wit = v.begin(), wendit = v.end();
+  bool sliderDeleted = false;
+  CopasiSlider* pCopasiSlider = NULL;
+
+  while (wit != wendit)
+    {
+      pCopasiSlider = dynamic_cast<CopasiSlider*>(*wit);
+
+      if (pCopasiSlider && !pCopasiSlider->isValid())
+        {
+          // we need to remove the slider
+          this->removeSlider(pCopasiSlider);
+          wit = v.erase(wit);
+          wendit = v.end();
+          sliderDeleted = true;
+          continue;
+        }
+
+      ++wit;
+    }
+
+  if (sliderDeleted)
+    {
+      CQMessageBox::information(NULL, "Invalid Slider",
+                                "One or more sliders are invalid and have been deleted!",
+                                QMessageBox::Ok, QMessageBox::NoButton);
     }
 }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-$Revision: 1.37.4.4 $
+$Revision: 1.37.4.5 $
 $Name:  $
 $Author: gauges $
-$Date: 2011/05/23 15:06:33 $
+$Date: 2011/10/31 15:27:52 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,7 @@ class CopasiSlider;
 class CCopasiTask;
 class CSlider;
 class CopasiUI3Window;
+class QShowEvent;
 
 class SliderDialog: public QDialog
 {
@@ -62,6 +63,14 @@ public:
   virtual void updateAllSliders();
 
 protected:
+  virtual void showEvent(QShowEvent * pEvent);
+
+  /**
+   * Deletes all sliders for the current folder id that
+   * are no longer valid.
+   */
+  void deleteInvalidSliders();
+
   size_t mapFolderId2EntryId(size_t folderId) const;
 
   void init();
