@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.15.4.1 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/24 12:52:47 $
+//   $Author: gauges $
+//   $Date: 2011/10/31 10:16:02 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -269,6 +274,14 @@ public:
    * @return const char* scaleName
    */
   const char* convertScaleToScaleName(Scale scale);
+
+
+  /**
+   * Checks whether the object the slider points to actually
+   * exists.
+   * Returns true if it does.
+   */
+  bool isValid() const;
 
   // Attributes
 private:
