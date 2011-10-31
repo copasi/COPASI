@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:07 $
+//   $Author: shoops $
+//   $Date: 2011/10/31 14:25:56 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -408,3 +408,14 @@ void CopasiSlider::setOriginalValue(C_FLOAT64 value)
 {
   this->mpCSlider->setOriginalValue(value);
 }
+/**
+ * Checks whether the slider is actually valid.
+ * This is mainly done by calling isValid on the underlying CSlider object.
+ */
+bool CopasiSlider::isValid() const
+{
+  return (this->mpCSlider != NULL && this->mpCSlider->isValid());
+}
+
+
+

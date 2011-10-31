@@ -48,9 +48,7 @@ protected :
 
 protected slots:
   void slotTableChanged();
-  void slotTimeOrStepChanged();
-  void changeLabelToTime();
-  void changeLabelToStep();
+  void slotTimeAndStepChanged();
   void changeContents();
 
   void saveDataToFile();

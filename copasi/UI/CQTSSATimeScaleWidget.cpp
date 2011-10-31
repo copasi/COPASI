@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSATimeScaleWidget.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/17 16:21:13 $
+//   $Date: 2011/10/31 14:25:56 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,7 +18,7 @@
 
 #include "CQTSSATimeScaleWidget.h"
 
-#include <math.h>
+#include <cmath>
 #include <qbitmap.h>
 #include <qcolor.h>
 #include <qtooltip.h>
@@ -146,6 +146,8 @@ void PaintWidget::paintEvent(QPaintEvent *)
 
   for (j = 0; j < mVector.size(); ++j)
     {
+      if (fabs(mVector[j]) == std::numeric_limits<C_FLOAT64>::infinity())
+        continue;
 
       if ((int)(log10(fabs(mVector[j])) + 1) > maxScaleValue)
         maxScaleValue = (int)(log10(fabs(mVector[j])) + 1);

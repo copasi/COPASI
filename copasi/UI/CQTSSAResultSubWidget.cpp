@@ -22,6 +22,7 @@
 #include "tssanalysis/CTSSAProblem.h"
 #include "utilities/CAnnotatedMatrix.h"
 #include "commandline/CLocaleString.h"
+#include "model/CModel.h"
 
 const CArrayAnnotation * pResult;
 
@@ -54,7 +55,7 @@ void CQTSSAResultSubWidget::saveDataToFile()
     {
       fileName =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          "untitled.txt", "TEXT Files (*.txt)", "Save to");
+                                          "untitled.txt", "Text Files (*.txt)", "Save to");
 
       if (fileName.isEmpty()) return;
 
@@ -121,46 +122,22 @@ void CQTSSAResultSubWidget::slotTableChanged()
 
 }
 
-void CQTSSAResultSubWidget::changeLabelToTime()
+
+//set time and step number
+void CQTSSAResultSubWidget::slotTimeAndStepChanged()
 {
 
   int s = mpSlider->value();
-
-  mpLabel->setNum(0);
 
   if (s > 1)
-    mpLabel->setNum((double)pMethod->returnCurrentTime(s - 1));
+    mpLabelTime->setNum((double)pMethod->returnCurrentTime(s - 1));
+  else
+    mpLabelTime->setNum(0);
 
-
+  mpLabelStep->setNum(s);
 }
 
-void CQTSSAResultSubWidget::changeLabelToStep()
-{
-
-  int s = mpSlider->value();
-
-  mpLabel->setNum(s);
-
-}
-
-
-void CQTSSAResultSubWidget::slotTimeOrStepChanged()
-{
-
-  int s = mpSlider->value();
-
-  if (mpButton1->isChecked())
-    {
-      if (s > 1)
-        mpLabel->setNum((double)pMethod->returnCurrentTime(s - 1));
-      else
-        mpLabel->setNum(0);
-    }
-
-  if (mpButton2->isChecked())
-    mpLabel->setNum(s);
-}
-
+//switch between time scale and table views
 void CQTSSAResultSubWidget::changeContents()
 {
 
@@ -197,7 +174,8 @@ void CQTSSAResultSubWidget::init()
 
   pMethod = dynamic_cast<CTSSAMethod*>(pTSSATask->getMethod());
 
-  mpLabel->setNum(0);
+  mpLabelTime->setNum(0);
+  mpLabelStep->setNum(0);
 
   connect(mpBox1, SIGNAL(currentIndexChanged(int)), this, SLOT(slotTableChanged(/* int */)));
 
@@ -212,8 +190,7 @@ void CQTSSAResultSubWidget::init()
 
   connect(mpSlider, SIGNAL(valueChanged(int)), this, SLOT(changeInterval()));
   connect(mpButton, SIGNAL(clicked()), this, SLOT(changeContents()));
-  connect(mpButton1, SIGNAL(clicked()), this, SLOT(changeLabelToTime()));
-  connect(mpButton2, SIGNAL(clicked()), this, SLOT(changeLabelToStep()));
+  connect(ButtonSaveData, SIGNAL(clicked()), this, SLOT(saveDataToFile()));
 
   mpBox1->setEditable(false);
 
@@ -239,7 +216,7 @@ void CQTSSAResultSubWidget::displayResult()
 
   pMethod = dynamic_cast<CTSSAMethod*>(pTSSATask->getMethod());
 
-  mpLabel->setNum((double)pProblem->getStepNumber());
+  QString a = FROM_UTF8(pModel->getTimeUnitName());
 
   mpSlider->setRange(1, pProblem->getStepNumber());
 
@@ -272,14 +249,14 @@ void CQTSSAResultSubWidget::discardOldResults()
 }
 
 /**
- * Get the results for the requested step from ILDM-method.
+ * Get the results for the requested step from the method.
  * Fill widgets with this results.
  **/
 
 void CQTSSAResultSubWidget::changeInterval()
 {
 
-  slotTimeOrStepChanged();
+  slotTimeAndStepChanged();
 
   int s = mpSlider->value();
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSATask.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:34:35 $
+//   $Date: 2011/10/31 14:25:57 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -80,7 +80,13 @@ CTSSATask::CTSSATask(const CCopasiContainer * pParent):
   mpProblem = new CTSSAProblem(this);
   mpMethod = createMethod(CCopasiMethod::tssILDM);
   this->add(mpMethod, true);
-  //mpMethod->setObjectParent(this);
+
+  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
+
+  if (pParameter != NULL)
+    mUpdateMoieties = *pParameter->getValue().pBOOL;
+  else
+    mUpdateMoieties = false;
 }
 
 CTSSATask::CTSSATask(const CTSSATask & src,
@@ -101,6 +107,15 @@ CTSSATask::CTSSATask(const CTSSATask & src,
   mpMethod->elevateChildren();
 
   this->add(mpMethod, true);
+
+
+  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
+
+  if (pParameter != NULL)
+    mUpdateMoieties = *pParameter->getValue().pBOOL;
+  else
+    mUpdateMoieties = false;
+
 }
 
 CTSSATask::~CTSSATask()
@@ -128,6 +143,14 @@ bool CTSSATask::initialize(const OutputFlag & of,
   mpTSSAMethod->setProblem(mpTSSAProblem);
 
   bool success = mpMethod->isValidProblem(mpProblem);
+
+  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
+
+  if (pParameter != NULL)
+    mUpdateMoieties = *pParameter->getValue().pBOOL;
+  else
+    mUpdateMoieties = false;
+
 
   pdelete(mpCurrentState);
   mpCurrentState = new CState(mpTSSAProblem->getModel()->getState());
@@ -241,7 +264,7 @@ bool CTSSATask::process(const bool & useInitialValues)
   catch (int)
     {
       mpTSSAProblem->getModel()->setState(*mpCurrentState);
-      mpTSSAProblem->getModel()->updateSimulatedValues(true);
+      mpTSSAProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
 
       if ((*LE)(outputStartTime, *mpCurrentTime))
         {
@@ -258,7 +281,7 @@ bool CTSSATask::process(const bool & useInitialValues)
   catch (CCopasiException Exception)
     {
       mpTSSAProblem->getModel()->setState(*mpCurrentState);
-      mpTSSAProblem->getModel()->updateSimulatedValues(true);
+      mpTSSAProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
 
       if ((*LE)(outputStartTime, *mpCurrentTime))
         {
@@ -312,7 +335,7 @@ bool CTSSATask::processStep(const C_FLOAT64 & nextTime)
       while (true);
 
       mpTSSAProblem->getModel()->setState(*mpCurrentState);
-      mpTSSAProblem->getModel()->updateSimulatedValues(true);
+      mpTSSAProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
 
       return true;
     }
@@ -335,7 +358,7 @@ bool CTSSATask::processStep(const C_FLOAT64 & nextTime)
       while (true);
 
       mpTSSAProblem->getModel()->setState(*mpCurrentState);
-      mpTSSAProblem->getModel()->updateSimulatedValues(true);
+      mpTSSAProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
 
       return true;
     }
@@ -353,7 +376,7 @@ bool CTSSATask::restore()
       CModel * pModel = mpProblem->getModel();
 
       pModel->setState(*mpCurrentState);
-      pModel->updateSimulatedValues(true);
+      pModel->updateSimulatedValues(mUpdateMoieties);
       pModel->setInitialState(pModel->getState());
       pModel->updateInitialValues();
     }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:34:36 $
+//   $Date: 2011/10/31 14:25:57 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -422,6 +422,8 @@ protected:
    **/
   void calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64 * Y1);
 
+  void calculateDerivatives(C_FLOAT64 * X1, C_FLOAT64 * Y1);
+
   /**
     * This is not very elegant solution. But I don't know the better one.
    **/
@@ -472,7 +474,7 @@ public:
   /**
   *return required time-value from timevector
   **/
-  C_FLOAT64 returnCurrentTime(int step) {return mCurrentTime[step];};
+  C_FLOAT64 returnCurrentTime(int step);
 
   /**
   * upgrade all vectors with values from actually calculalion for current step

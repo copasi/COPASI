@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:34:36 $
+//   $Date: 2011/10/31 14:25:57 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,6 +77,7 @@ void CILDMModifiedMethod::initializeParameter()
   initializeIntegrationsParameter();
 
   assertParameter("Deuflhard Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
+  mReducedModel = true;
 
   createAnnotationsM();
   emptyVectors();
@@ -84,6 +85,7 @@ void CILDMModifiedMethod::initializeParameter()
 
 void CILDMModifiedMethod::start(const CState * initialState)
 {
+  mReducedModel = true;
 
   integrationMethodStart(initialState);
 
@@ -134,8 +136,8 @@ void CILDMModifiedMethod::step(const double & deltaT)
   C_INT flag_jacob;
   flag_jacob = 1;  // Set flag_jacob=0 to print Jacobian
 
-  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor()
-                          / mpModel->getCompartments()[0]->getInitialValue();
+  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
+  //C_FLOAT64 number2conc = 1.;
 
   //this is an ugly hack that only makes sense if all metabs are in the same compartment
   //at the moment is is the only case the algorithm deals with
@@ -1052,6 +1054,8 @@ bool CILDMModifiedMethod::setAnnotationM(size_t step)
   if (step == 0) return false;
 
   if (mVec_mVslow.size() == 0) return false;
+
+  if (step > mVec_mVslow.size()) return false;
 
   if (step > mVec_SlowModes.size()) return false;
 

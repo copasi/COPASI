@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.196 $
+//   $Revision: 1.197 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/10 16:35:49 $
+//   $Date: 2011/10/31 14:25:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -622,7 +622,8 @@ public:
    */
   void calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                          const C_FLOAT64 & derivationFactor,
-                         const C_FLOAT64 & resolution);
+                         const C_FLOAT64 & resolution,
+                         const bool &userDefinedOrder = true);
 
   /**
    * Calculates the Jacobian of the reduced model for the current

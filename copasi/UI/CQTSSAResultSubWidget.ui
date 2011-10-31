@@ -2,13 +2,13 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultSubWidget.ui,v $ </comment>
-<comment>   $Revision: 1.16 $ </comment>
+<comment>   $Revision: 1.17 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/09/23 18:39:02 $ </comment>
+<comment>   $Date: 2011/10/31 14:25:56 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -20,8 +20,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>892</width>
-    <height>499</height>
+    <width>541</width>
+    <height>193</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -35,25 +35,25 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="mpLblResult">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="mpLblResult">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:x-large; font-weight:600;&quot;&gt;Time Scale Separation Analysis Result&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <layout class="QGridLayout" name="gridLayout_2">
-     <item row="0" column="0">
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="spacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -63,13 +63,13 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>608</width>
+         <width>108</width>
          <height>20</height>
         </size>
        </property>
       </spacer>
      </item>
-     <item row="0" column="1">
+     <item>
       <widget class="QPushButton" name="ButtonSaveData">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -78,7 +78,7 @@ p, li { white-space: pre-wrap; }
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Save data to file</string>
+        <string>Save to File</string>
        </property>
       </widget>
      </item>
@@ -87,72 +87,41 @@ p, li { white-space: pre-wrap; }
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QRadioButton" name="mpButton1">
-       <property name="text">
-        <string>Time</string>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="spacer_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>18</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QRadioButton" name="mpButton2">
+      <widget class="QLabel" name="label">
        <property name="text">
         <string>Step</string>
        </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
       </widget>
      </item>
      <item>
-      <spacer name="spacer_4">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>18</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="mpLabel">
+      <widget class="QLabel" name="mpLabelStep">
        <property name="text">
-        <string>1</string>
+        <string>0</string>
        </property>
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer_3">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Time</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="mpLabelTime">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>458</width>
+         <width>40</width>
          <height>20</height>
         </size>
        </property>
@@ -167,7 +136,7 @@ p, li { white-space: pre-wrap; }
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Show Time scales</string>
+        <string>Show Time Scales</string>
        </property>
       </widget>
      </item>
@@ -244,15 +213,15 @@ p, li { white-space: pre-wrap; }
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>CQArrayAnnotationsWidget</class>
+   <extends>QWidget</extends>
+   <header>copasi/UI/CQArrayAnnotationsWidget.h</header>
+  </customwidget>
+  <customwidget>
    <class>CopasiWidget</class>
    <extends>QWidget</extends>
    <header>copasi/UI/copasiWidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>CQArrayAnnotationsWidget</class>
-   <extends>QWidget</extends>
-   <header>copasi/UI/CQArrayAnnotationsWidget.h</header>
   </customwidget>
   <customwidget>
    <class>CQTSSATimeScaleWidget</class>
@@ -261,8 +230,6 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
  </customwidgets>
- <includes>
- </includes>
  <resources/>
  <connections/>
 </ui>

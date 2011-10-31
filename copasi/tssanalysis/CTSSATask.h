@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSATask.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:34:36 $
+//   $Date: 2011/10/31 14:25:57 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,6 +70,11 @@ private:
    * A pointer to the method
    */
   CTSSAMethod * mpTSSAMethod;
+
+  /**
+   * Indicates whether we need to update moieties.
+   */
+  bool mUpdateMoieties;
 
   /**
    * A pointer to the current state of the integration.

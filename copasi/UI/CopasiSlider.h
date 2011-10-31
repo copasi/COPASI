@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.h,v $
- $Revision: 1.18 $
+ $Revision: 1.19 $
  $Name:  $
  $Author: shoops $
- $Date: 2011/03/07 19:38:00 $
+ $Date: 2011/10/31 14:25:56 $
  End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,6 +69,12 @@ public:
   void updateLabel();
   void updateSliderData();
   void resetValue();
+
+  /**
+   * Checks whether the slider is actually valid.
+   * This is mainly done by calling isValid on the underlying CSlider object.
+   */
+  bool isValid() const;
 
 public slots:
   void sliderValueChanged(int value);
