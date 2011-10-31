@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.95.2.8 $
+//   $Revision: 1.95.2.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/25 17:37:59 $
+//   $Date: 2011/10/31 11:23:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -198,7 +198,6 @@ private:
   ListViews *mpListView;
   QComboBox * mpBoxSelectFramework;
 
-  int newFlag;
   QString FixedTitle;
 
   QAction* mpaNew;

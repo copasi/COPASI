@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.289.2.18 $
+//   $Revision: 1.289.2.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/25 17:37:59 $
+//   $Date: 2011/10/31 11:23:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -229,7 +229,6 @@ CopasiUI3Window::CopasiUI3Window():
     mpDataModelGUI(NULL),
     mpListView(NULL),
     mpBoxSelectFramework(NULL),
-    newFlag(0),
     mpSliders(NULL),
     mpObjectBrowser(NULL),
     mSaveAsRequired(true),
@@ -629,10 +628,12 @@ void CopasiUI3Window::slotFileSaveFinished(bool success)
 
 void CopasiUI3Window::newDoc()
 {
-  if (newFlag == 0)
-    newFlag = 1;
-  else
-    mpDataModelGUI->commit();
+  disconnect(this, SIGNAL(signalLoadFile(QString)), this, SLOT(newDoc()));
+
+  if (mCommitRequired)
+    {
+      mpDataModelGUI->commit();
+    }
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
@@ -645,7 +646,13 @@ void CopasiUI3Window::newDoc()
                                      QMessageBox::Save))
         {
           case QMessageBox::Save:
+            connect(this, SIGNAL(signalLoadFile(QString)), this, SLOT(newDoc()));
+
+            mNewFile = "newDoc()";
+            mCommitRequired = false;
             slotFileSave();
+            return;
+
             break;
 
           case QMessageBox::Discard:
@@ -676,6 +683,7 @@ void CopasiUI3Window::newDoc()
   updateTitle();
   mpListView->switchToOtherWidget(1, "");
   mSaveAsRequired = true;
+  mCommitRequired = true;
 }
 
 void CopasiUI3Window::slotProcessCommandline()
