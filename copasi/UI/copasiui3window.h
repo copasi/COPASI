@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.101 $
+//   $Revision: 1.102 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/14 17:38:24 $
+//   $Date: 2011/10/31 11:51:14 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,7 @@ using namespace SystemsBiologyWorkbench;
 class SBWListener;
 #endif  // COPASI_SBW_INTEGRATION
 
-#include "MIRIAM/CMIRIAMResource.h"
+#include "copasi/MIRIAM/CMIRIAMResource.h"
 
 //class QToolButton;
 class ListViews;
@@ -196,7 +196,6 @@ private:
   ListViews *mpListView;
   QComboBox * mpBoxSelectFramework;
 
-  int newFlag;
   QString FixedTitle;
 
   QAction* mpaNew;
