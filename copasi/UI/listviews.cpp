@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.290.2.10 $
+//   $Revision: 1.290.2.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/02/24 17:45:28 $
+//   $Author: gauges $
+//   $Date: 2011/10/31 15:27:17 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -691,7 +691,6 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
   if (newWidget == currentWidget)
     if (itemKey == lastKey) return; //do nothing
 
-  emit signalFolderChanged(index);
 
   // leave old widget
   if (currentWidget)
@@ -723,6 +722,11 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
 
       if (newWidget) newWidget->show();
     }
+
+  // we emit the signal after the old widget has saved
+  // the changes
+  emit signalFolderChanged(index);
+
 
   currentWidget = newWidget;
   lastKey = itemKey;
