@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-$Revision: 1.37.4.5 $
+$Revision: 1.37.4.6 $
 $Name:  $
 $Author: gauges $
-$Date: 2011/10/31 15:27:52 $
+$Date: 2011/11/01 16:05:13 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,6 +61,11 @@ public:
 
   // This methods needs to be called by copasiui3window
   virtual void updateAllSliders();
+
+  /**
+   * Deletes all exisiting sliders.
+   */
+  void clear();
 
 protected:
   virtual void showEvent(QShowEvent * pEvent);

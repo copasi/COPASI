@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.289.2.19 $
+//   $Revision: 1.289.2.20 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/31 11:23:37 $
+//   $Author: gauges $
+//   $Date: 2011/11/01 16:05:13 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -670,6 +670,9 @@ void CopasiUI3Window::newDoc()
 
   mpListView->switchToOtherWidget(0, "");
 
+  // delete the old sliders
+  if (this->mpSliders) this->mpSliders->clear();
+
   mpDataModelGUI->createModel();
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD, (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
   //if (!mbObject_browser_open)
@@ -767,6 +770,8 @@ void CopasiUI3Window::slotFileOpen(QString file)
                              (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
 
       mpListView->switchToOtherWidget(0, "");
+
+      if (this->mpSliders) this->mpSliders->clear();
 
       this->setCursor(Qt::WaitCursor);
 
@@ -1124,6 +1129,8 @@ void CopasiUI3Window::closeEvent(QCloseEvent* ce)
         }
     }
 
+  if (this->mpSliders) this->mpSliders->clear();
+
   return;
 }
 
@@ -1374,6 +1381,8 @@ void CopasiUI3Window::slotImportSBML(QString file)
                              (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
 
       mpListView->switchToOtherWidget(0, "");
+
+      if (this->mpSliders) this->mpSliders->clear();
 
       if (!mpDataModelGUI)
         {

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.83.4.14 $
+//   $Revision: 1.83.4.15 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/10/31 15:27:52 $
+//   $Date: 2011/11/01 16:05:13 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -403,11 +403,16 @@ SliderDialog::~SliderDialog()
   delete mpAutoModifyRangesCheckBox;
   delete mpSliderBox;
   delete mpScrollView;
-  size_t i, j, maxWidgets, maxVectors = mSliderMap.size();
+  this->clear();
+}
+
+void SliderDialog::clear()
+{
+  size_t i, j, maxWidgets, maxVectors = this->mSliderMap.size();
 
   for (i = 0; i < maxVectors; ++i)
     {
-      std::vector<QWidget*> v = mSliderMap[i];
+      std::vector<QWidget*> v = this->mSliderMap[i];
       maxWidgets = v.size();
 
       for (j = 0; j < maxWidgets; ++j)
@@ -415,6 +420,8 @@ SliderDialog::~SliderDialog()
           pdelete(v[j]);
         }
     }
+
+  this->mSliderMap.clear();
 }
 
 void SliderDialog::init()
