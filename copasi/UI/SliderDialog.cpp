@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.83.4.15 $
+//   $Revision: 1.83.4.16 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/11/01 16:05:13 $
+//   $Date: 2011/11/01 19:07:13 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -145,7 +145,9 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
   this->mpContextMenu->insertItem("Reset Value", this, SLOT(resetValue()));
   this->mpContextMenu->insertItem("Set new default value", this, SLOT(setDefault()));
 
-  this->mSliderMap[C_INVALID_INDEX].push_back(new QLabel("<p>There are no sliders available for this task. If you select one of the tasks that supports sliders in the copasi object tree, this dialog will become active.</p>", mpSliderBox));
+  QLabel* pLabel = new QLabel("<p>There are no sliders available for this task. If you select one of the tasks that supports sliders in the copasi object tree, this dialog will become active.</p>", NULL);
+  this->mSliderMap[C_INVALID_INDEX].push_back(pLabel);
+  static_cast<QBoxLayout*>(mpSliderBox->layout())->insertWidget(0, pLabel);
 
   this->mTaskMap[23] = &SliderDialog::runTimeCourse;
   this->mTaskMap[21] = &SliderDialog::runSteadyStateTask;
@@ -450,7 +452,7 @@ void SliderDialog::addSlider(CSlider* pSlider)
 
   if (!tmp)
     {
-      setCurrentSlider(new CopasiSlider(pSlider, mpParentWindow->getDataModel(), mpSliderBox));
+      setCurrentSlider(new CopasiSlider(pSlider, mpParentWindow->getDataModel(), NULL));
       mpCurrSlider->installEventFilter(this);
       mpCurrSlider->setHidden(true);
       mpCurrSlider->updateSliderData();
@@ -530,7 +532,6 @@ void SliderDialog::setCurrentFolderId(size_t id)
     }
 
   clearSliderBox();
-
   mCurrentFolderId = id;
 
   fillSliderBox();
@@ -1140,4 +1141,16 @@ void SliderDialog::deleteInvalidSliders()
                                 QMessageBox::Ok, QMessageBox::NoButton);
     }
 }
+
+/**
+ * Resets the SliderDialog to its initial state.
+ * It basically calls clear and readds the Label
+ * for the task widgets that don't support sliders.
+ */
+void SliderDialog::reset()
+{
+  this->clear();
+  this->mSliderMap[C_INVALID_INDEX].push_back(new QLabel("<p>There are no sliders available for this task. If you select one of the tasks that supports sliders in the copasi object tree, this dialog will become active.</p>", NULL));
+}
+
 

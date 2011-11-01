@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-$Revision: 1.37.4.6 $
+$Revision: 1.37.4.7 $
 $Name:  $
 $Author: gauges $
-$Date: 2011/11/01 16:05:13 $
+$Date: 2011/11/01 19:07:14 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,6 +66,13 @@ public:
    * Deletes all exisiting sliders.
    */
   void clear();
+
+  /**
+   * Resets the SliderDialog to its initial state.
+   * It basically calls clear and readds the Label
+   * for the task widgets that don't support sliders.
+   */
+  void reset();
 
 protected:
   virtual void showEvent(QShowEvent * pEvent);
