@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.289.2.21 $
+//   $Revision: 1.289.2.22 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/11/01 19:07:14 $
+//   $Date: 2011/11/01 19:57:48 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -321,6 +321,7 @@ CopasiUI3Window::CopasiUI3Window():
   // Assure that the changed flag is still false;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   (*CCopasiRootContainer::getDatamodelList())[0]->changed(false);
+  this->mpSliders->setChanged(false);
 
   mpAutoSaveTimer = new QTimer(this);
   mpAutoSaveTimer->start(AutoSaveInterval); // every 10 minutes
@@ -600,6 +601,7 @@ void CopasiUI3Window::slotFileSaveFinished(bool success)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
       (*CCopasiRootContainer::getDatamodelList())[0]->changed(false);
+      this->mpSliders->setChanged(false);
       updateTitle();
     }
   else
@@ -637,7 +639,7 @@ void CopasiUI3Window::newDoc()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  if (mpDataModelGUI && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
+  if (mpDataModelGUI && ((*CCopasiRootContainer::getDatamodelList())[0]->isChanged() || this->mpSliders->isChanged()))
     {
       switch (CQMessageBox::question(this, "COPASI",
                                      "The document contains unsaved changes\n"
@@ -674,6 +676,7 @@ void CopasiUI3Window::newDoc()
   if (this->mpSliders) this->mpSliders->reset();
 
   mpDataModelGUI->createModel();
+  this->mpSliders->setChanged(false);
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD, (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
   //if (!mbObject_browser_open)
   //mpFileMenu->setItemEnabled(nobject_browser, true);
@@ -738,7 +741,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-      if (mpDataModelGUI && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
+      if (mpDataModelGUI && ((*CCopasiRootContainer::getDatamodelList())[0]->isChanged() || this->mpSliders->isChanged()))
         {
           switch (CQMessageBox::question(this, "COPASI",
                                          "The document contains unsaved changes\n"
@@ -1043,7 +1046,7 @@ void CopasiUI3Window::slotQuit()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  if (mpDataModelGUI && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
+  if (mpDataModelGUI && ((*CCopasiRootContainer::getDatamodelList())[0]->isChanged() || this->mpSliders->isChanged()))
     {
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotQuitFinished(bool)));
 
@@ -1101,7 +1104,7 @@ void CopasiUI3Window::closeEvent(QCloseEvent* ce)
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
 
-  if (mpDataModelGUI && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
+  if (mpDataModelGUI && ((*CCopasiRootContainer::getDatamodelList())[0]->isChanged() || this->mpSliders->isChanged()))
     {
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotCloseEventFinished(bool)));
 
@@ -1244,7 +1247,7 @@ void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-      if (mpDataModelGUI && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
+      if (mpDataModelGUI && ((*CCopasiRootContainer::getDatamodelList())[0]->isChanged() || this->mpSliders->isChanged()))
         {
           switch (CQMessageBox::question(this, "COPASI",
                                          "The document contains unsaved changes\n"
@@ -1349,7 +1352,7 @@ void CopasiUI3Window::slotImportSBML(QString file)
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-      if (mpDataModelGUI && (*CCopasiRootContainer::getDatamodelList())[0]->isChanged())
+      if (mpDataModelGUI && ((*CCopasiRootContainer::getDatamodelList())[0]->isChanged() || this->mpSliders->isChanged()))
         {
           switch (CQMessageBox::question(this, "COPASI",
                                          "The document contains unsaved changes\n"

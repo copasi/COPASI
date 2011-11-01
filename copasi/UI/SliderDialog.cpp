@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.83.4.16 $
+//   $Revision: 1.83.4.17 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/11/01 19:07:13 $
+//   $Date: 2011/11/01 19:57:48 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,7 +86,8 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
     mCurrentFolderId(0),
     mSliderValueChanged(false),
     mSliderPressed(false),
-    mFramework(0)
+    mFramework(0),
+    mChanged(false)
 {
   QVBoxLayout* pMainLayout = new QVBoxLayout(this);
   this->setLayout(pMainLayout);
@@ -147,7 +148,7 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
 
   QLabel* pLabel = new QLabel("<p>There are no sliders available for this task. If you select one of the tasks that supports sliders in the copasi object tree, this dialog will become active.</p>", NULL);
   this->mSliderMap[C_INVALID_INDEX].push_back(pLabel);
-  static_cast<QBoxLayout*>(mpSliderBox->layout())->insertWidget(0, pLabel);
+  pLayout3->insertWidget(0, pLabel);
 
   this->mTaskMap[23] = &SliderDialog::runTimeCourse;
   this->mTaskMap[21] = &SliderDialog::runSteadyStateTask;
@@ -307,6 +308,7 @@ void SliderDialog::createNewSlider()
               pCSlider->compile(listOfContainers);
               pCSlider->resetRange();
               addSlider(pCSlider);
+              this->mChanged = true;
             }
         }
 
@@ -362,6 +364,7 @@ void SliderDialog::deleteSlider(CopasiSlider* pSlider)
       v->erase(it);
       mpSliderBox->layout()->remove(pSlider);
       pdelete(pSlider);
+      this->mChanged = true;
     }
 }
 
@@ -410,6 +413,7 @@ SliderDialog::~SliderDialog()
 
 void SliderDialog::clear()
 {
+  this->clearSliderBox();
   size_t i, j, maxWidgets, maxVectors = this->mSliderMap.size();
 
   for (i = 0; i < maxVectors; ++i)
@@ -464,6 +468,7 @@ void SliderDialog::addSlider(CSlider* pSlider)
       connect(mpCurrSlider, SIGNAL(closeClicked(CopasiSlider*)), this, SLOT(removeSlider(CopasiSlider*)));
       connect(mpCurrSlider, SIGNAL(editClicked(CopasiSlider*)), this, SLOT(editSlider(CopasiSlider*)));
       mpCurrSlider->setHidden(false);
+      this->mChanged = true;
     }
   else
     {
@@ -616,6 +621,7 @@ void SliderDialog::fillSliderBox()
               CopasiSlider* pTmpSlider = dynamic_cast<CopasiSlider*>(v[j]);
               assert(pTmpSlider);
               deleteSlider(pTmpSlider);
+              this->mChanged = true;
             }
         }
 
@@ -1150,7 +1156,20 @@ void SliderDialog::deleteInvalidSliders()
 void SliderDialog::reset()
 {
   this->clear();
+  assert(this->mSliderMap[C_INVALID_INDEX].size() == 0);
   this->mSliderMap[C_INVALID_INDEX].push_back(new QLabel("<p>There are no sliders available for this task. If you select one of the tasks that supports sliders in the copasi object tree, this dialog will become active.</p>", NULL));
 }
 
+/**
+ * Returns whether the slider dialog contains changes.
+ */
+bool SliderDialog::isChanged() const
+{
+  return this->mChanged;
+}
+
+void SliderDialog::setChanged(bool changed)
+{
+  this->mChanged = changed;
+}
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-$Revision: 1.37.4.7 $
+$Revision: 1.37.4.8 $
 $Name:  $
 $Author: gauges $
-$Date: 2011/11/01 19:07:14 $
+$Date: 2011/11/01 19:57:48 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -74,6 +74,15 @@ public:
    */
   void reset();
 
+  /**
+   * Returns whether the slider dialog contains changes.
+   */
+  bool isChanged() const;
+
+  /**
+   * Sets the changed state of the SliderDialog.
+   */
+  void setChanged(bool changed);
 protected:
   virtual void showEvent(QShowEvent * pEvent);
 
@@ -148,6 +157,9 @@ protected:
   bool mSliderValueChanged;
   bool mSliderPressed;
   int mFramework;
+
+  // stored whether the sliders have been changed
+  bool mChanged;
 
 
 };
