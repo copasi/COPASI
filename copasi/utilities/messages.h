@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.153.2.12 $
+//   $Revision: 1.153.2.13 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2011/10/28 14:02:40 $
+//   $Date: 2011/11/02 13:20:50 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -352,7 +352,7 @@ const MESSAGES Messages[] =
   {MCTSSAMethod + 6, "CILDMMethod (6): At time t='%f' all eigen values are positive. No reduction is possible."},
   {MCTSSAMethod + 7, "CILDMMethod (7): Problems with calculation of Sylvester equation for the mode number '%d' at time t='%f'."},
   {MCTSSAMethod + 8, "CILDMMethod (8): At time t='%f' no reduction is possible"},
-  {MCTSSAMethod + 9, "CILDMModifiedMethod (9): Problems with calculation of Jacobi matrix at time t='%f'."},
+  {MCTSSAMethod + 9, "CTSSAMethod (9): Problems with calculation of Jacobi matrix at time t='%f'."},
   {MCTSSAMethod + 10, "CILDMModifiedMethod (10): At time t='%f'  all eigen values are positive. No reduction is possible."},
   {MCTSSAMethod + 11, "CILDMModifiedMethod (11): At time t='%f'  no reduction is possible."},
   {MCTSSAMethod + 12, "CCSPMethod (12): At time t='%f'  no reduction is possible."},
