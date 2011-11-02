@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.cpp,v $
-//   $Revision: 1.16.2.4 $
+//   $Revision: 1.16.2.5 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2011/10/28 14:01:29 $
+//   $Date: 2011/11/02 15:26:49 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1044,6 +1044,8 @@ void CILDMModifiedMethod::createAnnotationsM()
   pTmp4->setDimensionDescription(0, "Species");
   pTmp4->setDimensionDescription(1, "Contribution to fast space");
   pVfastSpacePrintAnn = pTmp4;
+
+  mapTableToName[name] = pVfastSpacePrintAnn;
 }
 /**
  * Set the every CArrayAnnotation for the requested step.
@@ -1059,7 +1061,7 @@ bool CILDMModifiedMethod::setAnnotationM(size_t step)
 
   if (mVec_mVslow.size() == 0) return false;
 
-  if (step > mVec_mVslow.size()) return false;
+  //if (step > mVec_mVslow.size()) return false;
 
   if (step > mVec_SlowModes.size()) return false;
 
