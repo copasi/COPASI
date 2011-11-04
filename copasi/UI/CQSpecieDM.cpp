@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.cpp,v $
-//   $Revision: 1.11.2.8 $
+//   $Revision: 1.11.2.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/07 17:09:00 $
+//   $Date: 2011/11/04 16:18:23 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -332,6 +332,10 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
             {
               if (index.data().toString() == QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[value.toInt()]])))
                 return false;
+            }
+          else if (index.column() == COL_COMPARTMENT && value == "")
+            {
+              return false;
             }
           else if (index.data() == value)
             {
