@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesWidget.cpp,v $
-//   $Revision: 1.12.2.4 $
+//   $Revision: 1.12.2.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/11/04 16:18:23 $
+//   $Date: 2011/11/04 17:08:50 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -154,6 +154,7 @@ bool CQSpeciesWidget::enterProtected()
                  this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
     }
 
+  mpProxyModel->setSourceModel(mpSpecieDM);
   //Set Model for the TableView
   mpTblSpecies->setModel(NULL);
   mpTblSpecies->setModel(mpProxyModel);
