@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesWidget.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/14 16:17:45 $
+//   $Date: 2011/11/04 16:23:35 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,6 +47,9 @@ CQSpeciesWidget::CQSpeciesWidget(QWidget* parent, const char* name)
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
+  mpProxyModel->setSourceModel(mpSpecieDM);
+
+  mpTblSpecies->setModel(mpProxyModel);
 
   //Setting values for Compartment comboBox
   mpCompartmentDelegate = new CQComboDelegate(&mCompartments, this);
@@ -153,7 +156,6 @@ bool CQSpeciesWidget::enterProtected()
                  this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
     }
 
-  mpProxyModel->setSourceModel(mpSpecieDM);
   //Set Model for the TableView
   mpTblSpecies->setModel(NULL);
   mpTblSpecies->setModel(mpProxyModel);
