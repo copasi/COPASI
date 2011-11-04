@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.cpp,v $
-//   $Revision: 1.12.2.3 $
+//   $Revision: 1.12.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/11/23 18:06:10 $
+//   $Date: 2011/11/04 17:40:09 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -130,22 +130,29 @@ CQNotes::~CQNotes()
 // virtual
 bool CQNotes::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
-  if (key == mKey)
+  switch (action)
     {
-      switch (action)
-        {
-          case ListViews::CHANGE:
-            load();
-            break;
+      case ListViews::CHANGE:
 
-          case ListViews::DELETE:
+        if (key == mKey)
+          {
+            load();
+          }
+
+        break;
+
+      case ListViews::DELETE:
+
+        if (key == mKey || objectType == ListViews::MODEL)
+          {
             mpObject = NULL;
             mKey = "";
-            break;
+          }
 
-          default:
-            break;
-        }
+        break;
+
+      default:
+        break;
     }
 
   if (objectType == ListViews::MODEL &&
