@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.19.2.9 $
+//   $Revision: 1.19.2.10 $
 //   $Name:  $
 //   $Author: nsimus $
-//   $Date: 2011/11/02 13:18:00 $
+//   $Date: 2011/11/07 10:18:35 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -466,11 +466,14 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
   C_INT info = 0;
 
   schur(info);
-  {
-    CCopasiMessage(CCopasiMessage::WARNING,
-                   MCTSSAMethod + 9, mTime);
-    return;
-  }
+
+  if (info)
+    {
+      CCopasiMessage(CCopasiMessage::WARNING,
+                     MCTSSAMethod + 9, mTime);
+      return;
+    }
+
   /* trial basis vectors */
 
   /* use the matrix of Schur vectors */
