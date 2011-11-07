@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/31 14:25:57 $
+//   $Date: 2011/11/07 13:58:39 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -457,11 +457,22 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
   mQ.resize(N, N);
   mR.resize(N, N);
 
+
+  mQ = 0.;
+  mR = 0.;
+
   mJacobian_initial = J;
 
-  C_INT info;
+  C_INT info = 0;
 
   schur(info);
+
+  if (info)
+    {
+      CCopasiMessage(CCopasiMessage::WARNING,
+                     MCTSSAMethod + 9, mTime);
+      return;
+    }
 
   /* trial basis vectors */
 

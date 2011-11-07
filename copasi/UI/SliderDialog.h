@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-$Revision: 1.42 $
+$Revision: 1.43 $
 $Name:  $
-$Author: gauges $
-$Date: 2011/07/24 11:47:04 $
+$Author: shoops $
+$Date: 2011/11/07 13:59:27 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,7 +62,36 @@ public:
   // This methods needs to be called by copasiui3window
   virtual void updateAllSliders();
 
+  /**
+   * Deletes all exisiting sliders.
+   */
+  void clear();
+
+  /**
+   * Resets the SliderDialog to its initial state.
+   * It basically calls clear and readds the Label
+   * for the task widgets that don't support sliders.
+   */
+  void reset();
+
+  /**
+   * Returns whether the slider dialog contains changes.
+   */
+  bool isChanged() const;
+
+  /**
+   * Sets the changed state of the SliderDialog.
+   */
+  void setChanged(bool changed);
 protected:
+  virtual void showEvent(QShowEvent * pEvent);
+
+  /**
+   * Deletes all sliders for the current folder id that
+   * are no longer valid.
+   */
+  void deleteInvalidSliders();
+
   size_t mapFolderId2EntryId(size_t folderId) const;
 
   void init();
@@ -99,13 +128,6 @@ protected:
   // is actually allowed and if it isn't, it will return the correct object
   const CCopasiObject* determineCorrectObjectForSlider(const CCopasiObject* pObject);
 
-  /**
-   * Checks if the object on the slider fits the current framework
-   * and if not, changes the slider object to make it fit.
-   * The boolean return value determines if the slider was changed or not.
-   */
-  bool updateSliderObject(CopasiSlider* pSlider);
-
 protected slots:
   void removeSlider(CopasiSlider* slider);
   void editSlider(CopasiSlider* slider);
@@ -141,6 +163,9 @@ protected:
   bool mSliderValueChanged;
   bool mSliderPressed;
   int mFramework;
+
+  // stored whether the sliders have been changed
+  bool mChanged;
 
 
 };
