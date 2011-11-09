@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.100 $
+//   $Revision: 1.101 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/17 19:55:40 $
+//   $Author: gauges $
+//   $Date: 2011/11/09 15:08:57 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,6 +51,16 @@
 #include "utilities/CCopasiException.h"
 #include "commandline/CConfigurationFile.h"
 #include "utilities/CCopasiTree.h"
+
+#ifdef CELLDESIGNER_IMPORT
+#include "../layout/CLayout.h"
+#include "../layout/CListOfLayouts.h"
+#include "../layout/SBMLDocumentLoader.h"
+#include "../sbml/CCellDesignerImporter.h"
+#include "../sbml/SBMLUtils.h"
+
+#include <sbml/SBMLDocument.h>
+#endif // CELLDESIGNER_IMPORT
 
 
 //*****************************************************************************
@@ -232,7 +242,6 @@ void DataModelGUI::saveModelFinished()
   threadFinished();
 }
 
-
 void DataModelGUI::importSBMLFromString(const std::string & sbmlDocumentText)
 {
   mpProgressBar = CProgressBar::create();
@@ -265,6 +274,12 @@ void DataModelGUI::importSBMLFromStringFinished()
 
   if (mSuccess)
     {
+      // can't run this in a separate thread because it uses GUI routines
+      // TODO maybe put the main part of this routine in a separate thread after
+      // TODO asking the user
+#ifdef CELLDESIGNER_IMPORT
+      this->importCellDesigner();
+#endif // CELLDESIGNER_IMPORT
       mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
       linkDataModelToGUI();
     }
@@ -280,7 +295,6 @@ void DataModelGUI::importSBML(const std::string & fileName)
 
   mSuccess = true;
   mFileName = fileName;
-
   mpThread = new CQThread(this, &DataModelGUI::importSBMLRun);
   connect(mpThread, SIGNAL(finished()), this, SLOT(importSBMLFinished()));
   mpThread->start();
@@ -304,6 +318,9 @@ void DataModelGUI::importSBMLFinished()
 {
   if (mSuccess)
     {
+#ifdef CELLDESIGNER_IMPORT
+      this->importCellDesigner();
+#endif // CELLDESIGNER_IMPORT
       CCopasiRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(mFileName);
 
       mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
@@ -636,4 +653,118 @@ void DataModelGUI::commit()
       (*it)->commit();
     }
 }
+
+#ifdef CELLDESIGNER_IMPORT
+/**
+ * This method tries to import CellDesigner annotations.
+ */
+void DataModelGUI::importCellDesigner()
+{
+  // add code to check for CellDesigner annotations
+  // ask the user if the annotations should be imported
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+
+  if (pDataModel != NULL)
+    {
+      SBMLDocument* pSBMLDocument = pDataModel->getCurrentSBMLDocument();
+
+      if (pSBMLDocument != NULL &&
+          pSBMLDocument->getModel() != NULL &&
+          pSBMLDocument->getModel()->getAnnotation() != NULL)
+        {
+          // check for the CellDesigner namespace
+          std::pair<bool, std::string> foundNamespace = CCellDesignerImporter::findCellDesignerNamespace(pSBMLDocument);
+
+          if (foundNamespace.first == true)
+            {
+              const XMLNode* pAnno = CCellDesignerImporter::findCellDesignerAnnotation(pSBMLDocument, pSBMLDocument->getModel()->getAnnotation());
+
+              // first we check if there are supported cell designer annotations
+              if (pAnno != NULL)
+                {
+                  // check if the file contains the correct version
+                  double version = CCellDesignerImporter::determineVersion(pAnno);
+
+                  if (version < 4.0)
+                    {
+                      CCopasiMessage(CCopasiMessage::RAW, "CellDesigner annotation was found in the file, but the version is not supported.\nPlease open the file in the latest version of CellDesigner and save it again.");
+                    }
+                  else
+                    {
+                      // ask the user if the CellDesigner annotation should be imported
+                      if (QMessageBox::question(NULL, "CellDesigner import", "A CellDesigner diagram was found in this file.\nDo you want to import the diagram?" , QMessageBox::Yes | QMessageBox::No , QMessageBox::No) == QMessageBox::Yes)
+                        {
+                          // do the import
+                          CCellDesignerImporter cd_importer(pSBMLDocument);
+
+                          if (cd_importer.getLayout() == NULL)
+                            {
+                              CCopasiMessage(CCopasiMessage::WARNING, "Sorry, CellDesigner annotations could not be importet.");
+                            }
+                          else
+                            {
+                              // now we have to import the created layout
+                              // create the model map
+                              std::string s1, s2;
+                              std::map<std::string, std::string> modelmap;
+                              std::map<CCopasiObject*, SBase*>::const_iterator it;
+                              std::map<CCopasiObject*, SBase*>::const_iterator itEnd = pDataModel->getCopasi2SBMLMap().end();
+
+                              for (it = pDataModel->getCopasi2SBMLMap().begin(); it != itEnd; ++it)
+                                {
+                                  s1 = SBMLUtils::getIdFromSBase(it->second);
+
+                                  if (it->first)
+                                    {
+                                      s2 = it->first->getKey();
+                                    }
+                                  else
+                                    {
+                                      s2 = "";
+                                    }
+
+                                  if ((s1 != "") && (s2 != ""))
+                                    {
+                                      modelmap[s1] = s2;
+                                    }
+                                }
+
+
+                              // the layout map and the id to key map can be empty
+                              std::map<std::string, std::string> layoutmap;
+                              std::map<std::string, std::string> idToKeyMap;
+#ifdef USE_CRENDER_EXTENSION
+                              CLayout* pLayout = SBMLDocumentLoader::createLayout(*cd_importer.getLayout(), modelmap, layoutmap, idToKeyMap);
+#else
+                              CLayout* pLayout = SBMLDocumentLoader::createLayout(*cd_importer.getLayout(), modelmap, layoutmap);
+#endif /* USE_CRENDER_EXTENSION */
+
+                              // add the layout to the DataModel
+                              if (pLayout != NULL && pDataModel->getListOfLayouts() != NULL)
+                                {
+                                  // the addLayout methods expects a map as the second argument which currently is
+                                  // ignored, so we just pass an empty one
+                                  // TODO maybe the methods actually expects one of the maps above (layoutmap or idToKeyMap), but
+                                  // TODO this is not documented in CListOfLayouts
+                                  std::map<std::string, std::string> tmp;
+                                  pDataModel->getListOfLayouts()->addLayout(pLayout, tmp);
+                                }
+                              else
+                                {
+                                  CCopasiMessage(CCopasiMessage::WARNING, "Sorry, Layout from CellDesigner annotations could not be created.");
+                                }
+                            }
+                        }
+                    }
+                }
+              else
+                {
+                  CCopasiMessage(CCopasiMessage::RAW, "CellDesigner annotation was found in the file, but the version is not supported.\nPlease open the file in the latest version of CellDesigner and save it again.");
+                }
+            }
+        }
+    }
+}
+#endif // CELLDESIGNER_IMPORT
 

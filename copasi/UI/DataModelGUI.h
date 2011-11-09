@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/13 19:21:59 $
+//   $Author: gauges $
+//   $Date: 2011/11/09 15:08:57 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,6 +61,9 @@ public:
   void importSBMLFromString(const std::string & sbmlDocumentText);
   void exportSBMLToString(std::string & sbmlDocumentText);
   void exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile = false);
+#ifdef CELLDESIGNER_IMPORT
+  void importCellDesigner();
+#endif /* CELLDESIGNER_IMPORT */
 
   void loadModelRun();
   void saveModelRun();
