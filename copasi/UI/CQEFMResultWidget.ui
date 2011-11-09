@@ -2,25 +2,26 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMResultWidget.ui,v $ </comment>
-<comment>   $Revision: 1.5 $ </comment>
+<comment>   $Revision: 1.6 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/03/07 19:37:50 $ </comment>
+<comment>   $Date: 2011/11/09 18:00:30 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+ <comment> All rights reserved. </comment>
  <class>CQEFMResultWidget</class>
  <widget class="CopasiWidget" name="CQEFMResultWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>408</width>
-    <height>430</height>
+    <width>406</width>
+    <height>222</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -116,16 +117,43 @@ p, li { white-space: pre-wrap; }
       </attribute>
      </widget>
      <widget class="QTableView" name="mpNetReactions">
+      <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+      <property name="horizontalScrollMode">
+       <enum>QAbstractItemView::ScrollPerPixel</enum>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
       <attribute name="title">
        <string>Net Reactions</string>
       </attribute>
      </widget>
      <widget class="QTableView" name="mpReactionMatrix">
+      <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+      <property name="horizontalScrollMode">
+       <enum>QAbstractItemView::ScrollPerPixel</enum>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
       <attribute name="title">
        <string>EFM vs Reactions</string>
       </attribute>
      </widget>
      <widget class="QTableView" name="mpSpeciesMatrix">
+      <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+      <property name="horizontalScrollMode">
+       <enum>QAbstractItemView::ScrollPerPixel</enum>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
       <attribute name="title">
        <string>EFM vs Species</string>
       </attribute>
@@ -138,7 +166,7 @@ p, li { white-space: pre-wrap; }
   <customwidget>
    <class>CQEFMListWidget</class>
    <extends>QWidget</extends>
-   <header>CQEFMListWidget.h</header>
+   <header>copasi/UI/CQEFMListWidget.h</header>
   </customwidget>
   <customwidget>
    <class>CopasiWidget</class>

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMResultWidget.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/07/05 17:34:42 $
+//   $Author: shoops $
+//   $Date: 2011/11/09 18:00:30 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,6 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include <QHeaderView>
 
 #include "CQEFMResultWidget.h"
 #include "CQEFMNetReactionDM.h"
@@ -43,12 +42,9 @@ CQEFMResultWidget::CQEFMResultWidget(QWidget* parent, const char* name) :
 {
   setupUi(this);
 
-  mpReactionMatrix->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+  mpReactionMatrix->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   mpReactionMatrix->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpReactionMatrix->verticalHeader()->hide();
-  mpReactionMatrix->setAlternatingRowColors(true);
-  mpReactionMatrix->setSortingEnabled(true);
-  mpReactionMatrix->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
 
   //Create Source Data Model.
   mpReactionDM = new CQEFMReactionDM(this);
@@ -65,12 +61,9 @@ CQEFMResultWidget::CQEFMResultWidget(QWidget* parent, const char* name) :
   mpReactionMatrix->setModel(mpProxyModelReactions);
   mpReactionMatrix->resizeColumnsToContents();
 
-  mpSpeciesMatrix->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+  mpSpeciesMatrix->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   mpSpeciesMatrix->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpSpeciesMatrix->verticalHeader()->hide();
-  mpSpeciesMatrix->setAlternatingRowColors(true);
-  mpSpeciesMatrix->setSortingEnabled(true);
-  mpSpeciesMatrix->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
 
   //Create Source Data Model.
   mpSpeciesDM = new CQEFMSpeciesDM(this);
@@ -87,12 +80,9 @@ CQEFMResultWidget::CQEFMResultWidget(QWidget* parent, const char* name) :
   mpSpeciesMatrix->setModel(mpProxyModelSpecies);
   mpSpeciesMatrix->resizeColumnsToContents();
 
-  mpNetReactions->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+  mpNetReactions->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   mpNetReactions->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpNetReactions->verticalHeader()->hide();
-  mpNetReactions->setAlternatingRowColors(true);
-  mpNetReactions->setSortingEnabled(true);
-  mpNetReactions->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
 
   //Create Source Data Model.
   mpNetReactionDM = new CQEFMNetReactionDM(this);

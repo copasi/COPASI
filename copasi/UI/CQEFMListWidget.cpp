@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMListWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/07/05 17:34:42 $
+//   $Author: shoops $
+//   $Date: 2011/11/09 18:00:30 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,9 +16,9 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include <QHeaderView>
-
 #include "CQEFMListWidget.h"
+
+#include "elementaryFluxModes/CEFMTask.h"
 
 CQEFMListWidget::CQEFMListWidget(QWidget* parent, const char* name) :
     QWidget(parent),
@@ -29,11 +29,8 @@ CQEFMListWidget::CQEFMListWidget(QWidget* parent, const char* name) :
   setObjectName(QString::fromUtf8(name));
   setupUi(this);
 
-  mpEFMTable->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-  mpEFMTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpEFMTable->verticalHeader()->hide();
-  mpEFMTable->setAlternatingRowColors(true);
-  mpEFMTable->setSortingEnabled(true);
+  mpEFMTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpEFMTable->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
 
   //Create Source Data Model.
