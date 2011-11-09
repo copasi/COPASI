@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFluxModeDM.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:47 $
+//   $Date: 2011/11/09 17:56:44 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,9 +19,9 @@
 #ifndef CQFluxModeDM_H
 #define CQFluxModeDM_H
 
-#include "CQBaseDataModel.h"
-
 #include <vector>
+
+#include "copasi/UI/CQBaseDataModel.h"
 
 class CFluxMode;
 class CEFMTask;
