@@ -1,6 +1,6 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.130 $ 
+#   $Revision: 1.131 $ 
 #   $Name:  $ 
 # End CVS Header 
 
@@ -19,7 +19,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.130 $ $Author: shoops $ $Date: 2011/10/14 17:31:12 $  
+# $Revision: 1.131 $ $Author: gauges $ $Date: 2011/11/09 15:15:03 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -85,7 +85,28 @@ DEFINES += WITH_CSPMETHOD
 # This needs some more testing, but it should be quite stable.
 # Since this depends heavily on the existence of layouts, I would only enable it
 # once the autolayout has been finished.
-# DEFINES += ELEMENTARY_MODE_DISPLAY
+#DEFINES += ELEMENTARY_MODE_DISPLAY
+
+# This enables the code for the animation of flux data
+# When this is enabled, the time course task will collect data
+# on species concentrations or amounts as well as concentration
+# or particle fluxes when a time course simulation is run.
+# This data can be used by the layout windows to display animations
+# of changing species concentrations and/or changing fluxes.
+#DEFINES += FLUX_ANIMATION
+
+# this flag enables new code to import layout information from 
+# CellDesigner annotations
+# Right now this is pretty much limited to the bare layout stuff.
+#DEFINES += CELLDESIGNER_IMPORT
+
+# enable this to get screenshots from the OpenGL 
+# framebuffer. These should provide higher quality 
+# anitaliasing and they should work on more systems
+#DEFINES += FRAMEBUFFER_SCREENSHOTS
+
+# flag to use Svens SBML unit identification framework
+#define USE_SBMLUNIT
 
 debug {
   DEFINES += COPASI_DEBUG
