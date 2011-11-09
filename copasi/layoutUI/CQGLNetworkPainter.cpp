@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.162 $
+//   $Revision: 1.163 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/20 14:06:22 $
+//   $Author: gauges $
+//   $Date: 2011/11/09 15:05:30 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -681,7 +681,14 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
 
                   if (! segments.empty())
                     {
-                      CLLineSegment lastSeg = segments[curve.getNumCurveSegments() - 1];
+
+                      CLLineSegment lastSeg = segments[segments.size() - 1];
+
+                      if ((r == CLMetabReferenceGlyph::ACTIVATOR) || (r == CLMetabReferenceGlyph::INHIBITOR) || (r == CLMetabReferenceGlyph::MODIFIER))
+                        {
+                          lastSeg = segments[0];
+                        }
+
                       CLPoint p = lastSeg.getEnd();
                       CArrow *ar;
 
@@ -704,12 +711,36 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
                                 }
                             }
 
-                          CLLineSegment segForArrow = CLLineSegment(to, lastSeg.getEnd());
-                          ar = new CArrow(segForArrow, lastSeg.getEnd().getX(), lastSeg.getEnd().getY(), this->mCurrentZoom);
+                          CLLineSegment segForArrow;
+
+                          if ((r == CLMetabReferenceGlyph::ACTIVATOR) || (r == CLMetabReferenceGlyph::INHIBITOR) || (r == CLMetabReferenceGlyph::MODIFIER))
+                            {
+                              segForArrow = CLLineSegment(to, lastSeg.getEnd());
+                            }
+                          else
+                            {
+                              segForArrow = CLLineSegment(to, lastSeg.getEnd());
+                            }
+
+                          if ((r == CLMetabReferenceGlyph::ACTIVATOR) || (r == CLMetabReferenceGlyph::INHIBITOR) || (r == CLMetabReferenceGlyph::MODIFIER))
+                            {
+                              ar = new CArrow(segForArrow, lastSeg.getEnd().getX(), lastSeg.getEnd().getY(), this->mCurrentZoom);
+                            }
+                          else
+                            {
+                              ar = new CArrow(segForArrow, lastSeg.getEnd().getX(), lastSeg.getEnd().getY(), this->mCurrentZoom);
+                            }
                         }
                       else
                         {
-                          ar = new CArrow(lastSeg, p.getX(), p.getY(), this->mCurrentZoom);
+                          if ((r == CLMetabReferenceGlyph::ACTIVATOR) || (r == CLMetabReferenceGlyph::INHIBITOR) || (r == CLMetabReferenceGlyph::MODIFIER))
+                            {
+                              ar = new CArrow(lastSeg, p.getX(), p.getY(), this->mCurrentZoom);
+                            }
+                          else
+                            {
+                              ar = new CArrow(lastSeg, p.getX(), p.getY(), this->mCurrentZoom);
+                            }
                         }
 
                       curve.setArrowP(true);
@@ -892,17 +923,17 @@ void CQGLNetworkPainter::drawGraph()
                     nDiam = (*itNodeObj).second.getSize();
 
                   C_INT32 xNdCenter = (C_INT32)((*itNodeObj).second.getX() + ((*itNodeObj).second.getWidth() / 2.0));
-                  C_INT32 yNdCenter = (C_INT32)(*itNodeObj).second.getY();  // + ((*itNodeObj).second.getHeight() / 2.0);
+                  C_INT32 yNdCenter = (C_INT32)(*itNodeObj).second.getY() + ((*itNodeObj).second.getHeight() / 2.0);
 
                   if (pParentLayoutWindow->getMappingMode() == CVisParameters::COLOR_MODE)
                     {
                       x = xNdCenter + (CVisParameters::DEFAULT_NODE_SIZE / 2.0 * this->mCurrentZoom) + 2.0 - ((viewerLabels[i].getWidth() - tWid) / 2.0); // node center + circle radius + 2.0 - texture window overhead
-                      y = yNdCenter;
+                      y = yNdCenter + (CVisParameters::DEFAULT_NODE_SIZE / 2.0 * this->mCurrentZoom) + 2.0 - ((viewerLabels[i].getHeight()) / 2.0);
                     }
                   else if ((tWid + 4) > nDiam)
                     {// label wider (+ k=4 to avoid crossing circle borders) than size of circle-> place next to circle
                       x = xNdCenter + (nDiam / 2.0) + 2.0 - ((viewerLabels[i].getWidth() - tWid) / 2.0); // + nDiam / 2.0 - ((labelWWid - (*itNodeObj).second.getWidth()) / 2.0); // node center + circle radius - texture window overhead
-                      y = yNdCenter;
+                      y = yNdCenter + (nDiam / 2.0) + 2.0 - ((viewerLabels[i].getHeight()) / 2.0);
                     }
                   else
                     {// place in center of circle
@@ -1453,7 +1484,16 @@ void CQGLNetworkPainter::drawArrow(CArrow a, CLMetabReferenceGlyph::Role role)
   // calculate the angle of the line from the x axis
   // since all arrow heads go along the y axis, we have to subtract 90° from
   // the angle to get the correct rotation angle
-  double angle = calculateAngle(p1, p2);
+  double angle;
+
+  if ((role == CLMetabReferenceGlyph::PRODUCT) || (role == CLMetabReferenceGlyph::SIDEPRODUCT))
+    {
+      angle = calculateAngle(p1, p2);
+    }
+  else
+    {
+      angle = calculateAngle(p2, p1);
+    }
 
   if (angle != angle)
     {
@@ -1482,21 +1522,21 @@ void CQGLNetworkPainter::drawArrow(CArrow a, CLMetabReferenceGlyph::Role role)
     {
       if (role == CLMetabReferenceGlyph::MODIFIER)
         {
-          glTranslatef(p1.getX(), p1.getY(), 0.0f);
+          glTranslatef(p2.getX(), p2.getY(), 0.0f);
           glRotatef(angle, 0.0f, 0.0f, 1.0f);
           glScalef(3.0f, 3.0f, 1.0f);
           glCallList(mDisplayLists + 9);
         }
       else if (role == CLMetabReferenceGlyph::ACTIVATOR)
         {
-          glTranslatef(p1.getX(), p1.getY(), 0.0f);
+          glTranslatef(p2.getX(), p2.getY(), 0.0f);
           glRotatef(angle, 0.0f, 0.0f, 1.0f);
           glScalef(3.0f, 3.0f, 1.0f);
           glCallList(mDisplayLists + 6);
         }
       else if (role == CLMetabReferenceGlyph::INHIBITOR)
         {
-          glTranslatef(p1.getX(), p1.getY(), 0.0f);
+          glTranslatef(p2.getX(), p2.getY(), 0.0f);
           glRotatef(angle, 0.0f, 0.0f, 1.0f);
           glScalef(3.0f, 3.0f, 1.0f);
           glCallList(mDisplayLists + 8);
@@ -1536,7 +1576,7 @@ void CQGLNetworkPainter::RG_drawStringAt(std::string s, C_INT32 x, C_INT32 y, C_
   double yOffset = (h - texSpec->textHeight + texSpec->textYOffset + 2) / 2.0;
   xOffset = (xOffset < 0.0) ? 0.0 : xOffset;
   yOffset = (yOffset < 0.0) ? 0.0 : yOffset;
-  double textureXRatio = ((texSpec->textWidth + 2) / texSpec->textureWidth) / ((w - xOffset) / w);
+  double textureXRatio = ((texSpec->textWidth + 2) / texSpec->textureWidth) / ((w - xOffset) / w) * 1.02;
   double textureYRatio = ((texSpec->textHeight + 2) / texSpec->textureHeight) / ((h - 2 * yOffset) / h);
 
   glBegin(GL_POLYGON);
@@ -2350,6 +2390,7 @@ void CQGLNetworkPainter::setNodeSize(std::string key, C_FLOAT64 val)
       if (pCurve != NULL && pCurve->getNumCurveSegments() > 0)
         {
           CLLineSegment* pLastSeg = pCurve->getSegmentAt(pCurve->getNumCurveSegments() - 1); // get pointer to last segment
+
           // move end point of segment along the line from the circle center(=from) to the current end point of the last segment
           // so that it lies on the border of the circle
           CLPoint to;

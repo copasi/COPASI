@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutPainter.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/20 14:06:22 $
+//   $Author: gauges $
+//   $Date: 2011/11/09 15:05:30 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -173,6 +173,17 @@ public:
    * The array has a size of 4 elements.
    */
   const GLfloat* getHighlightColor() const;
+
+  /**
+   * Returns the currently set fog density.
+   */
+  GLfloat getFogDensity() const;
+
+  /**
+   * Sets the new fog density value.
+   */
+  void setFogDensity(GLfloat dens);
+
 
   /**
    * Sets the fog color.

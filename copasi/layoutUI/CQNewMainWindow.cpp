@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/21 11:34:24 $
+//   $Author: gauges $
+//   $Date: 2011/11/09 15:05:30 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -282,6 +282,8 @@ void CQNewMainWindow::createMenus()
   this->mpHighlightModeAction->setChecked(true);
   this->mpHighlightModeAction->setToolTip(tr("determines whether selected elements are highlighted or if unselected items are toned down."));
   connect(this->mpHighlightModeAction, SIGNAL(toggled(bool)), this, SLOT(toggleHighlightSlot(bool)));
+  this->mpFogDensityAction = this->mpViewMenu->addAction(tr("fog density ..."));
+  connect(this->mpFogDensityAction, SIGNAL(triggered(bool)), this, SLOT(fogDensitySlot(bool)));
   this->mpChangeColorAction = this->mpViewMenu->addAction(tr("highlight color ..."));
   connect(this->mpChangeColorAction, SIGNAL(triggered(bool)), this, SLOT(changeColorSlot(bool)));
   this->mpChangeColorAction->setToolTip(tr("depending on the highlight mode lets you select the color for highlighting or down toning elements"));
@@ -1142,13 +1144,35 @@ void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
       const CReaction* pReaction = NULL;
       assert(this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL);
       const CModel* pModel = this->mpDataModel->getModel();
+      const CEFMProblem* pProblem = NULL;
+      const CCopasiVectorN< CCopasiTask >* pTaskList = this->mpDataModel->getTaskList();
+      assert(pTaskList != NULL);
 
-      while (it != endit)
+      if (pTaskList != NULL)
+        {
+          // get the metabolic control analysis task object
+          const CEFMTask* pTask = dynamic_cast<const CEFMTask*>((*pTaskList)["Elementary Flux Modes"]);
+
+          if (pTask != NULL)
+            {
+              pProblem = dynamic_cast<const CEFMProblem*>(pTask->getProblem());
+            }
+        }
+
+
+      while (it != endit && pProblem != NULL)
         {
           assert(pModel->getReactions().size() > it->first);
-          pReaction = this->mpDataModel->getModel()->getReactions()[it->first];
-          assert(pReaction != NULL);
-          this->selectReaction(pReaction, mask, pPainter->getHighlightedObjects());
+
+          // the index is the index of the reordered fluxes from the problem, so in order
+          // to find the correct reaction, we need to get the reaction from the problem
+          if (pProblem != NULL)
+            {
+              pReaction = pProblem->getReorderedReactions()[it->first];
+              assert(pReaction != NULL);
+              this->selectReaction(pReaction, mask, pPainter->getHighlightedObjects());
+            }
+
           ++it;
         }
     }
@@ -1437,6 +1461,48 @@ void CQNewMainWindow::toggleHighlightSlot(bool checked)
     {
       this->mpLayoutViewer->getPainter()->update();
     }
+}
+
+/**
+ * Lets the user change the percentage of fog
+ * that is added to the color.
+ */
+void CQNewMainWindow::fogDensitySlot(bool)
+{
+  // show a dialog with a spin box that goes from 0 to 1.0
+  // it is filled with the fog density value from the renderer
+  GLfloat c = this->mpLayoutViewer->getPainter()->getFogDensity();
+
+  QDialog* pDialog = new QDialog;
+  pDialog->setLayout(new QVBoxLayout(pDialog));
+  pDialog->layout()->addWidget(new QLabel("Set the fog density:", pDialog));
+  QDoubleSpinBox* pSpinBox = new QDoubleSpinBox(pDialog);
+  pSpinBox->setRange(0.0, 1.0);
+  pSpinBox->setSingleStep(0.01);
+  pSpinBox->setValue(c);
+  pDialog->layout()->addWidget(pSpinBox);
+  QDialogButtonBox* pBBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, pDialog);
+  pDialog->layout()->addWidget(pBBox);
+  // connect the buttons
+  connect(pBBox, SIGNAL(accepted()), pDialog, SLOT(accept()));
+  connect(pBBox, SIGNAL(rejected()), pDialog, SLOT(reject()));
+
+
+
+  if (pDialog->exec() == QDialog::Accepted)
+    {
+      c = pSpinBox->value();
+      this->mpLayoutViewer->getPainter()->setFogDensity(c);
+
+      // redraw the GL window
+      if (this->mMode == GRAPH_MODE)
+        {
+          this->mpLayoutViewer->getPainter()->update();
+        }
+    }
+
+  delete pDialog;
+
 }
 
 

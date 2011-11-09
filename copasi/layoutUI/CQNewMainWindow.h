@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/20 14:06:22 $
+//   $Author: gauges $
+//   $Date: 2011/11/09 15:05:30 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -190,6 +190,12 @@ private slots:
    */
   void changeColorSlot(bool);
 
+  /**
+   * Lets the user change the percentage of fog
+   * that is added to the color.
+   */
+  void fogDensitySlot(bool);
+
 #endif // ELEMENTARY_MODE_DISPLAY
 
 #ifdef COPASI_AUTOLAYOUT
@@ -330,6 +336,7 @@ private:
   QPixmap* mpFogColorPixmap;
   QPixmap* mpHighlightColorPixmap;
   QAction* mpHighlightModeAction;
+  QAction* mpFogDensityAction;
   QAction* mpChangeColorAction;
 #endif // ELEMENTARY_MODE_DISPLAY
 
