@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajAdaptiveSA.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/09/13 15:06:38 $
+//   $Date: 2011/11/09 14:59:17 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -644,7 +644,14 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const 
 
       for (; ppOrderedAmu != ppOrderedAmuEnd; ++ppOrderedAmu, ++ppOrderedReactionFiring)
         {
-          **ppOrderedReactionFiring = mpRandomGenerator->getRandomPoisson(**ppOrderedAmu * Tau);
+          C_FLOAT64 Lambda = **ppOrderedAmu * Tau;
+
+          if (Lambda < 0.0)
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 10);
+          else if (Lambda > 2.0e9)
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 26);
+
+          **ppOrderedReactionFiring = mpRandomGenerator->getRandomPoisson(Lambda);
         }
 
       size_t CriticalReactionIndex = C_INVALID_INDEX;

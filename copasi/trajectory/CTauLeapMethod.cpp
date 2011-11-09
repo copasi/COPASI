@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:34:14 $
+//   $Date: 2011/11/09 14:59:17 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -422,8 +422,12 @@ C_FLOAT64 CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
 
   for (; pAmu != pAmuEnd; ++pAmu, ++pK)
     {
-      if ((Lambda = *pAmu * Tau) < 0.0)
+      Lambda = *pAmu * Tau;
+
+      if (Lambda < 0.0)
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 10);
+      else if (Lambda > 2.0e9)
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 26);
 
       *pK = mpRandomGenerator->getRandomPoisson(Lambda);
     }
