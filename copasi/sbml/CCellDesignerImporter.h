@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CCellDesignerImporter.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:36:58 $
+//   $Author: gauges $
+//   $Date: 2011/11/09 15:03:25 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,7 @@
 #include <list>
 #include <map>
 #include <string>
+#include <utility>
 
 #include <sbml/layout/BoundingBox.h>
 #include <sbml/layout/Dimensions.h>
@@ -71,6 +72,23 @@ enum SPECIES_CLASS
   , CHANNEL_CLASS
 };
 
+enum SPECIES_MODIFICATION_TYPE
+{
+  UNDEFINED_MOD_TYPE
+  , PHOSPHORYLATED_MOD_TYPE
+  , ACETYLATED_MOD_TYPE
+  , UBIQUITINATED_MOD_TYPE
+  , METHYLATED_MOD_TYPE
+  , HYDROXYLATED_MOD_TYPE
+  , DONTCARE_MOD_TYPE
+  , UNKNOWN_MOD_TYPE
+  , GLYCOSYLATED_MOD_TYPE
+  , MYRISTOYLATED_MOD_TYPE
+  , PALMYTOYLATED_MOD_TYPE
+  , PRENYLATED_MOD_TYPE
+  , PROTONATED_MOD_TYPE
+  , SUFLATED_MOD_TYPE
+};
 
 enum POSITION_TO_COMPARTMENT
 {
@@ -204,15 +222,39 @@ struct LinkTarget
   LinkTarget() : mAlias(""), mSpecies(""), mPosition(POSITION_UNDEFINED) {};
 };
 
+struct SpeciesModification
+{
+  std::string mResidue;
+  SPECIES_MODIFICATION_TYPE mType;
+
+  // default constructor
+  SpeciesModification() :
+      mResidue("")
+      , mType(UNDEFINED_MOD_TYPE)
+  {};
+};
+
+// structure for the species state
+struct SpeciesState
+{
+  std::vector<SpeciesModification> mModifications;
+
+  // default constructor
+  SpeciesState() {};
+};
+
+
 struct SpeciesIdentity
 {
   SPECIES_CLASS mSpeciesClass;
   std::string mNameOrReference;
+  SpeciesState mState;
 
   // Default constructor
   SpeciesIdentity() : mSpeciesClass(UNDEFINED_CLASS), mNameOrReference("") {};
 };
 
+// structure for the modifications in a species state
 struct SpeciesAnnotation
 {
   enum POSITION_TO_COMPARTMENT mPosition;
@@ -525,6 +567,38 @@ struct SpeciesAlias
   {};
 };
 
+struct ProteinModification
+{
+  std::string mId;
+  std::string mName;
+  double mAngle;
+
+  // default constructor
+  ProteinModification() :
+      mId(""),
+      mName(""),
+      mAngle(0.0)
+  {};
+};
+
+// data type to store protein data
+// from the listOfProteins
+struct Protein
+{
+  std::string mId;
+  std::string mName;
+  SPECIES_CLASS mType;
+  std::vector<ProteinModification> mModifications;
+
+  // default constructor
+  Protein():
+      mId(""),
+      mName(""),
+      mType(PROTEIN_CLASS)
+  {};
+};
+
+
 /**
  * This class converts CellDesigner layout information
  * into SBML layout.
@@ -572,7 +646,7 @@ protected:
   std::list<CCopasiNode<std::string>*> mComplexDependencies;
 
   // a map that stores protein types for protein ids
-  std::map<std::string, SPECIES_CLASS> mProteinTypeMap;
+  std::map<std::string, Protein> mProteinInformationMap;
 
   // a map that stores antisense RNA names for antisense RNA ids
   // These are used as TextGlyphs on antisense RNA nodes
@@ -616,7 +690,7 @@ protected:
   /**
    * a map that stores the name of a CellDesigner species with its id.
    */
-  std::map<std::string, std::string> mIncludedSpeciesNameMap;;
+  std::map<std::string, std::pair<std::string, SpeciesIdentity> > mIncludedSpeciesNameMap;;
 public:
   /**
    * Constructor that takes a pointer to an
@@ -648,7 +722,7 @@ public:
   const Layout* getLayout() const;
 
   /**
-   * Goes through the SBMLDocument and ries to find a CellDesigner
+   * Goes through the SBMLDocument and tries to find a CellDesigner
    * annotation.
    * If one is found, a const pointer to the corresponding XMLNode
    * is returned.
@@ -656,6 +730,23 @@ public:
    * is found, NULL is returned.
    */
   static const XMLNode* findCellDesignerAnnotation(SBMLDocument* pDocument, const XMLNode* pAnnotation);
+
+  /**
+   * This method searches for the CellDesigner namespace in the annotation to the model
+   * as well as the annotation to the document.
+   * The method returns a pair of bool and string. The bool determines if the namespace was
+   * found and the string specifies the prefix for the namespace.
+   */
+  static std::pair<bool, std::string> findCellDesignerNamespace(const SBMLDocument* pDocument);
+
+  /**
+   * Tries to find the version number of CellDesigner that was used to write
+   * this annotation.
+   * The node should be the CellDesigner annotation of the model.
+   * If the version number is not found or could not be parsed, we
+   * return -1.
+   */
+  static double determineVersion(const XMLNode* pNode);
 
 protected:
   /**
@@ -778,6 +869,19 @@ protected:
    */
   static bool parseSpeciesIdentity(const XMLNode* pNode, SpeciesIdentity& identity);
 
+  /**
+   * Parses the node which represents the state in a speciesIdentity node and fills the given SpeciesState
+   * structure with the data.
+   * If the parsing fails, false is returned.
+   */
+  static bool parseSpeciesState(const XMLNode* pNode, SpeciesState& state);
+
+  /**
+   * Parses the node which represents a modification ion a species node and fills the given SpeciesModification
+   * structure with the data.
+   * If the parsing fails, false is returned.
+   */
+  static bool parseSpeciesModification(const XMLNode* pNode, SpeciesModification& mod);
 
   /**
    * Tries to parse the species annotation in the given node and stores the data in the given
@@ -945,6 +1049,14 @@ protected:
   static bool parseReactionModification(const XMLNode* pNode, ReactionModification& mod);
 
   /**
+   * Tries to parse the protein modification in the given node and stores the data in the given
+   * ProteinModification structure.
+   * If parsing fails, false is returned.
+   */
+  static bool parseProteinModification(const XMLNode* pNode, ProteinModification& mod);
+
+
+  /**
    * Tries to parse the CellDesigner species in the listOfincludedSpecies.
    * If parsing fails, false is returned.
    */
@@ -957,6 +1069,11 @@ protected:
    */
   static PAINT_SCHEME paintSchemeToEnum(std::string s);
 
+  /*
+   * Converts the given modification string to the correspnding MODIFICATION_TYPE enum value.
+   * If no enum is found, UNDEFINED_MOD_TYPE is returned.
+   */
+  static SPECIES_MODIFICATION_TYPE speciesModificationTypeToEnum(std::string cl);
 
   /**
   * Converts the given class string to the correspnding SPECIES_CLASS enum value.
@@ -1215,6 +1332,7 @@ protected:
    * The result is returned in r.
    */
   static void rotate(const Point& p, double a, Point& r);
+
 };
 
 

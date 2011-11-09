@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CCellDesignerImporter.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/05/04 14:26:51 $
+//   $Date: 2011/11/09 15:03:25 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -159,7 +159,7 @@ const Layout* CCellDesignerImporter::getLayout() const
 }
 
 /**
- * Goes through the SBMLDocument and ries to find a CellDesigner
+ * Goes through the SBMLDocument and tries to find a CellDesigner
  * annotation.
  * If one is found, a const pointer to the corresponding XMLNode
  * is returned.
@@ -172,32 +172,13 @@ const XMLNode* CCellDesignerImporter::findCellDesignerAnnotation(SBMLDocument* p
 
   if (pDocument != NULL && pAnnotation != NULL)
     {
-      // first we look for the CellDesigner namespace in the SBMLDocument
-      // and in the model and in all children of the models annotation
-      const XMLNamespaces* pNamespaces = pDocument->getNamespaces();
-      const std::string uri("http://www.sbml.org/2001/ns/celldesigner");
-      Model* pModel = pDocument->getModel();
-      std::string ns_prefix = "";
+      const Model* pModel = pDocument->getModel();
+      std::pair<bool, std::string> celldesigner_ns_found = CCellDesignerImporter::findCellDesignerNamespace(pDocument);
 
-      if (pNamespaces && pNamespaces->hasURI(uri))
+      if (celldesigner_ns_found.first == true && pModel != NULL)
         {
-          ns_prefix = pNamespaces->getPrefix(uri);
-        }
-      else
-        {
-          if (pModel != NULL)
-            {
-              pNamespaces = pModel->getNamespaces();
-
-              if (pNamespaces != NULL && pNamespaces->hasURI(uri))
-                {
-                  ns_prefix = pNamespaces->getPrefix(uri);
-                }
-            }
-        }
-
-      if (pModel != NULL)
-        {
+          const XMLNamespaces* pNamespaces = NULL;
+          const std::string uri("http://www.sbml.org/2001/ns/celldesigner");
           const XMLNode* pAnnoChild = NULL;
 
           if (pAnnotation != NULL)
@@ -205,26 +186,38 @@ const XMLNode* CCellDesignerImporter::findCellDesignerAnnotation(SBMLDocument* p
               unsigned int i, iMax = pAnnotation->getNumChildren();
 
               // we only search until we found the first element that fits
+              std::string ns_prefix;
+
+              if (pAnnotation->getNamespaces().hasURI(uri))
+                {
+                  ns_prefix = pAnnotation->getNamespaces().getPrefix(uri);
+                }
+              else if (pDocument->getNamespaces()->hasURI(uri))
+                {
+                  ns_prefix = pDocument->getNamespaces()->getPrefix(uri);
+                }
+
               for (i = 0; i < iMax && pNode == NULL; ++i)
                 {
-                  pAnnoChild = &pAnnotation->getChild(0);
+                  pAnnoChild = &pAnnotation->getChild(i);
 
                   // check if the child has the celldesigner namespace
                   // or if the child has the celldesigner prefix
                   if (pAnnoChild != NULL)
                     {
+                      // if the prefix is redefined here, it should take precedence
                       pNamespaces = &pAnnoChild->getNamespaces();
 
-                      if (pNamespaces != NULL && pNamespaces->hasURI(uri) && pNamespaces->getPrefix(uri) == pAnnoChild->getPrefix() && pAnnoChild->getName() == "extension")
+                      if (pNamespaces->hasURI(uri))
                         {
                           ns_prefix = pNamespaces->getPrefix(uri);
+                        }
+
+                      if (!ns_prefix.empty() && ns_prefix == pAnnoChild->getPrefix() && pAnnoChild->getName() == "extension")
+                        {
                           // we have found the first cell designer annotation
                           // element
                           // check if it really is the top level cell designer anotation
-                          pNode = pAnnoChild;
-                        }
-                      else if (!ns_prefix.empty() && pAnnoChild->getPrefix() == ns_prefix && pAnnoChild->getName() == "extension")
-                        {
                           pNode = pAnnoChild;
                         }
                     }
@@ -234,6 +227,86 @@ const XMLNode* CCellDesignerImporter::findCellDesignerAnnotation(SBMLDocument* p
     }
 
   return pNode;
+}
+
+/**
+ * This method searches for the CellDesigner namespace in the annotation to the model
+ * as well as the annotation to the document.
+ * The method returns a pair of bool and string. The bool determines if the namespace was
+ * found and the string specifies the prefix for the namespace.
+ */
+std::pair<bool, std::string> CCellDesignerImporter::findCellDesignerNamespace(const SBMLDocument* pDocument)
+{
+  std::pair<bool, std::string> result(false, "");
+
+  if (pDocument != NULL)
+    {
+      // first we look for the CellDesigner namespace in the SBMLDocument
+      // and in the model and in all children of the models annotation
+      const XMLNamespaces* pNamespaces = pDocument->getNamespaces();
+      const std::string uri("http://www.sbml.org/2001/ns/celldesigner");
+      const Model* pModel = pDocument->getModel();
+
+      if (pNamespaces && pNamespaces->hasURI(uri))
+        {
+          result.first = true;
+          result.second = pNamespaces->getPrefix(uri);
+        }
+      else
+        {
+          if (pModel != NULL)
+            {
+              pNamespaces = pModel->getNamespaces();
+
+              if (pNamespaces != NULL && pNamespaces->hasURI(uri))
+                {
+                  result.first = true;
+                  result.second = pNamespaces->getPrefix(uri);
+                }
+              else
+                {
+                  // check the annotation and all its top level children
+                  const XMLNode* pAnnotation = const_cast<Model*>(pModel)->getAnnotation();
+
+                  if (pAnnotation != NULL)
+                    {
+                      pNamespaces = &pAnnotation->getNamespaces();
+
+                      if (pNamespaces != NULL && pNamespaces->hasURI(uri))
+                        {
+                          result.first = true;
+                          result.second = pNamespaces->getPrefix(uri);
+                        }
+                      else
+                        {
+                          unsigned int i, iMax = pAnnotation->getNumChildren();
+                          const XMLNode* pChild = NULL;
+
+                          for (i = 0; i < iMax; ++i)
+                            {
+                              pChild = &pAnnotation->getChild(i);
+                              assert(pChild != NULL);
+
+                              if (pChild != NULL)
+                                {
+                                  pNamespaces = &pChild->getNamespaces();
+
+                                  if (pNamespaces != NULL && pNamespaces->hasURI(uri))
+                                    {
+                                      result.first = true;
+                                      result.second = pNamespaces->getPrefix(uri);
+                                      break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+  return result;
 }
 
 /**
@@ -267,7 +340,7 @@ bool CCellDesignerImporter::convertCellDesignerLayout(const XMLNode* pCellDesign
   this->mComplexDependencies.clear();
   this->mModelIdToLayoutElement.clear();
   this->mCompartmentNamePointMap.clear();
-  this->mProteinTypeMap.clear();
+  this->mProteinInformationMap.clear();
   //this->mGeneNameMap.clear();
   //this->mRNANameMap.clear();
   //this->mASRNANameMap.clear();
@@ -334,28 +407,13 @@ bool CCellDesignerImporter::convertCellDesignerLayout(const XMLNode* pCellDesign
 
           const XMLNode* pChild = NULL;
 
-          // first we check if we have CellDesigner 4.0 or higher
-          pChild = CCellDesignerImporter::findChildNode(pCellDesignerAnnotation, pCellDesignerAnnotation->getPrefix(), "modelVersion", false);
+          double version = CCellDesignerImporter::determineVersion(pCellDesignerAnnotation);
 
-          if (pChild != NULL)
+          if (version < 4.0)
             {
-              // the version can probably be parsed as a double value
-              if (pChild->getNumChildren() == 1 && pChild->getChild(0).isText())
-                {
-                  std::string s = pChild->getChild(0).getCharacters();
-                  char** err = NULL;
-                  double version = strtod(s.c_str(), err);
-
-                  if (!(err == NULL || *err != s.c_str() || version >= 4.0))
-                    {
-                      result = false;
-                    }
-                }
-              else
-                {
-                  result = false;
-                }
+              result = false;
             }
+
 
           if (result == true)
             {
@@ -725,7 +783,7 @@ bool CCellDesignerImporter::createSpeciesStyles()
   if (this->mpLocalRenderInfo != NULL)
     {
       // we go through the top level species which we can get from the dependency tree
-      // for each glpyh we create a primitive depending on the class of the alias
+      // for each glyph we create a primitive depending on the class of the alias
       // for the first implementation, all classes will be represented as boxes
       // then we will recurse into the dependency tree and create primitives for the
       // children
@@ -790,6 +848,8 @@ bool CCellDesignerImporter::createSpeciesStyles()
                           // find the corresponsing SpeciesAlias entry
                           alias_pos = this->mSpeciesAliases.find(alias);
                           assert(alias_pos != this->mSpeciesAliases.end());
+                          bool is_included = false;
+                          std::map<std::string, std::pair<std::string, SpeciesIdentity> >::const_iterator nameMapPos;
 
                           if (alias_pos != this->mSpeciesAliases.end())
                             {
@@ -813,26 +873,44 @@ bool CCellDesignerImporter::createSpeciesStyles()
                                       if (pSpecies == NULL)
                                         {
                                           // it is a CellDesignerSpecies
-                                          std::map<std::string, std::string>::const_iterator nameMapPos = this->mIncludedSpeciesNameMap.find(sa.mSpecies);
+                                          nameMapPos = this->mIncludedSpeciesNameMap.find(sa.mSpecies);
                                           assert(nameMapPos != this->mIncludedSpeciesNameMap.end());
 
                                           if (nameMapPos != this->mIncludedSpeciesNameMap.end())
                                             {
-                                              text = nameMapPos->second;
+                                              text = nameMapPos->second.first;
+                                              is_included = true;
                                             }
                                         }
                                       else
                                         {
                                           text = pSpecies->getName();
                                         }
-
-                                      //result=this->findNameForSpeciesIdentity(alias.mSpecies,anno_pos->second.mIdentity,text);
                                     }
 
                                   if (result == true)
                                     {
-                                      //pStyle->getGroup()->setFillColor(color_id);
-                                      result = CCellDesignerImporter::createPrimitive(pGroup, anno_pos->second.mIdentity, alias_pos->second.mBounds, offset, 1.0, "#000000", color_id, text);
+                                      if (is_included)
+                                        {
+                                          // the identity should be stored in the mIncludedSpeciesNameMap
+                                          result = CCellDesignerImporter::createPrimitive(pGroup, nameMapPos->second.second, alias_pos->second.mBounds, offset, 1.0, "#000000", color_id, text);
+                                        }
+                                      else
+                                        {
+                                          // the identity should be stored in the SpeciesAnnotationMap
+                                          // The mSpeciesAnnotationMap uses the id of an SBML species as the key
+                                          anno_pos = this->mSpeciesAnnotationMap.find(sa.mSpecies);
+                                          assert(anno_pos != this->mSpeciesAnnotationMap.end());
+
+                                          if (anno_pos != this->mSpeciesAnnotationMap.end())
+                                            {
+                                              result = CCellDesignerImporter::createPrimitive(pGroup, anno_pos->second.mIdentity, alias_pos->second.mBounds, offset, 1.0, "#000000", color_id, text);
+                                            }
+                                          else
+                                            {
+                                              result = false;
+                                            }
+                                        }
                                     }
 
                                   // TODO gradients are currently not considered
@@ -984,10 +1062,102 @@ bool CCellDesignerImporter::createPrimitive(Group* pGroup,
               }
           }
           break;
-          case SIMPLE_MOLECULE_CLASS:
-          case OVAL_CLASS:
-          case DRUG_CLASS:
           case UNKNOWN_CLASS:
+            // unknown has no edge
+          {
+            Ellipse* pEllipse = pGroup->createEllipse();
+            assert(pEllipse != NULL);
+
+            if (pEllipse != NULL)
+              {
+                double width = bounds.getDimensions()->getWidth();
+                double height = bounds.getDimensions()->getHeight();
+                pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width*0.5, 0.0));
+                pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height*0.5, 0.0));
+                pEllipse->setRX(RelAbsVector(bounds.getDimensions()->getWidth()*0.5, 0.0));
+                pEllipse->setRY(RelAbsVector(bounds.getDimensions()->getHeight()*0.5, 0.0));
+                pEllipse->setFillColor(fill_color);
+              }
+            else
+              {
+                result = false;
+              }
+          }
+          break;
+          case DRUG_CLASS:
+            // TODO actually drug is a rectangle with rounded sides and not an ellipse
+            // TODO but for simplicity sake, we use two ellipses right now
+          {
+            Ellipse* pEllipse = pGroup->createEllipse();
+            assert(pEllipse != NULL);
+
+            if (pEllipse != NULL)
+              {
+                double width = bounds.getDimensions()->getWidth();
+                double height = bounds.getDimensions()->getHeight();
+                pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width*0.5, 0.0));
+                pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height*0.5, 0.0));
+                pEllipse->setRX(RelAbsVector(bounds.getDimensions()->getWidth()*0.5, 0.0));
+                pEllipse->setRY(RelAbsVector(bounds.getDimensions()->getHeight()*0.5, 0.0));
+                pEllipse->setStrokeWidth(stroke_width);
+                pEllipse->setStroke(stroke_color);
+                pEllipse->setFillColor(fill_color);
+                // create an inner ellipse
+                pEllipse = pGroup->createEllipse();
+                assert(pEllipse != NULL);
+
+                if (pEllipse != NULL)
+                  {
+                    pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width*0.5, 0.0));
+                    pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height*0.5, 0.0));
+                    pEllipse->setRX(RelAbsVector(bounds.getDimensions()->getWidth()*0.45, 0.0));
+                    pEllipse->setRY(RelAbsVector(bounds.getDimensions()->getHeight()*0.45, 0.0));
+                    pEllipse->setStrokeWidth(stroke_width);
+                    pEllipse->setStroke(stroke_color);
+                    pEllipse->setFillColor(fill_color);
+                  }
+                else
+                  {
+                    result = false;
+                  }
+
+              }
+            else
+              {
+                result = false;
+              }
+          }
+          break;
+          case OVAL_CLASS:
+            // TODO has thick wall with empty inner area
+            // TODO we could create this by two unfilled ellipses
+            // TODO for the inner and outer edges as well as a thick
+            // TODO unfilled ellipse for the area between the edges
+            // TODO the ellipse for the area would have to be drawn first
+            // TODO the oval shape is for representing compartments
+          {
+            Ellipse* pEllipse = pGroup->createEllipse();
+            assert(pEllipse != NULL);
+
+            if (pEllipse != NULL)
+              {
+                double width = bounds.getDimensions()->getWidth();
+                double height = bounds.getDimensions()->getHeight();
+                pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width*0.5, 0.0));
+                pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height*0.5, 0.0));
+                pEllipse->setRX(RelAbsVector(bounds.getDimensions()->getWidth()*0.5, 0.0));
+                pEllipse->setRY(RelAbsVector(bounds.getDimensions()->getHeight()*0.5, 0.0));
+                pEllipse->setStrokeWidth(stroke_width);
+                pEllipse->setStroke(stroke_color);
+                pEllipse->setFillColor(fill_color);
+              }
+            else
+              {
+                result = false;
+              }
+          }
+          break;
+          case SIMPLE_MOLECULE_CLASS:
           {
             Ellipse* pEllipse = pGroup->createEllipse();
             assert(pEllipse != NULL);
@@ -1208,137 +1378,24 @@ bool CCellDesignerImporter::createPrimitive(Group* pGroup,
           }
           break;
           case PROTEIN_CLASS:
-            // make a rectangle with cut edges
+            // make a rectangle with rounded edges
           {
-            double width = bounds.getDimensions()->getWidth();
-            double height = bounds.getDimensions()->getHeight();
-            // we assume the width is larger
-            double ratio = height / width;
-            Polygon* pPoly = pGroup->createPolygon();
-            assert(pPoly != NULL);
+            Rectangle* pRect = pGroup->createRectangle();
+            assert(pRect != NULL);
 
-            if (pPoly != NULL)
+            if (pRect != NULL)
               {
-                pPoly->setStrokeWidth(stroke_width);
-                pPoly->setStroke(stroke_color);
-                pPoly->setFillColor(fill_color);
-                RenderPoint* pP = pPoly->createPoint();
-
-                if (pP != NULL)
-                  {
-                    pP->setY(RelAbsVector(0.0, 10.0*ratio));
-                    pP->setY(RelAbsVector(0.0, 0.0));
-                  }
-                else
-                  {
-                    result = false;
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 100.0 - 10.0*ratio));
-                        pP->setY(RelAbsVector(0.0, 0.0));
-                      }
-                    else
-                      {
-                        result = false;
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 100.0));
-                        pP->setY(RelAbsVector(0.0, 10.0));
-                      }
-                    else
-                      {
-                        result = false;
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 100.0));
-                        pP->setY(RelAbsVector(0.0, 90.0));
-                      }
-                    else
-                      {
-                        result = false;
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 100.0 - 10.0*ratio));
-                        pP->setY(RelAbsVector(0.0, 100.0));
-                      }
-                    else
-                      {
-                        result = false;
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 10.0*ratio));
-                        pP->setY(RelAbsVector(0.0, 100.0));
-                      }
-                    else
-                      {
-                        result = false;
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 0.0));
-                        pP->setY(RelAbsVector(0.0, 90.0));
-                      }
-                    else
-                      {
-                        result = false;
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 0.0));
-                        pP->setY(RelAbsVector(0.0, 10.0));
-                      }
-                    else
-                      {
-                        result = false;
-                      }
-                  }
+                pRect->setX(RelAbsVector(offset.x() + bounds.getPosition()->x(), 0.0));
+                pRect->setY(RelAbsVector(offset.y() + bounds.getPosition()->y(), 0.0));
+                pRect->setRadiusX(RelAbsVector(0.0, 10.0));
+                pRect->setRadiusY(RelAbsVector(0.0, 10.0));
+                pRect->setWidth(RelAbsVector(bounds.getDimensions()->getWidth(), 0.0));
+                pRect->setHeight(RelAbsVector(bounds.getDimensions()->getHeight(), 0.0));
+                pRect->setStrokeWidth(stroke_width);
+                pRect->setStroke(stroke_color);
+                pRect->setFillColor(fill_color);
               }
+
             else
               {
                 result = false;
@@ -1600,22 +1657,136 @@ bool CCellDesignerImporter::createPrimitive(Group* pGroup,
           }
           break;
           case COMPLEX_CLASS:
-            // rectangle with rounded edges
+            // rectangle with cut edges
           {
-            Rectangle* pRect = pGroup->createRectangle();
-            assert(pRect != NULL);
+            double width = bounds.getDimensions()->getWidth();
+            double height = bounds.getDimensions()->getHeight();
+            // we assume the width is larger
+            double ratio = height / width;
+            Polygon* pPoly = pGroup->createPolygon();
+            assert(pPoly != NULL);
 
-            if (pRect != NULL)
+            if (pPoly != NULL)
               {
-                pRect->setX(RelAbsVector(offset.x() + bounds.getPosition()->x(), 0.0));
-                pRect->setY(RelAbsVector(offset.y() + bounds.getPosition()->y(), 0.0));
-                pRect->setRadiusX(RelAbsVector(0.0, 10.0));
-                pRect->setRadiusY(RelAbsVector(0.0, 10.0));
-                pRect->setWidth(RelAbsVector(bounds.getDimensions()->getWidth(), 0.0));
-                pRect->setHeight(RelAbsVector(bounds.getDimensions()->getHeight(), 0.0));
-                pRect->setStrokeWidth(stroke_width);
-                pRect->setStroke(stroke_color);
-                pRect->setFillColor(fill_color);
+                pPoly->setStrokeWidth(stroke_width);
+                pPoly->setStroke(stroke_color);
+                pPoly->setFillColor(fill_color);
+                RenderPoint* pP = pPoly->createPoint();
+
+                if (pP != NULL)
+                  {
+                    pP->setX(RelAbsVector(0.0, 10.0*ratio));
+                    pP->setY(RelAbsVector(0.0, 0.0));
+                  }
+                else
+                  {
+                    result = false;
+                  }
+
+                if (result == true)
+                  {
+                    pP = pPoly->createPoint();
+
+                    if (pP != NULL)
+                      {
+                        pP->setX(RelAbsVector(0.0, 100.0 - 10.0*ratio));
+                        pP->setY(RelAbsVector(0.0, 0.0));
+                      }
+                    else
+                      {
+                        result = false;
+                      }
+                  }
+
+                if (result == true)
+                  {
+                    pP = pPoly->createPoint();
+
+                    if (pP != NULL)
+                      {
+                        pP->setX(RelAbsVector(0.0, 100.0));
+                        pP->setY(RelAbsVector(0.0, 10.0));
+                      }
+                    else
+                      {
+                        result = false;
+                      }
+                  }
+
+                if (result == true)
+                  {
+                    pP = pPoly->createPoint();
+
+                    if (pP != NULL)
+                      {
+                        pP->setX(RelAbsVector(0.0, 100.0));
+                        pP->setY(RelAbsVector(0.0, 90.0));
+                      }
+                    else
+                      {
+                        result = false;
+                      }
+                  }
+
+                if (result == true)
+                  {
+                    pP = pPoly->createPoint();
+
+                    if (pP != NULL)
+                      {
+                        pP->setX(RelAbsVector(0.0, 100.0 - 10.0*ratio));
+                        pP->setY(RelAbsVector(0.0, 100.0));
+                      }
+                    else
+                      {
+                        result = false;
+                      }
+                  }
+
+                if (result == true)
+                  {
+                    pP = pPoly->createPoint();
+
+                    if (pP != NULL)
+                      {
+                        pP->setX(RelAbsVector(0.0, 10.0*ratio));
+                        pP->setY(RelAbsVector(0.0, 100.0));
+                      }
+                    else
+                      {
+                        result = false;
+                      }
+                  }
+
+                if (result == true)
+                  {
+                    pP = pPoly->createPoint();
+
+                    if (pP != NULL)
+                      {
+                        pP->setX(RelAbsVector(0.0, 0.0));
+                        pP->setY(RelAbsVector(0.0, 90.0));
+                      }
+                    else
+                      {
+                        result = false;
+                      }
+                  }
+
+                if (result == true)
+                  {
+                    pP = pPoly->createPoint();
+
+                    if (pP != NULL)
+                      {
+                        pP->setX(RelAbsVector(0.0, 0.0));
+                        pP->setY(RelAbsVector(0.0, 10.0));
+                      }
+                    else
+                      {
+                        result = false;
+                      }
+                  }
               }
             else
               {
@@ -1997,6 +2168,8 @@ bool CCellDesignerImporter::createPrimitive(Group* pGroup,
           }
           break;
           case GENE_CLASS:
+            // TODO all the classes below are for compartments, i.e.
+            // TODO they have thick walls and rounded corners
           case SQUARE_CLASS:
           case SQUARE_NW_CLASS:
           case SQUARE_NE_CLASS:
@@ -3719,11 +3892,15 @@ bool CCellDesignerImporter::parseProteins(const XMLNode* pNode)
               pChild->getAttributes().hasAttribute("id") &&
               pChild->getAttributes().hasAttribute("name"))
             {
+              Protein prot;
               // we are only interested in the id and the type
+              prot.mId = pChild->getAttributes().getValue("id");
+              assert(!prot.mId.empty());
+              prot.mName = pChild->getAttributes().getValue("name");
+              assert(!prot.mName.empty());
+
               if (pChild->getAttributes().hasAttribute("type"))
                 {
-                  std::string id = pChild->getAttributes().getValue("id");
-                  assert(!id.empty());
                   std::string type = pChild->getAttributes().getValue("type");
                   assert(!type.empty());
                   std::transform(type.begin(), type.end(), type.begin(), toupper);
@@ -3734,7 +3911,7 @@ bool CCellDesignerImporter::parseProteins(const XMLNode* pNode)
 
                       if (cl != UNDEFINED_CLASS)
                         {
-                          this->mProteinTypeMap.insert(std::pair<std::string, SPECIES_CLASS>(id, cl));
+                          prot.mType = cl;
                         }
                       else
                         {
@@ -3742,8 +3919,111 @@ bool CCellDesignerImporter::parseProteins(const XMLNode* pNode)
                         }
                     }
                 }
+
+              // parse the modifications
+              const XMLNode* pModifications = CCellDesignerImporter::findChildNode(pChild, pChild->getPrefix(), "listOfModificationResidues", false);
+
+              if (pModifications != NULL)
+                {
+                  unsigned int j, jMax = pModifications->getNumChildren();
+                  const XMLNode* pChild2 = NULL;
+
+                  while (j < jMax && result == true)
+                    {
+                      pChild2 = &pModifications->getChild(j);
+                      assert(pChild2 != NULL);
+
+                      if (pChild2 != NULL &&
+                          pChild2->getPrefix() == pModifications->getPrefix() &&
+                          pChild2->getName() == "modificationResidue")
+                        {
+                          ProteinModification mod;
+                          result = CCellDesignerImporter::parseProteinModification(pChild2, mod);
+
+                          if (result == true)
+                            {
+                              prot.mModifications.push_back(mod);
+                            }
+                        }
+                      else
+                        {
+                          result = false;
+                        }
+
+                      ++j;
+                    }
+                }
+
+              if (result == true)
+                {
+                  this->mProteinInformationMap.insert(std::pair<std::string, Protein>(prot.mId, prot));
+                }
             }
         }
+    }
+
+  return result;
+}
+
+/**
+ * Tries to parse the protein modification in the given node and stores the data in the given
+ * ProteinModification structure.
+ * If parsing fails, false is returned.
+ */
+bool CCellDesignerImporter::parseProteinModification(const XMLNode* pNode, ProteinModification& mod)
+{
+  bool result = true;
+
+  if (pNode != NULL &&
+      pNode->getName() == "modificationResidue")
+    {
+      const XMLAttributes& attr = pNode->getAttributes();
+
+      if (attr.hasAttribute("id"))
+        {
+          // has an id
+          mod.mId = attr.getValue("id");
+
+          // optional: name and angle
+          if (attr.hasAttribute("name"))
+            {
+              mod.mName = attr.getValue("name");
+            }
+          else
+            {
+              mod.mName = "";
+            }
+
+          if (attr.hasAttribute("angle"))
+            {
+              char** err = NULL;
+              double v;
+              std::string s = attr.getValue("angle");
+              assert(!s.empty());
+              v = strtod(s.c_str(), err);
+
+              if (err == NULL || *err != s.c_str())
+                {
+                  mod.mAngle = v;
+                }
+              else
+                {
+                  result = false;
+                }
+            }
+          else
+            {
+              mod.mAngle = 0.0;
+            }
+        }
+      else
+        {
+          result = false;
+        }
+    }
+  else
+    {
+      result = false;
     }
 
   return result;
@@ -3886,6 +4166,15 @@ bool CCellDesignerImporter::parseSpeciesIdentity(const XMLNode* pNode, SpeciesId
         {
           result = false;
         }
+
+      // handle state
+      pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "state", false);
+
+      if (pChild != NULL)
+        {
+          result = CCellDesignerImporter::parseSpeciesState(pChild, identity.mState);
+        }
+
     }
   else
     {
@@ -3894,6 +4183,95 @@ bool CCellDesignerImporter::parseSpeciesIdentity(const XMLNode* pNode, SpeciesId
 
   return result;
 }
+
+/**
+ * Parses the node which represents the state in a speciesIdentity node and fills the given SpeciesState
+ * structure with the data.
+ * If the parsing fails, false is returned.
+ */
+bool CCellDesignerImporter::parseSpeciesState(const XMLNode* pNode, SpeciesState& state)
+{
+  bool result = true;
+
+  if (pNode != NULL && pNode->getName() == "state")
+    {
+      // find the listOfModifications element
+      const XMLNode* pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "listOfModifications", false);
+
+      if (pChild != NULL)
+        {
+          unsigned int i, iMax = pChild->getNumChildren();
+          const XMLNode* pChild2 = NULL;
+
+          while (i < iMax && result == true)
+            {
+              pChild2 = &pChild->getChild(i);
+              assert(pChild2 != NULL);
+
+              if (pChild2 != NULL)
+                {
+                  SpeciesModification mod;
+                  result = CCellDesignerImporter::parseSpeciesModification(pChild2, mod);
+
+                  if (result == true)
+                    {
+                      state.mModifications.push_back(mod);
+                    }
+                }
+              else
+                {
+                  result = false;
+                }
+
+              ++i;
+            }
+        }
+    }
+  else
+    {
+      result = false;
+    }
+
+  return result;
+}
+
+/**
+ * Parses the node which represents a modification ion a species node and fills the given SpeciesModification
+ * structure with the data.
+ * If the parsing fails, false is returned.
+ */
+bool CCellDesignerImporter::parseSpeciesModification(const XMLNode* pNode, SpeciesModification& mod)
+{
+  bool result = true;
+
+  if (pNode != NULL &&
+      pNode->getName() == "modification")
+    {
+      const XMLAttributes& attr = pNode->getAttributes();
+
+      if (attr.hasAttribute("residue") &&
+          attr.hasAttribute("state"))
+        {
+          mod.mResidue = attr.getValue("residue");
+          assert(!mod.mResidue.empty());
+          std::string s = attr.getValue("state");
+          assert(!s.empty());
+          mod.mType = CCellDesignerImporter::speciesModificationTypeToEnum(s);
+          assert(mod.mType != UNDEFINED_MOD_TYPE);
+        }
+      else
+        {
+          result = false;
+        }
+    }
+  else
+    {
+      result = false;
+    }
+
+  return result;
+}
+
 
 /**
  * Searches for a child with a certain name and a certain prefix
@@ -8366,7 +8744,7 @@ std::string CCellDesignerImporter::findRootElementId(const std::string& id) cons
 }
 
 /**
- * Tries to parse the CellDesigner species in the listOfincludedSpecies.
+ * Tries to parse the CellDesigner species in the listOfIncludedSpecies.
  * If parsing fails, false is returned.
  */
 bool CCellDesignerImporter::handleIncludedSpecies(const XMLNode* pNode)
@@ -8394,9 +8772,61 @@ bool CCellDesignerImporter::handleIncludedSpecies(const XMLNode* pNode)
                 {
                   std::string id = attr.getValue("id");
                   std::string name = attr.getValue("name");
+                  std::pair<std::string, SpeciesIdentity> pair;
+                  pair.first = name;
                   assert(!id.empty());
                   assert(!name.empty());
-                  this->mIncludedSpeciesNameMap.insert(std::pair<std::string, std::string>(id, name));
+                  // we need to check if there is an annotation child and parse it
+                  // this annotation includes information about the identity
+                  unsigned j = 0, jMax = pChild->getNumChildren();
+                  const XMLNode* pAnnotation = NULL;
+
+                  while (j != jMax)
+                    {
+                      if (pChild->getChild(j).getName() == "annotation")
+                        {
+                          pAnnotation = &pChild->getChild(j);
+                          break;
+                        }
+
+                      ++j;
+                    }
+
+                  // there should be a name element in there somewhere
+                  if (pAnnotation != NULL)
+                    {
+                      // now look for an identity node
+                      const XMLNode* pIdent = NULL;
+                      j = 0;
+                      jMax = pAnnotation->getNumChildren();
+
+                      while (j != jMax)
+                        {
+                          if (pAnnotation->getChild(j).getName() == "speciesIdentity")
+                            {
+                              pIdent = &pAnnotation->getChild(j);
+                              break;
+                            }
+
+                          ++j;
+                        }
+
+                      if (pIdent != NULL)
+                        {
+                          SpeciesIdentity sident;
+                          result = CCellDesignerImporter::parseSpeciesIdentity(pIdent, sident);
+                          assert(result == true);
+
+                          if (result == true)
+                            {
+                              // set the species identity
+                              pair.second = sident;
+                            }
+                        }
+
+                    }
+
+                  this->mIncludedSpeciesNameMap.insert(std::pair<std::string, std::pair<std::string, SpeciesIdentity> >(id, pair));
                 }
               else
                 {
@@ -8506,5 +8936,105 @@ void CCellDesignerImporter::rotate(const Point& p, double a, Point& r)
   r.setY(p.x()*sin(a) + p.y()*cos(a));
 }
 
+/**
+ * Tries to find the version number of CellDesigner that was used to write
+ * this annotation.
+ * The node should be the CellDesigner annotation of the model.
+ * If the version number is not found or could not be parsed, we
+ * return -1.
+ */
+double CCellDesignerImporter::determineVersion(const XMLNode* pNode)
+{
+  double version = -1.0;
+
+  // first we check if we have CellDesigner 4.0 or higher
+  if (pNode != NULL)
+    {
+      const XMLNode* pChild = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "modelVersion", false);
+
+      if (pChild != NULL)
+        {
+          // the version can probably be parsed as a double value
+          if (pChild->getNumChildren() == 1 && pChild->getChild(0).isText())
+            {
+              std::string s = pChild->getChild(0).getCharacters();
+              char** err = NULL;
+              version = strtod(s.c_str(), err);
+
+              if (!(err == NULL || *err != s.c_str() || version >= 4.0))
+                {
+                  version = -1.0;
+                }
+            }
+        }
+    }
+
+  return version;
+}
+
+/**
+ * Converts the given modification string to the correspnding MODIFICATION_TYPE enum value.
+ * If no enum is found, UNDEFINED_MOD_TYPE is returned.
+ */
+SPECIES_MODIFICATION_TYPE CCellDesignerImporter::speciesModificationTypeToEnum(std::string cl)
+{
+  std::transform(cl.begin(), cl.end(), cl.begin(), toupper);
+  SPECIES_MODIFICATION_TYPE result = UNDEFINED_MOD_TYPE;
+
+  if (cl == "phosphorylated")
+    {
+      result = PHOSPHORYLATED_MOD_TYPE;
+    }
+  else if (cl == "ACETYLATED")
+    {
+      result = ACETYLATED_MOD_TYPE;
+    }
+  else if (cl == "UBIQUITINATED")
+    {
+      result = UBIQUITINATED_MOD_TYPE;
+    }
+  else if (cl == "METHYLATED")
+    {
+      result = METHYLATED_MOD_TYPE;
+    }
+  else if (cl == "HYDROXYLATED")
+    {
+      result = HYDROXYLATED_MOD_TYPE;
+    }
+  else if (cl == "DON'T CARE")
+    {
+      result = DONTCARE_MOD_TYPE;
+    }
+  else if (cl == "UNKNOWN")
+    {
+      result = UNKNOWN_MOD_TYPE;
+    }
+  else if (cl == "GLYCOSYLATED")
+    {
+      result = GLYCOSYLATED_MOD_TYPE;
+    }
+  else if (cl == "MYRISTOYLATED")
+    {
+      result = MYRISTOYLATED_MOD_TYPE;
+    }
+  else if (cl == "PALMYTOYLATED")
+    {
+      result = PALMYTOYLATED_MOD_TYPE;
+    }
+  else if (cl == "PRENYLATED")
+    {
+      result = PRENYLATED_MOD_TYPE;
+    }
+  else if (cl == "PROTONATED")
+    {
+      result = PROTONATED_MOD_TYPE;
+    }
+  else if (cl == "SUFLATED")
+    {
+      result = SUFLATED_MOD_TYPE;
+    }
+
+  return result;
+}
 
 
