@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/10/24 11:42:01 $
+//   $Date: 2011/11/09 15:04:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -182,8 +182,8 @@ protected:
   // a class that can create a texture from a jpeg or png image file
   CLImageTexturizer* mpImageTexturizer;
 
-#ifdef COPASI_DEBUG
-  std::set<const CCopasiObject*> mHighlightedModelObjects;
+#ifdef ELEMENTARY_MODE_DISPLAY
+  std::set<const CLGraphicalObject*> mHighlightedObjects;
 
   // flag that determines whether non-highlighted objects
   // are placed in a fog or if highlighted objects are highlighted
@@ -196,6 +196,8 @@ protected:
   // color value for the fog
   GLfloat mFogColor[4];
 
+  GLfloat mFogDensity;
+
   // stores whether the OpenGL functions we need
   // to allocate dynamically have been initialized
   bool mGLFunctionsInitialized;
@@ -205,7 +207,7 @@ protected:
   // Maybe all this dynamic function initialization should
   // be moved to some global place
   void(*mpGlFogCoordfEXT)(GLfloat);
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
 
 
 public:
@@ -479,24 +481,24 @@ public:
    */
   void setImageTexturizer(CLImageTexturizer* pTexturizer);
 
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
   // the following methods are used to highlight elements in the diagram
   // based on their association to model elements
 
   /**
    * Sets the list of model objects that are to be highlighted in the diagram.
    */
-  void setHighlightedModelObjects(const std::set<const CCopasiObject*>& highlightedObjects);
+  void setHighlightedObjects(const std::set<const CLGraphicalObject*>& highlightedObjects);
 
   /**
    * Returns a const reference to the set of highlighted model objects.
    */
-  const std::set<const CCopasiObject*>& getHighlightedModelObjects() const;
+  const std::set<const CLGraphicalObject*>& getHighlightedObjects() const;
 
   /**
    * Returns a reference to the set of highlighted model objects.
    */
-  std::set<const CCopasiObject*>& getHighlightedModelObjects();
+  std::set<const CLGraphicalObject*>& getHighlightedObjects();
 
   /**
    * Sets the highlight color.
@@ -520,6 +522,15 @@ public:
    */
   const GLfloat* getFogColor() const;
 
+  /**
+   * Sets the fog density.
+   */
+  void setFogDensity(GLfloat dens);
+
+  /**
+   * Returns the current fog density.
+   */
+  GLfloat getFogDensity() const;
 
   /**
    * Toggles the flag that determines if highlighted objects
@@ -538,7 +549,7 @@ public:
    */
   bool getHighlightFlag() const;
 
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
 
 protected:
   /**
@@ -969,7 +980,9 @@ protected:
    */
   void initialize_gl_extension_functions();
 
+#ifdef __APPLE__
   void * MyNSGLGetProcAddress(const char *name);
+#endif // __APPLE__  
 };
 
 #endif // CLLAYOUTRENDERER_H__

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:35:21 $
+//   $Author: gauges $
+//   $Date: 2011/11/09 15:04:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,6 +32,8 @@
 #include "CLGradientBase.h"
 #endif // USE_CRENDER_EXTENSION
 
+#include <sbml/ListOf.h>
+
 class CCopasiObject;
 class CCopasiContainer;
 class CListOfLayouts;
@@ -44,7 +46,6 @@ class CLTransformation2D;
 #endif // USE_CRENDER_EXTENSION
 
 class Layout;
-class ListOf;
 class SBase;
 class TextGlyph;
 
@@ -62,8 +63,7 @@ public:
                                 const ListOf & sbmlList,
                                 const std::map<CCopasiObject*, SBase*> & copasimodelmap);
 
-protected:
-
+  // createLayout is now needed by the code for the CellDesigner import
   static CLayout * createLayout(const Layout & sbmlLayout,
                                 const std::map<std::string, std::string> & modelmap,
                                 std::map<std::string, std::string> & layoutmap
@@ -75,6 +75,9 @@ protected:
 #endif /* USE_CRENDER_EXTENSION */
                                 , const CCopasiContainer * pParent = NULL
                                );
+
+
+protected:
 
   /**
    * resolves the graphical object reference of the text glyph

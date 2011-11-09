@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/10/24 11:42:01 $
+//   $Date: 2011/11/09 15:04:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,11 +66,11 @@
 
 
 #ifdef __APPLE__
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
 #include <string>
 #include <stdlib.h>
 #include <mach-o/dyld.h>
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
 # include "OpenGL/gl.h"
 # include "OpenGL/glu.h"
 #else
@@ -123,13 +123,14 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLGlobalRenderInforma
     mDeduceSpeciesReferenceRoles(false),
     mpSelectionBox(NULL),
     mpImageTexturizer(NULL)
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
     , mHighlight(true)
+    , mFogDensity(0.8)
     , mGLFunctionsInitialized(false)
     , mpGlFogCoordfEXT(NULL)
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
 {
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
   this->mHighlightColor[0] = 0.5;
   this->mHighlightColor[1] = 0.0;
   this->mHighlightColor[2] = 0.0;
@@ -138,7 +139,7 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLGlobalRenderInforma
   this->mFogColor[1] = 0.5;
   this->mFogColor[2] = 0.5;
   this->mFogColor[3] = 1.0;
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
   this->change_style(pRenderInformation);
 }
 
@@ -163,23 +164,24 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLLocalRenderInformat
     mpFontRenderer(NULL),
     mDeduceSpeciesReferenceRoles(false),
     mpSelectionBox(NULL)
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
     , mHighlight(true)
+    , mFogDensity(0.8)
     , mGLFunctionsInitialized(false)
     , mpGlFogCoordfEXT(NULL)
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
 {
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
   this->mHighlightColor[0] = 0.5;
-  this->mHighlightColor[0] = 0.0;
-  this->mHighlightColor[0] = 0.0;
-  this->mHighlightColor[0] = 1.0;
+  this->mHighlightColor[1] = 0.0;
+  this->mHighlightColor[2] = 0.0;
+  this->mHighlightColor[3] = 1.0;
   this->mFogColor[0] = 0.5;
   this->mFogColor[1] = 0.5;
   this->mFogColor[2] = 0.5;
   this->mFogColor[3] = 1.0;
   this->initialize_gl_extension_functions();
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
   this->change_style(pRenderInformation);
 }
 
@@ -953,7 +955,7 @@ void CLLayoutRenderer::draw_layout()
   // first we need to clear the screen
   // with the background color
   glDisable(GL_POLYGON_SMOOTH);
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
 
   if (this->mGLFunctionsInitialized == false)
     {
@@ -971,13 +973,13 @@ void CLLayoutRenderer::draw_layout()
       glFogfv(GL_FOG_COLOR, this->mFogColor);
     }
 
-  glFogf(GL_FOG_DENSITY, 0.5);
+  glFogf(GL_FOG_DENSITY, this->mFogDensity);
   glHint(GL_FOG_HINT, GL_FASTEST);
   glFogi(GL_FOG_COORD_SRC, GL_FOG_COORD);
   glEnable(GL_FOG);
   GLfloat highlight = (GLfloat)this->mHighlight;
   GLfloat notHighlight = (GLfloat)(!this->mHighlight);
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
 
   if (this->mpResolver)
     {
@@ -987,18 +989,18 @@ void CLLayoutRenderer::draw_layout()
       GLfloat green = (GLfloat)(pBackgroundColor->getGreen() / 255.0);
       GLfloat blue = (GLfloat)(pBackgroundColor->getBlue() / 255.0);
       GLfloat alpha = (GLfloat)(pBackgroundColor->getAlpha() / 255.0);
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
 
       if (this->mHighlight == false)
         {
           // we have to generate fog on the background ourselfes
-          red = (GLfloat)((red + this->mFogColor[0]) * 0.5);
-          green = (GLfloat)((green + this->mFogColor[1]) * 0.5);
-          blue = (GLfloat)((blue + this->mFogColor[2]) * 0.5);
-          alpha = (GLfloat)((alpha + this->mFogColor[3]) * 0.5);
+          red = (GLfloat)((red + this->mFogColor[0]) * this->mFogDensity);
+          green = (GLfloat)((green + this->mFogColor[1]) * this->mFogDensity);
+          blue = (GLfloat)((blue + this->mFogColor[2]) * this->mFogDensity);
+          alpha = (GLfloat)((alpha + this->mFogColor[3]) * this->mFogDensity);
         }
 
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
       glClearColor((GLclampf)red,
                    (GLclampf)green,
                    (GLclampf)blue,
@@ -1014,21 +1016,62 @@ void CLLayoutRenderer::draw_layout()
       const CLMetabReferenceGlyph* pSRG = NULL;
       const CLTextGlyph* pTG = NULL;
       std::vector<const CLGraphicalObject*>::iterator it = this->mDrawables.begin(), endit = this->mDrawables.end();
-      const CCopasiObject* pModelObject = NULL;
-#ifdef COPASI_DEBUG
+      const CLGraphicalObject* pGO = NULL;
+#ifdef ELEMENTARY_MODE_DISPLAY
 // this is needed to highlight or fog certain elements in the diagram
-      std::set<const CCopasiObject*>::const_iterator end = this->mHighlightedModelObjects.end();
-#endif // COPASI_DEBUG      
+      const CCopasiObject* pModelObject = NULL;
+      std::set<const CLGraphicalObject*>::const_iterator end = this->mHighlightedObjects.end();
+#endif // ELEMENTARY_MODE_DISPLAY      
 
       while (it != endit)
         {
-#ifdef COPASI_DEBUG
+          pGO = *it;
+          pRG = dynamic_cast<const CLReactionGlyph*>(pGO);
+          pSRG = dynamic_cast<const CLMetabReferenceGlyph*>(pGO);
+          pTG = dynamic_cast<const CLTextGlyph*>(pGO);
+          std::map<const CLGraphicalObject*, const CLStyle*>::const_iterator styleIt = this->mStyleMap.find(pGO);
+
+          if (styleIt == this->mStyleMap.end() || styleIt->second == NULL)
+            {
+              ++it;
+              continue;
+            }
+
+
+#ifdef ELEMENTARY_MODE_DISPLAY
+
 // this is needed to highlight or fog certain elements in the diagram
-          pModelObject = (*it)->getModelObject();
+          const CLGraphicalObject* pGO2 = NULL;
+
+          if (pSRG == NULL)
+            {
+              pModelObject = (pGO)->getModelObject();
+              pGO2 = pGO;
+            }
+          else
+            {
+              // if we have a species reference glyph, we check if the parent reaction glyph is highlighted and if
+              // it is we also highlight the species reference glyph
+              assert((*it)->getObjectParent() != NULL && (*it)->getObjectParent()->getObjectParent() != NULL);
+              assert(dynamic_cast<const CLGraphicalObject*>((*it)->getObjectParent()->getObjectParent()) != NULL);
+
+              if (pGO->getObjectParent() != NULL &&
+                  pGO->getObjectParent()->getObjectParent() != NULL
+                 )
+                {
+                  pGO2 = dynamic_cast<const CLGraphicalObject*>(pGO->getObjectParent()->getObjectParent());
+
+                  if (pGO2 != NULL)
+                    {
+                      pModelObject = pGO2->getModelObject();
+                    }
+                }
+
+            }
 
           if (this->mpGlFogCoordfEXT != NULL)
             {
-              if (pModelObject != NULL && this->mHighlightedModelObjects.find(pModelObject) != end)
+              if (pModelObject != NULL && this->mHighlightedObjects.find(pGO2) != end)
                 {
                   (*(this->mpGlFogCoordfEXT))(highlight);
                 }
@@ -1038,18 +1081,7 @@ void CLLayoutRenderer::draw_layout()
                 }
             }
 
-#endif //COPASI_DEBUG
-          pRG = dynamic_cast<const CLReactionGlyph*>(*it);
-          pSRG = dynamic_cast<const CLMetabReferenceGlyph*>(*it);
-          pTG = dynamic_cast<const CLTextGlyph*>(*it);
-          std::map<const CLGraphicalObject*, const CLStyle*>::const_iterator styleIt;
-          styleIt = this->mStyleMap.find(*it);
-
-          if (styleIt == this->mStyleMap.end() || styleIt->second == NULL)
-            {
-              ++it;
-              continue;
-            }
+#endif //ELEMENTARY_MODE_DISPLAY
 
           if ((pSRG != NULL && pSRG->getCurve().getNumCurveSegments() != 0))
             {
@@ -1077,7 +1109,7 @@ void CLLayoutRenderer::draw_layout()
 
               // if the curve is the only selected item, we draw the base points,
               // otherwise we only draw the selection frame
-              if (this->mSelection.find(const_cast<CLGraphicalObject*>(*it)) != this->mSelection.end())
+              if (this->mSelection.find(const_cast<CLGraphicalObject*>(pGO)) != this->mSelection.end())
                 {
                   CLBoundingBox* pBB = getCurveBoundingBox(&pSRG->getCurve());
                   this->drawSelectionBox(pBB->getPosition().getX(), pBB->getPosition().getY(),
@@ -1112,7 +1144,7 @@ void CLLayoutRenderer::draw_layout()
 
               // if the curve is the only selected item, we draw the base points,
               // otherwise we only draw the selection frame
-              if (this->mSelection.find(const_cast<CLGraphicalObject*>(*it)) != this->mSelection.end())
+              if (this->mSelection.find(const_cast<CLGraphicalObject*>(pGO)) != this->mSelection.end())
                 {
                   CLBoundingBox* pBB = getCurveBoundingBox(&pRG->getCurve());
                   this->drawSelectionBox(pBB->getPosition().getX(), pBB->getPosition().getY(),
@@ -1137,7 +1169,7 @@ void CLLayoutRenderer::draw_layout()
 
                   // draw the selection frame
                   // if it is the only selected element, we also draw the resize handles
-                  if (this->mSelection.find(const_cast<CLGraphicalObject*>(*it)) != this->mSelection.end())
+                  if (this->mSelection.find(const_cast<CLGraphicalObject*>(pGO)) != this->mSelection.end())
                     {
                       // we need to adjust the bounding box the same way we adjust the text glyphs
                       this->drawSelectionBox(bb.getPosition().getX(), bb.getPosition().getY() + pos->second->mAscent,
@@ -1147,12 +1179,12 @@ void CLLayoutRenderer::draw_layout()
             }
           else
             {
-              const CLBoundingBox* pBB = &(*it)->getBoundingBox();
+              const CLBoundingBox* pBB = &pGO->getBoundingBox();
               this->draw_object(styleIt->second, pBB);
 
               // draw the selection frame
               // if it is the only selected element, we also draw the resize handles
-              if (this->mSelection.find(const_cast<CLGraphicalObject*>(*it)) != this->mSelection.end())
+              if (this->mSelection.find(const_cast<CLGraphicalObject*>(pGO)) != this->mSelection.end())
                 {
                   this->drawSelectionBox(pBB->getPosition().getX(), pBB->getPosition().getY(),
                                          pBB->getDimensions().getWidth(), pBB->getDimensions().getHeight(), this->mSelection.size() == 1);
@@ -3280,6 +3312,8 @@ void CLLayoutRenderer::update_style_information()
           ++it;
         }
     }
+
+  std::map<const CLGraphicalObject*, const CLStyle*>::const_iterator it2 = this->mStyleMap.begin(), endit2 = this->mStyleMap.end();
 }
 
 /**
@@ -6887,30 +6921,30 @@ void CLLayoutRenderer::setImageTexturizer(CLImageTexturizer* pTexturizer)
   this->mpImageTexturizer = pTexturizer;
 }
 
-#ifdef COPASI_DEBUG
+#ifdef ELEMENTARY_MODE_DISPLAY
 
 /**
  * Sets the list of model objects that are to be highlighted in the diagram.
  */
-void CLLayoutRenderer::setHighlightedModelObjects(const std::set<const CCopasiObject*>& highlightedObjects)
+void CLLayoutRenderer::setHighlightedObjects(const std::set<const CLGraphicalObject*>& highlightedObjects)
 {
-  this->mHighlightedModelObjects = highlightedObjects;
+  this->mHighlightedObjects = highlightedObjects;
 }
 
 /**
  * Returns a const reference to the set of highlighted model objects.
  */
-const std::set<const CCopasiObject*>& CLLayoutRenderer::getHighlightedModelObjects() const
+const std::set<const CLGraphicalObject*>& CLLayoutRenderer::getHighlightedObjects() const
 {
-  return this->mHighlightedModelObjects;
+  return this->mHighlightedObjects;
 }
 
 /**
  * Returns a reference to the set of highlighted model objects.
  */
-std::set<const CCopasiObject*>& CLLayoutRenderer::getHighlightedModelObjects()
+std::set<const CLGraphicalObject*>& CLLayoutRenderer::getHighlightedObjects()
 {
-  return this->mHighlightedModelObjects;
+  return this->mHighlightedObjects;
 }
 
 
@@ -6982,6 +7016,23 @@ bool CLLayoutRenderer::getHighlightFlag() const
 }
 
 /**
+ * Sets the fog density.
+ */
+void CLLayoutRenderer::setFogDensity(GLfloat dens)
+{
+  this->mFogDensity = (dens > 1.0) ? 1.0 : ((dens < 0.0) ? 0.0 : dens);
+}
+
+/**
+ * Returns the current fog density.
+ */
+GLfloat CLLayoutRenderer::getFogDensity() const
+{
+  return this->mFogDensity;
+}
+
+
+/**
  * On non apple systems, we need to get the pointers to extension functions.
  */
 void CLLayoutRenderer::initialize_gl_extension_functions()
@@ -7033,6 +7084,6 @@ void * CLLayoutRenderer::MyNSGLGetProcAddress(const char *name)
 }
 #endif // __APPLE__
 
-#endif // COPASI_DEBUG
+#endif // ELEMENTARY_MODE_DISPLAY
 
 
