@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.79 $
+//   $Revision: 1.80 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:34:13 $
+//   $Date: 2011/11/09 15:53:24 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -151,6 +151,7 @@ CTrajectoryMethod::Status CStochMethod::step(const double & deltaT)
         }
     }
 
+  *mpCurrentState = mpProblem->getModel()->getState();
   mpCurrentState->setTime(time);
 
   // get back the particle numbers:
