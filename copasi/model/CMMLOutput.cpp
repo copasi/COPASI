@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMMLOutput.cpp,v $
-//   $Revision: 1.8.2.2 $
+//   $Revision: 1.8.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/06/27 19:59:44 $
+//   $Date: 2011/11/09 16:40:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,7 +44,7 @@ void CMMLOutput::writeLHS(std::ostream & out,
   out << SPC(l + 2) << "<mfenced>" << std::endl;
   out << SPC(l + 3) << "<mrow>" << std::endl;
   //out << SPC(l + 4) << "<mi>" << CMathMl::fixName(metabName) << "</mi>" << std::endl;
-  out << SPC(l + 4) << "<mi>[" << metabName << "]</mi>" << std::endl;
+  out << SPC(l + 4) << "<mi>[" << CMathMl::fixName(metabName) << "]</mi>" << std::endl;
   out << SPC(l + 4) << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
   out << SPC(l + 4) << "<msub><mi>V</mi><mi>" << CMathMl::fixName(compName) << "</mi></msub>" << std::endl;
 
@@ -178,7 +178,7 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
                   }
 
                 //params[i][0] = "<mi>"+ CMathMl::fixName(name)+"</mi>";
-                params[i][0] = "<mi>[" + name + "]</mi>";
+                params[i][0] = "<mi>[" + CMathMl::fixName(name) + "]</mi>";
               }
             else if (functionParams[i]->getType() == CFunctionParameter::VFLOAT64)
               {
@@ -189,7 +189,7 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
                   {
                     name = CCopasiRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][j])->getObjectDisplayName();
                     //params[i][j] = "<mi>"+ CMathMl::fixName(name)+"</mi>";
-                    params[i][j] = "<mi>[" + name + "]</mi>";
+                    params[i][j] = "<mi>[" + CMathMl::fixName(name) + "]</mi>";
                   }
               }
             else assert(false);
