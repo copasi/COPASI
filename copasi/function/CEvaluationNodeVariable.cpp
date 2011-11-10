@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVariable.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:18:21 $
+//   $Date: 2011/11/10 18:38:44 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,6 +87,6 @@ void CEvaluationNodeVariable::writeMathML(std::ostream & out,
     }
   else
     {
-      out << SPC(l) << "<mi>" << this->mData << "</mi>" << std::endl;
+      out << SPC(l) << "<mi>" << CMathMl::fixName(mData) << "</mi>" << std::endl;
     }
 }

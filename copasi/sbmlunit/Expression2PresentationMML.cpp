@@ -22,6 +22,8 @@
 #include "Expression2PresentationMML.h"
 #include <sbml/Model.h>
 
+#include "utilities/copasimathml.h"
+
 Expression2PresentationMML::Expression2PresentationMML(const ASTNode* rootnode)
     : mRootNode(rootnode), mpModel(NULL), mpReaction(NULL),
     mUseReactionNameInLocalParameters(true)
@@ -281,7 +283,7 @@ void Expression2PresentationMML::writeMathMLFunction(std::ostream & out, const A
 {
   out << SPC(l) << "<mrow>" << std::endl;
 
-  out << SPC(l + 1) << "<mi>" << node->getName() << "</mi>" << std::endl;
+  out << SPC(l + 1) << "<mi>" << CMathMl::fixName(node->getName()) << "</mi>" << std::endl;
   out << SPC(l + 1) << "<mo> &ApplyFunction; </mo>" << std::endl;
   out << SPC(l + 1) << "<mrow>" << std::endl;
   out << SPC(l + 2) << "<mo> (</mo>" << std::endl;
@@ -309,7 +311,7 @@ void Expression2PresentationMML::writeMathMLName(std::ostream & out, const ASTNo
 
   if (!mpModel)
     {
-      out << SPC(l) << "<mi>" << node->getName() << "</mi>" << std::endl;
+      out << SPC(l) << "<mi>" << CMathMl::fixName(node->getName()) << "</mi>" << std::endl;
       return;
     }
 
@@ -375,7 +377,7 @@ void Expression2PresentationMML::writeMathMLName(std::ostream & out, const ASTNo
     }
 
   //TODO area, length, reaction rates
-  out << SPC(l) << "<mi>" << node->getName() << "</mi>" << std::endl;
+  out << SPC(l) << "<mi>" << CMathMl::fixName(node->getName()) << "</mi>" << std::endl;
 }
 
 void Expression2PresentationMML::writeMathMLNumber(std::ostream & out, const ASTNode* node, size_t l) const
