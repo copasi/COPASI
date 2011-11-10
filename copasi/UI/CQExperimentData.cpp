@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.cpp,v $
-//   $Revision: 1.15.2.6 $
+//   $Revision: 1.15.2.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/13 21:46:49 $
+//   $Date: 2011/11/10 14:17:07 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -608,6 +608,8 @@ void CQExperimentData::slotCancel()
 void CQExperimentData::slotOK()
 {
   // Force the save all current changes.
+  mpBtnOK->setFocus();
+
   slotExperimentChanged(NULL);
 
   CExperiment * pExperiment;
