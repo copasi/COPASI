@@ -2,10 +2,10 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMResultWidget.ui,v $ </comment>
-<comment>   $Revision: 1.6 $ </comment>
+<comment>   $Revision: 1.7 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/11/09 18:00:30 $ </comment>
+<comment>   $Date: 2011/11/10 13:12:55 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -13,7 +13,6 @@
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
- <comment> All rights reserved. </comment>
  <class>CQEFMResultWidget</class>
  <widget class="CopasiWidget" name="CQEFMResultWidget">
   <property name="geometry">
@@ -117,6 +116,9 @@ p, li { white-space: pre-wrap; }
       </attribute>
      </widget>
      <widget class="QTableView" name="mpNetReactions">
+      <property name="editTriggers">
+       <set>QAbstractItemView::NoEditTriggers</set>
+      </property>
       <property name="alternatingRowColors">
        <bool>true</bool>
       </property>
@@ -131,6 +133,9 @@ p, li { white-space: pre-wrap; }
       </attribute>
      </widget>
      <widget class="QTableView" name="mpReactionMatrix">
+      <property name="editTriggers">
+       <set>QAbstractItemView::NoEditTriggers</set>
+      </property>
       <property name="alternatingRowColors">
        <bool>true</bool>
       </property>
@@ -145,6 +150,9 @@ p, li { white-space: pre-wrap; }
       </attribute>
      </widget>
      <widget class="QTableView" name="mpSpeciesMatrix">
+      <property name="editTriggers">
+       <set>QAbstractItemView::NoEditTriggers</set>
+      </property>
       <property name="alternatingRowColors">
        <bool>true</bool>
       </property>

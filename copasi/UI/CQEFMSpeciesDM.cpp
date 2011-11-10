@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMSpeciesDM.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/23 18:39:00 $
+//   $Date: 2011/11/10 13:12:55 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,13 +68,10 @@ QVariant CQEFMSpeciesDM::data(const QModelIndex &index, int role) const
   if (index.row() >= rowCount())
     return QVariant();
 
-  if (index.column() > 0 && role == Qt::ForegroundRole && !(flags(index) & Qt::ItemIsEditable))
-    return QColor(Qt::darkGray);
-
-  std::vector< CFluxMode >::const_iterator itMode = mBeginModes + index.row();
-
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
+      std::vector< CFluxMode >::const_iterator itMode = mBeginModes + index.row();
+
       switch (index.column())
         {
           case COL_ROW_NUMBER:
