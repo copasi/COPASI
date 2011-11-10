@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMListWidget.cpp,v $
-//   $Revision: 1.4.2.1 $
+//   $Revision: 1.4.2.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/13 21:46:53 $
+//   $Date: 2011/11/10 13:35:06 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,23 +16,21 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include <QHeaderView>
-
 #include "CQEFMListWidget.h"
 
+#include "elementaryFluxModes/CEFMTask.h"
+
 CQEFMListWidget::CQEFMListWidget(QWidget* parent, const char* name) :
-    QWidget(parent, name),
+    QWidget(parent),
     mpTask(NULL),
     mpProxyModel(NULL),
     mpFluxModeDM(NULL)
 {
+  setObjectName(QString::fromUtf8(name));
   setupUi(this);
 
-  mpEFMTable->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-  mpEFMTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpEFMTable->verticalHeader()->hide();
-  mpEFMTable->setAlternatingRowColors(true);
-  mpEFMTable->setSortingEnabled(true);
+  mpEFMTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpEFMTable->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
 
   //Create Source Data Model.
@@ -41,7 +39,6 @@ CQEFMListWidget::CQEFMListWidget(QWidget* parent, const char* name) :
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
-  mpProxyModel->setDynamicSortFilter(true);
   mpProxyModel->setFilterKeyColumn(-1);
 
   mpProxyModel->setSourceModel(mpFluxModeDM);

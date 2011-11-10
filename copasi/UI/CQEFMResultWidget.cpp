@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMResultWidget.cpp,v $
-//   $Revision: 1.7.2.2 $
+//   $Revision: 1.7.2.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/13 21:46:49 $
+//   $Date: 2011/11/10 13:35:06 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,6 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include <QHeaderView>
 
 #include "CQEFMResultWidget.h"
 #include "CQEFMNetReactionDM.h"
@@ -43,12 +42,9 @@ CQEFMResultWidget::CQEFMResultWidget(QWidget* parent, const char* name) :
 {
   setupUi(this);
 
-  mpReactionMatrix->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+  mpReactionMatrix->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   mpReactionMatrix->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpReactionMatrix->verticalHeader()->hide();
-  mpReactionMatrix->setAlternatingRowColors(true);
-  mpReactionMatrix->setSortingEnabled(true);
-  mpReactionMatrix->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
 
   //Create Source Data Model.
   mpReactionDM = new CQEFMReactionDM(this);
@@ -56,7 +52,6 @@ CQEFMResultWidget::CQEFMResultWidget(QWidget* parent, const char* name) :
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModelReactions = new CQSortFilterProxyModel();
   mpProxyModelReactions->setSortCaseSensitivity(Qt::CaseInsensitive);
-  mpProxyModelReactions->setDynamicSortFilter(true);
   mpProxyModelReactions->setFilterKeyColumn(COL_REACTION_NAME);
 
   mpProxyModelReactions->setSourceModel(mpReactionDM);
@@ -66,12 +61,9 @@ CQEFMResultWidget::CQEFMResultWidget(QWidget* parent, const char* name) :
   mpReactionMatrix->setModel(mpProxyModelReactions);
   mpReactionMatrix->resizeColumnsToContents();
 
-  mpSpeciesMatrix->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+  mpSpeciesMatrix->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   mpSpeciesMatrix->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpSpeciesMatrix->verticalHeader()->hide();
-  mpSpeciesMatrix->setAlternatingRowColors(true);
-  mpSpeciesMatrix->setSortingEnabled(true);
-  mpSpeciesMatrix->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
 
   //Create Source Data Model.
   mpSpeciesDM = new CQEFMSpeciesDM(this);
@@ -79,7 +71,6 @@ CQEFMResultWidget::CQEFMResultWidget(QWidget* parent, const char* name) :
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModelSpecies = new CQSortFilterProxyModel();
   mpProxyModelSpecies->setSortCaseSensitivity(Qt::CaseInsensitive);
-  mpProxyModelSpecies->setDynamicSortFilter(true);
   mpProxyModelSpecies->setFilterKeyColumn(COL_REACTION_NAME);
 
   mpProxyModelSpecies->setSourceModel(mpSpeciesDM);
@@ -89,12 +80,9 @@ CQEFMResultWidget::CQEFMResultWidget(QWidget* parent, const char* name) :
   mpSpeciesMatrix->setModel(mpProxyModelSpecies);
   mpSpeciesMatrix->resizeColumnsToContents();
 
-  mpNetReactions->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+  mpNetReactions->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   mpNetReactions->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpNetReactions->verticalHeader()->hide();
-  mpNetReactions->setAlternatingRowColors(true);
-  mpNetReactions->setSortingEnabled(true);
-  mpNetReactions->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
 
   //Create Source Data Model.
   mpNetReactionDM = new CQEFMNetReactionDM(this);
@@ -102,7 +90,6 @@ CQEFMResultWidget::CQEFMResultWidget(QWidget* parent, const char* name) :
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModelNetReactions = new CQSortFilterProxyModel();
   mpProxyModelNetReactions->setSortCaseSensitivity(Qt::CaseInsensitive);
-  mpProxyModelNetReactions->setDynamicSortFilter(true);
   mpProxyModelNetReactions->setFilterKeyColumn(COL_REACTION_NAME);
 
   mpProxyModelNetReactions->setSourceModel(mpNetReactionDM);
