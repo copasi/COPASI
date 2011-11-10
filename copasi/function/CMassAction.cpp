@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-//   $Revision: 1.41.4.3 $
+//   $Revision: 1.41.4.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/26 21:10:12 $
+//   $Date: 2011/11/10 18:16:31 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.

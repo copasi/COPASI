@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.34.4.2 $
+//   $Revision: 1.34.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/11 15:02:26 $
+//   $Date: 2011/11/10 18:16:31 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -478,7 +478,7 @@ void CEvaluationNodeCall::writeMathML(std::ostream & out,
           {
             out << SPC(l) << "<mrow>" << std::endl;
 
-            out << SPC(l + 1) << "<mi>" << mData << "</mi>" << std::endl;
+            out << SPC(l + 1) << "<mi>" << CMathMl::fixName(mData) << "</mi>" << std::endl;
             out << SPC(l + 1) << "<mo> &ApplyFunction; </mo>" << std::endl;
             out << SPC(l + 1) << "<mrow>" << std::endl;
             out << SPC(l + 2) << "<mo> (</mo>" << std::endl;

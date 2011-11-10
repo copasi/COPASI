@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-//   $Revision: 1.83.2.6 $
+//   $Revision: 1.83.2.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/02/16 18:35:07 $
+//   $Date: 2011/11/10 18:16:31 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -328,7 +328,7 @@ void CFunction::createListOfParametersForMathML(std::vector<std::vector<std::str
 
   for (i = 0; i < imax; ++i)
     {
-      env[i].push_back("<mi>" + getVariables()[i]->getObjectName() + "</mi>");
+      env[i].push_back("<mi>" + CMathMl::fixName(getVariables()[i]->getObjectName()) + "</mi>");
     }
 }
 
@@ -339,7 +339,7 @@ void CFunction::writeMathML(std::ostream & out,
 {
   if (expand && mpRoot)
     {
-      bool flag = false; //TODO include check if parantheses are necessary
+      bool flag = false; //TODO include check if parentheses are necessary
 
       if (flag) out << SPC(l) << "<mfenced>" << std::endl;
 
@@ -377,7 +377,7 @@ void CFunction::writeMathML(std::ostream & out, size_t l) const
 
   for (i = 0; i < imax; ++i)
     {
-      out << SPC(l + 2) << "<mi>" << getVariables()[i]->getObjectName() << "</mi>" << std::endl;
+      out << SPC(l + 2) << "<mi>" << CMathMl::fixName(getVariables()[i]->getObjectName()) << "</mi>" << std::endl;
     }
 
   out << SPC(l + 1) << "</mfenced>" << std::endl;
