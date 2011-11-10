@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFWriter.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2008/07/11 16:05:18 $
+//   $Date: 2011/11/10 17:14:10 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -14,6 +19,8 @@
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+#include <stdlib.h>
 
 #include <sstream>
 
@@ -32,10 +39,15 @@ std::string CRDFWriter::xmlFromGraph(const CRDFGraph * pGraph)
 {
   CRDFWriter Writer;
 
-  char * XML = Writer.CRDFWriter::write(pGraph);
+  char * pXML = Writer.CRDFWriter::write(pGraph);
 
-  if (XML != NULL)
-    return XML;
+  if (pXML != NULL)
+    {
+      std::string XML = pXML;
+      free(pXML);
+
+      return XML;
+    }
 
   return "";
 }
@@ -106,18 +118,19 @@ char * CRDFWriter::write(const CRDFGraph * pGraph)
     {
       // Set the subject of the triplet
       const CRDFSubject & Subject = it->pSubject->getSubject();
+
       switch (Subject.getType())
         {
-        case CRDFSubject::RESOURCE:
-          Triplet.subject_type = RAPTOR_IDENTIFIER_TYPE_RESOURCE;
-          pSubjectURI = raptor_new_uri((const unsigned char *) Subject.getResource().c_str());
-          Triplet.subject = pSubjectURI;
-          break;
+          case CRDFSubject::RESOURCE:
+            Triplet.subject_type = RAPTOR_IDENTIFIER_TYPE_RESOURCE;
+            pSubjectURI = raptor_new_uri((const unsigned char *) Subject.getResource().c_str());
+            Triplet.subject = pSubjectURI;
+            break;
 
-        case CRDFSubject::BLANK_NODE:
-          Triplet.subject_type = RAPTOR_IDENTIFIER_TYPE_ANONYMOUS;
-          Triplet.subject = Subject.getBlankNodeID().c_str();
-          break;
+          case CRDFSubject::BLANK_NODE:
+            Triplet.subject_type = RAPTOR_IDENTIFIER_TYPE_ANONYMOUS;
+            Triplet.subject = Subject.getBlankNodeID().c_str();
+            break;
         }
 
       // Set the predicate of the triplet
@@ -127,42 +140,45 @@ char * CRDFWriter::write(const CRDFGraph * pGraph)
 
       // Set the object of the triplet
       const CRDFObject & Object = it->pObject->getObject();
+
       switch (Object.getType())
         {
-        case CRDFObject::RESOURCE:
-          Triplet.object_type = RAPTOR_IDENTIFIER_TYPE_RESOURCE;
-          pObjectURI = raptor_new_uri((const unsigned char *) Object.getResource().c_str());
-          Triplet.object = pObjectURI;
-          break;
+          case CRDFObject::RESOURCE:
+            Triplet.object_type = RAPTOR_IDENTIFIER_TYPE_RESOURCE;
+            pObjectURI = raptor_new_uri((const unsigned char *) Object.getResource().c_str());
+            Triplet.object = pObjectURI;
+            break;
 
-        case CRDFObject::BLANK_NODE:
-          Triplet.object_type = RAPTOR_IDENTIFIER_TYPE_ANONYMOUS;
-          Triplet.object = Object.getBlankNodeID().c_str();
-          break;
+          case CRDFObject::BLANK_NODE:
+            Triplet.object_type = RAPTOR_IDENTIFIER_TYPE_ANONYMOUS;
+            Triplet.object = Object.getBlankNodeID().c_str();
+            break;
 
-        case CRDFObject::LITERAL:
-          Triplet.object_type = RAPTOR_IDENTIFIER_TYPE_LITERAL;
-          const CRDFLiteral & Literal = Object.getLiteral();
+          case CRDFObject::LITERAL:
+            Triplet.object_type = RAPTOR_IDENTIFIER_TYPE_LITERAL;
+            const CRDFLiteral & Literal = Object.getLiteral();
 
-          switch (Literal.getType())
-            {
-            case CRDFLiteral::TYPED:
-              pLiteralDataTypeURI = raptor_new_uri((const unsigned char *) Literal.getDataType().c_str());
-              Triplet.object_literal_datatype = pLiteralDataTypeURI;
-              Triplet.object_literal_language = NULL;
-              break;
+            switch (Literal.getType())
+              {
+                case CRDFLiteral::TYPED:
+                  pLiteralDataTypeURI = raptor_new_uri((const unsigned char *) Literal.getDataType().c_str());
+                  Triplet.object_literal_datatype = pLiteralDataTypeURI;
+                  Triplet.object_literal_language = NULL;
+                  break;
 
-            case CRDFLiteral::PLAIN:
-              Triplet.object_literal_datatype = NULL;
-              if (Literal.getLanguage() != "")
-                Triplet.object_literal_language = (const unsigned char *) Literal.getLanguage().c_str();
-              else
-                Triplet.object_literal_language = NULL;
-              break;
-            }
+                case CRDFLiteral::PLAIN:
+                  Triplet.object_literal_datatype = NULL;
 
-          Triplet.object = Literal.getLexicalData().c_str();
-          break;
+                  if (Literal.getLanguage() != "")
+                    Triplet.object_literal_language = (const unsigned char *) Literal.getLanguage().c_str();
+                  else
+                    Triplet.object_literal_language = NULL;
+
+                  break;
+              }
+
+            Triplet.object = Literal.getLexicalData().c_str();
+            break;
         }
 
       if (raptor_serialize_statement(mpWriter, &Triplet))
