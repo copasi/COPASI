@@ -1,6 +1,6 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.131 $ 
+#   $Revision: 1.132 $ 
 #   $Name:  $ 
 # End CVS Header 
 
@@ -19,7 +19,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.131 $ $Author: gauges $ $Date: 2011/11/09 15:15:03 $  
+# $Revision: 1.132 $ $Author: shoops $ $Date: 2011/11/10 15:49:44 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -667,12 +667,14 @@ contains(BUILD_OS, Linux) {
     !isEmpty(QWT_PATH){
        LIBS +=  -L$${QWT_PATH}/lib
        INCLUDEPATH += $${QWT_PATH}/include
+       INCLUDEPATH += $${QWT_PATH}/include/qwt-qt4
     }
     LIBS += -lqwt
 
     !isEmpty(QWT3D_PATH){
       LIBS += -L$${QWT3D_PATH}/lib/
       INCLUDEPATH += $${QWT3D_PATH}/include
+      INCLUDEPATH += $${QWT3D_PATH}/include/qwtplot3d-qt4
     }
     LIBS += -lqwtplot3d
 
