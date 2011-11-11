@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-$Revision: 1.37.4.8 $
+$Revision: 1.37.4.9 $
 $Name:  $
 $Author: gauges $
-$Date: 2011/11/01 19:57:48 $
+$Date: 2011/11/11 10:42:43 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -126,6 +126,14 @@ protected:
   // of a metabolite. Then it checks the current framework and the metabolite if a slider to the object
   // is actually allowed and if it isn't, it will return the correct object
   const CCopasiObject* determineCorrectObjectForSlider(const CCopasiObject* pObject);
+
+  /**
+   * Takes a CopasiSlider object and checks if the associated model object
+   * fits the currently set framework. If not, the slider object and the values are adjusted.
+   *
+   * On success, true is returned.
+   */
+  bool setCorrectSliderObject(CopasiSlider* pSlider);
 
 protected slots:
   void removeSlider(CopasiSlider* slider);
