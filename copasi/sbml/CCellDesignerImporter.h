@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CCellDesignerImporter.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/11/09 15:03:25 $
+//   $Date: 2011/11/11 21:20:13 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,9 @@
 #include <utility>
 
 #include <sbml/layout/BoundingBox.h>
+#include <sbml/layout/Curve.h>
 #include <sbml/layout/Dimensions.h>
+#include <sbml/layout/LineSegment.h>
 #include <sbml/layout/Point.h>
 #include <sbml/layout/render/Text.h>
 
@@ -1267,11 +1269,9 @@ protected:
   bool createDefaultSubstrateStyle();
 
   /**
-   * Create a primitive that corresponds to the given class
-   * The promitive is created in the given group object.
+   * Create a primitive that corresponds to the given species specific class
+   * The primitive is created in the given group object.
    * The complete primitive is translated by the given offset.
-   *
-   * TODO currently all classes are mapped to a simple rectangle.
    *
    * If creation of the primitive fails, false is returned.
    */
@@ -1332,6 +1332,63 @@ protected:
    * The result is returned in r.
    */
   static void rotate(const Point& p, double a, Point& r);
+
+  /**
+   * This method takes a pointer to a curve object
+   * as well as a start iterator and an end iterator which
+   * both iterate over a datastructure that contains points.
+   * For each point pair, a line segment is created and added to
+   * curve.
+   * The new curve segments are added to the end of the curve.
+   *
+   * If no error occurs, true is returned, else false is returned.
+   */
+  template<typename ITERATOR>
+  static bool createLineSegments(Curve* pCurve, ITERATOR start, ITERATOR end)
+  {
+    bool result = true;
+
+    // check if there is a curve and if there are points
+    if (pCurve != NULL && start != end)
+      {
+        ITERATOR tmpEnd = end;
+        --tmpEnd;
+
+        // make sure there is more than one point
+        if (start != tmpEnd)
+          {
+            LineSegment* pLS = pCurve->createLineSegment();
+            pLS->setStart(&(*start));
+            ++start;
+
+            while (start != tmpEnd)
+              {
+                pLS->setEnd(&(*start));
+                pLS = pCurve->createLineSegment();
+                pLS->setStart(&(*start));
+                ++start;
+              }
+
+            pLS->setEnd(&(*start));
+          }
+        else
+          {
+            result = false;
+          }
+      }
+    else
+      {
+        result = false;
+      }
+
+    return result;
+  }
+
+  /**
+   * Returns the color string for the given color id
+   * or an empty string if the color id was not found.
+   */
+  std::string getColorString(const std::string& color_id) const;
 
 };
 

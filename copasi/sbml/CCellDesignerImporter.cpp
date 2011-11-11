@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CCellDesignerImporter.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/11/09 15:03:25 $
+//   $Date: 2011/11/11 21:20:13 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -382,7 +382,7 @@ bool CCellDesignerImporter::convertCellDesignerLayout(const XMLNode* pCellDesign
               std::string render_id = this->createUniqueId("RenderInformation");
               this->mpLocalRenderInfo->setId(id);
               this->mIdMap.insert(std::pair<std::string, const SBase*>(render_id, this->mpLocalRenderInfo));
-              // TODO since we use black for the edge of all objects, we create a color definition for that
+              // since we use black for the edge of all objects, we create a color definition for that
               std::string color_id = this->createUniqueId("black");
               ColorDefinition* pBlack = this->mpLocalRenderInfo->createColorDefinition();
 
@@ -400,7 +400,7 @@ bool CCellDesignerImporter::convertCellDesignerLayout(const XMLNode* pCellDesign
 
               if (result == true)
                 {
-                  // TODO ReactionGlyphs and SpeciesReferenceGlyphs
+                  // ReactionGlyphs and SpeciesReferenceGlyphs
                   result = this->createDefaultStyles();
                 }
             }
@@ -506,33 +506,32 @@ bool CCellDesignerImporter::convertCellDesignerLayout(const XMLNode* pCellDesign
           // TODO to the corresponding species or CellDesigner species id
           // TODO this information is stored in a proteinReference element of either the annotation
           // TODO of the species or directly with the CellDesignerSpecies
-          /*
-          if(result==true)
-          {
-              pChild=CCellDesignerImporter::findChildNode(pCellDesignerAnnotation,pCellDesignerAnnotation->getPrefix(),"listOfProteins",false);
-              result = (pChild!=NULL && this->parseProteins(pChild));
+          if (result == true)
+            {
+              pChild = CCellDesignerImporter::findChildNode(pCellDesignerAnnotation, pCellDesignerAnnotation->getPrefix(), "listOfProteins", false);
+              result = (pChild != NULL && this->parseProteins(pChild));
 
-              // now we go through the protein map and set the correct type
-              // on the SpeciesAlias for the corresponding species
-              std::map<std::string,SPECIES_CLASS>::const_iterator it=this->mProteinTypeMap.begin(),endit=this->mProteinTypeMap.end();
-              std::map<std::string,SpeciesAnnotation>::iterator annoIt;
-              std::cout << "num protein types:" << this->mProteinTypeMap.size() << std::endl;
-              while(it != endit)
-              {
-                  std::cout << "looking for annotation to " << it->first << std::endl;
-                  annoIt=this->mSpeciesAnnotationMap.find(it->first);
-                  if(annoIt != this->mSpeciesAnnotationMap.end())
-                  {
-                      annoIt->second.mIdentity.mSpeciesClass=it->second;
-                  }
-                  else
-                  {
-                      result=false;
-                  }
-                  ++it;
-              }
-          }
-          */
+              //   // now we go through the protein map and set the correct type
+              //   // on the SpeciesAlias for the corresponding species
+              //   std::map<std::string,Protein>::const_iterator it=this->mProteinInformationMap.begin(),endit=this->mProteinInformationMap.end();
+              //   std::map<std::string,SpeciesAnnotation>::iterator annoIt;
+              //   std::cout << "num protein types:" << this->mProteinInformationMap.size() << std::endl;
+              //   while(it != endit)
+              //   {
+              //       std::cout << "looking for annotation to " << it->first << std::endl;
+              //       annoIt=this->mSpeciesAnnotationMap.find(it->first);
+              //       if(annoIt != this->mSpeciesAnnotationMap.end())
+              //       {
+              //           annoIt->second.mIdentity.mSpeciesClass=it->second;
+              //       }
+              //       else
+              //       {
+              //           result=false;
+              //       }
+              //       ++it;
+              //   }
+            }
+
           // go through all species glyphs and create a style for each one
           if (result)
             {
@@ -1030,13 +1029,30 @@ bool CCellDesignerImporter::createPrimitive(Group* pGroup,
 
   // maybe we should rule out all the SQUARE classes and the OVAL class
   // since they are probably only used for compartments
-  // On the other hand, maybe we can use this ethod to create the primitives
+  // On the other hand, maybe we can use this method to create the primitives
   // for the compartments as well
   if (pGroup != NULL &&
       si.mSpeciesClass != UNDEFINED_CLASS
      )
     {
-      switch (si.mSpeciesClass)
+      // if it is a protein, find the specific type
+      SPECIES_CLASS cl = UNDEFINED_CLASS;
+
+      if (si.mSpeciesClass == PROTEIN_CLASS && !si.mNameOrReference.empty())
+        {
+          std::map<std::string, Protein>::const_iterator pos = this->mProteinInformationMap.find(si.mNameOrReference);
+
+          if (pos != this->mProteinInformationMap.end())
+            {
+              cl = pos->second.mType;
+            }
+        }
+      else
+        {
+          cl = si.mSpeciesClass;
+        }
+
+      switch (cl)
         {
           case ION_CLASS:
           {
@@ -1085,71 +1101,51 @@ bool CCellDesignerImporter::createPrimitive(Group* pGroup,
           }
           break;
           case DRUG_CLASS:
-            // TODO actually drug is a rectangle with rounded sides and not an ellipse
-            // TODO but for simplicity sake, we use two ellipses right now
+            // actually drug is a rectangle with rounded sides
           {
-            Ellipse* pEllipse = pGroup->createEllipse();
-            assert(pEllipse != NULL);
+            // create two circles with radius height/2 at 10%,50% and 90%,50%
+            // both have a fill and a black edge with stroke width 1
+            double width = bounds.getDimensions()->getWidth();
+            double height = bounds.getDimensions()->getHeight();
 
-            if (pEllipse != NULL)
+            // outer rectangle
+            Rectangle* pRectangle = pGroup->createRectangle();
+            assert(pRectangle != NULL);
+
+            if (pRectangle != NULL)
               {
-                double width = bounds.getDimensions()->getWidth();
-                double height = bounds.getDimensions()->getHeight();
-                pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width*0.5, 0.0));
-                pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height*0.5, 0.0));
-                pEllipse->setRX(RelAbsVector(bounds.getDimensions()->getWidth()*0.5, 0.0));
-                pEllipse->setRY(RelAbsVector(bounds.getDimensions()->getHeight()*0.5, 0.0));
-                pEllipse->setStrokeWidth(stroke_width);
-                pEllipse->setStroke(stroke_color);
-                pEllipse->setFillColor(fill_color);
-                // create an inner ellipse
-                pEllipse = pGroup->createEllipse();
-                assert(pEllipse != NULL);
+                pRectangle->setX(RelAbsVector(offset.x() + bounds.getPosition()->x(), 0.0));
+                pRectangle->setY(RelAbsVector(offset.y() + bounds.getPosition()->y(), 0.0));
+                pRectangle->setRadiusX(RelAbsVector(height*0.5, 0.0));
+                pRectangle->setRadiusY(RelAbsVector(height*0.5, 0.0));
+                pRectangle->setWidth(RelAbsVector(width, 0.0));
+                pRectangle->setHeight(RelAbsVector(height, 0.0));
 
-                if (pEllipse != NULL)
-                  {
-                    pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width*0.5, 0.0));
-                    pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height*0.5, 0.0));
-                    pEllipse->setRX(RelAbsVector(bounds.getDimensions()->getWidth()*0.45, 0.0));
-                    pEllipse->setRY(RelAbsVector(bounds.getDimensions()->getHeight()*0.45, 0.0));
-                    pEllipse->setStrokeWidth(stroke_width);
-                    pEllipse->setStroke(stroke_color);
-                    pEllipse->setFillColor(fill_color);
-                  }
-                else
-                  {
-                    result = false;
-                  }
-
+                pRectangle->setStrokeWidth(stroke_width);
+                pRectangle->setStroke(stroke_color);
+                pRectangle->setFillColor(fill_color);
               }
             else
               {
                 result = false;
               }
-          }
-          break;
-          case OVAL_CLASS:
-            // TODO has thick wall with empty inner area
-            // TODO we could create this by two unfilled ellipses
-            // TODO for the inner and outer edges as well as a thick
-            // TODO unfilled ellipse for the area between the edges
-            // TODO the ellipse for the area would have to be drawn first
-            // TODO the oval shape is for representing compartments
-          {
-            Ellipse* pEllipse = pGroup->createEllipse();
-            assert(pEllipse != NULL);
 
-            if (pEllipse != NULL)
+            // inner rectangle
+            pRectangle = pGroup->createRectangle();
+            assert(pRectangle != NULL);
+
+            if (pRectangle != NULL)
               {
-                double width = bounds.getDimensions()->getWidth();
-                double height = bounds.getDimensions()->getHeight();
-                pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width*0.5, 0.0));
-                pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height*0.5, 0.0));
-                pEllipse->setRX(RelAbsVector(bounds.getDimensions()->getWidth()*0.5, 0.0));
-                pEllipse->setRY(RelAbsVector(bounds.getDimensions()->getHeight()*0.5, 0.0));
-                pEllipse->setStrokeWidth(stroke_width);
-                pEllipse->setStroke(stroke_color);
-                pEllipse->setFillColor(fill_color);
+                pRectangle->setX(RelAbsVector(offset.x() + bounds.getPosition()->x() + 5, 0.0));
+                pRectangle->setY(RelAbsVector(offset.y() + bounds.getPosition()->y() + 5, 0.0));
+                pRectangle->setRadiusX(RelAbsVector(height*0.5 - 5, 0.0));
+                pRectangle->setRadiusY(RelAbsVector(height*0.5 - 5, 0.0));
+                pRectangle->setWidth(RelAbsVector(width - 10, 0.0));
+                pRectangle->setHeight(RelAbsVector(height - 10, 0.0));
+
+                pRectangle->setStrokeWidth(stroke_width);
+                pRectangle->setStroke(stroke_color);
+                pRectangle->setFillColor(fill_color);
               }
             else
               {
@@ -1242,6 +1238,7 @@ bool CCellDesignerImporter::createPrimitive(Group* pGroup,
           break;
           case TRUNCATED_CLASS:
           {
+            // TODO the left corners should be rounded, but for now this is close enough
             double width = bounds.getDimensions()->getWidth();
             double height = bounds.getDimensions()->getHeight();
             // we assume the width is larger
@@ -1258,7 +1255,7 @@ bool CCellDesignerImporter::createPrimitive(Group* pGroup,
 
                 if (pP != NULL)
                   {
-                    pP->setY(RelAbsVector(0.0, 10.0*ratio));
+                    pP->setX(RelAbsVector(0.0, 10.0*ratio));
                     pP->setY(RelAbsVector(0.0, 0.0));
                   }
                 else
@@ -1522,7 +1519,7 @@ bool CCellDesignerImporter::createPrimitive(Group* pGroup,
 
                 if (pP != NULL)
                   {
-                    pP->setY(RelAbsVector(0.0, 20.0));
+                    pP->setX(RelAbsVector(0.0, 20.0));
                     pP->setY(RelAbsVector(0.0, 0.0));
                   }
                 else
@@ -1899,267 +1896,44 @@ bool CCellDesignerImporter::createPrimitive(Group* pGroup,
           }
           break;
           case CHANNEL_CLASS:
-            // make two rectangles with cut edges
+            // make two rectangles with rounded corners
           {
             double width = bounds.getDimensions()->getWidth();
             double height = bounds.getDimensions()->getHeight();
-            // we assume the width is larger
-            double ratio = height / width;
-            Polygon* pPoly = pGroup->createPolygon();
-            assert(pPoly != NULL);
+            Rectangle* pRect = pGroup->createRectangle();
+            assert(pRect != NULL);
 
-            if (pPoly != NULL)
+            if (pRect != NULL)
               {
-                pPoly->setStrokeWidth(stroke_width);
-                pPoly->setStroke(stroke_color);
-                pPoly->setFillColor(fill_color);
-                RenderPoint* pP = pPoly->createPoint();
-
-                if (pP != NULL)
-                  {
-                    pP->setY(RelAbsVector(0.0, 5.0*ratio));
-                    pP->setY(RelAbsVector(0.0, 0.0));
-                  }
-                else
-                  {
-                    result = false;
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 70.0 - 5.0*ratio));
-                        pP->setY(RelAbsVector(0.0, 0.0));
-                      }
-                    else
-                      {
-                        result = false;
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 70.0));
-                        pP->setY(RelAbsVector(0.0, 5.0));
-                      }
-                    else
-                      {
-                        result = false;
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 70.0));
-                        pP->setY(RelAbsVector(0.0, 95.0));
-                      }
-                    else
-                      {
-                        result = false;
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 70.0 - 5.0*ratio));
-                        pP->setY(RelAbsVector(0.0, 100.0));
-                      }
-                    else
-                      {
-                        result = false;
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 5.0*ratio));
-                        pP->setY(RelAbsVector(0.0, 100.0));
-                      }
-                    else
-                      {
-                        result = false;
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 0.0));
-                        pP->setY(RelAbsVector(0.0, 95.0));
-                      }
-                    else
-                      {
-                        result = false;
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 0.0));
-                        pP->setY(RelAbsVector(0.0, 5.0));
-                      }
-                    else
-                      {
-                        result = false;
-                      }
-                  }
+                pRect->setX(RelAbsVector(offset.x() + bounds.getPosition()->x(), 0.0));
+                pRect->setY(RelAbsVector(offset.y() + bounds.getPosition()->y(), 0.0));
+                pRect->setRadiusX(RelAbsVector(6.0, 0.0));
+                pRect->setRadiusY(RelAbsVector(6.0, 0.0));
+                pRect->setWidth(RelAbsVector(width*0.75, 0.0));
+                pRect->setHeight(RelAbsVector(height, 0.0));
+                pRect->setStrokeWidth(stroke_width);
+                pRect->setStroke(stroke_color);
+                pRect->setFillColor(fill_color);
               }
             else
               {
                 result = false;
               }
 
-            // second rectangle
-            pPoly = pGroup->createPolygon();
-            assert(pPoly != NULL);
+            pRect = pGroup->createRectangle();
+            assert(pRect != NULL);
 
-            if (pPoly != NULL)
+            if (pRect != NULL)
               {
-                pPoly->setStrokeWidth(stroke_width);
-                pPoly->setStroke(stroke_color);
-                pPoly->setFillColor(fill_color);
-                RenderPoint* pP = pPoly->createPoint();
-
-                if (pP != NULL)
-                  {
-                    pP->setY(RelAbsVector(0.0, 70.0 + 5.0*ratio));
-                    pP->setY(RelAbsVector(0.0, 0.0));
-                  }
-                else
-                  {
-                    result = false;
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 100.0 - 5.0*ratio));
-                        pP->setY(RelAbsVector(0.0, 0.0));
-                      }
-                    else
-                      {
-                        result = false;
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 100.0));
-                        pP->setY(RelAbsVector(0.0, 5.0));
-                      }
-                    else
-                      {
-                        result = false;
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 100.0));
-                        pP->setY(RelAbsVector(0.0, 95.0));
-                      }
-                    else
-                      {
-                        result = false;
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 100.0 - 5.0*ratio));
-                        pP->setY(RelAbsVector(0.0, 100.0));
-                      }
-                    else
-                      {
-                        result = false;
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 70 + 5.0*ratio));
-                        pP->setY(RelAbsVector(0.0, 100.0));
-                      }
-                    else
-                      {
-                        result = false;
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 70.0));
-                        pP->setY(RelAbsVector(0.0, 95.0));
-                      }
-                    else
-                      {
-                        result = false;
-                      }
-                  }
-
-                if (result == true)
-                  {
-                    pP = pPoly->createPoint();
-
-                    if (pP != NULL)
-                      {
-                        pP->setX(RelAbsVector(0.0, 70.0));
-                        pP->setY(RelAbsVector(0.0, 5.0));
-                      }
-                    else
-                      {
-                        result = false;
-                      }
-                  }
+                pRect->setX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width * 0.75, 0.0));
+                pRect->setY(RelAbsVector(offset.y() + bounds.getPosition()->y(), 0.0));
+                pRect->setWidth(RelAbsVector(width*0.25, 0.0));
+                pRect->setHeight(RelAbsVector(height, 0.0));
+                pRect->setRadiusX(RelAbsVector(6.0, 0.0));
+                pRect->setRadiusY(RelAbsVector(6.0, 0.0));
+                pRect->setStrokeWidth(stroke_width);
+                pRect->setStroke(stroke_color);
+                pRect->setFillColor(fill_color);
               }
             else
               {
@@ -2168,18 +1942,6 @@ bool CCellDesignerImporter::createPrimitive(Group* pGroup,
           }
           break;
           case GENE_CLASS:
-            // TODO all the classes below are for compartments, i.e.
-            // TODO they have thick walls and rounded corners
-          case SQUARE_CLASS:
-          case SQUARE_NW_CLASS:
-          case SQUARE_NE_CLASS:
-          case SQUARE_SW_CLASS:
-          case SQUARE_SE_CLASS:
-          case SQUARE_N_CLASS:
-          case SQUARE_E_CLASS:
-          case SQUARE_W_CLASS:
-          case SQUARE_S_CLASS:
-          default:
           {
             Rectangle* pRect = pGroup->createRectangle();
             assert(pRect != NULL);
@@ -2200,6 +1962,9 @@ bool CCellDesignerImporter::createPrimitive(Group* pGroup,
               }
           }
           break;
+          default:
+            result = false;
+            break;
         }
 
       // create the text element
@@ -2381,7 +2146,10 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                                 // then we go through the vector and create
                                 // the line segments
                                 // add all edit points
+                                //
+                                // p1 stores the coordinates of the anchor point at the reactant
                                 Point p1 = CCellDesignerImporter::getPositionPoint(box_pos1->second, ranno.mBaseReactants[0].mPosition);
+                                // p2 stores the coordinates of the anchor point at the product
                                 Point p2 = CCellDesignerImporter::getPositionPoint(box_pos2->second, ranno.mBaseProducts[0].mPosition);
                                 Point v1(p2.x() - p1.x(), p2.y() - p1.y());
                                 Point v2;
@@ -2391,6 +2159,10 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                                 std::vector<Point>::const_iterator pointIt = ranno.mEditPoints.mPoints.begin(), pointsEnd = ranno.mEditPoints.mPoints.end();
                                 Point p;
                                 std::vector<Point> points;
+                                // we add p1 and p2 to the points vector
+                                // then the values would be save and we could use the entries from the vector below
+                                // which would be save even if p1 and p2 got new values
+                                points.push_back(p1);
 
                                 while (pointIt != pointsEnd)
                                   {
@@ -2400,13 +2172,17 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                                     ++pointIt;
                                   }
 
+                                points.push_back(p2);
+
                                 std::vector<Point> reactantPoints;
-                                reactantPoints.push_back(p1);
+                                pointIt = points.begin(), pointsEnd = points.end();
+                                reactantPoints.push_back(*pointIt);
+                                ++pointIt;
                                 std::vector<Point> productPoints;
                                 int index = 0;
                                 int rectangleIndex = ranno.mConnectScheme.mRectangleIndex;
-                                pointIt = points.begin(), pointsEnd = points.end();
 
+                                // rectangle index marks the segment that contains the "process symbol", i.e. the reaction glyph
                                 while (index < rectangleIndex)
                                   {
                                     reactantPoints.push_back(*pointIt);
@@ -2414,12 +2190,16 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                                     ++pointIt;
                                   }
 
+                                assert(pointIt != pointsEnd);
+
                                 if (pointIt != pointsEnd)
                                   {
                                     p2 = *pointIt;
                                   }
 
-                                // p2 now points to the end of the reaction glyph
+                                // p2 now points to the end of the section that contains the reaction glyph
+                                // now we assing p3 to be the start of the segment that contains the reaction glyph
+                                // which is the last point we added to the reactants
                                 p3 = reactantPoints.back();
 
                                 double distance = CCellDesignerImporter::distance(p3, p2);
@@ -2444,7 +2224,7 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                                 // add a new substrate point
                                 // the substrate points are in reverse order
                                 reactantPoints.push_back(*pLS->getStart());
-                                // add a new substrate point
+                                // add a new product point
                                 productPoints.push_back(*pLS->getEnd());
 
                                 if (pointIt == pointsEnd)
@@ -2480,49 +2260,10 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                                     pCurve = pSRefGlyph1->getCurve();
                                     assert(pCurve != NULL);
 
-                                    if (pCurve != NULL)
+                                    if (pCurve != NULL && result == true)
                                       {
-                                        LineSegment* pLS2 = pCurve->createLineSegment();
-                                        assert(pLS2 != NULL && pLS != NULL);
-
-                                        if (pLS2 != NULL)
-                                          {
-                                            // in the layout extension, arrows for substrates and products
-                                            // point away from the reaction
-                                            std::vector<Point>::const_reverse_iterator rPointIt = reactantPoints.rbegin(), pointsREnd = reactantPoints.rend();
-                                            assert(reactantPoints.size() > 1);
-
-                                            pLS2->setStart(&(*rPointIt));
-                                            ++rPointIt;
-                                            LineSegment* pTmp = NULL;
-
-                                            while (rPointIt != pointsREnd && result == true)
-                                              {
-                                                pLS2->setEnd(&(*rPointIt));
-                                                ++rPointIt;
-
-                                                if (rPointIt != pointsREnd)
-                                                  {
-                                                    pTmp = pLS2;
-                                                    pLS2 = pCurve->createLineSegment();
-
-                                                    if (pLS2 == NULL)
-                                                      {
-                                                        result = false;
-                                                      }
-                                                    else
-                                                      {
-                                                        pLS2->setStart(pTmp->getEnd());
-                                                      }
-                                                  }
-                                              }
-
-                                            if (result == true)
-                                              {
-                                                pLS2->setEnd(&p1);
-                                              }
-
-                                          }
+                                        assert(reactantPoints.size() > 1);
+                                        result = CCellDesignerImporter::createLineSegments(pCurve, reactantPoints.rbegin(), reactantPoints.rend());
                                       }
                                     else
                                       {
@@ -2532,45 +2273,10 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                                     pCurve = pSRefGlyph2->getCurve();
                                     assert(pCurve != NULL);
 
-                                    if (pCurve != NULL && pLS != NULL)
+                                    if (pCurve != NULL && result == true)
                                       {
-                                        LineSegment* pLS2 = pCurve->createLineSegment();
-                                        assert(pLS2 != NULL);
-
-                                        if (pLS2 != NULL)
-                                          {
-                                            pointIt = productPoints.begin();
-                                            pointsEnd = productPoints.end();
-                                            assert(productPoints.size() > 1);
-                                            pLS2->setStart(&(*pointIt));
-                                            ++pointIt;
-                                            LineSegment* pTmp = NULL;
-
-                                            while (pointIt != pointsEnd && result == true)
-                                              {
-                                                pLS2->setEnd(&(*pointIt));
-                                                ++pointIt;
-
-                                                if (pointIt != pointsEnd)
-                                                  {
-                                                    pTmp = pLS2;
-                                                    pLS2 = pCurve->createLineSegment();
-
-                                                    if (pLS2 == NULL)
-                                                      {
-                                                        result = false;
-                                                      }
-                                                    else
-                                                      {
-                                                        pLS2->setStart(pTmp->getEnd());
-                                                      }
-                                                  }
-                                              }
-                                          }
-                                        else
-                                          {
-                                            result = false;
-                                          }
+                                        assert(productPoints.size() > 1);
+                                        result = CCellDesignerImporter::createLineSegments(pCurve, productPoints.begin(), productPoints.end());
                                       }
 
                                     // make sure the role is set because setSpeciesReferenceId relies on it
@@ -3189,12 +2895,10 @@ bool CCellDesignerImporter::createSpeciesReferenceGlyphs(ReactionGlyph* pRGlyph,
     {
       unsigned int i, iMax = links.size();
       const LinkTarget*  pLink = NULL;
-      const GraphicalObject* pGO = NULL;
 
       for (i = 0; i < iMax && result == true; ++i)
         {
           pLink = &links[i];
-          pGO = NULL;
 
           // a baseProduct or baseReactant node has an alias attribute
           if (!pLink->mAlias.empty())
@@ -4972,7 +4676,7 @@ SPECIES_CLASS CCellDesignerImporter::classToEnum(std::string cl)
     {
       result = SQUARE_NE_CLASS;
     }
-  else if (cl == "SQUARE_CLOSEUP_SOUTWEST")
+  else if (cl == "SQUARE_CLOSEUP_SOUTHWEST")
     {
       result = SQUARE_SW_CLASS;
     }
@@ -6688,9 +6392,6 @@ bool CCellDesignerImporter::parsePaint(const XMLNode* pNode, Paint& p)
  */
 bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, const CompartmentGlyph* pCGlyph)
 {
-  // TODO for now this style has a black, single
-  // TODO line edge and a background color as specified
-  // TODO in the paint element
   // TODO the GRADIENT flag is currently ignored
   bool result = true;
 
@@ -6699,9 +6400,29 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
       pCGlyph != NULL &&
       !pCGlyph->getId().empty())
     {
-      std::map<std::string, std::string>::const_iterator pos = this->mColorStringMap.find(ca.mPaint.mColor);
       std::string color_id;
       result = this->findOrCreateColorDefinition(ca.mPaint.mColor, color_id);
+      // CellDesigner seems to use the paint color for the two edges
+      // of the compartment representation
+      // The inner area (between the two edges seems to be filled with the same color, but
+      // with a opacity value of about 35 (23 hex).
+      std::string inner_color_id, inner_color_string = ca.mPaint.mColor;
+
+      if (inner_color_string.length() == 7)
+        {
+          inner_color_string += "23";
+          result = this->findOrCreateColorDefinition(inner_color_string, inner_color_id);
+        }
+      else if (inner_color_string.length() == 9)
+        {
+          inner_color_string[7] = '2';
+          inner_color_string[8] = '3';
+          result = this->findOrCreateColorDefinition(inner_color_string, inner_color_id);
+        }
+      else
+        {
+          result = false;
+        }
 
       if (result == true)
         {
@@ -6719,128 +6440,638 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                 {
                   // set the font size
                   pGroup->setFontSize(ca.mFontSize);
-                  // well as the edge color, and edge width
-                  pos = this->mColorStringMap.find("#000000FF");
-                  assert(pos != this->mColorStringMap.end());
-
-                  if (pos != this->mColorStringMap.end())
-                    {
-                      pGroup->setStroke("black");
-                    }
-                  else
-                    {
-                      pGroup->setStroke("#000000FF");
-                    }
-
-                  // TODO create render objects depending on the class of the
-                  // TODO object
-                  // TODO for now we use a rectangle
-                  // create the objects for the fill
                   double d = ca.mDoubleLine.mThickness;
+                  double width = pCGlyph->getBoundingBox()->getDimensions()->getWidth();
+                  double height = pCGlyph->getBoundingBox()->getDimensions()->getHeight();
 
-                  if (result == true)
+                  switch (ca.mClass)
                     {
-                      Rectangle* pRect = pGroup->createRectangle();
-                      assert(pRect != NULL);
+                      case SQUARE_CLASS:
+                      {
+                        // three rectangles the first is the thick one with the transparent color
+                        double small_side = (width < height) ? width : height;
+                        Rectangle* pRect = pGroup->createRectangle();
+                        assert(pRect != NULL);
 
-                      if (pRect != NULL)
-                        {
-                          pRect->setFillColor(color_id);
-                          pRect->setCoordinates(RelAbsVector(0.0, 0.0), RelAbsVector(0.0, 0.0), RelAbsVector(0.0, 0.0));
-                          pRect->setSize(RelAbsVector(d, 0.0), RelAbsVector(0.0, 100.0));
-                        }
-                      else
-                        {
-                          result = false;
-                        }
+                        if (pRect != NULL)
+                          {
+                            pRect->setStroke(inner_color_id);
+                            pRect->setStrokeWidth(d);
+                            pRect->setCoordinates(RelAbsVector(0.0, 0.0), RelAbsVector(0.0, 0.0), RelAbsVector(0.0, 0.0));
+                            pRect->setSize(RelAbsVector(width, 0.0), RelAbsVector(height, 0.0));
+                            pRect->setRadiusX(RelAbsVector(small_side*0.1, 0.0));
+                            pRect->setRadiusY(RelAbsVector(small_side*0.1, 0.0));
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                        // the second has a width of 2 and is non-transparent
+                        pRect = pGroup->createRectangle();
+                        assert(pRect != NULL);
+
+                        if (pRect != NULL)
+                          {
+                            pRect->setStroke(color_id);
+                            pRect->setStrokeWidth(2.0);
+                            pRect->setCoordinates(RelAbsVector(-0.5*d, 0.0), RelAbsVector(-0.5*d, 0.0), RelAbsVector(0.0, 0.0));
+                            pRect->setSize(RelAbsVector(width + d, 0.0), RelAbsVector(height + d, 0.0));
+                            pRect->setRadiusX(RelAbsVector((small_side + d)*0.1, 0.0));
+                            pRect->setRadiusY(RelAbsVector((small_side + d)*0.1, 0.0));
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                        // the third has a width of 1 and is non-transparent
+                        pRect = pGroup->createRectangle();
+                        assert(pRect != NULL);
+
+                        if (pRect != NULL)
+                          {
+                            pRect->setStroke(color_id);
+                            pRect->setStrokeWidth(1.0);
+                            pRect->setCoordinates(RelAbsVector(0.5*d, 0.0), RelAbsVector(0.5*d, 0.0), RelAbsVector(0.0, 0.0));
+                            pRect->setSize(RelAbsVector(width - d, 0.0), RelAbsVector(height - d, 0.0));
+                            pRect->setRadiusX(RelAbsVector((small_side - d)*0.1, 0.0));
+                            pRect->setRadiusY(RelAbsVector((small_side - d)*0.1, 0.0));
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                      }
+                      break;
+                      case OVAL_CLASS:
+                      {
+                        // we need three ellipses
+                        // the bottom one is the one with the transparent color
+                        // and the full width
+                        Ellipse* pEllipse = pGroup->createEllipse();
+                        pEllipse->setCX(RelAbsVector(width*0.5, 0.0));
+                        pEllipse->setCY(RelAbsVector(height*0.5, 0.0));
+                        pEllipse->setRX(RelAbsVector(width*0.5, 0.0));
+                        pEllipse->setRY(RelAbsVector(height*0.5, 0.0));
+                        pEllipse->setStrokeWidth(d);
+                        pEllipse->setStroke(inner_color_id);
+                        // the outer one has a width of 2 and has the non-transparent color
+                        pEllipse = pGroup->createEllipse();
+                        pEllipse->setCX(RelAbsVector(width*0.5, 0.0));
+                        pEllipse->setCY(RelAbsVector(height*0.5, 0.0));
+                        pEllipse->setRX(RelAbsVector(width*0.5 + d*0.5, 0.0));
+                        pEllipse->setRY(RelAbsVector(height*0.5 + d*0.5, 0.0));
+                        pEllipse->setStrokeWidth(2.0);
+                        pEllipse->setStroke(color_id);
+                        // the inner one has a width of 1 and has the non-transparent color
+                        pEllipse = pGroup->createEllipse();
+                        pEllipse->setCX(RelAbsVector(width*0.5, 0.0));
+                        pEllipse->setCY(RelAbsVector(height*0.5, 0.0));
+                        pEllipse->setRX(RelAbsVector(width*0.5 - d*0.5, 0.0));
+                        pEllipse->setRY(RelAbsVector(height*0.5 - d*0.5, 0.0));
+                        pEllipse->setStrokeWidth(1.0);
+                        pEllipse->setStroke(color_id);
+                      }
+                      break;
+                      case SQUARE_NW_CLASS:
+                        // TODO thick line with thicker edge to the northwest
+                        break;
+                      case SQUARE_NE_CLASS:
+                        // TODO thick line with thicker edge to the northeast
+                        break;
+                      case SQUARE_SW_CLASS:
+                        // TODO thick line with thicker edge to the southwest
+                        break;
+                      case SQUARE_SE_CLASS:
+                        // TODO thick line with thicker edge to the southeast
+                        break;
+                      case SQUARE_N_CLASS:
+                        // thick line with thicker edge to the north
+                      {
+                        // three curves, the first is thick and transparent
+                        RenderPoint* pP = NULL;
+                        RenderCurve* pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(d);
+                            pCurve->setStroke(inner_color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(0.0);
+                                pP->setY(0.0);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width);
+                                pP->setY(0.0);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                        // the second has width 2 and is non-transparent
+                        pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(2.0);
+                            pCurve->setStroke(color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(0.0);
+                                pP->setY(-0.5*d);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width);
+                                pP->setY(-0.5*d);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                        // the third has width 1 and is non-transparent
+                        pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(1.0);
+                            pCurve->setStroke(color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(0.0);
+                                pP->setY(0.5*d);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width);
+                                pP->setY(0.5*d);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+
+                      }
+                      break;
+                      case SQUARE_E_CLASS:
+                        // thick line with thicker edge to the east
+                      {
+                        // three curves, the first is thick and transparent
+                        RenderPoint* pP = NULL;
+                        RenderCurve* pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(d);
+                            pCurve->setStroke(inner_color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width);
+                                pP->setY(0.0);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width);
+                                pP->setY(height);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                        // the second has width 2 and is non-transparent
+                        pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(2.0);
+                            pCurve->setStroke(color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width + 0.5*d);
+                                pP->setY(0.0);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width + 0.5*d);
+                                pP->setY(height);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                        // the third has width 1 and is non-transparent
+                        pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(1.0);
+                            pCurve->setStroke(color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width - 0.5*d);
+                                pP->setY(0.0);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width - 0.5*d);
+                                pP->setY(height);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+
+                      }
+                      break;
+                      case SQUARE_W_CLASS:
+                        // thick line with thicker edge to the west
+                      {
+                        // three curves, the first is thick and transparent
+                        RenderPoint* pP = NULL;
+                        RenderCurve* pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(d);
+                            pCurve->setStroke(inner_color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(0.0);
+                                pP->setY(0.0);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(0.0);
+                                pP->setY(height);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                        // the second has width 2 and is non-transparent
+                        pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(2.0);
+                            pCurve->setStroke(color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(-0.5*d);
+                                pP->setY(0.0);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(-0.5*d);
+                                pP->setY(height);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                        // the third has width 1 and is non-transparent
+                        pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(1.0);
+                            pCurve->setStroke(color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(0.5*d);
+                                pP->setY(0.0);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(0.5*d);
+                                pP->setY(height);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+
+                      }
+                      break;
+                      case SQUARE_S_CLASS:
+                        // thick line with thicker edge to the south
+                      {
+                        // three curves, the first is thick and transparent
+                        RenderPoint* pP = NULL;
+                        RenderCurve* pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(d);
+                            pCurve->setStroke(inner_color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(0.0);
+                                pP->setY(height);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width);
+                                pP->setY(height);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                        // the second has width 2 and is non-transparent
+                        pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(2.0);
+                            pCurve->setStroke(color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(0.0);
+                                pP->setY(height + d*0.5);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width);
+                                pP->setY(height + d*0.5);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                        // the third has width 1 and is non-transparent
+                        pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(1.0);
+                            pCurve->setStroke(color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(0.0);
+                                pP->setY(height - d*0.5);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width);
+                                pP->setY(height - d*0.5);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+
+                      }
+                      break;
+                      default:
+                        result = false;
+                        break;
                     }
 
-                  if (result == true)
-                    {
-                      Rectangle* pRect = pGroup->createRectangle();
-                      assert(pRect != NULL);
-
-                      if (pRect != NULL)
-                        {
-                          pRect->setFillColor(color_id);
-                          pRect->setCoordinates(RelAbsVector(-d, 100.0), RelAbsVector(0.0, 0.0), RelAbsVector(0.0, 0.0));
-                          pRect->setSize(RelAbsVector(d, 0.0), RelAbsVector(0.0, 100.0));
-                        }
-                      else
-                        {
-                          result = false;
-                        }
-                    }
-
-                  if (result == true)
-                    {
-                      Rectangle* pRect = pGroup->createRectangle();
-                      assert(pRect != NULL);
-
-                      if (pRect != NULL)
-                        {
-                          pRect->setFillColor(color_id);
-                          pRect->setCoordinates(RelAbsVector(0.0, 0.0), RelAbsVector(0.0, 0.0), RelAbsVector(0.0, 0.0));
-                          pRect->setSize(RelAbsVector(0.0, 100.0), RelAbsVector(d, 0.0));
-                        }
-                      else
-                        {
-                          result = false;
-                        }
-                    }
-
-                  if (result == true)
-                    {
-                      Rectangle* pRect = pGroup->createRectangle();
-                      assert(pRect != NULL);
-
-                      if (pRect != NULL)
-                        {
-                          pRect->setFillColor(color_id);
-                          pRect->setCoordinates(RelAbsVector(0.0, 0.0), RelAbsVector(-d, 100.0), RelAbsVector(0.0, 0.0));
-                          pRect->setSize(RelAbsVector(0.0, 100.0), RelAbsVector(d, 0.0));
-                        }
-                      else
-                        {
-                          result = false;
-                        }
-                    }
-
-
-                  if (result == true)
-                    {
-                      Rectangle* pRect = pGroup->createRectangle();
-                      assert(pRect != NULL);
-
-                      if (pRect != NULL)
-                        {
-                          pRect->setStrokeWidth(ca.mDoubleLine.mOuterWidth);
-                          pRect->setCoordinates(RelAbsVector(0.0, 0.0), RelAbsVector(0.0, 0.0), RelAbsVector(0.0, 0.0));
-                          pRect->setSize(RelAbsVector(0.0, 100.0), RelAbsVector(0.0, 100.0));
-                        }
-                      else
-                        {
-                          result = false;
-                        }
-                    }
-
-                  // only create the inner line id the thickness is large enough
-                  if (result == true &&  d > 1.0)
-                    {
-                      Rectangle* pRect = pGroup->createRectangle();
-                      assert(pRect != NULL);
-
-                      if (pRect != NULL)
-                        {
-                          pRect->setStrokeWidth(ca.mDoubleLine.mInnerWidth);
-                          pRect->setCoordinates(RelAbsVector(d, 0.0), RelAbsVector(d, 0.0), RelAbsVector(0.0, 0.0));
-                          pRect->setSize(RelAbsVector(-2.0*d, 100.0), RelAbsVector(-2.0*d, 100.0));
-                        }
-                      else
-                        {
-                          result = false;
-                        }
-                    }
                 }
 
               // don't forget to associate the style and the layout object via the id
@@ -9032,6 +9263,29 @@ SPECIES_MODIFICATION_TYPE CCellDesignerImporter::speciesModificationTypeToEnum(s
   else if (cl == "SUFLATED")
     {
       result = SUFLATED_MOD_TYPE;
+    }
+
+  return result;
+}
+
+/**
+ * Returns the color string for the given color id
+ * or an empty string if the color id was not found.
+ */
+std::string CCellDesignerImporter::getColorString(const std::string& color_id) const
+{
+  std::string result;
+  std::map<std::string, std::string>::const_iterator it = this->mColorStringMap.begin(), endit = this->mColorStringMap.end();
+
+  while (it != endit)
+    {
+      if (it->second == color_id)
+        {
+          result = it->first;
+          break;
+        }
+
+      ++it;
     }
 
   return result;
