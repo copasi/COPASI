@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.263.2.36 $
+//   $Revision: 1.263.2.37 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/07/13 19:34:23 $
+//   $Author: shoops $
+//   $Date: 2011/11/11 13:20:43 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -126,8 +126,8 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   this->mpCopasiModel->setQuantityUnit(CModel::Mol);
   this->mpCopasiModel->setSBMLId(sbmlModel->getId());
 
-  unsigned C_INT32 step = 0, totalSteps;
-  size_t hStep;
+  unsigned C_INT32 step = 0, totalSteps = 0;
+  size_t hStep = C_INVALID_INDEX;
 
   mImportStep = 1;
 
@@ -2862,8 +2862,8 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
                                                   &mTotalSteps);
         }
 
-      unsigned C_INT32 step, totalSteps;
-      size_t hStep;
+      unsigned C_INT32 step = 0, totalSteps = 0;
+      size_t hStep = C_INVALID_INDEX;
 
       if (this->mpImportHandler != 0)
         {
@@ -5475,8 +5475,8 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
 {
   if (pTmpFunctionDB)
     {
-      unsigned C_INT32 step, totalSteps;
-      size_t hStep;
+      unsigned C_INT32 step = 0, totalSteps = 0;
+      size_t hStep = C_INVALID_INDEX;
       size_t i, iMax = this->mpCopasiModel->getReactions().size();
 
       if (mpImportHandler)
@@ -8131,8 +8131,8 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
       ++it;
     }
 
-  unsigned C_INT32 step, totalSteps;
-  size_t hStep;
+  unsigned C_INT32 step = 0, totalSteps = 0;
+  size_t hStep = C_INVALID_INDEX;
 
   if (this->mpImportHandler != 0)
     {
@@ -8813,8 +8813,8 @@ void SBMLImporter::replace_time_with_initial_time(ASTNode* pNode, const CModel* 
 void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   unsigned int i, iMax = pSBMLModel->getNumEvents();
-  unsigned C_INT32 step, totalSteps;
-  size_t hStep;
+  unsigned C_INT32 step = 0, totalSteps = 0;
+  size_t hStep = C_INVALID_INDEX;
 
   if (this->mpImportHandler != 0)
     {
