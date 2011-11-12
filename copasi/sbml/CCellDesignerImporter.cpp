@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CCellDesignerImporter.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/11/11 21:20:13 $
+//   $Date: 2011/11/12 09:50:26 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,13 +59,18 @@
 #include "SBMLUtils.h"
 
 // TODO modifications are not imported yet
+
 // TODO set the role on species reference glyphs where possible, this is done on substrates and products already
+
 // TODO modifiers are missing
+
 // TODO deal with missing linkAnchor in a nicer way, e.g. find the closest
 // TODO connection point
+
 // TODO import render information, e.g. start with color and font size
 // TODO since these should be easy
 
+// TODO label positions on compartments are not handled
 
 /**
  * Constructor that takes a pointer to an
@@ -1241,8 +1246,8 @@ bool CCellDesignerImporter::createPrimitive(Group* pGroup,
             // TODO the left corners should be rounded, but for now this is close enough
             double width = bounds.getDimensions()->getWidth();
             double height = bounds.getDimensions()->getHeight();
-            // we assume the width is larger
-            double ratio = height / width;
+            // we take a fixed radius for the rounded corners
+            double radius = 10.0;
             Polygon* pPoly = pGroup->createPolygon();
             assert(pPoly != NULL);
 
@@ -1252,10 +1257,11 @@ bool CCellDesignerImporter::createPrimitive(Group* pGroup,
                 pPoly->setStroke(stroke_color);
                 pPoly->setFillColor(fill_color);
                 RenderPoint* pP = pPoly->createPoint();
+                RenderCubicBezier* pCB = NULL;
 
                 if (pP != NULL)
                   {
-                    pP->setX(RelAbsVector(0.0, 10.0*ratio));
+                    pP->setX(RelAbsVector(radius, 0.0));
                     pP->setY(RelAbsVector(0.0, 0.0));
                   }
                 else
@@ -1269,7 +1275,7 @@ bool CCellDesignerImporter::createPrimitive(Group* pGroup,
 
                     if (pP != NULL)
                       {
-                        pP->setX(RelAbsVector(0.0, 100.0));
+                        pP->setX(RelAbsVector(width, 0.0));
                         pP->setY(RelAbsVector(0.0, 0.0));
                       }
                     else
@@ -1284,8 +1290,8 @@ bool CCellDesignerImporter::createPrimitive(Group* pGroup,
 
                     if (pP != NULL)
                       {
-                        pP->setX(RelAbsVector(0.0, 100.0));
-                        pP->setY(RelAbsVector(0.0, 80.0));
+                        pP->setX(RelAbsVector(width, 0.0));
+                        pP->setY(RelAbsVector(0.8*height, 0.0));
                       }
                     else
                       {
@@ -1299,8 +1305,8 @@ bool CCellDesignerImporter::createPrimitive(Group* pGroup,
 
                     if (pP != NULL)
                       {
-                        pP->setX(RelAbsVector(0.0, 80.0));
-                        pP->setY(RelAbsVector(0.0, 50.0));
+                        pP->setX(RelAbsVector(0.8*width, 0.0));
+                        pP->setY(RelAbsVector(0.5*height, 0.0));
                       }
                     else
                       {
@@ -1314,8 +1320,8 @@ bool CCellDesignerImporter::createPrimitive(Group* pGroup,
 
                     if (pP != NULL)
                       {
-                        pP->setX(RelAbsVector(0.0, 80.0));
-                        pP->setY(RelAbsVector(0.0, 100.0));
+                        pP->setX(RelAbsVector(0.8*width, 0.0));
+                        pP->setY(RelAbsVector(height, 0.0));
                       }
                     else
                       {
@@ -1329,8 +1335,27 @@ bool CCellDesignerImporter::createPrimitive(Group* pGroup,
 
                     if (pP != NULL)
                       {
-                        pP->setX(RelAbsVector(0.0, 10.0*ratio));
-                        pP->setY(RelAbsVector(0.0, 100.0));
+                        pP->setX(RelAbsVector(radius, 0.0));
+                        pP->setY(RelAbsVector(height, 0.0));
+                      }
+                    else
+                      {
+                        result = false;
+                      }
+                  }
+
+                if (result == true)
+                  {
+                    pCB = pPoly->createCubicBezier();
+
+                    if (pCB != NULL)
+                      {
+                        pCB->setBasePoint1_X(RelAbsVector(0.0, 0.0));
+                        pCB->setBasePoint1_Y(RelAbsVector(height, 0.0));
+                        pCB->setBasePoint2_X(RelAbsVector(0.0, 0.0));
+                        pCB->setBasePoint2_Y(RelAbsVector(height, 0.0));
+                        pCB->setX(RelAbsVector(0.0, 0.0));
+                        pCB->setY(RelAbsVector(height - radius, 0.0));
                       }
                     else
                       {
@@ -1345,7 +1370,7 @@ bool CCellDesignerImporter::createPrimitive(Group* pGroup,
                     if (pP != NULL)
                       {
                         pP->setX(RelAbsVector(0.0, 0.0));
-                        pP->setY(RelAbsVector(0.0, 90.0));
+                        pP->setY(RelAbsVector(radius, 0.0));
                       }
                     else
                       {
@@ -1355,12 +1380,16 @@ bool CCellDesignerImporter::createPrimitive(Group* pGroup,
 
                 if (result == true)
                   {
-                    pP = pPoly->createPoint();
+                    pCB = pPoly->createCubicBezier();
 
-                    if (pP != NULL)
+                    if (pCB != NULL)
                       {
-                        pP->setX(RelAbsVector(0.0, 0.0));
-                        pP->setY(RelAbsVector(0.0, 10.0));
+                        pCB->setBasePoint1_X(RelAbsVector(0.0, 0.0));
+                        pCB->setBasePoint1_Y(RelAbsVector(0.0, 0.0));
+                        pCB->setBasePoint2_X(RelAbsVector(0.0, 0.0));
+                        pCB->setBasePoint2_Y(RelAbsVector(0.0, 0.0));
+                        pCB->setX(RelAbsVector(radius, 0.0));
+                        pCB->setY(RelAbsVector(0.0, 0.0));
                       }
                     else
                       {
@@ -6536,17 +6565,889 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                       }
                       break;
                       case SQUARE_NW_CLASS:
-                        // TODO thick line with thicker edge to the northwest
-                        break;
+                        // thick line with thicker edge to the northwest
+                      {
+                        // three curves, the first is thick and transparent
+                        double radius = 20.0;
+                        RenderPoint* pP = NULL;
+                        RenderCubicBezier* pCB = NULL;
+                        RenderCurve* pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(d);
+                            pCurve->setStroke(inner_color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(0.0);
+                                pP->setY(height);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(0.0);
+                                pP->setY(radius);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pCB = pCurve->createCubicBezier();
+                            assert(pCB != NULL);
+
+                            if (pCB != NULL)
+                              {
+                                pCB->setBasePoint1_X(0.0);
+                                pCB->setBasePoint1_Y(0.0);
+                                pCB->setBasePoint2_X(0.0);
+                                pCB->setBasePoint2_Y(0.0);
+                                pCB->setX(radius);
+                                pCB->setY(0.0);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width);
+                                pP->setY(0.0);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                        // second curve for the outer edge
+                        pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(2.0);
+                            pCurve->setStroke(color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(-d*0.5);
+                                pP->setY(height);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(-d*0.5);
+                                pP->setY(radius);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pCB = pCurve->createCubicBezier();
+                            assert(pCB != NULL);
+
+                            if (pCB != NULL)
+                              {
+                                pCB->setBasePoint1_X(-d*0.5);
+                                pCB->setBasePoint1_Y(-d*0.5);
+                                pCB->setBasePoint2_X(-d*0.5);
+                                pCB->setBasePoint2_Y(-d*0.5);
+                                pCB->setX(radius);
+                                pCB->setY(-d*0.5);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width);
+                                pP->setY(-d*0.5);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                        // third curve for the inner edge
+                        pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(1.0);
+                            pCurve->setStroke(color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(d*0.5);
+                                pP->setY(height);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(d*0.5);
+                                pP->setY(radius);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pCB = pCurve->createCubicBezier();
+                            assert(pCB != NULL);
+
+                            if (pCB != NULL)
+                              {
+                                pCB->setBasePoint1_X(d*0.5);
+                                pCB->setBasePoint1_Y(d*0.5);
+                                pCB->setBasePoint2_X(d*0.5);
+                                pCB->setBasePoint2_Y(d*0.5);
+                                pCB->setX(radius);
+                                pCB->setY(d*0.5);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width);
+                                pP->setY(d*0.5);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                      }
+                      break;
                       case SQUARE_NE_CLASS:
-                        // TODO thick line with thicker edge to the northeast
-                        break;
+                        // thick line with thicker edge to the northeast
+                      {
+                        // three curves, the first is thick and transparent
+                        double radius = 20.0;
+                        RenderPoint* pP = NULL;
+                        RenderCubicBezier* pCB = NULL;
+                        RenderCurve* pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(d);
+                            pCurve->setStroke(inner_color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(0.0);
+                                pP->setY(0.0);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width - radius);
+                                pP->setY(0.0);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pCB = pCurve->createCubicBezier();
+                            assert(pCB != NULL);
+
+                            if (pCB != NULL)
+                              {
+                                pCB->setBasePoint1_X(width);
+                                pCB->setBasePoint1_Y(0.0);
+                                pCB->setBasePoint2_X(width);
+                                pCB->setBasePoint2_Y(0.0);
+                                pCB->setX(width);
+                                pCB->setY(radius);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width);
+                                pP->setY(height);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                        // second curve for the outer edge
+                        pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(2.0);
+                            pCurve->setStroke(color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(0.0);
+                                pP->setY(-d*0.5);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width - radius);
+                                pP->setY(-d*0.5);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pCB = pCurve->createCubicBezier();
+                            assert(pCB != NULL);
+
+                            if (pCB != NULL)
+                              {
+                                pCB->setBasePoint1_X(width + 0.5*d);
+                                pCB->setBasePoint1_Y(-0.5*d);
+                                pCB->setBasePoint2_X(width + 0.5*d);
+                                pCB->setBasePoint2_Y(-0.5*d);
+                                pCB->setX(width + 0.5*d);
+                                pCB->setY(radius);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width + 0.5*d);
+                                pP->setY(height);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                        // third curve for the inner edge
+                        pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(1.0);
+                            pCurve->setStroke(color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(0.0);
+                                pP->setY(0.5*d);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width - radius);
+                                pP->setY(0.5*d);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pCB = pCurve->createCubicBezier();
+                            assert(pCB != NULL);
+
+                            if (pCB != NULL)
+                              {
+                                pCB->setBasePoint1_X(width - 0.5*d);
+                                pCB->setBasePoint1_Y(0.5*d);
+                                pCB->setBasePoint2_X(width - 0.5*d);
+                                pCB->setBasePoint2_Y(0.5*d);
+                                pCB->setX(width - 0.5*d);
+                                pCB->setY(radius);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width - 0.5*d);
+                                pP->setY(height);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                      }
+                      break;
                       case SQUARE_SW_CLASS:
-                        // TODO thick line with thicker edge to the southwest
-                        break;
+                        // thick line with thicker edge to the southwest
+                      {
+                        // three curves, the first is thick and transparent
+                        double radius = 20.0;
+                        RenderPoint* pP = NULL;
+                        RenderCubicBezier* pCB = NULL;
+                        RenderCurve* pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(d);
+                            pCurve->setStroke(inner_color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(0.0);
+                                pP->setY(0.0);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(0.0);
+                                pP->setY(height - radius);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pCB = pCurve->createCubicBezier();
+                            assert(pCB != NULL);
+
+                            if (pCB != NULL)
+                              {
+                                pCB->setBasePoint1_X(0.0);
+                                pCB->setBasePoint1_Y(height);
+                                pCB->setBasePoint2_X(0.0);
+                                pCB->setBasePoint2_Y(height);
+                                pCB->setX(radius);
+                                pCB->setY(height);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width);
+                                pP->setY(height);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                        // second curve for the outer edge
+                        pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(2.0);
+                            pCurve->setStroke(color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(-0.5*d);
+                                pP->setY(0.0);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(-d*0.5);
+                                pP->setY(height - radius);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pCB = pCurve->createCubicBezier();
+                            assert(pCB != NULL);
+
+                            if (pCB != NULL)
+                              {
+                                pCB->setBasePoint1_X(-d*0.5);
+                                pCB->setBasePoint1_Y(height + d*0.5);
+                                pCB->setBasePoint2_X(-d*0.5);
+                                pCB->setBasePoint2_Y(height + d*0.5);
+                                pCB->setX(radius);
+                                pCB->setY(height + d*0.5);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width);
+                                pP->setY(height + d*0.5);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                        // third curve for the inner edge
+                        pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(1.0);
+                            pCurve->setStroke(color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(d*0.5);
+                                pP->setY(0.0);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(d*0.5);
+                                pP->setY(height - radius);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pCB = pCurve->createCubicBezier();
+                            assert(pCB != NULL);
+
+                            if (pCB != NULL)
+                              {
+                                pCB->setBasePoint1_X(d*0.5);
+                                pCB->setBasePoint1_Y(height - d*0.5);
+                                pCB->setBasePoint2_X(d*0.5);
+                                pCB->setBasePoint2_Y(height - d*0.5);
+                                pCB->setX(radius);
+                                pCB->setY(height - d*0.5);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width);
+                                pP->setY(height - d*0.5);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                      }
+                      break;
                       case SQUARE_SE_CLASS:
-                        // TODO thick line with thicker edge to the southeast
-                        break;
+                        // thick line with thicker edge to the southeast
+                      {
+                        // three curves, the first is thick and transparent
+                        double radius = 20.0;
+                        RenderPoint* pP = NULL;
+                        RenderCubicBezier* pCB = NULL;
+                        RenderCurve* pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(d);
+                            pCurve->setStroke(inner_color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(0.0);
+                                pP->setY(height);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width - radius);
+                                pP->setY(height);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pCB = pCurve->createCubicBezier();
+                            assert(pCB != NULL);
+
+                            if (pCB != NULL)
+                              {
+                                pCB->setBasePoint1_X(width);
+                                pCB->setBasePoint1_Y(height);
+                                pCB->setBasePoint2_X(width);
+                                pCB->setBasePoint2_Y(height);
+                                pCB->setX(width);
+                                pCB->setY(height - radius);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width);
+                                pP->setY(0.0);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                        // second curve for the outer edge
+                        pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(2.0);
+                            pCurve->setStroke(color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(0.0);
+                                pP->setY(height + 0.5*d);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width - radius);
+                                pP->setY(height + 0.5*d);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pCB = pCurve->createCubicBezier();
+                            assert(pCB != NULL);
+
+                            if (pCB != NULL)
+                              {
+                                pCB->setBasePoint1_X(width + d*0.5);
+                                pCB->setBasePoint1_Y(height + 0.5*d);
+                                pCB->setBasePoint2_X(width + d*0.5);
+                                pCB->setBasePoint2_Y(height + d*0.5);
+                                pCB->setX(width + 0.5*d);
+                                pCB->setY(height - radius);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width + 0.5*d);
+                                pP->setY(0.0);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                        // third curve for the inner edge
+                        pCurve = pGroup->createCurve();
+                        assert(pCurve != NULL);
+
+                        if (pCurve != NULL)
+                          {
+                            pCurve->setStrokeWidth(1.0);
+                            pCurve->setStroke(color_id);
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(0.0);
+                                pP->setY(height - 0.5*d);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width - radius);
+                                pP->setY(height - 0.5*d);
+
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pCB = pCurve->createCubicBezier();
+                            assert(pCB != NULL);
+
+                            if (pCB != NULL)
+                              {
+                                pCB->setBasePoint1_X(width - d*0.5);
+                                pCB->setBasePoint1_Y(height - d*0.5);
+                                pCB->setBasePoint2_X(width - d*0.5);
+                                pCB->setBasePoint2_Y(height - d*0.5);
+                                pCB->setX(width - 0.5*d);
+                                pCB->setY(height - radius);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+
+                            pP = pCurve->createPoint();
+                            assert(pP != NULL);
+
+                            if (pP != NULL)
+                              {
+                                pP->setX(width - 0.5*d);
+                                pP->setY(0.0);
+                              }
+                            else
+                              {
+                                result = false;
+                              }
+                          }
+                        else
+                          {
+                            result = false;
+                          }
+
+                      }
+                      break;
                       case SQUARE_N_CLASS:
                         // thick line with thicker edge to the north
                       {
