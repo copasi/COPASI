@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-//   $Revision: 1.48.4.2 $
+//   $Revision: 1.48.4.3 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2011/11/11 16:44:25 $
+//   $Date: 2011/11/13 22:09:25 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -624,7 +624,7 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
         }
     }
 
-  mBifurcationIndicator_Fold = abs(tmpcpl);
+  mBifurcationIndicator_Fold = std::abs(tmpcpl);
 
   tmpcpl = 1.0;
 
@@ -646,7 +646,7 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
         tmpcpl *= std::complex<C_FLOAT64>(mR[i], mI[i]);
     }
 
-  mBifurcationIndicator_Fold_BDT = mBifurcationIndicator_Fold / (1 - 0.99 * exp(-abs(tmpcpl)));
+  mBifurcationIndicator_Fold_BDT = mBifurcationIndicator_Fold / (1 - 0.99 * exp(-std::abs(tmpcpl)));
 
   C_FLOAT64 tmp_product = 1.0;
 
