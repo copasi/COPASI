@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternMethod.cpp,v $
-//   $Revision: 1.3.2.1 $
+//   $Revision: 1.3.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/01/12 18:56:03 $
+//   $Author: ssahle $
+//   $Date: 2011/11/15 14:08:39 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,6 +17,7 @@
 // All rights reserved.
 
 #include <stdlib.h>
+#include <cmath>
 
 #include "copasi.h"
 

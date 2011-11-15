@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/blaswrap.h,v $
-//   $Revision: 1.12.22.2 $
+//   $Revision: 1.12.22.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/01/25 20:25:17 $
+//   $Author: ssahle $
+//   $Date: 2011/11/15 14:08:39 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -90,6 +90,7 @@ extern "C"
   cblas_idamax(*N, X, *INCX)
 # undef vector
 # define vector vector
+#include <cmath>
 using std::isnan;
 #endif // Darwin
 

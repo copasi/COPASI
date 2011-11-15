@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/clapackwrap.h,v $
-//   $Revision: 1.12.30.2 $
+//   $Revision: 1.12.30.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/01/25 20:25:17 $
+//   $Author: ssahle $
+//   $Date: 2011/11/15 14:08:39 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1260,6 +1260,7 @@ extern "C"
 
 #ifdef Darwin
 # include "Accelerate.h"
+#include <cmath>
 using std::isnan;
 #endif
 
