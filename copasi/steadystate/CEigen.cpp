@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:33:42 $
+//   $Date: 2011/11/15 14:59:17 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,7 @@
 #endif
 
 #include <cmath>
+#include <complex>
 #ifndef M_PI
 #define M_PI           3.14159265358979323846  /* pi */
 #endif // not M_PI
@@ -75,6 +76,11 @@ CEigen::CEigen(const std::string & name,
     mImagOfMaxComplex(0.0),
     mFreqOfMaxComplex(0.0),
     mOscillationIndicator(0.0),
+    mOscillationIndicator_EV(0.0),
+    mBifurcationIndicator_Hopf(0.0),
+    mBifurcationIndicator_Fold(0.0),
+    mBifurcationIndicator_Hopf_BDT(0.0),
+    mBifurcationIndicator_Fold_BDT(0.0),
 
     mResolution(0),
     mJobvs('N'),
@@ -115,9 +121,14 @@ CEigen::CEigen(const CEigen & src,
     mImagOfMaxComplex(src.mImagOfMaxComplex),
     mFreqOfMaxComplex(src.mFreqOfMaxComplex),
     mOscillationIndicator(src.mOscillationIndicator),
+    mOscillationIndicator_EV(src.mOscillationIndicator_EV),
+    mBifurcationIndicator_Hopf(src.mBifurcationIndicator_Hopf),
+    mBifurcationIndicator_Fold(src.mBifurcationIndicator_Fold),
+    mBifurcationIndicator_Hopf_BDT(src.mBifurcationIndicator_Hopf_BDT),
+    mBifurcationIndicator_Fold_BDT(src.mBifurcationIndicator_Fold_BDT),
 
     mResolution(src.mResolution),
-    mJobvs(src.mSort),
+    mJobvs(src.mJobvs),
     mSort(src.mSort),
     mpSelect(NULL),
     mN(src.mN),
@@ -168,6 +179,12 @@ void CEigen::initObjects()
   addObjectReference("Imaginary part of largest complex eigenvalue", mImagOfMaxComplex, CCopasiObject::ValueDbl);
   addObjectReference("Linear Frequency of largest complex eigenvalue", mFreqOfMaxComplex, CCopasiObject::ValueDbl);
   addObjectReference("Oscillation indicator", mOscillationIndicator, CCopasiObject::ValueDbl);
+  addObjectReference("EV-based oscillation indicator", mOscillationIndicator_EV, CCopasiObject::ValueDbl);
+  addObjectReference("Hopf bifurcation test function", mBifurcationIndicator_Hopf, CCopasiObject::ValueDbl);
+  addObjectReference("Fold bifurcation test function", mBifurcationIndicator_Fold, CCopasiObject::ValueDbl);
+  addObjectReference("Hopf bifurcation test function (BDT)", mBifurcationIndicator_Hopf_BDT, CCopasiObject::ValueDbl);
+  addObjectReference("Fold bifurcation test function (BDT)", mBifurcationIndicator_Fold_BDT, CCopasiObject::ValueDbl);
+
 }
 
 /**
@@ -575,8 +592,73 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
 
   mHierarchy = distt / tott / (mN - 1);
 
-  //TODO add some metric that indicates the possibility of oscillations
-  mOscillationIndicator = 0.0;
+
+  //we calculate an oscillation indicator based on the eigenvalues. It is using a rather heuristical approach
+  if (mN < 2) // at least 2 Eigenvalues are required for oscillations
+    mOscillationIndicator_EV = 0;
+  else
+    {
+      if (fabs(mI[0]) > resolution)
+        mOscillationIndicator_EV = mR[0] * (mR[0] > 0 ? fabs(mI[0]) / (0.01 + fabs(mI[0])) : 2 - fabs(mI[0]) / (0.01 + fabs(mI[0])));
+      else
+        mOscillationIndicator_EV = 2 * mR[1] - (mR[0] > 0 ? 2 * mR[0] : 0);
+    }
+
+
+  //bifurcation test functions, according to Kuznetsov "Elements of applied bifurcation theory"
+  // this function can also be calculated without using the eigenvalues, but since we already
+  //have them we can use them
+
+  std::complex<C_FLOAT64> tmpcpl = 1.0;
+  unsigned C_INT32 index_min = 0; // the index of the EV with smallest abs real part
+  C_FLOAT64 tmpmin = 1e300;
+
+  for (i = 0; i < mN; i++)
+    {
+      tmpcpl *= std::complex<C_FLOAT64>(mR[i], mI[i]);
+
+      if (fabs(mR[i]) < tmpmin)
+        {
+          tmpmin = fabs(mR[i]);
+          index_min = i;
+        }
+    }
+
+  mBifurcationIndicator_Fold = std::abs<C_FLOAT64>(tmpcpl);
+
+  tmpcpl = 1.0;
+
+  for (i = 0; i < mN - 1; i++)
+    {
+      tmpcpl *= (std::complex<C_FLOAT64>(mR[i], mI[i]) + std::complex<C_FLOAT64>(mR[i+1], mI[i+1]));
+    }
+
+  mBifurcationIndicator_Hopf = (tmpcpl.real());
+
+  //now the test functions from the "Bifurcation discovery tool" (as described in the publication by Chickarmane et al.)
+
+  //calculate the product of EVs excluding the minimal one
+  tmpcpl = 1.0;
+
+  for (i = 0; i < mN; i++)
+    {
+      if (i != index_min)
+        tmpcpl *= std::complex<C_FLOAT64>(mR[i], mI[i]);
+    }
+
+  mBifurcationIndicator_Fold_BDT = mBifurcationIndicator_Fold / (1 - 0.99 * exp(-std::abs<C_FLOAT64>(tmpcpl)));
+
+  C_FLOAT64 tmp_product = 1.0;
+
+  for (i = 0; i < mN; i++)
+    {
+      tmp_product *= mR[i] / (1 - 0.99 * exp(-mI[i]));
+    }
+
+  mBifurcationIndicator_Hopf_BDT = tmp_product;
+
+
+  mOscillationIndicator = 0.0; //not used at the moment.
 }
 
 /**

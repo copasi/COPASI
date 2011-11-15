@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/blaswrap.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/16 18:04:24 $
+//   $Date: 2011/11/15 14:59:44 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,6 +87,7 @@ extern "C"
 # define dnrm2_(N, X, INCX) cblas_dnrm2(*N, X, *INCX)
 # define idamax_(N, X, INCX) \
   cblas_idamax(*N, X, *INCX)
+# include <cmath>
 using std::isnan;
 #endif // Darwin
 
