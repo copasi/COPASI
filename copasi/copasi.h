@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.76 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:24:16 $
+//   $Author: gauges $
+//   $Date: 2011/11/19 16:22:14 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -129,10 +129,10 @@
 # define ios_base ios
 #endif
 
-#if (defined USE_MKL || defined USE_SUNPERF || defined __x86_64)
+#if (defined USE_MKL || defined USE_SUNPERF || (defined Darwin && defined __LP64__))
 # define C_INT int
 #else
-# if (defined USE_CLAPACK || defined USE_LAPACK || defined Darwin)
+# if (defined USE_CLAPACK || defined USE_LAPACK || defined Darwin || defined __x86_64)
 #  define C_INT long
 # else
 #  error Neither USE_CLAPACK, USE_LAPACK, USE_SUNPERF, or USE_MKL is defined!
