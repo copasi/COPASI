@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.115.2.12 $
+//   $Revision: 1.115.2.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/06/01 17:56:51 $
+//   $Date: 2011/11/23 18:47:53 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -410,17 +410,11 @@ bool COptProblem::initialize()
   return success;
 }
 
-bool COptProblem::restore(const bool & updateModel)
+void COptProblem::restoreModel(const bool & updateModel)
 {
-  bool success = true;
-
-  if (mpSubtask != NULL)
-    success &= mpSubtask->restore();
-
-  std::vector<COptItem * >::iterator it = mpOptItems->begin();
-  std::vector<COptItem * >::iterator end = mpOptItems->end();
-  C_FLOAT64 * pTmp;
-
+  std::vector< COptItem * >::iterator it = mpOptItems->begin();
+  std::vector< COptItem * >::iterator end = mpOptItems->end();
+  const C_FLOAT64 * pTmp;
   std::set< const CCopasiObject * > ChangedObjects;
 
   if (updateModel && mSolutionValue != mWorstValue)
@@ -457,14 +451,24 @@ bool COptProblem::restore(const bool & updateModel)
     }
 
   // We need to update the dependent initial values
-  std::vector< Refresh * > UpdateSequence = mpModel->buildInitialRefreshSequence(ChangedObjects);
-  std::vector< Refresh * >::iterator itUpdate = UpdateSequence.begin();
-  std::vector< Refresh * >::iterator endUpdate = UpdateSequence.end();
+  std::vector<Refresh*> UpdateSequence = mpModel->buildInitialRefreshSequence(ChangedObjects);
+  std::vector<Refresh*>::iterator itUpdate = UpdateSequence.begin();
+  std::vector<Refresh*>::iterator endUpdate = UpdateSequence.end();
 
   for (; itUpdate != endUpdate; ++itUpdate)
     {
       (**itUpdate)();
     }
+}
+
+bool COptProblem::restore(const bool & updateModel)
+{
+  bool success = true;
+
+  if (mpSubtask != NULL)
+    success &= mpSubtask->restore();
+
+  restoreModel(updateModel);
 
   if (mFailedCounter * 20 > mCounter) // > 5% failure rate
     CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 8, mFailedCounter, mCounter);

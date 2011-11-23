@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-//   $Revision: 1.61.4.4 $
+//   $Revision: 1.61.4.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/25 15:29:30 $
+//   $Date: 2011/11/23 18:47:53 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -124,8 +124,15 @@ public:
   virtual bool calculate();
 
   /**
+   * Do all necessary restore procedures for the model
+   * is in the same state as before.
+   * @param const bool & updateModel
+   */
+  void restoreModel(const bool & updateModel);
+
+  /**
    * Do all necessary restore procedures so that the
-   * model is in the same state as before
+   * model and task are in the same state as before.
    * @param const bool & updateModel
    * @result bool success
    */

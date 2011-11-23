@@ -597,20 +597,5 @@ void CQFittingResult::slotSave(void)
 
 void CQFittingResult::slotUpdateModel()
 {
-  // Loop over the optimization items
-  const std::vector< COptItem * > & Items = mpProblem->getOptItemList();
-  std::vector<COptItem * >::const_iterator it = Items.begin();
-  std::vector<COptItem * >::const_iterator end = Items.end();
-
-  const C_FLOAT64 * pTmp;
-
-  pTmp = mpProblem->getSolutionVariables().array();
-
-  for (; it != end; ++it, pTmp++)
-    {
-      (*(*it)->COptItem::getUpdateMethod())(*pTmp);
-      (*it)->setStartValue(*pTmp);
-    }
-
-  mpProblem->getModel()->updateInitialValues();
+  const_cast< CFitProblem * >(mpProblem)->restoreModel(true);
 }
