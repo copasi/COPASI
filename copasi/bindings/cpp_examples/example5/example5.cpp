@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example5/example5.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 15:06:42 $
+//   $Date: 2011/11/23 15:45:43 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -166,7 +166,7 @@ int main()
   // iteration limit
   CCopasiParameter* pParameter = pOptMethod->getParameter("Iteration Limit");
   assert(pParameter != NULL);
-  pParameter->setValue((long int)2000);
+  pParameter->setValue((C_INT32) 2000);
   // tolerance
   pParameter = pOptMethod->getParameter("Tolerance");
   assert(pParameter != NULL);
