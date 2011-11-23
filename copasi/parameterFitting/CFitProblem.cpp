@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.73 $
+//   $Revision: 1.74 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/16 18:08:02 $
+//   $Date: 2011/11/23 17:12:51 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -679,6 +679,8 @@ bool CFitProblem::initialize()
   mCrossValidationObjective = mWorstValue;
   mThresholdCounter = 0;
 #endif // COPASI_CROSSVALIDATION
+
+  setResidualsRequired(false);
 
   pdelete(mpInitialState);
   mpInitialState = new CState(mpModel->getInitialState());
