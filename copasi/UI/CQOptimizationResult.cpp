@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationResult.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/14 16:38:31 $
+//   $Date: 2011/11/23 18:53:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -206,20 +206,5 @@ void CQOptimizationResult::slotSave(void)
 
 void CQOptimizationResult::slotUpdateModel()
 {
-  // Loop over the optimization items
-  const std::vector< COptItem * > & Items = mpProblem->getOptItemList();
-  std::vector<COptItem * >::const_iterator it = Items.begin();
-  std::vector<COptItem * >::const_iterator end = Items.end();
-
-  const C_FLOAT64 * pTmp;
-
-  pTmp = mpProblem->getSolutionVariables().array();
-
-  for (; it != end; ++it, pTmp++)
-    {
-      (*(*it)->COptItem::getUpdateMethod())(*pTmp);
-      (*it)->setStartValue(*pTmp);
-    }
-
-  mpProblem->getModel()->updateInitialValues();
+  const_cast< COptProblem * >(mpProblem)->restoreModel(true);
 }

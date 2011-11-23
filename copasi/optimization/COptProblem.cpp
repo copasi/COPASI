@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.121 $
+//   $Revision: 1.122 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/20 13:05:48 $
+//   $Date: 2011/11/23 18:53:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -410,17 +410,11 @@ bool COptProblem::initialize()
   return success;
 }
 
-bool COptProblem::restore(const bool & updateModel)
+void COptProblem::restoreModel(const bool & updateModel)
 {
-  bool success = true;
-
-  if (mpSubtask != NULL)
-    success &= mpSubtask->restore();
-
   std::vector<COptItem * >::iterator it = mpOptItems->begin();
   std::vector<COptItem * >::iterator end = mpOptItems->end();
-  C_FLOAT64 * pTmp;
-
+  const C_FLOAT64 * pTmp;
   std::set< const CCopasiObject * > ChangedObjects;
 
   if (updateModel && mSolutionValue != mWorstValue)
@@ -465,6 +459,16 @@ bool COptProblem::restore(const bool & updateModel)
     {
       (**itUpdate)();
     }
+}
+
+bool COptProblem::restore(const bool & updateModel)
+{
+  bool success = true;
+
+  if (mpSubtask != NULL)
+    success &= mpSubtask->restore();
+
+  restoreModel(updateModel);
 
   if (mFailedCounter * 20 > mCounter) // > 5% failure rate
     CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 8, mFailedCounter, mCounter);
