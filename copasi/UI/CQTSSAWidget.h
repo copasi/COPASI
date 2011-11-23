@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/17 16:21:45 $
+//   $Date: 2011/11/23 14:15:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,7 +62,6 @@ private:
 
   void init();
   void destroy();
-  void checkTimeSeries();
 };
 
 #endif // CQTSSAWIDGET_H

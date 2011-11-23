@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/17 16:21:34 $
+//   $Date: 2011/11/23 14:15:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,7 +117,6 @@ void CQTSSAWidget::slotDuration()
   mpValidatorIntervalSize->revalidate();
   mpEditIntervals->setText(QString::number(mpTSSAProblem->getStepNumber()));
 
-  checkTimeSeries();
 }
 
 void CQTSSAWidget::slotIntervalSize()
@@ -137,8 +136,6 @@ void CQTSSAWidget::slotIntervalSize()
   mpEditIntervalSize->setText(QString::number(mpTSSAProblem->getStepSize()));
   mpValidatorIntervalSize->revalidate();
   mpEditIntervals->setText(QString::number(mpTSSAProblem->getStepNumber()));
-
-  checkTimeSeries();
 }
 
 void CQTSSAWidget::slotIntervals()
@@ -156,8 +153,6 @@ void CQTSSAWidget::slotIntervals()
 
   mpEditIntervalSize->setText(QString::number(mpTSSAProblem->getStepSize()));
   mpValidatorIntervalSize->revalidate();
-
-  checkTimeSeries();
 }
 
 bool CQTSSAWidget::saveTask()
@@ -192,11 +187,6 @@ bool CQTSSAWidget::saveTask()
       mChanged = true;
     }
 
-  if (tssaproblem->timeSeriesRequested() != mpCheckSave->isChecked())
-    {
-      tssaproblem->setTimeSeriesRequested(mpCheckSave->isChecked());
-      mChanged = true;
-    }
 
   mpValidatorDuration->saved();
   mpValidatorIntervalSize->saved();
@@ -226,9 +216,6 @@ bool CQTSSAWidget::loadTask()
   mpEditIntervals->setText(QString::number(tssaproblem->getStepNumber()));
   mpEditDuration->setText(QString::number(tssaproblem->getDuration()));
 
-  //store time series checkbox
-  mpCheckSave->setChecked(tssaproblem->timeSeriesRequested());
-  checkTimeSeries();
 
   mpValidatorDuration->saved();
   mpValidatorIntervalSize->saved();
@@ -253,8 +240,6 @@ bool CQTSSAWidget::runTask()
 
   if (!pTSSMethod)
     pTSSMethod->emptyVectors();
-
-  checkTimeSeries();
 
   if (!commonBeforeRunTask()) return false;
 
@@ -300,17 +285,3 @@ bool CQTSSAWidget::taskFinishedEvent()
   return success;
 }
 
-void CQTSSAWidget::checkTimeSeries()
-{
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-
-  if (mpEditIntervals->text().toLong() *(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getStateTemplate().getNumVariable() > TSSAMAX)
-    {
-      mpCheckSave->setChecked(false);
-      mpCheckSave->setEnabled(false);
-    }
-  else
-    {
-      mpCheckSave->setEnabled(true);
-    }
-}
