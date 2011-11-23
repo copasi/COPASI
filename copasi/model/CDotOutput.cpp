@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CDotOutput.cpp,v $
-//   $Revision: 1.8.4.2 $
+//   $Revision: 1.8.4.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 21:44:51 $
+//   $Date: 2011/11/23 15:36:00 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,12 +20,21 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include "copasi.h"
+
 #include "CDotOutput.h"
 
 #include "report/CCopasiContainer.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
+
+CDotOutput::ObjectData::ObjectData():
+    mInUpToDateList(false),
+    mSimulatedRefreshesIndex(C_INVALID_INDEX),
+    mNonSimulatedRefreshesIndex(C_INVALID_INDEX),
+    mConstantRefreshesIndex(C_INVALID_INDEX)
+{};
 
 CDotOutput::CDotOutput()
     : mSkipCompartments(false),

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-//   $Revision: 1.74.2.4 $
+//   $Revision: 1.74.2.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/01/25 20:25:17 $
+//   $Author: shoops $
+//   $Date: 2011/11/23 15:36:00 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -78,7 +78,7 @@
 #  define  LLONG_MAX LONG_LONG_MAX
 # endif
 # define LLONG_CONST(n) n ## LL
-# define C_INT32 long
+# define C_INT32 int
 # define C_INT16 short
 # define C_FLOAT64 double
 # define C_FLOAT32 float
@@ -111,7 +111,7 @@
 #  define  LLONG_MAX LONG_LONG_MAX
 # endif
 # define LLONG_CONST(n) n ## LL
-# define C_INT32 long
+# define C_INT32 int
 # define C_INT16 short
 # define C_FLOAT64 double
 # define C_FLOAT32 float

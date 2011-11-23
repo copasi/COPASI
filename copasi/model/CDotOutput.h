@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CDotOutput.h,v $
-//   $Revision: 1.2.4.1 $
+//   $Revision: 1.2.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:04:00 $
+//   $Date: 2011/11/23 15:36:00 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -54,12 +54,7 @@ protected:
     size_t mNonSimulatedRefreshesIndex;
     size_t mConstantRefreshesIndex;
 
-    ObjectData()
-        : mInUpToDateList(false),
-        mSimulatedRefreshesIndex(-1),
-        mNonSimulatedRefreshesIndex(-1),
-        mConstantRefreshesIndex(-1)
-    {};
+    ObjectData();
   };
 
   void writeDotRecursively(const CCopasiObject * obj, std::ostream & os);
