@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:20:42 $
+//   $Date: 2011/11/29 14:45:29 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -272,14 +272,14 @@ bool CCopasiParameter::isValidValue(const C_FLOAT64 & value) const
   return true;
 }
 
-bool CCopasiParameter::isValidValue(const C_INT32 & C_UNUSED(value)) const
+bool CCopasiParameter::isValidValue(const C_INT32 & /* value */) const
 {
   if (mType != CCopasiParameter::INT) return false;
 
   return true;
 }
 
-bool CCopasiParameter::isValidValue(const unsigned C_INT32 & C_UNUSED(value)) const
+bool CCopasiParameter::isValidValue(const unsigned C_INT32 & /* value */) const
 {
   if (mType != CCopasiParameter::UINT) return false;
 
@@ -410,6 +410,21 @@ bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
         return !memcmp(lhs.mValue.pVOID, rhs.mValue.pVOID, lhs.mSize);
         break;
     }
+}
+
+// virtual
+CCopasiObjectName CCopasiParameter::getCN() const
+{
+  CCopasiContainer * pObjectParent = getObjectParent();
+  CCopasiParameterGroup * pGroup;
+
+  if (pObjectParent != NULL &&
+      (pGroup = dynamic_cast< CCopasiParameterGroup * >(pObjectParent)) != NULL)
+    {
+      return pObjectParent->getCN() + "," + CCopasiObjectName::escape(getObjectType()) + "=" + CCopasiObjectName::escape(pGroup->getUniqueParameterName(this));
+    }
+
+  return CCopasiObject::getCN();
 }
 
 void * CCopasiParameter::getValuePointer() const
@@ -545,6 +560,7 @@ void CCopasiParameter::deleteValue()
   return;
 }
 
+// virtual
 std::string CCopasiParameter::getObjectDisplayName(bool regular, bool richtext) const
 {
   // if one of the ancestors is a reaction and the parameter is not a group
@@ -554,8 +570,26 @@ std::string CCopasiParameter::getObjectDisplayName(bool regular, bool richtext) 
 
   if (tmp && getType() != GROUP)
     {
-      return tmp->getObjectDisplayName() + "." + getObjectName();
+      return tmp->getObjectDisplayName(regular, richtext) + "." + getObjectName();
+    }
+
+  CCopasiContainer * pObjectParent = getObjectParent();
+  CCopasiParameterGroup * pGroup;
+
+  if (pObjectParent != NULL &&
+      (pGroup = dynamic_cast< CCopasiParameterGroup * >(pObjectParent)) != NULL)
+    {
+      std::string DisplayName = pGroup->getObjectDisplayName(regular, richtext);
+      DisplayName.insert(DisplayName.length() - 1, pGroup->getUniqueParameterName(this));
+
+      if (getType() == GROUP)
+        {
+          DisplayName += "[]";
+        }
+
+      return DisplayName;
     }
 
   return CCopasiObject::getObjectDisplayName(regular, richtext);
 }
+

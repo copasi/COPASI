@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:34:55 $
+//   $Date: 2011/11/29 14:45:29 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,13 +25,17 @@
  *  This class is used to describe parameters. This class is intended
  *  to be used with integration or optimization methods or reactions.
  *
- *  Created for Copasi by Stefan Hoops 2002
+ *  Created for COPASI by Stefan Hoops 2002
  */
+
+#include <sstream>
 
 #include "copasi.h"
 
 #include "CCopasiParameterGroup.h"
 #include "CCopasiMessage.h"
+
+#include "utilities/utility.h"
 
 CCopasiParameterGroup::CCopasiParameterGroup():
     CCopasiParameter("NoName", GROUP)
@@ -54,6 +58,43 @@ CCopasiParameterGroup::~CCopasiParameterGroup()
 {
   clear();
 }
+
+// virtual
+const CObjectInterface * CCopasiParameterGroup::getObject(const CCopasiObjectName & cn) const
+{
+  const CObjectInterface * pObjectInterface = CCopasiContainer::getObject(cn);
+
+  if (pObjectInterface != NULL)
+    {
+      return pObjectInterface;
+    }
+
+  std::string UniqueName = cn.getObjectName();
+
+  std::string::size_type pos = UniqueName.find_last_of('[');
+  std::string Name = UniqueName.substr(0, pos);
+  size_t Index = strToUnsignedInt(UniqueName.substr(pos + 1).c_str());
+  size_t counter = C_INVALID_INDEX;
+
+  index_iterator it = mValue.pGROUP->begin();
+  index_iterator end = mValue.pGROUP->end();
+
+  for (; it != end; ++it)
+    {
+      if ((*it)->getObjectName() == Name)
+        {
+          counter++;
+
+          if (counter == Index)
+            {
+              return (*it)->getObject(cn.getRemainder());
+            }
+        }
+    }
+
+  return NULL;
+}
+
 
 bool CCopasiParameterGroup::elevateChildren() {return true;}
 
@@ -501,3 +542,40 @@ size_t CCopasiParameterGroup::getIndex(const std::string & name) const
 
   return C_INVALID_INDEX;
 }
+
+std::string CCopasiParameterGroup::getUniqueParameterName(const CCopasiParameter * pParameter) const
+{
+  size_t counter = C_INVALID_INDEX;
+  size_t Index = C_INVALID_INDEX;
+
+  std::string Name = pParameter->getObjectName();
+
+  index_iterator it = mValue.pGROUP->begin();
+  index_iterator end = mValue.pGROUP->end();
+
+  for (; it != end; ++it)
+    {
+      if ((*it)->getObjectName() == Name)
+        {
+          counter++;
+
+          if (*it == pParameter)
+            {
+              Index = counter;
+            }
+        }
+    }
+
+  if (counter == 0 || Index == C_INVALID_INDEX)
+    {
+      return Name;
+    }
+
+  std::stringstream UniqueName;
+  UniqueName << Name << "[" << Index << "]";
+
+  return UniqueName.str();
+}
+
+
+

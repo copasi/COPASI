@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
- $Revision: 1.32 $
+ $Revision: 1.33 $
  $Name:  $
  $Author: shoops $
- $Date: 2011/03/14 19:20:42 $
+ $Date: 2011/11/29 14:45:29 $
  End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -283,6 +283,14 @@ public:
    * @return bool equal
    */
   friend bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs);
+
+  /**
+   * Retrieve the CN of the math container
+   * The math container provides values for the numerical values of model objects.
+   * For the CN mechanism to work properly it has to pretend to be the model.
+   * @return CCopasiObjectName
+   */
+  virtual CCopasiObjectName getCN() const;
 
   virtual void * getValuePointer() const;
 

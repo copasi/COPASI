@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-$Revision: 1.30 $
+$Revision: 1.31 $
 $Name:  $
 $Author: shoops $
-$Date: 2011/03/07 19:34:55 $
+$Date: 2011/11/29 14:45:29 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,6 +68,8 @@ public:
    * Destructor
    */
   virtual ~CCopasiParameterGroup();
+
+  virtual const CObjectInterface * getObject(const CCopasiObjectName & cn) const;
 
   /**
    * This methods must be called to elevate subgroups to
@@ -422,6 +424,13 @@ public:
    * @return size_t index
    */
   size_t getIndex(const std::string & name) const;
+
+  /**
+   * Retrieve a unique name for the given parameter
+   * @param const CCopasiParameter * pParameter
+   * @return std::string uniqueParameterName
+   */
+  std::string getUniqueParameterName(const CCopasiParameter * pParameter) const;
 
   /**
    * This is the output method for any object. The default implementation
