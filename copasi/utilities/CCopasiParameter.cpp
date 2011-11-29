@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-//   $Revision: 1.35.4.1 $
+//   $Revision: 1.35.4.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/01/12 19:13:20 $
+//   $Date: 2011/11/29 15:56:01 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -402,6 +402,21 @@ bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
     }
 }
 
+// virtual
+CCopasiObjectName CCopasiParameter::getCN() const
+{
+  CCopasiContainer * pObjectParent = getObjectParent();
+  CCopasiParameterGroup * pGroup;
+
+  if (pObjectParent != NULL &&
+      (pGroup = dynamic_cast< CCopasiParameterGroup * >(pObjectParent)) != NULL)
+    {
+      return pObjectParent->getCN() + "," + CCopasiObjectName::escape(getObjectType()) + "=" + CCopasiObjectName::escape(pGroup->getUniqueParameterName(this));
+    }
+
+  return CCopasiObject::getCN();
+}
+
 void * CCopasiParameter::getValuePointer() const
 {return const_cast<void *>(mValue.pVOID);}
 
@@ -535,16 +550,48 @@ void CCopasiParameter::deleteValue()
   return;
 }
 
+// virtual
 std::string CCopasiParameter::getObjectDisplayName(bool regular, bool richtext) const
 {
   // if one of the ancestors is a reaction and the parameter is not a group
   // it is (hopefully) a kinetic parameter
 
-  CCopasiObject* tmp = this->getObjectAncestor("Reaction");
+  CCopasiObject * tmp = this->getObjectAncestor("Reaction");
 
   if (tmp && getType() != GROUP)
     {
-      return tmp->getObjectDisplayName() + "." + getObjectName();
+      return tmp->getObjectDisplayName(regular, richtext) + "." + getObjectName();
+    }
+
+  CCopasiContainer * pObjectParent = getObjectParent();
+  CCopasiParameterGroup * pGroup;
+
+  if (pObjectParent != NULL &&
+      (pGroup = dynamic_cast< CCopasiParameterGroup * >(pObjectParent)) != NULL)
+    {
+      std::string DisplayName = pGroup->getObjectDisplayName(regular, richtext);
+
+      if (DisplayName.length() >= 2 &&
+          (DisplayName.substr(DisplayName.length() - 2) == "[]"))
+        {
+          DisplayName.insert(DisplayName.length() - 1, pGroup->getUniqueParameterName(this));
+        }
+      else
+        {
+          if ((DisplayName.length() != 0) && (DisplayName[DisplayName.length() - 1] != '.'))
+            {
+              DisplayName += ".";
+            }
+
+          DisplayName += pGroup->getUniqueParameterName(this);
+        }
+
+      if (getType() == GROUP)
+        {
+          DisplayName += "[]";
+        }
+
+      return DisplayName;
     }
 
   return CCopasiObject::getObjectDisplayName(regular, richtext);
