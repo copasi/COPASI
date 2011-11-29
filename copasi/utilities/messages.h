@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.163 $
+//   $Revision: 1.164 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/11/09 14:59:17 $
+//   $Date: 2011/11/29 14:15:42 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,7 +161,7 @@ const MESSAGES Messages[] =
   {MCOptimization + 1, "Optimization (1): Object '%s' not found."},
   {MCOptimization + 2, "Optimization (2): Lower Bound '%s' not found."},
   {MCOptimization + 3, "Optimization (3): Upper Bound '%s' not found."},
-  {MCOptimization + 4, "Optimization (4): Empty Interval ('%f', '%f') specified."},
+  {MCOptimization + 4, "Optimization (4): Invalid Interval ('%f', '%f') specified for Object: '%s'."},
   {MCOptimization + 5, "Optimization (5): Invalid Objective Functions."},
   {MCOptimization + 6, "Optimization (6): No adjustable Parameters specified."},
   {MCOptimization + 7, "Optimization (7): No Task Type specified."},
