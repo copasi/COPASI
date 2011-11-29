@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayoutEngine.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/03/11 21:21:14 $
+//   $Date: 2011/11/29 13:06:40 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,7 @@ public:
 
   CLayoutEngine(CAbstractLayoutInterface * l, bool so);
 
-  void step();
+  double step();
 
   void calcForces(std::vector<double> & state, std::vector<double> & forces);
   void calcRHS(std::vector<double> & state, double* rhs);

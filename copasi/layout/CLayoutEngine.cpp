@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayoutEngine.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/03 12:25:41 $
+//   $Author: gauges $
+//   $Date: 2011/11/29 13:06:40 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -135,9 +135,9 @@ void CLayoutEngine::calcForces(std::vector<double> & state, std::vector<double> 
 
 
 
-void CLayoutEngine::step()
+double CLayoutEngine::step()
 {
-  if (!mpLayout) return;
+  if (!mpLayout) return -1.0;
 
   unsigned int i, imax = mVariables.size();
 
@@ -177,7 +177,8 @@ void CLayoutEngine::step()
 
     }
 
-  std::cout << dt << "   " << newpot << std::endl;
+  //std::cout << dt << "   " << newpot << std::endl;
+  return newpot;
 
 }
 
