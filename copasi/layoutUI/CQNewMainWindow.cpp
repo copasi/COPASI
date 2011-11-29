@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/11/09 15:05:30 $
+//   $Date: 2011/11/29 13:08:41 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2181,10 +2181,20 @@ void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
       CLayoutEngine le(&l, false);
       QAbstractEventDispatcher* pDispatcher = QAbstractEventDispatcher::instance();
       int i = 0;
+      double pot, oldPot = -1.0;
 
       for (; (i < numIterations) && (this->mStopLayout) == false; ++i)
         {
-          le.step();
+          pot = le.step();
+
+          if (pot == 0.0 || fabs((pot - oldPot) / pot) < 1e-9)
+            {
+              break;
+            }
+          else
+            {
+              oldPot = pot;
+            }
 
           if (doUpdate && (i % updateInterval == 0))
             {
