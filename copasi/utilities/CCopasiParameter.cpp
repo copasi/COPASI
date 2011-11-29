@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/11/29 14:45:29 $
+//   $Date: 2011/11/29 16:01:27 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -580,7 +580,21 @@ std::string CCopasiParameter::getObjectDisplayName(bool regular, bool richtext) 
       (pGroup = dynamic_cast< CCopasiParameterGroup * >(pObjectParent)) != NULL)
     {
       std::string DisplayName = pGroup->getObjectDisplayName(regular, richtext);
-      DisplayName.insert(DisplayName.length() - 1, pGroup->getUniqueParameterName(this));
+
+      if (DisplayName.length() >= 2 &&
+          (DisplayName.substr(DisplayName.length() - 2) == "[]"))
+        {
+          DisplayName.insert(DisplayName.length() - 1, pGroup->getUniqueParameterName(this));
+        }
+      else
+        {
+          if ((DisplayName.length() != 0) && (DisplayName[DisplayName.length() - 1] != '.'))
+            {
+              DisplayName += ".";
+            }
+
+          DisplayName += pGroup->getUniqueParameterName(this);
+        }
 
       if (getType() == GROUP)
         {
