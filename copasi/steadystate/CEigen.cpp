@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/11/15 14:59:17 $
+//   $Date: 2011/11/29 14:22:32 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -216,7 +216,7 @@ const C_FLOAT64 & CEigen::getMaximagpart() const
 }
 
 // Get the number of zero eigenvalues
-const C_INT32 & CEigen::getNzero() const
+const size_t & CEigen::getNzero() const
 {
   return mNzero;
 }
@@ -466,8 +466,8 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
 {
   if (!mN) return;
 
-  C_INT32 mx, mn;            // YH: n is the 4th parameter, not here
-  C_INT32 i;
+  size_t mx, mn;            // YH: n is the 4th parameter, not here
+  size_t i;
   C_FLOAT64 distt, maxt, tott;
   mResolution = resolution;
 
@@ -496,7 +496,7 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
   mMaximagpart = fabs(mI[0]);
   mImagOfMaxComplex = 0.0;
 
-  for (i = 0; i < mN; i++)
+  for (i = 0; (C_INT) i < mN; i++)
     {
       // for the largest real part
       if (mR[i] > mMaxrealpart)
@@ -565,7 +565,7 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
       else
         mx = mN - 1;
 
-      if (mNposreal == mN)
+      if ((C_INT) mNposreal == mN)
         mn = mNposreal - 1;
       else if (mR[mNposreal - 1] < fabs(mR[mNposreal]))
         mn = mNposreal - 1;
@@ -583,7 +583,7 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
   maxt = tott = fabs(1 / mR[mn]);
   distt = 0.0;
 
-  for (i = 1; i < mN; i++)
+  for (i = 1; (C_INT) i < mN; i++)
     if (i != mn)
       {
         distt += maxt - fabs(1 / mR[i]);
@@ -613,7 +613,7 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
   unsigned C_INT32 index_min = 0; // the index of the EV with smallest abs real part
   C_FLOAT64 tmpmin = 1e300;
 
-  for (i = 0; i < mN; i++)
+  for (i = 0; (C_INT) i < mN; i++)
     {
       tmpcpl *= std::complex<C_FLOAT64>(mR[i], mI[i]);
 
@@ -628,7 +628,7 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
 
   tmpcpl = 1.0;
 
-  for (i = 0; i < mN - 1; i++)
+  for (i = 0; (C_INT) i < mN - 1; i++)
     {
       tmpcpl *= (std::complex<C_FLOAT64>(mR[i], mI[i]) + std::complex<C_FLOAT64>(mR[i+1], mI[i+1]));
     }
@@ -640,7 +640,7 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
   //calculate the product of EVs excluding the minimal one
   tmpcpl = 1.0;
 
-  for (i = 0; i < mN; i++)
+  for (i = 0; (C_INT) i < mN; i++)
     {
       if (i != index_min)
         tmpcpl *= std::complex<C_FLOAT64>(mR[i], mI[i]);
@@ -650,7 +650,7 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
 
   C_FLOAT64 tmp_product = 1.0;
 
-  for (i = 0; i < mN; i++)
+  for (i = 0; (C_INT) i < mN; i++)
     {
       tmp_product *= mR[i] / (1 - 0.99 * exp(-mI[i]));
     }
@@ -664,7 +664,7 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
 /**
  * Return number of real eigenvalues WeiSun 3/28/02
  */
-const C_INT32 & CEigen::getNreal() const
+const size_t & CEigen::getNreal() const
 {
   return mNreal;
 }
@@ -672,12 +672,12 @@ const C_INT32 & CEigen::getNreal() const
 /**
  * Return the number of imaginary eigenvalue numbers
  */
-const C_INT32 & CEigen::getNimag() const
+const size_t & CEigen::getNimag() const
 {
   return mNimag;
 }
 
-const C_INT32 & CEigen::getNcplxconj() const
+const size_t & CEigen::getNcplxconj() const
 {
   return mNcplxconj;
 }
@@ -685,7 +685,7 @@ const C_INT32 & CEigen::getNcplxconj() const
 /**
  * Return the number of eigenvalues with positive real part
  */
-const C_INT32 & CEigen::getNposreal() const
+const size_t & CEigen::getNposreal() const
 {
   return mNposreal;
 }
@@ -693,7 +693,7 @@ const C_INT32 & CEigen::getNposreal() const
 /**
  * Return the number of eigenvalues with negative real part
  */
-const C_INT32 & CEigen::getNnegreal() const
+const size_t & CEigen::getNnegreal() const
 {
   return mNnegreal;
 }

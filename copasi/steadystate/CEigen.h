@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.h,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/11/15 14:59:17 $
+//   $Date: 2011/11/29 14:22:31 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,32 +54,32 @@ private:
   /**
    * the number of eigenvalues with positive real part
    */
-  C_INT32 mNposreal;
+  size_t mNposreal;
 
   /**
    * the number of eigenvalues with negative real part
    */
-  C_INT32 mNnegreal;
+  size_t mNnegreal;
 
   /**
    * the number of real eigenvalues
    */
-  C_INT32 mNreal;
+  size_t mNreal;
 
   /**
    * the number of imaginary eigenvalue numbers
    */
-  C_INT32 mNimag;
+  size_t mNimag;
 
   /**
    *
    */
-  C_INT32 mNcplxconj;
+  size_t mNcplxconj;
 
   /**
    * the number of eigenvalues with value of zero
    */
-  C_INT32 mNzero;
+  size_t mNzero;
 
   /**
    * the stiffness of eigenvalues
@@ -317,7 +317,7 @@ public:
   /**
    * Get the number of zero eigenvalues
    */
-  const C_INT32 & getNzero() const;
+  const size_t & getNzero() const;
 
   /**
    * Get the eigenvalue stiffness
@@ -332,24 +332,24 @@ public:
   /**
    * Return number of real eigenvalues WeiSun 3/28/02
    */
-  const C_INT32 & getNreal() const;
+  const size_t & getNreal() const;
 
   /**
    * Return the number of imaginary eigenvalue numbers
    */
-  const C_INT32 & getNimag() const;
+  const size_t & getNimag() const;
 
-  const C_INT32 & getNcplxconj() const;
+  const size_t & getNcplxconj() const;
 
   /**
    * Return the number of eigenvalues with positive real part
    */
-  const C_INT32 & getNposreal() const;
+  const size_t & getNposreal() const;
 
   /**
    * Return the number of eigenvalues with negative real part
    */
-  const C_INT32 & getNnegreal() const;
+  const size_t & getNnegreal() const;
 
   const CVector< C_FLOAT64 > & getI() const;
 
