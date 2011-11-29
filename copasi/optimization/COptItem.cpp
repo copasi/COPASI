@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.42.2.1 $
+//   $Revision: 1.42.2.2 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2011/03/29 13:38:37 $
+//   $Author: shoops $
+//   $Date: 2011/11/29 14:30:12 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -380,7 +380,7 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
 
   if (!mpUpperObject && !mpLowerObject && *mpUpperBound < *mpLowerBound)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 4, *mpLowerBound, *mpUpperBound);
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 4, *mpLowerBound, *mpUpperBound, mpObject->getObjectDisplayName().c_str());
       return false;
     }
 
