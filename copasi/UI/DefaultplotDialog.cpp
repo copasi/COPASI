@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DefaultplotDialog.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/25 17:15:43 $
+//   $Date: 2011/11/29 13:55:53 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -96,11 +96,22 @@ void DefaultPlotDialog::slotSelect()
 
   int i = listBox->currentRow();
 
-  mIndex = mList[i];
-  lineEditTitle->setText(FROM_UTF8(COutputAssistant::getItemName(mIndex)));
-  textEdit->setText(FROM_UTF8(COutputAssistant::getItem(mIndex).description));
+  if (i >= 0)
+    {
+      mIndex = mList[i];
+      lineEditTitle->setText(FROM_UTF8(COutputAssistant::getItemName(mIndex)));
+      textEdit->setText(FROM_UTF8(COutputAssistant::getItem(mIndex).description));
 
-  createButton->setEnabled(!lineEditTitle->text().startsWith("-- "));
+      createButton->setEnabled(!lineEditTitle->text().startsWith("-- "));
+    }
+  else //Listbox is emtpy, so there is no current row (-1)
+    {
+      mIndex = 0;
+      lineEditTitle->setText("");
+      textEdit->setText("");
+
+      createButton->setEnabled(false);
+    }
 }
 
 //virtual
