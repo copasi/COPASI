@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/11/29 14:15:42 $
+//   $Date: 2011/11/30 14:43:55 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -196,7 +196,28 @@ const std::string COptItem::getUpperBound() const
 
 bool COptItem::setStartValue(const C_FLOAT64 & value)
 {
-  *mpParmStartValue = value;
+  if (mpObjectValue == NULL)
+    {
+      const CCopasiDataModel* pDataModel = getObjectDataModel();
+      assert(pDataModel != NULL);
+      const CCopasiObject * pObject = pDataModel->getDataObject(getObjectCN());
+
+      if (pObject != NULL &&
+          pObject->getValuePointer() != NULL)
+        {
+          mpObjectValue = (const C_FLOAT64 *) pObject->getValuePointer();
+        }
+    }
+
+  if (mpObjectValue != NULL &&
+      *mpObjectValue == value)
+    {
+      *mpParmStartValue = NaN;
+    }
+  else
+    {
+      *mpParmStartValue = value;
+    }
 
   return true;
 }
