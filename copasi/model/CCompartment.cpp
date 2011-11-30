@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/08/03 17:43:27 $
+//   $Date: 2011/11/30 17:21:00 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -93,12 +98,7 @@ std::set< const CCopasiObject * > CCompartment::getDeletedObjects() const
 {
   std::set< const CCopasiObject * > Deleted = CModelEntity::getDeletedObjects();
 
-  // We need to add all metabolites
-  CCopasiVector< CMetab >::const_iterator it = mMetabolites.begin();
-  CCopasiVector< CMetab >::const_iterator end = mMetabolites.end();
-
-  for (; it != end; ++it)
-    Deleted.insert(*it);
+  // We must not add the metabolites as CModel::appendDependentMetabolites does that.
 
   return Deleted;
 }
