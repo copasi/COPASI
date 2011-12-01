@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.84.2.18 $
+//   $Revision: 1.84.2.19 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/12/01 14:25:26 $
+//   $Date: 2011/12/01 17:06:43 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -150,31 +150,37 @@ void CSBMLExporter::createTimeUnit(const CCopasiDataModel& dataModel)
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(-3);
+        unit.setMultiplier(1);
         break;
       case CModel::micros:
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(-6);
+        unit.setMultiplier(1);
         break;
       case CModel::ns:
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(-9);
+        unit.setMultiplier(1);
         break;
       case CModel::ps:
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(-12);
+        unit.setMultiplier(1);
         break;
       case CModel::fs:
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(-15);
+        unit.setMultiplier(1);
         break;
       case CModel::dimensionlessTime:
         unit.setKind(UNIT_KIND_DIMENSIONLESS);
         unit.setExponent(1);
         unit.setScale(0);
+        unit.setMultiplier(1);
         break;
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi time unit.");
@@ -276,6 +282,7 @@ void CSBMLExporter::createVolumeUnit(const CCopasiDataModel& dataModel)
         break;
     }
 
+  unit.setMultiplier(1.0);
   uDef.addUnit(&unit);
   Model* pSBMLModel = this->mpSBMLDocument->getModel();
   UnitDefinition* pUdef = pSBMLModel->getUnitDefinition("volume");
@@ -369,6 +376,7 @@ void CSBMLExporter::createSubstanceUnit(const CCopasiDataModel& dataModel)
         break;
     }
 
+  unit.setMultiplier(1);
   uDef.addUnit(&unit);
   Model* pSBMLModel = this->mpSBMLDocument->getModel();
   UnitDefinition* pUdef = pSBMLModel->getUnitDefinition("substance");
@@ -471,6 +479,7 @@ void CSBMLExporter::createLengthUnit(const CCopasiDataModel& dataModel)
         break;
     }
 
+  unit.setMultiplier(1.0);
   uDef.addUnit(&unit);
   Model* pSBMLModel = this->mpSBMLDocument->getModel();
   UnitDefinition* pUdef = pSBMLModel->getUnitDefinition("length");
@@ -569,6 +578,7 @@ void CSBMLExporter::createAreaUnit(const CCopasiDataModel& dataModel)
         break;
     }
 
+  unit.setMultiplier(1.0);
   uDef.addUnit(&unit);
   Model* pSBMLModel = this->mpSBMLDocument->getModel();
   UnitDefinition* pUdef = pSBMLModel->getUnitDefinition("area");
