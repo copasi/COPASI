@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQQtImageTexturizer.cpp,v $
-//   $Revision: 1.2.2.3 $
+//   $Revision: 1.2.2.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/10/20 15:14:24 $
+//   $Date: 2011/12/01 19:33:14 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,15 +16,15 @@
 #include <algorithm>
 
 #ifdef __APPLE__
-# include "OpenGL/gl.h"
-# include "OpenGL/glu.h"
+# include <OpenGL/gl.h>
+# include <OpenGL/glu.h>
 #else
-# include "GL/gl.h"
-# include "GL/glu.h"
-# include "copasi/GL/glext.h"
+# include <GL/gl.h>
+# include <GL/glu.h>
+# include <GL/glext.h>
 # ifndef _WIN32
 #  define GLX_GLXEXT_PROTOTYPES
-#  include "GL/glx.h"
+#  include <GL/glx.h>
 # endif // _WIN32
 #endif // __APPLE__
 

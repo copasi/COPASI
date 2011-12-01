@@ -1,12 +1,12 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/layoutUI.pro,v $
-#   $Revision: 1.34.2.2 $
+#   $Revision: 1.34.2.3 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/11/13 16:55:56 $
+#   $Date: 2011/12/01 19:33:14 $
 # End CVS Header
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -75,7 +75,10 @@ DISTFILES += load_data.xpm \
              forward.xpm \
              backward.xpm \
              forward_single.xpm \
-             backward_single.xpm
+             backward_single.xpm \
+             revert_curve.xpm  \
+             film_strip.xpm \
+             graph.xpm
 
 include(../lib.pri)
 

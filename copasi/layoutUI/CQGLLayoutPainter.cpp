@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutPainter.cpp,v $
-//   $Revision: 1.5.2.9 $
+//   $Revision: 1.5.2.10 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/10/20 11:12:45 $
+//   $Author: shoops $
+//   $Date: 2011/12/01 19:33:14 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,21 +60,21 @@
 #endif // WIN32
 
 #ifdef __APPLE__
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#undef GL_GLEXT_LEGACY
-#include <copasi/GL/glext.h>
+# include <OpenGL/gl.h>
+# include <OpenGL/glu.h>
+# undef GL_GLEXT_LEGACY
+# include <GL/glext.h>
 #else
-#define GLX_GLXEXT_LEGACY
-#include <GL/gl.h>
-#include <GL/glu.h>
+# define GLX_GLXEXT_LEGACY
+# include <GL/gl.h>
+# include <GL/glu.h>
 // I am including a new glext with the source code
-#include <copasi/GL/glext.h>
-#ifndef _WIN32
-#include <GL/glx.h>
-#endif // _WIN32
+# include <GL/glext.h>
+# ifndef _WIN32
+#  include <GL/glx.h>
+# endif // _WIN32
 // somehow glx defines a macro called CursorShape which clashes with the Qt enum of the same name
-#undef CursorShape
+# undef CursorShape
 #endif // __APPLE__
 
 // check that the OpenGL extensions we plan to use are at leaset defined so that we have the necessary enumerations

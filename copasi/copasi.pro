@@ -1,12 +1,12 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
-#   $Revision: 1.64.2.2 $
+#   $Revision: 1.64.2.3 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2010/11/13 18:10:04 $
+#   $Date: 2011/12/01 19:33:13 $
 # End CVS Header
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.64.2.2 $ $Author: shoops $ $Date: 2010/11/13 18:10:04 $
+# $Revision: 1.64.2.3 $ $Author: shoops $ $Date: 2011/12/01 19:33:13 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -131,17 +131,13 @@ macx:debug {
 
 
 DISTDIRS = $${SUBDIRS}
-DISTDIRS -= mml
 
 DISTFILES += \
         1_configure.vcproj \
         FlexLexer.h \
-        LicenseUS.txt.h \
-        LicenseDE.txt.h \
         blas.h \
         blaswrap.h \
         clapackwrap.h \
-        copasi.vcproj \
         copasi.sln \
         copasi.h \
         ArtisticLicense.txt \

@@ -495,6 +495,13 @@ for file in $CleanFiles; do
   gawk -- ' BEGIN {keep = 1} $0 ~ "#ifdef COPASI_CROSSVALIDATION" {keep = 0} {if (keep == 1) {print $0}} $0 ~ "#endif // COPASI_CROSSVALIDATION" {keep = 1}' $file > $$.tmp && mv $$.tmp $file;
 done;
 
+#remove Qt MML Widget source code
+rm copasi/mml/qtmmlwidget.*
+
+#include GL/glext.h
+mkdir copasi/GL
+cp ../copasi/GL/glext.h
+
 cd ..
 
 tar -czf Copasi-${build}-SRC.tar.gz copasi-${build}-src 

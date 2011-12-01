@@ -1,12 +1,12 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.239.2.9 $
+#   $Revision: 1.239.2.10 $
 #   $Name:  $
-#   $Author: aekamal $
-#   $Date: 2011/01/31 17:34:08 $
+#   $Author: shoops $
+#   $Date: 2011/12/01 19:33:13 $
 # End CVS Header
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.239.2.9 $ $Author: aekamal $ $Date: 2011/01/31 17:34:08 $
+# $Revision: 1.239.2.10 $ $Author: shoops $ $Date: 2011/12/01 19:33:13 $
 ######################################################################
 
 LIB = UI
@@ -395,14 +395,6 @@ FORMS += SteadyStateWidget.ui
 FORMS += TimeSeriesSubwidget.ui
 FORMS += CQExpandModelData.ui
 
-contains(COPASI_SRC_PACKAGE, true) {
-  HEADERS -= CQDifferentialEquations.h
-  SOURCES -= CQDifferentialEquations.cpp
-  
-  DISTFILES += CQDifferentialEquations.h
-  DISTFILES += CQDifferentialEquations.cpp
-}
-
 DISTFILES += icons/Copasi.ico \
              icons/Copasi??-Alpha.xpm \
              icons/CopasiDoc.ico \
@@ -438,6 +430,14 @@ include(../lib.pri)
 CONFIG += qt 
 
 include(../common.pri)
+
+!contains(DEFINES, HAVE_MML) {
+  HEADERS -= CQDifferentialEquations.h
+  SOURCES -= CQDifferentialEquations.cpp
+  
+  DISTFILES += CQDifferentialEquations.h
+  DISTFILES += CQDifferentialEquations.cpp
+}
 
 #ifdef COPASI_LICENSE_COM
 contains(USE_LICENSE, COM) {
