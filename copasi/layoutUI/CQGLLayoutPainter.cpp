@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutPainter.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/11/09 15:05:30 $
+//   $Author: shoops $
+//   $Date: 2011/12/01 19:54:54 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,13 +63,13 @@
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #undef GL_GLEXT_LEGACY
-#include "copasi/GL/glext.h"
+# include <GL/glext.h>
 #else
 #define GLX_GLXEXT_LEGACY
 #include <GL/gl.h>
 #include <GL/glu.h>
 // I am including a new glext with the source code
-#include "copasi/GL/glext.h"
+# include <GL/glext.h>
 #ifndef _WIN32
 #include <GL/glx.h>
 #endif // _WIN32

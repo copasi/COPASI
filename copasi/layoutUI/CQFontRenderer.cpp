@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQFontRenderer.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:35:56 $
+//   $Date: 2011/12/01 19:54:54 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,7 +36,7 @@
 #else
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include "copasi/GL/glext.h"
+#include <GL/glext.h>
 #endif // __APPLE__
 
 #include "copasi/layout/utility_classes.h"
