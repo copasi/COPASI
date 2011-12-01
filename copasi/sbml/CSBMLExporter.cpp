@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.84.2.17 $
+//   $Revision: 1.84.2.18 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/09/08 10:30:08 $
+//   $Date: 2011/12/01 14:25:26 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -4889,11 +4889,24 @@ void CSBMLExporter::removeUnusedObjects()
 {
   if (this->mpSBMLDocument != NULL || this->mpSBMLDocument->getModel() == NULL)
     {
+      // we need to reverse the COPASI2SBMLMap so that we can remove objects
+      // from the map if we delete them
+      std::map<const SBase*, const CCopasiObject*> reverseCOPASI2SBMLMap;
+      std::map<const CCopasiObject*, SBase*>::const_iterator it = this->mCOPASI2SBMLMap.begin(), endit = this->mCOPASI2SBMLMap.end();
+
+      while (it != endit)
+        {
+          reverseCOPASI2SBMLMap.insert(std::pair<const SBase*, const CCopasiObject*>(it->second, it->first));
+          ++it;
+        }
+
       Model* pModel = this->mpSBMLDocument->getModel();
       std::list<SBase*> removedObjects;
       SBase* pSBase = NULL;
       ListOf* pList = pModel->getListOfCompartments();
       unsigned int i;
+      std::map<const SBase*, const CCopasiObject*>::const_iterator pos;
+      std::map<const CCopasiObject*, SBase*>::iterator pos2;
 
       for (i = pList->size(); i != 0; --i)
         {
@@ -4937,6 +4950,19 @@ void CSBMLExporter::removeUnusedObjects()
 
           if (this->mHandledSBMLObjects.find(pSBase) == this->mHandledSBMLObjects.end())
             {
+              // remove the item from the COPASI2SBMLmap
+              pos = reverseCOPASI2SBMLMap.find(pSBase);
+
+              if (pos != reverseCOPASI2SBMLMap.end() && pos->second != NULL)
+                {
+                  pos2 = this->mCOPASI2SBMLMap.find(pos->second);
+
+                  if (pos2 != this->mCOPASI2SBMLMap.end())
+                    {
+                      this->mCOPASI2SBMLMap.erase(pos2);
+                    }
+                }
+
               // we don't have to store the initial assignments since
               // there are no rules or events for initial assignments
               delete pList->remove(i - 1);
@@ -4951,6 +4977,19 @@ void CSBMLExporter::removeUnusedObjects()
 
           if (this->mHandledSBMLObjects.find(pSBase) == this->mHandledSBMLObjects.end())
             {
+              // remove the item from the COPASI2SBMLmap
+              pos = reverseCOPASI2SBMLMap.find(pSBase);
+
+              if (pos != reverseCOPASI2SBMLMap.end() && pos->second != NULL)
+                {
+                  pos2 = this->mCOPASI2SBMLMap.find(pos->second);
+
+                  if (pos2 != this->mCOPASI2SBMLMap.end())
+                    {
+                      this->mCOPASI2SBMLMap.erase(pos2);
+                    }
+                }
+
               // we don't have to store the reactions since
               // there are no rules or events for reactions
               delete pList->remove(i - 1);
@@ -4959,7 +4998,7 @@ void CSBMLExporter::removeUnusedObjects()
 
       // check each removed object, if there is a rule or an event in
       // the SBML model for this object
-      std::list<SBase*>::iterator it = removedObjects.begin(), endit = removedObjects.end();
+      std::list<SBase*>::iterator it2 = removedObjects.begin(), endit2 = removedObjects.end();
       pList = pModel->getListOfRules();
       ListOf* pEventList = pModel->getListOfEvents();
       ListOf* pInitialAssignmentList = pModel->getListOfInitialAssignments();
@@ -4968,7 +5007,7 @@ void CSBMLExporter::removeUnusedObjects()
       InitialAssignment* pIA = NULL;
       unsigned int iMax;
 
-      while (it != endit)
+      while (it2 != endit2)
         {
           iMax = pList->size();
 
@@ -4976,8 +5015,21 @@ void CSBMLExporter::removeUnusedObjects()
             {
               pRule = dynamic_cast<Rule*>(pList->get(i));
 
-              if (pRule != NULL && pRule->isSetVariable() && pRule->getVariable() == (*it)->getId())
+              if (pRule != NULL && pRule->isSetVariable() && pRule->getVariable() == (*it2)->getId())
                 {
+                  // remove the item from the COPASI2SBMLmap
+                  pos = reverseCOPASI2SBMLMap.find(pRule);
+
+                  if (pos != reverseCOPASI2SBMLMap.end() && pos->second != NULL)
+                    {
+                      pos2 = this->mCOPASI2SBMLMap.find(pos->second);
+
+                      if (pos2 != this->mCOPASI2SBMLMap.end())
+                        {
+                          this->mCOPASI2SBMLMap.erase(pos2);
+                        }
+                    }
+
                   delete pList->remove(i);
                   break;
                 }
@@ -4989,8 +5041,21 @@ void CSBMLExporter::removeUnusedObjects()
             {
               pIA = dynamic_cast<InitialAssignment*>(pInitialAssignmentList->get(i));
 
-              if (pIA->isSetSymbol() && pIA->getSymbol() == (*it)->getId())
+              if (pIA->isSetSymbol() && pIA->getSymbol() == (*it2)->getId())
                 {
+                  // remove the item from the COPASI2SBMLmap
+                  pos = reverseCOPASI2SBMLMap.find(pIA);
+
+                  if (pos != reverseCOPASI2SBMLMap.end() && pos->second != NULL)
+                    {
+                      pos2 = this->mCOPASI2SBMLMap.find(pos->second);
+
+                      if (pos2 != this->mCOPASI2SBMLMap.end())
+                        {
+                          this->mCOPASI2SBMLMap.erase(pos2);
+                        }
+                    }
+
                   delete pInitialAssignmentList->remove(i);
                   break;
                 }
@@ -5012,8 +5077,21 @@ void CSBMLExporter::removeUnusedObjects()
                     {
                       pEA = pEvent->getEventAssignment(j);
 
-                      if (pEA != NULL && pEA->getVariable() == (*it)->getId())
+                      if (pEA != NULL && pEA->getVariable() == (*it2)->getId())
                         {
+                          // remove the item from the COPASI2SBMLmap
+                          pos = reverseCOPASI2SBMLMap.find(pEA);
+
+                          if (pos != reverseCOPASI2SBMLMap.end() && pos->second != NULL)
+                            {
+                              pos2 = this->mCOPASI2SBMLMap.find(pos->second);
+
+                              if (pos2 != this->mCOPASI2SBMLMap.end())
+                                {
+                                  this->mCOPASI2SBMLMap.erase(pos2);
+                                }
+                            }
+
                           delete pEAL->remove(j);
                           break;
                         }
@@ -5023,13 +5101,39 @@ void CSBMLExporter::removeUnusedObjects()
                   // event
                   if (pEAL->size() == 0)
                     {
+                      // remove the item from the COPASI2SBMLmap
+                      pos = reverseCOPASI2SBMLMap.find(pEvent);
+
+                      if (pos != reverseCOPASI2SBMLMap.end() && pos->second != NULL)
+                        {
+                          pos2 = this->mCOPASI2SBMLMap.find(pos->second);
+
+                          if (pos2 != this->mCOPASI2SBMLMap.end())
+                            {
+                              this->mCOPASI2SBMLMap.erase(pos2);
+                            }
+                        }
+
                       delete pEventList->remove(i);
                     }
                 }
             }
 
-          delete *it;
-          ++it;
+          // remove the item from the COPASI2SBMLmap
+          pos = reverseCOPASI2SBMLMap.find(*it2);
+
+          if (pos != reverseCOPASI2SBMLMap.end() && pos->second != NULL)
+            {
+              pos2 = this->mCOPASI2SBMLMap.find(pos->second);
+
+              if (pos2 != this->mCOPASI2SBMLMap.end())
+                {
+                  this->mCOPASI2SBMLMap.erase(pos2);
+                }
+            }
+
+          delete *it2;
+          ++it2;
         }
     }
 }
