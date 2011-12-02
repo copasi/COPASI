@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.96 $
+//   $Revision: 1.97 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/12/01 19:54:55 $
+//   $Author: gauges $
+//   $Date: 2011/12/02 09:09:12 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1131,6 +1131,8 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
   Reaction* pSBMLReaction = NULL;
 
   // if the reaction has nothing set but the name, we don't do anything
+  // This is mandated since SBML Level 2 Version 2. A reactions has to have either
+  // a substrate or a product.
   if (reaction.getChemEq().getSubstrates().size() == 0 &&
       reaction.getChemEq().getProducts().size() == 0) return;
 
