@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.cpp,v $
-//   $Revision: 1.15.4.1 $
+//   $Revision: 1.15.4.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/02/27 17:49:56 $
+//   $Date: 2011/12/05 16:49:20 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -238,9 +238,13 @@ CLTextGlyph & CLTextGlyph::operator= (const CLTextGlyph & rhs)
 std::string CLTextGlyph::getText() const
 {
   if (mIsTextSet)
-    return mText;
+    {
+      return mText;
+    }
   else
-    return getModelObjectDisplayName();
+    {
+      return getModelObjectDisplayName();
+    }
 }
 
 void CLTextGlyph::setText(const std::string & t)

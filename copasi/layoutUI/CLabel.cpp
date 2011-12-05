@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CLabel.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.1.14.1 $
 //   $Name:  $
-//   $Author: urost $
-//   $Date: 2008/05/28 11:53:09 $
+//   $Author: gauges $
+//   $Date: 2011/12/05 16:49:20 $
 // End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -14,6 +19,8 @@
 #include "CLabel.h"
 
 #include "copasi.h"
+
+#include <copasi/report/CCopasiRootContainer.h>
 
 CLabel::CLabel()
     : CLTextGlyph()
@@ -42,7 +49,7 @@ void CLabel::initOrigValues()
 }
 
 // scale original values (not the current position/dimensions)
-void CLabel::scale (const double & scaleFactor)
+void CLabel::scale(const double & scaleFactor)
 {
   this->setX(this->orig_x * scaleFactor);
   this->setY(this->orig_y * scaleFactor);
@@ -52,7 +59,7 @@ void CLabel::scale (const double & scaleFactor)
 
 // set height of mBBox to new value given by the only parameter and scale width of box
 // so that ration is preserved
-void CLabel::adaptToHeight (const double & h)
+void CLabel::adaptToHeight(const double & h)
 {
   C_FLOAT64 scaleFactor = h / mBBox.getDimensions().getHeight();
   C_FLOAT64 w = mBBox.getDimensions().getWidth() * scaleFactor;
@@ -64,3 +71,32 @@ void CLabel::scalePosition(const double & z)
   this->mBBox.getPosition().setX(this->mBBox.getPosition().getX() * z);
   this->mBBox.getPosition().setY(this->mBBox.getPosition().getY() * z);
 }
+
+/**
+ * Since labels are not part of the model, we can't use the new method for
+ * getting the text but have to fall back to the old
+ * behavior.
+ * Hopefully I can get rid of this implementation sonner than later.
+ */
+std::string CLabel::getText() const
+{
+  if (mIsTextSet)
+    {
+      return mText;
+    }
+  else
+    {
+      CCopasiObject* pObject = CCopasiRootContainer::getKeyFactory()->get(this->mModelObjectKey);
+
+      if (pObject)
+        {
+          return pObject->getObjectName();
+        }
+      else
+        {
+          return "unset";
+        }
+    }
+}
+
+

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.h,v $
-//   $Revision: 1.9.2.1 $
+//   $Revision: 1.9.2.2 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/02/27 17:49:57 $
+//   $Date: 2011/12/05 16:49:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,7 +40,7 @@ class GraphicalObject;
  */
 class CLGraphicalObject : public CLBase, public CCopasiContainer
 {
-private:
+protected:
 
   /**
    *  The key of the layout object itself
@@ -58,7 +58,6 @@ private:
   // attribute to store the object role
   std::string mObjectRole;
 #endif // USE_CRENDER_EXTENSION
-protected:
 
   CLBoundingBox mBBox;
 
@@ -156,6 +155,15 @@ public:
     */
   friend std::ostream & operator<<(std::ostream &os, const CLGraphicalObject & g);
   void print(std::ostream * ostream) const;
+
+  /**
+   * This method is used for the export of several layout elements.
+   * Layout elements can reference model elements, but when a referenced model element
+   * is deleted, the layout is not infomred about this yet, so we end up with dangling
+   * references.
+   * If the key belongs to an object in the same datamodel, true is returned, else false is returned.
+   */
+  bool hasValidModelReference() const;
 };
 
 #endif

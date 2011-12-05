@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.cpp,v $
-//   $Revision: 1.15.2.2 $
+//   $Revision: 1.15.2.3 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/02/27 17:49:57 $
+//   $Date: 2011/12/05 16:49:20 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -102,7 +102,17 @@ CLGraphicalObject & CLGraphicalObject::operator= (const CLGraphicalObject & rhs)
 
 CCopasiObject * CLGraphicalObject::getModelObject() const
 {
-  return CCopasiRootContainer::getKeyFactory()->get(mModelObjectKey);
+  CCopasiObject* pObject = NULL;
+
+  // as an additional safeguard, we check
+  // if the object is in the same datamodel
+  // This is not foolproof, but should work in most cases.
+  if (this->hasValidModelReference())
+    {
+      pObject = CCopasiRootContainer::getKeyFactory()->get(mModelObjectKey);
+    }
+
+  return pObject;
 }
 
 std::string CLGraphicalObject::getModelObjectName() const
@@ -120,10 +130,16 @@ std::string CLGraphicalObject::getModelObjectDisplayName(bool /* regular */, boo
   CCopasiObject * tmp = getModelObject();
 
   if (tmp)
-    return tmp->getObjectName();
+    {
+      return tmp->getObjectName();
+    }
   else
-    return "";
+    {
+      return "";
+    }
 }
+
+
 
 void CLGraphicalObject::exportToSBML(GraphicalObject * sbmlobject,
                                      const std::map<const CCopasiObject*, SBase*> & /* copasimodelmap */,
@@ -181,3 +197,70 @@ const std::string& CLGraphicalObject::getObjectRole() const
 }
 
 #endif // USE_CRENDER_EXTENSION
+
+
+/**
+ * This method is used for the export of several layout elements.
+ * Layout elements can reference model elements, but when a referenced model element
+ * is deleted, the layout is not infomred about this yet, so we end up with dnagling
+ * references.
+ * In order to not write these dangling references to file, we check if the reference
+ * belongs to a valid object in the same datamodel. If not, we issue a warning.
+ * This warning is only issued once during a save process.
+ *
+ * If the key belongs to an object in the same datamodel, true is returned, else false is returned.
+ */
+bool CLGraphicalObject::hasValidModelReference() const
+{
+  bool result = false;
+  // check if the object for this key actually exists
+  // TODO This is only a workaround because it is theoretically
+  // TODO possible that the key no longer belongs to the same object it
+  // TODO originally did.
+  CCopasiObject* pObj = CCopasiRootContainer::getKeyFactory()->get(this->mModelObjectKey);
+
+  if (pObj != NULL)
+    {
+      // check if the object actually belongs to the same
+      // model as the text glyph
+      const CCopasiDataModel* pDM1 = NULL;
+      const CCopasiDataModel* pDM2 = NULL;
+      const CCopasiContainer* pParent = pObj->getObjectParent();
+
+      while (pParent != NULL)
+        {
+          pDM1 = dynamic_cast<const CCopasiDataModel*>(pParent);
+
+          if (pDM1 != NULL)
+            {
+              break;
+            }
+
+          pParent = pParent->getObjectParent();
+        }
+
+      pParent = this->getObjectParent();
+
+      while (pParent != NULL)
+        {
+          pDM2 = dynamic_cast<const CCopasiDataModel*>(pParent);
+
+          if (pDM2 != NULL)
+            {
+              break;
+            }
+
+          pParent = pParent->getObjectParent();
+
+        }
+
+      assert(pDM2 != NULL);
+
+      if (pDM1 != NULL && pDM1 == pDM2)
+        {
+          result = true;
+        }
+    }
+
+  return result;
+}
