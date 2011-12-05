@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-//   $Revision: 1.23.2.1 $
+//   $Revision: 1.23.2.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/02/07 15:39:48 $
+//   $Author: gauges $
+//   $Date: 2011/12/05 16:58:12 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -608,6 +608,11 @@ private:
    * Pointer to the datamodel
    */
   CCopasiDataModel* mpDataModel;
+
+  /**
+   * Remember if we already issued MCXML21
+   */
+  bool mMCXML21Issued;
 };
 
 #endif // COPASI_CCopasiXML
