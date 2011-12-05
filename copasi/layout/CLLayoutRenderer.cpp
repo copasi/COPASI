@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.5.2.18 $
+//   $Revision: 1.5.2.19 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/10/24 11:39:14 $
+//   $Date: 2011/12/05 16:56:55 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1228,8 +1228,20 @@ void CLLayoutRenderer::draw_text(const CLStyle* pStyle, const CLBoundingBox* pBB
  */
 const std::string CLLayoutRenderer::resolve_text(const CLTextGlyph* pTextGlyph)
 {
-  // CLTextGlyph already knows how to reslve the text
-  return pTextGlyph->getText();
+  // CLTextGlyph already knows how to resolve the text
+  std::string text = pTextGlyph->getText();
+
+  // check if the empty string comes from an explicit text or if it
+  // is the result of an invalid model reference
+  if (text.empty() && !pTextGlyph->isTextSet())
+    {
+      // maybe unset is not the best text to
+      // notify the user of a problem, but right now I have no
+      // better idea
+      text = "unset";
+    }
+
+  return text;
 }
 
 /**
