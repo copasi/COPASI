@@ -500,7 +500,7 @@ rm copasi/mml/qtmmlwidget.*
 
 #include GL/glext.h
 mkdir copasi/GL
-cp ../copasi/GL/glext.h
+cp ../copasi/GL/glext.h copasi/GL
 
 cd ..
 
