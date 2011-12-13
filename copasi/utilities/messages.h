@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.164 $
+//   $Revision: 1.165 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/11/29 14:15:42 $
+//   $Date: 2011/12/13 19:49:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -146,6 +146,9 @@ const MESSAGES Messages[] =
   {MCXML + 16, "XML (16): Unknown parameter '%s' with type '%s' encountered at line '%d'."},
   {MCXML + 17, "XML (17): Invalid initial state specification encountered at line '%d'."},
   {MCXML + 18, "XML (18): Unknown method '%s' encountered at line '%d' selecting default '%s'."},
+  {MCXML + 19, "XML (19): %s with key '%s' references a model element that no longer exists. The reference has been deleted and the element might not be displayed correctly in the layout."},
+  {MCXML + 20, "XML (20): Could not determine text for TextGlyph with key '%s'. \"unset\" will be displayed instead."},
+  {MCXML + 21, "XML (21): One or more layout elements reference model objects that no longer exists. These references have been deleted."},
 
   // CCopasiMessage
   {MCCopasiMessage + 1, "Message (1): No more messages."},

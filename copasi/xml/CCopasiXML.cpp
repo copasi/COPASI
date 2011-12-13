@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.135 $
+//   $Revision: 1.136 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:51:35 $
+//   $Date: 2011/12/13 19:49:56 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -102,7 +102,8 @@ CCopasiXML::CCopasiXML():
     mpReportList(NULL),
     mpPlotList(NULL),
     mpGUI(NULL),
-    mpLayoutList(NULL)
+    mpLayoutList(NULL),
+    mMCXML21Issued(false)
 {
   mVersion.setVersion(COPASI_XML_VERSION_MAJOR,
                       COPASI_XML_VERSION_MINOR,
@@ -1405,7 +1406,24 @@ bool CCopasiXML::saveLayoutList()
               Attributes.erase();
               Attributes.add("key", cg->getKey());
               Attributes.add("name", cg->getObjectName());
-              Attributes.add("compartment", cg->getModelObjectKey());
+
+              if (!cg->getModelObjectKey().empty() && cg->hasValidModelReference())
+                {
+                  Attributes.add("compartment", cg->getModelObjectKey());
+                }
+              else
+                {
+                  // we set the model reference to the empty string so that
+                  // the warnings message only appears on the first save operation
+                  cg->setModelObjectKey("");
+
+                  if (!this->mMCXML21Issued)
+                    {
+                      CCopasiMessage(CCopasiMessage::WARNING, MCXML + 21);
+                      this->mMCXML21Issued = true;
+                    }
+                }
+
 #ifdef USE_CRENDER_EXTENSION
 
               if (cg->getObjectRole().find_first_not_of(" \t\r\n") != std::string::npos)
@@ -1437,7 +1455,24 @@ bool CCopasiXML::saveLayoutList()
               Attributes.erase();
               Attributes.add("key", cg->getKey());
               Attributes.add("name", cg->getObjectName());
-              Attributes.add("metabolite", cg->getModelObjectKey());
+
+              if (!cg->getModelObjectKey().empty() && cg->hasValidModelReference())
+                {
+                  Attributes.add("metabolite", cg->getModelObjectKey());
+                }
+              else
+                {
+                  // we set the model reference to the empty string so that
+                  // the warnings message only appears on the first save operation
+                  cg->setModelObjectKey("");
+
+                  if (!this->mMCXML21Issued)
+                    {
+                      CCopasiMessage(CCopasiMessage::WARNING, MCXML + 21);
+                      this->mMCXML21Issued = true;
+                    }
+                }
+
 #ifdef USE_CRENDER_EXTENSION
 
               if (cg->getObjectRole().find_first_not_of(" \t\r\n") != std::string::npos)
@@ -1469,7 +1504,24 @@ bool CCopasiXML::saveLayoutList()
               Attributes.erase();
               Attributes.add("key", cg->getKey());
               Attributes.add("name", cg->getObjectName());
-              Attributes.add("reaction", cg->getModelObjectKey());
+
+              if (!cg->getModelObjectKey().empty() && cg->hasValidModelReference())
+                {
+                  Attributes.add("reaction", cg->getModelObjectKey());
+                }
+              else
+                {
+                  // we set the model reference to the empty string so that
+                  // the warnings message only appears on the first save operation
+                  cg->setModelObjectKey("");
+
+                  if (!this->mMCXML21Issued)
+                    {
+                      CCopasiMessage(CCopasiMessage::WARNING, MCXML + 21);
+                      this->mMCXML21Issued = true;
+                    }
+                }
+
 #ifdef USE_CRENDER_EXTENSION
 
               if (cg->getObjectRole().find_first_not_of(" \t\r\n") != std::string::npos)
@@ -1546,10 +1598,30 @@ bool CCopasiXML::saveLayoutList()
                   Attributes.add("graphicalObject", cg->getGraphicalObjectKey());
 
                   if (cg->isTextSet())
-                    Attributes.add("text", cg->getText());
+                    {
+                      Attributes.add("text", cg->getText());
+                    }
                   else
                     {
-                      Attributes.add("originOfText", id);
+                      // check if the object actually exists
+                      if (cg->hasValidModelReference())
+                        {
+                          Attributes.add("originOfText", id);
+                        }
+                      else
+                        {
+                          // set the text to unset instead
+                          Attributes.add("text", "unset");
+                          // set the invalid key to the empty string
+                          cg->setModelObjectKey("");
+                          cg->setText("unset");
+
+                          if (!this->mMCXML21Issued)
+                            {
+                              CCopasiMessage(CCopasiMessage::WARNING, MCXML + 21);
+                              this->mMCXML21Issued = true;
+                            }
+                        }
                     }
 
 #ifdef USE_CRENDER_EXTENSION

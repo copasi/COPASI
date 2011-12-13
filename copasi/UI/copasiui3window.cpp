@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.304 $
+//   $Revision: 1.305 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/11/07 13:59:26 $
+//   $Date: 2011/12/13 19:49:57 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -593,6 +593,27 @@ void CopasiUI3Window::slotFileSaveFinished(bool success)
       (*CCopasiRootContainer::getDatamodelList())[0]->changed(false);
       this->mpSliders->setChanged(false);
       updateTitle();
+
+      CCopasiMessage msg = CCopasiMessage::getLastMessage();
+
+      if (msg.getNumber() != MCCopasiMessage + 1)
+        {
+          QString Message("Problem while saving file!\n\n");
+          Message += FROM_UTF8(msg.getText());
+
+          msg = CCopasiMessage::getLastMessage();
+
+          while (msg.getNumber() != MCCopasiMessage + 1)
+            {
+              Message += "\n";
+              Message += FROM_UTF8(msg.getText());
+              msg = CCopasiMessage::getLastMessage();
+            }
+
+          CQMessageBox::warning(this, QString("File Warning"), Message,
+                                QMessageBox::Ok, QMessageBox::Ok);
+        }
+
     }
   else
     {

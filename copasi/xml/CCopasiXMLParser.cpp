@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.235 $
+//   $Revision: 1.236 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/27 17:27:54 $
+//   $Date: 2011/12/13 19:49:56 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -6338,9 +6338,14 @@ void CCopasiXMLParser::CompartmentGlyphElement::start(const XML_Char *pszName, c
             {
               CCompartment * pComp = dynamic_cast< CCompartment * >(mCommon.KeyMap.get(compartment));
 
-              if (!pComp) fatalError();
-
-              mCommon.pCompartmentGlyph->setModelObjectKey(pComp->getKey());
+              if (!pComp)
+                {
+                  CCopasiMessage(CCopasiMessage::WARNING, MCXML + 19 , "CompartmentGlyph", key);
+                }
+              else
+                {
+                  mCommon.pCompartmentGlyph->setModelObjectKey(pComp->getKey());
+                }
             }
 
           mCommon.pCurrentLayout->addCompartmentGlyph(mCommon.pCompartmentGlyph);
@@ -6589,9 +6594,14 @@ void CCopasiXMLParser::MetaboliteGlyphElement::start(const XML_Char *pszName, co
             {
               CMetab * pMetab = dynamic_cast< CMetab * >(mCommon.KeyMap.get(metabolite));
 
-              if (!pMetab) fatalError();
-
-              mCommon.pMetaboliteGlyph->setModelObjectKey(pMetab->getKey());
+              if (!pMetab)
+                {
+                  CCopasiMessage(CCopasiMessage::WARNING, MCXML + 19, "MetaboliteGlyph", key);
+                }
+              else
+                {
+                  mCommon.pMetaboliteGlyph->setModelObjectKey(pMetab->getKey());
+                }
             }
 
           mCommon.pCurrentLayout->addMetaboliteGlyph(mCommon.pMetaboliteGlyph);
@@ -7119,9 +7129,14 @@ void CCopasiXMLParser::ReactionGlyphElement::start(const XML_Char *pszName, cons
             {
               CReaction * pReaction = dynamic_cast< CReaction * >(mCommon.KeyMap.get(reaction));
 
-              if (!pReaction) fatalError();
-
-              mCommon.pReactionGlyph->setModelObjectKey(pReaction->getKey());
+              if (!pReaction)
+                {
+                  CCopasiMessage(CCopasiMessage::WARNING, MCXML + 19, "ReactionGlyph" , key);
+                }
+              else
+                {
+                  mCommon.pReactionGlyph->setModelObjectKey(pReaction->getKey());
+                }
             }
 
           mCommon.pCurrentLayout->addReactionGlyph(mCommon.pReactionGlyph);
@@ -7410,11 +7425,21 @@ void CCopasiXMLParser::TextGlyphElement::start(const XML_Char *pszName, const XM
               CReaction * pR = dynamic_cast<CReaction *>(pObj);
 
               if (pME)
-                mCommon.pTextGlyph->setModelObjectKey(pME->getKey());
+                {
+                  mCommon.pTextGlyph->setModelObjectKey(pME->getKey());
+                }
               else if (pR)
-                mCommon.pTextGlyph->setModelObjectKey(pR->getKey());
+                {
+                  mCommon.pTextGlyph->setModelObjectKey(pR->getKey());
+                }
               else
-                fatalError();
+                {
+                  if (!text)
+                    {
+                      mCommon.pTextGlyph->setText("unset");
+                      CCopasiMessage(CCopasiMessage::WARNING, MCXML + 20, key);
+                    }
+                }
 
               //TODO: When we have a way to handle references to metab references, this needs to be adapted.
             }
