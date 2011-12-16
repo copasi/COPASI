@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example3/example3.cpp,v $
-//   $Revision: 1.1.6.3 $
+//   $Revision: 1.1.6.4 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/09/14 13:37:46 $
+//   $Date: 2011/12/16 07:06:51 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,6 @@
  * and run a time course simulation
  */
 
-#include <sys/time.h>
 #include <iostream>
 #include <string>
 
