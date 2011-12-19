@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/bindings.pro,v $ 
-#   $Revision: 1.11 $ 
+#   $Revision: 1.12 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2011/05/25 15:12:18 $ 
+#   $Date: 2011/12/19 16:20:20 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -49,6 +49,13 @@ contains(ENABLE_R,yes){
 contains(ENABLE_PERL,yes){
  SUBDIRS += perl
 }
+
+contains(ENABLE_CSHARP,yes){
+ SUBDIRS += csharp
+}
+
+
+src_distribution.commands = @echo "Bindings are not distributed."
 
 
 QMAKE_EXTRA_TARGETS += src_distribution

@@ -1,11 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.40 $ 
-#   $Name:  $ 
-#   $Revision: 1.40 $ 
+#   $Revision: 1.41 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2011/05/25 15:12:22 $ 
+#   $Date: 2011/12/19 16:20:20 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -48,18 +46,18 @@ contains(BUILD_OS,Linux){
          $$join(COPASI_LIBS, " -l", -l) \
          $${LIBS}
 
-  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
   !isEmpty(JAVA_HOME){
    isEmpty(JAVA_INCLUDE_PATH){
-     INCLUDEPATH += $$JAVA_HOME/include/
-     INCLUDEPATH += $$JAVA_HOME/include/linux
+     INCLUDEPATH += $${JAVA_HOME}/include/
+     INCLUDEPATH += $${JAVA_HOME}/include/linux
    }
   }
 
   !isEmpty(JAVA_INCLUDE_PATH){
-    INCLUDEPATH += $$JAVA_INCLUDE_PATH 
-    INCLUDEPATH += $$JAVA_INCLUDE_PATH/linux
+    INCLUDEPATH += $${JAVA_INCLUDE_PATH} 
+    INCLUDEPATH += $${JAVA_INCLUDE_PATH}/linux
   }
 }
 
@@ -70,7 +68,7 @@ contains(BUILD_OS, Darwin) {
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
   
-  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
     LIBS += -framework JavaVM
     LIBS += -framework QuickTime
@@ -81,134 +79,67 @@ contains(BUILD_OS, Darwin) {
     
     # make a hard link from the generated dylib file to a file with the ending
     # jnilib
-    QMAKE_PRE_LINK = nm -g $$SBML_PATH/lib/libsbml.a | grep "^[0-9]" | cut -d\" \" -f3  > unexported_symbols.list ; nm -g $$EXPAT_PATH/lib/libexpat.a | grep "^[0-9]" | cut -d\" \" -f3  >> unexported_symbols.list
+    QMAKE_PRE_LINK = nm -g $${SBML_PATH}/lib/libsbml.a | grep "^[0-9]" | cut -d\" \" -f3  > unexported_symbols.list ; nm -g $$EXPAT_PATH/lib/libexpat.a | grep "^[0-9]" | cut -d\" \" -f3  >> unexported_symbols.list
     QMAKE_POST_LINK = ln -f libCopasiJava.1.0.0.dylib libCopasiJava.jnilib 
 
   !isEmpty(JAVA_HOME){
    isEmpty(JAVA_INCLUDE_PATH){
-     INCLUDEPATH += $$JAVA_HOME/include/
+     INCLUDEPATH += $${JAVA_HOME}/include/
    }  
   }
 
   !isEmpty(JAVA_INCLUDE_PATH){
-    INCLUDEPATH += $$JAVA_INCLUDE_PATH
+    INCLUDEPATH += $${JAVA_INCLUDE_PATH}
   }
   
 
 }
 
 contains(BUILD_OS, WIN32) { 
-  LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
+  CONFIG += debug_and_release
 
-  POST_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
+  debug{
+    LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/Debug/", ../../lib/Debug/, .lib)
+  }  
+  release{
+    LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/release/", ../../lib/release/, .lib)
+  }  
+
+  debug{
+    PRE_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/Debug/", ../../lib/Debug/, .lib)
+  }
+
+  release{
+    PRE_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/release/", ../../lib/release/, .lib)
+  }
 
   CONFIG -= staticlib
   CONFIG += dll
   CONFIG += embed_manifest_dll
   LIBS += delayimp.lib
 
-  QMAKE_POST_LINK = mt.exe -manifest $(TARGET).manifest -outputresource:$(TARGET);2
+
+  #debug: SUBDIR = debug
+  #release: SUBDIR = release
+
+  #QMAKE_POST_LINK = mt.exe -manifest $${SUBDIR}/$(TARGET).manifest -outputresource:$${SUBDIR}/$(TARGET);2
 
   !isEmpty(JAVA_HOME){
    isEmpty(JAVA_INCLUDE_PATH){
-     INCLUDEPATH += $$JAVA_HOME\include\
-     INCLUDEPATH += $$JAVA_HOME\include\win32
+     INCLUDEPATH += $${JAVA_HOME}\\include
+     INCLUDEPATH += $${JAVA_HOME}\\include\\win32
    }  
   }
 
   !isEmpty(JAVA_INCLUDE_PATH){
-    INCLUDEPATH += $$JAVA_INCLUDE_PATH
-    INCLUDEPATH += $$JAVA_INCLUDE_PATH\win32
+    INCLUDEPATH += $${JAVA_INCLUDE_PATH}
+    INCLUDEPATH += $${JAVA_INCLUDE_PATH}\\win32
   }
   
 }
 
+include(../common/swig_files.pri)
 
-SWIG_INTERFACE_FILES=../swig/CChemEq.i \
-                     ../swig/CChemEqElement.i \
-                     ../swig/CCompartment.i \
-                     ../swig/CCopasiContainer.i \
-                     ../swig/CCopasiDataModel.i \
-                     ../swig/CCopasiException.i \
-		     ../swig/CCopasiMessage.i \
-		     ../swig/messages.i \
-                     ../swig/CCopasiMethod.i \
-                     ../swig/CCopasiObject.i \
-                     ../swig/CCopasiObjectReference.i \
-                     ../swig/CCopasiObjectName.i \
-                     ../swig/CCopasiParameter.i \
-                     ../swig/CCopasiParameterGroup.i \
-                     ../swig/CCopasiProblem.i \
-                     ../swig/CCopasiRootContainer.i \
-                     ../swig/CCopasiStaticString.i \
-                     ../swig/CCopasiTask.i \
-                     ../swig/CCopasiVector.i \
-                     ../swig/CEvaluationTree.i \
-                     ../swig/CExpression.i \
-                     ../swig/CFunction.i \
-                     ../swig/CCallParameters.i \
-                     ../swig/CFunctionDB.i \
-                     ../swig/CFunctionParameter.i \
-                     ../swig/CFunctionParameters.i \
-                     ../swig/CKeyFactory.i \
-                     ../swig/CMatrix.i \
-                     ../swig/CMetab.i \
-                     ../swig/CModel.i \
-                     ../swig/CModelValue.i \
-                     ../swig/CMoiety.i \
-		     ../swig/CNewtonMethod.i \
-                     ../swig/COutputAssistant.i \
-                     ../swig/COutputHandler.i \
-                     ../swig/CRandom.i \
-                     ../swig/CReaction.i \
-                     ../swig/CReport.i \
-                     ../swig/CReportDefinition.i \
-                     ../swig/CReportDefinitionVector.i \
-       		     ../swig/CScanMethod.i \
-		     ../swig/CScanProblem.i \
-		     ../swig/CScanTask.i \
-                     ../swig/CState.i \
-       		     ../swig/CSteadyStateMethod.i \
-		     ../swig/CSteadyStateProblem.i \
-		     ../swig/CSteadyStateTask.i \
-                     ../swig/CTimeSeries.i \
-                     ../swig/CTrajectoryMethod.i \
-                     ../swig/CTrajectoryProblem.i \
-                     ../swig/CTrajectoryTask.i \
-                     ../swig/CVersion.i \
-                     ../swig/CLyapMethod.i \
-                     ../swig/CLyapProblem.i \
-                     ../swig/CLyapTask.i \
-                     ../swig/COptItem.i \
-                     ../swig/COptMethod.i \
-                     ../swig/COptProblem.i \
-                     ../swig/COptTask.i \
-                     ../swig/CVector.i \
-                     ../swig/CFitMethod.i \
-                     ../swig/CFitProblem.i \
-                     ../swig/CFitTask.i \
-                     ../swig/CEvent.i \
-                     ../swig/CExperimentFileInfo.i \
-                     ../swig/CExperiment.i \
-                     ../swig/CExperimentSet.i \
-                     ../swig/CExperimentObjectMap.i \
-                     ../swig/CFitItem.i \
-                     ../swig/compare_utilities.i \
-                     ../swig/copasi.i \
-                     ../swig/CCopasiArray.i \
-                     ../swig/CLBase.i \
-                     ../swig/CLCurve.i \
-                     ../swig/CLGlyphs.i \
-                     ../swig/CLGraphicalObject.i \
-                     ../swig/CLReactionGlyph.i \
-                     ../swig/CLayout.i \
-                     ../swig/CListOfLayouts.i \
-                     ../swig/CAnnotation.i \
-                     ../swig/CBiologicalDescription.i \
-                     ../swig/CModelMIRIAMInfo.i \
-                     ../swig/CCreator.i \
-                     ../swig/CModified.i \
-                     ../swig/CReference.i
 
 
 #DISTFILE   = $$SWIG_INTERFACE_FILES
@@ -235,42 +166,79 @@ isEmpty(SWIG_PATH){
     # check if swig is there and create a target to run it to create
     # copasi_wrapper.cpp
     contains(BUILD_OS, WIN32){
-        !exists($$SWIG_PATH/swig.exe){
-        error(Unable to find swig excecutable in $$SWIG_PATH. Please use --with-swig=PATH to specify the path where PATH/swig.exe is located.) 
+        !exists($${SWIG_PATH}\\swig.exe){
+        error(Unable to find swig excecutable in $${SWIG_PATH}. Please use --with-swig=PATH to specify the path where PATH/swig.exe is located.) 
          }
     }
     !contains(BUILD_OS, WIN32){
-      !exists($$SWIG_PATH/bin/swig){
-        error(Unable to find swig excecutable in $$SWIG_PATH/bin/. Please use --with-swig=PATH to specify the path where PATH/bin/swig is located.) 
+      !exists($${SWIG_PATH}/bin/swig){
+        error(Unable to find swig excecutable in $${SWIG_PATH}/bin/. Please use --with-swig=PATH to specify the path where PATH/bin/swig is located.) 
       }
     }
 
     DEFINE_COMMANDLINE = $$join(DEFINES," -D",-D)
-    contains(BUILD_OS, WIN32){
-      wrapper_source.target = copasi_wrapper.cpp
-      wrapper_source.depends = $$SWIG_INTERFACE_FILES java.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) copasi_wrapper.cpp && $(DEL_FILE) java_files\org\COPASI\*.java && $(DEL_FILE) java_files\org\COPASI\*.class && $(DEL_FILE) gui\org\COPASI\gui\*.class && $$SWIG_PATH\swig.exe $$DEFINE_COMMANDLINE -I..\.. -c++ -java -o $$wrapper_source.target -package org.COPASI -outdir java_files\org\COPASI\  java.i && cd java_files && $$JAVA_HOME\bin\javac.exe -classpath . -d . org\COPASI\*.java  && cd .. && $$JAVA_HOME\bin\jar.exe cvf copasi.jar -C java_files .\org && cd gui && $$JAVA_HOME\bin\javac.exe -classpath .;..\copasi.jar -d . org\COPASI\gui\*.java && $$JAVA_HOME\bin\jar.exe cvf ..\copasi_gui.jar -C . org\COPASI\gui\*.class org\COPASI\gui\*.java
-      QMAKE_EXTRA_WIN_TARGETS += wrapper_source
-      #PRE_POST_TARGETDEPS += $${COPASI_LIBS_SE}
 
+    debug{
+      JAVAC_DEBUG_OPTIONS="-g"
+    }
+    
+    release{
+      JAVAC_DEBUG_OPTIONS=""
+    }
+
+    contains(BUILD_OS, WIN32){
+      # since the wrapper file is in a subdirectory, we need to add 
+      # the project directory to the include path
+      INCLUDEPATH += .
+
+      JAVA_FILE_PATH = "."
+
+      debug{
+        JAVA_FILE_PATH = debug
+        wrapper_source.target = "debug\\copasi_wrapper.cpp"
+      }	
+      release{
+        JAVA_FILE_PATH = release
+        wrapper_source.target = "release\\copasi_wrapper.cpp"
+      }
+
+      # we force the rebuild of the wrapper sources
+      wrapper_source.depends = FORCE
+
+      # using the -C switch with jar from JDK 1.6 seems to lead to errors, so I am switching paths explicitely
+      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} & $(MKDIR) $${JAVA_FILE_PATH}\\java_files\\org\\COPASI & $(DEL_FILE) $${JAVA_FILE_PATH}\\java_files\\org\\COPASI\\*.java & $(DEL_FILE) $${JAVA_FILE_PATH}\\java_files\\org\\COPASI\\*.class & $(DEL_FILE) gui\\org\\COPASI\\gui\\*.class & $${SWIG_PATH}\\swig.exe $${DEFINE_COMMANDLINE} -I..\\.. -c++ -java -o $${wrapper_source.target} -package org.COPASI -outdir $${JAVA_FILE_PATH}\\java_files\\org\\COPASI  java.i  & $${JAVA_HOME}\\bin\\javac.exe $${JAVAC_DEBUG_OPTIONS} -classpath .\\$${JAVA_FILE_PATH}\\java_files -d .\\$${JAVA_FILE_PATH}\\java_files .\\$${JAVA_FILE_PATH}\\java_files\\org\\COPASI\\*.java & cd .\\$${JAVA_FILE_PATH}\java_files & $${JAVA_HOME}\\bin\\jar.exe cvf ..\\copasi.jar org\\COPASI\\*.java org\\COPASI\\*.class & cd ..\..\gui & $${JAVA_HOME}\\bin\\javac.exe $${JAVAC_DEBUG_OPTIONS} -classpath .;..\\$${JAVA_FILE_PATH}\\copasi.jar -d . .\\org\\COPASI\\gui\\*.java & $${JAVA_HOME}\\bin\\jar.exe cvf ..\\$${JAVA_FILE_PATH}\\copasi_gui.jar org\\COPASI\\gui\\*.java org\\COPASI\\gui\\*.class & cd .. 
+      
+      QMAKE_EXTRA_TARGETS += wrapper_source
+
+      QMAKE_CLEAN += .\\debug\\copasi_wrapper.cpp
+      QMAKE_CLEAN += .\\debug\\copasi.jar 
+      QMAKE_CLEAN += .\\debug\\copasi_gui.jar
+      QMAKE_CLEAN += .\\debug\\java_files\\org\\COPASI\\*.java
+      QMAKE_CLEAN += .\\debug\\java_files\\org\\COPASI\\*.class
+      QMAKE_CLEAN += .\\release\\copasi_wrapper.cpp
+      QMAKE_CLEAN += .\\release\\copasi.jar 
+      QMAKE_CLEAN += .\\release\\copasi_gui.jar
+      QMAKE_CLEAN += .\\release\\java_files\\org\\COPASI\\*.java
+      QMAKE_CLEAN += .\\release\\java_files\\org\\COPASI\\*.class
+      QMAKE_CLEAN += .\\gui\\org\\COPASI\\gui\\*.class
     }
     !contains(BUILD_OS, WIN32){
 
       wrapper_source.target = copasi_wrapper.cpp
-      wrapper_source.depends = $$SWIG_INTERFACE_FILES java.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target; $(DEL_FILE) java_files/org/COPASI/*; $(DEL_FILE) gui/org/COPASI/gui/*.class ; mkdir -p java_files/org/COPASI ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -I../.. -c++ -java -o $$wrapper_source.target -package org.COPASI -outdir java_files/org/COPASI/  java.i; cd java_files; $$JAVA_HOME/bin/javac -classpath . -d . org/COPASI/*.java ;rm -f  copasi.jar;$$JAVA_HOME/bin/jar cf ../copasi.jar org ; cd .. ; cd  gui; $$JAVA_HOME/bin/javac -classpath ../copasi.jar:. -d . org/COPASI/gui/*.java ; $$JAVA_HOME/bin/jar cf ../copasi_gui.jar org/COPASI/gui/*.class org/COPASI/gui/*.java 
+      wrapper_source.depends = $${SWIG_INTERFACE_FILES} java.i local.cpp
+      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target}; $(DEL_FILE) java_files/org/COPASI/*; $(DEL_FILE) gui/org/COPASI/gui/*.class ; mkdir -p java_files/org/COPASI ; $${SWIG_PATH}/bin/swig $${DEFINE_COMMANDLINE} -I../.. -c++ -java -o $${wrapper_source.target} -package org.COPASI -outdir java_files/org/COPASI/  java.i; cd java_files; $${JAVA_HOME}/bin/javac $${JAVAC_DEBUG_OPTIONS} -classpath . -d . org/COPASI/*.java ;rm -f  copasi.jar;$${JAVA_HOME}/bin/jar cf ../copasi.jar org ; cd .. ; cd  gui; $${JAVA_HOME}/bin/javac $${JAVAC_DEBUG_OPTIONS} -classpath ../copasi.jar:. -d . org/COPASI/gui/*.java ; $${JAVA_HOME}/bin/jar cf ../copasi_gui.jar org/COPASI/gui/*.class org/COPASI/gui/*.java 
       QMAKE_EXTRA_TARGETS += wrapper_source
-      #PRE_POST_TARGETDEPS += $${COPASI_LIBS_SE}
+      
+      QMAKE_CLEAN += copasi.jar 
+      QMAKE_CLEAN += copasi_gui.jar
+      QMAKE_CLEAN += ./java_files/org/COPASI/*.java
+      QMAKE_CLEAN += ./java_files/org/COPASI/*.class
+      QMAKE_CLEAN += ./gui/org/COPASI/gui/*.class
     }
-    PRE_POST_TARGETDEPS += copasi_wrapper.cpp
+    PRE_TARGETDEPS += $${wrapper_source.target}
 }
 
-QMAKE_CLEAN += copasi_wrapper.cpp 
-QMAKE_CLEAN += copasi.jar 
-QMAKE_CLEAN += copasi_gui.jar
-QMAKE_CLEAN += java_files/org/COPASI/*.java
-QMAKE_CLEAN += java_files/org/COPASI/*.class
 
-SOURCES += copasi_wrapper.cpp
-# under windows qmake seems to ignore the last line of progject files
+SOURCES += $${wrapper_source.target}
+# under windows qmake seems to ignore the last line of project files
 
