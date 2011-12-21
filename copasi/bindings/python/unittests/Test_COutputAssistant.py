@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_COutputAssistant.py,v $ 
-#   $Revision: 1.4 $ 
+#   $Revision: 1.4.2.1 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2010/07/16 18:55:59 $ 
+#   $Author: gauges $ 
+#   $Date: 2011/12/21 15:52:30 $ 
 # End CVS Header 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -29,19 +29,19 @@ class Test_COutputAssistant(unittest.TestCase):
     self.problem=self.task.getProblem()
 
   def test_getDefaultReportIndex(self):
-    self.assert_(self.problem!=None)
+    self.assert_(self.task!=None)
     index=COPASI.COutputAssistant.getDefaultReportIndex(self.problem)
     self.assert_(type(index)==IntType)
 
   def test_getListOfDefaultOutputDescriptions(self):
-    self.assert_(self.problem!=None)
-    outputDescriptions=COPASI.COutputAssistant.getListOfDefaultOutputDescriptions(self.problem)
+    self.assert_(self.task!=None)
+    outputDescriptions=COPASI.COutputAssistant.getListOfDefaultOutputDescriptions(self.task)
     self.assert_(type(outputDescriptions)==TupleType)
     self.assert_(len(outputDescriptions)!=0)
 
   def test_getItemName(self):
-    self.assert_(self.problem!=None)
-    outputDescriptions=COPASI.COutputAssistant.getListOfDefaultOutputDescriptions(self.problem)
+    self.assert_(self.task!=None)
+    outputDescriptions=COPASI.COutputAssistant.getListOfDefaultOutputDescriptions(self.task)
     self.assert_(type(outputDescriptions)==TupleType)
     self.assert_(len(outputDescriptions)!=0)
     itemId=outputDescriptions[0]
@@ -49,8 +49,8 @@ class Test_COutputAssistant(unittest.TestCase):
     self.assert_(type(name)==StringType)
 
   def test_getItem(self):
-    self.assert_(self.problem!=None)
-    outputDescriptions=COPASI.COutputAssistant.getListOfDefaultOutputDescriptions(self.problem)
+    self.assert_(self.task!=None)
+    outputDescriptions=COPASI.COutputAssistant.getListOfDefaultOutputDescriptions(self.task)
     self.assert_(type(outputDescriptions)==TupleType)
     self.assert_(len(outputDescriptions)!=0)
     itemId=outputDescriptions[0]
@@ -59,7 +59,7 @@ class Test_COutputAssistant(unittest.TestCase):
     self.assert_(desc.__class__==COPASI.CDefaultOutputDescription)
 
   def test_createDefaultOutput(self):
-    self.assert_(self.problem!=None)
+    self.assert_(self.task!=None)
     index=COPASI.COutputAssistant.getDefaultReportIndex(self.problem)
     object=COPASI.COutputAssistant.createDefaultOutput(index,self.task,self.datamodel,True)
     self.assert_(object!=None)
