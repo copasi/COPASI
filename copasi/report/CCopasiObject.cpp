@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.93 $
+//   $Revision: 1.94 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:48:20 $
+//   $Date: 2011/12/21 16:48:21 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -145,9 +145,32 @@ CCopasiObject::getObject(const CCopasiObjectName & cn) const
 
 bool CCopasiObject::setObjectName(const std::string & name)
 {
-  if (name == mObjectName) return true;
-
   std::string Name = (name == "") ? "No Name" : name;
+
+  if (!isStaticString())
+    {
+      // We need to ensure that the name does not include any whitespace character except ' ' (space),
+      // i.e., we convert '\t' (tab), '\n' (newline) and '\r' (return) to ' ' (space).
+      std::string::iterator it = Name.begin();
+      std::string::iterator end = Name.end();
+
+      for (; it != end; ++it)
+        {
+          switch (*it)
+            {
+              case '\t':
+              case '\n':
+              case '\r':
+                *it = ' ';
+                break;
+
+              default:
+                break;
+            }
+        }
+    }
+
+  if (Name == mObjectName) return true;
 
   if (mpObjectParent &&
       mpObjectParent->isNameVector() &&
