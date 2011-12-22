@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.h,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:33:11 $
+//   $Date: 2011/12/22 19:52:00 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,11 +38,7 @@ public:
     SCAN_REPEAT = 0,
     SCAN_LINEAR,
     SCAN_RANDOM,
-    SCAN_BREAK,
-    SD_UNIFORM,
-    SD_GAUSS,
-    SD_BOLTZ,
-    SD_REGULAR
+    SCAN_BREAK
   };
 
 private:
@@ -108,9 +104,11 @@ public:
   const CCopasiParameterGroup* getScanItem(size_t index) const;
   CCopasiParameterGroup* getScanItem(size_t index);
 
-  CScanProblem::Type getScanItemType(size_t index);
+  CCopasiParameterGroup* addScanItem(CScanProblem::Type type, size_t steps = 5, const CCopasiObject* obj = NULL);
 
-  CCopasiParameterGroup* createScanItem(CScanProblem::Type type, size_t steps = 5, const CCopasiObject* obj = NULL);
+  bool removeScanItem(const size_t & index);
+
+  static CCopasiParameterGroup* createScanItem(CScanProblem::Type type, size_t steps = 5, const CCopasiObject* obj = NULL);
 
   void clearScanItems();
 

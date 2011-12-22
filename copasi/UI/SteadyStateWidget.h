@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.h,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:39:40 $
+//   $Date: 2011/12/22 19:51:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,34 +25,9 @@
 
 #include "copasi.h"
 
-#include "ui_SteadyStateWidget.h"
+#include "copasi/UI/ui_SteadyStateWidget.h"
 
-//#include <QtCore/QVariant>
-//#include <qwidget.h>
-#include "UI/TaskWidget.h"
-//Added by qt3to4:
-/*
-#include <Q3GridLayout>
-#include <Q3Frame>
-#include <Q3VBoxLayout>
- */
-#include <QGridLayout>
-#include <QFrame>
-#include <QVBoxLayout>
-
-class QCheckBox;
-//class Q3Frame;
-class Q3GridLayout;
-
-//class QLabel;
-//class QLineEdit;
-//class QPushButton;
-//class QRadioButton;
-//class QTable;
-//class CSteadyStateTask;
-//class CSteadyStateProblem;
-//class CSteadyStateMethod;
-//class CModel;
+#include "copasi/UI/TaskWidget.h"
 
 class SteadyStateWidget : public TaskWidget, public Ui::SteadyStateWidget
 {
@@ -65,7 +40,6 @@ public:
   virtual bool runTask();
 
 protected slots:
-  //virtual void parameterValueChanged();
   virtual void taskJacobianToggled();
 
 protected:
@@ -75,18 +49,7 @@ protected:
 
 
   virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
-  /*
-      //QFrame* line_ss;
-  //    Q3VBoxLayout* SteadyStateWidgetLayout;
-      QVBoxLayout* SteadyStateWidgetLayout;
-      QCheckBox* taskJacobian;
-      QCheckBox* taskStability;
 
-      QGridLayout * mpLayoutProblem;
-      QFrame* line1;
-      //QLabel* parameterValueLabel;
-      //QTable* parameterTable;
-  */
 private:
   void init();
 

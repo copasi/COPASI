@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetRandom.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:17 $
+//   $Date: 2011/12/22 19:51:57 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,26 +19,29 @@
 #ifndef CSCANWIDGETRANDOM_H
 #define CSCANWIDGETRANDOM_H
 
-#include "ui_CScanWidgetRandom.h"
+#include "copasi/UI/ui_CScanWidgetRandom.h"
+#include "copasi/UI/CScanItemData.h"
 
-#include "utilities/CCopasiParameterGroup.h"
-#include "scan/CScanProblem.h"
+class CCopasiParameterGroup;
 
-class CScanWidgetRandom : public QWidget, public Ui::CScanWidgetRandom
+class CScanWidgetRandom : public QWidget, public CScanItemData, public Ui::CScanWidgetRandom
 {
   Q_OBJECT
 
 public:
-  CScanWidgetRandom(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
-  ~CScanWidgetRandom();
+  CScanWidgetRandom(QWidget * parent = 0);
 
-  virtual bool initFromScanItem(CCopasiParameterGroup * pg, const CModel * model);
-  virtual bool saveToScanItem(CScanProblem * pg) const;
+  CScanWidgetRandom(const CScanWidgetRandom & src, QWidget * parent = 0);
+
+  virtual ~CScanWidgetRandom();
+
+  virtual void load(const CCopasiParameterGroup * pItem);
+
+  virtual bool save(CCopasiParameterGroup * pItem) const;
 
   void initFromObject(const CCopasiObject *obj);
 
 protected:
-  const CModel* mpModel;
   const CCopasiObject* mpObject;
 
 protected slots:

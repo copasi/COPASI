@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.218 $
+//   $Revision: 1.219 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:11 $
+//   $Author: shoops $
+//   $Date: 2011/12/22 19:51:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -168,7 +168,7 @@ bool ScanWidget::loadTask()
 
   for (i = 0; i < imax; ++i)
     {
-      void* pTmp;
+      void * pTmp;
 
       if (!(pTmp = scanProblem->getScanItem(i)->getValue("Type").pVOID)) return false;
 
@@ -179,36 +179,30 @@ bool ScanWidget::loadTask()
             //+++
           case CScanProblem::SCAN_LINEAR:
             tmp1 = new CScanWidgetScan(scrollview);
-            tmp1->initFromScanItem(scanProblem->getScanItem(i), pDataModel->getModel());
+            tmp1->load(scanProblem->getScanItem(i));
             scrollview->addWidget(tmp1);
             break;
 
           case CScanProblem::SCAN_REPEAT:
             tmp2 = new CScanWidgetRepeat(scrollview);
-            tmp2->initFromScanItem(scanProblem->getScanItem(i));
+            tmp2->load(scanProblem->getScanItem(i));
             scrollview->addWidget(tmp2);
             break;
 
           case CScanProblem::SCAN_RANDOM:
             tmp3 = new CScanWidgetRandom(scrollview);
-            tmp3->initFromScanItem(scanProblem->getScanItem(i), pDataModel->getModel());
+            tmp3->load(scanProblem->getScanItem(i));
             scrollview->addWidget(tmp3);
             break;
 
-            /*case CScanProblem::SCAN_BREAK:
-              tmp4 = new CScanWidgetBreak(scrollview);
-              tmp4->initFromScanItem(scanProblem->getScanItem(i));
-              scrollview->addWidget(tmp4);
-              break;*/
-
           default:
-            ;
+            break;
         }
     }
 
   // the widget for the subtask
   CScanWidgetTask* tmpT = new CScanWidgetTask(scrollview);
-  tmpT->initFromScanProblem(scanProblem, pDataModel->getModel());
+  tmpT->load(scanProblem);
   scrollview->addWidget(tmpT, false); //false: no control buttons (up/down/del)
 
   mChanged = false;
@@ -230,30 +224,41 @@ bool ScanWidget::slotAddItem()
 
   switch (intType)
     {
-        //+++
       case 0:
         type = CScanProblem::SCAN_LINEAR;
         break;
+
       case 1:
         type = CScanProblem::SCAN_REPEAT;
         break;
+
       case 2:
         type = CScanProblem::SCAN_RANDOM;
         break;
-        /*case 3:
-          type = CScanProblem::SCAN_BREAK;
-          break;*/
+
       default:
         type = CScanProblem::SCAN_LINEAR;
+        break;
     }
-
-  //create item to get the default values
-  CScanProblem* tmpProblem = new CScanProblem();
-  CCopasiParameterGroup* tmpItem = tmpProblem->createScanItem(type, 10);
 
   switch (type)
     {
-        //+++
+      case CScanProblem::SCAN_REPEAT:
+      {
+        tmp2 = new CScanWidgetRepeat(scrollview);
+
+        //create item to get the default values
+        CCopasiParameterGroup* pItem = CScanProblem::createScanItem(type, 10);
+        tmp2->load(pItem);
+        pdelete(pItem);
+
+        scrollview->insertWidget(tmp2);
+        totalRows = scrollview->rowCount();
+        tmp2->lineEditNumber->setFocus();
+
+      }
+      break;
+
       case CScanProblem::SCAN_LINEAR:
       {
         CQSimpleSelectionTree::ObjectClasses Classes = CQSimpleSelectionTree::InitialTime |
@@ -270,22 +275,12 @@ bool ScanWidget::slotAddItem()
             tmp1 = new CScanWidgetScan(scrollview);
             tmp1->initFromObject(*it);
             scrollview->insertWidget(tmp1);
-            totalRows = scrollview->numRows();
-            scrollview->ensureCellVisible(totalRows - 1, 0);
+            totalRows = scrollview->rowCount();
             tmp1->lineEditMin->setFocus();
           }
 
         break;
       }
-
-      case CScanProblem::SCAN_REPEAT:
-        tmp2 = new CScanWidgetRepeat(scrollview);
-        tmp2->initFromScanItem(tmpItem);
-        scrollview->insertWidget(tmp2);
-        totalRows = scrollview->numRows();
-        scrollview->ensureCellVisible(totalRows - 1, 0);
-        tmp2->lineEditNumber->setFocus();
-        break;
 
       case CScanProblem::SCAN_RANDOM:
       {
@@ -303,25 +298,16 @@ bool ScanWidget::slotAddItem()
             tmp3 = new CScanWidgetRandom(scrollview);
             tmp3->initFromObject(*it);
             scrollview->insertWidget(tmp3);
-            totalRows = scrollview->numRows();
-            scrollview->ensureCellVisible(totalRows - 1, 0);
+            totalRows = scrollview->rowCount();
             tmp3->lineEditMin->setFocus();
           }
 
         break;
       }
 
-      /*case CScanProblem::SCAN_BREAK:
-        tmp4 = new CScanWidgetBreak(scrollview);
-        tmp4->initFromScanItem(tmpItem);
-        scrollview->insertWidget(tmp4);
-        break;*/
-
       default:
-        ;
+        break;
     }
-
-  if (tmpProblem) delete tmpProblem;
 
   return true;
 }
@@ -339,47 +325,71 @@ bool ScanWidget::saveTask()
 
   if (!scanProblem) return false;
 
-  scanProblem->clearScanItems();
+  const std::vector< QWidget * > & widgetList = scrollview->getWidgetList();
 
-  const std::vector<QWidget*> & widgetList = scrollview->getWidgetList();
+  size_t newSize = widgetList.size() - 1; // The last widget is reserved for the subtask.
+  size_t oldSize = scanProblem->getNumberOfScanItems();
 
-  size_t i, imax = widgetList.size();
+  size_t i, imax = std::min(newSize, oldSize);
+
+  mChanged = false;
 
   for (i = 0; i < imax; ++i)
     {
-      //+++
+      QWidget * pWidget = widgetList[i];
 
-      // item: scan parameter
-      const CScanWidgetScan* tmp1 = dynamic_cast<CScanWidgetScan*>(widgetList[i]);
+      if (pWidget->objectName() == "CScanWidgetScan")
+        {
+          mChanged |= static_cast< CScanWidgetScan * >(pWidget)->save(scanProblem->getScanItem(i));
+        }
+      else if (pWidget->objectName() == "CScanWidgetRandom")
+        {
+          mChanged |= static_cast< CScanWidgetRandom * >(pWidget)->save(scanProblem->getScanItem(i));
+        }
+      else if (pWidget->objectName() == "CScanWidgetRepeat")
+        {
+          mChanged |= static_cast< CScanWidgetRepeat * >(pWidget)->save(scanProblem->getScanItem(i));
+        }
+    }
 
-      if (tmp1) {tmp1->saveToScanItem(scanProblem); continue;}
+  for (; i < newSize; ++i)
+    {
+      mChanged = true;
+      QWidget * pWidget = widgetList[i];
+      CCopasiParameterGroup * pItem = scanProblem->addScanItem(CScanProblem::SCAN_LINEAR);
 
-      // item: repeat
-      const CScanWidgetRepeat* tmp2 = dynamic_cast<CScanWidgetRepeat*>(widgetList[i]);
+      if (pWidget->objectName() == "CScanWidgetScan")
+        {
+          static_cast< CScanWidgetScan * >(pWidget)->save(pItem);
+        }
+      else if (pWidget->objectName() == "CScanWidgetRandom")
+        {
+          static_cast< CScanWidgetRandom * >(pWidget)->save(pItem);
+        }
+      else if (pWidget->objectName() == "CScanWidgetRepeat")
+        {
+          static_cast< CScanWidgetRepeat * >(pWidget)->save(pItem);
+        }
+    }
 
-      if (tmp2) {tmp2->saveToScanItem(scanProblem); continue;}
+  for (; i < oldSize; ++i)
+    {
+      mChanged = true;
+      scanProblem->removeScanItem(newSize);
+    }
 
-      // item: random
-      const CScanWidgetRandom* tmp3 = dynamic_cast<CScanWidgetRandom*>(widgetList[i]);
+  // the subtask
+  const CScanWidgetTask * tmpT = dynamic_cast<CScanWidgetTask*>(widgetList[newSize]);
 
-      if (tmp3) {tmp3->saveToScanItem(scanProblem); continue;}
-
-      // item: break
-      /*const CScanWidgetBreak* tmp4 = dynamic_cast<CScanWidgetBreak*>(widgetList[i]);
-      if (tmp4) {tmp4->saveToScanItem(scanProblem); continue;}*/
-
-      // the subtask
-      const CScanWidgetTask* tmpT = dynamic_cast<CScanWidgetTask*>(widgetList[i]);
-
-      if (tmpT) {tmpT->saveToScanProblem(scanProblem); continue;}
-
-      return false;
+  if (tmpT != NULL)
+    {
+      mChanged |= tmpT->save(scanProblem);
     }
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
-  // However we do not check whether the scan item are changed we delete all
+  // However we do not check whether the scan item are mChanged we delete all
   // and create them new.
-  if (true)
+  if (mChanged)
     {
       if (mpDataModel != NULL)
         {

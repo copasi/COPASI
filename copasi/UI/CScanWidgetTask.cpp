@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetTask.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:10 $
+//   $Author: shoops $
+//   $Date: 2011/12/22 19:51:58 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,18 +16,17 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include <QtGui>
+#include <QtGui/QValidator>
+
+#include <iostream>
 
 #include "copasi.h"
 
 #include "CScanWidgetTask.h"
+#include "CCopasiSelectionDialog.h"
 
-#include <iostream>
-
-#include <qvalidator.h>
-
-#include "UI/CCopasiSelectionDialog.h"
 #include "utilities/CCopasiParameterGroup.h"
+#include "report/CCopasiObjectName.h"
 
 /*
  *  Constructs a CScanWidgetTask as a child of 'parent', with the
@@ -37,7 +36,7 @@ CScanWidgetTask::CScanWidgetTask(QWidget* parent, const char* name, Qt::WindowFl
     : QWidget(parent, f)
 {
   setObjectName(QString::fromUtf8(name));
-  ui.setupUi(this);
+  setupUi(this);
 }
 
 /*
@@ -51,13 +50,9 @@ CScanWidgetTask::~CScanWidgetTask()
 void CScanWidgetTask::init()
 {}
 
-#include "report/CCopasiObjectName.h"
-bool CScanWidgetTask::initFromScanProblem(CScanProblem * pg, const CModel* model)
+// virtual
+void CScanWidgetTask::load(const CScanProblem * pg)
 {
-  if (!model) return false;
-
-  mpModel = model;
-
   CCopasiTask::Type type = pg->getSubtask();
   int n;
 
@@ -87,58 +82,78 @@ bool CScanWidgetTask::initFromScanProblem(CScanProblem * pg, const CModel* model
       case CCopasiTask::lna:
         n = 7;
         break;
-      default :
+      default:
         n = 0;
+        break;
     }
 
-  ui.comboType->setCurrentIndex(n);
+  comboType->setCurrentIndex(n);
 
-  ui.checkInitialConditions->setChecked(!(pg->getAdjustInitialConditions()));
+  checkInitialConditions->setChecked(!(pg->getAdjustInitialConditions()));
 
-  ui.checkOutput->setChecked(pg->getOutputInSubtask());
+  checkOutput->setChecked(pg->getOutputInSubtask());
 
-  return true;
+  return;
 }
 
-bool CScanWidgetTask::saveToScanProblem(CScanProblem * pg) const
+// virtual
+bool CScanWidgetTask::save(CScanProblem * pg) const
 {
-  int type = ui.comboType->currentIndex();
+  bool changed = false;
+  int type = comboType->currentIndex();
+
+  CCopasiTask::Type Type;
 
   switch (type)
     {
       case 0:
-        pg->setSubtask(CCopasiTask::steadyState);
+        Type = CCopasiTask::steadyState;
         break;
       case 1:
-        pg->setSubtask(CCopasiTask::timeCourse);
+        Type = CCopasiTask::timeCourse;
         break;
       case 2:
-        pg->setSubtask(CCopasiTask::mca);
+        Type = CCopasiTask::mca;
         break;
       case 3:
-        pg->setSubtask(CCopasiTask::lyap);
+        Type = CCopasiTask::lyap;
         break;
       case 4:
-        pg->setSubtask(CCopasiTask::optimization);
+        Type = CCopasiTask::optimization;
         break;
       case 5:
-        pg->setSubtask(CCopasiTask::parameterFitting);
+        Type = CCopasiTask::parameterFitting;
         break;
       case 6:
-        pg->setSubtask(CCopasiTask::sens);
+        Type = CCopasiTask::sens;
         break;
       case 7:
-        pg->setSubtask(CCopasiTask::lna);
+        Type = CCopasiTask::lna;
         break;
       default :
-        pg->setSubtask(CCopasiTask::steadyState);
+        Type = CCopasiTask::steadyState;
+        break;
     }
 
-  pg->setAdjustInitialConditions(!(ui.checkInitialConditions->isChecked()));
+  if (Type != pg->getSubtask())
+    {
+      pg->setSubtask(Type);
+      changed = true;
+    }
 
-  pg->setOutputInSubtask(ui.checkOutput->isChecked());
+  if (pg->getAdjustInitialConditions() == checkInitialConditions->isChecked())
+    {
+      pg->setAdjustInitialConditions(!(checkInitialConditions->isChecked()));
+      changed = true;
+    }
 
-  return true;
+  if (pg->getOutputInSubtask() != checkOutput->isChecked())
+    {
+      pg->setOutputInSubtask(checkOutput->isChecked());
+      changed = true;
+    }
+
+  return changed;
 }
 
 void CScanWidgetTask::typeChanged(int n)
@@ -146,11 +161,11 @@ void CScanWidgetTask::typeChanged(int n)
   switch (n)
     {
       case 1:
-        ui.checkOutput->setChecked(true);
+        checkOutput->setChecked(true);
         break;
 
       default:
-        ui.checkOutput->setChecked(false);
+        checkOutput->setChecked(false);
         break;
     }
 }

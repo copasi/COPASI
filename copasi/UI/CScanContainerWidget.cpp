@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanContainerWidget.cpp,v $
-$Revision: 1.12 $
+$Revision: 1.13 $
 $Name:  $
 $Author: shoops $
-$Date: 2011/03/07 19:37:48 $
+$Date: 2011/12/22 19:51:57 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,29 +22,32 @@ End CVS Header */
 #include <QResizeEvent>
 
 #include "CScanContainerWidget.h"
-
+#include "CScanWidgetScan.h"
+#include "CScanWidgetRepeat.h"
+#include "CScanWidgetRandom.h"
 #include "CUpDownSubwidget.h"
 
-CScanContainerWidget::CScanContainerWidget(QWidget* parent, const char* name)
-    : Q3Table(parent, name)
+CScanContainerWidget::CScanContainerWidget(QWidget * parent, const char * name) :
+    QTableWidget(parent)
 {
   if (!name)
     setName("CScanContainerWidget");
 
+  horizontalHeader()->setStretchLastSection(true);
+
   horizontalHeader()->hide();
   verticalHeader()->hide();
-  setTopMargin(0);
-  setLeftMargin(0);
 
   setShowGrid(false);
 
-  setNumCols(2);
+  setColumnCount(2);
+  setAutoScroll(true);
 
-  setSelectionMode(Q3Table::NoSelection);
-  setFocusStyle(Q3Table::FollowStyle);
+  setSelectionMode(QAbstractItemView::NoSelection);
+  // setFocusStyle(Q3Table::FollowStyle);
 
   mCopyEnabled = false;
-  //TODO maybe reemplement paintFocus() to make the focus completely invisible
+  //TODO maybe reimplement paintFocus() to make the focus completely invisible
   // (it is already invisible most of the time)
 }
 
@@ -53,10 +56,10 @@ CScanContainerWidget::~CScanContainerWidget()
 
 std::vector<QWidget*> CScanContainerWidget::getWidgetList() const
 {
-  std::vector<QWidget*> ret;
+  std::vector< QWidget * > ret;
   QWidget* tmpWidget;
 
-  C_INT32 i, imax = numRows();
+  int i, imax = rowCount();
 
   for (i = 0; i < imax; ++i)
     {
@@ -71,16 +74,14 @@ std::vector<QWidget*> CScanContainerWidget::getWidgetList() const
 
 void CScanContainerWidget::clearWidgetList()
 {
-  setNumRows(0);
+  setRowCount(0);
 }
 
-void CScanContainerWidget::addWidget(QWidget* widget, bool controls /*=true*/)
+void CScanContainerWidget::addWidget(QWidget * widget, bool controls)
 {
-  //mWL.push_back(widget);
+  setRowCount(rowCount() + 1);
 
-  setNumRows(numRows() + 1);
-
-  unsigned C_INT32 i = numRows() - 1;
+  int i = rowCount() - 1;
 
   if (controls) //add control widget
     {
@@ -104,22 +105,22 @@ void CScanContainerWidget::addWidget(QWidget* widget, bool controls /*=true*/)
     }
 
   setCellWidget(i, 1, widget);
-  adjustRow(i);
 
-  adjustColumn(0);
-  setColumnStretchable(1, true);
-
-//  updateTable();
-  qApp->processEvents();
+  updateIndices();
+  updateTable();
 }
 
 void CScanContainerWidget::insertWidget(QWidget* widget, int row)
 {
-  //setNumRows(numRows()+1);
   if (row == -1)
-    {if (numRows() == 0) row = 0; else row = numRows() - 1;}
+    {
+      if (rowCount() == 0)
+        row = 0;
+      else
+        row = rowCount() - 1;
+    }
 
-  insertRows(row);
+  insertRow(row);
 
   unsigned C_INT32 i = row;
 
@@ -127,77 +128,64 @@ void CScanContainerWidget::insertWidget(QWidget* widget, int row)
     {
       CUpDownSubwidget * tmpUD = new CUpDownSubwidget(this);
       tmpUD->enableCopy(mCopyEnabled);
-      //tmpUD->setIndex(i, true);
+
       connect(tmpUD, SIGNAL(del(int)), this, SLOT(slotDel(int)));
       connect(tmpUD, SIGNAL(up(int)), this, SLOT(slotUp(int)));
       connect(tmpUD, SIGNAL(down(int)), this, SLOT(slotDown(int)));
       connect(tmpUD, SIGNAL(copy(int)), this, SLOT(slotCopy(int)));
-      setCellWidget(i, 0, tmpUD);
 
-      //tell the widget above that it is not the last anymore
-      /*if (i>0)
-        {
-          CUpDownSubwidget* tmpWidget = dynamic_cast<CUpDownSubwidget*>(cellWidget(i-1,0));
-          if (tmpWidget)
-            tmpWidget->setIndex(i-1, false);
-        }*/
+      setCellWidget(i, 0, tmpUD);
     }
 
   setCellWidget(i, 1, widget);
-  /*
-    adjustRow(i);
 
-    adjustColumn(0);
-    setColumnStretchable(1, true);
-  */
   updateIndices();
   updateTable();
-  qApp->processEvents();
 }
 
 void CScanContainerWidget::slotUp(int index)
 {
   if (index <= 0) return; //do nothing
 
-//  swapCells(index, 1, index - 1, 1);
   slotDown(index - 1);
-
-//  updateIndices();
-//  updateTable();
 }
 
 void CScanContainerWidget::slotDown(int index)
 {
-  if (index >= numRows() - 1) return; //do nothing
+  if (index >= rowCount() - 1) return; //do nothing
 
-//  swapCells(index, 1, index + 1, 1);
+  QWidget * pWidget = cellWidget(index, 1);
+  QWidget * pNewWidget = NULL;
 
-  insertRows(index + 2);
-  swapRows(index, index + 2);
+  if (pWidget->objectName() == "CScanWidgetScan")
+    {
+      static_cast< CScanWidgetScan * >(pWidget)->save(NULL);
+      pNewWidget = new CScanWidgetScan(*static_cast< CScanWidgetScan * >(pWidget), this);
+    }
+  else if (pWidget->objectName() == "CScanWidgetRandom")
+    {
+      static_cast< CScanWidgetRandom * >(pWidget)->save(NULL);
+      pNewWidget = new CScanWidgetRandom(*static_cast< CScanWidgetRandom * >(pWidget), this);
+    }
+  else if (pWidget->objectName() == "CScanWidgetRepeat")
+    {
+      static_cast< CScanWidgetRepeat * >(pWidget)->save(NULL);
+      pNewWidget = new CScanWidgetRepeat(*static_cast< CScanWidgetRepeat * >(pWidget), this);
+    }
 
-  updateTable();
-
-  removeRow(index);
-
-  updateIndices();
-  updateTable();
+  if (pNewWidget != NULL)
+    {
+      removeRow(index);
+      insertWidget(pNewWidget, index + 1);
+    }
 }
 
 void CScanContainerWidget::slotDel(int index)
 {
-//  clearCellWidget(index, 0);
-//  clearCellWidget(index, 1);
-  clearCell(index, 0);
-  clearCell(index, 1);
   removeRow(index);
 
-//  if (numRows() == 1) adjustColumn(0);
-
   updateIndices();
-//  setCurrentCell(0, 1);
-
   updateTable();
-//  emit itemDeleted();
 }
 
 void CScanContainerWidget::slotCopy(int index)
@@ -208,7 +196,7 @@ void CScanContainerWidget::updateIndices()
   //update the indices of the updown widgets
   CUpDownSubwidget* tmp, *tmp_last, *tmp_next;
 
-  C_INT32 i, imax = numRows();
+  C_INT32 i, imax = rowCount();
 
   for (i = 0; i < imax; ++i)
     {
@@ -228,16 +216,8 @@ void CScanContainerWidget::updateTable()
 {
   qApp->processEvents();
 
-  int i;
-
-  for (i = 0; i < numRows(); i++)
-    adjustRow(i);
-
-  adjustColumn(0);
-//  if (numRows() == 1) adjustColumn(0);
-  setColumnStretchable(1, true);
-
-  qApp->processEvents();
+  resizeRowsToContents();
+  resizeColumnsToContents();
 }
 
 void CScanContainerWidget::enableCopy(const bool & enable)
@@ -245,13 +225,8 @@ void CScanContainerWidget::enableCopy(const bool & enable)
 
 void CScanContainerWidget::resizeEvent(QResizeEvent *e)
 {
-  Q3Table::resizeEvent(e);
+  QTableWidget::resizeEvent(e);
 
-  int i;
-
-  for (i = 0; i < numRows(); i++)
-    adjustRow(i);
-
-  adjustColumn(0);
-  setColumnStretchable(1, true);
+  resizeRowsToContents();
+  resizeColumnsToContents();
 }

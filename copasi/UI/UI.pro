@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.257 $
+#   $Revision: 1.258 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2011/12/01 19:54:56 $
+#   $Date: 2011/12/22 19:51:58 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.257 $ $Author: shoops $ $Date: 2011/12/01 19:54:56 $
+# $Revision: 1.258 $ $Author: shoops $ $Date: 2011/12/22 19:51:58 $
 ######################################################################
 
 LIB = UI
@@ -157,6 +157,7 @@ HEADERS	+= \
   CQUpdatesWidget.h \
   CQValidator.h \
   CScanContainerWidget.h \
+  CScanItemData.h \
   CTabWidget.h \
   DataModelGUI.h \
   DataModel.txt.h \
@@ -301,6 +302,7 @@ SOURCES	+= \
   CQUpdatesWidget.cpp \
   CQValidator.cpp \
   CScanContainerWidget.cpp \
+  CScanItemData.cpp \
   CTabWidget.cpp \
   DataModelGUI.cpp \
   listviews.cpp \

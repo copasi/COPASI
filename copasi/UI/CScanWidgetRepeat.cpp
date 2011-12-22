@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetRepeat.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:39:37 $
+//   $Date: 2011/12/22 19:51:57 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,29 +16,35 @@
 // and The University of Manchester.
 // All rights reserved.
 
+#include <QtGui/QValidator>
+
 #include "copasi.h"
 
 #include "CScanWidgetRepeat.h"
+#include "qtUtilities.h"
+#include "CCopasiSelectionDialog.h"
 
-//#include <QtCore/QVariant>
-//#include "CScanWidgetRepeat.ui.h"
-
-#include <qvalidator.h>
-
-#include "UI/qtUtilities.h"
-#include "UI/CCopasiSelectionDialog.h"
+#include "report/CCopasiObjectName.h"
 
 /*
  *  Constructs a CScanWidgetRepeat as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CScanWidgetRepeat::CScanWidgetRepeat(QWidget* parent, const char* name, Qt::WindowFlags fl)
-    : QWidget(parent, fl)
+CScanWidgetRepeat::CScanWidgetRepeat(QWidget* parent) :
+    QWidget(parent),
+    CScanItemData(CScanProblem::SCAN_REPEAT)
 {
-  setObjectName(QString::fromUtf8(name));
   setupUi(this);
-
   init();
+}
+
+CScanWidgetRepeat::CScanWidgetRepeat(const CScanWidgetRepeat & src, QWidget * parent) :
+    QWidget(parent),
+    CScanItemData(src)
+{
+  setupUi(this);
+  init();
+  load(mpData);
 }
 
 /*
@@ -54,31 +60,41 @@ void CScanWidgetRepeat::init()
   lineEditNumber->setValidator(new QIntValidator(lineEditNumber));
 }
 
-#include "report/CCopasiObjectName.h"
-bool CScanWidgetRepeat::initFromScanItem(CCopasiParameterGroup * pg)
+// virtual
+void CScanWidgetRepeat::load(const CCopasiParameterGroup * pItem)
 {
+  if (pItem == NULL) return;
+
+  *mpData = *pItem;
+
   C_INT32 * tmp;
 
-  if (!(tmp = pg->getValue("Type").pINT)) return false;
+  if (!(tmp = mpData->getValue("Type").pINT))
+    return;
 
   if (*(CScanProblem::Type *) tmp != CScanProblem::SCAN_REPEAT)
-    return false;
+    return;
 
-  if (!(tmp = pg->getValue("Number of steps").pINT)) return false;
+  if (!(tmp = mpData->getValue("Number of steps").pINT))
+    return;
 
   lineEditNumber->setText(QString::number(* tmp));
 
-  return true;
+  return;
 }
 
-bool CScanWidgetRepeat::saveToScanItem(CScanProblem * pg) const
+// virtual
+bool CScanWidgetRepeat::save(CCopasiParameterGroup * pItem) const
 {
-  CScanProblem::Type type = CScanProblem::SCAN_REPEAT;
+  mpData->setValue("Number of steps", lineEditNumber->text().toUInt());
 
-  unsigned C_INT32 steps = lineEditNumber->text().toUInt();
+  if (pItem != NULL)
+    {
+      if (*mpData == *pItem) return false;
 
-  CCopasiParameterGroup* tmp = pg->createScanItem(type, steps);
-  assert(tmp);
+      *pItem = *mpData;
+      return true;
+    }
 
-  return true;
+  return false;
 }

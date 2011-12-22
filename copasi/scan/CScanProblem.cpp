@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:33:11 $
+//   $Date: 2011/12/22 19:52:00 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -132,12 +132,23 @@ CCopasiParameterGroup* CScanProblem::getScanItem(size_t index)
 }
 
 //CScanProblem::Type CScanProblem::getScanItemType(size_t index);
+CCopasiParameterGroup* CScanProblem::addScanItem(CScanProblem::Type type, size_t steps, const CCopasiObject* obj)
+{
+  CCopasiParameterGroup * pItem = createScanItem(type, steps, obj);
+  mpScanItems->addParameter(pItem);
 
+  return pItem;
+}
+
+bool CScanProblem::removeScanItem(const size_t & index)
+{
+  return mpScanItems->removeParameter(index);
+}
+
+// static
 CCopasiParameterGroup* CScanProblem::createScanItem(CScanProblem::Type type, size_t steps, const CCopasiObject* obj)
 {
-  CCopasiParameterGroup* tmp;
-  mpScanItems->addGroup("ScanItem");
-  tmp = (CCopasiParameterGroup*)(mpScanItems->getParameter(getNumberOfScanItems() - 1));
+  CCopasiParameterGroup * tmp = new CCopasiParameterGroup("ScanItem");
 
   //create common parameters
   tmp->addParameter("Number of steps", CCopasiParameter::UINT, (unsigned C_INT32) steps);

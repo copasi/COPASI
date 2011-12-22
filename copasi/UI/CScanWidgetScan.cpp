@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetScan.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:39:41 $
+//   $Date: 2011/12/22 19:51:58 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,30 +20,41 @@
 
 #include "CScanWidgetScan.h"
 
-//#include <QtCore/QVariant>
-//#include "CScanWidgetScan.ui.h"
-
-#include <qvalidator.h>
+#include <QtGui/QValidator>
 
 #include "UI/qtUtilities.h"
 #include "UI/CCopasiSelectionDialog.h"
-#include "report/CCopasiRootContainer.h"
-
 #include "UI/icons/Copasi16-Alpha.xpm"
+
+#include "report/CCopasiRootContainer.h"
+#include "report/CCopasiObjectName.h"
+
 
 /*
  *  Constructs a CScanWidgetScan as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CScanWidgetScan::CScanWidgetScan(QWidget* parent, const char* name, Qt::WindowFlags fl)
-    : QWidget(parent, fl)
+CScanWidgetScan::CScanWidgetScan(QWidget* parent) :
+    QWidget(parent),
+    CScanItemData(CScanProblem::SCAN_LINEAR)
 {
-  setObjectName(QString::fromUtf8(name));
   setupUi(this);
 
   buttonObject->setIcon(QPixmap(Copasi16_Alpha_xpm));
 
   init();
+}
+
+CScanWidgetScan::CScanWidgetScan(const CScanWidgetScan & src, QWidget * parent) :
+    QWidget(parent),
+    CScanItemData(src)
+{
+  setupUi(this);
+
+  buttonObject->setIcon(QPixmap(Copasi16_Alpha_xpm));
+
+  init();
+  load(mpData);
 }
 
 /*
@@ -102,27 +113,27 @@ void CScanWidgetScan::initFromObject(const CCopasiObject *obj)
     }
 }
 
-#include "report/CCopasiObjectName.h"
-bool CScanWidgetScan::initFromScanItem(CCopasiParameterGroup * pg, const CModel* model)
+// virtual
+void CScanWidgetScan::load(const CCopasiParameterGroup * pItem)
 {
-  if (!model) return false;
+  if (pItem == NULL) return;
 
-  mpModel = model;
+  *mpData = *pItem;
 
-  void* tmp;
+  void * tmp;
 
-  if (!(tmp = pg->getValue("Type").pVOID)) return false;
+  if (!(tmp = mpData->getValue("Type").pVOID)) return;
 
   CScanProblem::Type type = *(CScanProblem::Type*)tmp;
 
   if (type != CScanProblem::SCAN_LINEAR)
-    return false;
+    return;
 
-  if (!(tmp = pg->getValue("Number of steps").pVOID)) return false;
+  if (!(tmp = mpData->getValue("Number of steps").pVOID)) return;
 
   lineEditNumber->setText(QString::number(*(C_INT32*)tmp));
 
-  if (!(tmp = pg->getValue("Object").pVOID)) return false;
+  if (!(tmp = mpData->getValue("Object").pVOID)) return;
 
   std::string tmpString = *(std::string*)tmp;
 
@@ -141,33 +152,36 @@ bool CScanWidgetScan::initFromScanItem(CCopasiParameterGroup * pg, const CModel*
   else
     lineEditObject->setText("");
 
-  if (!(tmp = pg->getValue("Minimum").pVOID)) return false;
+  if (!(tmp = mpData->getValue("Minimum").pVOID)) return;
 
   lineEditMin->setText(QString::number(*(C_FLOAT64*)tmp));
 
-  if (!(tmp = pg->getValue("Maximum").pVOID)) return false;
+  if (!(tmp = mpData->getValue("Maximum").pVOID)) return;
 
   lineEditMax->setText(QString::number(*(C_FLOAT64*)tmp));
 
-  if (!(tmp = pg->getValue("log").pVOID)) return false;
+  if (!(tmp = mpData->getValue("log").pVOID)) return;
 
   checkBoxLog->setChecked(*(bool*)tmp);
 
-  return true;
+  return;
 }
 
-bool CScanWidgetScan::saveToScanItem(CScanProblem * pg) const
+// virtual
+bool CScanWidgetScan::save(CCopasiParameterGroup * pItem) const
 {
-  CScanProblem::Type type = CScanProblem::SCAN_LINEAR;
+  mpData->setValue("Number of steps", lineEditNumber->text().toUInt());
+  mpData->setValue("Minimum", lineEditMin->text().toDouble());
+  mpData->setValue("Maximum", lineEditMax->text().toDouble());
+  mpData->setValue("log", checkBoxLog->isChecked());
 
-  unsigned C_INT32 steps = lineEditNumber->text().toUInt();
+  if (pItem != NULL)
+    {
+      if (*mpData == *pItem) return false;
 
-  CCopasiParameterGroup* tmp = pg->createScanItem(type, steps, mpObject);
-  assert(tmp);
+      *pItem = *mpData;
+      return true;
+    }
 
-  tmp->setValue("Minimum", lineEditMin->text().toDouble());
-  tmp->setValue("Maximum", lineEditMax->text().toDouble());
-  tmp->setValue("log", checkBoxLog->isChecked());
-
-  return true;
+  return false;
 }

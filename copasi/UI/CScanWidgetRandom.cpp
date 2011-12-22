@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetRandom.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:09 $
+//   $Author: shoops $
+//   $Date: 2011/12/22 19:51:57 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,55 +16,45 @@
 // and The University of Manchester.
 // All rights reserved.
 
+#include <iostream>
+
+#include <QtGui/QValidator>
+
 #include "copasi.h"
 
 #include "CScanWidgetRandom.h"
-
-#include <iostream>
-
-#include <qvalidator.h>
-
-#include "UI/qtUtilities.h"
-#include "UI/CCopasiSelectionDialog.h"
-#include "UI/icons/Copasi16-Alpha.xpm"
+#include "qtUtilities.h"
+#include "CCopasiSelectionDialog.h"
+#include "icons/Copasi16-Alpha.xpm"
 
 #include "report/CCopasiRootContainer.h"
+#include "report/CCopasiObjectName.h"
 
 /*
  *  Constructs a CScanWidgetRandom as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CScanWidgetRandom::CScanWidgetRandom(QWidget* parent, const char* name, Qt::WindowFlags fl)
-    : QWidget(parent, fl)
+CScanWidgetRandom::CScanWidgetRandom(QWidget* parent) :
+    QWidget(parent),
+    CScanItemData(CScanProblem::SCAN_RANDOM)
 {
-  setObjectName(QString::fromUtf8(name));
   setupUi(this);
-
-  lineEditMax->resize(112, 22);
-  lineEditMin->resize(111, 22);
-
-//  buttonObject->setPixmap(QPixmap(":/icons/Copasi16-Alpha_xpm"));
-//  buttonObject->setPixmap(QPixmap(":/icons/Copasi.ico"));
-
-//  QImage img;
-//  img.loadFromData(":/icons/Copasi16-Alpha.xpm", sizeof(":/icons/Copasi16-Alpha.xpm"), "PNG");
-//  buttonObject->setIcon(QIcon(QPixmap::fromImage(img)));
-
-//    QIcon icon;
-//    icon.addPixmap(QPixmap(QString::fromUtf8("icons/Copasi16-Alpha.xpm")), QIcon::Normal, QIcon::Off);
-//    icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/Copasi16-Alpha.xpm")), QIcon::Normal, QIcon::Off);
-//    buttonObject->setIcon(icon);
-
-//    buttonObject->setIcon(QIcon(":/icons/copasi_icon.png"));
-//  buttonObject->setIcon(QPixmap(":/icons/Copasi16-Alpha.xpm"));
-
   buttonObject->setIcon(QPixmap(Copasi16_Alpha_xpm));
-
-//  icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/Copasi16-Alpha.xpm")), QIcon::Normal, QIcon::Off);
-
   init();
   retranslateUi(this);
 }
+
+CScanWidgetRandom::CScanWidgetRandom(const CScanWidgetRandom & src, QWidget * parent) :
+    QWidget(parent),
+    CScanItemData(src)
+{
+  setupUi(this);
+  buttonObject->setIcon(QPixmap(Copasi16_Alpha_xpm));
+  init();
+  load(mpData);
+  retranslateUi(this);
+}
+
 
 /*
  *  Destroys the object and frees any allocated resources
@@ -136,23 +126,25 @@ void CScanWidgetRandom::initFromObject(const CCopasiObject *obj)
     }
 }
 
-#include "report/CCopasiObjectName.h"
-bool CScanWidgetRandom::initFromScanItem(CCopasiParameterGroup * pg, const CModel* model)
+// virtual
+void CScanWidgetRandom::load(const CCopasiParameterGroup * pItem)
 {
-  if (!model) return false;
+  if (pItem == NULL) return;
 
-  mpModel = model;
+  *mpData = *pItem;
 
   unsigned C_INT32 * tmp;
 
-  if (!(tmp = pg->getValue("Type").pUINT)) return false;
+  if (!(tmp = mpData->getValue("Type").pUINT))
+    return;
 
   if (*(CScanProblem::Type *) tmp != CScanProblem::SCAN_RANDOM)
-    return false;
+    return;
 
   std::string *pString;
 
-  if (!(pString = pg->getValue("Object").pSTRING)) return false;
+  if (!(pString = mpData->getValue("Object").pSTRING))
+    return;
 
   if (*pString == "")
     mpObject = NULL;
@@ -169,38 +161,42 @@ bool CScanWidgetRandom::initFromScanItem(CCopasiParameterGroup * pg, const CMode
   else
     lineEditObject->setText("");
 
-  if (!(tmp = pg->getValue("Distribution type").pUINT)) return false;
+  if (!(tmp = mpData->getValue("Distribution type").pUINT))
+    return;
 
   comboBoxType->setCurrentIndex(*tmp);
   changeType();
 
-  lineEditMin->setText(getParameterValue(pg, "Minimum"));
-  lineEditMax->setText(getParameterValue(pg, "Maximum"));
+  lineEditMin->setText(getParameterValue(mpData, "Minimum"));
+  lineEditMax->setText(getParameterValue(mpData, "Maximum"));
 
   bool * pBool;
 
-  if (!(pBool = pg->getValue("log").pBOOL)) return false;
+  if (!(pBool = mpData->getValue("log").pBOOL))
+    return;
 
   checkBoxLog->setChecked(* pBool);
 
-  return true;
+  return;
 }
 
-bool CScanWidgetRandom::saveToScanItem(CScanProblem * pg) const
+// virtual
+bool CScanWidgetRandom::save(CCopasiParameterGroup * pItem) const
 {
-  CScanProblem::Type type = CScanProblem::SCAN_RANDOM;
+  mpData->setValue("Distribution type", (unsigned C_INT32) comboBoxType->currentIndex());
+  mpData->setValue("Minimum", lineEditMin->text().toDouble());
+  mpData->setValue("Maximum", lineEditMax->text().toDouble());
+  mpData->setValue("log", checkBoxLog->isChecked());
 
-  unsigned C_INT32 steps = 1;
+  if (pItem != NULL)
+    {
+      if (*mpData == *pItem) return false;
 
-  CCopasiParameterGroup* tmp = pg->createScanItem(type, steps, mpObject);
-  assert(tmp);
+      *pItem = *mpData;
+      return true;
+    }
 
-  tmp->setValue("Distribution type", (unsigned C_INT32)comboBoxType->currentIndex());
-  tmp->setValue("Minimum", lineEditMin->text().toDouble());
-  tmp->setValue("Maximum", lineEditMax->text().toDouble());
-  tmp->setValue("log", checkBoxLog->isChecked());
-
-  return true;
+  return false;
 }
 
 void CScanWidgetRandom::changeType()
