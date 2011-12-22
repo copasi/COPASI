@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanContainerWidget.cpp,v $
-$Revision: 1.13 $
+$Revision: 1.14 $
 $Name:  $
 $Author: shoops $
-$Date: 2011/12/22 19:51:57 $
+$Date: 2011/12/22 19:55:14 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,7 +44,6 @@ CScanContainerWidget::CScanContainerWidget(QWidget * parent, const char * name) 
   setAutoScroll(true);
 
   setSelectionMode(QAbstractItemView::NoSelection);
-  // setFocusStyle(Q3Table::FollowStyle);
 
   mCopyEnabled = false;
   //TODO maybe reimplement paintFocus() to make the focus completely invisible

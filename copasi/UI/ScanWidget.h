@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.h,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.65 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:09 $
+//   $Author: shoops $
+//   $Date: 2011/12/22 19:55:14 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,10 +59,6 @@ protected:
   QPushButton* buttonNewItem;
   QComboBox* comboType;
 
-  /*
-      Q3GridLayout* ScanWidgetLayout;
-      Q3HBoxLayout* Layout24;
-  */
   QGridLayout* ScanWidgetLayout;
 
 protected slots:
