@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/26 16:10:40 $
+//   $Date: 2011/12/22 19:50:39 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,12 +25,12 @@
 
 #include <string>
 
-#include "utilities/CCopasiProblem.h"
-#include "model/CObjectLists.h"
-#include "utilities/CAnnotatedMatrix.h"
+#include "copasi/utilities/CCopasiProblem.h"
+#include "copasi/model/CObjectLists.h"
+#include "copasi/utilities/CAnnotatedMatrix.h"
 
 /**
- * This class describes either one specific copasi object (represented
+ * This class describes either one specific COPASI object (represented
  * by a registered object CN internally) or a list of objects (see CObjectLists
  * class).
  */
