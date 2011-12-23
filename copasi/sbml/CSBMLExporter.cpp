@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.97 $
+//   $Revision: 1.98 $
 //   $Name:  $
 //   $Author: gauges $
-//   $Date: 2011/12/02 09:09:12 $
+//   $Date: 2011/12/23 12:32:22 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2820,6 +2820,8 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
 void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
 {
   const SBMLDocument* pOldSBMLDocument = dataModel.getCurrentSBMLDocument();
+  const CModel* pModel = dataModel.getModel();
+  assert(pModel != NULL);
 
   if (pOldSBMLDocument == NULL)
     {
@@ -2837,22 +2839,25 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
       // there might still be COPASI object that have an SBML id, we have to
       // collect those as well
       CSBMLExporter::collectIds(dataModel, this->mIdMap);
-      std::string id = CSBMLExporter::createUniqueId(this->mIdMap, "Model_");
+      std::string id = pModel->getSBMLId();
+
+      if (id.empty())
+        {
+          id = CSBMLExporter::createUniqueId(this->mIdMap, "Model_");
+          this->mIdMap.insert(std::pair<const std::string, const SBase*>(id, this->mpSBMLDocument->getModel()));
+        }
+
       this->mpSBMLDocument->createModel(id);
-      this->mIdMap.insert(std::pair<const std::string, const SBase*>(id, this->mpSBMLDocument->getModel()));
     }
   else
     {
       SBMLUtils::collectIds(this->mpSBMLDocument->getModel(), this->mIdMap, this->mMetaIdMap);
     }
 
-
   this->mFunctionIdMap.clear();
   // update the copasi2sbmlmap
   updateCOPASI2SBMLMap(dataModel);
   // update the comments on the model
-  const CModel* pModel = dataModel.getModel();
-  assert(pModel != NULL);
   this->mpSBMLDocument->getModel()->setName(pModel->getObjectName());
 
 
@@ -6670,6 +6675,13 @@ void CSBMLExporter::collectIds(const CCopasiDataModel& dataModel, std::map<std::
     }
 
   const CModel* pModel = dataModel.getModel();
+
+  id = pModel->getSBMLId();
+
+  if (!id.empty())
+    {
+      idMap.insert(std::pair<const std::string, const SBase*>(id, NULL));
+    }
 
   iMax = pModel->getCompartments().size();
 
