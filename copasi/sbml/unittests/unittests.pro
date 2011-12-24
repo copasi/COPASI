@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/unittests.pro,v $ 
-#   $Revision: 1.41 $ 
+#   $Revision: 1.42 $ 
 #   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2011/12/01 19:54:56 $ 
+#   $Author: gauges $ 
+#   $Date: 2011/12/24 11:14:47 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -43,6 +43,9 @@ contains(BUILD_OS, Linux) {
   LIBS += -L$${CPPUNIT_PATH}/lib -lcppunit
   INCLUDEPATH += $${CPPUNIT_PATH}/include
 }
+contains(DEFINES, USE_BOOST_TEST) {
+    LIBS += -lboost_unit_test_framework
+}
 
 }
 
@@ -79,6 +82,7 @@ contains(BUILD_OS, Darwin){
 
 
 # Input
+
 HEADERS += utilities.hpp
 HEADERS += test000001.hpp
 HEADERS += test000002.hpp
@@ -181,6 +185,8 @@ HEADERS += test000099.h
 HEADERS += test000100.h 
 HEADERS += test000101.h 
 HEADERS += test000102.h 
+HEADERS += test000103.h 
+HEADERS += test000104.h 
 
 
 SOURCES += utilities.cpp
@@ -285,6 +291,8 @@ SOURCES += test000099.cpp
 SOURCES += test000100.cpp
 SOURCES += test000101.cpp
 SOURCES += test000102.cpp
+SOURCES += test000103.cpp
+SOURCES += test000104.cpp
 SOURCES += test.cpp
 
 contains(DEFINES,"USE_CRENDER_EXTENSION"){
