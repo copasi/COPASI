@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.276 $
+//   $Revision: 1.277 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/11/15 14:59:38 $
+//   $Author: gauges $
+//   $Date: 2011/12/24 11:15:31 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -575,11 +575,17 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           else
             {
               const UnitDefinition* pExtendsUnits = sbmlModel->getUnitDefinition(sbmlModel->getExtentUnits());
-              assert(pExtendsUnits != NULL);
 
-              if (!areSBMLUnitDefinitionsIdentical(pSubstanceUnits, pExtendsUnits))
+              if (pExtendsUnits != NULL)
                 {
-                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 92);
+                  if (!areSBMLUnitDefinitionsIdentical(pSubstanceUnits, pExtendsUnits))
+                    {
+                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 92);
+                    }
+                }
+              else
+                {
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "extends", "the same units as the substances");
                 }
             }
         }
