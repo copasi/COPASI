@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example4/example4.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 15:06:42 $
+//   $Date: 2012/01/03 18:34:54 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -208,7 +208,7 @@ int main()
 
   // we just want to run the timecourse task a number of times, so we
   // create a repeat item with 100 repeats
-  pScanProblem->createScanItem(CScanProblem::SCAN_REPEAT, 100);
+  pScanProblem->addScanItem(CScanProblem::SCAN_REPEAT, 100);
 
   // we want the output from the trajectory task
   pScanProblem->setOutputInSubtask(true);
