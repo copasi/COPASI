@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.pro,v $ 
-#   $Revision: 1.41 $ 
+#   $Revision: 1.42 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2011/12/19 16:20:20 $ 
+#   $Date: 2012/01/03 18:44:50 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -99,14 +99,14 @@ contains(BUILD_OS, WIN32) {
   CONFIG += debug_and_release
 
   debug{
-    LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/Debug/", ../../lib/Debug/, .lib)
+    LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/debug/", ../../lib/debug/, .lib)
   }  
   release{
     LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/release/", ../../lib/release/, .lib)
   }  
 
   debug{
-    PRE_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/Debug/", ../../lib/Debug/, .lib)
+    PRE_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/debug/", ../../lib/debug/, .lib)
   }
 
   release{
@@ -119,10 +119,6 @@ contains(BUILD_OS, WIN32) {
   LIBS += delayimp.lib
 
 
-  #debug: SUBDIR = debug
-  #release: SUBDIR = release
-
-  #QMAKE_POST_LINK = mt.exe -manifest $${SUBDIR}/$(TARGET).manifest -outputresource:$${SUBDIR}/$(TARGET);2
 
   !isEmpty(JAVA_HOME){
    isEmpty(JAVA_INCLUDE_PATH){
@@ -210,16 +206,21 @@ isEmpty(SWIG_PATH){
       
       QMAKE_EXTRA_TARGETS += wrapper_source
 
+      debug {
       QMAKE_CLEAN += .\\debug\\copasi_wrapper.cpp
       QMAKE_CLEAN += .\\debug\\copasi.jar 
       QMAKE_CLEAN += .\\debug\\copasi_gui.jar
       QMAKE_CLEAN += .\\debug\\java_files\\org\\COPASI\\*.java
       QMAKE_CLEAN += .\\debug\\java_files\\org\\COPASI\\*.class
+      }
+
+      release {
       QMAKE_CLEAN += .\\release\\copasi_wrapper.cpp
       QMAKE_CLEAN += .\\release\\copasi.jar 
       QMAKE_CLEAN += .\\release\\copasi_gui.jar
       QMAKE_CLEAN += .\\release\\java_files\\org\\COPASI\\*.java
       QMAKE_CLEAN += .\\release\\java_files\\org\\COPASI\\*.class
+      }
       QMAKE_CLEAN += .\\gui\\org\\COPASI\\gui\\*.class
     }
     !contains(BUILD_OS, WIN32){

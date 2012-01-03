@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/octave/octave.pro,v $ 
-#   $Revision: 1.6 $ 
+#   $Revision: 1.7 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2011/07/20 20:02:55 $ 
+#   $Author: shoops $ 
+#   $Date: 2012/01/03 18:44:49 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -45,6 +45,8 @@ contains(BUILD_OS,Linux){
 
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
+  QMAKE_POST_LINK += $${QMAKE_MOVE} libCOPASI.so.1.0.0 COPASI.oct $$escape_expand(\n\t)
+  QMAKE_POST_LINK += $${QMAKE_DEL_FILE} libCOPASI.so* $$escape_expand(\n\t)
 }
 
 contains(BUILD_OS, Darwin) {
@@ -56,158 +58,37 @@ contains(BUILD_OS, Darwin) {
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
   QMAKE_LFLAGS_SHLIB += -unexported_symbols_list unexported_symbols.list
-  QMAKE_PRE_LINK = nm -g $$SBML_PATH/lib/libsbml.a | grep "^[0-9]" | cut -d\" \" -f3  > unexported_symbols.list ; nm -g $$EXPAT_PATH/lib/libexpat.a | grep "^[0-9]" | cut -d\" \" -f3  >> unexported_symbols.list
+  QMAKE_PRE_LINK = nm -g $${SBML_PATH}/lib/libsbml.a | grep "^[0-9]" | cut -d\" \" -f3  > unexported_symbols.list ; nm -g $${EXPAT_PATH}/lib/libexpat.a | grep "^[0-9]" | cut -d\" \" -f3  >> unexported_symbols.list
 
 }
 
 contains(BUILD_OS, WIN32) { 
-  LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
+  CONFIG += debug_and_release
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
+  debug {
+    LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/debug/", ../../lib/debug/, .lib)
+  }
+  release {
+    LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/release/", ../../lib/release/, .lib)
+  }
+
+  debug {
+    PRE_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/debug/", ../../lib/debug/, .lib)
+  }
+
+  release {
+    PRE_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/release/", ../../lib/release/, .lib)
+  }
 
   CONFIG -= staticlib
   CONFIG += dll
   CONFIG += embed_manifest_dll
   LIBS += delayimp.lib
   
-  release {
-    QMAKE_POST_LINK = mt.exe -manifest $(TARGET).manifest -outputresource:$(TARGET);2 
-  } else {
-    QMAKE_POST_LINK = mt.exe -manifest $(TARGET).manifest -outputresource:$(TARGET);2 
-  }
-
-
 }
 
 
-SWIG_INTERFACE_FILES=../swig/CChemEq.i \
-                     ../swig/CChemEqElement.i \
-                     ../swig/CCompartment.i \
-                     ../swig/CCopasiContainer.i \
-                     ../swig/CCopasiDataModel.i \
-                     ../swig/CCopasiException.i \
-		     ../swig/CCopasiMessage.i \
-		     ../swig/messages.i \
-                     ../swig/CCopasiMethod.i \
-                     ../swig/CCopasiObject.i \
-                     ../swig/CCopasiObjectReference.i \
-                     ../swig/CCopasiObjectName.i \
-                     ../swig/CCopasiParameter.i \
-                     ../swig/CCopasiParameterGroup.i \
-                     ../swig/CCopasiProblem.i \
-                     ../swig/CCopasiRootContainer.i \
-                     ../swig/CCopasiStaticString.i \
-                     ../swig/CCopasiTask.i \
-                     ../swig/CCopasiVector.i \
-                     ../swig/CExpression.i \
-                     ../swig/CEvaluationTree.i \
-                     ../swig/CFunction.i \
-                     ../swig/CCallParameters.i \
-                     ../swig/CFunctionDB.i \
-                     ../swig/CFunctionParameter.i \
-                     ../swig/CFunctionParameters.i \
-                     ../swig/CKeyFactory.i \
-                     ../swig/CMatrix.i \
-                     ../swig/CMetab.i \
-                     ../swig/CModel.i \
-                     ../swig/CModelValue.i \
-                     ../swig/CMoiety.i \
-		     ../swig/CNewtonMethod.i \
-                     ../swig/COutputAssistant.i \
-                     ../swig/COutputHandler.i \
-                     ../swig/CRandom.i \
-                     ../swig/CReaction.i \
-                     ../swig/CReport.i \
-                     ../swig/CReportDefinition.i \
-                     ../swig/CReportDefinitionVector.i \
-       		     ../swig/CScanMethod.i \
-		     ../swig/CScanProblem.i \
-		     ../swig/CScanTask.i \
-                     ../swig/CState.i \
-       		     ../swig/CSteadyStateMethod.i \
-		     ../swig/CSteadyStateProblem.i \
-		     ../swig/CSteadyStateTask.i \
-                     ../swig/CTimeSeries.i \
-                     ../swig/CTrajectoryMethod.i \
-                     ../swig/CTrajectoryProblem.i \
-                     ../swig/CTrajectoryTask.i \
-                     ../swig/CVersion.i \
-                     ../swig/CLyapMethod.i \
-                     ../swig/CLyapProblem.i \
-                     ../swig/CLyapTask.i \
-                     ../swig/COptItem.i \
-                     ../swig/COptMethod.i \
-                     ../swig/COptProblem.i \
-                     ../swig/COptTask.i \
-                     ../swig/CVector.i \
-                     ../swig/CFitMethod.i \
-                     ../swig/CFitProblem.i \
-                     ../swig/CEvent.i \
-                     ../swig/CFitTask.i \
-                     ../swig/CExperimentFileInfo.i \
-                     ../swig/CExperiment.i \
-                     ../swig/CExperimentSet.i \
-                     ../swig/CExperimentObjectMap.i \
-                     ../swig/CFitItem.i \
-                     ../swig/compare_utilities.i \
-                     ../swig/copasi.i \
-                     ../swig/CCopasiArray.i \
-                     ../swig/CLBase.i \
-                     ../swig/CLCurve.i \
-                     ../swig/CLGlyphs.i \
-                     ../swig/CLGraphicalObject.i \
-                     ../swig/CLReactionGlyph.i \
-                     ../swig/CLayout.i \
-                     ../swig/CListOfLayouts.i \
-                     ../swig/CAnnotation.i \
-                     ../swig/CBiologicalDescription.i \
-                     ../swig/CModelMIRIAMInfo.i \
-                     ../swig/CCreator.i \
-                     ../swig/CModified.i \
-                     ../swig/CReference.i
-
-
-
-##UNITTEST_FILES = unittests/Test_CChemEq.oct \
-##                 unittests/Test_CChemEqElement.oct \
-##                 unittests/Test_CCompartment.oct \
-##                 unittests/Test_CCopasiContainer.oct \
-##                 unittests/Test_CCopasiDataModel.oct \
-##                 unittests/Test_CCopasiMethod.oct \
-##                 unittests/Test_CCopasiObject.oct \
-##                 unittests/Test_CCopasiObjectName.oct \
-##                 unittests/Test_CCopasiParameter.oct \
-##                 unittests/Test_CCopasiParameterGroup.oct \
-##                 unittests/Test_CCopasiProblem.oct \
-##                 unittests/Test_CCopasiStaticString.oct \
-##                 unittests/Test_CCopasiTask.oct \
-##                 unittests/Test_CCopasiVector.oct \
-##                 unittests/Test_CEvaluationTree.oct \
-##                 unittests/Test_CFunction.oct \
-##                 unittests/Test_CFunctionDB.oct \
-##                 unittests/Test_CFunctionParameter.oct \
-##                 unittests/Test_CFunctionParameters.oct \
-##                 unittests/Test_CMatrix.oct \
-##                 unittests/Test_CMetab.oct \
-##                 unittests/Test_CModel.oct \
-##                 unittests/Test_CModelValue.oct \
-##                 unittests/Test_CMoiety.oct \
-##                 unittests/Test_COutputAssistant.oct \
-##                 unittests/Test_CReaction.oct \
-##                 unittests/Test_CReport.oct \
-##                 unittests/Test_CReportDefinition.oct \
-##                 unittests/Test_CReportDefinitionVector.oct \
-##                 unittests/Test_CState.oct \
-##                 unittests/Test_CTimeSeries.oct \
-##                 unittests/Test_CTrajectoryMethod.oct \
-##                 unittests/Test_CTrajectoryProblem.oct \
-##                 unittests/Test_CTrajectoryTask.oct \
-##                 unittests/Test_CVersion.oct \
-##                 unittests/Test_CEvent.oct \
-##                 unittests/Test_CreateSimpleModel.oct \
-##                 unittests/Test_RunSimulations.oct \
-##                 unittests/runTests.oct 
-
+include(../common/swig_files.pri)
 
 
 #DISTFILE   = $$SWIG_INTERFACE_FILES
@@ -226,35 +107,60 @@ isEmpty(SWIG_PATH){
     # check if swig is there and create a target to run it to create
     # copasi_wrapper.cpp
     contains(BUILD_OS, WIN32){
-        !exists($$SWIG_PATH/swig.exe){
-        error(Unable to find swig excecutable in $$SWIG_PATH. Please use --with-swig=PATH to specify the path where PATH/swig.exe is located.) 
+        !exists($${SWIG_PATH}\\swig.exe){
+        error(Unable to find swig excecutable in $${SWIG_PATH}. Please use --with-swig=PATH to specify the path where PATH/swig.exe is located.) 
          }
     }
     !contains(BUILD_OS, WIN32){
-      !exists($$SWIG_PATH/bin/swig){
-        error(Unable to find swig excecutable in $$SWIG_PATH/bin/. Please use --with-swig=PATH to specify the path where PATH/bin/swig is located.) 
+      !exists($${SWIG_PATH}/bin/swig){
+        error(Unable to find swig excecutable in $${SWIG_PATH}/bin/. Please use --with-swig=PATH to specify the path where PATH/bin/swig is located.) 
       }
     }
 
     DEFINE_COMMANDLINE = $$join(DEFINES," -D",-D)
     contains(BUILD_OS, WIN32){
-      wrapper_source.target = copasi_wrapper.cpp
-      wrapper_source.depends = $$SWIG_INTERFACE_FILES octave.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target && $$SWIG_PATH\swig.exe $$DEFINE_COMMANDLINE -I..\.. -c++ -octave -o $$wrapper_source.target octave.i
-      QMAKE_EXTRA_WIN_TARGETS += wrapper_source
+      # since the wrapper file is in a subdirectory, we need to add 
+      # the project directory to the include path
+      INCLUDEPATH += .
+
+      WRAPPER_FILE_PATH = "."
+
+      debug{
+        WRAPPER_FILE_PATH = debug
+        wrapper_source.target = "debug\\copasi_wrapper.cpp"
+      }	
+      release{
+        WRAPPER_FILE_PATH = release
+        wrapper_source.target = "release\\copasi_wrapper.cpp"
+      }
+
+      # we force the rebuild of the wrapper sources
+      wrapper_source.depends = FORCE
+
+      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} & $${SWIG_PATH}\\swig.exe $${DEFINE_COMMANDLINE} -I..\\.. -c++ -octave -o $${wrapper_source.target} octave.i
+
+      QMAKE_EXTRA_TARGETS += wrapper_source
+      debug {
+        QMAKE_CLEAN += debug\\copasi_wrapper.cpp 
+        QMAKE_CLEAN += debug\\COPASI.oct
+      }
+      release {
+        QMAKE_CLEAN += release\\copasi_wrapper.cpp 
+        QMAKE_CLEAN += release\\COPASI.oct
+      }
     }
     !contains(BUILD_OS, WIN32){
       wrapper_source.target = copasi_wrapper.cpp
-      wrapper_source.depends = $$SWIG_INTERFACE_FILES octave.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -I../.. -c++ -octave -o $$wrapper_source.target octave.i; sed -e 's/octave_map/Octave_map/' $$wrapper_source.target > tmp.cpp;mv tmp.cpp $$wrapper_source.target
+      wrapper_source.depends = $${SWIG_INTERFACE_FILES} octave.i local.cpp
+      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} ; $${SWIG_PATH}/bin/swig $${DEFINE_COMMANDLINE} -I../.. -c++ -octave -o $${wrapper_source.target} octave.i; sed -e 's/octave_map/Octave_map/' $${wrapper_source.target} > tmp.cpp;mv tmp.cpp $${wrapper_source.target}
   
       QMAKE_EXTRA_TARGETS += wrapper_source
+      QMAKE_CLEAN += copasi_wrapper.cpp 
+      QMAKE_CLEAN += COPASI.oct
     }
-    PRE_POST_TARGETDEPS += copasi_wrapper.cpp
+    PRE_TARGETDEPS += $${wrapper_source.target}
 }
 
-QMAKE_CLEAN += copasi_wrapper.cpp 
-QMAKE_CLEAN += COPASI.oct
 
 
 isEmpty(MKOCTFILE_BIN){
@@ -262,13 +168,13 @@ isEmpty(MKOCTFILE_BIN){
   MKOCTFILE_BIN = $$system(which mkoctfile)
 }
 
-isEmpty(MKOCTFILE_BIN) | !exists($$MKOCTFILE_BIN){
+isEmpty(MKOCTFILE_BIN) | !exists($${MKOCTFILE_BIN}){
   error("Could not find mkoctfile binary at \"$${MKOCTFILE_BIN}\"."); 
 }
 
-OCTAVE_INCLUDES = $$system($$MKOCTFILE_BIN -p INCFLAGS)
-OCTAVE_LIBS = $$system($$MKOCTFILE_BIN -p OCTAVE_LIBS)
-OCTAVE_LIB_DIRS = $$system($$MKOCTFILE_BIN -p LFLAGS)
+OCTAVE_INCLUDES = $$system($${MKOCTFILE_BIN} -p INCFLAGS)
+OCTAVE_LIBS = $$system($${MKOCTFILE_BIN} -p OCTAVE_LIBS)
+OCTAVE_LIB_DIRS = $$system($${MKOCTFILE_BIN} -p LFLAGS)
 QMAKE_CXXFLAGS += $${OCTAVE_INCLUDES}
 QMAKE_CXXFLAGS -= -Wall
 
@@ -276,7 +182,6 @@ LIBS += $${OCTAVE_LIB_DIRS}
 LIBS += $${OCTAVE_LIBS}
 
 
-SOURCES += copasi_wrapper.cpp
-
+SOURCES += $${wrapper_source.target}
 # under windows qmake seems to ignore the last line of project files
 

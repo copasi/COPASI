@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/R/R.pro,v $ 
-#   $Revision: 1.3 $ 
+#   $Revision: 1.4 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2011/07/20 20:01:38 $ 
+#   $Author: shoops $ 
+#   $Date: 2012/01/03 18:44:50 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -13,6 +13,9 @@
 
 TEMPLATE = lib
 CONFIG -= qt
+# the plugin config option disables the 
+# creation of the versioning links for the library
+CONFIG += plugin
 
 include(../../common.pri)
 include(../../app.pri)
@@ -41,7 +44,7 @@ contains(BUILD_OS,Linux){
          $$join(COPASI_LIBS, " -l", -l) \
          $${LIBS}
 
-  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
 }
 
@@ -51,146 +54,32 @@ contains(BUILD_OS, Darwin) {
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
   
-  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
 }
 
 contains(BUILD_OS, WIN32) { 
-  LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
+  CONFIG += debug_and_release
 
-  POST_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
+  debug {
+    LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/debug/", ../../lib/debug/, .lib)
+  }
+  release {
+    LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/release/", ../../lib/release/, .lib)
+  }
+
+  debug {
+    PRE_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/debug/", ../../lib/debug/, .lib)
+}
+
+  release {
+    PRE_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/release/", ../../lib/release/, .lib)
+  }
 
 }
 
+include(../common/swig_files.pri)
 
-SWIG_INTERFACE_FILES=../swig/CChemEq.i \
-                     ../swig/CChemEqElement.i \
-                     ../swig/CCompartment.i \
-                     ../swig/CCopasiContainer.i \
-                     ../swig/CCopasiDataModel.i \
-                     ../swig/CCopasiException.i \
-		     ../swig/CCopasiMessage.i \
-		     ../swig/messages.i \
-                     ../swig/CCopasiMethod.i \
-                     ../swig/CCopasiObject.i \
-                     ../swig/CCopasiObjectReference.i \
-                     ../swig/CCopasiObjectName.i \
-                     ../swig/CCopasiParameter.i \
-                     ../swig/CCopasiParameterGroup.i \
-                     ../swig/CCopasiProblem.i \
-                     ../swig/CCopasiRootContainer.i \
-                     ../swig/CCopasiStaticString.i \
-                     ../swig/CCopasiTask.i \
-                     ../swig/CCopasiVector.i \
-                     ../swig/CExpression.i \
-                     ../swig/CEvaluationTree.i \
-                     ../swig/CFunction.i \
-                     ../swig/CCallParameters.i \
-                     ../swig/CFunctionDB.i \
-                     ../swig/CFunctionParameter.i \
-                     ../swig/CFunctionParameters.i \
-                     ../swig/CKeyFactory.i \
-                     ../swig/CMatrix.i \
-                     ../swig/CMetab.i \
-                     ../swig/CModel.i \
-                     ../swig/CModelValue.i \
-                     ../swig/CMoiety.i \
-		     ../swig/CNewtonMethod.i \
-                     ../swig/COutputAssistant.i \
-                     ../swig/COutputHandler.i \
-                     ../swig/CRandom.i \
-                     ../swig/CReaction.i \
-                     ../swig/CReport.i \
-                     ../swig/CReportDefinition.i \
-                     ../swig/CReportDefinitionVector.i \
-       		     ../swig/CScanMethod.i \
-		     ../swig/CScanProblem.i \
-		     ../swig/CScanTask.i \
-                     ../swig/CState.i \
-       		     ../swig/CSteadyStateMethod.i \
-		     ../swig/CSteadyStateProblem.i \
-		     ../swig/CSteadyStateTask.i \
-                     ../swig/CTimeSeries.i \
-                     ../swig/CTrajectoryMethod.i \
-                     ../swig/CTrajectoryProblem.i \
-                     ../swig/CTrajectoryTask.i \
-                     ../swig/CVersion.i \
-                     ../swig/CLyapMethod.i \
-                     ../swig/CLyapProblem.i \
-                     ../swig/CLyapTask.i \
-                     ../swig/COptItem.i \
-                     ../swig/COptMethod.i \
-                     ../swig/COptProblem.i \
-                     ../swig/COptTask.i \
-                     ../swig/CVector.i \
-                     ../swig/CFitMethod.i \
-                     ../swig/CFitProblem.i \
-                     ../swig/CEvent.i \
-                     ../swig/CFitTask.i \
-                     ../swig/CExperimentFileInfo.i \
-                     ../swig/CExperiment.i \
-                     ../swig/CExperimentSet.i \
-                     ../swig/CExperimentObjectMap.i \
-                     ../swig/CFitItem.i \
-                     ../swig/compare_utilities.i \
-                     ../swig/copasi.i \
-                     ../swig/CCopasiArray.i \
-                     ../swig/CLBase.i \
-                     ../swig/CLCurve.i \
-                     ../swig/CLGlyphs.i \
-                     ../swig/CLGraphicalObject.i \
-                     ../swig/CLReactionGlyph.i \
-                     ../swig/CLayout.i \
-                     ../swig/CListOfLayouts.i \
-                     ../swig/CAnnotation.i \
-                     ../swig/CBiologicalDescription.i \
-                     ../swig/CModelMIRIAMInfo.i \
-                     ../swig/CCreator.i \
-                     ../swig/CModified.i \
-                     ../swig/CReference.i
-
-
-
-## UNITTEST_FILES = unittests/Test_CChemEq.py \
-##                  unittests/Test_CChemEqElement.py \
-##                  unittests/Test_CCompartment.py \
-##                  unittests/Test_CCopasiContainer.py \
-##                  unittests/Test_CCopasiDataModel.py \
-##                  unittests/Test_CCopasiMethod.py \
-##                  unittests/Test_CCopasiObject.py \
-##                  unittests/Test_CCopasiObjectName.py \
-##                  unittests/Test_CCopasiParameter.py \
-##                  unittests/Test_CCopasiParameterGroup.py \
-##                  unittests/Test_CCopasiProblem.py \
-##                  unittests/Test_CCopasiStaticString.py \
-##                  unittests/Test_CCopasiTask.py \
-##                  unittests/Test_CCopasiVector.py \
-##                  unittests/Test_CEvaluationTree.py \
-##                  unittests/Test_CFunction.py \
-##                  unittests/Test_CFunctionDB.py \
-##                  unittests/Test_CFunctionParameter.py \
-##                  unittests/Test_CFunctionParameters.py \
-##                  unittests/Test_CMatrix.py \
-##                  unittests/Test_CMetab.py \
-##                  unittests/Test_CModel.py \
-##                  unittests/Test_CModelValue.py \
-##                  unittests/Test_CMoiety.py \
-##                  unittests/Test_COutputAssistant.py \
-##                  unittests/Test_CReaction.py \
-##                  unittests/Test_CReport.py \
-##                  unittests/Test_CReportDefinition.py \
-##                  unittests/Test_CReportDefinitionVector.py \
-##                  unittests/Test_CState.py \
-##                  unittests/Test_CTimeSeries.py \
-##                  unittests/Test_CTrajectoryMethod.py \
-##                  unittests/Test_CTrajectoryProblem.py \
-##                  unittests/Test_CTrajectoryTask.py \
-##                  unittests/Test_CVersion.py \
-##                  unittests/Test_CEvent.py \
-##                  unittests/Test_CreateSimpleModel.py \
-##                  unittests/Test_RunSimulations.py \
-##                  unittests/runTests.py 
- 
 
 
 #DISTFILE   = $$SWIG_INTERFACE_FILES
@@ -209,37 +98,65 @@ isEmpty(SWIG_PATH){
     # check if swig is there and create a target to run it to create
     # copasi_wrapper.cpp
     contains(BUILD_OS, WIN32){
-        !exists($$SWIG_PATH/swig.exe){
-        error(Unable to find swig excecutable in $$SWIG_PATH. Please use --with-swig=PATH to specify the path where PATH/swig.exe is located.) 
+        !exists($${SWIG_PATH}\\swig.exe){
+        error(Unable to find swig excecutable in $${SWIG_PATH}. Please use --with-swig=PATH to specify the path where PATH/swig.exe is located.) 
          }
     }
     !contains(BUILD_OS, WIN32){
-      !exists($$SWIG_PATH/bin/swig){
-        error(Unable to find swig excecutable in $$SWIG_PATH/bin/. Please use --with-swig=PATH to specify the path where PATH/bin/swig is located.) 
+      !exists($${SWIG_PATH}/bin/swig){
+        error(Unable to find swig excecutable in $${SWIG_PATH}/bin/. Please use --with-swig=PATH to specify the path where PATH/bin/swig is located.) 
       }
     }
 
     DEFINE_COMMANDLINE = $$join(DEFINES," -D",-D)
     contains(BUILD_OS, WIN32){
-      wrapper_source.target = COPASI.cpp
-      wrapper_source.depends = $$SWIG_INTERFACE_FILES R.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target && $$SWIG_PATH\swig.exe $$DEFINE_COMMANDLINE -I..\.. -c++ -r -o $$wrapper_source.target R.i
-      QMAKE_EXTRA_WIN_TARGETS += wrapper_source
+      # since the wrapper file is in a subdirectory, we need to add 
+      # the project directory to the include path
+      INCLUDEPATH += .
+
+      WRAPPER_FILE_PATH = "."
+
+      debug{
+        WRAPPER_FILE_PATH = debug
+        wrapper_source.target = "debug\\COPASI.cpp"
+      }	
+      release{
+        WRAPPER_FILE_PATH = release
+        wrapper_source.target = "release\\COPASI.cpp"
+      }
+
+      # we force the rebuild of the wrapper sources
+      wrapper_source.depends = FORCE
+
+      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} & $${SWIG_PATH}\\swig.exe $${DEFINE_COMMANDLINE} -I..\.. -c++ -r -o $${wrapper_source.target} R.i
+
+      QMAKE_EXTRA_TARGETS += wrapper_source
+      debug {
+        QMAKE_CLEAN += debug\\COPASI.cpp 
+        QMAKE_CLEAN += debug\\COPASI.R
+        QMAKE_CLEAN += debug\\COPASI.so
+      }
+      release {
+        QMAKE_CLEAN += release\\COPASI.cpp 
+        QMAKE_CLEAN += release\\COPASI.R
+        QMAKE_CLEAN += release\\COPASI.so
+      }
     }
     !contains(BUILD_OS, WIN32){
       wrapper_source.target = COPASI.cpp
-      wrapper_source.depends = $$SWIG_INTERFACE_FILES R.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -I../.. -c++ -r -o $$wrapper_source.target R.i
+      wrapper_source.depends = $${SWIG_INTERFACE_FILES} R.i local.cpp
+      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} ; $${SWIG_PATH}/bin/swig $${DEFINE_COMMANDLINE} -I../.. -c++ -r -o $${wrapper_source.target} R.i
   
       QMAKE_EXTRA_TARGETS += wrapper_source
+      QMAKE_CLEAN += COPASI.cpp 
+      QMAKE_CLEAN += COPASI.R
+      QMAKE_CLEAN += COPASI.so
     }
-    PRE_TARGETDEPS += COPASI.cpp
+    PRE_TARGETDEPS += $${wrapper_source.target}
 }
 
-QMAKE_CLEAN += COPASI.cpp 
-QMAKE_CLEAN += COPASI.R 
 
-SOURCES += COPASI.cpp
+SOURCES += $${wrapper_source.target}
 
 # according to the SWIG documentation, we need R to compile the R bindings
 #copasi_wrapper   
@@ -249,7 +166,7 @@ isEmpty(R_BIN){
   R_BIN = $$system(which R)
 }
 
-isEmpty(R_BIN) | !exists($$R_BIN){
+isEmpty(R_BIN) | !exists($${R_BIN}){
   error("Could not find R binary at \"$${R_BIN}\"."); 
 }
 
@@ -260,6 +177,10 @@ isEmpty(R_BIN) | !exists($$R_BIN){
 
 PKG_CPPFLAGS=$$join(DEFINES, " -D", -D)
 PKG_CPPFLAGS += $$join(INCLUDEPATH, " -I", -I) 
+# In order to build a debug version, it would also be good to pass the optimization flags to the build command
+# Also if COPASI was configured for a certain architecture, especially on Mac OS X, that information should also be passed to the build command.
+# Build flags for R packages can also be set in a file called .R/Makevars in ones home directory, the directory can even contain several Makevars
+# files which are specific for a certain platform, e.g. Makevars.win64 
 
 message($$DEFINES)
 

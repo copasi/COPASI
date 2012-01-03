@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/csharp/csharp.pro,v $ 
-#   $Revision: 1.2 $ 
+#   $Revision: 1.3 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2011/12/19 16:20:19 $ 
+#   $Date: 2012/01/03 18:44:49 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
@@ -78,25 +78,33 @@ contains(BUILD_OS, Darwin) {
     
     # make a hard link from the generated dylib file to a file with the ending
     # jnilib
-    QMAKE_PRE_LINK = nm -g $$SBML_PATH/lib/libsbml.a | grep "^[0-9]" | cut -d\" \" -f3  > unexported_symbols.list ; nm -g $$EXPAT_PATH/lib/libexpat.a | grep "^[0-9]" | cut -d\" \" -f3  >> unexported_symbols.list
+    QMAKE_PRE_LINK = nm -g $${SBML_PATH}/lib/libsbml.a | grep "^[0-9]" | cut -d\" \" -f3  > unexported_symbols.list ; nm -g $${EXPAT_PATH}/lib/libexpat.a | grep "^[0-9]" | cut -d\" \" -f3  >> unexported_symbols.list
 
 }
 
 contains(BUILD_OS, WIN32) { 
-  LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
+  CONFIG += debug_and_release
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/release/", ../../lib/release/, .lib)
+  debug {
+    LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/debug/", ../../lib/debug/, .lib)
+  }
+  release {
+    LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/release/", ../../lib/release/, .lib)
+  }
+
+  debug {
+    PRE_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/debug/", ../../lib/debug/, .lib)
+  }
+
+  release {
+    PRE_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/release/", ../../lib/release/, .lib)
+  }
 
   CONFIG -= staticlib
   CONFIG += dll
   CONFIG += embed_manifest_dll
   LIBS += delayimp.lib
 
-
-  #debug: SUBDIR=debug
-  #release: SUBDIR=release
-
-  #QMAKE_POST_LINK = mt.exe -manifest $$SUBDIR/$(TARGET).manifest -outputresource:$$SUBDIR/$(TARGET);2
 
 }
 
@@ -118,41 +126,68 @@ isEmpty(SWIG_PATH){
     # check if swig is there and create a target to run it to create
     # copasi_wrapper.cpp
     contains(BUILD_OS, WIN32){
-        !exists($$SWIG_PATH/swig.exe){
-        error(Unable to find swig excecutable in $$SWIG_PATH. Please use --with-swig=PATH to specify the path where PATH/swig.exe is located.) 
+        !exists($${SWIG_PATH}\\swig.exe){
+        error(Unable to find swig excecutable in $${SWIG_PATH}. Please use --with-swig=PATH to specify the path where PATH/swig.exe is located.) 
          }
     }
     !contains(BUILD_OS, WIN32){
-      !exists($$SWIG_PATH/bin/swig){
-        error(Unable to find swig excecutable in $$SWIG_PATH/bin/. Please use --with-swig=PATH to specify the path where PATH/bin/swig is located.) 
+      !exists($${SWIG_PATH}/bin/swig){
+        error(Unable to find swig excecutable in $${SWIG_PATH}/bin/. Please use --with-swig=PATH to specify the path where PATH/bin/swig is located.) 
       }
     }
 
     DEFINE_COMMANDLINE = $$join(DEFINES," -D",-D)
     contains(BUILD_OS, WIN32){
-      wrapper_source.target = copasi_wrapper.cpp
-      wrapper_source.depends = $$SWIG_INTERFACE_FILES csharp.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) copasi_wrapper.cpp && $(DEL_FILE) mono_files\*.cs && $(DEL_FILE) mono_files\*.dll && && $$SWIG_PATH\swig.exe $$DEFINE_COMMANDLINE -I..\.. -c++ -csharp -o $$wrapper_source.target -namespace org.COPASI -outdir mono_files\ -DSWIG_CSHARP_NO_IMCLASS_STATIC_CONSTRUCTOR -dllimport COPASIMONO csharp.i && cd mono_files && $$MCS_BIN $${GMCS_FLAGS} /out:..\COPASI.dll *.cs  && cd .. 
-      QMAKE_EXTRA_WIN_TARGETS += wrapper_source
-      #PRE_TARGETDEPS += $${COPASI_LIBS_SE}
+      # since the wrapper file is in a subdirectory, we need to add 
+      # the project directory to the include path
+      INCLUDEPATH += .
+
+      WRAPPER_FILE_PATH = "."
+
+      debug{
+        WRAPPER_FILE_PATH = debug
+        wrapper_source.target = "debug\\copasi_wrapper.cpp"
+      }	
+      release{
+        WRAPPER_FILE_PATH = release
+        wrapper_source.target = "release\\copasi_wrapper.cpp"
+      }
+
+      # we force the rebuild of the wrapper sources
+      wrapper_source.depends = FORCE
+
+      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} & $(MKDIR) $${WRAPPER_FILE_PATH}\\mono_files & $(DEL_FILE) $${WRAPPER_FILE_PATH}\\mono_files\\*.cs & $(DEL_FILE) $${WRAPPER_FILE_PATH}\\mono_files\\*.dll & $${SWIG_PATH}\\swig.exe $${DEFINE_COMMANDLINE} -I..\\.. -c++ -csharp -o $${wrapper_source.target} -namespace org.COPASI -outdir $${WRAPPER_FILE_PATH}\\mono_files\\ -DSWIG_CSHARP_NO_IMCLASS_STATIC_CONSTRUCTOR -dllimport COPASIMONO csharp.i && cd $${WRAPPER_FILE_PATH}\\mono_files && $${MCS_BIN} $${GMCS_FLAGS} /out:..\COPASI.dll *.cs  && cd ..\\.. 
+
+      QMAKE_EXTRA_TARGETS += wrapper_source
+      debug {
+        QMAKE_CLEAN += debug\\copasi_wrapper.cpp 
+        QMAKE_CLEAN += debug\\mono_files/*.cs
+        QMAKE_CLEAN += debug\\mono_files/*.dll
+      }
+
+      release {
+        QMAKE_CLEAN += release\\copasi_wrapper.cpp 
+        QMAKE_CLEAN += release\\mono_files/*.cs
+        QMAKE_CLEAN += release\\mono_files/*.dll
+      }
 
     }
 
     !contains(BUILD_OS, WIN32){
 
       wrapper_source.target = copasi_wrapper.cpp
-      wrapper_source.depends = $$SWIG_INTERFACE_FILES csharp.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target; $(DEL_FILE) mono_files/*.cs mono_files/*.dll; mkdir mono_files ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -I../.. -c++ -csharp -o $$wrapper_source.target -namespace org.COPASI -outdir mono_files/ -DSWIG_CSHARP_NO_IMCLASS_STATIC_CONSTRUCTOR -dllimport COPASIMONO csharp.i; cd mono_files; $$MCS_BIN $${GMCS_FLAGS} /out:../COPASI.dll *.cs 
-      QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
-      #PRE_TARGETDEPS += $${COPASI_LIBS_SE}
-    }
-    PRE_TARGETDEPS += copasi_wrapper.cpp
-}
+      wrapper_source.depends = $${SWIG_INTERFACE_FILES} csharp.i local.cpp
+      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target}; $(DEL_FILE) mono_files/*.cs mono_files/*.dll; mkdir mono_files ; $${SWIG_PATH}/bin/swig $${DEFINE_COMMANDLINE} -I../.. -c++ -csharp -o $${wrapper_source.target} -namespace org.COPASI -outdir mono_files/ -DSWIG_CSHARP_NO_IMCLASS_STATIC_CONSTRUCTOR -dllimport COPASIMONO csharp.i; cd mono_files; $${MCS_BIN} $${GMCS_FLAGS} /out:../COPASI.dll *.cs 
 
+      QMAKE_EXTRA_TARGETS += wrapper_source
 QMAKE_CLEAN += copasi_wrapper.cpp 
 QMAKE_CLEAN += mono_files/*.cs
 QMAKE_CLEAN += mono_files/*.dll
+    }
+    PRE_TARGETDEPS += $${wrapper_source.target}
+}
 
-SOURCES += copasi_wrapper.cpp
+
+SOURCES += $${wrapper_source.target}
 # under windows qmake seems to ignore the last line of project files
 

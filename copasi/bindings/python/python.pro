@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.32 $ 
+#   $Revision: 1.33 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2011/05/25 15:12:20 $ 
+#   $Date: 2012/01/03 18:44:49 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -53,14 +53,14 @@ contains(BUILD_OS,Linux){
   POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
   !isEmpty(PYTHON_LIB_PATH){
-    LIBS += -L$$PYTHON_LIB_PATH
-    LIBS += -lpython2.6
+    LIBS += -L$${PYTHON_LIB_PATH}
+    LIBS += -lpython2.7
   } else {
     LIBS += `python-config --libs`
   }
 
   !isEmpty(PYTHON_INCLUDE_PATH){
-    INCLUDEPATH += $$PYTHON_INCLUDE_PATH
+    INCLUDEPATH += $${PYTHON_INCLUDE_PATH}
   } else {
     QMAKE_CFLAGS_RELEASE += `python-config --includes` 
     QMAKE_CXXFLAGS_RELEASE += `python-config --includes` 
@@ -86,12 +86,12 @@ contains(BUILD_OS, Darwin) {
     LIBS += -framework Accelerate
 
     QMAKE_LFLAGS_SHLIB += -unexported_symbols_list unexported_symbols.list
-    QMAKE_PRE_LINK = nm -g $$SBML_PATH/lib/libsbml.a | grep "^[0-9]" | cut -d\" \" -f3  > unexported_symbols.list ; nm -g $$EXPAT_PATH/lib/libexpat.a | grep "^[0-9]" | cut -d\" \" -f3  >> unexported_symbols.list
+    QMAKE_PRE_LINK = nm -g $${SBML_PATH}/lib/libsbml.a | grep "^[0-9]" | cut -d\" \" -f3  > unexported_symbols.list ; nm -g $${EXPAT_PATH}/lib/libexpat.a | grep "^[0-9]" | cut -d\" \" -f3  >> unexported_symbols.list
 
 
   !isEmpty(PYTHON_INCLUDE_PATH){
-    INCLUDEPATH += $$PYTHON_INCLUDE_PATH
-    INCLUDEPATH += $$PYTHON_INCLUDE_PATH/python2.6
+    INCLUDEPATH += $${PYTHON_INCLUDE_PATH}
+    INCLUDEPATH += $${PYTHON_INCLUDE_PATH}/python2.7
   }
   #QMAKE_CXXFLAGS += `python-config --includes` 
 
@@ -99,28 +99,34 @@ contains(BUILD_OS, Darwin) {
 }
 
 contains(BUILD_OS, WIN32) { 
-  LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
+  CONFIG += debug_and_release
 
-  POST_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
+  debug {
+    LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/debug/", ../../lib/debug/, .lib)
+  }
+  release {
+    LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/release/", ../../lib/release/, .lib)
+  }
+
+  debug {
+    PRE_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/debug/", ../../lib/debug/, .lib)
+  }
+
+  release {
+    PRE_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/release/", ../../lib/release/, .lib)
+  }
 
   CONFIG -= staticlib
   CONFIG += dll
   CONFIG += embed_manifest_dll
   LIBS += delayimp.lib
   
-  release {
-    QMAKE_POST_LINK = mt.exe -manifest $(TARGET).manifest -outputresource:$(TARGET);2 && ren _COPASI.dll _COPASI.pyd
-  } else {
-    QMAKE_POST_LINK = mt.exe -manifest $(TARGET).manifest -outputresource:$(TARGET);2 && ren _COPASI.dll _COPASI_d.pyd
-  }
-
   !isEmpty(PYTHON_LIB_PATH){
-    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${PYTHON_LIB_PATH}"
-    QMAKE_LFLAGS_CONSOLE_DLL += /LIBPATH:"$${PYTHON_LIB_PATH}"
+    QMAKE_LFLAGS += /LIBPATH:"$${PYTHON_LIB_PATH}"
     debug{
-      LIBS += python25_d.lib
+      LIBS += python27_d.lib
     } else { 
-      LIBS += python25.lib
+      LIBS += python27.lib
     }
   }
 
@@ -134,92 +140,7 @@ contains(BUILD_OS, WIN32) {
 }
 
 
-SWIG_INTERFACE_FILES=../swig/CChemEq.i \
-                     ../swig/CChemEqElement.i \
-                     ../swig/CCompartment.i \
-                     ../swig/CCopasiContainer.i \
-                     ../swig/CCopasiDataModel.i \
-                     ../swig/CCopasiException.i \
-		     ../swig/CCopasiMessage.i \
-		     ../swig/messages.i \
-                     ../swig/CCopasiMethod.i \
-                     ../swig/CCopasiObject.i \
-                     ../swig/CCopasiObjectReference.i \
-                     ../swig/CCopasiObjectName.i \
-                     ../swig/CCopasiParameter.i \
-                     ../swig/CCopasiParameterGroup.i \
-                     ../swig/CCopasiProblem.i \
-                     ../swig/CCopasiRootContainer.i \
-                     ../swig/CCopasiStaticString.i \
-                     ../swig/CCopasiTask.i \
-                     ../swig/CCopasiVector.i \
-                     ../swig/CExpression.i \
-                     ../swig/CEvaluationTree.i \
-                     ../swig/CFunction.i \
-                     ../swig/CCallParameters.i \
-                     ../swig/CFunctionDB.i \
-                     ../swig/CFunctionParameter.i \
-                     ../swig/CFunctionParameters.i \
-                     ../swig/CKeyFactory.i \
-                     ../swig/CMatrix.i \
-                     ../swig/CMetab.i \
-                     ../swig/CModel.i \
-                     ../swig/CModelValue.i \
-                     ../swig/CMoiety.i \
-		     ../swig/CNewtonMethod.i \
-                     ../swig/COutputAssistant.i \
-                     ../swig/COutputHandler.i \
-                     ../swig/CRandom.i \
-                     ../swig/CReaction.i \
-                     ../swig/CReport.i \
-                     ../swig/CReportDefinition.i \
-                     ../swig/CReportDefinitionVector.i \
-       		     ../swig/CScanMethod.i \
-		     ../swig/CScanProblem.i \
-		     ../swig/CScanTask.i \
-                     ../swig/CState.i \
-       		     ../swig/CSteadyStateMethod.i \
-		     ../swig/CSteadyStateProblem.i \
-		     ../swig/CSteadyStateTask.i \
-                     ../swig/CTimeSeries.i \
-                     ../swig/CTrajectoryMethod.i \
-                     ../swig/CTrajectoryProblem.i \
-                     ../swig/CTrajectoryTask.i \
-                     ../swig/CVersion.i \
-                     ../swig/CLyapMethod.i \
-                     ../swig/CLyapProblem.i \
-                     ../swig/CLyapTask.i \
-                     ../swig/COptItem.i \
-                     ../swig/COptMethod.i \
-                     ../swig/COptProblem.i \
-                     ../swig/COptTask.i \
-                     ../swig/CVector.i \
-                     ../swig/CFitMethod.i \
-                     ../swig/CFitProblem.i \
-                     ../swig/CEvent.i \
-                     ../swig/CFitTask.i \
-                     ../swig/CExperimentFileInfo.i \
-                     ../swig/CExperiment.i \
-                     ../swig/CExperimentSet.i \
-                     ../swig/CExperimentObjectMap.i \
-                     ../swig/CFitItem.i \
-                     ../swig/compare_utilities.i \
-                     ../swig/copasi.i \
-                     ../swig/CCopasiArray.i \
-                     ../swig/CLBase.i \
-                     ../swig/CLCurve.i \
-                     ../swig/CLGlyphs.i \
-                     ../swig/CLGraphicalObject.i \
-                     ../swig/CLReactionGlyph.i \
-                     ../swig/CLayout.i \
-                     ../swig/CListOfLayouts.i \
-                     ../swig/CAnnotation.i \
-                     ../swig/CBiologicalDescription.i \
-                     ../swig/CModelMIRIAMInfo.i \
-                     ../swig/CCreator.i \
-                     ../swig/CModified.i \
-                     ../swig/CReference.i
-
+include(../common/swig_files.pri)
 
 
 UNITTEST_FILES = unittests/Test_CChemEq.py \
@@ -280,36 +201,64 @@ isEmpty(SWIG_PATH){
     # check if swig is there and create a target to run it to create
     # copasi_wrapper.cpp
     contains(BUILD_OS, WIN32){
-        !exists($$SWIG_PATH/swig.exe){
-        error(Unable to find swig excecutable in $$SWIG_PATH. Please use --with-swig=PATH to specify the path where PATH/swig.exe is located.) 
+        !exists($${SWIG_PATH}\\swig.exe){
+        error(Unable to find swig excecutable in $${SWIG_PATH}. Please use --with-swig=PATH to specify the path where PATH/swig.exe is located.) 
          }
     }
     !contains(BUILD_OS, WIN32){
-      !exists($$SWIG_PATH/bin/swig){
-        error(Unable to find swig excecutable in $$SWIG_PATH/bin/. Please use --with-swig=PATH to specify the path where PATH/bin/swig is located.) 
+      !exists($${SWIG_PATH}/bin/swig){
+        error(Unable to find swig excecutable in $${SWIG_PATH}/bin/. Please use --with-swig=PATH to specify the path where PATH/bin/swig is located.) 
       }
     }
 
     DEFINE_COMMANDLINE = $$join(DEFINES," -D",-D)
     contains(BUILD_OS, WIN32){
-      wrapper_source.target = copasi_wrapper.cpp
-      wrapper_source.depends = $$SWIG_INTERFACE_FILES python.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target && $$SWIG_PATH\swig.exe $$DEFINE_COMMANDLINE -I..\.. -c++ -python -o $$wrapper_source.target python.i
-      QMAKE_EXTRA_WIN_TARGETS += wrapper_source
+      # since the wrapper file is in a subdirectory, we need to add 
+      # the project directory to the include path
+      INCLUDEPATH += .
+
+      WRAPPER_FILE_PATH = "."
+
+      debug{
+        WRAPPER_FILE_PATH = debug
+        wrapper_source.target = "debug\\copasi_wrapper.cpp"
+      }	
+      release{
+        WRAPPER_FILE_PATH = release
+        wrapper_source.target = "release\\copasi_wrapper.cpp"
+      }
+
+      # we force the rebuild of the wrapper sources
+      wrapper_source.depends = FORCE
+
+      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} & $${SWIG_PATH}\\swig.exe $${DEFINE_COMMANDLINE} -I..\\.. -c++ -python -o $${wrapper_source.target} python.i
+
+      QMAKE_EXTRA_TARGETS += wrapper_source
+      debug {
+        QMAKE_CLEAN += debug\\copasi_wrapper.cpp 
+        QMAKE_CLEAN += debug\\COPASI.py 
+      }
+
+      release {
+        QMAKE_CLEAN += release\\copasi_wrapper.cpp 
+        QMAKE_CLEAN += release\\COPASI.py 
+      }
+
+      QMAKE_POST_LINK += ren $${WRAPPER_FILE_PATH}\\_COPASI.dll _COPASI.pyd
     }
     !contains(BUILD_OS, WIN32){
       wrapper_source.target = copasi_wrapper.cpp
-      wrapper_source.depends = $$SWIG_INTERFACE_FILES python.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -classic -I../.. -c++ -python -o $$wrapper_source.target python.i
+      wrapper_source.depends = $${SWIG_INTERFACE_FILES} python.i local.cpp
+      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} ; $${SWIG_PATH}/bin/swig $${DEFINE_COMMANDLINE} -classic -I../.. -c++ -python -o $${wrapper_source.target} python.i
   
       QMAKE_EXTRA_TARGETS += wrapper_source
+      QMAKE_CLEAN += copasi_wrapper.cpp 
+      QMAKE_CLEAN += COPASI.py 
     }
-    PRE_POST_TARGETDEPS += copasi_wrapper.cpp
+    PRE_TARGETDEPS += $${wrapper_source.target}
 }
 
-QMAKE_CLEAN += copasi_wrapper.cpp 
-QMAKE_CLEAN += COPASI.py 
 
-SOURCES += copasi_wrapper.cpp
-# under windows qmake seems to ignore the last line of progject files
+SOURCES += $${wrapper_source.target}
+# under windows qmake seems to ignore the last line of project files
 
