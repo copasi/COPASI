@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/03/16 18:56:24 $
+//   $Date: 2012/01/05 22:49:26 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,9 +25,9 @@
 
 #include <vector>
 
-#include "report/CCopasiObject.h"
-#include "report/CCopasiContainer.h"
-#include "utilities/CCopasiParameterGroup.h"
+#include "copasi/report/CCopasiObject.h"
+#include "copasi/report/CCopasiContainer.h"
+#include "copasi/utilities/CCopasiParameterGroup.h"
 
 class CCopasiObjectName;
 class COptProblem;
