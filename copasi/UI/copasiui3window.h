@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.102 $
+//   $Revision: 1.103 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/31 11:51:14 $
+//   $Date: 2012/01/05 22:45:12 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -100,6 +100,9 @@ public:
   void exportSBMLToString(std::string & SBML);
 
   QThread * getMainThread() const;
+
+  void addWindow(QMainWindow * pWindow);
+  void removeWindow(QMainWindow * pWindow);
 
 signals:
   void signalLoadFile(QString newFile);
@@ -251,6 +254,8 @@ private:
   QCloseEvent * mpCloseEvent;
   bool mQuitApplication;
   bool mSliderDialogEnabled;
+
+  QList< QMainWindow * > mWindows;
 
   static CopasiUI3Window * pMainWindow;
 

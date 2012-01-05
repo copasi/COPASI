@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:32:02 $
+//   $Date: 2012/01/05 22:45:11 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,7 @@
 #include "plot/CPlotSpecification.h"
 #include "COutputHandlerPlot.h"
 
+#include "UI/copasiui3window.h"
 #include "UI/CQMessageBox.h"
 #include "UI/qtUtilities.h"
 
@@ -58,9 +59,11 @@ public:
 
 //-----------------------------------------------------------------------------
 
-PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* ptrSpec):
+PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* ptrSpec, CopasiUI3Window * pMainWindow):
+    QMainWindow(),
     mpPlot(NULL),
-    mpHandler(pHandler)
+    mpHandler(pHandler),
+    mpMainWindow(pMainWindow)
 {
   this->resize(640, 480);
   this->setWindowTitle(("Copasi Plot: " + ptrSpec->getTitle()).c_str());
@@ -72,7 +75,7 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
   mpPlot = new CopasiPlot(ptrSpec, this);
   setCentralWidget(mpPlot);
 
-  //connect(mpPlot, SIGNAL(plotMouseReleased(const QMouseEvent &)), this, SLOT(mouseReleased(const QMouseEvent&)));
+  mpMainWindow->addWindow(this);
 }
 
 void PlotWindow::createActions()
@@ -233,11 +236,11 @@ void PlotWindow::printPlot()
   if (docName.isEmpty())
     {
       //docName.replace (QRegExp (QString::fromLatin1 ("\n")), tr (" -- "));
-      docName = QString::fromLatin1("A plot of selected Copasi output");
+      docName = QString::fromLatin1("A plot of selected COPASI output");
       printer.setDocName(docName);
     }
 
-  printer.setCreator("Copasi");
+  printer.setCreator("COPASI");
   printer.setOrientation(QPrinter::Landscape);
 
   QPrintDialog dialog(&printer);
@@ -293,7 +296,13 @@ void PlotWindow::slotZoomOut()
 //-----------------------------------------------------------------------------
 
 PlotWindow::~PlotWindow()
-{if (mpHandler) mpHandler->removeInterface(this);}
+{
+  if (mpHandler)
+    mpHandler->removeInterface(this);
+
+  if (mpMainWindow != NULL)
+    mpMainWindow->removeWindow(this);
+}
 
 bool PlotWindow::compile(std::vector< CCopasiContainer * > listOfContainer,
                          const CCopasiDataModel* pDataModel)
@@ -301,7 +310,7 @@ bool PlotWindow::compile(std::vector< CCopasiContainer * > listOfContainer,
   mObjects.clear();
   bool success = true;
 
-  if (mpPlot)
+  if (mpPlot != NULL)
     success = mpPlot->compile(listOfContainer, pDataModel);
 
   return success;

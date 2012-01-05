@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.305 $
+//   $Revision: 1.306 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/12/13 19:49:57 $
+//   $Date: 2012/01/05 22:45:11 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -237,7 +237,8 @@ CopasiUI3Window::CopasiUI3Window():
     mCommitRequired(true),
     mpCloseEvent(),
     mQuitApplication(false),
-    mSliderDialogEnabled(false)
+    mSliderDialogEnabled(false),
+    mWindows()
 
 #ifdef COPASI_SBW_INTEGRATION
     , mpSBWModule(NULL)
@@ -337,6 +338,14 @@ CopasiUI3Window::~CopasiUI3Window()
 
   pdelete(mpListView);
   pdelete(mpDataModelGUI);
+
+  QList< QMainWindow * >::iterator it = mWindows.begin();
+  QList< QMainWindow * >::iterator end = mWindows.end();
+
+  for (; it != end; ++it)
+    {
+      (*it)->close();
+    }
 }
 
 void CopasiUI3Window::createActions()
@@ -1857,6 +1866,16 @@ void CopasiUI3Window::slotExportSBMLToStringFinished(bool success)
 QThread * CopasiUI3Window::getMainThread() const
 {
   return mpMainThread;
+}
+
+void CopasiUI3Window::addWindow(QMainWindow * pWindow)
+{
+  mWindows.append(pWindow);
+}
+
+void CopasiUI3Window::removeWindow(QMainWindow * pWindow)
+{
+  mWindows.remove(pWindow);
 }
 
 #include "model/CModelAnalyzer.h"
