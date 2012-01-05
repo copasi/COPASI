@@ -425,6 +425,20 @@ ID       (\"([^\\\"]|\\.)*\"|[a-z_A-Z][a-z_A-Z0-9]*)
   return TOKEN_FUNCTION_2;
 %}
 
+<INITIAL,sSIGNorVALUE,sVALUE>(max|MAX)/\(   %{
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MAX,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION_2;
+%}
+
+<INITIAL,sSIGNorVALUE,sVALUE>(min|MIN)/\(   %{
+  mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MIN,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION_2;
+%}
+
 <INITIAL,sSIGNorVALUE,sVALUE>(delay|DELAY)/\(   %{
   mpNode = new CEvaluationNodeDelay(CEvaluationNodeDelay::DELAY,
                                     yytext);

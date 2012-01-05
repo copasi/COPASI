@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.98 $
+//   $Revision: 1.99 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/12/23 12:32:22 $
+//   $Author: shoops $
+//   $Date: 2012/01/05 22:50:49 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -3055,11 +3055,15 @@ const std::set<CEvaluationNodeFunction::SubType> CSBMLExporter::createUnsupporte
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCOTH);
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RNORMAL);
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RUNIFORM);
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::MAX);
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::MIN);
     }
   else
     {
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RNORMAL);
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RUNIFORM);
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::MAX);
+      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::MIN);
     }
 
   return unsupportedFunctionTypes;

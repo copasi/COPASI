@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/26 16:10:40 $
+//   $Date: 2012/01/05 22:48:40 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,14 +35,26 @@
 CRandom * CEvaluationNodeFunction::mpRandom = NULL;
 
 // static
-C_FLOAT64 CEvaluationNodeFunction::runiform(const C_FLOAT64 & lowerBound,
-    const C_FLOAT64 & upperBound)
+C_FLOAT64 CEvaluationNodeFunction::runiform(const C_FLOAT64 & lowerBound, const C_FLOAT64 & upperBound)
 {return lowerBound + mpRandom->getRandomOO() *(upperBound - lowerBound);}
 
 // static
-C_FLOAT64 CEvaluationNodeFunction::rnormal(const C_FLOAT64 & mean,
-    const C_FLOAT64 & sd)
+C_FLOAT64 CEvaluationNodeFunction::rnormal(const C_FLOAT64 & mean, const C_FLOAT64 & sd)
 {return mpRandom->getRandomNormal(mean, sd);}
+
+// static
+C_FLOAT64 CEvaluationNodeFunction::max(const C_FLOAT64 & x1, const C_FLOAT64 & x2)
+{
+  return std::max(x1, x2);
+}
+
+// static
+C_FLOAT64 CEvaluationNodeFunction::min(const C_FLOAT64 & x1, const C_FLOAT64 & x2)
+{
+  return std::min(x1, x2);
+}
+
+
 
 CEvaluationNodeFunction::CEvaluationNodeFunction():
     CEvaluationNode(CEvaluationNode::INVALID, "")
@@ -216,6 +228,14 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
 
         break;
 
+      case MAX:
+        mpFunction2 = max;
+        break;
+
+      case MIN:
+        mpFunction2 = min;
+        break;
+
       default:
         mpFunction = NULL;
         fatalError();
@@ -271,6 +291,8 @@ std::string CEvaluationNodeFunction::getInfix() const
 
         case RUNIFORM:
         case RNORMAL:
+        case MAX:
+        case MIN:
           return mData + "(" + mpArg1->getInfix() + "," + mpArg2->getInfix() + ")";
 
         default:
@@ -414,6 +436,12 @@ std::string CEvaluationNodeFunction::getDisplay_C_String(const CEvaluationTree *
           case RNORMAL:
             data = "user_provided_normal";
             break;
+          case MAX:
+            data = "max";
+            break;
+          case MIN:
+            data = "min";
+            break;
           default:
             data = "@";
             break;
@@ -432,6 +460,8 @@ std::string CEvaluationNodeFunction::getDisplay_C_String(const CEvaluationTree *
 
           case RUNIFORM:
           case RNORMAL:
+          case MAX:
+          case MIN:
             return data + "(" + mpArg1->getDisplay_C_String(pTree) + "," + mpArg2->getDisplay_C_String(pTree) + ")";
 
           default:
@@ -496,6 +526,8 @@ std::string CEvaluationNodeFunction::getDisplay_MMD_String(const CEvaluationTree
           case FACTORIAL:
           case RUNIFORM:
           case RNORMAL:
+          case MAX:
+          case MIN:
           default:
             data = "ILLEGAL FUNCTION";
             break;
@@ -514,6 +546,8 @@ std::string CEvaluationNodeFunction::getDisplay_MMD_String(const CEvaluationTree
 
           case RUNIFORM:
           case RNORMAL:
+          case MAX:
+          case MIN:
             return data + "(" + mpArg1->getDisplay_MMD_String(pTree) + "," + mpArg2->getDisplay_MMD_String(pTree) + ")";
 
           default:
@@ -579,6 +613,8 @@ std::string CEvaluationNodeFunction::getDisplay_XPP_String(const CEvaluationTree
           case FACTORIAL:
           case RUNIFORM:
           case RNORMAL:
+          case MAX:
+          case MIN:
           default:
             data = "@"; //TODO
             break;
@@ -596,6 +632,8 @@ std::string CEvaluationNodeFunction::getDisplay_XPP_String(const CEvaluationTree
 
           case RUNIFORM:
           case RNORMAL:
+          case MAX:
+          case MIN:
             return data + "(" + mpArg1->getDisplay_XPP_String(pTree) + "," + mpArg2->getDisplay_XPP_String(pTree) + ")";
 
           default:
@@ -911,12 +949,14 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
         break;
       case RUNIFORM:
       case RNORMAL:
+      case MAX:
+      case MIN:
         // :TODO: Bug 894: Implement me.
         fatalError();
         break;
     }
 
-  if (subType !=       INVALID)
+  if (subType != INVALID)
     {
       // the following is a workaround for a bug in libsbml 3.1.1 and 3.2.0
       // where libsbml does not handle the case correctly that a root
@@ -1295,12 +1335,14 @@ void CEvaluationNodeFunction::writeMathML(std::ostream & out,
 
       case RUNIFORM:
       case RNORMAL:
+      case MAX:
+      case MIN:
         out << SPC(l) << "<mrow>" << std::endl;
 
         out << SPC(l + 1) << "<mi>" << mData << "</mi>" << std::endl;
         out << SPC(l + 1) << "<mo> &ApplyFunction; </mo>" << std::endl;
         out << SPC(l + 1) << "<mrow>" << std::endl;
-        out << SPC(l + 2) << "<mo> (</mo>" << std::endl;
+        out << SPC(l + 2) << "<mo>(</mo>" << std::endl;
         out << SPC(l + 2) << "<mrow>" << std::endl;
 
         mpArg1->writeMathML(out, env, expand, l + 3);

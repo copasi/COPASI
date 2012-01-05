@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:18:22 $
+//   $Date: 2012/01/05 22:48:40 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,7 +84,9 @@ public:
     PLUS = 0x00000021,
     NOT = 0x00000022,
     RUNIFORM = 0x00000023,
-    RNORMAL = 0x00000024
+    RNORMAL = 0x00000024,
+    MAX = 0x00000025,
+    MIN =  0x00000026
   };
 
   // Operations
@@ -286,6 +288,12 @@ private:
 
   static C_FLOAT64 rnormal(const C_FLOAT64 & mean,
                            const C_FLOAT64 & sd);
+
+  static C_FLOAT64 max(const C_FLOAT64 & x1,
+                       const C_FLOAT64 & x2);
+
+  static C_FLOAT64 min(const C_FLOAT64 & x1,
+                       const C_FLOAT64 & x2);
 
   // Attributes
 private:
