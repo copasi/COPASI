@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskMethodWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/13 19:22:00 $
+//   $Date: 2012/01/06 19:13:44 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,7 +23,9 @@
 CQTaskMethodWidget::CQTaskMethodWidget(QWidget* parent, Qt::WindowFlags f):
     QWidget(parent, f),
     mpTask(NULL),
-    mpMethod(NULL)
+    mpMethod(NULL),
+    mShowMethods(false),
+    mShowMethodParameters(false)
 {
   setupUi(this);
 
@@ -85,6 +87,7 @@ void CQTaskMethodWidget::setValidMethods(const unsigned int * validMethods)
 
   if (i > 0)
     {
+      mShowMethods = true;
       mpLblMethod->show();
       mpBoxMethod->show();
 
@@ -92,6 +95,7 @@ void CQTaskMethodWidget::setValidMethods(const unsigned int * validMethods)
     }
   else
     {
+      mShowMethods = false;
       mpLblMethod->hide();
       mpBoxMethod->hide();
 
@@ -99,9 +103,11 @@ void CQTaskMethodWidget::setValidMethods(const unsigned int * validMethods)
     }
 }
 
-void CQTaskMethodWidget::enableMethodParameter(const bool & enable)
+void CQTaskMethodWidget::showMethodParameters(const bool & show)
 {
-  if (enable)
+  mShowMethodParameters = show;
+
+  if (mShowMethodParameters)
     {
       mpLblParameter->show();
       mpTableParameter->show();
@@ -119,12 +125,12 @@ bool CQTaskMethodWidget::loadMethod()
 
   if (!mpMethod) return false;
 
-  if (mpBoxMethod->isVisible())
+  if (mShowMethods)
     {
       mpBoxMethod->setCurrentIndex(mpBoxMethod->findText(QString::fromUtf8(CCopasiMethod::SubTypeName[mpMethod->getSubType()])));
     }
 
-  if (mpTableParameter->isVisible())
+  if (mShowMethodParameters)
     {
       QString Value;
 
@@ -163,33 +169,35 @@ bool CQTaskMethodWidget::saveMethod()
 
   bool changed = false;
 
-
-  if (pMethod->getSubType() != mpMethod->getSubType())
+  if (mShowMethods)
     {
-      mpTask->setMethodType(mpMethod->getSubType());
-      changed = true;
+      if (pMethod->getSubType() != mpMethod->getSubType())
+        {
+          mpTask->setMethodType(mpMethod->getSubType());
+          changed = true;
+        }
     }
 
   mpMethod = mpTask->getMethod();
 
-  unsigned C_INT32 i;
-  QString Value;
-  CCopasiParameter::Type Type;
-
-  for (i = 0; i < mpMethod->size(); i++)
+  if (mShowMethodParameters)
     {
-      if (!mpTableParameter)
-        break;
+      unsigned C_INT32 i;
+      QString Value;
+      CCopasiParameter::Type Type;
 
-      if (!mpTableParameter->item(i, 0))
-        continue;
-
-      Value = mpTableParameter->item(i, 0)->text();
-
-      if (Value != getParameterValue(mpMethod, i, &Type))
+      for (i = 0; i < mpMethod->size(); i++)
         {
-          setParameterValue(mpMethod, i, Value);
-          changed = true;
+          if (!mpTableParameter->item(i, 0))
+            continue;
+
+          Value = mpTableParameter->item(i, 0)->text();
+
+          if (Value != getParameterValue(mpMethod, i, &Type))
+            {
+              setParameterValue(mpMethod, i, Value);
+              changed = true;
+            }
         }
     }
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-//   $Revision: 1.130 $
+//   $Revision: 1.131 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/08/01 17:11:35 $
+//   $Author: shoops $
+//   $Date: 2012/01/06 19:13:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,7 +67,7 @@ void SteadyStateWidget::init()
   SteadyStateWidgetLayout->insertWidget(0, mpHeaderWidget); // header
   // SteadyStateWidgetLayout->insertSpacing(1, 14);      // space between header and body
 
-  mpMethodWidget->enableMethodParameter(true);
+  mpMethodWidget->showMethodParameters(true);
   SteadyStateWidgetLayout->addWidget(mpMethodWidget);
 
   SteadyStateWidgetLayout->addWidget(mpBtnWidget);      // 'footer'

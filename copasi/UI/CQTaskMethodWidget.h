@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskMethodWidget.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:39:41 $
+//   $Date: 2012/01/06 19:13:44 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,9 +32,9 @@ public:
 
   void setTask(CCopasiTask * pTask);
 
-  void setValidMethods(const unsigned int * validMehtods);
+  void setValidMethods(const unsigned int * validMethods);
 
-  void enableMethodParameter(const bool & enable);
+  void showMethodParameters(const bool & show);
 
   bool loadMethod();
 
@@ -48,6 +48,8 @@ protected slots:
 protected:
   CCopasiTask * mpTask;
   CCopasiMethod * mpMethod;
+  bool mShowMethods;
+  bool mShowMethodParameters;
 };
 
 #endif // COPASI_CQTaskMethodWidget

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLNAWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/14 15:10:06 $
+//   $Date: 2012/01/06 19:13:44 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -151,7 +151,7 @@ void CQLNAWidget::init()
   vboxLayout->insertWidget(0, mpHeaderWidget);  // header
   // vboxLayout->insertSpacing(1, 14);       // space between header and body
 
-  mpMethodWidget->enableMethodParameter(true);
+  mpMethodWidget->showMethodParameters(true);
   vboxLayout->addWidget(mpMethodWidget);
 
   vboxLayout->addWidget(mpBtnWidget);     // 'footer'

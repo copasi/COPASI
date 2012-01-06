@@ -70,7 +70,7 @@ void CQCrossSectionTaskWidget::init()
 
   verticalLayout->insertWidget(0, mpHeaderWidget); // header
 
-  mpMethodWidget->enableMethodParameter(true);
+  mpMethodWidget->showMethodParameters(true);
   verticalLayout->addWidget(mpMethodWidget);
 
   verticalLayout->addWidget(mpBtnWidget);      // 'footer'

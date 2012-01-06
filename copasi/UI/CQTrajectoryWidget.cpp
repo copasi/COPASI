@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTrajectoryWidget.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/23 18:39:02 $
+//   $Date: 2012/01/06 19:13:44 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,7 +67,7 @@ void CQTrajectoryWidget::init()
   // verticalLayout->insertSpacing(1, 14);       // space between header and body
 
   mpMethodWidget->setValidMethods(CTrajectoryTask::ValidMethods);
-  mpMethodWidget->enableMethodParameter(true);
+  mpMethodWidget->showMethodParameters(true);
   verticalLayout->addWidget(mpMethodWidget);
 
   verticalLayout->addWidget(mpBtnWidget);     // 'footer'
