@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/COutputHandlerPlot.cpp,v $
-$Revision: 1.24 $
+$Revision: 1.25 $
 $Name:  $
 $Author: shoops $
-$Date: 2012/01/05 22:45:11 $
+$Date: 2012/01/06 19:11:54 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,20 +83,6 @@ bool COutputHandlerPlot::compile(std::vector< CCopasiContainer * > listOfContain
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   return COutputHandler::compile(listOfContainer, pDataModel);
 }
-
-#ifdef XXXX
-void COutputHandlerPlot::init()
-{if (mpPlotSpecVector) mpPlotSpecVector->initPlotting();}
-
-void COutputHandlerPlot::doOutput()
-{if (mpPlotSpecVector) mpPlotSpecVector->doPlotting();}
-
-void COutputHandlerPlot::finish()
-{if (mpPlotSpecVector) mpPlotSpecVector->finishPlotting();}
-
-void COutputHandlerPlot::doSeparator()
-{if (mpPlotSpecVector) mpPlotSpecVector->doSeparator();}
-#endif // XXXX
 
 void COutputHandlerPlot::removeInterface(COutputInterface * pInterface)
 {
