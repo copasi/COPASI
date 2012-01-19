@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.h,v $
- $Revision: 1.28 $
+ $Revision: 1.29 $
  $Name:  $
  $Author: shoops $
- $Date: 2011/03/07 19:34:14 $
+ $Date: 2012/01/19 18:40:50 $
  End CVS Header */
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -262,19 +262,29 @@ public:
   virtual void start(const CState * initialState);
 
 
-  static void EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
-
   /**
    *  This evaluates the derivatives
    */
+  static void EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
+
   virtual void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
 
-  static void EvalR(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y,
-                    const C_INT * nr, C_FLOAT64 * r);
   /**
    *  This evaluates the roots
    */
+  static void EvalR(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y,
+                    const C_INT * nr, C_FLOAT64 * r);
+
   virtual void evalR(const C_FLOAT64 * t, const C_FLOAT64 * y, const C_INT * nr, C_FLOAT64 * r);
+
+  /**
+   *  This evaluates the Jacobian
+   */
+  static void EvalJ(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y,
+                    const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD);
+
+  virtual void evalJ(const C_FLOAT64 * t, const C_FLOAT64 * y,
+                     const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD);
 
 private:
   /**

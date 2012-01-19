@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/10 16:39:38 $
+//   $Date: 2012/01/19 18:40:50 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -273,7 +273,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
               &DSize, // 13. the double work array size
               mIWork.array(), // 14. the int work array
               &ISize, // 15. the int work array size
-              NULL, // 16. evaluate J (not given)
+              &EvalJ, // 16. evaluate J (not given)
               &mJType, // 17. type of j evaluation 2 internal full matrix
               &EvalR, // 18. evaluate constraint functions
               &mNumRoots, // 19. number of constraint functions g(i)
@@ -389,7 +389,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
              &DSize, // 13. the double work array size
              mIWork.array(), // 14. the int work array
              &ISize, // 15. the int work array size
-             NULL, // 16. evaluate J (not given)
+             EvalJ, // 16. evaluate J (not given)
              &mJType);        // 17. the type of jacobian calculate (2)
     }
 
@@ -546,6 +546,19 @@ void CLsodaMethod::evalR(const C_FLOAT64 *  t, const C_FLOAT64 *  /* y */,
       maskRoots(RootValues);
     }
 };
+
+// static
+void CLsodaMethod::EvalJ(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y,
+                         const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
+{static_cast<Data *>((void *) n)->pMethod->evalJ(t, y, ml, mu, pd, nRowPD);}
+
+
+// virtual
+void CLsodaMethod::evalJ(const C_FLOAT64 * t, const C_FLOAT64 * y,
+                         const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
+{
+  // TODO Implement me.
+}
 
 void CLsodaMethod::maskRoots(CVectorCore< C_FLOAT64 > & rootValues)
 {
