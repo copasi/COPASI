@@ -1,10 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/common.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $
-   $Date: 2009/05/22 19:57:18 $
+   $Date: 2012/01/19 18:36:46 $
    End CVS Header */
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -22,10 +27,10 @@
 #define ODEPACK_common
 
 typedef void (*evalF)(const C_INT*, const double*, const double*, double*);
-typedef void (*evalJ)(C_INT*, double*, double*, C_INT*,
-                      C_INT*, double*, C_INT*);
+typedef void (*evalJ)(const C_INT*, const double*, const double*, const C_INT*,
+                      const C_INT*, double*, const C_INT*);
 typedef void (*evalG)(const C_INT*, const double*, const double*,
-                      const C_INT*, double *);
+                      const C_INT*, double*);
 
 union dls001
 {
