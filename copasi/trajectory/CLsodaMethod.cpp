@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/01/19 18:40:50 $
+//   $Date: 2012/01/23 21:22:37 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -235,11 +235,14 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
 
   if (mTargetTime != EndTime)
     {
+      // We have a new end time and reset the root counter.
       mTargetTime = EndTime;
       mRootCounter = 0;
     }
   else
     {
+      // We are called with the same end time which means a root has previously been
+      // found. We increase the root counter and check whether the limit is reached.
       mRootCounter++;
 
       if (mRootCounter > *mpMaxInternalSteps)
@@ -280,7 +283,12 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
               mRoots.array()); // 20. integer array of length NG for output of root information
 
       // There exist situations where LSODAR reports status = 3, which are actually status = -33
-      if (mLsodaStatus == 3 && mRootCounter > 0.99 * *mpMaxInternalSteps)
+      // Obviously the trivial case is where LSODAR did not advance at all, i.e, the start time
+      // equals the current time. It may also happen that a very small steps has been taken in
+      // we reset short before we reach the internal step limit.
+      if (mLsodaStatus == 3 &&
+          (mRootCounter > 0.99 * *mpMaxInternalSteps ||
+           mTime == mpCurrentState->getTime()))
         {
           mLsodaStatus = -33;
           mRootCounter = 0;
@@ -295,6 +303,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
                 case NONE:
                 case DISCRETE:
                   // Reset the integrator to the state before the failed integration.
+
                   mMethodState = *mpCurrentState;
                   mTime = mMethodState.getTime();
                   mLsodaStatus = 1;
