@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.103 $
+//   $Revision: 1.104 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/01/05 22:45:12 $
+//   $Date: 2012/02/09 18:18:47 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -152,7 +152,6 @@ protected slots:
   void aboutQt();
   void slotQuit();
   void slotQuitFinished(bool success);
-  void slotCloseEventFinished(bool success);
   void slotPreferences();
   void slotConvertToIrreversible();
   void listViewsFolderChanged(const QModelIndex & index);
@@ -251,7 +250,6 @@ private:
   QThread * mpMainThread;
   QString mNewFile;
   bool mCommitRequired;
-  QCloseEvent * mpCloseEvent;
   bool mQuitApplication;
   bool mSliderDialogEnabled;
 

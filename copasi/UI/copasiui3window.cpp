@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.306 $
+//   $Revision: 1.307 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/01/05 22:45:11 $
+//   $Date: 2012/02/09 18:18:46 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -235,7 +235,6 @@ CopasiUI3Window::CopasiUI3Window():
     mpMainThread(QThread::currentThread()),
     mNewFile(),
     mCommitRequired(true),
-    mpCloseEvent(),
     mQuitApplication(false),
     mSliderDialogEnabled(false),
     mWindows()
@@ -1098,7 +1097,7 @@ void CopasiUI3Window::slotQuit()
 
 void CopasiUI3Window::slotQuitFinished(bool success)
 {
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileSaveFinished(bool)));
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotQuitFinished(bool)));
 
   mQuitApplication &= success;
 
@@ -1111,81 +1110,13 @@ void CopasiUI3Window::slotQuitFinished(bool success)
 
 void CopasiUI3Window::closeEvent(QCloseEvent* ce)
 {
-  if (!CopasiUI3Window::getMainWindow()->isEnabled())
-    {
-      CQMessageBox::information(this, "COPASI", "COPASI is currently executing tasks.\n"
-                                "Please stop them first before closing COPASI.");
-      ce->ignore();
-      return;
-    }
+  // We handle this internally.
+  ce->ignore();
 
-  mpDataModelGUI->commit();
-  mpCloseEvent = ce;
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-
-
-  if (mpDataModelGUI && ((*CCopasiRootContainer::getDatamodelList())[0]->isChanged() || this->mpSliders->isChanged()))
-    {
-      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotCloseEventFinished(bool)));
-
-      switch (CQMessageBox::question(this, "COPASI",
-                                     "The document contains unsaved changes\n"
-                                     "Do you want to save the changes before exiting?",
-                                     QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
-                                     QMessageBox::Save))
-        {
-          case QMessageBox::Save:
-            slotFileSave();
-            mpCloseEvent->ignore();
-            mpCloseEvent = NULL;
-            break;
-
-          case QMessageBox::Discard:
-            slotCloseEventFinished(true);
-            break;
-
-          case QMessageBox::Cancel:
-          default:
-            slotCloseEventFinished(false);
-            break;
-        }
-    }
-  else
-    {
-      slotCloseEventFinished(true);
-    }
-
-  if (this->mpSliders) this->mpSliders->reset();
+  slotQuit();
 
   return;
 }
-
-void CopasiUI3Window::slotCloseEventFinished(bool success)
-{
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotCloseEventFinished(bool)));
-
-  mQuitApplication &= success;
-
-  if (mQuitApplication)
-    {
-      CleanUp();
-      qApp->quit();
-    }
-
-  if (mpCloseEvent != NULL)
-    {
-      if (success)
-        {
-          CleanUp();
-          mpCloseEvent->accept();
-        }
-      else
-        mpCloseEvent->ignore();
-    }
-
-  mpCloseEvent = NULL;
-}
-
 
 // Cleanup all the temp .cps files created at runtime.
 void CopasiUI3Window::CleanUp()
