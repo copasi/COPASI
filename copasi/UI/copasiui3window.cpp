@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.307 $
+//   $Revision: 1.308 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/02/09 18:18:46 $
+//   $Date: 2012/02/22 16:28:44 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -319,14 +319,6 @@ CopasiUI3Window::CopasiUI3Window():
 
   // drop acceptance
   setAcceptDrops(true);
-
-  QTimer * pTimer = new QTimer(this);
-  pTimer->setSingleShot(true);
-  pTimer->setInterval(250);
-
-  connect(pTimer, SIGNAL(timeout()), this, SLOT(slotProcessCommandline()));
-
-  pTimer->start();
 }
 
 CopasiUI3Window::~CopasiUI3Window()
@@ -711,10 +703,13 @@ void CopasiUI3Window::newDoc()
   mCommitRequired = true;
 }
 
-void CopasiUI3Window::slotProcessCommandline()
+void CopasiUI3Window::openInitialDocument(const QString & file)
 {
-  //look at commandline
-  if (!COptions::compareValue("ImportSBML", std::string("")))
+  if (file != "")
+    {
+      slotFileOpen(file);
+    }
+  else if (!COptions::compareValue("ImportSBML", std::string("")))
     {
       // Import the SBML File
       std::string ImportSBML;
@@ -723,6 +718,7 @@ void CopasiUI3Window::slotProcessCommandline()
     }
   else if (COptions::getNonOptions().size())
     {
+      // Look at commandline
       slotFileOpen(FROM_UTF8(COptions::getNonOptions()[0]));
     }
   else

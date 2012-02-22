@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.258 $
+#   $Revision: 1.259 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2011/12/22 19:51:58 $
+#   $Date: 2012/02/22 16:28:44 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.258 $ $Author: shoops $ $Date: 2011/12/22 19:51:58 $
+# $Revision: 1.259 $ $Author: shoops $ $Date: 2012/02/22 16:28:44 $
 ######################################################################
 
 LIB = UI
@@ -71,6 +71,7 @@ HEADERS	+= \
   CQOptimizationWidget.h \
   CQOptimizationResult.h \
   CQOscillationTaskWidget.h \
+  CQParameterOverviewWidget.h \
   CQPlotsWidget.h \
   CQPreferenceDialog.h \
   CQProgressDialog.h \
@@ -125,6 +126,7 @@ HEADERS	+= \
   CQBaseDataModel.h \
   CQComboDelegate.h \
   CQCompartmentDM.h \
+  CQCopasiApplication.h \
   CQDateTimeEditDelegate.h \
   CQEFMNetReactionDM.h  \
   CQEFMReactionDM.h \
@@ -217,6 +219,7 @@ SOURCES	+= \
   CQOptimizationWidget.cpp \
   CQOptimizationResult.cpp \
   CQOscillationTaskWidget.cpp \
+  CQParameterOverviewWidget.cpp \
   CQPlotsWidget.cpp \
   CQPreferenceDialog.cpp \
   CQProgressDialog.cpp \
@@ -272,6 +275,7 @@ SOURCES	+= \
   CQBaseDataModel.cpp \
   CQComboDelegate.cpp \
   CQCompartmentDM.cpp \
+  CQCopasiApplication.cpp \
   CQDateTimeEditDelegate.cpp \
   CQEFMNetReactionDM.cpp  \
   CQEFMReactionDM.cpp \
@@ -357,6 +361,7 @@ FORMS += CQNotes.ui
 FORMS += CQOptimizationWidget.ui
 FORMS += CQOptimizationResult.ui
 FORMS += CQOscillationTaskWidget.ui
+FORMS += CQParameterOverviewWidget.ui
 FORMS += CQPlotsWidget.ui
 FORMS += CQPreferenceDialog.ui
 FORMS += CQProgressDialog.ui

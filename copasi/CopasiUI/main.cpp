@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/18 18:31:11 $
+//   $Date: 2012/02/22 16:28:45 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,7 @@
 
 #include "copasi.h"
 
+#include "UI/CQCopasiApplication.h"
 #include "UI/copasiui3window.h"
 #include "UI/DataModelGUI.h"
 #include "UI/CQMessageBox.h"
@@ -47,7 +48,7 @@
 
 int main(int argc, char *argv[])
 {
-  QApplication a(argc, argv);
+  CQCopasiApplication a(argc, argv);
 
   // Parse the commandline options
   try
@@ -88,7 +89,7 @@ int main(int argc, char *argv[])
 
   if (pWindow != NULL)
     {
-      pWindow->getDataModel()->setQApp(&a);
+      a.setMainWindow(pWindow);
       a.exec();
     }
 
