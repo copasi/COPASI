@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/14 17:31:11 $
+//   $Date: 2012/02/22 21:01:39 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,7 +39,7 @@
 #endif
 
 #ifdef Darwin
-# include <Carbon/Carbon.h>
+# include <Carbon.h>
 #endif
 
 #include <sstream>
