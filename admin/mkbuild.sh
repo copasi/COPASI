@@ -31,7 +31,7 @@ if [ x"$#" = x1 ]; then
   major=`${AWK} -- '$2 ~ "VERSION_MAJOR" {print $3}' copasi/copasiversion.h`
   minor=`${AWK} -- '$2 ~ "VERSION_MINOR" {print $3}' copasi/copasiversion.h`
   build=`${AWK} -- '$2 ~ "VERSION_BUILD" {print $3}' copasi/copasiversion.h`
-
+  comment=`${AWK} -- '$2 ~ "VERSION_COMMENT" {print $3}' copasi/copasiversion.h`
   license="US"
 
   rm Copasi-$build-${PACKAGE}.*
