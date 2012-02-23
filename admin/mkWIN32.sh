@@ -17,12 +17,6 @@ EOF`
 GUID=`echo $GUID | sed 'y/abcdef/ABCDEF/'`
 productcode=${GUID:0:8}-${GUID:8:4}-${GUID:12:4}-${GUID:16:4}-${GUID:20:12}
 
-buildname=${build}
-
-if [ x"${comment}" = xSnapshot ]; then
-  buildname=${major}$minor}${build}
-fi
-
 [ -e setup ] && rm -rf setup
 mkdir setup
 pushd setup
@@ -67,7 +61,7 @@ cp ${DEPDIR}/* copasi/bin
     
 if [ x"$license" = xUS ]; then
   UPLOAD copasi/bin/CopasiSE.exe \
-    $license/Copasi-AllSE/${PACKAGE}/CopasiSE-$build.exe
+    $license/Copasi-AllSE/${PACKAGE}/CopasiSE-${buildname}.exe
 fi
 
 # Copy configuration resources    
@@ -110,7 +104,7 @@ sed -e '/#define MyAppVersion/s/".*"/"'${major}.${minor}.${build}'"/' \
 rm tmp.iss
 
 # Move the package to its final location
-mv Copasi-$build-${PACKAGE}.exe ..
-chmod 755 ../Copasi-$build-${PACKAGE}.exe
+mv Copasi-${buildname}-${PACKAGE}.exe ..
+chmod 755 ../Copasi-${buildname}-${PACKAGE}.exe
 
 popd

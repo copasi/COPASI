@@ -10,7 +10,7 @@ if otool -L ./copasi/CopasiUI/CopasiUI.app/Contents/MacOS/CopasiUI \
 SETFILE=/Developer/Tools/SetFile
 
 # Create temporary package image drive
-hdiutil create Copasi-tmp.dmg -megabytes 400 -volname Copasi-$build-${PACKAGE} \
+hdiutil create Copasi-tmp.dmg -megabytes 400 -volname Copasi-${buildname}-${PACKAGE} \
   -fs HFS+ -layout NONE
 
 # Mount temporary package image drive
@@ -31,7 +31,7 @@ if [ -e copasi/CopasiSE/CopasiSE.app/Contents/MacOS/CopasiSE ] ; then
       
   if [ x"$license" = xUS ]; then
     UPLOAD ${TMPDIR}/COPASI/CopasiSE \
-      $license/Copasi-AllSE/${PACKAGE}/CopasiSE-$build
+      $license/Copasi-AllSE/${PACKAGE}/CopasiSE-${buildname}
    fi
 fi  
     
@@ -98,6 +98,6 @@ chmod 777 ${TMPDIR}/COPASI/examples
 sleep 10
 hdiutil eject ${drive} || (sleep 10; hdiutil eject ${drive} -force)
 
-[ -e Copasi-$build-${PACKAGE}.dmg ] && rm -rf Copasi-$build-${PACKAGE}.dmg
-hdiutil convert -format UDCO Copasi-tmp.dmg -o Copasi-$build-${PACKAGE}.dmg
+[ -e Copasi-${buildname}-${PACKAGE}.dmg ] && rm -rf Copasi-${buildname}-${PACKAGE}.dmg
+hdiutil convert -format UDCO Copasi-tmp.dmg -o Copasi-${buildname}-${PACKAGE}.dmg
 rm -rf Copasi-tmp.dmg

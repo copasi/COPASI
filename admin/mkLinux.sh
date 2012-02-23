@@ -1,6 +1,6 @@
-[ -e $build-${PACKAGE} ] && rm -rf $build-${PACKAGE}
-mkdir $build-${PACKAGE}
-pushd $build-${PACKAGE}
+[ -e ${buildname}-${PACKAGE} ] && rm -rf ${buildname}-${PACKAGE}
+mkdir ${buildname}-${PACKAGE}
+pushd ${buildname}-${PACKAGE}
 
 mkdir copasi
 mkdir copasi/bin
@@ -51,9 +51,9 @@ cp ../copasi/wizard/help_html/figures/*.png \
   copasi/share/copasi/doc/html/figures
 chmod 644 copasi/share/copasi/doc/html/figures/*.png
 
-tar -czf ../Copasi-$build-${PACKAGE}.tar.gz copasi
+tar -czf ../Copasi-${buildname}-${PACKAGE}.tar.gz copasi
 
 UPLOAD copasi/bin/CopasiSE \
-  $license/Copasi-AllSE/${PACKAGE}/CopasiSE-$build
+  $license/Copasi-AllSE/${PACKAGE}/CopasiSE-${buildname}
 
 popd
