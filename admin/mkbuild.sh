@@ -38,7 +38,7 @@ if [ x"$#" = x1 ]; then
 
   license="US"
 
-  rm Copasi-$build-${PACKAGE}.*
+  rm Copasi-${buildname}-${PACKAGE}.*
 
   case x"$1" in 
   xWIN32)
@@ -54,7 +54,7 @@ if [ x"$#" = x1 ]; then
     ;;
   esac
 
-  UPLOAD Copasi-$build-${PACKAGE}.* \
+  UPLOAD Copasi-${buildname}-${PACKAGE}.* \
     $license
 
 else
