@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
-#   $Revision: 1.72 $
+#   $Revision: 1.73 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2012/02/23 16:07:25 $
+#   $Date: 2012/02/23 16:34:43 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.72 $ $Author: shoops $ $Date: 2012/02/23 16:07:25 $
+# $Revision: 1.73 $ $Author: shoops $ $Date: 2012/02/23 16:34:43 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -101,25 +101,23 @@ macx:debug {
   }
 }
 
-!contains(COPASI_SRC_PACKAGE, true) {
-  # The bindings
-  !contains(BUILD_BINDINGS, no) {
-    macx:debug {
-      addSubdirs(bindings, $${COPASISE_DIRS} $${COPASIUI_DIRS})
-    } else {
-      addSubdirs(bindings, libs)
-    }
+# The bindings
+!contains(BUILD_BINDINGS, no) {
+  macx:debug {
+    addSubdirs(bindings, $${COPASISE_DIRS} $${COPASIUI_DIRS})
+  } else {
+    addSubdirs(bindings, libs)
   }
+}
 
-  # unit tests
-  !isEmpty(CPPUNIT_PATH) {
-    # the sbml unittests have to be compiled before the other unittests
-    # because the other unittests use some methods from the sbml unittests
-    # directory
-    SUBDIRS += sbml/unittests
-    SUBDIRS += compareExpressions/unittests
-    SUBDIRS += compareExpressions/stresstest
-  }
+# unit tests
+!isEmpty(CPPUNIT_PATH) {
+  # the sbml unittests have to be compiled before the other unittests
+  # because the other unittests use some methods from the sbml unittests
+  # directory
+  SUBDIRS += sbml/unittests
+  SUBDIRS += compareExpressions/unittests
+  SUBDIRS += compareExpressions/stresstest
 }
 
 
