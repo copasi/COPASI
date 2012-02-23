@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMmlScrollView.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:53 $
+//   $Date: 2012/02/23 16:09:10 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,7 @@
 #include <QApplication>
 
 #ifdef HAVE_MML
-# include "mml/qtmmlwidget.h"
+# include <qtmmlwidget.h>
 #endif // HAVE_MML
 
 #include "qtUtilities.h"

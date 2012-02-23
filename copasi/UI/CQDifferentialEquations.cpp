@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 17:07:40 $
+//   $Date: 2012/02/23 16:09:10 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,7 +30,7 @@
 #include <qregexp.h>
 
 #ifdef HAVE_MML
-# include "mml/qtmmlwidget.h"
+# include <qtmmlwidget.h>
 #endif // HAVE_MML
 
 #include "model/CMMLOutput.h"
