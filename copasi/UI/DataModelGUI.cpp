@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.101 $
+//   $Revision: 1.102 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/11/09 15:08:57 $
+//   $Author: shoops $
+//   $Date: 2012/02/23 17:44:15 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -478,12 +478,6 @@ bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
 }
 
 //************** QApplication ***********************************************
-
-void DataModelGUI::setQApp(QApplication* app)
-{mpApp = app;}
-
-QApplication* DataModelGUI::getQApp() const
-{return mpApp;}
 
 //************Model-View Architecture*****************************************
 

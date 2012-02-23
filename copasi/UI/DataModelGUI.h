@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/11/09 15:08:57 $
+//   $Author: shoops $
+//   $Date: 2012/02/23 17:44:15 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,9 +90,6 @@ public:
   //CMathModel * getMathModel() {return mpMathModel;}
   //bool updateMathModel();
   //bool scheduleMathModelUpdate(const bool & update = true);
-
-  void setQApp(QApplication* app);
-  QApplication* getQApp() const;
 
   bool notify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
 
