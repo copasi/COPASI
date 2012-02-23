@@ -82,6 +82,17 @@ if test x"${QWT_PATH}" != x""; then
 fi
 
 
+dnl qwt library
+AC_ARG_WITH([qtmml],
+  AS_HELP_STRING([--with-qtmml=PATH],
+                 [Path to Qt MML Widget Library ]),
+  [QTMML_PATH=$withval])
+
+if test x"${QTMML_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG QTMML_PATH=$QTMML_PATH"
+fi
+
+
 dnl qwt3d library
 AC_ARG_WITH([qwt3d],
   AS_HELP_STRING([--with-qwt3d=PATH],
