@@ -20,40 +20,46 @@ fi
 major=`gawk -- '$2 ~ "VERSION_MAJOR" {print $3}' copasi/copasiversion.h`
 minor=`gawk -- '$2 ~ "VERSION_MINOR" {print $3}' copasi/copasiversion.h`
 build=`gawk -- '$2 ~ "VERSION_BUILD" {print $3}' copasi/copasiversion.h`
+comment=`${AWK} -- '$2 ~ "VERSION_COMMENT" {print $3}' copasi/copasiversion.h`
+buildname=${build}
+
+if [ x"${comment}" = x\"Snapshot\" ]; then
+  buildname=${major}${minor}${build}
+fi
 
 license="US"
 
-test -d copasi-${build}-src && rm -rf copasi-${build}-src
+test -d copasi-${buildname}-src && rm -rf copasi-${buildname}-src
 
 cd copasi
 make src_distribution
 cd ..
 
-mv copasi_src copasi-${build}-src
+mv copasi_src copasi-${buildname}-src
 
-cp acinclude.m4 copasi-${build}-src
+cp acinclude.m4 copasi-${buildname}-src
 
-cp README.Linux copasi-${build}-src
-cp README.SunOS copasi-${build}-src
-cp README.Win32 copasi-${build}-src
-cp README_MAC.rtf copasi-${build}-src
+cp README.Linux copasi-${buildname}-src
+cp README.SunOS copasi-${buildname}-src
+cp README.Win32 copasi-${buildname}-src
+cp README_MAC.rtf copasi-${buildname}-src
 
-cp copasi/ArtisticLicense.txt copasi-${build}-src/LICENSE.txt
+cp copasi/ArtisticLicense.txt copasi-${buildname}-src/LICENSE.txt
 
-cp --parent admin/flex.sh copasi-${build}-src
-cp --parent admin/install-sh copasi-${build}-src
-cp --parent admin/missing copasi-${build}-src
-cp --parent admin/mkbuild.sh copasi-${build}-src
-cp --parent admin/yacc.sh copasi-${build}-src
-chmod 755 copasi-${build}-src/admin/*
+cp --parent admin/flex.sh copasi-${buildname}-src
+cp --parent admin/install-sh copasi-${buildname}-src
+cp --parent admin/missing copasi-${buildname}-src
+cp --parent admin/mkbuild.sh copasi-${buildname}-src
+cp --parent admin/yacc.sh copasi-${buildname}-src
+chmod 755 copasi-${buildname}-src/admin/*
 
-cp --parent cvs_admin/c++style copasi-${build}-src
-chmod 755 copasi-${build}-src/cvs_admin/*
+cp --parent cvs_admin/c++style copasi-${buildname}-src
+chmod 755 copasi-${buildname}-src/cvs_admin/*
 
-cp configure.in copasi-${build}-src
-cp admin/configure.bat copasi-${build}-src
+cp configure.in copasi-${buildname}-src
+cp admin/configure.bat copasi-${buildname}-src
 
-cd copasi-${build}-src
+cd copasi-${buildname}-src
 aclocal
 autoconf
 automake
@@ -71,7 +77,7 @@ cp ../copasi/GL/glext.h
 
 cd ..
 
-tar -czf Copasi-${build}-SRC.tar.gz copasi-${build}-src 
+tar -czf Copasi-${buildname}-SRC.tar.gz copasi-${buildname}-src 
  
-UPLOAD Copasi-${build}-SRC*.* $license
+UPLOAD Copasi-${buildname}-SRC*.* $license
 
