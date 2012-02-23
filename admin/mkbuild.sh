@@ -7,8 +7,6 @@ AWK=${COPASI_AWK:-gawk}
 
 PACKAGE=${COPASI_PACKAGE:-$1}
 
-echo $PACKAGE
-
 if [ x"$COPASI_UPLOAD" != x ]; then
   function UPLOAD () {
     SRC=""
@@ -34,8 +32,8 @@ if [ x"$#" = x1 ]; then
   comment=`${AWK} -- '$2 ~ "VERSION_COMMENT" {print $3}' copasi/copasiversion.h`
   buildname=${build}
 
-  if [ x"${comment}" = xSnapshot ]; then
-    buildname=${major}$minor}${build}
+  if [ x"${comment}" = x\"Snapshot\" ]; then
+    buildname=${major}${minor}${build}
   fi
 
   license="US"
