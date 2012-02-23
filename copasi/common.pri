@@ -1,6 +1,6 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.132 $ 
+#   $Revision: 1.133 $ 
 #   $Name:  $ 
 # End CVS Header 
 
@@ -19,7 +19,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.132 $ $Author: shoops $ $Date: 2011/11/10 15:49:44 $  
+# $Revision: 1.133 $ $Author: shoops $ $Date: 2012/02/23 16:07:25 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -115,10 +115,6 @@ debug {
   DEFINES += COPASI_NONLIN_DYN
   }
 
-!contains(COPASI_SRC_PACKAGE, true)  {
-  DEFINES += HAVE_MML
-}
-
 win32: STATIC_LINKAGE = yes
 
 contains(STATIC_LINKAGE, yes) {
@@ -181,39 +177,57 @@ contains(BUILD_OS, Darwin) {
   }
 
   !isEmpty(EXPAT_PATH){
-    LIBS+=  $${EXPAT_PATH}/lib/libexpat.a
+    LIBS +=  $${EXPAT_PATH}/lib/libexpat.a
     INCLUDEPATH += $${EXPAT_PATH}/include
   } else {
     LIBS += -lexpat
   }
 
   !isEmpty(RAPTOR_PATH){
-    LIBS+=  $${RAPTOR_PATH}/lib/libraptor.a
+    LIBS +=  $${RAPTOR_PATH}/lib/libraptor.a
+    LIBS += -lcurl -liconv -lxml2 -lxslt -lssl -lz
     INCLUDEPATH += $${RAPTOR_PATH}/include
   } else {
-    LIBS += -lraptor
+    LIBS += -lraptor -lcurl -liconv -lxml2 -lxslt -lssl -lz
   }
 
   contains(CONFIG, qt) {
-    !isEmpty(SBW_PATH){
-      LIBS+=  $${SBW_PATH}/lib/libSBW.a
-      INCLUDEPATH += $${SBW_PATH}/include
+    !isEmpty(SBW_PATH) {
+      contains(SBW_PATH, yes) {
+        LIBS += -lSBW
+      } else {
+        LIBS += $${SBW_PATH}/lib/libSBW.a
+        INCLUDEPATH += $${SBW_PATH}/include
+      }
       DEFINES += COPASI_SBW_INTEGRATION
-      DEFINES += LINUX DARWIN 
-    } 
+      DEFINES += LINUX DARWIN
+    }
   
-    !isEmpty(QWT_PATH){
+    !isEmpty(QWT_PATH) {
        LIBS+=  $${QWT_PATH}/lib/libqwt.a
        INCLUDEPATH += $${QWT_PATH}/include
     } else {
       LIBS += -lqwt
     }
     
-    !isEmpty(QWT3D_PATH){
+    !isEmpty(QWT3D_PATH) {
       LIBS +=  $${QWT3D_PATH}/lib/libqwtplot3d.a
       INCLUDEPATH += $${QWT3D_PATH}/include
     } else {
       LIBS += -lqwtplot3d
+    }
+
+    !isEmpty(QTMML_PATH) {
+      contains(QTMML_PATH, yes) {
+        release: LIBS += -lQtSolutions_MMLWidget-2.4
+        debug:   LIBS += -lQtSolutions_MMLWidget-2.4_debug
+      } else {
+        release: LIBS +=  $${QTMML_PATH}/lib/libQtSolutions_MMLWidget-2.4.a
+        debug:   LIBS +=  $${QTMML_PATH}/lib/libQtSolutions_MMLWidget-2.4_debug.a
+        INCLUDEPATH += $${QTMML_PATH}/include
+      }
+      
+      DEFINES += HAVE_MML
     }
   }
 
@@ -394,13 +408,13 @@ contains(BUILD_OS, WIN32) {
   }
   
   contains(CONFIG, qt) {
-    LIBS    += SBW$${RUNTIME}.lib ws2_32.lib
-
     !isEmpty(SBW_PATH){
       QMAKE_CXXFLAGS += -I\""$${SBW_PATH}"/include\"
       QMAKE_LFLAGS   += /LIBPATH:\""$${SBW_PATH}"/lib\"
       QMAKE_LFLAGS   += /LIBPATH:\""$${SBW_PATH}/lib/$${COPASI_ARCH}"\"
       
+      LIBS    += SBW$${RUNTIME}.lib ws2_32.lib
+
       DEFINES += COPASI_SBW_INTEGRATION
       DEFINES *= WIN32
     }
@@ -418,10 +432,20 @@ contains(BUILD_OS, WIN32) {
       INCLUDEPATH += \""$${QWT3D_PATH}"/include\"
     } 
 
-#    DEFINES        += QWT3D_NODLL
-
     release: LIBS += -lqwtplot3d
     debug: LIBS += -lqwtplot3dD
+    
+    !isEmpty(QTMML_PATH) {
+      QMAKE_CXXFLAGS += -I\""$${QTMML_PATH}"/include\"
+      QMAKE_LFLAGS   += /LIBPATH:\""$${QTMML_PATH}"/lib\"
+      QMAKE_LFLAGS   += /LIBPATH:\""$${QTMML_PATH}/lib/$${COPASI_ARCH}"\"
+    
+      release: LIBS +=  -lQtSolutions_MMLWidget-2.4
+      debug:   LIBS +=  -lQtSolutions_MMLWidget-2.4d
+      
+      DEFINES += HAVE_MML
+    }
+    
   }
 } 
 
@@ -496,6 +520,19 @@ contains(STATIC_LINKAGE, yes) {
       INCLUDEPATH += $${QWT3D_PATH}/include
     }
     LIBS += -lqwtplot3d
+    
+    !isEmpty(QTMML_PATH) {
+      contains(QTMML_PATH, yes) {
+        release: LIBS += -lQtSolutions_MMLWidget-2.4
+        debug:   LIBS += -lQtSolutions_MMLWidget-2.4_debug
+      } else {
+        release: LIBS +=  $${QTMML_PATH}/lib/libQtSolutions_MMLWidget-2.4.a
+        debug:   LIBS +=  $${QTMML_PATH}/lib/libQtSolutions_MMLWidget-2.4_debug.a
+        INCLUDEPATH += $${QTMML_PATH}/include
+      }
+      
+      DEFINES += HAVE_MML
+    }
     
     LIBS += -lSM
   } else {
@@ -653,7 +690,7 @@ contains(BUILD_OS, Linux) {
   }
 
   contains(CONFIG, qt) {
-    !isEmpty(SBW_PATH){
+    !isEmpty(SBW_PATH) {
       contains(SBW_PATH, yes) {
         LIBS += -lSBW
       } else {
@@ -664,19 +701,32 @@ contains(BUILD_OS, Linux) {
       DEFINES += LINUX 
     }
      
-    !isEmpty(QWT_PATH){
+    !isEmpty(QWT_PATH) {
        LIBS +=  -L$${QWT_PATH}/lib
        INCLUDEPATH += $${QWT_PATH}/include
        INCLUDEPATH += $${QWT_PATH}/include/qwt-qt4
     }
     LIBS += -lqwt
 
-    !isEmpty(QWT3D_PATH){
+    !isEmpty(QWT3D_PATH) {
       LIBS += -L$${QWT3D_PATH}/lib/
       INCLUDEPATH += $${QWT3D_PATH}/include
       INCLUDEPATH += $${QWT3D_PATH}/include/qwtplot3d-qt4
     }
     LIBS += -lqwtplot3d
+
+    !isEmpty(QTMML_PATH) {
+      contains(QTMML_PATH, yes) {
+        release: LIBS += -lQtSolutions_MMLWidget-2.4
+        debug:   LIBS += -lQtSolutions_MMLWidget-2.4_debug
+      } else {
+        release: LIBS +=  $${QTMML_PATH}/lib/libQtSolutions_MMLWidget-2.4.a
+        debug:   LIBS +=  $${QTMML_PATH}/lib/libQtSolutions_MMLWidget-2.4_debug.a
+        INCLUDEPATH += $${QTMML_PATH}/include
+      }
+      
+      DEFINES += HAVE_MML
+    }
 
 # only needed for the class CLSimpleImageTexturizer which is only
 # needed if we want to create bitmaps from layouts in the backend

@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
-#   $Revision: 1.71 $
+#   $Revision: 1.72 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2011/12/01 19:54:56 $
+#   $Date: 2012/02/23 16:07:25 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.71 $ $Author: shoops $ $Date: 2011/12/01 19:54:56 $
+# $Revision: 1.72 $ $Author: shoops $ $Date: 2012/02/23 16:07:25 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -74,10 +74,6 @@ addSubdirs($${COPASISE_DIRS})
   COPASIUI_DIRS += plotUI
   COPASIUI_DIRS += tex
   COPASIUI_DIRS += wizard
-
-  contains(DEFINES, HAVE_MML) {
-    COPASIUI_DIRS += mml
-  }
 
   addSubdirs($${COPASIUI_DIRS})
 

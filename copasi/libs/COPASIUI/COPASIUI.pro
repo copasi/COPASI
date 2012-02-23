@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/COPASIUI/COPASIUI.pro,v $
-#   $Revision: 1.20 $
+#   $Revision: 1.21 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2011/03/07 19:29:39 $
+#   $Date: 2012/02/23 16:08:09 $
 # End CVS Header
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -32,10 +32,6 @@ DISTFILES = COPASIUI.pro
 include(../../common.pri)
 
 CONFIG += qt
-
-contains(DEFINES, HAVE_MML) {
-  COPASI_LIBS += mml
-}
 
 COPASI_LIBS += barChart
 COPASI_LIBS += layoutUI

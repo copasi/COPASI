@@ -42,10 +42,6 @@ macx:debug {
     COPASI_LIBS_SE += tss
     COPASI_LIBS_SE += tssanalysis
     COPASI_LIBS_SE += utilities
-    
-    contains(DEFINES, HAVE_MML) {
-      COPASI_LIBS_UI += mml
-    }
 
     COPASI_LIBS_UI += barChart
     COPASI_LIBS_UI += layoutUI
