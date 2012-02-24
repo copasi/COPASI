@@ -59,7 +59,11 @@ chmod 755 copasi-${buildname}-src/cvs_admin/*
 cp configure.in copasi-${buildname}-src
 cp admin/configure.bat copasi-${buildname}-src
 
+#include GL/glext.h
+cp --parent copasi/GL/glext.h copasi-${buildname}-src
+
 cd copasi-${buildname}-src
+
 aclocal
 autoconf
 automake
@@ -67,13 +71,10 @@ rm -rf autom4te.cache
 
 #remove any reference to CROSSVALIDATION
 CleanFiles=`find . -type f -exec grep -Hq '#ifdef COPASI_CROSSVALIDATION' {} \; -exec echo {} \; | sort -u`
+
 for file in $CleanFiles; do
   gawk -- ' BEGIN {keep = 1} $0 ~ "#ifdef COPASI_CROSSVALIDATION" {keep = 0} {if (keep == 1) {print $0}} $0 ~ "#endif // COPASI_CROSSVALIDATION" {keep = 1}' $file > $$.tmp && mv $$.tmp $file;
 done;
-
-#include GL/glext.h
-mkdir copasi/GL
-cp ../copasi/GL/glext.h
 
 cd ..
 
