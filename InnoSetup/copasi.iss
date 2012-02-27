@@ -500,7 +500,7 @@ begin
   Architecture := 'x86'
   Name := 'Microsoft.VC90.CRT'
   Key := '1fc8b3b9a1e18e3b'
-  Version := StrToVersion('9.0.21022.8');
+  Version := StrToVersion('9.0.30729.1');
 
   DLLs := TStringList.Create;
   DLLs.Add('MSVCP90.DLL');
