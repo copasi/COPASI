@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/07 16:25:02 $
+//   $Date: 2012/02/27 22:26:21 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -385,17 +385,28 @@ void CQArrayAnnotationsWidget::fillTableN(size_t rowIndex, size_t colIndex,
   size_t i, imax = mpArray->size()[rowIndex];
   size_t j, jmax = mpArray->size()[colIndex];
 
+  int TableWidth = mpContentTable->size().width();
+  mpContentTable->verticalHeader()->setMaximumWidth(TableWidth / std::min< size_t >(jmax, 5));
+  mpContentTable->verticalHeader()->setTextElideMode(Qt::ElideRight);
+  mpContentTable->horizontalHeader()->setTextElideMode(Qt::ElideRight);
+
+  QString DisplayName;
+
   //annotations
   for (i = 0; i < imax; ++i)
     {
-      QTableWidgetItem * pItem = new QTableWidgetItem(FROM_UTF8(rowdescr[i]));
+      DisplayName = FROM_UTF8(rowdescr[i]);
+      QTableWidgetItem * pItem = new QTableWidgetItem(DisplayName);
+      pItem->setToolTip(DisplayName);
       mpContentTable->setVerticalHeaderItem(i, pItem);
     }
 
   for (j = 0; j < jmax; ++j)
     {
       // :TODO: This is a hack we need a smarter way possibly using getObjectDisplayName.
-      QTableWidgetItem * pItem = new QTableWidgetItem(FROM_UTF8(coldescr[j]).replace("; {", "\n{"));
+      DisplayName = FROM_UTF8(coldescr[j]).replace("; {", "\n{");
+      QTableWidgetItem * pItem = new QTableWidgetItem(DisplayName);
+      pItem->setToolTip(DisplayName);
       mpContentTable->setHorizontalHeaderItem((int) j, pItem);;
 
 #ifdef DEBUG_UI
