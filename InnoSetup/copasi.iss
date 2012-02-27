@@ -498,13 +498,13 @@ var
 
 begin
   Architecture := 'x86'
-  Name := 'Microsoft.VC80.CRT'
+  Name := 'Microsoft.VC90.CRT'
   Key := '1fc8b3b9a1e18e3b'
-  Version := StrToVersion('8.0.50727.762');
+  Version := StrToVersion('9.0.21022.8');
 
   DLLs := TStringList.Create;
-  DLLs.Add('MSVCP80.DLL');
-  DLLs.Add('MSVCR80.DLL');
+  DLLs.Add('MSVCP90.DLL');
+  DLLs.Add('MSVCR90.DLL');
 
   Result := HaveSxSInstallation(Architecture, Name, Key, Version, DLLs);
 end;
