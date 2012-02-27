@@ -8,13 +8,13 @@
 #define MyAppExeName "bin\CopasiUI.exe"
 #define MyBuild "0"
 #define MyAppId "{{00000000-0000-0000-0000-000000000000}"
-#define MyWorkDir "C:\cygwin\home\shoops\environment\qt4\copasi_dev\development\InnoSetup"
+#define MyWorkDir "C:\cygwin\home\shoops\environment\win32-icc-32\copasi_dev\RELEASE\InnoSetup"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={#MyAppId}
+AppID={#MyAppId}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
@@ -22,22 +22,24 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
+ChangesAssociations=true
+ChangesEnvironment=true
 DefaultDirName={code:DefDirRoot}\{#MyAppPublisher}\{#MyAppName} {#MyAppVersion}
 DefaultGroupName={#MyAppName} {#MyAppVersion}
 OutputDir={#MyWorkDir}
 OutputBaseFilename=Copasi-{#MyBuild}-WIN32
 SetupIconFile={#MyWorkDir}\addremov.ico
-Compression=lzma/ultra
+Compression=lzma/Ultra
 SolidCompression=true
-InternalCompressLevel=ultra
+InternalCompressLevel=Ultra
 ;SignTool=Standard sign /f C:\cygwin\home\shoops\environment\qt4\copasi_dev\development\InnoSetup\copasi.pfx /p Koichi01 $f
 SignedUninstaller=false
-ChangesEnvironment=yes
 VersionInfoVersion={#MyAppVersion}.0
 ShowLanguageDialog=no
 UninstallDisplayIcon={app}\share\copasi\icons\Copasi.ico
 UninstallDisplayName={#MyAppName} {#MyAppVersion}
 PrivilegesRequired=none
+VersionInfoCompany=copasi.org
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl
@@ -48,10 +50,10 @@ Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription
 
 [Files]
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
-Source: ..\setup\copasi\bin\QtXml4.dll; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\CopasiSE.exe; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\CopasiUI.exe; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\libmmd.dll; DestDir: {app}\bin
+Source: ..\setup\copasi\bin\svml_dispmd.dll; DestDir: {app}\bin; 
 Source: ..\setup\copasi\bin\phonon4.dll; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\Qt3Support4.dll; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\QtCore4.dll; DestDir: {app}\bin
@@ -61,9 +63,9 @@ Source: ..\setup\copasi\bin\QtOpenGL4.dll; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\QtSql4.dll; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\QtSvg4.dll; DestDir: {app}\bin
 Source: ..\setup\copasi\bin\QtWebKit4.dll; DestDir: {app}\bin
-Source: ..\setup\copasi\bin\svml_dispmd.dll; DestDir: {app}\bin
-Source: ..\setup\copasi\bin\msvcr80.dll; DestDir: {app}\bin; Check: InstallUserRuntime()
-Source: ..\setup\copasi\bin\msvcp80.dll; DestDir: {app}\bin; Check: InstallUserRuntime()
+Source: ..\setup\copasi\bin\QtXml4.dll; DestDir: {app}\bin
+Source: ..\setup\copasi\bin\msvcr90.dll; DestDir: {app}\bin; Check: InstallUserRuntime(); 
+Source: ..\setup\copasi\bin\msvcp90.dll; DestDir: {app}\bin; Check: InstallUserRuntime(); 
 Source: ..\setup\copasi\README.txt; DestDir: {app}
 Source: ..\setup\copasi\LICENSE.txt; DestDir: {app}
 Source: ..\setup\copasi\share\copasi\config\MIRIAMResources.xml; DestDir: {app}\share\copasi\config
@@ -109,7 +111,7 @@ Name: {commondesktop}\{#MyAppName}; Filename: {app}\{#MyAppExeName}; Tasks: desk
 Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}; Filename: {app}\{#MyAppExeName}; Tasks: quicklaunchicon; WorkingDir: {userdocs}
 
 [Run]
-Filename: {app}\vcredist_x86.exe; StatusMsg: Installing Microsoft Visual C++ 2005 Runtime Libraries; Parameters: /q:a; Check: InstallSystemRuntime()
+Filename: {app}\vcredist_x86.exe; StatusMsg: Installing Microsoft Visual C++ 2008 Runtime Libraries; Parameters: /q:a; Check: InstallSystemRuntime()
 
 [Dirs]
 Name: {app}\bin
