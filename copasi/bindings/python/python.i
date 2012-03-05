@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.i,v $ 
-//   $Revision: 1.27 $ 
+//   $Revision: 1.28 $ 
 //   $Name:  $ 
 //   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:01 $ 
+//   $Date: 2012/03/05 18:09:32 $ 
 // End CVS Header 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -39,14 +39,6 @@
 {
   $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCOptItem($1), 0);
 }
-
-/**
- * Convert CExperimentSet objects into the most specific type possible.
-%typemap(out) CExperimentSet*
-{
-  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCExperimentSet($1), 0);
-}
- */
 
 /**
  * Convert CCopasiAbstractArray objects into the most specific type possible.
@@ -263,5 +255,97 @@ CCopasiMessage.size=_COPASI.CCopasiMessage_size
   %}
 
 }
+
+%extend CTimeSeries
+{
+  %pythoncode
+  %{
+
+      def getTitles(self):
+        """Returns the titles of the variables in the time series
+        as a python list.
+        If the time series contains no variables, an empty list is returned.
+        """
+        result=[]
+        x=self.getNumVariables();
+        for index in range(0,x):
+            result.append(self.getTitle(index))
+        return result;
+
+      def getDataForIndex(self,index):
+        """Returns the complete time course particle number data for the variable with the given index.
+        The index has to be an integer type, otherwise an AttributeError is raised.
+
+        If the given index is invalid, None is returned.
+        """
+        if type(index) != types.IntType:
+            raise AttributeError("index argument to getConcentrationDataForIndex must be an int")
+        result=None
+        x=self.getNumVariables()
+        if (index >= 0) and (index < x):
+          result=[]
+          y=self.getRecordedSteps()
+          for step in range(0,y):
+            result.append(self.getData(step,index))
+        return result;
+
+      def getConcentrationDataForIndex(self,index):
+        """Returns the complete time course concentration data for the variable with the given index.
+        The index has to be an integer type, otherwise an AttributeError is raised.
+
+        If the given index is invalid, None is returned.
+        """
+        if type(index) != types.IntType:
+            raise AttributeError("index argument to getConcentrationDataForIndex must be an int")
+        result=None
+        x=self.getNumVariables()
+        if (index >= 0) and (index < x):
+          result=[]
+          y=self.getRecordedSteps()
+          for step in range(0,y):
+            result.append(self.getConcentrationData(step,index))
+        return result;
+
+      def getDataForObject(self,object):
+        """Returns the complete time course particle number data for the variable corresponding to the given object.
+        The key of the object must match the key of one of the variables of the time course as returned by the getKey method.
+
+        If no fitting key is found, None is returned.
+
+        The object argument must be an instance of CCopasiObject, otherwise an AttributeError is raised. 
+        """
+        if not isinstance(object,CCopasiObject):
+            raise AttributeError("object argument to getConcentrationDataForObject must be an instance of CCopasiObject")
+        result=None
+        x=self.getNumVariables()
+        for v in range(0,x):
+            if self.getKey(v) == object.getKey():
+                break
+        if v != x:
+            result=self.getDataForIndex(v)
+        return result;
+
+      def getConcentrationDataForObject(self,object):
+        """Returns the complete time course concentration data for the variable corresponding to the given object.
+        The key of the object must match the key of one of the variables of the time course as returned by the getKey method.
+
+        If no fitting key is found, None is returned.
+        
+        The object argument must be an instance of CCopasiObject, otherwise an AttributeError is raised. 
+        """
+        if not isinstance(object,CCopasiObject):
+            raise AttributeError("object argument to getConcentrationDataForObject must be an instance of CCopasiObject")
+        result=None
+        x=self.getNumVariables()
+        for v in range(0,x):
+            if self.getKey(v) == object.getKey():
+                break
+        if v != x:
+            result=self.getConcentrationDataForIndex(v)
+        return result;
+
+  %}
+}
+
 
 

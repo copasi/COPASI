@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.33 $ 
+#   $Revision: 1.34 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2012/01/03 18:44:49 $ 
+#   $Date: 2012/03/05 18:09:32 $ 
 # End CVS Header 
 
 # Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -50,7 +50,7 @@ contains(BUILD_OS,Linux){
          $$join(COPASI_LIBS, " -l", -l) \
          $${LIBS}
 
-  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
   !isEmpty(PYTHON_LIB_PATH){
     LIBS += -L$${PYTHON_LIB_PATH}
@@ -78,7 +78,7 @@ contains(BUILD_OS, Darwin) {
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
   
-  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
     LIBS += -framework Python
     LIBS += -framework QuickTime
@@ -98,7 +98,7 @@ contains(BUILD_OS, Darwin) {
   QMAKE_POST_LINK += ln -sf libCopasiPython.dylib _COPASI.so
 }
 
-contains(BUILD_OS, WIN32) { 
+contains(BUILD_OS, WIN32) {
   CONFIG += debug_and_release
 
   debug {
@@ -136,6 +136,7 @@ contains(BUILD_OS, WIN32) {
       INCLUDEPATH += $$PYTHON_INCLUDE_PATH/../PC/
     }
   }
+
 
 }
 

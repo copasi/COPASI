@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CFunctionDB.py,v $ 
-#   $Revision: 1.8 $ 
+#   $Revision: 1.9 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/07/16 18:56:00 $ 
+#   $Date: 2012/03/05 18:09:29 $ 
 # End CVS Header 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -28,14 +28,14 @@ class Test_CFunctionDB(unittest.TestCase):
     self.assert_(self.functions.__class__==COPASI.CFunctionDB)
 
   def test_createFunction(self):
-    size=self.functions.loadedFunctions().size()
+    size=len(self.functions.loadedFunctions())
     function=self.functions.createFunction("testFunction",COPASI.CEvaluationTree.Function)
     self.assert_(function!=None)
     self.assert_(function.__class__==COPASI.CFunction)
     self.assert_(self.functions.loadedFunctions().size()==size+1)
 
   def test_removeFunction(self):
-    size=self.functions.loadedFunctions().size()
+    size=len(self.functions.loadedFunctions())
     function=self.functions.createFunction("testFunction2",COPASI.CEvaluationTree.Function)
     self.assert_(function!=None)
     self.assert_(function.__class__==COPASI.CFunction)
@@ -58,7 +58,7 @@ class Test_CFunctionDB(unittest.TestCase):
   def test_loadedFunctions(self):
     loadedFunctions=self.functions.loadedFunctions()
     self.assert_(loadedFunctions!=None)
-    self.assert_(loadedFunctions.__class__==COPASI.CEvaluationTreeVectorN)
+    self.assert_(loadedFunctions.__class__==COPASI.CFunctionVectorN)
 
 
   def test_suitableFunctions(self):

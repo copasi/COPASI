@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example7.py,v $ 
-#   $Revision: 1.2 $ 
+#   $Revision: 1.3 $ 
 #   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2009/09/01 13:34:10 $ 
+#   $Author: shoops $ 
+#   $Date: 2012/03/05 18:09:32 $ 
 # End CVS Header 
+
+# Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
@@ -100,9 +105,8 @@ def main():
      funDB = CCopasiRootContainer.getFunctionList()
      assert funDB != None
 
-     function = CFunction("My Rate Law")
+     function = funDB.createFunction("My Rate Law",CEvaluationTree.UserDefined)
 
-     funDB.add(function, True)
      rateLaw = funDB.findFunction("My Rate Law")
 
      assert rateLaw != None

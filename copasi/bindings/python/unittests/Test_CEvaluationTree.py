@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CEvaluationTree.py,v $ 
-#   $Revision: 1.8 $ 
+#   $Revision: 1.9 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/07/16 18:55:59 $ 
+#   $Date: 2012/03/05 18:09:29 $ 
 # End CVS Header 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -67,7 +67,7 @@ class Test_CEvaluationTree(unittest.TestCase):
     self.assert_(not self.tree.setInfix(badExpr))
     pos=self.tree.getErrorLocation()
     self.assert_(type(pos)==IntType)
-    self.assert_(pos==2)
+    self.assert_(pos==2 or pos==3)
 
   def test_getVariableIndex(self):
     expr="3 * A + 5.0"

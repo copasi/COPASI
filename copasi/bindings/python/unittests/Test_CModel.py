@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CModel.py,v $ 
-#   $Revision: 1.15 $ 
+#   $Revision: 1.16 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2010/07/16 18:55:59 $ 
+#   $Date: 2012/03/05 18:09:29 $ 
 # End CVS Header 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -111,7 +111,12 @@ class Test_CModel(unittest.TestCase):
     self.assert_(type(n)==IntType)
     self.assert_(n==3)
 
+  def test_getNotes(self):
+    notes=self.model.getNotes()
+    self.assert_(type(notes)==StringType)
+
   def test_getComments(self):
+    ## this is only there for backwards compatibility
     comments=self.model.getComments()
     self.assert_(type(comments)==StringType)
 
@@ -125,7 +130,13 @@ class Test_CModel(unittest.TestCase):
     self.model.setTitle(title)
     self.assert_(self.model.getObjectName()==title)
 
+  def test_setNotes(self):
+    note="MyNote"
+    self.model.setNotes(note)
+    self.assert_(self.model.getNotes()==note)
+
   def test_setComments(self):
+    ## this is only there for backward compatibility
     comment="MyComment"
     self.model.setComments(comment)
     self.assert_(self.model.getComments()==comment)
