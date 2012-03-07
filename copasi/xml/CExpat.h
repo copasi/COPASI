@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.h,v $
-$Revision: 1.23 $
+$Revision: 1.24 $
 $Name:  $
 $Author: shoops $
-$Date: 2011/03/07 19:35:34 $
+$Date: 2012/03/07 17:12:41 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -639,7 +639,7 @@ public:
   {return;}
 
   /**
-   * Retreive the attribute value for the given name out of the list
+   * Retrieve the attribute value for the given name out of the list
    * of attributes. If required is true and the attribute is not found an
    * exception is thrown. If required is false and the attribute is not found
    * NULL is returned.
