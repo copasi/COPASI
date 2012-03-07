@@ -193,6 +193,54 @@
     <data type="string"/>
   </define>
 
+  <define name="unkownAnnotation.datatype">
+    <mixed>
+      <zeroOrMore>
+        <element>
+          <anyName>
+            <except>
+              <nsName ns=""/>
+              <nsName ns="http://www.copasi.org/static/schema"/>
+            </except>
+          </anyName>
+          <zeroOrMore>
+            <attribute>
+              <anyName>
+                <except>
+                  <nsName ns=""/>
+                  <nsName ns="http://www.copasi.org/static/schema"/>
+                </except>
+              </anyName>
+              <text/>
+            </attribute>
+          </zeroOrMore>
+        </element>
+      </zeroOrMore>
+    </mixed>
+  </define>
+  
+  <define name="listOfUnkownAnnotations.datatype">
+    <oneOrMore>
+      <element name="UnkownAnnotation">
+        <ref name="unkownAnnotation.datatype"/>
+      </element>
+    </oneOrMore>
+  </define>
+  
+  <define name="annotation.datatype">
+    <optional>
+      <ref name="miriamAnnotation.element"/>
+    </optional>
+    <optional>
+      <ref name="comment.element"/>
+    </optional>
+    <optional>
+      <element name="ListOfUnkownAnnotations">
+        <ref name="listOfUnkownAnnotations.datatype"/>
+      </element>
+    </optional>
+  </define>
+  
   <define name="other.datatype">
     <mixed>
       <zeroOrMore>
@@ -313,12 +361,7 @@
           <value type="string">false</value>
         </choice>
       </attribute>
-      <optional>
-        <ref name="miriamAnnotation.element"/>
-      </optional>
-      <optional>
-        <ref name="comment.element"/>
-      </optional>
+      <ref name="annotation.datatype"/>
       <ref name="expression.element"/>
       <optional>
         <element name="ListOfParameterDescriptions">
@@ -442,12 +485,7 @@
     <attribute name="avogadroConstant">
       <data type="double"/>
     </attribute>
-    <optional>
-      <ref name="miriamAnnotation.element"/>
-    </optional>
-    <optional>
-      <ref name="comment.element"/>
-    </optional>
+    <ref name="annotation.datatype"/>
     <optional>
       <ref name="initialExpression.element"/>
     </optional>
@@ -536,12 +574,7 @@
         <param name="maxInclusive">3</param>
       </data>
     </attribute>
-    <optional>
-      <ref name="miriamAnnotation.element"/>
-    </optional>
-    <optional>
-      <ref name="comment.element"/>
-    </optional>
+    <ref name="annotation.datatype"/>
     <optional>
       <ref name="expression.element"/>
     </optional>
@@ -578,12 +611,7 @@
         <value type="string">fixed</value>
       </choice>
     </attribute>
-    <optional>
-      <ref name="miriamAnnotation.element"/>
-    </optional>
-    <optional>
-      <ref name="comment.element"/>
-    </optional>
+    <ref name="annotation.datatype"/>
     <optional>
       <ref name="expression.element"/>
     </optional>
@@ -614,12 +642,7 @@
         <value type="string">fixed</value>
       </choice>
     </attribute>
-    <optional>
-      <ref name="miriamAnnotation.element"/>
-    </optional>
-    <optional>
-      <ref name="comment.element"/>
-    </optional>
+    <ref name="annotation.datatype"/>
     <optional>
       <ref name="expression.element"/>
     </optional>
@@ -629,6 +652,11 @@
   </define>
 
   <define name="listOfModelParameterSets.datatype">
+    <attribute name="activeSet">
+      <data type="IDREF">
+        <param name="pattern">ModelParameterSet_\d+</param>
+      </data>
+    </attribute>
     <oneOrMore>
       <element name="ModelParameterSet">
         <ref name="modelParameterSet.datatype"/>
@@ -638,12 +666,12 @@
   
   <define name="modelParameterSet.datatype">
     <ref name="name.attribute"/>
-    <optional>
-      <ref name="miriamAnnotation.element"/>
-    </optional>
-    <optional>
-      <ref name="comment.element"/>
-    </optional>
+    <attribute name="key">
+      <data type="ID">
+        <param name="pattern">ModelParameterSet_\d+</param>
+      </data>
+    </attribute>
+    <ref name="annotation.datatype"/>
     <oneOrMore>
       <element name="ModelParameterGroup">
         <ref name="modelParameterGroup.datatype"/>
@@ -706,12 +734,7 @@
     <attribute name="reversible">
       <data type="boolean"/>
     </attribute>
-    <optional>
-      <ref name="miriamAnnotation.element"/>
-    </optional>
-    <optional>
-      <ref name="comment.element"/>
-    </optional>
+    <ref name="annotation.datatype"/>
     <optional>
       <element name="ListOfSubstrates">
         <oneOrMore>
@@ -827,12 +850,7 @@
     <attribute name="order">
       <data type="nonNegativeInteger"/>
     </attribute>
-    <optional>
-      <ref name="miriamAnnotation.element"/>
-    </optional>
-    <optional>
-      <ref name="comment.element"/>
-    </optional>
+    <ref name="annotation.datatype"/>
     <element name="TriggerExpression">
       <ref name="expression.simpletype"/>
     </element>

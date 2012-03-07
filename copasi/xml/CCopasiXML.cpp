@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.136 $
+//   $Revision: 1.137 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/12/13 19:49:56 $
+//   $Date: 2012/03/07 17:14:43 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -933,7 +933,101 @@ bool CCopasiXML::saveModel()
 
   endSaveElement("InitialState");
 
+  // Save the model parameter sets
+  if ((imax = mpModel->getModelParameterSets().size()) > 0)
+    {
+      Attributes.erase();
+      Attributes.add("activeSet", mpModel->getActiveParameterSetKey());
+
+      startSaveElement("ListOfModelParameterSets");
+
+      Attributes.erase();
+      Attributes.add("key", "");
+      Attributes.add("name", "");
+
+      for (i = 0; i < imax; i++)
+        {
+          CModelParameterSet * pSet = mpModel->getModelParameterSets()[i];
+
+          Attributes.setValue(0, pSet->getKey());
+          Attributes.setValue(1, pSet->getObjectName());
+
+          startSaveElement("ModelParameterSet", Attributes);
+
+          if (pSet->getMiriamAnnotation() != "")
+            {
+              startSaveElement("MiriamAnnotation");
+              *mpOstream << pSet->getMiriamAnnotation() << std::endl;
+              endSaveElement("MiriamAnnotation");
+            }
+
+          if (pSet->getNotes() != "")
+            {
+              startSaveElement("Comment");
+              saveXhtml(pSet->getNotes());
+              endSaveElement("Comment");
+            }
+
+          CModelParameterGroup::const_iterator itSet = pSet->begin();
+          CModelParameterGroup::const_iterator endSet = pSet->end();
+
+          for (; itSet != endSet; ++itSet)
+            {
+              saveModelParameter(*itSet);
+            }
+
+          endSaveElement("ModelParameterSet");
+        }
+
+      endSaveElement("ListOfModelParameterSets");
+    }
+
   endSaveElement("Model");
+
+  return success;
+}
+
+bool CCopasiXML::saveModelParameter(const CModelParameter * pModelParameter)
+{
+  bool success = true;
+
+  CXMLAttributeList Attributes;
+
+  if (pModelParameter->getType() != CModelParameter::Group)
+    {
+      Attributes.add("cn", pModelParameter->getCN());
+      Attributes.add("value", pModelParameter->getValue());
+      Attributes.add("type", CModelParameter::TypeNames[pModelParameter->getType()]);
+
+      if (pModelParameter->getInitialExpression() != "")
+        {
+          startSaveElement("ModelParameter", Attributes);
+          startSaveElement("InitialExpression");
+          saveData(pModelParameter->getInitialExpression());
+          endSaveElement("InitialExpression");
+          endSaveElement("ModelParameter");
+        }
+      else
+        {
+          saveElement("ModelParameter", Attributes);
+        }
+    }
+  else
+    {
+      Attributes.add("cn", pModelParameter->getCN());
+
+      startSaveElement("ModelParameterGroup", Attributes);
+
+      CModelParameterGroup::const_iterator it = static_cast< const CModelParameterGroup * >(pModelParameter)->begin();
+      CModelParameterGroup::const_iterator end = static_cast< const CModelParameterGroup * >(pModelParameter)->end();
+
+      for (; it != end; ++it)
+        {
+          success &= saveModelParameter(*it);
+        }
+
+      endSaveElement("ModelParameterGroup");
+    }
 
   return success;
 }

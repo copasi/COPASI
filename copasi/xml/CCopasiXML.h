@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/12/13 19:49:56 $
+//   $Date: 2012/03/07 17:14:42 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,17 +20,12 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-/*!
- \file CCopasiXML.h
- \brief Header file of class CCopasiXML.
- */
-
 /**
  * CCopasiXML class.
  * This class implements a CCopasiXMLInterface to the COPASI XML specified in
  * http://www.copasi.org/schema/copasi.xsd
  *
- * Created for Copasi by Stefan Hoops 2003
+ * Created for COPASI by Stefan Hoops 2003
  * Copyright Stefan Hoops
  */
 
@@ -41,6 +36,7 @@
 #include "utilities/CVersion.h"
 
 class CModel;
+class CModelParameter;
 class CEvaluationTree;
 class CFunction;
 class CCopasiTask;
@@ -315,6 +311,13 @@ private:
    * @return bool success
    */
   bool saveModel();
+
+  /**
+   * Save a model parameter
+   * @param const CModelParameter * pModelParameter
+   * @return bool success
+   */
+  bool saveModelParameter(const CModelParameter * pModelParameter);
 
   /**
    * Save the list of functions.

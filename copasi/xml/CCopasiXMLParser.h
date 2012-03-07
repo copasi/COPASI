@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:35:35 $
+//   $Date: 2012/03/07 17:14:42 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,6 +77,9 @@ class CLCurve;
 class CLLineSegment;
 class CLMetabReferenceGlyph;
 class CCopasiDataModel;
+class CModelParameterSet;
+class CModelParameterGroup;
+class CModelParameter;
 
 #ifdef USE_CRENDER_EXTENSION
 
@@ -234,7 +237,17 @@ public:
    * of groups is possible.
    */
   std::stack< CCopasiParameterGroup * > ParameterGroupStack;
-  //    CCopasiParameterGroup* pCurrentParameterGroup;
+
+  /**
+   * Stack of Model Parameter Groups which is needed since nesting
+   * of groups is possible.
+   */
+  std::stack< CModelParameterGroup * > ModelParameterGroupStack;
+
+  /**
+   * The currently handeled Model Parameter
+   */
+  CModelParameter * pCurrentModelParameter;
 
   /**
    * Pointer to the currently processed plot
@@ -1782,8 +1795,9 @@ public:
    */
   CommentElement mCommentElement;
 
-private:
+#include "copasi/xml/ListOfModelParameterSets.h"
 
+private:
   class ModelElement:
       public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
@@ -1804,7 +1818,8 @@ private:
       ListOfReactions,
       ListOfEvents,
       StateTemplate,
-      InitialState
+      InitialState,
+      ListOfModelParameterSets
     };
 
     /**

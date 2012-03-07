@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.236 $
+//   $Revision: 1.237 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/12/13 19:49:56 $
+//   $Date: 2012/03/07 17:14:43 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,6 +38,7 @@
 #include "function/CFunction.h"
 #include "function/CExpression.h"
 #include "model/CModel.h"
+#include "model/CModelParameterSet.h"
 #include "report/CKeyFactory.h"
 #include "report/CReportDefinitionVector.h"
 #include "report/CReportDefinition.h"
@@ -1744,6 +1745,16 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
 
         break;
 
+      case ListOfModelParameterSets:
+
+        if (!strcmp(pszName, "ListOfModelParameterSets"))
+          {
+            mpCurrentHandler = new ListOfModelParameterSetsElement(mParser, mCommon);
+            mLastKnownElement = mCurrentElement;
+          }
+
+        break;
+
       default:
         mCurrentElement = UNKNOWN_ELEMENT;
         mpCurrentHandler =  &mParser.mUnknownElement;
@@ -1878,6 +1889,16 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
         if (strcmp(pszName, "InitialState"))
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "InitialState", mParser.getCurrentLineNumber());
+
+        deleteCurrentHandler();
+        mCurrentElement = Model;
+        break;
+
+      case ListOfModelParameterSets:
+
+        if (strcmp(pszName, "ListOfModelParameterSets"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfModelParameterSets", mParser.getCurrentLineNumber());
 
         deleteCurrentHandler();
         mCurrentElement = Model;
@@ -3491,7 +3512,7 @@ void CCopasiXMLParser::ListOfReactionsElement::start(const XML_Char *pszName,
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                          pszName, "Reaction", mParser.getCurrentLineNumber());
 
-        /* If we do not have a function element handler we create one. */
+        /* If we do not have a Reaction element handler we create one. */
         if (!mpCurrentHandler)
           mpCurrentHandler = new ReactionElement(mParser, mCommon);
 
@@ -14441,6 +14462,8 @@ SCopasiXMLParserCommon::SCopasiXMLParserCommon():
     pCurrentTask(NULL),
     pCurrentParameter(NULL),
     ParameterGroupStack(),
+    ModelParameterGroupStack(),
+    pCurrentModelParameter(NULL),
     pCurrentPlot(NULL),
     pCurrentPlotItem(NULL),
     pCurrentChannelSpec(NULL),
