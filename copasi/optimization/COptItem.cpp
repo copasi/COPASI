@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/01/05 22:50:25 $
+//   $Date: 2012/03/07 17:12:08 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -410,11 +410,9 @@ C_FLOAT64 COptItem::getConstraintViolation() const
       case 1:
         return *mpObjectValue - *mpUpperBound;
         break;
-
-      default:
-        return 0.0;
-        break;
     }
+
+  return 0.0;
 }
 
 C_INT32 COptItem::checkConstraint(const C_FLOAT64 & value) const

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLFontRendererBase.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/12/01 19:54:55 $
+//   $Date: 2012/03/07 17:11:02 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,6 +44,11 @@ struct CLFontSpec;
 class CLFontRendererBase
 {
 public:
+  /**
+   * Destructor
+   */
+  virtual ~CLFontRendererBase() {};
+
   /**
    * Functor that returns a TextureSpec object with a texture
    * for the given font family, font size font weight, font style and text.
