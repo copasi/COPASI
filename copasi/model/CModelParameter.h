@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameter.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/21 17:45:15 $
+//   $Date: 2012/03/07 17:11:38 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,8 @@ public:
     Set,
     unknown
   };
+
+  static const char * TypeNames[];
 
   enum CompareResult
   {

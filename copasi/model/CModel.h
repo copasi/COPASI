@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.197 $
+//   $Revision: 1.198 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/31 14:25:58 $
+//   $Date: 2012/03/07 17:11:38 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,7 @@
 #include "copasi/model/CMoiety.h"
 #include "copasi/model/CModelValue.h"
 #include "copasi/model/CProcessQueue.h"
+#include "copasi/model/CModelParameterSet.h"
 
 #include "copasi/utilities/CVector.h"
 #include "copasi/utilities/CMatrix.h"
@@ -375,6 +376,25 @@ public:
    *  @return C_INT32
    */
   size_t getNumModelValues() const;
+
+  /**
+   * Return the non model parameter sets
+   * @return CCopasiVectorN< CModelParameterSet > & values
+   */
+  const CCopasiVectorN< CModelParameterSet > & getModelParameterSets() const;
+  CCopasiVectorN< CModelParameterSet > & getModelParameterSets();
+
+  /**
+   * Set the key of the active parameter set
+   * @param const std::string & activeParameterSetKey
+   */
+  void setActiveParameterSetKey(const std::string & activeParameterSetKey);
+
+  /**
+   * Retrieve the key of the active parameter set
+   * @return const std::string & activeParameterSetKey
+   */
+  const std::string & getActiveParameterSetKey() const;
 
   //********** TT *****************************
 
@@ -1341,6 +1361,16 @@ private:
    *  vector of non concentration values in the model
    */
   CCopasiVectorN< CModelValue > mValues;
+
+  /**
+   *  vector of non concentration values in the model
+   */
+  CCopasiVectorN< CModelParameterSet > mParameterSets;
+
+  /**
+   * The key of the currently active parameter set.
+   */
+  std::string mActiveParameterSetKey;
 
   /**
    *  for array of conserved moieties

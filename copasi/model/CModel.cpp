@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.409 $
+//   $Revision: 1.410 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/31 14:25:58 $
+//   $Date: 2012/03/07 17:11:38 $
 // End CVS Header
 
 // Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,6 +119,8 @@ CModel::CModel(CCopasiContainer* pParent):
     mEvents("Events", this),
     mParticleFluxes(),
     mValues("Values", this),
+    mParameterSets("ParameterSets", this),
+    mActiveParameterSetKey(""),
     mMoieties("Moieties", this),
     mStoi(),
     mpStoiAnnotation(NULL),
@@ -189,6 +191,8 @@ CModel::CModel(CCopasiContainer* pParent):
 //     mEvents(src.mEvents,this),
 //     mParticleFluxes(src.mParticleFluxes),
 //     mValues(src.mValues, this),
+//     mParameterSets(src.mParameterSets, this),
+//     mActiveParameterSetKey(src.mActiveParameterSetKey),
 //     mMoieties(src.mMoieties, this),
 //     mStoi(src.mStoi),
 //     mpStoiAnnotation(NULL),
@@ -1027,6 +1031,23 @@ const CCopasiVectorN< CModelValue > & CModel::getModelValues() const
 CCopasiVectorN< CModelValue > & CModel::getModelValues()
 {return mValues;}
 
+const CCopasiVectorN< CModelParameterSet > & CModel::getModelParameterSets() const
+{return mParameterSets;}
+
+CCopasiVectorN< CModelParameterSet > & CModel::getModelParameterSets()
+{return mParameterSets;}
+
+void CModel::setActiveParameterSetKey(const std::string & activeParameterSetKey)
+{
+  mActiveParameterSetKey = activeParameterSetKey;
+}
+
+const std::string & CModel::getActiveParameterSetKey() const
+{
+  return mActiveParameterSetKey;
+}
+
+
 CCopasiVectorN < CEvent > & CModel::getEvents()
 {return mEvents;}
 
@@ -1755,7 +1776,14 @@ void CModel::updateSimulatedValues(const bool & updateMoieties)
   C_FLOAT64 * pFlux = mParticleFluxes.array();
 
   for (; it != end; ++it, ++pFlux)
-    *pFlux = (*it)->getParticleFlux();
+    {
+      *pFlux = (*it)->getParticleFlux();
+
+      if (isnan(*pFlux))
+        {
+          std::cout << "Reaction Flux[" <<   it -  mSteps.begin() << "] is NaN" << std::endl;
+        }
+    }
 }
 
 void CModel::updateNonSimulatedValues(void)
@@ -1781,7 +1809,14 @@ void CModel::calculateDerivatives(C_FLOAT64 * derivatives)
     ppIt + mStateTemplate.getNumIndependent() - mNumMetabolitesReactionIndependent;
 
   for (; ppIt != ppEnd; ++ppIt, ++pTmp)
-    *pTmp = (*ppIt)->getRate();
+    {
+      *pTmp = (*ppIt)->getRate();
+
+      if (isnan(*pTmp))
+        {
+          std::cout << "Entity[" <<   ppIt - (mStateTemplate.getEntities() + 1) << "] is NaN" << std::endl;
+        }
+    }
 
   // Now calculate derivatives of all metabolites determined by reactions
   char T = 'N';

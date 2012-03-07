@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameterGroup.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/21 17:45:15 $
+//   $Date: 2012/03/07 17:11:38 $
 // End CVS Header
 
 // Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,9 +73,14 @@ CModelParameter * CModelParameterGroup::add(const CModelParameter::Type & type)
         break;
     }
 
-  mModelParameters.push_back(pModelParameter);
+  add(pModelParameter);
 
   return pModelParameter;
+}
+
+void CModelParameterGroup::add(CModelParameter * pModelParameter)
+{
+  mModelParameters.push_back(pModelParameter);
 }
 
 void CModelParameterGroup::remove(const size_t & index)
