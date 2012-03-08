@@ -672,11 +672,7 @@
       </data>
     </attribute>
     <ref name="annotation.datatype"/>
-    <oneOrMore>
-      <element name="ModelParameterGroup">
-        <ref name="modelParameterGroup.datatype"/>
-      </element>
-    </oneOrMore>
+    <ref name="modelParameterGroup.datatype"/>
   </define>
   
   <define name="modelParameterGroup.datatype">
