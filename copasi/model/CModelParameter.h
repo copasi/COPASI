@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameter.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/07 17:11:38 $
+//   $Date: 2012/03/08 19:04:39 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,8 +14,11 @@
 #ifndef COPASI_CModelParameter
 #define COPASI_CModelParameter
 
+#include <set>
+
 #include "copasi/report/CCopasiObjectName.h"
 
+class CModelParameterSet;
 class CModelParameterGroup;
 class CCopasiObject;
 class CExpression;
@@ -45,6 +48,18 @@ public:
     Identical
   };
 
+  enum Framework
+  {
+    ParticleNumbers = 0,
+    Concentration
+  };
+
+private:
+  /**
+   * The default constructor is hidden.
+   */
+  CModelParameter();
+
 public:
   /**
    * Constructor
@@ -62,6 +77,8 @@ public:
    */
   virtual ~CModelParameter();
 
+  void setParent(CModelParameterGroup * pParent);
+
   CModelParameterGroup * getParent() const;
 
   const Type & getType() const;
@@ -70,9 +87,9 @@ public:
 
   const CCopasiObjectName & getCN() const;
 
-  void setValue(const C_FLOAT64 & value);
+  virtual void setValue(const C_FLOAT64 & value, const Framework & framework = ParticleNumbers);
 
-  const C_FLOAT64 & getValue() const;
+  virtual const C_FLOAT64 & getValue(const Framework & framework = ParticleNumbers) const;
 
   void setInitialExpression(const std::string & initialExpression);
 
@@ -88,13 +105,20 @@ public:
 
   CCopasiObject * getObject() const;
 
+  CModelParameterSet * getSet() const;
+
   bool isInitialExpressionValid() const;
+
+  virtual std::string getName() const;
 
   virtual void compile();
 
   virtual const CompareResult & diff(const CModelParameter & other);
 
   virtual bool updateModel();
+
+protected:
+  static std::string nameFromCN(const CCopasiObjectName & cn);
 
 protected:
   CModelParameterGroup * mpParent;
@@ -114,4 +138,75 @@ protected:
   bool mIsInitialExpressionValid;
 };
 
+class CModelParameterSpecies;
+
+class CModelParameterCompartment : public CModelParameter
+{
+public:
+  /**
+   * Constructor
+   */
+  CModelParameterCompartment(CModelParameterGroup * pParent, const CModelParameter::Type & type = CModelParameter::Compartment);
+
+  /**
+   * Copy constructor
+   */
+  CModelParameterCompartment(const CModelParameterCompartment & src, CModelParameterGroup * pParent);
+
+public:
+  /**
+   * Destructor
+   */
+  virtual ~CModelParameterCompartment();
+
+  virtual void setValue(const C_FLOAT64 & value, const Framework & framework = ParticleNumbers);
+
+  void addSpecies(CModelParameterSpecies * pSpecies);
+
+  void removeSpecies(CModelParameterSpecies * pSpecies);
+
+private:
+  std::set< CModelParameterSpecies * > mSpecies;
+};
+
+class CModelParameterSpecies : public CModelParameter
+{
+  friend CModelParameterCompartment::~CModelParameterCompartment();
+
+public:
+  /**
+   * Constructor
+   */
+  CModelParameterSpecies(CModelParameterGroup * pParent, const CModelParameter::Type & type = CModelParameter::Species);
+
+  /**
+   * Copy constructor
+   */
+  CModelParameterSpecies(const CModelParameterSpecies & src, CModelParameterGroup * pParent);
+
+public:
+  /**
+   * Destructor
+   */
+  virtual ~CModelParameterSpecies();
+
+  /**
+   * Retrieve the name.
+   * @return std::string name
+   */
+  virtual std::string getName() const;
+
+  virtual void compile();
+
+  virtual void setValue(const C_FLOAT64 & value, const Framework & framework = ParticleNumbers);
+
+  virtual const C_FLOAT64 & getValue(const Framework & framework = ParticleNumbers) const;
+
+  CCopasiObjectName getCompartmentCN() const;
+
+private:
+  CModelParameterCompartment * mpCompartment;
+
+  C_FLOAT64 mConcentration;
+};
 #endif // COPASI_CModelParameter
