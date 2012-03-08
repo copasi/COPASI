@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/ListOfModelParameterSets.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/07 17:14:43 $
+//   $Date: 2012/03/08 19:06:27 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -519,7 +519,21 @@ void CCopasiXMLParser::ModelParameterElement::start(const XML_Char *pszName,
 
             Type = toEnum(pType, CModelParameter::TypeNames, CModelParameter::unknown);
 
-            mCommon.pCurrentModelParameter = new CModelParameter(mCommon.ModelParameterGroupStack.top(), Type);
+            switch (Type)
+              {
+                case CModelParameter::Species:
+                  mCommon.pCurrentModelParameter = new CModelParameterSpecies(mCommon.ModelParameterGroupStack.top());
+                  break;
+
+                case CModelParameter::Compartment:
+                  mCommon.pCurrentModelParameter = new CModelParameterCompartment(mCommon.ModelParameterGroupStack.top());
+                  break;
+
+                default:
+                  mCommon.pCurrentModelParameter = new CModelParameter(mCommon.ModelParameterGroupStack.top(), Type);
+                  break;
+              }
+
             mCommon.pCurrentModelParameter->setCN(std::string(CN));
             mCommon.pCurrentModelParameter->setValue(Value);
             return;
@@ -560,9 +574,6 @@ void CCopasiXMLParser::ModelParameterElement::end(const XML_Char *pszName)
         if (strcmp(pszName, "ModelParameter"))
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "ModelParameter", mParser.getCurrentLineNumber());
-
-        mCommon.pCurrentModelParameter = mCommon.ModelParameterGroupStack.top();
-        mCommon.ModelParameterGroupStack.pop();
 
         mParser.popElementHandler();
         mLastKnownElement = START_ELEMENT;
