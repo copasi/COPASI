@@ -24,6 +24,8 @@ function findSubdir ()
 
     [ $_found = true ] && break;
   done
+
+  [ $_found = false -a -e "$_i" ] && (cd $_i/; pwd)
 }
 
 if [ x"$1" = x-i ]; then
