@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVersion.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:56:57 $
+//   $Author: shoops $
+//   $Date: 2012/03/09 00:04:03 $
 // End CVS Header
+
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -64,35 +69,39 @@ void CVersion::setVersion(const C_INT32 & major,
 }
 
 C_INT32 CVersion::getVersionMajor() const
-  {
-    return mMajor;
-  }
+{
+  return mMajor;
+}
 
 C_INT32 CVersion::getVersionMinor() const
-  {
-    return mMinor;
-  }
+{
+  return mMinor;
+}
 
 C_INT32 CVersion::getVersionDevel() const
-  {
-    return mDevel;
-  }
+{
+  return mDevel;
+}
 
 const std::string & CVersion::getVersion() const
-  {
-    return mVersion;
-  }
+{
+  return mVersion;
+}
 
 void CVersion::setString()
 {
 #ifdef COPASI_DEBUG
   mVersion = StringPrint("%d.%d.%d (Debug)", mMajor, mMinor, mDevel);
 #else
+
   if (mComment == "stable")
     mVersion = StringPrint("%d.%d (Build %d)", mMajor, mMinor, mDevel);
+  else if (mComment == "Snapshot")
+    mVersion = StringPrint("%d.%02d.%02d (%s)", mMajor, mMinor, mDevel, mComment.c_str());
   else if (mComment != "")
     mVersion = StringPrint("%d.%d.%d (%s)", mMajor, mMinor, mDevel, mComment.c_str());
   else
     mVersion = StringPrint("%d.%d.%d", mMajor, mMinor, mDevel);
+
 #endif
 }

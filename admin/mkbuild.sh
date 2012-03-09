@@ -33,7 +33,11 @@ if [ x"$#" = x1 ]; then
   buildname=${build}
 
   if [ x"${comment}" = x\"Snapshot\" ]; then
-    buildname=${major}${minor}${build}
+    buildname=${major}
+    [ ${#minor} = 1 ] && buildname=${buildname}0
+    buildname=${buildname}${minor}
+    [ ${#build} = 1 ] && buildname=${buildname}0
+    buildname=${buildname}${build}
   fi
 
   license="US"
