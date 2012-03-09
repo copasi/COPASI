@@ -1,6 +1,6 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.134 $ 
+#   $Revision: 1.135 $ 
 #   $Name:  $ 
 # End CVS Header 
 
@@ -19,7 +19,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.134 $ $Author: shoops $ $Date: 2012/03/09 04:21:14 $  
+# $Revision: 1.135 $ $Author: shoops $ $Date: 2012/03/09 13:05:34 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -719,16 +719,16 @@ contains(BUILD_OS, Linux) {
       LIBS *= -L$${QWT_PATH}/lib
       LIBS += $$system($${BUILD_ROOT}/admin/libs.sh -l $${QWT_PATH}/lib qwt-qt4 qwt)
     } else {
+      INCLUDEPATH *= $$system($${BUILD_ROOT}/admin/include.sh qwt-qt4 qwt)
       LIBS += $$system($${BUILD_ROOT}/admin/libs.sh qwt-qt4 qwt)
     }
     
-    LIBS += -lqwt
-
     !isEmpty(QWT3D_PATH):!contains(QWT_PATH, yes) {
       INCLUDEPATH *= $$system($${BUILD_ROOT}/admin/include.sh -i $${QWT3D_PATH}/include qwtplot3d-qt4 qwtplt3d)
       LIBS *= -L$${QWT3D_PATH}/lib
       LIBS += $$system($${BUILD_ROOT}/admin/libs.sh -l $${QWT3D_PATH}/lib qwtplot3d-qt4 qwtplt3d)
     } else {
+      INCLUDEPATH *= $$system($${BUILD_ROOT}/admin/include.sh qwtplot3d-qt4 qwtplt3d)
       LIBS += $$system($${BUILD_ROOT}/admin/libs.sh qwtplot3d-qt4 qwtplt3d)
     }    
 
