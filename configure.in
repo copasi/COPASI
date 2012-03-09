@@ -355,6 +355,8 @@ dnl to prevent calling aclocal, automake and configure again
  touch Makefile.in
  touch configure
 
+ QMAKE_ARG="BUILD_ROOT=`pwd` $QMAKE_ARG"
+ 
  find copasi -type f -name Makefile -exec rm {} \;
 
  cd copasi && \
