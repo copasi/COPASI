@@ -1,10 +1,10 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.133 $ 
+#   $Revision: 1.134 $ 
 #   $Name:  $ 
 # End CVS Header 
 
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -19,7 +19,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.133 $ $Author: shoops $ $Date: 2012/02/23 16:07:25 $  
+# $Revision: 1.134 $ $Author: shoops $ $Date: 2012/03/09 04:21:14 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -32,7 +32,7 @@ isEmpty(BUILD_OS) {
       MY_QTDIR = $$system(echo %QTDIR%)
       contains(MY_QTDIR, %QTDIR%) {
         QMAKE_QMAKE = qmake.exe
-        !build_pass: message("Configuring for $${BUILD_OS} with QTDIR=???.")
+        !build_pass: message("Configuring for $${BUILD_OS}.")
       } else {
         QMAKE_QMAKE = $(QTDIR)/bin/qmake.exe
         !build_pass: message("Configuring for $${BUILD_OS} with QTDIR=$(QTDIR).")
@@ -44,7 +44,12 @@ isEmpty(BUILD_OS) {
 
   } else {
     BUILD_OS = $$system(uname)
-    message("Configuring for $${BUILD_OS} with QTDIR=$(QTDIR).")
+    MY_QTDIR = $$system(echo _$QTDIR)
+    contains(MY_QTDIR, _) {
+      message("Configuring for $${BUILD_OS}.")
+    } else {
+      message("Configuring for $${BUILD_OS} with QTDIR=$(QTDIR).")
+    }  
   }
 }
 DEFINES += $$BUILD_OS
@@ -60,7 +65,7 @@ contains(CONFIG, qt) {
     QT += webkit
 }
 
-INCLUDEPATH += ../..
+INCLUDEPATH += $${BUILD_ROOT}
 QMAKE_CFLAGS   += $$(CFLAGS)
 QMAKE_CXXFLAGS += $$(CXXFLAGS)
 QMAKE_LFLAGS  += $$(LDFLAGS)
@@ -137,15 +142,15 @@ contains(STATIC_LINKAGE, yes) {
   QMAKE_CXXFLAGS_RELEASE -= -O4
   QMAKE_CXXFLAGS_RELEASE += -O3
 
-  QMAKE_LEX = ../../admin/flex.sh
-  QMAKE_YACC = ../../admin/yacc.sh
+  QMAKE_LEX = $${BUILD_ROOT}/admin/flex.sh
+  QMAKE_YACC = $${BUILD_ROOT}/admin/yacc.sh
   
   # The character # (hex 23) can not be escaped we therefore create 
   # a variable containing it
-  HASH = $$system(echo "\\043")
-  contains(HASH, \\043){
-    HASH = $$system(echo -e "\\043")
-  }
+  # HASH = $$system(echo "\\043")
+  # contains(HASH, \\043){
+  #   HASH = $$system(echo -e "\\043")
+  # }
 }
 
 
@@ -267,8 +272,8 @@ contains(BUILD_OS, WIN32) {
     QMAKE_LFLAGS   += /LIBPATH:\""$${INTELRD_PATH}"\"
   }
   
-  QMAKE_LEX = C:/cygwin/bin/bash ../../admin/flex.sh
-  QMAKE_YACC = C:/cygwin/bin/bash ../../admin/yacc.sh
+  QMAKE_LEX = C:/cygwin/bin/bash $${BUILD_ROOT}/admin/flex.sh
+  QMAKE_YACC = C:/cygwin/bin/bash $${BUILD_ROOT}/admin/yacc.sh
 
   DEFINES -= UNICODE
   DEFINES += _CRT_SECURE_NO_WARNINGS
@@ -543,13 +548,13 @@ contains(STATIC_LINKAGE, yes) {
  
 contains(BUILD_OS, Linux) {
 
-  TARGET_64 = $$system($CC -dM -E - < /dev/null | grep -q __x86_64__ && echo true)
+  TARGET_64 = $$system($${QMAKE_CC} -dM -E - < /dev/null | grep -q __x86_64__ && echo true)
 
   contains(TARGET_64, true) {
     message("Creating 64 bit binaries.")
   }
 
-  INTEL_COMPILER = $$system($CC -dM -E - < /dev/null | grep -q __INTEL_COMPILER && echo true)
+  INTEL_COMPILER = $$system($${QMAKE_CC} -dM -E - < /dev/null | grep -q __INTEL_COMPILER && echo true)
 
   contains(INTEL_COMPILER, true) {
     message("Linking statically against Intel libraries.")
@@ -575,8 +580,8 @@ contains(BUILD_OS, Linux) {
   }
 
   !isEmpty(SBML_PATH){
-    INCLUDEPATH += $${SBML_PATH}/include
-    INCLUDEPATH += $${SBML_PATH}/include/sbml
+    INCLUDEPATH *= $${SBML_PATH}/include
+    INCLUDEPATH *= $${SBML_PATH}/include/sbml
 
     contains(PACKAGE, yes) {
       LIBS += $${SBML_PATH}/lib/libsbml.a
@@ -596,7 +601,7 @@ contains(BUILD_OS, Linux) {
   }
 
   !isEmpty(EXPAT_PATH){
-    INCLUDEPATH += $${EXPAT_PATH}/include
+    INCLUDEPATH *= $${EXPAT_PATH}/include
 
     contains(PACKAGE, yes) {
       LIBS += $${EXPAT_PATH}/lib/libexpat.a
@@ -618,7 +623,7 @@ contains(BUILD_OS, Linux) {
 # The raptor library
   !isEmpty(RAPTOR_PATH){
       LIBS +=  -L$${RAPTOR_PATH}/lib
-      INCLUDEPATH += $${RAPTOR_PATH}/include
+      INCLUDEPATH *= $${RAPTOR_PATH}/include
 
     contains(PACKAGE, yes) {
       LIBS += $${RAPTOR_PATH}/lib/libraptor.a
@@ -639,7 +644,7 @@ contains(BUILD_OS, Linux) {
   
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
-    INCLUDEPATH += $${MKL_PATH}/include
+    INCLUDEPATH *= $${MKL_PATH}/include
 
     contains(TARGET_64, true) {
       LIBS += -Wl,--start-group \
@@ -669,16 +674,24 @@ contains(BUILD_OS, Linux) {
       !isEmpty(LAPACK_PATH) {
         message("Using lapack.")
         DEFINES += USE_LAPACK
-        INCLUDEPATH += $${LAPACK_PATH}/include
+        
+        !contains(LAPACK_PATH, yes) {
+          INCLUDEPATH *= $${LAPACK_PATH}/include
 
-        contains(PACKAGE, yes) {
-          LIBS += $${LAPACK_PATH}/lib/liblapack.a 
-          LIBS += $${LAPACK_PATH}/lib/libblas.a
-          LIBS += $$system(locate libg2c.a)
-        }
-        else {
-          LIBS += -L$${LAPACK_PATH}/lib
-          LIBS += -llapack 
+          contains(PACKAGE, yes) {
+            LIBS += $${LAPACK_PATH}/lib/liblapack.a 
+            LIBS += $${LAPACK_PATH}/lib/libblas.a
+            LIBS += $$system(locate libg2c.a)
+          }
+          else {
+            LIBS += -L$${LAPACK_PATH}/lib
+            LIBS += -llapack 
+            LIBS += -lblas
+            HAVE_G2C = $$system(locate libg2c)
+            !isEmpty(HAVE_G2C) LIBS += -lg2c
+          }
+        } else {
+          LIBS += -llapack
           LIBS += -lblas
           HAVE_G2C = $$system(locate libg2c)
           !isEmpty(HAVE_G2C) LIBS += -lg2c
@@ -695,34 +708,36 @@ contains(BUILD_OS, Linux) {
         LIBS += -lSBW
       } else {
         LIBS += $${SBW_PATH}/lib/libSBW.a
-        INCLUDEPATH += $${SBW_PATH}/include
+        INCLUDEPATH *= $${SBW_PATH}/include
       }
       DEFINES += COPASI_SBW_INTEGRATION
       DEFINES += LINUX 
     }
      
-    !isEmpty(QWT_PATH) {
-       LIBS +=  -L$${QWT_PATH}/lib
-       INCLUDEPATH += $${QWT_PATH}/include
-       INCLUDEPATH += $${QWT_PATH}/include/qwt-qt4
+    !isEmpty(QWT_PATH):!contains(QWT_PATH, yes) {
+      INCLUDEPATH *= $$system($${BUILD_ROOT}/admin/include.sh -i $${QWT_PATH}/include qwt-qt4 qwt)
+      LIBS *= -L$${QWT_PATH}/lib
+      LIBS += $$system($${BUILD_ROOT}/admin/libs.sh -l $${QWT_PATH}/lib qwt-qt4 qwt)
+    } else {
+      LIBS += $$system($${BUILD_ROOT}/admin/libs.sh qwt-qt4 qwt)
     }
+    
     LIBS += -lqwt
 
-    !isEmpty(QWT3D_PATH) {
-      LIBS += -L$${QWT3D_PATH}/lib/
-      INCLUDEPATH += $${QWT3D_PATH}/include
-      INCLUDEPATH += $${QWT3D_PATH}/include/qwtplot3d-qt4
-    }
-    LIBS += -lqwtplot3d
+    !isEmpty(QWT3D_PATH):!contains(QWT_PATH, yes) {
+      INCLUDEPATH *= $$system($${BUILD_ROOT}/admin/include.sh -i $${QWT3D_PATH}/include qwtplot3d-qt4 qwtplt3d)
+      LIBS *= -L$${QWT3D_PATH}/lib
+      LIBS += $$system($${BUILD_ROOT}/admin/libs.sh -l $${QWT3D_PATH}/lib qwtplot3d-qt4 qwtplt3d)
+    } else {
+      LIBS += $$system($${BUILD_ROOT}/admin/libs.sh qwtplot3d-qt4 qwtplt3d)
+    }    
 
-    !isEmpty(QTMML_PATH) {
+    !isEmpty(QTMML_PATH) { 
       contains(QTMML_PATH, yes) {
-        release: LIBS += -lQtSolutions_MMLWidget-2.4
-        debug:   LIBS += -lQtSolutions_MMLWidget-2.4_debug
+        LIBS += -lQtSolutions_MMLWidget-2.4
       } else {
-        release: LIBS +=  $${QTMML_PATH}/lib/libQtSolutions_MMLWidget-2.4.a
-        debug:   LIBS +=  $${QTMML_PATH}/lib/libQtSolutions_MMLWidget-2.4_debug.a
-        INCLUDEPATH += $${QTMML_PATH}/include
+        LIBS +=  $${QTMML_PATH}/lib/libQtSolutions_MMLWidget-2.4.a
+        INCLUDEPATH *= $${QTMML_PATH}/include
       }
       
       DEFINES += HAVE_MML
