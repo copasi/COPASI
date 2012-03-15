@@ -13,7 +13,9 @@
     <file>images/filePrint.png</file>
     <file>images/fileSave.png</file>
     <file>images/fileSaveas.png</file>
+    <file>images/isToS.png</file>
     <file>images/locked.png</file>
+    <file>images/miriam.png</file>
     <file>images/moveDown.png</file>
     <file>images/moveUp.png</file>
     <file>images/playerKill.png</file>
@@ -28,6 +30,7 @@
     <file>images/renderMathML.png</file>
     <file>images/separator.png</file>
     <file>images/slider.png</file>
+    <file>images/sToIs.png</file>
     <file>images/tool.png</file>
     <file>images/unlocked.png</file>
     <file>images/zoomOut.png</file>

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/resourcesUI/CQIconResource.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/15 17:01:30 $
+//   $Date: 2012/03/15 19:07:12 $
 // End CVS Header
 
 // Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,7 +50,9 @@ void CQIconResource::init()
   Icons[filePrint].addFile(QString::fromUtf8(":/images/filePrint.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[fileSave].addFile(QString::fromUtf8(":/images/fileSave.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[fileSaveas].addFile(QString::fromUtf8(":/images/fileSaveas.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[isToS].addFile(QString::fromUtf8(":/images/isToS.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[locked].addFile(QString::fromUtf8(":/images/locked.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[miriam].addFile(QString::fromUtf8(":/images/miriam.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[moveDown].addFile(QString::fromUtf8(":/images/moveDown.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[moveUp].addFile(QString::fromUtf8(":/images/moveUp.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[playerKill].addFile(QString::fromUtf8(":/images/playerKill.png"), QSize(), QIcon::Normal, QIcon::On);
@@ -65,6 +67,7 @@ void CQIconResource::init()
   Icons[renderMathML].addFile(QString::fromUtf8(":/images/renderMathML.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[separator].addFile(QString::fromUtf8(":/images/separator.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[slider].addFile(QString::fromUtf8(":/images/slider.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[sToIs].addFile(QString::fromUtf8(":/images/sToIs.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[tool].addFile(QString::fromUtf8(":/images/tool.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[unlocked].addFile(QString::fromUtf8(":/images/unlocked.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[zoomOut].addFile(QString::fromUtf8(":/images/zoomOut.png"), QSize(), QIcon::Normal, QIcon::On);
