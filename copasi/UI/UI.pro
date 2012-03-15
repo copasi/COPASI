@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.260 $
+#   $Revision: 1.261 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2012/03/15 17:09:28 $
+#   $Date: 2012/03/15 17:33:46 $
 # End CVS Header
 
 # Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.260 $ $Author: shoops $ $Date: 2012/03/15 17:09:28 $
+# $Revision: 1.261 $ $Author: shoops $ $Date: 2012/03/15 17:33:46 $
 ######################################################################
 
 LIB = UI
@@ -135,7 +135,6 @@ HEADERS	+= \
   CQFluxModeDM.h \
   CQFunctionDM.h \
   CQGlobalQuantityDM.h \
-  CQIcons.h \
   CQLayoutsDM.h \
   CQMessageBox.h \
   CQMmlScrollView.h \
@@ -284,7 +283,6 @@ SOURCES	+= \
   CQFluxModeDM.cpp \
   CQFunctionDM.cpp \
   CQGlobalQuantityDM.cpp \
-  CQIcons.cpp \
   CQLayoutsDM.cpp \
   CQMessageBox.cpp \
   CQMmlScrollView.cpp \
