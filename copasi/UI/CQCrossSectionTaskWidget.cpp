@@ -6,7 +6,7 @@
 //   $Date: 2011/02/17 19:14:45 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,9 +20,10 @@
 #include "CQTaskBtnWidget.h"
 #include "CQTaskHeaderWidget.h"
 #include "CQTaskMethodWidget.h"
-#include "UI/icons/Copasi16-Alpha.xpm"
 #include "CQMessageBox.h"
 #include "CQValidator.h"
+
+#include "resourcesUI/CQIconResource.h"
 
 #include "copasi.h"
 
@@ -48,7 +49,7 @@ CQCrossSectionTaskWidget::CQCrossSectionTaskWidget(QWidget* parent, const char* 
     : TaskWidget(parent, name)
 {
   setupUi(this);
-  mpButtonVariable->setIcon(QPixmap(Copasi16_Alpha_xpm));
+  mpButtonVariable->setIcon(CQIconResource::icon(CQIconResource::copasi));
 
   init();
 }

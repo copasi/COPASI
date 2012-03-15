@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/11/04 17:59:25 $
+//   $Date: 2012/03/15 17:07:51 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,7 +24,7 @@
 #include <QXmlSimpleReader>
 
 #include "CQNotes.h"
-#include "CQIcons.h"
+#include "resourcesUI/CQIconResource.h"
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
 
@@ -119,7 +119,7 @@ CQNotes::CQNotes(QWidget* parent, const char* name) :
   mEditMode = false;
   mpEdit->hide();
   mpWebView->show();
-  mpBtnToggleEdit->setIcon(CQIcons::getIcon(CQIcons::Edit));
+  mpBtnToggleEdit->setIcon(CQIconResource::icon(CQIconResource::edit));
 
   mpWebView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
 }
@@ -200,7 +200,7 @@ void CQNotes::slotToggleMode()
     {
       mpWebView->hide();
       mpEdit->show();
-      mpBtnToggleEdit->setIcon(CQIcons::getIcon(CQIcons::View));
+      mpBtnToggleEdit->setIcon(CQIconResource::icon(CQIconResource::renderMarkup));
     }
   else
     {
@@ -209,7 +209,7 @@ void CQNotes::slotToggleMode()
 
       mpEdit->hide();
       mpWebView->show();
-      mpBtnToggleEdit->setIcon(CQIcons::getIcon(CQIcons::Edit));
+      mpBtnToggleEdit->setIcon(CQIconResource::icon(CQIconResource::edit));
     }
 }
 
@@ -234,13 +234,13 @@ void CQNotes::slotValidateXML()
     {
       mpWebView->hide();
       mpEdit->show();
-      mpBtnToggleEdit->setIcon(CQIcons::getIcon(CQIcons::View));
+      mpBtnToggleEdit->setIcon(CQIconResource::icon(CQIconResource::renderMarkup));
     }
   else
     {
       mpEdit->hide();
       mpWebView->show();
-      mpBtnToggleEdit->setIcon(CQIcons::getIcon(CQIcons::Edit));
+      mpBtnToggleEdit->setIcon(CQIconResource::icon(CQIconResource::edit));
     }
 }
 

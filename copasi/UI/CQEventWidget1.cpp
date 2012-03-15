@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/13 19:21:57 $
+//   $Date: 2012/03/15 17:07:52 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,7 +26,7 @@
 
 #include "CQMessageBox.h"
 #include "CCopasiSelectionDialog.h"
-#include "CQIcons.h"
+#include "resourcesUI/CQIconResource.h"
 #include "CTabWidget.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -170,9 +170,9 @@ void CQEventWidget1::init()
   mpExpressionEA->hide();
 
   // Set the icons for the buttons
-  mpBtnSelectObject->setIcon(CQIcons::getIcon(CQIcons::SelectObject));
-  mpBtnAddTarget->setIcon(CQIcons::getIcon(CQIcons::Add));
-  mpBtnDeleteTarget->setIcon(CQIcons::getIcon(CQIcons::Delete));
+  mpBtnSelectObject->setIcon(CQIconResource::icon(CQIconResource::copasi));
+  mpBtnAddTarget->setIcon(CQIconResource::icon(CQIconResource::editAdd));
+  mpBtnDeleteTarget->setIcon(CQIconResource::icon(CQIconResource::editDelete));
 }
 
 /*! Slot to add a new target without object target nor its expression

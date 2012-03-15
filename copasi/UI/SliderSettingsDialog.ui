@@ -2,30 +2,26 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderSettingsDialog.ui,v $ </comment>
-<comment>   $Revision: 1.20 $ </comment>
+<comment>   $Revision: 1.21 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/09/19 13:54:23 $ </comment>
+<comment>   $Date: 2012/03/15 17:07:52 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
-<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
-<comment> and The University of Manchester. </comment>
-<comment> All rights reserved. </comment>
-
+ <comment> All rights reserved. </comment>
  <class>SliderSettingsDialog</class>
  <widget class="QDialog" name="SliderSettingsDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>635</width>
-    <height>323</height>
+    <width>429</width>
+    <height>310</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -37,7 +33,7 @@
   <property name="windowTitle">
    <string>Slider Settings</string>
   </property>
-  <layout class="QVBoxLayout" name="mpVerticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -73,35 +69,15 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="mpObjectBrowseButton">
+      <widget class="QToolButton" name="mpObjectBrowseButton">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="minimumSize">
-        <size>
-         <width>30</width>
-         <height>0</height>
-        </size>
-       </property>
        <property name="toolTip">
-        <string>Select an object for the slider</string>
-       </property>
-       <property name="whatsThis">
-        <string>Clicking this button opens a dialog that
-lets the user choose the object that the 
-slider will manipulate. The object has to 
-represent either an integer value or a float
-value.</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>icons/Copasi.ico</normaloff>icons/Copasi.ico</iconset>
+        <string>select</string>
        </property>
       </widget>
      </item>
@@ -130,10 +106,16 @@ than 0.0.</string>
      <item>
       <widget class="QLineEdit" name="mpMinValueEdit">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>80</width>
+         <height>0</height>
+        </size>
        </property>
        <property name="text">
         <string>0.0</string>
@@ -149,11 +131,11 @@ than 0.0.</string>
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
+        <enum>QSizePolicy::Maximum</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>18</width>
+         <width>20</width>
          <height>20</height>
         </size>
        </property>
@@ -179,10 +161,16 @@ the slider will take.</string>
      <item>
       <widget class="QLineEdit" name="mpMaxValueEdit">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>80</width>
+         <height>0</height>
+        </size>
        </property>
        <property name="whatsThis">
         <string/>
@@ -215,22 +203,6 @@ greater than 0.0.</string>
        </property>
       </widget>
      </item>
-     <item>
-      <spacer name="mpSpacer1_2_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>200</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
     </layout>
    </item>
    <item>
@@ -251,7 +223,7 @@ greater than 0.0.</string>
 some more less often needed options.</string>
        </property>
        <property name="text">
-        <string>more options</string>
+        <string>Advanced &gt;&gt;</string>
        </property>
       </widget>
      </item>
@@ -295,12 +267,6 @@ maximum value.</string>
      </item>
      <item row="0" column="1">
       <widget class="QLineEdit" name="mpNumMinorTicksEdit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
        <property name="text">
         <string>10.0</string>
        </property>
@@ -315,11 +281,11 @@ maximum value.</string>
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
+        <enum>QSizePolicy::Minimum</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>40</width>
+         <width>20</width>
          <height>20</height>
         </size>
        </property>
@@ -346,11 +312,11 @@ when setting the &quot;Number of Minor Ticks&quot;.</string>
      </item>
      <item row="0" column="4">
       <widget class="QLineEdit" name="mpMinorTickSizeEdit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
        </property>
        <property name="text">
         <string>1.0</string>
@@ -383,12 +349,6 @@ keys and a major step via the page up/down keys.</string>
      </item>
      <item row="1" column="1">
       <widget class="QLineEdit" name="mpMinorMajorFactorEdit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
        <property name="text">
         <string>10.0</string>
        </property>
@@ -403,11 +363,11 @@ keys and a major step via the page up/down keys.</string>
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
+        <enum>QSizePolicy::Maximum</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>40</width>
+         <width>20</width>
          <height>20</height>
         </size>
        </property>
@@ -434,12 +394,6 @@ when setting the &quot;Number of Minor Ticks&quot;.</string>
      </item>
      <item row="1" column="4">
       <widget class="QLineEdit" name="mpOriginalValueEdit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
        <property name="text">
         <string>1.0</string>
        </property>
@@ -470,12 +424,6 @@ when editing or creating a slider.</string>
      </item>
      <item row="2" column="1">
       <widget class="QLineEdit" name="mpObjectValueEdit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
        <property name="text">
         <string>50.0</string>
        </property>
@@ -483,22 +431,6 @@ when editing or creating a slider.</string>
         <set>Qt::AlignRight</set>
        </property>
       </widget>
-     </item>
-     <item row="2" column="2" colspan="3">
-      <spacer name="mpSpacer1_3_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>238</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
      </item>
     </layout>
    </item>
@@ -517,19 +449,6 @@ when editing or creating a slider.</string>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_5">
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>38</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
      <item>
       <widget class="QPushButton" name="mpOkButton">
        <property name="sizePolicy">
@@ -579,7 +498,6 @@ when editing or creating a slider.</string>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>mpObjectNameLineEdit</tabstop>
-  <tabstop>mpObjectBrowseButton</tabstop>
   <tabstop>mpMinValueEdit</tabstop>
   <tabstop>mpMaxValueEdit</tabstop>
   <tabstop>mpLogCheckBox</tabstop>
@@ -590,9 +508,7 @@ when editing or creating a slider.</string>
  <includes>
   <include location="global">vector</include>
  </includes>
- <resources>
-  <include location="Resources.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>mpCancelButton</sender>
@@ -743,38 +659,6 @@ when editing or creating a slider.</string>
    <signal>clicked()</signal>
    <receiver>SliderSettingsDialog</receiver>
    <slot>browseButtonPressed()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mpNumMinTicksEdit</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>SliderSettingsDialog</receiver>
-   <slot>numTicksValueTextChanged()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mpNumMinTicksEdit</sender>
-   <signal>editingFinished()</signal>
-   <receiver>SliderSettingsDialog</receiver>
-   <slot>numMinorTicksChanged()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>20</x>

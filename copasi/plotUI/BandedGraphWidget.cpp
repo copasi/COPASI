@@ -1,12 +1,12 @@
 // Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.15.2.2 $
-//   $Name: Build-33 $
-//   $Author: shoops $
-//   $Date: 2011/02/17 19:14:45 $
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/plotUI/BandedGraphWidget.cpp,v $
+//   $Revision: 1.1 $
+//   $Name:  $
+//   $Author: tjohann $
+//   $Date: 2011/09/05 11:53:01 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,6 +20,7 @@
 
 #include "report/CCopasiRootContainer.h"
 #include "plot/CPlotItem.h"
+#include "resourcesUI/CQIconResource.h"
 
 /*
  *  Constructs a BandedGraphWidget as a child of 'parent', with the
@@ -30,11 +31,9 @@ BandedGraphWidget::BandedGraphWidget(QWidget* parent, const char* /* name */, Qt
 {
   setupUi(this);
 
-  const QIcon icon = qt_get_icon(image0_ID);
-
-  mpBtnX->setIcon(icon);
-  mpBtnYone->setIcon(icon);
-  mpBtnYtwo->setIcon(icon);
+  mpBtnX->setIcon(CQIconResource::icon(CQIconResource::copasi));
+  mpBtnYone->setIcon(CQIconResource::icon(CQIconResource::copasi));
+  mpBtnYtwo->setIcon(CQIconResource::icon(CQIconResource::copasi));
 }
 
 /*

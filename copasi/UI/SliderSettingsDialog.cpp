@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderSettingsDialog.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:52 $
+//   $Date: 2012/03/15 17:07:54 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,6 +27,7 @@
 #include "UI/qtUtilities.h"
 #include "UI/CCopasiSelectionDialog.h"
 #include "UI/CQMessageBox.h"
+#include "resourcesUI/CQIconResource.h"
 
 #include "utilities/CSlider.h"
 #include "report/CCopasiRootContainer.h"
@@ -337,6 +338,7 @@ void SliderSettingsDialog::init()
   mpSlider = NULL;
   mChanged = NONE;
   mScaling = CSlider::linear;
+  mpObjectBrowseButton->setIcon(CQIconResource::icon(CQIconResource::copasi));
   mpExtendedOptionsButton->setText("Advanced >>");
   hideOptionsControls();
   this->setFixedSize(minimumSizeHint());
@@ -621,8 +623,6 @@ void SliderSettingsDialog::showOptionsControls()
 
   mpObjectValueLabel->show();
   mpObjectValueEdit->show();
-
-  mpVerticalLayout->insertLayout(4, mpOptionsGridLayout);
 }
 
 void SliderSettingsDialog::hideOptionsControls()
@@ -639,6 +639,4 @@ void SliderSettingsDialog::hideOptionsControls()
 
   mpObjectValueLabel->hide();
   mpObjectValueEdit->hide();
-
-  mpVerticalLayout->removeItem(mpOptionsGridLayout);
 }

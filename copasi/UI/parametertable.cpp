@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/13 17:25:10 $
+//   $Date: 2012/03/15 17:07:52 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,18 +28,14 @@
 #include <stdlib.h>
 
 #include "parametertable.h"
+#include "resourcesUI/CQIconResource.h"
+
 #include "model/CReactionInterface.h"
 #include "model/CModel.h"
 #include "model/CMetabNameInterface.h"
 #include "qtUtilities.h"
 #include "utilities/CDimension.h"
 #include "copasi/report/CCopasiRootContainer.h"
-
-#include "./icons/product.xpm"
-#include "./icons/substrate.xpm"
-#include "./icons/modifier.xpm"
-#include "./icons/locked.xpm"
-#include "./icons/unlocked.xpm"
 
 ParameterTable::ParameterTable(QWidget * parent, const char * name)
     : Q3Table(parent, name),
@@ -214,12 +210,6 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
   QColor volColor(210, 210, 255);
   QColor timeColor(210, 210, 210);
 
-  QPixmap * pProduct = new QPixmap((const char**)product_xpm);
-  QPixmap * pSubstrate = new QPixmap((const char**)substrate_xpm);
-  QPixmap * pModifier = new QPixmap((const char**)modifier_xpm);
-  QPixmap * pLocked = new QPixmap((const char**)locked_xpm);
-  QPixmap * pUnlocked = new QPixmap((const char**)unlocked_xpm);
-
   CFunctionParameter::Role usage;
   QString qUsage;
   QColor color;
@@ -278,11 +268,12 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
       // add first column
       item = new ColorTableItem(this, Q3TableItem::Never, color, qUsage);
 
-      if (usage == CFunctionParameter::SUBSTRATE) item->setPixmap(*pSubstrate);
-
-      if (usage == CFunctionParameter::PRODUCT) item->setPixmap(*pProduct);
-
-      if (usage == CFunctionParameter::MODIFIER) item->setPixmap(*pModifier);
+      if (usage == CFunctionParameter::SUBSTRATE)
+        item->setPixmap(CQIconResource::icon(CQIconResource::reactionSubstrate).pixmap(QSize(40, 20), QIcon::Normal, QIcon::On));
+      else if (usage == CFunctionParameter::PRODUCT)
+        item->setPixmap(CQIconResource::icon(CQIconResource::reactionProduct).pixmap(QSize(40, 20), QIcon::Normal, QIcon::On));
+      else if (usage == CFunctionParameter::MODIFIER)
+        item->setPixmap(CQIconResource::icon(CQIconResource::reactionModifier).pixmap(QSize(40, 20), QIcon::Normal, QIcon::On));
 
       setItem((int) rowCounter, 0, item);
 
@@ -293,7 +284,10 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
           && (usage != CFunctionParameter::VOLUME)
           && (usage != CFunctionParameter::TIME))
         {
-          if (ri.isLocked(i)) item->setPixmap(*pLocked); else item->setPixmap(*pUnlocked);
+          if (ri.isLocked(i))
+            item->setPixmap(CQIconResource::icon(CQIconResource::locked).pixmap(QSize(40, 20), QIcon::Normal, QIcon::On));
+          else
+            item->setPixmap(CQIconResource::icon(CQIconResource::unlocked).pixmap(QSize(40, 20), QIcon::Normal, QIcon::On));
         }
 
       setItem((int) rowCounter, 1, item);

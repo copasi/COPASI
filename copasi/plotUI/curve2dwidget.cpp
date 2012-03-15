@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/curve2dwidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:27 $
+//   $Date: 2012/03/15 17:04:48 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,6 +20,7 @@
 
 #include "report/CCopasiRootContainer.h"
 #include "plot/CPlotItem.h"
+#include "resourcesUI/CQIconResource.h"
 
 /*
  *  Constructs a Curve2DWidget as a child of 'parent', with the
@@ -31,9 +32,8 @@ Curve2DWidget::Curve2DWidget(QWidget* parent, const char* /* name */, Qt::Window
   setupUi(this);
 
 
-  const QIcon icon = qt_get_icon(image0_ID);
-  mpBtnX->setIcon(icon);
-  mpBtnY->setIcon(icon);
+  mpBtnX->setIcon(CQIconResource::icon(CQIconResource::copasi));
+  mpBtnY->setIcon(CQIconResource::icon(CQIconResource::copasi));
 }
 
 /*

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:08 $
+//   $Author: shoops $
+//   $Date: 2012/03/15 17:07:52 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,6 +27,8 @@
 #include "CQExperimentSelection.h"
 #include "CQStartValueReset.h"
 #include "qtUtilities.h"
+
+#include "resourcesUI/CQIconResource.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"
@@ -50,30 +52,23 @@ CQFittingItemWidget::CQFittingItemWidget(QWidget* parent, Qt::WindowFlags fl)
 {
   setupUi(this);
 
-  const QIcon icon = qt_get_icon(image0_ID);
-  mpBtnDel->setIcon(icon);
+  mpBtnDel->setIcon(CQIconResource::icon(CQIconResource::editDelete));
 
-  const QIcon icon1 = qt_get_icon(image1_ID);
-  mpBtnUp->setIcon(icon1);
+  mpBtnUp->setIcon(CQIconResource::icon(CQIconResource::moveUp));
 
-  const QIcon icon2 = qt_get_icon(image2_ID);
-  mpBtnUpperEdit->setIcon(icon2);
-  mpBtnLowerEdit->setIcon(icon2);
-  mpBtnObject->setIcon(icon2);
+  mpBtnUpperEdit->setIcon(CQIconResource::icon(CQIconResource::copasi));
+  mpBtnLowerEdit->setIcon(CQIconResource::icon(CQIconResource::copasi));
+  mpBtnObject->setIcon(CQIconResource::icon(CQIconResource::copasi));
 
-  const QIcon icon3 = qt_get_icon(image3_ID);
-  mpBtnNew->setIcon(icon3);
+  mpBtnNew->setIcon(CQIconResource::icon(CQIconResource::editAdd));
 
-  const QIcon icon4 = qt_get_icon(image4_ID);
-  mpBtnDown->setIcon(icon4);
+  mpBtnDown->setIcon(CQIconResource::icon(CQIconResource::moveDown));
 
-  const QIcon icon5 = qt_get_icon(image5_ID);
-  mpBtnCopy->setIcon(icon5);
+  mpBtnCopy->setIcon(CQIconResource::icon(CQIconResource::editCopy));
 
-  const QIcon icon6 = qt_get_icon(image6_ID);
-  mpBtnReset->setIcon(icon6);
-  mpBtnExperiments->setIcon(icon6);
-  mpBtnCrossValidations->setIcon(icon6);
+  mpBtnReset->setIcon(CQIconResource::icon(CQIconResource::tool));
+  mpBtnExperiments->setIcon(CQIconResource::icon(CQIconResource::tool));
+  mpBtnCrossValidations->setIcon(CQIconResource::icon(CQIconResource::tool));
 
   init();
 }

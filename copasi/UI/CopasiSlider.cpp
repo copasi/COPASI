@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/31 14:25:56 $
+//   $Date: 2012/03/15 17:07:54 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -37,9 +37,7 @@
 #include "listviews.h"
 #include "qtUtilities.h"
 #include "DataModelGUI.h"
-
-#include "icons/closeSlider.xpm"
-#include "icons/editSlider.xpm"
+#include "resourcesUI/CQIconResource.h"
 
 CopasiSlider::CopasiSlider(CSlider* pSlider, DataModelGUI * pDM, QWidget* parent):
     QFrame(parent),
@@ -70,16 +68,15 @@ CopasiSlider::CopasiSlider(CSlider* pSlider, DataModelGUI * pDM, QWidget* parent
   pFrame = new QFrame(NULL);
   pFrame->setLayout(new QVBoxLayout);
   pFrame->layout()->setContentsMargins(2, 2, 2, 2);
-  //pFrame->layout()->setSpacing(0);
-  QPixmap icons[2] = {closeSlider, editSlider};
+
   this->mpCloseButton = new QToolButton(NULL);
-  this->mpCloseButton->setIcon(icons[0]);
-  this->mpCloseButton->setFixedSize(13, 13);
+  this->mpCloseButton->setIcon(CQIconResource::icon(CQIconResource::editDelete));
   pFrame->layout()->addWidget(this->mpCloseButton);
+
   this->mpEditButton = new QToolButton(NULL);
-  this->mpEditButton->setIcon(icons[1]);
-  this->mpEditButton->setFixedSize(13, 13);
+  this->mpEditButton->setIcon(CQIconResource::icon(CQIconResource::edit));
   pFrame->layout()->addWidget(this->mpEditButton);
+
   this->layout()->addWidget(pFrame);
 
   if (!this->mpCSlider->compile())

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetRandom.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/12/22 19:51:57 $
+//   $Date: 2012/03/15 17:07:51 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,7 +25,7 @@
 #include "CScanWidgetRandom.h"
 #include "qtUtilities.h"
 #include "CCopasiSelectionDialog.h"
-#include "icons/Copasi16-Alpha.xpm"
+#include "resourcesUI/CQIconResource.h"
 
 #include "report/CCopasiRootContainer.h"
 #include "report/CCopasiObjectName.h"
@@ -39,7 +39,7 @@ CScanWidgetRandom::CScanWidgetRandom(QWidget* parent) :
     CScanItemData(CScanProblem::SCAN_RANDOM)
 {
   setupUi(this);
-  buttonObject->setIcon(QPixmap(Copasi16_Alpha_xpm));
+  buttonObject->setIcon(CQIconResource::icon(CQIconResource::copasi));
   init();
   retranslateUi(this);
 }
@@ -49,7 +49,7 @@ CScanWidgetRandom::CScanWidgetRandom(const CScanWidgetRandom & src, QWidget * pa
     CScanItemData(src)
 {
   setupUi(this);
-  buttonObject->setIcon(QPixmap(Copasi16_Alpha_xpm));
+  buttonObject->setIcon(CQIconResource::icon(CQIconResource::copasi));
   init();
   load(mpData);
   retranslateUi(this);

@@ -1,40 +1,42 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/curve2dwidget.ui,v $ </comment>
-<comment>   $Revision: 1.10 $ </comment>
+<comment>   $Revision: 1.11 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2010/07/16 19:01:57 $ </comment>
+<comment>   $Date: 2012/03/15 17:04:47 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+ <comment> All rights reserved. </comment>
  <class>Curve2DWidget</class>
- <widget class="QWidget" name="Curve2DWidget" >
-  <property name="geometry" >
+ <widget class="QWidget" name="Curve2DWidget">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>340</width>
+    <width>345</width>
     <height>279</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form2</string>
   </property>
-  <layout class="QGridLayout" >
-   <item row="7" column="1" >
-    <spacer name="mpSpacerV2" >
-     <property name="orientation" >
+  <layout class="QGridLayout">
+   <item row="7" column="1">
+    <spacer name="mpSpacerV2">
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeType" >
+     <property name="sizeType">
       <enum>QSizePolicy::Fixed</enum>
      </property>
-     <property name="sizeHint" stdset="0" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
        <height>16</height>
@@ -42,15 +44,15 @@
      </property>
     </spacer>
    </item>
-   <item row="10" column="1" >
-    <spacer name="mpSpacerV3" >
-     <property name="orientation" >
+   <item row="10" column="1">
+    <spacer name="mpSpacerV3">
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeType" >
+     <property name="sizeType">
       <enum>QSizePolicy::Expanding</enum>
      </property>
-     <property name="sizeHint" stdset="0" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
        <height>80</height>
@@ -58,130 +60,130 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="0" >
-    <widget class="QLabel" name="mpLblTitle" >
-     <property name="text" >
+   <item row="1" column="0">
+    <widget class="QLabel" name="mpLblTitle">
+     <property name="text">
       <string>Title</string>
      </property>
-     <property name="alignment" >
+     <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
-     <property name="wordWrap" >
+     <property name="wordWrap">
       <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="2" >
-    <widget class="QLabel" name="mpLblHeader" >
-     <property name="text" >
-      <string>&lt;h3>2D curve&lt;/h3></string>
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="mpLblHeader">
+     <property name="text">
+      <string>&lt;h3&gt;2D curve&lt;/h3&gt;</string>
      </property>
-     <property name="wordWrap" >
+     <property name="wordWrap">
       <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item rowspan="2" row="5" column="0" >
-    <widget class="QLabel" name="mpLblY" >
-     <property name="text" >
+   <item row="5" column="0" rowspan="2">
+    <widget class="QLabel" name="mpLblY">
+     <property name="text">
       <string>Y-Axis</string>
      </property>
-     <property name="alignment" >
+     <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
-     <property name="wordWrap" >
+     <property name="wordWrap">
       <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item row="4" column="0" >
-    <widget class="QLabel" name="mpLblX" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+   <item row="4" column="0">
+    <widget class="QLabel" name="mpLblX">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="text" >
+     <property name="text">
       <string>X-Axis</string>
      </property>
-     <property name="alignment" >
+     <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
-     <property name="wordWrap" >
+     <property name="wordWrap">
       <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item row="9" column="0" >
-    <widget class="QLabel" name="mpLblCaptureData" >
-     <property name="text" >
+   <item row="9" column="0">
+    <widget class="QLabel" name="mpLblCaptureData">
+     <property name="text">
       <string>Capture Data</string>
      </property>
-     <property name="alignment" >
+     <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
-     <property name="wordWrap" >
+     <property name="wordWrap">
       <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item row="8" column="0" >
-    <widget class="QLabel" name="mpLblType" >
-     <property name="text" >
+   <item row="8" column="0">
+    <widget class="QLabel" name="mpLblType">
+     <property name="text">
       <string>Type</string>
      </property>
-     <property name="alignment" >
+     <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
-     <property name="wordWrap" >
+     <property name="wordWrap">
       <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item rowspan="2" row="2" column="0" colspan="2" >
-    <widget class="Line" name="mpLine" >
-     <property name="frameShape" >
+   <item row="2" column="0" rowspan="2" colspan="2">
+    <widget class="Line" name="mpLine">
+     <property name="frameShape">
       <enum>QFrame::HLine</enum>
      </property>
-     <property name="frameShadow" >
+     <property name="frameShadow">
       <enum>QFrame::Sunken</enum>
      </property>
     </widget>
    </item>
-   <item row="1" column="1" >
-    <widget class="QLineEdit" name="mpEditTitle" />
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="mpEditTitle"/>
    </item>
-   <item row="8" column="1" >
-    <layout class="QHBoxLayout" >
+   <item row="8" column="1">
+    <layout class="QHBoxLayout">
      <item>
-      <widget class="QComboBox" name="mpBoxType" >
+      <widget class="QComboBox" name="mpBoxType">
        <item>
-        <property name="text" >
+        <property name="text">
          <string>lines</string>
         </property>
        </item>
        <item>
-        <property name="text" >
+        <property name="text">
          <string>points</string>
         </property>
        </item>
        <item>
-        <property name="text" >
+        <property name="text">
          <string>symbols</string>
         </property>
        </item>
       </widget>
      </item>
      <item>
-      <spacer name="mpSpacerType" >
-       <property name="orientation" >
+      <spacer name="mpSpacerType">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeType" >
+       <property name="sizeType">
         <enum>QSizePolicy::Expanding</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>284</width>
          <height>20</height>
@@ -191,41 +193,41 @@
      </item>
     </layout>
    </item>
-   <item row="9" column="1" >
-    <layout class="QHBoxLayout" >
+   <item row="9" column="1">
+    <layout class="QHBoxLayout">
      <item>
-      <widget class="QCheckBox" name="mpCheckBefore" >
-       <property name="text" >
+      <widget class="QCheckBox" name="mpCheckBefore">
+       <property name="text">
         <string>before</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="mpCheckDuring" >
-       <property name="text" >
+      <widget class="QCheckBox" name="mpCheckDuring">
+       <property name="text">
         <string>during</string>
        </property>
-       <property name="checked" >
+       <property name="checked">
         <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="mpCheckAfter" >
-       <property name="text" >
+      <widget class="QCheckBox" name="mpCheckAfter">
+       <property name="text">
         <string>after Task</string>
        </property>
       </widget>
      </item>
      <item>
-      <spacer name="mpSpacerCaptureData" >
-       <property name="orientation" >
+      <spacer name="mpSpacerCaptureData">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeType" >
+       <property name="sizeType">
         <enum>QSizePolicy::Expanding</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>160</width>
          <height>20</height>
@@ -235,57 +237,49 @@
      </item>
     </layout>
    </item>
-   <item row="6" column="1" >
-    <layout class="QHBoxLayout" >
+   <item row="6" column="1">
+    <layout class="QHBoxLayout">
      <item>
-      <widget class="QLineEdit" name="mpEditY" >
-       <property name="readOnly" >
+      <widget class="QLineEdit" name="mpEditY">
+       <property name="readOnly">
         <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="mpBtnY" >
-       <property name="maximumSize" >
+      <widget class="QToolButton" name="mpBtnY">
+       <property name="maximumSize">
         <size>
          <width>20</width>
          <height>20</height>
         </size>
        </property>
-       <property name="text" >
+       <property name="text">
         <string>select</string>
-       </property>
-       <property name="icon" >
-        <iconset>
-         <normaloff>image0</normaloff>image0</iconset>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item rowspan="3" row="3" column="1" >
-    <layout class="QHBoxLayout" >
+   <item row="3" column="1" rowspan="3">
+    <layout class="QHBoxLayout">
      <item>
-      <widget class="QLineEdit" name="mpEditX" >
-       <property name="readOnly" >
+      <widget class="QLineEdit" name="mpEditX">
+       <property name="readOnly">
         <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="mpBtnX" >
-       <property name="maximumSize" >
+      <widget class="QToolButton" name="mpBtnX">
+       <property name="maximumSize">
         <size>
          <width>20</width>
          <height>20</height>
         </size>
        </property>
-       <property name="text" >
+       <property name="text">
         <string>select</string>
-       </property>
-       <property name="icon" >
-        <iconset>
-         <normaloff>image0</normaloff>image0</iconset>
        </property>
       </widget>
      </item>
@@ -293,7 +287,7 @@
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <resources/>
  <connections>
   <connection>
@@ -302,11 +296,11 @@
    <receiver>Curve2DWidget</receiver>
    <slot>buttonPressedX()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -318,11 +312,11 @@
    <receiver>Curve2DWidget</receiver>
    <slot>buttonPressedY()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>

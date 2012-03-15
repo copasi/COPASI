@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetScan.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/12/22 19:51:58 $
+//   $Date: 2012/03/15 17:07:52 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,7 +24,7 @@
 
 #include "UI/qtUtilities.h"
 #include "UI/CCopasiSelectionDialog.h"
-#include "UI/icons/Copasi16-Alpha.xpm"
+#include "resourcesUI/CQIconResource.h"
 
 #include "report/CCopasiRootContainer.h"
 #include "report/CCopasiObjectName.h"
@@ -40,7 +40,7 @@ CScanWidgetScan::CScanWidgetScan(QWidget* parent) :
 {
   setupUi(this);
 
-  buttonObject->setIcon(QPixmap(Copasi16_Alpha_xpm));
+  buttonObject->setIcon(CQIconResource::icon(CQIconResource::copasi));
 
   init();
 }
@@ -51,7 +51,7 @@ CScanWidgetScan::CScanWidgetScan(const CScanWidgetScan & src, QWidget * parent) 
 {
   setupUi(this);
 
-  buttonObject->setIcon(QPixmap(Copasi16_Alpha_xpm));
+  buttonObject->setIcon(CQIconResource::icon(CQIconResource::copasi));
 
   init();
   load(mpData);

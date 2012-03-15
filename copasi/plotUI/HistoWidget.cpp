@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/HistoWidget.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:36:41 $
+//   $Date: 2012/03/15 17:04:47 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,14 +21,14 @@
 
 #include "plot/CPlotItem.h"
 #include "report/CCopasiRootContainer.h"
+#include "resourcesUI/CQIconResource.h"
 
 HistoWidget::HistoWidget(QWidget* parent, const char* /* name */, Qt::WindowFlags fl)
     : QWidget(parent, fl)
 {
   setupUi(this);
 
-  const QIcon icon = qt_get_icon(image0_ID);
-  mpBtnVariable->setIcon(icon);
+  mpBtnVariable->setIcon(CQIconResource::icon(CQIconResource::copasi));
 }
 
 HistoWidget::~HistoWidget()

@@ -6,7 +6,7 @@
 //   $Date: 2009/07/14 11:09:51 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,7 +20,7 @@
 
 #include "copasi.h"
 
-#include "CQIcons.h"
+#include "resourcesUI/CQIconResource.h"
 #include "CQPushButtonDelegate.h"
 #include "CopasiFileDialog.h"
 #include "CQMessageBox.h"
@@ -80,7 +80,7 @@ void CQMoietiesTaskResult::init()
   pItem = new QTableWidgetItem("Expression");
   mpMoieties->setHorizontalHeaderItem(COL_EQUATION, pItem);
 
-  CQPushButtonDelegate * pDelegate = new CQPushButtonDelegate(QIcon(CQIcons::getIcon(CQIcons::Tool)), "",  CQPushButtonDelegate::ToolButton, this);
+  CQPushButtonDelegate * pDelegate = new CQPushButtonDelegate(CQIconResource::icon(CQIconResource::tool), "",  CQPushButtonDelegate::ToolButton, this);
   mpMoieties->setItemDelegateForColumn(COL_BTN, pDelegate);
 
   connect(pDelegate, SIGNAL(clicked(int)), this, SLOT(slotCreateGlobalQuantity(int)));

@@ -6,7 +6,7 @@
 //   $Date: 2009/10/01 12:58:00 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,12 +26,12 @@
 #include "tex/CMathMLToTeX.h"
 #include "commandline/CLocaleString.h"
 
-#include "CQIcons.h"
+#include "resourcesUI/CQIconResource.h"
 
 #include <QtDebug>
 
 /*
- *  Constructs a CQExpressionMmlWidget as a child of 'parent', with the
+ *  Constructs a CQExpressionMmlStackedWidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 CQExpressionMmlStackedWidget::CQExpressionMmlStackedWidget(QWidget* parent)
@@ -39,10 +39,10 @@ CQExpressionMmlStackedWidget::CQExpressionMmlStackedWidget(QWidget* parent)
 {
   setupUi(this);
 
-  mpBtnExpressionObject->setIcon(CQIcons::getIcon(CQIcons::SelectObject));
-  mpBtnViewExpression->setIcon(CQIcons::getIcon(CQIcons::View));
-  mpBtnEditExpression->setIcon(CQIcons::getIcon(CQIcons::Edit));
-  mpBtnSaveExpression->setIcon(CQIcons::getIcon(CQIcons::Save));
+  mpBtnExpressionObject->setIcon(CQIconResource::icon(CQIconResource::copasi));
+  mpBtnViewExpression->setIcon(CQIconResource::icon(CQIconResource::renderMathML));
+  mpBtnEditExpression->setIcon(CQIconResource::icon(CQIconResource::edit));
+  mpBtnSaveExpression->setIcon(CQIconResource::icon(CQIconResource::fileExport));
 
   init();
 }

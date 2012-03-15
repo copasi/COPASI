@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQParameterTable.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/14 17:30:45 $
+//   $Date: 2012/03/15 17:07:54 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,6 +29,8 @@
 #include <stdlib.h>
 
 #include "CQParameterTable.h"
+#include "resourcesUI/CQIconResource.h"
+
 #include "model/CReactionInterface.h"
 #include "model/CModel.h"
 #include "model/CMetabNameInterface.h"
@@ -206,12 +208,6 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
   QColor volColor(210, 210, 255);
   QColor timeColor(210, 210, 210);
 
-  QPixmap * pProduct = new QPixmap((const char**)product_xpm);
-  QPixmap * pSubstrate = new QPixmap((const char**)substrate_xpm);
-  QPixmap * pModifier = new QPixmap((const char**)modifier_xpm);
-  QPixmap * pLocked = new QPixmap((const char**)locked_xpm);
-  QPixmap * pUnlocked = new QPixmap((const char**)unlocked_xpm);
-
   CFunctionParameter::Role usage;
   QString qUsage;
   QColor color;
@@ -271,11 +267,11 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
       // add first column
       QTableWidgetItem * pItem = new ColorTableItem(color, qUsage);
 
-      if (usage == CFunctionParameter::SUBSTRATE) pItem->setIcon(*pSubstrate);
+      if (usage == CFunctionParameter::SUBSTRATE) pItem->setIcon(CQIconResource::icon(CQIconResource::reactionSubstrate));
 
-      if (usage == CFunctionParameter::PRODUCT) pItem->setIcon(*pProduct);
+      if (usage == CFunctionParameter::PRODUCT) pItem->setIcon(CQIconResource::icon(CQIconResource::reactionProduct));
 
-      if (usage == CFunctionParameter::MODIFIER) pItem->setIcon(*pModifier);
+      if (usage == CFunctionParameter::MODIFIER) pItem->setIcon(CQIconResource::icon(CQIconResource::reactionModifier));
 
       setItem((int) rowCounter, 0, pItem);
 
@@ -287,9 +283,9 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
           && (usage != CFunctionParameter::TIME))
         {
           if (ri.isLocked(i))
-            pItem->setIcon(*pLocked);
+            pItem->setIcon(CQIconResource::icon(CQIconResource::locked));
           else
-            pItem->setIcon(*pUnlocked);
+            pItem->setIcon(CQIconResource::icon(CQIconResource::unlocked));
         }
 
       setItem((int) rowCounter, 1, pItem);

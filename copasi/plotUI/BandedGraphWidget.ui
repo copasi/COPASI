@@ -2,13 +2,13 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $ </comment>
-<comment>   $Revision: 1.15.2.2 $ </comment>
-<comment>   $Name: Build-33 $ </comment>
+<comment>   $Revision: 1.18 $ </comment>
+<comment>   $Name: HEAD $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/02/17 19:14:45 $ </comment>
+<comment>   $Date: 2012/03/07 20:49:51 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -180,10 +180,6 @@ p, li { white-space: pre-wrap; }
        <property name="text">
         <string>select</string>
        </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>image0</normaloff>image0</iconset>
-       </property>
       </widget>
      </item>
     </layout>
@@ -207,10 +203,6 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="text">
         <string>select</string>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>image0</normaloff>image0</iconset>
        </property>
       </widget>
      </item>
@@ -264,10 +256,6 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="text">
         <string>select</string>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>image0</normaloff>image0</iconset>
        </property>
       </widget>
      </item>

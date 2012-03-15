@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/11/10 14:17:59 $
+//   $Date: 2012/03/15 17:07:54 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,7 +27,7 @@
 #include "CQValidator.h"
 #include "qtUtilities.h"
 #include "CQMessageBox.h"
-#include "CQIcons.h"
+#include "resourcesUI/CQIconResource.h"
 #include "CQPushButtonDelegate.h"
 #include "CQComboDelegate.h"
 
@@ -774,10 +774,10 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet, CCopasiDataModel * 
 
 void CQExperimentData::init()
 {
-  mpBtnFileAdd->setIcon(CQIcons::getIcon(CQIcons::Add));
-  mpBtnFileDelete->setIcon(CQIcons::getIcon(CQIcons::Delete));
-  mpBtnExperimentAdd->setIcon(CQIcons::getIcon(CQIcons::Add));
-  mpBtnExperimentDelete->setIcon(CQIcons::getIcon(CQIcons::Delete));
+  mpBtnFileAdd->setIcon(CQIconResource::icon(CQIconResource::editAdd));
+  mpBtnFileDelete->setIcon(CQIconResource::icon(CQIconResource::editDelete));
+  mpBtnExperimentAdd->setIcon(CQIconResource::icon(CQIconResource::editAdd));
+  mpBtnExperimentDelete->setIcon(CQIconResource::icon(CQIconResource::editDelete));
 
   mpTable->hideColumn(COL_TYPE_HIDDEN);
   mpTable->hideColumn(COL_OBJECT_HIDDEN);
@@ -786,7 +786,7 @@ void CQExperimentData::init()
   mpTable->setItemDelegateForColumn(COL_TYPE, mpComboDelegate);
   connect(mpComboDelegate, SIGNAL(currentIndexChanged(int, int)), this, SLOT(slotTypeChanged(int, int)));
 
-  CQPushButtonDelegate * pButtonDelegate = new CQPushButtonDelegate(QIcon(CQIcons::getIcon(CQIcons::SelectObject)), QString(),
+  CQPushButtonDelegate * pButtonDelegate = new CQPushButtonDelegate(CQIconResource::icon(CQIconResource::copasi), QString(),
       CQPushButtonDelegate::ToolButton, this);
   mpTable->setItemDelegateForColumn(COL_BTN, pButtonDelegate);
   connect(pButtonDelegate, SIGNAL(clicked(int)), this, SLOT(slotModelObject(int)));

@@ -1,18 +1,18 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CUpDownSubwidget.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:10 $
+//   $Author: shoops $
+//   $Date: 2012/03/15 17:07:51 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #include "CUpDownSubwidget.h"
-#include "CQIcons.h"
+#include "resourcesUI/CQIconResource.h"
 
 /*
  *  Constructs a CUpDownSubwidget as a child of 'parent', with the
@@ -40,10 +40,10 @@ void CUpDownSubwidget::init()
   setIndex(0, true, true);
   enableCopy(false);
 
-  toolButtonDel->setIcon(CQIcons::getIcon(CQIcons::Delete));
-  toolButtonUp->setIcon(CQIcons::getIcon(CQIcons::Up));
-  toolButtonCopy->setIcon(CQIcons::getIcon(CQIcons::Copy));
-  toolButtonDown->setIcon(CQIcons::getIcon(CQIcons::Down));
+  toolButtonDel->setIcon(CQIconResource::icon(CQIconResource::editDelete));
+  toolButtonUp->setIcon(CQIconResource::icon(CQIconResource::moveUp));
+  toolButtonCopy->setIcon(CQIconResource::icon(CQIconResource::editCopy));
+  toolButtonDown->setIcon(CQIconResource::icon(CQIconResource::moveDown));
 
 }
 

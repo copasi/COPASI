@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressDialog.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:39:40 $
+//   $Date: 2012/03/15 17:07:51 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,6 +21,8 @@
 #include <QtCore/QVariant>
 #include <qapplication.h>
 #include <qtimer.h>
+
+#include "resourcesUI/CQIconResource.h"
 
 /*
  *  Constructs a CQProgressDialog as a child of 'parent', with the
@@ -74,9 +76,9 @@ bool CQProgressDialog::removeProgressItem(CQProgressItem * pItem)
 
 void CQProgressDialog::init()
 {
-  mpBtnPause->setIcon(CQIcons::getIcon(CQIcons::Pause));
-  mpBtnContinue->setIcon(CQIcons::getIcon(CQIcons::Continue));
-  mpBtnStop->setIcon(CQIcons::getIcon(CQIcons::Stop));
+  mpBtnPause->setIcon(CQIconResource::icon(CQIconResource::playerPause));
+  mpBtnContinue->setIcon(CQIconResource::icon(CQIconResource::playerStart));
+  mpBtnStop->setIcon(CQIconResource::icon(CQIconResource::playerStop));
 
   mpLine->hide();
   //  mpBtnPause->hide();
