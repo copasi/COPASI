@@ -1,0 +1,35 @@
+<RCC>
+  <qresource>
+    <file>images/captureImage.png</file>
+    <file>images/checkMark.png</file>
+    <file>images/copasi.png</file>
+    <file>images/edit.png</file>
+    <file>images/editAdd.png</file>
+    <file>images/editCopy.png</file>
+    <file>images/editDelete.png</file>
+    <file>images/fileExport.png</file>
+    <file>images/fileNew.png</file>
+    <file>images/fileOpen.png</file>
+    <file>images/filePrint.png</file>
+    <file>images/fileSave.png</file>
+    <file>images/fileSaveas.png</file>
+    <file>images/locked.png</file>
+    <file>images/moveDown.png</file>
+    <file>images/moveUp.png</file>
+    <file>images/playerKill.png</file>
+    <file>images/playerPause.png</file>
+    <file>images/playerStart.png</file>
+    <file>images/playerStop.png</file>
+    <file>images/preferences.png</file>
+    <file>images/reactionModifier.png</file>
+    <file>images/reactionProduct.png</file>
+    <file>images/reactionSubstrate.png</file>
+    <file>images/renderMarkup.png</file>
+    <file>images/renderMathML.png</file>
+    <file>images/separator.png</file>
+    <file>images/slider.png</file>
+    <file>images/tool.png</file>
+    <file>images/unlocked.png</file>
+    <file>images/zoomOut.png</file>
+  </qresource>
+</RCC>

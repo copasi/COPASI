@@ -1,12 +1,12 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/COPASIUI/COPASIUI.pro,v $
-#   $Revision: 1.21 $
+#   $Revision: 1.22 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2012/02/23 16:08:09 $
+#   $Date: 2012/03/15 17:02:51 $
 # End CVS Header
 
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -37,6 +37,7 @@ COPASI_LIBS += barChart
 COPASI_LIBS += layoutUI
 COPASI_LIBS += MIRIAMUI
 COPASI_LIBS += plotUI
+COPASI_LIBS += resourcesUI
 COPASI_LIBS += tex
 COPASI_LIBS += UI
 COPASI_LIBS += wizard

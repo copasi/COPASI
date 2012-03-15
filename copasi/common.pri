@@ -1,6 +1,6 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.136 $ 
+#   $Revision: 1.137 $ 
 #   $Name:  $ 
 # End CVS Header 
 
@@ -19,7 +19,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.136 $ $Author: shoops $ $Date: 2012/03/09 14:03:15 $  
+# $Revision: 1.137 $ $Author: shoops $ $Date: 2012/03/15 17:02:51 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -63,6 +63,8 @@ CONFIG += thread
 
 contains(CONFIG, qt) {
     QT += webkit
+    QT += svg
+    Qt += opengl
 }
 
 INCLUDEPATH += $${BUILD_ROOT}
