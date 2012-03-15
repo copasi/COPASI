@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.261 $
+#   $Revision: 1.262 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2012/03/15 17:33:46 $
+#   $Date: 2012/03/15 17:59:24 $
 # End CVS Header
 
 # Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.261 $ $Author: shoops $ $Date: 2012/03/15 17:33:46 $
+# $Revision: 1.262 $ $Author: shoops $ $Date: 2012/03/15 17:59:24 $
 ######################################################################
 
 LIB = UI
@@ -438,10 +438,5 @@ include(../common.pri)
   DISTFILES += CQDifferentialEquations.h
   DISTFILES += CQDifferentialEquations.cpp
 }
-
-#endif // COPASI_LICENSE_COM
-
-#The following line was inserted by qt3to4
-QT += xml qt3support opengl webkit
 
 include(../srcDistribution.pri)

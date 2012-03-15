@@ -1,12 +1,12 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/CopasiUI.pro,v $
-#   $Revision: 1.154 $
+#   $Revision: 1.155 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2011/05/25 15:12:17 $
+#   $Date: 2012/03/15 17:59:25 $
 # End CVS Header
 
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.154 $ $Author: shoops $ $Date: 2011/05/25 15:12:17 $
+# $Revision: 1.155 $ $Author: shoops $ $Date: 2012/03/15 17:59:25 $
 ######################################################################
 
 TEMPLATE = app
@@ -163,12 +163,5 @@ release {
 
   INSTALLS += distribution
 }
-
-#The following line was inserted by qt3to4
-QT += xml  opengl qt3support 
-
-#The following line is for implementing QtSvg module
-QT += svg
-QT += webkit
 
 include(../srcDistribution.pri)
