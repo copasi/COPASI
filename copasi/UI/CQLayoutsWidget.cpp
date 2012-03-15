@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/13 17:24:27 $
+//   $Date: 2012/03/15 19:07:26 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,6 +27,8 @@
 
 #include "listviews.h"
 #include "qtUtilities.h"
+#include "resourcesUI/CQIconResource.h"
+
 #include "copasi/layout/CLayout.h"
 #include "copasi/layout/CListOfLayouts.h"
 #include "copasi/model/CModel.h"
@@ -68,7 +70,7 @@ CQLayoutsWidget::CQLayoutsWidget(QWidget* parent)
   mpTblLayouts->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   mpTblLayouts->setModel(mpProxyModel);
 
-  mpPushButtonDelegate = new CQPushButtonDelegate(QIcon(), QString(), CQPushButtonDelegate::PushButton, this);
+  mpPushButtonDelegate = new CQPushButtonDelegate(CQIconResource::icon(CQIconResource::unknown), QString(), CQPushButtonDelegate::PushButton, this);
 
   mpTblLayouts->setItemDelegateForColumn(COL_SHOW, mpPushButtonDelegate);
 
