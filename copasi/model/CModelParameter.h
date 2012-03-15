@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameter.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/08 19:04:39 $
+//   $Date: 2012/03/15 19:42:41 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,8 +50,8 @@ public:
 
   enum Framework
   {
-    ParticleNumbers = 0,
-    Concentration
+    Concentration = 0,
+    ParticleNumbers
   };
 
 private:
