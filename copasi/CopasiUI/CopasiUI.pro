@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/CopasiUI.pro,v $
-#   $Revision: 1.155 $
+#   $Revision: 1.156 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2012/03/15 17:59:25 $
+#   $Date: 2012/03/15 19:06:46 $
 # End CVS Header
 
 # Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,12 +21,14 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.155 $ $Author: shoops $ $Date: 2012/03/15 17:59:25 $
+# $Revision: 1.156 $ $Author: shoops $ $Date: 2012/03/15 19:06:46 $
 ######################################################################
 
 TEMPLATE = app
 SRC_TARGET = CopasiUI
 DISTFILES = CopasiUI.pro
+
+CONFIG += qt
 
 # Input
 HEADERS += resource.h
