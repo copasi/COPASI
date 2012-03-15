@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentDM.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/10/17 12:30:58 $
+//   $Author: shoops $
+//   $Date: 2012/03/15 17:06:48 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -42,12 +42,12 @@ public:
   const std::vector< unsigned C_INT32 >& getItemToType();
   virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
   virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
-  Qt::ItemFlags flags(const QModelIndex &index) const;
-  QVariant data(const QModelIndex &index, int role) const;
-  QVariant headerData(int section, Qt::Orientation orientation,
-                      int role = Qt::DisplayRole) const;
-  bool setData(const QModelIndex &index, const QVariant &value,
-               int role = Qt::EditRole);
+  virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+  virtual QVariant data(const QModelIndex &index, int role) const;
+  virtual QVariant headerData(int section, Qt::Orientation orientation,
+                              int role = Qt::DisplayRole) const;
+  virtual bool setData(const QModelIndex &index, const QVariant &value,
+                       int role = Qt::EditRole);
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
 protected:
