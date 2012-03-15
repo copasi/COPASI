@@ -1,12 +1,12 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.259 $
+#   $Revision: 1.260 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2012/02/22 16:28:44 $
+#   $Date: 2012/03/15 17:09:28 $
 # End CVS Header
 
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.259 $ $Author: shoops $ $Date: 2012/02/22 16:28:44 $
+# $Revision: 1.260 $ $Author: shoops $ $Date: 2012/03/15 17:09:28 $
 ######################################################################
 
 LIB = UI
@@ -48,7 +48,6 @@ HEADERS	+= \
   CQExperimentData.h \
   CQExperimentSelection.h \
   CQExpressionMmlStackedWidget.h \
-  CQExpressionMmlWidget.h \
   CQFittingItemWidget.h \
   CQFittingResult.h \
   CQFittingResultTab1.h \
@@ -140,6 +139,7 @@ HEADERS	+= \
   CQLayoutsDM.h \
   CQMessageBox.h \
   CQMmlScrollView.h \
+  CQParameterOverviewDM.h \
   CQPlotDM.h \
   CQPushButtonDelegate.h \
   CQReactionDM.h \
@@ -196,7 +196,6 @@ SOURCES	+= \
   CQExperimentData.cpp \
   CQExperimentSelection.cpp \
   CQExpressionMmlStackedWidget.cpp \
-  CQExpressionMmlWidget.cpp \
   CQFittingItemWidget.cpp \
   CQFittingResult.cpp \
   CQFittingResultTab1.cpp \
@@ -289,6 +288,7 @@ SOURCES	+= \
   CQLayoutsDM.cpp \
   CQMessageBox.cpp \
   CQMmlScrollView.cpp \
+  CQParameterOverviewDM.cpp \
   CQPlotDM.cpp \
   CQPushButtonDelegate.cpp \
   CQReactionDM.cpp \
@@ -338,7 +338,6 @@ FORMS += CQEventWidget1.ui
 FORMS += CQExperimentData.ui
 FORMS += CQExperimentSelection.ui
 FORMS += CQExpressionMmlStackedWidget.ui
-FORMS += CQExpressionMmlWidget.ui
 FORMS += CQFittingItemWidget.ui
 FORMS += CQFittingResult.ui
 FORMS += CQFittingResultTab1.ui
