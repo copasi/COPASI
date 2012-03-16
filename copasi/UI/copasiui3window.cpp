@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.309 $
+//   $Revision: 1.310 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/15 19:07:40 $
+//   $Date: 2012/03/16 14:50:27 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,10 +73,6 @@
 #include "model/CModelMerging.h"
 #endif
 #include "model/CModelExpansion.h"
-
-#ifdef WITH_MERGEMODEL
-#include "./icons/fileadd.xpm"
-#endif
 
 #define AutoSaveInterval 10*60*1000
 

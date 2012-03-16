@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.219 $
+//   $Revision: 1.220 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/12/22 19:51:58 $
+//   $Date: 2012/03/16 14:50:28 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -60,8 +60,6 @@
 #include "CScanWidgetRepeat.h"
 #include "CScanWidgetScan.h"
 #include "CScanWidgetTask.h"
-
-#include "./icons/scanwidgetbuttonicon.xpm"
 
 ScanWidget::ScanWidget(QWidget* parent, const char* name, Qt::WFlags f)
     : TaskWidget(parent, name, f)

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/15 17:07:52 $
+//   $Date: 2012/03/16 14:50:28 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,8 +40,6 @@
 #include "copasi/report/CCopasiRootContainer.h"
 
 #include <QtDebug>
-
-//#include "UI/icons/Copasi16-Alpha.xpm"
 
 /*
  *  Constructs a CQFittingItemWidget as a child of 'parent', with the

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQParameterTable.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/15 17:07:54 $
+//   $Date: 2012/03/16 14:50:28 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,12 +37,6 @@
 #include "qtUtilities.h"
 #include "utilities/CDimension.h"
 #include "copasi/report/CCopasiRootContainer.h"
-
-#include "./icons/product.xpm"
-#include "./icons/substrate.xpm"
-#include "./icons/modifier.xpm"
-#include "./icons/locked.xpm"
-#include "./icons/unlocked.xpm"
 
 ParameterTable::ParameterTable(QWidget * parent, const char * name) :
     QTableWidget(parent),
