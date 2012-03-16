@@ -6,10 +6,20 @@ MT=${COPASI_MT:-"yes"}
 
 VisualStudioPath="/cygdrive/c/Program Files/Microsoft Visual Studio 8"
 
+MyAppVersion=${major}.${minor}.${build}
+
+if [ x"${comment}" = x\"Snapshot\" ]; then
+  MyAppVersion=${major}/
+  [ ${#minor} = 1 ] && MyAppVersion=${MyAppVersion}0
+  MyAppVersion=${MyAppVersion}${minor}/
+  [ ${#build} = 1 ] && MyAppVersion=$MyAppVersion}0
+  MyAppVersion=${MyAppVersion}${build}
+fi
+
 # Create the unique product code based on version and application name
 GUID=`md5sum << EOF
 #define MyAppName "COPASI"
-#define MyAppVersion "${major}.${minor}.${build}"
+#define MyAppVersion "${MyAppVersion}"
 #define MyAppPublisher "copasi.org"
 #define MyAppURL "http://www.copasi.org/"
 #define MyAppExeName "bin\CopasiUI.exe"
