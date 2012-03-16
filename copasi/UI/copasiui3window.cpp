@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.310 $
+//   $Revision: 1.311 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/16 14:50:27 $
+//   $Date: 2012/03/16 15:32:11 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -322,7 +322,7 @@ void CopasiUI3Window::createActions()
   //     QAction* mpaObjectBrowser;
 
 #ifdef WITH_MERGEMODEL
-  mpaAddModel = new QAction(QPixmap(fileadd), "&Add ...", Qt::SHIFT + Qt::CTRL + Qt::Key_A, this, "addmodel");
+  mpaAddModel = new QAction(CQIconResource::icon(CQIconResource::fileAdd), "&Add ...", Qt::SHIFT + Qt::CTRL + Qt::Key_A, this, "addmodel");
   connect(mpaAddModel, SIGNAL(activated()), this, SLOT(slotAddFileOpen()));
 
   mpaMergeModels = new QAction("&Merge ...", Qt::SHIFT + Qt::CTRL + Qt::Key_M, this, "mergemodel");

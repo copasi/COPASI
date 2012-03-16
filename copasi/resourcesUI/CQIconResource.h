@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/resourcesUI/CQIconResource.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/15 19:07:12 $
+//   $Date: 2012/03/16 15:31:54 $
 // End CVS Header
 
 // Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,7 @@ public:
     editAdd,
     editCopy,
     editDelete,
+    fileAdd,
     fileExport,
     fileNew,
     fileOpen,
