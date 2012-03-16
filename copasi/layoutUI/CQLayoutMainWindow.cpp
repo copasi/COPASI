@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.106 $
+//   $Revision: 1.107 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/10/21 15:25:00 $
+//   $Author: shoops $
+//   $Date: 2012/03/16 12:33:29 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -149,7 +149,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget* pParent):
   connect(this->mpTimeSlider, SIGNAL(valueChanged(double)),
           this, SLOT(showStep(double)));
 
-  QGridLayout* pGridLayout = new QGridLayout(NULL);
+  QGridLayout* pGridLayout = new QGridLayout();
   this->mpFrame->setLayout(pGridLayout);
   pGridLayout->addWidget(this->mpTimeSlider, 1, 1, 2, 1, Qt::AlignTop);
   pGridLayout->addWidget(this->mpControlWidget, 0, 0, 4, 1, Qt::AlignTop);
