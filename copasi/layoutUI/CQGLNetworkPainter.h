@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.88 $
+//   $Revision: 1.89 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/20 14:06:22 $
+//   $Date: 2012/03/19 21:20:52 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,7 +24,10 @@
 #define CQGLNETWORKPAINTER_H_
 
 //#include<iostream>
-#include <qgl.h>
+
+#include <QtOpenGL/qgl.h>
+#include <GL/glu.h>
+
 // #include <GL/glut.h>
 // #include <GL/gl.h>
 #include <QColor>

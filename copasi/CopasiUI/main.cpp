@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/02/22 16:28:45 $
+//   $Date: 2012/03/19 21:20:52 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -49,6 +49,10 @@
 int main(int argc, char *argv[])
 {
   CQCopasiApplication a(argc, argv);
+
+  a.setAttribute(Qt::AA_DontShowIconsInMenus, false);
+
+  Q_INIT_RESOURCE(copasi);
 
   // Parse the commandline options
   try
