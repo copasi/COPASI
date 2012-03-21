@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEvent.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/06/02 17:15:47 $
+//   $Date: 2012/03/21 17:48:57 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -54,6 +54,11 @@ bool CMathEventN::CAssignment::compile(CEventAssignment * pDataAssignment,
 
   // Determine the target object
   mpTarget = container.getMathObject(pDataAssignment->getTargetObject());
+
+  if (mpTarget->getSimulationType() == CMath::Fixed)
+    {
+      mpTarget->setSimulationType(CMath::EventTarget);
+    }
 
   std::vector< CCopasiContainer * > ListOfContainer;
   ListOfContainer.push_back(const_cast< CMathContainer * >(&container));

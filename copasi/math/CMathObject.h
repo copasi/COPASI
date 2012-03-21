@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathObject.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/25 12:50:08 $
+//   $Date: 2012/03/21 17:48:57 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -142,6 +142,12 @@ public:
    * @return const CMath::SimulationType & simulationType
    */
   const CMath::SimulationType & getSimulationType() const;
+
+  /**
+   * Set the simulation type
+   * @param const CMath::SimulationType & simulationType
+   */
+  void setSimulationType(const CMath::SimulationType & simulationType);
 
   /**
    * Check whether the object is an intensive property
