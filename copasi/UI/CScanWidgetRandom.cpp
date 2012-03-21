@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetRandom.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/15 17:07:51 $
+//   $Date: 2012/03/21 15:41:54 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -187,6 +187,15 @@ bool CScanWidgetRandom::save(CCopasiParameterGroup * pItem) const
   mpData->setValue("Minimum", lineEditMin->text().toDouble());
   mpData->setValue("Maximum", lineEditMax->text().toDouble());
   mpData->setValue("log", checkBoxLog->isChecked());
+
+  if (mpObject != NULL)
+    {
+      mpData->setValue("Object", mpObject->getCN());
+    }
+  else
+    {
+      mpData->setValue("Object", std::string(""));
+    }
 
   if (pItem != NULL)
     {
