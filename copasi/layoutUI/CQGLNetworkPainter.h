@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.90 $
+//   $Revision: 1.91 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/20 16:54:41 $
+//   $Date: 2012/03/22 00:00:18 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,19 +23,14 @@
 #ifndef CQGLNETWORKPAINTER_H_
 #define CQGLNETWORKPAINTER_H_
 
-//#include<iostream>
-
 #include <QtOpenGL/qgl.h>
 
 #ifdef __APPLE__
-#include "OpenGL/gl.h"
+#include "OpenGL/glu.h"
 #else
-#include "GL/gl.h"
+#include "GL/glu.h"
 #endif // __APPLE__
 
-
-// #include <GL/glut.h>
-// #include <GL/gl.h>
 #include <QColor>
 #include <QDialog> // for CQSimpleProgressDialog
 #include <QFont>
