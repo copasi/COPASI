@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:35:35 $
+//   $Date: 2012/03/26 12:54:21 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -99,7 +99,7 @@ public:
   enum EncodingType
   {
     none = 0,
-    std,
+    standard,
     attribute,
     character
   };
@@ -198,7 +198,7 @@ public:
    * @param const std::string & str
    * @return std::string encoded
    */
-  static std::string encode(const std::string & str, const EncodingType & type = std);
+  static std::string encode(const std::string & str, const EncodingType & type = standard);
 
   /**
    * Encode a given string to a valid XML string
