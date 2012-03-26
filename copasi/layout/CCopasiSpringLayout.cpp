@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CCopasiSpringLayout.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/11 21:21:14 $
+//   $Author: shoops $
+//   $Date: 2012/03/26 18:25:45 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -407,7 +407,7 @@ void CCopasiSpringLayout::finalizeState()
 
       CLPoint dir = p - s; //overall direction of reaction
 
-      if (dir.getX() == 0 and dir.getY() == 0)
+      if (dir.getX() == 0 && dir.getY() == 0)
         dir = CLPoint(1, 0);
 
       CLPoint reaction_s = pRG->getPosition() - (dir * 0.1);
