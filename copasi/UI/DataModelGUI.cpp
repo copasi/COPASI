@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.102 $
+//   $Revision: 1.103 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/02/23 17:44:15 $
+//   $Date: 2012/03/26 20:30:41 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -53,13 +53,21 @@
 #include "utilities/CCopasiTree.h"
 
 #ifdef CELLDESIGNER_IMPORT
-#include "../layout/CLayout.h"
-#include "../layout/CListOfLayouts.h"
-#include "../layout/SBMLDocumentLoader.h"
-#include "../sbml/CCellDesignerImporter.h"
-#include "../sbml/SBMLUtils.h"
+
+#define USE_LAYOUT 1
+#define USE_RENDER 1
 
 #include <sbml/SBMLDocument.h>
+#include <sbml/layout/Point.h>
+#include <sbml/layout/render/Text.h>
+#include <sbml/layout/LineSegment.h>
+
+#include "layout/CLayout.h"
+#include "layout/CListOfLayouts.h"
+#include "layout/SBMLDocumentLoader.h"
+#include "sbml/CCellDesignerImporter.h"
+#include "sbml/SBMLUtils.h"
+
 #endif // CELLDESIGNER_IMPORT
 
 
