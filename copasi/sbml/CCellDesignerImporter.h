@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CCellDesignerImporter.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/11/11 21:20:13 $
+//   $Author: shoops $
+//   $Date: 2012/03/26 20:19:22 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,31 +14,32 @@
 #ifndef CCellDesignerImporter_H__
 #define CCellDesignerImporter_H__
 
+#include <vector>
 #include <list>
 #include <map>
 #include <string>
 #include <utility>
-
-#include <sbml/layout/BoundingBox.h>
-#include <sbml/layout/Curve.h>
-#include <sbml/layout/Dimensions.h>
-#include <sbml/layout/LineSegment.h>
-#include <sbml/layout/Point.h>
-#include <sbml/layout/render/Text.h>
+#include <limits>
 
 #include "copasi/utilities/CCopasiNode.h"
 
+class BoundingBox;
 class ColorDefinition;
+class CompartmentGlyph;
+class Dimensions;
 class GraphicalObject;
 class Group;
 class Layout;
 class LocalRenderInformation;
 class Model;
+class Point;
 class Reaction;
 class ReactionGlyph;
-class SBase;
 class SBMLDocument;
-class SpeciesReferenceGlyphs;
+class SBase;
+class SpeciesGlyph;
+class SpeciesModification;
+class SpeciesReferenceGlyph;
 class XMLNode;
 
 enum SPECIES_CLASS

@@ -1,17 +1,19 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CCellDesignerImporter.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/11/12 09:50:26 $
+//   $Author: shoops $
+//   $Date: 2012/03/26 20:19:22 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-#include "CCellDesignerImporter.h"
+#ifdef _WIN32
+# define _USE_MATH_DEFINES // without the following define, M_PI will not be declared under windows
+#endif // _WIN32
 
 #include <algorithm>
 #include <assert.h>
@@ -20,6 +22,9 @@
 #include <cmath>
 #include <sstream>
 #include <stdlib.h> // for strtod
+
+#define USE_LAYOUT 1
+#define USE_RENDER 1
 
 // SBML classes
 #include <sbml/Compartment.h>
@@ -42,6 +47,9 @@
 #include <sbml/layout/SpeciesReferenceGlyph.h>
 #include <sbml/layout/SpeciesReferenceRole.h>
 #include <sbml/layout/TextGlyph.h>
+#include <sbml/layout/BoundingBox.h>
+#include <sbml/layout/Dimensions.h>
+#include <sbml/layout/Point.h>
 
 // render classes
 #include <sbml/layout/render/ColorDefinition.h>
@@ -54,7 +62,9 @@
 #include <sbml/layout/render/RelAbsVector.h>
 #include <sbml/layout/render/RenderCurve.h>
 #include <sbml/layout/render/RenderPoint.h>
+#include <sbml/layout/render/Text.h>
 
+#include "CCellDesignerImporter.h"
 
 #include "SBMLUtils.h"
 
@@ -3237,7 +3247,7 @@ bool CCellDesignerImporter::convertCompartmentAnnotations()
                     {
                       this->mCompartmentAnnotationMap.insert(std::pair<std::string, CompartmentAnnotation>(pCompartment->getId(), canno));
                       // create the text glyph if there is a CompartmentGlyph
-                      std::map<std::string, GraphicalObject*>::const_iterator pos = this->mModelIdToLayoutElement.find(pCompartment->getId());
+                      std::multimap<std::string, GraphicalObject*>::const_iterator pos = this->mModelIdToLayoutElement.find(pCompartment->getId());
 
                       if (pos != this->mModelIdToLayoutElement.end() && pos->second != NULL)
                         {
@@ -3351,7 +3361,7 @@ bool CCellDesignerImporter::convertSpeciesAnnotations()
                       if (result && !name.empty())
                         {
                           // create the text glyph if there is a SpeciesGlyph
-                          std::map<std::string, GraphicalObject*>::const_iterator pos = this->mModelIdToLayoutElement.find(pSpecies->getId());
+                          std::multimap<std::string, GraphicalObject*>::const_iterator pos = this->mModelIdToLayoutElement.find(pSpecies->getId());
                           assert(pos != this->mModelIdToLayoutElement.end());
                           assert(pos->second != NULL);
 
@@ -3658,7 +3668,7 @@ bool CCellDesignerImporter::parseProteins(const XMLNode* pNode)
 
               if (pModifications != NULL)
                 {
-                  unsigned int j, jMax = pModifications->getNumChildren();
+                  unsigned int j = 0, jMax = pModifications->getNumChildren();
                   const XMLNode* pChild2 = NULL;
 
                   while (j < jMax && result == true)
@@ -3933,7 +3943,7 @@ bool CCellDesignerImporter::parseSpeciesState(const XMLNode* pNode, SpeciesState
 
       if (pChild != NULL)
         {
-          unsigned int i, iMax = pChild->getNumChildren();
+          unsigned int i = 0, iMax = pChild->getNumChildren();
           const XMLNode* pChild2 = NULL;
 
           while (i < iMax && result == true)
