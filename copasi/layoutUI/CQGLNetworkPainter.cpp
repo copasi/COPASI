@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.163 $
+//   $Revision: 1.164 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/11/09 15:05:30 $
+//   $Author: shoops $
+//   $Date: 2012/03/26 21:09:34 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -3464,7 +3464,7 @@ bool CQGLNetworkPainter::export_bitmap(double x, double y, double width, double 
                       tmpfilename.append(completeBaseName);
                       // check how many decimals we need
                       // the largest number should be at the end of s
-                      int length = ceil(log10(*s.rbegin()) + 1);
+                      int length = ceil(log10((C_FLOAT64) * s.rbegin()) + 1);
                       tmpfilename.append(QString("%1").arg((uint)frame, (int)length, (int)10, QLatin1Char('0')));
                       tmpfilename.append(".");
                       tmpfilename.append(suffix);

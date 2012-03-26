@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/11/29 13:08:41 $
+//   $Author: shoops $
+//   $Date: 2012/03/26 21:09:34 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1724,7 +1724,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
   if (!compartments.empty())
     {
       double compartmentarea = 0.0;
-      std::set<const CCompartment*>::iterator compIt = compartments.begin(), compEndit = compartments.end();
+      std::set<const CCompartment*>::const_iterator compIt = compartments.begin(), compEndit = compartments.end();
       CLCompartmentGlyph* pCompartmentGlyph = NULL;
       // position variables
       double boundX, boundY;
@@ -1817,7 +1817,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
   // species that appear in sideMetabs are duplicated for each reaction
   // we store the end iterator for the side species set because we need it many times
   std::set<const CMetab*>::const_iterator sideSpeciesEnd = sideMetabs.end();
-  std::set<const CReaction*>::iterator reactIt = reactions.begin(), reactEndit = reactions.end();
+  std::set<const CReaction*>::const_iterator reactIt = reactions.begin(), reactEndit = reactions.end();
 
   while (reactIt != reactEndit)
     {
