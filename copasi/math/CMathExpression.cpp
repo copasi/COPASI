@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathExpression.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/24 16:32:32 $
+//   $Date: 2012/03/27 12:18:52 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -173,7 +173,7 @@ bool CMathExpression::compile()
           std::istringstream Value;
           void * pValue;
           Value.str((*it)->getData().substr(2));
-          Value.flags(std::ios::right | std::ios::hex | std::ios::showbase);
+          Value.flags(std::ios::hex);
           Value >> pValue;
 
           mPrerequisites.insert(mpContainer->getMathObject((C_FLOAT64 *) pValue));

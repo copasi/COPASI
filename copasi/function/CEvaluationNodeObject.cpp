@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/25 12:48:28 $
+//   $Date: 2012/03/27 12:18:51 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -62,8 +62,8 @@ CEvaluationNodeObject::CEvaluationNodeObject(const C_FLOAT64 * pValue):
   mPrecedence = PRECEDENCE_NUMBER;
 
   std::ostringstream Pointer;
-  Pointer.flags(std::ios::right | std::ios::hex | std::ios::showbase);
-  Pointer << pValue;
+  Pointer.flags(std::ios::hex);
+  Pointer << "0x" << pValue;
 
   mData = Pointer.str();
 }
@@ -116,7 +116,7 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
         std::istringstream Pointer;
         void * pPointer;
         Pointer.str(mData.substr(2));
-        Pointer.flags(std::ios::right | std::ios::hex | std::ios::showbase);
+        Pointer.flags(std::ios::hex);
         Pointer >> pPointer;
         mpValue = (const C_FLOAT64 *) pPointer;
       }
