@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.277 $
+//   $Revision: 1.278 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/12/24 11:15:31 $
+//   $Author: bergmann $
+//   $Date: 2012/03/28 09:46:47 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -5377,6 +5377,20 @@ ConverterASTNode* SBMLImporter::isMultipliedByVolume(const ASTNode* node, const 
             }
           else
             {
+              // bail in case of hOSU
+              if (child->getType() == AST_NAME &&  mSubstanceOnlySpecies.size() > 0)
+                {
+                  std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin();
+                  std::map<Species*, Compartment*>::iterator endIt = this->mSubstanceOnlySpecies.end();
+
+                  while (it != endIt)
+                    {
+                      if (it->first->getId() == child->getName()) return NULL;
+
+                      it++;
+                    }
+                }
+
               pTmpResultNode->addChild(new ConverterASTNode(*child));
             }
         }

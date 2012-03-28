@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2011/09/05 12:00:16 $
+   $Author: bergmann $
+   $Date: 2012/03/28 09:46:47 $
    End CVS Header */
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,6 +29,9 @@
 #include "utilities/CCopasiParameterGroup.h"
 #include "report/CCopasiObjectName.h"
 #include "utilities/COutputHandler.h"
+
+#undef min
+#undef max
 
 class CPlotDataChannelSpec : public CRegisteredObjectName
 {

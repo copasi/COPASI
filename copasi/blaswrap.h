@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/blaswrap.h,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/11/15 14:59:44 $
+//   $Author: bergmann $
+//   $Date: 2012/03/28 09:46:46 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -51,7 +51,7 @@ extern "C"
 #  define idamax_ IDAMAX
 # endif // WIN32 && USE_LAPACK
 
-# ifdef USE_CLAPACK
+# if (defined USE_CLAPACK && !NO_BLAS_WRAP)
 #  define daxpy_ f2c_daxpy
 #  define dcopy_ f2c_dcopy
 #  define ddot_ f2c_ddot

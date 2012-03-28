@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CCellDesignerImporter.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/26 20:19:22 $
+//   $Author: bergmann $
+//   $Date: 2012/03/28 09:46:47 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -10123,7 +10123,7 @@ SPECIES_MODIFICATION_TYPE CCellDesignerImporter::speciesModificationTypeToEnum(s
   std::transform(cl.begin(), cl.end(), cl.begin(), toupper);
   SPECIES_MODIFICATION_TYPE result = UNDEFINED_MOD_TYPE;
 
-  if (cl == "phosphorylated")
+  if (cl == "PHOSPHORYLATED")
     {
       result = PHOSPHORYLATED_MOD_TYPE;
     }

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:28:19 $
+//   $Author: bergmann $
+//   $Date: 2012/03/28 09:46:46 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -375,18 +375,34 @@ CEvaluationNode* CEvaluationNodeLogical::createNodeFromASTTree(const ASTNode& no
       case AND:
       case OR:
       case XOR:
-        // these can have two or more children
-        assert(iMax >= 2);
-        convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(iMax - 1)));
-        convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(iMax - 2)));
-        iMax -= 3;
 
-        for (i = iMax; i >= 0; --i)
+        if (iMax == 0)
           {
-            CEvaluationNode* pTmpNode = new CEvaluationNodeLogical(subType, data);
-            pTmpNode->addChild(convertedNode);
-            pTmpNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(i)));
-            convertedNode = pTmpNode;
+            if (subType == AND)
+              convertedNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::TRUE, "TRUE");
+            else
+              convertedNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::FALSE, "FALSE");
+          }
+        else if (iMax == 1)
+          {
+            convertedNode = CEvaluationTree::convertASTNode(*node.getChild(iMax - 1));
+          }
+        else
+          {
+
+            // these can have two or more children
+            assert(iMax >= 2);
+            convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(iMax - 1)));
+            convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(iMax - 2)));
+            iMax -= 3;
+
+            for (i = iMax; i >= 0; --i)
+              {
+                CEvaluationNode* pTmpNode = new CEvaluationNodeLogical(subType, data);
+                pTmpNode->addChild(convertedNode);
+                pTmpNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(i)));
+                convertedNode = pTmpNode;
+              }
           }
 
         break;
