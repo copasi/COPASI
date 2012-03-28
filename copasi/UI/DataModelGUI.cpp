@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.103 $
+//   $Revision: 1.104 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/26 20:30:41 $
+//   $Author: bergmann $
+//   $Date: 2012/03/28 14:22:20 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -132,7 +132,7 @@ void DataModelGUI::linkDataModelToGUI()
 
 bool DataModelGUI::addModel(const std::string & fileName)
 {
-  CProgressBar* pProgressBar = new CProgressBar();
+  CProgressBar* pProgressBar = CProgressBar::create();
 
   bool success = true;
 
