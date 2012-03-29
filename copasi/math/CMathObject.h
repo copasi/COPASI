@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathObject.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/21 17:48:57 $
+//   $Date: 2012/03/29 16:12:05 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -217,7 +217,14 @@ private:
    * @param CMathContainer & container
    * @return bool success
    */
-  bool compileValueRate(CMathContainer & container);
+  bool compileRate(CMathContainer & container);
+
+  /**
+   * Compile the reactions particle flux
+   * @param CMathContainer & container
+   * @return bool success
+   */
+  bool compileParticleFlux(CMathContainer & container);
 
   /**
    * Compile the reactions flux
@@ -246,6 +253,11 @@ private:
    * @return bool success
    */
   bool compileDependentMass(CMathContainer & container);
+
+  /**
+   * Common compile steps after an expression has been created.
+   */
+  void compileCommon();
 
   /**
    * Create and compile an expression based on the given expression.

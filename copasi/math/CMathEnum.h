@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEnum.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/24 16:32:31 $
+//   $Date: 2012/03/29 16:12:05 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -86,41 +86,55 @@ public:
 public:
     C_FLOAT64 * pInitialExtensiveValues;
     C_FLOAT64 * pInitialIntensiveValues;
+    C_FLOAT64 * pInitialExtensiveRates;
+    C_FLOAT64 * pInitialIntensiveRates;
+    C_FLOAT64 * pInitialParticleFluxes;
+    C_FLOAT64 * pInitialFluxes;
     C_FLOAT64 * pInitialEventTriggers;
+
     C_FLOAT64 * pExtensiveValues;
     C_FLOAT64 * pIntensiveValues;
     C_FLOAT64 * pExtensiveRates;
     C_FLOAT64 * pIntensiveRates;
+    C_FLOAT64 * pParticleFluxes;
     C_FLOAT64 * pFluxes;
+    C_FLOAT64 * pEventTriggers;
+
+    C_FLOAT64 * pEventDelays;
+    C_FLOAT64 * pEventPriorities;
+    C_FLOAT64 * pEventAssignments;
+    C_FLOAT64 * pEventRoots;
+    C_FLOAT64 * pEventRootStates;
     C_FLOAT64 * pPropensities;
     C_FLOAT64 * pTotalMasses;
     C_FLOAT64 * pDependentMasses;
     C_FLOAT64 * pDiscontinuous;
-    C_FLOAT64 * pEventDelays;
-    C_FLOAT64 * pEventPriorities;
-    C_FLOAT64 * pEventAssignments;
-    C_FLOAT64 * pEventTriggers;
-    C_FLOAT64 * pEventRoots;
-    C_FLOAT64 * pEventRootStates;
 
     CMathObject * pInitialExtensiveValuesObject;
     CMathObject * pInitialIntensiveValuesObject;
+    CMathObject * pInitialExtensiveRatesObject;
+    CMathObject * pInitialIntensiveRatesObject;
+    CMathObject * pInitialParticleFluxesObject;
+    CMathObject * pInitialFluxesObject;
     CMathObject * pInitialEventTriggersObject;
+
     CMathObject * pExtensiveValuesObject;
     CMathObject * pIntensiveValuesObject;
     CMathObject * pExtensiveRatesObject;
     CMathObject * pIntensiveRatesObject;
+    CMathObject * pParticleFluxesObject;
     CMathObject * pFluxesObject;
+    CMathObject * pEventTriggersObject;
+
+    CMathObject * pEventDelaysObject;
+    CMathObject * pEventPrioritiesObject;
+    CMathObject * pEventAssignmentsObject;
+    CMathObject * pEventRootsObject;
+    CMathObject * pEventRootStatesObject;
     CMathObject * pPropensitiesObject;
     CMathObject * pTotalMassesObject;
     CMathObject * pDependentMassesObject;
     CMathObject * pDiscontinuousObject;
-    CMathObject * pEventDelaysObject;
-    CMathObject * pEventPrioritiesObject;
-    CMathObject * pEventAssignmentsObject;
-    CMathObject * pEventTriggersObject;
-    CMathObject * pEventRootsObject;
-    CMathObject * pEventRootStatesObject;
   };
 
 public:
@@ -142,7 +156,8 @@ public:
   {
     ValueTypeUndefined,
     Value,
-    ValueRate,
+    Rate,
+    ParticleFlux,
     Flux,
     Propensity,
     TotalMass,

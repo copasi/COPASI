@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathContainer.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/24 16:32:31 $
+//   $Date: 2012/03/29 16:12:05 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -148,6 +148,13 @@ public:
    * @param CMath::CAllocationStack::CAllocation & allocations
    */
   void determineDiscontinuityAllocationRequirement(CMath::CAllocationStack::CAllocation & allocations) const;
+
+  /**
+   * Retrieve the pointer to the corresponding initial value
+   * @param const C_FLOAT64 * pValue
+   * @return C_FLOAT64 * pInitialvalue
+   */
+  C_FLOAT64 * getInitialValuePointer(const C_FLOAT64 * pValue) const;
 
 private:
   /**
@@ -298,25 +305,29 @@ private:
 
   CVectorCore< C_FLOAT64 > mInitialExtensiveValues;
   CVectorCore< C_FLOAT64 > mInitialIntensiveValues;
+  CVectorCore< C_FLOAT64 > mInitialExtensiveRates;
+  CVectorCore< C_FLOAT64 > mInitialIntensiveRates;
+  CVectorCore< C_FLOAT64 > mInitialParticleFluxes;
+  CVectorCore< C_FLOAT64 > mInitialFluxes;
   CVectorCore< C_FLOAT64 > mInitialEventTriggers;
 
   CVectorCore< C_FLOAT64 > mExtensiveValues;
   CVectorCore< C_FLOAT64 > mIntensiveValues;
-
   CVectorCore< C_FLOAT64 > mExtensiveRates;
   CVectorCore< C_FLOAT64 > mIntensiveRates;
-
+  CVectorCore< C_FLOAT64 > mParticleFluxes;
   CVectorCore< C_FLOAT64 > mFluxes;
+  CVectorCore< C_FLOAT64 > mEventTriggers;
+
+  CVectorCore< C_FLOAT64 > mEventDelays;
+  CVectorCore< C_FLOAT64 > mEventPriorities;
+  CVectorCore< C_FLOAT64 > mEventAssignments;
+  CVectorCore< C_FLOAT64 > mEventRoots;
+  CVectorCore< C_FLOAT64 > mEventRootStates;
   CVectorCore< C_FLOAT64 > mPropensities;
   CVectorCore< C_FLOAT64 > mTotalMasses;
   CVectorCore< C_FLOAT64 > mDependentMasses;
   CVectorCore< C_FLOAT64 > mDiscontinuous;
-  CVectorCore< C_FLOAT64 > mEventDelays;
-  CVectorCore< C_FLOAT64 > mEventPriorities;
-  CVectorCore< C_FLOAT64 > mEventAssignments;
-  CVectorCore< C_FLOAT64 > mEventTriggers;
-  CVectorCore< C_FLOAT64 > mEventRoots;
-  CVectorCore< C_FLOAT64 > mEventRootStates;
 
   /**
    * Dependency graph for initial value calculations

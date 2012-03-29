@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathExpression.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/27 12:18:52 $
+//   $Date: 2012/03/29 16:12:05 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -176,11 +176,23 @@ bool CMathExpression::compile()
           Value.flags(std::ios::hex);
           Value >> pValue;
 
-          mPrerequisites.insert(mpContainer->getMathObject((C_FLOAT64 *) pValue));
+          // TODO CRITICAL It is possible that the user selects non model objects, i.e.,
+          // problem or method values within the expression. These cannot be mapped to a
+          // math objects and therefore dependencies will be broken.
+
+          CMathObject * pMathObject = mpContainer->getMathObject((C_FLOAT64 *) pValue);
+
+          if (pMathObject != NULL)
+            {
+              mPrerequisites.insert(pMathObject);
+            }
+          else
+            {
+              // For the moment we stop.
+              assert(false);
+            }
         }
     }
-
-  std::cout << getObjectName() << ": " << mInfix << std::endl;
 
   if (mInfix == "@")
     {
@@ -190,6 +202,44 @@ bool CMathExpression::compile()
   assert(mUsable);
 
   return mUsable;
+}
+
+bool CMathExpression::convertToInitialExpression()
+{
+  if (getObjectName().substr(0, 7) != "Initial")
+    {
+      setObjectName("Initial" + getObjectName());
+    }
+
+  std::vector< CEvaluationNode * >::iterator it = mpNodeList->begin();
+  std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
+  bool changed = false;
+
+  for (; it != end; ++it)
+    {
+      if ((*it)->getType() == (CEvaluationNode::OBJECT | CEvaluationNodeObject::POINTER))
+        {
+          CEvaluationNodeObject * pNode = static_cast< CEvaluationNodeObject *>(*it);
+          const C_FLOAT64 * pValue = pNode->getObjectValuePtr();
+          C_FLOAT64 * pInitialValue = mpContainer->getInitialValuePointer(pValue);
+
+          if (pValue != pInitialValue)
+            {
+              changed = true;
+              pNode->setObjectValuePtr(pInitialValue);
+
+              mPrerequisites.erase(mpContainer->getMathObject(pValue));
+              mPrerequisites.insert(mpContainer->getMathObject(pInitialValue));
+            }
+        }
+    }
+
+  if (changed)
+    {
+      mInfix = mpRoot->getInfix();
+    }
+
+  return true;
 }
 
 

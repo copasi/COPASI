@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathObject.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/21 17:48:57 $
+//   $Date: 2012/03/29 16:12:05 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -294,9 +294,7 @@ bool CMathObject::setExpressionPtr(CMathExpression * pMathExpression)
   if (mpExpression != NULL)
     {
       success &= mpExpression->compile();
-
-      mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
-                            mpExpression->getPrerequisites().end());
+      compileCommon();
     }
   else
     {
@@ -348,8 +346,12 @@ bool CMathObject::compile(CMathContainer & container)
 
         break;
 
-      case CMath::ValueRate:
-        success = compileValueRate(container);
+      case CMath::Rate:
+        success = compileRate(container);
+        break;
+
+      case CMath::ParticleFlux:
+        success = compileParticleFlux(container);
         break;
 
       case CMath::Flux:
@@ -373,9 +375,7 @@ bool CMathObject::compile(CMathContainer & container)
         if (mpExpression != NULL)
           {
             success &= mpExpression->compile();
-
-            mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
-                                  mpExpression->getPrerequisites().end());
+            compileCommon();
           }
 
         break;
@@ -405,7 +405,7 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
 
   if (mIsIntensiveProperty)
     {
-      // Only species have intensive properties.
+      // Only species have intensive properties (concentration and concentration rate).
       const CMetab * pSpecies = static_cast< const CMetab * >(pEntity);
 
       switch (mSimulationType)
@@ -546,7 +546,7 @@ bool CMathObject::compileValue(CMathContainer & container)
   return success;
 }
 
-bool CMathObject::compileValueRate(CMathContainer & container)
+bool CMathObject::compileRate(CMathContainer & container)
 {
   bool success = true;
 
@@ -624,7 +624,7 @@ bool CMathObject::compileValueRate(CMathContainer & container)
   return success;
 }
 
-bool CMathObject::compileFlux(CMathContainer & container)
+bool CMathObject::compileParticleFlux(CMathContainer & container)
 {
   bool success = true;
 
@@ -634,9 +634,36 @@ bool CMathObject::compileFlux(CMathContainer & container)
                                      pReaction->getCallParameters(),
                                      container,
                                      !mIsInitialValue);
+  compileCommon();
 
   return success;
 }
+
+bool CMathObject::compileFlux(CMathContainer & container)
+{
+  bool success = true;
+
+  const CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
+
+  std::ostringstream Infix;
+  Infix.imbue(std::locale::classic());
+  Infix.precision(16);
+
+  Infix << container.getModel().getNumber2QuantityFactor();
+  Infix << "*<";
+  Infix << pReaction->getParticleFluxReference()->getCN();
+  Infix << ">";
+
+  CExpression E("FluxExpression", &container);
+
+  success &= E.setInfix(Infix.str());
+
+  mpExpression = new CMathExpression(E, container, !mIsInitialValue);
+  compileCommon();
+
+  return success;
+}
+
 
 bool CMathObject::compilePropensity(CMathContainer & container)
 {
@@ -718,8 +745,7 @@ bool CMathObject::compilePropensity(CMathContainer & container)
   success &= E.setInfix(Infix.str());
 
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
-  mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
-                        mpExpression->getPrerequisites().end());
+  compileCommon();
 
   return success;
 }
@@ -762,8 +788,7 @@ bool CMathObject::compileTotalMass(CMathContainer & container)
   success &= E.setInfix(Infix.str());
 
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
-  mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
-                        mpExpression->getPrerequisites().end());
+  compileCommon();
 
   return success;
 }
@@ -814,10 +839,27 @@ bool CMathObject::compileDependentMass(CMathContainer & container)
   success &= E.setInfix(Infix.str());
 
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
+  compileCommon();
+
+  return success;
+}
+
+void CMathObject::compileCommon()
+{
+  assert(mpExpression);
+
+  if (mIsInitialValue)
+    {
+      mpExpression->convertToInitialExpression();
+    }
+
   mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
                         mpExpression->getPrerequisites().end());
 
-  return success;
+  if (mPrerequisites.empty())
+    {
+      calculate();
+    }
 }
 
 bool CMathObject::createConvertedExpression(const CExpression * pExpression,
@@ -829,8 +871,7 @@ bool CMathObject::createConvertedExpression(const CExpression * pExpression,
 
   mpExpression = new CMathExpression(*pExpression, container,
                                      !mIsInitialValue && mValueType != CMath::Discontinuous);
-  mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
-                        mpExpression->getPrerequisites().end());
+  compileCommon();
 
   return success;
 }
@@ -871,8 +912,7 @@ bool CMathObject::createIntensiveValueExpression(const CMetab * pSpecies,
   success &= E.setInfix(Infix.str());
 
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
-  mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
-                        mpExpression->getPrerequisites().end());
+  compileCommon();
 
   return success;
 }
@@ -914,8 +954,7 @@ bool CMathObject::createExtensiveValueExpression(const CMetab * pSpecies,
   success &= E.setInfix(Infix.str());
 
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
-  mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
-                        mpExpression->getPrerequisites().end());
+  compileCommon();
 
   return success;
 }
@@ -952,8 +991,7 @@ bool CMathObject::createIntensiveRateExpression(const CMetab * pSpecies,
   success &= E.setInfix(Infix.str());
 
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
-  mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
-                        mpExpression->getPrerequisites().end());
+  compileCommon();
 
   return success;
 }
@@ -983,8 +1021,7 @@ bool CMathObject::createExtensiveODERateExpression(const CMetab * pSpecies,
   success &= E.setInfix(Infix.str());
 
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
-  mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
-                        mpExpression->getPrerequisites().end());
+  compileCommon();
 
   return success;
 }
@@ -1041,10 +1078,8 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
   success &= E.setInfix(Infix.str());
 
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
-  mPrerequisites.insert(mpExpression->getPrerequisites().begin(),
-                        mpExpression->getPrerequisites().end());
+  compileCommon();
 
-  return success;
   return success;
 }
 
@@ -1071,8 +1106,12 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
         os << "Value" << std::endl;
         break;
 
-      case CMath::ValueRate:
+      case CMath::Rate:
         os << "ValueRate" << std::endl;
+        break;
+
+      case CMath::ParticleFlux:
+        os << "ParticleFlux" << std::endl;
         break;
 
       case CMath::Flux:
