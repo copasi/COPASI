@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEvent.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/21 17:48:57 $
+//   $Date: 2012/03/29 16:05:44 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -171,7 +171,7 @@ void CMathEventN::CTrigger::allocate(const CEvent * pDataEvent,
   Trigger.setBooleanRequired(true);
   Trigger.setInfix(pDataEvent->getTriggerExpression());
 
-  bool success = Trigger.compile(Container);
+  bool success = Trigger.compile();
 
   assert(success);
 
@@ -217,13 +217,13 @@ bool CMathEventN::CTrigger::compile(CEvent * pDataEvent,
   CMath::CVariableStack VariableStack(Stack);
 
   std::vector< CCopasiContainer * > ListOfContainer;
-  ListOfContainer.push_back(const_cast< CMathContainer * >(&container));
+  ListOfContainer.push_back(&container);
 
   CExpression DataTrigger("DataTrigger", &container);
   DataTrigger.setBooleanRequired(true);
   DataTrigger.setInfix(pDataEvent->getTriggerExpression());
 
-  success &= DataTrigger.compile(ListOfContainer);
+  success &= DataTrigger.compile();
 
   CEvaluationNode * pTriggerRoot = NULL;
   CRoot * pRoot = mRoots.array();
