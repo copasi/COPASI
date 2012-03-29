@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/27 12:18:51 $
+//   $Date: 2012/03/29 16:01:42 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,7 +63,7 @@ CEvaluationNodeObject::CEvaluationNodeObject(const C_FLOAT64 * pValue):
 
   std::ostringstream Pointer;
   Pointer.flags(std::ios::hex);
-  Pointer << "0x" << pValue;
+  Pointer << "0x" << mpValue;
 
   mData = Pointer.str();
 }
@@ -317,6 +317,34 @@ const CRegisteredObjectName & CEvaluationNodeObject::getObjectCN() const
 const C_FLOAT64 * CEvaluationNodeObject::getObjectValuePtr() const
 {
   return mpValue;
+}
+
+void CEvaluationNodeObject::setObjectValuePtr(C_FLOAT64 * pObjectValue)
+{
+  assert(pObjectValue);
+
+  switch ((int) subType(mType))
+    {
+      case CN:
+        break;
+
+      case POINTER:
+
+        if (mpValue != pObjectValue)
+          {
+            mpValue = pObjectValue;
+
+            std::ostringstream Pointer;
+            Pointer.flags(std::ios::hex);
+            Pointer << "0x" << mpValue;
+
+            mData = Pointer.str();
+          }
+
+        break;
+    }
+
+  return;
 }
 
 #include "utilities/copasimathml.h"

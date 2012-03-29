@@ -1,12 +1,12 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.h,v $
-  $Revision: 1.21 $
+  $Revision: 1.22 $
   $Name:  $
   $Author: shoops $
-  $Date: 2011/04/25 12:48:28 $
+  $Date: 2012/03/29 16:01:42 $
   End CVS Header */
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -162,6 +162,12 @@ public:
    * @return const C_FLOAT64 * pObjectValue
    */
   const C_FLOAT64 * getObjectValuePtr() const;
+
+  /**
+   * Set the pointer to the value of the referred object
+   * @param C_FLOAT64 * pObjectValue
+   */
+  void setObjectValuePtr(C_FLOAT64 * pObjectValue);
 
   /**
    * generate display MathML recursively
