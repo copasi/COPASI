@@ -6,7 +6,7 @@
 //   $Date: 2010/03/21 15:21:13 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -102,6 +102,11 @@ bool CQFittingResult::enterProtected()
       mpTabWidget->setTabEnabled(mpValues, true);
       mpTabWidget->setTabEnabled(mpCorrelations, true);
       mpTabWidget->setTabEnabled(mpFisherInformation, true);
+
+#ifdef COPASI_CROSSVALIDATION
+      mpTabWidget->setTabEnabled(mpCrossValidations, true);
+      mpTabWidget->setTabEnabled(mpCrossValidationValues, true);
+#endif // COPASI_CROSSVALIDATION
     }
   else
     {
@@ -114,7 +119,6 @@ bool CQFittingResult::enterProtected()
       mpTabWidget->setTabEnabled(mpCrossValidations, false);
       mpTabWidget->setTabEnabled(mpCrossValidationValues, false);
 #endif // COPASI_CROSSVALIDATION
-
     }
 
   size_t i, imax;
