@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/ListOfModelParameterSets.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/08 19:06:27 $
+//   $Date: 2012/03/30 17:52:07 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,7 +59,7 @@ void CCopasiXMLParser::ListOfModelParameterSetsElement::start(const XML_Char *ps
             mLastKnownElement = ListOfModelParameterSets;
 
             mCommon.pModel->getModelParameterSets().clear();
-            mActiveSet = mParser.getAttributeValue("activeSet", papszAttrs);
+            mActiveSet = mParser.getAttributeValue("activeSet", papszAttrs, "");
 
             return;
 
@@ -218,6 +218,8 @@ void CCopasiXMLParser::ModelParameterSetElement::start(const XML_Char *pszName,
 
             break;
 
+          case ListOfUnkownAnnotations:
+            break;
 
           case Content:
 
@@ -303,6 +305,9 @@ void CCopasiXMLParser::ModelParameterSetElement::end(const XML_Char *pszName)
         break;
 
 
+      case ListOfUnkownAnnotations:
+        break;
+
       case Content:
 
         if (strcmp(pszName, "ModelParameterGroup") &&
@@ -318,8 +323,8 @@ void CCopasiXMLParser::ModelParameterSetElement::end(const XML_Char *pszName)
             mCommon.pCurrentModelParameter = NULL;
           }
 
-        // Content may be repeated therefore we set to the previous element which is Comment.
-        mCurrentElement = Comment;
+        // Content may be repeated therefore we set to the previous element which is ListOfUnkownAnnotations.
+        mCurrentElement = mLastKnownElement = ModelParameterSet;
         break;
 
       case UNKNOWN_ELEMENT:
@@ -457,7 +462,7 @@ void CCopasiXMLParser::ModelParameterGroupElement::end(const XML_Char *pszName)
           }
 
         // Content may be repeated therefore we set to the previous element which is ModelParameterGroup.
-        mCurrentElement = ModelParameterGroup;
+        mCurrentElement = mLastKnownElement = ModelParameterGroup;
         break;
 
       case UNKNOWN_ELEMENT:

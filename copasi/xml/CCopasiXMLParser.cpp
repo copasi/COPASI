@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.238 $
+//   $Revision: 1.239 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/08 19:09:45 $
+//   $Date: 2012/03/30 17:52:07 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1578,7 +1578,6 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
   CModel::LengthUnit LengthUnit;
   const char * quantityUnit;
   CModel::QuantityUnit QuantityUnit;
-  const char * StateVariable;
   CModel::ModelType ModelType;
   C_FLOAT64 Avogadro;
 
@@ -1627,11 +1626,12 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         ModelType = toEnum(mParser.getAttributeValue("type", papszAttrs, "deterministic"),
                            CModel::ModelTypeNames, CModel::deterministic);
 
-        StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs, "");
-
         Avogadro = CCopasiXMLInterface::DBL(mParser.getAttributeValue("avogadroConstant", papszAttrs, "6.0221415e23"));
 
         if (!mCommon.pModel) mCommon.pModel = new CModel(mCommon.pDataModel);
+
+        // We remove the default parameter set:
+        mCommon.pModel->getModelParameterSets().CCopasiVector< CModelParameterSet >::remove((size_t) 0);
 
         mCommon.KeyMap.addFix(mKey, mCommon.pModel);
         mCommon.pModel->setTitle(Name);
@@ -1642,6 +1642,7 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         mCommon.pModel->setQuantityUnit(QuantityUnit);
         mCommon.pModel->setModelType(ModelType);
         mCommon.pModel->setAvogadro(Avogadro);
+
         return;
         break;
 
