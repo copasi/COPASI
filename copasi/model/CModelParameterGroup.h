@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameterGroup.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/08 19:04:39 $
+//   $Date: 2012/03/30 17:55:53 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,8 +34,6 @@ public:
   CModelParameterGroup(const CModelParameterGroup & src, CModelParameterGroup * pParent);
 
   virtual ~CModelParameterGroup();
-
-  virtual CModel * getModel();
 
   CModelParameter * add(const CModelParameter::Type & type);
 

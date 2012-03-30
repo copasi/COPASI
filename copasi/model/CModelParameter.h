@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameter.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/15 19:42:41 $
+//   $Date: 2012/03/30 17:55:53 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,9 +22,12 @@ class CModelParameterSet;
 class CModelParameterGroup;
 class CCopasiObject;
 class CExpression;
+class CModel;
 
 class CModelParameter
 {
+  friend std::ostream &operator<<(std::ostream &os, const CModelParameter & o);
+
 public:
   enum Type
   {
@@ -83,7 +86,7 @@ public:
 
   const Type & getType() const;
 
-  void setCN(const CCopasiObjectName & cn);
+  virtual void setCN(const CCopasiObjectName & cn);
 
   const CCopasiObjectName & getCN() const;
 
@@ -106,6 +109,8 @@ public:
   CCopasiObject * getObject() const;
 
   CModelParameterSet * getSet() const;
+
+  CModel * getModel() const;
 
   bool isInitialExpressionValid() const;
 
@@ -198,13 +203,17 @@ public:
 
   virtual void compile();
 
+  virtual void setCN(const CCopasiObjectName & cn);
+
   virtual void setValue(const C_FLOAT64 & value, const Framework & framework = ParticleNumbers);
 
   virtual const C_FLOAT64 & getValue(const Framework & framework = ParticleNumbers) const;
 
+private:
   CCopasiObjectName getCompartmentCN() const;
 
-private:
+  CRegisteredObjectName mCompartmentCN;
+
   CModelParameterCompartment * mpCompartment;
 
   C_FLOAT64 mConcentration;

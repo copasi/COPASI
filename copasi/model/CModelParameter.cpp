@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameter.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/08 19:04:40 $
+//   $Date: 2012/03/30 17:55:53 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,7 +63,7 @@ std::string CModelParameter::nameFromCN(const CCopasiObjectName & cn)
 }
 
 CModelParameter::CModelParameter(CModelParameterGroup * pParent, const CModelParameter::Type & type):
-    mpParent(pParent),
+    mpParent(static_cast< CModelParameterGroup * >(pParent)),
     mType(type),
     mCN(),
     mValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
@@ -114,7 +114,7 @@ const CModelParameter::Type & CModelParameter::getType() const
   return mType;
 }
 
-
+// virtual
 void CModelParameter::setCN(const CCopasiObjectName & cn)
 {
   mCN = cn;
@@ -139,8 +139,13 @@ const C_FLOAT64 & CModelParameter::getValue(const Framework & /* framework */) c
 
 void CModelParameter::setInitialExpression(const std::string & initialExpression)
 {
-  if (initialExpression != "" &&
-      mpInitialExpression == NULL)
+  if (initialExpression == "")
+    {
+      pdelete(mpInitialExpression);
+      return;
+    }
+
+  if (mpInitialExpression == NULL)
     {
       CModelParameterGroup * pParent = mpParent;
 
@@ -211,6 +216,11 @@ CCopasiObject * CModelParameter::getObject() const
 
 CModelParameterSet * CModelParameter::getSet() const
 {
+  if (mType == Set)
+    {
+      return static_cast< CModelParameterSet * >(const_cast< CModelParameter *>(this));
+    }
+
   CModelParameterGroup * pParent = mpParent;
 
   while (pParent != NULL)
@@ -225,6 +235,19 @@ CModelParameterSet * CModelParameter::getSet() const
 
   return NULL;
 }
+
+CModel * CModelParameter::getModel() const
+{
+  CModelParameterSet * pSet = getSet();
+
+  if (pSet != NULL)
+    {
+      return pSet->getModel();
+    }
+
+  return NULL;
+}
+
 
 bool CModelParameter::isInitialExpressionValid() const
 {
@@ -247,9 +270,9 @@ void CModelParameter::compile()
   mpObject = NULL;
   mIsInitialExpressionValid = true;
 
-  CModel * pModel = mpParent->getModel();
+  CModel * pModel = getModel();
 
-  assert(pModel == NULL);
+  assert(pModel != NULL);
 
   std::vector< CCopasiContainer * > ListOfContainer;
   ListOfContainer.push_back(pModel);
@@ -428,12 +451,14 @@ void CModelParameterCompartment::removeSpecies(CModelParameterSpecies * pSpecies
 
 CModelParameterSpecies::CModelParameterSpecies(CModelParameterGroup * pParent, const CModelParameter::Type & type):
     CModelParameter(pParent, type),
+    mCompartmentCN(),
     mpCompartment(NULL),
     mConcentration(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
 {}
 
 CModelParameterSpecies::CModelParameterSpecies(const CModelParameterSpecies & src, CModelParameterGroup * pParent):
     CModelParameter(src, pParent),
+    mCompartmentCN(src.mCompartmentCN),
     mpCompartment(src.mpCompartment),
     mConcentration(src.mConcentration)
 {}
@@ -465,24 +490,54 @@ void CModelParameterSpecies::compile()
 {
   CModelParameter::compile();
 
-  mpCompartment = static_cast< CModelParameterCompartment * >(getSet()->getModelParameter(getCompartmentCN()));
+  mpCompartment = static_cast< CModelParameterCompartment * >(getSet()->getModelParameter(mCompartmentCN));
 
   if (mpCompartment != NULL)
     {
       mpCompartment->addSpecies(this);
     }
+
+  // Update the concentration if possible
+  setValue(mValue);
 }
+
+// virtual
+void CModelParameterSpecies::setCN(const CCopasiObjectName & cn)
+{
+  CModelParameter::setCN(cn);
+
+  // Determine the CN for the compartment.
+  // "CN=Root,Model=New Model,Vector=Compartments[compartment],Vector=Metabolites[A]"
+  CCopasiObjectName Tmp = mCN;
+  std::string Separator = "";
+
+  for (; Tmp != ""; Tmp = Tmp.getRemainder())
+    {
+      CCopasiObjectName Primary = Tmp.getPrimary();
+      mCompartmentCN += Separator + Primary;
+      Separator = ",";
+
+      if (Primary.getObjectType() == "Vector" ||
+          Primary.getObjectName() == "Compartments")
+        {
+          break;
+        }
+    }
+}
+
 
 // virtual
 void CModelParameterSpecies::setValue(const C_FLOAT64 & value, const Framework & framework)
 {
+  CModel * pModel = getModel();
+
   if (framework == Concentration)
     {
       mConcentration = value;
 
-      if (mpCompartment != NULL)
+      if (mpCompartment != NULL && pModel != NULL)
         {
-          mValue = mConcentration / mpCompartment->getValue();
+          mValue = mConcentration * mpCompartment->getValue() * pModel->getQuantity2NumberFactor();
         }
       else
         {
@@ -493,9 +548,9 @@ void CModelParameterSpecies::setValue(const C_FLOAT64 & value, const Framework &
     {
       mValue = value;
 
-      if (mpCompartment != NULL)
+      if (mpCompartment != NULL && pModel != NULL)
         {
-          mConcentration = mValue * mpCompartment->getValue();
+          mConcentration = mValue / mpCompartment->getValue() * pModel->getNumber2QuantityFactor();
         }
       else
         {
@@ -517,23 +572,17 @@ const C_FLOAT64 & CModelParameterSpecies::getValue(const Framework & framework) 
 
 CCopasiObjectName CModelParameterSpecies::getCompartmentCN() const
 {
-  // Determine the parameter for the compartment.
-  // "CN=Root,Model=New Model,Vector=Compartments[compartment],Vector=Metabolites[A]"
+  return mCompartmentCN;
+}
 
-  CCopasiObjectName Tmp = mCN;
-  CCopasiObjectName CompartmentCN;
+std::ostream &operator<<(std::ostream &os, const CModelParameter & o)
+{
+  os << "Model Parameter:" << std::endl;
+  os << "  Type:       " << CModelParameter::TypeNames[o.mType] << std::endl;
+  os << "  CN:         " << o.mCN << std::endl;
+  os << "  Value:      " << o.mValue << std::endl;
+  os << "  Expression: " << o.getInitialExpression() << std::endl;
+  os << "  Diff:       " << o.mCompareResult << std::endl;
 
-  for (; Tmp != ""; Tmp = Tmp.getRemainder())
-    {
-      CCopasiObjectName Primary = Tmp.getPrimary();
-      CompartmentCN += Primary;
-
-      if (Primary.getObjectType() == "Vector" ||
-          Primary.getObjectName() == "Compartments")
-        {
-          break;
-        }
-    }
-
-  return CompartmentCN;
+  return os;
 }

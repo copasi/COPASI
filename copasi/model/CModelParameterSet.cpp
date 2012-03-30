@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameterSet.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/08 19:04:39 $
+//   $Date: 2012/03/30 17:55:53 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,7 +56,7 @@ bool CModelParameterSet::setObjectParent(const CCopasiContainer * pParent)
 {
   bool success = CCopasiObject::setObjectParent(pParent);
 
-  mpModel = dynamic_cast< CModel * >(getObjectAncestor("CModel"));
+  mpModel = dynamic_cast< CModel * >(getObjectAncestor("Model"));
 
   return success;
 }
@@ -88,6 +88,7 @@ void CModelParameterSet::createFromModel()
 
   pParameter = pGroup->add(Model);
   pParameter->setCN(mpModel->getCN());
+  pParameter->setValue(mpModel->getInitialTime());
 
   pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
   pGroup->setCN(CCopasiStaticString("Initial Compartment Sizes").getCN());
@@ -167,6 +168,8 @@ void CModelParameterSet::createFromModel()
             }
         }
     }
+
+  compile();
 }
 
 bool CModelParameterSet::compareWithModel()

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameterGroup.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/08 19:04:39 $
+//   $Date: 2012/03/30 17:55:53 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,7 @@
 // All rights reserved.
 
 #include <map>
+#include <iostream>
 
 #include "CModelParameterGroup.h"
 
@@ -65,12 +66,6 @@ CModelParameterGroup::CModelParameterGroup(const CModelParameterGroup & src, CMo
 CModelParameterGroup::~CModelParameterGroup()
 {
   clear();
-}
-
-// virtual
-CModel * CModelParameterGroup::getModel()
-{
-  return mpParent->getModel();
 }
 
 CModelParameter * CModelParameterGroup::add(const CModelParameter::Type & type)
@@ -140,6 +135,8 @@ void CModelParameterGroup::remove(const size_t & index)
 
 size_t CModelParameterGroup::size() const
 {
+  std::cout << getName() << ": " << mModelParameters.size() << std::endl;
+
   return mModelParameters.size();
 }
 
