@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.410 $
+//   $Revision: 1.411 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/07 17:11:38 $
+//   $Date: 2012/03/30 17:55:11 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -3228,6 +3228,11 @@ void CModel::initObjects()
   mpLinkMatrixAnnotation->setDimensionDescription(0, "Species that are controlled by reactions (full system)");
   mpLinkMatrixAnnotation->setMode(1, CArrayAnnotation::OBJECTS);
   mpLinkMatrixAnnotation->setDimensionDescription(1, "Species (reduced system)");
+
+  CModelParameterSet * pParameterSet = new CModelParameterSet("Default");
+  mParameterSets.add(pParameterSet, true);
+  mActiveParameterSetKey = pParameterSet->getKey();
+  pParameterSet->createFromModel();
 
   mpMathModel = new CMathModel(this);
 }
