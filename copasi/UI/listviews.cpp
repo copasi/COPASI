@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.298 $
+//   $Revision: 1.299 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/11/07 13:59:26 $
+//   $Date: 2012/03/30 18:02:18 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -63,6 +63,7 @@
 #include "CQMoietiesTaskResult.h"
 #include "CQMoietiesTaskWidget.h"
 #include "ParametersWidget.h"
+#include "CQParameterOverviewWidget.h"
 #include "CQReactionsWidget.h"
 #include "ReactionsWidget1.h"
 #include "SteadyStateWidget.h"
@@ -163,6 +164,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
     paramFittingWidget(NULL),
     mpFittingResultWidget(NULL),
     parametersWidget(NULL),
+    mpParameterOverviewWidget(NULL),
     mpPlotsWidget(NULL),
     mpPlotSubwidget(NULL),
     mpReactionsWidget(NULL),
@@ -355,6 +357,11 @@ void ListViews::ConstructNodeWidgets()
   if (!parametersWidget) parametersWidget = new ParametersWidget(this);
 
   parametersWidget->hide();
+
+  if (!mpParameterOverviewWidget)
+    mpParameterOverviewWidget = new CTabWidget(QString("Parameter Set"), new CQParameterOverviewWidget(this), this);
+
+  mpParameterOverviewWidget->hide();
 
   if (!mpCMCAResultWidget) mpCMCAResultWidget = new CMCAResultWidget(this);
 
@@ -558,6 +565,9 @@ CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
         break;
       case 117:
         return parametersWidget;
+        break;
+      case 118:
+        return mpParameterOverviewWidget;
         break;
         //case 122:
         //  return functionSymbols;

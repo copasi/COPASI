@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.176 $
+//   $Revision: 1.177 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/17 19:55:40 $
+//   $Date: 2012/03/30 18:02:18 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -58,6 +58,7 @@ class CQGlobalQuantitiesWidget;
 class CQMoietiesTaskResult;
 class CQMoietiesTaskWidget;
 class ParametersWidget;
+class CQParameterOverviewWidget;
 class ReactionsWidget1;
 class CQReactionsWidget;
 class SteadyStateWidget;
@@ -216,6 +217,7 @@ private:
   CQFittingWidget *paramFittingWidget;
   CQFittingResult *mpFittingResultWidget;
   ParametersWidget *parametersWidget;
+  CTabWidget * mpParameterOverviewWidget;
   CQPlotsWidget *mpPlotsWidget;
   PlotSubwidget *mpPlotSubwidget;
   CQReactionsWidget *mpReactionsWidget;
