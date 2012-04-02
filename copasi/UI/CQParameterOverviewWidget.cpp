@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQParameterOverviewWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/30 18:01:35 $
+//   $Author: bergmann $
+//   $Date: 2012/04/02 16:57:27 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,13 +49,15 @@ CQParameterOverviewWidget::~CQParameterOverviewWidget()
 // virtual
 bool CQParameterOverviewWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
-
+  // placeholder, ensure compilation under MSVC
+  return true;
 }
 
 // virtual
 bool CQParameterOverviewWidget::leave()
 {
-
+  // placeholder, ensure compilation under MSVC
+  return true;
 }
 
 // virtual
