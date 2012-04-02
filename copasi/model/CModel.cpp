@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.411 $
+//   $Revision: 1.412 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/30 17:55:11 $
+//   $Date: 2012/04/02 17:34:32 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1047,6 +1047,23 @@ const std::string & CModel::getActiveParameterSetKey() const
   return mActiveParameterSetKey;
 }
 
+void CModel::applyActiveParameterSet()
+{
+  CModelParameterSet * pParameterSet =
+    dynamic_cast< CModelParameterSet * >(CCopasiRootContainer::getKeyFactory()->get(mActiveParameterSetKey));
+
+  if (pParameterSet != NULL)
+    {
+      pParameterSet->updateModel();
+    }
+  else
+    {
+      CModelParameterSet * pParameterSet = new CModelParameterSet("Default");
+      mParameterSets.add(pParameterSet, true);
+      mActiveParameterSetKey = pParameterSet->getKey();
+      pParameterSet->createFromModel();
+    }
+}
 
 CCopasiVectorN < CEvent > & CModel::getEvents()
 {return mEvents;}
@@ -3228,11 +3245,6 @@ void CModel::initObjects()
   mpLinkMatrixAnnotation->setDimensionDescription(0, "Species that are controlled by reactions (full system)");
   mpLinkMatrixAnnotation->setMode(1, CArrayAnnotation::OBJECTS);
   mpLinkMatrixAnnotation->setDimensionDescription(1, "Species (reduced system)");
-
-  CModelParameterSet * pParameterSet = new CModelParameterSet("Default");
-  mParameterSets.add(pParameterSet, true);
-  mActiveParameterSetKey = pParameterSet->getKey();
-  pParameterSet->createFromModel();
 
   mpMathModel = new CMathModel(this);
 }
