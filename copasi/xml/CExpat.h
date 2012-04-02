@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.h,v $
-$Revision: 1.24 $
+$Revision: 1.25 $
 $Name:  $
 $Author: shoops $
-$Date: 2012/03/07 17:12:41 $
+$Date: 2012/04/02 14:12:16 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -335,7 +335,8 @@ public:
   {
     assert(mParser != NULL);
     XML_SetUnknownEncodingHandler(mParser,
-                                  fEnable ? unknownEncodingHandler : NULL);
+                                  fEnable ? unknownEncodingHandler : NULL,
+                                  NULL);
   }
 
   /**
@@ -816,7 +817,7 @@ protected:
    * @param const XML_Char *pszSystemID
    * @param const XML_Char *pszPublicID
    */
-  static int externalEntityRefHandler(void *pUserData,
+  static int externalEntityRefHandler(XML_Parser pUserData,
                                       const XML_Char *pszContext,
                                       const XML_Char *pszBase,
                                       const XML_Char *pszSystemID,
@@ -833,7 +834,8 @@ protected:
    * @param const XML_Char *pszName
    * @param XML_Encoding *pInfo
    */
-  static int unknownEncodingHandler(void *pUserData,
+
+  static int unknownEncodingHandler(void * pUserData,
                                     const XML_Char *pszName,
                                     XML_Encoding *pInfo)
   {

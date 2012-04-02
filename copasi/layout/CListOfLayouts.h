@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.h,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:35:21 $
+//   $Date: 2012/04/02 14:12:19 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -73,10 +73,10 @@ public:
 #ifdef USE_CRENDER_EXTENSION
   //*******************
 
-  const CCopasiVector<CLGlobalRenderInformation> & getListOfGlobalRenderInformationObjects() const
+  const CCopasiVector< CLGlobalRenderInformation > & getListOfGlobalRenderInformationObjects() const
   {return this->mvGlobalRenderInformationObjects;};
 
-  CCopasiVector<CLGlobalRenderInformation> & getListOfGlobalRenderInformationObjects()
+  CCopasiVector< CLGlobalRenderInformation > & getListOfGlobalRenderInformationObjects()
   {return this->mvGlobalRenderInformationObjects;};
 
   /**
