@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.161 $
+//   $Revision: 1.162 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/17 19:56:01 $
+//   $Date: 2012/04/02 17:45:53 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -556,12 +556,6 @@ bool CCopasiDataModel::newModel(CModel * pModel,
 
   hideOldData();
 
-  if (mData.pModel)
-    {
-      mData.pModel->compileIfNecessary(pProcessReport);
-      mData.pModel->updateInitialValues();
-    }
-
   // We have at least one task of every type
   addDefaultTasks();
   addDefaultReports();
@@ -588,6 +582,16 @@ bool CCopasiDataModel::newModel(CModel * pModel,
   // due to incomplete task specification at this time.
   while (CCopasiMessage::size() > Size)
     CCopasiMessage::getLastMessage();
+
+  if (mData.pModel)
+    {
+      mData.pModel->compileIfNecessary(pProcessReport);
+      mData.pModel->updateInitialValues();
+#ifdef COPASI_PARAMETER_SETS
+      mData.pModel->applyActiveParameterSet();
+#endif // COPASI_PARAMTER_SETS
+
+    }
 
   changed(false);
 

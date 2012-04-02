@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.140 $
+//   $Revision: 1.141 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/02 14:11:59 $
+//   $Date: 2012/04/02 17:45:53 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -933,6 +933,8 @@ bool CCopasiXML::saveModel()
 
   endSaveElement("InitialState");
 
+#ifdef COPASI_PARAMETER_SETS
+
   // Save the model parameter sets
   if ((imax = mpModel->getModelParameterSets().size()) > 0)
     {
@@ -981,6 +983,8 @@ bool CCopasiXML::saveModel()
 
       endSaveElement("ListOfModelParameterSets");
     }
+
+#endif // COPASI_PARAMETER_SETS
 
   endSaveElement("Model");
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModel.txt.h,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/30 18:02:18 $
+//   $Date: 2012/04/02 17:45:53 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,9 +29,9 @@ static char DataModeltxt[] =
   "11:115:Global Quantities\n"
   "11:116:Events\n"
   "11:117:Parameter Overview\n"
-#ifdef COPASI_DEBUG
+#ifdef COPASI_PARAMETER_SETS
   "11:118:Parameter Set\n"
-#endif // COPASI_DEBUG
+#endif // COPASI_PARAMETER_SETS
   "1:12:Mathematical\n"
   //"12:122:Used Functions\n"
 #ifdef HAVE_MML
