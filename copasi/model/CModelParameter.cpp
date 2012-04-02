@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameter.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/30 17:55:53 $
+//   $Date: 2012/04/02 17:34:01 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -259,7 +259,14 @@ std::string CModelParameter::getName() const
 {
   if (mpObject != NULL)
     {
-      return mpObject->getObjectDisplayName();
+      if (mType == Species)
+        {
+          return mpObject->getObjectDisplayName();
+        }
+      else
+        {
+          return mpObject->getObjectName();
+        }
     }
 
   return nameFromCN(mCN);
