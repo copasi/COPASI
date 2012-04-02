@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameterSet.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/30 17:55:53 $
+//   $Date: 2012/04/02 14:13:37 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,9 @@ CModelParameterSet::CModelParameterSet(const CModelParameterSet & src,
 
 // virtual
 CModelParameterSet::~CModelParameterSet()
-{}
+{
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+}
 
 // virtual
 const std::string & CModelParameterSet::getKey() const
