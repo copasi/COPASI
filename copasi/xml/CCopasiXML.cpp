@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.139 $
+//   $Revision: 1.140 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/30 17:52:07 $
+//   $Date: 2012/04/02 14:11:59 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -415,7 +415,6 @@ bool CCopasiXML::saveModel()
   Attributes.add("quantityUnit", mpModel->getQuantityUnitName());
   Attributes.add("type", CModel::ModelTypeNames[mpModel->getModelType()]);
   Attributes.add("avogadroConstant", mpModel->getAvogadro());
-  Attributes.add("activeParameterSetKey", mpModel->getActiveParameterSetKey());
 
   // This is now optional
   // Attributes.add("stateVariable",
@@ -1915,7 +1914,7 @@ bool CCopasiXML::buildFunctionList()
 /**
  * Saves the list of global render information objects.
  */
-void CCopasiXML::saveListOfGlobalRenderInformation(const CCopasiVector<CLGlobalRenderInformation>& list)
+void CCopasiXML::saveListOfGlobalRenderInformation(const CCopasiVector< CLGlobalRenderInformation > & list)
 {
   startSaveElement("ListOfGlobalRenderInformation");
   size_t i, iMax = list.size();
