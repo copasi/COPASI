@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/ListOfModelParameterSets.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/30 17:52:07 $
+//   $Date: 2012/04/02 17:33:25 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -603,6 +603,9 @@ void CCopasiXMLParser::ModelParameterElement::end(const XML_Char *pszName)
           while (CCopasiMessage::size() > Size)
             CCopasiMessage::getLastMessage();
         }
+
+        mCurrentElement = ModelParameter;
+
         break;
 
       case UNKNOWN_ELEMENT:
