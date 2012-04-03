@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQBrowserPaneDM.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/30 18:01:35 $
+//   $Date: 2012/04/03 13:42:22 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -324,7 +324,10 @@ void CQBrowserPaneDM::load()
   load(116); // Events
 
   findNodeFromId(117)->setKey(mpCopasiDM->getModel()->getKey()); // Parameter Overview
+
+#ifdef COPASI_PARAMETER_SETS
   findNodeFromId(118)->setKey(mpCopasiDM->getModel()->getActiveParameterSetKey()); // Parameter Set
+#endif // COPASI_PARAMETER_SETS
 
   findNodeFromId(21)->setKey((*mpCopasiDM->getTaskList())["Steady-State"]->getKey());
   findNodeFromId(221)->setKey((*mpCopasiDM->getTaskList())["Elementary Flux Modes"]->getKey());
