@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.162 $
+//   $Revision: 1.163 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/02 17:45:53 $
+//   $Date: 2012/04/04 19:32:23 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -120,7 +120,7 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
   newModel(NULL, NULL, NULL, true);
   CCopasiObject::setRenameHandler(&mRenameHandler); //TODO where in the constructor should this be called?
   new CCopasiTimer(CCopasiTimer::WALL, this);
-  new CCopasiTimer(CCopasiTimer::CPU, this);
+  new CCopasiTimer(CCopasiTimer::PROCESS, this);
 }
 
 CCopasiDataModel::CCopasiDataModel(const std::string & name,
@@ -141,7 +141,7 @@ CCopasiDataModel::CCopasiDataModel(const std::string & name,
   newModel(NULL, NULL, NULL, true);
   CCopasiObject::setRenameHandler(&mRenameHandler); //TODO where in the constructor should this be called?
   new CCopasiTimer(CCopasiTimer::WALL, this);
-  new CCopasiTimer(CCopasiTimer::CPU, this);
+  new CCopasiTimer(CCopasiTimer::PROCESS, this);
 }
 
 CCopasiDataModel::~CCopasiDataModel()
