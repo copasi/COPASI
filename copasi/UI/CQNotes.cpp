@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/15 17:07:51 $
+//   $Date: 2012/04/04 15:58:37 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,7 +39,8 @@
 
 CQValidatorXML::CQValidatorXML(QPlainTextEdit * parent, const char * name):
     CQValidator< QPlainTextEdit >(parent, &QPlainTextEdit::toPlainText, name),
-    mIsFreeText(true)
+    mIsFreeText(true),
+    mNeedsWrap(false)
 {}
 
 // virtual
@@ -52,15 +53,17 @@ QValidator::State CQValidatorXML::validate(QString & input, int & pos) const
   Validator.setContentHandler(&ContentHandler);
 
   // We like to allow free text and therefore wrap the text to create valid XML.
-  Input.setData("<ValidateXML>" + input + "</ValidateXML>");
+  Input.setData("<Validate:XML xmlns:Validate=\"http://www.copasi.org/Validate\">" + input + "</Validate:XML>");
 
   if (Validator.parse(Input))
     {
       mIsFreeText = ContentHandler.isFreeText();
+      mNeedsWrap = ContentHandler.needsWrap();
       return CQValidator< QPlainTextEdit >::validate(input, pos);
     }
 
   mIsFreeText = true;
+  mNeedsWrap = false;
   setColor(Invalid);
   return Intermediate;
 }
@@ -70,9 +73,16 @@ const bool & CQValidatorXML::isFreeText() const
   return mIsFreeText;
 }
 
+const bool & CQValidatorXML::needsWrap() const
+{
+  return mNeedsWrap;
+}
+
 CQNotesContentHandler::CQNotesContentHandler():
     QXmlDefaultHandler(),
-    mIsFreeText(true)
+    mIsFreeText(true),
+    mNeedsWrap(true),
+    mLevel(0)
 {}
 
 CQNotesContentHandler:: ~CQNotesContentHandler()
@@ -82,20 +92,41 @@ CQNotesContentHandler:: ~CQNotesContentHandler()
 bool CQNotesContentHandler::startDocument()
 {
   mIsFreeText = true;
-
+  mNeedsWrap = true;
+  mLevel = 0;
   return true;
 }
 
 // virtual
-bool CQNotesContentHandler::startElement(const QString & /* namespaceURI */,
+bool CQNotesContentHandler::startElement(const QString & namespaceURI,
     const QString & localName,
-    const QString & /* qName */,
-    const QXmlAttributes & /* atts */)
+    const QString & qName,
+    const QXmlAttributes & atts)
 {
-  if (localName != "ValidateXML")
+  std::cout << "Level: " << mLevel << ", " << TO_UTF8(namespaceURI) << ", " << TO_UTF8(localName) << ", " << TO_UTF8(qName) << std::endl;
+
+  if (namespaceURI != "http://www.copasi.org/Validate" ||
+      qName != "Validate:XML")
     mIsFreeText = false;
 
-  return true;
+  if (mLevel == 1 &&
+      (localName == "xhtml" ||
+       localName == "body"))
+    mNeedsWrap = false;
+
+  mLevel++;
+
+  return QXmlDefaultHandler::startElement(namespaceURI, localName, qName, atts);
+}
+
+// virtual
+bool CQNotesContentHandler::endElement(const QString & namespaceURI,
+                                       const QString & localName,
+                                       const QString & qName)
+{
+  mLevel--;
+
+  return QXmlDefaultHandler::endElement(namespaceURI, localName, qName);
 }
 
 const bool & CQNotesContentHandler::isFreeText() const
@@ -103,6 +134,10 @@ const bool & CQNotesContentHandler::isFreeText() const
   return mIsFreeText;
 }
 
+bool CQNotesContentHandler::needsWrap() const
+{
+  return (mNeedsWrap && !mIsFreeText);
+}
 
 CQNotes::CQNotes(QWidget* parent, const char* name) :
     CopasiWidget(parent, name),
@@ -307,9 +342,9 @@ void CQNotes::save()
         {
           std::string PlainText = TO_UTF8(mpEdit->toPlainText());
 
-          if (!mpValidatorXML->isFreeText() && PlainText[0] != '<')
+          if (mpValidatorXML->needsWrap())
             {
-              // We wrap the XHTML in a body element if it does not start with an XML element.
+              // We wrap the HTML in a body element if it does not contain a top level html or body element.
               PlainText = "<body xmlns=\"http://www.w3.org/1999/xhtml\">" + PlainText + "</body>";
             }
 

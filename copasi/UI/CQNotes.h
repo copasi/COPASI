@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:37:54 $
+//   $Date: 2012/04/04 15:58:37 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -31,9 +31,13 @@ public:
 
   const bool & isFreeText() const;
 
+  const bool & needsWrap() const;
+
 private:
   // Attributes
   mutable bool mIsFreeText;
+
+  mutable bool mNeedsWrap;
 };
 
 class CQNotesContentHandler : public QXmlDefaultHandler
@@ -51,11 +55,21 @@ public:
                             const QString & qName,
                             const QXmlAttributes & atts);
 
+  virtual bool endElement(const QString & namespaceURI,
+                          const QString & localName,
+                          const QString & qName);
+
   const bool & isFreeText() const;
+
+  bool needsWrap() const;
 
 private:
   // Attributes
   bool mIsFreeText;
+
+  bool mNeedsWrap;
+
+  size_t mLevel;
 };
 
 class CQNotes : public CopasiWidget, public Ui::CQNotes
