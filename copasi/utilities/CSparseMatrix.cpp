@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSparseMatrix.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/04/02 16:57:27 $
+//   $Author: shoops $
+//   $Date: 2012/04/04 19:18:11 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -657,7 +657,7 @@ bool SparseMatrixTest(const size_t & size,
   std::cout << "CompressedColumnFormat(" << size << "x" << size << "):\t" << tmp2 << std::endl;
   std::cout << "CompressedColumnFormat/Matrix:\t" << tmp2 / tmp << std::endl << std::endl;
 
-  CCopasiTimer CPU(CCopasiTimer::CPU);
+  CCopasiTimer CPU(CCopasiTimer::PROCESS);
   CCopasiTimer WALL(CCopasiTimer::WALL);
 
   if (RMP)

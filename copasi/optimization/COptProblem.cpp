@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.122 $
+//   $Revision: 1.123 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/11/23 18:53:37 $
+//   $Date: 2012/04/04 19:18:11 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -83,7 +83,7 @@ COptProblem::COptProblem(const CCopasiTask::Type & type,
     mFailedCounter(0),
     mConstraintCounter(0),
     mFailedConstraintCounter(0),
-    mCPUTime(CCopasiTimer::CPU, this),
+    mCPUTime(CCopasiTimer::PROCESS, this),
     mhSolutionValue(C_INVALID_INDEX),
     mhCounter(C_INVALID_INDEX),
     mStoreResults(false),
@@ -122,7 +122,7 @@ COptProblem::COptProblem(const COptProblem& src,
     mFailedCounter(0),
     mConstraintCounter(0),
     mFailedConstraintCounter(0),
-    mCPUTime(CCopasiTimer::CPU, this),
+    mCPUTime(CCopasiTimer::PROCESS, this),
     mhSolutionValue(C_INVALID_INDEX),
     mhCounter(C_INVALID_INDEX),
     mStoreResults(src.mStoreResults),

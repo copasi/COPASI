@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.79 $
+//   $Revision: 1.80 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/17 19:55:03 $
+//   $Date: 2012/04/04 19:18:11 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -389,7 +389,7 @@ void CCopasiTask::initObjects()
 {
   addObjectReference("Output counter", mOutputCounter, CCopasiObject::ValueInt);
   new CCopasiTimer(CCopasiTimer::WALL, this);
-  new CCopasiTimer(CCopasiTimer::CPU, this);
+  new CCopasiTimer(CCopasiTimer::PROCESS, this);
 }
 
 CCopasiTask::CDescription::CDescription(const CCopasiContainer * pParent):
