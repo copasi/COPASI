@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiTimer.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $
-   $Date: 2011/06/02 17:15:47 $
+   $Date: 2012/04/04 19:17:43 $
    End CVS Header */
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,12 +26,29 @@ CCopasiTimer::CCopasiTimer(const Type & type,
     CCopasiObject((type == CCopasiTimer::WALL) ? "Wall Clock Time" : "CPU Time",
                   pParent, "Timer", CCopasiObject::ValueDbl),
     mType(type),
-    mStartTime((mType == CCopasiTimer::WALL) ?
-               CCopasiTimeVariable::getCurrentWallTime() :
-               CCopasiTimeVariable::getCPUTime()),
+    mStartTime(),
     mElapsedTime(0),
     mElapsedTimeSeconds(0)
-{setRefresh(this, &CCopasiTimer::refresh);}
+{
+  switch (mType)
+    {
+      case WALL:
+        mStartTime = CCopasiTimeVariable::getCurrentWallTime();
+        break;
+
+      case PROCESS:
+        mStartTime = CCopasiTimeVariable::getProcessTime();
+        break;
+
+      case THREAD:
+        mStartTime = CCopasiTimeVariable::getThreadTime();
+        break;
+
+    }
+
+  setRefresh(this, &CCopasiTimer::refresh);
+}
+
 
 CCopasiTimer::CCopasiTimer(const CCopasiTimer & src,
                            const CCopasiContainer * pParent):
@@ -53,8 +70,12 @@ bool CCopasiTimer::start()
         mStartTime = CCopasiTimeVariable::getCurrentWallTime();
         break;
 
-      case CPU:
-        mStartTime = CCopasiTimeVariable::getCPUTime();
+      case PROCESS:
+        mStartTime = CCopasiTimeVariable::getProcessTime();
+        break;
+
+      case THREAD:
+        mStartTime = CCopasiTimeVariable::getThreadTime();
         break;
     }
 
@@ -72,8 +93,12 @@ void CCopasiTimer::refresh()
         mElapsedTime = CCopasiTimeVariable::getCurrentWallTime() - mStartTime;
         break;
 
-      case CPU:
-        mElapsedTime = CCopasiTimeVariable::getCPUTime() - mStartTime;
+      case PROCESS:
+        mElapsedTime = CCopasiTimeVariable::getProcessTime() - mStartTime;
+        break;
+
+      case THREAD:
+        mElapsedTime = CCopasiTimeVariable::getThreadTime() - mStartTime;
         break;
     }
 
