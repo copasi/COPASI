@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CopasiTime.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:43 $
+   $Date: 2012/04/04 16:00:06 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -62,83 +67,85 @@ bool CCopasiTimeVariable::operator < (const CCopasiTimeVariable & value)
 {return (mTime < value.mTime);}
 
 std::string CCopasiTimeVariable::isoFormat() const
-  {
-    std::stringstream Iso;
-    bool first = true;
+{
+  std::stringstream Iso;
+  bool first = true;
 
-    if (mTime < LLONG_CONST(0))
-      {
-        CCopasiTimeVariable Tmp(-mTime);
-        Iso << "-";
-        Iso << Tmp.isoFormat();
+  if (mTime < LLONG_CONST(0))
+    {
+      CCopasiTimeVariable Tmp(-mTime);
+      Iso << "-";
+      Iso << Tmp.isoFormat();
 
-        return Iso.str();
-      }
+      return Iso.str();
+    }
 
-    if (mTime >= LLONG_CONST(86400000000))
-      {
-        Iso << LL2String(getDays()) << ":";
-        first = false;
-      }
+  if (mTime >= LLONG_CONST(86400000000))
+    {
+      Iso << LL2String(getDays()) << ":";
+      first = false;
+    }
 
-    if (mTime >= LLONG_CONST(3600000000))
-      Iso << LL2String(getHours(true), first ? 0 : 2) << ":";
-    if (mTime >= LLONG_CONST(60000000))
-      Iso << LL2String(getMinutes(true), first ? 0 : 2) << ":";
-    if (mTime >= LLONG_CONST(1000000))
-      Iso << LL2String(getSeconds(true), first ? 0 : 2) << ".";
-    else
-      Iso << "0.";
+  if (mTime >= LLONG_CONST(3600000000))
+    Iso << LL2String(getHours(true), first ? 0 : 2) << ":";
 
-    Iso << LL2String(getMilliSeconds(true), 3) << LL2String(getMicroSeconds(true), 3);
+  if (mTime >= LLONG_CONST(60000000))
+    Iso << LL2String(getMinutes(true), first ? 0 : 2) << ":";
 
-    return Iso.str();
-  }
+  if (mTime >= LLONG_CONST(1000000))
+    Iso << LL2String(getSeconds(true), first ? 0 : 2) << ".";
+  else
+    Iso << "0.";
+
+  Iso << LL2String(getMilliSeconds(true), 3) << LL2String(getMicroSeconds(true), 3);
+
+  return Iso.str();
+}
 
 C_INT64 CCopasiTimeVariable::getMicroSeconds(const bool & bounded) const
-  {
-    if (bounded) return mTime % LLONG_CONST(1000);
-    else return mTime;
-  }
+{
+  if (bounded) return mTime % LLONG_CONST(1000);
+  else return mTime;
+}
 
 C_INT64 CCopasiTimeVariable::getMilliSeconds(const bool & bounded) const
-  {
-    C_INT64 MilliSeconds = mTime / LLONG_CONST(1000);
+{
+  C_INT64 MilliSeconds = mTime / LLONG_CONST(1000);
 
-    if (bounded) return MilliSeconds % LLONG_CONST(1000);
-    else return MilliSeconds;
-  }
+  if (bounded) return MilliSeconds % LLONG_CONST(1000);
+  else return MilliSeconds;
+}
 
 C_INT64 CCopasiTimeVariable::getSeconds(const bool & bounded) const
-  {
-    C_INT64 Seconds = mTime / LLONG_CONST(1000000);
+{
+  C_INT64 Seconds = mTime / LLONG_CONST(1000000);
 
-    if (bounded) return Seconds % LLONG_CONST(60);
-    else return Seconds;
-  }
+  if (bounded) return Seconds % LLONG_CONST(60);
+  else return Seconds;
+}
 
 C_INT64 CCopasiTimeVariable::getMinutes(const bool & bounded) const
-  {
-    C_INT64 Minutes = mTime / LLONG_CONST(60000000);
+{
+  C_INT64 Minutes = mTime / LLONG_CONST(60000000);
 
-    if (bounded) return Minutes % LLONG_CONST(60);
-    else return Minutes;
-  }
+  if (bounded) return Minutes % LLONG_CONST(60);
+  else return Minutes;
+}
 
 C_INT64 CCopasiTimeVariable::getHours(const bool & bounded) const
-  {
-    C_INT64 Hours = mTime / LLONG_CONST(3600000000);
+{
+  C_INT64 Hours = mTime / LLONG_CONST(3600000000);
 
-    if (bounded) return Hours % LLONG_CONST(24);
-    else return Hours;
-  }
+  if (bounded) return Hours % LLONG_CONST(24);
+  else return Hours;
+}
 
 C_INT64 CCopasiTimeVariable::getDays() const
-  {
-    C_INT64 Days = mTime / LLONG_CONST(86400000000);
+{
+  C_INT64 Days = mTime / LLONG_CONST(86400000000);
 
-    return Days;
-  }
+  return Days;
+}
 
 #ifndef WIN32
 
@@ -163,7 +170,7 @@ CCopasiTimeVariable CCopasiTimeVariable::getCurrentWallTime()
 }
 #endif
 
-CCopasiTimeVariable CCopasiTimeVariable::getCPUTime()
+CCopasiTimeVariable CCopasiTimeVariable::getProcessTime()
 {
 #ifdef WIN32
   LARGE_INTEGER CreationTime;
@@ -185,7 +192,33 @@ CCopasiTimeVariable CCopasiTimeVariable::getCPUTime()
   getrusage(RUSAGE_SELF, &ResourceUsage);
 
   return ((C_INT64) ResourceUsage.ru_utime.tv_sec) * LLONG_CONST(1000000)
-  + (C_INT64) ResourceUsage.ru_utime.tv_usec;
+         + (C_INT64) ResourceUsage.ru_utime.tv_usec;
+#endif // WIN32
+}
+
+CCopasiTimeVariable CCopasiTimeVariable::getThreadTime()
+{
+#ifdef WIN32
+  LARGE_INTEGER CreationTime;
+  LARGE_INTEGER ExitTime;
+  LARGE_INTEGER KernelTime;
+  LARGE_INTEGER UserTime;
+
+  GetThreadTimes(GetCurrentThread(),
+                 (FILETIME *) &CreationTime,
+                 (FILETIME *) &ExitTime,
+                 (FILETIME *) &KernelTime,
+                 (FILETIME *) &UserTime);
+
+  return (KernelTime.QuadPart + UserTime.QuadPart) / LLONG_CONST(10);
+
+#else
+  struct rusage ResourceUsage;
+
+  getrusage(RUSAGE_THREAD, &ResourceUsage);
+
+  return ((C_INT64) ResourceUsage.ru_utime.tv_sec) * LLONG_CONST(1000000)
+         + (C_INT64) ResourceUsage.ru_utime.tv_usec;
 #endif // WIN32
 }
 
