@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CopasiTime.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $
-   $Date: 2012/04/04 16:00:06 $
+   $Date: 2012/04/04 19:16:26 $
    End CVS Header */
 
 // Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,10 @@
 # include <windows.h>
 # include <winbase.h>
 #else
+# ifdef Darwin
+#  include <mach/mach_init.h>
+#  include <mach/task.h>
+# endif
 # include <sys/time.h>
 # include <sys/resource.h>
 #endif // WIN32
@@ -211,6 +215,22 @@ CCopasiTimeVariable CCopasiTimeVariable::getThreadTime()
                  (FILETIME *) &UserTime);
 
   return (KernelTime.QuadPart + UserTime.QuadPart) / LLONG_CONST(10);
+
+#elif defined Darwin
+
+  struct thread_basic_info t_info;
+  mach_msg_type_number_t t_info_count = THREAD_BASIC_INFO_COUNT;
+
+  if (KERN_SUCCESS != task_info(mach_task_self(),
+                                THREAD_BASIC_INFO, (task_info_t) & t_info, & t_info_count))
+    {
+      return -1;
+    }
+
+  time_value_t  user_time = t_info.user_time;
+
+  return ((C_INT64) user_time.seconds) * LLONG_CONST(1000000)
+         + (C_INT64) user_time.microseconds;
 
 #else
   struct rusage ResourceUsage;
