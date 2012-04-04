@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CopasiTime.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $
-   $Date: 2012/04/04 19:16:26 $
+   $Date: 2012/04/04 20:40:55 $
    End CVS Header */
 
 // Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,9 @@
 # endif
 # include <sys/time.h>
 # include <sys/resource.h>
+# ifndef RUSAGE_THREAD
+#  define RUSAGE_THREAD 1   /* only the calling thread */
+# endif
 #endif // WIN32
 
 #include <sstream>
