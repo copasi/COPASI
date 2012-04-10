@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/12/13 19:49:58 $
+//   $Author: bergmann $
+//   $Date: 2012/04/10 09:50:22 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -125,7 +125,7 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLGlobalRenderInforma
     mpImageTexturizer(NULL)
 #ifdef ELEMENTARY_MODE_DISPLAY
     , mHighlight(true)
-    , mFogDensity(0.8)
+    , mFogDensity(0.8f)
     , mGLFunctionsInitialized(false)
     , mpGlFogCoordfEXT(NULL)
 #endif // ELEMENTARY_MODE_DISPLAY
@@ -166,7 +166,7 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLLocalRenderInformat
     mpSelectionBox(NULL)
 #ifdef ELEMENTARY_MODE_DISPLAY
     , mHighlight(true)
-    , mFogDensity(0.8)
+    , mFogDensity(0.8f)
     , mGLFunctionsInitialized(false)
     , mpGlFogCoordfEXT(NULL)
 #endif // ELEMENTARY_MODE_DISPLAY
@@ -3399,7 +3399,7 @@ void CLLayoutRenderer::update_textures_and_colors()
                   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
                   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
                   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-                  glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, texture.first->mTextureWidth, texture.first->mTextureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, texture.second);
+                  glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, (GLsizei)texture.first->mTextureWidth, (GLsizei)texture.first->mTextureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, texture.second);
                   delete[] texture.second;
                 }
 
@@ -3447,7 +3447,7 @@ void CLLayoutRenderer::update_textures_and_colors()
                       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
                       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
                       glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-                      glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, texture.first->mTextureWidth, texture.first->mTextureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, texture.second);
+                      glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, (GLsizei)texture.first->mTextureWidth, (GLsizei)texture.first->mTextureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, texture.second);
                       delete[] texture.second;
                     }
 
@@ -3864,7 +3864,7 @@ void CLLayoutRenderer::update_textures_and_colors(const CLGroup* pGroup, double 
                       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
                       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
                       glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-                      glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, texture.first->mTextureWidth, texture.first->mTextureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, texture.second);
+                      glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, (GLsizei)texture.first->mTextureWidth, (GLsizei)texture.first->mTextureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, texture.second);
                       delete[] texture.second;
                     }
 
@@ -3912,7 +3912,7 @@ void CLLayoutRenderer::update_textures_and_colors(const CLGroup* pGroup, double 
                           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
                           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
                           glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-                          glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, texture.first->mTextureWidth, texture.first->mTextureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, texture.second);
+                          glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, (GLsizei)texture.first->mTextureWidth, (GLsizei)texture.first->mTextureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, texture.second);
                           delete[] texture.second;
                         }
 
@@ -5847,7 +5847,7 @@ bool CLLayoutRenderer::is_curve_segment_visible(const CLLineSegment& segment, do
           double minV = (fabs(lx - rx) > fabs(ly - ry)) ? fabs(lx - rx) : fabs(ly - ry);
           // we multiply the ratio with a constant to get the number of points that
           // we need to calculate
-          unsigned int numPoints = floor(maxL / minV * 6.0);
+          unsigned int numPoints = (unsigned int)floor(maxL / minV * 6.0);
 
           // the 10000 cutoff is just a safety net
           if (numPoints != 0 && fabs(minV) != std::numeric_limits<double>::infinity() && numPoints < 10000)
@@ -7032,7 +7032,7 @@ bool CLLayoutRenderer::getHighlightFlag() const
  */
 void CLLayoutRenderer::setFogDensity(GLfloat dens)
 {
-  this->mFogDensity = (dens > 1.0) ? 1.0 : ((dens < 0.0) ? 0.0 : dens);
+  this->mFogDensity = (dens > 1.0) ? 1.0f : ((dens < 0.0f) ? 0.0f : dens);
 }
 
 /**
