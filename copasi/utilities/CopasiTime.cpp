@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CopasiTime.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $
-   $Date: 2012/04/04 20:40:55 $
+   $Date: 2012/04/10 12:32:09 $
    End CVS Header */
 
 // Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
@@ -230,10 +230,8 @@ CCopasiTimeVariable CCopasiTimeVariable::getThreadTime()
       return -1;
     }
 
-  time_value_t  user_time = t_info.user_time;
-
-  return ((C_INT64) user_time.seconds) * LLONG_CONST(1000000)
-         + (C_INT64) user_time.microseconds;
+  return ((C_INT64) t_info.user_time.seconds) * LLONG_CONST(1000000)
+         + (C_INT64) t_info.user_time.microseconds;
 
 #else
   struct rusage ResourceUsage;
