@@ -99,5 +99,5 @@ sleep 10
 hdiutil eject ${drive} || (sleep 10; hdiutil eject ${drive} -force)
 
 [ -e Copasi-${buildname}-${PACKAGE}.dmg ] && rm -rf Copasi-${buildname}-${PACKAGE}.dmg
-hdiutil convert -format UDCO Copasi-tmp.dmg -o Copasi-${buildname}-${PACKAGE}.dmg
+hdiutil convert -format UDZO Copasi-tmp.dmg -o Copasi-${buildname}-${PACKAGE}.dmg
 rm -rf Copasi-tmp.dmg
