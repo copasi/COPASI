@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/franks_testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/03/16 18:59:03 $
+//   $Author: bergmann $
+//   $Date: 2012/04/10 09:51:05 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -219,7 +219,7 @@ int main(int argc, char *argv[])
 
       // Run the trajectory task
 
-      //pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL,NULL);
+      //pTrajectoryTask->initialize(CCopasiTask::OUTPUT_UI, NULL,NULL);
       //pTrajectoryTask->process(true);
       //pTrajectoryTask->restore();
 
@@ -228,7 +228,7 @@ int main(int argc, char *argv[])
       // create a trajectory task
       pTrajectoryTask->getReport().setTarget(pOutputFilename);
 
-      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, pDataModel, NULL);
+      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_UI, pDataModel, NULL);
       pTrajectoryTask->process(true);
       pTrajectoryTask->restore();
     }
