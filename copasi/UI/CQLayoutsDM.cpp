@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsDM.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:39:00 $
+//   $Author: bergmann $
+//   $Date: 2012/04/10 15:19:37 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -36,6 +36,13 @@ int CQLayoutsDM::rowCount(const QModelIndex & /* parent */) const
 
   return (int) mpListOfLayouts->size();
 }
+
+
+bool CQLayoutsDM::clear()
+{
+  return removeRows(0, rowCount());
+}
+
 
 int CQLayoutsDM::columnCount(const QModelIndex & /* parent */) const
 {

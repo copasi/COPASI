@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQBaseDataModel.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/14 16:17:45 $
+//   $Author: bergmann $
+//   $Date: 2012/04/10 15:19:37 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -39,7 +39,7 @@ public:
                        int role = Qt::EditRole) = 0;
   bool insertRow();
   bool removeRow(int position);
-  bool clear();
+  virtual bool clear();
   virtual bool isDefaultRow(const QModelIndex& i) const;
   QString createNewName(const QString name, const int nameCol);
 
