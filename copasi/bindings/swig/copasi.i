@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/copasi.i,v $ 
-//   $Revision: 1.34 $ 
+//   $Revision: 1.35 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2011/05/03 13:53:20 $ 
+//   $Author: bergmann $ 
+//   $Date: 2012/04/11 15:01:31 $ 
 // End CVS Header 
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -42,6 +42,7 @@
 %include std_vector.i
 
 
+%include "CObjectLists.i"
 %include "CVector.i"
 %include "CRandom.i"
 %include "CCopasiMessage.i"
@@ -113,6 +114,9 @@
 %include "CFitMethod.i"
 %include "CFitProblem.i"
 %include "CFitTask.i"
+%include "CMCAMethod.i"
+%include "CMCAProblem.i"
+%include "CMCATask.i"
 %include "compare_utilities.i"
 %include "CCopasiRootContainer.i"
 %include "CEvent.i"
