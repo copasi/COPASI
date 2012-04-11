@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/04 15:58:37 $
+//   $Date: 2012/04/11 12:35:17 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -103,15 +103,13 @@ bool CQNotesContentHandler::startElement(const QString & namespaceURI,
     const QString & qName,
     const QXmlAttributes & atts)
 {
-  std::cout << "Level: " << mLevel << ", " << TO_UTF8(namespaceURI) << ", " << TO_UTF8(localName) << ", " << TO_UTF8(qName) << std::endl;
-
   if (namespaceURI != "http://www.copasi.org/Validate" ||
       qName != "Validate:XML")
     mIsFreeText = false;
 
   if (mLevel == 1 &&
-      (localName == "xhtml" ||
-       localName == "body"))
+      namespaceURI == "http://www.w3.org/1999/xhtml" &&
+      (localName == "html" || localName == "body"))
     mNeedsWrap = false;
 
   mLevel++;
