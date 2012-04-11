@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.28 $ 
+//   $Revision: 1.29 $ 
 //   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2011/05/03 13:53:20 $ 
+//   $Author: bergmann $ 
+//   $Date: 2012/04/11 15:40:26 $ 
 // End CVS Header 
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -41,7 +41,7 @@
 %ignore CCopasiVectorNS::load;
 %ignore CCopasiVector::CCopasiVector;
 
-#ifdef SWIGJAVA
+#if (defined SWIGJAVA || defined SWIGCSHARP)
 // disable some operator for Java to get rid of the warnings
 
 %ignore CCopasiVector::operator [];
@@ -52,7 +52,7 @@
 %ignore CCopasiVector::begin() const;
 %ignore CCopasiVector::end();
 %ignore CCopasiVector::end() const;
-#endif // SWIGJAVA
+#endif // SWIGJAVA || CSHARP
 
 
 %rename(addCopy) CCopasiVector::add(const CType&);
