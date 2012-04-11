@@ -9,9 +9,9 @@ VisualStudioPath="/cygdrive/c/Program Files/Microsoft Visual Studio 8"
 MyAppVersion=${major}.${minor}.${build}
 
 if [ x"${comment}" = x\"Snapshot\" ]; then
-  MyAppVersion=${major}/
+  MyAppVersion=${major}.
   [ ${#minor} = 1 ] && MyAppVersion=${MyAppVersion}0
-  MyAppVersion=${MyAppVersion}${minor}/
+  MyAppVersion=${MyAppVersion}${minor}.
   [ ${#build} = 1 ] && MyAppVersion=$MyAppVersion}0
   MyAppVersion=${MyAppVersion}${build}
 fi
@@ -103,7 +103,7 @@ workdir=`cygpath -wa .`
 workdir=${workdir//\\/\\\\}
 
 #   modify product code, product version, and package name
-sed -e '/#define MyAppVersion/s/".*"/"'${major}.${minor}.${build}'"/' \
+sed -e '/#define MyAppVersion/s/".*"/"'${MyAppVersion}'"/' \
     -e '/#define MyBuild/s/".*"/"'${buildname}'"/' \
     -e '/#define MyAppId/s/".*"/"{{'${productcode}'}"/' \
     -e '/#define MyWorkDir/s/".*"/"'${workdir}'"/' \
