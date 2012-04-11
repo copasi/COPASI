@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/FunctionDB.xml.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/25 18:38:07 $
+//   $Date: 2012/04/11 12:28:58 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -195,12 +195,12 @@ static char FunctionDBxml[] =
   "   </rdf:RDF>\n"
   "  </MiriamAnnotation>\n"
   "  <Comment>\n"
-  "<b xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-  "mass action rate law for first order irreversible reactions\n"
-  "</b>\n"
+  "<body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+  "<b>Mass action rate law for first order irreversible reactions</b>\n"
   "<p>\n"
   "Reaction scheme where the products are created from the reactants and the change of a product quantity is proportional to the product of reactant activities. The reaction scheme does not include any reverse process that creates the reactants from the products. The change of a product quantity is proportional to the quantity of one reactant.\n"
   "</p>\n"
+  "</body>\n"
   "  </Comment>\n"
   "<Expression>\n"
   "k1*PRODUCT&lt;substrate_i&gt;\n"
@@ -219,12 +219,12 @@ static char FunctionDBxml[] =
   "   </rdf:RDF>\n"
   "  </MiriamAnnotation>\n"
   "  <Comment>\n"
-  "<b xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-  "mass action rate law for reversible reactions\n"
-  "</b>\n"
+  "<body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+  "<b>Mass action rate law for reversible reactions</b>\n"
   "<p>\n"
   "Reaction scheme where the products are created from the reactants and the change of a product quantity is proportional to the product of reactant activities. The reaction scheme does include a reverse process that creates the reactants from the products.\n"
   "</p>\n"
+  "</body>\n"
   "  </Comment>\n"
   "<Expression>\n"
   "k1*PRODUCT&lt;substrate_i&gt;-k2*PRODUCT&lt;product_j&gt;\n"
