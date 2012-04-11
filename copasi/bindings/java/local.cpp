@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/local.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/03 13:53:19 $
+//   $Author: bergmann $
+//   $Date: 2012/04/11 16:21:19 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -58,6 +58,12 @@
 #include "lyap/CLyapTask.h"
 #include "lyap/CLyapProblem.h"
 #include "lyap/CLyapMethod.h"
+#include "steadystate/CMCATask.h"
+#include "steadystate/CMCAProblem.h"
+#include "steadystate/CMCAMethod.h"
+#include "sensitivities/CSensTask.h"
+#include "sensitivities/CSensProblem.h"
+#include "sensitivities/CSensMethod.h"
 #include "optimization/COptItem.h"
 #include "optimization/COptTask.h"
 #include "optimization/COptProblem.h"
@@ -688,6 +694,40 @@ jobject DownCast_CCopasiTask(JNIEnv* jenv, CCopasiTask* pPointer)
             }
         }
     }
+  else if (dynamic_cast<CMCATask*>(pPointer))
+    {
+      // return a CMCATask
+      jclass clazz = jenv->FindClass("org/COPASI/CMCATask");
+
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CMCATask**)&cptr = static_cast<CMCATask*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
+  else if (dynamic_cast<CSensTask*>(pPointer))
+    {
+      // return a CSensTask
+      jclass clazz = jenv->FindClass("org/COPASI/CSensTask");
+
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CSensTask**)&cptr = static_cast<CSensTask*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
   else
     {
       // return a CCopasiTask
@@ -834,6 +874,40 @@ jobject DownCast_CCopasiMethod(JNIEnv* jenv, CCopasiMethod* pPointer)
             }
         }
     }
+  else if (dynamic_cast<CMCAMethod*>(pPointer))
+    {
+      // return a CMCAMethod
+      jclass clazz = jenv->FindClass("org/COPASI/CMCAMethod");
+
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CMCAMethod**)&cptr = static_cast<CMCAMethod*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
+  else if (dynamic_cast<CSensMethod*>(pPointer))
+    {
+      // return a CSensMethod
+      jclass clazz = jenv->FindClass("org/COPASI/CSensMethod");
+
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CSensMethod**)&cptr = static_cast<CSensMethod*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
   else
     {
       // return a CCopasiMethod
@@ -960,6 +1034,40 @@ jobject DownCast_CCopasiProblem(JNIEnv* jenv, CCopasiProblem* pPointer)
             {
               jlong cptr = 0;
               *(CLyapProblem**)&cptr = static_cast<CLyapProblem*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
+  else if (dynamic_cast<CMCAProblem*>(pPointer))
+    {
+      // return a CMCAProblem
+      jclass clazz = jenv->FindClass("org/COPASI/CMCAProblem");
+
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CMCAProblem**)&cptr = static_cast<CMCAProblem*>(pPointer);
+              result = jenv->NewObject(clazz, mid, cptr, false);
+            }
+        }
+    }
+  else if (dynamic_cast<CSensProblem*>(pPointer))
+    {
+      // return a CSensProblem
+      jclass clazz = jenv->FindClass("org/COPASI/CSensProblem");
+
+      if (clazz)
+        {
+          jmethodID mid = jenv->GetMethodID(clazz, "<init>", "(JZ)V");
+
+          if (mid)
+            {
+              jlong cptr = 0;
+              *(CSensProblem**)&cptr = static_cast<CSensProblem*>(pPointer);
               result = jenv->NewObject(clazz, mid, cptr, false);
             }
         }

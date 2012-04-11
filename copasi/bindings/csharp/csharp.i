@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/csharp/csharp.i,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: bergmann $
-//   $Date: 2012/04/10 09:50:21 $
+//   $Date: 2012/04/11 16:21:16 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual 
@@ -17,7 +17,6 @@
  */
 %include "enumsimple.swg"
 %csconst(1);
-
 
 void initCopasi();
 
@@ -696,10 +695,10 @@ int GetType_COptTask(COptTask* pPointer);
                     // return a CSteadyStateMethod
                     ret = new CSteadyStateMethod(cPtr,owner);
                     break;
-                //case COPASI.CMCAMethod_Type:
-                //    // return a CMCAMethod
-                //    ret = new CMCAMethod(cPtr,owner);
-                //    break;
+                case COPASI.CMCAMethod_Type:
+                    // return a CMCAMethod
+                    ret = new CMCAMethod(cPtr,owner);
+                    break;
                 case COPASI.CScanMethod_Type:
                     // return a CScanMethod
                     ret = new CScanMethod(cPtr,owner);
@@ -869,10 +868,10 @@ int GetType_COptTask(COptTask* pPointer);
                     // return a CSteadyStateProblem
                     ret = new CSteadyStateProblem(cPtr,owner);
                     break;
-                //case COPASI.CMCAProblem_Type:
-                //    // return a CMCAProblem
-                //    ret = new CMCAProblem(cPtr,owner);
-                //    break;
+                case COPASI.CMCAProblem_Type:
+                    // return a CMCAProblem
+                    ret = new CMCAProblem(cPtr,owner);
+                    break;
                 case COPASI.CScanProblem_Type:
                     // return a CScanProblem
                     ret = new CScanProblem(cPtr,owner);
@@ -923,10 +922,10 @@ int GetType_COptTask(COptTask* pPointer);
                     // return a CSteadyStateTask
                     ret = new CSteadyStateTask(cPtr,owner);
                     break;
-                //case COPASI.CMCATask_Type:
-                //    // return a CMCATask
-                //    ret = new CMCATask(cPtr,owner);
-                //    break;
+                case COPASI.CMCATask_Type:
+                    // return a CMCATask
+                    ret = new CMCATask(cPtr,owner);
+                    break;
                 case COPASI.CScanTask_Type:
                     // return a CScanTask
                     ret = new CScanTask(cPtr,owner);
