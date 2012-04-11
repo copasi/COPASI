@@ -177,7 +177,10 @@
 
   <define name="comment.element">
     <element name="Comment">
-      <ref name="xhtml.datatype"/>
+      <choice>
+        <ref name="xhtml.datatype"/>
+        <text/>        
+      </choice>
     </element>
   </define>
 
@@ -252,26 +255,25 @@
               <text/>
             </attribute>
           </zeroOrMore>
+          <ref name="other.datatype"></ref>
         </element>
       </zeroOrMore>
     </mixed>
   </define>
   
   <define name="xhtml.datatype">
-    <mixed>
-      <zeroOrMore>
-        <element>
-          <nsName ns="http://www.w3.org/1999/xhtml"/>
-          <zeroOrMore>
-            <attribute>
-              <anyName/>
-              <text/>
-            </attribute>
-          </zeroOrMore>
-          <ref name="other.datatype"/>
-        </element>
-      </zeroOrMore>
-    </mixed>
+    <zeroOrMore>
+      <element>
+        <nsName ns="http://www.w3.org/1999/xhtml"/>
+        <zeroOrMore>
+          <attribute>
+            <anyName/>
+            <text/>
+          </attribute>
+        </zeroOrMore>
+        <ref name="other.datatype"/>
+      </element>
+    </zeroOrMore>
   </define>
 
   <define name="rdf.datatype">
@@ -902,22 +904,7 @@
       <data type="boolean"/>
     </attribute>
     <attribute name="type">
-      <choice>
-        <value type="string">lyapunovExponents</value>
-        <value type="string">parameterFitting</value>
-        <value type="string">timeCourse</value>
-        <value type="string">moieties</value>
-        <value type="string">sensitivities</value>
-        <value type="string">optimization</value>
-        <value type="string">metabolicControlAnalysis</value>
-        <value type="string">timeScaleSeparationAnalysis</value>
-        <value type="string">scan</value>
-        <value type="string">steadyState</value>
-        <value type="string">fluxMode</value>
-        <value type="string">timeScaleSeparation</value>
-        <value type="string">crosssection</value>
-        <value type="string">linearNoiseApproximation</value>
-      </choice>
+      <ref name="taskTypeEnumeration.datatype"/>
     </attribute>
     <optional>
       <element name="Report">
@@ -958,6 +945,25 @@
     </oneOrMore>
   </define>
 
+  <define name="taskTypeEnumeration.datatype">
+    <choice>
+      <value type="string">lyapunovExponents</value>
+      <value type="string">parameterFitting</value>
+      <value type="string">timeCourse</value>
+      <value type="string">moieties</value>
+      <value type="string">sensitivities</value>
+      <value type="string">optimization</value>
+      <value type="string">metabolicControlAnalysis</value>
+      <value type="string">timeScaleSeparationAnalysis</value>
+      <value type="string">scan</value>
+      <value type="string">steadyState</value>
+      <value type="string">fluxMode</value>
+      <value type="string">timeScaleSeparation</value>
+      <value type="string">crosssection</value>
+      <value type="string">linearNoiseApproximation</value>
+    </choice>
+  </define>
+  
   <define name="reportSpecification.datatype">
     <attribute name="key">
       <data type="ID">
@@ -966,20 +972,7 @@
     </attribute>
     <ref name="name.attribute"/>
     <attribute name="taskType">
-      <choice>
-        <value type="string">lyapunovExponents</value>
-        <value type="string">parameterFitting</value>
-        <value type="string">timeCourse</value>
-        <value type="string">moieties</value>
-        <value type="string">sensitivities</value>
-        <value type="string">optimization</value>
-        <value type="string">metabolicControlAnalysis</value>
-        <value type="string">timeScaleSeparationAnalysis</value>
-        <value type="string">scan</value>
-        <value type="string">steadyState</value>
-        <value type="string">fluxMode</value>
-        <value type="string">timeScaleSeparation</value>
-      </choice>
+      <ref name="taskTypeEnumeration.datatype"/>
     </attribute>
     <attribute name="precision">
       <data type="unsignedInt"/>
