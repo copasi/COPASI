@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.412 $
+//   $Revision: 1.413 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/02 17:34:32 $
+//   $Date: 2012/04/13 18:29:38 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1583,6 +1583,7 @@ bool CModel::buildSimulatedSequence()
         (*itReaction)->compile();
 
       // The compile might have broken some refresh pointers we need to rebuild the constant sequence
+      buildInitialSequence();
       buildApplyInitialValuesSequence();
     }
 
