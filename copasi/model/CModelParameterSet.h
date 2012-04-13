@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameterSet.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/30 17:55:53 $
+//   $Date: 2012/04/13 18:32:47 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,8 @@ public:
   virtual std::string getName() const;
 
   virtual bool updateModel();
+
+  bool isActive() const;
 
 private:
   std::string mName;

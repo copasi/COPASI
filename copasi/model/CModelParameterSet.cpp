@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameterSet.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/02 14:13:37 $
+//   $Date: 2012/04/13 18:32:47 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -148,13 +148,13 @@ void CModelParameterSet::createFromModel()
       CCopasiParameterGroup::index_iterator itParameter = (*itReaction)->getParameters().beginIndex();
       CCopasiParameterGroup::index_iterator endParameter = (*itReaction)->getParameters().endIndex();
 
-      for (size_t i = 0; itParameter != endParameter; ++itParameter, ++i)
+      for (; itParameter != endParameter; ++itParameter)
         {
           pParameter = pReaction->add(ReactionParameter);
           pParameter->setCN((*itParameter)->getCN());
 
           // Check whether this refers to a global quantity.
-          if ((*itReaction)->isLocalParameter(i))
+          if ((*itReaction)->isLocalParameter((*itParameter)->getObjectName()))
             {
               pParameter->setValue(*(*itParameter)->getValue().pDOUBLE);
             }
@@ -206,4 +206,12 @@ bool CModelParameterSet::updateModel()
   return CModelParameterGroup::updateModel();
 }
 
+bool CModelParameterSet::isActive() const
+{
+  if (mpModel == NULL)
+    {
+      return false;
+    }
 
+  return (mpModel->getActiveParameterSetKey() == mKey);
+}

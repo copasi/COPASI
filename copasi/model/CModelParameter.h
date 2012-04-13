@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameter.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/30 17:55:53 $
+//   $Date: 2012/04/13 18:32:47 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,72 +67,50 @@ public:
   /**
    * Constructor
    */
-  CModelParameter(CModelParameterGroup * pParent, const CModelParameter::Type & type);
-
+  CModelParameter(CModelParameterGroup* pParent,
+                  const CModelParameter::Type& type);
   /**
    * Copy constructor
    */
-  CModelParameter(const CModelParameter & src, CModelParameterGroup * pParent);
+  CModelParameter(const CModelParameter& src, CModelParameterGroup* pParent);
 
 public:
   /**
    * Destructor
    */
   virtual ~CModelParameter();
-
-  void setParent(CModelParameterGroup * pParent);
-
-  CModelParameterGroup * getParent() const;
-
-  const Type & getType() const;
-
-  virtual void setCN(const CCopasiObjectName & cn);
-
-  const CCopasiObjectName & getCN() const;
-
-  virtual void setValue(const C_FLOAT64 & value, const Framework & framework = ParticleNumbers);
-
-  virtual const C_FLOAT64 & getValue(const Framework & framework = ParticleNumbers) const;
-
-  void setInitialExpression(const std::string & initialExpression);
-
+  void setParent(CModelParameterGroup* pParent);
+  CModelParameterGroup* getParent() const;
+  const Type& getType() const;
+  virtual void setCN(const CCopasiObjectName& cn);
+  const CCopasiObjectName& getCN() const;
+  virtual void setValue(const double& value, const Framework& framework =
+                          ParticleNumbers);
+  const virtual double& getValue(
+    const Framework& framework = ParticleNumbers) const;
+  void setInitialExpression(const std::string& initialExpression);
   std::string getInitialExpression() const;
-
-  void setCompareResult(const CompareResult & compareResult);
-
-  const CompareResult & getCompareResult() const;
-
+  void setCompareResult(const CompareResult& compareResult);
+  const CompareResult& getCompareResult() const;
   size_t getIndex() const;
-
   bool isReadOnly() const;
-
-  CCopasiObject * getObject() const;
-
+  CCopasiObject* getObject() const;
   CModelParameterSet * getSet() const;
-
-  CModel * getModel() const;
-
+  CModel* getModel() const;
   bool isInitialExpressionValid() const;
-
   virtual std::string getName() const;
-
   virtual void compile();
-
-  virtual const CompareResult & diff(const CModelParameter & other);
-
+  const virtual CompareResult& diff(const CModelParameter& other);
   virtual bool updateModel();
 
 protected:
-  static std::string nameFromCN(const CCopasiObjectName & cn);
+  static std::string nameFromCN(const CCopasiObjectName& cn);
 
 protected:
-  CModelParameterGroup * mpParent;
-
+  CModelParameterGroup* mpParent;
   Type mType;
-
   CRegisteredObjectName mCN;
-
-  C_FLOAT64 mValue;
+  double mValue;
 
   CExpression * mpInitialExpression;
 

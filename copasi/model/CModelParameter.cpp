@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameter.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/02 17:34:01 $
+//   $Date: 2012/04/13 18:32:47 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -129,6 +129,13 @@ const CCopasiObjectName & CModelParameter::getCN() const
 void CModelParameter::setValue(const C_FLOAT64 & value, const Framework & /* framework */)
 {
   mValue = value;
+
+  CModelParameterSet * pSet = getSet();
+
+  if (pSet->isActive())
+    {
+      updateModel();
+    }
 }
 
 // virtual
@@ -147,14 +154,7 @@ void CModelParameter::setInitialExpression(const std::string & initialExpression
 
   if (mpInitialExpression == NULL)
     {
-      CModelParameterGroup * pParent = mpParent;
-
-      while (pParent->getType() != Set)
-        {
-          pParent = pParent->getParent();
-        }
-
-      mpInitialExpression = new CExpression("InitialExpression", static_cast< CModelParameterSet * >(pParent));
+      mpInitialExpression = new CExpression("InitialExpression", getSet());
     }
 
   mpInitialExpression->setInfix(initialExpression);
@@ -218,7 +218,7 @@ CModelParameterSet * CModelParameter::getSet() const
 {
   if (mType == Set)
     {
-      return static_cast< CModelParameterSet * >(const_cast< CModelParameter *>(this));
+      return static_cast< CModelParameterSet * >(const_cast< CModelParameter * >(this));
     }
 
   CModelParameterGroup * pParent = mpParent;
