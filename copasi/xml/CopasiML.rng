@@ -961,6 +961,7 @@
       <value type="string">timeScaleSeparation</value>
       <value type="string">crosssection</value>
       <value type="string">linearNoiseApproximation</value>
+      <value type="string">unset</value>
     </choice>
   </define>
   
