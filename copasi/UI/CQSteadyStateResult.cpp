@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSteadyStateResult.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:18 $
+//   $Date: 2012/04/16 19:25:47 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -140,8 +140,17 @@ void CQSteadyStateResult::slotUpdateModel()
       if (pModel != NULL)
         {
           pModel->compileIfNecessary(NULL);
-          pModel->setInitialState(*mpTask->getState());
-          pModel->updateInitialValues();
+
+          if (mpTask->isUpdateModel())
+            {
+              mpTask->restore();
+            }
+          else
+            {
+              mpTask->setUpdateModel(true);
+              mpTask->restore();
+              mpTask->setUpdateModel(false);
+            }
 
           protectedNotify(ListViews::STATE, ListViews::CHANGE, pModel->getKey());
         }

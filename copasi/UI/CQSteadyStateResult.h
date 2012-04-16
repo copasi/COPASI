@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSteadyStateResult.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:39:39 $
+//   $Date: 2012/04/16 19:25:47 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -41,7 +41,7 @@ protected slots:
 
 private:
   const CSteadyStateProblem * mpProblem;
-  const CSteadyStateTask * mpTask;
+  CSteadyStateTask * mpTask;
   bool mUpToDate;
 
   void init();
