@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/03/28 09:46:45 $
+//   $Author: shoops $
+//   $Date: 2012/04/16 15:25:48 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -185,6 +185,7 @@ bool CProgressBar::progressItem(const size_t & handle)
 
   if (mPause)
     {
+      QMutexLocker Locker(&mMutex);
       mWaitPause.wait(&mMutex);
     }
 
