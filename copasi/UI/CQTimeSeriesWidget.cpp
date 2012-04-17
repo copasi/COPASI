@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTimeSeriesWidget.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/01/06 19:14:16 $
+//   $Date: 2012/04/17 18:31:20 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -93,10 +93,7 @@ bool CQTimeSeriesWidget::loadResult(const CCopasiTask * pTask)
       mpTableView->resizeRowToContents(0);
       int RowHeight = mpTableView->rowHeight(0);
 
-      for (int i = 1; i < RowCount; ++i)
-        {
-          mpTableView->setRowHeight(i, RowHeight);
-        }
+      mpTableView->verticalHeader()->setDefaultSectionSize(RowHeight);
     }
 
   // mpTableView->resizeColumnsToContents(); This is to slow
@@ -109,8 +106,6 @@ void CQTimeSeriesWidget::setFramework(int framework)
 {
   CopasiWidget::setFramework(framework);
   mpDataModel->setFramework(framework);
-  mpTableView->resizeColumnsToContents();
-  mpTableView->resizeRowsToContents();
 }
 
 // virtual
