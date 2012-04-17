@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTimeSeriesDM.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/23 18:39:02 $
+//   $Date: 2012/04/17 18:21:25 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -59,10 +59,10 @@ QVariant CQTimeSeriesDM::data(const QModelIndex &index, int role) const
   switch (mFramework)
     {
       case 0:
-        return QString::number(mpTimeSeries->getData(index.row(), index.column()));
+        return QString::number(mpTimeSeries->getConcentrationData(index.row(), index.column()));
 
       case 1:
-        return QString::number(mpTimeSeries->getConcentrationData(index.row(), index.column()));
+        return QString::number(mpTimeSeries->getData(index.row(), index.column()));
     }
 
   return QVariant();
