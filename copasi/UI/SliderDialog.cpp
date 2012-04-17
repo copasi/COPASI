@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.93 $
+//   $Revision: 1.94 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/11/15 14:59:43 $
+//   $Date: 2012/04/17 12:58:08 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -860,11 +860,13 @@ void SliderDialog::updateAllSliders()
 
   if (!v.empty())
     {
+      // We make sure that all initial values of the model are up to date
+      // before we update the sliders.
       if (mpParentWindow != NULL)
         mpParentWindow->getDataModel()->refreshInitialValues();
 
-      // now we need to go through the slider again and make sure that
-      // they actually display the updated values
+      // We  through the sliders and make sure that
+      // that the  model values are updated.
       wit = v.begin();
       wendit = v.end();
       CopasiSlider* pCopasiSlider = NULL;
@@ -881,6 +883,12 @@ void SliderDialog::updateAllSliders()
 
           ++wit;
         }
+
+      // We make sure that all dependent initial values of the model are up to date.
+      // Please note that this is context sensitive, i.e., concentration and patile numbers
+      // are dealt with correctly.
+      if (mpParentWindow != NULL)
+        mpParentWindow->getDataModel()->refreshInitialValues();
     }
 }
 
