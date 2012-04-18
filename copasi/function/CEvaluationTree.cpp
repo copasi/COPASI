@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.76 $
+//   $Revision: 1.77 $
 //   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/03/28 09:46:46 $
+//   $Author: shoops $
+//   $Date: 2012/04/18 17:20:24 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,6 +39,7 @@
 #include "utilities/CCopasiTree.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
+#include "math/CMathObject.h"
 
 const std::string CEvaluationTree::TypeName[] =
 {
@@ -315,7 +316,7 @@ bool CEvaluationTree::compileNodes()
     }
   else
     {
-      const CCopasiObject * pObject;
+      const CObjectInterface * pObject;
 
       for (it = mpNodeList->begin(); it != end; ++it)
         switch ((*it)->getType() & 0xFF000000)
@@ -323,8 +324,22 @@ bool CEvaluationTree::compileNodes()
             case CEvaluationNode::OBJECT:
             {
               if (mType == Expression &&
-                  (pObject = static_cast<CExpression *>(this)->getNodeObject(static_cast< CEvaluationNodeObject *>(*it)->getObjectCN())) != NULL)
-                addDirectDependency(pObject);
+                  (pObject = static_cast< CEvaluationNodeObject *>(*it)->getObjectInterfacePtr()) != NULL)
+                {
+                  const CCopasiObject * pDataObject = dynamic_cast< const CCopasiObject * >(pObject);
+
+                  if (pDataObject == NULL)
+                    {
+                      const CMathObject * pMathObject = dynamic_cast< const CMathObject * >(pObject);
+
+                      if (pMathObject != NULL)
+                        {
+                          pDataObject = pMathObject->getDataObject();
+                        }
+                    }
+
+                  addDirectDependency(pDataObject);
+                }
             }
             break;
 
