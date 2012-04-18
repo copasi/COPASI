@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/29 16:01:42 $
+//   $Date: 2012/04/18 17:18:18 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,7 @@
 #include "report/CCopasiContainer.h"
 #include "model/CModel.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "math/CMathObject.h"
 
 #include "sbml/math/ASTNode.h"
 #include "sbml/SBase.h"
@@ -80,6 +81,7 @@ CEvaluationNodeObject::~CEvaluationNodeObject() {}
 bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
 {
   mpObject = NULL;
+  mpValue = NULL;
 
   switch ((int) subType(mType))
     {
@@ -92,10 +94,30 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
         mpObject =
           pExpression->getNodeObject(mRegisteredObjectCN);
 
-        if (mpObject)
-          mpValue = (C_FLOAT64 *) mpObject->getValuePointer();
-        else
-          mpValue = NULL;
+        const CCopasiObject * pDataObject = dynamic_cast< const CCopasiObject * >(mpObject);
+
+        if (pDataObject != NULL)
+          {
+            // We may have some container objects for which the value is an included
+            // reference. For the math model to work this needs to be corrected.
+            const CObjectInterface * pObject = pDataObject->getValueObject();
+
+            if (mpObject != pObject)
+              {
+                mpObject = pObject;
+                mRegisteredObjectCN = mpObject->getCN();
+                mData = getData();
+              }
+
+            if (pDataObject->isValueDbl())
+              {
+                mpValue = (C_FLOAT64 *) mpObject->getValuePointer();
+              }
+          }
+        else if (mpObject != NULL)
+          {
+            mpValue = (C_FLOAT64 *) mpObject->getValuePointer();
+          }
 
         if (mpValue == NULL)
           {
@@ -104,7 +126,6 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
             return false;
           }
 
-        if (!mpObject->isValueDbl()) return false;
 
         mData = "<" + mRegisteredObjectCN + ">";
       }
@@ -314,6 +335,11 @@ ASTNode* CEvaluationNodeObject::toAST(const CCopasiDataModel* pDataModel) const
 const CRegisteredObjectName & CEvaluationNodeObject::getObjectCN() const
 {return mRegisteredObjectCN;}
 
+const CObjectInterface * CEvaluationNodeObject::getObjectInterfacePtr() const
+{
+  return mpObject;
+}
+
 const C_FLOAT64 * CEvaluationNodeObject::getObjectValuePtr() const
 {
   return mpValue;
@@ -354,5 +380,17 @@ void CEvaluationNodeObject::writeMathML(std::ostream & out,
                                         bool /* expand */,
                                         size_t l) const
 {
-  out << SPC(l) << CMathMl::getMMLName(mpObject) << std::endl;
+  const CCopasiObject * pDataObject = dynamic_cast< const CCopasiObject * >(mpObject);
+
+  if (pDataObject == NULL)
+    {
+      const CMathObject * pMathObject = dynamic_cast< const CMathObject * >(mpObject);
+
+      if (pMathObject != NULL)
+        {
+          pDataObject = pMathObject->getDataObject();
+        }
+    }
+
+  out << SPC(l) << CMathMl::getMMLName(pDataObject) << std::endl;
 }

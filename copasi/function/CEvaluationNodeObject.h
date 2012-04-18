@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.h,v $
-  $Revision: 1.22 $
+  $Revision: 1.23 $
   $Name:  $
   $Author: shoops $
-  $Date: 2012/03/29 16:01:42 $
+  $Date: 2012/04/18 17:18:18 $
   End CVS Header */
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -158,6 +158,12 @@ public:
   const CRegisteredObjectName & getObjectCN() const;
 
   /**
+   * Retrieve the pointer to the referred object interface
+   * @return const CObjectInterface * pObjectInterface
+   */
+  const CObjectInterface * getObjectInterfacePtr() const;
+
+  /**
    * Retrieve the pointer to the value of the referred object
    * @return const C_FLOAT64 * pObjectValue
    */
@@ -187,7 +193,7 @@ private:
   /**
    * Pointer to the object
    */
-  const CCopasiObject * mpObject;
+  const CObjectInterface * mpObject;
 
   /**
    * The registered object name to track eventual renaming.
