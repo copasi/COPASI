@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathContainer.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/29 16:12:05 $
+//   $Date: 2012/04/18 14:36:50 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -1058,7 +1058,7 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
         {
           SimulationType = CMath::Conversion;
         }
-      else if ((*it)->getExpression() != "" ||
+      else if ((simulationType == CMath::Assignment && (*it)->getExpression() != "") ||
                (*it)->getInitialExpression() != "")
         {
           SimulationType = CMath::Assignment;
