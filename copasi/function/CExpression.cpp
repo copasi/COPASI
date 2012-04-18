@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/16 18:06:53 $
+//   $Date: 2012/04/18 17:16:49 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -125,13 +125,15 @@ const C_FLOAT64 & CExpression::calcValue()
 void CExpression::refresh()
 {calcValue();}
 
-const CCopasiObject * CExpression::getNodeObject(const CCopasiObjectName & CN) const
+const CObjectInterface * CExpression::getNodeObject(const CCopasiObjectName & CN) const
 {
   const CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
 
   if (mpListOfContainer != NULL)
-    return pDataModel->ObjectFromName(*mpListOfContainer, CN);
+    {
+      return pDataModel->ObjectFromCN(*mpListOfContainer, CN);
+    }
   else
     {
       return pDataModel->getDataObject(CN);

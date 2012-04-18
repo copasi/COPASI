@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:19:25 $
+//   $Date: 2012/04/18 17:16:48 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -115,9 +115,9 @@ public:
    * Retrieve a pointer to the object defined by CN. This method may only be called
    * during compile() since the list mpListOfContainer is only valid then.
    * @param const CCopasiObjectName & CN
-   * @return const CCopasiObject * value
+   * @return const CObjectInterface * value
    */
-  virtual const CCopasiObject * getNodeObject(const CCopasiObjectName & CN) const;
+  const CObjectInterface * getNodeObject(const CCopasiObjectName & CN) const;
 
 public:
   /**
