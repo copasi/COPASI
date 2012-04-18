@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathObject.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/29 16:12:05 $
+//   $Date: 2012/04/18 14:37:59 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -869,8 +869,12 @@ bool CMathObject::createConvertedExpression(const CExpression * pExpression,
 
   bool success = true;
 
-  mpExpression = new CMathExpression(*pExpression, container,
-                                     !mIsInitialValue && mValueType != CMath::Discontinuous);
+  bool ReplaceDiscontinousNodes =
+    !mIsInitialValue &&
+    mValueType != CMath::Discontinuous &&
+    mValueType != CMath::EventAssignment;
+
+  mpExpression = new CMathExpression(*pExpression, container, ReplaceDiscontinousNodes);
   compileCommon();
 
   return success;
