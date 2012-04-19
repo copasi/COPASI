@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathObject.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/29 16:12:05 $
+//   $Date: 2012/04/19 14:33:11 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -257,7 +257,7 @@ private:
   /**
    * Common compile steps after an expression has been created.
    */
-  void compileCommon();
+  void compileExpression();
 
   /**
    * Create and compile an expression based on the given expression.

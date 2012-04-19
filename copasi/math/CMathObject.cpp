@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathObject.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/18 14:37:59 $
+//   $Date: 2012/04/19 14:33:11 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -294,7 +294,7 @@ bool CMathObject::setExpressionPtr(CMathExpression * pMathExpression)
   if (mpExpression != NULL)
     {
       success &= mpExpression->compile();
-      compileCommon();
+      compileExpression();
     }
   else
     {
@@ -375,7 +375,7 @@ bool CMathObject::compile(CMathContainer & container)
         if (mpExpression != NULL)
           {
             success &= mpExpression->compile();
-            compileCommon();
+            compileExpression();
           }
 
         break;
@@ -634,7 +634,7 @@ bool CMathObject::compileParticleFlux(CMathContainer & container)
                                      pReaction->getCallParameters(),
                                      container,
                                      !mIsInitialValue);
-  compileCommon();
+  compileExpression();
 
   return success;
 }
@@ -659,7 +659,7 @@ bool CMathObject::compileFlux(CMathContainer & container)
   success &= E.setInfix(Infix.str());
 
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
-  compileCommon();
+  compileExpression();
 
   return success;
 }
@@ -745,7 +745,7 @@ bool CMathObject::compilePropensity(CMathContainer & container)
   success &= E.setInfix(Infix.str());
 
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
-  compileCommon();
+  compileExpression();
 
   return success;
 }
@@ -788,7 +788,7 @@ bool CMathObject::compileTotalMass(CMathContainer & container)
   success &= E.setInfix(Infix.str());
 
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
-  compileCommon();
+  compileExpression();
 
   return success;
 }
@@ -839,12 +839,12 @@ bool CMathObject::compileDependentMass(CMathContainer & container)
   success &= E.setInfix(Infix.str());
 
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
-  compileCommon();
+  compileExpression();
 
   return success;
 }
 
-void CMathObject::compileCommon()
+void CMathObject::compileExpression()
 {
   assert(mpExpression);
 
@@ -875,7 +875,7 @@ bool CMathObject::createConvertedExpression(const CExpression * pExpression,
     mValueType != CMath::EventAssignment;
 
   mpExpression = new CMathExpression(*pExpression, container, ReplaceDiscontinousNodes);
-  compileCommon();
+  compileExpression();
 
   return success;
 }
@@ -916,7 +916,7 @@ bool CMathObject::createIntensiveValueExpression(const CMetab * pSpecies,
   success &= E.setInfix(Infix.str());
 
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
-  compileCommon();
+  compileExpression();
 
   return success;
 }
@@ -958,7 +958,7 @@ bool CMathObject::createExtensiveValueExpression(const CMetab * pSpecies,
   success &= E.setInfix(Infix.str());
 
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
-  compileCommon();
+  compileExpression();
 
   return success;
 }
@@ -995,7 +995,7 @@ bool CMathObject::createIntensiveRateExpression(const CMetab * pSpecies,
   success &= E.setInfix(Infix.str());
 
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
-  compileCommon();
+  compileExpression();
 
   return success;
 }
@@ -1025,7 +1025,7 @@ bool CMathObject::createExtensiveODERateExpression(const CMetab * pSpecies,
   success &= E.setInfix(Infix.str());
 
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
-  compileCommon();
+  compileExpression();
 
   return success;
 }
@@ -1082,7 +1082,7 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
   success &= E.setInfix(Infix.str());
 
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
-  compileCommon();
+  compileExpression();
 
   return success;
 }
