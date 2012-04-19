@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.111 $
+//   $Revision: 1.112 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/10 16:35:49 $
+//   $Date: 2012/04/19 15:14:01 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -217,7 +217,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
   C_FLOAT64 StepSize = mpTrajectoryProblem->getStepSize();
   C_FLOAT64 StepNumber = fabs(Duration) / StepSize;
 
-  if (isnan(StepNumber) || StepNumber < std::numeric_limits< C_FLOAT64 >::min())
+  if (isnan(StepNumber) || StepNumber < 1.0)
     StepNumber = 1.0;
 
   C_FLOAT64 NextTimeToReport;
@@ -264,7 +264,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
   C_FLOAT64 Percentage = 0;
   size_t hProcess;
 
-  if (mpCallBack)
+  if (mpCallBack != NULL && StepNumber > 1.0)
     {
       mpCallBack->setName("performing simulation...");
       C_FLOAT64 hundred = 100;
@@ -286,7 +286,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
           flagProceed &= processStep(NextTimeToReport);
 
-          if (mpCallBack)
+          if (mpCallBack != NULL && StepNumber > 1.0)
             {
               Percentage = (*mpCurrentTime - StartTime) * handlerFactor;
               flagProceed &= mpCallBack->progressItem(hProcess);
@@ -310,7 +310,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
           output(COutputInterface::DURING);
         }
 
-      if (mpCallBack) mpCallBack->finishItem(hProcess);
+      if (mpCallBack != NULL && StepNumber > 1.0) mpCallBack->finishItem(hProcess);
 
       output(COutputInterface::AFTER);
 
@@ -327,14 +327,14 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
           output(COutputInterface::DURING);
         }
 
-      if (mpCallBack) mpCallBack->finishItem(hProcess);
+      if (mpCallBack != NULL && StepNumber > 1.0) mpCallBack->finishItem(hProcess);
 
       output(COutputInterface::AFTER);
 
       throw CCopasiException(Exception.getMessage());
     }
 
-  if (mpCallBack) mpCallBack->finishItem(hProcess);
+  if (mpCallBack != NULL && StepNumber > 1.0) mpCallBack->finishItem(hProcess);
 
   output(COutputInterface::AFTER);
 
@@ -358,11 +358,12 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
 {
   CModel * pModel = mpTrajectoryProblem->getModel();
   bool StateChanged = false;
+  bool proceed = true;
 
   C_FLOAT64 Tolerance = 100.0 * (fabs(endTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + DBL_MIN);
   C_FLOAT64 NextTime = endTime;
 
-  do
+  while (proceed)
     {
       // TODO Provide a call back method for resolving simultaneous assignments.
       StateChanged |= pModel->processQueue(*mpCurrentTime, false, NULL);
@@ -453,10 +454,11 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
             return false;
             break;
         }
-    }
-  while (true);
 
-  return true;
+      proceed = mpCallBack == NULL || mpCallBack->proceed();
+    }
+
+  return proceed;
 }
 
 bool CTrajectoryTask::restore()
