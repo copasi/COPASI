@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.99 $
+//   $Revision: 1.100 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:33:41 $
+//   $Date: 2012/04/19 15:15:09 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -214,13 +214,15 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
 
   if (mpTrajectory)
     {
+      mpTrajectory->setCallBack(mpCallBack);
+
       pTrajectoryProblem =
         dynamic_cast<CTrajectoryProblem *>(mpTrajectory->getProblem());
       assert(pTrajectoryProblem);
       pTrajectoryProblem->setStepNumber(1);
     }
 
-  bool stepLimitReached;
+  bool stepLimitReached = false;
   C_FLOAT64 duration;
 
   for (duration = minDuration; fabs(duration) <= fabs(maxDuration); duration *= iterationFactor, Step++)
