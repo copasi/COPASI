@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEvent.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/29 16:05:44 $
+//   $Date: 2012/04/19 14:34:39 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,9 +61,8 @@ bool CMathEventN::CAssignment::compile(CEventAssignment * pDataAssignment,
     }
 
   std::vector< CCopasiContainer * > ListOfContainer;
-  ListOfContainer.push_back(const_cast< CMathContainer * >(&container));
 
-  // Compile the assignment object
+  // Compile the assignment object in the model context
   CExpression AssignmentExpression("AssignmentExpression", &container);
   success &= AssignmentExpression.setInfix(pDataAssignment->getExpression());
   success &= AssignmentExpression.compile(ListOfContainer);
