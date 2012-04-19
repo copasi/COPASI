@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000100.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/09/08 11:26:17 $
+//   $Author: bergmann $
+//   $Date: 2012/04/19 15:00:10 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,8 +17,9 @@
 #include <sstream>
 #include <stdexcept>
 #include <iostream>
+#ifndef WIN32
 #include <signal.h>
-
+#endif
 #include "utilities.hpp"
 
 #include "copasi/report/CCopasiRootContainer.h"
@@ -34,11 +35,13 @@ void abort_handler(int)
   throw std::runtime_error("Received SIGABRT signal.");
 }
 
+#ifndef WIN32
 struct sigaction* pNewAct = NULL;
 struct sigaction* pOldAct = NULL;
-
+#endif
 void test000100::setUp()
 {
+#ifndef WIN32
   // set a new action handler for SIGABRT that throws an exception
   // instead of terminating the program. This is needed to handle failed assertions
   // in debug versions.
@@ -52,6 +55,7 @@ void test000100::setUp()
       std::cerr << "Setting the signal handler failed." << std::endl;
     }
 
+#endif
   // Create the root container.
   CCopasiRootContainer::init(0, NULL, false);
   pDataModel = CCopasiRootContainer::addDatamodel();
@@ -60,6 +64,7 @@ void test000100::setUp()
 void test000100::tearDown()
 {
   CCopasiRootContainer::destroy();
+#ifndef WIN32
   // restore the old action handler
   int x = sigaction(SIGABRT, pOldAct, NULL);
 
@@ -67,6 +72,8 @@ void test000100::tearDown()
     {
       std::cerr << "Resetting the signal handler failed." << std::endl;
     }
+
+#endif
 }
 
 // test whether exporting an SBML Level 3 file after an SBML Level 2 file

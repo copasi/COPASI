@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000101.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/12/01 13:22:01 $
+//   $Author: bergmann $
+//   $Date: 2012/04/19 15:00:10 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,7 +14,9 @@
 #include "test000101.h"
 
 #include <iostream>
+#ifndef WIN32
 #include <signal.h>
+#endif
 #include <stdexcept>
 
 #include <copasi/report/CCopasiRootContainer.h>
@@ -30,11 +32,13 @@ void test000101::abort_handler(int)
   throw std::runtime_error("Received SIGSEGV signal.");
 }
 
+#ifndef WIN32
 struct sigaction* test000101::pOldAct = new struct sigaction();
 struct sigaction* test000101::pNewAct = new struct sigaction();
-
+#endif
 void test000101::setUp()
 {
+#ifndef WIN32
   // set a new action handler for SIGABRT that throws an exception
   // instead of terminating the program. This is needed to handle failed assertions
   // in debug versions.
@@ -46,6 +50,7 @@ void test000101::setUp()
       std::cerr << "Setting the signal handler failed." << std::endl;
     }
 
+#endif
   // Create the root container.
   CCopasiRootContainer::init(0, NULL, false);
   pDataModel = CCopasiRootContainer::addDatamodel();
@@ -53,6 +58,7 @@ void test000101::setUp()
 
 void test000101::tearDown()
 {
+#ifndef WIN32
   CCopasiRootContainer::destroy();
   // restore the old action handler
   int x = sigaction(SIGSEGV, test000101::pOldAct, NULL);
@@ -61,6 +67,8 @@ void test000101::tearDown()
     {
       std::cerr << "Resetting the signal handler failed." << std::endl;
     }
+
+#endif
 }
 
 

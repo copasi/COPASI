@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/stresstest/stress_test.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/05/04 17:35:52 $
+//   $Author: bergmann $
+//   $Date: 2012/04/19 15:00:42 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,7 +23,18 @@
 #include <vector>
 #include <map>
 #include <set>
+#ifdef WIN32
+#include <time.h>
+#include <windows.h>
+#include <sys/timeb.h>
+#if defined(_MSC_VER) || defined(_MSC_EXTENSIONS)
+#define DELTA_EPOCH_IN_MICROSECS  11644473600000000Ui64
+#else
+#define DELTA_EPOCH_IN_MICROSECS  11644473600000000ULL
+#endif
+#else
 #include <sys/time.h>
+#endif
 
 class CNormalFraction;
 class Model;
@@ -38,6 +49,55 @@ class Reaction;
 // in order to find out if they are the same.
 class stress_test
 {
+#ifdef WIN32
+  struct timeval
+  {
+    time_t  tv_sec;         /* seconds */
+    long tv_usec;    /* and microseconds */
+  };
+
+  struct timezone
+  {
+    int  tz_minuteswest; /* minutes W of Greenwich */
+    int  tz_dsttime;     /* type of dst correction */
+  };
+
+  int gettimeofday(struct timeval *tv, struct timezone *tz)
+  {
+    FILETIME ft;
+    unsigned __int64 tmpres = 0;
+    static int tzflag;
+
+    if (NULL != tv)
+      {
+        GetSystemTimeAsFileTime(&ft);
+
+        tmpres |= ft.dwHighDateTime;
+        tmpres <<= 32;
+        tmpres |= ft.dwLowDateTime;
+
+        /*converting file time to unix epoch*/
+        tmpres -= DELTA_EPOCH_IN_MICROSECS;
+        tmpres /= 10;  /*convert into microseconds*/
+        tv->tv_sec = (long)(tmpres / 1000000UL);
+        tv->tv_usec = (long)(tmpres % 1000000UL);
+      }
+
+    if (NULL != tz)
+      {
+        if (!tzflag)
+          {
+            _tzset();
+            tzflag++;
+          }
+
+        tz->tz_minuteswest = _timezone / 60;
+        tz->tz_dsttime = _daylight;
+      }
+
+    return 0;
+  }
+#endif
 public:
   /**
    * Constructor.
