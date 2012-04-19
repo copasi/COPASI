@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/18 17:18:18 $
+//   $Date: 2012/04/19 14:32:37 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,6 +116,9 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
           }
         else if (mpObject != NULL)
           {
+            // TODO CRITICAL SH: I like to avoid these for the time being
+            assert(false);
+
             mpValue = (C_FLOAT64 *) mpObject->getValuePointer();
           }
 
