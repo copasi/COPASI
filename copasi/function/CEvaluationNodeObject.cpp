@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/19 14:32:37 $
+//   $Date: 2012/04/20 14:53:47 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,12 +61,7 @@ CEvaluationNodeObject::CEvaluationNodeObject(const C_FLOAT64 * pValue):
     mRegisteredObjectCN("")
 {
   mPrecedence = PRECEDENCE_NUMBER;
-
-  std::ostringstream Pointer;
-  Pointer.flags(std::ios::hex);
-  Pointer << "0x" << mpValue;
-
-  mData = Pointer.str();
+  mData = pointerToString(mpValue);
 }
 
 CEvaluationNodeObject::CEvaluationNodeObject(const CEvaluationNodeObject & src):
@@ -137,12 +132,7 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
       case POINTER:
         // We need to convert the data into a pointer
       {
-        std::istringstream Pointer;
-        void * pPointer;
-        Pointer.str(mData.substr(2));
-        Pointer.flags(std::ios::hex);
-        Pointer >> pPointer;
-        mpValue = (const C_FLOAT64 *) pPointer;
+        mpValue = (const C_FLOAT64 *) stringToPointer(mData);
       }
       break;
 
@@ -362,12 +352,7 @@ void CEvaluationNodeObject::setObjectValuePtr(C_FLOAT64 * pObjectValue)
         if (mpValue != pObjectValue)
           {
             mpValue = pObjectValue;
-
-            std::ostringstream Pointer;
-            Pointer.flags(std::ios::hex);
-            Pointer << "0x" << mpValue;
-
-            mData = Pointer.str();
+            mData = pointerToString(mpValue);
           }
 
         break;

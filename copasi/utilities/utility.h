@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $
-   $Date: 2011/10/13 17:21:00 $
+   $Date: 2012/04/20 14:53:47 $
    End CVS Header */
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -166,5 +166,20 @@ C_INT32 strToInt(const char * str,
  */
 unsigned C_INT32 strToUnsignedInt(const char * str,
                                   char const ** pTail = NULL);
+
+/**
+ * Convert a character sequence to a void pointer
+ * @param const std::string str
+ * @return void * pVoid
+ */
+void * stringToPointer(const std::string str);
+
+/**
+ * Convert a void pointer to a string
+ * @param const void * pVoid
+ * @return std::string str
+ */
+std::string pointerToString(const void * pVoid);
+
 
 #endif // COPASI_utilities

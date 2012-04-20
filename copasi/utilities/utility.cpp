@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-$Revision: 1.39 $
+$Revision: 1.40 $
 $Name:  $
 $Author: shoops $
-$Date: 2011/04/01 15:06:38 $
+$Date: 2012/04/20 14:53:47 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,7 @@ End CVS Header */
 #include <string.h>
 
 #include <sstream>
+#include <iostream>
 
 #include "copasi.h"
 
@@ -722,5 +723,43 @@ unsigned C_INT32 strToUnsignedInt(const char * str,
     }
 
   return Value;
+}
+
+
+void * stringToPointer(const std::string str)
+{
+  std::istringstream Pointer;
+  void * pPointer;
+
+  Pointer.setf(std::ios::hex);
+
+#ifdef WIN32
+  Pointer.unsetf(std::ios::showbase);
+  Pointer.str(str.substr(2));
+  Pointer >> pPointer;
+#else
+  Pointer.setf(std::ios::showbase);
+  Pointer.str(str);
+  Pointer >> pPointer;
+#endif
+
+  return pPointer;
+}
+
+std::string pointerToString(const void * pVoid)
+{
+  std::ostringstream Pointer;
+
+  Pointer.setf(std::ios::hex);
+
+#ifdef WIN32
+  Pointer.unsetf(std::ios::showbase);
+  Pointer << "0x" << pVoid;
+#else
+  Pointer.setf(std::ios::showbase);
+  Pointer << pVoid;
+#endif
+
+  return Pointer.str();
 }
 

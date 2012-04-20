@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathExpression.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/29 16:12:05 $
+//   $Date: 2012/04/20 14:53:48 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -170,11 +170,7 @@ bool CMathExpression::compile()
 
       if ((*it)->getType() == (CEvaluationNode::OBJECT | CEvaluationNodeObject::POINTER))
         {
-          std::istringstream Value;
-          void * pValue;
-          Value.str((*it)->getData().substr(2));
-          Value.flags(std::ios::hex);
-          Value >> pValue;
+          void * pValue = stringToPointer((*it)->getData());
 
           // TODO CRITICAL It is possible that the user selects non model objects, i.e.,
           // problem or method values within the expression. These cannot be mapped to a
