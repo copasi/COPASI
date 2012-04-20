@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/05/19 15:43:29 $
+//   $Date: 2012/04/20 12:08:24 $
 // End CVS Header
+
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -172,15 +177,7 @@ void CReportDefinition::addTableElement(const CCopasiObject * pObject)
   // Determine column title
   if (pObject->getObjectParent())
     {
-      Title =
-        pObject->getObjectParent()->getCN();
-      Title += ",Reference=Name";
-
-      if (mbTitle)
-        mHeaderVector.push_back(Title);
-
-      Title =
-        CCopasiStaticString("[" + pObject->getObjectName() + "]").getCN();
+      Title = pObject->getCN() + ",Property=DisplayName";
     }
   else
     Title =

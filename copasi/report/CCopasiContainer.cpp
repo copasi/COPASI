@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:48:20 $
+//   $Date: 2012/04/20 12:08:24 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -87,6 +87,11 @@ const CObjectInterface * CCopasiContainer::getObject(const CCopasiObjectName & c
         return NULL;
       else
         return this;
+    }
+
+  if (cn == "Property=DisplayName")
+    {
+      return CCopasiObject::getObject(cn);
     }
 
   std::string Name = cn.getObjectName();
@@ -188,10 +193,6 @@ const CObjectInterface * CCopasiContainer::getObject(const CCopasiObjectName & c
       else
         return pObject->getObject(cn.getRemainder());
     }
-
-  if (it->second->isReference() || it->second->isStaticString() ||
-      cn.getRemainder() == "")
-    return it->second;
 
   return it->second->getObject(cn.getRemainder());
 }

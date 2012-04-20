@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.201 $
+//   $Revision: 1.202 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/07/05 19:24:02 $
+//   $Date: 2012/04/20 12:08:25 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -465,7 +465,8 @@ const CObjectInterface * CReaction::getObject(const CCopasiObjectName & cn) cons
   const CCopasiObject * pObject =
     static_cast< const CCopasiObject * >(CCopasiContainer::getObject(cn));
 
-  if (pObject == NULL) return pObject;
+  if (pObject == NULL ||
+      pObject->isStaticString()) return pObject;
 
   const CCopasiContainer * pParent = pObject->getObjectParent();
 

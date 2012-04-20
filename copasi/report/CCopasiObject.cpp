@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.94 $
+//   $Revision: 1.95 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/12/21 16:48:21 $
+//   $Date: 2012/04/20 12:08:24 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -35,6 +35,7 @@
 #include "CCopasiObjectName.h"
 #include "CCopasiObject.h"
 #include "CCopasiContainer.h"
+#include "CCopasiStaticString.h"
 #include "CRenameHandler.h"
 #include "utilities/CCopasiVector.h"
 #include "model/CModelValue.h"
@@ -57,6 +58,7 @@ CCopasiObject::CCopasiObject():
     mObjectName("No Name"),
     mObjectType("Unknown Type"),
     mpObjectParent(NULL),
+    mpObjectDisplayName(NULL),
     mObjectFlag(0),
     mpUpdateMethod(&this->mDefaultUpdateMethod),
     mpRefresh(NULL)
@@ -70,6 +72,7 @@ CCopasiObject::CCopasiObject(const std::string & name,
     mObjectName((name == "") ? "No Name" : name),
     mObjectType(type),
     mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
+    mpObjectDisplayName(NULL),
     mObjectFlag(flag),
     mpUpdateMethod(&this->mDefaultUpdateMethod),
     mpRefresh(NULL)
@@ -84,6 +87,7 @@ CCopasiObject::CCopasiObject(const CCopasiObject & src,
     mObjectName(src.mObjectName),
     mObjectType(src.mObjectType),
     mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
+    mpObjectDisplayName(NULL),
     mObjectFlag(src.mObjectFlag),
     mpUpdateMethod(&this->mDefaultUpdateMethod),
     mpRefresh(NULL)
@@ -93,6 +97,8 @@ CCopasiObject::~CCopasiObject()
 {
   if (mpObjectParent)
     mpObjectParent->remove(this);
+
+  pdelete(mpObjectDisplayName);
 
   if (mpUpdateMethod != &mDefaultUpdateMethod)
     pdelete(mpUpdateMethod);
@@ -138,9 +144,23 @@ const CObjectInterface *
 CCopasiObject::getObject(const CCopasiObjectName & cn) const
 {
   if (cn == "")
-    return this;
-  else  //a CCopasiObject has no child objects
-    return NULL;
+    {
+      return this;
+    }
+
+  if (cn == "Property=DisplayName")
+    {
+      if (mpObjectDisplayName == NULL)
+        {
+          mpObjectDisplayName = new CCopasiStaticString();
+        }
+
+      *mpObjectDisplayName = getObjectDisplayName();
+
+      return mpObjectDisplayName;
+    }
+
+  return NULL;
 }
 
 bool CCopasiObject::setObjectName(const std::string & name)

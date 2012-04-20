@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:48:17 $
+//   $Date: 2012/04/20 12:08:24 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -299,6 +299,11 @@ const CObjectInterface * CArrayAnnotation::getObject(const CCopasiObjectName & c
   if (cn == "")
     {
       return this;
+    }
+
+  if (cn == "Property=DisplayName")
+    {
+      return CCopasiObject::getObject(cn);
     }
 
   //if there are no indices there could still be other children. This can be handled
