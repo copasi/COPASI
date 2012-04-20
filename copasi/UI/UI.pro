@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.262 $
+#   $Revision: 1.263 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2012/03/15 17:59:24 $
+#   $Date: 2012/04/20 16:26:55 $
 # End CVS Header
 
 # Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.262 $ $Author: shoops $ $Date: 2012/03/15 17:59:24 $
+# $Revision: 1.263 $ $Author: shoops $ $Date: 2012/04/20 16:26:55 $
 ######################################################################
 
 LIB = UI
@@ -79,6 +79,7 @@ HEADERS	+= \
   CQProgressItemText.h \
   CQReactionsWidget.h \
   CQReportDefinition.h \
+  CQReportDefinitionSelect.h \
   CQReportsWidget.h \
   CQSensResultWidget.h \
   CQSpeciesDetail.h \
@@ -121,7 +122,6 @@ HEADERS	+= \
   copasiWidget.h \
   copasiui3window.h \
   CProgressBar.h \
-  CReportDefinitionSelect.h \
   CQBaseDataModel.h \
   CQComboDelegate.h \
   CQCompartmentDM.h \
@@ -226,6 +226,7 @@ SOURCES	+= \
   CQProgressItemText.cpp \
   CQReactionsWidget.cpp \
   CQReportDefinition.cpp \
+  CQReportDefinitionSelect.cpp \
   CQReportsWidget.cpp \
   CQSensResultWidget.cpp \
   CQSpeciesDetail.cpp \
@@ -269,7 +270,6 @@ SOURCES	+= \
   copasiWidget.cpp \
   copasiui3window.cpp \
   CProgressBar.cpp \
-  CReportDefinitionSelect.cpp \
   CQBaseDataModel.cpp \
   CQComboDelegate.cpp \
   CQCompartmentDM.cpp \
@@ -367,6 +367,7 @@ FORMS += CQProgressItemBar.ui
 FORMS += CQProgressItemText.ui
 FORMS += CQReactionsWidget.ui
 FORMS += CQReportDefinition.ui
+FORMS += CQReportDefinitionSelect.ui 
 FORMS += CQReportsWidget.ui
 FORMS += CQSensResultWidget.ui
 FORMS += CQSpeciesDetail.ui
