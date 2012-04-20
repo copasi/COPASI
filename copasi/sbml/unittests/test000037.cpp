@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000037.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/11 11:52:00 $
+//   $Author: bergmann $
+//   $Date: 2012/04/20 09:23:41 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -96,7 +96,9 @@ void test000037::test_hasOnlySubstanceUnits()
   const CFunction* pKineticFunction = pReaction1->getFunction();
   CPPUNIT_ASSERT(pKineticFunction != NULL);
   const CMassAction* pMassAction = dynamic_cast<const CMassAction*>(pKineticFunction);
-  CPPUNIT_ASSERT(pMassAction != NULL);
+  //FTB: this no longer is recognized as mass action reaction because of the
+  //     special case of a species with hOSU
+  CPPUNIT_ASSERT(pMassAction == NULL);
   const CChemEq* pChemEq = &pReaction1->getChemEq();
   CPPUNIT_ASSERT(pChemEq != NULL);
   CPPUNIT_ASSERT(pChemEq->getCompartmentNumber() == 1);
