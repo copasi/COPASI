@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/steady_state_test_wrapper/copasi_wrapper.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/08/18 12:31:12 $
+//   $Author: bergmann $
+//   $Date: 2012/04/20 14:06:56 $
 // End CVS Header
+
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -183,7 +188,7 @@ int main(int argc, char *argv[])
       pSSTask->setScheduled(true);
 
       pSSTask->getReport().setReportDefinition(pReport);
-      pSSTask->getReport().setTarget(CWD + "/" + pOutputFilename);
+      pSSTask->getReport().setTarget(pOutputFilename);
       pSSTask->getReport().setAppend(false);
 
       //**** specify problem ****
@@ -223,8 +228,9 @@ int main(int argc, char *argv[])
       // create a trajectory task
       pSSTask->getReport().setTarget(pOutputFilename);
 
-      pSSTask->initialize(CCopasiTask::OUTPUT_COMPLETE, pDataModel, NULL);
+      pSSTask->initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
       pSSTask->process(true);
+      (*CCopasiRootContainer::getDatamodelList())[0]->finish();
       pSSTask->restore();
     }
   catch (CCopasiException Exception)
