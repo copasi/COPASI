@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.299 $
+//   $Revision: 1.300 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/30 18:02:18 $
+//   $Author: ssahle $
+//   $Date: 2012/04/22 22:46:35 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -893,4 +893,14 @@ CQMCAWidget* ListViews::getMCAWidget()
 CQLNAWidget* ListViews::getLNAWidget()
 {
   return mpCQLNAWidget;
+}
+
+CQFittingWidget* ListViews::getFittingWidget()
+{
+  return paramFittingWidget;
+}
+
+CQOptimizationWidget* ListViews::getOptimizationWidget()
+{
+  return optimizationWidget;
 }
