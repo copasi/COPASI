@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.94 $
+//   $Revision: 1.95 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/17 12:58:08 $
+//   $Author: ssahle $
+//   $Date: 2012/04/22 23:18:28 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,8 @@
 #include "ScanWidget.h"
 #include "CQMCAWidget.h"
 #include "CQLNAWidget.h"
+#include "CQFittingWidget.h"
+#include "CQOptimizationWidget.h"
 #include "SliderSettingsDialog.h"
 #include "CQMessageBox.h"
 #include "CopasiSlider.h"
@@ -57,14 +59,16 @@
 #include "steadystate/CMCATask.h"
 #include "lna/CLNATask.h"
 #include "scan/CScanTask.h"
+#include "parameterFitting/CFitTask.h"
+#include "optimization/COptTask.h"
 #include "utilities/CSlider.h"
 #include "model/CModel.h"
 #include "CCopasiSelectionDialog.h"
 
-size_t SliderDialog::numMappings = 8;
+size_t SliderDialog::numMappings = 12;
 size_t SliderDialog::folderMappings[][2] =
 {
-  {21, 21}, {211, 21}, {23, 23}, {231, 23}, {24, 24} , {241, 24} , {31, 31}, {35, 35}
+  {21, 21}, {211, 21}, {23, 23}, {231, 23}, {24, 24} , {241, 24} , {31, 31}, {32, 32}, {321, 32}, {33, 33}, {331, 33}, {35, 35}
 };
 
 //size_t SliderDialog::numKnownTasks = 4;
@@ -156,6 +160,8 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
   this->mTaskMap[31] = &SliderDialog::runScanTask;
   this->mTaskMap[24] = &SliderDialog::runMCATask;
   this->mTaskMap[35] = &SliderDialog::runLNATask;
+  this->mTaskMap[33] = &SliderDialog::runParameterEstimationTask;
+  this->mTaskMap[32] = &SliderDialog::runOptimizationTask;
 
   connect(this->mpRunTaskButton, SIGNAL(clicked()), this, SLOT(runTask()));
   connect(this->mpNewSliderButton, SIGNAL(clicked()), this, SLOT(createNewSlider()));
@@ -797,6 +803,26 @@ void SliderDialog::runLNATask()
     }
 }
 
+void SliderDialog::runParameterEstimationTask()
+{
+  if (mpParentWindow)
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      mpParentWindow->getMainWidget()->getFittingWidget()->enter((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Parameter Estimation"]->getKey());
+      mpParentWindow->getMainWidget()->getFittingWidget()->runTask();
+    }
+}
+
+void SliderDialog::runOptimizationTask()
+{
+  if (mpParentWindow)
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      mpParentWindow->getMainWidget()->getOptimizationWidget()->enter((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Optimization"]->getKey());
+      mpParentWindow->getMainWidget()->getOptimizationWidget()->runTask();
+    }
+}
+
 void SliderDialog::closeEvent(QCloseEvent* e)
 {
   QDialog::closeEvent(e);
@@ -829,6 +855,12 @@ CCopasiTask* SliderDialog::getTaskForFolderId(size_t folderId)
         break;
       case 35:
         task = dynamic_cast<CLNATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Linear Noise Approximation"]);
+        break;
+      case 33:
+        task = dynamic_cast<CFitTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Parameter Estimation"]);
+        break;
+      case 32:
+        task = dynamic_cast<COptTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Optimization"]);
         break;
       default:
         task = NULL;
@@ -865,7 +897,7 @@ void SliderDialog::updateAllSliders()
       if (mpParentWindow != NULL)
         mpParentWindow->getDataModel()->refreshInitialValues();
 
-      // We  through the sliders and make sure that
+      // We go through the sliders and make sure that
       // that the  model values are updated.
       wit = v.begin();
       wendit = v.end();
@@ -885,7 +917,7 @@ void SliderDialog::updateAllSliders()
         }
 
       // We make sure that all dependent initial values of the model are up to date.
-      // Please note that this is context sensitive, i.e., concentration and patile numbers
+      // Please note that this is context sensitive, i.e., concentration and particle numbers
       // are dealt with correctly.
       if (mpParentWindow != NULL)
         mpParentWindow->getDataModel()->refreshInitialValues();

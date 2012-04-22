@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-$Revision: 1.44 $
+$Revision: 1.45 $
 $Name:  $
-$Author: shoops $
-$Date: 2011/11/15 14:59:43 $
+$Author: ssahle $
+$Date: 2012/04/22 23:18:28 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -109,6 +109,8 @@ protected:
   virtual void runSteadyStateTask();
   virtual void runMCATask();
   virtual void runLNATask();
+  virtual void runParameterEstimationTask();
+  virtual void runOptimizationTask();
   virtual void closeEvent(QCloseEvent* e);
 
   virtual CCopasiTask* getTaskForFolderId(size_t folderId);
