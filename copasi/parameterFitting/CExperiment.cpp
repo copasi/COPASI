@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.74 $
+//   $Revision: 1.75 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/08/02 20:43:36 $
+//   $Author: ssahle $
+//   $Date: 2012/04/22 14:54:55 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,7 +22,7 @@
 
 #include <fstream>
 #include <limits>
-#include <math.h>
+#include <cmath>
 #include <float.h>
 
 #include "copasi.h"

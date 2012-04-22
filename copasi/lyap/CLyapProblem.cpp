@@ -1,12 +1,17 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapProblem.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/12 14:27:06 $
+//   $Author: ssahle $
+//   $Date: 2012/04/22 14:54:54 $
 // End CVS Header
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,7 +19,7 @@
  *  CLyapProblem class.
  */
 
-#include <math.h>
+#include <cmath>
 #include <string>
 
 #include "copasi.h"
@@ -83,7 +88,7 @@ void CLyapProblem::setExponentNumber(const unsigned C_INT32 & number)
 }
 
 const unsigned C_INT32 & CLyapProblem::getExponentNumber() const
-  {return *mpExponentNumber;}
+{return *mpExponentNumber;}
 
 void CLyapProblem::setTransientTime(const C_FLOAT64 & startTime)
 {
@@ -91,7 +96,7 @@ void CLyapProblem::setTransientTime(const C_FLOAT64 & startTime)
 }
 
 const C_FLOAT64 & CLyapProblem::getTransientTime() const
-  {return *mpTransientTime;}
+{return *mpTransientTime;}
 
 /*void CLyapProblem::setTimeSeriesRequested(bool flag)
 {
@@ -108,12 +113,13 @@ void CLyapProblem::setDivergenceRequested(bool flag)
 }
 
 bool CLyapProblem::divergenceRequested() const
-  {return *mpDivergenceRequested;}
+{return *mpDivergenceRequested;}
 
 void CLyapProblem::printResult(std::ostream * ostream) const
-  {
-    CLyapTask* parent = dynamic_cast<CLyapTask*>(getObjectParent());
-    if (!parent) return;
+{
+  CLyapTask* parent = dynamic_cast<CLyapTask*>(getObjectParent());
 
-    parent->printResult(ostream);
-  }
+  if (!parent) return;
+
+  parent->printResult(ostream);
+}

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalFraction.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/08/02 14:09:17 $
+//   $Author: ssahle $
+//   $Date: 2012/04/22 14:51:17 $
 // End CVS Header
+
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -23,7 +28,7 @@
 #endif  // WIN32
 
 #include <vector>
-#include <math.h>
+#include <cmath>
 #include <sstream>
 
 #include "copasi.h"
@@ -39,22 +44,24 @@
 /**
  * Default constructor
  */
-CNormalFraction::CNormalFraction(): CNormalBase(), mpNumerator(new CNormalSum()), mpDenominator(new CNormalSum()){}
+CNormalFraction::CNormalFraction(): CNormalBase(), mpNumerator(new CNormalSum()), mpDenominator(new CNormalSum()) {}
 
 /**
  * Copy contructor
  */
 CNormalFraction::CNormalFraction(const CNormalFraction& src): CNormalBase(src),
     mpNumerator(new CNormalSum(*src.mpNumerator)),
-mpDenominator(new CNormalSum(*src.mpDenominator)){}
+    mpDenominator(new CNormalSum(*src.mpDenominator)) {}
 
 /**
  * Assignment operator
  */
-CNormalFraction& CNormalFraction::operator=(const CNormalFraction& src)
+CNormalFraction& CNormalFraction::operator=(const CNormalFraction & src)
 {
   if (this->mpNumerator != NULL) delete this->mpNumerator;
+
   if (this->mpDenominator != NULL) delete this->mpDenominator;
+
   this->mpNumerator = new CNormalSum(*src.mpNumerator);
   this->mpDenominator = new CNormalSum(*src.mpDenominator);
   return *this;
@@ -63,6 +70,7 @@ CNormalFraction& CNormalFraction::operator=(const CNormalFraction& src)
 CNormalFraction::~CNormalFraction()
 {
   if (mpNumerator != NULL) delete mpNumerator;
+
   if (mpDenominator != NULL) delete mpDenominator;
 }
 
@@ -76,6 +84,7 @@ bool CNormalFraction::setNumerator(const CNormalSum& numerator)
     {
       delete mpNumerator;
     }
+
   mpNumerator = new CNormalSum(numerator);
   return true;
 }
@@ -90,9 +99,12 @@ bool CNormalFraction::setDenominator(const CNormalSum& denominator)
     {
       delete mpDenominator;
     }
+
   mpDenominator = new CNormalSum(denominator);
+
   if (mpDenominator->getSize() == 0)
     return false;
+
   return true;
 }
 
@@ -101,18 +113,18 @@ bool CNormalFraction::setDenominator(const CNormalSum& denominator)
  * @return bool
  */
 bool CNormalFraction::checkNumeratorOne() const
-  {
-    return this->mpNumerator->checkIsOne();
-  }
+{
+  return this->mpNumerator->checkIsOne();
+}
 
 /**
  * Check if the denominator of this fraction equals 1.
  * @return bool
  */
 bool CNormalFraction::checkDenominatorOne() const
-  {
-    return this->mpDenominator->checkIsOne();
-  }
+{
+  return this->mpDenominator->checkIsOne();
+}
 
 /**
  * Set the denominator of this fraction equal 1.
@@ -152,29 +164,30 @@ CNormalSum& CNormalFraction::getDenominator()
  * @return mpNumerator.
  */
 const CNormalSum& CNormalFraction::getNumerator() const
-  {
-    return *mpNumerator;
-  }
+{
+  return *mpNumerator;
+}
 
 /**
  * Retrieve the denominator of this fraction.
  * @return mpDenominator.
  */
 const CNormalSum& CNormalFraction::getDenominator() const
-  {
-    return *mpDenominator;
-  }
+{
+  return *mpDenominator;
+}
 
 /**
  * Check if this fraction contains further fractions.
  * @return bool.
  */
 bool CNormalFraction::checkForFractions() const
-  {
-    if (mpNumerator->getFractions().size() + mpDenominator->getFractions().size() == 0)
-      return false;
-    return true;
-  }
+{
+  if (mpNumerator->getFractions().size() + mpDenominator->getFractions().size() == 0)
+    return false;
+
+  return true;
+}
 
 /**
  * Expand this fraction by a lcm.
@@ -184,8 +197,10 @@ bool CNormalFraction::expand(const CNormalLcm& lcm)
 {
   mpNumerator->multiply(lcm);
   mpDenominator->multiply(lcm);
+
   if (mpDenominator->getSize() == 0)
     return false;
+
   return true;
 }
 
@@ -207,6 +222,7 @@ bool CNormalFraction::cancel()
       if (mpDenominator->getProducts().size() != 0)
         {
           C_FLOAT64 factor = (*mpDenominator->getProducts().begin())->getFactor();
+
           if (fabs(factor) < 1.0E-100)
             return false;
           else
@@ -223,22 +239,28 @@ bool CNormalFraction::cancel()
               std::set<CNormalItemPower*, compareItemPowers >::const_iterator it = (*mpDenominator->getProducts().begin())->getItemPowers().begin();
               std::set<CNormalItemPower*, compareItemPowers >::const_iterator itEnd = (*mpDenominator->getProducts().begin())->getItemPowers().end();
               std::vector<CNormalItemPower*> tmpV;
+
               while (it != itEnd)
                 {//runs through all item powers in the first product of the denominator
                   C_FLOAT64 exp = mpNumerator->checkFactor(**it);
+
                   if (fabs(exp) >= 1.0E-100)
                     {
                       exp = mpDenominator->checkFactor(**it) < exp ? mpDenominator->checkFactor(**it) : exp;
+
                       if (fabs(exp) >= 1.0E-100)
                         {
                           CNormalItemPower* itemPower = new CNormalItemPower((*it)->getItem(), exp);
                           tmpV.push_back(itemPower);
                         }
                     }
+
                   ++it;
                 }
+
               std::vector<CNormalItemPower*>::iterator it2 = tmpV.begin();
               std::vector<CNormalItemPower*>::iterator itEnd2 = tmpV.end();
+
               while (it2 != itEnd2)
                 {
                   mpNumerator->divide(**it2);
@@ -249,6 +271,7 @@ bool CNormalFraction::cancel()
             }
         }
     }
+
   return true;
 }
 
@@ -259,8 +282,10 @@ bool CNormalFraction::cancel()
 bool CNormalFraction::multiply(const C_FLOAT64& number)
 {
   mpNumerator->multiply(number);
+
   if (mpNumerator->getSize() == 0)
     setDenominatorOne();
+
   return true;
 }
 
@@ -272,11 +297,13 @@ bool CNormalFraction::multiply(const CNormalItemPower& itemPower)
 {
   C_FLOAT64 exp = mpDenominator->checkFactor(itemPower);
   C_FLOAT64 tmpExp;
+
   if (fabs(exp) >= 1.0E-100)
     {
       CNormalItemPower* pTmp1 = new CNormalItemPower(itemPower.getItem(), exp);
       mpDenominator->divide(*pTmp1);
       delete pTmp1;
+
       if ((tmpExp = fabs(itemPower.getExp() - exp)) >= 1.0E-100)
         {
           // :TODO: Memory leak?
@@ -286,10 +313,12 @@ bool CNormalFraction::multiply(const CNormalItemPower& itemPower)
           delete pTmp2;
           return true;
         }
+
       return true;
     }
   else
     mpNumerator->multiply(itemPower);
+
   return true;
 }
 
@@ -298,25 +327,27 @@ bool CNormalFraction::multiply(const CNormalItemPower& itemPower)
  * @return pointer to lcm.
  */
 const CNormalLcm* CNormalFraction::findLcm() const
-  {
-    CNormalLcm* lcm = new CNormalLcm();
+{
+  CNormalLcm* lcm = new CNormalLcm();
 
-    std::set<CNormalFraction*>::const_iterator it;
-    std::set<CNormalFraction*>::const_iterator itEnd = mpNumerator->getFractions().end();
-    for (it = mpNumerator->getFractions().begin(); it != itEnd; ++it)
-      {
-        lcm->add((*it)->getDenominator());
-      }
+  std::set<CNormalFraction*>::const_iterator it;
+  std::set<CNormalFraction*>::const_iterator itEnd = mpNumerator->getFractions().end();
 
-    std::set<CNormalFraction*>::const_iterator it2;
-    std::set<CNormalFraction*>::const_iterator it2End = mpDenominator->getFractions().end();
-    for (it2 = mpDenominator->getFractions().begin(); it2 != it2End; ++it2)
-      {
-        lcm->add((*it2)->getDenominator());
-      }
+  for (it = mpNumerator->getFractions().begin(); it != itEnd; ++it)
+    {
+      lcm->add((*it)->getDenominator());
+    }
 
-    return lcm;
-  }
+  std::set<CNormalFraction*>::const_iterator it2;
+  std::set<CNormalFraction*>::const_iterator it2End = mpDenominator->getFractions().end();
+
+  for (it2 = mpDenominator->getFractions().begin(); it2 != it2End; ++it2)
+    {
+      lcm->add((*it2)->getDenominator());
+    }
+
+  return lcm;
+}
 
 /**
  * Multiply this fraction by a lcm.
@@ -329,10 +360,12 @@ const CNormalSum* CNormalFraction::multiply(CNormalLcm lcm)
     {
       return NULL;
     }
+
   if (lcm.remove(*mpDenominator) == false)
     {
       return NULL;
     }
+
   mpNumerator->multiply(lcm);
   CNormalSum * sum = new CNormalSum(*mpNumerator);
   return sum;
@@ -347,10 +380,12 @@ bool CNormalFraction::simplify()
 {
   bool result = true;
   result = this->mpNumerator->simplify();
+
   if (result == true)
     {
       result = this->mpDenominator->simplify();
     }
+
   if (result == true)
     {
       if (mpNumerator->getFractions().size() + mpDenominator->getFractions().size() > 0)
@@ -361,17 +396,18 @@ bool CNormalFraction::simplify()
           delete lcm;
         }
     }
+
   cancel();
   return result;
 }
 
 bool CNormalFraction::operator==(const CNormalFraction & rhs) const
-  {
-    if ((*mpNumerator == *rhs.mpNumerator) && (*mpDenominator == *rhs.mpDenominator))
-      return true;
-    else
-      return false;
-  }
+{
+  if ((*mpNumerator == *rhs.mpNumerator) && (*mpDenominator == *rhs.mpDenominator))
+    return true;
+  else
+    return false;
+}
 
 std::ostream & operator<< (std::ostream &os, const CNormalFraction & d)
 {
@@ -380,40 +416,44 @@ std::ostream & operator<< (std::ostream &os, const CNormalFraction & d)
 }
 
 std::string CNormalFraction::toString() const
-  {
-    std::ostringstream os;
-    if (this->checkDenominatorOne() == true)
-      {
-        os << *this->mpNumerator;
-      }
-    else
-      {
-        os << "(" << *this->mpNumerator << ")/(" << *this->mpDenominator << ")";
-      }
-    return os.str();
-  }
+{
+  std::ostringstream os;
+
+  if (this->checkDenominatorOne() == true)
+    {
+      os << *this->mpNumerator;
+    }
+  else
+    {
+      os << "(" << *this->mpNumerator << ")/(" << *this->mpDenominator << ")";
+    }
+
+  return os.str();
+}
 
 CNormalBase * CNormalFraction::copy() const
-  {
-    return new CNormalFraction(*this);
-  }
+{
+  return new CNormalFraction(*this);
+}
 
 bool CNormalFraction::operator<(const CNormalFraction& src) const
-  {
-    bool result = false;
-    if ((*this->mpNumerator) < (*src.mpNumerator))
-      {
-        result = true;
-      }
-    else if ((*this->mpNumerator) == (*src.mpNumerator))
-      {
-        if ((*this->mpDenominator) < (*src.mpDenominator))
-          {
-            result = true;
-          }
-      }
-    return result;
-  }
+{
+  bool result = false;
+
+  if ((*this->mpNumerator) < (*src.mpNumerator))
+    {
+      result = true;
+    }
+  else if ((*this->mpNumerator) == (*src.mpNumerator))
+    {
+      if ((*this->mpDenominator) < (*src.mpDenominator))
+        {
+          result = true;
+        }
+    }
+
+  return result;
+}
 
 /*
 std::set<const CNormalLogical*> CNormalFraction::findLogicals() const
@@ -476,16 +516,16 @@ std::set<const CNormalLogical*> CNormalFraction::findLogicals() const
  */
 
 bool CNormalFraction::checkIsOne() const
-  {
-    // the fraction is one if numerator and denominator are equal
-    return ((*mpNumerator) == (*mpDenominator));
-  }
+{
+  // the fraction is one if numerator and denominator are equal
+  return ((*mpNumerator) == (*mpDenominator));
+}
 
 bool CNormalFraction::checkIsZero() const
-  {
-    // the fraction is 0.0 if the numerator is 0.0
-    return this->mpNumerator->checkIsZero();
-  }
+{
+  // the fraction is 0.0 if the numerator is 0.0
+  return this->mpNumerator->checkIsZero();
+}
 
 CNormalFraction* CNormalFraction::createUnitFraction()
 {

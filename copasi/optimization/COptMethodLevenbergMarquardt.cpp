@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodLevenbergMarquardt.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:31:27 $
+//   $Author: ssahle $
+//   $Date: 2012/04/22 14:54:52 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,6 +23,7 @@
 // adapted by Pedro Mendes, April 2005, from the original Gepasi file
 // levmarq.cpp : Restricted step Newton method (Marquardt iteration)
 
+#include <cmath>
 #include "copasi.h"
 
 #include "COptMethodLevenbergMarquardt.h"

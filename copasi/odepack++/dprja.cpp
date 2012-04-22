@@ -1,19 +1,25 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/dprja.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/05 19:38:32 $
+   $Author: ssahle $
+   $Date: 2012/04/22 14:54:53 $
    End CVS Header */
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
 //
 // This C++ code is based on an f2c conversion of the Fortran
 // library ODEPACK available at: http://www.netlib.org/odepack/
 
-#include <math.h>
+#include <cmath>
 
 #include <algorithm>
 
@@ -115,43 +121,52 @@ C_INT CInternalSolver::dprja_(C_INT *neq, double *y, double *yh,
   dls001_1.ierpj = 0;
   dls001_1.jcur = 1;
   hl0 = dls001_1.h__ * dls001_1.el0;
+
   switch (dls001_1.miter)
     {
-    case 1: goto L100;
-    case 2: goto L200;
-    case 3: goto L300;
-    case 4: goto L400;
-    case 5: goto L500;
+      case 1: goto L100;
+      case 2: goto L200;
+      case 3: goto L300;
+      case 4: goto L400;
+      case 5: goto L500;
     }
+
   /* If MITER = 1, call JAC and multiply by scalar. ----------------------- */
 L100:
   lenp = dls001_1.n * dls001_1.n;
   i__1 = lenp;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L110: */
       wm[i__ + 2] = 0.;
     }
+
   jac(&neq[1], &dls001_1.tn, &y[1], &c__0, &c__0, &wm[3], &dls001_1.n);
   con = -hl0;
   i__1 = lenp;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L120: */
       wm[i__ + 2] *= con;
     }
+
   goto L240;
   /* If MITER = 2, make N calls to F to approximate J. -------------------- */
 L200:
   fac = dmnorm_(&dls001_1.n, &savf[1], &ewt[1]);
   r0 = fabs(dls001_1.h__) * 1e3 * dls001_1.uround * dls001_1.n * fac;
+
   if (r0 == 0.)
     {
       r0 = 1.;
     }
+
   srur = wm[1];
   j1 = 2;
   i__1 = dls001_1.n;
+
   for (j = 1; j <= i__1; ++j)
     {
       yj = y[j];
@@ -162,15 +177,18 @@ L200:
       fac = -hl0 / r__;
       f(&neq[1], &dls001_1.tn, &y[1], &ftem[1]);
       i__2 = dls001_1.n;
+
       for (i__ = 1; i__ <= i__2; ++i__)
         {
           /* L220: */
           wm[i__ + j1] = (ftem[i__] - savf[i__]) * fac;
         }
+
       y[j] = yj;
       j1 += dls001_1.n;
       /* L230: */
     }
+
   dls001_1.nfe += dls001_1.n;
 L240:
   /* Compute norm of Jacobian. -------------------------------------------- */
@@ -179,18 +197,22 @@ L240:
   j = 3;
   np1 = dls001_1.n + 1;
   i__1 = dls001_1.n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       wm[j] += 1.;
       /* L250: */
       j += np1;
     }
+
   /* Do LU decomposition on P. -------------------------------------------- */
   dgefa_(&wm[3], &dls001_1.n, &dls001_1.n, &iwm[21], &ier);
+
   if (ier != 0)
     {
       dls001_1.ierpj = 1;
     }
+
   return 0;
   /* Dummy block only, since MITER is never 3 in this routine. ------------ */
 L300:
@@ -204,19 +226,23 @@ L400:
   meband = mband + ml;
   lenp = meband * dls001_1.n;
   i__1 = lenp;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L410: */
       wm[i__ + 2] = 0.;
     }
+
   jac(&neq[1], &dls001_1.tn, &y[1], &ml, &mu, &wm[ml3], &meband);
   con = -hl0;
   i__1 = lenp;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L420: */
       wm[i__ + 2] *= con;
     }
+
   goto L570;
   /* If MITER = 5, make MBAND calls to F to approximate J. ---------------- */
 L500:
@@ -229,15 +255,19 @@ L500:
   srur = wm[1];
   fac = dmnorm_(&dls001_1.n, &savf[1], &ewt[1]);
   r0 = fabs(dls001_1.h__) * 1e3 * dls001_1.uround * dls001_1.n * fac;
+
   if (r0 == 0.)
     {
       r0 = 1.;
     }
+
   i__1 = mba;
+
   for (j = 1; j <= i__1; ++j)
     {
       i__2 = dls001_1.n;
       i__3 = mband;
+
       for (i__ = j; i__3 < 0 ? i__ >= i__2 : i__ <= i__2; i__ += i__3)
         {
           yi = y[i__];
@@ -247,9 +277,11 @@ L500:
           /* L530: */
           y[i__] += r__;
         }
+
       f(&neq[1], &dls001_1.tn, &y[1], &ftem[1]);
       i__3 = dls001_1.n;
       i__2 = mband;
+
       for (jj = j; i__2 < 0 ? jj >= i__3 : jj <= i__3; jj += i__2)
         {
           y[jj] = yh[jj + yh_dim1];
@@ -266,15 +298,19 @@ L500:
           i2 = std::min(i__4, dls001_1.n);
           ii = jj * meb1 - ml + 2;
           i__4 = i2;
+
           for (i__ = i1; i__ <= i__4; ++i__)
             {
               /* L540: */
               wm[ii + i__] = (ftem[i__] - savf[i__]) * fac;
             }
+
           /* L550: */
         }
+
       /* L560: */
     }
+
   dls001_1.nfe += mba;
 L570:
   /* Compute norm of Jacobian. -------------------------------------------- */
@@ -283,18 +319,22 @@ L570:
   /* Add identity matrix. ------------------------------------------------- */
   ii = mband + 2;
   i__1 = dls001_1.n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       wm[ii] += 1.;
       /* L580: */
       ii += meband;
     }
+
   /* Do LU decomposition of P. -------------------------------------------- */
   dgbfa_(&wm[3], &meband, &dls001_1.n, &ml, &mu, &iwm[21], &ier);
+
   if (ier != 0)
     {
       dls001_1.ierpj = 1;
     }
+
   return 0;
   /* ----------------------- End of Subroutine DPRJA ----------------------- */
 } /* dprja_ */

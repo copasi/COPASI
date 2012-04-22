@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/07 17:12:08 $
+//   $Author: ssahle $
+//   $Date: 2012/04/22 14:54:52 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,7 +21,7 @@
 // All rights reserved.
 
 #include <limits>
-#include <math.h>
+#include <cmath>
 #include <float.h>
 #include <sstream>
 #include <stdlib.h>

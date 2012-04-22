@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CLSODA.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2010/07/16 19:01:58 $
+   $Author: ssahle $
+   $Date: 2012/04/22 14:54:53 $
    End CVS Header */
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,7 +19,7 @@
 // This C++ code is based on an f2c conversion of the Fortran
 // library ODEPACK available at: http://www.netlib.org/odepack/
 
-#include <math.h>
+#include <cmath>
 #include <float.h>
 
 #include <algorithm>

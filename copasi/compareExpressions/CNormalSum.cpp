@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalSum.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/13 17:40:50 $
+//   $Author: ssahle $
+//   $Date: 2012/04/22 14:51:17 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,7 +28,7 @@
 #endif  // WIN32
 
 #include <vector>
-#include <math.h>
+#include <cmath>
 #include <sstream>
 
 #include "copasi.h"

@@ -1,19 +1,25 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/dmnorm.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/06 15:14:53 $
+   $Author: ssahle $
+   $Date: 2012/04/22 14:54:53 $
    End CVS Header */
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
 //
 // This C++ code is based on an f2c conversion of the Fortran
 // library ODEPACK available at: http://www.netlib.org/odepack/
 
-#include <math.h>
+#include <cmath>
 
 #include <algorithm>
 
@@ -61,6 +67,7 @@ double dmnorm_(C_INT *n, double *v, double *w)
   /* Function Body */
   vm = 0.;
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L10: */
@@ -68,6 +75,7 @@ double dmnorm_(C_INT *n, double *v, double *w)
       d__2 = vm, d__3 = (d__1 = v[i__], fabs(d__1)) * w[i__];
       vm = std::max(d__2, d__3);
     }
+
   ret_val = vm;
   return ret_val;
   /* ----------------------- End of Function DMNORM ------------------------ */

@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLcm.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/03/03 15:57:53 $
+//   $Author: ssahle $
+//   $Date: 2012/04/22 14:51:17 $
 // End CVS Header
+
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -17,14 +22,14 @@
 
 #ifdef WIN32
 # pragma warning (disable: 4786)
-# pragma warning (disable: 4243) 
+# pragma warning (disable: 4243)
 // warning C4355: 'this' : used in base member initializer list
 # pragma warning (disable: 4355)
 #endif  // WIN32
 
 #include <vector>
 #include <set>
-#include <math.h>
+#include <cmath>
 #include <sstream>
 
 #include "copasi.h"
@@ -47,12 +52,15 @@ CNormalLcm::CNormalLcm(const CNormalLcm& src)
 {
   std::set <CNormalItemPower*, compareItemPowers >::const_iterator it;
   std::set <CNormalItemPower*, compareItemPowers >::const_iterator itEnd = src.mItemPowers.end();
+
   for (it = src.mItemPowers.begin(); it != itEnd; ++it)
     {
       mItemPowers.insert(new CNormalItemPower(**it));
     }
+
   std::vector<CNormalSum*>::const_iterator it2;
   std::vector<CNormalSum*>::const_iterator it2End = src.mSums.end();
+
   for (it2 = src.mSums.begin(); it2 != it2End; ++it2)
     {
       mSums.push_back(new CNormalSum(**it2));
@@ -62,15 +70,17 @@ CNormalLcm::CNormalLcm(const CNormalLcm& src)
 /**
  * Assignment operator
  */
-CNormalLcm & CNormalLcm::operator=(const CNormalLcm& src)
+CNormalLcm & CNormalLcm::operator=(const CNormalLcm & src)
 {
   std::set<CNormalItemPower*, compareItemPowers >::const_iterator it;
   std::set<CNormalItemPower*, compareItemPowers >::const_iterator itEnd = src.mItemPowers.end();
+
   for (it = src.mItemPowers.begin(); it != itEnd; ++it)
     mItemPowers.insert(new CNormalItemPower(**it));
 
   std::vector<CNormalSum*>::const_iterator it2;
   std::vector<CNormalSum*>::const_iterator it2End = src.mSums.end();
+
   for (it2 = src.mSums.begin(); it2 != it2End; ++it2)
     mSums.push_back(new CNormalSum(**it2));
 
@@ -84,11 +94,13 @@ CNormalLcm::~CNormalLcm()
 {
   std::set<CNormalItemPower*, compareItemPowers >::const_iterator it;
   std::set<CNormalItemPower*, compareItemPowers >::const_iterator itEnd = mItemPowers.end();
+
   for (it = mItemPowers.begin(); it != itEnd; ++it)
     delete *it;
 
   std::vector<CNormalSum*>::const_iterator it2;
   std::vector<CNormalSum*>::const_iterator it2End = mSums.end();
+
   for (it2 = mSums.begin(); it2 != it2End; ++it2)
     delete *it2;
 }
@@ -102,6 +114,7 @@ bool CNormalLcm::add(const CNormalItemPower& itemPower)
 {
   std::set <CNormalItemPower*, compareItemPowers >::iterator it;
   std::set <CNormalItemPower*, compareItemPowers >::iterator itEnd = mItemPowers.end();
+
   for (it = mItemPowers.begin(); it != itEnd; ++it)
     {
       if ((*it)->getItem().areEqual(itemPower.getItem()))
@@ -110,6 +123,7 @@ bool CNormalLcm::add(const CNormalItemPower& itemPower)
           return true;
         }
     }
+
   CNormalItemPower* tmp = new CNormalItemPower(itemPower);
   mItemPowers.insert(tmp);
   return true;
@@ -124,25 +138,28 @@ bool CNormalLcm::add(const CNormalSum& sum)
 {
   switch (sum.getProducts().size())
     {
-    case 0:     //Sum must contain at least one product!
+      case 0:     //Sum must contain at least one product!
       {
         return false;
       }
-    case 1:
+      case 1:
       {
         CNormalProduct* product = *sum.getProducts().begin();
         std::set<CNormalItemPower*, compareItemPowers >::const_iterator it;
         std::set<CNormalItemPower*, compareItemPowers >::const_iterator itEnd = product->getItemPowers().end();
+
         for (it = product->getItemPowers().begin(); it != itEnd; ++it)
           {
             add(**it);
           }
+
         return true;
       }
-    default:
+      default:
       {
         std::vector<CNormalSum*>::iterator it;
         std::vector<CNormalSum*>::iterator itEnd = mSums.end();
+
         for (it = mSums.begin(); it != itEnd; ++it)
           {
             if (sum == **it)
@@ -150,6 +167,7 @@ bool CNormalLcm::add(const CNormalSum& sum)
                 return true;
               }
           }
+
         CNormalSum* tmp = new CNormalSum(sum);
         mSums.push_back(tmp);
         return true;
@@ -165,23 +183,28 @@ bool CNormalLcm::remove(const CNormalItemPower& itemPower)
 {
   std::set <CNormalItemPower*, compareItemPowers >::iterator it;
   std::set <CNormalItemPower*, compareItemPowers >::iterator itEnd = mItemPowers.end();
+
   for (it = mItemPowers.begin(); it != itEnd; ++it)
     {
       if ((*it)->getItem().areEqual(itemPower.getItem()))
         {
           C_FLOAT64 dif = (*it)->getExp() - itemPower.getExp();
+
           if (dif <= -1.0E-100)
             return false;
+
           if (fabs(dif) < 1.0E-100)
             {
               delete *it;
               mItemPowers.erase(it);
               return true;
             }
+
           (*it)->setExp(dif);
           return true;
         }
     }
+
   return false;
 }
 
@@ -195,38 +218,44 @@ bool CNormalLcm::remove(const CNormalSum& sum)   //sum must not contain fraction
   std::set <CNormalItemPower*, compareItemPowers >::const_iterator it, itEnd;
   std::vector<CNormalSum*>::iterator it2, itEnd2;
   const CNormalProduct* pProduct = NULL;
+
   switch (sum.getProducts().size())
     {
-    case 0:
-      result = false;
-      break;
-    case 1:
-      pProduct = *sum.getProducts().begin();
-      itEnd = pProduct->getItemPowers().end();
-      for (it = pProduct->getItemPowers().begin(); it != itEnd && result == true; ++it)
-        {
-          if (remove(**it) == false)
-            {
-              result = false;
-            }
-        }
-      break;
-    default:
-      itEnd2 = mSums.end();
-      for (it2 = mSums.begin(); it2 != itEnd2; ++it2)
-        {
-          if (**it2 == sum)
-            {
-              delete *it2;
-              mSums.erase(it2);
-              break;
-            }
-        }
-      if (it2 == itEnd2)
-        {
-          result = false;
-        }
+      case 0:
+        result = false;
+        break;
+      case 1:
+        pProduct = *sum.getProducts().begin();
+        itEnd = pProduct->getItemPowers().end();
+
+        for (it = pProduct->getItemPowers().begin(); it != itEnd && result == true; ++it)
+          {
+            if (remove(**it) == false)
+              {
+                result = false;
+              }
+          }
+
+        break;
+      default:
+        itEnd2 = mSums.end();
+
+        for (it2 = mSums.begin(); it2 != itEnd2; ++it2)
+          {
+            if (**it2 == sum)
+              {
+                delete *it2;
+                mSums.erase(it2);
+                break;
+              }
+          }
+
+        if (it2 == itEnd2)
+          {
+            result = false;
+          }
     }
+
   return result;
 }
 
@@ -235,25 +264,25 @@ bool CNormalLcm::remove(const CNormalSum& sum)   //sum must not contain fraction
  * @return mItemPowers.
  */
 const std::set <CNormalItemPower*, compareItemPowers >& CNormalLcm::getItemPowers() const
-  {
-    return mItemPowers;
-  }
+{
+  return mItemPowers;
+}
 
 /**
  * Retrieve the vector of sums of this lcm.
  * @return mSums.
  */
 const std::vector<CNormalSum*>& CNormalLcm::getSums() const
-  {
-    return mSums;
-  }
+{
+  return mSums;
+}
 
 std::string CNormalLcm::toString() const
-  {
-    std::ostringstream os;
-    os << *this;
-    return os.str();
-  }
+{
+  std::ostringstream os;
+  os << *this;
+  return os.str();
+}
 
 std::ostream & operator<< (std::ostream &os, const CNormalLcm & d)
 {
@@ -262,23 +291,28 @@ std::ostream & operator<< (std::ostream &os, const CNormalLcm & d)
       bool firstFactor = true;
       std::set <CNormalItemPower*, compareItemPowers >::const_iterator it;
       std::set <CNormalItemPower*, compareItemPowers >::const_iterator itEnd = d.mItemPowers.end();
+
       for (it = d.mItemPowers.begin(); it != itEnd; ++it)
         {
           if (firstFactor == false)
             {
               os << " * ";
             }
+
           os << **it;
           firstFactor = false;
         }
+
       std::vector<CNormalSum*>::const_iterator it2;
       std::vector<CNormalSum*>::const_iterator it2End = d.mSums.end();
+
       for (it2 = d.mSums.begin(); it2 != it2End; ++it2)
         {
           if (firstFactor == false)
             {
               os << " * ";
             }
+
           os << "(" << **it2 << ")";
           firstFactor = false;
         }
@@ -287,6 +321,7 @@ std::ostream & operator<< (std::ostream &os, const CNormalLcm & d)
     {
       os << "1.0";
     }
+
   return os;
 }
 

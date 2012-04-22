@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/10 08:29:56 $
+//   $Author: ssahle $
+//   $Date: 2012/04/22 14:51:18 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,7 +24,7 @@
 
 #include <string>
 #include <set>
-#include <math.h>
+#include <cmath>
 
 #include "function/CEvaluationTree.h"
 #include "function/CEvaluationNode.h"

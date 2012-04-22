@@ -1,19 +1,25 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/dsolsy.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/05 19:38:32 $
+   $Author: ssahle $
+   $Date: 2012/04/22 14:54:53 $
    End CVS Header */
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
 //
 // This C++ code is based on an f2c conversion of the Fortran
 // library ODEPACK available at: http://www.netlib.org/odepack/
 
-#include <math.h>
+#include <cmath>
 #include <algorithm>
 
 #include "copasi.h"
@@ -103,14 +109,16 @@ C_INT CInternalSolver::dsolsy_(double *wm, C_INT *iwm, double *x,
 
   /* Function Body */
   dls001_1.iersl = 0;
+
   switch (dls001_1.miter)
     {
-    case 1: goto L100;
-    case 2: goto L100;
-    case 3: goto L300;
-    case 4: goto L400;
-    case 5: goto L400;
+      case 1: goto L100;
+      case 2: goto L100;
+      case 3: goto L300;
+      case 4: goto L400;
+      case 5: goto L400;
     }
+
 L100:
   dgesl_(&wm[3], &dls001_1.n, &dls001_1.n, &iwm[21], &x[1], &c__0);
   return 0;
@@ -119,29 +127,37 @@ L300:
   phl0 = wm[2];
   hl0 = dls001_1.h__ * dls001_1.el0;
   wm[2] = hl0;
+
   if (hl0 == phl0)
     {
       goto L330;
     }
+
   r__ = hl0 / phl0;
   i__1 = dls001_1.n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       di = 1. - r__ * (1. - 1. / wm[i__ + 2]);
+
       if (fabs(di) == 0.)
         {
           goto L390;
         }
+
       /* L320: */
       wm[i__ + 2] = 1. / di;
     }
+
 L330:
   i__1 = dls001_1.n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L340: */
       x[i__] = wm[i__ + 2] * x[i__];
     }
+
   return 0;
 L390:
   dls001_1.iersl = 1;

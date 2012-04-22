@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/04/10 09:50:22 $
+//   $Author: ssahle $
+//   $Date: 2012/04/22 14:51:16 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,7 +12,7 @@
 // All rights reserved.
 
 #include <limits>
-#include <math.h>
+#include <cmath>
 #include <stdio.h>
 #include <cctype>
 #include <algorithm>

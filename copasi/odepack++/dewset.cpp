@@ -1,19 +1,25 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/dewset.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:19:11 $
+   $Author: ssahle $
+   $Date: 2012/04/22 14:54:53 $
    End CVS Header */
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
 //
 // This C++ code is based on an f2c conversion of the Fortran
 // library ODEPACK available at: http://www.netlib.org/odepack/
 
-#include <math.h>
+#include <cmath>
 
 #include "copasi.h"
 
@@ -63,42 +69,51 @@ C_INT dewset_(C_INT *n, C_INT *itol, double *rtol,
   /* Function Body */
   switch (*itol)
     {
-    case 1: goto L10;
-    case 2: goto L20;
-    case 3: goto L30;
-    case 4: goto L40;
+      case 1: goto L10;
+      case 2: goto L20;
+      case 3: goto L30;
+      case 4: goto L40;
     }
+
 L10:
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L15: */
       ewt[i__] = rtol[1] * (d__1 = ycur[i__], fabs(d__1)) + atol[1];
     }
+
   return 0;
 L20:
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L25: */
       ewt[i__] = rtol[1] * (d__1 = ycur[i__], fabs(d__1)) + atol[i__];
     }
+
   return 0;
 L30:
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L35: */
       ewt[i__] = rtol[i__] * (d__1 = ycur[i__], fabs(d__1)) + atol[1];
     }
+
   return 0;
 L40:
   i__1 = *n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L45: */
       ewt[i__] = rtol[i__] * (d__1 = ycur[i__], fabs(d__1)) + atol[i__];
     }
+
   return 0;
   /* ----------------------- END OF SUBROUTINE DEWSET ---------------------- */
 } /* dewset_ */

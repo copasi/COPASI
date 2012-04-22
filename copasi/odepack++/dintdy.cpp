@@ -1,19 +1,25 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/dintdy.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/05 19:38:32 $
+   $Author: ssahle $
+   $Date: 2012/04/22 14:54:53 $
    End CVS Header */
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
 //
 // This C++ code is based on an f2c conversion of the Fortran
 // library ODEPACK available at: http://www.netlib.org/odepack/
 
-#include <math.h>
+#include <cmath>
 #include <string>
 
 #include <algorithm>
@@ -113,83 +119,104 @@ C_INT CInternalSolver::dintdy_(double *t, const C_INT *k, double *yh,
 
   /* Function Body */
   *iflag = 0;
+
   if (*k < 0 || *k > dls001_1.nq)
     {
       goto L80;
     }
+
   d__1 = fabs(dls001_1.tn) + fabs(dls001_1.hu);
   tp = dls001_1.tn - dls001_1.hu - dls001_1.uround * 100. * d_sign(d__1, dls001_1.hu);
-  if ((*t - tp) * (*t - dls001_1.tn) > 0.)
+
+  if ((*t - tp) *(*t - dls001_1.tn) > 0.)
     {
       goto L90;
     }
 
   s = (*t - dls001_1.tn) / dls001_1.h__;
   ic = 1;
+
   if (*k == 0)
     {
       goto L15;
     }
+
   jj1 = dls001_1.l - *k;
   i__1 = dls001_1.nq;
+
   for (jj = jj1; jj <= i__1; ++jj)
     {
       /* L10: */
       ic *= jj;
     }
+
 L15:
   c__ = (double) ic;
   i__1 = dls001_1.n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L20: */
       dky[i__] = c__ * yh[i__ + dls001_1.l * yh_dim1];
     }
+
   if (*k == dls001_1.nq)
     {
       goto L55;
     }
+
   jb2 = dls001_1.nq - *k;
   i__1 = jb2;
+
   for (jb = 1; jb <= i__1; ++jb)
     {
       j = dls001_1.nq - jb;
       jp1 = j + 1;
       ic = 1;
+
       if (*k == 0)
         {
           goto L35;
         }
+
       jj1 = jp1 - *k;
       i__2 = j;
+
       for (jj = jj1; jj <= i__2; ++jj)
         {
           /* L30: */
           ic *= jj;
         }
+
 L35:
       c__ = (double) ic;
       i__2 = dls001_1.n;
+
       for (i__ = 1; i__ <= i__2; ++i__)
         {
           /* L40: */
           dky[i__] = c__ * yh[i__ + jp1 * yh_dim1] + s * dky[i__];
         }
+
       /* L50: */
     }
+
   if (*k == 0)
     {
       return 0;
     }
+
 L55:
   i__1 = -(*k);
   r__ = pow_di(&dls001_1.h__, &i__1);
   i__1 = dls001_1.n;
+
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L60: */
       dky[i__] = r__ * dky[i__];
     }
+
   return 0;
 
 L80:

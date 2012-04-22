@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.107 $
+//   $Revision: 1.108 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/16 12:33:29 $
+//   $Author: ssahle $
+//   $Date: 2012/04/22 14:51:17 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,7 +39,7 @@
 #include <QCloseEvent>
 
 #include <iostream>
-#include <math.h>
+#include <cmath>
 #include <stdlib.h>
 
 #include "copasi/UI/CQMessageBox.h"

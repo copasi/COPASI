@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.76 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/11/30 17:21:00 $
+//   $Author: ssahle $
+//   $Date: 2012/04/22 14:54:53 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,7 +29,7 @@
 
 #include <iostream>
 #include <float.h>
-#include <math.h>
+#include <cmath>
 
 #include "copasi.h"
 #include "utilities/CReadConfig.h"
