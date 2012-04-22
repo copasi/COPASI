@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.164 $
+//   $Revision: 1.165 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/26 21:09:34 $
+//   $Author: ssahle $
+//   $Date: 2012/04/22 15:52:45 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,9 +43,11 @@
 #include <QList>
 #include <QMenu>
 
+//#include <OpenGL/glu.h>
+
 #include <iostream>
 #include <limits>
-#include <math.h>
+#include <cmath>
 #include <float.h>
 #include <utility>
 
