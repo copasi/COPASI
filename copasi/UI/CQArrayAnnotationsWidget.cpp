@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/03/28 09:51:14 $
+//   $Author: ssahle $
+//   $Date: 2012/04/22 15:41:45 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,7 +23,7 @@
 #ifdef SunOS
 #include <ieeefp.h>
 #else
-#include <math.h>
+#include <cmath>
 #endif
 
 #include "copasi.h"

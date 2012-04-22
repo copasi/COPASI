@@ -1,20 +1,25 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/scrollbar.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:19:33 $
+   $Author: ssahle $
+   $Date: 2012/04/22 15:41:47 $
    End CVS Header */
 
-// Copyright © 1997   Josef Wilgen
-// Copyright © 2002   Uwe Rathmann
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright  1997   Josef Wilgen
+// Copyright  2002   Uwe Rathmann
 //
 // This file is published under the Qwt License, Version 1.0.
 // You should have received a copy of this licence in the file
 // QwtLicense.
 //
 // Modifications made to the original are
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright  2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -24,7 +29,7 @@
 #endif
 #include "scrollbar.h"
 
-#include <math.h>
+#include <cmath>
 
 ScrollBar::ScrollBar(QWidget * parent):
     QScrollBar(parent),
@@ -73,9 +78,9 @@ void ScrollBar::setInverted(bool inverted)
 }
 
 bool ScrollBar::isInverted() const
-  {
-    return d_inverted;
-  }
+{
+  return d_inverted;
+}
 
 void ScrollBar::setBase(double min, double max)
 {
@@ -114,6 +119,7 @@ void ScrollBar::moveSlider(double min, double max)
 
   setRange(sliderTicks / 2, d_baseTicks - sliderTicks / 2);
   int steps = sliderTicks / 200;
+
   if (steps <= 0)
     steps = 1;
 
@@ -140,63 +146,63 @@ void ScrollBar::moveSlider(double min, double max)
 }
 
 double ScrollBar::minBaseValue() const
-  {
-    if (mLogScale)
-      return exp(d_minBase);
-    else
-      return d_minBase;
-  }
+{
+  if (mLogScale)
+    return exp(d_minBase);
+  else
+    return d_minBase;
+}
 
 double ScrollBar::maxBaseValue() const
-  {
-    if (mLogScale)
-      return exp(d_maxBase);
-    else
-      return d_maxBase;
-  }
+{
+  if (mLogScale)
+    return exp(d_maxBase);
+  else
+    return d_maxBase;
+}
 
 void ScrollBar::sliderRange(int value, double &min, double &max) const
-  {
-    if (isInverted())
-      value = d_baseTicks - value;
+{
+  if (isInverted())
+    value = d_baseTicks - value;
 
-    const int visibleTicks = pageStep();
+  const int visibleTicks = pageStep();
 
-    min = mapFromTick(value - visibleTicks / 2);
-    max = mapFromTick(value + visibleTicks / 2);
+  min = mapFromTick(value - visibleTicks / 2);
+  max = mapFromTick(value + visibleTicks / 2);
 
-    if (mLogScale)
-      {
-        min = exp(min);
-        max = exp(max);
-      }
-  }
+  if (mLogScale)
+    {
+      min = exp(min);
+      max = exp(max);
+    }
+}
 
 double ScrollBar::minSliderValue() const
-  {
-    double min, dummy;
-    sliderRange(value(), min, dummy);
+{
+  double min, dummy;
+  sliderRange(value(), min, dummy);
 
-    return min;
-  }
+  return min;
+}
 
 double ScrollBar::maxSliderValue() const
-  {
-    double max, dummy;
-    sliderRange(value(), dummy, max);
+{
+  double max, dummy;
+  sliderRange(value(), dummy, max);
 
-    return max;
-  }
+  return max;
+}
 
 int ScrollBar::mapToTick(double v) const
-  {
-    return (int) ((v - d_minBase) / (d_maxBase - d_minBase) * d_baseTicks);
-  }
+{
+  return (int)((v - d_minBase) / (d_maxBase - d_minBase) * d_baseTicks);
+}
 
 double ScrollBar::mapFromTick(int tick) const
-  {
-    return d_minBase + (d_maxBase - d_minBase) * tick / d_baseTicks;
-  }
+{
+  return d_minBase + (d_maxBase - d_minBase) * tick / d_baseTicks;
+}
 
 void ScrollBar::catchValueChanged(int value)
 {
@@ -213,27 +219,29 @@ void ScrollBar::catchSliderMoved(int value)
 }
 
 int ScrollBar::extent() const
-  {
+{
 #if QT_VERSION < 0x040000
-    return style().pixelMetric(QStyle::PM_ScrollBarExtent, this);
+  return style().pixelMetric(QStyle::PM_ScrollBarExtent, this);
 #else
-    QStyleOptionSlider opt;
-    opt.init(this);
-    opt.subControls = QStyle::SC_None;
-    opt.activeSubControls = QStyle::SC_None;
-    opt.orientation = orientation();
-    opt.minimum = minimum();
-    opt.maximum = maximum();
-    opt.sliderPosition = sliderPosition();
-    opt.sliderValue = value();
-    opt.singleStep = singleStep();
-    opt.pageStep = pageStep();
-    opt.upsideDown = invertedAppearance();
-    if (orientation() == Qt::Horizontal)
-      opt.state |= QStyle::State_Horizontal;
-    return style()->pixelMetric(QStyle::PM_ScrollBarExtent, &opt, this);
+  QStyleOptionSlider opt;
+  opt.init(this);
+  opt.subControls = QStyle::SC_None;
+  opt.activeSubControls = QStyle::SC_None;
+  opt.orientation = orientation();
+  opt.minimum = minimum();
+  opt.maximum = maximum();
+  opt.sliderPosition = sliderPosition();
+  opt.sliderValue = value();
+  opt.singleStep = singleStep();
+  opt.pageStep = pageStep();
+  opt.upsideDown = invertedAppearance();
+
+  if (orientation() == Qt::Horizontal)
+    opt.state |= QStyle::State_Horizontal;
+
+  return style()->pixelMetric(QStyle::PM_ScrollBarExtent, &opt, this);
 #endif
-  }
+}
 
 void ScrollBar::setLogScale(bool l)
 {
@@ -241,6 +249,6 @@ void ScrollBar::setLogScale(bool l)
 }
 
 bool ScrollBar::isLogScale() const
-  {
-    return mLogScale;
-  }
+{
+  return mLogScale;
+}

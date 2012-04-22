@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderSettingsDialog.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/15 17:07:54 $
+//   $Author: ssahle $
+//   $Date: 2012/04/22 15:41:44 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,7 @@
 
 #include <qvalidator.h>
 
-#include <math.h>
+#include <cmath>
 
 #include "copasi.h"
 

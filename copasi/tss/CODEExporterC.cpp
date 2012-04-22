@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterC.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/07/05 19:24:02 $
+//   $Author: ssahle $
+//   $Date: 2012/04/22 15:41:47 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,7 +21,7 @@
 // All rights reserved.
 
 #include <locale>
-#include <math.h>
+#include <cmath>
 #include "copasi.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
