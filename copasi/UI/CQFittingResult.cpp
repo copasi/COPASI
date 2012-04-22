@@ -135,10 +135,15 @@ bool CQFittingResult::enterProtected()
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
+  QFont smallFont(this->font());
+  smallFont.setPointSize(smallFont.pointSize() - 3);
+
+  //the parameters table
   mpParameters->setRowCount((int) imax);
 
   for (i = 0; i != imax; i++)
     {
+      //1st column: parameter name
       const CCopasiObject *pObject =
         pDataModel->getDataObject(Items[i]->getObjectCN());
 
@@ -157,16 +162,36 @@ bool CQFittingResult::enterProtected()
 
       mpParameters->setItem((int) i, 0, pItem);
 
+      //2nd column: lower bound
+      pItem = new QTableWidgetItem(FROM_UTF8(Items[i]->getLowerBound()));
+      pItem->setFont(smallFont);
+      mpParameters->setItem((int) i, 1, pItem);
+
+      //3rd column: start value
+      pItem = new QTableWidgetItem(QString::number(Items[i]->getStartValue()));
+      pItem->setForeground(QColor(120, 120, 140));
+      mpParameters->setItem((int) i, 2, pItem);
+
+      //4th column: solution value
       const C_FLOAT64 & Solution = Solutions[i];
       pItem = new QTableWidgetItem(QString::number(Solution));
-      mpParameters->setItem((int) i, 1, pItem);
+      mpParameters->setItem((int) i, 3, pItem);
+
+      //5th column: lower bound
+      pItem = new QTableWidgetItem(FROM_UTF8(Items[i]->getUpperBound()));
+      pItem->setFont(smallFont);
+      mpParameters->setItem((int) i, 4, pItem);
+
+
       const C_FLOAT64 & StdDeviation = StdDeviations[i];
       pItem = new QTableWidgetItem(QString::number(StdDeviation));
-      mpParameters->setItem((int) i, 2, pItem);
+      mpParameters->setItem((int) i, 5, pItem);
+
       pItem = new QTableWidgetItem(QString::number(fabs(100.0 * StdDeviation / Solution)));
-      mpParameters->setItem((int) i, 3, pItem);
+      mpParameters->setItem((int) i, 6, pItem);
+
       pItem = new QTableWidgetItem(QString::number(Gradients[i]));
-      mpParameters->setItem((int) i, 4, pItem);
+      mpParameters->setItem((int) i, 7, pItem);
     }
 
   mpParameters->resizeColumnsToContents();
