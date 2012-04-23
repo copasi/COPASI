@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:10:23 $
+//   $Date: 2012/04/23 23:14:03 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,20 @@
 
 #include <limits>
 #include <cmath>
+
+#ifdef WIN32 // These are not part of ANSI C and Visual C++ misses them.
+static inline double asinh(double value)
+{return log(value + sqrt(value * value + 1.0));}
+
+static inline double acosh(double value)
+{return log(value + sqrt(value * value - 1.0));}
+
+static inline double atanh(double value)
+{return (.5 * log((1.0 + value) / (1.0 - value)));}
+
+static inline double round(double value)
+{return  value < 0.0 ? -floor(-value + 0.5) : floor(value + 0.5);}
+#endif // WIN32
 
 #include "copasi/function/CEvaluationNode.h"
 

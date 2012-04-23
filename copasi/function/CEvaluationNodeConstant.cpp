@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:10:23 $
+//   $Date: 2012/04/23 23:14:03 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,11 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#ifdef WIN32
+# define _USE_MATH_DEFINES
+#endif
+
+#include <cmath>
 #include <string>
 
 #include "copasi.h"
