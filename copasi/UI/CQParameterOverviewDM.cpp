@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQParameterOverviewDM.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/30 18:01:35 $
+//   $Date: 2012/04/23 15:49:57 $
 // End CVS Header
 
 // Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,6 +105,43 @@ Qt::ItemFlags CQParameterOverviewDM::flags(const QModelIndex &index) const
 
   return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable;
 }
+
+// virtual
+QVariant CQParameterOverviewDM::headerData(int section, Qt::Orientation orientation, int role) const
+{
+  if (role != Qt::DisplayRole)
+    return QVariant();
+
+  switch (section)
+    {
+      case COL_NAME:
+        return QVariant("Name");
+        break;
+
+      case COL_DIFF:
+        return QVariant("");
+        break;
+
+      case COL_TYPE:
+        return QVariant("Status");
+        break;
+
+      case COL_VALUE:
+        return QVariant("Value");
+        break;
+
+      case COL_UNIT:
+        return QVariant("Unit");
+        break;
+
+      case COL_ASSIGNMENT:
+        return QVariant("Expression");
+        break;
+    }
+
+  return QVariant();
+}
+
 
 // virtual
 QModelIndex CQParameterOverviewDM::index(int row, int column, const QModelIndex & parent) const

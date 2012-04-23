@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQParameterOverviewDM.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/30 18:01:35 $
+//   $Date: 2012/04/23 15:49:57 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,6 +36,8 @@ public:
   virtual QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
 
   virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+
+  virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
   virtual QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const;
 
