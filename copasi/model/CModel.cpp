@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.413 $
+//   $Revision: 1.414 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/13 18:29:38 $
+//   $Date: 2012/04/23 15:46:50 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2855,7 +2855,6 @@ CModelValue* CModel::createModelValue(const std::string & name,
   CModelValue * cmv = new CModelValue(name);
 
   cmv->setInitialValue(value);
-  cmv->setValue(value);
 
   if (!mValues.add(cmv, true))
     {
