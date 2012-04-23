@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CluX.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2012/04/22 15:41:45 $
+   $Author: shoops $
+   $Date: 2012/04/23 21:12:49 $
    End CVS Header */
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <float.h>
 #include <limits>
 
 #include "copasi.h"

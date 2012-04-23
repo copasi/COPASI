@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/26 16:10:40 $
+//   $Date: 2012/04/23 21:11:53 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -430,7 +430,7 @@ C_FLOAT64 CSensMethod::do_collapsing_innerloop(CCopasiArray::index_type & fullin
 
       if (tmpFloat != tmpFloat) continue;
 
-      if (fabs(tmpFloat) >= DBL_MAX) continue;
+      if (fabs(tmpFloat) >= std::numeric_limits< C_FLOAT64 >::max()) continue;
 
       tmpSum += tmpFloat * tmpFloat;
     }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 15:41:46 $
+//   $Author: shoops $
+//   $Date: 2012/04/23 21:12:28 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1007,7 +1007,7 @@ C_INT CCSPMethod::isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & A
 
   result = 1;
 
-  if (fabs(max) >= DBL_MAX || fabs(maxl) >= DBL_MAX || max < 0 || maxl < 0)
+  if (fabs(max) >= std::numeric_limits< C_FLOAT64 >::max() || fabs(maxl) >= std::numeric_limits< C_FLOAT64 >::max() || max < 0 || maxl < 0)
     {
 #ifdef CSPDEBUG
       std::cout <<  " iterations  crucially  disconverged  " << std::endl;

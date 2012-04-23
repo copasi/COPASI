@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-//   $Revision: 1.51 $
+//   $Revision: 1.52 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:33:42 $
+//   $Date: 2012/04/23 21:11:53 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,7 +22,6 @@
 
 #include <cmath>
 #include <limits>
-#include <float.h>
 
 #include "copasi.h"
 #include "utilities/CReadConfig.h"
@@ -231,14 +230,14 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
       Store = metabs[j]->getValue();
 
       // We only need to make sure that we do not have an underflow problem
-      if (fabs(Store) < 100 * DBL_MIN)
+      if (fabs(Store) < 100 * std::numeric_limits< C_FLOAT64 >::min())
         {
           X1 = 0.0;
 
           if (Store < 0.0)
-            X2 = -200.0 * DBL_MIN;
+            X2 = -200.0 * std::numeric_limits< C_FLOAT64 >::min();
           else
-            X2 = 200.0 * DBL_MIN;;
+            X2 = 200.0 * std::numeric_limits< C_FLOAT64 >::min();;
         }
       else
         {

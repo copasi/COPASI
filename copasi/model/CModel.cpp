@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.414 $
+//   $Revision: 1.415 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 15:46:50 $
+//   $Date: 2012/04/23 21:11:04 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,15 +26,8 @@
 #include <string>
 #include <vector>
 #include <limits>
-#include <float.h>
 #include <cmath>
 #include <algorithm>
-
-#ifdef SunOS
-# include <ieeefp.h>
-#else
-# include <float.h>
-#endif
 
 #include "copasi.h"
 
@@ -701,7 +694,7 @@ bool CModel::handleUnusedMetabolites()
       for (pRowEnd = pStoi + numCols; pStoi < pRowEnd; ++pStoi)
         tmp += fabs(*pStoi);
 
-      if (tmp < DBL_MIN) Unused.push_back(i);
+      if (tmp < std::numeric_limits< C_FLOAT64 >::min()) Unused.push_back(i);
     }
 
   NumUnused = Unused.size();

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.165 $
+//   $Revision: 1.166 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 15:52:45 $
+//   $Author: shoops $
+//   $Date: 2012/04/23 21:10:43 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,14 +48,12 @@
 #include <iostream>
 #include <limits>
 #include <cmath>
-#include <float.h>
 #include <utility>
 
 #include "copasi.h"
 
 #include "copasi/utilities/COutputHandler.h"
 
-#include "mathematics.h"
 #include "FontChooser.h"
 
 #if (defined WIN32 && !defined log2)
@@ -2085,8 +2083,8 @@ bool CQGLNetworkPainter::createDataSets()
           // now get some info about the data set such as the maximum concentration values for each reactant
           for (i = 0; i < pTimeSer->getNumVariables(); i++) // iterate on reactants
             {
-              maxR = - DBL_MAX;
-              minR = DBL_MAX;
+              maxR = - std::numeric_limits< C_FLOAT64 >::max();
+              minR = std::numeric_limits< C_FLOAT64 >::max();
               name = pTimeSer->getTitle(i);
               objKey = pTimeSer->getKey(i);
               std::map<std::string, std::string>::iterator iter = keyMap.find(objKey);
@@ -2307,7 +2305,7 @@ void CQGLNetworkPainter::showStep(size_t stepNumber)
               if (pParentLayoutWindow->getMappingMode() != CVisParameters::COLOR_MODE)
                 {// no color mode
 
-                  if (val != -DBL_MAX)
+                  if (val != -std::numeric_limits< C_FLOAT64 >::max())
                     {
                       if (isnan(val)) // test for NaN
                         {
@@ -2340,7 +2338,7 @@ void CQGLNetworkPainter::showStep(size_t stepNumber)
                   // TODO animation, so the arrow heads don't have to be recalculated
                   setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
 
-                  if (val != -DBL_MAX)
+                  if (val != -std::numeric_limits< C_FLOAT64 >::max())
                     {
                       if (isnan(val)) // test for NaN
                         {

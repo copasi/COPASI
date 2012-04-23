@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQScreenshotOptionsDialog.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:29:16 $
+//   $Date: 2012/04/23 21:10:43 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,8 +20,7 @@
 #include <iostream>
 #include <assert.h>
 #include <sstream>
-
-#include "mathematics.h"
+#include <cmath>
 
 CQScreenshotOptionsDialog::CQScreenshotOptionsDialog(double layoutX, double layoutY, double layoutWidth, double layoutHeight,
     double currentX, double currentY, double currentWidth, double currentHeight, unsigned int imageWidth, unsigned int imageHeight,

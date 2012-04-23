@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 15:41:46 $
+//   $Author: shoops $
+//   $Date: 2012/04/23 21:12:28 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -305,13 +305,13 @@ void CTSSAMethod::initializeIntegrationsParameter()
             {
               const CCopasiVectorNS< CCompartment > & Compartment = pModel->getCompartments();
               size_t i, imax;
-              C_FLOAT64 Volume = DBL_MAX;
+              C_FLOAT64 Volume = std::numeric_limits< C_FLOAT64 >::max();
 
               for (i = 0, imax = Compartment.size(); i < imax; i++)
                 if (Compartment[i]->getValue() < Volume)
                   Volume = Compartment[i]->getValue();
 
-              if (Volume == DBL_MAX)
+              if (Volume == std::numeric_limits< C_FLOAT64 >::max())
                 // The default
                 NewValue = 1.e-12;
               else

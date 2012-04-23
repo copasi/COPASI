@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.78 $
+//   $Revision: 1.79 $
 //   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/04/23 06:39:04 $
+//   $Author: shoops $
+//   $Date: 2012/04/23 21:11:54 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,9 +30,9 @@
 #include <qwt_legend_item.h>
 #include <qwt_scale_engine.h>
 
-#include <float.h>
 #include <limits>
 #include <algorithm>
+#include <cmath>
 
 #include "scrollzoomer.h"
 
@@ -164,7 +164,7 @@ QwtDoubleRect C2DCurveData::boundingRect() const
     return QwtDoubleRect(1.0, 1.0, -2.0, -2.0); // invalid
 
   // We need to avoid very small data ranges (absolute and relative)
-  C_FLOAT64 minRange = fabs(mMinX + mMaxX) * 5.e-5 + DBL_MIN * 100.0;
+  C_FLOAT64 minRange = fabs(mMinX + mMaxX) * 5.e-5 + std::numeric_limits< C_FLOAT64 >::min() * 100.0;
 
   if (mMaxX - mMinX < minRange)
     {
@@ -172,7 +172,7 @@ QwtDoubleRect C2DCurveData::boundingRect() const
       mMaxX = mMaxX + minRange * 0.5;
     }
 
-  minRange = fabs(mMinY + mMaxY) * 5e-5 + DBL_MIN * 100.0;
+  minRange = fabs(mMinY + mMaxY) * 5e-5 + std::numeric_limits< C_FLOAT64 >::min() * 100.0;
 
   if (mMaxY - mMinY < minRange)
     {
@@ -378,7 +378,7 @@ CBandedGraphData::boundingRect() const
     return QwtDoubleRect(1.0, 1.0, -2.0, -2.0); // invalid
 
   // We need to avoid very small data ranges (absolute and relative)
-  C_FLOAT64 minRange = fabs(mMinX + mMaxX) * 5.e-5 + DBL_MIN * 100.0;
+  C_FLOAT64 minRange = fabs(mMinX + mMaxX) * 5.e-5 + std::numeric_limits< C_FLOAT64 >::min() * 100.0;
 
   if (mMaxX - mMinX < minRange)
     {
@@ -386,7 +386,7 @@ CBandedGraphData::boundingRect() const
       mMaxX = mMaxX + minRange * 0.5;
     }
 
-  minRange = fabs(mMinY + mMaxY) * 5e-5 + DBL_MIN * 100.0;
+  minRange = fabs(mMinY + mMaxY) * 5e-5 + std::numeric_limits< C_FLOAT64 >::min() * 100.0;
 
   if (mMaxY - mMinY < minRange)
     {

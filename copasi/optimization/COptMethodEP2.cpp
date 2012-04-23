@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP2.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/24 18:12:31 $
+//   $Date: 2012/04/23 21:11:20 $
 // End CVS Header
+
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -152,7 +157,7 @@ C_INT32 COptMethodEP2::optimise()
         }
       catch (int)
         {
-          CandidateValue[i] = DBL_MAX;
+          CandidateValue[i] = std::numeric_limits< C_FLOAT64 >::max();
         }
     } // initialization ends
 
@@ -345,7 +350,7 @@ C_INT32 COptMethodEP2::optimise()
                 }
               catch (int)
                 {
-                  CandidateValue[mm] = DBL_MAX;
+                  CandidateValue[mm] = std::numeric_limits< C_FLOAT64 >::max();
                 }
             }
 
@@ -396,7 +401,7 @@ C_INT32 COptMethodEP2::optimise()
                     }
                   catch (int)
                     {
-                      CandidateValue[mm] = DBL_MAX;
+                      CandidateValue[mm] = std::numeric_limits< C_FLOAT64 >::max();
                     }
                 }
 
@@ -447,7 +452,7 @@ C_INT32 COptMethodEP2::optimise()
                         }
                       catch (int)
                         {
-                          CandidateValue[mm] = DBL_MAX;
+                          CandidateValue[mm] = std::numeric_limits< C_FLOAT64 >::max();
                         }
                     }
 

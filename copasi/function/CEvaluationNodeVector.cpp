@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVector.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/19 15:38:50 $
+//   $Author: shoops $
+//   $Date: 2012/04/23 21:10:23 $
 // End CVS Header
+
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -17,30 +22,29 @@
 
 #include "copasi.h"
 
-#include "mathematics.h"
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
 
 #include "sbml/math/ASTNode.h"
 
 CEvaluationNodeVector::CEvaluationNodeVector():
-    CEvaluationNode((Type) (CEvaluationNode::VECTOR), ""),
+    CEvaluationNode((Type)(CEvaluationNode::VECTOR), ""),
     mVector()
 {mPrecedence = PRECEDENCE_FUNCTION;}
 
 CEvaluationNodeVector::CEvaluationNodeVector(const SubType & subType,
     const Data & data):
-    CEvaluationNode((Type) (CEvaluationNode::VECTOR | subType), data),
+    CEvaluationNode((Type)(CEvaluationNode::VECTOR | subType), data),
     mVector()
 {
   switch (subType)
     {
-    case VECTOR:
-      break;
+      case VECTOR:
+        break;
 
-    default:
-      fatalError();
-      break;
+      default:
+        fatalError();
+        break;
     }
 
   mPrecedence = PRECEDENCE_FUNCTION;
@@ -54,60 +58,60 @@ CEvaluationNodeVector::CEvaluationNodeVector(const CEvaluationNodeVector & src):
 CEvaluationNodeVector::~CEvaluationNodeVector() {}
 
 const C_FLOAT64 & CEvaluationNodeVector::value() const
-  {
-    std::vector< CEvaluationNode * >::const_iterator it = mVector.begin();
-    std::vector< CEvaluationNode * >::const_iterator end = mVector.end();
+{
+  std::vector< CEvaluationNode * >::const_iterator it = mVector.begin();
+  std::vector< CEvaluationNode * >::const_iterator end = mVector.end();
 
-    for (; it != end; ++it)
-      (*it)->value();
+  for (; it != end; ++it)
+    (*it)->value();
 
-    return mValue;
-  }
+  return mValue;
+}
 
 std::string CEvaluationNodeVector::getInfix() const
-  {
-    std::string Infix = "{";
+{
+  std::string Infix = "{";
 
-    std::vector< CEvaluationNode * >::const_iterator it = mVector.begin();
-    std::vector< CEvaluationNode * >::const_iterator end = mVector.end();
+  std::vector< CEvaluationNode * >::const_iterator it = mVector.begin();
+  std::vector< CEvaluationNode * >::const_iterator end = mVector.end();
 
-    if (it != end) Infix += (*it++)->getInfix();
+  if (it != end) Infix += (*it++)->getInfix();
 
-    for (; it != end; ++it)
-      Infix += "," + (*it)->getInfix();
+  for (; it != end; ++it)
+    Infix += "," + (*it)->getInfix();
 
-    return Infix + "}";
-  }
+  return Infix + "}";
+}
 
 std::string CEvaluationNodeVector::getDisplayString(const CEvaluationTree * pTree) const
-  {
-    std::string DisplayString = "{";
+{
+  std::string DisplayString = "{";
 
-    std::vector< CEvaluationNode * >::const_iterator it = mVector.begin();
-    std::vector< CEvaluationNode * >::const_iterator end = mVector.end();
+  std::vector< CEvaluationNode * >::const_iterator it = mVector.begin();
+  std::vector< CEvaluationNode * >::const_iterator end = mVector.end();
 
-    if (it != end) DisplayString += (*it++)->getDisplayString(pTree);
+  if (it != end) DisplayString += (*it++)->getDisplayString(pTree);
 
-    for (; it != end; ++it)
-      DisplayString += "," + (*it)->getDisplayString(pTree);
+  for (; it != end; ++it)
+    DisplayString += "," + (*it)->getDisplayString(pTree);
 
-    return DisplayString + "}";
-  }
+  return DisplayString + "}";
+}
 
 std::string CEvaluationNodeVector::getDisplay_C_String(const CEvaluationTree * /* pTree */) const
-  {
-    return "@";
-  }
+{
+  return "@";
+}
 
 std::string CEvaluationNodeVector::getDisplay_MMD_String(const CEvaluationTree * /* pTree */) const
-  {
-    return "@";
-  }
+{
+  return "@";
+}
 
 std::string CEvaluationNodeVector::getDisplay_XPP_String(const CEvaluationTree * /* pTree */) const
-  {
-    return "@";
-  }
+{
+  return "@";
+}
 
 CEvaluationNode* CEvaluationNodeVector::createNodeFromASTTree(const ASTNode & /* node */)
 {
@@ -120,11 +124,11 @@ CEvaluationNode* CEvaluationNodeVector::createNodeFromASTTree(const ASTNode & /*
 }
 
 ASTNode* CEvaluationNodeVector::toAST(const CCopasiDataModel* /*pDataModel*/) const
-  {
-    // :TODO:
-    ASTNode* node = new ASTNode(AST_FUNCTION_PIECEWISE);
-    return node;
-  }
+{
+  // :TODO:
+  ASTNode* node = new ASTNode(AST_FUNCTION_PIECEWISE);
+  return node;
+}
 
 bool CEvaluationNodeVector::addChild(CCopasiNode< Data > * pChild,
                                      CCopasiNode< Data > * pAfter)
@@ -136,4 +140,4 @@ bool CEvaluationNodeVector::addChild(CCopasiNode< Data > * pChild,
 }
 
 const std::vector< CEvaluationNode * > & CEvaluationNodeVector::getVector() const
-  {return mVector;}
+{return mVector;}

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CCellDesignerImporter.h,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 18:19:42 $
+//   $Date: 2012/04/23 21:11:54 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,25 +21,26 @@
 #include <utility>
 #include <limits>
 
+#include <sbml/packages/layout/sbml/BoundingBox.h>
+#include <sbml/packages/layout/sbml/Curve.h>
+#include <sbml/packages/layout/sbml/Dimensions.h>
+#include <sbml/packages/layout/sbml/LineSegment.h>
+#include <sbml/packages/layout/sbml/Point.h>
+#include <sbml/packages/render/sbml/Text.h>
+
 #include "copasi/utilities/CCopasiNode.h"
 
-class BoundingBox;
 class ColorDefinition;
-class CompartmentGlyph;
-class Dimensions;
 class GraphicalObject;
 class RenderGroup;
 class Layout;
 class LocalRenderInformation;
 class Model;
-class Point;
 class Reaction;
 class ReactionGlyph;
-class SBMLDocument;
 class SBase;
-class SpeciesGlyph;
-class SpeciesModification;
-class SpeciesReferenceGlyph;
+class SBMLDocument;
+class SpeciesReferenceGlyphs;
 class XMLNode;
 
 enum SPECIES_CLASS

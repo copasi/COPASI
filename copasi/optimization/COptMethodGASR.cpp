@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-//   $Revision: 1.36 $
+//   $Revision: 1.37 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:31:26 $
+//   $Date: 2012/04/23 21:11:20 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,10 +20,9 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <float.h>
+#include <cmath>
 
 #include "copasi.h"
-#include "mathematics.h"
 
 #include "COptMethodGASR.h"
 #include "COptProblem.h"
@@ -47,8 +46,8 @@ COptMethodGASR::COptMethodGASR(const CCopasiContainer * pParent):
     mShuffle(0),
     mWins(0),
     mMutationVarians(0.1),
-    mEvaluationValue(DBL_MAX),
-    mBestValue(DBL_MAX),
+    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
+    mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
     mBestIndex(C_INVALID_INDEX),
     mGeneration(0)
 
@@ -76,8 +75,8 @@ COptMethodGASR::COptMethodGASR(const COptMethodGASR & src,
     mShuffle(0),
     mWins(0),
     mMutationVarians(0.1),
-    mEvaluationValue(DBL_MAX),
-    mBestValue(DBL_MAX),
+    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
+    mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
     mBestIndex(C_INVALID_INDEX),
     mGeneration(0)
 {initObjects();}
@@ -344,7 +343,7 @@ C_FLOAT64 COptMethodGASR::phi(size_t indivNum)
 size_t COptMethodGASR::fittest()
 {
   size_t i, BestIndex = C_INVALID_INDEX;
-  C_FLOAT64 BestValue = DBL_MAX;
+  C_FLOAT64 BestValue = std::numeric_limits< C_FLOAT64 >::max();
 
   for (i = 0; i < mPopulationSize; i++)
     if (mValue[i] < BestValue && !(mPhi[i] != 0))
@@ -389,12 +388,12 @@ bool COptMethodGASR::creation(size_t first,
                 mut = mn + mpRandom->getRandomCC() * (mx - mn);
               else
                 {
-                  la = log10(mx) - log10(std::max(mn, DBL_MIN));
+                  la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
                   if (la < 1.8)
                     mut = mn + mpRandom->getRandomCC() * (mx - mn);
                   else
-                    mut = pow(10.0, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
+                    mut = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mpRandom->getRandomCC());
                 }
             }
 

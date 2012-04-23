@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:54:52 $
+//   $Author: shoops $
+//   $Date: 2012/04/23 21:11:20 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,6 @@
 
 #include <limits>
 #include <cmath>
-#include <float.h>
 #include <sstream>
 #include <stdlib.h>
 
@@ -256,12 +255,12 @@ C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)
       // depending on the location and act upon it.
       if (0.0 <= mn) // the interval [mn, mx) is in [0, inf)
         {
-          la = log10(mx) - log10(std::max(mn, DBL_MIN));
+          la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
           if (la < 1.8 || !(mn > 0.0)) // linear
             RandomValue = mn + pRandom->getRandomCC() * (mx - mn);
           else
-            RandomValue = pow(10.0, log10(std::max(mn, DBL_MIN)) + la * pRandom->getRandomCC());
+            RandomValue = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * pRandom->getRandomCC());
         }
       else if (mx > 0) // 0 is in the interval (mn, mx)
         {
@@ -272,7 +271,7 @@ C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)
           else
             {
               C_FLOAT64 mean = (mx + mn) * 0.5;
-              C_FLOAT64 sigma = std::min(DBL_MAX, mx - mn) / 3.0;
+              C_FLOAT64 sigma = std::min(std::numeric_limits< C_FLOAT64 >::max(), mx - mn) / 3.0;
 
               do
                 {
@@ -288,12 +287,12 @@ C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)
           mx = - *mpLowerBound;
           mn = - *mpUpperBound;
 
-          la = log10(mx) - log10(std::max(mn, DBL_MIN));
+          la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
           if (la < 1.8 || !(mn > 0.0)) // linear
             RandomValue = - (mn + pRandom->getRandomCC() * (mx - mn));
           else
-            RandomValue = - pow(10.0, log10(std::max(mn, DBL_MIN)) + la * pRandom->getRandomCC());
+            RandomValue = - pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * pRandom->getRandomCC());
         }
     }
 
@@ -444,7 +443,7 @@ bool COptItem::compileLowerBound(const std::vector< CCopasiContainer * > & listO
 
   if (*mpParmLowerBound == "-inf")
     {
-      mLowerBound = - DBL_MAX;
+      mLowerBound = - std::numeric_limits< C_FLOAT64 >::max();
       mpLowerBound = &mLowerBound;
     }
   else if (isNumber(*mpParmLowerBound))
@@ -474,7 +473,7 @@ bool COptItem::compileUpperBound(const std::vector< CCopasiContainer * > & listO
 
   if (*mpParmUpperBound == "inf")
     {
-      mUpperBound = DBL_MAX;
+      mUpperBound = std::numeric_limits< C_FLOAT64 >::max();
       mpUpperBound = &mUpperBound;
     }
   else if (isNumber(*mpParmUpperBound))

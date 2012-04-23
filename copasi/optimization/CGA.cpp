@@ -1,10 +1,15 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CGA.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/09/24 18:12:31 $
+//   $Date: 2012/04/23 21:11:20 $
 // End CVS Header
+
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -122,7 +127,7 @@ void CGA::initFirstGeneration()
     }
   catch (unsigned int e)
     {
-      mCandX[0] = DBL_MAX;
+      mCandX[0] = std::numeric_limits< C_FLOAT64 >::max();
     }
 
   // the others are randomly generated
@@ -335,7 +340,7 @@ double CGA::evaluate(unsigned int i)
     }
   catch (unsigned int e)
     {
-      fitness = DBL_MAX;
+      fitness = std::numeric_limits< C_FLOAT64 >::max();
     }
 
   return fitness;
@@ -396,7 +401,7 @@ void CGA::mutate(unsigned int i)
       // force it to be within the bounds
 
       if (mut <= mMin)
-        mut = mMin + DBL_EPSILON;
+        mut = mMin + std::numeric_limits< C_FLOAT64 >::epsilon();
       else
 
         {
@@ -405,7 +410,7 @@ void CGA::mutate(unsigned int i)
         }
 
       if (mut >= mMax)
-        mut = mMax - DBL_EPSILON;
+        mut = mMax - std::numeric_limits< C_FLOAT64 >::epsilon();
       else
 
         {
@@ -654,7 +659,7 @@ void CGA::creation(unsigned int l, unsigned int u)
         }
       catch (unsigned int e)
         {
-          mCandX[i] = DBL_MAX;
+          mCandX[i] = std::numeric_limits< C_FLOAT64 >::max();
         }
     }
 

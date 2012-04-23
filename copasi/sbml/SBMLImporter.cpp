@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.279 $
+//   $Revision: 1.280 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 15:49:06 $
+//   $Date: 2012/04/23 21:11:54 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,8 +63,6 @@
 #include <sbml/FunctionDefinition.h>
 #include <sbml/UnitDefinition.h>
 
-#include "mathematics.h"
-
 #include "copasi.h"
 
 #include "report/CKeyFactory.h"
@@ -110,7 +108,7 @@ bool SBMLImporter::areApproximatelyEqual(const double & x, const double & y, con
     (fabs(x) + fabs(y)) * t;
 
   // Avoid underflow
-  if (Scale < 100.0 * DBL_MIN)
+  if (Scale < 100.0 * std::numeric_limits< C_FLOAT64 >::min())
     return true;
 
   return 2 * fabs(x - y) < Scale;

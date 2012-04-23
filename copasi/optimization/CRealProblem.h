@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRealProblem.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 07:43:32 $
+   $Author: shoops $
+   $Date: 2012/04/23 21:11:20 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -37,8 +42,6 @@
 
 #include <string>
 #include <vector>
-#include "mathematics.h"
-#include <float.h>
 
 #include "optimization/COptProblem.h"
 
@@ -46,28 +49,28 @@
 /** @dia:pos 3.05,34.05 */
 /** @dia:route COptProblem; v,9.3288,30.75,32.7,9.3472,34.05 */
 class CRealProblem : public COptProblem
-  {
-    //data member
-    //no real variables defined here, but the base class has many members
-  private:
+{
+  //data member
+  //no real variables defined here, but the base class has many members
+private:
 
-    // Implementation
-  public:
+  // Implementation
+public:
 
-    /**
-     * Default constructor
-     */
-    CRealProblem();
+  /**
+   * Default constructor
+   */
+  CRealProblem();
 
-    /**
-     * Destructor
-     */
-    ~CRealProblem();
+  /**
+   * Destructor
+   */
+  ~CRealProblem();
 
-    /**
-     * calculate function for optimization
-     */
-    virtual bool calculate();
-  };
+  /**
+   * calculate function for optimization
+   */
+  virtual bool calculate();
+};
 
 #endif  // the end

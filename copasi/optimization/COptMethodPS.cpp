@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPS.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/08/02 20:46:08 $
+//   $Date: 2012/04/23 21:11:21 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,10 +20,10 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <float.h>
+#include <cmath>
 
 #include "copasi.h"
-#include "mathematics.h"
+
 #include "COptMethodPS.h"
 #include "COptProblem.h"
 #include "COptItem.h"
@@ -225,7 +225,7 @@ bool COptMethodPS::create(const size_t & index)
           // depending on the location and act uppon it.
           if (0.0 <= mn) // the interval [mn, mx) is in [0, inf)
             {
-              la = log10(mx) - log10(std::max(mn, DBL_MIN));
+              la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
               if (la < 1.8 || !(mn > 0.0)) // linear
                 {
@@ -234,9 +234,9 @@ bool COptMethodPS::create(const size_t & index)
                 }
               else
                 {
-                  *pIndividual = pow(10.0, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
+                  *pIndividual = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mpRandom->getRandomCC());
                   *pVelocity =
-                    pow(10.0, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC()) - *pIndividual;
+                    pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mpRandom->getRandomCC()) - *pIndividual;
                 }
             }
           else if (mx > 0) // 0 is in the interval (mn, mx)
@@ -251,7 +251,7 @@ bool COptMethodPS::create(const size_t & index)
               else
                 {
                   C_FLOAT64 mean = (mx + mn) * 0.5;
-                  C_FLOAT64 sigma = std::min(DBL_MAX, mx - mn) / 3.0;
+                  C_FLOAT64 sigma = std::min(std::numeric_limits< C_FLOAT64 >::max(), mx - mn) / 3.0;
 
                   do
                     {
@@ -269,7 +269,7 @@ bool COptMethodPS::create(const size_t & index)
               mx = - *OptItem.getLowerBoundValue();
               mn = - *OptItem.getUpperBoundValue();
 
-              la = log10(mx) - log10(std::max(mn, DBL_MIN));
+              la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
               if (la < 1.8 || !(mn > 0.0)) // linear
                 {
@@ -278,9 +278,9 @@ bool COptMethodPS::create(const size_t & index)
                 }
               else
                 {
-                  *pIndividual = - pow(10.0, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
+                  *pIndividual = - pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mpRandom->getRandomCC());
                   *pVelocity =
-                    - pow(10.0, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC()) - *pIndividual;
+                    - pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mpRandom->getRandomCC()) - *pIndividual;
                 }
             }
         }

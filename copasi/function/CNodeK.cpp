@@ -1,12 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CNodeK.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
+   $Date: 2012/04/23 21:10:23 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,7 +19,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#include "mathematics.h"
 #include <stdio.h>
 
 #include "copasi.h"
@@ -123,6 +127,7 @@ C_INT32 CNodeK::load(CReadConfig & configbuffer)
     {
       if ((Fail = configbuffer.getVariable("Index", "C_INT32", &mIndex)))
         return Fail;
+
       if ((Fail = configbuffer.getVariable("Name", "string", &mName)))
         return Fail;
     }
@@ -323,55 +328,59 @@ std::string CNodeK::getExplicitFunctionString(const std::vector< std::vector< st
  */
 
 char CNodeK::getType() const
-  {
-    return mType;
-  }
+{
+  return mType;
+}
 
 char CNodeK::getSubtype() const
-  {
-    return mSubtype;
-  }
+{
+  return mSubtype;
+}
 
 CNodeK & CNodeK::getLeft() const
-  {
-    if (!mLeft)
-      fatalError(); // Call LeftIsValid first to avoid this!
-    return *mLeft;
-  }
+{
+  if (!mLeft)
+    fatalError(); // Call LeftIsValid first to avoid this!
+
+  return *mLeft;
+}
 
 CNodeK & CNodeK::getRight() const
-  {
-    if (!mRight)
-      fatalError(); // Call RightIsValid first to avoid this!
-    return *mRight;
-  }
+{
+  if (!mRight)
+    fatalError(); // Call RightIsValid first to avoid this!
+
+  return *mRight;
+}
 
 std::string CNodeK::getName() const
-  {
-    return mName;
+{
+  return mName;
 #ifdef XXXX
 
-    static unsigned C_INT ctr = 0;
-    char name[9];
-    if (isIdentifier())
-      return mName;
-    else
-      {
-        sprintf(name, "%X", ctr++);
-        return name;
-      }
+  static unsigned C_INT ctr = 0;
+  char name[9];
+
+  if (isIdentifier())
+    return mName;
+  else
+    {
+      sprintf(name, "%X", ctr++);
+      return name;
+    }
+
 #endif // XXXX
-  }
+}
 
 C_FLOAT64 CNodeK::getConstant() const
-  {
-    return mConstant;
-  }
+{
+  return mConstant;
+}
 
 C_INT32 CNodeK::getIndex() const
-  {
-    return mIndex;
-  }
+{
+  return mIndex;
+}
 
 void CNodeK::setType(char type)
 {
@@ -424,24 +433,24 @@ void CNodeK::setOldIndex(C_INT32 oldindex)
 }
 
 C_INT16 CNodeK::isLeftValid() const
-  {
-    return (mLeft != NULL);
-  }
+{
+  return (mLeft != NULL);
+}
 
 C_INT16 CNodeK::isRightValid() const
-  {
-    return (mRight != NULL);
-  }
+{
+  return (mRight != NULL);
+}
 
 C_INT16 CNodeK::isNumber() const
-  {
-    return (mType == N_NUMBER);
-  }
+{
+  return (mType == N_NUMBER);
+}
 
 C_INT16 CNodeK::isIdentifier() const
-  {
-    switch (mType)
-      {
+{
+  switch (mType)
+    {
       case N_OBJECT:
       case N_IDENTIFIER:
       case N_SUBSTRATE:
@@ -452,27 +461,28 @@ C_INT16 CNodeK::isIdentifier() const
         return true;
       default:
         return false;
-      }
-  }
+    }
+}
 
 C_INT16 CNodeK::isOperator() const
-  {
-    return mType == N_OPERATOR;
-  }
+{
+  return mType == N_OPERATOR;
+}
 
 C_INT16 CNodeK::leftPrecedence() const
-  {
-    switch (mType)
-      {
+{
+  switch (mType)
+    {
       case N_OBJECT:
       case N_NUMBER:
       case N_IDENTIFIER:
       case N_FUNCTION:
         return 5;
-      }
-    // if we got here then it is an operator
-    switch (mSubtype)
-      {
+    }
+
+  // if we got here then it is an operator
+  switch (mSubtype)
+    {
       case '+':
       case '-':
         return 1;
@@ -486,24 +496,26 @@ C_INT16 CNodeK::leftPrecedence() const
       case ')':
       case '%':
         return 0;
-      }
-    return 0;
-  }
+    }
+
+  return 0;
+}
 
 C_INT16 CNodeK::rightPrecedence() const
-  {
-    switch (mType)
-      {
+{
+  switch (mType)
+    {
       case N_OBJECT:
       case N_NUMBER:
       case N_IDENTIFIER:
         return 6;
       case N_FUNCTION:
         return 4;
-      }
-    // if we got here then it is an operator
-    switch (mSubtype)
-      {
+    }
+
+  // if we got here then it is an operator
+  switch (mSubtype)
+    {
       case '+':
       case '-':
         return 2;
@@ -517,9 +529,10 @@ C_INT16 CNodeK::rightPrecedence() const
       case '(':
       case '%':
         return 0;
-      }
-    return 0;
-  }
+    }
+
+  return 0;
+}
 
 /*
 C_FLOAT64 CNodeK::value(const CCallParameters<C_FLOAT64> & callParameters) const

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CCellDesignerImporter.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 18:19:42 $
+//   $Date: 2012/04/23 21:11:54 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -10299,7 +10299,7 @@ Line::Line():
     mCurve(false)
 {}
 
-LineDirection; : LineDirection() :
+LineDirection::LineDirection() :
     mIndex(std::numeric_limits<int>::max())
     , mArm(std::numeric_limits<int>::max())
     , mValue(DIRECTION_UNDEFINED)

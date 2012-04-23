@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSRES.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:31:26 $
+//   $Date: 2012/04/23 21:11:20 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,10 +20,9 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <float.h>
+#include <cmath>
 
 #include "copasi.h"
-#include "mathematics.h"
 
 #include "COptMethodSRES.h"
 #include "COptProblem.h"
@@ -48,9 +47,9 @@ COptMethodSRES::COptMethodSRES(const CCopasiContainer * pParent):
     mpRandom(NULL),
     mVariableSize(0),
     mIndividual(0),
-    mEvaluationValue(DBL_MAX),
+    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
     mValue(0),
-    mBestValue(DBL_MAX),
+    mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
     mGeneration(0)
 
 {
@@ -71,9 +70,9 @@ COptMethodSRES::COptMethodSRES(const COptMethodSRES & src,
     mpRandom(NULL),
     mVariableSize(0),
     mIndividual(0),
-    mEvaluationValue(DBL_MAX),
+    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
     mValue(0),
-    mBestValue(DBL_MAX),
+    mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
     mGeneration(0)
 {initObjects();}
 
@@ -286,7 +285,7 @@ void COptMethodSRES::select()
 size_t COptMethodSRES::fittest()
 {
   size_t i, BestIndex = C_INVALID_INDEX;
-  C_FLOAT64 BestValue = DBL_MAX;
+  C_FLOAT64 BestValue = std::numeric_limits< C_FLOAT64 >::max();
 
   for (i = 0; i < mPopulationSize; i++)
     if (mValue[i] < BestValue && mPhi[i] == 0)
@@ -345,7 +344,7 @@ bool COptMethodSRES::creation(size_t first)
                 if (!OptItem.checkLowerBound(mut)) // Inequality
                   {
                     if (mut == 0.0)
-                      mut = DBL_MIN;
+                      mut = std::numeric_limits< C_FLOAT64 >::min();
                     else
                       mut += mut * std::numeric_limits< C_FLOAT64 >::epsilon();
                   }
@@ -358,7 +357,7 @@ bool COptMethodSRES::creation(size_t first)
                 if (!OptItem.checkUpperBound(mut)) // Inequality
                   {
                     if (mut == 0.0)
-                      mut = - DBL_MIN;
+                      mut = - std::numeric_limits< C_FLOAT64 >::min();
                     else
                       mut -= mut * std::numeric_limits< C_FLOAT64 >::epsilon();
                   }
@@ -406,12 +405,12 @@ bool COptMethodSRES::creation(size_t first)
               // depending on the location and act uppon it.
               if (0.0 <= mn) // the interval [mn, mx) is in [0, inf)
                 {
-                  la = log10(mx) - log10(std::max(mn, DBL_MIN));
+                  la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
                   if (la < 1.8 || !(mn > 0.0)) // linear
                     mut = mn + mpRandom->getRandomCC() * (mx - mn);
                   else
-                    mut = pow(10.0, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
+                    mut = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mpRandom->getRandomCC());
                 }
               else if (mx > 0) // 0 is in the interval (mn, mx)
                 {
@@ -438,12 +437,12 @@ bool COptMethodSRES::creation(size_t first)
                   mx = - *OptItem.getLowerBoundValue();
                   mn = - *OptItem.getUpperBoundValue();
 
-                  la = log10(mx) - log10(std::max(mn, DBL_MIN));
+                  la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
                   if (la < 1.8 || !(mn > 0.0)) // linear
                     mut = - (mn + mpRandom->getRandomCC() * (mx - mn));
                   else
-                    mut = - pow(10.0, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
+                    mut = - pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mpRandom->getRandomCC());
                 }
             }
 
@@ -461,7 +460,7 @@ bool COptMethodSRES::creation(size_t first)
                 if (!OptItem.checkLowerBound(mut)) // Inequality
                   {
                     if (mut == 0.0)
-                      mut = DBL_MIN;
+                      mut = std::numeric_limits< C_FLOAT64 >::min();
                     else
                       mut += mut * std::numeric_limits< C_FLOAT64 >::epsilon();
                   }
@@ -474,7 +473,7 @@ bool COptMethodSRES::creation(size_t first)
                 if (!OptItem.checkUpperBound(mut)) // Inequality
                   {
                     if (mut == 0.0)
-                      mut = - DBL_MIN;
+                      mut = - std::numeric_limits< C_FLOAT64 >::min();
                     else
                       mut -= mut * std::numeric_limits< C_FLOAT64 >::epsilon();
                   }

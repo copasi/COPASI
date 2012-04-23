@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodTruncatedNewton.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:31:26 $
+//   $Date: 2012/04/23 21:11:21 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -68,8 +68,8 @@ bool COptMethodTruncatedNewton::optimise()
   CVector< C_INT > iPivot(mVariableSize);
   CVector< C_FLOAT64 > dwork(lw);
 
-  up = DBL_MAX;
-  low = - DBL_MAX;
+  up = std::numeric_limits< C_FLOAT64 >::max();
+  low = - std::numeric_limits< C_FLOAT64 >::max();
 
   // initial point is the first guess but we have to make sure that
   // we are within the parameter domain

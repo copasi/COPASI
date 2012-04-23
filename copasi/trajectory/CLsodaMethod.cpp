@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.69 $
+//   $Revision: 1.70 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/01/23 21:22:37 $
+//   $Date: 2012/04/23 21:12:08 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -127,13 +127,13 @@ void CLsodaMethod::initializeParameter()
             {
               const CCopasiVectorNS< CCompartment > & Compartment = pModel->getCompartments();
               size_t i, imax;
-              C_FLOAT64 Volume = DBL_MAX;
+              C_FLOAT64 Volume = std::numeric_limits< C_FLOAT64 >::max();
 
               for (i = 0, imax = Compartment.size(); i < imax; i++)
                 if (Compartment[i]->getValue() < Volume)
                   Volume = Compartment[i]->getValue();
 
-              if (Volume == DBL_MAX)
+              if (Volume == std::numeric_limits< C_FLOAT64 >::max())
                 // The default
                 NewValue = 1.e-12;
               else

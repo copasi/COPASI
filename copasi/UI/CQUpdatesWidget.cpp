@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQUpdatesWidget.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/08/22 21:38:34 $
+//   $Date: 2012/04/23 21:12:27 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -368,7 +368,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
       mpTableState->setItem((int) i + tmpint, 3, new QTableWidgetItem(QString::number(atolv[i])));
 
       CModelEntity* pME = *(st.getEntities() + i + 1);
-      C_FLOAT64 tmp = std::min(atolv[i], std::max(100.0 * DBL_MIN, fabs(pME->getInitialValue())));
+      C_FLOAT64 tmp = std::min(atolv[i], std::max(100.0 * std::numeric_limits< C_FLOAT64 >::min(), fabs(pME->getInitialValue())));
       mpTableState->setItem((int) i + tmpint, 4, new QTableWidgetItem(QString::number(tmp)));
     }
 

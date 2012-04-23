@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.100 $
+//   $Revision: 1.101 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 15:49:06 $
+//   $Date: 2012/04/23 21:11:54 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,8 @@
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+#include <cmath>
 
 #define USE_LAYOUT 1
 
@@ -4755,13 +4757,13 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
             pResult = new ASTNode(AST_RATIONAL);
             pResult->setValue(0L, 0L);
           }
-        else if (pNode->getReal() > DBL_MAX)
+        else if (pNode->getReal() > std::numeric_limits< C_FLOAT64 >::max())
           {
             // replace by 1/0
             pResult = new ASTNode(AST_RATIONAL);
             pResult->setValue(1L, 0L);
           }
-        else if (pNode->getReal() < - DBL_MAX)
+        else if (pNode->getReal() < - std::numeric_limits< C_FLOAT64 >::max())
           {
             // replace by -1/0
             pResult = new ASTNode(AST_RATIONAL);

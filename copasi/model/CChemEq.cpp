@@ -1,12 +1,12 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.cpp,v $
- $Revision: 1.52 $
+ $Revision: 1.53 $
  $Name:  $
  $Author: shoops $
- $Date: 2011/04/07 12:27:19 $
+ $Date: 2012/04/23 21:11:04 $
  End CVS Header */
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,7 +26,8 @@
 // (C) Stefan Hoops 2001
 //
 
-#include "mathematics.h"
+#include <cmath>
+
 #include "copasi.h"
 #include "CChemEq.h"
 #include "utilities/CReadConfig.h"

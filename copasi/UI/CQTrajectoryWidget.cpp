@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTrajectoryWidget.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/01/06 19:13:44 $
+//   $Date: 2012/04/23 21:12:28 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -293,9 +293,9 @@ bool CQTrajectoryWidget::loadTask()
   bool Delayed;
 
   if (trajectoryproblem->getStepSize() > 0.0)
-    Delayed = (trajectoryproblem->getOutputStartTime() - InitialTime) > DBL_MIN;
+    Delayed = (trajectoryproblem->getOutputStartTime() - InitialTime) > std::numeric_limits< C_FLOAT64 >::min();
   else
-    Delayed = (InitialTime - trajectoryproblem->getOutputStartTime()) > DBL_MIN;
+    Delayed = (InitialTime - trajectoryproblem->getOutputStartTime()) > std::numeric_limits< C_FLOAT64 >::min();
 
   mpCheckDelay->setChecked(Delayed);
   mpEditDelay->setEnabled(Delayed);

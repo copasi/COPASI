@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.95 $
+//   $Revision: 1.96 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 23:18:28 $
+//   $Author: shoops $
+//   $Date: 2012/04/23 21:12:27 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,6 @@
 
 #include <iostream>
 #include <sstream>
-#include <mathematics.h>
 
 //Added by qt3to4:
 #include <QContextMenuEvent>
@@ -46,7 +45,6 @@
 #include "CQMessageBox.h"
 #include "CopasiSlider.h"
 #include "listviews.h"
-#include "mathematics.h"
 #include "qtUtilities.h"
 #include "xml/CCopasiXMLInterface.h"
 #include "CopasiDataModel/CCopasiDataModel.h"

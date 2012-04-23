@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/FminBrent.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:54:52 $
+//   $Author: shoops $
+//   $Date: 2012/04/23 21:11:20 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,7 +21,6 @@
 // All rights reserved.
 
 #include <cmath>
-#include <float.h>
 #include <limits>
 
 #include "copasi.h"

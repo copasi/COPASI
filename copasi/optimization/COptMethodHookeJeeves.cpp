@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHookeJeeves.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:31:26 $
+//   $Date: 2012/04/23 21:11:21 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,11 +27,9 @@
 /* 12 February 1994 author: Mark G. Johnson                 */
 
 /* Adapted for Gepasi by Pedro Mendes, 18 August 1997              */
-
-#include <float.h>
+#include <cmath>
 
 #include "copasi.h"
-#include "mathematics.h"
 
 #include "COptMethodHookeJeeves.h"
 #include "COptProblem.h"
@@ -275,7 +273,7 @@ bool COptMethodHookeJeeves::evaluate()
   // evaluate the fitness
   if (!mpOptProblem->checkParametricConstraints())
     {
-      mEvaluationValue = DBL_MAX;
+      mEvaluationValue = std::numeric_limits< C_FLOAT64 >::max();
       return mContinue;
     }
 

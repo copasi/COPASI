@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CPraxis.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:54:52 $
+//   $Author: shoops $
+//   $Date: 2012/04/23 21:11:20 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,6 @@
  */
 
 #include <cmath>
-#include <float.h>
 #include <stdio.h>
 
 #include "copasi.h"

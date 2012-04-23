@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/26 16:10:36 $
+//   $Date: 2012/04/23 21:11:03 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,8 +21,6 @@
 // All rights reserved.
 
 #include <stdio.h>
-#include <float.h>
-#include "mathematics.h"
 
 #include "copasi.h"
 #include "CMoiety.h"

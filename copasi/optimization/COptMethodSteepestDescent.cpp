@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:31:27 $
+//   $Date: 2012/04/23 21:11:21 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -103,7 +103,7 @@ bool COptMethodSteepestDescent::optimise()
       //  mn = 0.0; md = 1.0;
       //  mnbrak(&mn, &md, &mx, &fmn, &fmd, &fmx, descent_line);
       // make sure that no parameter will exceed its bounds
-      x0 = DBL_MAX;
+      x0 = std::numeric_limits< C_FLOAT64 >::max();
 
       for (i = 0; i < mVariableSize; i++)
         {

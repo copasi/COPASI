@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.108 $
+//   $Revision: 1.109 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:51:17 $
+//   $Author: shoops $
+//   $Date: 2012/04/23 21:10:43 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -584,7 +584,7 @@ void CQLayoutMainWindow::insertValueTable(CDataEntity dataSet)
   while ((key = mpGLViewport->getPainter()->getNodeNameEntry(i)) != "")
     {
       name = this->mpGLViewport->getPainter()->getNameForNodeKey(key);
-      val = dataSet.getOrigValueForSpecies(key); // would be (- DBL_MAX) if key not present
+      val = dataSet.getOrigValueForSpecies(key); // would be (- std::numeric_limits< C_FLOAT64 >::max()) if key not present
       mpValTable->setRowInTable(i, key, name, val);
       i++;
     }
@@ -602,7 +602,7 @@ void CQLayoutMainWindow::updateValueTable(CDataEntity dataSet)
   while ((key = mpGLViewport->getPainter()->getNodeNameEntry(i)) != "")
     {
       name = mpGLViewport->getPainter()->getNameForNodeKey(key);
-      val = dataSet.getOrigValueForSpecies(key); // would be (- DBL_MAX) if key not present
+      val = dataSet.getOrigValueForSpecies(key); // would be (- std::numeric_limits< C_FLOAT64 >::max()) if key not present
 
       if (mpValTable->numRows() > i)
         {

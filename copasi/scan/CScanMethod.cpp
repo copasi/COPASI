@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.62 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:20:44 $
+//   $Date: 2012/04/23 21:11:55 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,12 +24,12 @@
  *  CScanMethod class.
  *  This class describes the Scan method
  *
- *  Created for Copasi by Rohan Luktuke 2002
+ *  Created for COPASI by Rohan Luktuke 2002
  */
 
 #include <string>
+#include <cmath>
 
-#include "mathematics.h"
 #include "copasi.h"
 #include "model/CModel.h"
 #include "model/CState.h"
@@ -206,7 +206,7 @@ bool CScanItemLinear::isValidScanItem()
 
   if (mLog)
     {
-      if (isnan(mFaktor) || mFaktor < - DBL_MAX || DBL_MAX < mFaktor)
+      if (isnan(mFaktor) || mFaktor < - std::numeric_limits< C_FLOAT64 >::max() || std::numeric_limits< C_FLOAT64 >::max() < mFaktor)
         {
           //not a valid range for log
           CCopasiMessage(CCopasiMessage::EXCEPTION, "Only positive values for min and max are possible for a logarithmic scan.");

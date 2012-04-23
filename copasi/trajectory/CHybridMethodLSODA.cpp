@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:34:13 $
+//   $Date: 2012/04/23 21:12:08 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -46,8 +46,6 @@
 
 #include <limits.h>
 #include <iterator>
-
-#include "mathematics.h" // pow(), floor()
 
 #include "copasi.h"
 
@@ -380,12 +378,12 @@ C_FLOAT64 CHybridMethodLSODA::getDefaultAtol(const CModel * pModel) const
   const CCopasiVectorNS< CCompartment > & Compartment = pModel->getCompartments();
   size_t i, imax;
 
-  C_FLOAT64 Volume = DBL_MAX;
+  C_FLOAT64 Volume = std::numeric_limits< C_FLOAT64 >::max();
 
   for (i = 0, imax = Compartment.size(); i < imax; i++)
     if (Compartment[i]->getValue() < Volume) Volume = Compartment[i]->getValue();
 
-  if (Volume == DBL_MAX) return 1.0e009;
+  if (Volume == std::numeric_limits< C_FLOAT64 >::max()) return 1.0e009;
 
   return Volume * pModel->getQuantity2NumberFactor() * 1.e-12;
 }

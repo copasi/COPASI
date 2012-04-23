@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:31:26 $
+//   $Date: 2012/04/23 21:11:20 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,13 +20,12 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <float.h>
-
-#include <limits.h>
-#include <string.h>
+#include <cmath>
+#include <limits>
+#include <string>
 
 #include "copasi.h"
-#include "mathematics.h"
+
 #include "COptMethodGA.h"
 #include "COptProblem.h"
 #include "COptItem.h"
@@ -46,13 +45,13 @@ COptMethodGA::COptMethodGA(const CCopasiContainer * pParent):
     mIndividual(0),
     mCrossOverFalse(0),
     mCrossOver(0),
-    mEvaluationValue(DBL_MAX),
+    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
     mValue(0),
     mShuffle(0),
     mLosses(0),
     mPivot(0),
     mMutationVarians(0.1),
-    mBestValue(DBL_MAX),
+    mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
     mBestIndex(C_INVALID_INDEX),
     mGeneration(0)
 
@@ -75,13 +74,13 @@ COptMethodGA::COptMethodGA(const COptMethodGA & src,
     mIndividual(0),
     mCrossOverFalse(0),
     mCrossOver(0),
-    mEvaluationValue(DBL_MAX),
+    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
     mValue(0),
     mShuffle(0),
     mLosses(0),
     mPivot(0),
     mMutationVarians(0.1),
-    mBestValue(DBL_MAX),
+    mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
     mBestIndex(C_INVALID_INDEX),
     mGeneration(0)
 {initObjects();}
@@ -303,7 +302,7 @@ bool COptMethodGA::select()
 size_t COptMethodGA::fittest()
 {
   size_t i, BestIndex = C_INVALID_INDEX;
-  C_FLOAT64 BestValue = DBL_MAX;
+  C_FLOAT64 BestValue = std::numeric_limits< C_FLOAT64 >::max();
 
   for (i = 0; i < mPopulationSize && !mLosses[i]; i++)
     if (mValue[i] < BestValue)
@@ -348,12 +347,12 @@ bool COptMethodGA::creation(size_t first,
                 mut = mn + mpRandom->getRandomCC() * (mx - mn);
               else
                 {
-                  la = log10(mx) - log10(std::max(mn, DBL_MIN));
+                  la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
                   if (la < 1.8)
                     mut = mn + mpRandom->getRandomCC() * (mx - mn);
                   else
-                    mut = pow(10.0, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
+                    mut = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mpRandom->getRandomCC());
                 }
             }
 

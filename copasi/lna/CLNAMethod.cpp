@@ -1,19 +1,18 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lna/CLNAMethod.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/08/01 17:45:33 $
+//   $Date: 2012/04/23 21:11:04 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #include <cmath>
 #include <limits>
-#include <float.h>
 
 #include "copasi.h"
 #include "model/CModel.h"
@@ -241,9 +240,9 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
       if (!finite(*pA) && !isnan(*pA))
         {
           if (*pA > 0)
-            *pA = DBL_MAX;
+            *pA = std::numeric_limits< C_FLOAT64 >::max();
           else
-            *pA = - DBL_MAX;
+            *pA = - std::numeric_limits< C_FLOAT64 >::max();
         }
     }
 
@@ -337,9 +336,9 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
           if (!finite(At[j][i]) && !isnan(At[j][i]))
             {
               if (At[j][i] > 0)
-                At[j][i] = DBL_MAX;
+                At[j][i] = std::numeric_limits< C_FLOAT64 >::max();
               else
-                At[j][i] = - DBL_MAX;
+                At[j][i] = - std::numeric_limits< C_FLOAT64 >::max();
             }
         }
     }

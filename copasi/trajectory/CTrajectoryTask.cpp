@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-//   $Revision: 1.112 $
+//   $Revision: 1.113 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/19 15:14:01 $
+//   $Date: 2012/04/23 21:12:07 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,7 @@
  */
 
 #include <string>
+#include <cmath>
 
 #include "copasi.h"
 
@@ -235,7 +236,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
       L = &bl;
 
       // It suffices to reach the end time within machine precision
-      CompareEndTime = EndTime + 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + DBL_MIN);
+      CompareEndTime = EndTime + 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
     }
   else
     {
@@ -243,7 +244,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
       L = &fl;
 
       // It suffices to reach the end time within machine precision
-      CompareEndTime = EndTime - 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + DBL_MIN);
+      CompareEndTime = EndTime - 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
     }
 
   unsigned C_INT32 StepCounter = 1;
@@ -360,7 +361,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
   bool StateChanged = false;
   bool proceed = true;
 
-  C_FLOAT64 Tolerance = 100.0 * (fabs(endTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + DBL_MIN);
+  C_FLOAT64 Tolerance = 100.0 * (fabs(endTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
   C_FLOAT64 NextTime = endTime;
 
   while (proceed)

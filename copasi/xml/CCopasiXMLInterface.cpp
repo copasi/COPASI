@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
- $Revision: 1.55 $
+ $Revision: 1.56 $
  $Name:  $
  $Author: shoops $
- $Date: 2012/03/26 12:54:21 $
+ $Date: 2012/04/23 21:12:50 $
  End CVS Header */
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,12 +30,7 @@
 
 #include <fstream>
 #include <limits>
-
-#ifdef SunOS
-# include <ieeefp.h>
-#else
-# include <float.h>
-#endif
+#include <cmath>
 
 #include "copasi.h"
 #include "CCopasiXMLInterface.h"
@@ -207,7 +202,7 @@ std::string CCopasiXMLInterface::encode(const std::string & str, const EncodingT
 CCopasiXMLInterface::DBL::DBL(const C_FLOAT64 & value):
     mValue(value)
 {
-  if (-mValue < DBL_MIN && mValue < DBL_MIN && !isnan(mValue))
+  if (-mValue < std::numeric_limits< C_FLOAT64 >::min() && mValue < std::numeric_limits< C_FLOAT64 >::min() && !isnan(mValue))
     mValue = 0.0;
 }
 

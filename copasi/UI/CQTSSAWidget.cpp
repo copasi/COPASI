@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAWidget.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/01/06 19:13:44 $
+//   $Date: 2012/04/23 21:12:27 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -91,7 +91,7 @@ void CQTSSAWidget::init()
   mpEditDuration->setValidator(mpValidatorDuration);
 
   mpValidatorIntervalSize = new CQValidatorDouble(mpEditIntervalSize);
-  mpValidatorIntervalSize->setRange(0, DBL_MAX);
+  mpValidatorIntervalSize->setRange(0, std::numeric_limits< C_FLOAT64 >::max());
   mpEditIntervalSize->setValidator(mpValidatorIntervalSize);
 }
 

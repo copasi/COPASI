@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:31:26 $
+//   $Date: 2012/04/23 21:11:21 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,6 +19,8 @@
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+#include <cmath>
 
 #include "copasi.h"
 
@@ -39,8 +41,8 @@ COptMethodEP::COptMethodEP(const CCopasiContainer * pParent):
     mpRandom(NULL),
     mBestIndex(C_INVALID_INDEX),
     mLosses(0),
-    mBestValue(DBL_MAX),
-    mEvaluationValue(DBL_MAX),
+    mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
+    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
     mValue(0),
     mVariableSize(0),
     mIndividual(0),
@@ -62,8 +64,8 @@ COptMethodEP::COptMethodEP(const COptMethodEP & src,
     mpRandom(NULL),
     mBestIndex(C_INVALID_INDEX),
     mLosses(0),
-    mBestValue(DBL_MAX),
-    mEvaluationValue(DBL_MAX),
+    mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
+    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
     mValue(0),
     mVariableSize(0),
     mIndividual(0),
@@ -265,7 +267,7 @@ bool COptMethodEP::creation()
             if (!OptItem.checkLowerBound(mut)) // Inequality
               {
                 if (mut == 0.0)
-                  mut = DBL_MIN;
+                  mut = std::numeric_limits< C_FLOAT64 >::min();
                 else
                   mut += mut * std::numeric_limits< C_FLOAT64 >::epsilon();
               }
@@ -278,7 +280,7 @@ bool COptMethodEP::creation()
             if (!OptItem.checkUpperBound(mut)) // Inequality
               {
                 if (mut == 0.0)
-                  mut = - DBL_MIN;
+                  mut = - std::numeric_limits< C_FLOAT64 >::min();
                 else
                   mut -= mut * std::numeric_limits< C_FLOAT64 >::epsilon();
               }
@@ -322,12 +324,12 @@ bool COptMethodEP::creation()
               // depending on the location and act uppon it.
               if (0.0 <= mn) // the interval [mn, mx) is in [0, inf)
                 {
-                  la = log10(mx) - log10(std::max(mn, DBL_MIN));
+                  la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
                   if (la < 1.8 || !(mn > 0.0)) // linear
                     mut = mn + mpRandom->getRandomCC() * (mx - mn);
                   else
-                    mut = pow(10.0, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
+                    mut = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mpRandom->getRandomCC());
                 }
               else if (mx > 0) // 0 is in the interval (mn, mx)
                 {
@@ -354,12 +356,12 @@ bool COptMethodEP::creation()
                   mx = - *OptItem.getLowerBoundValue();
                   mn = - *OptItem.getUpperBoundValue();
 
-                  la = log10(mx) - log10(std::max(mn, DBL_MIN));
+                  la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
                   if (la < 1.8 || !(mn > 0.0)) // linear
                     mut = - (mn + mpRandom->getRandomCC() * (mx - mn));
                   else
-                    mut = - pow(10.0, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
+                    mut = - pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mpRandom->getRandomCC());
                 }
             }
 
@@ -377,7 +379,7 @@ bool COptMethodEP::creation()
                 if (!OptItem.checkLowerBound(mut)) // Inequality
                   {
                     if (mut == 0.0)
-                      mut = DBL_MIN;
+                      mut = std::numeric_limits< C_FLOAT64 >::min();
                     else
                       mut += mut * std::numeric_limits< C_FLOAT64 >::epsilon();
                   }
@@ -390,7 +392,7 @@ bool COptMethodEP::creation()
                 if (!OptItem.checkUpperBound(mut)) // Inequality
                   {
                     if (mut == 0.0)
-                      mut = - DBL_MIN;
+                      mut = - std::numeric_limits< C_FLOAT64 >::min();
                     else
                       mut -= mut * std::numeric_limits< C_FLOAT64 >::epsilon();
                   }

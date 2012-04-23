@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:31:25 $
+//   $Date: 2012/04/23 21:11:20 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -162,7 +162,7 @@ bool CRandomSearch::optimise()
                 if (!OptItem.checkLowerBound(mut)) // Inequality
                   {
                     if (mut == 0.0)
-                      mut = DBL_MIN;
+                      mut = std::numeric_limits< C_FLOAT64 >::min();
                     else
                       mut += mut * std::numeric_limits< C_FLOAT64 >::epsilon();
                   }
@@ -175,7 +175,7 @@ bool CRandomSearch::optimise()
                 if (!OptItem.checkUpperBound(mut)) // Inequality
                   {
                     if (mut == 0.0)
-                      mut = - DBL_MIN;
+                      mut = - std::numeric_limits< C_FLOAT64 >::min();
                     else
                       mut -= mut * std::numeric_limits< C_FLOAT64 >::epsilon();
                   }

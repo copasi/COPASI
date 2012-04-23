@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.123 $
+//   $Revision: 1.124 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/04 19:18:11 $
+//   $Date: 2012/04/23 21:11:21 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,7 +29,7 @@
  *           It specifies the optimization problem with its own members and
  *           functions. It's used by COptAlgorithm class and COptimization class
  */
-#include <float.h>
+#include <cmath>
 
 #include "copasi.h"
 #include "COptTask.h"

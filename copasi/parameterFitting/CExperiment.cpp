@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.76 $
+//   $Revision: 1.77 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/23 14:14:19 $
+//   $Author: shoops $
+//   $Date: 2012/04/23 21:11:55 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,7 +23,6 @@
 #include <fstream>
 #include <limits>
 #include <cmath>
-#include <float.h>
 
 #include "copasi.h"
 
@@ -925,7 +924,7 @@ bool CExperiment::read(std::istream & in,
 bool CExperiment::calculateWeights()
 {
   // We need to calculate the means and the weights
-  C_FLOAT64 MinWeight = DBL_MAX;
+  C_FLOAT64 MinWeight = std::numeric_limits< C_FLOAT64 >::max();
 
   size_t DependentCount = mMeans.size();
   CVector< C_FLOAT64 > MeanSquares(DependentCount);

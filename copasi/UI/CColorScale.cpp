@@ -1,19 +1,24 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CColorScale.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2009/01/07 19:43:40 $
+//   $Date: 2012/04/23 21:12:27 $
 // End CVS Header
+
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-#include "CColorScale.h"
-#include <float.h>
+#include <cmath>
 
-#include "copasi/mathematics.h"
+#include "CColorScale.h"
 
 CColorScale1::CColorScale1()
     : m1(1e-4)
@@ -23,12 +28,14 @@ CColorScale1::CColorScale1()
 QColor CColorScale1::getColor(const C_FLOAT64 & number)
 {
   QColor color;
+
   if (fabs(number) < m1)
     color = QColor(250, 250, 250);
   else if (number > 0)
     color = QColor(200, 255, 200);
   else
     color = QColor(255, 200, 200);
+
   return color;
 }
 
@@ -45,7 +52,9 @@ CColorScaleSimple::CColorScaleSimple()
 QColor CColorScaleSimple::getColor(const C_FLOAT64 & number)
 {
   C_FLOAT64 tmp = (number - mMin) / (mMax - mMin); //scale to 0..1
+
   if (tmp > 1) tmp = 1;
+
   if (tmp < 0) tmp = 0;
 
   int r = 0;
@@ -61,14 +70,14 @@ QColor CColorScaleSimple::getColor(const C_FLOAT64 & number)
   else if (tmp < 0.5)
     {
       r = 255;
-      g = (int) (255 + (tmp - 0.5) * 260);
-      b = (int) (255 + (tmp - 0.5) * 260);
+      g = (int)(255 + (tmp - 0.5) * 260);
+      b = (int)(255 + (tmp - 0.5) * 260);
     }
   else
     {
-      r = (int) (255 - (tmp - 0.5) * 260);
+      r = (int)(255 - (tmp - 0.5) * 260);
       g = 255;
-      b = (int) (255 - (tmp - 0.5) * 260);
+      b = (int)(255 - (tmp - 0.5) * 260);
     }
 
   QColor color(r, g, b);
@@ -78,14 +87,15 @@ QColor CColorScaleSimple::getColor(const C_FLOAT64 & number)
 //virtual
 void CColorScaleSimple::startAutomaticParameterCalculation()
 {
-  mMin = DBL_MAX;
-  mMax = -DBL_MAX;
+  mMin = std::numeric_limits< C_FLOAT64 >::max();
+  mMax = -std::numeric_limits< C_FLOAT64 >::max();
 }
 
 //virtual
 void CColorScaleSimple::passValue(const C_FLOAT64 & number)
 {
   if (number > mMax) mMax = number;
+
   if (number < mMin) mMin = number;
 }
 
@@ -95,6 +105,7 @@ void CColorScaleSimple::finishAutomaticParameterCalculation()
   if (mSym)
     {
       C_FLOAT64 tmp;
+
       if (fabs(mMax) > fabs(mMin))
         tmp = fabs(mMax);
       else
@@ -133,12 +144,14 @@ void CColorScaleAdvanced::setColorMax(QColor col)
 QColor CColorScaleAdvanced::getColor(const C_FLOAT64 & number)
 {
   C_FLOAT64 tmp = (number - mMin) / (mMax - mMin); //scale to 0..1
+
   if (tmp > 1) tmp = 1;
+
   if (tmp < 0) tmp = 0;
 
-  int r = (int) (mColorMin.red() * (1 - tmp) + mColorMax.red() * tmp);
-  int g = (int) (mColorMin.green() * (1 - tmp) + mColorMax.green() * tmp);
-  int b = (int) (mColorMin.blue() * (1 - tmp) + mColorMax.blue() * tmp);
+  int r = (int)(mColorMin.red() * (1 - tmp) + mColorMax.red() * tmp);
+  int g = (int)(mColorMin.green() * (1 - tmp) + mColorMax.green() * tmp);
+  int b = (int)(mColorMin.blue() * (1 - tmp) + mColorMax.blue() * tmp);
 
   QColor color(r, g, b);
   return color;
@@ -164,7 +177,8 @@ void CColorScaleAverage::startAutomaticParameterCalculation()
 void CColorScaleAverage::passValue(const C_FLOAT64 & number)
 {
   if (number != number) return; //NaN
-  if (fabs(number) >= DBL_MAX) return; //Inf
+
+  if (fabs(number) >= std::numeric_limits< C_FLOAT64 >::max()) return; //Inf
 
   ++mInt;
   mFloat += fabs(number);
@@ -177,6 +191,7 @@ void CColorScaleAverage::finishAutomaticParameterCalculation()
     mMax = mFactor * mFloat / mInt;
   else
     mMax = mFactor;
+
   mMin = -mMax;
 
   if (mMin == mMax)
@@ -201,7 +216,9 @@ QColor CColorScaleBiLog::getColor(const C_FLOAT64 & number)
   C_FLOAT64 logtmp = log(fabs(number));
 
   C_FLOAT64 tmp = (logtmp - m1) / (m2 - m1); //scale to 0..1
+
   if (tmp > 1) tmp = 1;
+
   if (tmp < 0) tmp = 0;
 
   if (number > 0)
@@ -222,14 +239,14 @@ QColor CColorScaleBiLog::getColor(const C_FLOAT64 & number)
   else if (tmp < 0.5)
     {
       r = 255;
-      g = (int) (255 + (tmp - 0.5) * 260);
-      b = (int) (255 + (tmp - 0.5) * 260);
+      g = (int)(255 + (tmp - 0.5) * 260);
+      b = (int)(255 + (tmp - 0.5) * 260);
     }
   else
     {
-      r = (int) (255 - (tmp - 0.5) * 260);
+      r = (int)(255 - (tmp - 0.5) * 260);
       g = 255;
-      b = (int) (255 - (tmp - 0.5) * 260);
+      b = (int)(255 - (tmp - 0.5) * 260);
     }
 
   QColor color(r, g, b);
@@ -239,8 +256,8 @@ QColor CColorScaleBiLog::getColor(const C_FLOAT64 & number)
 //virtual
 void CColorScaleBiLog::startAutomaticParameterCalculation()
 {
-  m1 = DBL_MAX;
-  m2 = -DBL_MAX;
+  m1 = std::numeric_limits< C_FLOAT64 >::max();
+  m2 = -std::numeric_limits< C_FLOAT64 >::max();
   mFloat = 0.0;
   mInt = 0;
 }
@@ -249,13 +266,16 @@ void CColorScaleBiLog::startAutomaticParameterCalculation()
 void CColorScaleBiLog::passValue(const C_FLOAT64 & number)
 {
   if (number != number) return; //NaN
-  if (fabs(number) >= DBL_MAX) return; //Inf
+
+  if (fabs(number) >= std::numeric_limits< C_FLOAT64 >::max()) return; //Inf
+
   if (number == 0.0) return;
 
   C_FLOAT64 tmp = log(fabs(number));
 
   //minmax
   if (tmp > m2) m2 = tmp;
+
   if (tmp < m1) m1 = tmp;
 
   //average
@@ -270,6 +290,7 @@ void CColorScaleBiLog::finishAutomaticParameterCalculation()
     m1 = (mFloat / mInt) - 4;
   else
     m1 = -4.0;
+
   m2 -= 1.0;
 }
 

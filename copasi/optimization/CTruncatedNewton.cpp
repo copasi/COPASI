@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CTruncatedNewton.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 15:48:07 $
+//   $Date: 2012/04/23 21:11:21 $
 // End CVS Header
 
 // Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,6 @@
  */
 
 #include <cmath>
-#include <float.h>
 
 #include "copasi.h"
 #include "CTruncatedNewton.h"

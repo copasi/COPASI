@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
-$Revision: 1.20 $
+$Revision: 1.21 $
 $Name:  $
 $Author: shoops $
-$Date: 2011/03/07 19:34:55 $
+$Date: 2012/04/23 21:13:05 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,7 +18,6 @@ End CVS Header */
 #include <limits>
 #include <iostream>
 #include <sstream>
-#include <float.h>
 #include <string.h>
 #include <stdlib.h>
 

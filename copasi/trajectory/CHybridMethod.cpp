@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-//   $Revision: 1.64 $
+//   $Revision: 1.65 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/24 16:32:37 $
+//   $Date: 2012/04/23 21:12:08 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -46,8 +46,6 @@
 
 #include <limits.h>
 #include <iterator>
-
-#include "mathematics.h" // pow(), floor()
 
 #include "copasi.h"
 

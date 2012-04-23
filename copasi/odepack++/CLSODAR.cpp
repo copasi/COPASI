@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CLSODAR.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2012/04/22 14:54:53 $
+   $Author: shoops $
+   $Date: 2012/04/23 21:11:03 $
    End CVS Header */
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,7 +24,6 @@
 // library ODEPACK available at: http://www.netlib.org/odepack/
 
 #include <cmath>
-#include <float.h>
 
 #include <algorithm>
 #include <string>
@@ -1770,7 +1769,7 @@ L70:
   /* The error weights in EWT are inverted after being loaded. */
   /* ----------------------------------------------------------------------- */
 L100:
-  dls001_1.uround = DBL_EPSILON;
+  dls001_1.uround = std::numeric_limits< C_FLOAT64 >::epsilon();
   dls001_1.tn = *t;
   dlsa01_1.tsw = *t;
   dls001_1.maxord = dlsa01_1.mxordn;
