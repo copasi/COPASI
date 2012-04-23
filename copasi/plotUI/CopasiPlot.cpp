@@ -1,24 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.77 $
+//   $Revision: 1.78 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/23 00:10:29 $
+//   $Author: bergmann $
+//   $Date: 2012/04/23 06:39:04 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.77 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/23 00:10:29 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -48,6 +36,7 @@
 
 #include "scrollzoomer.h"
 
+#include "copasi.h"
 #include "CopasiPlot.h"
 #include "plot/CPlotSpecification.h"
 #include "UI/qtUtilities.h"
@@ -704,7 +693,7 @@ void C2DPlotCurve::myDrawLines(QPainter *painter,
       int i;
 
       for (i = from; i <= to; ++i)
-        if (isnan(x(i))or isnan(y(i))) //NaN
+        if (isnan(x(i)) || isnan(y(i))) //NaN
           break;
 
       if (i == from)
@@ -751,7 +740,7 @@ void C2DPlotCurve::drawSymbols(QPainter *painter, const QwtSymbol &symbol,
     {
 
       //find the next not-NaN point
-      while (isnan(x(from2)) or isnan(y(from2)))
+      while (isnan(x(from2)) || isnan(y(from2)))
         {
           ++from2;
 
@@ -769,7 +758,7 @@ void C2DPlotCurve::drawSymbols(QPainter *painter, const QwtSymbol &symbol,
           if (to2 > to)
             break;
         }
-      while (!(isnan(x(to2)) or isnan(y(to2))));
+      while (!(isnan(x(to2)) || isnan(y(to2))));
 
       --to2;
 
