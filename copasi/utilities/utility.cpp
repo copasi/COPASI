@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-$Revision: 1.41 $
+$Revision: 1.42 $
 $Name:  $
 $Author: shoops $
-$Date: 2012/04/23 21:12:49 $
+$Date: 2012/04/23 21:45:51 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,17 +15,15 @@ End CVS Header */
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <stdio.h>
-#include <time.h>
-
+#include <cmath>
 #include <limits>
 #include <string>
-#include <stdlib.h>
-// for strcmp
-#include <string.h>
-
 #include <sstream>
 #include <iostream>
+
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 #include "copasi.h"
 
