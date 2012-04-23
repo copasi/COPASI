@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CCellDesignerImporter.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 17:42:28 $
+//   $Date: 2012/04/23 18:19:42 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -222,7 +222,7 @@ struct LinkTarget
   POSITION mPosition;
 
   // Default constructor
-  LinkTarget() : mAlias(""), mSpecies(""), mPosition(POSITION_UNDEFINED) {};
+  LinkTarget();
 };
 
 struct SpeciesModification
@@ -231,10 +231,7 @@ struct SpeciesModification
   SPECIES_MODIFICATION_TYPE mType;
 
   // default constructor
-  SpeciesModification() :
-      mResidue("")
-      , mType(UNDEFINED_MOD_TYPE)
-  {};
+  SpeciesModification();
 };
 
 // structure for the species state
@@ -243,7 +240,7 @@ struct SpeciesState
   std::vector<SpeciesModification> mModifications;
 
   // default constructor
-  SpeciesState() {};
+  SpeciesState();
 };
 
 
@@ -254,7 +251,7 @@ struct SpeciesIdentity
   SpeciesState mState;
 
   // Default constructor
-  SpeciesIdentity() : mSpeciesClass(UNDEFINED_CLASS), mNameOrReference("") {};
+  SpeciesIdentity();
 };
 
 // structure for the modifications in a species state
@@ -265,7 +262,7 @@ struct SpeciesAnnotation
   SpeciesIdentity mIdentity;
 
   // Default constructor
-  SpeciesAnnotation() : mPosition(UNDEFINED_POSITION), mParentComplex(""), mIdentity(SpeciesIdentity()) {};
+  SpeciesAnnotation();
 };
 
 struct CompartmentAnnotation
@@ -273,7 +270,7 @@ struct CompartmentAnnotation
   std::string mName;
 
   // Default constructor
-  CompartmentAnnotation() : mName("") {};
+  CompartmentAnnotation();
 };
 
 
@@ -284,7 +281,7 @@ struct Line
   bool mCurve;
 
   // Default constructor
-  Line(): mColor("#FF000000"), mWidth(0.0), mCurve(false) {};
+  Line();
 };
 
 struct LineDirection
@@ -294,11 +291,7 @@ struct LineDirection
   DIRECTION_VALUE mValue;
 
   // default constructor
-  LineDirection() :
-      mIndex(std::numeric_limits<int>::max())
-      , mArm(std::numeric_limits<int>::max())
-      , mValue(DIRECTION_UNDEFINED)
-  {};
+  LineDirection();
 };
 
 struct ConnectScheme
@@ -308,11 +301,7 @@ struct ConnectScheme
   std::vector<LineDirection> mLineDirections;
 
   // default constructor
-  ConnectScheme() :
-      mPolicy(POLICY_UNDEFINED)
-      , mRectangleIndex(0)
-      , mLineDirections()
-  {};
+  ConnectScheme();
 };
 
 struct EditPoints
@@ -325,14 +314,7 @@ struct EditPoints
   std::vector<Point> mPoints;
 
   // default constructor
-  EditPoints() :
-      mNum0(std::numeric_limits<int>::max())
-      , mNum1(std::numeric_limits<int>::max())
-      , mNum2(std::numeric_limits<int>::max())
-      , mOmittedShapeIndex(std::numeric_limits<int>::max())
-      , mTShapeIndex(std::numeric_limits<int>::max())
-      , mPoints()
-  {};
+  EditPoints();
 };
 
 struct ReactionModification
@@ -380,13 +362,7 @@ struct ReactantLink
   Line mLine;
 
   // default constructor
-  ReactantLink() :
-      mAlias("")
-      , mReactant("")
-      , mTargetLineIndex(std::numeric_limits<int>::max())
-      , mPosition(POSITION_UNDEFINED)
-      , mLine()
-  {};
+  ReactantLink();
 };
 
 struct ReactionAnnotation
@@ -437,12 +413,7 @@ struct CellDesignerSpecies
   SpeciesAnnotation mAnnotation;
 
   // default constructor
-  CellDesignerSpecies() :
-      mId("")
-      , mName("")
-      , mCompartment("")
-      , mAnnotation()
-  {};
+  CellDesignerSpecies();
 };
 
 struct Paint
@@ -454,10 +425,7 @@ struct Paint
   PAINT_SCHEME mScheme;
 
   // default constructor
-  Paint() :
-      mColor("#FF000000")
-      , mScheme(PAINT_UNDEFINED)
-  {};
+  Paint();
 
 };
 
@@ -468,11 +436,7 @@ struct DoubleLine
   double mThickness;
 
   // default constructor
-  DoubleLine() :
-      mInnerWidth(0.0)
-      , mOuterWidth(0.0)
-      , mThickness(0.0)
-  {};
+  DoubleLine();
 };
 
 struct CompartmentAlias
@@ -521,16 +485,7 @@ struct SpeciesAlias
   UsualView mUView;
 
   // default constructor
-  SpeciesAlias() :
-      mId("")
-      , mSpecies("")
-      , mComplexSpeciesAlias("")
-      , mCompartmentAlias("")
-      , mFontSize(12.0)
-      , mComplex(false)
-      , mBounds()
-      , mUView()
-  {};
+  SpeciesAlias();
 };
 
 struct ProteinModification
@@ -540,11 +495,7 @@ struct ProteinModification
   double mAngle;
 
   // default constructor
-  ProteinModification() :
-      mId(""),
-      mName(""),
-      mAngle(0.0)
-  {};
+  ProteinModification();
 };
 
 // data type to store protein data
@@ -557,11 +508,7 @@ struct Protein
   std::vector<ProteinModification> mModifications;
 
   // default constructor
-  Protein():
-      mId(""),
-      mName(""),
-      mType(PROTEIN_CLASS)
-  {};
+  Protein();
 };
 
 

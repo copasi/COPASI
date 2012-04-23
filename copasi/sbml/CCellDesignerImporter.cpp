@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CCellDesignerImporter.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 17:42:28 $
+//   $Date: 2012/04/23 18:19:42 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -10229,7 +10229,7 @@ ReactionModification::ReactionModification() :
     , mNum2(std::numeric_limits<int>::max())
     , mModType(UNDEFINED_MTYPE)
     , mOffset(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
-{};
+{}
 
 ReactionAnnotation::ReactionAnnotation() :
     mName("")
@@ -10243,7 +10243,7 @@ ReactionAnnotation::ReactionAnnotation() :
     , mEditPoints()
     , mLine(Line())
     , mModifications()
-{};
+{}
 
 CompartmentAlias::CompartmentAlias() :
     mId("")
@@ -10254,12 +10254,125 @@ CompartmentAlias::CompartmentAlias() :
     , mPaint()
     , mBounds()
     , mFontSize(12.0)
-{};
+{}
 
 UsualView::UsualView() :
     mInnerPosition(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
     , mBoxSize(Dimensions(new LayoutPkgNamespaces(), 0.0, 0.0))
     , mLineWidth(0.0)
     , mPaint()
-{};
+{}
+
+LinkTarget::LinkTarget() :
+    mAlias(""),
+    mSpecies(""),
+    mPosition(POSITION_UNDEFINED)
+{}
+
+SpeciesModification::SpeciesModification() :
+    mResidue("")
+    , mType(UNDEFINED_MOD_TYPE)
+{}
+
+SpeciesState::SpeciesState():
+    mModifications()
+{}
+
+SpeciesIdentity::SpeciesIdentity():
+    mSpeciesClass(UNDEFINED_CLASS),
+    mNameOrReference("")
+{}
+
+SpeciesAnnotation::SpeciesAnnotation():
+    mPosition(UNDEFINED_POSITION),
+    mParentComplex(""),
+    mIdentity(SpeciesIdentity())
+{}
+
+CompartmentAnnotation::CompartmentAnnotation():
+    mName("")
+{}
+
+Line::Line():
+    mColor("#FF000000"),
+    mWidth(0.0),
+    mCurve(false)
+{}
+
+LineDirection; : LineDirection() :
+    mIndex(std::numeric_limits<int>::max())
+    , mArm(std::numeric_limits<int>::max())
+    , mValue(DIRECTION_UNDEFINED)
+{}
+
+ConnectScheme::ConnectScheme() :
+    mPolicy(POLICY_UNDEFINED)
+    , mRectangleIndex(0)
+    , mLineDirections()
+{}
+
+EditPoints::EditPoints() :
+    mNum0(std::numeric_limits<int>::max())
+    , mNum1(std::numeric_limits<int>::max())
+    , mNum2(std::numeric_limits<int>::max())
+    , mOmittedShapeIndex(std::numeric_limits<int>::max())
+    , mTShapeIndex(std::numeric_limits<int>::max())
+    , mPoints()
+{}
+
+ReactantLink::ReactantLink() :
+    mAlias("")
+    , mReactant("")
+    , mTargetLineIndex(std::numeric_limits<int>::max())
+    , mPosition(POSITION_UNDEFINED)
+    , mLine()
+{}
+
+CellDesignerSpecies::CellDesignerSpecies() :
+    mId("")
+    , mName("")
+    , mCompartment("")
+    , mAnnotation()
+{}
+
+Paint::Paint() :
+    mColor("#FF000000")
+    , mScheme(PAINT_UNDEFINED)
+{}
+
+DoubleLine::DoubleLine() :
+    mInnerWidth(0.0)
+    , mOuterWidth(0.0)
+    , mThickness(0.0)
+{}
+
+SpeciesAlias::SpeciesAlias() :
+    mId("")
+    , mSpecies("")
+    , mComplexSpeciesAlias("")
+    , mCompartmentAlias("")
+    , mFontSize(12.0)
+    , mComplex(false)
+    , mBounds()
+    , mUView()
+{}
+
+ProteinModification::ProteinModification() :
+    mId(""),
+    mName(""),
+    mAngle(0.0)
+{}
+
+Protein::Protein():
+    mId(""),
+    mName(""),
+    mType(PROTEIN_CLASS)
+{}
+
+
+
+
+
+
+
 
