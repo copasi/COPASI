@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.67 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/20 16:26:55 $
+//   $Author: ssahle $
+//   $Date: 2012/04/23 14:29:59 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -237,6 +237,8 @@ void TaskWidget::reportBtnClicked()
 void TaskWidget::assistantBtnClicked()
 {
   if (!mpTask) return;
+
+  saveTask(); //this is necessary since the output may use information from the problem
 
   DefaultPlotDialog * pDlg = new DefaultPlotDialog(this);
   pDlg->setTask(mpTask);
