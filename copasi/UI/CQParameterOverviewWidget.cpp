@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQParameterOverviewWidget.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/04/02 16:57:27 $
+//   $Author: shoops $
+//   $Date: 2012/04/23 15:50:54 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,6 +73,7 @@ bool CQParameterOverviewWidget::enterProtected()
     }
 
   mpParameterSetDM->setModelParameterset(mpParameterSet);
+  mpTreeView->expandAll();
 
   return true;
 
