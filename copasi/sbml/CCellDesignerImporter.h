@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CCellDesignerImporter.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 15:49:07 $
+//   $Date: 2012/04/23 17:42:28 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -365,18 +365,7 @@ struct ReactionModification
   Line mLine;
 
   // Default constructor
-  ReactionModification() :
-      mAliases()
-      , mModifiers()
-      , mType(UNDEFINED_ML_TYPE)
-      , mTargetLineIndex(std::numeric_limits<int>::max())
-      , mEditPoints()
-      , mNum0(std::numeric_limits<int>::max())
-      , mNum1(std::numeric_limits<int>::max())
-      , mNum2(std::numeric_limits<int>::max())
-      , mModType(UNDEFINED_MTYPE)
-      , mOffset(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
-  {};
+  ReactionModification();
 };
 
 struct ReactantLink
@@ -433,19 +422,7 @@ struct ReactionAnnotation
   std::vector<ReactionModification> mModifications;
 
   // Default constructor
-  ReactionAnnotation() :
-      mName("")
-      , mType(UNDEFINED_RTYPE)
-      , mBaseReactants()
-      , mBaseProducts()
-      , mReactantLinks()
-      , mProductLinks()
-      , mConnectScheme()
-      , mOffset(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
-      , mEditPoints()
-      , mLine(Line())
-      , mModifications()
-  {};
+  ReactionAnnotation();
 };
 
 // some structures for the general model annotation
@@ -512,16 +489,7 @@ struct CompartmentAlias
   double mFontSize;
 
   // default constructor
-  CompartmentAlias() :
-      mId("")
-      , mCompartment("")
-      , mClass(UNDEFINED_CLASS)
-      , mNamePoint(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
-      , mDoubleLine()
-      , mPaint()
-      , mBounds()
-      , mFontSize(12.0)
-  {};
+  CompartmentAlias();
 };
 
 
@@ -533,12 +501,7 @@ struct UsualView
   Paint mPaint;
 
   // default constructor
-  UsualView() :
-      mInnerPosition(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
-      , mBoxSize(Dimensions(new LayoutPkgNamespaces(), 0.0, 0.0))
-      , mLineWidth(0.0)
-      , mPaint()
-  {};
+  UsualView();
 };
 
 // ComplexSpeciesAlias seems to have the
