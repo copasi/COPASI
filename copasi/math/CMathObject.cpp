@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathObject.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/19 14:33:11 $
+//   $Date: 2012/04/23 15:52:58 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -311,7 +311,6 @@ const CMathExpression * CMathObject::getExpressionPtr() const
 
 bool CMathObject::compile(CMathContainer & container)
 {
-  std::cout << *this;
 
   bool success = true;
 
@@ -392,7 +391,7 @@ bool CMathObject::compile(CMathContainer & container)
         break;
     }
 
-  // std::cout << *this << std::endl;
+  std::cout << *this;
 
   return success;
 }
