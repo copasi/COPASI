@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.76 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2012/04/22 14:54:54 $
+//   $Date: 2012/04/23 14:14:20 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -806,10 +806,36 @@ bool CFitProblem::calculate()
 
               case CCopasiTask::timeCourse:
 
+                size_t numIntermediateSteps;
+
+                if (mStoreResults)
+                  {
+                    //calculate a reasonable number of intermediate points
+                    numIntermediateSteps = 4; //TODO
+                    //resize the storage for the extended time series
+                    pExp->initExtendedTimeSeries(numIntermediateSteps * kmax - numIntermediateSteps + 1);
+                  }
+
                 for (j = 0; j < kmax && Continue; j++) // For each data row;
                   {
                     if (j)
                       {
+                        if (mStoreResults)
+                          {
+                            //do additional intermediate steps for nicer display
+                            C_FLOAT64 ttt;
+                            size_t ic;
+
+                            for (ic = 1; ic < numIntermediateSteps; ++ic)
+                              {
+                                ttt = pExp->getTimeData()[j-1] + (pExp->getTimeData()[j] - pExp->getTimeData()[j-1]) * (C_FLOAT64(ic) / numIntermediateSteps);
+                                mpTrajectory->processStep(ttt);
+                                //save the simulation results in the experiment
+                                pExp->storeExtendedTimeSeriesData(ttt);
+                              }
+                          }
+
+                        //do the regular step
                         mpTrajectory->processStep(pExp->getTimeData()[j]);
                       }
                     else
@@ -852,6 +878,12 @@ bool CFitProblem::calculate()
                       mCalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
                     else
                       mCalculateValue += pExp->sumOfSquares(j, Residuals);
+
+                    if (mStoreResults)
+                      {
+                        //additionally also store the the simulation result for the extended time series
+                        pExp->storeExtendedTimeSeriesData(pExp->getTimeData()[j]);
+                      }
                   }
 
                 break;

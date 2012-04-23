@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-$Revision: 1.35 $
+$Revision: 1.36 $
 $Name:  $
 $Author: ssahle $
-$Date: 2012/04/22 14:54:54 $
+$Date: 2012/04/23 14:14:19 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -261,7 +261,19 @@ bool CExperimentSet::calculateStatistics()
   for (i = 0; i < imax; i++)
     {
       for (it = mpExperiments->begin() + mNonExperiments; it != end; ++it)
-        (*it)->updateFittedPointValues(i);
+        (*it)->updateFittedPointValues(i, false); //false means without simulated data TODO
+
+      pParentTask->output(COutputInterface::AFTER);
+    }
+
+  //now the extended time series
+  for (it = mpExperiments->begin() + mNonExperiments, imax = 0; it != end; ++it)
+    imax = std::max(imax, (*it)->extendedTimeSeriesSize());
+
+  for (i = 0; i < imax; i++)
+    {
+      for (it = mpExperiments->begin() + mNonExperiments; it != end; ++it)
+        (*it)->updateFittedPointValuesFromExtendedTimeSeries(i);
 
       pParentTask->output(COutputInterface::AFTER);
     }

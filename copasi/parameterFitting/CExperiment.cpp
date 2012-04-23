@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.76 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2012/04/22 14:54:55 $
+//   $Date: 2012/04/23 14:14:19 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -280,7 +280,7 @@ void CExperiment::updateFittedPoints()
       }
 }
 
-void CExperiment::updateFittedPointValues(const size_t & index)
+void CExperiment::updateFittedPointValues(const size_t & index, bool includeSimulation)
 {
   CCopasiVector< CFittingPoint >::iterator it = mFittingPoints.begin();
   CCopasiVector< CFittingPoint >::iterator end = mFittingPoints.end();
@@ -316,12 +316,41 @@ void CExperiment::updateFittedPointValues(const size_t & index)
       Residual = *pWeight * (*pDataDependentCalculated - *pDataDependent);
       (*it)->setValues(Independent,
                        *pDataDependent,
-                       *pDataDependentCalculated,
+                       includeSimulation ? *pDataDependentCalculated : std::numeric_limits<C_FLOAT64>::quiet_NaN(),
                        Residual);
     }
 
   return;
 }
+
+void CExperiment::updateFittedPointValuesFromExtendedTimeSeries(const size_t & index)
+{
+  CCopasiVector< CFittingPoint >::iterator it = mFittingPoints.begin();
+  CCopasiVector< CFittingPoint >::iterator end = mFittingPoints.end();
+
+  if (index >= extendedTimeSeriesSize())
+    {
+      for (; it != end; ++it)
+        (*it)->setValues(std::numeric_limits<C_FLOAT64>::quiet_NaN(),
+                         std::numeric_limits<C_FLOAT64>::quiet_NaN(),
+                         std::numeric_limits<C_FLOAT64>::quiet_NaN(),
+                         std::numeric_limits<C_FLOAT64>::quiet_NaN());
+
+      return;
+    }
+
+  size_t i;
+
+  for (i = 1; it != end; ++it, ++i)
+    {
+      (*it)->setValues(mExtendedTimeSeries[index *(mDataDependent.numCols()+1)],
+                       std::numeric_limits<C_FLOAT64>::quiet_NaN(),
+                       mExtendedTimeSeries[index *(mDataDependent.numCols()+1)+i] ,
+                       std::numeric_limits<C_FLOAT64>::quiet_NaN());
+    }
+
+}
+
 
 C_FLOAT64 CExperiment::sumOfSquares(const size_t & index,
                                     C_FLOAT64 *& residuals) const
@@ -427,6 +456,38 @@ C_FLOAT64 CExperiment::sumOfSquaresStore(const size_t & index,
     }
 
   return s;
+}
+
+void CExperiment::initExtendedTimeSeries(size_t s)
+{
+  mExtendedTimeSeriesSize = s;
+  mExtendedTimeSeries.resize(s*(this->getDependentData().numCols() + 1)); //+1 for time
+  mStorageIt = mExtendedTimeSeries.begin();
+}
+
+void CExperiment::storeExtendedTimeSeriesData(C_FLOAT64 time)
+{
+  //first store time
+  *mStorageIt = time; ++mStorageIt;
+
+  //do all necessary refreshs
+  std::vector< Refresh * >::const_iterator it = mRefreshMethods.begin();
+  std::vector< Refresh * >::const_iterator end = mRefreshMethods.end();
+
+  for (; it != end; ++it)
+    (**it)();
+
+  //store the calculated data
+  C_FLOAT64 * const * ppDependentValues = mDependentValues.array();
+  size_t  i, imax = mDataDependent.numCols();
+
+  for (i = 0; i < imax; ++i, ++ppDependentValues, ++mStorageIt)
+    *mStorageIt = **ppDependentValues;
+}
+
+size_t CExperiment::extendedTimeSeriesSize() const
+{
+  return mExtendedTimeSeriesSize;
 }
 
 bool CExperiment::calculateStatistics()

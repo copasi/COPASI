@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/24 16:32:36 $
+//   $Author: ssahle $
+//   $Date: 2012/04/23 14:14:20 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -202,6 +202,23 @@ public:
   C_FLOAT64 sumOfSquaresStore(const size_t & index,
                               C_FLOAT64 *& dependentValues);
 
+
+  /**
+   * Initialize the storage of an extended time series for plotting.
+   * This clears the storage, resizes it to the given size and sets the
+   * iterator to the start of the storage.
+   * The size given is the number of time points, not the number of data
+   */
+  void initExtendedTimeSeries(size_t s);
+
+  /**
+   * Add one dataset to the extended time series. The time and the simulated dependent
+   * values are stored and the iterator is increased
+   */
+  void storeExtendedTimeSeriesData(C_FLOAT64 time);
+
+  size_t extendedTimeSeriesSize() const;
+
   /**
    * Calculate statistics by comparing the stored calculated values
    * with the measurements.
@@ -306,8 +323,16 @@ public:
    * This method is used for output to fill the fitted points
    * with the values of the index data record. If index exceedds the
    * number of data records all values are set to NaN.
+   * If includeSimulation = false the entries for the simulation results
+   * are set to NaN. (This means the simulated time series is not plotted and
+   * can be output using a different mechanism)
    */
-  void updateFittedPointValues(const size_t & index);
+  void updateFittedPointValues(const size_t & index, bool includeSimulation);
+
+  /**
+   * Fill the fitted points with values from the extended time series
+   */
+  void updateFittedPointValuesFromExtendedTimeSeries(const size_t & index);
 
   /**
    * Retrieve the number of columns
@@ -643,6 +668,15 @@ private:
   std::map< CCopasiObject *, size_t > mDependentObjects;
 
   CCopasiVector< CFittingPoint > mFittingPoints;
+
+  //storage for extended time series (for nicer plotting)
+  std::vector<C_FLOAT64> mExtendedTimeSeries;
+
+  //points to the next empty space in the time series storage
+  std::vector<C_FLOAT64>::iterator mStorageIt;
+
+  //number of data sets in the extended time series
+  size_t mExtendedTimeSeriesSize;
 };
 
 #endif // COPASI_CExperiment
