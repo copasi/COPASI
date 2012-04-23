@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/steady_state_test_wrapper/copasi_wrapper.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/23 08:44:44 $
+//   $Author: bergmann $
+//   $Date: 2012/04/23 13:30:52 $
 // End CVS Header
 
 // Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 
   if (argc < 3)
     {
-      std::cout << "Usage: batch_wrapper SBMLFILENAME OUTFILENAME" << std::endl;
+      std::cout << "Usage: steady_state_test_wrapper SBMLFILENAME OUTPUTFILE_PREFIX" << std::endl;
       exit(1);
     }
 
@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
       pSSTask->setScheduled(true);
 
       pSSTask->getReport().setReportDefinition(pReport);
-      pSSTask->getReport().setTarget(CWD + "/" + pOutputFilename + ".res");
+      pSSTask->getReport().setTarget(pOutputFilename + std::string(".res"));
       pSSTask->getReport().setAppend(false);
 
       //**** specify problem ****
@@ -204,8 +204,7 @@ int main(int argc, char *argv[])
       TaskList.add(pSSTask, true);
 
       // save the file for control purposes
-      std::string saveFilename = pSBMLFilename;
-      saveFilename = saveFilename.substr(0, saveFilename.length() - 4) + ".cps";
+      std::string saveFilename = pOutputFilename + std::string(".cps");
       pDataModel->saveModel(saveFilename, NULL, true);
 
       // Run the task
@@ -229,13 +228,22 @@ int main(int argc, char *argv[])
   //status output
   CSteadyStateMethod::ReturnCode rc = pSSTask->getResult();
 
+  std::string resultCode;
+
   switch (rc)
     {
-      case CSteadyStateMethod::notFound: std::cout << "###0 No steady state found." << std::endl; break;
-      case CSteadyStateMethod::found: std::cout << "###1 Steady state found." << std::endl; break;
-      case CSteadyStateMethod::foundEquilibrium: std::cout << "###2 Equilibrium found." << std::endl; break;
-      case CSteadyStateMethod::foundNegative: std::cout << "###3 Negative steady state found." << std::endl; break;
+      case CSteadyStateMethod::notFound: resultCode = "###0 No steady state found."; break;
+      case CSteadyStateMethod::found: resultCode = "###1 Steady state found."; break;
+      case CSteadyStateMethod::foundEquilibrium: resultCode = "###2 Equilibrium found."; break;
+      case CSteadyStateMethod::foundNegative: resultCode = "###3 Negative steady state found."; break;
     }
+
+  std::cout << resultCode << std::endl;
+
+  std::string resultFileName = pOutputFilename + std::string(".txt");
+  std::ofstream resultFile(resultFileName.c_str());
+  resultFile << resultCode << std::endl;
+  resultFile.close();
 
   std::string Text = "";
 
@@ -257,7 +265,7 @@ int main(int argc, char *argv[])
 
   //write method log to separate file
   std::string methodlog = dynamic_cast<CSteadyStateMethod*>(pSSTask->getMethod())->getMethodLog();
-  std::string logname = CWD + "/" + pOutputFilename + ".log";
+  std::string logname = pOutputFilename + std::string(".log");
   std::ofstream ofs(logname.c_str());
   ofs << methodlog;
   ofs.close();
