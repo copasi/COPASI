@@ -1,21 +1,21 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.76 $
+//   $Revision: 1.77 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/09/21 19:03:49 $
+//   $Author: ssahle $
+//   $Date: 2012/04/23 00:10:29 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.76 $
+//   $Revision: 1.77 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/09/21 19:03:49 $
+//   $Author: ssahle $
+//   $Date: 2012/04/23 00:10:29 $
 // End CVS Header
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -442,7 +442,6 @@ CBandedGraphData & CBandedGraphData::operator = (const CBandedGraphData & rhs)
   return * this;
 }
 #endif // COPASI_BANDED_GRAPH
-
 //********************  data  *********************************************
 CHistoCurveData::CHistoCurveData():
     QwtData(),
@@ -705,7 +704,7 @@ void C2DPlotCurve::myDrawLines(QPainter *painter,
       int i;
 
       for (i = from; i <= to; ++i)
-        if (isnan(x(i))) //NaN
+        if (isnan(x(i))or isnan(y(i))) //NaN
           break;
 
       if (i == from)
@@ -737,6 +736,51 @@ void C2DPlotCurve::drawCurve(QPainter *painter, int style,
   else
     {
       QwtPlotCurve::drawCurve(painter, style, xMap, yMap, from, to);
+    }
+}
+
+void C2DPlotCurve::drawSymbols(QPainter *painter, const QwtSymbol &symbol,
+                               const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+                               int from, int to) const
+{
+
+  int from2 = from;
+  int to2;
+
+  for (;;)
+    {
+
+      //find the next not-NaN point
+      while (isnan(x(from2)) or isnan(y(from2)))
+        {
+          ++from2;
+
+          if (from2 >= to)
+            return;
+        }
+
+      //find the nex NaN point (or the end of data)
+      to2 = from2;
+
+      do
+        {
+          ++to2;
+
+          if (to2 > to)
+            break;
+        }
+      while (!(isnan(x(to2)) or isnan(y(to2))));
+
+      --to2;
+
+      QwtPlotCurve::drawSymbols(painter, symbol, xMap, yMap, from2, to2);
+
+      //are we done?
+      if (to2 >= to)
+        return;
+
+      //continue with the next data point
+      from2 = to2 + 1;
     }
 }
 
@@ -816,7 +860,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   QColor curveColours[6] = {QColor(255, 0, 0), QColor(0, 0, 255), QColor(0, 230, 0), QColor(0, 190, 240), QColor(240, 0, 255), QColor(240, 200, 0)} ; //TODO
 
   mCurves.resize(kmax);
-  mHistoIndices.resize(kmax);
+  //mHistoIndices.resize(kmax);
 
   std::map< std::string, C2DPlotCurve * >::iterator found;
 
@@ -850,7 +894,22 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
       mCurves[k] = pCurve;
       mCurveMap[pItem->CCopasiParameter::getKey()] = pCurve;
 
-      pCurve->setPen(curveColours[k % 6]);
+
+      //color handling should be similar for different curve types
+      QColor color;
+
+      if (pCurve->getType() == CPlotItem::curve2d || pCurve->getType() == CPlotItem::histoItem1d)
+        {
+
+          unsigned C_INT32 colorindex = *pItem->getValue("Color").pUINT;
+
+          if (colorindex == 0) //default
+            color = curveColours[k % 6];
+          else
+            color = curveColours[(colorindex-1) % 6];
+        }
+
+      pCurve->setPen(color);
       pCurve->attach(this);
 
       showCurve(pCurve, Visible);
@@ -858,6 +917,8 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
       switch (pCurve->getType())
         {
           case CPlotItem::curve2d:
+          {
+            unsigned C_INT32 subtype = *pItem->getValue("Line subtype").pUINT;
 
             switch (*pItem->getValue("Line type").pUINT)
               {
@@ -870,12 +931,36 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
                   break;
                 case 2:           //symbols
                   pCurve->setStyle(QwtPlotCurve::NoCurve);
-                  const QColor &c = curveColours[k % 6];
-                  pCurve->setSymbol(QwtSymbol(QwtSymbol::Cross, QBrush(c), QPen(c), QSize(5, 5)));
+
+                  if (subtype > 100)
+                    {
+                      pCurve->setStyle(QwtPlotCurve::Lines);
+                      pCurve->setPen(QPen(QBrush(color), 1, Qt::DotLine));
+                    }
+
+                  subtype = subtype % 100;
+
+                  pCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
+
+                  //const QColor &c = curveColours[k % 6];
+                  switch (subtype)
+                    {
+                      case 1:
+                        pCurve->setSymbol(QwtSymbol(QwtSymbol::Cross, QBrush(), QPen(QBrush(color), 2), QSize(7, 7)));
+                        break;
+                      case 2:
+                        pCurve->setSymbol(QwtSymbol(QwtSymbol::Ellipse, QBrush(), QPen(QBrush(color), 1), QSize(8, 8)));
+                        break;
+                      case 0:
+                      default:
+                        pCurve->setSymbol(QwtSymbol(QwtSymbol::Cross, QBrush(color), QPen(QBrush(color), 1), QSize(5, 5)));
+                        break;
+                    }
+
                   break;
               }
-
-            break;
+          }
+          break;
 
 #ifdef COPASI_BANDED_GRAPH
           case CPlotItem::bandedGraph:
@@ -891,7 +976,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
           case CPlotItem::histoItem1d:
             // Store the index of the histogram to be created
-            mHistoIndices[k] = HistogramIndex++;
+            //mHistoIndices[k] = HistogramIndex++;
             pCurve->setIncrement(*pItem->getValue("increment").pDOUBLE);
 
             pCurve->setStyle(QwtPlotCurve::Steps);

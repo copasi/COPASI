@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
-//   $Author: tjohann $
-//   $Date: 2011/09/05 12:06:51 $
+//   $Author: ssahle $
+//   $Date: 2012/04/23 00:10:29 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -212,6 +212,12 @@ protected:
                          const QwtScaleMap &xMap, const QwtScaleMap &yMap,
                          int from, int to) const;
 
+  //Reroute drawing to our own routine, mainly to disable plotting of NaN values.
+  virtual void drawSymbols(QPainter *painter, const QwtSymbol &symbol,
+                           const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+                           int from, int to) const;
+
+
 private:
   QMutex * mpMutex;
 
@@ -408,7 +414,7 @@ private:
   /**
    * Map of curve to the index to the corresponding histogram.
    */
-  std::vector<size_t> mHistoIndices;
+  //std::vector<size_t> mHistoIndices;
 
   /**
    * Count of data lines recorded during activity BEFORE.

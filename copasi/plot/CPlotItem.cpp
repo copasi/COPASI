@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
-//   $Author: tjohann $
-//   $Date: 2011/09/05 12:00:16 $
+//   $Author: ssahle $
+//   $Date: 2012/04/23 00:10:29 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -32,6 +32,7 @@ const std::string CPlotItem::TypeName[] =
 #ifdef COPASI_BANDED_GRAPH
   "Banded Graph",
 #endif // COPASI_BANDED_GRAPH
+  "Surface",
 
   "2D Plot",
   "SimWiz",
@@ -46,6 +47,7 @@ const char* CPlotItem::XMLType[] =
 #ifdef COPASI_BANDED_GRAPH
   "BandedGraph",
 #endif // COPASI_BANDED_GRAPH
+  "Surface",
 
   "Plot2D",
   "SimWiz",
@@ -115,6 +117,7 @@ void CPlotItem::setType(CPlotItem::Type type)
 #endif // COPASI_BANDED_GRAPH
     {
       assertParameter("Line type", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+      assertParameter("Line subtype", CCopasiParameter::UINT, (unsigned C_INT32) 0);
     }
 
   if (type == histoItem1d)
@@ -124,13 +127,15 @@ void CPlotItem::setType(CPlotItem::Type type)
 
 #ifndef COPASI_BANDED_GRAPH
 
-  if (type == curve2d || type == histoItem1d)
+  if (type == curve2d || type == histoItem1d || type == surface)
 #else
-  if (type == curve2d || type == histoItem1d || type == bandedGraph)
+  if (type == curve2d || type == histoItem1d || type == bandedGraph || type == surface)
 #endif // COPASI_BANDED_GRAPH
     {
+      assertParameter("Color", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+
       mpXMLActivity =
-      assertParameter("Recording Activity", CCopasiParameter::STRING, std::string("during"))->getValue().pSTRING;
+        assertParameter("Recording Activity", CCopasiParameter::STRING, std::string("during"))->getValue().pSTRING;
 
       mActivity = toEnum(mpXMLActivity->c_str(), XMLRecordingActivity, COutputInterface::DURING);
 
@@ -174,6 +179,7 @@ void CPlotItem::setActivity(const COutputInterface::Activity & activity)
       case bandedGraph:
 #endif // COPASI_BANDED_GRAPH
       case histoItem1d:
+      case surface:
         mActivity = activity;
         *mpXMLActivity = XMLRecordingActivity[mActivity];
         break;
@@ -195,6 +201,7 @@ const COutputInterface::Activity & CPlotItem::getActivity() const
       case bandedGraph:
 #endif // COPASI_BANDED_GRAPH
       case histoItem1d:
+      case surface:
 
         if (!mpXMLActivity)
           const_cast<CPlotItem *>(this)->mpXMLActivity =
