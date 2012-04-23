@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQScreenshotOptionsDialog.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 23:14:04 $
+//   $Date: 2012/04/23 23:41:05 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,7 +21,7 @@
 #include <assert.h>
 #include <sstream>
 
-#include "copasi/function/CEvaluationFunction.h"
+#include "copasi/function/CEvaluationNodeFunction.h"
 
 CQScreenshotOptionsDialog::CQScreenshotOptionsDialog(double layoutX, double layoutY, double layoutWidth, double layoutHeight,
     double currentX, double currentY, double currentWidth, double currentHeight, unsigned int imageWidth, unsigned int imageHeight,
