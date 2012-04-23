@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGroup.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:46 $
+//   $Date: 2012/04/23 15:44:52 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,13 +21,13 @@
 #define USE_RENDER 1
 #endif // USE_CRENDER_EXTENSION
 
-#include <sbml/layout/render/Group.h>
-#include <sbml/layout/render/Rectangle.h>
-#include <sbml/layout/render/Ellipse.h>
-#include <sbml/layout/render/Transformation2D.h>
-#include <sbml/layout/render/RenderCurve.h>
-#include <sbml/layout/render/Polygon.h>
-#include <sbml/layout/render/Image.h>
+#include <sbml/packages/render/sbml/RenderGroup.h>
+#include <sbml/packages/render/sbml/Rectangle.h>
+#include <sbml/packages/render/sbml/Ellipse.h>
+#include <sbml/packages/render/sbml/Transformation2D.h>
+#include <sbml/packages/render/sbml/RenderCurve.h>
+#include <sbml/packages/render/sbml/Polygon.h>
+#include <sbml/packages/render/sbml/Image.h>
 
 #define sbmlEllipse Ellipse
 #define sbmlPolygon Polygon
@@ -125,7 +125,7 @@ CLGroup::CLGroup(const CLGroup& source, CCopasiContainer* pParent):
 /**
  * Constructor to generate object from the corresponding SBML object.
  */
-CLGroup::CLGroup(const Group& source, CCopasiContainer* pParent):
+CLGroup::CLGroup(const RenderGroup& source, CCopasiContainer* pParent):
     CLGraphicalPrimitive2D(source),
     CCopasiContainer("RenderGroup", pParent),
     mFontFamily(source.getFontFamily()),
@@ -226,9 +226,9 @@ CLGroup::CLGroup(const Group& source, CCopasiContainer* pParent):
         {
           this->mElements.add(new CLImage(*static_cast<const Image*>(pChild), this), true);
         }
-      else if (dynamic_cast<const Group*>(pChild))
+      else if (dynamic_cast<const RenderGroup*>(pChild))
         {
-          this->mElements.add(new CLGroup(*static_cast<const Group*>(pChild), this), true);
+          this->mElements.add(new CLGroup(*static_cast<const RenderGroup*>(pChild), this), true);
         }
     }
 }
@@ -790,9 +790,9 @@ const std::string& CLGroup::getKey() const
 /**
  * Converts this object to the corresponding SBML object.
  */
-Group* CLGroup::toSBML(unsigned int level, unsigned int version) const
+RenderGroup* CLGroup::toSBML(unsigned int level, unsigned int version) const
 {
-  Group* pGroup = new Group(level, version);
+  RenderGroup* pGroup = new RenderGroup(level, version);
   this->addSBMLAttributes(pGroup);
   pGroup->setStartHead(this->mStartHead);
   pGroup->setEndHead(this->mEndHead);

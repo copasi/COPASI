@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLPolygon.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:35:20 $
+//   $Date: 2012/04/23 15:44:52 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,7 +17,7 @@
 #define USE_RENDER 1
 #endif // USE_CRENDER_EXTENSION
 
-#include <sbml/layout/render/Polygon.h>
+#include <sbml/packages/render/sbml/Polygon.h>
 
 #define sbmlPolygon Polygon
 #include "CLPolygon.h"

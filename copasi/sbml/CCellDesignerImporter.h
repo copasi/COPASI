@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CCellDesignerImporter.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/26 20:19:22 $
+//   $Date: 2012/04/23 15:49:07 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,7 @@ class ColorDefinition;
 class CompartmentGlyph;
 class Dimensions;
 class GraphicalObject;
-class Group;
+class RenderGroup;
 class Layout;
 class LocalRenderInformation;
 class Model;
@@ -375,7 +375,7 @@ struct ReactionModification
       , mNum1(std::numeric_limits<int>::max())
       , mNum2(std::numeric_limits<int>::max())
       , mModType(UNDEFINED_MTYPE)
-      , mOffset(Point(0.0, 0.0))
+      , mOffset(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
   {};
 };
 
@@ -441,7 +441,7 @@ struct ReactionAnnotation
       , mReactantLinks()
       , mProductLinks()
       , mConnectScheme()
-      , mOffset(Point(0.0, 0.0))
+      , mOffset(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
       , mEditPoints()
       , mLine(Line())
       , mModifications()
@@ -516,7 +516,7 @@ struct CompartmentAlias
       mId("")
       , mCompartment("")
       , mClass(UNDEFINED_CLASS)
-      , mNamePoint(Point(0.0, 0.0))
+      , mNamePoint(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
       , mDoubleLine()
       , mPaint()
       , mBounds()
@@ -534,8 +534,8 @@ struct UsualView
 
   // default constructor
   UsualView() :
-      mInnerPosition(Point(0.0, 0.0))
-      , mBoxSize(Dimensions(0.0, 0.0))
+      mInnerPosition(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
+      , mBoxSize(Dimensions(new LayoutPkgNamespaces(), 0.0, 0.0))
       , mLineWidth(0.0)
       , mPaint()
   {};
@@ -1276,7 +1276,7 @@ protected:
    *
    * If creation of the primitive fails, false is returned.
    */
-  bool createPrimitive(Group* pGroup,
+  bool createPrimitive(RenderGroup* pGroup,
                        const SpeciesIdentity& si,
                        const BoundingBox& bounds,
                        const Point& offset,

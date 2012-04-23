@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.163 $
+//   $Revision: 1.164 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/04 19:32:23 $
+//   $Date: 2012/04/23 15:44:30 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1466,6 +1466,7 @@ CObjectInterface * CCopasiDataModel::ObjectFromCN(const std::vector< CCopasiCont
 CCopasiObject * CCopasiDataModel::ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
     const CCopasiObjectName & objName) const
 {
+  // TODO CRITICAL This does not work for math as object ObjectFromCN only returns a CObjectInterface.
   return static_cast< CCopasiObject * >(ObjectFromCN(listOfContainer, objName));
 }
 

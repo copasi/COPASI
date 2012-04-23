@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/12/13 19:49:58 $
+//   $Date: 2012/04/23 15:44:51 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,9 +24,13 @@
 
 #ifdef USE_CRENDER_EXTENSION
 #define USE_RENDER 1
+
+#include <sbml/packages/render/extension/RenderGraphicalObjectPlugin.h>
+
 #endif // USE_CRENDER_EXTENSION
 
-#include <sbml/layout/GraphicalObject.h>
+#include <sbml/packages/layout/sbml/GraphicalObject.h>
+
 
 #include "CLGraphicalObject.h"
 
@@ -65,11 +69,17 @@ CLGraphicalObject::CLGraphicalObject(const GraphicalObject & sbml,
     CCopasiContainer(sbml.getId(), pParent, "LayoutElement"),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
     mModelObjectKey(""),
-#ifdef USE_CRENDER_EXTENSION
-    mObjectRole(sbml.getObjectRole()),
-#endif // USE_CRENDER_EXTENSION
     mBBox(*sbml.getBoundingBox())
 {
+
+#ifdef USE_CRENDER_EXTENSION
+  RenderGraphicalObjectPlugin* rgoPlugin = (RenderGraphicalObjectPlugin*) sbml.getPlugin("render");
+
+  if (rgoPlugin != NULL)
+    mObjectRole = rgoPlugin->getObjectRole();
+
+#endif // USE_CRENDER_EXTENSION
+
   //add the copasi key to the map
   layoutmap[sbml.getId()] = mKey;
 };
@@ -159,7 +169,10 @@ void CLGraphicalObject::exportToSBML(GraphicalObject * sbmlobject,
 
   if (this->mObjectRole.find_first_not_of(" \t\r\n") != std::string::npos)
     {
-      sbmlobject->setObjectRole(this->mObjectRole);
+      RenderGraphicalObjectPlugin* rgoPlugin = (RenderGraphicalObjectPlugin*) sbmlobject->getPlugin("render");
+
+      if (rgoPlugin != NULL)
+        rgoPlugin->setObjectRole(this->mObjectRole);
     }
 
 #endif // USE_CRENDER_EXTENSION

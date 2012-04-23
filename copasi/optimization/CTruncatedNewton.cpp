@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CTruncatedNewton.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:54:52 $
+//   $Author: shoops $
+//   $Date: 2012/04/23 15:48:07 $
 // End CVS Header
 
 // Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,6 +32,7 @@
 #include "CTruncatedNewton.h"
 
 #include "blaswrap.h"
+#include "clapackwrap.h"
 
 C_FLOAT64 step1_(C_FLOAT64 *fnew, C_FLOAT64 *fm, C_FLOAT64 *gtp,
                  C_FLOAT64 *smax);

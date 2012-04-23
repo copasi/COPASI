@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLUtils.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:36:58 $
+//   $Date: 2012/04/23 15:49:06 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -35,7 +35,7 @@ std::string SBMLUtils::getIdFromSBase(const SBase* pS)
 
   std::string id;
 
-  SBMLTypeCode_t type = pS->getTypeCode();
+  int type = pS->getTypeCode();
 
   switch (type)
     {

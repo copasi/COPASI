@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.99 $
+//   $Revision: 1.100 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/01/05 22:50:49 $
+//   $Date: 2012/04/23 15:49:06 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -32,6 +32,11 @@
 #if LIBSBML_VERSION >= 40100
 #include "sbml/LocalParameter.h"
 #endif // LIBSBML_VERSION
+
+#if LIBSBML_VERSION >= 50400
+#include <sbml/packages/layout/extension/LayoutModelPlugin.h>
+#endif
+
 #include "sbml/Model.h"
 #include "sbml/Species.h"
 #include "sbml/Parameter.h"
@@ -85,7 +90,7 @@
 # include "sbmlunit/CUnitInterfaceSBML.h"
 #endif // USE_SBMLUNIT
 
-CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1), mIncompleteExport(false), mVariableVolumes(false), mpAvogadro(NULL), mAvogadroCreated(false), mMIRIAMWarning(false), mDocumentDisowned(false), mExportCOPASIMIRIAM(false)
+CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1), mIncompleteExport(false), mVariableVolumes(false), mpAvogadro(NULL), mAvogadroCreated(false), mMIRIAMWarning(false), mDocumentDisowned(false), mExportCOPASIMIRIAM(false), mExportedFunctions(2, 1)
 {}
 
 CSBMLExporter::~CSBMLExporter()
@@ -1850,22 +1855,27 @@ const std::map<std::string, const SBase*> CSBMLExporter::createIdMap(const Model
     }
 
   // if COPASI is compiled with layout, we have to add those ids as well
-  if (sbmlModel.getListOfLayouts()->isSetId())
+  const LayoutModelPlugin* lmPlugin = (LayoutModelPlugin*)sbmlModel.getPlugin("layout");
+
+  if (lmPlugin != NULL)
     {
-      idMap.insert(std::pair<const std::string, const SBase*>(sbmlModel.getListOfLayouts()->getId(), sbmlModel.getListOfLayouts()));
-    }
-
-  iMax = sbmlModel.getListOfLayouts()->size();
-
-  for (i = 0; i < iMax; ++i)
-    {
-      const Layout* pLayout = sbmlModel.getLayout(i);
-
-      if (pLayout != NULL)
+      if (lmPlugin->getListOfLayouts()->isSetId())
         {
-          if (pLayout->isSetId())
+          idMap.insert(std::pair<const std::string, const SBase*>(lmPlugin->getListOfLayouts()->getId(), lmPlugin->getListOfLayouts()));
+        }
+
+      iMax = lmPlugin->getListOfLayouts()->size();
+
+      for (i = 0; i < iMax; ++i)
+        {
+          const Layout* pLayout = lmPlugin->getLayout(i);
+
+          if (pLayout != NULL)
             {
-              idMap.insert(std::pair<const std::string, const SBase*>(pLayout->getId(), pLayout));
+              if (pLayout->isSetId())
+                {
+                  idMap.insert(std::pair<const std::string, const SBase*>(pLayout->getId(), pLayout));
+                }
             }
         }
     }
@@ -2738,8 +2748,13 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
   createSBMLDocument(dataModel);
 
   if (this->mpSBMLDocument && this->mpSBMLDocument->getModel())
-    dataModel.getListOfLayouts()->exportToSBML(this->mpSBMLDocument->getModel()->getListOfLayouts(),
-        this->mCOPASI2SBMLMap, mIdMap, this->mpSBMLDocument->getLevel(), this->mpSBMLDocument->getVersion());
+    {
+      LayoutModelPlugin* lmPlugin = (LayoutModelPlugin*)this->mpSBMLDocument->getModel()->getPlugin("layout");
+
+      if (lmPlugin != NULL)
+        dataModel.getListOfLayouts()->exportToSBML(lmPlugin->getListOfLayouts(),
+            this->mCOPASI2SBMLMap, mIdMap, this->mpSBMLDocument->getLevel(), this->mpSBMLDocument->getVersion());
+    }
 
 #ifdef USE_SBMLUNIT
 
@@ -2975,6 +2990,8 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
             {
               pFunDef = this->mExportedFunctions.get(i);
               assert(pFunDef != NULL);
+              // match the namespaces to those of the model
+              pFunDef->setSBMLNamespaces(pSBMLModel->getSBMLNamespaces());
 // add methods only return a value starting with libsbml 4
 #if LIBSBML_VERSION >= 40100
               result = pSBMLModel->addFunctionDefinition(pFunDef);

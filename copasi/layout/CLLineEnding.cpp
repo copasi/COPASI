@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLineEnding.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:35:20 $
+//   $Date: 2012/04/23 15:44:52 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,7 +20,7 @@
 #define USE_RENDER 1
 #endif // USE_CRENDER_EXTENSION
 
-#include <sbml/layout/render/LineEnding.h>
+#include <sbml/packages/render/sbml/LineEnding.h>
 
 #include "CLLineEnding.h"
 
@@ -183,14 +183,16 @@ LineEnding* CLLineEnding::toSBML(unsigned int level, unsigned int version) const
   pLE->setEnableRotationalMapping(this->mEnableRotationalMapping);
   BoundingBox bb(level, version);
   bb.setId("bb");
-  Point p(this->mBoundingBox.getPosition().getX(),
+  Point p(new LayoutPkgNamespaces(),
+          this->mBoundingBox.getPosition().getX(),
           this->mBoundingBox.getPosition().getY());
   bb.setPosition(&p);
-  Dimensions d(this->mBoundingBox.getDimensions().getWidth(),
+  Dimensions d(new LayoutPkgNamespaces(),
+               this->mBoundingBox.getDimensions().getWidth(),
                this->mBoundingBox.getDimensions().getHeight());
   bb.setDimensions(&d);
   pLE->setBoundingBox(&bb);
-  const Group* pG = this->mpGroup->toSBML(level, version);
+  const RenderGroup* pG = this->mpGroup->toSBML(level, version);
   pLE->setGroup(pG);
   delete pG;
   return pLE;

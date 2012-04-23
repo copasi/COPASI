@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/26 16:10:42 $
+//   $Date: 2012/04/23 15:44:52 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,10 +27,12 @@
 
 #ifdef USE_CRENDER_EXTENSION
 #define USE_RENDER 1
+#include <sbml/packages/render/extension/RenderListOfLayoutsPlugin.h>
+#include <sbml/packages/render/sbml/GlobalRenderInformation.h>
 #endif // USE_CRENDER_EXTENSION
 
 #include <sbml/ListOf.h>
-#include <sbml/layout/Layout.h>
+#include <sbml/packages/layout/sbml/Layout.h>
 
 #include "CListOfLayouts.h"
 #include "report/CKeyFactory.h"
@@ -87,13 +89,17 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<const CCopasiObject*, S
   std::map<std::string,std::map<std::string,std::string> > gradientKeyToIdMapMap;
   std::map<std::string,std::map<std::string,std::string> > lineEndingKeyToIdMapMap;
   */
+
+  RenderListOfLayoutsPlugin* rlolPlugin = (RenderListOfLayoutsPlugin*) lol->getPlugin("render");
+  assert(rlolPlugin != NULL);
+
   for (i = 0; i < imax; ++i)
     {
       //colorKeyToIdMap.clear();
       //gradientKeyToIdMap.clear();
       //lineEndingKeyToIdMap.clear();
       //pGRI=this->mvGlobalRenderInformationObjects[i]->toSBML(colorKeyToIdMap,gradientKeyToIdMap,lineEndingKeyToIdMap);
-      pGRI = pLoL->createGlobalRenderInformation();
+      pGRI = rlolPlugin->createGlobalRenderInformation();
       this->mvGlobalRenderInformationObjects[i]->toSBML(pGRI, pLoL->getLevel(), pLoL->getVersion());
       // add the id and key to the map
       assert(pGRI != NULL);
@@ -105,7 +111,7 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<const CCopasiObject*, S
 
   // fix the references
   // we need to pass the ListOfGlobalRenderInformation objects as the first argument
-  SBMLDocumentLoader::convertRenderInformationReferencesKeys<GlobalRenderInformation>(*(pLoL->getListOfGlobalRenderInformation()), keyToIdMap);
+  SBMLDocumentLoader::convertRenderInformationReferencesKeys<GlobalRenderInformation>(*(rlolPlugin->getListOfGlobalRenderInformation()), keyToIdMap);
   // fix the color ids, gradient ids and line ending ids.
   /*
   std::map<std::string,std::map<std::string,std::string> >::const_iterator mapPos;

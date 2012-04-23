@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLBase.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/10 12:26:12 $
+//   $Author: shoops $
+//   $Date: 2012/04/23 15:44:51 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,7 +22,7 @@
 
 #define USE_LAYOUT 1
 
-#include <sbml/layout/BoundingBox.h>
+#include <sbml/packages/layout/sbml/BoundingBox.h>
 
 #include "CLBase.h"
 
@@ -39,9 +39,9 @@ CLPoint::CLPoint(const Point& p) :
 Point CLPoint::getSBMLPoint() const
 {
 #ifdef USE_CRENDER_EXTENSION
-  Point p(mX, mY, mZ);
+  Point p(new LayoutPkgNamespaces(), mX, mY, mZ);
 #else
-  Point p(mX, mY);
+  Point p(new LayoutPkgNamespaces(), mX, mY);
 #endif // USE_CRENDER_EXTENSION
   return p;
 }
@@ -58,7 +58,8 @@ CLDimensions::CLDimensions(const Dimensions& d) :
 
 Dimensions CLDimensions::getSBMLDimensions() const
 {
-  Dimensions d(mWidth
+  Dimensions d(new LayoutPkgNamespaces()
+               , mWidth
                , mHeight
 #ifdef USE_CRENDER_EXTENSION
                , mDepth
@@ -76,7 +77,7 @@ CLBoundingBox::CLBoundingBox(const BoundingBox & bb)
 
 BoundingBox CLBoundingBox::getSBMLBoundingBox() const
 {
-  return BoundingBox("", mPosition.getX(), mPosition.getY(),
+  return BoundingBox(new LayoutPkgNamespaces(), "", mPosition.getX(), mPosition.getY(),
                      mDimensions.getWidth(), mDimensions.getHeight());
 }
 

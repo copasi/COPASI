@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRelAbsVector.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:51:16 $
+//   $Author: shoops $
+//   $Date: 2012/04/23 15:44:51 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,7 +18,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <sbml/layout/render/RelAbsVector.h>
+#include <sbml/packages/render/sbml/RelAbsVector.h>
 
 #include "CLRelAbsVector.h"
 

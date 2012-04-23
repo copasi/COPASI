@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CCopasiSpringLayout.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/26 18:25:45 $
+//   $Date: 2012/04/23 15:44:52 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -654,20 +654,24 @@ double CCopasiSpringLayout::getPotential()
           tmp += 100000 * potSpeciesSpecies(*mpLayout->getListOfMetaboliteGlyphs()[i], *mpLayout->getListOfMetaboliteGlyphs()[j]);
       }
 
-  //repulsion between species nodes and reaction nodes
-  for (i = 0; i < mpLayout->getListOfMetaboliteGlyphs().size(); ++i)
-    for (j = 0; j < mpLayout->getListOfReactionGlyphs().size(); ++j)
-      {
-        tmp += 100000 * potSpeciesReaction(*mpLayout->getListOfMetaboliteGlyphs()[i], *mpLayout->getListOfReactionGlyphs()[j]);
-      }
+  // only if we have reactions!
+  if (mpLayout->getListOfReactionGlyphs().size() > 0)
+    {
+      //repulsion between species nodes and reaction nodes
+      for (i = 0; i < mpLayout->getListOfMetaboliteGlyphs().size(); ++i)
+        for (j = 0; j < mpLayout->getListOfReactionGlyphs().size(); ++j)
+          {
+            tmp += 100000 * potSpeciesReaction(*mpLayout->getListOfMetaboliteGlyphs()[i], *mpLayout->getListOfReactionGlyphs()[j]);
+          }
 
-  //repulsion between reaction nodes
-  for (i = 0; i < mpLayout->getListOfReactionGlyphs().size() - 1; ++i)
-    for (j = i + 1; j < mpLayout->getListOfReactionGlyphs().size(); ++j)
-      {
-        if (i != j)
-          tmp += 100000 * potReactionReaction(*mpLayout->getListOfReactionGlyphs()[i], *mpLayout->getListOfReactionGlyphs()[j]);
-      }
+      //repulsion between reaction nodes
+      for (i = 0; i < mpLayout->getListOfReactionGlyphs().size() - 1; ++i)
+        for (j = i + 1; j < mpLayout->getListOfReactionGlyphs().size(); ++j)
+          {
+            if (i != j)
+              tmp += 100000 * potReactionReaction(*mpLayout->getListOfReactionGlyphs()[i], *mpLayout->getListOfReactionGlyphs()[j]);
+          }
+    }
 
   //spring force for species references
   for (i = 0; i < mpLayout->getListOfReactionGlyphs().size(); ++i)

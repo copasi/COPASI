@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:47 $
+//   $Date: 2012/04/23 15:44:51 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,13 +29,14 @@
 #endif // USE_CRENDER_EXTENSION
 
 #include <sbml/ListOf.h>
-#include <sbml/layout/Layout.h>
-#include <sbml/layout/SpeciesGlyph.h>
-#include <sbml/layout/ReactionGlyph.h>
-#include <sbml/layout/SpeciesReferenceGlyph.h>
-#include <sbml/layout/TextGlyph.h>
+#include <sbml/packages/layout/sbml/Layout.h>
+#include <sbml/packages/layout/sbml/SpeciesGlyph.h>
+#include <sbml/packages/layout/sbml/ReactionGlyph.h>
+#include <sbml/packages/layout/sbml/SpeciesReferenceGlyph.h>
+#include <sbml/packages/layout/sbml/TextGlyph.h>
 #ifdef USE_CRENDER_EXTENSION
-#include <sbml/layout/render/Text.h>
+#include <sbml/packages/render/sbml/Text.h>
+#include <sbml/packages/render/sbml/LocalStyle.h>
 #endif // USE_CRENDER_EXTENSION
 
 #include "copasi.h"
@@ -48,6 +49,8 @@
 
 #ifdef USE_CRENDER_EXTENSION
 #include "CLRenderCurve.h"
+#include <sbml/packages/render/extension/RenderListOfLayoutsPlugin.h>
+#include <sbml/packages/render/extension/RenderLayoutPlugin.h>
 #endif // USE_CRENDER_EXTENSION
 
 #include "report/CKeyFactory.h"
@@ -64,7 +67,9 @@ void SBMLDocumentLoader::readListOfLayouts(CListOfLayouts & lol,
   // read the global render information
   const ListOfLayouts* pLoL = dynamic_cast<const ListOfLayouts*>(&sbmlList);
   assert(pLoL != NULL);
-  iMax = pLoL->getNumGlobalRenderInformationObjects();
+  RenderListOfLayoutsPlugin* rlolPlugin = (RenderListOfLayoutsPlugin*) pLoL ->getPlugin("render");
+  assert(rlolPlugin != NULL);
+  iMax = rlolPlugin->getNumGlobalRenderInformationObjects();
   std::map<std::string, std::string> idToKeyMap;
   CLGlobalRenderInformation* pGRI = NULL;
 
@@ -82,8 +87,8 @@ void SBMLDocumentLoader::readListOfLayouts(CListOfLayouts & lol,
       //gradientIdToKeyMap.clear();
       //lineEndingIdToKeyMap.clear();
       //pGRI=new CLGlobalRenderInformation(*pLoL->getRenderInformation(i),colorIdToKeyMap,gradientIdToKeyMap,lineEndingIdToKeyMap,&lol);
-      pGRI = new CLGlobalRenderInformation(*pLoL->getRenderInformation(i), &lol);
-      idToKeyMap.insert(std::pair<std::string, std::string>(pLoL->getRenderInformation(i)->getId(), pGRI->getKey()));
+      pGRI = new CLGlobalRenderInformation(*rlolPlugin->getRenderInformation(i), &lol);
+      idToKeyMap.insert(std::pair<std::string, std::string>(rlolPlugin->getRenderInformation(i)->getId(), pGRI->getKey()));
       //colorIdToKeyMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pGRI->getKey(),colorIdToKeyMap));
       //gradientIdToKeyMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pGRI->getKey(),gradientIdToKeyMap));
       //lineEndingIdToKeyMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pGRI->getKey(),lineEndingIdToKeyMap));
@@ -255,8 +260,11 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
     }
 
 #ifdef USE_CRENDER_EXTENSION
+  RenderLayoutPlugin* rlPlugin = (RenderLayoutPlugin*) sbmlLayout.getPlugin("render");
+  assert(rlPlugin != NULL);
+
   // import the local render information
-  iMax = sbmlLayout.getNumLocalRenderInformationObjects();
+  iMax = rlPlugin->getNumLocalRenderInformationObjects();
   std::map<std::string, std::string> idToKeyMap;
   CLLocalRenderInformation* pLRI = NULL;
 
@@ -272,8 +280,8 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
       //gradientIdToKeyMap.clear();
       //lineEndingIdToKeyMap.clear();
       //pLRI=new CLLocalRenderInformation(*sbmlLayout.getRenderInformation(i),colorIdToKeyMap,gradientIdToKeyMap,lineEndingIdToKeyMap,layout);
-      pLRI = new CLLocalRenderInformation(*sbmlLayout.getRenderInformation(i), layout);
-      idToKeyMap.insert(std::pair<std::string, std::string>(sbmlLayout.getRenderInformation(i)->getId(), pLRI->getKey()));
+      pLRI = new CLLocalRenderInformation(*rlPlugin->getRenderInformation(i), layout);
+      idToKeyMap.insert(std::pair<std::string, std::string>(rlPlugin->getRenderInformation(i)->getId(), pLRI->getKey()));
       //colorIdToKeyMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pLRI->getKey(),colorIdToKeyMap));
       //gradientIdToKeyMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pLRI->getKey(),gradientIdToKeyMap));
       //lineEndingIdToKeyMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pLRI->getKey(),lineEndingIdToKeyMap));

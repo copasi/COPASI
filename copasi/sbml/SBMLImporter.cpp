@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.278 $
+//   $Revision: 1.279 $
 //   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/03/28 09:46:47 $
+//   $Author: shoops $
+//   $Date: 2012/04/23 15:49:06 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,6 +45,13 @@
 #if LIBSBML_VERSION >= 40100
 #include <sbml/LocalParameter.h>
 #endif // LIBSBML_VERSION
+
+#if LIBSBML_VERSION >= 50400
+#include <sbml/packages/layout/extension/LayoutModelPlugin.h>
+#endif // LIBSBML_VERSION
+
+
+
 #include <sbml/KineticLaw.h>
 #include <sbml/math/FormulaFormatter.h>
 #include <sbml/Model.h>
@@ -3055,9 +3062,14 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
       Model* sbmlmodel = pSBMLDocument->getModel();
 
       if (sbmlmodel && prLol)
-        SBMLDocumentLoader::readListOfLayouts(*prLol,
-                                              *sbmlmodel->getListOfLayouts(),
-                                              copasi2sbmlmap);
+        {
+          LayoutModelPlugin *lmPlugin = (LayoutModelPlugin*)sbmlmodel->getPlugin("layout");
+
+          if (lmPlugin != NULL)
+            SBMLDocumentLoader::readListOfLayouts(*prLol,
+                                                  *lmPlugin->getListOfLayouts(),
+                                                  copasi2sbmlmap);
+        }
     }
   else
     {
@@ -4004,7 +4016,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
 
           while (it != endIt)
             {
-              SBMLTypeCode_t type = it->second->getTypeCode();
+              int type = it->second->getTypeCode();
 
               switch (type)
                 {
@@ -5768,7 +5780,7 @@ bool SBMLImporter::isStochasticModel(const Model* pSBMLModel)
 void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
 {
   // so far we only support assignment rules and rate rules
-  SBMLTypeCode_t type = sbmlRule->getTypeCode();
+  int type = sbmlRule->getTypeCode();
 
   if (type == SBML_ASSIGNMENT_RULE)
     {
@@ -6220,7 +6232,7 @@ void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<CCopasiO
         }
 
       Rule* pR;
-      SBMLTypeCode_t type;
+      int type;
 
       while (i < iMax)
         {

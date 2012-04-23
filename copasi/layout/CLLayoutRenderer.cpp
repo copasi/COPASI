@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:51:16 $
+//   $Author: shoops $
+//   $Date: 2012/04/23 15:44:51 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,7 @@
 #include <cctype>
 #include <algorithm>
 
-#include <sbml/layout/render/Transformation.h>
+#include <sbml/packages/render/sbml/Transformation.h>
 
 // this define is needed so that the glFogCoordf function is found
 // in linux

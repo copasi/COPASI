@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.pro,v $
-#   $Revision: 1.74 $
+#   $Revision: 1.75 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2012/03/15 17:02:51 $
+#   $Date: 2012/04/23 15:44:20 $
 # End CVS Header
 
 # Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.74 $ $Author: shoops $ $Date: 2012/03/15 17:02:51 $
+# $Revision: 1.75 $ $Author: shoops $ $Date: 2012/04/23 15:44:20 $
 ######################################################################
 
 TEMPLATE = subdirs
@@ -46,7 +46,7 @@ COPASISE_DIRS += moieties
 COPASISE_DIRS += MIRIAM
 COPASISE_DIRS += odepack++
 COPASISE_DIRS += optimization
-// COPASISE_DIRS += oscillation
+# COPASISE_DIRS += oscillation
 COPASISE_DIRS += parameterFitting
 COPASISE_DIRS += plot
 COPASISE_DIRS += randomGenerator

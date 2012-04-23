@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CCellDesignerImporter.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/03/28 09:46:47 $
+//   $Author: shoops $
+//   $Date: 2012/04/23 15:49:05 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,33 +36,33 @@
 #include <sbml/xml/XMLNamespaces.h>
 #include <sbml/xml/XMLAttributes.h>
 // layout classes
-#include <sbml/layout/CompartmentGlyph.h>
-#include <sbml/layout/CubicBezier.h>
-#include <sbml/layout/Curve.h>
-#include <sbml/layout/GraphicalObject.h>
-#include <sbml/layout/Layout.h>
-#include <sbml/layout/LineSegment.h>
-#include <sbml/layout/ReactionGlyph.h>
-#include <sbml/layout/SpeciesGlyph.h>
-#include <sbml/layout/SpeciesReferenceGlyph.h>
-#include <sbml/layout/SpeciesReferenceRole.h>
-#include <sbml/layout/TextGlyph.h>
-#include <sbml/layout/BoundingBox.h>
-#include <sbml/layout/Dimensions.h>
-#include <sbml/layout/Point.h>
+#include <sbml/packages/layout/sbml/CompartmentGlyph.h>
+#include <sbml/packages/layout/sbml/CubicBezier.h>
+#include <sbml/packages/layout/sbml/Curve.h>
+#include <sbml/packages/layout/sbml/GraphicalObject.h>
+#include <sbml/packages/layout/sbml/Layout.h>
+#include <sbml/packages/layout/sbml/LineSegment.h>
+#include <sbml/packages/layout/sbml/ReactionGlyph.h>
+#include <sbml/packages/layout/sbml/SpeciesGlyph.h>
+#include <sbml/packages/layout/sbml/SpeciesReferenceGlyph.h>
+#include <sbml/packages/layout/sbml/SpeciesReferenceRole.h>
+#include <sbml/packages/layout/sbml/TextGlyph.h>
+
+#include <sbml/packages/layout/extension/LayoutModelPlugin.h>
 
 // render classes
-#include <sbml/layout/render/ColorDefinition.h>
-#include <sbml/layout/render/Ellipse.h>
-#include <sbml/layout/render/Group.h>
-#include <sbml/layout/render/LocalRenderInformation.h>
-#include <sbml/layout/render/LocalStyle.h>
-#include <sbml/layout/render/Polygon.h>
-#include <sbml/layout/render/Rectangle.h>
-#include <sbml/layout/render/RelAbsVector.h>
-#include <sbml/layout/render/RenderCurve.h>
-#include <sbml/layout/render/RenderPoint.h>
-#include <sbml/layout/render/Text.h>
+#include <sbml/packages/render/sbml/ColorDefinition.h>
+#include <sbml/packages/render/sbml/Ellipse.h>
+#include <sbml/packages/render/sbml/RenderGroup.h>
+#include <sbml/packages/render/sbml/LocalRenderInformation.h>
+#include <sbml/packages/render/sbml/LocalStyle.h>
+#include <sbml/packages/render/sbml/Polygon.h>
+#include <sbml/packages/render/sbml/Rectangle.h>
+#include <sbml/packages/render/sbml/RelAbsVector.h>
+#include <sbml/packages/render/sbml/RenderCurve.h>
+#include <sbml/packages/render/sbml/RenderPoint.h>
+
+#include <sbml/packages/render/extension/RenderLayoutPlugin.h>
 
 #include "CCellDesignerImporter.h"
 
@@ -136,14 +136,21 @@ void CCellDesignerImporter::setSBMLDocument(SBMLDocument* pDocument)
             {
               if (this->mpDocument && this->mpDocument->getModel())
                 {
-                  unsigned int i, iMax = this->mpDocument->getModel()->getListOfLayouts()->size();
 
-                  for (i = 0; i < iMax; ++i)
+                  LayoutModelPlugin* lmPlugin = (LayoutModelPlugin*)this->mpDocument->getModel()->getPlugin("layout");
+
+                  if (lmPlugin != NULL)
                     {
-                      if (this->mpDocument->getModel()->getLayout(i) == this->mpLayout)
+
+                      unsigned int i, iMax = lmPlugin->getListOfLayouts()->size();
+
+                      for (i = 0; i < iMax; ++i)
                         {
-                          this->mpDocument->getModel()->removeLayout(i);
-                          break;
+                          if (lmPlugin->getLayout(i) == this->mpLayout)
+                            {
+                              lmPlugin->removeLayout(i);
+                              break;
+                            }
                         }
                     }
                 }
@@ -370,8 +377,11 @@ bool CCellDesignerImporter::convertCellDesignerLayout(const XMLNode* pCellDesign
       std::map<std::string, const SBase*> metaids;
       // delete all existing ids
       SBMLUtils::collectIds(this->mpDocument->getModel(), this->mIdMap, metaids);
+
+      LayoutModelPlugin* lmPlugin = (LayoutModelPlugin*)this->mpDocument->getModel()->getPlugin("layout");
+      assert(lmPlugin != NULL);
       // create the layout
-      this->mpLayout = this->mpDocument->getModel()->createLayout();
+      this->mpLayout = lmPlugin->createLayout();
 
       if (this->mpLayout != NULL)
         {
@@ -382,7 +392,8 @@ bool CCellDesignerImporter::convertCellDesignerLayout(const XMLNode* pCellDesign
           this->mIdMap.insert(std::pair<std::string, const SBase*>(id, this->mpLayout));
 
           // create the LocalRenderInformation
-          this->mpLocalRenderInfo = this->mpLayout->createLocalRenderInformation();
+          RenderLayoutPlugin* rlPlugin = (RenderLayoutPlugin*) this->mpLayout->getPlugin("render");
+          this->mpLocalRenderInfo = rlPlugin->createLocalRenderInformation();
 
           if (this->mpLocalRenderInfo != NULL)
             {
@@ -560,14 +571,19 @@ bool CCellDesignerImporter::convertCellDesignerLayout(const XMLNode* pCellDesign
         {
           if (this->mpDocument && this->mpDocument->getModel())
             {
-              unsigned int i, iMax = this->mpDocument->getModel()->getListOfLayouts()->size();
+              LayoutModelPlugin* lmPlugin = (LayoutModelPlugin*)this->mpDocument->getModel()->getPlugin("layout");
 
-              for (i = 0; i < iMax; ++i)
+              if (lmPlugin != NULL)
                 {
-                  if (this->mpDocument->getModel()->getLayout(i) == this->mpLayout)
+                  unsigned int i, iMax = lmPlugin->getListOfLayouts()->size();
+
+                  for (i = 0; i < iMax; ++i)
                     {
-                      this->mpDocument->getModel()->removeLayout(i);
-                      break;
+                      if (lmPlugin->getLayout(i) == this->mpLayout)
+                        {
+                          lmPlugin->removeLayout(i);
+                          break;
+                        }
                     }
                 }
             }
@@ -842,7 +858,7 @@ bool CCellDesignerImporter::createSpeciesStyles()
                       this->mIdMap.insert(std::pair<std::string, const SBase*>(style_id, pStyle));
                       // apply the style to the glyph
                       pStyle->addId(glyphs_it->first->getId());
-                      Group* pGroup = pStyle->getGroup();
+                      RenderGroup* pGroup = pStyle->getGroup();
                       assert(pGroup != NULL);
                       // since children of aliases should stay within the bounds of their
                       // parents, we add all children to the same group and assume
@@ -853,7 +869,7 @@ bool CCellDesignerImporter::createSpeciesStyles()
                       // all primitives we create should be relative to the glyphs bounding box
                       // sine the CellDesigner annotation contains absolute values for
                       // all coordinates, we need to subtract the species glyphs position
-                      Point offset(-glyphs_it->first->getBoundingBox()->getPosition()->x(), -glyphs_it->first->getBoundingBox()->getPosition()->y());
+                      Point offset(new LayoutPkgNamespaces(), -glyphs_it->first->getBoundingBox()->getPosition()->x(), -glyphs_it->first->getBoundingBox()->getPosition()->y());
 
                       while (pCurrent != NULL)
                         {
@@ -984,7 +1000,7 @@ bool CCellDesignerImporter::createSpeciesStyles()
 
                                   if (result == true)
                                     {
-                                      result = CCellDesignerImporter::createPrimitive(pStyle->getGroup(), anno_pos->second.mIdentity, glyphs_it->second.mBounds, Point(-glyphs_it->first->getBoundingBox()->getPosition()->x(), -glyphs_it->first->getBoundingBox()->getPosition()->y()), 1.0, "#000000", color_id);
+                                      result = CCellDesignerImporter::createPrimitive(pStyle->getGroup(), anno_pos->second.mIdentity, glyphs_it->second.mBounds, Point(new LayoutPkgNamespaces(), -glyphs_it->first->getBoundingBox()->getPosition()->x(), -glyphs_it->first->getBoundingBox()->getPosition()->y()), 1.0, "#000000", color_id);
                                     }
 
                                   // TODO gradients are currently not considered
@@ -1030,7 +1046,7 @@ bool CCellDesignerImporter::createSpeciesStyles()
  * If creation of the primitive fails, false is returned.
  *
  */
-bool CCellDesignerImporter::createPrimitive(Group* pGroup,
+bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
     const SpeciesIdentity& si,
     const BoundingBox& bounds,
     const Point& offset,
@@ -2190,13 +2206,13 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                                 Point p1 = CCellDesignerImporter::getPositionPoint(box_pos1->second, ranno.mBaseReactants[0].mPosition);
                                 // p2 stores the coordinates of the anchor point at the product
                                 Point p2 = CCellDesignerImporter::getPositionPoint(box_pos2->second, ranno.mBaseProducts[0].mPosition);
-                                Point v1(p2.x() - p1.x(), p2.y() - p1.y());
-                                Point v2;
+                                Point v1(new LayoutPkgNamespaces(), p2.x() - p1.x(), p2.y() - p1.y());
+                                Point v2(new LayoutPkgNamespaces());
                                 result = CCellDesignerImporter::createOrthogonal(v1, v2);
 
-                                Point p3(p1.x() + v2.x(), p1.y() + v2.y());
+                                Point p3(new LayoutPkgNamespaces(), p1.x() + v2.x(), p1.y() + v2.y());
                                 std::vector<Point>::const_iterator pointIt = ranno.mEditPoints.mPoints.begin(), pointsEnd = ranno.mEditPoints.mPoints.end();
-                                Point p;
+                                Point p(new LayoutPkgNamespaces());
                                 std::vector<Point> points;
                                 // we add p1 and p2 to the points vector
                                 // then the values would be save and we could use the entries from the vector below
@@ -2242,7 +2258,7 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                                 p3 = reactantPoints.back();
 
                                 double distance = CCellDesignerImporter::distance(p3, p2);
-                                Point v((p2.x() - p3.x()) / distance, (p2.y() - p3.y()) / distance);
+                                Point v(new LayoutPkgNamespaces(), (p2.x() - p3.x()) / distance, (p2.y() - p3.y()) / distance);
                                 // create the curve for the reaction glyph
                                 // right now, the reaction glyph consists of a short
                                 // line segment
@@ -2257,7 +2273,7 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                                 Curve* pCurve = pRGlyph->getCurve();
                                 assert(pCurve != NULL);
                                 LineSegment* pLS = pCurve->createLineSegment();
-                                Point center((p3.x() + p2.x())*0.5, (p3.y() + p2.y())*0.5);
+                                Point center(new LayoutPkgNamespaces(), (p3.x() + p2.x())*0.5, (p3.y() + p2.y())*0.5);
                                 pLS->setStart(center.x() - distance*v.x(), center.y() - distance*v.y());
                                 pLS->setEnd(center.x() + distance*v.x(), center.y() + distance*v.y());
                                 // add a new substrate point
@@ -2351,7 +2367,7 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                         // that tells us, which of the points is the connection point
                         // center_product1 - center_substrate_1)
                         // if no tShapeIndex or omittedSHapeIndex is given, we assume it is 0
-                        Point connectionPoint;
+                        Point connectionPoint(new LayoutPkgNamespaces());
 
                         if (ranno.mEditPoints.mTShapeIndex < (int)ranno.mEditPoints.mPoints.size())
                           {
@@ -2390,12 +2406,12 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                             pos2 != this->mCDBounds.end() &&
                             pos3 != this->mCDBounds.end())
                           {
-                            Point p1(pos1->second.getPosition()->x() + pos1->second.getDimensions()->getWidth()*0.5, pos1->second.getPosition()->y() + pos1->second.getDimensions()->getHeight()*0.5);
-                            Point p2(pos2->second.getPosition()->x() + pos2->second.getDimensions()->getWidth()*0.5, pos2->second.getPosition()->y() + pos2->second.getDimensions()->getHeight()*0.5);
-                            Point p3(pos3->second.getPosition()->x() + pos3->second.getDimensions()->getWidth()*0.5, pos3->second.getPosition()->y() + pos3->second.getDimensions()->getHeight()*0.5);
-                            Point v1(p2.x() - p1.x(), p2.y() - p1.y());
-                            Point v2(p3.x() - p1.x(), p3.y() - p1.y());
-                            Point p(p1.x() + connectionPoint.x()*v1.x() + connectionPoint.y()*v2.x(), p1.y() + connectionPoint.x()*v1.y() + connectionPoint.y()*v2.y());
+                            Point p1(new LayoutPkgNamespaces(), pos1->second.getPosition()->x() + pos1->second.getDimensions()->getWidth()*0.5, pos1->second.getPosition()->y() + pos1->second.getDimensions()->getHeight()*0.5);
+                            Point p2(new LayoutPkgNamespaces(), pos2->second.getPosition()->x() + pos2->second.getDimensions()->getWidth()*0.5, pos2->second.getPosition()->y() + pos2->second.getDimensions()->getHeight()*0.5);
+                            Point p3(new LayoutPkgNamespaces(), pos3->second.getPosition()->x() + pos3->second.getDimensions()->getWidth()*0.5, pos3->second.getPosition()->y() + pos3->second.getDimensions()->getHeight()*0.5);
+                            Point v1(new LayoutPkgNamespaces(), p2.x() - p1.x(), p2.y() - p1.y());
+                            Point v2(new LayoutPkgNamespaces(), p3.x() - p1.x(), p3.y() - p1.y());
+                            Point p(new LayoutPkgNamespaces(), p1.x() + connectionPoint.x()*v1.x() + connectionPoint.y()*v2.x(), p1.y() + connectionPoint.x()*v1.y() + connectionPoint.y()*v2.y());
                             // p is the start point of the reaction glyph
                             // i.e. the point where the substrates connect
                             // create the curve for the reaction glyph
@@ -2437,7 +2453,7 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                                         Point p1 = CCellDesignerImporter::getPositionPoint(pos1->second, ranno.mBaseReactants[0].mPosition);
                                         double dist = CCellDesignerImporter::distance(p1, p);
                                         assert(dist != 0.0);
-                                        Point v((p1.x() - p.x()) / dist, (p1.y() - p.y()) / dist);
+                                        Point v(new LayoutPkgNamespaces(), (p1.x() - p.x()) / dist, (p1.y() - p.y()) / dist);
                                         dist /= 3.0;
 
                                         if (dist > 15.0)
@@ -2622,7 +2638,7 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                         assert(!ranno.mEditPoints.mPoints.empty());
                         // there should be a tShapeIndex or an omittedShapeIndex element
                         // that tells us, which of the points is the connection point
-                        Point connectionPoint;
+                        Point connectionPoint(new LayoutPkgNamespaces());
 
                         if (ranno.mEditPoints.mTShapeIndex < (int)ranno.mEditPoints.mPoints.size())
                           {
@@ -2663,9 +2679,9 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                             pos2 != this->mCDBounds.end() &&
                             pos3 != this->mCDBounds.end())
                           {
-                            Point p1(pos1->second.getPosition()->x() + pos1->second.getDimensions()->getWidth()*0.5, pos1->second.getPosition()->y() + pos1->second.getDimensions()->getHeight()*0.5);
-                            Point p2(pos2->second.getPosition()->x() + pos2->second.getDimensions()->getWidth()*0.5, pos2->second.getPosition()->y() + pos2->second.getDimensions()->getHeight()*0.5);
-                            Point p3(pos3->second.getPosition()->x() + pos3->second.getDimensions()->getWidth()*0.5, pos3->second.getPosition()->y() + pos3->second.getDimensions()->getHeight()*0.5);
+                            Point p1(new LayoutPkgNamespaces(), pos1->second.getPosition()->x() + pos1->second.getDimensions()->getWidth()*0.5, pos1->second.getPosition()->y() + pos1->second.getDimensions()->getHeight()*0.5);
+                            Point p2(new LayoutPkgNamespaces(), pos2->second.getPosition()->x() + pos2->second.getDimensions()->getWidth()*0.5, pos2->second.getPosition()->y() + pos2->second.getDimensions()->getHeight()*0.5);
+                            Point p3(new LayoutPkgNamespaces(), pos3->second.getPosition()->x() + pos3->second.getDimensions()->getWidth()*0.5, pos3->second.getPosition()->y() + pos3->second.getDimensions()->getHeight()*0.5);
 
                             Point p = CCellDesignerImporter::calculateAbsoluteValue(connectionPoint, p1, p2, p3);
 
@@ -2704,7 +2720,7 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                                         Point p3 = CCellDesignerImporter::getPositionPoint(pos3->second, ranno.mBaseProducts[0].mPosition);
                                         double dist = CCellDesignerImporter::distance(p3, p);
                                         assert(dist != 0.0);
-                                        Point v((p3.x() - p.x()) / dist, (p3.y() - p.y()) / dist);
+                                        Point v(new LayoutPkgNamespaces(), (p3.x() - p.x()) / dist, (p3.y() - p.y()) / dist);
                                         dist /= 3.0;
 
                                         if (dist > 15.0)
@@ -3091,7 +3107,7 @@ bool CCellDesignerImporter::createSpeciesReferenceGlyphs(ReactionGlyph* pRGlyph,
                                   // there are actually elements that do not have the linkAnchor
                                   // since I currently don't know what to do with these, I just add the
                                   // origin as position
-                                  startsMap.insert(std::pair<SpeciesReferenceGlyph*, Point>(pSRG, Point(0.0, 0.0)));
+                                  startsMap.insert(std::pair<SpeciesReferenceGlyph*, Point>(pSRG, Point(new LayoutPkgNamespaces(), 0.0, 0.0)));
                                 }
                             }
                         }
@@ -3211,7 +3227,7 @@ Point CCellDesignerImporter::getPositionPoint(const BoundingBox& box, POSITION p
         break;
     }
 
-  return Point(x, y);
+  return Point(new LayoutPkgNamespaces(), x, y);
 }
 
 /**
@@ -3265,7 +3281,7 @@ bool CCellDesignerImporter::convertCompartmentAnnotations()
                               const CompartmentGlyph* pCGlyph = dynamic_cast<const CompartmentGlyph*>(pos->second);
                               assert(pCGlyph != NULL);
                               std::map<const CompartmentGlyph*, Point>::const_iterator pos2 = this->mCompartmentNamePointMap.find(pCGlyph);
-                              Point p(0.0, 0.0);
+                              Point p(new LayoutPkgNamespaces(), 0.0, 0.0);
 
                               if (pos2 != this->mCompartmentNamePointMap.end())
                                 {
@@ -5627,7 +5643,7 @@ bool CCellDesignerImporter::parsePointsString(const std::string& s, std::vector<
       std::string splitter(",");
       char** err;
       double dbl;
-      Point p;
+      Point p(new LayoutPkgNamespaces());
 
       while (it != endit && result == true)
         {
@@ -5784,7 +5800,7 @@ bool CCellDesignerImporter::parseCompartmentAlias(const XMLNode* pNode, Compartm
                         {
                           if (pChild->getAttributes().hasAttribute("x") && pChild->getAttributes().hasAttribute("y"))
                             {
-                              Point tmp;
+                              Point tmp(new LayoutPkgNamespaces());
                               result = CCellDesignerImporter::parsePoint(pChild, tmp);
 
                               if (result == true)
@@ -6472,7 +6488,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
           if (pStyle != NULL)
             {
               this->mIdMap.insert(std::pair<std::string, const SBase*>(style_id, pStyle));
-              Group* pGroup = pStyle->getGroup();
+              RenderGroup* pGroup = pStyle->getGroup();
               assert(pGroup != NULL);
 
               if (pGroup != NULL)
@@ -8114,7 +8130,7 @@ bool CCellDesignerImporter::createTextGlyphStyle(double size, Text::TEXT_ANCHOR 
       if (pStyle != NULL)
         {
           this->mIdMap.insert(std::pair<std::string, const SBase*>(style_id, pStyle));
-          Group* pGroup = pStyle->getGroup();
+          RenderGroup* pGroup = pStyle->getGroup();
           assert(pGroup != NULL);
 
           if (pGroup != NULL)
@@ -8258,13 +8274,13 @@ bool CCellDesignerImporter::createDefaultModifierStyle()
           headId = this->createUniqueId("modifier_arrow");
           pLE->setId(headId);
           this->mIdMap.insert(std::pair<std::string, const SBase*>(headId, pLE));
-          Point pos(-5.0, -5.0);
-          Dimensions dim = Dimensions(10.0, 10.0);
+          Point pos(new LayoutPkgNamespaces(), -5.0, -5.0);
+          Dimensions dim = Dimensions(new LayoutPkgNamespaces(), 10.0, 10.0);
           BoundingBox box;
           box.setPosition(&pos);
           box.setDimensions(&dim);
           pLE->setBoundingBox(&box);
-          Group* pGroup = pLE->getGroup();
+          RenderGroup* pGroup = pLE->getGroup();
           assert(pGroup != NULL);
 
           if (pGroup != NULL)
@@ -8399,9 +8415,9 @@ bool CCellDesignerImporter::createDefaultInhibitorStyle()
       LineEnding* pLE = this->mpLocalRenderInfo->createLineEnding();
       assert(pLE != NULL);
       BoundingBox box;
-      Point pos;
-      Dimensions dim;
-      Group* pGroup = NULL;
+      Point pos(new LayoutPkgNamespaces());
+      Dimensions dim(new LayoutPkgNamespaces());
+      RenderGroup* pGroup = NULL;
       std::string headId;
 
       if (pLE != NULL)
@@ -8410,8 +8426,8 @@ bool CCellDesignerImporter::createDefaultInhibitorStyle()
           headId = this->createUniqueId("inhibitor_arrow");
           pLE->setId(headId);
           this->mIdMap.insert(std::pair<std::string, const SBase*>(headId, pLE));
-          pos = Point(0.0, -5.0);
-          dim = Dimensions(3.0, 10.0);
+          pos = Point(new LayoutPkgNamespaces(), 0.0, -5.0);
+          dim = Dimensions(new LayoutPkgNamespaces(), 3.0, 10.0);
           box.setPosition(&pos);
           box.setDimensions(&dim);
           pLE->setBoundingBox(&box);
@@ -8505,9 +8521,9 @@ bool CCellDesignerImporter::createDefaultActivatorStyle()
       LineEnding* pLE = this->mpLocalRenderInfo->createLineEnding();
       assert(pLE != NULL);
       BoundingBox box;
-      Point pos;
-      Dimensions dim;
-      Group* pGroup = NULL;
+      Point pos(new LayoutPkgNamespaces());
+      Dimensions dim(new LayoutPkgNamespaces());
+      RenderGroup* pGroup = NULL;
       std::string headId;
 
       if (pLE != NULL)
@@ -8516,8 +8532,8 @@ bool CCellDesignerImporter::createDefaultActivatorStyle()
           headId = this->createUniqueId("activator_arrow");
           pLE->setId(headId);
           this->mIdMap.insert(std::pair<std::string, const SBase*>(headId, pLE));
-          pos = Point(-5.0, -5.0);
-          dim = Dimensions(10.0, 10.0);
+          pos = Point(new LayoutPkgNamespaces(), -5.0, -5.0);
+          dim = Dimensions(new LayoutPkgNamespaces(), 10.0, 10.0);
           box.setPosition(&pos);
           box.setDimensions(&dim);
           pLE->setBoundingBox(&box);
@@ -8643,9 +8659,9 @@ bool CCellDesignerImporter::createDefaultProductStyle()
       LineEnding* pLE = this->mpLocalRenderInfo->createLineEnding();
       assert(pLE != NULL);
       BoundingBox box;
-      Point pos;
-      Dimensions dim;
-      Group* pGroup = NULL;
+      Point pos(new LayoutPkgNamespaces());
+      Dimensions dim(new LayoutPkgNamespaces());
+      RenderGroup* pGroup = NULL;
       std::string headId;
 
       if (pLE != NULL)
@@ -8654,8 +8670,8 @@ bool CCellDesignerImporter::createDefaultProductStyle()
           headId = this->createUniqueId("product_arrow");
           pLE->setId(headId);
           this->mIdMap.insert(std::pair<std::string, const SBase*>(headId, pLE));
-          pos = Point(-5.0, -5.0);
-          dim = Dimensions(10.0, 10.0);
+          pos = Point(new LayoutPkgNamespaces(), -5.0, -5.0);
+          dim = Dimensions(new LayoutPkgNamespaces(), 10.0, 10.0);
           box.setPosition(&pos);
           box.setDimensions(&dim);
           pLE->setBoundingBox(&box);
@@ -8906,7 +8922,7 @@ bool CCellDesignerImporter::findShortestConnection(std::vector<POSITION>& pos1, 
         {
           double minDist = std::numeric_limits<double>::max();
           double dist;
-          Point p1, p2;
+          Point p1(new LayoutPkgNamespaces()), p2(new LayoutPkgNamespaces());
           std::pair<POSITION, POSITION> bestPair;
           std::vector<POSITION>::const_iterator it = pos1.begin(), endit = pos1.end();
           POSITION best;
@@ -8995,7 +9011,7 @@ POSITION CCellDesignerImporter::findShortestConnection(const Point& p, std::vect
         }
 
       std::vector<POSITION>::const_iterator it = pos.begin(), endit = pos.end();
-      Point p2;
+      Point p2(new LayoutPkgNamespaces());
 
       while (it != endit)
         {
@@ -9032,9 +9048,9 @@ double CCellDesignerImporter::distance(const Point& p1, const Point& p2)
  */
 Point CCellDesignerImporter::calculateAbsoluteValue(const Point& p, const Point& p1, const Point& p2, const Point& p3)
 {
-  Point v1(p2.x() - p1.x(), p2.y() - p1.y());
-  Point v2(p3.x() - p1.x(), p3.y() - p1.y());
-  Point result(p1.x() + p.x()*v1.x() + p.y()*v2.x(), p1.y() + p.x()*v1.y() + p.y()*v2.y());
+  Point v1(new LayoutPkgNamespaces(), p2.x() - p1.x(), p2.y() - p1.y());
+  Point v2(new LayoutPkgNamespaces(), p3.x() - p1.x(), p3.y() - p1.y());
+  Point result(new LayoutPkgNamespaces(), p1.x() + p.x()*v1.x() + p.y()*v2.x(), p1.y() + p.x()*v1.y() + p.y()*v2.y());
   return result;
 }
 
@@ -9318,7 +9334,7 @@ bool CCellDesignerImporter::handleModificationLinks(ReactionGlyph* pRGlyph, Reac
                           y1 = pLS->getStart()->y();
                           x2 = pLS->getEnd()->x();
                           y2 = pLS->getEnd()->y();
-                          Point tmpP(x2 - x1, y2 - y1);
+                          Point tmpP(new LayoutPkgNamespaces(), x2 - x1, y2 - y1);
                           double tmp;
                           tmp = x1;
                           x1 = (x1 < x2) ? x1 : x2;
@@ -9333,8 +9349,8 @@ bool CCellDesignerImporter::handleModificationLinks(ReactionGlyph* pRGlyph, Reac
                           width = (width < 10.0) ? 10.0 : width;
                           height = (height < 10.0) ? 10.0 : height;
                           BoundingBox r_box;
-                          Point position(x1 - width*0.5, y1 - height*0.5);
-                          Dimensions dim(width, height);
+                          Point position(new LayoutPkgNamespaces(), x1 - width*0.5, y1 - height*0.5);
+                          Dimensions dim(new LayoutPkgNamespaces(), width, height);
                           r_box.setPosition(&position);
                           r_box.setDimensions(&dim);
                           Point connectionPoint = CCellDesignerImporter::getPositionPoint(r_box, r_pos);
@@ -9421,15 +9437,15 @@ bool CCellDesignerImporter::handleModificationLinks(ReactionGlyph* pRGlyph, Reac
                                   // the first vector for the coordinate system of the edit points is the vector
                                   // from connection point to target point
 
-                                  Point v1(connectionPoint.x() - targetPoint.x(), connectionPoint.y() - targetPoint.y());
+                                  Point v1(new LayoutPkgNamespaces(), connectionPoint.x() - targetPoint.x(), connectionPoint.y() - targetPoint.y());
                                   // the second vector is the vector with the same length that is orthogonal
                                   // to this vector
-                                  Point v2;
+                                  Point v2(new LayoutPkgNamespaces());
                                   result = CCellDesignerImporter::createOrthogonal(v1, v2);
 
                                   if (result == true)
                                     {
-                                      Point p3(targetPoint.x() + v2.x(), targetPoint.y() + v2.y());
+                                      Point p3(new LayoutPkgNamespaces(), targetPoint.x() + v2.x(), targetPoint.y() + v2.y());
                                       Curve* pCurve = pSRefGlyph->getCurve();
                                       assert(pCurve != NULL);
 
@@ -9441,7 +9457,7 @@ bool CCellDesignerImporter::handleModificationLinks(ReactionGlyph* pRGlyph, Reac
                                           // the line segments
                                           // add all edit points
                                           std::vector<Point>::const_iterator pointIt = mod.mEditPoints.mPoints.begin(), pointsEnd = mod.mEditPoints.mPoints.end();
-                                          Point p;
+                                          Point p(new LayoutPkgNamespaces());
                                           std::vector<Point> points;
 
                                           while (pointIt != pointsEnd)

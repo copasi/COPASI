@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:54:52 $
+//   $Author: shoops $
+//   $Date: 2012/04/23 15:47:07 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,7 @@
 #include "CModel.h"
 
 #include "blaswrap.h"
+#include "clapackwrap.h"
 
 CMathModel::CMathModel(const CCopasiContainer * pParent) :
     CCopasiContainer("MathModel", pParent, "CMathModel"),
