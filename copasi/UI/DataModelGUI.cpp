@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.104 $
+//   $Revision: 1.105 $
 //   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/03/28 14:22:20 $
+//   $Author: shoops $
+//   $Date: 2012/04/23 18:04:17 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,9 +58,9 @@
 #define USE_RENDER 1
 
 #include <sbml/SBMLDocument.h>
-#include <sbml/layout/Point.h>
-#include <sbml/layout/render/Text.h>
-#include <sbml/layout/LineSegment.h>
+#include <sbml/packages/render/sbml/RenderPoint.h>
+#include <sbml/packages/render/sbml/Text.h>
+#include <sbml/packages/layout/sbml/LineSegment.h>
 
 #include "layout/CLayout.h"
 #include "layout/CListOfLayouts.h"
