@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationResult.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/11/23 18:53:37 $
+//   $Author: ssahle $
+//   $Date: 2012/04/24 22:19:02 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -109,8 +109,12 @@ bool CQOptimizationResult::enterProtected()
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
+  QFont smallFont(this->font());
+  smallFont.setPointSize(smallFont.pointSize() - 3);
+
   for (i = 0; i != imax; i++)
     {
+      //1st column: parameter name
       const CCopasiObject *pObject =
         pDataModel->getDataObject(Items[i]->getObjectCN());
 
@@ -121,11 +125,28 @@ bool CQOptimizationResult::enterProtected()
 
       mpParameters->setItem((int) i, 0, pItem);
 
+      //2nd column: lower bound
+      pItem = new QTableWidgetItem(FROM_UTF8(Items[i]->getLowerBound()));
+      pItem->setFont(smallFont);
+      mpParameters->setItem((int) i, 1, pItem);
+
+      //3rd column: start value
+      pItem = new QTableWidgetItem(QString::number(Items[i]->getStartValue()));
+      pItem->setForeground(QColor(120, 120, 140));
+      mpParameters->setItem((int) i, 2, pItem);
+
+      //4th column: solution value
       const C_FLOAT64 & Solution = Solutions[i];
       pItem = new QTableWidgetItem(QString::number(Solution));
-      mpParameters->setItem((int) i, 1,  pItem);
+      mpParameters->setItem((int) i, 3, pItem);
+
+      //5th column: upper bound
+      pItem = new QTableWidgetItem(FROM_UTF8(Items[i]->getUpperBound()));
+      pItem->setFont(smallFont);
+      mpParameters->setItem((int) i, 4, pItem);
+
       pItem = new QTableWidgetItem(QString::number(Gradients[i]));
-      mpParameters->setItem((int) i, 2,  pItem);
+      mpParameters->setItem((int) i, 5,  pItem);
     }
 
   mpParameters->resizeColumnsToContents();

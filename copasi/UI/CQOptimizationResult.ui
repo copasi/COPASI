@@ -2,13 +2,13 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationResult.ui,v $ </comment>
-<comment>   $Revision: 1.9 $ </comment>
+<comment>   $Revision: 1.10 $ </comment>
 <comment>   $Name:  $ </comment>
-<comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/10/14 16:38:31 $ </comment>
+<comment>   $Author: ssahle $ </comment>
+<comment>   $Date: 2012/04/24 22:19:02 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -153,7 +153,22 @@ p, li { white-space: pre-wrap; }
      </column>
      <column>
       <property name="text">
+       <string>Lower Bound</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Start Value</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
        <string>Value</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Upper Bound</string>
       </property>
      </column>
      <column>
