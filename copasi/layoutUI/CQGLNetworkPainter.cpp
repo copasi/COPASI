@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.167 $
+//   $Revision: 1.168 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 23:14:04 $
+//   $Author: bergmann $
+//   $Date: 2012/04/24 09:52:29 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,7 +55,7 @@
 #include <utility>
 
 #include "copasi.h"
-
+#include "mathematics.h"
 #include "copasi/utilities/COutputHandler.h"
 
 #include "FontChooser.h"
