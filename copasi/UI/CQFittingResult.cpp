@@ -177,7 +177,7 @@ bool CQFittingResult::enterProtected()
       pItem = new QTableWidgetItem(QString::number(Solution));
       mpParameters->setItem((int) i, 3, pItem);
 
-      //5th column: lower bound
+      //5th column: upper bound
       pItem = new QTableWidgetItem(FROM_UTF8(Items[i]->getUpperBound()));
       pItem->setFont(smallFont);
       mpParameters->setItem((int) i, 4, pItem);
