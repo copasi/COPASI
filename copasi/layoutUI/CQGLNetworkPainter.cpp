@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.168 $
+//   $Revision: 1.169 $
 //   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/04/24 09:52:29 $
+//   $Author: shoops $
+//   $Date: 2012/04/25 12:29:24 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,55 +20,52 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <QAction>
-#include <QCoreApplication>
-#include <QFileInfo>
-#include <QGLFramebufferObject>
-#include <QString>
-#include <QBitmap>
-#include <QPainter>
-#include <QProgressDialog>
-#include <QRect>
-#include <QPoint>
-#include <QPixmap>
-#include <QEvent>
-#include <QSize>
-#include <QTimer>
-#include <QGraphicsScene>
-#include <QGraphicsTextItem>
-
-#include <QFontInfo>
-#include <QFontDatabase>
-#include <QContextMenuEvent>
-#include <QList>
-#include <QMenu>
-
-//#include <OpenGL/glu.h>
-
 #ifdef WIN32
 # define _USE_MATH_DEFINES
 #endif
 
+#include <QtCore/QCoreApplication>
+#include <QtCore/QEvent>
+#include <QtCore/QFileInfo>
+#include <QtCore/QList>
+#include <QtCore/QPoint>
+#include <QtCore/QRect>
+#include <QtCore/QSize>
+#include <QtCore/QString>
+#include <QtCore/QTimer>
+
+#include <QtGui/QAction>
+#include <QtGui/QBitmap>
+#include <QtGui/QContextMenuEvent>
+#include <QtGui/QFontDatabase>
+#include <QtGui/QFontInfo>
+#include <QtGui/QGraphicsScene>
+#include <QtGui/QGraphicsTextItem>
+#include <QtGui/QMenu>
+#include <QtGui/QPainter>
+#include <QtGui/QPixmap>
+#include <QtGui/QProgressDialog>
+#include <QtOpenGL/QGLFramebufferObject>
+
+#include <cmath>
 #include <iostream>
 #include <limits>
-#include <cmath>
 #include <utility>
 
 #include "copasi.h"
-#include "mathematics.h"
 #include "copasi/utilities/COutputHandler.h"
 
 #include "FontChooser.h"
 
 #if (defined WIN32 && !defined log2)
 C_FLOAT64 log2(const C_FLOAT64 & __x)
-{return log(__x) / log(2.0);}
+{return log(__x) / M_LN2;}
 #endif // WIN32
 
 #include "CQGLNetworkPainter.h"
 #include "CQLayoutMainWindow.h"
-#include "report/CCopasiRootContainer.h"
 
+#include "report/CCopasiRootContainer.h"
 #include "UI/qtUtilities.h"
 #include "layout/CLayout.h"
 #include "utilities/CCopasiVector.h"
