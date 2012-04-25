@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.280 $
+//   $Revision: 1.281 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:11:54 $
+//   $Author: bergmann $
+//   $Date: 2012/04/25 11:55:49 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2893,7 +2893,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
         {
           step = 0;
           totalSteps = 1;
-          hStep = mpImportHandler->addItem("Checking consitency...",
+          hStep = mpImportHandler->addItem("Checking consistency...",
                                            step,
                                            &totalSteps);
         }
