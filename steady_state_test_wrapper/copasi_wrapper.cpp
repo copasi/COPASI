@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/steady_state_test_wrapper/copasi_wrapper.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: bergmann $
-//   $Date: 2012/04/23 13:30:52 $
+//   $Date: 2012/04/26 08:04:43 $
 // End CVS Header
 
 // Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,95 @@
 #include "copasi/report/CReportDefinitionVector.h"
 #include "copasi/report/CReportDefinition.h"
 
+
+CReportDefinition* createReport(CCopasiDataModel* pDataModel, CReportDefinitionVector* pReports)
+{
+  CReportDefinition* pReport =  pReports->createReportDefinition("Report", "Output for batch run");
+  pReport->setTaskType(CCopasiTask::steadyState);
+  pReport->setIsTable(false);
+  pReport->setSeparator(CCopasiReportSeparator(", "));
+
+  std::vector<CRegisteredObjectName>* pHeader = pReport->getHeaderAddr();
+  std::vector<CRegisteredObjectName>* pBody = pReport->getBodyAddr();
+  std::vector<CRegisteredObjectName>* pFoot = pReport->getFooterAddr();
+
+  //Time is not needed for steady state
+  //pBody->push_back(CCopasiObjectName(pDataModel->getModel()->getCN() + ",Reference=Time"));
+  //pBody->push_back(CRegisteredObjectName(pReport->getSeparator().getCN()));
+  //pHeader->push_back(CCopasiStaticString("time").getCN());
+  //pHeader->push_back(pReport->getSeparator().getCN());
+
+  const CCopasiVectorNS<CCompartment>& compartments = pDataModel->getModel()->getCompartments();
+  unsigned int j, jMax = compartments.size();
+
+  for (j = 0; j < jMax; ++j)
+    {
+      if (compartments[j]->getStatus() != CModelEntity::FIXED)
+        {
+          pFoot->push_back(compartments[j]->getObject(CCopasiObjectName("Reference=Volume"))->getCN());
+          pFoot->push_back(pReport->getSeparator().getCN());
+          pHeader->push_back(CCopasiStaticString(compartments[j]->getSBMLId()).getCN());
+          pHeader->push_back(pReport->getSeparator().getCN());
+        }
+    }
+
+  const CCopasiVector<CMetab>& metabolites = pDataModel->getModel()->getMetabolites();
+
+  jMax = metabolites.size();
+
+  for (j = 0; j < jMax; ++j)
+    {
+      if (metabolites[j]->getStatus() != CModelEntity::FIXED)
+        {
+          pFoot->push_back(metabolites[j]->getObject(CCopasiObjectName("Reference=Concentration"))->getCN());
+          pFoot->push_back(pReport->getSeparator().getCN());
+          pHeader->push_back(CCopasiStaticString(metabolites[j]->getSBMLId()).getCN());
+          pHeader->push_back(pReport->getSeparator().getCN());
+        }
+    }
+
+  const CCopasiVectorN<CModelValue>& parameters = pDataModel->getModel()->getModelValues();
+
+  jMax = parameters.size();
+
+  for (j = 0; j < jMax; ++j)
+    {
+      if (parameters[j]->getStatus() != CModelEntity::FIXED)
+        {
+          pFoot->push_back(parameters[j]->getObject(CCopasiObjectName("Reference=Value"))->getCN());
+          pFoot->push_back(pReport->getSeparator().getCN());
+          pHeader->push_back(CCopasiStaticString(parameters[j]->getSBMLId()).getCN());
+          pHeader->push_back(pReport->getSeparator().getCN());
+        }
+    }
+
+  /*
+  const CCopasiVectorNS<CReaction>& reactions = pDataModel->getModel()->getReactions();
+  jMax = reactions.size();
+  for (j = 0; j < jMax;++j)
+  {
+  pBody->push_back(reactions[j]->getObject(CCopasiObjectName("Reference=Flux"))->getCN());
+  pBody->push_back(pReport->getSeparator().getCN());
+  pHeader->push_back(CCopasiStaticString(reactions[j]->getSBMLId()).getCN());
+  pHeader->push_back(pReport->getSeparator().getCN());
+  }
+  */
+
+  // delete the last separator
+
+  if ((*pFoot->rbegin()) == pReport->getSeparator().getCN())
+    {
+      pFoot->erase(--pFoot->end());
+    }
+
+  if ((*pHeader->rbegin()) == pReport->getSeparator().getCN())
+    {
+      pHeader->erase(--pHeader->end());
+    }
+
+  return pReport;
+}
+
 int main(int argc, char *argv[])
 {
   // Parse the commandline options
@@ -73,7 +162,6 @@ int main(int argc, char *argv[])
 
   char* pSBMLFilename = argv[1];
   const char* pOutputFilename = argv[2];
-  CSteadyStateTask* pSSTask = NULL;
 
   std::string CWD = COptions::getPWD();
 
@@ -88,99 +176,20 @@ int main(int argc, char *argv[])
       // create a report with the correct filename and all the species against
       // time.
       CReportDefinitionVector* pReports = pDataModel->getReportDefinitionList();
-      CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for batch run");
-      pReport->setTaskType(CCopasiTask::steadyState);
-      pReport->setIsTable(false);
-      pReport->setSeparator(CCopasiReportSeparator(", "));
+      CReportDefinition* pSteadyState = (*pReports)["Steady-State"];
 
-      std::vector<CRegisteredObjectName>* pHeader = pReport->getHeaderAddr();
-      std::vector<CRegisteredObjectName>* pBody = pReport->getBodyAddr();
-      std::vector<CRegisteredObjectName>* pFoot = pReport->getFooterAddr();
-
-      //Time is not needed for steady state
-      //pBody->push_back(CCopasiObjectName(pDataModel->getModel()->getCN() + ",Reference=Time"));
-      //pBody->push_back(CRegisteredObjectName(pReport->getSeparator().getCN()));
-      //pHeader->push_back(CCopasiStaticString("time").getCN());
-      //pHeader->push_back(pReport->getSeparator().getCN());
-
-      const CCopasiVectorNS<CCompartment>& compartments = pDataModel->getModel()->getCompartments();
-      unsigned int j, jMax = compartments.size();
-
-      for (j = 0; j < jMax; ++j)
-        {
-          if (compartments[j]->getStatus() != CModelEntity::FIXED)
-            {
-              pFoot->push_back(compartments[j]->getObject(CCopasiObjectName("Reference=Volume"))->getCN());
-              pFoot->push_back(pReport->getSeparator().getCN());
-              pHeader->push_back(CCopasiStaticString(compartments[j]->getSBMLId()).getCN());
-              pHeader->push_back(pReport->getSeparator().getCN());
-            }
-        }
-
-      const CCopasiVector<CMetab>& metabolites = pDataModel->getModel()->getMetabolites();
-
-      jMax = metabolites.size();
-
-      for (j = 0; j < jMax; ++j)
-        {
-          if (metabolites[j]->getStatus() != CModelEntity::FIXED)
-            {
-              pFoot->push_back(metabolites[j]->getObject(CCopasiObjectName("Reference=Concentration"))->getCN());
-              pFoot->push_back(pReport->getSeparator().getCN());
-              pHeader->push_back(CCopasiStaticString(metabolites[j]->getSBMLId()).getCN());
-              pHeader->push_back(pReport->getSeparator().getCN());
-            }
-        }
-
-      const CCopasiVectorN<CModelValue>& parameters = pDataModel->getModel()->getModelValues();
-
-      jMax = parameters.size();
-
-      for (j = 0; j < jMax; ++j)
-        {
-          if (parameters[j]->getStatus() != CModelEntity::FIXED)
-            {
-              pFoot->push_back(parameters[j]->getObject(CCopasiObjectName("Reference=Value"))->getCN());
-              pFoot->push_back(pReport->getSeparator().getCN());
-              pHeader->push_back(CCopasiStaticString(parameters[j]->getSBMLId()).getCN());
-              pHeader->push_back(pReport->getSeparator().getCN());
-            }
-        }
-
-      /*
-      const CCopasiVectorNS<CReaction>& reactions = pDataModel->getModel()->getReactions();
-      jMax = reactions.size();
-      for (j = 0; j < jMax;++j)
-      {
-        pBody->push_back(reactions[j]->getObject(CCopasiObjectName("Reference=Flux"))->getCN());
-        pBody->push_back(pReport->getSeparator().getCN());
-        pHeader->push_back(CCopasiStaticString(reactions[j]->getSBMLId()).getCN());
-        pHeader->push_back(pReport->getSeparator().getCN());
-      }
-      */
-
-      // delete the last separator
-
-      if ((*pFoot->rbegin()) == pReport->getSeparator().getCN())
-        {
-          pFoot->erase(--pFoot->end());
-        }
-
-      if ((*pHeader->rbegin()) == pReport->getSeparator().getCN())
-        {
-          pHeader->erase(--pHeader->end());
-        }
+      CReportDefinition* pReport = createReport(pDataModel, pReports);
 
       //**** create a task ****
 
-      pSSTask = new CSteadyStateTask();
+      CSteadyStateTask* pSSTask = new CSteadyStateTask();
       pSSTask->setMethodType(CCopasiMethod::Newton);
       pSSTask->getProblem()->setModel(pDataModel->getModel());
 
       pSSTask->setScheduled(true);
 
-      pSSTask->getReport().setReportDefinition(pReport);
-      pSSTask->getReport().setTarget(pOutputFilename + std::string(".res"));
+      pSSTask->getReport().setReportDefinition(pSteadyState);
+      pSSTask->getReport().setTarget(pOutputFilename + std::string(".res1"));
       pSSTask->getReport().setAppend(false);
 
       //**** specify problem ****
@@ -204,7 +213,15 @@ int main(int argc, char *argv[])
       TaskList.add(pSSTask, true);
 
       // save the file for control purposes
-      std::string saveFilename = pOutputFilename + std::string(".cps");
+      std::string saveFilename = pOutputFilename + std::string("1.cps");
+      pDataModel->saveModel(saveFilename, NULL, true);
+
+      pSSTask->getReport().setReportDefinition(pReport);
+      pSSTask->getReport().setTarget(pOutputFilename + std::string(".res"));
+      pSSTask->getReport().setAppend(false);
+
+      // save the file for control purposes
+      saveFilename = pOutputFilename + std::string(".cps");
       pDataModel->saveModel(saveFilename, NULL, true);
 
       // Run the task
@@ -219,31 +236,41 @@ int main(int argc, char *argv[])
       pSSTask->process(true);
       pDataModel->finish();
       pSSTask->restore();
+
+
+      //status output
+      CSteadyStateMethod::ReturnCode rc = pSSTask->getResult();
+
+      std::string resultCode;
+
+      switch (rc)
+        {
+          case CSteadyStateMethod::notFound: resultCode = "###0 No steady state found."; break;
+          case CSteadyStateMethod::found: resultCode = "###1 Steady state found."; break;
+          case CSteadyStateMethod::foundEquilibrium: resultCode = "###2 Equilibrium found."; break;
+          case CSteadyStateMethod::foundNegative: resultCode = "###3 Negative steady state found."; break;
+        }
+
+      std::cout << resultCode << std::endl;
+
+      std::string resultFileName = pOutputFilename + std::string(".txt");
+      std::ofstream resultFile(resultFileName.c_str());
+      resultFile << resultCode << std::endl;
+      resultFile.close();
+
+      //write method log to separate file
+      std::string methodlog = dynamic_cast<CSteadyStateMethod*>(pSSTask->getMethod())->getMethodLog();
+      std::string logname = pOutputFilename + std::string(".log");
+      std::ofstream ofs(logname.c_str());
+      ofs << methodlog;
+      ofs.close();
+
     }
   catch (CCopasiException Exception)
     {
       std::cerr << Exception.getMessage().getText() << std::endl;
     }
 
-  //status output
-  CSteadyStateMethod::ReturnCode rc = pSSTask->getResult();
-
-  std::string resultCode;
-
-  switch (rc)
-    {
-      case CSteadyStateMethod::notFound: resultCode = "###0 No steady state found."; break;
-      case CSteadyStateMethod::found: resultCode = "###1 Steady state found."; break;
-      case CSteadyStateMethod::foundEquilibrium: resultCode = "###2 Equilibrium found."; break;
-      case CSteadyStateMethod::foundNegative: resultCode = "###3 Negative steady state found."; break;
-    }
-
-  std::cout << resultCode << std::endl;
-
-  std::string resultFileName = pOutputFilename + std::string(".txt");
-  std::ofstream resultFile(resultFileName.c_str());
-  resultFile << resultCode << std::endl;
-  resultFile.close();
 
   std::string Text = "";
 
@@ -260,17 +287,6 @@ int main(int argc, char *argv[])
     }
 
   if (Text != "") std::cerr << Text << std::endl;
-
-
-
-  //write method log to separate file
-  std::string methodlog = dynamic_cast<CSteadyStateMethod*>(pSSTask->getMethod())->getMethodLog();
-  std::string logname = pOutputFilename + std::string(".log");
-  std::ofstream ofs(logname.c_str());
-  ofs << methodlog;
-  ofs.close();
-
-
 
 
   //finish
