@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 17:33:33 $
+//   $Date: 2012/04/27 16:31:31 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -225,7 +225,9 @@ void copasi::COptionParser::finalize(void)
           case option_Verbose:
             throw option_error("missing value for 'verbose' option");
         }
+
     }
+
 }
 //#########################################################################
 void copasi::COptionParser::parse_element(const char *element, int position, opsource source)
@@ -241,7 +243,7 @@ void copasi::COptionParser::parse_element(const char *element, int position, ops
 
         if (length >= 2 && element[0] == '-' && element[1] == '-')
           {
-            if (length == 2) {state_ = state_consume; return;}
+            if (length == 2) { state_ = state_consume; return; }
 
             element += 2;
             const char *value = element;
@@ -764,6 +766,10 @@ void copasi::COptionParser::parse_value(const char *value)
           {
             evalue = SBMLSchema_L2V4;
           }
+        else if (strcmp(value, "L3V1") == 0)
+          {
+            evalue = SBMLSchema_L3V1;
+          }
         else
           {
             std::string error("'"); error += value; error += "' is an invalid value for the 'SBMLSchema' option";
@@ -861,6 +867,7 @@ const char* expand_long_name(const std::string &name)
 
   if (name_size <= 4 && name.compare("help") == 0)
     matches.push_back("help");
+
 
   if (matches.empty())
     {

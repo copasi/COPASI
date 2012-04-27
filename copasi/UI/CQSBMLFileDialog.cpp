@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSBMLFileDialog.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/24 16:32:33 $
+//   $Date: 2012/04/27 16:33:29 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,10 +20,11 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include <QtCore/QRegExp>
+
 #include "copasi.h"
 
 #include "CQSBMLFileDialog.h"
-
 #include "CopasiFileDialog.h"
 
 // static
@@ -40,45 +41,16 @@ std::pair< QString, std::pair< unsigned C_INT32, unsigned C_INT32 > > CQSBMLFile
                    "Level 2 Version 1 (*.xml);;"
                    "Level 2 Version 2 (*.xml);;"
                    "Level 2 Version 3 (*.xml);;"
-                   "Level 2 Version 4 (*.xml)";
+                   "Level 2 Version 4 (*.xml);;"
+                   "Level 3 Version 1 (*.xml)";
 
-  QString SelectedFilter = "Level 2 Version 4 (*.xml)";
+  QString SelectedFilter =
+    QString("Level %1 Version %2 (*.xml)").arg(QString::number(sbmlLevel)).arg(QString::number(sbmlVersion));;
 
-  switch (sbmlLevel)
+  // The default export is L2V4
+  if (Filter.indexOf(SelectedFilter) == -1)
     {
-      case 1:
-
-        switch (sbmlVersion)
-          {
-            case 2:
-              SelectedFilter = "Level 1 Version 2 (*.xml)";
-              break;
-            default:
-              break;
-          }
-
-        break;
-      case 2:
-
-        switch (sbmlVersion)
-          {
-            case 1:
-              SelectedFilter = "Level 2 Version 1 (*.xml)";
-              break;
-            case 2:
-              SelectedFilter = "Level 2 Version 2 (*.xml)";
-              break;
-            case 3:
-              SelectedFilter = "Level 2 Version 3 (*.xml)";
-              break;
-            case 4:
-              SelectedFilter = "Level 2 Version 4 (*.xml)";
-              break;
-            default:
-              break;
-          }
-
-        break;
+      SelectedFilter = "Level 2 Version 4 (*.xml)";
     }
 
   // We need to avoid the KDE dialog at least under Qt 4.7 and KDE 4.5
@@ -92,27 +64,14 @@ std::pair< QString, std::pair< unsigned C_INT32, unsigned C_INT32 > > CQSBMLFile
   NameAndVersion.first =
     CopasiFileDialog::getSaveFileName(parent, name, startWith, Filter, caption, &SelectedFilter, DontUseNativeDialog);
 
-  if (SelectedFilter == "Level 1 Version 2 (*.xml)")
+  QRegExp Pattern("Level (\\d) Version (\\d) \\(\\*\\.xml\\)");
+
+  if (Pattern.exactMatch(SelectedFilter))
     {
-      NameAndVersion.second.first = 1;
-      NameAndVersion.second.second = 2;
+      NameAndVersion.second.first = Pattern.cap(1).toInt();
+      NameAndVersion.second.second = Pattern.cap(2).toInt();
     }
-  else if (SelectedFilter == "Level 2 Version 1 (*.xml)")
-    {
-      NameAndVersion.second.first = 2;
-      NameAndVersion.second.second = 1;
-    }
-  else if (SelectedFilter == "Level 2 Version 2 (*.xml)")
-    {
-      NameAndVersion.second.first = 2;
-      NameAndVersion.second.second = 2;
-    }
-  else if (SelectedFilter == "Level 2 Version 3 (*.xml)")
-    {
-      NameAndVersion.second.first = 2;
-      NameAndVersion.second.second = 3;
-    }
-  else if (SelectedFilter == "Level 2 Version 4 (*.xml)")
+  else
     {
       NameAndVersion.second.first = 2;
       NameAndVersion.second.second = 4;

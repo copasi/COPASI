@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 17:33:32 $
+//   $Date: 2012/04/27 16:31:15 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,6 +28,7 @@
 // name with the cxx_header_def variable
 #ifndef COPASI_COptionParser
 #define COPASI_COptionParser
+
 
 // standard includes
 #include <stdexcept>
@@ -53,7 +54,8 @@ enum SBMLSchema_enum
   SBMLSchema_L2V1,
   SBMLSchema_L2V2,
   SBMLSchema_L2V3,
-  SBMLSchema_L2V4
+  SBMLSchema_L2V4,
+  SBMLSchema_L3V1
 };
 
 /**
@@ -66,7 +68,7 @@ struct options
   options(void) :
       License(false),
       NoLogo(false),
-      SBMLSchema(SBMLSchema_L2V3),
+      SBMLSchema(SBMLSchema_L2V4),
       Validate(false),
       Verbose(false)
   {}
@@ -127,7 +129,7 @@ class option_error : public std::runtime_error
 {
 public:
   option_error(const std::string &what_arg)
-      : runtime_error(what_arg) {}
+      : runtime_error(what_arg) { }
 
   const char* get_help_comment(void) const;
 };
@@ -142,14 +144,14 @@ class autoexcept : public option_error
 public:
   // constructor
   autoexcept(autothrow id, const std::string &message)
-      : option_error(message), autothrow_(id) {}
+      : option_error(message), autothrow_(id) { }
 
   /**
    * get the autothrow enum member for the autothrow
    * option that caused the exception.
    */
   autothrow get_autothrow_id(void) const
-  {return autothrow_;}
+  { return autothrow_; }
 private:
   autothrow autothrow_;
 };
@@ -176,15 +178,15 @@ public:
 
   /// get a list of nonoptions from the command line
   const std::vector<std::string>& get_non_options(void) const
-  {return non_options_;}
+  { return non_options_; }
 
   /// get the main options
   const options& get_options(void) const
-  {return options_;}
+  { return options_; }
 
   /// get the main option locations
   const option_locations& get_locations(void) const
-  {return locations_;}
+  { return locations_; }
 private:
   options options_;
   option_locations locations_;
@@ -212,7 +214,7 @@ private:
     option_RegisteredUser
   } openum_;
 
-  enum parser_state {state_option, state_value, state_consume } state_;
+  enum parser_state { state_option, state_value, state_consume } state_;
   std::vector<std::string> non_options_;
 
   enum opsource
