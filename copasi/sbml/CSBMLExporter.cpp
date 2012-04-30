@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.101 $
+//   $Revision: 1.102 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:11:54 $
+//   $Author: bergmann $
+//   $Date: 2012/04/30 07:21:29 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,6 +37,14 @@
 
 #if LIBSBML_VERSION >= 50400
 #include <sbml/packages/layout/extension/LayoutModelPlugin.h>
+#define INIT_DEFAULTS(element) \
+  {\
+    element.initDefaults();\
+  }
+#else
+#define INIT_DEFAULTS(element) \
+  {\
+  }
 #endif
 
 #include "sbml/Model.h"
@@ -126,6 +134,7 @@ void CSBMLExporter::createTimeUnit(const CCopasiDataModel& dataModel)
   uDef.setName("time");
   uDef.setId("time");
   Unit unit(this->mSBMLLevel, this->mSBMLVersion);
+  INIT_DEFAULTS(unit);
 
   switch (dataModel.getModel()->getTimeUnitEnum())
     {
@@ -241,6 +250,7 @@ void CSBMLExporter::createVolumeUnit(const CCopasiDataModel& dataModel)
   uDef.setName("volume");
   uDef.setId("volume");
   Unit unit(this->mSBMLLevel, this->mSBMLVersion);
+  INIT_DEFAULTS(unit);
 
   switch (dataModel.getModel()->getVolumeUnitEnum())
     {
@@ -335,6 +345,7 @@ void CSBMLExporter::createSubstanceUnit(const CCopasiDataModel& dataModel)
   uDef.setName("substance");
   uDef.setId("substance");
   Unit unit(this->mSBMLLevel, this->mSBMLVersion);
+  INIT_DEFAULTS(unit);
 
   switch (dataModel.getModel()->getQuantityUnitEnum())
     {
@@ -433,6 +444,7 @@ void CSBMLExporter::createLengthUnit(const CCopasiDataModel& dataModel)
   uDef.setName("length");
   uDef.setId("length");
   Unit unit(this->mSBMLLevel, this->mSBMLVersion);
+  INIT_DEFAULTS(unit);
 
   switch (dataModel.getModel()->getLengthUnitEnum())
     {
@@ -532,6 +544,7 @@ void CSBMLExporter::createAreaUnit(const CCopasiDataModel& dataModel)
   uDef.setName("area");
   uDef.setId("area");
   Unit unit(this->mSBMLLevel, this->mSBMLVersion);
+  INIT_DEFAULTS(unit);
 
   switch (dataModel.getModel()->getAreaUnitEnum())
     {
@@ -668,6 +681,8 @@ void CSBMLExporter::createCompartment(CCompartment& compartment)
       compartment.setSBMLId(sbmlId);
       pSBMLCompartment->setId(sbmlId);
     }
+
+  INIT_DEFAULTS((*pSBMLCompartment));
 
   this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pSBMLCompartment));
   this->mHandledSBMLObjects.insert(pSBMLCompartment);
@@ -861,6 +876,8 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
       pSBMLSpecies->setId(sbmlId);
     }
 
+  INIT_DEFAULTS((*pSBMLSpecies));
+
   this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pSBMLSpecies));
   this->mHandledSBMLObjects.insert(pSBMLSpecies);
 
@@ -1029,6 +1046,8 @@ void CSBMLExporter::createParameter(CModelValue& modelValue)
       pParameter->setId(sbmlId);
     }
 
+  INIT_DEFAULTS((*pParameter));
+
   this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pParameter));
   this->mHandledSBMLObjects.insert(pParameter);
 
@@ -1176,6 +1195,8 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
       pSBMLReaction->setId(sbmlId);
     }
 
+  INIT_DEFAULTS((*pSBMLReaction));
+
   this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pSBMLReaction));
   this->mHandledSBMLObjects.insert(pSBMLReaction);
 
@@ -1205,6 +1226,7 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
           sRef->setSpecies(pMetabolite->getSBMLId().c_str());
         }
 
+      INIT_DEFAULTS((*sRef));
       sRef->setStoichiometry(element->getMultiplicity());
       sRef->setDenominator(1);
       usedReferences.insert(sRef->getSpecies());
@@ -1236,6 +1258,7 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
           sRef->setSpecies(pMetabolite->getSBMLId().c_str());
         }
 
+      INIT_DEFAULTS((*sRef));
       sRef->setStoichiometry(element->getMultiplicity());
       sRef->setDenominator(1);
       usedReferences.insert(sRef->getSpecies());

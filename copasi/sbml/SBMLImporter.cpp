@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.281 $
+//   $Revision: 1.282 $
 //   $Name:  $
 //   $Author: bergmann $
-//   $Date: 2012/04/25 11:55:49 $
+//   $Date: 2012/04/30 07:21:30 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,14 @@
 
 #if LIBSBML_VERSION >= 50400
 #include <sbml/packages/layout/extension/LayoutModelPlugin.h>
+#define INIT_DEFAULTS(element) \
+  {\
+    element.initDefaults();\
+  }
+#else
+#define INIT_DEFAULTS(element) \
+  {\
+  }
 #endif // LIBSBML_VERSION
 
 
@@ -156,6 +164,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       std::string units;
       UnitDefinition* pUDef = NULL;
       Unit unit(sbmlModel->getLevel(), sbmlModel->getVersion());
+      INIT_DEFAULTS(unit);
 
       if (sbmlModel->isSetSubstanceUnits())
         {
