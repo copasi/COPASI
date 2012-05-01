@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.78 $
+//   $Revision: 1.79 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/01 14:40:03 $
+//   $Date: 2012/05/01 16:39:29 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,8 +106,16 @@ CExperiment::CExperiment(const CCopasiContainer * pParent,
     mNumDataRows(0),
     mpDataDependentCalculated(NULL),
     mDependentObjects(),
-    mFittingPoints("Fitted Points", this)
-{initializeParameter();}
+    mFittingPoints("Fitted Points", this),
+    mExtendedTimeSeries(),
+    mStorageIt(),
+    mExtendedTimeSeriesSize(0)
+
+{
+  mStorageIt = mExtendedTimeSeries.array();
+
+  initializeParameter();
+}
 
 CExperiment::CExperiment(const CExperiment & src,
                          const CCopasiContainer * pParent):
@@ -136,8 +144,16 @@ CExperiment::CExperiment(const CExperiment & src,
     mNumDataRows(src.mNumDataRows),
     mpDataDependentCalculated(src.mpDataDependentCalculated),
     mDependentObjects(src.mDependentObjects),
-    mFittingPoints(src.mFittingPoints, this)
-{initializeParameter();}
+    mFittingPoints(src.mFittingPoints, this),
+    mExtendedTimeSeries(src.mExtendedTimeSeries),
+    mStorageIt(),
+    mExtendedTimeSeriesSize(src.mExtendedTimeSeriesSize)
+
+{
+  mStorageIt = mExtendedTimeSeries.array() + (src.mStorageIt - src.mExtendedTimeSeries.array());
+
+  initializeParameter();
+}
 
 CExperiment::CExperiment(const CCopasiParameterGroup & group,
                          const CCopasiContainer * pParent):
@@ -166,8 +182,16 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
     mNumDataRows(0),
     mpDataDependentCalculated(NULL),
     mDependentObjects(),
-    mFittingPoints("Fitted Points", this)
-{initializeParameter();}
+    mFittingPoints("Fitted Points", this),
+    mExtendedTimeSeries(),
+    mStorageIt(),
+    mExtendedTimeSeriesSize(0)
+
+{
+  mStorageIt = mExtendedTimeSeries.array();
+
+  initializeParameter();
+}
 
 CExperiment::~CExperiment() {}
 
@@ -461,7 +485,7 @@ void CExperiment::initExtendedTimeSeries(size_t s)
 {
   mExtendedTimeSeriesSize = s;
   mExtendedTimeSeries.resize(s*(this->getDependentData().numCols() + 1)); //+1 for time
-  mStorageIt = mExtendedTimeSeries.begin();
+  mStorageIt = mExtendedTimeSeries.array();
 }
 
 void CExperiment::storeExtendedTimeSeriesData(C_FLOAT64 time)

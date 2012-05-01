@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/23 14:14:20 $
+//   $Author: shoops $
+//   $Date: 2012/05/01 16:39:29 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -670,10 +670,10 @@ private:
   CCopasiVector< CFittingPoint > mFittingPoints;
 
   //storage for extended time series (for nicer plotting)
-  std::vector<C_FLOAT64> mExtendedTimeSeries;
+  CVector< C_FLOAT64 > mExtendedTimeSeries;
 
   //points to the next empty space in the time series storage
-  std::vector<C_FLOAT64>::iterator mStorageIt;
+  C_FLOAT64 * mStorageIt;
 
   //number of data sets in the extended time series
   size_t mExtendedTimeSeriesSize;
