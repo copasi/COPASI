@@ -12,7 +12,7 @@ if [ x"${comment}" = x\"Snapshot\" ]; then
   MyAppVersion=${major}.
   [ ${#minor} = 1 ] && MyAppVersion=${MyAppVersion}0
   MyAppVersion=${MyAppVersion}${minor}.
-  [ ${#build} = 1 ] && MyAppVersion=$MyAppVersion}0
+  [ ${#build} = 1 ] && MyAppVersion=${MyAppVersion}0
   MyAppVersion=${MyAppVersion}${build}
 fi
 
@@ -110,8 +110,7 @@ sed -e '/#define MyAppVersion/s/".*"/"'${MyAppVersion}'"/' \
     ${INNO_FILE} > tmp.iss
 
 # Run Inno Setup to create package
-"${INNO_SETUP}" tmp.iss
-rm tmp.iss
+"${INNO_SETUP}" tmp.iss && rm tmp.iss
 
 # Move the package to its final location
 mv Copasi-${buildname}-${PACKAGE}.exe ..
