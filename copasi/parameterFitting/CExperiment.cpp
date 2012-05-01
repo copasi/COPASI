@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.77 $
+//   $Revision: 1.78 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:11:55 $
+//   $Date: 2012/05/01 14:40:03 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,7 +111,7 @@ CExperiment::CExperiment(const CCopasiContainer * pParent,
 
 CExperiment::CExperiment(const CExperiment & src,
                          const CCopasiContainer * pParent):
-    CCopasiParameterGroup(src, (pParent != NULL) ? pParent : src.getObjectDataModel()),
+    CCopasiParameterGroup(src, static_cast< const CCopasiContainer * >((pParent != NULL) ? pParent : src.getObjectDataModel())),
     mpFileName(NULL),
     mpFirstRow(NULL),
     mpLastRow(NULL),
@@ -141,7 +141,7 @@ CExperiment::CExperiment(const CExperiment & src,
 
 CExperiment::CExperiment(const CCopasiParameterGroup & group,
                          const CCopasiContainer * pParent):
-    CCopasiParameterGroup(group, (pParent != NULL) ? pParent : group.getObjectDataModel()),
+    CCopasiParameterGroup(group, static_cast< const CCopasiContainer * >((pParent != NULL) ? pParent : group.getObjectDataModel())),
     mpFileName(NULL),
     mpFirstRow(NULL),
     mpLastRow(NULL),
