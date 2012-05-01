@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-$Revision: 1.36 $
+$Revision: 1.37 $
 $Name:  $
-$Author: ssahle $
-$Date: 2012/04/23 14:14:19 $
+$Author: shoops $
+$Date: 2012/05/01 14:42:21 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,14 +39,14 @@ CExperimentSet::CExperimentSet(const CCopasiContainer * pParent,
 
 CExperimentSet::CExperimentSet(const CExperimentSet & src,
                                const CCopasiContainer * pParent):
-    CCopasiParameterGroup(src, (pParent != NULL) ? pParent : src.getObjectDataModel()),
+    CCopasiParameterGroup(src, static_cast< const CCopasiContainer * >((pParent != NULL) ? pParent : src.getObjectDataModel())),
     mpExperiments(NULL),
     mNonExperiments(0)
 {initializeParameter();}
 
 CExperimentSet::CExperimentSet(const CCopasiParameterGroup & group,
                                const CCopasiContainer * pParent):
-    CCopasiParameterGroup(group, (pParent != NULL) ? pParent : group.getObjectDataModel()),
+    CCopasiParameterGroup(group, static_cast< const CCopasiContainer * >((pParent != NULL) ? pParent : group.getObjectDataModel())),
     mpExperiments(NULL),
     mNonExperiments(0)
 {initializeParameter();}
@@ -261,7 +261,7 @@ bool CExperimentSet::calculateStatistics()
   for (i = 0; i < imax; i++)
     {
       for (it = mpExperiments->begin() + mNonExperiments; it != end; ++it)
-        (*it)->updateFittedPointValues(i, false); //false means without simulated data TODO
+        (*it)->updateFittedPointValues(i, (*it)->getExperimentType() != CCopasiTask::timeCourse); //false means without simulated data
 
       pParentTask->output(COutputInterface::AFTER);
     }
@@ -273,7 +273,12 @@ bool CExperimentSet::calculateStatistics()
   for (i = 0; i < imax; i++)
     {
       for (it = mpExperiments->begin() + mNonExperiments; it != end; ++it)
-        (*it)->updateFittedPointValuesFromExtendedTimeSeries(i);
+        {
+          if ((*it)->getExperimentType() == CCopasiTask::timeCourse)
+            {
+              (*it)->updateFittedPointValuesFromExtendedTimeSeries(i);
+            }
+        }
 
       pParentTask->output(COutputInterface::AFTER);
     }
