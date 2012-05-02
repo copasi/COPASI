@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.109 $
+//   $Revision: 1.110 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:10:43 $
+//   $Date: 2012/05/02 18:56:10 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -961,7 +961,7 @@ QIcon CQLayoutMainWindow::createStopIcon()
 // returns true because window is opened from COPASI and can be easily reopened
 bool CQLayoutMainWindow::maybeSave()
 {
-  //  int ret = QMessageBox::warning(this, "SimWiz",
+  //  int ret = CQMessageBox::warning(this, "SimWiz",
   //                                 "Do you really want to quit?",
   //                                 //                   tr("Do you really want to quit?\n"
   //                                 //                      "XXXXXXXX"),

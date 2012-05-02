@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.79 $
+//   $Revision: 1.80 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:11:54 $
+//   $Date: 2012/05/02 18:56:35 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1180,7 +1180,7 @@ void CopasiPlot::output(const Activity & activity)
   else if (mHaveAfter && (activity == COutputInterface::AFTER)) mDataAfter++;
 
   for (ItemActivity = 0; ItemActivity < ActivitySize; ItemActivity++)
-    if (ItemActivity & activity && mData[ItemActivity].size())
+    if ((ItemActivity & activity) && mData[ItemActivity].size())
       {
         std::vector< CVector< double > * > & data = mData[ItemActivity];
         size_t & ndata = mDataSize[ItemActivity];
@@ -1218,7 +1218,7 @@ void CopasiPlot::separate(const Activity & activity)
   if (mHaveAfter && (activity == COutputInterface::AFTER)) mDataAfter++;
 
   for (ItemActivity = 0; ItemActivity < ActivitySize; ItemActivity++)
-    if (ItemActivity & activity && mData[ItemActivity].size())
+    if ((ItemActivity & activity) && mData[ItemActivity].size())
       {
         std::vector< CVector< double > * > & data = mData[ItemActivity];
         size_t & ndata = mDataSize[ItemActivity];

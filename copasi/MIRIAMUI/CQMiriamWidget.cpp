@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/14 16:17:20 $
+//   $Date: 2012/05/02 18:56:24 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,7 +18,6 @@
 
 #include "CQMiriamWidget.h"
 
-#include <QtGui/QMessageBox>
 #include <QtGui/QHeaderView>
 #include <QtGui/QClipboard>
 #include <QtGui/QKeyEvent>
@@ -26,6 +25,8 @@
 #include "copasi.h"
 
 #include "UI/qtUtilities.h"
+#include "UI/CQMessageBox.h"
+
 #include "MIRIAM/CModelMIRIAMInfo.h"
 #include "report/CCopasiRootContainer.h"
 #include "commandline/CConfigurationFile.h"
@@ -206,8 +207,8 @@ void CQMiriamWidget::slotBtnClearClicked()
 
   if (mpTblAuthors->hasFocus())
     {
-      int ret = QMessageBox::question(this, tr("Confirm Delete"), "Delete all Creators?",
-                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+      int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete all Creators?",
+                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
       if (ret == QMessageBox::Yes)
         {
@@ -216,8 +217,8 @@ void CQMiriamWidget::slotBtnClearClicked()
     }
   else if (mpTblReferences->hasFocus())
     {
-      int ret = QMessageBox::question(this, tr("Confirm Delete"), "Delete all References?",
-                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+      int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete all References?",
+                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
       if (ret == QMessageBox::Yes)
         {
@@ -226,8 +227,8 @@ void CQMiriamWidget::slotBtnClearClicked()
     }
   else if (mpTblDescription->hasFocus())
     {
-      int ret = QMessageBox::question(this, tr("Confirm Delete"), "Delete all Descriptions?",
-                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+      int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete all Descriptions?",
+                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
       if (ret == QMessageBox::Yes)
         {
@@ -236,8 +237,8 @@ void CQMiriamWidget::slotBtnClearClicked()
     }
   else if (mpTblModified->hasFocus())
     {
-      int ret = QMessageBox::question(this, tr("Confirm Delete"), "Delete all Date/Time Modifieds?",
-                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+      int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete all Date/Time Modifieds?",
+                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
       if (ret == QMessageBox::Yes)
         {

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQCreatorDM.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:30:18 $
+//   $Date: 2012/05/02 18:56:24 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,8 +16,7 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include <QMessageBox>
-
+#include "UI/CQMessageBox.h"
 #include "UI/qtUtilities.h"
 #include "CQCreatorDM.h"
 
@@ -223,9 +222,9 @@ bool CQCreatorDM::removeRows(QModelIndexList rows, const QModelIndex&)
 
               msg.append("'?");
 
-              choice = QMessageBox::question(NULL, tr("Confirm Delete"), msg,
-                                             QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll,
-                                             QMessageBox::No);
+              choice = CQMessageBox::question(NULL, tr("Confirm Delete"), msg,
+                                              QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll,
+                                              QMessageBox::No);
             }
 
           if (choice == QMessageBox::NoToAll)

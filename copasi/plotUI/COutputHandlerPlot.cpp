@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/COutputHandlerPlot.cpp,v $
-$Revision: 1.25 $
+$Revision: 1.26 $
 $Name:  $
 $Author: shoops $
-$Date: 2012/01/06 19:11:54 $
+$Date: 2012/05/02 18:56:35 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,10 +45,8 @@ bool COutputHandlerPlot::compile(std::vector< CCopasiContainer * > listOfContain
 {
   if (!mpDefinitionVector) return false;
 
-  CopasiUI3Window * pMainWindow = CopasiUI3Window::getMainWindow();
-
   // This must only be executed in the main thread.
-  if (pMainWindow->getMainThread() == QThread::currentThread())
+  if (CopasiUI3Window::getMainThread() == QThread::currentThread())
     {
       mInterfaces.clear();
 
@@ -66,10 +64,10 @@ bool COutputHandlerPlot::compile(std::vector< CCopasiContainer * > listOfContain
               key = pSpecification->CCopasiParameter::getKey();
 
               if (!mPlotMap.count(key))
-                mPlotMap[key] = new PlotWindow(this, pSpecification, pMainWindow);
-              else if ("Copasi Plot: " + pSpecification->getTitle() !=
+                mPlotMap[key] = new PlotWindow(this, pSpecification, CopasiUI3Window::getMainWindow());
+              else if ("COPASI Plot: " + pSpecification->getTitle() !=
                        TO_UTF8(mPlotMap[key]->windowTitle()))
-                mPlotMap[key] = new PlotWindow(this, pSpecification, pMainWindow);
+                mPlotMap[key] = new PlotWindow(this, pSpecification, CopasiUI3Window::getMainWindow());
               else
                 mPlotMap[key]->initFromSpec(pSpecification);
 

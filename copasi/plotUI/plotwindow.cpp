@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-//   $Revision: 1.50 $
+//   $Revision: 1.51 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/01/05 22:45:11 $
+//   $Date: 2012/05/02 18:56:35 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -66,7 +66,7 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
     mpMainWindow(pMainWindow)
 {
   this->resize(640, 480);
-  this->setWindowTitle(("Copasi Plot: " + ptrSpec->getTitle()).c_str());
+  this->setWindowTitle(("COPASI Plot: " + ptrSpec->getTitle()).c_str());
 
   // set up the GUI - the toolbar
   createActions();
@@ -140,7 +140,7 @@ void PlotWindow::createToolBar()
 
 bool PlotWindow::initFromSpec(const CPlotSpecification* ptrSpec)
 {
-  this->setWindowTitle(("Copasi Plot: " + ptrSpec->getTitle()).c_str());
+  this->setWindowTitle(("COPASI Plot: " + ptrSpec->getTitle()).c_str());
   return mpPlot->initFromSpec(ptrSpec);
 }
 

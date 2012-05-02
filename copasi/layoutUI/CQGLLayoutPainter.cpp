@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutPainter.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/12/01 19:54:54 $
+//   $Date: 2012/05/02 18:56:11 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -36,12 +36,11 @@
 #include "CQGLLayoutPainter.h"
 
 // Qt includes
-#include <QMouseEvent>
-#include <QTimer>
-#include <QCursor>
-#include <QApplication>
-#include <QMessageBox>
-#include <Qt>
+#include <QtGui/QMouseEvent>
+#include <QtCore/QTimer>
+#include <QtGui/QCursor>
+#include <QtGui/QApplication>
+#include <QtCore/Qt>
 
 // global includes
 #include <limits>
@@ -77,7 +76,9 @@
 #undef CursorShape
 #endif // __APPLE__
 
-// check that the OpenGL extensions we plan to use are at leaset defined so that we have the necessary enumerations
+#include "UI/CQMessageBox.h"
+
+// check that the OpenGL extensions we plan to use are at least defined so that we have the necessary enumerations
 #if !defined(GL_EXT_framebuffer_object) || !defined(GL_EXT_framebuffer_multisample)
 #error "Error. Your header files do not define the OpenGL macros necessary to compile this program. For further information please see http://www.gamedev.net/community/forums/showfaq.asp?forum_id=25#q5."
 #endif // GL_EXT_framebuffer_object
@@ -182,10 +183,10 @@ void CQGLLayoutPainter::draw()
       // display any error messages
       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
         {
-          QMessageBox::critical(NULL, "Render Error",
-                                CCopasiMessage::getAllMessageText().c_str(),
-                                QMessageBox::Ok | QMessageBox::Default,
-                                QMessageBox::NoButton);
+          CQMessageBox::critical(NULL, "Render Error",
+                                 CCopasiMessage::getAllMessageText().c_str(),
+                                 QMessageBox::Ok | QMessageBox::Default,
+                                 QMessageBox::NoButton);
           CCopasiMessage::clearDeque();
         }
     }
@@ -1281,8 +1282,8 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
 
               if (!multisample_supported || samples < 2)
                 {
-                  QMessageBox::warning(this, tr("Multisampling unsupported"),
-                                       tr("Your implementation does not support multisampling of\nframebuffer objects. The resulting\bitmap might not look very nice."));
+                  CQMessageBox::warning(this, tr("Multisampling unsupported"),
+                                        tr("Your implementation does not support multisampling of\nframebuffer objects. The resulting\bitmap might not look very nice."));
                 }
 
               // if we are not on an apple, we have to initialize the functions
@@ -1301,8 +1302,8 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
                     }
                   catch (...)
                     {
-                      QMessageBox::critical(this, tr("Error creating image"),
-                                            tr("Could not create image. Maybe you ran out of memory."));
+                      CQMessageBox::critical(this, tr("Error creating image"),
+                                             tr("Could not create image. Maybe you ran out of memory."));
                       // set normal cursor
                       this->setCursor(cursor);
                       return NULL;
@@ -1544,8 +1545,8 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
       else
         {
           // give an error message that the image is to large
-          QMessageBox::critical(this, tr("Image too large"),
-                                tr("Sorry, refusing to create images that are larger than 500MB."));
+          CQMessageBox::critical(this, tr("Image too large"),
+                                 tr("Sorry, refusing to create images that are larger than 500MB."));
         }
 
       // set normal cursor
@@ -1554,8 +1555,8 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
   else
     {
       // give an error message that the image is to large
-      QMessageBox::critical(this, tr("Framebuffers not supported"),
-                            tr("This version of OpenGL does not support the framebuffer extension.\nSorry, can't create the bitmap."));
+      CQMessageBox::critical(this, tr("Framebuffers not supported"),
+                             tr("This version of OpenGL does not support the framebuffer extension.\nSorry, can't create the bitmap."));
     }
 
   return pImageData;
@@ -1760,8 +1761,8 @@ bool CQGLLayoutPainter::draw_bitmap(double x, double y, double width, double hei
   // issue the error message and reset the state
   if (fail == true)
     {
-      QMessageBox::critical(this, messageHeader,
-                            message);
+      CQMessageBox::critical(this, messageHeader,
+                             message);
     }
 
   return !fail;

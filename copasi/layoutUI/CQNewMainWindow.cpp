@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/26 21:09:34 $
+//   $Date: 2012/05/02 18:56:11 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,26 +12,25 @@
 // All rights reserved.
 
 // Qt includes
-#include <QAbstractEventDispatcher>
-#include <QAction>
-#include <QActionGroup>
-#include <QCloseEvent>
-#include <QColor>
-#include <QColorDialog>
-#include <QComboBox>
-#include <QFileDialog>
-#include <QFileInfo>
-#include <QHBoxLayout>
-#include <QIcon>
-#include <QImage>
-#include <QLabel>
-#include <QPixmap>
-#include <QMenuBar>
-#include <QMessageBox>
-#include <QStackedWidget>
-#include <QStatusBar>
-#include <QToolBar>
-#include <QVBoxLayout>
+#include <QtCore/QAbstractEventDispatcher>
+#include <QtGui/QAction>
+#include <QtGui/QActionGroup>
+#include <QtGui/QCloseEvent>
+#include <QtGui/QColor>
+#include <QtGui/QColorDialog>
+#include <QtGui/QComboBox>
+#include <QtCore/QFileInfo>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QIcon>
+#include <QtGui/QImage>
+#include <QtGui/QLabel>
+#include <QtGui/QPixmap>
+#include <QtGui/QMenuBar>
+#include <QtGui/QStackedWidget>
+#include <QtGui/QStatusBar>
+#include <QtGui/QToolBar>
+#include <QtGui/QVBoxLayout>
+
 
 // local includes
 #include "CQGLLayoutPainter.h"
@@ -43,6 +42,8 @@
 #include "CQGLLayoutViewer.h"
 #include "CQLayoutMainWindow.h"
 
+#include "UI/CQMessageBox.h"
+#include "UI/CopasiFileDialog.h"
 #include <string.h>
 
 // COPASI includes
@@ -834,7 +835,7 @@ void CQNewMainWindow::slotScreenshot()
       if (pDialog->exec() == QDialog::Accepted)
         {
           // ask for the filename
-          QString fileName = QFileDialog::getSaveFileName(this, QString("Export to"), "", QString("PNG (*.png);;All files (*)"));
+          QString fileName = CopasiFileDialog::getSaveFileName(this, QString("Export to"), "", QString("PNG (*.png);;All files (*)"));
 
           if (!fileName.isEmpty())
             {
@@ -868,8 +869,8 @@ void CQNewMainWindow::export_bitmap(const QString& filename, double x, double y,
           if (!info.isFile())
             {
               // create an error message and cancel saving
-              QMessageBox::critical(this, tr("Not a file"),
-                                    tr("Path exists, but it is not a file."));
+              CQMessageBox::critical(this, tr("Not a file"),
+                                     tr("Path exists, but it is not a file."));
               return;
             }
           else
@@ -877,8 +878,8 @@ void CQNewMainWindow::export_bitmap(const QString& filename, double x, double y,
               if (!info.isWritable())
                 {
                   // create an error message and cancel saving
-                  QMessageBox::critical(this, tr("Not writable"),
-                                        tr("Can't write to file."));
+                  CQMessageBox::critical(this, tr("Not writable"),
+                                         tr("Can't write to file."));
                   return;
                 }
             }
@@ -902,8 +903,8 @@ void CQNewMainWindow::export_bitmap(const QString& filename, double x, double y,
 
               if (result == false)
                 {
-                  QMessageBox::critical(this, tr("Save error"),
-                                        tr("An error occured while saving the file.\nThe file might be invalid."));
+                  CQMessageBox::critical(this, tr("Save error"),
+                                         tr("An error occured while saving the file.\nThe file might be invalid."));
                 }
 
               delete pImage;
@@ -914,8 +915,8 @@ void CQNewMainWindow::export_bitmap(const QString& filename, double x, double y,
   else
     {
       // give an error message that the image is to large
-      QMessageBox::critical(this, tr("Image too large"),
-                            tr("Sorry, refusing to create images that are larger than 500MB."));
+      CQMessageBox::critical(this, tr("Image too large"),
+                             tr("Sorry, refusing to create images that are larger than 500MB."));
     }
 }
 

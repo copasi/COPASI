@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/15 19:07:26 $
+//   $Date: 2012/05/02 18:58:45 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -285,8 +285,8 @@ void CQLayoutsWidget::slotBtnDeleteClicked()
 // virtual
 void CQLayoutsWidget::slotBtnClearClicked()
 {
-  int ret = QMessageBox::question(this, tr("Confirm Delete"), "Delete all Layouts?",
-                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+  int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete all Layouts?",
+                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
   if (ret == QMessageBox::Yes)
     {

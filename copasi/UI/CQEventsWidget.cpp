@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/14 16:17:45 $
+//   $Date: 2012/05/02 18:58:45 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -109,8 +109,8 @@ void CQEventsWidget::deleteSelectedEvents()
 void CQEventsWidget::slotBtnClearClicked()
 {
 
-  int ret = QMessageBox::question(this, tr("Confirm Delete"), "Delete all Events?",
-                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+  int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete all Events?",
+                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
   if (ret == QMessageBox::Yes)
     {
