@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2012/04/23 00:10:29 $
+//   $Date: 2012/05/02 23:41:49 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,9 +29,7 @@ const std::string CPlotItem::TypeName[] =
   "Unset",
   "2D Curve",
   "Histogram",
-#ifdef COPASI_BANDED_GRAPH
   "Banded Graph",
-#endif // COPASI_BANDED_GRAPH
   "Surface",
 
   "2D Plot",
@@ -44,9 +42,7 @@ const char* CPlotItem::XMLType[] =
   "Unset",
   "Curve2D",
   "Histogram1DItem",
-#ifdef COPASI_BANDED_GRAPH
   "BandedGraph",
-#endif // COPASI_BANDED_GRAPH
   "Surface",
 
   "Plot2D",
@@ -109,15 +105,12 @@ void CPlotItem::setType(CPlotItem::Type type)
   mType = type;
 
   //create parameters
-#ifndef COPASI_BANDED_GRAPH
-
-  if (type == curve2d)
-#else
   if (type == curve2d || type == bandedGraph)
-#endif // COPASI_BANDED_GRAPH
     {
       assertParameter("Line type", CCopasiParameter::UINT, (unsigned C_INT32) 0);
       assertParameter("Line subtype", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+      assertParameter("Line width", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0);
+      assertParameter("Symbol subtype", CCopasiParameter::UINT, (unsigned C_INT32) 0);
     }
 
   if (type == histoItem1d)
@@ -125,14 +118,9 @@ void CPlotItem::setType(CPlotItem::Type type)
       assertParameter("increment", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0);
     }
 
-#ifndef COPASI_BANDED_GRAPH
-
-  if (type == curve2d || type == histoItem1d || type == surface)
-#else
   if (type == curve2d || type == histoItem1d || type == bandedGraph || type == surface)
-#endif // COPASI_BANDED_GRAPH
     {
-      assertParameter("Color", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+      assertParameter("Color", CCopasiParameter::STRING, std::string("auto"));
 
       mpXMLActivity =
         assertParameter("Recording Activity", CCopasiParameter::STRING, std::string("during"))->getValue().pSTRING;
@@ -175,9 +163,7 @@ void CPlotItem::setActivity(const COutputInterface::Activity & activity)
   switch (mType)
     {
       case curve2d:
-#ifdef COPASI_BANDED_GRAPH
       case bandedGraph:
-#endif // COPASI_BANDED_GRAPH
       case histoItem1d:
       case surface:
         mActivity = activity;
@@ -197,9 +183,7 @@ const COutputInterface::Activity & CPlotItem::getActivity() const
   switch (mType)
     {
       case curve2d:
-#ifdef COPASI_BANDED_GRAPH
       case bandedGraph:
-#endif // COPASI_BANDED_GRAPH
       case histoItem1d:
       case surface:
 
