@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/COutputHandlerPlot.cpp,v $
-$Revision: 1.26 $
+$Revision: 1.27 $
 $Name:  $
 $Author: shoops $
-$Date: 2012/05/02 18:56:35 $
+$Date: 2012/05/02 20:34:52 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,7 +46,7 @@ bool COutputHandlerPlot::compile(std::vector< CCopasiContainer * > listOfContain
   if (!mpDefinitionVector) return false;
 
   // This must only be executed in the main thread.
-  if (CopasiUI3Window::getMainThread() == QThread::currentThread())
+  if (CopasiUI3Window::isMainThread())
     {
       mInterfaces.clear();
 

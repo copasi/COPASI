@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressDialog.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/15 17:07:51 $
+//   $Date: 2012/05/02 20:34:51 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,8 +19,10 @@
 #include "CQProgressDialog.h"
 
 #include <QtCore/QVariant>
-#include <qapplication.h>
-#include <qtimer.h>
+#include <QtGui/QApplication>
+#include <QtCore/QTimer>
+
+#include "copasiui3window.h"
 
 #include "resourcesUI/CQIconResource.h"
 
@@ -91,10 +93,7 @@ void CQProgressDialog::init()
   mPause = false;
   mProceed = true;
 
-  mpTimer = new QTimer(this);
-  mpTimer->start(1500);
-  mpTimer->setSingleShot(true);
-  connect(mpTimer, SIGNAL(timeout()), this, SLOT(timerShow()));
+  QTimer::singleShot(1500, this, SLOT(timerShow()));
 
   return;
 }
@@ -127,5 +126,13 @@ void CQProgressDialog::btnStopPressed()
 
 void CQProgressDialog::timerShow()
 {
-  this->show();
+  if (CopasiUI3Window::getMainWindow() != NULL &&
+      CopasiUI3Window::getMainWindow()->messageShown())
+    {
+      QTimer::singleShot(1500, this, SLOT(timerShow()));
+    }
+  else
+    {
+      show();
+    }
 }

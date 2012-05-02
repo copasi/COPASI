@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.106 $
+//   $Revision: 1.107 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/02 18:58:27 $
+//   $Date: 2012/05/02 20:34:51 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,7 +72,7 @@ public:
 
   static CopasiUI3Window * getMainWindow();
 
-  static QThread * getMainThread();
+  static bool isMainThread();
 
   ~CopasiUI3Window();
 
@@ -104,6 +104,10 @@ public:
   void addWindow(QMainWindow * pWindow);
   void removeWindow(QMainWindow * pWindow);
 
+  void setMessageShown(const bool & shown);
+
+  const bool & messageShown() const;
+
 signals:
   void signalLoadFile(QString newFile);
 
@@ -129,7 +133,6 @@ public slots:
 
   void openInitialDocument(const QString & file);
 
-public slots:
   void slotFileOpen(QString file = QString::null);
 
 protected slots:
@@ -255,6 +258,7 @@ private:
   bool mCommitRequired;
   bool mQuitApplication;
   bool mSliderDialogEnabled;
+  bool mMessageShown;
 
   QList< QMainWindow * > mWindows;
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/02 18:58:27 $
+//   $Date: 2012/05/02 20:34:52 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,10 +24,9 @@
 #include <qlayout.h>
 #include <qwaitcondition.h>
 
-#include <QCloseEvent>
-#include <QMutex>
-#include <QMutexLocker>
-#include <QThread>
+#include <QtGui/QCloseEvent>
+#include <QtCore/QMutex>
+#include <QtCore/QMutexLocker>
 
 #include "copasi.h"
 #include "qtUtilities.h"
@@ -42,19 +41,17 @@
 #undef min
 #undef max
 
-extern QApplication *pApp;
-
 // static
 CProgressBar * CProgressBar::create(QWidget* parent, const char* name,
                                     bool modal, Qt::WFlags fl)
 {
-  if (CopasiUI3Window::getMainThread() != QThread::currentThread())
+  if (CopasiUI3Window::isMainThread())
     {
-      return NULL;
+      return new CProgressBar(parent, name, modal, fl);
     }
   else
     {
-      return new CProgressBar(parent, name, modal, fl);
+      return NULL;
     }
 }
 
@@ -64,8 +61,7 @@ CProgressBar::CProgressBar(QWidget* parent, const char* name,
     CProcessReport(),
     mProgressItemList(1),
     mNextEventProcessing(QDateTime::currentDateTime()),
-    mpMainWidget(NULL),
-    mpMainThread(NULL)
+    mpMainWidget(NULL)
 {
   mProgressItemList[0] = NULL;
 
@@ -73,7 +69,6 @@ CProgressBar::CProgressBar(QWidget* parent, const char* name,
   // intervention.
   if ((mpMainWidget = CopasiUI3Window::getMainWindow()) != NULL)
     {
-      mpMainThread = CopasiUI3Window::getMainThread();
       mpMainWidget->setEnabled(false);
       QCoreApplication::processEvents();
     }
@@ -110,8 +105,7 @@ size_t CProgressBar::addItem(const std::string & name,
 {
   size_t hItem = CProcessReport::addItem(name, type, pValue, pEndValue);
 
-  if (mpMainThread != NULL &&
-      QThread::currentThread() != mpMainThread)
+  if (!CopasiUI3Window::isMainThread())
     {
       QMutexLocker Locker(&mMutex);
       mSlotFinished = false;
@@ -189,8 +183,7 @@ bool CProgressBar::progressItem(const size_t & handle)
       mWaitPause.wait(&mMutex);
     }
 
-  if (mpMainThread != NULL &&
-      QThread::currentThread() != mpMainThread)
+  if (!CopasiUI3Window::isMainThread())
     {
       if (mSlotFinished)
         {
@@ -227,8 +220,7 @@ bool CProgressBar::finish()
 {
   // Assure that all signals have been properly handled before we delete
   // the progress items
-  if (mpMainThread == NULL ||
-      QThread::currentThread() == mpMainThread)
+  if (CopasiUI3Window::isMainThread())
     QCoreApplication::processEvents();
 
   // The method must only be called from the main thread!
@@ -256,8 +248,7 @@ bool CProgressBar::finish()
     {
       mpMainWidget->setEnabled(true);
 
-      if (mpMainThread == NULL ||
-          QThread::currentThread() == mpMainThread)
+      if (CopasiUI3Window::isMainThread())
         QCoreApplication::processEvents();
     }
 
@@ -271,8 +262,7 @@ bool CProgressBar::finishItem(const size_t & handle)
 {
   if (!isValidHandle(handle) || mProgressItemList[handle] == NULL) return false;
 
-  if (mpMainThread != NULL &&
-      QThread::currentThread() != mpMainThread)
+  if (!CopasiUI3Window::isMainThread())
     {
       QMutexLocker Locker(&mMutex);
       mSlotFinished = false;
@@ -324,8 +314,7 @@ bool CProgressBar::proceed()
 // virtual
 bool CProgressBar::setName(const std::string & name)
 {
-  if (mpMainThread != NULL &&
-      QThread::currentThread() != mpMainThread)
+  if (!CopasiUI3Window::isMainThread())
     {
       QMutexLocker Locker(&mMutex);
       mSlotFinished = false;

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.h,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:07 $
+//   $Author: shoops $
+//   $Date: 2012/05/02 20:34:51 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,10 +23,10 @@
 #if !defined HANDLER_PROGRESS_BAR
 #define HANDLER_PROGRESS_BAR
 
-#include <qdatetime.h>
-#include <QCloseEvent>
-#include <QMutex>
-#include <QWaitCondition>
+#include <QtCore/QDateTime>
+#include <QtGui/QCloseEvent>
+#include <QtCore/QMutex>
+#include <QtCore/QWaitCondition>
 
 #include "utilities/CProcessReport.h"
 #include "CQProgressDialog.h"
@@ -141,8 +141,6 @@ private:
   QDateTime mNextEventProcessing;
 
   QWidget * mpMainWidget;
-
-  QThread * mpMainThread;
 
 signals:
   void signalAddItem(const int handle);

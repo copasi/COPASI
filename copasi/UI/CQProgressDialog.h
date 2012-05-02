@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressDialog.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/15 17:07:53 $
+//   $Date: 2012/05/02 20:34:51 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,7 +21,7 @@
 
 #include <QDialog>
 
-#include "ui_CQProgressDialog.h"
+#include "copasi/UI/ui_CQProgressDialog.h"
 
 class CQProgressDialog : public QDialog, public Ui::CQProgressDialog
 {
@@ -37,7 +37,6 @@ public:
 protected:
   bool mProceed;
   bool mPause;
-  QTimer *mpTimer;
 
 protected slots:
 

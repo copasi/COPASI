@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.312 $
+//   $Revision: 1.313 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/02 18:58:26 $
+//   $Date: 2012/05/02 20:34:51 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,14 +90,9 @@ CopasiUI3Window * CopasiUI3Window::getMainWindow()
 }
 
 // static
-QThread * CopasiUI3Window::getMainThread()
+bool CopasiUI3Window::isMainThread()
 {
-  if (pMainWindow != NULL)
-    {
-      return pMainWindow->mpMainThread;
-    }
-
-  return NULL;
+  return pMainWindow == NULL || pMainWindow->mpMainThread == QThread::currentThread();
 }
 
 // static
@@ -1715,6 +1710,16 @@ void CopasiUI3Window::addWindow(QMainWindow * pWindow)
 void CopasiUI3Window::removeWindow(QMainWindow * pWindow)
 {
   mWindows.remove(pWindow);
+}
+
+void CopasiUI3Window::setMessageShown(const bool & shown)
+{
+  mMessageShown = shown;
+}
+
+const bool & CopasiUI3Window::messageShown() const
+{
+  return mMessageShown;
 }
 
 #include "model/CModelAnalyzer.h"
