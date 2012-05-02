@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.239 $
+//   $Revision: 1.240 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/30 17:52:07 $
+//   $Author: ssahle $
+//   $Date: 2012/05/02 23:50:01 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -5724,8 +5724,9 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
         if (!strcmp(pszName, "Parameter"))
           {
             p = mCommon.pCurrentPlotItem->getParameter(mCommon.pCurrentParameter->getObjectName());
+            //TODO warning if type mismatch. Is silently ignored currently.
 
-            if (p)
+            if (p && p->getType() == mCommon.pCurrentParameter->getType())
               {
                 switch (p->getType())
                   {
