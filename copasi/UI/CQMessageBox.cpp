@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMessageBox.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/04/26 12:28:51 $
+//   $Author: shoops $
+//   $Date: 2012/05/02 18:58:27 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,7 +77,7 @@ QMessageBox::StandardButton CQMessageBox::information(QWidget *parent, const QSt
     const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton defaultButton)
 {
-  if (CopasiUI3Window::getMainWindow() != NULL && CopasiUI3Window::getMainWindow()->getMainThread() != QThread::currentThread())
+  if (CopasiUI3Window::getMainThread() != QThread::currentThread())
     return defaultButton;
 
   CQMessageBox * pMessageBox = new CQMessageBox(QMessageBox::Information, title, text, buttons, parent);
@@ -92,7 +92,7 @@ QMessageBox::StandardButton CQMessageBox::question(QWidget *parent, const QStrin
     const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton defaultButton)
 {
-  if (CopasiUI3Window::getMainWindow() != NULL && CopasiUI3Window::getMainWindow()->getMainThread() != QThread::currentThread())
+  if (CopasiUI3Window::getMainThread() != QThread::currentThread())
     return defaultButton;
 
   CQMessageBox * pMessageBox = new CQMessageBox(QMessageBox::Question, title, text, buttons, parent);
@@ -108,7 +108,7 @@ QMessageBox::StandardButton CQMessageBox::warning(QWidget *parent, const QString
     const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton defaultButton)
 {
-  if (CopasiUI3Window::getMainWindow() != NULL && CopasiUI3Window::getMainWindow()->getMainThread() != QThread::currentThread())
+  if (CopasiUI3Window::getMainThread() != QThread::currentThread())
     return defaultButton;
 
   CQMessageBox * pMessageBox = new CQMessageBox(QMessageBox::Warning, title, text, buttons, parent);
@@ -124,7 +124,7 @@ QMessageBox::StandardButton CQMessageBox::critical(QWidget *parent, const QStrin
     const QString &text, QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton defaultButton)
 {
-  if (CopasiUI3Window::getMainWindow() != NULL && CopasiUI3Window::getMainWindow()->getMainThread() != QThread::currentThread())
+  if (CopasiUI3Window::getMainThread() != QThread::currentThread())
     return defaultButton;
 
   CQMessageBox * pMessageBox = new CQMessageBox(QMessageBox::Critical, title, text, buttons, parent);

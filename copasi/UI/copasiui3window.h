@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.105 $
+//   $Revision: 1.106 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/02/22 16:28:44 $
+//   $Date: 2012/05/02 18:58:27 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -72,6 +72,8 @@ public:
 
   static CopasiUI3Window * getMainWindow();
 
+  static QThread * getMainThread();
+
   ~CopasiUI3Window();
 
   DataModelGUI* getDataModel();
@@ -98,8 +100,6 @@ public:
   void importSBMLFromString(const std::string & sbmlDocumentText);
 
   void exportSBMLToString(std::string & SBML);
-
-  QThread * getMainThread() const;
 
   void addWindow(QMainWindow * pWindow);
   void removeWindow(QMainWindow * pWindow);

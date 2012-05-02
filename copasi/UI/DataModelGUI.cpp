@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.106 $
+//   $Revision: 1.107 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:12:27 $
+//   $Date: 2012/05/02 18:58:27 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -697,7 +697,7 @@ void DataModelGUI::importCellDesigner()
                   else
                     {
                       // ask the user if the CellDesigner annotation should be imported
-                      if (QMessageBox::question(NULL, "CellDesigner import", "A CellDesigner diagram was found in this file.\nDo you want to import the diagram?" , QMessageBox::Yes | QMessageBox::No , QMessageBox::No) == QMessageBox::Yes)
+                      if (CQMessageBox::question(NULL, "CellDesigner import", "A CellDesigner diagram was found in this file.\nDo you want to import the diagram?" , QMessageBox::Yes | QMessageBox::No , QMessageBox::No) == QMessageBox::Yes)
                         {
                           // do the import
                           CCellDesignerImporter cd_importer(pSBMLDocument);

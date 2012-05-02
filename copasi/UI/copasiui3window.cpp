@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.311 $
+//   $Revision: 1.312 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/16 15:32:11 $
+//   $Date: 2012/05/02 18:58:26 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,6 +87,17 @@ CopasiUI3Window * CopasiUI3Window::pMainWindow = NULL;
 CopasiUI3Window * CopasiUI3Window::getMainWindow()
 {
   return pMainWindow;
+}
+
+// static
+QThread * CopasiUI3Window::getMainThread()
+{
+  if (pMainWindow != NULL)
+    {
+      return pMainWindow->mpMainThread;
+    }
+
+  return NULL;
 }
 
 // static
@@ -1694,11 +1705,6 @@ void CopasiUI3Window::slotExportSBMLToStringFinished(bool success)
                              QMessageBox::Ok, QMessageBox::Ok);
       CCopasiMessage::clearDeque();
     }
-}
-
-QThread * CopasiUI3Window::getMainThread() const
-{
-  return mpMainThread;
 }
 
 void CopasiUI3Window::addWindow(QMainWindow * pWindow)
