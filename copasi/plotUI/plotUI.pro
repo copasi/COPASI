@@ -1,30 +1,25 @@
-# Begin CVS Header
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotUI.pro,v $
-#   $Revision: 1.13 $
-#   $Name:  $
-#   $Author: shoops $
-#   $Date: 2012/03/15 17:59:24 $
-# End CVS Header
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotUI.pro,v $ 
+#   $Revision: 1.14 $ 
+#   $Name:  $ 
+#   $Author: ssahle $ 
+#   $Date: 2012/05/02 23:40:07 $ 
+# End CVS Header 
 
-# Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-# and The University of Manchester.
-# All rights reserved.
-
-######################################################################
-# $Revision: 1.13 $ $Author: shoops $ $Date: 2012/03/15 17:59:24 $
-######################################################################
-
 LIB = plotUI
+
+
 DISTFILES = plotUI.pro
 
-HEADERS += CopasiPlot.h \
+HEADERS += BandedGraphWidget.h \
+           CopasiPlot.h \
            COutputHandlerPlot.h \
+           CQPlotColors.h \
            curve2dwidget.h \
            HistoWidget.h \
            PlotSubwidget.h \
@@ -32,8 +27,10 @@ HEADERS += CopasiPlot.h \
            scrollbar.h \
            scrollzoomer.h
 
-SOURCES += CopasiPlot.cpp \
+SOURCES += BandedGraphWidget.cpp \
+           CopasiPlot.cpp \
            COutputHandlerPlot.cpp \
+           CQPlotColors.cpp \
            curve2dwidget.cpp \
            HistoWidget.cpp \
            PlotSubwidget.cpp \
@@ -41,6 +38,7 @@ SOURCES += CopasiPlot.cpp \
            scrollbar.cpp \
            scrollzoomer.cpp
 
+FORMS += BandedGraphWidget.ui
 FORMS +=  PlotSubwidget.ui
 FORMS +=  HistoWidget.ui
 FORMS +=  curve2dwidget.ui
@@ -54,8 +52,3 @@ CONFIG += qt
 include(../common.pri)
 include(../srcDistribution.pri)
 
-contains(DEFINES, COPASI_BANDED_GRAPH) {
-HEADERS += BandedGraphWidget.h
-SOURCES += BandedGraphWidget.cpp
-FORMS += BandedGraphWidget.ui
-}
