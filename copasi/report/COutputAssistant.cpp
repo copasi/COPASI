@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2012/04/23 06:50:52 $
+//   $Date: 2012/05/02 23:48:11 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "plot/COutputDefinitionVector.h"
+#include "plot/CPlotColors.h"
 #include "parameterFitting/CFitProblem.h"
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CExperiment.h"
@@ -621,8 +622,9 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
         std::vector< std::string > ChannelX;
         std::vector< std::string > Names;
         std::vector< unsigned C_INT32 > LineTypes;
+        std::vector< unsigned C_INT32 > SymbolSubTypes;
         std::vector< unsigned C_INT32 > LineSubTypes;
-        std::vector< unsigned C_INT32 > Colors;
+        std::vector< std::string > Colors;
 
         unsigned C_INT32 colorcounter = 0;
 
@@ -650,13 +652,16 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
                 Name = pExperiment->getObjectName() + "," + Name;
 
+                //1
                 data1.push_back(static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=Measured Value"))));
                 ChannelX.push_back(data2->getCN());
                 Names.push_back(Name + "(Measured Value)");
-                LineTypes.push_back(2); //symbols
-                LineSubTypes.push_back(101); //fat cross
-                Colors.push_back((colorcounter % 6) + 1);
+                LineTypes.push_back(3); //symbols & lines
+                SymbolSubTypes.push_back(1); //fat cross
+                LineSubTypes.push_back(1); //dotted
+                Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
 
+                //2
                 data1.push_back(static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=Fitted Value"))));
                 ChannelX.push_back(data2->getCN());
                 Names.push_back(Name + "(Fitted Value)");
@@ -664,24 +669,25 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                 if (pExperiment->getExperimentType() == CCopasiTask::timeCourse)
                   {
                     LineTypes.push_back(0); //curve
-                    LineSubTypes.push_back(0);
+                    SymbolSubTypes.push_back(0); //default, this value is not used
                   }
                 else
-                  LineTypes.push_back(2);
+                  {
+                    LineTypes.push_back(2); //symbols
+                    SymbolSubTypes.push_back(1); //TODO
+                  }
 
-                {
-                  LineTypes.push_back(2);
-                  LineSubTypes.push_back(1); //TODO
-                }
-                Colors.push_back((colorcounter % 6) + 1);
+                LineSubTypes.push_back(0); //default, solid
+                Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
 
+                //3
                 data1.push_back(static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=Weighted Error"))));
                 ChannelX.push_back(data2->getCN());
                 Names.push_back(Name + "(Weighted Error)");
-                LineTypes.push_back(2);
                 LineTypes.push_back(2); //symbols
-                LineSubTypes.push_back(2); //circles
-                Colors.push_back((colorcounter % 6) + 1);
+                SymbolSubTypes.push_back(2); //circles
+                LineSubTypes.push_back(0); //default, this value is not used
+                Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
 
                 ++colorcounter;
               }
@@ -698,8 +704,9 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
             std::vector< std::string >::const_iterator itChannelX = ChannelX.begin();
             std::vector< std::string >::const_iterator itName = Names.begin();
             std::vector< unsigned C_INT32 >::const_iterator itLineType = LineTypes.begin();
+            std::vector< unsigned C_INT32 >::const_iterator itSymbolSubType = SymbolSubTypes.begin();
             std::vector< unsigned C_INT32 >::const_iterator itLineSubType = LineSubTypes.begin();
-            std::vector< unsigned C_INT32 >::const_iterator itColor = Colors.begin();
+            std::vector<std::string>::const_iterator itColor = Colors.begin();
 
             while (itItem != endItem)
               {
@@ -707,6 +714,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                 (*itItem)->setTitle(*itName++);
                 (*itItem)->setActivity(COutputInterface::AFTER);
                 (*itItem)->setValue("Line type", *itLineType++);
+                (*itItem)->setValue("Symbol subtype", *itSymbolSubType++);
                 (*itItem)->setValue("Line subtype", *itLineSubType++);
                 (*itItem++)->setValue("Color", *itColor++);
               }
@@ -779,21 +787,22 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
                     (*itItem)->setTitle(Name + "(Measured Value)");
                     (*itItem)->setActivity(COutputInterface::AFTER);
-                    (*itItem)->setValue("Line type", (unsigned C_INT32) 2);
-                    (*itItem)->setValue("Line subtype", (unsigned C_INT32) 101);
-                    (*itItem++)->setValue("Color", (unsigned C_INT32)(colorcounter % 6) + 1);
+                    (*itItem)->setValue("Line type", (unsigned C_INT32) 3); //symbols and lines
+                    (*itItem)->setValue("Symbol subtype", (unsigned C_INT32) 1); //fat cross
+                    (*itItem)->setValue("Line subtype", (unsigned C_INT32) 1); //dotted
+                    (*itItem++)->setValue("Color", CPlotColors::getCopasiColorStr(colorcounter));
 
                     (*itItem)->setTitle(Name + "(Fitted Value)");
                     (*itItem)->setActivity(COutputInterface::AFTER);
                     (*itItem)->setValue("Line type", (unsigned C_INT32) LineType);
-                    (*itItem)->setValue("Line subtype", (unsigned C_INT32) 0);
-                    (*itItem++)->setValue("Color", (unsigned C_INT32)(colorcounter % 6) + 1);
+                    (*itItem)->setValue("Symbol subtype", (unsigned C_INT32) 0);
+                    (*itItem++)->setValue("Color", CPlotColors::getCopasiColorStr(colorcounter));
 
                     (*itItem)->setTitle(Name + "(Weighted Error)");
                     (*itItem)->setActivity(COutputInterface::AFTER);
                     (*itItem)->setValue("Line type", (unsigned C_INT32) 2);
-                    (*itItem)->setValue("Line subtype", (unsigned C_INT32) 2);
-                    (*itItem++)->setValue("Color", (unsigned C_INT32)(colorcounter % 6) + 1);
+                    (*itItem)->setValue("Symbol subtype", (unsigned C_INT32) 2);
+                    (*itItem++)->setValue("Color", CPlotColors::getCopasiColorStr(colorcounter));
 
                     ++colorcounter;
                   }
@@ -870,15 +879,16 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                 if (pPlotSpecification != NULL)
                   {
                     //first determine color for the current curves
-                    unsigned C_INT32 colorindex = (pPlotSpecification->getItems().size() / 3) % 6 + 1;
+                    unsigned C_INT32 colorindex = (pPlotSpecification->getItems().size() / 3);
 
 
                     CPlotItem * pItem =
                       pPlotSpecification->createItem(Name + "(Measured Value)", CPlotItem::curve2d);
                     pItem->setActivity(COutputInterface::AFTER);
-                    pItem->setValue("Line type", (unsigned C_INT32) 2);
-                    pItem->setValue("Line subtype", (unsigned C_INT32) 101);
-                    pItem->setValue("Color", (unsigned C_INT32) colorindex);
+                    pItem->setValue("Line type", (unsigned C_INT32) 3); //symbols and lines
+                    pItem->setValue("Line subtype", (unsigned C_INT32) 1); //dotted
+                    pItem->setValue("Symbol subtype", (unsigned C_INT32) 1); //fat cross
+                    pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
                     pItem->addChannel(ChannelX);
                     pItem->addChannel((*it)->getObject(CCopasiObjectName("Reference=Measured Value"))->getCN());
 
@@ -886,8 +896,8 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                       pPlotSpecification->createItem(Name + "(Fitted Value)", CPlotItem::curve2d);
                     pItem->setActivity(COutputInterface::AFTER);
                     pItem->setValue("Line type", LineType);
-                    pItem->setValue("Line subtype", (unsigned C_INT32) 0);
-                    pItem->setValue("Color", (unsigned C_INT32) colorindex);
+                    pItem->setValue("Symbol subtype", (unsigned C_INT32) 0);
+                    pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
                     pItem->addChannel(ChannelX);
                     pItem->addChannel((*it)->getObject(CCopasiObjectName("Reference=Fitted Value"))->getCN());
 
@@ -895,8 +905,8 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                       pPlotSpecification->createItem(Name + "(Weighted Error)", CPlotItem::curve2d);
                     pItem->setActivity(COutputInterface::AFTER);
                     pItem->setValue("Line type", (unsigned C_INT32) 2);
-                    pItem->setValue("Line subtype", (unsigned C_INT32) 2);
-                    pItem->setValue("Color", (unsigned C_INT32) colorindex);
+                    pItem->setValue("Symbol subtype", (unsigned C_INT32) 2);
+                    pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
                     pItem->addChannel(ChannelX);
                     pItem->addChannel((*it)->getObject(CCopasiObjectName("Reference=Weighted Error"))->getCN());
                   }
