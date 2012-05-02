@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-//   $Revision: 1.47 $
+//   $Revision: 1.48 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2012/04/23 00:10:29 $
+//   $Date: 2012/05/02 23:45:03 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,7 +83,6 @@ private:
 };
 
 
-#ifdef COPASI_BANDED_GRAPH
 class CBandedGraphData : public QwtData
 {
 public:
@@ -126,7 +125,6 @@ private:
   mutable double mMinY;
   mutable double mMaxY;
 };
-#endif // COPASI_BANDED_GRAPH
 
 
 class CHistoCurveData : public QwtData
@@ -188,11 +186,7 @@ public:
 
   void setDataSize(const size_t & size);
 
-#ifndef COPASI_BANDED_GRAPH
-  void reallocatedData(const CVector< double > * pX, const CVector< double > * pY);
-#else
   void reallocatedData(const CVector< double > * pX, const CVector< double > * pY, const CVector< double > * pY2 = 0);
-#endif
 
   void setIncrement(const C_FLOAT64 & increment);
 

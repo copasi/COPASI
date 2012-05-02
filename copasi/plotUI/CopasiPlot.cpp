@@ -1,23 +1,14 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.80 $
+//   $Revision: 1.81 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/02 18:56:35 $
+//   $Author: ssahle $
+//   $Date: 2012/05/02 23:45:03 $
 // End CVS Header
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <qstring.h>
@@ -38,6 +29,7 @@
 
 #include "copasi.h"
 #include "CopasiPlot.h"
+#include "CQPlotColors.h"
 #include "plot/CPlotSpecification.h"
 #include "UI/qtUtilities.h"
 #include "report/CCopasiRootContainer.h"
@@ -213,7 +205,6 @@ C2DCurveData & C2DCurveData::operator = (const C2DCurveData & rhs)
   return * this;
 }
 
-#ifdef COPASI_BANDED_GRAPH
 //********************  CBandedGraphData  *********************************
 CBandedGraphData::CBandedGraphData():
     QwtData(),
@@ -430,7 +421,7 @@ CBandedGraphData & CBandedGraphData::operator = (const CBandedGraphData & rhs)
 
   return * this;
 }
-#endif // COPASI_BANDED_GRAPH
+
 //********************  data  *********************************************
 CHistoCurveData::CHistoCurveData():
     QwtData(),
@@ -616,11 +607,9 @@ void C2DPlotCurve::setDataSize(const size_t & size)
         static_cast< C2DCurveData * >(&data())->setSize(size);
         break;
 
-#ifdef COPASI_BANDED_GRAPH
       case CPlotItem::bandedGraph:
         static_cast< CBandedGraphData * >(&data())->setSize(size);
         break;
-#endif // COPASI_BANDED_GRAPH
 
       case CPlotItem::histoItem1d:
         static_cast< CHistoCurveData * >(&data())->setSize(size);
@@ -632,11 +621,7 @@ void C2DPlotCurve::setDataSize(const size_t & size)
     }
 }
 
-#ifndef COPASI_BANDED_GRAPH
-void C2DPlotCurve::reallocatedData(const CVector< double > * pX, const CVector< double > * pY)
-#else
 void C2DPlotCurve::reallocatedData(const CVector< double > * pX, const CVector< double > * pY, const CVector< double > * pY2)
-#endif // COPASI_BANDED_GRAPH
 {
 
   switch (mCurveType)
@@ -645,11 +630,9 @@ void C2DPlotCurve::reallocatedData(const CVector< double > * pX, const CVector< 
         static_cast< C2DCurveData * >(&data())->reallocated(pX, pY);
         break;
 
-#ifdef COPASI_BANDED_GRAPH
       case CPlotItem::bandedGraph:
         static_cast< CBandedGraphData * >(&data())->reallocated(pX, pY, pY2);
         break;
-#endif // COPASI_BANDED_GRAPH
 
       case CPlotItem::histoItem1d:
         static_cast< CHistoCurveData * >(&data())->reallocated(pX);
@@ -846,7 +829,6 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   setTitle(FROM_UTF8(mpPlotSpecification->getTitle()));
 
   CPlotItem* pItem;
-  QColor curveColours[6] = {QColor(255, 0, 0), QColor(0, 0, 255), QColor(0, 230, 0), QColor(0, 190, 240), QColor(240, 0, 255), QColor(240, 200, 0)} ; //TODO
 
   mCurves.resize(kmax);
   //mHistoIndices.resize(kmax);
@@ -856,7 +838,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   std::map< std::string, C2DPlotCurve * > CurveMap = mCurveMap;
   mCurveMap.clear();
 
-  size_t HistogramIndex = 0;
+  //size_t HistogramIndex = 0;
 
   for (k = 0; k < kmax; k++)
     {
@@ -887,15 +869,12 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
       //color handling should be similar for different curve types
       QColor color;
 
-      if (pCurve->getType() == CPlotItem::curve2d || pCurve->getType() == CPlotItem::histoItem1d)
+      if (pCurve->getType() == CPlotItem::curve2d
+          || pCurve->getType() == CPlotItem::histoItem1d
+          || pCurve->getType() == CPlotItem::bandedGraph)
         {
-
-          unsigned C_INT32 colorindex = *pItem->getValue("Color").pUINT;
-
-          if (colorindex == 0) //default
-            color = curveColours[k % 6];
-          else
-            color = curveColours[(colorindex-1) % 6];
+          std::string colorstr = *pItem->getValue("Color").pSTRING;
+          color = CQPlotColors::getColor(colorstr, k);
         }
 
       pCurve->setPen(color);
@@ -903,81 +882,93 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
       showCurve(pCurve, Visible);
 
-      switch (pCurve->getType())
+      if (pCurve->getType() == CPlotItem::curve2d
+          || pCurve->getType() == CPlotItem::bandedGraph)
         {
-          case CPlotItem::curve2d:
-          {
-            unsigned C_INT32 subtype = *pItem->getValue("Line subtype").pUINT;
+          pCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
 
-            switch (*pItem->getValue("Line type").pUINT)
-              {
-                case 0:           //curve
-                  pCurve->setStyle(QwtPlotCurve::Lines);
-                  pCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
-                  break;
-                case 1:           //points
-                  pCurve->setStyle(QwtPlotCurve::Dots);
-                  break;
-                case 2:           //symbols
-                  pCurve->setStyle(QwtPlotCurve::NoCurve);
+          unsigned C_INT32 linetype = *pItem->getValue("Line type").pUINT;
 
-                  if (subtype > 100)
-                    {
-                      pCurve->setStyle(QwtPlotCurve::Lines);
-                      pCurve->setPen(QPen(QBrush(color), 1, Qt::DotLine));
-                    }
-
-                  subtype = subtype % 100;
-
-                  pCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
-
-                  //const QColor &c = curveColours[k % 6];
-                  switch (subtype)
-                    {
-                      case 1:
-                        pCurve->setSymbol(QwtSymbol(QwtSymbol::Cross, QBrush(), QPen(QBrush(color), 2), QSize(7, 7)));
-                        break;
-                      case 2:
-                        pCurve->setSymbol(QwtSymbol(QwtSymbol::Ellipse, QBrush(), QPen(QBrush(color), 1), QSize(8, 8)));
-                        break;
-                      case 0:
-                      default:
-                        pCurve->setSymbol(QwtSymbol(QwtSymbol::Cross, QBrush(color), QPen(QBrush(color), 1), QSize(5, 5)));
-                        break;
-                    }
-
-                  break;
-              }
-          }
-          break;
-
-#ifdef COPASI_BANDED_GRAPH
-          case CPlotItem::bandedGraph:
-            pCurve->setStyle(QwtPlotCurve::Lines);
-            pCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
+          if (linetype == 0      //line
+              || linetype == 3)  //line+symbols
             {
-              QColor &c = curveColours[k % 6];
-              c.setAlpha(64);
-              pCurve->setBrush(c);
+              pCurve->setStyle(QwtPlotCurve::Lines);
+              unsigned C_INT32 linesubtype = *pItem->getValue("Line subtype").pUINT;
+              C_FLOAT64 width = *pItem->getValue("Line width").pUDOUBLE;
+
+              switch (linesubtype) //symbol type
+                {
+                  case 1:
+                    pCurve->setPen(QPen(QBrush(color), width, Qt::DotLine));
+                    break;
+                  case 2:
+                    pCurve->setPen(QPen(QBrush(color), width, Qt::DashLine));
+                    break;
+                  case 3:
+                    pCurve->setPen(QPen(QBrush(color), width, Qt::DashDotLine));
+                    break;
+                  case 4:
+                    pCurve->setPen(QPen(QBrush(color), width, Qt::DashDotDotLine));
+                    break;
+                  case 0:
+                  default:
+                    pCurve->setPen(QPen(QBrush(color), width, Qt::SolidLine));
+                    break;
+                }
             }
-            break;
-#endif // COPASI_BANDED_GRAPH
 
-          case CPlotItem::histoItem1d:
-            // Store the index of the histogram to be created
-            //mHistoIndices[k] = HistogramIndex++;
-            pCurve->setIncrement(*pItem->getValue("increment").pDOUBLE);
+          if (linetype == 1) //points
+            {
+              pCurve->setStyle(QwtPlotCurve::Dots);
+            }
 
-            pCurve->setStyle(QwtPlotCurve::Steps);
-            pCurve->setYAxis(QwtPlot::yRight);
-            pCurve->setCurveAttribute(QwtPlotCurve::Inverted);
-            break;
+          if (linetype == 2) //only symbols
+            {
+              pCurve->setStyle(QwtPlotCurve::NoCurve);
+            }
 
-          default :
-            mIgnoreUpdate = false;
-            fatalError();
-            break;
+          if (linetype == 2      //symbols
+              || linetype == 3)  //line+symbols
+            {
+              unsigned C_INT32 symbolsubtype = *pItem->getValue("Symbol subtype").pUINT;
+
+              switch (symbolsubtype) //symbol type
+                {
+                  case 1:
+                    pCurve->setSymbol(QwtSymbol(QwtSymbol::Cross, QBrush(), QPen(QBrush(color), 2), QSize(7, 7)));
+                    break;
+                  case 2:
+                    pCurve->setSymbol(QwtSymbol(QwtSymbol::Ellipse, QBrush(), QPen(QBrush(color), 1), QSize(8, 8)));
+                    break;
+                  case 0:
+                  default:
+                    pCurve->setSymbol(QwtSymbol(QwtSymbol::Cross, QBrush(color), QPen(QBrush(color), 1), QSize(5, 5)));
+                    break;
+                }
+
+            }
+
+        } //2d curves and banded graphs
+
+      if (pCurve->getType() == CPlotItem::bandedGraph)
+        {
+          //set fill color
+          QColor c = color;
+          c.setAlpha(64);
+          pCurve->setBrush(c);
         }
+
+      if (pCurve->getType() == CPlotItem::histoItem1d)
+        {
+          pCurve->setIncrement(*pItem->getValue("increment").pDOUBLE);
+
+          pCurve->setStyle(QwtPlotCurve::Steps);
+          pCurve->setYAxis(QwtPlot::yRight);
+          pCurve->setCurveAttribute(QwtPlotCurve::Inverted);
+
+        }
+
+
     }
 
   // Remove unused curves if definition has changed
@@ -1142,14 +1133,12 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
                                               0));
             break;
 
-#ifdef COPASI_BANDED_GRAPH
           case CPlotItem::bandedGraph:
             (*itCurves)->setData(CBandedGraphData(*data[mDataIndex[k][0].second],
                                                   *data[mDataIndex[k][1].second],
                                                   *data[mDataIndex[k][2].second],
                                                   0));
             break;
-#endif // COPASI_BANDED_GRAPH
 
           case CPlotItem::histoItem1d:
             (*itCurves)->setData(CHistoCurveData(*data[mDataIndex[k][0].second],
@@ -1311,13 +1300,11 @@ void CopasiPlot::resizeCurveData(const size_t & activity)
                                              data[mDataIndex[k][1].second]);
                 break;
 
-#ifdef COPASI_BANDED_GRAPH
               case CPlotItem::bandedGraph:
                 (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
                                              data[mDataIndex[k][1].second],
                                              data[mDataIndex[k][2].second]);
                 break;
-#endif // COPASI_BANDED_GRAPH
 
               case CPlotItem::histoItem1d:
                 (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
