@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 15:41:43 $
+//   $Author: shoops $
+//   $Date: 2012/05/03 21:08:21 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1201,6 +1201,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
         {
           pItem = new QTableWidgetItem("");
           mpTable->setItem((int) i, COL_WEIGHT, pItem);
+          pItem->setFlags(pItem->flags() & ~Qt::ItemIsEditable);
         }
       else
         {
@@ -1208,16 +1209,23 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
           C_FLOAT64 Weight = ObjectMap.getWeight(i);
 
           QString WeightText;
+          Qt::ItemFlags FlagMask = Qt::NoItemFlags;
 
-          if ((isnan(DefaultWeight) &&
-               isnan(Weight)) ||
-              DefaultWeight == Weight)
+          if (DefaultWeight == 0.0)
+            {
+              WeightText = "n/a";
+              FlagMask = Qt::ItemIsEditable;
+            }
+          else if ((isnan(DefaultWeight) &&
+                    isnan(Weight)) ||
+                   DefaultWeight == Weight)
             WeightText = "(" + QString::number(DefaultWeight) + ")";
           else
             WeightText = QString::number(Weight);
 
           pItem = new QTableWidgetItem(WeightText);
           mpTable->setItem((int) i, COL_WEIGHT, pItem);
+          pItem->setFlags(pItem->flags() & ~FlagMask);
         }
     }
 
@@ -1341,9 +1349,19 @@ void CQExperimentData::slotTypeChanged(int row, int index)
                 {
 
                   C_FLOAT64 DefaultWeight = ObjectMap.getDefaultWeight(i);
-                  WeightText = "(" + QString::number(DefaultWeight) + ")";
 
-                  pItem->setText(WeightText);
+                  if (DefaultWeight != 0.0)
+                    {
+                      WeightText = "(" + QString::number(DefaultWeight) + ")";
+                      pItem->setText(WeightText);
+                      pItem->setFlags(pItem->flags() | Qt::ItemIsEditable);
+                    }
+                  else
+                    {
+                      WeightText = "n/a";
+                      pItem->setText(WeightText);
+                      pItem->setFlags(pItem->flags() & ~Qt::ItemIsEditable);
+                    }
                 }
             }
         }

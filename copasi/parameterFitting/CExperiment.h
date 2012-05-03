@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/03 14:22:29 $
+//   $Date: 2012/05/03 21:08:21 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,7 +95,8 @@ public:
   {
     MEAN = 0,
     MEAN_SQUARE,
-    SD
+    SD,
+    VALUE_SCALING
   };
 
   /**
@@ -540,6 +541,58 @@ private:
    * properly initialized.
    */
   void initializeParameter();
+
+  /**
+   * Calculate the sum of squares for the indexed row of the experiment
+   * with column weights.
+   * If residuals is not NULL residuals will contain the differences
+   * between the calculated and the experiment values.
+   * @param const size_t & index
+   * @param C_FLOAT64 *& residuals (may be NULL)
+   * @return C_FLOAT64 sumOfSquares
+   */
+  C_FLOAT64 sumOfSquaresWithColumnWeights(const size_t & index,
+                                          C_FLOAT64 *& residuals) const;
+
+
+  /**
+   * Calculate the sum of squares for the indexed row of the experiment
+   * with column weights.
+   * On return dependentValues contains the calculated values. If
+   * residuals is not NULL residuals will contain the differences
+   * between the calculated and the experiment values.
+   * @param const size_t & index
+   * @param C_FLOAT64 *& dependentValues (must not be NULL)
+   * @return C_FLOAT64 sumOfSquares
+   */
+  C_FLOAT64 sumOfSquaresWithColumnWeightsStore(const size_t & index,
+      C_FLOAT64 *& dependentValues);
+  /**
+   * Calculate the sum of squares for the indexed row of the experiment
+   * with each value individually weighted.
+   * If residuals is not NULL residuals will contain the differences
+   * between the calculated and the experiment values.
+   * @param const size_t & index
+   * @param C_FLOAT64 *& residuals (may be NULL)
+   * @return C_FLOAT64 sumOfSquares
+   */
+  C_FLOAT64 sumOfSquaresWithValueWeights(const size_t & index,
+                                         C_FLOAT64 *& residuals) const;
+
+
+  /**
+   * Calculate the sum of squares for the indexed row of the experiment
+   * with each value individually weighted.
+   * On return dependentValues contains the calculated values. If
+   * residuals is not NULL residuals will contain the differences
+   * between the calculated and the experiment values.
+   * @param const size_t & index
+   * @param C_FLOAT64 *& dependentValues (must not be NULL)
+   * @return C_FLOAT64 sumOfSquares
+   */
+  C_FLOAT64 sumOfSquaresWithValueWeightsStore(const size_t & index,
+      C_FLOAT64 *& dependentValues);
+
 
 private:
   // Attributes

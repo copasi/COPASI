@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.80 $
+//   $Revision: 1.81 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/03 14:22:29 $
+//   $Date: 2012/05/03 21:08:21 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,6 +68,7 @@ const std::string CExperiment::WeightMethodName[] =
   "Mean",
   "Mean Square",
   "Standard Deviation",
+  "Value Scaling"
   ""
 };
 
@@ -76,6 +77,7 @@ const char* CExperiment::WeightMethodType[] =
   "Mean",
   "MeanSquare",
   "StandardDeviation",
+  "ValueScaling",
   NULL
 };
 
@@ -336,7 +338,17 @@ void CExperiment::updateFittedPointValues(const size_t & index, bool includeSimu
 
   for (; it != end; ++it, ++pWeight, ++pDataDependentCalculated, ++pDataDependent)
     {
-      Residual = *pWeight * (*pDataDependentCalculated - *pDataDependent);
+      switch (*mpWeightMethod)
+        {
+          case VALUE_SCALING:
+            Residual = (*pDataDependentCalculated - *pDataDependent) / *pDataDependent;
+            break;
+
+          default:
+            Residual = (*pDataDependentCalculated - *pDataDependent) * *pWeight;
+            break;
+        }
+
       (*it)->setValues(Independent,
                        *pDataDependent,
                        includeSimulation ? *pDataDependentCalculated : std::numeric_limits<C_FLOAT64>::quiet_NaN(),
@@ -374,9 +386,43 @@ void CExperiment::updateFittedPointValuesFromExtendedTimeSeries(const size_t & i
 
 }
 
-
 C_FLOAT64 CExperiment::sumOfSquares(const size_t & index,
                                     C_FLOAT64 *& residuals) const
+{
+  switch (*mpWeightMethod)
+    {
+      case VALUE_SCALING:
+        return sumOfSquaresWithValueWeights(index, residuals);
+        break;
+
+      default:
+        return sumOfSquaresWithColumnWeights(index, residuals);
+        break;
+    }
+
+  return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+}
+
+C_FLOAT64 CExperiment::sumOfSquaresStore(const size_t & index,
+    C_FLOAT64 *& dependentValues)
+{
+  switch (*mpWeightMethod)
+    {
+      case VALUE_SCALING:
+        return sumOfSquaresWithValueWeightsStore(index, dependentValues);
+        break;
+
+      default:
+        return sumOfSquaresWithColumnWeightsStore(index, dependentValues);
+        break;
+    }
+
+  return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+}
+
+
+C_FLOAT64 CExperiment::sumOfSquaresWithColumnWeights(const size_t & index,
+    C_FLOAT64 *& residuals) const
 {
   C_FLOAT64 Residual;
   C_FLOAT64 s = 0.0;
@@ -434,7 +480,7 @@ C_FLOAT64 CExperiment::sumOfSquares(const size_t & index,
   return s;
 }
 
-C_FLOAT64 CExperiment::sumOfSquaresStore(const size_t & index,
+C_FLOAT64 CExperiment::sumOfSquaresWithColumnWeightsStore(const size_t & index,
     C_FLOAT64 *& dependentValues)
 {
   if (index == 0)
@@ -474,6 +520,110 @@ C_FLOAT64 CExperiment::sumOfSquaresStore(const size_t & index,
         {
           *dependentValues = **ppDependentValues;
           Residual = (*pDataDependent - *dependentValues) * *pWeight;
+          s += Residual * Residual;
+        }
+    }
+
+  return s;
+}
+
+C_FLOAT64 CExperiment::sumOfSquaresWithValueWeights(const size_t & index,
+    C_FLOAT64 *& residuals) const
+{
+  C_FLOAT64 Residual;
+  C_FLOAT64 s = 0.0;
+
+  C_FLOAT64 const * pDataDependent = mDataDependent[index];
+  C_FLOAT64 const * pEnd = pDataDependent + mDataDependent.numCols();
+  C_FLOAT64 * const * ppDependentValues = mDependentValues.array();
+
+  std::vector< Refresh * >::const_iterator it = mRefreshMethods.begin();
+  std::vector< Refresh * >::const_iterator end = mRefreshMethods.end();
+
+  for (; it != end; ++it)
+    (**it)();
+
+  if (mMissingData)
+    {
+      if (residuals)
+        for (; pDataDependent != pEnd; pDataDependent++, ppDependentValues++, residuals++)
+          {
+            if (isnan(*pDataDependent)) continue;
+
+            // TODO CRITICAL What if *pDataDependent == 0?
+            *residuals = (*pDataDependent - **ppDependentValues) / *pDataDependent;
+            s += *residuals * *residuals;
+          }
+      else
+        for (; pDataDependent != pEnd; pDataDependent++, ppDependentValues++)
+          {
+            if (isnan(*pDataDependent)) continue;
+
+            // TODO CRITICAL What if *pDataDependent == 0?
+            Residual = (*pDataDependent - **ppDependentValues) / *pDataDependent;
+            s += Residual * Residual;
+          }
+    }
+  else
+    {
+      if (residuals)
+        for (; pDataDependent != pEnd; pDataDependent++, ppDependentValues++, residuals++)
+          {
+            // TODO CRITICAL What if *pDataDependent == 0?
+            *residuals = (*pDataDependent - **ppDependentValues) / *pDataDependent;
+            s += *residuals * *residuals;
+          }
+      else
+        for (; pDataDependent != pEnd; pDataDependent++, ppDependentValues++)
+          {
+            // TODO CRITICAL What if *pDataDependent == 0?
+            Residual = (*pDataDependent - **ppDependentValues) / *pDataDependent;
+            s += Residual * Residual;
+          }
+    }
+
+  return s;
+}
+
+C_FLOAT64 CExperiment::sumOfSquaresWithValueWeightsStore(const size_t & index,
+    C_FLOAT64 *& dependentValues)
+{
+  if (index == 0)
+    mpDataDependentCalculated = dependentValues;
+
+  C_FLOAT64 Residual;
+  C_FLOAT64 s = 0.0;
+
+  C_FLOAT64 const * pDataDependent = mDataDependent[index];
+  C_FLOAT64 const * pEnd = pDataDependent + mDataDependent.numCols();
+  C_FLOAT64 * const * ppDependentValues = mDependentValues.array();
+
+  std::vector< Refresh * >::const_iterator it = mRefreshMethods.begin();
+  std::vector< Refresh * >::const_iterator end = mRefreshMethods.end();
+
+  for (; it != end; ++it)
+    (**it)();
+
+  if (mMissingData)
+    {
+      for (; pDataDependent != pEnd; pDataDependent++, ppDependentValues++, dependentValues++)
+        {
+          *dependentValues = **ppDependentValues;
+
+          if (isnan(*pDataDependent)) continue;
+
+          // TODO CRITICAL What if *pDataDependent == 0?
+          Residual = (*pDataDependent - *dependentValues) / *pDataDependent;
+          s += Residual * Residual;
+        }
+    }
+  else
+    {
+      for (; pDataDependent != pEnd; pDataDependent++, ppDependentValues++, dependentValues++)
+        {
+          *dependentValues = **ppDependentValues;
+          // TODO CRITICAL What if *pDataDependent == 0?
+          Residual = (*pDataDependent - *dependentValues) / *pDataDependent;
           s += Residual * Residual;
         }
     }
@@ -564,7 +714,16 @@ bool CExperiment::calculateStatistics()
     {
       for (j = 0; j < numCols; j++, pDataDependentCalculated++, pDataDependent++)
         {
-          Residual = mWeight[j] * (*pDataDependentCalculated - *pDataDependent);
+          switch (*mpWeightMethod)
+            {
+              case VALUE_SCALING:
+                Residual = (*pDataDependentCalculated - *pDataDependent) / *pDataDependent;
+                break;
+
+              default:
+                Residual = (*pDataDependentCalculated - *pDataDependent) * mWeight[j];
+                break;
+            }
 
           if (isnan(Residual)) continue;
 
@@ -617,7 +776,16 @@ bool CExperiment::calculateStatistics()
     {
       for (j = 0; j < numCols; j++, pDataDependentCalculated++, pDataDependent++)
         {
-          Residual = mMean - mWeight[j] * (*pDataDependentCalculated - *pDataDependent);
+          switch (*mpWeightMethod)
+            {
+              case VALUE_SCALING:
+                Residual = mMean - (*pDataDependentCalculated - *pDataDependent) / *pDataDependent;
+                break;
+
+              default:
+                Residual = mMean - (*pDataDependentCalculated - *pDataDependent) * mWeight[j];
+                break;
+            }
 
           if (isnan(Residual)) continue;
 
@@ -1020,16 +1188,23 @@ bool CExperiment::calculateWeights()
           case MEAN_SQUARE:
             DefaultWeight = MeanSquares[i];
             break;
+
+          case VALUE_SCALING:
+            DefaultWeight = 0.0;
+            break;
         }
 
       if (DefaultWeight < MinWeight) MinWeight = DefaultWeight;
     }
 
-  // We have to calculate the default weights
-  for (i = 0; i < DependentCount; i++)
-    mDefaultWeight[i] =
-      (MinWeight + sqrt(std::numeric_limits< C_FLOAT64 >::epsilon()))
-      / (mDefaultWeight[i] + sqrt(std::numeric_limits< C_FLOAT64 >::epsilon()));
+  if (*mpWeightMethod != VALUE_SCALING)
+    {
+      // We have to calculate the default weights
+      for (i = 0; i < DependentCount; i++)
+        mDefaultWeight[i] =
+          (MinWeight + sqrt(std::numeric_limits< C_FLOAT64 >::epsilon()))
+          / (mDefaultWeight[i] + sqrt(std::numeric_limits< C_FLOAT64 >::epsilon()));
+    }
 
   return true;
 }
