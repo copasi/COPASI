@@ -2,10 +2,10 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/curve2dwidget.ui,v $ </comment>
-<comment>   $Revision: 1.11 $ </comment>
+<comment>   $Revision: 1.12 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2012/03/15 17:04:47 $ </comment>
+<comment>   $Date: 2012/05/03 13:49:09 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -171,6 +171,11 @@
        <item>
         <property name="text">
          <string>symbols</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>lines &amp; symbols</string>
         </property>
        </item>
       </widget>
