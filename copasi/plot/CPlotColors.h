@@ -27,7 +27,7 @@ class CPlotColors
 {
 public:
   static std::string getCopasiColorStr(size_t index);
-
+  static size_t getNumCopasiColors();
 private:
 };
 

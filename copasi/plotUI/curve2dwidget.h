@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/curve2dwidget.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/15 17:04:47 $
+//   $Author: ssahle $
+//   $Date: 2012/05/03 14:25:48 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,6 +41,7 @@ protected slots:
 
   virtual void buttonPressedX();
   virtual void buttonPressedY();
+  virtual void typeChanged(int linetype);
 };
 
 #endif // CURVE2DWIDGET_H

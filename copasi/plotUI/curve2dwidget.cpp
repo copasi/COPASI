@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/curve2dwidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/15 17:04:48 $
+//   $Author: ssahle $
+//   $Date: 2012/05/03 14:25:48 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,6 +11,7 @@
 // of Manchester.
 // All rights reserved.
 
+#include <qpainter.h>
 #include "curve2dwidget.h"
 
 #include "UI/CCopasiSelectionDialog.h"
@@ -20,6 +21,7 @@
 
 #include "report/CCopasiRootContainer.h"
 #include "plot/CPlotItem.h"
+#include "CQPlotColors.h"
 #include "resourcesUI/CQIconResource.h"
 
 /*
@@ -74,10 +76,88 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
 
   const void* tmp;
 
+  //Type
   if (!(tmp = curve->getValue("Line type").pVOID)) return false;
 
-  mpBoxType->setCurrentIndex(*(unsigned C_INT32*)tmp);
+  unsigned C_INT32 linetype = *(unsigned C_INT32*)tmp;
+  mpBoxType->setCurrentIndex(linetype);
 
+  typeChanged(linetype);
+
+  //line subtype & width
+  if (linetype == 0 || linetype == 3)
+    {
+      if (!(tmp = curve->getValue("Line subtype").pVOID)) return false;
+
+      mpBoxLineSubType->setCurrentIndex(*(unsigned C_INT32*)tmp);
+
+      //mpBoxWidth
+      if (!(tmp = curve->getValue("Line width").pVOID)) return false;
+
+      mpSpinBoxWidth->setValue(*(C_FLOAT64*)tmp);
+    }
+
+  //symbol type
+  if (linetype == 2 || linetype == 3)
+    {
+      if (!(tmp = curve->getValue("Symbol subtype").pVOID)) return false;
+
+      mpBoxSymbolSubType->setCurrentIndex(*(unsigned C_INT32*)tmp);
+    }
+
+  //color TODO
+  mpBoxColor->clear();
+  mpBoxColor->addItem("auto");
+  size_t i;
+
+  for (i = 0; i < CQPlotColors::getNumCopasiColors(); ++i)
+    {
+      QColor color = CQPlotColors::getColor("auto", i);
+      QPixmap pix(12, 12);
+      QPainter painter(&pix);
+
+      if (color.isValid())
+        {
+          painter.setPen(Qt::gray);
+          painter.setBrush(QBrush(color));
+          painter.drawRect(0, 0, 12, 12);
+        }
+
+      QIcon icon;
+      icon.addPixmap(pix);
+
+      mpBoxColor->addItem(icon, CQPlotColors::getCopasiColorStr(i).c_str());
+    }
+
+  if (!(tmp = curve->getValue("Color").pVOID)) return false;
+
+  std::string colorstr = *(std::string*)tmp;
+  int tmpindex;
+
+  if ((tmpindex = mpBoxColor->findText(colorstr.c_str())) != -1)
+    mpBoxColor->setCurrentIndex(tmpindex);
+  else
+    {
+      QColor color = QColor(colorstr.c_str());
+      QPixmap pix(12, 12);
+      QPainter painter(&pix);
+
+      if (color.isValid())
+        {
+          painter.setPen(Qt::gray);
+          painter.setBrush(QBrush(color));
+          painter.drawRect(0, 0, 12, 12);
+        }
+
+      QIcon icon;
+      icon.addPixmap(pix);
+
+      mpBoxColor->addItem(icon, colorstr.c_str());
+      mpBoxColor->setCurrentIndex(mpBoxColor->count() - 1);
+    }
+
+
+  //channel
   mpCheckBefore->setChecked(curve->getActivity() & COutputInterface::BEFORE);
   mpCheckDuring->setChecked(curve->getActivity() & COutputInterface::DURING);
   mpCheckAfter->setChecked(curve->getActivity() & COutputInterface::AFTER);
@@ -98,6 +178,12 @@ bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve) const
   curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectY ? mpObjectY->getCN() : CCopasiObjectName("")));
 
   curve->setValue("Line type", (unsigned C_INT32)mpBoxType->currentIndex());
+  curve->setValue("Line subtype", (unsigned C_INT32)mpBoxLineSubType->currentIndex());
+  curve->setValue("Symbol subtype", (unsigned C_INT32)mpBoxSymbolSubType->currentIndex());
+  curve->setValue("Line width", (C_FLOAT64)mpSpinBoxWidth->value());
+
+  //color
+  curve->setValue("Color", std::string(TO_UTF8(mpBoxColor->currentText())));
 
   C_INT32 Activity = 0;
 
@@ -157,6 +243,34 @@ void Curve2DWidget::buttonPressedY()
   else
     mpEditY->setText("");
 }
+
+void Curve2DWidget::typeChanged(int linetype)
+{
+  if (linetype == 0 || linetype == 3)
+    {
+      mpBoxLineSubType->show();
+      mpSpinBoxWidth->show();
+      mpLblWidth->show();
+    }
+  else
+    {
+      mpBoxLineSubType->hide();
+      mpSpinBoxWidth->hide();
+      mpLblWidth->hide();
+    }
+
+  //symbol type
+  if (linetype == 2 || linetype == 3)
+    {
+      mpBoxSymbolSubType->show();
+    }
+  else
+    {
+      mpBoxSymbolSubType->hide();
+    }
+
+}
+
 
 void Curve2DWidget::setModel(const CModel * model)
 {

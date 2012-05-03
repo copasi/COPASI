@@ -32,6 +32,12 @@ std::string CPlotColors::getCopasiColorStr(size_t index)
   return "auto";
 }
 
+//static
+size_t CPlotColors::getNumCopasiColors()
+{
+  return 6;
+}
+
 
 
 //QColor curveColours[6] = {QColor(255, 0, 0), QColor(0, 0, 255), QColor(0, 230, 0), QColor(0, 190, 240), QColor(240, 0, 255), QColor(240, 200, 0)} ; //TODO
