@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.263 $
+#   $Revision: 1.264 $
 #   $Name:  $
-#   $Author: shoops $
-#   $Date: 2012/04/20 16:26:55 $
+#   $Author: ssahle $
+#   $Date: 2012/05/03 14:48:35 $
 # End CVS Header
 
 # Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.263 $ $Author: shoops $ $Date: 2012/04/20 16:26:55 $
+# $Revision: 1.264 $ $Author: ssahle $ $Date: 2012/05/03 14:48:35 $
 ######################################################################
 
 LIB = UI
@@ -102,6 +102,7 @@ HEADERS	+= \
   CScanWidgetTask.h \
   DefaultplotDialog.h \
   FunctionWidget1.h \
+  objectdebug.h \
   SensitivitiesWidget.h \
   SliderSettingsDialog.h \
   StateSubwidget.h \
@@ -251,6 +252,7 @@ SOURCES	+= \
   CUpDownSubwidget.cpp \
   DefaultplotDialog.cpp \
   FunctionWidget1.cpp \
+  objectdebug.cpp \
   SensitivitiesWidget.cpp \
   SliderSettingsDialog.cpp \
   StateSubwidget.cpp \
@@ -390,6 +392,7 @@ FORMS += CScanWidgetTask.ui
 FORMS += CUpDownSubwidget.ui
 FORMS += DefaultplotDialog.ui
 FORMS += FunctionWidget1.ui
+FORMS += objectdebug.ui
 FORMS += SensitivitiesWidget.ui
 FORMS += SliderSettingsDialog.ui
 FORMS += StateSubwidget.ui
