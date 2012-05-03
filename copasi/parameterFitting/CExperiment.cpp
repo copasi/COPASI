@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.79 $
+//   $Revision: 1.80 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/01 16:39:29 $
+//   $Date: 2012/05/03 14:22:29 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1562,6 +1562,26 @@ CFittingPoint::CFittingPoint(const CFittingPoint & src,
 {initObjects();}
 
 CFittingPoint::~CFittingPoint() {}
+
+// virtual
+std::string CFittingPoint::getObjectDisplayName(bool regular, bool richtext) const
+{
+  const CCopasiDataModel * pDataModel = this->getObjectDataModel();
+
+  if (pDataModel == NULL)
+    {
+      return CCopasiContainer::getObjectDisplayName(regular, richtext);
+    }
+
+  const CCopasiObject * pObject = dynamic_cast< const CCopasiObject * >(pDataModel->getObject(this->getObjectName()));
+
+  if (pObject == NULL)
+    {
+      return CCopasiContainer::getObjectDisplayName(regular, richtext);
+    }
+
+  return pObject->getObjectDisplayName(regular, richtext);
+}
 
 void CFittingPoint::setValues(const C_FLOAT64 & independent,
                               const C_FLOAT64 & measured,

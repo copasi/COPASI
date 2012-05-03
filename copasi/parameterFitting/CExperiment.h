@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/01 16:39:29 $
+//   $Date: 2012/05/03 14:22:29 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,6 +44,8 @@ public:
                 const CCopasiContainer * pParent = NULL);
 
   ~CFittingPoint();
+
+  virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
 
   void setValues(const C_FLOAT64 & independent,
                  const C_FLOAT64 & measured,
