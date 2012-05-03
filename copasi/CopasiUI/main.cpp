@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-//   $Revision: 1.48 $
+//   $Revision: 1.49 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/19 21:20:52 $
+//   $Author: ssahle $
+//   $Date: 2012/05/03 14:50:01 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,7 @@
 #include "copasi.h"
 
 #include "UI/CQCopasiApplication.h"
+//#include "UI/objectdebug.h"
 #include "UI/copasiui3window.h"
 #include "UI/DataModelGUI.h"
 #include "UI/CQMessageBox.h"
@@ -93,6 +94,10 @@ int main(int argc, char *argv[])
 
   if (pWindow != NULL)
     {
+      // ObjectDebug objwindow;
+      // objwindow.show();
+
+
       a.setMainWindow(pWindow);
       a.exec();
     }
