@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/03 21:08:21 $
+//   $Date: 2012/05/04 19:36:08 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -493,11 +493,11 @@ public:
   C_FLOAT64 getObjectiveValue(CCopasiObject * const& pObject) const;
 
   /**
-   * Retrieve the default weight for the object.
+   * Retrieve the default scaling factor for the object.
    * @param CCopasiObject *const& pObject
-   * @return C_FLOAT64 weight
+   * @return C_FLOAT64 defaultScale
    */
-  C_FLOAT64 getDefaultWeight(const CCopasiObject * const& pObject) const;
+  C_FLOAT64 getDefaultScale(const CCopasiObject * const& pObject) const;
 
   /**
    * Retrieve the RMS for the object.
@@ -542,57 +542,7 @@ private:
    */
   void initializeParameter();
 
-  /**
-   * Calculate the sum of squares for the indexed row of the experiment
-   * with column weights.
-   * If residuals is not NULL residuals will contain the differences
-   * between the calculated and the experiment values.
-   * @param const size_t & index
-   * @param C_FLOAT64 *& residuals (may be NULL)
-   * @return C_FLOAT64 sumOfSquares
-   */
-  C_FLOAT64 sumOfSquaresWithColumnWeights(const size_t & index,
-                                          C_FLOAT64 *& residuals) const;
-
-
-  /**
-   * Calculate the sum of squares for the indexed row of the experiment
-   * with column weights.
-   * On return dependentValues contains the calculated values. If
-   * residuals is not NULL residuals will contain the differences
-   * between the calculated and the experiment values.
-   * @param const size_t & index
-   * @param C_FLOAT64 *& dependentValues (must not be NULL)
-   * @return C_FLOAT64 sumOfSquares
-   */
-  C_FLOAT64 sumOfSquaresWithColumnWeightsStore(const size_t & index,
-      C_FLOAT64 *& dependentValues);
-  /**
-   * Calculate the sum of squares for the indexed row of the experiment
-   * with each value individually weighted.
-   * If residuals is not NULL residuals will contain the differences
-   * between the calculated and the experiment values.
-   * @param const size_t & index
-   * @param C_FLOAT64 *& residuals (may be NULL)
-   * @return C_FLOAT64 sumOfSquares
-   */
-  C_FLOAT64 sumOfSquaresWithValueWeights(const size_t & index,
-                                         C_FLOAT64 *& residuals) const;
-
-
-  /**
-   * Calculate the sum of squares for the indexed row of the experiment
-   * with each value individually weighted.
-   * On return dependentValues contains the calculated values. If
-   * residuals is not NULL residuals will contain the differences
-   * between the calculated and the experiment values.
-   * @param const size_t & index
-   * @param C_FLOAT64 *& dependentValues (must not be NULL)
-   * @return C_FLOAT64 sumOfSquares
-   */
-  C_FLOAT64 sumOfSquaresWithValueWeightsStore(const size_t & index,
-      C_FLOAT64 *& dependentValues);
-
+  void initializeScalingMatrix();
 
 private:
   // Attributes
@@ -678,15 +628,20 @@ private:
   CMatrix< C_FLOAT64 > mDataDependent;
 
   /**
+   * The individual scale for each residual
+   */
+  CMatrix< C_FLOAT64 > mScale;
+
+  /**
    * Indicates whether we have missing data
    */
   bool mMissingData;
 
   CVector< C_FLOAT64 > mMeans;
 
-  CVector< C_FLOAT64 > mWeight;
+  CVector< C_FLOAT64 > mColumnScale;
 
-  CVector< C_FLOAT64 > mDefaultWeight;
+  CVector< C_FLOAT64 > mDefaultColumnScale;
 
   CVector< C_FLOAT64 * > mDependentValues;
 

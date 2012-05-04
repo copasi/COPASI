@@ -2,10 +2,10 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.ui,v $ </comment>
-<comment>   $Revision: 1.17 $ </comment>
+<comment>   $Revision: 1.18 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2012/03/15 17:07:54 $ </comment>
+<comment>   $Date: 2012/05/04 19:36:07 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -461,7 +461,7 @@
     </widget>
    </item>
    <item row="8" column="3">
-    <widget class="QLabel" name="mpLblSeperator">
+    <widget class="QLabel" name="mpLblSeparator">
      <property name="minimumSize">
       <size>
        <width>0</width>

@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
-$Revision: 1.22 $
+$Revision: 1.23 $
 $Name:  $
-$Author: ssahle $
-$Date: 2012/04/22 14:54:54 $
+$Author: shoops $
+$Date: 2012/05/04 19:36:08 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -188,36 +188,36 @@ std::string CExperimentObjectMap::getObjectCN(const size_t & index) const
     return "";
 }
 
-bool CExperimentObjectMap::setWeight(const size_t & index,
-                                     const C_FLOAT64 & weight)
+bool CExperimentObjectMap::setScale(const size_t & index,
+                                    const C_FLOAT64 & weight)
 {
   CDataColumn * pColumn =
     dynamic_cast< CDataColumn * >(getGroup(StringPrint("%d", index)));
 
   if (pColumn)
-    return pColumn->setWeight(weight);
+    return pColumn->setScale(weight);
   else
     return false;
 }
 
-C_FLOAT64 CExperimentObjectMap::getWeight(const size_t & index) const
+C_FLOAT64 CExperimentObjectMap::getScale(const size_t & index) const
 {
   const CDataColumn * pColumn =
     dynamic_cast< const CDataColumn * >(getGroup(StringPrint("%d", index)));
 
   if (pColumn)
-    return pColumn->getWeight();
+    return pColumn->getScale();
   else
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 }
 
-C_FLOAT64 CExperimentObjectMap::getDefaultWeight(const size_t & index) const
+C_FLOAT64 CExperimentObjectMap::getDefaultScale(const size_t & index) const
 {
   const CDataColumn * pColumn =
     dynamic_cast< const CDataColumn * >(getGroup(StringPrint("%d", index)));
 
   if (pColumn)
-    return pColumn->getDefaultWeight();
+    return pColumn->getDefaultScale();
   else
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 }
@@ -278,7 +278,7 @@ CExperimentObjectMap::CDataColumn::CDataColumn(const std::string & name,
     CCopasiParameterGroup(name, pParent),
     mpRole(NULL),
     mpObjectCN(NULL),
-    mpWeight(NULL)
+    mpScale(NULL)
 {
   initializeParameter();
 }
@@ -288,7 +288,7 @@ CExperimentObjectMap::CDataColumn::CDataColumn(const CDataColumn & src,
     CCopasiParameterGroup(src, pParent),
     mpRole(NULL),
     mpObjectCN(NULL),
-    mpWeight(NULL)
+    mpScale(NULL)
 {
   initializeParameter();
 }
@@ -298,7 +298,7 @@ CExperimentObjectMap::CDataColumn::CDataColumn(const CCopasiParameterGroup & gro
     CCopasiParameterGroup(group, pParent),
     mpRole(NULL),
     mpObjectCN(NULL),
-    mpWeight(NULL)
+    mpScale(NULL)
 {
   initializeParameter();
 }
@@ -319,7 +319,7 @@ void CExperimentObjectMap::CDataColumn::initializeParameter()
   pParm = getParameter("Weight");
 
   if (pParm != NULL)
-    mpWeight = pParm->getValue().pUDOUBLE;
+    mpScale = pParm->getValue().pUDOUBLE;
 
   elevateChildren();
 }
@@ -328,7 +328,7 @@ CExperimentObjectMap::CDataColumn & CExperimentObjectMap::CDataColumn::operator 
 {
   *mpRole = *rhs.mpRole;
   setObjectCN(rhs.getObjectCN());
-  setWeight(rhs.getWeight());
+  setScale(rhs.getScale());
 
   return *this;
 }
@@ -375,46 +375,46 @@ std::string CExperimentObjectMap::CDataColumn::getObjectCN() const
     return "";
 }
 
-bool CExperimentObjectMap::CDataColumn::setWeight(const C_FLOAT64 & weight)
+bool CExperimentObjectMap::CDataColumn::setScale(const C_FLOAT64 & weight)
 {
   if (isnan(weight))
     {
-      if (mpWeight != NULL)
+      if (mpScale != NULL)
         {
           removeParameter("Weight");
-          mpWeight = NULL;
+          mpScale = NULL;
         }
 
       return true;
     }
 
-  C_FLOAT64 DefaultWeight = getDefaultWeight();
+  C_FLOAT64 DefaultWeight = getDefaultScale();
 
   if (weight != DefaultWeight || isnan(DefaultWeight))
     {
-      if (mpWeight != NULL)
-        *mpWeight = weight;
+      if (mpScale != NULL)
+        *mpScale = weight;
       else
-        mpWeight = assertParameter("Weight", CCopasiParameter::UDOUBLE, weight)->getValue().pUDOUBLE;
+        mpScale = assertParameter("Weight", CCopasiParameter::UDOUBLE, weight)->getValue().pUDOUBLE;
 
       return true;
     }
 
-  if (mpWeight != NULL)
+  if (mpScale != NULL)
     removeParameter("Weight");
 
   return true;
 }
 
-C_FLOAT64 CExperimentObjectMap::CDataColumn::getWeight() const
+C_FLOAT64 CExperimentObjectMap::CDataColumn::getScale() const
 {
-  if (mpWeight == NULL)
-    return getDefaultWeight();
+  if (mpScale == NULL)
+    return getDefaultScale();
   else
-    return *mpWeight;
+    return *mpScale;
 }
 
-C_FLOAT64 CExperimentObjectMap::CDataColumn::getDefaultWeight() const
+C_FLOAT64 CExperimentObjectMap::CDataColumn::getDefaultScale() const
 {
   if (mpObjectCN == NULL)
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -438,5 +438,5 @@ C_FLOAT64 CExperimentObjectMap::CDataColumn::getDefaultWeight() const
   if (pObject == NULL)
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-  return pExperiment->getDefaultWeight(pObject);
+  return pExperiment->getDefaultScale(pObject);
 }

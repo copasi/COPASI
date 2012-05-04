@@ -1,12 +1,12 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.h,v $
- $Revision: 1.10 $
+ $Revision: 1.11 $
  $Name:  $
  $Author: shoops $
- $Date: 2011/03/07 19:32:03 $
+ $Date: 2012/05/04 19:36:08 $
  End CVS Header */
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -113,23 +113,23 @@ public:
     std::string getObjectCN() const;
 
     /**
-     * Set the weight for the column
-     * @param const C_FLOAT64 & weight
+     * Set the scaling factor for the column
+     * @param const C_FLOAT64 & scale
      * @return bool success
      */
-    bool setWeight(const C_FLOAT64 & weight);
+    bool setScale(const C_FLOAT64 & scale);
 
     /**
-     * Retrieve the weight of the column
-     * @return C_FLOAT64 weight
+     * Retrieve the scaling factor of the column
+     * @return C_FLOAT64 scale
      */
-    C_FLOAT64 getWeight() const;
+    C_FLOAT64 getScale() const;
 
     /**
      * Retrieve the default weight of the column
-     * @return C_FLOAT64 weight
+     * @return C_FLOAT64 defaultScale
      */
-    C_FLOAT64 getDefaultWeight() const;
+    C_FLOAT64 getDefaultScale() const;
 
     // Attributes
   private:
@@ -137,7 +137,7 @@ public:
 
     CCopasiObjectName *mpObjectCN;
 
-    C_FLOAT64 *mpWeight;
+    C_FLOAT64 *mpScale;
   };
 
 public:
@@ -238,28 +238,28 @@ public:
   std::string getObjectCN(const size_t & index) const;
 
   /**
-   * Set the weight for the indexed column
+   * Set the scaling factor for the indexed column
    * @param const size_t & index
-   * @param const C_FLOAT64 & weight
+   * @param const C_FLOAT64 & scale
    * @return bool success
    */
-  bool setWeight(const size_t & index,
-                 const C_FLOAT64 & weight);
+  bool setScale(const size_t & index,
+                const C_FLOAT64 & scale);
 
   /**
-   * Retrieve the weight of the indexed column
+   * Retrieve the scaling factor of the indexed column
    * @param const size_t & index
-   * @return C_FLOAT64 weight
+   * @return C_FLOAT64 scale
    */
-  C_FLOAT64 getWeight(const size_t & index) const;
+  C_FLOAT64 getScale(const size_t & index) const;
 
   /**
-   * Retrieve the default weight according to the selected weight method
+   * Retrieve the default scaling factor according to the selected weight method
    * of the indexed column
    * @param const size_t & index
-   * @return C_FLOAT64 weight
+   * @return C_FLOAT64 defaultScale
    */
-  C_FLOAT64 getDefaultWeight(const size_t & index) const;
+  C_FLOAT64 getDefaultScale(const size_t & index) const;
 
   /**
    * Compile the map. This function must be called

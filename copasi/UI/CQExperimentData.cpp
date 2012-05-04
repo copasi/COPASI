@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.cpp,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/03 21:08:21 $
+//   $Date: 2012/05/04 19:36:07 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,7 +48,7 @@
 #define COL_BTN 3
 #define COL_OBJECT 4
 #define COL_OBJECT_HIDDEN 5
-#define COL_WEIGHT 6
+#define COL_SCALE 6
 
 #define InvalidIndex std::numeric_limits< unsigned C_INT32 >::max()
 
@@ -920,6 +920,17 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
       mOldWeightMethod = pExperiment->getWeightMethod();
       mpBoxWeightMethod->setCurrentIndex(mOldWeightMethod);
 
+      switch ((CExperiment::WeightMethod) mOldWeightMethod)
+        {
+          case CExperiment::VALUE_SCALING:
+            mpTable->horizontalHeaderItem(COL_SCALE)->setText("Epsilon");
+            break;
+
+          default:
+            mpTable->horizontalHeaderItem(COL_SCALE)->setText("Weight");
+            break;
+        }
+
       size_t Next =
         mpExperimentSetCopy->keyToIndex(pExperiment->CCopasiParameter::getKey()) + 1;
 
@@ -1200,31 +1211,25 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
       if (Type != CExperiment::dependent)
         {
           pItem = new QTableWidgetItem("");
-          mpTable->setItem((int) i, COL_WEIGHT, pItem);
+          mpTable->setItem((int) i, COL_SCALE, pItem);
           pItem->setFlags(pItem->flags() & ~Qt::ItemIsEditable);
         }
       else
         {
-          C_FLOAT64 DefaultWeight = ObjectMap.getDefaultWeight(i);
-          C_FLOAT64 Weight = ObjectMap.getWeight(i);
+          C_FLOAT64 DefaultScale = ObjectMap.getDefaultScale(i);
+          C_FLOAT64 Scale = ObjectMap.getScale(i);
 
-          QString WeightText;
+          QString ScaleText;
           Qt::ItemFlags FlagMask = Qt::NoItemFlags;
 
-          if (DefaultWeight == 0.0)
-            {
-              WeightText = "n/a";
-              FlagMask = Qt::ItemIsEditable;
-            }
-          else if ((isnan(DefaultWeight) &&
-                    isnan(Weight)) ||
-                   DefaultWeight == Weight)
-            WeightText = "(" + QString::number(DefaultWeight) + ")";
+          if ((isnan(DefaultScale) && isnan(Scale)) ||
+              DefaultScale == Scale)
+            ScaleText = "(" + QString::number(DefaultScale) + ")";
           else
-            WeightText = QString::number(Weight);
+            ScaleText = QString::number(Scale);
 
-          pItem = new QTableWidgetItem(WeightText);
-          mpTable->setItem((int) i, COL_WEIGHT, pItem);
+          pItem = new QTableWidgetItem(ScaleText);
+          mpTable->setItem((int) i, COL_SCALE, pItem);
           pItem->setFlags(pItem->flags() & ~FlagMask);
         }
     }
@@ -1333,36 +1338,29 @@ void CQExperimentData::slotTypeChanged(int row, int index)
 
       for (i = 0; i < imax; i++)
         {
-          QTableWidgetItem * pItem = mpTable->item(i, COL_WEIGHT);
+          QTableWidgetItem * pItem = mpTable->item(i, COL_SCALE);
 
-          // COL_WEIGHT
+          // COL_SCALE
           if (ObjectMap.getRole(i) != CExperiment::dependent)
             {
               pItem->setText("");
+              pItem->setFlags(pItem->flags() & ~Qt::ItemIsEditable);
             }
           else
             {
-              QString WeightText = pItem->text();
+              QString ScaleText = pItem->text();
 
               // Keep non default values
-              if (WeightText == "" || WeightText[0] == '(')
+              if (ScaleText == "" || ScaleText[0] == '(')
                 {
 
-                  C_FLOAT64 DefaultWeight = ObjectMap.getDefaultWeight(i);
+                  C_FLOAT64 DefaultWeight = ObjectMap.getDefaultScale(i);
 
-                  if (DefaultWeight != 0.0)
-                    {
-                      WeightText = "(" + QString::number(DefaultWeight) + ")";
-                      pItem->setText(WeightText);
-                      pItem->setFlags(pItem->flags() | Qt::ItemIsEditable);
-                    }
-                  else
-                    {
-                      WeightText = "n/a";
-                      pItem->setText(WeightText);
-                      pItem->setFlags(pItem->flags() & ~Qt::ItemIsEditable);
-                    }
+                  ScaleText = "(" + QString::number(DefaultWeight) + ")";
+                  pItem->setText(ScaleText);
                 }
+
+              pItem->setFlags(pItem->flags() | Qt::ItemIsEditable);
             }
         }
     }
@@ -1417,17 +1415,17 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
           Changed = true;
         }
 
-      QString WeightText = mpTable->item((int) i, COL_WEIGHT)->text();
+      QString ScaleText = mpTable->item((int) i, COL_SCALE)->text();
 
       // Empty fields are treated as default.
-      if (WeightText == "")
-        WeightText = QString::number(std::numeric_limits<C_FLOAT64>::quiet_NaN());
+      if (ScaleText == "")
+        ScaleText = QString::number(std::numeric_limits<C_FLOAT64>::quiet_NaN());
 
       if (Type == CExperiment::dependent &&
-          WeightText[0] != '(' &&
-          QString::number(MasterObjectMap.getWeight(i)) != WeightText)
+          ScaleText[0] != '(' &&
+          QString::number(MasterObjectMap.getScale(i)) != ScaleText)
         {
-          ObjectMap.setWeight(i, WeightText.toDouble());
+          ObjectMap.setScale(i, ScaleText.toDouble());
           Changed = true;
         }
     }
@@ -1604,6 +1602,17 @@ void CQExperimentData::slotWeightMethod(int weightMethod)
 
   if ((CExperiment::WeightMethod) weightMethod ==
       mpExperiment->getWeightMethod()) return;
+
+  switch ((CExperiment::WeightMethod) weightMethod)
+    {
+      case CExperiment::VALUE_SCALING:
+        mpTable->horizontalHeaderItem(COL_SCALE)->setText("Epsilon");
+        break;
+
+      default:
+        mpTable->horizontalHeaderItem(COL_SCALE)->setText("Weight");
+        break;
+    }
 
   size_t Current =
     mpExperimentSetCopy->keyToIndex(mpExperiment->CCopasiParameter::getKey());
