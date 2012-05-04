@@ -517,6 +517,11 @@
       </element>
     </optional>
     <optional>
+      <element name="ListOfModelParameterSets">
+        <ref name="listOfModelParameterSets.datatype"/>
+      </element>
+    </optional>
+    <optional>
       <element name="StateTemplate">
         <zeroOrMore>
           <element name="StateTemplateVariable">
@@ -539,11 +544,6 @@
             <data type="double"/>
           </zeroOrMore>
         </list>
-      </element>
-    </optional>
-    <optional>
-      <element name="ListOfModelParameterSets">
-        <ref name="listOfModelParameterSets.datatype"/>
       </element>
     </optional>
   </define>
