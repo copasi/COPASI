@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanContainerWidget.h,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/12/22 19:51:57 $
+//   $Author: ssahle $
+//   $Date: 2012/05/04 14:06:59 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,6 +24,8 @@
 #define CCONTAINERWIDGET_H
 
 #include <QtGui/QTableWidget>
+#include <vector>
+
 /**
  *  This widget is a table that contains other widgets (arranged vertically)
  *  it adds buttons to delete, move up or down the widgets
