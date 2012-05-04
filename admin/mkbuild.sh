@@ -4,7 +4,7 @@ PATH=$PATH:/bin:/usr/bin:/usr/local/bin
 
 SCP=${COPASI_SCP:-scp}
 AWK=${COPASI_AWK:-gawk}
-
+SORT=${COPASI_SORT:-sort}
 PACKAGE=${COPASI_PACKAGE:-$1}
 
 if [ x"$COPASI_UPLOAD" != x ]; then
@@ -29,7 +29,7 @@ if [ x"$#" = x1 ]; then
   major=`${AWK} -- '$2 ~ "VERSION_MAJOR" {print $3}' copasi/copasiversion.h`
   minor=`${AWK} -- '$2 ~ "VERSION_MINOR" {print $3}' copasi/copasiversion.h`
   build=`${AWK} -- '$2 ~ "VERSION_BUILD" {print $3}' copasi/copasiversion.h`
-  comment=`${AWK} -- '$3 ~ "VERSION_COMMENT" {print $4}' copasi/copasiversion.h | sort -u`
+  comment=`${AWK} -- '$3 ~ "VERSION_COMMENT" {print $4}' copasi/copasiversion.h | ${SORT} -u`
   buildname=${build}
 
   if [ x"${comment}" = x\"Snapshot\" ]; then
@@ -39,6 +39,9 @@ if [ x"$#" = x1 ]; then
     [ ${#build} = 1 ] && buildname=${buildname}0
     buildname=${buildname}${build}
   fi
+
+echo ${comment}
+return
 
   license="US"
 
