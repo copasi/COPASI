@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/07 17:14:42 $
+//   $Date: 2012/05/04 15:06:20 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -554,6 +554,9 @@ private:
 #endif /* USE_CRENDER_EXTENSION */
 
   // Attributes
+
+  static const std::string CVSDate;
+  static const std::string CVSRevision;
 
   /**
    * The version of the COPASI XML Schema the current file adheres to.

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.141 $
+//   $Revision: 1.142 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/02 17:45:53 $
+//   $Date: 2012/05/04 15:06:20 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -94,6 +94,13 @@
 // class CCopasiTask;
 // class CCopasiReport;
 
+// static
+const std::string CCopasiXML::CVSDate = "$Date: 2012/05/04 15:06:20 $";
+
+// static
+const std::string CCopasiXML::CVSRevision = "$Revision: 1.142 $";
+
+// static
 CCopasiXML::CCopasiXML():
     CCopasiXMLInterface(),
     mpModel(NULL),
@@ -105,10 +112,11 @@ CCopasiXML::CCopasiXML():
     mpLayoutList(NULL),
     mMCXML21Issued(false)
 {
-  mVersion.setVersion(COPASI_XML_VERSION_MAJOR,
-                      COPASI_XML_VERSION_MINOR,
-                      COPASI_XML_VERSION_BUILD,
-                      COPASI_XML_VERSION_COMMENT);
+  C_INT32 major = strToInt(CVSDate.substr(7, 4).c_str());
+  C_INT32 minor = strToInt(CVSDate.substr(12, 2).c_str());
+  C_INT32 devel = strToInt(CVSDate.substr(15, 2).c_str());
+
+  mVersion.setVersion(major, minor, devel, CVSRevision.substr(1, CVSRevision.length() - 3));
 }
 
 CCopasiXML::~CCopasiXML() {}
@@ -247,7 +255,7 @@ bool CCopasiXML::load(std::istream & is,
       pdelete(mpLayoutList);
     }
 
-  if (FileVersion.getVersionDevel() > mVersion.getVersionDevel())
+  if (mVersion < FileVersion)
     CCopasiMessage(CCopasiMessage::WARNING, MCXML + 9,
                    mFilename.c_str(), FileVersion.getVersion().c_str());
 
