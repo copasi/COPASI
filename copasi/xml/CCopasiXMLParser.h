@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.75 $
+//   $Revision: 1.76 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/07 17:14:42 $
+//   $Date: 2012/05/04 16:10:53 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1817,9 +1817,9 @@ private:
       ListOfModelValues,
       ListOfReactions,
       ListOfEvents,
+      ListOfModelParameterSets,
       StateTemplate,
-      InitialState,
-      ListOfModelParameterSets
+      InitialState
     };
 
     /**

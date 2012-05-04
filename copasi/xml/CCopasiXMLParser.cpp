@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.240 $
+//   $Revision: 1.241 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/05/02 23:50:01 $
+//   $Author: shoops $
+//   $Date: 2012/05/04 16:10:53 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1726,6 +1726,16 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
 
         break;
 
+      case ListOfModelParameterSets:
+
+        if (!strcmp(pszName, "ListOfModelParameterSets"))
+          {
+            mpCurrentHandler = new ListOfModelParameterSetsElement(mParser, mCommon);
+            mLastKnownElement = mCurrentElement;
+          }
+
+        break;
+
       case StateTemplate:
 
         if (!strcmp(pszName, "StateTemplate"))
@@ -1741,16 +1751,6 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         if (!strcmp(pszName, "InitialState"))
           {
             mpCurrentHandler = new InitialStateElement(mParser, mCommon);
-            mLastKnownElement = mCurrentElement;
-          }
-
-        break;
-
-      case ListOfModelParameterSets:
-
-        if (!strcmp(pszName, "ListOfModelParameterSets"))
-          {
-            mpCurrentHandler = new ListOfModelParameterSetsElement(mParser, mCommon);
             mLastKnownElement = mCurrentElement;
           }
 
@@ -1876,6 +1876,16 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
         deleteCurrentHandler();
         break;
 
+      case ListOfModelParameterSets:
+
+        if (strcmp(pszName, "ListOfModelParameterSets"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfModelParameterSets", mParser.getCurrentLineNumber());
+
+        deleteCurrentHandler();
+        mCurrentElement = Model; // This is possibly the last element.
+        break;
+
       case StateTemplate:
 
         if (strcmp(pszName, "StateTemplate"))
@@ -1892,21 +1902,12 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
                          pszName, "InitialState", mParser.getCurrentLineNumber());
 
         deleteCurrentHandler();
-        mCurrentElement = Model;
-        break;
-
-      case ListOfModelParameterSets:
-
-        if (strcmp(pszName, "ListOfModelParameterSets"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "ListOfModelParameterSets", mParser.getCurrentLineNumber());
-
-        deleteCurrentHandler();
-        mCurrentElement = Model;
+        mCurrentElement = Model; // This is possibly the last element.
         break;
 
       case UNKNOWN_ELEMENT:
         mCurrentElement = mLastKnownElement;
+        mCurrentElement = Model; // This is possibly the last element.
         break;
 
       default:
