@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.142 $
+//   $Revision: 1.143 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/04 15:06:20 $
+//   $Date: 2012/05/04 16:10:00 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,10 +95,10 @@
 // class CCopasiReport;
 
 // static
-const std::string CCopasiXML::CVSDate = "$Date: 2012/05/04 15:06:20 $";
+const std::string CCopasiXML::CVSDate = "$Date: 2012/05/04 16:10:00 $";
 
 // static
-const std::string CCopasiXML::CVSRevision = "$Revision: 1.142 $";
+const std::string CCopasiXML::CVSRevision = "$Revision: 1.143 $";
 
 // static
 CCopasiXML::CCopasiXML():
@@ -906,41 +906,6 @@ bool CCopasiXML::saveModel()
       endSaveElement("ListOfEvents");
     }
 
-  startSaveElement("StateTemplate");
-
-  Attributes.erase();
-  // This is now optional.
-  // Attributes.add("key", "");
-  Attributes.add("objectReference", "");
-  std::pair< std::string, std::string > Variable;
-
-  CModelEntity *const* ppEntity = mpModel->getStateTemplate().getEntities();
-  CModelEntity *const* ppEntityEnd = ppEntity + mpModel->getStateTemplate().size();
-
-  for (; ppEntity != ppEntityEnd; ++ppEntity)
-    {
-      Attributes.setValue(0, (*ppEntity)->getKey());
-
-      saveElement("StateTemplateVariable", Attributes);
-    }
-
-  endSaveElement("StateTemplate");
-
-  Attributes.erase();
-  Attributes.add("type", "initialState");
-  startSaveElement("InitialState", Attributes);
-  *mpOstream << mIndent;
-  ppEntity = mpModel->getStateTemplate().getEntities();
-
-  for (; ppEntity != ppEntityEnd; ++ppEntity)
-    {
-      *mpOstream << (DBL)(*ppEntity)->getInitialValue() << " ";
-    }
-
-  *mpOstream << std::endl;
-
-  endSaveElement("InitialState");
-
 #ifdef COPASI_PARAMETER_SETS
 
   // Save the model parameter sets
@@ -993,6 +958,40 @@ bool CCopasiXML::saveModel()
     }
 
 #endif // COPASI_PARAMETER_SETS
+  startSaveElement("StateTemplate");
+
+  Attributes.erase();
+  // This is now optional.
+  // Attributes.add("key", "");
+  Attributes.add("objectReference", "");
+  std::pair< std::string, std::string > Variable;
+
+  CModelEntity *const* ppEntity = mpModel->getStateTemplate().getEntities();
+  CModelEntity *const* ppEntityEnd = ppEntity + mpModel->getStateTemplate().size();
+
+  for (; ppEntity != ppEntityEnd; ++ppEntity)
+    {
+      Attributes.setValue(0, (*ppEntity)->getKey());
+
+      saveElement("StateTemplateVariable", Attributes);
+    }
+
+  endSaveElement("StateTemplate");
+
+  Attributes.erase();
+  Attributes.add("type", "initialState");
+  startSaveElement("InitialState", Attributes);
+  *mpOstream << mIndent;
+  ppEntity = mpModel->getStateTemplate().getEntities();
+
+  for (; ppEntity != ppEntityEnd; ++ppEntity)
+    {
+      *mpOstream << (DBL)(*ppEntity)->getInitialValue() << " ";
+    }
+
+  *mpOstream << std::endl;
+
+  endSaveElement("InitialState");
 
   endSaveElement("Model");
 
