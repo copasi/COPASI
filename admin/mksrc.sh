@@ -20,7 +20,8 @@ fi
 major=`gawk -- '$2 ~ "VERSION_MAJOR" {print $3}' copasi/copasiversion.h`
 minor=`gawk -- '$2 ~ "VERSION_MINOR" {print $3}' copasi/copasiversion.h`
 build=`gawk -- '$2 ~ "VERSION_BUILD" {print $3}' copasi/copasiversion.h`
-comment=`gawk -- '$2 ~ "VERSION_COMMENT" {print $3}' copasi/copasiversion.h`
+comment=`gawk -- '$3 ~ "VERSION_COMMENT" {print $4}' copasi/copasiversion.h | sort -u`
+
 buildname=${build}
 
 if [ x"${comment}" = x\"Snapshot\" ]; then
