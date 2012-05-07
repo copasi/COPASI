@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000067.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/23 12:42:55 $
+//   $Author: shoops $
+//   $Date: 2012/05/07 12:03:37 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -557,7 +557,7 @@ const char* test000067::MODEL_STRING1 =
   "            <Parameter name=\"First Row\" type=\"unsignedInteger\" value=\"1\"/>\n"
   "            <Parameter name=\"Last Row\" type=\"unsignedInteger\" value=\"93\"/>\n"
   "            <Parameter name=\"Experiment Type\" type=\"unsignedInteger\" value=\"1\"/>\n"
-  "            <Parameter name=\"Seperator\" type=\"string\" value=\"&#x09;\"/>\n"
+  "            <Parameter name=\"Separator\" type=\"string\" value=\"&#x09;\"/>\n"
   "            <Parameter name=\"Weight Method\" type=\"unsignedInteger\" value=\"2\"/>\n"
   "            <Parameter name=\"Data is Row Oriented\" type=\"bool\" value=\"1\"/>\n"
   "            <Parameter name=\"Row containing Names\" type=\"unsignedInteger\" value=\"1\"/>\n"
