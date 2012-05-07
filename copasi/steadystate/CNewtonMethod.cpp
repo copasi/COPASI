@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.100 $
+//   $Revision: 1.101 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/19 15:15:09 $
+//   $Date: 2012/05/07 12:35:52 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -169,6 +169,7 @@ void CNewtonMethod::load(CReadConfig & configBuffer,
 
           default:
             fatalError();
+            break;
         }
 
       configBuffer.getVariable("SSBackIntegration", "bool", &Bool);
@@ -235,7 +236,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
         {
           stepLimitReached = !mpTrajectory->process(true); //single step
         }
-      catch (CCopasiException Exception)
+      catch (CCopasiException & Exception)
         {
           *mpSteadyState = *mpTrajectory->getState();
 

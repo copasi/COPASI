@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-//   $Revision: 1.86 $
+//   $Revision: 1.87 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/11/10 18:38:44 $
+//   $Date: 2012/05/07 12:35:53 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -163,13 +163,15 @@ const C_FLOAT64 & CFunction::calcValue(const CCallParameters<C_FLOAT64> & callPa
 
   try
     {
-      return mValue = mpRoot->value();
+      mValue = mpRoot->value();
     }
 
   catch (...)
     {
-      return mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
     }
+
+  return mValue;
 }
 
 bool CFunction::dependsOn(const C_FLOAT64 * parameter,
@@ -204,6 +206,7 @@ void CFunction::load(CReadConfig & configBuffer,
 
       default:
         fatalError();
+        break;
     }
 
   configBuffer.getVariable("Reversible", "C_INT32", &mReversible);

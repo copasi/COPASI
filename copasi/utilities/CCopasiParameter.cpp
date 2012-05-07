@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/11/29 16:01:27 $
+//   $Date: 2012/05/07 12:35:52 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -410,6 +410,8 @@ bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
         return !memcmp(lhs.mValue.pVOID, rhs.mValue.pVOID, lhs.mSize);
         break;
     }
+
+  return false;
 }
 
 // virtual

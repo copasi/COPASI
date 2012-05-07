@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMReactionDM.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/11/10 13:12:56 $
+//   $Date: 2012/05/07 12:35:52 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -102,8 +102,9 @@ QVariant CQEFMReactionDM::headerData(int section, Qt::Orientation orientation,
             break;
         }
     }
-  else  //Vertical header
-    return QString("%1").arg(section + 1);
+
+  //Vertical header
+  return QString("%1").arg(section + 1);
 }
 
 void CQEFMReactionDM::setTask(const CEFMTask * pTask)
