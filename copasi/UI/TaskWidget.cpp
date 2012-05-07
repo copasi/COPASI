@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/23 14:29:59 $
+//   $Author: shoops $
+//   $Date: 2012/05/07 02:47:58 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -394,7 +394,7 @@ bool TaskWidget::commonRunTask()
         throw CCopasiException(CCopasiMessage::peekLastMessage());
     }
 
-  catch (CCopasiException Exception)
+  catch (CCopasiException & Exception)
     {
       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
         {
@@ -468,7 +468,7 @@ void TaskWidget::finishTask()
 
   try {mpTask->restore();}
 
-  catch (CCopasiException Exception)
+  catch (CCopasiException & Exception)
     {
       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
         {
