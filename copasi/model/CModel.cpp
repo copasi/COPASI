@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.415 $
+//   $Revision: 1.416 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:11:04 $
+//   $Date: 2012/05/07 02:47:24 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1790,10 +1790,14 @@ void CModel::updateSimulatedValues(const bool & updateMoieties)
     {
       *pFlux = (*it)->getParticleFlux();
 
+#ifdef COPASI_DEBUG
+
       if (isnan(*pFlux))
         {
           std::cout << "Reaction Flux[" <<   it -  mSteps.begin() << "] is NaN" << std::endl;
         }
+
+#endif // COPASI_DEBUG
     }
 }
 
@@ -1823,10 +1827,14 @@ void CModel::calculateDerivatives(C_FLOAT64 * derivatives)
     {
       *pTmp = (*ppIt)->getRate();
 
+#ifdef COPASI_DEBUG
+
       if (isnan(*pTmp))
         {
           std::cout << "Entity[" <<   ppIt - (mStateTemplate.getEntities() + 1) << "] is NaN" << std::endl;
         }
+
+#endif // COPASI_DEBUG
     }
 
   // Now calculate derivatives of all metabolites determined by reactions
@@ -4236,7 +4244,9 @@ void CModel::processRoots(const C_FLOAT64 & time,
                           const bool & correct,
                           const CVector< C_INT > & roots)
 {
-  return mpMathModel->processRoots(time, equality, correct, roots);
+  mpMathModel->processRoots(time, equality, correct, roots);
+
+  return;
 }
 
 const C_FLOAT64 & CModel::getProcessQueueExecutionTime() const
