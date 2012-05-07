@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.82 $
+//   $Revision: 1.83 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/04 19:36:08 $
+//   $Date: 2012/05/07 02:46:13 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,7 +68,7 @@ const std::string CExperiment::WeightMethodName[] =
   "Mean",
   "Mean Square",
   "Standard Deviation",
-  "Value Scaling"
+  "Value Scaling",
   ""
 };
 
