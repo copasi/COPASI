@@ -1,18 +1,20 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/13 17:38:26 $
+//   $Date: 2012/05/08 13:15:26 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #ifndef CQEXPERIMENTDATA_H
 #define CQEXPERIMENTDATA_H
+
+#include <QtCore/QVariant>
 
 #include "ui_CQExperimentData.h"
 
