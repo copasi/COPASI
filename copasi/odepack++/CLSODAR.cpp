@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CLSODAR.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2012/04/23 21:11:03 $
+   $Author: bergmann $
+   $Date: 2012/05/08 08:19:53 $
    End CVS Header */
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,7 @@
 
 #include "copasi.h"
 #include "blaswrap.h"
+#include "clapackwrap.h"
 
 #include "CLSODAR.h"
 #include "Cxerrwd.h"
