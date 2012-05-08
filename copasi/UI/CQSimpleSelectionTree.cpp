@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSimpleSelectionTree.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/16 18:13:46 $
+//   $Date: 2012/05/08 18:29:39 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -72,7 +72,7 @@ CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget* parent):
   mpReactionFluxNumberSubtree =
     new QTreeWidgetItem(mpReactionSubtree, QStringList("Fluxes (Particle Numbers)"));
   mpReactionFluxConcentrationSubtree =
-    new QTreeWidgetItem(mpReactionSubtree, QStringList("Fluxes (Concentration)"));
+    new QTreeWidgetItem(mpReactionSubtree, QStringList("Fluxes (Amount)"));
   mpReactionParameterSubtree =
     new QTreeWidgetItem(mpReactionSubtree, QStringList("Reaction Parameters"));
 
