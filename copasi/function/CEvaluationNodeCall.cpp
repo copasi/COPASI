@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:10:22 $
+//   $Date: 2012/05/09 21:25:19 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,7 +39,8 @@ CEvaluationNodeCall::CEvaluationNodeCall():
     mpExpression(NULL),
     mCallNodes(),
     mpCallParameters(NULL),
-    mBooleanRequired(false)
+    mBooleanRequired(false),
+    mRegisteredFucntionCN()
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
@@ -50,8 +51,10 @@ CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
     mCallNodes(),
     mpCallParameters(NULL),
     mQuotesRequired(false),
-    mBooleanRequired(false)
+    mBooleanRequired(false),
+    mRegisteredFucntionCN()
 {
+  setData(data);
   mData = unQuote(mData);
 
   // We force quoting if the round trip unquote, quote does not recover the original input
@@ -117,13 +120,30 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
   bool success = true;
   clearParameters(mpCallParameters, mCallNodes);
 
+  CObjectInterface * pObjectInterface = NULL;
+
+  if (mRegisteredFucntionCN != "")
+    {
+      pObjectInterface = const_cast< CObjectInterface * >(CCopasiRootContainer::getRoot()->getObject(mRegisteredFucntionCN));
+    }
+
   switch (mType & 0x00FFFFFF)
     {
       case FUNCTION:
-        mpFunction =
-          dynamic_cast<CFunction *>(CCopasiRootContainer::getFunctionList()->findFunction(mData));
+
+        if (pObjectInterface != NULL)
+          {
+            mpFunction = dynamic_cast< CFunction * >(pObjectInterface);
+          }
+        else
+          {
+            mpFunction =
+              dynamic_cast<CFunction *>(CCopasiRootContainer::getFunctionList()->findFunction(mData));
+          }
 
         if (!mpFunction) return false;
+
+        mRegisteredFucntionCN = mpFunction->getCN();
 
         // We need to check whether the provided arguments match the on needed by the
         // function;
@@ -133,23 +153,42 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
         break;
 
       case EXPRESSION:
-        mpExpression =
-          dynamic_cast<CExpression *>(CCopasiRootContainer::getFunctionList()->findFunction(mData));
+
+        if (pObjectInterface != NULL)
+          {
+            mpExpression = dynamic_cast<CExpression *>(pObjectInterface);
+          }
+        else
+          {
+            mpExpression =
+              dynamic_cast<CExpression *>(CCopasiRootContainer::getFunctionList()->findFunction(mData));
+          }
 
         if (!mpExpression)
           {
             // We may have a function with no arguments the parser is not able to distinguish
             // between that and an expression.
-            mpFunction =
-              dynamic_cast<CFunction *>(CCopasiRootContainer::getFunctionList()->findFunction(mData));
+            if (pObjectInterface != NULL)
+              {
+                mpFunction = dynamic_cast< CFunction * >(pObjectInterface);
+              }
+            else
+              {
+                mpFunction =
+                  dynamic_cast<CFunction *>(CCopasiRootContainer::getFunctionList()->findFunction(mData));
+              }
 
             if (!mpFunction) return false;
+
+            mRegisteredFucntionCN = mpFunction->getCN();
 
             mType = (CEvaluationNode::Type)(CEvaluationNode::CALL | FUNCTION);
             success = compile(pTree);
           }
         else
           {
+            mRegisteredFucntionCN = mpExpression->getCN();
+
             success = mpExpression->compile(static_cast<const CExpression *>(pTree)->getListOfContainer());
           }
 
@@ -175,17 +214,60 @@ bool CEvaluationNodeCall::calls(std::set< std::string > & list) const
   return false;
 }
 
+// virtual
+const CEvaluationNode::Data & CEvaluationNodeCall::getData() const
+{
+  std::string Data;
+
+  if (mpFunction != NULL)
+    {
+      Data = mpFunction->getObjectName();
+      mQuotesRequired = mpFunction->getObjectName() != unQuote(quote(Data));
+
+      return mpFunction->getObjectName();
+    }
+
+  if (mpExpression != NULL)
+    {
+      Data = mpExpression->getObjectName();
+      mQuotesRequired = mpExpression->getObjectName() != unQuote(quote(Data));
+
+      return mpExpression->getObjectName();
+    }
+
+  return mData;
+}
+
+// virtual
+bool CEvaluationNodeCall::setData(const Data & data)
+{
+  mData = unQuote(data);
+
+  // We force quoting if the round trip unquote, quote does not recover the original input
+  if (mData != data && quote(mData) != data)
+    {
+      mQuotesRequired = true;
+    }
+
+  mRegisteredFucntionCN = std::string("");
+
+  return true;
+}
+
+
 std::string CEvaluationNodeCall::getInfix() const
 {
   std::string Infix;
 
+  const std::string & Data = getData();
+
   if (mQuotesRequired)
     {
-      Infix = "\"" + quote(mData, "-+^*/%(){},\t\r\n\"") + "\"(";
+      Infix = "\"" + quote(Data, "-+^*/%(){},\t\r\n\"") + "\"(";
     }
   else
     {
-      Infix = quote(mData, "-+^*/%(){},\t\r\n") + "(";
+      Infix = quote(Data, "-+^*/%(){},\t\r\n") + "(";
     }
 
   switch (mType & 0x00FFFFFF)
@@ -479,9 +561,8 @@ void CEvaluationNodeCall::writeMathML(std::ostream & out,
             out << SPC(l) << "<mrow>" << std::endl;
 
             out << SPC(l + 1) << "<mi>" << CMathMl::fixName(mData) << "</mi>" << std::endl;
-            out << SPC(l + 1) << "<mo> &ApplyFunction; </mo>" << std::endl;
             out << SPC(l + 1) << "<mrow>" << std::endl;
-            out << SPC(l + 2) << "<mo> (</mo>" << std::endl;
+            out << SPC(l + 2) << "<mo>(</mo>" << std::endl;
             out << SPC(l + 2) << "<mrow>" << std::endl;
 
             std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();

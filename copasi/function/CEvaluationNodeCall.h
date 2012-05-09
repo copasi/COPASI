@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.h,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:10:22 $
+//   $Date: 2012/05/09 21:25:19 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -100,6 +100,20 @@ public:
    * @return const Data & value
    */
   virtual std::string getInfix() const;
+
+  /**
+   * Retrieve the value of the node. This method is superseded
+   * by value() which will perform faster.
+   * @return const Data & value
+   */
+  virtual const Data & getData() const;
+
+  /**
+   * Set the data of the Node.
+   * @param const Data & data
+   * @return bool success
+   */
+  virtual bool setData(const Data & data);
 
   /**
    * Retrieve the display string of the node and its eventual child nodes.
@@ -227,8 +241,14 @@ private:
   CExpression * mpExpression;
   std::vector<CEvaluationNode *> mCallNodes;
   CCallParameters< C_FLOAT64 > * mpCallParameters;
-  bool mQuotesRequired;
+  mutable bool mQuotesRequired;
   bool mBooleanRequired;
+
+  /**
+   * The registered object name to track eventual renaming.
+   */
+  CRegisteredObjectName mRegisteredFucntionCN;
+
 };
 
 #endif // COPASI_CEvaluationNodeCall
