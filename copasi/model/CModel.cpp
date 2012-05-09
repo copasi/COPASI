@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.416 $
+//   $Revision: 1.417 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/07 02:47:24 $
+//   $Date: 2012/05/09 21:26:27 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1134,14 +1134,6 @@ CStateTemplate & CModel::getStateTemplate()
 
 const std::set< const CCopasiObject * > & CModel::getUptoDateObjects() const
 {return mSimulatedUpToDateObjects;}
-
-bool CModel::setTitle(const std::string &title)
-{
-  if (title == "")
-    return setObjectName("NoTitle");
-
-  return setObjectName(title);
-}
 
 void CModel::setInitialTime(const C_FLOAT64 & time)
 {*mpIValue = time;}

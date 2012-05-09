@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.199 $
+//   $Revision: 1.200 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/02 17:34:32 $
+//   $Date: 2012/05/09 21:26:27 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -454,12 +454,6 @@ public:
    * Return a pointer to the current time
    */
   //virtual void * getValuePointer() const;
-
-  /**
-   * Set the title of this model
-   * @param "const string &" title title for this model
-   */
-  bool setTitle(const std::string &title);
 
   //************** time *********************
 
