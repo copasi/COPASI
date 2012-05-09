@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/02/23 17:44:15 $
+//   $Date: 2012/05/09 21:32:18 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -109,7 +109,7 @@ private:
 
 signals:
   void updateCompleteView();
-  void notifyView(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
+  void notifyView(ListViews::ObjectType objectType, ListViews::Action action, std::string key = "");
   void finished(bool success);
 
 private:

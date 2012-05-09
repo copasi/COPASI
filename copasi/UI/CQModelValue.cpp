@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/13 19:21:59 $
+//   $Date: 2012/05/09 21:32:17 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,7 +22,6 @@
 
 #include "UI/CQMessageBox.h"
 #include "UI/qtUtilities.h"
-#include "CTabWidget.h"
 
 #include "model/CModel.h"
 #include "model/CModelValue.h"
@@ -49,20 +48,6 @@ CQModelValue::~CQModelValue()
 {
   destroy();
   // no need to delete child widgets, Qt does it all for us
-}
-
-/*!
-    After clicking the Commit button, COPASI will internally, automatically save any inputs and load them.
- */
-void CQModelValue::slotBtnCommit()
-{
-  save();
-  load();
-}
-
-void CQModelValue::slotBtnRevert()
-{
-  load();
 }
 
 /// Slot to create a new quantity; activated whenever the New button is clicked
@@ -114,36 +99,11 @@ void CQModelValue::slotBtnDelete()
     {
       case QMessageBox::Ok:
       {
-        size_t index =
-          static_cast<CCopasiVector< CModelValue > *>(&pDataModel->getModel()->getModelValues())->getIndex(CCopasiRootContainer::getKeyFactory()->get(mKey));
-
         pDataModel->getModel()->removeModelValue(mKey);
-        std::string deletedKey = mKey;
-
-        size_t size =
-          pDataModel->getModel()->getModelValues().size();
-
         mpModelValue = NULL;
 
-        QObject *pParent = parent();
-        CTabWidget * pTabWidget = NULL;
-
-        while (pParent != NULL &&
-               (pTabWidget = dynamic_cast< CTabWidget *>(pParent)) == NULL)
-          {
-            pParent = pParent->parent();
-          }
-
-        if (pTabWidget != NULL)
-          {
-            if (size > 0)
-              pTabWidget->enter(pDataModel->getModel()->getModelValues()[std::min(index, size - 1)]->getKey());
-            else
-              pTabWidget->enter("");
-          }
-
 #undef DELETE
-        protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, deletedKey);
+        protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, mKey);
         protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
         break;
       }
@@ -162,9 +122,6 @@ void CQModelValue::slotTypeChanged(int type)
   switch ((CModelEntity::Status) mItemToType[type])
     {
       case CModelEntity::FIXED:
-        // remove expression layout from GUI screen
-        gridLayout->removeWidget(mpLblExpression);
-
         // hide label, widget, and all buttons
         mpLblExpression->hide();
         mpExpressionEMW->hide();
@@ -178,9 +135,6 @@ void CQModelValue::slotTypeChanged(int type)
         break;
 
       case CModelEntity::ASSIGNMENT:
-        // add expression layout
-        gridLayout->addWidget(mpLblExpression, 2, 0);
-
         // show label, widget, and correct buttons
         mpLblExpression->show();   // show the label
         mpExpressionEMW->show();  // show the widget
@@ -222,13 +176,11 @@ void CQModelValue::slotTypeChanged(int type)
 void CQModelValue::slotExpressionValid(bool valid)
 {
   mExpressionValid = valid;
-  mpBtnCommit->setEnabled(mExpressionValid && mInitialExpressionValid);
 }
 
 void CQModelValue::slotInitialExpressionValid(bool valid)
 {
   mInitialExpressionValid = valid;
-  mpBtnCommit->setEnabled(mExpressionValid && mInitialExpressionValid);
 }
 
 void CQModelValue::init()
@@ -260,23 +212,19 @@ bool CQModelValue::update(ListViews::ObjectType /* objectType */,
 
 bool CQModelValue::leave()
 {
-  // This is now always enabled, i.e., a save is always performed!
-  if (mpBtnCommit->isEnabled())
+  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::FIXED)
     {
-      if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::FIXED)
-        {
-          // -- Expression --
-          mpExpressionEMW->updateWidget();
-        }
-
-      if (mpBoxUseInitialExpression->isChecked())
-        {
-          // -- Initial Expression --
-          mpInitialExpressionEMW->updateWidget();
-        }
-
-      save();
+      // -- Expression --
+      mpExpressionEMW->updateWidget();
     }
+
+  if (mpBoxUseInitialExpression->isChecked())
+    {
+      // -- Initial Expression --
+      mpInitialExpressionEMW->updateWidget();
+    }
+
+  save();
 
   return true;
 }
@@ -301,9 +249,6 @@ bool CQModelValue::enterProtected()
 void CQModelValue::load()
 {
   if (mpModelValue == NULL) return;
-
-  // Name
-  mpEditName->setText(FROM_UTF8(mpModelValue->getObjectName()));
 
   // Type
   mpComboBoxType->setCurrentIndex(mpComboBoxType->findText(FROM_UTF8(CModelEntity::StatusName[mpModelValue->getStatus()])));
@@ -355,29 +300,6 @@ void CQModelValue::save()
 {
   if (mpModelValue == NULL) return;
 
-  // set name of quantity
-  if (mpModelValue->getObjectName() != TO_UTF8(mpEditName->text()))
-    {
-      if (!mpModelValue->setObjectName(TO_UTF8(mpEditName->text())))  // the new name is rejected as it has been used
-        {
-          QString msg;
-          msg = "Unable to rename quantity '" + FROM_UTF8(mpModelValue->getObjectName()) + "'\n"
-                + "to '" + mpEditName->text() + "' since a quantity with that name already exists.\n";
-
-          CQMessageBox::information(this,
-                                    "Unable to rename Quantity",
-                                    msg,
-                                    QMessageBox::Ok, QMessageBox::Ok);
-
-          mpEditName->setText(FROM_UTF8(mpModelValue->getObjectName()));
-        }
-      else  // the new name is accepted
-        {
-          protectedNotify(ListViews::MODELVALUE, ListViews::RENAME, mKey);
-          mChanged = true;
-        }
-    }
-
   // set status
   if (mpModelValue->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()])
     {
@@ -428,11 +350,6 @@ void CQModelValue::save()
   mChanged = false;
 }
 
-void CQModelValue::slotNameLostFocus()
-{
-  if (mpEditName->text() != FROM_UTF8(mpModelValue->getObjectName()))
-    {}}
-
 /*!
     If the initial expression is chosen to be used by checking the mpBoxUseInitialExpression check box being represented by
     the boolean parameter useInitialAssignment (true if checked; false otherwise), COPASI will show the Initial Expression
@@ -442,9 +359,6 @@ void CQModelValue::slotInitialTypeChanged(bool useInitialAssignment)
 {
   if (useInitialAssignment)  // use Initial Expression (ie. the mpBoxUseInitialExpression is checked)
     {
-      // add the layout of initial expression to the CQModelValueLayout
-      gridLayout->addWidget(mpLblInitialExpression, 4, 0);
-
       // show label, widget, and the correct buttons
       mpLblInitialExpression->show();  // show the label
       mpInitialExpressionEMW->show(); // show the widget
@@ -457,9 +371,6 @@ void CQModelValue::slotInitialTypeChanged(bool useInitialAssignment)
     }
   else  // mpBoxUseInitialExpression is not checked
     {
-      // remove the layout of initial expression from GUI screen
-      gridLayout->removeWidget(mpLblInitialExpression);
-
       // hide label, widget, and all buttons
       mpLblInitialExpression->hide();
       mpInitialExpressionEMW->hide();

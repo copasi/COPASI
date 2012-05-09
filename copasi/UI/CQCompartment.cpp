@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/21 17:46:25 $
+//   $Date: 2012/05/09 21:32:17 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,8 +21,6 @@
 #include "CQExpressionWidget.h"
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
-
-#include "CTabWidget.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
@@ -76,20 +74,6 @@ CQCompartment::~CQCompartment()
   // no need to delete child widgets, Qt does it all for us
 }
 
-/*!
-    After clicking the Commit button, COPASI will internally, automatically save any inputs and load them.
- */
-void CQCompartment::slotBtnCommit()
-{
-  save();
-  load();
-}
-
-void CQCompartment::slotBtnRevert()
-{
-  load();
-}
-
 void CQCompartment::slotBtnNew()
 {
   save();
@@ -132,33 +116,9 @@ void CQCompartment::slotBtnDelete()
     {
       case QMessageBox::Ok:
       {
-        size_t Index =
-          pDataModel->getModel()->getCompartments().getIndex(mpCompartment->getObjectName());
         pDataModel->getModel()->removeCompartment(mKey);
-        std::string deletedKey = mKey;
-        //std::string moveToKey = "";
 
-        size_t Size =
-          pDataModel->getModel()->getCompartments().size();
-
-        QObject *pParent = parent();
-        CTabWidget * pTabWidget = NULL;
-
-        while (pParent != NULL &&
-               (pTabWidget = dynamic_cast< CTabWidget *>(pParent)) == NULL)
-          {
-            pParent = pParent->parent();
-          }
-
-        if (pTabWidget != NULL)
-          {
-            if (Size > 0)
-              pTabWidget->enter(pDataModel->getModel()->getCompartments()[std::min(Index, Size - 1)]->getKey());
-            else
-              pTabWidget->enter("");
-          }
-
-        protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, deletedKey);
+        protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, mKey);
         protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
         break;
       }
@@ -242,8 +202,6 @@ void CQCompartment::slotInitialTypeChanged(bool useInitialAssignment)
 {
   if (useInitialAssignment)
     {
-      gridLayout->addWidget(mpLblInitialExpression, 5, 0);
-
       mpLblInitialExpression->show();
       mpInitialExpressionEMW->show();
 
@@ -252,8 +210,6 @@ void CQCompartment::slotInitialTypeChanged(bool useInitialAssignment)
     }
   else
     {
-      gridLayout->removeWidget(mpLblInitialExpression);
-
       mpLblInitialExpression->hide();
       mpInitialExpressionEMW->hide();
 
@@ -263,21 +219,15 @@ void CQCompartment::slotInitialTypeChanged(bool useInitialAssignment)
 
 /*!
  */
-void CQCompartment::slotNameLostFocus()
-{
-  if (mpEditName->text() != FROM_UTF8(mpCompartment->getObjectName()))
-    {}}
 
 void CQCompartment::slotExpressionValid(bool valid)
 {
   mExpressionValid = valid;
-  mpBtnCommit->setEnabled(mExpressionValid && mInitialExpressionValid);
 }
 
 void CQCompartment::slotInitialExpressionValid(bool valid)
 {
   mInitialExpressionValid = valid;
-  mpBtnCommit->setEnabled(mExpressionValid && mInitialExpressionValid);
 }
 
 bool CQCompartment::enterProtected()
@@ -296,23 +246,19 @@ bool CQCompartment::enterProtected()
 
 bool CQCompartment::leave()
 {
-  // This is now always enabled, i.e., a save is always performed!
-  if (mpBtnCommit->isEnabled())
+  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::FIXED)
     {
-      if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::FIXED)
-        {
-          // -- Expression --
-          mpExpressionEMW->updateWidget();
-        }
-
-      if (mpBoxUseInitialExpression->isChecked())
-        {
-          // -- Initial Expression --
-          mpInitialExpressionEMW->updateWidget();
-        }
-
-      save();
+      // -- Expression --
+      mpExpressionEMW->updateWidget();
     }
+
+  if (mpBoxUseInitialExpression->isChecked())
+    {
+      // -- Initial Expression --
+      mpInitialExpressionEMW->updateWidget();
+    }
+
+  save();
 
   return true;
 }
@@ -372,9 +318,6 @@ void CQCompartment::load()
   mpLblVolume->setText("Volume" + ValueUnits);
   mpLblRate->setText("Rate" + RateUnits);
 
-  // Name
-  mpEditName->setText(FROM_UTF8(mpCompartment->getObjectName()));
-
   //Dimensionality
   mpComboBoxDim->setCurrentIndex(mpCompartment->getDimensionality());
   //this assumes the indices of the entries in the combobox correspond 1to1 to the values of dimensionality
@@ -422,29 +365,6 @@ void CQCompartment::load()
 void CQCompartment::save()
 {
   if (mpCompartment == NULL) return;
-
-  // Name
-  if (mpCompartment->getObjectName() != TO_UTF8(mpEditName->text()))
-    {
-      if (!mpCompartment->setObjectName(TO_UTF8(mpEditName->text())))
-        {
-          QString msg;
-          msg = "Unable to rename compartment '" + FROM_UTF8(mpCompartment->getObjectName()) + "'\n"
-                + "to '" + mpEditName->text() + "' since a compartment with that name already exists.\n";
-
-          CQMessageBox::information(this,
-                                    "Unable to rename Compartment",
-                                    msg,
-                                    QMessageBox::Ok, QMessageBox::Ok);
-
-          mpEditName->setText(FROM_UTF8(mpCompartment->getObjectName()));
-        }
-      else
-        {
-          protectedNotify(ListViews::COMPARTMENT, ListViews::RENAME, mKey);
-          mChanged = true;
-        }
-    }
 
 #ifdef COPASI_EXTUNIT
 

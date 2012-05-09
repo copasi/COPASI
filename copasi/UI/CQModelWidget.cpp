@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelWidget.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/13 19:21:56 $
+//   $Date: 2012/05/09 21:32:15 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -108,8 +108,6 @@ void CQModelWidget::load()
   if (mpModel == NULL)
     return;
 
-  mpEditName->setText(FROM_UTF8(mpModel->getObjectName()));
-
   mpComboTimeUnit->setCurrentIndex(mpComboTimeUnit->findText(FROM_UTF8(mpModel->getTimeUnitName())));
   mpComboVolumeUnit->setCurrentIndex(mpComboVolumeUnit->findText(FROM_UTF8(mpModel->getVolumeUnitName())));
   mpComboQuantityUnit->setCurrentIndex(mpComboQuantityUnit->findText(FROM_UTF8(mpModel->getQuantityUnitName())));
@@ -131,13 +129,6 @@ void CQModelWidget::save()
     return;
 
   bool changed = false;
-
-  if (TO_UTF8(mpEditName->text()) != mpModel->getObjectName())
-    {
-      mpModel->setTitle(TO_UTF8(mpEditName->text()));
-      changed = true;
-    }
-
 
   if (TO_UTF8(mpComboTimeUnit->currentText()) != mpModel->getTimeUnitName())
     {
@@ -225,8 +216,6 @@ bool CQModelWidget::update(ListViews::ObjectType objectType,
 
 bool CQModelWidget::leave()
 {
-  mpBtnCommit->setFocus();
-
   save();
 
   mpNotes->leave();

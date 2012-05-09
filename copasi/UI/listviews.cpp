@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.300 $
+//   $Revision: 1.301 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 22:46:35 $
+//   $Author: shoops $
+//   $Date: 2012/05/09 21:32:18 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,7 +95,7 @@
 #include "CQMathMatrixWidget.h"
 #include "MIRIAMUI/CQMiriamWidget.h"
 
-#include "CTabWidget.h"
+#include "CQTabWidget.h"
 
 #include "UI/CQLayoutsWidget.h"
 
@@ -112,6 +112,26 @@
 #include "CQCrossSectionTaskWidget.h"
 #include "CQOscillationTaskWidget.h"
 #endif
+
+// static
+const std::string ListViews::ObjectTypeName[] =
+{
+  "Species", // METABOLITE
+  "Compartment", // COMPARTMENT
+  "Reaction", // REACTION
+  "Function", // FUNCTION
+  "Model", // MODEL
+  "State", // STATE
+  "Report", // REPORT
+  "Plot", // PLOT
+  "Global Quantity", // MODELVALUE
+  "Event", // EVENT
+  "Annotation", //  MIRIAM
+  "Layout", // LAYOUT
+  "Parameter Set" // PARAMETERSET
+  ""
+};
+
 
 // -----------------------------------------------------------------
 //////////////////////////////////////////////////////////////////////////
@@ -242,8 +262,8 @@ void ListViews::setDataModel(DataModelGUI* pDM)
   //First Disconnect updateCompleteView() and notifyView() from DataModelGUI
   if (mpDataModelGUI)
     {
-      disconnect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const std::string &)),
-                 this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const std::string &)));
+      disconnect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, std::string)),
+                 this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, std::string)));
     }
 
   mpDataModelGUI = pDM;
@@ -277,7 +297,7 @@ void ListViews::ConstructNodeWidgets()
   mpCompartmentsWidget->hide();
 
   if (!compartmentsWidget1)
-    compartmentsWidget1 = new CTabWidget(QString("Compartment"), new CQCompartment(this), this);
+    compartmentsWidget1 = new CQTabWidget(ListViews::COMPARTMENT, new CQCompartment(this), this);
 
   compartmentsWidget1->hide();
 
@@ -292,7 +312,7 @@ void ListViews::ConstructNodeWidgets()
 
   eventsWidget->hide();
 
-  if (!eventWidget1) eventWidget1 = new CTabWidget(QString("Event"), new CQEventWidget1(this), this);
+  if (!eventWidget1) eventWidget1 = new CQTabWidget(ListViews::EVENT, new CQEventWidget1(this), this);
 
   eventWidget1->hide();
 
@@ -301,7 +321,7 @@ void ListViews::ConstructNodeWidgets()
   mpFunctionsWidget->hide();
 
   if (!functionWidget1)
-    functionWidget1 = new CTabWidget(QString("Function"), new FunctionWidget1(this), this);
+    functionWidget1 = new CQTabWidget(ListViews::FUNCTION, new FunctionWidget1(this), this);
 
   functionWidget1->hide();
 
@@ -318,17 +338,17 @@ void ListViews::ConstructNodeWidgets()
   mpSpeciesWidget->hide();
 
   if (!metabolitesWidget1)
-    metabolitesWidget1 = new CTabWidget(QString("Species"), new CQSpeciesDetail(this), this);
+    metabolitesWidget1 = new CQTabWidget(ListViews::METABOLITE, new CQSpeciesDetail(this), this);
 
   metabolitesWidget1->hide();
 
   if (!modelWidget)
-    modelWidget = new CTabWidget(QString("Model"), new CQModelWidget(this), this);
+    modelWidget = new CQTabWidget(ListViews::MODEL, new CQModelWidget(this), this);
 
   modelWidget->hide();
 
   if (!mpModelValueWidget)
-    mpModelValueWidget = new CTabWidget(QString("ModelValue"), new CQModelValue(this), this);
+    mpModelValueWidget = new CQTabWidget(ListViews::MODELVALUE, new CQModelValue(this), this);
 
   mpModelValueWidget->hide();
 
@@ -359,7 +379,7 @@ void ListViews::ConstructNodeWidgets()
   parametersWidget->hide();
 
   if (!mpParameterOverviewWidget)
-    mpParameterOverviewWidget = new CTabWidget(QString("Parameter Set"), new CQParameterOverviewWidget(this), this);
+    mpParameterOverviewWidget = new CQTabWidget(ListViews::PARAMETERSET, new CQParameterOverviewWidget(this), this);
 
   mpParameterOverviewWidget->hide();
 
@@ -408,7 +428,7 @@ void ListViews::ConstructNodeWidgets()
   mpReactionsWidget->hide();
 
   if (!reactionsWidget1)
-    reactionsWidget1 = new CTabWidget(QString("Reaction"), new ReactionsWidget1(this), this);
+    reactionsWidget1 = new CQTabWidget(ListViews::REACTION, new ReactionsWidget1(this), this);
 
   reactionsWidget1->hide();
 
@@ -772,7 +792,7 @@ size_t ListViews::getCurrentItemId()
 
 //static members **************************
 
-bool ListViews::slotNotify(ObjectType objectType, Action action, const std::string & key)
+bool ListViews::slotNotify(ObjectType objectType, Action action, std::string key)
 {
   if (objectType != MODEL &&
       objectType != STATE &&

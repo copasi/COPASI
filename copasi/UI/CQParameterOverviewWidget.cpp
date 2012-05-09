@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQParameterOverviewWidget.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 15:50:54 $
+//   $Date: 2012/05/09 21:32:15 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,6 +76,18 @@ bool CQParameterOverviewWidget::enterProtected()
   mpTreeView->expandAll();
 
   return true;
+
+}
+
+// virtual
+void CQParameterOverviewWidget::slotBtnNew()
+{
+
+}
+
+// virtual
+void CQParameterOverviewWidget::slotBtnDelete()
+{
 
 }
 

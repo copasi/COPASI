@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.178 $
+//   $Revision: 1.179 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/16 18:13:46 $
+//   $Date: 2012/05/09 21:32:17 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,7 +27,6 @@
 #include "CQMessageBox.h"
 #include "FunctionWidget1.h"
 #include "qtUtilities.h"
-#include "CTabWidget.h"
 
 #include "tex/CMathMLToTeX.h"
 
@@ -386,8 +385,6 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
     return false;
 
   // function name
-  LineEdit1->setText(FROM_UTF8(mpFunction->getObjectName()));
-
   /* Insert line breaks in the function description */
   std::string desc = mpFunction->getInfix();
   size_t l = 0;
@@ -423,13 +420,7 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   RadioButton2->setEnabled(!mReadOnly);
   RadioButton3->setEnabled(!mReadOnly);
 
-  LineEdit1->setReadOnly(mReadOnly);
-
   mpExpressionEMSW->setReadOnly(mReadOnly);
-
-  cancelChanges->setEnabled(!mReadOnly);
-  deleteFcn->setEnabled(!mReadOnly);
-  commitChanges->setEnabled(isValid && !mReadOnly);
 
   // formula expression
   mIgnoreFcnDescriptionChange = true;
@@ -530,62 +521,6 @@ bool FunctionWidget1::saveToFunction()
 
   if (!func) return false;
 
-  //name
-  QString name(LineEdit1->text());
-
-  if (func->getObjectName() != TO_UTF8(name))
-    {
-      // We need to check whether other trees call the current one.
-      std::set<std::string> dependentTrees;
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-
-      if ((*CCopasiRootContainer::getDatamodelList())[0]->getModel())
-        {
-          dependentTrees =
-            CCopasiRootContainer::getFunctionList()->listDependentTrees(func->getObjectName());
-        }
-
-      if (dependentTrees.size() > 0)
-        {
-          std::set<std::string>::iterator it = dependentTrees.begin();
-          std::set<std::string>::iterator end = dependentTrees.end();
-
-          QString trees;
-
-          for (; it != end; it++)
-            {
-              trees.append(FROM_UTF8(*it));
-              trees.append(" ---> ");
-              trees.append(FROM_UTF8(mpFunction->getObjectName()));
-              trees.append("\n");
-            }
-
-          QString msg1 = "Cannot change Function. ";
-          msg1.append("Following dependencies with listed Function(s) exist:\n");
-          msg1.append(trees);
-
-          CQMessageBox::information(this, "Delete not possible",
-                                    msg1, QMessageBox::Ok, QMessageBox::Ok);
-          return false;
-        }
-
-      if (!func->setObjectName(TO_UTF8(name)))
-        {
-          QString msg;
-          msg = "Unable to rename function '" + FROM_UTF8(func->getObjectName()) + "'\n"
-                + "to '" + name + "' since a function with that name already exists.";
-
-          CQMessageBox::information(this,
-                                    "Unable to rename Function",
-                                    msg,
-                                    QMessageBox::Ok, QMessageBox::Ok);
-
-          LineEdit1->setText(FROM_UTF8(func->getObjectName()));
-        }
-      else
-        protectedNotify(ListViews::FUNCTION, ListViews::RENAME, mKey);
-    }
-
   //radio buttons
   TriLogic tmpl;
 
@@ -667,8 +602,6 @@ void FunctionWidget1::slotFcnDescriptionChanged(bool valid)
 
       // application table
       loadUsageTable();
-
-      commitChanges->setEnabled(true);
     }
   else
     {
@@ -680,8 +613,6 @@ void FunctionWidget1::slotFcnDescriptionChanged(bool valid)
                                  QMessageBox::NoButton);
           CCopasiMessage::clearDeque();
         }
-
-      commitChanges->setEnabled(false);
     }
 }
 
@@ -713,22 +644,34 @@ void FunctionWidget1::slotReversibilityChanged()
 
 //**************** slots for buttons *********************************************
 
-//! Slot for being activated wehenver Cancel button is clicked
-void FunctionWidget1::slotCancelButtonClicked()
+
+//! Slot for being activated wehenver New button is clicked
+void FunctionWidget1::slotBtnNew()
 {
-  enter(mKey); // reload
+  std::string name = "function";
+  int i = 0;
+  CFunction* pFunc;
+  CCopasiVectorN<CFunction>& FunctionList
+  = CCopasiRootContainer::getFunctionList()->loadedFunctions();
+
+  while (FunctionList.getIndex(name) != C_INVALID_INDEX)
+    {
+      i++;
+      name = "function_";
+      name += TO_UTF8(QString::number(i));
+    }
+
+  CCopasiRootContainer::getFunctionList()->add(pFunc = new CKinFunction(name), true);
+
+  std::string key = pFunc->getKey();
+  protectedNotify(ListViews::FUNCTION, ListViews::ADD, key);
+  enter(key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
-//! Slot for being activated wehenver Commit button is clicked
-void FunctionWidget1::slotCommitButtonClicked()
+//! Slot for being activated whenever Delete button is clicked
+void FunctionWidget1::slotBtnDelete()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
-
-  if (pModel == NULL)
-    return;
-
-  // :TODO: We should check what changes have been done to the function //
   CFunctionDB * pFunctionDB = CCopasiRootContainer::getFunctionList();
 
   if (pFunctionDB == NULL)
@@ -736,7 +679,93 @@ void FunctionWidget1::slotCommitButtonClicked()
 
   CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
-  if (pFunction == NULL) return;
+  if (pFunction == NULL)
+    return;
+
+  QMessageBox::StandardButton choice =
+    CQMessageBox::confirmDelete(NULL, "function",
+                                FROM_UTF8(pFunction->getObjectName()),
+                                pFunction->getDeletedObjects());
+
+  /* Check if user chooses to deleted Functions */
+  switch (choice)
+    {
+      case QMessageBox::Ok:                                                    // Yes or Enter
+      {
+        CCopasiRootContainer::getFunctionList()->removeFunction(mKey);
+
+        protectedNotify(ListViews::FUNCTION, ListViews::DELETE, mKey);
+        protectedNotify(ListViews::FUNCTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
+        break;
+      }
+
+      default:                                                    // No or Escape
+        break;
+    }
+}
+
+//***********  slot for editing requests on the function formula (mMmlWidget) *****
+
+
+//************************  standard interface to COPASI widgets ******************
+
+//! Function to update the COPASI widgets
+bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+{
+  if (mIgnoreUpdates) return true;
+
+  switch (objectType)
+    {
+      case ListViews::MODEL:
+        loadFromFunction(dynamic_cast< CFunction * >(CCopasiRootContainer::getKeyFactory()->get(mKey)));
+        break;
+
+      case ListViews::FUNCTION:
+
+        if (key == mKey)
+          {
+            switch (action)
+              {
+                case ListViews::CHANGE:
+                  loadFromFunction(dynamic_cast< CFunction * >(CCopasiRootContainer::getKeyFactory()->get(mKey)));
+                  break;
+
+                case ListViews::DELETE:
+                  mKey = "";
+                  break;
+
+                default:
+                  break;
+              }
+          }
+
+        break;
+
+      default:
+        break;
+    }
+
+  return true;
+}
+
+bool FunctionWidget1::leave()
+{
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+
+  if (pModel == NULL)
+    return true;
+
+  // :TODO: We should check what changes have been done to the function //
+  CFunctionDB * pFunctionDB = CCopasiRootContainer::getFunctionList();
+
+  if (pFunctionDB == NULL)
+    return true;
+
+  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
+
+  if (pFunction == NULL)
+    return true;
 
   bool Used = false;
 
@@ -860,7 +889,7 @@ void FunctionWidget1::slotCommitButtonClicked()
           CQMessageBox::information(this, "Modification not possible",
                                     msg, QMessageBox::Ok, QMessageBox::Ok);
 
-          return;
+          return true;
         }
     }
 
@@ -883,120 +912,6 @@ void FunctionWidget1::slotCommitButtonClicked()
       desc.erase(loc, 1);
     }
   textBrowser->setText(FROM_UTF8(desc));*/
-}
-
-//! Slot for being activated wehenver New button is clicked
-void FunctionWidget1::slotNewButtonClicked()
-{
-  slotCommitButtonClicked();
-
-  std::string name = "function";
-  int i = 0;
-  CFunction* pFunc;
-  CCopasiVectorN<CFunction>& FunctionList
-  = CCopasiRootContainer::getFunctionList()->loadedFunctions();
-
-  while (FunctionList.getIndex(name) != C_INVALID_INDEX)
-    {
-      i++;
-      name = "function_";
-      name += TO_UTF8(QString::number(i));
-    }
-
-  CCopasiRootContainer::getFunctionList()->add(pFunc = new CKinFunction(name), true);
-
-  std::string key = pFunc->getKey();
-  protectedNotify(ListViews::FUNCTION, ListViews::ADD, key);
-  enter(key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
-}
-
-//! Slot for being activated whenever Delete button is clicked
-void FunctionWidget1::slotDeleteButtonClicked()
-{
-  CFunctionDB * pFunctionDB = CCopasiRootContainer::getFunctionList();
-
-  if (pFunctionDB == NULL)
-    return;
-
-  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
-
-  if (pFunction == NULL)
-    return;
-
-  QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(NULL, "function",
-                                FROM_UTF8(pFunction->getObjectName()),
-                                pFunction->getDeletedObjects());
-
-  /* Check if user chooses to deleted Functions */
-  switch (choice)
-    {
-      case QMessageBox::Ok:                                                    // Yes or Enter
-      {
-        size_t index =
-          CCopasiRootContainer::getFunctionList()->loadedFunctions().getIndex(mpFunction->getObjectName());
-
-        CCopasiRootContainer::getFunctionList()->removeFunction(mKey);
-        std::string deletedKey = mKey;
-
-        size_t size =
-          CCopasiRootContainer::getFunctionList()->loadedFunctions().size();
-
-        QObject *pParent = parent();
-        CTabWidget * pTabWidget = NULL;
-
-        while (pParent != NULL &&
-               (pTabWidget = dynamic_cast< CTabWidget *>(pParent)) == NULL)
-          {
-            pParent = pParent->parent();
-          }
-
-        if (pTabWidget != NULL)
-          {
-            if (size > 0)
-              pTabWidget->enter(CCopasiRootContainer::getFunctionList()->loadedFunctions()[std::min(index, size - 1)]->getKey());
-            else
-              pTabWidget->enter("");
-          }
-
-        protectedNotify(ListViews::FUNCTION, ListViews::DELETE, deletedKey);
-        protectedNotify(ListViews::FUNCTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
-        break;
-      }
-
-      default:                                                    // No or Escape
-        break;
-    }
-}
-
-//***********  slot for editing requests on the function formula (mMmlWidget) *****
-
-
-//************************  standard interface to COPASI widgets ******************
-
-//! Function to update the COPASI widgets
-bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
-{
-  if (mIgnoreUpdates) return true;
-
-  switch (objectType)
-    {
-      case ListViews::MODEL:
-      case ListViews::FUNCTION:
-        return loadFromFunction(dynamic_cast< CFunction * >(CCopasiRootContainer::getKeyFactory()->get(mKey)));
-        break;
-
-      default:
-        break;
-    }
-
-  return true;
-}
-
-bool FunctionWidget1::leave()
-{
-  slotCommitButtonClicked();
 
   //mScrollView->hide();
   return true;

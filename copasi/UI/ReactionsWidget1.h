@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.h,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:09 $
+//   $Author: shoops $
+//   $Date: 2012/05/09 21:32:15 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -62,15 +62,12 @@ public:
   virtual void setFramework(int framework);
 
 protected slots:
-  virtual void slotBtnCancelClicked();
-  virtual void slotBtnOKClicked();
-  virtual void slotBtnNewClicked();
-  virtual void slotBtnDeleteClicked();
+  virtual void slotBtnNew();
+  virtual void slotBtnDelete();
   virtual void slotCheckBoxClicked();
   virtual void slotComboBoxSelectionChanged(const QString &);
   virtual void slotLineEditChanged();
   virtual void slotNewFunction();
-  virtual void slotNameChanged();
 
   //  public slots:
   virtual void slotTableChanged(int index, int sub, QString newValue);
@@ -86,18 +83,12 @@ protected:
 
   QGridLayout* ReactionsWidget1Layout;
   QHBoxLayout* Layout1;
-  QLabel* TextLabel4;
   QLabel* TextLabel7;
-  QPushButton* commitChanges;
-  QPushButton* cancelChanges;
-  QPushButton* newReaction;
-  QPushButton* deleteReaction;
   QLabel* TextLabel8;
   QFrame* Line2;
   QFrame* Line1;
   QFrame* Line3;
   QLabel* TextLabel6;
-  QLineEdit* LineEdit1;
   MyLineEdit* LineEdit2;
   QComboBox* ComboBox1;
   QFrame* Line4;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/15 17:07:52 $
+//   $Date: 2012/05/09 21:32:16 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,7 +27,6 @@
 #include "CQMessageBox.h"
 #include "CCopasiSelectionDialog.h"
 #include "resourcesUI/CQIconResource.h"
-#include "CTabWidget.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
@@ -56,15 +55,8 @@ CQEventWidget1::~CQEventWidget1()
   // no need to delete child widgets, Qt does it all for us
 }
 
-/*! Slot to save all current values of the active event widget whenever the Commit button is clicked */
-void CQEventWidget1::slotBtnCommitClicked()
-{
-  saveToEvent();
-  loadFromEvent();
-}
-
 /*! Slot to delete the active event widget */
-void CQEventWidget1::slotBtnDeleteClicked()
+void CQEventWidget1::slotBtnDelete()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -74,38 +66,16 @@ void CQEventWidget1::slotBtnDeleteClicked()
   if (pModel == NULL)
     return;
 
-  size_t index =
-    pDataModel->getModel()->getEvents().CCopasiVector< CEvent >::getIndex(mpEvent);
 
   pDataModel->getModel()->removeEvent(mKey);
-  std::string deletedKey = mKey;
-
-  size_t Size = pDataModel->getModel()->getEvents().size();
 
   mpEvent = NULL;
 
-  QObject *pParent = parent();
-  CTabWidget * pTabWidget = NULL;
-
-  while (pParent != NULL &&
-         (pTabWidget = dynamic_cast< CTabWidget *>(pParent)) == NULL)
-    {
-      pParent = pParent->parent();
-    }
-
-  if (pTabWidget != NULL)
-    {
-      if (Size > 0)
-        pTabWidget->enter(pDataModel->getModel()->getEvents()[std::min(index, Size - 1)]->getKey());
-      else
-        pTabWidget->enter("");
-    }
-
-  protectedNotify(ListViews::EVENT, ListViews::DELETE, deletedKey);
+  protectedNotify(ListViews::EVENT, ListViews::DELETE, mKey);
 }
 
 /// Slot to create a new event; activated whenever the New button is clicked
-void CQEventWidget1::slotBtnNewClicked()
+void CQEventWidget1::slotBtnNew()
 {
   // save the current setting values
   saveToEvent();
@@ -129,18 +99,6 @@ void CQEventWidget1::slotBtnNewClicked()
   protectedNotify(ListViews::EVENT, ListViews::ADD, key);
   enter(key);
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
-}
-
-/*! Slot to go back to the previous values of the active event widget whenever the Revert button is clicked */
-void CQEventWidget1::slotBtnRevertClicked()
-{
-  loadFromEvent();
-}
-
-/*! Slot to change the event name */
-void CQEventWidget1::slotNameChanged()
-{
-  std::string rName = TO_UTF8(mpLineEditName->text());
 }
 
 /*! */
@@ -226,9 +184,6 @@ bool CQEventWidget1::loadFromEvent()
     dynamic_cast< const CModel * >(mpEvent->getObjectAncestor("Model"));
 
   if (pModel == NULL) return false;
-
-  // *** Name
-  mpLineEditName->setText(FROM_UTF8(mpEvent->getObjectName()));
 
   // *** Expression of Trigger
   mpExpressionTrigger->mpExpressionWidget->setExpression(mpEvent->getTriggerExpression());
@@ -321,27 +276,6 @@ void CQEventWidget1::saveToEvent()
     dynamic_cast< const CModel * >(mpEvent->getObjectAncestor("Model"));
 
   if (pModel == NULL) return;
-
-  // set name of event
-  if (mpEvent->getObjectName() != TO_UTF8(mpLineEditName->text()))
-    {
-      if (!mpEvent->setObjectName(TO_UTF8(mpLineEditName->text())))  // the new name is rejected as it has been used
-        {
-          QString msg;
-          msg = "Unable to rename event '" + FROM_UTF8(mpEvent->getObjectName()) + "'\n"
-                + "to '" + mpLineEditName->text() + "' since an event with that name already exists.\n";
-
-          CQMessageBox::information(this, "Unable to rename Event", msg,
-                                    QMessageBox::Ok, QMessageBox::Ok);
-
-          mpLineEditName->setText(FROM_UTF8(mpEvent->getObjectName()));
-        }
-      else  // the new name is accepted
-        {
-          protectedNotify(ListViews::EVENT, ListViews::RENAME, mKey);
-          mChanged = true;
-        }
-    }
 
   if (mpEvent->getTriggerExpression() != mpExpressionTrigger->mpExpressionWidget->getExpression())
     {

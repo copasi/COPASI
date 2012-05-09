@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.264 $
+#   $Revision: 1.265 $
 #   $Name:  $
-#   $Author: ssahle $
-#   $Date: 2012/05/03 14:48:35 $
+#   $Author: shoops $
+#   $Date: 2012/05/09 21:32:16 $
 # End CVS Header
 
 # Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.264 $ $Author: ssahle $ $Date: 2012/05/03 14:48:35 $
+# $Revision: 1.265 $ $Author: shoops $ $Date: 2012/05/09 21:32:16 $
 ######################################################################
 
 LIB = UI
@@ -87,6 +87,7 @@ HEADERS	+= \
   CQSplashWidget.h \
   CQStartValueReset.h \
   CQSteadyStateResult.h \
+  CQTabWidget.h \
   CQTaskBtnWidget.h \
   CQTaskHeaderWidget.h \
   CQTaskMethodWidget.h \
@@ -160,7 +161,6 @@ HEADERS	+= \
   CQValidator.h \
   CScanContainerWidget.h \
   CScanItemData.h \
-  CTabWidget.h \
   DataModelGUI.h \
   DataModel.txt.h \
   listviews.h \
@@ -235,6 +235,7 @@ SOURCES	+= \
   CQSplashWidget.cpp \
   CQStartValueReset.cpp \
   CQSteadyStateResult.cpp \
+  CQTabWidget.cpp \
   CQTaskBtnWidget.cpp \
   CQTaskHeaderWidget.cpp \
   CQTaskMethodWidget.cpp \
@@ -307,7 +308,6 @@ SOURCES	+= \
   CQValidator.cpp \
   CScanContainerWidget.cpp \
   CScanItemData.cpp \
-  CTabWidget.cpp \
   DataModelGUI.cpp \
   listviews.cpp \
   MyLineEdit.cpp \
@@ -377,6 +377,7 @@ FORMS += CQSpeciesWidget.ui
 FORMS += CQSplashWidget.ui
 FORMS += CQStartValueReset.ui
 FORMS += CQSteadyStateResult.ui
+FORMS += CQTabWidget.ui
 FORMS += CQTaskBtnWidget.ui
 FORMS += CQTaskHeaderWidget.ui
 FORMS += CQTaskMethodWidget.ui

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQBrowserPaneDM.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/03 13:42:22 $
+//   $Date: 2012/05/09 21:32:18 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -299,7 +299,7 @@ void CQBrowserPaneDM::setGuiDM(const DataModelGUI * pDataModel)
 {
   if (mpGuiDM)
     {
-      disconnect(mpGuiDM, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const std::string &)),
+      disconnect(mpGuiDM, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, std::string)),
                  this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const std::string &)));
     }
 
@@ -307,8 +307,8 @@ void CQBrowserPaneDM::setGuiDM(const DataModelGUI * pDataModel)
 
   if (mpGuiDM)
     {
-      connect(mpGuiDM, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const std::string &)),
-              this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const std::string &)));
+      connect(mpGuiDM, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, std::string)),
+              this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, std::string)));
     }
 }
 
@@ -489,7 +489,7 @@ void CQBrowserPaneDM::load(const size_t & id)
     }
 }
 
-bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Action action, std::string key)
 {
   if (key == "")
     {
@@ -542,6 +542,8 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
             case ListViews::PLOT:
             case ListViews::REPORT:
             case ListViews::FUNCTION:
+            case ListViews::LAYOUT:
+            case ListViews::PARAMETERSET:
               rename(key, DisplayRole);
               break;
 
@@ -557,43 +559,23 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
         switch (objectType)
           {
             case ListViews::COMPARTMENT:
-              remove(key);
-              break;
-
             case ListViews::METABOLITE:
-              remove(key);
-              break;
-
             case ListViews::REACTION:
-              remove(key);
-              break;
-
             case ListViews::MODELVALUE:
-              remove(key);
-              break;
-
             case ListViews::EVENT:
-              remove(key);
-              break;
-
             case ListViews::PLOT:
-              remove(key);
-              break;
-
             case ListViews::REPORT:
+            case ListViews::FUNCTION:
+            case ListViews::LAYOUT:
+            case ListViews::PARAMETERSET:
               remove(key);
               break;
 
-            case ListViews::FUNCTION:
-              remove(key);
-              break;
 
             default:
               break;
           }
 
-        break;
-        remove(key);
         break;
 
       case ListViews::ADD:

@@ -1,13 +1,13 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.211 $
-//   $Revision: 1.211 $
+//   $Revision: 1.212 $
+//   $Revision: 1.212 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/13 19:21:57 $
+//   $Date: 2012/05/09 21:32:16 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -42,7 +42,6 @@
 #include "ChemEqValidator.h"
 #include "FunctionWidget1.h"
 #include "CQMessageBox.h"
-#include "CTabWidget.h"
 
 #include "utilities/CCopasiVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -73,11 +72,6 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
   ReactionsWidget1Layout->setSpacing(6);
   ReactionsWidget1Layout->setObjectName("ReactionsWidget1Layout");
 
-  TextLabel4 = new QLabel(this, "TextLabel4");
-  TextLabel4->setText(trUtf8("Name"));
-  TextLabel4->setAlignment(int(Qt::AlignVCenter
-                               | Qt::AlignRight));
-  ReactionsWidget1Layout->addWidget(TextLabel4, 0, 0);
 
   TextLabel7 = new QLabel(this, "TextLabel7");
   TextLabel7->setText(trUtf8("Symbol Definition"));
@@ -85,49 +79,11 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
                                | Qt::AlignRight));
   ReactionsWidget1Layout->addWidget(TextLabel7, 8, 0);
 
-  //Buttons:
-  Layout1 = new QHBoxLayout(0);
-  Layout1->setMargin(0);
-  Layout1->setSpacing(6);
-  Layout1->setObjectName("Layout1");
-
-  commitChanges = new QPushButton(this, "commitChanges");
-  commitChanges->setText(trUtf8("Commit"));
-  Layout1->addWidget(commitChanges);
-
-  cancelChanges = new QPushButton(this, "cancelChanges");
-  cancelChanges->setText(trUtf8("Revert"));
-  Layout1->addWidget(cancelChanges);
-
-  newReaction = new QPushButton(this, "newReaction");
-  newReaction->setText(trUtf8("&New"));
-  Layout1->addWidget(newReaction);
-
-  deleteReaction = new QPushButton(this, "deleteReaction");
-  deleteReaction->setText(trUtf8("&Delete"));
-  Layout1->addWidget(deleteReaction);
-
-  ReactionsWidget1Layout->addMultiCellLayout(Layout1, 11, 11, 0, 3);
-
-  //
-
   Line2 = new QFrame(this, "Line2");
   Line2->setFrameShape(QFrame::HLine);
   Line2->setFrameShadow(QFrame::Sunken);
   Line2->setFrameShape(QFrame::HLine);
   ReactionsWidget1Layout->addMultiCellWidget(Line2, 7, 7, 0, 3);
-
-  /*Line1 = new QFrame(this, "Line1");
-  Line1->setFrameShape(QFrame::HLine);
-  Line1->setFrameShadow(QFrame::Sunken);
-  Line1->setFrameShape(QFrame::HLine);
-  ReactionsWidget1Layout->addMultiCellWidget(Line1, 11, 11, 0, 3);*/
-
-  /*Line3 = new QFrame(this, "Line3");
-  Line3->setFrameShape(QFrame::HLine);
-  Line3->setFrameShadow(QFrame::Sunken);
-  Line3->setFrameShape(QFrame::HLine);
-  ReactionsWidget1Layout->addMultiCellWidget(Line3, 1, 1, 0, 3);*/
 
   // kinetics line
   TextLabel6 = new QLabel(this, "TextLabel6");
@@ -152,10 +108,6 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
   LineEdit3 = new QLineEdit(this, "LineEdit3");
   LineEdit3->setEnabled(false);
   ReactionsWidget1Layout->addMultiCellWidget(LineEdit3, 6, 6, 1, 2);
-
-  //name
-  LineEdit1 = new MyLineEdit(this, "LineEdit1");
-  ReactionsWidget1Layout->addMultiCellWidget(LineEdit1, 0, 0, 1, 3);
 
   // equation line
   TextLabel5 = new QLabel(this, "TextLabel5");
@@ -192,28 +144,17 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
   ReactionsWidget1Layout->addItem(spacer, 10, 0);
   //ReactionsWidget1Layout->setRowStretch(10,1);
 
-  setTabOrder(LineEdit1, LineEdit2);
   setTabOrder(LineEdit2, CheckBox);
   setTabOrder(CheckBox, mpMultiCompartment);
   setTabOrder(mpMultiCompartment, ComboBox1);
   setTabOrder(ComboBox1, newKinetics);
   setTabOrder(newKinetics, table);
-  setTabOrder(table, commitChanges);
-  setTabOrder(commitChanges, cancelChanges);
-  setTabOrder(cancelChanges, newReaction);
-  setTabOrder(newReaction, deleteReaction); //TODO !!!!!
-
-  connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
-  connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
-  connect(newReaction, SIGNAL(clicked()), this, SLOT(slotBtnNewClicked()));
-  connect(deleteReaction, SIGNAL(clicked()), this, SLOT(slotBtnDeleteClicked()));
 
   connect(newKinetics, SIGNAL(clicked()), this, SLOT(slotNewFunction()));
 
   connect(CheckBox, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
   connect(ComboBox1, SIGNAL(activated(const QString &)), this, SLOT(slotComboBoxSelectionChanged(const QString &)));
   connect(LineEdit2, SIGNAL(edited()), this, SLOT(slotLineEditChanged()));
-  connect(LineEdit1, SIGNAL(edited()), this, SLOT(slotNameChanged()));
 
   //connect(table, SIGNAL(signalChanged(int, int, Qstring)), this, SLOT(slotTableChanged(int, int, QString)));
 }
@@ -260,7 +201,7 @@ bool ReactionsWidget1::saveToReaction()
 
   if (pModel == NULL) return false;
 
-  size_t ReactionIndex = pModel->getReactions().getIndex(mpRi->getReactionName());
+  size_t ReactionIndex = pModel->getReactions().getIndex(mpObject->getObjectName());
 
   // Before we save any changes we must check whether any local reaction parameters,
   // which are used in any mathematical expression in the model are removed.
@@ -310,30 +251,9 @@ bool ReactionsWidget1::saveToReaction()
 
   if (reac == NULL)
     {
-      size_t size = pModel->getReactions().size();
-
       mpRi->setFunctionWithEmptyMapping("");
 
-      std::string deletedKey = mKey;
-
-      QObject *pParent = parent();
-      CTabWidget * pTabWidget = NULL;
-
-      while (pParent != NULL &&
-             (pTabWidget = dynamic_cast< CTabWidget *>(pParent)) == NULL)
-        {
-          pParent = pParent->parent();
-        }
-
-      if (pTabWidget != NULL)
-        {
-          if (size > 0)
-            pTabWidget->enter(pModel->getReactions()[std::min(ReactionIndex, size - 1)]->getKey());
-          else
-            pTabWidget->enter("");
-        }
-
-      protectedNotify(ListViews::REACTION, ListViews::DELETE, deletedKey);
+      protectedNotify(ListViews::REACTION, ListViews::DELETE, mKey);
       protectedNotify(ListViews::REACTION, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
       return true;
     }
@@ -342,28 +262,8 @@ bool ReactionsWidget1::saveToReaction()
   bool createdMetabs = mpRi->createMetabolites();
   bool createdObjects = mpRi->createOtherObjects();
 
-  mpRi->setReactionName(TO_UTF8(LineEdit1->text()));
-
   //this writes all changes to the reaction
-  if (!mpRi->writeBackToReaction(NULL))
-    {
-      CCopasiObject * pReaction = CCopasiRootContainer::getKeyFactory()->get(mKey);
-
-      if (mpRi->getReactionName() != pReaction->getObjectName())
-        {
-          QString msg;
-          msg = "Unable to rename reaction '" + FROM_UTF8(reac->getObjectName()) + "'\n"
-                + "to '" + FROM_UTF8(mpRi->getReactionName()) + "' since a reation with that name already exists.";
-
-          CQMessageBox::information(this,
-                                    "Unable to rename Reaction",
-                                    msg,
-                                    QMessageBox::Ok, QMessageBox::Ok);
-
-          mpRi->setReactionName(reac->getObjectName());
-          LineEdit1->setText(FROM_UTF8(mpRi->getReactionName()));
-        }
-    }
+  mpRi->writeBackToReaction(NULL);
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   //(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->compile();
@@ -387,22 +287,6 @@ bool ReactionsWidget1::saveToReaction()
     (*CCopasiRootContainer::getDatamodelList())[0]->changed();
 
   return true;
-}
-
-void ReactionsWidget1::slotBtnCancelClicked()
-{enter(mKey);}
-
-void ReactionsWidget1::slotBtnOKClicked()
-{
-  // This assures that even the last edit is recognized.
-  commitChanges->setFocus();
-
-  saveToReaction();
-  CReaction* reac = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
-
-  if (reac == NULL) return;
-
-  loadFromReaction(reac);
 }
 
 void ReactionsWidget1::slotCheckBoxClicked()
@@ -448,17 +332,9 @@ void ReactionsWidget1::slotLineEditChanged()
   FillWidgetFromRI();
 }
 
-void ReactionsWidget1::slotNameChanged()
-{
-  std::string rName = TO_UTF8(LineEdit1->text());
-  mpRi->setReactionName(rName);
-}
-
 // added 5/19/04
-void ReactionsWidget1::slotBtnNewClicked()
+void ReactionsWidget1::slotBtnNew()
 {
-  slotBtnOKClicked();
-
   std::string name = "reaction";
   size_t i = 0;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -479,7 +355,7 @@ void ReactionsWidget1::slotBtnNewClicked()
 }
 
 // Just added 5/18/04
-void ReactionsWidget1::slotBtnDeleteClicked()
+void ReactionsWidget1::slotBtnDelete()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -503,35 +379,11 @@ void ReactionsWidget1::slotBtnDeleteClicked()
     {
       case QMessageBox::Ok:                                                     // Yes or Enter
       {
-        size_t index
-        = pDataModel->getModel()->getReactions().getIndex(mpRi->getReactionName());
-
         pDataModel->getModel()->removeReaction(mKey);
-        std::string deletedKey = mKey;
-
-        size_t size
-        = pDataModel->getModel()->getReactions().size();
 
         mpRi->setFunctionWithEmptyMapping("");
 
-        QObject *pParent = parent();
-        CTabWidget * pTabWidget = NULL;
-
-        while (pParent != NULL &&
-               (pTabWidget = dynamic_cast< CTabWidget *>(pParent)) == NULL)
-          {
-            pParent = pParent->parent();
-          }
-
-        if (pTabWidget != NULL)
-          {
-            if (size > 0)
-              pTabWidget->enter(pDataModel->getModel()->getReactions()[std::min(index, size - 1)]->getKey());
-            else
-              pTabWidget->enter("");
-          }
-
-        protectedNotify(ListViews::REACTION, ListViews::DELETE, deletedKey);
+        protectedNotify(ListViews::REACTION, ListViews::DELETE, mKey);
         protectedNotify(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
         break;
       }
@@ -542,8 +394,6 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
 void ReactionsWidget1::FillWidgetFromRI()
 {
-  LineEdit1->setText(FROM_UTF8(mpRi->getReactionName()));
-
   LineEdit2->setText(FROM_UTF8(mpRi->getChemEqString()));
 
   setFramework(mFramework);
@@ -584,8 +434,6 @@ void ReactionsWidget1::FillWidgetFromRI()
       table->initTable();
     }
 
-  //TODO isValid()
-  commitChanges->setEnabled(mpRi->isValid());
 }
 
 void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
@@ -643,7 +491,7 @@ void ReactionsWidget1::slotNewFunction()
   // fw->show();
   // TODO: we could think about calling the function widget as a dialogue here...
 
-  std::string name = std::string("Rate Law for ") + TO_UTF8(LineEdit1->text());
+  std::string name = std::string("Rate Law for ") + mpObject->getObjectName();
   std::string nname = name;
   size_t i = 0;
   CCopasiVectorN<CFunction>& FunctionList
@@ -686,9 +534,6 @@ bool ReactionsWidget1::update(ListViews::ObjectType objectType,
 
 bool ReactionsWidget1::leave()
 {
-  // We make sure that any current pending editing is commSitted.
-  commitChanges->setFocus();
-
   saveToReaction();
   return true; //always return true. That means that the widget can be
   //left without saving

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.h,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/17 13:10:18 $
+//   $Date: 2012/05/09 21:32:16 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -58,14 +58,11 @@ private:
   void save();
 
 private slots:
-  void slotBtnCommit();
-  void slotBtnRevert();
   void slotBtnNew();
   void slotBtnDelete();
   void slotTypeChanged(int type);
   void slotExpressionValid(bool valid);
   void slotInitialExpressionValid(bool valid);
-  void slotNameLostFocus();
   void slotInitialTypeChanged(bool useInitialAssignment);
 };
 

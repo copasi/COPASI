@@ -2,22 +2,18 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $ </comment>
-<comment>   $Revision: 1.11 $ </comment>
-<comment>   $Name:  $ </comment>
+<comment>   $Revision: 1.18 $ </comment>
+<comment>   $Name: HEAD $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2009/07/14 11:09:51 $ </comment>
+<comment>   $Date: 2012/03/07 20:49:51 $ </comment>
 <comment> End CVS Header </comment>
 
-<comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
-<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
-<comment> and The University of Manchester. </comment>
-<comment> All rights reserved. </comment>
-
+ <comment> All rights reserved. </comment>
  <class>CQExpressionMmlStackedWidget</class>
  <widget class="QStackedWidget" name="CQExpressionMmlStackedWidget">
   <property name="geometry">
@@ -36,6 +32,9 @@
   </property>
   <widget class="QWidget" name="mpExpressionPage">
    <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="margin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="CQExpressionWidget" name="mpExpressionWidget"/>
     </item>
@@ -86,6 +85,9 @@
   </widget>
   <widget class="QWidget" name="mpMmlPage">
    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <property name="margin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="CQMmlScrollView" name="mpMmlScrollView">
       <property name="sizePolicy">

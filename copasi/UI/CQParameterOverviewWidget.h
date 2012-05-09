@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQParameterOverviewWidget.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/30 18:01:35 $
+//   $Date: 2012/05/09 21:32:17 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -39,6 +39,8 @@ private:
 protected:
 
 protected slots:
+  virtual void slotBtnNew();
+  virtual void slotBtnDelete();
   virtual void slotBtnSave();
   virtual void dataChanged(const QModelIndex& topLeft,
                            const QModelIndex& bottomRight);

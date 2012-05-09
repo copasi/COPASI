@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.178 $
+//   $Revision: 1.179 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 22:46:35 $
+//   $Author: shoops $
+//   $Date: 2012/05/09 21:32:15 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,7 @@
 
 #include "copasi.h"
 
-class CTabWidget;
+class CQTabWidget;
 class CQBrowserPane;
 class CQBrowserPaneDM;
 
@@ -111,6 +111,8 @@ class ListViews : public QSplitter
   friend class CopasiUI3Window;
 
 public:
+  static const std::string ObjectTypeName[];
+
   ListViews(QWidget *parent = 0, const char *name = 0);
   virtual ~ListViews();
 
@@ -131,6 +133,8 @@ public:
                    , EVENT
                    , MIRIAM
                    , LAYOUT
+                   , PARAMETERSET
+
                   };
 
   void setDataModel(DataModelGUI* pDM);
@@ -171,7 +175,7 @@ public slots:
   void slotFolderChanged(const QModelIndex & index);
 
 private slots:
-  bool slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
+  bool slotNotify(ListViews::ObjectType objectType, ListViews::Action action, std::string key = "");
   void slotSort(const QModelIndex & index1, const QModelIndex & index2);
 
 private:
@@ -196,20 +200,20 @@ private:
   CQLNAWidget* mpCQLNAWidget;
   CLNAResultWidget* mpCLNAResultWidget;
   CQCompartmentsWidget *mpCompartmentsWidget;
-  CTabWidget *compartmentsWidget1;
+  CQTabWidget *compartmentsWidget1;
   CQSplashWidget *defaultWidget;
   CQDifferentialEquations *differentialEquations;
   CQEventsWidget *eventsWidget;
-  CTabWidget *eventWidget1;
+  CQTabWidget *eventWidget1;
   CQFunctionsWidget *mpFunctionsWidget;
-  CTabWidget *functionWidget1;
+  CQTabWidget *functionWidget1;
   CQLyapWidget *lyapWidget;
   CQLyapResultWidget *lyapResultWidget;
   CQSpeciesWidget *mpSpeciesWidget;
-  CTabWidget *metabolitesWidget1;
-  CTabWidget *modelWidget;
+  CQTabWidget *metabolitesWidget1;
+  CQTabWidget *modelWidget;
   CQGlobalQuantitiesWidget *mpGlobalQuantitiesWidget;
-  CTabWidget *mpModelValueWidget;
+  CQTabWidget *mpModelValueWidget;
   CQEFMWidget *mpEFMWidget;
   CQEFMResultWidget *mpEFMResultWidget;
   CQMoietiesTaskResult *mpMoietiesTaskResult;
@@ -219,11 +223,11 @@ private:
   CQFittingWidget *paramFittingWidget;
   CQFittingResult *mpFittingResultWidget;
   ParametersWidget *parametersWidget;
-  CTabWidget * mpParameterOverviewWidget;
+  CQTabWidget * mpParameterOverviewWidget;
   CQPlotsWidget *mpPlotsWidget;
   PlotSubwidget *mpPlotSubwidget;
   CQReactionsWidget *mpReactionsWidget;
-  CTabWidget *reactionsWidget1;
+  CQTabWidget *reactionsWidget1;
   ScanWidget *scanWidget;
   SensitivitiesWidget *sensWidget;
   CQSensResultWidget *sensResultWidget;

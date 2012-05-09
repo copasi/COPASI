@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskMethodWidget.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/01/06 19:13:44 $
+//   $Date: 2012/05/09 21:32:18 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -83,7 +83,7 @@ void CQTaskMethodWidget::setValidMethods(const unsigned int * validMethods)
   unsigned C_INT32 i;
 
   for (i = 0; validMethods[i] != CCopasiMethod::unset; i++)
-    mpBoxMethod->insertItem(mpBoxMethod->count(), QString::fromUtf8(CCopasiMethod::SubTypeName[validMethods[i]]));
+    mpBoxMethod->insertItem(mpBoxMethod->count(), FROM_UTF8(CCopasiMethod::SubTypeName[validMethods[i]]));
 
   if (i > 0)
     {
@@ -127,7 +127,7 @@ bool CQTaskMethodWidget::loadMethod()
 
   if (mShowMethods)
     {
-      mpBoxMethod->setCurrentIndex(mpBoxMethod->findText(QString::fromUtf8(CCopasiMethod::SubTypeName[mpMethod->getSubType()])));
+      mpBoxMethod->setCurrentIndex(mpBoxMethod->findText(FROM_UTF8(CCopasiMethod::SubTypeName[mpMethod->getSubType()])));
     }
 
   if (mShowMethodParameters)

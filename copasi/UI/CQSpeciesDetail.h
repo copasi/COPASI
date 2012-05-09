@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesDetail.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:39:39 $
+//   $Date: 2012/05/09 21:32:17 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -59,8 +59,6 @@ private:
   void loadReactionTable();
 
 private slots:
-  void slotBtnCommit();
-  void slotBtnRevert();
   void slotBtnNew();
   void slotBtnDelete();
   void slotCompartmentChanged(int compartment);

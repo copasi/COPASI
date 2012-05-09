@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesDetail.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/13 19:22:00 $
+//   $Date: 2012/05/09 21:32:18 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,7 +19,6 @@
 #include "CQSpeciesDetail.h"
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
-#include "CTabWidget.h"
 
 #include "model/CModel.h"
 #include "model/CChemEqInterface.h"
@@ -77,24 +76,20 @@ CQSpeciesDetail::~CQSpeciesDetail()
 
 bool CQSpeciesDetail::leave()
 {
-  // This is now always enabled, i.e., a save is always performed!
-  if (mpBtnCommit->isEnabled())
+  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::FIXED &&
+      (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::REACTIONS)
     {
-      if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::FIXED &&
-          (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::REACTIONS)
-        {
-          // -- Expression --
-          mpExpressionEMW->updateWidget();
-        }
-
-      if (mpBoxUseInitialExpression->isChecked())
-        {
-          // -- Initial Expression --
-          mpInitialExpressionEMW->updateWidget();
-        }
-
-      save();
+      // -- Expression --
+      mpExpressionEMW->updateWidget();
     }
+
+  if (mpBoxUseInitialExpression->isChecked())
+    {
+      // -- Initial Expression --
+      mpInitialExpressionEMW->updateWidget();
+    }
+
+  save();
 
   return true;
 }
@@ -277,9 +272,6 @@ void CQSpeciesDetail::load()
   // Update the labels to reflect the model units
   mpLblTransitionTime->setText("Transition Time " + TimeUnits);
 
-  // Name
-  mpEditName->setText(FROM_UTF8(mpMetab->getObjectName()));
-
   // Compartment
   const CCopasiVectorNS< CCompartment > & Compartments = pModel->getCompartments();
   const CCompartment * pCompartment;
@@ -351,29 +343,6 @@ void CQSpeciesDetail::save()
   CModel * pModel = const_cast< CModel * >(mpMetab->getModel());
 
   if (pModel == NULL) return;
-
-  // Name
-  if (mpMetab->getObjectName() != TO_UTF8(mpEditName->text()))
-    {
-      if (!mpMetab->setObjectName(TO_UTF8(mpEditName->text())))
-        {
-          QString msg;
-          msg = "Unable to rename species '" + FROM_UTF8(mpMetab->getObjectName()) + "'\n"
-                + "to '" + mpEditName->text() + "' since a species with that name already exists.\n";
-
-          CQMessageBox::information(this,
-                                    "Unable to rename Species",
-                                    msg,
-                                    QMessageBox::Ok, QMessageBox::Ok);
-
-          mpEditName->setText(FROM_UTF8(mpMetab->getObjectName()));
-        }
-      else
-        {
-          protectedNotify(ListViews::METABOLITE, ListViews::RENAME, mKey);
-          mChanged = true;
-        }
-    }
 
   // Compartment
   if (mpCurrentCompartment != mpMetab->getCompartment())
@@ -498,13 +467,6 @@ void CQSpeciesDetail::loadReactionTable()
   return;
 }
 
-void CQSpeciesDetail::slotBtnCommit()
-{
-  mpBtnCommit->setFocus();
-  save();
-  load();
-}
-
 void CQSpeciesDetail::slotBtnDelete()
 {
   if (mpMetab == NULL) return;
@@ -522,34 +484,10 @@ void CQSpeciesDetail::slotBtnDelete()
     {
       case QMessageBox::Ok:
       {
-        size_t index =
-          pModel->getMetabolites().getIndex(CCopasiRootContainer::getKeyFactory()->get(mKey));
-
         pModel->removeMetabolite(mKey);
-        std::string deletedKey = mKey;
-
-        size_t size =
-          pModel->getMetabolites().size();
-
-        QObject *pParent = parent();
-        CTabWidget * pTabWidget = NULL;
-
-        while (pParent != NULL &&
-               (pTabWidget = dynamic_cast< CTabWidget *>(pParent)) == NULL)
-          {
-            pParent = pParent->parent();
-          }
-
-        if (pTabWidget != NULL)
-          {
-            if (size > 0)
-              pTabWidget->enter(pModel->getMetabolites()[std::min(index, size - 1)]->getKey());
-            else
-              pTabWidget->enter("");
-          }
 
 #undef DELETE
-        protectedNotify(ListViews::METABOLITE, ListViews::DELETE, deletedKey);
+        protectedNotify(ListViews::METABOLITE, ListViews::DELETE, mKey);
         protectedNotify(ListViews::METABOLITE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
         //TODO notify about reactions
         break;
@@ -603,11 +541,6 @@ void CQSpeciesDetail::slotBtnNew()
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
-void CQSpeciesDetail::slotBtnRevert()
-{
-  load();
-}
-
 void CQSpeciesDetail::slotCompartmentChanged(int compartment)
 {
   if (!mpMetab || !mpCurrentCompartment) return;
@@ -635,21 +568,17 @@ void CQSpeciesDetail::slotCompartmentChanged(int compartment)
 void CQSpeciesDetail::slotExpressionValid(bool valid)
 {
   mExpressionValid = valid;
-  mpBtnCommit->setEnabled(mExpressionValid && mInitialExpressionValid);
 }
 
 void CQSpeciesDetail::slotInitialExpressionValid(bool valid)
 {
   mInitialExpressionValid = valid;
-  mpBtnCommit->setEnabled(mExpressionValid && mInitialExpressionValid);
 }
 
 void CQSpeciesDetail::slotInitialTypeChanged(bool useInitialExpression)
 {
   if (useInitialExpression)
     {
-      gridLayout->addWidget(mpLblInitialExpression, 5, 0);
-
       mpLblInitialExpression->show();
       mpInitialExpressionEMW->show();
 
@@ -658,8 +587,6 @@ void CQSpeciesDetail::slotInitialTypeChanged(bool useInitialExpression)
     }
   else
     {
-      gridLayout->removeWidget(mpLblInitialExpression);
-
       mpLblInitialExpression->hide();
       mpInitialExpressionEMW->hide();
 
