@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.78 $
+//   $Revision: 1.79 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/16 18:07:44 $
+//   $Author: bergmann $
+//   $Date: 2012/05/09 08:52:56 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -379,16 +379,6 @@ CCopasiObject * CModelEntity::getRateReference() const
 
 void CModelEntity::setValue(const C_FLOAT64 & value)
 {
-#ifdef COPASI_DEBUG
-
-  if (mStatus == FIXED)
-    {
-      std::cout << "a FIXED CModelEntity value was changed" << std::endl;
-      std::cout << "   " << getObjectDisplayName() << " to " << value << std::endl;
-    }
-
-#endif
-
   *mpValue = value;
 }
 
