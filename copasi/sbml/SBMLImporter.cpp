@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.282 $
+//   $Revision: 1.283 $
 //   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/04/30 07:21:30 $
+//   $Author: shoops $
+//   $Date: 2012/05/09 21:28:02 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -808,7 +808,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       title = "NoName";
     }
 
-  this->mpCopasiModel->setTitle(title.c_str());
+  this->mpCopasiModel->setObjectName(title.c_str());
 #if LIBSBML_VERSION >= 40100
   // fill the set of SBML species reference ids because
   // we need this to check for references to species references in all expressions
