@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeDelay.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:10:23 $
+//   $Date: 2012/05/09 21:25:31 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -208,7 +208,6 @@ void CEvaluationNodeDelay::writeMathML(std::ostream & out,
         out << SPC(l) << "<mrow>" << std::endl;
 
         out << SPC(l + 1) << "<mi>" << mData << "</mi>" << std::endl;
-        out << SPC(l + 1) << "<mo> &ApplyFunction; </mo>" << std::endl;
         out << SPC(l + 1) << "<mrow>" << std::endl;
         out << SPC(l + 2) << "<mo> (</mo>" << std::endl;
         out << SPC(l + 2) << "<mrow>" << std::endl;
