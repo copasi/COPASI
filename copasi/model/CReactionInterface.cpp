@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/11 17:53:00 $
+//   $Date: 2012/05/09 21:26:57 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -98,9 +98,6 @@ void CReactionInterface::initFromReaction(const C_INT32 index)
 
 void CReactionInterface::initFromReaction(const CReaction *rea)
 {
-  //name
-  mReactionName = rea->getObjectName();
-
   //chemical equation
   mChemEqI.loadFromChemEq(rea->getChemEq());
 
@@ -118,10 +115,6 @@ void CReactionInterface::initFromReaction(const CReaction *rea)
     {
       setFunctionWithEmptyMapping("");
     }
-
-#ifdef COPASI_DEBUG
-  printDebug();
-#endif // COPASI_DEBUG
 }
 
 bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
@@ -229,9 +222,6 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea)
     rea = dynamic_cast< CReaction *>(CCopasiRootContainer::getKeyFactory()->get(mReactionReferenceKey));
 
   if (rea == NULL) return false;
-
-  if (!rea->setObjectName(mReactionName))
-    success = false;
 
   // Now we can safely write to the equation as we are sure that only unique metabolites
   // may have the empty string as compartments
@@ -943,7 +933,6 @@ bool CReactionInterface::isValid() const
 void CReactionInterface::printDebug() const
 {
   std::cout << "Reaction interface   " << std::endl;
-  std::cout << " Reaction:   " << getReactionName() << std::endl;
   std::cout << "  Function: " << getFunctionName() << std::endl;
   std::cout << "  ChemEq:   " << getChemEqString() << std::endl;
 

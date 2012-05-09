@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:30:50 $
+//   $Date: 2012/05/09 21:26:57 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -62,11 +62,6 @@ private:
   std::string mReactionReferenceKey;
 
   /**
-   * The name of the reaction (which may change)
-   */
-  std::string mReactionName;
-
-  /**
    * A copy of the chemical equation of the reaction
    */
   CChemEqInterface mChemEqI;
@@ -103,9 +98,6 @@ public:
   CReactionInterface(CModel * pModel);
 
   ~CReactionInterface();
-
-  void setReactionName(const std::string & name) {mReactionName = name;};
-  const std::string & getReactionName() const {return mReactionName;};
 
   /**
    * set a new chemical equation.
