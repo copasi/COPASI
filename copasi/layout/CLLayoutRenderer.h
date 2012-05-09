@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/11/09 15:04:58 $
+//   $Author: bergmann $
+//   $Date: 2012/05/09 13:52:35 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -59,6 +59,13 @@ class CLTransform;
 class CModel;
 struct CLTextureSpec;
 struct CLTextTextureSpec;
+
+
+#ifdef _WIN32
+#define STD_CALL _stdcall
+#else
+#define STD_CALL
+#endif
 
 class CLLayoutRenderer
 {
@@ -206,7 +213,7 @@ protected:
   // in the renderer
   // Maybe all this dynamic function initialization should
   // be moved to some global place
-  void(*mpGlFogCoordfEXT)(GLfloat);
+  void(STD_CALL *mpGlFogCoordfEXT)(GLfloat);
 #endif // ELEMENTARY_MODE_DISPLAY
 
 

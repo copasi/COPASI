@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 23:14:03 $
+//   $Author: bergmann $
+//   $Date: 2012/05/09 13:52:35 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,6 +13,7 @@
 
 #ifdef WIN32
 # define _USE_MATH_DEFINES
+#pragma comment(lib,"opengl32.lib")
 #endif
 
 #include <limits>
@@ -7062,7 +7063,7 @@ void CLLayoutRenderer::initialize_gl_extension_functions()
   if (std::string(extensionsString).find("GL_EXT_fog_coord") == std::string::npos) return;
 
 #ifdef _WIN32
-  mpGlFogCoordfEXT = (void(*)(GLfloat)) wglGetProcAddress("glFogCoordfEXT");
+  mpGlFogCoordfEXT = (void(_stdcall*)(GLfloat)) wglGetProcAddress("glFogCoordfEXT");
 #else
 #ifdef __APPLE__
   mpGlFogCoordfEXT = (void(*)(GLfloat)) MyNSGLGetProcAddress("glFogCoordfEXT");
