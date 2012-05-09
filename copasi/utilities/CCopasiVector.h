@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-//   $Revision: 1.90 $
+//   $Revision: 1.91 $
 //   $Name:  $
 //   $Author: bergmann $
-//   $Date: 2012/03/28 09:46:47 $
+//   $Date: 2012/05/09 13:23:40 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -238,7 +238,7 @@ public:
 
     // This is not very efficient !!!
     // It results in a lot of resizing of the vector !!!
-    push_back(Element);
+    std::vector< CType * >::push_back(Element);
     return CCopasiContainer::add(Element);
   }
 
@@ -276,7 +276,7 @@ public:
   {
     // This is not very efficient !!!
     // It results in a lot of resizing of the vector !!!
-    push_back(src);
+    std::vector< CType * >::push_back(src);
     return CCopasiContainer::add(src, adopt);
   }
 
@@ -301,7 +301,7 @@ public:
         else
           {
             CCopasiContainer::remove(*Target);
-            erase(Target, Target + 1);
+            std::vector< CType * >::erase(Target, Target + 1);
           }
       }
   }
@@ -320,7 +320,7 @@ public:
     if (index != C_INVALID_INDEX)
       {
         iterator Target = begin() + index;
-        erase(Target, Target + 1);
+        std::vector< CType * >::erase(Target, Target + 1);
       }
     else
       success = false;
@@ -641,7 +641,7 @@ public:
     if (Element == NULL)
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, sizeof(CType));
 
-    push_back(Element);
+    std::vector< CType * >::push_back(Element);
     return CCopasiContainer::add(Element);
   }
 
@@ -663,7 +663,7 @@ public:
 
     // This is not very efficient !!!
     // It results in a lot of resizing of the vector !!!
-    push_back(src);
+    std::vector< CType * >::push_back(src);
     return CCopasiContainer::add(src, adopt);
   }
 
