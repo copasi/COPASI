@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.241 $
+//   $Revision: 1.242 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/04 16:10:53 $
+//   $Date: 2012/05/09 21:34:36 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1634,7 +1634,7 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         mCommon.pModel->getModelParameterSets().CCopasiVector< CModelParameterSet >::remove((size_t) 0);
 
         mCommon.KeyMap.addFix(mKey, mCommon.pModel);
-        mCommon.pModel->setTitle(Name);
+        mCommon.pModel->setObjectName(Name);
         mCommon.pModel->setTimeUnit(TimeUnit);
         mCommon.pModel->setVolumeUnit(VolumeUnit);
         mCommon.pModel->setAreaUnit(AreaUnit);
