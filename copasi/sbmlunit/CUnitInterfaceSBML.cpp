@@ -6,7 +6,7 @@
 //   $Date: 2008/04/11 15:21:36 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -574,50 +574,51 @@ void CUnitInterfaceSBML::writeBackToModel()
     {
       Reaction * reaction = mpModel->getReaction(j);
 
-      for (i = 0; i < reaction->getKineticLaw()->getNumParameters(); i++)
-        {
-          Parameter *p = reaction->getKineticLaw()->getParameter(i);
+      if (reaction->getKineticLaw() != NULL)
+        for (i = 0; i < reaction->getKineticLaw()->getNumParameters(); i++)
+          {
+            Parameter *p = reaction->getKineticLaw()->getParameter(i);
 
-          CUnitInformation * tmp = getMappedUnitFromIdentifier(p->getId(), CEnvironmentInformation(reaction->getId()));
-          //TODO this could be easier directly from the map instead of using getMappedUnitFromIdentifier()
+            CUnitInformation * tmp = getMappedUnitFromIdentifier(p->getId(), CEnvironmentInformation(reaction->getId()));
+            //TODO this could be easier directly from the map instead of using getMappedUnitFromIdentifier()
 
-          //if the unit could be derived and it does not contain a symbolic exponent
-          if (tmp && tmp->getInfo() == CUnitInformation::DERIVED && tmp->getSymbolicExpExp() == 0)
-            {
-              //first try to find an equivalent unit in the model
-              unsigned int j;
+            //if the unit could be derived and it does not contain a symbolic exponent
+            if (tmp && tmp->getInfo() == CUnitInformation::DERIVED && tmp->getSymbolicExpExp() == 0)
+              {
+                //first try to find an equivalent unit in the model
+                unsigned int j;
 
-              for (j = 0; j < mpModel->getNumUnitDefinitions(); ++j)
-                if (UnitDefinition::areEquivalent(&tmp->getSBMLUnitDefinition(), mpModel->getUnitDefinition(j)))
-                  break;
+                for (j = 0; j < mpModel->getNumUnitDefinitions(); ++j)
+                  if (UnitDefinition::areEquivalent(&tmp->getSBMLUnitDefinition(), mpModel->getUnitDefinition(j)))
+                    break;
 
-              if (j < mpModel->getNumUnitDefinitions())
-                p->setUnits(mpModel->getUnitDefinition(j)->getId());
-              else
-                {
-                  //we have to create a new unit definition in the model
-                  std::string tmpstring;
-                  unsigned int id = 0;
+                if (j < mpModel->getNumUnitDefinitions())
+                  p->setUnits(mpModel->getUnitDefinition(j)->getId());
+                else
+                  {
+                    //we have to create a new unit definition in the model
+                    std::string tmpstring;
+                    unsigned int id = 0;
 
-                  do
-                    {
-                      std::ostringstream tmpid; tmpid << "unit_" << id;
-                      tmpstring = tmpid.str();
-                      ++id;
-                    }
-                  while (mpModel->getUnitDefinition(tmpstring));
+                    do
+                      {
+                        std::ostringstream tmpid; tmpid << "unit_" << id;
+                        tmpstring = tmpid.str();
+                        ++id;
+                      }
+                    while (mpModel->getUnitDefinition(tmpstring));
 
-                  tmp->getSBMLUnitDefinition().setId(tmpstring);
-                  tmp->getSBMLUnitDefinition().unsetName();
-                  tmp->getSBMLUnitDefinition().unsetMetaId();
-                  tmp->getSBMLUnitDefinition().unsetNotes();
-                  tmp->getSBMLUnitDefinition().unsetAnnotation();
-                  tmp->getSBMLUnitDefinition().unsetSBOTerm();
-                  mpModel->addUnitDefinition(&tmp->getSBMLUnitDefinition());
-                  p->setUnits(tmpstring);
-                }
-            }
-        }
+                    tmp->getSBMLUnitDefinition().setId(tmpstring);
+                    tmp->getSBMLUnitDefinition().unsetName();
+                    tmp->getSBMLUnitDefinition().unsetMetaId();
+                    tmp->getSBMLUnitDefinition().unsetNotes();
+                    tmp->getSBMLUnitDefinition().unsetAnnotation();
+                    tmp->getSBMLUnitDefinition().unsetSBOTerm();
+                    mpModel->addUnitDefinition(&tmp->getSBMLUnitDefinition());
+                    p->setUnits(tmpstring);
+                  }
+              }
+          }
     }
 
   //numbers TODO (not possible at the moment)
