@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/11/04 16:23:35 $
+//   $Date: 2012/05/10 16:27:18 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -469,14 +469,17 @@ bool CQSpecieDM::insertRows(int position, int rows, const QModelIndex&)
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
 
   if (pDataModel->getModel()->getCompartments().size() == 0)
-    pDataModel->getModel()->createCompartment("compartment");
+    {
+      pDataModel->getModel()->createCompartment("compartment");
+      emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pDataModel->getModel()->getCompartments()[0]->getKey());
+    }
 
   beginInsertRows(QModelIndex(), position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
       mpSpecies =
-        (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createMetabolite(TO_UTF8(createNewName("species", COL_NAME_SPECIES)), "", 1.0, CModelEntity::REACTIONS);
+        pDataModel->getModel()->createMetabolite(TO_UTF8(createNewName("species", COL_NAME_SPECIES)), "", 1.0, CModelEntity::REACTIONS);
 
       if (mNotify)
         {
