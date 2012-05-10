@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.283 $
+//   $Revision: 1.284 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/09 21:28:02 $
+//   $Date: 2012/05/10 19:33:53 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,8 +57,6 @@
   {\
   }
 #endif // LIBSBML_VERSION
-
-
 
 #include <sbml/KineticLaw.h>
 #include <sbml/math/FormulaFormatter.h>
@@ -2907,7 +2905,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
                                            &totalSteps);
         }
 
-      bool checkResult = sbmlDoc->checkConsistency();
+      bool checkResult = false; // sbmlDoc->checkConsistency();
 
       if (mpImportHandler) mpImportHandler->finishItem(hStep);
 
@@ -4520,45 +4518,65 @@ void SBMLImporter::replaceTimeAndAvogadroNodeNames(ASTNode* pNode)
 {
   if (!pNode) return;
 
-  if (pNode->getType() == AST_NAME_TIME)
+  unsigned int childCount;
+
+  std::pair< ASTNode *, unsigned int > current;
+  current.first = pNode;
+  current.second = 0;
+
+  std::stack< std::pair< ASTNode *, unsigned int > > NodeStack;
+  NodeStack.push(current);
+
+  while (!NodeStack.empty())
     {
-      pNode->setName(this->mpCopasiModel->getObject(CCopasiObjectName("Reference=Time"))->getCN().c_str());
-    }
+      current = NodeStack.top();
+      NodeStack.pop();
+
+      if (current.first->getType() == AST_NAME_TIME)
+        {
+          current.first->setName(this->mpCopasiModel->getObject(CCopasiObjectName("Reference=Time"))->getCN().c_str());
+        }
 
 #if LIBSBML_VERSION >= 40100
-  else if (pNode->getType() == AST_NAME_AVOGADRO)
-    {
-      pNode->setName(this->mpCopasiModel->getObject(CCopasiObjectName("Reference=Avogadro Constant"))->getCN().c_str());
-
-      // when we do this the first time, we have to set the avogadro number on the model
-      if (!this->mAvogadroSet)
+      else if (current.first->getType() == AST_NAME_AVOGADRO)
         {
-          this->mAvogadroSet = true;
-          assert(this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL);
+          current.first->setName(this->mpCopasiModel->getObject(CCopasiObjectName("Reference=Avogadro Constant"))->getCN().c_str());
 
-          if (this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL)
+          // when we do this the first time, we have to set the avogadro number on the model
+          if (!this->mAvogadroSet)
             {
-              this->mpDataModel->getModel()->setAvogadro(pNode->getReal());
-            }
+              this->mAvogadroSet = true;
+              assert(this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL);
 
-          // to be consistent, we also have to set the number on the
-          // avogadro parameter we created
-          if (this->mAvogadroCreated)
-            {
-              const_cast<Parameter*>(*this->mPotentialAvogadroNumbers.begin())->setValue(pNode->getReal());
+              if (this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL)
+                {
+                  this->mpDataModel->getModel()->setAvogadro(current.first->getReal());
+                }
+
+              // to be consistent, we also have to set the number on the
+              // avogadro parameter we created
+              if (this->mAvogadroCreated)
+                {
+                  const_cast<Parameter*>(*this->mPotentialAvogadroNumbers.begin())->setValue(current.first->getReal());
+                }
             }
         }
-    }
 
 #endif // LIBSBML_VERSION >= 40100
-  else
-    {
-      // go through all children and replace the time nodes names
-      unsigned int i, iMax = pNode->getNumChildren();
-
-      for (i = 0; i < iMax; ++i)
+      else if (current.second < (childCount = current.first->getNumChildren()))
         {
-          this->replaceTimeAndAvogadroNodeNames(dynamic_cast<ASTNode*>(pNode->getChild(i)));
+          std::pair< ASTNode *, unsigned int > child;
+
+          child.first = NULL;
+          child.second = 0;
+
+          while (child.first == NULL && current.second < childCount)
+            {
+              child.first = dynamic_cast< ASTNode * >(current.first->getChild(current.second++));
+            }
+
+          NodeStack.push(current);
+          NodeStack.push(child);
         }
     }
 }
@@ -6155,6 +6173,7 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
   // replace all the nodes that represent species with the
   // hasOnlySubstanceUnits flag set with the node multiplied by the volume
   //replaceSubstanceOnlySpeciesNodes(&tmpNode, mSubstanceOnlySpecies);
+
   this->preprocessNode(&tmpNode, pSBMLModel, copasi2sbmlmap);
   // replace the object names
   this->replaceObjectNames(&tmpNode, copasi2sbmlmap);
@@ -6348,125 +6367,148 @@ void SBMLImporter::getIdsFromNode(const ASTNode* pNode, std::set<std::string>& i
 
 void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, bool initialExpression)
 {
-  if (pNode->getType() == AST_NAME)
+  if (!pNode) return;
+
+  unsigned int childCount;
+
+  std::pair< ASTNode *, unsigned int > current;
+  current.first = pNode;
+  current.second = 0;
+
+  std::stack< std::pair< ASTNode *, unsigned int > > NodeStack;
+  NodeStack.push(current);
+
+  while (!NodeStack.empty())
     {
-      std::string name = pNode->getName();
-      // the id can either belong to a compartment, a species, a reaction or a
-      // global parameter
-      std::map<CCopasiObject*, SBase*>::const_iterator it = copasi2sbmlmap.begin();
-      std::map<CCopasiObject*, SBase*>::const_iterator endit = copasi2sbmlmap.end();
-      CReaction* pReaction;
-      CModelEntity* pModelEntity;
+      current = NodeStack.top();
+      NodeStack.pop();
 
-      while (it != endit)
+      if (current.first->getType() == AST_NAME)
         {
-          CCopasiObject* pObject = it->first;
-          pReaction = dynamic_cast<CReaction*>(pObject);
-          pModelEntity = dynamic_cast<CModelEntity*>(pObject);
-          Species* pSpecies = dynamic_cast<Species*>(it->second);
-          std::string sbmlId;
+          std::string name = current.first->getName();
+          // the id can either belong to a compartment, a species, a reaction or a
+          // global parameter
+          std::map<CCopasiObject*, SBase*>::const_iterator it = copasi2sbmlmap.begin();
+          std::map<CCopasiObject*, SBase*>::const_iterator endit = copasi2sbmlmap.end();
+          CReaction* pReaction;
+          CModelEntity* pModelEntity;
 
-          if (pReaction)
+          while (it != endit)
             {
-              sbmlId = pReaction->getSBMLId();
-            }
-          else if (pModelEntity)
-            {
-              sbmlId = pModelEntity->getSBMLId();
-            }
+              CCopasiObject* pObject = it->first;
+              pReaction = dynamic_cast<CReaction*>(pObject);
+              pModelEntity = dynamic_cast<CModelEntity*>(pObject);
+              Species* pSpecies = dynamic_cast<Species*>(it->second);
+              std::string sbmlId;
 
-          if (!sbmlId.empty() && sbmlId == name)
-            {
-              // make sure it is only one of the allowed types
-              switch (it->second->getTypeCode())
+              if (pReaction)
                 {
-                  case SBML_COMPARTMENT:
-
-                    if (!initialExpression)
-                      {
-                        pNode->setName((pObject->getCN() + ",Reference=Volume").c_str());
-                      }
-                    else
-                      {
-                        pNode->setName((pObject->getCN() + ",Reference=InitialVolume").c_str());
-                      }
-
-                    break;
-                  case SBML_SPECIES:
-                    // !!!! Check if this is always correct. Maybe if
-                    // hasOnlySubstanceUnits is set we have to use the amount
-                    // instead. !!!!
-                    assert(pSpecies != NULL);
-
-                    if (this->mSubstanceOnlySpecies.find(pSpecies) == this->mSubstanceOnlySpecies.end())
-                      {
-                        if (!initialExpression)
-                          {
-                            pNode->setName((pObject->getCN() + ",Reference=Concentration").c_str());
-                          }
-                        else
-                          {
-                            pNode->setName((pObject->getCN() + ",Reference=InitialConcentration").c_str());
-                          }
-                      }
-                    else
-                      {
-                        if (!initialExpression)
-                          {
-                            pNode->setName((pObject->getCN() + ",Reference=ParticleNumber").c_str());
-                          }
-                        else
-                          {
-                            pNode->setName((pObject->getCN() + ",Reference=InitialParticleNumber").c_str());
-                          }
-                      }
-
-                    break;
-                  case SBML_REACTION:
-
-                    if (((const Reaction*)it->second)->getKineticLaw() == NULL)
-                      {
-                        CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 80, sbmlId.c_str());
-                      }
-
-                    pNode->setName((pObject->getCN() + ",Reference=Flux").c_str());
-                    break;
-                  case SBML_PARAMETER:
-
-                    if (!initialExpression)
-                      {
-                        pNode->setName((pObject->getCN() + ",Reference=Value").c_str());
-                      }
-                    else
-                      {
-                        pNode->setName((pObject->getCN() + ",Reference=InitialValue").c_str());
-                      }
-
-                    break;
-                  default:
-                    fatalError();
-                    break;
+                  sbmlId = pReaction->getSBMLId();
+                }
+              else if (pModelEntity)
+                {
+                  sbmlId = pModelEntity->getSBMLId();
                 }
 
-              break;
+              if (!sbmlId.empty() && sbmlId == name)
+                {
+                  // make sure it is only one of the allowed types
+                  switch (it->second->getTypeCode())
+                    {
+                      case SBML_COMPARTMENT:
+
+                        if (!initialExpression)
+                          {
+                            current.first->setName((pObject->getCN() + ",Reference=Volume").c_str());
+                          }
+                        else
+                          {
+                            current.first->setName((pObject->getCN() + ",Reference=InitialVolume").c_str());
+                          }
+
+                        break;
+                      case SBML_SPECIES:
+                        // !!!! Check if this is always correct. Maybe if
+                        // hasOnlySubstanceUnits is set we have to use the amount
+                        // instead. !!!!
+                        assert(pSpecies != NULL);
+
+                        if (this->mSubstanceOnlySpecies.find(pSpecies) == this->mSubstanceOnlySpecies.end())
+                          {
+                            if (!initialExpression)
+                              {
+                                current.first->setName((pObject->getCN() + ",Reference=Concentration").c_str());
+                              }
+                            else
+                              {
+                                current.first->setName((pObject->getCN() + ",Reference=InitialConcentration").c_str());
+                              }
+                          }
+                        else
+                          {
+                            if (!initialExpression)
+                              {
+                                current.first->setName((pObject->getCN() + ",Reference=ParticleNumber").c_str());
+                              }
+                            else
+                              {
+                                current.first->setName((pObject->getCN() + ",Reference=InitialParticleNumber").c_str());
+                              }
+                          }
+
+                        break;
+                      case SBML_REACTION:
+
+                        if (((const Reaction*)it->second)->getKineticLaw() == NULL)
+                          {
+                            CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 80, sbmlId.c_str());
+                          }
+
+                        current.first->setName((pObject->getCN() + ",Reference=Flux").c_str());
+                        break;
+                      case SBML_PARAMETER:
+
+                        if (!initialExpression)
+                          {
+                            current.first->setName((pObject->getCN() + ",Reference=Value").c_str());
+                          }
+                        else
+                          {
+                            current.first->setName((pObject->getCN() + ",Reference=InitialValue").c_str());
+                          }
+
+                        break;
+                      default:
+                        fatalError();
+                        break;
+                    }
+
+                  break;
+                }
+
+              ++it;
             }
 
-          ++it;
+          // not found
+          if (it == endit)
+            {
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 74, name.c_str());
+            }
         }
-
-      // not found
-      if (it == endit)
+      else if (current.second < (childCount = current.first->getNumChildren()))
         {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 74, name.c_str());
-        }
-    }
-  else
-    {
-      unsigned int i, iMax = pNode->getNumChildren();
+          std::pair< ASTNode *, unsigned int > child;
 
-      for (i = 0; i < iMax; ++i)
-        {
-          this->replaceObjectNames(pNode->getChild(i), copasi2sbmlmap, initialExpression);
+          child.first = NULL;
+          child.second = 0;
+
+          while (child.first == NULL && current.second < childCount)
+            {
+              child.first = dynamic_cast< ASTNode * >(current.first->getChild(current.second++));
+            }
+
+          NodeStack.push(current);
+          NodeStack.push(child);
         }
     }
 }
