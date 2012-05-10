@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:50 $
+//   $Author: bergmann $
+//   $Date: 2012/05/10 08:55:15 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -493,6 +493,17 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
         }
 
       RenderLayoutPlugin* rlolPlugin = (RenderLayoutPlugin*) layout->getPlugin("render");
+
+      if (rlolPlugin == NULL)
+        {
+          const std::string uri = (layout->getLevel() < 3 ? RenderExtension::getXmlnsL2() : RenderExtension::getXmlnsL3V1V1());
+          layout->enablePackage(uri, "render", true);
+
+          if (layout->getLevel() > 2)
+            layout->getSBMLDocument()->setPackageRequired("render", false);
+
+          rlolPlugin = (RenderLayoutPlugin*) layout->getPlugin("render");
+        }
 
       if (rlolPlugin != NULL)
         rlolPlugin->getListOfLocalRenderInformation()->appendAndOwn(pLRI);
