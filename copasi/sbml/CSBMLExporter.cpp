@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.102 $
+//   $Revision: 1.103 $
 //   $Name:  $
 //   $Author: bergmann $
-//   $Date: 2012/04/30 07:21:29 $
+//   $Date: 2012/05/10 07:48:27 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,16 +36,26 @@
 #endif // LIBSBML_VERSION
 
 #if LIBSBML_VERSION >= 50400
+
 #include <sbml/packages/layout/extension/LayoutModelPlugin.h>
+#include <sbml/packages/layout/extension/LayoutExtension.h>
+
+#ifdef USE_CRENDER_EXTENSION
+#include <sbml/packages/render/extension/RenderExtension.h>
+#endif
+
 #define INIT_DEFAULTS(element) \
   {\
     element.initDefaults();\
   }
+
 #else
+
 #define INIT_DEFAULTS(element) \
   {\
   }
-#endif
+
+#endif // LIBSBML VERSION
 
 #include "sbml/Model.h"
 #include "sbml/Species.h"
@@ -1227,6 +1237,12 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
         }
 
       INIT_DEFAULTS((*sRef));
+#if LIBSBML_VERSION > 50500
+
+      if (this->mSBMLLevel > 2)
+        sRef->setConstant(true);
+
+#endif
       sRef->setStoichiometry(element->getMultiplicity());
       sRef->setDenominator(1);
       usedReferences.insert(sRef->getSpecies());
@@ -1259,6 +1275,13 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
         }
 
       INIT_DEFAULTS((*sRef));
+#if LIBSBML_VERSION > 50500
+
+      if (this->mSBMLLevel > 2)
+        sRef->setConstant(true);
+
+#endif
+
       sRef->setStoichiometry(element->getMultiplicity());
       sRef->setDenominator(1);
       usedReferences.insert(sRef->getSpecies());
@@ -2866,6 +2889,23 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   if (pOldSBMLDocument == NULL)
     {
       this->mpSBMLDocument = new SBMLDocument(this->mSBMLLevel, this->mSBMLVersion);
+#if LIBSBML_VERSION >= 50000
+      const std::string uri = (this->mSBMLLevel < 3 ? LayoutExtension::getXmlnsL2() : LayoutExtension::getXmlnsL3V1V1());
+      this->mpSBMLDocument->enablePackage(uri, "layout", true);
+
+      if (this->mSBMLLevel > 2)
+        this->mpSBMLDocument->setPackageRequired("layout", false);
+
+#if USE_CRENDER_EXTENSION
+      const std::string renderuri = (this->mSBMLLevel < 3 ? RenderExtension::getXmlnsL2() : RenderExtension::getXmlnsL3V1V1());
+      this->mpSBMLDocument->enablePackage(uri, "render", true);
+
+      if (this->mSBMLLevel > 2)
+        this->mpSBMLDocument->setPackageRequired("render", false);
+
+#endif
+
+#endif
     }
   else
     {
@@ -3039,7 +3079,8 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
     }
 
   // In case the document is just a clone of an old model, we have to set the level and version
-  this->mpSBMLDocument->setLevelAndVersion(this->mSBMLLevel, this->mSBMLVersion);
+  if (this->mpSBMLDocument->getLevel() != this->mSBMLLevel || this->mpSBMLDocument->getVersion() != this->mSBMLVersion)
+    this->mpSBMLDocument->setLevelAndVersion(this->mSBMLLevel, this->mSBMLVersion);
 
   if (this->mpSBMLDocument->getLevel() != this->mSBMLLevel || this->mpSBMLDocument->getVersion() != this->mSBMLVersion)
     {
