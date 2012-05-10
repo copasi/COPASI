@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.103 $
+//   $Revision: 1.104 $
 //   $Name:  $
 //   $Author: bergmann $
-//   $Date: 2012/05/10 07:48:27 $
+//   $Date: 2012/05/10 12:15:12 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1237,7 +1237,7 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
         }
 
       INIT_DEFAULTS((*sRef));
-#if LIBSBML_VERSION > 50500
+#if LIBSBML_VERSION > 40100
 
       if (this->mSBMLLevel > 2)
         sRef->setConstant(true);
@@ -1275,7 +1275,7 @@ void CSBMLExporter::createReaction(CReaction& reaction, CCopasiDataModel& dataMo
         }
 
       INIT_DEFAULTS((*sRef));
-#if LIBSBML_VERSION > 50500
+#if LIBSBML_VERSION > 40100
 
       if (this->mSBMLLevel > 2)
         sRef->setConstant(true);

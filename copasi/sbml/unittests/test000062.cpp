@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000062.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/11 11:52:00 $
+//   $Author: bergmann $
+//   $Date: 2012/05/10 12:15:13 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -63,7 +63,12 @@ void test000062::test_kineticlaw_without_math()
   CReaction* pReaction = pModel->getReactions()[0];
   CPPUNIT_ASSERT(pReaction->getFunction() == CCopasiRootContainer::getUndefinedFunction());
   // check if the correct error message has been created
+#if LIBSBML_VERSION >= 40200
+  // recent libsbml versions will complain about missing math element!
+  CPPUNIT_ASSERT(CCopasiMessage::size() == 2);
+#else
   CPPUNIT_ASSERT(CCopasiMessage::size() == 1);
+#endif
   const CCopasiMessage& message = CCopasiMessage::getLastMessage();
   CPPUNIT_ASSERT(message.getType() == CCopasiMessage::WARNING);
   CPPUNIT_ASSERT(message.getNumber() == MCSBML + 56);
