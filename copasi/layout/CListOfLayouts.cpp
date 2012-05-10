@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:52 $
+//   $Author: bergmann $
+//   $Date: 2012/05/10 08:12:48 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,6 +91,15 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<const CCopasiObject*, S
   */
 
   RenderListOfLayoutsPlugin* rlolPlugin = (RenderListOfLayoutsPlugin*) lol->getPlugin("render");
+
+  if (rlolPlugin == NULL)
+    {
+      // we do not yet have a render layout plugin so let us enable it
+      const std::string uri = (lol->getLevel() < 3 ? RenderExtension::getXmlnsL2() : RenderExtension::getXmlnsL3V1V1());
+      lol->enablePackage(uri, "render", true);
+      rlolPlugin = (RenderListOfLayoutsPlugin*) lol->getPlugin("render");
+    }
+
   assert(rlolPlugin != NULL);
 
   for (i = 0; i < imax; ++i)
