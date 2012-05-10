@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.155 $
+//   $Revision: 1.156 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/21 15:48:15 $
+//   $Date: 2012/05/10 16:03:09 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -873,7 +873,7 @@ std::string CMetab::getObjectDisplayName(bool regular, bool richtext) const
 
   if (tmp)
     {
-      return CMetabNameInterface::getDisplayName(tmp, *this);
+      return CMetabNameInterface::getDisplayName(tmp, *this, false);
     }
 
   return CCopasiObject::getObjectDisplayName(regular, richtext);

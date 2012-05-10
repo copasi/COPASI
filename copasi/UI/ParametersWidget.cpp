@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/06 16:14:08 $
+//   $Author: shoops $
+//   $Date: 2012/05/10 16:03:11 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -328,7 +328,7 @@ bool ParametersWidget::loadFromModel()
         unit = FROM_UTF8(model->getConcentrationUnitsDisplayString());
 
         for (i = 0; i < imax; ++i)
-          new CParameterListItem(mMetabItem, FROM_UTF8(CMetabNameInterface::getDisplayName(model, *metabs[i])),
+          new CParameterListItem(mMetabItem, FROM_UTF8(CMetabNameInterface::getDisplayName(model, *metabs[i], false)),
                                  metabs[i], metabs[i]->getInitialConcentration(), unit, mFramework);
 
         break;
@@ -338,7 +338,7 @@ bool ParametersWidget::loadFromModel()
         unit = "";
 
         for (i = 0; i < imax; ++i)
-          new CParameterListItem(mMetabItem, FROM_UTF8(CMetabNameInterface::getDisplayName(model, *metabs[i])),
+          new CParameterListItem(mMetabItem, FROM_UTF8(CMetabNameInterface::getDisplayName(model, *metabs[i], false)),
                                  metabs[i], metabs[i]->getInitialValue(), unit, mFramework);
 
         break;

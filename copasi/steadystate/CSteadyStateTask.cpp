@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-//   $Revision: 1.86 $
+//   $Revision: 1.87 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/08/02 20:45:32 $
+//   $Date: 2012/05/10 16:03:12 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -522,7 +522,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   for (i = 0; i < imax; ++i)
     {
       pMetab = Metabolites[i];
-      os << CMetabNameInterface::getDisplayName(pModel, *pMetab) << "\t";
+      os << CMetabNameInterface::getDisplayName(pModel, *pMetab, false) << "\t";
       os << pMetab->getConcentration() << "\t";
       os << pMetab->getConcentrationRate() << "\t";
       os << pMetab->getValue() << "\t";

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMTask.cpp,v $
-//   $Revision: 1.17 $
+//   $Revision: 1.18 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:27:36 $
+//   $Date: 2012/05/10 16:03:08 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -309,7 +309,7 @@ std::string CEFMTask::getNetReaction(const CFluxMode & fluxMode) const
               Products << it->second << " * ";
             }
 
-          Products << CMetabNameInterface::getDisplayName(pModel, *it->first);
+          Products << CMetabNameInterface::getDisplayName(pModel, *it->first, true);
           ProductsSeparator = " + ";
         }
       else if (it->second < -100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
@@ -321,7 +321,7 @@ std::string CEFMTask::getNetReaction(const CFluxMode & fluxMode) const
               Substrates << -it->second << " * ";
             }
 
-          Substrates << CMetabNameInterface::getDisplayName(pModel, *it->first);
+          Substrates << CMetabNameInterface::getDisplayName(pModel, *it->first, true);
           SubstratesSeparator = " + ";
         }
     }
@@ -358,7 +358,7 @@ std::string CEFMTask::getInternalSpecies(const CFluxMode & fluxMode) const
       if (fabs(it->second) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
         {
           Modifiers << ModifiersSeparator;
-          Modifiers << CMetabNameInterface::getDisplayName(pModel, *it->first);
+          Modifiers << CMetabNameInterface::getDisplayName(pModel, *it->first, true);
           ModifiersSeparator = ", ";
         }
     }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:11:04 $
+//   $Date: 2012/05/10 16:03:09 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -347,7 +347,7 @@ void CChemEqInterface::buildDisplayNames()
        end = mSubstrateDisplayNames.end();
        it != end;
        ++itName, ++itCompartment, ++it)
-    *it = CMetabNameInterface::getDisplayName(mpModel, *itName, *itCompartment);
+    *it = CMetabNameInterface::getDisplayName(mpModel, *itName, *itCompartment, true);
 
   // We need to build the list of display names for the products;
   mProductDisplayNames.resize(mProductNames.size());
@@ -358,7 +358,7 @@ void CChemEqInterface::buildDisplayNames()
        end = mProductDisplayNames.end();
        it != end;
        ++itName, ++itCompartment, ++it)
-    *it = CMetabNameInterface::getDisplayName(mpModel, *itName, *itCompartment);
+    *it = CMetabNameInterface::getDisplayName(mpModel, *itName, *itCompartment, true);
 
   // We need to build the list of display names for the modifiers;
   mModifierDisplayNames.resize(mModifierNames.size());
@@ -369,7 +369,7 @@ void CChemEqInterface::buildDisplayNames()
        end = mModifierDisplayNames.end();
        it != end;
        ++itName, ++itCompartment, ++it)
-    *it = CMetabNameInterface::getDisplayName(mpModel, *itName, *itCompartment);
+    *it = CMetabNameInterface::getDisplayName(mpModel, *itName, *itCompartment, true);
 
   return;
 }

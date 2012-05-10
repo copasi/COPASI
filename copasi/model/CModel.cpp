@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.417 $
+//   $Revision: 1.418 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/09 21:26:27 $
+//   $Date: 2012/05/10 16:03:09 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -4001,7 +4001,7 @@ std::string CModel::printParameterOverview()
       oss << "Initial concentrations:\n\n";
 
       for (i = 0; i < imax; ++i)
-        oss << CMetabNameInterface::getDisplayName(model, *metabs[i]) << " \t"
+        oss << CMetabNameInterface::getDisplayName(model, *metabs[i], false) << " \t"
         << metabs[i]->getInitialConcentration() << " "
         << model->getConcentrationUnitsDisplayString() << "\n";
 

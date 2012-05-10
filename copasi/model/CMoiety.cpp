@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-//   $Revision: 1.58 $
+//   $Revision: 1.59 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:11:03 $
+//   $Date: 2012/05/10 16:03:09 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -190,7 +190,7 @@ std::string CMoiety::getDescription(const CModel * model) const
           fabs(it->first) < 1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
         Description << fabs(it->first) << "*";
 
-      Description << CMetabNameInterface::getDisplayName(model, *it->second);
+      Description << CMetabNameInterface::getDisplayName(model, *it->second, false);
     }
 
   return Description.str();

@@ -1,10 +1,10 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.212 $
-//   $Revision: 1.212 $
+//   $Revision: 1.213 $
+//   $Revision: 1.213 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/09 21:32:16 $
+//   $Date: 2012/05/10 16:03:10 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -200,8 +200,6 @@ bool ReactionsWidget1::saveToReaction()
   CModel * pModel = pDataModel->getModel();
 
   if (pModel == NULL) return false;
-
-  size_t ReactionIndex = pModel->getReactions().getIndex(mpObject->getObjectName());
 
   // Before we save any changes we must check whether any local reaction parameters,
   // which are used in any mathematical expression in the model are removed.

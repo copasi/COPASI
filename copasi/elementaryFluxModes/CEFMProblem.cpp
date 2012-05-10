@@ -1,10 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMProblem.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $
-   $Date: 2010/02/03 17:18:42 $
+   $Date: 2012/05/10 16:03:08 $
    End CVS Header */
+
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
@@ -191,7 +196,7 @@ void CEFMProblem::printResult(std::ostream * ostream) const
 
       for (; itSpecies != endSpecies; ++itSpecies)
         {
-          *ostream << "\t" << CMetabNameInterface::getDisplayName(mpModel, **itSpecies);
+          *ostream << "\t" << CMetabNameInterface::getDisplayName(mpModel, **itSpecies, false);
         }
 
       *ostream << std::endl;

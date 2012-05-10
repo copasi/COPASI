@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/15 17:07:52 $
+//   $Date: 2012/05/10 16:03:10 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -92,7 +92,7 @@ const std::vector<std::string> ParameterTable::getListOfAllMetabNames(const CMod
   size_t i, imax = model.getMetabolites().size();
 
   for (i = 0; i < imax; ++i)
-    ret.push_back(CMetabNameInterface::getDisplayName(&model, *model.getMetabolites()[i]));
+    ret.push_back(CMetabNameInterface::getDisplayName(&model, *model.getMetabolites()[i], false));
 
   //now all the metabs from the ReactionInterface (that have not yet been committed to the model)
   std::vector<std::string> lll;

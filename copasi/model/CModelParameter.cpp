@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameter.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/13 18:32:47 $
+//   $Date: 2012/05/10 16:03:10 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -486,7 +486,7 @@ std::string CModelParameterSpecies::getName() const
 
   if (mpObject != NULL)
     {
-      return CMetabNameInterface::getDisplayName(pModel, *static_cast< CMetab * >(mpObject));
+      return CMetabNameInterface::getDisplayName(pModel, *static_cast< CMetab * >(mpObject), false);
     }
 
   return nameFromCN(mCN) + '{' + nameFromCN(getCompartmentCN()) + '}';

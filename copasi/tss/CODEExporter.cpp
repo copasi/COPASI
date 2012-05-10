@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 15:41:47 $
+//   $Author: shoops $
+//   $Date: 2012/05/10 16:03:11 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -718,7 +718,7 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
       std::string str1;
       std::string str2;
 
-      comments << "metabolite \'" << CMetabNameInterface::getDisplayName(copasiModel, *metab)
+      comments << "metabolite \'" << CMetabNameInterface::getDisplayName(copasiModel, *metab, false)
       << "\': " << CModelEntity::StatusName[metab->getStatus()];
 
       switch (metab->getStatus())
@@ -844,7 +844,7 @@ bool CODEExporter::exportMetabolitesConcentrations(const CModel* copasiModel)
       std::ostringstream expression;
       std::ostringstream comments;
 
-      comments << "concentration of metabolite \'" << CMetabNameInterface::getDisplayName(copasiModel, *metab)
+      comments << "concentration of metabolite \'" << CMetabNameInterface::getDisplayName(copasiModel, *metab, false)
       << "\': " << CModelEntity::StatusName[metab->getStatus()];
 
       std::ostringstream smKey;

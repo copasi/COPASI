@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetabNameInterface.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:30:49 $
+//   $Date: 2012/05/10 16:03:09 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -46,24 +46,25 @@
 CMetabNameInterface::~CMetabNameInterface()
 {}
 
-std::string CMetabNameInterface::getDisplayName(const CModel* model, const std::string & key)
+std::string CMetabNameInterface::getDisplayName(const CModel* model, const std::string & key, const bool & quoted)
 {
   CMetab * metab = dynamic_cast< CMetab * >(CCopasiRootContainer::getKeyFactory()->get(key));
 
   if (metab)
-    return getDisplayName(model, *metab);
+    return getDisplayName(model, *metab, quoted);
   else
     return "";
 }
 
-std::string CMetabNameInterface::getDisplayName(const CModel* model, const CMetab & metab)
+std::string CMetabNameInterface::getDisplayName(const CModel* model, const CMetab & metab, const bool & quoted)
 {
-  return getDisplayName(model, metab.getObjectName(), metab.getCompartment()->getObjectName());
+  return getDisplayName(model, metab.getObjectName(), metab.getCompartment()->getObjectName(), quoted);
 }
 
 std::string CMetabNameInterface::getDisplayName(const CModel* model,
     const std::string & metabolite,
-    const std::string & compartment)
+    const std::string & compartment,
+    const bool & quoted)
 {
   std::string DefaultCompartment;
 
@@ -72,9 +73,9 @@ std::string CMetabNameInterface::getDisplayName(const CModel* model,
   else
     DefaultCompartment = model->getCompartments()[0]->getObjectName();
 
-  std::string Metabolite = quote(metabolite, "{}");
+  std::string Metabolite = quoted ? quote(metabolite, "{}") : metabolite;
 
-  if (isNumber(Metabolite))
+  if (quoted && isNumber(Metabolite))
     Metabolite = "\"" + Metabolite + "\"";
 
   if ((CMetabNameInterface::doesExist(model, metabolite, compartment) &&
@@ -83,9 +84,9 @@ std::string CMetabNameInterface::getDisplayName(const CModel* model,
        compartment == DefaultCompartment))
     return Metabolite;
 
-  std::string Compartment = quote(compartment, "{}");
+  std::string Compartment = quoted ? quote(compartment, "{}") : compartment;
 
-  if (isNumber(Compartment))
+  if (quoted && isNumber(Compartment))
     Compartment = "\"" + Compartment + "\"";
 
   return Metabolite + '{' + Compartment + '}';

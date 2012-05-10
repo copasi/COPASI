@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQBrowserPaneDM.cpp,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/09 21:32:18 $
+//   $Date: 2012/05/10 16:03:10 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -425,7 +425,7 @@ void CQBrowserPaneDM::load(const size_t & id)
 
       if (isSpecies)
         {
-          DisplayRole = FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, *static_cast<const CMetab *>(*it)));
+          DisplayRole = FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, *static_cast<const CMetab *>(*it), false));
         }
       else
         {
@@ -468,7 +468,7 @@ void CQBrowserPaneDM::load(const size_t & id)
 
           if (isSpecies)
             {
-              DisplayRole = FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, *static_cast<const CMetab *>(*it)));
+              DisplayRole = FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, *static_cast<const CMetab *>(*it), false));
             }
           else
             {
@@ -522,7 +522,7 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
 
           if (pModel != NULL)
             {
-              DisplayRole = FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, *pMetab));
+              DisplayRole = FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, *pMetab, false));
             }
         }
     }

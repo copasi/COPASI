@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/09 21:26:57 $
+//   $Date: 2012/05/10 16:03:09 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -159,7 +159,7 @@ bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
 
           for (jt = it->begin(), jEnd = it->end(); jt != jEnd; ++jt)
             {
-              metabName = CMetabNameInterface::getDisplayName(mpModel, *jt);
+              metabName = CMetabNameInterface::getDisplayName(mpModel, *jt, true);
               assert(metabName != "");
               SubList.push_back(metabName);
             }
@@ -174,7 +174,7 @@ bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
               case CFunctionParameter::SUBSTRATE:
               case CFunctionParameter::PRODUCT:
               case CFunctionParameter::MODIFIER:
-                metabName = CMetabNameInterface::getDisplayName(mpModel, *(it->begin()));
+                metabName = CMetabNameInterface::getDisplayName(mpModel, *(it->begin()), true);
                 // assert(metabName != "");
                 SubList[0] = metabName;
                 //TODO: check if the metabolite is in the chemical equation with the correct rule

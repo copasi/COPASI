@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/17 16:22:04 $
+//   $Date: 2012/05/10 16:03:10 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -80,7 +80,7 @@ void StateSubwidget::loadMetabolites()
     if ((*it)->getStatus() == CModelEntity::ODE ||
         ((*it)->getStatus() == CModelEntity::REACTIONS && (*it)->isUsed()))
       {
-        mpTblMetabolites->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(CMetabNameInterface::getDisplayName(mpModel, **it))));
+        mpTblMetabolites->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(CMetabNameInterface::getDisplayName(mpModel, **it, false))));
         mpTblMetabolites->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(CModelEntity::StatusName[(*it)->getStatus()])));
         mpTblMetabolites->setItem(i, 2, new QTableWidgetItem(QString::number((*it)->getConcentration())));
         mpTblMetabolites->setItem(i, 3, new QTableWidgetItem(QString::number((*it)->getValue())));
