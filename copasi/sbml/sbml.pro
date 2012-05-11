@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/sbml.pro,v $
-#   $Revision: 1.26 $
+#   $Revision: 1.27 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2012/05/11 15:42:13 $
+#   $Date: 2012/05/11 16:53:59 $
 # End CVS Header
 
 # Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -26,7 +26,6 @@ DISTFILES = sbml.pro
 
 # Input
 HEADERS += StdException.h \
-           CASTNodeIterator.h \
            CSBMLExporter.h \
            ConverterASTNode.h \
            SBMLImporter.h \
