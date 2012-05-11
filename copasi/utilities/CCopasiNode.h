@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiNode.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $
-   $Date: 2011/09/16 12:11:47 $
+   $Date: 2012/05/11 16:49:52 $
    End CVS Header */
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -214,6 +214,45 @@ public:
    * @return const CCopasiNode< Data > * pChild
    */
   const CCopasiNode< Data > * getChild() const {return mpChild;}
+
+  /**
+   * Retrieve the child with given index of a node.
+   * If index is out of range NULL is returned.
+   * @return const CCopasiNode< Data > * pChild
+   */
+  CCopasiNode< Data > * getChild(const size_t & index)
+  {
+    size_t count = 0;
+
+    CCopasiNode< Data > * pChild = getChild();
+
+    while (count < index && pChild != NULL)
+      {
+        count++;
+        pChild = pChild->getSibling();
+      }
+
+    return pChild;
+  }
+
+  /**
+   * Retrieve the number of children
+   * @return size_t numChildren
+   */
+  size_t getNumChildren() const
+  {
+    size_t count = 0;
+
+    const CCopasiNode< Data > * pChild = getChild();
+
+    while (pChild != NULL)
+      {
+        count++;
+        pChild = pChild->getSibling();
+      }
+
+    return count;
+  }
 
   /**
    * Add a sibling to a node.
