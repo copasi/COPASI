@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPreferenceDialog.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:09 $
+//   $Author: bergmann $
+//   $Date: 2012/05/11 12:51:39 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -90,6 +90,17 @@ void CQPreferenceDialog::init()
 
       new QTreeWidgetItem(mpTreeWidget, Values);
     }
+
+  pParameter = configFile->getParameter("Validate Units");
+
+  if (pParameter != NULL)
+    {
+      QStringList Values;
+      Values.append("Validate Units");
+      Values.append((*pParameter->getValue().pBOOL ? "YES" : "NO"));
+      new QTreeWidgetItem(mpTreeWidget, Values);
+    }
+
 }
 
 void CQPreferenceDialog::slotBtnOk()
@@ -153,6 +164,15 @@ void CQPreferenceDialog::slotBtnOk()
 
       if (Items[0]->text(COL_VALUE) != FROM_UTF8(*pParameter->getValue().pSTRING))
         pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
+    }
+
+  Items = mpTreeWidget->findItems("Validate Units", 0, 0);
+  pParameter = configFile->getParameter("Validate Units");
+
+  if (Items.size() > 0 &&
+      pParameter != NULL)
+    {
+      pParameter->setValue(Items[0]->text(COL_VALUE).toUpper() == "YES");
     }
 
   done(1);

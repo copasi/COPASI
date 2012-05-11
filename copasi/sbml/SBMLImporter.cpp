@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.284 $
+//   $Revision: 1.285 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/10 19:33:53 $
+//   $Author: bergmann $
+//   $Date: 2012/05/11 12:51:39 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -94,6 +94,7 @@
 #include "SBMLUtils.h"
 #include "ConverterASTNode.h"
 #include "utilities/CProcessReport.h"
+#include "copasi/commandline/CConfigurationFile.h"
 
 #include "layout/SBMLDocumentLoader.h"
 #include "layout/CListOfLayouts.h"
@@ -2905,7 +2906,12 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
                                            &totalSteps);
         }
 
-      bool checkResult = false; // sbmlDoc->checkConsistency();
+      if (CCopasiRootContainer::getConfiguration()->validateUnits())
+        sbmlDoc->setApplicableValidators(AllChecksON);
+      else
+        sbmlDoc->setApplicableValidators(AllChecksON & UnitsCheckOFF);
+
+      bool checkResult = sbmlDoc->checkConsistency();
 
       if (mpImportHandler) mpImportHandler->finishItem(hStep);
 

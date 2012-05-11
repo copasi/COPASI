@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
-$Revision: 1.18 $
+$Revision: 1.19 $
 $Name:  $
-$Author: shoops $
-$Date: 2011/10/14 17:31:11 $
+$Author: bergmann $
+$Date: 2012/05/11 12:51:39 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -109,7 +109,8 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
     mpRecentSBMLFiles(NULL),
     mpRecentMIRIAMResources(NULL),
     mpApplicationFont(NULL),
-    mpWebBrowser(NULL)
+    mpWebBrowser(NULL),
+    mpValidateUnits(NULL)
 {initializeParameter();}
 
 CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
@@ -119,7 +120,8 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
     mpRecentSBMLFiles(NULL),
     mpRecentMIRIAMResources(NULL),
     mpApplicationFont(NULL),
-    mpWebBrowser(NULL)
+    mpWebBrowser(NULL),
+    mpValidateUnits(NULL)
 {initializeParameter();}
 
 CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
@@ -129,7 +131,8 @@ CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
     mpRecentSBMLFiles(NULL),
     mpRecentMIRIAMResources(NULL),
     mpApplicationFont(NULL),
-    mpWebBrowser(NULL)
+    mpWebBrowser(NULL),
+    mpValidateUnits(NULL)
 {initializeParameter();}
 
 CConfigurationFile::~CConfigurationFile()
@@ -170,6 +173,8 @@ void CConfigurationFile::initializeParameter()
     assertParameter("Application for opening URLs", CCopasiParameter::STRING, std::string(""))->getValue().pSTRING;
 
   assertGroup("MIRIAM Resources");
+
+  mpValidateUnits = assertParameter("Validate Units", CCopasiParameter::BOOL, false)->getValue().pBOOL;
 
   elevateChildren();
 }
@@ -256,6 +261,17 @@ const std::string CConfigurationFile::getWebBrowser() const
 void CConfigurationFile::setWebBrowser(const std::string & webBrowser)
 {
   *mpWebBrowser = webBrowser;
+}
+
+
+bool CConfigurationFile::validateUnits() const
+{
+  return *mpValidateUnits;
+}
+
+void CConfigurationFile::setValidateUnits(bool validateUnits)
+{
+  *mpValidateUnits = validateUnits;
 }
 
 CConfigurationFile::CXML::CXML():
