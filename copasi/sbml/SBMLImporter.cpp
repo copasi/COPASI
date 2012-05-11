@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.286 $
+//   $Revision: 1.287 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/11 15:46:48 $
+//   $Date: 2012/05/11 16:53:44 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,6 +84,7 @@
 #include "function/CExpression.h"
 #include "report/CCopasiObjectReference.h"
 #include "utilities/CCopasiTree.h"
+#include "utilities/CNodeIterator.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "MIRIAM/CRDFGraphConverter.h"
@@ -93,7 +94,6 @@
 #include "SBMLImporter.h"
 #include "SBMLUtils.h"
 #include "ConverterASTNode.h"
-#include "CASTNodeIterator.h"
 #include "utilities/CProcessReport.h"
 #include "copasi/commandline/CConfigurationFile.h"
 
@@ -4523,11 +4523,11 @@ bool SBMLImporter::isDelayFunctionUsed(ConverterASTNode* pNode)
 
 void SBMLImporter::replaceTimeAndAvogadroNodeNames(ASTNode* pNode)
 {
-  CASTNodeIterator it(pNode);
+  CNodeIterator< ASTNode > it(pNode);
 
   do
     {
-      if (*it != NULL && it.nextChildIndex() != CASTNodeIterator::InvalidIndex)
+      if (*it != NULL && it.nextChildIndex() != CNodeIterator< ASTNode >::None)
         {
           if (it->getType() == AST_NAME_TIME)
             {
@@ -6351,11 +6351,11 @@ void SBMLImporter::getIdsFromNode(const ASTNode* pNode, std::set<std::string>& i
 
 void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, bool initialExpression)
 {
-  CASTNodeIterator itNode(pNode);
+  CNodeIterator< ASTNode > itNode(pNode);
 
   do
     {
-      if (*itNode != NULL && itNode.nextChildIndex() != CASTNodeIterator::InvalidIndex)
+      if (*itNode != NULL && itNode.nextChildIndex() != CNodeIterator< ASTNode >::None)
         {
           if (itNode->getType() == AST_NAME)
             {
