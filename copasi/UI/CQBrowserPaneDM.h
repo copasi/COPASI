@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQBrowserPaneDM.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/09 21:32:15 $
+//   $Date: 2012/05/11 16:53:06 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,10 +64,6 @@ public:
     void setKey(const std::string & key);
 
     const std::string & getKey() const;
-
-    int getChildrenCount() const;
-
-    CNode * getChild(const size_t & Index);
 
     int getRow() const;
   };

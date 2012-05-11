@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQBrowserPaneDM.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/10 16:03:10 $
+//   $Date: 2012/05/11 16:53:05 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,7 +76,7 @@ QVariant CQBrowserPaneDM::data(const QModelIndex & index, int role) const
             case 114:
             case 115:
             case 116:
-              return QVariant(pNode->getDisplayRole() + " (" + QString::number(pNode->getChildrenCount()) + ")");
+              return QVariant(pNode->getDisplayRole() + " (" + QString::number(pNode->getNumChildren()) + ")");
               break;
 
             default:
@@ -101,7 +101,7 @@ QModelIndex CQBrowserPaneDM::index(int row, int column, const QModelIndex & pare
 
   if (pParent == NULL) return createIndex(row, column, mpRoot);
 
-  CNode * pNode = pParent->getChild(row);
+  CNode * pNode = static_cast< CNode * >(pParent->getChild(row));
 
   if (pNode)
     return createIndex(row, column, pNode);
@@ -149,7 +149,7 @@ int CQBrowserPaneDM::rowCount(const QModelIndex & parent) const
 
   CNode * pParent = nodeFromIndex(parent);
 
-  return pParent->getChildrenCount();
+  return pParent->getNumChildren();
 }
 
 // virtual
@@ -159,7 +159,7 @@ bool CQBrowserPaneDM::removeRows(int row, int count, const QModelIndex & parent)
 
   if (pParent == NULL) return false;
 
-  CNode * pNode = pParent->getChild(row);
+  CNode * pNode = static_cast< CNode * >(pParent->getChild(row));
 
   beginRemoveRows(parent, row, row + count - 1);
 
@@ -270,7 +270,7 @@ void CQBrowserPaneDM::add(const size_t & id,
 
   if (pParent != NULL)
     {
-      row = pParent->getChildrenCount();
+      row = pParent->getNumChildren();
     }
 
   beginInsertRows(index(pParent), row, row);
@@ -457,7 +457,7 @@ void CQBrowserPaneDM::load(const size_t & id)
   // Add missing nodes
   if (it != end)
     {
-      int first = pParent->getChildrenCount();
+      int first = pParent->getNumChildren();
       int last = first + (end - it) - 1;
 
       beginInsertRows(index(pParent), first, last);
@@ -800,35 +800,6 @@ void CQBrowserPaneDM::CNode::setKey(const std::string & key)
 const std::string & CQBrowserPaneDM::CNode::getKey() const
 {
   return mData.mKey;
-}
-
-int CQBrowserPaneDM::CNode::getChildrenCount() const
-{
-  int count = 0;
-  const CCopasiNode< CQBrowserPaneDM::SData > * pChild = CCopasiNode< CQBrowserPaneDM::SData >::getChild();
-
-  while (pChild != NULL)
-    {
-      count++;
-      pChild = pChild->getSibling();
-    }
-
-  return count;
-}
-
-CQBrowserPaneDM::CNode * CQBrowserPaneDM::CNode::getChild(const size_t & Index)
-{
-  size_t count = 0;
-
-  CCopasiNode< CQBrowserPaneDM::SData > * pChild = CCopasiNode< CQBrowserPaneDM::SData >::getChild();
-
-  while (count < Index && pChild != NULL)
-    {
-      count++;
-      pChild = pChild->getSibling();
-    }
-
-  return static_cast< CNode * >(pChild);
 }
 
 int CQBrowserPaneDM::CNode::getRow() const
