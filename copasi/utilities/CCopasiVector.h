@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-//   $Revision: 1.91 $
+//   $Revision: 1.92 $
 //   $Name:  $
 //   $Author: bergmann $
-//   $Date: 2012/05/09 13:23:40 $
+//   $Date: 2012/05/14 05:55:34 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -101,7 +101,7 @@ public:
           }
 
         if (*Target == NULL)
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, imax * sizeof(CType));
+          CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCopasiBase + 1, imax * sizeof(CType));
       }
   }
 
@@ -178,7 +178,7 @@ public:
           }
 
         if (*Target == NULL)
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, imax * sizeof(CType));
+          CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCopasiBase + 1, imax * sizeof(CType));
       }
   }
 
@@ -234,7 +234,7 @@ public:
       }
 
     if (Element == NULL)
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, sizeof(CType));
+      CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCopasiBase + 1, sizeof(CType));
 
     // This is not very efficient !!!
     // It results in a lot of resizing of the vector !!!
@@ -252,10 +252,10 @@ public:
     size_t Size = size();
 
     if (!(indexFrom < Size))
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCCopasiVector + 3, indexFrom, Size - 1);
+      CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCCopasiVector + 3, indexFrom, Size - 1);
 
     if (!(indexTo < Size))
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCCopasiVector + 3, indexTo, Size - 1);
+      CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCCopasiVector + 3, indexTo, Size - 1);
 
     iterator from = begin() + indexFrom;
     iterator to = begin() + indexTo;
@@ -338,7 +338,7 @@ public:
   const value_type & operator[](const size_t & index) const
   {
     if (!(index < size()))
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCCopasiVector + 3, index, size() - 1);
+      CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCCopasiVector + 3, index, size() - 1);
 
     return *(begin() + index);
   }
@@ -351,7 +351,7 @@ public:
   value_type & operator[](const size_t & index)
   {
     if (!(index < size()))
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCCopasiVector + 3, index, size() - 1);
+      CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCCopasiVector + 3, index, size() - 1);
 
     return *(begin() + index);
   }
@@ -558,7 +558,7 @@ public:
           }
 
         if (*Target == NULL)
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, size * sizeof(CType));
+          CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCopasiBase + 1, size * sizeof(CType));
 
         (*Target)->load(configbuffer);
       }
@@ -622,8 +622,8 @@ public:
   {
     if (!isInsertAllowed(&src))
       {
-        CCopasiMessage(CCopasiMessage::ERROR,
-                       MCCopasiVector + 2, src.getObjectName().c_str());
+        CCopasiMessage ex(CCopasiMessage::ERROR,
+                          MCCopasiVector + 2, src.getObjectName().c_str());
         return false;
       }
 
@@ -639,7 +639,7 @@ public:
       }
 
     if (Element == NULL)
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, sizeof(CType));
+      CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCopasiBase + 1, sizeof(CType));
 
     std::vector< CType * >::push_back(Element);
     return CCopasiContainer::add(Element);
@@ -656,8 +656,8 @@ public:
   {
     if (!isInsertAllowed(src))
       {
-        CCopasiMessage(CCopasiMessage::ERROR,
-                       MCCopasiVector + 2, src->getObjectName().c_str());
+        CCopasiMessage ex(CCopasiMessage::ERROR,
+                          MCCopasiVector + 2, src->getObjectName().c_str());
         return false;
       }
 
@@ -677,8 +677,8 @@ public:
 
     if (Index == C_INVALID_INDEX)
       {
-        CCopasiMessage(CCopasiMessage::ERROR,
-                       MCCopasiVector + 1, name.c_str());
+        CCopasiMessage ex(CCopasiMessage::ERROR,
+                          MCCopasiVector + 1, name.c_str());
         return;
       }
 
@@ -712,8 +712,8 @@ public:
     size_t Index = getIndex(name);
 
     if (Index == C_INVALID_INDEX)
-      CCopasiMessage(CCopasiMessage::EXCEPTION,
-                     MCCopasiVector + 1, name.c_str());
+      CCopasiMessage ex(CCopasiMessage::EXCEPTION,
+                        MCCopasiVector + 1, name.c_str());
 
     return *(CCopasiVector< CType >::begin() + Index);
   }
@@ -728,8 +728,8 @@ public:
     size_t Index = getIndex(name);
 
     if (Index == C_INVALID_INDEX)
-      CCopasiMessage(CCopasiMessage::EXCEPTION,
-                     MCCopasiVector + 1, name.c_str());
+      CCopasiMessage ex(CCopasiMessage::EXCEPTION,
+                        MCCopasiVector + 1, name.c_str());
 
     return *(CCopasiVector< CType >::begin() + Index);
   }
@@ -859,7 +859,7 @@ public:
           }
 
         if (*Target == NULL)
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, size * sizeof(CType));
+          CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCopasiBase + 1, size * sizeof(CType));
 
         (*Target)->load(configbuffer);
       }

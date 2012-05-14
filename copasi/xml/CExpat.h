@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.h,v $
-$Revision: 1.25 $
+$Revision: 1.26 $
 $Name:  $
-$Author: shoops $
-$Date: 2012/04/02 14:12:16 $
+$Author: bergmann $
+$Date: 2012/05/14 05:56:57 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -662,8 +662,8 @@ public:
     if (attributes[i]) return attributes[i + 1];
 
     if (required)
-      CCopasiMessage(CCopasiMessage::ERROR, MCXML + 1,
-                     name.c_str(), getCurrentLineNumber());
+      CCopasiMessage ex(CCopasiMessage::ERROR, MCXML + 1,
+                        name.c_str(), getCurrentLineNumber());
 
     return NULL;
   }
