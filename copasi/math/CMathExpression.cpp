@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathExpression.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/20 14:53:48 $
+//   $Date: 2012/05/15 15:56:59 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -142,9 +142,11 @@ CMathExpression::CMathExpression(const CFunction & src,
 CMathExpression::~CMathExpression()
 {}
 
-const C_FLOAT64 & CMathExpression::value() const
+const C_FLOAT64 & CMathExpression::value()
 {
-  return mpRoot->value();
+  calculate();
+
+  return mValue;
 }
 
 // virtual
@@ -197,6 +199,8 @@ bool CMathExpression::compile()
 
   assert(mUsable);
 
+  buildCalculationSequence();
+
   return mUsable;
 }
 
@@ -232,7 +236,7 @@ bool CMathExpression::convertToInitialExpression()
 
   if (changed)
     {
-      mInfix = mpRoot->getInfix();
+      mInfix = mpRoot->buildInfix();
     }
 
   return true;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.77 $
+//   $Revision: 1.78 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/18 17:20:24 $
+//   $Date: 2012/05/15 15:56:40 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,6 +37,7 @@
 #include "report/CCopasiObjectReference.h"
 #include "sbml/math/ASTNode.h"
 #include "utilities/CCopasiTree.h"
+#include "utilities/CNodeIterator.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "math/CMathObject.h"
@@ -144,7 +145,8 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
     mpNodeList(NULL),
     mpRoot(NULL),
     mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mBooleanRequired(false)
+    mBooleanRequired(false),
+    mCalculationSequence()
 {
   initObjects();
   setInfix("");
@@ -160,7 +162,8 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
     mpNodeList(NULL),
     mpRoot(NULL),
     mValue(src.mValue),
-    mBooleanRequired(src.mBooleanRequired)
+    mBooleanRequired(src.mBooleanRequired),
+    mCalculationSequence()
 {
   initObjects();
   setInfix(src.mInfix);
@@ -287,9 +290,38 @@ bool CEvaluationTree::isBoolean() const
   return false;
 }
 
+void CEvaluationTree::buildCalculationSequence()
+{
+  CNodeIterator < CEvaluationNode > itNode(mpRoot);
+
+  while (itNode.next() != itNode.end())
+    {
+      switch (CEvaluationNode::type(itNode->getType()))
+        {
+          case CEvaluationNode::NUMBER:
+          case CEvaluationNode::CONSTANT:
+            break;
+
+          case CEvaluationNode::OBJECT:
+
+            if ((int) CEvaluationNode::subType(itNode->getType()) != (int) CEvaluationNodeObject::POINTER)
+              {
+                mCalculationSequence.push_back(*itNode);
+              }
+
+            break;
+
+          default:
+            mCalculationSequence.push_back(*itNode);
+            break;
+        }
+    }
+}
+
 bool CEvaluationTree::compileNodes()
 {
   clearDirectDependencies();
+  mCalculationSequence.clear();
 
   if (mInfix == "")
     return mUsable = true;
@@ -350,9 +382,39 @@ bool CEvaluationTree::compileNodes()
             default:
               break;
           }
+
+      buildCalculationSequence();
     }
 
   return mUsable;
+}
+
+void CEvaluationTree::calculate()
+{
+  try
+    {
+      if (mpRoot != NULL)
+        {
+          std::vector< CEvaluationNode * >::iterator it = mCalculationSequence.begin();
+          std::vector< CEvaluationNode * >::iterator end = mCalculationSequence.end();
+
+          for (; it != end; ++it)
+            {
+              (*it)->calculate();
+            }
+
+          mValue = mpRoot->getValue();
+        }
+      else
+        {
+          mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+        }
+    }
+
+  catch (...)
+    {
+      mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+    }
 }
 
 bool CEvaluationTree::setRoot(CEvaluationNode* pRootNode)
@@ -395,121 +457,143 @@ bool CEvaluationTree::updateTree()
   for (; it != end; ++it)
     mpNodeList->push_back(&*it);
 
-  mInfix = mpRoot->getInfix();
+  mInfix = mpRoot->buildInfix();
 
   return true;
 }
 
 bool CEvaluationTree::setTree(const ASTNode& pRootNode)
 {
-  return this->setRoot(CEvaluationTree::convertASTNode(pRootNode));
+  return this->setRoot(CEvaluationTree::fromAST(&pRootNode));
 }
 
-CEvaluationNode* CEvaluationTree::convertASTNode(const ASTNode& node)
+CEvaluationNode * CEvaluationTree::fromAST(const ASTNode * pASTNode)
 {
+  if (pASTNode == NULL) return NULL;
+
+  CNodeContextIterator< const ASTNode, std::vector< CEvaluationNode * > > itNode(pASTNode);
   CEvaluationNode* pResultNode = NULL;
-  ASTNodeType_t nodeType = node.getType();
-  CCopasiMessage Message;
 
-  switch (nodeType)
+  while (itNode.next() != itNode.end())
     {
-      case AST_LAMBDA:
-        // this nodetype will never be handled directly
-        break;
-      case AST_PLUS:
-      case AST_MINUS:
-      case AST_TIMES:
-      case AST_DIVIDE:
-      case AST_POWER:
-      case AST_FUNCTION_POWER:
-        // create a CEvaluationNodeOperator
-        pResultNode = CEvaluationNodeOperator::createNodeFromASTTree(node);
-        break;
-      case AST_INTEGER:
-      case AST_REAL:
-      case AST_REAL_E:
-      case AST_RATIONAL:
-        // create a CEvaluationNodeNumber
-        pResultNode = CEvaluationNodeNumber::createNodeFromASTTree(node);
-        break;
-      case AST_NAME:
-      case AST_NAME_TIME:
+      if (*itNode != NULL)
+        {
+          CCopasiMessage Message;
+
+          switch (itNode->getType())
+            {
+              case AST_LAMBDA:
+                // this nodetype will never be handled directly
+                break;
+              case AST_PLUS:
+              case AST_MINUS:
+              case AST_TIMES:
+              case AST_DIVIDE:
+              case AST_POWER:
+              case AST_FUNCTION_POWER:
+                // create a CEvaluationNodeOperator
+                pResultNode = CEvaluationNodeOperator::fromAST(*itNode, itNode.context());
+                break;
+
+              case AST_INTEGER:
+              case AST_REAL:
+              case AST_REAL_E:
+              case AST_RATIONAL:
+                // create a CEvaluationNodeNumber
+                pResultNode = CEvaluationNodeNumber::fromAST(*itNode, itNode.context());
+                break;
+
+              case AST_NAME:
+              case AST_NAME_TIME:
 #if LIBSBML_VERSION >= 40100
-      case AST_NAME_AVOGADRO:
+              case AST_NAME_AVOGADRO:
 #endif // LIBSBML_VERSION >= 40100
-        // create a CEvaluationNodeObject
-        pResultNode = CEvaluationNodeObject::createNodeFromASTTree(node);
-        break;
-      case AST_CONSTANT_E:
-      case AST_CONSTANT_PI:
-      case AST_CONSTANT_FALSE:
-      case AST_CONSTANT_TRUE:
-        // create a CEvaluationNodeConstant
-        pResultNode = CEvaluationNodeConstant::createNodeFromASTTree(node);
-        break;
-      case AST_FUNCTION:
-        // create a function call node
-        pResultNode = CEvaluationNodeCall::createNodeFromASTTree(node);
-        break;
-      case AST_FUNCTION_DELAY:
-        // create a function call node
-        pResultNode = CEvaluationNodeDelay::createNodeFromASTTree(node);
-        break;
-      case AST_FUNCTION_ABS:
-      case AST_FUNCTION_ARCCOS:
-      case AST_FUNCTION_ARCCOSH:
-      case AST_FUNCTION_ARCCOT:
-      case AST_FUNCTION_ARCCOTH:
-      case AST_FUNCTION_ARCCSC:
-      case AST_FUNCTION_ARCCSCH:
-      case AST_FUNCTION_ARCSEC:
-      case AST_FUNCTION_ARCSECH:
-      case AST_FUNCTION_ARCSIN:
-      case AST_FUNCTION_ARCSINH:
-      case AST_FUNCTION_ARCTAN:
-      case AST_FUNCTION_ARCTANH:
-      case AST_FUNCTION_CEILING:
-      case AST_FUNCTION_COS:
-      case AST_FUNCTION_COSH:
-      case AST_FUNCTION_COT:
-      case AST_FUNCTION_COTH:
-      case AST_FUNCTION_CSC:
-      case AST_FUNCTION_CSCH:
-      case AST_FUNCTION_EXP:
-      case AST_FUNCTION_FACTORIAL:
-      case AST_FUNCTION_FLOOR:
-      case AST_FUNCTION_LN:
-      case AST_FUNCTION_LOG:
-      case AST_FUNCTION_ROOT:
-      case AST_FUNCTION_SEC:
-      case AST_FUNCTION_SECH:
-      case AST_FUNCTION_SIN:
-      case AST_FUNCTION_SINH:
-      case AST_FUNCTION_TAN:
-      case AST_FUNCTION_TANH:
-      case AST_LOGICAL_NOT:
-        pResultNode = CEvaluationNodeFunction::createNodeFromASTTree(node);
-        break;
+                // create a CEvaluationNodeObject
+                pResultNode = CEvaluationNodeObject::fromAST(*itNode, itNode.context());
+                break;
 
-      case AST_LOGICAL_AND:
-      case AST_LOGICAL_OR:
-      case AST_LOGICAL_XOR:
-      case AST_RELATIONAL_EQ:
-      case AST_RELATIONAL_GEQ:
-      case AST_RELATIONAL_GT:
-      case AST_RELATIONAL_LEQ:
-      case AST_RELATIONAL_LT:
-      case AST_RELATIONAL_NEQ:
-        pResultNode = CEvaluationNodeLogical::createNodeFromASTTree(node);
-        break;
-      case AST_FUNCTION_PIECEWISE:
-        pResultNode = CEvaluationNodeChoice::createNodeFromASTTree(node);
-        break;
-      case AST_UNKNOWN:
-        // create an unknown element error
-        Message = CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathML + 2);
+              case AST_CONSTANT_E:
+              case AST_CONSTANT_PI:
+              case AST_CONSTANT_FALSE:
+              case AST_CONSTANT_TRUE:
+                // create a CEvaluationNodeConstant
+                pResultNode = CEvaluationNodeConstant::fromAST(*itNode, itNode.context());
+                break;
 
-        break;
+              case AST_FUNCTION:
+                // create a function call node
+                pResultNode = CEvaluationNodeCall::fromAST(*itNode, itNode.context());
+                break;
+
+              case AST_FUNCTION_DELAY:
+                // create a function call node
+                pResultNode = CEvaluationNodeDelay::fromAST(*itNode, itNode.context());
+                break;
+
+              case AST_FUNCTION_ABS:
+              case AST_FUNCTION_ARCCOS:
+              case AST_FUNCTION_ARCCOSH:
+              case AST_FUNCTION_ARCCOT:
+              case AST_FUNCTION_ARCCOTH:
+              case AST_FUNCTION_ARCCSC:
+              case AST_FUNCTION_ARCCSCH:
+              case AST_FUNCTION_ARCSEC:
+              case AST_FUNCTION_ARCSECH:
+              case AST_FUNCTION_ARCSIN:
+              case AST_FUNCTION_ARCSINH:
+              case AST_FUNCTION_ARCTAN:
+              case AST_FUNCTION_ARCTANH:
+              case AST_FUNCTION_CEILING:
+              case AST_FUNCTION_COS:
+              case AST_FUNCTION_COSH:
+              case AST_FUNCTION_COT:
+              case AST_FUNCTION_COTH:
+              case AST_FUNCTION_CSC:
+              case AST_FUNCTION_CSCH:
+              case AST_FUNCTION_EXP:
+              case AST_FUNCTION_FACTORIAL:
+              case AST_FUNCTION_FLOOR:
+              case AST_FUNCTION_LN:
+              case AST_FUNCTION_LOG:
+              case AST_FUNCTION_ROOT:
+              case AST_FUNCTION_SEC:
+              case AST_FUNCTION_SECH:
+              case AST_FUNCTION_SIN:
+              case AST_FUNCTION_SINH:
+              case AST_FUNCTION_TAN:
+              case AST_FUNCTION_TANH:
+              case AST_LOGICAL_NOT:
+                pResultNode = CEvaluationNodeFunction::fromAST(*itNode, itNode.context());
+                break;
+
+              case AST_LOGICAL_AND:
+              case AST_LOGICAL_OR:
+              case AST_LOGICAL_XOR:
+              case AST_RELATIONAL_EQ:
+              case AST_RELATIONAL_GEQ:
+              case AST_RELATIONAL_GT:
+              case AST_RELATIONAL_LEQ:
+              case AST_RELATIONAL_LT:
+              case AST_RELATIONAL_NEQ:
+                pResultNode = CEvaluationNodeLogical::fromAST(*itNode, itNode.context());
+                break;
+
+              case AST_FUNCTION_PIECEWISE:
+                pResultNode = CEvaluationNodeChoice::fromAST(*itNode, itNode.context());
+                break;
+
+              case AST_UNKNOWN:
+                // create an unknown element error
+                Message = CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathML + 2);
+
+                break;
+            }
+
+          if (itNode.parentContextPtr() != NULL)
+            {
+              itNode.parentContextPtr()->push_back(pResultNode);
+            }
+        }
     }
 
   return pResultNode;

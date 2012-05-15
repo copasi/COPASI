@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.104 $
+//   $Revision: 1.105 $
 //   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/05/10 12:15:12 $
+//   $Author: shoops $
+//   $Date: 2012/05/15 15:57:18 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -5580,7 +5580,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                       (((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pRight->getType())) == CEvaluationNodeNumber::DOUBLE ||
                        ((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pRight->getType())) == CEvaluationNodeNumber::ENOTATION))
                     {
-                      double value = dynamic_cast<const CEvaluationNodeNumber*>(pRight)->value();
+                      double value = dynamic_cast<const CEvaluationNodeNumber*>(pRight)->getValue();
 
                       if (fabs((factor - value) / factor) <= 1e-3)
                         {

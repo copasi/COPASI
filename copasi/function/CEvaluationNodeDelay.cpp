@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeDelay.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/09 21:25:31 $
+//   $Date: 2012/05/15 15:56:41 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,11 +55,6 @@ CEvaluationNodeDelay::CEvaluationNodeDelay(const CEvaluationNodeDelay & src):
 
 CEvaluationNodeDelay::~CEvaluationNodeDelay() {}
 
-const C_FLOAT64 & CEvaluationNodeDelay::value() const
-{
-  return mValue;
-}
-
 bool CEvaluationNodeDelay::compile(const CEvaluationTree * /*pTree*/)
 {
   bool success = true;
@@ -87,14 +82,15 @@ bool CEvaluationNodeDelay::compile(const CEvaluationTree * /*pTree*/)
   return success;
 }
 
-std::string CEvaluationNodeDelay::getInfix() const
+// virtual
+std::string CEvaluationNodeDelay::getInfix(const std::vector< std::string > & children) const
 {
   if (const_cast<CEvaluationNodeDelay*>(this)->compile(NULL))
     {
       switch (mType & 0x00FFFFFF)
         {
           case DELAY:
-            return mData + "(" + mpDelayedObject->getInfix() + "," + mpDeltaT->getInfix() + ")";
+            return mData + "(" + children[0] + "," + children[1] + ")";
             break;
 
           default:
@@ -108,12 +104,13 @@ std::string CEvaluationNodeDelay::getInfix() const
     }
 }
 
-std::string CEvaluationNodeDelay::getDisplayString(const CEvaluationTree * pTree) const
+// virtual
+std::string CEvaluationNodeDelay::getDisplayString(const std::vector< std::string > & children) const
 {
   switch (mType & 0x00FFFFFF)
     {
       case DELAY:
-        return mData + "(" + mpDelayedObject->getDisplayString(pTree) + "," + mpDeltaT->getDisplayString(pTree) + ")";
+        return mData + "(" + children[0] + "," + children[1] + ")";
         break;
 
       default:
@@ -164,17 +161,21 @@ std::string CEvaluationNodeDelay::getDisplay_XPP_String(const CEvaluationTree * 
     }
 }
 
-CEvaluationNode* CEvaluationNodeDelay::createNodeFromASTTree(const ASTNode& node)
+// static
+CEvaluationNode * CEvaluationNodeDelay::fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children)
 {
+  assert(pASTNode->getNumChildren() == children.size());
+
+  size_t i = 0, iMax = children.size();
+
   SubType subType = CEvaluationNodeDelay::DELAY;
   std::string data = "delay";
 
-  CEvaluationNodeDelay* pConvertedNode = new CEvaluationNodeDelay(subType, data);
-  unsigned int i, iMax = node.getNumChildren();
+  CEvaluationNode * pConvertedNode = new CEvaluationNodeDelay(subType, data);
 
   for (i = 0; i < iMax; ++i)
     {
-      pConvertedNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(i)));
+      pConvertedNode->addChild(children[i]);
     }
 
   pConvertedNode->compile(NULL);

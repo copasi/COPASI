@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeDelay.h,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/30 16:34:38 $
+//   $Date: 2012/05/15 15:56:40 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -65,16 +65,10 @@ public:
   virtual ~CEvaluationNodeDelay();
 
   /**
-   * Retrieve the value of the node
-   * @return const C_FLOAT64 & value
-   */
-  virtual const C_FLOAT64 & value() const;
-
-  /**
    * Retrieve the display string of the node and its eventual child nodes.
    * @return const Data & value
    */
-  virtual std::string getDisplayString(const CEvaluationTree * pTree) const;
+  virtual std::string getDisplayString(const std::vector< std::string > & children) const;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes in C.
@@ -97,11 +91,12 @@ public:
   virtual std::string getDisplay_XPP_String(const CEvaluationTree * pTree) const;
 
   /**
-   * Creates a new CEvaluationNodeDelay from an ASTNode.
-   * @param const ASTNode* node
-   * @return CEvaluationNode* return a pointer to the newly created node;
+   * Creates a new CEvaluationNodeCall from an ASTNode and the given children
+   * @param const ASTNode* pNode
+   * @param const std::vector< CEvaluationNode * > & children
+   * @return CEvaluationNode * pCretedNode
    */
-  static CEvaluationNode* createNodeFromASTTree(const ASTNode& node);
+  static CEvaluationNode * fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children);
 
   /**
    * Create a new ASTNode corresponding to this delay node.
@@ -128,7 +123,7 @@ public:
    * Retrieve the infix value of the node and its eventual child nodes.
    * @return const Data & value
    */
-  virtual std::string getInfix() const;
+  virtual std::string getInfix(const std::vector< std::string > & children) const;
 
 private:
   CEvaluationNode * mpDelayedObject;

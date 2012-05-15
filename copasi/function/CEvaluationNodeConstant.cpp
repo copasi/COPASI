@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-//   $Revision: 1.30 $
+//   $Revision: 1.31 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 23:14:03 $
+//   $Date: 2012/05/15 15:56:41 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -171,13 +171,16 @@ std::string CEvaluationNodeConstant::getDisplay_XPP_String(const CEvaluationTree
   return data;
 }
 
-CEvaluationNode* CEvaluationNodeConstant::createNodeFromASTTree(const ASTNode& node)
+// static
+CEvaluationNode * CEvaluationNodeConstant::fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children)
 {
-  ASTNodeType_t type = node.getType();
+  assert(pASTNode->getNumChildren() == children.size());
+  assert(children.size() == 0);
+
   SubType subType;
   std::string data = "";
 
-  switch (type)
+  switch (pASTNode->getType())
     {
       case AST_CONSTANT_E:
         subType = EXPONENTIALE;

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/20 14:53:47 $
+//   $Date: 2012/05/15 15:56:41 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -171,7 +171,8 @@ bool CEvaluationNodeObject::setData(const Data & data)
   return true;
 }
 
-std::string CEvaluationNodeObject::getInfix() const
+// virtual
+std::string CEvaluationNodeObject::getInfix(const std::vector< std::string > & /* children */) const
 {
   switch ((int) subType(mType))
     {
@@ -203,7 +204,8 @@ std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * pTre
 }
 #endif
 
-std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * /* pTree */) const
+// virtual
+std::string CEvaluationNodeObject::getDisplayString(const std::vector< std::string > & /* children */) const
 {
   return "<" + mRegisteredObjectCN + ">";
 }
@@ -223,19 +225,20 @@ std::string CEvaluationNodeObject::getDisplay_XPP_String(const CEvaluationTree *
   return mData;
 }
 
-CEvaluationNode* CEvaluationNodeObject::createNodeFromASTTree(const ASTNode& node)
-{
-  CEvaluationNodeObject* pNode = NULL;
-  ASTNodeType_t type = node.getType();
 
-  switch (type)
+// static
+CEvaluationNode * CEvaluationNodeObject::fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children)
+{
+  assert(pASTNode->getNumChildren() == children.size());
+
+  CEvaluationNodeObject* pNode = NULL;
+
+  switch (pASTNode->getType())
     {
-#if LIBSBML_VERSION >= 40100
       case AST_NAME_AVOGADRO:
-#endif // LIBSBML_VERSION >= 40100
       case AST_NAME_TIME:
       case AST_NAME:
-        pNode = new CEvaluationNodeObject(CN, CCopasiObjectName(std::string("<") + node.getName() + std::string(">")));
+        pNode = new CEvaluationNodeObject(CN, CCopasiObjectName(std::string("<") + pASTNode->getName() + std::string(">")));
         break;
       default:
         break;

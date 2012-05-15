@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVector.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:10:23 $
+//   $Date: 2012/05/15 15:56:41 $
 // End CVS Header
 
 // Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,43 +57,34 @@ CEvaluationNodeVector::CEvaluationNodeVector(const CEvaluationNodeVector & src):
 
 CEvaluationNodeVector::~CEvaluationNodeVector() {}
 
-const C_FLOAT64 & CEvaluationNodeVector::value() const
-{
-  std::vector< CEvaluationNode * >::const_iterator it = mVector.begin();
-  std::vector< CEvaluationNode * >::const_iterator end = mVector.end();
-
-  for (; it != end; ++it)
-    (*it)->value();
-
-  return mValue;
-}
-
-std::string CEvaluationNodeVector::getInfix() const
+// virtual
+std::string CEvaluationNodeVector::getInfix(const std::vector< std::string > & children) const
 {
   std::string Infix = "{";
 
-  std::vector< CEvaluationNode * >::const_iterator it = mVector.begin();
-  std::vector< CEvaluationNode * >::const_iterator end = mVector.end();
+  std::vector< std::string >::const_iterator it = children.begin();
+  std::vector< std::string >::const_iterator end = children.end();
 
-  if (it != end) Infix += (*it++)->getInfix();
+  if (it != end) Infix += *it++;
 
   for (; it != end; ++it)
-    Infix += "," + (*it)->getInfix();
+    Infix += "," + *it;
 
   return Infix + "}";
 }
 
-std::string CEvaluationNodeVector::getDisplayString(const CEvaluationTree * pTree) const
+// virtual
+std::string CEvaluationNodeVector::getDisplayString(const std::vector< std::string > & children) const
 {
   std::string DisplayString = "{";
 
-  std::vector< CEvaluationNode * >::const_iterator it = mVector.begin();
-  std::vector< CEvaluationNode * >::const_iterator end = mVector.end();
+  std::vector< std::string >::const_iterator it = children.begin();
+  std::vector< std::string >::const_iterator end = children.end();
 
-  if (it != end) DisplayString += (*it++)->getDisplayString(pTree);
+  if (it != end) DisplayString += *it++;
 
   for (; it != end; ++it)
-    DisplayString += "," + (*it)->getDisplayString(pTree);
+    DisplayString += "," + *it;
 
   return DisplayString + "}";
 }
@@ -113,14 +104,10 @@ std::string CEvaluationNodeVector::getDisplay_XPP_String(const CEvaluationTree *
   return "@";
 }
 
-CEvaluationNode* CEvaluationNodeVector::createNodeFromASTTree(const ASTNode & /* node */)
+// static
+CEvaluationNode * CEvaluationNodeVector::fromAST(const ASTNode * /* pASTNode */, const std::vector< CEvaluationNode * > & /* children */)
 {
-  // :TODO:
-  SubType subType;
-  std::string data = "";
-
-  CEvaluationNodeVector* convertedNode = new CEvaluationNodeVector(subType, data);
-  return convertedNode;
+  return NULL;
 }
 
 ASTNode* CEvaluationNodeVector::toAST(const CCopasiDataModel* /*pDataModel*/) const

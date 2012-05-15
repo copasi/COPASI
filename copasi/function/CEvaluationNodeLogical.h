@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.h,v $
-  $Revision: 1.17 $
+  $Revision: 1.18 $
   $Name:  $
   $Author: shoops $
-  $Date: 2012/04/23 21:10:23 $
+  $Date: 2012/05/15 15:56:41 $
   End CVS Header */
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,54 +78,52 @@ public:
   virtual ~CEvaluationNodeLogical();
 
   /**
-   * Retrieve the value of the node
-   * @return const C_FLOAT64 & value
+   * Calculate the numerical result of the node. It is assumed that
+   * all child nodes are up to date.
    */
-  virtual inline const C_FLOAT64 & value() const
+  virtual inline void calculate()
   {
     switch (mType & 0x00FFFFFF)
       {
         case OR:
-          mValue = (mpLeft->value() != 0.0 ||
-                    mpRight->value() != 0.0) ? 1.0 : 0.0;
+          mValue = (mpLeft->getValue() > 0.5 ||
+                    mpRight->getValue() > 0.5) ? 1.0 : 0.0;
           break;
 
         case XOR:
-          mValue = ((mpLeft->value() != 0.0 && mpRight->value() == 0.0) ||
-                    (mpLeft->value() == 0.0 && mpRight->value() != 0.0)) ? 1.0 : 0.0;
+          mValue = ((mpLeft->getValue() > 0.5 && mpRight->getValue() < 0.5) ||
+                    (mpLeft->getValue() < 0.5 && mpRight->getValue() > 0.5)) ? 1.0 : 0.0;
           break;
 
         case AND:
-          mValue = (mpLeft->value() != 0.0 &&
-                    mpRight->value() != 0.0) ? 1.0 : 0.0;
+          mValue = (mpLeft->getValue() > 0.5 &&
+                    mpRight->getValue() > 0.5) ? 1.0 : 0.0;
           break;
 
         case EQ:
-          mValue = (mpLeft->value() == mpRight->value()) ? 1.0 : 0.0;
+          mValue = (mpLeft->getValue() == mpRight->getValue()) ? 1.0 : 0.0;
           break;
 
         case NE:
-          mValue = (mpLeft->value() != mpRight->value()) ? 1.0 : 0.0;
+          mValue = (mpLeft->getValue() != mpRight->getValue()) ? 1.0 : 0.0;
           break;
 
         case GT:
-          mValue = (mpLeft->value() > mpRight->value()) ? 1.0 : 0.0;
+          mValue = (mpLeft->getValue() > mpRight->getValue()) ? 1.0 : 0.0;
           break;
 
         case GE:
-          mValue = (mpLeft->value() >= mpRight->value()) ? 1.0 : 0.0;
+          mValue = (mpLeft->getValue() >= mpRight->getValue()) ? 1.0 : 0.0;
           break;
 
         case LT:
-          mValue = (mpLeft->value() < mpRight->value()) ? 1.0 : 0.0;
+          mValue = (mpLeft->getValue() < mpRight->getValue()) ? 1.0 : 0.0;
           break;
 
         case LE:
-          mValue = (mpLeft->value() <= mpRight->value()) ? 1.0 : 0.0;
+          mValue = (mpLeft->getValue() <= mpRight->getValue()) ? 1.0 : 0.0;
           break;
       }
-
-    return mValue;
   }
 
   /**
@@ -139,13 +137,13 @@ public:
    * Retrieve the infix value of the node and its eventual child nodes.
    * @return const Data & value
    */
-  virtual std::string getInfix() const;
+  virtual std::string getInfix(const std::vector< std::string > & children) const;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes.
    * @return const Data & value
    */
-  virtual std::string getDisplayString(const CEvaluationTree * pTree) const;
+  virtual std::string getDisplayString(const std::vector< std::string > & children) const;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes in C.
@@ -168,11 +166,12 @@ public:
   virtual std::string getDisplay_XPP_String(const CEvaluationTree * pTree) const;
 
   /**
-   * Create a new operator node from an ASTNode tree.
-   * @param const ASTNode* node
-   * @return CEvaluationNode* return a pointer to the newly created node;
+   * Creates a new CEvaluationNodeCall from an ASTNode and the given children
+   * @param const ASTNode* pNode
+   * @param const std::vector< CEvaluationNode * > & children
+   * @return CEvaluationNode * pCretedNode
    */
-  static CEvaluationNode* createNodeFromASTTree(const ASTNode& node);
+  static CEvaluationNode * fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children);
 
   /**
    * Check whether the result is Boolean

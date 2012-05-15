@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:10:22 $
+//   $Date: 2012/05/15 15:56:40 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,118 +89,124 @@ CEvaluationNodeNumber::CEvaluationNodeNumber(const CEvaluationNodeNumber & src):
 
 CEvaluationNodeNumber::~CEvaluationNodeNumber() {}
 
-CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& node)
+// static
+CEvaluationNode * CEvaluationNodeNumber::fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children)
 {
-  ASTNodeType_t type = node.getType();
+  assert(pASTNode->getNumChildren() == children.size());
+
   std::stringstream ss;
   SubType subType;
   std::string data = "";
   CEvaluationNode* pNode = NULL;
 
-  switch (type)
+  switch (pASTNode->getType())
     {
       case AST_INTEGER:
         subType = INTEGER;
 
-        if (node.getInteger() < 0)
+        if (pASTNode->getInteger() < 0)
           {
             pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
 
-            ss << abs(node.getInteger());
+            ss << abs(pASTNode->getInteger());
             data = ss.str();
             pNode->addChild(new CEvaluationNodeNumber(subType, data));
           }
         else
           {
-            ss << node.getInteger();
+            ss << pASTNode->getInteger();
             data = ss.str();
             pNode = new CEvaluationNodeNumber(subType, data);
           }
 
         break;
+
       case AST_REAL:
         subType = DOUBLE;
 
-        if (node.getReal() == (std::numeric_limits<C_FLOAT64>::infinity()))
+        if (pASTNode->getReal() == (std::numeric_limits<C_FLOAT64>::infinity()))
           {
             pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY");
           }
-        else if (node.getReal() == (-std::numeric_limits<C_FLOAT64>::infinity()))
+        else if (pASTNode->getReal() == (-std::numeric_limits<C_FLOAT64>::infinity()))
           {
             pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
             pNode->addChild(new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY"));
           }
-        else if (isnan(node.getReal()))
+        else if (isnan(pASTNode->getReal()))
           {
             pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
           }
-        else if (node.getReal() < 0.0)
+        else if (pASTNode->getReal() < 0.0)
           {
             pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
 
-            ss << fabs(node.getReal());
+            ss << fabs(pASTNode->getReal());
             data = ss.str();
             pNode->addChild(new CEvaluationNodeNumber(subType, data));
           }
         else
           {
-            ss << node.getReal();
+            ss << pASTNode->getReal();
             data = ss.str();
             pNode = new CEvaluationNodeNumber(subType, data);
           }
 
         break;
+
       case AST_REAL_E:
         subType = ENOTATION;
 
-        if (node.getReal() == (std::numeric_limits<C_FLOAT64>::infinity()))
+        if (pASTNode->getReal() == (std::numeric_limits<C_FLOAT64>::infinity()))
           {
             pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY");
           }
-        else if (node.getReal() == (-std::numeric_limits<C_FLOAT64>::infinity()))
+        else if (pASTNode->getReal() == (-std::numeric_limits<C_FLOAT64>::infinity()))
           {
             pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
             pNode->addChild(new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY"));
           }
-        else if (isnan(node.getReal()))
+        else if (isnan(pASTNode->getReal()))
           {
             pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
           }
-        else if (node.getReal() < 0.0)
+        else if (pASTNode->getReal() < 0.0)
           {
             pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
 
-            ss << fabs(node.getReal());
+            ss << fabs(pASTNode->getReal());
             data = ss.str();
             pNode->addChild(new CEvaluationNodeNumber(subType, data));
           }
         else
           {
-            ss << node.getReal();
+            ss << pASTNode->getReal();
             data = ss.str();
             pNode = new CEvaluationNodeNumber(subType, data);
           }
 
         break;
+
       case AST_RATIONAL:
         subType = RATIONALE;
 
-        if (node.getReal() < 0.0) // getReal returns the value of the node
+        if (pASTNode->getReal() < 0.0) // getReal returns the value of the node
           {
             pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS, "-");
 
-            ss << "(" << abs(node.getNumerator()) << "/" << abs(node.getDenominator()) << ")";
+            ss << "(" << abs(pASTNode->getNumerator()) << "/" << abs(pASTNode->getDenominator()) << ")";
             data = ss.str();
             pNode->addChild(new CEvaluationNodeNumber(subType, data));
           }
         else
           {
-            ss << "(" << node.getNumerator() << "/" << node.getDenominator() << ")";
+            ss << "(" << pASTNode->getNumerator() << "/" << pASTNode->getDenominator() << ")";
             data = ss.str();
             pNode = new CEvaluationNodeNumber(subType, data);
           }
 
         break;
+
       default:
         subType = INVALID;
         break;
@@ -222,16 +228,16 @@ ASTNode* CEvaluationNodeNumber::toAST(const CCopasiDataModel* /* pDataModel */) 
     {
       case DOUBLE:
         node->setType(AST_REAL);
-        node->setValue(this->value());
+        node->setValue(this->getValue());
         break;
       case INTEGER:
         node->setType(AST_INTEGER);
-        node->setValue((long)this->value());
+        node->setValue((long)this->getValue());
         break;
       case ENOTATION:
         node->setType(AST_REAL_E);
-        num2 = floor(log10(this->value()));
-        num1 = pow(10.0, log10(this->value()) - num2);
+        num2 = floor(log10(this->getValue()));
+        num1 = pow(10.0, log10(this->getValue()) - num2);
         node->setValue(num1, (long)num2);
         break;
       case RATIONALE:

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathContainer.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/18 14:36:50 $
+//   $Date: 2012/05/15 15:56:59 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -213,6 +213,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pSrc,
   return copyBranch(pSrc, VariableStack, replaceDiscontinuousNodes);
 }
 
+// TODO CRITICAL Replace the recursive call
 CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pSrc,
     CMath::CVariableStack & variableStack,
     const bool & replaceDiscontinuousNodes)

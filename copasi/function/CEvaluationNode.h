@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:18:21 $
+//   $Date: 2012/05/15 15:56:41 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -120,19 +120,6 @@ protected:
   CEvaluationNode(const Type & type,
                   const Data & data);
 
-  /**
-   * Replaces all root nodes with the corresponding power
-   * operator since COPASI does not have the ROOT function.
-   */
-  static void replaceRoot(ConverterASTNode* sourceNode);
-
-  /**
-   * Replaces all LOG10 (AST_FUNCTION_LOG) nodes that have two
-   * children with the quotient of two LOG10 nodes with the base
-   * as the argument for the divisor LOG10 node.
-   */
-  static void replaceLog(ConverterASTNode* sourceNode);
-
 public:
   /**
    * Copy constructor
@@ -149,7 +136,13 @@ public:
    * Retrieve the value of the node
    * @return const C_FLOAT64 & value
    */
-  virtual inline const C_FLOAT64 & value() const {return mValue;}
+  inline const C_FLOAT64 & getValue() const {return mValue;}
+
+  /**
+   * Calculate the numerical result of the node. It is assumed that
+   * all child nodes are up to date.
+   */
+  virtual inline void calculate() {};
 
   /**
    * Compile a node;
@@ -162,13 +155,23 @@ public:
    * Retrieve the infix value of the node and its eventual child nodes.
    * @return const Data & value
    */
-  virtual std::string getInfix() const;
+  virtual std::string getInfix(const std::vector< std::string > & children) const;
+
+  /**
+   * Build the infix string.
+   */
+  std::string buildInfix() const;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes.
    * @return const Data & value
    */
-  virtual std::string getDisplayString(const CEvaluationTree * pTree) const;
+  virtual std::string getDisplayString(const std::vector< std::string > & children) const;
+
+  /**
+   * Build the human readable display string.
+   */
+  std::string buildDisplayString() const;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes in C.
@@ -204,6 +207,12 @@ public:
    * @return bool isBoolean
    */
   virtual bool isBoolean() const;
+
+  /**
+   * Add the children to the node
+   * @param const std::vector< CEvaluationNode * > & children
+   */
+  void addChildren(const std::vector< CEvaluationNode * > & children);
 
   /**
    * Create a new invalid ASTNode.
@@ -289,7 +298,7 @@ protected:
   /**
    * The numerical value of the node
    */
-  mutable C_FLOAT64 mValue;
+  C_FLOAT64 mValue;
 
   /**
    * Structure holding the precedence information

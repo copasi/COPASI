@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathExpression.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/29 16:12:05 $
+//   $Date: 2012/05/15 15:56:59 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,7 +75,7 @@ public:
    * Evaluate the expression
    * @return const C_FLOAT64 & value
    */
-  const C_FLOAT64 & value() const;
+  const C_FLOAT64 & value();
 
   /**
    * Retrieve the prerequisites, i.e., the objects which need to be evaluated

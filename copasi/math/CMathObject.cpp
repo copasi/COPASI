@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathObject.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 15:52:58 $
+//   $Date: 2012/05/15 15:56:59 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -1273,7 +1273,7 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
 
   if (o.mpExpression != NULL)
     {
-      os << o.mpExpression->getRoot()->getInfix() << std::endl;
+      os << o.mpExpression->getRoot()->buildInfix() << std::endl;
     }
   else
     {

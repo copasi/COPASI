@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-//   $Revision: 1.49 $
+//   $Revision: 1.50 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 23:14:03 $
+//   $Date: 2012/05/15 15:56:40 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -129,26 +129,24 @@ public:
   virtual ~CEvaluationNodeFunction();
 
   /**
-   * Retrieve the value of the node
-   * @return const C_FLOAT64 & value
+   * Calculate the numerical result of the node. It is assumed that
+   * all child nodes are up to date.
    */
-  virtual inline const C_FLOAT64 & value() const
+  virtual inline void calculate()
   {
     if (mpFunction)
       {
-        mValue = (*mpFunction)(mpArg1->value());
+        mValue = (*mpFunction)(mpArg1->getValue());
       }
     else if (mpFunction2)
       {
-        mValue = (*mpFunction2)(mpArg1->value(), mpArg2->value());
+        mValue = (*mpFunction2)(mpArg1->getValue(), mpArg2->getValue());
       }
     else if (mpFunction4)
       {
-        mValue = (*mpFunction4)(mpArg1->value(), mpArg2->value(),
-                                mpArg3->value(), mpArg4->value());
+        mValue = (*mpFunction4)(mpArg1->getValue(), mpArg2->getValue(),
+                                mpArg3->getValue(), mpArg4->getValue());
       }
-
-    return mValue;
   }
 
   /**
@@ -162,13 +160,13 @@ public:
    * Retrieve the infix value of the node and its eventual child nodes.
    * @return const Data & value
    */
-  virtual std::string getInfix() const;
+  virtual std::string getInfix(const std::vector< std::string > & children) const;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes.
    * @return const Data & value
    */
-  virtual std::string getDisplayString(const CEvaluationTree * pTree) const;
+  virtual std::string getDisplayString(const std::vector< std::string > & children) const;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes in C.
@@ -191,11 +189,12 @@ public:
   virtual std::string getDisplay_XPP_String(const CEvaluationTree * pTree) const;
 
   /**
-   * Creates a new CEvaluationNodeFunction from an ASTNode.
-   * @param const ASTNode* node
-   * @return CEvaluationNode* return a pointer to the newly created node;
+   * Creates a new CEvaluationNodeCall from an ASTNode and the given children
+   * @param const ASTNode* pNode
+   * @param const std::vector< CEvaluationNode * > & children
+   * @return CEvaluationNode * pCretedNode
    */
-  static CEvaluationNode* createNodeFromASTTree(const ASTNode& node);
+  static CEvaluationNode * fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children);
 
   /**
    * Check whether the result is Boolean

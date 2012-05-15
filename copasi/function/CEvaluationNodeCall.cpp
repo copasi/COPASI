@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/09 21:25:19 $
+//   $Date: 2012/05/15 15:56:40 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,30 +89,22 @@ CEvaluationNodeCall::CEvaluationNodeCall(const CEvaluationNodeCall & src):
 
 CEvaluationNodeCall::~CEvaluationNodeCall() {}
 
-const C_FLOAT64 & CEvaluationNodeCall::value() const
+void CEvaluationNodeCall::calculate()
 {
   switch (mType & 0x00FFFFFF)
     {
       case FUNCTION:
-      {
-        std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
-        std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
-
-        for (; it != end; ++it)(*it)->value();
-      }
-      return mValue = mpFunction->calcValue(*mpCallParameters);
-      break;
+        mValue = mpFunction->calcValue(*mpCallParameters);
+        break;
 
       case EXPRESSION:
-        return mValue = mpExpression->calcValue();
+        mValue = mpExpression->calcValue();
         break;
 
       default:
-        return mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+        mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
         break;
     }
-
-  return mValue;
 }
 
 bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
@@ -255,7 +247,8 @@ bool CEvaluationNodeCall::setData(const Data & data)
 }
 
 
-std::string CEvaluationNodeCall::getInfix() const
+// virtual
+std::string CEvaluationNodeCall::getInfix(const std::vector< std::string > & children) const
 {
   std::string Infix;
 
@@ -274,13 +267,13 @@ std::string CEvaluationNodeCall::getInfix() const
     {
       case FUNCTION:
       {
-        std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
-        std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
+        std::vector< std::string >::const_iterator it = children.begin();
+        std::vector< std::string>::const_iterator end = children.end();
 
-        if (it != end) Infix += (*it++)->getInfix();
+        if (it != end) Infix += *it++;
 
         for (; it != end; ++it)
-          Infix += "," + (*it)->getInfix();
+          Infix += "," + *it;
       }
 
       break;
@@ -296,7 +289,8 @@ std::string CEvaluationNodeCall::getInfix() const
   return Infix + ")";
 }
 
-std::string CEvaluationNodeCall::getDisplayString(const CEvaluationTree * pTree) const
+// virtual
+std::string CEvaluationNodeCall::getDisplayString(const std::vector< std::string > & children) const
 {
   std::string DisplayString;
 
@@ -313,13 +307,13 @@ std::string CEvaluationNodeCall::getDisplayString(const CEvaluationTree * pTree)
     {
       case FUNCTION:
       {
-        std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
-        std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
+        std::vector< std::string >::const_iterator it = children.begin();
+        std::vector< std::string >::const_iterator end = children.end();
 
-        if (it != end) DisplayString += (*it++)->getDisplayString(pTree);
+        if (it != end) DisplayString += *it++;
 
         for (; it != end; ++it)
-          DisplayString += "," + (*it)->getDisplayString(pTree);
+          DisplayString += "," + *it;
       }
 
       break;
@@ -405,20 +399,19 @@ std::string CEvaluationNodeCall::getDisplay_XPP_String(const CEvaluationTree * /
   return DisplayString;
 }
 
-CEvaluationNode* CEvaluationNodeCall::createNodeFromASTTree(const ASTNode& node)
+// static
+CEvaluationNode * CEvaluationNodeCall::fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children)
 {
+  assert(pASTNode->getNumChildren() == children.size());
+
   SubType subType = CEvaluationNodeCall::FUNCTION;
-  std::string data = node.getName();
+  std::string data = pASTNode->getName();
 
-  CEvaluationNodeCall* pConvertedNode = new CEvaluationNodeCall(subType, data);
-  unsigned int i, iMax = node.getNumChildren();
+  CEvaluationNodeCall * pNode = new CEvaluationNodeCall(subType, data);
 
-  for (i = 0; i < iMax; ++i)
-    {
-      pConvertedNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(i)));
-    }
+  pNode->addChildren(children);
 
-  return pConvertedNode;
+  return pNode;
 }
 
 ASTNode* CEvaluationNodeCall::toAST(const CCopasiDataModel* pDataModel) const

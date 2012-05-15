@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-//   $Revision: 1.65 $
+//   $Revision: 1.66 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:10:22 $
+//   $Date: 2012/05/15 15:56:39 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -139,7 +139,7 @@ void CKinFunction::createParameters()
                   (*it)->setData(Name);
 
               // The Infix has changed we need to update it.
-              setInfix(mpRoot->getInfix());
+              setInfix(mpRoot->buildInfix());
             }
 
           pParameter = new CFunctionParameter(Name);

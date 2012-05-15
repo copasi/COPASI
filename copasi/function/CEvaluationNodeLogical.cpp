@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/03/28 09:46:46 $
+//   $Author: shoops $
+//   $Date: 2012/05/15 15:56:40 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,23 +95,24 @@ bool CEvaluationNodeLogical::compile(const CEvaluationTree * /* pTree */)
   return (mpRight->getSibling() == NULL); // We must have exactly two children
 }
 
-std::string CEvaluationNodeLogical::getInfix() const
+// virtual
+std::string CEvaluationNodeLogical::getInfix(const std::vector< std::string > & children) const
 {
   if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
     {
       Data Infix;
 
       if (*mpLeft < *(CEvaluationNode *)this)
-        Infix = "(" + mpLeft->getInfix() + ")";
+        Infix = "(" + children[0] + ")";
       else
-        Infix = mpLeft->getInfix();
+        Infix = children[0];
 
       Infix += " " + mData + " ";
 
       if (!(*(CEvaluationNode *)this < *mpRight))
-        Infix += "(" + mpRight->getInfix() + ")";
+        Infix += "(" + children[1] + ")";
       else
-        Infix += mpRight->getInfix();
+        Infix += children[1];
 
       return Infix;
     }
@@ -119,23 +120,24 @@ std::string CEvaluationNodeLogical::getInfix() const
     return "@";
 }
 
-std::string CEvaluationNodeLogical::getDisplayString(const CEvaluationTree * pTree) const
+// virtual
+std::string CEvaluationNodeLogical::getDisplayString(const std::vector< std::string > & children) const
 {
   if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
     {
       Data DisplayString;
 
       if (*mpLeft < *(CEvaluationNode *)this)
-        DisplayString = "(" + mpLeft->getDisplayString(pTree) + ")";
+        DisplayString = "(" + children[0] + ")";
       else
-        DisplayString = mpLeft->getDisplayString(pTree) + " ";
+        DisplayString = children[0] + " ";
 
       DisplayString += mData;
 
       if (!(*(CEvaluationNode *)this < *mpRight))
-        DisplayString += "(" + mpRight->getDisplayString(pTree) + ")";
+        DisplayString += "(" + children[1] + ")";
       else
-        DisplayString += " " + mpRight->getDisplayString(pTree);
+        DisplayString += " " + children[1];
 
       return DisplayString;
     }
@@ -318,12 +320,17 @@ std::string CEvaluationNodeLogical::getDisplay_XPP_String(const CEvaluationTree 
     return "@"; //TODO
 }
 
-CEvaluationNode* CEvaluationNodeLogical::createNodeFromASTTree(const ASTNode& node)
+// static
+CEvaluationNode * CEvaluationNodeLogical::fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children)
 {
+  assert(pASTNode->getNumChildren() == children.size());
+
+  size_t  i, iMax = children.size();
+
   SubType subType;
   std::string data = "";
 
-  switch (node.getType())
+  switch (pASTNode->getType())
     {
       case AST_LOGICAL_AND:
         subType = AND;
@@ -366,9 +373,8 @@ CEvaluationNode* CEvaluationNodeLogical::createNodeFromASTTree(const ASTNode& no
         break;
     }
 
-  CEvaluationNode* convertedNode = new CEvaluationNodeLogical(subType, data);
+  CEvaluationNode* pNode = NULL;
   // convert the two children
-  int i, iMax = node.getNumChildren();
 
   switch (subType)
     {
@@ -376,36 +382,57 @@ CEvaluationNode* CEvaluationNodeLogical::createNodeFromASTTree(const ASTNode& no
       case OR:
       case XOR:
 
-        if (iMax == 0)
+        // The number of chidren may vary
+        switch (iMax)
           {
-            if (subType == AND)
-              convertedNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::TRUE, "TRUE");
-            else
-              convertedNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::FALSE, "FALSE");
-          }
-        else if (iMax == 1)
-          {
-            convertedNode = CEvaluationTree::convertASTNode(*node.getChild(iMax - 1));
-          }
-        else
-          {
+            case 0:
 
-            // these can have two or more children
-            assert(iMax >= 2);
-            convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(iMax - 1)));
-            convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(iMax - 2)));
-            iMax -= 3;
+              if (subType == AND)
+                pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::TRUE, "TRUE");
+              else
+                pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::FALSE, "FALSE");
 
-            for (i = iMax; i >= 0; --i)
-              {
-                CEvaluationNode* pTmpNode = new CEvaluationNodeLogical(subType, data);
-                pTmpNode->addChild(convertedNode);
-                pTmpNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(i)));
-                convertedNode = pTmpNode;
-              }
+              break;
+
+            case 1:
+              pNode = children[0];
+              break;
+
+            default:
+            {
+              pNode = new CEvaluationNodeLogical(subType, data);
+              CEvaluationNode * pCurrent = pNode;
+
+              // We have at least 2 children
+              while (i < iMax - 1)
+                {
+                  // add the first value
+                  pCurrent->addChild(children[i++]);
+
+                  switch (iMax - i)
+                    {
+                      case 1:
+                        // We have only 1 more child
+                        pCurrent->addChild(children[i++]);
+                        break;
+
+                      default:
+                        // We have at least 2 more children
+                      {
+                        // create a new node with the same operator
+                        CEvaluationNode * pTmp = new CEvaluationNodeLogical(subType, data);
+                        pCurrent->addChild(pTmp);
+                        pCurrent = pTmp;
+                      }
+                      break;
+                    }
+                }
+            }
+            break;
           }
 
         break;
+
       case EQ:
       case NE:
       case GE:
@@ -413,15 +440,18 @@ CEvaluationNode* CEvaluationNodeLogical::createNodeFromASTTree(const ASTNode& no
       case LE:
       case LT:
         // all these are binary
-        convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getLeftChild()));
-        convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getRightChild()));
+        assert(iMax == 2);
+        pNode = new CEvaluationNodeLogical(subType, data);
+        pNode->addChild(children[0]);
+        pNode->addChild(children[1]);
         break;
+
       case INVALID:
         // do nothing
         break;
     }
 
-  return convertedNode;
+  return pNode;
 }
 
 // virtual

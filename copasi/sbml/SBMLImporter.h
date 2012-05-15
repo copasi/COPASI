@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.96 $
+//   $Revision: 1.97 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/08/02 20:43:55 $
+//   $Date: 2012/05/15 15:57:16 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -261,8 +261,8 @@ protected:
    * parameters that were used when the function was called. The function returns
    * a pointer to the ConverterAST node with the replaced variables.
    */
-  ConverterASTNode* replaceBvars(const ASTNode* node,
-                                 std::map<std::string, ASTNode*> bvarMap);
+  // ConverterASTNode* replaceBvars(const ASTNode* node,
+  //                                std::map<std::string, ASTNode*> bvarMap);
 
   /**
    * This function replaces the AST_FUNCTION_POWER ASTNodes in a ASTNode tree

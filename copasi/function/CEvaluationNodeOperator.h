@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.h,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:10:23 $
+//   $Date: 2012/05/15 15:56:41 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -74,47 +74,45 @@ public:
   virtual ~CEvaluationNodeOperator();
 
   /**
-   * Retrieve the value of the node
-   * @return const C_FLOAT64 & value
+   * Calculate the numerical result of the node. It is assumed that
+   * all child nodes are up to date.
    */
-  virtual inline const C_FLOAT64 & value() const
+  virtual inline void calculate()
   {
     switch (mType & 0x00FFFFFF)
       {
         case POWER:
-          mValue = pow(mpLeft->value(), mpRight->value());
+          mValue = pow(mpLeft->getValue(), mpRight->getValue());
           break;
 
         case MULTIPLY:
-          mValue = mpLeft->value() * mpRight->value();
+          mValue = mpLeft->getValue() * mpRight->getValue();
           break;
 
         case DIVIDE:
-          mValue = mpLeft->value() / mpRight->value();
+          mValue = mpLeft->getValue() / mpRight->getValue();
           break;
 
         case MODULUS:
 
-          if ((C_INT32) mpRight->value() == 0)
+          if ((C_INT32) mpRight->getValue() == 0)
             mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
           else
-            mValue = (C_FLOAT64)(((C_INT32) mpLeft->value()) % ((C_INT32) mpRight->value()));
+            mValue = (C_FLOAT64)(((C_INT32) mpLeft->getValue()) % ((C_INT32) mpRight->getValue()));
 
           break;
 
         case PLUS:
-          mValue = mpLeft->value() + mpRight->value();
+          mValue = mpLeft->getValue() + mpRight->getValue();
           break;
 
         case MINUS:
-          mValue = mpLeft->value() - mpRight->value();
+          mValue = mpLeft->getValue() - mpRight->getValue();
           break;
 
         default:
           break;
       }
-
-    return mValue;
   }
 
   /**
@@ -128,13 +126,13 @@ public:
    * Retrieve the infix value of the node and its eventual child nodes.
    * @return const Data & value
    */
-  virtual std::string getInfix() const;
+  virtual std::string getInfix(const std::vector< std::string > & children) const;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes.
    * @return const Data & value
    */
-  virtual std::string getDisplayString(const CEvaluationTree * pTree) const;
+  virtual std::string getDisplayString(const std::vector< std::string > & children) const;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes in C.
@@ -157,11 +155,12 @@ public:
   virtual std::string getDisplay_XPP_String(const CEvaluationTree * pTree) const;
 
   /**
-   * Create a new operator node from an ASTNode tree.
-   * @param const ASTNode* node
-   * @return CEvaluationNode* return a pointer to the newly created node;
+   * Creates a new CEvaluationNodeCall from an ASTNode and the given children
+   * @param const ASTNode* pNode
+   * @param const std::vector< CEvaluationNode * > & children
+   * @return CEvaluationNode * pCretedNode
    */
-  static CEvaluationNode* createNodeFromASTTree(const ASTNode& node);
+  static CEvaluationNode * fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children);
 
   /**
    * Create a new ASTNode corresponding to this OperatorNode.

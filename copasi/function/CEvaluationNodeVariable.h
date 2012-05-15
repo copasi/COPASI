@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVariable.h,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:17 $
+//   $Date: 2012/05/15 15:56:40 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -77,10 +77,10 @@ public:
   virtual bool compile(const CEvaluationTree * pTree);
 
   /**
-   * Retrieve the value of the node
-   * @return const C_FLOAT64 & value
+   * Calculate the numerical result of the node. It is assumed that
+   * all child nodes are up to date.
    */
-  virtual inline const C_FLOAT64 & value() const;
+  virtual void calculate();
 
   /**
    * Converts this node to an AST Node of type AST_NAME

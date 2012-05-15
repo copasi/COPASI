@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/18 17:16:49 $
+//   $Date: 2012/05/15 15:56:40 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,8 +90,8 @@ bool CExpression::compile(std::vector< CCopasiContainer * > listOfContainer)
 
   if (mpRoot)
     {
-      mDisplayString = mpRoot->getDisplayString(this);
-      mInfix = mpRoot->getInfix();
+      mDisplayString = mpRoot->buildDisplayString();
+      mInfix = mpRoot->buildInfix();
     }
   else
     {
@@ -106,18 +106,7 @@ bool CExpression::compile(std::vector< CCopasiContainer * > listOfContainer)
 
 const C_FLOAT64 & CExpression::calcValue()
 {
-  if (!mUsable)
-    return mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-
-  try
-    {
-      mValue = mpRoot->value();
-    }
-
-  catch (...)
-    {
-      mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-    }
+  calculate();
 
   return mValue;
 }
@@ -147,7 +136,7 @@ bool CExpression::updateInfix()
 {
   if (mpNodeList == NULL) return false;
 
-  mInfix = mpRoot->getInfix();
+  mInfix = mpRoot->buildInfix();
 
   return true;
 }

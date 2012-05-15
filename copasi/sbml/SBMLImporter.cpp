@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.287 $
+//   $Revision: 1.288 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/11 16:53:44 $
+//   $Date: 2012/05/15 15:57:19 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -2323,7 +2323,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
             }
 
-          CEvaluationNode* pExpressionTreeRoot = CEvaluationTree::convertASTNode(*node);
+          CEvaluationNode* pExpressionTreeRoot = CEvaluationTree::fromAST(node);
           delete node;
           node = NULL;
 
@@ -2679,6 +2679,7 @@ SBMLImporter::getFunctionDefinitionForName(const std::string name, const Model* 
   return fDef;
 }
 
+#ifdef XXXX
 /**
  * Replaces the variables in a function definition with the actual function
  * parameters that were used when the function was called. The function returns
@@ -2713,6 +2714,7 @@ SBMLImporter::replaceBvars(const ASTNode* node, std::map<std::string, ASTNode*> 
 
   return newNode;
 }
+#endif // XXXX
 
 /**
  * Constructor that initializes speciesMap and the FunctionDB object
@@ -4295,6 +4297,7 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
  * The method tries to determine if there already is a multiplication with
  * avogadros number and removes this multiplication rather than adding a new division.
  */
+// TODO CRITICAL Replace the recursive call
 void SBMLImporter::replaceAmountReferences(ConverterASTNode* pNode, Model* pSBMLModel, double factor, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   if (!pNode) return;
@@ -4525,16 +4528,14 @@ void SBMLImporter::replaceTimeAndAvogadroNodeNames(ASTNode* pNode)
 {
   CNodeIterator< ASTNode > it(pNode);
 
-  do
+  while (it.next() != it.end())
     {
-      if (*it != NULL && it.nextChildIndex() != CNodeIterator< ASTNode >::None)
+      if (*it != NULL)
         {
           if (it->getType() == AST_NAME_TIME)
             {
               it->setName(this->mpCopasiModel->getObject(CCopasiObjectName("Reference=Time"))->getCN().c_str());
             }
-
-#if LIBSBML_VERSION >= 40100
           else if (it->getType() == AST_NAME_AVOGADRO)
             {
               it->setName(this->mpCopasiModel->getObject(CCopasiObjectName("Reference=Avogadro Constant"))->getCN().c_str());
@@ -4558,13 +4559,11 @@ void SBMLImporter::replaceTimeAndAvogadroNodeNames(ASTNode* pNode)
                     }
                 }
             }
-
-#endif // LIBSBML_VERSION >= 40100
         }
     }
-  while (it.next());
 }
 
+// TODO CRITICAL Replace the recursive call
 void SBMLImporter::replaceCallNodeNames(ASTNode* pNode)
 {
   if (pNode)
@@ -4921,17 +4920,17 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
 
                                   if (multiplicityMap.find(pMetab) != multiplicityMap.end())
                                     {
-                                      multiplicityMap[pMetab] = multiplicityMap[pMetab] + pChildNode->value();
+                                      multiplicityMap[pMetab] = multiplicityMap[pMetab] + pChildNode->getValue();
                                     }
                                   else
                                     {
-                                      multiplicityMap[pMetab] = pChildNode->value();
+                                      multiplicityMap[pMetab] = pChildNode->getValue();
                                     }
                                 }
                               else if (type == CEvaluationNode::FUNCTION && (CEvaluationNodeFunction::SubType)CEvaluationNode::subType(pChildNode->getType()) == CEvaluationNodeFunction::MINUS && CEvaluationNode::type(((CEvaluationNode*)pChildNode->getChild())->getType()) == CEvaluationNode::NUMBER)
                                 {
                                   const CMetab* pMetab = static_cast<const CMetab*>(pObject);
-                                  multiplicityMap[pMetab] = -1 * ((CEvaluationNodeNumber*)(pChildNode->getChild()))->value();
+                                  multiplicityMap[pMetab] = -1 * ((CEvaluationNodeNumber*)(pChildNode->getChild()))->getValue();
                                 }
                               else
                                 {
@@ -6353,9 +6352,9 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
 {
   CNodeIterator< ASTNode > itNode(pNode);
 
-  do
+  while (itNode.next() != itNode.end())
     {
-      if (*itNode != NULL && itNode.nextChildIndex() != CNodeIterator< ASTNode >::None)
+      if (*itNode != NULL)
         {
           if (itNode->getType() == AST_NAME)
             {
@@ -6471,7 +6470,6 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
             }
         }
     }
-  while (itNode.next());
 }
 
 /**
@@ -6484,6 +6482,7 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
  * If a time node has been found, the function return true, otherwise false
  * is returned.
  */
+// TODO CRITICAL Replace the recursive call
 bool SBMLImporter::replaceTimeNodesInFunctionDefinition(ASTNode* root, std::string newNodeName)
 {
   bool timeFound = false;
@@ -6517,6 +6516,7 @@ bool SBMLImporter::replaceTimeNodesInFunctionDefinition(ASTNode* root, std::stri
   return timeFound;
 }
 
+// TODO CRITICAL Replace the recursive call
 void SBMLImporter::replaceTimeDependentFunctionCalls(ASTNode* root)
 {
   if (root == NULL) return;
@@ -8832,6 +8832,7 @@ void SBMLImporter::setImportCOPASIMIRIAM(bool import)
  * This method takes an AST node and converts all time nodes to object nodes
  * that have the common name of the time as the name.
  */
+// TODO CRITICAL Replace the recursive call
 void SBMLImporter::replace_time_with_initial_time(ASTNode* pNode, const CModel* pCopasiModel)
 {
   if (pNode->getType() == AST_NAME_TIME)
@@ -9362,6 +9363,7 @@ void SBMLImporter::findDirectDependencies(const ASTNode* pNode, std::set<std::st
  * This is necessary because all knetic laws in COPASI are function calls and
  * function definitions should not contain a call to delay.
  */
+// TODO CRITICAL Replace the recursive call
 void SBMLImporter::replace_delay_nodes(ConverterASTNode* pNode, Model* pModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Reaction* pSBMLReaction, std::map<std::string, std::string>& localReplacementMap)
 {
   if (pNode == NULL) return;
@@ -9639,6 +9641,7 @@ void SBMLImporter::find_local_parameters_in_delay(ASTNode* pNode, Reaction* pSBM
  * names. All AST_NAME nodes with an "old" name are replaced by a node with
  * the "new" name.
  */
+// TODO CRITICAL Replace the recursive call
 void SBMLImporter::replace_name_nodes(ASTNode* pNode, const std::map<std::string, std::string>& replacementMap)
 {
   if (pNode == NULL) return;

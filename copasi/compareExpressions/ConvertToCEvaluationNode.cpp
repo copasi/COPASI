@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/ConvertToCEvaluationNode.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/13 17:41:32 $
+//   $Author: shoops $
+//   $Date: 2012/05/15 15:56:21 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -371,27 +371,27 @@ CNormalFraction* createFraction(const CEvaluationNode* node)
  * Create an item from an evaluation node that need not be of specific type.
  * @return CNormalItem*, pointer to newly created item.
  */
-CNormalItem* createItem(const CEvaluationNode* node)
+CNormalItem* createItem(const CEvaluationNode* pNode)
 {
   CNormalItem* pItem = NULL;
 
-  switch (CEvaluationNode::type(node->getType()))
+  switch (CEvaluationNode::type(pNode->getType()))
     {
       case CEvaluationNode::VARIABLE:
-        pItem = new CNormalItem(node->getInfix(), CNormalItem::VARIABLE);
+        pItem = new CNormalItem(pNode->buildInfix(), CNormalItem::VARIABLE);
         break;
       case CEvaluationNode::CONSTANT:
-        pItem = new CNormalItem(node->getInfix(), CNormalItem::CONSTANT);
+        pItem = new CNormalItem(pNode->buildInfix(), CNormalItem::CONSTANT);
         break;
         /*
         case CEvaluationNode::OPERATOR:
-        if (((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(node->getType()))==CEvaluationNodeOperator::POWER
-            || ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(node->getType()))==CEvaluationNodeOperator::MODULUS)
+        if (((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pNode->getType()))==CEvaluationNodeOperator::POWER
+            || ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pNode->getType()))==CEvaluationNodeOperator::MODULUS)
         {
-            // calling createItem will add the wrong node for the
+            // calling createItem will add the wrong pNode for the
             // string into the lookup table
-            CNormalItem * child1 = createItem(dynamic_cast<const CEvaluationNode*>(node->getChild()));
-            CNormalItem * child2 = createItem(dynamic_cast<const CEvaluationNode*>(node->getChild()->getSibling()));
+            CNormalItem * child1 = createItem(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
+            CNormalItem * child2 = createItem(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getSibling()));
 
             std::stringstream tmp;
             if ((child1->getType() == CNormalItem::VARIABLE) || (child1->getType() == CNormalItem::CONSTANT))
@@ -400,7 +400,7 @@ CNormalItem* createItem(const CEvaluationNode* node)
             {
                 tmp << "(" << *child1 << ")";
             }
-            tmp << node->getData();
+            tmp << pNode->getData();
             if ((child2->getType() == CNormalItem::VARIABLE) || (child2->getType() == CNormalItem::CONSTANT))
                 tmp << *child2;
             else
@@ -415,14 +415,14 @@ CNormalItem* createItem(const CEvaluationNode* node)
             {
                 CEvaluationNodeOperator::SubType type=CEvaluationNodeOperator::POWER;
                 std::string s("^");
-                if(node->getData()=="%")
+                if(pNode->getData()=="%")
                 {
                     type=CEvaluationNodeOperator::MODULUS;
                     s="%";
                 }
                 CEvaluationNodeOperator* pNode=new CEvaluationNodeOperator(type,s);
-                // when the child node is converted, the wrongly added
-                // node from above is returned
+                // when the child pNode is converted, the wrongly added
+                // pNode from above is returned
 
                 pNode->addChild(convertToCEvaluationNode(*child1));
                 pNode->addChild(convertToCEvaluationNode(*child2));
@@ -432,9 +432,9 @@ CNormalItem* createItem(const CEvaluationNode* node)
             delete child1;
             delete child2;
         }
-        else // can be called only by createItem('OPERATOR node')
+        else // can be called only by createItem('OPERATOR pNode')
         {
-            CNormalFraction * normedNode = createFraction(node);
+            CNormalFraction * normedNode = createFraction(pNode);
             normedNode->simplify();
             CEvaluationNode* pTmpNode=convertToCEvaluationNode(*normedNode);
             std::stringstream tmp;
@@ -475,7 +475,7 @@ CNormalItemPower * createItemPower(const CEvaluationNode* node)
       if (CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(node->getChild()->getSibling())->getType()) == CEvaluationNode::NUMBER)
         {
           // we set the exponent to that number
-          pItemPower->setExp((C_FLOAT64)dynamic_cast<const CEvaluationNodeNumber*>(node->getChild()->getSibling())->value());
+          pItemPower->setExp((C_FLOAT64)dynamic_cast<const CEvaluationNodeNumber*>(node->getChild()->getSibling())->getValue());
           // check if we can create a CNormalItem object for the fist child, else we
           // create a general power with exponent 1
           CEvaluationNode::Type type = CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(node->getChild())->getType());
@@ -607,7 +607,7 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
               // instead of creating an item for it
               if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::NUMBER)
                 {
-                  factor *= dynamic_cast<const CEvaluationNodeNumber*>(*it)->value();
+                  factor *= dynamic_cast<const CEvaluationNodeNumber*>(*it)->getValue();
                 }
               else
                 {
@@ -636,7 +636,7 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
               // instead of adding it to the factor
               if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::NUMBER)
                 {
-                  factor *= dynamic_cast<const CEvaluationNodeNumber*>(*it)->value();
+                  factor *= dynamic_cast<const CEvaluationNodeNumber*>(*it)->getValue();
                 }
               else
                 {
@@ -673,7 +673,7 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
               // instead of adding it to the vector
               if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::NUMBER)
                 {
-                  factor /= dynamic_cast<const CEvaluationNodeNumber*>(*it)->value();
+                  factor /= dynamic_cast<const CEvaluationNodeNumber*>(*it)->getValue();
                 }
               else
                 {
@@ -713,7 +713,7 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
     }
   else if (CEvaluationNode::type(node->getType()) == CEvaluationNode::NUMBER)
     {
-      double factor = dynamic_cast<const CEvaluationNodeNumber*>(node)->value();
+      double factor = dynamic_cast<const CEvaluationNodeNumber*>(node)->getValue();
       // set the factor
       pProduct->setFactor(factor);
     }

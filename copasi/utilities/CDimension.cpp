@@ -1,12 +1,12 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.cpp,v $
- $Revision: 1.10 $
+ $Revision: 1.11 $
  $Name:  $
  $Author: shoops $
- $Date: 2011/03/07 19:34:54 $
+ $Date: 2012/05/15 15:57:31 $
  End CVS Header */
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -652,7 +652,7 @@ CDimension CFindDimensions::findDimension(const CEvaluationNode * node,
   if (numnode)
     {
       //heuristics!
-      if (mUseHeuristics && (numnode->value() == 1.0))
+      if (mUseHeuristics && (numnode->getValue() == 1.0))
         result.setDimension(0, 0, 0, 0, 0);
     }
 

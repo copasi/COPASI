@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compare_utilities.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/04/10 17:07:14 $
+//   $Author: shoops $
+//   $Date: 2012/05/15 15:56:21 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -446,7 +446,7 @@ CNormalFraction* create_simplified_normalform(const ASTNode* pSource)
 {
   CNormalFraction* pFraction = NULL;
   // translate the ASTNode based tree into an CEvaluationNode based tree and
-  CEvaluationNode* pEvaluationNode = CEvaluationTree::convertASTNode(*pSource);
+  CEvaluationNode* pEvaluationNode = CEvaluationTree::fromAST(pSource);
   // all variable nodes in this tree are objects nodes so we have to convert
   // them
   CCopasiTree<CEvaluationNode>::iterator treeIt = pEvaluationNode;
@@ -498,7 +498,7 @@ CNormalFraction* create_normalform(const ASTNode* pSource)
 {
   CNormalFraction* pFraction = NULL;
   // translate the ASTNode based tree into an CEvaluationNode based tree and
-  CEvaluationNode* pEvaluationNode = CEvaluationTree::convertASTNode(*pSource);
+  CEvaluationNode* pEvaluationNode = CEvaluationTree::fromAST(pSource);
   // all variable nodes in this tree are objects nodes so we have to convert
   // them
   CCopasiTree<CEvaluationNode>::iterator treeIt = pEvaluationNode;

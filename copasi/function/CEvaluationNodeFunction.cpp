@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/09 21:25:31 $
+//   $Date: 2012/05/15 15:56:39 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -279,39 +279,47 @@ bool CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
   return (mpArg4->getSibling() == NULL); // We must have exactly 4 children
 }
 
-std::string CEvaluationNodeFunction::getInfix() const
+// virtual
+std::string CEvaluationNodeFunction::getInfix(const std::vector< std::string > & children) const
 {
   if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
     switch (mType & 0x00FFFFFF)
       {
         case MINUS:
         case PLUS:
-          return handleSign(mpArg1->getInfix());
+          return handleSign(children[0]);
 
         case RUNIFORM:
         case RNORMAL:
         case MAX:
         case MIN:
-          return mData + "(" + mpArg1->getInfix() + "," + mpArg2->getInfix() + ")";
+          return mData + "(" + children[0] + "," + children[1] + ")";
 
         default:
-          return mData + "(" + mpArg1->getInfix() + ")";
+          return mData + "(" + children[0] + ")";
       }
   else
     return "@";
 }
 
-std::string CEvaluationNodeFunction::getDisplayString(const CEvaluationTree * pTree) const
+// virtual
+std::string CEvaluationNodeFunction::getDisplayString(const std::vector< std::string > & children) const
 {
   if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
     switch (mType & 0x00FFFFFF)
       {
         case MINUS:
         case PLUS:
-          return handleSign(mpArg1->getDisplayString(pTree));
+          return handleSign(children[0]);
+
+        case RUNIFORM:
+        case RNORMAL:
+        case MAX:
+        case MIN:
+          return mData + "(" + children[0] + "," + children[1] + ")";
 
         default:
-          return mData + "(" + mpArg1->getDisplayString(pTree) + ")";
+          return mData + "(" + children[0] + ")";
       }
   else
     return "@";
@@ -645,23 +653,63 @@ std::string CEvaluationNodeFunction::getDisplay_XPP_String(const CEvaluationTree
   return ""; //should never be reached, only because of warning
 }
 
-CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& node)
+// static
+CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children)
 {
-  ASTNodeType_t type = node.getType();
+  assert(pASTNode->getNumChildren() == children.size());
+
+  size_t iMax = children.size();
+
+  ASTNodeType_t type = pASTNode->getType();
   SubType subType;
   std::string data = "";
 
   if (type == AST_FUNCTION_ROOT)
     {
-      ConverterASTNode tmpNode(node);
-      CEvaluationNode::replaceRoot(&tmpNode);
-      return CEvaluationTree::convertASTNode(tmpNode);
+      CEvaluationNode * pNode = NULL;
+
+      switch (iMax)
+        {
+          case 1:
+            pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SQRT, "sqrt");
+            pNode->addChild(children[0]);
+            break;
+
+          case 2:
+            /**
+             * Replaces all root nodes with the corresponding power
+             * operator since COPASI does not have the ROOT function.
+             */
+          {
+            pNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^");
+            pNode->addChild(children[1]); // Value
+            CEvaluationNode * pExponent = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+            pNode->addChild(pExponent);
+            pExponent->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1"));
+            pExponent->addChild(children[0]); // Degree
+          }
+          break;
+        }
+
+      return pNode;
     }
-  else if (type == AST_FUNCTION_LOG && node.getNumChildren() == 2)
+  else if (type == AST_FUNCTION_LOG && iMax == 2)
     {
-      ConverterASTNode tmpNode(node);
-      CEvaluationNode::replaceLog(&tmpNode);
-      return CEvaluationTree::convertASTNode(tmpNode);
+      /**
+       * Replaces all LOG10 (AST_FUNCTION_LOG) nodes that have two
+       * children with the quotient of two LOG10 nodes with the base
+       * as the argument for the divisor LOG10 node.
+       */
+
+      CEvaluationNode * pNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+      CEvaluationNode * pValue = new CEvaluationNodeFunction(CEvaluationNodeFunction::LOG10, "log10");
+      pValue->addChild(children[1]);
+      CEvaluationNode * pBase = new CEvaluationNodeFunction(CEvaluationNodeFunction::LOG10, "log10");
+      pValue->addChild(children[0]);
+      pNode->addChild(pValue);
+      pNode->addChild(pBase);
+
+      return pNode;
     }
 
   switch (type)
@@ -796,24 +844,15 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& n
         break;
       default:
         subType = INVALID;
+        fatalError();
         break;
     }
 
-  if (subType !=       INVALID)
-    {
-      CEvaluationNodeFunction* convertedNode = new CEvaluationNodeFunction(subType, data);
-      ASTNode* child = node.getLeftChild();
-      CEvaluationNode* convertedChildNode = CEvaluationTree::convertASTNode(*child);
-      convertedNode->addChild(convertedChildNode);
-      return convertedNode;
-    }
-  else
-    {
-      // throw an exception
-      fatalError();
-    }
+  assert(iMax == 1);
+  CEvaluationNode * pNode = new CEvaluationNodeFunction(subType, data);
+  pNode->addChild(children[0]);
 
-  return NULL;
+  return pNode;
 }
 
 // virtual
@@ -1044,7 +1083,7 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(const std::vector<CEvalua
             case CEvaluationNode::NUMBER:
             {
               std::stringstream tmp;
-              tmp << child1->value() *(-1.0);
+              tmp << child1->getValue() *(-1.0);
               CEvaluationNode* newnode = CEvaluationNode::create((Type)(NUMBER | CEvaluationNodeNumber::DOUBLE), tmp.str());
               delete child1;
               return newnode;

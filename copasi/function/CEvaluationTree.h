@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/05/24 16:32:35 $
+//   $Date: 2012/05/15 15:56:39 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -134,10 +134,10 @@ public:
   /**
    * Converts an SBML ASTNode to the corresponding
    * CEvaluationNode tree.
-   * @param const ASTNode& node
+   * @param const ASTNode * pASTNode
    * @return CEvaluationNode*
    */
-  static CEvaluationNode* convertASTNode(const ASTNode& node);
+  static CEvaluationNode* fromAST(const ASTNode * pASTNode);
 
   /**
    * Converts a CEvaluationTree to an ASTNode based tree.
@@ -270,6 +270,17 @@ protected:
    */
   bool compileNodes();
 
+  /**
+   * Build the sequence of calculations required to determine
+   * the value of the expression.
+   */
+  void buildCalculationSequence();
+
+  /**
+   * Calculate the value
+   */
+  void calculate();
+
 private:
   /**
    * Initialize the contained CCopasiObjects
@@ -327,6 +338,12 @@ protected:
    * Indicates whether the tree must evaluate to a boolean value.
    */
   bool mBooleanRequired;
+
+  /**
+   * A vector of nodes which need to be calculated in sequence
+   */
+  std::vector< CEvaluationNode * > mCalculationSequence;
+
 };
 
 #endif // COPASI_CEvaluationTree

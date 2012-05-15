@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.52 $
+//   $Revision: 1.53 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/25 12:48:27 $
+//   $Date: 2012/05/15 15:56:41 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,6 +26,8 @@
 #include "sbml/math/ASTNode.h"
 #include "sbml/ConverterASTNode.h"
 #include "sbml/util/List.h"
+
+#include "utilities/CNodeIterator.h"
 
 CEvaluationNode::CPrecedence::CPrecedence(const size_t & left,
     const size_t & right):
@@ -156,18 +158,70 @@ CEvaluationNode::~CEvaluationNode() {}
 bool CEvaluationNode::compile(const CEvaluationTree * /* pTree */)
 {return true;}
 
-std::string CEvaluationNode::getInfix() const
+// virtual
+std::string CEvaluationNode::getInfix(const std::vector< std::string > & /* children */) const
 {return mData;}
 
-std::string CEvaluationNode::getDisplayString(const CEvaluationTree * /* pTree */) const
+std::string CEvaluationNode::buildInfix() const
+{
+  std::string Infix = "";
+  CNodeContextIterator< const CEvaluationNode, std::vector< std::string > > it(this);
+
+  while (it.next() != it.end())
+    {
+      if (*it != NULL)
+        {
+          if (it.parentContextPtr() != NULL)
+            {
+              it.parentContextPtr()->push_back(it->getInfix(it.context()));
+            }
+          else
+            {
+              Infix = it->getInfix(it.context());
+            }
+        }
+    }
+
+  return Infix;
+}
+
+// virtual
+std::string CEvaluationNode::getDisplayString(const std::vector< std::string > & /* children */) const
 {return mData;}
 
+std::string CEvaluationNode::buildDisplayString() const
+{
+  std::string DisplayString = "";
+  CNodeContextIterator< const CEvaluationNode, std::vector< std::string > > it(this);
+
+  while (it.next() != it.end())
+    {
+      if (*it != NULL)
+        {
+          if (it.parentContextPtr() != NULL)
+            {
+              it.parentContextPtr()->push_back(it->getDisplayString(it.context()));
+            }
+          else
+            {
+              DisplayString = it->getDisplayString(it.context());
+            }
+        }
+    }
+
+  return DisplayString;
+}
+
+
+// TODO CRITICAL Replace the recursive call
 std::string CEvaluationNode::getDisplay_C_String(const CEvaluationTree * /* pTree */) const
 {return mData;}
 
+// TODO CRITICAL Replace the recursive call
 std::string CEvaluationNode::getDisplay_MMD_String(const CEvaluationTree * /* pTree */) const
 {return mData;}
 
+// TODO CRITICAL Replace the recursive call
 std::string CEvaluationNode::getDisplay_XPP_String(const CEvaluationTree * /* pTree */) const
 {return mData;}
 
@@ -178,9 +232,21 @@ const CEvaluationNode::Type & CEvaluationNode::getType() const
 bool CEvaluationNode::isBoolean() const
 {return false;}
 
+void CEvaluationNode::addChildren(const std::vector< CEvaluationNode * > & children)
+{
+  std::vector< CEvaluationNode * >::const_iterator it = children.begin();
+  std::vector< CEvaluationNode * >::const_iterator end = children.end();
+
+  for (; it != end; ++it)
+    {
+      addChild(*it);
+    }
+}
+
 bool CEvaluationNode::operator < (const CEvaluationNode & rhs)
 {return (mPrecedence.right < rhs.mPrecedence.left);}
 
+// TODO CRITICAL Replace the recursive call
 CEvaluationNode* CEvaluationNode::copyNode(CEvaluationNode* child1, CEvaluationNode* child2) const
 {
   std::vector<CEvaluationNode*> children;
@@ -192,6 +258,7 @@ CEvaluationNode* CEvaluationNode::copyNode(CEvaluationNode* child1, CEvaluationN
   return copyNode(children);
 }
 
+// TODO CRITICAL Replace the recursive call
 CEvaluationNode* CEvaluationNode::copyNode(const std::vector<CEvaluationNode*>& children) const
 {
   CEvaluationNode *newnode = create(mType, getData());
@@ -206,6 +273,7 @@ CEvaluationNode* CEvaluationNode::copyNode(const std::vector<CEvaluationNode*>& 
   return newnode;
 }
 
+// TODO CRITICAL Replace the recursive call
 CEvaluationNode* CEvaluationNode::copyBranch() const
 {
   std::vector<CEvaluationNode*> children;
@@ -236,6 +304,7 @@ ASTNode* CEvaluationNode::toAST(const CCopasiDataModel* /*pDataModel*/) const
 const C_FLOAT64 * CEvaluationNode::getValuePointer() const
 {return &mValue;}
 
+// TODO CRITICAL Replace the recursive call
 void CEvaluationNode::writeMathML(std::ostream & /* out */,
                                   const std::vector<std::vector<std::string> > & /* env */,
                                   bool /* expand */,
@@ -274,58 +343,6 @@ void CEvaluationNode::printRecursively(std::ostream & os, int indent) const
 void CEvaluationNode::printRecursively() const
 {
   this->printRecursively(std::cout, 0);
-}
-
-/**
- * Replaces all LOG10 (AST_FUNCTION_LOG) nodes that have two
- * children with the quotient of two LOG10 nodes with the base
- * as the argument for the divisor LOG10 node.
- */
-void CEvaluationNode::replaceLog(ConverterASTNode* sourceNode)
-{
-  if (sourceNode->getType() == AST_FUNCTION_LOG && sourceNode->getNumChildren() == 2)
-    {
-      List* l = new List();
-      ConverterASTNode* child1 = (ConverterASTNode*)sourceNode->getChild(0);
-      ConverterASTNode* child2 = (ConverterASTNode*)sourceNode->getChild(1);
-      ConverterASTNode* logNode1 = new ConverterASTNode(AST_FUNCTION_LOG);
-      l->add(child1);
-      logNode1->setChildren(l);
-      ConverterASTNode* logNode2 = new ConverterASTNode(AST_FUNCTION_LOG);
-      l = new List();
-      l->add(child2);
-      logNode2->setChildren(l);
-      l = new List();
-      l->add(logNode2);
-      l->add(logNode1);
-      sourceNode->setChildren(l);
-      sourceNode->setType(AST_DIVIDE);
-    }
-}
-
-/**
- * Replaces all root nodes with the corresponding power
- * operator since COPASI does not have the ROOT function.
- */
-void CEvaluationNode::replaceRoot(ConverterASTNode* sourceNode)
-{
-  if (sourceNode->getType() == AST_FUNCTION_ROOT && sourceNode->getNumChildren() == 2)
-    {
-      ConverterASTNode* child1 = (ConverterASTNode*)sourceNode->getChild(0);
-      ConverterASTNode* child2 = (ConverterASTNode*)sourceNode->getChild(1);
-      ConverterASTNode* divideNode = new ConverterASTNode(AST_DIVIDE);
-      ConverterASTNode* oneNode = new ConverterASTNode(AST_REAL);
-      oneNode->setValue(1.0);
-      divideNode->addChild(oneNode);
-      divideNode->addChild(child1);
-
-      List* l2 = new List();
-      l2->add(child2);
-      l2->add(divideNode);
-
-      sourceNode->setChildren(l2);
-      sourceNode->setType(AST_POWER);
-    }
 }
 
 CEvaluationNode* CEvaluationNode::splitBranch(const CEvaluationNode* splitnode, bool left) const
@@ -383,6 +400,7 @@ CEvaluationNode* CEvaluationNode::splitBranch(const CEvaluationNode* splitnode, 
     }
 }
 
+// TODO CRITICAL Replace the recursive call
 const CEvaluationNode* CEvaluationNode::findTopMinus(const std::vector<CFunctionAnalyzer::CValue> & callParameters) const
 {
   if (getType() == (OPERATOR | CEvaluationNodeOperator::MINUS))
@@ -445,6 +463,7 @@ bool CEvaluationNode::operator!=(const CEvaluationNode& right) const
   return !(*this == right);
 }
 
+// TODO CRITICAL Replace the recursive call
 bool CEvaluationNode::operator==(const CEvaluationNode& right) const
 {
   bool result = true;

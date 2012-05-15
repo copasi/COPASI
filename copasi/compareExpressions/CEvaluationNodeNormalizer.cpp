@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CEvaluationNodeNormalizer.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2010/02/19 19:06:18 $
+//   $Date: 2012/05/15 15:56:22 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -661,14 +661,14 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizePowerNode(const CEvaluation
             {
               if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER)
                 {
-                  if (pChild2->value() - 1.0 < ZERO)
+                  if (pChild2->getValue() - 1.0 < ZERO)
                     {
                       // replace it with the first child
                       pResult = pChild1;
                       delete pChild2;
                       pChild2 = NULL;
                     }
-                  else if (pChild2->value() < ZERO)
+                  else if (pChild2->getValue() < ZERO)
                     {
                       // replace it by a number node of 1
                       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "1");
@@ -714,14 +714,14 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeMultiplyNode(const CEvaluat
               // other child
               if (CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER)
                 {
-                  if (fabs(pChild1->value() - 1.0) < ZERO)
+                  if (fabs(pChild1->getValue() - 1.0) < ZERO)
                     {
                       pResult = pChild2;
                       delete pChild1;
                       pChild1 = NULL;
                       pChild2 = NULL;
                     }
-                  else if (fabs(pChild1->value()) < ZERO)
+                  else if (fabs(pChild1->getValue()) < ZERO)
                     {
                       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "0");
                       // we are done
@@ -734,14 +734,14 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeMultiplyNode(const CEvaluat
 
               if (pChild2 && CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER)
                 {
-                  if (fabs(pChild2->value() - 1.0) < ZERO)
+                  if (fabs(pChild2->getValue() - 1.0) < ZERO)
                     {
                       pResult = pChild1;
                       delete pChild2;
                       pChild2 = NULL;
                       pChild1 = NULL;
                     }
-                  else if (fabs(pChild2->value()) < ZERO)
+                  else if (fabs(pChild2->getValue()) < ZERO)
                     {
                       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "0");
                       // we are done
@@ -802,7 +802,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizePlusNode(const CEvaluationN
               // other child
               if (CEvaluationNode::type(pChild1->getType()) == CEvaluationNode::NUMBER)
                 {
-                  if (fabs(pChild1->value()) < ZERO)
+                  if (fabs(pChild1->getValue()) < ZERO)
                     {
                       pResult = pChild2;
                       delete pChild1;
@@ -813,7 +813,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizePlusNode(const CEvaluationN
 
               if (pChild2 != NULL && CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER)
                 {
-                  if (fabs(pChild2->value()) < ZERO)
+                  if (fabs(pChild2->getValue()) < ZERO)
                     {
                       if (pChild2 != pResult)
                         {
@@ -880,7 +880,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeDivideNode(const CEvaluatio
               if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER)
                 {
                   // eliminate divisions by 1
-                  if (fabs(pChild2->value() - 1.0) < ZERO)
+                  if (fabs(pChild2->getValue() - 1.0) < ZERO)
                     {
                       pResult = pChild1;
                       delete pChild2;
@@ -890,7 +890,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeDivideNode(const CEvaluatio
                     {
                       // if both children are numbers, do the calculation
                       std::ostringstream os;
-                      os << pChild1->value() / pChild2->value();
+                      os << pChild1->getValue() / pChild2->getValue();
                       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str());
                       delete pChild1;
                       delete pChild2;
@@ -949,7 +949,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeModulusNode(const CEvaluati
               if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER)
                 {
                   // eliminate modulus 1
-                  if (fabs(pChild2->value() - 1.0) < ZERO)
+                  if (fabs(pChild2->getValue() - 1.0) < ZERO)
                     {
                       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "0");
                       delete pChild1;
@@ -963,7 +963,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeModulusNode(const CEvaluati
                     {
                       // if both children are numbers, do the calculation
                       std::ostringstream os;
-                      os << (long)pChild1->value() % (long)pChild2->value();
+                      os << (long)pChild1->getValue() % (long)pChild2->getValue();
                       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, os.str());
                       delete pChild1;
                       delete pChild2;
@@ -1022,7 +1022,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeMinusNode(const CEvaluation
               if (CEvaluationNode::type(pChild2->getType()) == CEvaluationNode::NUMBER)
                 {
                   // eliminate subtraction of 0
-                  if (fabs(pChild2->value()) < ZERO)
+                  if (fabs(pChild2->getValue()) < ZERO)
                     {
                       pResult = pChild1;
                       delete pChild2;
@@ -1033,7 +1033,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeMinusNode(const CEvaluation
                     {
                       // if both children are numbers, do the calculation
                       std::ostringstream os;
-                      os << pChild1->value() - pChild2->value();
+                      os << pChild1->getValue() - pChild2->getValue();
                       pResult = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, os.str());
                       delete pChild1;
                       delete pChild2;
@@ -1101,11 +1101,11 @@ bool CEvaluationNodeNormalizer::eliminateMultipleNumbers(CEvaluationNodeOperator
 
                   if (subType == CEvaluationNodeOperator::MULTIPLY)
                     {
-                      value *= pNumberNode->value();
+                      value *= pNumberNode->getValue();
                     }
                   else
                     {
-                      value += pNumberNode->value();
+                      value += pNumberNode->getValue();
                     }
                 }
 

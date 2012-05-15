@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEvent.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/19 14:34:39 $
+//   $Date: 2012/05/15 15:56:59 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -260,7 +260,7 @@ bool CMathEventN::CTrigger::compileDiscontinuous(const CMathObject * pObject,
     {
       case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
       {
-        success &= DataTrigger.setInfix(static_cast< const CEvaluationNode * >(pNode->getChild())->getInfix());
+        success &= DataTrigger.setInfix(static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix());
         mDualAction = true;
 
         // Modify discontinuous object expression.

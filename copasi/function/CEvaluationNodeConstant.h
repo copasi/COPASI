@@ -1,12 +1,12 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.h,v $
-  $Revision: 1.23 $
+  $Revision: 1.24 $
   $Name:  $
   $Author: shoops $
-  $Date: 2011/03/07 19:28:18 $
+  $Date: 2012/05/15 15:56:40 $
   End CVS Header */
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -104,12 +104,12 @@ public:
   virtual std::string getDisplay_XPP_String(const CEvaluationTree * pTree) const;
 
   /**
-   * Create a new operator node from an ASTNode tree.
-   * @param const ASTNode* node
-   * @return CEvaluationNode* return a pointer to the newly created node;
+   * Creates a new CEvaluationNodeCall from an ASTNode and the given children
+   * @param const ASTNode* pNode
+   * @param const std::vector< CEvaluationNode * > & children
+   * @return CEvaluationNode * pCretedNode
    */
-
-  static CEvaluationNode* createNodeFromASTTree(const ASTNode& node);
+  static CEvaluationNode * fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children);
 
   /**
    * Check whether the result is Boolean
