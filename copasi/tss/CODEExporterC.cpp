@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterC.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 15:41:47 $
+//   $Author: shoops $
+//   $Date: 2012/05/15 21:12:55 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -770,7 +770,7 @@ bool CODEExporterC::exportSingleFunction(const CFunction *func, std::set<std::st
 
           functions << ") ";
           functions << '\t' << "//" << name << std::endl;
-          functions << "{return  " << tmpfunc->getRoot()->getDisplay_C_String(tmpfunc).c_str() << ";} " << std::endl;
+          functions << "{return  " << tmpfunc->getRoot()->buildCCodeString().c_str() << ";} " << std::endl;
 
           headers << "); " << std::endl;
 
@@ -965,7 +965,7 @@ std::string CODEExporterC::getDisplayExpressionString(CExpression * tmp)
 {
   std::string str1;
 
-  str1 = tmp->getRoot()->getDisplay_C_String(tmp).c_str();
+  str1 = tmp->getRoot()->buildCCodeString().c_str();
 
   return str1;
 }
