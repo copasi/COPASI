@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.cpp,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/15 15:56:40 $
+//   $Date: 2012/05/15 18:32:56 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -145,7 +145,8 @@ std::string CEvaluationNodeLogical::getDisplayString(const std::vector< std::str
     return "@";
 }
 
-std::string CEvaluationNodeLogical::getDisplay_C_String(const CEvaluationTree * pTree) const
+// virtual
+std::string CEvaluationNodeLogical::getCCodeString(const std::vector< std::string > & children) const
 {
   if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
     {
@@ -187,16 +188,16 @@ std::string CEvaluationNodeLogical::getDisplay_C_String(const CEvaluationTree * 
         }
 
       if (*mpLeft < *(CEvaluationNode *)this)
-        DisplayString = "(" + mpLeft->getDisplay_C_String(pTree) + ")";
+        DisplayString = "(" + children[0] + ")";
       else
-        DisplayString = mpLeft->getDisplay_C_String(pTree) + " ";
+        DisplayString = children[0] + " ";
 
       DisplayString += data;
 
       if (!(*(CEvaluationNode *)this < *mpRight))
-        DisplayString += "(" + mpRight->getDisplay_C_String(pTree) + ")";
+        DisplayString += "(" + children[1] + ")";
       else
-        DisplayString += " " + mpRight->getDisplay_C_String(pTree);
+        DisplayString += " " + children[1];
 
       return DisplayString;
     }

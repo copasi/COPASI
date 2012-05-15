@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-//   $Revision: 1.61 $
+//   $Revision: 1.62 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/15 15:56:39 $
+//   $Date: 2012/05/15 18:32:56 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -325,7 +325,8 @@ std::string CEvaluationNodeFunction::getDisplayString(const std::vector< std::st
     return "@";
 }
 
-std::string CEvaluationNodeFunction::getDisplay_C_String(const CEvaluationTree * pTree) const
+// virtual
+std::string CEvaluationNodeFunction::getCCodeString(const std::vector< std::string > & children) const
 {
   if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
     {
@@ -457,22 +458,22 @@ std::string CEvaluationNodeFunction::getDisplay_C_String(const CEvaluationTree *
       switch (mType & 0x00FFFFFF)
         {
           case MINUS:
-            return "(" + data + mpArg1->getDisplay_C_String(pTree) + ")";
+            return "(" + data + children[0] + ")";
             break;
 
           case PLUS:
             //return handleSign(mpLeft->getDisplay_C_String(pTree));
-            return mpArg1->getDisplay_C_String(pTree);
+            return children[0];
             break;
 
           case RUNIFORM:
           case RNORMAL:
           case MAX:
           case MIN:
-            return data + "(" + mpArg1->getDisplay_C_String(pTree) + "," + mpArg2->getDisplay_C_String(pTree) + ")";
+            return data + "(" + children[0] + "," + children[1] + ")";
 
           default:
-            return data + "(" + mpArg1->getDisplay_C_String(pTree) + ")";
+            return data + "(" + children[0] + ")";
         }
     }
 

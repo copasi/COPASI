@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeDelay.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/15 15:56:41 $
+//   $Date: 2012/05/15 18:32:57 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -94,14 +94,11 @@ std::string CEvaluationNodeDelay::getInfix(const std::vector< std::string > & ch
             break;
 
           default:
-            return "@";
             break;
         }
     }
-  else
-    {
-      return "@";
-    }
+
+  return "@";
 }
 
 // virtual
@@ -114,23 +111,26 @@ std::string CEvaluationNodeDelay::getDisplayString(const std::vector< std::strin
         break;
 
       default:
-        return "@";
         break;
     }
+
+  return "@";
 }
 
-std::string CEvaluationNodeDelay::getDisplay_C_String(const CEvaluationTree * pTree) const
+// virtual
+std::string CEvaluationNodeDelay::getCCodeString(const std::vector< std::string > & children) const
 {
   switch (mType & 0x00FFFFFF)
     {
       case DELAY:
-        return mData + "(" + mpDelayedObject->getDisplay_C_String(pTree) + "," + mpDeltaT->getDisplay_C_String(pTree) + ")";
+        return mData + "(" + children[0] + "," + children[1] + ")";
         break;
 
       default:
-        return "@";
         break;
     }
+
+  return "@";
 }
 
 std::string CEvaluationNodeDelay::getDisplay_MMD_String(const CEvaluationTree * pTree) const
@@ -142,9 +142,10 @@ std::string CEvaluationNodeDelay::getDisplay_MMD_String(const CEvaluationTree * 
         break;
 
       default:
-        return "@";
         break;
     }
+
+  return "@";
 }
 
 std::string CEvaluationNodeDelay::getDisplay_XPP_String(const CEvaluationTree * pTree) const
@@ -156,9 +157,10 @@ std::string CEvaluationNodeDelay::getDisplay_XPP_String(const CEvaluationTree * 
         break;
 
       default:
-        return "@";
         break;
     }
+
+  return "@";
 }
 
 // static

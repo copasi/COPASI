@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/15 15:56:41 $
+//   $Date: 2012/05/15 18:32:57 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -177,7 +177,12 @@ public:
    * Retrieve the display string of the node and its eventual child nodes in C.
    * @return const Data & value
    */
-  virtual std::string getDisplay_C_String(const CEvaluationTree * pTree) const;
+  virtual std::string getCCodeString(const std::vector< std::string > & children) const;
+
+  /**
+   * Build the C-code string.
+   */
+  std::string buildCCodeString() const;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes

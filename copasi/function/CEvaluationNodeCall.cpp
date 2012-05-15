@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/15 15:56:40 $
+//   $Date: 2012/05/15 18:32:56 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -329,7 +329,8 @@ std::string CEvaluationNodeCall::getDisplayString(const std::vector< std::string
   return DisplayString + ")";
 }
 
-std::string CEvaluationNodeCall::getDisplay_C_String(const CEvaluationTree * pTree) const
+// virtual
+std::string CEvaluationNodeCall::getCCodeString(const std::vector< std::string > & children) const
 {
   std::string DisplayString;
 
@@ -346,13 +347,13 @@ std::string CEvaluationNodeCall::getDisplay_C_String(const CEvaluationTree * pTr
     {
       case FUNCTION:
       {
-        std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
-        std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
+        std::vector< std::string >::const_iterator it = children.begin();
+        std::vector< std::string >::const_iterator end = children.end();
 
-        if (it != end) DisplayString += (*it++)->getDisplay_C_String(pTree);
+        if (it != end) DisplayString += *it++;
 
         for (; it != end; ++it)
-          DisplayString += "," + (*it)->getDisplay_C_String(pTree);
+          DisplayString += "," + *it;
       }
 
       break;
