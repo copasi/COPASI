@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CNodeIterator.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/11 16:51:55 $
+//   $Date: 2012/05/15 15:55:30 $
 // End CVS Header
 
 // Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,7 +12,7 @@
 // All rights reserved.
 
 /*
- * CASTIterator.h
+ * CNodeIterator.h
  *
  *  Created on: May 11, 2012
  *      Author: shoops
@@ -27,7 +27,14 @@
 template < class Node, class Context > class CNodeContextIterator
 {
 public:
-  static const size_t None = (size_t) - 1;
+  enum ProcessingMode
+  {
+    Start = 0x00,
+    Before = 0x01,
+    After = 0x02,
+    Intermediate = 0x04,
+    End = 0x08
+  };
 
 private:
   class CStackElement
@@ -37,21 +44,24 @@ private:
         mpNode(NULL),
         mChildCount(0),
         mNextChildIndex(0),
-        mContext()
+        mContext(),
+        mpParentContext(NULL)
     {}
 
     CStackElement(const CStackElement & src):
         mpNode(src.mpNode),
         mChildCount(src.mChildCount),
         mNextChildIndex(src.mNextChildIndex),
-        mContext(src.mContext)
+        mContext(src.mContext),
+        mpParentContext(src.mpParentContext)
     {}
 
-    CStackElement(Node * pNode, const Context & context = Context()):
+    CStackElement(Node * pNode, Context * pParentContext = NULL):
         mpNode(pNode),
         mChildCount(0),
         mNextChildIndex(0),
-        mContext(context)
+        mContext(),
+        mpParentContext(pParentContext)
     {
       if (pNode != NULL)
         {
@@ -65,25 +75,33 @@ private:
     size_t mChildCount;
     size_t mNextChildIndex;
     Context mContext;
+    Context * mpParentContext;
   };
 
 public:
   CNodeContextIterator():
-      mStack()
+      mStack(),
+      mCurrentMode(End),
+      mProcessingModes((ProcessingMode)(After | End))
   {}
 
   CNodeContextIterator(const CNodeContextIterator & src):
-      mStack(src.mStack)
+      mStack(src.mStack),
+      mCurrentMode(src.mCurrentMode),
+      mProcessingModes(src.mProcessingModes)
   {}
 
-  CNodeContextIterator(Node * pNode, const Context & context = Context()):
-      mStack()
+  CNodeContextIterator(Node * pNode, Context * pParentContext = NULL):
+      mStack(),
+      mCurrentMode(Start),
+      mProcessingModes((ProcessingMode)(After | End))
   {
-    mStack.push(CStackElement(pNode, context));
+    mStack.push(CStackElement(pNode, pParentContext));
   }
 
   ~CNodeContextIterator() {}
 
+private:
   /**
    * This method moves the iterator to the next node in the tree. The tree is
    * traversed depth first. A return value of false indicates that the tree
@@ -98,50 +116,99 @@ public:
    *
    * @return bool moreNodes
    */
-  bool next()
+  void increment()
   {
-    if (mStack.empty()) return false;
+    if (mStack.empty())
+      {
+        mCurrentMode = End;
+
+        return;
+      }
 
     CStackElement & Current = mStack.top();
 
     if (Current.mNextChildIndex < Current.mChildCount)
       {
-        CStackElement Child(Current.mpNode->getChild(Current.mNextChildIndex++), Current.mContext);
+        mStack.push(CStackElement(static_cast< Node * >(Current.mpNode->getChild(Current.mNextChildIndex++)), &Current.mContext));
+        mCurrentMode = Before;
 
-        if (Current.mNextChildIndex == Current.mChildCount)
-          {
-            Current.mNextChildIndex = None;
-          }
-
-        mStack.push(Child);
-
-        return true;
+        return;
       }
 
-    if (Current.mNextChildIndex != None)
+    if (Current.mNextChildIndex == Current.mChildCount)
       {
-        Current.mNextChildIndex = None;
+        Current.mNextChildIndex++;
+        mCurrentMode = After;
+
+        return;
+      }
+
+    mStack.pop();
+
+    if (mStack.empty())
+      {
+        mCurrentMode = End;
+
+        return;
+      }
+
+    CStackElement & Parent = mStack.top();
+
+    if (Parent.mNextChildIndex < Parent.mChildCount)
+      {
+        mCurrentMode = Intermediate;
       }
     else
       {
-        mStack.pop();
+        mCurrentMode = After;
+        Parent.mNextChildIndex++;
       }
 
-    return !mStack.empty();
+    return;
+  }
+
+public:
+  const ProcessingMode & next()
+  {
+    if (mCurrentMode != Start)
+      {
+        increment();
+      }
+    else
+      {
+        mCurrentMode = Before;
+      }
+
+    while (!(mProcessingModes & mCurrentMode))
+      {
+        increment();
+      }
+
+    return mCurrentMode;
   }
 
   Node * operator*() {return mStack.top().mpNode;}
 
   Node * operator->() {return mStack.top().mpNode;}
 
-  size_t childCount() const {return mStack.top().mChildCount;}
+  const ProcessingMode & processingMode() const {return mCurrentMode;}
 
-  size_t nextChildIndex() const {return mStack.top().mNextChildIndex;}
+  ProcessingMode end() const {return End;}
 
   Context & context() {return mStack.top().mContext;}
 
+  Context * parentContextPtr() {return mStack.top().mpParentContext;}
+
+  void setProcessingModes(const ProcessingMode & processingModes) {mProcessingModes = (ProcessingMode)(processingModes | End);}
+
+  ProcessingMode getProcessingModes() const {return (ProcessingMode)(mProcessingModes & ~End);}
+
 private:
   std::stack< CStackElement > mStack;
+
+  ProcessingMode mCurrentMode;
+
+  ProcessingMode mProcessingModes;
 };
 
 template < class Node > class CNodeIterator : public CNodeContextIterator< Node, int >
@@ -155,7 +222,7 @@ public:
       CNodeContextIterator< Node, int >(src)
   {}
 
-  CNodeIterator(ASTNode * pNode):
+  CNodeIterator(Node * pNode):
       CNodeContextIterator< Node, int >(pNode)
   {}
 
