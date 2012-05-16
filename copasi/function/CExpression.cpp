@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/15 15:56:40 $
+//   $Date: 2012/05/16 03:24:37 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -144,12 +144,12 @@ bool CExpression::updateInfix()
 const std::string & CExpression::getDisplayString() const
 {return mDisplayString;}
 
-std::string CExpression::getDisplay_C_String() const
+std::string CExpression::getCCodeString() const
 {
   std::string str1;
 
   if (mpRoot)
-    str1 = mpRoot->getDisplay_C_String(this);
+    str1 = mpRoot->buildCCodeString();
   else
     str1 = "";
 

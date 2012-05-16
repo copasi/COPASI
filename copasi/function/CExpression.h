@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/18 17:16:48 $
+//   $Date: 2012/05/16 03:24:37 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -143,7 +143,7 @@ public:
   /**
    * Retrieve the display string in C syntax.
    */
-  std::string getDisplay_C_String() const;
+  std::string getCCodeString() const;
 
   /**
    * Retrieve the display string in Berkeley Madonna  syntax.
