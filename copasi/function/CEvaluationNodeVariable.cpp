@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVariable.cpp,v $
-//   $Revision: 1.18 $
+//   $Revision: 1.19 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/15 15:56:40 $
+//   $Date: 2012/05/16 23:11:32 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,17 +78,21 @@ ASTNode* CEvaluationNodeVariable::toAST(const CCopasiDataModel* /*pDataModel*/) 
 
 #include "utilities/copasimathml.h"
 
-void CEvaluationNodeVariable::writeMathML(std::ostream & out,
-    const std::vector<std::vector<std::string> > & env,
-    bool /* expand */,
-    size_t l) const
+// virtual
+std::string CEvaluationNodeVariable::getMMLString(const std::vector< std::string > & children,
+    bool expand,
+    const std::vector< std::vector< std::string > > & variables) const
 {
-  if (mIndex < env.size())
+  std::ostringstream out;
+
+  if (mIndex < variables.size())
     {
-      out << SPC(l) << env[mIndex][0] << std::endl;
+      out << variables[mIndex][0] << std::endl;
     }
   else
     {
-      out << SPC(l) << "<mi>" << CMathMl::fixName(mData) << "</mi>" << std::endl;
+      out << "<mi>" << CMathMl::fixName(mData) << "</mi>" << std::endl;
     }
+
+  return out.str();
 }

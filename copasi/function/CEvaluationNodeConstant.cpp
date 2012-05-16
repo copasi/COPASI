@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 17:00:57 $
+//   $Date: 2012/05/16 23:11:31 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -247,9 +247,9 @@ ASTNode* CEvaluationNodeConstant::toAST(const CCopasiDataModel* /*pDataModel*/) 
         node->setValue(std::numeric_limits<C_FLOAT64>::infinity());
         break;
       case _NaN:
+      case INVALID:
         node->setType(AST_REAL);
         node->setValue(std::numeric_limits<C_FLOAT64>::quiet_NaN());
-      case INVALID:
         break;
     }
 
@@ -258,16 +258,16 @@ ASTNode* CEvaluationNodeConstant::toAST(const CCopasiDataModel* /*pDataModel*/) 
 
 #include "utilities/copasimathml.h"
 
-void CEvaluationNodeConstant::writeMathML(std::ostream & out,
-    const std::vector<std::vector<std::string> > & /* env */,
+// virtual
+std::string CEvaluationNodeConstant::getMMLString(const std::vector< std::string > & /* children */,
     bool /* expand */,
-    size_t /* l */) const
+    const std::vector< std::vector< std::string > > & /* variables */) const
 {
-  SubType subType = (SubType)CEvaluationNode::subType(this->getType());
+  std::ostringstream out;
 
   std::string data = "";
 
-  switch (subType)
+  switch ((SubType)CEvaluationNode::subType(this->getType()))
     {
       case PI:
         data = "&pi;";
@@ -292,5 +292,7 @@ void CEvaluationNodeConstant::writeMathML(std::ostream & out,
         break;
     }
 
-  out << SPC(1) << "<mi>" << data << "</mi>" << std::endl;
+  out << "<mi>" << data << "</mi>" << std::endl;
+
+  return out.str();
 }

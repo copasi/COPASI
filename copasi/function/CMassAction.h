@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.h,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:17 $
+//   $Date: 2012/05/16 23:11:32 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -94,10 +94,9 @@ public:
    */
   virtual bool compile();
 
-  virtual void writeMathML(std::ostream & out,
-                           const std::vector<std::vector<std::string> > & env,
-                           bool expand = true, bool fullExpand = true,
-                           size_t l = 0) const;
+  virtual std::string writeMathML(const std::vector< std::vector< std::string > > & variables,
+                                  bool expand = true, bool fullExpand = true) const;
+
 };
 
 #endif // COPASI_CMassAction

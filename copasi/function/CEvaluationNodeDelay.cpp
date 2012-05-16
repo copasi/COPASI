@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeDelay.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 17:00:56 $
+//   $Date: 2012/05/16 23:11:31 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -202,37 +202,39 @@ ASTNode* CEvaluationNodeDelay::toAST(const CCopasiDataModel* pDataModel) const
 
 #include "utilities/copasimathml.h"
 
-void CEvaluationNodeDelay::writeMathML(std::ostream & out,
-                                       const std::vector<std::vector<std::string> > & env,
-                                       bool expand,
-                                       size_t l) const
+// virtual
+std::string CEvaluationNodeDelay::getMMLString(const std::vector< std::string > & children,
+    bool /* expand */,
+    const std::vector< std::vector< std::string > > & /* variables */) const
 {
+  std::ostringstream out;
+
   switch (mType & 0x00FFFFFF)
     {
       case DELAY:
-        out << SPC(l) << "<mrow>" << std::endl;
+        out << "<mrow>" << std::endl;
 
-        out << SPC(l + 1) << "<mi>" << mData << "</mi>" << std::endl;
-        out << SPC(l + 1) << "<mrow>" << std::endl;
-        out << SPC(l + 2) << "<mo> (</mo>" << std::endl;
-        out << SPC(l + 2) << "<mrow>" << std::endl;
+        out << "<mi>" << mData << "</mi>" << std::endl;
+        out << "<mrow>" << std::endl;
+        out << "<mo> (</mo>" << std::endl;
+        out << "<mrow>" << std::endl;
 
-        mpDelayedObject->writeMathML(out, env, expand, l + 3);
+        out << children[0];
 
-        out << SPC(l + 3) << "<mo> , </mo>" << std::endl;
+        out << "<mo> , </mo>" << std::endl;
 
-        mpDeltaT->writeMathML(out, env, expand, l + 3);
+        out << children[1];
 
-        out << SPC(l + 2) << "</mrow>" << std::endl;
-        out << SPC(l + 2) << "<mo>) </mo>" << std::endl;
+        out << "</mrow>" << std::endl;
+        out << "<mo>) </mo>" << std::endl;
 
-        out << SPC(l + 1) << "</mrow>" << std::endl;
-        out << SPC(l) << "</mrow>" << std::endl;
+        out << "</mrow>" << std::endl;
+        out << "</mrow>" << std::endl;
         break;
 
       default:
         break;
     }
 
-  return;
+  return out.str();
 }

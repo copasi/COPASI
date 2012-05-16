@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:28:18 $
+//   $Date: 2012/05/16 23:11:32 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -169,45 +169,47 @@ bool CMassAction::compile()
 
 #include "utilities/copasimathml.h"
 
-void CMassAction::writeMathML(std::ostream & out,
-                              const std::vector<std::vector<std::string> > & env,
-                              bool /* expand */,
-                              bool /* fullExpand */,
-                              size_t l) const
+// virtual
+std::string CMassAction::writeMathML(const std::vector< std::vector< std::string > > & variables,
+                                     bool expand, bool fullExpand) const
 {
+  std::ostringstream out;
+
   bool rev = (isReversible() == TriTrue);
 
   if (rev)
-    out << SPC(l) << "<mfenced>" << std::endl;
+    out << "<mfenced>" << std::endl;
 
-  out << SPC(l) << "<mrow>" << std::endl;
+  out << "<mrow>" << std::endl;
 
-  out << SPC(l + 1) << env[0][0] << std::endl;
+  out << variables[0][0] << std::endl;
 
-  size_t i, imax = env[1].size();
+  size_t i, imax = variables[1].size();
 
   for (i = 0; i < imax; ++i)
     {
-      out << SPC(l + 1) << "<mo>&CenterDot;</mo>" << std::endl;
-      out << SPC(l + 1) << env[1][i] << std::endl;
+      out << "<mo>&CenterDot;</mo>" << std::endl;
+      out << variables[1][i] << std::endl;
     }
 
   if (rev)
     {
-      out << SPC(l + 1) << "<mo>-</mo>" << std::endl;
-      out << SPC(l + 1) << env[2][0] << std::endl;
+      out << "<mo>-</mo>" << std::endl;
+      out << variables[2][0] << std::endl;
 
-      size_t i, imax = env[3].size();
+      size_t i, imax = variables[3].size();
 
       for (i = 0; i < imax; ++i)
         {
-          out << SPC(l + 1) << "<mo>&CenterDot;</mo>" << std::endl;
-          out << SPC(l + 1) << env[3][i] << std::endl;
+          out << "<mo>&CenterDot;</mo>" << std::endl;
+          out << variables[3][i] << std::endl;
         }
     }
 
-  out << SPC(l) << "</mrow>" << std::endl;
+  out << "</mrow>" << std::endl;
 
   if (rev)
-    out << SPC(l) << "</mfenced>" << std::endl;
+    out << "</mfenced>" << std::endl;
+
+  return out.str();
 }

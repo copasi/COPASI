@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 17:00:57 $
+//   $Date: 2012/05/16 23:11:30 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -319,7 +319,6 @@ void CEvaluationNode::addChildren(const std::vector< CEvaluationNode * > & child
 bool CEvaluationNode::operator < (const CEvaluationNode & rhs)
 {return (mPrecedence.right < rhs.mPrecedence.left);}
 
-// TODO CRITICAL Replace the recursive call
 CEvaluationNode* CEvaluationNode::copyNode(CEvaluationNode* child1, CEvaluationNode* child2) const
 {
   std::vector<CEvaluationNode*> children;
@@ -331,36 +330,45 @@ CEvaluationNode* CEvaluationNode::copyNode(CEvaluationNode* child1, CEvaluationN
   return copyNode(children);
 }
 
-// TODO CRITICAL Replace the recursive call
 CEvaluationNode* CEvaluationNode::copyNode(const std::vector<CEvaluationNode*>& children) const
 {
-  CEvaluationNode *newnode = create(mType, getData());
-  std::vector<CEvaluationNode*>::const_iterator it = children.begin(), endit = children.end();
+  CEvaluationNode * pNode = create(mType, getData());
+  std::vector<CEvaluationNode*>::const_iterator it = children.begin();
+  std::vector<CEvaluationNode*>::const_iterator endit = children.end();
 
   while (it != endit)
     {
-      newnode->addChild(*it);
+      pNode->addChild(*it);
       ++it;
     }
 
-  return newnode;
+  return pNode;
 }
 
-// TODO CRITICAL Replace the recursive call
-CEvaluationNode* CEvaluationNode::copyBranch() const
+CEvaluationNode * CEvaluationNode::copyBranch() const
 {
-  std::vector<CEvaluationNode*> children;
-  const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(getChild());
+  CEvaluationNode * pNode = NULL;
+  CNodeContextIterator< const CEvaluationNode, std::vector< CEvaluationNode * > > itNode(this);
 
-  while (child != NULL)
+  while (itNode.next() != itNode.end())
     {
-      children.push_back(child->copyBranch());
-      child = dynamic_cast<const CEvaluationNode*>(child->getSibling());
+      if (*itNode == NULL)
+        {
+          continue;
+        }
+
+      if (itNode.parentContextPtr() != NULL)
+        {
+          itNode.parentContextPtr()->push_back(itNode->copyNode(itNode.context()));
+        }
+      else
+        {
+          assert(*itNode == this);
+          pNode = itNode->copyNode(itNode.context());
+        }
     }
 
-  //children.push_back(NULL);
-  CEvaluationNode *newnode = copyNode(children);
-  return newnode;
+  return pNode;
 }
 
 CEvaluationNode* CEvaluationNode::simplifyNode(const std::vector<CEvaluationNode*>& children) const
@@ -377,13 +385,39 @@ ASTNode* CEvaluationNode::toAST(const CCopasiDataModel* /*pDataModel*/) const
 const C_FLOAT64 * CEvaluationNode::getValuePointer() const
 {return &mValue;}
 
-// TODO CRITICAL Replace the recursive call
-void CEvaluationNode::writeMathML(std::ostream & /* out */,
-                                  const std::vector<std::vector<std::string> > & /* env */,
-                                  bool /* expand */,
-                                  size_t /* l */) const
-{}
+// virtual
+std::string CEvaluationNode::getMMLString(const std::vector< std::string > & /* children */,
+    bool /* expand */,
+    const std::vector< std::vector< std::string > > & /* variables */) const
+{
+  return "";
+}
 
+std::string CEvaluationNode::buildMMLString(bool expand,
+    const std::vector< std::vector< std::string > > & variables) const
+{
+  std::string MMLString = "";
+  CNodeContextIterator< const CEvaluationNode, std::vector< std::string > > it(this);
+
+  while (it.next() != it.end())
+    {
+      if (*it != NULL)
+        {
+          if (it.parentContextPtr() != NULL)
+            {
+              it.parentContextPtr()->push_back(it->getMMLString(it.context(), expand, variables));
+            }
+          else
+            {
+              MMLString = it->getMMLString(it.context(), expand, variables);
+            }
+        }
+    }
+
+  return MMLString;
+}
+
+// TODO CRITICAL Replace the recursive call
 void CEvaluationNode::printRecursively(std::ostream & os, int indent) const
 {
   int i;
@@ -536,64 +570,32 @@ bool CEvaluationNode::operator!=(const CEvaluationNode& right) const
   return !(*this == right);
 }
 
-// TODO CRITICAL Replace the recursive call
 bool CEvaluationNode::operator==(const CEvaluationNode& right) const
 {
-  bool result = true;
+  CNodeIterator< const CEvaluationNode > itLeft(this);
+  CNodeIterator< const CEvaluationNode > itRight(&right);
 
-  if (this->getType() == right.getType())
+  while (itLeft.next() != itLeft.end() &&
+         itRight.next() != itRight.end())
     {
-      switch (CEvaluationNode::type(this->getType()))
+      if (*itLeft == NULL && *itRight == NULL)
         {
-          case CEvaluationNode::CONSTANT:
-          case CEvaluationNode::NUMBER:
-          case CEvaluationNode::OBJECT:
-          case CEvaluationNode::CALL:
-          case CEvaluationNode::STRUCTURE:
-          case CEvaluationNode::VARIABLE:
-          case CEvaluationNode::WHITESPACE:
-            result = (this->getData() == right.getData());
-            break;
-          case CEvaluationNode::OPERATOR:
-          case CEvaluationNode::FUNCTION:
-          case CEvaluationNode::CHOICE:
-          case CEvaluationNode::LOGICAL:
-          case CEvaluationNode::MV_FUNCTION:
-          case CEvaluationNode::VECTOR:
-          case CEvaluationNode::DELAY:
-          case CEvaluationNode::INVALID:
-            break;
+          continue;
         }
 
-      const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
-
-      const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(right.getChild());
-
-      while (result == true)
+      if (*itLeft == NULL || *itRight == NULL)
         {
-          if (pChild1 == NULL || pChild2 == NULL)
-            {
-              if (!(pChild1 == NULL && pChild2 == NULL))
-                {
-                  result = false;
-                }
+          return false;
+        }
 
-              break;
-            }
-          else
-            {
-              result = (*pChild1 == *pChild2);
-              pChild1 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
-              pChild2 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
-            }
+      if (itLeft->getType() != itRight->getType() ||
+          itLeft->getData() != itRight->getData())
+        {
+          return false;
         }
     }
-  else
-    {
-      result = false;
-    }
 
-  return result;
+  return true;
 }
 
 bool CEvaluationNode::operator<(const CEvaluationNode& right) const

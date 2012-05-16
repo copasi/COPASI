@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.59 $
+//   $Revision: 1.60 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 17:00:56 $
+//   $Date: 2012/05/16 23:11:31 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -369,11 +369,13 @@ void CEvaluationNodeObject::setObjectValuePtr(C_FLOAT64 * pObjectValue)
 
 #include "utilities/copasimathml.h"
 
-void CEvaluationNodeObject::writeMathML(std::ostream & out,
-                                        const std::vector<std::vector<std::string> > & /* env */,
-                                        bool /* expand */,
-                                        size_t l) const
+// virtual
+std::string CEvaluationNodeObject::getMMLString(const std::vector< std::string > & /* children */ ,
+    bool /* expand */,
+    const std::vector< std::vector< std::string > > & /* variables */) const
 {
+  std::ostringstream out;
+
   const CCopasiObject * pDataObject = dynamic_cast< const CCopasiObject * >(mpObject);
 
   if (pDataObject == NULL)
@@ -386,5 +388,7 @@ void CEvaluationNodeObject::writeMathML(std::ostream & out,
         }
     }
 
-  out << SPC(l) << CMathMl::getMMLName(pDataObject) << std::endl;
+  out << CMathMl::getMMLName(pDataObject) << std::endl;
+
+  return out.str();
 }

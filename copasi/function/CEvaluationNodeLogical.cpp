@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 17:00:56 $
+//   $Date: 2012/05/16 23:11:31 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -515,11 +515,13 @@ ASTNode* CEvaluationNodeLogical::toAST(const CCopasiDataModel* pDataModel) const
 
 #include "utilities/copasimathml.h"
 
-void CEvaluationNodeLogical::writeMathML(std::ostream & out,
-    const std::vector<std::vector<std::string> > & env,
-    bool expand,
-    size_t l) const
+// virtual
+std::string CEvaluationNodeLogical::getMMLString(const std::vector< std::string > & children,
+    bool /* expand */,
+    const std::vector< std::vector< std::string > > & /* variables */) const
 {
+  std::ostringstream out;
+
   if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
     {
       std::string data = "";
@@ -562,26 +564,26 @@ void CEvaluationNodeLogical::writeMathML(std::ostream & out,
             break;
         }
 
-      out << SPC(l) << "<mrow>" << std::endl;
+      out << "<mrow>" << std::endl;
 
       flag = ((*mpLeft < *(CEvaluationNode *)this));
 
-      if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+      if (flag) out << "<mfenced>" << std::endl;
 
-      mpLeft->writeMathML(out, env, expand, l + 1);
+      out << children[0];
 
-      if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
+      if (flag) out << "</mfenced>" << std::endl;
 
-      out << SPC(l + 1) << "<mo>" << data << "</mo>" << std::endl;
+      out << "<mo>" << data << "</mo>" << std::endl;
 
       flag = ((*(CEvaluationNode *)this < *mpRight));
 
-      if (!flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+      if (!flag) out << "<mfenced>" << std::endl;
 
-      mpRight->writeMathML(out, env, expand, l + 1);
+      out << children[1];
 
-      if (!flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
+      if (!flag) out << "</mfenced>" << std::endl;
 
-      out << SPC(l) << "</mrow>" << std::endl;
+      out << "</mrow>" << std::endl;
     }
 }

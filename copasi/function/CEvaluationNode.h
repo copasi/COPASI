@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 17:00:56 $
+//   $Date: 2012/05/16 23:11:30 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -103,13 +103,13 @@ public:
    * Equals operator, compares two CEvaluationNode objects and return true if
    * they are equal.
    */
-  virtual bool operator==(const CEvaluationNode& right) const;
+  bool operator==(const CEvaluationNode& right) const;
 
   /**
    * Less operator, compares two CEvaluationNode objects and return true if
    * the first operand is smaller than the second.
    */
-  virtual bool operator<(const CEvaluationNode& right) const;
+  bool operator<(const CEvaluationNode& right) const;
 
 protected:
   /**
@@ -153,58 +153,63 @@ public:
 
   /**
    * Retrieve the infix value of the node and its eventual child nodes.
-   * @return const Data & value
+   * @return std::string Infix
    */
   virtual std::string getInfix(const std::vector< std::string > & children) const;
 
   /**
    * Build the infix string.
+   * @return std::string Infix
    */
   std::string buildInfix() const;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes.
-   * @return const Data & value
+   * @return std::string DisplayString
    */
   virtual std::string getDisplayString(const std::vector< std::string > & children) const;
 
   /**
    * Build the human readable display string.
+   * @return std::string DisplayString
    */
   std::string buildDisplayString() const;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes in C.
-   * @return const Data & value
+   * @return std::string CCodeString
    */
   virtual std::string getCCodeString(const std::vector< std::string > & children) const;
 
   /**
    * Build the C-code string.
+   * @return std::string CCodeString
    */
   std::string buildCCodeString() const;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes
    * in Berkeley Madonna format.
-   * @return const Data & value
+   * @return std::string BerkeleyMadonnaString
    */
   virtual std::string getBerkeleyMadonnaString(const std::vector< std::string > & children) const;
 
   /**
    * Build the Berkeley Madonna string.
+   * @return std::string BerkeleyMadonnaString
    */
   std::string buildBerkeleyMadonnaString() const;
 
   /**
-   ** Retrieve the display string of the node and its eventual child nodes
-   ** in XPPAUT format.
-   ** @return const Data & value
-   **/
+   * Retrieve the display string of the node and its eventual child nodes
+   * in XPPAUT format.
+   * @return std::string XPPString
+   */
   virtual std::string getXPPString(const std::vector< std::string > & children) const;
 
   /**
    * Build the XPPAUT string.
+   * @return std::string XPPString
    */
   std::string buildXPPString() const;
 
@@ -275,12 +280,23 @@ public:
   const C_FLOAT64 * getValuePointer() const;
 
   /**
-   * generate display MathML recursively
+   * Build the MathML string
+   * @param const std::vector< std::string > & children
+   * @param bool expand = true
+   * @param const std::vector< std::vector< std::string > > & variables
+   * @return std::string MMLString
    */
-  virtual void writeMathML(std::ostream & out,
-                           const std::vector<std::vector<std::string> > & env,
-                           bool expand = true,
-                           size_t l = 0) const;
+  virtual std::string getMMLString(const std::vector< std::string > & children,
+                                   bool expand,
+                                   const std::vector< std::vector< std::string > > & variables) const;
+
+  /**
+   * Build the MathML string
+   * @param bool expand = true
+   * @param const std::vector< std::vector< std::string > > & variables
+   * @return std::string MMLString
+   */
+  std::string buildMMLString(bool expand, const std::vector< std::vector< std::string > > & variables) const;
 
   void printRecursively(std::ostream & os, int indent = 0) const;
 

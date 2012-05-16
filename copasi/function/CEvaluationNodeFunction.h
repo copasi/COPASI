@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 17:00:57 $
+//   $Date: 2012/05/16 23:11:31 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -216,12 +216,15 @@ public:
   virtual CEvaluationNode* simplifyNode(const std::vector<CEvaluationNode*>& children) const;
 
   /**
-   * generate display MathML recursively
+   * Build the MathML string
+   * @param const std::vector< std::string > & children
+   * @param bool expand = true
+   * @param const std::vector< std::vector< std::string > > & variables
+   * @return std::string MMLString
    */
-  virtual void writeMathML(std::ostream & out,
-                           const std::vector<std::vector<std::string> > & env,
-                           bool expand = true,
-                           size_t l = 0) const;
+  virtual std::string getMMLString(const std::vector< std::string > & children,
+                                   bool expand,
+                                   const std::vector< std::vector< std::string > > & variables) const;
 
   CEvaluationNode * getLeft();
   const CEvaluationNode * getLeft() const;

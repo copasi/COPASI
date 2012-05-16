@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-//   $Revision: 1.88 $
+//   $Revision: 1.89 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/15 15:56:41 $
+//   $Date: 2012/05/16 23:11:32 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -349,37 +349,40 @@ void CFunction::createListOfParametersForMathML(std::vector<std::vector<std::str
     }
 }
 
-void CFunction::writeMathML(std::ostream & out,
-                            const std::vector<std::vector<std::string> > & env,
-                            bool expand, bool fullExpand,
-                            size_t l) const
+// virtual
+std::string CFunction::writeMathML(const std::vector< std::vector< std::string > > & variables,
+                                   bool expand, bool fullExpand) const
 {
+  std::ostringstream out;
+
   if (expand && mpRoot)
     {
       bool flag = false; //TODO include check if parentheses are necessary
 
-      if (flag) out << SPC(l) << "<mfenced>" << std::endl;
+      if (flag) out << "<mfenced>" << std::endl;
 
-      mpRoot->writeMathML(out, env, fullExpand, l + 1);
+      mpRoot->buildMMLString(fullExpand, variables);
 
-      if (flag) out << SPC(l) << "</mfenced>" << std::endl;
+      if (flag) out << "</mfenced>" << std::endl;
     }
   else //no expand
     {
-      out << SPC(l) << "<mrow>" << std::endl;
-      out << SPC(l + 1) << CMathMl::fixName(getObjectName()) << std::endl;
-      out << SPC(l + 1) << "<mfenced>" << std::endl;
+      out << "<mrow>" << std::endl;
+      out << CMathMl::fixName(getObjectName()) << std::endl;
+      out << "<mfenced>" << std::endl;
 
-      size_t i, imax = getVariables().size();
+      size_t i, imax = variables.size();
 
       for (i = 0; i < imax; ++i)
         {
-          out << SPC(l + 2) << env[i][0] << std::endl;
+          out << variables[i][0] << std::endl;
         }
 
-      out << SPC(l + 1) << "</mfenced>" << std::endl;
-      out << SPC(l) << "</mrow>" << std::endl;
+      out << "</mfenced>" << std::endl;
+      out << "</mrow>" << std::endl;
     }
+
+  return out.str();
 }
 
 void CFunction::writeMathML(std::ostream & out, size_t l) const

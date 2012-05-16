@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMMLOutput.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/11/09 16:45:26 $
+//   $Date: 2012/05/16 23:14:34 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -131,7 +131,7 @@ void CMMLOutput::writeRHS(std::ostream & out,
 
       if (expand) out << SPC(l + 1) << "<mfenced>" << std::endl;
 
-      pReac->getFunction()->writeMathML(out, params, expand, expandFull, l + 1);
+      out << pReac->getFunction()->writeMathML(params, expand, expandFull);
 
       if (expand) out << SPC(l + 1) << "</mfenced>" << std::endl;
     }

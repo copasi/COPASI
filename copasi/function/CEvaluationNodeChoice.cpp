@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeChoice.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 17:00:57 $
+//   $Date: 2012/05/16 23:11:31 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -232,45 +232,49 @@ ASTNode* CEvaluationNodeChoice::toAST(const CCopasiDataModel* pDataModel) const
 
 #include "utilities/copasimathml.h"
 
-void CEvaluationNodeChoice::writeMathML(std::ostream & out,
-                                        const std::vector<std::vector<std::string> > & env,
-                                        bool expand,
-                                        size_t l) const
+// virtual
+std::string CEvaluationNodeChoice::getMMLString(const std::vector< std::string > & children,
+    bool /* expand */,
+    const std::vector< std::vector< std::string > > & /* variables */) const
 {
+  std::ostringstream out;
+
   if (const_cast<CEvaluationNodeChoice *>(this)->compile(NULL))
     {
-      out << SPC(l) << "<mrow>" << std::endl;
-      out << SPC(l + 1) << "<mo> {</mo>" << std::endl;
-      out << SPC(l + 1) << "<mtable>" << std::endl;
+      out << "<mrow>" << std::endl;
+      out << "<mo> {</mo>" << std::endl;
+      out << "<mtable>" << std::endl;
 
-      out << SPC(l + 2) << "<mtr>" << std::endl;
+      out << "<mtr>" << std::endl;
 
-      out << SPC(l + 3) << "<mtd>" << std::endl;
-      mpTrue->writeMathML(out, env, expand, l + 3);
-      out << SPC(l + 3) << "<mo> , </mo>" << std::endl;
-      out << SPC(l + 3) << "</mtd>" << std::endl;
+      out << "<mtd>" << std::endl;
+      out << children[0];
+      out << "<mo> , </mo>" << std::endl;
+      out << "</mtd>" << std::endl;
 
-      out << SPC(l + 3) << "<mtd>" << std::endl;
-      mpIf->writeMathML(out, env, expand, l + 3);
+      out << "<mtd>" << std::endl;
+      out << children[1];
 
-      out << SPC(l + 3) << "</mtd>" << std::endl;
+      out << "</mtd>" << std::endl;
 
-      out << SPC(l + 2) << "</mtr>" << std::endl;
+      out << "</mtr>" << std::endl;
 
-      out << SPC(l + 2) << "<mtr>" << std::endl;
+      out << "<mtr>" << std::endl;
 
-      out << SPC(l + 3) << "<mtd>" << std::endl;
-      mpFalse->writeMathML(out, env, expand, l + 3);
-      out << SPC(l + 3) << "<mo> , </mo>" << std::endl;
+      out << "<mtd>" << std::endl;
+      out << children[2];
+      out << "<mo> , </mo>" << std::endl;
 
-      out << SPC(l + 3) << "</mtd>" << std::endl;
-      out << SPC(l + 3) << "<mtd>" << std::endl;
-      out << SPC(l + 3) << "<mo> else </mo>" << std::endl;
-      out << SPC(l + 3) << "</mtd>" << std::endl;
+      out << "</mtd>" << std::endl;
+      out << "<mtd>" << std::endl;
+      out << "<mo> else </mo>" << std::endl;
+      out << "</mtd>" << std::endl;
 
-      out << SPC(l + 2) << "</mtr>" << std::endl;
+      out << "</mtr>" << std::endl;
 
-      out << SPC(l + 1) << "</mtable>" << std::endl;
-      out << SPC(l) << "</mrow>" << std::endl;
+      out << "</mtable>" << std::endl;
+      out << "</mrow>" << std::endl;
     }
+
+  return out.str();
 }

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 17:00:57 $
+//   $Date: 2012/05/16 23:11:32 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1344,45 +1344,47 @@ const CEvaluationNode * CEvaluationNodeOperator::getRight() const
 
 #include "utilities/copasimathml.h"
 
-void CEvaluationNodeOperator::writeMathML(std::ostream & out,
-    const std::vector<std::vector<std::string> > & env,
+// virtual
+std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string > & children,
     bool expand,
-    size_t l) const
+    const std::vector< std::vector< std::string > > & /* variables */) const
 {
+  std::ostringstream out;
+
   bool flag;
 
   switch (mType & 0x00FFFFFF)
     {
       case PLUS:
 
-        out << SPC(l) << "<mrow>" << std::endl;
-        mpLeft->writeMathML(out, env, expand, l + 1);
-        out << SPC(l + 1) << "<mo>" << "+" << "</mo>" << std::endl;
-        mpRight->writeMathML(out, env, expand, l + 1);
-        out << SPC(l) << "</mrow>" << std::endl;
+        out << "<mrow>" << std::endl;
+        out << children[0];
+        out << "<mo>" << "+" << "</mo>" << std::endl;
+        out << children[1];
+        out << "</mrow>" << std::endl;
         break;
 
       case MINUS:
-        out << SPC(l) << "<mrow>" << std::endl;
-        mpLeft->writeMathML(out, env, expand, l + 1);
-        out << SPC(l + 1) << "<mo>" << "-" << "</mo>" << std::endl;
+        out << "<mrow>" << std::endl;
+        out << children[0];
+        out << "<mo>" << "-" << "</mo>" << std::endl;
 
         flag = ((mpRight->getType() == (CEvaluationNode::OPERATOR | PLUS))
                 || (mpRight->getType() == (CEvaluationNode::OPERATOR | MINUS))
                 || (((mpRight->getType() & 0xFF000000) == CEvaluationNode::CALL) && expand)
                );
 
-        if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << std::endl;
 
-        mpRight->writeMathML(out, env, expand, l + 1);
+        out << children[1];
 
-        if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl; // ???
+        if (flag) out << "</mfenced>" << std::endl; // ???
 
-        out << SPC(l) << "</mrow>" << std::endl;
+        out << "</mrow>" << std::endl;
         break;
 
       case MULTIPLY:
-        out << SPC(l) << "<mrow>" << std::endl;
+        out << "<mrow>" << std::endl;
 
         //do we need "()" ?
         flag = ((mpLeft->getType() == (CEvaluationNode::OPERATOR | PLUS))
@@ -1390,45 +1392,45 @@ void CEvaluationNodeOperator::writeMathML(std::ostream & out,
                 || (((mpLeft->getType() & 0xFF000000) == CEvaluationNode::CALL) && expand)
                );
 
-        if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << std::endl;
 
-        mpLeft->writeMathML(out, env, expand, l + 1);
+        out << children[0];
 
-        if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
+        if (flag) out << "</mfenced>" << std::endl;
 
-        out << SPC(l + 1) << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
+        out << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
 
         flag = ((mpRight->getType() == (CEvaluationNode::OPERATOR | PLUS))
                 || (mpRight->getType() == (CEvaluationNode::OPERATOR | MINUS))
                 || (((mpRight->getType() & 0xFF000000) == CEvaluationNode::CALL) && expand)
                );
 
-        if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << std::endl;
 
-        mpRight->writeMathML(out, env, expand, l + 1);
+        out << children[1];
 
-        if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
+        if (flag) out << "</mfenced>" << std::endl;
 
-        out << SPC(l) << "</mrow>" << std::endl;
+        out << "</mrow>" << std::endl;
 
         break;
 
       case DIVIDE:
-        out << SPC(l) << "<mfrac>" << std::endl;
+        out << "<mfrac>" << std::endl;
 
-        //out << SPC(l + 1) << "<mrow>" << std::endl;
-        mpLeft->writeMathML(out, env, expand, l + 1);
-        //out << SPC(level + 1) << "</mrow>" << std::endl;
+        //out << "<mrow>" << std::endl;
+        out << children[0];
+        //out << "</mrow>" << std::endl;
 
-        //out << SPC(l + 1) << "<mrow>" << std::endl;
-        mpRight->writeMathML(out, env, expand, l + 1);
-        //out << SPC(l + 1) << "</mrow>" << std::endl;
+        //out << "<mrow>" << std::endl;
+        out << children[1];
+        //out << "</mrow>" << std::endl;
 
-        out << SPC(l) << "</mfrac>" << std::endl;
+        out << "</mfrac>" << std::endl;
         break;
 
       case POWER:
-        out << SPC(l) << "<msup>" << std::endl;
+        out << "<msup>" << std::endl;
 
         //do we need "()" ?
         flag = ((mpLeft->getType() == (CEvaluationNode::OPERATOR | PLUS))
@@ -1439,42 +1441,44 @@ void CEvaluationNodeOperator::writeMathML(std::ostream & out,
                 || (((mpLeft->getType() & 0xFF000000) == CEvaluationNode::CALL) && expand)
                );
 
-        if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << std::endl;
 
-        mpLeft->writeMathML(out, env, expand, l + 2);
+        out << children[0];
 
-        if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
+        if (flag) out << "</mfenced>" << std::endl;
 
-        out << SPC(l + 1) << "<mrow>" << std::endl;
-        mpRight->writeMathML(out, env, expand, l + 2);
-        out << SPC(l + 1) << "</mrow>" << std::endl;
+        out << "<mrow>" << std::endl;
+        out << children[1];
+        out << "</mrow>" << std::endl;
 
-        out << SPC(l) << "</msup>" << std::endl;
+        out << "</msup>" << std::endl;
         break;
 
       case MODULUS:
-        out << SPC(l) << "<mrow>" << std::endl;
+        out << "<mrow>" << std::endl;
 
         //do we need "()" ?
         flag = true;
 
-        if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << std::endl;
 
-        mpLeft->writeMathML(out, env, expand, l + 1);
+        out << children[0];
 
-        if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
+        if (flag) out << "</mfenced>" << std::endl;
 
-        out << SPC(l + 1) << "<mo>" << "%" << "</mo>" << std::endl;
+        out << "<mo>" << "%" << "</mo>" << std::endl;
 
         flag = true;
 
-        if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << std::endl;
 
-        mpRight->writeMathML(out, env, expand, l + 1);
+        out << children[1];
 
-        if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
+        if (flag) out << "</mfenced>" << std::endl;
 
-        out << SPC(l) << "</mrow>" << std::endl;
+        out << "</mrow>" << std::endl;
         break;
     }
+
+  return out.str();
 }

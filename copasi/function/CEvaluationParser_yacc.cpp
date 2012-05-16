@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationParser_yacc.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 20:03:39 $
+//   $Date: 2012/05/16 23:11:32 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -79,6 +79,7 @@
 #define yydebug CEvaluationParserdebug
 #define yynerrs CEvaluationParsernerrs
 
+
 /* Tokens.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
@@ -144,6 +145,9 @@ enum yytokentype
 #define TOKEN_STRUCTURE_CLOSE 283
 #define TOKEN_STRUCTURE_VECTOR_CLOSE 284
 
+
+
+
 /* Copy the first part of user declarations.  */
 #line 4 "CEvaluationParser.ypp"
 
@@ -176,6 +180,8 @@ void setBooleanRequired(CEvaluationNode * pNode, const bool & booleanRequired)
     }
 }
 
+
+
 /* Enabling traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 1
@@ -201,7 +207,10 @@ typedef int YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 #endif
 
+
+
 /* Copy the second part of user declarations.  */
+
 
 /* Line 216 of yacc.c.  */
 #line 204 "CEvaluationParser_yacc.cpp"
@@ -320,7 +329,7 @@ int i;
 
 # ifdef YYSTACK_ALLOC
 /* Pacify GCC's `empty if-body' warning.  */
-#  define YYSTACK_FREE(Ptr) do {/* empty */; } while (YYID (0))
+#  define YYSTACK_FREE(Ptr) do { /* empty */; } while (YYID (0))
 #  ifndef YYSTACK_ALLOC_MAXIMUM
 /* The OS might guarantee only one guard page at the bottom of the stack,
    and a page size can be as small as 4096 bytes.  So we cannot safely
@@ -359,6 +368,7 @@ void free(void *);  /* INFRINGES ON USER NAME SPACE */
 # endif
 #endif /* ! defined yyoverflow || YYERROR_VERBOSE */
 
+
 #if (! defined yyoverflow \
      && (! defined __cplusplus \
    || (defined YYSTYPE_IS_TRIVIAL && YYSTYPE_IS_TRIVIAL)))
@@ -388,7 +398,7 @@ union yyalloc
 #  else
 #   define YYCOPY(To, From, Count)    \
   do          \
-    {\
+    {         \
       YYSIZE_T yyi;       \
       for (yyi = 0; yyi < (Count); yyi++) \
         (To)[yyi] = (From)[yyi];    \
@@ -404,7 +414,7 @@ union yyalloc
    stack.  */
 # define YYSTACK_RELOCATE(Stack)          \
   do                  \
-    {\
+    {                 \
       YYSIZE_T yynewbytes;            \
       YYCOPY (&yyptr->Stack, Stack, yysize);        \
       Stack = &yyptr->Stack;            \
@@ -736,6 +746,7 @@ static const yytype_uint8 yystos[] =
 #define YYABORT   goto yyabortlab
 #define YYERROR   goto yyerrorlab
 
+
 /* Like YYERROR except do call yyerror.  This remains here temporarily
    to ease the transition to the new meaning of YYERROR, for GCC.
    Once GCC version 2 has supplanted version 1, this can go.  */
@@ -747,7 +758,7 @@ static const yytype_uint8 yystos[] =
 #define YYBACKUP(Token, Value)          \
   do                \
     if (yychar == YYEMPTY && yylen == 1)        \
-      {\
+      {               \
         yychar = (Token);           \
         yylval = (Value);           \
         yytoken = YYTRANSLATE (yychar);       \
@@ -755,14 +766,16 @@ static const yytype_uint8 yystos[] =
         goto yybackup;            \
       }               \
     else                \
-      {\
+      {               \
         yyerror (YY_("syntax error: cannot back up")); \
         YYERROR;              \
       }               \
   while (YYID (0))
 
+
 #define YYTERROR  1
 #define YYERRCODE 256
+
 
 /* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
    If N is 0, then set CURRENT to the empty location which ends
@@ -773,14 +786,14 @@ static const yytype_uint8 yystos[] =
 # define YYLLOC_DEFAULT(Current, Rhs, N)        \
   do                  \
     if (YYID (N))                                                    \
-      {\
+      {               \
         (Current).first_line   = YYRHSLOC (Rhs, 1).first_line;  \
         (Current).first_column = YYRHSLOC (Rhs, 1).first_column;  \
         (Current).last_line    = YYRHSLOC (Rhs, N).last_line;   \
         (Current).last_column  = YYRHSLOC (Rhs, N).last_column; \
       }               \
     else                \
-      {\
+      {               \
         (Current).first_line   = (Current).last_line   =    \
                                  YYRHSLOC (Rhs, 0).last_line;        \
         (Current).first_column = (Current).last_column =    \
@@ -788,6 +801,7 @@ static const yytype_uint8 yystos[] =
       }               \
   while (YYID (0))
 #endif
+
 
 /* YY_LOCATION_PRINT -- Print the location on the stream.
    This macro was not mandated originally: define only if we know
@@ -803,6 +817,7 @@ static const yytype_uint8 yystos[] =
 #  define YY_LOCATION_PRINT(File, Loc) ((void) 0)
 # endif
 #endif
+
 
 /* YYLEX -- calling `yylex' with the right arguments.  */
 
@@ -821,21 +836,22 @@ static const yytype_uint8 yystos[] =
 # endif
 
 # define YYDPRINTF(Args)      \
-  do {\
+  do {            \
       if (yydebug)          \
         YYFPRINTF Args;       \
     } while (YYID (0))
 
 # define YY_SYMBOL_PRINT(Title, Type, Value, Location)        \
-  do {\
+  do {                    \
       if (yydebug)                  \
-        {\
+        {                   \
           YYFPRINTF (stderr, "%s ", Title);           \
           yy_symbol_print (stderr,              \
                            Type, Value); \
           YYFPRINTF (stderr, "\n");             \
         }                   \
     } while (YYID (0))
+
 
 /*--------------------------------.
 | Print this symbol on YYOUTPUT.  |
@@ -873,6 +889,7 @@ YYSTYPE const * const yyvaluep;
         break;
     }
 }
+
 
 /*--------------------------------.
 | Print this symbol on YYOUTPUT.  |
@@ -925,10 +942,11 @@ yytype_int16 *top;
 }
 
 # define YY_STACK_PRINT(Bottom, Top)        \
-  do {\
+  do {                \
       if (yydebug)              \
         yy_stack_print ((Bottom), (Top));       \
     } while (YYID (0))
+
 
 /*------------------------------------------------.
 | Report that the YYRULE is going to be reduced.  |
@@ -963,7 +981,7 @@ int yyrule;
 }
 
 # define YY_REDUCE_PRINT(Rule)    \
-  do {\
+  do {          \
       if (yydebug)        \
         yy_reduce_print (yyvsp, Rule); \
     } while (YYID (0))
@@ -977,6 +995,7 @@ int yydebug = YYDEBUG;
 # define YY_STACK_PRINT(Bottom, Top)
 # define YY_REDUCE_PRINT(Rule)
 #endif /* !YYDEBUG */
+
 
 /* YYINITDEPTH -- initial size of the parser's stacks.  */
 #ifndef YYINITDEPTH
@@ -1096,7 +1115,7 @@ yytnamerr(char *yyres, const char *yystr)
               return yyn;
           }
 
-do_not_strip_quotes:;
+do_not_strip_quotes: ;
     }
 
   if (! yyres)
@@ -1127,7 +1146,7 @@ yysyntax_error(char *yyresult, int yystate, int yychar)
       YYSIZE_T yysize = yysize0;
       YYSIZE_T yysize1;
       int yysize_overflow = 0;
-      enum {YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
+      enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
       char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
       int yyx;
 
@@ -1264,6 +1283,8 @@ YYSTYPE *yyvaluep;
 #endif
 #endif /* ! YYPARSE_PARAM */
 
+
+
 /* The look-ahead symbol.  */
 int yychar;
 
@@ -1272,6 +1293,8 @@ YYSTYPE yylval;
 
 /* Number of syntax errors so far.  */
 int yynerrs;
+
+
 
 /*----------.
 | yyparse.  |
@@ -1332,6 +1355,8 @@ yyparse()
   YYSTYPE *yyvs = yyvsa;
   YYSTYPE *yyvsp;
 
+
+
 #define YYPOPSTACK(N)   (yyvsp -= (N), yyssp -= (N))
 
   YYSIZE_T yystacksize = YYINITDEPTH;
@@ -1339,6 +1364,7 @@ yyparse()
   /* The variables used to return semantic value and location from the
      action routines.  */
   YYSTYPE yyval;
+
 
   /* The number of symbols on the RHS of the reduced rule.
      Keep to zero when no symbol should be popped.  */
@@ -1384,6 +1410,7 @@ yysetstate:
            memory.  */
         YYSTYPE *yyvs1 = yyvs;
         yytype_int16 *yyss1 = yyss;
+
 
         /* Each stack pointer address is followed by the size of the
            data in use in that stack, in bytes.  This used to be a
@@ -1433,6 +1460,7 @@ yysetstate:
 
       yyssp = yyss + yysize - 1;
       yyvsp = yyvs + yysize - 1;
+
 
       YYDPRINTF((stderr, "Stack size increased to %lu\n",
                  (unsigned long int) yystacksize));
@@ -1517,6 +1545,7 @@ yybackup:
 
   goto yynewstate;
 
+
   /*-----------------------------------------------------------.
   | yydefault -- do the default action for the current state.  |
   `-----------------------------------------------------------*/
@@ -1527,6 +1556,7 @@ yydefault:
     goto yyerrlab;
 
   goto yyreduce;
+
 
   /*-----------------------------.
   | yyreduce -- Do a reduction.  |
@@ -1544,6 +1574,7 @@ yyreduce:
      unconditionally makes the parser a bit smaller, and it avoids a
      GCC warning that YYVAL may be used uninitialized.  */
   yyval = yyvsp[1-yylen];
+
 
   YY_REDUCE_PRINT(yyn);
 
@@ -2068,6 +2099,7 @@ yyreduce:
         }
         break;
 
+
         /* Line 1267 of yacc.c.  */
 #line 2060 "CEvaluationParser_yacc.cpp"
       default: break;
@@ -2080,6 +2112,7 @@ yyreduce:
   YY_STACK_PRINT(yyss, yyssp);
 
   *++yyvsp = yyval;
+
 
   /* Now `shift' the result of the reduction.  Determine what state
      that goes to, based on the state we popped back to and the rule
@@ -2095,6 +2128,7 @@ yyreduce:
     yystate = yydefgoto[yyn - YYNTOKENS];
 
   goto yynewstate;
+
 
   /*------------------------------------.
   | yyerrlab -- here on detecting error |
@@ -2148,6 +2182,8 @@ yyerrlab:
 #endif
     }
 
+
+
   if (yyerrstatus == 3)
     {
       /* If just tried and failed to reuse look-ahead token after an
@@ -2171,6 +2207,7 @@ yyerrlab:
      token.  */
   goto yyerrlab1;
 
+
   /*---------------------------------------------------.
   | yyerrorlab -- error raised explicitly by YYERROR.  |
   `---------------------------------------------------*/
@@ -2189,6 +2226,7 @@ yyerrorlab:
   YY_STACK_PRINT(yyss, yyssp);
   yystate = *yyssp;
   goto yyerrlab1;
+
 
   /*-------------------------------------------------------------.
   | yyerrlab1 -- common code for both syntax error and YYERROR.  |
@@ -2217,6 +2255,7 @@ yyerrlab1:
       if (yyssp == yyss)
         YYABORT;
 
+
       yydestruct("Error: popping",
                  yystos[yystate], yyvsp);
       YYPOPSTACK(1);
@@ -2229,11 +2268,13 @@ yyerrlab1:
 
   *++yyvsp = yylval;
 
+
   /* Shift the error token.  */
   YY_SYMBOL_PRINT("Shifting", yystos[yyn], yyvsp, yylsp);
 
   yystate = yyn;
   goto yynewstate;
+
 
   /*-------------------------------------.
   | yyacceptlab -- YYACCEPT comes here.  |
@@ -2293,4 +2334,8 @@ yyreturn:
   return YYID(yyresult);
 }
 
+
 #line 455 "CEvaluationParser.ypp"
+
+
+

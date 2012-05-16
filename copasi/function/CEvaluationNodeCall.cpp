@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 17:00:56 $
+//   $Date: 2012/05/16 23:11:30 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -542,11 +542,16 @@ const CEvaluationTree * CEvaluationNodeCall::getCalledTree() const
 
 #include "utilities/copasimathml.h"
 
-void CEvaluationNodeCall::writeMathML(std::ostream & out,
-                                      const std::vector<std::vector<std::string> > & env,
-                                      bool expand,
-                                      size_t l) const
+// virtual
+std::string CEvaluationNodeCall::getMMLString(const std::vector< std::string > & children,
+    bool expand,
+    const std::vector< std::vector< std::string > > & /* variables */) const
 {
+  std::ostringstream out;
+
+  std::vector< std::string >::const_iterator it = children.begin();
+  std::vector< std::string >::const_iterator end = children.end();
+
   switch (mType & 0x00FFFFFF)
     {
       case FUNCTION:
@@ -554,50 +559,44 @@ void CEvaluationNodeCall::writeMathML(std::ostream & out,
 
         if (!expand || !mpFunction)
           {
-            out << SPC(l) << "<mrow>" << std::endl;
+            out << "<mrow>" << std::endl;
 
-            out << SPC(l + 1) << "<mi>" << CMathMl::fixName(mData) << "</mi>" << std::endl;
-            out << SPC(l + 1) << "<mrow>" << std::endl;
-            out << SPC(l + 2) << "<mo>(</mo>" << std::endl;
-            out << SPC(l + 2) << "<mrow>" << std::endl;
+            out << "<mi>" << CMathMl::fixName(mData) << "</mi>" << std::endl;
+            out << "<mrow>" << std::endl;
+            out << "<mo>(</mo>" << std::endl;
+            out << "<mrow>" << std::endl;
 
-            std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
-            std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
-
-            if (it != end)(*it++)->writeMathML(out, env, expand, l + 3);
+            if (it != end)
+              {
+                out << *it++;
+              }
 
             for (; it != end; ++it)
               {
-
-                out << SPC(l + 3) << "<mo> , </mo>" << std::endl;
-                (*it)->writeMathML(out, env, expand, l + 3);
+                out << "<mo> , </mo>" << std::endl;
+                out << *it;
               }
 
-            out << SPC(l + 2) << "</mrow>" << std::endl;
-            out << SPC(l + 2) << "<mo>) </mo>" << std::endl;
+            out << "</mrow>" << std::endl;
+            out << "<mo>) </mo>" << std::endl;
 
-            out << SPC(l + 1) << "</mrow>" << std::endl;
-            out << SPC(l) << "</mrow>" << std::endl;
+            out << "</mrow>" << std::endl;
+            out << "</mrow>" << std::endl;
           }
         else
           {
-            //construct the environment for the nested function
-            std::vector<std::vector<std::string> > env2;
-
-            std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
-            std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
+            std::vector< std::vector< std::string > > Variables;
 
             for (; it != end; ++it)
               {
-                std::ostringstream oss;
-                (*it)->writeMathML(oss, env, expand, l + 3);
-                std::vector<std::string> tmpvector; tmpvector.push_back(oss.str());
-                env2.push_back(tmpvector);
+                std::vector< std::string > Variable;
+                Variable.push_back(*it);
+                Variables.push_back(Variable);
               }
 
-            out << SPC(l) << "<mfenced>" << std::endl;
-            mpFunction->writeMathML(out, env2, expand, expand, l + 1);
-            out << SPC(l) << "</mfenced>" << std::endl;
+            out << "<mfenced>" << std::endl;
+            out << mpFunction->writeMathML(Variables, expand, expand);
+            out << "</mfenced>" << std::endl;
           }
       }
       break;
@@ -608,7 +607,7 @@ void CEvaluationNodeCall::writeMathML(std::ostream & out,
         break;
     }
 
-  return;
+  return out.str();
 }
 
 void CEvaluationNodeCall::setBooleanRequired(const bool & booleanRequired)

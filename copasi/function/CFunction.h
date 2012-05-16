@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-//   $Revision: 1.53 $
+//   $Revision: 1.54 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/14 19:19:25 $
+//   $Date: 2012/05/16 23:11:32 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -237,15 +237,13 @@ public:
   /**
    * Function to write the mathematical formula in format of MathML.
    * @param std::ostream & out
-   * @param const std::vector<std::vector<std::string> > & env
+   * @param const std::vector< std::vector< std::string > > & variables
    * @param bool expand = true
    * @param bool fullExpand
-   * @param size_t l
+   * @return std::string
    */
-  virtual void writeMathML(std::ostream & out,
-                           const std::vector<std::vector<std::string> > & env,
-                           bool expand = true, bool fullExpand = true,
-                           size_t l = 0) const;
+  virtual std::string writeMathML(const std::vector< std::vector< std::string > > & variables,
+                                  bool expand = true, bool fullExpand = true) const;
 
   /**
    * Function to create a list of the names of the function parameters in MathML format.
