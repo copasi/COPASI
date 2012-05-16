@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-//   $Revision: 1.33 $
+//   $Revision: 1.34 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 15:02:45 $
+//   $Date: 2012/05/16 17:00:57 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -145,7 +145,8 @@ std::string CEvaluationNodeConstant::getBerkeleyMadonnaString(const std::vector<
   return data;
 }
 
-std::string CEvaluationNodeConstant::getDisplay_XPP_String(const CEvaluationTree * /*pTree*/) const
+// virtual
+std::string CEvaluationNodeConstant::getXPPString(const std::vector< std::string > & /* children */) const
 {
   std::ostringstream DisplayString;
   std::string data = "";

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-//   $Revision: 1.63 $
+//   $Revision: 1.64 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 15:02:44 $
+//   $Date: 2012/05/16 17:00:56 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -568,7 +568,8 @@ std::string CEvaluationNodeFunction::getBerkeleyMadonnaString(const std::vector<
   return "@";
 }
 
-std::string CEvaluationNodeFunction::getDisplay_XPP_String(const CEvaluationTree * pTree) const
+// virtual
+std::string CEvaluationNodeFunction::getXPPString(const std::vector< std::string > & children) const
 {
   std::string data = "";
 
@@ -632,21 +633,21 @@ std::string CEvaluationNodeFunction::getDisplay_XPP_String(const CEvaluationTree
       switch (mType & 0x00FFFFFF)
         {
           case MINUS:
-            return "(" + data + mpArg1->getDisplay_XPP_String(pTree) + ")";
+            return "(" + data + children[0] + ")";
             break;
 
           case PLUS:
-            return mpArg1->getDisplay_XPP_String(pTree);
+            return children[0];
             break;
 
           case RUNIFORM:
           case RNORMAL:
           case MAX:
           case MIN:
-            return data + "(" + mpArg1->getDisplay_XPP_String(pTree) + "," + mpArg2->getDisplay_XPP_String(pTree) + ")";
+            return data + "(" + children[0] + "," + children[1] + ")";
 
           default:
-            return data + "(" + mpArg1->getDisplay_XPP_String(pTree) + ")";
+            return data + "(" + children[0] + ")";
         }
     }
   else

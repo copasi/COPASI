@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterXPPAUT.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 15:41:47 $
+//   $Author: shoops $
+//   $Date: 2012/05/16 17:00:58 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -551,14 +551,14 @@ bool CODEExporterXPPAUT::exportSingleParameter(const CCopasiParameter* param, st
 std::string CODEExporterXPPAUT::getDisplayFunctionString(CFunction * func)
 {
   std::string str1;
-  str1 = func->getRoot()->getDisplay_XPP_String(func).c_str();
+  str1 = func->getRoot()->buildXPPString();
   return str1;
 }
 
 std::string CODEExporterXPPAUT::getDisplayExpressionString(CExpression * tmp)
 {
   std::string str1;
-  str1 = tmp->getRoot()->getDisplay_XPP_String(tmp).c_str();
+  str1 = tmp->getRoot()->buildXPPString();
   return str1;
 }
 

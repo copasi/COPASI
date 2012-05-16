@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 15:02:45 $
+//   $Date: 2012/05/16 17:00:57 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -270,9 +270,33 @@ std::string CEvaluationNode::buildBerkeleyMadonnaString() const
   return BerkeleyMadonnaString;
 }
 
-// TODO CRITICAL Replace the recursive call
-std::string CEvaluationNode::getDisplay_XPP_String(const CEvaluationTree * /* pTree */) const
+// virtual
+std::string CEvaluationNode::getXPPString(const std::vector< std::string > & /* children */) const
 {return mData;}
+
+std::string CEvaluationNode::buildXPPString() const
+{
+  std::string BerkeleyMadonnaString = "";
+  CNodeContextIterator< const CEvaluationNode, std::vector< std::string > > it(this);
+
+  while (it.next() != it.end())
+    {
+      if (*it != NULL)
+        {
+          if (it.parentContextPtr() != NULL)
+            {
+              it.parentContextPtr()->push_back(it->getXPPString(it.context()));
+            }
+          else
+            {
+              BerkeleyMadonnaString = it->getXPPString(it.context());
+            }
+        }
+    }
+
+  return BerkeleyMadonnaString;
+}
+
 
 const CEvaluationNode::Type & CEvaluationNode::getType() const
 {return mType;}

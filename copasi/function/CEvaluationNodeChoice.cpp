@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeChoice.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 15:02:45 $
+//   $Date: 2012/05/16 17:00:57 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -125,10 +125,11 @@ std::string CEvaluationNodeChoice::getBerkeleyMadonnaString(const std::vector< s
     return "@";
 }
 
-std::string CEvaluationNodeChoice::getDisplay_XPP_String(const CEvaluationTree * pTree) const
+// virtual
+std::string CEvaluationNodeChoice::getXPPString(const std::vector< std::string > & children) const
 {
   if (const_cast<CEvaluationNodeChoice *>(this)->compile(NULL))
-    return "if(" + mpIf->getDisplay_XPP_String(pTree) + ")then(" + mpTrue->getDisplay_XPP_String(pTree) + ")else(" + mpFalse->getDisplay_XPP_String(pTree) + ")";
+    return "if(" + children[0] + ")then(" + children[1] + ")else(" + children[2] + ")";
   else
     return "@"; //TODO
 }

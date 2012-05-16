@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.h,v $
-  $Revision: 1.26 $
+  $Revision: 1.27 $
   $Name:  $
   $Author: shoops $
-  $Date: 2012/05/16 15:02:45 $
+  $Date: 2012/05/16 17:00:56 $
   End CVS Header */
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -101,7 +101,7 @@ public:
    **  in XPPAUT format.
    **  @return const Data & value
    **/
-  virtual std::string getDisplay_XPP_String(const CEvaluationTree * pTree) const;
+  virtual std::string getXPPString(const std::vector< std::string > & children) const;
 
   /**
    * Creates a new CEvaluationNodeCall from an ASTNode and the given children

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 15:02:44 $
+//   $Date: 2012/05/16 17:00:56 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -385,7 +385,8 @@ std::string CEvaluationNodeCall::getBerkeleyMadonnaString(const std::vector< std
   return DisplayString;
 }
 
-std::string CEvaluationNodeCall::getDisplay_XPP_String(const CEvaluationTree * /* pTree */) const
+// virtual
+std::string CEvaluationNodeCall::getXPPString(const std::vector< std::string > & /* children */) const
 {
   std::string DisplayString;
 
