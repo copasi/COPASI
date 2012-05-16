@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-//   $Revision: 1.43 $
+//   $Revision: 1.44 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/15 18:32:57 $
+//   $Date: 2012/05/16 15:02:44 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -189,7 +189,12 @@ public:
    * in Berkeley Madonna format.
    * @return const Data & value
    */
-  virtual std::string getDisplay_MMD_String(const CEvaluationTree * pTree) const;
+  virtual std::string getBerkeleyMadonnaString(const std::vector< std::string > & children) const;
+
+  /**
+   * Build the Berkeley Madonna string.
+   */
+  std::string buildBerkeleyMadonnaString() const;
 
   /**
    ** Retrieve the display string of the node and its eventual child nodes

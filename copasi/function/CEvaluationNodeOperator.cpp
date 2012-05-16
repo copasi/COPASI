@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/15 18:32:57 $
+//   $Date: 2012/05/16 15:02:45 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -182,7 +182,8 @@ std::string CEvaluationNodeOperator::getCCodeString(const std::vector< std::stri
     return "@";
 }
 
-std::string CEvaluationNodeOperator::getDisplay_MMD_String(const CEvaluationTree * pTree) const
+// virtual
+std::string CEvaluationNodeOperator::getBerkeleyMadonnaString(const std::vector< std::string > & children) const
 {
   if (const_cast<CEvaluationNodeOperator *>(this)->compile(NULL))
     {
@@ -196,16 +197,16 @@ std::string CEvaluationNodeOperator::getDisplay_MMD_String(const CEvaluationTree
       Data DisplayString;
 
       if (*mpLeft < *(CEvaluationNode *)this)
-        DisplayString = "(" + mpLeft->getDisplay_MMD_String(pTree) + ")";
+        DisplayString = "(" + children[0] + ")";
       else
-        DisplayString = mpLeft->getDisplay_MMD_String(pTree);
+        DisplayString = children[0];
 
       DisplayString += mdata;
 
       if (!(*(CEvaluationNode *)this < *mpRight))
-        DisplayString += "(" + mpRight->getDisplay_MMD_String(pTree) + ")";
+        DisplayString += "(" + children[1] + ")";
       else
-        DisplayString += mpRight->getDisplay_MMD_String(pTree);
+        DisplayString += children[1];
 
       return DisplayString;
     }

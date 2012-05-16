@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeChoice.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/15 18:32:57 $
+//   $Date: 2012/05/16 15:02:45 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,10 +116,11 @@ std::string CEvaluationNodeChoice::getCCodeString(const std::vector< std::string
     return "@";
 }
 
-std::string CEvaluationNodeChoice::getDisplay_MMD_String(const CEvaluationTree * pTree) const
+// virtual
+std::string CEvaluationNodeChoice::getBerkeleyMadonnaString(const std::vector< std::string > & children) const
 {
   if (const_cast<CEvaluationNodeChoice *>(this)->compile(NULL))
-    return "(if " + mpIf->getDisplay_MMD_String(pTree) + " then " + mpTrue->getDisplay_MMD_String(pTree) + " else " + mpFalse->getDisplay_MMD_String(pTree) + ")";
+    return "(if " + children[0] + " then " + children[1] + " else " + children[2] + ")";
   else
     return "@";
 }

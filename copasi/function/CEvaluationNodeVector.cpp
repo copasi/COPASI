@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVector.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/15 18:32:57 $
+//   $Date: 2012/05/16 15:02:45 $
 // End CVS Header
 
 // Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,7 +95,8 @@ std::string CEvaluationNodeVector::getCCodeString(const std::vector< std::string
   return "@";
 }
 
-std::string CEvaluationNodeVector::getDisplay_MMD_String(const CEvaluationTree * /* pTree */) const
+// virtual
+std::string CEvaluationNodeVector::getBerkeleyMadonnaString(const std::vector< std::string > & /* children */) const
 {
   return "@";
 }

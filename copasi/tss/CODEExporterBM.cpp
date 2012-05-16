@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterBM.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 15:41:47 $
+//   $Author: shoops $
+//   $Date: 2012/05/16 15:02:46 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -408,14 +408,14 @@ bool CODEExporterBM::exportSingleODE(const CModelEntity* mentity, std::string & 
 std::string CODEExporterBM::getDisplayFunctionString(CFunction * func)
 {
   std::string str1;
-  str1 = func->getRoot()->getDisplay_MMD_String(func).c_str();
+  str1 = func->getRoot()->buildBerkeleyMadonnaString();
   return str1;
 }
 
 std::string CODEExporterBM::getDisplayExpressionString(CExpression * tmp)
 {
   std::string str1;
-  str1 = tmp->getRoot()->getDisplay_MMD_String(tmp).c_str();
+  str1 = tmp->getRoot()->buildBerkeleyMadonnaString();
   return str1;
 }
 

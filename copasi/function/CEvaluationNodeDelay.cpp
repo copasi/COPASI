@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeDelay.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/15 18:32:57 $
+//   $Date: 2012/05/16 15:02:45 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -133,12 +133,13 @@ std::string CEvaluationNodeDelay::getCCodeString(const std::vector< std::string 
   return "@";
 }
 
-std::string CEvaluationNodeDelay::getDisplay_MMD_String(const CEvaluationTree * pTree) const
+// virtual
+std::string CEvaluationNodeDelay::getBerkeleyMadonnaString(const std::vector< std::string > & children) const
 {
   switch (mType & 0x00FFFFFF)
     {
       case DELAY:
-        return mData + "(" + mpDelayedObject->getDisplay_MMD_String(pTree) + "," + mpDeltaT->getDisplay_MMD_String(pTree) + ")";
+        return mData + "(" + children[0] + "," + children[1] + ")";
         break;
 
       default:

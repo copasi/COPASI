@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 03:24:37 $
+//   $Date: 2012/05/16 15:02:45 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -156,12 +156,12 @@ std::string CExpression::getCCodeString() const
   return str1;
 }
 
-std::string CExpression::getDisplay_MMD_String() const
+std::string CExpression::getBerkeleyMadonnaString() const
 {
   std::string str1;
 
   if (mpRoot)
-    str1 = mpRoot->getDisplay_MMD_String(this);
+    str1 = mpRoot->buildBerkeleyMadonnaString();
   else
     str1 = "";
 
