@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/09 21:32:17 $
+//   $Date: 2012/05/16 12:58:44 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -456,21 +456,22 @@ void CQCompartment::loadMetaboliteTable()
 {
   if (mpCompartment == NULL) return;
 
-  mpMetaboliteTable->clear();
-  mpMetaboliteTable->setColumnWidth(0, 10);
+  mpMetaboliteTable->setRowCount(mpCompartment->getMetabolites().size());
 
   std::multimap< const std::string, CCopasiObject * >::const_iterator it =
     mpCompartment->getMetabolites().getObjects().begin();
   std::multimap< const std::string, CCopasiObject * >::const_iterator end =
     mpCompartment->getMetabolites().getObjects().end();
 
-  for (int i = 0; it != end; ++it, ++i)
+  for (int i = 0; it != end; ++it)
     {
       if (dynamic_cast< CMetab * >(it->second) != NULL)
         {
-          mpMetaboliteTable->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(it->second->getObjectName())));
+          mpMetaboliteTable->setItem(i++, 0, new QTableWidgetItem(FROM_UTF8(it->second->getObjectName())));
         }
     }
+
+  mpMetaboliteTable->resizeRowsToContents();
 
   return;
 }

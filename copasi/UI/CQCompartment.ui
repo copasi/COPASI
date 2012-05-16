@@ -2,10 +2,10 @@
 <ui version="4.0">
 <comment> Begin CVS Header </comment>
 <comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.ui,v $ </comment>
-<comment>   $Revision: 1.19 $ </comment>
+<comment>   $Revision: 1.20 $ </comment>
 <comment>   $Name:  $ </comment>
 <comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2012/05/09 21:32:15 $ </comment>
+<comment>   $Date: 2012/05/16 12:58:44 $ </comment>
 <comment> End CVS Header </comment>
 
 <comment> Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual </comment>
@@ -314,15 +314,26 @@
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
      <property name="horizontalScrollMode">
       <enum>QAbstractItemView::ScrollPerPixel</enum>
      </property>
      <attribute name="horizontalHeaderVisible">
       <bool>false</bool>
      </attribute>
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
      <attribute name="verticalHeaderVisible">
       <bool>false</bool>
      </attribute>
+     <column>
+      <property name="text">
+       <string>Species</string>
+      </property>
+     </column>
     </widget>
    </item>
    <item row="9" column="2">
@@ -351,7 +362,7 @@
   <customwidget>
    <class>CQExpressionMmlStackedWidget</class>
    <extends>QStackedWidget</extends>
-   <header>copasi/UI/CQExpressionMmlStackedWidget.h</header>
+   <header>CQExpressionMmlStackedWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
