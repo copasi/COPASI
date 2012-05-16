@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 15:47:07 $
+//   $Date: 2012/05/16 16:26:32 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -112,7 +112,7 @@ bool CMathModel::compile(CModel * pModel)
   mRootValues.resize(RootFinderCount);
   C_FLOAT64 ** ppRootValue = mRootValues.array();
 
-  // We need to create a CVector indicating whther the roots only change
+  // We need to create a CVector indicating whether the roots only change
   // during discrete events.
   mRootDiscrete.resize(RootFinderCount);
   bool * pRootDiscrete = mRootDiscrete.array();
