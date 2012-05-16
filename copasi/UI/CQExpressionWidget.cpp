@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:08 $
+//   $Author: shoops $
+//   $Date: 2012/05/16 23:20:45 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -252,7 +252,7 @@ void CQExpressionWidget::writeMathML(std::ostream & out) const
           std::vector<std::vector<std::string> > params;
 
           Function.createListOfParametersForMathML(params);
-          Function.writeMathML(out, params, true, false, 0);
+          out << Function.writeMathML(params, true, false);
         }
       else if (Infix == CMassAction::Infix[1])
         {
@@ -260,13 +260,13 @@ void CQExpressionWidget::writeMathML(std::ostream & out) const
           std::vector<std::vector<std::string> > params;
 
           Function.createListOfParametersForMathML(params);
-          Function.writeMathML(out, params, true, false, 0);
+          out << Function.writeMathML(params, true, false);
         }
       else
         {
           std::vector<std::vector<std::string> > params;
           mpValidatorFunction->getFunction()->createListOfParametersForMathML(params);
-          mpValidatorFunction->getFunction()->writeMathML(out, params, true, false, 0);
+          out << mpValidatorFunction->getFunction()->writeMathML(params, true, false);
         }
     }
 
