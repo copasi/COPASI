@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000095.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:33:09 $
+//   $Author: bergmann $
+//   $Date: 2012/05/16 06:24:49 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -88,7 +88,7 @@ void test000095::test_import_l3_event_1()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 2.0) / 2.0) < 1e-6);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 2.0) / 2.0) < 1e-6);
   // check that there is a delay
 
   CPPUNIT_ASSERT(pEvent->getAssignments().size() == 1);
@@ -102,7 +102,7 @@ void test000095::test_import_l3_event_1()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT((fabs(pNumberNode->value() - 8.0) / 8.0) < 1e-9);
+  CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 8.0) / 8.0) < 1e-9);
 
   // check that the message stack contains a warning about event priorities
   // MCSBML + 98
@@ -152,7 +152,7 @@ void test000095::test_import_l3_event_2()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 2.0) / 2.0) < 1e-6);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 2.0) / 2.0) < 1e-6);
   // check that there is a delay
 
   CPPUNIT_ASSERT(pEvent->getAssignments().size() == 1);
@@ -166,7 +166,7 @@ void test000095::test_import_l3_event_2()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT((fabs(pNumberNode->value() - 8.0) / 8.0) < 1e-9);
+  CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 8.0) / 8.0) < 1e-9);
 
 
   // check that the message stack contains a warning about initial values for triggers
@@ -217,7 +217,7 @@ void test000095::test_import_l3_event_3()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 2.0) / 2.0) < 1e-6);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 2.0) / 2.0) < 1e-6);
   // check that there is a delay
 
   CPPUNIT_ASSERT(pEvent->getAssignments().size() == 1);
@@ -231,7 +231,7 @@ void test000095::test_import_l3_event_3()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT((fabs(pNumberNode->value() - 8.0) / 8.0) < 1e-9);
+  CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 8.0) / 8.0) < 1e-9);
 
   // check that the message stack contains a warning about event priorities
   // MCSBML + 98
@@ -283,7 +283,7 @@ void test000095::test_import_l3_event_4()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 2.0) / 2.0) < 1e-6);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 2.0) / 2.0) < 1e-6);
   // check that there is a delay
 
   CPPUNIT_ASSERT(pEvent->getAssignments().size() == 1);
@@ -297,7 +297,7 @@ void test000095::test_import_l3_event_4()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT((fabs(pNumberNode->value() - 8.0) / 8.0) < 1e-9);
+  CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 8.0) / 8.0) < 1e-9);
 
   // check that the message stack contains a warning about non-persistent triggers
   // MCSBML + 99
@@ -347,7 +347,7 @@ void test000095::test_import_l3_event_5()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 2.0) / 2.0) < 1e-6);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 2.0) / 2.0) < 1e-6);
   // check that there is a delay
 
   CPPUNIT_ASSERT(pEvent->getAssignments().size() == 1);
@@ -361,7 +361,7 @@ void test000095::test_import_l3_event_5()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT((fabs(pNumberNode->value() - 8.0) / 8.0) < 1e-9);
+  CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 8.0) / 8.0) < 1e-9);
 
   // check that there is no MCSBML + 97, MCSBML + 98 or MCSBML + 99  error message
   CPPUNIT_ASSERT(CCopasiMessage::checkForMessage(MCSBML + 97) == false);

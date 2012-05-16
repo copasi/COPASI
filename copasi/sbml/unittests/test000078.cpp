@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000078.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/11 11:52:00 $
+//   $Author: bergmann $
+//   $Date: 2012/05/16 06:24:49 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -99,7 +99,7 @@ void test000078::test_l2v4_import_unordered_functions()
   CPPUNIT_ASSERT((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeNumber::DOUBLE);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 3.0) / 3.0) < 1e-6);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 3.0) / 3.0) < 1e-6);
   pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
   CPPUNIT_ASSERT(pChild != NULL);
   CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::VARIABLE);
@@ -189,7 +189,7 @@ void test000078::test_l2v4_import_unordered_functions()
   CPPUNIT_ASSERT((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeNumber::DOUBLE);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 1.3) / 1.3) < 1e-6);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 1.3) / 1.3) < 1e-6);
   CPPUNIT_ASSERT(pChild->getSibling() == NULL);
 
   pFun = pFunDB->findFunction("function_4");
@@ -238,7 +238,7 @@ void test000078::test_l2v4_import_unordered_functions()
   CPPUNIT_ASSERT((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeNumber::DOUBLE);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 2.0) / 2.0) < 1e-6);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 2.0) / 2.0) < 1e-6);
   pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
   CPPUNIT_ASSERT(pChild == NULL);
 
@@ -310,7 +310,7 @@ void test000078::test_l2v4_import_unordered_functions()
   CPPUNIT_ASSERT((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeNumber::DOUBLE);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pChild);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 5.23) / 5.23) < 1e-6);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 5.23) / 5.23) < 1e-6);
   CPPUNIT_ASSERT(pChild->getSibling() == NULL);
 
   pFun = pFunDB->findFunction("function_6");

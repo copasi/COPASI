@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000091.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:37:14 $
+//   $Author: bergmann $
+//   $Date: 2012/05/16 06:24:49 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -125,7 +125,7 @@ void test000091::test_delay_in_kinetic_law()
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pObjectNode->getSibling());
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pNumberNode->getType())) == CEvaluationNodeNumber::DOUBLE);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 0.5) / 0.5) < 1e-3);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 0.5) / 0.5) < 1e-3);
   CPPUNIT_ASSERT(pNumberNode->getSibling() == NULL);
 
   CPPUNIT_ASSERT(pDummy2 != NULL);
@@ -152,7 +152,7 @@ void test000091::test_delay_in_kinetic_law()
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pObjectNode->getSibling());
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pNumberNode->getType())) == CEvaluationNodeNumber::DOUBLE);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 0.2) / 0.2) < 1e-3);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 0.2) / 0.2) < 1e-3);
   CPPUNIT_ASSERT(pNumberNode->getSibling() == NULL);
 
   CPPUNIT_ASSERT(pModel->getReactions().size() == 1);
@@ -452,7 +452,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pObjectNode->getSibling());
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pNumberNode->getType())) == CEvaluationNodeNumber::DOUBLE);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 0.5) / 0.5) < 1e-3);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 0.5) / 0.5) < 1e-3);
   CPPUNIT_ASSERT(pNumberNode->getSibling() == NULL);
 
   // check if pDummy2 has the correct expression
@@ -479,7 +479,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pObjectNode->getSibling());
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pNumberNode->getType())) == CEvaluationNodeNumber::DOUBLE);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 0.2) / 0.2) < 1e-3);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 0.2) / 0.2) < 1e-3);
   CPPUNIT_ASSERT(pNumberNode->getSibling() == NULL);
 
   // check if pDummy3 has the correct expression
@@ -506,7 +506,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pObjectNode->getSibling());
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pNumberNode->getType())) == CEvaluationNodeNumber::DOUBLE);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 0.5) / 0.5) < 1e-3);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 0.5) / 0.5) < 1e-3);
   CPPUNIT_ASSERT(pNumberNode->getSibling() == NULL);
 
   // check if pDummy4 has the correct expression
@@ -533,7 +533,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pObjectNode->getSibling());
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pNumberNode->getType())) == CEvaluationNodeNumber::DOUBLE);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 0.5) / 0.5) < 1e-3);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 0.5) / 0.5) < 1e-3);
   CPPUNIT_ASSERT(pNumberNode->getSibling() == NULL);
 
   CPPUNIT_ASSERT(pReaction->isReversible() == false);

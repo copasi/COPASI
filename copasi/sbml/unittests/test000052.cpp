@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000052.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/11 11:52:00 $
+//   $Author: bergmann $
+//   $Date: 2012/05/16 06:24:49 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -88,15 +88,15 @@ void test000052::test_bug988()
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pObjectNode->getSibling());
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pNumberNode->getType())) == CEvaluationNodeNumber::DOUBLE);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 5.0) / 5.0) < 1e-3);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 5.0) / 5.0) < 1e-3);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pLogicalNode->getSibling());
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pNumberNode->getType())) == CEvaluationNodeNumber::DOUBLE);
-  CPPUNIT_ASSERT(pNumberNode->value() < 1e-3);
+  CPPUNIT_ASSERT(pNumberNode->getValue() < 1e-3);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNumberNode->getSibling());
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pNumberNode->getType())) == CEvaluationNodeNumber::DOUBLE);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 10.0) / 10.0) < 1e-3);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 10.0) / 10.0) < 1e-3);
 
   CPPUNIT_ASSERT(pModel->getModelValues().size() == 0);
   CPPUNIT_ASSERT(pModel->getReactions().size() == 0);

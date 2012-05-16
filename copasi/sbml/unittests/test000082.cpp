@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000082.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/11 11:55:16 $
+//   $Author: bergmann $
+//   $Date: 2012/05/16 06:24:49 $
 // End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -106,7 +106,7 @@ void test000082::test_import_delayAssignment_1()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 2.0) / 2.0) < 1e-6);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 2.0) / 2.0) < 1e-6);
   // check that there is a delay
   pExpr = pEvent->getDelayExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
@@ -115,7 +115,7 @@ void test000082::test_import_delayAssignment_1()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 10.0) / 10.0) < 1e-6);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 10.0) / 10.0) < 1e-6);
   // check that the delayAssignment flag is set to true
   CPPUNIT_ASSERT(pEvent->getDelayAssignment() == true);
 
@@ -243,7 +243,7 @@ void test000082::test_import_delayAssignment_2()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 2.0) / 2.0) < 1e-6);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 2.0) / 2.0) < 1e-6);
   // check that there is a delay
   pExpr = pEvent->getDelayExpressionPtr();
   CPPUNIT_ASSERT(pExpr == NULL);
@@ -369,7 +369,7 @@ void test000082::test_import_delayAssignment_3()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 2.0) / 2.0) < 1e-6);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 2.0) / 2.0) < 1e-6);
   // check that there is a delay
   pExpr = pEvent->getDelayExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
@@ -378,7 +378,7 @@ void test000082::test_import_delayAssignment_3()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 10.0) / 10.0) < 1e-6);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 10.0) / 10.0) < 1e-6);
   // check that the delayAssignment flag is set to true
   CPPUNIT_ASSERT(pEvent->getDelayAssignment() == true);
 
@@ -506,7 +506,7 @@ void test000082::test_import_delayAssignment_4()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 2.0) / 2.0) < 1e-6);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 2.0) / 2.0) < 1e-6);
   // check that there is a delay
   pExpr = pEvent->getDelayExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
@@ -515,7 +515,7 @@ void test000082::test_import_delayAssignment_4()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 10.0) / 10.0) < 1e-6);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 10.0) / 10.0) < 1e-6);
   // check that the delayAssignment flag is set to true
   CPPUNIT_ASSERT(pEvent->getDelayAssignment() == true);
 
@@ -643,7 +643,7 @@ void test000082::test_import_delayAssignment_5()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 2.0) / 2.0) < 1e-6);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 2.0) / 2.0) < 1e-6);
   // check that there is a delay
   pExpr = pEvent->getDelayExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
@@ -652,7 +652,7 @@ void test000082::test_import_delayAssignment_5()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 10.0) / 10.0) < 1e-6);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 10.0) / 10.0) < 1e-6);
   // check that the delayAssignment flag is set to false
   CPPUNIT_ASSERT(pEvent->getDelayAssignment() == false);
 
@@ -780,7 +780,7 @@ void test000082::test_import_delayAssignment_6()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 2.0) / 2.0) < 1e-6);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 2.0) / 2.0) < 1e-6);
   // check that there is a delay
   pExpr = pEvent->getDelayExpressionPtr();
   CPPUNIT_ASSERT(pExpr == NULL);
@@ -906,7 +906,7 @@ void test000082::test_import_delayAssignment_7()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 2.0) / 2.0) < 1e-6);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 2.0) / 2.0) < 1e-6);
   // check that there is a delay
   pExpr = pEvent->getDelayExpressionPtr();
   CPPUNIT_ASSERT(pExpr == NULL);
@@ -1032,7 +1032,7 @@ void test000082::test_import_delayAssignment_8()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(fabs((pNumberNode->value() - 2.0) / 2.0) < 1e-6);
+  CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 2.0) / 2.0) < 1e-6);
   // check that there is a delay
   pExpr = pEvent->getDelayExpressionPtr();
   CPPUNIT_ASSERT(pExpr == NULL);

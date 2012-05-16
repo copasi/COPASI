@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_depth_first_iterator.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:51:18 $
+//   $Author: bergmann $
+//   $Date: 2012/05/16 06:24:48 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,7 +53,7 @@ void test_depth_first_iterator::test_dfi()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   pNumberNode = dynamic_cast<CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT((fabs(pNumberNode->value() - 7) / 7.0) <= std::numeric_limits<double>::min());
+  CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 7) / 7.0) <= std::numeric_limits<double>::min());
   // 3
   ++it;
   CPPUNIT_ASSERT(it.isValid() == true);
@@ -62,7 +62,7 @@ void test_depth_first_iterator::test_dfi()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   pNumberNode = dynamic_cast<CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT((fabs(pNumberNode->value() - 3) / 3.0) <= std::numeric_limits<double>::min());
+  CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 3) / 3.0) <= std::numeric_limits<double>::min());
   // 4
   ++it;
   CPPUNIT_ASSERT(it.isValid() == true);
@@ -71,7 +71,7 @@ void test_depth_first_iterator::test_dfi()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   pNumberNode = dynamic_cast<CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT((fabs(pNumberNode->value() - 4) / 4.0) <= std::numeric_limits<double>::min());
+  CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 4) / 4.0) <= std::numeric_limits<double>::min());
   // 6
   ++it;
   CPPUNIT_ASSERT(it.isValid() == true);
@@ -80,7 +80,7 @@ void test_depth_first_iterator::test_dfi()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   pNumberNode = dynamic_cast<CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT((fabs(pNumberNode->value() - 6) / 6.0) <= std::numeric_limits<double>::min());
+  CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 6) / 6.0) <= std::numeric_limits<double>::min());
   // -
   ++it;
   CPPUNIT_ASSERT(it.isValid() == true);
@@ -116,7 +116,7 @@ void test_depth_first_iterator::test_dfi()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   pNumberNode = dynamic_cast<CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT((fabs(pNumberNode->value() - 1) / 1.0) <= std::numeric_limits<double>::min());
+  CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 1) / 1.0) <= std::numeric_limits<double>::min());
   // 8
   ++it;
   CPPUNIT_ASSERT(it.isValid() == true);
@@ -125,7 +125,7 @@ void test_depth_first_iterator::test_dfi()
   CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
   pNumberNode = dynamic_cast<CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT((fabs(pNumberNode->value() - 8) / 8.0) <= std::numeric_limits<double>::min());
+  CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 8) / 8.0) <= std::numeric_limits<double>::min());
   // *
   ++it;
   CPPUNIT_ASSERT(it.isValid() == true);
