@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 15:02:45 $
+//   $Date: 2012/05/16 23:10:01 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -153,7 +153,7 @@ public:
   /**
    * Retrieve the display string in XPPAUT  syntax.
    */
-  std::string getDisplay_XPP_String() const;
+  std::string getXPPString() const;
 
   // Attribute
 protected:

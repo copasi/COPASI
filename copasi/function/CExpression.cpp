@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 15:02:45 $
+//   $Date: 2012/05/16 23:10:01 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -168,12 +168,12 @@ std::string CExpression::getBerkeleyMadonnaString() const
   return str1;
 }
 
-std::string CExpression::getDisplay_XPP_String() const
+std::string CExpression::getXPPString() const
 {
   std::string str1;
 
   if (mpRoot)
-    str1 = mpRoot->getDisplay_XPP_String(this);
+    str1 = mpRoot->buildXPPString();
   else
     str1 = "";
 
@@ -193,7 +193,7 @@ void CExpression::writeMathML(std::ostream & out, bool fullExpand, size_t l) con
 
       if (flag) out << SPC(l) << "<mfenced>" << std::endl;
 
-      mpRoot->writeMathML(out, env, fullExpand, l + 1);
+      out << mpRoot->buildMMLString(fullExpand, env);
 
       if (flag) out << SPC(l) << "</mfenced>" << std::endl;
     }
