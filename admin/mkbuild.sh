@@ -40,9 +40,6 @@ if [ x"$#" = x1 ]; then
     buildname=${buildname}${build}
   fi
 
-echo ${comment}
-return
-
   license="US"
 
   rm Copasi-${buildname}-${PACKAGE}.*
