@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.cpp,v $
-//   $Revision: 1.23 $
+//   $Revision: 1.24 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/17 13:20:28 $
+//   $Date: 2012/05/17 13:34:09 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1074,7 +1074,7 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
     Mode mode)
 {
   CNodeContextIterator< const CEvaluationNode, std::vector< CValue > > itNode(pNode);
-  CValue Result;
+  CValue Result = CValue::invalid;
 
   while (itNode.next() != itNode.end())
     {
