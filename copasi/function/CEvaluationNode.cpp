@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.57 $
+//   $Revision: 1.58 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 23:11:30 $
+//   $Date: 2012/05/17 17:11:11 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -507,62 +507,109 @@ CEvaluationNode* CEvaluationNode::splitBranch(const CEvaluationNode* splitnode, 
     }
 }
 
-// TODO CRITICAL Replace the recursive call
-const CEvaluationNode* CEvaluationNode::findTopMinus(const std::vector<CFunctionAnalyzer::CValue> & callParameters) const
+const CEvaluationNode * CEvaluationNode::findTopMinus(const std::vector<CFunctionAnalyzer::CValue> & callParameters) const
 {
-  if (getType() == (OPERATOR | CEvaluationNodeOperator::MINUS))
-    return this;
+  CNodeContextIterator< const CEvaluationNode, std::vector< const CEvaluationNode * > > itNode(this);
+  itNode.setProcessingModes(CNodeIteratorMode::Before | CNodeIteratorMode::After);
+  const CEvaluationNode * pMinus = NULL;
 
-  if (getType() == (OPERATOR | CEvaluationNodeOperator::MULTIPLY))
+  std::cout << buildInfix() << std::endl;
+
+  while (itNode.next() != itNode.end())
     {
-      //look at left child recursively
-      const CEvaluationNode *child = dynamic_cast<const CEvaluationNode*>(this->getChild());
-      const CEvaluationNode *tmp = NULL;
-
-      if (child) tmp = child->findTopMinus(callParameters);
-
-      if (tmp)
+      if (*itNode == NULL)
         {
-          //we have found a minus operator in the branch of the left child. We
-          //only want to report this as a split point if the other branch is positive.
-          const CEvaluationNode *child2 = dynamic_cast<const CEvaluationNode*>(child->getSibling());
-
-          if (CFunctionAnalyzer::evaluateNode(child2, callParameters, CFunctionAnalyzer::NOOBJECT).isPositive())
-            return tmp;
-          else
-            return NULL;
+          continue;
         }
 
-      //otherwise look at right child
-      const CEvaluationNode *child2 = dynamic_cast<const CEvaluationNode*>(child->getSibling());
+      std::cout << itNode->getData() << std::endl;
 
-      if (child2) tmp = child2->findTopMinus(callParameters);
-
-      if (tmp)
+      switch (itNode.processingMode())
         {
-          //we have found a minus operator in the branch of the right child. We
-          //only want to report this as a split point if the other branch is positive.
-          if (CFunctionAnalyzer::evaluateNode(child, callParameters, CFunctionAnalyzer::NOOBJECT).isPositive())
-            return tmp;
-          else
-            return NULL;
+          case CNodeIteratorMode::Before:
+
+            if (itNode->getType() == (OPERATOR | CEvaluationNodeOperator::MINUS))
+              {
+                pMinus = *itNode;
+
+                // We found a minus no need to go down the tree.
+                while (itNode.next() != itNode.end())
+                  {
+                    if (*itNode == pMinus) break;
+                  }
+
+                if (itNode.parentContextPtr() != NULL)
+                  {
+                    itNode.parentContextPtr()->push_back(pMinus);
+                  }
+              }
+
+            break;
+
+          case CNodeIteratorMode::After:
+
+            if (itNode->getType() == (OPERATOR | CEvaluationNodeOperator::MULTIPLY))
+              {
+                // Left child
+                if (itNode.context()[0] != NULL)
+                  {
+                    // Both children contain a minus, this is not a valid split point.
+
+                    if (itNode.context()[1] != NULL)
+                      {
+                        pMinus = NULL;
+                      }
+                    // Check whether the right is positive
+                    else if (CFunctionAnalyzer::evaluateNode(static_cast< const CEvaluationNode *>(itNode->getChild(1)),
+                             callParameters, CFunctionAnalyzer::NOOBJECT).isPositive())
+                      {
+                        pMinus = itNode.context()[0];
+                      }
+                    else
+                      {
+                        pMinus = NULL;
+                      }
+                  }
+                // Right child
+                else if (itNode.context()[1] != NULL)
+                  {
+                    // Check whether the left is positive
+                    if (CFunctionAnalyzer::evaluateNode(static_cast< const CEvaluationNode *>(itNode->getChild(0)),
+                                                        callParameters, CFunctionAnalyzer::NOOBJECT).isPositive())
+                      pMinus = itNode.context()[1];
+                    else
+                      pMinus = NULL;
+
+                  }
+                else
+                  {
+                    pMinus = NULL;
+                  }
+              }
+            else if (itNode->getType() == (OPERATOR | CEvaluationNodeOperator::DIVIDE))
+              {
+                // Left child
+                pMinus = itNode.context()[0];
+              }
+            else
+              {
+                pMinus = NULL;
+              }
+
+            if (itNode.parentContextPtr() != NULL)
+              {
+                itNode.parentContextPtr()->push_back(pMinus);
+              }
+
+            break;
+
+          default:
+            // This will never happen
+            break;
         }
-
-      //TODO: check if both children contain a minus. This would not be a valid split point.
     }
 
-  if (getType() == (OPERATOR | CEvaluationNodeOperator::DIVIDE))
-    {
-      //look at left child only (recursively)
-      const CEvaluationNode *child = dynamic_cast<const CEvaluationNode*>(this->getChild());
-      const CEvaluationNode *tmp = NULL;
-
-      if (child) tmp = child->findTopMinus(callParameters);
-
-      if (tmp) return tmp;
-    }
-
-  return NULL;
+  return pMinus;
 }
 
 bool CEvaluationNode::operator!=(const CEvaluationNode& right) const
