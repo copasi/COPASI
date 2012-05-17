@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CNodeIterator.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/15 15:55:30 $
+//   $Date: 2012/05/17 18:52:20 $
 // End CVS Header
 
 // Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,10 +24,12 @@
 #include <stack>
 #include <limits>
 
-template < class Node, class Context > class CNodeContextIterator
+#include "copasi/math/CMathEnum.h"
+
+class CNodeIteratorMode
 {
 public:
-  enum ProcessingMode
+  enum State
   {
     Start = 0x00,
     Before = 0x01,
@@ -36,6 +38,11 @@ public:
     End = 0x08
   };
 
+  typedef CMathFlags< State > Flag;
+};
+
+template < class Node, class Context > class CNodeContextIterator
+{
 private:
   class CStackElement
   {
@@ -81,8 +88,8 @@ private:
 public:
   CNodeContextIterator():
       mStack(),
-      mCurrentMode(End),
-      mProcessingModes((ProcessingMode)(After | End))
+      mCurrentMode(CNodeIteratorMode::End),
+      mProcessingModes((CNodeIteratorMode::State)(CNodeIteratorMode::After | CNodeIteratorMode::End))
   {}
 
   CNodeContextIterator(const CNodeContextIterator & src):
@@ -93,8 +100,8 @@ public:
 
   CNodeContextIterator(Node * pNode, Context * pParentContext = NULL):
       mStack(),
-      mCurrentMode(Start),
-      mProcessingModes((ProcessingMode)(After | End))
+      mCurrentMode(CNodeIteratorMode::Start),
+      mProcessingModes((CNodeIteratorMode::State)(CNodeIteratorMode::After | CNodeIteratorMode::End))
   {
     mStack.push(CStackElement(pNode, pParentContext));
   }
@@ -120,7 +127,7 @@ private:
   {
     if (mStack.empty())
       {
-        mCurrentMode = End;
+        mCurrentMode = CNodeIteratorMode::End;
 
         return;
       }
@@ -130,7 +137,7 @@ private:
     if (Current.mNextChildIndex < Current.mChildCount)
       {
         mStack.push(CStackElement(static_cast< Node * >(Current.mpNode->getChild(Current.mNextChildIndex++)), &Current.mContext));
-        mCurrentMode = Before;
+        mCurrentMode = CNodeIteratorMode::Before;
 
         return;
       }
@@ -138,7 +145,7 @@ private:
     if (Current.mNextChildIndex == Current.mChildCount)
       {
         Current.mNextChildIndex++;
-        mCurrentMode = After;
+        mCurrentMode = CNodeIteratorMode::After;
 
         return;
       }
@@ -147,7 +154,7 @@ private:
 
     if (mStack.empty())
       {
-        mCurrentMode = End;
+        mCurrentMode = CNodeIteratorMode::End;
 
         return;
       }
@@ -156,11 +163,11 @@ private:
 
     if (Parent.mNextChildIndex < Parent.mChildCount)
       {
-        mCurrentMode = Intermediate;
+        mCurrentMode = CNodeIteratorMode::Intermediate;
       }
     else
       {
-        mCurrentMode = After;
+        mCurrentMode = CNodeIteratorMode::After;
         Parent.mNextChildIndex++;
       }
 
@@ -168,15 +175,15 @@ private:
   }
 
 public:
-  const ProcessingMode & next()
+  const CNodeIteratorMode::State & next()
   {
-    if (mCurrentMode != Start)
+    if (mCurrentMode != CNodeIteratorMode::Start)
       {
         increment();
       }
     else
       {
-        mCurrentMode = Before;
+        mCurrentMode = CNodeIteratorMode::Before;
       }
 
     while (!(mProcessingModes & mCurrentMode))
@@ -191,24 +198,26 @@ public:
 
   Node * operator->() {return mStack.top().mpNode;}
 
-  const ProcessingMode & processingMode() const {return mCurrentMode;}
+  const CNodeIteratorMode::State & processingMode() const {return mCurrentMode;}
 
-  ProcessingMode end() const {return End;}
+  CNodeIteratorMode::State end() const {return CNodeIteratorMode::End;}
 
   Context & context() {return mStack.top().mContext;}
 
   Context * parentContextPtr() {return mStack.top().mpParentContext;}
 
-  void setProcessingModes(const ProcessingMode & processingModes) {mProcessingModes = (ProcessingMode)(processingModes | End);}
+  size_t level() {return mStack.size();}
 
-  ProcessingMode getProcessingModes() const {return (ProcessingMode)(mProcessingModes & ~End);}
+  void setProcessingModes(const CNodeIteratorMode::Flag & processingModes) {mProcessingModes = (processingModes | CNodeIteratorMode::End);}
+
+  CNodeIteratorMode::Flag getProcessingModes() const {return (mProcessingModes & ~CNodeIteratorMode::End);}
 
 private:
   std::stack< CStackElement > mStack;
 
-  ProcessingMode mCurrentMode;
+  CNodeIteratorMode::State mCurrentMode;
 
-  ProcessingMode mProcessingModes;
+  CNodeIteratorMode::Flag mProcessingModes;
 };
 
 template < class Node > class CNodeIterator : public CNodeContextIterator< Node, int >
