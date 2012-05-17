@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/16 23:11:31 $
+//   $Author: ssahle $
+//   $Date: 2012/05/17 23:31:24 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -328,7 +328,8 @@ CEvaluationNode * CEvaluationNodeLogical::fromAST(const ASTNode * pASTNode, cons
 {
   assert(pASTNode->getNumChildren() == children.size());
 
-  size_t  i, iMax = children.size();
+  size_t i = 0;
+  size_t iMax = children.size();
 
   SubType subType;
   std::string data = "";
