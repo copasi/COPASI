@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/15 15:56:40 $
+//   $Date: 2012/05/17 13:20:28 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,7 @@
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
 #include "copasi/report/CCopasiRootContainer.h"
+#include "utilities/CNodeIterator.h"
 
 #ifdef WIN32
 // we can't call this truncate because truncate
@@ -64,7 +65,7 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::CValue::operator*(const CFunctionAn
   CValue ret;
 
   //invalid
-  if (this->getStatus()&invalid || rhs.getStatus()&invalid)
+  if ((this->getStatus() & invalid) || (rhs.getStatus() & invalid))
     ret.Or(invalid);
 
   const CValue* v1, *v2;
@@ -108,7 +109,7 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::CValue::operator/(const CFunctionAn
   CValue ret;
 
   //invalid
-  if (this->getStatus() & invalid || rhs.getStatus()&invalid)
+  if ((this->getStatus() & invalid) || (rhs.getStatus() & invalid))
     ret.Or(invalid);
 
   if (rhs.getStatus() & zero)
@@ -149,7 +150,7 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::CValue::operator+(const CFunctionAn
   CValue ret;
 
   //invalid
-  if (this->getStatus()&invalid || rhs.getStatus()&invalid)
+  if ((this->getStatus() & invalid) || (rhs.getStatus() & invalid))
     ret.Or(invalid);
 
   //zero
@@ -213,7 +214,7 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::CValue::operator^(const CFunctionAn
   CValue ret;
 
   //invalid
-  if (this->getStatus()&invalid || rhs.getStatus()&invalid)
+  if ((this->getStatus() & invalid) || (rhs.getStatus() & invalid))
     ret.Or(invalid);
 
   const CValue* v1, *v2;
@@ -1069,124 +1070,152 @@ void CFunctionAnalyzer::constructCallParametersActualValues(std::vector<CValue> 
 }
 
 //static
-CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode * node, const std::vector<CValue> & callParameters,
+CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode * pNode, const std::vector<CValue> & callParameters,
     Mode mode)
 {
-  const CEvaluationNodeOperator * pENO = dynamic_cast<const CEvaluationNodeOperator*>(node);
+  CNodeContextIterator< const CEvaluationNode, std::vector< CValue > > itNode(pNode);
+  CValue Result;
 
-  if (pENO)
+  while (itNode.next() != itNode.end())
     {
-      switch ((CEvaluationNodeOperator::SubType) CEvaluationNode::subType(pENO->getType()))
+      if (*itNode == NULL)
         {
-          case CEvaluationNodeOperator::MULTIPLY:
-            return evaluateNode(pENO->getLeft(), callParameters, mode) * evaluateNode(pENO->getRight(), callParameters, mode);
+          continue;
+        }
+
+      switch (CEvaluationNode::type(itNode->getType()))
+        {
+          case CEvaluationNode::OPERATOR:
+
+            switch ((CEvaluationNodeOperator::SubType) CEvaluationNode::subType(itNode->getType()))
+              {
+                case CEvaluationNodeOperator::MULTIPLY:
+                  Result = itNode.context()[0] * itNode.context()[1];
+                  break;
+
+                case CEvaluationNodeOperator::DIVIDE:
+                  Result = itNode.context()[0] / itNode.context()[1];
+                  break;
+
+                case CEvaluationNodeOperator::PLUS:
+                  Result = itNode.context()[0] + itNode.context()[1];
+                  break;
+
+                case CEvaluationNodeOperator::MINUS:
+                  Result = itNode.context()[0] - itNode.context()[1];
+                  break;
+
+                case CEvaluationNodeOperator::POWER:
+                  Result = itNode.context()[0] ^ itNode.context()[1];
+                  break;
+
+                  // case MODULUS:
+                  //   Value = (C_FLOAT64) (((size_t) mpLeft->value()) % ((size_t) mpRight->value()));
+                  //   break;
+                  //
+
+                default:
+                  Result = CValue::unknown;
+                  break;
+              }
+
             break;
 
-          case CEvaluationNodeOperator::DIVIDE:
-            return evaluateNode(pENO->getLeft(), callParameters, mode) / evaluateNode(pENO->getRight(), callParameters, mode);
+          case CEvaluationNode::NUMBER:
+            Result = itNode->getValue();
             break;
 
-          case CEvaluationNodeOperator::PLUS:
-            return evaluateNode(pENO->getLeft(), callParameters, mode) + evaluateNode(pENO->getRight(), callParameters, mode);
+          case CEvaluationNode::VARIABLE:
+          {
+            const CEvaluationNodeVariable * pENV = static_cast<const CEvaluationNodeVariable*>(*itNode);
+
+            if (callParameters.size() < pENV->getIndex() + 1)
+              {
+                Result =  CValue::invalid;
+              }
+            else
+              {
+                Result = callParameters[pENV->getIndex()];
+              }
+          }
+
+          break;
+
+          case CEvaluationNode::FUNCTION:
+
+            switch ((CEvaluationNodeOperator::SubType) CEvaluationNode::subType(itNode->getType()))
+              {
+                case CEvaluationNodeFunction::MINUS:
+                  Result = itNode.context()[0].invert();
+                  break;
+
+                default:
+                  Result = CValue::unknown;
+                  break;
+              }
+
             break;
 
-          case CEvaluationNodeOperator::MINUS:
-            return evaluateNode(pENO->getLeft(), callParameters, mode) - evaluateNode(pENO->getRight(), callParameters, mode);
+          case CEvaluationNode::CHOICE:
+            //TODO: implement
+            Result = CValue::unknown;
             break;
 
-          case CEvaluationNodeOperator::POWER:
-            return evaluateNode(pENO->getLeft(), callParameters, mode) ^ evaluateNode(pENO->getRight(), callParameters, mode);
+          case CEvaluationNode::CALL:
+          {
+            const CEvaluationNodeCall * pENCall = static_cast<const CEvaluationNodeCall*>(*itNode);
+
+            //some checks
+            if (pENCall->getCalledTree() && pENCall->getCalledTree()->getRoot())
+              {
+                const CFunction * tmpFunc = dynamic_cast<const CFunction*>(pENCall->getCalledTree());
+
+                if (tmpFunc && tmpFunc->getVariables().size() == pENCall->getListOfChildNodes().size())
+                  {
+                    Result = evaluateNode(pENCall->getCalledTree()->getRoot(), itNode.context(), mode);
+                  }
+                else
+                  {
+                    Result = CValue::invalid;
+                  }
+              }
+            else
+              {
+                Result = CValue::invalid;
+              }
+          }
+          break;
+
+          case CEvaluationNode::OBJECT:
+
+            if (mode == NOOBJECT)
+              {
+                Result = CValue::invalid;
+              }
+            else if (mode == POSITIVE)
+              {
+                Result = CValue::positive;
+              }
+            else
+              {
+                //TODO: implement GENERAL and ACTUAL
+                Result = CValue::unknown;
+              }
+
             break;
-            //
-            //           case MODULUS:
-            //             Value = (C_FLOAT64) (((size_t) mpLeft->value()) % ((size_t) mpRight->value()));
-            //             break;
-            //
 
           default:
+            Result = CValue::unknown;
             break;
         }
-    }
 
-  const CEvaluationNodeNumber * pENN = dynamic_cast<const CEvaluationNodeNumber*>(node);
-
-  if (pENN)
-    {
-      return pENN->getValue();
-    }
-
-  const CEvaluationNodeVariable * pENV = dynamic_cast<const CEvaluationNodeVariable*>(node);
-
-  if (pENV)
-    {
-      if (callParameters.size() < pENV->getIndex() + 1) return CValue::invalid;
-
-      return callParameters[pENV->getIndex()];
-    }
-
-  const CEvaluationNodeFunction * pENF = dynamic_cast<const CEvaluationNodeFunction*>(node);
-
-  if (pENF)
-    {
-      //TODO: implement at least the most important functions
-      switch (CEvaluationNode::subType(pENF->getType()))
+      if (itNode.parentContextPtr() != NULL)
         {
-          case CEvaluationNodeFunction::MINUS:
-            return evaluateNode(pENF->getLeft(), callParameters, mode).invert();
-            break;
-
-          default:
-            break;
+          itNode.parentContextPtr()->push_back(Result);
         }
     }
 
-  const CEvaluationNodeChoice * pENC = dynamic_cast<const CEvaluationNodeChoice*>(node);
-
-  if (pENC)
-    {
-      //TODO: implement
-    }
-
-  const CEvaluationNodeCall * pENCall = dynamic_cast<const CEvaluationNodeCall*>(node);
-
-  if (pENCall)
-    {
-      //some checks
-      if (!pENCall->getCalledTree()) return CValue::invalid;
-
-      const CFunction * tmpFunc = dynamic_cast<const CFunction*>(pENCall->getCalledTree());
-
-      if (!tmpFunc) return CValue::invalid;
-
-      if (!pENCall->getCalledTree()->getRoot()) return CValue::invalid;
-
-      size_t i, imax = tmpFunc->getVariables().size();
-
-      if (imax != pENCall->getListOfChildNodes().size()) return CValue::invalid;
-
-      std::vector<CValue> localCallParameters;
-      localCallParameters.resize(imax);
-
-      for (i = 0; i < imax; ++i)
-        {
-          localCallParameters[i] = evaluateNode(pENCall->getListOfChildNodes()[i], callParameters, mode);
-        }
-
-      return CFunctionAnalyzer::evaluateNode(pENCall->getCalledTree()->getRoot(), localCallParameters, mode);
-    }
-
-  const CEvaluationNodeObject * pENObject = dynamic_cast<const CEvaluationNodeObject*>(node);
-
-  if (pENObject)
-    {
-      if (mode == NOOBJECT) return CValue::invalid;
-
-      if (mode == POSITIVE) return CValue::positive;
-
-      //TODO: implement GENERAL and ACTUAL
-    }
-
-  return CValue::unknown;
+  return Result;
 }
 
 void CFunctionAnalyzer::checkKineticFunction(const CFunction * f, const CReaction * reaction)
