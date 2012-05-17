@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-//   $Revision: 1.89 $
+//   $Revision: 1.90 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 23:11:32 $
+//   $Date: 2012/05/17 12:17:47 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -361,7 +361,7 @@ std::string CFunction::writeMathML(const std::vector< std::vector< std::string >
 
       if (flag) out << "<mfenced>" << std::endl;
 
-      mpRoot->buildMMLString(fullExpand, variables);
+      out << mpRoot->buildMMLString(fullExpand, variables);
 
       if (flag) out << "</mfenced>" << std::endl;
     }
