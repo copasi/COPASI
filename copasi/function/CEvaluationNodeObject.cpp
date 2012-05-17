@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 23:11:31 $
+//   $Date: 2012/05/17 18:11:30 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,6 @@
 
 CEvaluationNodeObject::CEvaluationNodeObject():
     CEvaluationNode(CEvaluationNode::INVALID, ""),
-    mpValue(NULL),
     mpObject(NULL),
     mRegisteredObjectCN("")
 {mPrecedence = PRECEDENCE_NUMBER;}
@@ -49,27 +48,29 @@ CEvaluationNodeObject::CEvaluationNodeObject():
 CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
     const Data & data):
     CEvaluationNode((Type)(CEvaluationNode::OBJECT | subType), data),
-    mpValue(NULL),
     mpObject(NULL),
     mRegisteredObjectCN(data.substr(1, data.length() - 2))
-{mPrecedence = PRECEDENCE_NUMBER;}
+{
+  mPrecedence = PRECEDENCE_NUMBER;
+}
 
 CEvaluationNodeObject::CEvaluationNodeObject(const C_FLOAT64 * pValue):
     CEvaluationNode((Type)(CEvaluationNode::OBJECT | POINTER), "pointer"),
-    mpValue(pValue),
     mpObject(NULL),
     mRegisteredObjectCN("")
 {
   mPrecedence = PRECEDENCE_NUMBER;
-  mData = pointerToString(mpValue);
+  mpValue = pValue;
+  mData = pointerToString(pValue);
 }
 
 CEvaluationNodeObject::CEvaluationNodeObject(const CEvaluationNodeObject & src):
     CEvaluationNode(src),
-    mpValue(src.mpValue),
     mpObject(src.mpObject),
     mRegisteredObjectCN(src.mRegisteredObjectCN)
-{}
+{
+  mpValue = src.mpValue;
+}
 
 CEvaluationNodeObject::~CEvaluationNodeObject() {}
 

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.58 $
+//   $Revision: 1.59 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/17 17:11:11 $
+//   $Date: 2012/05/17 18:11:30 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -135,23 +135,32 @@ CEvaluationNode::CEvaluationNode():
     CCopasiNode<Data>(""),
     mType(CEvaluationNode::INVALID),
     mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+    mpValue(NULL),
     mPrecedence(PRECEDENCE_DEFAULT)
-{}
+{
+  mpValue = & mValue;
+}
 
 CEvaluationNode::CEvaluationNode(const Type & type,
                                  const Data & data):
     CCopasiNode<Data>(data),
     mType(type),
     mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+    mpValue(NULL),
     mPrecedence(PRECEDENCE_DEFAULT)
-{}
+{
+  mpValue = & mValue;
+}
 
 CEvaluationNode::CEvaluationNode(const CEvaluationNode & src):
     CCopasiNode<Data>(src),
     mType(src.mType),
     mValue(src.mValue),
+    mpValue(NULL),
     mPrecedence(src.mPrecedence)
-{}
+{
+  mpValue = & mValue;
+}
 
 CEvaluationNode::~CEvaluationNode() {}
 
@@ -417,7 +426,7 @@ std::string CEvaluationNode::buildMMLString(bool expand,
   return MMLString;
 }
 
-// TODO CRITICAL Replace the recursive call
+// TODO Replace the recursive call (not critical since only used for debug)
 void CEvaluationNode::printRecursively(std::ostream & os, int indent) const
 {
   int i;

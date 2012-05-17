@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 23:11:30 $
+//   $Date: 2012/05/17 18:11:30 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -136,7 +136,7 @@ public:
    * Retrieve the value of the node
    * @return const C_FLOAT64 & value
    */
-  inline const C_FLOAT64 & getValue() const {return mValue;}
+  inline const C_FLOAT64 & getValue() const {return *mpValue;}
 
   /**
    * Calculate the numerical result of the node. It is assumed that
@@ -330,6 +330,12 @@ protected:
    * The numerical value of the node
    */
   C_FLOAT64 mValue;
+
+  /**
+   * A pointer to the numerical value of the node
+   */
+  const C_FLOAT64 * mpValue;
+
 
   /**
    * Structure holding the precedence information

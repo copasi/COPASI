@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.79 $
+//   $Revision: 1.80 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 16:27:58 $
+//   $Date: 2012/05/17 18:11:30 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -300,6 +300,7 @@ void CEvaluationTree::buildCalculationSequence()
         {
           case CEvaluationNode::NUMBER:
           case CEvaluationNode::CONSTANT:
+          case CEvaluationNode::OBJECT:
             break;
 
           default:

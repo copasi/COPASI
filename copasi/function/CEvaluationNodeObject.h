@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.h,v $
-  $Revision: 1.28 $
+  $Revision: 1.29 $
   $Name:  $
   $Author: shoops $
-  $Date: 2012/05/16 23:11:32 $
+  $Date: 2012/05/17 18:11:30 $
   End CVS Header */
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,12 +84,6 @@ public:
    * @return bool success;
    */
   virtual bool compile(const CEvaluationTree * pTree);
-
-  /**
-   * Calculate the numerical result of the node. It is assumed that
-   * all child nodes are up to date.
-   */
-  virtual inline void calculate() {mValue = *mpValue;}
 
   /**
    * Retrieve the value of the node.
@@ -187,11 +181,6 @@ public:
 
   //Attributes
 private:
-  /**
-   * Pointer to the value of the object.
-   */
-  const C_FLOAT64 * mpValue;
-
   /**
    * Pointer to the object
    */
