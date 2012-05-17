@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-//   $Revision: 1.67 $
+//   $Revision: 1.68 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 23:11:32 $
+//   $Date: 2012/05/17 16:39:23 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,7 +51,7 @@ CKinFunction::CKinFunction(const CFunction & src,
 
   if (configBuffer)
     {
-      size_t i, Size;
+      C_INT32 i, Size;
       configBuffer->getVariable("Nodes", "C_INT32", &Size);
       mNodes.resize(Size);
 
