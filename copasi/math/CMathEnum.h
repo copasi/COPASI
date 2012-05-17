@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEnum.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/29 16:12:05 $
+//   $Date: 2012/05/17 14:59:26 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,10 +57,20 @@ public:
     return (mFlags & mask);
   }
 
+  CMathFlags operator & (const int & mask) const
+  {
+    return (mFlags & mask);
+  }
+
   CMathFlags & operator = (const CMathFlags & rhs)
   {
     mFlags = rhs.mFlags;
     return *this;
+  }
+
+  CMathFlags operator | (const Enum & flag) const
+  {
+    return (mFlags | flag);
   }
 
   CMathFlags operator | (const CMathFlags & other) const
