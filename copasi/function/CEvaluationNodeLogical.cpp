@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2012/05/17 23:31:24 $
+//   $Date: 2012/05/17 23:48:56 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -587,4 +587,6 @@ std::string CEvaluationNodeLogical::getMMLString(const std::vector< std::string 
 
       out << "</mrow>" << std::endl;
     }
+
+  return out.str();
 }
