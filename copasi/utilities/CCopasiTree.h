@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTree.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $
-   $Date: 2011/10/25 17:15:54 $
+   $Date: 2012/05/17 16:38:34 $
    End CVS Header */
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -75,7 +75,7 @@ public:
   /**
    * A forward iterator used to traverse the tree.
    */
-#if (defined __GNUC__ && __GNUC__ < 3)
+#if (defined __GNUC__ && __GNUC__ < 3 && !defined __APPLE_CC__)
   class iterator: public std::forward_iterator< _Node, ptrdiff_t >
 #else
   class iterator:
@@ -160,7 +160,7 @@ public:
   /**
    * A const forward iterator used to traverse the tree.
    */
-#if (defined __GNUC__ && __GNUC__ < 3)
+#if (defined __GNUC__ && __GNUC__ < 3 && !defined __APPLE_CC__)
   class const_iterator: public std::forward_iterator< _Node, ptrdiff_t >
 #else
   class const_iterator:
