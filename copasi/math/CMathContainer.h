@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathContainer.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/29 16:12:05 $
+//   $Date: 2012/05/21 14:12:02 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -125,23 +125,23 @@ public:
    * and discrete nodes are replaced by object node pointing to newly created math objects,
    * which are and targets of automatically generated events.
    * @param const CEvaluationNode * pSrc
-   * @param CMath::CVariableStack & variableStack
+   * @param const CMath::Variables & variables
    * @param const bool & replaceDiscontinuousNodes
    * @return CEvaluationNode * pCopy
    */
   CEvaluationNode * copyBranch(const CEvaluationNode * pSrc,
-                               CMath::CVariableStack & variableStack,
+                               const CMath::Variables< CEvaluationNode * > & variables,
                                const bool & replaceDiscontinuousNodes);
 
   /**
    * Replace a discontinuous node by an object node pointing to newly created math objects,
    * which are targets of automatically generated events.
    * @param const CEvaluationNode * pSrc
-   * @param CMath::CVariableStack & variableStack
+   * @param const std::vector< CEvaluationNode * > & children
    * @return CEvaluationNode * pCopy
    */
   CEvaluationNode * replaceDiscontinuousNode(const CEvaluationNode * pSrc,
-      CMath::CVariableStack & variableStack);
+      const std::vector< CEvaluationNode * > & children);
 
   /**
    * Determine the additional allocation requirements needed for handling discontinuities.

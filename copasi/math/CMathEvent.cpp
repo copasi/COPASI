@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEvent.cpp,v $
-//   $Revision: 1.11 $
+//   $Revision: 1.12 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/15 15:56:59 $
+//   $Date: 2012/05/21 14:12:02 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,7 @@
 #include "model/CEvent.h"
 
 #include "report/CCopasiRootContainer.h"
+#include "utilities/CNodeIterator.h"
 
 CMathEventN::CAssignment::CAssignment():
     mpTarget(NULL),
@@ -155,13 +156,7 @@ void CMathEventN::CTrigger::allocate(const CEvent * pDataEvent,
                                      const CMathContainer & container)
 {
   // Determine the number of roots.
-  CMath::CVariableStack::StackElement Variables;
-  CMath::CVariableStack::Buffer VariableBuffer;
-  CMath::CVariableStack VariableStack(VariableBuffer);
-
-  CMath::CAllocationStack::StackElement Allocations;
-  CMath::CAllocationStack::Buffer AllocationBuffer;
-  CMath::CAllocationStack AllocationStack(AllocationBuffer);
+  CMath::Variables< size_t > Variables;
 
   std::vector< CCopasiContainer * > Container;
   Container.push_back(const_cast< CMathContainer * >(&container));
@@ -174,7 +169,7 @@ void CMathEventN::CTrigger::allocate(const CEvent * pDataEvent,
 
   assert(success);
 
-  mRoots.resize(countRoots(Trigger.getRoot(), VariableStack, AllocationStack));
+  mRoots.resize(countRoots(Trigger.getRoot(), Variables));
 }
 
 void CMathEventN::CTrigger::allocateDiscontinuous(const size_t & nRoots,
@@ -212,8 +207,7 @@ bool CMathEventN::CTrigger::compile(CEvent * pDataEvent,
 {
   bool success = true;
 
-  CMath::CVariableStack::Buffer Stack;
-  CMath::CVariableStack VariableStack(Stack);
+  CMath::Variables< CEvaluationNode * > Variables;
 
   std::vector< CCopasiContainer * > ListOfContainer;
   ListOfContainer.push_back(&container);
@@ -227,10 +221,9 @@ bool CMathEventN::CTrigger::compile(CEvent * pDataEvent,
   CEvaluationNode * pTriggerRoot = NULL;
   CRoot * pRoot = mRoots.array();
 
-  success &= compile(pTriggerRoot, DataTrigger.getRoot(), VariableStack, pRoot, container);
+  pTriggerRoot = compile(DataTrigger.getRoot(), Variables, pRoot, container);
 
   assert(pRoot == mRoots.array() + mRoots.size());
-  assert(VariableStack.size() == 0);
 
   CMathExpression * pTrigger = new CMathExpression("EventTrigger", container);
   success &= pTrigger->setRoot(pTriggerRoot);
@@ -342,13 +335,11 @@ bool CMathEventN::CTrigger::compileDiscontinuous(const CMathObject * pObject,
   CEvaluationNode * pTriggerRoot = NULL;
   CRoot * pRoot = mRoots.array();
 
-  CMath::CVariableStack::Buffer Stack;
-  CMath::CVariableStack VariableStack(Stack);
+  CMath::Variables< CEvaluationNode * > Variables;
 
-  success &= compile(pTriggerRoot, DataTrigger.getRoot(), VariableStack, pRoot, container);
+  pTriggerRoot =  compile(DataTrigger.getRoot(), Variables, pRoot, container);
 
   assert(pRoot == mRoots.array() + mRoots.size());
-  assert(VariableStack.size() == 0);
 
   CMathExpression * pTrigger = new CMathExpression("EventTrigger", container);
   success &= pTrigger->setRoot(pTriggerRoot);
@@ -365,365 +356,405 @@ const CVector< CMathEventN::CTrigger::CRoot > & CMathEventN::CTrigger::getRoots(
 
 // static
 size_t CMathEventN::CTrigger::countRoots(const CEvaluationNode * pNode,
-    CMath::CVariableStack & variableStack,
-    CMath::CAllocationStack & allocationStack)
+    const CMath::Variables< size_t > & variables)
 {
-  const CEvaluationNode::Type & Type = pNode->getType();
+  size_t RootCount = 0;
 
-  switch (CEvaluationNode::type(Type))
+  // TODO CRITICAL We only need to count in boolean functions see compile for details.
+  CNodeContextIterator< const CEvaluationNode, std::vector< size_t > > itNode(pNode);
+  itNode.setProcessingModes(CNodeIteratorMode::Before | CNodeIteratorMode::After);
+
+  while (itNode.next() != itNode.end())
     {
-      case CEvaluationNode::LOGICAL:
+      if (*itNode == NULL)
+        {
+          continue;
+        }
 
-        switch ((int) CEvaluationNode::subType(Type))
+      switch (itNode.processingMode())
+        {
+          case CNodeIteratorMode::Before:
+
+            // Variables return always false.
+            if (!itNode->isBoolean() ||
+                (itNode->getType() == CEvaluationNode::VARIABLE &&
+                 !static_cast< const CEvaluationNode * >(itNode->getChild())->isBoolean()))
+              {
+                // We found a non boolean node which does not create a root.
+                itNode.skipChildren();
+                RootCount = 0;
+              }
+
+            break;
+
+          case CNodeIteratorMode::After:
           {
-            case CEvaluationNodeLogical::EQ:
-            case CEvaluationNodeLogical::NE:
-              return countRootsEQ(pNode, variableStack, allocationStack);
-              break;
+            // We do not need to check whether the root is boolean as non boolean nodes are
+            // already processed
+            const CEvaluationNode::Type & Type = itNode->getType();
 
-            case CEvaluationNodeLogical::LE:
-            case CEvaluationNodeLogical::LT:
-            case CEvaluationNodeLogical::GE:
-            case CEvaluationNodeLogical::GT:
-              return countRootsLE(pNode, variableStack, allocationStack);
-              break;
+            switch (CEvaluationNode::type(Type))
+              {
+                case CEvaluationNode::LOGICAL:
 
-            default:
-              break;
+                  switch ((int) CEvaluationNode::subType(Type))
+                    {
+                      case CEvaluationNodeLogical::EQ:
+                      case CEvaluationNodeLogical::NE:
+                        RootCount = countRootsEQ(*itNode, itNode.context());
+                        break;
+
+                      case CEvaluationNodeLogical::LE:
+                      case CEvaluationNodeLogical::LT:
+                      case CEvaluationNodeLogical::GE:
+                      case CEvaluationNodeLogical::GT:
+                        RootCount = 1;
+                        break;
+
+                      default:
+                        RootCount = countRootsDefault(itNode.context());
+                        break;
+                    }
+
+                  break;
+
+                case CEvaluationNode::CALL:
+
+                  switch ((int) CEvaluationNode::subType(Type))
+                    {
+                      case CEvaluationNodeCall::FUNCTION:
+                      case CEvaluationNodeCall::EXPRESSION:
+                        RootCount = countRootsFUNCTION(*itNode, itNode.context());
+                        break;
+
+                      default:
+                        RootCount = countRootsDefault(itNode.context());
+                        break;
+                    }
+
+                  break;
+
+                case CEvaluationNode::VARIABLE:
+
+                  switch ((int) CEvaluationNode::subType(Type))
+                    {
+                      case CEvaluationNodeVariable::ANY:
+                        RootCount = countRootsVARIABLE(*itNode, variables);
+                        break;
+
+                      default:
+                        RootCount = countRootsDefault(itNode.context());
+                        break;
+                    }
+
+                  break;
+
+                default:
+                  RootCount = countRootsDefault(itNode.context());
+                  break;
+              }
           }
+          break;
 
-        break;
+          default:
+            break;
+        }
 
-      case CEvaluationNode::CALL:
-
-        switch ((int) CEvaluationNode::subType(Type))
-          {
-            case CEvaluationNodeCall::FUNCTION:
-            case CEvaluationNodeCall::EXPRESSION:
-              return countRootsFUNCTION(pNode, variableStack, allocationStack);
-              break;
-
-            default:
-              break;
-          }
-
-        break;
-
-      case CEvaluationNode::VARIABLE:
-
-        switch ((int) CEvaluationNode::subType(Type))
-          {
-            case CEvaluationNodeVariable::ANY:
-              return countRootsVARIABLE(pNode, variableStack, allocationStack);
-              break;
-
-            default:
-              break;
-          }
-
-        break;
-
-      default:
-        break;
+      if (itNode.parentContextPtr() != NULL)
+        {
+          itNode.parentContextPtr()->push_back(RootCount);
+        }
     }
 
-  size_t nRoots = 0;
-  const CEvaluationNode * pChild =
-    static_cast< const CEvaluationNode * >(pNode->getChild());
+  return RootCount;
+}
 
-  while (pChild != NULL)
+// static
+size_t CMathEventN::CTrigger::countRootsDefault(const std::vector< size_t > & children)
+{
+  size_t RootCount = 0;
+
+  std::vector< size_t >::const_iterator it = children.begin();
+  std::vector< size_t >::const_iterator end = children.end();
+
+  for (; it != end; ++it)
     {
-      nRoots += countRoots(pChild, variableStack, allocationStack);
-      pChild = static_cast< const CEvaluationNode * >(pChild->getSibling());
+      RootCount += *it;
     }
 
-  return nRoots;
+  return RootCount;
 }
 
 // static
 size_t CMathEventN::CTrigger::countRootsEQ(const CEvaluationNode * pNode,
-    CMath::CVariableStack & variableStack,
-    CMath::CAllocationStack & allocationStack)
+    const std::vector< size_t > & children)
 {
-  size_t nRoots = 0;
-
-  const CEvaluationNode * pLeft = static_cast<const CEvaluationNode *>(pNode->getChild());
-  const CEvaluationNode * pRight = static_cast<const CEvaluationNode *>(pLeft->getSibling());
-
-  nRoots += countRoots(pLeft, variableStack, allocationStack);
-  nRoots += countRoots(pRight, variableStack, allocationStack);
+  size_t nRoots = children[0] + children[1];
 
   // Equality can be determined between Boolean and double values.
-  if (CEvaluationNode::type(pLeft->getType()) != CEvaluationNode::LOGICAL)
+  if (static_cast<const CEvaluationNode *>(pNode->getChild())->isBoolean())
     {
-      // We treat x EQ y as (x GE y) AND (y GE x)
-      nRoots *= 2; // Left and right roots are duplicated
-      nRoots += 2; // add both GE comparisons.
+      nRoots = children[0] + children[1];
     }
-
-  return nRoots;
-}
-
-// static
-size_t CMathEventN::CTrigger::countRootsLE(const CEvaluationNode * pNode,
-    CMath::CVariableStack & variableStack,
-    CMath::CAllocationStack & allocationStack)
-{
-  size_t nRoots = 0;
-
-  const CEvaluationNode * pLeft = static_cast<const CEvaluationNode *>(pNode->getChild());
-  const CEvaluationNode * pRight = static_cast<const CEvaluationNode *>(pLeft->getSibling());
-
-  nRoots += countRoots(pLeft, variableStack, allocationStack);
-  nRoots += countRoots(pRight, variableStack, allocationStack);
-
-  nRoots += 1;
+  else
+    {
+      nRoots = 2;
+    }
 
   return nRoots;
 }
 
 // static
 size_t CMathEventN::CTrigger::countRootsFUNCTION(const CEvaluationNode * pNode,
-    CMath::CVariableStack & variableStack,
-    CMath::CAllocationStack & allocationStack)
+    const std::vector< size_t > & children)
 {
   // We need to mimic the process in CMathContainer::copyBranch;
-  CMath::CVariableStack::StackElement Variables;
+  CMath::Variables< size_t > Variables;
 
-  const CEvaluationNode * pChild =
-    static_cast< const CEvaluationNode * >(pNode->getChild());
+  std::vector< size_t >::const_iterator it = children.begin();
+  std::vector< size_t >::const_iterator end = children.end();
 
-  // We create temporary copies in which the discontinuous nodes are not replaced.
-  while (pChild != NULL)
+  for (; it != end; ++it)
     {
-      // TODO CRITICAL We should count the roots of each variable here instead when the
-      // variable is used as the later may duplicate roots.
-      Variables.push_back(pChild);
-      pChild = static_cast< const CEvaluationNode * >(pChild->getSibling());
+      CMath::Variables< size_t >::value_type Variable;
+      Variable.push_back(*it);
+      Variables.push_back(Variable);
     }
-
-  variableStack.push(Variables);
 
   const CEvaluationNode * pTreeRoot =
     static_cast< const CEvaluationNodeCall * >(pNode)->getCalledTree()->getRoot();
 
-  size_t nRoots = countRoots(pTreeRoot, variableStack, allocationStack);
-
-  variableStack.pop();
+  size_t nRoots = countRoots(pTreeRoot, Variables);
 
   return nRoots;
 }
 
 // static
 size_t CMathEventN::CTrigger::countRootsVARIABLE(const CEvaluationNode * pNode,
-    CMath::CVariableStack & variableStack,
-    CMath::CAllocationStack & allocationStack)
+    const CMath::Variables< size_t > & variables)
 {
   size_t Index =
     static_cast< const CEvaluationNodeVariable * >(pNode)->getIndex();
 
-  const CEvaluationNode * pVariableNode = variableStack[Index];
-
-  return countRoots(pVariableNode, variableStack, allocationStack);
+  return variables[Index][0];
 }
 
 // static
-bool CMathEventN::CTrigger::compile(CEvaluationNode *& pTriggerNode,
-                                    const CEvaluationNode * pDataNode,
-                                    CMath::CVariableStack & variableStack,
-                                    CMathEventN::CTrigger::CRoot *& pRoot,
-                                    CMathContainer & container)
+CEvaluationNode * CMathEventN::CTrigger::compile(const CEvaluationNode * pTriggerNode,
+    const CMath::Variables< CEvaluationNode * > & variables,
+    CMathEventN::CTrigger::CRoot *& pRoot,
+    CMathContainer & container)
 {
-  bool success = true;
+  CEvaluationNode * pNode = NULL;
 
-  switch ((int) pDataNode->getType())
+  CNodeContextIterator< const CEvaluationNode, std::vector< CEvaluationNode * > > itNode(pTriggerNode);
+  itNode.setProcessingModes(CNodeIteratorMode::Before | CNodeIteratorMode::After);
+
+  while (itNode.next() != itNode.end())
     {
-      case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::AND):
-      case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::OR):
-      case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::XOR):
-        return compileAND(pTriggerNode, pDataNode, variableStack, pRoot, container);
-        break;
+      if (*itNode != NULL)
+        {
+          continue;
+        }
 
-      case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::EQ):
-        return compileEQ(pTriggerNode, pDataNode, variableStack, pRoot, container);
-        break;
+      switch (itNode.processingMode())
+        {
+          case CNodeIteratorMode::Before:
 
-      case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::NE):
-        return compileNE(pTriggerNode, pDataNode, variableStack, pRoot, container);
-        break;
+            // Variables return always false.
+            if (CEvaluationNode::type(itNode->getType()) == CEvaluationNode::VARIABLE &&
+                !static_cast< const CEvaluationNode * >(itNode->getChild())->isBoolean())
+              {
+                // We found a non boolean node which we simply copy.
+                itNode.skipChildren();
 
-      case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::LE):
-      case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::LT):
-      case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::GE):
-      case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::GT):
-        return compileLE(pTriggerNode, pDataNode, variableStack, pRoot, container);
-        break;
+                // We need to mimic the process in CMathContainer::copyBranch;
+                size_t Index =
+                  static_cast< const CEvaluationNodeVariable * >(*itNode)->getIndex();
 
-      case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::NOT):
-        return compileNOT(pTriggerNode, pDataNode, variableStack, pRoot, container);
-        break;
+                // Since a variable may be referred to multiple times we need to copy it.
+                pNode = variables[Index][0]->copyBranch();
+              }
+            else if (!itNode->isBoolean())
+              {
+                // We found a non boolean node which we simply copy.
+                itNode.skipChildren();
+                pNode = container.copyBranch(*itNode, variables, true);
+              }
 
-      case(CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
-      case(CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
-        return compileFUNCTION(pTriggerNode, pDataNode, variableStack, pRoot, container);
-        break;
+            break;
 
-      case(CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
-        return compileVARIABLE(pTriggerNode, pDataNode, variableStack, pRoot, container);
-        break;
+          case CNodeIteratorMode::After:
 
-      case(CEvaluationNode::CONSTANT | CEvaluationNodeConstant::TRUE):
-      case(CEvaluationNode::CONSTANT | CEvaluationNodeConstant::FALSE):
-        return compileCONSTANT(pTriggerNode, pDataNode, variableStack, pRoot, container);
-        break;
+            // We do not need to check whether the root is boolean as non boolean nodes are
+            // already processed
+            switch ((int) itNode->getType())
+              {
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::AND):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::OR):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::XOR):
+                  pNode = compileAND(*itNode, itNode.context(), variables, pRoot, container);
+                  break;
 
-      default:
-        assert(false);
-        break;
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::EQ):
+                  pNode = compileEQ(*itNode, itNode.context(), variables, pRoot, container);
+                  break;
+
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::NE):
+                  pNode = compileNE(*itNode, itNode.context(), variables, pRoot, container);
+                  break;
+
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::LE):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::LT):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::GE):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::GT):
+                  pNode = compileLE(*itNode, itNode.context(), variables, pRoot, container);
+                  break;
+
+                case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::NOT):
+                  pNode = compileNOT(*itNode, itNode.context(), variables, pRoot, container);
+                  break;
+
+                case(CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
+                case(CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+                  pNode = compileFUNCTION(*itNode, itNode.context(), variables, pRoot, container);
+                  break;
+
+                case(CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
+                  pNode = compileVARIABLE(*itNode, itNode.context(), variables, pRoot, container);
+                  break;
+
+                case(CEvaluationNode::CONSTANT | CEvaluationNodeConstant::TRUE):
+                case(CEvaluationNode::CONSTANT | CEvaluationNodeConstant::FALSE):
+                default:
+                  pNode = itNode->copyNode(itNode.context());
+                  break;
+              }
+
+            break;
+
+          default:
+            // This will never happen
+            break;
+        }
+
+      if (itNode.parentContextPtr() != NULL)
+        {
+          itNode.parentContextPtr()->push_back(pNode);
+        }
     }
 
-  return success;
+  return pNode;
 }
 
 // static
-bool CMathEventN::CTrigger::compileAND(CEvaluationNode *& pTriggerNode,
-                                       const CEvaluationNode * pDataNode,
-                                       CMath::CVariableStack & variableStack,
-                                       CMathEventN::CTrigger::CRoot *& pRoot,
-                                       CMathContainer & container)
+CEvaluationNode * CMathEventN::CTrigger::compileAND(const CEvaluationNode * pTriggerNode,
+    const std::vector< CEvaluationNode * > & children,
+    const CMath::Variables< CEvaluationNode * > & /* variables */,
+    CMathEventN::CTrigger::CRoot *& /* pRoot */,
+    CMathContainer & /* container */)
 {
-  bool success = true;
+  CEvaluationNode * pNode = NULL;
 
-  const CEvaluationNode * pDataLeft = static_cast<const CEvaluationNode *>(pDataNode->getChild());
-  const CEvaluationNode * pDataRight = static_cast<const CEvaluationNode *>(pDataLeft->getSibling());
-
-  CEvaluationNode * pTriggerLeft = NULL;
-  success &= compile(pTriggerLeft, pDataLeft, variableStack, pRoot, container);
-
-  CEvaluationNode * pTriggerRight = NULL;
-  success &= compile(pTriggerRight, pDataRight, variableStack, pRoot, container);
-
-  switch ((int) CEvaluationNode::subType(pDataNode->getType()))
+  switch ((int) CEvaluationNode::subType(pTriggerNode->getType()))
     {
       case CEvaluationNodeLogical::AND:
-        pTriggerNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
+        pNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
         break;
 
       case CEvaluationNodeLogical::OR:
-        pTriggerNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::OR, "OR");
+        pNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::OR, "OR");
         break;
 
       case CEvaluationNodeLogical::XOR:
-        pTriggerNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::XOR, "XOR");
+        pNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::XOR, "XOR");
         break;
 
       default:
-        success = false;
         break;
     }
 
-  if (pTriggerNode != NULL)
+  if (pNode != NULL)
     {
-      pTriggerNode->addChild(pTriggerLeft);
-      pTriggerNode->addChild(pTriggerRight);
+      pNode->addChild(children[0]);
+      pNode->addChild(children[1]);
     }
 
-  return success;
+  return pNode;
 }
 
 // static
-bool CMathEventN::CTrigger::compileEQ(CEvaluationNode *& pTriggerNode,
-                                      const CEvaluationNode * pDataNode,
-                                      CMath::CVariableStack & variableStack,
-                                      CMathEventN::CTrigger::CRoot *& pRoot,
-                                      CMathContainer & container)
+CEvaluationNode * CMathEventN::CTrigger::compileEQ(const CEvaluationNode * pTriggerNode,
+    const std::vector< CEvaluationNode * > & children,
+    const CMath::Variables< CEvaluationNode * > & /* variables */,
+    CMathEventN::CTrigger::CRoot *& /* pRoot */,
+    CMathContainer & /* container */)
 {
-  bool success = true;
-
-  const CEvaluationNode * pDataLeft = static_cast<const CEvaluationNode *>(pDataNode->getChild());
-  const CEvaluationNode * pDataRight = static_cast<const CEvaluationNode *>(pDataLeft->getSibling());
+  CEvaluationNode * pNode = NULL;
 
   // Equality can be determined between Boolean and double values.
-  if (CEvaluationNode::type(pDataLeft->getType()) != CEvaluationNode::LOGICAL)
+  if (static_cast< const CEvaluationNode * >(pTriggerNode->getChild())->isBoolean())
     {
       // We treat x EQ y as (x GE y) AND (y GE x)
+      pNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
 
-      // Create a temporary expression and compile it.
-      CEvaluationNode * pAND = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
       CEvaluationNode * pGELeft = new CEvaluationNodeLogical(CEvaluationNodeLogical::GE, "GE");
-      pGELeft->addChild(pDataLeft->copyBranch());
-      pGELeft->addChild(pDataRight->copyBranch());
-      pAND->addChild(pGELeft);
+      pGELeft->addChild(children[0]);
+      pGELeft->addChild(children[1]);
+      pNode->addChild(pGELeft);
 
       CEvaluationNode * pGERight = new CEvaluationNodeLogical(CEvaluationNodeLogical::GE, "GE");
-      pGERight->addChild(pDataRight->copyBranch());
-      pGERight->addChild(pDataLeft->copyBranch());
-      pAND->addChild(pGERight);
-
-      success &= compileAND(pTriggerNode, pAND, variableStack, pRoot, container);
-
-      // Delete the temporary
-      pdelete(pAND);
+      pGERight->addChild(children[1]->copyBranch());
+      pGERight->addChild(children[0]->copyBranch());
+      pNode->addChild(pGERight);
     }
   else
     {
-      CEvaluationNode * pTriggerLeft = NULL;
-      success &= compile(pTriggerLeft, pDataLeft, variableStack, pRoot, container);
-
-      CEvaluationNode * pTriggerRight = NULL;
-      success &= compile(pTriggerRight, pDataRight, variableStack, pRoot, container);
-
-
-      pTriggerNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::EQ, "EQ");
-      pTriggerNode->addChild(pTriggerLeft);
-      pTriggerNode->addChild(pTriggerRight);
+      pNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::EQ, "EQ");
+      pNode->addChild(children[0]);
+      pNode->addChild(children[1]);
     }
 
-  return success;
+  return pNode;
 }
 
 // static
-bool CMathEventN::CTrigger::compileNE(CEvaluationNode *& pTriggerNode,
-                                      const CEvaluationNode * pDataNode,
-                                      CMath::CVariableStack & variableStack,
-                                      CMathEventN::CTrigger::CRoot *& pRoot,
-                                      CMathContainer & container)
+CEvaluationNode * CMathEventN::CTrigger::compileNE(const CEvaluationNode * /* pTriggerNode */,
+    const std::vector< CEvaluationNode * > & children,
+    const CMath::Variables< CEvaluationNode * > & variables,
+    CMathEventN::CTrigger::CRoot *& pRoot,
+    CMathContainer & container)
 {
-  bool success = true;
-
-  const CEvaluationNode * pDataLeft = static_cast<const CEvaluationNode *>(pDataNode->getChild());
-  const CEvaluationNode * pDataRight = static_cast<const CEvaluationNode *>(pDataLeft->getSibling());
+  CEvaluationNode * pNode = NULL;
 
   // We treat this as NOT and EQ.
   // For this we create a modified copy of the current node.
 
   CEvaluationNode * pNotNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
-  CEvaluationNode * pEqNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::EQ, "EQ");
 
-  pEqNode->addChild(pDataLeft->copyBranch());
-  pEqNode->addChild(pDataRight->copyBranch());
+  CEvaluationNodeLogical EqNode(CEvaluationNodeLogical::EQ, "EQ");
 
+  EqNode.addChild(children[0]);
+  EqNode.addChild(children[1]);
+
+  CEvaluationNode * pEqNode = compileEQ(&EqNode, children, variables, pRoot, container);
   pNotNode->addChild(pEqNode);
 
-  success &= compileNOT(pTriggerNode, pNotNode, variableStack, pRoot, container);
+  // We need to remove the children since the ownership has been transferred to pEqNode.
+  EqNode.removeChild(children[0]);
+  EqNode.removeChild(children[1]);
 
-  // Delete the temporary
-  pdelete(pNotNode);
-
-  return success;
+  return pNode;
 }
 
 // static
-bool CMathEventN::CTrigger::compileLE(CEvaluationNode *& pTriggerNode,
-                                      const CEvaluationNode * pDataNode,
-                                      CMath::CVariableStack & variableStack,
-                                      CMathEventN::CTrigger::CRoot *& pRoot,
-                                      CMathContainer & container)
+CEvaluationNode * CMathEventN::CTrigger::compileLE(const CEvaluationNode * pTriggerNode,
+    const std::vector< CEvaluationNode * > & children,
+    const CMath::Variables< CEvaluationNode * > & /* variables */,
+    CMathEventN::CTrigger::CRoot *& pRoot,
+    CMathContainer & container)
 {
-  bool success = true;
-
-  const CEvaluationNode * pDataLeft = static_cast<const CEvaluationNode *>(pDataNode->getChild());
-  const CEvaluationNode * pDataRight = static_cast<const CEvaluationNode *>(pDataLeft->getSibling());
+  CEvaluationNode * pNode = NULL;
 
   // We need to compile the root finding structure
   // Create a root expression
@@ -732,153 +763,105 @@ bool CMathEventN::CTrigger::compileLE(CEvaluationNode *& pTriggerNode,
   bool Equality = false;
 
   // We need to create a copy the left and right data nodes with the variables being replaced.
-  switch ((int) CEvaluationNode::subType(pDataNode->getType()))
+  switch ((int) CEvaluationNode::subType(pTriggerNode->getType()))
     {
       case CEvaluationNodeLogical::LE:
-        pRootNode->addChild(container.copyBranch(pDataRight, variableStack, true));
-        pRootNode->addChild(container.copyBranch(pDataLeft, variableStack, true));
+        pRootNode->addChild(children[1]);
+        pRootNode->addChild(children[0]);
         Equality = true;
         break;
 
       case CEvaluationNodeLogical::LT:
-        pRootNode->addChild(container.copyBranch(pDataRight, variableStack, true));
-        pRootNode->addChild(container.copyBranch(pDataLeft, variableStack, true));
+        pRootNode->addChild(children[1]);
+        pRootNode->addChild(children[0]);
         Equality = false;
         break;
 
       case CEvaluationNodeLogical::GE:
-        pRootNode->addChild(container.copyBranch(pDataLeft, variableStack, true));
-        pRootNode->addChild(container.copyBranch(pDataRight, variableStack, true));
+        pRootNode->addChild(children[0]);
+        pRootNode->addChild(children[1]);
         Equality = true;
         break;
 
       case CEvaluationNodeLogical::GT:
-        pRootNode->addChild(container.copyBranch(pDataLeft, variableStack, true));
-        pRootNode->addChild(container.copyBranch(pDataRight, variableStack, true));
+        pRootNode->addChild(children[0]);
+        pRootNode->addChild(children[1]);
         Equality = false;
         break;
     }
 
-  success &= pRoot->compile(pRootNode, Equality, container);
-  pTriggerNode = pRoot->createTriggerExpressionNode();
+  pRoot->compile(pRootNode, Equality, container);
+  pNode = pRoot->createTriggerExpressionNode();
   pRoot++;
 
   // We do not need to delete pRootNode as CRoot::compile takes car of it.
 
-  return success;
+  return pNode;
 }
 
 // static
-bool CMathEventN::CTrigger::compileNOT(CEvaluationNode *& pTriggerNode,
-                                       const CEvaluationNode * pDataNode,
-                                       CMath::CVariableStack & variableStack,
-                                       CMathEventN::CTrigger::CRoot *& pRoot,
-                                       CMathContainer & container)
+CEvaluationNode * CMathEventN::CTrigger::compileNOT(const CEvaluationNode * /* pTriggerNode */,
+    const std::vector< CEvaluationNode * > & children,
+    const CMath::Variables< CEvaluationNode * > & /* variables */,
+    CMathEventN::CTrigger::CRoot *& /* pRoot */,
+    CMathContainer & /* container */)
 {
-  bool success = true;
+  CEvaluationNode * pNode = NULL;
 
-  const CEvaluationNode * pData = static_cast<const CEvaluationNode *>(pDataNode->getChild());
+  pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
+  pNode->addChild(children[0]);
 
-  CEvaluationNode * pTrigger = NULL;
-  success &= compile(pTrigger, pData, variableStack, pRoot, container);
-
-  pTriggerNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::NOT, "NOT");
-  pTriggerNode->addChild(pTrigger);
-
-  return success;
+  return pNode;
 }
 
 // static
-bool CMathEventN::CTrigger::compileFUNCTION(CEvaluationNode *& pTriggerNode,
-    const CEvaluationNode * pDataNode,
-    CMath::CVariableStack & variableStack,
+CEvaluationNode * CMathEventN::CTrigger::compileFUNCTION(const CEvaluationNode * pTriggerNode,
+    const std::vector< CEvaluationNode * > & children,
+    const CMath::Variables< CEvaluationNode * > & /* variables */,
     CMathEventN::CTrigger::CRoot *& pRoot,
     CMathContainer & container)
 {
-  if (!pDataNode->isBoolean())
-    return false;
-
   // We need to mimic the process in CMathContainer::copyBranch;
 
-  CMath::CVariableStack::StackElement Variables;
+  CMath::Variables< CEvaluationNode * > Variables;
 
-  const CEvaluationNode * pChild =
-    static_cast< const CEvaluationNode * >(pDataNode->getChild());
+  std::vector< CEvaluationNode * >::const_iterator it = children.begin();
+  std::vector< CEvaluationNode * >::const_iterator end = children.end();
 
-  // We create temporary copies in which the discontinuous nodes are not replaced.
-  while (pChild != NULL)
+  for (; it != end; ++it)
     {
-      Variables.push_back(container.copyBranch(pChild, variableStack, false));
-      pChild = static_cast< const CEvaluationNode * >(pChild->getSibling());
+      CMath::Variables< CEvaluationNode * >::value_type Variable;
+      Variable.push_back(*it);
+      Variables.push_back(Variable);
     }
-
-  variableStack.push(Variables);
 
   const CEvaluationNode * pCalledNode =
-    static_cast< const CEvaluationNodeCall * >(pDataNode)->getCalledTree()->getRoot();
+    static_cast< const CEvaluationNodeCall * >(pTriggerNode)->getCalledTree()->getRoot();
 
-  bool success = compile(pTriggerNode, pCalledNode, variableStack, pRoot, container);
+  CEvaluationNode * pNode = compile(pCalledNode, Variables, pRoot, container);
 
-  variableStack.pop();
-
-  CMath::CVariableStack::StackElement::iterator itVariable = Variables.begin();
-  CMath::CVariableStack::StackElement::iterator endVariable = Variables.end();
-
-  // Delete temporary copies.
-  for (; itVariable != endVariable; ++itVariable)
+  // We need to delete the children as the variables have been copied in place.
+  for (it = children.begin(); it != end; ++it)
     {
-      pdelete(*itVariable);
+      delete *it;
     }
 
-  return success;
+  return pNode;
 }
 
 // static
-bool CMathEventN::CTrigger::compileVARIABLE(CEvaluationNode *& pTriggerNode,
-    const CEvaluationNode * pDataNode,
-    CMath::CVariableStack & variableStack,
-    CMathEventN::CTrigger::CRoot *& pRoot,
-    CMathContainer & container)
+CEvaluationNode * CMathEventN::CTrigger::compileVARIABLE(const CEvaluationNode * pTriggerNode,
+    const std::vector< CEvaluationNode * > & /* children */,
+    const CMath::Variables< CEvaluationNode * > & variables,
+    CMathEventN::CTrigger::CRoot *& /* pRoot */,
+    CMathContainer & /* container */)
 {
   // We need to mimic the process in CMathContainer::copyBranch;
-
   size_t Index =
-    static_cast< const CEvaluationNodeVariable * >(pDataNode)->getIndex();
+    static_cast< const CEvaluationNodeVariable * >(pTriggerNode)->getIndex();
 
-  const CEvaluationNode * pIndexedNode = variableStack[Index];
-
-  if (!pIndexedNode->isBoolean())
-    return false;
-
-  return compile(pTriggerNode, pIndexedNode, variableStack, pRoot, container);
-}
-
-// static
-bool CMathEventN::CTrigger::compileCONSTANT(CEvaluationNode *& pTriggerNode,
-    const CEvaluationNode * pDataNode,
-    CMath::CVariableStack & /* variableStack */,
-    CMathEventN::CTrigger::CRoot *& pRoot,
-    CMathContainer & container)
-{
-  bool success = true;
-
-  CEvaluationNode * pRootNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0");
-
-  switch ((int) CEvaluationNode::subType(pDataNode->getType()))
-    {
-      case CEvaluationNodeConstant::TRUE:
-        pTriggerNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::TRUE, "TRUE");
-        break;
-
-      case CEvaluationNodeConstant::FALSE:
-        pTriggerNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::FALSE, "FALSE");
-        break;
-    }
-
-  success &= pRoot->compile(pRootNode, true, container);
-  pRoot++;
-
-  return success;
+  // Since a variable may be referred to multiple times we need to copy it.
+  return variables[Index][0]->copyBranch();
 }
 
 // static

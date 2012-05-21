@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEnum.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/17 17:10:30 $
+//   $Date: 2012/05/21 14:12:02 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -209,6 +209,8 @@ public:
     Event
   };
 
+
+  template < class Type > class Variables: public std::vector< std::vector< Type > > {};
 
   class CVariableStack
   {

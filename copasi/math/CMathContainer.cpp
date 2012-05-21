@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathContainer.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/15 15:56:59 $
+//   $Date: 2012/05/21 14:12:02 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,7 @@
 #include "model/CModelValue.h"
 #include "model/CObjectLists.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "utilities/CNodeIterator.h"
 
 CMathContainer::CMathContainer():
     CCopasiContainer("Math Container", NULL, "CMathContainer"),
@@ -207,125 +208,117 @@ const CModel & CMathContainer::getModel() const
 CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pSrc,
     const bool & replaceDiscontinuousNodes)
 {
-  CMath::CVariableStack::Buffer Stack;
-  CMath::CVariableStack VariableStack(Stack);
+  CMath::Variables< CEvaluationNode * > Variables;
 
-  return copyBranch(pSrc, VariableStack, replaceDiscontinuousNodes);
+  return copyBranch(pSrc, Variables, replaceDiscontinuousNodes);
 }
 
-// TODO CRITICAL Replace the recursive call
-CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pSrc,
-    CMath::CVariableStack & variableStack,
+CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
+    const CMath::Variables< CEvaluationNode * > & variables,
     const bool & replaceDiscontinuousNodes)
 {
+  CNodeContextIterator< const CEvaluationNode, std::vector< CEvaluationNode * > > itNode(pNode);
   CEvaluationNode * pCopy = NULL;
 
-  // We need to replace variables, expand called trees, and handle discrete nodes.
-  switch ((int) pSrc->getType())
+  while (itNode.next() != itNode.end())
     {
-        // Handle object nodes which are of type CN
-      case(CEvaluationNode::OBJECT | CEvaluationNodeObject::CN):
-      {
-        // We need to map the object to a math object if possible.
-        const CObjectInterface * pObject =
-          getObject(static_cast< const CEvaluationNodeObject *>(pSrc)->getObjectCN());
+      if (*itNode == NULL)
+        {
+          continue;
+        }
 
-        // Create a converted node
-        pCopy = createNodeFromObject(pObject);
-      }
-      break;
-
-      // Handle object nodes which are of type POINTER
-      case(CEvaluationNode::OBJECT | CEvaluationNodeObject::POINTER):
-      {
-        const CObjectInterface * pObject =
-          getMathObject(static_cast< const CEvaluationNodeObject *>(pSrc)->getObjectValuePtr());
-
-        // Create a converted node
-        pCopy = createNodeFromObject(pObject);
-      }
-      break;
-
-      // Handle variables
-      case(CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
-      {
-        size_t Index =
-          static_cast< const CEvaluationNodeVariable * >(pSrc)->getIndex();
-
-        pCopy = copyBranch(variableStack[Index], variableStack, replaceDiscontinuousNodes);
-      }
-      break;
-
-      // Handle call nodes
-      case(CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
-      case(CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
-      {
-        CMath::CVariableStack::StackElement Variables;
-
-        const CEvaluationNode * pChild =
-          static_cast< const CEvaluationNode * >(pSrc->getChild());
-
-        // We create temporary copies in which the discontinuous nodes are not replaced.
-        while (pChild != NULL)
+      // We need to replace variables, expand called trees, and handle discrete nodes.
+      switch ((int) itNode->getType())
+        {
+            // Handle object nodes which are of type CN
+          case(CEvaluationNode::OBJECT | CEvaluationNodeObject::CN):
           {
-            Variables.push_back(copyBranch(pChild, variableStack, false));
-            pChild = static_cast< const CEvaluationNode * >(pChild->getSibling());
+            // We need to map the object to a math object if possible.
+            const CObjectInterface * pObject =
+              getObject(static_cast< const CEvaluationNodeObject *>(*itNode)->getObjectCN());
+
+            // Create a converted node
+            pCopy = createNodeFromObject(pObject);
           }
+          break;
 
-        variableStack.push(Variables);
-
-        const CEvaluationNode * pCalledNode =
-          static_cast< const CEvaluationNodeCall * >(pSrc)->getCalledTree()->getRoot();
-
-        pCopy = copyBranch(pCalledNode, variableStack, replaceDiscontinuousNodes);
-
-        variableStack.pop();
-
-        CMath::CVariableStack::StackElement::iterator itVariable = Variables.begin();
-        CMath::CVariableStack::StackElement::iterator endVariable = Variables.end();
-
-        // Delete temporary copies.
-        for (; itVariable != endVariable; ++itVariable)
+          // Handle object nodes which are of type POINTER
+          case(CEvaluationNode::OBJECT | CEvaluationNodeObject::POINTER):
           {
-            pdelete(*itVariable);
+            const CObjectInterface * pObject =
+              getMathObject(static_cast< const CEvaluationNodeObject *>(*itNode)->getObjectValuePtr());
+
+            // Create a converted node
+            pCopy = createNodeFromObject(pObject);
           }
-      }
-      break;
+          break;
 
-      // Handle discrete nodes
-      case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
-      case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
-      case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
-
-        if (replaceDiscontinuousNodes)
+          // Handle variables
+          case(CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
           {
-            // The node is replaced with a pointer to a math object value.
-            // The math object is calculated by an assignment with the target being the
-            // math object
-            pCopy = replaceDiscontinuousNode(pSrc, variableStack);
+            size_t Index =
+              static_cast< const CEvaluationNodeVariable * >(*itNode)->getIndex();
 
-            // The break statement is intentionally within the conditional code block.
-            // If we do not want to replace discrete nodes (e.g. initial assignments)
-            // we just go on and copy the node which is handled by the default.
+            pCopy = variables[Index][0]->copyBranch();
+          }
+          break;
+
+          // Handle call nodes
+          case(CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
+          case(CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+          {
+            CMath::Variables< CEvaluationNode * > Variables;
+            std::vector< CEvaluationNode * >::iterator it = itNode.context().begin();
+            std::vector< CEvaluationNode * >::iterator end = itNode.context().end();
+
+            for (; it != end; ++it)
+              {
+                CMath::Variables< CEvaluationNode * >::value_type Variable;
+                Variable.push_back(*it);
+                Variables.push_back(Variable);
+              }
+
+            const CEvaluationNode * pCalledNode =
+              static_cast< const CEvaluationNodeCall * >(*itNode)->getCalledTree()->getRoot();
+
+            pCopy = copyBranch(pCalledNode, Variables, replaceDiscontinuousNodes);
+
+            // The variables have been copied into place we need to delete them.
+            for (; it != end; ++it)
+              {
+                delete *it;
+              }
+          }
+          break;
+
+          // Handle discrete nodes
+          case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
+          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+
+            if (replaceDiscontinuousNodes)
+              {
+                // The node is replaced with a pointer to a math object value.
+                // The math object is calculated by an assignment with the target being the
+                // math object
+                pCopy = replaceDiscontinuousNode(*itNode, itNode.context());
+              }
+            else
+              {
+                pCopy = itNode->copyNode(itNode.context());
+              }
+
             break;
-          }
 
-      default:
-        // Handle all other nodes.
-        std::vector< CEvaluationNode * > Children;
+          default:
+            pCopy = itNode->copyNode(itNode.context());
+            break;
+        }
 
-        const CEvaluationNode * pChild =
-          static_cast< const CEvaluationNode * >(pSrc->getChild());
-
-        while (pChild != NULL)
-          {
-            Children.push_back(copyBranch(pChild, variableStack, replaceDiscontinuousNodes));
-            pChild = static_cast< const CEvaluationNode * >(pChild->getSibling());
-          }
-
-        pCopy = pSrc->copyNode(Children);
-
-        break;
+      if (itNode.parentContextPtr() != NULL)
+        {
+          itNode.parentContextPtr()->push_back(pCopy);
+        }
     }
 
   assert(pCopy != NULL);
@@ -335,21 +328,9 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pSrc,
 
 CEvaluationNode *
 CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
-    CMath::CVariableStack & variableStack)
+    const std::vector< CEvaluationNode * > & children)
 {
   bool success = true;
-
-  // Using copyBranch(pSrc, variables, true) will lead to an infinite recursion.
-  std::vector< CEvaluationNode * > Children;
-
-  const CEvaluationNode * pChild =
-    static_cast< const CEvaluationNode * >(pSrc->getChild());
-
-  while (pChild != NULL)
-    {
-      Children.push_back(copyBranch(pChild, variableStack, true));
-      pChild = static_cast< const CEvaluationNode * >(pChild->getSibling());
-    }
 
   // Create a node pointing to the discontinuous object.
   CEvaluationNode * pCopy =
@@ -358,7 +339,7 @@ CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
   // Compile the discontinuous object
   CMathExpression * pExpression = new CMathExpression("DiscontinuousExpression", *this);
 
-  success &= pExpression->setRoot(pSrc->copyNode(Children));
+  success &= pExpression->setRoot(pSrc->copyNode(children));
   success &= mCreateDiscontinuousPointer.pDiscontinuous->setExpressionPtr(pExpression);
 
   mCreateDiscontinuousPointer.pDiscontinuous += 1;

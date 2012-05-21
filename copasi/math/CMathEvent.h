@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEvent.h,v $
-//   $Revision: 1.5 $
+//   $Revision: 1.6 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/06/02 17:15:47 $
+//   $Date: 2012/05/21 14:12:02 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -118,78 +118,65 @@ public:
 
   private:
     static size_t countRoots(const CEvaluationNode * pNode,
-                             CMath::CVariableStack & variableStack,
-                             CMath::CAllocationStack & allocationStack);
+                             const CMath::Variables< size_t > & variables);
+
+    static size_t countRootsDefault(const std::vector< size_t > & children);
 
     static size_t countRootsEQ(const CEvaluationNode * pNode,
-                               CMath::CVariableStack & variableStack,
-                               CMath::CAllocationStack & allocationStack);
-
-    static size_t countRootsLE(const CEvaluationNode * pNode,
-                               CMath::CVariableStack & variableStack,
-                               CMath::CAllocationStack & allocationStack);
+                               const std::vector< size_t > & children);
 
     static size_t countRootsFUNCTION(const CEvaluationNode * pNode,
-                                     CMath::CVariableStack & variableStack,
-                                     CMath::CAllocationStack & allocationStack);
+                                     const std::vector< size_t > & children);
 
     static size_t countRootsVARIABLE(const CEvaluationNode * pNode,
-                                     CMath::CVariableStack & variableStack,
-                                     CMath::CAllocationStack & allocationStack);
+                                     const CMath::Variables< size_t > & variables);
 
-    static bool compile(CEvaluationNode *& pTriggerNode,
-                        const CEvaluationNode * pDataNode,
-                        CMath::CVariableStack & variableStack,
-                        CMathEventN::CTrigger::CRoot *& pRoot,
-                        CMathContainer & container);
+    static CEvaluationNode * compile(const CEvaluationNode * pNode,
+                                     const CMath::Variables< CEvaluationNode * > & variables,
+                                     CMathEventN::CTrigger::CRoot *& pRoot,
+                                     CMathContainer & container);
 
-    static bool compileAND(CEvaluationNode *& pTriggerNode,
-                           const CEvaluationNode * pDataNode,
-                           CMath::CVariableStack & variableStack,
-                           CMathEventN::CTrigger::CRoot *& pRoot,
-                           CMathContainer & container);
+    static CEvaluationNode * compileAND(const CEvaluationNode * pNode,
+                                        const std::vector< CEvaluationNode * > & children,
+                                        const CMath::Variables< CEvaluationNode * > & variables,
+                                        CMathEventN::CTrigger::CRoot *& pRoot,
+                                        CMathContainer & container);
 
-    static bool compileEQ(CEvaluationNode *& pTriggerNode,
-                          const CEvaluationNode * pDataNode,
-                          CMath::CVariableStack & variableStack,
-                          CMathEventN::CTrigger::CRoot *& pRoot,
-                          CMathContainer & container);
+    static CEvaluationNode * compileEQ(const CEvaluationNode * pNode,
+                                       const std::vector< CEvaluationNode * > & children,
+                                       const CMath::Variables< CEvaluationNode * > & variables,
+                                       CMathEventN::CTrigger::CRoot *& pRoot,
+                                       CMathContainer & container);
 
-    static bool compileNE(CEvaluationNode *& pTriggerNode,
-                          const CEvaluationNode * pDataNode,
-                          CMath::CVariableStack & variableStack,
-                          CMathEventN::CTrigger::CRoot *& pRoot,
-                          CMathContainer & container);
+    static CEvaluationNode * compileNE(const CEvaluationNode * pNode,
+                                       const std::vector< CEvaluationNode * > & children,
+                                       const CMath::Variables< CEvaluationNode * > & variables,
+                                       CMathEventN::CTrigger::CRoot *& pRoot,
+                                       CMathContainer & container);
 
-    static bool compileLE(CEvaluationNode *& pTriggerNode,
-                          const CEvaluationNode * pDataNode,
-                          CMath::CVariableStack & variableStack,
-                          CMathEventN::CTrigger::CRoot *& pRoot,
-                          CMathContainer & container);
+    static CEvaluationNode * compileLE(const CEvaluationNode * pNode,
+                                       const std::vector< CEvaluationNode * > & children,
+                                       const CMath::Variables< CEvaluationNode * > & variables,
+                                       CMathEventN::CTrigger::CRoot *& pRoot,
+                                       CMathContainer & container);
 
-    static bool compileNOT(CEvaluationNode *& pTriggerNode,
-                           const CEvaluationNode * pDataNode,
-                           CMath::CVariableStack & variableStack,
-                           CMathEventN::CTrigger::CRoot *& pRoot,
-                           CMathContainer & container);
+    static CEvaluationNode * compileNOT(const CEvaluationNode * pNode,
+                                        const std::vector< CEvaluationNode * > & children,
+                                        const CMath::Variables< CEvaluationNode * > & variables,
+                                        CMathEventN::CTrigger::CRoot *& pRoot,
+                                        CMathContainer & container);
 
-    static bool compileFUNCTION(CEvaluationNode *& pTriggerNode,
-                                const CEvaluationNode * pDataNode,
-                                CMath::CVariableStack & variableStack,
-                                CMathEventN::CTrigger::CRoot *& pRoot,
-                                CMathContainer & container);
+    static CEvaluationNode * compileFUNCTION(const CEvaluationNode * pNode,
+        const std::vector< CEvaluationNode * > & children,
+        const CMath::Variables< CEvaluationNode * > & variables,
+        CMathEventN::CTrigger::CRoot *& pRoot,
+        CMathContainer & container);
 
-    static bool compileVARIABLE(CEvaluationNode *& pTriggerNode,
-                                const CEvaluationNode * pDataNode,
-                                CMath::CVariableStack & variableStack,
-                                CMathEventN::CTrigger::CRoot *& pRoot,
-                                CMathContainer & container);
-
-    static bool compileCONSTANT(CEvaluationNode *& pTriggerNode,
-                                const CEvaluationNode * pDataNode,
-                                CMath::CVariableStack & variableStack,
-                                CMathEventN::CTrigger::CRoot *& pRoot,
-                                CMathContainer & container);
+    static CEvaluationNode * compileVARIABLE(const CEvaluationNode * pNode,
+        const std::vector< CEvaluationNode * > & children,
+        const CMath::Variables< CEvaluationNode * > & variables,
+        CMathEventN::CTrigger::CRoot *& pRoot,
+        CMathContainer & container);
 
     CMathObject * mpTrigger;
     CMathObject * mpInitialTrigger;

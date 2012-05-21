@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathExpression.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/15 15:56:59 $
+//   $Date: 2012/05/21 14:12:02 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,32 +65,21 @@ CMathExpression::CMathExpression(const CFunction & src,
         std::cout << src.getObjectName() << ": " << src.getInfix() << std::endl;
 
         // Create a vector of CEvaluationNodeObject for each variable
-        CMath::CVariableStack::StackElement CallParameters;
+        CMath::Variables< CEvaluationNode * > Variables;
+
         CCallParameters< C_FLOAT64 >::const_iterator it = callParameters.begin();
         CCallParameters< C_FLOAT64 >::const_iterator end = callParameters.end();
 
         for (; it != end; ++it)
           {
-            CallParameters.push_back(createNodeFromValue(it->value));
+            CMath::Variables< CEvaluationNode * >::value_type Variable;
+            Variable.push_back(createNodeFromValue(it->value));
+            Variables.push_back(Variable);
           }
-
-        CMath::CVariableStack::Buffer Stack;
-        CMath::CVariableStack VariableStack(Stack);
-
-        VariableStack.push(CallParameters);
 
         // Create a converted copy of the existing expression tree.
-        mpRoot = container.copyBranch(src.getRoot(), VariableStack, replaceDiscontinuousNodes);
+        mpRoot = container.copyBranch(src.getRoot(), Variables, replaceDiscontinuousNodes);
 
-        VariableStack.pop();
-
-        CMath::CVariableStack::StackElement::iterator itVar = CallParameters.begin();
-        CMath::CVariableStack::StackElement::iterator endVar = CallParameters.end();
-
-        for (; itVar != endVar; ++itVar)
-          {
-            delete *itVar;
-          }
       }
 
       break;
