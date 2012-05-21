@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:51 $
+//   $Author: bergmann $
+//   $Date: 2012/05/21 09:55:01 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,7 +68,14 @@ void SBMLDocumentLoader::readListOfLayouts(CListOfLayouts & lol,
   const ListOfLayouts* pLoL = dynamic_cast<const ListOfLayouts*>(&sbmlList);
   assert(pLoL != NULL);
   RenderListOfLayoutsPlugin* rlolPlugin = (RenderListOfLayoutsPlugin*) pLoL ->getPlugin("render");
-  assert(rlolPlugin != NULL);
+
+  if (rlolPlugin == NULL)
+    {
+      const_cast<SBMLDocument *>(pLoL->getSBMLDocument())->enablePackage(RenderExtension::getXmlnsL3V1V1(), "render", true);
+      rlolPlugin = (RenderListOfLayoutsPlugin*) pLoL ->getPlugin("render");
+
+    }
+
   iMax = rlolPlugin->getNumGlobalRenderInformationObjects();
   std::map<std::string, std::string> idToKeyMap;
   CLGlobalRenderInformation* pGRI = NULL;
