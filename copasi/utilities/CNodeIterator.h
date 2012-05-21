@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CNodeIterator.h,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/17 18:52:20 $
+//   $Date: 2012/05/21 13:36:05 $
 // End CVS Header
 
 // Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
@@ -190,6 +190,15 @@ public:
       {
         increment();
       }
+
+    return mCurrentMode;
+  }
+
+  const CNodeIteratorMode::State & skipChildren()
+  {
+    CStackElement & Current = mStack.top();
+    Current.mNextChildIndex = Current.mChildCount + 1;
+    mCurrentMode = CNodeIteratorMode::After;
 
     return mCurrentMode;
   }
