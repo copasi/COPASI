@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-//   $Revision: 1.90 $
+//   $Revision: 1.91 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/17 12:17:47 $
+//   $Date: 2012/05/21 14:11:22 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,7 +38,7 @@ CFunction::CFunction(const std::string & name,
     mKey(CCopasiRootContainer::getKeyFactory()->add("Function", this)),
     mSBMLId(""),
     mVariables("Function Parameters", this),
-    mpCallParameters(NULL),
+    mCallParametersBegin(),
     mReversible(TriUnspecified)
 {}
 
@@ -49,7 +49,7 @@ CFunction::CFunction(const CFunction & src,
     mKey(CCopasiRootContainer::getKeyFactory()->add("Function", this)),
     mSBMLId(src.mSBMLId),
     mVariables(src.mVariables, this),
-    mpCallParameters(NULL),
+    mCallParametersBegin(src.mCallParametersBegin),
     mReversible(src.mReversible)
 {
   setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
@@ -135,7 +135,7 @@ size_t CFunction::getVariableIndex(const std::string & name) const
 }
 
 const C_FLOAT64 & CFunction::getVariableValue(const size_t & index) const
-{return *(*mpCallParameters)[index].value;}
+{return *(mCallParametersBegin + index)->value;}
 
 void CFunction::setReversible(const TriLogic & reversible)
 {mReversible = reversible;}
@@ -156,7 +156,7 @@ bool CFunction::addVariable(const std::string & name,
 
 const C_FLOAT64 & CFunction::calcValue(const CCallParameters<C_FLOAT64> & callParameters)
 {
-  mpCallParameters = & callParameters;
+  mCallParametersBegin = callParameters.begin();
 
   calculate();
 

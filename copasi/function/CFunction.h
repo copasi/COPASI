@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-//   $Revision: 1.54 $
+//   $Revision: 1.55 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 23:11:32 $
+//   $Date: 2012/05/21 14:11:22 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -218,7 +218,7 @@ private:
   /**
    * A pointer to the call parameters during calculation.
    */
-  const CCallParameters<C_FLOAT64> * mpCallParameters;
+  CCallParameters< C_FLOAT64 >::const_iterator mCallParametersBegin;
 
   /**
    * Whether the function is reversible
