@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEvent.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/21 14:12:02 $
+//   $Date: 2012/05/21 15:57:38 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -552,7 +552,7 @@ CEvaluationNode * CMathEventN::CTrigger::compile(const CEvaluationNode * pTrigge
 
   while (itNode.next() != itNode.end())
     {
-      if (*itNode != NULL)
+      if (*itNode == NULL)
         {
           continue;
         }
