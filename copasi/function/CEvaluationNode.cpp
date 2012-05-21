@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.59 $
+//   $Revision: 1.60 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/17 18:11:30 $
+//   $Date: 2012/05/21 14:09:44 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -522,8 +522,6 @@ const CEvaluationNode * CEvaluationNode::findTopMinus(const std::vector<CFunctio
   itNode.setProcessingModes(CNodeIteratorMode::Before | CNodeIteratorMode::After);
   const CEvaluationNode * pMinus = NULL;
 
-  std::cout << buildInfix() << std::endl;
-
   while (itNode.next() != itNode.end())
     {
       if (*itNode == NULL)
@@ -539,13 +537,9 @@ const CEvaluationNode * CEvaluationNode::findTopMinus(const std::vector<CFunctio
 
             if (itNode->getType() == (OPERATOR | CEvaluationNodeOperator::MINUS))
               {
-                pMinus = *itNode;
-
                 // We found a minus no need to go down the tree.
-                while (itNode.next() != itNode.end())
-                  {
-                    if (*itNode == pMinus) break;
-                  }
+                itNode.skipChildren();
+                pMinus = *itNode;
 
                 if (itNode.parentContextPtr() != NULL)
                   {
