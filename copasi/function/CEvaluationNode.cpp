@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.60 $
+//   $Revision: 1.61 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/21 14:09:44 $
+//   $Date: 2012/05/21 15:58:03 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -392,7 +392,7 @@ ASTNode* CEvaluationNode::toAST(const CCopasiDataModel* /*pDataModel*/) const
 }
 
 const C_FLOAT64 * CEvaluationNode::getValuePointer() const
-{return &mValue;}
+{return mpValue;}
 
 // virtual
 std::string CEvaluationNode::getMMLString(const std::vector< std::string > & /* children */,
