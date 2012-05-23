@@ -1,9 +1,9 @@
 /* Begin CVS Header
  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.cpp,v $
- $Revision: 1.11 $
+ $Revision: 1.12 $
  $Name:  $
  $Author: shoops $
- $Date: 2012/05/15 15:57:31 $
+ $Date: 2012/05/23 12:57:54 $
  End CVS Header */
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -264,7 +264,7 @@ std::string CDimension::print(const CCopasiDataModel* pDataModel) const
     << ", " << this->mD4 << ", " << this->mD5 << ")  "
     << this->getDisplayString(pDataModel);
 
-  return os.str();;
+  return os.str();
 }
 
 void CDimension::fixDimensionless(bool d1, bool d2, bool d3, bool d4, bool d5)
