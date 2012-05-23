@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathDependencyGraph.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/29 16:20:16 $
+//   $Date: 2012/05/23 12:56:39 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,6 +18,7 @@
 #include "CMathObject.h"
 
 #include "report/CCopasiContainer.h"
+#include "report/CCopasiObjectName.h"
 #include "utilities/CCopasiMessage.h"
 
 CMathDependencyGraph::CMathDependencyGraph():
@@ -83,55 +84,49 @@ bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag 
   CObjectInterface::ObjectSet::const_iterator end = changedObjects.end();
 
   // Mark all nodes which are changed or need to be calculated
-  for (; it != end; ++it)
+  for (; it != end && success; ++it)
     {
       CMathDependencyNode * pNode = mObjects2Nodes[*it];
 
-      pNode->updateDependentState(context, changedObjects);
+      success &= pNode->updateDependentState(context, changedObjects);
     }
 
   it = requestedObjects.begin();
   end = requestedObjects.end();
 
   // Mark all nodes which are requested and its prerequisites.
-  for (; it != end; ++it)
+  for (; it != end && success; ++it)
     {
       CMathDependencyNode * pNode = mObjects2Nodes[*it];
 
       pNode->setRequested(true);
-      pNode->updatePrerequisiteState(context, changedObjects);
+      success &= pNode->updatePrerequisiteState(context, changedObjects);
     }
 
+  it = requestedObjects.begin();
+  end = requestedObjects.end();
 
-  it = changedObjects.begin();
-  end = changedObjects.end();
-
-  for (it = changedObjects.begin(); it != end; ++it)
+  for (; it != end && success; ++it)
     {
       CMathDependencyNode * pNode = mObjects2Nodes[*it];
 
-      pNode->buildUpdateSequence(context, updateSequence);
+      success &= pNode->buildUpdateSequence(context, updateSequence);
     }
 
-  // There should be no nodes left which are not up to date. If that is the case we have circular
-  // dependencies
   const_iterator itCheck = mObjects2Nodes.begin();
   const_iterator endCheck = mObjects2Nodes.end();
 
   for (; itCheck != endCheck; ++itCheck)
     {
-      if (itCheck->second->isChanged() &&
-          itCheck->second->isRequested())
-        {
-          updateSequence.clear();
-          success = false;
-
-          // TODO CRITICAL We need to create a proper error message.
-        }
-
       // Reset the dependency nodes for the next call.
       itCheck->second->setChanged(false);
-      itCheck->second->setRequested(false);
+    }
+
+  if (!success)
+    {
+      updateSequence.clear();
+
+      CCopasiMessage(CCopasiMessage::ERROR, MCMathModel + 3, (*it)->getCN().c_str());
     }
 
   return success;
@@ -149,9 +144,9 @@ void CMathDependencyGraph::exportDOTFormat(std::ostream & os, const std::string 
     {
       const CObjectInterface * pObject = it->second->getObject();
 
-      const std::set< CMathDependencyNode * > & Dependents = it->second->getDependents();
-      std::set< CMathDependencyNode * >::const_iterator itDep = Dependents.begin();
-      std::set< CMathDependencyNode * >::const_iterator endDep = Dependents.end();
+      const std::vector< CMathDependencyNode * > & Dependents = it->second->getDependents();
+      std::vector< CMathDependencyNode * >::const_iterator itDep = Dependents.begin();
+      std::vector< CMathDependencyNode * >::const_iterator endDep = Dependents.end();
 
       for (; itDep != endDep; ++itDep)
         {

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathDependencyNode.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/29 16:20:16 $
+//   $Date: 2012/05/23 12:56:39 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -35,19 +35,19 @@ public:
 
   void addPrerequisite(CMathDependencyNode * pNode);
 
-  std::set< CMathDependencyNode * > & getDependents();
+  std::vector< CMathDependencyNode * > & getDependents();
 
   void addDependent(CMathDependencyNode * pNode);
 
-  std::set< CMathDependencyNode * > & getPrerequisites();
+  std::vector< CMathDependencyNode * > & getPrerequisites();
 
-  void updateDependentState(const CMath::SimulationContextFlag & context,
+  bool updateDependentState(const CMath::SimulationContextFlag & context,
                             const CObjectInterface::ObjectSet & changedObjects);
 
-  void updatePrerequisiteState(const CMath::SimulationContextFlag & context,
+  bool updatePrerequisiteState(const CMath::SimulationContextFlag & context,
                                const CObjectInterface::ObjectSet & changedObjects);
 
-  void buildUpdateSequence(const CMath::SimulationContextFlag & context,
+  bool buildUpdateSequence(const CMath::SimulationContextFlag & context,
                            std::vector< CObjectInterface * > & updateSequence);
 
   void setChanged(const bool & changed);
@@ -61,8 +61,8 @@ public:
   // Attributes
 private:
   const CObjectInterface * mpObject;
-  std::set< CMathDependencyNode * > mPrerequisites;
-  std::set< CMathDependencyNode * > mDependents;
+  std::vector< CMathDependencyNode * > mPrerequisites;
+  std::vector< CMathDependencyNode * > mDependents;
   bool mChanged;
   bool mRequested;
 };

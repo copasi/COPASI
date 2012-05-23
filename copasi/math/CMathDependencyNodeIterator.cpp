@@ -1,0 +1,224 @@
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathDependencyNodeIterator.cpp,v $
+//   $Revision: 1.1 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2012/05/23 12:56:39 $
+// End CVS Header
+
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+#include "copasi.h"
+
+#include "CMathDependencyNodeIterator.h"
+
+#include "CMathDependencyNode.h"
+
+CMathDependencyNodeIterator::CStackElement::CStackElement():
+    mpNode(NULL),
+    mType(Dependents),
+    mItChild(),
+    mEndChild(),
+    mpParent(NULL)
+{}
+
+CMathDependencyNodeIterator::CStackElement::CStackElement(const CMathDependencyNodeIterator::CStackElement & src):
+    mpNode(src.mpNode),
+    mType(src.mType),
+    mItChild(src.mItChild),
+    mEndChild(src.mEndChild),
+    mpParent(src.mpParent)
+{}
+
+CMathDependencyNodeIterator::CStackElement::CStackElement(CMathDependencyNode * pNode,
+    const CMathDependencyNodeIterator::Type & type,
+    const CMathDependencyNode * pParent):
+    mpNode(pNode),
+    mType(type),
+    mItChild(),
+    mEndChild(),
+    mpParent(pParent)
+{
+  if (pNode != NULL)
+    {
+      switch (mType)
+        {
+          case Dependents:
+            mItChild = mpNode->getDependents().begin();
+            mEndChild = mpNode->getDependents().end();
+            break;
+
+          case Prerequisites:
+            mItChild = mpNode->getPrerequisites().begin();
+            mEndChild = mpNode->getPrerequisites().end();
+            break;
+        }
+    }
+}
+
+CMathDependencyNodeIterator::CStackElement::~CStackElement()
+{}
+
+CMathDependencyNodeIterator::CMathDependencyNodeIterator():
+    mStack(),
+    mVisited(),
+    mType(Dependents),
+    mCurrentState(End),
+    mProcessingModes(After | End | Recursive)
+{}
+
+CMathDependencyNodeIterator::CMathDependencyNodeIterator(const CMathDependencyNodeIterator & src):
+    mStack(src.mStack),
+    mVisited(src.mVisited),
+    mType(src.mType),
+    mCurrentState(src.mCurrentState),
+    mProcessingModes(src.mProcessingModes)
+{}
+
+CMathDependencyNodeIterator::CMathDependencyNodeIterator(CMathDependencyNode * pNode,
+    const CMathDependencyNodeIterator::Type & type):
+    mStack(),
+    mVisited(),
+    mType(type),
+    mCurrentState(Start),
+    mProcessingModes(After | End | Recursive)
+{
+  mStack.push(CStackElement(pNode, mType, NULL));
+  mVisited.insert(pNode);
+}
+
+CMathDependencyNodeIterator::~CMathDependencyNodeIterator()
+{}
+
+void CMathDependencyNodeIterator::increment()
+{
+  if (mStack.empty())
+    {
+      mCurrentState = End;
+
+      return;
+    }
+
+  CStackElement & Current = mStack.top();
+
+  if (mCurrentState != After)
+    {
+      if (Current.mItChild != Current.mEndChild)
+        {
+          CMathDependencyNode * pNode = *Current.mItChild;
+
+          if (mVisited.find(pNode) != mVisited.end())
+            {
+              mStack.push(CStackElement(*Current.mItChild, Current.mType, Current.mpNode));
+              mCurrentState = Before;
+            }
+          else
+            {
+              mCurrentState = Recursive;
+            }
+
+          return;
+        }
+
+      if (Current.mItChild != Current.mEndChild)
+        {
+          mCurrentState = After;
+
+          return;
+        }
+    }
+
+  mVisited.erase(Current.mpNode);
+  mStack.pop();
+
+  if (mStack.empty())
+    {
+      mCurrentState = End;
+
+      return;
+    }
+
+  CStackElement & Parent = mStack.top();
+
+  if (Parent.mItChild != Parent.mEndChild)
+    {
+      mCurrentState = Intermediate;
+    }
+  else
+    {
+      mCurrentState = After;
+    }
+
+  return;
+}
+
+const bool CMathDependencyNodeIterator::next()
+{
+  if (mCurrentState != Start)
+    {
+      increment();
+    }
+  else
+    {
+      mCurrentState = Before;
+    }
+
+  while (!(mProcessingModes & mCurrentState))
+    {
+      increment();
+    }
+
+  return mCurrentState & ~(End | Recursive);
+}
+
+const CMathDependencyNodeIterator::State & CMathDependencyNodeIterator::skipChildren()
+{
+  CStackElement & Current = mStack.top();
+  Current.mItChild = Current.mEndChild;
+  mCurrentState = After;
+
+  if (!(mProcessingModes & mCurrentState))
+    {
+      next();
+    }
+
+  return mCurrentState;
+}
+
+CMathDependencyNode * CMathDependencyNodeIterator::operator*()
+{
+  return mStack.top().mpNode;
+}
+
+CMathDependencyNode * CMathDependencyNodeIterator::operator->()
+{
+  return mStack.top().mpNode;
+}
+
+const CMathDependencyNode * CMathDependencyNodeIterator::parent()
+{
+  return mStack.top().mpParent;
+}
+
+const CMathDependencyNodeIterator::State & CMathDependencyNodeIterator::state() const
+{
+  return mCurrentState;
+}
+
+size_t CMathDependencyNodeIterator::level() const
+{
+  return mStack.size();
+}
+
+void CMathDependencyNodeIterator::setProcessingModes(const CMathDependencyNodeIterator::Flag & processingModes)
+{
+  mProcessingModes = (processingModes | End | Recursive);
+}
+
+CMathDependencyNodeIterator::Flag CMathDependencyNodeIterator::getProcessingModes() const
+{
+  return (mProcessingModes & ~(End | Recursive));
+}
