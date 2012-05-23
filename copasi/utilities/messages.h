@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.165 $
+//   $Revision: 1.166 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/12/13 19:49:58 $
+//   $Date: 2012/05/23 12:55:36 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -389,6 +389,7 @@ const MESSAGES Messages[] =
    "continue."},
   {MCMathModel + 2, "CMathModel (2): The execution time '%d' of an event is before the current"
    " time '%d' due to a negative delay."},
+  {MCMathModel + 3, "CMathModel (3): Recursive prerequisites encountered for object '%s'."},
 
   //CModelMerging
   {MCModelMerging + 1, "CModelMerging (1): An error has occurred while constructing the temporary (joined)  data model."},
