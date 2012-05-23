@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-//   $Revision: 1.65 $
+//   $Revision: 1.66 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 23:11:31 $
+//   $Date: 2012/05/23 18:39:00 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -708,7 +708,7 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
       CEvaluationNode * pValue = new CEvaluationNodeFunction(CEvaluationNodeFunction::LOG10, "log10");
       pValue->addChild(children[1]);
       CEvaluationNode * pBase = new CEvaluationNodeFunction(CEvaluationNodeFunction::LOG10, "log10");
-      pValue->addChild(children[0]);
+      pBase->addChild(children[0]);
       pNode->addChild(pValue);
       pNode->addChild(pBase);
 
