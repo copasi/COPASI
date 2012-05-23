@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.96 $
+//   $Revision: 1.97 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:12:27 $
+//   $Date: 2012/05/23 17:05:06 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -295,9 +295,12 @@ void SliderDialog::createNewSlider()
                       case QMessageBox::NoToAll:
                         // set the flag
                         noToAll = true;
+                        break;
+
                       case QMessageBox::No:
                         // do nothing else
                         break;
+
                       default:
                         // do nothing
                         break;

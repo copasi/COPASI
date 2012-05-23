@@ -1,9 +1,9 @@
 /* Begin CVS Header
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CReadConfig.cpp,v $
-$Revision: 1.22 $
+$Revision: 1.23 $
 $Name:  $
 $Author: shoops $
-$Date: 2011/03/07 19:34:55 $
+$Date: 2012/05/23 17:04:50 $
 End CVS Header */
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,7 +116,7 @@ C_INT32 CReadConfig::getVariable(const std::string& name,
       // the context if we have found the correct one in the case the mode
       // is SEARCH.
 
-      if (mode & CReadConfig::SEARCH &&
+      if ((mode & CReadConfig::SEARCH) &&
           name == "Compartment" &&
           Name == "Compartment")
         {
@@ -129,7 +129,7 @@ C_INT32 CReadConfig::getVariable(const std::string& name,
       // The Title keyword is used twice. So we must determine by
       // the context if we have found the correct one in the case the mode
       // is SEARCH.
-      if (mode & CReadConfig::SEARCH &&
+      if ((mode & CReadConfig::SEARCH) &&
           name == "Title" &&
           Name == "Title")
         {
