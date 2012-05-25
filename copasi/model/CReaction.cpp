@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.202 $
+//   $Revision: 1.203 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/20 12:08:25 $
+//   $Date: 2012/05/25 10:42:54 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1213,6 +1213,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
   return pVariableNode;
 }
 
+// TODO CRITICAL Remove recursion!
 CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >& replacementMap, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   CEvaluationNode* pTmpNode = NULL;
