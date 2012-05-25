@@ -1,9 +1,9 @@
 /* Begin CVS Header
   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.h,v $
-  $Revision: 1.9 $
+  $Revision: 1.10 $
   $Name:  $
-  $Author: bergmann $
-  $Date: 2012/05/11 12:51:39 $
+  $Author: shoops $
+  $Date: 2012/05/25 12:08:46 $
   End CVS Header */
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -248,7 +248,7 @@ private:
     void setConfiguration(const CCopasiParameterGroup & configuration);
 
     /**
-     * Retreive the configuration contents
+     * Retrieve the configuration contents
      * @return const CConfigurationFile & configuration
      */
     const CCopasiParameterGroup & getConfiguration() const;
