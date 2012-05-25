@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.418 $
+//   $Revision: 1.419 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/10 16:03:09 $
+//   $Date: 2012/05/25 12:11:29 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -99,6 +99,12 @@ CModel::CModel(CCopasiContainer* pParent):
     mInitialState(),
     mCurrentState(),
     mStateTemplate(*this, this->mInitialState, this->mCurrentState),
+    mSimulatedUpToDateObjects(),
+#ifdef TST_DEPENDENCYGRAPH
+    mInitialDependencies(),
+    mTransientDependencies(),
+    mPhysicalDependencies(),
+#endif // TST_DEPENDENCYGRAPH
     mVolumeUnit(ml),
     mAreaUnit(m2),
     mLengthUnit(m),
@@ -502,6 +508,7 @@ bool CModel::buildDependencyGraphs()
 {
   mInitialDependencies.clear();
   mTransientDependencies.clear();
+  mPhysicalDependencies.clear();
 
   // The initial values of the model entities
   CModelEntity **ppEntity = mStateTemplate.beginIndependent() - 1; // Offset for time
