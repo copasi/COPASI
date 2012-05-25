@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.cpp,v $
-//   $Revision: 1.24 $
+//   $Revision: 1.25 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/17 13:34:09 $
+//   $Date: 2012/05/25 10:42:20 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1143,7 +1143,7 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
 
           case CEvaluationNode::FUNCTION:
 
-            switch ((CEvaluationNodeOperator::SubType) CEvaluationNode::subType(itNode->getType()))
+            switch ((CEvaluationNodeFunction::SubType) CEvaluationNode::subType(itNode->getType()))
               {
                 case CEvaluationNodeFunction::MINUS:
                   Result = itNode.context()[0].invert();
