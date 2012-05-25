@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.81 $
+//   $Revision: 1.82 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/21 15:58:40 $
+//   $Date: 2012/05/25 20:52:24 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -325,7 +325,7 @@ bool CEvaluationTree::compileNodes()
   CNodeIterator< CEvaluationNode > itNode(mpRoot);
   mUsable = true;
 
-  while (itNode.next() != itNode.end() && mUsable)
+  while (mUsable && itNode.next() != itNode.end())
     {
       if (*itNode != NULL)
         {
@@ -341,10 +341,13 @@ bool CEvaluationTree::compileNodes()
       // Find the error node in the node list
       for (it = mpNodeList->begin(); it != end; ++it)
         {
-          if (*it == *itNode) break;
+          if (*it == *itNode)
+            {
+              end = it + 1;
+              break;
+            }
         }
 
-      end = it;
       mErrorPosition = 0;
 
       for (it = mpNodeList->begin(); it != end; ++it)
