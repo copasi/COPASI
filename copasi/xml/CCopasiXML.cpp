@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.143 $
+//   $Revision: 1.144 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/04 16:10:00 $
+//   $Date: 2012/05/25 12:13:29 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,10 +95,10 @@
 // class CCopasiReport;
 
 // static
-const std::string CCopasiXML::CVSDate = "$Date: 2012/05/04 16:10:00 $";
+const std::string CCopasiXML::CVSDate = "$Date: 2012/05/25 12:13:29 $";
 
 // static
-const std::string CCopasiXML::CVSRevision = "$Revision: 1.143 $";
+const std::string CCopasiXML::CVSRevision = "$Revision: 1.144 $";
 
 // static
 CCopasiXML::CCopasiXML():
@@ -430,19 +430,7 @@ bool CCopasiXML::saveModel()
 
   startSaveElement("Model", Attributes);
 
-  if (mpModel->getMiriamAnnotation() != "")
-    {
-      startSaveElement("MiriamAnnotation");
-      *mpOstream << mpModel->getMiriamAnnotation() << std::endl;
-      endSaveElement("MiriamAnnotation");
-    }
-
-  if (mpModel->getNotes() != "")
-    {
-      startSaveElement("Comment");
-      saveXhtml(mpModel->getNotes());
-      endSaveElement("Comment");
-    }
+  saveAnnotation(mpModel);
 
   if (mpModel->getInitialExpression() != "")
     {
@@ -478,19 +466,7 @@ bool CCopasiXML::saveModel()
 
           startSaveElement("Compartment", Attributes);
 
-          if (pComp->getMiriamAnnotation() != "")
-            {
-              startSaveElement("MiriamAnnotation");
-              *mpOstream << pComp->getMiriamAnnotation() << std::endl;
-              endSaveElement("MiriamAnnotation");
-            }
-
-          if (pComp->getNotes() != "")
-            {
-              startSaveElement("Comment");
-              saveXhtml(pComp->getNotes());
-              endSaveElement("Comment");
-            }
+          saveAnnotation(pComp);
 
           if (SimulationType != CModelEntity::FIXED &&
               pComp->getExpression() != "")
@@ -539,19 +515,7 @@ bool CCopasiXML::saveModel()
 
           startSaveElement("Metabolite", Attributes);
 
-          if (pMetab->getMiriamAnnotation() != "")
-            {
-              startSaveElement("MiriamAnnotation");
-              *mpOstream << pMetab->getMiriamAnnotation() << std::endl;
-              endSaveElement("MiriamAnnotation");
-            }
-
-          if (pMetab->getNotes() != "")
-            {
-              startSaveElement("Comment");
-              saveXhtml(pMetab->getNotes());
-              endSaveElement("Comment");
-            }
+          saveAnnotation(pMetab);
 
           if (SimulationType != CModelEntity::FIXED &&
               SimulationType != CModelEntity::REACTIONS &&
@@ -599,19 +563,7 @@ bool CCopasiXML::saveModel()
 
           startSaveElement("ModelValue", Attributes);
 
-          if (pMV->getMiriamAnnotation() != "")
-            {
-              startSaveElement("MiriamAnnotation");
-              *mpOstream << pMV->getMiriamAnnotation() << std::endl;
-              endSaveElement("MiriamAnnotation");
-            }
-
-          if (pMV->getNotes() != "")
-            {
-              startSaveElement("Comment");
-              saveXhtml(pMV->getNotes());
-              endSaveElement("Comment");
-            }
+          saveAnnotation(pMV);
 
           if (SimulationType != CModelEntity::FIXED &&
               pMV->getExpression() != "")
@@ -667,19 +619,7 @@ bool CCopasiXML::saveModel()
 
           startSaveElement("Reaction", Attributes);
 
-          if (pReaction->getMiriamAnnotation() != "")
-            {
-              startSaveElement("MiriamAnnotation");
-              *mpOstream << pReaction->getMiriamAnnotation() << std::endl;
-              endSaveElement("MiriamAnnotation");
-            }
-
-          if (pReaction->getNotes() != "")
-            {
-              startSaveElement("Comment");
-              saveXhtml(pReaction->getNotes());
-              endSaveElement("Comment");
-            }
+          saveAnnotation(pReaction);
 
           Attr.erase();
           Attr.add("metabolite", "");
@@ -841,19 +781,7 @@ bool CCopasiXML::saveModel()
 
           startSaveElement("Event", Attributes);
 
-          if (pEvent->getMiriamAnnotation() != "")
-            {
-              startSaveElement("MiriamAnnotation");
-              *mpOstream << pEvent->getMiriamAnnotation() << std::endl;
-              endSaveElement("MiriamAnnotation");
-            }
-
-          if (pEvent->getNotes() != "")
-            {
-              startSaveElement("Comment");
-              saveXhtml(pEvent->getNotes());
-              endSaveElement("Comment");
-            }
+          saveAnnotation(pEvent);
 
           if (pEvent->getTriggerExpression() != "")
             {
@@ -929,19 +857,7 @@ bool CCopasiXML::saveModel()
 
           startSaveElement("ModelParameterSet", Attributes);
 
-          if (pSet->getMiriamAnnotation() != "")
-            {
-              startSaveElement("MiriamAnnotation");
-              *mpOstream << pSet->getMiriamAnnotation() << std::endl;
-              endSaveElement("MiriamAnnotation");
-            }
-
-          if (pSet->getNotes() != "")
-            {
-              startSaveElement("Comment");
-              saveXhtml(pSet->getNotes());
-              endSaveElement("Comment");
-            }
+          saveAnnotation(pSet);
 
           CModelParameterGroup::const_iterator itSet = pSet->begin();
           CModelParameterGroup::const_iterator endSet = pSet->end();
@@ -997,6 +913,48 @@ bool CCopasiXML::saveModel()
 
   return success;
 }
+
+bool CCopasiXML::saveAnnotation(const CAnnotation * pAnnotation)
+{
+  if (pAnnotation->getMiriamAnnotation() != "")
+    {
+      startSaveElement("MiriamAnnotation");
+      *mpOstream << pAnnotation->getMiriamAnnotation() << std::endl;
+      endSaveElement("MiriamAnnotation");
+    }
+
+  if (pAnnotation->getNotes() != "")
+    {
+      startSaveElement("Comment");
+      saveXhtml(pAnnotation->getNotes());
+      endSaveElement("Comment");
+    }
+
+  if (pAnnotation->getUnsupportedAnnotations().size() > 0)
+    {
+      startSaveElement("ListOfUnsupportedAnnotations");
+
+      CAnnotation::UnsupportedAnnotation::const_iterator it = pAnnotation->getUnsupportedAnnotations().begin();
+      CAnnotation::UnsupportedAnnotation::const_iterator end = pAnnotation->getUnsupportedAnnotations().end();
+
+      CXMLAttributeList Attributes;
+      Attributes.add("name", "");
+
+      for (; it != end; ++it)
+        {
+          Attributes.setValue(0, it->first);
+
+          startSaveElement("UnsupportedAnnotation", Attributes);
+          *mpOstream << it->second << std::endl;
+          endSaveElement("UnsupportedAnnotation");
+        }
+
+      endSaveElement("ListOfUnsupportedAnnotations");
+    }
+
+  return true;
+}
+
 
 bool CCopasiXML::saveModelParameter(const CModelParameter * pModelParameter)
 {
@@ -1097,19 +1055,7 @@ bool CCopasiXML::saveFunctionList()
 
       startSaveElement("Function", Attributes);
 
-      if (pFunction->getMiriamAnnotation() != "")
-        {
-          startSaveElement("MiriamAnnotation");
-          *mpOstream << pFunction->getMiriamAnnotation() << std::endl;
-          endSaveElement("MiriamAnnotation");
-        }
-
-      if (pFunction->getNotes() != "")
-        {
-          startSaveElement("Comment");
-          saveXhtml(pFunction->getNotes());
-          endSaveElement("Comment");
-        }
+      saveAnnotation(pFunction);
 
       startSaveElement("Expression");
       saveData(pFunction->getInfix());

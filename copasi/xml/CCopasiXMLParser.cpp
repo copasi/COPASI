@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-//   $Revision: 1.242 $
+//   $Revision: 1.243 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/09 21:34:36 $
+//   $Date: 2012/05/25 12:13:29 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -214,6 +214,7 @@ CCopasiXMLParser::CCopasiXMLParser(CVersion & version) :
     mElementHandlerStack(),
     mUnknownElement(*this, this->mCommon),
     mCharacterDataElement(*this, this->mCommon),
+    mListOfUnsupportedAnnotationsElement(*this, this->mCommon),
     mCommentElement(*this, this->mCommon),
     mMiriamAnnotationElement(*this, this->mCommon)
 {
@@ -924,6 +925,13 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
 
             break;
 
+          case ListOfUnsupportedAnnotations:
+
+            if (!strcmp(pszName, "ListOfUnsupportedAnnotations"))
+              mpCurrentHandler = &mParser.mListOfUnsupportedAnnotationsElement;
+
+            break;
+
           case Expression:
 
             if (!strcmp(pszName, "Expression"))
@@ -1057,6 +1065,19 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
           {
             mCommon.pFunction->setNotes(mCommon.CharacterData);
             mCommon.CharacterData = "";
+          }
+
+        break;
+
+      case ListOfUnsupportedAnnotations:
+
+        if (strcmp(pszName, "ListOfUnsupportedAnnotations"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfUnsupportedAnnotations", mParser.getCurrentLineNumber());
+
+        if (mCommon.pFunction != NULL)
+          {
+            mCommon.pFunction->getUnsupportedAnnotations() = mParser.mListOfUnsupportedAnnotationsElement.getUnsupportedAnnotations();
           }
 
         break;
@@ -1666,6 +1687,16 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
 
         break;
 
+      case ListOfUnsupportedAnnotations:
+
+        if (!strcmp(pszName, "ListOfUnsupportedAnnotations"))
+          {
+            mpCurrentHandler = &mParser.mListOfUnsupportedAnnotationsElement;
+            mLastKnownElement = mCurrentElement;
+          }
+
+        break;
+
       case InitialExpression:
 
         if (!strcmp(pszName, "InitialExpression"))
@@ -1807,6 +1838,16 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
 
         mCommon.pModel->setNotes(mCommon.CharacterData);
         mCommon.CharacterData = "";
+        break;
+
+      case ListOfUnsupportedAnnotations:
+
+        if (strcmp(pszName, "ListOfUnsupportedAnnotations"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfUnsupportedAnnotations", mParser.getCurrentLineNumber());
+
+        mCommon.pModel->getUnsupportedAnnotations() = mParser.mListOfUnsupportedAnnotationsElement.getUnsupportedAnnotations();
+
         break;
 
       case InitialExpression:
@@ -2224,6 +2265,13 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
 
             break;
 
+          case ListOfUnsupportedAnnotations:
+
+            if (!strcmp(pszName, "ListOfUnsupportedAnnotations"))
+              mpCurrentHandler = &mParser.mListOfUnsupportedAnnotationsElement;
+
+            break;
+
           case Expression:
 
             if (!strcmp(pszName, "Expression"))
@@ -2292,6 +2340,16 @@ void CCopasiXMLParser::CompartmentElement::end(const XML_Char *pszName)
 
         mpCompartment->setNotes(mCommon.CharacterData);
         mCommon.CharacterData = "";
+        break;
+
+      case ListOfUnsupportedAnnotations:
+
+        if (strcmp(pszName, "ListOfUnsupportedAnnotations"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfUnsupportedAnnotations", mParser.getCurrentLineNumber());
+
+        mpCompartment->getUnsupportedAnnotations() = mParser.mListOfUnsupportedAnnotationsElement.getUnsupportedAnnotations();
+
         break;
 
       case Expression:
@@ -2520,6 +2578,13 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
 
             break;
 
+          case ListOfUnsupportedAnnotations:
+
+            if (!strcmp(pszName, "ListOfUnsupportedAnnotations"))
+              mpCurrentHandler = &mParser.mListOfUnsupportedAnnotationsElement;
+
+            break;
+
           case Expression:
 
             if (!strcmp(pszName, "Expression"))
@@ -2588,6 +2653,16 @@ void CCopasiXMLParser::MetaboliteElement::end(const XML_Char *pszName)
 
         mpMetabolite->setNotes(mCommon.CharacterData);
         mCommon.CharacterData = "";
+        break;
+
+      case ListOfUnsupportedAnnotations:
+
+        if (strcmp(pszName, "ListOfUnsupportedAnnotations"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfUnsupportedAnnotations", mParser.getCurrentLineNumber());
+
+        mpMetabolite->getUnsupportedAnnotations() = mParser.mListOfUnsupportedAnnotationsElement.getUnsupportedAnnotations();
+
         break;
 
       case Expression:
@@ -2805,6 +2880,13 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
 
             break;
 
+          case ListOfUnsupportedAnnotations:
+
+            if (!strcmp(pszName, "ListOfUnsupportedAnnotations"))
+              mpCurrentHandler = &mParser.mListOfUnsupportedAnnotationsElement;
+
+            break;
+
           case Expression:
 
             if (!strcmp(pszName, "Expression"))
@@ -2886,6 +2968,16 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
 
         mpMV->setNotes(mCommon.CharacterData);
         mCommon.CharacterData = "";
+        break;
+
+      case ListOfUnsupportedAnnotations:
+
+        if (strcmp(pszName, "ListOfUnsupportedAnnotations"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfUnsupportedAnnotations", mParser.getCurrentLineNumber());
+
+        mpMV->getUnsupportedAnnotations() = mParser.mListOfUnsupportedAnnotationsElement.getUnsupportedAnnotations();
+
         break;
 
       case Expression:
@@ -3122,6 +3214,13 @@ void CCopasiXMLParser::EventElement::start(const XML_Char *pszName,
 
             break;
 
+          case ListOfUnsupportedAnnotations:
+
+            if (!strcmp(pszName, "ListOfUnsupportedAnnotations"))
+              mpCurrentHandler = &mParser.mListOfUnsupportedAnnotationsElement;
+
+            break;
+
           case TriggerExpression:
 
             if (!strcmp(pszName, "TriggerExpression"))
@@ -3208,6 +3307,16 @@ void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
 
         mCommon.pEvent->setNotes(mCommon.CharacterData);
         mCommon.CharacterData = "";
+        break;
+
+      case ListOfUnsupportedAnnotations:
+
+        if (strcmp(pszName, "ListOfUnsupportedAnnotations"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfUnsupportedAnnotations", mParser.getCurrentLineNumber());
+
+        mCommon.pEvent->getUnsupportedAnnotations() = mParser.mListOfUnsupportedAnnotationsElement.getUnsupportedAnnotations();
+
         break;
 
       case TriggerExpression:
@@ -3669,6 +3778,13 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
 
             break;
 
+          case ListOfUnsupportedAnnotations:
+
+            if (!strcmp(pszName, "ListOfUnsupportedAnnotations"))
+              mpCurrentHandler = &mParser.mListOfUnsupportedAnnotationsElement;
+
+            break;
+
           case ListOfSubstrates:
 
             if (!strcmp(pszName, "ListOfSubstrates"))
@@ -3788,6 +3904,16 @@ void CCopasiXMLParser::ReactionElement::end(const XML_Char *pszName)
 
         mCommon.pReaction->setNotes(mCommon.CharacterData);
         mCommon.CharacterData = "";
+        break;
+
+      case ListOfUnsupportedAnnotations:
+
+        if (strcmp(pszName, "ListOfUnsupportedAnnotations"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfUnsupportedAnnotations", mParser.getCurrentLineNumber());
+
+        mCommon.pReaction->getUnsupportedAnnotations() = mParser.mListOfUnsupportedAnnotationsElement.getUnsupportedAnnotations();
+
         break;
 
       case ListOfSubstrates:

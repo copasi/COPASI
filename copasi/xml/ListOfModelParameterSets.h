@@ -1,15 +1,18 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/ListOfModelParameterSets.h,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/03/07 17:14:43 $
+//   $Date: 2012/05/25 12:13:30 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
+
+#ifndef COPASI_ListOfModelParameterSets
+#define COPASI_ListOfModelParameterSets
 
 class ModelParameterElement:
     public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
@@ -222,3 +225,4 @@ private:
   ModelParameterSetElement * mpModelParameterSetElement;
 };
 
+#endif // COPASI_ListOfModelParameterSets

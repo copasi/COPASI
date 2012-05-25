@@ -1,12 +1,12 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/xml.pro,v $
-#   $Revision: 1.16 $
+#   $Revision: 1.17 $
 #   $Name:  $
 #   $Author: shoops $
-#   $Date: 2012/03/07 17:14:42 $
+#   $Date: 2012/05/25 12:13:29 $
 # End CVS Header
 
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -17,7 +17,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.16 $ $Author: shoops $ $Date: 2012/03/07 17:14:42 $
+# $Revision: 1.17 $ $Author: shoops $ $Date: 2012/05/25 12:13:29 $
 ######################################################################
 
 LIB = copasiXML
@@ -31,14 +31,17 @@ HEADERS += CCopasiXML.h \
            CExpat.h \
            CFixLocalReactionParameters.h \
            CXMLHandler.h  \
-           CCopasiXMLParser.h
+           CCopasiXMLParser.h \
+           ListOfModelParameterSets.h \
+           ListOfUnsupportedAnnotations.h
 
 SOURCES += CCopasiXML.cpp \
            CCopasiXMLInterface.cpp \
            CExpat.cpp \
            CFixLocalReactionParameters.cpp \
            CCopasiXMLParser.cpp \
-           ListOfModelParameterSets.cpp
+           ListOfModelParameterSets.cpp \
+           ListOfUnsupportedAnnotations.cpp
 
 
 include(../lib.pri)

@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CXMLHandler.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2010/03/16 18:59:03 $
+   $Date: 2012/05/25 12:13:30 $
    End CVS Header */
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -107,6 +107,7 @@ protected:
     if (mpCurrentHandler != NULL &&
         mpCurrentHandler != &mParser.mUnknownElement &&
         mpCurrentHandler != &mParser.mCharacterDataElement &&
+        mpCurrentHandler != &mParser.mListOfUnsupportedAnnotationsElement &&
         mpCurrentHandler != &mParser.mCommentElement &&
         mpCurrentHandler != &mParser.mMiriamAnnotationElement)
       {

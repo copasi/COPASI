@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.76 $
+//   $Revision: 1.77 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/04 16:10:53 $
+//   $Date: 2012/05/25 12:13:29 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,11 +35,13 @@
 #include <map>
 #include <string>
 #include <sstream>
+#include <vector>
 
 #include "xml/CExpat.h"
 #include "xml/CXMLHandler.h"
 #include "utilities/CCopasiVector.h"
 #include "report/CKeyFactory.h"
+#include "copasi/model/CAnnotation.h"
 
 class CCompartment;
 class CMetab;
@@ -90,8 +92,6 @@ class CLStyle;
 class CLGroup;
 class CLText;
 class CLRenderPoint;
-
-#include <vector>
 
 #endif /* USE_CRENDER_EXTENSION */
 
@@ -499,6 +499,10 @@ public:
    * The character data element handler
    */
   CharacterDataElement mCharacterDataElement;
+
+#include "copasi/xml/ListOfUnsupportedAnnotations.h"
+
+  ListOfUnsupportedAnnotationsElement mListOfUnsupportedAnnotationsElement;
 
 private:
 
@@ -1139,6 +1143,7 @@ private:
       Reaction = 0,
       MiriamAnnotation,
       Comment,
+      ListOfUnsupportedAnnotations,
       ListOfSubstrates,
       ListOfProducts,
       ListOfModifiers,
@@ -1259,6 +1264,7 @@ private:
       Metabolite = 0,
       MiriamAnnotation,
       Comment,
+      ListOfUnsupportedAnnotations,
       Expression,
       InitialExpression
     };
@@ -1357,6 +1363,7 @@ private:
       Compartment = 0,
       MiriamAnnotation,
       Comment,
+      ListOfUnsupportedAnnotations,
       Expression,
       InitialExpression
     };
@@ -1457,6 +1464,7 @@ private:
       ModelValue = 0,
       MiriamAnnotation,
       Comment,
+      ListOfUnsupportedAnnotations,
       Expression,
       InitialExpression,
       MathML
@@ -1597,6 +1605,7 @@ private:
       Event = 0,
       MiriamAnnotation,
       Comment,
+      ListOfUnsupportedAnnotations,
       TriggerExpression,
       DelayExpression,
       ListOfAssignments
@@ -1795,6 +1804,7 @@ public:
    */
   CommentElement mCommentElement;
 
+private:
 #include "copasi/xml/ListOfModelParameterSets.h"
 
 private:
@@ -1811,6 +1821,7 @@ private:
       Model = 0,
       MiriamAnnotation,
       Comment,
+      ListOfUnsupportedAnnotations,
       InitialExpression,
       ListOfCompartments,
       ListOfMetabolites,
@@ -3041,6 +3052,7 @@ private:
       Function = 0,
       MiriamAnnotation,
       Comment,
+      ListOfUnsupportedAnnotations,
       Expression,
       ListOfParameterDescriptions,
       MathML

@@ -196,7 +196,7 @@
     <data type="string"/>
   </define>
 
-  <define name="unkownAnnotation.datatype">
+  <define name="UnsupportedAnnotation.datatype">
     <mixed>
       <zeroOrMore>
         <element>
@@ -222,10 +222,11 @@
     </mixed>
   </define>
   
-  <define name="listOfUnkownAnnotations.datatype">
+  <define name="listOfUnsupportedAnnotations.datatype">
     <oneOrMore>
-      <element name="UnkownAnnotation">
-        <ref name="unkownAnnotation.datatype"/>
+      <element name="UnsupportedAnnotation">
+        <attribute name="Name"><text/></attribute>
+        <ref name="UnsupportedAnnotation.datatype"/>
       </element>
     </oneOrMore>
   </define>
@@ -238,8 +239,8 @@
       <ref name="comment.element"/>
     </optional>
     <optional>
-      <element name="ListOfUnkownAnnotations">
-        <ref name="listOfUnkownAnnotations.datatype"/>
+      <element name="ListOfUnsupportedAnnotations">
+        <ref name="listOfUnsupportedAnnotations.datatype"/>
       </element>
     </optional>
   </define>

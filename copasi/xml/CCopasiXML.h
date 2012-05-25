@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-//   $Revision: 1.27 $
+//   $Revision: 1.28 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/04 15:06:20 $
+//   $Date: 2012/05/25 12:13:29 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,7 @@
 #include "xml/CCopasiXMLInterface.h"
 #include "utilities/CVersion.h"
 
+class CAnnotation;
 class CModel;
 class CModelParameter;
 class CEvaluationTree;
@@ -318,6 +319,8 @@ private:
    * @return bool success
    */
   bool saveModelParameter(const CModelParameter * pModelParameter);
+
+  bool saveAnnotation(const CAnnotation * pAnnotation);
 
   /**
    * Save the list of functions.
