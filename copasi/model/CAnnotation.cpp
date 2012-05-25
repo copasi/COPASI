@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CAnnotation.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:30:50 $
+//   $Date: 2012/05/25 12:12:29 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,22 +18,29 @@
  *      Author: shoops
  */
 
+#include <sstream>
+
 #include "copasi.h"
 
 #include "CAnnotation.h"
 
 #include "MIRIAM/CRDFUtilities.h"
+#include "utilities/CCopasiMessage.h"
+#include "xml/CCopasiXMLParser.h"
+#include "utilities/CVersion.h"
 
 CAnnotation::CAnnotation():
     mNotes(),
     mMiriamAnnotation(),
-    mXMLId()
+    mXMLId(),
+    mUnsupportedAnnotations()
 {}
 
 CAnnotation::CAnnotation(const CAnnotation & src):
     mNotes(src.mNotes),
     mMiriamAnnotation(src.mMiriamAnnotation),
-    mXMLId(src.mXMLId)
+    mXMLId(src.mXMLId),
+    mUnsupportedAnnotations(src.mUnsupportedAnnotations)
 {}
 
 CAnnotation::~CAnnotation()
@@ -69,5 +76,107 @@ bool CAnnotation::operator == (const CAnnotation & rhs) const
   CRDFUtilities::fixLocalFileAboutReference(TmpAnnotation, rhs.mXMLId, mXMLId);
 
   return (TmpAnnotation == rhs.mMiriamAnnotation);
+}
+
+CAnnotation::UnsupportedAnnotation & CAnnotation::getUnsupportedAnnotations()
+{
+  return mUnsupportedAnnotations;
+}
+
+const CAnnotation::UnsupportedAnnotation & CAnnotation::getUnsupportedAnnotations() const
+{
+  return mUnsupportedAnnotations;
+}
+
+bool CAnnotation::addUnsupportedAnnotation(const std::string & name, const std::string & xml)
+{
+  // We need to check whether we have valid XML.
+  if (!isValidXML(xml))
+    {
+      return false;
+    }
+
+  if (mUnsupportedAnnotations.find(name) != mUnsupportedAnnotations.end())
+    {
+      return false;
+    }
+
+  mUnsupportedAnnotations[name] = xml;
+
+  return true;
+}
+
+bool CAnnotation::replaceUnsupportedAnnotation(const std::string & name, const std::string & xml)
+{
+  // We need to check whether we have valid XML.
+  if (!isValidXML(xml))
+    {
+      return false;
+    }
+
+  if (mUnsupportedAnnotations.find(name) == mUnsupportedAnnotations.end())
+    {
+      return false;
+    }
+
+  mUnsupportedAnnotations[name] = xml;
+
+  return true;
+
+}
+
+bool CAnnotation::removeUnsupportedAnnotation(const std::string & name)
+{
+  UnsupportedAnnotation::iterator it = mUnsupportedAnnotations.find(name);
+
+  if (it == mUnsupportedAnnotations.end())
+    {
+      return false;
+    }
+
+  mUnsupportedAnnotations.erase(it);
+
+  return true;
+}
+
+// static
+bool CAnnotation::isValidXML(const std::string & xml)
+{
+  std::istringstream XML;
+  XML.str(xml);
+  XML.imbue(std::locale::classic());
+  XML.precision(16);
+
+  bool done = false;
+
+  CVersion Version;
+  CCopasiXMLParser Parser(Version);
+
+#define BUFFER_SIZE 0xfffe
+  char * pBuffer = new char[BUFFER_SIZE + 1];
+
+  while (!done)
+    {
+      XML.get(pBuffer, BUFFER_SIZE, 0);
+
+      if (XML.eof()) done = true;
+
+      if (XML.fail() && !done)
+        {
+          done = true;
+          return false;
+        }
+
+      if (!Parser.parse(pBuffer, -1, done))
+        {
+          done = true;
+          return false;
+        }
+    }
+
+  delete [] pBuffer;
+#undef BUFFER_SIZE
+
+  return true;
 }
 
