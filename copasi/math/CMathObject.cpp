@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathObject.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/15 15:56:59 $
+//   $Date: 2012/05/30 17:12:31 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -1061,11 +1061,29 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
 
           if (First || Multiplicity < 0.0)
             {
-              Infix << Multiplicity;
+              if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
+                {
+                  Infix << "infinity";
+                }
+              else if (Multiplicity == -std::numeric_limits< C_FLOAT64 >::infinity())
+                {
+                  Infix << "-infinity";
+                }
+              else
+                {
+                  Infix << Multiplicity;
+                }
             }
           else
             {
-              Infix << "+" << Multiplicity;
+              if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
+                {
+                  Infix << "+infinity";
+                }
+              else
+                {
+                  Infix << "+" << Multiplicity;
+                }
             }
 
           First = false;
@@ -1079,6 +1097,11 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
   CExpression E("ExtensiveReactionExpression", &container);
 
   success &= E.setInfix(Infix.str());
+
+  if (!success)
+    {
+      std::cout << Infix.str() << std::endl;
+    }
 
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
   compileExpression();
