@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathExpression.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/21 14:12:02 $
+//   $Date: 2012/05/30 17:13:00 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,8 +40,6 @@ CMathExpression::CMathExpression(const CExpression & src,
     CEvaluationTree(src.getObjectName(), &container, CEvaluationTree::MathExpression),
     mPrerequisites()
 {
-  std::vector< std::vector< const CEvaluationNode * > > Variables;
-
   // Create a converted copy of the existing expression tree.
   mpRoot = container.copyBranch(src.getRoot(), replaceDiscontinuousNodes);
 
