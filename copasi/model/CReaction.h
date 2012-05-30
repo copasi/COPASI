@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-//   $Revision: 1.111 $
+//   $Revision: 1.112 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/09/16 18:07:44 $
+//   $Date: 2012/05/30 17:16:35 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -482,7 +482,7 @@ private:
    * of CFunctionParameters that are stored in the replacementMap.
    * On failure a NULL pointer is returned.
    */
-  CEvaluationNode* objects2variables(CEvaluationNode* expression,
+  CEvaluationNode* objects2variables(const CEvaluationNode* expression,
                                      std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >& replacementMap,
                                      std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
@@ -492,7 +492,7 @@ private:
    * of CFunctionParameters that are stored in the replacementMap.
    * On failure a NULL pointer is returned.
    */
-  CEvaluationNodeVariable* object2variable(CEvaluationNodeObject* objectNode,
+  CEvaluationNodeVariable* object2variable(const CEvaluationNodeObject* objectNode,
       std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >& replacementMap,
       std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
