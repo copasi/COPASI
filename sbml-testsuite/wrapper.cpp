@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/sbml-testsuite/wrapper.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/04/01 17:33:32 $
+//   $Date: 2012/05/30 17:18:42 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -284,7 +284,7 @@ int main(int argc, char** argv)
       pBodyAddr->push_back(CCopasiObjectName(pDataModel->getModel()->getValueReference()->getCN()));
       pHeaderAddr->push_back(pReport->getSeparator().getCN());
       pBodyAddr->push_back(pReport->getSeparator().getCN());
-      // create a map of all posible variables
+      // create a map of all possible variables
       std::map<std::string, const CModelEntity*> variableMap;
       const CCopasiVector<CMetab>& metabolites = pDataModel->getModel()->getMetabolites();
       unsigned int i, iMax = metabolites.size();
@@ -404,15 +404,23 @@ int main(int argc, char** argv)
       TaskList.add(pTrajectoryTask, true);
 
       // save the file for control purposes
-      //std::string saveFilename = sbml_filename;
-      //saveFilename = saveFilename.substr(0, saveFilename.length() - 4) + ".cps";
-      //pDataModel->saveModel(saveFilename, NULL, true, false);
+      std::string saveFilename = sbml_filename.substr(0, sbml_filename.length() - 4) + ".cps";
+      pDataModel->saveModel(saveFilename, NULL, true, false);
 
       // Run the trajectory task
 
-      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
-      pTrajectoryTask->process(true);
-      pTrajectoryTask->restore();
+      if (!pTrajectoryTask->initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL))
+        {
+          std::cerr << CCopasiMessage::getAllMessageText();
+        }
+      else if (!pTrajectoryTask->process(true))
+        {
+          std::cerr << CCopasiMessage::getAllMessageText();
+        }
+      else if (!pTrajectoryTask->restore())
+        {
+          std::cerr << CCopasiMessage::getAllMessageText();
+        }
 
       // create another report that will write to the directory where the input file came from
       // this can be used for debugging
@@ -423,9 +431,10 @@ int main(int argc, char** argv)
       //pTrajectoryTask->process(true);
       //pTrajectoryTask->restore();
     }
-  catch (CCopasiException Exception)
+
+  catch (CCopasiException & Exception)
     {
-      std::cerr << Exception.getMessage().getText() << std::endl;
+      std::cout << Exception.getMessage().getText() << std::endl;
     }
 
   CCopasiRootContainer::destroy();
