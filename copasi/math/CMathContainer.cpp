@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathContainer.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/21 14:12:02 $
+//   $Date: 2012/05/30 17:15:33 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,8 @@
 CMathContainer::CMathContainer():
     CCopasiContainer("Math Container", NULL, "CMathContainer"),
     mpModel(NULL),
+    mpAvogadro(NULL),
+    mpQuantity2NumberFactor(NULL),
     mValues(),
     mInitialExtensiveValues(),
     mInitialIntensiveValues(),
@@ -61,6 +63,8 @@ CMathContainer::CMathContainer():
 CMathContainer::CMathContainer(CModel & model):
     CCopasiContainer("Math Container", NULL, "CMathContainer"),
     mpModel(&model),
+    mpAvogadro(NULL),
+    mpQuantity2NumberFactor(NULL),
     mValues(),
     mInitialExtensiveValues(),
     mInitialIntensiveValues(),
@@ -95,6 +99,10 @@ CMathContainer::CMathContainer(CModel & model):
   // We do not want the model to know about the math container therefore we
   // do not use &model in the constructor of CCopasiContainer
   setObjectParent(mpModel);
+
+  mpAvogadro = mpModel->getObject(CCopasiObjectName("Reference=Avogadro Constant"));
+  mpQuantity2NumberFactor = mpModel->getObject(CCopasiObjectName("Reference=Quantity Conversion Factor"));
+
   init();
 }
 
@@ -854,14 +862,19 @@ CEvaluationNode * CMathContainer::createNodeFromObject(const CObjectInterface * 
 {
   CEvaluationNode * pNode = NULL;
 
-  if (pObject != NULL)
-    {
-      pNode = new CEvaluationNodeObject((C_FLOAT64 *) pObject->getValuePointer());
-    }
-  else
+  if (pObject == NULL)
     {
       // We have an invalid value, i.e. NaN
       pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
+    }
+  else if (pObject == mpAvogadro ||
+           pObject == mpQuantity2NumberFactor)
+    {
+      pNode = new CEvaluationNodeNumber(*(C_FLOAT64 *) pObject->getValuePointer());
+    }
+  else
+    {
+      pNode = new CEvaluationNodeObject((C_FLOAT64 *) pObject->getValuePointer());
     }
 
   return pNode;

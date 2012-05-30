@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathContainer.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/21 14:12:02 $
+//   $Date: 2012/05/30 17:15:33 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -300,6 +300,8 @@ private:
    * A pointer to the data model which mathematics are contained
    */
   CModel * mpModel;
+  const CObjectInterface * mpAvogadro;
+  const CObjectInterface * mpQuantity2NumberFactor;
 
   CVector< C_FLOAT64 > mValues;
 
