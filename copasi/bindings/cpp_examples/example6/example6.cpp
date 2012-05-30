@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example6/example6.cpp,v $
-//   $Revision: 1.8 $
+//   $Revision: 1.9 $
 //   $Name:  $
 //   $Author: ssahle $
-//   $Date: 2012/04/22 15:42:45 $
+//   $Date: 2012/05/30 22:11:22 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -127,7 +127,7 @@ int main()
   try
     {
       // now we run the actual trajectory
-      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
+      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_UI, pDataModel, NULL);
       result = pTrajectoryTask->process(true);
     }
   catch (...)
