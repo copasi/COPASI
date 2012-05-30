@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEvent.cpp,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/21 15:57:38 $
+//   $Date: 2012/05/30 17:14:03 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -375,15 +375,16 @@ size_t CMathEventN::CTrigger::countRoots(const CEvaluationNode * pNode,
         {
           case CNodeIteratorMode::Before:
 
-            // Variables return always false.
-            if (!itNode->isBoolean() ||
-                (itNode->getType() == CEvaluationNode::VARIABLE &&
-                 !static_cast< const CEvaluationNode * >(itNode->getChild())->isBoolean()))
+            // Variables return always false we need to dig deeper.
+            if (CEvaluationNode::type(itNode->getType()) == CEvaluationNode::VARIABLE ||
+                itNode->isBoolean())
               {
-                // We found a non boolean node which does not create a root.
-                itNode.skipChildren();
-                RootCount = 0;
+                continue;
               }
+
+            // We found a non boolean node which does not create a root.
+            itNode.skipChildren();
+            RootCount = 0;
 
             break;
 
@@ -561,16 +562,19 @@ CEvaluationNode * CMathEventN::CTrigger::compile(const CEvaluationNode * pTrigge
         {
           case CNodeIteratorMode::Before:
 
-            // Variables return always false.
-            if (CEvaluationNode::type(itNode->getType()) == CEvaluationNode::VARIABLE &&
-                !static_cast< const CEvaluationNode * >(itNode->getChild())->isBoolean())
+            // Variables return always false we need to dig deeper.
+            if (CEvaluationNode::type(itNode->getType()) == CEvaluationNode::VARIABLE)
               {
-                // We found a non boolean node which we simply copy.
-                itNode.skipChildren();
-
-                // We need to mimic the process in CMathContainer::copyBranch;
                 size_t Index =
                   static_cast< const CEvaluationNodeVariable * >(*itNode)->getIndex();
+
+                if (variables[Index][0]->isBoolean())
+                  {
+                    continue;
+                  }
+
+                // We found a non boolean node which we simply copy.
+                itNode.skipChildren();
 
                 // Since a variable may be referred to multiple times we need to copy it.
                 pNode = variables[Index][0]->copyBranch();
@@ -580,6 +584,10 @@ CEvaluationNode * CMathEventN::CTrigger::compile(const CEvaluationNode * pTrigge
                 // We found a non boolean node which we simply copy.
                 itNode.skipChildren();
                 pNode = container.copyBranch(*itNode, variables, true);
+              }
+            else
+              {
+                continue;
               }
 
             break;
@@ -952,7 +960,7 @@ bool CMathEventN::compile(CEvent * pDataEvent,
     }
 
   std::vector< CCopasiContainer * > ListOfContainer;
-  ListOfContainer.push_back(const_cast< CMathContainer * >(&container));
+  // ListOfContainer.push_back(const_cast< CMathContainer * >(&container));
 
   // Compile the delay object.
   CExpression DelayExpression("DelayExpression", &container);
