@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-//   $Revision: 1.66 $
+//   $Revision: 1.67 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/23 18:39:00 $
+//   $Date: 2012/05/30 17:11:46 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -295,6 +295,9 @@ std::string CEvaluationNodeFunction::getInfix(const std::vector< std::string > &
         case MIN:
           return mData + "(" + children[0] + "," + children[1] + ")";
 
+        case NOT:
+          return handleNot(children[0]);
+
         default:
           return mData + "(" + children[0] + ")";
       }
@@ -317,6 +320,9 @@ std::string CEvaluationNodeFunction::getDisplayString(const std::vector< std::st
         case MAX:
         case MIN:
           return mData + "(" + children[0] + "," + children[1] + ")";
+
+        case NOT:
+          return handleNot(children[0]);
 
         default:
           return mData + "(" + children[0] + ")";
@@ -1131,6 +1137,23 @@ std::string CEvaluationNodeFunction::handleSign(const std::string & str) const
 
   return Result;
 }
+
+std::string CEvaluationNodeFunction::handleNot(const std::string & str) const
+{
+  Data Result = mData + " ";
+
+  Type T = mpArg1->getType();
+
+  if ((T & 0xFF000000) == LOGICAL)
+    {
+      Result += "(" + str + ")";
+    }
+  else
+    Result += str;
+
+  return Result;
+}
+
 
 CEvaluationNode * CEvaluationNodeFunction::getLeft()
 {return mpArg1;}
