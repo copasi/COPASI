@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEvent.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/30 17:14:03 $
+//   $Date: 2012/05/31 16:14:25 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -694,26 +694,29 @@ CEvaluationNode * CMathEventN::CTrigger::compileAND(const CEvaluationNode * pTri
 // static
 CEvaluationNode * CMathEventN::CTrigger::compileEQ(const CEvaluationNode * pTriggerNode,
     const std::vector< CEvaluationNode * > & children,
-    const CMath::Variables< CEvaluationNode * > & /* variables */,
-    CMathEventN::CTrigger::CRoot *& /* pRoot */,
-    CMathContainer & /* container */)
+    const CMath::Variables< CEvaluationNode * > & variables,
+    CMathEventN::CTrigger::CRoot *& pRoot,
+    CMathContainer & container)
 {
   CEvaluationNode * pNode = NULL;
 
   // Equality can be determined between Boolean and double values.
-  if (static_cast< const CEvaluationNode * >(pTriggerNode->getChild())->isBoolean())
+  if (!static_cast< const CEvaluationNode * >(pTriggerNode->getChild())->isBoolean())
     {
       // We treat x EQ y as (x GE y) AND (y GE x)
       pNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::AND, "AND");
 
-      CEvaluationNode * pGELeft = new CEvaluationNodeLogical(CEvaluationNodeLogical::GE, "GE");
-      pGELeft->addChild(children[0]);
-      pGELeft->addChild(children[1]);
+      CEvaluationNodeLogical GELeft(CEvaluationNodeLogical::GE, "GE");
+      CEvaluationNode * pGELeft = compileLE(&GELeft, children, variables, pRoot, container);
       pNode->addChild(pGELeft);
 
-      CEvaluationNode * pGERight = new CEvaluationNodeLogical(CEvaluationNodeLogical::GE, "GE");
-      pGERight->addChild(children[1]->copyBranch());
-      pGERight->addChild(children[0]->copyBranch());
+      // We need to duplicate and reverse the order for the right
+      std::vector< CEvaluationNode * > RightChildren;
+      RightChildren.push_back(children[1]->copyBranch());
+      RightChildren.push_back(children[0]->copyBranch());
+
+      CEvaluationNodeLogical GERight(CEvaluationNodeLogical::GE, "GE");
+      CEvaluationNode * pGERight = compileLE(&GERight, RightChildren, variables, pRoot, container);
       pNode->addChild(pGERight);
     }
   else
