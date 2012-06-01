@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.cpp,v $
-//   $Revision: 1.31 $
+//   $Revision: 1.32 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/27 16:31:31 $
+//   $Date: 2012/06/01 17:25:01 $
 // End CVS Header
 
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -50,6 +50,8 @@ const char const_usage[] =
   "  --exportXPPAUT file           The XPPAUT file to export.\n"
   "  --home dir                    Your home directory.\n"
   "  --license                     Display the license.\n"
+  "  --maxTime seconds             The maximal time CopasiSE may run in\n"
+  "                                seconds.\n"
   "  --nologo                      Surpresses the startup message.\n"
   "  --validate                    Only validate the given input file (COPASI,\n"
   "                                Gepasi, or SBML) without performing any\n"
@@ -206,14 +208,10 @@ void copasi::COptionParser::finalize(void)
             throw option_error("missing value for 'importSBML' option");
           case option_License:
             throw option_error("missing value for 'license' option");
+          case option_MaxTime:
+            throw option_error("missing value for 'maxTime' option");
           case option_NoLogo:
             throw option_error("missing value for 'nologo' option");
-          case option_RegisteredEmail:
-            throw option_error("missing value for 'rEmail' option");
-          case option_RegisteredUser:
-            throw option_error("missing value for 'rUser' option");
-          case option_RegistrationCode:
-            throw option_error("missing value for 'rCode' option");
           case option_SBMLSchema:
             throw option_error("missing value for 'SBMLSchema' option");
           case option_Save:
@@ -225,9 +223,7 @@ void copasi::COptionParser::finalize(void)
           case option_Verbose:
             throw option_error("missing value for 'verbose' option");
         }
-
     }
-
 }
 //#########################################################################
 void copasi::COptionParser::parse_element(const char *element, int position, opsource source)
@@ -243,7 +239,7 @@ void copasi::COptionParser::parse_element(const char *element, int position, ops
 
         if (length >= 2 && element[0] == '-' && element[1] == '-')
           {
-            if (length == 2) { state_ = state_consume; return; }
+            if (length == 2) {state_ = state_consume; return;}
 
             element += 2;
             const char *value = element;
@@ -549,6 +545,20 @@ void copasi::COptionParser::parse_long_option(const char *option, int position, 
       options_.License = !options_.License;
       return;
     }
+  else if (strcmp(option, "maxTime") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'maxTime' option is only allowed on the command line");
+
+      if (locations_.MaxTime)
+        {
+          throw option_error("the 'maxTime' option is only allowed once");
+        }
+
+      openum_ = option_MaxTime;
+      locations_.MaxTime = position;
+      state_ = state_value;
+      return;
+    }
   else if (strcmp(option, "nologo") == 0)
     {
       source = source; // kill compiler unused variable warning
@@ -561,48 +571,6 @@ void copasi::COptionParser::parse_long_option(const char *option, int position, 
       openum_ = option_NoLogo;
       locations_.NoLogo = position;
       options_.NoLogo = !options_.NoLogo;
-      return;
-    }
-  else if (strcmp(option, "rCode") == 0)
-    {
-      if (source != source_cl) throw option_error("the 'rCode' option is only allowed on the command line");
-
-      if (locations_.RegistrationCode)
-        {
-          throw option_error("the 'rCode' option is only allowed once");
-        }
-
-      openum_ = option_RegistrationCode;
-      locations_.RegistrationCode = position;
-      state_ = state_value;
-      return;
-    }
-  else if (strcmp(option, "rEmail") == 0)
-    {
-      if (source != source_cl) throw option_error("the 'rEmail' option is only allowed on the command line");
-
-      if (locations_.RegisteredEmail)
-        {
-          throw option_error("the 'rEmail' option is only allowed once");
-        }
-
-      openum_ = option_RegisteredEmail;
-      locations_.RegisteredEmail = position;
-      state_ = state_value;
-      return;
-    }
-  else if (strcmp(option, "rUser") == 0)
-    {
-      if (source != source_cl) throw option_error("the 'rUser' option is only allowed on the command line");
-
-      if (locations_.RegisteredUser)
-        {
-          throw option_error("the 'rUser' option is only allowed once");
-        }
-
-      openum_ = option_RegisteredUser;
-      locations_.RegisteredUser = position;
-      state_ = state_value;
       return;
     }
   else if (strcmp(option, "save") == 0)
@@ -721,23 +689,28 @@ void copasi::COptionParser::parse_value(const char *value)
       break;
       case option_License:
         break;
+      case option_MaxTime:
+      {
+        char *endptr; int tmp = std::strtol(value, &endptr, 0);
+
+        while (*endptr != 0 && std::isspace(*endptr)) ++endptr;
+
+        if (*endptr != 0)
+          {
+            std::string error("invalid integer value '"); error += value; error += "'";
+            throw option_error(error);
+          }
+
+        if (tmp < 0)
+          {
+            throw option_error("integer value out of range, 'maxTime' min is 0");
+          }
+
+        options_.MaxTime = tmp;
+      }
+      break;
       case option_NoLogo:
         break;
-      case option_RegisteredEmail:
-      {
-        options_.RegisteredEmail = value;
-      }
-      break;
-      case option_RegisteredUser:
-      {
-        options_.RegisteredUser = value;
-      }
-      break;
-      case option_RegistrationCode:
-      {
-        options_.RegistrationCode = value;
-      }
-      break;
       case option_SBMLSchema:
       {
         SBMLSchema_enum evalue;
@@ -841,17 +814,11 @@ const char* expand_long_name(const std::string &name)
   if (name_size <= 7 && name.compare("license") == 0)
     matches.push_back("license");
 
+  if (name_size <= 7 && name.compare("maxTime") == 0)
+    matches.push_back("maxTime");
+
   if (name_size <= 6 && name.compare("nologo") == 0)
     matches.push_back("nologo");
-
-  if (name_size <= 5 && name.compare("rCode") == 0)
-    matches.push_back("rCode");
-
-  if (name_size <= 6 && name.compare("rEmail") == 0)
-    matches.push_back("rEmail");
-
-  if (name_size <= 5 && name.compare("rUser") == 0)
-    matches.push_back("rUser");
 
   if (name_size <= 4 && name.compare("save") == 0)
     matches.push_back("save");
@@ -867,7 +834,6 @@ const char* expand_long_name(const std::string &name)
 
   if (name_size <= 4 && name.compare("help") == 0)
     matches.push_back("help");
-
 
   if (matches.empty())
     {

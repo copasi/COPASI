@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-//   $Revision: 1.46 $
+//   $Revision: 1.47 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/02/24 16:25:51 $
+//   $Date: 2012/06/01 17:25:01 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -202,6 +202,7 @@ void COptions::init(C_INT argc, char *argv[])
   setValue("ExportC", Options.ExportC);
   setValue("ExportXPPAUT", Options.ExportXPPAUT);
   setValue("ExportBerkeleyMadonna", Options.ExportBerkeleyMadonna);
+  setValue("MaxTime", Options.MaxTime);
 
   delete pPreParser;
 

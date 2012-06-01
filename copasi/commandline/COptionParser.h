@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.h,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/27 16:31:15 $
+//   $Date: 2012/06/01 17:25:01 $
 // End CVS Header
 
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,7 +28,6 @@
 // name with the cxx_header_def variable
 #ifndef COPASI_COptionParser
 #define COPASI_COptionParser
-
 
 // standard includes
 #include <stdexcept>
@@ -67,6 +66,7 @@ struct options
 {
   options(void) :
       License(false),
+      MaxTime(0),
       NoLogo(false),
       SBMLSchema(SBMLSchema_L2V4),
       Validate(false),
@@ -82,10 +82,8 @@ struct options
   std::string     Home;
   std::string     ImportSBML;
   bool     License;
+  int     MaxTime;
   bool     NoLogo;
-  std::string     RegisteredEmail;
-  std::string     RegisteredUser;
-  std::string     RegistrationCode;
   SBMLSchema_enum     SBMLSchema;
   std::string     Save;
   std::string     Tmp;
@@ -110,10 +108,8 @@ struct option_locations
   size_type Home;
   size_type ImportSBML;
   size_type License;
+  size_type MaxTime;
   size_type NoLogo;
-  size_type RegisteredEmail;
-  size_type RegisteredUser;
-  size_type RegistrationCode;
   size_type SBMLSchema;
   size_type Save;
   size_type Tmp;
@@ -129,7 +125,7 @@ class option_error : public std::runtime_error
 {
 public:
   option_error(const std::string &what_arg)
-      : runtime_error(what_arg) { }
+      : runtime_error(what_arg) {}
 
   const char* get_help_comment(void) const;
 };
@@ -144,14 +140,14 @@ class autoexcept : public option_error
 public:
   // constructor
   autoexcept(autothrow id, const std::string &message)
-      : option_error(message), autothrow_(id) { }
+      : option_error(message), autothrow_(id) {}
 
   /**
    * get the autothrow enum member for the autothrow
    * option that caused the exception.
    */
   autothrow get_autothrow_id(void) const
-  { return autothrow_; }
+  {return autothrow_;}
 private:
   autothrow autothrow_;
 };
@@ -178,15 +174,15 @@ public:
 
   /// get a list of nonoptions from the command line
   const std::vector<std::string>& get_non_options(void) const
-  { return non_options_; }
+  {return non_options_;}
 
   /// get the main options
   const options& get_options(void) const
-  { return options_; }
+  {return options_;}
 
   /// get the main option locations
   const option_locations& get_locations(void) const
-  { return locations_; }
+  {return locations_;}
 private:
   options options_;
   option_locations locations_;
@@ -209,12 +205,10 @@ private:
     option_ExportBerkeleyMadonna,
     option_ExportC,
     option_ExportXPPAUT,
-    option_RegistrationCode,
-    option_RegisteredEmail,
-    option_RegisteredUser
+    option_MaxTime
   } openum_;
 
-  enum parser_state { state_option, state_value, state_consume } state_;
+  enum parser_state {state_option, state_value, state_consume } state_;
   std::vector<std::string> non_options_;
 
   enum opsource
