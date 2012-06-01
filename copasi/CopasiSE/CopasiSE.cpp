@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-//   $Revision: 1.56 $
+//   $Revision: 1.57 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/27 16:32:07 $
+//   $Date: 2012/06/01 17:26:43 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,7 @@
 #include "utilities/CVersion.h"
 #include "utilities/CDirEntry.h"
 #include "utilities/CSparseMatrix.h"
+#include "utilities/CProcessReport.h"
 
 void writeLogo();
 int validate();
@@ -60,6 +61,8 @@ int exportSBML();
 int main(int argc, char *argv[])
 {
   int retcode = 0;
+  CProcessReport * pProcessReport = NULL;
+  int MaxTime = 0;
 
 #ifdef XXXX
   C_FLOAT64 sparseness = 0.00;
@@ -119,6 +122,13 @@ int main(int argc, char *argv[])
 
       retcode = 0;
       goto finish;
+    }
+
+  COptions::getValue("MaxTime", MaxTime);
+
+  if (MaxTime > 0)
+    {
+      pProcessReport = new CProcessReport(MaxTime);
     }
 
   try
@@ -396,6 +406,7 @@ int main(int argc, char *argv[])
                 if (TaskList[i]->isScheduled())
                   {
                     TaskList[i]->getProblem()->setModel(pDataModel->getModel());
+                    TaskList[i]->setCallBack(pProcessReport);
 
                     bool success = true;
 
@@ -432,6 +443,12 @@ int main(int argc, char *argv[])
                         retcode = 1;
                       }
 
+                    if (pProcessReport != NULL)
+                      {
+                        pProcessReport->finish();
+                      }
+
+                    TaskList[i]->setCallBack(NULL);
                     pDataModel->finish();
                   }
 
@@ -463,8 +480,10 @@ int main(int argc, char *argv[])
       std::cerr << Exception.getMessage().getText() << std::endl;
     }
 
+
 finish:
   CCopasiRootContainer::destroy();
+  pdelete(pProcessReport);
 
   return retcode;
 }
