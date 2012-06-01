@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CProcessReport.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $
-   $Date: 2011/03/07 19:34:54 $
+   $Date: 2012/06/01 17:25:40 $
    End CVS Header */
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,6 +24,8 @@
 #include "utilities/CCopasiParameter.h"
 
 #include "utilities/CVector.h"
+
+class CCopasiTimeVariable;
 
 class CProcessReportItem: public CCopasiParameter
 {
@@ -93,8 +95,9 @@ class CProcessReport
 public:
   /**
    * Default Constructor
+   * @param const unsigned int & maxTime (Default: 0)
    */
-  CProcessReport();
+  CProcessReport(const unsigned int & maxTime = 0);
 
   /**
    * Destructor
@@ -258,6 +261,11 @@ protected:
    * The name of the process.
    */
   std::string mName;
+
+  /**
+   * The time the process should stop.
+   */
+  CCopasiTimeVariable * mpEndTime;
 };
 
 #endif // COPASI_CProcessReport

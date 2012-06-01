@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CProcessReport.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $
-   $Date: 2011/03/07 19:34:55 $
+   $Date: 2012/06/01 17:25:40 $
    End CVS Header */
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,8 +17,11 @@
 
 #include "copasi.h"
 
-#include "utilities/CVector.h"
 #include "CProcessReport.h"
+
+#include "CVector.h"
+#include "CopasiTime.h"
+
 #include "report/CCopasiObject.h"
 
 CProcessReportItem::CProcessReportItem():
@@ -64,9 +67,17 @@ const CCopasiParameter::Value & CProcessReportItem::getEndValue() const
 CCopasiParameter::Value & CProcessReportItem::getEndValue()
 {return mEndValue;}
 
-CProcessReport::CProcessReport():
-    mProcessReportItemList(1)
-{mProcessReportItemList[0] = NULL;}
+CProcessReport::CProcessReport(const unsigned int & maxTime):
+    mProcessReportItemList(1),
+    mpEndTime(NULL)
+{
+  mProcessReportItemList[0] = NULL;
+
+  if (maxTime > 0)
+    {
+      mpEndTime = new CCopasiTimeVariable(CCopasiTimeVariable::getCurrentWallTime() + maxTime * LLONG_CONST(1000000));
+    }
+}
 
 CProcessReport::~CProcessReport()
 {
@@ -74,6 +85,8 @@ CProcessReport::~CProcessReport()
 
   for (i = 0; i < imax; i++)
     pdelete(mProcessReportItemList[i]);
+
+  pdelete(mpEndTime);
 }
 
 size_t CProcessReport::addItem(const std::string & name,
@@ -141,14 +154,20 @@ bool CProcessReport::progress()
   for (i = 0; i < imax; i++)
     if (mProcessReportItemList[i] && !progressItem(i)) success = false;
 
-  return success;
+  return success && proceed();
 }
 
 bool CProcessReport::progressItem(const size_t & handle)
-{return isValidHandle(handle);}
+{
+  return isValidHandle(handle) && proceed();
+}
 
 bool CProcessReport::proceed()
-{return true;}
+{
+  if (mpEndTime == NULL) return true;
+
+  return (CCopasiTimeVariable::getCurrentWallTime() < *mpEndTime);
+}
 
 bool CProcessReport::reset()
 {
@@ -162,7 +181,9 @@ bool CProcessReport::reset()
 }
 
 bool CProcessReport::resetItem(const size_t & handle)
-{return isValidHandle(handle);}
+{
+  return isValidHandle(handle) && proceed();
+}
 
 bool CProcessReport::finish()
 {
