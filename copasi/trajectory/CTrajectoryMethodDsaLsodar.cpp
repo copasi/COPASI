@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethodDsaLsodar.cpp,v $
-//   $Revision: 1.4 $
+//   $Revision: 1.5 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:12:08 $
+//   $Date: 2012/06/04 17:37:43 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -622,6 +622,9 @@ void CTrajectoryMethodDsaLsodar::start(const CState * initialState)
 
       std::set< const CCopasiObject * > changed;
 
+      // The time is always updated
+      changed.insert(mpModel->getValueReference());
+
       CCopasiVector< CChemEqElement >::const_iterator itBalance = Balances.begin();
       CCopasiVector< CChemEqElement >::const_iterator endBalance = Balances.end();
 
@@ -883,6 +886,12 @@ void CTrajectoryMethodDsaLsodar::calculateAmu(const size_t & index)
   C_FLOAT64 & Amu = mAmu[index];
 
   Amu = *Dependencies.mpParticleFlux;
+
+  if (Amu < 0.0)
+    {
+      // TODO CRITICAL Create a warning message
+      Amu = 0.0;
+    }
 
   if (!mDoCorrection)
     {

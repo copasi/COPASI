@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-//   $Revision: 1.37 $
+//   $Revision: 1.38 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:12:08 $
+//   $Date: 2012/06/04 17:37:43 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -171,6 +171,13 @@ CTrajectoryMethod::Status CTauLeapMethod::step(const double & deltaT)
 
   while (Time < EndTime)
     {
+      mMethodState.setTime(Time);
+      mpModel->setState(mMethodState);
+      mpModel->updateSimulatedValues(false);
+
+      // We do not need to update the the method state since the only independent state
+      // values are species of type reaction which are all controlled by the method.
+
       Time += doSingleStep(EndTime - Time);
 
       if (++Steps > mMaxSteps)
@@ -446,6 +453,7 @@ C_FLOAT64 CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
         }
     }
 
+
   return Tau;
 }
 
@@ -468,6 +476,12 @@ const C_FLOAT64 &  CTauLeapMethod::calculateAmu(const size_t & index)
   C_FLOAT64 & Amu = mAmu[index];
 
   Amu = *Dependencies.mpParticleFlux;
+
+  if (Amu < 0.0)
+    {
+      // TODO CRITICAL Create a warning message
+      Amu = 0.0;
+    }
 
   if (!mDoCorrection)
     {
@@ -563,12 +577,6 @@ bool CTauLeapMethod::updateSystem()
           return false;
         }
     }
-
-  mpModel->setState(mMethodState);
-  mpModel->updateSimulatedValues(false);
-
-  // We do not need to update the the method state since the only independent state
-  // values are species of type reaction which are all controlled by the method.
 
   return true;
 }

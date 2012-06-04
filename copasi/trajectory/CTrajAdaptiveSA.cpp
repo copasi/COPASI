@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajAdaptiveSA.cpp,v $
-//   $Revision: 1.3 $
+//   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:12:07 $
+//   $Date: 2012/06/04 17:37:43 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -319,6 +319,9 @@ void CTrajAdaptiveSA::start(const CState * initialState)
 
       std::set< const CCopasiObject * > changed;
 
+      // The time is always updated
+      changed.insert(mpModel->getValueReference());
+
       CCopasiVector< CChemEqElement >::const_iterator itBalance = Balances.begin();
       CCopasiVector< CChemEqElement >::const_iterator endBalance = Balances.end();
 
@@ -507,7 +510,7 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const 
             {
               size_t TmpMax;
 
-              if ((TmpMax = (size_t)(**ppModelSpecies / *pMultiplicity)) < *pMaxReactionFiring)
+              if ((TmpMax = (size_t) abs(**ppModelSpecies / *pMultiplicity)) < *pMaxReactionFiring)
                 {
                   *pMaxReactionFiring = TmpMax;
                 }
@@ -742,6 +745,8 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const 
         }
     }
 
+  // Update the model time (for explicitly time dependent models)
+  mMethodState.setTime(curTime + Tau);
   mpModel->setState(mMethodState);
   mpModel->updateSimulatedValues(false);
 
@@ -772,6 +777,9 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleSSAStep(const C_FLOAT64 & curTime, const C_FL
     {
       return endTime - curTime;
     }
+
+  // Update the model time (for explicitly time dependent models)
+  mpModel->setTime(mNextReactionTime);
 
   // We are sure that we have at least 1 reaction
   mNextReactionIndex = 0;
@@ -844,6 +852,12 @@ const C_FLOAT64 & CTrajAdaptiveSA::calculateAmu(const size_t & index)
   C_FLOAT64 & Amu = mAmu[index];
 
   Amu = *Dependencies.mpParticleFlux;
+
+  if (Amu < 0.0)
+    {
+      // TODO CRITICAL Create a warning message
+      Amu = 0.0;
+    }
 
   if (!mDoCorrection)
     {

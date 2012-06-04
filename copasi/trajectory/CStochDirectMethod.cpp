@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:12:08 $
+//   $Date: 2012/06/04 17:37:43 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -155,6 +155,7 @@ CTrajectoryMethod::Status CStochDirectMethod::step(const double & deltaT)
 
   while (Time < EndTime)
     {
+      mMethodState.setTime(Time);
       Time += doSingleStep(Time, EndTime);
 
       if (++Steps > mMaxSteps)
@@ -251,6 +252,9 @@ void CStochDirectMethod::start(const CState * initialState)
       itDependencies->mModelSpecies.resize(Balances.size());
 
       std::set< const CCopasiObject * > changed;
+
+      // The time is always updated
+      changed.insert(mpModel->getValueReference());
 
       CCopasiVector< CChemEqElement >::const_iterator itBalance = Balances.begin();
       CCopasiVector< CChemEqElement >::const_iterator endBalance = Balances.end();
@@ -462,6 +466,9 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(const C_FLOAT64 & curTime, const C_FL
       return endTime - curTime;
     }
 
+  // Update the model time (for explicitly time dependent models)
+  mpModel->setTime(mNextReactionTime);
+
   CReactionDependencies & Dependencies = mReactionDependencies[mNextReactionIndex];
 
   // Update the method internal and model species numbers
@@ -519,6 +526,12 @@ void CStochDirectMethod::calculateAmu(const size_t & index)
   C_FLOAT64 & Amu = mAmu[index];
 
   Amu = *Dependencies.mpParticleFlux;
+
+  if (Amu < 0.0)
+    {
+      // TODO CRITICAL Create a warning message
+      Amu = 0.0;
+    }
 
   if (!mDoCorrection)
     {
