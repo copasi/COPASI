@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodLevenbergMarquardt.cpp,v $
-//   $Revision: 1.22 $
+//   $Revision: 1.23 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:54:52 $
+//   $Author: mendes $
+//   $Date: 2012/06/04 14:12:37 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,8 +42,9 @@
 COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CCopasiContainer * pParent):
     COptMethod(CCopasiTask::optimization, CCopasiMethod::LevenbergMarquardt, pParent)
 {
-  addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 200);
-  addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-005);
+  addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 2000);
+  addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-006);
+  addParameter("Modulation", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-006);
 
   initObjects();
 }
@@ -101,7 +102,7 @@ bool COptMethodLevenbergMarquardt::optimise()
 
       switch (OptItem.checkConstraint())
         {
-          case - 1:
+          case -1:
             mCurrent[i] = *OptItem.getLowerBoundValue();
             break;
 
@@ -140,12 +141,12 @@ bool COptMethodLevenbergMarquardt::optimise()
 
   for (mIteration = 0; (mIteration < mIterationLimit) && (nu != 0.0) && mContinue; mIteration++)
     {
-      // calculate gradient and hessian
+      // calculate gradient and Hessian
       if (calc_hess) hessian();
 
       calc_hess = true;
 
-      // Cholesky decomposition of Hessian
+      // mHessianLM will be used for Cholesky decomposition
       mHessianLM = mHessian;
 
       // add Marquardt lambda to Hessian
@@ -153,7 +154,7 @@ bool COptMethodLevenbergMarquardt::optimise()
       for (i = 0; i < mVariableSize; i++)
         {
           mHessianLM[i][i] *= 1.0 + LM_lambda; // Improved
-          // mHessianLM[i][i] += LM_lambda; // Orginal
+          // mHessianLM[i][i] += LM_lambda; // Original
           mStep[i] = - mGradient[i];
         }
 
@@ -162,6 +163,7 @@ bool COptMethodLevenbergMarquardt::optimise()
       //         Work.array(), &LWork, &info);
 
       // SUBROUTINE DPOTRF(UPLO, N, A, LDA, INFO)
+      // Cholesky factorization
       char UPLO = 'L';
       dpotrf_(&UPLO, &dim, mHessianLM.array(), &dim, &info);
 
@@ -184,6 +186,11 @@ bool COptMethodLevenbergMarquardt::optimise()
               mStep[i] /= LM_lambda;
             }
         }
+
+//REVIEW:START
+// This code is different between Gepasi and COPASI
+// Gepasi goes along the direction until it hits the boundary
+// COPASI moves in a different direction; this could be a problem
 
       // Force the parameters to stay within the defined boundaries.
       // Forcing the parameters gives better solution than forcing the steps.
@@ -208,6 +215,8 @@ bool COptMethodLevenbergMarquardt::optimise()
                 break;
             }
         }
+
+// This is the Gepasi code, which would do the truncation along the search line
 
       // Assure that the step will stay within the bounds but is
       // in its original direction.
@@ -248,7 +257,9 @@ bool COptMethodLevenbergMarquardt::optimise()
            if (Factor == 1.0) break;
          }
        */
+//REVIEW:END
 
+      // calculate the relative change in each parameter
       for (convp = 0.0, i = 0; i < mVariableSize; i++)
         {
           (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
@@ -259,7 +270,9 @@ bool COptMethodLevenbergMarquardt::optimise()
       evaluate();
 
       // set the convergence check amplitudes
+      // convx has the relative change in objective function value
       convx = (mBestValue - mEvaluationValue) / mBestValue;
+      // convp has the average relative change in parameter values
       convp /= mVariableSize;
 
       if (mEvaluationValue < mBestValue)
@@ -336,7 +349,7 @@ const C_FLOAT64 & COptMethodLevenbergMarquardt::evaluate()
   mContinue &= mpOptProblem->calculate();
   mEvaluationValue = mpOptProblem->getCalculateValue();
 
-  // when we leave the either the parameter or functional domain
+  // when we leave either the parameter or functional domain
   // we penalize the objective value by forcing it to be larger
   // than the best value recorded so far.
   if (mEvaluationValue < mBestValue &&
@@ -353,8 +366,10 @@ bool COptMethodLevenbergMarquardt::initialize()
 
   if (!COptMethod::initialize()) return false;
 
+  mModulation = 0.001;
   mIterationLimit = * getValue("Iteration Limit").pUINT;
   mTolerance = * getValue("Tolerance").pDOUBLE;
+  mModulation = * getValue("Modulation").pDOUBLE;
 
   mIteration = 0;
 
@@ -391,30 +406,35 @@ bool COptMethodLevenbergMarquardt::initialize()
   return true;
 }
 
-// evaluate the value of the gradient by forward differences
+// evaluate the value of the gradient by forward finite differences
 void COptMethodLevenbergMarquardt::gradient()
 {
   size_t i;
 
   C_FLOAT64 y;
   C_FLOAT64 x;
+  C_FLOAT64 mod1;
+
+  mod1 = 1.0 + mModulation;
 
   y = evaluate();
 
   for (i = 0; i < mVariableSize && mContinue; i++)
     {
+//REVIEW:START
       if ((x = mCurrent[i]) != 0.0)
         {
-          (*(*mpSetCalculateVariable)[i])(x * 1.001);
-          mGradient[i] = (evaluate() - y) / (x * 0.001);
+          (*(*mpSetCalculateVariable)[i])(x * mod1);
+          mGradient[i] = (evaluate() - y) / (x * mModulation);
         }
 
       else
         {
-          (*(*mpSetCalculateVariable)[i])(1e-7);
-          mGradient[i] = (evaluate() - y) / 1e-7;
+          (*(*mpSetCalculateVariable)[i])(mModulation);
+          mGradient[i] = (evaluate() - y) / mModulation;
         }
 
+//REVIEW:END
       (*(*mpSetCalculateVariable)[i])(x);
     }
 }
@@ -423,6 +443,9 @@ void COptMethodLevenbergMarquardt::gradient()
 void COptMethodLevenbergMarquardt::hessian()
 {
   size_t i, j;
+  C_FLOAT64 mod1;
+
+  mod1 = 1.0 + mModulation;
 
   if (mHaveResiduals)
     {
@@ -446,19 +469,21 @@ void COptMethodLevenbergMarquardt::hessian()
 
       for (i = 0; i < mVariableSize && mContinue; i++)
         {
+//REVIEW:START
           if ((x = mCurrent[i]) != 0.0)
             {
-              Delta = 1.0 / (x * 0.001);
-              (*(*mpSetCalculateVariable)[i])(x * 1.001);
+              Delta = 1.0 / (x * mModulation);
+              (*(*mpSetCalculateVariable)[i])(x * mod1);
             }
 
           else
             {
-              Delta = 1e7;
-              (*(*mpSetCalculateVariable)[i])(1e-7);
+              Delta = 1.0 / mModulation;
+              (*(*mpSetCalculateVariable)[i])(mModulation);
+//REVIEW:END
             }
 
-          // evaluate another column of the jacobian
+          // evaluate another column of the Jacobian
           evaluate();
           pCurrentResiduals = CurrentResiduals.array();
           pResiduals = Residuals.array();
@@ -538,15 +563,17 @@ void COptMethodLevenbergMarquardt::hessian()
       // calculate rows of the Hessian
       for (i = 0; i < mVariableSize; i++)
         {
+//REVIEW:START
           if ((x = mCurrent[i]) != 0.0)
             {
-              mCurrent[i] = x * 1.001;
-              Delta = 1.0 / (x * 0.001);
+              mCurrent[i] = x * mod1;
+              Delta = 1.0 / (x * mModulation);
             }
           else
             {
-              mCurrent[i] = 1e-7;
-              Delta = 1e7;
+              mCurrent[i] = mModulation;
+              Delta = 1.0 / mModulation;
+//REVIEW:END
             }
 
           (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
