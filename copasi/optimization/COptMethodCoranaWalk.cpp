@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodCoranaWalk.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: mendes $
-//   $Date: 2012/06/04 14:10:44 $
+//   $Author: shoops $
+//   $Date: 2012/06/04 14:40:24 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,8 @@
 // written by Pedro Mendes, January 2012
 // adapted from the Corana Simulated Annealing algorithm
 // this does only the top level iteration of that algorithm
+
+#include <cmath>
 
 #include "copasi.h"
 
@@ -86,10 +88,10 @@ bool COptMethodCoranaWalk::optimise()
       minstep += mCurrent[i];
     }
 
-  if (minstep > DBL_EPSILON)
+  if (minstep > std::numeric_limits< C_FLOAT64 >::epsilon())
     minstep /= i;
   else
-    minstep = 100 * DBL_EPSILON;
+    minstep = 100 * std::numeric_limits< C_FLOAT64 >::epsilon();
 
   // initial point is first guess but we have to make sure that we
   // are within the parameter domain
