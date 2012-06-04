@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-//   $Revision: 1.34 $
+//   $Revision: 1.35 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:34:14 $
+//   $Date: 2012/06/04 17:58:00 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -126,7 +126,7 @@ protected:
    * @return mFail
    * @see mFail
    */
-  C_INT32 updateSystemState(size_t reaction_index);
+  C_INT32 updateSystemState(size_t reaction_index, const C_FLOAT64 & time);
 
   /**
   * Set up the dependency graph and the balances

@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.81 $
+//   $Revision: 1.82 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:12:07 $
+//   $Date: 2012/06/04 17:58:00 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -143,6 +143,7 @@ CTrajectoryMethod::Status CStochMethod::step(const double & deltaT)
   while (time < endtime)
     {
       time = doSingleStep(time, endtime);
+      mpCurrentState->setTime(time);
 
       if (++Steps > mMaxSteps)
         {
@@ -243,9 +244,17 @@ C_INT32 CStochMethod::updatePropensities()
 
 C_INT32 CStochMethod::calculateAmu(size_t index)
 {
+  C_FLOAT64 rate_factor = mpModel->getReactions()[index]->calculateParticleFlux();
+
+  if (rate_factor < 0.0)
+    {
+      // TODO CRITICAL Create a warning message
+      rate_factor = 0.0;
+    }
+
   if (!mDoCorrection)
     {
-      mAmu[index] = mpModel->getReactions()[index]->calculateParticleFlux();
+      mAmu[index] = rate_factor;
       return 0;
     }
 
@@ -298,7 +307,6 @@ C_INT32 CStochMethod::calculateAmu(size_t index)
   // rate_factor is the rate function divided by substrate_factor.
   // It would be more efficient if this was generated directly, since in effect we
   // are multiplying and then dividing by the same thing (substrate_factor)!
-  C_FLOAT64 rate_factor = mpModel->getReactions()[index]->calculateParticleFlux();
 
   if (flag)
     {
@@ -314,7 +322,7 @@ C_INT32 CStochMethod::calculateAmu(size_t index)
   return 0;
 }
 
-C_INT32 CStochMethod::updateSystemState(size_t rxn)
+C_INT32 CStochMethod::updateSystemState(size_t rxn, const C_FLOAT64 & time)
 {
   // Change the particle numbers according to which step took place.
   // First, get the vector of balances in the reaction we've got.
@@ -340,6 +348,7 @@ C_INT32 CStochMethod::updateSystemState(size_t rxn)
     {
       // this is less efficient but can deal with assignments.
       //TODO: handle dependencies for assignments also.
+      mpModel->setTime(time);
       mpModel->updateSimulatedValues(false);
 
       //now potentially species with assignments have non integer

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochNextReactionMethod.cpp,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:34:13 $
+//   $Date: 2012/06/04 17:58:01 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -46,7 +46,7 @@ C_FLOAT64 CStochNextReactionMethod::doSingleStep(C_FLOAT64 C_UNUSED(time), C_FLO
   else
     {
       size_t reaction_index = mPQ.topIndex();
-      updateSystemState(reaction_index);
+      updateSystemState(reaction_index, steptime);
       updatePriorityQueue(reaction_index, steptime);
       //printDebugInfo();
       return steptime;
