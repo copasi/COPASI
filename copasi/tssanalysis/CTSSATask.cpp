@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSATask.cpp,v $
-//   $Revision: 1.16 $
+//   $Revision: 1.17 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/31 14:25:57 $
+//   $Author: nsimus $
+//   $Date: 2012/06/04 11:05:37 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -128,6 +128,26 @@ void CTSSATask::cleanup()
   pdelete(mpCurrentState);
 }
 
+bool CTSSATask::updateMatrices() //NEW
+{
+  assert(mpProblem != NULL && mpMethod != NULL);
+
+  assert(dynamic_cast<CTSSAProblem *>(mpProblem) != NULL);
+
+  if (!mpMethod->isValidProblem(mpProblem)) return false;
+
+  CTSSAMethod * pMethod = dynamic_cast<CTSSAMethod*>(mpMethod);
+
+  if (!pMethod) return false;
+
+  pMethod->setModel(mpProblem->getModel());
+
+  pMethod->predifineAnnotation();
+
+
+  return true;
+}
+
 bool CTSSATask::initialize(const OutputFlag & of,
                            COutputHandler * pOutputHandler,
                            std::ostream * pOstream)
@@ -172,7 +192,16 @@ bool CTSSATask::initialize(const OutputFlag & of,
         }
     }
 
+//NEW
+
+  mpTSSAMethod->setModel(mpTSSAProblem->getModel());
+
+  mpTSSAMethod->predifineAnnotation();
+
+//
+
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
+
 
   return success;
 }
@@ -234,7 +263,7 @@ bool CTSSATask::process(const bool & useInitialValues)
                                      &hundred);
     }
 
-  if ((*LE)(outputStartTime, *mpCurrentTime)) output(COutputInterface::DURING);
+  //if ((*LE)(outputStartTime, *mpCurrentTime)) output(COutputInterface::DURING);
 
   try
     {
@@ -311,6 +340,8 @@ void CTSSATask::processStart(const bool & useInitialValues)
 
   mpTSSAMethod->setCurrentState(mpCurrentState);
   mpTSSAMethod->start(mpCurrentState);
+
+
 
   return;
 }

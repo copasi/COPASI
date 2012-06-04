@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSimpleSelectionTree.cpp,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/08 18:29:39 $
+//   $Author: nsimus $
+//   $Date: 2012/06/04 11:09:39 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,6 +41,9 @@
 #include "steadystate/CMCAMethod.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "sensitivities/CSensProblem.h"
+#include "tssanalysis/CCSPMethod.h"
+#include "tssanalysis/CTSSATask.h"
+
 
 CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget* parent):
     QTreeWidget(parent), mpOutputVector(NULL)
@@ -57,6 +60,7 @@ CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget* parent):
   mpResultSteadyStateSubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Steady State"));
   mpResultSensitivitySubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Sensitivity"));
   mpResultMCASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Metabolic Control Analysis"));
+  mpResultTSSASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Time Scale Separation Analysis"));
 
   mpModelMatrixSubtree = new QTreeWidgetItem(this, QStringList("Matrices"));
 
@@ -477,6 +481,62 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
   catch (...)
     {}
 
+// TSSA
+  task = dynamic_cast<CCopasiTask*>((*pDataModel->getTaskList())["Time Scale Separation Analysis"]);
+
+  try
+    {
+      if (task && task->updateMatrices())
+        {
+
+          CTSSAMethod* pMethod = dynamic_cast<CTSSAMethod *>(task->getMethod());
+
+          if (pMethod->getSubType() == CTSSAMethod::tssCSP)
+            {
+              const CCopasiContainer::objectMap * pObjects = & pMethod->getObjects();
+              CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
+              CArrayAnnotation *ann;
+
+              for (; its != pObjects->end(); ++its)
+                {
+                  ann = dynamic_cast<CArrayAnnotation*>(its->second);
+
+                  if (!ann) continue;
+
+                  if (ann->getObjectName() == "Fast Participation Index")
+                    if (!ann->isEmpty() && filter(classes, ann))
+                      {
+                        pItem = new QTreeWidgetItem(this->mpResultTSSASubtree, QStringList(FROM_UTF8(ann->getObjectName())));
+                        treeItems[pItem] = ann;
+
+                      }
+
+                  if (ann->getObjectName() == "Slow Participation Index")
+                    if (!ann->isEmpty() && filter(classes, ann))
+                      {
+                        pItem = new QTreeWidgetItem(this->mpResultTSSASubtree, QStringList(FROM_UTF8(ann->getObjectName())));
+                        treeItems[pItem] = ann;
+
+                      }
+
+
+                  if (ann->getObjectName() == "Importance Index")
+                    if (!ann->isEmpty() && filter(classes, ann))
+                      {
+                        pItem = new QTreeWidgetItem(this->mpResultTSSASubtree, QStringList(FROM_UTF8(ann->getObjectName())));
+                        treeItems[pItem] = ann;
+
+
+                      }
+                }
+            }
+
+        }
+    }
+  catch (...)
+    {}
+
+
   // Steady State
   task = dynamic_cast<CCopasiTask *>((*pDataModel->getTaskList())["Steady-State"]);
 
@@ -538,6 +598,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
     {}
 
   removeEmptySubTree(&mpResultMCASubtree);
+  removeEmptySubTree(&mpResultTSSASubtree);
   removeEmptySubTree(&mpResultSensitivitySubtree);
   removeEmptySubTree(&mpResultSteadyStateSubtree);
   removeEmptySubTree(&mpResultMatrixSubtree);

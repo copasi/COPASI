@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/02/23 18:05:35 $
+//   $Author: nsimus $
+//   $Date: 2012/06/04 11:03:09 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -130,6 +130,8 @@ public:
   CMatrix<C_FLOAT64> mParticipationIndex;
   CMatrix<C_FLOAT64> mParticipationIndexNormedRow;
   CMatrix<C_FLOAT64> mParticipationIndexNormedColumn;
+  CVector<C_FLOAT64> mFastParticipationIndex;
+  CVector<C_FLOAT64> mSlowParticipationIndex;
 
   /**
    * Importance Index: is a measure of relative importance of the contribution of r-th elementary
@@ -239,7 +241,7 @@ public:
    * compute CSP Participation Index
    **/
 
-  void CSPParticipationIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_FLOAT64 > & B0);
+  void CSPParticipationIndex(C_INT & N, C_INT & M, C_FLOAT64 & tauM1, CMatrix< C_FLOAT64 > & B0); //NEW
 
   /**
    * compute CSP Importance Index
@@ -261,6 +263,7 @@ public:
   /**
    * evaluate Jacobian for the current y
    **/
+  //void calculateJacobianX(C_INT & n, CVector<C_FLOAT64> & y, CMatrix <C_FLOAT64> & J);
   void calculateJacobian(C_INT & n, CVector<C_FLOAT64> & y, CMatrix <C_FLOAT64> & J);
 
   /**
@@ -282,7 +285,7 @@ public:
   /**
    * compute  the norm C  of the off-diagonal blocks
    **/
-  C_INT isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & ALA, C_FLOAT64 SMALL);
+  C_INT isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & ALA, C_FLOAT64 small);
 
   /**
    *  Start procedure of the CSP algorithm.
@@ -313,6 +316,8 @@ public:
   std::vector< CMatrix<C_FLOAT64> > mVec_mParticipationIndex;
   std::vector< CMatrix<C_FLOAT64> > mVec_mParticipationIndexNormedRow;
   std::vector< CMatrix<C_FLOAT64> > mVec_mParticipationIndexNormedColumn;
+  std::vector< CMatrix<C_FLOAT64> > mVec_mFastParticipationIndex;
+  std::vector< CMatrix<C_FLOAT64> > mVec_mSlowParticipationIndex;
   std::vector< CMatrix<C_FLOAT64> > mVec_mImportanceIndex;
   std::vector< CMatrix<C_FLOAT64> > mVec_mImportanceIndexNormedRow;
 
@@ -332,6 +337,8 @@ public:
   CArrayAnnotation* pParticipationIndexAnn;
   CArrayAnnotation* pParticipationIndexNormedRowAnn;
   CArrayAnnotation* pParticipationIndexNormedColumnAnn;
+  CArrayAnnotation* pFastParticipationIndexAnn;
+  CArrayAnnotation* pSlowParticipationIndexAnn;
   CArrayAnnotation* pImportanceIndexAnn;
   CArrayAnnotation* pImportanceIndexNormedRowAnn;
 
@@ -345,6 +352,10 @@ public:
   CArrayAnnotation* pTmp4;
   CArrayAnnotation* pTmp4NormedColumn;
   CArrayAnnotation* pTmp4NormedRow;
+
+  CArrayAnnotation* pTmp4Fast;
+  CArrayAnnotation* pTmp4Slow;
+
   CArrayAnnotation* pTmp5;
   CArrayAnnotation* pTmp5NormedRow;
 
@@ -362,8 +373,11 @@ public:
   CMatrix<C_FLOAT64> mImportanceIndexTab;
   CMatrix<C_FLOAT64> mImportanceIndexNormedRowTab;
 
+  CMatrix<C_FLOAT64>  mFastParticipationIndexTab;
+  CMatrix<C_FLOAT64>  mSlowParticipationIndexTab;
+
   /**
-  * return CArrayAnnotation for visualization in ILDM-tab
+  * return CArrayAnnotation for visualization
   * in the CQTSSAResultSubWidget
   **/
 
@@ -386,6 +400,10 @@ public:
   {return pParticipationIndexNormedRowAnn;}
   const CArrayAnnotation* getParticipationIndexNormedColumnAnn() const
   {return pParticipationIndexNormedColumnAnn;}
+  const CArrayAnnotation* getFastParticipationIndexAnn() const
+  {return pFastParticipationIndexAnn;}
+  const CArrayAnnotation* getSlowParticipationIndexAnn() const
+  {return pSlowParticipationIndexAnn;}
   const CArrayAnnotation* getImportanceIndexAnn() const
   {return pImportanceIndexAnn;}
   const CArrayAnnotation* getImportanceIndexNormedRowAnn() const
@@ -396,6 +414,12 @@ public:
    **/
   void setVectors(int fast);
 
+
+  /**
+   *  set vectors to NaN when the reduction was not possible
+   **/
+  void setVectorsToNaN();
+
   /**
   * empty every vector to be able to fill them with new values for a
   * new calculation also nullify the step counter
@@ -403,10 +427,18 @@ public:
   void emptyVectors();
 
   /**
-   * create the CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget
+   * create the CArraAnnotations for every table in the CQTSSAResultSubWidget
    * input for each CArraAnnotations is a seperate CMatrix
    **/
   void createAnnotationsM();
+
+  /**
+  * Predifine the CArrayAnnotation for plots
+  **/
+
+  virtual void predifineAnnotation();
+
+
 
   /**
   * set the every CArrayAnnotation for the requested step

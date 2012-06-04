@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSimpleSelectionTree.h,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:57 $
+//   $Author: nsimus $
+//   $Date: 2012/06/04 11:10:02 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -93,6 +93,7 @@ protected:
   QTreeWidgetItem* mpResultSteadyStateSubtree;
   QTreeWidgetItem* mpResultSensitivitySubtree;
   QTreeWidgetItem* mpResultMCASubtree;
+  QTreeWidgetItem* mpResultTSSASubtree;
 
   std::map< QTreeWidgetItem *, const CCopasiObject * > treeItems;
   std::vector< const CCopasiObject * > * mpOutputVector;

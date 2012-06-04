@@ -6,7 +6,7 @@
 //   $Date: 2010/04/27 16:00:44 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -95,6 +95,8 @@ void CQTSSAResultSubWidget::slotTableChanged()
       name == "Reactions distribution between modes " ||
       name == "Reactions fast space" ||
       name == "Participation Index" ||
+      name == "Fast Participation Index" ||
+      name == "Slow Participation Index" ||
       name == "Normed Participation Index (by column)" ||
       name == "Normed Participation Index (by row)" ||
       name == "Importance Index" ||
@@ -107,9 +109,13 @@ void CQTSSAResultSubWidget::slotTableChanged()
     }
   else
     {
-      CColorScaleAdvanced * tcs = new CColorScaleAdvanced() ;
-      tcs->setColorMin(QColor(240, 240, 240));
-      tcs->setColorMax(QColor(0, 255, 0));
+      //CColorScaleAdvanced * tcs = new CColorScaleAdvanced() ;
+      //tcs->setColorMin(QColor(240, 240, 240));
+      //tcs->setColorMax(QColor(0, 255, 0));
+
+      CColorScaleSimple* tcs = new CColorScaleSimple();
+      tcs->setSymmetric(true);
+
       mpArrayWidget->setColorCoding(tcs);
       mpArrayWidget->setColorScalingAutomatic(true);
 
@@ -260,7 +266,7 @@ void CQTSSAResultSubWidget::changeInterval()
 
   int s = mpSlider->value();
 
-  if (pMethod->setAnnotationM(s))
+  if (pMethod->setAnnotationM(s - 1))
     {
       std::string name  =  static_cast<std::string >(mpBox1->currentText().toUtf8());
       pResult = pMethod->getTable(name);
