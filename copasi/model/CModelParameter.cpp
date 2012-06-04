@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameter.cpp,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/10 16:03:10 $
+//   $Date: 2012/06/04 17:36:43 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
@@ -372,16 +372,18 @@ bool CModelParameter::updateModel()
               {
                 CModel * pModel = mpParent->getModel();
 
-                assert(pModel == NULL);
+                assert(pModel != NULL);
 
                 std::vector< CCopasiContainer * > ListOfContainer;
                 ListOfContainer.push_back(pModel);
 
                 CCopasiObjectName CN = static_cast< CEvaluationNodeObject * >(mpInitialExpression->getRoot())->getObjectCN();
-                mpObject = pModel->getObjectDataModel()->ObjectFromName(ListOfContainer, CN);
+                CCopasiObject * pObject = pModel->getObjectDataModel()->ObjectFromName(ListOfContainer, CN);
 
-                CReaction * pReaction = static_cast< CReaction * >(mpObject->getObjectAncestor("CReaction"));
-                pReaction->setParameterMapping(pParameter->getObjectName(), mpObject->getKey());
+                assert(pObject != NULL);
+
+                CReaction * pReaction = static_cast< CReaction * >(mpObject->getObjectAncestor("Reaction"));
+                pReaction->setParameterMapping(pParameter->getObjectName(), pObject->getObjectParent()->getKey());
               }
           }
           break;
