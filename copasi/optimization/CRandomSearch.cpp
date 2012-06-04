@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-//   $Revision: 1.41 $
+//   $Revision: 1.42 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:11:20 $
+//   $Author: mendes $
+//   $Date: 2012/06/04 14:13:19 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -109,8 +109,7 @@ bool CRandomSearch::optimise()
 
   unsigned C_INT32 j;
 
-  // Initialize the population
-  // first individual is the initial guess
+  // current value is the initial guess
   for (j = 0; j < mVariableSize; j++)
     {
       C_FLOAT64 & mut = mIndividual[j];
