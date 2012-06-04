@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.35 $
+//   $Revision: 1.36 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 15:41:46 $
+//   $Author: nsimus $
+//   $Date: 2012/06/04 11:07:33 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,8 +19,6 @@
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-
-#include <cmath>
 
 #include "copasi.h"
 #include "CILDMMethod.h"
@@ -83,6 +81,8 @@ void CILDMMethod::initializeParameter()
 
   assertParameter("Deuflhard Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
   mReducedModel = true;
+
+  //mData.dim = mpState->getNumIndependent();
 
   createAnnotationsM();
   emptyVectors();
@@ -874,6 +874,7 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
 void CILDMMethod::start(const CState * initialState)
 {
   mReducedModel = true;
+
 
   integrationMethodStart(initialState);
 

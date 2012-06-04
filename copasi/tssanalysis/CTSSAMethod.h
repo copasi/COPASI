@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.h,v $
-//   $Revision: 1.12 $
+//   $Revision: 1.13 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/31 14:25:57 $
+//   $Author: nsimus $
+//   $Date: 2012/06/04 11:04:27 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -113,6 +113,17 @@ public:
 
   //virtual void setAnnotationM(int s) = 0;
   virtual bool setAnnotationM(size_t s) = 0;
+
+  /**
+  * Set the Model
+  */
+  void setModel(CModel* model);
+
+  /**
+  * Predifine the CArrayAnnotation for plots
+  */
+  virtual void predifineAnnotation();
+
 
   /**
    *  Set a pointer to the current state.

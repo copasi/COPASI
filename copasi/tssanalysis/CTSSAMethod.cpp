@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.32 $
+//   $Revision: 1.33 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:12:28 $
+//   $Author: nsimus $
+//   $Date: 2012/06/04 11:05:02 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,8 +27,6 @@
  *  this class.
  *
  */
-
-#include <cmath>
 
 #include "copasi.h"
 
@@ -142,9 +140,21 @@ void CTSSAMethod::step(const double & C_UNUSED(deltaT))
 void CTSSAMethod::start(const CState * C_UNUSED(initialState))
 {return;}
 
+void CTSSAMethod::setModel(CModel* model)
+{
+  mpModel = model;
+}
+
+void CTSSAMethod::predifineAnnotation()
+{
+  return;
+}
+
 //virtual
 bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
+
+
   if (!CCopasiMethod::isValidProblem(pProblem)) return false;
 
   const CTSSAProblem * pTP = dynamic_cast<const CTSSAProblem *>(pProblem);
@@ -353,6 +363,7 @@ void CTSSAMethod::integrationStep(const double & deltaT)
     }
 
   C_FLOAT64 EndTime = mTime + deltaT;
+
   C_INT ITOL = 2; // mRtol scalar, mAtol vector
   C_INT one = 1;
   C_INT DSize = (C_INT) mDWork.size();
@@ -374,7 +385,7 @@ void CTSSAMethod::integrationStep(const double & deltaT)
          mIWork.array(), // 14. the int work array
          &ISize, // 15. the int work array size
          NULL, // 16. evaluate J (not given)
-         &mJType);        // 17. the type of Jacobian calculate (2)
+         &mJType);        // 17. the type of jacobian calculate (2)
 
   // Why did we ignore this error?
   // if (mLsodaStatus == -1) mLsodaStatus = 2;
@@ -394,9 +405,8 @@ void CTSSAMethod::integrationStep(const double & deltaT)
   mpState->setTime(mTime);
   *mpCurrentState = *mpState;
 
-  return;
+  return ;
 }
-
 /**
 MAT_ANAL_MOD:  mathematical analysis of matrices mTdInverse for post-analysis
  */
@@ -1988,6 +1998,8 @@ void CTSSAMethod::integrationMethodStart(const CState * initialState)
   pdelete(mpState);
   mpState = new CState(*initialState);
   mY = mpState->beginIndependent();
+
+
   mTime = mpState->getTime();
 
   if (mReducedModel)
@@ -1998,6 +2010,7 @@ void CTSSAMethod::integrationMethodStart(const CState * initialState)
     {
       mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentReactionMetabs();
     }
+
 
   mYdot.resize(mData.dim);
   // mY_initial.resize(mData.dim);

@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSATask.h,v $
-//   $Revision: 1.6 $
+//   $Revision: 1.7 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/31 14:25:57 $
+//   $Author: nsimus $
+//   $Date: 2012/06/04 11:06:09 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -105,6 +105,15 @@ public:
    * Destructor
    */
   ~CTSSATask();
+
+  /**
+   * Resizes result matrices and updates array annotations for a specific task.
+   * This is used when we need to know about the data structures of a task result
+   * without actually performing the task, e.g. when selecting objects for output.
+   * For now we assume that this functionality is also performed when
+   * initialize() is called.
+   */
+  virtual bool updateMatrices();
 
   /**
    * Initialize the task. If an ostream is given this ostream is used

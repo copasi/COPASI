@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.cpp,v $
-//   $Revision: 1.20 $
+//   $Revision: 1.21 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 15:41:46 $
+//   $Author: nsimus $
+//   $Date: 2012/06/04 11:08:33 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,8 +19,6 @@
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-
-#include <cmath>
 
 #include "copasi.h"
 
@@ -80,6 +78,8 @@ void CILDMModifiedMethod::initializeParameter()
 
   assertParameter("Deuflhard Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
   mReducedModel = true;
+
+  //mData.dim = mpState->getNumIndependent();
 
   createAnnotationsM();
   emptyVectors();
@@ -558,6 +558,7 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
     }
 
   C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
+  //C_FLOAT64 number2conc = 1.;
 
   dxdt.resize(dim);
 
@@ -676,6 +677,7 @@ void CILDMModifiedMethod::newton_new(C_INT *index_metab, C_INT & slow, C_INT & i
   info = 0;
 
   C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
+  //C_FLOAT64 number2conc = 1.;
 
   for (i = 0; i < fast; i++)
     {
@@ -880,8 +882,8 @@ void CILDMModifiedMethod::newton_for_timestep(C_INT metabolite_number, C_FLOAT64
 
   info = 0;
 
-  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor()
-                          / mpModel->getCompartments()[0]->getInitialValue();
+  C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
+  //C_FLOAT62number2conc = 1.;
 
   //this is an ugly hack that only makes sense if all metabs are in the same compartment
   //at the moment is is the only case the algorithm deals with
