@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
-//   $Revision: 1.39 $
+//   $Revision: 1.40 $
 //   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/18 14:38:24 $
+//   $Author: mendes $
+//   $Date: 2012/06/04 14:13:56 $
 // End CVS Header
 
 // Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,6 +45,7 @@
 #include "COptMethodNelderMead.h"
 #include "COptMethodPS.h"
 #include "COptMethodSA.h"
+#include "COptMethodCoranaWalk.h"
 #include "COptMethodSRES.h"
 #include "COptMethodStatistics.h"
 #include "COptMethodSteepestDescent.h"
@@ -88,6 +89,10 @@ COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
 
       case SimulatedAnnealing:
         pMethod = new COptMethodSA();
+        break;
+
+      case CoranaWalk:
+        pMethod = new COptMethodCoranaWalk();
         break;
 
       case SRES:
