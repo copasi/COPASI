@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example6/example6.cpp,v $
-//   $Revision: 1.9 $
+//   $Revision: 1.10 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/05/30 22:11:22 $
+//   $Author: mendes $
+//   $Date: 2012/06/04 14:19:06 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -294,7 +294,7 @@ int main()
   // separated list (the default is TAB separated)
   pExperiment->setSeparator(",");
   // the data start in row 1 and goes to row 4001
-  pExperiment->setFirstRow(1);
+  pExperiment->setFirstRow((unsigned C_INT32) 1);
   assert(pExperiment->getFirstRow() == 1);
   pExperiment->setLastRow(4001);
   assert(pExperiment->getLastRow() == 4001);
