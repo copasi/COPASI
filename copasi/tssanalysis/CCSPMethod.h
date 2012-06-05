@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.h,v $
-//   $Revision: 1.13 $
+//   $Revision: 1.14 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2012/06/04 11:03:09 $
+//   $Author: shoops $
+//   $Date: 2012/06/05 13:33:03 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -285,7 +285,7 @@ public:
   /**
    * compute  the norm C  of the off-diagonal blocks
    **/
-  C_INT isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & ALA, C_FLOAT64 small);
+  C_INT isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & ALA, C_FLOAT64 SMALL);
 
   /**
    *  Start procedure of the CSP algorithm.

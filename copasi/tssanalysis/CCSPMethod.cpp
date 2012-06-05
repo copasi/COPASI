@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.26 $
+//   $Revision: 1.27 $
 //   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2012/06/04 11:02:42 $
+//   $Author: shoops $
+//   $Date: 2012/06/05 13:33:03 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -958,7 +958,7 @@ cspiteration:
   return;
 }
 /*  compute  the norm C  of the off-diagonal blocks   */
-C_INT CCSPMethod::isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & ALA, C_FLOAT64 small)
+C_INT CCSPMethod::isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & ALA, C_FLOAT64 SMALL)
 {
   C_INT i, j, imax, jmax, imaxl, jmaxl;
   C_FLOAT64 max = -1., maxl = -1.;
@@ -1051,7 +1051,7 @@ C_INT CCSPMethod::isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & A
 
       result =  -1;
     }
-  else if (max <= small) result = 0;
+  else if (max <= SMALL) result = 0;
 
   return result;
 }
@@ -1941,7 +1941,7 @@ void CCSPMethod::createAnnotationsM()
                                new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mFastReactionPointerTab), true);
   pTmp3->setMode(0, pTmp3->VECTOR);
   pTmp3->setMode(1, pTmp3->STRINGS);
-  pTmp3->setDescription("Fast Reaction Pointer of the m-th reaction  mode : whenever is not a small number, the r-th reaction is said to be a fast reaction");
+  pTmp3->setDescription("Fast Reaction Pointer of the m-th reaction  mode : whenever is not a SMALL number, the r-th reaction is said to be a fast reaction");
   pTmp3->setDimensionDescription(0, "Reactions");
   pTmp3->setDimensionDescription(1, "Fast Time Scales");
   pFastReactionPointerAnn = pTmp3;
@@ -1956,7 +1956,7 @@ void CCSPMethod::createAnnotationsM()
                                      new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mFastReactionPointerNormedTab), true);
   pTmp3Normed->setMode(0, pTmp3Normed->VECTOR);
   pTmp3Normed->setMode(1, pTmp3Normed->STRINGS);
-  pTmp3Normed->setDescription("Fast Reaction Pointer of the m-th reaction  mode : whenever is not a small number, the r-th reaction is said to be a fast reaction");
+  pTmp3Normed->setDescription("Fast Reaction Pointer of the m-th reaction  mode : whenever is not a SMALL number, the r-th reaction is said to be a fast reaction");
   pTmp3Normed->setDimensionDescription(0, "Reactions");
   pTmp3Normed->setDimensionDescription(1, "Fast Time Scales");
   pFastReactionPointerNormedAnn = pTmp3Normed;
@@ -2616,10 +2616,10 @@ void CCSPMethod::printResult(std::ostream * ostream) const
   const CCopasiVector< CReaction > & reacs = mpModel->getReactions();
 
   os << std::endl;
-  os << " Radical Pointer: whenever is not a small number, species k is said to be CSP radical" << std::endl;
+  os << " Radical Pointer: whenever is not a SMALL number, species k is said to be CSP radical" << std::endl;
   os << std::endl;
 
-  os << " Fast Reaction Pointer of the m-th reaction  mode : whenever is not a small number, " << std::endl;
+  os << " Fast Reaction Pointer of the m-th reaction  mode : whenever is not a SMALL number, " << std::endl;
   os << " the r-th reaction is said to be a fast reaction  " << std::endl;
   os << std::endl;
 
