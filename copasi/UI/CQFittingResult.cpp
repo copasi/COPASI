@@ -135,11 +135,21 @@ bool CQFittingResult::enterProtected()
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
-  QFont smallFont(this->font());
-  smallFont.setPointSize(smallFont.pointSize() - 3);
-
   //the parameters table
   mpParameters->setRowCount((int) imax);
+
+
+  QColor BackgroundColor = mpParameters->palette().brush(QPalette::Active, QPalette::Base).color();
+
+  int h, s, v;
+  BackgroundColor.getHsv(&h, &s, &v);
+
+  if (s < 20)
+    {
+      s = 20;
+    }
+
+  BackgroundColor.setHsv(0, s, v);
 
   for (i = 0; i != imax; i++)
     {
@@ -162,10 +172,16 @@ bool CQFittingResult::enterProtected()
 
       mpParameters->setItem((int) i, 0, pItem);
 
+      const C_FLOAT64 & Solution = Solutions[i];
+
       //2nd column: lower bound
       pItem = new QTableWidgetItem(FROM_UTF8(Items[i]->getLowerBound()));
-      pItem->setFont(smallFont);
       mpParameters->setItem((int) i, 1, pItem);
+
+      if (1.01 * *Items[i]->getLowerBoundValue() > Solution)
+        {
+          pItem->setBackgroundColor(BackgroundColor);
+        }
 
       //3rd column: start value
       pItem = new QTableWidgetItem(QString::number(Items[i]->getStartValue()));
@@ -173,24 +189,30 @@ bool CQFittingResult::enterProtected()
       mpParameters->setItem((int) i, 2, pItem);
 
       //4th column: solution value
-      const C_FLOAT64 & Solution = Solutions[i];
       pItem = new QTableWidgetItem(QString::number(Solution));
       mpParameters->setItem((int) i, 3, pItem);
 
       //5th column: upper bound
       pItem = new QTableWidgetItem(FROM_UTF8(Items[i]->getUpperBound()));
-      pItem->setFont(smallFont);
       mpParameters->setItem((int) i, 4, pItem);
 
+      if (0.99 * *Items[i]->getUpperBoundValue() < Solution)
+        {
+          pItem->setBackgroundColor(BackgroundColor);
+        }
 
       const C_FLOAT64 & StdDeviation = StdDeviations[i];
+
       pItem = new QTableWidgetItem(QString::number(StdDeviation));
+
       mpParameters->setItem((int) i, 5, pItem);
 
       pItem = new QTableWidgetItem(QString::number(fabs(100.0 * StdDeviation / Solution)));
+
       mpParameters->setItem((int) i, 6, pItem);
 
       pItem = new QTableWidgetItem(QString::number(Gradients[i]));
+
       mpParameters->setItem((int) i, 7, pItem);
     }
 
