@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.313 $
+//   $Revision: 1.314 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/02 20:34:51 $
+//   $Date: 2012/06/07 15:11:22 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -152,6 +152,7 @@ CopasiUI3Window::CopasiUI3Window():
     mCommitRequired(true),
     mQuitApplication(false),
     mSliderDialogEnabled(false),
+    mMessageShown(false),
     mWindows()
 
 #ifdef COPASI_SBW_INTEGRATION
