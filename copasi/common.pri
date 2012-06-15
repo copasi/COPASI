@@ -1,6 +1,6 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.139 $ 
+#   $Revision: 1.140 $ 
 #   $Name:  $ 
 # End CVS Header 
 
@@ -19,7 +19,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.139 $ $Author: shoops $ $Date: 2012/03/15 18:09:03 $  
+# $Revision: 1.140 $ $Author: shoops $ $Date: 2012/06/15 17:38:04 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -211,20 +211,42 @@ contains(BUILD_OS, Darwin) {
       DEFINES += COPASI_SBW_INTEGRATION
       DEFINES += LINUX DARWIN
     }
-  
-    !isEmpty(QWT_PATH) {
-       LIBS+=  $${QWT_PATH}/lib/libqwt.a
-       INCLUDEPATH += $${QWT_PATH}/include
+    
+    # TODO CRITICAL To build packages we need to assure that only the static library is linked 
+    !isEmpty(QWT_PATH):!contains(QWT_PATH, yes) {
+      INCLUDEPATH *= $$system($${BUILD_ROOT}/admin/include.sh -i $${QWT_PATH}/include qwt-qt4 qwt)
+      LIBS *= -L$${QWT_PATH}/lib
+      
+      DEBUG_LIB += $$system($${BUILD_ROOT}/admin/libs.sh -l $${QWT_PATH}/lib qwt-qt4_debug qwt_debug)
+      RELEASE_LIB += $$system($${BUILD_ROOT}/admin/libs.sh -l $${QWT_PATH}/lib qwt-qt4 qwt)
+      
+      debug:!isEmpty(DEBUG_LIB) {
+          LIBS += $${DEBUG_LIB}
+        } else {
+          LIBS += $${RELEASE_LIB}
+        }
     } else {
-      LIBS += -lqwt
+      INCLUDEPATH *= $$system($${BUILD_ROOT}/admin/include.sh qwt-qt4 qwt)
+
+      DEBUG_LIB += $$system($${BUILD_ROOT}/admin/libs.sh qwt-qt4_debug qwt_debug)
+      RELEASE_LIB += $$system($${BUILD_ROOT}/admin/libs.sh qwt-qt4 qwt)
+      
+      debug:!isEmpty(DEBUG_LIB) {
+          LIBS += $${DEBUG_LIB}
+        } else {
+          LIBS += $${RELEASE_LIB}
+        }
     }
     
-    !isEmpty(QWT3D_PATH) {
-      LIBS +=  $${QWT3D_PATH}/lib/libqwtplot3d.a
-      INCLUDEPATH += $${QWT3D_PATH}/include
+    # TODO CRITICAL To build packages we need to assure that only the static library is linked 
+    !isEmpty(QWT3D_PATH):!contains(QWT3D_PATH, yes) {
+      INCLUDEPATH *= $$system($${BUILD_ROOT}/admin/include.sh -i $${QWT3D_PATH}/include qwtplot3d-qt4 qwtplot3d)
+      LIBS *= -L$${QWT3D_PATH}/lib
+      LIBS += $$system($${BUILD_ROOT}/admin/libs.sh -l $${QWT3D_PATH}/lib qwtplot3d-qt4 qwtplot3d)
     } else {
-      LIBS += -lqwtplot3d
-    }
+      INCLUDEPATH *= $$system($${BUILD_ROOT}/admin/include.sh qwtplot3d-qt4 qwtplot3d)
+      LIBS += $$system($${BUILD_ROOT}/admin/libs.sh qwtplot3d-qt4 qwtplot3d)
+    }    
 
     !isEmpty(QTMML_PATH) {
       contains(QTMML_PATH, yes) {
