@@ -1,12 +1,12 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/libs/libs.pro,v $ 
-#   $Revision: 1.7 $ 
+#   $Revision: 1.8 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2011/05/25 15:12:15 $ 
+#   $Date: 2012/06/15 15:31:50 $ 
 # End CVS Header 
 
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -36,7 +36,7 @@ DISTFILES += \
         libs.pro \
         lib.pri
 
-include(srcDistribution.pri)
+include(../srcDistribution.pri)
 
 src_distribution.commands = \
   rm -rf ../../copasi_src/copasi/libs; \
