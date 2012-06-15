@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CTruncatedNewton.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:11:21 $
+//   $Date: 2012/06/15 17:36:57 $
 // End CVS Header
 
 // Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
@@ -708,9 +708,10 @@ L50:
 
   /* TEST FOR CONVERGENCE */
 
-  if (alpha * pnorm < toleps *(one + xnorm) && fabs(difnew) < rtleps *
-      ftest && gtg < peps * ftest * ftest || gtg < *accrcy * 1e-4 *
-      ftest * ftest)
+  if ((alpha * pnorm < toleps *(one + xnorm) &&
+       fabs(difnew) < rtleps * ftest &&
+       gtg < peps * ftest * ftest) ||
+      gtg < *accrcy * 1e-4 * ftest * ftest)
     {
       goto L90;
     }
@@ -3066,9 +3067,11 @@ L90:
 
   /* CHECK TERMINATION CRITERIA */
 
-  convrg = fabs(xmidpt) <= twotol - half * (*b - *a) || fabs(*gmin) <= *
-           gtest2 && *fmin < *oldf && ((d__1 = *xmin - *xbnd, fabs(d__1)) > *
-                                       tol || !(*braktd));
+  convrg = fabs(xmidpt) <= twotol - half * (*b - *a) ||
+           (fabs(*gmin) <= *gtest2 &&
+            *fmin < *oldf &&
+            ((d__1 = *xmin - *xbnd, fabs(d__1)) > * tol ||
+             !(*braktd)));
 
   if (! convrg)
     {
