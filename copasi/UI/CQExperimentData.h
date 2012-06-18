@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.h,v $
-//   $Revision: 1.21 $
+//   $Revision: 1.22 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/08 13:15:26 $
+//   $Date: 2012/06/18 18:07:39 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,7 +56,7 @@ protected:
   std::map<std::string, std::string> mKeyMap;
   std::map<std::string, std::string> mFileMap;
   CQExperimentDataValidator * mpValidatorFirst;
-  size_t mShown;
+  int mShown;
   CQExperimentDataValidator * mpValidatorName;
   bool mCrossValidation;
   bool mShowError;
@@ -64,6 +64,7 @@ protected:
   CQComboDelegate * mpComboDelegate;
   QStringList mTypeItems;
   QStringList mTypeWithoutTimeItems;
+  int mModelObjectRow;
 
   virtual bool loadExperiment(CExperiment * pExperiment);
   bool saveExperiment(CExperiment * pExperiment, const bool & full);
@@ -91,6 +92,7 @@ protected slots:
   void slotOK();
   void slotUpdateTable();
   void slotModelObject(int row);
+  void slotModelObjectDelayed();
   void slotTypeChanged(int row, int index);
   void slotSeparator();
   void slotCheckFrom(bool checked);

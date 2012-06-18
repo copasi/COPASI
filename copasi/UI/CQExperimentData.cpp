@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.cpp,v $
-//   $Revision: 1.28 $
+//   $Revision: 1.29 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/04 19:36:07 $
+//   $Date: 2012/06/18 18:07:38 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,8 @@
 #include "CQExperimentData.h"
 
 #include <QtCore/QVariant>
+#include <QtCore/QTimer>
+
 #include <algorithm>
 #include <limits>
 #include <cmath>
@@ -71,14 +73,15 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
     mKeyMap(),
     mFileMap(),
     mpValidatorFirst(),
-    mShown(C_INVALID_INDEX),
+    mShown(-1),
     mpValidatorName(NULL),
     mCrossValidation(false),
     mShowError(true),
     mpDataModel(NULL),
     mpComboDelegate(NULL),
     mTypeItems(),
-    mTypeWithoutTimeItems()
+    mTypeWithoutTimeItems(),
+    mModelObjectRow(-1)
 {
   setObjectName(QString::fromUtf8(name));
   setModal(modal);
@@ -121,7 +124,7 @@ public:
 
   virtual State validate(QString & input, int & pos) const
   {
-    if (mpContext->mShown == (unsigned int) - 1) return Acceptable;
+    if (mpContext->mShown == -1) return Acceptable;
 
     if (mType == Name)
       {
@@ -433,7 +436,7 @@ void CQExperimentData::slotExperimentChanged(QListWidgetItem * pCurrentItem, QLi
   else
     {
       mpExperiment = NULL;
-      mShown = (unsigned int) - 1;
+      mShown =  -1;
     }
 
   loadExperiment(mpExperiment);
@@ -714,7 +717,7 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet, CCopasiDataModel * 
   if (!pExperimentSet) return false;
 
   mpExperiment = NULL;
-  mShown = (unsigned int) - 1;
+  mShown =  -1;
 
   mpExperimentSet = pExperimentSet;
 
@@ -826,8 +829,6 @@ void CQExperimentData::init()
 
       pTmp++;
     }
-
-
 }
 
 void CQExperimentData::destroy()
@@ -985,7 +986,7 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & fu
     {
       int current = mpBoxExperiment->currentRow();
       mpBoxExperiment->blockSignals(true);
-      mpBoxExperiment->item((int) mShown)->setText(value);
+      mpBoxExperiment->item(mShown)->setText(value);
       mpBoxExperiment->setCurrentRow(current);
       mpBoxExperiment->blockSignals(false);
       pExperiment->setObjectName(TO_UTF8(value));
@@ -1050,17 +1051,18 @@ void CQExperimentData::syncExperiments()
   std::string Shown;
 
   if (mShown != C_INVALID_INDEX)
-    Shown = TO_UTF8(mpBoxExperiment->item((int) mShown)->text());
+    Shown = TO_UTF8(mpBoxExperiment->item(mShown)->text());
 
   mpFileInfo->sync();
 
+  mpBoxExperiment->blockSignals(true);
   mpBoxExperiment->clear();
 
   std::vector< std::string > ExperimentNames = mpFileInfo->getExperimentNames();
   std::vector< std::string >::const_iterator it = ExperimentNames.begin();
   std::vector< std::string >::const_iterator end = ExperimentNames.end();
 
-  size_t i;
+  int i;
 
   for (i = 0; it != end; ++it, i++)
     {
@@ -1068,13 +1070,13 @@ void CQExperimentData::syncExperiments()
 
       if (*it == Current)
         {
-          mpBoxExperiment->blockSignals(true);
           mpBoxExperiment->setCurrentRow(mpBoxExperiment->count() - 1);
-          mpBoxExperiment->blockSignals(false);
         }
 
       if (*it == Shown) mShown = i;
     }
+
+  mpBoxExperiment->blockSignals(false);
 
   return;
 }
@@ -1105,6 +1107,16 @@ void CQExperimentData::slotModelObject(int row)
       mpTable->item(row, COL_OBJECT)->setText(FROM_UTF8(pObject->getObjectDisplayName()));
       mpTable->item(row, COL_OBJECT_HIDDEN)->setText(FROM_UTF8(pObject->getCN()));
     }
+}
+
+void CQExperimentData::slotModelObjectDelayed()
+{
+  if (mModelObjectRow != -1)
+    {
+      slotModelObject(mModelObjectRow);
+    }
+
+  mModelObjectRow = -1;
 }
 
 void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
@@ -1267,7 +1279,10 @@ void CQExperimentData::slotTypeChanged(int row, int index)
         if (!CQSimpleSelectionTree::filter(CQSimpleSelectionTree::InitialTime |
                                            CQSimpleSelectionTree::Parameters,
                                            pDataModel->getDataObject(CN)))
-          slotModelObject(row);
+          {
+            mModelObjectRow = row;
+            QTimer::singleShot(10, this, SLOT(slotModelObjectDelayed()));
+          }
 
         BtnEnabled = true;
         break;
@@ -1277,7 +1292,10 @@ void CQExperimentData::slotTypeChanged(int row, int index)
         if (!CQSimpleSelectionTree::filter(CQSimpleSelectionTree::Variables |
                                            CQSimpleSelectionTree::ObservedValues,
                                            pDataModel->getDataObject(CN)))
-          slotModelObject(row);
+          {
+            mModelObjectRow = row;
+            QTimer::singleShot(10, this, SLOT(slotModelObjectDelayed()));
+          }
 
         BtnEnabled = true;
         break;
