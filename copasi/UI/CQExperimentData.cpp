@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/06/18 18:07:38 $
+//   $Date: 2012/06/18 18:11:08 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -1050,7 +1050,7 @@ void CQExperimentData::syncExperiments()
   std::string Current = TO_UTF8(mpBoxExperiment->currentItem()->text());
   std::string Shown;
 
-  if (mShown != C_INVALID_INDEX)
+  if (mShown != -1)
     Shown = TO_UTF8(mpBoxExperiment->item(mShown)->text());
 
   mpFileInfo->sync();
