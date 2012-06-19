@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.164 $
+//   $Revision: 1.165 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 15:44:30 $
+//   $Date: 2012/06/19 18:10:54 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -899,6 +899,58 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
   return true;
 }
 
+std::string CCopasiDataModel::exportMathModelToString(CProcessReport* pProcessReport, const std::string & filter)
+{
+  CODEExporter * pExporter = NULL;
+
+  if (filter == "C Files (*.c)")
+    {
+      pExporter = new CODEExporterC;
+    }
+  else if (filter == "Berkeley Madonna Files (*.mmd)")
+    {
+      pExporter = new CODEExporterBM();
+    }
+  else if (filter == "XPPAUT (*.ode)")
+    {
+      pExporter = new CODEExporterXPPAUT;
+    }
+
+  if (pExporter == NULL)
+    {
+      return "";
+    }
+
+  try
+    {
+      if (!mData.pModel->compileIfNecessary(pProcessReport))
+        return "";
+    }
+
+  catch (...)
+    {
+      return "";
+    }
+
+  CCopasiVector< CModelValue >::const_iterator it = mData.pModel->getModelValues().begin();
+  CCopasiVector< CModelValue >::const_iterator end = mData.pModel->getModelValues().end();
+
+  for (; it != end; ++it)
+    if ((*it)->isUsed()) break;
+
+  if (it != end)
+    CCopasiMessage(CCopasiMessage::WARNING, MCODEExporter + 2);
+
+  std::ostringstream os;
+
+  if (!pExporter->exportToStream(this, os))
+    {
+      return "";
+    }
+
+  return os.str();
+}
+
 bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessReport* pProcessReport,
                                        const std::string & filter, bool overwriteFile)
 {
@@ -924,6 +976,13 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessRep
           return false;
         }
     }
+  else if (!CDirEntry::isWritable(CDirEntry::dirName(fileName)))
+    {
+      CCopasiMessage(CCopasiMessage::ERROR,
+                     MCDirEntry + 2,
+                     fileName.c_str());
+      return false;
+    }
 
   try
     {
@@ -945,28 +1004,37 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessRep
   if (it != end)
     CCopasiMessage(CCopasiMessage::WARNING, MCODEExporter + 2);
 
+  CODEExporter * pExporter = NULL;
+
   if (filter == "C Files (*.c)")
     {
-      CODEExporterC exporter;
-
-      return exporter.exportMathModel(this, fileName.c_str(), filter.c_str(), overwriteFile);
+      pExporter = new CODEExporterC;
     }
-
-  if (filter == "Berkeley Madonna Files (*.mmd)")
+  else if (filter == "Berkeley Madonna Files (*.mmd)")
     {
-      CODEExporterBM exporter;
-
-      return exporter.exportMathModel(this, fileName.c_str(), filter.c_str(), overwriteFile);
+      pExporter = new CODEExporterBM();
     }
-
-  if (filter == "XPPAUT (*.ode)")
+  else if (filter == "XPPAUT (*.ode)")
     {
-      CODEExporterXPPAUT exporter;
-
-      return exporter.exportMathModel(this, fileName.c_str(), filter.c_str(), overwriteFile);
+      pExporter = new CODEExporterXPPAUT;
     }
 
-  return false;
+  if (pExporter == NULL)
+    {
+      return false;
+    }
+
+  std::ofstream os(CLocaleString::fromUtf8(fileName).c_str(), std::ios::out);
+
+  if (!os.good())
+    {
+      CCopasiMessage(CCopasiMessage::ERROR,
+                     MCDirEntry + 3,
+                     fileName.c_str());
+      return false;
+    }
+
+  return pExporter->exportToStream(this, os);
 }
 
 void CCopasiDataModel::deleteOldData()

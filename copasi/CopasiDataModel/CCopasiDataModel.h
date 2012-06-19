@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.55 $
+//   $Revision: 1.56 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/10/25 17:17:22 $
+//   $Date: 2012/06/19 18:10:54 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -49,7 +49,7 @@ template <class CType> class CCopasiVectorN;
 
 //******************************************************************************
 
-#include "report/CRenameHandler.h"
+#include "copasi/report/CRenameHandler.h"
 class CCopasiDataModel;
 
 class CDataModelRenameHandler : public CRenameHandler
@@ -124,6 +124,8 @@ public:
 
   std::string exportSBMLToString(CProcessReport* pExportHandler, int sbmlLevel, int sbmlVersion);
   bool exportSBML(const std::string & fileName, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM = true, CProcessReport* pExportHandler = NULL);
+
+  std::string exportMathModelToString(CProcessReport* pProcessReport, const std::string & filter);
   bool exportMathModel(const std::string & fileName, CProcessReport* pProcessReport,
                        const std::string & filter, bool overwriteFile = false);
 

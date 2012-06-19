@@ -1,9 +1,9 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiDataModel.i,v $ 
-//   $Revision: 1.25 $ 
+//   $Revision: 1.26 $ 
 //   $Name:  $ 
-//   $Author: bergmann $ 
-//   $Date: 2012/04/12 15:44:15 $ 
+//   $Author: shoops $ 
+//   $Date: 2012/06/19 18:11:05 $ 
 // End CVS Header 
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -47,6 +47,7 @@
 %ignore CCopasiDataModel::exportSBML(const std::string& fileName,bool overwriteFile,int sbmlLevel, int sbmlVersion,bool exportIncomplete ,bool exportCOPASIMIRIAM=false,CProcessReport* pExportHandler = NULL );
 %ignore CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler,int sbmlLevel, int sbmlVersion);
 %ignore CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessReport* pProcessReport, const std::string & filter, bool overwriteFile = false);
+%ignore CCopasiDataModel::exportMathModelToString(CProcessReport* pProcessReport, const std::string & filter);
 %ignore CCopasiDataModel::getModel() const;
 %ignore CCopasiDataModel::listTaskDependentOnReport(const std::string & key);
 %ignore CCopasiDataModel::addReport(const CCopasiTask::Type & taskType);
@@ -121,6 +122,11 @@
     std::string exportSBMLToString()
     {
         return $self->exportSBMLToString(NULL,2,1);
+    };
+
+    std::string exportMathModelToString(const std::string& filter)
+    {
+        return $self->exportMathModelToString(NULL,filter);
     };
 
     bool newModel()
