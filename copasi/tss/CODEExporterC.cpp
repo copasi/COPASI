@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterC.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/15 21:12:55 $
+//   $Date: 2012/06/19 18:07:56 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,7 +60,7 @@
 CODEExporterC::CODEExporterC()
 {}
 
-bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ofstream & outFile)
+bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os)
 {
 
   size_t metab_size = copasiModel->getMetabolitesX().size();
@@ -82,21 +82,21 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ofstream & o
       count = count + reac->getParameters().size();
     }
 
-  outFile << "#ifdef SIZE_DEFINITIONS" << std::endl;
-  outFile << "#define N_METABS " << metab_size << std::endl;
-  outFile << "#define N_ODE_METABS " << ode_size << std::endl;
-  outFile << "#define N_INDEP_METABS " << indep_size << std::endl;
-  outFile << "#define N_COMPARTMENTS " << comps_size << std::endl;
-  outFile << "#define N_GLOBAL_PARAMS " << modvals_size << std::endl;
-  outFile << "#define N_KIN_PARAMS " << count << std::endl;
-  outFile << "#define N_REACTIONS " << reacs_size << std::endl;
+  os << "#ifdef SIZE_DEFINITIONS" << std::endl;
+  os << "#define N_METABS " << metab_size << std::endl;
+  os << "#define N_ODE_METABS " << ode_size << std::endl;
+  os << "#define N_INDEP_METABS " << indep_size << std::endl;
+  os << "#define N_COMPARTMENTS " << comps_size << std::endl;
+  os << "#define N_GLOBAL_PARAMS " << modvals_size << std::endl;
+  os << "#define N_KIN_PARAMS " << count << std::endl;
+  os << "#define N_REACTIONS " << reacs_size << std::endl;
 
-  outFile << "#endif // SIZE_DEFINITIONS" << std::endl;
-  outFile << std::endl;
+  os << "#endif // SIZE_DEFINITIONS" << std::endl;
+  os << std::endl;
 
-  outFile << "#ifdef TIME" << std::endl;
-  outFile << "#define T  <set here a user name for the time variable> " << std::endl;
-  outFile << "#endif // TIME" << std::endl;
+  os << "#ifdef TIME" << std::endl;
+  os << "#define T  <set here a user name for the time variable> " << std::endl;
+  os << "#endif // TIME" << std::endl;
 
   return true;
 }

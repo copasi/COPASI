@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterXPPAUT.h,v $
-//   $Revision: 1.7 $
+//   $Revision: 1.8 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/03/07 19:34:15 $
+//   $Date: 2012/06/19 18:07:56 $
 // End CVS Header
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -38,7 +38,7 @@ public:
    */
   CODEExporterXPPAUT();
 
-  virtual bool exportTitleData(const CCopasiDataModel* pDataModel, std::ofstream & outFile);
+  virtual bool exportTitleData(const CCopasiDataModel* pDataModel, std::ostream & os);
 
   virtual void setReservedNames();
 
@@ -78,7 +78,7 @@ public:
 
   virtual std::string exportTitleString(const size_t tmp);
 
-  bool exportClosingData(const CModel* copasiModel, std::ofstream & outFile);
+  bool exportClosingData(const CModel* copasiModel, std::ostream & os);
 
   std::map< std::string, unsigned C_INT32 > Frequancy;
   std::set<std::string> NameSet;

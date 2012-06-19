@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterBM.cpp,v $
-//   $Revision: 1.10 $
+//   $Revision: 1.11 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 15:02:46 $
+//   $Date: 2012/06/19 18:07:56 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,20 +59,20 @@
  */
 CODEExporterBM::CODEExporterBM()
 {}
-bool CODEExporterBM::exportTitleData(const CCopasiDataModel* pDataModel, std::ofstream & outFile)
+bool CODEExporterBM::exportTitleData(const CCopasiDataModel* pDataModel, std::ostream & os)
 {
-  outFile << "METHOD stiff" << std::endl;
-  outFile << std::endl;
-  outFile << "STARTTIME = 0" << std::endl;
+  os << "METHOD stiff" << std::endl;
+  os << std::endl;
+  os << "STARTTIME = 0" << std::endl;
 
   const CTrajectoryTask * pTrajectory =
     dynamic_cast<const CTrajectoryTask *>((*const_cast<CCopasiDataModel*>(pDataModel)->getTaskList())["Time-Course"]);
   const CTrajectoryProblem * pTrajectoryProblem =
     dynamic_cast<const CTrajectoryProblem *>(pTrajectory->getProblem());
 
-  outFile << "STOPTIME = " << pTrajectoryProblem->getDuration() << std::endl;
-  outFile << "DT = " << pTrajectoryProblem->getStepSize() << std::endl;
-  outFile << std::endl;
+  os << "STOPTIME = " << pTrajectoryProblem->getDuration() << std::endl;
+  os << "DT = " << pTrajectoryProblem->getStepSize() << std::endl;
+  os << std::endl;
 
   return true;
 }

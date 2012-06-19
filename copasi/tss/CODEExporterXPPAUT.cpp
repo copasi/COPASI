@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterXPPAUT.cpp,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/16 17:00:58 $
+//   $Date: 2012/06/19 18:07:57 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,17 +60,16 @@
 CODEExporterXPPAUT::CODEExporterXPPAUT()
 {}
 
-bool CODEExporterXPPAUT::exportTitleData(const CCopasiDataModel* pDataModel, std::ofstream & outFile)
+bool CODEExporterXPPAUT::exportTitleData(const CCopasiDataModel* pDataModel, std::ostream & os)
 {
-
-  outFile << "@ t0=0,";  //TODO
+  os << "@ t0=0,";  //TODO
   const CTrajectoryTask * pTrajectory =
     dynamic_cast<const CTrajectoryTask *>((*const_cast<CCopasiDataModel*>(pDataModel)->getTaskList())["Time-Course"]);
   const CTrajectoryProblem * pTrajectoryProblem =
     dynamic_cast<const CTrajectoryProblem *>(pTrajectory->getProblem());
 
-  outFile << "total=" << pTrajectoryProblem->getDuration() << ",";
-  outFile << "dt=" << pTrajectoryProblem->getStepSize()
+  os << "total=" << pTrajectoryProblem->getDuration() << ",";
+  os << "dt=" << pTrajectoryProblem->getStepSize()
   << ",METH=stiff" << std::endl; //gear is the only method with automatic step size
 
   return true;
@@ -605,8 +604,8 @@ std::string CODEExporterXPPAUT::exportTitleString(const size_t tmp)
     }
 }
 
-bool CODEExporterXPPAUT::exportClosingData(const CModel* /* copasiModel */, std::ofstream & outFile)
+bool CODEExporterXPPAUT::exportClosingData(const CModel* /* copasiModel */, std::ostream & os)
 {
-  outFile << "done" << std::endl;
+  os << "done" << std::endl;
   return true;
 }

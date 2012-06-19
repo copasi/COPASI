@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.cpp,v $
-//   $Revision: 1.29 $
+//   $Revision: 1.30 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/10 16:03:11 $
+//   $Date: 2012/06/19 18:07:56 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,7 @@
 #include <cmath>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <ctype.h>
 
 #include "copasi.h"
@@ -68,34 +69,15 @@ CODEExporter::CODEExporter()
 CODEExporter::~CODEExporter()
 {}
 
-/**
- **
- */
-bool CODEExporter::exportMathModel(const CCopasiDataModel * pDataModel, std::string mmasciiFilename,
-                                   std::string /* Filter */, bool overwriteFile)
+bool CODEExporter::exportToStream(const CCopasiDataModel* pDataModel, std::ostream & os)
 {
-  /* check if the file already exisits.
-          If yes, write if overwrite is true,
-          else create an appropriate  CCopasiMessage. */
-
-  std::ifstream testInfile(CLocaleString::fromUtf8(mmasciiFilename).c_str(), std::ios::in);
-
-  if (testInfile && !overwriteFile)
-    {
-      // create a CCopasiMessage with the appropriate error
-      CCopasiMessage(CCopasiMessage::ERROR, MCDirEntry + 1, mmasciiFilename.c_str());
-      return false;
-    }
-
-  std::ofstream outFile(CLocaleString::fromUtf8(mmasciiFilename).c_str(), std::ios::out);
-
-  /* translate Copasi data names in exporter syntax */
+  /* translate COPASI data names in exporter syntax */
 
   if (!preprocess(pDataModel->getModel())) return false;
 
-  /* export Copasi data */
+  /* export COPASI data */
 
-  if (!exportTitleData(pDataModel->getModel(), outFile)) return false;
+  if (!exportTitleData(pDataModel->getModel(), os)) return false;
 
   if (!exportMetabolites(pDataModel->getModel())) return false;
 
@@ -115,14 +97,14 @@ bool CODEExporter::exportMathModel(const CCopasiDataModel * pDataModel, std::str
 
   if (!exportMetabolitesConcentrations(pDataModel->getModel())) return false;
 
-  outFile << std::endl << exportTitleString(INITIAL) << std::endl << initial.str() << exportClosingString(INITIAL);
-  outFile << std::endl << exportTitleString(FIXED) << std::endl << fixed.str() << exportClosingString(FIXED);
-  outFile << std::endl << exportTitleString(ASSIGNMENT) << std::endl << assignment.str() << exportClosingString(ASSIGNMENT);
-  outFile << std::endl << exportTitleString(HEADERS) << std::endl << headers.str() << exportClosingString(HEADERS);
-  outFile << std::endl << exportTitleString(FUNCTIONS) << std::endl << functions.str() << exportClosingString(FUNCTIONS);
-  outFile << std::endl << exportTitleString(ODEs) << std::endl << ode.str() << exportClosingString(ODEs);
+  os << std::endl << exportTitleString(INITIAL) << std::endl << initial.str() << exportClosingString(INITIAL);
+  os << std::endl << exportTitleString(FIXED) << std::endl << fixed.str() << exportClosingString(FIXED);
+  os << std::endl << exportTitleString(ASSIGNMENT) << std::endl << assignment.str() << exportClosingString(ASSIGNMENT);
+  os << std::endl << exportTitleString(HEADERS) << std::endl << headers.str() << exportClosingString(HEADERS);
+  os << std::endl << exportTitleString(FUNCTIONS) << std::endl << functions.str() << exportClosingString(FUNCTIONS);
+  os << std::endl << exportTitleString(ODEs) << std::endl << ode.str() << exportClosingString(ODEs);
 
-  if (!exportClosingData(pDataModel->getModel(), outFile)) return false;
+  if (!exportClosingData(pDataModel->getModel(), os)) return false;
 
   return true;
 }
@@ -688,7 +670,7 @@ bool CODEExporter::preprocess(const CModel* copasiModel)
 }
 
 bool CODEExporter::exportTitleData(const CModel* /* copasiModel */,
-                                   std::ofstream & /* outFile */)
+                                   std::ostream & /* os */)
 {return true;}
 
 /* export metabolites */
@@ -1088,7 +1070,7 @@ bool CODEExporter::exportODEs(const CModel* copasiModel)
 }
 
 bool CODEExporter::exportClosingData(const CModel* /* copasiModel */,
-                                     std::ofstream & /* outFile */)
+                                     std::ostream & /* os */)
 {return true;}
 
 void CODEExporter::setReservedNames()
