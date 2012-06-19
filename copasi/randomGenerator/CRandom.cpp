@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/CRandom.cpp,v $
-//   $Revision: 1.25 $
+//   $Revision: 1.26 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:51:18 $
+//   $Author: shoops $
+//   $Date: 2012/06/19 18:06:36 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -224,7 +224,7 @@ C_INT32 CRandom::getRandomS(const C_INT32 & max)
 
   while (NumberU >= Limit);
 
-  return mNumberU % Max;
+  return NumberU % Max;
 }
 
 /**
