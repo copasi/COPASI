@@ -1,12 +1,12 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.34 $ 
+#   $Revision: 1.35 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2012/03/05 18:09:32 $ 
+#   $Date: 2012/06/20 15:20:20 $ 
 # End CVS Header 
 
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -23,8 +23,8 @@
 TEMPLATE = lib
 CONFIG -= qt
 
-include(../../common.pri)
-include(../../app.pri)
+include($${BUILD_ROOT}/copasi/common.pri)
+include($${BUILD_ROOT}/copasi/app.pri)
 
 contains(BUILD_OS,WIN32){
    TARGET = _COPASI
@@ -44,104 +44,95 @@ QMAKE_CXXFLAGS_RELEASE += -O1
 COPASI_LIBS += $${COPASI_LIBS_SE}
 
 
-INCLUDEPATH += ../../..
-contains(BUILD_OS,Linux){
-  LIBS = -L../../lib \
-         $$join(COPASI_LIBS, " -l", -l) \
-         $${LIBS}
+INCLUDEPATH *= $${BUILD_ROOT}/copasi
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+contains(BUILD_OS,Linux) {
+  LIBS = -L$${BUILD_ROOT}/copasi/lib  $$join(COPASI_LIBS, " -l", -l) $${LIBS}
+
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  $${BUILD_ROOT}/copasi/lib/lib", $${BUILD_ROOT}/copasi/lib/lib, .a)
 
   !isEmpty(PYTHON_LIB_PATH){
     LIBS += -L$${PYTHON_LIB_PATH}
     LIBS += -lpython2.7
   } else {
-    LIBS += `python-config --libs`
+    LIBS += $$system(python-config --libs)
   }
 
   !isEmpty(PYTHON_INCLUDE_PATH){
-    INCLUDEPATH += $${PYTHON_INCLUDE_PATH}
+    INCLUDEPATH *= $${PYTHON_INCLUDE_PATH}
   } else {
-    QMAKE_CFLAGS_RELEASE += `python-config --includes` 
-    QMAKE_CXXFLAGS_RELEASE += `python-config --includes` 
-    QMAKE_CFLAGS_DEBUG += `python-config --includes` 
-    QMAKE_CXXFLAGS_DEBUG += `python-config --includes` 
+    INCLUDEPATH *= $$system(python-config --includes)
   }
 
  QMAKE_POST_LINK += ln -sf libCopasiPython.so _COPASI.so
-
 }
 
 contains(BUILD_OS, Darwin) {
   QMAKE_LFLAGS += -Wl,-search_paths_first
   
-  LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
+  LIBS = $$join(COPASI_LIBS, ".a  $${BUILD_ROOT}/copasi/lib/lib", $${BUILD_ROOT}/copasi/lib/lib, .a) \
          $${LIBS}
   
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  TARGETDEPS += $$join(COPASI_LIBS, ".a  $${BUILD_ROOT}/copasi/lib/lib", $${BUILD_ROOT}/copasi/lib/lib, .a)
 
-    LIBS += -framework Python
-    LIBS += -framework QuickTime
-    LIBS += -framework Carbon
-    LIBS += -framework Accelerate
+    LIBS += "-framework Python"
 
     QMAKE_LFLAGS_SHLIB += -unexported_symbols_list unexported_symbols.list
     QMAKE_PRE_LINK = nm -g $${SBML_PATH}/lib/libsbml.a | grep "^[0-9]" | cut -d\" \" -f3  > unexported_symbols.list ; nm -g $${EXPAT_PATH}/lib/libexpat.a | grep "^[0-9]" | cut -d\" \" -f3  >> unexported_symbols.list
 
 
   !isEmpty(PYTHON_INCLUDE_PATH){
-    INCLUDEPATH += $${PYTHON_INCLUDE_PATH}
-    INCLUDEPATH += $${PYTHON_INCLUDE_PATH}/python2.7
+    INCLUDEPATH *= $${PYTHON_INCLUDE_PATH}
+    INCLUDEPATH *= $${PYTHON_INCLUDE_PATH}/python2.7
+  } else {
+    INCLUDEPATH *= $$system(python-config --includes)
   }
-  #QMAKE_CXXFLAGS += `python-config --includes` 
 
   QMAKE_POST_LINK += ln -sf libCopasiPython.dylib _COPASI.so
 }
 
-contains(BUILD_OS, WIN32) {
+contains(BUILD_OS, WIN32) { 
   CONFIG += debug_and_release
 
   debug {
-    LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/debug/", ../../lib/debug/, .lib)
+    LIBS += $$join(COPASI_LIBS, ".lib  $${BUILD_ROOT}/copasi/lib/debug/", $${BUILD_ROOT}/copasi/lib/debug/, .lib)
   }
   release {
-    LIBS += $$join(COPASI_LIBS, ".lib  ../../lib/release/", ../../lib/release/, .lib)
+    LIBS += $$join(COPASI_LIBS, ".lib  $${BUILD_ROOT}/copasi/lib/release/", $${BUILD_ROOT}/copasi/lib/release/, .lib)
   }
 
   debug {
-    PRE_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/debug/", ../../lib/debug/, .lib)
+    PRE_TARGETDEPS += $$join(COPASI_LIBS, ".lib  $${BUILD_ROOT}/copasi/lib/debug/", $${BUILD_ROOT}/copasi/lib/debug/, .lib)
   }
 
   release {
-    PRE_TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/release/", ../../lib/release/, .lib)
+    PRE_TARGETDEPS += $$join(COPASI_LIBS, ".lib  $${BUILD_ROOT}/copasi/lib/release/", $${BUILD_ROOT}/copasi/lib/release/, .lib)
   }
 
   CONFIG -= staticlib
-  CONFIG += dll
-  CONFIG += embed_manifest_dll
-  LIBS += delayimp.lib
+  CONFIG *= dll
+  CONFIG *= embed_manifest_dll
+  LIBS *= delayimp.lib
   
-  !isEmpty(PYTHON_LIB_PATH){
+  !isEmpty(PYTHON_LIB_PATH) {
     QMAKE_LFLAGS += /LIBPATH:"$${PYTHON_LIB_PATH}"
-    debug{
-      LIBS += python27_d.lib
+    debug {
+      LIBS *= python27_d.lib
     } else { 
-      LIBS += python27.lib
+      LIBS *= python27.lib
     }
   }
 
-  !isEmpty(PYTHON_INCLUDE_PATH){
-    INCLUDEPATH += $$PYTHON_INCLUDE_PATH
-    debug{
-      INCLUDEPATH += $$PYTHON_INCLUDE_PATH/../PC/
+  !isEmpty(PYTHON_INCLUDE_PATH) {
+    INCLUDEPATH *= $$PYTHON_INCLUDE_PATH
+    debug {
+      INCLUDEPATH *= $$PYTHON_INCLUDE_PATH/../PC/
     }
   }
-
-
 }
 
 
-include(../common/swig_files.pri)
+include($${BUILD_ROOT}/copasi/bindings/common/swig_files.pri)
 
 
 UNITTEST_FILES = unittests/Test_CChemEq.py \
@@ -191,66 +182,66 @@ UNITTEST_FILES = unittests/Test_CChemEq.py \
 #DISTFILES += python.i
 #DISTFILES += $$UNITTEST_FILES
 
-isEmpty(SWIG_PATH){
+isEmpty(SWIG_PATH) {
     # check if the wrapper file is there
-    !exists(copasi_wrapper.cpp){
+    !exists(copasi_wrapper.cpp) {
         error(Wrapper file copasi_wrapper.cpp missing. Please reconfigure with --with-swig=PATH_TO_SWIG.)
     }
 }
 
-!isEmpty(SWIG_PATH){
+!isEmpty(SWIG_PATH) {
     # check if swig is there and create a target to run it to create
     # copasi_wrapper.cpp
-    contains(BUILD_OS, WIN32){
-        !exists($${SWIG_PATH}\\swig.exe){
+    contains(BUILD_OS, WIN32) {
+        !exists($${SWIG_PATH}/swig.exe) {
         error(Unable to find swig excecutable in $${SWIG_PATH}. Please use --with-swig=PATH to specify the path where PATH/swig.exe is located.) 
          }
     }
-    !contains(BUILD_OS, WIN32){
-      !exists($${SWIG_PATH}/bin/swig){
+    !contains(BUILD_OS, WIN32) {
+      !exists($${SWIG_PATH}/bin/swig) {
         error(Unable to find swig excecutable in $${SWIG_PATH}/bin/. Please use --with-swig=PATH to specify the path where PATH/bin/swig is located.) 
       }
     }
 
     DEFINE_COMMANDLINE = $$join(DEFINES," -D",-D)
-    contains(BUILD_OS, WIN32){
+    contains(BUILD_OS, WIN32) {
       # since the wrapper file is in a subdirectory, we need to add 
       # the project directory to the include path
-      INCLUDEPATH += .
+      INCLUDEPATH *= .
 
       WRAPPER_FILE_PATH = "."
 
       debug{
         WRAPPER_FILE_PATH = debug
-        wrapper_source.target = "debug\\copasi_wrapper.cpp"
+        wrapper_source.target = "debug/copasi_wrapper.cpp"
       }	
       release{
         WRAPPER_FILE_PATH = release
-        wrapper_source.target = "release\\copasi_wrapper.cpp"
+        wrapper_source.target = "release/copasi_wrapper.cpp"
       }
 
       # we force the rebuild of the wrapper sources
       wrapper_source.depends = FORCE
 
-      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} & $${SWIG_PATH}\\swig.exe $${DEFINE_COMMANDLINE} -I..\\.. -c++ -python -o $${wrapper_source.target} python.i
+      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} & $${SWIG_PATH}/swig.exe $${DEFINE_COMMANDLINE} -I$${BUILD_ROOT}/copasi -c++ -python -o $${wrapper_source.target} python.i
 
       QMAKE_EXTRA_TARGETS += wrapper_source
       debug {
-        QMAKE_CLEAN += debug\\copasi_wrapper.cpp 
-        QMAKE_CLEAN += debug\\COPASI.py 
+        QMAKE_CLEAN += debug/copasi_wrapper.cpp 
+        QMAKE_CLEAN += debug/COPASI.py 
       }
 
       release {
-        QMAKE_CLEAN += release\\copasi_wrapper.cpp 
-        QMAKE_CLEAN += release\\COPASI.py 
+        QMAKE_CLEAN += release/copasi_wrapper.cpp 
+        QMAKE_CLEAN += release/COPASI.py 
       }
 
-      QMAKE_POST_LINK += ren $${WRAPPER_FILE_PATH}\\_COPASI.dll _COPASI.pyd
+      QMAKE_POST_LINK += ren $${WRAPPER_FILE_PATH}/_COPASI.dll _COPASI.pyd
     }
     !contains(BUILD_OS, WIN32){
       wrapper_source.target = copasi_wrapper.cpp
       wrapper_source.depends = $${SWIG_INTERFACE_FILES} python.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} ; $${SWIG_PATH}/bin/swig $${DEFINE_COMMANDLINE} -classic -I../.. -c++ -python -o $${wrapper_source.target} python.i
+      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} ; $${SWIG_PATH}/bin/swig $${DEFINE_COMMANDLINE} -classic -I$${BUILD_ROOT}/copasi -c++ -python -o $${wrapper_source.target} python.i
   
       QMAKE_EXTRA_TARGETS += wrapper_source
       QMAKE_CLEAN += copasi_wrapper.cpp 
