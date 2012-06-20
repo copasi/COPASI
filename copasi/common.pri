@@ -1,6 +1,6 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.140 $ 
+#   $Revision: 1.141 $ 
 #   $Name:  $ 
 # End CVS Header 
 
@@ -19,7 +19,7 @@
 # All rights reserved.
 
 ######################################################################
-# $Revision: 1.140 $ $Author: shoops $ $Date: 2012/06/15 17:38:04 $  
+# $Revision: 1.141 $ $Author: shoops $ $Date: 2012/06/20 19:55:37 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -240,7 +240,7 @@ contains(BUILD_OS, Darwin) {
     
     # TODO CRITICAL To build packages we need to assure that only the static library is linked 
     !isEmpty(QWT3D_PATH):!contains(QWT3D_PATH, yes) {
-      INCLUDEPATH *= $$system($${BUILD_ROOT}/admin/include.sh -i $${QWT3D_PATH}/include qwtplot3d-qt4 qwtplot3d)
+      INCLUDEPAT0H *= $$system($${BUILD_ROOT}/admin/include.sh -i $${QWT3D_PATH}/include qwtplot3d-qt4 qwtplot3d)
       LIBS *= -L$${QWT3D_PATH}/lib
       LIBS += $$system($${BUILD_ROOT}/admin/libs.sh -l $${QWT3D_PATH}/lib qwtplot3d-qt4 qwtplot3d)
     } else {
@@ -585,6 +585,8 @@ contains(BUILD_OS, Linux) {
   contains(INTEL_COMPILER, true) {
     message("Linking statically against Intel libraries.")
     QMAKE_LFLAGS *= -static-intel
+    QMAKE_LFLAGS -= -shared-intel
+    QMAKE_LFLAGS_SHLIB -= -shared-intel
   }
   
   release {

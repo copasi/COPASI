@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.35 $ 
+#   $Revision: 1.36 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2012/06/20 15:20:20 $ 
+#   $Date: 2012/06/20 19:55:37 $ 
 # End CVS Header 
 
 # Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -43,28 +43,35 @@ QMAKE_CXXFLAGS_RELEASE += -O1
 
 COPASI_LIBS += $${COPASI_LIBS_SE}
 
-
 INCLUDEPATH *= $${BUILD_ROOT}/copasi
 
 contains(BUILD_OS,Linux) {
+  QMAKE_LFLAGS -= -static
+  QMAKE_LFLAGS += -shared
+
   LIBS = -L$${BUILD_ROOT}/copasi/lib  $$join(COPASI_LIBS, " -l", -l) $${LIBS}
 
   TARGETDEPS += $$join(COPASI_LIBS, ".a  $${BUILD_ROOT}/copasi/lib/lib", $${BUILD_ROOT}/copasi/lib/lib, .a)
 
-  !isEmpty(PYTHON_LIB_PATH){
-    LIBS += -L$${PYTHON_LIB_PATH}
-    LIBS += -lpython2.7
+  !isEmpty(PYTHON_PATH){
+    LIBS *= $$system($${PYTHON_PATH}/bin/python-config --ldflags)
+    QMAKE_CXXFLAGS *= $$system($${PYTHON_PATH}/bin/python-config --includes)
   } else {
-    LIBS += $$system(python-config --libs)
+    LIBS += $$system(python-config --ldflags)
+    QMAKE_CFLAGS *= $$system(python-config --includes)
+    QMAKE_CXXFLAGS *= $$system(python-config --includes)
+  }
+
+  !isEmpty(PYTHON_LIB_PATH){
+    LIBS *= -L$${PYTHON_LIB_PATH}
   }
 
   !isEmpty(PYTHON_INCLUDE_PATH){
     INCLUDEPATH *= $${PYTHON_INCLUDE_PATH}
-  } else {
-    INCLUDEPATH *= $$system(python-config --includes)
   }
 
- QMAKE_POST_LINK += ln -sf libCopasiPython.so _COPASI.so
+  QMAKE_POST_LINK += ln -sf libCopasiPython.so _COPASI.so
+  message($${QMAKE_LFLAGS})
 }
 
 contains(BUILD_OS, Darwin) {

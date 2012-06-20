@@ -214,7 +214,11 @@ fi
 AC_ARG_WITH([python],
   AS_HELP_STRING([--with-python=PATH],
                  [Path to python]),
-  [PYTHON_PATH=$withval;PYTHON_INCLUDE_PATH=$PYTHON_PATH/include;PYTHON_LIB_PATH=$PYTHON_PATH/lib])
+  [PYTHON_PATH=$withval])
+
+if test x"${PYTHON_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG PYTHON_PATH=$PYTHON_PATH"
+fi
 
 
 AC_ARG_WITH([python-includes],
