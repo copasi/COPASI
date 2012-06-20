@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-//   $Revision: 1.62 $
+//   $Revision: 1.63 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:11:55 $
+//   $Date: 2012/06/20 21:29:13 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -413,7 +413,7 @@ bool CScanMethod::init()
   mInitialRefreshes = mpProblem->getModel()->buildInitialRefreshSequence(ObjectSet);
 
   //set mLastNestingItem
-  mLastNestingItem = -1;
+  mLastNestingItem = C_INVALID_INDEX;
 
   if (imax != 0)
     {

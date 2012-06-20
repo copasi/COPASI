@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.38 $
+//   $Revision: 1.39 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:11:53 $
+//   $Date: 2012/06/20 21:29:13 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -593,7 +593,7 @@ bool CSensMethod::initialize(CSensProblem* problem)
           sc.push_back(mLocalData[i].variables.size());
         }
       else
-        mLocalData[i].index = -1;
+        mLocalData[i].index = C_INVALID_INDEX;
     }
 
   //resize result & annotations
