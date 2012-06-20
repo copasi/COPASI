@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.70 $
+//   $Revision: 1.71 $
 //   $Name:  $
-//   $Author: mendes $
-//   $Date: 2012/06/04 14:15:21 $
+//   $Author: shoops $
+//   $Date: 2012/06/20 21:17:10 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,6 +42,7 @@ const std::string CCopasiMethod::SubTypeName[] =
   "Random Search (PVM)",
   "Simulated Annealing",
   "Corana Random Walk",
+  "Differential Evolution",
   "Genetic Algorithm",
   "Evolutionary Programming",
   "Steepest Descent",
@@ -91,6 +92,7 @@ const char * CCopasiMethod::XMLSubType[] =
   "RandomSearch(PVM)",
   "SimulatedAnnealing",
   "CoranaRandomWalk",
+  "DifferentialEvolution",
   "GeneticAlgorithm",
   "EvolutionaryProgram",
   "SteepestDescent",

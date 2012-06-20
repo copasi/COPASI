@@ -1,9 +1,9 @@
 # Begin CVS Header
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/optimization.pro,v $
-#   $Revision: 1.37 $
+#   $Revision: 1.38 $
 #   $Name:  $
-#   $Author: mendes $
-#   $Date: 2012/06/04 14:13:56 $
+#   $Author: shoops $
+#   $Date: 2012/06/20 21:17:11 $
 # End CVS Header
 
 # Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -21,7 +21,7 @@
 # All rights reserved. 
 
 ######################################################################
-# $Revision: 1.37 $ $Author: mendes $ $Date: 2012/06/04 14:13:56 $
+# $Revision: 1.38 $ $Author: shoops $ $Date: 2012/06/20 21:17:11 $
 ######################################################################
 
 LIB = optimization
@@ -31,6 +31,7 @@ DISTFILES = optimization.pro
 HEADERS += COptItem.h \
            COptMethod.h \
            COptMethodEP.h \
+           COptMethodDE.h \
            COptMethodGA.h \
            COptMethodGASR.h \
            COptMethodHookeJeeves.h \
@@ -53,6 +54,7 @@ HEADERS += COptItem.h \
 
 SOURCES += COptItem.cpp \
            COptMethod.cpp \
+           COptMethodDE.cpp \
            COptMethodEP.cpp \
            COptMethodGA.cpp \
            COptMethodGASR.cpp \

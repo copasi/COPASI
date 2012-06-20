@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-//   $Revision: 1.58 $
+//   $Revision: 1.59 $
 //   $Name:  $
-//   $Author: mendes $
-//   $Date: 2012/06/04 14:15:21 $
+//   $Author: shoops $
+//   $Date: 2012/06/20 21:17:10 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,7 @@ public:
     RandomSearchMaster,
     SimulatedAnnealing,
     CoranaWalk,
+    DifferentialEvolution,
     GeneticAlgorithm,
     EvolutionaryProgram,
     SteepestDescent,
