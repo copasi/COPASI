@@ -1,9 +1,9 @@
 # Begin CVS Header 
 #   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.36 $ 
+#   $Revision: 1.37 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 
-#   $Date: 2012/06/20 19:55:37 $ 
+#   $Date: 2012/06/20 20:54:16 $ 
 # End CVS Header 
 
 # Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
@@ -43,18 +43,16 @@ QMAKE_CXXFLAGS_RELEASE += -O1
 
 COPASI_LIBS += $${COPASI_LIBS_SE}
 
+
 INCLUDEPATH *= $${BUILD_ROOT}/copasi
 
 contains(BUILD_OS,Linux) {
-  QMAKE_LFLAGS -= -static
-  QMAKE_LFLAGS += -shared
-
   LIBS = -L$${BUILD_ROOT}/copasi/lib  $$join(COPASI_LIBS, " -l", -l) $${LIBS}
 
   TARGETDEPS += $$join(COPASI_LIBS, ".a  $${BUILD_ROOT}/copasi/lib/lib", $${BUILD_ROOT}/copasi/lib/lib, .a)
 
   !isEmpty(PYTHON_PATH){
-    LIBS *= $$system($${PYTHON_PATH}/bin/python-config --ldflags)
+    LIBS += $$system($${PYTHON_PATH}/bin/python-config --ldflags)
     QMAKE_CXXFLAGS *= $$system($${PYTHON_PATH}/bin/python-config --includes)
   } else {
     LIBS += $$system(python-config --ldflags)
@@ -70,7 +68,7 @@ contains(BUILD_OS,Linux) {
     INCLUDEPATH *= $${PYTHON_INCLUDE_PATH}
   }
 
-  QMAKE_POST_LINK += ln -sf libCopasiPython.so _COPASI.so
+ QMAKE_POST_LINK += ln -sf libCopasiPython.so _COPASI.so
   message($${QMAKE_LFLAGS})
 }
 
@@ -82,18 +80,28 @@ contains(BUILD_OS, Darwin) {
   
   TARGETDEPS += $$join(COPASI_LIBS, ".a  $${BUILD_ROOT}/copasi/lib/lib", $${BUILD_ROOT}/copasi/lib/lib, .a)
 
-    LIBS += "-framework Python"
+  QMAKE_LFLAGS_SHLIB += -unexported_symbols_list unexported_symbols.list
+  QMAKE_PRE_LINK = nm -g $${SBML_PATH}/lib/libsbml.a | grep "^[0-9]" | cut -d\" \" -f3  > unexported_symbols.list; \
+                   nm -g $${EXPAT_PATH}/lib/libexpat.a | grep "^[0-9]" | cut -d\" \" -f3  >> unexported_symbols.list; \
+                   nm -g $${RAPTOR_PATH}/lib/libraptor.a | grep "^[0-9]" | cut -d\" \" -f3  >> unexported_symbols.list;
+                   
+  !isEmpty(PYTHON_PATH){
+    LIBS += $$system($${PYTHON_PATH}/bin/python-config --ldflags)
+    QMAKE_CXXFLAGS *= $$system($${PYTHON_PATH}/bin/python-config --includes)
+  } else {
+    LIBS += $$system(python-config --ldflags)
+    QMAKE_CFLAGS *= $$system(python-config --includes)
+    QMAKE_CXXFLAGS *= $$system(python-config --includes)
+  }
 
-    QMAKE_LFLAGS_SHLIB += -unexported_symbols_list unexported_symbols.list
-    QMAKE_PRE_LINK = nm -g $${SBML_PATH}/lib/libsbml.a | grep "^[0-9]" | cut -d\" \" -f3  > unexported_symbols.list ; nm -g $${EXPAT_PATH}/lib/libexpat.a | grep "^[0-9]" | cut -d\" \" -f3  >> unexported_symbols.list
-
+  !isEmpty(PYTHON_LIB_PATH){
+    LIBS *= -L$${PYTHON_LIB_PATH}
+  }
 
   !isEmpty(PYTHON_INCLUDE_PATH){
     INCLUDEPATH *= $${PYTHON_INCLUDE_PATH}
-    INCLUDEPATH *= $${PYTHON_INCLUDE_PATH}/python2.7
-  } else {
-    INCLUDEPATH *= $$system(python-config --includes)
   }
+
 
   QMAKE_POST_LINK += ln -sf libCopasiPython.dylib _COPASI.so
 }
