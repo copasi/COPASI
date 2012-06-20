@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-//   $Revision: 1.42 $
+//   $Revision: 1.43 $
 //   $Name:  $
-//   $Author: mendes $
-//   $Date: 2012/06/04 14:13:19 $
+//   $Author: shoops $
+//   $Date: 2012/06/20 21:16:37 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -201,7 +201,7 @@ bool CRandomSearch::optimise()
         }
     }
 
-  return Continue;
+  return true;
 }
 
 // evaluate the fitness of one individual

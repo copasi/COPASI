@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSRES.cpp,v $
-//   $Revision: 1.19 $
+//   $Revision: 1.20 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/04/23 21:11:20 $
+//   $Date: 2012/06/20 21:16:37 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -681,7 +681,7 @@ bool COptMethodSRES::optimise()
         mpCallBack->finishItem(mhGenerations);
 
       cleanup();
-      return false;
+      return true;
     }
 
   // ITERATE FOR gener GENERATIONS
@@ -749,5 +749,5 @@ bool COptMethodSRES::optimise()
   if (mpCallBack)
     mpCallBack->finishItem(mhGenerations);
 
-  return 0;
+  return true;
 }

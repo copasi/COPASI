@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodDE.cpp,v $
-//   $Revision: 1.1 $
+//   $Revision: 1.2 $
 //   $Name:  $
-//   $Author: mendes $
-//   $Date: 2012/06/04 19:46:41 $
+//   $Author: shoops $
+//   $Date: 2012/06/20 21:16:37 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,14 +20,11 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <float.h>
-
-#include <limits.h>
-#include <string.h>
-#include <math.h>
+#include <limits>
+#include <string>
+#include <cmath>
 
 #include "copasi.h"
-#include "mathematics.h"
 #include "COptMethodDE.h"
 #include "COptProblem.h"
 #include "COptItem.h"
@@ -45,10 +42,10 @@ COptMethodDE::COptMethodDE(const CCopasiContainer * pParent):
     mpRandom(NULL),
     mVariableSize(0),
     mIndividual(0),
-    mEvaluationValue(DBL_MAX),
+    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
     mValue(0),
     mMutationVarians(0.1),
-    mBestValue(DBL_MAX),
+    mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
     mBestIndex(C_INVALID_INDEX),
     mGeneration(0)
 
@@ -69,10 +66,10 @@ COptMethodDE::COptMethodDE(const COptMethodDE & src,
     mpRandom(NULL),
     mVariableSize(0),
     mIndividual(0),
-    mEvaluationValue(DBL_MAX),
+    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
     mValue(0),
     mMutationVarians(0.1),
-    mBestValue(DBL_MAX),
+    mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
     mBestIndex(C_INVALID_INDEX),
     mGeneration(0)
 {initObjects();}
@@ -257,7 +254,7 @@ bool COptMethodDE::replicate()
 size_t COptMethodDE::fittest()
 {
   size_t i, BestIndex = C_INVALID_INDEX;
-  C_FLOAT64 BestValue = DBL_MAX;
+  C_FLOAT64 BestValue = std::numeric_limits< C_FLOAT64 >::max();
 
   for (i = 0; i < mPopulationSize; i++)
     if (mValue[i] < BestValue)
@@ -316,12 +313,12 @@ bool COptMethodDE::creation(size_t first, size_t last)
                   mut = mn + mpRandom->getRandomCC() * (mx - mn);
                 else
                   {
-                    la = log10(mx) - log10(std::max(mn, DBL_MIN));
+                    la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
                     if (la < 1.8)
                       mut = mn + mpRandom->getRandomCC() * (mx - mn);
                     else
-                      mut = pow(10.0, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
+                      mut = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mpRandom->getRandomCC());
                   }
               }
 
@@ -494,17 +491,17 @@ bool COptMethodDE::optimise()
         mpCallBack->finishItem(mhGenerations);
 
       cleanup();
-      return false;
+      return true;
     }
 
-  size_t Stalled = 0, Stalled20;
+  size_t Stalled = 0;
 
   // ITERATE FOR gener GENERATIONS
   for (mGeneration = 2;
        mGeneration <= mGenerations && Continue;
-       mGeneration++, Stalled20++)
+       mGeneration++, Stalled++)
     {
-      if (Stalled20 > 10)
+      if (Stalled > 10)
         {
           Continue &= creation((size_t) 0.4 * mPopulationSize, (size_t) 0.8 * mPopulationSize);
         }
@@ -521,7 +518,7 @@ bool COptMethodDE::optimise()
       if (mBestIndex != C_INVALID_INDEX &&
           mValue[mBestIndex] < mBestValue)
         {
-          Stalled20 = 0;
+          Stalled = 0;
           mBestValue = mValue[mBestIndex];
 
           Continue &= mpOptProblem->setSolution(mBestValue, *mIndividual[mBestIndex]);
@@ -540,5 +537,5 @@ bool COptMethodDE::optimise()
 
   cleanup();
 
-  return Continue;
+  return true;
 }

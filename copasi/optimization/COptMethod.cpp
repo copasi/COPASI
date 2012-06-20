@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
-//   $Revision: 1.40 $
+//   $Revision: 1.41 $
 //   $Name:  $
-//   $Author: mendes $
-//   $Date: 2012/06/04 14:13:56 $
+//   $Author: shoops $
+//   $Date: 2012/06/20 21:16:37 $
 // End CVS Header
 
 // Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,6 +38,7 @@
 #include "COptProblem.h"
 
 #include "CRandomSearch.h"
+#include "COptMethodDE.h"
 #include "COptMethodGA.h"
 #include "COptMethodGASR.h"
 #include "COptMethodHookeJeeves.h"
@@ -59,6 +60,10 @@ COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
 
   switch (subType)
     {
+      case DifferentialEvolution:
+        pMethod = new COptMethodDE();
+        break;
+
       case EvolutionaryProgram:
         pMethod = new COptMethodEP();
         break;
