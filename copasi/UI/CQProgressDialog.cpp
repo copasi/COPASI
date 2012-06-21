@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressDialog.cpp,v $
-//   $Revision: 1.15 $
+//   $Revision: 1.16 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/02 20:34:51 $
+//   $Date: 2012/06/21 21:36:26 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,15 +30,16 @@
  *  Constructs a CQProgressDialog as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  *
- *  The dialog will by default be modeless, unless you set 'modal' to
- *  true to construct a modal dialog.
+ *  The dialog will by default be Qt::WindowModal.
  */
-CQProgressDialog::CQProgressDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
+CQProgressDialog::CQProgressDialog(QWidget* parent, const char* name, Qt::WindowModality windowModality, Qt::WindowFlags fl)
     : QDialog(parent, fl)
 {
   setObjectName(QString::fromUtf8(name));
-  setModal(modal);
+
   setupUi(this);
+
+  setWindowModality(windowModality);
 
   init();
 }

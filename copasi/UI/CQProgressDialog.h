@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressDialog.h,v $
-//   $Revision: 1.14 $
+//   $Revision: 1.15 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/02 20:34:51 $
+//   $Date: 2012/06/21 21:36:26 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,7 @@ class CQProgressDialog : public QDialog, public Ui::CQProgressDialog
   Q_OBJECT
 
 public:
-  CQProgressDialog(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0);
+  CQProgressDialog(QWidget* parent = 0, const char* name = 0, Qt::WindowModality windowModality = Qt::WindowModal, Qt::WindowFlags fl = 0);
   ~CQProgressDialog();
 
   bool insertProgressItem(CQProgressItem * pItem);

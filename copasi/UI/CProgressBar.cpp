@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.44 $
+//   $Revision: 1.45 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/02 20:34:52 $
+//   $Date: 2012/06/21 21:36:26 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,12 +42,18 @@
 #undef max
 
 // static
-CProgressBar * CProgressBar::create(QWidget* parent, const char* name,
-                                    bool modal, Qt::WFlags fl)
+CProgressBar * CProgressBar::create(QWidget* parent, const char* name, Qt::WindowModality windowModality)
 {
+  QWidget * pParent = parent;
+
+  if (pParent == NULL)
+    {
+      pParent = CopasiUI3Window::getMainWindow();
+    }
+
   if (CopasiUI3Window::isMainThread())
     {
-      return new CProgressBar(parent, name, modal, fl);
+      return new CProgressBar(pParent, name, windowModality);
     }
   else
     {
@@ -55,23 +61,14 @@ CProgressBar * CProgressBar::create(QWidget* parent, const char* name,
     }
 }
 
-CProgressBar::CProgressBar(QWidget* parent, const char* name,
-                           bool modal, Qt::WFlags fl):
-    CQProgressDialog(parent, name, modal, fl | Qt::WindowMinimizeButtonHint),
+CProgressBar::CProgressBar(QWidget* parent, const char* name, Qt::WindowModality windowModality):
+    CQProgressDialog(parent, name, windowModality, Qt::WindowMinimizeButtonHint),
     CProcessReport(),
     mProgressItemList(1),
     mNextEventProcessing(QDateTime::currentDateTime()),
     mpMainWidget(NULL)
 {
   mProgressItemList[0] = NULL;
-
-  // Whenever a progress bar is active we do not want any user
-  // intervention.
-  if ((mpMainWidget = CopasiUI3Window::getMainWindow()) != NULL)
-    {
-      mpMainWidget->setEnabled(false);
-      QCoreApplication::processEvents();
-    }
 
   connect(this, SIGNAL(signalAddItem(const int)),
           this, SLOT(slotAddItem(const int)));
@@ -246,7 +243,7 @@ bool CProgressBar::finish()
   // We need to activate the user interface again.
   if (mpMainWidget != NULL)
     {
-      mpMainWidget->setEnabled(true);
+      // mpMainWidget->setEnabled(true);
 
       if (CopasiUI3Window::isMainThread())
         QCoreApplication::processEvents();
