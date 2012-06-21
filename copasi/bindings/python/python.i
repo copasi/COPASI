@@ -1,12 +1,12 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.i,v $ 
-//   $Revision: 1.28 $ 
+//   $Revision: 1.29 $ 
 //   $Name:  $ 
 //   $Author: shoops $ 
-//   $Date: 2012/03/05 18:09:32 $ 
+//   $Date: 2012/06/21 16:46:55 $ 
 // End CVS Header 
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -137,6 +137,14 @@
 %typemap(out) CCopasiObject*
 {
   $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCCopasiObject($1), 0);
+}
+
+/**
+ * Convert CObjectInterface objects into the most specific type possible.
+ */
+%typemap(out) CObjectInterface*
+{
+  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCObjectInterface($1), 0);
 }
 
 

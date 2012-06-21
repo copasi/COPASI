@@ -1,12 +1,12 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/common/downcast_common.cpp,v $
-//   $Revision: 1.2 $
+//   $Revision: 1.3 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2011/12/19 16:20:15 $
+//   $Date: 2012/06/21 16:46:55 $
 // End CVS Header
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -32,6 +32,10 @@ GetDowncastSwigTypeForMethod(CCopasiMethod* method);
 // CCopasiObject
 struct swig_type_info*
 GetDowncastSwigTypeForCCopasiObject(CCopasiObject* object);
+
+// CObjectInterface
+struct swig_type_info*
+GetDowncastSwigTypeForCObjectInterface(CObjectInterface* objectInterface);
 
 // CCopasiParameter
 struct swig_type_info*
@@ -354,6 +358,22 @@ GetDowncastSwigTypeForCCopasiObject(CCopasiObject* object)
         {
           pInfo = SWIGTYPE_p_CCopasiStaticString;
         }
+    }
+
+  return pInfo;
+}
+
+// CObjectInterface
+struct swig_type_info*
+GetDowncastSwigTypeForCObjectInterface(CObjectInterface* objectInterface)
+{
+  if (objectInterface == NULL) return SWIGTYPE_p_CObjectInterface;
+
+  struct swig_type_info* pInfo = SWIGTYPE_p_CObjectInterface;
+
+  if (dynamic_cast<CCopasiObject*>(objectInterface))
+    {
+      pInfo = GetDowncastSwigTypeForCCopasiObject(static_cast<CCopasiObject*>(objectInterface));
     }
 
   return pInfo;
