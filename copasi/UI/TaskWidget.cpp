@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.68 $
+//   $Revision: 1.69 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/05/07 02:47:58 $
+//   $Date: 2012/06/22 17:08:47 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -342,7 +342,6 @@ bool TaskWidget::commonBeforeRunTask()
   //handle autosave feature
   CopasiUI3Window::getMainWindow()->autoSave();
   CopasiUI3Window::getMainWindow()->suspendAutoSave(true);
-  CopasiUI3Window::getMainWindow()->disableSliders(true);
 
   //create progress bar
   mProgressBar = CProgressBar::create();
@@ -378,7 +377,6 @@ bool TaskWidget::commonAfterRunTask()
   protectedNotify(ListViews::STATE, ListViews::CHANGE, (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
   unsetCursor();
   CopasiUI3Window::getMainWindow()->suspendAutoSave(false);
-  CopasiUI3Window::getMainWindow()->disableSliders(false);
 
   return loadTask();
 }

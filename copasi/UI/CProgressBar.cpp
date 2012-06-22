@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.45 $
+//   $Revision: 1.46 $
 //   $Name:  $
 //   $Author: shoops $
-//   $Date: 2012/06/21 21:36:26 $
+//   $Date: 2012/06/22 17:08:47 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,6 +68,8 @@ CProgressBar::CProgressBar(QWidget* parent, const char* name, Qt::WindowModality
     mNextEventProcessing(QDateTime::currentDateTime()),
     mpMainWidget(NULL)
 {
+  CopasiUI3Window::getMainWindow()->disableSliders(true);
+
   mProgressItemList[0] = NULL;
 
   connect(this, SIGNAL(signalAddItem(const int)),
@@ -240,14 +242,7 @@ bool CProgressBar::finish()
         }
     }
 
-  // We need to activate the user interface again.
-  if (mpMainWidget != NULL)
-    {
-      // mpMainWidget->setEnabled(true);
-
-      if (CopasiUI3Window::isMainThread())
-        QCoreApplication::processEvents();
-    }
+  CopasiUI3Window::getMainWindow()->disableSliders(false);
 
   CProcessReport::finish();
   done(1);
