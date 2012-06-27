@@ -17,7 +17,7 @@ echo compiling $SOURCE_FILE '==>' $TARGET_FILE_C, $TARGET_FILE_H
 echo ${YACC} -dt -b $FILE_PREFIX -p $FILE_PREFIX $SOURCE_FILE
 ${YACC} -dt -b $FILE_PREFIX -p $FILE_PREFIX $SOURCE_FILE
 
-# We make sure that the file have the epected endings.
+# We make sure that the file have the expected endings.
 [ -e $FILE_PREFIX.tab.cpp ] && mv $FILE_PREFIX.tab.cpp $FILE_PREFIX.tab.c
 [ -e $FILE_PREFIX.tab.hpp ] && mv $FILE_PREFIX.tab.hpp $FILE_PREFIX.tab.h
 
