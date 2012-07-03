@@ -1,9 +1,9 @@
 // Begin CVS Header
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.76 $
+//   $Revision: 1.77 $
 //   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/23 14:14:20 $
+//   $Author: shoops $
+//   $Date: 2012/07/03 22:48:37 $
 // End CVS Header
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
@@ -405,8 +405,6 @@ bool CFitProblem::initialize()
 
       mpTrajectoryProblem =
         new CTrajectoryProblem(*static_cast<CTrajectoryProblem *>(mpTrajectory->getProblem()));
-
-      static_cast<CTrajectoryProblem *>(mpTrajectory->getProblem())->setStepNumber(1);
     }
   else
     {
@@ -852,6 +850,7 @@ bool CFitProblem::calculate()
                         while (itRefresh != endRefresh)
                           (**itRefresh++)();
 
+                        static_cast< CTrajectoryProblem * >(mpTrajectory->getProblem())->setStepNumber(1);
                         mpTrajectory->processStart(true);
 
                         if (pExp->getTimeData()[0] != mpModel->getInitialTime())
