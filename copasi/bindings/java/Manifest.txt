@@ -1,0 +1,4 @@
+Name: org.COPASI
+Implementation-Title: "COPASI Java API"
+Implementation-Version: "Build 35"
+Implementation-Vendor: "The COPASI Team"

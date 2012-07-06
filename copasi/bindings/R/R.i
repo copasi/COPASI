@@ -1,15 +1,36 @@
 // Begin CVS Header 
 //   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/R/R.i,v $ 
-//   $Revision: 1.1 $ 
+//   $Revision: 1.2 $ 
 //   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2010/10/15 12:55:57 $ 
+//   $Author: bergmann $ 
+//   $Date: 2012/07/06 07:35:47 $ 
 // End CVS Header 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
+
+%typemap("rtype") unsigned int, unsigned int *, unsigned int &      "integer";
+%apply unsigned int {size_t}
+%apply unsigned int {std::size_t}
+%apply unsigned int {ptrdiff_t}
+%apply unsigned int {std::ptrdiff_t}
+%apply unsigned int {signed int}
+%apply unsigned int {unsigned int}
+%apply unsigned int {short}
+%apply unsigned int {unsigned short}
+
+
+%typemap(scoercein) unsigned int, unsigned int *, unsigned int &
+  %{  $input = as.integer($input);     %}
+
+%{
+typedef unsigned int size_t;
+%}
+
+%typedef unsigned int size_t;
+
 
 /**
  * Convert CFitItem objects into the most specific type possible.
