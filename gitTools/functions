@@ -75,7 +75,8 @@ else
   isWindows=false
 fi
 
-GitStart=1341872700
+// The date at which git has taken over the control.
+GitStart=1342718698
 
 function debug () {
   if [ _${GitLog} != _ ]; then
