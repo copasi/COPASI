@@ -1,0 +1,13 @@
+#!/bin/bash
+
+GitTools="`git config copasi.gittools`"
+. ${GitTools}/functions
+
+clean="cat"
+
+if [ `git log -1 --pretty=%at -- $1` -gt ${GitStart} ]; then
+  clean="$clean | ${GitTools}/header --clean $1" 
+fi
+
+debug clean: $clean
+eval $clean

@@ -1,0 +1,48 @@
+#!/bin/bash
+
+GitTools=`git config copasi.gittools`
+
+DIR=
+PATTERN=
+FILES=
+
+while [ x"${1:0:1}" == x- ]; do
+  case $1 in
+    -d|--dir)
+      shift
+      DIR="$DIR $1"
+      shift
+      ;;
+
+    -p|--pattern)
+      shift
+      PATTERN="$PATTERN $1"
+      shift
+      ;;
+
+    *)
+      shift
+      ;;
+   esac
+done
+
+DIR=${DIR:-.}
+PATTERN="${PATTERN:-.cpp .h}"
+FILES=$@
+
+if [ x"$FILES" == x ]; then
+  for p in $PATTERN; do
+    find $DIR -name "*$p" >> $$.files
+  done
+
+  FILES=`cat $$.files`
+  rm $$.files
+fi
+
+echo formating:
+for f in $FILES; do
+  echo "  $f"
+  cat $f | "${GitTools}/cstyle" > $$ && mv $$ $f 
+done
+
+git diff | less

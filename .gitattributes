@@ -1,0 +1,14 @@
+*.cpp  filter=common format=cstyle CommentStart=//
+*.hpp  filter=common format=cstyle CommentStart=//
+*.c    filter=common format=cstyle CommentStart=//
+*.h    filter=common format=cstyle CommentStart=//
+*.i    filter=common format=cstyle CommentStart=//
+*.java filter=common CommentStart=//
+*.pro  filter=common CommentStart=#
+*.pri  filter=common CommentStart=#
+*.xsd  filter=common CommentStart=<!-- CommentEnd=--> PrologEnd=>
+*.xml  filter=common CommentStart=<!-- CommentEnd=--> PrologEnd=>
+*.rng  filter=common CommentStart=<!-- CommentEnd=--> PrologEnd=>
+*.ui   filter=common CommentStart=<comment> CommentEnd=</comment> PrologEnd=<ui.*>
+*.py   filter=common CommentStart=# CommentEnd=</comment> PrologEnd=-\\*-
+

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+GitTools="`git config copasi.gittools`"
+. ${GitTools}/functions
+
+smudge="cat"
+
+if [ `git log -1 --pretty=%at -- $1` -gt ${GitStart} ]; then
+  smudge="$smudge | ${GitTools}/header --smudge $1" 
+fi
+
+debug smudge: $smudge
+eval $smudge

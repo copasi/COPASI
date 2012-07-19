@@ -1,0 +1,163 @@
+#!/bin/bash
+
+. "`git config copasi.gittools`/functions"
+
+CommentStart=`getAttribute CommentStart $1`
+
+if [ _$CommentStart == _unspecified -o \
+     _$CommentStart == _unset -o \
+     _$CommentStart == _set ]; then
+  cat 
+  exit
+fi
+
+GAWK=`gitTool gawk`
+
+if [ _"$GAWK" == _ ]; then
+  cat 
+  exit
+fi
+
+Date=`date -u +%Y`
+
+# LastCommit=`git log -1 --date=short --pretty=format:"%ad" $1`
+# LastCommit=(${LastCommit//-/ })
+# LastCommit=${LastCommit[0]} 
+
+# if [ _${LastCommit} == _${Date} -a \
+#      `git log -1 --pretty=%at -- $1` -gt ${GitStart} ]; then
+#   cat
+#   exit;
+# fi
+
+LastCommit=${Date} 
+
+FirstCommit=`git log --reverse --date=short --pretty=format:"%ad" $1 | head -n 1`
+FirstCommit=(${FirstCommit//-/ })
+FirstCommit=${FirstCommit[0]}
+FirstCommit=${FirstCommit:-$Date} 
+
+CommentEnd=`getAttribute CommentEnd $1`
+
+if [ _$CommentEnd == _unspecified -o \
+     _$CommentEnd == _unset -o \
+     _$CommentEnd == _set ]; then
+  CommentEnd=
+fi
+
+PrologEnd=`getAttribute PrologEnd $1`
+
+if [ _$PrologEnd == _unspecified -o \
+     _$PrologEnd == _unset -o \
+     _$PrologEnd == _set -o \
+     _$PrologEnd == _ ]; then
+  PrologEnd=0
+fi
+
+
+function clean () {
+  $GAWK -- '
+BEGIN {
+  Copyright = 0
+  Prolog = "'$PrologEnd'"
+  Skip = 0
+}
+
+function printCopyright(FirstCommit, LastCommit)
+{
+  while (LastCommit != 0) {
+    if (LastCommit <= 2007) {
+      if (FirstCommit != LastCommit) {      
+        printf "'$CommentStart' Copyright (C) %d - %d by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n", FirstCommit, LastCommit
+      } else {
+        printf "'$CommentStart' Copyright (C) %d by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n", FirstCommit
+      }
+
+      printf "'$CommentStart' Properties, Inc. and EML Research, gGmbH. '$CommentEnd'\n"
+      printf "'$CommentStart' All rights reserved. '$CommentEnd'\n"
+      printf "\n"
+      break;
+    } else if (LastCommit <= 2009) {
+      if (FirstCommit != LastCommit) { 
+        if (FirstCommit < 2008) {     
+          printf "'$CommentStart' Copyright (C) 2008 - %d by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n", LastCommit
+        } else {
+          printf "'$CommentStart' Copyright (C) %d - %d by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n", FirstCommit, LastCommit
+        }
+      } else {
+        printf "'$CommentStart' Copyright (C) %d by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n", FirstCommit
+      }
+
+      printf "'$CommentStart' Properties, Inc., EML Research, gGmbH, University of Heidelberg, '$CommentEnd'\n"
+      printf "'$CommentStart' and The University of Manchester. '$CommentEnd'\n"
+      printf "'$CommentStart' All rights reserved. '$CommentEnd'\n"
+      printf "\n"
+      
+      if (FirstCommit >= 2008) {
+        break
+      } else {
+        LastCommit = 2007
+      }
+    } else {
+      if (FirstCommit != LastCommit) { 
+        if (FirstCommit < 2010) {
+          printf "'$CommentStart' Copyright (C) 2010 - %d by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n", LastCommit
+        } else {
+          printf "'$CommentStart' Copyright (C) %d - %d by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n", FirstCommit, LastCommit
+        }
+      } else {
+        printf "'$CommentStart' Copyright (C) %d by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n", FirstCommit
+      }
+
+      printf "'$CommentStart' Properties, Inc., University of Heidelberg, and The University '$CommentEnd'\n"
+      printf "'$CommentStart' of Manchester. '$CommentEnd'\n"
+      printf "'$CommentStart' All rights reserved. '$CommentEnd'\n"
+      printf "\n"
+
+      if (FirstCommit >= 2010) {
+        break
+      } else {
+        LastCommit = 2009
+      }
+    }
+  }
+}
+
+$0 ~ "'$CommentStart' Copyright.*by Pedro Mendes" {
+  skip = 2 
+}
+
+{
+  if (skip == 1) {
+    if ($0 !~ "^$") {
+      if (Prolog == 0 && Copyright < 1) {
+        printCopyright('$FirstCommit', '$LastCommit')
+        Copyright = 1
+      }
+
+      print $0
+    }
+
+    skip = 0
+  } else if (skip == 0) {
+    if (Prolog == 0 && Copyright < 1) {
+      printCopyright('$FirstCommit', '$LastCommit')
+      Copyright = 1
+    }
+
+    print $0
+  }    
+}
+
+$0 ~ "'$CommentStart' All rights reserved." {
+  if (skip == 2) {
+    skip = 1
+  }
+}
+
+$0 ~ Prolog {
+  Prolog = 0
+}'
+}
+
+cat | clean

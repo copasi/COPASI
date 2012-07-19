@@ -1,0 +1,73 @@
+#!/bin/bash
+
+gitTools="`dirname $0`"
+cd "${gitTools}"
+gitTools="`pwd`"
+
+. "${gitTools}/functions"
+
+case "$1" in
+  --Windows)
+    setGitConfig copasi.astyle "${gitTools}/Windows/AStyle.exe" --path
+    unsetGitConfig copasi.gawk
+    unsetGitConfig copasi.dos2unix
+    ;;
+
+  --reset)
+    git config --remove-section copasi
+    git config --remove-section filter."common"
+    git config --remove-section user
+    ;;
+
+  --tool)
+    if [ $# == 3 ]; then
+      dirName=`dirname "$3"`
+
+      if [ x"${dirName}" != x. ]; then
+        cd "${dirName}" 
+        tool="`pwd`/`basename $3`"
+        cd "${gitTools}"
+      else
+        tool="`which $3`"
+      fi
+
+      setGitConfig $2 "${tool}" --path
+    fi
+    ;;
+
+  --name)
+    setGitConfig user.name "$2"
+    ;;
+
+  --email)
+    setGitConfig user.email "$2"
+    ;;
+esac
+
+checkGitTool astyle
+checkGitTool gawk
+
+if [ ${isWindows} == true ]; then
+  checkGitTool dos2unix
+  setGitConfig core.autocrlf true 
+else
+  setGitConfig core.autocrlf input
+fi
+
+setGitConfig copasi.gittools "${gitTools}" --path
+setGitConfig filter."common".clean "${gitTools}/clean %f"
+setGitConfig filter."common".smudge "${gitTools}/smudge %f"
+
+if [ "x`git config --local user.name`" == x ]; then
+  read -p "Name [`git config user.name`]: " name
+  name="${name:-`git config user.name`}"
+  setGitConfig user.name "$name"
+fi
+
+if [ "x`git config --local user.email`" == x ]; then
+  read -p "Email [`git config user.email`]: " email
+  email="${email:-`git config user.email`}"
+  setGitConfig user.email "$email"
+fi
+
+cp pre-commit ../.git/hooks/

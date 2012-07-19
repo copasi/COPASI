@@ -1,0 +1,84 @@
+#!/bin/bash
+
+# Clear User configuration
+function setGitConfig () {
+  unsetGitConfig "$1"
+  git config --local $3 --add $1 "$2"
+}
+
+function unsetGitConfig () {
+  git config --local --unset-all $1
+
+  Section=${1%.*}
+
+  if [ `git config --get-regexp $Section | wc -l` == 0 ]; then
+    git config --remove-section $Section 2>/dev/null
+  fi
+}
+
+function checkGitTool () {
+  tool="`git config copasi.$1`"
+  tool="${tool:-$1}"
+  whichTool="`which ${tool}`"
+
+  if [ -x "${tool}" ]; then
+    echo $1 '=>' ${tool}
+  elif [ -x "${whichTool}" ]; then
+    echo $1 '=>' "${whichTool}"
+  else
+    if [ x"`git config copasi.$1`" == x ]; then 
+      echo $1 is missing!
+    else
+      echo $1 '=>' `git config copasi.$1` is missing!
+    fi
+
+    if [ ${isWindows} == true ]; then
+      echo "  try:"
+      echo "    initTools --Windows"
+      echo "  or:"
+    else
+      echo "  use:"
+    fi
+
+    echo "    initTools $1 '<application to use>'"
+    echo
+  fi
+}
+
+function gitTool () {
+  tool="`git config copasi.$1`"
+  tool="${tool:-$1}"
+  whichTool="`which ${tool}`"
+
+  if [ -x "${tool}" ]; then
+    echo ${tool}
+  elif [ -x "${whichTool}" ]; then
+    echo ${whichTool}
+  fi
+}
+
+function getAttribute () {
+  attribute="`git check-attr $1 $2`"
+  attribute=(${attribute})
+  attribute=${attribute[${#attribute[*]}-1]}
+
+  if [ $attribute == $1: ]; then
+    attribute=
+  fi
+
+  echo $attribute
+}
+
+if [ x"${WINDIR}" != x ]; then
+  isWindows=true
+else
+  isWindows=false
+fi
+
+GitStart=1341872700
+
+function debug () {
+  if [ _${GitLog} != _ ]; then
+    echo $@ >> ${GitLog}
+  fi
+}

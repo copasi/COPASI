@@ -1,0 +1,108 @@
+#!/bin/bash
+
+. "`git config copasi.gittools`/functions"
+
+ASTYLE=`gitTool astyle`
+[ x"$ASTYLE" == x ] && echo astyle is missing && exit 1
+
+GAWK=`gitTool gawk`
+[ x"$GAWK" == x ] && echo gawk is missing && exit 1
+
+if [ ${isWindows} == true ]; then
+  DOS2UNIX=`gitTool dos2unix`
+  [ x"$DOS2UNIX" == x ] && echo dos2unix is missing && exit 1
+
+  function ConvertToUnix () {
+    $DOS2UNIX -u2d $1 1>/dev/null 2>&1
+  }
+else
+  function ConvertToUnix () {
+    echo -n
+  }
+fi
+
+if [ x$1 == x ]; then
+  fileName=$$
+  cat > $fileName
+else
+  fileName=$1
+fi
+
+$ASTYLE --break-blocks \
+        --convert-tabs \
+        --indent-preprocessor \
+        --indent-switches \
+        --indent=spaces=2 \
+        --keep-one-line-blocks \
+        --keep-one-line-statements \
+        --min-conditional-indent=0 \
+        --mode=c \
+        --pad-header \
+        --pad-oper \
+        --quiet \
+        --style=gnu \
+        --suffix=none \
+        --unpad-paren \
+        $fileName
+
+$GAWK -- '
+BEGIN {
+  lastEmpty = 0
+  lastOpenBracket = 0
+  lastClosingBracket = 0
+}
+
+END {
+  if (lastClosingBracket == 1) {
+    printf "\n"
+  }
+}
+
+$0 ~ "^ *$" {
+  lastEmpty = 1
+}
+
+$0 !~ "^ *$" {
+  if (lastEmpty == 1) {
+    if ($0 !~ "^ *}.*$") printf "\n"
+    lastEmpty = 0
+  }
+
+  if (lastClosingBracket == 1) {
+    if ($0 !~ "^ *;")  printf "\n"
+    lastClosingBracket = 0
+  }
+
+  gsub(/ +$/, "")
+  gsub(/\( +/, "(")
+  gsub(/\{ +/, "{")
+  gsub(/^\*/, " *")
+  gsub(/^ +#/, "#")
+
+  $0 = gensub(/([^ ]) +\)$/, "\\1)", "g")
+  $0 = gensub(/([^ ]) +;$/, "\\1;", "g")
+  $0 = gensub(/([^ ]) +}$/, "\\1}", "g")
+  
+  if ($0 ~ ".*}$") {
+    lastClosingBracket = 1
+    printf "%s", $0
+  }
+  else {
+    lastClosingBracket = 0
+    printf "%s\n", $0
+  }
+
+  if ($0 ~ "{$") {
+    lastOpenBracket = 1
+  } else {
+    lastOpenBracket = 0
+  }
+}
+' $fileName > $fileName.tmp && \
+ConvertToUnix $fileName.tmp && \
+mv -f $fileName.tmp $fileName 
+
+if [ x$1 == x ]; then
+  cat $fileName
+  rm $fileName
+fi

@@ -1,0 +1,111 @@
+#!/bin/bash
+
+. "`git config copasi.gittools`/functions"
+
+case "$1" in
+  --smudge)
+    action=smudge
+    shift
+    ;;
+
+  *)
+    action=clean
+    shift
+    ;;
+esac
+
+CommentStart=`getAttribute CommentStart "$1"`
+
+if [ _"$CommentStart" == _unspecified -o \
+     _"$CommentStart" == _unset -o \
+     _"$CommentStart" == _set -o \
+     _"$CommentStart" == _ ]; then
+  CommentStart=
+fi
+
+CommentEnd=`getAttribute CommentEnd "$1"`
+
+if [ _"$CommentEnd" == _unspecified -o \
+     _"$CommentEnd" == _unset -o \
+     _"$CommentEnd" == _set -o \
+     _"$CommentEnd" == _ ]; then
+  CommentEnd=
+fi
+
+PrologEnd=`getAttribute PrologEnd "$1"`
+
+if [ _"$PrologEnd" == _unspecified -o \
+     _"$PrologEnd" == _unset -o \
+     _"$PrologEnd" == _set -o \
+     _"$PrologEnd" == _ ]; then
+  PrologEnd=0
+fi
+
+Commit="`git log -1 --pretty=%H -- "$1"`"
+Author="`git log -1 --pretty="%an <%ae>" -- "$1"`"
+Date="`git log -1 --pretty=%ai -- "$1"`"
+
+GAWK=`gitTool gawk`
+[ x"$GAWK" == x ] && CommentStart=
+
+function smudge() {
+$GAWK -- '
+BEGIN {
+  Header = 0
+  Prolog = "'"$PrologEnd"'"
+}
+
+{
+  if (Prolog == 0 && Header < 1) {
+    printf "'"$CommentStart"' Begin git Header '"$CommentEnd"'\n"
+    printf "'"$CommentStart"'   Commit: '"$Commit"' '"$CommentEnd"'\n"
+    printf "'"$CommentStart"'   Author: '"$Author"' '"$CommentEnd"'\n"
+    printf "'"$CommentStart"'   Date: '"$Date"' '"$CommentEnd"'\n"
+    printf "'"$CommentStart"' End git Header '"$CommentEnd"'\n"
+    printf "\n"
+
+    Header = 1
+  }
+
+  print $0
+}
+
+$0 ~ Prolog {
+  Prolog = 0
+}'
+}
+
+function clean () {
+  $GAWK -- '
+BEGIN {
+  Skip = 0
+}
+
+$0 ~ "'"$CommentStart"' Begin (git|CVS) Header" {
+  skip = 2 
+}
+
+{
+  if (skip == 1) {
+    if ($0 !~ "^$") {
+      print $0
+    }
+
+    skip = 0
+  } else if (skip == 0) {
+    print $0
+  }    
+}
+
+$0 ~ "'"$CommentStart"' End (git|CVS) Header" {
+  if (skip == 2) {
+    skip = 1
+  }
+}'
+}
+
+if [ x"$CommentStart" != x ]; then
+  cat | $action
+else
+  cat
+fi
