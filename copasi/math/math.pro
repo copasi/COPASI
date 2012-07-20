@@ -1,3 +1,8 @@
+# Copyright (C) 2011 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 LIB = math
 SRC_TARGET = math
 DISTFILES = math.pro
@@ -26,3 +31,4 @@ SOURCES += CMathTrigger.cpp
 include(../lib.pri)
 include(../common.pri)
 include(../srcDistribution.pri)
+
