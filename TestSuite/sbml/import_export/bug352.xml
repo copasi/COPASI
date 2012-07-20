@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., University of Heidelberg, and The University -->
+<!-- of Manchester. -->
+<!-- All rights reserved. -->
+
+<!-- Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., EML Research, gGmbH, University of Heidelberg, -->
+<!-- and The University of Manchester. -->
+<!-- All rights reserved. -->
+
+<!-- Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc. and EML Research, gGmbH. -->
+<!-- All rights reserved. -->
+
 <!-- Created by COPASI version 4.0 Debug 14++ on 2005-08-17 15:32 with libsbml version 2.3.2. -->
 <sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
   <model id="Model_1" name="NoName">
