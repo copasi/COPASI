@@ -1,0 +1,11 @@
+*.o
+*.app
+moc_*.cpp
+ui_*.h
+/.cproject
+/.project
+/.settings/
+Makefile
+config.log
+config.status
+qrc_copasi.cpp
