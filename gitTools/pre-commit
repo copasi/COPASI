@@ -10,6 +10,8 @@
 GitTools=`git config copasi.gittools`
 . ${GitTools}/functions
 
+[ -e ${GitTools}/checkout ] && rm ${GitTools}/checkout
+
 for f in `git diff --cached --name-only`; do
   pipe=
 
@@ -33,9 +35,21 @@ for f in `git diff --cached --name-only`; do
   fi
 
   if [ x"$pipe" != x ]; then
-    debug pre-commit: cat "$f" $pipe 
+    debug pre-commit: cat "$f" $pipe
+     
+    if [ x`git diff --name-only $f` = x ]; then
+      echo $f >> ${GitTools}/checkout
+    fi
+    
+    mv $f $f.bkp
+    git checkout-index $f
+           
     eval cat "$f" $pipe > $$ && mv $$ $f
+    git add $f
+    
+    mv $f.bkp $f
   fi  
+  
 done
 
 [ -e $$ ] && rm $$

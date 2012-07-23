@@ -71,3 +71,4 @@ if [ "x`git config --local user.email`" == x ]; then
 fi
 
 cp pre-commit ../.git/hooks/
+cp post-commit ../.git/hooks/
