@@ -14,7 +14,7 @@
 #include "utilities/CCopasiMessage.h"
 
 CMathDependencyGraph::CMathDependencyGraph():
-  mObjects2Nodes()
+    mObjects2Nodes()
 {}
 
 CMathDependencyGraph::~CMathDependencyGraph()
@@ -24,8 +24,8 @@ CMathDependencyGraph::~CMathDependencyGraph()
 
 void CMathDependencyGraph::clear()
 {
-  iterator it = mObjects2Nodes.begin();
-  iterator end = mObjects2Nodes.end();
+    iterator it = mObjects2Nodes.begin();
+    iterator end = mObjects2Nodes.end();
 
   for (; it != end; ++it)
     {
