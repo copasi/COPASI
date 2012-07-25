@@ -81,23 +81,23 @@ BEGIN {
   Skip = 0
 }
 
-$0 ~ "'"$CommentStart"' Begin (git|CVS) Header" {
+$0 ~ "('"$CommentStart"'|/\\*) Begin (git|CVS) Header" {
   skip = 2 
 }
 
 {
-  if (skip == 1) {
+  if (skip == 0) {
+    print $0
+  } else if (skip == 1) {
     if ($0 !~ "^$") {
       print $0
     }
 
     skip = 0
-  } else if (skip == 0) {
-    print $0
-  }    
+  }
 }
 
-$0 ~ "'"$CommentStart"' End (git|CVS) Header" {
+$0 ~ "End (git|CVS) Header" {
   if (skip == 2) {
     skip = 1
   }
