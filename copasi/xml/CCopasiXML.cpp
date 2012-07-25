@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-//   $Revision: 1.144 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/25 12:13:29 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -95,29 +87,18 @@
 // class CCopasiReport;
 
 // static
-const std::string CCopasiXML::CVSDate = "$Date: 2012/05/25 12:13:29 $";
-
-// static
-const std::string CCopasiXML::CVSRevision = "$Revision: 1.144 $";
-
-// static
 CCopasiXML::CCopasiXML():
-    CCopasiXMLInterface(),
-    mpModel(NULL),
-    mpFunctionList(NULL),
-    mpTaskList(NULL),
-    mpReportList(NULL),
-    mpPlotList(NULL),
-    mpGUI(NULL),
-    mpLayoutList(NULL),
-    mMCXML21Issued(false)
-{
-  C_INT32 major = strToInt(CVSDate.substr(7, 4).c_str());
-  C_INT32 minor = strToInt(CVSDate.substr(12, 2).c_str());
-  C_INT32 devel = strToInt(CVSDate.substr(15, 2).c_str());
-
-  mVersion.setVersion(major, minor, devel, CVSRevision.substr(1, CVSRevision.length() - 3));
-}
+  CCopasiXMLInterface(),
+  mpModel(NULL),
+  mpFunctionList(NULL),
+  mpTaskList(NULL),
+  mpReportList(NULL),
+  mpPlotList(NULL),
+  mpGUI(NULL),
+  mpLayoutList(NULL),
+  mpDataModel(NULL),
+  mMCXML21Issued(false)
+{}
 
 CCopasiXML::~CCopasiXML() {}
 
@@ -133,22 +114,22 @@ bool CCopasiXML::save(std::ostream & os,
   bool success = true;
 
   *mpOstream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-  << std::endl;
+             << std::endl;
 
   *mpOstream << "<!-- generated with COPASI "
-  << CVersion::VERSION.getVersion()
-  << " (http://www.copasi.org) at "
-  << UTCTimeStamp()
-  << " UTC -->"
-  << std::endl;
+             << CVersion::VERSION.getVersion()
+             << " (http://www.copasi.org) at "
+             << UTCTimeStamp()
+             << " UTC -->"
+             << std::endl;
 
   *mpOstream << "<?oxygen RNGSchema=\"http://www.copasi.org/static/schema/CopasiML.rng\" type=\"xml\"?>" << std::endl;
 
   CXMLAttributeList Attributes;
   Attributes.add("xmlns", "http://www.copasi.org/static/schema");
-  Attributes.add("versionMajor", mVersion.getVersionMajor());
-  Attributes.add("versionMinor", mVersion.getVersionMinor());
-  Attributes.add("versionDevel", mVersion.getVersionDevel());
+  Attributes.add("versionMajor", CVersion::VERSION.getVersionMajor());
+  Attributes.add("versionMinor", CVersion::VERSION.getVersionMinor());
+  Attributes.add("versionDevel", CVersion::VERSION.getVersionDevel());
 
   /*
   Attributes.add("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
@@ -255,15 +236,12 @@ bool CCopasiXML::load(std::istream & is,
       pdelete(mpLayoutList);
     }
 
-  if (mVersion < FileVersion)
+  if (CVersion::VERSION < FileVersion)
     CCopasiMessage(CCopasiMessage::WARNING, MCXML + 9,
                    mFilename.c_str(), FileVersion.getVersion().c_str());
 
   return success;
 }
-
-const CVersion & CCopasiXML::getVersion() const
-{return mVersion;}
 
 bool CCopasiXML::setModel(CModel * pModel)
 {
@@ -954,7 +932,6 @@ bool CCopasiXML::saveAnnotation(const CAnnotation * pAnnotation)
 
   return true;
 }
-
 
 bool CCopasiXML::saveModelParameter(const CModelParameter * pModelParameter)
 {
@@ -1857,7 +1834,7 @@ bool CCopasiXML::buildFunctionList()
   bool success = true;
 
   CCopasiVectorN< CFunction > * pFunctionList
-  = new CCopasiVectorN< CFunction >;
+    = new CCopasiVectorN< CFunction >;
 
   *pFunctionList = CCopasiRootContainer::getFunctionList()->getUsedFunctions(this->mpDataModel->getModel());
 
@@ -2124,9 +2101,11 @@ void CCopasiXML::saveGradientAttributes(const CLGradientBase& gradient, CXMLAttr
       case CLGradientBase::REPEAT:
         attributes.add("spreadMethod", "repeat");
         break;
+
       case CLGradientBase::REFLECT:
         attributes.add("spreadMethod", "reflect");
         break;
+
       case CLGradientBase::PAD:
       default:
         attributes.add("spreadMethod", "pad");
@@ -2345,6 +2324,7 @@ void CCopasiXML::save2DAttributes(const CLGraphicalPrimitive2D& primitive, CXMLA
           case CLGraphicalPrimitive2D::EVENODD:
             attributes.add("fill-rule", "evenodd");
             break;
+
           case CLGraphicalPrimitive2D::NONZERO:
           default:
             attributes.add("fill-rule", "nonzero");
@@ -2380,6 +2360,7 @@ void CCopasiXML::saveTextAttributes(const TEXTELEMENT& text, CXMLAttributeList& 
           case CLText::WEIGHT_BOLD:
             attributes.add("font-weight", "bold");
             break;
+
           default:
             break;
         }
@@ -2393,6 +2374,7 @@ void CCopasiXML::saveTextAttributes(const TEXTELEMENT& text, CXMLAttributeList& 
           case CLText::STYLE_ITALIC:
             attributes.add("font-style", "italic");
             break;
+
           default:
             break;
         }
@@ -2406,12 +2388,15 @@ void CCopasiXML::saveTextAttributes(const TEXTELEMENT& text, CXMLAttributeList& 
           case CLText::ANCHOR_MIDDLE:
             attributes.add("text-anchor", "middle");
             break;
+
           case CLText::ANCHOR_END:
             attributes.add("text-anchor", "end");
             break;
+
           case CLText::ANCHOR_START:
             attributes.add("text-anchor", "start");
             break;
+
           default:
             break;
         }
@@ -2425,12 +2410,15 @@ void CCopasiXML::saveTextAttributes(const TEXTELEMENT& text, CXMLAttributeList& 
           case CLText::ANCHOR_MIDDLE:
             attributes.add("vtext-anchor", "middle");
             break;
+
           case CLText::ANCHOR_BOTTOM:
             attributes.add("vtext-anchor", "bottom");
             break;
+
           case CLText::ANCHOR_TOP:
             attributes.add("vtext-anchor", "top");
             break;
+
           default:
             break;
         }

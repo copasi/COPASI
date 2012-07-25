@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-//   $Revision: 1.28 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/25 12:13:29 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -115,14 +107,6 @@ public:
    */
   virtual bool load(std::istream & is,
                     const std::string & relativeTo);
-
-  /**
-   * Retrieve the version of the current XML file.
-   * Before any load operation this contains the COPASI schema version supported by
-   * the writer. After load it contains the schema version of the loaded file.
-   * @return const CVersion & version
-   */
-  const CVersion & getVersion() const;
 
   /**
    * Set the model.
@@ -557,14 +541,6 @@ private:
 #endif /* USE_CRENDER_EXTENSION */
 
   // Attributes
-
-  static const std::string CVSDate;
-  static const std::string CVSRevision;
-
-  /**
-   * The version of the COPASI XML Schema the current file adheres to.
-   */
-  CVersion mVersion;
 
   /**
    * Pointer to a model which has been loaded or is to be saved.
