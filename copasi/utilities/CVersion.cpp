@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVersion.cpp,v $
-//   $Revision: 1.17 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/04 15:06:20 $
-// End CVS Header
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -35,19 +27,19 @@
 const CVersion CVersion::VERSION(COPASI_VERSION_MAJOR, COPASI_VERSION_MINOR, COPASI_VERSION_BUILD, COPASI_VERSION_COMMENT);
 
 CVersion::CVersion(C_INT32 major, C_INT32 minor, C_INT32 devel, const std::string& comment):
-    mMajor(major),
-    mMinor(minor),
-    mDevel(devel),
-    mComment(comment)
+  mMajor(major),
+  mMinor(minor),
+  mDevel(devel),
+  mComment(comment)
 {
   setString();
 }
 
 CVersion::CVersion():
-    mMajor(0),
-    mMinor(0),
-    mDevel(0),
-    mComment("")
+  mMajor(0),
+  mMinor(0),
+  mDevel(0),
+  mComment("")
 {
   setString();
 }
@@ -55,7 +47,7 @@ CVersion::CVersion():
 CVersion::~CVersion()
 {}
 
-bool CVersion::operator < (const CVersion & rhs)
+bool CVersion::operator < (const CVersion & rhs) const
 {
   if (mMajor > rhs.mMajor) return false;
 
