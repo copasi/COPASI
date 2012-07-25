@@ -80,6 +80,6 @@ GitStart=1342718698
 
 function debug () {
   if [ _${GitLog} != _ ]; then
-    echo $@ >> ${GitLog}
+    echo '['`date +'%Y.%m.%d %H:%M:%S'`']' $@ >> ${GitLog}
   fi
 }
