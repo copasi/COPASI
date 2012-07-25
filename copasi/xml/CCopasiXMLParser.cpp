@@ -398,7 +398,8 @@ const CCopasiObject * CCopasiXMLParser::getObjectFromName(const std::string & cn
 
 CCopasiXMLParser::UnknownElement::UnknownElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
-    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+    mLineNumber(0)
 {}
 
 CCopasiXMLParser::UnknownElement::~UnknownElement()
@@ -2811,7 +2812,9 @@ void CCopasiXMLParser::ListOfModelValuesElement::end(const XML_Char *pszName)
 CCopasiXMLParser::ModelValueElement::ModelValueElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
     CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
-    mpMathMLElement(NULL)
+    mpMV(NULL),
+    mpMathMLElement(NULL),
+    mKey("")
 {}
 
 CCopasiXMLParser::ModelValueElement::~ModelValueElement()
@@ -5729,7 +5732,8 @@ CCopasiXMLParser::PlotItemElement::PlotItemElement(CCopasiXMLParser& parser, SCo
     CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
     mpParameterElement(NULL),
     mpParameterGroupElement(NULL),
-    mpListOfChannelsElement(NULL)
+    mpListOfChannelsElement(NULL),
+    mLineNumber(0)
 
 {}
 
@@ -5958,7 +5962,9 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
   return;
 }
 
-CCopasiXMLParser::PlotSpecificationElement::PlotSpecificationElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common): CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+CCopasiXMLParser::PlotSpecificationElement::PlotSpecificationElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+    mLineNumber(0)
 {}
 
 CCopasiXMLParser::PlotSpecificationElement::~PlotSpecificationElement()
@@ -6239,7 +6245,9 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
 
 //******** Curve **********
 
-CCopasiXMLParser::CurveElement::CurveElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common): CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+CCopasiXMLParser::CurveElement::CurveElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+    mLineNumber(0)
 {}
 
 CCopasiXMLParser::CurveElement::~CurveElement()
@@ -6446,7 +6454,9 @@ void CCopasiXMLParser::CurveElement::end(const XML_Char *pszName)
 
 //******** CompartmentGlyph **********
 
-CCopasiXMLParser::CompartmentGlyphElement::CompartmentGlyphElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common): CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+CCopasiXMLParser::CompartmentGlyphElement::CompartmentGlyphElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+    mLineNumber(0)
 {}
 
 CCopasiXMLParser::CompartmentGlyphElement::~CompartmentGlyphElement()
@@ -6702,7 +6712,9 @@ void CCopasiXMLParser::ListOfCompartmentGlyphsElement::end(const XML_Char * pszN
 
 //******** MetaboliteGlyph **********
 
-CCopasiXMLParser::MetaboliteGlyphElement::MetaboliteGlyphElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common): CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+CCopasiXMLParser::MetaboliteGlyphElement::MetaboliteGlyphElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+    mLineNumber(0)
 {}
 
 CCopasiXMLParser::MetaboliteGlyphElement::~MetaboliteGlyphElement()
@@ -6957,8 +6969,9 @@ void CCopasiXMLParser::ListOfMetabGlyphsElement::end(const XML_Char * pszName)
 
 //******** MetaboliteReferenceGlyph **********
 
-CCopasiXMLParser::MetaboliteReferenceGlyphElement::MetaboliteReferenceGlyphElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common)
-    : CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+CCopasiXMLParser::MetaboliteReferenceGlyphElement::MetaboliteReferenceGlyphElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+    mLineNumber(0)
 {}
 
 CCopasiXMLParser::MetaboliteReferenceGlyphElement::~MetaboliteReferenceGlyphElement()
@@ -7237,7 +7250,9 @@ void CCopasiXMLParser::ListOfMetaboliteReferenceGlyphsElement::end(const XML_Cha
 
 //******** ReactionGlyph **********
 
-CCopasiXMLParser::ReactionGlyphElement::ReactionGlyphElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common): CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+CCopasiXMLParser::ReactionGlyphElement::ReactionGlyphElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+    mLineNumber(0)
 {}
 
 CCopasiXMLParser::ReactionGlyphElement::~ReactionGlyphElement()
@@ -7519,7 +7534,9 @@ void CCopasiXMLParser::ListOfReactionGlyphsElement::end(const XML_Char * pszName
 
 //******** TextGlyph **********
 
-CCopasiXMLParser::TextGlyphElement::TextGlyphElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common): CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+CCopasiXMLParser::TextGlyphElement::TextGlyphElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+    mLineNumber(0)
 {}
 
 CCopasiXMLParser::TextGlyphElement::~TextGlyphElement()
@@ -7796,7 +7813,9 @@ void CCopasiXMLParser::ListOfTextGlyphsElement::end(const XML_Char * pszName)
 
 //******** AdditionalGO **********
 
-CCopasiXMLParser::AdditionalGOElement::AdditionalGOElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common): CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+CCopasiXMLParser::AdditionalGOElement::AdditionalGOElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+    mLineNumber(0)
 {}
 
 CCopasiXMLParser::AdditionalGOElement::~AdditionalGOElement()
@@ -8034,7 +8053,9 @@ void CCopasiXMLParser::ListOfAdditionalGOsElement::end(const XML_Char * pszName)
 
 //******** Layout **********
 
-CCopasiXMLParser::LayoutElement::LayoutElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common): CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+CCopasiXMLParser::LayoutElement::LayoutElement(CCopasiXMLParser& parser, SCopasiXMLParserCommon & common):
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+    mLineNumber(0)
 {}
 
 CCopasiXMLParser::LayoutElement::~LayoutElement()
@@ -9264,7 +9285,8 @@ CCopasiXMLParser::MethodElement::MethodElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
     CXMLElementHandler < CCopasiXMLParser,
     SCopasiXMLParserCommon > (parser, common),
-    mpContentHandler(NULL)
+    mpContentHandler(NULL),
+    mLineNumber(0)
 {}
 
 CCopasiXMLParser::MethodElement::~MethodElement()
@@ -14614,4 +14636,15 @@ SCopasiXMLParserCommon::SCopasiXMLParserCommon():
     reportReferenceMap(),
     pGUI(NULL),
     pDataModel(NULL)
+#ifdef USE_CRENDER_EXTENSION
+    ,
+    pRenderInformation(NULL),
+    pGradient(NULL),
+    pLineEnding(NULL),
+    pStyle(NULL),
+    pGroup(NULL),
+    pText(NULL),
+    pListOfCurveElements(NULL)
+#endif /* USE_CRENDER_EXTENSION */
+
 {}
