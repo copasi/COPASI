@@ -6,6 +6,16 @@ ui_*.h
 /.project
 /.settings/
 Makefile
+Makefile.Release
+Makefile.Debug
 config.log
 config.status
 qrc_copasi.cpp
+*.idb
+*.vcproj*
+*.icproj
+*/*/release/
+*/*/*/release/
+*/*/debug/
+*/*/*/debug/
+config.status.bat
