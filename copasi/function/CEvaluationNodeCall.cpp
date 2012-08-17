@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-//   $Revision: 1.47 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/15 15:32:27 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -34,25 +26,25 @@
 #include "copasi/report/CCopasiRootContainer.h"
 
 CEvaluationNodeCall::CEvaluationNodeCall():
-    CEvaluationNode(CEvaluationNode::INVALID, ""),
-    mpFunction(NULL),
-    mpExpression(NULL),
-    mCallNodes(),
-    mpCallParameters(NULL),
-    mBooleanRequired(false),
-    mRegisteredFucntionCN()
+  CEvaluationNode(CEvaluationNode::INVALID, ""),
+  mpFunction(NULL),
+  mpExpression(NULL),
+  mCallNodes(),
+  mpCallParameters(NULL),
+  mBooleanRequired(false),
+  mRegisteredFunctionCN()
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
     const Data & data):
-    CEvaluationNode((Type)(CEvaluationNode::CALL | subType), data),
-    mpFunction(NULL),
-    mpExpression(NULL),
-    mCallNodes(),
-    mpCallParameters(NULL),
-    mQuotesRequired(false),
-    mBooleanRequired(false),
-    mRegisteredFucntionCN()
+  CEvaluationNode((Type)(CEvaluationNode::CALL | subType), data),
+  mpFunction(NULL),
+  mpExpression(NULL),
+  mCallNodes(),
+  mpCallParameters(NULL),
+  mQuotesRequired(false),
+  mBooleanRequired(false),
+  mRegisteredFunctionCN()
 {
   setData(data);
   mData = unQuote(mData);
@@ -78,13 +70,13 @@ CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
 }
 
 CEvaluationNodeCall::CEvaluationNodeCall(const CEvaluationNodeCall & src):
-    CEvaluationNode(src),
-    mpFunction(src.mpFunction),
-    mpExpression(src.mpExpression),
-    mCallNodes(src.mCallNodes),
-    mpCallParameters(NULL),
-    mQuotesRequired(src.mQuotesRequired),
-    mBooleanRequired(src.mBooleanRequired)
+  CEvaluationNode(src),
+  mpFunction(src.mpFunction),
+  mpExpression(src.mpExpression),
+  mCallNodes(src.mCallNodes),
+  mpCallParameters(NULL),
+  mQuotesRequired(src.mQuotesRequired),
+  mBooleanRequired(src.mBooleanRequired)
 {mpCallParameters = buildParameters(mCallNodes);}
 
 CEvaluationNodeCall::~CEvaluationNodeCall() {}
@@ -114,9 +106,9 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 
   CObjectInterface * pObjectInterface = NULL;
 
-  if (mRegisteredFucntionCN != "")
+  if (mRegisteredFunctionCN != "")
     {
-      pObjectInterface = const_cast< CObjectInterface * >(CCopasiRootContainer::getRoot()->getObject(mRegisteredFucntionCN));
+      pObjectInterface = const_cast< CObjectInterface * >(CCopasiRootContainer::getRoot()->getObject(mRegisteredFunctionCN));
     }
 
   switch (mType & 0x00FFFFFF)
@@ -135,7 +127,7 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 
         if (!mpFunction) return false;
 
-        mRegisteredFucntionCN = mpFunction->getCN();
+        mRegisteredFunctionCN = mpFunction->getCN();
 
         // We need to check whether the provided arguments match the on needed by the
         // function;
@@ -172,14 +164,14 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 
             if (!mpFunction) return false;
 
-            mRegisteredFucntionCN = mpFunction->getCN();
+            mRegisteredFunctionCN = mpFunction->getCN();
 
             mType = (CEvaluationNode::Type)(CEvaluationNode::CALL | FUNCTION);
             success = compile(pTree);
           }
         else
           {
-            mRegisteredFucntionCN = mpExpression->getCN();
+            mRegisteredFunctionCN = mpExpression->getCN();
 
             success = mpExpression->compile(static_cast<const CExpression *>(pTree)->getListOfContainer());
           }
@@ -241,11 +233,10 @@ bool CEvaluationNodeCall::setData(const Data & data)
       mQuotesRequired = true;
     }
 
-  mRegisteredFucntionCN = std::string("");
+  mRegisteredFunctionCN = std::string("");
 
   return true;
 }
-
 
 // virtual
 std::string CEvaluationNodeCall::getInfix(const std::vector< std::string > & children) const
@@ -360,6 +351,7 @@ std::string CEvaluationNodeCall::getCCodeString(const std::vector< std::string >
 
       case EXPRESSION:
         break;
+
       default:
         return "@";
         break;
@@ -445,7 +437,23 @@ bool CEvaluationNodeCall::addChild(CCopasiNode< Data > * pChild,
                                    CCopasiNode< Data > * pAfter)
 {
   CCopasiNode< Data >::addChild(pChild, pAfter);
-  mCallNodes.push_back(static_cast<CEvaluationNode *>(pChild));
+
+  if (pAfter == NULL)
+    {
+      mCallNodes.push_back(static_cast<CEvaluationNode *>(pChild));
+      return true;
+    }
+
+  std::vector<CEvaluationNode *>::iterator it = mCallNodes.begin();
+
+  if (pAfter != this)
+    {
+      std::vector<CEvaluationNode *>::iterator end = mCallNodes.end();
+
+      while (it != end && *it != pAfter) ++it;
+    }
+
+  mCallNodes.insert(it, static_cast<CEvaluationNode *>(pChild));
 
   return true;
 }
@@ -603,6 +611,7 @@ std::string CEvaluationNodeCall::getMMLString(const std::vector< std::string > &
 
       case EXPRESSION:
         break;
+
       default:
         break;
     }
