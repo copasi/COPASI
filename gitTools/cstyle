@@ -3,22 +3,26 @@
 . "`git config copasi.gittools`/functions"
 
 ASTYLE=`gitTool astyle`
-[ x"$ASTYLE" == x ] && echo astyle is missing && exit 1
-
 GAWK=`gitTool gawk`
-[ x"$GAWK" == x ] && echo gawk is missing && exit 1
 
 if [ ${isWindows} == true ]; then
   DOS2UNIX=`gitTool dos2unix`
-  [ x"$DOS2UNIX" == x ] && echo dos2unix is missing && exit 1
-
   function ConvertToUnix () {
     $DOS2UNIX -u2d $1 1>/dev/null 2>&1
   }
 else
+  DOS2UNIX=ignored
   function ConvertToUnix () {
     echo -n
   }
+fi
+
+if [ x"$ASTYLE" == x -o x"$GAWK" == x -o x"DOS2UNIX" == x ]; then
+  if [ x$1 == x ]; then
+    cat
+  fi
+  
+  exit 0
 fi
 
 if [ x$1 == x ]; then
