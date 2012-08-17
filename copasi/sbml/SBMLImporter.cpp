@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-//   $Revision: 1.289 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/15 18:13:03 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -1292,7 +1284,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       mImportStep = 9;
 
       if (!mpImportHandler->progressItem(mhImportStep)) return false;
-
     }
 
   this->importEvents(sbmlModel, this->mpCopasiModel, copasi2sbmlmap);
@@ -1617,7 +1608,6 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
         {
           CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 89, sbmlCompartment->getId().c_str());
           dimensionality = 3;
-
         }
     }
   else
@@ -2655,11 +2645,11 @@ SBMLImporter::replaceBvars(const ASTNode* node, std::map<std::string, ASTNode*> 
  * Constructor that initializes speciesMap and the FunctionDB object
  */
 SBMLImporter::SBMLImporter():
-    mpDataModel(NULL),
-    mpCopasiModel(NULL),
-    mImportCOPASIMIRIAM(false),
-    mUsedSBMLIdsPopulated(false),
-    mAvogadroSet(false)
+  mpDataModel(NULL),
+  mpCopasiModel(NULL),
+  mImportCOPASIMIRIAM(false),
+  mUsedSBMLIdsPopulated(false),
+  mAvogadroSet(false)
 {
   this->speciesMap = std::map<std::string, CMetab*>();
   this->functionDB = NULL;
@@ -2825,7 +2815,6 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
                                            &totalSteps);
         }
 
-
       SBMLDocument* sbmlDoc = reader->readSBMLFromString(sbmlDocumentText);
 
       if (mpImportHandler) mpImportHandler->finishItem(hStep);
@@ -2880,6 +2869,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
 
                     CCopasiMessage(messageType, MCSBML + 40, "INFO", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
                     break;
+
                   case LIBSBML_SEV_WARNING:
 
                     if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
@@ -2893,6 +2883,7 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
 
                     CCopasiMessage(messageType, MCSBML + 40, "WARNING", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
                     break;
+
                   case LIBSBML_SEV_ERROR:
 
                     if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
@@ -2902,7 +2893,9 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
 
                     CCopasiMessage(messageType, MCSBML + 40, "ERROR", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
                     break;
+
                   case LIBSBML_SEV_FATAL:
+
                     // treat unknown as fatal
                   default:
 
@@ -3080,26 +3073,32 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
                     qUnit = CModel::Mol;
                     result = true;
                     break;
+
                   case - 3:
                     qUnit = CModel::mMol;
                     result = true;
                     break;
+
                   case - 6:
                     qUnit = CModel::microMol;
                     result = true;
                     break;
+
                   case - 9:
                     qUnit = CModel::nMol;
                     result = true;
                     break;
+
                   case - 12:
                     qUnit = CModel::pMol;
                     result = true;
                     break;
+
                   case - 15:
                     qUnit = CModel::fMol;
                     result = true;
                     break;
+
                   default:
                     //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
                     result = false;
@@ -3285,26 +3284,32 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
                         tUnit = CModel::s;
                         result = true;
                         break;
+
                       case - 3:
                         tUnit = CModel::ms;
                         result = true;
                         break;
+
                       case - 6:
                         tUnit = CModel::micros;
                         result = true;
                         break;
+
                       case - 9:
                         tUnit = CModel::ns;
                         result = true;
                         break;
+
                       case - 12:
                         tUnit = CModel::ps;
                         result = true;
                         break;
+
                       case - 15:
                         tUnit = CModel::fs;
                         result = true;
                         break;
+
                       default:
                         //DebugFile << "Error. This value should never have been reached for the scale of the time unit." << std::endl;
                         result = false;
@@ -3439,34 +3444,42 @@ SBMLImporter::handleLengthUnit(const UnitDefinition* uDef)
                     lUnit = CModel::m;
                     result = true;
                     break;
+
                   case - 1:
                     lUnit = CModel::dm;
                     result = true;
                     break;
+
                   case - 2:
                     lUnit = CModel::cm;
                     result = true;
                     break;
+
                   case - 3:
                     lUnit = CModel::mm;
                     result = true;
                     break;
+
                   case - 6:
                     lUnit = CModel::microm;
                     result = true;
                     break;
+
                   case - 9:
                     lUnit = CModel::nm;
                     result = true;
                     break;
+
                   case - 12:
                     lUnit = CModel::pm;
                     result = true;
                     break;
+
                   case - 15:
                     lUnit = CModel::fm;
                     result = true;
                     break;
+
                   default:
                     //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
                     result = false;
@@ -3578,34 +3591,42 @@ SBMLImporter::handleAreaUnit(const UnitDefinition* uDef)
                     aUnit = CModel::m2;
                     result = true;
                     break;
+
                   case - 1:
                     aUnit = CModel::dm2;
                     result = true;
                     break;
+
                   case - 2:
                     aUnit = CModel::cm2;
                     result = true;
                     break;
+
                   case - 3:
                     aUnit = CModel::mm2;
                     result = true;
                     break;
+
                   case - 6:
                     aUnit = CModel::microm2;
                     result = true;
                     break;
+
                   case - 9:
                     aUnit = CModel::nm2;
                     result = true;
                     break;
+
                   case - 12:
                     aUnit = CModel::pm2;
                     result = true;
                     break;
+
                   case - 15:
                     aUnit = CModel::fm2;
                     result = true;
                     break;
+
                   default:
                     //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
                     result = false;
@@ -3719,26 +3740,32 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
                     vUnit = CModel::l;
                     result = true;
                     break;
+
                   case - 3:
                     vUnit = CModel::ml;
                     result = true;
                     break;
+
                   case - 6:
                     vUnit = CModel::microl;
                     result = true;
                     break;
+
                   case - 9:
                     vUnit = CModel::nl;
                     result = true;
                     break;
+
                   case - 12:
                     vUnit = CModel::pl;
                     result = true;
                     break;
+
                   case - 15:
                     vUnit = CModel::fl;
                     result = true;
                     break;
+
                   default:
                     //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
                     result = false;
@@ -3793,26 +3820,32 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
                         vUnit = CModel::l;
                         result = true;
                         break;
+
                       case - 3:
                         vUnit = CModel::ml;
                         result = true;
                         break;
+
                       case - 6:
                         vUnit = CModel::microl;
                         result = true;
                         break;
+
                       case - 9:
                         vUnit = CModel::nl;
                         result = true;
                         break;
+
                       case - 12:
                         vUnit = CModel::pl;
                         result = true;
                         break;
+
                       case - 15:
                         vUnit = CModel::fl;
                         result = true;
                         break;
+
                       default:
                         result = false;
                         break;
@@ -3973,6 +4006,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
                       }
 
                     break;
+
                   case SBML_SPECIES:
                     pSBMLSpecies = dynamic_cast<Species*>(it->second);
 
@@ -3992,6 +4026,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
                       }
 
                     break;
+
                   case SBML_REACTION:
                     pSBMLReaction = dynamic_cast<Reaction*>(it->second);
 
@@ -4011,6 +4046,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
                       }
 
                     break;
+
                   case SBML_PARAMETER:
                     pSBMLParameter = dynamic_cast<Parameter*>(it->second);
 
@@ -4030,6 +4066,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
                       }
 
                     break;
+
                   default:
                     break;
                 }
@@ -4114,7 +4151,7 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
       this->mUnitOnNumberFound = SBMLImporter::checkForUnitsOnNumbers(pNode);
     }
 
-  // first replace the calls to explicitely time dependent functions
+  // first replace the calls to explicitly time dependent functions
   this->replaceTimeDependentFunctionCalls(pNode);
 
   if (!this->mDelayFound || pSBMLReaction != NULL)
@@ -4468,9 +4505,11 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassAction(const CEvaluatio
 
         result = this->isMassActionFunction(dynamic_cast<const CFunction*>(pTree), chemicalEquation, functionArgumentCNs);
         break;
+
       case CEvaluationTree::Expression:
         result = this->isMassActionExpression(pTree->getRoot(), chemicalEquation);
         break;
+
       default:
         fatalError();
         break;
@@ -4926,14 +4965,17 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
                             // it is a substrate
                             pFunParam->setUsage(CFunctionParameter::SUBSTRATE);
                             break;
+
                           case CChemEq::PRODUCT:
                             // it is a product
                             pFunParam->setUsage(CFunctionParameter::PRODUCT);
                             break;
+
                           case CChemEq::MODIFIER:
                             // it is a modifier
                             pFunParam->setUsage(CFunctionParameter::MODIFIER);
                             break;
+
                           default:
                             fatalError();
                             break;
@@ -5693,6 +5735,7 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
               }
 
             break;
+
           case SBML_SPECIES:
             pS = dynamic_cast<Species*>(it->second);
 
@@ -5727,6 +5770,7 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
               }
 
             break;
+
           case SBML_PARAMETER:
             pP = dynamic_cast<Parameter*>(it->second);
 
@@ -5762,6 +5806,7 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
               }
 
             break;
+
           default:
             break;
         }
@@ -5809,6 +5854,7 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
 
             this->importRuleForModelEntity(rule, pME, ruleType, copasi2sbmlmap, pSBMLModel);
             break;
+
           default:
             // now that compartments, metabolites and global parameters are
             // supported, everything else should produce a fatal error.
@@ -5852,9 +5898,11 @@ void SBMLImporter::areRulesUnique(const Model* sbmlModel)
           case SBML_ASSIGNMENT_RULE:
             id = dynamic_cast<const AssignmentRule*>(pRule)->getVariable();
             break;
+
           case SBML_RATE_RULE:
             id = dynamic_cast<const RateRule*>(pRule)->getVariable();
             break;
+
           default:
             break;
         }
@@ -6141,6 +6189,7 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
                               }
 
                             break;
+
                           case SBML_SPECIES:
                             // !!!! Check if this is always correct. Maybe if
                             // hasOnlySubstanceUnits is set we have to use the amount
@@ -6171,6 +6220,7 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
                               }
 
                             break;
+
                           case SBML_REACTION:
 
                             if (((const Reaction*)it->second)->getKineticLaw() == NULL)
@@ -6180,6 +6230,7 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
 
                             itNode->setName((pObject->getCN() + ",Reference=Flux").c_str());
                             break;
+
                           case SBML_PARAMETER:
 
                             if (!initialExpression)
@@ -6192,6 +6243,7 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
                               }
 
                             break;
+
                           default:
                             fatalError();
                             break;
@@ -6988,6 +7040,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                       }
 
                     break;
+
                   case 1:
 
                     if (!areSBMLUnitDefinitionsIdentical(pLengthUnits, pTmpUdef2))
@@ -6996,6 +7049,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                       }
 
                     break;
+
                   case 2:
 
                     if (!areSBMLUnitDefinitionsIdentical(pAreaUnits, pTmpUdef2))
@@ -7004,6 +7058,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                       }
 
                     break;
+
                   case 3:
 
                     if (!areSBMLUnitDefinitionsIdentical(pVolumeUnits, pTmpUdef2))
@@ -7012,6 +7067,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                       }
 
                     break;
+
                   default:
                     fatalError();
                 }
@@ -8359,6 +8415,7 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
                                              metaid);
               }
               break;
+
               case SBML_REACTION:
               {
                 assert(dynamic_cast<const Reaction*>(pSBMLObject) != NULL);
@@ -8474,10 +8531,12 @@ CCopasiObject* SBMLImporter::isConstantFlux(const CEvaluationNode* pRoot, CModel
           }
       }
       break;
+
       case CEvaluationNode::OBJECT:
         name = dynamic_cast<const CEvaluationNodeObject*>(pRoot)->getObjectCN();
         assert(!name.empty());
         break;
+
       default:
         break;
     }
@@ -8561,7 +8620,6 @@ void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::ma
                                        step,
                                        &totalSteps);
     }
-
 
   for (i = 0; i < iMax; ++i)
     {
@@ -9614,4 +9672,3 @@ void SBMLImporter::deleteCopasiModel()
       this->mpCopasiModel = NULL;
     }
 }
-
