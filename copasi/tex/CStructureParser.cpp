@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tex/CStructureParser.cpp,v $
-//   $Revision: 1.15 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:33:43 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -265,6 +257,8 @@ bool CStructureParser::characters(const QString& str)
   QString strAux = str.trimmed();
   int pos = rx.indexIn(strAux);
 
+  std::cout << TO_UTF8(strAux) << std::endl;
+
   if (pos != -1)
     {
       // handling word character within <mrow> ... </mrow>
@@ -288,7 +282,11 @@ bool CStructureParser::characters(const QString& str)
                   || strAux == "arcsech" || strAux == "arccsch" || strAux == "arccoth")
                 tex += "{\\mathrm{" + strAux + " \\: }}";
               else
-                tex += "{\\mathrm{" + strAux + "}}";
+                {
+                  strAux.replace("_", "\\_");
+                  strAux.replace(" ", "\\;");
+                  tex += "{\\mathrm{" + strAux + "}}";
+                }
             }
           else  // exactly only one character
             tex += "{" + strAux + "}";
