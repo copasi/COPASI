@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-//   $Revision: 1.82 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/25 20:52:24 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -137,16 +129,16 @@ CEvaluationTree::copy(const CEvaluationTree & src)
 CEvaluationTree::CEvaluationTree(const std::string & name,
                                  const CCopasiContainer * pParent,
                                  const CEvaluationTree::Type & type):
-    CCopasiContainer(name, pParent, "Function"),
-    mType(type),
-    mInfix(),
-    mUsable(false),
-    mErrorPosition(std::string::npos),
-    mpNodeList(NULL),
-    mpRoot(NULL),
-    mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mBooleanRequired(false),
-    mCalculationSequence()
+  CCopasiContainer(name, pParent, "Function"),
+  mType(type),
+  mInfix(),
+  mUsable(false),
+  mErrorPosition(std::string::npos),
+  mpNodeList(NULL),
+  mpRoot(NULL),
+  mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+  mBooleanRequired(false),
+  mCalculationSequence()
 {
   initObjects();
   setInfix("");
@@ -154,16 +146,16 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
 
 CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
                                  const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    mType(src.mType),
-    mInfix(),
-    mUsable(false),
-    mErrorPosition(std::string::npos),
-    mpNodeList(NULL),
-    mpRoot(NULL),
-    mValue(src.mValue),
-    mBooleanRequired(src.mBooleanRequired),
-    mCalculationSequence()
+  CCopasiContainer(src, pParent),
+  mType(src.mType),
+  mInfix(),
+  mUsable(false),
+  mErrorPosition(std::string::npos),
+  mpNodeList(NULL),
+  mpRoot(NULL),
+  mValue(src.mValue),
+  mBooleanRequired(src.mBooleanRequired),
+  mCalculationSequence()
 {
   initObjects();
   setInfix(src.mInfix);
@@ -354,7 +346,7 @@ bool CEvaluationTree::compileNodes()
         mErrorPosition += (*it)->getData().length();
 
       mErrorPosition -= (*--it)->getData().length();
-      CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 3, mErrorPosition);
+      CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 3, getObjectName().c_str(), mErrorPosition);
     }
   else
     {
@@ -495,6 +487,7 @@ CEvaluationNode * CEvaluationTree::fromAST(const ASTNode * pASTNode)
               case AST_LAMBDA:
                 // this nodetype will never be handled directly
                 break;
+
               case AST_PLUS:
               case AST_MINUS:
               case AST_TIMES:
@@ -704,15 +697,15 @@ bool CEvaluationTree::hasDiscontinuity() const
     {
       switch ((int)(*it)->getType())
         {
-          case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
-          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
-          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+          case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
+          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
             // We found a discontinuity.
             return true;
             break;
 
-          case(CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
-          case(CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+          case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
+          case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
 
             // If the called tree has a discontinuity so do we.
             if (static_cast< CEvaluationNodeCall * >(*it)->getCalledTree()->hasDiscontinuity())

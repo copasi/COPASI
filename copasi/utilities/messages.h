@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-//   $Revision: 1.166 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/23 12:55:36 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -33,8 +25,10 @@ const MESSAGES Messages[] =
   {MCReadConfig + 5, "CReadConfig (5): Invalid type '%s' for  Variable '%s'."},
 
   // CKinFunction
-  {MCKinFunction + 1, "CKinFunction (1): Cannot find identifier '%s'"
-   " in function '%s'."},
+  {
+    MCKinFunction + 1, "CKinFunction (1): Cannot find identifier '%s'"
+    " in function '%s'."
+  },
   {MCKinFunction + 2, "CKinFunction (2): Missing operand in function '%s'."},
 
   // CRange
@@ -46,18 +40,26 @@ const MESSAGES Messages[] =
   {MCCopasiVector + 3, "CCopasiVector (3): Index '%d' out of range (0, '%d')."},
 
   // CFunctionParameters
-  {MCFunctionParameters + 1, "CFunctionParameters (1): The usage '%s' "
-   "is not unique for a vector type parameter ('%d')."},
-  {MCFunctionParameters + 2, "CFunctionParameters (2): No parameter with "
-   "usage '%s' with index >= '%ld'."},
+  {
+    MCFunctionParameters + 1, "CFunctionParameters (1): The usage '%s' "
+    "is not unique for a vector type parameter ('%d')."
+  },
+  {
+    MCFunctionParameters + 2, "CFunctionParameters (2): No parameter with "
+    "usage '%s' with index >= '%ld'."
+  },
 
   // CMassAction
-  {MCMassAction + 1, "CMassAction (1): The function Mass Action reversibility "
-   "must be either TRUE or FALSE."},
+  {
+    MCMassAction + 1, "CMassAction (1): The function Mass Action reversibility "
+    "must be either TRUE or FALSE."
+  },
 
   // CCopasiMethod
-  {MCCopasiMethod + 1, "CCopasiMethod (1): No parameter list "
-   "found for name '%s' and type '%s'."},
+  {
+    MCCopasiMethod + 1, "CCopasiMethod (1): No parameter list "
+    "found for name '%s' and type '%s'."
+  },
   {MCCopasiMethod + 2, "CCopasiMethod (2): Problem is not set."},
   {MCCopasiMethod + 3, "CCopasiMethod (3): Model is not set in problem."},
   {MCCopasiMethod + 4, "CCopasiMethod (4): Event exists. Current task '%s' is not suitable with the event."},
@@ -74,8 +76,10 @@ const MESSAGES Messages[] =
   {MCReaction + 9, "CReaction (9): Could not find object for key '%s'."},
   {MCReaction + 10, "CReaction (10): Parameter '%s' is a vector."},
   {MCReaction + 11, "CReaction (11): Reaction '%s' refers to unusable Function '%s'."},
-  {MCReaction + 12, "CReaction (12): The reversible Reaction '%s' could not be split into two irreversible "
-   "Reactions due to the Structure of the Kinetic Law '%s'."},
+  {
+    MCReaction + 12, "CReaction (12): The reversible Reaction '%s' could not be split into two irreversible "
+    "Reactions due to the Structure of the Kinetic Law '%s'."
+  },
 
   // CChemEq
   {MCChemEq + 1, "CChemEq (1): No Substrates and no Products."},
@@ -83,23 +87,33 @@ const MESSAGES Messages[] =
   {MCChemEq + 3, "CChemEq (3): No Substrates and Products are in different compartments."},
 
   // CMethodParameter
-  {MCParameter + 1, "CCopasiParameter (1): Invalid value '%f' for '%s' "
-   "which is of type '%s'."},
+  {
+    MCParameter + 1, "CCopasiParameter (1): Invalid value '%f' for '%s' "
+    "which is of type '%s'."
+  },
   {MCParameter + 2, "CCopasiParameter (2): Elevation failed, since no parameter is provided."},
   {MCParameter + 3, "CCopasiParameter (3): Elevation failed, since the parameter is not of the required source type."},
   {MCParameter + 4, "CCopasiParameter (4): Elevation failed, since elevation of children failed."},
   {MCParameter + 5, "CCopasiParameter (5): Elevation failed, since the parameter is not member of this group."},
 
   // CTrajectoryMethod
-  {MCTrajectoryMethod + 1, "CTrajectoryMethod (1): Hybrid simulation not "
-   "applicable, since the stoichiometry contains a non-integer."},
-  {MCTrajectoryMethod + 2, "CTrajectoryMethod (2): Hybrid simulation not "
-   "applicable, since reversible reactions exists."},
-  {MCTrajectoryMethod + 3, "CTrajectoryMethod (3): Hybrid simulation not "
-   "applicable, since more than one compartment is involved."},
+  {
+    MCTrajectoryMethod + 1, "CTrajectoryMethod (1): Hybrid simulation not "
+    "applicable, since the stoichiometry contains a non-integer."
+  },
+  {
+    MCTrajectoryMethod + 2, "CTrajectoryMethod (2): Hybrid simulation not "
+    "applicable, since reversible reactions exists."
+  },
+  {
+    MCTrajectoryMethod + 3, "CTrajectoryMethod (3): Hybrid simulation not "
+    "applicable, since more than one compartment is involved."
+  },
   {MCTrajectoryMethod + 4, "CTrajectoryMethod (4): Lower Limit '%.2f' is greater than Upper Limit '%.2f'."},
-  {MCTrajectoryMethod + 6, "CTrajectoryMethod (6): Deterministic integration failed. "
-   "LSODA reported:\n%s \n\nPlease see result for indications of numerical instability."},
+  {
+    MCTrajectoryMethod + 6, "CTrajectoryMethod (6): Deterministic integration failed. "
+    "LSODA reported:\n%s \n\nPlease see result for indications of numerical instability."
+  },
   {MCTrajectoryMethod + 7, "CTrajectoryMethod (7): Problem is not set."},
   {MCTrajectoryMethod + 8, "CTrajectoryMethod (8): Problem is not a trajectory problem."},
   {MCTrajectoryMethod + 9, "CTrajectoryMethod (9): Negative time steps not possible with stochastic simulation."},
@@ -120,7 +134,6 @@ const MESSAGES Messages[] =
   {MCTrajectoryMethod + 25, "CTrajectoryMethod (25): Invalid state at time '%f'."},
   {MCTrajectoryMethod + 26, "CTrajectoryMethod (26): A tau-Leap step encountered numerical problems.\nPlease check whether some particle numbers are large."},
 
-
   // XML Package
   {MCXML + 1, "XML (1): Required attribute '%s' not found (line: '%d')."},
   {MCXML + 2, "XML (2): XML error (line: '%d', column: '%d'): '%s'."},
@@ -129,20 +142,28 @@ const MESSAGES Messages[] =
   {MCXML + 5, "XML (5): Unknown task type '%s' encountered at line '%d'."},
   {MCXML + 6, "XML (6): Invalid function '%s' encountered at line '%d'."},
   {MCXML + 7, "XML (7): Unknown function '%s' in reaction '%s' encountered at line '%d'."},
-  {MCXML + 8, "XML (8): Unknown variable '%s' in function '%s' encountered at line '%d'. "
-   "A possible reason is that the variable is a reserved string within the function description."},
-  {MCXML + 9, "XML (9): The file '%s'\nis written in a newer version '%s' of the COPASI file format.\n"
-   "This file might include features your version of COPASI does not support.\n"
-   "To assure full compatibility please download the newest version at http://www.copasi.org."},
+  {
+    MCXML + 8, "XML (8): Unknown variable '%s' in function '%s' encountered at line '%d'. "
+    "A possible reason is that the variable is a reserved string within the function description."
+  },
+  {
+    MCXML + 9, "XML (9): The file '%s'\nis written in a newer version '%s' of the COPASI file format.\n"
+    "This file might include features your version of COPASI does not support.\n"
+    "To assure full compatibility please download the newest version at http://www.copasi.org."
+  },
   {MCXML + 10, "XML (10): Invalid element '<%s>' expecting '<%s>' encountered at line '%d'."},
   {MCXML + 11, "XML (11): Invalid closing element '</%s>' expecting '</%s>' encountered at line '%d'."},
   {MCXML + 12, "XML (12): Order '%d' out of range for variable '%s' in function '%s' encountered at line '%d'. "},
   {MCXML + 13, "XML (13): Unrecognized format in file '%s'."},
-  {MCXML + 14, "XML (14): Local reaction parameters may no longer be used in any expression in the model. "
-   " The following automatic corrections have been applied:\n%s"
-   " Please note: Tasks, reports, and plots may have been affected by these changes and may no longer work as expected."},
-  {MCXML + 15, "XML (15): Multiple events with order '%d' encountered. The problem has been fixed."
-   "Please verify that the automatic correction represents the intended behavior."},
+  {
+    MCXML + 14, "XML (14): Local reaction parameters may no longer be used in any expression in the model. "
+    " The following automatic corrections have been applied:\n%s"
+    " Please note: Tasks, reports, and plots may have been affected by these changes and may no longer work as expected."
+  },
+  {
+    MCXML + 15, "XML (15): Multiple events with order '%d' encountered. The problem has been fixed."
+    "Please verify that the automatic correction represents the intended behavior."
+  },
   {MCXML + 16, "XML (16): Unknown parameter '%s' with type '%s' encountered at line '%d'."},
   {MCXML + 17, "XML (17): Invalid initial state specification encountered at line '%d'."},
   {MCXML + 18, "XML (18): Unknown method '%s' encountered at line '%d' selecting default '%s'."},
@@ -154,10 +175,12 @@ const MESSAGES Messages[] =
   {MCCopasiMessage + 1, "Message (1): No more messages."},
 
   // Configuration
-  {MCConfiguration + 1, "Configuration (1): COPASI directory is not set. Some features might not be working correctly.\n"
-   "Please set the environment variable COPASIDIR or use the "
-   "command-line options \"-c COPASIDIR\" or \"--copasidir COPASIDIR\" "
-   "to point to the COPASI installation directory."},
+  {
+    MCConfiguration + 1, "Configuration (1): COPASI directory is not set. Some features might not be working correctly.\n"
+    "Please set the environment variable COPASIDIR or use the "
+    "command-line options \"-c COPASIDIR\" or \"--copasidir COPASIDIR\" "
+    "to point to the COPASI installation directory."
+  },
   {MCConfiguration + 2, "Configuration (2): Configuration file '%s' found but is not readable."},
 
   // Optimization
@@ -275,10 +298,14 @@ const MESSAGES Messages[] =
   {MCSBML + 101, "SBML (101): Assignment rule for species reference \"%s\" imported. Please be aware that COPASI does not support stoichiometries that change over time. The imported expression has therefore been converted to a constant value."},
 
   {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
-  {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
-   "exceeds the limit. The step number and step size have been adjusted to avoid over flow."},
-  {MCTrajectoryProblem + 3, "CTrajectoryProblem (3): The step size '%f' "
-   "is to small for the machine accuracy. The step number and step size have been adjusted."},
+  {
+    MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
+    "exceeds the limit. The step number and step size have been adjusted to avoid over flow."
+  },
+  {
+    MCTrajectoryProblem + 3, "CTrajectoryProblem (3): The step size '%f' "
+    "is to small for the machine accuracy. The step number and step size have been adjusted."
+  },
 
   // Directory Entries
   {MCDirEntry + 1, "DirEntry (1): Directory entry '%s' already exists."},
@@ -292,9 +319,9 @@ const MESSAGES Messages[] =
   {MCMathML + 4, "MathML (4): DIVIDE and POWER operator can only have 2 arguments."},
 
   // Function
-  {MCFunction + 1, "Function (1): Parser error after position: '%d'."},
-  {MCFunction + 2, "Function (2): Lexer error after position: '%d'."},
-  {MCFunction + 3, "Function (3): Compile error after position: '%d'."},
+  {MCFunction + 1, "Function (1): Parser error near character position: '%d'."},
+  {MCFunction + 2, "Function (2): Lexer error near character position: '%d'."},
+  {MCFunction + 3, "Function (3): Compile error in function '%s' near character position: '%d'."},
   {MCFunction + 4, "Function (4): Circular dependency detected."},
 
   {MCEvaluationNodeObject + 1, "CEvaluationNodeObject (1): Only references to compartment, species, parameters and reaction are allowed in expression."},
@@ -308,13 +335,19 @@ const MESSAGES Messages[] =
   {MCCopasiTask + 7, "CCopasiTask (7): Problems compiling output."},
   {MCCopasiTask + 8, "CCopasiTask (8): '%d' Function Evaluations out of '%d' failed."},
 
-  {MCSteadyState + 1, "CSteadyState (1): The model is explicitly time dependent. "
-   "Therefore, the calculation of a steady state using the Newton method is not very meaningful."},
+  {
+    MCSteadyState + 1, "CSteadyState (1): The model is explicitly time dependent. "
+    "Therefore, the calculation of a steady state using the Newton method is not very meaningful."
+  },
 
-  {MCFitting + 1, "CFitting (1): Failed to determine work area size for matrix inversion. "
-   "dsytrf returned with error '%d'."},
-  {MCFitting + 2, "CFitting (2): Failed to invert Fisher information matrix. "
-   "dsytrf returned with error '%d'."},
+  {
+    MCFitting + 1, "CFitting (1): Failed to determine work area size for matrix inversion. "
+    "dsytrf returned with error '%d'."
+  },
+  {
+    MCFitting + 2, "CFitting (2): Failed to invert Fisher information matrix. "
+    "dsytrf returned with error '%d'."
+  },
   {MCFitting + 3, "CFitting (3): No column with type 'Time' specified for a time course experiment '%s'."},
   {MCFitting + 4, "CFitting (4): Insufficient experimental data (columns requested '%d', columns found '%d')."},
   {MCFitting + 5, "CFitting (5): Incomplete data mapping, column '%d' must be mapped."},
@@ -324,8 +357,10 @@ const MESSAGES Messages[] =
   {MCFitting + 9, "CFitting (9): Experiment '%s' has no data rows."},
   {MCFitting + 10, "CFitting (10): Experiment '%s' has no dependent data."},
   {MCFitting + 11, "CFitting (11): Missing independent data for Experiment '%s' in row '%d', column '%d'."},
-  {MCFitting + 12, "CFitting (12): The Fisher information matrix is singular. Therefore, the "
-   "correlation matrix can not be calculated."},
+  {
+    MCFitting + 12, "CFitting (12): The Fisher information matrix is singular. Therefore, the "
+    "correlation matrix can not be calculated."
+  },
   {MCFitting + 13, "CFitting (13): Not enough memory available to calculate the Fisher Information Matrix."},
 
   // CCopasiObject
@@ -340,16 +375,20 @@ const MESSAGES Messages[] =
 
   // CODEExporter
   {MCODEExporter + 1, "CODEExporter (1): Length of exporting line exceeds 1000 characters."},
-  {MCODEExporter + 2, "CODEExporter (2): The export was incomplete since the model depends on model"
-   "quantities, which can currently not be exported."},
+  {
+    MCODEExporter + 2, "CODEExporter (2): The export was incomplete since the model depends on model"
+    "quantities, which can currently not be exported."
+  },
 
   {MCRegistration + 1, "CRegistration (1): Invalid registration code."},
   {MCRegistration + 2, "CRegistration (2): Email and/or user name do not match registration code."},
   {MCRegistration + 3, "CRegistration (3): Trial license expired on: '%s'."},
 
   // CTSSAMethod
-  {MCTSSAMethod + 1, "CTSSAMethod (1): Deterministic integration failed. "
-   "LSODA reported:\n%s \n\nPlease see result for indications of numerical instability."},
+  {
+    MCTSSAMethod + 1, "CTSSAMethod (1): Deterministic integration failed. "
+    "LSODA reported:\n%s \n\nPlease see result for indications of numerical instability."
+  },
   {MCTSSAMethod + 2, "CTSSAMethod (2): Problem is not a time scale separation analysis problem."},
   {MCTSSAMethod + 3, "CTSSAMethod (3): Internal step limit exceeded."},
   {MCTSSAMethod + 4, "CTSSAMethod (4): Numerical Error encountered."},
@@ -369,10 +408,14 @@ const MESSAGES Messages[] =
 
   // CTSSAProblem
   {MCTSSAProblem + 1, "CTSSAProblem (1): Invalid step size = '%f'."},
-  {MCTSSAProblem + 2, "CTSSAProblem (2): The step number '%f' "
-   "exceeds the limit. The step number and step size have been adjusted to avoid over flow."},
-  {MCTSSAProblem + 3, "CTSSAProblem (3): The step size '%f' "
-   "is to small for the machine accuracy. The step number and step size have been adjusted."},
+  {
+    MCTSSAProblem + 2, "CTSSAProblem (2): The step number '%f' "
+    "exceeds the limit. The step number and step size have been adjusted to avoid over flow."
+  },
+  {
+    MCTSSAProblem + 3, "CTSSAProblem (3): The step size '%f' "
+    "is to small for the machine accuracy. The step number and step size have been adjusted."
+  },
 
   {MCEigen + 1, "CEigen (1): Invalid argument '%d' for dgees."},
   {MCEigen + 2, "CEigen (2): Failed to compute Eigen value with index '%d'."},
@@ -381,14 +424,20 @@ const MESSAGES Messages[] =
 
   {MCMiriam + 1, "CMiriam (1): Problem parsing RDF at line '%d', column '%d':\n %s"},
   {MCMiriam + 2, "CMiriam (2): Namespace prefix redefinition for '%s' from '%s' to '%s'."},
-  {MCMiriam + 3, "CMiriam (3): Updating the MIRIRAM resource information failed. "
-   "Please try again. The server responded:   \n%s   \n%s"},
+  {
+    MCMiriam + 3, "CMiriam (3): Updating the MIRIRAM resource information failed. "
+    "Please try again. The server responded:   \n%s   \n%s"
+  },
 
   // Messages generated by the mathematical model an all its classes.
-  {MCMathModel + 1, "CMathModel (1): Simultaneous event assignments encountered. The simulation cannot "
-   "continue."},
-  {MCMathModel + 2, "CMathModel (2): The execution time '%d' of an event is before the current"
-   " time '%d' due to a negative delay."},
+  {
+    MCMathModel + 1, "CMathModel (1): Simultaneous event assignments encountered. The simulation cannot "
+    "continue."
+  },
+  {
+    MCMathModel + 2, "CMathModel (2): The execution time '%d' of an event is before the current"
+    " time '%d' due to a negative delay."
+  },
   {MCMathModel + 3, "CMathModel (3): Recursive prerequisites encountered for object '%s'."},
 
   //CModelMerging
