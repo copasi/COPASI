@@ -1,4 +1,14 @@
 <?xml version="1.0"?>
+<!-- Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., University of Heidelberg, and The University -->
+<!-- of Manchester. -->
+<!-- All rights reserved. -->
+
+<!-- Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., EML Research, gGmbH, University of Heidelberg, -->
+<!-- and The University of Manchester. -->
+<!-- All rights reserved. -->
+
 <grammar ns="http://www.copasi.org/static/schema" xmlns="http://relaxng.org/ns/structure/1.0"
   xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
   datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
@@ -1233,28 +1243,6 @@
   </define>
 
   <define name="curveSegment.element" combine="choice">
-    <a:documentation>
-      This is only added to be backwards compatible by supporting the xsi:type mechanism, which is not needed for RelaxNG.
-    </a:documentation>
-    <element name="CurveSegment">
-      <choice>
-        <group>
-          <attribute name="type" ns="http://www.w3.org/2001/XMLSchema-instance">
-            <value type="string">LineSegment</value>
-          </attribute>
-          <ref name="lineSegment.datatype"/>
-        </group>
-        <group>
-          <attribute name="type" ns="http://www.w3.org/2001/XMLSchema-instance">
-            <value type="string">CubicBezier</value>
-          </attribute>
-          <ref name="cubicBezier.datatype"/>
-        </group>
-      </choice>
-    </element>
-  </define>
-
-  <define name="curveSegment.element" combine="choice">
     <element name="LineSegment">
       <ref name="lineSegment.datatype"/>
     </element>
@@ -1849,28 +1837,6 @@
       <ref name="relAbsValue.datatype"/>
     </attribute>
   </define>  
-  
-  <define name="renderCurve.element" combine="choice">
-    <a:documentation>
-      This is only added to be backwards compatible by supporting the xsi:type mechanism, which is not needed for RelaxNG.
-    </a:documentation>
-    <element name="Element">
-      <choice>
-        <group>
-          <attribute name="type" ns="http://www.w3.org/2001/XMLSchema-instance">
-            <value type="string">RenderPoint</value>
-          </attribute>
-          <ref name="renderPoint.datatytpe"/>
-        </group>
-        <group>
-          <attribute name="type" ns="http://www.w3.org/2001/XMLSchema-instance">
-            <value type="string">RenderCubicBezier</value>
-          </attribute>
-          <ref name="renderCubicBezier.datatype"/>
-        </group>
-      </choice>
-    </element>
-  </define>
   
   <define name="renderCurve.element" combine="choice">
     <element name="RenderPoint">
