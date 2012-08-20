@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathContainer.cpp,v $
-//   $Revision: 1.14 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/30 17:15:33 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,78 +15,78 @@
 #include "utilities/CNodeIterator.h"
 
 CMathContainer::CMathContainer():
-    CCopasiContainer("Math Container", NULL, "CMathContainer"),
-    mpModel(NULL),
-    mpAvogadro(NULL),
-    mpQuantity2NumberFactor(NULL),
-    mValues(),
-    mInitialExtensiveValues(),
-    mInitialIntensiveValues(),
-    mInitialExtensiveRates(),
-    mInitialIntensiveRates(),
-    mInitialParticleFluxes(),
-    mInitialFluxes(),
-    mInitialEventTriggers(),
-    mExtensiveValues(),
-    mIntensiveValues(),
-    mExtensiveRates(),
-    mIntensiveRates(),
-    mParticleFluxes(),
-    mFluxes(),
-    mEventTriggers(),
-    mEventDelays(),
-    mEventPriorities(),
-    mEventAssignments(),
-    mEventRoots(),
-    mEventRootStates(),
-    mPropensities(),
-    mTotalMasses(),
-    mDependentMasses(),
-    mDiscontinuous(),
-    mInitialDependencies(),
-    mTransientDependencies(),
-    mObjects(),
-    mEvents(),
-    mCreateDiscontinuousPointer(),
-    mDataObject2MathObject(),
-    mDataValue2MathObject()
+  CCopasiContainer("Math Container", NULL, "CMathContainer"),
+  mpModel(NULL),
+  mpAvogadro(NULL),
+  mpQuantity2NumberFactor(NULL),
+  mValues(),
+  mInitialExtensiveValues(),
+  mInitialIntensiveValues(),
+  mInitialExtensiveRates(),
+  mInitialIntensiveRates(),
+  mInitialParticleFluxes(),
+  mInitialFluxes(),
+  mInitialEventTriggers(),
+  mExtensiveValues(),
+  mIntensiveValues(),
+  mExtensiveRates(),
+  mIntensiveRates(),
+  mParticleFluxes(),
+  mFluxes(),
+  mEventTriggers(),
+  mEventDelays(),
+  mEventPriorities(),
+  mEventAssignments(),
+  mEventRoots(),
+  mEventRootStates(),
+  mPropensities(),
+  mTotalMasses(),
+  mDependentMasses(),
+  mDiscontinuous(),
+  mInitialDependencies(),
+  mTransientDependencies(),
+  mObjects(),
+  mEvents(),
+  mCreateDiscontinuousPointer(),
+  mDataObject2MathObject(),
+  mDataValue2MathObject()
 {}
 
 CMathContainer::CMathContainer(CModel & model):
-    CCopasiContainer("Math Container", NULL, "CMathContainer"),
-    mpModel(&model),
-    mpAvogadro(NULL),
-    mpQuantity2NumberFactor(NULL),
-    mValues(),
-    mInitialExtensiveValues(),
-    mInitialIntensiveValues(),
-    mInitialExtensiveRates(),
-    mInitialIntensiveRates(),
-    mInitialParticleFluxes(),
-    mInitialFluxes(),
-    mInitialEventTriggers(),
-    mExtensiveValues(),
-    mIntensiveValues(),
-    mExtensiveRates(),
-    mIntensiveRates(),
-    mParticleFluxes(),
-    mFluxes(),
-    mEventTriggers(),
-    mEventDelays(),
-    mEventPriorities(),
-    mEventAssignments(),
-    mEventRoots(),
-    mEventRootStates(),
-    mPropensities(),
-    mTotalMasses(),
-    mDependentMasses(),
-    mDiscontinuous(),
-    mInitialDependencies(),
-    mTransientDependencies(),
-    mObjects(),
-    mEvents(),
-    mDataObject2MathObject(),
-    mDataValue2MathObject()
+  CCopasiContainer("Math Container", NULL, "CMathContainer"),
+  mpModel(&model),
+  mpAvogadro(NULL),
+  mpQuantity2NumberFactor(NULL),
+  mValues(),
+  mInitialExtensiveValues(),
+  mInitialIntensiveValues(),
+  mInitialExtensiveRates(),
+  mInitialIntensiveRates(),
+  mInitialParticleFluxes(),
+  mInitialFluxes(),
+  mInitialEventTriggers(),
+  mExtensiveValues(),
+  mIntensiveValues(),
+  mExtensiveRates(),
+  mIntensiveRates(),
+  mParticleFluxes(),
+  mFluxes(),
+  mEventTriggers(),
+  mEventDelays(),
+  mEventPriorities(),
+  mEventAssignments(),
+  mEventRoots(),
+  mEventRootStates(),
+  mPropensities(),
+  mTotalMasses(),
+  mDependentMasses(),
+  mDiscontinuous(),
+  mInitialDependencies(),
+  mTransientDependencies(),
+  mObjects(),
+  mEvents(),
+  mDataObject2MathObject(),
+  mDataValue2MathObject()
 {
   // We do not want the model to know about the math container therefore we
   // do not use &model in the constructor of CCopasiContainer
@@ -185,7 +177,6 @@ CMathObject * CMathContainer::getMathObject(const C_FLOAT64 * pDataValue) const
   return NULL;
 }
 
-
 CMathObject * CMathContainer::getMathObject(const CCopasiObjectName & cn) const
 {
   return getMathObject(mpModel->getObject(cn));
@@ -239,7 +230,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
       switch ((int) itNode->getType())
         {
             // Handle object nodes which are of type CN
-          case(CEvaluationNode::OBJECT | CEvaluationNodeObject::CN):
+          case (CEvaluationNode::OBJECT | CEvaluationNodeObject::CN):
           {
             // We need to map the object to a math object if possible.
             const CObjectInterface * pObject =
@@ -251,7 +242,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           break;
 
           // Handle object nodes which are of type POINTER
-          case(CEvaluationNode::OBJECT | CEvaluationNodeObject::POINTER):
+          case (CEvaluationNode::OBJECT | CEvaluationNodeObject::POINTER):
           {
             const CObjectInterface * pObject =
               getMathObject(static_cast< const CEvaluationNodeObject *>(*itNode)->getObjectValuePtr());
@@ -262,7 +253,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           break;
 
           // Handle variables
-          case(CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
+          case (CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
           {
             size_t Index =
               static_cast< const CEvaluationNodeVariable * >(*itNode)->getIndex();
@@ -272,8 +263,8 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           break;
 
           // Handle call nodes
-          case(CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
-          case(CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+          case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
+          case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
           {
             CMath::Variables< CEvaluationNode * > Variables;
             std::vector< CEvaluationNode * >::iterator it = itNode.context().begin();
@@ -300,9 +291,9 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           break;
 
           // Handle discrete nodes
-          case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
-          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
-          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+          case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
+          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
 
             if (replaceDiscontinuousNodes)
               {
@@ -329,7 +320,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
         }
     }
 
-  assert(pCopy != NULL);
+  // assert(pCopy != NULL);
 
   return pCopy;
 }
@@ -354,7 +345,6 @@ CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
 
 #ifdef XXXX // TODO CRITICAL We postpone the creation of events for discontinuous nodes till later.
   success &= mCreateDiscontinuousPointer.pEvent->compileDiscontinuous(mCreateDiscontinuousPointer.pDiscontinuous, *this);
-
 
   // Since the children are copied first it is better to defer advancing the pointers
   mCreateDiscontinuousPointer.pEvent += 1;
@@ -444,7 +434,7 @@ void CMathContainer::determineDiscontinuityAllocationRequirement(const CEvaluati
   switch ((int) pNode->getType())
     {
         // Handle variables
-      case(CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
+      case (CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
 
         // We do not need to do anything
         if (false)
@@ -459,8 +449,8 @@ void CMathContainer::determineDiscontinuityAllocationRequirement(const CEvaluati
         break;
 
         // Handle call nodes
-      case(CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
-      case(CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+      case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
+      case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
       {
         CMath::CVariableStack::StackElement Variables;
         CMath::CAllocationStack::StackElement Allocations;
@@ -501,7 +491,7 @@ void CMathContainer::determineDiscontinuityAllocationRequirement(const CEvaluati
       break;
 
       // Handle discrete nodes
-      case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+      case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
       {
         const CEvaluationNode * pIf = static_cast< const CEvaluationNode * >(pNode->getChild());
         const CEvaluationNode * pTrue = static_cast< const CEvaluationNode * >(pIf->getSibling());
@@ -517,8 +507,6 @@ void CMathContainer::determineDiscontinuityAllocationRequirement(const CEvaluati
             variableStack,
             allocationStack,
             allocations);
-
-
       }
 
       // TODO CRITICAL We need to analyze the condition to determine how many roots
@@ -529,8 +517,8 @@ void CMathContainer::determineDiscontinuityAllocationRequirement(const CEvaluati
 
       break;
 
-      case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
-      case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+      case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
+      case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
         determineDiscontinuityAllocationRequirement(static_cast< const CEvaluationNode * >(pNode->getChild()),
             variableStack,
             allocationStack,
@@ -615,7 +603,7 @@ void CMathContainer::allocate()
 
 # endif // XXXX
 
-  mValues.resize(4 *(nExtensiveValues + nIntensiveValues) +
+  mValues.resize(4 * (nExtensiveValues + nIntensiveValues) +
                  5 * nReactions +
                  2 * nMoieties +
                  AllocationRequirement.nDiscontinuous +
@@ -653,7 +641,6 @@ void CMathContainer::allocate()
   pArray += nReactions;
   mEventTriggers = CVectorCore< C_FLOAT64 >(nEvents, pArray);
   pArray += nEvents;
-
 
   mEventDelays = CVectorCore< C_FLOAT64 >(nEvents, pArray);
   pArray += nEvents;
@@ -1275,4 +1262,3 @@ C_FLOAT64 * CMathContainer::getInitialValuePointer(const C_FLOAT64 * pValue) con
 
   return const_cast< C_FLOAT64 * >(pInitialValue);
 }
-

@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathExpression.cpp,v $
-//   $Revision: 1.11 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/30 17:13:00 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,21 +16,21 @@
 #define mpContainer static_cast< const CMathContainer * >(getObjectParent())
 
 CMathExpression::CMathExpression():
-    CEvaluationTree(),
-    mPrerequisites()
+  CEvaluationTree(),
+  mPrerequisites()
 {}
 
 CMathExpression::CMathExpression(const std::string & name,
                                  CMathContainer & container):
-    CEvaluationTree(name, &container, CEvaluationTree::MathExpression),
-    mPrerequisites()
+  CEvaluationTree(name, &container, CEvaluationTree::MathExpression),
+  mPrerequisites()
 {}
 
 CMathExpression::CMathExpression(const CExpression & src,
                                  CMathContainer & container,
                                  const bool & replaceDiscontinuousNodes):
-    CEvaluationTree(src.getObjectName(), &container, CEvaluationTree::MathExpression),
-    mPrerequisites()
+  CEvaluationTree(src.getObjectName(), &container, CEvaluationTree::MathExpression),
+  mPrerequisites()
 {
   // Create a converted copy of the existing expression tree.
   mpRoot = container.copyBranch(src.getRoot(), replaceDiscontinuousNodes);
@@ -50,8 +42,8 @@ CMathExpression::CMathExpression(const CFunction & src,
                                  const CCallParameters< C_FLOAT64 > & callParameters,
                                  CMathContainer & container,
                                  const bool & replaceDiscontinuousNodes):
-    CEvaluationTree(src.getObjectName(), &container, CEvaluationTree::MathExpression),
-    mPrerequisites()
+  CEvaluationTree(src.getObjectName(), &container, CEvaluationTree::MathExpression),
+  mPrerequisites()
 {
   // Deal with the different function types
   switch (src.getType())
@@ -77,7 +69,6 @@ CMathExpression::CMathExpression(const CFunction & src,
 
         // Create a converted copy of the existing expression tree.
         mpRoot = container.copyBranch(src.getRoot(), Variables, replaceDiscontinuousNodes);
-
       }
 
       break;
@@ -148,7 +139,13 @@ bool CMathExpression::compile()
   mPrerequisites.clear();
   mUsable = true;
 
-  updateTree();
+  if (!updateTree())
+    {
+      mUsable = false;
+      mCalculationSequence.clear();
+
+      return mUsable;
+    }
 
   std::vector< CEvaluationNode * >::iterator it = mpNodeList->begin();
   std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
@@ -198,6 +195,11 @@ bool CMathExpression::convertToInitialExpression()
       setObjectName("Initial" + getObjectName());
     }
 
+  if (mpNodeList == NULL)
+    {
+      return false;
+    }
+
   std::vector< CEvaluationNode * >::iterator it = mpNodeList->begin();
   std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
   bool changed = false;
@@ -228,7 +230,6 @@ bool CMathExpression::convertToInitialExpression()
 
   return true;
 }
-
 
 CEvaluationNode * CMathExpression::createNodeFromValue(const C_FLOAT64 * pDataValue)
 {
