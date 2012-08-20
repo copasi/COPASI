@@ -1,14 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.cpp,v $
-//   $Revision: 1.30 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/18 18:11:08 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "CQExperimentData.h"
@@ -62,26 +63,26 @@
  *  true to construct a modal dialog.
  */
 CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl):
-    QDialog(parent, fl),
-    mOldWeightMethod(),
-    mpValidatorHeader(NULL),
-    mpValidatorLast(NULL),
-    mpExperiment(NULL),
-    mpFileInfo(NULL),
-    mpExperimentSet(NULL),
-    mpExperimentSetCopy(NULL),
-    mKeyMap(),
-    mFileMap(),
-    mpValidatorFirst(),
-    mShown(-1),
-    mpValidatorName(NULL),
-    mCrossValidation(false),
-    mShowError(true),
-    mpDataModel(NULL),
-    mpComboDelegate(NULL),
-    mTypeItems(),
-    mTypeWithoutTimeItems(),
-    mModelObjectRow(-1)
+  QDialog(parent, fl),
+  mOldWeightMethod(),
+  mpValidatorHeader(NULL),
+  mpValidatorLast(NULL),
+  mpExperiment(NULL),
+  mpFileInfo(NULL),
+  mpExperimentSet(NULL),
+  mpExperimentSetCopy(NULL),
+  mKeyMap(),
+  mFileMap(),
+  mpValidatorFirst(),
+  mShown(-1),
+  mpValidatorName(NULL),
+  mCrossValidation(false),
+  mShowError(true),
+  mpDataModel(NULL),
+  mpComboDelegate(NULL),
+  mTypeItems(),
+  mTypeWithoutTimeItems(),
+  mModelObjectRow(-1)
 {
   setObjectName(QString::fromUtf8(name));
   setModal(modal);
@@ -116,10 +117,10 @@ public:
                             const char * name,
                             CQExperimentData * pContext,
                             const Type & type):
-      CQValidatorNotEmpty(parent, name),
-      mpIntValidator(new QIntValidator(1, std::numeric_limits< int >::max(), parent)),
-      mpContext(pContext),
-      mType(type)
+    CQValidatorNotEmpty(parent, name),
+    mpIntValidator(new QIntValidator(1, std::numeric_limits< int >::max(), parent)),
+    mpContext(pContext),
+    mType(type)
   {}
 
   virtual State validate(QString & input, int & pos) const
@@ -492,7 +493,6 @@ void CQExperimentData::slotExperimentDelete()
       size_t Next =
         mpExperimentSetCopy->keyToIndex(mpExperiment->CCopasiParameter::getKey()) + 1;
 
-
       if (Next < mpExperimentSetCopy->size())
         mpCheckTo->setChecked(isLikePreviousExperiment(mpExperimentSetCopy->getExperiment(Next)));
       else
@@ -626,7 +626,6 @@ void CQExperimentData::slotFileDelete()
 
 void CQExperimentData::slotCancel()
 {
-  pdelete(mpExperimentSetCopy);
   reject();
 }
 
@@ -854,7 +853,6 @@ void CQExperimentData::setTypeItems(const int & timeRow)
         }
     }
 }
-
 
 bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
 {
@@ -1189,7 +1187,6 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
           mpTable->openPersistentEditor(pItem);
         }
 
-
       // COL_OBJECT and COL_OBJECT_HIDDEN
       QTableWidgetItem * pItem;
 
@@ -1250,7 +1247,6 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 
   mpTable->resizeColumnsToContents();
   mpTable->resizeRowsToContents();
-
 }
 
 void CQExperimentData::slotTypeChanged(int row, int index)
