@@ -2593,6 +2593,7 @@ fi
  cd copasi && \
  echo executing in `pwd`: && \
  rm -f .qmake.internal.cache */.qmake.internal.cache && \
+ cp CopasiVersion.h.in CopasiVersion.h && \
  echo "  $QMAKE $QMAKE_ARG" && \
  $QMAKE $QMAKE_ARG && \
  cat Makefile | \
