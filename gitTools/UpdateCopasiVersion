@@ -27,7 +27,7 @@ else
   creator=`git config user.email`
 fi
 
-sed -e's/COPASI_VERSION_BUILD .\+/COPASI_VERSION_BUILD '$build'/' \
-    -e's/COPASI_VERSION_CREATOR .\+/COPASI_VERSION_CREATOR '$creator'/' \
-    copasi/copasiversion.h > $$.tmp && mv $$.tmp copasi/copasiversion.h
+sed -e 's/COPASI_VERSION_BUILD.*/COPASI_VERSION_BUILD '$build'/' \
+    -e 's/COPASI_VERSION_CREATOR.*/COPASI_VERSION_CREATOR "'$creator'"/' \
+    copasi/CopasiVersion.h.in > copasi/CopasiVersion.h
 
