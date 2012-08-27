@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-//   $Revision: 1.165 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/19 18:10:54 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -25,7 +17,7 @@
 #include <sbml/SBMLDocument.h>
 
 #include "copasi.h"
-#include "copasiversion.h"
+#include "CopasiVersion.h"
 #include "CCopasiDataModel.h"
 
 #include "copasi/report/CCopasiTimer.h"
@@ -76,7 +68,7 @@
 #endif
 
 CDataModelRenameHandler::CDataModelRenameHandler(CCopasiDataModel* dm)
-    : mpDataModel(dm)
+  : mpDataModel(dm)
 {}
 
 bool CDataModelRenameHandler::handle(const std::string & oldCN, const std::string & newCN) const
@@ -102,19 +94,19 @@ bool CDataModelRenameHandler::handle(const std::string & oldCN, const std::strin
 //********************************************************************
 
 CCopasiDataModel::CCopasiDataModel(const bool withGUI):
-    CCopasiContainer("Root", NULL, "CN", CCopasiObject::DataModel),
-    COutputHandler(),
-    mData(),
-    mOldData(),
-    mWithGUI(withGUI),
-    mChanged(false),
-    mAutoSaveNeeded(false),
-    mRenameHandler(this),
-    mSBMLFileName(""),
+  CCopasiContainer("Root", NULL, "CN", CCopasiObject::DataModel),
+  COutputHandler(),
+  mData(),
+  mOldData(),
+  mWithGUI(withGUI),
+  mChanged(false),
+  mAutoSaveNeeded(false),
+  mRenameHandler(this),
+  mSBMLFileName(""),
 #ifdef USE_CRENDER_EXTENSION
-    mReferenceDir(""),
+  mReferenceDir(""),
 #endif // USE_CRENDER_EXTENSION
-    pOldMetabolites(new CCopasiVectorS < CMetabOld >)
+  pOldMetabolites(new CCopasiVectorS < CMetabOld >)
 {
 
   newModel(NULL, NULL, NULL, true);
@@ -127,16 +119,16 @@ CCopasiDataModel::CCopasiDataModel(const std::string & name,
                                    const CCopasiContainer * pParent,
                                    const std::string & type,
                                    bool withGUI):
-    CCopasiContainer(name, pParent, type, CCopasiObject::DataModel),
-    COutputHandler(),
-    mData(),
-    mOldData(),
-    mWithGUI(withGUI),
-    mChanged(false),
-    mAutoSaveNeeded(false),
-    mRenameHandler(this),
-    mSBMLFileName(""),
-    pOldMetabolites(new CCopasiVectorS < CMetabOld >)
+  CCopasiContainer(name, pParent, type, CCopasiObject::DataModel),
+  COutputHandler(),
+  mData(),
+  mOldData(),
+  mWithGUI(withGUI),
+  mChanged(false),
+  mAutoSaveNeeded(false),
+  mRenameHandler(this),
+  mSBMLFileName(""),
+  pOldMetabolites(new CCopasiVectorS < CMetabOld >)
 {
   newModel(NULL, NULL, NULL, true);
   CCopasiObject::setRenameHandler(&mRenameHandler); //TODO where in the constructor should this be called?
@@ -590,7 +582,6 @@ bool CCopasiDataModel::newModel(CModel * pModel,
 #ifdef COPASI_PARAMETER_SETS
       mData.pModel->applyActiveParameterSet();
 #endif // COPASI_PARAMTER_SETS
-
     }
 
   changed(false);
@@ -743,7 +734,6 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* /*pExportHandle
 
 #endif // LIBSBML_VERSION
 
-
   CSBMLExporter exporter;
   // Per default export COPASIs MIRIAM annotation.
   // This should eventually be determined by a setting in the preferences
@@ -786,7 +776,6 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* /*pExportHandle
     {
       this->mData.pCurrentSBMLDocument = pOrigSBMLDocument;
     }
-
 
   return str;
 }
@@ -1117,6 +1106,7 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
         break;
 
 #ifdef COPASI_NONLIN_DYN
+
       case CCopasiTask::crosssection:
         pTask = new CCrossSectionTask(mData.pTaskList);
         break;
@@ -1153,7 +1143,6 @@ bool CCopasiDataModel::appendDependentTasks(std::set< const CCopasiObject * > ca
 
   CCopasiVectorN< CCopasiTask >::const_iterator itTask = mData.pTaskList->begin();
   CCopasiVectorN< CCopasiTask >::const_iterator endTask = mData.pTaskList->end();
-
 
   for (; it != end; ++it)
     {
@@ -1551,23 +1540,23 @@ const std::string& CCopasiDataModel::getReferenceDirectory() const
 #endif // USE_CRENDER_EXTENSION
 
 CCopasiDataModel::CData::CData():
-    pModel(NULL),
-    pTaskList(NULL),
-    pReportDefinitionList(NULL),
-    pPlotDefinitionList(NULL),
-    pListOfLayouts(NULL),
-    pGUI(NULL),
-    pCurrentSBMLDocument(NULL)
+  pModel(NULL),
+  pTaskList(NULL),
+  pReportDefinitionList(NULL),
+  pPlotDefinitionList(NULL),
+  pListOfLayouts(NULL),
+  pGUI(NULL),
+  pCurrentSBMLDocument(NULL)
 {}
 
 CCopasiDataModel::CData::CData(const CData & src):
-    pModel(src.pModel),
-    pTaskList(src.pTaskList),
-    pReportDefinitionList(src.pReportDefinitionList),
-    pPlotDefinitionList(src.pPlotDefinitionList),
-    pListOfLayouts(src.pListOfLayouts),
-    pGUI(src.pGUI),
-    pCurrentSBMLDocument(src.pCurrentSBMLDocument)
+  pModel(src.pModel),
+  pTaskList(src.pTaskList),
+  pReportDefinitionList(src.pReportDefinitionList),
+  pPlotDefinitionList(src.pPlotDefinitionList),
+  pListOfLayouts(src.pListOfLayouts),
+  pGUI(src.pGUI),
+  pCurrentSBMLDocument(src.pCurrentSBMLDocument)
 {}
 
 CCopasiDataModel::CData::~CData()
@@ -1644,7 +1633,4 @@ void CCopasiDataModel::hideOldData()
 
   if (mOldData.pCurrentSBMLDocument == mData.pCurrentSBMLDocument)
     mOldData.pCurrentSBMLDocument = NULL;
-
 }
-
-

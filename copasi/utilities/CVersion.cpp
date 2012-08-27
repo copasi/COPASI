@@ -21,9 +21,9 @@
 #include "copasi.h"
 #include "CVersion.h"
 #include "utility.h"
-#include "copasiversion.h"
+#include "CopasiVersion.h"
 
-// initialize the gobal version instance
+// initialize the global version instance
 const CVersion CVersion::VERSION(COPASI_VERSION_MAJOR, COPASI_VERSION_MINOR, COPASI_VERSION_BUILD, COPASI_VERSION_COMMENT);
 
 CVersion::CVersion(C_INT32 major, C_INT32 minor, C_INT32 devel, const std::string& comment):
