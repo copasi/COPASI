@@ -1,0 +1,33 @@
+#!/bin/bash
+
+localCommit=`git log -1 --pretty=%H`
+remoteCommit=`git rev-parse origin`
+localChanges=`git status --untracked-files=no --short | wc -l`
+
+if [ "x$localCommit" == "x$remoteCommit" -a $localChanges == 0 ]; then
+  build=`wget -qO- "git.copasi.org/buildnumber/$remoteCommit"`
+  creator=copasi.org
+else
+  buildList=`wget -qO- "git.copasi.org/buildnumber/list" | \
+             sed -e 's/<\(table\|tr\|td\)>//g' \
+                 -e 's?</table>??' \
+                 -e 's?</td></tr>?\n?g' \
+                 -e 's?</td>?=?g'` 
+
+  SAVEIFS=$IFS
+  IFS=$(echo -en "\n\b")
+                 
+  for b in $buildList; do
+    if [ `git log --pretty=%H | grep ${b#*=}` ]; then
+      build=`echo ${b%=*}`
+      break
+    fi
+  done 
+  
+  creator=`git config user.email`
+fi
+
+sed -e's/COPASI_VERSION_BUILD .\+/COPASI_VERSION_BUILD '$build'/' \
+    -e's/COPASI_VERSION_CREATOR .\+/COPASI_VERSION_CREATOR '$creator'/' \
+    copasi/copasiversion.h > $$.tmp && mv $$.tmp copasi/copasiversion.h
+
