@@ -17,10 +17,10 @@ else
   }
 fi
 
-major=`gawk -- '$2 ~ "VERSION_MAJOR" {print $3}' copasi/copasiversion.h`
-minor=`gawk -- '$2 ~ "VERSION_MINOR" {print $3}' copasi/copasiversion.h`
-build=`gawk -- '$2 ~ "VERSION_BUILD" {print $3}' copasi/copasiversion.h`
-comment=`gawk -- '$3 ~ "VERSION_COMMENT" {print $4}' copasi/copasiversion.h | sort -u`
+major=`gawk -- '$2 ~ "VERSION_MAJOR" {print $3}' copasi/CopasiVersion.h`
+minor=`gawk -- '$2 ~ "VERSION_MINOR" {print $3}' copasi/CopasiVersion.h`
+build=`gawk -- '$2 ~ "VERSION_BUILD" {print $3}' copasi/CopasiVersion.h`
+comment=`gawk -- '$3 ~ "VERSION_COMMENT" {print $4}' copasi/CopasiVersion.h | sort -u`
 
 buildname=${build}
 

@@ -26,10 +26,10 @@ fi
 pushd ../..
 
 if [ x"$#" = x1 ]; then
-  major=`${AWK} -- '$2 ~ "VERSION_MAJOR" {print $3}' copasi/copasiversion.h`
-  minor=`${AWK} -- '$2 ~ "VERSION_MINOR" {print $3}' copasi/copasiversion.h`
-  build=`${AWK} -- '$2 ~ "VERSION_BUILD" {print $3}' copasi/copasiversion.h`
-  comment=`${AWK} -- '$3 ~ "VERSION_COMMENT" {print $4}' copasi/copasiversion.h | ${SORT} -u`
+  major=`${AWK} -- '$2 ~ "VERSION_MAJOR" {print $3}' copasi/CopasiVersion.h`
+  minor=`${AWK} -- '$2 ~ "VERSION_MINOR" {print $3}' copasi/CopasiVersion.h`
+  build=`${AWK} -- '$2 ~ "VERSION_BUILD" {print $3}' copasi/CopasiVersion.h`
+  comment=`${AWK} -- '$3 ~ "VERSION_COMMENT" {print $4}' copasi/CopasiVersion.h | ${SORT} -u`
   buildname=${build}
 
   if [ x"${comment}" = x\"Snapshot\" ]; then
