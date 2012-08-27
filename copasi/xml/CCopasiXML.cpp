@@ -33,7 +33,6 @@
 
 #include "CCopasiXML.h"
 #include "CCopasiXMLParser.h"
-#include "CCopasiXMLVersion.h"
 #include "CFixLocalReactionParameters.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
