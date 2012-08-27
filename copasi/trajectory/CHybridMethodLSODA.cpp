@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.cpp,v $
-//   $Revision: 1.29 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:12:08 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -69,28 +61,24 @@
  *   Default constructor.
  */
 CHybridMethodLSODA::CHybridMethodLSODA(const CCopasiContainer * pParent):
-    CTrajectoryMethod(CCopasiMethod::hybridLSODA, pParent)
+  CTrajectoryMethod(CCopasiMethod::hybridLSODA, pParent)
 {
   assert((void *) &mData == (void *) &mData.dim);
 
   mData.pMethod = this;
 
-  /* Set version number */
-  mVersion.setVersion(1, 0, 102, "");
   mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
   initializeParameter();
 }
 
 CHybridMethodLSODA::CHybridMethodLSODA(const CHybridMethodLSODA & src,
                                        const CCopasiContainer * pParent):
-    CTrajectoryMethod(src, pParent)
+  CTrajectoryMethod(src, pParent)
 {
   assert((void *) &mData == (void *) &mData.dim);
 
   mData.pMethod = this;
 
-  /* Set version number */
-  mVersion.setVersion(1, 0, 102, "");
   mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
   initializeParameter();
 }
@@ -692,7 +680,8 @@ void CHybridMethodLSODA::updatePriorityQueue(size_t rIndex, C_FLOAT64 time)
 
   // draw new random number and update the reaction just fired
   if ((rIndex != C_INVALID_INDEX) && (mReactionFlags[rIndex].mpPrev == NULL))
-    {// reaction is stochastic
+    {
+      // reaction is stochastic
       newTime = time + generateReactionTime(rIndex);
       mPQ.updateNode(rIndex, newTime);
     }
@@ -1415,6 +1404,7 @@ void CHybridMethodLSODA::outputData(std::ostream & os, C_INT32 mode)
           }
 
         break;
+
       case 1:
         os << mpCurrentState->getTime() << " : ";
 
@@ -1425,6 +1415,7 @@ void CHybridMethodLSODA::outputData(std::ostream & os, C_INT32 mode)
 
         os << std::endl;
         break;
+
       default:
         ;
     }
@@ -1445,8 +1436,7 @@ void CHybridMethodLSODA::outputDebug(std::ostream & os, size_t level)
   switch (level)
     {
       case 0:                              // Everything !!!
-        os << "Version: " << mVersion.getVersion() << " Name: "
-        << CCopasiParameter::getObjectName() << std::endl;
+        os << " Name: " << CCopasiParameter::getObjectName() << std::endl;
         os << "current time: " << mpCurrentState->getTime() << std::endl;
         os << "mNumVariableMetabs: " << mNumVariableMetabs << std::endl;
         os << "mMaxSteps: " << mMaxSteps << std::endl;
@@ -1676,7 +1666,7 @@ std::ostream & operator<<(std::ostream & os, const CHybridLSODABalance & d)
 {
   os << "CHybridLSODABalance" << std::endl;
   os << "  mIndex: " << d.mIndex << " mMultiplicity: " << d.mMultiplicity
-  << " mpMetabolite: " << d.mpMetabolite << std::endl;
+     << " mpMetabolite: " << d.mpMetabolite << std::endl;
   return os;
 }
 
