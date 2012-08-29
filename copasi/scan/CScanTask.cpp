@@ -1,5 +1,5 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
 //   $Revision: 1.83 $
 //   $Name:  $
 //   $Author: jpahle $
@@ -37,6 +37,8 @@
 
 #include "model/CModel.h"
 #include "model/CState.h"
+
+#include "optimization/COptProblem.h"
 
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
@@ -182,6 +184,15 @@ bool CScanTask::processCallback()
   //do output
   if (success && !mOutputInSubtask)
     output(COutputInterface::DURING);
+
+  if (mpSubtask->isUpdateModel())
+  {
+    COptProblem* problem = dynamic_cast<COptProblem*> (mpSubtask->getProblem());
+    if (problem != NULL)
+    {
+      problem->restoreModel(true);
+    }
+  }
 
   //do progress bar
   ++mProgress;
