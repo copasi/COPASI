@@ -1,5 +1,5 @@
 // Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiTask.i,v $ 
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CCopasiTask.i,v $ 
 //   $Revision: 1.28 $ 
 //   $Name:  $ 
 //   $Author: bergmann $ 

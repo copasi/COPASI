@@ -1,5 +1,5 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/csharp/local.cpp,v $
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/csharp/local.cpp,v $
 //   $Revision: 1.2 $
 //   $Name:  $
 //   $Author: shoops $
@@ -12,7 +12,7 @@
 // All rights reserved.
 
 #include "../common/local_common.cpp"
-
+#include "plot/CPlotSpecification.h"
 // Now we specify the definitions
 // for the type determination methods
 
@@ -232,7 +232,20 @@ int GetType_CCopasiContainer(CCopasiContainer* pPointer)
                       result = ReportDefinitionVector_Type;
                     }
                 }
-              else if (dynamic_cast<CCopasiVector<CMoiety>* >(pPointer))
+                else if (dynamic_cast<CCopasiVector<CPlotSpecification>* >(pPointer))
+                {
+                  if (dynamic_cast<CCopasiVectorN<CPlotSpecification>* >(pPointer))
+                    {
+                      // return a ReportDefinitionVectorN
+                      result = OutputDefinitionVectorN_Type;
+                    }
+                  else
+                    {
+                      // return a ReportDefinitionVector
+                      result = OutputDefinitionVector_Type;
+                    }
+                }
+				else if (dynamic_cast<CCopasiVector<CMoiety>* >(pPointer))
                 {
                   // return a MoietyVector
                   result = MoietyVector_Type;

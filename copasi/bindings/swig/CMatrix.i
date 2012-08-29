@@ -1,5 +1,5 @@
 // Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CMatrix.i,v $ 
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CMatrix.i,v $ 
 //   $Revision: 1.9 $ 
 //   $Name:  $ 
 //   $Author: bergmann $ 

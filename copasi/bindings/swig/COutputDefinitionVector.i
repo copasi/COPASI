@@ -1,6 +1,6 @@
 // Begin CVS Header 
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CReportDefinition.i,v $ 
-//   $Revision: 1.7 $ 
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/COutputDefinitionVector.i,v $ 
+//   $Revision: 1.5 $ 
 //   $Name:  $ 
 //   $Author: shoops $ 
 //   $Date: 2009/01/07 18:51:30 $ 
@@ -17,11 +17,11 @@
 
 %{
 
-#include "report/CReportDefinition.h"
+#include "plot/COutputDefinitionVector.h"
 
 %}
 
-%include "report/CReportDefinition.h"
+%include "plot/COutputDefinitionVector.h"
 
 
 

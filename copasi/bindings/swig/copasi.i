@@ -1,5 +1,5 @@
 // Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/copasi.i,v $ 
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/copasi.i,v $ 
 //   $Revision: 1.35 $ 
 //   $Name:  $ 
 //   $Author: bergmann $ 
@@ -84,6 +84,10 @@
 %include "COutputHandler.i"
 %include "CReport.i"
 %include "CCopasiTask.i"
+%include "CPlotItem.i"
+%include "CPlotColors.i"
+%include "CPlotSpecification.i"
+%include "COutputDefinitionVector.i"
 %include "CReportDefinition.i"
 %include "CReportDefinitionVector.i"
 %include "CCopasiDataModel.i"

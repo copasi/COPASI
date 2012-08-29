@@ -1,5 +1,5 @@
 // Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiDataModel.i,v $ 
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CCopasiDataModel.i,v $ 
 //   $Revision: 1.26 $ 
 //   $Name:  $ 
 //   $Author: shoops $ 
@@ -139,6 +139,11 @@
       return (*$self->getReportDefinitionList())[index];
     };
 
+	CPlotSpecification* getPlotSpecification(unsigned C_INT32 index)
+    {
+      return (*$self->getPlotDefinitionList())[index];
+    };
+	
     CCopasiTask* getTask(unsigned C_INT32 index)
     {
       return (*$self->getTaskList())[index];

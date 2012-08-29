@@ -1,5 +1,5 @@
 # Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/csharp/csharp.pro,v $ 
+#   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/csharp/csharp.pro,v $ 
 #   $Revision: 1.3 $ 
 #   $Name:  $ 
 #   $Author: shoops $ 

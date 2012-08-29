@@ -1,5 +1,5 @@
 // Begin CVS Header 
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CReportDefinition.i,v $ 
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CPlotColors.i,v $ 
 //   $Revision: 1.7 $ 
 //   $Name:  $ 
 //   $Author: shoops $ 
@@ -17,11 +17,11 @@
 
 %{
 
-#include "report/CReportDefinition.h"
+#include "plot/CPlotColors.h"
 
 %}
 
-%include "report/CReportDefinition.h"
+%include "plot/CPlotColors.h"
 
 
 

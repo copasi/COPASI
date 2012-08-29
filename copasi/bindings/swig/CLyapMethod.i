@@ -1,5 +1,5 @@
 // Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CLyapMethod.i,v $ 
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CLyapMethod.i,v $ 
 //   $Revision: 1.1 $ 
 //   $Name:  $ 
 //   $Author: gauges $ 
