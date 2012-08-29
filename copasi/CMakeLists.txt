@@ -11,12 +11,12 @@
 # Properties, Inc., University of Heidelberg, and The University
 # of Manchester.
 # All rights reserved.
-# 
+#
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 # and The University of Manchester.
 # All rights reserved.
-# 
+#
 # Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc. and EML Research, gGmbH.
 # All rights reserved.
@@ -33,16 +33,19 @@ include (common.cmake)
 
 
 
-execute_process(	
+execute_process(
 	COMMAND "${CMAKE_COMMAND}"
-	ARGS -DSRC_DIRECTORY=\"${CMAKE_SOURCE_DIR}\"		 
+	ARGS -DSRC_DIRECTORY=\"${CMAKE_SOURCE_DIR}\"
 		 -P "${CMAKE_SOURCE_DIR}/delete-qmake-files.cmake"
-		 
+
 	WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
-	) 
+	)
 
 set(COPASI_SOURCES)
 set(COPASI_HEADERS)
+
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CopasiVersion.h.in ${CMAKE_CURRENT_SOURCE_DIR}/CopasiVersion.h)
 
 include(CopasiDataModel/CMakeLists.txt)
 include(MIRIAM/CMakeLists.txt)
@@ -76,13 +79,13 @@ include(utilities/CMakeLists.txt)
 include(xml/CMakeLists.txt)
 
 include_directories(
-  "${CMAKE_CURRENT_SOURCE_DIR}" 
+  "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/.."
-  ${RAPTOR_INCLUDE_DIR}  
+  ${RAPTOR_INCLUDE_DIR}
   ${LIBEXPAT_INCLUDE_DIR}
   ${LAPACK_CLAPACK_INCLUDE_DIR}
   ${LIBSBML_INCLUDE_DIR}
-  
+
 )
 
 add_library(libCOPASI STATIC ${COPASI_SOURCES} ${COPASI_HEADERS})
@@ -104,7 +107,7 @@ mark_as_advanced(BUILD_SE)
 
 if(BUILD_SE)
   add_subdirectory(CopasiSE)
-  add_dependencies(CopasiSE libCOPASI ${SE_DEPENDENCIES}) 
+  add_dependencies(CopasiSE libCOPASI ${SE_DEPENDENCIES})
 endif(BUILD_SE)
 
 
@@ -124,8 +127,8 @@ if(BUILD_GUI)
   include(tex/CMakeLists.txt)
   include(wizard/CMakeLists.txt)
   include(UI/CMakeLists.txt)
-  
-  
+
+
 set(COPASI_UI_MOC_OPTIONS)
 if (ENABLE_SBW_INTEGRATION)
 set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_SBW_INTEGRATION=1)
@@ -169,7 +172,7 @@ if (ENABLE_SBW_INTEGRATION)
   include_directories(${SBW_INCLUDE_DIR})
   add_definitions(-DCOPASI_SBW_INTEGRATION)
 endif(ENABLE_SBW_INTEGRATION)
-  
+
 if (NOT MML_LIBRARY)
   if (EXISTS ${CMAKE_SOURCE_DIR}/copasi/mml/qtmmlwidget.cpp)
     set(COPASI_UI_SOURCES ${CMAKE_SOURCE_DIR}/copasi/mml/qtmmlwidget.cpp ${COPASI_UI_SOURCES})
@@ -179,7 +182,7 @@ endif(NOT MML_LIBRARY)
 #if (COPASI_UI_MOC_OPTIONS)
 #  message(STATUS "Mocing with options: ${COPASI_UI_MOC_OPTIONS}")
 #endif(COPASI_UI_MOC_OPTIONS)
-# 
+#
 set(HEADERS_UI_MOC)
 set(HEADERS_UI_FORMS)
 
@@ -199,29 +202,29 @@ MACRO (COPASI_QT4_WRAP_UI outfiles subdir )
 
 ENDMACRO (COPASI_QT4_WRAP_UI)
 
-foreach (dir 
+foreach (dir
   barChart layoutUI MIRIAMUI plotUI tex UI wizard
-) 
+)
 
   string(TOUPPER ${dir} suffix)
   #message(STATUS "Mocing files for subdir: ${dir}")
 
   set(TEMP_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -p${dir})
-  
+
   if (TEMP_UI_MOC_OPTIONS)
     qt4_wrap_cpp(TEMP_UI_MOC ${HEADERS_${suffix}} OPTIONS ${TEMP_UI_MOC_OPTIONS})
   else()
     qt4_wrap_cpp(TEMP_UI_MOC ${dir} ${HEADERS_${suffix}})
   endif(TEMP_UI_MOC_OPTIONS)
-  
+
   set(HEADERS_UI_MOC ${HEADERS_UI_MOC} ${TEMP_UI_MOC})
-  
-  
+
+
   if(FORMS_${suffix})
-    #message(STATUS "uic'ing files for subdir: ${dir}")	
+    #message(STATUS "uic'ing files for subdir: ${dir}")
 	COPASI_QT4_WRAP_UI(TEMP_UI_FORMS ${dir} ${FORMS_${suffix}})
   endif()
-  
+
   set(HEADERS_UI_FORMS ${HEADERS_UI_FORMS} ${TEMP_UI_FORMS})
   include_directories(${CMAKE_CURRENT_BINARY_DIR}/${dir})
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/${dir})
@@ -240,15 +243,15 @@ include_directories(${QT_QTSVG_INCLUDE_DIR})
 add_library(libCOPASIUI STATIC ${COPASI_UI_SOURCES} ${COPASI_UI_HEADERS} ${HEADERS_UI_FORMS} ${COPASI_RCC_SOURCES} ${HEADERS_UI_MOC})
 target_link_libraries(libCOPASIUI libCOPASI ${OPENGL_glu_LIBRARY} ${QT_QTOPENGL_LIBRARY}  ${QWT_LIBRARIES} ${QT_LIBRARIES} ${QT_QTSVG_LIBRARY})
 if (ENABLE_MML AND MML_LIBRARY)
-  target_link_libraries(libCOPASIUI ${MML_LIBRARY})  
+  target_link_libraries(libCOPASIUI ${MML_LIBRARY})
 endif()
 set_target_properties (libCOPASIUI PROPERTIES OUTPUT_NAME "COPASIUI")
-  
-  set(UI_LIBS 
+
+  set(UI_LIBS
     libCOPASIUI
   )
 
-   set(UI_DEPENDENCIES 
+   set(UI_DEPENDENCIES
      libCOPASIUI
    )
 
@@ -258,9 +261,9 @@ set_target_properties (libCOPASIUI PROPERTIES OUTPUT_NAME "COPASIUI")
     set(UI_LIBS ${UI_LIBS} mml)
     set(UI_DEPENDENCIES ${UI_DEPENDENCIES} mml)
   endif (HAVE_MML)
- 
+
   add_subdirectory(CopasiUI)
-  add_dependencies(CopasiUI ${SE_DEPENDENCIES} libCOPASIUI ${UI_DEPENDENCIES}) 
-  
+  add_dependencies(CopasiUI ${SE_DEPENDENCIES} libCOPASIUI ${UI_DEPENDENCIES})
+
 endif(BUILD_GUI)
 
