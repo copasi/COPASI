@@ -1,5 +1,5 @@
 // Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CTrajectoryTask.i,v $ 
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CTrajectoryTask.i,v $ 
 //   $Revision: 1.10 $ 
 //   $Name:  $ 
 //   $Author: shoops $ 

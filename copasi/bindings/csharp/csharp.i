@@ -1,5 +1,5 @@
 // Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/csharp/csharp.i,v $
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/csharp/csharp.i,v $
 //   $Revision: 1.4 $
 //   $Name:  $
 //   $Author: bergmann $
@@ -85,6 +85,7 @@ enum CLASS_TYPE
   , CReaction_Type
   , CReference_Type
   , CReportDefinition_Type
+  , CPlotSpecification_Type  
   , CScanMethod_Type
   , CScanProblem_Type
   , CScanTask_Type
@@ -115,6 +116,8 @@ enum CLASS_TYPE
   , ReactionVector_Type
   , ReportDefinitionVectorN_Type
   , ReportDefinitionVector_Type
+  , OutputDefinitionVectorN_Type
+  , OutputDefinitionVector_Type
   , TaskVectorN_Type
   , TaskVector_Type
 };
@@ -743,6 +746,10 @@ int GetType_COptTask(COptTask* pPointer);
                     break;
                 case COPASI.CCopasiContainer_Type:
                     ret = InstantiateConcrete_CCopasiContainer(cPtr, owner);
+                    break;
+                case COPASI.CPlotSpecification_Type:
+                    // return a CPlotSpecification
+                    ret = new CPlotSpecification(cPtr,owner);
                     break;
                 case COPASI.CReportDefinition_Type:
                     // return a CReportDefinition

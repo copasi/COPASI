@@ -1,5 +1,5 @@
 // Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
 //   $Revision: 1.29 $ 
 //   $Name:  $ 
 //   $Author: bergmann $ 
@@ -23,6 +23,7 @@
 %{
 
 #include "utilities/CCopasiVector.h"
+#include "plot/CPlotSpecification.h"
 #include <layout/CLBase.h>
 #include <layout/CLCurve.h>
 
@@ -135,6 +136,14 @@
 %template(ReportDefinitionStdVector) std::vector<CReportDefinition*>;
 %template(ReportDefinitionVector) CCopasiVector<CReportDefinition>;
 %template(ReportDefinitionVectorN) CCopasiVectorN<CReportDefinition>;
+
+%rename(removeObject) CCopasiVector<CPlotSpecification>::remove(CCopasiObject* pObject);
+%rename(removeByName) CCopasiVectorN<CPlotSpecification>::remove(const std::string& name);
+%rename(getIndexByName) CCopasiVectorN<CPlotSpecification>::getIndex(const std::string& name) const;
+
+%template(OutputDefinitionStdVector) std::vector<CPlotSpecification*>;
+%template(OutputDefinitionVector) CCopasiVector<CPlotSpecification>;
+%template(OutputDefinitionVectorN) CCopasiVectorN<CPlotSpecification>;
 
 %rename(removeObject) CCopasiVector<CMoiety>::remove(CCopasiObject* pObject);
 

@@ -1,5 +1,5 @@
 // Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/swig/CFunctionParameter.i,v $ 
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CFunctionParameter.i,v $ 
 //   $Revision: 1.4 $ 
 //   $Name:  $ 
 //   $Author: shoops $ 
