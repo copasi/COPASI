@@ -1,24 +1,20 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-//   $Revision: 1.83 $
-//   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/05/24 17:30:48 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+
+
+
 
 /**
  * CScanTask class.
@@ -52,7 +48,7 @@
 #include "report/CCopasiRootContainer.h"
 
 CScanTask::CScanTask(const CCopasiContainer * pParent):
-    CCopasiTask(CCopasiTask::scan, pParent)
+  CCopasiTask(CCopasiTask::scan, pParent)
 {
   mpProblem = new CScanProblem(this);
   mpMethod = createMethod(CCopasiMethod::scanMethod);
@@ -62,7 +58,7 @@ CScanTask::CScanTask(const CCopasiContainer * pParent):
 
 CScanTask::CScanTask(const CScanTask & src,
                      const CCopasiContainer * pParent):
-    CCopasiTask(src, pParent)
+  CCopasiTask(src, pParent)
 {
   mpProblem = new CScanProblem(*(CScanProblem *) src.mpProblem, this);
   mpMethod = createMethod(CCopasiMethod::scanMethod);
@@ -186,13 +182,14 @@ bool CScanTask::processCallback()
     output(COutputInterface::DURING);
 
   if (mpSubtask->isUpdateModel())
-  {
-    COptProblem* problem = dynamic_cast<COptProblem*> (mpSubtask->getProblem());
-    if (problem != NULL)
     {
-      problem->restoreModel(true);
+      COptProblem* problem = dynamic_cast<COptProblem*>(mpSubtask->getProblem());
+
+      if (problem != NULL)
+        {
+          problem->restoreModel(true);
+        }
     }
-  }
 
   //do progress bar
   ++mProgress;
