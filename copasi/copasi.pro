@@ -143,3 +143,4 @@ src_distribution.commands = \
   $$join(DISTDIRS, "; $(MAKE) -f $(MAKEFILE) $@; cd ..; cd ", "cd ", "; $(MAKE) -f $(MAKEFILE) $@; cd ..;")
 
 QMAKE_EXTRA_TARGETS += src_distribution
+

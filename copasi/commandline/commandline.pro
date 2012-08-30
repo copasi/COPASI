@@ -1,20 +1,16 @@
-# Begin CVS Header
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/commandline.pro,v $
-#   $Revision: 1.18 $
-#   $Name:  $
-#   $Author: shoops $
-#   $Date: 2011/05/25 15:12:18 $
-# End CVS Header
-
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-# and The University of Manchester.
-# All rights reserved.
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
 
 ######################################################################
 # $Revision: 1.18 $ $Author: shoops $ $Date: 2011/05/25 15:12:18 $
@@ -41,7 +37,7 @@ contains(BUILD_PARSER, yes) {
   clo.target = COptionParser.cpp
   clo.depends = COptionParser.xml
   win32:{
-    clo.commands = C:\cygwin\bin\bash ../../admin/clo++.sh $$clo.depends
+    clo.commands = C:/cygwin/bin/bash ../../admin/clo++.sh $$clo.depends
     QMAKE_EXTRA_WIN_TARGETS += clo
   } else {
     clo.commands = ../../admin/clo++.sh $$clo.depends
