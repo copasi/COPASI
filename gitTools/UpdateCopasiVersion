@@ -1,5 +1,7 @@
 #!/bin/bash
 
+gitTools="`dirname $0`"
+
 localCommit=`git log -1 --pretty=%H`
 remoteCommit=`git rev-parse origin`
 localChanges=`git status --untracked-files=no --short | wc -l`
@@ -10,8 +12,8 @@ current_build=35
 current_commit=4224d80e365b0dc42a0b17a76b8656ce10e9de84
 
 if [ "x$localCommit" == "x$remoteCommit" -a $localChanges == 0 ]; then
-  major=`${AWK} -- '$2 ~ "VERSION_MAJOR" {print $3}' copasi/CopasiVersion.h.in`
-  minor=`${AWK} -- '$2 ~ "VERSION_MINOR" {print $3}' copasi/CopasiVersion.h.in`
+  major=`${AWK} -- '$2 ~ "VERSION_MAJOR" {print $3}' ${gitTools}/../copasi/CopasiVersion.h.in`
+  minor=`${AWK} -- '$2 ~ "VERSION_MINOR" {print $3}' ${gitTools}/../copasi/CopasiVersion.h.in`
   
   build=`wget -qO- "git.copasi.org/buildnumber/${major}.${minor}.${remoteCommit}"`
   creator=copasi.org
@@ -43,7 +45,7 @@ for b in $buildList; do
   build=${build%% *}
   commit=${b#*commit=}
   
-  if [ `git log --pretty=%H $current_commit..HEAD -- . | grep ${commit}` ]; then
+  if [ `git log --pretty=%H $current_commit..HEAD -- ${gitTools}/.. | grep ${commit}` ]; then
     if [ $current_build == 35 ]; then 
       current_major=${major}
       current_minor=${minor}
@@ -89,6 +91,6 @@ sed -e 's/COPASI_VERSION_MAJOR.*/COPASI_VERSION_MAJOR '$current_major'/' \
     -e 's/COPASI_VERSION_MODIFIED.*/COPASI_VERSION_MODIFIED '$modified'/' \
     -e 's/COPASI_VERSION_COMPATIBILITY.*/COPASI_VERSION_COMPATIBILITY '$compatibility'/' \
     -e 's/COPASI_VERSION_CREATOR.*/COPASI_VERSION_CREATOR "'$creator'"/' \
-    copasi/CopasiVersion.h.in > copasi/CopasiVersion.h
+    ${gitTools}/../copasi/CopasiVersion.h.in > ${gitTools}/../copasi/CopasiVersion.h
     
 IFS=$SAVEIFS

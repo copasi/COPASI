@@ -1,19 +1,15 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utilities.pro,v $ 
-#   $Revision: 1.29 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2012/05/11 16:52:15 $ 
-# End CVS Header 
-
-# Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
 ######################################################################
@@ -79,6 +75,20 @@ SOURCES += CAnnotatedMatrix.cpp \
            CVersion.cpp \
            utility.cpp
 
+copasi_version.target = ../CopasiVersion.h
+copasi_version.depends = ../CopasiVersion.h.in
+win32:{
+    (if exist $${BUILD_ROOT}/gitTools/UpdateCopasiVersion C:/cygwin/bin/bash $${BUILD_ROOT}/gitTools/UpdateCopasiVersion) \
+    (if not exist CopasiVersion.h $(COPY_FILE) CopasiVersion.h.in CopasiVersion.h)
+} else {
+  copasi_version.commands = \
+    test -e $${BUILD_ROOT}/gitTools/UpdateCopasiVersion && $${BUILD_ROOT}/gitTools/UpdateCopasiVersion; \
+    test -e ../CopasiVersion.h || $(COPY_FILE) ../CopasiVersion.h.in ../CopasiVersion.h
+}
+
+QMAKE_EXTRA_TARGETS += copasi_version
+
 include(../lib.pri)
 include(../common.pri)
 include(../srcDistribution.pri)
+
