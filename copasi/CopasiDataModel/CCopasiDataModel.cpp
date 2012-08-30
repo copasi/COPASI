@@ -17,7 +17,6 @@
 #include <sbml/SBMLDocument.h>
 
 #include "copasi.h"
-#include "CopasiVersion.h"
 #include "CCopasiDataModel.h"
 
 #include "copasi/report/CCopasiTimer.h"
