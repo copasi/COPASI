@@ -41,13 +41,15 @@ for f in `git diff --cached --name-only`; do
       echo $f >> ${GitTools}/checkout
     fi
     
-    mv $f $f.bkp
-    git checkout-index $f
+    if [ -e "$f" ]; then
+      mv $f $f.bkp
+      git checkout-index -- $f
            
-    eval cat "$f" $pipe > $$ && mv $$ $f
-    git add $f
+      eval cat "$f" $pipe > $$ && mv $$ $f
+      git add -- $f
     
-    mv $f.bkp $f
+      mv $f.bkp $f
+    fi
   fi  
   
 done

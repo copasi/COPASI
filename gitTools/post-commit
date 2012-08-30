@@ -13,8 +13,10 @@ GitTools=`git config copasi.gittools`
 if [ -e ${GitTools}/checkout ]; then
   for f in `cat ${GitTools}/checkout`; do
     debug post-commit: checking out $f
-    rm $f
-    git checkout $f
+    if [ -e "$f" ]; then
+      rm $f
+      git checkout -- $f
+    fi
   done
 
   rm ${GitTools}/checkout
