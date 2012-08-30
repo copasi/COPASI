@@ -2,6 +2,7 @@
 *.hpp  filter=common format=cstyle CommentStart=//
 *.c    filter=common format=cstyle CommentStart=//
 *.h    filter=common format=cstyle CommentStart=//
+*.h.in filter=common format=cstyle CommentStart=//
 *.i    filter=common format=cstyle CommentStart=//
 *.java filter=common CommentStart=//
 *.pro  filter=common CommentStart=#
