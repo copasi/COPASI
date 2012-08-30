@@ -17,29 +17,60 @@
  *
  * (C) Pedro Mendes 2001
  */
+#include <sstream>
 
 #include "copasi.h"
+
 #include "CVersion.h"
 #include "utility.h"
 #include "CopasiVersion.h"
 
 // initialize the global version instance
-const CVersion CVersion::VERSION(COPASI_VERSION_MAJOR, COPASI_VERSION_MINOR, COPASI_VERSION_BUILD, COPASI_VERSION_COMMENT);
+// static
+const CVersion CVersion::VERSION(COPASI_VERSION_MAJOR,
+                                 COPASI_VERSION_MINOR,
+                                 COPASI_VERSION_BUILD,
+                                 COPASI_VERSION_MODIFIED,
+                                 COPASI_VERSION_COMMENT,
+                                 COPASI_VERSION_CREATOR);
 
-CVersion::CVersion(C_INT32 major, C_INT32 minor, C_INT32 devel, const std::string& comment):
+CVersion::CVersion(C_INT32 major,
+                   C_INT32 minor,
+                   C_INT32 build,
+                   const bool & sourcesModified,
+                   const std::string & comment,
+                   const std::string & creator):
   mMajor(major),
   mMinor(minor),
-  mDevel(devel),
-  mComment(comment)
+  mBuild(build),
+  mSourcesModified(sourcesModified),
+  mComment(comment),
+  mCreator(creator),
+  mVersion(""),
+  mCompatible()
 {
+  C_INT32 Compatible[] = COPASI_VERSION_COMPATIBILITY;
+  C_INT32 * pCompatible = Compatible;
+
+  for (; *pCompatible != mBuild; pCompatible++)
+    {
+      mCompatible.insert(*pCompatible);
+    }
+
+  mCompatible.insert(mBuild);
+
   setString();
 }
 
 CVersion::CVersion():
   mMajor(0),
   mMinor(0),
-  mDevel(0),
-  mComment("")
+  mBuild(0),
+  mSourcesModified(false),
+  mComment(""),
+  mCreator(""),
+  mVersion(""),
+  mCompatible()
 {
   setString();
 }
@@ -47,26 +78,39 @@ CVersion::CVersion():
 CVersion::~CVersion()
 {}
 
-bool CVersion::operator < (const CVersion & rhs) const
+bool CVersion::isCompatible(const CVersion & version) const
 {
-  if (mMajor > rhs.mMajor) return false;
+  if (mCompatible.empty())
+    {
+      if (mMajor > version.mMajor) return false;
 
-  if (mMinor > rhs.mMinor) return false;
+      if (mMinor > version.mMinor) return false;
 
-  if (mDevel >= rhs.mDevel) return false;
+      if (mBuild >= version.mBuild) return false;
 
-  return true;
+      return true;
+    }
+
+  if (version.mBuild < *mCompatible.begin()) return true;
+
+  if (mCompatible.find(version.mBuild) != mCompatible.end()) return true;
+
+  return false;
 }
 
 void CVersion::setVersion(const C_INT32 & major,
                           const C_INT32 & minor,
                           const C_INT32 & devel,
-                          const std::string & comment)
+                          const bool & sourcesModified,
+                          const std::string & comment,
+                          const std::string & creator)
 {
   mMajor = major;
   mMinor = minor;
-  mDevel = devel;
+  mBuild = devel;
+  mSourcesModified = sourcesModified;
   mComment = comment;
+  mCreator = creator;
 
   setString();
 }
@@ -83,7 +127,12 @@ C_INT32 CVersion::getVersionMinor() const
 
 C_INT32 CVersion::getVersionDevel() const
 {
-  return mDevel;
+  return mBuild;
+}
+
+const bool & CVersion::isSourceModified() const
+{
+  return mSourcesModified;
 }
 
 const std::string & CVersion::getVersion() const
@@ -93,12 +142,24 @@ const std::string & CVersion::getVersion() const
 
 void CVersion::setString()
 {
+#ifdef COPASI_DEBUG
+  mComment = "Debug";
+#endif
+
+  std::stringstream Build;
+  Build << mBuild;
+
+  if (mSourcesModified)
+    {
+      Build << "+";
+    }
+
   if (mComment == "stable")
-    mVersion = StringPrint("%d.%d (Build %d)", mMajor, mMinor, mDevel);
+    mVersion = StringPrint("%d.%d (Build %s)", mMajor, mMinor, Build.str().c_str());
   else if (mComment == "Snapshot")
-    mVersion = StringPrint("%d.%02d.%02d (%s)", mMajor, mMinor, mDevel, mComment.c_str());
+    mVersion = StringPrint("%d.%02d.%s (%s)", mMajor, mMinor, Build.str().c_str(), mComment.c_str());
   else if (mComment != "")
-    mVersion = StringPrint("%d.%d.%d (%s)", mMajor, mMinor, mDevel, mComment.c_str());
+    mVersion = StringPrint("%d.%d.%s (%s)", mMajor, mMinor, Build.str().c_str(), mComment.c_str());
   else
-    mVersion = StringPrint("%d.%d.%d", mMajor, mMinor, mDevel);
+    mVersion = StringPrint("%d.%d.%s (Source)", mMajor, mMinor, Build.str().c_str());
 }

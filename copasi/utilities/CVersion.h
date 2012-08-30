@@ -12,14 +12,6 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-/* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVersion.h,v $
-  $Revision: 1.9 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2012/05/04 15:06:20 $
-  End CVS Header */
-
 /**
  * CVersion
  *
@@ -29,55 +21,73 @@
 #ifndef COPASI_CVersion
 #define COPASI_CVersion
 
-#include <string>
+#include <set>
+
 #include "copasi.h"
 
 class CVersion
 {
   // Attributes
-
 private:
   /**
-   *  Major version number.
-   *  (4 for first Copasi release)
+   * Major version number.
+   * (4 for first COPASI release)
    */
   C_INT32 mMajor;
 
   /**
-   *  Minor version number.
-   *  (changes with releases that are mostly bugfixes)
+   * Minor version number.
+   * (changes with releases that are mostly bug fixes)
    */
   C_INT32 mMinor;
 
   /**
-   *  Develpment stage version.
-   *  Alpha versions are numbered 101 -> 199
-   *  Beta versions are numbered 201 -> 299
-   *  Release versions are always 300
+   * The monotonously increasing build number
    */
-  C_INT32 mDevel;
+  C_INT32 mBuild;
 
   /**
-   *  Comment appendended to the version string, e.g. RC 1
+   * Boolean value indicating whether mBuild is describing the
+   * current state of the sources.
+   */
+  bool mSourcesModified;
+
+  /**
+   * Comment appended to the version string
    */
   std::string mComment;
 
   /**
-   *  Version string.
-   *  (printable version number in the form "4.01 beta 2")
+   * Creator who compiled this version for official unmodified sources
+   * it is copasi.org
+   */
+  std::string mCreator;
+
+  /**
+   * Version string.
    */
   std::string mVersion;
+
+  /**
+   * The list of compatible builds
+   */
+  std::set< C_INT32 > mCompatible;
 
   // Operations
 
   /**
    * Constructor with four arguments.
    */
-  CVersion(C_INT32 major, C_INT32 minor, C_INT32 devel, const std::string& comment);
+  CVersion(C_INT32 major,
+           C_INT32 minor,
+           C_INT32 build,
+           const bool & sourcesModified,
+           const std::string & comment,
+           const std::string & creator);
 
 public:
   /**
-   *  Default consructor.
+   *  Default constructor.
    *  This creates a version object without any version info.
    */
   CVersion();
@@ -103,10 +113,16 @@ public:
 
   /**
    *  Returns the development version number.
-   *  @return mDevel
-   *  @see mDevel
+   *  @return mBuild
+   *  @see mBuild
    */
   C_INT32 getVersionDevel() const;
+
+  /**
+   * Retrieve the whether the source code is modified compared to the official build
+   * @return const bool & isSourceModified
+   */
+  const bool & isSourceModified() const;
 
   /**
    *  Returns a string with the full version number.
@@ -119,18 +135,24 @@ public:
    *  Sets a version number
    *  @param const C_INT32 & major
    *  @param const C_INT32 & minor
-   *  @param const C_INT32 & devel
+   *  @param const C_INT32 & build
+   *  @param const bool & sourcesModified
    *  @param const std::string & comment
+   *  @param const std::string & creator
    */
   void setVersion(const C_INT32 & major,
                   const C_INT32 & minor,
                   const C_INT32 & devel,
-                  const std::string & comment);
+                  const bool & sourcesModified,
+                  const std::string & comment = "",
+                  const std::string & creator = "");
 
   /**
    * Compare Versions
+   * @param const CVersion & version
+   * @return bool isCompatible
    */
-  bool operator < (const CVersion & rhs) const;
+  bool isCompatible(const CVersion & version) const;
 
 private:
   /**

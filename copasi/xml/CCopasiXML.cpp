@@ -129,6 +129,7 @@ bool CCopasiXML::save(std::ostream & os,
   Attributes.add("versionMajor", CVersion::VERSION.getVersionMajor());
   Attributes.add("versionMinor", CVersion::VERSION.getVersionMinor());
   Attributes.add("versionDevel", CVersion::VERSION.getVersionDevel());
+  Attributes.add("copasiSourcesModified", CVersion::VERSION.isSourceModified());
 
   /*
   Attributes.add("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
@@ -235,7 +236,7 @@ bool CCopasiXML::load(std::istream & is,
       pdelete(mpLayoutList);
     }
 
-  if (CVersion::VERSION < FileVersion)
+  if (!CVersion::VERSION.isCompatible(FileVersion))
     CCopasiMessage(CCopasiMessage::WARNING, MCXML + 9,
                    mFilename.c_str(), FileVersion.getVersion().c_str());
 

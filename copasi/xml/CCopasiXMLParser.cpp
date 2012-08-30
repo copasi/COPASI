@@ -456,6 +456,7 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
   C_INT32 VersionMinor;
   const char * versionDevel;
   C_INT32 VersionDevel;
+  bool CopasiSourcesModified = true;
 
   switch (mCurrentElement)
     {
@@ -478,8 +479,9 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
         VersionMinor = strToInt(versionMinor);
         versionDevel = mParser.getAttributeValue("versionDevel", papszAttrs, "0");
         VersionDevel = strToInt(versionDevel);
+        CopasiSourcesModified = mParser.toBool(mParser.getAttributeValue("copasiSourcesModified", papszAttrs, "true"));
 
-        mCommon.pVersion->setVersion(VersionMajor, VersionMinor, VersionDevel, "");
+        mCommon.pVersion->setVersion(VersionMajor, VersionMinor, VersionDevel, CopasiSourcesModified);
 
         return;
 
