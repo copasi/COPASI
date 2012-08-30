@@ -4,30 +4,91 @@ localCommit=`git log -1 --pretty=%H`
 remoteCommit=`git rev-parse origin`
 localChanges=`git status --untracked-files=no --short | wc -l`
 
-if [ "x$localCommit" == "x$remoteCommit" -a $localChanges == 0 ]; then
-  build=`wget -qO- "git.copasi.org/buildnumber/$remoteCommit"`
-  creator=copasi.org
-else
-  buildList=`wget -qO- "git.copasi.org/buildnumber/list" | \
-             sed -e 's/<\(table\|tr\|td\)>//g' \
-                 -e 's?</table>??' \
-                 -e 's?</td></tr>?\n?g' \
-                 -e 's?</td>?=?g'` 
+current_major=4
+current_minor=8
+current_build=35
+current_commit=4224d80e365b0dc42a0b17a76b8656ce10e9de84
 
-  SAVEIFS=$IFS
-  IFS=$(echo -en "\n\b")
-                 
-  for b in $buildList; do
-    if [ `git log --pretty=%H | grep ${b#*=}` ]; then
-      build=`echo ${b%=*}`
-      break
-    fi
-  done 
+if [ "x$localCommit" == "x$remoteCommit" -a $localChanges == 0 ]; then
+  major=`${AWK} -- '$2 ~ "VERSION_MAJOR" {print $3}' copasi/CopasiVersion.h.in`
+  minor=`${AWK} -- '$2 ~ "VERSION_MINOR" {print $3}' copasi/CopasiVersion.h.in`
   
+  build=`wget -qO- "git.copasi.org/buildnumber/${major}.${minor}.${remoteCommit}"`
+  creator=copasi.org
+  modified=false
+else
   creator=`git config user.email`
+  modified=true
 fi
 
-sed -e 's/COPASI_VERSION_BUILD.*/COPASI_VERSION_BUILD '$build'/' \
+buildList=`wget -qO- "git.copasi.org/buildnumber/list" | \
+           sed -e 's/<\(table\|tr\|td\)>//g' \
+               -e 's?</table>??' \
+               -e 's?</td></tr>?\n?g' \
+               -e 's?</td>? ?g'` 
+
+SAVEIFS=$IFS
+IFS=$(echo -en "\n\b")
+
+echo $current_build > $$
+                
+compatibility="{"
+
+for b in $buildList; do
+  major=${b#major=}
+  major=${major%% *}
+  minor=${b#*minor=}
+  minor=${minor%% *}
+  build=${b#*build=}
+  build=${build%% *}
+  commit=${b#*commit=}
+  
+  if [ `git log --pretty=%H $current_commit..HEAD -- . | grep ${commit}` ]; then
+    if [ $current_build == 35 ]; then 
+      current_major=${major}
+      current_minor=${minor}
+      current_build=${build}
+      current_commit=${commit}
+    fi
+	
+	echo $build >> $$
+  fi
+done 
+
+IFS=$SAVEIFS
+
+compatible=all
+previous=34
+next=35
+
+compatibility={
+
+for b in `sort $$`; do
+  if [ $next != $b ]; then
+    compatibility="${compatibility}${previous}, "
+    compatible=list
+  fi
+  
+  let previous=b
+  let next=b+1
+  
+  if [ $compatible == list -a $b != $current_build ]; then
+    compatibility="${compatibility}${b}, "
+  fi
+done;  
+
+compatibility="${compatibility}${current_build}}"
+
+rm $$
+
+IFS=$(echo -en "\n\b")
+
+sed -e 's/COPASI_VERSION_MAJOR.*/COPASI_VERSION_MAJOR '$current_major'/' \
+    -e 's/COPASI_VERSION_MINOR.*/COPASI_VERSION_MINOR '$current_minor'/' \
+    -e 's/COPASI_VERSION_BUILD.*/COPASI_VERSION_BUILD '$current_build'/' \
+    -e 's/COPASI_VERSION_MODIFIED.*/COPASI_VERSION_MODIFIED '$modified'/' \
+    -e 's/COPASI_VERSION_COMPATIBILITY.*/COPASI_VERSION_COMPATIBILITY '$compatibility'/' \
     -e 's/COPASI_VERSION_CREATOR.*/COPASI_VERSION_CREATOR "'$creator'"/' \
     copasi/CopasiVersion.h.in > copasi/CopasiVersion.h
-
+    
+IFS=$SAVEIFS
