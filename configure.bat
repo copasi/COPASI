@@ -75,7 +75,6 @@ cd copasi
 echo Executing in copasi:
 
 rem Creating Visual Studio Project Files
-copy CopasiVersion.h.in CopasiVersion.h
 copy copasi.pro tmp.pro
 set QMAKESPEC=%PROJECT%
 Echo   %QMAKE% -tp vc -r "CONFIG-=release" "CONFIG-=debug" %arguments% copasi.pro
