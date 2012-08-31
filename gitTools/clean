@@ -5,7 +5,9 @@ GitTools="`git config copasi.gittools`"
 
 clean="cat"
 
-if [ `git log -1 --pretty=%at -- $1` -gt ${GitStart} ]; then
+GitCommitDate=`git log -1 --pretty=%at -- $1`
+
+if [ ${GitCommitDate:-0} -gt ${GitStart} ]; then
   clean="$clean | ${GitTools}/header --clean $1" 
 fi
 
