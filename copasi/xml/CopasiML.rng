@@ -946,11 +946,9 @@
     <attribute name="append">
       <data type="boolean"/>
     </attribute>
-    <optional>
-      <attribute name="confirmOverwrite">
-        <data type="boolean"/>
-      </attribute>
-    </optional>
+    <attribute name="confirmOverwrite">
+      <data type="boolean"/>
+    </attribute>
   </define>
 
   <define name="listOfReportSpecifications.datatype">

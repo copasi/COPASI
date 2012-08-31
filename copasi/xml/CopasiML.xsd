@@ -837,7 +837,7 @@
     </xs:attribute>
     <xs:attribute name="target" use="required" type="xs:anyURI"/>
     <xs:attribute name="append" use="required" type="xs:boolean"/>
-    <xs:attribute name="confirmOverwrite" use="optional" type="xs:boolean"/>
+    <xs:attribute name="confirmOverwrite" use="required" type="xs:boolean"/>
   </xs:attributeGroup>
   <xs:complexType name="listOfReportSpecifications.datatype">
     <xs:sequence>

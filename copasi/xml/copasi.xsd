@@ -970,7 +970,7 @@
     <xs:attribute name="reference" type="cREPORT_KEYREF" use="required"/>
     <xs:attribute name="target" type="xs:anyURI" use="required"/>
     <xs:attribute name="append" type="xs:boolean" use="optional" default="false"/>
-    <xs:attribute name="confirmOverwrite" type="xs:boolean" use="optional" default="true"/>
+    <xs:attribute name="confirmOverwrite" type="xs:boolean" use="required" default="true"/>
   </xs:complexType>
   <xs:complexType name="cPLOTITEM">
     <xs:complexContent>
