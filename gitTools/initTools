@@ -9,7 +9,7 @@ gitTools="`pwd`"
 case "$1" in
   --Windows)
     setGitConfig copasi.astyle "${gitTools}/Windows/AStyle.exe" --path
-    setGitConfig copasi.get "${gitTools}/Windows/wget.exe" --path
+    setGitConfig copasi.wget "${gitTools}/Windows/wget.exe" --path
     unsetGitConfig copasi.gawk
     unsetGitConfig copasi.wget
     unsetGitConfig copasi.dos2unix
