@@ -1,21 +1,34 @@
 #!/bin/bash
 
-gitTools="`dirname $0`"
+GitTools="`git config copasi.gittools`"
+. ${GitTools}/functions
+
+GAWK=`gitTool gawk`
+WGET=`gitTool wget`
+
+remoteCommit=`git rev-parse origin`
+
+# We only register a build.
+if [ "_$1" == "_--registerBuild" ]; then
+  major=`${GAWK} -- '$2 ~ "VERSION_MAJOR" {print $3}' ${GitTools}/../copasi/CopasiVersion.h.in`
+  minor=`${GAWK} -- '$2 ~ "VERSION_MINOR" {print $3}' ${GitTools}/../copasi/CopasiVersion.h.in`
+  ${WGET} -qO- "git.copasi.org/buildnumber/${major}.${minor}.${remoteCommit}" 
+  
+  exit
+fi
+
+# Load information about the last run.
+if [ -e ${GitTools}/.UpdateCopasiVersion ]; then
+  . ${GitTools}/.UpdateCopasiVersion
+else
+  lastCommit=
+  lastModified=
+fi
 
 localCommit=`git log -1 --pretty=%H`
-remoteCommit=`git rev-parse origin`
 localChanges=`git status --untracked-files=no --short | wc -l`
 
-current_major=4
-current_minor=8
-current_build=35
-current_commit=4224d80e365b0dc42a0b17a76b8656ce10e9de84
-
-if [ "x$localCommit" == "x$remoteCommit" -a $localChanges == 0 ]; then
-  major=`${AWK} -- '$2 ~ "VERSION_MAJOR" {print $3}' ${gitTools}/../copasi/CopasiVersion.h.in`
-  minor=`${AWK} -- '$2 ~ "VERSION_MINOR" {print $3}' ${gitTools}/../copasi/CopasiVersion.h.in`
-  
-  build=`wget -qO- "git.copasi.org/buildnumber/${major}.${minor}.${remoteCommit}"`
+if [ "_$localCommit" == "_$remoteCommit" -a $localChanges == 0 ]; then
   creator=copasi.org
   modified=false
 else
@@ -23,7 +36,24 @@ else
   modified=true
 fi
 
-buildList=`wget -qO- "git.copasi.org/buildnumber/list" | \
+# If nothing has changed we stop here.
+if [ "_$lastCommit" == "_$localCommit" -a "_$lastModified" == "_$modified" -a "_$1" != "_--force" -a -e ${GitTools}/../copasi/CopasiVersion.h ]; then
+  echo No changes detected, skipping update.
+  exit
+fi
+
+# Save information about current run
+echo lastCommit=$localCommit > ${GitTools}/.UpdateCopasiVersion
+echo lastModified=$modified >> ${GitTools}/.UpdateCopasiVersion
+
+echo Updating ${GitTools}/../copasi/CopasiVersion.h
+
+current_major=4
+current_minor=8
+current_build=35
+current_commit=4224d80e365b0dc42a0b17a76b8656ce10e9de84
+
+buildList=`${WGET} -qO- "git.copasi.org/buildnumber/list" | \
            sed -e 's/<\(table\|tr\|td\)>//g' \
                -e 's?</table>??' \
                -e 's?</td></tr>?\n?g' \
@@ -45,7 +75,7 @@ for b in $buildList; do
   build=${build%% *}
   commit=${b#*commit=}
   
-  if [ `git log --pretty=%H $current_commit..HEAD -- ${gitTools}/.. | grep ${commit}` ]; then
+  if [ `git log --pretty=%H $current_commit..HEAD -- ${GitTools}/.. | grep ${commit}` ]; then
     if [ $current_build == 35 ]; then 
       current_major=${major}
       current_minor=${minor}
@@ -91,6 +121,6 @@ sed -e 's/COPASI_VERSION_MAJOR.*/COPASI_VERSION_MAJOR '$current_major'/' \
     -e 's/COPASI_VERSION_MODIFIED.*/COPASI_VERSION_MODIFIED '$modified'/' \
     -e 's/COPASI_VERSION_COMPATIBILITY.*/COPASI_VERSION_COMPATIBILITY '$compatibility'/' \
     -e 's/COPASI_VERSION_CREATOR.*/COPASI_VERSION_CREATOR "'$creator'"/' \
-    ${gitTools}/../copasi/CopasiVersion.h.in > ${gitTools}/../copasi/CopasiVersion.h
+    ${GitTools}/../copasi/CopasiVersion.h.in > ${GitTools}/../copasi/CopasiVersion.h
     
 IFS=$SAVEIFS
