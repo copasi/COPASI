@@ -19,5 +19,5 @@ qrc_copasi.cpp
 */*/debug/
 */*/*/debug/
 config.status.bat
-
-copasi/copasiversion.h
+copasi/CopasiVersion.h
+gitTools/.UpdateCopasiVersion
