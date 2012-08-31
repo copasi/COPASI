@@ -1,0 +1,8 @@
+#!/bin/bash
+
+GitTools=`git config copasi.gittools`
+. ${GitTools}/functions
+
+if [ -e ${GitTools}/UpdateCopasiVersion ]; then
+  ${GitTools}/UpdateCopasiVersion
+fi
