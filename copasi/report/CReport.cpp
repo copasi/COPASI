@@ -47,6 +47,7 @@ CReport::CReport():
     mpReportDef(NULL),
     mTarget(""),
     mAppend(true),
+    mConfirmOverwrite(true),
     mFooterObjectList(),
     mBodyObjectList(),
     mHeaderObjectList(),
@@ -64,6 +65,7 @@ CReport::CReport(const CReport & src):
     mpReportDef(src.mpReportDef),
     mTarget(src.mTarget),
     mAppend(src.mAppend),
+    mConfirmOverwrite(src.mConfirmOverwrite),
     mFooterObjectList(src.mFooterObjectList),
     mBodyObjectList(src.mBodyObjectList),
     mHeaderObjectList(src.mHeaderObjectList),
@@ -102,6 +104,13 @@ bool CReport::append() const
 
 void CReport::setAppend(bool append)
 {mAppend = append;}
+
+bool CReport::confirmOverwrite() const
+{return mConfirmOverwrite;}
+
+void CReport::setConfirmOverwrite(bool confirmOverwrite)
+{mConfirmOverwrite = confirmOverwrite;}
+
 
 void CReport::output(const Activity & activity)
 {

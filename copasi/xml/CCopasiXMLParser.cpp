@@ -8813,6 +8813,7 @@ void CCopasiXMLParser::ReportInstanceElement::start(const XML_Char* pszName, con
 
   std::string target;
   bool append;
+  bool confirmOverwrite;
   std::string reference;
 
   switch (mCurrentElement)
@@ -8828,6 +8829,9 @@ void CCopasiXMLParser::ReportInstanceElement::start(const XML_Char* pszName, con
 
         append = mParser.toBool(mParser.getAttributeValue("append", papszAttrs, "false"));
         mCommon.pCurrentTask->getReport().setAppend(append);
+        confirmOverwrite = mParser.toBool(mParser.getAttributeValue("confirmOverwrite", papszAttrs, "false"));
+
+        mCommon.pCurrentTask->getReport().setConfirmOverwrite(confirmOverwrite);
         mCommon.pCurrentTask->getReport().setTarget(target);
 
         if (mCommon.taskReferenceMap.find(reference) == mCommon.taskReferenceMap.end())

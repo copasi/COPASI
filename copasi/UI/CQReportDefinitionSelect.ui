@@ -79,6 +79,9 @@
        <widget class="QLineEdit" name="mpEditTarget"/>
       </item>
       <item row="2" column="1">
+
+    <layout class="QHBoxLayout">
+     <item>
        <widget class="QCheckBox" name="mpCheckAppend">
         <property name="text">
          <string>Append</string>
@@ -87,7 +90,21 @@
          <bool>true</bool>
         </property>
        </widget>
+     </item>
+     <item>
+       <widget class="QCheckBox" name="mpCheckConfirmOverwrite">
+        <property name="text">
+         <string>Confirm Overwrite</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
+
+            </layout>
+            </item>
+
       <item row="0" column="2">
        <widget class="QToolButton" name="mpBtnEdit">
         <property name="text">
@@ -95,6 +112,7 @@
         </property>
        </widget>
       </item>
+
       <item row="1" column="2">
        <widget class="QToolButton" name="mpBtnBrowse">
         <property name="text">

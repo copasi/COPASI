@@ -189,7 +189,7 @@
     <element name="Comment">
       <choice>
         <ref name="xhtml.datatype"/>
-        <text/>        
+        <text/>
       </choice>
     </element>
   </define>
@@ -231,7 +231,7 @@
       </zeroOrMore>
     </mixed>
   </define>
-  
+
   <define name="listOfUnsupportedAnnotations.datatype">
     <oneOrMore>
       <element name="UnsupportedAnnotation">
@@ -240,7 +240,7 @@
       </element>
     </oneOrMore>
   </define>
-  
+
   <define name="annotation.datatype">
     <optional>
       <ref name="miriamAnnotation.element"/>
@@ -254,7 +254,7 @@
       </element>
     </optional>
   </define>
-  
+
   <define name="other.datatype">
     <mixed>
       <zeroOrMore>
@@ -271,7 +271,7 @@
       </zeroOrMore>
     </mixed>
   </define>
-  
+
   <define name="xhtml.datatype">
     <zeroOrMore>
       <element>
@@ -676,7 +676,7 @@
       </element>
     </oneOrMore>
   </define>
-  
+
   <define name="modelParameterSet.datatype">
     <ref name="name.attribute"/>
     <attribute name="key">
@@ -687,7 +687,7 @@
     <ref name="annotation.datatype"/>
     <ref name="modelParameterGroup.datatype"/>
   </define>
-  
+
   <define name="modelParameterGroup.datatype">
     <zeroOrMore>
       <choice>
@@ -703,7 +703,7 @@
       </choice>
     </zeroOrMore>
   </define>
-  
+
   <define name="modelParameter.datatype">
     <attribute name="cn">
       <data type="string"/>
@@ -724,7 +724,7 @@
       <ref name="initialExpression.element"/>
     </optional>
   </define>
-  
+
   <define name="listOfReactions.datatype">
     <oneOrMore>
       <element name="Reaction">
@@ -946,6 +946,11 @@
     <attribute name="append">
       <data type="boolean"/>
     </attribute>
+    <optional>
+      <attribute name="confirmOverwrite">
+        <data type="boolean"/>
+      </attribute>
+    </optional>
   </define>
 
   <define name="listOfReportSpecifications.datatype">
@@ -975,7 +980,7 @@
       <value type="string">unset</value>
     </choice>
   </define>
-  
+
   <define name="reportSpecification.datatype">
     <attribute name="key">
       <data type="ID">
@@ -1521,7 +1526,7 @@
       <attribute name="ry">
         <ref name="relAbsValue.datatype"/>
       </attribute>
-    </optional>  
+    </optional>
   </define>
 
   <define name="ellipse.datatype">
@@ -1836,26 +1841,26 @@
     <attribute name="basePoint2_y">
       <ref name="relAbsValue.datatype"/>
     </attribute>
-  </define>  
-  
+  </define>
+
   <define name="renderCurve.element" combine="choice">
     <element name="RenderPoint">
       <ref name="renderPoint.datatytpe"/>
     </element>
   </define>
-  
+
   <define name="renderCurve.element" combine="choice">
     <element name="RenderCubicBezier">
       <ref name="renderCubicBezier.datatype"/>
     </element>
   </define>
-  
+
   <define name="renderCurveElements.datatype">
     <oneOrMore>
       <ref name="renderCurve.element"/>
     </oneOrMore>
   </define>
-  
+
   <define name="dimension.datatype">
     <attribute name="width">
       <data type="double"/>
@@ -2082,5 +2087,5 @@
       </element>
     </optional>
   </define>
-  
+
 </grammar>
