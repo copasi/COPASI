@@ -1,7 +1,9 @@
-#!/bin/bash
+#!/bin/sh
 
 GitTools=`git config copasi.gittools`
 . ${GitTools}/functions
+
+debug post_merge:
 
 if [ -e ${GitTools}/UpdateCopasiVersion ]; then
   ${GitTools}/UpdateCopasiVersion
