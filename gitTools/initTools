@@ -9,7 +9,9 @@ gitTools="`pwd`"
 case "$1" in
   --Windows)
     setGitConfig copasi.astyle "${gitTools}/Windows/AStyle.exe" --path
+    setGitConfig copasi.get "${gitTools}/Windows/wget.exe" --path
     unsetGitConfig copasi.gawk
+    unsetGitConfig copasi.wget
     unsetGitConfig copasi.dos2unix
     ;;
 
@@ -46,6 +48,7 @@ esac
 
 checkGitTool astyle
 checkGitTool gawk
+checkGitTool wget
 
 if [ ${isWindows} == true ]; then
   checkGitTool dos2unix
@@ -70,5 +73,4 @@ if [ "x`git config --local user.email`" == x ]; then
   setGitConfig user.email "$email"
 fi
 
-cp pre-commit ../.git/hooks/
-cp post-commit ../.git/hooks/
+cp hooks/* ../.git/hooks/
