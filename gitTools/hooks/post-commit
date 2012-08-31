@@ -22,5 +22,9 @@ if [ -e ${GitTools}/checkout ]; then
   rm ${GitTools}/checkout
 fi
 
+if [ -e ${GitTools}/UpdateCopasiVersion ]; then
+  ${GitTools}/UpdateCopasiVersion
+fi
+
 
 
