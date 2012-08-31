@@ -970,6 +970,7 @@
     <xs:attribute name="reference" type="cREPORT_KEYREF" use="required"/>
     <xs:attribute name="target" type="xs:anyURI" use="required"/>
     <xs:attribute name="append" type="xs:boolean" use="optional" default="false"/>
+    <xs:attribute name="confirmOverwrite" type="xs:boolean" use="required" default="true"/>
   </xs:complexType>
   <xs:complexType name="cPLOTITEM">
     <xs:complexContent>
@@ -1266,27 +1267,27 @@
       </xs:element>
     </xs:sequence>
   </xs:complexType>
-  
+
   <xs:complexType name="cTRANSFORMATION">
     <xs:attribute name="transform">
       <xs:simpleType>
       	<xs:restriction base="xs:string">
-      	  <!-- pattern for 6 or 12 comma separated floating point values -->	
+      	  <!-- pattern for 6 or 12 comma separated floating point values -->
       	  <xs:pattern value="((\s*[+-]?[0-9]*(\.[0-9]*)?([eE][+-]?[0-9]+)?\s*,){5}|(\s*[+-]?[0-9]*(\.[0-9]*)?([eE][+-]?[0-9]+)?\s*,){11})(\s*[+-]?[0-9]*(\.[0-9]*)?([eE][+-]?[0-9]+)?\s*)" />
       	</xs:restriction>
       </xs:simpleType>
     </xs:attribute>
   </xs:complexType>
-  
+
   <!-- data type for key, role and type lists -->
   <xs:simpleType name="cCommaSeparatedStringList">
     <xs:restriction base="xs:string">
       <!-- pattern for a komma separated list of string. -->
-      <!-- the list may also be empty -->	
+      <!-- the list may also be empty -->
       <xs:pattern value="^(\s*\S+\s*,)*(\s*\S+\s*)?" />
     </xs:restriction>
   </xs:simpleType>
-  
+
   <xs:complexType name="cGRAPHICAL_PRIMITIVE1D">
     <xs:complexContent>
       <xs:extension base="cTRANSFORMATION">
@@ -1316,7 +1317,7 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  
+
   <xs:simpleType name="cREL_ABS_VALUE">
     <xs:restriction base="xs:string">
       <xs:pattern value="\s*((([+-]?[0-9]*(\.[0-9]*)?([eE][+-]?[0-9]+)?)([+-][0-9]*(\.[0-9]*)?([eE][+-]?[0-9]+)?%))|([+-]?[0-9]*(\.[0-9]*)?([eE][+-]?[0-9]+)?%?))\s*" />
@@ -1329,7 +1330,7 @@
       <xs:enumeration value="italic" />
     </xs:restriction>
   </xs:simpleType>
-  
+
   <xs:simpleType name="cFONT_WEIGHT" >
     <xs:restriction base="xs:string">
       <xs:enumeration value="normal" />
@@ -1412,7 +1413,7 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  
+
   <xs:complexType name="cRECTANGLE">
     <xs:complexContent>
       <xs:extension base="cGRAPHICAL_PRIMITIVE2D">
@@ -1426,7 +1427,7 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  
+
   <xs:complexType name="cELLIPSE">
     <xs:complexContent>
       <xs:extension base="cGRAPHICAL_PRIMITIVE2D">
@@ -1438,7 +1439,7 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  
+
   <xs:complexType name="RenderPoint">
     <xs:attribute name="x" type="cREL_ABS_VALUE" use="required" />
     <xs:attribute name="y" type="cREL_ABS_VALUE" use="required" />
@@ -1457,13 +1458,13 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  
+
   <xs:complexType name="cRENDER_CURVE_ELEMENTS">
   	<xs:sequence>
   	  <xs:element name="Element" type="RenderPoint" minOccurs="2" maxOccurs="unbounded" />
   	</xs:sequence>
   </xs:complexType>
-  
+
   <xs:complexType name="cRENDER_CURVE">
     <xs:complexContent>
       <xs:extension base="cGRAPHICAL_PRIMITIVE1D">
@@ -1485,29 +1486,29 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  
+
   <xs:simpleType name="cCOLOR_VALUE">
     <xs:restriction base="xs:string">
       <xs:pattern value="#([0-9a-f]|[0-9A-F]){8}|#([0-9a-f]|[0-9A-F]){6}" />
-    </xs:restriction>	
+    </xs:restriction>
   </xs:simpleType>
-  
+
   <xs:simpleType name="cCOLOR_VALUE_OR_ID">
     <xs:union memberTypes="cSBMLPseudoIdRef cCOLOR_VALUE"/>
   </xs:simpleType>
-  
+
   <xs:complexType name="cGRADIENT_STOP">
     <xs:attribute name="offset" type="cREL_ABS_VALUE" use="required" />
     <xs:attribute name="stop-color" type="cCOLOR_VALUE" use="required" />
   </xs:complexType>
-  
+
   <xs:complexType name="cGRADIENT_BASE">
     <xs:sequence>
       <xs:element name="Stop" type="cGRADIENT_STOP" minOccurs="1" maxOccurs="unbounded" />
     </xs:sequence>
     <xs:attribute name="id" type="cSBMLPseudoId" use="required" />
   </xs:complexType>
-  
+
   <xs:complexType name="cRADIAL_GRADIENT">
     <xs:complexContent>
       <xs:extension base="cGRADIENT_BASE">
@@ -1534,19 +1535,19 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  
+
   <xs:group name="cGRADIENT_GROUP" id="copasi.cGRADIENT_GROUP">
     <xs:choice>
       <xs:element name="RadialGradient" type="cRADIAL_GRADIENT" />
       <xs:element name="LinearGradient" type="cLINEAR_GRADIENT" />
     </xs:choice>
   </xs:group>
-  
+
   <xs:complexType name="cCOLOR_DEFINITION">
     <xs:attribute name="id" type="cSBMLPseudoId" use="required" />
     <xs:attribute name="value" type="cCOLOR_VALUE" use="required" />
   </xs:complexType>
-  
+
   <xs:complexType name="cLINE_ENDING">
     <xs:sequence>
       <xs:element name="BoundingBox" type="cBOUNDING_BOX" />
@@ -1554,7 +1555,7 @@
     </xs:sequence>
     <xs:attribute name="id" type="cSBMLPseudoId" use="required" />
   </xs:complexType>
-  
+
   <xs:complexType name="cRENDER_INFORMATION_BASE">
     <xs:sequence>
       <xs:element name="ListOfColorDefinitions" minOccurs="0">
@@ -1563,27 +1564,27 @@
       	    <xs:element name="ColorDefinition" type="cCOLOR_DEFINITION" minOccurs="1" maxOccurs="unbounded" />
       	  </xs:sequence>
       	</xs:complexType>
-     </xs:element> 	
+     </xs:element>
      <xs:element name="ListOfGradientDefinitions" minOccurs="0">
       	<xs:complexType>
       	  <xs:sequence>
       	  	<xs:group ref="cGRADIENT_GROUP" minOccurs="1" maxOccurs="unbounded" />
       	  </xs:sequence>
       	</xs:complexType>
-     </xs:element> 	
+     </xs:element>
      <xs:element name="ListOfLineEndings" minOccurs="0">
       	<xs:complexType>
       	  <xs:sequence>
       	    <xs:element name="LineEnding" type="cLINE_ENDING" minOccurs="1" maxOccurs="unbounded" />
       	  </xs:sequence>
       	</xs:complexType>
-     </xs:element> 	
+     </xs:element>
     </xs:sequence>
     <xs:attribute name="backgroundColor" type="cCOLOR_VALUE" use="optional" default="#FFFFFFFF" />
     <xs:attribute name="referenceRenderInformation" type="cKEYREF" use="optional" />
     <xs:attribute name="name" type="xs:string" use="optional" />
   </xs:complexType>
-  
+
   <xs:complexType name="cSTYLE">
     <xs:sequence>
       <xs:element name="Group" type="cGROUP" />
@@ -1591,13 +1592,13 @@
     <xs:attribute name="roleList" type="cCommaSeparatedStringList" use="optional" />
     <xs:attribute name="typeList" type="cCommaSeparatedStringList" use="optional" />
   </xs:complexType>
-  
+
   <xs:complexType name="cGLOBAL_STYLE">
     <xs:complexContent>
       <xs:extension base="cSTYLE" />
     </xs:complexContent>
   </xs:complexType>
-  
+
   <xs:complexType name="cLOCAL_STYLE">
     <xs:complexContent>
       <xs:extension base="cSTYLE" >
@@ -1607,7 +1608,7 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  
+
   <xs:complexType name="cLOCAL_RENDER_INFORMATION">
     <xs:complexContent>
       <xs:extension base="cRENDER_INFORMATION_BASE">
@@ -1616,7 +1617,7 @@
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="Style" type="cLOCAL_STYLE" minOccurs="1" maxOccurs="unbounded" />
-              </xs:sequence>  
+              </xs:sequence>
             </xs:complexType>
           </xs:element>
         </xs:sequence>
@@ -1630,7 +1631,7 @@
         <xs:sequence>
           <xs:element name="ListOfStyles" minOccurs="0">
             <xs:complexType>
-              <xs:sequence>	
+              <xs:sequence>
                 <xs:element name="Style" type="cGLOBAL_STYLE" minOccurs="1" maxOccurs="unbounded" />
               </xs:sequence>
             </xs:complexType>
@@ -1639,17 +1640,17 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  
+
   <xs:complexType name="cLIST_OF_GLOBAL_RENDER_INFORMATION">
     <xs:sequence>
       <xs:element name="RenderInformation" type="cGLOBAL_RENDER_INFORMATION" />
     </xs:sequence>
   </xs:complexType>
-  
+
   <xs:complexType name="cLIST_OF_LOCAL_RENDER_INFORMATION">
     <xs:sequence>
       <xs:element name="RenderInformation" type="cLOCAL_RENDER_INFORMATION" />
     </xs:sequence>
   </xs:complexType>
-  
+
 </xs:schema>

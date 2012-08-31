@@ -336,6 +336,18 @@ bool TaskWidget::commonBeforeRunTask()
 
   if (!mpTask) return false;
 
+  // if overwrite is enabled and the file exists, then ask
+  if (!mpTask->getReport().getTarget().empty() &&
+      mpTask->getReport().confirmOverwrite() &&
+      QFile(mpTask->getReport().getTarget().c_str()).exists())
+      {
+      if (QMessageBox::question(this,
+          QString("Confirm Overwrite"),
+          QString("The report file already exists. Would you like to overwrite it? \n\n(You can disable this dialog by clicking the 'Report' button.)"),
+          QMessageBox::Yes, QMessageBox::No) == QMessageBox::No )
+          return false;
+      }
+
   //set mouse cursor
   setCursor(Qt::WaitCursor);
 

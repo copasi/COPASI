@@ -66,6 +66,7 @@ class CReport : public COutputInterface
     CReportDefinition *mpReportDef;
     std::string mTarget;
     bool mAppend;
+    bool mConfirmOverwrite;
 
     std::vector< CCopasiObject * > mFooterObjectList;
     std::vector< CCopasiObject * > mBodyObjectList;
@@ -167,6 +168,17 @@ class CReport : public COutputInterface
      * sets the append attribute if the report tag
      */
     void setAppend(bool append);
+
+    /**
+     * Returns whether a confirmation should be issued when overwriting a report
+     */
+    bool confirmOverwrite() const;
+
+    /**
+     * sets the confirmOverwrite attribute if the report tag
+     */
+    void setConfirmOverwrite(bool confirmOverwrite);
+
 
   private:
     /**

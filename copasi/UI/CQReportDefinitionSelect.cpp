@@ -74,6 +74,7 @@ void CQReportDefinitionSelect::loadReportDefinitionVector()
       mpComboDefinition->setCurrentIndex(1);
       mpReport->setReportDefinition((*(*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList())[0]); //first one report definition
       mpReport->setAppend(mpCheckAppend->isChecked());
+      mpReport->setConfirmOverwrite(mpCheckConfirmOverwrite->isChecked());
       mpReport->setTarget(TO_UTF8(mpEditTarget->text()));
       mpListView->getDataModel()->notify(ListViews::REPORT, ListViews::CHANGE, ""); //notify Table Definition to
 
@@ -91,6 +92,7 @@ void CQReportDefinitionSelect::loadReportDefinitionVector()
       row = mpComboDefinition->currentIndex();
       mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
       mpReport->setAppend(mpCheckAppend->isChecked());
+      mpReport->setConfirmOverwrite(mpCheckConfirmOverwrite->isChecked());
       mpReport->setTarget(TO_UTF8(mpEditTarget->text()));
       return;
     }
@@ -105,6 +107,7 @@ void CQReportDefinitionSelect::loadReportDefinitionVector()
 
       mpComboDefinition->setCurrentIndex(i);
       mpCheckAppend->setChecked(mpReport->append());
+      mpCheckConfirmOverwrite->setChecked(mpReport->confirmOverwrite());
       mpEditTarget->setText(FROM_UTF8(mpReport->getTarget()));
     }
 }
@@ -129,6 +132,7 @@ void CQReportDefinitionSelect::accept()
   row = mpComboDefinition->currentIndex();
   mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
   mpReport->setAppend(mpCheckAppend->isChecked());
+  mpReport->setConfirmOverwrite(mpCheckConfirmOverwrite->isChecked());
   mpReport->setTarget(TO_UTF8(mpEditTarget->text()));
   cleanup();
   QDialog::done(QDialog::Accepted);

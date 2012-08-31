@@ -1195,6 +1195,7 @@ bool CCopasiXML::saveTaskList()
 
           Attributes.add("target", Target);
           Attributes.add("append", tReport.append());
+          Attributes.add("confirmOverwrite", tReport.confirmOverwrite());
           saveElement("Report", Attributes);
         }
 
