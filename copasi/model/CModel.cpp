@@ -633,7 +633,7 @@ void CModel::buildStoi()
   CCopasiVector< CReaction >::iterator itStep = mSteps.begin();
   CCopasiVector< CMetab >::const_iterator itMetab;
 
-  for (; pCol < pColEnd; ++pCol, ++itStep, ++i)
+  for (; pCol < pColEnd; ++pCol, ++itStep)
     {
       if (mpCompileHandler && !mpCompileHandler->progressItem(hProcess)) return;
 

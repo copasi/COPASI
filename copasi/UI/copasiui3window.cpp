@@ -855,7 +855,7 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
 
           assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-          assert((*CCopasiRootContainer::getDatamodelList())[1]->newModel(NULL, NULL));
+          assert((*CCopasiRootContainer::getDatamodelList())[1]->newModel(NULL, NULL, NULL, true));
         }
 
       CCopasiMessage msg = CCopasiMessage::getLastMessage();
