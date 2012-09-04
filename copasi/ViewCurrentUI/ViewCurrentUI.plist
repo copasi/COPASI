@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleIconFile</key>
+	<string>copasi.icns</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleVersion</key>
+	<string>%COPASI_VERSION%</string>
+	<key>CFBundleShortVersionString</key>
+	<string>%COPASI_VERSION%</string>
+	<key>CFBundleGetInfoString</key>
+	<string>COPASI %COPASI_VERSION% is distributed under the Artistic License 2.0.</string>
+	<key>CFBundleExecutable</key>
+	<string>CopasiUI</string>
+	<key>CFBundleIdentifier</key>
+	<string>org.copasi.CopasiUI</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>COPASI</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>cps</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>copasi.icns</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
+		</dict>
+	</array>
+</dict>
+</plist>
