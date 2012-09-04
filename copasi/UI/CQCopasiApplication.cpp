@@ -41,6 +41,10 @@ bool CQCopasiApplication::event(QEvent * pEvent)
           }
         else
           {
+            // need to take the new file, otherwise whenever the application 
+            // is open we will re-open the first file that was supposed to be
+            // opened. 
+            mFile = static_cast<QFileOpenEvent *>(pEvent)->file();
             mpMainWindow->slotFileOpen(mFile);
           }
 
