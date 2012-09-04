@@ -42,7 +42,7 @@ if [ _"$PrologEnd" == _unspecified -o \
 fi
 
 Commit="`git log -1 --pretty=%H -- "$1"`"
-Author="`git log -1 --pretty="%an <%ae>" -- "$1"`"
+Author="`git log -1 --pretty="%an %ae" -- "$1"`"
 Date="`git log -1 --pretty=%ai -- "$1"`"
 
 GAWK=`gitTool gawk`
