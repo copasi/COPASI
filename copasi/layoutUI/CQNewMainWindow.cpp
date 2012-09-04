@@ -983,6 +983,16 @@ void CQNewMainWindow::switchMode()
         this->mpHighlightModeAction->setEnabled(false);
         this->mpChangeColorAction->setEnabled(false);
 #endif // ELEMENTARY_MODE_DISPLAY
+
+#ifdef COPASI_AUTOLAYOUT
+        updateLayoutList();        
+        // reset current displayed layout, so we can get the updates displayed
+        this->mpAnimationWindow->setLayout(NULL);
+        // update with the new layout
+        this->mpAnimationWindow->setLayout(mpCurrentLayout);
+        // and fit it too screen
+        slotFitToScreen();
+#endif
         break;
       case CQNewMainWindow::ANIMATION_MODE:
         disconnect(this->mpScreenshotAct, SIGNAL(triggered()), this->mpAnimationWindow, SLOT(saveImage()));
@@ -998,7 +1008,7 @@ void CQNewMainWindow::switchMode()
         this->mpElementaryModesMenu->setEnabled(true);
         this->mpHighlightModeAction->setEnabled(true);
         this->mpChangeColorAction->setEnabled(true);
-#endif // ELEMENTARY_MODE_DISPLAY
+#endif // ELEMENTARY_MODE_DISPLAY        
         break;
     }
 }
