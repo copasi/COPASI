@@ -438,6 +438,7 @@ void CCopasiSpringLayout::finalizeState()
                 direction = 0.1;
                 break;
               default:
+                direction = 0.0;
                 reactionPoint = pRG->getPosition();
             }
 
