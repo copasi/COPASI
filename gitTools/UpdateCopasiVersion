@@ -75,7 +75,7 @@ for b in $buildList; do
   build=${build%% *}
   commit=${b#*commit=}
   
-  if [ `git log --pretty=%H $current_commit..HEAD -- ${GitTools}/.. | grep ${commit}` ]; then
+  if [ `git log --pretty=%H $current_commit..HEAD | grep ${commit}` ]; then
     if [ $current_build == 35 ]; then 
       current_major=${major}
       current_minor=${minor}
