@@ -7,7 +7,7 @@
 
 find_path(SBW_INCLUDE_DIR SBW/SBW.h )
 
-find_library(SBW_LIBRARIES NAMES SBW sbw libSBW libsbw)
+find_library(SBW_LIBRARIES NAMES SBW SBW-static sbw libSBW libsbw)
 
 # handle the QUIETLY and REQUIRED arguments and set SBW_FOUND to TRUE if
 # all listed variables are TRUE

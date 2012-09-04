@@ -265,6 +265,12 @@ set_target_properties (libCOPASIUI PROPERTIES OUTPUT_NAME "COPASIUI")
 
   add_subdirectory(CopasiUI)
   add_dependencies(CopasiUI ${SE_DEPENDENCIES} libCOPASIUI ${UI_DEPENDENCIES})
-
+  
+  option(BUILD_VIEWCURRENT "Build the viewer for optimization / fitting tasks (ViewCurrent)." OFF)
+  mark_as_advanced(BUILD_VIEWCURRENT)
+  
+  if(BUILD_VIEWCURRENT)
+    add_subdirectory(ViewCurrentUI)  
+  endif(BUILD_VIEWCURRENT)
+    
 endif(BUILD_GUI)
-
