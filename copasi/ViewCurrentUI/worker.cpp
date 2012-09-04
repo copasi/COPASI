@@ -17,7 +17,7 @@ Worker::Worker(CopasiUI3Window *window, Arguments *args)
 {
   mpArgs = args;
   mpWindow = window;
-  mpDataModel= mpWindow->getDataModel();  
+  mpDataModel= mpWindow->getDataModel();
 
   // open the newly generated model
   mpWindow->openInitialDocument(QString((args->getFilename() + ".view.cps").c_str()));
@@ -35,27 +35,27 @@ TaskWidget* Worker::getWidgetForTask(CCopasiTask *task)  const
 
   switch(task->getType())
   {
-  case CCopasiTask::Type::steadyState:
+  case CCopasiTask::steadyState:
     return reinterpret_cast<TaskWidget*>(views->getSteadyStateWidget());
-  case CCopasiTask::Type::timeCourse:
+  case CCopasiTask::timeCourse:
     return reinterpret_cast<TaskWidget*>(views->getTrajectoryWidget());
-  case CCopasiTask::Type::scan:
+  case CCopasiTask::scan:
     return reinterpret_cast<TaskWidget*>(views->getScanWidget());
-  case CCopasiTask::Type::optimization:
+  case CCopasiTask::optimization:
     return reinterpret_cast<TaskWidget*>(views->getOptimizationWidget());
-  case CCopasiTask::Type::parameterFitting:
+  case CCopasiTask::parameterFitting:
     return reinterpret_cast<TaskWidget*>(views->getFittingWidget());
-  case CCopasiTask::Type::mca:
+  case CCopasiTask::mca:
     return reinterpret_cast<TaskWidget*>(views->getMCAWidget());
-  case CCopasiTask::Type::lna:
+  case CCopasiTask::lna:
     return reinterpret_cast<TaskWidget*>(views->getLNAWidget());
-  case CCopasiTask::Type::lyap:
-  case CCopasiTask::Type::fluxMode:
-  case CCopasiTask::Type::tssAnalysis:
-  case CCopasiTask::Type::sens:
-  case CCopasiTask::Type::moieties:
-  case CCopasiTask::Type::crosssection:
-  case CCopasiTask::Type::unset:
+  case CCopasiTask::lyap:
+  case CCopasiTask::fluxMode:
+  case CCopasiTask::tssAnalysis:
+  case CCopasiTask::sens:
+  case CCopasiTask::moieties:
+  case CCopasiTask::crosssection:
+  case CCopasiTask::unset:
   default:
     // have no widget for these
     return NULL;
@@ -63,33 +63,33 @@ TaskWidget* Worker::getWidgetForTask(CCopasiTask *task)  const
 
 }
 
-int Worker::getIndexForTask(CCopasiTask* task) 
+int Worker::getIndexForTask(CCopasiTask* task)
 {
   if (task == NULL) return -1;
 
   switch(task->getType())
   {
-  case CCopasiTask::Type::steadyState:
+  case CCopasiTask::steadyState:
     return 21;
-  case CCopasiTask::Type::timeCourse:
+  case CCopasiTask::timeCourse:
     return 23;
-  case CCopasiTask::Type::scan:
+  case CCopasiTask::scan:
     return 31;
-  case CCopasiTask::Type::optimization:
+  case CCopasiTask::optimization:
     return 32;
-  case CCopasiTask::Type::parameterFitting:
+  case CCopasiTask::parameterFitting:
     return 33;
-  case CCopasiTask::Type::mca:
+  case CCopasiTask::mca:
     return 24;
-  case CCopasiTask::Type::lna:
+  case CCopasiTask::lna:
     return 35;
-  case CCopasiTask::Type::lyap:
-  case CCopasiTask::Type::fluxMode:
-  case CCopasiTask::Type::tssAnalysis:
-  case CCopasiTask::Type::sens:
-  case CCopasiTask::Type::moieties:
-  case CCopasiTask::Type::crosssection:
-  case CCopasiTask::Type::unset:
+  case CCopasiTask::lyap:
+  case CCopasiTask::fluxMode:
+  case CCopasiTask::tssAnalysis:
+  case CCopasiTask::sens:
+  case CCopasiTask::moieties:
+  case CCopasiTask::crosssection:
+  case CCopasiTask::unset:
   default:
     // have no id
     return -1;
@@ -97,7 +97,7 @@ int Worker::getIndexForTask(CCopasiTask* task)
 
 }
 
-int Worker::getIndexForWidget(TaskWidget* widget) 
+int Worker::getIndexForWidget(TaskWidget* widget)
 {
   if (widget == NULL) return -1;
   CCopasiTask *task = widget->getTask();

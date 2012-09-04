@@ -1,8 +1,8 @@
 #include "arguments.h"
 #include "string.h"
 
-#include <QString> 
-#include <QFile> 
+#include <QString>
+#include <QFile>
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 
@@ -18,7 +18,7 @@
 #include "utilities/CCopasiMethod.h"
 
 
-Arguments::Arguments(int argc, char* argv[]) 
+Arguments::Arguments(int argc, char* argv[])
   : mFilename("")
   , mTask("")
   , mReportFile("")
@@ -112,27 +112,27 @@ void Arguments::parseArgs(int argc, char* argv[])
     }
     else if (lower == "--set-solution-statistic")
     {
-      mSetSolutionStatistic=true;      
+      mSetSolutionStatistic=true;
     }
     else if (lower == "--disable-calculate-statistic")
     {
-      mDisableStatistic=true;      
+      mDisableStatistic=true;
     }
     else if (lower == "--disable-other-plots")
     {
-      mDisablePlots=true;      
+      mDisablePlots=true;
     }
     else if (lower == "--hide")
     {
-      mHideWindow=true;      
+      mHideWindow=true;
     }
     else if (lower == "--clear-targets")
     {
-      mClearTargets=true;      
+      mClearTargets=true;
     }
     else if (lower == "--disable-randomize-startvalues")
     {
-      mDisableRandomizeStartValues=true;      
+      mDisableRandomizeStartValues=true;
     }
     else if (i+1 < argc && (lower == "-g" || lower == "--generate-output"))
     {
@@ -162,7 +162,7 @@ int Arguments::getTaskToSwitchTo() const
   return mSwitchToTask;
 }
 
-char** Arguments::getInitArgs() const 
+char** Arguments::getInitArgs() const
 {
   char ** result = (char**)malloc(sizeof(char*)*2);
   result[0] = strdup(mArgv[0]);
@@ -222,7 +222,7 @@ bool Arguments::isDisablePlots() const
 
 
 std::string Arguments::prepareModel() const
-{  
+{
   CCopasiDataModel* model = (*CCopasiRootContainer::getDatamodelList())[0];
   model->loadModel(getFilename(), NULL);
 
@@ -262,7 +262,7 @@ std::string Arguments::prepareModel() const
     {
       COptProblem *problem = (COptProblem *)optTask->getProblem();
       if (mSetSolutionStatistic)
-        optTask->setMethodType(CCopasiMethod::SubType::Statistics);
+        optTask->setMethodType(CCopasiMethod::Statistics);
       if (isDisableRandomizeStartValues())
         problem->setRandomizeStartValues(false);
       if (isDisableStatistic())
