@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-//   $Revision: 1.64 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/14 19:20:00 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -40,39 +32,39 @@
 //
 //////////////////////////////////////////////////
 CReport::CReport():
-    COutputInterface(),
-    mpDataModel(NULL),
-    mpOstream(NULL),
-    mStreamOwner(false),
-    mpReportDef(NULL),
-    mTarget(""),
-    mAppend(true),
-    mConfirmOverwrite(true),
-    mFooterObjectList(),
-    mBodyObjectList(),
-    mHeaderObjectList(),
-    mpHeader(NULL),
-    mpBody(NULL),
-    mpFooter(NULL),
-    mState(Invalid)
+  COutputInterface(),
+  mpDataModel(NULL),
+  mpOstream(NULL),
+  mStreamOwner(false),
+  mpReportDef(NULL),
+  mTarget(""),
+  mAppend(true),
+  mConfirmOverwrite(true),
+  mFooterObjectList(),
+  mBodyObjectList(),
+  mHeaderObjectList(),
+  mpHeader(NULL),
+  mpBody(NULL),
+  mpFooter(NULL),
+  mState(Invalid)
 {}
 
 CReport::CReport(const CReport & src):
-    COutputInterface(src),
-    mpDataModel(src.mpDataModel),
-    mpOstream(src.mpOstream),
-    mStreamOwner(false),
-    mpReportDef(src.mpReportDef),
-    mTarget(src.mTarget),
-    mAppend(src.mAppend),
-    mConfirmOverwrite(src.mConfirmOverwrite),
-    mFooterObjectList(src.mFooterObjectList),
-    mBodyObjectList(src.mBodyObjectList),
-    mHeaderObjectList(src.mHeaderObjectList),
-    mpHeader(src.mpHeader),
-    mpBody(src.mpBody),
-    mpFooter(src.mpFooter),
-    mState(Invalid)
+  COutputInterface(src),
+  mpDataModel(src.mpDataModel),
+  mpOstream(src.mpOstream),
+  mStreamOwner(false),
+  mpReportDef(src.mpReportDef),
+  mTarget(src.mTarget),
+  mAppend(src.mAppend),
+  mConfirmOverwrite(src.mConfirmOverwrite),
+  mFooterObjectList(src.mFooterObjectList),
+  mBodyObjectList(src.mBodyObjectList),
+  mHeaderObjectList(src.mHeaderObjectList),
+  mpHeader(src.mpHeader),
+  mpBody(src.mpBody),
+  mpFooter(src.mpFooter),
+  mState(Invalid)
 {}
 
 CReport::~CReport()
@@ -110,7 +102,6 @@ bool CReport::confirmOverwrite() const
 
 void CReport::setConfirmOverwrite(bool confirmOverwrite)
 {mConfirmOverwrite = confirmOverwrite;}
-
 
 void CReport::output(const Activity & activity)
 {
