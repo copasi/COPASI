@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-//   $Revision: 1.419 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/25 12:11:29 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -19,6 +11,7 @@
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
 //
 
 #include <string.h>
@@ -71,81 +64,81 @@
 #define MNumMetabolitesReactionDependent (mNumMetabolitesReaction - mNumMetabolitesReactionIndependent)
 
 const char * CModel::VolumeUnitNames[] =
-  {"dimensionless", "m\xc2\xb3", "l", "ml", "\xc2\xb5l", "nl", "pl", "fl", NULL};
+{"dimensionless", "m\xc2\xb3", "l", "ml", "\xc2\xb5l", "nl", "pl", "fl", NULL};
 
 const char * CModel::AreaUnitNames[] =
-  {"dimensionless", "m\xc2\xb2", "dm\xc2\xb2", "cm\xc2\xb2", "mm\xc2\xb2", "\xc2\xb5m\xc2\xb2", "nm\xc2\xb2", "pm\xc2\xb2", "fm\xc2\xb2", NULL};
+{"dimensionless", "m\xc2\xb2", "dm\xc2\xb2", "cm\xc2\xb2", "mm\xc2\xb2", "\xc2\xb5m\xc2\xb2", "nm\xc2\xb2", "pm\xc2\xb2", "fm\xc2\xb2", NULL};
 
 const char * CModel::LengthUnitNames[] =
-  {"dimensionless", "m", "dm", "cm", "mm", "\xc2\xb5m", "nm", "pm", "fm", NULL};
+{"dimensionless", "m", "dm", "cm", "mm", "\xc2\xb5m", "nm", "pm", "fm", NULL};
 
 const char * CModel::TimeUnitNames[] =
-  {"dimensionless", "d", "h", "min", "s", "ms", "\xc2\xb5s", "ns", "ps", "fs", NULL};
+{"dimensionless", "d", "h", "min", "s", "ms", "\xc2\xb5s", "ns", "ps", "fs", NULL};
 
 // "mol" is the correct name, however in the COPASI XML files "Mol" is used
 // up to build 18
 
 const char * CModel::QuantityUnitOldXMLNames[] =
-  {"dimensionless", "Mol", "mMol", "\xc2\xb5Mol", "nMol", "pMol", "fMol", "#", NULL};
+{"dimensionless", "Mol", "mMol", "\xc2\xb5Mol", "nMol", "pMol", "fMol", "#", NULL};
 
 const char * CModel::QuantityUnitNames[] =
-  {"dimensionless", "mol", "mmol", "\xc2\xb5mol", "nmol", "pmol", "fmol", "#", NULL};
+{"dimensionless", "mol", "mmol", "\xc2\xb5mol", "nmol", "pmol", "fmol", "#", NULL};
 
 const char * CModel::ModelTypeNames[] =
-  {"deterministic", "stochastic", NULL};
+{"deterministic", "stochastic", NULL};
 
 CModel::CModel(CCopasiContainer* pParent):
-    CModelEntity("New Model", pParent, "Model"),
-    mInitialState(),
-    mCurrentState(),
-    mStateTemplate(*this, this->mInitialState, this->mCurrentState),
-    mSimulatedUpToDateObjects(),
+  CModelEntity("New Model", pParent, "Model"),
+  mInitialState(),
+  mCurrentState(),
+  mStateTemplate(*this, this->mInitialState, this->mCurrentState),
+  mSimulatedUpToDateObjects(),
 #ifdef TST_DEPENDENCYGRAPH
-    mInitialDependencies(),
-    mTransientDependencies(),
-    mPhysicalDependencies(),
+  mInitialDependencies(),
+  mTransientDependencies(),
+  mPhysicalDependencies(),
 #endif // TST_DEPENDENCYGRAPH
-    mVolumeUnit(ml),
-    mAreaUnit(m2),
-    mLengthUnit(m),
-    mTimeUnit(s),
-    mQuantityUnit(mMol),
-    mType(deterministic),
-    mCompartments("Compartments", this),
-    mMetabolites("Metabolites", this),
-    mMetabolitesX("Reduced Model Metabolites", this),
-    mSteps("Reactions", this),
-    mEvents("Events", this),
-    mParticleFluxes(),
-    mValues("Values", this),
-    mParameterSets("ParameterSets", this),
-    mActiveParameterSetKey(""),
-    mMoieties("Moieties", this),
-    mStoi(),
-    mpStoiAnnotation(NULL),
-    mStoiReordered(),
-    mRedStoi(),
-    mpRedStoiAnnotation(NULL),
-    mNumMetabolitesUnused(0),
-    mNumMetabolitesODE(0),
-    mNumMetabolitesReaction(0),
-    mNumMetabolitesAssignment(0),
-    mNumMetabolitesReactionIndependent(0),
-    mL(),
-    mpLinkMatrixAnnotation(NULL),
-    mLView(mL, mNumMetabolitesReactionIndependent),
-    mAvogadro(6.02214179e23),
-    mQuantity2NumberFactor(1.0),
-    mNumber2QuantityFactor(1.0),
-    mpCompileHandler(NULL),
-    mInitialRefreshes(),
-    mSimulatedRefreshes(),
-    mApplyInitialValuesRefreshes(),
-    mNonSimulatedRefreshes(),
-    mReorderNeeded(false),
-    mIsAutonomous(true),
-    mBuildInitialSequence(true),
-    mpMathModel(NULL)
+  mVolumeUnit(ml),
+  mAreaUnit(m2),
+  mLengthUnit(m),
+  mTimeUnit(s),
+  mQuantityUnit(mMol),
+  mType(deterministic),
+  mCompartments("Compartments", this),
+  mMetabolites("Metabolites", this),
+  mMetabolitesX("Reduced Model Metabolites", this),
+  mSteps("Reactions", this),
+  mEvents("Events", this),
+  mParticleFluxes(),
+  mValues("Values", this),
+  mParameterSets("ParameterSets", this),
+  mActiveParameterSetKey(""),
+  mMoieties("Moieties", this),
+  mStoi(),
+  mpStoiAnnotation(NULL),
+  mStoiReordered(),
+  mRedStoi(),
+  mpRedStoiAnnotation(NULL),
+  mNumMetabolitesUnused(0),
+  mNumMetabolitesODE(0),
+  mNumMetabolitesReaction(0),
+  mNumMetabolitesAssignment(0),
+  mNumMetabolitesReactionIndependent(0),
+  mL(),
+  mpLinkMatrixAnnotation(NULL),
+  mLView(mL, mNumMetabolitesReactionIndependent),
+  mAvogadro(6.02214179e23),
+  mQuantity2NumberFactor(1.0),
+  mNumber2QuantityFactor(1.0),
+  mpCompileHandler(NULL),
+  mInitialRefreshes(),
+  mSimulatedRefreshes(),
+  mApplyInitialValuesRefreshes(),
+  mNonSimulatedRefreshes(),
+  mReorderNeeded(false),
+  mIsAutonomous(true),
+  mBuildInitialSequence(true),
+  mpMathModel(NULL)
 {
   initObjects();
 
@@ -3267,8 +3260,8 @@ const CModel::CLinkMatrixView::elementType CModel::CLinkMatrixView::mUnit = 1.0;
 
 CModel::CLinkMatrixView::CLinkMatrixView(const CMatrix< C_FLOAT64 > & A,
     const size_t & numIndependent):
-    mA(A),
-    mNumIndependent(numIndependent)
+  mA(A),
+  mNumIndependent(numIndependent)
 {CONSTRUCTOR_TRACE;}
 
 CModel::CLinkMatrixView::~CLinkMatrixView()
@@ -3691,7 +3684,6 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
       if ((*itEvent)->getTriggerExpressionPtr()->hasDiscontinuity())
         {
           TreesWithDiscontinuities.push_back((*itEvent)->getTriggerExpressionPtr());
-
         }
     }
 
@@ -3994,7 +3986,7 @@ std::string CModel::printParameterOverview()
 
       for (i = 0; i < imax; ++i)
         oss << comps[i]->getObjectName() << " \t" << comps[i]->getInitialValue()
-        << " " << model->getVolumeUnitsDisplayString() << "\n";
+            << " " << model->getVolumeUnitsDisplayString() << "\n";
 
       oss << "\n";
     }
@@ -4009,8 +4001,8 @@ std::string CModel::printParameterOverview()
 
       for (i = 0; i < imax; ++i)
         oss << CMetabNameInterface::getDisplayName(model, *metabs[i], false) << " \t"
-        << metabs[i]->getInitialConcentration() << " "
-        << model->getConcentrationUnitsDisplayString() << "\n";
+            << metabs[i]->getInitialConcentration() << " "
+            << model->getConcentrationUnitsDisplayString() << "\n";
 
       oss << "\n";
     }
@@ -4025,7 +4017,7 @@ std::string CModel::printParameterOverview()
 
       for (i = 0; i < imax; ++i)
         oss << params[i]->getObjectName() << " \t"
-        << params[i]->getInitialValue() << "\n";
+            << params[i]->getInitialValue() << "\n";
 
       oss << "\n";
     }
@@ -4071,8 +4063,8 @@ std::string CModel::printParameterOverview()
                     if (!par) continue; //or rather fatal error?
 
                     oss << "    " << params[j]->getObjectName() << " \t"
-                    << *par->getValue().pDOUBLE << " "
-                    << units.getDimensions()[j].getDisplayString(getObjectDataModel()) << "\n";
+                        << *par->getValue().pDOUBLE << " "
+                        << units.getDimensions()[j].getDisplayString(getObjectDataModel()) << "\n";
                   }
                 else
                   {
@@ -4081,8 +4073,8 @@ std::string CModel::printParameterOverview()
                     if (!par) continue; //or rather fatal error?
 
                     oss << "    " << params[j]->getObjectName() << " \t"
-                    << "-> " + par->getObjectName()
-                    << " (" << units.getDimensions()[j].getDisplayString(getObjectDataModel()) << ")\n";
+                        << "-> " + par->getObjectName()
+                        << " (" << units.getDimensions()[j].getDisplayString(getObjectDataModel()) << ")\n";
                   }
               }
 
@@ -4267,4 +4259,3 @@ const CVector< CMathTrigger::CRootFinder * > & CModel::getRootFinders() const
 {
   return mpMathModel->getRootFinders();
 }
-

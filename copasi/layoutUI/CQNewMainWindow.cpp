@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.cpp,v $
-//   $Revision: 1.16 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/05/10 08:36:34 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -30,7 +22,6 @@
 #include <QtGui/QStatusBar>
 #include <QtGui/QToolBar>
 #include <QtGui/QVBoxLayout>
-
 
 // local includes
 #include "CQGLLayoutPainter.h"
@@ -90,31 +81,30 @@
 const char* const CQNewMainWindow::ZOOM_FACTOR_STRINGS[] = {"1%", "2%", "3%", "4%", "5%", "10%", "20%", "25%", "30%", "40%", "50%", "75%", "100%", "150%", "200%", "300%", "400%", "500%", "1000%"};
 const double CQNewMainWindow::ZOOM_FACTORS[] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
 
-
 // TODO implement signals that allow enabling and disabling the save and save as actions.
 
 CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
-    QMainWindow(),
-    mMode(CQNewMainWindow::GRAPH_MODE),
-    mpWidgetStack(NULL),
-    mpLayoutViewer(NULL),
-    mpAnimationWindow(NULL),
-    mpDataModel(pDatamodel),
-    mpCurrentLayout(NULL),
-    mpCurrentRenderInformation(NULL),
-    mDocumentChanged(false),
-    mCurDir(""),
-    mGraphIcon(QPixmap(graph_xpm)),
-    mAnimationIcon(QPixmap(film_strip_xpm))
+  QMainWindow(),
+  mMode(CQNewMainWindow::GRAPH_MODE),
+  mpWidgetStack(NULL),
+  mpLayoutViewer(NULL),
+  mpAnimationWindow(NULL),
+  mpDataModel(pDatamodel),
+  mpCurrentLayout(NULL),
+  mpCurrentRenderInformation(NULL),
+  mDocumentChanged(false),
+  mCurDir(""),
+  mGraphIcon(QPixmap(graph_xpm)),
+  mAnimationIcon(QPixmap(film_strip_xpm))
 #ifdef ELEMENTARY_MODE_DISPLAY
-    , mpFogColorPixmap(new QPixmap(32, 32))
-    , mpHighlightColorPixmap(new QPixmap(32, 32))
-    , mpHighlightModeAction(NULL)
-    , mpChangeColorAction(NULL)
+  , mpFogColorPixmap(new QPixmap(32, 32))
+  , mpHighlightColorPixmap(new QPixmap(32, 32))
+  , mpHighlightModeAction(NULL)
+  , mpChangeColorAction(NULL)
 #endif // ELEMENTARY_MODE_DISPLAY
 #ifdef COPASI_AUTOLAYOUT
-    , mStopLayout(false)
-    , mpStopLayoutAction(NULL)
+  , mStopLayout(false)
+  , mpStopLayoutAction(NULL)
 #endif //  COPASI_AUTOLAYOUT
 {
   // first we load the default styles if they don't already exist
@@ -147,12 +137,11 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   // We have to do that after the call to updateLayoutList because before that call
   // the rnederer does not exist yet.
   const GLfloat* c = this->mpLayoutViewer->getPainter()->getFogColor();
-  this->mpFogColorPixmap->fill(QColor((int)(c[0]*255.0), (int)(c[1]*255.0), (int)(c[2]*255.0), (int)(c[3]*255.0)));
+  this->mpFogColorPixmap->fill(QColor((int)(c[0] * 255.0), (int)(c[1] * 255.0), (int)(c[2] * 255.0), (int)(c[3] * 255.0)));
   c = this->mpLayoutViewer->getPainter()->getHighlightColor();
-  this->mpHighlightColorPixmap->fill(QColor((int)(c[0]*255.0), (int)(c[1]*255.0), (int)(c[2]*255.0), (int)(c[3]*255.0)));
+  this->mpHighlightColorPixmap->fill(QColor((int)(c[0] * 255.0), (int)(c[1] * 255.0), (int)(c[2] * 255.0), (int)(c[3] * 255.0)));
   this->mpChangeColorAction->setIcon(QIcon(*this->mpHighlightColorPixmap));
 #endif // ELEMENTARY_MODE_DISPLAY
-
 }
 
 void CQNewMainWindow::createActions()
@@ -346,7 +335,6 @@ void CQNewMainWindow::createToolBars()
   this->mpRenderDropdown->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
   pLayout->addWidget(this->mpRenderDropdown);
 
-
   QFrame* pFrame3 = new QFrame;
   pLayout = new QVBoxLayout;
   pLayout->setSpacing(3);
@@ -448,7 +436,6 @@ void CQNewMainWindow::slotFitToScreen()
       zoom = this->mpLayoutViewer->fitToScreen();
       // set the zoom factor on the other GL window
       this->mpAnimationWindow->setZoomFactor(zoom);
-
     }
 
   // uncheck the zoom entry in the menu
@@ -485,9 +472,7 @@ void CQNewMainWindow::slotFitToScreen()
 
   this->mpZoomDropdown->setCurrentIndex(0);
   connect(this->mpZoomDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotZoomChanged(int)));
-
 }
-
 
 void CQNewMainWindow::slotLayoutChanged(int index)
 {
@@ -899,7 +884,7 @@ void CQNewMainWindow::export_bitmap(const QString& filename, double x, double y,
 
           if (pImageData != NULL)
             {
-              QImage* pImage = new QImage(pImageData, imageWidth, imageHeight, 4*imageWidth, QImage::Format_ARGB32);
+              QImage* pImage = new QImage(pImageData, imageWidth, imageHeight, 4 * imageWidth, QImage::Format_ARGB32);
               bool result = pImage->save(filename, "PNG");
 
               if (result == false)
@@ -985,7 +970,7 @@ void CQNewMainWindow::switchMode()
 #endif // ELEMENTARY_MODE_DISPLAY
 
 #ifdef COPASI_AUTOLAYOUT
-        updateLayoutList();        
+        updateLayoutList();
         // reset current displayed layout, so we can get the updates displayed
         this->mpAnimationWindow->setLayout(NULL);
         // update with the new layout
@@ -994,6 +979,7 @@ void CQNewMainWindow::switchMode()
         slotFitToScreen();
 #endif
         break;
+
       case CQNewMainWindow::ANIMATION_MODE:
         disconnect(this->mpScreenshotAct, SIGNAL(triggered()), this->mpAnimationWindow, SLOT(saveImage()));
         connect(mpScreenshotAct, SIGNAL(triggered()), this, SLOT(slotScreenshot()));
@@ -1008,7 +994,7 @@ void CQNewMainWindow::switchMode()
         this->mpElementaryModesMenu->setEnabled(true);
         this->mpHighlightModeAction->setEnabled(true);
         this->mpChangeColorAction->setEnabled(true);
-#endif // ELEMENTARY_MODE_DISPLAY        
+#endif // ELEMENTARY_MODE_DISPLAY
         break;
     }
 }
@@ -1051,7 +1037,6 @@ void CQNewMainWindow::setStatusMessage(const QString& message, int timeout)
 {
   this->statusBar()->showMessage(message, timeout);
 }
-
 
 #ifdef ELEMENTARY_MODE_DISPLAY
 /**
@@ -1171,7 +1156,6 @@ void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
             }
         }
 
-
       while (it != endit && pProblem != NULL)
         {
           assert(pModel->getReactions().size() > it->first);
@@ -1228,8 +1212,6 @@ void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
 
           ++ait;
         }
-
-
     }
 
   // redraw the GL window
@@ -1298,10 +1280,10 @@ void CQNewMainWindow::selectReaction(const CReaction* pReaction, unsigned int se
                               {
                                 s.insert(static_cast<const CLMetabGlyph*>(pObject));
                               }
-
                           }
 
                         break;
+
                       case CLMetabReferenceGlyph::SUBSTRATE:
 
                         if (selectionMask & CQNewMainWindow::ROLE_SUBSTRATE)
@@ -1317,6 +1299,7 @@ void CQNewMainWindow::selectReaction(const CReaction* pReaction, unsigned int se
                           }
 
                         break;
+
                       case CLMetabReferenceGlyph::PRODUCT:
 
                         if (selectionMask & CQNewMainWindow::ROLE_PRODUCT)
@@ -1332,6 +1315,7 @@ void CQNewMainWindow::selectReaction(const CReaction* pReaction, unsigned int se
                           }
 
                         break;
+
                       case CLMetabReferenceGlyph::SIDESUBSTRATE:
 
                         if (selectionMask & CQNewMainWindow::ROLE_SIDESUBSTRATE)
@@ -1347,6 +1331,7 @@ void CQNewMainWindow::selectReaction(const CReaction* pReaction, unsigned int se
                           }
 
                         break;
+
                       case CLMetabReferenceGlyph::SIDEPRODUCT:
 
                         if (selectionMask & CQNewMainWindow::ROLE_SIDEPRODUCT)
@@ -1362,6 +1347,7 @@ void CQNewMainWindow::selectReaction(const CReaction* pReaction, unsigned int se
                           }
 
                         break;
+
                       case CLMetabReferenceGlyph::MODIFIER:
 
                         if (selectionMask & CQNewMainWindow::ROLE_MODIFIER)
@@ -1377,6 +1363,7 @@ void CQNewMainWindow::selectReaction(const CReaction* pReaction, unsigned int se
                           }
 
                         break;
+
                       case CLMetabReferenceGlyph::ACTIVATOR:
 
                         if (selectionMask & CQNewMainWindow::ROLE_ACTIVATOR)
@@ -1392,6 +1379,7 @@ void CQNewMainWindow::selectReaction(const CReaction* pReaction, unsigned int se
                           }
 
                         break;
+
                       case CLMetabReferenceGlyph::INHIBITOR:
 
                         if (selectionMask & CQNewMainWindow::ROLE_INHIBITOR)
@@ -1417,7 +1405,6 @@ void CQNewMainWindow::selectReaction(const CReaction* pReaction, unsigned int se
         }
     }
 }
-
 
 /**
  * Selected the given metabolite object by selecting all
@@ -1446,7 +1433,6 @@ void CQNewMainWindow::selectMetabolite(const CMetab* pMetab, std::set<const CLGr
         }
     }
 }
-
 
 /**
  * Is called when the menu entry for toggling highlighting
@@ -1499,8 +1485,6 @@ void CQNewMainWindow::fogDensitySlot(bool)
   connect(pBBox, SIGNAL(accepted()), pDialog, SLOT(accept()));
   connect(pBBox, SIGNAL(rejected()), pDialog, SLOT(reject()));
 
-
-
   if (pDialog->exec() == QDialog::Accepted)
     {
       c = pSpinBox->value();
@@ -1514,9 +1498,7 @@ void CQNewMainWindow::fogDensitySlot(bool)
     }
 
   delete pDialog;
-
 }
-
 
 /**
  * This slot is triggered when the user wants to change
@@ -1538,7 +1520,7 @@ void CQNewMainWindow::changeColorSlot(bool)
     }
 
   // open a color selection dialog
-  QColorDialog* pDialog = new QColorDialog(QColor((int)(c[0]*255.0), (int)(c[1]*255.0), (int)(c[2]*255.0), (int)(c[3]*255.0)), this);
+  QColorDialog* pDialog = new QColorDialog(QColor((int)(c[0] * 255.0), (int)(c[1] * 255.0), (int)(c[2] * 255.0), (int)(c[3] * 255.0)), this);
 
   if (pDialog->exec() == QDialog::Accepted)
     {
@@ -1613,8 +1595,6 @@ CLReactionGlyph* CQNewMainWindow::createReactionGlyph(const std::string& modelob
   return pResult;
 }
 
-
-
 /**
  * Creates a CLTextGlyph for the given graphical object keys and size.
  */
@@ -1640,7 +1620,6 @@ CLMetabReferenceGlyph* CQNewMainWindow::createMetabReferenceGlyph(const std::str
   pResult->getCurve().addCurveSegment(CLLineSegment(CLPoint(x1, y1), CLPoint(x2, y2)));
   return pResult;
 }
-
 
 /**
  * This method creates a random layout using the elements
@@ -1791,7 +1770,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
                   (*gIt)->setPosition(CLPoint(xPos, yPos));
                   pTextGlyph = textGlyphMap[*gIt];
                   assert(pTextGlyph != NULL);
-                  pTextGlyph->setPosition(CLPoint(xPos + ((*gIt)->getDimensions().getWidth() - pTextGlyph->getDimensions().getWidth())*0.5, yPos + ((*gIt)->getDimensions().getHeight() - pTextGlyph->getDimensions().getHeight())*0.5));
+                  pTextGlyph->setPosition(CLPoint(xPos + ((*gIt)->getDimensions().getWidth() - pTextGlyph->getDimensions().getWidth()) * 0.5, yPos + ((*gIt)->getDimensions().getHeight() - pTextGlyph->getDimensions().getHeight()) * 0.5));
                   // if we remove the species that have already been placed, we can
                   // later determine which elements are not layed out in a compartment
                   textGlyphMap.erase(textGlyphMap.find(*gIt));
@@ -1801,7 +1780,6 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
 
           ++compIt;
         }
-
     }
 
   // now we calculate the remaining area and place the rest of the species glyphs
@@ -2090,7 +2068,6 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
                   this->mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
                   // TODO maybe change the position of the copy, but this is not really
                   // TODO necessary
-
                 }
 
               // create the species reference glyph
@@ -2258,5 +2235,3 @@ void CQNewMainWindow::closeEvent(QCloseEvent * event)
   this->QMainWindow::closeEvent(event);
 }
 #endif // COPASI_AUTOLAYOUT
-
-

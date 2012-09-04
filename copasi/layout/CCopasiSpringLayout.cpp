@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CCopasiSpringLayout.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:52 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -67,12 +59,12 @@ void CCopasiSpringLayout::ReactionNode::updateFromState(const std::vector<double
 
   //angle
 }
-*/
+ */
 
 //*******************************************
 
 CCopasiSpringLayout::CCopasiSpringLayout(CLayout* layout)
-    : mpLayout(NULL)
+  : mpLayout(NULL)
 {
   initFromLayout(layout);
 }
@@ -133,9 +125,7 @@ bool CCopasiSpringLayout::initFromLayout(CLayout* layout)
     }
 
   return true;
-
 }
-
 
 CLCompartmentGlyph* CCopasiSpringLayout::findCompartmentForReactionNode(CLReactionGlyph & r)
 {
@@ -169,14 +159,10 @@ CLCompartmentGlyph* CCopasiSpringLayout::findCompartmentForReactionNode(CLReacti
           pCG = NULL;
           break;
         }
-
-
     }
 
   return pCG;
 }
-
-
 
 bool CCopasiSpringLayout::createVariables()
 {
@@ -281,9 +267,9 @@ void CCopasiSpringLayout::addReactionVariables(CLReactionGlyph* rg)
     {
       unsigned int numsegs = rg->getCurve().getNumCurveSegments();
       xxx = 0.5 * (rg->getCurve().getCurveSegments()[0].getStart().getX()
-                   + rg->getCurve().getCurveSegments()[numsegs-1].getEnd().getX());
+                   + rg->getCurve().getCurveSegments()[numsegs - 1].getEnd().getX());
       yyy = 0.5 * (rg->getCurve().getCurveSegments()[0].getStart().getY()
-                   + rg->getCurve().getCurveSegments()[numsegs-1].getEnd().getY());
+                   + rg->getCurve().getCurveSegments()[numsegs - 1].getEnd().getY());
     }
   else
     {
@@ -303,7 +289,6 @@ void CCopasiSpringLayout::addReactionVariables(CLReactionGlyph* rg)
 
   mUpdateActions.push_back(UpdateAction(UpdateAction::REACTION_2V, rg, first_index, first_index + 1));
 }
-
 
 bool CCopasiSpringLayout::setState(const std::vector<double> & vars)
 {
@@ -432,11 +417,13 @@ void CCopasiSpringLayout::finalizeState()
                 reactionPoint = reaction_s;
                 direction = -0.1;
                 break;
+
               case CLMetabReferenceGlyph::PRODUCT :
               case CLMetabReferenceGlyph::SIDEPRODUCT :
                 reactionPoint = reaction_p;
                 direction = 0.1;
                 break;
+
               default:
                 direction = 0.0;
                 reactionPoint = pRG->getPosition();
@@ -447,9 +434,8 @@ void CCopasiSpringLayout::finalizeState()
           pMRG->getCurve().clear();
           pMRG->getCurve().addCurveSegment(CLLineSegment(reactionPoint,
                                            metabPoint,
-                                           reactionPoint + dir*direction,
-                                           (reactionPoint + dir*(direction*1.5) + metabPoint)*0.5));
-
+                                           reactionPoint + dir * direction,
+                                           (reactionPoint + dir * (direction * 1.5) + metabPoint) * 0.5));
         }
     }
 
@@ -467,7 +453,7 @@ CLPoint CCopasiSpringLayout::borderProjection(CLGraphicalObject* go, const CLPoi
 
   CLPoint ret;
 
-  if (fabs(diff.getX()) * fabs(go->getHeight())*0.5 + d > fabs(diff.getY()) * fabs(go->getWidth())*0.5 + d)
+  if (fabs(diff.getX()) * fabs(go->getHeight()) * 0.5 + d > fabs(diff.getY()) * fabs(go->getWidth()) * 0.5 + d)
     {
       double f = (fabs(go->getWidth()) * 0.5 + d) / fabs(diff.getX());
       ret = center + diff * f;
@@ -481,9 +467,7 @@ CLPoint CCopasiSpringLayout::borderProjection(CLGraphicalObject* go, const CLPoi
   return ret;
 }
 
-
 //*************************************
-
 
 double CCopasiSpringLayout::potSpeciesSpecies(const CLMetabGlyph & a, const CLMetabGlyph & b) const
 {
@@ -500,7 +484,6 @@ double CCopasiSpringLayout::potSpeciesSpecies(const CLMetabGlyph & a, const CLMe
   //else
   //  return 0;
 }
-
 
 double CCopasiSpringLayout::potSpeciesReaction(const CLMetabGlyph & a, const CLReactionGlyph & b) const
 {
@@ -522,7 +505,6 @@ double CCopasiSpringLayout::potReactionReaction(const CLReactionGlyph & a, const
   return /*a.charge*b.charge*/ 1 / tmp; //TODO: reintroduce the charge
 }
 
-
 double CCopasiSpringLayout::potEdge(const CLMetabReferenceGlyph & e, const CLReactionGlyph & r) const
 {
   double dist = 70;
@@ -535,7 +517,7 @@ double CCopasiSpringLayout::potEdge(const CLMetabReferenceGlyph & e, const CLRea
                         r.getX() + r.getWidth() / 2, r.getY() + r.getHeight() / 2);
 
   if (e.getRole() == CLMetabReferenceGlyph::MODIFIER)
-    return 0.3*pow(tmp - dist, 2);
+    return 0.3 * pow(tmp - dist, 2);
   else
     return pow(tmp - dist, 2);
 }
@@ -569,7 +551,7 @@ double CCopasiSpringLayout::potReaction(const ReactionNode & r) const
       ret+=cos(2*(s_angle-r_angle));
     }
   }
-*/
+ */
 /*  for (i=0; i<imax; ++i)
   {
     if (r.getEdges()[i].role==Edge::SUBSTRATE)
@@ -588,39 +570,37 @@ double CCopasiSpringLayout::potReaction(const ReactionNode & r) const
   return ret;
 }
 
-*/
+ */
 double CCopasiSpringLayout::potSpeciesCompartment(const CLMetabGlyph & s, const CLCompartmentGlyph & c) const
 {
   double tmp = 0;
   double dist = fabs((s.getX() + 0.5 * s.getWidth()) - (c.getX() + 0.5 * c.getWidth()));
 
-  if (dist > (0.5*c.getWidth() - 50))
+  if (dist > (0.5 * c.getWidth() - 50))
     tmp += pow(dist - 0.5 * c.getWidth() + 50, 2);
 
   dist = fabs((s.getY() + 0.5 * s.getHeight()) - (c.getY() + 0.5 * c.getHeight()));
 
-  if (dist > (0.5*c.getHeight() - 50))
+  if (dist > (0.5 * c.getHeight() - 50))
     tmp += pow(dist - 0.5 * c.getHeight() + 50, 2);
 
   return tmp /**s.charge*/; //TODO reintroduce charge
 }
-
 
 double CCopasiSpringLayout::potReactionCompartment(const CLReactionGlyph & r, const CLCompartmentGlyph & c) const
 {
   double tmp = 0;
   double dist = fabs((r.getX() + 0.5 * r.getWidth()) - (c.getX() + 0.5 * c.getWidth()));
 
-  if (dist > (0.5*c.getWidth() - 50))
+  if (dist > (0.5 * c.getWidth() - 50))
     tmp += pow(dist - 0.5 * c.getWidth() + 50, 2);
 
   dist = fabs((r.getY() + 0.5 * r.getHeight()) - (c.getY() + 0.5 * c.getHeight()));
 
-  if (dist > (0.5*c.getHeight() - 50))
+  if (dist > (0.5 * c.getHeight() - 50))
     tmp += pow(dist - 0.5 * c.getHeight() + 50, 2);
 
   return tmp /**s.charge*/; //TODO reintroduce charge
-
 }
 
 /*
@@ -636,8 +616,7 @@ double CCopasiSpringLayout::potCompartmentCompartment(const CLCompartmentGlyph &
     tmp+= -dist;
   return tmp;
 }
-*/
-
+ */
 
 double CCopasiSpringLayout::getPotential()
 {
