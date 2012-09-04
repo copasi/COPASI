@@ -12,8 +12,8 @@ remoteCommit=`git rev-parse origin`
 if [ "_$1" == "_--registerBuild" ]; then
   major=`${GAWK} -- '$2 ~ "VERSION_MAJOR" {print $3}' ${GitTools}/../copasi/CopasiVersion.h.in`
   minor=`${GAWK} -- '$2 ~ "VERSION_MINOR" {print $3}' ${GitTools}/../copasi/CopasiVersion.h.in`
-  ${WGET} -qO- "git.copasi.org/buildnumber/${major}.${minor}.${remoteCommit}" 
-  
+  echo Version: `${WGET} -qO- "git.copasi.org/buildnumber/${major}.${minor}.${remoteCommit}"`
+
   exit
 fi
 
@@ -53,6 +53,7 @@ current_minor=8
 current_build=35
 current_commit=4224d80e365b0dc42a0b17a76b8656ce10e9de84
 
+commitList=`git log --pretty=%H $current_commit..HEAD`
 buildList=`${WGET} -qO- "git.copasi.org/buildnumber/list" | \
            sed -e 's/<\(table\|tr\|td\)>//g' \
                -e 's?</table>??' \
@@ -75,7 +76,7 @@ for b in $buildList; do
   build=${build%% *}
   commit=${b#*commit=}
   
-  if [ `git log --pretty=%H $current_commit..HEAD | grep ${commit}` ]; then
+  if [ `echo $commitList | grep ${commit}` ]; then
     if [ $current_build == 35 ]; then 
       current_major=${major}
       current_minor=${minor}
@@ -83,7 +84,7 @@ for b in $buildList; do
       current_commit=${commit}
     fi
 	
-	echo $build >> $$
+    echo $build >> $$
   fi
 done 
 
