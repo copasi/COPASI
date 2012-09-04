@@ -3,7 +3,7 @@
 *.c    filter=common format=cstyle CommentStart=//
 *.h    filter=common format=cstyle CommentStart=//
 *.h.in filter=common format=cstyle CommentStart=//
-*.i    filter=common format=cstyle CommentStart=//
+*.i    filter=common CommentStart=//
 *.java filter=common CommentStart=//
 *.pro  filter=common CommentStart=#
 *.pri  filter=common CommentStart=#
