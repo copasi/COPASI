@@ -7,7 +7,7 @@ class CCopasiTask;
 
 class Arguments {
 
-public: 
+public:
 
   Arguments(int argc, char* argv[]);
 
@@ -23,6 +23,8 @@ public:
 
   bool isSwitchToTask() const;
 
+  bool isValid() const;
+
   int getTaskToSwitchTo() const;
 
   bool isGenerateOutput() const;
@@ -36,7 +38,7 @@ public:
   bool haveTaskName() const;
 
   const std::string& getTaskName() const;
-  
+
   bool isSolutionStatistic() const;
 
   bool isDisableStatistic() const;

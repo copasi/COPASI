@@ -54,7 +54,7 @@
 int main(int argc, char *argv[])
 {
   CQCopasiApplication a(argc, argv);
-  
+
     // parse args
   Arguments args(argc, argv);
 
@@ -108,10 +108,11 @@ int main(int argc, char *argv[])
       // ObjectDebug objwindow;
       // objwindow.show();
       a.setMainWindow(pWindow);
-      
+
       // pass control to the worker
+      if (args.isValid())
       Worker worker(pWindow, &args);
-      
+
       a.exec();
     }
 

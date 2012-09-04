@@ -220,9 +220,18 @@ bool Arguments::isDisablePlots() const
     return mHideWindow;
   }
 
+  bool Arguments::isValid() const
+  {
+  	if (!haveFile()) return false;
+  	if (!QFile(mFilename.c_str()).exists()) return false;
+  	return true;
+  }
+
 
 std::string Arguments::prepareModel() const
 {
+  if (!isValid()) return "";
+
   CCopasiDataModel* model = (*CCopasiRootContainer::getDatamodelList())[0];
   model->loadModel(getFilename(), NULL);
 
