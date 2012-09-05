@@ -156,8 +156,6 @@ void CVersion::setString()
 
   if (mComment == "stable")
     mVersion = StringPrint("%d.%d (Build %s)", mMajor, mMinor, Build.str().c_str());
-  else if (mComment == "Snapshot")
-    mVersion = StringPrint("%d.%02d.%s (%s)", mMajor, mMinor, Build.str().c_str(), mComment.c_str());
   else if (mComment != "")
     mVersion = StringPrint("%d.%d.%s (%s)", mMajor, mMinor, Build.str().c_str(), mComment.c_str());
   else
