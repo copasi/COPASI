@@ -85,22 +85,22 @@ CReportDefinition* CReport::getReportDefinition()
 void CReport::setReportDefinition(CReportDefinition* reportDef)
 {mpReportDef = reportDef;}
 
-const std::string& CReport::getTarget() const
+const std::string & CReport::getTarget() const
 {return mTarget;}
 
-void CReport::setTarget(std::string target)
+void CReport::setTarget(const std::string & target)
 {mTarget = target;}
 
-bool CReport::append() const
+const bool & CReport::append() const
 {return mAppend;}
 
-void CReport::setAppend(bool append)
+void CReport::setAppend(const bool & append)
 {mAppend = append;}
 
-bool CReport::confirmOverwrite() const
+const bool & CReport::confirmOverwrite() const
 {return mConfirmOverwrite;}
 
-void CReport::setConfirmOverwrite(bool confirmOverwrite)
+void CReport::setConfirmOverwrite(const bool & confirmOverwrite)
 {mConfirmOverwrite = confirmOverwrite;}
 
 void CReport::output(const Activity & activity)
