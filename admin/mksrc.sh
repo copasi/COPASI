@@ -1,6 +1,7 @@
 #!/bin/bash
 
 SCP=${COPASI_SCP:-scp}
+AWK=${COPASI_AWK:-gawk}
 
 if [ x"$COPASI_UPLOAD" != x ]; then
   function UPLOAD () {
@@ -17,21 +18,17 @@ else
   }
 fi
 
-major=`gawk -- '$2 ~ "VERSION_MAJOR" {print $3}' copasi/CopasiVersion.h`
-minor=`gawk -- '$2 ~ "VERSION_MINOR" {print $3}' copasi/CopasiVersion.h`
-build=`gawk -- '$2 ~ "VERSION_BUILD" {print $3}' copasi/CopasiVersion.h`
-comment=`gawk -- '$3 ~ "VERSION_COMMENT" {print $4}' copasi/CopasiVersion.h | sort -u`
-
+major=`${AWK} -- '$2 ~ "COPASI_VERSION_MAJOR" {print $3}' copasi/CopasiVersion.h`
+minor=`${AWK} -- '$2 ~ "COPASI_VERSION_MINOR" {print $3}' copasi/CopasiVersion.h`
+build=`${AWK} -- '$2 ~ "COPASI_VERSION_BUILD" {print $3}' copasi/CopasiVersion.h`
+modified=`${AWK} -- '$2 ~ "COPASI_VERSION_MODIFIED" {print $3}' copasi/CopasiVersion.h`
+comment=`${AWK} -- '$2 ~ "COPASI_VERSION_COMMENT" {print $3}' copasi/CopasiVersion.h`
 buildname=${build}
 
-if [ x"${comment}" = x\"Snapshot\" ]; then
-  buildname=${major}
-  [ ${#minor} = 1 ] && buildname=${buildname}0
-  buildname=${buildname}${minor}
-  [ ${#build} = 1 ] && buildname=${buildname}0
-  buildname=${buildname}${build}
+if [ $modified == true ]; then
+  buildname=${buildname}+
 fi
-
+  
 license="US"
 
 test -d copasi-${buildname}-src && rm -rf copasi-${buildname}-src
