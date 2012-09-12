@@ -6,7 +6,8 @@ GitTools="`git config copasi.gittools`"
 GAWK=`gitTool gawk`
 WGET=`gitTool wget`
 
-remoteCommit=`git rev-parse origin`
+branch=`git rev-parse --abbrev-ref HEAD`
+remoteCommit=`git rev-parse origin/${branch}`
 
 # We only register a build.
 if [ "_$1" == "_--registerBuild" ]; then
