@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/utilities.cpp,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/04/26 16:10:39 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -77,20 +69,19 @@ bool load_cps_model_from_stream(std::istream& is, CCopasiDataModel& dataModel)
 //              try
 //                {
 //                  (*it)->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-//                }
+//}
 //
 //              catch (...) {}
-//            }
+//}
 //
 //          // Remove error messages created by the task initialization as this may fail
 //          // due to incomplete task specification at this time.
 //          while (CCopasiMessage::size() > Size)
 //            CCopasiMessage::getLastMessage();
-
         }
 
       // the code below is a hack.
-      // Normally the add method would make sure that all objects belong to the container they arer added to, 
+      // Normally the add method would make sure that all objects belong to the container they arer added to,
       // but since this method does not have accesss to the internal elements of the data model, the properties can't be
       // set in the same way as it is done in the load method for CCopasiDataModel
       if (XML.getReportList())
@@ -98,14 +89,16 @@ bool load_cps_model_from_stream(std::istream& is, CCopasiDataModel& dataModel)
           CReportDefinitionVector* pReportDefinitions = dataModel.getReportDefinitionList();
           *pReportDefinitions = *XML.getReportList();
           dataModel.add(dataModel.getTaskList(), true);
-          unsigned int i=0,iMax=pReportDefinitions->size();
-          CReportDefinition* pReport=NULL;
-          while(i < iMax)
-          {
-            pReport=(*pReportDefinitions)[i];
-            pReport->setObjectParent(pReportDefinitions);
-            ++i;
-          }
+          unsigned int i = 0, iMax = pReportDefinitions->size();
+          CReportDefinition* pReport = NULL;
+
+          while (i < iMax)
+            {
+              pReport = (*pReportDefinitions)[i];
+              pReport->setObjectParent(pReportDefinitions);
+              ++i;
+            }
+
           dataModel.addDefaultReports();
         }
 
@@ -114,14 +107,15 @@ bool load_cps_model_from_stream(std::istream& is, CCopasiDataModel& dataModel)
           COutputDefinitionVector* pPlotList = dataModel.getPlotDefinitionList();
           *pPlotList = *XML.getPlotList();
           dataModel.add(pPlotList, true);
-          unsigned int i=0,iMax=pPlotList->size();
-          CPlotSpecification* pPlot=NULL;
-          while(i < iMax)
-          {
-            pPlot=(*pPlotList)[i];
-            pPlot->setObjectParent(pPlotList);
-            ++i;
-          }
+          unsigned int i = 0, iMax = pPlotList->size();
+          CPlotSpecification* pPlot = NULL;
+
+          while (i < iMax)
+            {
+              pPlot = (*pPlotList)[i];
+              pPlot->setObjectParent(pPlotList);
+              ++i;
+            }
         }
 
       //TODO: layouts
@@ -130,17 +124,17 @@ bool load_cps_model_from_stream(std::istream& is, CCopasiDataModel& dataModel)
           CListOfLayouts* pListOfLayouts = dataModel.getListOfLayouts();
           *pListOfLayouts = *XML.getLayoutList();
           // adding does not seem to work
-          dataModel.add(pListOfLayouts,true);
+          dataModel.add(pListOfLayouts, true);
           // so I do it manually
-          unsigned int i=0,iMax=pListOfLayouts->size();
-          CLayout* pLayout=NULL;
-          while(i < iMax)
-          {
-            pLayout=(*pListOfLayouts)[i];
-            pLayout->setObjectParent(pListOfLayouts);
-            ++i;
-          }
+          unsigned int i = 0, iMax = pListOfLayouts->size();
+          CLayout* pLayout = NULL;
 
+          while (i < iMax)
+            {
+              pLayout = (*pListOfLayouts)[i];
+              pLayout->setObjectParent(pListOfLayouts);
+              ++i;
+            }
         }
     }
   else
@@ -192,4 +186,3 @@ bool save_cps_model_to_stream(std::ostream& os, CCopasiDataModel* pDataModel)
 
   return success;
 }
-
