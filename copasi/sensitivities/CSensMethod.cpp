@@ -1,28 +1,22 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-//   $Revision: 1.39 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/20 21:29:13 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /**
  *  CSensMethod class.
  */
+
+#include <sstream>
 
 #include "copasi.h"
 
@@ -60,18 +54,18 @@ CSensMethod::createMethod(CCopasiMethod::SubType subType)
  */
 CSensMethod::CSensMethod(CCopasiMethod::SubType subType,
                          const CCopasiContainer * pParent):
-    CCopasiMethod(CCopasiTask::sens, subType, pParent),
-    mpProblem(NULL),
-    mLocalData(),
-    mTargetfunctionPointers(),
-    mpSubTask(NULL),
-    mInitialRefreshes(),
-    mpDeltaFactor(NULL),
-    mpMinDelta(NULL),
-    mProgressHandler(C_INVALID_INDEX),
-    mProgress(0),
-    mCounter(0),
-    mFailedCounter(0)
+  CCopasiMethod(CCopasiTask::sens, subType, pParent),
+  mpProblem(NULL),
+  mLocalData(),
+  mTargetfunctionPointers(),
+  mpSubTask(NULL),
+  mInitialRefreshes(),
+  mpDeltaFactor(NULL),
+  mpMinDelta(NULL),
+  mProgressHandler(C_INVALID_INDEX),
+  mProgress(0),
+  mCounter(0),
+  mFailedCounter(0)
 {
   addParameter("Delta factor",
                CCopasiParameter::UDOUBLE, (C_FLOAT64) 1e-3);
@@ -90,18 +84,18 @@ CSensMethod::CSensMethod(CCopasiMethod::SubType subType,
  */
 CSensMethod::CSensMethod(const CSensMethod & src,
                          const CCopasiContainer * pParent):
-    CCopasiMethod(src, pParent),
-    mpProblem(src.mpProblem),
-    mLocalData(),
-    mTargetfunctionPointers(),
-    mpSubTask(NULL),
-    mInitialRefreshes(),
-    mpDeltaFactor(NULL),
-    mpMinDelta(NULL),
-    mProgressHandler(C_INVALID_INDEX),
-    mProgress(0),
-    mCounter(0),
-    mFailedCounter(0)
+  CCopasiMethod(src, pParent),
+  mpProblem(src.mpProblem),
+  mLocalData(),
+  mTargetfunctionPointers(),
+  mpSubTask(NULL),
+  mInitialRefreshes(),
+  mpDeltaFactor(NULL),
+  mpMinDelta(NULL),
+  mProgressHandler(C_INVALID_INDEX),
+  mProgress(0),
+  mCounter(0),
+  mFailedCounter(0)
 {CONSTRUCTOR_TRACE;}
 
 /**
@@ -497,7 +491,8 @@ void CSensMethod::do_collapsing()
         }
     }
   else
-    {}}
+    {}
+}
 
 //****************************************************************************
 
@@ -543,7 +538,6 @@ bool CSensMethod::initialize(CSensProblem* problem)
         mpSubTask = dynamic_cast<CCopasiTask*>
                     ((*pDataModel->getTaskList())["Optimization"]);
         break;
-
     }
 
   if (mpSubTask)

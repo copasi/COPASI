@@ -1,27 +1,21 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterBM.cpp,v $
-//   $Revision: 1.11 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/19 18:07:56 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include <sstream>
 #include <locale>
 #include <cmath>
+
 #include "copasi.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -125,21 +119,27 @@ std::string CODEExporterBM::translateObjectName(const std::string & realName)
             case '_':
               tmpName << ch;
               break;
+
             case '-':
               tmpName << "_";
               break;
+
             case '{':
               tmpName << "_";
               break;
+
             case '}':
               tmpName << "_";
               break;
+
             case '(':
               tmpName << "_";
               break;
+
             case ')':
               tmpName << "_";
               break;
+
             default:
               break;
           }
@@ -207,7 +207,7 @@ std::string CODEExporterBM::setODEName(const std::string & objName)
 bool CODEExporterBM::exportSingleObject(std::ostringstream & which, std::string & name, std::string & expression, std::string & comments)
 {
   which << name << " = " << expression
-  << '\t' << '\t' << "; " << comments << std::endl;
+        << '\t' << '\t' << "; " << comments << std::endl;
 
   return true;
 }
@@ -228,6 +228,7 @@ bool CODEExporterBM::exportSingleMetabolite(const CMetab* metab, std::string & e
           return false;
 
         break;
+
       case CModelEntity::REACTIONS:
       {
         if (metab->isDependent())
@@ -245,6 +246,7 @@ bool CODEExporterBM::exportSingleMetabolite(const CMetab* metab, std::string & e
 
         break;
       }
+
       case CModelEntity::ODE:
       {
         initial << "init ";
@@ -254,6 +256,7 @@ bool CODEExporterBM::exportSingleMetabolite(const CMetab* metab, std::string & e
 
         break;
       }
+
       case CModelEntity::ASSIGNMENT:
       {
         if (!exportSingleObject(assignment, name, expression, comments))
@@ -261,6 +264,7 @@ bool CODEExporterBM::exportSingleMetabolite(const CMetab* metab, std::string & e
 
         break;
       }
+
       default:
         return false;
         break;
@@ -280,6 +284,7 @@ bool CODEExporterBM::exportSingleCompartment(const CCompartment* comp, std::stri
 
         break;
       }
+
       case CModelEntity::ODE:
       {
         initial << "init ";
@@ -289,6 +294,7 @@ bool CODEExporterBM::exportSingleCompartment(const CCompartment* comp, std::stri
 
         break;
       }
+
       case CModelEntity::ASSIGNMENT:
       {
         if (!exportSingleObject(assignment, NameMap[comp->getKey()], expression, comments))
@@ -296,6 +302,7 @@ bool CODEExporterBM::exportSingleCompartment(const CCompartment* comp, std::stri
 
         break;
       }
+
       default:
         return false;
         break;
@@ -315,6 +322,7 @@ bool CODEExporterBM::exportSingleModVal(const CModelValue* modval, std::string &
 
         break;
       }
+
       case CModelEntity::ODE:
       {
         initial << "init ";
@@ -324,6 +332,7 @@ bool CODEExporterBM::exportSingleModVal(const CModelValue* modval, std::string &
 
         break;
       }
+
       case CModelEntity::ASSIGNMENT:
       {
         if (!exportSingleObject(assignment, NameMap[modval->getKey()], expression, comments))
@@ -331,6 +340,7 @@ bool CODEExporterBM::exportSingleModVal(const CModelValue* modval, std::string &
 
         break;
       }
+
       default:
         return false;
         break;
@@ -365,6 +375,7 @@ bool CODEExporterBM::exportSingleModelEntity(const CModelEntity* tmp, std::strin
 
         break;
       }
+
       case CModelEntity::ODE:
       {
         if (!exportSingleObject(initial, name, expression, comments))
@@ -372,6 +383,7 @@ bool CODEExporterBM::exportSingleModelEntity(const CModelEntity* tmp, std::strin
 
         break;
       }
+
       case CModelEntity::ASSIGNMENT:
       {
         if (!exportSingleObject(assignment, name, expression, comments))
@@ -379,6 +391,7 @@ bool CODEExporterBM::exportSingleModelEntity(const CModelEntity* tmp, std::strin
 
         break;
       }
+
       default:
         return false;
         break;
@@ -432,16 +445,22 @@ std::string CODEExporterBM::exportTitleString(const size_t tmp)
     {
       case INITIAL:
         return "{Initial values:}";
+
       case FIXED:
         return "{Fixed Model Entities: }";
+
       case ASSIGNMENT:
         return "{Assignment Model Entities: }";
+
       case FUNCTIONS:
         return "{Kinetics: }";
+
       case HEADERS:
         return " ";
+
       case ODEs:
         return "{Equations:}";
+
       default:
         return " ";
     }

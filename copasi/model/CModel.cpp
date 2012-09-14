@@ -14,8 +14,7 @@
 
 //
 
-#include <string.h>
-#include <limits.h>
+#include <sstream>
 #include <string>
 #include <vector>
 #include <limits>

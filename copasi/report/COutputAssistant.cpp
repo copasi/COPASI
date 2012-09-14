@@ -1,24 +1,18 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-//   $Revision: 1.26 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/05/02 23:48:11 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+#include <sstream>
 
 #include "COutputAssistant.h"
 #include "CCopasiObject.h"
@@ -74,11 +68,9 @@ std::vector<C_INT32> COutputAssistant::getListOfDefaultOutputDescriptions(const 
           //if (secondaryTask matches) TODO
           ret.push_back(it->first);
         }
-
     }
 
   return ret;
-
 }
 
 //static
@@ -90,8 +82,10 @@ C_INT32 COutputAssistant::getDefaultReportIndex(const CCopasiProblem * problem)
     {
       case CCopasiTask::steadyState:
         return 1000;
+
       case CCopasiTask::timeCourse:
         return 1000;
+
       default:
         return - 1;
     }
@@ -123,8 +117,10 @@ C_INT32 COutputAssistant::getDefaultPlotIndex(const CCopasiProblem * problem)
     {
       case CCopasiTask::steadyState:
         return 0;
+
       case CCopasiTask::timeCourse:
         return 0;
+
       default:
         return - 1;
     }
@@ -166,7 +162,7 @@ above 1000: reports
 the meaning of the last two digits should be the same in all those cases.
 
 Special plots, e.g. for parameter estimation, use numbers 900-998.
-**/
+ **/
 
 //static
 bool COutputAssistant::initialize()
@@ -601,7 +597,6 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
   std::vector<const CCopasiObject*> data1, tmpdata;
   const CCopasiObject* data2 = NULL;
 
-
   //first handle the special cases (those not that are not numbered according to the systematic scheme)
   switch (id)
     {
@@ -723,6 +718,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
         return pPlotSpecification;
       }
       break;
+
       case 911:
       {
         CPlotSpecification * pPlotSpecification = NULL;
@@ -812,6 +808,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
         return pPlotSpecification;
       }
       break;
+
       case 912:
       {
         CPlotSpecification * pPlotSpecification = NULL;
@@ -881,7 +878,6 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                     //first determine color for the current curves
                     unsigned C_INT32 colorindex = (pPlotSpecification->getItems().size() / 3);
 
-
                     CPlotItem * pItem =
                       pPlotSpecification->createItem(Name + "(Measured Value)", CPlotItem::curve2d);
                     pItem->setActivity(COutputInterface::AFTER);
@@ -916,6 +912,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
         return pPlotSpecification;
       }
       break;
+
       case 913:
       {
         CPlotSpecification * pPlotSpecification = NULL;
@@ -954,6 +951,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
         return pPlotSpecification;
       }
       break;
+
       case 914:
       {
         CPlotSpecification * pPlotSpecification = NULL;
@@ -995,7 +993,6 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
       break;
     }
 
-
   //now deal with the systematically numbered cases
   bool isReport = (id >= 1000);
   C_INT32 idMod = id % 200;
@@ -1015,6 +1012,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
           CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, pModel);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         break;
+
       case 1:
         data1 =
           CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_NUMBERS, pModel);
@@ -1025,6 +1023,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
           CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES, pModel);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         break;
+
       case 2:
         data1 =
           CObjectLists::getListOfConstObjects(CObjectLists::METAB_CONCENTRATIONS, pModel);
@@ -1035,6 +1034,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
           CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_VALUES, pModel);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         break;
+
       case 3:
         data1 =
           CObjectLists::getListOfConstObjects(CObjectLists::METAB_NUMBERS, pModel);
@@ -1045,6 +1045,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
           CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_VALUES, pModel);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         break;
+
       case 4:
         data1 =
           CObjectLists::getListOfConstObjects(CObjectLists::METAB_CONC_RATES, pModel);
@@ -1055,6 +1056,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
           CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, pModel);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         break;
+
       case 5:
         data1 =
           CObjectLists::getListOfConstObjects(CObjectLists::METAB_PART_RATES, pModel);
@@ -1065,14 +1067,17 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
           CObjectLists::getListOfConstObjects(CObjectLists::GLOBAL_PARAMETER_RATES, pModel);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         break;
+
       case 6:
         data1 =
           CObjectLists::getListOfConstObjects(CObjectLists::REACTION_CONC_FLUXES, pModel);
         break;
+
       case 7:
         data1 =
           CObjectLists::getListOfConstObjects(CObjectLists::REACTION_PART_FLUXES, pModel);
         break;
+
       case 8:
         data1 =
           CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_CONCENTRATIONS, pModel);
@@ -1098,6 +1103,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
           CObjectLists::getListOfConstObjects(CObjectLists::METAB_TRANSITION_TIME, pModel);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         break;
+
       case 9:
         data1 =
           CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_NUMBERS, pModel);
@@ -1123,6 +1129,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
           CObjectLists::getListOfConstObjects(CObjectLists::METAB_TRANSITION_TIME, pModel);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         break;
+
       case 50:
         data1 =
           CObjectLists::getListOfConstObjects(CObjectLists::REDUCED_JACOBIAN_EV_RE, pModel);
@@ -1130,6 +1137,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
           CObjectLists::getListOfConstObjects(CObjectLists::REDUCED_JACOBIAN_EV_IM, pModel);
         data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
         break;
+
       case 51: //parameter estimation target function
       {
         CCopasiTask * pTask = (*pDataModel->getTaskList())["Parameter Estimation"];
@@ -1144,6 +1152,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
         logY = true;
       }
       break;
+
       case 52: //optimization target function
       {
         CCopasiTask * pTask = (*pDataModel->getTaskList())["Optimization"];
@@ -1157,7 +1166,6 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
         data1.push_back(static_cast< const CCopasiObject * >(pOptProblem->getObject(CCopasiObjectName("Reference=Best Value"))));
       }
       break;
-
     }
 
   if (isReport)

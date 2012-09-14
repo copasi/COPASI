@@ -1,27 +1,21 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterC.cpp,v $
-//   $Revision: 1.16 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/19 18:07:56 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include <sstream>
 #include <locale>
 #include <cmath>
+
 #include "copasi.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -117,6 +111,7 @@ std::string CODEExporterC::setExportName(const CModelEntity::Status & status, si
         name << "p[" << n[0] << "]";
         n[0] ++;
         break;
+
       case CModelEntity::REACTIONS:
 
         if (!dependent)
@@ -131,14 +126,17 @@ std::string CODEExporterC::setExportName(const CModelEntity::Status & status, si
           }
 
         break;
+
       case CModelEntity::ODE:
         name << "x[" << n[1] << "]";
         n[1] ++;
         break;
+
       case CModelEntity::ASSIGNMENT:
         name << "y[" << n[2] << "]";
         n[2] ++;
         break;
+
       default:
         return " ";
         break;
@@ -157,6 +155,7 @@ std::string CODEExporterC::setConcentrationName(const CModelEntity::Status & sta
         name << "p_c[" << n[0] << "]";
         n[0] ++;
         break;
+
       case CModelEntity::REACTIONS:
 
         if (!dependent)
@@ -171,14 +170,17 @@ std::string CODEExporterC::setConcentrationName(const CModelEntity::Status & sta
           }
 
         break;
+
       case CModelEntity::ODE:
         name << "x_c[" << n[1] << "]";
         n[1] ++;
         break;
+
       case CModelEntity::ASSIGNMENT:
         name << "y_c[" << n[2] << "]";
         n[2] ++;
         break;
+
       default:
         return " ";
         break;
@@ -232,6 +234,7 @@ std::string CODEExporterC::translateObjectName(const std::string & realName)
             case '_':
               tmpName << ch;
               break;
+
             case '-':
             case '{':
             case '}':
@@ -241,6 +244,7 @@ std::string CODEExporterC::translateObjectName(const std::string & realName)
             case ']':
               tmpName << "_";
               break;
+
             default:
               break;
           }
@@ -453,7 +457,7 @@ void CODEExporterC::setExportNameOfFunction(const CEvaluationNode* pNode, std::s
 bool CODEExporterC::exportSingleObject(std::ostringstream & which, std::string & name, std::string & expression, std::string & comments)
 {
   which << name << " = " << expression << ";"
-  << '\t' << "//" << comments << std::endl;
+        << '\t' << "//" << comments << std::endl;
 
   return true;
 }
@@ -476,6 +480,7 @@ bool CODEExporterC::exportSingleMetabolite(const CMetab* metab, std::string & ex
           return false;
 
         break;
+
       case CModelEntity::REACTIONS:
       case CModelEntity::ODE:
       {
@@ -492,6 +497,7 @@ bool CODEExporterC::exportSingleMetabolite(const CMetab* metab, std::string & ex
 
         break;
       }
+
       case CModelEntity::ASSIGNMENT:
       {
         if (!exportSingleObject(assignment, name, expression, comments))
@@ -499,6 +505,7 @@ bool CODEExporterC::exportSingleMetabolite(const CMetab* metab, std::string & ex
 
         break;
       }
+
       default:
         return false;
         break;
@@ -518,6 +525,7 @@ bool CODEExporterC::exportSingleCompartment(const CCompartment* comp, std::strin
 
         break;
       }
+
       case CModelEntity::ODE:
       {
         if (!exportSingleObject(initial, NameMap[comp->getKey()], expression, comments))
@@ -525,6 +533,7 @@ bool CODEExporterC::exportSingleCompartment(const CCompartment* comp, std::strin
 
         break;
       }
+
       case CModelEntity::ASSIGNMENT:
       {
         if (!exportSingleObject(assignment, NameMap[comp->getKey()], expression, comments))
@@ -532,6 +541,7 @@ bool CODEExporterC::exportSingleCompartment(const CCompartment* comp, std::strin
 
         break;
       }
+
       default:
         return false;
         break;
@@ -551,6 +561,7 @@ bool CODEExporterC::exportSingleModVal(const CModelValue* modval, std::string & 
 
         break;
       }
+
       case CModelEntity::ODE:
       {
         if (!exportSingleObject(initial, NameMap[modval->getKey()], expression, comments))
@@ -558,6 +569,7 @@ bool CODEExporterC::exportSingleModVal(const CModelValue* modval, std::string & 
 
         break;
       }
+
       case CModelEntity::ASSIGNMENT:
       {
         if (!exportSingleObject(assignment, NameMap[modval->getKey()], expression, comments))
@@ -565,6 +577,7 @@ bool CODEExporterC::exportSingleModVal(const CModelValue* modval, std::string & 
 
         break;
       }
+
       default:
         return false;
         break;
@@ -599,6 +612,7 @@ bool CODEExporterC::exportSingleModelEntity(const CModelEntity* tmp, std::string
 
         break;
       }
+
       case CModelEntity::ODE:
       {
         if (!exportSingleObject(initial, name, expression, comments))
@@ -606,6 +620,7 @@ bool CODEExporterC::exportSingleModelEntity(const CModelEntity* tmp, std::string
 
         break;
       }
+
       case CModelEntity::ASSIGNMENT:
       {
         if (!exportSingleObject(assignment, name, expression, comments))
@@ -613,6 +628,7 @@ bool CODEExporterC::exportSingleModelEntity(const CModelEntity* tmp, std::string
 
         break;
       }
+
       default:
         return false;
         break;
@@ -946,16 +962,22 @@ std::string CODEExporterC::exportTitleString(const size_t tmp)
     {
       case INITIAL:
         return "#ifdef INITIAL";
+
       case FIXED:
         return "#ifdef FIXED";
+
       case ASSIGNMENT:
         return "#ifdef ASSIGNMENT";
+
       case HEADERS:
         return "#ifdef  FUNCTIONS_HEADERS";
+
       case FUNCTIONS:
         return "#ifdef  FUNCTIONS";
+
       case ODEs:
         return "#ifdef ODEs";
+
       default:
         return " ";
     }
@@ -976,16 +998,22 @@ std::string CODEExporterC::exportClosingString(const size_t tmp)
     {
       case INITIAL:
         return "#endif INITIAL\n";
+
       case FIXED:
         return "#endif FIXED\n";
+
       case ASSIGNMENT:
         return "#endif ASSIGNMENT\n";
+
       case HEADERS:
         return "#endif FUNCTIONS_HEADERS\n";
+
       case FUNCTIONS:
         return "#endif FUNCTIONS\n";
+
       case ODEs:
         return "#endif ODEs\n";
+
       default:
         return " ";
     }

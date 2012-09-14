@@ -43,17 +43,19 @@
 #define COPASI_CHybridMethodLSODA
 
 /* INCLUDES ******************************************************************/
-#include "trajectory/CTrajectoryMethod.h"
 #include <set>
 #include <vector>
-#include <iostream>
+#include <sstream>
 #include <fstream>
-#include "utilities/CVersion.h"
-#include "utilities/CMatrix.h"
-#include "utilities/CDependencyGraph.h"
-#include "utilities/CIndexedPriorityQueue.h"
-#include "utilities/CCopasiVector.h"
-#include "odepack++/CLSODA.h"
+
+#include "copasi/trajectory/CTrajectoryMethod.h"
+
+#include "copasi/utilities/CVersion.h"
+#include "copasi/utilities/CMatrix.h"
+#include "copasi/utilities/CDependencyGraph.h"
+#include "copasi/utilities/CIndexedPriorityQueue.h"
+#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/odepack++/CLSODA.h"
 
 /* DEFINE ********************************************************************/
 #define MAX_STEPS                    1000000

@@ -1,24 +1,18 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-//   $Revision: 1.46 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/10 16:03:09 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+#include <sstream>
 
 #include "copasi.h"
 #include "CChemEqInterface.h"
@@ -32,11 +26,11 @@
 #include "utilities/utility.h"
 
 CChemEqInterface::CChemEqInterface():
-    mpModel(NULL)
+  mpModel(NULL)
 {}
 
 CChemEqInterface::CChemEqInterface(CModel * pModel):
-    mpModel(pModel)
+  mpModel(pModel)
 {}
 
 CChemEqInterface::~CChemEqInterface()

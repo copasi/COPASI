@@ -1,27 +1,21 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporterXPPAUT.cpp,v $
-//   $Revision: 1.15 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/19 18:07:57 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include <sstream>
 #include <locale>
 #include <cmath>
+
 #include "copasi.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -70,7 +64,7 @@ bool CODEExporterXPPAUT::exportTitleData(const CCopasiDataModel* pDataModel, std
 
   os << "total=" << pTrajectoryProblem->getDuration() << ",";
   os << "dt=" << pTrajectoryProblem->getStepSize()
-  << ",METH=stiff" << std::endl; //gear is the only method with automatic step size
+     << ",METH=stiff" << std::endl; //gear is the only method with automatic step size
 
   return true;
 }
@@ -124,15 +118,19 @@ std::string CODEExporterXPPAUT::translateObjectName(const std::string & realName
             case '_':
               tmpName << ch;
               break;
+
             case '-':
               tmpName << "_";
               break;
+
             case '{':
               tmpName << "_";
               break;
+
             case '}':
               tmpName << "_";
               break;
+
             default:
               break;
           }
@@ -228,12 +226,13 @@ void CODEExporterXPPAUT::setReservedNames()
   size_t i;
 
   const std::string reserved[45] =
-    {"SIN", "COS", "TAN", "ATAN", "ATAN2", "SINH", "EXP", "DELAY", "LN", "LOG10",
-     "LOG", "T", "PI", "IF", "THEN", "ELSE", "ASIN", "ACOS", "HEAV", "SIGN",
-     "CEIL", "FLR", "RAN", "ABS", "MAX", "MIN", "NORMAL", "BESSELJ", "BESSELY", "ERF",
-     "ERFS", "ARG1", "ARG2", "ARG2", "ARG4", "ARG5", "ARG6", "ARG7", "ARG8", "ARG9",
-     "SHIFT", "NOT", "INT", "SUM", "OF"
-    };
+  {
+    "SIN", "COS", "TAN", "ATAN", "ATAN2", "SINH", "EXP", "DELAY", "LN", "LOG10",
+    "LOG", "T", "PI", "IF", "THEN", "ELSE", "ASIN", "ACOS", "HEAV", "SIGN",
+    "CEIL", "FLR", "RAN", "ABS", "MAX", "MIN", "NORMAL", "BESSELJ", "BESSELY", "ERF",
+    "ERFS", "ARG1", "ARG2", "ARG2", "ARG4", "ARG5", "ARG6", "ARG7", "ARG8", "ARG9",
+    "SHIFT", "NOT", "INT", "SUM", "OF"
+  };
 
   for (i = 0; i < 45; i++)
     {
@@ -355,6 +354,7 @@ bool CODEExporterXPPAUT::exportSingleMetabolite(const CMetab* metab, std::string
 
         break;
       }
+
       case CModelEntity::ODE:
       case CModelEntity::REACTIONS:
       {
@@ -376,6 +376,7 @@ bool CODEExporterXPPAUT::exportSingleMetabolite(const CMetab* metab, std::string
 
         break;
       }
+
       case CModelEntity::ASSIGNMENT:
       {
         assignment << "#" << comments << std::endl;
@@ -385,6 +386,7 @@ bool CODEExporterXPPAUT::exportSingleMetabolite(const CMetab* metab, std::string
 
         break;
       }
+
       default:
         return false;
         break;
@@ -408,6 +410,7 @@ bool CODEExporterXPPAUT::exportSingleCompartment(const CCompartment* comp, std::
 
         break;
       }
+
       case CModelEntity::ODE:
       {
         initial << "#" << comments << std::endl;
@@ -418,6 +421,7 @@ bool CODEExporterXPPAUT::exportSingleCompartment(const CCompartment* comp, std::
 
         break;
       }
+
       case CModelEntity::ASSIGNMENT:
       {
 #if 0
@@ -429,6 +433,7 @@ bool CODEExporterXPPAUT::exportSingleCompartment(const CCompartment* comp, std::
 #endif
         break;
       }
+
       default:
         return false;
         break;
@@ -452,6 +457,7 @@ bool CODEExporterXPPAUT::exportSingleModVal(const CModelValue* modval, std::stri
 
         break;
       }
+
       case CModelEntity::ODE:
       {
         initial << "#" << comments << std::endl;
@@ -462,6 +468,7 @@ bool CODEExporterXPPAUT::exportSingleModVal(const CModelValue* modval, std::stri
 
         break;
       }
+
       case CModelEntity::ASSIGNMENT:
       {
 #if 0
@@ -473,6 +480,7 @@ bool CODEExporterXPPAUT::exportSingleModVal(const CModelValue* modval, std::stri
 #endif
         break;
       }
+
       default:
         return false;
         break;
@@ -509,6 +517,7 @@ bool CODEExporterXPPAUT::exportSingleModelEntity(const CModelEntity* tmp, std::s
 
         break;
       }
+
       case CModelEntity::ODE:
       {
         initial << "#" << comments << std::endl;
@@ -519,6 +528,7 @@ bool CODEExporterXPPAUT::exportSingleModelEntity(const CModelEntity* tmp, std::s
 
         break;
       }
+
       case CModelEntity::ASSIGNMENT:
       {
         assignment << "#" << comments << std::endl;
@@ -528,6 +538,7 @@ bool CODEExporterXPPAUT::exportSingleModelEntity(const CModelEntity* tmp, std::s
 
         break;
       }
+
       default:
         return false;
         break;
@@ -589,16 +600,22 @@ std::string CODEExporterXPPAUT::exportTitleString(const size_t tmp)
     {
       case INITIAL:
         return "# Initial values:";
+
       case FIXED:
         return "# Fixed Model Entities:";
+
       case ASSIGNMENT:
         return "# Assignment Model Entities:";
+
       case FUNCTIONS:
         return "#Kinetics:  ";
+
       case HEADERS:
         return " ";
+
       case ODEs:
         return "# Equations:";
+
       default:
         return " ";
     }
