@@ -347,6 +347,7 @@ void PlotWindow::slotDeselectAll()
 
 void PlotWindow::slotCloseWindow()
 {
+  mpMainWindow->removeWindow(this);
   close();
 }
 

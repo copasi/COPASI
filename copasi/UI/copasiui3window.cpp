@@ -146,6 +146,7 @@ CopasiUI3Window::CopasiUI3Window():
     mpMenuRecentSBMLFiles(NULL),
     mRecentSBMLFilesActionMap(),
     mpRecentSBMLFilesActionGroup(NULL),
+    mpWindowsActionGroup(NULL),
     mpMIRIAMResources(NULL),
     mpMainThread(QThread::currentThread()),
     mNewFile(),
@@ -335,6 +336,10 @@ void CopasiUI3Window::createActions()
   mpaMergeModels = new QAction("&Merge ...", Qt::SHIFT + Qt::CTRL + Qt::Key_M, this, "mergemodel");
   connect(mpaMergeModels, SIGNAL(activated()), this, SLOT(slotMergeModels()));
 #endif
+
+  mpaCloseAllWindows = new QAction("Close All Windows", this);
+  connect(mpaCloseAllWindows, SIGNAL(activated()), this, SLOT(slotCloseAllWindows()));
+
 }
 
 void CopasiUI3Window::createToolBar()
@@ -437,6 +442,11 @@ void CopasiUI3Window::createMenuBar()
   mpTools->addAction(mpaUpdateMIRIAM);
   mpTools->addAction("&Preferences", this, SLOT(slotPreferences()));
   mpTools->addAction(mpaFontSelectionDialog);
+
+
+  //****** windows menu **************
+  mpWindowsMenu =  menuBar()->addMenu("&Window");  
+  refreshWindowsMenu();
 
   //*******  help menu *****************
 
@@ -1706,12 +1716,60 @@ void CopasiUI3Window::slotExportSBMLToStringFinished(bool success)
 void CopasiUI3Window::addWindow(QMainWindow * pWindow)
 {
   mWindows.append(pWindow);
+  refreshWindowsMenu();
 }
 
 void CopasiUI3Window::removeWindow(QMainWindow * pWindow)
 {
   mWindows.remove(pWindow);
+  refreshWindowsMenu();
 }
+
+void CopasiUI3Window::refreshWindowsMenu()
+{
+  mpWindowsMenu->clear();
+
+  mpWindowsMenu->addAction(mpaCloseAllWindows);
+  mpWindowsMenu->addSeparator();
+
+  if (mpWindowsActionGroup != NULL)
+    {
+      disconnect(mpWindowsActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slowFindWindowTriggered(QAction *)));
+      mpWindowsActionGroup->deleteLater();
+      mpWindowsActionGroup = NULL;
+    }
+
+  mpWindowsActionGroup = new QActionGroup(this);
+  connect(mpWindowsActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slowFindWindowTriggered(QAction *)));
+
+  QAction * pAction;
+
+  for(int index = 0; index < mWindows.count(); ++index)
+  {
+      pAction = new QAction( mWindows[index]->windowTitle(), mpWindowsActionGroup);
+      mpWindowsMenu->addAction(pAction);
+  }
+}
+
+void CopasiUI3Window::slotCloseAllWindows()
+{
+    for(int index = mWindows.count()-1; index >= 0 ; --index)
+    {
+      mWindows[index]->close();
+      mWindows.removeAt(index);
+    }
+    refreshWindowsMenu();
+}
+
+void CopasiUI3Window::slowFindWindowTriggered(QAction* action)
+{
+   for(int index = 0; index < mWindows.count(); ++index)
+   {
+     if (mWindows[index]->windowTitle() == action->text())
+       mWindows[index]->activateWindow();
+   }
+}
+
 
 void CopasiUI3Window::setMessageShown(const bool & shown)
 {

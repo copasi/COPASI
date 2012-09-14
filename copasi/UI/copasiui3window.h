@@ -172,6 +172,9 @@ protected slots:
   void slotExpandModel();
   void slotFontSelection();
 
+  void slotCloseAllWindows();
+  void slowFindWindowTriggered(QAction* action);
+
 #ifdef WITH_MERGEMODEL
   void slotAddFileOpen(QString file = QString::null);
   void slotAddModel();
@@ -226,6 +229,8 @@ private:
   QAction* mpaExpandModel;
   QAction* mpaFontSelectionDialog;
 
+  QAction* mpaCloseAllWindows;
+
 #ifdef WITH_MERGEMODEL
   QAction* mpaAddModel;
   QAction* mpaMergeModels;
@@ -240,13 +245,16 @@ private:
   //menus
   QMenu * mpMenuExamples;
   QMenu * mpMenuRecentFiles;
+  QMenu * mpWindowsMenu;
   QMap< QAction *, int > mRecentFilesActionMap;
   QActionGroup * mpRecentFilesActionGroup;
   void refreshRecentFileMenu();
+  void refreshWindowsMenu();
 
   QMenu * mpMenuRecentSBMLFiles;
   QMap< QAction *, int > mRecentSBMLFilesActionMap;
   QActionGroup * mpRecentSBMLFilesActionGroup;
+  QActionGroup * mpWindowsActionGroup;
   void refreshRecentSBMLFileMenu();
 
   QMenu * mpTools;
