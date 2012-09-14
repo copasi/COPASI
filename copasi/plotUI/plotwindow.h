@@ -132,4 +132,7 @@ private slots:
    * Close current window
    */
   void slotCloseWindow();
+
+protected:
+  virtual void closeEvent(QCloseEvent *closeEvent);
 };

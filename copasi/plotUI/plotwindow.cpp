@@ -347,8 +347,14 @@ void PlotWindow::slotDeselectAll()
 
 void PlotWindow::slotCloseWindow()
 {
-  mpMainWindow->removeWindow(this);
   close();
+}
+
+void PlotWindow::closeEvent(QCloseEvent *closeEvent)
+{
+   mpMainWindow->removeWindow(this);
+  mpHandler->removeInterface(this);
+ 
 }
 
 CopasiPlot* PlotWindow::getPlot() const

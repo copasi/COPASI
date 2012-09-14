@@ -1756,7 +1756,6 @@ void CopasiUI3Window::slotCloseAllWindows()
     for(int index = mWindows.count()-1; index >= 0 ; --index)
     {
       mWindows[index]->close();
-      mWindows.removeAt(index);
     }
     refreshWindowsMenu();
 }
