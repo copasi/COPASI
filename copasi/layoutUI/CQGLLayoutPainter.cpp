@@ -462,6 +462,17 @@ void CQGLLayoutPainter::timeout()
     }
 }
 
+void removeTextGlyphs(std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize>& hits)
+{
+  std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize>::iterator it = hits.begin();
+  while(it != hits.end()) {
+    CLTextGlyph* glyph = dynamic_cast<CLTextGlyph*>((*it));
+    if (glyph != NULL)
+      hits.erase(it);
+    it++;
+  }
+}
+
 /**
  * Gets called when the mouse is released on the scene.
  */
@@ -618,6 +629,8 @@ void CQGLLayoutPainter::mouseReleaseEvent(QMouseEvent* pMouseEvent)
               {
                 std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> hits = this->mpRenderer->getObjectsAtViewportPosition(this->mMouseCurrentPosition.x(), this->mMouseCurrentPosition.y());
 
+                removeTextGlyphs(hits);
+                
                 if (!hits.empty())
                   {
                     // if there is only one element in hits, we change the selection
