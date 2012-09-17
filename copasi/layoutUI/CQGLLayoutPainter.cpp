@@ -436,6 +436,7 @@ void CQGLLayoutPainter::mousePressEvent(QMouseEvent* pMouseEvent)
       this->mMousePressPosition = pMouseEvent->pos();
       this->mMouseCurrentPosition = this->mMousePressPosition;
       this->mMouseLastPosition = this->mMousePressPosition;
+      this->mDragTimeout = false;
 
       // check if the left mouse button has been pressed.
       if (this->mMouseButton == Qt::LeftButton)
@@ -498,8 +499,8 @@ void CQGLLayoutPainter::mouseReleaseEvent(QMouseEvent* pMouseEvent)
                 std::pair<double, double> coords2 = this->mpRenderer->convert_to_model_space(maxX, maxY);
                 std::vector<CLGraphicalObject*> objects = this->mpRenderer->getObjectsInBoundingBox(coords1.first, coords1.second, coords2.first, coords2.second, false);
                 std::vector<CLGraphicalObject*>::iterator it = objects.begin(), endit = objects.end();
-
-                if (pMouseEvent->modifiers() == Qt::NoModifier)
+                Qt::KeyboardModifiers modifiers = pMouseEvent->modifiers();
+                if (modifiers == Qt::NoModifier)
                   {
                     this->mpRenderer->clearSelection();
 
@@ -509,7 +510,7 @@ void CQGLLayoutPainter::mouseReleaseEvent(QMouseEvent* pMouseEvent)
                         ++it;
                       }
                   }
-                else if (pMouseEvent->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier))
+                else if (modifiers == (Qt::ControlModifier | Qt::ShiftModifier))
                   {
                     // intersection
                     std::set<CLGraphicalObject*>& selection = this->mpRenderer->getSelection();
@@ -524,7 +525,7 @@ void CQGLLayoutPainter::mouseReleaseEvent(QMouseEvent* pMouseEvent)
                         ++it;
                       }
                   }
-                else if (pMouseEvent->modifiers() == Qt::ControlModifier)
+                else if (modifiers == Qt::ControlModifier)
                   {
                     // subtraction
                     std::set<CLGraphicalObject*>& selection = this->mpRenderer->getSelection();
@@ -539,7 +540,7 @@ void CQGLLayoutPainter::mouseReleaseEvent(QMouseEvent* pMouseEvent)
                         ++it;
                       }
                   }
-                else if (pMouseEvent->modifiers() == Qt::ShiftModifier)
+                else if (modifiers == Qt::ShiftModifier)
                   {
                     // addition
                     std::set<CLGraphicalObject*>& selection = this->mpRenderer->getSelection();
@@ -1006,7 +1007,7 @@ void CQGLLayoutPainter::update_status_and_cursor()
           {
             std::set<CLGraphicalObject*>& selection = this->mpRenderer->getSelection();
 
-            if (!selection.empty())
+            if (!selection.empty() )
               {
                 // maybe the user was not on a line, but on the basepoint of a bezier segment
                 // this would not be covered by the above test and has to be handled separatly
@@ -1081,8 +1082,30 @@ void CQGLLayoutPainter::update_status_and_cursor()
                       }
                   }
               }
-          }
+            
+            if (this->mMouseButton == Qt::LeftButton)
+            {
+              if (QApplication::keyboardModifiers() != Qt::ShiftModifier)
+                this->mpRenderer->clearSelection();
+              
+              // most often if someone clicks the canvas they want to move something
+              // there is no reason to assume that they want to drag something else
+              // so we are going to first select whatever is under the mouse click
+              std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> hits = this->mpRenderer->getObjectsAtViewportPosition(this->mMouseCurrentPosition.x(), this->mMouseCurrentPosition.y());
+              std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize>::iterator it = hits.begin(), endit = hits.end();
+              
+              while (it != endit)
+              {
+                if (dynamic_cast<CLTextGlyph*>(*it) == NULL)
+                this->mpRenderer->addToSelection(*it);
+                ++it;
+              }
+              selectedHit = !hits.empty();
+              
+            }
 
+          }
+       
         if (selectedHit)
           {
             // if we are over a selected item
