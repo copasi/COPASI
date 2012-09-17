@@ -441,6 +441,27 @@ void CQGLLayoutPainter::mousePressEvent(QMouseEvent* pMouseEvent)
       // check if the left mouse button has been pressed.
       if (this->mMouseButton == Qt::LeftButton)
         {
+
+            if (this->mMouseButton == Qt::LeftButton)
+            {
+              if (QApplication::keyboardModifiers() != Qt::ShiftModifier)
+                this->mpRenderer->clearSelection();
+              
+              // most often if someone clicks the canvas they want to move something
+              // there is no reason to assume that they want to drag something else
+              // so we are going to first select whatever is under the mouse click
+              std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> hits = this->mpRenderer->getObjectsAtViewportPosition(this->mMouseCurrentPosition.x(), this->mMouseCurrentPosition.y());
+              std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize>::iterator it = hits.begin(), endit = hits.end();
+              
+              while (it != endit)
+              {
+                if (dynamic_cast<CLTextGlyph*>(*it) == NULL)
+                this->mpRenderer->addToSelection(*it);
+                ++it;
+              }
+
+            }
+
           // start a timer that fires after QApplication::startDragTime
           // if the mouse button is still down when the event fires, we might start a drag operation
           // depending on how far the mouse pointer has been moved
@@ -1088,27 +1109,6 @@ void CQGLLayoutPainter::update_status_and_cursor()
                       }
                   }
               }
-            
-            if (this->mMouseButton == Qt::LeftButton)
-            {
-              if (QApplication::keyboardModifiers() != Qt::ShiftModifier)
-                this->mpRenderer->clearSelection();
-              
-              // most often if someone clicks the canvas they want to move something
-              // there is no reason to assume that they want to drag something else
-              // so we are going to first select whatever is under the mouse click
-              std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> hits = this->mpRenderer->getObjectsAtViewportPosition(this->mMouseCurrentPosition.x(), this->mMouseCurrentPosition.y());
-              std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize>::iterator it = hits.begin(), endit = hits.end();
-              
-              while (it != endit)
-              {
-                if (dynamic_cast<CLTextGlyph*>(*it) == NULL)
-                this->mpRenderer->addToSelection(*it);
-                ++it;
-              }
-              selectedHit = !hits.empty();
-              
-            }
 
           }
        
