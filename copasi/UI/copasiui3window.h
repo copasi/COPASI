@@ -1,10 +1,8 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.107 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/02 20:34:51 $
-// End CVS Header
+// Begin git Header 
+//   Commit: 49e2ce1db7de18f295c593999807d55c387ac57b 
+//   Author: Frank T. Bergmann fbergman@caltech.edu 
+//   Date: 2012-09-14 15:00:36 +0200 
+// End git Header 
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University

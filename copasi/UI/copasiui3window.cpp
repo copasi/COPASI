@@ -1,10 +1,8 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-//   $Revision: 1.314 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/07 15:11:22 $
-// End CVS Header
+// Begin git Header 
+//   Commit: 948bf0d3e0b8d39b652761ecf02bbceeca23ec70 
+//   Author: Frank Bergmann fbergman@caltech.edu 
+//   Date: 2012-09-17 11:09:34 +0200 
+// End git Header 
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
@@ -73,6 +71,7 @@
 #include "model/CModelMerging.h"
 #endif
 #include "model/CModelExpansion.h"
+#include <plotUI/plotwindow.h>
 
 #define AutoSaveInterval 10*60*1000
 
@@ -1732,6 +1731,15 @@ void CopasiUI3Window::refreshWindowsMenu()
   mpWindowsMenu->addAction(mpaCloseAllWindows);
   mpWindowsMenu->addSeparator();
 
+  for(int index = 0; index < mWindows.count(); ++index)
+  {
+    QMenu* menu = ((PlotWindow*)mWindows[index])->getMenu();
+    menu->clear();
+    menu->addAction(mpaCloseAllWindows);
+    menu->addSeparator();    
+  }
+  
+  
   if (mpWindowsActionGroup != NULL)
     {
       disconnect(mpWindowsActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slowFindWindowTriggered(QAction *)));
@@ -1748,6 +1756,11 @@ void CopasiUI3Window::refreshWindowsMenu()
   {
       pAction = new QAction( mWindows[index]->windowTitle(), mpWindowsActionGroup);
       mpWindowsMenu->addAction(pAction);
+    for(int index = 0; index < mWindows.count(); ++index)
+    {
+      QMenu* menu = ((PlotWindow*)mWindows[index])->getMenu();
+      menu->addAction(pAction);
+    }
   }
 }
 

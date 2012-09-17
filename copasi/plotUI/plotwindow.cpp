@@ -1,10 +1,8 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-//   $Revision: 1.51 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/02 18:56:35 $
-// End CVS Header
+// Begin git Header 
+//   Commit: 948bf0d3e0b8d39b652761ecf02bbceeca23ec70 
+//   Author: Frank Bergmann fbergman@caltech.edu 
+//   Date: 2012-09-17 11:09:34 +0200 
+// End git Header 
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
@@ -58,12 +56,12 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-
 PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* ptrSpec, CopasiUI3Window * pMainWindow):
     QMainWindow(),
     mpPlot(NULL),
     mpHandler(pHandler),
-    mpMainWindow(pMainWindow)
+    mpMainWindow(pMainWindow),
+    mpWindowMenu(NULL)
 {
   this->resize(640, 480);
   this->setWindowTitle(("COPASI Plot: " + ptrSpec->getTitle()).c_str());
@@ -75,8 +73,17 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
   mpPlot = new CopasiPlot(ptrSpec, this);
   setCentralWidget(mpPlot);
 
+  // add a place holder menu, to be filled by the main window
+  mpWindowMenu = menuBar()->addMenu("Window");
+  
   mpMainWindow->addWindow(this);
 }
+
+QMenu *PlotWindow::getMenu() const
+{
+  return mpWindowMenu;
+}
+
 
 void PlotWindow::createActions()
 {
