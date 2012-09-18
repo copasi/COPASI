@@ -180,6 +180,9 @@
 %template(ReportItemVector) std::vector<CRegisteredObjectName>;
 
 %template(CFunctionStdVector) std::vector<CFunction*>;
+%template(CFunctionVector) CCopasiVector<CFunction>;
+%template(CFunctionVectorN) CCopasiVectorN<CFunction>;
+%template(CFunctionVectorNS) CCopasiVectorNS<CFunction>;
 
 %rename(removeObject) CCopasiVector<CEvaluationTree>::remove(CCopasiObject* pObject);
 %rename(removeByName) CCopasiVectorN<CEvaluationTree>::remove(const std::string& name);
