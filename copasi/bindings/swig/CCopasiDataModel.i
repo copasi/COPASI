@@ -1,28 +1,16 @@
-// Begin CVS Header 
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CCopasiDataModel.i,v $ 
-//   $Revision: 1.26 $ 
-//   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2012/06/19 18:11:05 $ 
-// End CVS Header 
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
-
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
 
 
 
@@ -81,7 +69,7 @@
 %ignore CCopasiDataModel::ObjectFromName(std::vector<CCopasiContainer * > const &,CCopasiObjectName const &) const;
 
 %catches(CCopasiException) CCopasiDataModel::newModel();
-%catches(CCopasiException) CCopasiDataModel::newModel(CModel* pMode,CProcessReport* pProcessReport,CListOfLayouts* pLoL,const bool& deleteOldData);
+%catches(CCopasiException) CCopasiDataModel::newModel(CProcessReport* pProcessReport,const bool& deleteOldData);
 %catches(CCopasiException) CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler = NULL,const bool& deleteOldData = true);
 %catches(CCopasiException) CCopasiDataModel::importSBML(const std::string&,CProcessReport*,const bool& deleteOldData = true);
 %catches(CCopasiException) CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler , int sbmlLevel,int sbmlVersion);
@@ -131,7 +119,7 @@
 
     bool newModel()
     {
-        return $self->newModel(NULL,NULL,NULL,false);
+        return $self->newModel(NULL,false);
     };
 
     CReportDefinition* getReportDefinition(unsigned C_INT32 index)

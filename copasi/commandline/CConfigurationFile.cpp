@@ -1,17 +1,14 @@
-/* Begin CVS Header
-$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
-$Revision: 1.19 $
-$Name:  $
-$Author: bergmann $
-$Date: 2012/05/11 12:51:39 $
-End CVS Header */
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -29,23 +26,23 @@ End CVS Header */
 
 CRecentFiles::CRecentFiles(const std::string & name,
                            const CCopasiContainer * pParent):
-    CCopasiParameterGroup(name, pParent),
-    mpMaxFiles(NULL),
-    mpRecentFiles(NULL)
+  CCopasiParameterGroup(name, pParent),
+  mpMaxFiles(NULL),
+  mpRecentFiles(NULL)
 {initializeParameter();}
 
 CRecentFiles::CRecentFiles(const CRecentFiles & src,
                            const CCopasiContainer * pParent):
-    CCopasiParameterGroup(src, pParent),
-    mpMaxFiles(NULL),
-    mpRecentFiles(NULL)
+  CCopasiParameterGroup(src, pParent),
+  mpMaxFiles(NULL),
+  mpRecentFiles(NULL)
 {initializeParameter();}
 
 CRecentFiles::CRecentFiles(const CCopasiParameterGroup & group,
                            const CCopasiContainer * pParent):
-    CCopasiParameterGroup(group, pParent),
-    mpMaxFiles(NULL),
-    mpRecentFiles(NULL)
+  CCopasiParameterGroup(group, pParent),
+  mpMaxFiles(NULL),
+  mpRecentFiles(NULL)
 {initializeParameter();}
 
 CRecentFiles::~CRecentFiles()
@@ -104,35 +101,35 @@ void CRecentFiles::addFile(const std::string & file)
 
 CConfigurationFile::CConfigurationFile(const std::string & name,
                                        const CCopasiContainer * pParent):
-    CCopasiParameterGroup(name, pParent),
-    mpRecentFiles(NULL),
-    mpRecentSBMLFiles(NULL),
-    mpRecentMIRIAMResources(NULL),
-    mpApplicationFont(NULL),
-    mpWebBrowser(NULL),
-    mpValidateUnits(NULL)
+  CCopasiParameterGroup(name, pParent),
+  mpRecentFiles(NULL),
+  mpRecentSBMLFiles(NULL),
+  mpRecentMIRIAMResources(NULL),
+  mpApplicationFont(NULL),
+  mpWebBrowser(NULL),
+  mpValidateUnits(NULL)
 {initializeParameter();}
 
 CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
                                        const CCopasiContainer * pParent):
-    CCopasiParameterGroup(src, pParent),
-    mpRecentFiles(NULL),
-    mpRecentSBMLFiles(NULL),
-    mpRecentMIRIAMResources(NULL),
-    mpApplicationFont(NULL),
-    mpWebBrowser(NULL),
-    mpValidateUnits(NULL)
+  CCopasiParameterGroup(src, pParent),
+  mpRecentFiles(NULL),
+  mpRecentSBMLFiles(NULL),
+  mpRecentMIRIAMResources(NULL),
+  mpApplicationFont(NULL),
+  mpWebBrowser(NULL),
+  mpValidateUnits(NULL)
 {initializeParameter();}
 
 CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
                                        const CCopasiContainer * pParent):
-    CCopasiParameterGroup(group, pParent),
-    mpRecentFiles(NULL),
-    mpRecentSBMLFiles(NULL),
-    mpRecentMIRIAMResources(NULL),
-    mpApplicationFont(NULL),
-    mpWebBrowser(NULL),
-    mpValidateUnits(NULL)
+  CCopasiParameterGroup(group, pParent),
+  mpRecentFiles(NULL),
+  mpRecentSBMLFiles(NULL),
+  mpRecentMIRIAMResources(NULL),
+  mpApplicationFont(NULL),
+  mpWebBrowser(NULL),
+  mpValidateUnits(NULL)
 {initializeParameter();}
 
 CConfigurationFile::~CConfigurationFile()
@@ -263,7 +260,6 @@ void CConfigurationFile::setWebBrowser(const std::string & webBrowser)
   *mpWebBrowser = webBrowser;
 }
 
-
 bool CConfigurationFile::validateUnits() const
 {
   return *mpValidateUnits;
@@ -275,8 +271,8 @@ void CConfigurationFile::setValidateUnits(bool validateUnits)
 }
 
 CConfigurationFile::CXML::CXML():
-    CCopasiXMLInterface(),
-    mConfiguration("Configuration")
+  CCopasiXMLInterface(),
+  mConfiguration("Configuration")
 {
   mConfiguration.assertGroup("Recent Files");
   mConfiguration.assertGroup("Recent SBML Files");
@@ -289,7 +285,7 @@ CConfigurationFile::CXML::~CXML()
 bool CConfigurationFile::CXML::save(std::ostream & os,
                                     const std::string & relativeTo)
 {
-  mFilename = relativeTo;
+  mPWD = relativeTo;
 
   os.imbue(std::locale::classic());
   os.precision(16);
@@ -297,14 +293,14 @@ bool CConfigurationFile::CXML::save(std::ostream & os,
   mpOstream = &os;
 
   *mpOstream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-  << std::endl;
+             << std::endl;
 
   *mpOstream << "<!-- generated with COPASI "
-  << CVersion::VERSION.getVersion()
-  << " (http://www.copasi.org) at "
-  << UTCTimeStamp()
-  << " UTC -->"
-  << std::endl;
+             << CVersion::VERSION.getVersion()
+             << " (http://www.copasi.org) at "
+             << UTCTimeStamp()
+             << " UTC -->"
+             << std::endl;
 
   saveParameter(mConfiguration);
 
@@ -314,7 +310,7 @@ bool CConfigurationFile::CXML::save(std::ostream & os,
 bool CConfigurationFile::CXML::load(std::istream & is,
                                     const std::string & relativeTo)
 {
-  mFilename = relativeTo;
+  mPWD = relativeTo;
 
   is.imbue(std::locale::classic());
   is.precision(16);

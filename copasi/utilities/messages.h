@@ -147,14 +147,14 @@ const MESSAGES Messages[] =
     "A possible reason is that the variable is a reserved string within the function description."
   },
   {
-    MCXML + 9, "XML (9): The file '%s'\nis written in a newer version '%s' of the COPASI file format.\n"
-    "This file might include features your version of COPASI does not support.\n"
+    MCXML + 9, "XML (9): The content is created with a newer version '%s' of COPASI.\n"
+    "This means it might include features your version of COPASI does not support.\n"
     "To assure full compatibility please download the newest version at http://www.copasi.org."
   },
   {MCXML + 10, "XML (10): Invalid element '<%s>' expecting '<%s>' encountered at line '%d'."},
   {MCXML + 11, "XML (11): Invalid closing element '</%s>' expecting '</%s>' encountered at line '%d'."},
   {MCXML + 12, "XML (12): Order '%d' out of range for variable '%s' in function '%s' encountered at line '%d'. "},
-  {MCXML + 13, "XML (13): Unrecognized format in file '%s'."},
+  {MCXML + 13, "XML (13): Unrecognized content format."},
   {
     MCXML + 14, "XML (14): Local reaction parameters may no longer be used in any expression in the model. "
     " The following automatic corrections have been applied:\n%s"

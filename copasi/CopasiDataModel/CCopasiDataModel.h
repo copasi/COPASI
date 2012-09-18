@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-//   $Revision: 1.56 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/19 18:10:54 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -55,32 +47,38 @@ class CCopasiDataModel;
 class CDataModelRenameHandler : public CRenameHandler
 {
 public:
-  CDataModelRenameHandler(CCopasiDataModel* dm);
+  CDataModelRenameHandler();
 
   virtual ~CDataModelRenameHandler() {};
 
   virtual bool handle(const std::string & oldCN, const std::string & newCN) const;
-
-private:
-  CCopasiDataModel * mpDataModel;
 };
 
 //******************************************************************************
 
 class CCopasiDataModel: public CCopasiContainer, public COutputHandler
 {
+  enum FileType
+  {
+    CopasiML = 0,
+    SBML,
+    Gepasi,
+    unset
+  };
+
 private:
   class CData
   {
   public:
 
-    CData();
+    CData(const bool & withGUI = false);
 
     CData(const CData & src);
 
     ~CData();
 
     CData & operator = (const CData & rhs);
+    bool isValid() const;
 
     CModel * pModel;
     CCopasiVectorN< CCopasiTask > * pTaskList;
@@ -89,6 +87,34 @@ private:
     CListOfLayouts * pListOfLayouts;
     SCopasiXMLGUI * pGUI;
     SBMLDocument* pCurrentSBMLDocument;
+
+    bool mWithGUI;
+
+    std::string mSaveFileName;
+    FileType mFileType;
+    bool mChanged;
+    bool mAutoSaveNeeded;
+
+    /**
+     * The name of the referenced SBML file
+     */
+    std::string mSBMLFileName;
+
+    /**
+     * This will map each COPASI object to the
+     * corresponding SBML object if the current model
+     * was created by an SBML import.
+     */
+    std::map<CCopasiObject*, SBase*> mCopasi2SBMLMap;
+
+    // if we want to display images in the render extension,
+    // those images can be png or jpg files with a relative path name.
+    // If the path is relative, it is considered to be relative to the
+    // path of the filename it came from.
+    // Because of this, I need to know the reference directory where
+    // the render information came from because it can either come from
+    // an imported SBML file or from a loaded cps file.
+    std::string mReferenceDir;
   };
 
   // Operations
@@ -102,16 +128,23 @@ public:
 
   virtual ~CCopasiDataModel();
 
-  bool loadModel(const std::string & fileName, CProcessReport* pProcessReport,
+  bool loadModel(std::istream & in,
+                 const std::string & pwd,
+                 CProcessReport* pProcessReport,
                  const bool & deleteOldData = true);
-  bool saveModel(const std::string & fileName, CProcessReport* pProcessReport,
+
+  bool loadModel(const std::string & fileName,
+                 CProcessReport* pProcessReport,
+                 const bool & deleteOldData = true);
+
+  bool saveModel(const std::string & fileName,
+                 CProcessReport* pProcessReport,
                  bool overwriteFile = false,
                  const bool & autoSave = false);
+
   bool autoSave();
 
-  bool newModel(CModel * pModel,
-                CProcessReport* pProcessReport,
-                CListOfLayouts * pLol,
+  bool newModel(CProcessReport* pProcessReport,
                 const bool & deleteOldData);
 
   bool importSBMLFromString(const std::string & sbmlDocumentText,
@@ -196,47 +229,19 @@ public:
    */
   CCopasiObject * getDataObject(const CCopasiObjectName & CN) const;
 
-#ifdef USE_CRENDER_EXTENSION
   const std::string& getReferenceDirectory() const;
-#endif // USE_CRENDER_EXTENSION
 
 protected:
-  void hideOldData();
+  void pushData();
+  void popData();
+  void commonAfterLoad(CProcessReport* pProcessReport,
+                       const bool & deleteOldData);
 
   // Attributes
 protected:
   CData mData;
   CData mOldData;
-
-  bool mWithGUI;
-
-  std::string mSaveFileName;
-  bool mChanged;
-  bool mAutoSaveNeeded;
   CDataModelRenameHandler mRenameHandler;
-
-  /**
-   * The name of the referenced SBML file
-   */
-  std::string mSBMLFileName;
-
-  /**
-   * This will map each COPASI object to the
-   * corresponding SBML object if the current model
-   * was created by an SBML import.
-   */
-  std::map<CCopasiObject*, SBase*> mCopasi2SBMLMap;
-
-#ifdef USE_CRENDER_EXTENSION
-  // if we want to display images in the render extension,
-  // those images can be png or jpg files with a relative path name.
-  // If the path is relative, it is considered to be relative to the
-  // path of the filename it came from.
-  // Because of this, I need to know the reference directory where
-  // the render information came from because it can either come from
-  // an imported SBML file or from a loaded cps file.
-  std::string mReferenceDir;
-#endif // USE_CRENDER_EXTENSION
 
 public:
   /**

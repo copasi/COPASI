@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-//   $Revision: 1.107 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/02 18:58:27 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -72,29 +64,28 @@
 
 #endif // CELLDESIGNER_IMPORT
 
-
 //*****************************************************************************
 
 DataModelGUI::DataModelGUI(QObject * parent):
-    QObject(parent),
-    mpApp(NULL),
-    mOutputHandlerPlot(),
-    mListViews(),
-    mFramework(0),
-    mUpdateVector(),
-    mChangedObjects(),
-    mpThread(NULL),
-    mpProgressBar(NULL),
-    mSuccess(false),
-    mSBMLImportString(),
-    mpSBMLExportString(NULL),
-    mFileName(),
-    mOverWrite(false),
-    mSBMLLevel(2),
-    mSBMLVersion(4),
-    mSBMLExportIncomplete(true),
-    mSBMLExportCOPASIMIRIAM(true),
-    mExportFormat()
+  QObject(parent),
+  mpApp(NULL),
+  mOutputHandlerPlot(),
+  mListViews(),
+  mFramework(0),
+  mUpdateVector(),
+  mChangedObjects(),
+  mpThread(NULL),
+  mpProgressBar(NULL),
+  mSuccess(false),
+  mSBMLImportString(),
+  mpSBMLExportString(NULL),
+  mFileName(),
+  mOverWrite(false),
+  mSBMLLevel(2),
+  mSBMLVersion(4),
+  mSBMLExportIncomplete(true),
+  mSBMLExportCOPASIMIRIAM(true),
+  mExportFormat()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   (*CCopasiRootContainer::getDatamodelList())[0]->addInterface(&mOutputHandlerPlot);
@@ -122,10 +113,8 @@ void DataModelGUI::linkDataModelToGUI()
       (*it)->setDataModel(this);
     }
 
-
   pDataModel->deleteOldData();
 }
-
 
 //*****************************************************************
 
@@ -165,7 +154,7 @@ bool DataModelGUI::createModel()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  if (!(*CCopasiRootContainer::getDatamodelList())[0]->newModel(NULL, NULL, NULL, false)) return false;
+  if (!(*CCopasiRootContainer::getDatamodelList())[0]->newModel(NULL, false)) return false;
 
   mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
 
@@ -213,7 +202,6 @@ void DataModelGUI::loadModelFinished()
 
   threadFinished();
 }
-
 
 void DataModelGUI::saveModel(const std::string & fileName, bool overwriteFile)
 {
@@ -341,7 +329,6 @@ void DataModelGUI::importSBMLFinished()
 
   threadFinished();
 }
-
 
 void DataModelGUI::exportSBMLToString(std::string & sbmlDocumentText)
 {
@@ -734,7 +721,6 @@ void DataModelGUI::importCellDesigner()
                                     }
                                 }
 
-
                               // the layout map and the id to key map can be empty
                               std::map<std::string, std::string> layoutmap;
                               std::map<std::string, std::string> idToKeyMap;
@@ -771,4 +757,3 @@ void DataModelGUI::importCellDesigner()
     }
 }
 #endif // CELLDESIGNER_IMPORT
-
