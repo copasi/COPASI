@@ -1,20 +1,14 @@
-// Begin git Header 
-//   Commit: 49e2ce1db7de18f295c593999807d55c387ac57b 
-//   Author: Frank T. Bergmann fbergman@caltech.edu 
-//   Date: 2012-09-14 15:00:36 +0200 
-// End git Header 
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -58,8 +52,8 @@ class QThread;
 
 class CopasiUI3Window : public QMainWindow
 #ifdef COPASI_SBW_INTEGRATION
-    // A SBW listener can catch messages from SBW ... used here to allow COPASI to be shut down
-    , public SBWListener
+  // A SBW listener can catch messages from SBW ... used here to allow COPASI to be shut down
+  , public SBWListener
 #endif // COPASI_SBW_INTEGRATION
 
 {
@@ -304,7 +298,6 @@ public:
   {
   public:
     QSBWShutdownEvent();
-
   };
 
   // We expose 2 methods to SBW, one to load an SBML file
@@ -414,7 +407,6 @@ private:
   std::string mSBWDocumentString;
 
   QStringList::size_type mSBWActionId;
-
 
 #endif // COPASI_SBW_INTEGRATION
 };

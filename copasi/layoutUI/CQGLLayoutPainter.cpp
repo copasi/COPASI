@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutPainter.cpp,v $
-//   $Revision: 1.12 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/02 18:56:11 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,7 +8,6 @@
 // the glext from the 10.4 sdk so that we can load the one provided with COPASI
 #define GL_GLEXT_LEGACY
 #endif
-
 
 // SBML includes
 #include "copasi/model/CModel.h"
@@ -91,7 +82,7 @@ const int CQGLLayoutPainter::MARGIN = 10;
 #undef max
 #endif // _WIN32
 CQGLLayoutPainter::CQGLLayoutPainter(const QGLFormat& format, QWidget *parent)
-    : QGLWidget(format, parent),
+  : QGLWidget(format, parent),
     mInitialized(false),
     mMinX(std::numeric_limits<double>::max()),
     mMinY(std::numeric_limits<double>::max()),
@@ -320,10 +311,6 @@ double CQGLLayoutPainter::fitToScreen()
   return zoom;
 }
 
-
-
-
-
 double CQGLLayoutPainter::minX() const
 {
   return this->mMinX;
@@ -442,26 +429,26 @@ void CQGLLayoutPainter::mousePressEvent(QMouseEvent* pMouseEvent)
       if (this->mMouseButton == Qt::LeftButton)
         {
 
-            if (this->mMouseButton == Qt::LeftButton)
+          if (this->mMouseButton == Qt::LeftButton)
             {
-              if (QApplication::keyboardModifiers() != Qt::ShiftModifier  && 
-                QApplication::keyboardModifiers() != Qt::ControlModifier)
+              if (QApplication::keyboardModifiers() != Qt::ShiftModifier  &&
+                  QApplication::keyboardModifiers() != Qt::ControlModifier)
                 this->mpRenderer->clearSelection();
-              
+
               // most often if someone clicks the canvas they want to move something
               // there is no reason to assume that they want to drag something else
               // so we are going to first select whatever is under the mouse click
               std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> hits = this->mpRenderer->getObjectsAtViewportPosition(this->mMouseCurrentPosition.x(), this->mMouseCurrentPosition.y());
               std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize>::iterator it = hits.begin(), endit = hits.end();
-              
-              while (it != endit)
-              {
-                if (dynamic_cast<CLTextGlyph*>(*it) == NULL)
-                  if (dynamic_cast<CLCompartmentGlyph*>(*it) == NULL)
-                this->mpRenderer->addToSelection(*it);
-                ++it;
-              }
 
+              while (it != endit)
+                {
+                  if (dynamic_cast<CLTextGlyph*>(*it) == NULL)
+                    if (dynamic_cast<CLCompartmentGlyph*>(*it) == NULL)
+                      this->mpRenderer->addToSelection(*it);
+
+                  ++it;
+                }
             }
 
           // start a timer that fires after QApplication::startDragTime
@@ -490,17 +477,20 @@ std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> removeTextGlyph
 {
   std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> result;
   std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize>::iterator it = hits.begin();
-  while(it != hits.end()) {
-    CLTextGlyph* glyph = dynamic_cast<CLTextGlyph*>((*it));
-    if (glyph == NULL)
+
+  while (it != hits.end())
     {
-      result.insert(*it);
-    }       
-    ++it;
-  }
+      CLTextGlyph* glyph = dynamic_cast<CLTextGlyph*>((*it));
+
+      if (glyph == NULL)
+        {
+          result.insert(*it);
+        }
+
+      ++it;
+    }
 
   return result;
-
 }
 
 /**
@@ -529,6 +519,7 @@ void CQGLLayoutPainter::mouseReleaseEvent(QMouseEvent* pMouseEvent)
                 std::vector<CLGraphicalObject*> objects = this->mpRenderer->getObjectsInBoundingBox(coords1.first, coords1.second, coords2.first, coords2.second, false);
                 std::vector<CLGraphicalObject*>::iterator it = objects.begin(), endit = objects.end();
                 Qt::KeyboardModifiers modifiers = pMouseEvent->modifiers();
+
                 if (modifiers == Qt::NoModifier)
                   {
                     this->mpRenderer->clearSelection();
@@ -610,6 +601,7 @@ void CQGLLayoutPainter::mouseReleaseEvent(QMouseEvent* pMouseEvent)
               }
 
             break;
+
           case CQGLLayoutPainter::STATE_DRAG:
 
             // the user has been dragging the selected abstract_merge_items
@@ -652,6 +644,7 @@ void CQGLLayoutPainter::mouseReleaseEvent(QMouseEvent* pMouseEvent)
 
             this->mState = CQGLLayoutPainter::STATE_NORMAL;
             break;
+
           case CQGLLayoutPainter::STATE_NORMAL:
 
             // check if there is an item under the mouse
@@ -660,7 +653,7 @@ void CQGLLayoutPainter::mouseReleaseEvent(QMouseEvent* pMouseEvent)
                 std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> hits = this->mpRenderer->getObjectsAtViewportPosition(this->mMouseCurrentPosition.x(), this->mMouseCurrentPosition.y());
 
                 hits = removeTextGlyphs(hits);
-                
+
                 if (!hits.empty())
                   {
                     // if there is only one element in hits, we change the selection
@@ -824,6 +817,7 @@ void CQGLLayoutPainter::mouseMoveEvent(QMouseEvent* pMouseEvent)
           }
 
         break;
+
       case CQGLLayoutPainter::STATE_DRAG:
 
         if (this->mpRenderer != NULL)
@@ -862,6 +856,7 @@ void CQGLLayoutPainter::mouseMoveEvent(QMouseEvent* pMouseEvent)
           }
 
         break;
+
       case CQGLLayoutPainter::STATE_NORMAL:
 
         // check if a drag timout has occured and the user has moved the
@@ -1023,11 +1018,13 @@ void CQGLLayoutPainter::update_status_and_cursor()
         shape = Qt::ClosedHandCursor;
         emit status_message("Drag item(s) out of their parent to break merge.", 0);
         break;
+
       case CQGLLayoutPainter::STATE_SELECTION:
         // make the cursor a crosshair
         shape = Qt::CrossCursor;
         emit status_message("Drag cursor to make selection.", 0);
         break;
+
       case CQGLLayoutPainter::STATE_NORMAL:
         // we check if we are currently over another item
         bool selectedHit = false;
@@ -1036,7 +1033,7 @@ void CQGLLayoutPainter::update_status_and_cursor()
           {
             std::set<CLGraphicalObject*>& selection = this->mpRenderer->getSelection();
 
-            if (!selection.empty() )
+            if (!selection.empty())
               {
                 // maybe the user was not on a line, but on the basepoint of a bezier segment
                 // this would not be covered by the above test and has to be handled separatly
@@ -1111,9 +1108,8 @@ void CQGLLayoutPainter::update_status_and_cursor()
                       }
                   }
               }
-
           }
-       
+
         if (selectedHit)
           {
             // if we are over a selected item
@@ -1342,7 +1338,7 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
                   // create storage for the complete image
                   try
                     {
-                      pImageData = new GLubyte[imageWidth*imageHeight*4];
+                      pImageData = new GLubyte[imageWidth * imageHeight * 4];
                     }
                   catch (...)
                     {
@@ -1383,7 +1379,7 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
                                   // copy the data
                                   pSrc = pTmpData + k * chunk_size * 4;
                                   pDst = pImageData + (i * chunk_size + k) * imageWidth * 4 + j * chunk_size * 4;
-                                  memcpy(pDst, pSrc, 4*chunk_size);
+                                  memcpy(pDst, pSrc, 4 * chunk_size);
                                 }
                             }
 
@@ -1428,7 +1424,7 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
                                   // copy the data
                                   pSrc = pTmpData + k * restX * 4;
                                   pDst = pImageData + (i * chunk_size + k) * imageWidth * 4 + j * chunk_size * 4;
-                                  memcpy(pDst, pSrc, 4*restX);
+                                  memcpy(pDst, pSrc, 4 * restX);
                                 }
                             }
 
@@ -1468,7 +1464,7 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
                                   // copy the data
                                   pSrc = pTmpData + k * chunk_size * 4;
                                   pDst = pImageData + (i * chunk_size + k) * imageWidth * 4 + j * chunk_size * 4;
-                                  memcpy(pDst, pSrc, 4*chunk_size);
+                                  memcpy(pDst, pSrc, 4 * chunk_size);
                                 }
                             }
 
@@ -1504,7 +1500,7 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
                                   // copy the data
                                   pSrc = pTmpData + k * restX * 4;
                                   pDst = pImageData + (i * chunk_size + k) * imageWidth * 4 + j * chunk_size * 4;
-                                  memcpy(pDst, pSrc, 4*restX);
+                                  memcpy(pDst, pSrc, 4 * restX);
                                 }
                             }
 
@@ -1581,7 +1577,7 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
                       // In Qt the color value has to be an int 0xAARRGGBB
                       // so the order in memory depends on the endianess of
                       // the system
-                      ((GLuint*)pImageData)[i] = pImageData[i*4+3] * 16777216 | ((GLuint)pImageData[i*4]) * 65536 | ((GLuint)pImageData[i*4+1]) * 256 | ((GLuint)pImageData[i*4+2]);
+                      ((GLuint*)pImageData)[i] = pImageData[i * 4 + 3] * 16777216 | ((GLuint)pImageData[i * 4]) * 65536 | ((GLuint)pImageData[i * 4 + 1]) * 256 | ((GLuint)pImageData[i * 4 + 2]);
                     }
                 }
             }
@@ -1708,7 +1704,7 @@ bool CQGLLayoutPainter::draw_bitmap(double x, double y, double width, double hei
     {
       try
         {
-          (*pImageData) = new GLubyte[imageWidth*imageHeight*4];
+          (*pImageData) = new GLubyte[imageWidth * imageHeight * 4];
         }
       catch (...)
         {
@@ -1776,17 +1772,17 @@ bool CQGLLayoutPainter::draw_bitmap(double x, double y, double width, double hei
           //std::cout << "reading pixels from read buffer." << std::endl;
           glReadPixels(0, 0, imageWidth, imageHeight, GL_RGBA, GL_UNSIGNED_BYTE, *pImageData);
           // the picture is flipped horizontally, so we have to turn it around
-          GLubyte* pTmpData = new GLubyte[imageWidth*4];
+          GLubyte* pTmpData = new GLubyte[imageWidth * 4];
           unsigned int i, iMax = imageHeight / 2;
 
           for (i = 0; i < iMax; ++i)
             {
               // save the first line
-              memcpy(pTmpData, (*pImageData) + i*4*imageWidth, imageWidth*4);
+              memcpy(pTmpData, (*pImageData) + i * 4 * imageWidth, imageWidth * 4);
               // copy the iMax-1-i the line to the ith line
-              memcpy((*pImageData) + i*4*imageWidth, (*pImageData) + (imageHeight - 1 - i)*imageWidth*4, imageWidth*4);
+              memcpy((*pImageData) + i * 4 * imageWidth, (*pImageData) + (imageHeight - 1 - i)*imageWidth * 4, imageWidth * 4);
               // copy pTmpData into the iMax-1-i th line
-              memcpy((*pImageData) + (imageHeight - 1 - i)*4*imageWidth, pTmpData, imageWidth*4);
+              memcpy((*pImageData) + (imageHeight - 1 - i) * 4 * imageWidth, pTmpData, imageWidth * 4);
             }
         }
 
@@ -1851,18 +1847,23 @@ bool CQGLLayoutPainter::check_fbo_status(QString& messageHeader, QString& messag
         // everything is OK
         success = true;
         break;
+
       case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
         message = tr("Could not create framebuffer object (INCOMPLETE_ATTACHMENT). ");
         break;
+
       case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
         message = tr("Could not create framebuffer object (INCOMPLETE_DIMENSIONS). ");
         break;
+
       case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
         message = tr("Could not create framebuffer object (INCOMPLETE_MISSING_ATTACHMENT).");
         break;
+
       case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
         message = tr("Could not create framebuffer object (INCOMPLETE_UNSUPPORTED). ");
         break;
+
       default:
         message = tr("Could not create framebuffer object (UNKNOWN). ");
         break;
@@ -1870,7 +1871,6 @@ bool CQGLLayoutPainter::check_fbo_status(QString& messageHeader, QString& messag
 
   return success;
 }
-
 
 /**
  * On non apple systems, we need to get the pointers to extension functions.
@@ -2013,7 +2013,6 @@ GLfloat CQGLLayoutPainter::getFogDensity() const
   return this->mpRenderer->getFogDensity();
 }
 
-
 /**
  * Returns a const pointer to the highlight color.
  * The array has a size of 4 elements.
@@ -2039,7 +2038,6 @@ const GLfloat* CQGLLayoutPainter::getFogColor() const
 {
   return this->mpRenderer->getFogColor();
 }
-
 
 /**
  * Toggles the flag that determines if highlighted objects
@@ -2068,6 +2066,3 @@ bool CQGLLayoutPainter::getHighlightFlag() const
 }
 
 #endif // ELEMENTARY_MODE_DISPLAY
-
-
-

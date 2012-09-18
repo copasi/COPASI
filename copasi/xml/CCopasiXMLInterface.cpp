@@ -1,22 +1,14 @@
-/* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
- $Revision: 1.56 $
- $Name:  $
- $Author: shoops $
- $Date: 2012/04/23 21:12:50 $
- End CVS Header */
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -49,7 +41,7 @@ SCopasiXMLGUI::SCopasiXMLGUI(const std::string & name,
                              const CCopasiContainer * pParent,
                              const std::string & type,
                              const unsigned C_INT32 & flag)
-    : CCopasiContainer(name, pParent, type, flag),
+  : CCopasiContainer(name, pParent, type, flag),
     mpSliderList(new CCopasiVector<CSlider>("SliderList", this))
 {}
 
@@ -200,14 +192,14 @@ std::string CCopasiXMLInterface::encode(const std::string & str, const EncodingT
 }
 
 CCopasiXMLInterface::DBL::DBL(const C_FLOAT64 & value):
-    mValue(value)
+  mValue(value)
 {
   if (-mValue < std::numeric_limits< C_FLOAT64 >::min() && mValue < std::numeric_limits< C_FLOAT64 >::min() && !isnan(mValue))
     mValue = 0.0;
 }
 
 CCopasiXMLInterface::DBL::DBL(const char * value):
-    mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN())
+  mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN())
 {
   if (!value || !*value) return;
 
@@ -277,9 +269,9 @@ std::string CCopasiXMLInterface::utf8(const std::string & str)
 }
 
 CCopasiXMLInterface::CCopasiXMLInterface():
-    mpIstream(NULL),
-    mpOstream(NULL),
-    mIndent()
+  mpIstream(NULL),
+  mpOstream(NULL),
+  mIndent()
 {}
 
 CCopasiXMLInterface::~CCopasiXMLInterface() {}
@@ -501,13 +493,13 @@ bool CCopasiXMLInterface::saveParameterGroup(const std::vector< CCopasiParameter
 }
 
 CXMLAttributeList::CXMLAttributeList():
-    mAttributeList(),
-    mSaveList()
+  mAttributeList(),
+  mSaveList()
 {}
 
 CXMLAttributeList::CXMLAttributeList(const CXMLAttributeList & src):
-    mAttributeList(src.mAttributeList),
-    mSaveList(src.mSaveList)
+  mAttributeList(src.mAttributeList),
+  mSaveList(src.mSaveList)
 {}
 
 CXMLAttributeList::~CXMLAttributeList() {}

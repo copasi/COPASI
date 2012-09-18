@@ -1,20 +1,14 @@
-// Begin git Header 
-//   Commit: 948bf0d3e0b8d39b652761ecf02bbceeca23ec70 
-//   Author: Frank Bergmann fbergman@caltech.edu 
-//   Date: 2012-09-17 11:09:34 +0200 
-// End git Header 
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -129,41 +123,41 @@ CopasiUI3Window * CopasiUI3Window::create()
  *  for more information about these flags.
  */
 CopasiUI3Window::CopasiUI3Window():
-    QMainWindow(),
-    mpDataModelGUI(NULL),
-    mpListView(NULL),
-    mpBoxSelectFramework(NULL),
-    mpSliders(NULL),
-    mpObjectBrowser(NULL),
-    mSaveAsRequired(true),
-    mpAutoSaveTimer(NULL),
-    mSuspendAutoSave(false),
-    mpMenuExamples(NULL),
-    mpMenuRecentFiles(NULL),
-    mRecentFilesActionMap(),
-    mpRecentFilesActionGroup(NULL),
-    mpMenuRecentSBMLFiles(NULL),
-    mRecentSBMLFilesActionMap(),
-    mpRecentSBMLFilesActionGroup(NULL),
-    mpWindowsActionGroup(NULL),
-    mpMIRIAMResources(NULL),
-    mpMainThread(QThread::currentThread()),
-    mNewFile(),
-    mCommitRequired(true),
-    mQuitApplication(false),
-    mSliderDialogEnabled(false),
-    mMessageShown(false),
-    mWindows()
+  QMainWindow(),
+  mpDataModelGUI(NULL),
+  mpListView(NULL),
+  mpBoxSelectFramework(NULL),
+  mpSliders(NULL),
+  mpObjectBrowser(NULL),
+  mSaveAsRequired(true),
+  mpAutoSaveTimer(NULL),
+  mSuspendAutoSave(false),
+  mpMenuExamples(NULL),
+  mpMenuRecentFiles(NULL),
+  mRecentFilesActionMap(),
+  mpRecentFilesActionGroup(NULL),
+  mpMenuRecentSBMLFiles(NULL),
+  mRecentSBMLFilesActionMap(),
+  mpRecentSBMLFilesActionGroup(NULL),
+  mpWindowsActionGroup(NULL),
+  mpMIRIAMResources(NULL),
+  mpMainThread(QThread::currentThread()),
+  mNewFile(),
+  mCommitRequired(true),
+  mQuitApplication(false),
+  mSliderDialogEnabled(false),
+  mMessageShown(false),
+  mWindows()
 
 #ifdef COPASI_SBW_INTEGRATION
-    , mpSBWModule(NULL)
-    , mSBWAnalyzerModules()
-    , mSBWAnalyzerServices()
-    , mSBWActionMap()
-    , mpSBWActionGroup(NULL)
-    , mpSBWMenu(NULL)
-    , mpSBWAction(NULL)
-    , mSBWIgnoreShutdownEvent(true)
+  , mpSBWModule(NULL)
+  , mSBWAnalyzerModules()
+  , mSBWAnalyzerServices()
+  , mSBWActionMap()
+  , mpSBWActionGroup(NULL)
+  , mpSBWMenu(NULL)
+  , mpSBWAction(NULL)
+  , mSBWIgnoreShutdownEvent(true)
 #endif // COPASI_SBW_INTEGRATION
 {
   // set destructive close
@@ -338,7 +332,6 @@ void CopasiUI3Window::createActions()
 
   mpaCloseAllWindows = new QAction("Close All Windows", this);
   connect(mpaCloseAllWindows, SIGNAL(activated()), this, SLOT(slotCloseAllWindows()));
-
 }
 
 void CopasiUI3Window::createToolBar()
@@ -442,9 +435,8 @@ void CopasiUI3Window::createMenuBar()
   mpTools->addAction("&Preferences", this, SLOT(slotPreferences()));
   mpTools->addAction(mpaFontSelectionDialog);
 
-
   //****** windows menu **************
-  mpWindowsMenu =  menuBar()->addMenu("&Window");  
+  mpWindowsMenu =  menuBar()->addMenu("&Window");
   refreshWindowsMenu();
 
   //*******  help menu *****************
@@ -535,7 +527,6 @@ void CopasiUI3Window::slotFileSaveFinished(bool success)
           CQMessageBox::warning(this, QString("File Warning"), Message,
                                 QMessageBox::Ok, QMessageBox::Ok);
         }
-
     }
   else
     {
@@ -1331,10 +1322,10 @@ void CopasiUI3Window::slotExportSBML()
 
       if ((*CCopasiRootContainer::getDatamodelList())[0]->getFileName() != "")
         Default
-        = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                    + CDirEntry::Separator
-                    + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                    + ".xml");
+          = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                      + CDirEntry::Separator
+                      + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                      + ".xml");
       else
         {
           Default = "untitled.xml";
@@ -1401,9 +1392,9 @@ void CopasiUI3Window::slotExportMathModel()
 
       if (pDataModel->getFileName() != "")
         Default
-        = FROM_UTF8(CDirEntry::dirName(pDataModel->getFileName())
-                    + CDirEntry::Separator
-                    + CDirEntry::baseName(pDataModel->getFileName()));
+          = FROM_UTF8(CDirEntry::dirName(pDataModel->getFileName())
+                      + CDirEntry::Separator
+                      + CDirEntry::baseName(pDataModel->getFileName()));
       else
         Default = "untitled.c";
 
@@ -1447,7 +1438,6 @@ void CopasiUI3Window::slotExportMathModelFinished(bool success)
                              QMessageBox::NoButton);
       CCopasiMessage::clearDeque();
     }
-
 }
 
 void CopasiUI3Window::slotConvertToIrreversible()
@@ -1731,15 +1721,14 @@ void CopasiUI3Window::refreshWindowsMenu()
   mpWindowsMenu->addAction(mpaCloseAllWindows);
   mpWindowsMenu->addSeparator();
 
-  for(int index = 0; index < mWindows.count(); ++index)
-  {
-    QMenu* menu = ((PlotWindow*)mWindows[index])->getMenu();
-    menu->clear();
-    menu->addAction(mpaCloseAllWindows);
-    menu->addSeparator();    
-  }
-  
-  
+  for (int index = 0; index < mWindows.count(); ++index)
+    {
+      QMenu* menu = ((PlotWindow*)mWindows[index])->getMenu();
+      menu->clear();
+      menu->addAction(mpaCloseAllWindows);
+      menu->addSeparator();
+    }
+
   if (mpWindowsActionGroup != NULL)
     {
       disconnect(mpWindowsActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slowFindWindowTriggered(QAction *)));
@@ -1752,36 +1741,37 @@ void CopasiUI3Window::refreshWindowsMenu()
 
   QAction * pAction;
 
-  for(int index = 0; index < mWindows.count(); ++index)
-  {
-      pAction = new QAction( mWindows[index]->windowTitle(), mpWindowsActionGroup);
-      mpWindowsMenu->addAction(pAction);
-    for(int index = 0; index < mWindows.count(); ++index)
+  for (int index = 0; index < mWindows.count(); ++index)
     {
-      QMenu* menu = ((PlotWindow*)mWindows[index])->getMenu();
-      menu->addAction(pAction);
+      pAction = new QAction(mWindows[index]->windowTitle(), mpWindowsActionGroup);
+      mpWindowsMenu->addAction(pAction);
+
+      for (int index = 0; index < mWindows.count(); ++index)
+        {
+          QMenu* menu = ((PlotWindow*)mWindows[index])->getMenu();
+          menu->addAction(pAction);
+        }
     }
-  }
 }
 
 void CopasiUI3Window::slotCloseAllWindows()
 {
-    for(int index = mWindows.count()-1; index >= 0 ; --index)
+  for (int index = mWindows.count() - 1; index >= 0 ; --index)
     {
       mWindows[index]->close();
     }
-    refreshWindowsMenu();
+
+  refreshWindowsMenu();
 }
 
 void CopasiUI3Window::slowFindWindowTriggered(QAction* action)
 {
-   for(int index = 0; index < mWindows.count(); ++index)
-   {
-     if (mWindows[index]->windowTitle() == action->text())
-       mWindows[index]->activateWindow();
-   }
+  for (int index = 0; index < mWindows.count(); ++index)
+    {
+      if (mWindows[index]->windowTitle() == action->text())
+        mWindows[index]->activateWindow();
+    }
 }
-
 
 void CopasiUI3Window::setMessageShown(const bool & shown)
 {
@@ -2026,15 +2016,15 @@ void CopasiUI3Window::slotMergeModels()
 // Create 2 custom events, one containing the filename to an SBML document to be loaded
 // into COPASI
 CopasiUI3Window::QSBWSBMLEvent::QSBWSBMLEvent(const std::string & SBMLModel):
-    QEvent((QEvent::Type)65433),
-    mSBML(SBMLModel)
+  QEvent((QEvent::Type)65433),
+  mSBML(SBMLModel)
 {}
 
 const std::string & CopasiUI3Window::QSBWSBMLEvent::getSBMLModel() const
 {return mSBML;}
 
 CopasiUI3Window::QSBWShutdownEvent::QSBWShutdownEvent():
-    QEvent((QEvent::Type)65434)
+  QEvent((QEvent::Type)65434)
 {}
 
 void CopasiUI3Window::registerMethods(SystemsBiologyWorkbench::MethodTable< CopasiUI3Window > & table)
@@ -2099,9 +2089,8 @@ void CopasiUI3Window::sbwConnect()
 
       mpSBWModule =
         new SystemsBiologyWorkbench::ModuleImpl(FullName, FullName,
-                                                SystemsBiologyWorkbench::UniqueModule,
-                                                Description);
-
+            SystemsBiologyWorkbench::UniqueModule,
+            Description);
 
       mpSBWModule->addServiceObject(FullName, FullName, Category, this, Description);
 
@@ -2116,7 +2105,6 @@ void CopasiUI3Window::sbwConnect()
     {
       pdelete(mpSBWModule);
     }
-
 
   // Update the SBW Menu
   sbwRefreshMenu();
@@ -2322,7 +2310,6 @@ void CopasiUI3Window::sbwSlotMenuTriggered(QAction * pAction)
     }
 }
 
-
 void CopasiUI3Window::sbwSlotMenuTriggeredFinished(bool success)
 {
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(sbwSlotMenuTriggeredFinished(bool)));
@@ -2491,5 +2478,3 @@ void CopasiUI3Window::disableSliders(bool disable)
       this->mpSliders->updateAllSliders();
     }
 }
-
-

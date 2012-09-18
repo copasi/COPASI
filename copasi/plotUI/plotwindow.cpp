@@ -1,20 +1,14 @@
-// Begin git Header 
-//   Commit: 948bf0d3e0b8d39b652761ecf02bbceeca23ec70 
-//   Author: Frank Bergmann fbergman@caltech.edu 
-//   Date: 2012-09-17 11:09:34 +0200 
-// End git Header 
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -57,11 +51,11 @@ public:
 
 //-----------------------------------------------------------------------------
 PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* ptrSpec, CopasiUI3Window * pMainWindow):
-    QMainWindow(),
-    mpPlot(NULL),
-    mpHandler(pHandler),
-    mpMainWindow(pMainWindow),
-    mpWindowMenu(NULL)
+  QMainWindow(),
+  mpPlot(NULL),
+  mpHandler(pHandler),
+  mpMainWindow(pMainWindow),
+  mpWindowMenu(NULL)
 {
   this->resize(640, 480);
   this->setWindowTitle(("COPASI Plot: " + ptrSpec->getTitle()).c_str());
@@ -75,7 +69,7 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
 
   // add a place holder menu, to be filled by the main window
   mpWindowMenu = menuBar()->addMenu("Window");
-  
+
   mpMainWindow->addWindow(this);
 }
 
@@ -83,7 +77,6 @@ QMenu *PlotWindow::getMenu() const
 {
   return mpWindowMenu;
 }
-
 
 void PlotWindow::createActions()
 {
@@ -359,9 +352,8 @@ void PlotWindow::slotCloseWindow()
 
 void PlotWindow::closeEvent(QCloseEvent *closeEvent)
 {
-   mpMainWindow->removeWindow(this);
+  mpMainWindow->removeWindow(this);
   mpHandler->removeInterface(this);
- 
 }
 
 CopasiPlot* PlotWindow::getPlot() const
