@@ -444,7 +444,8 @@ void CQGLLayoutPainter::mousePressEvent(QMouseEvent* pMouseEvent)
 
             if (this->mMouseButton == Qt::LeftButton)
             {
-              if (QApplication::keyboardModifiers() != Qt::ShiftModifier)
+              if (QApplication::keyboardModifiers() != Qt::ShiftModifier  && 
+                QApplication::keyboardModifiers() != Qt::ControlModifier)
                 this->mpRenderer->clearSelection();
               
               // most often if someone clicks the canvas they want to move something
@@ -456,6 +457,7 @@ void CQGLLayoutPainter::mousePressEvent(QMouseEvent* pMouseEvent)
               while (it != endit)
               {
                 if (dynamic_cast<CLTextGlyph*>(*it) == NULL)
+                  if (dynamic_cast<CLCompartmentGlyph*>(*it) == NULL)
                 this->mpRenderer->addToSelection(*it);
                 ++it;
               }
