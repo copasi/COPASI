@@ -82,10 +82,12 @@ typedef CExpression DisownedExpression;
 %}
 #endif // SWIGPYTHON
 
+// suppress warnings on multiple inheritance
+%warnfilter(813) CModelEntity;
 
 %include "model/CModelValue.h"
 
-#ifdef SWIGJAVA
+#if (defined SWIGJAVA || defined SWIGCSHARP)
 %extend CModelEntity
 {
   void setInitialExpressionPtr(DisownedExpression* pDisownedExpression)
@@ -98,7 +100,31 @@ typedef CExpression DisownedExpression;
      $self->CModelEntity::setExpressionPtr(pDisownedExpression);
   }
 
+  // the CAnnotation functionality has to be added manually because
+  // Java does not know about multiple inheritance
+  void setNotes(const std::string& notes)
+  {
+    self->setNotes(notes);
+  } 
+
+  const std::string& getNotes() const
+  {
+    return self->getNotes();
+  } 
+
+  const std::string& getMiriamAnnotation() const
+  {
+    return self->getMiriamAnnotation();
+  }
+
+  void setMiriamAnnotation(const std::string& miriamAnnotation,
+                           const std::string& newId,
+                           const std::string& oldId)
+  {
+	self->setMiriamAnnotation(miriamAnnotation,newId,oldId);
+  } 
+
 }
-#endif // SWIGJAVA
+#endif // SWIGJAVA || CSHARP
 
 

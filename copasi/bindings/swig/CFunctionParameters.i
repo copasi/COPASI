@@ -26,6 +26,9 @@
 
 %}
 
+%ignore CFunctionParameters::operator [];
+%ignore CFunctionParameters::operator[](size_t);
+%ignore CFunctionParameters::operator[](size_t) const;
 
 %ignore CFunctionParameters::operator[](unsigned C_INT32);
 %ignore CFunctionParameters::operator[](unsigned C_INT32) const;

@@ -46,8 +46,19 @@
 
 #endif // SWIGJAVA || CSHARP
 
+#ifdef SWIGR
+%ignore CCopasiParameter::getType() const;
+#endif // SWIGR
+
+// suppress warnings on nested structures
+%warnfilter(325) Value;
 
 %include "utilities/CCopasiParameter.h"
+
+#ifdef SWIGR
+%rename(getType) CCopasiParameter::getType() const;
+#endif // SWIGR
+
 
 %extend CCopasiParameter
 {
@@ -160,6 +171,13 @@
   {
     return self->setValue(v);
   }
+
+#ifdef SWIGR
+  CCopasiParameter::Type getType() const
+  {
+    return $self->getType();
+  }
+#endif // SWIGR
 
 }
 

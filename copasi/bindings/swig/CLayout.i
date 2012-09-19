@@ -40,6 +40,13 @@ typedef CCopasiVector<CLGraphicalObject> GraphicalObjectVector;
 %ignore CLayout::exportToSBML;
 %ignore CLayout::print;
 %ignore CLayout::exportToDotFile;
+%ignore CLayout::getListOfLocalRenderInformationObjects;
+%ignore CLayout::getListOfMetaboliteGlyphs;
+%ignore CLayout::getListOfTextGlyphs;
+%ignore CLayout::getRenderInformation;
+
+// suppress warnings on multiple inheritance
+%warnfilter(813) CLayout;
 
 
 %include "layout/CLayout.h"

@@ -1,26 +1,27 @@
-// Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.i,v $ 
-//   $Revision: 1.16 $ 
-//   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2009/04/21 15:45:05 $ 
-// End CVS Header 
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.i,v $
+//   $Revision: 1.16 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2009/04/21 15:45:05 $
+// End CVS Header
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+%include <std_string.i>
+%include <exception.i>
 
-%include exception.i
 /**
  * Make COPASI and wrapper constants Java compile-time
  * constants so they may be used in switch statements.
@@ -34,7 +35,7 @@ void initCopasi();
 %typemap(jni) CCopasiAbstractArray* CArrayAnnotation::array "jobject"
 %typemap(jtype) CCopasiAbstractArray* CArrayAnnotation::array "CCopasiAbstractArray"
 %typemap(jstype) CCopasiAbstractArray* CArrayAnnotation::array "CCopasiAbstractArray"
-%typemap(javaout) CCopasiAbstractArray* CArrayAnnotation::array 
+%typemap(javaout) CCopasiAbstractArray* CArrayAnnotation::array
 {
   return $jnicall;
 }
@@ -51,7 +52,7 @@ void initCopasi();
 %typemap(jni) CCopasiTask* CCopasiDataModel::addTask "jobject"
 %typemap(jtype) CCopasiTask* CCopasiDataModel::addTask "CCopasiTask"
 %typemap(jstype) CCopasiTask* CCopasiDataModel::addTask "CCopasiTask"
-%typemap(javaout) CCopasiTask* CCopasiDataModel::addTask 
+%typemap(javaout) CCopasiTask* CCopasiDataModel::addTask
 {
   return $jnicall;
 }
@@ -67,7 +68,7 @@ void initCopasi();
 %typemap(jni) CCopasiTask* CCopasiDataModel::getTask "jobject"
 %typemap(jtype) CCopasiTask* CCopasiDataModel::getTask "CCopasiTask"
 %typemap(jstype) CCopasiTask* CCopasiDataModel::getTask "CCopasiTask"
-%typemap(javaout) CCopasiTask* CCopasiDataModel::getTask 
+%typemap(javaout) CCopasiTask* CCopasiDataModel::getTask
 {
   return $jnicall;
 }
@@ -100,7 +101,7 @@ void initCopasi();
 %typemap(jni) CCopasiContainer* CCopasiObject::getObjectParent "jobject"
 %typemap(jtype) CCopasiContainer* CCopasiObject::getObjectParent "CCopasiContainer"
 %typemap(jstype) CCopasiContainer* CCopasiObject::getObjectParent "CCopasiContainer"
-%typemap(javaout) CCopasiContainer* CCopasiObject::getObjectParent 
+%typemap(javaout) CCopasiContainer* CCopasiObject::getObjectParent
 {
   return $jnicall;
 }
@@ -117,7 +118,7 @@ void initCopasi();
 %typemap(jni) CCopasiParameter* CCopasiParameterGroup::getParameter "jobject"
 %typemap(jtype) CCopasiParameter* CCopasiParameterGroup::getParameter "CCopasiParameter"
 %typemap(jstype) CCopasiParameter* CCopasiParameterGroup::getParameter "CCopasiParameter"
-%typemap(javaout) CCopasiParameter* CCopasiParameterGroup::getParameter 
+%typemap(javaout) CCopasiParameter* CCopasiParameterGroup::getParameter
 {
   return $jnicall;
 }
@@ -133,7 +134,7 @@ void initCopasi();
 %typemap(jni) CCopasiParameterGroup* CCopasiParameterGroup::getGroup "jobject"
 %typemap(jtype) CCopasiParameterGroup* CCopasiParameterGroup::getGroup "CCopasiParameterGroup"
 %typemap(jstype) CCopasiParameterGroup* CCopasiParameterGroup::getGroup "CCopasiParameterGroup"
-%typemap(javaout) CCopasiParameterGroup* CCopasiParameterGroup::getGroup 
+%typemap(javaout) CCopasiParameterGroup* CCopasiParameterGroup::getGroup
 {
   return $jnicall;
 }
@@ -150,7 +151,7 @@ void initCopasi();
 %typemap(jni) CCopasiProblem* CCopasiTask::getProblem "jobject"
 %typemap(jtype) CCopasiProblem* CCopasiTask::getProblem "CCopasiProblem"
 %typemap(jstype) CCopasiProblem* CCopasiTask::getProblem "CCopasiProblem"
-%typemap(javaout) CCopasiProblem* CCopasiTask::getProblem 
+%typemap(javaout) CCopasiProblem* CCopasiTask::getProblem
 {
   return $jnicall;
 }
@@ -167,7 +168,7 @@ void initCopasi();
 %typemap(jni) CCopasiMethod* CCopasiTask::getMethod "jobject"
 %typemap(jtype) CCopasiMethod* CCopasiTask::getMethod "CCopasiMethod"
 %typemap(jstype) CCopasiMethod* CCopasiTask::getMethod "CCopasiMethod"
-%typemap(javaout) CCopasiMethod* CCopasiTask::getMethod 
+%typemap(javaout) CCopasiMethod* CCopasiTask::getMethod
 {
   return $jnicall;
 }
@@ -184,7 +185,7 @@ void initCopasi();
 %typemap(jni) CEvaluationTree* CFunctionDB::findFunction "jobject"
 %typemap(jtype) CEvaluationTree* CFunctionDB::findFunction "CEvaluationTree"
 %typemap(jstype) CEvaluationTree* CFunctionDB::findFunction "CEvaluationTree"
-%typemap(javaout) CEvaluationTree* CFunctionDB::findFunction 
+%typemap(javaout) CEvaluationTree* CFunctionDB::findFunction
 {
   return $jnicall;
 }
@@ -201,7 +202,7 @@ void initCopasi();
 %typemap(jni) CEvaluationTree* CFunctionDB::findLoadFunction "jobject"
 %typemap(jtype) CEvaluationTree* CFunctionDB::findLoadFunction "CEvaluationTree"
 %typemap(jstype) CEvaluationTree* CFunctionDB::findLoadFunction "CEvaluationTree"
-%typemap(javaout) CEvaluationTree* CFunctionDB::findLoadFunction 
+%typemap(javaout) CEvaluationTree* CFunctionDB::findLoadFunction
 {
   return $jnicall;
 }
@@ -218,7 +219,7 @@ void initCopasi();
 %typemap(jni) CEvaluationTree* CFunctionDB::createFunction "jobject"
 %typemap(jtype) CEvaluationTree* CFunctionDB::createFunction "CEvaluationTree"
 %typemap(jstype) CEvaluationTree* CFunctionDB::createFunction "CEvaluationTree"
-%typemap(javaout) CEvaluationTree* CFunctionDB::createFunction 
+%typemap(javaout) CEvaluationTree* CFunctionDB::createFunction
 {
   return $jnicall;
 }
@@ -233,9 +234,9 @@ void initCopasi();
 
 %pragma(java) jniclasscode=
 %{
-  static 
+  static
   {
-    try 
+    try
     {
       System.loadLibrary("CopasiJava");
     }
@@ -248,16 +249,16 @@ void initCopasi();
   }
 %}
 
-/*  
+/*
 %typemap(jni) CModelEntity* "jobject"
 %typemap(jtype) CModelEntity* "CModelEntity"
 %typemap(jstype) CModelEntity* "CModelEntity"
-%typemap(javaout) CModelEntity* 
+%typemap(javaout) CModelEntity*
 {
     return $jnicall;
 }
 
-%typemap(out) CModelEntity* 
+%typemap(out) CModelEntity*
 {
     $result = DownCast_CModelEntity(jenv,$1);
     if(!$result)
@@ -270,12 +271,12 @@ void initCopasi();
 %typemap(jni) CEvaluationTree* "jobject"
 %typemap(jtype) CEvaluationTree* "CEvaluationTree"
 %typemap(jstype) CEvaluationTree* "CEvaluationTree"
-%typemap(javaout) CEvaluationTree* 
+%typemap(javaout) CEvaluationTree*
 {
     return $jnicall;
 }
 
-%typemap(out) CEvaluationTree* 
+%typemap(out) CEvaluationTree*
 {
     $result = DownCast_CEvaluationTree(jenv,$1);
     if(!$result)
@@ -287,12 +288,12 @@ void initCopasi();
 %typemap(jni) CCopasiTask* "jobject"
 %typemap(jtype) CCopasiTask* "CCopasiTask"
 %typemap(jstype) CCopasiTask* "CCopasiTask"
-%typemap(javaout) CCopasiTask* 
+%typemap(javaout) CCopasiTask*
 {
     return $jnicall;
 }
 
-%typemap(out) CCopasiTask* 
+%typemap(out) CCopasiTask*
 {
     $result=DownCast_CCopasiTask(jenv,$1);
     if(!$result)
@@ -304,12 +305,12 @@ void initCopasi();
 %typemap(jni) CCopasiMethod* "jobject"
 %typemap(jtype) CCopasiMethod* "CCopasiMethod"
 %typemap(jstype) CCopasiMethod* "CCopasiMethod"
-%typemap(javaout) CCopasiMethod* 
+%typemap(javaout) CCopasiMethod*
 {
     return $jnicall;
 }
 
-%typemap(out) CCopasiMethod* 
+%typemap(out) CCopasiMethod*
 {
     $result = DownCast_CCopasiMethod(jenv,$1);
     if(!$result)
@@ -321,12 +322,12 @@ void initCopasi();
 %typemap(jni) CCopasiProblem* "jobject"
 %typemap(jtype) CCopasiProblem* "CCopasiProblem"
 %typemap(jstype) CCopasiProblem* "CCopasiProblem"
-%typemap(javaout) CCopasiProblem* 
+%typemap(javaout) CCopasiProblem*
 {
     return $jnicall;
 }
 
-%typemap(out) CCopasiProblem* 
+%typemap(out) CCopasiProblem*
 {
     $result = DownCast_CCopasiProblem(jenv,$1);
     if(!$result)
@@ -340,12 +341,12 @@ void initCopasi();
 %typemap(jni) CCopasiParameterGroup* "jobject"
 %typemap(jtype) CCopasiParameterGroup* "CCopasiParameterGroup"
 %typemap(jstype) CCopasiParameterGroup* "CCopasiParameterGroup"
-%typemap(javaout) CCopasiParameterGroup* 
+%typemap(javaout) CCopasiParameterGroup*
 {
     return $jnicall;
 }
 
-%typemap(out) CCopasiParameterGroup* 
+%typemap(out) CCopasiParameterGroup*
 {
     $result = DownCast_CCopasiParameterGroup(jenv,$1);
     if(!$result)
@@ -358,12 +359,12 @@ void initCopasi();
 %typemap(jni) CCopasiParameter* "jobject"
 %typemap(jtype) CCopasiParameter* "CCopasiParameter"
 %typemap(jstype) CCopasiParameter* "CCopasiParameter"
-%typemap(javaout) CCopasiParameter* 
+%typemap(javaout) CCopasiParameter*
 {
     return $jnicall;
 }
 
-%typemap(out) CCopasiParameter* 
+%typemap(out) CCopasiParameter*
 {
     $result = DownCast_CCopasiParameter(jenv,$1);
     if(!$result)
@@ -376,12 +377,12 @@ void initCopasi();
 %typemap(jni) CCopasiContainer* "jobject"
 %typemap(jtype) CCopasiContainer* "CCopasiContainer"
 %typemap(jstype) CCopasiContainer* "CCopasiContainer"
-%typemap(javaout) CCopasiContainer* 
+%typemap(javaout) CCopasiContainer*
 {
     return $jnicall;
 }
 
-%typemap(out) CCopasiContainer* 
+%typemap(out) CCopasiContainer*
 {
     $result = DownCast_CCopasiContainer(jenv,$1);
     if(!$result)
@@ -393,12 +394,12 @@ void initCopasi();
 %typemap(jni) CCopasiObject* "jobject"
 %typemap(jtype) CCopasiObject* "CCopasiObject"
 %typemap(jstype) CCopasiObject* "CCopasiObject"
-%typemap(javaout) CCopasiObject* 
+%typemap(javaout) CCopasiObject*
 {
     return $jnicall;
 }
 
-%typemap(out) CCopasiObject* 
+%typemap(out) CCopasiObject*
 {
     $result = DownCast_CCopasiObject(jenv,$1);
     if(!$result)
@@ -411,11 +412,11 @@ void initCopasi();
 
 
 %javaexception("java.lang.Exception") CCopasiTask::process {
-   try 
+   try
    {
      $action
-   } 
-   catch (std::exception &e) 
+   }
+   catch (std::exception &e)
    {
      jclass clazz = jenv->FindClass("java/lang/Exception");
      jenv->ThrowNew(clazz, e.what());
@@ -431,11 +432,11 @@ void initCopasi();
 
 
 %javaexception("java.lang.Exception") CCopasiDataModel::importSBML {
-   try 
+   try
    {
      $action
-   } 
-   catch (std::exception &e) 
+   }
+   catch (std::exception &e)
    {
      jclass clazz = jenv->FindClass("java/lang/Exception");
      jenv->ThrowNew(clazz, e.what());
@@ -451,11 +452,11 @@ void initCopasi();
 
 
 %javaexception("java.lang.Exception") CCopasiDataModel::newModel {
-   try 
+   try
    {
      $action
-   } 
-   catch (std::exception &e) 
+   }
+   catch (std::exception &e)
    {
      jclass clazz = jenv->FindClass("java/lang/Exception");
      jenv->ThrowNew(clazz, e.what());
@@ -470,11 +471,11 @@ void initCopasi();
 }
 
 %javaexception("java.lang.Exception") CCopasiDataModel::importSBMLFromString {
-   try 
+   try
    {
      $action
-   } 
-   catch (std::exception &e) 
+   }
+   catch (std::exception &e)
    {
      jclass clazz = jenv->FindClass("java/lang/Exception");
      jenv->ThrowNew(clazz, e.what());
@@ -489,11 +490,11 @@ void initCopasi();
 }
 
 %javaexception("java.lang.Exception") CCopasiDataModel::exportSBMLToString {
-   try 
+   try
    {
      $action
-   } 
-   catch (std::exception &e) 
+   }
+   catch (std::exception &e)
    {
      jclass clazz = jenv->FindClass("java/lang/Exception");
      jenv->ThrowNew(clazz, e.what());
@@ -508,11 +509,11 @@ void initCopasi();
 }
 
 %javaexception("java.lang.Exception") CCopasiDataModel::exportSBML {
-   try 
+   try
    {
      $action
-   } 
-   catch (std::exception &e) 
+   }
+   catch (std::exception &e)
    {
      jclass clazz = jenv->FindClass("java/lang/Exception");
      jenv->ThrowNew(clazz, e.what());

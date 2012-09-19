@@ -22,9 +22,12 @@
 
 %{
 
+#include <string>
 #include "report/CCopasiObjectName.h"
 
 %}
+
+%warnfilter(402) CCopasiObjectName;
 
 %ignore CCopasiObjectName::findEx;
 %ignore CRegisteredObjectName::getSet;

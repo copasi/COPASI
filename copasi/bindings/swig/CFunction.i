@@ -27,10 +27,14 @@
 %}
 
 %ignore operator<<;
+%ignore CFunction::operator==;
 %ignore CFunction::load;
 %ignore CFunction::dependsOn;
 %ignore CFunction::splitFunction;
 %ignore CFunction::writeMathML;
+
+// suppress warnings on multiple inheritance
+%warnfilter(813) CFunction;
 
 #if (defined SWIGJAVA || defined SWIGCSHARP)
 // remove some const methods to get rid of warnings

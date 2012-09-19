@@ -32,11 +32,27 @@
 
 #include "local.cpp"
 
+/**
+ * This method is used to get the C_INVALID_INDEX
+ * value in an architecture independent way.
+ * Since size_t is defined differently depending on
+ * the platform, the conversion from size_t to long in
+ * java depends on the architecture and the result is different for
+ * 32 bit and 64 bit systems.
+ */
+size_t INVALID_INDEX() {
+    return C_INVALID_INDEX;
+}
+
+
 %}
 
 %ignore DebugFile;
 
 %include "copasi.h"
+
+// warp method to get C_INVALID_INDEX
+size_t INVALID_INDEX(); 
 
 %include std_string.i
 %include std_vector.i
@@ -139,4 +155,5 @@
 %include "CCreator.i"
 %include "CModified.i"
 %include "CModelMIRIAMInfo.i"
+
 

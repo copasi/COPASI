@@ -39,17 +39,16 @@
 
 %ignore operator<<;
 
+%ignore CCopasiParameterGroup::getParameter(const std::string&) const;
+%ignore CCopasiParameterGroup::getParameter(const size_t&) const;
+%ignore CCopasiParameterGroup::getGroup(const std::string&) const;
+%ignore CCopasiParameterGroup::getGroup(const size_t&) const;
+%ignore CCopasiParameterGroup::getValue;
 
 
 #if (defined SWIGJAVA || defined SWIGCSHARP)
 // remove some const methods to get rid of warnings
 %ignore CCopasiParameterGroup::operator =;
-
-%ignore CCopasiParameterGroup::getParameter(const std::string&) const;
-%ignore CCopasiParameterGroup::getParameter(const unsigned long&) const;
-%ignore CCopasiParameterGroup::getGroup(const std::string&) const;
-%ignore CCopasiParameterGroup::getGroup(const unsigned long&) const;
-%ignore CCopasiParameterGroup::getValue;
 
 
 #endif // SWIGJAVA || CSHARP
@@ -73,7 +72,7 @@
 
 %include "utilities/CCopasiParameterGroup.h"
 
-
+/*
 %extend CCopasiParameterGroup
 {
     // for backward compatibility
@@ -82,4 +81,4 @@
         return $self->getIndexByName(name);
     }
 }
-
+*/

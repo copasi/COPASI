@@ -24,6 +24,9 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+
+%ignore CRenameHandler;
+
 %{
 
 #include "report/CCopasiObject.h"

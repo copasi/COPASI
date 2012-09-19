@@ -21,7 +21,7 @@
 
 %}
 
+%ignore CPlotSpecification::getItems() const;
+
 %include "plot/CPlotSpecification.h"
-
-
 

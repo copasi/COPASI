@@ -26,6 +26,7 @@
 #include "plot/CPlotSpecification.h"
 #include <layout/CLBase.h>
 #include <layout/CLCurve.h>
+#include <model/CObjectLists.h>
 
 %}
 
@@ -80,6 +81,13 @@
   {
       return self->add(DISOWN,true);
   }
+
+#ifdef SWIGPYTHON
+ size_t __len__() const
+ {
+    return self->size();
+ }
+#endif // SWIGPYTHON
 
 }
 
@@ -203,6 +211,7 @@
 
 %template(IntStdVector) std::vector<C_INT32>;
 %template(UIntStdVector) std::vector<unsigned int>;
+%template(SizeTStdVector) std::vector<size_t>;
 
 %template(StringStdVector) std::vector<std::string>;
 %template(VectorOfStringVectors) std::vector<std::vector<std::string> >;
@@ -223,6 +232,8 @@
 %template(CreatorVector) CCopasiVector<CCreator>;
 %template(ReferenceVector) CCopasiVector<CReference>;
 %template(ModificationVector) CCopasiVector<CModification>;
+
+%template(ObjectListTypeStdVector) std::vector<CObjectLists::ListType>;
 
 typedef CCopasiVectorN<CEvent> EventVectorN;
 
@@ -246,7 +257,9 @@ typedef std::vector<CCopasiParameter*> ParameterVector;
 
 typedef CCopasiVectorN<CEvaluationTree> CEvaluationTreeVectorN;
 
-typedef std::vector<CFunction> CFunctionStdVector;
+typedef std::vector<CFunction*> CFunctionStdVector;
+typedef CCopasiVector<CFunction> CFunctionVector;
+typedef CCopasiVectorN<CFunction> CFunctionVectorN;
 
 typedef CCopasiVector<CChemEqElement> CChemEqElementVector;
 
@@ -254,7 +267,7 @@ typedef CCopasiVector<CCopasiDataModel> DataModelVector;
 
 typedef std::vector<C_INT32> IntStdVector;
 typedef std::vector<unsigned int> UIntStdVector;
-
+typedef std::vector<size_t> SizeTStdVector;
 typedef std::vector<C_FLOAT64> FloatStdVector;
 
 typedef std::vector<COptItem*> OptItemStdVector;
@@ -270,4 +283,10 @@ typedef std::vector<CLLineSegment> LineSegmentStdVector;
 
 typedef CCopasiVector<CFittingPoint> FittingPointVector;
 
+typedef CCopasiVector<CBiologicalDescription> BiologicalDescriptionVector;
+typedef CCopasiVector<CCreator> CreatorVector;
+typedef CCopasiVector<CReference> ReferenceVector;
+typedef CCopasiVector<CModification> ModificationVector;
+
+typedef std::vector<CObjectLists::ListType> ObjectListTypeStdVector;
 

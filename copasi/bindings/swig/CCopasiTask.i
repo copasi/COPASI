@@ -58,6 +58,16 @@
 
 #endif // SWIGJAVA || SWIGCSHARP                      
 
+#ifdef SWIGR
+// we ignore the method that takes an int and create a new method that takes
+// the enum from CCopasiTask
+%ignore CCopasiTask::setMethodType(const int& type);
+#endif // SWIGR
+
+
+// suppress warnings on nested structures
+%warnfilter(325) CDescription;
+%warnfilter(325) CResult;
 
 %include "utilities/CCopasiTask.h"
 
@@ -115,6 +125,12 @@
         return result;
       }  
    
+#ifdef SWIGR
+   bool setMethodType(const CCopasiMethod::SubType& type)
+   {
+      return $self->setMethodType(type);
+   }
+#endif // SWIGR
 }  
 
 

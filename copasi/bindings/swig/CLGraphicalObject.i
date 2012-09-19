@@ -24,6 +24,9 @@
 %ignore CLGraphicalObject::exportToSBML;
 %ignore CLGraphicalObject::print;
 
+// suppress warnings on multiple inheritance
+%warnfilter(813) CLGraphicalObject;
+
 %include "layout/CLGraphicalObject.h"
 
 

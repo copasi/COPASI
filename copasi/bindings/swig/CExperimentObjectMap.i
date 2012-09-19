@@ -17,6 +17,8 @@
 
 %}
 
+// suppress warnings on nested structures
+%warnfilter(325) CDataColumn;
 
 %include "parameterFitting/CExperimentObjectMap.h"
 

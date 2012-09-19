@@ -21,6 +21,7 @@
 %ignore CEvent::getTriggerExpressionPtr() const; 
 %ignore CEvent::getDelayExpressionPtr() const; 
 %ignore CEvent::getAssignments() const; 
+%ignore CEvent::getPriorityExpressionPtr() const;
 
 // cleanup does not seem to be implemented
 %ignore CEvent::cleanup(); 
@@ -81,6 +82,9 @@ typedef CExpression DisownedExpression;
 %}
 #endif // SWIGPYTHON
 
+// suppress warnings on multiple inheritance
+%warnfilter(813) CEvent;
+
 %include "model/CEvent.h"
 
 %extend CEvent
@@ -92,7 +96,18 @@ typedef CExpression DisownedExpression;
     return pAssignment;
   }
 
-#ifdef SWIGJAVA
+  // more convenience methods
+  unsigned C_INT32 getNumAssignments() const
+  {
+       return $self->getAssignments().size();
+  }
+
+  CEventAssignment* getAssignment(unsigned C_INT32 index)
+  {
+       return $self->getAssignments()[index];
+  }
+
+#if (defined SWIGJAVA || defined SWIGCSHARP)
   void setTriggerExpressionPtr(DisownedExpression* pDisownedExpression)
   {
      $self->CEvent::setTriggerExpressionPtr(pDisownedExpression);
@@ -102,7 +117,31 @@ typedef CExpression DisownedExpression;
   {
      $self->CEvent::setDelayExpressionPtr(pDisownedExpression);
   }
-#endif // SWIGJAVA
+
+  // the CAnnotation functionality has to be added manually because
+  // Java does not know about multiple inheritance
+  void setNotes(const std::string& notes)
+  {
+    self->setNotes(notes);
+  } 
+
+  const std::string& getNotes() const
+  {
+    return self->getNotes();
+  } 
+
+  const std::string& getMiriamAnnotation() const
+  {
+    return self->getMiriamAnnotation();
+  }
+
+  void setMiriamAnnotation(const std::string& miriamAnnotation,
+                           const std::string& newId,
+                           const std::string& oldId)
+  {
+	self->setMiriamAnnotation(miriamAnnotation,newId,oldId);
+  } 
+#endif // SWIGJAVA || CSHARP
 }
 
 #ifdef SWIGJAVA

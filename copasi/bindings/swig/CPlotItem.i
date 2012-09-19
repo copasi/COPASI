@@ -21,7 +21,8 @@
 
 %}
 
+%ignore CPlotItem::getChannels() const;
+%ignore CPlotItem::XMLRecordingActivity;
+
 %include "plot/CPlotItem.h"
-
-
 

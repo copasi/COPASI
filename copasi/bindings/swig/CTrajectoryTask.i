@@ -32,6 +32,11 @@
 
 %ignore CTrajectoryTask::load;
 %ignore CTrajectoryTask::initialize;
+#ifdef SWIGR
+// we ignore the method that takes an int and create a new method that takes
+// the enum from CCopasiTask
+%ignore CTrajectoryTask::setMethodType(const int& type);
+#endif // SWIGR
 
 %include "trajectory/CTrajectoryTask.h"
 
@@ -47,6 +52,13 @@
       }
       return validMethods;
     } 
+
+#ifdef SWIGR
+   bool setMethodType(const CCopasiMethod::SubType& type)
+   {
+      return $self->setMethodType(type);
+   }
+#endif // SWIGR
 }
 
 

@@ -69,7 +69,22 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %ignore CModel::buildInitialRefreshSequence;
 %ignore CModel::getRootFinders;
 %ignore CModel::getL;
+%ignore CModel::getModelParameterSets() const;
 
+// suppress warnings on nested structures
+%warnfilter(325) CLinkMatrixView;
+
+#ifdef SWIGR
+// since enums in R are mapped to strings, it seems to confuse swig
+// if a string is passed to one of the setXXXUnit methods in CModel
+// because it doesn't know whether to pass it on as a string or to translate it
+// to the enum
+%rename (setTimeUnitFromString) CModel::setTimeUnit(const std::string & name);
+%rename (setVolumeUnitFromString) CModel::setVolumeUnit(const std::string & name);
+%rename (setAreaUnitFromString) CModel::setAreaUnit(const std::string & name);
+%rename (setLengthUnitFromString) CModel::setLengthUnit(const std::string & name);
+%rename (setQuantityUnitFromString) CModel::setQuantityUnit(const std::string & name);
+#endif // SWIGR
 
 %include "model/CModel.h"
 
@@ -153,13 +168,40 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
     // for backwards compatibility
    unsigned C_INT32 getNumIndependentMetabs() const 
    {
+       std::cerr << "Calling getNumIndependentMetabs on CModel instances is obsolete, please use getNumIndependentReactionMetabs instead." << std::endl;
         return $self->getNumIndependentReactionMetabs();
    }
 
     // for backwards compatibility
    unsigned C_INT32 getNumDependentMetabs() const 
    {
+       std::cerr << "Calling getNumDependentMetabs on CModel instances is obsolete, please use getNumDependentReactionMetabs instead." << std::endl;
         return $self->getNumDependentReactionMetabs();
+   }
+
+   // for backward compatibility
+   void setComments(const std::string& notes)
+   {
+      std::cerr << "Calling setComments on CModel instances is obsolete, please use setNotes instead." << std::endl;
+      self->setNotes(notes);
+   }
+
+   // for backward compatibility
+   const std::string& getComments() const
+   {
+     std::cerr << "Calling getComments on CModel instances is obsolete, please use getNotes instead." << std::endl;
+     return self->getNotes();
+   }
+
+   // more convenience methods
+   unsigned C_INT32 getNumEvents() const
+   {
+        return $self->getEvents().size();
+   }
+
+   CEvent* getEvent(unsigned C_INT32 index)
+   {
+        return $self->getEvents()[index];
    }
 }
 

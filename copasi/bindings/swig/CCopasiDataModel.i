@@ -49,6 +49,8 @@
 %ignore CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessReport* pProcessReport, const std::string & filter, bool overwriteFile = false);
 %ignore CCopasiDataModel::exportMathModelToString(CProcessReport* pProcessReport, const std::string & filter);
 %ignore CCopasiDataModel::getModel() const;
+%ignore CCopasiDataModel::getTaskList() const;
+%ignore CCopasiDataModel::getListOfLayouts() const;
 %ignore CCopasiDataModel::listTaskDependentOnReport(const std::string & key);
 %ignore CCopasiDataModel::addReport(const CCopasiTask::Type & taskType);
 %ignore CCopasiDataModel::getPlotDefinitionList();
@@ -79,6 +81,7 @@
 %ignore CCopasiDataModel::mpReportDefinitionList;
 %ignore CCopasiDataModel::mpPlotDefinitionList;
 %ignore CCopasiDataModel::ObjectFromName(std::vector<CCopasiContainer * > const &,CCopasiObjectName const &) const;
+%ignore CCopasiDataModel::getReportDefinitionList() const;
 
 %catches(CCopasiException) CCopasiDataModel::newModel();
 %catches(CCopasiException) CCopasiDataModel::newModel(CModel* pMode,CProcessReport* pProcessReport,CListOfLayouts* pLoL,const bool& deleteOldData);
@@ -96,7 +99,11 @@
       return false;
    }
 }
-#endif
+#endif // SWIGPYTHON
+
+// suppress warnings on multiple inheritance
+%warnfilter(813) CCopasiDataModel;
+
 %include "CopasiDataModel/CCopasiDataModel.h"
 
 %rename(newModel) CCopasiDataModel::newModel;
@@ -106,53 +113,99 @@
     bool loadModel(const std::string& fileName)
     {
         return $self->loadModel(fileName,NULL);
-    };
+    }
 
     bool saveModel(const std::string& fileName,bool overwriteFile=false)
     {
         return $self->saveModel(fileName,NULL,overwriteFile,false);
-    };
+    }
 
     std::string exportSBMLToString(int sbmlLevel, int sbmlVersion)
     {
         return $self->exportSBMLToString(NULL,sbmlLevel,sbmlVersion);
-    };
+    }
 
     /* this is for backwards compatibility. */  
     std::string exportSBMLToString()
     {
         return $self->exportSBMLToString(NULL,2,1);
-    };
+    }
 
     std::string exportMathModelToString(const std::string& filter)
     {
         return $self->exportMathModelToString(NULL,filter);
-    };
+    }
 
     bool newModel()
     {
         return $self->newModel(NULL,NULL,NULL,false);
-    };
+    }
 
     CReportDefinition* getReportDefinition(unsigned C_INT32 index)
     {
       return (*$self->getReportDefinitionList())[index];
-    };
+    }
 
 	CPlotSpecification* getPlotSpecification(unsigned C_INT32 index)
     {
       return (*$self->getPlotDefinitionList())[index];
-    };
+    }
 	
     CCopasiTask* getTask(unsigned C_INT32 index)
     {
       return (*$self->getTaskList())[index];
-    };
+    }
 
     CCopasiTask* getTask(const std::string& name)
     {
       return (*$self->getTaskList())[name];
-    };
+    }
+
+#ifdef SWIGJAVA
+    // needed for CellDesigner
+    static CCopasiDataModel* Global_get()
+    {
+        std::cerr << "Calling static method getGlobal on CCopasiDataModel is obsolete, please see the documentation for CCopasiRootContainer on how to handle this in newer versions of the COPASI API." << std::endl; 
+        // check if there is a model and if not, create one
+        CCopasiDataModel* pDatamodel=NULL;
+        if(CCopasiRootContainer::getDatamodelList()->size() != 0)
+        {
+            pDatamodel=(*CCopasiRootContainer::getDatamodelList())[0];
+        }
+        else
+        {
+            pDatamodel=CCopasiRootContainer::addDatamodel();
+        }
+        assert(pDatamodel != NULL);
+        return pDatamodel;
+    }
+
+    // needed for CellDesigner
+    const CVersion* getVersion() const
+    {
+        std::cerr << "Calling static method getVersion on CCopasiDataModel is obsolete, please use static method getVERSION() from CVersion instead." << std::endl; 
+        return &CVersion::VERSION;
+    }
+
+    // needed for CellDesigner
+    static CCopasiDataModel* getGlobal()
+    {
+        std::cerr << "Calling static method getGlobal on CCopasiDataModel is obsolete, please see the documentation for CCopasiRootContainer on how to handle this in newer versions of the COPASI API." << std::endl; 
+        // check if there is a model and if not, create one
+        CCopasiDataModel* pDatamodel=NULL;
+        if(CCopasiRootContainer::getDatamodelList()->size() != 0)
+        {
+            pDatamodel=(*CCopasiRootContainer::getDatamodelList())[0];
+        }
+        else
+        {
+            pDatamodel=CCopasiRootContainer::addDatamodel();
+        }
+        assert(pDatamodel != NULL);
+        return pDatamodel;
+	
+    }	
+#endif // SWIGJAVA
 };
 
 

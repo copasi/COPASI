@@ -25,7 +25,11 @@
 %ignore CFunctionParameterMap::removeCallParameter;
 %ignore CFunctionParameterMap::getObjects;
 %ignore CFunctionParameterMap::findParameterByName;
+%ignore CFunctionParameterMap::pUnmappedObject;
+%ignore CFunctionParameterMap::getPointers() const;
 
+// suppress warnings on nested structures
+%warnfilter(325) UType;
 
 %include "function/CCallParameters.h" 
 

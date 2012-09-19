@@ -26,7 +26,7 @@
 // remove some const methods to get rid of warnings
 %ignore CExperimentSet::getExperiment(const unsigned long&) const;
 %ignore CExperimentSet::getExperiment(const std::string&) const;
-
+%ignore CExperimentSet::getExperiment(size_t const &) const;
 #endif // SWIGJAVA || CSHARP
 
 

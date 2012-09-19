@@ -37,6 +37,10 @@
 %ignore CRandom::XMLType;
 %ignore CRandom::TypeName;
 
+// suppress warnings on nested structures
+%warnfilter(325) PoissonVars;
+%warnfilter(325) ExpVars;
+
 
 %include "randomGenerator/CRandom.h"
 

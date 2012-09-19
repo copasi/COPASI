@@ -11,6 +11,9 @@
 // of Manchester. 
 // All rights reserved. 
 
+%ignore CAnnotation::operator==;
+%ignore CAnnotation::getUnsupportedAnnotations() const;
+
 %{
 
 #include "model/CAnnotation.h"  
