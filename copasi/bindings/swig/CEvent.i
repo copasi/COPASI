@@ -1,39 +1,39 @@
-// Begin CVS Header 
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CEvent.i,v $ 
-//   $Revision: 1.2 $ 
-//   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:26 $ 
-// End CVS Header 
+// Begin CVS Header
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CEvent.i,v $
+//   $Revision: 1.2 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2010/07/16 18:56:26 $
+// End CVS Header
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 %{
 
-#include "model/CEvent.h"  
-#include <assert.h>  
+#include "model/CEvent.h"
+#include <assert.h>
 %}
 
-%ignore CEventAssignment::getExpressionPtr() const; 
-%ignore CEvent::getTriggerExpressionPtr() const; 
-%ignore CEvent::getDelayExpressionPtr() const; 
-%ignore CEvent::getAssignments() const; 
+%ignore CEventAssignment::getExpressionPtr() const;
+%ignore CEvent::getTriggerExpressionPtr() const;
+%ignore CEvent::getDelayExpressionPtr() const;
+%ignore CEvent::getAssignments() const;
 %ignore CEvent::getPriorityExpressionPtr() const;
 
 // cleanup does not seem to be implemented
-%ignore CEvent::cleanup(); 
+%ignore CEvent::cleanup();
 
 
 // some special code for java
-#ifdef SWIGJAVA
-// we ignore some of the methods and add them back as an extension 
+#if (defined SWIGJAVA || defined SWIGCSHARP)
+// we ignore some of the methods and add them back as an extension
 // with the hopefully correct typemaps
-%ignore CEventAssignment::setExpressionPtr(CExpression*); 
-%ignore CEvent::setDelayExpressionPtr(CExpression*); 
-%ignore CEvent::setTriggerExpressionPtr(CExpression*); 
+%ignore CEventAssignment::setExpressionPtr(CExpression*);
+%ignore CEvent::setDelayExpressionPtr(CExpression*);
+%ignore CEvent::setTriggerExpressionPtr(CExpression*);
 
 %inline
 %{
@@ -41,6 +41,9 @@
 typedef CExpression DisownedExpression;
 %}
 
+#endif // SWIGJAVA || CSHARP
+
+#if SWIGJAVA
 
 %typemap(javain) DisownedExpression *pDisownedExpression "getCPtrAndAddReference($javainput)"
 
@@ -63,7 +66,34 @@ typedef CExpression DisownedExpression;
     return CExpression.getCPtr(expression);
   }
 %}
-#endif // SWIGJAVA
+
+#endif
+
+#ifdef SWIGCSHARP
+
+%typemap(csin) DisownedExpression *pDisownedExpression "getCPtrAndAddReference($csinput)"
+
+%typemap(cscode) CEvent %{
+  // Ensure that the GC doesn't collect any element set from Java
+  // as the underlying C++ class stores a shallow copy
+  private CExpression expressionReference;
+  private System.Runtime.InteropServices.HandleRef getCPtrAndAddReference(CExpression expression) {
+    expressionReference = expression;
+    return CExpression.getCPtr(expression);
+  }
+%}
+
+%typemap(cscode) CEventAssignment %{
+  // Ensure that the GC doesn't collect any element set from Java
+  // as the underlying C++ class stores a shallow copy
+  private CExpression expressionReference;
+  private System.Runtime.InteropServices.HandleRef getCPtrAndAddReference(CExpression expression) {
+    expressionReference = expression;
+    return CExpression.getCPtr(expression);
+  }
+%}
+
+#endif
 
 #ifdef SWIGPYTHON
 %feature("pythonappend") CEventAssignment::setExpressionPtr(CExpression*) %{
@@ -123,12 +153,12 @@ typedef CExpression DisownedExpression;
   void setNotes(const std::string& notes)
   {
     self->setNotes(notes);
-  } 
+  }
 
   const std::string& getNotes() const
   {
     return self->getNotes();
-  } 
+  }
 
   const std::string& getMiriamAnnotation() const
   {
@@ -140,7 +170,7 @@ typedef CExpression DisownedExpression;
                            const std::string& oldId)
   {
 	self->setMiriamAnnotation(miriamAnnotation,newId,oldId);
-  } 
+  }
 #endif // SWIGJAVA || CSHARP
 }
 
