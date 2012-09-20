@@ -22,3 +22,4 @@ config.status.bat
 copasi/CopasiVersion.h
 copasi/f2c.h
 gitTools/.UpdateCopasiVersion
+.DS_Store
