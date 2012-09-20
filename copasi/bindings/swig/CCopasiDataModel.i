@@ -1,24 +1,24 @@
-// Begin CVS Header 
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CCopasiDataModel.i,v $ 
-//   $Revision: 1.26 $ 
-//   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2012/06/19 18:11:05 $ 
-// End CVS Header 
+// Begin CVS Header
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CCopasiDataModel.i,v $
+//   $Revision: 1.26 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2012/06/19 18:11:05 $
+// End CVS Header
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
@@ -125,7 +125,7 @@
         return $self->exportSBMLToString(NULL,sbmlLevel,sbmlVersion);
     }
 
-    /* this is for backwards compatibility. */  
+    /* this is for backwards compatibility. */
     std::string exportSBMLToString()
     {
         return $self->exportSBMLToString(NULL,2,1);
@@ -150,7 +150,7 @@
     {
       return (*$self->getPlotDefinitionList())[index];
     }
-	
+
     CCopasiTask* getTask(unsigned C_INT32 index)
     {
       return (*$self->getTaskList())[index];
@@ -165,7 +165,7 @@
     // needed for CellDesigner
     static CCopasiDataModel* Global_get()
     {
-        std::cerr << "Calling static method getGlobal on CCopasiDataModel is obsolete, please see the documentation for CCopasiRootContainer on how to handle this in newer versions of the COPASI API." << std::endl; 
+        std::cerr << "Calling static method getGlobal on CCopasiDataModel is obsolete, please see the documentation for CCopasiRootContainer on how to handle this in newer versions of the COPASI API." << std::endl;
         // check if there is a model and if not, create one
         CCopasiDataModel* pDatamodel=NULL;
         if(CCopasiRootContainer::getDatamodelList()->size() != 0)
@@ -183,14 +183,14 @@
     // needed for CellDesigner
     const CVersion* getVersion() const
     {
-        std::cerr << "Calling static method getVersion on CCopasiDataModel is obsolete, please use static method getVERSION() from CVersion instead." << std::endl; 
+        std::cerr << "Calling static method getVersion on CCopasiDataModel is obsolete, please use static method getVERSION() from CVersion instead." << std::endl;
         return &CVersion::VERSION;
     }
 
     // needed for CellDesigner
     static CCopasiDataModel* getGlobal()
     {
-        std::cerr << "Calling static method getGlobal on CCopasiDataModel is obsolete, please see the documentation for CCopasiRootContainer on how to handle this in newer versions of the COPASI API." << std::endl; 
+        std::cerr << "Calling static method getGlobal on CCopasiDataModel is obsolete, please see the documentation for CCopasiRootContainer on how to handle this in newer versions of the COPASI API." << std::endl;
         // check if there is a model and if not, create one
         CCopasiDataModel* pDatamodel=NULL;
         if(CCopasiRootContainer::getDatamodelList()->size() != 0)
@@ -203,8 +203,8 @@
         }
         assert(pDatamodel != NULL);
         return pDatamodel;
-	
-    }	
+
+    }
 #endif // SWIGJAVA
 };
 

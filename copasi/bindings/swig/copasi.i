@@ -1,20 +1,24 @@
-<<<<<<< HEAD
-=======
+// Begin CVS Header
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/copasi.i,v $
+//   $Revision: 1.35 $
+//   $Name:  $
+//   $Author: bergmann $
+//   $Date: 2012/04/11 15:01:31 $
+// End CVS Header
 
->>>>>>> resolved conflicts
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 %module COPASI
 
@@ -48,7 +52,7 @@ size_t INVALID_INDEX() {
 %include "copasi.h"
 
 // warp method to get C_INVALID_INDEX
-size_t INVALID_INDEX(); 
+size_t INVALID_INDEX();
 
 %include std_string.i
 %include std_vector.i
@@ -67,18 +71,15 @@ size_t INVALID_INDEX();
 %include "CCopasiContainer.i"
 %include "CCopasiArray.i"
 %include "CAnnotatedMatrix.i"
-%include "CCopasiVector.i"
+%include "CAnnotation.i"
 %include "CEigen.i"
 %include "CFunctionParameter.i"
 %include "CFunctionParameters.i"
 %include "CCallParameters.i"
-%include "CAnnotation.i"
 %include "CEvaluationTree.i"
 %include "CExpression.i"
 %include "CFunction.i"
 %include "CFunctionDB.i"
-%include "CCopasiParameter.i"
-%include "CCopasiParameterGroup.i"
 %include "CCopasiStaticString.i"
 %include "CMoiety.i"
 %include "CModelValue.i"
@@ -90,6 +91,12 @@ size_t INVALID_INDEX();
 %include "CChemEq.i"
 %include "CReaction.i"
 %include "CModel.i"
+%include "CCopasiParameter.i"
+%include "CCopasiParameterGroup.i"
+%include "CModelParameter.i"
+%include "CModelParameterGroup.i"
+%include "CModelParameterSet.i"
+%include "CCopasiVector.i"
 %include "CVersion.i"
 %include "CCopasiMethod.i"
 %include "CCopasiProblem.i"

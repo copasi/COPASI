@@ -1,24 +1,24 @@
-// Begin CVS Header 
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.29 $ 
-//   $Name:  $ 
-//   $Author: bergmann $ 
-//   $Date: 2012/04/11 15:40:26 $ 
-// End CVS Header 
+// Begin CVS Header
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $
+//   $Revision: 1.29 $
+//   $Name:  $
+//   $Author: bergmann $
+//   $Date: 2012/04/11 15:40:26 $
+// End CVS Header
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 %{
 
@@ -73,7 +73,7 @@
       return (CCopasiObject*)((*self)[index]);
   }
 
-  // this method is needed because I haven't found out how to disown 
+  // this method is needed because I haven't found out how to disown
   // objects from java
   // Calling the parameter DISOWN should activate the DISOWN typemap
   // and pass ownership to the C++ side
@@ -153,6 +153,14 @@
 %template(OutputDefinitionVector) CCopasiVector<CPlotSpecification>;
 %template(OutputDefinitionVectorN) CCopasiVectorN<CPlotSpecification>;
 
+%rename(removeObject) CCopasiVector<CPlotItem>::remove(CCopasiObject* pObject);
+%rename(removeByName) CCopasiVectorN<CPlotItem>::remove(const std::string& name);
+%rename(getIndexByName) CCopasiVectorN<CPlotItem>::getIndex(const std::string& name) const;
+
+%template(PlotItemVector) CCopasiVector<CPlotItem>;
+%template(PlotItemVectorN) CCopasiVectorN<CPlotItem>;
+
+
 %rename(removeObject) CCopasiVector<CMoiety>::remove(CCopasiObject* pObject);
 
 %template(MoietyStdVector) std::vector<CMoiety*>;
@@ -175,6 +183,13 @@
 %template(CompartmentVector) CCopasiVector<CCompartment>;
 %template(CompartmentVectorN) CCopasiVectorN<CCompartment>;
 %template(CompartmentVectorNS) CCopasiVectorNS<CCompartment>;
+
+%rename(removeObject) CCopasiVector<CModelParameterSet>::remove(CCopasiObject* pObject);
+%rename(removeByName) CCopasiVectorN<CModelParameterSet>::remove(const std::string& name);
+%rename(getIndexByName) CCopasiVectorN<CModelParameterSet>::getIndex(const std::string& name) const;
+%template(ModelParameterSetVector) CCopasiVector<CModelParameterSet>;
+%template(ModelParameterSetVectorN) CCopasiVectorN<CModelParameterSet>;
+
 
 %rename(removeObject) CCopasiVector<CReaction>::remove(CCopasiObject* pObject);
 %rename(removeByName) CCopasiVectorN<CReaction>::remove(const std::string& name);
