@@ -23,14 +23,36 @@ public:
   typedef NodeMap::const_iterator const_iterator;
 
   // Operations
+  /**
+   * Constructor
+   */
   CMathDependencyGraph();
 
+  /**
+   * Destructor
+   */
   ~CMathDependencyGraph();
 
+  /**
+   * Clear the whole dependency tree
+   */
   void clear();
 
+  /**
+   * Add an object and all its prerequisites to the tree
+   * @param const CObjectInterface * pObject
+   * @return std::map< const CObjectInterface *, CMathDependencyNode * >::iterator itObject
+   */
   iterator addObject(const CObjectInterface * pObject);
 
+  /**
+   * Construct a update sequence for the given context
+   * @param const CMath::SimulationContextFlag & context
+   * @param const CObjectInterface::ObjectSet & changedObjects
+   * @param const CObjectInterface::ObjectSet & requestedObjects
+   * @param std::vector< CObjectInterface * > & updateSequence)
+   * @return bool success
+   */
   bool getUpdateSequence(const CMath::SimulationContextFlag & context,
                          const CObjectInterface::ObjectSet & changedObjects,
                          const CObjectInterface::ObjectSet & requestedObjects,
