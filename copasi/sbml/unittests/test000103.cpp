@@ -1,15 +1,7 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000103.cpp,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/12/24 11:14:48 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2011 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #include "test000103.h"
 
@@ -47,7 +39,7 @@ void test000103::test_bug1743_l2()
   pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
   CPPUNIT_ASSERT(pModel->getSBMLId() == id);
-  pDataModel->newModel(NULL, NULL, NULL, true);
+  pDataModel->newModel(NULL, true);
   pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
   CPPUNIT_ASSERT(pModel->getSBMLId() != id);
@@ -79,7 +71,7 @@ void test000103::test_bug1743_l3()
   pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
   CPPUNIT_ASSERT(pModel->getSBMLId() == id);
-  pDataModel->newModel(NULL, NULL, NULL, true);
+  pDataModel->newModel(NULL, true);
   pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
   CPPUNIT_ASSERT(pModel->getSBMLId() != id);
