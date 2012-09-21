@@ -1,5 +1,6 @@
 *.o
 *.app
+*.swp
 moc_*.cpp
 ui_*.h
 /.cproject
