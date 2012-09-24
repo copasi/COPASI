@@ -275,6 +275,8 @@ bool CCopasiDataModel::loadModel(const std::string & fileName,
       !CDirEntry::makePathAbsolute(FileName, PWD))
     FileName = CDirEntry::fileName(FileName);
 
+  PWD = CDirEntry::dirName(FileName);
+
   std::ifstream File(CLocaleString::fromUtf8(FileName).c_str());
 
   if (File.fail())
@@ -293,7 +295,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName,
   switch (mData.mFileType)
     {
       case CopasiML:
-        mData.mSaveFileName = CDirEntry::normalize(mData.mSaveFileName);
+        mData.mSaveFileName = CDirEntry::normalize(FileName);
         // we have to store the reference directory
         mData.mReferenceDir = CDirEntry::dirName(mData.mSaveFileName);
         break;
