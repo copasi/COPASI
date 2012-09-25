@@ -1,15 +1,7 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CCellDesignerImporter.h,v $
-//   $Revision: 1.9 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:11:54 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2011 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #ifndef CCellDesignerImporter_H__
 #define CCellDesignerImporter_H__
@@ -92,6 +84,7 @@ enum SPECIES_MODIFICATION_TYPE
   , PRENYLATED_MOD_TYPE
   , PROTONATED_MOD_TYPE
   , SUFLATED_MOD_TYPE
+  , EMPTY_MOD_TYPE
 };
 
 enum POSITION_TO_COMPARTMENT
