@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CAnnotation.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/25 12:12:29 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -30,17 +22,17 @@
 #include "utilities/CVersion.h"
 
 CAnnotation::CAnnotation():
-    mNotes(),
-    mMiriamAnnotation(),
-    mXMLId(),
-    mUnsupportedAnnotations()
+  mNotes(),
+  mMiriamAnnotation(),
+  mXMLId(),
+  mUnsupportedAnnotations()
 {}
 
 CAnnotation::CAnnotation(const CAnnotation & src):
-    mNotes(src.mNotes),
-    mMiriamAnnotation(src.mMiriamAnnotation),
-    mXMLId(src.mXMLId),
-    mUnsupportedAnnotations(src.mUnsupportedAnnotations)
+  mNotes(src.mNotes),
+  mMiriamAnnotation(src.mMiriamAnnotation),
+  mXMLId(src.mXMLId),
+  mUnsupportedAnnotations(src.mUnsupportedAnnotations)
 {}
 
 CAnnotation::~CAnnotation()
@@ -72,10 +64,71 @@ bool CAnnotation::operator == (const CAnnotation & rhs) const
   if (mNotes != rhs.mNotes)
     return false;
 
-  std::string TmpAnnotation = mMiriamAnnotation;
-  CRDFUtilities::fixLocalFileAboutReference(TmpAnnotation, rhs.mXMLId, mXMLId);
+  std::string Annotation = mMiriamAnnotation;
+  CRDFUtilities::fixLocalFileAboutReference(Annotation, rhs.mXMLId, mXMLId);
 
-  return (TmpAnnotation == rhs.mMiriamAnnotation);
+  // We need to ignore white spaces when comparing.
+  std::string::const_iterator it = Annotation.begin();
+  std::string::const_iterator end = Annotation.end();
+  std::string::const_iterator itRhs = rhs.mMiriamAnnotation.begin();
+  std::string::const_iterator endRhs = rhs.mMiriamAnnotation.end();
+
+  while (it != end && itRhs != endRhs)
+    {
+      if (*it == * itRhs)
+        {
+          ++it;
+          ++itRhs;
+
+          continue;
+        }
+
+      // Advance past white spaces
+      while (it != end)
+        {
+          if (*it == '\x20' || *it == '\x09' || *it == '\x0d' || *it == '\x0a')
+            {
+              ++it;
+
+              continue;
+            }
+
+          break;
+        }
+
+      // Advance past white spaces
+      while (itRhs != endRhs)
+        {
+          if (*itRhs == '\x20' || *itRhs == '\x09' || *itRhs == '\x0d' || *itRhs == '\x0a')
+            {
+              ++itRhs;
+
+              continue;
+            }
+
+          break;
+        }
+
+      if (it == end && itRhs == endRhs)
+        {
+          return true;
+        }
+
+      if (it == end || itRhs == endRhs)
+        {
+          return false;
+        }
+
+      if (*it != *itRhs)
+        {
+          return false;
+        }
+
+      ++it;
+      ++itRhs;
+    }
+
+  return true;
 }
 
 CAnnotation::UnsupportedAnnotation & CAnnotation::getUnsupportedAnnotations()
@@ -122,7 +175,6 @@ bool CAnnotation::replaceUnsupportedAnnotation(const std::string & name, const s
   mUnsupportedAnnotations[name] = xml;
 
   return true;
-
 }
 
 bool CAnnotation::removeUnsupportedAnnotation(const std::string & name)
@@ -179,4 +231,3 @@ bool CAnnotation::isValidXML(const std::string & xml)
 
   return true;
 }
-
