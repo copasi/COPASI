@@ -1,15 +1,7 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CCellDesignerImporter.cpp,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:11:54 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2011 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #ifdef _WIN32
 # define _USE_MATH_DEFINES // without the following define, M_PI will not be declared under windows
@@ -1219,8 +1211,8 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                 pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width*0.5, 0.0));
                 pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height*0.5, 0.0));
                 double short_side = (width > height) ? height : width;
-                pEllipse->setRX(RelAbsVector(short_side*0.5, 0.0));
-                pEllipse->setRY(RelAbsVector(short_side*0.5, 0.0));
+                pEllipse->setRX(RelAbsVector(short_side*0.35, 0.0));
+                pEllipse->setRY(RelAbsVector(short_side*0.35, 0.0));
                 pEllipse->setStrokeWidth(stroke_width);
                 pEllipse->setStroke(stroke_color);
                 pEllipse->setFillColor(fill_color);
@@ -3374,7 +3366,7 @@ bool CCellDesignerImporter::convertSpeciesAnnotations()
                       std::string name = pSpecies->getName();
 
                       //result=this->findNameForSpeciesIdentity(sanno.mIdentity,name);
-                      if (result && !name.empty())
+                      if (result && !name.empty() && sanno.mIdentity.mSpeciesClass != DEGRADED_CLASS)
                         {
                           // create the text glyph if there is a SpeciesGlyph
                           std::multimap<std::string, GraphicalObject*>::const_iterator pos = this->mModelIdToLayoutElement.find(pSpecies->getId());
@@ -10162,6 +10154,11 @@ SPECIES_MODIFICATION_TYPE CCellDesignerImporter::speciesModificationTypeToEnum(s
   else if (cl == "DON'T CARE")
     {
       result = DONTCARE_MOD_TYPE;
+    }
+  else if (cl == "EMPTY") // "empty" is not mentioned in the specification, but it seems to occur in SBML files written by CellDesigner
+    {
+      // actually as far as I can see from the rendering in CellDesigner, "empty" means "draw the circle, but leave it unfilled"  
+      result = EMPTY_MOD_TYPE;
     }
   else if (cl == "UNKNOWN")
     {
