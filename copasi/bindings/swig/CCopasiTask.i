@@ -1,22 +1,14 @@
-// Begin CVS Header 
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CCopasiTask.i,v $ 
-//   $Revision: 1.28 $ 
-//   $Name:  $ 
-//   $Author: bergmann $ 
-//   $Date: 2012/04/10 09:50:21 $ 
-// End CVS Header 
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
@@ -97,22 +89,94 @@
       return validMethods;
     } 
 
-    virtual  bool process(bool useInitialValues) 
+    virtual bool process(bool useInitialValues, std::string & Error, std::string & Warning) 
       {
+        bool success = true;
+        
         CCopasiMessage::clearDeque();
         CCopasiDataModel* pDataModel=self->getObjectDataModel();
         assert(pDataModel!=NULL);
-        bool result=self->initialize(CCopasiTask::OUTPUT_UI,pDataModel, NULL);
-        if(result)
+        
+        // Initialize the task
+        try
         {
-          result=self->process(useInitialValues);
-          pDataModel->finish();
+          if (!self->initialize(CCopasiTask::OUTPUT_UI, pDataModel, NULL))
+          {
+            throw CCopasiException(CCopasiMessage::peekLastMessage());
+          }
         }
-        if(result)
+
+        catch (CCopasiException & Exception)
         {
-          result=self->restore();
+          if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+          {
+            Error = CCopasiMessage::getAllMessageText();
+			success = false;
+			
+			goto restore;
+          }
         }
-        return result;
+
+        if (CCopasiMessage::getHighestSeverity() >= CCopasiMessage::COMMANDLINE)
+        {
+          Error = CCopasiMessage::getAllMessageText();
+          success = false;
+			
+		  goto restore;
+        }
+
+        CCopasiMessage::clearDeque();
+        
+        try 
+        {
+          success = self->process(useInitialValues);
+        }
+        
+        catch (CCopasiException & Exception)
+        {
+          success = false;
+        }
+        
+        if (!success && CCopasiMessage::size() != 0)
+        {
+          Error = CCopasiMessage::getAllMessageText();
+          success = false;
+        }
+        else if (CCopasiMessage::getHighestSeverity() >= CCopasiMessage::COMMANDLINE)
+        {
+          Warning = CCopasiMessage::getAllMessageText();
+          success = true;
+        }
+        
+        restore:
+        
+        CCopasiMessage::clearDeque();
+
+        try 
+        {
+          self->restore();
+        }
+
+        catch (CCopasiException & Exception)
+        {
+          if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+          {
+            Error = CCopasiMessage::getAllMessageText();
+          }
+        }
+
+        catch (...) {}
+
+        if (CCopasiMessage::getHighestSeverity() >= CCopasiMessage::COMMANDLINE)
+        {
+		  Warning = CCopasiMessage::getAllMessageText();
+        }
+
+        CCopasiMessage::clearDeque();
+
+        pDataModel->finish();
+        
+        return success;
       }  
    
 }  
