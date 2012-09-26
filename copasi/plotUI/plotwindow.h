@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.h,v $
-//   $Revision: 1.29 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/01/05 22:45:11 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -38,6 +30,7 @@ class CPlotSpec2Vector;
 class CCopasiContainer;
 class COutputHandlerPlot;
 class CopasiUI3Window;
+class QMenu;
 
 class PlotWindow : public QMainWindow, public COutputInterface
 {
@@ -49,6 +42,7 @@ private:
   CopasiPlot *mpPlot;
   COutputHandlerPlot *mpHandler;
   CopasiUI3Window * mpMainWindow;
+  QMenu* mpWindowMenu;
 
   void createToolBar();
   void createActions();
@@ -61,6 +55,17 @@ public:
   bool initFromSpec(const CPlotSpecification* ptrSpec);
 
   CopasiPlot * getPlot() const;
+
+  /**
+   * Navigating multiple plot windows is still difficult. So it would be
+   * way better to have the window menu not just on the main window, but
+   * also on the plot windows. Though this function really ought to be
+   * in a separate base class, so it could be re-used and the mainwindow
+   * would not have to know about plotwindows.
+   *
+   * @return a pointer to this plot windows 'window' menu.
+   */
+  QMenu *getMenu() const;
 
   QToolButton * zoomButton;
   QToolButton * printButton;
@@ -132,4 +137,7 @@ private slots:
    * Close current window
    */
   void slotCloseWindow();
+
+protected:
+  virtual void closeEvent(QCloseEvent *closeEvent);
 };

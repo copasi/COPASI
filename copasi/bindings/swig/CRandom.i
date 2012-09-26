@@ -1,10 +1,9 @@
-// Begin CVS Header 
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CRandom.i,v $ 
-//   $Revision: 1.4 $ 
-//   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:27 $ 
-// End CVS Header 
+// Begin git Header 
+//   Commit: 28d5663ff3fc99993d3b249dec626841cb5247ab 
+//   Author: Frank T. Bergmann fbergman@caltech.edu 
+//   Date: 2012-08-29 10:43:00 +0200 
+// End git Header 
+
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
@@ -36,6 +35,10 @@
 %ignore CRandom::vare;
 %ignore CRandom::XMLType;
 %ignore CRandom::TypeName;
+
+// suppress warnings on nested structures
+%warnfilter(325) PoissonVars;
+%warnfilter(325) ExpVars;
 
 
 %include "randomGenerator/CRandom.h"

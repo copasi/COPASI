@@ -1,3 +1,9 @@
+// Begin git Header 
+//   Commit: 4213653fceb0f661b98347c61ea9669e6f6847d6 
+//   Author: Stefan Hoops shoops@vbi.vt.edu 
+//   Date: 2012-09-10 14:56:18 -0400 
+// End git Header 
+
 // Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -24,11 +30,27 @@
 
 #include "local.cpp"
 
+/**
+ * This method is used to get the C_INVALID_INDEX
+ * value in an architecture independent way.
+ * Since size_t is defined differently depending on
+ * the platform, the conversion from size_t to long in
+ * java depends on the architecture and the result is different for
+ * 32 bit and 64 bit systems.
+ */
+size_t INVALID_INDEX() {
+    return C_INVALID_INDEX;
+}
+
+
 %}
 
 %ignore DebugFile;
 
 %include "copasi.h"
+
+// warp method to get C_INVALID_INDEX
+size_t INVALID_INDEX();
 
 %include std_string.i
 %include std_vector.i
@@ -47,18 +69,15 @@
 %include "CCopasiContainer.i"
 %include "CCopasiArray.i"
 %include "CAnnotatedMatrix.i"
-%include "CCopasiVector.i"
+%include "CAnnotation.i"
 %include "CEigen.i"
 %include "CFunctionParameter.i"
 %include "CFunctionParameters.i"
 %include "CCallParameters.i"
-%include "CAnnotation.i"
 %include "CEvaluationTree.i"
 %include "CExpression.i"
 %include "CFunction.i"
 %include "CFunctionDB.i"
-%include "CCopasiParameter.i"
-%include "CCopasiParameterGroup.i"
 %include "CCopasiStaticString.i"
 %include "CMoiety.i"
 %include "CModelValue.i"
@@ -70,6 +89,12 @@
 %include "CChemEq.i"
 %include "CReaction.i"
 %include "CModel.i"
+%include "CCopasiParameter.i"
+%include "CCopasiParameterGroup.i"
+%include "CModelParameter.i"
+%include "CModelParameterGroup.i"
+%include "CModelParameterSet.i"
+%include "CCopasiVector.i"
 %include "CVersion.i"
 %include "CCopasiMethod.i"
 %include "CCopasiProblem.i"
@@ -131,4 +156,5 @@
 %include "CCreator.i"
 %include "CModified.i"
 %include "CModelMIRIAMInfo.i"
+
 

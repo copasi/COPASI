@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameter.h,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/13 18:32:47 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -84,10 +76,12 @@ public:
   const Type& getType() const;
   virtual void setCN(const CCopasiObjectName& cn);
   const CCopasiObjectName& getCN() const;
+#ifndef SWIG
   virtual void setValue(const double& value, const Framework& framework =
                           ParticleNumbers);
   const virtual double& getValue(
     const Framework& framework = ParticleNumbers) const;
+#endif
   void setInitialExpression(const std::string& initialExpression);
   std::string getInitialExpression() const;
   void setCompareResult(const CompareResult& compareResult);
@@ -100,7 +94,9 @@ public:
   bool isInitialExpressionValid() const;
   virtual std::string getName() const;
   virtual void compile();
+#ifndef SWIG
   const virtual CompareResult& diff(const CModelParameter& other);
+#endif
   virtual bool updateModel();
 
 protected:

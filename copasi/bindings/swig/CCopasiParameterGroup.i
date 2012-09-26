@@ -1,10 +1,9 @@
-// Begin CVS Header 
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CCopasiParameterGroup.i,v $ 
-//   $Revision: 1.9 $ 
-//   $Name:  $ 
-//   $Author: bergmann $ 
-//   $Date: 2012/04/11 15:40:26 $ 
-// End CVS Header 
+// Begin git Header 
+//   Commit: 28d5663ff3fc99993d3b249dec626841cb5247ab 
+//   Author: Frank T. Bergmann fbergman@caltech.edu 
+//   Date: 2012-08-29 10:43:00 +0200 
+// End git Header 
+
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
@@ -39,17 +38,16 @@
 
 %ignore operator<<;
 
+%ignore CCopasiParameterGroup::getParameter(const std::string&) const;
+%ignore CCopasiParameterGroup::getParameter(const size_t&) const;
+%ignore CCopasiParameterGroup::getGroup(const std::string&) const;
+%ignore CCopasiParameterGroup::getGroup(const size_t&) const;
+%ignore CCopasiParameterGroup::getValue;
 
 
 #if (defined SWIGJAVA || defined SWIGCSHARP)
 // remove some const methods to get rid of warnings
 %ignore CCopasiParameterGroup::operator =;
-
-%ignore CCopasiParameterGroup::getParameter(const std::string&) const;
-%ignore CCopasiParameterGroup::getParameter(const unsigned long&) const;
-%ignore CCopasiParameterGroup::getGroup(const std::string&) const;
-%ignore CCopasiParameterGroup::getGroup(const unsigned long&) const;
-%ignore CCopasiParameterGroup::getValue;
 
 
 #endif // SWIGJAVA || CSHARP
@@ -73,7 +71,7 @@
 
 %include "utilities/CCopasiParameterGroup.h"
 
-
+/*
 %extend CCopasiParameterGroup
 {
     // for backward compatibility
@@ -82,4 +80,4 @@
         return $self->getIndexByName(name);
     }
 }
-
+*/
