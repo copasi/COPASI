@@ -598,6 +598,12 @@ protected:
    * a map that stores the name of a CellDesigner species with its id.
    */
   std::map<std::string, std::pair<std::string, SpeciesIdentity> > mIncludedSpeciesNameMap;;
+
+  /**
+   * a map that associated a modifier type with  the corresponding style.
+   */
+  std::map<MODIFICATION_LINK_TYPE,LocalStyle*> mModificationLinkStyleMap;
+
 public:
   /**
    * Constructor that takes a pointer to an
@@ -1152,6 +1158,11 @@ protected:
    * Create default style for modifiers.
    */
   bool createDefaultModifierStyle();
+  
+  /**
+   * Create style for catalysis.
+   */
+  bool createCatalysisStyles();
 
   /**
    * Create default style for inhibitors.
@@ -1189,6 +1200,15 @@ protected:
                        const std::string& fill_color,
                        const std::string& text = ""
                       );
+
+  /**
+   * Takes a protein modification description and creates the corresponding primitive.
+   */
+  bool createProteinModification(RenderGroup* pGroup,
+                                 const SpeciesModification& smod,
+                                 const BoundingBox& bounds,
+                                 const std::string& stroke_color
+                                );
 
   /**
    * Creates styles for all species glyphs.

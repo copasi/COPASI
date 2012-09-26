@@ -867,7 +867,7 @@ bool CCellDesignerImporter::createSpeciesStyles()
                         {
                           alias = pCurrent->getData();
                           assert(!alias.empty());
-                          // find the corresponsing SpeciesAlias entry
+                          // find the corresponding SpeciesAlias entry
                           alias_pos = this->mSpeciesAliases.find(alias);
                           assert(alias_pos != this->mSpeciesAliases.end());
                           bool is_included = false;
@@ -1123,7 +1123,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
-          case DRUG_CLASS:
+        case DRUG_CLASS:
             // actually drug is a rectangle with rounded sides
           {
             // create two circles with radius height/2 at 10%,50% and 90%,50%
@@ -1176,7 +1176,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
-          case SIMPLE_MOLECULE_CLASS:
+        case SIMPLE_MOLECULE_CLASS:
           {
             Ellipse* pEllipse = pGroup->createEllipse();
             assert(pEllipse != NULL);
@@ -1199,7 +1199,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
-          case DEGRADED_CLASS:
+        case DEGRADED_CLASS:
           {
             Ellipse* pEllipse = pGroup->createEllipse();
             assert(pEllipse != NULL);
@@ -1259,7 +1259,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
-          case TRUNCATED_CLASS:
+        case TRUNCATED_CLASS:
           {
             // TODO the left corners should be rounded, but for now this is close enough
             double width = bounds.getDimensions()->getWidth();
@@ -1421,7 +1421,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
-          case PROTEIN_CLASS:
+        case PROTEIN_CLASS:
             // make a rectangle with rounded edges
           {
             Rectangle* pRect = pGroup->createRectangle();
@@ -1444,9 +1444,20 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               {
                 result = false;
               }
+            if(result == true)
+              {
+                // handle modifications
+                std::vector<SpeciesModification>::const_iterator it=si.mState.mModifications.begin(),endit=si.mState.mModifications.end();
+                while(it != endit)
+                {
+                    result=this->createProteinModification(pGroup,*it,bounds,stroke_color);
+                    assert(result==true);
+                    ++it;
+                }
+              }
           }
           break;
-          case PHENOTYPE_CLASS:
+        case PHENOTYPE_CLASS:
           {
             // we assume the width is larger
             Polygon* pPoly = pGroup->createPolygon();
@@ -1550,7 +1561,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
-          case RNA_CLASS:
+        case RNA_CLASS:
             // make a trapezoid
           {
             // we assume the width is larger
@@ -1625,7 +1636,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
-          case ANTISENSE_RNA_CLASS:
+        case ANTISENSE_RNA_CLASS:
             // make a trapzoid
           {
             // we assume the width is larger
@@ -1700,7 +1711,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
-          case COMPLEX_CLASS:
+        case COMPLEX_CLASS:
             // rectangle with cut edges
           {
             double width = bounds.getDimensions()->getWidth();
@@ -1838,7 +1849,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
-          case RECEPTOR_CLASS:
+        case RECEPTOR_CLASS:
           {
             // we assume the width is larger
             Polygon* pPoly = pGroup->createPolygon();
@@ -1942,7 +1953,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
-          case CHANNEL_CLASS:
+        case CHANNEL_CLASS:
             // make two rectangles with rounded corners
           {
             double width = bounds.getDimensions()->getWidth();
@@ -1988,7 +1999,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
-          case GENE_CLASS:
+        case GENE_CLASS:
           {
             Rectangle* pRect = pGroup->createRectangle();
             assert(pRect != NULL);
@@ -2009,7 +2020,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
-          default:
+        default:
             result = false;
             break;
         }
@@ -2052,6 +2063,98 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
 }
 
 
+/**
+ * Takes a protein modification description and creates the corresponding primitive.
+ */
+bool CCellDesignerImporter::createProteinModification(RenderGroup* pGroup,
+                                                     const SpeciesModification& smod,
+                                                     const BoundingBox& bounds,
+                                                     const std::string& stroke_color
+                                                    )
+{
+   // TODO this method will place all modification in exactly the same spot, so 
+   // TODO if a protein has several modifications, they will sit on top of each other
+   // TODO One would have to play around with CellDesigner to see how it is done there
+   // TODO because there does not seem to be any stored information on where the
+   // TODO modification symbol is supposed to be placed 
+   bool result=true;
+   // this is a filled circle
+   // the fill color is white
+   Ellipse* pEllipse=pGroup->createEllipse();
+   assert(pEllipse != NULL);
+   if(pEllipse != NULL)
+   {
+       pEllipse->setCX(RelAbsVector(0.0, 0.0));
+       pEllipse->setCY(RelAbsVector(0.0, 0.0));
+       pEllipse->setRX(RelAbsVector(7.0, 0.0));
+       pEllipse->setRY(RelAbsVector(7.0, 0.0));
+       pEllipse->setStrokeWidth(1.0);
+       pEllipse->setStroke(stroke_color);
+       pEllipse->setFillColor("#FFFFFFFF");
+       // depending on the type of modification, the string displayed in the circle varies
+       std::string mod_string("");
+       switch(smod.mType)
+       {
+           case PHOSPHORYLATED_MOD_TYPE:
+               mod_string="P";
+               break;
+           case ACETYLATED_MOD_TYPE:
+               mod_string="Ac";
+               break;
+           case UBIQUITINATED_MOD_TYPE:
+               mod_string="Ub";
+               break;
+           case METHYLATED_MOD_TYPE:
+               mod_string="Me";
+               break;
+           case HYDROXYLATED_MOD_TYPE:
+               mod_string="OH";
+               break;
+           case DONTCARE_MOD_TYPE:
+               mod_string="*";
+               break;
+           case UNKNOWN_MOD_TYPE:
+               mod_string="?";
+               break;
+           case GLYCOSYLATED_MOD_TYPE:
+               mod_string="G";
+               break;
+           case MYRISTOYLATED_MOD_TYPE:
+               mod_string="My";
+               break;
+           case PALMYTOYLATED_MOD_TYPE:
+               mod_string="Pa";
+               break;
+           case PRENYLATED_MOD_TYPE:
+               mod_string="Pr";
+               break;
+           case PROTONATED_MOD_TYPE:
+               mod_string="H";
+               break;
+           case SUFLATED_MOD_TYPE:
+               mod_string="S";
+               break;
+           default:
+               break;
+       }
+       Text* pText=pGroup->createText();
+       pText->setTextAnchor(Text::ANCHOR_MIDDLE);
+       pText->setVTextAnchor(Text::ANCHOR_MIDDLE);
+       pText->setX(RelAbsVector(0.0,0.0));
+       pText->setY(RelAbsVector(0.0,0.0));
+       pText->setText(mod_string);
+       pText->setFontFamily("serif");
+       pText->setFontSize(RelAbsVector(8.0, 0.0));
+       pText->setStroke("#000000FF");
+   }
+   else
+   {
+     result=false;
+   }
+   return result;
+}
+
+ 
 
 /**
  * Creates a unique id with the given prefix.
@@ -8165,13 +8268,13 @@ bool CCellDesignerImporter::createTextGlyphStyle(double size, Text::TEXT_ANCHOR 
  * TODO right now, we use default styles for species reference glyphs
  * TODO and reaction glyphs.
  * TODO These are created here.
- * TODO later we have to create individua lstyles based on the type of reaction
+ * TODO later we have to create individual styles based on the type of reaction
  * TODO and the color set in the CellDesigner annotation.
  */
 bool CCellDesignerImporter::createDefaultStyles()
 {
-  // we define a black line of width 1
   bool result = true;
+  this->mModificationLinkStyleMap.clear();
 
   if (this->mpLocalRenderInfo != NULL)
     {
@@ -8179,6 +8282,7 @@ bool CCellDesignerImporter::createDefaultStyles()
       result = (result && this->createDefaultModifierStyle());
       result = (result && this->createDefaultInhibitorStyle());
       result = (result && this->createDefaultActivatorStyle());
+      result = (result && this->createCatalysisStyles());
       result = (result && this->createDefaultProductStyle());
       result = (result && this->createDefaultSubstrateStyle());
     }
@@ -8218,7 +8322,7 @@ bool CCellDesignerImporter::createDefaultReactionGlyphStyle()
                 }
               else
                 {
-                  pStyle->getGroup()->setStroke("000000FF");
+                  pStyle->getGroup()->setStroke("#000000FF");
                 }
 
               pStyle->getGroup()->setStrokeWidth(1.0);
@@ -8368,7 +8472,7 @@ bool CCellDesignerImporter::createDefaultModifierStyle()
                     }
                   else
                     {
-                      pStyle->getGroup()->setStroke("000000FF");
+                      pStyle->getGroup()->setStroke("#000000FF");
                     }
 
                   pStyle->getGroup()->setStrokeWidth(1.0);
@@ -8473,7 +8577,7 @@ bool CCellDesignerImporter::createDefaultInhibitorStyle()
                     }
                   else
                     {
-                      pStyle->getGroup()->setStroke("000000FF");
+                      pStyle->getGroup()->setStroke("#000000FF");
                     }
 
                   pStyle->getGroup()->setStrokeWidth(1.0);
@@ -8611,12 +8715,163 @@ bool CCellDesignerImporter::createDefaultActivatorStyle()
                     }
                   else
                     {
-                      pStyle->getGroup()->setStroke("000000FF");
+                      pStyle->getGroup()->setStroke("#000000FF");
                     }
 
                   pStyle->getGroup()->setStrokeWidth(1.0);
                   pStyle->getGroup()->setEndHead(headId);
                   pStyle->addRole("activator");
+                }
+              else
+                {
+                  result = false;
+                }
+            }
+          else
+            {
+              result = false;
+            }
+        }
+    }
+  else
+    {
+      result = false;
+    }
+
+  return result;
+}
+
+/**
+ * Create style for catalysis.
+ */
+bool CCellDesignerImporter::createCatalysisStyles()
+{
+  bool result = true;
+
+  if (this->mpLocalRenderInfo != NULL)
+    {
+      // we need a head for products
+      LineEnding* pLE = this->mpLocalRenderInfo->createLineEnding();
+      assert(pLE != NULL);
+      BoundingBox box;
+      Point pos(new LayoutPkgNamespaces());
+      Dimensions dim(new LayoutPkgNamespaces());
+      RenderGroup* pGroup = NULL;
+      std::string headId;
+
+      if (pLE != NULL)
+        {
+          pLE->setEnableRotationalMapping(true);
+          headId = this->createUniqueId("catalysis_arrow");
+          pLE->setId(headId);
+          this->mIdMap.insert(std::pair<std::string, const SBase*>(headId, pLE));
+          pos = Point(new LayoutPkgNamespaces(), -5.0, -5.0);
+          dim = Dimensions(new LayoutPkgNamespaces(), 10.0, 10.0);
+          box.setPosition(&pos);
+          box.setDimensions(&dim);
+          pLE->setBoundingBox(&box);
+          pGroup = pLE->getGroup();
+          assert(pGroup != NULL);
+
+          if (pGroup != NULL)
+            {
+                Ellipse* pEllipse = pGroup->createEllipse();
+                assert(pEllipse != NULL);
+
+                if (pEllipse != NULL)
+                {
+                    pEllipse->setCX(RelAbsVector(5.0, 0.0));
+                    pEllipse->setCY(RelAbsVector(5.0, 0.0));
+                    pEllipse->setRX(RelAbsVector(5.0, 0.0));
+                    pEllipse->setRY(RelAbsVector(5.0, 0.0));
+                    pEllipse->setStrokeWidth(1.0);
+                    pEllipse->setStroke("#000000");
+                    pEllipse->setFillColor("none");
+                }
+                else
+                {
+                    result = false;
+                }
+            }
+          else
+            {
+              result = false;
+            }
+        }
+      else
+        {
+          result = false;
+        }
+
+      if (result == true)
+        {
+          std::string style_id = this->createUniqueId("CatalysisStyle");
+          LocalStyle* pStyle = this->mpLocalRenderInfo->createStyle(style_id);
+
+          if (pStyle != NULL)
+            {
+              this->mIdMap.insert(std::pair<std::string, const SBase*>(style_id, pStyle));
+              assert(pStyle->getGroup() != NULL);
+
+              if (pStyle->getGroup() != NULL)
+                {
+                  std::map<std::string, std::string>::const_iterator pos = this->mColorStringMap.find("#000000FF");
+
+                  if (pos != this->mColorStringMap.end())
+                    {
+                      pStyle->getGroup()->setStroke(pos->second);
+                    }
+                  else
+                    {
+                      pStyle->getGroup()->setStroke("#000000FF");
+                    }
+
+                  pStyle->getGroup()->setStrokeWidth(1.0);
+                  pStyle->getGroup()->setEndHead(headId);
+                  this->mModificationLinkStyleMap.insert(std::pair<MODIFICATION_LINK_TYPE,LocalStyle*>(CATALYSIS_ML_TYPE,pStyle));
+                }
+              else
+                {
+                  result = false;
+                }
+            }
+          else
+            {
+              result = false;
+            }
+        }
+      if (result == true)
+        {
+          std::string style_id = this->createUniqueId("UnknownCatalysisStyle");
+          LocalStyle* pStyle = this->mpLocalRenderInfo->createStyle(style_id);
+
+          if (pStyle != NULL)
+            {
+              this->mIdMap.insert(std::pair<std::string, const SBase*>(style_id, pStyle));
+              assert(pStyle->getGroup() != NULL);
+
+              if (pStyle->getGroup() != NULL)
+                {
+                  std::map<std::string, std::string>::const_iterator pos = this->mColorStringMap.find("#000000FF");
+
+                  if (pos != this->mColorStringMap.end())
+                    {
+                      pStyle->getGroup()->setStroke(pos->second);
+                    }
+                  else
+                    {
+                      pStyle->getGroup()->setStroke("#000000FF");
+                    }
+
+                  pStyle->getGroup()->setStrokeWidth(1.0);
+                  std::vector<unsigned int> dashes;
+                  dashes.push_back(5);
+                  dashes.push_back(5);
+                  pStyle->getGroup()->setDashArray(dashes);
+                  // Unknown Catalysis has a dashed stroke pattern
+                  pStyle->getGroup()->setEndHead(headId);
+                  this->mModificationLinkStyleMap.insert(std::pair<MODIFICATION_LINK_TYPE,LocalStyle*>(UNKNOWN_CATALYSIS_ML_TYPE,pStyle));
+
                 }
               else
                 {
@@ -8750,7 +9005,7 @@ bool CCellDesignerImporter::createDefaultProductStyle()
                     }
                   else
                     {
-                      pStyle->getGroup()->setStroke("000000FF");
+                      pStyle->getGroup()->setStroke("#000000FF");
                     }
 
                   pStyle->getGroup()->setStrokeWidth(1.0);
@@ -8805,7 +9060,7 @@ bool CCellDesignerImporter::createDefaultSubstrateStyle()
                 }
               else
                 {
-                  pStyle->getGroup()->setStroke("000000FF");
+                  pStyle->getGroup()->setStroke("#000000FF");
                 }
 
               pStyle->getGroup()->setStrokeWidth(1.0);
@@ -9415,7 +9670,37 @@ bool CCellDesignerImporter::handleModificationLinks(ReactionGlyph* pRGlyph, Reac
                                         pSRefGlyph->setRole(SPECIES_ROLE_INHIBITOR);
                                         break;
                                       case CATALYSIS_ML_TYPE:
+                                        // find the stye that belongs to CATALYSIS
+                                        // add the id of the species reference glyph to it
+                                        {
+                                            std::map<MODIFICATION_LINK_TYPE,LocalStyle*>::iterator pos=this->mModificationLinkStyleMap.find(CATALYSIS_ML_TYPE);
+                                            assert(pos != this->mModificationLinkStyleMap.end());
+                                            if(pos != this->mModificationLinkStyleMap.end())
+                                            {
+                                                assert(pos->second != NULL);
+                                                if(pos->second != NULL)
+                                                {
+                                                  pos->second->addId(pSRefGlyph->getId());
+                                                }
+                                            }
+                                        }
+                                        break;
                                       case UNKNOWN_CATALYSIS_ML_TYPE:
+                                        // find the stye that belongs to UNKNOWN_CATALYSIS
+                                        // add the id of the species reference glyph to it
+                                        {
+                                            std::map<MODIFICATION_LINK_TYPE,LocalStyle*>::iterator pos=this->mModificationLinkStyleMap.find(UNKNOWN_CATALYSIS_ML_TYPE);
+                                            assert(pos != this->mModificationLinkStyleMap.end());
+                                            if(pos != this->mModificationLinkStyleMap.end())
+                                            {
+                                                assert(pos->second != NULL);
+                                                if(pos->second != NULL)
+                                                {
+                                                  pos->second->addId(pSRefGlyph->getId());
+                                                }
+                                            }
+                                        }
+                                        break;
                                       case TRANSCRIPTIONAL_ACTIVATION_ML_TYPE:
                                       case TRANSLATIONAL_ACTIVATION_ML_TYPE:
                                         pSRefGlyph->setRole(SPECIES_ROLE_ACTIVATOR);
