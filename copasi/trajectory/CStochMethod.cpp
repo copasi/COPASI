@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-//   $Revision: 1.82 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/04 17:58:00 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -54,7 +46,7 @@ C_INT32 CStochMethod::checkModel(CModel * C_UNUSED(pmodel))
 }
 
 CStochMethod::CStochMethod(const CCopasiContainer * pParent):
-    CTrajectoryMethod(CCopasiMethod::stochastic, pParent)
+  CTrajectoryMethod(CCopasiMethod::stochastic, pParent)
 {
   initializeParameter();
   mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
@@ -62,7 +54,7 @@ CStochMethod::CStochMethod(const CCopasiContainer * pParent):
 
 CStochMethod::CStochMethod(const CStochMethod & src,
                            const CCopasiContainer * pParent):
-    CTrajectoryMethod(src, pParent)
+  CTrajectoryMethod(src, pParent)
 {
   initializeParameter();
   mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
@@ -528,7 +520,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
     }
 
   mMaxBalance = maxBalance;
-  mMaxIntBeforeStep =        /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
+  mMaxIntBeforeStep = std::numeric_limits< C_INT64 >::max() - 1 - mMaxSteps * mMaxBalance;
 
   // Delete the memory allocated in getDependsOn() and getAffects()
   // since this is allocated in other functions.

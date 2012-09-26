@@ -3332,7 +3332,7 @@ std::string CModel::suitableForStochasticSimulation() const
 
   for (i = 0; i < mMetabolites.size(); ++i)
     {
-      if (mMetabolites[i]->getInitialValue() > LLONG_MAX)
+      if (mMetabolites[i]->getInitialValue() > std::numeric_limits< C_INT64 >::max())
         return "At least one particle number in the initial state is too big.";
     }
 
