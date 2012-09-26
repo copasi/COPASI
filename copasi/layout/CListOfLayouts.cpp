@@ -1,25 +1,16 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.cpp,v $
-//   $Revision: 1.25 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/05/10 08:55:15 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-
 
 #include "copasi.h"
 
@@ -40,40 +31,37 @@
 #include "copasi/report/CCopasiRootContainer.h"
 #include "SBMLDocumentLoader.h"
 
-
 // the following is taken from libsbml 5.5 if a lower version is used then
 // these defines will become active
 #ifndef EXTENSION_CREATE_NS
 #define EXTENSION_CREATE_NS(type,variable,sbmlns)\
-type* variable;\
-{\
-XMLNamespaces* xmlns = sbmlns->getNamespaces();\
-variable = dynamic_cast<type*>(sbmlns);\
-if (variable == NULL)\
-{\
-variable = new type(sbmlns->getLevel(), sbmlns->getVersion());\
-for (int i = 0; i < xmlns->getNumNamespaces(); i++)\
-{\
-if (!variable->getNamespaces()->hasURI(xmlns->getURI(i)))\
-variable->getNamespaces()->add(xmlns->getURI(i), xmlns->getPrefix(i));\
-}\
-}\
-}
+  type* variable;\
+  {\
+    XMLNamespaces* xmlns = sbmlns->getNamespaces();\
+    variable = dynamic_cast<type*>(sbmlns);\
+    if (variable == NULL)\
+      {\
+        variable = new type(sbmlns->getLevel(), sbmlns->getVersion());\
+        for (int i = 0; i < xmlns->getNumNamespaces(); i++)\
+          {\
+            if (!variable->getNamespaces()->hasURI(xmlns->getURI(i)))\
+              variable->getNamespaces()->add(xmlns->getURI(i), xmlns->getPrefix(i));\
+          }\
+      }\
+  }
 #endif
 
 #ifndef LAYOUT_CREATE_NS
 #define LAYOUT_CREATE_NS(variable,sbmlns)\
-EXTENSION_CREATE_NS(LayoutPkgNamespaces,variable,sbmlns);
+  EXTENSION_CREATE_NS(LayoutPkgNamespaces,variable,sbmlns);
 #endif
-
-
 
 CListOfLayouts::CListOfLayouts(const std::string & name,
                                const CCopasiContainer * pParent):
-    CCopasiVector<CLayout>(name, pParent),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this))
+  CCopasiVector<CLayout>(name, pParent),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this))
 #ifdef USE_CRENDER_EXTENSION
-    , mvGlobalRenderInformationObjects("ListOfGlobalRenderInformationObjects", this)
+  , mvGlobalRenderInformationObjects("ListOfGlobalRenderInformationObjects", this)
 #endif /* USE_CRENDER_EXTENSION */
 {}
 
@@ -211,13 +199,13 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<const CCopasiObject*, S
           // otherwise the render infromation is not correctly exported
           // because newer version is libsbml set the level to 3 per default
           //pLayout = new Layout(level, version);
-          
+
           // the issue with the above is that the render package is not automatically
           // instantiated (we really ought to simply call ->createLayout on the plugin object)
           // until then we simply take all the namespaces from the parent element with us
           LAYOUT_CREATE_NS(layoutns, lol->getSBMLNamespaces());
           pLayout = new Layout(layoutns);
-          
+
           lol->appendAndOwn(pLayout);
 
           //add object to map
