@@ -1,3 +1,9 @@
+// Begin git Header 
+//   Commit: ab149c998e8f80a81eb05be1536bf773450f8e84 
+//   Author: Stefan Hoops shoops@vbi.vt.edu 
+//   Date: 2012-09-25 15:02:02 -0400 
+// End git Header 
+
 // Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -50,6 +56,16 @@
 
 #endif // SWIGJAVA || SWIGCSHARP                      
 
+#ifdef SWIGR
+// we ignore the method that takes an int and create a new method that takes
+// the enum from CCopasiTask
+%ignore CCopasiTask::setMethodType(const int& type);
+#endif // SWIGR
+
+
+// suppress warnings on nested structures
+%warnfilter(325) CDescription;
+%warnfilter(325) CResult;
 
 %include "utilities/CCopasiTask.h"
 
@@ -179,6 +195,12 @@
         return success;
       }  
    
+#ifdef SWIGR
+   bool setMethodType(const CCopasiMethod::SubType& type)
+   {
+      return $self->setMethodType(type);
+   }
+#endif // SWIGR
 }  
 
 

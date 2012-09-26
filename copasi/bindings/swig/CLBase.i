@@ -1,10 +1,9 @@
-// Begin CVS Header 
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CLBase.i,v $ 
-//   $Revision: 1.2 $ 
-//   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:27 $ 
-// End CVS Header 
+// Begin git Header 
+//   Commit: 28d5663ff3fc99993d3b249dec626841cb5247ab 
+//   Author: Frank T. Bergmann fbergman@caltech.edu 
+//   Date: 2012-08-29 10:43:00 +0200 
+// End git Header 
+
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
@@ -19,14 +18,22 @@
 
 %ignore CLBase::CLBase(const SBase&);
 
+
+%rename(add)             *::operator+;
+%rename(sub)             *::operator-;
+%rename(mul)             *::operator*;
+
+
 %ignore CLPoint::getX;
 %ignore CLPoint::getY;
+%ignore CLPoint::getZ;
 %ignore CLPoint::CLPoint(const Point&);
 %ignore CLPoint::getSBMLPoint() const;
 %ignore CLPoint::operator<(const CLPoint&) const;
 
 %ignore CLDimensions::getHeight;
 %ignore CLDimensions::getWidth;
+%ignore CLDimensions::getDepth;
 %ignore CLDimensions::CLDimensions(const Dimensions&);
 %ignore CLDimensions::getSBMLDimensions() const;
 
@@ -45,6 +52,8 @@
 // unignore getHeight and getWidth for CLDimensions
 %rename(getHeight) CLDimensions::getHeight;
 %rename(getWidth) CLDimensions::getWidth;
+
+
 
 %extend CLPoint
 {

@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-//   $Revision: 1.51 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/02 18:56:35 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -58,12 +50,12 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-
 PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* ptrSpec, CopasiUI3Window * pMainWindow):
-    QMainWindow(),
-    mpPlot(NULL),
-    mpHandler(pHandler),
-    mpMainWindow(pMainWindow)
+  QMainWindow(),
+  mpPlot(NULL),
+  mpHandler(pHandler),
+  mpMainWindow(pMainWindow),
+  mpWindowMenu(NULL)
 {
   this->resize(640, 480);
   this->setWindowTitle(("COPASI Plot: " + ptrSpec->getTitle()).c_str());
@@ -75,7 +67,15 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
   mpPlot = new CopasiPlot(ptrSpec, this);
   setCentralWidget(mpPlot);
 
+  // add a place holder menu, to be filled by the main window
+  mpWindowMenu = menuBar()->addMenu("Window");
+
   mpMainWindow->addWindow(this);
+}
+
+QMenu *PlotWindow::getMenu() const
+{
+  return mpWindowMenu;
 }
 
 void PlotWindow::createActions()
@@ -348,6 +348,12 @@ void PlotWindow::slotDeselectAll()
 void PlotWindow::slotCloseWindow()
 {
   close();
+}
+
+void PlotWindow::closeEvent(QCloseEvent *closeEvent)
+{
+  mpMainWindow->removeWindow(this);
+  mpHandler->removeInterface(this);
 }
 
 CopasiPlot* PlotWindow::getPlot() const

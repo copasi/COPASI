@@ -1,10 +1,9 @@
-// Begin CVS Header 
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CFunction.i,v $ 
-//   $Revision: 1.6 $ 
-//   $Name:  $ 
-//   $Author: bergmann $ 
-//   $Date: 2012/04/11 15:40:26 $ 
-// End CVS Header 
+// Begin git Header 
+//   Commit: 28d5663ff3fc99993d3b249dec626841cb5247ab 
+//   Author: Frank T. Bergmann fbergman@caltech.edu 
+//   Date: 2012-08-29 10:43:00 +0200 
+// End git Header 
+
 
 // Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
@@ -27,10 +26,14 @@
 %}
 
 %ignore operator<<;
+%ignore CFunction::operator==;
 %ignore CFunction::load;
 %ignore CFunction::dependsOn;
 %ignore CFunction::splitFunction;
 %ignore CFunction::writeMathML;
+
+// suppress warnings on multiple inheritance
+%warnfilter(813) CFunction;
 
 #if (defined SWIGJAVA || defined SWIGCSHARP)
 // remove some const methods to get rid of warnings

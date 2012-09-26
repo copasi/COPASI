@@ -1,24 +1,23 @@
-// Begin CVS Header 
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $ 
-//   $Revision: 1.29 $ 
-//   $Name:  $ 
-//   $Author: bergmann $ 
-//   $Date: 2012/04/11 15:40:26 $ 
-// End CVS Header 
+// Begin git Header 
+//   Commit: 28d5663ff3fc99993d3b249dec626841cb5247ab 
+//   Author: Frank T. Bergmann fbergman@caltech.edu 
+//   Date: 2012-08-29 10:43:00 +0200 
+// End git Header 
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 %{
 
@@ -26,6 +25,7 @@
 #include "plot/CPlotSpecification.h"
 #include <layout/CLBase.h>
 #include <layout/CLCurve.h>
+#include <model/CObjectLists.h>
 
 %}
 
@@ -72,7 +72,7 @@
       return (CCopasiObject*)((*self)[index]);
   }
 
-  // this method is needed because I haven't found out how to disown 
+  // this method is needed because I haven't found out how to disown
   // objects from java
   // Calling the parameter DISOWN should activate the DISOWN typemap
   // and pass ownership to the C++ side
@@ -80,6 +80,13 @@
   {
       return self->add(DISOWN,true);
   }
+
+#ifdef SWIGPYTHON
+ size_t __len__() const
+ {
+    return self->size();
+ }
+#endif // SWIGPYTHON
 
 }
 
@@ -145,6 +152,14 @@
 %template(OutputDefinitionVector) CCopasiVector<CPlotSpecification>;
 %template(OutputDefinitionVectorN) CCopasiVectorN<CPlotSpecification>;
 
+%rename(removeObject) CCopasiVector<CPlotItem>::remove(CCopasiObject* pObject);
+%rename(removeByName) CCopasiVectorN<CPlotItem>::remove(const std::string& name);
+%rename(getIndexByName) CCopasiVectorN<CPlotItem>::getIndex(const std::string& name) const;
+
+%template(PlotItemVector) CCopasiVector<CPlotItem>;
+%template(PlotItemVectorN) CCopasiVectorN<CPlotItem>;
+
+
 %rename(removeObject) CCopasiVector<CMoiety>::remove(CCopasiObject* pObject);
 
 %template(MoietyStdVector) std::vector<CMoiety*>;
@@ -168,6 +183,13 @@
 %template(CompartmentVectorN) CCopasiVectorN<CCompartment>;
 %template(CompartmentVectorNS) CCopasiVectorNS<CCompartment>;
 
+%rename(removeObject) CCopasiVector<CModelParameterSet>::remove(CCopasiObject* pObject);
+%rename(removeByName) CCopasiVectorN<CModelParameterSet>::remove(const std::string& name);
+%rename(getIndexByName) CCopasiVectorN<CModelParameterSet>::getIndex(const std::string& name) const;
+%template(ModelParameterSetVector) CCopasiVector<CModelParameterSet>;
+%template(ModelParameterSetVectorN) CCopasiVectorN<CModelParameterSet>;
+
+
 %rename(removeObject) CCopasiVector<CReaction>::remove(CCopasiObject* pObject);
 %rename(removeByName) CCopasiVectorN<CReaction>::remove(const std::string& name);
 %rename(getIndexByName) CCopasiVectorN<CReaction>::getIndex(const std::string& name) const;
@@ -180,6 +202,9 @@
 %template(ReportItemVector) std::vector<CRegisteredObjectName>;
 
 %template(CFunctionStdVector) std::vector<CFunction*>;
+%template(CFunctionVector) CCopasiVector<CFunction>;
+%template(CFunctionVectorN) CCopasiVectorN<CFunction>;
+%template(CFunctionVectorNS) CCopasiVectorNS<CFunction>;
 
 %rename(removeObject) CCopasiVector<CEvaluationTree>::remove(CCopasiObject* pObject);
 %rename(removeByName) CCopasiVectorN<CEvaluationTree>::remove(const std::string& name);
@@ -200,6 +225,7 @@
 
 %template(IntStdVector) std::vector<C_INT32>;
 %template(UIntStdVector) std::vector<unsigned int>;
+%template(SizeTStdVector) std::vector<size_t>;
 
 %template(StringStdVector) std::vector<std::string>;
 %template(VectorOfStringVectors) std::vector<std::vector<std::string> >;
@@ -220,6 +246,8 @@
 %template(CreatorVector) CCopasiVector<CCreator>;
 %template(ReferenceVector) CCopasiVector<CReference>;
 %template(ModificationVector) CCopasiVector<CModification>;
+
+%template(ObjectListTypeStdVector) std::vector<CObjectLists::ListType>;
 
 typedef CCopasiVectorN<CEvent> EventVectorN;
 
@@ -243,7 +271,9 @@ typedef std::vector<CCopasiParameter*> ParameterVector;
 
 typedef CCopasiVectorN<CEvaluationTree> CEvaluationTreeVectorN;
 
-typedef std::vector<CFunction> CFunctionStdVector;
+typedef std::vector<CFunction*> CFunctionStdVector;
+typedef CCopasiVector<CFunction> CFunctionVector;
+typedef CCopasiVectorN<CFunction> CFunctionVectorN;
 
 typedef CCopasiVector<CChemEqElement> CChemEqElementVector;
 
@@ -251,7 +281,7 @@ typedef CCopasiVector<CCopasiDataModel> DataModelVector;
 
 typedef std::vector<C_INT32> IntStdVector;
 typedef std::vector<unsigned int> UIntStdVector;
-
+typedef std::vector<size_t> SizeTStdVector;
 typedef std::vector<C_FLOAT64> FloatStdVector;
 
 typedef std::vector<COptItem*> OptItemStdVector;
@@ -267,4 +297,10 @@ typedef std::vector<CLLineSegment> LineSegmentStdVector;
 
 typedef CCopasiVector<CFittingPoint> FittingPointVector;
 
+typedef CCopasiVector<CBiologicalDescription> BiologicalDescriptionVector;
+typedef CCopasiVector<CCreator> CreatorVector;
+typedef CCopasiVector<CReference> ReferenceVector;
+typedef CCopasiVector<CModification> ModificationVector;
+
+typedef std::vector<CObjectLists::ListType> ObjectListTypeStdVector;
 

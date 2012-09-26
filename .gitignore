@@ -1,6 +1,6 @@
+*.swp
 *.o
 *.app
-*.swp
 moc_*.cpp
 ui_*.h
 /.cproject
@@ -23,3 +23,5 @@ config.status.bat
 copasi/CopasiVersion.h
 copasi/f2c.h
 gitTools/.UpdateCopasiVersion
+.DS_Store
+trace

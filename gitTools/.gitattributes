@@ -1,0 +1,9 @@
+clean eol=lf
+copyright eol=lf
+cstyle eol=lf
+functions eol=lf
+header eol=lf
+initTools eol=lf
+smudge eol=lf
+testCStyle eol=lf
+UpdateCopasiVersion eol=lf

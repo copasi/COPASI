@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-//   $Revision: 1.107 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/02 20:34:51 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -60,8 +52,8 @@ class QThread;
 
 class CopasiUI3Window : public QMainWindow
 #ifdef COPASI_SBW_INTEGRATION
-    // A SBW listener can catch messages from SBW ... used here to allow COPASI to be shut down
-    , public SBWListener
+  // A SBW listener can catch messages from SBW ... used here to allow COPASI to be shut down
+  , public SBWListener
 #endif // COPASI_SBW_INTEGRATION
 
 {
@@ -172,6 +164,9 @@ protected slots:
   void slotExpandModel();
   void slotFontSelection();
 
+  void slotCloseAllWindows();
+  void slowFindWindowTriggered(QAction* action);
+
 #ifdef WITH_MERGEMODEL
   void slotAddFileOpen(QString file = QString::null);
   void slotAddModel();
@@ -226,6 +221,8 @@ private:
   QAction* mpaExpandModel;
   QAction* mpaFontSelectionDialog;
 
+  QAction* mpaCloseAllWindows;
+
 #ifdef WITH_MERGEMODEL
   QAction* mpaAddModel;
   QAction* mpaMergeModels;
@@ -240,13 +237,16 @@ private:
   //menus
   QMenu * mpMenuExamples;
   QMenu * mpMenuRecentFiles;
+  QMenu * mpWindowsMenu;
   QMap< QAction *, int > mRecentFilesActionMap;
   QActionGroup * mpRecentFilesActionGroup;
   void refreshRecentFileMenu();
+  void refreshWindowsMenu();
 
   QMenu * mpMenuRecentSBMLFiles;
   QMap< QAction *, int > mRecentSBMLFilesActionMap;
   QActionGroup * mpRecentSBMLFilesActionGroup;
+  QActionGroup * mpWindowsActionGroup;
   void refreshRecentSBMLFileMenu();
 
   QMenu * mpTools;
@@ -298,7 +298,6 @@ public:
   {
   public:
     QSBWShutdownEvent();
-
   };
 
   // We expose 2 methods to SBW, one to load an SBML file
@@ -408,7 +407,6 @@ private:
   std::string mSBWDocumentString;
 
   QStringList::size_type mSBWActionId;
-
 
 #endif // COPASI_SBW_INTEGRATION
 };

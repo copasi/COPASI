@@ -1,3 +1,9 @@
+// Begin git Header 
+//   Commit: 7df6de529ee44d91a58c6857592ea1e589ddb2c5 
+//   Author: Stefan Hoops shoops@vbi.vt.edu 
+//   Date: 2012-09-25 13:17:46 -0400 
+// End git Header 
+
 // Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -20,6 +26,11 @@
 
 %ignore CTrajectoryTask::load;
 %ignore CTrajectoryTask::initialize;
+#ifdef SWIGR
+// we ignore the method that takes an int and create a new method that takes
+// the enum from CCopasiTask
+%ignore CTrajectoryTask::setMethodType(const int& type);
+#endif // SWIGR
 
 %include "trajectory/CTrajectoryTask.h"
 
@@ -35,6 +46,13 @@
       }
       return validMethods;
     } 
+
+#ifdef SWIGR
+   bool setMethodType(const CCopasiMethod::SubType& type)
+   {
+      return $self->setMethodType(type);
+   }
+#endif // SWIGR
 }
 
 

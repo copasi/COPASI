@@ -1,10 +1,9 @@
-// Begin CVS Header 
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CSteadyStateTask.i,v $ 
-//   $Revision: 1.6 $ 
-//   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:26 $ 
-// End CVS Header 
+// Begin git Header 
+//   Commit: 28d5663ff3fc99993d3b249dec626841cb5247ab 
+//   Author: Frank T. Bergmann fbergman@caltech.edu 
+//   Date: 2012-08-29 10:43:00 +0200 
+// End git Header 
+
 
 // Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
@@ -33,13 +32,32 @@
 
 %ignore operator<<;
 
+// process is ignored because I have written extension code in CCopasiTask
+// that calls the task specific process, so this new process should be
+// used for all tasks
 %ignore CSteadyStateTask::process(const bool& useInitialValues);
 %ignore CSteadyStateTask::initialize;
 %ignore CSteadyStateTask::load;
 %ignore CSteadyStateTask::print;
 
+#ifdef SWIGR
+// we ignore the method that takes an int and create a new method that takes
+// the enum from CCopasiTask
+%ignore CSteadyStateTask::setMethodType(const int& type);
+#endif // SWIGR
+
+
 %rename (getResult) CSteadyStateTask::getResult() const; // unignore %getResult()
 
 %include "steadystate/CSteadyStateTask.h"
 
+   
+#ifdef SWIGR
+%extend CSteadyStateTask{
+   bool setMethodType(const CCopasiMethod::SubType& type)
+   {
+      return $self->setMethodType(type);
+   }
+}
+#endif // SWIGR
 
