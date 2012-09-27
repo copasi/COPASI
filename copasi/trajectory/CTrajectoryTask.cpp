@@ -77,8 +77,8 @@ CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
   mpCurrentState(NULL),
   mpCurrentTime(NULL),
   mpOutputStartTime(NULL),
-  mpLessOrEqual(NULL),
-  mpLess(NULL)
+  mpLessOrEqual(&fle),
+  mpLess(&fl)
 {
   mpProblem = new CTrajectoryProblem(this);
   mpMethod = createMethod(CCopasiMethod::deterministic);
@@ -103,8 +103,8 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
   mpCurrentState(NULL),
   mpCurrentTime(NULL),
   mpOutputStartTime(NULL),
-  mpLessOrEqual(NULL),
-  mpLess(NULL)
+  mpLessOrEqual(src.mpLessOrEqual),
+  mpLess(src.mpLess)
 {
   mpProblem =
     new CTrajectoryProblem(*static_cast< CTrajectoryProblem * >(src.mpProblem), this);
