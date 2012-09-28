@@ -52,6 +52,7 @@ private:
   void init();
   virtual void newFunction();
   virtual void saveMML(const QString filename);
+  virtual void savePNG(const QString filename);
   virtual void saveTeX(const QString filename);
 };
 

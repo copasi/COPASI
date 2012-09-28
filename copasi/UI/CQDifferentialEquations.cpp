@@ -19,6 +19,7 @@
 #include "CQDifferentialEquations.h"
 
 #include <QtCore/QVariant>
+#include <QPainter>
 
 #include "CQDifferentialEquations.h"
 
@@ -55,6 +56,8 @@ CQDifferentialEquations::CQDifferentialEquations(QWidget* parent, const char* na
     : CopasiWidget(parent, name)
 {
   setupUi(this);
+
+  mpScrollView->setBackgroundColor(QColor(Qt::white));
 
   init();
 }
@@ -161,6 +164,25 @@ void CQDifferentialEquations::saveTeX(const QString outfilename)
   ofile.close();
 }
 
+void CQDifferentialEquations::savePNG(const QString outfilename)
+{
+    QtMmlDocument doc;
+    doc.setBaseFontPointSize(20);
+    doc.setFontName(QtMmlWidget::NormalFont, qApp->font().family());    
+    doc.setContent(FROM_UTF8(mml.str()));
+    
+    const QSize &size = doc.size();
+    QPixmap pixmap(size.width(), size.height());
+    QPainter painter(&pixmap);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform);
+    painter.setRenderHint(QPainter::HighQualityAntialiasing);
+    painter.fillRect(0, 0, size.width(), size.height(), Qt::white);    
+    doc.paint(&painter, QPoint(0,0));
+    pixmap.save(outfilename, "PNG");
+
+}
+
 void CQDifferentialEquations::slotSave()
 {
   QString outfilename;
@@ -173,7 +195,7 @@ void CQDifferentialEquations::slotSave()
         CopasiFileDialog::getSaveFileName(this,
                                           "Save File Dialog",
                                           "untitled.mml",
-                                          "MathML (*.mml);;TeX (*.tex)",
+                                          "MathML (*.mml);;TeX (*.tex);;PNG (*.png)",
                                           "Save Formula to Disk", new QString);
 
       if (outfilename.isEmpty()) return;
@@ -188,9 +210,24 @@ void CQDifferentialEquations::slotSave()
 #ifdef DEBUG_UI
   qDebug() << "outfilename = " << outfilename;
 #endif
-
+  
+  
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  
   if (outfilename.contains(".tex"))
+  {
     saveTeX(outfilename);
+  }
+  else if(outfilename.contains(".png"))
+  {
+    savePNG(outfilename);
+  }
   else
+  {
     saveMML(outfilename);
+  }
+  
+  QApplication::restoreOverrideCursor();
+  
+
 }
