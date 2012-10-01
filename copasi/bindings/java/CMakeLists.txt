@@ -76,7 +76,9 @@ endif()
 #
 add_custom_command(	
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 	       
-	       ${CMAKE_CURRENT_BINARY_DIR}/java-java_files/org/COPASI/COPASIJNI.java
+	       ${CMAKE_CURRENT_BINARY_DIR}/java-files
+	       ${CMAKE_CURRENT_BINARY_DIR}/gui
+	       ${CMAKE_CURRENT_BINARY_DIR}/java-files/org/COPASI/COPASIJNI.java
 	COMMAND "${CMAKE_COMMAND}"
 	ARGS    -E make_directory  ${CMAKE_CURRENT_BINARY_DIR}/java-files/org/COPASI
     COMMAND "${SWIG_EXECUTABLE}"
@@ -134,6 +136,7 @@ target_link_libraries(binding_java_lib ${SE_EXTERNAL_LIBS} ${SE_LIBS} )
 
 add_custom_command(	
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/copasi.jar
+	       ${CMAKE_CURRENT_BINARY_DIR}/copasi-gui.jar
 	COMMAND "${CMAKE_COMMAND}"
 	ARGS -DJava_JAVAC_EXECUTABLE=\"${Java_JAVAC_EXECUTABLE}\"
 		 -DJava_JAR_EXECUTABLE=\"${Java_JAR_EXECUTABLE}\"
