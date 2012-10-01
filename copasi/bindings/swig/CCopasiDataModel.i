@@ -1,27 +1,21 @@
-// Begin git Header 
-//   Commit: 3af7c6e4d7629c6838abc9237068d895f092235c 
-//   Author: Stefan Hoops shoops@vbi.vt.edu 
-//   Date: 2012-09-18 07:55:28 -0400 
-// End git Header 
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
 
 
 
@@ -132,7 +126,14 @@
 
     std::string exportMathModelToString(const std::string& filter)
     {
-        return $self->exportMathModelToString(NULL,filter);
+        try
+        {
+	return $self->exportMathModelToString(NULL,filter);
+        }
+        catch (...)
+        {
+	return "";
+        }
     }
 
     bool newModel()
