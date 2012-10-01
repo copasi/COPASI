@@ -71,8 +71,9 @@ endif()
 
 make_directory(${CMAKE_CURRENT_BINARY_DIR}/csharp-files)
 add_custom_command(	
-    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
-	       ${CMAKE_CURRENT_BINARY_DIR}/csharp-files/copasi.cs 
+    OUTPUT 	${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
+	${CMAKE_CURRENT_BINARY_DIR}/csharp-files
+	${CMAKE_CURRENT_BINARY_DIR}/csharp-files/copasi.cs 
     COMMAND "${CMAKE_COMMAND}"
     ARGS  -E remove_directory "${COPASI_CS_FILES}"
     COMMAND "${CMAKE_COMMAND}"
