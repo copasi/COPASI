@@ -144,12 +144,32 @@ set (DEFAULT_NONLIN OFF)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 # for the debug version we need to enable
 # COPASI_DEBUG
-add_definitions(-DCOPASI_DEBUG)
 
 set (DEFAULT_EXTUNIT ON)
 set (DEFAULT_NONLIN ON)
+set (DEFAULT_DEBUG ON)
 
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
+
+# there should be an option to disable the debug flag, as it litters the 
+# file system with trace files all over the place (or rather everywhere the 
+# program is started)
+option(ENABLE_COPASI_DEBUG "Enable COPASI Debug" ${DEFAULT_DEBUG})
+if(ENABLE_COPASI_DEBUG)
+  add_definitions(-DCOPASI_DEBUG)
+endif(ENABLE_COPASI_DEBUG)
+
+# Sven developed an option of scaling the residuals in the parameter estimation 
+# by the current simulation value (instead of 0) this removes the bias when
+# using value scaled experimental data. 
+option(ENABLE_COASI_PARAMETERFITTING_RESIDUAL_SCALING "Scale parameter estimation residuals with the simulation value" OFF)
+if (ENABLE_COASI_PARAMETERFITTING_RESIDUAL_SCALING)
+# COPASI_NONLIN_DYN
+add_definitions(-DCOASI_PARAMETERFITTING_RESIDUAL_SCALING)
+
+endif(ENABLE_COASI_PARAMETERFITTING_RESIDUAL_SCALING)
+
+
 
 option(ENABLE_COPASI_NONLIN_DYN "Non linear Dynamics" ${DEFAULT_NONLIN})
 if (ENABLE_COPASI_NONLIN_DYN)
