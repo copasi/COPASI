@@ -1,19 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.cpp,v $
-//   $Revision: 1.18 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/02/23 16:09:10 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "CQDifferentialEquations.h"
@@ -53,7 +49,7 @@
  *  name 'name'.'
  */
 CQDifferentialEquations::CQDifferentialEquations(QWidget* parent, const char* name)
-    : CopasiWidget(parent, name)
+  : CopasiWidget(parent, name)
 {
   setupUi(this);
 
@@ -166,21 +162,20 @@ void CQDifferentialEquations::saveTeX(const QString outfilename)
 
 void CQDifferentialEquations::savePNG(const QString outfilename)
 {
-    QtMmlDocument doc;
-    doc.setBaseFontPointSize(20);
-    doc.setFontName(QtMmlWidget::NormalFont, qApp->font().family());    
-    doc.setContent(FROM_UTF8(mml.str()));
-    
-    const QSize &size = doc.size();
-    QPixmap pixmap(size.width(), size.height());
-    QPainter painter(&pixmap);
-    painter.setRenderHint(QPainter::Antialiasing);
-    painter.setRenderHint(QPainter::SmoothPixmapTransform);
-    painter.setRenderHint(QPainter::HighQualityAntialiasing);
-    painter.fillRect(0, 0, size.width(), size.height(), Qt::white);    
-    doc.paint(&painter, QPoint(0,0));
-    pixmap.save(outfilename, "PNG");
+  QtMmlDocument doc;
+  doc.setBaseFontPointSize(20);
+  doc.setFontName(QtMmlWidget::NormalFont, qApp->font().family());
+  doc.setContent(FROM_UTF8(mml.str()));
 
+  const QSize &size = doc.size();
+  QPixmap pixmap(size.width(), size.height());
+  QPainter painter(&pixmap);
+  painter.setRenderHint(QPainter::Antialiasing);
+  painter.setRenderHint(QPainter::SmoothPixmapTransform);
+  painter.setRenderHint(QPainter::HighQualityAntialiasing);
+  painter.fillRect(0, 0, size.width(), size.height(), Qt::white);
+  doc.paint(&painter, QPoint(0, 0));
+  pixmap.save(outfilename, "PNG");
 }
 
 void CQDifferentialEquations::slotSave()
@@ -210,24 +205,21 @@ void CQDifferentialEquations::slotSave()
 #ifdef DEBUG_UI
   qDebug() << "outfilename = " << outfilename;
 #endif
-  
-  
-  QApplication::setOverrideCursor(Qt::WaitCursor);
-  
-  if (outfilename.contains(".tex"))
-  {
-    saveTeX(outfilename);
-  }
-  else if(outfilename.contains(".png"))
-  {
-    savePNG(outfilename);
-  }
-  else
-  {
-    saveMML(outfilename);
-  }
-  
-  QApplication::restoreOverrideCursor();
-  
 
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+
+  if (outfilename.contains(".tex"))
+    {
+      saveTeX(outfilename);
+    }
+  else if (outfilename.contains(".png"))
+    {
+      savePNG(outfilename);
+    }
+  else
+    {
+      saveMML(outfilename);
+    }
+
+  QApplication::restoreOverrideCursor();
 }
