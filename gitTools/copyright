@@ -127,6 +127,10 @@ $0 ~ "'$CommentStart' Copyright.*by Pedro Mendes" {
   skip = 2 
 }
 
+$0 ~ "('"$CommentStart"'|/\\*) Begin CVS Header" {
+  skip = 2 
+}
+
 {
   if (skip == 1) {
     if ($0 !~ "^$") {
@@ -150,6 +154,12 @@ $0 ~ "'$CommentStart' Copyright.*by Pedro Mendes" {
 }
 
 $0 ~ "'$CommentStart' All rights reserved." {
+  if (skip == 2) {
+    skip = 1
+  }
+}
+
+$0 ~ "End CVS Header" {
   if (skip == 2) {
     skip = 1
   }
