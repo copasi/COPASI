@@ -6,7 +6,8 @@ GitTools="`git config copasi.gittools`"
 GAWK=`gitTool gawk`
 WGET=`gitTool wget`
 
-remoteCommit=`git rev-parse origin`
+branch=`git rev-parse --abbrev-ref HEAD`
+remoteCommit=`git rev-parse origin/${branch} 2>/dev/null`
 
 # We only register a build.
 if [ "_$1" == "_--registerBuild" ]; then
@@ -28,16 +29,8 @@ fi
 localCommit=`git log -1 --pretty=%H`
 localChanges=`git status --untracked-files=no --short | wc -l`
 
-if [ "_$localCommit" == "_$remoteCommit" -a $localChanges == 0 ]; then
-  creator=copasi.org
-  modified=false
-else
-  creator=`git config user.email`
-  modified=true
-fi
-
 # If nothing has changed we stop here.
-if [ "_$lastCommit" == "_$localCommit" -a "_$lastModified" == "_$modified" -a "_$1" != "_--force" -a -e ${GitTools}/../copasi/CopasiVersion.h ]; then
+if [ "_$lastCommit" == "_$localCommit" -a $localChanges == 0 -a "_$1" != "_--force" -a -e ${GitTools}/../copasi/CopasiVersion.h ]; then
   echo No changes detected, skipping update.
   exit
 fi
@@ -115,6 +108,17 @@ compatibility="${compatibility}${current_build}}"
 rm $$
 
 IFS=$(echo -en "\n\b")
+
+echo $buildList | grep ${localCommit}
+
+if [ "`echo $buildList | grep ${localCommit}`" -a $localChanges == 0 ]; then
+  creator=copasi.org
+  modified=false
+else
+  creator=`git config user.email`
+  modified=true
+fi
+
 
 sed -e 's/COPASI_VERSION_MAJOR.*/COPASI_VERSION_MAJOR '$current_major'/' \
     -e 's/COPASI_VERSION_MINOR.*/COPASI_VERSION_MINOR '$current_minor'/' \
