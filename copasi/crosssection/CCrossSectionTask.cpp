@@ -69,12 +69,12 @@ CCrossSectionTask::CCrossSectionTask(const CCopasiContainer * pParent):
   mpMethod = createMethod(CCopasiMethod::deterministic);
   this->add(mpMethod, true);
 
-  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
+/*  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
 
   if (pParameter != NULL)
     mUpdateMoieties = *pParameter->getValue().pBOOL;
   else
-    mUpdateMoieties = false;
+    mUpdateMoieties = false;*/
 }
 
 CCrossSectionTask::CCrossSectionTask(const CCrossSectionTask & src,
@@ -101,12 +101,12 @@ CCrossSectionTask::CCrossSectionTask(const CCrossSectionTask & src,
 
   this->add(mpMethod, true);
 
-  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
+/*  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
 
   if (pParameter != NULL)
     mUpdateMoieties = *pParameter->getValue().pBOOL;
   else
-    mUpdateMoieties = false;
+    mUpdateMoieties = false;*/
 }
 
 CCrossSectionTask::~CCrossSectionTask()
@@ -155,7 +155,7 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
       mTimeSeriesRequested &&
       (of & CCopasiTask::TIME_SERIES))
     {
-      mTimeSeries.allocate(mpCrossSectionProblem->getStepNumber());
+      mTimeSeries.allocate(20);
       pOutputHandler->addInterface(&mTimeSeries);
     }
   else
@@ -176,26 +176,23 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
 
   //*****
 
-  C_FLOAT64 Duration = mpCrossSectionProblem->getDuration();
-  C_FLOAT64 StepSize = mpCrossSectionProblem->getStepSize();
-  C_FLOAT64 StepNumber = fabs(Duration) / StepSize;
+  C_FLOAT64 MaxDuration = mpCrossSectionProblem->getDuration();
+  //C_FLOAT64 StepSize = mpCrossSectionProblem->getStepSize();
+  //C_FLOAT64 StepNumber = fabs(Duration) / StepSize;
 
-  if (isnan(StepNumber) || StepNumber < 1.0)
-    StepNumber = 1.0;
+  //if (isnan(StepNumber) || StepNumber < 1.0)
+  //  StepNumber = 1.0;
 
   //the output starts only after "outputStartTime" has passed
-  if (useInitialValues)
-    mOutputStartTime = mpCrossSectionProblem->getOutputStartTime();
-  else
-    mOutputStartTime = *mpCurrentTime + mpCrossSectionProblem->getOutputStartTime();
+  mOutputStartTime = *mpCurrentTime + mpCrossSectionProblem->getOutputStartTime();
+  
+  //C_FLOAT64 NextTimeToReport;
 
-  C_FLOAT64 NextTimeToReport;
-
-  const C_FLOAT64 EndTime = *mpCurrentTime + Duration;
+  const C_FLOAT64 EndTime = *mpCurrentTime + MaxDuration;
   const C_FLOAT64 StartTime = *mpCurrentTime;
   C_FLOAT64 CompareEndTime;
 
-  if (StepSize < 0.0)
+  if (MaxDuration < 0.0)
     {
       mpLessOrEqual = &cs_ble;
       mpLess = &cs_bl;
@@ -212,23 +209,23 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
       CompareEndTime = EndTime - 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
     }
 
-  unsigned C_INT32 StepCounter = 1;
+  //unsigned C_INT32 StepCounter = 1;
 
-  if (StepSize == 0.0 && Duration != 0.0)
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryProblem + 1, StepSize);
-      return false;
-    }
+  //if (StepSize == 0.0 && Duration != 0.0)
+  //  {
+  //    CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryProblem + 1, StepSize);
+  //    return false;
+  //  }
 
   output(COutputInterface::BEFORE);
 
   bool flagProceed = true;
-  C_FLOAT64 handlerFactor = 100.0 / Duration;
+  C_FLOAT64 handlerFactor = 100.0 / MaxDuration;
 
   C_FLOAT64 Percentage = 0;
   size_t hProcess;
 
-  if (mpCallBack != NULL && StepNumber > 1.0)
+  if (mpCallBack != NULL)
     {
       mpCallBack->setName("performing simulation...");
       C_FLOAT64 hundred = 100;
@@ -243,21 +240,21 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
         {
           // This is numerically more stable then adding
           // mpTrajectoryProblem->getStepSize().
-          NextTimeToReport =
-            StartTime + (EndTime - StartTime) * StepCounter++ / StepNumber;
+          //NextTimeToReport =
+          //  StartTime + (EndTime - StartTime) * StepCounter++ / StepNumber;
 
-          flagProceed &= processStep(NextTimeToReport);
+          flagProceed &= processStep(EndTime);
 
-          if (mpCallBack != NULL && StepNumber > 1.0)
+          if (mpCallBack != NULL )
             {
               Percentage = (*mpCurrentTime - StartTime) * handlerFactor;
               flagProceed &= mpCallBack->progressItem(hProcess);
             }
 
-          if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime))
-            {
-              output(COutputInterface::DURING);
-            }
+          //if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime))
+          //  {
+          //    output(COutputInterface::DURING);
+          //  }
         }
       while ((*mpLess)(*mpCurrentTime, CompareEndTime) && flagProceed);
     }
@@ -267,7 +264,8 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
       mpCrossSectionProblem->getModel()->setState(*mpCurrentState);
       mpCrossSectionProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
 
-      if (mpCallBack != NULL && StepNumber > 1.0) mpCallBack->finishItem(hProcess);
+
+      if (mpCallBack != NULL) mpCallBack->finishItem(hProcess);
 
       output(COutputInterface::AFTER);
 
@@ -279,14 +277,15 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
       mpCrossSectionProblem->getModel()->setState(*mpCurrentState);
       mpCrossSectionProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
 
-      if (mpCallBack != NULL && StepNumber > 1.0) mpCallBack->finishItem(hProcess);
+
+      if (mpCallBack != NULL) mpCallBack->finishItem(hProcess);
 
       output(COutputInterface::AFTER);
 
       throw CCopasiException(Exception.getMessage());
     }
 
-  if (mpCallBack != NULL && StepNumber > 1.0) mpCallBack->finishItem(hProcess);
+  if (mpCallBack != NULL) mpCallBack->finishItem(hProcess);
 
   output(COutputInterface::AFTER);
 
@@ -322,8 +321,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
 
       if (StateChanged)
         {
-          if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime) &&
-              mpCrossSectionProblem->getOutputEvent())
+          if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime) )
             {
               output(COutputInterface::DURING);
             }
@@ -343,8 +341,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
             pModel->updateSimulatedValues(mUpdateMoieties);
 
             if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime) &&
-                *mpCurrentTime == pModel->getProcessQueueExecutionTime() &&
-                mpCrossSectionProblem->getOutputEvent())
+                *mpCurrentTime == pModel->getProcessQueueExecutionTime() )
               {
                 output(COutputInterface::DURING);
               }
@@ -356,8 +353,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
               return true;
 
             if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime) &&
-                StateChanged &&
-                mpCrossSectionProblem->getOutputEvent())
+                StateChanged )
               {
                 output(COutputInterface::DURING);
               }
@@ -371,8 +367,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
             pModel->processRoots(*mpCurrentTime, true, true, mpTrajectoryMethod->getRoots());
 
             if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime) &&
-                *mpCurrentTime == pModel->getProcessQueueExecutionTime() &&
-                mpCrossSectionProblem->getOutputEvent())
+                *mpCurrentTime == pModel->getProcessQueueExecutionTime() )
               {
                 output(COutputInterface::DURING);
               }
@@ -396,8 +391,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
                 return true;
               }
 
-            if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime) &&
-                mpCrossSectionProblem->getOutputEvent() &&
+            if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime)  &&
                 (StateChanged ||
                  *mpCurrentTime == pModel->getProcessQueueExecutionTime()))
               {

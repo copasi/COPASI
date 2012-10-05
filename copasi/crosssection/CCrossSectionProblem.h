@@ -94,6 +94,11 @@ public:
 
 private:
 
+  //overload these member functions just to make sure they are not used in this
+  //derived class
+  unsigned C_INT32 getStepNumber() const {return 0;}  
+  C_FLOAT64 getStepSize() const {return 0.0;}  
+    
   void initObjects();
 
   /**
