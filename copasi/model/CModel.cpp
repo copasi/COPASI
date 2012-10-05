@@ -30,6 +30,7 @@
 #include "CModel.h"
 #include "CState.h"
 #include "CModelValue.h"
+#include "CObjectLists.h"
 #include "function/CFunctionDB.h"
 #include "report/CCopasiObjectReference.h"
 #include "report/CKeyFactory.h"
@@ -3633,6 +3634,82 @@ void CModel::determineIsAutonomous()
   // An autonomous models always start simulation at T = 0
   if (mIsAutonomous)
     setInitialValue(0.0);
+}
+
+bool CModel::isStateVariable(const CCopasiObject * pObject) const
+{
+  if (pObject == NULL)
+    {
+      return false;
+    }
+
+  // We check whether the object itself or the parent object is a state variable
+  // A state variable is an independent model entity, a dependent species, or
+  // a fixed entity, which is an event target.
+
+  const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(pObject);
+
+  if (pEntity == NULL)
+    {
+      pEntity = dynamic_cast< const CModelEntity * >(pObject->getObjectParent());
+    }
+
+  if (pEntity == NULL)
+    {
+      return false;
+    }
+
+  CModelEntity * const* it = mStateTemplate.beginIndependent();
+  CModelEntity * const* end = mStateTemplate.endDependent();
+
+  for (; it != end; ++it)
+    {
+      if (*it == pEntity)
+        {
+          return true;
+        }
+    }
+
+  std::set< const CModelEntity * > EventTargets = CObjectLists::getEventTargets(this);
+  std::set< const CModelEntity * >::const_iterator itSet = EventTargets.begin();
+  std::set< const CModelEntity * >::const_iterator endSet = EventTargets.end();
+
+  for (; itSet != endSet; ++itSet)
+    {
+      if (*itSet == pEntity)
+        {
+          return true;
+        }
+    }
+
+  return false;
+}
+
+CCopasiObject * CModel::getCorrespondingTransientObject(const CCopasiObject * pObject) const
+{
+  // CModelEntities and derived classes are the only object which have initial and transient values
+  // Note, for species we have distinguish between particle number and concentration.
+
+  const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(pObject);
+
+  if (pEntity == NULL)
+    {
+      pEntity = dynamic_cast< const CModelEntity * >(pObject->getObjectParent());
+    }
+
+  if (pEntity == NULL)
+    {
+      return const_cast< CCopasiObject * >(pObject);
+    }
+
+  const CMetab * pMetab = dynamic_cast< const CMetab * >(pEntity);
+
+  if (pMetab != NULL && pMetab->getInitialConcentrationReference() == pObject)
+    {
+      return pMetab->getConcentrationReference();
+    }
+
+  return pEntity->getValueReference();
 }
 
 std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() const

@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.h,v $
-//   $Revision: 1.31 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/12/22 19:52:00 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -90,14 +87,14 @@ public:
   const bool & getOutputInSubtask() const;
 
   /**
-   *  Set if initial conditions should be set to the result of the previous run.
+   *  Set whether the subtask should continue with its last result.
    */
-  void setAdjustInitialConditions(bool aic);
+  void setContinueFromCurrentState(bool aic);
 
   /**
-   *  Ask if initial conditions should be set to the result of the previous run.
+   *  Retrieve whether the subtask should continue with its last result.
    */
-  const bool & getAdjustInitialConditions() const;
+  bool getContinueFromCurrentState() const;
 
   size_t getNumberOfScanItems() const;
 

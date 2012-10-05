@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-//   $Revision: 1.36 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:33:11 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -46,8 +38,8 @@ class CScanItem
 protected:
   size_t mNumSteps;
 
-  // C_FLOAT64 * mpValue;
-  CCopasiObject * mpValue;
+  CCopasiObject * mpObject;
+  CCopasiObject * mpInitialObject;
 
   C_FLOAT64 mStoreValue;
 
@@ -55,11 +47,13 @@ protected:
 
   bool mFlagFinished;
 
+  bool mIsStateVariable;
+
 public:
   static
   CScanItem* createScanItemFromParameterGroup(CCopasiParameterGroup* si,
       CRandom* rg,
-      CScanTask* st);
+      const bool & continueFromCurrentState);
 
   size_t getNumSteps() const;
 
@@ -67,11 +61,11 @@ public:
 
   void storeValue();
 
-  virtual void reset();
+  void reset();
+
+  bool isFinished() const;
 
   virtual void step() = 0;
-
-  virtual bool isFinished() const;
 
   virtual bool isNesting() const {return true;};
 
@@ -80,18 +74,19 @@ public:
   /**
    * perform checks. This is used in the method::isValidProblem() method.
    * It returns false for an invalid ScanItem and generates a CCopasiMessage
+   * @param const bool & continueFromCurrentState
    */
-  virtual bool isValidScanItem();
+  virtual bool isValidScanItem(const bool & continueFromCurrentState);
 
   /**
-   * Retrieve the object which is scanned by the item.
+   * Retrieve the initial object which is scanned.
    * @return const CCopasiObject * object
    */
   const CCopasiObject * getObject() const;
 
 protected:
 
-  CScanItem(CCopasiParameterGroup* si);
+  CScanItem(CCopasiParameterGroup* si, const bool & continueFromCurrentState);
 
   //initObject();
 
@@ -104,10 +99,12 @@ private:
 class CScanItemRepeat: public CScanItem
 {
 public:
-  CScanItemRepeat(CCopasiParameterGroup* si);
-  void step();
+  CScanItemRepeat(CCopasiParameterGroup* si, const bool & continueFromCurrentState);
+  virtual void step();
 
   virtual ~CScanItemRepeat() {};
+
+  virtual bool isValidScanItem(const bool & continueFromCurrentState);
 };
 
 //***********************************+
@@ -118,12 +115,12 @@ private:
   C_FLOAT64 mMin, mMax, mFaktor;
   bool mLog;
 public:
-  CScanItemLinear(CCopasiParameterGroup* si);
-  void step();
+  CScanItemLinear(CCopasiParameterGroup* si, const bool & continueFromCurrentState);
+  virtual void step();
 
   virtual ~CScanItemLinear() {};
 
-  virtual bool isValidScanItem();
+  virtual bool isValidScanItem(const bool & continueFromCurrentState);
 };
 
 //***********************************+
@@ -136,12 +133,11 @@ private:
   unsigned C_INT32 mRandomType;
   bool mLog;
 public:
-  CScanItemRandom(CCopasiParameterGroup* si, CRandom* rg);
+  CScanItemRandom(CCopasiParameterGroup* si, CRandom* rg, const bool & continueFromCurrentState);
   virtual ~CScanItemRandom() {};
 
-  void step();
+  virtual void step();
   virtual bool isNesting() const {return false;};
-  virtual bool isValidScanItem();
 };
 
 //***********************************+
@@ -182,6 +178,8 @@ protected:
 
   std::vector< Refresh * > mInitialRefreshes;
 
+  std::vector< Refresh * > mTransientRefreshes;
+
   size_t mTotalSteps;
 
   /**
@@ -191,14 +189,10 @@ protected:
   size_t mLastNestingItem;
 
   /**
-   *
+   * Variable indicating whether the subtask shall continue from the current state
+   * or the initial state
    */
-  //size_t mVariableSize;
-
-  /**
-   *
-   */
-  //C_FLOAT64 * mpVariables;
+  bool mContinueFromCurrentState;
 
   // Operations
 private:

@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-//   $Revision: 1.201 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/25 12:09:39 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -1104,6 +1096,20 @@ public:
    * @return const bool &isAutonomous
    */
   const bool & isAutonomous() const;
+
+  /**
+   * Check whether the given object is a part of state variable
+   * @param const CCopasiObject * pObject
+   * @return bool isStateVariable
+   */
+  bool isStateVariable(const CCopasiObject * pObject) const;
+
+  /**
+   * Retrieve the corresponding transient state object of the given object
+   * @param const CCopasiObject * pObject
+   * @return CCopasiObject * correspondingTransientObject
+   */
+  CCopasiObject * getCorrespondingTransientObject(const CCopasiObject * pObject) const;
 
   /**
    * Build the update sequence used to calculate all initial values depending
