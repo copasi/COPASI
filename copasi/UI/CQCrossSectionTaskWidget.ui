@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Begin CVS Header </comment>
-<comment>   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $ </comment>
-<comment>   $Revision: 1.15.2.2 $ </comment>
-<comment>   $Name: Build-33 $ </comment>
-<comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/02/17 19:14:45 $ </comment>
-<comment> End CVS Header </comment>
-
-<comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -20,227 +12,482 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>624</width>
-    <height>438</height>
+    <width>503</width>
+    <height>301</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Cross Section Task Widget</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="mpLblVariable">
-       <property name="text">
-        <string>Variable</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <layout class="QFormLayout" name="formLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="mpLblVariable">
+         <property name="minimumSize">
+          <size>
+           <width>65</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Variable:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_variable">
+         <item>
+          <widget class="QLineEdit" name="mpLineEditVariable">
+           <property name="text">
+            <string>[Please Choose Object.] ---&gt;</string>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="mpButtonVariable">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>8</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QComboBox" name="mpCombo1">
+           <property name="minimumSize">
+            <size>
+             <width>70</width>
+             <height>20</height>
+            </size>
+           </property>
+           <item>
+            <property name="text">
+             <string notr="true">Value</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string notr="true">Rate</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>crossing</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_9">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Expanding</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="mpLineEditValue">
+           <property name="maximumSize">
+            <size>
+             <width>140</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>0</string>
+           </property>
+           <property name="readOnly">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>in</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="mpComboDirection">
+           <property name="minimumSize">
+            <size>
+             <width>70</width>
+             <height>20</height>
+            </size>
+           </property>
+           <item>
+            <property name="text">
+             <string>positive</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>negative</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>direction</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="Line" name="line_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_variable">
-       <item>
-        <widget class="QLineEdit" name="mpLineEditVariable">
-         <property name="text">
-          <string>[Please Choose Object.] ---&gt;</string>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="mpButtonVariable">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="1" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_4">
-       <item>
-        <widget class="QComboBox" name="mpCombo1">
-         <item>
-          <property name="text">
-           <string notr="true">Value</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string notr="true">Rate</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>crossing</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="mpLineEditValue">
-         <property name="text">
-          <string>0</string>
-         </property>
-         <property name="readOnly">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="2" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_5">
-       <item>
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>in</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="mpComboDirection">
-         <item>
-          <property name="text">
-           <string>positive</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>negative</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>direction</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
+     <item>
+      <layout class="QFormLayout" name="formLayout_2">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="minimumSize">
           <size>
-           <width>40</width>
-           <height>20</height>
+           <width>65</width>
+           <height>0</height>
           </size>
          </property>
-        </spacer>
+         <property name="text">
+          <string>Simulation: </string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QLabel" name="mpLblLT_2">
+           <property name="text">
+            <string>Limit Time to</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Expanding</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="mpTxtTime">
+           <property name="maximumSize">
+            <size>
+             <width>140</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="readOnly">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QCheckBox" name="mpCheckSimCrossings">
+           <property name="text">
+            <string>Limit # crossings to</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Expanding</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="mpTxtCrossings">
+           <property name="maximumSize">
+            <size>
+             <width>140</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QCheckBox" name="mpCheckSimConvergence">
+           <property name="text">
+            <string>until convergence with tolerance </string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Expanding</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="mpTxtConvergence">
+           <property name="maximumSize">
+            <size>
+             <width>140</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </item>
-     <item row="3" column="0" colspan="2">
+     <item>
       <widget class="Line" name="line_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="mpLblLC">
-       <property name="text">
-        <string>Limit Crossings</string>
+     <item>
+      <layout class="QFormLayout" name="formLayout_3">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetDefaultConstraint</enum>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
        </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QCheckBox" name="mpCheckLC">
+       <item row="0" column="0">
+        <widget class="QLabel" name="mpLblLT">
+         <property name="minimumSize">
+          <size>
+           <width>65</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
-          <string/>
+          <string>Output:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QLabel" name="mpLblLC_2">
-         <property name="text">
-          <string>to</string>
-         </property>
-        </widget>
+       <item row="0" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <item>
+          <widget class="QCheckBox" name="mpCheckOutputDelay">
+           <property name="text">
+            <string>Delay output until</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_6">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Expanding</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="mpTxtOutTime">
+           <property name="maximumSize">
+            <size>
+             <width>140</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="readOnly">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
-       <item>
-        <widget class="QLineEdit" name="mpLineEditLC"/>
+       <item row="1" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_7">
+         <item>
+          <widget class="QCheckBox" name="mpCheckOutputCrossings">
+           <property name="text">
+            <string>Collect after # crossings</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_7">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Expanding</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="mpTxtOutCrossings">
+           <property name="maximumSize">
+            <size>
+             <width>140</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="readOnly">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_8">
+         <item>
+          <widget class="QCheckBox" name="mpCheckOutputConvergence">
+           <property name="text">
+            <string>Delay output until convergence with tolerance</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_8">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Expanding</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="mpTxtOutConvergence">
+           <property name="maximumSize">
+            <size>
+             <width>140</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="readOnly">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="mpLblLT">
-       <property name="text">
-        <string>Limit Time</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QCheckBox" name="mpCheckLT">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="mpLblLT_2">
-         <property name="text">
-          <string>to</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="mpLineEditLT">
-         <property name="readOnly">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="6" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
-        <widget class="QCheckBox" name="mpCheck">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="mpLbl">
-         <property name="text">
-          <string>supress output
-before</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="mpLineEdit">
-         <property name="readOnly">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="7" column="0" colspan="2">
+     <item>
       <widget class="Line" name="line">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -271,11 +518,11 @@ before</string>
    <slot>slotChooseVariable()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>596</x>
-     <y>47</y>
+     <x>468</x>
+     <y>33</y>
     </hint>
     <hint type="destinationlabel">
-     <x>614</x>
+     <x>502</x>
      <y>69</y>
     </hint>
    </hints>
@@ -287,24 +534,24 @@ before</string>
    <slot>slotValueRate()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>374</x>
-     <y>106</y>
+     <x>490</x>
+     <y>61</y>
     </hint>
     <hint type="destinationlabel">
-     <x>616</x>
+     <x>502</x>
      <y>112</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>mpCheckLC</sender>
+   <sender>mpCheckSimCrossings</sender>
    <signal>toggled(bool)</signal>
    <receiver>CQCrossSectionTaskWidget</receiver>
-   <slot>slotUpdateLC(bool)</slot>
+   <slot>slotUpdateCrossings(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>132</x>
-     <y>246</y>
+     <x>182</x>
+     <y>154</y>
     </hint>
     <hint type="destinationlabel">
      <x>6</x>
@@ -313,34 +560,66 @@ before</string>
    </hints>
   </connection>
   <connection>
-   <sender>mpCheckLT</sender>
+   <sender>mpCheckOutputDelay</sender>
    <signal>toggled(bool)</signal>
    <receiver>CQCrossSectionTaskWidget</receiver>
-   <slot>slotUpdateLT(bool)</slot>
+   <slot>slotOutputDelay(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>125</x>
-     <y>316</y>
+     <x>182</x>
+     <y>221</y>
     </hint>
     <hint type="destinationlabel">
-     <x>8</x>
-     <y>284</y>
+     <x>9</x>
+     <y>300</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>mpCheck</sender>
+   <sender>mpCheckOutputCrossings</sender>
    <signal>toggled(bool)</signal>
    <receiver>CQCrossSectionTaskWidget</receiver>
-   <slot>slotUpdateSupress(bool)</slot>
+   <slot>slotOutputCrossings(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>135</x>
-     <y>383</y>
+     <x>152</x>
+     <y>246</y>
     </hint>
     <hint type="destinationlabel">
-     <x>9</x>
-     <y>399</y>
+     <x>309</x>
+     <y>154</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpCheckOutputConvergence</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>CQCrossSectionTaskWidget</receiver>
+   <slot>slotOutputConvergence(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>204</x>
+     <y>269</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>251</x>
+     <y>150</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpCheckSimConvergence</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>CQCrossSectionTaskWidget</receiver>
+   <slot>slotUpdateConvergence(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>173</x>
+     <y>174</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>251</x>
+     <y>150</y>
     </hint>
    </hints>
   </connection>
@@ -348,8 +627,15 @@ before</string>
  <slots>
   <slot>slotChooseVariable()</slot>
   <slot>slotValueRate()</slot>
-  <slot>slotUpdateLC(bool)</slot>
-  <slot>slotUpdateLT(bool)</slot>
-  <slot>slotUpdateSupress(bool)</slot>
+  <slot>slotUpdateCrossings(bool)</slot>
+  <slot>slotUpdateConvergence(bool)</slot>
+  <slot>slotOutputDelay(bool)</slot>
+  <slot>slotOutputCrossings(bool)</slot>
+  <slot>slotOutputConvergence(bool)</slot>
+  <slot>slotOutputDelayTime()</slot>
+  <slot>slotOutputCrossingsLimit()</slot>
+  <slot>slotOutputConvergenceTolerance()</slot>
+  <slot>slotUpdateCrossingsLimit()</slot>
+  <slot>slotUpdateConvergenceTolerance()</slot>
  </slots>
 </ui>
