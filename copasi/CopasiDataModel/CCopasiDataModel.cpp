@@ -1,9 +1,3 @@
-// Begin git Header 
-//   Commit: 3af7c6e4d7629c6838abc9237068d895f092235c 
-//   Author: Stefan Hoops shoops@vbi.vt.edu 
-//   Date: 2012-09-18 07:55:28 -0400 
-// End git Header 
-
 // Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -368,8 +362,9 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* p
 
   try
     {
-      if (!mData.pModel->compileIfNecessary(pProcessReport))
-        return false;
+      // We do not care whether the model compiles or not
+      // We just save as much as we can
+      mData.pModel->compileIfNecessary(pProcessReport);
     }
 
   catch (...)
