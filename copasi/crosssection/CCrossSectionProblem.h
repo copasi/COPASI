@@ -14,9 +14,9 @@
 #ifndef CCROSSSECTIONPROBLEM_H
 #define CCROSSSECTIONPROBLEM_H
 
-#include "utilities/CCopasiProblem.h"
+#include "trajectory/CTrajectoryProblem.h"
 
-class CCrossSectionProblem : public CCopasiProblem
+class CCrossSectionProblem : public CTrajectoryProblem
 {
 public:
   /**
@@ -59,11 +59,6 @@ public:
   const C_FLOAT64 &getTimeLimit() const;
 
   /**
-   * Function to get mpOutputStartTime
-   */
-  const C_FLOAT64 &getOutputStartTime() const;
-
-  /**
    * Function to set mpFlagLimitCrossings
    */
   void setFlagLimitCrossings(bool flagLimitCrossing);
@@ -82,11 +77,6 @@ public:
    * Function to set mpTimeLimit
    */
   void setTimeLimit(const C_FLOAT64 &timeLimit);
-
-  /**
-   * Function to set mpOutputStartTime
-   */
-  void setOutputStartTime(const C_FLOAT64 &outputStartTime);
 
   /**
    * This is the output method for any result of a problem. The default implementation
@@ -136,21 +126,6 @@ private:
    * this member variable is mapped to a CCopasiParameter
    */
   bool * mpFlagLimitTime;
-
-  /**
-   * this variable indicates how long the calculation should run
-   * if the corresponding flag is true.
-   *
-   * this member variable is mapped to a CCopasiParameter
-   */
-  C_FLOAT64 * mpTimeLimit;
-
-  /**
-   * this variable indicates at what time the output is started
-   *
-   * this member variable is mapped to a CCopasiParameter
-   */
-  C_FLOAT64 * mpOutputStartTime;
 
   /**
    * this variable holds the trigger expression

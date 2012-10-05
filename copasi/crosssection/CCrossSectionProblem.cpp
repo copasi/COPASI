@@ -14,12 +14,10 @@
 #include "CCrossSectionProblem.h"
 
 CCrossSectionProblem::CCrossSectionProblem(const CCopasiContainer * pParent):
-    CCopasiProblem(CCopasiTask::crosssection, pParent),
+    CTrajectoryProblem(pParent),
     mpFlagLimitCrossings(NULL),
     mpCrossingsLimit(NULL),
-    mpFlagLimitTime(NULL),
-    mpTimeLimit(NULL),
-    mpOutputStartTime(NULL)
+    mpFlagLimitTime(NULL)
 {
   addParameter("LimitCrossings", CCopasiParameter::BOOL, false);
   mpFlagLimitCrossings = getValue("LimitCrossings").pBOOL;
@@ -30,15 +28,14 @@ CCrossSectionProblem::CCrossSectionProblem(const CCopasiContainer * pParent):
   addParameter("LimitTime", CCopasiParameter::BOOL, true);
   mpFlagLimitTime = getValue("LimitTime").pBOOL;
 
-  addParameter("TimeLimit", CCopasiParameter::DOUBLE, 100.0);
-  mpTimeLimit = getValue("TimeLimit").pDOUBLE;
+  //addParameter("TimeLimit", CCopasiParameter::DOUBLE, 100.0);
+  //mpTimeLimit = getValue("TimeLimit").pDOUBLE;
 
-  addParameter("OutputStartTime", CCopasiParameter::DOUBLE, 0.0);
-  mpOutputStartTime = getValue("OutputStartTime").pDOUBLE;
+  //addParameter("OutputStartTime", CCopasiParameter::DOUBLE, 0.0);
+  //mpOutputStartTime = getValue("OutputStartTime").pDOUBLE;
 
   mpTriggerExpression =
     assertParameter("TriggerExpression", CCopasiParameter::EXPRESSION, std::string(""))->getValue().pEXPRESSION;
-
 
   initObjects();
   CONSTRUCTOR_TRACE;
@@ -46,18 +43,16 @@ CCrossSectionProblem::CCrossSectionProblem(const CCopasiContainer * pParent):
 
 CCrossSectionProblem::CCrossSectionProblem(const CCrossSectionProblem & src,
     const CCopasiContainer * pParent):
-    CCopasiProblem(src, pParent),
+    CTrajectoryProblem(src, pParent),
     mpFlagLimitCrossings(NULL),
     mpCrossingsLimit(NULL),
-    mpFlagLimitTime(NULL),
-    mpTimeLimit(NULL),
-    mpOutputStartTime(NULL)
+    mpFlagLimitTime(NULL)
 {
   mpFlagLimitCrossings = getValue("LimitCrossings").pBOOL;
   mpCrossingsLimit = getValue("NumCrossingsLimit").pUINT;
   mpFlagLimitTime = getValue("LimitTime").pBOOL;
-  mpTimeLimit = getValue("TimeLimit").pDOUBLE;
-  mpOutputStartTime = getValue("OutputStartTime").pDOUBLE;
+  //mpTimeLimit = getValue("TimeLimit").pDOUBLE;
+  //mpOutputStartTime = getValue("OutputStartTime").pDOUBLE;
   mpTriggerExpression =
     assertParameter("TriggerExpression", CCopasiParameter::EXPRESSION, std::string(""))->getValue().pEXPRESSION;
 
@@ -99,10 +94,7 @@ bool CCrossSectionProblem::getFlagLimitTime() const
 { return *mpFlagLimitTime; }
 
 const C_FLOAT64 & CCrossSectionProblem::getTimeLimit() const
-{ return *mpTimeLimit; }
-
-const C_FLOAT64 & CCrossSectionProblem::getOutputStartTime() const
-{ return *mpOutputStartTime; }
+{ return *mpDuration; }
 
 void CCrossSectionProblem::setFlagLimitCrossings(bool flagLimitCrossing)
 { *mpFlagLimitCrossings = flagLimitCrossing; }
@@ -114,8 +106,6 @@ void CCrossSectionProblem::setFlagLimitTime(bool flagLimitTime)
 { *mpFlagLimitTime = flagLimitTime; }
 
 void CCrossSectionProblem::setTimeLimit(const C_FLOAT64 &timeLimit)
-{ *mpTimeLimit = timeLimit; }
+{ *mpDuration = timeLimit; }
 
-void CCrossSectionProblem::setOutputStartTime(const C_FLOAT64 &outputStartTime)
-{ *mpOutputStartTime = outputStartTime; }
 
