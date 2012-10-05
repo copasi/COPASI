@@ -184,18 +184,9 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
   //  StepNumber = 1.0;
 
   //the output starts only after "outputStartTime" has passed
-<<<<<<< HEAD
-  if (useInitialValues)
-    mOutputStartTime = mpCrossSectionProblem->getOutputStartTime();
-  else
-    mOutputStartTime = *mpCurrentTime + mpCrossSectionProblem->getOutputStartTime();
-
-  C_FLOAT64 NextTimeToReport;
-=======
   mOutputStartTime = *mpCurrentTime + mpCrossSectionProblem->getOutputStartTime();
   
   //C_FLOAT64 NextTimeToReport;
->>>>>>> Some more steps towards cross section implementation
 
   const C_FLOAT64 EndTime = *mpCurrentTime + MaxDuration;
   const C_FLOAT64 StartTime = *mpCurrentTime;
@@ -273,12 +264,8 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
       mpCrossSectionProblem->getModel()->setState(*mpCurrentState);
       mpCrossSectionProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
 
-<<<<<<< HEAD
-      if (mpCallBack != NULL && StepNumber > 1.0) mpCallBack->finishItem(hProcess);
-=======
 
       if (mpCallBack != NULL) mpCallBack->finishItem(hProcess);
->>>>>>> Some more steps towards cross section implementation
 
       output(COutputInterface::AFTER);
 
@@ -290,12 +277,8 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
       mpCrossSectionProblem->getModel()->setState(*mpCurrentState);
       mpCrossSectionProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
 
-<<<<<<< HEAD
-      if (mpCallBack != NULL && StepNumber > 1.0) mpCallBack->finishItem(hProcess);
-=======
 
       if (mpCallBack != NULL) mpCallBack->finishItem(hProcess);
->>>>>>> Some more steps towards cross section implementation
 
       output(COutputInterface::AFTER);
 
