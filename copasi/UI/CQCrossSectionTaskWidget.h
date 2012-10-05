@@ -59,8 +59,19 @@ private slots:
   void slotChooseVariable();
   void slotValueRate();
   void slotUpdateCrossings(bool);
-  void slotUpdateLT(bool);
+  void slotUpdateConvergence(bool);
+
   void slotOutputDelay(bool);
+  void slotOutputCrossings(bool);
+  void slotOutputConvergence(bool);
+
+  void slotUpdateTime();
+  void slotUpdateConvergenceTolerance();
+  void slotUpdateCrossingsLimit();
+
+  void slotOutputConvergenceTolerance();
+  void slotOutputCrossingsLimit();
+  void slotOutputDelayTime();
 };
 
 #endif

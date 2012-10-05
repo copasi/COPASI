@@ -61,12 +61,14 @@ void CQCrossSectionTaskWidget::init()
 
   mpHeaderWidget->setTaskName("Cross Section");
 
-  verticalLayout->insertWidget(0, mpHeaderWidget); // header
+  //verticalLayout->insertWidget(0, mpHeaderWidget); // header
+  formLayout->insertRow(0, mpHeaderWidget);
 
   mpMethodWidget->showMethodParameters(true);
-  verticalLayout->addWidget(mpMethodWidget);
-
-  verticalLayout->addWidget(mpBtnWidget);      // 'footer'
+  //verticalLayout->addWidget(mpMethodWidget);
+  formLayout->addRow(mpMethodWidget);
+  //verticalLayout->addWidget(mpBtnWidget);      // 'footer'
+  formLayout->addWidget(mpBtnWidget);
 
   mpValidatorCrossing = new CQValidatorDouble(mpLineEditValue);
   mpLineEditValue->setValidator(mpValidatorCrossing);
@@ -283,7 +285,7 @@ void CQCrossSectionTaskWidget::slotUpdateCrossings(bool b)
 //  updateValues();
 }
 
-void CQCrossSectionTaskWidget::slotUpdateLT(bool b)
+void CQCrossSectionTaskWidget::slotUpdateConvergence(bool b)
 {
   mpTxtTime->setEnabled(b);
 
@@ -328,6 +330,41 @@ void CQCrossSectionTaskWidget::slotOutputDelay(bool b)
     }
 
 //  updateValues();
+}
+
+void CQCrossSectionTaskWidget::slotOutputCrossings(bool b)
+{
+  // TODO: Implement
+}
+void CQCrossSectionTaskWidget::slotOutputConvergence(bool b)
+{
+  // TODO: Implement
+}
+
+void CQCrossSectionTaskWidget::slotUpdateTime()
+{
+  // TODO: Implement
+}
+void CQCrossSectionTaskWidget::slotUpdateConvergenceTolerance()
+{
+  // TODO: Implement
+}
+void CQCrossSectionTaskWidget::slotUpdateCrossingsLimit()
+{
+  // TODO: Implement
+}
+
+void CQCrossSectionTaskWidget::slotOutputConvergenceTolerance()
+{
+  // TODO: Implement
+}
+void CQCrossSectionTaskWidget::slotOutputCrossingsLimit()
+{
+  // TODO: Implement
+}
+void CQCrossSectionTaskWidget::slotOutputDelayTime()
+{
+  // TODO: Implement
 }
 
 void CQCrossSectionTaskWidget::updateValues()
