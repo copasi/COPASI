@@ -26,6 +26,7 @@ CMathContainer::CMathContainer():
   mInitialIntensiveRates(),
   mInitialParticleFluxes(),
   mInitialFluxes(),
+  mInitialTotalMasses(),
   mInitialEventTriggers(),
   mExtensiveValues(),
   mIntensiveValues(),
@@ -33,6 +34,7 @@ CMathContainer::CMathContainer():
   mIntensiveRates(),
   mParticleFluxes(),
   mFluxes(),
+  mTotalMasses(),
   mEventTriggers(),
   mEventDelays(),
   mEventPriorities(),
@@ -40,7 +42,6 @@ CMathContainer::CMathContainer():
   mEventRoots(),
   mEventRootStates(),
   mPropensities(),
-  mTotalMasses(),
   mDependentMasses(),
   mDiscontinuous(),
   mInitialDependencies(),
@@ -64,6 +65,7 @@ CMathContainer::CMathContainer(CModel & model):
   mInitialIntensiveRates(),
   mInitialParticleFluxes(),
   mInitialFluxes(),
+  mInitialTotalMasses(),
   mInitialEventTriggers(),
   mExtensiveValues(),
   mIntensiveValues(),
@@ -71,6 +73,7 @@ CMathContainer::CMathContainer(CModel & model):
   mIntensiveRates(),
   mParticleFluxes(),
   mFluxes(),
+  mTotalMasses(),
   mEventTriggers(),
   mEventDelays(),
   mEventPriorities(),
@@ -78,7 +81,6 @@ CMathContainer::CMathContainer(CModel & model):
   mEventRoots(),
   mEventRootStates(),
   mPropensities(),
-  mTotalMasses(),
   mDependentMasses(),
   mDiscontinuous(),
   mInitialDependencies(),
@@ -605,7 +607,7 @@ void CMathContainer::allocate()
 
   mValues.resize(4 * (nExtensiveValues + nIntensiveValues) +
                  5 * nReactions +
-                 2 * nMoieties +
+                 3 * nMoieties +
                  AllocationRequirement.nDiscontinuous +
                  4 * nEvents + nEventAssignments + 2 * nEventRoots);
   mValues = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
@@ -624,6 +626,8 @@ void CMathContainer::allocate()
   pArray += nReactions;
   mInitialFluxes = CVectorCore< C_FLOAT64 >(nReactions, pArray);
   pArray += nReactions;
+  mInitialTotalMasses = CVectorCore< C_FLOAT64 >(nMoieties, pArray);
+  pArray += nMoieties;
   mInitialEventTriggers = CVectorCore< C_FLOAT64 >(nEvents, pArray);
   pArray += nEvents;
 
@@ -639,6 +643,8 @@ void CMathContainer::allocate()
   pArray += nReactions;
   mFluxes = CVectorCore< C_FLOAT64 >(nReactions, pArray);
   pArray += nReactions;
+  mTotalMasses = CVectorCore< C_FLOAT64 >(nMoieties, pArray);
+  pArray += nMoieties;
   mEventTriggers = CVectorCore< C_FLOAT64 >(nEvents, pArray);
   pArray += nEvents;
 
@@ -654,8 +660,6 @@ void CMathContainer::allocate()
   pArray += nEventRoots;
   mPropensities = CVectorCore< C_FLOAT64 >(nReactions, pArray);
   pArray += nReactions;
-  mTotalMasses = CVectorCore< C_FLOAT64 >(nMoieties, pArray);
-  pArray += nMoieties;
   mDependentMasses = CVectorCore< C_FLOAT64 >(nMoieties, pArray);
   pArray += nMoieties;
   mDiscontinuous = CVectorCore< C_FLOAT64 >(AllocationRequirement.nDiscontinuous, pArray);
@@ -923,6 +927,7 @@ void CMathContainer::initializePointers(CMath::sPointers & p)
   p.pInitialIntensiveRates = mInitialIntensiveRates.array();
   p.pInitialParticleFluxes = mInitialParticleFluxes.array();
   p.pInitialFluxes = mInitialFluxes.array();
+  p.pInitialTotalMasses = mInitialTotalMasses.array();
   p.pInitialEventTriggers = mInitialEventTriggers.array();
 
   p.pExtensiveValues = mInitialEventTriggers.array();
@@ -931,6 +936,7 @@ void CMathContainer::initializePointers(CMath::sPointers & p)
   p.pIntensiveRates = mIntensiveRates.array();
   p.pParticleFluxes = mParticleFluxes.array();
   p.pFluxes = mFluxes.array();
+  p.pTotalMasses = mTotalMasses.array();
   p.pEventTriggers = mEventTriggers.array();
 
   p.pEventDelays = mEventDelays.array();
@@ -939,7 +945,6 @@ void CMathContainer::initializePointers(CMath::sPointers & p)
   p.pEventRoots = mEventRoots.array();
   p.pEventRootStates = mEventRootStates.array();
   p.pPropensities = mPropensities.array();
-  p.pTotalMasses = mTotalMasses.array();
   p.pDependentMasses = mDependentMasses.array();
   p.pDiscontinuous = mDiscontinuous.array();
 
@@ -952,6 +957,7 @@ void CMathContainer::initializePointers(CMath::sPointers & p)
   p.pInitialIntensiveRatesObject = pObjects + (p.pInitialIntensiveRates - pValues);
   p.pInitialParticleFluxesObject = pObjects + (p.pInitialParticleFluxes - pValues);
   p.pInitialFluxesObject = pObjects + (p.pInitialFluxes - pValues);
+  p.pInitialTotalMassesObject = pObjects + (p.pInitialTotalMasses - pValues);
   p.pInitialEventTriggersObject = pObjects + (p.pInitialEventTriggers - pValues);
 
   p.pExtensiveValuesObject = pObjects + (p.pExtensiveValues - pValues);
@@ -960,6 +966,7 @@ void CMathContainer::initializePointers(CMath::sPointers & p)
   p.pIntensiveRatesObject = pObjects + (p.pIntensiveRates - pValues);
   p.pParticleFluxesObject = pObjects + (p.pParticleFluxes - pValues);
   p.pFluxesObject = pObjects + (p.pFluxes - pValues);
+  p.pTotalMassesObject = pObjects + (p.pTotalMasses - pValues);
   p.pEventTriggersObject = pObjects + (p.pEventTriggers - pValues);
 
   p.pEventDelaysObject = pObjects + (p.pEventDelays - pValues);
@@ -968,7 +975,6 @@ void CMathContainer::initializePointers(CMath::sPointers & p)
   p.pEventRootsObject = pObjects + (p.pEventRoots - pValues);
   p.pEventRootStatesObject = pObjects + (p.pEventRootStates - pValues);
   p.pPropensitiesObject = pObjects + (p.pPropensities - pValues);
-  p.pTotalMassesObject = pObjects + (p.pTotalMasses - pValues);
   p.pDependentMassesObject = pObjects + (p.pDependentMasses - pValues);
   p.pDiscontinuousObject = pObjects + (p.pDiscontinuous - pValues);
 }
@@ -1213,6 +1219,11 @@ void CMathContainer::initializeMathObjects(const CCopasiVector< CMoiety > & moie
 
   for (; it != end; ++it)
     {
+      // Initial Total Mass
+      CMathObject::initialize(p.pInitialTotalMassesObject, p.pInitialTotalMasses,
+                              CMath::TotalMass, CMath::Moiety, CMath::SimulationTypeUndefined, false, true,
+                              (*it)->getTotalNumberReference());
+
       // Total Mass
       map((*it)->getTotalNumberReference(), p.pTotalMassesObject);
       CMathObject::initialize(p.pTotalMassesObject, p.pTotalMasses,

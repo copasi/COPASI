@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathContainer.h,v $
-//   $Revision: 1.8 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/30 17:15:33 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -37,7 +29,7 @@ private:
 
   struct sDiscontinuous
   {
-public:
+  public:
     CMathEventN * pEvent;
     CMathObject * pDiscontinuous;
     CMathObject * pEventDelay;
@@ -311,6 +303,7 @@ private:
   CVectorCore< C_FLOAT64 > mInitialIntensiveRates;
   CVectorCore< C_FLOAT64 > mInitialParticleFluxes;
   CVectorCore< C_FLOAT64 > mInitialFluxes;
+  CVectorCore< C_FLOAT64 > mInitialTotalMasses;
   CVectorCore< C_FLOAT64 > mInitialEventTriggers;
 
   CVectorCore< C_FLOAT64 > mExtensiveValues;
@@ -319,6 +312,7 @@ private:
   CVectorCore< C_FLOAT64 > mIntensiveRates;
   CVectorCore< C_FLOAT64 > mParticleFluxes;
   CVectorCore< C_FLOAT64 > mFluxes;
+  CVectorCore< C_FLOAT64 > mTotalMasses;
   CVectorCore< C_FLOAT64 > mEventTriggers;
 
   CVectorCore< C_FLOAT64 > mEventDelays;
@@ -327,7 +321,6 @@ private:
   CVectorCore< C_FLOAT64 > mEventRoots;
   CVectorCore< C_FLOAT64 > mEventRootStates;
   CVectorCore< C_FLOAT64 > mPropensities;
-  CVectorCore< C_FLOAT64 > mTotalMasses;
   CVectorCore< C_FLOAT64 > mDependentMasses;
   CVectorCore< C_FLOAT64 > mDiscontinuous;
 
