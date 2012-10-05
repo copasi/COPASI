@@ -226,7 +226,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
     mOutputStartTime = mpTrajectoryProblem->getOutputStartTime();
   else
     mOutputStartTime = *mpCurrentTime + mpTrajectoryProblem->getOutputStartTime();
-  
+
   C_FLOAT64 NextTimeToReport;
 
   const C_FLOAT64 EndTime = *mpCurrentTime + Duration;

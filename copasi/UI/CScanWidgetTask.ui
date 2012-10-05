@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Begin CVS Header </comment>
-<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetTask.ui,v $ </comment>
-<comment>   $Revision: 1.15 $ </comment>
-<comment>   $Name:  $ </comment>
-<comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/12/22 19:51:58 $ </comment>
-<comment> End CVS Header </comment>
-
-<comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc. and EML Research, gGmbH. </comment>
 <comment> All rights reserved. </comment>
 
  <comment> All rights reserved. </comment>
@@ -188,12 +189,12 @@ p, li { white-space: pre-wrap; }
       <item>
        <layout class="QHBoxLayout">
         <item>
-         <widget class="QCheckBox" name="checkInitialConditions">
+         <widget class="QCheckBox" name="mpCheckContinue">
           <property name="toolTip">
-           <string>If this is activated every calculation will start with the initial conditions specified in the model. &lt;p&gt;If it is not activated only the first calculation will use the initial value specified in the model. All subsequent calculations will start with the result of the previous calculation.</string>
+           <string>If this is marked every calculation will continue from the previous result except the first with starts with the initial values. &lt;p&gt;If it is not marked calculation will always use the initial values specified in the model.</string>
           </property>
           <property name="text">
-           <string>always use initial conditions</string>
+           <string>Continue from Current State</string>
           </property>
           <property name="checked">
            <bool>true</bool>

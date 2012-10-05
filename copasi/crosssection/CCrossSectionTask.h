@@ -3,7 +3,6 @@
 // of Manchester.
 // All rights reserved.
 
-
 /**
  * CCrossSectionTask class.
  *
@@ -101,7 +100,7 @@ public:
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CCrossSectionTask(const CCrossSectionTask & src,
-                  const CCopasiContainer * pParent = NULL);
+                    const CCopasiContainer * pParent = NULL);
 
   /**
    * Destructor
@@ -160,7 +159,6 @@ public:
    * @return CCopasiMethod *
    */
   virtual CCopasiMethod * createMethod(const int & type) const;
-
 
   /**
    * Retrieves a pointer to current state of the integration.

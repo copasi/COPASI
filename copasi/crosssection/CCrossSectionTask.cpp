@@ -3,15 +3,6 @@
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
 /**
  * CCrossSectionTask class.
  *
@@ -33,7 +24,6 @@
 #include "utilities/CProcessReport.h"
 #include "utilities/CCopasiException.h"
 #include  "CopasiDataModel/CCopasiDataModel.h"
-
 
 bool cs_fle(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 {return (d1 <= d2);}
@@ -88,7 +78,7 @@ CCrossSectionTask::CCrossSectionTask(const CCopasiContainer * pParent):
 }
 
 CCrossSectionTask::CCrossSectionTask(const CCrossSectionTask & src,
-                                 const CCopasiContainer * pParent):
+                                     const CCopasiContainer * pParent):
   CCopasiTask(src, pParent),
   mTimeSeriesRequested(src.mTimeSeriesRequested),
   mTimeSeries(),
@@ -129,10 +119,9 @@ void CCrossSectionTask::cleanup()
   pdelete(mpCurrentState);
 }
 
-
 bool CCrossSectionTask::initialize(const OutputFlag & of,
-                                 COutputHandler * pOutputHandler,
-                                 std::ostream * pOstream)
+                                   COutputHandler * pOutputHandler,
+                                   std::ostream * pOstream)
 {
   assert(mpProblem && mpMethod);
 
@@ -199,7 +188,7 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
     mOutputStartTime = mpCrossSectionProblem->getOutputStartTime();
   else
     mOutputStartTime = *mpCurrentTime + mpCrossSectionProblem->getOutputStartTime();
-  
+
   C_FLOAT64 NextTimeToReport;
 
   const C_FLOAT64 EndTime = *mpCurrentTime + Duration;
@@ -248,7 +237,6 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
                                      &hundred);
     }
 
-
   try
     {
       do
@@ -279,7 +267,6 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
       mpCrossSectionProblem->getModel()->setState(*mpCurrentState);
       mpCrossSectionProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
 
-
       if (mpCallBack != NULL && StepNumber > 1.0) mpCallBack->finishItem(hProcess);
 
       output(COutputInterface::AFTER);
@@ -291,7 +278,6 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
     {
       mpCrossSectionProblem->getModel()->setState(*mpCurrentState);
       mpCrossSectionProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
-
 
       if (mpCallBack != NULL && StepNumber > 1.0) mpCallBack->finishItem(hProcess);
 

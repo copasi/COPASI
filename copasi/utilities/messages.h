@@ -454,6 +454,9 @@ const MESSAGES Messages[] =
   {MCEFMAnalysis + 3, "CEFMAnalysis (3): Non integer stoichiometry found for reaction '%s'."},
 
   {MCLayout + 1, "CLayout (1): Could not open image file '%s'."},
+
+  {MCScan + 1, "CScan (1): The scan item '%s' set the initial value of a state variable and is ignored when Continue from Current State is checked."},
+
   // This must be the last element of the message list! Do not delete!
   {0, NULL}
 };

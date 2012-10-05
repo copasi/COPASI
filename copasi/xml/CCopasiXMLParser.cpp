@@ -8629,10 +8629,12 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
               break;
 
 #ifdef COPASI_NONLIN_DYN
+
             case CCopasiTask::crosssection:
               mCommon.pCurrentTask = new CCrossSectionTask(mCommon.pTaskList);
               break;
 #endif
+
             default:
               mParser.pushElementHandler(&mParser.mUnknownElement);
               mParser.onStartElement(pszName, papszAttrs);

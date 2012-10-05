@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/crosssection/CCrossSectionProblem.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/05/26 18:51:05 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,10 +6,10 @@
 #include "CCrossSectionProblem.h"
 
 CCrossSectionProblem::CCrossSectionProblem(const CCopasiContainer * pParent):
-    CTrajectoryProblem(pParent),
-    mpFlagLimitCrossings(NULL),
-    mpCrossingsLimit(NULL),
-    mpFlagLimitTime(NULL)
+  CTrajectoryProblem(pParent),
+  mpFlagLimitCrossings(NULL),
+  mpCrossingsLimit(NULL),
+  mpFlagLimitTime(NULL)
 {
   addParameter("LimitCrossings", CCopasiParameter::BOOL, false);
   mpFlagLimitCrossings = getValue("LimitCrossings").pBOOL;
@@ -43,10 +35,10 @@ CCrossSectionProblem::CCrossSectionProblem(const CCopasiContainer * pParent):
 
 CCrossSectionProblem::CCrossSectionProblem(const CCrossSectionProblem & src,
     const CCopasiContainer * pParent):
-    CTrajectoryProblem(src, pParent),
-    mpFlagLimitCrossings(NULL),
-    mpCrossingsLimit(NULL),
-    mpFlagLimitTime(NULL)
+  CTrajectoryProblem(src, pParent),
+  mpFlagLimitCrossings(NULL),
+  mpCrossingsLimit(NULL),
+  mpFlagLimitTime(NULL)
 {
   mpFlagLimitCrossings = getValue("LimitCrossings").pBOOL;
   mpCrossingsLimit = getValue("NumCrossingsLimit").pUINT;
@@ -80,32 +72,29 @@ std::ostream &operator<<(std::ostream &os, const CCrossSectionProblem & o)
   return os;
 }
 
-
 void CCrossSectionProblem::print(std::ostream * ostream) const
 {*ostream << *this;}
 
 bool CCrossSectionProblem::getFlagLimitCrossings() const
-{ return *mpFlagLimitCrossings; }
+{return *mpFlagLimitCrossings;}
 
 const unsigned C_INT32 & CCrossSectionProblem::getCrossingsLimit() const
-{ return *mpCrossingsLimit; }
+{return *mpCrossingsLimit;}
 
 bool CCrossSectionProblem::getFlagLimitTime() const
-{ return *mpFlagLimitTime; }
+{return *mpFlagLimitTime;}
 
 const C_FLOAT64 & CCrossSectionProblem::getTimeLimit() const
-{ return *mpDuration; }
+{return *mpDuration;}
 
 void CCrossSectionProblem::setFlagLimitCrossings(bool flagLimitCrossing)
-{ *mpFlagLimitCrossings = flagLimitCrossing; }
+{*mpFlagLimitCrossings = flagLimitCrossing;}
 
 void CCrossSectionProblem::setCrossingsLimit(const unsigned C_INT32 &crossingLimit)
-{ *mpCrossingsLimit = crossingLimit; }
+{*mpCrossingsLimit = crossingLimit;}
 
 void CCrossSectionProblem::setFlagLimitTime(bool flagLimitTime)
-{ *mpFlagLimitTime = flagLimitTime; }
+{*mpFlagLimitTime = flagLimitTime;}
 
 void CCrossSectionProblem::setTimeLimit(const C_FLOAT64 &timeLimit)
-{ *mpDuration = timeLimit; }
-
-
+{*mpDuration = timeLimit;}

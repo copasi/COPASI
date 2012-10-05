@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-//   $Revision: 1.47 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/12/22 19:52:00 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -36,7 +28,7 @@
  *  @param "CModel *" pModel
  */
 CScanProblem::CScanProblem(const CCopasiContainer * pParent):
-    CCopasiProblem(CCopasiTask::scan, pParent)
+  CCopasiProblem(CCopasiTask::scan, pParent)
 {
   addParameter("Subtask", CCopasiParameter::UINT, (unsigned C_INT32) CCopasiTask::timeCourse);
 
@@ -55,7 +47,7 @@ CScanProblem::CScanProblem(const CCopasiContainer * pParent):
  */
 CScanProblem::CScanProblem(const CScanProblem & src,
                            const CCopasiContainer * pParent):
-    CCopasiProblem(src, pParent)
+  CCopasiProblem(src, pParent)
 {CONSTRUCTOR_TRACE;}
 
 /**
@@ -86,12 +78,12 @@ const bool & CScanProblem::getOutputInSubtask() const
 
 //************************************
 
-void CScanProblem::setAdjustInitialConditions(bool aic)
+void CScanProblem::setContinueFromCurrentState(bool aic)
 {
   setValue("Adjust initial conditions", aic);
 }
 
-const bool & CScanProblem::getAdjustInitialConditions() const
+bool CScanProblem::getContinueFromCurrentState() const
 {return * getValue("Adjust initial conditions").pBOOL;}
 
 //************************************
