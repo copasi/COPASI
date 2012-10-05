@@ -34,7 +34,7 @@
 class CTrajectoryProblem : public CCopasiProblem
 {
   // Attributes
-private:
+protected:
   /**
    * Pointer to parameter value for duration.
    */
