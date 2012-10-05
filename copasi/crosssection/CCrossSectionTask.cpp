@@ -25,17 +25,6 @@
 #include "utilities/CCopasiException.h"
 #include  "CopasiDataModel/CCopasiDataModel.h"
 
-bool cs_fle(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
-{return (d1 <= d2);}
-
-bool cs_fl(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
-{return (d1 < d2);}
-
-bool cs_ble(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
-{return (d1 >= d2);}
-
-bool cs_bl(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
-{return (d1 > d2);}
 
 const unsigned int CCrossSectionTask::ValidMethods[] =
 {
@@ -61,9 +50,7 @@ CCrossSectionTask::CCrossSectionTask(const CCopasiContainer * pParent):
   mUpdateMoieties(false),
   mpCurrentState(NULL),
   mpCurrentTime(NULL),
-  mOutputStartTime(0.0),
-  mpLessOrEqual(&cs_fle),
-  mpLess(&cs_fl)
+  mOutputStartTime(0.0)
 {
   mpProblem = new CCrossSectionProblem(this);
   mpMethod = createMethod(CCopasiMethod::deterministic);
@@ -87,9 +74,7 @@ CCrossSectionTask::CCrossSectionTask(const CCrossSectionTask & src,
   mUpdateMoieties(false),
   mpCurrentState(NULL),
   mpCurrentTime(NULL),
-  mOutputStartTime(0.0),
-  mpLessOrEqual(src.mpLessOrEqual),
-  mpLess(src.mpLess)
+  mOutputStartTime(0.0)
 {
   mpProblem =
     new CCrossSectionProblem(*static_cast< CCrossSectionProblem * >(src.mpProblem), this);
@@ -192,22 +177,8 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
   const C_FLOAT64 StartTime = *mpCurrentTime;
   C_FLOAT64 CompareEndTime;
 
-  if (MaxDuration < 0.0)
-    {
-      mpLessOrEqual = &cs_ble;
-      mpLess = &cs_bl;
-
-      // It suffices to reach the end time within machine precision
-      CompareEndTime = EndTime + 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
-    }
-  else
-    {
-      mpLessOrEqual = &cs_fle;
-      mpLess = &cs_fl;
-
-      // It suffices to reach the end time within machine precision
-      CompareEndTime = EndTime - 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
-    }
+  // It suffices to reach the end time within machine precision
+  CompareEndTime = EndTime - 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
 
   //unsigned C_INT32 StepCounter = 1;
 
@@ -256,7 +227,7 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
           //    output(COutputInterface::DURING);
           //  }
         }
-      while ((*mpLess)(*mpCurrentTime, CompareEndTime) && flagProceed);
+      while ((*mpCurrentTime < CompareEndTime) && flagProceed);
     }
 
   catch (int)
@@ -321,7 +292,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
 
       if (StateChanged)
         {
-          if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime) )
+          if (mOutputStartTime <= *mpCurrentTime )
             {
               output(COutputInterface::DURING);
             }
@@ -340,7 +311,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
             pModel->setState(*mpCurrentState);
             pModel->updateSimulatedValues(mUpdateMoieties);
 
-            if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime) &&
+            if ((mOutputStartTime <= *mpCurrentTime) &&
                 *mpCurrentTime == pModel->getProcessQueueExecutionTime() )
               {
                 output(COutputInterface::DURING);
@@ -352,7 +323,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
             if (fabs(*mpCurrentTime - endTime) < Tolerance)
               return true;
 
-            if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime) &&
+            if ((mOutputStartTime <= *mpCurrentTime) &&
                 StateChanged )
               {
                 output(COutputInterface::DURING);
@@ -366,7 +337,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
 
             pModel->processRoots(*mpCurrentTime, true, true, mpTrajectoryMethod->getRoots());
 
-            if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime) &&
+            if ((mOutputStartTime <= *mpCurrentTime) &&
                 *mpCurrentTime == pModel->getProcessQueueExecutionTime() )
               {
                 output(COutputInterface::DURING);
@@ -391,7 +362,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
                 return true;
               }
 
-            if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime)  &&
+            if ((mOutputStartTime <= *mpCurrentTime)  &&
                 (StateChanged ||
                  *mpCurrentTime == pModel->getProcessQueueExecutionTime()))
               {

@@ -77,16 +77,6 @@ private:
    */
   C_FLOAT64 mOutputStartTime;
 
-  /**
-   * A pointer to lessOrEqual comparison
-   */
-  bool (*mpLessOrEqual)(const C_FLOAT64 &, const C_FLOAT64 &);
-
-  /**
-   * A pointer to less comparison
-   */
-  bool (*mpLess)(const C_FLOAT64 &, const C_FLOAT64 &);
-
 public:
   /**
    * Default constructor
