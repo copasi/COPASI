@@ -264,6 +264,12 @@ bool CScanTask::initSubtask(const OutputFlag & /* of */,
                     ((*pDataModel->getTaskList())["Linear Noise Approximation"]);
         break;
 
+#ifdef COPASI_NONLIN_DYN
+        case CCopasiTask::crosssection:
+            mpSubtask = dynamic_cast<CCopasiTask*>
+                        ((*pDataModel->getTaskList())["Cross Section"]);
+            break;
+#endif            
       default:
         mpSubtask = NULL;
     }
