@@ -39,7 +39,7 @@
 
 #include "crosssection/CCrossSectionTask.h"
 #include "crosssection/CCrossSectionProblem.h"
-#include "crosssection/CCrossSectionMethod.h"
+//#include "crosssection/CCrossSectionMethod.h"
 
 /*
  *  Constructs a CQCrossSectionWidget which is a child of 'parent', with the
@@ -166,8 +166,13 @@ bool CQCrossSectionTaskWidget::loadTask()
   pdelete(mpCrossSectionProblem);
   mpCrossSectionProblem = new CCrossSectionProblem(*pProblem);
 
-  CCrossSectionMethod* pMethod =
-    dynamic_cast<CCrossSectionMethod *>(pTask->getMethod());
+  //CCrossSectionMethod* pMethod =
+  //  dynamic_cast<CCrossSectionMethod *>(pTask->getMethod());
+  //assert(pMethod);
+
+  //for now, we use a trajectory method
+  CTrajectoryMethod* pMethod =
+  dynamic_cast<CTrajectoryMethod *>(pTask->getMethod());
   assert(pMethod);
 
   // load the saved values
