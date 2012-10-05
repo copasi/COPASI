@@ -82,7 +82,12 @@ void CScanWidgetTask::load(const CScanProblem * pg)
       case CCopasiTask::lna:
         n = 7;
         break;
-      default:
+#ifdef COPASI_NONLIN_DYN
+        case CCopasiTask::crosssection:
+        n = 8;
+        break;
+#endif
+        default:
         n = 0;
         break;
     }
@@ -130,7 +135,12 @@ bool CScanWidgetTask::save(CScanProblem * pg) const
       case 7:
         Type = CCopasiTask::lna;
         break;
-      default :
+#ifdef COPASI_NONLIN_DYN
+      case 8:
+        Type = CCopasiTask::crosssection;
+        break;
+#endif
+        default :
         Type = CCopasiTask::steadyState;
         break;
     }

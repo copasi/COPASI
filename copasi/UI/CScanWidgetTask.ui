@@ -160,6 +160,11 @@ p, li { white-space: pre-wrap; }
             <string>Linear Noise Approximation</string>
            </property>
           </item>
+          <item>
+           <property name="text">
+            <string>Cross Section</string>
+           </property>
+          </item>
          </widget>
         </item>
         <item>
