@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.15.2.2 $
-//   $Name: Build-33 $
-//   $Author: shoops $
-//   $Date: 2011/02/17 19:14:45 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -39,14 +31,14 @@
 
 #include "crosssection/CCrossSectionTask.h"
 #include "crosssection/CCrossSectionProblem.h"
-#include "crosssection/CCrossSectionMethod.h"
+//#include "crosssection/CCrossSectionMethod.h"
 
 /*
  *  Constructs a CQCrossSectionWidget which is a child of 'parent', with the
  *  name 'name'.'
  */
 CQCrossSectionTaskWidget::CQCrossSectionTaskWidget(QWidget* parent, const char* name)
-    : TaskWidget(parent, name)
+  : TaskWidget(parent, name)
 {
   setupUi(this);
   mpButtonVariable->setIcon(CQIconResource::icon(CQIconResource::copasi));
@@ -79,30 +71,39 @@ void CQCrossSectionTaskWidget::init()
   mpValidatorCrossing = new CQValidatorDouble(mpLineEditValue);
   mpLineEditValue->setValidator(mpValidatorCrossing);
 
-  mpValidatorLC = new CQValidatorInt(mpLineEditLC);
+  mpValidatorLC = new CQValidatorInt(mpTxtCrossings);
   mpValidatorLC->setRange(0, std::numeric_limits< int >::max());
-  mpLineEditLC->setValidator(mpValidatorLC);
+  mpTxtCrossings->setValidator(mpValidatorLC);
 
-  mpValidatorLT = new CQValidatorDouble(mpLineEditLT);
+  mpValidatorLT = new CQValidatorDouble(mpTxtTime);
   mpValidatorLT->setRange(0, std::numeric_limits< double >::max());
-  mpLineEditLT->setValidator(mpValidatorLT);
+  mpTxtTime->setValidator(mpValidatorLT);
 
-  mpValidator = new CQValidatorDouble(mpLineEdit);
-  mpLineEdit->setValidator(mpValidator);
+  mpValidator = new CQValidatorDouble(mpTxtOutTime);
+  mpTxtOutTime->setValidator(mpValidator);
 }
-
 
 void CQCrossSectionTaskWidget::destroy()
 {
   pdelete(mpCrossSectionProblem);
 }
 
+void CQCrossSectionTaskWidget::validateInput()
+{
+}
 
 bool CQCrossSectionTaskWidget::runTask()
 {
-  return true;
-}
+  validateInput();
 
+  if (!commonBeforeRunTask()) return false;
+
+  bool success = true;
+
+  if (!commonRunTask()) success = false;
+
+  return success;
+}
 
 /*
  * Function to save actual changes of the Task
@@ -125,15 +126,14 @@ bool CQCrossSectionTaskWidget::saveTask()
   assert(pProblem);
 
   // save the actual changes
+  if (mpCheckSimConvergence->isChecked())
+    pProblem->setCrossingsLimit(mpTxtCrossings->text().toULong());
 
-  if (mpCheckLC->isChecked())
-    pProblem->setCrossingsLimit(mpLineEditLC->text().toULong());
+  //if (mpCheckLT->isChecked())
+  pProblem->setTimeLimit(mpTxtTime->text().toDouble());
 
-  if (mpCheckLT->isChecked())
-    pProblem->setTimeLimit(mpLineEditLT->text().toDouble());
-
-  if (mpCheck->isChecked())
-    pProblem->setOutputStartTime(mpLineEdit->text().toDouble());
+  if (mpCheckOutputDelay->isChecked())
+    pProblem->setOutputStartTime(mpTxtOutTime->text().toDouble());
 
   mpValidatorCrossing->saved();
   mpValidatorLC->saved();
@@ -166,39 +166,44 @@ bool CQCrossSectionTaskWidget::loadTask()
   pdelete(mpCrossSectionProblem);
   mpCrossSectionProblem = new CCrossSectionProblem(*pProblem);
 
-  CCrossSectionMethod* pMethod =
-    dynamic_cast<CCrossSectionMethod *>(pTask->getMethod());
+  //CCrossSectionMethod* pMethod =
+  //  dynamic_cast<CCrossSectionMethod *>(pTask->getMethod());
+  //assert(pMethod);
+
+  //for now, we use a trajectory method
+  CTrajectoryMethod* pMethod =
+    dynamic_cast<CTrajectoryMethod *>(pTask->getMethod());
   assert(pMethod);
 
   // load the saved values
 
-  mpCheckLC->setChecked(pProblem->getFlagLimitCrossings());
-  mpLineEditLC->setEnabled(pProblem->getFlagLimitCrossings());
+  mpCheckSimConvergence->setChecked(pProblem->getFlagLimitCrossings());
+  mpTxtCrossings->setEnabled(pProblem->getFlagLimitCrossings());
 
   if (pProblem->getFlagLimitCrossings())
-    mpLineEditLC->setText(QString::number(pProblem->getCrossingsLimit()));
+    mpTxtCrossings->setText(QString::number(pProblem->getCrossingsLimit()));
   else
-    mpLineEditLC->setText("");
+    mpTxtCrossings->setText("");
 
-  mpCheckLT->setChecked(pProblem->getFlagLimitTime());
-  mpLineEditLT->setEnabled(pProblem->getFlagLimitTime());
+  //mpCheckLT->setChecked(pProblem->getFlagLimitTime());
+  mpTxtTime->setEnabled(pProblem->getFlagLimitTime());
 
   if (pProblem->getFlagLimitTime())
-    mpLineEditLT->setText(QString::number(pProblem->getTimeLimit()));
+    mpTxtTime->setText(QString::number(pProblem->getTimeLimit()));
   else
-    mpLineEditLT->setText("");
+    mpTxtTime->setText("");
 
   if (pProblem->getOutputStartTime() > 0.0)
     {
-      mpCheck->setChecked(true);
-      mpLineEdit->setEnabled(true);
-      mpLineEdit->setText(QString::number(pProblem->getOutputStartTime()));
+      mpCheckOutputDelay->setChecked(true);
+      mpTxtOutTime->setEnabled(true);
+      mpTxtOutTime->setText(QString::number(pProblem->getOutputStartTime()));
     }
   else
     {
-      mpCheck->setChecked(false);
-      mpLineEdit->setEnabled(false);
-      mpLineEdit->setText("");
+      mpCheckOutputDelay->setChecked(false);
+      mpTxtOutTime->setEnabled(false);
+      mpTxtOutTime->setText("");
     }
 
   mpValidatorCrossing->saved();
@@ -218,8 +223,7 @@ void CQCrossSectionTaskWidget::slotChooseVariable()
 {
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
-                                            CQSimpleSelectionTree::InitialTime |
-                                            CQSimpleSelectionTree::Parameters);
+        CQSimpleSelectionTree::Variables);
 
   if (pObject)
     {
@@ -254,19 +258,19 @@ void CQCrossSectionTaskWidget::slotValueRate()
   */
 }
 
-void CQCrossSectionTaskWidget::slotUpdateLC(bool b)
+void CQCrossSectionTaskWidget::slotUpdateCrossings(bool b)
 {
-  mpLineEditLC->setEnabled(b);
+  mpTxtCrossings->setEnabled(b);
 
-  if (!b && !(mpCheckLT->isChecked()))
-    mpCheckLT->setChecked(true);
+  //if (!b && !(mpCheckLT->isChecked()))
+//    mpCheckLT->setChecked(true);
 
-  if (!mpLineEditLC->hasAcceptableInput())
+  if (!mpTxtCrossings->hasAcceptableInput())
     return;
 
   try
     {
-      mpCrossSectionProblem->setCrossingsLimit(mpLineEditLC->text().toULong());
+      mpCrossSectionProblem->setCrossingsLimit(mpTxtCrossings->text().toULong());
     }
 
   catch (...)
@@ -281,17 +285,17 @@ void CQCrossSectionTaskWidget::slotUpdateLC(bool b)
 
 void CQCrossSectionTaskWidget::slotUpdateLT(bool b)
 {
-  mpLineEditLT->setEnabled(b);
+  mpTxtTime->setEnabled(b);
 
-  if (!b && !(mpCheckLC->isChecked()))
-    mpCheckLC->setChecked(true);
+  if (!b && !(mpCheckSimConvergence->isChecked()))
+    mpCheckSimConvergence->setChecked(true);
 
-  if (!mpLineEditLT->hasAcceptableInput())
+  if (!mpTxtTime->hasAcceptableInput())
     return;
 
   try
     {
-      mpCrossSectionProblem->setTimeLimit(mpLineEditLT->text().toDouble());
+      mpCrossSectionProblem->setTimeLimit(mpTxtTime->text().toDouble());
     }
 
   catch (...)
@@ -304,16 +308,16 @@ void CQCrossSectionTaskWidget::slotUpdateLT(bool b)
 //  updateValues();
 }
 
-void CQCrossSectionTaskWidget::slotUpdateSupress(bool b)
+void CQCrossSectionTaskWidget::slotOutputDelay(bool b)
 {
-  mpLineEdit->setEnabled(b);
+  mpTxtOutTime->setEnabled(b);
 
-  if (!mpLineEdit->hasAcceptableInput())
+  if (!mpTxtOutTime->hasAcceptableInput())
     return;
 
   try
     {
-      mpCrossSectionProblem->setOutputStartTime(mpLineEdit->text().toDouble());
+      mpCrossSectionProblem->setOutputStartTime(mpTxtOutTime->text().toDouble());
     }
 
   catch (...)
@@ -328,13 +332,12 @@ void CQCrossSectionTaskWidget::slotUpdateSupress(bool b)
 
 void CQCrossSectionTaskWidget::updateValues()
 {
-  mpLineEditLC->setText(QString::number(mpCrossSectionProblem->getCrossingsLimit()));
+  mpTxtCrossings->setText(QString::number(mpCrossSectionProblem->getCrossingsLimit()));
   mpValidatorLC->revalidate();
 
-  mpLineEditLT->setText(QString::number(mpCrossSectionProblem->getTimeLimit()));
+  mpTxtTime->setText(QString::number(mpCrossSectionProblem->getTimeLimit()));
   mpValidatorLT->revalidate();
 
-  mpLineEdit->setText(QString::number(mpCrossSectionProblem->getOutputStartTime()));
+  mpTxtOutTime->setText(QString::number(mpCrossSectionProblem->getOutputStartTime()));
   mpValidator->revalidate();
 }
-

@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/crosssection/CCrossSectionProblem.h,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/05/26 18:51:05 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,9 +6,9 @@
 #ifndef CCROSSSECTIONPROBLEM_H
 #define CCROSSSECTIONPROBLEM_H
 
-#include "utilities/CCopasiProblem.h"
+#include "trajectory/CTrajectoryProblem.h"
 
-class CCrossSectionProblem : public CCopasiProblem
+class CCrossSectionProblem : public CTrajectoryProblem
 {
 public:
   /**
@@ -59,11 +51,6 @@ public:
   const C_FLOAT64 &getTimeLimit() const;
 
   /**
-   * Function to get mpOutputStartTime
-   */
-  const C_FLOAT64 &getOutputStartTime() const;
-
-  /**
    * Function to set mpFlagLimitCrossings
    */
   void setFlagLimitCrossings(bool flagLimitCrossing);
@@ -82,11 +69,6 @@ public:
    * Function to set mpTimeLimit
    */
   void setTimeLimit(const C_FLOAT64 &timeLimit);
-
-  /**
-   * Function to set mpOutputStartTime
-   */
-  void setOutputStartTime(const C_FLOAT64 &outputStartTime);
 
   /**
    * This is the output method for any result of a problem. The default implementation
@@ -138,27 +120,11 @@ private:
   bool * mpFlagLimitTime;
 
   /**
-   * this variable indicates how long the calculation should run
-   * if the corresponding flag is true.
-   *
-   * this member variable is mapped to a CCopasiParameter
-   */
-  C_FLOAT64 * mpTimeLimit;
-
-  /**
-   * this variable indicates at what time the output is started
-   *
-   * this member variable is mapped to a CCopasiParameter
-   */
-  C_FLOAT64 * mpOutputStartTime;
-
-  /**
    * this variable holds the trigger expression
    *
    * this member variable is mapped to a CCopasiParameter
    */
   std::string * mpTriggerExpression;
-
 };
 
 #endif // CCROSSSECTIONPROBLEM_H

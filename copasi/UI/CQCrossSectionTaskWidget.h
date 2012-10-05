@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.15 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/04/27 16:00:44 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -40,6 +32,7 @@ public:
   //virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
 
 protected:
+  void validateInput();
   virtual bool saveTask();
   virtual bool loadTask();
 //  virtual bool taskFinishedEvent();
@@ -65,9 +58,9 @@ private slots:
 
   void slotChooseVariable();
   void slotValueRate();
-  void slotUpdateLC(bool);
+  void slotUpdateCrossings(bool);
   void slotUpdateLT(bool);
-  void slotUpdateSupress(bool);
+  void slotOutputDelay(bool);
 };
 
 #endif

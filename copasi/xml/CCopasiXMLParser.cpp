@@ -51,6 +51,7 @@
 #include "lyap/CLyapTask.h"
 #include "sensitivities/CSensTask.h"
 #include "moieties/CMoietiesTask.h"
+#include "crosssection/CCrossSectionTask.h"
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotSpecification.h"
 #include "plot/CPlotItem.h"
@@ -8626,6 +8627,13 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
             case CCopasiTask::moieties:
               mCommon.pCurrentTask = new CMoietiesTask(Type, mCommon.pTaskList);
               break;
+
+#ifdef COPASI_NONLIN_DYN
+
+            case CCopasiTask::crosssection:
+              mCommon.pCurrentTask = new CCrossSectionTask(mCommon.pTaskList);
+              break;
+#endif
 
             default:
               mParser.pushElementHandler(&mParser.mUnknownElement);

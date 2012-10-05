@@ -83,7 +83,7 @@ private:
   /**
    * A pointer to the time at which the output starts.
    */
-  const C_FLOAT64 * mpOutputStartTime;
+  C_FLOAT64 mOutputStartTime;
 
   /**
    * A pointer to lessOrEqual comparison

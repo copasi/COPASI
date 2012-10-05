@@ -76,7 +76,7 @@ CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
   mUpdateMoieties(false),
   mpCurrentState(NULL),
   mpCurrentTime(NULL),
-  mpOutputStartTime(NULL),
+  mOutputStartTime(0.0),
   mpLessOrEqual(&fle),
   mpLess(&fl)
 {
@@ -102,7 +102,7 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
   mUpdateMoieties(false),
   mpCurrentState(NULL),
   mpCurrentTime(NULL),
-  mpOutputStartTime(NULL),
+  mOutputStartTime(0.0),
   mpLessOrEqual(src.mpLessOrEqual),
   mpLess(src.mpLess)
 {
@@ -182,7 +182,8 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
   mpCurrentState = new CState(mpTrajectoryProblem->getModel()->getState());
   mpCurrentTime = &mpCurrentState->getTime();
 
-  mpOutputStartTime = & mpTrajectoryProblem->getOutputStartTime();
+  //mpOutputStartTime = & mpTrajectoryProblem->getOutputStartTime();
+
   // Handle the time series as a regular output.
   mTimeSeriesRequested = mpTrajectoryProblem->timeSeriesRequested();
 
@@ -219,6 +220,12 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
   if (isnan(StepNumber) || StepNumber < 1.0)
     StepNumber = 1.0;
+
+  //the output starts only after "outputStartTime" has passed
+  if (useInitialValues)
+    mOutputStartTime = mpTrajectoryProblem->getOutputStartTime();
+  else
+    mOutputStartTime = *mpCurrentTime + mpTrajectoryProblem->getOutputStartTime();
 
   C_FLOAT64 NextTimeToReport;
 
@@ -268,7 +275,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
                                      &hundred);
     }
 
-  if ((*mpLessOrEqual)(*mpOutputStartTime, *mpCurrentTime)) output(COutputInterface::DURING);
+  if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime)) output(COutputInterface::DURING);
 
   try
     {
@@ -287,7 +294,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
               flagProceed &= mpCallBack->progressItem(hProcess);
             }
 
-          if ((*mpLessOrEqual)(*mpOutputStartTime, *mpCurrentTime))
+          if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime))
             {
               output(COutputInterface::DURING);
             }
@@ -300,7 +307,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
       mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
       mpTrajectoryProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
 
-      if ((*mpLessOrEqual)(*mpOutputStartTime, *mpCurrentTime))
+      if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime))
         {
           output(COutputInterface::DURING);
         }
@@ -317,7 +324,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
       mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
       mpTrajectoryProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
 
-      if ((*mpLessOrEqual)(*mpOutputStartTime, *mpCurrentTime))
+      if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime))
         {
           output(COutputInterface::DURING);
         }
@@ -365,7 +372,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
 
       if (StateChanged)
         {
-          if ((*mpLessOrEqual)(*mpOutputStartTime, *mpCurrentTime) &&
+          if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime) &&
               mpTrajectoryProblem->getOutputEvent())
             {
               output(COutputInterface::DURING);
@@ -385,7 +392,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
             pModel->setState(*mpCurrentState);
             pModel->updateSimulatedValues(mUpdateMoieties);
 
-            if ((*mpLessOrEqual)(*mpOutputStartTime, *mpCurrentTime) &&
+            if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime) &&
                 *mpCurrentTime == pModel->getProcessQueueExecutionTime() &&
                 mpTrajectoryProblem->getOutputEvent())
               {
@@ -398,7 +405,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
             if (fabs(*mpCurrentTime - endTime) < Tolerance)
               return true;
 
-            if ((*mpLessOrEqual)(*mpOutputStartTime, *mpCurrentTime) &&
+            if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime) &&
                 StateChanged &&
                 mpTrajectoryProblem->getOutputEvent())
               {
@@ -413,7 +420,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
 
             pModel->processRoots(*mpCurrentTime, true, true, mpTrajectoryMethod->getRoots());
 
-            if ((*mpLessOrEqual)(*mpOutputStartTime, *mpCurrentTime) &&
+            if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime) &&
                 *mpCurrentTime == pModel->getProcessQueueExecutionTime() &&
                 mpTrajectoryProblem->getOutputEvent())
               {
@@ -439,7 +446,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
                 return true;
               }
 
-            if ((*mpLessOrEqual)(*mpOutputStartTime, *mpCurrentTime) &&
+            if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime) &&
                 mpTrajectoryProblem->getOutputEvent() &&
                 (StateChanged ||
                  *mpCurrentTime == pModel->getProcessQueueExecutionTime()))
