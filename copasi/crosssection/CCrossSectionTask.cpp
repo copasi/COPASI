@@ -15,11 +15,7 @@
 /**
  * CCrossSectionTask class.
  *
- * This class implements a trajectory task which is comprised of a
- * of a problem and a method. Additionally calls to the reporting
- * methods are done when initialized.
- *
- * Created for COPASI by Stefan Hoops 2002
+ * This class implements a cross section task.
  */
 
 #include <string>
@@ -29,7 +25,7 @@
 
 #include "CCrossSectionTask.h"
 #include "CCrossSectionProblem.h"
-#include "CCrossSectionMethod.h"
+//#include "CCrossSectionMethod.h"
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "report/CKeyFactory.h"
@@ -38,7 +34,6 @@
 #include "utilities/CCopasiException.h"
 #include  "CopasiDataModel/CCopasiDataModel.h"
 
-#define XXXX_Reporting
 
 bool cs_fle(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 {return (d1 <= d2);}
@@ -192,8 +187,6 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
 
   //*****
 
-  //size_t FailCounter = 0;
-
   C_FLOAT64 Duration = mpCrossSectionProblem->getDuration();
   C_FLOAT64 StepSize = mpCrossSectionProblem->getStepSize();
   C_FLOAT64 StepNumber = fabs(Duration) / StepSize;
@@ -255,7 +248,6 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
                                      &hundred);
     }
 
-  if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime)) output(COutputInterface::DURING);
 
   try
     {
@@ -287,10 +279,6 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
       mpCrossSectionProblem->getModel()->setState(*mpCurrentState);
       mpCrossSectionProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
 
-      if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime))
-        {
-          output(COutputInterface::DURING);
-        }
 
       if (mpCallBack != NULL && StepNumber > 1.0) mpCallBack->finishItem(hProcess);
 
@@ -304,10 +292,6 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
       mpCrossSectionProblem->getModel()->setState(*mpCurrentState);
       mpCrossSectionProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
 
-      if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime))
-        {
-          output(COutputInterface::DURING);
-        }
 
       if (mpCallBack != NULL && StepNumber > 1.0) mpCallBack->finishItem(hProcess);
 
