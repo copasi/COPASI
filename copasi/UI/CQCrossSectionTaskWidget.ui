@@ -21,6 +21,9 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
+	<layout class="QVBoxLayout" name="outerLayout">
+       <item>
+
     <layout class="QFormLayout" name="formLayout">
      <property name="fieldGrowthPolicy">
       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
@@ -588,6 +591,8 @@
       </layout>
      </item>
     </layout>
+   </item>
+  </layout>
    </item>
   </layout>
  </widget>
