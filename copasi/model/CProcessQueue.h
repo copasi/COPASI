@@ -115,6 +115,9 @@ private:
     size_t mEventId;
   };
 
+  friend std::ostream &operator<<(std::ostream &os, const CKey & o);
+
+  
   class CAction
   {
     // Operations
@@ -201,6 +204,9 @@ private:
     CProcessQueue * mpProcessQueue;
   };
 
+  friend std::ostream &operator<<(std::ostream &os, const CAction & o);
+  
+  
   // Type definitions
 public:
   typedef std::multimap< CKey, CAction >::iterator iterator;
