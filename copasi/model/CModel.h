@@ -1602,6 +1602,8 @@ public:
    * @return const CVector< CMathTrigger::CRootFinder * > & rootFinders
    */
   const CVector< CMathTrigger::CRootFinder * > & getRootFinders() const;
+    
+  const CMathModel* getMathModel() const;
 };
 
 #endif // CModel

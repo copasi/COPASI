@@ -309,6 +309,11 @@ const C_FLOAT64 & CMathModel::getProcessQueueExecutionTime() const
   return mProcessQueue.getProcessQueueExecutionTime();
 }
 
+const CProcessQueue & CMathModel::getProcessQueue() const
+{
+    return mProcessQueue;
+}
+
 void CMathModel::applyInitialValues()
 {
   // Clear the process queue.

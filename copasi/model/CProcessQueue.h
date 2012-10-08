@@ -84,6 +84,8 @@ private:
      */
     inline const C_FLOAT64 & getExecutionTime() const {return mExecutionTime;}
 
+    friend std::ostream &operator<<(std::ostream &os, const CKey & o);  
+      
     // Attributes
   private:
     /**
@@ -167,6 +169,8 @@ private:
      * @return CMathEvent * pEvent
      */
     inline CMathEvent * getEvent() const {return mpEvent;}
+
+    friend std::ostream &operator<<(std::ostream &os, const CAction & o);  
 
     // Attributes
   public:
@@ -298,7 +302,16 @@ public:
    * @return bool isEmpty
    */
   bool isEmpty() const;
+    
+  
+    /**
+     * This prints debugging info to stdout
+     */
+    void printDebug() const { std::cout << *this; }; 
+   
+  friend std::ostream &operator<<(std::ostream &os, const CProcessQueue & o);  
 
+    
 private:
   /**
    * Destroy a unique eventId

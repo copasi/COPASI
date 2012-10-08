@@ -104,6 +104,9 @@ public:
    */
   const C_FLOAT64 & getProcessQueueExecutionTime() const;
 
+  const CProcessQueue & getProcessQueue() const;
+    
+    
   /**
    * Initialize all values of the math model with their initial values.
    */

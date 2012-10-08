@@ -73,6 +73,18 @@ bool CProcessQueue::CKey::operator < (const CProcessQueue::CKey & rhs) const
   return mEventId < rhs.mEventId;
 }
 
+std::ostream &operator<<(std::ostream &os, const CProcessQueue::CKey & o)
+{
+    os << "exec time " << o.mExecutionTime << ", cascading lvl "
+       << o.mCascadingLevel << ", " 
+       << (o.mEquality ? "equality, " : "inequality, ")
+       << "order " << o.mOrder << ", event ID " 
+       << o.mEventId;
+    return os;
+}
+
+//*********************************************************
+
 CProcessQueue::CAction::CAction() :
     mpTarget(NULL),
     mValue(),
@@ -134,6 +146,17 @@ void CProcessQueue::CAction::process(const size_t & eventId)
       *mpTarget = mValue;
     }
 }
+
+std::ostream &operator<<(std::ostream &os, const CProcessQueue::CAction & o)
+{
+    os << "target " << o.mpTarget
+       << ", value " << o.mValue
+       << ", expr " << o.mpExpression
+       << ", event " << o.mpEvent;
+    return os;
+}
+
+//*********************************************************
 
 CProcessQueue::CProcessQueue() :
     mCalculations(),
@@ -614,3 +637,25 @@ bool CProcessQueue::isEmpty() const
 {
   return (mAssignments.size() == 0) && (mCalculations.size() == 0);
 }
+
+std::ostream &operator<<(std::ostream &os, const CProcessQueue & o)
+{
+    os << "Process Queue" << std::endl;
+    std::multimap< CProcessQueue::CKey, CProcessQueue::CAction >::const_iterator it;
+    
+    if (o.mCalculations.size()) os << " Calculations:" << std::endl;
+    for (it=o.mCalculations.begin(); it != o.mCalculations.end(); ++it)
+    {
+        os << it->first << std::endl;
+        os << it->second << std::endl << std::endl;
+    }
+    if (o.mAssignments.size()) os << " Assignments:" << std::endl;
+    for (it=o.mAssignments.begin(); it != o.mAssignments.end(); ++it)
+    {
+        os << it->first << std::endl;
+        os << it->second << std::endl << std::endl;
+    }
+    
+    return os;
+}
+

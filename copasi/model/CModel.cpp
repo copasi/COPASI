@@ -4335,3 +4335,7 @@ const CVector< CMathTrigger::CRootFinder * > & CModel::getRootFinders() const
 {
   return mpMathModel->getRootFinders();
 }
+
+const CMathModel* CModel::getMathModel() const 
+{return mpMathModel;}
+
