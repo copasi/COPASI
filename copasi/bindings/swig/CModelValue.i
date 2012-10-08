@@ -1,23 +1,20 @@
-// Begin git Header 
-//   Commit: 28d5663ff3fc99993d3b249dec626841cb5247ab 
-//   Author: Frank T. Bergmann fbergman@caltech.edu 
-//   Date: 2012-08-29 10:43:00 +0200 
-// End git Header 
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
 
 %{
 
@@ -114,9 +111,9 @@ typedef CExpression DisownedExpression;
 
 %include "model/CModelValue.h"
 
-#if (defined SWIGJAVA || defined SWIGCSHARP)
 %extend CModelEntity
 {
+#if (defined SWIGJAVA || defined SWIGCSHARP)
   void setInitialExpressionPtr(DisownedExpression* pDisownedExpression)
   {
      $self->CModelEntity::setInitialExpressionPtr(pDisownedExpression);
@@ -126,6 +123,8 @@ typedef CExpression DisownedExpression;
   {
      $self->CModelEntity::setExpressionPtr(pDisownedExpression);
   }
+
+#endif // SWIGJAVA || CSHARP
 
   // the CAnnotation functionality has to be added manually because
   // Java does not know about multiple inheritance
@@ -151,7 +150,59 @@ typedef CExpression DisownedExpression;
 	self->setMiriamAnnotation(miriamAnnotation,newId,oldId);
   }
 
+  std::string getUnsupportedAnnotation(std::string name)
+  {
+  	return $self->getUnsupportedAnnotations()[name];
+  }
+  
+  bool hasUnsupportedAnnotation(std::string name)
+  {
+  	const std::string& annot = $self->getUnsupportedAnnotations()[name];
+  	return !(annot.empty());
+  }
+  
+  int getNumUnsupportedAnnotations()
+  {
+  	return (int)$self->getUnsupportedAnnotations().size();
+  }
+  
+  std::string getUnsupportedAnnotation(int index)
+  {		
+  	std::map< std::string, std::string > &anot = $self->getUnsupportedAnnotations();
+  	if (index >= anot.size()) 
+  		return "";
+  	std::map< std::string, std::string >::iterator iter = anot.begin();
+  	for (int i = 0; i < index; ++i)
+  		++iter;
+  	return (*iter).second;
+  }
+  
+  std::string getUnsupportedAnnotationName(int index)
+  {		
+  	std::map< std::string, std::string > &anot = $self->getUnsupportedAnnotations();
+  	if (index >= anot.size()) 
+  		return "";
+  	std::map< std::string, std::string >::iterator iter = anot.begin();
+  	for (int i = 0; i < index; ++i)
+  		++iter;
+  	return (*iter).first;
+  }
+   
+  bool addUnsupportedAnnotation(const std::string & name, const std::string & xml)
+  {
+  	return $self->addUnsupportedAnnotation(name, xml);
+  }
+  
+  bool replaceUnsupportedAnnotation(const std::string & name, const std::string & xml)
+  {
+  	return $self->replaceUnsupportedAnnotation(name, xml);
+  }
+  
+  bool removeUnsupportedAnnotation(const std::string & name)
+  {
+  	return $self->removeUnsupportedAnnotation(name);
+  }
+   
 }
-#endif // SWIGJAVA || CSHARP
 
 
