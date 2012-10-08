@@ -463,28 +463,34 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
     {
       case COPASI:
 
-        if (strcmp(pszName, "COPASI"))
+        if (!strcmp(pszName, "COPASI"))
           {
-            // We may have a configuration file which starts with a parameter group
-            if (strcmp(pszName, "ParameterGroup"))
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                             pszName, "COPASI", mParser.getCurrentLineNumber());
+            versionMajor = mParser.getAttributeValue("versionMajor", papszAttrs, "0");
+            VersionMajor = strToInt(versionMajor);
+            versionMinor = mParser.getAttributeValue("versionMinor", papszAttrs, "0");
+            VersionMinor = strToInt(versionMinor);
+            versionDevel = mParser.getAttributeValue("versionDevel", papszAttrs, "0");
+            VersionDevel = strToInt(versionDevel);
+            CopasiSourcesModified = mParser.toBool(mParser.getAttributeValue("copasiSourcesModified", papszAttrs, "true"));
 
+            mCommon.pVersion->setVersion(VersionMajor, VersionMinor, VersionDevel, CopasiSourcesModified);
+
+            return;
+          }
+        // We may have a configuration file which starts with a parameter group
+        else if (!strcmp(pszName, "ParameterGroup"))
+          {
             mpCurrentHandler = new ParameterGroupElement(mParser, mCommon);
-            break;
+          }
+        else
+          {
+            mpCurrentHandler = &mParser.mUnknownElement;
+
+            CCopasiMessage(CCopasiMessage::WARNING, MCXML + 10,
+                           pszName, "COPASI", mParser.getCurrentLineNumber());
           }
 
-        versionMajor = mParser.getAttributeValue("versionMajor", papszAttrs, "0");
-        VersionMajor = strToInt(versionMajor);
-        versionMinor = mParser.getAttributeValue("versionMinor", papszAttrs, "0");
-        VersionMinor = strToInt(versionMinor);
-        versionDevel = mParser.getAttributeValue("versionDevel", papszAttrs, "0");
-        VersionDevel = strToInt(versionDevel);
-        CopasiSourcesModified = mParser.toBool(mParser.getAttributeValue("copasiSourcesModified", papszAttrs, "true"));
-
-        mCommon.pVersion->setVersion(VersionMajor, VersionMinor, VersionDevel, CopasiSourcesModified);
-
-        return;
+        break;
 
       case ListOfFunctions:
 
@@ -589,7 +595,8 @@ void CCopasiXMLParser::COPASIElement::end(const XML_Char * pszName)
         }
 
       // We need to remove the no longer needed expression "Objective Function" from the function list.
-      if (mCommon.pFunctionList->getIndex("Objective Function") != C_INVALID_INDEX)
+      if (mCommon.pFunctionList != NULL &&
+          mCommon.pFunctionList->getIndex("Objective Function") != C_INVALID_INDEX)
         {
           mCommon.pFunctionList->remove("Objective Function");
         }
@@ -1843,7 +1850,6 @@ void CCopasiXMLParser::ModelElement::end(const XML_Char *pszName)
                          pszName, "ListOfUnsupportedAnnotations", mParser.getCurrentLineNumber());
 
         mCommon.pModel->getUnsupportedAnnotations() = mParser.mListOfUnsupportedAnnotationsElement.getUnsupportedAnnotations();
-
         break;
 
       case InitialExpression:

@@ -144,11 +144,10 @@ const CAnnotation::UnsupportedAnnotation & CAnnotation::getUnsupportedAnnotation
 bool CAnnotation::addUnsupportedAnnotation(const std::string & name, const std::string & xml)
 {
   // We need to check whether we have valid XML.
-  // TODO: isValidXML is currently not working as it expects COAPSI elements
-  // if (!isValidXML(xml))
-  //   {
-  //     return false;
-  //}
+  if (!isValidXML(xml))
+    {
+      return false;
+    }
 
   if (mUnsupportedAnnotations.find(name) != mUnsupportedAnnotations.end())
     {
@@ -163,11 +162,10 @@ bool CAnnotation::addUnsupportedAnnotation(const std::string & name, const std::
 bool CAnnotation::replaceUnsupportedAnnotation(const std::string & name, const std::string & xml)
 {
   // We need to check whether we have valid XML.
-  // TODO: isValidXML is currently not working as it expects COAPSI elements
-  //if (!isValidXML(xml))
-  //  {
-  //    return false;
-  //}
+  if (!isValidXML(xml))
+    {
+      return false;
+    }
 
   if (mUnsupportedAnnotations.find(name) == mUnsupportedAnnotations.end())
     {
@@ -206,6 +204,8 @@ bool CAnnotation::isValidXML(const std::string & xml)
   CVersion Version;
   CCopasiXMLParser Parser(Version);
 
+  size_t Size = CCopasiMessage::size();
+
 #define BUFFER_SIZE 0xfffe
   char * pBuffer = new char[BUFFER_SIZE + 1];
 
@@ -230,6 +230,11 @@ bool CAnnotation::isValidXML(const std::string & xml)
 
   delete [] pBuffer;
 #undef BUFFER_SIZE
+
+  // Remove error messages created by setExpression as this may fail
+  // due to incomplete model specification at this time.
+  while (CCopasiMessage::size() > Size)
+    CCopasiMessage::getLastMessage();
 
   return true;
 }
