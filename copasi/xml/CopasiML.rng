@@ -25,6 +25,9 @@
       <attribute name="versionDevel">
         <data type="integer"/>
       </attribute>
+      <attribute name="copasiSourcesModified">
+        <data type="boolean"/>
+      </attribute>
       <zeroOrMore>
         <attribute>
           <a:documentation> We explicitedly allow the addition of attributes which are not in the
@@ -235,7 +238,7 @@
   <define name="listOfUnsupportedAnnotations.datatype">
     <oneOrMore>
       <element name="UnsupportedAnnotation">
-        <attribute name="Name"><text/></attribute>
+        <attribute name="name"><text/></attribute>
         <ref name="UnsupportedAnnotation.datatype"/>
       </element>
     </oneOrMore>
