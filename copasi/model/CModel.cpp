@@ -479,11 +479,12 @@ bool CModel::compile()
   if (!success)
     {
       mIsAutonomous = false;
-      return false;
     }
-
-  mCompileIsNecessary = false;
-  determineIsAutonomous();
+  else
+    {
+      mCompileIsNecessary = false;
+      determineIsAutonomous();
+    }
 
   //writeDependenciesToDotFile();
 
@@ -493,7 +494,7 @@ bool CModel::compile()
   CMathContainer MathModel(*this);
 #endif // TST_DEPENDENCYGRAPH
 
-  return true;
+  return success;
 }
 
 #ifdef TST_DEPENDENCYGRAPH
@@ -3727,7 +3728,8 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
           case ODE:
           case ASSIGNMENT:
 
-            if ((*ppEntity)->getExpressionPtr()->hasDiscontinuity())
+            if ((*ppEntity)->getExpressionPtr() &&
+                (*ppEntity)->getExpressionPtr()->hasDiscontinuity())
               {
                 TreesWithDiscontinuities.push_back((*ppEntity)->getExpressionPtr());
               }
@@ -3745,7 +3747,8 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
 
   for (; itReaction != endReaction; ++itReaction)
     {
-      if ((*itReaction)->getFunction()->hasDiscontinuity())
+      if ((*itReaction)->getFunction() &&
+          (*itReaction)->getFunction()->hasDiscontinuity())
         {
           TreesWithDiscontinuities.push_back((*itReaction)->getFunction());
         }
@@ -3757,7 +3760,8 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
 
   for (; itEvent != endEvent; ++itEvent)
     {
-      if ((*itEvent)->getTriggerExpressionPtr()->hasDiscontinuity())
+      if ((*itEvent)->getTriggerExpressionPtr() &&
+          (*itEvent)->getTriggerExpressionPtr()->hasDiscontinuity())
         {
           TreesWithDiscontinuities.push_back((*itEvent)->getTriggerExpressionPtr());
         }

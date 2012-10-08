@@ -52,8 +52,13 @@ public class printUnsupportedAnnotation
 			
 			if (numAnnotations ==  0)
 			{
+				System.out.println("adding custom annotation");
 				// we don't have an annotation, so lets add one
-				model.addUnsupportedAnnotation("http://myannotation.org", "<test xmlns='http://myannotation.org' value='blaaaahaaa'/>");
+				if (!model.addUnsupportedAnnotation("http://myannotation.org", "<test xmlns='http://myannotation.org' value='blaaaahaaa'/>"))
+				{
+					System.err.println("couldn't set annotation: ");
+					System.err.println(CCopasiMessage.getAllMessageText());
+				}
 				
 			}
 			System.out.println("The name of the first is: " + model.getUnsupportedAnnotationName(0));

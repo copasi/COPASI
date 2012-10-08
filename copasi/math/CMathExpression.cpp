@@ -181,8 +181,6 @@ bool CMathExpression::compile()
       mUsable = true;
     }
 
-  assert(mUsable);
-
   buildCalculationSequence();
 
   return mUsable;
@@ -229,6 +227,11 @@ bool CMathExpression::convertToInitialExpression()
     }
 
   return true;
+}
+
+bool CMathExpression::setRoot(CEvaluationNode* pRootNode)
+{
+  return CEvaluationTree::setRoot(pRootNode);
 }
 
 CEvaluationNode * CMathExpression::createNodeFromValue(const C_FLOAT64 * pDataValue)

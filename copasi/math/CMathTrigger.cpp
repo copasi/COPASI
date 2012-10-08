@@ -1,19 +1,6 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathTrigger.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/16 12:15:30 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
 // All rights reserved.
 
 #include "copasi.h"
@@ -23,24 +10,24 @@
 #include "report/CCopasiObjectReference.h"
 
 CMathTrigger::CRootFinder::CRootFinder(const CCopasiContainer * pParent) :
-    CCopasiContainer("Root", pParent),
-    mRoot("Expression", this),
-    mpRootValue(NULL),
-    mEquality(false),
-    mDiscrete(false),
-    mTrue(0.0)
+  CCopasiContainer("Root", pParent),
+  mRoot("Expression", this),
+  mpRootValue(NULL),
+  mEquality(false),
+  mDiscrete(false),
+  mTrue(0.0)
 {
   initObjects();
 }
 
 CMathTrigger::CRootFinder::CRootFinder(const CMathTrigger::CRootFinder & src,
                                        const CCopasiContainer * pParent) :
-    CCopasiContainer(src, pParent),
-    mRoot(src.mRoot, this),
-    mpRootValue(NULL),
-    mEquality(src.mEquality),
-    mDiscrete(src.mDiscrete),
-    mTrue(src.mTrue)
+  CCopasiContainer(src, pParent),
+  mRoot(src.mRoot, this),
+  mpRootValue(NULL),
+  mEquality(src.mEquality),
+  mDiscrete(src.mDiscrete),
+  mTrue(src.mTrue)
 {
   initObjects();
 }
@@ -136,18 +123,18 @@ C_FLOAT64 * CMathTrigger::CRootFinder::getRootValuePtr()
 }
 
 CMathTrigger::CMathTrigger(const CCopasiContainer * pParent) :
-    CCopasiContainer("MathTrigger", pParent, "MathTrigger"),
-    mTrueExpression("TrueExpression", this),
-    mRootFinders("ListOfRoots", this),
-    mFunctionVariableMap()
+  CCopasiContainer("MathTrigger", pParent, "MathTrigger"),
+  mTrueExpression("TrueExpression", this),
+  mRootFinders("ListOfRoots", this),
+  mFunctionVariableMap()
 {}
 
 CMathTrigger::CMathTrigger(const CMathTrigger & src,
                            const CCopasiContainer * pParent) :
-    CCopasiContainer(src, pParent),
-    mTrueExpression(src.mTrueExpression, this),
-    mRootFinders(src.mRootFinders, this),
-    mFunctionVariableMap()
+  CCopasiContainer(src, pParent),
+  mTrueExpression(src.mTrueExpression, this),
+  mRootFinders(src.mRootFinders, this),
+  mFunctionVariableMap()
 {}
 
 CMathTrigger::~CMathTrigger()
@@ -649,12 +636,20 @@ CEvaluationNode * CMathTrigger::copyBranch(const CEvaluationNode * pSource)
 {
   if (pSource->getType() == CEvaluationNode::VARIABLE)
     {
-      assert(!mFunctionVariableMap.empty());
+      if (!mFunctionVariableMap.empty())
+        {
+          size_t Index = static_cast< const CEvaluationNodeVariable * >(pSource)->getIndex();
 
-      size_t Index =
-        static_cast< const CEvaluationNodeVariable * >(pSource)->getIndex();
+          if (Index != C_INVALID_INDEX &&
+              Index < mFunctionVariableMap.top().size())
+            {
+              return mFunctionVariableMap.top()[Index]->copyBranch();
+            }
+        }
 
-      return mFunctionVariableMap.top()[Index]->copyBranch();
+      // We have an invalid variables and therefore create an constant node with the
+      // variable name and value NaN.
+      return new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, pSource->getData());
     }
 
   return pSource->copyBranch();

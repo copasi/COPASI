@@ -1,11 +1,3 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/ListOfUnsupportedAnnotations.cpp,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/25 12:13:29 $
-// End CVS Header
-
 // Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -29,11 +21,11 @@
 
 CCopasiXMLParser::UnsupportedAnnotationElement::UnsupportedAnnotationElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
-    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
-    mName(),
-    mXML(),
-    mLevel(0),
-    mElementEmpty()
+  CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+  mName(),
+  mXML(),
+  mLevel(0),
+  mElementEmpty()
 {}
 
 // virtual
@@ -77,7 +69,7 @@ void CCopasiXMLParser::UnsupportedAnnotationElement::start(const XML_Char *pszNa
 
         for (ppAttrs = papszAttrs; *ppAttrs && **ppAttrs; ppAttrs += 2)
           mXML << " " << *ppAttrs << "=\""
-          << CCopasiXMLInterface::encode(*(ppAttrs + 1), CCopasiXMLInterface::attribute) << "\"";
+               << CCopasiXMLInterface::encode(*(ppAttrs + 1), CCopasiXMLInterface::attribute) << "\"";
 
         mLevel++;
         mElementEmpty.push(true);
@@ -193,9 +185,9 @@ std::string CCopasiXMLParser::UnsupportedAnnotationElement::getXML() const
 
 CCopasiXMLParser::ListOfUnsupportedAnnotationsElement::ListOfUnsupportedAnnotationsElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
-    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
-    mUnsupportedAnnotations(),
-    mpUnsupportedAnnotationElement(NULL)
+  CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+  mUnsupportedAnnotations(),
+  mpUnsupportedAnnotationElement(NULL)
 {}
 
 // virtual
@@ -288,6 +280,7 @@ void CCopasiXMLParser::ListOfUnsupportedAnnotationsElement::end(const XML_Char *
               mpUnsupportedAnnotationElement->getXML();
           }
 
+        mLastKnownElement = ListOfUnsupportedAnnotations;
         mCurrentElement = ListOfUnsupportedAnnotations;
         break;
 

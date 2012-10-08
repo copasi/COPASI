@@ -16,6 +16,9 @@
 
 
 
+
+
+
 %{
 
 #include "model/CModelValue.h"
@@ -190,12 +193,26 @@ typedef CExpression DisownedExpression;
    
   bool addUnsupportedAnnotation(const std::string & name, const std::string & xml)
   {
-  	return $self->addUnsupportedAnnotation(name, xml);
+	try
+	{
+		return $self->addUnsupportedAnnotation(name, xml);
+	}
+	catch(...)
+	{
+		return false;
+	}
   }
   
   bool replaceUnsupportedAnnotation(const std::string & name, const std::string & xml)
   {
-  	return $self->replaceUnsupportedAnnotation(name, xml);
+	try
+	{	
+		return $self->replaceUnsupportedAnnotation(name, xml);
+	}
+	catch(...)
+	{
+		return false;
+	}
   }
   
   bool removeUnsupportedAnnotation(const std::string & name)

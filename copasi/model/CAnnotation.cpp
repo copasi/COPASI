@@ -144,10 +144,11 @@ const CAnnotation::UnsupportedAnnotation & CAnnotation::getUnsupportedAnnotation
 bool CAnnotation::addUnsupportedAnnotation(const std::string & name, const std::string & xml)
 {
   // We need to check whether we have valid XML.
-  if (!isValidXML(xml))
-    {
-      return false;
-    }
+  // TODO: isValidXML is currently not working as it expects COAPSI elements
+  // if (!isValidXML(xml))
+  //   {
+  //     return false;
+  //}
 
   if (mUnsupportedAnnotations.find(name) != mUnsupportedAnnotations.end())
     {
@@ -162,10 +163,11 @@ bool CAnnotation::addUnsupportedAnnotation(const std::string & name, const std::
 bool CAnnotation::replaceUnsupportedAnnotation(const std::string & name, const std::string & xml)
 {
   // We need to check whether we have valid XML.
-  if (!isValidXML(xml))
-    {
-      return false;
-    }
+  // TODO: isValidXML is currently not working as it expects COAPSI elements
+  //if (!isValidXML(xml))
+  //  {
+  //    return false;
+  //}
 
   if (mUnsupportedAnnotations.find(name) == mUnsupportedAnnotations.end())
     {
