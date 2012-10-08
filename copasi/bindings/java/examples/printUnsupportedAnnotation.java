@@ -4,11 +4,11 @@
 // All rights reserved. 
 
 /**
- * This is an example on how to export the math model from a copasi file.
+ * This is an example on how to access an unsupported annotation on a model element.
  */
 import org.COPASI.*;
 
-public class exampleMathExport
+public class printUnsupportedAnnotation
 {
 	public static void main(String[] args)
 	{
@@ -18,9 +18,9 @@ public class exampleMathExport
 		CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
 		assert CCopasiRootContainer.getDatamodelList().size() == 1;
 		
-		if (args.length != 2)
+		if (args.length != 1)
 		{
-			System.err.println("Need two arguments: filename and filter.");
+			System.err.println("Need one argument: SBML | CPS filename.");
 			System.exit(1);
 		}
 		
@@ -46,25 +46,22 @@ public class exampleMathExport
 		}
 		try
 		{
-			// clear warnings / error messages
-			CCopasiMessage.clearDeque();
+			CModel model = dataModel.getModel();
+			int numAnnotations = model.getNumUnsupportedAnnotations();
+			System.out.println("The model has: " + numAnnotations + " unsupported annotations.");
 			
-			// convert
-			String translation = dataModel.exportMathModelToString(args[1]);
-			
-			// if conversion failed print message
-			if (translation.length() == 0)
+			if (numAnnotations ==  0)
 			{
-				System.err.println("Translation failed: ");
-				System.err.println(CCopasiMessage.getAllMessageText());
+				// we don't have an annotation, so lets add one
+				model.addUnsupportedAnnotation("http://myannotation.org", "<test xmlns='http://myannotation.org' value='blaaaahaaa'/>");
+				
 			}
-			
-			// print translation 
-			System.out.println(translation);
+			System.out.println("The name of the first is: " + model.getUnsupportedAnnotationName(0));
+			System.out.println("The raw xml of the first is: " + model.getUnsupportedAnnotation(0));
 		}
 		catch(java.lang.Exception ex)
 		{
-			System.err.println("Error. Exporting the model to math failed.");
+			System.err.println("Error: " + ex.getMessage());
 		}
 	}
 }
