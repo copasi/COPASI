@@ -18,6 +18,7 @@
 #include "CCrossSectionProblem.h"
 //#include "CCrossSectionMethod.h"
 #include "model/CModel.h"
+#include "model/CMathModel.h"
 #include "model/CState.h"
 #include "report/CKeyFactory.h"
 #include "report/CReport.h"
@@ -155,18 +156,9 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
 
 bool CCrossSectionTask::process(const bool & useInitialValues)
 {
-  //*****
-
   processStart(useInitialValues);
 
-  //*****
-
   C_FLOAT64 MaxDuration = mpCrossSectionProblem->getDuration();
-  //C_FLOAT64 StepSize = mpCrossSectionProblem->getStepSize();
-  //C_FLOAT64 StepNumber = fabs(Duration) / StepSize;
-
-  //if (isnan(StepNumber) || StepNumber < 1.0)
-  //  StepNumber = 1.0;
 
   //the output starts only after "outputStartTime" has passed
   mOutputStartTime = *mpCurrentTime + mpCrossSectionProblem->getOutputStartTime();
@@ -179,14 +171,6 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
 
   // It suffices to reach the end time within machine precision
   CompareEndTime = EndTime - 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
-
-  //unsigned C_INT32 StepCounter = 1;
-
-  //if (StepSize == 0.0 && Duration != 0.0)
-  //  {
-  //    CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryProblem + 1, StepSize);
-  //    return false;
-  //  }
 
   output(COutputInterface::BEFORE);
 
@@ -288,7 +272,9 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
   while (proceed)
     {
       // TODO Provide a call back method for resolving simultaneous assignments.
+        pModel->getMathModel()->getProcessQueue().printDebug();
       StateChanged |= pModel->processQueue(*mpCurrentTime, false, NULL);
+        pModel->getMathModel()->getProcessQueue().printDebug();
 
       if (StateChanged)
         {
@@ -335,7 +321,9 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
             pModel->setState(*mpCurrentState);
             pModel->updateSimulatedValues(mUpdateMoieties);
 
+                pModel->getMathModel()->getProcessQueue().printDebug();
             pModel->processRoots(*mpCurrentTime, true, true, mpTrajectoryMethod->getRoots());
+                pModel->getMathModel()->getProcessQueue().printDebug();
 
             if ((mOutputStartTime <= *mpCurrentTime) &&
                 *mpCurrentTime == pModel->getProcessQueueExecutionTime() )
@@ -346,7 +334,9 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
             // TODO Provide a call back method for resolving simultaneous assignments.
             StateChanged |= pModel->processQueue(*mpCurrentTime, true, NULL);
 
+                pModel->getMathModel()->getProcessQueue().printDebug();
             pModel->processRoots(*mpCurrentTime, false, true, mpTrajectoryMethod->getRoots());
+                pModel->getMathModel()->getProcessQueue().printDebug();
 
             // If the root happens to coincide with end of the step we have to return and
             // inform the integrator of eventual state changes.
