@@ -260,7 +260,15 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
             size_t Index =
               static_cast< const CEvaluationNodeVariable * >(*itNode)->getIndex();
 
-            pCopy = variables[Index][0]->copyBranch();
+            if (Index != C_INVALID_INDEX &&
+                Index < variables.size())
+              {
+                pCopy = variables[Index][0]->copyBranch();
+              }
+            else
+              {
+                pCopy = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, itNode->getData());
+              }
           }
           break;
 
@@ -340,7 +348,7 @@ CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
   // Compile the discontinuous object
   CMathExpression * pExpression = new CMathExpression("DiscontinuousExpression", *this);
 
-  success &= pExpression->setRoot(pSrc->copyNode(children));
+  success &= static_cast< CEvaluationTree * >(pExpression)->setRoot(pSrc->copyNode(children));
   success &= mCreateDiscontinuousPointer.pDiscontinuous->setExpressionPtr(pExpression);
 
   mCreateDiscontinuousPointer.pDiscontinuous += 1;
@@ -445,7 +453,11 @@ void CMathContainer::determineDiscontinuityAllocationRequirement(const CEvaluati
             size_t Index =
               static_cast< const CEvaluationNodeVariable * >(pNode)->getIndex();
 
-            allocations += allocationStack[Index];
+            if (Index != C_INVALID_INDEX &&
+                Index < allocationStack.size())
+              {
+                allocations += allocationStack[Index];
+              }
           }
 
         break;
