@@ -100,7 +100,7 @@ BEGIN {
   Skip = 0
 }
 
-$0 ~ "('"$CommentStart"'|/\\*) Begin (git|CVS) Header" {
+$0 ~ "('"$CommentStart"'|/\\*) Begin git Header" {
   skip = 2 
 }
 
@@ -116,7 +116,7 @@ $0 ~ "('"$CommentStart"'|/\\*) Begin (git|CVS) Header" {
   }
 }
 
-$0 ~ "End (git|CVS) Header" {
+$0 ~ "End git Header" {
   if (skip == 2) {
     skip = 1
   }
