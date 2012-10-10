@@ -1,17 +1,14 @@
-/* Begin CVS Header
-$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.cpp,v $
-$Revision: 1.30 $
-$Name:  $
-$Author: shoops $
-$Date: 2011/04/26 16:10:37 $
-End CVS Header */
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -36,19 +33,19 @@ End CVS Header */
 #include "report/CCopasiObjectReference.h"
 
 CEFMAlgorithm::CSpeciesOrderNode::CSpeciesOrderNode():
-    CCopasiNode< size_t >(),
-    mTableauLines()
+  CCopasiNode< size_t >(),
+  mTableauLines()
 {}
 
 CEFMAlgorithm::CSpeciesOrderNode::CSpeciesOrderNode(const CSpeciesOrderNode & src):
-    CCopasiNode< size_t >(src),
-    mTableauLines(src.mTableauLines)
+  CCopasiNode< size_t >(src),
+  mTableauLines(src.mTableauLines)
 {}
 
 CEFMAlgorithm::CSpeciesOrderNode::CSpeciesOrderNode(const size_t & index,
     const CTableauMatrix & matrix):
-    CCopasiNode< size_t >(index),
-    mTableauLines()
+  CCopasiNode< size_t >(index),
+  mTableauLines()
 {
   update(matrix);
 }
@@ -74,34 +71,34 @@ void CEFMAlgorithm::CSpeciesOrderNode::update(const CTableauMatrix & matrix)
 }
 
 CEFMAlgorithm::CEFMAlgorithm(const CCopasiContainer * pParent):
-    CEFMMethod(CCopasiTask::fluxMode, CCopasiMethod::EFMAlgorithm, pParent),
-    mpModel(NULL),
-    mStoi(),
-    mReversible(0),
-    mpCurrentTableau(NULL),
-    mpNextTableau(NULL),
-    mIndexSet()
+  CEFMMethod(CCopasiTask::fluxMode, CCopasiMethod::EFMAlgorithm, pParent),
+  mpModel(NULL),
+  mStoi(),
+  mReversible(0),
+  mpCurrentTableau(NULL),
+  mpNextTableau(NULL),
+  mIndexSet()
 {initObjects();}
 
 CEFMAlgorithm::CEFMAlgorithm(const CCopasiMethod::SubType subType, const CCopasiContainer * pParent):
-    CEFMMethod(CCopasiTask::fluxMode, subType, pParent),
-    mpModel(NULL),
-    mStoi(),
-    mReversible(0),
-    mpCurrentTableau(NULL),
-    mpNextTableau(NULL),
-    mIndexSet()
+  CEFMMethod(CCopasiTask::fluxMode, subType, pParent),
+  mpModel(NULL),
+  mStoi(),
+  mReversible(0),
+  mpCurrentTableau(NULL),
+  mpNextTableau(NULL),
+  mIndexSet()
 {initObjects();}
 
 CEFMAlgorithm::CEFMAlgorithm(const CEFMAlgorithm & src,
                              const CCopasiContainer * pParent):
-    CEFMMethod(src, pParent),
-    mpModel(NULL),
-    mStoi(),
-    mReversible(0),
-    mpCurrentTableau(NULL),
-    mpNextTableau(NULL),
-    mIndexSet()
+  CEFMMethod(src, pParent),
+  mpModel(NULL),
+  mStoi(),
+  mReversible(0),
+  mpCurrentTableau(NULL),
+  mpNextTableau(NULL),
+  mIndexSet()
 {initObjects();}
 
 CEFMAlgorithm::~CEFMAlgorithm()
@@ -253,9 +250,9 @@ void CEFMAlgorithm::calculateNextTableau()
   std::list< const CTableauLine * >::iterator a;
   std::list< const CTableauLine * >::iterator b;
   C_FLOAT64 ma, mb;
-#ifdef COPASI_DEBUG
+#ifdef COPASI_DEBUG_TRACE
   DebugFile << *mpCurrentTableau << std::endl;
-#endif //COPASI_DEBUG
+#endif //COPASI_DEBUG_TRACE
 
   mpNextTableau = new CTableauMatrix();
 
@@ -451,5 +448,5 @@ double CEFMAlgorithm::calculateCombinations(size_t index)
         }
     }
 
-  return (posIrr + rev) *(negIrr + rev);
+  return (posIrr + rev) * (negIrr + rev);
 }

@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternTreeMethod.cpp,v $
-//   $Revision: 1.27 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:51:18 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -38,66 +30,66 @@
 #define DEBUG_MATRIX
 
 CBitPatternTreeMethod::CBitPatternTreeMethod(const CCopasiContainer * pParent):
-    CEFMMethod(CCopasiTask::fluxMode, CCopasiMethod::EFMBitPatternTreeAlgorithm, pParent),
-    mpModel(NULL),
-    mProgressCounter(0),
-    mProgressCounterMax(0),
-    mhProgressCounter(0),
-    mProgressCounter2(0),
-    mProgressCounter2Max(0),
-    mhProgressCounter2(0),
-    mReactionForward(),
-    mReactionPivot(0),
-    mExpandedStoiTranspose(0, 0),
-    mpStepMatrix(NULL),
-    mpNullTree(NULL),
-    mMinimumSetSize(0),
-    mStep(0),
-    mContinueCombination(true)
+  CEFMMethod(CCopasiTask::fluxMode, CCopasiMethod::EFMBitPatternTreeAlgorithm, pParent),
+  mpModel(NULL),
+  mProgressCounter(0),
+  mProgressCounterMax(0),
+  mhProgressCounter(0),
+  mProgressCounter2(0),
+  mProgressCounter2Max(0),
+  mhProgressCounter2(0),
+  mReactionForward(),
+  mReactionPivot(0),
+  mExpandedStoiTranspose(0, 0),
+  mpStepMatrix(NULL),
+  mpNullTree(NULL),
+  mMinimumSetSize(0),
+  mStep(0),
+  mContinueCombination(true)
 {
   initObjects();
 }
 
 CBitPatternTreeMethod::CBitPatternTreeMethod(const CCopasiMethod::SubType subType,
     const CCopasiContainer * pParent):
-    CEFMMethod(CCopasiTask::fluxMode, subType, pParent),
-    mpModel(NULL),
-    mProgressCounter(0),
-    mProgressCounterMax(0),
-    mhProgressCounter(0),
-    mProgressCounter2(0),
-    mProgressCounter2Max(0),
-    mhProgressCounter2(0),
-    mReactionForward(),
-    mReactionPivot(0),
-    mExpandedStoiTranspose(0, 0),
-    mpStepMatrix(NULL),
-    mpNullTree(NULL),
-    mMinimumSetSize(0),
-    mStep(0),
-    mContinueCombination(true)
+  CEFMMethod(CCopasiTask::fluxMode, subType, pParent),
+  mpModel(NULL),
+  mProgressCounter(0),
+  mProgressCounterMax(0),
+  mhProgressCounter(0),
+  mProgressCounter2(0),
+  mProgressCounter2Max(0),
+  mhProgressCounter2(0),
+  mReactionForward(),
+  mReactionPivot(0),
+  mExpandedStoiTranspose(0, 0),
+  mpStepMatrix(NULL),
+  mpNullTree(NULL),
+  mMinimumSetSize(0),
+  mStep(0),
+  mContinueCombination(true)
 {
   initObjects();
 }
 
 CBitPatternTreeMethod::CBitPatternTreeMethod(const CBitPatternTreeMethod & src,
     const CCopasiContainer * pParent):
-    CEFMMethod(src, pParent),
-    mpModel(src.mpModel),
-    mProgressCounter(src.mProgressCounter),
-    mProgressCounterMax(src.mProgressCounterMax),
-    mhProgressCounter(src.mhProgressCounter),
-    mProgressCounter2(src.mProgressCounter2),
-    mProgressCounter2Max(src.mProgressCounter2Max),
-    mhProgressCounter2(src.mhProgressCounter2),
-    mReactionForward(src.mReactionForward),
-    mReactionPivot(src.mReactionPivot),
-    mExpandedStoiTranspose(src.mExpandedStoiTranspose),
-    mpStepMatrix(src.mpStepMatrix),
-    mpNullTree(src.mpNullTree),
-    mMinimumSetSize(src.mMinimumSetSize),
-    mStep(src.mStep),
-    mContinueCombination(src.mContinueCombination)
+  CEFMMethod(src, pParent),
+  mpModel(src.mpModel),
+  mProgressCounter(src.mProgressCounter),
+  mProgressCounterMax(src.mProgressCounterMax),
+  mhProgressCounter(src.mhProgressCounter),
+  mProgressCounter2(src.mProgressCounter2),
+  mProgressCounter2Max(src.mProgressCounter2Max),
+  mhProgressCounter2(src.mhProgressCounter2),
+  mReactionForward(src.mReactionForward),
+  mReactionPivot(src.mReactionPivot),
+  mExpandedStoiTranspose(src.mExpandedStoiTranspose),
+  mpStepMatrix(src.mpStepMatrix),
+  mpNullTree(src.mpNullTree),
+  mMinimumSetSize(src.mMinimumSetSize),
+  mStep(src.mStep),
+  mContinueCombination(src.mContinueCombination)
 {
   initObjects();
 }
@@ -135,14 +127,14 @@ bool CBitPatternTreeMethod::initialize()
   // We first build the kernel matrix
   CMatrix< C_INT64 > KernelMatrix;
   buildKernelMatrix(KernelMatrix);
-#ifdef COPASI_DEBUG
+#ifdef COPASI_DEBUG_TRACE
   DebugFile << "Original Kernel Matrix:" << std::endl;
   DebugFile << KernelMatrix << std::endl;
-#endif // COPASI_DEBUG
+#endif // COPASI_DEBUG_TRACE
   mMinimumSetSize = KernelMatrix.numCols() - 2;
-#ifdef COPASI_DEBUG
+#ifdef COPASI_DEBUG_TRACE
   DebugFile << "MinSetSize = " << mMinimumSetSize << std::endl;
-#endif // COPASI_DEBUG
+#endif // COPASI_DEBUG_TRACE
 
   // Now we create the initial step matrix
   mpStepMatrix = new CStepMatrix(KernelMatrix);
@@ -174,10 +166,10 @@ bool CBitPatternTreeMethod::calculate()
   while (mpStepMatrix->getNumUnconvertedRows() > 0 &&
          Continue)
     {
-#ifdef COPASI_DEBUG
+#ifdef COPASI_DEBUG_TRACE
       DebugFile << "Step Matrix:" << std::endl;
       DebugFile << *mpStepMatrix << std::endl;
-#endif // COPASI_DEBUG
+#endif // COPASI_DEBUG_TRACE
       mStep = mpStepMatrix->getFirstUnconvertedRow();
 
       std::vector< CStepMatrixColumn * > PositiveColumns;
@@ -265,7 +257,7 @@ void CBitPatternTreeMethod::combine(const CBitPatternTreeNode * pPositive,
 
   CZeroSet Intersection = CZeroSet::intersection(pPositive->getZeroSet(),
                           pNegative->getZeroSet());
-#ifdef COPASI_DEBUG
+#ifdef COPASI_DEBUG_TRACE
   DebugFile << "Intersection: " << Intersection << std::endl;
 
   // Adjacency test
@@ -275,7 +267,7 @@ void CBitPatternTreeMethod::combine(const CBitPatternTreeNode * pPositive,
       return;
     }
 
-#endif //COPASI_DEBUG
+#endif //COPASI_DEBUG_TRACE
 
   const CStepMatrixColumn * pPositiveColumn = pPositive->getStepMatrixColumn();
 
@@ -294,9 +286,9 @@ void CBitPatternTreeMethod::combine(const CBitPatternTreeNode * pPositive,
           if (Intersection.isExtremeRay(mNewColumns))
             {
               CStepMatrixColumn * pColumn = mpStepMatrix->addColumn(Intersection, pPositiveColumn, pNegativeColumn);
-#ifdef COPASI_DEBUG
+#ifdef COPASI_DEBUG_TRACE
               DebugFile << "New Column: " << *pColumn << std::endl;
-#endif //COPASI_DEBUG
+#endif //COPASI_DEBUG_TRACE
               // Remove all new column which are no longer extreme rays
               std::vector< CStepMatrixColumn * >::iterator it = mNewColumns.begin();
               std::vector< CStepMatrixColumn * >::iterator end = mNewColumns.end();
@@ -315,16 +307,16 @@ void CBitPatternTreeMethod::combine(const CBitPatternTreeNode * pPositive,
               mNewColumns.push_back(pColumn);
             }
 
-#ifdef COPASI_DEBUG
+#ifdef COPASI_DEBUG_TRACE
           else DebugFile << "Intersection fails - new columns already contain superset." << std::endl;
 
-#endif //COPASI_DEBUG
+#endif //COPASI_DEBUG_TRACE
         }
 
-#ifdef COPASI_DEBUG
+#ifdef COPASI_DEBUG_TRACE
       else DebugFile << "Intersection fails - null tree already contains superset." << std::endl;
 
-#endif //COPASI_DEBUG
+#endif //COPASI_DEBUG_TRACE
 
       mProgressCounter2++;
 
@@ -333,25 +325,25 @@ void CBitPatternTreeMethod::combine(const CBitPatternTreeNode * pPositive,
     }
   else if (pPositiveColumn != NULL)
     {
-#ifdef COPASI_DEBUG
+#ifdef COPASI_DEBUG_TRACE
       DebugFile << "Intersection has null negative column." << std::endl;
-#endif //COPASI_DEBUG
+#endif //COPASI_DEBUG_TRACE
       combine(pPositive, pNegative->getUnsetChild());
       combine(pPositive, pNegative->getSetChild());
     }
   else if (pNegativeColumn != NULL)
     {
-#ifdef COPASI_DEBUG
+#ifdef COPASI_DEBUG_TRACE
       DebugFile << "Intersection has null positive column." << std::endl;
-#endif //COPASI_DEBUG
+#endif //COPASI_DEBUG_TRACE
       combine(pPositive->getUnsetChild(), pNegative);
       combine(pPositive->getSetChild(), pNegative);
     }
   else
     {
-#ifdef COPASI_DEBUG
+#ifdef COPASI_DEBUG_TRACE
       DebugFile << "Intersection has null positive and negative columns." << std::endl;
-#endif //COPASI_DEBUG
+#endif //COPASI_DEBUG_TRACE
       combine(pPositive->getUnsetChild(), pNegative->getUnsetChild());
       combine(pPositive->getUnsetChild(), pNegative->getSetChild());
       combine(pPositive->getSetChild(), pNegative->getUnsetChild());
@@ -615,7 +607,7 @@ void CBitPatternTreeMethod::convertToIntegers(CMatrix< C_FLOAT64 > & values)
           m01 = m10 = 0;
 
           /* loop finding terms until denom gets too big */
-          while (m10 *(ai = (unsigned C_INT32) x) + m11 <= maxden)
+          while (m10 * (ai = (unsigned C_INT32) x) + m11 <= maxden)
             {
               C_INT32 t;
               t = m00 * ai + m01;
@@ -632,7 +624,7 @@ void CBitPatternTreeMethod::convertToIntegers(CMatrix< C_FLOAT64 > & values)
               x = 1 / (x - (C_FLOAT64) ai);
             }
 
-          if ((C_FLOAT64) m10 *(C_FLOAT64) ai + (C_FLOAT64) m11 > (C_FLOAT64) maxden)
+          if ((C_FLOAT64) m10 * (C_FLOAT64) ai + (C_FLOAT64) m11 > (C_FLOAT64) maxden)
             {
               Problems = true;
             }
@@ -833,7 +825,7 @@ bool CBitPatternTreeMethod::CalculateKernel(CMatrix< C_INT64 > & matrix,
           for (; pActiveRow < pActiveRowEnd; ++pActiveRow, ++pCurrent)
             {
               // Assert that we do not have a numerical overflow.
-              assert(fabs(((C_FLOAT64) alpha) *((C_FLOAT64) * pCurrent) - ((C_FLOAT64) beta) *((C_FLOAT64) * pActiveRow)) < std::numeric_limits< C_INT64 >::max());
+              assert(fabs(((C_FLOAT64) alpha) * ((C_FLOAT64) * pCurrent) - ((C_FLOAT64) beta) * ((C_FLOAT64) * pActiveRow)) < std::numeric_limits< C_INT64 >::max());
 
               *pCurrent = alpha * *pCurrent - beta * *pActiveRow;
 

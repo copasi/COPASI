@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-//   $Revision: 1.42 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:34:54 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -145,15 +137,15 @@ bool CCopasiMessage::checkForMessage(const size_t & number)
 }
 
 CCopasiMessage::CCopasiMessage(void):
-    mText(),
-    mType(CCopasiMessage::RAW),
-    mNumber(0)
+  mText(),
+  mType(CCopasiMessage::RAW),
+  mNumber(0)
 {}
 
 CCopasiMessage::CCopasiMessage(const CCopasiMessage & src):
-    mText(src.mText),
-    mType(src.mType),
-    mNumber(src.mNumber)
+  mText(src.mText),
+  mType(src.mType),
+  mNumber(src.mNumber)
 {}
 
 CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
@@ -324,9 +316,9 @@ void CCopasiMessage::handler(const bool & /* _throw */)
     {
       std::cerr << mText << std::endl;
 
-#ifdef COPASI_DEBUG
+#ifdef COPASI_DEBUG_TRACE
       DebugFile << mText << std::endl;
-#endif // COPASI_DEBUG
+#endif // COPASI_DEBUG_TRACE
     }
 
   if (mType == EXCEPTION)

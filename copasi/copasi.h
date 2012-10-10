@@ -144,7 +144,7 @@ QMutex * pCopasiGuiMutex = NULL;
 #endif
 
 /* Define Constructor/Destructor Trace */
-#ifdef COPASI_DEBUG
+#ifdef COPASI_DEBUG_TRACE
 # include <time.h>
 # include <sys/timeb.h>
 
@@ -191,7 +191,7 @@ extern std::ofstream DebugFile;
 #  define NDEBUG
 # endif // not NDEBUG
 # define DEBUG_OUT(s)
-#endif // COPASI_DEBUG
+#endif // COPASI_DEBUG_TRACE
 
 #ifndef CONSTRUCTOR_TRACE
 # define CONSTRUCTOR_TRACE
