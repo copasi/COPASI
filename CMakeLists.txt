@@ -141,6 +141,8 @@ endif(BUILD_TESTS)
 
 set (DEFAULT_EXTUNIT OFF)
 set (DEFAULT_NONLIN OFF)
+set (DEFAULT_DEBUG OFF)
+set (DEFAULT_DEBUG_TRACING OFF)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 # for the debug version we need to enable
 # COPASI_DEBUG
@@ -148,6 +150,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 set (DEFAULT_EXTUNIT ON)
 set (DEFAULT_NONLIN ON)
 set (DEFAULT_DEBUG ON)
+set (DEFAULT_DEBUG_TRACING ON)
 
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
@@ -158,6 +161,12 @@ option(ENABLE_COPASI_DEBUG "Enable COPASI Debug" ${DEFAULT_DEBUG})
 if(ENABLE_COPASI_DEBUG)
   add_definitions(-DCOPASI_DEBUG)
 endif(ENABLE_COPASI_DEBUG)
+
+option(ENABLE_COPASI_DEBUG_TRACE "Enable COPASI Debug Tracing" ${DEFAULT_DEBUG_TRACING})
+if(ENABLE_COPASI_DEBUG_TRACE)
+  add_definitions(-DCOPASI_DEBUG_TRACE)
+endif(ENABLE_COPASI_DEBUG_TRACE)
+
 
 # Sven developed an option of scaling the residuals in the parameter estimation 
 # by the current simulation value (instead of 0) this removes the bias when
