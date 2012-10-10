@@ -347,7 +347,7 @@ void DataModelGUI::exportSBMLToStringRun()
   try
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      *mpSBMLExportString = (*CCopasiRootContainer::getDatamodelList())[0]->exportSBMLToString(mpProgressBar, 2, 3);
+      *mpSBMLExportString = (*CCopasiRootContainer::getDatamodelList())[0]->exportSBMLToString(mpProgressBar, 2, 4);
     }
 
   catch (...)

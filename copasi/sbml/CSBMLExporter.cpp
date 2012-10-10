@@ -31,6 +31,7 @@
 
 #include <sbml/packages/layout/extension/LayoutModelPlugin.h>
 #include <sbml/packages/layout/extension/LayoutExtension.h>
+#include <sbml/conversion/ConversionProperties.h>
 
 #ifdef USE_CRENDER_EXTENSION
 #include <sbml/packages/render/extension/RenderExtension.h>
@@ -3116,7 +3117,18 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
 
   // In case the document is just a clone of an old model, we have to set the level and version
   if (this->mpSBMLDocument->getLevel() != this->mSBMLLevel || this->mpSBMLDocument->getVersion() != this->mSBMLVersion)
-    this->mpSBMLDocument->setLevelAndVersion(this->mSBMLLevel, this->mSBMLVersion);
+    {
+#if LIBSBML_VERSION >= 50400
+      ConversionProperties prop(new SBMLNamespaces(mSBMLLevel, mSBMLVersion));
+      prop.addOption("strict", false);
+      prop.addOption("setLevelAndVersion", true);
+      prop.addOption("ignorePackages", true);
+
+      mpSBMLDocument->convert(prop);
+#else
+      this->mpSBMLDocument->setLevelAndVersion(this->mSBMLLevel, this->mSBMLVersion);
+#endif
+    }
 
   if (this->mpSBMLDocument->getLevel() != this->mSBMLLevel || this->mpSBMLDocument->getVersion() != this->mSBMLVersion)
     {
