@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.h,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/21 15:48:16 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -33,6 +25,8 @@ class CProcessQueue
 private:
   class CKey
   {
+    friend std::ostream &operator<<(std::ostream &os, const CProcessQueue & o);
+
     // Operations
   public:
     /**
@@ -84,8 +78,8 @@ private:
      */
     inline const C_FLOAT64 & getExecutionTime() const {return mExecutionTime;}
 
-    friend std::ostream &operator<<(std::ostream &os, const CKey & o);  
-      
+    friend std::ostream &operator<<(std::ostream &os, const CKey & o);
+
     // Attributes
   private:
     /**
@@ -117,7 +111,6 @@ private:
 
   friend std::ostream &operator<<(std::ostream &os, const CKey & o);
 
-  
   class CAction
   {
     // Operations
@@ -173,7 +166,7 @@ private:
      */
     inline CMathEvent * getEvent() const {return mpEvent;}
 
-    friend std::ostream &operator<<(std::ostream &os, const CAction & o);  
+    friend std::ostream &operator<<(std::ostream &os, const CAction & o);
 
     // Attributes
   public:
@@ -205,14 +198,13 @@ private:
   };
 
   friend std::ostream &operator<<(std::ostream &os, const CAction & o);
-  
-  
+
   // Type definitions
 public:
   typedef std::multimap< CKey, CAction >::iterator iterator;
 
   typedef std::pair < std::multimap< CKey, CAction >::iterator,
-  std::multimap< CKey, CAction >::iterator > range;
+          std::multimap< CKey, CAction >::iterator > range;
 
   typedef range(*resolveSimultaneousAssignments)(const std::multimap< CKey, CAction > & /* assignments */,
       const C_FLOAT64 & /* time */,
@@ -308,16 +300,14 @@ public:
    * @return bool isEmpty
    */
   bool isEmpty() const;
-    
-  
-    /**
-     * This prints debugging info to stdout
-     */
-    void printDebug() const { std::cout << *this; }; 
-   
-  friend std::ostream &operator<<(std::ostream &os, const CProcessQueue & o);  
 
-    
+  /**
+   * This prints debugging info to stdout
+   */
+  void printDebug() const {std::cout << *this; };
+
+  friend std::ostream &operator<<(std::ostream &os, const CProcessQueue & o);
+
 private:
   /**
    * Destroy a unique eventId

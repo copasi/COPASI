@@ -3,6 +3,8 @@
 // of Manchester.
 // All rights reserved.
 
+#include <cmath>
+
 #include "copasi.h"
 
 #include "CMathTrigger.h"
@@ -15,7 +17,8 @@ CMathTrigger::CRootFinder::CRootFinder(const CCopasiContainer * pParent) :
   mpRootValue(NULL),
   mEquality(false),
   mDiscrete(false),
-  mTrue(0.0)
+  mTrue(0.0),
+  mLastToggleTime(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
 {
   initObjects();
 }
@@ -27,7 +30,8 @@ CMathTrigger::CRootFinder::CRootFinder(const CMathTrigger::CRootFinder & src,
   mpRootValue(NULL),
   mEquality(src.mEquality),
   mDiscrete(src.mDiscrete),
-  mTrue(src.mTrue)
+  mTrue(src.mTrue),
+  mLastToggleTime(src.mLastToggleTime)
 {
   initObjects();
 }
@@ -84,21 +88,32 @@ CEvaluationNode * CMathTrigger::CRootFinder::getTrueExpression() const
   return pTrueExpression;
 }
 
-void CMathTrigger::CRootFinder::toggle(const bool & equality)
+void CMathTrigger::CRootFinder::toggle(const C_FLOAT64 & time,
+                                       const bool & equality,
+                                       const bool & continous)
 {
   // This function must only be called if we found a root, i.e., the
   // value of the root expression changes sign. In that case it is save
   // to toggle the activity.
 
+  if (continous &&
+      !isnan(mLastToggleTime) &&
+      mLastToggleTime == time)
+    {
+      return;
+    }
+
   if (mDiscrete &&
       equality == true)
     {
       mTrue = (mTrue > 0.5) ? 0.0 : 1.0;
+      mLastToggleTime = time;
     }
   else if (!mDiscrete &&
            equality == mEquality)
     {
       mTrue = (mTrue > 0.5) ? 0.0 : 1.0;
+      mLastToggleTime = time;
     }
 
   return;

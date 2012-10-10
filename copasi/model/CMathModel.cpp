@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.27 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/16 16:26:32 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -27,28 +19,28 @@
 #include "clapackwrap.h"
 
 CMathModel::CMathModel(const CCopasiContainer * pParent) :
-    CCopasiContainer("MathModel", pParent, "CMathModel"),
-    mpModel(NULL),
-    mProcessQueue(),
-    mEvents("ListOfMathEvents", this),
-    mRootValues(),
-    mRootDiscrete(),
-    mRootRefreshes(),
-    mRootIndex2Event(),
-    mRootIndex2RootFinder()
+  CCopasiContainer("MathModel", pParent, "CMathModel"),
+  mpModel(NULL),
+  mProcessQueue(),
+  mEvents("ListOfMathEvents", this),
+  mRootValues(),
+  mRootDiscrete(),
+  mRootRefreshes(),
+  mRootIndex2Event(),
+  mRootIndex2RootFinder()
 {}
 
 CMathModel::CMathModel(const CMathModel & src,
                        const CCopasiContainer * pParent) :
-    CCopasiContainer(src, pParent),
-    mpModel(src.mpModel),
-    mProcessQueue(src.mProcessQueue),
-    mEvents("ListOfMathEvents", this),
-    mRootValues(),
-    mRootDiscrete(),
-    mRootRefreshes(),
-    mRootIndex2Event(),
-    mRootIndex2RootFinder()
+  CCopasiContainer(src, pParent),
+  mpModel(src.mpModel),
+  mProcessQueue(src.mProcessQueue),
+  mEvents("ListOfMathEvents", this),
+  mRootValues(),
+  mRootDiscrete(),
+  mRootRefreshes(),
+  mRootIndex2Event(),
+  mRootIndex2RootFinder()
 {
   // Compile the math model.
   compile(mpModel);
@@ -285,7 +277,7 @@ void CMathModel::processRoots(const C_FLOAT64 & time,
           // We must only toggle the roots which are marked.
           if (*pFoundRoot > 0)
             {
-              (*ppRootFinder)->toggle(equality);
+              (*ppRootFinder)->toggle(time, equality, correct);
             }
 
           ++pFoundRoot; ++ppEvent; ++ppRootFinder;
@@ -311,7 +303,7 @@ const C_FLOAT64 & CMathModel::getProcessQueueExecutionTime() const
 
 const CProcessQueue & CMathModel::getProcessQueue() const
 {
-    return mProcessQueue;
+  return mProcessQueue;
 }
 
 void CMathModel::applyInitialValues()
@@ -523,7 +515,7 @@ bool CMathModel::determineInitialRoots(CVector< C_INT > & foundRoots)
           if ((*ppRootFinder)->isEquality() &&
               *pDerivative < 0.0)
             {
-              (*ppRootFinder)->toggle(true);
+              (*ppRootFinder)->toggle(std::numeric_limits< C_FLOAT64 >::quiet_NaN(), true, false);
             }
         }
 
