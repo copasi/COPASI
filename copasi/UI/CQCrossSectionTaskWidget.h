@@ -32,7 +32,7 @@ public:
   //virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
 
 protected:
-  void validateInput();
+  void commitInput();
   virtual bool saveTask();
   virtual bool loadTask();
 //  virtual bool taskFinishedEvent();
@@ -50,8 +50,11 @@ private:
   CCrossSectionProblem * mpCrossSectionProblem;
 
   CQValidatorInt * mpValidatorLC;
-  CQValidatorDouble * mpValidatorLT;
-  CQValidatorDouble * mpValidator;
+  CQValidatorDouble * mpValidatorTime;
+  CQValidatorDouble * mpValidatorTolerance;
+  CQValidatorInt * mpValidatorOutLC;
+  CQValidatorDouble * mpValidatorOutTime;
+  CQValidatorDouble * mpValidatorOutTolerance;
   CQValidatorDouble * mpValidatorCrossing;
 
 private slots:

@@ -41,6 +41,16 @@ public:
   const unsigned C_INT32 &getCrossingsLimit() const;
 
   /**
+   * Function to get mpFlagLimitOutCrossings
+   */
+  bool getFlagLimitOutCrossings() const;
+
+  /**
+   * Function to get mpOutCrossingsLimit
+   */
+  const unsigned C_INT32 &getOutCrossingsLimit() const;
+
+  /**
    * Function to get mpFlagLimitTime
    */
   bool getFlagLimitTime() const;
@@ -51,6 +61,46 @@ public:
   const C_FLOAT64 &getTimeLimit() const;
 
   /**
+   * Function to get mpFlagLimitConvergence
+   */
+  bool getFlagLimitConvergence() const;
+
+  /**
+   * Function to get mpConvergenceTolerance
+   */
+  const C_FLOAT64 &getConvergenceTolerance() const;
+
+  /**
+  * Function to set mpFlagLimitConvergence
+  */
+  void setFlagLimitConvergence(bool flagLimitConvergence);
+
+  /**
+   * Function to set mpConvergenceTolerance
+   */
+  void setConvergenceTolerance(const C_FLOAT64 &convergenceTolerance);
+
+  /**
+   * Function to get mpFlagLimitOutConvergence
+   */
+  bool getFlagLimitOutConvergence() const;
+
+  /**
+   * Function to get mpConvergenceOutTolerance
+   */
+  const C_FLOAT64 &getConvergenceOutTolerance() const;
+
+  /**
+  * Function to set mpFlagLimitOutConvergence
+  */
+  void setFlagLimitOutConvergence(bool flagLimitConvergence);
+
+  /**
+   * Function to set mpConvergenceOutTolerance
+   */
+  void setConvergenceOutTolerance(const C_FLOAT64 &convergenceTolerance);
+
+  /**
    * Function to set mpFlagLimitCrossings
    */
   void setFlagLimitCrossings(bool flagLimitCrossing);
@@ -59,6 +109,16 @@ public:
    * Function to set mpCrossingsLimit
    */
   void setCrossingsLimit(const unsigned C_INT32 &crossingLimit);
+
+  /**
+   * Function to set mpFlagLimitOutCrossings
+   */
+  void setFlagLimitOutCrossings(bool flagLimitCrossing);
+
+  /**
+   * Function to set mpOutCrossingsLimit
+   */
+  void setOutCrossingsLimit(const unsigned C_INT32 &crossingLimit);
 
   /**
    * Function to set mpFlagLimitTime
@@ -96,9 +156,14 @@ private:
 
   //overload these member functions just to make sure they are not used in this
   //derived class
-  unsigned C_INT32 getStepNumber() const {return 0;}  
-  C_FLOAT64 getStepSize() const {return 0.0;}  
-    
+  unsigned C_INT32 getStepNumber() const {return 0;}
+  C_FLOAT64 getStepSize() const {return 0.0;}
+
+  /**
+   * Initialize the parameters
+   */
+  void initializeParameter();
+
   void initObjects();
 
   /**
@@ -116,6 +181,53 @@ private:
    * this member variable is mapped to a CCopasiParameter
    */
   unsigned C_INT32 * mpCrossingsLimit;
+
+  /**
+   * this flag indicates whether the calculation should be stopped when convergence is reached
+   *
+   * this member variable is mapped to a CCopasiParameter
+   */
+  bool * mpFlagLimitConvergence;
+
+  /**
+   * this variable indicates the tolerance after which the calculation should be considered
+   * converged
+   *
+   * this member variable is mapped to a CCopasiParameter
+   */
+  C_FLOAT64 * mpConvergenceTolerance;
+
+  /**
+   * this flag indicates whether the output should only be collected once
+   * convergence is reached
+   *
+   * this member variable is mapped to a CCopasiParameter
+   */
+  bool * mpFlagLimitOutConvergence;
+
+  /**
+   * this variable indicates the tolerance after which the calculation should be considered
+   * converged and output should commence
+   *
+   * this member variable is mapped to a CCopasiParameter
+   */
+  C_FLOAT64 * mpConvergenceOutTolerance;
+
+  /**
+  * this flag indicates whether the output should be collected after a given number
+  * of detected crossings
+  *
+  * this member variable is mapped to a CCopasiParameter
+  */
+  bool * mpFlagLimitOutCrossings;
+
+  /**
+   * this variable indicates after how many crossings the output should start
+   * if the corresponding flag is true.
+   *
+   * this member variable is mapped to a CCopasiParameter
+   */
+  unsigned C_INT32 * mpOutCrossingsLimit;
 
   /**
    * this flag indicates whether the calculation should be stopped after a given time.

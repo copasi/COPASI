@@ -80,12 +80,22 @@ void CQCrossSectionTaskWidget::init()
   mpValidatorLC->setRange(0, std::numeric_limits< int >::max());
   mpTxtCrossings->setValidator(mpValidatorLC);
 
-  mpValidatorLT = new CQValidatorDouble(mpTxtTime);
-  mpValidatorLT->setRange(0, std::numeric_limits< double >::max());
-  mpTxtTime->setValidator(mpValidatorLT);
+  mpValidatorTime = new CQValidatorDouble(mpTxtTime);
+  mpValidatorTime->setRange(0, std::numeric_limits< double >::max());
+  mpTxtTime->setValidator(mpValidatorTime);
 
-  mpValidator = new CQValidatorDouble(mpTxtOutTime);
-  mpTxtOutTime->setValidator(mpValidator);
+  mpValidatorOutTime = new CQValidatorDouble(mpTxtOutTime);
+  mpTxtOutTime->setValidator(mpValidatorOutTime);
+
+  mpValidatorTolerance = new CQValidatorDouble(mpTxtConvergence);
+  mpTxtConvergence->setValidator(mpValidatorTolerance);
+
+  mpValidatorOutLC = new CQValidatorInt(mpTxtOutCrossings);
+  mpValidatorOutLC->setRange(0, std::numeric_limits< int >::max());
+  mpTxtOutCrossings->setValidator(mpValidatorOutLC);
+
+  mpValidatorOutTolerance = new CQValidatorDouble(mpTxtOutConvergence);
+  mpTxtOutConvergence->setValidator(mpValidatorOutTolerance);
 }
 
 void CQCrossSectionTaskWidget::destroy()
@@ -93,13 +103,25 @@ void CQCrossSectionTaskWidget::destroy()
   pdelete(mpCrossSectionProblem);
 }
 
-void CQCrossSectionTaskWidget::validateInput()
+void CQCrossSectionTaskWidget::commitInput()
 {
+  if (!mpCrossSectionProblem) return;
+
+  mpCrossSectionProblem->setFlagLimitCrossings(mpCheckSimCrossings->isChecked());
+  mpCrossSectionProblem->setCrossingsLimit(mpTxtCrossings->text().toULong());
+  mpCrossSectionProblem->setFlagLimitOutCrossings(mpCheckOutputCrossings->isChecked());
+  mpCrossSectionProblem->setOutCrossingsLimit(mpTxtOutCrossings->text().toULong());
+  mpCrossSectionProblem->setTimeLimit(mpTxtTime->text().toDouble());
+  mpCrossSectionProblem->setOutputStartTime(mpTxtOutTime->text().toDouble());
+  mpCrossSectionProblem->setFlagLimitConvergence(mpCheckSimConvergence->isChecked());
+  mpCrossSectionProblem->setConvergenceTolerance(mpTxtConvergence->text().toDouble());
+  mpCrossSectionProblem->setFlagLimitOutConvergence(mpCheckOutputConvergence->isChecked());
+  mpCrossSectionProblem->setConvergenceOutTolerance(mpTxtOutConvergence->text().toDouble());
 }
 
 bool CQCrossSectionTaskWidget::runTask()
 {
-  validateInput();
+  commitInput();
 
   if (!commonBeforeRunTask()) return false;
 
@@ -140,10 +162,22 @@ bool CQCrossSectionTaskWidget::saveTask()
   if (mpCheckOutputDelay->isChecked())
     pProblem->setOutputStartTime(mpTxtOutTime->text().toDouble());
 
+  pProblem->setFlagLimitCrossings(mpCheckSimCrossings->isChecked());
+  pProblem->setCrossingsLimit(mpTxtCrossings->text().toULong());
+  pProblem->setFlagLimitOutCrossings(mpCheckOutputCrossings->isChecked());
+  pProblem->setOutCrossingsLimit(mpTxtOutCrossings->text().toULong());
+  pProblem->setFlagLimitConvergence(mpCheckSimConvergence->isChecked());
+  pProblem->setConvergenceTolerance(mpTxtConvergence->text().toDouble());
+  pProblem->setFlagLimitOutConvergence(mpCheckOutputConvergence->isChecked());
+  pProblem->setConvergenceOutTolerance(mpTxtOutConvergence->text().toDouble());
+
   mpValidatorCrossing->saved();
+  mpValidatorTolerance->saved();
+  mpValidatorOutTolerance->saved();
   mpValidatorLC->saved();
-  mpValidatorLT->saved();
-  mpValidator->saved();
+  mpValidatorOutLC->saved();
+  mpValidatorTime->saved();
+  mpValidatorOutTime->saved();
 
   return true;
 }
@@ -182,13 +216,37 @@ bool CQCrossSectionTaskWidget::loadTask()
 
   // load the saved values
 
-  mpCheckSimConvergence->setChecked(pProblem->getFlagLimitCrossings());
+  mpCheckSimConvergence->setChecked(pProblem->getFlagLimitConvergence());
+  mpTxtConvergence->setEnabled(pProblem->getFlagLimitConvergence());
+
+  if (pProblem->getFlagLimitConvergence())
+    mpTxtConvergence->setText(QString::number(pProblem->getConvergenceTolerance()));
+  else
+    mpTxtConvergence->setText("");
+
+  mpCheckOutputConvergence->setChecked(pProblem->getFlagLimitOutConvergence());
+  mpTxtOutConvergence->setEnabled(pProblem->getFlagLimitOutConvergence());
+
+  if (pProblem->getFlagLimitOutConvergence())
+    mpTxtOutConvergence->setText(QString::number(pProblem->getConvergenceOutTolerance()));
+  else
+    mpTxtOutConvergence->setText("");
+
+  mpCheckSimCrossings->setChecked(pProblem->getFlagLimitCrossings());
   mpTxtCrossings->setEnabled(pProblem->getFlagLimitCrossings());
 
   if (pProblem->getFlagLimitCrossings())
     mpTxtCrossings->setText(QString::number(pProblem->getCrossingsLimit()));
   else
     mpTxtCrossings->setText("");
+
+  mpCheckOutputCrossings->setChecked(pProblem->getFlagLimitOutCrossings());
+  mpTxtOutCrossings->setEnabled(pProblem->getFlagLimitOutCrossings());
+
+  if (pProblem->getFlagLimitOutCrossings())
+    mpTxtOutCrossings->setText(QString::number(pProblem->getOutCrossingsLimit()));
+  else
+    mpTxtOutCrossings->setText("");
 
   //mpCheckLT->setChecked(pProblem->getFlagLimitTime());
   mpTxtTime->setEnabled(pProblem->getFlagLimitTime());
@@ -212,9 +270,12 @@ bool CQCrossSectionTaskWidget::loadTask()
     }
 
   mpValidatorCrossing->saved();
+  mpValidatorTolerance->saved();
+  mpValidatorOutTolerance->saved();
   mpValidatorLC->saved();
-  mpValidatorLT->saved();
-  mpValidator->saved();
+  mpValidatorOutLC->saved();
+  mpValidatorTime->saved();
+  mpValidatorOutTime->saved();
 
   return true;
 }
@@ -239,6 +300,7 @@ void CQCrossSectionTaskWidget::slotChooseVariable()
 
 void CQCrossSectionTaskWidget::slotValueRate()
 {
+
   /*  // check validity
     QString yt = mpLineEditValue->text();
 
@@ -267,14 +329,12 @@ void CQCrossSectionTaskWidget::slotUpdateCrossings(bool b)
 {
   mpTxtCrossings->setEnabled(b);
 
-  //if (!b && !(mpCheckLT->isChecked()))
-//    mpCheckLT->setChecked(true);
-
   if (!mpTxtCrossings->hasAcceptableInput())
     return;
 
   try
     {
+      mpCrossSectionProblem->setFlagLimitCrossings(b);
       mpCrossSectionProblem->setCrossingsLimit(mpTxtCrossings->text().toULong());
     }
 
@@ -290,17 +350,14 @@ void CQCrossSectionTaskWidget::slotUpdateCrossings(bool b)
 
 void CQCrossSectionTaskWidget::slotUpdateConvergence(bool b)
 {
-  mpTxtTime->setEnabled(b);
+  mpTxtConvergence->setEnabled(b);
 
-  if (!b && !(mpCheckSimConvergence->isChecked()))
-    mpCheckSimConvergence->setChecked(true);
-
-  if (!mpTxtTime->hasAcceptableInput())
+  if (!mpTxtConvergence->hasAcceptableInput())
     return;
 
   try
     {
-      mpCrossSectionProblem->setTimeLimit(mpTxtTime->text().toDouble());
+      mpCrossSectionProblem->setConvergenceTolerance(mpTxtConvergence->text().toDouble());
     }
 
   catch (...)
@@ -337,36 +394,86 @@ void CQCrossSectionTaskWidget::slotOutputDelay(bool b)
 
 void CQCrossSectionTaskWidget::slotOutputCrossings(bool b)
 {
-  // TODO: Implement
+  mpTxtOutCrossings->setEnabled(b);
+
+  if (!mpTxtOutCrossings->hasAcceptableInput())
+    return;
+
+  try
+    {
+      mpCrossSectionProblem->setOutCrossingsLimit(mpTxtOutCrossings->text().toDouble());
+    }
+
+  catch (...)
+    {
+      CQMessageBox::information(this, QString("Information"),
+                                FROM_UTF8(CCopasiMessage::getAllMessageText()),
+                                QMessageBox::Ok, QMessageBox::Ok);
+    }
 }
 void CQCrossSectionTaskWidget::slotOutputConvergence(bool b)
 {
-  // TODO: Implement
+  mpTxtOutConvergence->setEnabled(b);
+
+  if (!mpTxtOutConvergence->hasAcceptableInput())
+    return;
+
+  try
+    {
+      mpCrossSectionProblem->setConvergenceOutTolerance(mpTxtOutConvergence->text().toDouble());
+    }
+
+  catch (...)
+    {
+      CQMessageBox::information(this, QString("Information"),
+                                FROM_UTF8(CCopasiMessage::getAllMessageText()),
+                                QMessageBox::Ok, QMessageBox::Ok);
+    }
 }
 
 void CQCrossSectionTaskWidget::slotUpdateTime()
 {
+  if (!mpTxtTime->hasAcceptableInput())
+    return;
+
+  commitInput();
+
   // TODO: Implement
 }
 void CQCrossSectionTaskWidget::slotUpdateConvergenceTolerance()
 {
+  if (!mpTxtConvergence->hasAcceptableInput())
+    return;
+
   // TODO: Implement
 }
 void CQCrossSectionTaskWidget::slotUpdateCrossingsLimit()
 {
+  if (!mpTxtCrossings->hasAcceptableInput())
+    return;
+
   // TODO: Implement
 }
 
 void CQCrossSectionTaskWidget::slotOutputConvergenceTolerance()
 {
+  if (!mpTxtOutConvergence->hasAcceptableInput())
+    return;
+
   // TODO: Implement
 }
 void CQCrossSectionTaskWidget::slotOutputCrossingsLimit()
 {
+  if (!mpTxtOutCrossings->hasAcceptableInput())
+    return;
+
   // TODO: Implement
 }
 void CQCrossSectionTaskWidget::slotOutputDelayTime()
 {
+  if (!mpTxtOutTime->hasAcceptableInput())
+    return;
+
   // TODO: Implement
 }
 
@@ -375,9 +482,18 @@ void CQCrossSectionTaskWidget::updateValues()
   mpTxtCrossings->setText(QString::number(mpCrossSectionProblem->getCrossingsLimit()));
   mpValidatorLC->revalidate();
 
+  mpTxtOutCrossings->setText(QString::number(mpCrossSectionProblem->getOutCrossingsLimit()));
+  mpValidatorOutLC->revalidate();
+
   mpTxtTime->setText(QString::number(mpCrossSectionProblem->getTimeLimit()));
-  mpValidatorLT->revalidate();
+  mpValidatorTime->revalidate();
 
   mpTxtOutTime->setText(QString::number(mpCrossSectionProblem->getOutputStartTime()));
-  mpValidator->revalidate();
+  mpValidatorOutTime->revalidate();
+
+  mpTxtConvergence->setText(QString::number(mpCrossSectionProblem->getConvergenceTolerance()));
+  mpValidatorTolerance->revalidate();
+
+  mpTxtOutConvergence->setText(QString::number(mpCrossSectionProblem->getConvergenceOutTolerance()));
+  mpValidatorOutTolerance->revalidate();
 }
