@@ -62,6 +62,10 @@
 #include "sbml/CCellDesignerImporter.h"
 #include "sbml/SBMLUtils.h"
 
+#if LIBSBML_VERSION >= 50400
+#include <sbml/packages/layout/extension/LayoutModelPlugin.h>
+#endif
+
 #endif // CELLDESIGNER_IMPORT
 
 //*****************************************************************************
@@ -683,8 +687,18 @@ void DataModelGUI::importCellDesigner()
                     }
                   else
                     {
+                      bool importCD = false;
+#if LIBSBML_VERSION >= 50400
+                      // if we don't have a layout import it!
+                      LayoutModelPlugin* mplugin = (LayoutModelPlugin*)pSBMLDocument->getModel()->getPlugin("layout");
+
+                      if (mplugin == NULL || (mplugin != NULL && mplugin->getNumLayouts() == 0))
+                        importCD = true;
+
+#endif
+
                       // ask the user if the CellDesigner annotation should be imported
-                      if (CQMessageBox::question(NULL, "CellDesigner import", "A CellDesigner diagram was found in this file.\nDo you want to import the diagram?" , QMessageBox::Yes | QMessageBox::No , QMessageBox::No) == QMessageBox::Yes)
+                      if (importCD || CQMessageBox::question(NULL, "CellDesigner import", "A CellDesigner diagram was found in this file.\nDo you want to import the diagram?" , QMessageBox::Yes | QMessageBox::No , QMessageBox::No) == QMessageBox::Yes)
                         {
                           // do the import
                           CCellDesignerImporter cd_importer(pSBMLDocument);
