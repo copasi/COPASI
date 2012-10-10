@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifdef WIN32
 # pragma warning (disable: 4786)
@@ -4261,52 +4261,57 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pS
       // check if there is already a multiplication with the avogadro number
       // if so, we just replace that multiplication instead of adding an additional division
       //
-      // we only do this, if there are two children to the multiplication because otherwise we would have to do sophisticated checks 
+      // we only do this, if there are two children to the multiplication because otherwise we would have to do sophisticated checks
       // whether the multiplication is really only between a certain species and the avogadro number
-      if(itNode->getType() == AST_TIMES && itNode->getNumChildren()==2)
-      {
-          std::set<const Parameter*>::const_iterator avoIt=this->mPotentialAvogadroNumbers.begin(); 
-          std::set<const Parameter*>::const_iterator avoEndit=this->mPotentialAvogadroNumbers.end(); 
+      if (itNode->getType() == AST_TIMES && itNode->getNumChildren() == 2)
+        {
+          std::set<const Parameter*>::const_iterator avoIt = this->mPotentialAvogadroNumbers.begin();
+          std::set<const Parameter*>::const_iterator avoEndit = this->mPotentialAvogadroNumbers.end();
           // check if one of the potantial avogrador numbers is a child to this multiplication
-          ASTNode* pChild1=itNode->getChild(0);
-          ASTNode* pChild2=itNode->getChild(1);
+          ASTNode* pChild1 = itNode->getChild(0);
+          ASTNode* pChild2 = itNode->getChild(1);
           assert(pChild1 != NULL);
           assert(pChild2 != NULL);
-          if(pChild1->getType() == AST_NAME && pChild2->getType() == AST_NAME)
-          {
-              std::string id1=pChild1->getName();
-              std::string id2=pChild2->getName();
-              ASTNode *pAvogadro=NULL, *pSpecies=NULL;
-              if(pChild1 != NULL && pChild2 != NULL)
-              {
-                  while(avoIt != avoEndit)
-                  {
-                      if(id1 == (*avoIt)->getId())
-                      {
-                          pAvogadro=pChild1;
-                          pSpecies=pChild2;
+
+          if (pChild1->getType() == AST_NAME && pChild2->getType() == AST_NAME)
+            {
+              std::string id1 = pChild1->getName();
+              std::string id2 = pChild2->getName();
+              ASTNode *pAvogadro = NULL, *pSpecies = NULL;
+
+              if (pChild1 != NULL && pChild2 != NULL)
+                {
+                  while (avoIt != avoEndit)
+                    {
+                      if (id1 == (*avoIt)->getId())
+                        {
+                          pAvogadro = pChild1;
+                          pSpecies = pChild2;
                           // store the id of the species in id1 for use below
-                          id1=id2;
+                          id1 = id2;
                           break;
-                      }
-                      else if(id2 == (*avoIt)->getId())
-                      {
-                          pAvogadro=pChild2;
-                          pSpecies=pChild1;
+                        }
+                      else if (id2 == (*avoIt)->getId())
+                        {
+                          pAvogadro = pChild2;
+                          pSpecies = pChild1;
                           break;
-                      }
+                        }
+
                       ++avoIt;
-                  }
-                  if(pAvogadro != NULL)
-                  {
+                    }
+
+                  if (pAvogadro != NULL)
+                    {
                       // check if the potential speices node is really a substance only species
                       //
                       std::map<Species*, Compartment*>::const_iterator it = this->mSubstanceOnlySpecies.begin();
                       std::map<Species*, Compartment*>::const_iterator endit = this->mSubstanceOnlySpecies.end();
-                      while(it != endit)
-                      {
-                          if(it->first->getId() == id1)
-                          {
+
+                      while (it != endit)
+                        {
+                          if (it->first->getId() == id1)
+                            {
                               // now we know that we can change the current node
                               // to represent the species
                               itNode->setType(AST_NAME);
@@ -4317,37 +4322,40 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pS
                               itNode->removeChild(0);
                               pdelete(pChild1);
                               pdelete(pChild2);
-                              break; 
-                          }
+                              break;
+                            }
+
                           ++it;
-                      }
-                  }
-              }
-          }
-          else if((pChild1->getType() == AST_NAME && (pChild2->getType() == AST_REAL || pChild2->getType() == AST_REAL_E)) ||
-                  (pChild2->getType() == AST_NAME && (pChild1->getType() == AST_REAL || pChild1->getType() == AST_REAL_E)))
-          {
+                        }
+                    }
+                }
+            }
+          else if ((pChild1->getType() == AST_NAME && (pChild2->getType() == AST_REAL || pChild2->getType() == AST_REAL_E)) ||
+                   (pChild2->getType() == AST_NAME && (pChild1->getType() == AST_REAL || pChild1->getType() == AST_REAL_E)))
+            {
               double value = 0.0;
               std::string id;
-              if(pChild1->getType() == AST_NAME)
-              {
-                  value=pChild2->getMantissa() * pow(10.0, (double)pChild2->getExponent());
-                  id=pChild1->getName();
-              }
+
+              if (pChild1->getType() == AST_NAME)
+                {
+                  value = pChild2->getMantissa() * pow(10.0, (double)pChild2->getExponent());
+                  id = pChild1->getName();
+                }
               else
-              {
-                  value=pChild1->getMantissa() * pow(10.0, (double)pChild1->getExponent());
-                  id=pChild2->getName();
-              }
+                {
+                  value = pChild1->getMantissa() * pow(10.0, (double)pChild1->getExponent());
+                  id = pChild2->getName();
+                }
 
               if (areApproximatelyEqual(factor, value, 1e-3))
-              {
+                {
                   std::map<Species*, Compartment*>::const_iterator it = this->mSubstanceOnlySpecies.begin();
                   std::map<Species*, Compartment*>::const_iterator endit = this->mSubstanceOnlySpecies.end();
-                  while(it != endit)
-                  {
-                      if(it->first->getId() == id)
-                      {
+
+                  while (it != endit)
+                    {
+                      if (it->first->getId() == id)
+                        {
                           // now we know that we can change the current node
                           // to represent the species
                           itNode->setType(AST_NAME);
@@ -4358,15 +4366,14 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pS
                           itNode->removeChild(0);
                           pdelete(pChild1);
                           pdelete(pChild2);
-                          break; 
-                      }
+                          break;
+                        }
+
                       ++it;
-                  }
-
-              }
-
-          }
-      }
+                    }
+                }
+            }
+        }
       else if (itNode->getType() == AST_NAME)
         {
           // check if pNode is a reference to a hasOnlySubstance species
@@ -8418,49 +8425,52 @@ void SBMLImporter::multiplySubstanceOnlySpeciesByVolume(ConverterASTNode* pASTNo
         }
 
       std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin(), endit = this->mSubstanceOnlySpecies.end();
-      
-      if (itNode->getType() == AST_DIVIDE)
-      {
-        // check if the first child is a has only substance species and the second
-        // is the compartment the species belongs to
-        // in that case, we just change the node to being the species node
-        assert(itNode->getNumChildren() == 2);
-        if(itNode->getNumChildren() == 2)
-        {
-            const ASTNode* pChild1=itNode->getChild(0);
-            const ASTNode* pChild2=itNode->getChild(1);
-            if(pChild1->getType() == AST_NAME && pChild2->getType() == AST_NAME)
-            {
-                std::string id = pChild1->getName();
 
-                while (it != endit)
+      if (itNode->getType() == AST_DIVIDE)
+        {
+          // check if the first child is a has only substance species and the second
+          // is the compartment the species belongs to
+          // in that case, we just change the node to being the species node
+          assert(itNode->getNumChildren() == 2);
+
+          if (itNode->getNumChildren() == 2)
+            {
+              const ASTNode* pChild1 = itNode->getChild(0);
+              const ASTNode* pChild2 = itNode->getChild(1);
+
+              if (pChild1->getType() == AST_NAME && pChild2->getType() == AST_NAME)
                 {
-                    if (it->first->getId() == id)
+                  std::string id = pChild1->getName();
+
+                  while (it != endit)
                     {
-                        break;
+                      if (it->first->getId() == id)
+                        {
+                          break;
+                        }
+
+                      ++it;
                     }
 
-                    ++it;
-                }
-                if(it != endit && it->second->getSpatialDimensions() != 0 && pChild2->getName() == it->second->getId()) 
-                {
-                    // change the current node to represent the species
-                    itNode->setType(AST_NAME);
-                    itNode->setName(pChild1->getName());
-                    itNode.skipChildren();
-                    // delete the children
-                    itNode->removeChild(1);
-                    itNode->removeChild(0);
-                    pdelete(pChild1);
-                    pdelete(pChild2);
+                  if (it != endit && it->second->getSpatialDimensions() != 0 && pChild2->getName() == it->second->getId())
+                    {
+                      // change the current node to represent the species
+                      itNode->setType(AST_NAME);
+                      itNode->setName(pChild1->getName());
+                      itNode.skipChildren();
+                      // delete the children
+                      itNode->removeChild(1);
+                      itNode->removeChild(0);
+                      pdelete(pChild1);
+                      pdelete(pChild2);
+                    }
                 }
             }
         }
-
-      }
       else if (itNode->getType() == AST_NAME)
         {
           std::string id = itNode->getName();
+
           while (it != endit)
             {
               if (it->first->getId() == id)
@@ -9760,55 +9770,72 @@ bool SBMLImporter::importNotes(CAnnotation* pAnno, const SBase* pSBase)
 {
   bool result = true;
 
-  if (pAnno != NULL && pSBase != NULL)
+  if (pAnno == NULL || pSBase == NULL)
+    return result;
+
+  if (pSBase->isSetNotes())
     {
-      if (pSBase->isSetNotes())
+
+      std::string s = const_cast<SBase*>(pSBase)->getNotesString();
+      size_t pos = s.find_first_not_of(" \n\t\r");
+
+      if (pos != std::string::npos)
         {
-          std::string s = const_cast<SBase*>(pSBase)->getNotesString();
-          size_t pos = s.find_first_not_of(" \n\t\r");
-
-          if (pos != std::string::npos)
+          // the getNotesString method from libsbml seems to add the
+          // <notes> tag to the string as well which is not OK, so we
+          // have to remove it again.
+          if (s.substr(pos, 6) == "<notes")
             {
-              // the getNotesString method from libsbml seems to add the
-              // <notes> tag to the string as well which is not OK, so we
-              // have to remove it again.
-              if (s.substr(pos, 6) == "<notes")
+              // find the closing bracket
+              size_t pos2 = s.find(">", pos);
+              assert(pos2 != std::string::npos);
+
+              if (pos2 != std::string::npos && pos2 != (s.length() - 1))
                 {
-                  // find the closing bracket
-                  size_t pos2 = s.find(">", pos);
-                  assert(pos2 != std::string::npos);
-
-                  if (pos2 != std::string::npos && pos2 != (s.length() - 1))
-                    {
-                      s = s.substr(pos2 + 1);
-                    }
-                  else
-                    {
-                      return false;
-                    }
-
-                  // also remove the closing </notes> tag
-                  pos = s.rfind("</notes>");
-                  assert(pos != std::string::npos);
-
-                  if (pos != std::string::npos)
-                    {
-                      s = s.substr(0, pos);
-                    }
-                  else
-                    {
-                      return false;
-                    }
+                  s = s.substr(pos2 + 1);
                 }
-              else if (s.substr(pos, 8) == "<notes/>")
+              else
                 {
-                  // the notes element is empty
-                  return true;
+                  return false;
+                }
+
+              // also remove the closing </notes> tag
+              pos = s.rfind("</notes>");
+              assert(pos != std::string::npos);
+
+              if (pos != std::string::npos)
+                {
+                  s = s.substr(0, pos);
+                }
+              else
+                {
+                  return false;
                 }
             }
-
-          pAnno->setNotes(s);
+          else if (s.substr(pos, 8) == "<notes/>")
+            {
+              // the notes element is empty
+              return true;
+            }
         }
+
+      pAnno->setNotes(s);
+    }
+
+  if (!pSBase->isSetAnnotation())
+    return result;
+
+  const XMLNode* node = const_cast<SBase*>(pSBase)->getAnnotation();
+
+  for (unsigned int i = 0; i < node->getNumChildren(); ++i)
+    {
+      const XMLNode& current = node->getChild(i);
+
+      // skip over all miriam and RDF stuff as that is handled elsewhere
+      if (current.getName() == "RDF" || current.getName() == "COPASI")
+        continue;
+
+      pAnno->addUnsupportedAnnotation(current.getNamespaceURI(current.getPrefix()), current.toXMLString());
     }
 
   return result;
