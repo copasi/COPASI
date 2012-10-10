@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.8 (Build 35) (http://www.copasi.org) at 2012-01-23 17:29:21 UTC -->
+<!-- generated with COPASI 4.9.37+ (Debug) (http://www.copasi.org) at 2012-10-09 17:37:15 UTC -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
-<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="1" versionMinor="0" versionDevel="35">
+<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="9" versionDevel="37" copasiSourcesModified="1">
   <ListOfFunctions>
     <Function key="Function_8" name="Henri-Michaelis-Menten (irreversible)" type="PreDefined" reversible="false">
       <MiriamAnnotation>
@@ -99,10 +99,10 @@ Reaction scheme where the products are created from the reactants and the change
         <ParameterDescription key="FunctionParameter_268" name="V" order="6" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_39" name="activated Transcription" type="UserDefined" reversible="unspecified">
+    <Function key="Function_41" name="activated Transcription" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_39">
+  <rdf:Description rdf:about="#Function_41">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2012-01-21T11:08:49Z</dcterms:W3CDTF>
@@ -662,12 +662,12 @@ Reaction scheme where the products are created from the reactants and the change
           <Product metabolite="Metabolite_10" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1653" name="k1" value="397.791"/>
+          <Constant key="Parameter_1641" name="k1" value="397.791"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1653"/>
+              <SourceParameter reference="Parameter_1641"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_0"/>
@@ -694,16 +694,16 @@ Reaction scheme where the products are created from the reactants and the change
           <Modifier metabolite="Metabolite_10" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_1654" name="k1" value="9.72168e-06"/>
-          <Constant key="Parameter_1655" name="k2" value="0.00146177"/>
+          <Constant key="Parameter_1642" name="k1" value="9.72168e-06"/>
+          <Constant key="Parameter_1643" name="k2" value="0.00146177"/>
         </ListOfConstants>
-        <KineticLaw function="Function_39">
+        <KineticLaw function="Function_41">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_273">
-              <SourceParameter reference="Parameter_1654"/>
+              <SourceParameter reference="Parameter_1642"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_269">
-              <SourceParameter reference="Parameter_1655"/>
+              <SourceParameter reference="Parameter_1643"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_265">
               <SourceParameter reference="Metabolite_10"/>
@@ -730,16 +730,16 @@ Reaction scheme where the products are created from the reactants and the change
           <Modifier metabolite="Metabolite_10" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_1658" name="k1" value="1.28007e-06"/>
-          <Constant key="Parameter_1657" name="k2" value="6.5932e-05"/>
+          <Constant key="Parameter_1644" name="k1" value="1.28007e-06"/>
+          <Constant key="Parameter_1645" name="k2" value="6.5932e-05"/>
         </ListOfConstants>
-        <KineticLaw function="Function_39">
+        <KineticLaw function="Function_41">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_273">
-              <SourceParameter reference="Parameter_1658"/>
+              <SourceParameter reference="Parameter_1644"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_269">
-              <SourceParameter reference="Parameter_1657"/>
+              <SourceParameter reference="Parameter_1645"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_265">
               <SourceParameter reference="Metabolite_10"/>
@@ -770,21 +770,21 @@ Reaction scheme where the products are created from the reactants and the change
           <Modifier metabolite="Metabolite_2" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_1659" name="Ki" value="0.136933"/>
-          <Constant key="Parameter_1656" name="Km" value="0.537842"/>
-          <Constant key="Parameter_1660" name="V" value="0.452475"/>
-          <Constant key="Parameter_1661" name="Ka" value="1.62456"/>
+          <Constant key="Parameter_1646" name="Ki" value="0.136933"/>
+          <Constant key="Parameter_1647" name="Km" value="0.537842"/>
+          <Constant key="Parameter_1648" name="V" value="0.452475"/>
+          <Constant key="Parameter_1649" name="Ka" value="1.62456"/>
         </ListOfConstants>
         <KineticLaw function="Function_40">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_254">
-              <SourceParameter reference="Parameter_1661"/>
+              <SourceParameter reference="Parameter_1649"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_264">
               <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_258">
-              <SourceParameter reference="Parameter_1659"/>
+              <SourceParameter reference="Parameter_1646"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_266">
               <SourceParameter reference="Metabolite_2"/>
@@ -793,10 +793,10 @@ Reaction scheme where the products are created from the reactants and the change
               <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_272">
-              <SourceParameter reference="Parameter_1656"/>
+              <SourceParameter reference="Parameter_1647"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_268">
-              <SourceParameter reference="Parameter_1660"/>
+              <SourceParameter reference="Parameter_1648"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -817,12 +817,12 @@ Reaction scheme where the products are created from the reactants and the change
           <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_1662" name="k1" value="0.280505"/>
+          <Constant key="Parameter_1650" name="k1" value="0.280505"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1662"/>
+              <SourceParameter reference="Parameter_1650"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_1"/>
@@ -850,8 +850,8 @@ Reaction scheme where the products are created from the reactants and the change
           <Product metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1663" name="V" value="0.0629"/>
-          <Constant key="Parameter_1664" name="Km" value="1.4"/>
+          <Constant key="Parameter_1651" name="V" value="0.0629"/>
+          <Constant key="Parameter_1652" name="Km" value="1.4"/>
         </ListOfConstants>
         <KineticLaw function="Function_8">
           <ListOfCallParameters>
@@ -886,12 +886,12 @@ Reaction scheme where the products are created from the reactants and the change
           <Product metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1665" name="k1" value="32.0219"/>
+          <Constant key="Parameter_1653" name="k1" value="32.0219"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1665"/>
+              <SourceParameter reference="Parameter_1653"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_4"/>
@@ -915,12 +915,12 @@ Reaction scheme where the products are created from the reactants and the change
           <Substrate metabolite="Metabolite_2" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_1666" name="k1" value="0.01"/>
+          <Constant key="Parameter_1654" name="k1" value="0.01"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1666"/>
+              <SourceParameter reference="Parameter_1654"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_2"/>
@@ -948,7 +948,7 @@ Reaction scheme where the products are created from the reactants and the change
           <Product metabolite="Metabolite_12" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1667" name="k1" value="10"/>
+          <Constant key="Parameter_1655" name="k1" value="10"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
@@ -978,12 +978,12 @@ Reaction scheme where the products are created from the reactants and the change
           <Substrate metabolite="Metabolite_11" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_1668" name="k1" value="0.000178022"/>
+          <Constant key="Parameter_1656" name="k1" value="0.000178022"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1668"/>
+              <SourceParameter reference="Parameter_1656"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_11"/>
@@ -1007,12 +1007,12 @@ Reaction scheme where the products are created from the reactants and the change
           <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_1669" name="k1" value="0.000678268"/>
+          <Constant key="Parameter_1657" name="k1" value="0.000678268"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1669"/>
+              <SourceParameter reference="Parameter_1657"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_5"/>
@@ -1040,12 +1040,12 @@ Reaction scheme where the products are created from the reactants and the change
           <Product metabolite="Metabolite_2" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1670" name="k1" value="90.8247"/>
+          <Constant key="Parameter_1658" name="k1" value="90.8247"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1670"/>
+              <SourceParameter reference="Parameter_1658"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_7"/>
@@ -1073,12 +1073,12 @@ Reaction scheme where the products are created from the reactants and the change
           <Product metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1671" name="k1" value="17.1575"/>
+          <Constant key="Parameter_1661" name="k1" value="17.1575"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1671"/>
+              <SourceParameter reference="Parameter_1661"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_8"/>
@@ -1105,8 +1105,8 @@ Reaction scheme where the products are created from the reactants and the change
           <Product metabolite="Metabolite_11" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1672" name="k1" value="0.00043"/>
-          <Constant key="Parameter_1673" name="k2" value="0"/>
+          <Constant key="Parameter_1660" name="k1" value="0.00043"/>
+          <Constant key="Parameter_1662" name="k2" value="0"/>
         </ListOfConstants>
         <KineticLaw function="Function_14">
           <ListOfCallParameters>
@@ -1141,12 +1141,12 @@ Reaction scheme where the products are created from the reactants and the change
           <Substrate metabolite="Metabolite_7" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_1674" name="k1" value="0.123098"/>
+          <Constant key="Parameter_1659" name="k1" value="0.123098"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1674"/>
+              <SourceParameter reference="Parameter_1659"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_7"/>
@@ -1170,12 +1170,12 @@ Reaction scheme where the products are created from the reactants and the change
           <Substrate metabolite="Metabolite_8" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_1675" name="k1" value="0.00756795"/>
+          <Constant key="Parameter_1663" name="k1" value="0.00756795"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1675"/>
+              <SourceParameter reference="Parameter_1663"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_8"/>
@@ -1199,12 +1199,12 @@ Reaction scheme where the products are created from the reactants and the change
           <Substrate metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_1678" name="k1" value="0.00109852"/>
+          <Constant key="Parameter_1664" name="k1" value="0.00109852"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1678"/>
+              <SourceParameter reference="Parameter_1664"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_9"/>
@@ -1231,8 +1231,8 @@ Reaction scheme where the products are created from the reactants and the change
           <Product metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1677" name="Km" value="0.1"/>
-          <Constant key="Parameter_1676" name="V" value="0.1"/>
+          <Constant key="Parameter_1665" name="Km" value="0.1"/>
+          <Constant key="Parameter_1666" name="V" value="0.1"/>
         </ListOfConstants>
         <KineticLaw function="Function_8">
           <ListOfCallParameters>
@@ -1267,12 +1267,12 @@ Reaction scheme where the products are created from the reactants and the change
           <Product metabolite="Metabolite_6" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1679" name="k1" value="0.000102889"/>
+          <Constant key="Parameter_1667" name="k1" value="0.000102889"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1679"/>
+              <SourceParameter reference="Parameter_1667"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_12"/>
@@ -1299,12 +1299,12 @@ Reaction scheme where the products are created from the reactants and the change
           <Product metabolite="Metabolite_7" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1680" name="k1" value="0.00529169"/>
+          <Constant key="Parameter_1668" name="k1" value="0.00529169"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1680"/>
+              <SourceParameter reference="Parameter_1668"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_13"/>
@@ -1328,12 +1328,12 @@ Reaction scheme where the products are created from the reactants and the change
           <Substrate metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_1683" name="k1" value="0.00291833"/>
+          <Constant key="Parameter_1669" name="k1" value="0.00291833"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1683"/>
+              <SourceParameter reference="Parameter_1669"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_13"/>
@@ -1357,12 +1357,12 @@ Reaction scheme where the products are created from the reactants and the change
           <Substrate metabolite="Metabolite_14" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_1682" name="k1" value="0.91516"/>
+          <Constant key="Parameter_1670" name="k1" value="0.91516"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1682"/>
+              <SourceParameter reference="Parameter_1670"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_14"/>
@@ -1389,12 +1389,12 @@ Reaction scheme where the products are created from the reactants and the change
           <Product metabolite="Metabolite_8" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1681" name="k1" value="0.106328"/>
+          <Constant key="Parameter_1671" name="k1" value="0.106328"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_1681"/>
+              <SourceParameter reference="Parameter_1671"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_14"/>
@@ -1404,9 +1404,11 @@ Reaction scheme where the products are created from the reactants and the change
       </Reaction>
     </ListOfReactions>
     <ListOfEvents>
-      <Event key="Event_0" name="TNFa_addition" order="1">
+      <Event key="Event_0" name="TNFa_addition" fireAtInitialTime="0" persistentTrigger="0">
         <MiriamAnnotation>
-<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:RDF
+   xmlns:dcterms="http://purl.org/dc/terms/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Event_0">
     <dcterms:created>
       <rdf:Description>
@@ -1415,6 +1417,7 @@ Reaction scheme where the products are created from the reactants and the change
     </dcterms:created>
   </rdf:Description>
 </rdf:RDF>
+
         </MiriamAnnotation>
         <TriggerExpression>
           &lt;CN=Root,Model=TNFa Signaling,Reference=Time&gt; &gt; 19800
@@ -1442,8 +1445,8 @@ Reaction scheme where the products are created from the reactants and the change
       <StateTemplateVariable objectReference="Metabolite_0"/>
       <StateTemplateVariable objectReference="Metabolite_12"/>
       <StateTemplateVariable objectReference="Metabolite_5"/>
-      <StateTemplateVariable objectReference="Metabolite_6"/>
       <StateTemplateVariable objectReference="Metabolite_10"/>
+      <StateTemplateVariable objectReference="Metabolite_6"/>
       <StateTemplateVariable objectReference="Metabolite_4"/>
       <StateTemplateVariable objectReference="ModelValue_1"/>
       <StateTemplateVariable objectReference="ModelValue_15"/>
@@ -1454,6 +1457,8 @@ Reaction scheme where the products are created from the reactants and the change
       <StateTemplateVariable objectReference="ModelValue_11"/>
       <StateTemplateVariable objectReference="ModelValue_16"/>
       <StateTemplateVariable objectReference="ModelValue_17"/>
+      <StateTemplateVariable objectReference="Compartment_0"/>
+      <StateTemplateVariable objectReference="Compartment_1"/>
       <StateTemplateVariable objectReference="ModelValue_0"/>
       <StateTemplateVariable objectReference="ModelValue_2"/>
       <StateTemplateVariable objectReference="ModelValue_3"/>
@@ -1464,16 +1469,14 @@ Reaction scheme where the products are created from the reactants and the change
       <StateTemplateVariable objectReference="ModelValue_13"/>
       <StateTemplateVariable objectReference="ModelValue_14"/>
       <StateTemplateVariable objectReference="ModelValue_18"/>
-      <StateTemplateVariable objectReference="Compartment_0"/>
-      <StateTemplateVariable objectReference="Compartment_1"/>
     </StateTemplate>
     <InitialState type="initialState">
-      0 1.531938968883519e+17 713096136148355.4 754660166455.7294 7.656966832286781e+16 0 2.408856716e+18 2.784168096507707e+17 30654305453337.11 10602806067548.65 -1.333888821666638e-14 -1.16069704765833e-08 0 2.408856716000054e+18 -5.632146318591533e-12 0 0 0.499671 0.4623219103095391 71.3178784418097 0 4.00000000000009 1.035765909811433e-56 1 1 173.4739701784136 1 16.27693 236.182 1 50000 1.66767 0.01 0.999342 19800 4 1 
+      0 1.531938968883519e+17 713096136148355.4 754660166455.7294 7.656966832286781e+16 0 2.408856716e+18 2.784168096507707e+17 30654305453337.11 10602806067548.65 -1.333888821666638e-14 -1.16069704765833e-08 0 -5.632146318591533e-12 2.408856716000054e+18 0 0 0.499671 0.4623219103095391 71.3178784418097 0 4.00000000000009 1.035765909811433e-56 1 1 4 1 173.4739701784136 1 16.27693 236.182 1 50000 1.66767 0.01 0.999342 19800 
     </InitialState>
   </Model>
   <ListOfTasks>
-    <Task key="Task_10" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
-      <Report reference="Report_7" target="" append="1"/>
+    <Task key="Task_12" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
+      <Report reference="Report_8" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="1"/>
         <Parameter name="StabilityAnalysisRequested" type="bool" value="1"/>
@@ -1490,8 +1493,8 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Maximum duration for backward integration" type="unsignedFloat" value="1000000"/>
       </Method>
     </Task>
-    <Task key="Task_9" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
-      <Report reference="Report_17" target="EventTest9.1.txt" append="0"/>
+    <Task key="Task_11" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
+      <Report reference="Report_18" target="EventTest9.1.txt" append="0" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="1440"/>
@@ -1502,12 +1505,12 @@ Reaction scheme where the products are created from the reactants and the change
       </Problem>
       <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
         <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
-        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-07"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-08"/>
         <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="1000"/>
       </Method>
     </Task>
-    <Task key="Task_8" name="Scan" type="scan" scheduled="false" updateModel="false">
+    <Task key="Task_10" name="Scan" type="scan" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="1"/>
         <ParameterGroup name="ScanItems">
@@ -1526,15 +1529,15 @@ Reaction scheme where the products are created from the reactants and the change
       <Method name="Scan Framework" type="ScanFramework">
       </Method>
     </Task>
-    <Task key="Task_7" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
-      <Report reference="Report_6" target="" append="1"/>
+    <Task key="Task_9" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
+      <Report reference="Report_7" target="" append="1" confirmOverwrite="0"/>
       <Problem>
       </Problem>
       <Method name="EFM Algorithm" type="EFMAlgorithm">
       </Method>
     </Task>
-    <Task key="Task_6" name="Optimization" type="optimization" scheduled="false" updateModel="false">
-      <Report reference="Report_5" target="" append="1"/>
+    <Task key="Task_8" name="Optimization" type="optimization" scheduled="false" updateModel="false">
+      <Report reference="Report_6" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Subtask" type="cn" value="CN=Root,Vector=TaskList[Steady-State]"/>
         <ParameterText name="ObjectiveExpression" type="expression">
@@ -1554,8 +1557,8 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_5" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
-      <Report reference="Report_4" target="V18_fit1_report_parameterEstimation.txt" append="1"/>
+    <Task key="Task_7" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
+      <Report reference="Report_5" target="V18_fit1_report_parameterEstimation.txt" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Maximize" type="bool" value="0"/>
         <Parameter name="Randomize Start Values" type="bool" value="0"/>
@@ -1581,17 +1584,17 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_4" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_3" target="" append="1"/>
+    <Task key="Task_6" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_4" target="" append="1" confirmOverwrite="0"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_10"/>
+        <Parameter name="Steady-State" type="key" value="Task_12"/>
       </Problem>
       <Method name="MCA Method (Reder)" type="MCAMethod(Reder)">
         <Parameter name="Modulation Factor" type="unsignedFloat" value="1e-09"/>
       </Method>
     </Task>
-    <Task key="Task_3" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
-      <Report reference="Report_2" target="" append="1"/>
+    <Task key="Task_5" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
+      <Report reference="Report_3" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="ExponentNumber" type="unsignedInteger" value="3"/>
         <Parameter name="DivergenceRequested" type="bool" value="1"/>
@@ -1605,8 +1608,8 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_2" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_1" target="" append="1"/>
+    <Task key="Task_4" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_2" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
@@ -1618,8 +1621,8 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Deuflhard Tolerance" type="unsignedFloat" value="1e-06"/>
       </Method>
     </Task>
-    <Task key="Task_1" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
-      <Report reference="Report_0" target="" append="1"/>
+    <Task key="Task_3" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
+      <Report reference="Report_1" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="SubtaskType" type="unsignedInteger" value="1"/>
         <ParameterGroup name="TargetFunctions">
@@ -1638,15 +1641,45 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Delta minimum" type="unsignedFloat" value="1e-12"/>
       </Method>
     </Task>
-    <Task key="Task_11" name="Moieties" type="moieties" scheduled="false" updateModel="false">
+    <Task key="Task_2" name="Moieties" type="moieties" scheduled="false" updateModel="false">
       <Problem>
       </Problem>
       <Method name="Householder Reduction" type="Householder">
       </Method>
     </Task>
+    <Task key="Task_1" name="Cross Section" type="crosssection" scheduled="false" updateModel="false">
+      <Problem>
+        <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
+        <Parameter name="StepSize" type="float" value="0.01"/>
+        <Parameter name="Duration" type="float" value="1"/>
+        <Parameter name="TimeSeriesRequested" type="bool" value="1"/>
+        <Parameter name="OutputStartTime" type="float" value="0"/>
+        <Parameter name="Output Event" type="bool" value="0"/>
+        <Parameter name="LimitCrossings" type="bool" value="0"/>
+        <Parameter name="NumCrossingsLimit" type="unsignedInteger" value="0"/>
+        <Parameter name="LimitTime" type="bool" value="1"/>
+        <ParameterText name="TriggerExpression" type="expression">
+          
+        </ParameterText>
+      </Problem>
+      <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
+        <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-06"/>
+        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
+        <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
+      </Method>
+    </Task>
+    <Task key="Task_13" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
+      <Report reference="Report_0" target="" append="1" confirmOverwrite="1"/>
+      <Problem>
+        <Parameter name="Steady-State" type="key" value="Task_12"/>
+      </Problem>
+      <Method name="Linear Noise Approximation" type="LinearNoiseApproximation">
+      </Method>
+    </Task>
   </ListOfTasks>
   <ListOfReports>
-    <Report key="Report_7" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
+    <Report key="Report_8" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1656,7 +1689,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Steady-State]"/>
       </Footer>
     </Report>
-    <Report key="Report_6" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
+    <Report key="Report_7" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1666,7 +1699,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_5" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
+    <Report key="Report_6" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1692,7 +1725,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Optimization],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_4" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
+    <Report key="Report_5" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1718,7 +1751,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_3" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_4" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1732,7 +1765,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_2" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
+    <Report key="Report_3" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1746,7 +1779,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_1" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_2" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1760,7 +1793,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_0" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
+    <Report key="Report_1" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1774,7 +1807,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Sensitivities],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_16" name="Linear Noise Approximation" taskType="" separator="&#x09;" precision="6">
+    <Report key="Report_0" name="Linear Noise Approximation" taskType="unset" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1786,7 +1819,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_17" name="Events" taskType="timeCourse" separator="&#x09;" precision="6">
+    <Report key="Report_18" name="Events" taskType="timeCourse" separator="&#x09;" precision="7">
       <Comment>
         A table of time, variable species concentrations, variable compartment volumes, and variable global quantity values.
       </Comment>
@@ -1825,192 +1858,288 @@ Reaction scheme where the products are created from the reactants and the change
       <Parameter name="log Y" type="bool" value="0"/>
       <ListOfPlotItems>
         <PlotItem name="[p65{cytoplasm}]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Compartments[cytoplasm],Vector=Metabolites[p65],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[IkBa_p]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Compartments[cytoplasm],Vector=Metabolites[IkBa_p],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[A20]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Compartments[cytoplasm],Vector=Metabolites[A20],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[IKKb]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Compartments[cytoplasm],Vector=Metabolites[IKKb],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[IKKb_p]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Compartments[cytoplasm],Vector=Metabolites[IKKb_p],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[TNFa]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Compartments[cytoplasm],Vector=Metabolites[TNFa],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[p65-IkB{cytoplasm}]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Compartments[cytoplasm],Vector=Metabolites[p65-IkB],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[A20_mRNA{cytoplasm}]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Compartments[cytoplasm],Vector=Metabolites[A20_mRNA],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[IkBa_mRNA{cytoplasm}]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Compartments[cytoplasm],Vector=Metabolites[IkBa_mRNA],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[IkBa{cytoplasm}]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Compartments[cytoplasm],Vector=Metabolites[IkBa],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[p65{nucleus}]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Compartments[nucleus],Vector=Metabolites[p65],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[IkBa{nucleus}]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Compartments[nucleus],Vector=Metabolites[IkBa],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[p65-IkB{nucleus}]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Compartments[nucleus],Vector=Metabolites[p65-IkB],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[A20_mRNA{nucleus}]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Compartments[nucleus],Vector=Metabolites[A20_mRNA],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[IkBa_mRNA{nucleus}]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Compartments[nucleus],Vector=Metabolites[IkBa_mRNA],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[V_IKK]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Values[V_IKK],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[A20]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Values[A20],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[IkBa]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Values[IkBa],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[pIkBa]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Values[pIkBa],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[p65]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Values[p65],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[pp65]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Values[pp65],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[k5]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Values[k5],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[A20_mRNA]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Values[A20_mRNA],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[IkBa_mRNA]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=TNFa Signaling,Vector=Values[IkBa_mRNA],Reference=Value"/>
