@@ -23,7 +23,6 @@ if [ -e ${GitTools}/.UpdateCopasiVersion ]; then
   . ${GitTools}/.UpdateCopasiVersion
 else
   lastCommit=
-  lastModified=
 fi
 
 localCommit=`git log -1 --pretty=%H`
@@ -37,7 +36,6 @@ fi
 
 # Save information about current run
 echo lastCommit=$localCommit > ${GitTools}/.UpdateCopasiVersion
-echo lastModified=$modified >> ${GitTools}/.UpdateCopasiVersion
 
 echo Updating ${GitTools}/../copasi/CopasiVersion.h
 
