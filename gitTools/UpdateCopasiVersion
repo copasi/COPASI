@@ -107,10 +107,6 @@ compatibility="${compatibility}${current_build}}"
 
 rm $$
 
-IFS=$(echo -en "\n\b")
-
-echo $buildList | grep ${localCommit}
-
 if [ "`echo $buildList | grep ${localCommit}`" -a $localChanges == 0 ]; then
   creator=copasi.org
   modified=false
@@ -119,6 +115,7 @@ else
   modified=true
 fi
 
+IFS=$(echo -en "\n\b")
 
 sed -e 's/COPASI_VERSION_MAJOR.*/COPASI_VERSION_MAJOR '$current_major'/' \
     -e 's/COPASI_VERSION_MINOR.*/COPASI_VERSION_MINOR '$current_minor'/' \
