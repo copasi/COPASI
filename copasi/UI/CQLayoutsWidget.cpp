@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.cpp,v $
-//   $Revision: 1.18 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/02 18:58:45 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -46,9 +38,8 @@
 # include "copasi/layoutUI/CQAutolayoutWizard.h"
 #endif // COPASI_AUTOLAYOUT
 
-
 CQLayoutsWidget::CQLayoutsWidget(QWidget* parent)
-    : CopasiWidget(parent)
+  : CopasiWidget(parent)
 {
   setupUi(this);
 
@@ -156,7 +147,6 @@ void CQLayoutsWidget::deleteSelectedLayouts()
   mpLayoutsDM->removeRows(mappedSelRows);
 }
 
-
 void CQLayoutsWidget::updateDeleteBtns()
 {
   mpBtnDelete->setEnabled(mpTblLayouts->selectionModel()->selectedRows().size() > 0);
@@ -171,7 +161,6 @@ bool CQLayoutsWidget::enterProtected()
       disconnect(mpTblLayouts->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
                  this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
     }
-
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CListOfLayouts * pListOfLayouts = (*CCopasiRootContainer::getDatamodelList())[0]->getListOfLayouts();
@@ -203,9 +192,8 @@ bool CQLayoutsWidget::enterProtected()
       // if this layout does not have an entry in the layout window map, add one
       if (pos == mLayoutWindowMap.end())
         {
-          mLayoutWindowMap.insert(std::pair<std::string, LayoutWindow*>((*it)->getKey(), NULL));
+          mLayoutWindowMap.insert(std::pair<std::string, LayoutWindow*>((*it)->getKey(), (LayoutWindow*)NULL));
         }
-
     }
 
   connect(mpTblLayouts->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
@@ -216,7 +204,6 @@ bool CQLayoutsWidget::enterProtected()
   return true;
 }
 
-
 void CQLayoutsWidget::showButtons()
 {
   int i, imax = mpLayoutsDM->rowCount();
@@ -226,7 +213,6 @@ void CQLayoutsWidget::showButtons()
       this->mpTblLayouts->openPersistentEditor(mpProxyModel->index(i, COL_SHOW, QModelIndex()));
     }
 }
-
 
 // virtual
 void CQLayoutsWidget::slotBtnNewClicked()
@@ -264,7 +250,6 @@ void CQLayoutsWidget::slotBtnNewClicked()
           // now we create the spring layout
           pWin->createSpringLayout(1000, 1);
         }
-
     }
   else
     {
@@ -280,7 +265,6 @@ void CQLayoutsWidget::slotBtnDeleteClicked()
   if (mpTblLayouts->hasFocus())
     {deleteSelectedLayouts();}
 }
-
 
 // virtual
 void CQLayoutsWidget::slotBtnClearClicked()
@@ -301,7 +285,6 @@ void CQLayoutsWidget::slotSelectionChanged(const QItemSelection & /* selected */
 {
   updateDeleteBtns();
 }
-
 
 // virtual
 void CQLayoutsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
@@ -330,7 +313,6 @@ void CQLayoutsWidget::slotFilterChanged()
   QRegExp regExp(mpLEFilter->text(), Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
 }
-
 
 /**
  * This creates a new layout window and return a pointer to it.
@@ -395,4 +377,3 @@ void CQLayoutsWidget::slotShowLayout(int row)
       //std::cerr << "Could not find layout." << std::endl;
     }
 }
-

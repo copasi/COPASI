@@ -307,12 +307,14 @@ if (LAPACK_USE_CLAPACK)
  if (EXISTS ${LAPACK_CLAPACK_LIBRARY})
 	set (CLAPACK_FOUND "yes")
  endif()
- if (EXISTS "${LAPACK_CLAPACK_INCLUDE_DIR}/f2c.h")
-   configure_file("${LAPACK_CLAPACK_INCLUDE_DIR}/f2c.h" "${CMAKE_SOURCE_DIR}/copasi/f2c.h")
-  endif()
-  if (EXISTS "${LAPACK_CLAPACK_INCLUDE_DIR}/clapack.h")
-   configure_file("${LAPACK_CLAPACK_INCLUDE_DIR}/clapack.h" "${CMAKE_SOURCE_DIR}/copasi/lapack.h")
-  endif()
+ 
+ # this should no longer be necessary
+ #if (EXISTS "${LAPACK_CLAPACK_INCLUDE_DIR}/f2c.h")
+ #  configure_file("${LAPACK_CLAPACK_INCLUDE_DIR}/f2c.h" "${CMAKE_SOURCE_DIR}/copasi/f2c.h")
+ # endif()
+ # if (EXISTS "${LAPACK_CLAPACK_INCLUDE_DIR}/clapack.h")
+ #  configure_file("${LAPACK_CLAPACK_INCLUDE_DIR}/clapack.h" "${CMAKE_SOURCE_DIR}/copasi/lapack.h")
+ # endif()
  
 endif()
 
