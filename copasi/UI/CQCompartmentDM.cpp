@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartmentDM.cpp,v $
-//   $Revision: 1.13 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/14 16:17:45 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -32,7 +24,7 @@
 #include "function/CExpression.h"
 
 CQCompartmentDM::CQCompartmentDM(QObject *parent)
-    : CQBaseDataModel(parent)
+  : CQBaseDataModel(parent)
 
 {
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
@@ -100,12 +92,16 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
             {
               case COL_ROW_NUMBER:
                 return QVariant(QString(""));
+
               case COL_NAME_COMPARTMENTS:
                 return QVariant(QString("New Compartment"));
+
               case COL_TYPE_COMPARTMENTS:
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[0]])));
+
               case COL_IVOLUME:
-                return QVariant(QString("1"));
+                return QVariant(QString::number(1.0, 'g', 10));
+
               default:
                 return QVariant(QString(""));
             }
@@ -206,20 +202,28 @@ QVariant CQCompartmentDM::headerData(int section, Qt::Orientation orientation,
         {
           case COL_ROW_NUMBER:
             return QVariant(QString("#"));
+
           case COL_NAME_COMPARTMENTS:
             return QVariant(QString("Name"));
+
           case COL_TYPE_COMPARTMENTS:
             return QVariant(QString("     Type     "));
+
           case COL_IVOLUME:
             return QVariant("Initial Volume" + ValueUnits);
+
           case COL_VOLUME:
             return QVariant("Volume" + ValueUnits);
+
           case COL_RATE_COMPARTMENTS:
             return QVariant("Rate" + RateUnits);
+
           case COL_IEXPRESSION_COMPARTMENTS:
             return QVariant("Initial Expression" + ValueUnits);
+
           case COL_EXPRESSION_COMPARTMENTS:
             return QVariant("Expression" + ExpressionUnits);
+
           default:
             return QVariant();
         }
