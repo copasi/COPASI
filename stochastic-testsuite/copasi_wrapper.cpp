@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.22 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/25 15:13:25 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -158,7 +150,6 @@ int main(int argc, char *argv[])
       //std::cout << "Copying pointer to " <<  argv[i]  << "." << std::endl;
     }
 
-
   try
     {
       // Create the global data model.
@@ -214,7 +205,6 @@ int main(int argc, char *argv[])
 
           pHeader->push_back(CCopasiStaticString(SBMLId).getCN());
           pBody->push_back(metabolites[j]->getObject(CCopasiObjectName("Reference=ParticleNumber"))->getCN());
-
         }
 
       // create a trajectory task
@@ -256,7 +246,7 @@ int main(int argc, char *argv[])
       pScanProblem->setSubtask(CCopasiTask::timeCourse);
       pScanProblem->createScanItem(CScanProblem::SCAN_REPEAT, repeats);
       pScanProblem->setOutputInSubtask(true);
-      pScanProblem->setAdjustInitialConditions(false);
+      pScanProblem->setContinueFromCurrentState(false);
 
       TaskList.remove("Scan");
       TaskList.add(pScanTask, true);
