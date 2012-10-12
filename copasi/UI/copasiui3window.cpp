@@ -1,9 +1,3 @@
-// Begin git Header 
-//   Commit: 0ab350ed839edac0770f83ff4bad128279a3513f 
-//   Author: Frank T. Bergmann fbergman@caltech.edu 
-//   Date: 2012-09-03 11:40:19 +0200 
-// End git Header 
-
 // Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -2450,6 +2444,31 @@ void CopasiUI3Window::dragEnterEvent(QDragEnterEvent *event)
     event->acceptProposedAction();
 }
 
+/**
+ * Utility function for guessing whether the file might
+ * be an SBML file. If soit should contain an SBML tag in the
+ * first couple of lines.
+ */
+bool isProabablySBML(QString &fileName)
+{
+  QFile file(fileName);
+
+  if (!file.open(QIODevice::ReadOnly))
+    return false;
+
+  for (int i = 0; i < 5; ++i)
+    {
+      QByteArray array = file.readLine();
+
+      if (QString(array).contains("<sbml"))
+        return true;
+    }
+
+  file.close();
+
+  return false;
+}
+
 void CopasiUI3Window::dropEvent(QDropEvent *event)
 {
   QList<QUrl> urls = event->mimeData()->urls();
@@ -2462,7 +2481,10 @@ void CopasiUI3Window::dropEvent(QDropEvent *event)
   if (fileName.isEmpty())
     return;
 
-  slotFileOpen(fileName);
+  if (isProabablySBML(fileName))
+    slotImportSBML(fileName);
+  else
+    slotFileOpen(fileName);
 }
 /**
  * The slider dialog has to be disabled before
