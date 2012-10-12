@@ -233,7 +233,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
           stepLimitReached = !mpTrajectory->process(false); //single step
         }
 
-      catch (CCopasiException & Exception)
+      catch (CCopasiException & /*Exception*/)
         {
           *mpSteadyState = *mpTrajectory->getState();
 

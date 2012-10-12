@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-//   $Revision: 1.77 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/07/03 22:48:37 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -49,39 +41,39 @@
 //  Default constructor
 CFitProblem::CFitProblem(const CCopasiTask::Type & type,
                          const CCopasiContainer * pParent):
-    COptProblem(type, pParent),
-    mpParmSteadyStateCN(NULL),
-    mpParmTimeCourseCN(NULL),
-    mpExperimentSet(NULL),
-    mpSteadyState(NULL),
-    mpTrajectory(NULL),
-    mExperimentUpdateMethods(0, 0),
-    mExperimentUndoMethods(0, 0),
-    mExperimentConstraints(0, 0),
-    mExperimentDependentValues(0),
+  COptProblem(type, pParent),
+  mpParmSteadyStateCN(NULL),
+  mpParmTimeCourseCN(NULL),
+  mpExperimentSet(NULL),
+  mpSteadyState(NULL),
+  mpTrajectory(NULL),
+  mExperimentUpdateMethods(0, 0),
+  mExperimentUndoMethods(0, 0),
+  mExperimentConstraints(0, 0),
+  mExperimentDependentValues(0),
 #ifdef COPASI_CROSSVALIDATION
-    mpCrossValidationSet(NULL),
-    mCrossValidationUpdateMethods(0, 0),
-    mCrossValidationConstraints(0, 0),
-    mCrossValidationDependentValues(0),
-    mCrossValidationSolutionValue(mWorstValue),
-    mCrossValidationRMS(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mCrossValidationSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mCrossValidationObjective(mWorstValue),
-    mThresholdCounter(0),
+  mpCrossValidationSet(NULL),
+  mCrossValidationUpdateMethods(0, 0),
+  mCrossValidationConstraints(0, 0),
+  mCrossValidationDependentValues(0),
+  mCrossValidationSolutionValue(mWorstValue),
+  mCrossValidationRMS(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+  mCrossValidationSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+  mCrossValidationObjective(mWorstValue),
+  mThresholdCounter(0),
 #endif // COPASI_CROSSVALIDATION
-    mpTrajectoryProblem(NULL),
-    mpInitialState(NULL),
-    mResiduals(0),
-    mRMS(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mParameterSD(0),
-    mFisher(0, 0),
-    mpFisherMatrixInterface(NULL),
-    mpFisherMatrix(NULL),
-    mCorrelation(0, 0),
-    mpCorrelationMatrixInterface(NULL),
-    mpCorrelationMatrix(NULL)
+  mpTrajectoryProblem(NULL),
+  mpInitialState(NULL),
+  mResiduals(0),
+  mRMS(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+  mSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+  mParameterSD(0),
+  mFisher(0, 0),
+  mpFisherMatrixInterface(NULL),
+  mpFisherMatrix(NULL),
+  mCorrelation(0, 0),
+  mpCorrelationMatrixInterface(NULL),
+  mpCorrelationMatrix(NULL)
 {
   initObjects();
   initializeParameter();
@@ -90,39 +82,39 @@ CFitProblem::CFitProblem(const CCopasiTask::Type & type,
 // copy constructor
 CFitProblem::CFitProblem(const CFitProblem& src,
                          const CCopasiContainer * pParent):
-    COptProblem(src, pParent),
-    mpParmSteadyStateCN(NULL),
-    mpParmTimeCourseCN(NULL),
-    mpExperimentSet(NULL),
-    mpSteadyState(NULL),
-    mpTrajectory(NULL),
-    mExperimentUpdateMethods(0, 0),
-    mExperimentUndoMethods(0, 0),
-    mExperimentConstraints(0, 0),
-    mExperimentDependentValues(src.mExperimentDependentValues),
+  COptProblem(src, pParent),
+  mpParmSteadyStateCN(NULL),
+  mpParmTimeCourseCN(NULL),
+  mpExperimentSet(NULL),
+  mpSteadyState(NULL),
+  mpTrajectory(NULL),
+  mExperimentUpdateMethods(0, 0),
+  mExperimentUndoMethods(0, 0),
+  mExperimentConstraints(0, 0),
+  mExperimentDependentValues(src.mExperimentDependentValues),
 #ifdef COPASI_CROSSVALIDATION
-    mpCrossValidationSet(NULL),
-    mCrossValidationUpdateMethods(0, 0),
-    mCrossValidationConstraints(0, 0),
-    mCrossValidationDependentValues(src.mCrossValidationDependentValues),
-    mCrossValidationSolutionValue(mWorstValue),
-    mCrossValidationRMS(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mCrossValidationSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mCrossValidationObjective(mWorstValue),
-    mThresholdCounter(0),
+  mpCrossValidationSet(NULL),
+  mCrossValidationUpdateMethods(0, 0),
+  mCrossValidationConstraints(0, 0),
+  mCrossValidationDependentValues(src.mCrossValidationDependentValues),
+  mCrossValidationSolutionValue(mWorstValue),
+  mCrossValidationRMS(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+  mCrossValidationSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+  mCrossValidationObjective(mWorstValue),
+  mThresholdCounter(0),
 #endif // COPASI_CROSSVALIDATION
-    mpTrajectoryProblem(NULL),
-    mpInitialState(NULL),
-    mResiduals(src.mResiduals),
-    mRMS(src.mRMS),
-    mSD(src.mSD),
-    mParameterSD(src.mParameterSD),
-    mFisher(src.mFisher),
-    mpFisherMatrixInterface(NULL),
-    mpFisherMatrix(NULL),
-    mCorrelation(src.mCorrelation),
-    mpCorrelationMatrixInterface(NULL),
-    mpCorrelationMatrix(NULL)
+  mpTrajectoryProblem(NULL),
+  mpInitialState(NULL),
+  mResiduals(src.mResiduals),
+  mRMS(src.mRMS),
+  mSD(src.mSD),
+  mParameterSD(src.mParameterSD),
+  mFisher(src.mFisher),
+  mpFisherMatrixInterface(NULL),
+  mpFisherMatrix(NULL),
+  mCorrelation(src.mCorrelation),
+  mpCorrelationMatrixInterface(NULL),
+  mpCorrelationMatrix(NULL)
 {
   initObjects();
   initializeParameter();
@@ -826,7 +818,7 @@ bool CFitProblem::calculate()
 
                             for (ic = 1; ic < numIntermediateSteps; ++ic)
                               {
-                                ttt = pExp->getTimeData()[j-1] + (pExp->getTimeData()[j] - pExp->getTimeData()[j-1]) * (C_FLOAT64(ic) / numIntermediateSteps);
+                                ttt = pExp->getTimeData()[j - 1] + (pExp->getTimeData()[j] - pExp->getTimeData()[j - 1]) * (C_FLOAT64(ic) / numIntermediateSteps);
                                 mpTrajectory->processStep(ttt);
                                 //save the simulation results in the experiment
                                 pExp->storeExtendedTimeSeriesData(ttt);
@@ -978,7 +970,6 @@ bool CFitProblem::restore(const bool & updateModel)
   if (mpTrajectoryProblem)
     *mpTrajectory->getProblem() = *mpTrajectoryProblem;
 
-
   success &= COptProblem::restore(updateModel);
 
   pdelete(mpTrajectoryProblem);
@@ -1006,8 +997,8 @@ void CFitProblem::printResult(std::ostream * ostream) const
 
   os << "Function Evaluations:\t" << mCounter << std::endl;
   os << "CPU Time [s]:\t"
-  << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
-  << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
+     << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
+     << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
   os << "Evaluations/Second [1/s]:\t" << mCounter / (C_FLOAT64)(CPUTime.getMilliSeconds() / 1e3) << std::endl;
   os << std::endl;
 
@@ -1079,7 +1070,6 @@ void CFitProblem::printResult(std::ostream * ostream) const
 
       os << "Correlation Matrix:" << std::endl;
       os << "  " << mCorrelation << std::endl;
-
     }
 }
 
@@ -1172,7 +1162,6 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   mStoreResults = true;
   calculate();
 
-
   // The statistics need to be calculated for the result, i.e., now.
   mpExperimentSet->calculateStatistics();
 
@@ -1218,7 +1207,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
           dyp.resize(imax, jmax);
         }
 
-      catch (CCopasiException & Exception)
+      catch (CCopasiException & /*Exception*/)
         {
           CalculateFIM = false;
         }
@@ -1233,7 +1222,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
           if (fabs(Current) > resolution)
             {
-              (*mUpdateMethods[i])(Current *(1.0 + factor));
+              (*mUpdateMethods[i])(Current * (1.0 + factor));
               Delta = 1.0 / (Current * factor);
             }
           else

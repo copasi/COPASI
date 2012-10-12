@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-//   $Revision: 1.69 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/22 17:08:47 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -53,23 +45,22 @@
 #include "plotUI/CopasiPlot.h"
 #include "plotUI/plotwindow.h"
 
-
 /*
  *  Constructs a TaskWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 TaskWidget::TaskWidget(QWidget* parent, const char* name, Qt::WFlags fl):
-    CopasiWidget(parent, name, fl),
-    mProgressBar(NULL),
-    mpHeaderWidget(NULL),
-    mpMethodWidget(NULL),
-    mpBtnWidget(NULL),
-    mpMethodLayout(NULL),
-    mpSpacer1(NULL),
-    mpSpacer2(NULL),
-    mpTask(NULL),
-    mpMethod(NULL),
-    mChanged(false)
+  CopasiWidget(parent, name, fl),
+  mProgressBar(NULL),
+  mpHeaderWidget(NULL),
+  mpMethodWidget(NULL),
+  mpBtnWidget(NULL),
+  mpMethodLayout(NULL),
+  mpSpacer1(NULL),
+  mpSpacer2(NULL),
+  mpTask(NULL),
+  mpMethod(NULL),
+  mChanged(false)
 {
   if (!name)
     setObjectName("TaskWidget");
@@ -340,13 +331,13 @@ bool TaskWidget::commonBeforeRunTask()
   if (!mpTask->getReport().getTarget().empty() &&
       mpTask->getReport().confirmOverwrite() &&
       QFile(mpTask->getReport().getTarget().c_str()).exists())
-      {
+    {
       if (QMessageBox::question(this,
-          QString("Confirm Overwrite"),
-          QString("The report file already exists. Would you like to overwrite it? \n\n(You can disable this dialog by clicking the 'Report' button.)"),
-          QMessageBox::Yes, QMessageBox::No) == QMessageBox::No )
-          return false;
-      }
+                                QString("Confirm Overwrite"),
+                                QString("The report file already exists. Would you like to overwrite it? \n\n(You can disable this dialog by clicking the 'Report' button.)"),
+                                QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+        return false;
+    }
 
   //set mouse cursor
   setCursor(Qt::WaitCursor);
@@ -404,7 +395,7 @@ bool TaskWidget::commonRunTask()
         throw CCopasiException(CCopasiMessage::peekLastMessage());
     }
 
-  catch (CCopasiException & Exception)
+  catch (CCopasiException & /*Exception*/)
     {
       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
         {
@@ -478,7 +469,7 @@ void TaskWidget::finishTask()
 
   try {mpTask->restore();}
 
-  catch (CCopasiException & Exception)
+  catch (CCopasiException & /*Exception*/)
     {
       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
         {
@@ -525,6 +516,7 @@ bool TaskWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UN
     {
       case ListViews::MODEL:
         break;
+
       default:
         break;
     }
