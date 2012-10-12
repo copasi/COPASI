@@ -4007,12 +4007,6 @@ void CSBMLExporter::updateCOPASI2SBMLMap(const CCopasiDataModel& dataModel)
 
   while (it != endit)
     {
-      if (it->second == NULL)
-        {
-          ++it;
-          continue;
-        }
-
       std::map<std::string, const SBase*>::iterator pos = this->mIdMap.find(it->second->getId());
 
       if (pos != this->mIdMap.end())
