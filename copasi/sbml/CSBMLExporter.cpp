@@ -4001,11 +4001,18 @@ void CSBMLExporter::updateCOPASI2SBMLMap(const CCopasiDataModel& dataModel)
   // objects updated with objects from the copied
   // model
   this->mCOPASI2SBMLMap.clear();
-  std::map<CCopasiObject*, SBase*>::const_iterator it = const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap().begin();
-  std::map<CCopasiObject*, SBase*>::const_iterator endit = const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap().end();
+  std::map<CCopasiObject*, SBase*>& modelMap = const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap();
+  std::map<CCopasiObject*, SBase*>::const_iterator it = modelMap.begin();
+  std::map<CCopasiObject*, SBase*>::const_iterator endit = modelMap.end();
 
   while (it != endit)
     {
+      if (it->second == NULL)
+        {
+          ++it;
+          continue;
+        }
+
       std::map<std::string, const SBase*>::iterator pos = this->mIdMap.find(it->second->getId());
 
       if (pos != this->mIdMap.end())

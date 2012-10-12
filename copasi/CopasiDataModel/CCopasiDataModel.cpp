@@ -1562,6 +1562,7 @@ CCopasiDataModel::CData & CCopasiDataModel::CData::operator = (const CData & rhs
   mAutoSaveNeeded = rhs.mAutoSaveNeeded;
   mSBMLFileName = rhs.mSBMLFileName;
   mReferenceDir = rhs.mReferenceDir;
+  mCopasi2SBMLMap = rhs.mCopasi2SBMLMap;
 
   return *this;
 }
