@@ -69,6 +69,7 @@
 #endif // COPASI_AUTOLAYOUT
 
 #include "../UI/icons/photo.xpm"
+#include "resourcesUI/CQIconResource.h"
 #include "revert_curve.xpm"
 #include "film_strip.xpm"
 #include "graph.xpm"
@@ -107,6 +108,11 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   , mpStopLayoutAction(NULL)
 #endif //  COPASI_AUTOLAYOUT
 {
+
+#ifndef Darwin
+  setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
+#endif // not Darwin
+
   // first we load the default styles if they don't already exist
   if (DEFAULT_STYLES == NULL)
     {

@@ -31,6 +31,7 @@ class CCopasiContainer;
 class COutputHandlerPlot;
 class CopasiUI3Window;
 class QMenu;
+class QAction;
 
 class PlotWindow : public QMainWindow, public COutputInterface
 {
@@ -43,6 +44,11 @@ private:
   COutputHandlerPlot *mpHandler;
   CopasiUI3Window * mpMainWindow;
   QMenu* mpWindowMenu;
+
+  QAction *mpaToggleLogX;
+  QAction *mpaToggleLogY;
+
+  bool initializing;
 
   void createToolBar();
   void createActions();
@@ -110,6 +116,12 @@ private slots:
   //void enableZoom();
 
   //void mouseReleased(const QMouseEvent &e);
+
+  // toggle log X
+  void toggleLogX(bool);
+
+  // toggle log Y
+  void toggleLogY(bool);
 
   // Print the plot to printer
   void printPlot();

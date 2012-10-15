@@ -30,10 +30,14 @@
 #include "UI/copasiui3window.h"
 #include "UI/CQMessageBox.h"
 #include "UI/qtUtilities.h"
+#include "resourcesUI/CQIconResource.h"
 
 #ifdef DEBUG_UI
 #include <QtDebug>
 #endif
+
+#include <qwt_plot.h>
+#include <qwt_scale_engine.h>
 
 // taken from qwt examples/bode
 class PrintFilter: public QwtPlotPrintFilter
@@ -55,10 +59,17 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
   mpPlot(NULL),
   mpHandler(pHandler),
   mpMainWindow(pMainWindow),
-  mpWindowMenu(NULL)
+  mpWindowMenu(NULL),
+  mpaToggleLogX(NULL),
+  mpaToggleLogY(NULL),
+  initializing(false)
 {
   this->resize(640, 480);
   this->setWindowTitle(("COPASI Plot: " + ptrSpec->getTitle()).c_str());
+
+#ifndef Darwin
+  setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
+#endif // not Darwin
 
   // set up the GUI - the toolbar
   createActions();
@@ -80,6 +91,16 @@ QMenu *PlotWindow::getMenu() const
 
 void PlotWindow::createActions()
 {
+  mpaToggleLogX = new QAction("Log &X", this);
+  mpaToggleLogX->setCheckable(true);
+  mpaToggleLogX->setToolTip("Toggle x-axis logscale.");
+  connect(mpaToggleLogX, SIGNAL(toggled(bool)), this, SLOT(toggleLogX(bool)));
+
+  mpaToggleLogY = new QAction("Log &Y", this);
+  mpaToggleLogY->setCheckable(true);
+  mpaToggleLogY->setToolTip("Toggle y-axis logscale.");
+  connect(mpaToggleLogY, SIGNAL(toggled(bool)), this, SLOT(toggleLogY(bool)));
+
   printButton = new QToolButton;
   printButton -> setToolTip("Print Plot");
   printButton -> setText("Print");
@@ -121,6 +142,10 @@ void PlotWindow::createToolBar()
   plotTools->addWidget(zoomButton);
 
   plotTools->addSeparator();
+  plotTools->addAction(mpaToggleLogX);
+  plotTools->addAction(mpaToggleLogY);
+
+  plotTools->addSeparator();
 
   plotTools->addWidget(mpSelectAll);
   plotTools->addWidget(mpDeselectAll);
@@ -141,7 +166,57 @@ void PlotWindow::createToolBar()
 bool PlotWindow::initFromSpec(const CPlotSpecification* ptrSpec)
 {
   this->setWindowTitle(("COPASI Plot: " + ptrSpec->getTitle()).c_str());
-  return mpPlot->initFromSpec(ptrSpec);
+  bool result = mpPlot->initFromSpec(ptrSpec);
+
+  if (result)
+    {
+      initializing  = true;
+      mpaToggleLogX->setChecked(ptrSpec->isLogX());
+      mpaToggleLogY->setChecked(ptrSpec->isLogY());
+      initializing = false;
+    }
+
+  return result;
+}
+
+// toggle log X
+void PlotWindow::toggleLogX(bool logX)
+{
+  if (initializing) return;
+
+  if (logX)
+    {
+      mpPlot->setAxisScaleEngine(QwtPlot::xBottom, new QwtLog10ScaleEngine());
+    }
+  else
+    {
+      mpPlot->setAxisScaleEngine(QwtPlot::xBottom, new QwtLinearScaleEngine());
+    }
+
+  mpPlot->setAxisAutoScale(QwtPlot::xBottom);
+  mpPlot->updateAxes();
+  mpPlot->replot();
+  mpPlot->update();
+}
+
+// toggle log Y
+void PlotWindow::toggleLogY(bool logY)
+{
+  if (initializing) return;
+
+  if (logY)
+    {
+      mpPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLog10ScaleEngine());
+    }
+  else
+    {
+      mpPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine());
+    }
+
+  mpPlot->setAxisAutoScale(QwtPlot::yLeft);
+  mpPlot->updateAxes();
+  mpPlot->replot();
+  mpPlot->update();
 }
 
 //-----------------------------------------------------------------------------

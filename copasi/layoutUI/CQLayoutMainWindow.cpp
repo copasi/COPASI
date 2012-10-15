@@ -1,24 +1,17 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.111 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/05/10 08:36:34 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
 #include "CQLayoutMainWindow.h"
 
 #include <QAction>
@@ -62,6 +55,8 @@
 #include "load_data.xpm"
 #endif // USE_CRENDER_EXTENSION
 
+#include "resourcesUI/CQIconResource.h"
+
 #ifdef DEBUG_UI
 #include <QtDebug>
 #endif
@@ -71,33 +66,37 @@ using namespace std;
 const char* const CQLayoutMainWindow::ZOOM_FACTOR_STRINGS[] = {"1%", "2%", "3%", "4%", "5%", "10%", "20%", "25%", "30%", "40%", "50%", "75%", "100%", "150%", "200%", "300%", "400%", "500%", "1000%"};
 const double CQLayoutMainWindow::ZOOM_FACTORS[] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
 
-
 #ifndef USE_CRENDER_EXTENSION
 CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout):
-    QMainWindow(NULL)
+  QMainWindow(NULL)
 #else
 CQLayoutMainWindow::CQLayoutMainWindow(QWidget* pParent):
-    QFrame(pParent)
+  QFrame(pParent)
 #endif // USE_CRENDER_EXTENSION
-    , mpVisParameters(new CVisParameters)
-    , mpParaPanel(new CQParaPanel)
-    , mpValTable(new CQCurrentValueTable)
-    , mpMainBox(new QFrame(this))
-    , mpSplitter(new QSplitter(Qt::Horizontal, this->mpMainBox))
-    , mpGLViewport(NULL)
-    , mpTimeSlider(new QwtSlider(NULL, Qt::Horizontal, QwtSlider::BottomScale, QwtSlider::BgTrough))
-    , mpFrame(new QFrame)
-    , mpInfoBox(new QFrame)
-    , mpControlWidget(new CQPlayerControlWidget)
-    , mDataPresent(false)
-    , mCurrentPlace(QString::null)
-    , mpZoomActionGroup(new QActionGroup(this))
+  , mpVisParameters(new CVisParameters)
+  , mpParaPanel(new CQParaPanel)
+  , mpValTable(new CQCurrentValueTable)
+  , mpMainBox(new QFrame(this))
+  , mpSplitter(new QSplitter(Qt::Horizontal, this->mpMainBox))
+  , mpGLViewport(NULL)
+  , mpTimeSlider(new QwtSlider(NULL, Qt::Horizontal, QwtSlider::BottomScale, QwtSlider::BgTrough))
+  , mpFrame(new QFrame)
+  , mpInfoBox(new QFrame)
+  , mpControlWidget(new CQPlayerControlWidget)
+  , mDataPresent(false)
+  , mCurrentPlace(QString::null)
+  , mpZoomActionGroup(new QActionGroup(this))
 #ifdef USE_CRENDER_EXTENSION
-    , mpLayout(NULL)
+  , mpLayout(NULL)
 #else
-    , mpLayout(pLayout)
+  , mpLayout(pLayout)
 #endif // USE_CRENDER_EXTENSION
 {
+
+#ifndef Darwin
+  setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
+#endif // not Darwin
+
 #ifndef USE_CRENDER_EXTENSION
   this->setWindowTitle(tr("Reaction network graph"));
   this->setCentralWidget(mpMainBox);
@@ -638,7 +637,8 @@ void CQLayoutMainWindow::startAnimation()
     this->loadData(); // look for data
 
   if (this->mDataPresent)
-    {// only if time series data present
+    {
+      // only if time series data present
       this->mpVisParameters->mAnimationRunning = true;
       this->mpTimeSlider->setEnabled(false);
       this->mpGLViewport->getPainter()->runAnimation();
@@ -713,6 +713,7 @@ void CQLayoutMainWindow::saveImage()
                       }
 
                     break;
+
                   case CQScreenshotOptionsDialog::USER_DEFINED_FRAMES:
                     v.insert(v.begin(), pDialog->getFrameSet().begin(), pDialog->getFrameSet().end());
 
@@ -725,6 +726,7 @@ void CQLayoutMainWindow::saveImage()
                       }
 
                     break;
+
                   default:
                     v.push_back(step);
                     break;
@@ -976,7 +978,6 @@ bool CQLayoutMainWindow::maybeSave()
   return true;
 }
 
-
 /**
  * Make the layout fit the screen.
  * Return the new zoom factor.
@@ -1009,11 +1010,11 @@ double CQLayoutMainWindow::slotFitToScreen()
 
   if (this->mpZoomComboBox->count() > n)
     {
-      this->mpZoomComboBox->setItemText(0, QString("%1").arg(zoom*100).append("%"));
+      this->mpZoomComboBox->setItemText(0, QString("%1").arg(zoom * 100).append("%"));
     }
   else
     {
-      this->mpZoomComboBox->insertItem(0, QString("%1").arg(zoom*100).append("%"));
+      this->mpZoomComboBox->insertItem(0, QString("%1").arg(zoom * 100).append("%"));
     }
 
   this->mpZoomComboBox->setCurrentIndex(0);
