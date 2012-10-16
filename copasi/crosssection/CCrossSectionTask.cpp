@@ -273,13 +273,18 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
     {
       // TODO Provide a call back method for resolving simultaneous assignments.
         pModel->getMathModel()->getProcessQueue().printDebug();
-      StateChanged |= pModel->processQueue(*mpCurrentTime, false, NULL);
+      
+        //execute events for inequalities
+        StateChanged |= pModel->processQueue(*mpCurrentTime, false, NULL);
         pModel->getMathModel()->getProcessQueue().printDebug();
 
       if (StateChanged)
         {
           if (mOutputStartTime <= *mpCurrentTime )
             {
+              //this output is done when an event from an 
+              //inequality was executed and changed the state;
+              //after execution
               output(COutputInterface::DURING);
             }
 
@@ -304,6 +309,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
               }
 
             // TODO Provide a call back method for resolving simultaneous assignments.
+                //execute events for equalities
             StateChanged |= pModel->processQueue(*mpCurrentTime, true, NULL);
 
             if (fabs(*mpCurrentTime - endTime) < Tolerance)
@@ -318,16 +324,23 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
             break;
 
           case CTrajectoryMethod::ROOT:
+                //we arrive here whenever the integrator finds a root
+                //this does not necessarily mean an event fires
             pModel->setState(*mpCurrentState);
             pModel->updateSimulatedValues(mUpdateMoieties);
 
                 pModel->getMathModel()->getProcessQueue().printDebug();
-            pModel->processRoots(*mpCurrentTime, true, true, mpTrajectoryMethod->getRoots());
+           
+                //this checks whether equality events are triggered
+                pModel->processRoots(*mpCurrentTime, true, true, mpTrajectoryMethod->getRoots());
                 pModel->getMathModel()->getProcessQueue().printDebug();
 
             if ((mOutputStartTime <= *mpCurrentTime) &&
                 *mpCurrentTime == pModel->getProcessQueueExecutionTime() )
               {
+                //this output is done when an event from an equality 
+                  //is scheduled in the queue
+                  //for the current time; befor the execution of the event
                 output(COutputInterface::DURING);
               }
 
@@ -335,6 +348,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
             StateChanged |= pModel->processQueue(*mpCurrentTime, true, NULL);
 
                 pModel->getMathModel()->getProcessQueue().printDebug();
+                //this checks whether inequality events are triggered
             pModel->processRoots(*mpCurrentTime, false, true, mpTrajectoryMethod->getRoots());
                 pModel->getMathModel()->getProcessQueue().printDebug();
 
@@ -356,6 +370,10 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
                 (StateChanged ||
                  *mpCurrentTime == pModel->getProcessQueueExecutionTime()))
               {
+                  //this output is done when an event was executed from an
+                  //equality or when an event from an inequality
+                  //is scheduled in the queue 
+                  //for the current time; befor the execution of this event
                 output(COutputInterface::DURING);
               }
 
