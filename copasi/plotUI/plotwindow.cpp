@@ -60,6 +60,13 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
   mpHandler(pHandler),
   mpMainWindow(pMainWindow),
   mpWindowMenu(NULL),
+  mpaCloseWindow(NULL),
+  mpaShowAll(NULL),
+  mpaHideAll(NULL),
+  mpaPrint(NULL),
+  mpaSaveImage(NULL),
+  mpaSaveData(NULL),
+  mpaZoomOut(NULL),
   mpaToggleLogX(NULL),
   mpaToggleLogY(NULL),
   initializing(false)
@@ -73,18 +80,37 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
 
   // set up the GUI - the toolbar
   createActions();
+  createMenus();
   createToolBar();
 
   mpPlot = new CopasiPlot(ptrSpec, this);
   setCentralWidget(mpPlot);
 
-  // add a place holder menu, to be filled by the main window
-  mpWindowMenu = menuBar()->addMenu("Window");
-
   mpMainWindow->addWindow(this);
 }
 
-QMenu *PlotWindow::getMenu() const
+void PlotWindow::createMenus()
+{
+  QMenu *fileMenu = menuBar()->addMenu("&File");
+  fileMenu->addAction(mpaSaveImage);
+  fileMenu->addAction(mpaSaveData);
+  fileMenu->addAction(mpaPrint);
+  fileMenu->addSeparator();
+  fileMenu->addAction(mpaCloseWindow);
+
+  QMenu *viewMenu = menuBar()->addMenu("&View");
+  viewMenu->addAction(mpaShowAll);
+  viewMenu->addAction(mpaHideAll);
+  viewMenu->addSeparator();
+  viewMenu->addAction(mpaToggleLogX);
+  viewMenu->addAction(mpaToggleLogY);
+  viewMenu->addSeparator();
+  viewMenu->addAction(mpaZoomOut);
+
+  // add a place holder menu, to be filled by the main window
+  mpWindowMenu = menuBar()->addMenu("Window");
+}
+QMenu *PlotWindow::getWindowMenu() const
 {
   return mpWindowMenu;
 }
@@ -101,45 +127,50 @@ void PlotWindow::createActions()
   mpaToggleLogY->setToolTip("Toggle y-axis logscale.");
   connect(mpaToggleLogY, SIGNAL(toggled(bool)), this, SLOT(toggleLogY(bool)));
 
-  printButton = new QToolButton;
-  printButton -> setToolTip("Print Plot");
-  printButton -> setText("Print");
-  connect(printButton, SIGNAL(clicked()), this, SLOT(printPlot()));
+  mpaPrint = new QAction("Print", this);
+  mpaPrint ->setToolTip("Print Plot");
+  mpaPrint -> setShortcut(Qt::CTRL + Qt::Key_P);
+  connect(mpaPrint, SIGNAL(triggered()), this, SLOT(printPlot()));
 
-  print2Button = new QToolButton;
-  print2Button -> setToolTip("Print Image");
-  print2Button -> setText("Save Image");
-  connect(print2Button, SIGNAL(clicked()), this, SLOT(printAsImage()));
+  mpaSaveImage = new QAction("Save Image", this);
+  mpaSaveImage ->setShortcut(Qt::CTRL + Qt::Key_S);
+  mpaSaveImage ->setToolTip("Save Plot as Image");
+  connect(mpaSaveImage, SIGNAL(triggered()), this, SLOT(printAsImage()));
 
-  saveButton = new QToolButton;
-  saveButton -> setToolTip("Save Data");
-  saveButton -> setText("Save Data");
-  connect(saveButton, SIGNAL(clicked()), this, SLOT(slotSaveData()));
+  mpaSaveData = new QAction("Save Data", this);
+  mpaSaveData ->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_S);
+  mpaSaveData ->setToolTip("Save Data");
+  connect(mpaSaveData, SIGNAL(triggered()), this, SLOT(slotSaveData()));
 
-  zoomButton = new QToolButton;
-  zoomButton->setToolTip("Zoom out");
-  zoomButton->setText("Zoom out");
-  connect(zoomButton, SIGNAL(clicked()), this, SLOT(slotZoomOut()));
+  mpaZoomOut = new QAction("Zoom out", this);
+  mpaZoomOut ->setShortcut(Qt::CTRL + Qt::Key_0);
+  mpaZoomOut ->setToolTip("Zoom out");
+  connect(mpaZoomOut, SIGNAL(triggered()), this, SLOT(slotZoomOut()));
 
-  mpSelectAll = new QToolButton;
-  mpSelectAll->setToolTip("Show all curves");
-  mpSelectAll->setText("Show All");
-  connect(mpSelectAll, SIGNAL(clicked()), this, SLOT(slotSelectAll()));
+  mpaShowAll = new QAction("Show All", this);
+  mpaShowAll ->setShortcut(Qt::CTRL + Qt::Key_A);
+  mpaShowAll ->setToolTip("Show all curves");
+  connect(mpaShowAll, SIGNAL(triggered()), this, SLOT(slotSelectAll()));
 
-  mpDeselectAll = new QToolButton;
-  mpDeselectAll->setToolTip("Hide all curves");
-  mpDeselectAll->setText("Hide All");
-  connect(mpDeselectAll, SIGNAL(clicked()), this, SLOT(slotDeselectAll()));
+  mpaHideAll = new QAction("Hide All", this);
+  mpaHideAll ->setShortcut(Qt::CTRL + Qt::Key_D);
+  mpaHideAll ->setToolTip("Hide all curves");
+  connect(mpaHideAll, SIGNAL(triggered()), this, SLOT(slotDeselectAll()));
+
+  mpaCloseWindow = new QAction("Close", this);
+  mpaCloseWindow->setObjectName("close");
+  mpaCloseWindow->setShortcut(Qt::CTRL + Qt::Key_W);
+  connect(mpaCloseWindow, SIGNAL(triggered()), this, SLOT(slotCloseWindow()));
 }
 
 void PlotWindow::createToolBar()
 {
   QToolBar * plotTools = addToolBar("plot operations");
 
-  plotTools->addWidget(printButton);
-  plotTools->addWidget(print2Button);
-  plotTools->addWidget(saveButton);
-  plotTools->addWidget(zoomButton);
+  plotTools->addAction(mpaPrint);
+  plotTools->addAction(mpaSaveImage);
+  plotTools->addAction(mpaSaveData);
+  plotTools->addAction(mpaZoomOut);
 
   plotTools->addSeparator();
   plotTools->addAction(mpaToggleLogX);
@@ -147,16 +178,12 @@ void PlotWindow::createToolBar()
 
   plotTools->addSeparator();
 
-  plotTools->addWidget(mpSelectAll);
-  plotTools->addWidget(mpDeselectAll);
+  plotTools->addAction(mpaShowAll);
+  plotTools->addAction(mpaHideAll);
 
   plotTools->addSeparator();
 
-  QAction* closeAct = new QAction("Close", this);
-  closeAct->setObjectName("close");
-  closeAct->setShortcut(Qt::CTRL + Qt::Key_W);
-  connect(closeAct, SIGNAL(triggered()), this, SLOT(slotCloseWindow()));
-  plotTools->addAction(closeAct);
+  plotTools->addAction(mpaCloseWindow);
 
   //TODO button icons...
 
@@ -255,7 +282,7 @@ void PlotWindow::printAsImage()
                        QString::null, "PNG Files (*.png);;SVG Files (*.svg)", "Save to");
       */
       fileName = CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                 "untitled.png", "PNG Files (*.png);;SVG Files (*.svg)", "Save to", new QString);
+                 "untitled.png", "PNG Files (*.png);;SVG Files (*.svg)", "Save Plot as Image", new QString);
 
       if (fileName.isEmpty()) return;
 
@@ -332,7 +359,7 @@ void PlotWindow::slotSaveData()
   while (Answer == QMessageBox::No)
     {
       fileName =
-        CopasiFileDialog::getSaveFileName(this, "Save File Dialog", "untitled.txt", "TEXT Files (*.txt)", "Save to");
+        CopasiFileDialog::getSaveFileName(this, "Save File Dialog", "untitled.txt", "TEXT Files (*.txt)", "Save Plot Data to");
 
       if (fileName.isNull()) return;
 

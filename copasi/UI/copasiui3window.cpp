@@ -1723,7 +1723,7 @@ void CopasiUI3Window::refreshWindowsMenu()
 
   for (int index = 0; index < mWindows.count(); ++index)
     {
-      QMenu* menu = ((PlotWindow*)mWindows[index])->getMenu();
+      QMenu* menu = ((PlotWindow*)mWindows[index])->getWindowMenu();
       menu->clear();
       menu->addAction(mpaCloseAllWindows);
       menu->addSeparator();
@@ -1748,7 +1748,7 @@ void CopasiUI3Window::refreshWindowsMenu()
 
       for (int index = 0; index < mWindows.count(); ++index)
         {
-          QMenu* menu = ((PlotWindow*)mWindows[index])->getMenu();
+          QMenu* menu = ((PlotWindow*)mWindows[index])->getWindowMenu();
           menu->addAction(pAction);
         }
     }

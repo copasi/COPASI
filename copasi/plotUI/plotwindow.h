@@ -45,12 +45,20 @@ private:
   CopasiUI3Window * mpMainWindow;
   QMenu* mpWindowMenu;
 
+  QAction *mpaCloseWindow;
+  QAction *mpaShowAll;
+  QAction *mpaHideAll;
+  QAction *mpaPrint;
+  QAction *mpaSaveImage;
+  QAction *mpaSaveData;
+  QAction *mpaZoomOut;
   QAction *mpaToggleLogX;
   QAction *mpaToggleLogY;
 
   bool initializing;
 
   void createToolBar();
+  void createMenus();
   void createActions();
 
 public:
@@ -71,15 +79,7 @@ public:
    *
    * @return a pointer to this plot windows 'window' menu.
    */
-  QMenu *getMenu() const;
-
-  QToolButton * zoomButton;
-  QToolButton * printButton;
-  QToolButton * print2Button;
-  QToolButton * saveButton;
-
-  QToolButton * mpSelectAll;
-  QToolButton * mpDeselectAll;
+  QMenu *getWindowMenu() const;
 
   /**
    * compile the object list from name vector
