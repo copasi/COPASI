@@ -19,6 +19,9 @@
 
 
 
+
+
+
 %{
 
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -146,9 +149,33 @@
       return (*$self->getReportDefinitionList())[index];
     }
 
-	CPlotSpecification* getPlotSpecification(unsigned C_INT32 index)
+    CReportDefinition* getReportDefinition(const std::string& name)
+    {
+      try
+      {
+      return (*$self->getReportDefinitionList())[name];
+      }
+      catch(...)
+      {
+	return NULL;
+      }
+    }
+    
+    CPlotSpecification* getPlotSpecification(unsigned C_INT32 index)
     {
       return (*$self->getPlotDefinitionList())[index];
+    }
+
+    CPlotSpecification* getPlotSpecification(const std::string& name)
+    {
+      try
+      {
+      return (*$self->getPlotDefinitionList())[name];
+      }
+      catch(...)
+      {
+	return NULL;
+      }
     }
 
     CCopasiTask* getTask(unsigned C_INT32 index)
@@ -158,7 +185,14 @@
 
     CCopasiTask* getTask(const std::string& name)
     {
-      return (*$self->getTaskList())[name];
+      try
+      {
+	return (*$self->getTaskList())[name];
+      }
+      catch(...)
+      {
+	return NULL;
+      }
     }
 
 #ifdef SWIGJAVA
