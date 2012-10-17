@@ -51,6 +51,14 @@ CQExpressionMmlStackedWidget::CQExpressionMmlStackedWidget(QWidget* parent)
 
   mpMmlScrollView->setBackgroundColor(QColor(Qt::white));
 
+#ifdef WIN32
+  // on windows there ought to be a border around the MML widget
+  // otherwise it is difficult to distinguish the formula from the rest of the
+  // dialog
+  mpMmlScrollView->setFrameShape(QFrame::Panel);
+  mpMmlScrollView->setFrameStyle(QFrame::Panel | QFrame::Plain);
+#endif
+
   init();
 }
 

@@ -55,6 +55,14 @@ CQDifferentialEquations::CQDifferentialEquations(QWidget* parent, const char* na
 
   mpScrollView->setBackgroundColor(QColor(Qt::white));
 
+#ifdef WIN32
+  // on windows there ought to be a border around the MML widget
+  // otherwise it is difficult to distinguish the formula from the rest of the
+  // dialog
+  mpScrollView->setFrameShape(QFrame::Panel);
+  mpScrollView->setFrameStyle(QFrame::Panel | QFrame::Plain);
+#endif
+
   init();
 }
 
