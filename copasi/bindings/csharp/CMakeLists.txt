@@ -81,14 +81,14 @@ add_custom_command(
     COMMAND "${SWIG_EXECUTABLE}"
     ARGS -I${CMAKE_CURRENT_SOURCE_DIR}/../swig/
 	     -I${CMAKE_CURRENT_SOURCE_DIR}/../../
-         -I${CMAKE_CURRENT_SOURCE_DIR}
+	     -I${CMAKE_CURRENT_SOURCE_DIR}
 	     -c++
 	     -csharp
 	     -namespace org.COPASI
-		 -DSWIG_CSHARP_NO_IMCLASS_STATIC_CONSTRUCTOR
+	     -DSWIG_CSHARP_NO_IMCLASS_STATIC_CONSTRUCTOR
 	     -dllimport copasics ${SWIG_EXTRA_ARGS}
 	     ${SWIG_EXTRA_FLAGS}		 
-         -outdir ${COPASI_CS_FILES}
+	     -outdir ${COPASI_CS_FILES}
 	     -o ${COPASI_NATIVE_WRAPPER}
 	     ${CMAKE_CURRENT_SOURCE_DIR}/csharp.i
 
@@ -125,7 +125,7 @@ endif()
 target_link_libraries(binding_csharp_native_lib ${SE_EXTERNAL_LIBS} ${SE_LIBS} )
 
 INSTALL(TARGETS binding_csharp_native_lib 
-        DESTINATION COPASI/bindings/csharp
+        DESTINATION bindings/csharp
   )
 
 ####################################################################
@@ -134,25 +134,26 @@ INSTALL(TARGETS binding_csharp_native_lib
 # 
 
 ADD_CUSTOM_COMMAND(	
-	OUTPUT 
-		${CMAKE_CURRENT_BINARY_DIR}/copasicsP.dll 
+	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/copasicsP.dll 
 		
 	COMMAND "${CMAKE_COMMAND}"
 	ARGS -DCSHARP_EXTRA_ARGS=\"${CSHARP_EXTRA_ARGS}\"
-		 -DCSHARP_COMPILER=\"${CSHARP_COMPILER}\"
-		 -DBIN_DIRECTORY=\"${CMAKE_CURRENT_BINARY_DIR}\"
-		 -DSRC_DIRECTORY=\"${CMAKE_CURRENT_SOURCE_DIR}\"		 
-		 -P "${CMAKE_CURRENT_SOURCE_DIR}/compile-native-files.cmake"
+	     -DCSHARP_COMPILER=\"${CSHARP_COMPILER}\"
+	     -DBIN_DIRECTORY=\"${CMAKE_CURRENT_BINARY_DIR}\"
+	     -DSRC_DIRECTORY=\"${CMAKE_CURRENT_SOURCE_DIR}\"		 
+	     -P "${CMAKE_CURRENT_SOURCE_DIR}/compile-native-files.cmake"
 		 
 	MAIN_DEPENDENCY "${CMAKE_CURRENT_SOURCE_DIR}/../swig/copasi.i"
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/compile-native-files.cmake
-			${CMAKE_CURRENT_BINARY_DIR}/csharp-files/copasi.cs
+	        ${CMAKE_CURRENT_BINARY_DIR}/csharp-files/copasi.cs
 	        ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
 	WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-    COMMENT "Build csharp files"
+	COMMENT "Build csharp files"
 	) 
 
 add_custom_target(binding_csharp_managed_lib ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/copasicsP.dll)
 add_dependencies(binding_csharp_managed_lib binding_csharp_swig)
 
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/copasicsP.dll DESTINATION COPASI/bindings/csharp) 
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/copasicsP.dll DESTINATION bindings/csharp) 
+file(GLOB examples ${CMAKE_CURRENT_SOURCE_DIR}/examples/*.cs)
+INSTALL(FILES ${examples} DESTINATION bindings/csharp/examples) 
