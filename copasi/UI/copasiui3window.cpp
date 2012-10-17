@@ -42,6 +42,7 @@
 #include "CQPreferenceDialog.h"
 #include "CQSBMLFileDialog.h"
 #include "copasi/UI/qtUtilities.h"
+#include "copasi/UI/CQTabWidget.h"
 #include "copasiWidget.h"
 #include "TaskWidget.h"
 #include "resourcesUI/CQIconResource.h"
@@ -612,6 +613,11 @@ void CopasiUI3Window::newDoc()
 
   updateTitle();
   mpListView->switchToOtherWidget(1, "");
+  CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
+
+  if (widget != NULL)
+    widget->selectTab(0);
+
   mSaveAsRequired = true;
   mCommitRequired = true;
 }
@@ -772,6 +778,10 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
 
   updateTitle();
   mpListView->switchToOtherWidget(1, "");
+  CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
+
+  if (widget != NULL)
+    widget->selectTab(0);
 
   refreshRecentFileMenu();
 
@@ -1189,6 +1199,10 @@ void CopasiUI3Window::slotImportSBMLFromStringFinished(bool success)
   //       mpFileMenu->setItemEnabled(nsave_menu_id, true);
 
   mpListView->switchToOtherWidget(1, "");
+  CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
+
+  if (widget != NULL)
+    widget->selectTab(0);
 
   updateTitle();
 
@@ -1295,6 +1309,10 @@ void CopasiUI3Window::slotImportSBMLFinished(bool success)
   mpaExportODE->setEnabled(true);
 
   mpListView->switchToOtherWidget(1, "");
+  CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
+
+  if (widget != NULL)
+    widget->selectTab(0);
 
   refreshRecentSBMLFileMenu();
 

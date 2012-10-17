@@ -1,11 +1,3 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTabWidget.cpp,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/09 21:31:31 $
-// End CVS Header
-
 // Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -26,10 +18,10 @@
 
 CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget * pCopasiWidget,
                          QWidget * parent, Qt::WindowFlags f) :
-    CopasiWidget(parent, NULL, f),
-    mPages(),
-    mObjectType(objectType),
-    mIgnoreLeave(false)
+  CopasiWidget(parent, NULL, f),
+  mPages(),
+  mObjectType(objectType),
+  mIgnoreLeave(false)
 {
   setupUi(this);
 
@@ -123,6 +115,11 @@ bool CQTabWidget::update(ListViews::ObjectType objectType, ListViews::Action act
   return true;
 }
 
+void CQTabWidget::selectTab(int index) const
+{
+  mpTabWidget->setCurrentIndex(index);
+}
+
 void CQTabWidget::load()
 {
   // mpObject can not be trusted
@@ -183,7 +180,6 @@ bool CQTabWidget::save()
               mpDataModel->changed();
             }
         }
-
     }
 
   return true;
