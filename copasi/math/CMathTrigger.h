@@ -92,9 +92,21 @@ public:
                 const bool & continous);
 
     /**
+     * Toggle the root status dependent on the
+     * processed equality status
+     * @param const C_FLOAT64 & time
+     */
+    void toggle(const C_FLOAT64 & time);
+
+    /**
+     * Initialize all values of the math model with their initial values.
+     */
+    void applyInitialValues();
+
+    /**
      * Determine the truth value for the initial conditions.
      */
-    void calculateInitialTrue();
+    void calculateTrueValue();
 
     /**
      * Retrieve a pointer to the current value of the root.
@@ -157,9 +169,14 @@ public:
   virtual ~CMathTrigger();
 
   /**
+   * Initialize all values of the math model with their initial values.
+   */
+  void applyInitialValues();
+
+  /**
    * Determine the true value for the initial conditions.
    */
-  void calculateInitialTrue();
+  void calculateTrueValue();
 
   /**
    * Determine the activity for the initial conditions.

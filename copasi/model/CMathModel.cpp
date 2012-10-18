@@ -250,7 +250,7 @@ void CMathModel::processRoots(const C_FLOAT64 & time,
           // We reevaluate the state of the non found roots, which should be save.
           if (*pFoundRoot < 1 && (*ppRootFinder)->isEquality() == equality)
             {
-              (*ppRootFinder)->calculateInitialTrue();
+              (*ppRootFinder)->calculateTrueValue();
             }
 
           ++pFoundRoot; ++ppRootFinder;
@@ -296,6 +296,81 @@ void CMathModel::processRoots(const C_FLOAT64 & time,
   return;
 }
 
+void CMathModel::processRoots(const C_FLOAT64 & time,
+                              const CVector< C_INT > & foundRoots)
+{
+  // Apply all needed refresh calls to calculate the current root values.
+  std::vector< Refresh * >::const_iterator itRefresh = mRootRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endRefresh = mRootRefreshes.end();
+
+  while (itRefresh != endRefresh)
+    (**itRefresh++)();
+
+  assert(foundRoots.size() == mRootIndex2Event.size());
+
+  // All events associated with the found roots need to be evaluated whether they fire.
+  // In case one fires the corresponding event needs to be scheduled in the process queue.
+
+  const C_INT *pFoundRoot = foundRoots.array();
+  const C_INT *pFoundRootEnd = pFoundRoot + foundRoots.size();
+
+  CMathEvent ** ppEvent = mRootIndex2Event.array();
+  CMathEvent * pProcessEvent = NULL;
+
+  CMathTrigger::CRootFinder **ppRootFinder = mRootIndex2RootFinder.array();
+
+  while (pFoundRoot != pFoundRootEnd)
+    {
+      // We reevaluate the state of the non found roots, which should be save.
+      if (*pFoundRoot < 1)
+        {
+          (*ppRootFinder)->calculateTrueValue();
+        }
+
+      ++pFoundRoot; ++ppRootFinder;
+    }
+
+  pFoundRoot = foundRoots.array();
+  ppRootFinder = mRootIndex2RootFinder.array();
+
+  // We go through the list of roots and process the events
+  // which need to be checked whether they fire.
+  bool TriggerBefore = true;
+
+  while (pFoundRoot != pFoundRootEnd)
+    {
+      pProcessEvent = *ppEvent;
+      TriggerBefore = pProcessEvent->getMathTrigger().calculate();
+
+      // Process the events for which we have found a root.
+      // A found root is indicated by roots[i] = 1 or 0 otherwise.
+      while (pFoundRoot != pFoundRootEnd &&
+             *ppEvent == pProcessEvent)
+        {
+          // We must only toggle the roots which are marked.
+          if (*pFoundRoot > 0)
+            {
+              (*ppRootFinder)->toggle(time);
+            }
+
+          ++pFoundRoot; ++ppEvent; ++ppRootFinder;
+        }
+
+      bool TriggerAfter = pProcessEvent->getMathTrigger().calculate();
+
+      // Check whether the event fires
+      if (TriggerAfter == true &&
+          TriggerBefore == false)
+        {
+          // We are dealing with discrete root processing and can not distinguish
+          // between equality and inequality. Thus we just pick equality = true
+          pProcessEvent->fire(time, true, mProcessQueue);
+        }
+    }
+
+  return;
+}
+
 const C_FLOAT64 & CMathModel::getProcessQueueExecutionTime() const
 {
   return mProcessQueue.getProcessQueueExecutionTime();
@@ -326,7 +401,7 @@ void CMathModel::applyInitialValues()
   // for each event
   for (; itMathEvent != endMathEvent; ++itMathEvent)
     {
-      (*itMathEvent)->getMathTrigger().calculateInitialTrue();
+      (*itMathEvent)->getMathTrigger().applyInitialValues();
     }
 
   // We need to schedule events which fire at t > t_0

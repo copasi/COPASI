@@ -109,17 +109,42 @@ void CMathTrigger::CRootFinder::toggle(const C_FLOAT64 & time,
       mTrue = (mTrue > 0.5) ? 0.0 : 1.0;
       mLastToggleTime = time;
     }
-  else if (!mDiscrete &&
-           equality == mEquality)
+  else if (!mDiscrete)
     {
-      mTrue = (mTrue > 0.5) ? 0.0 : 1.0;
-      mLastToggleTime = time;
+      if (equality == mEquality && mTrue < 0.5)
+        {
+          mTrue = 1.0;
+          mLastToggleTime = time;
+        }
+      else if (equality != mEquality && mTrue > 0.5)
+        {
+          mTrue = 0.0;
+          mLastToggleTime = time;
+        }
     }
 
   return;
 }
 
-void CMathTrigger::CRootFinder::calculateInitialTrue()
+void CMathTrigger::CRootFinder::toggle(const C_FLOAT64 & time)
+{
+  // This function must only be called if we found a root, i.e., the
+  // value of the root expression changes sign. In that case it is save
+  // to toggle the activity.
+
+  mTrue = (mTrue > 0.5) ? 0.0 : 1.0;
+  mLastToggleTime = time;
+
+  return;
+}
+
+void CMathTrigger::CRootFinder::applyInitialValues()
+{
+  calculateTrueValue();
+  mLastToggleTime = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+}
+
+void CMathTrigger::CRootFinder::calculateTrueValue()
 {
   if ((*mpRootValue < 0.0) ||
       ((*mpRootValue <= 0.0) && !mEquality))
@@ -155,15 +180,27 @@ CMathTrigger::CMathTrigger(const CMathTrigger & src,
 CMathTrigger::~CMathTrigger()
 {}
 
-void CMathTrigger::calculateInitialTrue()
+void CMathTrigger::applyInitialValues()
 {
-  // Calculate the initial activity for the root finders
+  // Calculate the initial truth value for the root finders
   CCopasiVector< CRootFinder >::iterator itRoot = mRootFinders.begin();
   CCopasiVector< CRootFinder >::iterator endRoot = mRootFinders.end();
 
   for (; itRoot != endRoot; ++itRoot)
     {
-      (*itRoot)->calculateInitialTrue();
+      (*itRoot)->applyInitialValues();
+    }
+}
+
+void CMathTrigger::calculateTrueValue()
+{
+  // Calculate the current truth value for the root finders
+  CCopasiVector< CRootFinder >::iterator itRoot = mRootFinders.begin();
+  CCopasiVector< CRootFinder >::iterator endRoot = mRootFinders.end();
+
+  for (; itRoot != endRoot; ++itRoot)
+    {
+      (*itRoot)->calculateTrueValue();
     }
 }
 

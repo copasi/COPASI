@@ -141,6 +141,7 @@ CProcessQueue::CProcessQueue() :
   mCascadingLevel(0),
   mSimultaneousAssignments(false),
   mEventIdSet(),
+  mpMathModel(NULL),
   mRootsFound(0),
   mRootValues1(0),
   mRootValues2(0),
@@ -159,6 +160,7 @@ CProcessQueue::CProcessQueue(const CProcessQueue & src):
   mCascadingLevel(src.mCascadingLevel),
   mSimultaneousAssignments(src.mSimultaneousAssignments),
   mEventIdSet(src.mEventIdSet),
+  mpMathModel(src.mpMathModel),
   mRootsFound(src.mRootsFound),
   mRootValues1(src.mRootValues1),
   mRootValues2(src.mRootValues2),
@@ -299,8 +301,7 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
       if (rootsFound())
         {
           // We have to deal with both types of found roots.
-          mpMathModel->processRoots(mTime, true, false, mRootsFound);
-          mpMathModel->processRoots(mTime, false, false, mRootsFound);
+          mpMathModel->processRoots(mTime, mRootsFound);
         }
 
       // Note, applying the events may have added new events to the queue.
@@ -565,8 +566,6 @@ bool CProcessQueue::rootsFound()
   CVector< C_FLOAT64 > * pTmp = mpRootValuesBefore;
   mpRootValuesBefore = mpRootValuesAfter;
   mpRootValuesAfter = pTmp;
-
-  std::cout << mRootsFound << std::endl;
 
   return rootsFound;
 }
