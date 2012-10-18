@@ -15,9 +15,7 @@ runTest EventTest4
 runTest EventTest5
 runTest EventTest6
 runTest EventTest7
-# This test currently fails
-echo Test: EventTest8 skipped
-# runTest EventTest8  
+runTest EventTest8  
 runTest EventTest9
 runTest EventTest10
 runTest EventTest11
