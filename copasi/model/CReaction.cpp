@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-//   $Revision: 1.204 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/30 17:16:35 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -57,21 +49,21 @@ C_FLOAT64 CReaction::mDefaultScalingFactor = 1.0;
 
 CReaction::CReaction(const std::string & name,
                      const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Reaction"),
-    CAnnotation(),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Reaction", this)),
-    mChemEq("Chemical Equation", this),
-    mpFunction(NULL),
-    mFlux(0),
-    mpFluxReference(NULL),
-    mParticleFlux(0),
-    mpParticleFluxReference(NULL),
-    mPropensity(0),
-    mpPropensityReference(NULL),
-    mScalingFactor(&mDefaultScalingFactor),
-    mUnitScalingFactor(&mDefaultScalingFactor),
-    mMetabKeyMap(),
-    mParameters("Parameters", this)
+  CCopasiContainer(name, pParent, "Reaction"),
+  CAnnotation(),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("Reaction", this)),
+  mChemEq("Chemical Equation", this),
+  mpFunction(NULL),
+  mFlux(0),
+  mpFluxReference(NULL),
+  mParticleFlux(0),
+  mpParticleFluxReference(NULL),
+  mPropensity(0),
+  mpPropensityReference(NULL),
+  mScalingFactor(&mDefaultScalingFactor),
+  mUnitScalingFactor(&mDefaultScalingFactor),
+  mMetabKeyMap(),
+  mParameters("Parameters", this)
 {
   CONSTRUCTOR_TRACE;
   initObjects();
@@ -80,22 +72,22 @@ CReaction::CReaction(const std::string & name,
 
 CReaction::CReaction(const CReaction & src,
                      const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    CAnnotation(src),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Reaction", this)),
-    mChemEq(src.mChemEq, this),
-    mpFunction(src.mpFunction),
-    mFlux(src.mFlux),
-    mpFluxReference(NULL),
-    mParticleFlux(src.mParticleFlux),
-    mpParticleFluxReference(NULL),
-    mPropensity(src.mPropensity),
-    mpPropensityReference(NULL),
-    mScalingFactor(src.mScalingFactor),
-    mUnitScalingFactor(src.mUnitScalingFactor),
-    mMap(src.mMap),
-    mMetabKeyMap(src.mMetabKeyMap),
-    mParameters(src.mParameters, this)
+  CCopasiContainer(src, pParent),
+  CAnnotation(src),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("Reaction", this)),
+  mChemEq(src.mChemEq, this),
+  mpFunction(src.mpFunction),
+  mFlux(src.mFlux),
+  mpFluxReference(NULL),
+  mParticleFlux(src.mParticleFlux),
+  mpParticleFluxReference(NULL),
+  mPropensity(src.mPropensity),
+  mpPropensityReference(NULL),
+  mScalingFactor(src.mScalingFactor),
+  mUnitScalingFactor(src.mUnitScalingFactor),
+  mMap(src.mMap),
+  mMetabKeyMap(src.mMetabKeyMap),
+  mParameters(src.mParameters, this)
 {
   CONSTRUCTOR_TRACE;
   initObjects();
@@ -166,7 +158,7 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
     return Fail;
 
   CModel * pModel
-  = dynamic_cast< CModel * >(getObjectAncestor("Model"));
+    = dynamic_cast< CModel * >(getObjectAncestor("Model"));
   CChemEqInterface::setChemEqFromString(pModel, *this, ChemEq);
 
   if ((Fail = configbuffer.getVariable("KineticType", "string", &tmp)))
@@ -491,7 +483,6 @@ const CObjectInterface * CReaction::getObject(const CCopasiObjectName & cn) cons
   return pObject;
 }
 
-
 void CReaction::initializeParameters()
 {
   if (!mpFunction) fatalError();
@@ -657,7 +648,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
                             const std::string & prefix)
 {
   const CModel * pModel
-  = dynamic_cast< const CModel * >(getObjectAncestor("Model"));
+    = dynamic_cast< const CModel * >(getObjectAncestor("Model"));
   const CCopasiVector< CMetab > & Metabolites = pModel->getMetabolites();
 
   size_t pos;
@@ -850,7 +841,7 @@ C_FLOAT64 CReaction::calculatePartialDerivative(C_FLOAT64 * pXi,
 
       *pXi = store;
 
-      return *mScalingFactor *(f1 - f2) / (2.0 * tmp * derivationFactor);
+      return *mScalingFactor * (f1 - f2) / (2.0 * tmp * derivationFactor);
       //this is d(flow)/d(concentration)
     }
   else
@@ -1011,7 +1002,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
   CEvaluationNodeVariable* pVariableNode = NULL;
   std::string objectCN = objectNode->getData();
   CModel * pModel
-  = dynamic_cast< CModel * >(getObjectAncestor("Model"));
+    = dynamic_cast< CModel * >(getObjectAncestor("Model"));
   std::vector<CCopasiContainer*> containers = std::vector<CCopasiContainer*>();
   containers.push_back(pModel);
   CCopasiObject* object = getObjectDataModel()->ObjectFromName(containers, CCopasiObjectName(objectCN.substr(1, objectCN.size() - 2)));
@@ -1037,9 +1028,10 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
 
                   // We need to check that we have no reserved name.
                   const char *Reserved[] =
-                    {"pi", "exponentiale", "true", "false", "infinity", "nan",
-                     "PI", "EXPONENTIALE", "TRUE", "FALSE", "INFINITY", "NAN"
-                    };
+                  {
+                    "pi", "exponentiale", "true", "false", "infinity", "nan",
+                    "PI", "EXPONENTIALE", "TRUE", "FALSE", "INFINITY", "NAN"
+                  };
 
                   size_t j, jmax = 12;
 
@@ -1214,7 +1206,6 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
   return pVariableNode;
 }
 
-// TODO CRITICAL Remove recursion!
 CEvaluationNode* CReaction::objects2variables(const CEvaluationNode* pNode, std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >& replacementMap, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   CNodeContextIterator< const CEvaluationNode, std::vector< CEvaluationNode * > > itNode(pNode);
@@ -1357,9 +1348,11 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
       case CEvaluationNode::NUMBER:
         pTmpNode = new CEvaluationNodeNumber(static_cast<CEvaluationNodeNumber::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
         break;
+
       case CEvaluationNode::CONSTANT:
         pTmpNode = new CEvaluationNodeConstant(static_cast<CEvaluationNodeConstant::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
         break;
+
       case CEvaluationNode::OPERATOR:
         pTmpNode = new CEvaluationNodeOperator(static_cast<CEvaluationNodeOperator::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
         // convert the two children as well
@@ -1387,9 +1380,11 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
           }
 
         break;
+
       case CEvaluationNode::OBJECT:
         pTmpNode = new CEvaluationNodeObject(static_cast<CEvaluationNodeObject::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
         break;
+
       case CEvaluationNode::FUNCTION:
         pTmpNode = new CEvaluationNodeFunction(static_cast<CEvaluationNodeFunction::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
         // convert the only child as well
@@ -1406,6 +1401,7 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
           }
 
         break;
+
       case CEvaluationNode::CALL:
         pTmpNode = new CEvaluationNodeCall(static_cast<CEvaluationNodeCall::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
         // convert all children
@@ -1429,9 +1425,11 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
           }
 
         break;
+
       case CEvaluationNode::STRUCTURE:
         pTmpNode = new CEvaluationNodeStructure(static_cast<CEvaluationNodeStructure::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
         break;
+
       case CEvaluationNode::CHOICE:
         pTmpNode = new CEvaluationNodeChoice(static_cast<CEvaluationNodeChoice::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
         // convert the two children as well
@@ -1459,12 +1457,15 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
           }
 
         break;
+
       case CEvaluationNode::VARIABLE:
         pTmpNode = this->variable2object(static_cast<CEvaluationNodeVariable*>(expression));
         break;
+
       case CEvaluationNode::WHITESPACE:
         pTmpNode = new CEvaluationNodeWhiteSpace(static_cast<CEvaluationNodeWhiteSpace::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
         break;
+
       case CEvaluationNode::LOGICAL:
         pTmpNode = new CEvaluationNodeLogical(static_cast<CEvaluationNodeLogical::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
         // convert the two children as well
@@ -1492,14 +1493,17 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
           }
 
         break;
+
       case CEvaluationNode::MV_FUNCTION:
         // create an error message until there is a class for it
         CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "MV_FUNCTION");
         break;
+
       case CEvaluationNode::INVALID:
         CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "INVALID");
         // create an error message
         break;
+
       default:
         break;
     }
