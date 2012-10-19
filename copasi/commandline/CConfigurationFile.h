@@ -1,22 +1,14 @@
-/* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.h,v $
-  $Revision: 1.10 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2012/05/25 12:08:46 $
-  End CVS Header */
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -196,6 +188,18 @@ public:
    */
   void setValidateUnits(bool validateUnits);
 
+  /**
+   * Retrieve the web working directory
+   * @return const std::string & workingDirectory
+   */
+  const std::string getWorkingDirectory() const;
+
+  /**
+   * Set the working directory.
+   * @param const std::string & workingDirectory
+   */
+  void setWorkingDirectory(const std::string & workingDirectory);
+
 private:
   /**
    * Allocates all group parameters and assures that they are
@@ -287,9 +291,14 @@ private:
   std::string * mpWebBrowser;
 
   /**
-  * A pointer indicating whether units will always be validated
+   * A pointer indicating whether units will always be validated
    */
   bool * mpValidateUnits;
+
+  /**
+   * A pointer to the last used working directory of the GUI.
+   */
+  std::string * mpWorkingDirectory;
 };
 
 #endif // COPASI_CConfigurationFile

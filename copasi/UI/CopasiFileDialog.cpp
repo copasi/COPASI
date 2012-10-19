@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.cpp,v $
-//   $Revision: 1.32 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/24 16:32:34 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,24 +22,25 @@
 
 #include "commandline/COptions.h"
 #include "utilities/CDirEntry.h"
+#include "report/CCopasiRootContainer.h"
+#include "commandline/CConfigurationFile.h"
 
 #ifdef DEBUG_UI
 #include <QtDebug>
 #endif
 
 // static
-QDir CopasiFileDialog::LastDir;
-
-// static
 QString CopasiFileDialog::StartWith(const QString & startWith)
 {
+  QString WorkingDirectory = FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory());
+
   if (startWith.isNull())
     {
-      return LastDir.path();
+      return WorkingDirectory;
     }
   else if (CDirEntry::dirName(TO_UTF8(startWith)) == "")
     {
-      return LastDir.path() + "/" + startWith;
+      return WorkingDirectory + "/" + startWith;
     }
 
   return startWith;
@@ -60,7 +53,7 @@ void CopasiFileDialog::openExampleDir()
   COptions::getValue("ExampleDir", ExampleDir);
 
   if (CDirEntry::isDir(ExampleDir))
-    LastDir = FROM_UTF8(ExampleDir);
+    CCopasiRootContainer::getConfiguration()->setWorkingDirectory(ExampleDir);
   else
     CQMessageBox::information(NULL, "Directory Not Found", FROM_UTF8(ExampleDir),
                               QMessageBox::Ok, QMessageBox::Ok);
@@ -83,7 +76,7 @@ QString CopasiFileDialog::getOpenFileName(QWidget * parent,
                     options);
 
   if (newFile != "")
-    LastDir = FROM_UTF8(CDirEntry::dirName(TO_UTF8(newFile)));
+    CCopasiRootContainer::getConfiguration()->setWorkingDirectory(CDirEntry::dirName(TO_UTF8(newFile)));
 
   return newFile;
 }
@@ -115,9 +108,8 @@ QString CopasiFileDialog::getSaveFileName(QWidget * parent,
                                              newFilter, pSelectedFilter,
                                              QFileDialog::DontConfirmOverwrite | options);
 
-
       if (newFile != "")
-        LastDir = FROM_UTF8(CDirEntry::dirName(TO_UTF8(newFile)));
+        CCopasiRootContainer::getConfiguration()->setWorkingDirectory(CDirEntry::dirName(TO_UTF8(newFile)));
       else
         return QString::null;
 

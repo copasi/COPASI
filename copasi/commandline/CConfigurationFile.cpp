@@ -107,7 +107,8 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
   mpRecentMIRIAMResources(NULL),
   mpApplicationFont(NULL),
   mpWebBrowser(NULL),
-  mpValidateUnits(NULL)
+  mpValidateUnits(NULL),
+  mpWorkingDirectory(NULL)
 {initializeParameter();}
 
 CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
@@ -118,7 +119,8 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
   mpRecentMIRIAMResources(NULL),
   mpApplicationFont(NULL),
   mpWebBrowser(NULL),
-  mpValidateUnits(NULL)
+  mpValidateUnits(NULL),
+  mpWorkingDirectory(NULL)
 {initializeParameter();}
 
 CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
@@ -129,7 +131,8 @@ CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
   mpRecentMIRIAMResources(NULL),
   mpApplicationFont(NULL),
   mpWebBrowser(NULL),
-  mpValidateUnits(NULL)
+  mpValidateUnits(NULL),
+  mpWorkingDirectory(NULL)
 {initializeParameter();}
 
 CConfigurationFile::~CConfigurationFile()
@@ -172,6 +175,7 @@ void CConfigurationFile::initializeParameter()
   assertGroup("MIRIAM Resources");
 
   mpValidateUnits = assertParameter("Validate Units", CCopasiParameter::BOOL, false)->getValue().pBOOL;
+  mpWorkingDirectory = assertParameter("Working Directory", CCopasiParameter::STRING, std::string(""))->getValue().pSTRING;
 
   elevateChildren();
 }
@@ -263,6 +267,16 @@ void CConfigurationFile::setWebBrowser(const std::string & webBrowser)
 bool CConfigurationFile::validateUnits() const
 {
   return *mpValidateUnits;
+}
+
+const std::string CConfigurationFile::getWorkingDirectory() const
+{
+  return *mpWorkingDirectory;
+}
+
+void CConfigurationFile::setWorkingDirectory(const std::string & workingDirectory)
+{
+  *mpWorkingDirectory = workingDirectory;
 }
 
 void CConfigurationFile::setValidateUnits(bool validateUnits)
