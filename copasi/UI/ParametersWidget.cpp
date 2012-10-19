@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-//   $Revision: 1.41 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/10 16:03:11 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -48,7 +40,7 @@ class CParameterListItem : public Q3ListViewItem
 {
 public:
   CParameterListItem(Q3ListView *parent, const QString & text)
-      : Q3ListViewItem(parent, text),
+    : Q3ListViewItem(parent, text),
       mpObject(NULL),
       mIsChanged(false)
   {
@@ -57,7 +49,7 @@ public:
   }
 
   CParameterListItem(CParameterListItem *parent, const QString & text)
-      : Q3ListViewItem(parent, text),
+    : Q3ListViewItem(parent, text),
       mpObject(NULL),
       mIsChanged(false)
   {
@@ -67,7 +59,7 @@ public:
 
   CParameterListItem(CParameterListItem *parent, const QString & name,
                      CCopasiObject* obj, C_FLOAT64 value, const QString & unit, int framework = 0)
-      : Q3ListViewItem(parent, name, "", QString::number(value), unit),
+    : Q3ListViewItem(parent, name, "", QString::number(value), unit),
       mpObject(obj),
       mIsChanged(false)
   {
@@ -131,7 +123,7 @@ public:
   //this constructor is used for global parameters in reactions
   CParameterListItem(CParameterListItem *parent, const QString & name,
                      CCopasiObject* obj, const QString & value, const QString & unit)
-      : Q3ListViewItem(parent, name, "", value, unit),
+    : Q3ListViewItem(parent, name, "", value, unit),
       mpObject(obj),
       mIsChanged(false)
   {
@@ -172,7 +164,7 @@ protected:
 //****************************************************************************
 
 ParametersWidget::ParametersWidget(QWidget* parent, const char* name, Qt::WFlags fl)
-    : CopasiWidget(parent, name, fl)
+  : CopasiWidget(parent, name, fl)
 {
   if (!name)
     setName("ParametersWidget");
@@ -206,9 +198,9 @@ ParametersWidget::ParametersWidget(QWidget* parent, const char* name, Qt::WFlags
   listView->setResizeMode(Q3ListView::LastColumn);
   listView->setDefaultRenameAction(Q3ListView::Accept);
 
-  ParametersWidgetLayout->addMultiCellWidget(listView, 0, 0, 2, 3);
+  ParametersWidgetLayout->addMultiCellWidget(listView, 1, 1, 0, 3);
 
-  layoutLeft = new QVBoxLayout(0);
+  layoutLeft = new QHBoxLayout(0);
   layoutLeft->setMargin(0);
   layoutLeft->setSpacing(6);
   layoutLeft->setObjectName("layoutLeft");
@@ -216,18 +208,18 @@ ParametersWidget::ParametersWidget(QWidget* parent, const char* name, Qt::WFlags
   labelTitle = new QLabel(this);
   labelTitle->setObjectName("labelTitle");
   labelTitle->setAlignment(int(Qt::WordBreak | Qt::AlignVCenter | Qt::AlignRight));
-  labelTitle->setText("<h2>Model parameters</h2>");
+  labelTitle->setText("<h2>Model Parameters</h2>");
   layoutLeft->addWidget(labelTitle);
+
+  spacer1 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  layoutLeft->addItem(spacer1);
 
   saveButton = new QPushButton(this);
   saveButton->setObjectName("saveButton");
   saveButton->setText("Save data...");
   layoutLeft->addWidget(saveButton);
 
-  spacer1 = new QSpacerItem(20, 261, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  layoutLeft->addItem(spacer1);
-
-  ParametersWidgetLayout->addMultiCellLayout(layoutLeft, 0, 1, 0, 1);
+  ParametersWidgetLayout->addMultiCellLayout(layoutLeft, 0, 0, 0, 3);
 
   // signals and slots connections
   connect(commitButton, SIGNAL(clicked()), this, SLOT(commitPressed()));
@@ -399,7 +391,8 @@ bool ParametersWidget::loadFromModel()
                 if (!par) continue; //or rather fatal error?
 
                 new CParameterListItem(tmp, FROM_UTF8(params[j]->getObjectName()), par,
-                                       FROM_UTF8("-> " + par->getObjectName()),
+                                       FROM_UTF8("-> " + par->getObjectName() + " (" + QString::number(par->getInitialValue()).ascii() + ")"),
+
                                        FROM_UTF8(units.getDimensions()[j].getDisplayString(pDataModel)));
               }
           }

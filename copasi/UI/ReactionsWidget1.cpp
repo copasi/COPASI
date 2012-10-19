@@ -1,23 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-//   $Revision: 1.213 $
-//   $Revision: 1.213 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/10 16:03:10 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -31,7 +22,6 @@
  **********************************************************************/
 
 #include <QWidget>
-
 
 #include "copasi.h"
 #include "ReactionsWidget1.h"
@@ -59,7 +49,7 @@
  */
 
 ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlags f)
-    : CopasiWidget(parent, name, f),
+  : CopasiWidget(parent, name, f),
     mpRi(NULL)
 {
   if (!name)
@@ -71,7 +61,6 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
   ReactionsWidget1Layout->setMargin(11);
   ReactionsWidget1Layout->setSpacing(6);
   ReactionsWidget1Layout->setObjectName("ReactionsWidget1Layout");
-
 
   TextLabel7 = new QLabel(this, "TextLabel7");
   TextLabel7->setText(trUtf8("Symbol Definition"));
@@ -111,7 +100,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
 
   // equation line
   TextLabel5 = new QLabel(this, "TextLabel5");
-  TextLabel5->setText(trUtf8("Chemical Equation"));
+  TextLabel5->setText(trUtf8("Reaction"));
   TextLabel5->setAlignment(int(Qt::AlignVCenter
                                | Qt::AlignRight));
   ReactionsWidget1Layout->addWidget(TextLabel5, 2, 0);
@@ -385,6 +374,7 @@ void ReactionsWidget1::slotBtnDelete()
         protectedNotify(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
         break;
       }
+
       default:                                                     // No or Escape
         break;
     }
@@ -431,7 +421,6 @@ void ReactionsWidget1::FillWidgetFromRI()
       ComboBox1->setCurrentText("undefined");
       table->initTable();
     }
-
 }
 
 void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
@@ -493,7 +482,7 @@ void ReactionsWidget1::slotNewFunction()
   std::string nname = name;
   size_t i = 0;
   CCopasiVectorN<CFunction>& FunctionList
-  = CCopasiRootContainer::getFunctionList()->loadedFunctions();
+    = CCopasiRootContainer::getFunctionList()->loadedFunctions();
   CFunction* pFunc;
 
   while (FunctionList.getIndex(nname) != C_INVALID_INDEX)

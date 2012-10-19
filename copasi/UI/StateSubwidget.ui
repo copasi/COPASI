@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Begin CVS Header </comment>
-<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.ui,v $ </comment>
-<comment>   $Revision: 1.26 $ </comment>
-<comment>   $Name:  $ </comment>
-<comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/10/17 16:22:04 $ </comment>
-<comment> End CVS Header </comment>
-
-<comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc. and EML Research, gGmbH. </comment>
+<comment> All rights reserved. </comment>
+
+
 
  <comment> All rights reserved. </comment>
  <class>StateSubwidget</class>
@@ -252,7 +255,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Chemical Equation</string>
+           <string>Reaction</string>
           </property>
          </column>
         </widget>
