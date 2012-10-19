@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.h,v $
-//   $Revision: 1.13 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/14 16:17:20 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -77,6 +69,8 @@ private:
 protected slots:
   virtual void slotBtnDeleteClicked();
   virtual void slotBtnClearClicked();
+  virtual void slotBtnBrowseReference(const QModelIndex& index);
+  virtual void slotBtnBrowseDescription(const QModelIndex& index);
   virtual void slotCreatedDTChanged(QDateTime newDT);
   virtual void dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight);
   virtual void slotCopyEvent();

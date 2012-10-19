@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CReference.h,v $
-//   $Revision: 1.8 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 19:00:07 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -96,6 +88,11 @@ public:
    * @return const CRDFTriplet & triplet
    */
   const CRDFTriplet & getTriplet() const;
+
+  /**
+   * Retrieve the MIRIAM resource object for this reference
+   */
+  const CMIRIAMResourceObject & getMIRIAMResourceObject() const;
 
   /**
    * Retrieve the key for the object

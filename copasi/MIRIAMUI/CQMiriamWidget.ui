@@ -1,21 +1,19 @@
-<ui version="4.0" >
-<comment> Begin CVS Header </comment>
-<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.ui,v $ </comment>
-<comment>   $Revision: 1.16 $ </comment>
-<comment>   $Name:  $ </comment>
-<comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/09/16 12:57:39 $ </comment>
-<comment> End CVS Header </comment>
-
-<comment> Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<comment> Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+<comment> Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
  <comment> All rights reserved. </comment>
  <class>CQMiriamWidget</class>
- <widget class="CopasiWidget" name="CQMiriamWidget" >
-  <property name="geometry" >
+ <widget class="CopasiWidget" name="CQMiriamWidget">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -23,29 +21,29 @@
     <height>456</height>
    </rect>
   </property>
-  <property name="caption" stdset="0" >
+  <property name="caption" stdset="0">
    <string>MIRIAM Annotation</string>
   </property>
-  <layout class="QGridLayout" >
-   <item row="0" column="0" >
-    <widget class="QLabel" name="mpLblCreated" >
-     <property name="text" >
+  <layout class="QGridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="mpLblCreated">
+     <property name="text">
       <string>Created at</string>
      </property>
-     <property name="wordWrap" >
+     <property name="wordWrap">
       <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item row="0" column="3" >
-    <spacer name="mpSpcCreated" >
-     <property name="orientation" >
+   <item row="0" column="3">
+    <spacer name="mpSpcCreated">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="sizeType" >
+     <property name="sizeType">
       <enum>QSizePolicy::MinimumExpanding</enum>
      </property>
-     <property name="sizeHint" stdset="0" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>80</width>
        <height>20</height>
@@ -53,14 +51,26 @@
      </property>
     </spacer>
    </item>
-   <item row="6" column="0" colspan="4" >
-    <layout class="QHBoxLayout" >
+   <item row="6" column="0" colspan="4">
+    <layout class="QHBoxLayout">
      <item>
-      <spacer name="horizontalSpacerLeft" >
-       <property name="orientation" >
+      <widget class="QLabel" name="label">
+       <property name="font">
+        <font>
+         <italic>true</italic>
+        </font>
+       </property>
+       <property name="text">
+        <string>Double click on Reference / Description to open it in browser</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacerLeft">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -69,31 +79,31 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="mpBtnDelete" >
-       <property name="focusPolicy" >
+      <widget class="QPushButton" name="mpBtnDelete">
+       <property name="focusPolicy">
         <enum>Qt::NoFocus</enum>
        </property>
-       <property name="text" >
+       <property name="text">
         <string>Delete</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="mpBtnClear" >
-       <property name="focusPolicy" >
+      <widget class="QPushButton" name="mpBtnClear">
+       <property name="focusPolicy">
         <enum>Qt::NoFocus</enum>
        </property>
-       <property name="text" >
+       <property name="text">
         <string>Delete All</string>
        </property>
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacerRight" >
-       <property name="orientation" >
+      <spacer name="horizontalSpacerRight">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -103,152 +113,152 @@
      </item>
     </layout>
    </item>
-   <item row="4" column="0" >
-    <widget class="QLabel" name="mpLblModified" >
-     <property name="text" >
+   <item row="4" column="0">
+    <widget class="QLabel" name="mpLblModified">
+     <property name="text">
       <string>Modified at</string>
      </property>
-     <property name="alignment" >
+     <property name="alignment">
       <set>Qt::AlignTop</set>
      </property>
-     <property name="wordWrap" >
+     <property name="wordWrap">
       <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" >
-    <widget class="QLabel" name="mpLblAuthors" >
-     <property name="text" >
+   <item row="1" column="0">
+    <widget class="QLabel" name="mpLblAuthors">
+     <property name="text">
       <string>Authors</string>
      </property>
-     <property name="alignment" >
+     <property name="alignment">
       <set>Qt::AlignTop</set>
      </property>
-     <property name="wordWrap" >
+     <property name="wordWrap">
       <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item row="2" column="0" >
-    <widget class="QLabel" name="mpLblReferences" >
-     <property name="text" >
+   <item row="2" column="0">
+    <widget class="QLabel" name="mpLblReferences">
+     <property name="text">
       <string>References</string>
      </property>
-     <property name="alignment" >
+     <property name="alignment">
       <set>Qt::AlignTop</set>
      </property>
-     <property name="wordWrap" >
+     <property name="wordWrap">
       <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item row="3" column="0" >
-    <widget class="QLabel" name="mpLblDescription" >
-     <property name="text" >
+   <item row="3" column="0">
+    <widget class="QLabel" name="mpLblDescription">
+     <property name="text">
       <string>Description</string>
      </property>
-     <property name="alignment" >
+     <property name="alignment">
       <set>Qt::AlignTop</set>
      </property>
-     <property name="wordWrap" >
+     <property name="wordWrap">
       <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item row="3" column="1" colspan="3" >
-    <widget class="CQTableView" name="mpTblDescription" >
-     <property name="editTriggers" >
+   <item row="3" column="1" colspan="3">
+    <widget class="CQTableView" name="mpTblDescription">
+     <property name="editTriggers">
       <set>QAbstractItemView::CurrentChanged|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
      </property>
-     <property name="alternatingRowColors" >
+     <property name="alternatingRowColors">
       <bool>false</bool>
      </property>
-     <property name="selectionMode" >
+     <property name="selectionMode">
       <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
-     <property name="selectionBehavior" >
+     <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
-     <property name="horizontalScrollMode" >
+     <property name="horizontalScrollMode">
       <enum>QAbstractItemView::ScrollPerPixel</enum>
      </property>
-     <property name="sortingEnabled" >
+     <property name="sortingEnabled">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="4" column="1" colspan="3" >
-    <widget class="CQTableView" name="mpTblModified" >
-     <property name="editTriggers" >
+   <item row="4" column="1" colspan="3">
+    <widget class="CQTableView" name="mpTblModified">
+     <property name="editTriggers">
       <set>QAbstractItemView::CurrentChanged|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
      </property>
-     <property name="alternatingRowColors" >
+     <property name="alternatingRowColors">
       <bool>false</bool>
      </property>
-     <property name="selectionMode" >
+     <property name="selectionMode">
       <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
-     <property name="selectionBehavior" >
+     <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
-     <property name="horizontalScrollMode" >
+     <property name="horizontalScrollMode">
       <enum>QAbstractItemView::ScrollPerPixel</enum>
      </property>
-     <property name="sortingEnabled" >
+     <property name="sortingEnabled">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="2" column="1" colspan="3" >
-    <widget class="CQTableView" name="mpTblReferences" >
-     <property name="editTriggers" >
+   <item row="2" column="1" colspan="3">
+    <widget class="CQTableView" name="mpTblReferences">
+     <property name="editTriggers">
       <set>QAbstractItemView::CurrentChanged|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
      </property>
-     <property name="alternatingRowColors" >
+     <property name="alternatingRowColors">
       <bool>false</bool>
      </property>
-     <property name="selectionMode" >
+     <property name="selectionMode">
       <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
-     <property name="selectionBehavior" >
+     <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
-     <property name="horizontalScrollMode" >
+     <property name="horizontalScrollMode">
       <enum>QAbstractItemView::ScrollPerPixel</enum>
      </property>
-     <property name="sortingEnabled" >
+     <property name="sortingEnabled">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="1" column="1" colspan="3" >
-    <widget class="CQTableView" name="mpTblAuthors" >
-     <property name="editTriggers" >
+   <item row="1" column="1" colspan="3">
+    <widget class="CQTableView" name="mpTblAuthors">
+     <property name="editTriggers">
       <set>QAbstractItemView::CurrentChanged|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
      </property>
-     <property name="alternatingRowColors" >
+     <property name="alternatingRowColors">
       <bool>false</bool>
      </property>
-     <property name="selectionMode" >
+     <property name="selectionMode">
       <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
-     <property name="selectionBehavior" >
+     <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
-     <property name="horizontalScrollMode" >
+     <property name="horizontalScrollMode">
       <enum>QAbstractItemView::ScrollPerPixel</enum>
      </property>
-     <property name="sortingEnabled" >
+     <property name="sortingEnabled">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="0" column="1" >
-    <widget class="QDateTimeEdit" name="mpDTCreated" />
+   <item row="0" column="1">
+    <widget class="QDateTimeEdit" name="mpDTCreated"/>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
    <class>CopasiWidget</class>
@@ -272,8 +282,8 @@
   <tabstop>mpBtnClear</tabstop>
  </tabstops>
  <includes>
-  <include location="global" >vector</include>
-  <include location="local" >copasi/UI/copasiWidget.h</include>
+  <include location="global">vector</include>
+  <include location="local">copasi/UI/copasiWidget.h</include>
  </includes>
  <resources/>
  <connections>
@@ -283,11 +293,11 @@
    <receiver>CQMiriamWidget</receiver>
    <slot>slotBtnClearClicked()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>334</x>
-     <y>443</y>
+    <hint type="sourcelabel">
+     <x>307</x>
+     <y>445</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -299,11 +309,11 @@
    <receiver>CQMiriamWidget</receiver>
    <slot>slotBtnDeleteClicked()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>253</x>
-     <y>443</y>
+    <hint type="sourcelabel">
+     <x>226</x>
+     <y>445</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -315,11 +325,11 @@
    <receiver>CQMiriamWidget</receiver>
    <slot>slotCreatedDTChanged(QDateTime)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>143</x>
      <y>18</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>270</x>
      <y>227</y>
     </hint>
