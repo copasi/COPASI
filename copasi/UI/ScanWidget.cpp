@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-//   $Revision: 1.220 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/16 14:50:28 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -62,7 +54,7 @@
 #include "CScanWidgetTask.h"
 
 ScanWidget::ScanWidget(QWidget* parent, const char* name, Qt::WFlags f)
-    : TaskWidget(parent, name, f)
+  : TaskWidget(parent, name, f)
 {
   if (!name)
     setName("ScanWidget");
@@ -103,7 +95,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, Qt::WFlags f)
   tmpLayout->addItem(mpSpacer);
 
   buttonNewItem = new QPushButton(this, "buttonNewItem");
-  buttonNewItem->setText("... Create!");
+  buttonNewItem->setText("Create");
   //ScanWidgetLayout->addWidget(buttonNewItem, 1, 2);
   tmpLayout->addWidget(buttonNewItem);
 
@@ -253,7 +245,6 @@ bool ScanWidget::slotAddItem()
         scrollview->insertWidget(tmp2);
         totalRows = scrollview->rowCount();
         tmp2->lineEditNumber->setFocus();
-
       }
       break;
 
