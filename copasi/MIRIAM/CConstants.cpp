@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CConstants.cpp,v $
-//   $Revision: 1.15 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/03 13:59:22 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -78,8 +70,8 @@ std::string CMIRIAMResourceObject::trimId(const std::string & id)
 }
 
 CMIRIAMResourceObject::CMIRIAMResourceObject(CRDFNode * pNode):
-    mId(),
-    mpNode(pNode)
+  mId(),
+  mpNode(pNode)
 {
   if (mpNode != NULL)
     setURI(mpNode->getObject().getResource());
@@ -92,17 +84,17 @@ void CMIRIAMResourceObject::setMIRIAMResources(const CMIRIAMResources * pResourc
 }
 
 CMIRIAMResourceObject::CMIRIAMResourceObject(const std::string & displayName, const std::string & id):
-    mResource(C_INVALID_INDEX),
-    mId(),
-    mpNode(NULL)
+  mResource(C_INVALID_INDEX),
+  mId(),
+  mpNode(NULL)
 {
   setDisplayName(displayName);
   mId = id;
 }
 
 CMIRIAMResourceObject::CMIRIAMResourceObject(const CMIRIAMResourceObject & src):
-    mResource(src.mResource),
-    mId(src.mId)
+  mResource(src.mResource),
+  mId(src.mId)
 {}
 
 bool CMIRIAMResourceObject::setId(const std::string & id)
@@ -200,11 +192,20 @@ void CMIRIAMResourceObject::extractId(const std::string & URI)
       mResource == C_INVALID_INDEX)
     return;
 
-  const std::string & tmp = (mpResources->getMIRIAMResource(mResource)).getMIRIAMURI();
+  const std::string * pTmp = & mpResources->getMIRIAMResource(mResource).getMIRIAMURI();
 
-  if (URI.substr(0, tmp.length()) == tmp &&
-      URI.length() > tmp.length())
-    mId = URI.substr(tmp.length() + 1);
+  if (URI.substr(0, pTmp->length()) == *pTmp &&
+      URI.length() > pTmp->length())
+    mId = URI.substr(pTmp->length() + 1);
+
+  if (mId == "")
+    {
+      std::string Tmp = mpResources->getMIRIAMResource(mResource).getIdentifiersOrgURL();
+
+      if (URI.substr(0, Tmp.length()) == Tmp &&
+          URI.length() > Tmp.length())
+        mId = URI.substr(Tmp.length() + 1);
+    }
 
   if (mId == "")
     {
