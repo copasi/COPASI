@@ -12,14 +12,6 @@
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
-
-
-
-
-
-
-
-
 ######################################################################
 # $Revision: 1.142 $ $Author: shoops $ $Date: 2012/06/26 22:30:00 $  
 ######################################################################
@@ -774,6 +766,7 @@ contains(BUILD_OS, Linux) {
       DEFINES += HAVE_MML
     }
 
+	LIBS *= -lGLU
 # only needed for the class CLSimpleImageTexturizer which is only
 # needed if we want to create bitmaps from layouts in the backend
 #contains(DEFINES,USE_CRENDER_EXTENSION) {           
