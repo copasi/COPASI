@@ -12,6 +12,9 @@
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
+
+
+
 %{
 
 #include "utilities/CVector.h"
@@ -68,8 +71,10 @@
 
 typedef CVectorCore<C_FLOAT64> FloatVectorCore;
 typedef CVector<C_FLOAT64> FloatVector;
+#ifndef SWIGPYTHON
 typedef CVectorCore<unsigned long> ULongVectorCore;
 typedef CVector<unsigned long> ULongVector;
+#endif
 typedef CVectorCore<size_t> SizeTVectorCore;
 typedef CVector<size_t> SizeTVector;
 typedef CVectorCore<CCopasiObject*> ObjectVectorCore;
@@ -77,8 +82,10 @@ typedef CVector<CCopasiObject*> ObjectVector;
 
 %template(FloatVectorCore) CVectorCore<C_FLOAT64>;
 %template(FloatVector) CVector<C_FLOAT64>;
+#ifndef SWIGPYTHON
 %template(ULongVectorCore) CVectorCore<unsigned long>;
 %template(ULongVector) CVector<unsigned long>;
+#endif
 %template(SizeTVectorCore) CVectorCore<size_t>;
 %template(SizeTVector) CVector<size_t>;
 %template(ObjectVectorCore) CVectorCore<CCopasiObject*>;

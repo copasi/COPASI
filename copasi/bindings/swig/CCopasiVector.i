@@ -1,23 +1,21 @@
-// Begin git Header 
-//   Commit: 28d5663ff3fc99993d3b249dec626841cb5247ab 
-//   Author: Frank T. Bergmann fbergman@caltech.edu 
-//   Date: 2012-08-29 10:43:00 +0200 
-// End git Header 
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+
 
 %{
 
@@ -224,7 +222,9 @@
 %template(ParameterVector) std::vector<CCopasiParameter*>;
 
 %template(IntStdVector) std::vector<C_INT32>;
+#ifndef SWIGPYTHON
 %template(UIntStdVector) std::vector<unsigned int>;
+#endif
 %template(SizeTStdVector) std::vector<size_t>;
 
 %template(StringStdVector) std::vector<std::string>;
@@ -280,7 +280,9 @@ typedef CCopasiVector<CChemEqElement> CChemEqElementVector;
 typedef CCopasiVector<CCopasiDataModel> DataModelVector;
 
 typedef std::vector<C_INT32> IntStdVector;
+#ifndef SWIGPYTHON
 typedef std::vector<unsigned int> UIntStdVector;
+#endif
 typedef std::vector<size_t> SizeTStdVector;
 typedef std::vector<C_FLOAT64> FloatStdVector;
 
