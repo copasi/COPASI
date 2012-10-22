@@ -134,8 +134,8 @@ CFitProblem::~CFitProblem()
 void CFitProblem::initObjects()
 {
 #ifdef COPASI_CROSSVALIDATION
-  addObjectReference("Cross Validation Solution", mCrossValidationSolutionValue, CCopasiObject::ValueDbl);
-  addObjectReference("Cross Validation Objective", mCrossValidationObjective, CCopasiObject::ValueDbl);
+  addObjectReference("Validation Solution", mCrossValidationSolutionValue, CCopasiObject::ValueDbl);
+  addObjectReference("Validation Objective", mCrossValidationObjective, CCopasiObject::ValueDbl);
 #endif // COPASI_CROSSVALIDATION
 
   mpFisherMatrixInterface = new CCopasiMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisher);
@@ -169,7 +169,7 @@ void CFitProblem::initializeParameter()
   assertGroup("Experiment Set");
 
 #ifdef COPASI_CROSSVALIDATION
-  assertGroup("Cross Validation Set");
+  assertGroup("Validation Set");
 #endif // COPASI_CROSSVALIDATION
 
   elevateChildren();
@@ -251,8 +251,18 @@ bool CFitProblem::elevateChildren()
 #ifdef COPASI_CROSSVALIDATION
   std::map<std::string, std::string> CrossValidationMap;
 
+  // We have old CopasiML files (only snapshots and test releases), which use
+  // "Cross Validation Set"
+  pGroup = getGroup("Cross Validation Set");
+
+  if (pGroup != NULL)
+    {
+      removeParameter("Validation Set");
+      pGroup->setObjectName("Validation Set");
+    }
+
   pExperiments =
-    getGroup("Cross Validation Set")->CCopasiParameter::getValue().pGROUP;
+    getGroup("Validation Set")->CCopasiParameter::getValue().pGROUP;
 
   for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
     if ((pGroup = dynamic_cast< CCopasiParameterGroup * >(*itExp)) != NULL &&
@@ -261,9 +271,9 @@ bool CFitProblem::elevateChildren()
 
   // This intermediate elevation step should be not needed but Viusal C fails when directly
   // going to the CCrossValidationSet.
-  elevate< CExperimentSet, CCopasiParameterGroup >(getGroup("Cross Validation Set"));
+  elevate< CExperimentSet, CCopasiParameterGroup >(getGroup("Validation Set"));
   mpCrossValidationSet =
-    elevate< CCrossValidationSet, CCopasiParameterGroup >(getGroup("Cross Validation Set"));
+    elevate< CCrossValidationSet, CCopasiParameterGroup >(getGroup("Validation Set"));
 
   if (!mpCrossValidationSet) return false;
 

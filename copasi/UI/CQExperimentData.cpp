@@ -692,7 +692,7 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet, CCopasiDataModel * 
 
   if (mCrossValidation)
     {
-      setWindowTitle("Cross Validation Data");
+      setWindowTitle("Validation Data");
       mpLblWeight->show();
       mpEditWeight->show();
       mpLblThreshold->show();
