@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeChoice.cpp,v $
-//   $Revision: 1.26 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/16 23:11:31 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -28,15 +20,18 @@
 #include "sbml/math/ASTNode.h"
 
 CEvaluationNodeChoice::CEvaluationNodeChoice():
-    CEvaluationNode(CEvaluationNode::INVALID, "")
+  CEvaluationNode(CEvaluationNode::INVALID, ""),
+  mpIf(NULL),
+  mpTrue(NULL),
+  mpFalse(NULL)
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeChoice::CEvaluationNodeChoice(const SubType & subType,
     const Data & data):
-    CEvaluationNode((Type)(CEvaluationNode::CHOICE | subType), data),
-    mpIf(NULL),
-    mpTrue(NULL),
-    mpFalse(NULL)
+  CEvaluationNode((Type)(CEvaluationNode::CHOICE | subType), data),
+  mpIf(NULL),
+  mpTrue(NULL),
+  mpFalse(NULL)
 {
   switch (subType)
     {
@@ -52,10 +47,10 @@ CEvaluationNodeChoice::CEvaluationNodeChoice(const SubType & subType,
 }
 
 CEvaluationNodeChoice::CEvaluationNodeChoice(const CEvaluationNodeChoice & src):
-    CEvaluationNode(src),
-    mpIf(src.mpIf),
-    mpTrue(src.mpTrue),
-    mpFalse(src.mpFalse)
+  CEvaluationNode(src),
+  mpIf(src.mpIf),
+  mpTrue(src.mpTrue),
+  mpFalse(src.mpFalse)
 {}
 
 CEvaluationNodeChoice::~CEvaluationNodeChoice() {}

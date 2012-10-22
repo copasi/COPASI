@@ -23,10 +23,17 @@
 #include <iostream>
 #include "UI/qtUtilities.h"
 
-CStructureParser::CStructureParser(int n)
-{
-  sumColumns = n;
-}
+CStructureParser::CStructureParser(int n):
+  indent(),
+  texHead(),
+  tex(),
+  texTail(),
+  tagName(),
+  needToWriteColumnAllignment(false),
+  sumColumns(n),
+  indexColumns(0),
+  mListOfUncompletedTags()
+{}
 
 bool CStructureParser::startDocument()
 {

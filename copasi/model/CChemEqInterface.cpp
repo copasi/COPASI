@@ -26,11 +26,37 @@
 #include "utilities/utility.h"
 
 CChemEqInterface::CChemEqInterface():
-  mpModel(NULL)
+  mpModel(NULL),
+  mSubstrateNames(),
+  mProductNames(),
+  mModifierNames(),
+  mSubstrateMult(),
+  mProductMult(),
+  mModifierMult(),
+  mSubstrateCompartments(),
+  mProductCompartments(),
+  mModifierCompartments(),
+  mSubstrateDisplayNames(),
+  mProductDisplayNames(),
+  mModifierDisplayNames(),
+  mReversibility(false)
 {}
 
 CChemEqInterface::CChemEqInterface(CModel * pModel):
-  mpModel(pModel)
+  mpModel(pModel),
+  mSubstrateNames(),
+  mProductNames(),
+  mModifierNames(),
+  mSubstrateMult(),
+  mProductMult(),
+  mModifierMult(),
+  mSubstrateCompartments(),
+  mProductCompartments(),
+  mModifierCompartments(),
+  mSubstrateDisplayNames(),
+  mProductDisplayNames(),
+  mModifierDisplayNames(),
+  mReversibility(false)
 {}
 
 CChemEqInterface::~CChemEqInterface()

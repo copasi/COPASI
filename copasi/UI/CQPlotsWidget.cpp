@@ -71,18 +71,13 @@ CQPlotsWidget::~CQPlotsWidget()
 
 void CQPlotsWidget::slotBtnActivateAllClicked()
 {
-  const QItemSelectionModel * pSelectionModel = mpTblPlots->selectionModel();
-
-  QModelIndexList mappedSelRows;
-  size_t i, imax = mpPlotDM->rowCount();
-
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
   if (!pDataModel->getModel())
     return;
 
-  for (i = 0; i < pDataModel->getPlotDefinitionList()->size(); i++)
+  for (size_t i = 0; i < pDataModel->getPlotDefinitionList()->size(); i++)
     {
       CPlotSpecification *pPS = static_cast<CPlotSpecification *>(pDataModel->getPlotDefinitionList()->operator[](i));
       pPS->setActive(true);
@@ -93,18 +88,13 @@ void CQPlotsWidget::slotBtnActivateAllClicked()
 
 void CQPlotsWidget::slotBtnDeactivateAllClicked()
 {
-  const QItemSelectionModel * pSelectionModel = mpTblPlots->selectionModel();
-
-  QModelIndexList mappedSelRows;
-  size_t i, imax = mpPlotDM->rowCount();
-
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
   if (!pDataModel->getModel())
     return;
 
-  for (i = 0; i < pDataModel->getPlotDefinitionList()->size(); i++)
+  for (size_t i = 0; i < pDataModel->getPlotDefinitionList()->size(); i++)
     {
       CPlotSpecification *pPS = static_cast<CPlotSpecification *>(pDataModel->getPlotDefinitionList()->operator[](i));
       pPS->setActive(false);

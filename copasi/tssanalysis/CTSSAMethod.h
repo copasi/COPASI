@@ -112,7 +112,7 @@ public:
   void setModel(CModel* model);
 
   /**
-  * Predifine the CArrayAnnotation for plots
+  * Predefine the CArrayAnnotation for plots
   */
   virtual void predifineAnnotation();
 
@@ -155,7 +155,7 @@ public:
   virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
   /**
-   *  Intialize the method parameter
+   *  Initialize the method parameter
    */
   virtual void initializeParameter();
 
@@ -185,7 +185,7 @@ protected:
   C_FLOAT64 * mY;
 
   /**
-   * Vector containig the derivatives after calling eval
+   * Vector containing the derivatives after calling eval
    */
   CVector< C_FLOAT64 > mYdot;
 
@@ -348,7 +348,7 @@ protected:
   // Operations
 
   /**
-   * Intialize integration method parameters
+   * Initialize integration method parameters
    */
 
   void initializeIntegrationsParameter();

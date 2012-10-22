@@ -2645,11 +2645,57 @@ SBMLImporter::replaceBvars(const ASTNode* node, std::map<std::string, ASTNode*> 
  * Constructor that initializes speciesMap and the FunctionDB object
  */
 SBMLImporter::SBMLImporter():
+  mIgnoredSBMLMessages(),
+  speciesMap(),
+  functionDB(NULL),
+  mIncompleteModel(false),
+  mUnsupportedRuleFound(false),
+  mUnsupportedRateRuleFound(false),
+  mUnsupportedAssignmentRuleFound(false),
+  mUnitOnNumberFound(false),
+  mAssignmentToSpeciesReferenceFound(false),
+  mLevel(0),
+  mOriginalLevel(0),
+  mVersion(0),
+  sbmlIdMap(),
+  mUsedFunctions(),
   mpDataModel(NULL),
   mpCopasiModel(NULL),
-  mImportCOPASIMIRIAM(false),
+  mFunctionNameMapping(),
+  mDivisionByCompartmentReactions(),
+  mpImportHandler(NULL),
+  mImportStep(0),
+  mhImportStep(C_INVALID_INDEX),
+  mTotalSteps(0),
+  mSubstanceOnlySpecies(),
+  mFastReactions(),
+  mReactionsWithReplacedLocalParameters(),
+  mExplicitelyTimeDependentFunctionDefinitions(),
+  mIgnoredParameterUnits(),
+  mStoichiometricExpressionMap(),
+  mDelayFound(false),
+  mPotentialAvogadroNumbers(),
+  mAvogadroCreated(false),
+  mImportCOPASIMIRIAM(true),
+  mDelayNodeMap(),
+  mUsedSBMLIds(),
   mUsedSBMLIdsPopulated(false),
-  mAvogadroSet(false)
+  mAvogadroSet(false),
+#if LIBSBML_VERSION >= 40100
+  mpModelConversionFactor(NULL),
+  mChemEqElementSpeciesIdMap(),
+  mSpeciesConversionParameterMap(),
+  mSBMLIdModelValueMap(),
+  mSBMLSpeciesReferenceIds(),
+  mRateRuleForSpeciesReferenceIgnored(false),
+  mEventAssignmentForSpeciesReferenceIgnored(false),
+  mConversionFactorFound(false),
+# if LIBSBML_VERSION >= 40200
+  mEventPrioritiesIgnored(false),
+  mInitialTriggerValues(false),
+  mNonPersistentTriggerFound(false)
+# endif // LIBSBML_VERSION >= 40200
+#endif // LIBSBML_VERSION >= 40100
 {
   this->speciesMap = std::map<std::string, CMetab*>();
   this->functionDB = NULL;
@@ -7187,6 +7233,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
                   default:
                     fatalError();
+                    break;
                 }
 
               delete pTmpUdef2;

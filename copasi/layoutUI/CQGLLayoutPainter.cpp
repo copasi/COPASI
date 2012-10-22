@@ -94,10 +94,25 @@ CQGLLayoutPainter::CQGLLayoutPainter(const QGLFormat& format, QWidget *parent)
     mViewportWidth(0),
     mViewportHeight(0),
     mpRenderer(NULL),
+    mMousePressPosition(),
+    mMouseCurrentPosition(),
+    mMouseLastPosition(),
     mMouseButton(Qt::NoButton),
     mDragTimeout(false),
     mState(CQGLLayoutPainter::STATE_NORMAL),
-    mpDragPoint(NULL)
+    mpDragPoint(NULL),
+    glCheckFramebufferStatusEXTPtr(NULL),
+    glGenFramebuffersEXTPtr(NULL),
+    glGenRenderbuffersEXTPtr(NULL),
+    glDeleteFramebuffersEXTPtr(NULL),
+    glDeleteRenderbuffersEXTPtr(NULL),
+    glBindFramebufferEXTPtr(NULL),
+    glBindRenderbufferEXTPtr(NULL),
+    glRenderbufferStorageEXTPtr(NULL),
+    glFramebufferRenderbufferEXTPtr(NULL),
+    glRenderbufferStorageMultisampleEXTPtr(NULL),
+    glBlitFramebufferEXTPtr(NULL)
+
 {
   this->setMouseTracking(true);
 }

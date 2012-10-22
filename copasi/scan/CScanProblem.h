@@ -116,6 +116,12 @@ public:
    */
   void load(CReadConfig & configBuffer,
             CReadConfig::Mode mode = CReadConfig::NEXT);
+
+private:
+  /**
+   * Initialize the method parameter
+   */
+  void initializeParameter();
 };
 
 #endif

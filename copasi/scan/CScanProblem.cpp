@@ -28,17 +28,10 @@
  *  @param "CModel *" pModel
  */
 CScanProblem::CScanProblem(const CCopasiContainer * pParent):
-  CCopasiProblem(CCopasiTask::scan, pParent)
+  CCopasiProblem(CCopasiTask::scan, pParent),
+  mpScanItems(NULL)
 {
-  addParameter("Subtask", CCopasiParameter::UINT, (unsigned C_INT32) CCopasiTask::timeCourse);
-
-  addGroup("ScanItems");
-  mpScanItems = dynamic_cast<CCopasiParameterGroup*>(getParameter("ScanItems"));
-
-  addParameter("Output in subtask", CCopasiParameter::BOOL, true);
-  addParameter("Adjust initial conditions", CCopasiParameter::BOOL, false);
-
-  CONSTRUCTOR_TRACE;
+  initializeParameter();
 }
 
 /**
@@ -47,14 +40,28 @@ CScanProblem::CScanProblem(const CCopasiContainer * pParent):
  */
 CScanProblem::CScanProblem(const CScanProblem & src,
                            const CCopasiContainer * pParent):
-  CCopasiProblem(src, pParent)
-{CONSTRUCTOR_TRACE;}
+  CCopasiProblem(src, pParent),
+  mpScanItems(NULL)
+{
+  initializeParameter();
+}
 
 /**
  *  Destructor.
  */
 CScanProblem::~CScanProblem()
-{DESTRUCTOR_TRACE;}
+{}
+
+void CScanProblem::initializeParameter()
+{
+  addParameter("Subtask", CCopasiParameter::UINT, (unsigned C_INT32) CCopasiTask::timeCourse);
+
+  addGroup("ScanItems");
+  mpScanItems = dynamic_cast<CCopasiParameterGroup*>(getParameter("ScanItems"));
+
+  addParameter("Output in subtask", CCopasiParameter::BOOL, true);
+  addParameter("Adjust initial conditions", CCopasiParameter::BOOL, false);
+}
 
 //***********************************
 

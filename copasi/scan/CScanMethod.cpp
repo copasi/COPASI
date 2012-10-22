@@ -69,6 +69,16 @@ CScanItem* CScanItem::createScanItemFromParameterGroup(CCopasiParameterGroup* si
   return tmp;
 }
 
+CScanItem::CScanItem():
+  mNumSteps(0),
+  mpObject(NULL),
+  mpInitialObject(NULL),
+  mStoreValue(0.0),
+  mIndex(0),
+  mFlagFinished(false),
+  mIsStateVariable(false)
+{}
+
 CScanItem::CScanItem(CCopasiParameterGroup* si,
                      const bool & continueFromCurrentState):
   mNumSteps(0),

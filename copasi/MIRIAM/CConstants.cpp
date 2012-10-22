@@ -94,7 +94,8 @@ CMIRIAMResourceObject::CMIRIAMResourceObject(const std::string & displayName, co
 
 CMIRIAMResourceObject::CMIRIAMResourceObject(const CMIRIAMResourceObject & src):
   mResource(src.mResource),
-  mId(src.mId)
+  mId(src.mId),
+  mpNode(NULL)
 {}
 
 bool CMIRIAMResourceObject::setId(const std::string & id)

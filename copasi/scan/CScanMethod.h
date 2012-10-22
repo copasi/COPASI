@@ -91,7 +91,7 @@ protected:
   //initObject();
 
 private:
-  CScanItem() {};
+  CScanItem();
 };
 
 //***********************************+

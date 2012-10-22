@@ -65,6 +65,7 @@ CTSSAMethod::createMethod(CCopasiMethod::SubType subType)
 
       default:
         fatalError();
+        break;
     }
 
   return pMethod;
@@ -79,8 +80,47 @@ CTSSAMethod::CTSSAMethod(const CCopasiMethod::SubType & subType,
   mpCurrentState(NULL),
   mpProblem(NULL),
   mpState(NULL),
-  mY(NULL)
-{CONSTRUCTOR_TRACE;}
+  mData(),
+  mY(NULL),
+  mYdot(),
+  mY_initial(),
+  mTime(0.0),
+  mJacobian(),
+  mJacobian_initial(),
+  mQ(),
+  mQ_desc(),
+  mR(),
+  mR_desc(),
+  mTd(),
+  mTdInverse(),
+  mQz(),
+  mTd_save(),
+  mTdInverse_save(),
+  mCfast(),
+  mY_cons(),
+  mVslow(),
+  mVslow_metab(),
+  mVslow_space(),
+  mVfast_space(),
+  mSlow(0),
+  mLsodaStatus(1),
+  mReducedModel(false),
+  mRtol(1e-5),
+  mAtol(),
+  mErrorMsg(),
+  mLSODA(),
+  mState(0),
+  mDWork(),
+  mIWork(),
+  mJType(0),
+  mpModel(NULL),
+  mDtol(1e-6),
+  mEPS(0.01),
+  mVec_SlowModes(),
+  mCurrentTime(),
+  mVec_TimeScale(),
+  mCurrentStep(0)
+{}
 
 /**
  *  Copy constructor.
@@ -90,14 +130,55 @@ CTSSAMethod::CTSSAMethod(const CTSSAMethod & src,
                          const CCopasiContainer * pParent):
   CCopasiMethod(src, pParent),
   mpCurrentState(src.mpCurrentState),
-  mpProblem(src.mpProblem)
-{CONSTRUCTOR_TRACE;}
+  mpProblem(src.mpProblem),
+  mpState(NULL),
+  mData(),
+  mY(NULL),
+  mYdot(),
+  mY_initial(),
+  mTime(src.mTime),
+  mJacobian(),
+  mJacobian_initial(),
+  mQ(),
+  mQ_desc(),
+  mR(),
+  mR_desc(),
+  mTd(),
+  mTdInverse(),
+  mQz(),
+  mTd_save(),
+  mTdInverse_save(),
+  mCfast(),
+  mY_cons(),
+  mVslow(),
+  mVslow_metab(),
+  mVslow_space(),
+  mVfast_space(),
+  mSlow(0),
+  mLsodaStatus(1),
+  mReducedModel(src.mReducedModel),
+  mRtol(src.mRtol),
+  mAtol(src.mAtol),
+  mErrorMsg(),
+  mLSODA(),
+  mState(0),
+  mDWork(),
+  mIWork(),
+  mJType(0),
+  mpModel(NULL),
+  mDtol(src.mDtol),
+  mEPS(src.mEPS),
+  mVec_SlowModes(),
+  mCurrentTime(),
+  mVec_TimeScale(),
+  mCurrentStep(0)
+{}
 
 /**
  *  Destructor.
  */
 CTSSAMethod::~CTSSAMethod()
-{DESTRUCTOR_TRACE;}
+{}
 
 void CTSSAMethod::setCurrentState(CState * currentState)
 {
@@ -189,6 +270,7 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
 
           default:
             fatalError();
+            break;
         }
     }
 
@@ -914,6 +996,7 @@ void CTSSAMethod::schur(C_INT &info)
 
               default:
                 fatalError();
+                break;
             }
 
           //ILDM : if (index[count + 1] < index[count])

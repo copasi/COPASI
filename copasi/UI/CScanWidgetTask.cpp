@@ -16,20 +16,24 @@
 
 #include <iostream>
 
-#include "copasi.h"
-
 #include "CScanWidgetTask.h"
 #include "CCopasiSelectionDialog.h"
 
+#include "copasi.h"
+
 #include "utilities/CCopasiParameterGroup.h"
 #include "report/CCopasiObjectName.h"
+#include "scan/CScanProblem.h"
 
 /*
  *  Constructs a CScanWidgetTask as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CScanWidgetTask::CScanWidgetTask(QWidget* parent, const char* name, Qt::WindowFlags f)
-  : QWidget(parent, f)
+CScanWidgetTask::CScanWidgetTask(QWidget* parent, const char* name, Qt::WindowFlags f):
+  QWidget(parent, f),
+  mpObject(NULL),
+  mpModel(NULL)
+
 {
   setObjectName(QString::fromUtf8(name));
   setupUi(this);

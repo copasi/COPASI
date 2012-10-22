@@ -321,6 +321,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName,
 
       default:
         fatalError();
+        break;
     }
 
   return true;
