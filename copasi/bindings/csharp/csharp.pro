@@ -1,12 +1,4 @@
-# Begin CVS Header 
-#   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/csharp/csharp.pro,v $ 
-#   $Revision: 1.3 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2012/01/03 18:44:49 $ 
-# End CVS Header 
-
-# Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -57,7 +49,7 @@ contains(BUILD_OS,Linux){
          $$join(COPASI_LIBS, " -l", -l) \
          $${LIBS}
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 }
 
 
@@ -67,7 +59,7 @@ contains(BUILD_OS, Darwin) {
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
   
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
     LIBS += -framework JavaVM
     LIBS += -framework QuickTime

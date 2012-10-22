@@ -1,12 +1,4 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/octave/octave.pro,v $ 
-#   $Revision: 1.7 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2012/01/03 18:44:49 $ 
-# End CVS Header 
-
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -43,7 +35,7 @@ contains(BUILD_OS,Linux){
          $$join(COPASI_LIBS, " -l", -l) \
          $${LIBS}
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
   QMAKE_POST_LINK += $${QMAKE_MOVE} libCOPASI.so.1.0.0 COPASI.oct $$escape_expand(\n\t)
   QMAKE_POST_LINK += $${QMAKE_DEL_FILE} libCOPASI.so* $$escape_expand(\n\t)
@@ -55,7 +47,7 @@ contains(BUILD_OS, Darwin) {
   LIBS = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a) \
          $${LIBS}
   
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 
   QMAKE_LFLAGS_SHLIB += -unexported_symbols_list unexported_symbols.list
   QMAKE_PRE_LINK = nm -g $${SBML_PATH}/lib/libsbml.a | grep "^[0-9]" | cut -d\" \" -f3  > unexported_symbols.list ; nm -g $${EXPAT_PATH}/lib/libexpat.a | grep "^[0-9]" | cut -d\" \" -f3  >> unexported_symbols.list
