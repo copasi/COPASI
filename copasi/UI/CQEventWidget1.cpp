@@ -425,7 +425,7 @@ void CQEventWidget1::slotSelectObject()
 
   if (mAssignments[mCurrentTarget]->setTargetKey(pME->getKey()))
     {
-      // If the target key change was successfull we need to update the label.
+      // If the target key change was successful we need to update the label.
       mpLBTarget->item((int) mCurrentTarget)->setText(FROM_UTF8(pME->getObjectDisplayName()));
     }
 }
@@ -474,6 +474,15 @@ void CQEventWidget1::slotApplyDelay(bool show)
 {
   mpBtnDelayAssignment->setEnabled(show);
   mpBtnDelayCalculation->setEnabled(show);
-  mpLabelDelayExpression->setEnabled(show);
-  mpExpressionDelay->setEnabled(show);
+
+  if (show)
+    {
+      mpLabelDelayExpression->show();
+      mpExpressionDelay->show();
+    }
+  else
+    {
+      mpLabelDelayExpression->hide();
+      mpExpressionDelay->hide();
+    }
 }
