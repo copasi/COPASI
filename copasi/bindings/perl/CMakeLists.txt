@@ -66,7 +66,7 @@ ADD_CUSTOM_COMMAND(
 	        ${SWIG_DEPENDENCIES}
     COMMENT "Swig Perl source") 
 
-add_custom_target(binding_perl_swig ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp)
+add_custom_target(binding_perl_swig ALL DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/perl.i)
 
 	
 ####################################################################

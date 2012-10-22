@@ -97,7 +97,7 @@ add_custom_command(
          ${SWIG_DEPENDENCIES}
     COMMENT "Swig Java source") 
 	
-add_custom_target(binding_java_swig DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp)
+add_custom_target(binding_java_swig DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/java.i)
 
 	
 include(../../common.cmake)
@@ -147,7 +147,7 @@ add_custom_command(
 		 -P "${CMAKE_CURRENT_SOURCE_DIR}/compile-native-files.cmake"
 	
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp
+    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/java-files
     COMMENT "Building: copasi.jar"
 	) 
 
