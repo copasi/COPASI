@@ -200,17 +200,7 @@ void openMiriamReference(const std::string &reference)
   if (reference == "" || reference.length() < 7)
     return;
 
-  if (reference.find("http://") != std::string::npos)
-    {
-      QDesktopServices::openUrl(QUrl(reference.c_str()));
-    }
-  else if (reference.find("urn:miriam:") != std::string::npos)
-    {
-      QString actual(reference.c_str());
-      actual.replace("urn:miriam:", "");
-      actual.replace(":", "/");
-      QDesktopServices::openUrl(QUrl("http://identifiers.org/" + actual + "?profile=most_reliable"));
-    }
+  QDesktopServices::openUrl(QUrl(reference.c_str()));
 }
 
 void CQMiriamWidget::slotBtnBrowseReference(const QModelIndex& index)
@@ -222,7 +212,13 @@ void CQMiriamWidget::slotBtnBrowseReference(const QModelIndex& index)
     return;
 
   const CReference *ref = mpMIRIAMInfo->getReferences()[index.row()];
-  openMiriamReference(ref->getURI());
+  const std::string refResource = ref->getResource();
+  const std::string refId = ref->getId();
+  const CMIRIAMResources * pResource = &CCopasiRootContainer::getConfiguration()->getRecentMIRIAMResources();
+  size_t resourceId = pResource->getResourceIndexFromDisplayName(refResource);
+  std::string identifiers = pResource->getMIRIAMResource(resourceId).getIdentifiersOrgURL();
+
+  openMiriamReference(identifiers + "/" + refId + "?profile=most_reliable");
 }
 
 void CQMiriamWidget::slotBtnBrowseDescription(const QModelIndex& index)
@@ -234,7 +230,13 @@ void CQMiriamWidget::slotBtnBrowseDescription(const QModelIndex& index)
     return;
 
   const CBiologicalDescription *ref = mpMIRIAMInfo->getBiologicalDescriptions()[index.row()];
-  openMiriamReference(ref->getURI());
+  const std::string refResource = ref->getResource();
+  const std::string refId = ref->getId();
+  const CMIRIAMResources * pResource = &CCopasiRootContainer::getConfiguration()->getRecentMIRIAMResources();
+  size_t resourceId = pResource->getResourceIndexFromDisplayName(refResource);
+  std::string identifiers = pResource->getMIRIAMResource(resourceId).getIdentifiersOrgURL();
+
+  openMiriamReference(identifiers + "/" + refId + "?profile=most_reliable");
 }
 
 void CQMiriamWidget::slotBtnClearClicked()
