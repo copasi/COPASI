@@ -211,14 +211,9 @@ void CQMiriamWidget::slotBtnBrowseReference(const QModelIndex& index)
       index.row() >= (int)mpMIRIAMInfo->getReferences().size())
     return;
 
-  const CReference *ref = mpMIRIAMInfo->getReferences()[index.row()];
-  const std::string refResource = ref->getResource();
-  const std::string refId = ref->getId();
-  const CMIRIAMResources * pResource = &CCopasiRootContainer::getConfiguration()->getRecentMIRIAMResources();
-  size_t resourceId = pResource->getResourceIndexFromDisplayName(refResource);
-  std::string identifiers = pResource->getMIRIAMResource(resourceId).getIdentifiersOrgURL();
+  const CReference *pRef = mpMIRIAMInfo->getReferences()[index.row()];
 
-  openMiriamReference(identifiers + "/" + refId + "?profile=most_reliable");
+  openMiriamReference(pRef->getMIRIAMResourceObject().getIdentifiersOrgURL() + "?profile=most_reliable");
 }
 
 void CQMiriamWidget::slotBtnBrowseDescription(const QModelIndex& index)
@@ -229,14 +224,9 @@ void CQMiriamWidget::slotBtnBrowseDescription(const QModelIndex& index)
       index.row() >= (int)mpMIRIAMInfo->getBiologicalDescriptions().size())
     return;
 
-  const CBiologicalDescription *ref = mpMIRIAMInfo->getBiologicalDescriptions()[index.row()];
-  const std::string refResource = ref->getResource();
-  const std::string refId = ref->getId();
-  const CMIRIAMResources * pResource = &CCopasiRootContainer::getConfiguration()->getRecentMIRIAMResources();
-  size_t resourceId = pResource->getResourceIndexFromDisplayName(refResource);
-  std::string identifiers = pResource->getMIRIAMResource(resourceId).getIdentifiersOrgURL();
+  const CBiologicalDescription *pRef = mpMIRIAMInfo->getBiologicalDescriptions()[index.row()];
 
-  openMiriamReference(identifiers + "/" + refId + "?profile=most_reliable");
+  openMiriamReference(pRef->getMIRIAMResourceObject().getIdentifiersOrgURL() + "?profile=most_reliable");
 }
 
 void CQMiriamWidget::slotBtnClearClicked()
@@ -332,6 +322,8 @@ bool CQMiriamWidget::enterProtected()
   if (mKey == "")
     return false;
 
+  CCopasiMessage::clearDeque();
+
   mpMIRIAMInfo->load(mKey);
 
   //Set Models for the 4 TableViews
@@ -362,6 +354,26 @@ bool CQMiriamWidget::enterProtected()
   else
     {
       mpDTCreated->setDateTime(QDateTime::currentDateTime());
+    }
+
+  if (CCopasiMessage::size() > 0)
+    {
+      switch (CCopasiMessage::getHighestSeverity())
+        {
+          case CCopasiMessage::WARNING:
+            CQMessageBox::information(this, "Information", FROM_UTF8(CCopasiMessage::getAllMessageText()));
+            break;
+
+          case CCopasiMessage::ERROR:
+          case CCopasiMessage::EXCEPTION:
+            CQMessageBox::critical(this, "Error", FROM_UTF8(CCopasiMessage::getAllMessageText()));
+            break;
+
+          default:
+            break;
+        }
+
+      CCopasiMessage::clearDeque();
     }
 
   return true;

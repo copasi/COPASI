@@ -119,6 +119,12 @@ const std::string & CMIRIAMResourceObject::getId() const
 bool CMIRIAMResourceObject::setURI(const std::string & URI)
 {
   mResource = getResource(URI);
+
+  if (mResource == C_INVALID_INDEX)
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, MCMiriam + 4, URI.c_str());
+    }
+
   extractId(URI);
 
   return isValid();
@@ -127,6 +133,11 @@ bool CMIRIAMResourceObject::setURI(const std::string & URI)
 std::string CMIRIAMResourceObject::getURI() const
 {
   return (mpResources->getMIRIAMResource(mResource)).getMIRIAMURI() + ":" + mId;
+}
+
+std::string CMIRIAMResourceObject::getIdentifiersOrgURL() const
+{
+  return (mpResources->getMIRIAMResource(mResource)).getIdentifiersOrgURL() + "/" + mId;
 }
 
 bool CMIRIAMResourceObject::setNode(CRDFNode * pNode)
@@ -191,7 +202,10 @@ void CMIRIAMResourceObject::extractId(const std::string & URI)
   // Check whether the resource is known.
   if (mpResources == NULL ||
       mResource == C_INVALID_INDEX)
-    return;
+    {
+      mId = URI;
+      return;
+    }
 
   const std::string * pTmp = & mpResources->getMIRIAMResource(mResource).getMIRIAMURI();
 
