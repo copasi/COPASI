@@ -528,7 +528,7 @@ end;
 
 function DefDirRoot(Param: String): String;
 begin
-  if IsRegularUser then
+  if IsRegularUser() then
     Result := ExpandConstant('{localappdata}')
   else
     Result := ExpandConstant('{pf}')
