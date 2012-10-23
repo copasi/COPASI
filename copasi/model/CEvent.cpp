@@ -232,6 +232,8 @@ CExpression* CEventAssignment::getExpressionPtr()
   return mpExpression;
 }
 
+//****************************************************************
+
 CEvent::CEvent(const std::string & name,
                const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Event"),
@@ -244,7 +246,8 @@ CEvent::CEvent(const std::string & name,
     mPersistentTrigger(false),
     mpTriggerExpression(NULL),
     mpDelayExpression(NULL),
-    mpPriorityExpression(NULL)
+    mpPriorityExpression(NULL),
+    mIsCutPlane(false)
 {
   initObjects();
 }
@@ -261,7 +264,8 @@ CEvent::CEvent(const CEvent & src,
     mPersistentTrigger(src.mPersistentTrigger),
     mpTriggerExpression(src.mpTriggerExpression != NULL ? new CExpression(*src.mpTriggerExpression, this) : NULL),
     mpDelayExpression(src.mpDelayExpression != NULL ? new CExpression(*src.mpDelayExpression, this) : NULL),
-    mpPriorityExpression(src.mpPriorityExpression != NULL ? new CExpression(*src.mpPriorityExpression, this) : NULL)
+    mpPriorityExpression(src.mpPriorityExpression != NULL ? new CExpression(*src.mpPriorityExpression, this) : NULL),
+    mIsCutPlane(src.mIsCutPlane)
 {
   initObjects();
 
@@ -633,3 +637,13 @@ void CEvent::deleteAssignment(const std::string & key)
       mAssignments.CCopasiVector< CEventAssignment >::remove(pAssignment);
     }
 }
+
+bool CEvent::isCutPlane() const
+{
+  return mIsCutPlane;
+}
+void CEvent::setIsCutPlane(bool flag)
+{
+  mIsCutPlane=flag;
+}
+

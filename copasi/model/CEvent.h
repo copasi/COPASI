@@ -385,6 +385,14 @@ public:
   void deleteAssignment(const std::string & key);
 
   /**
+   * returns whether this is a special event that specifies a cut plane
+   * for nonlinear dynamics analysis
+   */
+  bool isCutPlane() const;
+  
+  void setIsCutPlane(bool flag);
+  
+  /**
    * insert operator
    */
   friend std::ostream & operator<<(std::ostream &os, const CEvent & d);
@@ -440,6 +448,14 @@ private:
    */
   CExpression * mpPriorityExpression;
 
+  /**
+   * This indicates a special kind of event that is used to specify a cut
+   * plane for nonlinear dynamics analysis. If in the future we will
+   * introduce additional types of special events, this could easily be 
+   * converted in to an enum.
+   */
+  bool mIsCutPlane;
+    
   /**
    * The id of the corresponding event in an SBML file.
    * This value is either set upon importing an SBML file,

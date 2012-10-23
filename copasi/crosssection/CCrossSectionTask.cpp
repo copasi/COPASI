@@ -117,6 +117,21 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
   mpTrajectoryMethod = dynamic_cast<CTrajectoryMethod *>(mpMethod);
   assert(mpTrajectoryMethod);
 
+  //Here we mark one existing event as being the cut plane. This is probably
+  //the place where in the future we will create this special event 
+  //rather than just mark it.
+  
+  CModel* pModel = mpCrossSectionProblem->getModel();
+  size_t i;
+  for (i=0; i<pModel->getEvents().size(); ++i)
+  {
+    if (pModel->getEvents()[i]->getObjectName()=="__cutplane")
+      pModel->getEvents()[i]->setIsCutPlane(true);
+  }
+  pModel->setCompileFlag();
+  pModel->compileIfNecessary(NULL);
+  
+  
   mpTrajectoryMethod->setProblem(mpCrossSectionProblem);
 
   bool success = mpMethod->isValidProblem(mpProblem);

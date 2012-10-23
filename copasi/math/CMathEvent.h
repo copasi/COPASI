@@ -356,6 +356,8 @@ public:
    * @return C_FLOAT64 executionTime
    */
   C_FLOAT64 getAssignmentTime(const C_FLOAT64 & currentTime);
+  
+  bool isCutPlane() const;
 
 private:
   /**
@@ -416,6 +418,12 @@ private:
    * values which depend on the target values of the assignments.
    */
   std::vector< Refresh * > mDependentValueRefreshes;
+  
+  /**
+   * indicates whether this is a special event used in nonlinear dynamics
+   * analysis
+   */
+  bool mIsCutPlane;
 };
 
 #endif // COPASI_CMathEvent

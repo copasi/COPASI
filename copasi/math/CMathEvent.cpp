@@ -1072,7 +1072,8 @@ CMathEvent::CMathEvent(const CCopasiContainer * pParent) :
   mAssignments("ListOfMathEventAssignment", this),
   mDelayValueRefreshes(),
   mAssignmentValueRefreshes(),
-  mDependentValueRefreshes()
+  mDependentValueRefreshes(),
+  mIsCutPlane(false)
 {}
 
 CMathEvent::CMathEvent(const CMathEvent & src,
@@ -1086,7 +1087,8 @@ CMathEvent::CMathEvent(const CMathEvent & src,
   mAssignments(src.mAssignments, this),
   mDelayValueRefreshes(src.mDelayValueRefreshes),
   mAssignmentValueRefreshes(src.mAssignmentValueRefreshes),
-  mDependentValueRefreshes(src.mDependentValueRefreshes)
+  mDependentValueRefreshes(src.mDependentValueRefreshes),
+  mIsCutPlane(src.mIsCutPlane)
 {}
 
 CMathEvent::~CMathEvent()
@@ -1110,6 +1112,8 @@ bool CMathEvent::compile(const CEvent * pEvent,
 
   mHaveDelay = (mDelay.getInfix() != "");
 
+  mIsCutPlane=pEvent->isCutPlane();
+  
   // Build the list of refresh calls needed to assure that the delay expression
   // can be calculated.
 
@@ -1277,4 +1281,9 @@ C_FLOAT64 CMathEvent::calculateDelayedTime(const C_FLOAT64 & currentTime)
     }
 
   return DelayedTime;
+}
+
+bool CMathEvent::isCutPlane() const
+{
+  return mIsCutPlane;
 }
