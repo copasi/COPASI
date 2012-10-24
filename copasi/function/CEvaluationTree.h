@@ -327,11 +327,6 @@ protected:
   C_FLOAT64 mValue;
 
   /**
-   * Indicates whether the tree must evaluate to a boolean value.
-   */
-  bool mBooleanRequired;
-
-  /**
    * A vector of nodes which need to be calculated in sequence
    */
   std::vector< CEvaluationNode * > mCalculationSequence;

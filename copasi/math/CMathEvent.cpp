@@ -147,7 +147,7 @@ void CMathEventN::CTrigger::allocate(const CEvent * pDataEvent,
   Container.push_back(const_cast< CMathContainer * >(&container));
 
   CExpression Trigger("EventTrigger", &container);
-  Trigger.setBooleanRequired(true);
+  Trigger.setIsBoolean(true);
   Trigger.setInfix(pDataEvent->getTriggerExpression());
   Trigger.compile();
 
@@ -195,7 +195,7 @@ bool CMathEventN::CTrigger::compile(CEvent * pDataEvent,
   ListOfContainer.push_back(&container);
 
   CExpression DataTrigger("DataTrigger", &container);
-  DataTrigger.setBooleanRequired(true);
+  DataTrigger.setIsBoolean(true);
   DataTrigger.setInfix(pDataEvent->getTriggerExpression());
 
   success &= DataTrigger.compile();
@@ -228,7 +228,7 @@ bool CMathEventN::CTrigger::compileDiscontinuous(const CMathObject * pObject,
   // The trigger depends on the root node of the expression of the
   // discontinuous object.
   CExpression DataTrigger("DataTrigger", &container);
-  DataTrigger.setBooleanRequired(true);
+  DataTrigger.setIsBoolean(true);
   const CEvaluationNode * pNode = pObject->getExpressionPtr()->getRoot();
 
   switch ((int) pNode->getType())
@@ -1112,8 +1112,8 @@ bool CMathEvent::compile(const CEvent * pEvent,
 
   mHaveDelay = (mDelay.getInfix() != "");
 
-  mIsCutPlane=pEvent->isCutPlane();
-  
+  mIsCutPlane = pEvent->isCutPlane();
+
   // Build the list of refresh calls needed to assure that the delay expression
   // can be calculated.
 

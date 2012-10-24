@@ -8946,7 +8946,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
   // now we convert the node to a CEvaluationNode
   CExpression* pExpression = dynamic_cast<CExpression*>(CEvaluationTree::create(CEvaluationTree::Expression));
 
-  pExpression->setBooleanRequired(true);
+  pExpression->setIsBoolean(true);
 
   pExpression->setTree(*pTmpNode);
 

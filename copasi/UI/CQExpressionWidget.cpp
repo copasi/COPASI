@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-//   $Revision: 1.58 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/16 23:20:45 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -60,7 +52,7 @@ std::ostream &operator<<(std::ostream &os, const QTextCursor & d)
 #endif // DEBUG_UI
 
 CQExpressionHighlighter::CQExpressionHighlighter(CQExpressionWidget* ew)
-    : QSyntaxHighlighter(ew),
+  : QSyntaxHighlighter(ew),
     mObjectDisplayPattern(CQExpressionWidget::DisplayPattern)
 {
   // COPASI object format
@@ -85,14 +77,14 @@ void CQExpressionHighlighter::highlightBlock(const QString &text)
 //***********************************************************************
 
 CQValidatorExpression::CQValidatorExpression(QTextEdit * parent, const char * name, bool isBoolean):
-    CQValidator< QTextEdit >(parent, &QTextEdit::toPlainText, name),
-    mExpression()
+  CQValidator< QTextEdit >(parent, &QTextEdit::toPlainText, name),
+  mExpression()
 {
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
   mExpression.setObjectParent(pDataModel);
-  mExpression.setBooleanRequired(isBoolean);
+  mExpression.setIsBoolean(isBoolean);
 }
 
 /**
@@ -131,14 +123,14 @@ CExpression *CQValidatorExpression::getExpression()
 
 void CQValidatorExpression::setBooleanRequired(bool booleanRequired)
 {
-  mExpression.setBooleanRequired(booleanRequired);
+  mExpression.setIsBoolean(booleanRequired);
 }
 
 //***********************************************************************
 
 CQValidatorFunction::CQValidatorFunction(QTextEdit * parent, const char * name):
-    CQValidator< QTextEdit >(parent, &QTextEdit::toPlainText, name),
-    mFunction()
+  CQValidator< QTextEdit >(parent, &QTextEdit::toPlainText, name),
+  mFunction()
 {
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -190,7 +182,6 @@ CFunction * CQValidatorFunction::getFunction()
   return &mFunction;
 }
 
-
 //***********************************************************************
 
 // static
@@ -199,9 +190,8 @@ const char CQExpressionWidget::InfixPattern[] = "<(CN=([^\\\\>]|\\\\.)*)>";
 // static
 const char CQExpressionWidget::DisplayPattern[] = "\\{(([^\\\\\\}]|\\\\.)*)\\}";
 
-
 CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
-    : QTextEdit(parent),
+  : QTextEdit(parent),
     mpValidatorExpression(NULL),
     mpValidatorFunction(NULL),
     mObjectClasses(TransientExpression),
@@ -548,7 +538,6 @@ std::string CQExpressionWidget::getFunction() const
   return TO_UTF8(toPlainText());
 }
 
-
 void CQExpressionWidget::setExpression(const std::string & expression)
 {
   if (mpValidatorExpression == NULL)
@@ -659,7 +648,6 @@ std::string CQExpressionWidget::getExpression() const
   int Index = 0;
   QString::const_iterator it = Display.begin();
   QString::const_iterator end;
-
 
   while (true)
     {

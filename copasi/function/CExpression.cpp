@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-//   $Revision: 1.42 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/16 23:10:01 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -33,18 +25,20 @@
 
 CExpression::CExpression(const std::string & name,
                          const CCopasiContainer * pParent):
-    CEvaluationTree(name, pParent, CEvaluationTree::Expression),
-    mpListOfContainer(NULL),
-    mDisplayString("")
+  CEvaluationTree(name, pParent, CEvaluationTree::Expression),
+  mpListOfContainer(NULL),
+  mDisplayString(""),
+  mIsBoolean(false)
 {
   initObjects();
 }
 
 CExpression::CExpression(const CExpression & src,
                          const CCopasiContainer * pParent):
-    CEvaluationTree(src, pParent),
-    mpListOfContainer(NULL),
-    mDisplayString(src.mDisplayString)
+  CEvaluationTree(src, pParent),
+  mpListOfContainer(NULL),
+  mDisplayString(src.mDisplayString),
+  mIsBoolean(src.mIsBoolean)
 {
   initObjects();
   compile();
@@ -61,9 +55,9 @@ void CExpression::initObjects()
   static_cast< CCopasiObject * >(pObject)->setRefresh(this, &CExpression::refresh);
 }
 
-void CExpression::setBooleanRequired(const bool & booleanRequired)
+void CExpression::setIsBoolean(const bool & isBoolean)
 {
-  mBooleanRequired = booleanRequired;
+  mIsBoolean = isBoolean;
 }
 
 bool CExpression::setInfix(const std::string & infix)
@@ -71,6 +65,23 @@ bool CExpression::setInfix(const std::string & infix)
   if (!CEvaluationTree::setInfix(infix)) return false;
 
   if (mpNodeList == NULL) return true;
+
+  // Check whether the expression has the expected type.
+  if (mpRoot != NULL)
+    {
+      if (mIsBoolean && !mpRoot->isBoolean())
+        {
+          return false;
+        }
+
+      // We wrap a boolean expression in an if construct for
+      // non-boolean expressions
+      if (!mIsBoolean && mpRoot->isBoolean())
+        {
+          std::string Infix = "if(" + infix + ", 1, 0)";
+          CEvaluationTree::setInfix(Infix);
+        }
+    }
 
   // We need to check that the expression does not contain any variables
   std::vector< CEvaluationNode * >::const_iterator it = mpNodeList->begin();
