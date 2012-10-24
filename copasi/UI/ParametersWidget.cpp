@@ -261,7 +261,7 @@ void ParametersWidget::savePressed()
     {
       fileName =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          "untitled.txt", "TEXT Files (*.txt)", "Save to");
+                                          "untitled.tab", "Tab Separated Files (*.tab);;Comma Separated Files (*.csv);;TEXT Files (*.txt)", "Save as");
 
       if (fileName.isEmpty()) return;
 
@@ -275,13 +275,75 @@ void ParametersWidget::savePressed()
 
   if (file.fail()) return;
 
-  CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+  if (fileName.endsWith(".txt"))
+    {
+      CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
-  if (!model) return;
+      if (model != NULL)
+        {
+          file << model->printParameterOverview() << std::endl;
+        }
+    }
+  else if (fileName.endsWith(".csv"))
+    {
+      saveData(file, ",");
+    }
+  else
+    {
+      saveData(file, "\t");
+    }
 
-  file << model->printParameterOverview() << std::endl;
+  file.close();
 }
+void ParametersWidget::saveData(std::ofstream& file, const std::string& delim /*= "\t"*/) const
+{
+  file << "type" << delim
+       << "reaction" << delim
+       << "name" << delim
+       << "status" << delim
+       << "value" << delim
+       << "unit" << std::endl;
+  Q3ListViewItem *current = listView->firstChild();
 
+  while (current != NULL)
+    {
+      Q3ListViewItem* item = current->firstChild();
+      const std::string& currentName = current->text(0).toStdString();
+
+      while (item != NULL)
+        {
+          if (currentName == "Kinetic Parameters")
+            {
+              const std::string& reactionName = item->text(0).toStdString();
+              Q3ListViewItem* reaction = item->firstChild();
+
+              while (reaction != NULL)
+                {
+                  file << currentName << delim;
+                  file << reactionName << delim;
+                  file << reaction->text(0).toStdString() << delim;
+                  file << reaction->text(1).toStdString() << delim;
+                  file << reaction->text(2).toStdString() << delim;
+                  file << reaction->text(3).toStdString() << std::endl;
+                  reaction = reaction->nextSibling();
+                }
+            }
+          else
+            {
+              file << currentName << delim;
+              file << delim;
+              file << item->text(0).toStdString() << delim;
+              file << item->text(1).toStdString() << delim;
+              file << item->text(2).toStdString() << delim;
+              file << item->text(3).toStdString() << std::endl;
+            }
+
+          item = item->nextSibling();
+        }
+
+      current = current->nextSibling();
+    }
+}
 bool ParametersWidget::loadFromModel()
 {
   CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::getKeyFactory()->get(mKey));

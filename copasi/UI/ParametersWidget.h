@@ -47,6 +47,8 @@ protected:
   bool loadFromModel();
   bool saveToModel();
 
+  void saveData(std::ofstream& file, const std::string& delim = "\t") const;
+
   QPushButton* commitButton;
   QPushButton* revertButton;
   QPushButton* saveButton;
