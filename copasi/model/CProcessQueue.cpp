@@ -629,10 +629,10 @@ std::ostream &operator<<(std::ostream &os, const CProcessQueue & o)
 
       os << std::endl;
 
-      os << "target " << it->second.mpTarget
+      os << "target (" << it->second.mpTarget << "->" << (it->second.mpTarget ? *it->second.mpTarget : -999.999) << ")"
          << ", value " << it->second.mValue
          << ", expr " << it->second.mpExpression
-         << ", event " << it->second.mpEvent;
+         << ", event (" << it->second.mpEvent << (it->second.mpEvent->isCutPlane() ? " cut plane)" : ")");
 
       os << std::endl << std::endl;
     }
