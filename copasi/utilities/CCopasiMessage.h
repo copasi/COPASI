@@ -123,6 +123,12 @@ private:
   static std::deque< CCopasiMessage > mMessageDeque;
 #endif // not WIN32
 
+  /**
+   * A flag indicating whether the COPASI is running as commandline or
+   * GUI
+   */
+  static bool IsGUI;
+
   // Operations
 
 public:
@@ -193,6 +199,14 @@ public:
    * @return bool found
    */
   static bool checkForMessage(const size_t & number);
+
+  /**
+   * Set whether the messages are created from COPASI as GUI or commandline.
+   * This method is called from CCopasiRootContainer::init and there should be
+   * no need to call it otherwise.
+   * @param const bool & isGUI
+   */
+  static void setIsGUI(const bool & isGUI);
 
   /**
    *  Default constructor.

@@ -45,6 +45,9 @@ static std::deque< CCopasiMessage > mMessageDeque;
 std::deque< CCopasiMessage > CCopasiMessage::mMessageDeque;
 #endif
 
+// static
+bool CCopasiMessage::IsGUI = false;
+
 const CCopasiMessage & CCopasiMessage::peekFirstMessage()
 {
   if (mMessageDeque.empty())
@@ -134,6 +137,12 @@ bool CCopasiMessage::checkForMessage(const size_t & number)
     if (it->getNumber() == number) return true;
 
   return false;
+}
+
+// static
+void CCopasiMessage::setIsGUI(const bool & isGUI)
+{
+  IsGUI = isGUI;
 }
 
 CCopasiMessage::CCopasiMessage(void):
@@ -243,9 +252,22 @@ void CCopasiMessage::handler(const bool & /* _throw */)
         mText += "<\n";
         break;
 
-      case COMMANDLINE:
       case WARNING:
         mText = ">WARNING ";
+        mText += LocalTimeStamp();
+        mText += "<\n";
+        break;
+
+      case COMMANDLINE:
+        if (IsGUI)
+          {
+            mText = ">WARNING ";
+          }
+        else
+          {
+            mText = ">ERROR ";
+          }
+
         mText += LocalTimeStamp();
         mText += "<\n";
         break;

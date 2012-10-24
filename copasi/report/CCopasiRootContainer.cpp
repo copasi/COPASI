@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiRootContainer.cpp,v $
-//   $Revision: 1.15 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:32:38 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -37,14 +29,14 @@ extern CCopasiRootContainer * pRootContainer;
  * method.
  */
 CCopasiRootContainer::CCopasiRootContainer(const bool & withGUI):
-    CCopasiContainer("Root", NULL, "CN", CCopasiObject::Root),
-    mKeyFactory(),
-    mpUnknownResource(NULL),
-    mpFunctionList(NULL),
-    mpConfiguration(NULL),
-    mpDataModelList(NULL),
-    mWithGUI(withGUI),
-    mpUndefined(NULL)
+  CCopasiContainer("Root", NULL, "CN", CCopasiObject::Root),
+  mKeyFactory(),
+  mpUnknownResource(NULL),
+  mpFunctionList(NULL),
+  mpConfiguration(NULL),
+  mpDataModelList(NULL),
+  mWithGUI(withGUI),
+  mpUndefined(NULL)
 {}
 
 // Destructor
@@ -74,6 +66,8 @@ CCopasiRootContainer::~CCopasiRootContainer()
 void CCopasiRootContainer::init(int argc, char *argv[], const bool & withGUI)
 {
   COptions::init(argc, argv);
+
+  CCopasiMessage::setIsGUI(withGUI);
 
   if (pRootContainer == NULL)
     pRootContainer = new CCopasiRootContainer(withGUI);
@@ -163,7 +157,6 @@ const CMIRIAMResource & CCopasiRootContainer::getUnknownMiriamResource()
   return *pRootContainer->mpUnknownResource;
 }
 
-
 // static
 bool CCopasiRootContainer::removeDatamodel(const CCopasiDataModel * pDatamodel)
 {
@@ -196,5 +189,3 @@ const char * CCopasiRootContainer::getLicenseHTML()
 {
   return CopasiLicenseHtml;
 }
-
-
