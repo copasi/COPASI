@@ -15,6 +15,9 @@
 
 
 
+
+
+
 %{
 
 #include "utilities/CVector.h"
@@ -71,7 +74,7 @@
 
 typedef CVectorCore<C_FLOAT64> FloatVectorCore;
 typedef CVector<C_FLOAT64> FloatVector;
-#ifndef SWIGPYTHON
+#if !SWIGPYTHON && !SWIGR
 typedef CVectorCore<unsigned long> ULongVectorCore;
 typedef CVector<unsigned long> ULongVector;
 #endif
@@ -82,7 +85,7 @@ typedef CVector<CCopasiObject*> ObjectVector;
 
 %template(FloatVectorCore) CVectorCore<C_FLOAT64>;
 %template(FloatVector) CVector<C_FLOAT64>;
-#ifndef SWIGPYTHON
+#if !SWIGPYTHON && !SWIGR
 %template(ULongVectorCore) CVectorCore<unsigned long>;
 %template(ULongVector) CVector<unsigned long>;
 #endif

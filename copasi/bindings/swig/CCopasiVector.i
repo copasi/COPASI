@@ -17,6 +17,9 @@
 
 
 
+
+
+
 %{
 
 #include "utilities/CCopasiVector.h"
@@ -222,7 +225,7 @@
 %template(ParameterVector) std::vector<CCopasiParameter*>;
 
 %template(IntStdVector) std::vector<C_INT32>;
-#ifndef SWIGPYTHON
+#if !SWIGPYTHON && !SWIGR
 %template(UIntStdVector) std::vector<unsigned int>;
 #endif
 %template(SizeTStdVector) std::vector<size_t>;
@@ -279,8 +282,8 @@ typedef CCopasiVector<CChemEqElement> CChemEqElementVector;
 
 typedef CCopasiVector<CCopasiDataModel> DataModelVector;
 
+#if !SWIGPYTHON && !SWIGR
 typedef std::vector<C_INT32> IntStdVector;
-#ifndef SWIGPYTHON
 typedef std::vector<unsigned int> UIntStdVector;
 #endif
 typedef std::vector<size_t> SizeTStdVector;
