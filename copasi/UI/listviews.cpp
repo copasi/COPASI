@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-//   $Revision: 1.301 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/09 21:32:18 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -82,6 +74,7 @@
 #ifdef COPASI_DEBUG
 #include "CQUpdatesWidget.h"
 #endif //COPASI_DEBUG
+#undef DELETE
 #include "listviews.h"
 #include "qtUtilities.h"
 #include "CQFittingWidget.h"
@@ -132,7 +125,6 @@ const std::string ListViews::ObjectTypeName[] =
   ""
 };
 
-
 // -----------------------------------------------------------------
 //////////////////////////////////////////////////////////////////////////
 // Definitions of the ListViews class as declared in listviews.h
@@ -149,66 +141,66 @@ const std::string ListViews::ObjectTypeName[] =
  ************************************************************/
 ListViews::ListViews(QWidget *parent, const char *name):
 
-    QSplitter(Qt::Horizontal, parent, name),
-    mpDataModelGUI(NULL),
-    mpTreeDM(NULL),
-    mpTreeSortDM(NULL),
-    mpMathModel(NULL),
-    mpCurrentWidget(NULL),
-    mCurrentItemKey(),
-    mpCMCAResultWidget(NULL),
-    mpCQMCAWidget(NULL),
-    mpCQLNAWidget(NULL),
-    mpCLNAResultWidget(NULL),
-    mpCompartmentsWidget(NULL),
-    compartmentsWidget1(NULL),
-    defaultWidget(NULL),
-    differentialEquations(NULL),
-    eventsWidget(NULL),
-    eventWidget1(NULL),
-    mpFunctionsWidget(NULL),
-    functionWidget1(NULL),
-    lyapWidget(NULL),
-    lyapResultWidget(NULL),
-    mpSpeciesWidget(NULL),
-    metabolitesWidget1(NULL),
-    modelWidget(NULL),
-    mpGlobalQuantitiesWidget(NULL),
-    mpModelValueWidget(NULL),
-    mpEFMWidget(NULL),
-    mpEFMResultWidget(NULL),
-    mpMoietiesTaskResult(NULL),
-    mpMoietiesTaskWidget(NULL),
-    optimizationWidget(NULL),
-    optResultWidget(NULL),
-    paramFittingWidget(NULL),
-    mpFittingResultWidget(NULL),
-    parametersWidget(NULL),
-    mpParameterOverviewWidget(NULL),
-    mpPlotsWidget(NULL),
-    mpPlotSubwidget(NULL),
-    mpReactionsWidget(NULL),
-    reactionsWidget1(NULL),
-    scanWidget(NULL),
-    sensWidget(NULL),
-    sensResultWidget(NULL),
-    stateWidget(NULL),
-    steadystateWidget(NULL),
-    mpReportsWidget(NULL),
-    tableDefinition1(NULL),
-    timeSeriesWidget(NULL),
-    trajectoryWidget(NULL),
-    tssaWidget(NULL),
-    tssaResultWidget(NULL),
+  QSplitter(Qt::Horizontal, parent, name),
+  mpDataModelGUI(NULL),
+  mpTreeDM(NULL),
+  mpTreeSortDM(NULL),
+  mpMathModel(NULL),
+  mpCurrentWidget(NULL),
+  mCurrentItemKey(),
+  mpCMCAResultWidget(NULL),
+  mpCQMCAWidget(NULL),
+  mpCQLNAWidget(NULL),
+  mpCLNAResultWidget(NULL),
+  mpCompartmentsWidget(NULL),
+  compartmentsWidget1(NULL),
+  defaultWidget(NULL),
+  differentialEquations(NULL),
+  eventsWidget(NULL),
+  eventWidget1(NULL),
+  mpFunctionsWidget(NULL),
+  functionWidget1(NULL),
+  lyapWidget(NULL),
+  lyapResultWidget(NULL),
+  mpSpeciesWidget(NULL),
+  metabolitesWidget1(NULL),
+  modelWidget(NULL),
+  mpGlobalQuantitiesWidget(NULL),
+  mpModelValueWidget(NULL),
+  mpEFMWidget(NULL),
+  mpEFMResultWidget(NULL),
+  mpMoietiesTaskResult(NULL),
+  mpMoietiesTaskWidget(NULL),
+  optimizationWidget(NULL),
+  optResultWidget(NULL),
+  paramFittingWidget(NULL),
+  mpFittingResultWidget(NULL),
+  parametersWidget(NULL),
+  mpParameterOverviewWidget(NULL),
+  mpPlotsWidget(NULL),
+  mpPlotSubwidget(NULL),
+  mpReactionsWidget(NULL),
+  reactionsWidget1(NULL),
+  scanWidget(NULL),
+  sensWidget(NULL),
+  sensResultWidget(NULL),
+  stateWidget(NULL),
+  steadystateWidget(NULL),
+  mpReportsWidget(NULL),
+  tableDefinition1(NULL),
+  timeSeriesWidget(NULL),
+  trajectoryWidget(NULL),
+  tssaWidget(NULL),
+  tssaResultWidget(NULL),
 #ifdef COPASI_NONLIN_DYN
-    crossSectionTaskWidget(NULL),
-    oscillationTaskWidget(NULL),
+  crossSectionTaskWidget(NULL),
+  oscillationTaskWidget(NULL),
 #endif
 #ifdef COPASI_DEBUG
-    mpUpdatesWidget(NULL),
+  mpUpdatesWidget(NULL),
 #endif
-    mpLayoutsWidget(NULL),
-    mpMathMatrixWidget(NULL)
+  mpLayoutsWidget(NULL),
+  mpMathMatrixWidget(NULL)
 {
 
   this->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred, 1, 1));
@@ -284,7 +276,6 @@ void ListViews::setDataModel(DataModelGUI* pDM)
 
   ConstructNodeWidgets();
 }
-
 
 /***********ListViews::ConstructNodeWidgets()---------------------------->
  ** Description:-This method is used to construct all the node widgets
@@ -511,7 +502,6 @@ CopasiWidget* ListViews::findWidgetFromIndex(const QModelIndex & index) const
   if (!index.isValid() || !mpDataModelGUI)
     return NULL;
 
-
   // first try ID
   size_t id = mpTreeDM->getIdFromIndex(index);
 
@@ -529,24 +519,31 @@ CopasiWidget* ListViews::findWidgetFromIndex(const QModelIndex & index) const
       case 111:
         return compartmentsWidget1;
         break;
+
       case 112:
         return metabolitesWidget1;
         break;
+
       case 114:
         return reactionsWidget1;
         break;
+
       case 115:
         return mpModelValueWidget;
         break;
+
       case 116:
         return eventWidget1;
         break;
+
       case 43:
         return tableDefinition1;
         break;
+
       case 42:
         return mpPlotSubwidget;
         break;
+
       case 5:
         return functionWidget1;
         break;
@@ -562,30 +559,39 @@ CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
     {
       case - 1:
         break; //continue with parent id
+
       case 0:
         return defaultWidget;
         break;
+
       case 1:
         return modelWidget;
         break;
+
       case 111:
         return mpCompartmentsWidget;
         break;
+
       case 112:
         return mpSpeciesWidget;
         break;
+
       case 114:
         return mpReactionsWidget;
         break;
+
       case 115:
         return mpGlobalQuantitiesWidget;
         break;
+
       case 116:
         return eventsWidget;
         break;
+
       case 117:
         return parametersWidget;
         break;
+
       case 118:
         return mpParameterOverviewWidget;
         break;
@@ -593,104 +599,136 @@ CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
         //  return functionSymbols;
         //  break;
 #ifdef HAVE_MML
+
       case 126:
         return differentialEquations;
         break;
 #endif // HAVE_MML
+
       case 127:
         return mpMathMatrixWidget;
         break;
 #ifdef COPASI_DEBUG
+
       case 128:
         return mpUpdatesWidget;
         break;
 #endif
+
       case 13:
         return mpLayoutsWidget;
         break;
+
       case 21:
         return steadystateWidget;
         break;
+
       case 211:
         return stateWidget;
         break;
+
       case 221:
         return mpEFMWidget;
         break;
+
       case 2211:
         return mpEFMResultWidget;
         break;
+
       case 222:
         return mpMoietiesTaskWidget;
         break;
+
       case 2221:
         return mpMoietiesTaskResult;
         break;
+
       case 23:
         return trajectoryWidget;
         break;
+
       case 231:
         return timeSeriesWidget;
         break;
+
       case 24:
         return mpCQMCAWidget;
         break;
+
       case 241:
         return mpCMCAResultWidget;
         break;
+
       case 26:
         return lyapWidget;
         break;
+
       case 261:
         return lyapResultWidget;
         break;
+
       case 27:
         return tssaWidget;
         break;
+
       case 271:
         return tssaResultWidget;
         break;
 #ifdef COPASI_NONLIN_DYN
+
       case 28:
         return crossSectionTaskWidget;
         break;
+
       case 29:
         return oscillationTaskWidget;
         break;
 #endif
+
       case 31:
         return scanWidget;
         break;
+
       case 32:
         return optimizationWidget;
         break;
+
       case 321:
         return optResultWidget;
         break;
+
       case 33:
         return paramFittingWidget;
         break;
+
       case 331:
         return mpFittingResultWidget;
         break;
+
       case 34:
         return sensWidget;
         break;
+
       case 341:
         return sensResultWidget;
         break;
+
       case 35:
         return mpCQLNAWidget;
         break;
+
       case 351:
         return mpCLNAResultWidget;
         break;
+
       case 43:                                         //Report
         return mpReportsWidget;
         break;
+
       case 42:
         return mpPlotsWidget;
         break;
+
       case 5:
         return mpFunctionsWidget;
         break;
@@ -722,7 +760,6 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
 
   if (newWidget == mpCurrentWidget)
     if (itemKey == mCurrentItemKey) return; //do nothing
-
 
   // leave old widget
   if (mpCurrentWidget)
@@ -776,7 +813,6 @@ void ListViews::switchToOtherWidget(const size_t & id, const std::string & key)
 }
 
 //********** some methods to store and restore the state of the listview ****
-
 
 size_t ListViews::getCurrentItemId()
 {
@@ -888,7 +924,6 @@ void ListViews::setFramework(int framework)
         pCopasiWidget->setFramework(framework);
     }
 }
-
 
 CQTrajectoryWidget* ListViews::getTrajectoryWidget()
 {
