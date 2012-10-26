@@ -132,6 +132,11 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
   pModel->compileIfNecessary(NULL);
   
   
+  //this instructs the process queue to call back whenever an event is 
+  //executed
+  pModel->getMathModel()->getProcessQueue().setEventCallBack(this, &EventCallBack);
+  
+  
   mpTrajectoryMethod->setProblem(mpCrossSectionProblem);
 
   bool success = mpMethod->isValidProblem(mpProblem);
@@ -287,7 +292,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
   while (proceed)
     {
       // TODO Provide a call back method for resolving simultaneous assignments.
-      pModel->getMathModel()->getProcessQueue().printDebug();
+      //pModel->getMathModel()->getProcessQueue().printDebug();
       
       //execute events for inequalities
       StateChanged |= pModel->processQueue(*mpCurrentTime, false, NULL);
@@ -326,7 +331,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
 
             //this checks whether equality events are triggered
             pModel->processRoots(*mpCurrentTime, true, true, mpTrajectoryMethod->getRoots());
-            pModel->getMathModel()->getProcessQueue().printDebug();
+            //pModel->getMathModel()->getProcessQueue().printDebug();
 
             if ((mOutputStartTime <= *mpCurrentTime) &&
                 *mpCurrentTime == pModel->getProcessQueueExecutionTime() )
@@ -344,7 +349,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
 
             //this checks whether inequality events are triggered
             pModel->processRoots(*mpCurrentTime, false, true, mpTrajectoryMethod->getRoots());
-            pModel->getMathModel()->getProcessQueue().printDebug();
+            //pModel->getMathModel()->getProcessQueue().printDebug();
 
             // If the root happens to coincide with end of the step we have to return and
             // inform the integrator of eventual state changes.
@@ -437,3 +442,12 @@ CState * CCrossSectionTask::getState()
 
 const CTimeSeries & CCrossSectionTask::getTimeSeries() const
 {return mTimeSeries;}
+
+//static
+void CCrossSectionTask::EventCallBack(void* pCSTask, C_INT32 type)
+{static_cast<CCrossSectionTask *>(pCSTask)->eventCallBack(type);}
+
+void CCrossSectionTask::eventCallBack(C_INT32 type)
+{
+  std::cout << "event call back: " << type << std::endl;
+}
