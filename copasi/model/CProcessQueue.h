@@ -135,7 +135,8 @@ private:
      */
     CAction(C_FLOAT64 * pTarget,
             const C_FLOAT64 & value,
-            CMathEvent * pEvent);
+            CMathEvent * pEvent,
+            CProcessQueue * pProcessQueue);
 
     /**
      * Specific constructor
@@ -210,6 +211,11 @@ public:
       const C_FLOAT64 & /* time */,
       const bool & /* equality */,
       const size_t & /* cascadingLevel */);
+  
+  /**
+   * This is the type for an event call back function
+   */
+  typedef void (*EventCallBack)(void*, C_INT32);
 
   // Operations
 public:
@@ -300,6 +306,18 @@ public:
    * @return bool isEmpty
    */
   bool isEmpty() const;
+  
+  /**
+   * Sets an event call back. The call back function must be a static function
+   * that receives a "this" pointer as first argument. 
+   * The function is called when the actual assignment takes place, 
+   * or when the assignment would take place in case the event
+   * has no assignment. 
+   * The function is called with an integer argument: 
+   *    1:  An assignment has happened
+   *    2:  A cut plane was crossed
+   */
+  bool setEventCallBack(void* pTask, EventCallBack ecb);
 
   /**
    * This prints debugging info to stdout
@@ -435,6 +453,16 @@ private:
    * A pointer to a call back method for resolving simultaneous event assignments
    */
   resolveSimultaneousAssignments mpResolveSimultaneousAssignments;
+  
+  /**
+   * the object to which the call back function belongs
+   */
+  void * mpCallbackTask;
+  
+  /**
+   * the pointer to the call back function
+   */
+  EventCallBack mpEventCallBack;
 };
 
 #endif // COPASI_CProcessQueue
