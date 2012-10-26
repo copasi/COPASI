@@ -363,6 +363,10 @@ void CopasiUI3Window::createToolBar()
   tb->addWidget(mpBoxSelectFramework);
 
   connect(mpBoxSelectFramework, SIGNAL(activated(int)), this, SLOT(slotFrameworkChanged(int)));
+  
+  
+  setUnifiedTitleAndToolBarOnMac(true);
+  
 }
 
 void CopasiUI3Window::createMenuBar()

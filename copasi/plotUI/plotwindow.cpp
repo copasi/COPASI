@@ -187,6 +187,8 @@ void PlotWindow::createToolBar()
 
   //TODO button icons...
 
+  
+  setUnifiedTitleAndToolBarOnMac(true);
 //  plotTools->setStretchableWidget(new QWidget(plotTools));
 }
 

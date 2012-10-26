@@ -1,3 +1,9 @@
+// Begin git Header 
+//   Commit: 2067e5f531df8d9d5571a63a8b58d5714611235f 
+//   Author: Frank T. Bergmann fbergman@caltech.edu 
+//   Date: 2012-10-26 16:48:41 +0200 
+// End git Header 
+
 // Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.

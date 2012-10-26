@@ -1,3 +1,9 @@
+// Begin git Header 
+//   Commit: 96a835d0b017bbcdf3f9683a5d4c491081280849 
+//   Author: Frank T. Bergmann fbergman@caltech.edu 
+//   Date: 2012-10-12 14:28:30 +0200 
+// End git Header 
+
 // Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -27,7 +33,7 @@ CCopasiVector<CLGlobalRenderInformation>* DEFAULT_STYLES = NULL;
 const char* DEFAULT_STYLES_STRING = \
                                     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                                     "<listOfGlobalRenderInformation xmlns=\"http://projects.eml.org/bcb/sbml/render/version1_0_0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
-                                    "<renderInformation id='SBGN_default' name='SBGN Default style' programVersion='1.0'>\n"
+                                    "<renderInformation id='SBGN_default' name='SBGN Default style'>\n"
                                     "  <listOfColorDefinitions>\n"
                                     "    <colorDefinition id='black' value='#000000' />\n"
                                     "    <colorDefinition id='white' value='#ffffff' />\n"
@@ -181,7 +187,7 @@ const char* DEFAULT_STYLES_STRING = \
                                     "    </style>\n"
                                     "  </listOfStyles>\n"
                                     "</renderInformation>\n"
-                                    "  <renderInformation id=\"default\" name=\"blue gradient species glyphs and colored modifiers\"  backgroundColor=\"#FFFFFFFF\">\n"
+                                    "  <renderInformation id=\"default\" name=\"Blue Gradient Species; colored modifiers\"  backgroundColor=\"#FFFFFFFF\">\n"
                                     "    <listOfColorDefinitions>\n"
                                     "      <colorDefinition id=\"speciesColor\" value=\"#D2D2E6\"/>\n"
                                     "      <colorDefinition id=\"compartmentColor\" value=\"#BCCABA\"/>\n"
@@ -299,7 +305,7 @@ const char* DEFAULT_STYLES_STRING = \
                                     "      </style>\n"
                                     "    </listOfStyles>\n"
                                     "  </renderInformation>\n"
-                                    "  <renderInformation id=\"lightBlue\" name=\"light blue species glyphs and colored modifiers\"  backgroundColor=\"#FFFFFFFF\">\n"
+                                    "  <renderInformation id=\"lightBlue\" name=\"Light-blue Species; colored modifiers\"  backgroundColor=\"#FFFFFFFF\">\n"
                                     "    <listOfColorDefinitions>\n"
                                     "      <colorDefinition id=\"lightBlue\" value=\"#ADD8E6\"/>\n"
                                     "      <colorDefinition id=\"white\" value=\"#FFFFFF\"/>\n"
@@ -406,7 +412,7 @@ const char* DEFAULT_STYLES_STRING = \
                                     "      </style>\n"
                                     "    </listOfStyles>\n"
                                     "  </renderInformation>\n"
-                                    "  <renderInformation id=\"gray_green\" name=\"Gray-Green Default Style\" backgroundColor=\"#FFFFFFFF\">\n"
+                                    "  <renderInformation id=\"gray_green\" name=\"Gray-Green Style\" backgroundColor=\"#FFFFFFFF\">\n"
                                     "    <listOfColorDefinitions>\n"
                                     "      <colorDefinition id=\"SpeciesColorLight\" value=\"#D2D2E6FF\"/>\n"
                                     "      <colorDefinition id=\"CompartmentColorLight\" value=\"#E1F2DFFF\"/>\n"
@@ -526,7 +532,7 @@ const char* DEFAULT_STYLES_STRING = \
                                     "      </style>\n"
                                     "    </listOfStyles>\n"
                                     "  </renderInformation>\n"
-                                    "  <renderInformation id=\"grayStyle\" name=\"grayscale style\" backgroundColor=\"#FFFFFFFF\">\n"
+                                    "  <renderInformation id=\"grayStyle\" name=\"Gray Scale\" backgroundColor=\"#FFFFFFFF\">\n"
                                     "    <listOfColorDefinitions>\n"
                                     "      <colorDefinition id=\"lightGray\" value=\"#CECECE\"/>\n"
                                     "      <colorDefinition id=\"white\" value=\"#FFFFFF\"/>\n"
@@ -576,7 +582,7 @@ const char* DEFAULT_STYLES_STRING = \
                                     "      </style>\n"
                                     "    </listOfStyles>\n"
                                     "  </renderInformation>\n"
-                                    "  <renderInformation id=\"invertGrayStyle\" name=\"dark grayscale style\" backgroundColor=\"#404040FF\">\n"
+                                    "  <renderInformation id=\"invertGrayStyle\" name=\"Dark Gray Scale\" backgroundColor=\"#404040FF\">\n"
                                     "    <listOfColorDefinitions>\n"
                                     "      <colorDefinition id=\"lightGray\" value=\"#CECECE\"/>\n"
                                     "      <colorDefinition id=\"white\" value=\"#FFFFFF\"/>\n"

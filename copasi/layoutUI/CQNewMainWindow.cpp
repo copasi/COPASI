@@ -1,3 +1,9 @@
+// Begin git Header 
+//   Commit: 4673540f760fc9379f9dd731c73d10135ab05e88 
+//   Author: Frank T. Bergmann fbergman@caltech.edu 
+//   Date: 2012-10-26 16:08:31 +0200 
+// End git Header 
+
 // Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -174,8 +180,8 @@ void CQNewMainWindow::createActions()
   connect(mpScreenshotAct, SIGNAL(triggered()), this, SLOT(slotScreenshot()));
 
   mpCloseAct = new QAction(tr("Close"), this);
-  mpCloseAct->setShortcut(tr("Ctrl+Q"));
-  mpCloseAct->setStatusTip(tr("Exit the application"));
+  mpCloseAct->setShortcut(tr("Ctrl+W"));
+  mpCloseAct->setStatusTip(tr("Close Diagram"));
   connect(mpCloseAct, SIGNAL(triggered()), this, SLOT(close()));
 
   mpLoadDataAct = new QAction(QPixmap(load_data_xpm), tr("update trajectory data"), this);
@@ -345,6 +351,7 @@ void CQNewMainWindow::createToolBars()
   pLayout->addWidget(this->mpRenderLabel);
   this->mpRenderDropdown = new QComboBox;
   this->mpRenderDropdown->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
+  this->mpRenderDropdown->setMaximumWidth(400);
   pLayout->addWidget(this->mpRenderDropdown);
 
   QFrame* pFrame3 = new QFrame;
