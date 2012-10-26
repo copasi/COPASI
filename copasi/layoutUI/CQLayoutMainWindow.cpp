@@ -97,23 +97,16 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget* pParent):
   setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
 #endif // not Darwin
 
-#ifndef USE_CRENDER_EXTENSION
-  this->setWindowTitle(tr("Reaction network graph"));
-  this->setCentralWidget(mpMainBox);
-#else
-  this->QFrame::setLayout(new QVBoxLayout);
-  this->layout()->addWidget(this->mpMainBox);
-#endif // USE_CRENDER_EXTENSION
-  this->mpMainBox->setLayout(new QVBoxLayout());
+  QVBoxLayout* mainLayout = new QVBoxLayout(mpMainBox);
+  QVBoxLayout* infoLayout = new QVBoxLayout(mpInfoBox);
+  mpSplitter->addWidget(this->mpInfoBox);
 
   // create split window with parameter panel and graph panel
-  this->mpMainBox->layout()->addWidget(this->mpSplitter);
+  mainLayout->addWidget(this->mpSplitter);
 
-  this->mpSplitter->addWidget(this->mpInfoBox);
-  this->mpInfoBox->setLayout(new QVBoxLayout);
-
-  this->mpInfoBox->layout()->addWidget(this->mpParaPanel);
-  this->mpInfoBox->layout()->addWidget(this->mpValTable);
+  infoLayout->addWidget(this->mpParaPanel);
+  infoLayout->addWidget(this->mpValTable);
+  this->mpInfoBox->setLayout(infoLayout);
 
   // Create OpenGL widget
   // we initialize it here because the parent has to be present
@@ -129,8 +122,6 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget* pParent):
   this->mpSplitter->setStretchFactor(this->mpSplitter->indexOf(this->mpInfoBox), 0);
   this->mpSplitter->setStretchFactor(this->mpSplitter->indexOf(this->mpGLViewport), 1);
 
-  this->mpMainBox->layout()->addWidget(this->mpFrame);
-
   connect(this->mpControlWidget, SIGNAL(play()), this, SLOT(startAnimation()));
   connect(this->mpControlWidget, SIGNAL(pause()), this, SLOT(pauseAnimation()));
   connect(this->mpControlWidget, SIGNAL(stop()), this, SLOT(stopAnimation()));
@@ -144,18 +135,26 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget* pParent):
   this->mpTimeSlider->setEnabled(false);
 
   this->mpTimeSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-  //this->mpFrame->setFixedHeight(80);
-  connect(this->mpTimeSlider, SIGNAL(valueChanged(int)),
-          this, SLOT(showStep(int)));
+  connect(this->mpTimeSlider, SIGNAL(valueChanged(int)), this, SLOT(showStep(int)));
 
-  QGridLayout* pGridLayout = new QGridLayout();
+  QHBoxLayout* pGridLayout = new QHBoxLayout(mpFrame);
+  pGridLayout->addWidget(this->mpControlWidget);
+  pGridLayout->addWidget(this->mpTimeSlider);
   this->mpFrame->setLayout(pGridLayout);
-  pGridLayout->addWidget(this->mpTimeSlider, 1, 1, 2, 1, Qt::AlignTop);
-  pGridLayout->addWidget(this->mpControlWidget, 0, 0, 4, 1, Qt::AlignTop);
+
+  mainLayout->addWidget(this->mpFrame);
+
+  this->mpMainBox->setLayout(mainLayout);
 
 #ifndef USE_CRENDER_EXTENSION
-  QSpacerItem* pSpacer = new QSpacerItem(20, 20);
-  pGridLayout->addItem(pSpacer, 1, 0);
+  this->setWindowTitle(tr("Reaction network graph"));
+  this->setCentralWidget(mpMainBox);
+#else
+  this->QFrame::setLayout(new QVBoxLayout);
+  this->layout()->addWidget(this->mpMainBox);
+#endif // USE_CRENDER_EXTENSION
+
+#ifndef USE_CRENDER_EXTENSION
 
   loadData(); // try to load data (if already present)
   // the action have to be created before mpLoadDataAction is used below

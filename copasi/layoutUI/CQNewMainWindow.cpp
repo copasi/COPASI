@@ -1,9 +1,3 @@
-// Begin git Header 
-//   Commit: 4673540f760fc9379f9dd731c73d10135ab05e88 
-//   Author: Frank T. Bergmann fbergman@caltech.edu 
-//   Date: 2012-10-26 16:08:31 +0200 
-// End git Header 
-
 // Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -127,7 +121,6 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
 
   this->mCurDir = pDatamodel->getReferenceDirectory();
   this->mpWidgetStack = new QStackedWidget(this);
-  this->setCentralWidget(this->mpWidgetStack);
   this->mpLayoutViewer = new CQGLLayoutViewer(this->mpWidgetStack);
   // add the first page
   this->mpWidgetStack->addWidget(this->mpLayoutViewer);
@@ -140,6 +133,7 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   createToolBars();
   createStatusBar();
 
+  this->setCentralWidget(this->mpWidgetStack);
   setUnifiedTitleAndToolBarOnMac(true);
   this->addGlobalRenderInfoItemsToList();
   this->addDefaultRenderInfoItemsToList();
@@ -351,7 +345,6 @@ void CQNewMainWindow::createToolBars()
   pLayout->addWidget(this->mpRenderLabel);
   this->mpRenderDropdown = new QComboBox;
   this->mpRenderDropdown->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
-  this->mpRenderDropdown->setMaximumWidth(400);
   pLayout->addWidget(this->mpRenderDropdown);
 
   QFrame* pFrame3 = new QFrame;

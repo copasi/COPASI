@@ -19,34 +19,49 @@
 
 #include <resourcesUI/CQIconResource.h>
 
-CQPlayerControlWidget::CQPlayerControlWidget(QWidget* pParent): QWidget(pParent), mNumSteps(0), mCurrentStep(0), mPlaying(false)
+QPushButton* createControl(const CQIconResource::IconID& iconId, int size = 32)
+{
+  QPushButton* button = new QPushButton;
+  button->setFlat(true);
+  button->setMinimumSize(size, size);
+  button->setMaximumSize(size, size);
+  button->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  QIcon icon(CQIconResource::icon(iconId));
+  button->setIcon(icon);
+  button->setIconSize(QSize(size, size));
+  return button;
+}
+
+CQPlayerControlWidget::CQPlayerControlWidget(QWidget* pParent)
+  : QWidget(pParent)
+  , mNumSteps(0)
+  , mCurrentStep(0)
+  , mPlaying(false)
 {
   QGridLayout* pLayout = new QGridLayout;
-  this->setLayout(pLayout);
-  this->mpStepBackwardButton = new QPushButton;
-  this->mpStepBackwardButton->setFlat(true);
-  this->mpStepBackwardButton->setIcon(CQIconResource::icon(CQIconResource::backward));
+
+  this->mpStepBackwardButton = createControl(CQIconResource::backward);
   pLayout->addWidget(this->mpStepBackwardButton, 0, 0, 1, 1);
-  this->mpPlayButton = new QPushButton;
-  this->mpPlayButton->setFlat(true);
-  this->mpPlayButton->setIcon(CQIconResource::icon(CQIconResource::play));
+
+  this->mpPlayButton = createControl(CQIconResource::play);
   pLayout->addWidget(this->mpPlayButton, 0, 1, 1, 1);
-  this->mpStepForwardButton = new QPushButton;
-  this->mpStepForwardButton->setFlat(true);
+
+  this->mpStepForwardButton = createControl(CQIconResource::forward);
   pLayout->addWidget(this->mpStepForwardButton, 0, 2, 1, 1);
-  this->mpStepForwardButton->setIcon(CQIconResource::icon(CQIconResource::forward));
-  this->mpBackwardButton = new QPushButton;
-  this->mpBackwardButton->setFlat(true);
-  this->mpBackwardButton->setIcon(CQIconResource::icon(CQIconResource::skipBackward));
+
+  this->mpBackwardButton = createControl(CQIconResource::skipBackward);
   pLayout->addWidget(this->mpBackwardButton, 1, 0, 1, 1);
-  this->mpStopButton = new QPushButton;
-  this->mpStopButton->setFlat(true);
-  this->mpStopButton->setIcon(CQIconResource::icon(CQIconResource::stop));
+
+  this->mpStopButton = createControl(CQIconResource::stop);
   pLayout->addWidget(this->mpStopButton, 1, 1, 1, 1);
-  this->mpForwardButton = new QPushButton;
-  this->mpForwardButton->setFlat(true);
-  this->mpForwardButton->setIcon(CQIconResource::icon(CQIconResource::skipForward));
+
+  this->mpForwardButton = createControl(CQIconResource::skipForward);
   pLayout->addWidget(this->mpForwardButton, 1, 2, 1, 1);
+
+  this->setLayout(pLayout);
+
+  pLayout->setSizeConstraint(QLayout::SetFixedSize);
+
   this->createActions();
 
   this->updateButtons();
