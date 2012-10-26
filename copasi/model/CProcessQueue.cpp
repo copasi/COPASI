@@ -125,7 +125,11 @@ void CProcessQueue::CAction::process(const size_t & eventId)
     }
   else
     {
-      *mpTarget = mValue;
+      //there may be special events in the queue that do 
+      //not have an assignment at all
+      //These are represented by a CAction without target
+      if (mpTarget)
+        *mpTarget = mValue;
     }
 }
 
