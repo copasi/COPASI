@@ -360,7 +360,8 @@ CQLayoutsWidget::LayoutWindow * CQLayoutsWidget::createLayoutWindow(int row, CLa
   LayoutWindow * pWin = new CQLayoutMainWindow(pLayout);
 #endif // USE_CRENDER_EXTENSION
 
-  pWin->setWindowTitle(pLayout->getObjectName().c_str());
+  std::string title = "COPASI Diagram: "  + pLayout->getObjectName();
+  pWin->setWindowTitle(title.c_str());
   pWin->resize(900, 600);
   mLayoutWindowMap[pLayout->getKey()] = pWin;
 
