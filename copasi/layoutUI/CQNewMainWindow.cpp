@@ -85,7 +85,7 @@ const double CQNewMainWindow::ZOOM_FACTORS[] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.
 // TODO implement signals that allow enabling and disabling the save and save as actions.
 
 CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
-  QMainWindow(),
+  CWindowInterface(),
   mMode(CQNewMainWindow::GRAPH_MODE),
   mpWidgetStack(NULL),
   mpLayoutViewer(NULL),
@@ -148,6 +148,11 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   this->mpHighlightColorPixmap->fill(QColor((int)(c[0] * 255.0), (int)(c[1] * 255.0), (int)(c[2] * 255.0), (int)(c[3] * 255.0)));
   this->mpChangeColorAction->setIcon(QIcon(*this->mpHighlightColorPixmap));
 #endif // ELEMENTARY_MODE_DISPLAY
+}
+
+QMenu *CQNewMainWindow::getWindowMenu() const
+{
+  return mpWindowMenu;
 }
 
 void CQNewMainWindow::createActions()
@@ -303,7 +308,7 @@ void CQNewMainWindow::createMenus()
 
   menuBar()->addSeparator();
 
-  mpHelpMenu = menuBar()->addMenu(tr("&Help"));
+  mpWindowMenu = menuBar()->addMenu(tr("&Window"));
 }
 
 void CQNewMainWindow::createToolBars()
@@ -2235,9 +2240,13 @@ void CQNewMainWindow::slotRunSpringLayout()
   this->createSpringLayout(1000, 1);
 }
 
+#endif // COPASI_AUTOLAYOUT
+
 void CQNewMainWindow::closeEvent(QCloseEvent * event)
 {
+#ifdef COPASI_AUTOLAYOUT
   this->slotStopClicked();
+#endif // COPASI_AUTOLAYOUT
+  removeFromMainWindow();
   this->QMainWindow::closeEvent(event);
 }
-#endif // COPASI_AUTOLAYOUT

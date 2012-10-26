@@ -366,6 +366,7 @@ void CQLayoutsWidget::slotShowLayout(int row)
         {
 #ifdef USE_CRENDER_EXTENSION
           pLayoutWindow->slotLayoutChanged(row);
+          pLayoutWindow->addToMainWindow();
 #endif // USE_CRENDER_EXTENSION
           pLayoutWindow->show();
           pLayoutWindow->showNormal();

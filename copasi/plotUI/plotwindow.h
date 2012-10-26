@@ -15,11 +15,11 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <QMainWindow>
 #include <QToolButton>
 
 #include "copasi.h"
 #include "UI/CopasiFileDialog.h"
+#include "UI/CWindowInterface.h"
 #include "utilities/COutputHandler.h"
 
 class QAction;
@@ -33,7 +33,7 @@ class CopasiUI3Window;
 class QMenu;
 class QAction;
 
-class PlotWindow : public QMainWindow, public COutputInterface
+class PlotWindow : public CWindowInterface, public COutputInterface
 {
   Q_OBJECT
 
@@ -71,15 +71,10 @@ public:
   CopasiPlot * getPlot() const;
 
   /**
-   * Navigating multiple plot windows is still difficult. So it would be
-   * way better to have the window menu not just on the main window, but
-   * also on the plot windows. Though this function really ought to be
-   * in a separate base class, so it could be re-used and the mainwindow
-   * would not have to know about plotwindows.
    *
    * @return a pointer to this plot windows 'window' menu.
    */
-  QMenu *getWindowMenu() const;
+  virtual QMenu *getWindowMenu() const;
 
   /**
    * compile the object list from name vector

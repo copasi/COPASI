@@ -55,7 +55,7 @@ public:
 
 //-----------------------------------------------------------------------------
 PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* ptrSpec, CopasiUI3Window * pMainWindow):
-  QMainWindow(),
+  CWindowInterface(),
   mpPlot(NULL),
   mpHandler(pHandler),
   mpMainWindow(pMainWindow),
@@ -86,7 +86,7 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
   mpPlot = new CopasiPlot(ptrSpec, this);
   setCentralWidget(mpPlot);
 
-  mpMainWindow->addWindow(this);
+  addToMainWindow(mpMainWindow);
 }
 
 void PlotWindow::createMenus()
@@ -403,7 +403,7 @@ PlotWindow::~PlotWindow()
     mpHandler->removeInterface(this);
 
   if (mpMainWindow != NULL)
-    mpMainWindow->removeWindow(this);
+    removeFromMainWindow(mpMainWindow);
 }
 
 bool PlotWindow::compile(std::vector< CCopasiContainer * > listOfContainer,

@@ -66,7 +66,7 @@
 #include "model/CModelMerging.h"
 #endif
 #include "model/CModelExpansion.h"
-#include <plotUI/plotwindow.h>
+#include <UI/CWindowInterface.h>
 
 #define AutoSaveInterval 10*60*1000
 
@@ -1741,7 +1741,7 @@ void CopasiUI3Window::refreshWindowsMenu()
 
   for (int index = 0; index < mWindows.count(); ++index)
     {
-      QMenu* menu = ((PlotWindow*)mWindows[index])->getWindowMenu();
+      QMenu* menu = ((CWindowInterface*)mWindows[index])->getWindowMenu();
       menu->clear();
       menu->addAction(mpaCloseAllWindows);
       menu->addSeparator();
@@ -1766,7 +1766,7 @@ void CopasiUI3Window::refreshWindowsMenu()
 
       for (int index = 0; index < mWindows.count(); ++index)
         {
-          QMenu* menu = ((PlotWindow*)mWindows[index])->getWindowMenu();
+          QMenu* menu = ((CWindowInterface*)mWindows[index])->getWindowMenu();
           menu->addAction(pAction);
         }
     }
