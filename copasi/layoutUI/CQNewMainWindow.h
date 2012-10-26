@@ -49,6 +49,15 @@ class CQNewMainWindow : public CWindowInterface
   Q_OBJECT
 
 public:
+
+  enum DISPLAY_MODE
+  {
+    GRAPH_MODE,
+    ANIMATION_MODE
+  };
+
+  void setMode(DISPLAY_MODE mode = GRAPH_MODE);
+
 #ifdef ELEMENTARY_MODE_DISPLAY
   enum REACTION_SELECTION_BITS
   {
@@ -233,11 +242,6 @@ protected slots:
 #endif // COPASI_AUTOLAYOUT
 
 private:
-  enum DISPLAY_MODE
-  {
-    GRAPH_MODE,
-    ANIMATION_MODE
-  };
 
   void createActions();
   void createMenus();

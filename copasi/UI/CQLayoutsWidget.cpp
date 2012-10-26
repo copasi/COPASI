@@ -38,6 +38,8 @@
 # include "copasi/layoutUI/CQAutolayoutWizard.h"
 #endif // COPASI_AUTOLAYOUT
 
+#include <sstream>
+
 CQLayoutsWidget::CQLayoutsWidget(QWidget* parent)
   : CopasiWidget(parent)
 {
@@ -214,14 +216,41 @@ void CQLayoutsWidget::showButtons()
     }
 }
 
+bool hasLayout(const CListOfLayouts& layouts, const std::string &name)
+{
+
+  for (size_t i = 0; i < layouts.size(); ++i)
+    {
+      const CLayout *layout = layouts[i];
+      const std::string &current = layout->getObjectName();
+
+      if (current == name)
+        return true;
+    }
+
+  return false;
+}
+
 // virtual
 void CQLayoutsWidget::slotBtnNewClicked()
 {
 #ifdef COPASI_AUTOLAYOUT
-  CLayout* pLayout = new CLayout("COPASI autolayout");
+
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   const CModel* pModel = pDataModel->getModel();
   assert(pModel != NULL);
+
+  std::string name = "COPASI autolayout";
+  int ncount = 1;
+
+  while (hasLayout(*(pDataModel->getListOfLayouts()), name))
+    {
+      std::stringstream str;
+      str << "COPASI autolayout " << ncount++;
+      name = str.str();
+    }
+
+  CLayout* pLayout = new CLayout(name);
   CQAutolayoutWizard* pWizard = new CQAutolayoutWizard(*pModel);
 
   if (pWizard->exec() == QDialog::Accepted)
@@ -244,6 +273,8 @@ void CQLayoutsWidget::slotBtnNewClicked()
           // create the random layout
           pWin->createRandomLayout(pWizard->getSelectedCompartments(), pWizard->getSelectedReactions(), pWizard->getSelectedMetabolites(), pWizard->getSideMetabolites());
           pWin->updateRenderer();
+          pWin->addToMainWindow();
+          pWin->setMode();
           // show the new layout
           pWin->show();
           pWin->redrawNow();
@@ -367,6 +398,7 @@ void CQLayoutsWidget::slotShowLayout(int row)
 #ifdef USE_CRENDER_EXTENSION
           pLayoutWindow->slotLayoutChanged(row);
           pLayoutWindow->addToMainWindow();
+          pLayoutWindow->setMode();
 #endif // USE_CRENDER_EXTENSION
           pLayoutWindow->show();
           pLayoutWindow->showNormal();

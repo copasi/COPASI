@@ -385,7 +385,12 @@ void CQNewMainWindow::createStatusBar()
 {
   statusBar()->showMessage(tr("Ready"));
 }
-
+void CQNewMainWindow::setMode(DISPLAY_MODE mode)
+{
+  // need to invert to have the toggle work
+  mMode = mode == GRAPH_MODE ? ANIMATION_MODE : GRAPH_MODE;
+  switchMode();
+}
 void CQNewMainWindow::updateRenderer()
 {
   // pass the datamodel, the layout and the render info to the

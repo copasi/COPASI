@@ -26,7 +26,7 @@
 #include <QSplitter>
 #include <QVBoxLayout>
 #include <QToolBar>
-#include <qwt_slider.h>
+#include <QSlider>
 #include <QGridLayout>
 #include <QPixmap>
 #include <QCloseEvent>
@@ -79,7 +79,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget* pParent):
   , mpMainBox(new QFrame(this))
   , mpSplitter(new QSplitter(Qt::Horizontal, this->mpMainBox))
   , mpGLViewport(NULL)
-  , mpTimeSlider(new QwtSlider(NULL, Qt::Horizontal, QwtSlider::BottomScale, QwtSlider::BgTrough))
+  , mpTimeSlider(new QSlider(Qt::Horizontal))
   , mpFrame(new QFrame)
   , mpInfoBox(new QFrame)
   , mpControlWidget(new CQPlayerControlWidget)
@@ -139,23 +139,24 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget* pParent):
   connect(this->mpControlWidget, SIGNAL(step_backward()), this, SLOT(stepBackwardAnimation()));
   connect(this->mpControlWidget, SIGNAL(step_forward()), this, SLOT(stepForwardAnimation()));
 
-  this->mpTimeSlider->setRange(0, 100, 1, 0);
-  this->mpTimeSlider->setValue(0.0);
+  this->mpTimeSlider->setRange(0, 100);
+  this->mpTimeSlider->setValue(0);
   this->mpTimeSlider->setEnabled(false);
 
   this->mpTimeSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-  this->mpFrame->setFixedHeight(68);
-  connect(this->mpTimeSlider, SIGNAL(valueChanged(double)),
-          this, SLOT(showStep(double)));
+  //this->mpFrame->setFixedHeight(80);
+  connect(this->mpTimeSlider, SIGNAL(valueChanged(int)),
+          this, SLOT(showStep(int)));
 
   QGridLayout* pGridLayout = new QGridLayout();
   this->mpFrame->setLayout(pGridLayout);
   pGridLayout->addWidget(this->mpTimeSlider, 1, 1, 2, 1, Qt::AlignTop);
   pGridLayout->addWidget(this->mpControlWidget, 0, 0, 4, 1, Qt::AlignTop);
+
+#ifndef USE_CRENDER_EXTENSION
   QSpacerItem* pSpacer = new QSpacerItem(20, 20);
   pGridLayout->addItem(pSpacer, 1, 0);
 
-#ifndef USE_CRENDER_EXTENSION
   loadData(); // try to load data (if already present)
   // the action have to be created before mpLoadDataAction is used below
   // the menus have to be created after the player control widget is created
@@ -784,7 +785,7 @@ void CQLayoutMainWindow::endOfAnimationReached()
     }
 }
 
-void CQLayoutMainWindow::showStep(double i)
+void CQLayoutMainWindow::showStep(int i)
 {
   this->mpControlWidget->setCurrentStep(static_cast<int>(i));
   mpGLViewport->getPainter()->showStep(static_cast<int>(i));
