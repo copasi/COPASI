@@ -126,20 +126,21 @@ void CProcessQueue::CAction::process(const size_t & eventId)
     }
   else
     {
-      C_INT32 result=0;
-      
-      //there may be special events in the queue that do 
+      C_INT32 result = 0;
+
+      //there may be special events in the queue that do
       //not have an assignment at all
       //These are represented by a CAction without target
       if (mpTarget)
-      {
-        *mpTarget = mValue; 
-        result |= 1; //state changed
-      }
-      
+        {
+          *mpTarget = mValue;
+          result |= 1; //state changed
+        }
+
       if (mpEvent->isCutPlane())
-        result |=2;
-      if(mpProcessQueue->mpEventCallBack)
+        result |= 2;
+
+      if (mpProcessQueue->mpEventCallBack)
         (*mpProcessQueue->mpEventCallBack)(mpProcessQueue->mpCallbackTask, result);
     }
 }
@@ -633,10 +634,11 @@ bool CProcessQueue::isEmpty() const
 
 bool CProcessQueue::setEventCallBack(void* pTask, EventCallBack ecb)
 {
-  mpCallbackTask=pTask;
-  mpEventCallBack=ecb;
+  mpCallbackTask = pTask;
+  mpEventCallBack = ecb;
+  // TODO: does not compile on windows without return statement
+  return false;
 }
-
 
 std::ostream &operator<<(std::ostream &os, const CProcessQueue & o)
 {
