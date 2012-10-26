@@ -1,24 +1,20 @@
-# Begin CVS Header
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/UI.pro,v $
-#   $Revision: 1.265 $
-#   $Name:  $
-#   $Author: shoops $
-#   $Date: 2012/05/09 21:32:16 $
-# End CVS Header
-
-# Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-# and The University of Manchester.
-# All rights reserved.
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
 
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
+# Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
+
+
+
+
 
 ######################################################################
 # $Revision: 1.265 $ $Author: shoops $ $Date: 2012/05/09 21:32:16 $
@@ -42,6 +38,7 @@ HEADERS	+= \
   CQDifferentialEquations.h \
   CQEFMListWidget.h \
   CQEFMResultWidget.h \
+  CWindowInterface.h \
   CQEFMWidget.h \
   CQEventsWidget.h \
   CQEventWidget1.h \
@@ -228,6 +225,7 @@ SOURCES	+= \
   CQReactionsWidget.cpp \
   CQReportDefinition.cpp \
   CQReportDefinitionSelect.cpp \
+  CWindowInterface.cpp \
   CQReportsWidget.cpp \
   CQSensResultWidget.cpp \
   CQSpeciesDetail.cpp \
