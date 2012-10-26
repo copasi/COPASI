@@ -25,4 +25,4 @@ public:
   void removeFromMainWindow(CopasiUI3Window *window = NULL);
 };
 
-#endif CWindowInterface_H
+#endif // CWindowInterface_H
