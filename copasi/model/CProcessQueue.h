@@ -1,8 +1,3 @@
-// Begin git Header 
-//   Commit: 0ade3ccc6127881693ac8e861801f6322a32ce66 
-//   Author: Sven Sahle sven.sahle@bioquant.uni-heidelberg.de 
-//   Date: 2012-10-26 14:24:39 +0200 
-// End git Header 
 
 // Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University

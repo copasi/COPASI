@@ -1,8 +1,3 @@
-// Begin git Header 
-//   Commit: 0cd1a0a9cfd421f48607741d276da69e248b3bc3 
-//   Author: Stefan Hoops shoops@vbi.vt.edu 
-//   Date: 2012-10-22 09:45:59 -0400 
-// End git Header 
 
 // Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
