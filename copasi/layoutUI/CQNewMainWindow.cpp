@@ -169,6 +169,7 @@ void CQNewMainWindow::createActions()
 
   mpScreenshotAct = new QAction(QPixmap(photo), tr("Export bitmap..."), this);
   mpScreenshotAct->setStatusTip(tr("Export diagram as bitmap."));
+  mpScreenshotAct->setShortcut(Qt::CTRL + Qt::Key_E);
   mpScreenshotAct->setEnabled(true);
   connect(mpScreenshotAct, SIGNAL(triggered()), this, SLOT(slotScreenshot()));
 
@@ -213,6 +214,8 @@ void CQNewMainWindow::createMenus()
 {
   mpFileMenu = menuBar()->addMenu(tr("&File"));
   mpFileMenu->addAction(mpSwitchModeAct);
+  mpFileMenu->addSeparator();
+  mpFileMenu->addAction(this->mpScreenshotAct);
   mpFileMenu->addSeparator();
   mpFileMenu->addAction(mpCloseAct);
 
@@ -294,8 +297,6 @@ void CQNewMainWindow::createMenus()
   this->mpElementaryModesMenu->addAction(tr("none"));
   connect(this->mpElementaryModesMenu, SIGNAL(aboutToShow()), this, SLOT(checkForElementaryModesSlot()));
 #endif // ELEMENTARY_MODE_DISPLAY
-  this->mpViewMenu->addSeparator();
-  this->mpViewMenu->addAction(this->mpScreenshotAct);
 
   // options menu
   mpOptionsMenu = menuBar()->addMenu(tr("Options"));
@@ -388,6 +389,12 @@ void CQNewMainWindow::createStatusBar()
 }
 void CQNewMainWindow::setMode(DISPLAY_MODE mode)
 {
+  // be sure to disconnect screenshot action
+  if (mMode == GRAPH_MODE)
+    disconnect(mpScreenshotAct, SIGNAL(triggered()), this, SLOT(slotScreenshot()));
+  else
+    disconnect(this->mpScreenshotAct, SIGNAL(triggered()), this->mpAnimationWindow, SLOT(saveImage()));
+
   // need to invert to have the toggle work
   mMode = mode == GRAPH_MODE ? ANIMATION_MODE : GRAPH_MODE;
   switchMode();
