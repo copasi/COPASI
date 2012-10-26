@@ -131,7 +131,6 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
   pModel->setCompileFlag();
   pModel->compileIfNecessary(NULL);
   
-  
   mpTrajectoryMethod->setProblem(mpCrossSectionProblem);
 
   bool success = mpMethod->isValidProblem(mpProblem);
@@ -173,6 +172,11 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
 {
   processStart(useInitialValues);
 
+  //this instructs the process queue to call back whenever an event is 
+  //executed
+  mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(this, &EventCallBack);
+
+  
   C_FLOAT64 MaxDuration = mpCrossSectionProblem->getDuration();
 
   //the output starts only after "outputStartTime" has passed
@@ -239,6 +243,9 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
 
       output(COutputInterface::AFTER);
 
+      //reset call back
+      mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
+      
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 16);
     }
 
@@ -252,12 +259,18 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
 
       output(COutputInterface::AFTER);
 
+      //reset call back
+      mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
+
       throw CCopasiException(Exception.getMessage());
     }
 
   if (mpCallBack != NULL) mpCallBack->finishItem(hProcess);
 
   output(COutputInterface::AFTER);
+
+  //reset call back
+  mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
 
   return true;
 }
@@ -287,7 +300,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
   while (proceed)
     {
       // TODO Provide a call back method for resolving simultaneous assignments.
-      pModel->getMathModel()->getProcessQueue().printDebug();
+      //pModel->getMathModel()->getProcessQueue().printDebug();
       
       //execute events for inequalities
       StateChanged |= pModel->processQueue(*mpCurrentTime, false, NULL);
@@ -326,7 +339,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
 
             //this checks whether equality events are triggered
             pModel->processRoots(*mpCurrentTime, true, true, mpTrajectoryMethod->getRoots());
-            pModel->getMathModel()->getProcessQueue().printDebug();
+            //pModel->getMathModel()->getProcessQueue().printDebug();
 
             if ((mOutputStartTime <= *mpCurrentTime) &&
                 *mpCurrentTime == pModel->getProcessQueueExecutionTime() )
@@ -344,7 +357,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
 
             //this checks whether inequality events are triggered
             pModel->processRoots(*mpCurrentTime, false, true, mpTrajectoryMethod->getRoots());
-            pModel->getMathModel()->getProcessQueue().printDebug();
+            //pModel->getMathModel()->getProcessQueue().printDebug();
 
             // If the root happens to coincide with end of the step we have to return and
             // inform the integrator of eventual state changes.
@@ -373,6 +386,9 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
             break;
 
           case CTrajectoryMethod::FAILURE:
+            //reset call back
+            mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
+
             CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
 
             return false;
@@ -398,6 +414,9 @@ bool CCrossSectionTask::restore()
       pModel->setInitialState(pModel->getState());
       pModel->updateInitialValues();
     }
+
+  //reset call back
+  mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
 
   return success;
 }
@@ -437,3 +456,12 @@ CState * CCrossSectionTask::getState()
 
 const CTimeSeries & CCrossSectionTask::getTimeSeries() const
 {return mTimeSeries;}
+
+//static
+void CCrossSectionTask::EventCallBack(void* pCSTask, C_INT32 type)
+{static_cast<CCrossSectionTask *>(pCSTask)->eventCallBack(type);}
+
+void CCrossSectionTask::eventCallBack(C_INT32 type)
+{
+  std::cout << "event call back: " << type << std::endl;
+}

@@ -85,12 +85,13 @@ CProcessQueue::CAction::CAction(const CAction & src) :
 
 CProcessQueue::CAction::CAction(C_FLOAT64 * pTarget,
                                 const C_FLOAT64 & value,
-                                CMathEvent * pEvent) :
+                                CMathEvent * pEvent,
+                                CProcessQueue * pProcessQueue) :
   mpTarget(pTarget),
   mValue(value),
   mpExpression(NULL),
   mpEvent(pEvent),
-  mpProcessQueue(NULL)
+  mpProcessQueue(pProcessQueue)
 {}
 
 CProcessQueue::CAction::CAction(C_FLOAT64 * pTarget,
@@ -125,7 +126,21 @@ void CProcessQueue::CAction::process(const size_t & eventId)
     }
   else
     {
-      *mpTarget = mValue;
+      C_INT32 result=0;
+      
+      //there may be special events in the queue that do 
+      //not have an assignment at all
+      //These are represented by a CAction without target
+      if (mpTarget)
+      {
+        *mpTarget = mValue; 
+        result |= 1; //state changed
+      }
+      
+      if (mpEvent->isCutPlane())
+        result |=2;
+      if(mpProcessQueue->mpEventCallBack)
+        (*mpProcessQueue->mpEventCallBack)(mpProcessQueue->mpCallbackTask, result);
     }
 }
 
@@ -147,7 +162,9 @@ CProcessQueue::CProcessQueue() :
   mRootValues2(0),
   mpRootValuesBefore(&mRootValues1),
   mpRootValuesAfter(&mRootValues2),
-  mpResolveSimultaneousAssignments(NULL)
+  mpResolveSimultaneousAssignments(NULL),
+  mpCallbackTask(NULL),
+  mpEventCallBack(NULL)
 {}
 
 CProcessQueue::CProcessQueue(const CProcessQueue & src):
@@ -166,7 +183,9 @@ CProcessQueue::CProcessQueue(const CProcessQueue & src):
   mRootValues2(src.mRootValues2),
   mpRootValuesBefore(&src.mRootValues1 == src.mpRootValuesBefore ? &mRootValues1 : &mRootValues2),
   mpRootValuesAfter(&src.mRootValues1 == src.mpRootValuesAfter ? &mRootValues1 : &mRootValues2),
-  mpResolveSimultaneousAssignments(src.mpResolveSimultaneousAssignments)
+  mpResolveSimultaneousAssignments(src.mpResolveSimultaneousAssignments),
+  mpCallbackTask(src.mpCallbackTask),
+  mpEventCallBack(src.mpEventCallBack)
 {}
 
 CProcessQueue::~CProcessQueue()
@@ -193,7 +212,7 @@ bool CProcessQueue::addAssignment(const C_FLOAT64 & executionTime,
                                           order,
                                           eventId,
                                           CascadingLevel),
-                                     CAction(pTarget, value, pEvent)));
+                                     CAction(pTarget, value, pEvent, this)));
 
   return true;
 }
@@ -611,6 +630,13 @@ bool CProcessQueue::isEmpty() const
 {
   return (mAssignments.size() == 0) && (mCalculations.size() == 0);
 }
+
+bool CProcessQueue::setEventCallBack(void* pTask, EventCallBack ecb)
+{
+  mpCallbackTask=pTask;
+  mpEventCallBack=ecb;
+}
+
 
 std::ostream &operator<<(std::ostream &os, const CProcessQueue & o)
 {

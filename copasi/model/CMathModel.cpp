@@ -381,6 +381,12 @@ const CProcessQueue & CMathModel::getProcessQueue() const
   return mProcessQueue;
 }
 
+CProcessQueue & CMathModel::getProcessQueue() 
+{
+  return mProcessQueue;
+}
+
+
 void CMathModel::applyInitialValues()
 {
   // Clear the process queue.

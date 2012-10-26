@@ -167,5 +167,19 @@ private:
    * cleanup()
    */
   void cleanup();
+
+  /**
+   * this is the static call back function that is called by the 
+   * process queue when an event is executed-
+   */
+  static void EventCallBack(void* pCSTask, C_INT32 type);
+  
+  /**
+   * This is the member function that is called by the static call back function
+   * It checks if an event describes the cut plane and does all
+   * the necessary analysis and output in this case
+   */
+  void eventCallBack(C_INT32 type);
+  
 };
 #endif // COPASI_CCrossSectionTask
