@@ -1,24 +1,12 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEvent.h,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/21 14:12:02 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
 // All rights reserved.
 
 #ifndef COPASI_CMathEvent
 #define COPASI_CMathEvent
 
+#include "copasi/model/CEvent.h"
 #include "copasi/math/CMathTrigger.h"
 
 #include "copasi/function/CExpression.h"
@@ -27,7 +15,6 @@
 class CProcessQueue;
 class CMathContainer;
 class CMathObject;
-class CEvent;
 class CEventAssignment;
 
 class CMathEventN
@@ -303,7 +290,7 @@ public:
                std::vector< CCopasiContainer * > listOfContainer);
 
   /**
-   * The event fires and the approriate actions are scheduled
+   * The event fires and the appropriate actions are scheduled
    * in the process queue.
    * @param const C_FLOAT64 & time
    * @param const bool & equality
@@ -356,8 +343,12 @@ public:
    * @return C_FLOAT64 executionTime
    */
   C_FLOAT64 getAssignmentTime(const C_FLOAT64 & currentTime);
-  
-  bool isCutPlane() const;
+
+  /**
+   * Retrieve the type of the event
+   * @return const CEvent::Type & type
+   */
+  const CEvent::Type & getType() const;
 
 private:
   /**
@@ -418,12 +409,11 @@ private:
    * values which depend on the target values of the assignments.
    */
   std::vector< Refresh * > mDependentValueRefreshes;
-  
+
   /**
-   * indicates whether this is a special event used in nonlinear dynamics
-   * analysis
+   * The type of the event
    */
-  bool mIsCutPlane;
+  CEvent::Type mType;
 };
 
 #endif // COPASI_CMathEvent

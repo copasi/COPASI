@@ -1073,7 +1073,7 @@ CMathEvent::CMathEvent(const CCopasiContainer * pParent) :
   mDelayValueRefreshes(),
   mAssignmentValueRefreshes(),
   mDependentValueRefreshes(),
-  mIsCutPlane(false)
+  mType(CEvent::Assignment)
 {}
 
 CMathEvent::CMathEvent(const CMathEvent & src,
@@ -1088,7 +1088,7 @@ CMathEvent::CMathEvent(const CMathEvent & src,
   mDelayValueRefreshes(src.mDelayValueRefreshes),
   mAssignmentValueRefreshes(src.mAssignmentValueRefreshes),
   mDependentValueRefreshes(src.mDependentValueRefreshes),
-  mIsCutPlane(src.mIsCutPlane)
+  mType(src.mType)
 {}
 
 CMathEvent::~CMathEvent()
@@ -1112,7 +1112,7 @@ bool CMathEvent::compile(const CEvent * pEvent,
 
   mHaveDelay = (mDelay.getInfix() != "");
 
-  mIsCutPlane = pEvent->isCutPlane();
+  mType = pEvent->getType();
 
   // Build the list of refresh calls needed to assure that the delay expression
   // can be calculated.
@@ -1164,26 +1164,28 @@ void CMathEvent::fire(const C_FLOAT64 & time,
   // Determine the execution time of the calculation of the event.
   C_FLOAT64 CalculationTime = getCalculationTime(time);
 
-  // We can only add calculations even if the calculation time is the current time.
-  // This is due to the fact that equality and inequality checks are treated differently.
-  bool assignmentAdded=false;
-  for (; itAssignment != endAssignment; ++itAssignment)
+  switch (mType)
     {
-      // We must delay the calculation of the new target value
-      processQueue.addCalculation(CalculationTime,
-                                  equality,
-                                  mOrder,
-                                  EventId,
-                                  (*itAssignment)->mpTarget,
-                                  &(*itAssignment)->mExpression,
-                                  this);
-      assignmentAdded=true;
+      case CEvent::Assignment:
+        for (; itAssignment != endAssignment; ++itAssignment)
+          {
+            // We must delay the calculation of the new target value
+            processQueue.addCalculation(CalculationTime,
+                                        equality,
+                                        mOrder,
+                                        EventId,
+                                        (*itAssignment)->mpTarget,
+                                        &(*itAssignment)->mExpression,
+                                        this);
+          }
+
+        break;
+
+      case CEvent::CutPlane:
+        processQueue.addCalculation(CalculationTime, equality, mOrder, EventId,
+                                    NULL, NULL, this);
+        break;
     }
-  //if the event contains no assignment, but represents a cut plane,
-  //an "empty" calculation item is added. 
-  if (!assignmentAdded && mIsCutPlane)
-    processQueue.addCalculation(CalculationTime, equality, mOrder, EventId,
-                                NULL, NULL, this);
 }
 
 void CMathEvent::applyDelayRefreshes()
@@ -1290,7 +1292,7 @@ C_FLOAT64 CMathEvent::calculateDelayedTime(const C_FLOAT64 & currentTime)
   return DelayedTime;
 }
 
-bool CMathEvent::isCutPlane() const
+const CEvent::Type & CMathEvent::getType() const
 {
-  return mIsCutPlane;
+  return mType;
 }

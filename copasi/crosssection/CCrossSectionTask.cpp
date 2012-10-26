@@ -26,7 +26,6 @@
 #include "utilities/CCopasiException.h"
 #include  "CopasiDataModel/CCopasiDataModel.h"
 
-
 const unsigned int CCrossSectionTask::ValidMethods[] =
 {
   CCopasiMethod::deterministic,
@@ -57,12 +56,12 @@ CCrossSectionTask::CCrossSectionTask(const CCopasiContainer * pParent):
   mpMethod = createMethod(CCopasiMethod::deterministic);
   this->add(mpMethod, true);
 
-/*  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
+  /*  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
 
-  if (pParameter != NULL)
-    mUpdateMoieties = *pParameter->getValue().pBOOL;
-  else
-    mUpdateMoieties = false;*/
+    if (pParameter != NULL)
+      mUpdateMoieties = *pParameter->getValue().pBOOL;
+    else
+      mUpdateMoieties = false;*/
 }
 
 CCrossSectionTask::CCrossSectionTask(const CCrossSectionTask & src,
@@ -87,12 +86,12 @@ CCrossSectionTask::CCrossSectionTask(const CCrossSectionTask & src,
 
   this->add(mpMethod, true);
 
-/*  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
+  /*  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
 
-  if (pParameter != NULL)
-    mUpdateMoieties = *pParameter->getValue().pBOOL;
-  else
-    mUpdateMoieties = false;*/
+    if (pParameter != NULL)
+      mUpdateMoieties = *pParameter->getValue().pBOOL;
+    else
+      mUpdateMoieties = false;*/
 }
 
 CCrossSectionTask::~CCrossSectionTask()
@@ -118,19 +117,21 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
   assert(mpTrajectoryMethod);
 
   //Here we mark one existing event as being the cut plane. This is probably
-  //the place where in the future we will create this special event 
+  //the place where in the future we will create this special event
   //rather than just mark it.
-  
+
   CModel* pModel = mpCrossSectionProblem->getModel();
   size_t i;
-  for (i=0; i<pModel->getEvents().size(); ++i)
-  {
-    if (pModel->getEvents()[i]->getObjectName()=="__cutplane")
-      pModel->getEvents()[i]->setIsCutPlane(true);
-  }
+
+  for (i = 0; i < pModel->getEvents().size(); ++i)
+    {
+      if (pModel->getEvents()[i]->getObjectName() == "__cutplane")
+        pModel->getEvents()[i]->setType(CEvent::CutPlane);
+    }
+
   pModel->setCompileFlag();
   pModel->compileIfNecessary(NULL);
-  
+
   mpTrajectoryMethod->setProblem(mpCrossSectionProblem);
 
   bool success = mpMethod->isValidProblem(mpProblem);
@@ -172,16 +173,15 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
 {
   processStart(useInitialValues);
 
-  //this instructs the process queue to call back whenever an event is 
+  //this instructs the process queue to call back whenever an event is
   //executed
   mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(this, &EventCallBack);
 
-  
   C_FLOAT64 MaxDuration = mpCrossSectionProblem->getDuration();
 
   //the output starts only after "outputStartTime" has passed
   mOutputStartTime = *mpCurrentTime + mpCrossSectionProblem->getOutputStartTime();
-  
+
   //C_FLOAT64 NextTimeToReport;
 
   const C_FLOAT64 EndTime = *mpCurrentTime + MaxDuration;
@@ -219,7 +219,7 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
 
           flagProceed &= processStep(EndTime);
 
-          if (mpCallBack != NULL )
+          if (mpCallBack != NULL)
             {
               Percentage = (*mpCurrentTime - StartTime) * handlerFactor;
               flagProceed &= mpCallBack->progressItem(hProcess);
@@ -228,7 +228,7 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
           //if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime))
           //  {
           //    output(COutputInterface::DURING);
-          //  }
+          //}
         }
       while ((*mpCurrentTime < CompareEndTime) && flagProceed);
     }
@@ -238,14 +238,13 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
       mpCrossSectionProblem->getModel()->setState(*mpCurrentState);
       mpCrossSectionProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
 
-
       if (mpCallBack != NULL) mpCallBack->finishItem(hProcess);
 
       output(COutputInterface::AFTER);
 
       //reset call back
       mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
-      
+
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 16);
     }
 
@@ -253,7 +252,6 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
     {
       mpCrossSectionProblem->getModel()->setState(*mpCurrentState);
       mpCrossSectionProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
-
 
       if (mpCallBack != NULL) mpCallBack->finishItem(hProcess);
 
@@ -301,7 +299,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
     {
       // TODO Provide a call back method for resolving simultaneous assignments.
       //pModel->getMathModel()->getProcessQueue().printDebug();
-      
+
       //execute events for inequalities
       StateChanged |= pModel->processQueue(*mpCurrentTime, false, NULL);
 
@@ -322,7 +320,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
             pModel->updateSimulatedValues(mUpdateMoieties);
 
             // TODO Provide a call back method for resolving simultaneous assignments.
-            
+
             //execute events for equalities
             StateChanged |= pModel->processQueue(*mpCurrentTime, true, NULL);
 
@@ -342,16 +340,16 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
             //pModel->getMathModel()->getProcessQueue().printDebug();
 
             if ((mOutputStartTime <= *mpCurrentTime) &&
-                *mpCurrentTime == pModel->getProcessQueueExecutionTime() )
+                *mpCurrentTime == pModel->getProcessQueueExecutionTime())
               {
-                //this output is done when an event from an equality 
+                //this output is done when an event from an equality
                 //is scheduled in the queue
                 //for the current time; befor the execution of the event
                 output(COutputInterface::DURING);
               }
 
             // TODO Provide a call back method for resolving simultaneous assignments.
-            
+
             //execute scheduled events for equalities
             StateChanged |= pModel->processQueue(*mpCurrentTime, true, NULL);
 
@@ -374,11 +372,11 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
               }
 
             if ((mOutputStartTime <= *mpCurrentTime)  &&
-                (  /*StateChanged || */
-                 *mpCurrentTime == pModel->getProcessQueueExecutionTime()))
+                (/*StateChanged || */
+                  *mpCurrentTime == pModel->getProcessQueueExecutionTime()))
               {
                 //this output is done when an event from an inequality
-                //is scheduled in the queue 
+                //is scheduled in the queue
                 //for the current time; before the execution of this event
                 output(COutputInterface::DURING);
               }
@@ -458,10 +456,10 @@ const CTimeSeries & CCrossSectionTask::getTimeSeries() const
 {return mTimeSeries;}
 
 //static
-void CCrossSectionTask::EventCallBack(void* pCSTask, C_INT32 type)
+void CCrossSectionTask::EventCallBack(void* pCSTask, CEvent::Type type)
 {static_cast<CCrossSectionTask *>(pCSTask)->eventCallBack(type);}
 
-void CCrossSectionTask::eventCallBack(C_INT32 type)
+void CCrossSectionTask::eventCallBack(CEvent::Type type)
 {
   std::cout << "event call back: " << type << std::endl;
 }

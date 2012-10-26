@@ -239,7 +239,7 @@ CEvent::CEvent(const std::string & name,
   mpTriggerExpression(NULL),
   mpDelayExpression(NULL),
   mpPriorityExpression(NULL),
-  mIsCutPlane(false)
+  mType(Assignment)
 {
   initObjects();
 }
@@ -257,7 +257,7 @@ CEvent::CEvent(const CEvent & src,
   mpTriggerExpression(src.mpTriggerExpression != NULL ? new CExpression(*src.mpTriggerExpression, this) : NULL),
   mpDelayExpression(src.mpDelayExpression != NULL ? new CExpression(*src.mpDelayExpression, this) : NULL),
   mpPriorityExpression(src.mpPriorityExpression != NULL ? new CExpression(*src.mpPriorityExpression, this) : NULL),
-  mIsCutPlane(src.mIsCutPlane)
+  mType(src.mType)
 {
   initObjects();
 
@@ -629,11 +629,12 @@ void CEvent::deleteAssignment(const std::string & key)
     }
 }
 
-bool CEvent::isCutPlane() const
+const CEvent::Type & CEvent::getType() const
 {
-  return mIsCutPlane;
+  return mType;
 }
-void CEvent::setIsCutPlane(bool flag)
+
+void CEvent::setType(const CEvent::Type & type)
 {
-  mIsCutPlane = flag;
+  mType = type;
 }

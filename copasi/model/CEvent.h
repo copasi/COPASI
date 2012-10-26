@@ -1,26 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.h,v $
-//   $Revision: 1.18 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/29 16:19:26 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
-// Copyright (C) 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -43,8 +31,8 @@ class CModel;
 
 class CEventAssignment : public CCopasiContainer
 {
-  // Operations
 public:
+  // Operations
   /**
    * Default constructor
    * @param const std::string & targetKey (default: "")
@@ -164,6 +152,12 @@ private:
 class CEvent : public CCopasiContainer, public CAnnotation
 {
 public:
+  enum Type
+  {
+    Assignment,
+    CutPlane
+  };
+
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
@@ -385,13 +379,17 @@ public:
   void deleteAssignment(const std::string & key);
 
   /**
-   * returns whether this is a special event that specifies a cut plane
-   * for nonlinear dynamics analysis
+   * Retrieve the type of the event
+   * @return const Type & type
    */
-  bool isCutPlane() const;
-  
-  void setIsCutPlane(bool flag);
-  
+  const Type & getType() const;
+
+  /**
+   * Set the type of the event
+   * @param const Type & type
+   */
+  void setType(const Type & type);
+
   /**
    * insert operator
    */
@@ -449,13 +447,10 @@ private:
   CExpression * mpPriorityExpression;
 
   /**
-   * This indicates a special kind of event that is used to specify a cut
-   * plane for nonlinear dynamics analysis. If in the future we will
-   * introduce additional types of special events, this could easily be 
-   * converted in to an enum.
+   * The type of the event
    */
-  bool mIsCutPlane;
-    
+  Type mType;
+
   /**
    * The id of the corresponding event in an SBML file.
    * This value is either set upon importing an SBML file,

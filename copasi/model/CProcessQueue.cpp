@@ -134,14 +134,10 @@ void CProcessQueue::CAction::process(const size_t & eventId)
       if (mpTarget)
         {
           *mpTarget = mValue;
-          result |= 1; //state changed
         }
 
-      if (mpEvent->isCutPlane())
-        result |= 2;
-
       if (mpProcessQueue->mpEventCallBack)
-        (*mpProcessQueue->mpEventCallBack)(mpProcessQueue->mpCallbackTask, result);
+        (*mpProcessQueue->mpEventCallBack)(mpProcessQueue->mpCallbackTask, mpEvent->getType());
     }
 }
 
@@ -632,12 +628,10 @@ bool CProcessQueue::isEmpty() const
   return (mAssignments.size() == 0) && (mCalculations.size() == 0);
 }
 
-bool CProcessQueue::setEventCallBack(void* pTask, EventCallBack ecb)
+void CProcessQueue::setEventCallBack(void* pTask, EventCallBack ecb)
 {
   mpCallbackTask = pTask;
   mpEventCallBack = ecb;
-  // TODO: does not compile on windows without return statement
-  return false;
 }
 
 std::ostream &operator<<(std::ostream &os, const CProcessQueue & o)
@@ -660,7 +654,7 @@ std::ostream &operator<<(std::ostream &os, const CProcessQueue & o)
       os << "target (" << it->second.mpTarget << "->" << (it->second.mpTarget ? *it->second.mpTarget : -999.999) << ")"
          << ", value " << it->second.mValue
          << ", expr " << it->second.mpExpression
-         << ", event (" << it->second.mpEvent << (it->second.mpEvent->isCutPlane() ? " cut plane)" : ")");
+         << ", event (" << it->second.mpEvent << (it->second.mpEvent->getType() == CEvent::CutPlane ? " cut plane)" : ")");
 
       os << std::endl << std::endl;
     }
