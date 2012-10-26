@@ -327,33 +327,32 @@ void CQNewMainWindow::createToolBars()
   // add a toolbar for the selection widgets
   mpSelectionToolBar = addToolBar(tr("Select"));
   QFrame* pFrame1 = new QFrame;
-  QVBoxLayout* pLayout = new QVBoxLayout;
+  QHBoxLayout* pLayout = new QHBoxLayout;
   pLayout->setSpacing(3);
   QLabel* pLabel = new QLabel(tr("Layout:"));
   pLayout->addWidget(pLabel);
   this->mpLayoutDropdown = new QComboBox;
-  this->mpLayoutDropdown->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
+  this->mpLayoutDropdown->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
   pFrame1->setLayout(pLayout);
   pLayout->addWidget(this->mpLayoutDropdown);
 
   QFrame* pFrame2 = new QFrame;
-  pLayout = new QVBoxLayout;
+  pLayout = new QHBoxLayout;
   pLayout->setSpacing(3);
   pFrame2->setLayout(pLayout);
   this->mpRenderLabel = new QLabel(tr("Render Information:"));
   pLayout->addWidget(this->mpRenderLabel);
   this->mpRenderDropdown = new QComboBox;
-  this->mpRenderDropdown->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
+  this->mpRenderDropdown->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
   pLayout->addWidget(this->mpRenderDropdown);
 
   QFrame* pFrame3 = new QFrame;
-  pLayout = new QVBoxLayout;
+  pLayout = new QHBoxLayout;
   pLayout->setSpacing(3);
   pFrame3->setLayout(pLayout);
   pLabel = new QLabel(tr("Zoom Factor:"));
   pLayout->addWidget(pLabel);
   this->mpZoomDropdown = new QComboBox;
-  this->mpZoomDropdown->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
   pLayout->addWidget(this->mpZoomDropdown);
   // fill the zoom factor box
   unsigned int i, iMax = sizeof(CQNewMainWindow::ZOOM_FACTOR_STRINGS) / sizeof(char*);
@@ -368,6 +367,8 @@ void CQNewMainWindow::createToolBars()
           defaultIndex = i;
         }
     }
+
+  this->mpZoomDropdown->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
 
   // set 100% as the default zoom factor
   assert(defaultIndex != -1);
@@ -585,9 +586,10 @@ void CQNewMainWindow::updateRenderInformationList()
 
           if (!pTmpRenderInfo->getName().empty())
             {
-              text += " (";
-              text += pTmpRenderInfo->getName();
-              text += ")";
+              text = pTmpRenderInfo->getName();
+              //text += " (";
+              //text += pTmpRenderInfo->getName();
+              //text += ")";
             }
 
           this->mpRenderDropdown->insertItem(0, QString(text.c_str()));
@@ -690,9 +692,10 @@ void CQNewMainWindow::addGlobalRenderInfoItemsToList()
 
       if (!pTmpRenderInfo->getName().empty())
         {
-          text += " (";
-          text += pTmpRenderInfo->getName();
-          text += ")";
+          text = pTmpRenderInfo->getName();
+          //text += " (";
+          //text += pTmpRenderInfo->getName();
+          //text += ")";
         }
 
       this->mpRenderDropdown->addItem(QString(text.c_str()));
@@ -716,9 +719,10 @@ void CQNewMainWindow::addDefaultRenderInfoItemsToList()
 
       if (!pTmpRenderInfo->getName().empty())
         {
-          text += " (";
-          text += pTmpRenderInfo->getName();
-          text += ")";
+          text = pTmpRenderInfo->getName();
+          //text += " (";
+          //text += pTmpRenderInfo->getName();
+          //text += ")";
         }
 
       this->mpRenderDropdown->addItem(QString(text.c_str()));
@@ -938,9 +942,10 @@ void CQNewMainWindow::updateLayoutList()
 
       if (!pTmpLayout->getObjectName().empty())
         {
-          text += "(";
-          text += pTmpLayout->getObjectName();
-          text += ")";
+          text = pTmpLayout->getObjectName();
+          //text += "(";
+          //text += pTmpLayout->getObjectName();
+          //text += ")";
         }
 
       this->mpLayoutDropdown->addItem(text.c_str());
