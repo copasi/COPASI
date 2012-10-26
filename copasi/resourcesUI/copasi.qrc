@@ -35,5 +35,12 @@
     <file>images/tool.png</file>
     <file>images/unlocked.png</file>
     <file>images/zoomOut.png</file>
+    <file>images/media-playback-pause.png</file>
+    <file>images/media-playback-start.png</file>
+    <file>images/media-playback-stop.png</file>
+    <file>images/media-seek-backward.png</file>
+    <file>images/media-seek-forward.png</file>
+    <file>images/media-skip-backward.png</file>
+    <file>images/media-skip-forward.png</file>
   </qresource>
 </RCC>
