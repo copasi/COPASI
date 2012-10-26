@@ -74,9 +74,14 @@ private:
   const C_FLOAT64 * mpCurrentTime;
 
   /**
-   * A pointer to the time at which the output starts.
+   * time at which the output starts.
    */
   C_FLOAT64 mOutputStartTime;
+  
+  /**
+   * handle for progress reporting
+   */
+  size_t mhProgress;
 
 public:
   /**
@@ -180,6 +185,15 @@ private:
    * It checks if an event describes the cut plane and does all
    * the necessary analysis and output in this case
    */
-  void eventCallBack(CEvent::Type type);
+  void eventCallBack(C_INT32 type);
+  
+  /**
+   * should be called by all code paths that finish the task.
+   * -finishes progress reporting
+   * -finishes output
+   * -resets call back function
+   */
+  void finish();
+  
 };
 #endif // COPASI_CCrossSectionTask

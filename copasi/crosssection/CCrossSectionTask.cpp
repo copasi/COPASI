@@ -147,8 +147,6 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
   mpCurrentState = new CState(mpCrossSectionProblem->getModel()->getState());
   mpCurrentTime = &mpCurrentState->getTime();
 
-  //mpOutputStartTime = & mpTrajectoryProblem->getOutputStartTime();
-
   // Handle the time series as a regular output.
   mTimeSeriesRequested = mpCrossSectionProblem->timeSeriesRequested();
 
@@ -181,9 +179,6 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
 
   //the output starts only after "outputStartTime" has passed
   mOutputStartTime = *mpCurrentTime + mpCrossSectionProblem->getOutputStartTime();
-
-  //C_FLOAT64 NextTimeToReport;
-
   const C_FLOAT64 EndTime = *mpCurrentTime + MaxDuration;
   const C_FLOAT64 StartTime = *mpCurrentTime;
   C_FLOAT64 CompareEndTime;
@@ -197,13 +192,13 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
   C_FLOAT64 handlerFactor = 100.0 / MaxDuration;
 
   C_FLOAT64 Percentage = 0;
-  size_t hProcess;
+  
 
   if (mpCallBack != NULL)
     {
       mpCallBack->setName("performing simulation...");
       C_FLOAT64 hundred = 100;
-      hProcess = mpCallBack->addItem("Completion",
+      mhProgress = mpCallBack->addItem("Completion",
                                      Percentage,
                                      &hundred);
     }
@@ -212,23 +207,14 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
     {
       do
         {
-          // This is numerically more stable then adding
-          // mpTrajectoryProblem->getStepSize().
-          //NextTimeToReport =
-          //  StartTime + (EndTime - StartTime) * StepCounter++ / StepNumber;
-
           flagProceed &= processStep(EndTime);
 
           if (mpCallBack != NULL)
             {
               Percentage = (*mpCurrentTime - StartTime) * handlerFactor;
-              flagProceed &= mpCallBack->progressItem(hProcess);
+              flagProceed &= mpCallBack->progressItem(mhProgress);
             }
 
-          //if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime))
-          //  {
-          //    output(COutputInterface::DURING);
-          //}
         }
       while ((*mpCurrentTime < CompareEndTime) && flagProceed);
     }
@@ -237,14 +223,7 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
     {
       mpCrossSectionProblem->getModel()->setState(*mpCurrentState);
       mpCrossSectionProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
-
-      if (mpCallBack != NULL) mpCallBack->finishItem(hProcess);
-
-      output(COutputInterface::AFTER);
-
-      //reset call back
-      mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
-
+      finish();
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 16);
     }
 
@@ -252,24 +231,12 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
     {
       mpCrossSectionProblem->getModel()->setState(*mpCurrentState);
       mpCrossSectionProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
-
-      if (mpCallBack != NULL) mpCallBack->finishItem(hProcess);
-
-      output(COutputInterface::AFTER);
-
-      //reset call back
-      mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
-
+      finish();
       throw CCopasiException(Exception.getMessage());
     }
 
-  if (mpCallBack != NULL) mpCallBack->finishItem(hProcess);
-
-  output(COutputInterface::AFTER);
-
-  //reset call back
-  mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
-
+  finish();
+  
   return true;
 }
 
@@ -337,16 +304,6 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
 
             //this checks whether equality events are triggered
             pModel->processRoots(*mpCurrentTime, true, true, mpTrajectoryMethod->getRoots());
-            //pModel->getMathModel()->getProcessQueue().printDebug();
-
-            if ((mOutputStartTime <= *mpCurrentTime) &&
-                *mpCurrentTime == pModel->getProcessQueueExecutionTime())
-              {
-                //this output is done when an event from an equality
-                //is scheduled in the queue
-                //for the current time; befor the execution of the event
-                output(COutputInterface::DURING);
-              }
 
             // TODO Provide a call back method for resolving simultaneous assignments.
 
@@ -355,7 +312,6 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
 
             //this checks whether inequality events are triggered
             pModel->processRoots(*mpCurrentTime, false, true, mpTrajectoryMethod->getRoots());
-            //pModel->getMathModel()->getProcessQueue().printDebug();
 
             // If the root happens to coincide with end of the step we have to return and
             // inform the integrator of eventual state changes.
@@ -370,25 +326,11 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
 
                 return true;
               }
-
-            if ((mOutputStartTime <= *mpCurrentTime)  &&
-                (/*StateChanged || */
-                  *mpCurrentTime == pModel->getProcessQueueExecutionTime()))
-              {
-                //this output is done when an event from an inequality
-                //is scheduled in the queue
-                //for the current time; before the execution of this event
-                output(COutputInterface::DURING);
-              }
-
             break;
 
           case CTrajectoryMethod::FAILURE:
-            //reset call back
-            mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
-
+            finish();
             CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
-
             return false;
             break;
         }
@@ -397,6 +339,16 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
     }
 
   return proceed;
+}
+
+void CCrossSectionTask::finish()
+{
+  //reset call back
+  mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
+
+  if (mpCallBack != NULL) mpCallBack->finishItem(mhProgress);
+  
+  output(COutputInterface::AFTER);
 }
 
 bool CCrossSectionTask::restore()
@@ -459,7 +411,8 @@ const CTimeSeries & CCrossSectionTask::getTimeSeries() const
 void CCrossSectionTask::EventCallBack(void* pCSTask, CEvent::Type type)
 {static_cast<CCrossSectionTask *>(pCSTask)->eventCallBack(type);}
 
-void CCrossSectionTask::eventCallBack(CEvent::Type type)
+void CCrossSectionTask::eventCallBack(C_INT32 type)
 {
   std::cout << "event call back: " << type << std::endl;
+  output(COutputInterface::DURING);
 }
