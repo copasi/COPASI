@@ -1166,6 +1166,7 @@ void CMathEvent::fire(const C_FLOAT64 & time,
 
   // We can only add calculations even if the calculation time is the current time.
   // This is due to the fact that equality and inequality checks are treated differently.
+  bool assignmentAdded=false;
   for (; itAssignment != endAssignment; ++itAssignment)
     {
       // We must delay the calculation of the new target value
@@ -1176,7 +1177,13 @@ void CMathEvent::fire(const C_FLOAT64 & time,
                                   (*itAssignment)->mpTarget,
                                   &(*itAssignment)->mExpression,
                                   this);
+      assignmentAdded=true;
     }
+  //if the event contains no assignment, but represents a cut plane,
+  //an "empty" calculation item is added. 
+  if (!assignmentAdded && mIsCutPlane)
+    processQueue.addCalculation(CalculationTime, equality, mOrder, EventId,
+                                NULL, NULL, this);
 }
 
 void CMathEvent::applyDelayRefreshes()
