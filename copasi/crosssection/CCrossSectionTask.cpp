@@ -411,7 +411,7 @@ const CTimeSeries & CCrossSectionTask::getTimeSeries() const
 void CCrossSectionTask::EventCallBack(void* pCSTask, CEvent::Type type)
 {static_cast<CCrossSectionTask *>(pCSTask)->eventCallBack(type);}
 
-void CCrossSectionTask::eventCallBack(C_INT32 type)
+void CCrossSectionTask::eventCallBack(CEvent::Type type)
 {
   std::cout << "event call back: " << type << std::endl;
   output(COutputInterface::DURING);

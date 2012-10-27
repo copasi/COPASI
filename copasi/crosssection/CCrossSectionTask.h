@@ -185,7 +185,7 @@ private:
    * It checks if an event describes the cut plane and does all
    * the necessary analysis and output in this case
    */
-  void eventCallBack(C_INT32 type);
+  void eventCallBack(CEvent::Type type);
   
   /**
    * should be called by all code paths that finish the task.
