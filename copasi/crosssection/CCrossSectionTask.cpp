@@ -56,12 +56,6 @@ CCrossSectionTask::CCrossSectionTask(const CCopasiContainer * pParent):
   mpMethod = createMethod(CCopasiMethod::deterministic);
   this->add(mpMethod, true);
 
-  /*  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
-
-    if (pParameter != NULL)
-      mUpdateMoieties = *pParameter->getValue().pBOOL;
-    else
-      mUpdateMoieties = false;*/
 }
 
 CCrossSectionTask::CCrossSectionTask(const CCrossSectionTask & src,
@@ -85,13 +79,6 @@ CCrossSectionTask::CCrossSectionTask(const CCrossSectionTask & src,
   mpMethod->elevateChildren();
 
   this->add(mpMethod, true);
-
-  /*  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
-
-    if (pParameter != NULL)
-      mUpdateMoieties = *pParameter->getValue().pBOOL;
-    else
-      mUpdateMoieties = false;*/
 }
 
 CCrossSectionTask::~CCrossSectionTask()
@@ -119,7 +106,6 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
   //Here we mark one existing event as being the cut plane. This is probably
   //the place where in the future we will create this special event
   //rather than just mark it.
-
   CModel* pModel = mpCrossSectionProblem->getModel();
   size_t i;
 
@@ -137,7 +123,6 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
   bool success = mpMethod->isValidProblem(mpProblem);
 
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
-
   if (pParameter != NULL)
     mUpdateMoieties = *pParameter->getValue().pBOOL;
   else
@@ -186,14 +171,16 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
   // It suffices to reach the end time within machine precision
   CompareEndTime = EndTime - 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
 
+  mMaxNumCrossings = mpCrossSectionProblem->getCrossingsLimit();
+  
+  mOutputStartNumCrossings = mpCrossSectionProblem->getOutCrossingsLimit();
+  
+  
   output(COutputInterface::BEFORE);
 
   bool flagProceed = true;
   C_FLOAT64 handlerFactor = 100.0 / MaxDuration;
-
   C_FLOAT64 Percentage = 0;
-  
-
   if (mpCallBack != NULL)
     {
       mpCallBack->setName("performing simulation...");
@@ -203,6 +190,10 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
                                      &hundred);
     }
 
+
+  mState=TRANSIENT; 
+  mNumCrossings=0;
+  
   try
     {
       do
@@ -336,6 +327,8 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
         }
 
       proceed = mpCallBack == NULL || mpCallBack->proceed();
+      if (mState==FINISH)
+        proceed=false;
     }
 
   return proceed;
@@ -414,5 +407,40 @@ void CCrossSectionTask::EventCallBack(void* pCSTask, CEvent::Type type)
 void CCrossSectionTask::eventCallBack(CEvent::Type type)
 {
   std::cout << "event call back: " << type << std::endl;
-  output(COutputInterface::DURING);
+  
+  //do nothing if the event is not representing a cut plane
+  if (type != CEvent::CutPlane)
+    return;
+  
+  //count the crossings
+  ++mNumCrossings;
+  
+  //now check if we can transition to the main state
+  if (mState==TRANSIENT)
+  {
+    if (*mpCurrentTime >= mOutputStartTime)
+      mState=MAIN;
+    
+    if (mNumCrossings >= mOutputStartNumCrossings)
+      mState=MAIN;
+    
+    //TODO convergence criterium
+      
+  }
+  
+  if (mState==MAIN)
+  {
+    output(COutputInterface::DURING);
+
+    //TODO store the state, ...
+    
+  }
+
+  //check if the conditions for stopping are met
+  //we don't have to check for maximum duration, this is done elsewhere
+  if (mNumCrossings>=mMaxNumCrossings)
+    mState=FINISH;
+  
+  //TODO convergence criterium
+
 }

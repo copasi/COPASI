@@ -78,10 +78,28 @@ private:
    */
   C_FLOAT64 mOutputStartTime;
   
+  size_t mNumCrossings;
+  
+  size_t mOutputStartNumCrossings;
+  
+  size_t mMaxNumCrossings;
+  
   /**
    * handle for progress reporting
    */
   size_t mhProgress;
+  
+  /**
+   * describes the internal state of the calculation
+   */ 
+  enum STATE 
+  {
+    TRANSIENT = 0, //before the condition for starting output is met
+    MAIN,          //the main part of the run, while output is generated
+    FINISH         //when the conditions for finishing are met
+  };
+  
+  STATE mState;
 
 public:
   /**
