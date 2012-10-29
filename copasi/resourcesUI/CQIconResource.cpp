@@ -71,6 +71,7 @@ void CQIconResource::init()
   Icons[forward].addFile(QString::fromUtf8(":/images/media-seek-forward.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[skipBackward].addFile(QString::fromUtf8(":/images/media-skip-backward.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[skipForward].addFile(QString::fromUtf8(":/images/media-skip-forward.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[roll].addFile(QString::fromUtf8(":/images/roll.png"), QSize(), QIcon::Normal, QIcon::On);
 
   needInit = false;
 }

@@ -326,6 +326,38 @@ double CQGLLayoutPainter::fitToScreen()
   return zoom;
 }
 
+void CQGLLayoutPainter::setMinX(double x)
+{
+  mMinX = x;
+}
+
+void CQGLLayoutPainter::setMinY(double y)
+{
+  mMinY = y;
+}
+void CQGLLayoutPainter::setMaxX(double x)
+{
+  mMaxX = x;
+}
+
+void CQGLLayoutPainter::setMaxY(double y)
+{
+  mMaxY = y;
+}
+
+void CQGLLayoutPainter::setBounds(const QRectF& rect)
+{
+  setBounds(rect.left(), rect.top(), rect.right(), rect.bottom());
+}
+
+void CQGLLayoutPainter::setBounds(double minX, double minY, double maxX, double maxY)
+{
+  mMinX = minX;
+  mMinY = minY;
+  mMaxX = maxX;
+  mMaxY = maxY;
+}
+
 double CQGLLayoutPainter::minX() const
 {
   return this->mMinX;
@@ -346,30 +378,9 @@ double CQGLLayoutPainter::maxY() const
   return this->mMaxY;
 }
 
-void CQGLLayoutPainter::update(const CCopasiDataModel* pDatamodel, CLayout* pLayout, const CLRenderInformationBase* pRenderInfo, const QString& baseDir)
+void CQGLLayoutPainter::calculateAndAssignBounds(CLayout* pLayout)
 {
-  // delete the current renderer if there is one
-  if (this->mpRenderer)
-    {
-      delete this->mpRenderer;
-    }
-
-  // create a new renderer with the given options
-  if (dynamic_cast<const CLLocalRenderInformation*>(pRenderInfo))
-    {
-      this->mpRenderer = new CLLayoutRenderer(pLayout, static_cast<const CLLocalRenderInformation*>(pRenderInfo), &pDatamodel->getListOfLayouts()->getListOfGlobalRenderInformationObjects(), pDatamodel->getModel(), baseDir.toLatin1().data());
-      // set the text renderer
-    }
-  else
-    {
-      this->mpRenderer = new CLLayoutRenderer(pLayout, static_cast<const CLGlobalRenderInformation*>(pRenderInfo), &pDatamodel->getListOfLayouts()->getListOfGlobalRenderInformationObjects(), pDatamodel->getModel(), baseDir.toLatin1().data());
-    }
-
-  if (this->mpRenderer)
-    {
-      this->mpRenderer->set_font_renderer(new CQFontRenderer());
-      this->mpRenderer->setImageTexturizer(new CQQtImageTexturizer());
-    }
+  if (pLayout == NULL) return;
 
   // update minX, minY, maxX and maxY
   CLBoundingBox bb = pLayout->calculateBoundingBox();
@@ -405,6 +416,34 @@ void CQGLLayoutPainter::update(const CCopasiDataModel* pDatamodel, CLayout* pLay
       // draw the layout
       this->updateGL();
     }
+}
+
+void CQGLLayoutPainter::update(const CCopasiDataModel* pDatamodel, CLayout* pLayout, const CLRenderInformationBase* pRenderInfo, const QString& baseDir)
+{
+  // delete the current renderer if there is one
+  if (this->mpRenderer)
+    {
+      delete this->mpRenderer;
+    }
+
+  // create a new renderer with the given options
+  if (dynamic_cast<const CLLocalRenderInformation*>(pRenderInfo))
+    {
+      this->mpRenderer = new CLLayoutRenderer(pLayout, static_cast<const CLLocalRenderInformation*>(pRenderInfo), &pDatamodel->getListOfLayouts()->getListOfGlobalRenderInformationObjects(), pDatamodel->getModel(), baseDir.toLatin1().data());
+      // set the text renderer
+    }
+  else
+    {
+      this->mpRenderer = new CLLayoutRenderer(pLayout, static_cast<const CLGlobalRenderInformation*>(pRenderInfo), &pDatamodel->getListOfLayouts()->getListOfGlobalRenderInformationObjects(), pDatamodel->getModel(), baseDir.toLatin1().data());
+    }
+
+  if (this->mpRenderer)
+    {
+      this->mpRenderer->set_font_renderer(new CQFontRenderer());
+      this->mpRenderer->setImageTexturizer(new CQQtImageTexturizer());
+    }
+
+  calculateAndAssignBounds(pLayout);
 }
 
 void CQGLLayoutPainter::change_style(const CLRenderInformationBase* pRenderInfo, bool defaultStyle)

@@ -106,6 +106,8 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
 #ifdef COPASI_AUTOLAYOUT
   , mStopLayout(false)
   , mpStopLayoutAction(NULL)
+  , mpRandomizeLayout(NULL)
+  , mpCalculateDimensions(NULL)
 #endif //  COPASI_AUTOLAYOUT
 {
 
@@ -208,6 +210,16 @@ void CQNewMainWindow::createActions()
   this->mpStopLayoutAction->setEnabled(true);
   this->mpStopLayoutAction->setToolTip("Run Spring Layout Algorithm");
   connect(this->mpStopLayoutAction, SIGNAL(triggered()), this, SLOT(slotRunSpringLayout()));
+
+  mpRandomizeLayout = new QAction(CQIconResource::icon(CQIconResource::roll), tr("Randomize Layout"), this);
+  mpRandomizeLayout->setToolTip("Randomize current Layout");
+  mpRandomizeLayout->setShortcut(Qt::CTRL + Qt::Key_F5);
+  connect(this->mpRandomizeLayout, SIGNAL(triggered()), this, SLOT(slotRunRandomizeLayout()));
+
+  mpCalculateDimensions = new QAction(tr("&Calculate Dimensions"), this);
+  mpCalculateDimensions->setToolTip("Calculates Dimensions of this Layout.");
+  connect(this->mpCalculateDimensions, SIGNAL(triggered()), this, SLOT(slotCalculateDimensions()));
+
 #endif // COPASI_AUTOLAYOUT
 }
 
@@ -219,6 +231,15 @@ void CQNewMainWindow::createMenus()
   mpFileMenu->addAction(this->mpScreenshotAct);
   mpFileMenu->addSeparator();
   mpFileMenu->addAction(mpCloseAct);
+
+#ifdef COPASI_AUTOLAYOUT
+
+  mpLayoutMenu = menuBar()->addMenu(tr("&Layout"));
+  mpLayoutMenu->addAction(mpStopLayoutAction);
+  mpLayoutMenu->addAction(mpRandomizeLayout);
+  mpLayoutMenu->addSeparator();
+  mpLayoutMenu->addAction(mpCalculateDimensions);
+#endif
 
   // play menu
   mpPlayMenu = menuBar()->addMenu(tr("&Play"));
@@ -324,6 +345,7 @@ void CQNewMainWindow::createToolBars()
 #ifdef COPASI_AUTOLAYOUT
   this->mpFileToolBar->addSeparator();
   this->mpFileToolBar->addAction(this->mpStopLayoutAction);
+  this->mpFileToolBar->addAction(this->mpRandomizeLayout);
 #endif // COPASI_AUTOLAYOUT
 
   // add a toolbar for the selection widgets
@@ -1077,12 +1099,15 @@ void CQNewMainWindow::setGraphToolbar()
 void CQNewMainWindow::setAnimationMenu()
 {
   this->mpPlayMenu->menuAction()->setVisible(true);
+  this->mpLayoutMenu->menuAction()->setVisible(false);
+
   this->mpOptionsMenu->menuAction()->setVisible(true);
 }
 
 void CQNewMainWindow::setGraphMenu()
 {
   this->mpPlayMenu->menuAction()->setVisible(false);
+  this->mpLayoutMenu->menuAction()->setVisible(true);
   this->mpOptionsMenu->menuAction()->setVisible(false);
 }
 
@@ -2242,7 +2267,7 @@ void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
             {
               l.finalizeState(); //makes the layout ready for drawing;
               // redraw
-              this->redrawNow();
+              slotCalculateDimensions();
             }
 
           if (pDispatcher->hasPendingEvents())
@@ -2256,7 +2281,7 @@ void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
 
       if (!doUpdate || (i % updateInterval != 0))
         {
-          this->redrawNow();
+          slotCalculateDimensions();
         }
     }
 
@@ -2265,7 +2290,7 @@ void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
   disconnect(this->mpStopLayoutAction, SIGNAL(triggered()), this, SLOT(slotStopClicked()));
   connect(this->mpStopLayoutAction, SIGNAL(triggered()), this, SLOT(slotRunSpringLayout()));
   this->mpStopLayoutAction->setIcon(QPixmap(layout_start_xpm));
-  this->mpStopLayoutAction->setToolTip("run spring layout algorithm");
+  this->mpStopLayoutAction->setToolTip("Run Spring Layout Algorithm");
 }
 
 /**
@@ -2280,6 +2305,108 @@ void CQNewMainWindow::slotStopClicked()
 void CQNewMainWindow::slotRunSpringLayout()
 {
   this->createSpringLayout(1000, 1);
+}
+
+QRectF getBounds(const std::vector<CCopasiSpringLayout::UpdateAction>& updates)
+{
+  QRectF result(1000, 1000, -1000, -1000);
+  std::vector<CCopasiSpringLayout::UpdateAction>::const_iterator it, itEnd = updates.end();
+
+  for (it = updates.begin(); it != itEnd; ++it)
+    {
+      switch (it->mAction)
+        {
+          case CCopasiSpringLayout::UpdateAction::COMPARTMENT_4V:
+          {
+            CLCompartmentGlyph* current = ((CLCompartmentGlyph*)(it->mpTarget));
+            result.setLeft(qMin(result.left(), current->getX()));
+            result.setTop(qMin(result.top(), current->getY()));
+            result.setRight(qMax(result.right(), current->getX() + current->getWidth()));
+            result.setBottom(qMax(result.bottom(), current->getY() + current->getHeight()));
+          }
+          break;
+
+          case CCopasiSpringLayout::UpdateAction::SPECIES_2V:
+          {
+            CLMetabGlyph* current = ((CLMetabGlyph*)(it->mpTarget));
+            result.setLeft(qMin(result.left(), current->getX()));
+            result.setTop(qMin(result.top(), current->getY()));
+            result.setRight(qMax(result.right(), current->getX() + current->getWidth()));
+            result.setBottom(qMax(result.bottom(), current->getY() + current->getHeight()));
+          }
+          break;
+
+          case CCopasiSpringLayout::UpdateAction::REACTION_2V:
+          {
+            CLReactionGlyph* current = ((CLReactionGlyph*)(it->mpTarget));
+            result.setLeft(qMin(result.left(), current->getX()));
+            result.setTop(qMin(result.top(), current->getY()));
+            result.setRight(qMax(result.right(), current->getX() + current->getWidth()));
+            result.setBottom(qMax(result.bottom(), current->getY() + current->getHeight()));
+          }
+          break;
+
+          default:
+            break;
+        };
+    }
+
+  return result;
+}
+
+void CQNewMainWindow::slotCalculateDimensions()
+{
+  if (this->mpCurrentLayout == NULL ||
+      (this->mpCurrentLayout->getListOfCompartmentGlyphs().size() == 0 && this->mpCurrentLayout->getListOfMetaboliteGlyphs().size() == 0))
+    return;
+
+  mpLayoutViewer->getPainter()->calculateAndAssignBounds(mpCurrentLayout);
+  // redraw
+  this->redrawNow();
+}
+
+void CQNewMainWindow::slotRunRandomizeLayout()
+{
+  if (this->mpCurrentLayout == NULL ||
+      (this->mpCurrentLayout->getListOfCompartmentGlyphs().size() == 0 && this->mpCurrentLayout->getListOfMetaboliteGlyphs().size() == 0))
+    return;
+
+  // create the spring layout
+  CCopasiSpringLayout l(this->mpCurrentLayout);
+  l.createVariables();
+
+  CRandom* pRandom = CRandom::createGenerator(CRandom::mt19937, CRandom::getSystemSeed());
+
+  const std::vector<CCopasiSpringLayout::UpdateAction>& updateActions = l.getUpdateActions();
+  std::vector<double>& initialValues = l.getInitialValues();
+
+  std::vector<CCopasiSpringLayout::UpdateAction>::const_iterator it, itEnd = updateActions.end();
+
+  double right = mpCurrentLayout->getDimensions().getWidth();
+  double bottom = mpCurrentLayout->getDimensions().getHeight();
+  double left = right / 2.0;
+  double top = 0.0;//bottom/2.0;
+
+  for (it = updateActions.begin(); it != itEnd; ++it)
+    {
+      switch (it->mAction)
+        {
+          case CCopasiSpringLayout::UpdateAction::COMPARTMENT_4V:
+          case CCopasiSpringLayout::UpdateAction::SPECIES_2V:
+            //case CCopasiSpringLayout::UpdateAction::REACTION_2V:
+            initialValues[it->mIndex1] = left + pRandom->getRandomCC() * right;
+            initialValues[it->mIndex2] = top + pRandom->getRandomCC() * bottom;
+            break;
+
+          default:
+            break;
+        };
+    }
+
+  l.setState(initialValues);
+  l.finalizeState(); //makes the layout ready for drawing;
+
+  slotCalculateDimensions();
 }
 
 #endif // COPASI_AUTOLAYOUT

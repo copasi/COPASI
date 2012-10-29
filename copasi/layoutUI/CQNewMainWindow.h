@@ -9,6 +9,7 @@
 #include <UI/CWindowInterface.h>
 #include <QString>
 #include <QIcon>
+#include <QRectF>
 #include <string>
 #include <vector>
 #include <set>
@@ -243,7 +244,12 @@ protected slots:
    */
   void slotStopClicked();
 
+  void slotRunRandomizeLayout();
+
   void slotRunSpringLayout();
+
+  void slotCalculateDimensions();
+
 #endif // COPASI_AUTOLAYOUT
 
 private:
@@ -261,6 +267,7 @@ private:
   QStackedWidget* mpWidgetStack;
   QMenu *mpFileMenu;
   QMenu *mpPlayMenu;
+  QMenu *mpLayoutMenu;
   QMenu *mpViewMenu;
   QMenu *mpOptionsMenu;
   QMenu *mpWindowMenu;
@@ -344,6 +351,9 @@ private:
   bool mStopLayout;
 
   QAction* mpStopLayoutAction;
+
+  QAction* mpRandomizeLayout;
+  QAction* mpCalculateDimensions;
 
 public:
   void redrawNow();

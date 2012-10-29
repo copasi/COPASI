@@ -56,6 +56,7 @@ public:
     forward,
     skipBackward,
     skipForward,
+    roll,
     // This is the default icon which is empty
     unknown,
     // This must be the last entry to automatically determine the size!

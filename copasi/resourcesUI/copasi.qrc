@@ -42,5 +42,6 @@
     <file>images/media-seek-forward.png</file>
     <file>images/media-skip-backward.png</file>
     <file>images/media-skip-forward.png</file>
+    <file>images/roll.png</file>
   </qresource>
 </RCC>

@@ -55,7 +55,6 @@ CCrossSectionTask::CCrossSectionTask(const CCopasiContainer * pParent):
   mpProblem = new CCrossSectionProblem(this);
   mpMethod = createMethod(CCopasiMethod::deterministic);
   this->add(mpMethod, true);
-
 }
 
 CCrossSectionTask::CCrossSectionTask(const CCrossSectionTask & src,
@@ -109,6 +108,8 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
   CModel* pModel = mpCrossSectionProblem->getModel();
   size_t i;
 
+  // TODO: add event instead of selecting __cutplane
+
   for (i = 0; i < pModel->getEvents().size(); ++i)
     {
       if (pModel->getEvents()[i]->getObjectName() == "__cutplane")
@@ -123,6 +124,7 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
   bool success = mpMethod->isValidProblem(mpProblem);
 
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
+
   if (pParameter != NULL)
     mUpdateMoieties = *pParameter->getValue().pBOOL;
   else
@@ -172,28 +174,27 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
   CompareEndTime = EndTime - 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
 
   mMaxNumCrossings = mpCrossSectionProblem->getCrossingsLimit();
-  
+
   mOutputStartNumCrossings = mpCrossSectionProblem->getOutCrossingsLimit();
-  
-  
+
   output(COutputInterface::BEFORE);
 
   bool flagProceed = true;
   C_FLOAT64 handlerFactor = 100.0 / MaxDuration;
   C_FLOAT64 Percentage = 0;
+
   if (mpCallBack != NULL)
     {
       mpCallBack->setName("performing simulation...");
       C_FLOAT64 hundred = 100;
       mhProgress = mpCallBack->addItem("Completion",
-                                     Percentage,
-                                     &hundred);
+                                       Percentage,
+                                       &hundred);
     }
 
+  mState = TRANSIENT;
+  mNumCrossings = 0;
 
-  mState=TRANSIENT; 
-  mNumCrossings=0;
-  
   try
     {
       do
@@ -205,7 +206,6 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
               Percentage = (*mpCurrentTime - StartTime) * handlerFactor;
               flagProceed &= mpCallBack->progressItem(mhProgress);
             }
-
         }
       while ((*mpCurrentTime < CompareEndTime) && flagProceed);
     }
@@ -227,7 +227,7 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
     }
 
   finish();
-  
+
   return true;
 }
 
@@ -317,6 +317,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
 
                 return true;
               }
+
             break;
 
           case CTrajectoryMethod::FAILURE:
@@ -327,8 +328,9 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
         }
 
       proceed = mpCallBack == NULL || mpCallBack->proceed();
-      if (mState==FINISH)
-        proceed=false;
+
+      if (mState == FINISH)
+        proceed = false;
     }
 
   return proceed;
@@ -340,7 +342,7 @@ void CCrossSectionTask::finish()
   mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
 
   if (mpCallBack != NULL) mpCallBack->finishItem(mhProgress);
-  
+
   output(COutputInterface::AFTER);
 }
 
@@ -357,6 +359,8 @@ bool CCrossSectionTask::restore()
       pModel->setInitialState(pModel->getState());
       pModel->updateInitialValues();
     }
+
+  // TODO: remove event
 
   //reset call back
   mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
@@ -407,40 +411,37 @@ void CCrossSectionTask::EventCallBack(void* pCSTask, CEvent::Type type)
 void CCrossSectionTask::eventCallBack(CEvent::Type type)
 {
   std::cout << "event call back: " << type << std::endl;
-  
+
   //do nothing if the event is not representing a cut plane
   if (type != CEvent::CutPlane)
     return;
-  
+
   //count the crossings
   ++mNumCrossings;
-  
-  //now check if we can transition to the main state
-  if (mState==TRANSIENT)
-  {
-    if (*mpCurrentTime >= mOutputStartTime)
-      mState=MAIN;
-    
-    if (mNumCrossings >= mOutputStartNumCrossings)
-      mState=MAIN;
-    
-    //TODO convergence criterium
-      
-  }
-  
-  if (mState==MAIN)
-  {
-    output(COutputInterface::DURING);
 
-    //TODO store the state, ...
-    
-  }
+  //now check if we can transition to the main state
+  if (mState == TRANSIENT)
+    {
+      if (*mpCurrentTime >= mOutputStartTime)
+        mState = MAIN;
+
+      if (mNumCrossings >= mOutputStartNumCrossings)
+        mState = MAIN;
+
+      //TODO convergence criterium
+    }
+
+  if (mState == MAIN)
+    {
+      output(COutputInterface::DURING);
+
+      //TODO store the state, ...
+    }
 
   //check if the conditions for stopping are met
   //we don't have to check for maximum duration, this is done elsewhere
-  if (mNumCrossings>=mMaxNumCrossings)
-    mState=FINISH;
-  
-  //TODO convergence criterium
+  if (mNumCrossings >= mMaxNumCrossings)
+    mState = FINISH;
 
+  //TODO convergence criterium
 }

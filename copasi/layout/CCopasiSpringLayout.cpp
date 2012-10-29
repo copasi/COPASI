@@ -739,3 +739,8 @@ std::vector<double> CCopasiSpringLayout::getInitialValues()
 {
   return mInitialState;
 }
+
+const std::vector<CCopasiSpringLayout::UpdateAction>& CCopasiSpringLayout::getUpdateActions() const
+{
+  return mUpdateActions;
+}
