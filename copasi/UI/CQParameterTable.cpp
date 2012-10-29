@@ -1,23 +1,6 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQParameterTable.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/16 14:50:28 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <QStringList>
@@ -39,8 +22,8 @@
 #include "copasi/report/CCopasiRootContainer.h"
 
 ParameterTable::ParameterTable(QWidget * parent, const char * name) :
-    QTableWidget(parent),
-    mOldRow(0)
+  QTableWidget(parent),
+  mOldRow(0)
 {
   setObjectName(name);
 
@@ -211,7 +194,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
   mLine2Index.clear();
 
   this->setRowCount(0);
-  this->setRowCount((int)(imax*2));
+  this->setRowCount((int)(imax * 2));
 
   for (i = 0; i < imax; ++i)
     {
@@ -330,7 +313,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
                   QComboBox * pComboBox = new QComboBox();
                   pComboBox->addItems(qsl);
                   pComboBox->setBackgroundColor(color);
-                  pComboBox->setCurrentText(FROM_UTF8((*metabNames)[0]));
+                  pComboBox->setCurrentText(FROM_UTF8(unQuote((*metabNames)[0])));
 
                   setCellWidget((int) rowCounter, 3, pComboBox);
                 }
@@ -455,7 +438,6 @@ void ParameterTable::slotCellChanged(int row, int col)
       if (item(row, col)->flags() | Qt::ItemIsUserCheckable)
         {
           emit parameterStatusChanged((int) i, (item(row, col)->checkState() == Qt::Unchecked) ? false : true);
-
         }
 
       return;
@@ -469,7 +451,7 @@ void ParameterTable::slotCellChanged(int row, int col)
 //**************************************************************************
 #ifdef XXXX
 ComboItem::ComboItem(Q3Table *t, EditType et, QColor c, const QStringList & sl)
-    : ColorTableItem(t, et, c, "Yes"), cb(0)
+  : ColorTableItem(t, et, c, "Yes"), cb(0)
 {
   // we do not want this item to be replaced
   setReplaceable(false);
@@ -504,7 +486,7 @@ void ComboItem::setText(const QString &s)
 //**********************************************************************
 
 ColorTableItem::ColorTableItem(QColor color, const QString txt) :
-    QTableWidgetItem(txt)
+  QTableWidgetItem(txt)
 {
   setColor(color);
 }
@@ -522,7 +504,7 @@ void ColorTableItem::setColor(QColor color)
 //**********************************************************************
 #ifdef XXXX
 ColorCheckTableItem::ColorCheckTableItem(Q3Table *t, QColor c, const QString txt)
-    : Q3CheckTableItem(t, txt)
+  : Q3CheckTableItem(t, txt)
 {
   color = c;
 }

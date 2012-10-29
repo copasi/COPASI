@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
-//   $Revision: 1.35 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/10 16:03:10 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -38,7 +30,7 @@
 #include "copasi/report/CCopasiRootContainer.h"
 
 ParameterTable::ParameterTable(QWidget * parent, const char * name)
-    : Q3Table(parent, name),
+  : Q3Table(parent, name),
     mOldRow(0)
 {
   initTable();
@@ -219,7 +211,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
   mLine2Index.clear();
 
   setNumRows(0); // this is a hack to clear the table.
-  setNumRows((int)(imax*2));
+  setNumRows((int)(imax * 2));
 
   for (i = 0; i < imax; ++i)
     {
@@ -241,24 +233,31 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
           case CFunctionParameter::SUBSTRATE:
             color = subsColor;
             break;
+
           case CFunctionParameter::PRODUCT:
             color = prodColor;
             break;
+
           case CFunctionParameter::MODIFIER:
             color = modiColor;
             break;
+
           case CFunctionParameter::PARAMETER:
             color = paraColor;
             break;
+
           case CFunctionParameter::VOLUME:
             color = volColor;
             break;
+
           case CFunctionParameter::TIME:
             color = timeColor;
             break;
+
           case CFunctionParameter::VARIABLE:
             color = QColor(255, 20, 20);
             break;
+
           default :
             qUsage = "unknown";
             color = QColor(255, 20, 20);
@@ -341,7 +340,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
                   //combo = new ComboItem(this, QTableItem::WhenCurrent, color, qsl);
                   combo = new Q3ComboTableItem(this, qsl);
                   //combo->setText(FROM_UTF8((*metabNames)[0]));
-                  combo->setCurrentItem(FROM_UTF8((*metabNames)[0]));
+                  combo->setCurrentItem(FROM_UTF8(unQuote((*metabNames)[0])));
                   setItem((int) rowCounter, 3, combo);
                 }
             }
@@ -478,7 +477,7 @@ void ParameterTable::slotCellChanged(int row, int col)
 //**************************************************************************
 
 ComboItem::ComboItem(Q3Table *t, EditType et, QColor c, const QStringList & sl)
-    : ColorTableItem(t, et, c, "Yes"), cb(0)
+  : ColorTableItem(t, et, c, "Yes"), cb(0)
 {
   // we do not want this item to be replaced
   setReplaceable(false);
@@ -513,7 +512,7 @@ void ComboItem::setText(const QString &s)
 //**********************************************************************
 
 ColorTableItem::ColorTableItem(Q3Table *t, EditType et, QColor c, const QString txt)
-    : Q3TableItem(t, et, txt)
+  : Q3TableItem(t, et, txt)
 {
   color = c;
 }
@@ -532,7 +531,7 @@ void ColorTableItem::paint(QPainter *p, const QColorGroup &cg,
 //**********************************************************************
 
 ColorCheckTableItem::ColorCheckTableItem(Q3Table *t, QColor c, const QString txt)
-    : Q3CheckTableItem(t, txt)
+  : Q3CheckTableItem(t, txt)
 {
   color = c;
 }

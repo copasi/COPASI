@@ -481,7 +481,7 @@ void CChemEqInterface::addModifier(const std::string & name)
       mModifierNames.push_back(Modifier.first);
       mModifierMult.push_back(1.0);
       mModifierCompartments.push_back(Modifier.second);
-      mModifierDisplayNames.push_back(name);
+      mModifierDisplayNames.push_back(quote(name));
     }
 }
 
