@@ -96,14 +96,15 @@ const std::vector<std::string> ParameterTable::getListOfAllMetabNames(const CMod
 
   for (sourceIt = lll.begin(); sourceIt != sourceItEnd; ++sourceIt)
     {
+      std::string Source = unQuote(*sourceIt);
       searchItEnd = ret.end();
 
       for (searchIt = ret.begin(); searchIt != searchItEnd; ++searchIt)
-        if (*searchIt == *sourceIt)
+        if (*searchIt == Source)
           break;
 
       if (searchIt == searchItEnd) //that means new metab name is not in model yet
-        ret.push_back(*sourceIt);
+        ret.push_back(Source);
     }
 
   lll = ri.getListOfMetabs(CFunctionParameter::PRODUCT);
@@ -111,14 +112,15 @@ const std::vector<std::string> ParameterTable::getListOfAllMetabNames(const CMod
 
   for (sourceIt = lll.begin(); sourceIt != sourceItEnd; ++sourceIt)
     {
+      std::string Source = unQuote(*sourceIt);
       searchItEnd = ret.end();
 
       for (searchIt = ret.begin(); searchIt != searchItEnd; ++searchIt)
-        if (*searchIt == *sourceIt)
+        if (*searchIt == Source)
           break;
 
       if (searchIt == searchItEnd) //that means new metab name is not in model yet
-        ret.push_back(*sourceIt);
+        ret.push_back(Source);
     }
 
   lll = ri.getListOfMetabs(CFunctionParameter::MODIFIER);
@@ -126,14 +128,15 @@ const std::vector<std::string> ParameterTable::getListOfAllMetabNames(const CMod
 
   for (sourceIt = lll.begin(); sourceIt != sourceItEnd; ++sourceIt)
     {
+      std::string Source = unQuote(*sourceIt);
       searchItEnd = ret.end();
 
       for (searchIt = ret.begin(); searchIt != searchItEnd; ++searchIt)
-        if (*searchIt == *sourceIt)
+        if (*searchIt == Source)
           break;
 
       if (searchIt == searchItEnd) //that means new metab name is not in model yet
-        ret.push_back(*sourceIt);
+        ret.push_back(Source);
     }
 
   return ret;
