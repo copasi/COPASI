@@ -81,19 +81,19 @@ CQPlayerControlWidget::CQPlayerControlWidget(QWidget* pParent)
 
 void CQPlayerControlWidget::createActions()
 {
-  this->mpPlayAction = new QAction(CQIconResource::icon(CQIconResource::play), "play", this);
+  this->mpPlayAction = new QAction(CQIconResource::icon(CQIconResource::play), "Play", this);
   connect(this->mpPlayAction, SIGNAL(triggered()), this, SLOT(slot_play_clicked()));
-  this->mpPauseAction = new QAction(CQIconResource::icon(CQIconResource::pause), "pause", this);
+  this->mpPauseAction = new QAction(CQIconResource::icon(CQIconResource::pause), "Pause", this);
   connect(this->mpPauseAction, SIGNAL(triggered()), this, SLOT(slot_pause_clicked()));
-  this->mpStopAction = new QAction(CQIconResource::icon(CQIconResource::stop), "stop", this);
+  this->mpStopAction = new QAction(CQIconResource::icon(CQIconResource::stop), "Stop", this);
   connect(this->mpStopAction, SIGNAL(triggered()), this, SLOT(slot_stop_clicked()));
-  this->mpForwardAction = new QAction(CQIconResource::icon(CQIconResource::skipForward), "forward", this);
+  this->mpForwardAction = new QAction(CQIconResource::icon(CQIconResource::skipForward), "Forward", this);
   connect(this->mpForwardAction, SIGNAL(triggered()), this, SLOT(slot_forward_clicked()));
-  this->mpBackwardAction = new QAction(CQIconResource::icon(CQIconResource::skipBackward), "backward", this);
+  this->mpBackwardAction = new QAction(CQIconResource::icon(CQIconResource::skipBackward), "Backward", this);
   connect(this->mpBackwardAction, SIGNAL(triggered()), this, SLOT(slot_backward_clicked()));
-  this->mpStepForwardAction = new QAction(CQIconResource::icon(CQIconResource::forward), "step forward", this);
+  this->mpStepForwardAction = new QAction(CQIconResource::icon(CQIconResource::forward), "Step Forward", this);
   connect(this->mpStepForwardAction, SIGNAL(triggered()), this, SLOT(slot_step_forward_clicked()));
-  this->mpStepBackwardAction = new QAction(CQIconResource::icon(CQIconResource::backward), "step backward", this);
+  this->mpStepBackwardAction = new QAction(CQIconResource::icon(CQIconResource::backward), "Step Backward", this);
   connect(this->mpStepBackwardAction, SIGNAL(triggered()), this, SLOT(slot_step_backward_clicked()));
 }
 
