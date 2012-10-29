@@ -74,7 +74,7 @@ public:
         CMetab * pMetab = dynamic_cast< CMetab * >(me);
 
         if (pMetab != NULL && framework == 0)
-          InitiaValueChangeAllowed &= pMetab->isInitialConcentrationChangeAllowed();
+          InitiaValueChangeAllowed &= static_cast<const bool>(pMetab->isInitialConcentrationChangeAllowed());
 
         switch (me->getStatus())
           {
