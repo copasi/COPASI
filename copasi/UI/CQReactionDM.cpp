@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReactionDM.cpp,v $
-//   $Revision: 1.19 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/16 18:13:46 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -30,8 +22,8 @@
 #include "qtUtilities.h"
 
 CQReactionDM::CQReactionDM(QObject *parent):
-    CQBaseDataModel(parent),
-    mNewEquation()
+  CQBaseDataModel(parent),
+  mNewEquation()
 {}
 
 int CQReactionDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
@@ -73,8 +65,10 @@ QVariant CQReactionDM::data(const QModelIndex &index, int role) const
             {
               case COL_ROW_NUMBER:
                 return QVariant(QString(""));
+
               case COL_NAME_REACTIONS:
                 return QVariant(QString("New Reaction"));
+
               default:
                 return QVariant(QString(""));
             }
@@ -133,12 +127,16 @@ QVariant CQReactionDM::headerData(int section, Qt::Orientation orientation,
         {
           case COL_ROW_NUMBER:
             return QVariant(QString("#"));
+
           case COL_NAME_REACTIONS:
             return QVariant(QString("Name"));
+
           case COL_EQUATION:
-            return QVariant(QString("Equation"));
+            return QVariant(QString("Reaction"));
+
           case COL_RATE_LAW:
             return QVariant(QString("Rate Law"));
+
           case COL_FLUX:
           {
             const CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
@@ -155,6 +153,7 @@ QVariant CQReactionDM::headerData(int section, Qt::Orientation orientation,
 
             return QVariant("Flux" + RateUnits);
           }
+
           case COL_PARTICLE_FLUX:
           {
             const CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
@@ -171,6 +170,7 @@ QVariant CQReactionDM::headerData(int section, Qt::Orientation orientation,
 
             return QVariant("Flux" + FrequencyUnits);
           }
+
           default:
             return QVariant();
         }
