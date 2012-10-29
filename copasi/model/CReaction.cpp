@@ -332,7 +332,7 @@ void CReaction::addParameterMapping(const size_t & index, const std::string & ke
   mMetabKeyMap[index].push_back(key);
 }
 
-void CReaction::setParameterMapping(const std::string & parameterName, const std::string & key)
+bool CReaction::setParameterMapping(const std::string & parameterName, const std::string & key)
 {
   if (!mpFunction) fatalError();
 
@@ -341,11 +341,13 @@ void CReaction::setParameterMapping(const std::string & parameterName, const std
   index = mMap.findParameterByName(parameterName, type);
 
   if (C_INVALID_INDEX == index)
-    return;
+    return false;
 
   if (type != CFunctionParameter::FLOAT64) fatalError();
 
   mMetabKeyMap[index][0] = key;
+
+  return true;
 }
 
 void CReaction::addParameterMapping(const std::string & parameterName, const std::string & key)

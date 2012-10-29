@@ -1156,20 +1156,17 @@ const CVector<size_t> & CModel::getMetabolitePermutation() const
 /**
  *        Returns the index of the metab
  */
-size_t CModel::findMetabByName(const std::string & Target) const
+size_t CModel::findMetabByName(const std::string & name) const
 {
-  size_t i, s;
-  std::string name;
+  size_t i, imax = mMetabolites.size();
+  CCopasiVector< CMetab >::const_iterator Target = mMetabolites.begin();
 
-  s = mMetabolites.size();
+  std::string Name = unQuote(name);
 
-  for (i = 0; i < s; i++)
-    {
-      name = mMetabolites[i]->getObjectName();
-
-      if (name == Target)
-        return i;
-    }
+  for (i = 0; i < imax; i++, Target++)
+    if (*Target &&
+        ((*Target)->getObjectName() == name ||
+         (*Target)->getObjectName() == Name)) return i;
 
   return C_INVALID_INDEX;
 }
@@ -3130,12 +3127,48 @@ bool CModel::convert2NonReversible()
                 switch (fp->getUsage())
                   {
                     case CFunctionParameter::SUBSTRATE:
-                    case CFunctionParameter::PRODUCT:
-                    case CFunctionParameter::MODIFIER:
                       reac1->setParameterMapping(fp->getObjectName(),
                                                  reac0->getParameterMapping(fp->getObjectName())[0]);
+
+                      // It is possible (see Bug 1830) that the split function may have additional modifier.
+                      // This will happen e.g. if the product is referenced in the forward part of the reaction.
+                      if (reac2->setParameterMapping(fp->getObjectName(),
+                                                     reac0->getParameterMapping(fp->getObjectName())[0]))
+                        {
+                          reac2->addModifier(reac0->getParameterMapping(fp->getObjectName())[0]);
+                        }
+
+                      break;
+
+                    case CFunctionParameter::PRODUCT:
+
+                      // It is possible (see Bug 1830) that the split function may have additional modifier.
+                      // This will happen e.g. if the product is referenced in the forward part of the reaction.
+                      if (reac1->setParameterMapping(fp->getObjectName(),
+                                                     reac0->getParameterMapping(fp->getObjectName())[0]))
+                        {
+                          reac1->addModifier(reac0->getParameterMapping(fp->getObjectName())[0]);
+                        }
+
                       reac2->setParameterMapping(fp->getObjectName(),
                                                  reac0->getParameterMapping(fp->getObjectName())[0]);
+                      break;
+
+                    case CFunctionParameter::MODIFIER:
+                      if (reac1->setParameterMapping(fp->getObjectName(),
+                                                     reac0->getParameterMapping(fp->getObjectName())[0]))
+                        {
+                          // Add the modifier
+                          reac1->addModifier(reac0->getParameterMapping(fp->getObjectName())[0]);
+                        }
+
+                      if (reac2->setParameterMapping(fp->getObjectName(),
+                                                     reac0->getParameterMapping(fp->getObjectName())[0]))
+                        {
+                          // Add the modifier
+                          reac2->addModifier(reac0->getParameterMapping(fp->getObjectName())[0]);
+                        }
+
                       break;
 
                     case CFunctionParameter::PARAMETER:
@@ -4340,10 +4373,8 @@ const CVector< CMathTrigger::CRootFinder * > & CModel::getRootFinders() const
   return mpMathModel->getRootFinders();
 }
 
-const CMathModel* CModel::getMathModel() const 
+const CMathModel* CModel::getMathModel() const
 {return mpMathModel;}
 
 CMathModel* CModel::getMathModel()
 {return mpMathModel;}
-
-
