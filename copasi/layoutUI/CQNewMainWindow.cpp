@@ -833,32 +833,57 @@ void CQNewMainWindow::slotScreenshot()
 {
   CQGLLayoutPainter* pPainter = this->mpLayoutViewer->getPainter();
 
-  if (pPainter != NULL)
+  if (pPainter == NULL)
+    return;
+
+  double layoutX = pPainter->minX();
+  double layoutY = pPainter->minY();
+  double layoutWidth = pPainter->maxX() - layoutX;
+  double layoutHeight = pPainter->maxY() - layoutY;
+  double x = pPainter->getCurrentPositionX();
+  double y = pPainter->getCurrentPositionY();
+  double width = pPainter->getCurrentWidth();
+  double height = pPainter->getCurrentHeight();
+#ifndef USE_SCREENSHOT_OPTIONS
+
+  QString fileName = CopasiFileDialog::getSaveFileName(this, QString("Export to"), "", QString("PNG (*.png);;All files (*)"));
+
+  if (!fileName.isEmpty())
+    export_bitmap(fileName, 2.0);
+
+#else
+  CQScreenshotOptionsDialog* pDialog = new CQScreenshotOptionsDialog(layoutX, layoutY, layoutWidth, layoutHeight,
+      x, y, width, height, pPainter->width() , pPainter->height(), -1, this);
+
+  if (pDialog->exec() == QDialog::Accepted)
     {
-      double layoutX = pPainter->minX();
-      double layoutY = pPainter->minY();
-      double layoutWidth = pPainter->maxX() - layoutX;
-      double layoutHeight = pPainter->maxY() - layoutY;
-      double x = pPainter->getCurrentPositionX();
-      double y = pPainter->getCurrentPositionY();
-      double width = pPainter->getCurrentWidth();
-      double height = pPainter->getCurrentHeight();
-      CQScreenshotOptionsDialog* pDialog = new CQScreenshotOptionsDialog(layoutX, layoutY, layoutWidth, layoutHeight,
-          x, y, width, height, pPainter->width() , pPainter->height(), -1, this);
 
-      if (pDialog->exec() == QDialog::Accepted)
+      // ask for the filename
+      QString fileName = CopasiFileDialog::getSaveFileName(this, QString("Export to"), "", QString("PNG (*.png);;All files (*)"));
+
+      if (!fileName.isEmpty())
         {
-          // ask for the filename
-          QString fileName = CopasiFileDialog::getSaveFileName(this, QString("Export to"), "", QString("PNG (*.png);;All files (*)"));
-
-          if (!fileName.isEmpty())
-            {
-              export_bitmap(fileName, pDialog->getX(), pDialog->getY(), pDialog->getWidth(), pDialog->getHeight(), pDialog->getImageWidth(), pDialog->getImageHeight(), pDialog->isSetDrawSelectionDecoration());
-            }
+          export_bitmap(fileName, pDialog->getX(), pDialog->getY(), pDialog->getWidth(), pDialog->getHeight(), pDialog->getImageWidth(), pDialog->getImageHeight(), pDialog->isSetDrawSelectionDecoration());
         }
-
-      delete pDialog;
     }
+
+  delete pDialog;
+#endif
+}
+
+void CQNewMainWindow::export_bitmap(const QString& filename, double scale /*= 4.0*/)
+{
+  CQGLLayoutPainter* pPainter = this->mpLayoutViewer->getPainter();
+
+  if (pPainter == NULL)
+    return;
+
+  double layoutX = pPainter->minX();
+  double layoutY = pPainter->minY();
+  double layoutWidth = pPainter->maxX() - layoutX;
+  double layoutHeight = pPainter->maxY() - layoutY;
+
+  export_bitmap(filename, layoutX, layoutY, layoutWidth, layoutHeight, layoutWidth * scale, layoutHeight * scale, false);
 }
 
 /**

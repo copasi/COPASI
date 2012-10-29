@@ -124,6 +124,11 @@ private slots:
   void slotScreenshot();
 
   /**
+   * exports a bit map of the currently displayed image with the given scale.
+   */
+  void export_bitmap(const QString& filename, double scale = 4.0);
+
+  /**
    * Exports a bitmap of the given size to
    * the file with the given name.
    */
