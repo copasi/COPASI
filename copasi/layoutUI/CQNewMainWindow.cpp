@@ -160,6 +160,7 @@ void CQNewMainWindow::createActions()
 
   mpSwitchModeAct = new QAction(mAnimationIcon, tr("Animation Mode"), this);
   mpSwitchModeAct->setStatusTip(tr("Switch to animation mode."));
+  mpSwitchModeAct->setShortcut(Qt::CTRL + Qt::Key_M);
   mpSwitchModeAct->setEnabled(true);
   connect(mpSwitchModeAct, SIGNAL(triggered()), this, SLOT(switchMode()));
   mpRevertCurveAct = new QAction(QPixmap(revert_curve_xpm), tr("Revert curve"), this);
@@ -184,22 +185,22 @@ void CQNewMainWindow::createActions()
   connect(this->mpLoadDataAct, SIGNAL(activated()), this->mpAnimationWindow, SLOT(loadData()));
 
   mpRectangularShape = new QAction("Rectangle", this);
-  mpRectangularShape->setShortcut(Qt::CTRL + Qt::Key_R);
+  //mpRectangularShape->setShortcut(Qt::CTRL + Qt::Key_R);
   mpRectangularShape->setStatusTip("Show labels as rectangles");
   connect(mpRectangularShape, SIGNAL(activated()), this->mpAnimationWindow, SLOT(mapLabelsToRectangles()));
 
   mpCircularShape = new QAction("Circle", this);
-  mpCircularShape->setShortcut(Qt::CTRL + Qt::Key_C);
+  //mpCircularShape->setShortcut(Qt::CTRL + Qt::Key_C);
   mpCircularShape->setStatusTip("Show labels as circles");
   connect(mpCircularShape, SIGNAL(activated()), this->mpAnimationWindow, SLOT(mapLabelsToCircles()));
 
   mpMimaNodeSizes = new QAction("Set Min/Max Node Sizes", this);
-  mpMimaNodeSizes->setShortcut(Qt::CTRL + Qt::Key_M);
+  //mpMimaNodeSizes->setShortcut(Qt::CTRL + Qt::Key_M);
   mpMimaNodeSizes->setToolTip("Change Min/Max for node sizes within animation");
   connect(mpMimaNodeSizes, SIGNAL(activated()), this->mpAnimationWindow, SLOT(changeMinMaxNodeSizes()));
 
   mpSFontSize = new QAction("Set Font Size", this);
-  mpSFontSize->setShortcut(Qt::CTRL + Qt::Key_F);
+  //mpSFontSize->setShortcut(Qt::CTRL + Qt::Key_F);
   mpSFontSize->setToolTip("Change the font size of the node labels in the graph view");
   connect(mpSFontSize, SIGNAL(activated()), this->mpAnimationWindow, SLOT(changeFontSize()));
 #ifdef COPASI_AUTOLAYOUT
