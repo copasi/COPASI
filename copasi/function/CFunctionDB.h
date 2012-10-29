@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.h,v $
-//   $Revision: 1.57 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/16 18:06:53 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -121,7 +113,7 @@ public:
    * Add the function to the database, if necessary adapt the name so it
    * is unique.
    */
-  void addAndAdaptName(CFunction * pFunction);
+  CFunction * addAndAdaptName(CFunction * pFunction);
 
 #ifdef FFFF
   /**

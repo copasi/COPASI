@@ -3048,9 +3048,9 @@ bool CModel::convert2NonReversible()
                 continue;
               }
 
-            if (tmp.first) CCopasiRootContainer::getFunctionList()->addAndAdaptName(tmp.first);
+            tmp.first = CCopasiRootContainer::getFunctionList()->addAndAdaptName(tmp.first);
 
-            if (tmp.second) CCopasiRootContainer::getFunctionList()->addAndAdaptName(tmp.second);
+            tmp.second = CCopasiRootContainer::getFunctionList()->addAndAdaptName(tmp.second);
           }
 
         size_t i, imax;
