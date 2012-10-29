@@ -103,6 +103,9 @@
 
 #ifdef COPASI_NONLIN_DYN
 #include "CQCrossSectionTaskWidget.h"
+#endif
+
+#ifdef COPASI_NONLIN_DYN_OSCILLATION
 #include "CQOscillationTaskWidget.h"
 #endif
 
@@ -194,6 +197,8 @@ ListViews::ListViews(QWidget *parent, const char *name):
   tssaResultWidget(NULL),
 #ifdef COPASI_NONLIN_DYN
   crossSectionTaskWidget(NULL),
+#endif
+#ifdef COPASI_NONLIN_DYN_OSCILLATION
   oscillationTaskWidget(NULL),
 #endif
 #ifdef COPASI_DEBUG
@@ -473,6 +478,9 @@ void ListViews::ConstructNodeWidgets()
 
   crossSectionTaskWidget->hide();
 
+#endif
+#ifdef COPASI_NONLIN_DYN_OSCILLATION
+
   if (!oscillationTaskWidget) oscillationTaskWidget = new CQOscillationTaskWidget(this);
 
   oscillationTaskWidget->hide();
@@ -679,6 +687,8 @@ CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
       case 28:
         return crossSectionTaskWidget;
         break;
+#endif
+#ifdef COPASI_NONLIN_DYN_OSCILLATION
 
       case 29:
         return oscillationTaskWidget;

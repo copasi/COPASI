@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-//   $Revision: 1.179 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/09 21:32:15 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -75,6 +67,8 @@ class CQTSSAResultSubWidget;
 
 #ifdef COPASI_NONLIN_DYN
 class CQCrossSectionTaskWidget;
+#endif
+#ifdef COPASI_NONLIN_DYN_OSCILLATION
 class CQOscillationTaskWidget;
 #endif
 
@@ -134,7 +128,6 @@ public:
                    , MIRIAM
                    , LAYOUT
                    , PARAMETERSET
-
                   };
 
   void setDataModel(DataModelGUI* pDM);
@@ -164,7 +157,6 @@ public:
 
 signals:
   void signalFolderChanged(const QModelIndex & index);
-
 
 private:
   CopasiWidget* findWidgetFromIndex(const QModelIndex & index) const;
@@ -243,6 +235,8 @@ private:
 
 #ifdef COPASI_NONLIN_DYN
   CQCrossSectionTaskWidget *crossSectionTaskWidget;
+#endif
+#ifdef COPASI_NONLIN_DYN_OSCILLATION
   CQOscillationTaskWidget *oscillationTaskWidget;
 #endif
 
