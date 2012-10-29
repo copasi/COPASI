@@ -1238,7 +1238,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                       if (tmpObject)
                         {
                           data2 = tmpObject; //we only keep the last scan parameter we find, this is the innermost loop.
-                          logX = pSP->getScanItem(i)->getValue("log").pBOOL;
+                          logX = *(pSP->getScanItem(i)->getValue("log").pBOOL);
                         }
                     }
                 }
