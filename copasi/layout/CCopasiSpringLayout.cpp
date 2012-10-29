@@ -735,7 +735,7 @@ double CCopasiSpringLayout::getPotential()
   return tmp;
 }
 
-std::vector<double> CCopasiSpringLayout::getInitialValues()
+const std::vector<double> & CCopasiSpringLayout::getInitialValues() const
 {
   return mInitialState;
 }

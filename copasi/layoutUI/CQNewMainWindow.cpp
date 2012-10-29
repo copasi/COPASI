@@ -2378,7 +2378,7 @@ void CQNewMainWindow::slotRunRandomizeLayout()
   CRandom* pRandom = CRandom::createGenerator(CRandom::mt19937, CRandom::getSystemSeed());
 
   const std::vector<CCopasiSpringLayout::UpdateAction>& updateActions = l.getUpdateActions();
-  std::vector<double>& initialValues = l.getInitialValues();
+  std::vector<double> initialValues = l.getInitialValues();
 
   std::vector<CCopasiSpringLayout::UpdateAction>::const_iterator it, itEnd = updateActions.end();
 

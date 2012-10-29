@@ -59,7 +59,7 @@ public:
 //  virtual bool getState(std::vector<double> & vars);
 
   virtual double getPotential();
-  virtual std::vector<double> getInitialValues();
+  virtual const std::vector<double> & getInitialValues() const;
 
   /**
    * if all participants of a reaction are in a single compartment return the compartment
