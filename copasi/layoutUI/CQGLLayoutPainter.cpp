@@ -1287,121 +1287,250 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
 
   // TODO this method of testing if the extension is supported is not very safe, we should check if there is
   // a whitespace character or npos after the position
-  if (std::string(extensionsString).find("GL_EXT_framebuffer_object") != std::string::npos)
+  if (std::string(extensionsString).find("GL_EXT_framebuffer_object") == std::string::npos)
     {
-      // set busy cursor
-      QCursor cursor = this->cursor();
-      this->setCursor(Qt::BusyCursor);
-      // check if the size of the final image is ok.
-      double size = imageWidth * imageHeight * 4;
+      // give an error message that the image is to large
+      CQMessageBox::critical(this, tr("Framebuffers not supported"),
+                             tr("This version of OpenGL does not support the framebuffer extension.\nSorry, can't create the bitmap."));
+      return NULL;
+    }
 
-      // I don't think we should write images that are larger than 500MB
-      if (size < 5e8)
+  // check if the size of the final image is ok.
+  double size = imageWidth * imageHeight * 4;
+
+  // TODO: again this arbitrary limit seems odd to me
+  // I don't think we should write images that are larger than 500MB
+  if (size >= 5e8)
+    {
+      // give an error message that the image is to large
+      CQMessageBox::critical(this, tr("Image too large"),
+                             tr("Sorry, refusing to create images that are larger than 500MB."));
+      return NULL;
+    }
+
+  // set busy cursor
+  QCursor cursor = this->cursor();
+  this->setCursor(Qt::BusyCursor);
+
+  // if draw selection is false, we first have to store the selection somewhere
+  // reset the current selection
+  std::set<CLGraphicalObject*> selection;
+
+  if (!drawSelection)
+    {
+      selection = this->getSelection();
+    }
+
+  //
+  size /= 4;
+  // if the image size is larger than a certain size, we have to subdivide the drawing into smaller bits.
+  GLint chunk_size = 0;
+  glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &chunk_size);
+
+  chunk_size /= 8;
+
+  if (chunk_size > 0)
+    {
+      // create the framebuffer object, the render buffer objects and bind them
+      GLuint fboName = 0;
+      GLuint blitFBOName = 0;
+      GLuint* rbuffers = NULL;
+      GLuint* multisampleBuffers = NULL;
+      bool multisample_supported = false;
+      GLint samples = 0;
+
+      if (std::string(extensionsString).find("GL_EXT_framebuffer_multisample") != std::string::npos)
         {
-          // if draw selection is false, we first have to store the selection somewhere
-          // reset the current selection
-          std::set<CLGraphicalObject*> selection;
+          // enable after the bugs have been fixed
+          multisample_supported = true;
+          // check how many samples we can use
+          glGetIntegerv(GL_MAX_SAMPLES_EXT, &samples);
+          // we don't want to do more than 4x AA
+          samples = (samples > 4) ? 4 : samples;
+        }
 
-          if (!drawSelection)
+      if (!multisample_supported || samples < 2)
+        {
+          CQMessageBox::warning(this, tr("Multisampling unsupported"),
+                                tr("Your implementation does not support multisampling of\nframebuffer objects. The resulting\bitmap might not look very nice."));
+        }
+
+      // if we are not on an apple, we have to initialize the functions
+      // for the OpenGL extensions
+      this->initialize_extension_functions();
+
+      if (imageWidth > (unsigned int)chunk_size || imageHeight > (unsigned int)chunk_size)
+        {
+          double currentX = x;
+          double currentY = y;
+
+          // create storage for the complete image
+          try
             {
-              selection = this->getSelection();
+              pImageData = new GLubyte[imageWidth * imageHeight * 4];
+            }
+          catch (...)
+            {
+              CQMessageBox::critical(this, tr("Error creating image"),
+                                     tr("Could not create image. Maybe you ran out of memory."));
+              // set normal cursor
+              this->setCursor(cursor);
+              return NULL;
             }
 
+          unsigned int xSteps = imageWidth / chunk_size;
+          unsigned int ySteps = imageHeight / chunk_size;
+          unsigned int restX = imageWidth % chunk_size;
+          unsigned int restY = imageHeight % chunk_size;
+          unsigned int i = 0, j = 0;
+          int k;
+          double xModelStep = chunk_size * width / imageWidth;
+          double yModelStep = chunk_size * height / imageHeight;
+          const uchar* pSrc = NULL;
+          uchar* pDst = NULL;
+          // For each step we reposition the gl widget, create the pixmap and add the content to the large pixmap
           //
-          size /= 4;
-          // if the image size is larger than a certain size, we have to subdivide the drawing into smaller bits.
-          GLint chunk_size = 0;
-          glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &chunk_size);
+          GLubyte* pTmpData = NULL;
+          bool success = true;
 
-          chunk_size /= 8;
-
-          if (chunk_size > 0)
+          for (i = 0; i < ySteps && success; ++i)
             {
-              // create the framebuffer object, the render buffer objects and bind them
-              GLuint fboName = 0;
-              GLuint blitFBOName = 0;
-              GLuint* rbuffers = NULL;
-              GLuint* multisampleBuffers = NULL;
-              bool multisample_supported = false;
-              GLint samples = 0;
+              currentX = x;
 
-              if (std::string(extensionsString).find("GL_EXT_framebuffer_multisample") != std::string::npos)
+              for (j = 0; j < xSteps && success; ++j)
                 {
-                  // enable after the bugs have been fixed
-                  multisample_supported = true;
-                  // check how many samples we can use
-                  glGetIntegerv(GL_MAX_SAMPLES_EXT, &samples);
-                  // we don't want to do more than 4x AA
-                  samples = (samples > 4) ? 4 : samples;
-                }
+                  success = this->draw_bitmap(currentX, currentY, xModelStep, yModelStep, chunk_size, chunk_size, fboName, blitFBOName, &rbuffers, &multisampleBuffers, &pTmpData, samples);
 
-              if (!multisample_supported || samples < 2)
-                {
-                  CQMessageBox::warning(this, tr("Multisampling unsupported"),
-                                        tr("Your implementation does not support multisampling of\nframebuffer objects. The resulting\bitmap might not look very nice."));
-                }
-
-              // if we are not on an apple, we have to initialize the functions
-              // for the OpenGL extensions
-              this->initialize_extension_functions();
-
-              if (imageWidth > (unsigned int)chunk_size || imageHeight > (unsigned int)chunk_size)
-                {
-                  double currentX = x;
-                  double currentY = y;
-
-                  // create storage for the complete image
-                  try
+                  if (success)
                     {
-                      pImageData = new GLubyte[imageWidth * imageHeight * 4];
-                    }
-                  catch (...)
-                    {
-                      CQMessageBox::critical(this, tr("Error creating image"),
-                                             tr("Could not create image. Maybe you ran out of memory."));
-                      // set normal cursor
-                      this->setCursor(cursor);
-                      return NULL;
-                    }
-
-                  unsigned int xSteps = imageWidth / chunk_size;
-                  unsigned int ySteps = imageHeight / chunk_size;
-                  unsigned int restX = imageWidth % chunk_size;
-                  unsigned int restY = imageHeight % chunk_size;
-                  unsigned int i = 0, j = 0;
-                  int k;
-                  double xModelStep = chunk_size * width / imageWidth;
-                  double yModelStep = chunk_size * height / imageHeight;
-                  const uchar* pSrc = NULL;
-                  uchar* pDst = NULL;
-                  // For each step we reposition the gl widget, create the pixmap and add the content to the large pixmap
-                  //
-                  GLubyte* pTmpData = NULL;
-                  bool success = true;
-
-                  for (i = 0; i < ySteps && success; ++i)
-                    {
-                      currentX = x;
-
-                      for (j = 0; j < xSteps && success; ++j)
+                      for (k = 0; k < chunk_size; ++k)
                         {
-                          success = this->draw_bitmap(currentX, currentY, xModelStep, yModelStep, chunk_size, chunk_size, fboName, blitFBOName, &rbuffers, &multisampleBuffers, &pTmpData, samples);
-
-                          if (success)
-                            {
-                              for (k = 0; k < chunk_size; ++k)
-                                {
-                                  // copy the data
-                                  pSrc = pTmpData + k * chunk_size * 4;
-                                  pDst = pImageData + (i * chunk_size + k) * imageWidth * 4 + j * chunk_size * 4;
-                                  memcpy(pDst, pSrc, 4 * chunk_size);
-                                }
-                            }
-
-                          currentX += xModelStep;
+                          // copy the data
+                          pSrc = pTmpData + k * chunk_size * 4;
+                          pDst = pImageData + (i * chunk_size + k) * imageWidth * 4 + j * chunk_size * 4;
+                          memcpy(pDst, pSrc, 4 * chunk_size);
                         }
+                    }
 
-                      currentY += yModelStep;
+                  currentX += xModelStep;
+                }
+
+              currentY += yModelStep;
+            }
+
+          // delete the current render buffer
+          this->destroy_buffers(fboName, rbuffers, blitFBOName, multisampleBuffers);
+
+          if (rbuffers != NULL)
+            {
+              delete[] rbuffers;
+              rbuffers = NULL;
+            }
+
+          if (multisampleBuffers != NULL)
+            {
+              delete[] multisampleBuffers;
+              multisampleBuffers = NULL;
+            }
+
+          // check if there are some pixels left at the right edge
+          if (success && restX != 0)
+            {
+              double tmpWidth = restX * width / imageWidth;
+              // go back to the top
+              currentY = y;
+
+              for (i = 0; i < ySteps && success ; ++i)
+                {
+                  success = this->draw_bitmap(currentX, currentY, tmpWidth, yModelStep, restX, chunk_size, fboName, blitFBOName, &rbuffers, &multisampleBuffers, &pTmpData, samples);
+
+                  // if rendering failed, we make sure the buffer for the image
+                  // data is deleted so that it will not be used further down
+                  if (success)
+                    {
+                      for (k = 0; k < chunk_size; ++k)
+                        {
+                          // copy the data
+                          pSrc = pTmpData + k * restX * 4;
+                          pDst = pImageData + (i * chunk_size + k) * imageWidth * 4 + j * chunk_size * 4;
+                          memcpy(pDst, pSrc, 4 * restX);
+                        }
+                    }
+
+                  currentY += yModelStep;
+                }
+
+              // delete the current render buffer
+              this->destroy_buffers(fboName, rbuffers, blitFBOName, multisampleBuffers);
+
+              if (rbuffers != NULL)
+                {
+                  delete[] rbuffers;
+                  rbuffers = NULL;
+                }
+
+              if (multisampleBuffers != NULL)
+                {
+                  delete[] multisampleBuffers;
+                  multisampleBuffers = NULL;
+                }
+            }
+
+          if (success && restY != 0)
+            {
+              // go back to the right
+              double tmpHeight = restY * height / imageHeight;
+              currentX = x;
+
+              for (j = 0; j < xSteps; ++j)
+                {
+                  success = this->draw_bitmap(currentX, currentY, xModelStep, tmpHeight, chunk_size, restY, fboName, blitFBOName, &rbuffers, &multisampleBuffers, &pTmpData, samples);
+
+                  if (success)
+                    {
+                      for (k = 0; k < (int)restY; ++k)
+                        {
+                          // copy the data
+                          pSrc = pTmpData + k * chunk_size * 4;
+                          pDst = pImageData + (i * chunk_size + k) * imageWidth * 4 + j * chunk_size * 4;
+                          memcpy(pDst, pSrc, 4 * chunk_size);
+                        }
+                    }
+
+                  currentX += xModelStep;
+                }
+
+              // delete the current render buffer
+              this->destroy_buffers(fboName, rbuffers, blitFBOName, multisampleBuffers);
+
+              if (rbuffers != NULL)
+                {
+                  delete[] rbuffers;
+                  rbuffers = NULL;
+                }
+
+              if (multisampleBuffers != NULL)
+                {
+                  delete[] multisampleBuffers;
+                  multisampleBuffers = NULL;
+                }
+
+              // check if there are some pixels left
+              if (success && restX != 0)
+                {
+                  double tmpWidth = restX * width / imageWidth;
+                  // set the correct viewport size
+                  success = this->draw_bitmap(currentX, currentY, tmpWidth, tmpHeight, restX, restY, fboName, blitFBOName, &rbuffers, &multisampleBuffers, &pTmpData, samples);
+
+                  if (success)
+                    {
+                      for (k = 0; k < (int)restY; ++k)
+                        {
+                          // copy the data
+                          pSrc = pTmpData + k * restX * 4;
+                          pDst = pImageData + (i * chunk_size + k) * imageWidth * 4 + j * chunk_size * 4;
+                          memcpy(pDst, pSrc, 4 * restX);
+                        }
                     }
 
                   // delete the current render buffer
@@ -1418,201 +1547,72 @@ GLubyte* CQGLLayoutPainter::export_bitmap(double x, double y, double width, doub
                       delete[] multisampleBuffers;
                       multisampleBuffers = NULL;
                     }
-
-                  // check if there are some pixels left at the right edge
-                  if (success && restX != 0)
-                    {
-                      double tmpWidth = restX * width / imageWidth;
-                      // go back to the top
-                      currentY = y;
-
-                      for (i = 0; i < ySteps && success ; ++i)
-                        {
-                          success = this->draw_bitmap(currentX, currentY, tmpWidth, yModelStep, restX, chunk_size, fboName, blitFBOName, &rbuffers, &multisampleBuffers, &pTmpData, samples);
-
-                          // if rendering failed, we make sure the buffer for the image
-                          // data is deleted so that it will not be used further down
-                          if (success)
-                            {
-                              for (k = 0; k < chunk_size; ++k)
-                                {
-                                  // copy the data
-                                  pSrc = pTmpData + k * restX * 4;
-                                  pDst = pImageData + (i * chunk_size + k) * imageWidth * 4 + j * chunk_size * 4;
-                                  memcpy(pDst, pSrc, 4 * restX);
-                                }
-                            }
-
-                          currentY += yModelStep;
-                        }
-
-                      // delete the current render buffer
-                      this->destroy_buffers(fboName, rbuffers, blitFBOName, multisampleBuffers);
-
-                      if (rbuffers != NULL)
-                        {
-                          delete[] rbuffers;
-                          rbuffers = NULL;
-                        }
-
-                      if (multisampleBuffers != NULL)
-                        {
-                          delete[] multisampleBuffers;
-                          multisampleBuffers = NULL;
-                        }
-                    }
-
-                  if (success && restY != 0)
-                    {
-                      // go back to the right
-                      double tmpHeight = restY * height / imageHeight;
-                      currentX = x;
-
-                      for (j = 0; j < xSteps; ++j)
-                        {
-                          success = this->draw_bitmap(currentX, currentY, xModelStep, tmpHeight, chunk_size, restY, fboName, blitFBOName, &rbuffers, &multisampleBuffers, &pTmpData, samples);
-
-                          if (success)
-                            {
-                              for (k = 0; k < (int)restY; ++k)
-                                {
-                                  // copy the data
-                                  pSrc = pTmpData + k * chunk_size * 4;
-                                  pDst = pImageData + (i * chunk_size + k) * imageWidth * 4 + j * chunk_size * 4;
-                                  memcpy(pDst, pSrc, 4 * chunk_size);
-                                }
-                            }
-
-                          currentX += xModelStep;
-                        }
-
-                      // delete the current render buffer
-                      this->destroy_buffers(fboName, rbuffers, blitFBOName, multisampleBuffers);
-
-                      if (rbuffers != NULL)
-                        {
-                          delete[] rbuffers;
-                          rbuffers = NULL;
-                        }
-
-                      if (multisampleBuffers != NULL)
-                        {
-                          delete[] multisampleBuffers;
-                          multisampleBuffers = NULL;
-                        }
-
-                      // check if there are some pixels left
-                      if (success && restX != 0)
-                        {
-                          double tmpWidth = restX * width / imageWidth;
-                          // set the correct viewport size
-                          success = this->draw_bitmap(currentX, currentY, tmpWidth, tmpHeight, restX, restY, fboName, blitFBOName, &rbuffers, &multisampleBuffers, &pTmpData, samples);
-
-                          if (success)
-                            {
-                              for (k = 0; k < (int)restY; ++k)
-                                {
-                                  // copy the data
-                                  pSrc = pTmpData + k * restX * 4;
-                                  pDst = pImageData + (i * chunk_size + k) * imageWidth * 4 + j * chunk_size * 4;
-                                  memcpy(pDst, pSrc, 4 * restX);
-                                }
-                            }
-
-                          // delete the current render buffer
-                          this->destroy_buffers(fboName, rbuffers, blitFBOName, multisampleBuffers);
-
-                          if (rbuffers != NULL)
-                            {
-                              delete[] rbuffers;
-                              rbuffers = NULL;
-                            }
-
-                          if (multisampleBuffers != NULL)
-                            {
-                              delete[] multisampleBuffers;
-                              multisampleBuffers = NULL;
-                            }
-                        }
-                    }
-
-                  // if rendering failed, we make sure the buffer for the image
-                  // data is deleted so that it will not be used further down
-                  if (!success)
-                    {
-                      if (pImageData != NULL) delete[] pImageData;
-
-                      pImageData = NULL;
-                    }
-
-                  if (pTmpData != NULL) delete[] pTmpData;
-                }
-              else
-                {
-                  // we just draw it in one go
-                  bool success = this->draw_bitmap(x, y, width, height, imageWidth, imageHeight, fboName, blitFBOName, &rbuffers, &multisampleBuffers, &pImageData, samples);
-
-                  // if rendering failed, we make sure the buffer for the image
-                  // data is deleted so that it will not be used further down
-                  if (!success && pImageData != NULL)
-                    {
-                      delete[] pImageData;
-                      pImageData = NULL;
-                    }
-
-                  // delete the buffers
-                  this->destroy_buffers(fboName, rbuffers, blitFBOName, multisampleBuffers);
-
-                  if (rbuffers != NULL) delete[] rbuffers;
-
-                  if (multisampleBuffers != NULL) delete[] multisampleBuffers;
-                }
-
-              // if we are not on an apple, we have to deinitialize the functions
-              // for the OpenGL extensions again because we can not reuse them
-              // for the next export sicne they are context dependent and the context might have changed
-              // This is not absolutly necessary, but it might help finding problems.
-              this->clear_extension_functions();
-
-              // if the stored selection is not empty, we have to restore the selection
-              if (!selection.empty())
-                {
-                  this->setSelection(selection);
-                }
-
-              // need to convert from RGBA to ARGB
-              if (pImageData != NULL)
-                {
-                  unsigned int i, iMax = imageWidth * imageHeight;
-
-                  for (i = 0; i < iMax; ++i)
-                    {
-                      // in OpenGL the color values are stored as bytes in
-                      // the order RR GG BB AA
-                      // In Qt the color value has to be an int 0xAARRGGBB
-                      // so the order in memory depends on the endianess of
-                      // the system
-                      ((GLuint*)pImageData)[i] = pImageData[i * 4 + 3] * 16777216 | ((GLuint)pImageData[i * 4]) * 65536 | ((GLuint)pImageData[i * 4 + 1]) * 256 | ((GLuint)pImageData[i * 4 + 2]);
-                    }
                 }
             }
+
+          // if rendering failed, we make sure the buffer for the image
+          // data is deleted so that it will not be used further down
+          if (!success)
+            {
+              if (pImageData != NULL) delete[] pImageData;
+
+              pImageData = NULL;
+            }
+
+          if (pTmpData != NULL) delete[] pTmpData;
         }
       else
         {
-          // give an error message that the image is to large
-          CQMessageBox::critical(this, tr("Image too large"),
-                                 tr("Sorry, refusing to create images that are larger than 500MB."));
+          // we just draw it in one go
+          bool success = this->draw_bitmap(x, y, width, height, imageWidth, imageHeight, fboName, blitFBOName, &rbuffers, &multisampleBuffers, &pImageData, samples);
+
+          // if rendering failed, we make sure the buffer for the image
+          // data is deleted so that it will not be used further down
+          if (!success && pImageData != NULL)
+            {
+              delete[] pImageData;
+              pImageData = NULL;
+            }
+
+          // delete the buffers
+          this->destroy_buffers(fboName, rbuffers, blitFBOName, multisampleBuffers);
+
+          if (rbuffers != NULL) delete[] rbuffers;
+
+          if (multisampleBuffers != NULL) delete[] multisampleBuffers;
         }
 
-      // set normal cursor
-      this->setCursor(cursor);
+      // if we are not on an apple, we have to deinitialize the functions
+      // for the OpenGL extensions again because we can not reuse them
+      // for the next export sicne they are context dependent and the context might have changed
+      // This is not absolutly necessary, but it might help finding problems.
+      this->clear_extension_functions();
+
+      // if the stored selection is not empty, we have to restore the selection
+      if (!selection.empty())
+        {
+          this->setSelection(selection);
+        }
+
+      // need to convert from RGBA to ARGB
+      if (pImageData != NULL)
+        {
+          unsigned int i, iMax = imageWidth * imageHeight;
+
+          for (i = 0; i < iMax; ++i)
+            {
+              // in OpenGL the color values are stored as bytes in
+              // the order RR GG BB AA
+              // In Qt the color value has to be an int 0xAARRGGBB
+              // so the order in memory depends on the endianess of
+              // the system
+              ((GLuint*)pImageData)[i] = pImageData[i * 4 + 3] * 16777216 | ((GLuint)pImageData[i * 4]) * 65536 | ((GLuint)pImageData[i * 4 + 1]) * 256 | ((GLuint)pImageData[i * 4 + 2]);
+            }
+        }
     }
-  else
-    {
-      // give an error message that the image is to large
-      CQMessageBox::critical(this, tr("Framebuffers not supported"),
-                             tr("This version of OpenGL does not support the framebuffer extension.\nSorry, can't create the bitmap."));
-    }
+
+  // set normal cursor
+  this->setCursor(cursor);
 
   return pImageData;
 }

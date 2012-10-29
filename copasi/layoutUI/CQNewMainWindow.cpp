@@ -869,68 +869,65 @@ void CQNewMainWindow::export_bitmap(const QString& filename, double x, double y,
   // check if the size of the final image is ok.
   double size = imageWidth * imageHeight * 4;
 
+  // TODO: not sure we really need to restrict this, if the user *needs* a higher resolution image
+  // TODO: what speeks against it? (Though in praxis resolutions above 4320p are unlikely)
   // I don't think we should write images that are larger than 500MB
-  if (size < 5e8)
-    {
-      //
-      // before we even start, we check if the file can be written to at all
-      // if not, we don't have to do anything
-      QFileInfo info(filename);
-
-      if (info.exists())
-        {
-          if (!info.isFile())
-            {
-              // create an error message and cancel saving
-              CQMessageBox::critical(this, tr("Not a file"),
-                                     tr("Path exists, but it is not a file."));
-              return;
-            }
-          else
-            {
-              if (!info.isWritable())
-                {
-                  // create an error message and cancel saving
-                  CQMessageBox::critical(this, tr("Not writable"),
-                                         tr("Can't write to file."));
-                  return;
-                }
-            }
-        }
-      else
-        {
-          // check if the directory exists.
-        }
-
-      // now we try to create the image
-      CQGLLayoutPainter* pPainter = this->mpLayoutViewer->getPainter();
-
-      if (pPainter != NULL)
-        {
-          GLubyte* pImageData = pPainter->export_bitmap(x, y, width, height, imageWidth, imageHeight, drawSelection);
-
-          if (pImageData != NULL)
-            {
-              QImage* pImage = new QImage(pImageData, imageWidth, imageHeight, 4 * imageWidth, QImage::Format_ARGB32);
-              bool result = pImage->save(filename, "PNG");
-
-              if (result == false)
-                {
-                  CQMessageBox::critical(this, tr("Save error"),
-                                         tr("An error occured while saving the file.\nThe file might be invalid."));
-                }
-
-              delete pImage;
-              delete[] pImageData;
-            }
-        }
-    }
-  else
+  if (size > 5e8)
     {
       // give an error message that the image is to large
       CQMessageBox::critical(this, tr("Image too large"),
                              tr("Sorry, refusing to create images that are larger than 500MB."));
     }
+
+  //
+  // before we even start, we check if the file can be written to at all
+  // if not, we don't have to do anything
+  QFileInfo info(filename);
+
+  if (info.exists())
+    {
+      if (!info.isFile())
+        {
+          // create an error message and cancel saving
+          CQMessageBox::critical(this, tr("Not a file"),
+                                 tr("Path exists, but it is not a file."));
+          return;
+        }
+      else
+        {
+          if (!info.isWritable())
+            {
+              // create an error message and cancel saving
+              CQMessageBox::critical(this, tr("Not writable"),
+                                     tr("Can't write to file."));
+              return;
+            }
+        }
+    }
+
+  // now we try to create the image
+  CQGLLayoutPainter* pPainter = this->mpLayoutViewer->getPainter();
+
+  if (pPainter == NULL)
+    return;
+
+  GLubyte* pImageData = pPainter->export_bitmap(x, y, width, height, imageWidth, imageHeight, drawSelection);
+
+  if (pImageData == NULL)
+    return;
+
+  // create QImage for buffer
+  QImage* pImage = new QImage(pImageData, imageWidth, imageHeight, 4 * imageWidth, QImage::Format_ARGB32);
+  bool result = pImage->save(filename, "PNG");
+
+  if (result == false)
+    {
+      CQMessageBox::critical(this, tr("Save error"),
+                             tr("An error occured while saving the file.\nThe file might be invalid."));
+    }
+
+  delete pImage;
+  delete[] pImageData;
 }
 
 void CQNewMainWindow::updateLayoutList()
