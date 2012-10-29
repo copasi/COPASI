@@ -158,7 +158,7 @@ QMenu *CQNewMainWindow::getWindowMenu() const
 void CQNewMainWindow::createActions()
 {
 
-  mpSwitchModeAct = new QAction(mAnimationIcon, tr("animation mode"), this);
+  mpSwitchModeAct = new QAction(mAnimationIcon, tr("Animation Mode"), this);
   mpSwitchModeAct->setStatusTip(tr("Switch to animation mode."));
   mpSwitchModeAct->setEnabled(true);
   connect(mpSwitchModeAct, SIGNAL(triggered()), this, SLOT(switchMode()));
@@ -178,7 +178,7 @@ void CQNewMainWindow::createActions()
   mpCloseAct->setStatusTip(tr("Close Diagram"));
   connect(mpCloseAct, SIGNAL(triggered()), this, SLOT(close()));
 
-  mpLoadDataAct = new QAction(QPixmap(load_data_xpm), tr("update trajectory data"), this);
+  mpLoadDataAct = new QAction(QPixmap(load_data_xpm), tr("Update Trajectory Data"), this);
   mpLoadDataAct->setStatusTip(tr("Update time course data"));
   mpLoadDataAct->setEnabled(true);
   connect(this->mpLoadDataAct, SIGNAL(activated()), this->mpAnimationWindow, SLOT(loadData()));
@@ -205,7 +205,7 @@ void CQNewMainWindow::createActions()
 #ifdef COPASI_AUTOLAYOUT
   this->mpStopLayoutAction = new QAction(QPixmap(layout_start_xpm), tr("Stop"), this);
   this->mpStopLayoutAction->setEnabled(true);
-  this->mpStopLayoutAction->setToolTip("run spring layout algorithm");
+  this->mpStopLayoutAction->setToolTip("Run Spring Layout Algorithm");
   connect(this->mpStopLayoutAction, SIGNAL(triggered()), this, SLOT(slotRunSpringLayout()));
 #endif // COPASI_AUTOLAYOUT
 }
@@ -220,7 +220,7 @@ void CQNewMainWindow::createMenus()
   mpFileMenu->addAction(mpCloseAct);
 
   // play menu
-  mpPlayMenu = menuBar()->addMenu(tr("Play"));
+  mpPlayMenu = menuBar()->addMenu(tr("&Play"));
   mpPlayMenu->setVisible(false);
   this->mpPlayMenu->addAction(this->mpAnimationWindow->getControlWidget()->getPlayAction());
   this->mpPlayMenu->addAction(this->mpAnimationWindow->getControlWidget()->getPauseAction());
@@ -230,7 +230,7 @@ void CQNewMainWindow::createMenus()
   this->mpPlayMenu->addAction(this->mpAnimationWindow->getControlWidget()->getStepForwardAction());
   this->mpPlayMenu->addAction(this->mpAnimationWindow->getControlWidget()->getStepBackwardAction());
   this->mpPlayMenu->addSeparator();
-  this->mpLoopItemAction = this->mpPlayMenu->addAction(tr("loop animation"));
+  this->mpLoopItemAction = this->mpPlayMenu->addAction(tr("Loop Animation"));
   this->mpLoopItemAction->setCheckable(true);
   this->mpLoopItemAction->setChecked(false);
   connect(this->mpLoopItemAction, SIGNAL(toggled(bool)) , this->mpAnimationWindow, SLOT(slotLoopActivated(bool)));
@@ -238,10 +238,10 @@ void CQNewMainWindow::createMenus()
   this->mpPlayMenu->addAction(this->mpLoadDataAct);
 
   // view menu
-  mpViewMenu = menuBar()->addMenu(tr("View"));
-  mpViewMenu->addAction(tr("Reset View"), this, SLOT(slotResetView()));
-  mpViewMenu->addAction(tr("Fit to Screen"), this, SLOT(slotFitToScreen()));
-  this->mpZoomMenu = this->mpViewMenu->addMenu(tr("Zoom"));
+  mpViewMenu = menuBar()->addMenu(tr("&View"));
+  mpViewMenu->addAction(tr("&Reset View"), this, SLOT(slotResetView()));
+  mpViewMenu->addAction(tr("&Fit to Screen"), this, SLOT(slotFitToScreen()));
+  this->mpZoomMenu = this->mpViewMenu->addMenu(tr("&Zoom"));
   this->mpZoomActionGroup = new QActionGroup(this);
   QAction* pAction = this->mpZoomActionGroup->addAction("1%");
   pAction->setCheckable(true);
@@ -282,19 +282,19 @@ void CQNewMainWindow::createMenus()
   this->mpZoomMenu->addActions(this->mpZoomActionGroup->actions());
 #ifdef ELEMENTARY_MODE_DISPLAY
   this->mpViewMenu->addSeparator();
-  this->mpHighlightModeAction = this->mpViewMenu->addAction(tr("highlight"));
+  this->mpHighlightModeAction = this->mpViewMenu->addAction(tr("Highlight"));
   this->mpHighlightModeAction->setCheckable(true);
   this->mpHighlightModeAction->setChecked(true);
-  this->mpHighlightModeAction->setToolTip(tr("determines whether selected elements are highlighted or if unselected items are toned down."));
+  this->mpHighlightModeAction->setToolTip(tr("Toggle whether selected elements are highlighted or unselected items toned down."));
   connect(this->mpHighlightModeAction, SIGNAL(toggled(bool)), this, SLOT(toggleHighlightSlot(bool)));
-  this->mpFogDensityAction = this->mpViewMenu->addAction(tr("fog density ..."));
+  this->mpFogDensityAction = this->mpViewMenu->addAction(tr("Fog Density ..."));
   connect(this->mpFogDensityAction, SIGNAL(triggered(bool)), this, SLOT(fogDensitySlot(bool)));
-  this->mpChangeColorAction = this->mpViewMenu->addAction(tr("highlight color ..."));
+  this->mpChangeColorAction = this->mpViewMenu->addAction(tr("Highlight Color ..."));
   connect(this->mpChangeColorAction, SIGNAL(triggered(bool)), this, SLOT(changeColorSlot(bool)));
-  this->mpChangeColorAction->setToolTip(tr("depending on the highlight mode lets you select the color for highlighting or down toning elements"));
-  this->mpElementaryModesMenu = this->mpViewMenu->addMenu("ElementaryModes");
-  this->mpElementaryModesMenu->setToolTip(tr("displays a list of elementary modes if any have been calculated and lets you select one or more that are emphasized in the layout displayed"));
-  this->mpElementaryModesMenu->addAction(tr("none"));
+  this->mpChangeColorAction->setToolTip(tr("When higlighted, sets the highlight color, or the toned down one otherwise."));
+  this->mpElementaryModesMenu = this->mpViewMenu->addMenu("Elementary Modes");
+  this->mpElementaryModesMenu->setToolTip(tr("Displays a list of elementary modes when they have been calculated and lets you select one or more that are emphasized in the layout displayed."));
+  this->mpElementaryModesMenu->addAction(tr("None"));
   connect(this->mpElementaryModesMenu, SIGNAL(aboutToShow()), this, SLOT(checkForElementaryModesSlot()));
 #endif // ELEMENTARY_MODE_DISPLAY
 
@@ -986,7 +986,7 @@ void CQNewMainWindow::switchMode()
         connect(this->mpScreenshotAct, SIGNAL(triggered()), this->mpAnimationWindow, SLOT(saveImage()));
         this->mpSwitchModeAct->setIcon(mGraphIcon);
         this->mpSwitchModeAct->setStatusTip(tr("Switch to graph mode."));
-        this->mpSwitchModeAct->setText(tr("graph mode"));
+        this->mpSwitchModeAct->setText(tr("Graph Mode"));
         this->mMode = CQNewMainWindow::ANIMATION_MODE;
         this->setAnimationToolbar();
         this->setAnimationMenu();
@@ -1013,7 +1013,7 @@ void CQNewMainWindow::switchMode()
         connect(mpScreenshotAct, SIGNAL(triggered()), this, SLOT(slotScreenshot()));
         this->mpSwitchModeAct->setIcon(mAnimationIcon);
         this->mpSwitchModeAct->setStatusTip(tr("Switch to animation mode."));
-        this->mpSwitchModeAct->setText(tr("animation mode"));
+        this->mpSwitchModeAct->setText(tr("Animation Mode"));
         this->mMode = CQNewMainWindow::GRAPH_MODE;
         this->setGraphToolbar();
         this->setGraphMenu();
@@ -1035,6 +1035,7 @@ void CQNewMainWindow::setAnimationToolbar()
   this->mpLoadDataAct->setVisible(true);
   // hide the render information box
   this->mpRenderLabel->hide();
+  this->mpRevertCurveAct->setVisible(false);
   this->mpRenderDropdown->hide();
 }
 
@@ -1046,6 +1047,7 @@ void CQNewMainWindow::setGraphToolbar()
   this->mpRevertCurveAct->setVisible(true);
   // show the render information box
   this->mpRenderLabel->show();
+  this->mpRevertCurveAct->setVisible(false);
   this->mpRenderDropdown->show();
 }
 
