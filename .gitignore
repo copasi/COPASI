@@ -25,3 +25,6 @@ copasi/f2c.h
 gitTools/.UpdateCopasiVersion
 .DS_Store
 trace
+/autom4te.cache
+InitialDependencies.dot
+SimulationDependencies.dot
