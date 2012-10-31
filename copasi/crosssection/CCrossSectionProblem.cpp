@@ -4,6 +4,7 @@
 // All rights reserved.
 
 #include "CCrossSectionProblem.h"
+#include <CopasiDataModel/CCopasiDataModel.h>
 
 CCrossSectionProblem::CCrossSectionProblem(const CCopasiContainer * pParent):
   CTrajectoryProblem(pParent),
@@ -15,7 +16,10 @@ CCrossSectionProblem::CCrossSectionProblem(const CCopasiContainer * pParent):
   mpConvergenceOutTolerance(NULL),
   mpFlagLimitOutCrossings(NULL),
   mpOutCrossingsLimit(NULL),
-  mpFlagLimitTime(NULL)
+  mpFlagLimitTime(NULL),
+  mSingleObjectCN(NULL),
+  mpFlagPositiveDirection(NULL),
+  mpThreshold(NULL)
 {
   initializeParameter();
   initObjects();
@@ -33,7 +37,10 @@ CCrossSectionProblem::CCrossSectionProblem(const CCrossSectionProblem & src,
   mpConvergenceOutTolerance(NULL),
   mpFlagLimitOutCrossings(NULL),
   mpOutCrossingsLimit(NULL),
-  mpFlagLimitTime(NULL)
+  mpFlagLimitTime(NULL),
+  mSingleObjectCN(NULL),
+  mpFlagPositiveDirection(NULL),
+  mpThreshold(NULL)
 {
   initializeParameter();
   initObjects();
@@ -46,13 +53,16 @@ void CCrossSectionProblem::initializeParameter()
   mpCrossingsLimit  = assertParameter("NumCrossingsLimit", CCopasiParameter::UINT, (unsigned C_INT32)0)->getValue().pUINT;
   mpFlagLimitTime  = assertParameter("LimitTime", CCopasiParameter::BOOL, true)->getValue().pBOOL;
   mpFlagLimitOutCrossings  = assertParameter("LimitOutCrossings", CCopasiParameter::BOOL, false)->getValue().pBOOL;
+  mpFlagPositiveDirection  = assertParameter("PositiveDirection", CCopasiParameter::BOOL, true)->getValue().pBOOL;
   mpOutCrossingsLimit  = assertParameter("NumOutCrossingsLimit", CCopasiParameter::UINT, (unsigned C_INT32)0)->getValue().pUINT;
   mpFlagLimitConvergence  = assertParameter("LimitUntilConvergence", CCopasiParameter::BOOL, false)->getValue().pBOOL;
   mpConvergenceTolerance  = assertParameter("ConvergenceTolerance", CCopasiParameter::DOUBLE, (C_FLOAT64)1E-6)->getValue().pDOUBLE;
+  mpThreshold  = assertParameter("Threshold", CCopasiParameter::DOUBLE, (C_FLOAT64)0)->getValue().pDOUBLE;
   mpFlagLimitOutConvergence  = assertParameter("DelayOutputUntilConvergence", CCopasiParameter::BOOL, false)->getValue().pBOOL;
   mpConvergenceOutTolerance  = assertParameter("OutputConvergenceTolerance", CCopasiParameter::DOUBLE, (C_FLOAT64)1E-6)->getValue().pDOUBLE;
   mpTriggerExpression =
     assertParameter("TriggerExpression", CCopasiParameter::EXPRESSION, std::string(""))->getValue().pEXPRESSION;
+  mSingleObjectCN = assertParameter("SingleVariable", CCopasiParameter::CN, CCopasiObjectName(""))->getValue().pCN;
 }
 
 void CCrossSectionProblem::initObjects()
@@ -96,6 +106,15 @@ bool CCrossSectionProblem::getFlagLimitTime() const
 const C_FLOAT64 & CCrossSectionProblem::getTimeLimit() const
 {return *mpDuration;}
 
+bool CCrossSectionProblem::isPositiveDirection() const
+{
+  return *mpFlagPositiveDirection;
+}
+void CCrossSectionProblem::setPositiveDirection(bool isPositive)
+{
+  *mpFlagPositiveDirection = isPositive;
+}
+
 void CCrossSectionProblem::setFlagLimitCrossings(bool flagLimitCrossing)
 {*mpFlagLimitCrossings = flagLimitCrossing;}
 
@@ -113,6 +132,38 @@ void CCrossSectionProblem::setFlagLimitTime(bool flagLimitTime)
 
 void CCrossSectionProblem::setTimeLimit(const C_FLOAT64 &timeLimit)
 {*mpDuration = timeLimit;}
+
+/**
+ * return the variable
+ */
+const std::string& CCrossSectionProblem::getSingleObjectCN() const
+{
+  return *mSingleObjectCN;
+}
+
+void CCrossSectionProblem::setSingleObjectCN(const CCopasiObject* pObject)
+{
+  if (pObject == NULL) return;
+
+  setSingleObjectCN(pObject->getCN());
+}
+
+const C_FLOAT64& CCrossSectionProblem::getThreshold() const
+{
+  return *mpThreshold;
+}
+void CCrossSectionProblem::setThreshold(const C_FLOAT64 &threshold)
+{
+  *mpThreshold = threshold;
+}
+
+/*
+ * set the variable
+ */
+void CCrossSectionProblem::setSingleObjectCN(const std::string& cn)
+{
+  *mSingleObjectCN = cn;
+}
 
 bool CCrossSectionProblem::getFlagLimitConvergence() const
 {

@@ -46,6 +46,8 @@ private:
 
   void updateValues();
 
+  void setSingleObject(const CCopasiObject * pSingleVariable);
+
   const CCopasiObject * mpSingleVariable;
   CCrossSectionProblem * mpCrossSectionProblem;
 

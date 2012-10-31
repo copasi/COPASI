@@ -61,6 +61,18 @@ public:
   const C_FLOAT64 &getTimeLimit() const;
 
   /**
+   * return the variable
+   */
+  const std::string& getSingleObjectCN() const;
+  /*
+   * set the variable
+   */
+  void setSingleObjectCN(const std::string& cn);
+  void setSingleObjectCN(const CCopasiObject* pObject);
+  const C_FLOAT64& getThreshold() const;
+  void setThreshold(const C_FLOAT64 &threshold);
+
+  /**
    * Function to get mpFlagLimitConvergence
    */
   bool getFlagLimitConvergence() const;
@@ -99,6 +111,9 @@ public:
    * Function to set mpConvergenceOutTolerance
    */
   void setConvergenceOutTolerance(const C_FLOAT64 &convergenceTolerance);
+
+  bool isPositiveDirection() const;
+  void setPositiveDirection(bool isPositive);
 
   /**
    * Function to set mpFlagLimitCrossings
@@ -242,6 +257,9 @@ private:
    * this member variable is mapped to a CCopasiParameter
    */
   std::string * mpTriggerExpression;
+  std::string * mSingleObjectCN;
+  bool * mpFlagPositiveDirection;
+  C_FLOAT64 * mpThreshold;
 };
 
 #endif // CCROSSSECTIONPROBLEM_H

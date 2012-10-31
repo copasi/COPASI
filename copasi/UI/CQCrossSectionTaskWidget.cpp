@@ -39,6 +39,16 @@
  */
 CQCrossSectionTaskWidget::CQCrossSectionTaskWidget(QWidget* parent, const char* name)
   : TaskWidget(parent, name)
+  , mpSingleVariable(NULL)
+  , mpCrossSectionProblem(NULL)
+  , mpValidatorLC(NULL)
+  , mpValidatorTime(NULL)
+  , mpValidatorTolerance(NULL)
+  , mpValidatorOutLC(NULL)
+  , mpValidatorOutTime(NULL)
+  , mpValidatorOutTolerance(NULL)
+  , mpValidatorCrossing(NULL)
+
 {
   setupUi(this);
   mpButtonVariable->setIcon(CQIconResource::icon(CQIconResource::copasi));
@@ -61,16 +71,11 @@ void CQCrossSectionTaskWidget::init()
 
   mpHeaderWidget->setTaskName("Cross Section");
 
-  //verticalLayout->insertWidget(0, mpHeaderWidget); // header
-  //formLayout->insertRow(0, mpHeaderWidget);
   outerLayout->insertWidget(0, mpHeaderWidget);
 
   mpMethodWidget->showMethodParameters(true);
-  //verticalLayout->addWidget(mpMethodWidget);
-  //formLayout->addRow(mpMethodWidget);
+
   outerLayout->addWidget(mpMethodWidget);
-  //verticalLayout->addWidget(mpBtnWidget);      // 'footer'
-  //formLayout->addWidget(mpBtnWidget);
   outerLayout->addWidget(mpBtnWidget);
 
   mpValidatorCrossing = new CQValidatorDouble(mpLineEditValue);
@@ -117,6 +122,9 @@ void CQCrossSectionTaskWidget::commitInput()
   mpCrossSectionProblem->setConvergenceTolerance(mpTxtConvergence->text().toDouble());
   mpCrossSectionProblem->setFlagLimitOutConvergence(mpCheckOutputConvergence->isChecked());
   mpCrossSectionProblem->setConvergenceOutTolerance(mpTxtOutConvergence->text().toDouble());
+  mpCrossSectionProblem->setSingleObjectCN(mpSingleVariable);
+  mpCrossSectionProblem->setPositiveDirection(mpDirectionPositive->isChecked());
+  mpCrossSectionProblem->setThreshold(mpLineEditValue->text().toDouble());
 }
 
 bool CQCrossSectionTaskWidget::runTask()
@@ -156,8 +164,12 @@ bool CQCrossSectionTaskWidget::saveTask()
   if (mpCheckSimConvergence->isChecked())
     pProblem->setCrossingsLimit(mpTxtCrossings->text().toULong());
 
+  pProblem->setPositiveDirection(mpDirectionPositive->isChecked());
+  pProblem->setThreshold(mpLineEditValue->text().toDouble());
   //if (mpCheckLT->isChecked())
   pProblem->setTimeLimit(mpTxtTime->text().toDouble());
+
+  pProblem->setSingleObjectCN(mpSingleVariable);
 
   if (mpCheckOutputDelay->isChecked())
     pProblem->setOutputStartTime(mpTxtOutTime->text().toDouble());
@@ -215,6 +227,16 @@ bool CQCrossSectionTaskWidget::loadTask()
   assert(pMethod);
 
   // load the saved values
+  const std::string &name = pProblem->getSingleObjectCN();
+
+  if (name.empty())
+    setSingleObject(NULL);
+  else
+    setSingleObject(static_cast<const CCopasiObject*>(pTask->getObjectDataModel()->getObject(name)));
+
+  mpLineEditValue->setText(QString::number(pProblem->getThreshold()));
+  mpDirectionPositive->setChecked(mpCrossSectionProblem->isPositiveDirection());
+  mpDirectionNegative->setChecked(!mpCrossSectionProblem->isPositiveDirection());
 
   mpCheckSimConvergence->setChecked(pProblem->getFlagLimitConvergence());
   mpTxtConvergence->setEnabled(pProblem->getFlagLimitConvergence());
@@ -289,40 +311,27 @@ void CQCrossSectionTaskWidget::slotChooseVariable()
 {
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
-        CQSimpleSelectionTree::Variables);
+        CQSimpleSelectionTree::Variables, mpSingleVariable);
 
-  if (pObject)
-    {
-      mpLineEditVariable->setText(FROM_UTF8(pObject->getObjectDisplayName()));
-      mpSingleVariable = pObject;
-    }
+  setSingleObject(pObject);
+}
+
+void CQCrossSectionTaskWidget::setSingleObject(const CCopasiObject * pSingleVariable)
+{
+  mpSingleVariable = pSingleVariable;
+
+  if (pSingleVariable == NULL)
+    mpLineEditVariable->setText(tr("[Please Choose Object.] --->"));
+  else
+    mpLineEditVariable->setText(FROM_UTF8(pSingleVariable->getObjectDisplayName()));
 }
 
 void CQCrossSectionTaskWidget::slotValueRate()
 {
+  if (!mpLineEditValue->hasAcceptableInput())
+    return;
 
-  /*  // check validity
-    QString yt = mpLineEditValue->text();
-
-  //  const QString number("^[0-9]+$");
-    const QString number("[0-9]+\.[0-9]*([eE][+-]?[0-9]+)?");
-
-    QRegExp numberRegExp(number);
-    numberRegExp.setPatternSyntax(QRegExp::RegExp2);
-
-    if (numberRegExp.exactMatch(yt))
-    {
-      std::cout << "RIGHT yt = " << TO_UTF8(yt) << std::endl;
-    }
-    else
-    {
-      std::cout << "ERR yt = " << TO_UTF8(yt) << " - " << yt.length() << std::endl;
-
-    mpLineEditValue->setText(yt.remove(yt.length()-1,1));
-    yt = mpLineEditValue->text();
-      std::cout << "TEST yt = " << TO_UTF8(yt) << std::endl;
-    }
-  */
+  commitInput();
 }
 
 void CQCrossSectionTaskWidget::slotUpdateCrossings(bool b)
@@ -496,4 +505,7 @@ void CQCrossSectionTaskWidget::updateValues()
 
   mpTxtOutConvergence->setText(QString::number(mpCrossSectionProblem->getConvergenceOutTolerance()));
   mpValidatorOutTolerance->revalidate();
+
+  mpLineEditValue->setText(QString::number(mpCrossSectionProblem->getThreshold()));
+  mpValidatorCrossing->revalidate();
 }
