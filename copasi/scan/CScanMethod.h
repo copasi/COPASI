@@ -178,7 +178,7 @@ protected:
 
   std::vector< Refresh * > mInitialRefreshes;
 
-  std::vector< Refresh * > mTransientRefreshes;
+  //std::vector< Refresh * > mTransientRefreshes;
 
   size_t mTotalSteps;
 

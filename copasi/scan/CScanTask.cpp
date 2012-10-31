@@ -12,16 +12,6 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-
-
-
-
-
-
-
-
-
-
 /**
  * CScanTask class.
  *
@@ -52,6 +42,10 @@
 #include "utilities/CProcessReport.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
+
+#if COPASI_NONLIN_DYN
+#include <crosssection/CCrossSectionTask.h>
+#endif
 
 CScanTask::CScanTask(const CCopasiContainer * pParent):
   CCopasiTask(CCopasiTask::scan, pParent),
@@ -150,6 +144,14 @@ bool CScanTask::process(const bool & useInitialValues)
   // initialize the method (parsing the ScanItems)
   pMethod->setProblem(pProblem);
 
+#if COPASI_NONLIN_DYN
+  CCrossSectionTask* task = dynamic_cast<CCrossSectionTask*>(mpSubtask);
+
+  if (task != NULL)
+    task->createEvent();
+
+#endif
+
   if (!pMethod->init()) return false;
 
   // init progress bar
@@ -173,6 +175,13 @@ bool CScanTask::process(const bool & useInitialValues)
 
   //calling the scanner, output is done in the callback
   if (!pMethod->scan()) success = false;
+
+#if COPASI_NONLIN_DYN
+
+  if (task != NULL)
+    task->removeEvent();
+
+#endif
 
   //finishing progress bar and output
   //if (mpCallBack) mpCallBack->finish();

@@ -10,9 +10,11 @@
  */
 
 #include <string>
+#include <sstream>
 #include <cmath>
 
 #include "copasi.h"
+#include <model/CEvent.h>
 
 #include "CCrossSectionTask.h"
 #include "CCrossSectionProblem.h"
@@ -25,6 +27,13 @@
 #include "utilities/CProcessReport.h"
 #include "utilities/CCopasiException.h"
 #include  "CopasiDataModel/CCopasiDataModel.h"
+
+#define C_GET_STRING(target,args)\
+  {\
+    std::stringstream str; str << args;target = str.str();\
+  }
+
+using namespace std;
 
 const unsigned int CCrossSectionTask::ValidMethods[] =
 {
@@ -50,7 +59,8 @@ CCrossSectionTask::CCrossSectionTask(const CCopasiContainer * pParent):
   mUpdateMoieties(false),
   mpCurrentState(NULL),
   mpCurrentTime(NULL),
-  mOutputStartTime(0.0)
+  mOutputStartTime(0.0),
+  mpEvent(NULL)
 {
   mpProblem = new CCrossSectionProblem(this);
   mpMethod = createMethod(CCopasiMethod::deterministic);
@@ -67,7 +77,8 @@ CCrossSectionTask::CCrossSectionTask(const CCrossSectionTask & src,
   mUpdateMoieties(false),
   mpCurrentState(NULL),
   mpCurrentTime(NULL),
-  mOutputStartTime(0.0)
+  mOutputStartTime(0.0),
+  mpEvent(NULL)
 {
   mpProblem =
     new CCrossSectionProblem(*static_cast< CCrossSectionProblem * >(src.mpProblem), this);
@@ -101,23 +112,6 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
 
   mpTrajectoryMethod = dynamic_cast<CTrajectoryMethod *>(mpMethod);
   assert(mpTrajectoryMethod);
-
-  //Here we mark one existing event as being the cut plane. This is probably
-  //the place where in the future we will create this special event
-  //rather than just mark it.
-  CModel* pModel = mpCrossSectionProblem->getModel();
-  size_t i;
-
-  // TODO: add event instead of selecting __cutplane
-
-  for (i = 0; i < pModel->getEvents().size(); ++i)
-    {
-      if (pModel->getEvents()[i]->getObjectName() == "__cutplane")
-        pModel->getEvents()[i]->setType(CEvent::CutPlane);
-    }
-
-  pModel->setCompileFlag();
-  pModel->compileIfNecessary(NULL);
 
   mpTrajectoryMethod->setProblem(mpCrossSectionProblem);
 
@@ -153,9 +147,66 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
 
   return success;
 }
+void CCrossSectionTask::createEvent()
+{
+  if (mpEvent != NULL) return;
+
+  //Here we mark one existing event as being the cut plane. This is probably
+  //the place where in the future we will create this special event
+  //rather than just mark it.
+  CModel* pModel = mpCrossSectionProblem->getModel();
+  size_t i;
+
+  // TODO: add event instead of selecting __cutplane
+  if (!mpCrossSectionProblem->getSingleObjectCN().empty())
+    {
+      int count = 0;
+      std::string name = "__cutplane";
+
+      while (pModel->getEvents().getIndex(name) != C_INVALID_INDEX)
+        C_GET_STRING(name, "__cutplane" << ++count);
+
+      mpEvent = pModel->createEvent(name);
+      mpEvent  -> setType(CEvent::CutPlane);
+      std::stringstream expression;
+      expression << "<" << mpCrossSectionProblem->getSingleObjectCN() << "> "
+                 << (mpCrossSectionProblem->isPositiveDirection() ? std::string(" > ") : std::string(" < "))
+                 << mpCrossSectionProblem->getThreshold()
+                 ;
+
+      mpEvent ->setTriggerExpression(
+        expression.str()
+      );
+    }
+
+//    <TriggerExpression>
+//          &lt;CN=Root,Model=New Model,Vector=Compartments[compartment],Vector=Metabolites[Y],Reference=Rate&gt; &lt; 0
+//        </TriggerExpression>
+
+  //for (i = 0; i < pModel->getEvents().size(); ++i)
+  //  {
+  //    if (pModel->getEvents()[i]->getObjectName() == "__cutplane")
+  //      pModel->getEvents()[i]->setType(CEvent::CutPlane);
+  //}
+
+  pModel->setCompileFlag();
+  pModel->compileIfNecessary(NULL);
+}
+
+void CCrossSectionTask::removeEvent()
+{
+  // TODO: remove event
+  if (mpEvent != NULL)
+    {
+      mpCrossSectionProblem->getModel()->removeEvent(mpEvent);
+      mpEvent = NULL;
+    }
+}
 
 bool CCrossSectionTask::process(const bool & useInitialValues)
 {
+  createEvent();
+
   processStart(useInitialValues);
 
   //this instructs the process queue to call back whenever an event is
@@ -338,6 +389,7 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
 
 void CCrossSectionTask::finish()
 {
+
   //reset call back
   mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
 
@@ -349,18 +401,18 @@ void CCrossSectionTask::finish()
 bool CCrossSectionTask::restore()
 {
   bool success = CCopasiTask::restore();
+  CModel * pModel = mpProblem->getModel();
+
+  removeEvent();
 
   if (mUpdateModel)
     {
-      CModel * pModel = mpProblem->getModel();
 
       pModel->setState(*mpCurrentState);
       pModel->updateSimulatedValues(mUpdateMoieties);
       pModel->setInitialState(pModel->getState());
       pModel->updateInitialValues();
     }
-
-  // TODO: remove event
 
   //reset call back
   mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);

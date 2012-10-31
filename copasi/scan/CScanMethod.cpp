@@ -31,6 +31,7 @@
 #include "CScanProblem.h"
 #include "CScanMethod.h"
 #include "CScanTask.h"
+
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 
@@ -375,7 +376,7 @@ bool CScanMethod::init()
 
   cleanupScanItems();
   mInitialRefreshes.clear();
-  mTransientRefreshes.clear();
+  //mTransientRefreshes.clear();
 
   mTotalSteps = 1;
   std::set< const CCopasiObject * > InitialObjectSet;

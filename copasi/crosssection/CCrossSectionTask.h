@@ -26,6 +26,7 @@
 class CCrossSectionProblem;
 //class CCrossSectionMethod;
 class CState;
+class CEvent;
 
 class CCrossSectionTask : public CCopasiTask
 {
@@ -77,28 +78,33 @@ private:
    * time at which the output starts.
    */
   C_FLOAT64 mOutputStartTime;
-  
+
   size_t mNumCrossings;
-  
+
   size_t mOutputStartNumCrossings;
-  
+
   size_t mMaxNumCrossings;
-  
+
   /**
    * handle for progress reporting
    */
   size_t mhProgress;
-  
+
+  /**
+   * temporary event
+   */
+  CEvent* mpEvent;
+
   /**
    * describes the internal state of the calculation
-   */ 
-  enum STATE 
+   */
+  enum STATE
   {
     TRANSIENT = 0, //before the condition for starting output is met
     MAIN,          //the main part of the run, while output is generated
     FINISH         //when the conditions for finishing are met
   };
-  
+
   STATE mState;
 
 public:
@@ -140,6 +146,9 @@ public:
    * @return bool success
    */
   virtual bool process(const bool & useInitialValues);
+
+  void createEvent();
+  void removeEvent();
 
   /**
    * Starts the process of integration by calling CTrajectoryMethod::start
@@ -204,7 +213,7 @@ private:
    * the necessary analysis and output in this case
    */
   void eventCallBack(CEvent::Type type);
-  
+
   /**
    * should be called by all code paths that finish the task.
    * -finishes progress reporting
@@ -212,6 +221,5 @@ private:
    * -resets call back function
    */
   void finish();
-  
 };
 #endif // COPASI_CCrossSectionTask
