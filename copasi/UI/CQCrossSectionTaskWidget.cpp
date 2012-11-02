@@ -334,7 +334,7 @@ void CQCrossSectionTaskWidget::slotChooseVariable()
 {
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
-        CQSimpleSelectionTree::Variables, mpSingleVariable);
+                                            CQSimpleSelectionTree::Variables + CQSimpleSelectionTree::ObservedValues, mpSingleVariable);
 
   setSingleObject(pObject);
 }
