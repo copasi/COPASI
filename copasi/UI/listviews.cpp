@@ -422,11 +422,11 @@ void ListViews::ConstructNodeWidgets()
 
 #ifdef USE_NEW_PLOTSUBWIDGET
 
-  if (!mpPlotSubwidget) mpPlotSubwidget = new PlotSubWidget(this);
+  if (!mpPlotSubwidget) mpPlotSubwidget = new CQPlotSubwidget(this);
 
 #else
 
-  if (!mpPlotSubwidget) mpPlotSubwidget = new CQPlotSubwidget(this);
+  if (!mpPlotSubwidget) mpPlotSubwidget = new PlotSubwidget(this);
 
 #endif
 

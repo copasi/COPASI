@@ -12,7 +12,7 @@
 typedef CQPlotSubwidget PlotWindowType;
 #else
 #include "PlotSubwidget.h"
-typedef PlotSubWidget PlotWindowType;
+typedef PlotSubwidget PlotWindowType;
 #endif
 
 #include "UI/CCopasiSelectionDialog.h"
