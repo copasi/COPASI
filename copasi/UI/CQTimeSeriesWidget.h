@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTimeSeriesWidget.h,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/23 18:39:01 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,11 +7,12 @@
 #define COPASI_CQTimeSeriesWidget
 
 #include <QtCore/QVariant>
+#include <QString>
 
 #include "copasi/UI/ui_CQTimeSeriesWidget.h"
 
 class CQTimeSeriesDM;
-class CTrajectoryTask;
+class CTimeSeries;
 class CCopasiTask;
 
 class CQTimeSeriesWidget: public CopasiWidget, public Ui::CQTimeSeriesWidget
@@ -39,6 +32,8 @@ public:
 
   virtual void setFramework(int framework);
 
+  virtual void setTitle(const QString &title);
+
 protected:
   virtual bool enterProtected();
 
@@ -48,7 +43,7 @@ private slots:
   void slotSave();
 
 private:
-  const CTrajectoryTask * mpTask;
+  const CTimeSeries * mpTimeSeries;
   CQTimeSeriesDM * mpDataModel;
 };
 

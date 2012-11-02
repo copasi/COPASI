@@ -35,7 +35,7 @@ protected:
   void commitInput();
   virtual bool saveTask();
   virtual bool loadTask();
-//  virtual bool taskFinishedEvent();
+  virtual bool taskFinishedEvent();
   virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
 
 protected slots:

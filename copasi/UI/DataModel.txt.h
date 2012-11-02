@@ -52,6 +52,7 @@ static char DataModeltxt[] =
   "27:271:Result\n"
 #ifdef COPASI_NONLIN_DYN
   "2:28:Cross Section\n"
+  "28:281:Result\n"
 #endif
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
   "2:29:Oscillation\n"

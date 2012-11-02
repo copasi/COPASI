@@ -235,6 +235,7 @@ private:
 
 #ifdef COPASI_NONLIN_DYN
   CQCrossSectionTaskWidget *crossSectionTaskWidget;
+  CQTimeSeriesWidget *crossSectionTimeSeriesWidget;
 #endif
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
   CQOscillationTaskWidget *oscillationTaskWidget;

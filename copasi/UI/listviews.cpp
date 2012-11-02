@@ -197,6 +197,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
   tssaResultWidget(NULL),
 #ifdef COPASI_NONLIN_DYN
   crossSectionTaskWidget(NULL),
+  crossSectionTimeSeriesWidget(NULL),
 #endif
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
   oscillationTaskWidget(NULL),
@@ -474,6 +475,10 @@ void ListViews::ConstructNodeWidgets()
 
 #ifdef COPASI_NONLIN_DYN
 
+  if (!crossSectionTimeSeriesWidget) crossSectionTimeSeriesWidget = new CQTimeSeriesWidget(this);
+
+  crossSectionTimeSeriesWidget->hide();
+
   if (!crossSectionTaskWidget) crossSectionTaskWidget = new CQCrossSectionTaskWidget(this);
 
   crossSectionTaskWidget->hide();
@@ -687,6 +692,9 @@ CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
       case 28:
         return crossSectionTaskWidget;
         break;
+
+      case 281:
+        return crossSectionTimeSeriesWidget;
 #endif
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
 

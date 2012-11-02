@@ -8,6 +8,7 @@
  */
 
 #include "CQCrossSectionTaskWidget.h"
+#include "CQTimeSeriesWidget.h"
 #include "listviews.h"
 #include "CQTaskBtnWidget.h"
 #include "CQTaskHeaderWidget.h"
@@ -101,6 +102,12 @@ void CQCrossSectionTaskWidget::init()
 
   mpValidatorOutTolerance = new CQValidatorDouble(mpTxtOutConvergence);
   mpTxtOutConvergence->setValidator(mpValidatorOutTolerance);
+
+  CQTimeSeriesWidget * pResult =
+    dynamic_cast< CQTimeSeriesWidget * >(mpListView->findWidgetFromId(281));
+
+  if (pResult != NULL)
+    pResult->setTitle("<h2>Cross Section Result</h2>");
 }
 
 void CQCrossSectionTaskWidget::destroy()
@@ -192,6 +199,22 @@ bool CQCrossSectionTaskWidget::saveTask()
   mpValidatorOutTime->saved();
 
   return true;
+}
+
+bool CQCrossSectionTaskWidget::taskFinishedEvent()
+{
+  bool success = true;
+  // We need to load the result here as this is the only place where
+  // we know that it is correct.
+  CQTimeSeriesWidget * pResult =
+    dynamic_cast< CQTimeSeriesWidget * >(mpListView->findWidgetFromId(281));
+
+  if (pResult == NULL)
+    return false;
+
+  success &= pResult->loadResult(mpTask);
+
+  return success;
 }
 
 /*
