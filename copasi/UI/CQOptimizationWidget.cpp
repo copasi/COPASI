@@ -1,19 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.cpp,v $
-//   $Revision: 1.31 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/01/06 19:13:44 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "CQOptimizationWidget.h"
@@ -43,7 +39,7 @@
  *  name 'name'.'
  */
 CQOptimizationWidget::CQOptimizationWidget(QWidget* parent, const char* name)
-    : TaskWidget(parent, name)
+  : TaskWidget(parent, name)
 {
   setupUi(this);
 
@@ -218,7 +214,7 @@ void CQOptimizationWidget::init()
 
   mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::ObjectiveFunctions);
 
-  mpBtnMaximize->setMinimumWidth(mpLblExpression->width());
+  //mpBtnMaximize->setMinimumWidth(mpLblExpression->width());
 
   mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::steadyState]));
   mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::steadyState]] = CCopasiTask::steadyState;

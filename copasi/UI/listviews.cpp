@@ -805,9 +805,21 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
 
   if (mpCurrentWidget != newWidget)
     {
-      if (mpCurrentWidget) mpCurrentWidget->hide();
+      QRect size;
 
-      if (newWidget) newWidget->show();
+      if (mpCurrentWidget)
+        {
+          size = mpCurrentWidget->geometry();
+          mpCurrentWidget->hide();
+        }
+
+      if (newWidget)
+        {
+          if (mpCurrentWidget)
+            newWidget->setGeometry(size);
+
+          newWidget->show();
+        }
     }
 
   // we emit the signal after the old widget has saved

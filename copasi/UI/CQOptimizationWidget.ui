@@ -66,8 +66,8 @@
       <widget class="CQExpressionMmlStackedWidget" name="mpExpressionEMW">
        <property name="minimumSize">
         <size>
-         <width>420</width>
-         <height>70</height>
+         <width>0</width>
+         <height>0</height>
         </size>
        </property>
        <widget class="QWidget" name="page"/>
