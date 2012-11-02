@@ -129,7 +129,7 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
   mpCurrentTime = &mpCurrentState->getTime();
 
   // Handle the time series as a regular output.
-  mTimeSeriesRequested = mpCrossSectionProblem->timeSeriesRequested();
+  mTimeSeriesRequested = true;//mpCrossSectionProblem->timeSeriesRequested();
 
   if ((pOutputHandler != NULL) &&
       mTimeSeriesRequested &&
@@ -151,9 +151,6 @@ void CCrossSectionTask::createEvent()
 {
   if (mpEvent != NULL) return;
 
-  //Here we mark one existing event as being the cut plane. This is probably
-  //the place where in the future we will create this special event
-  //rather than just mark it.
   CModel* pModel = mpCrossSectionProblem->getModel();
   size_t i;
 
@@ -178,16 +175,6 @@ void CCrossSectionTask::createEvent()
         expression.str()
       );
     }
-
-//    <TriggerExpression>
-//          &lt;CN=Root,Model=New Model,Vector=Compartments[compartment],Vector=Metabolites[Y],Reference=Rate&gt; &lt; 0
-//        </TriggerExpression>
-
-  //for (i = 0; i < pModel->getEvents().size(); ++i)
-  //  {
-  //    if (pModel->getEvents()[i]->getObjectName() == "__cutplane")
-  //      pModel->getEvents()[i]->setType(CEvent::CutPlane);
-  //}
 
   pModel->setCompileFlag();
   pModel->compileIfNecessary(NULL);
@@ -224,9 +211,15 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
   // It suffices to reach the end time within machine precision
   CompareEndTime = EndTime - 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
 
-  mMaxNumCrossings = mpCrossSectionProblem->getCrossingsLimit();
+  if (mpCrossSectionProblem->getFlagLimitCrossings())
+    mMaxNumCrossings = mpCrossSectionProblem->getCrossingsLimit();
+  else 
+    mMaxNumCrossings = 0;
 
-  mOutputStartNumCrossings = mpCrossSectionProblem->getOutCrossingsLimit();
+  if (mpCrossSectionProblem->getFlagLimitOutCrossings())
+    mOutputStartNumCrossings = mpCrossSectionProblem->getOutCrossingsLimit();
+  else 
+    mOutputStartNumCrossings = 0;
 
   output(COutputInterface::BEFORE);
 
@@ -244,6 +237,8 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
     }
 
   mState = TRANSIENT;
+  
+  
   mNumCrossings = 0;
 
   try
