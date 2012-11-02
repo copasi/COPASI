@@ -79,7 +79,6 @@ class CQUpdatesWidget;
 class CQOptimizationWidget;
 class CQOptimizationResult;
 class CopasiWidget;
-class PlotSubwidget;
 class CQPlotsWidget;
 class CQSplashWidget;
 class CQTimeSeriesWidget;
@@ -95,6 +94,14 @@ class CQLyapResultWidget;
 class CQModelValue;
 class CQMathMatrixWidget;
 class CQLayoutsWidget;
+
+#ifdef USE_NEW_PLOTSUBWIDGET
+class CQPlotSubwidget;
+typedef CQPlotSubwidget PlotWindowType;
+#else
+class PlotSubwidget;
+typedef PlotSubwidget PlotWindowType;
+#endif
 
 //********************************************************************************
 
@@ -217,7 +224,7 @@ private:
   ParametersWidget *parametersWidget;
   CQTabWidget * mpParameterOverviewWidget;
   CQPlotsWidget *mpPlotsWidget;
-  PlotSubwidget *mpPlotSubwidget;
+  PlotWindowType *mpPlotSubwidget;
   CQReactionsWidget *mpReactionsWidget;
   CQTabWidget *reactionsWidget1;
   ScanWidget *scanWidget;

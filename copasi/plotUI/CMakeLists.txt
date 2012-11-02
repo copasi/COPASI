@@ -23,15 +23,6 @@
 #
 ###############################################################################
 
-# cmake_minimum_required (VERSION 2.8)
-# project (plotUI)
-# 
-# 
-# include_directories(
-#   "${PROJECT_SOURCE_DIR}/.." 
-#   "${PROJECT_SOURCE_DIR}/../.." 
-#   "${PROJECT_SOURCE_DIR}"
-# )
 
 file(GLOB HEADERS_PLOTUI plotUI/*.h  )
 file(GLOB FORMS_PLOTUI   plotUI/*.ui )
@@ -51,75 +42,3 @@ source_group(plotUI FILES ${FORMS_PLOTUI} ${HEADERS_PLOTUI} ${SOURCES_PLOTUI})
 set(COPASI_UI_SOURCES ${COPASI_UI_SOURCES} ${SOURCES_PLOTUI})
 set(COPASI_UI_FORMS   ${COPASI_UI_FORMS}     ${FORMS_PLOTUI})
 set(COPASI_UI_HEADERS ${COPASI_UI_HEADERS} ${HEADERS_PLOTUI})
-
-
-# set(HEADERS
-# 
-#   COutputHandlerPlot.h
-#   CopasiPlot.h
-#   HistoWidget.h
-#   PlotSubwidget.h
-#   curve2dwidget.h
-#   plotwindow.h
-#   scrollbar.h
-#   scrollzoomer.h
-# 
-# ${HEADERS})
-# 
-# if(COPASI_BANDED_GRAPH)
-#   set(HEADERS BandedGraphWidget.h ${HEADERS})
-# endif(COPASI_BANDED_GRAPH)
-# 
-# set(SOURCES
-# 
-#   COutputHandlerPlot.cpp
-#   CopasiPlot.cpp
-#   HistoWidget.cpp
-#   PlotSubwidget.cpp
-#   curve2dwidget.cpp
-#   plotwindow.cpp
-#   scrollbar.cpp
-#   scrollzoomer.cpp
-# 
-# ${SOURCES})
-# 
-# if(COPASI_BANDED_GRAPH)
-#   set(SOURCES BandedGraphWidget.cpp ${SOURCES})
-# endif(COPASI_BANDED_GRAPH)
-# 
-# 
-# set(FORMS
-# 
-# 
-#   HistoWidget.ui
-#   PlotSubwidget.ui
-#   curve2dwidget.ui
-# 
-# ${FORMS})
-# 
-# if(COPASI_BANDED_GRAPH)
-#   set(FORMS BandedGraphWidget.ui ${FORMS})
-# endif(COPASI_BANDED_GRAPH)
-# 
-#if (ENABLE_SBW_INTEGRATION)
-#  include_directories(${SBW_INCLUDE_DIR})
-#  add_definitions(-DCOPASI_SBW_INTEGRATION)
-#endif(ENABLE_SBW_INTEGRATION)
-#  
-#
-#include(../CMakeUILib.cmake)
-#
-#qt4_wrap_cpp(HEADERS_MOC ${HEADERS})
-#
-#if(FORMS)
-#qt4_wrap_ui(HEADERS_FORMS ${FORMS})
-#endif(FORMS)
-#
-#INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-#INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
-#INCLUDE_DIRECTORIES(${QT_QTSVG_INCLUDE_DIR})
-#
-#add_library(plotUI STATIC ${SOURCES} ${HEADERS} ${HEADERS_FORMS} ${HEADERS_MOC})
-#
-#target_link_libraries(plotUI plot UI ${QWT_LIBRARIES} ${QT_LIBRARIES} ${QT_QTSVG_LIBRARY})
-#

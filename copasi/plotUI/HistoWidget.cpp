@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/HistoWidget.cpp,v $
-//   $Revision: 1.8 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/15 17:04:47 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,7 +6,14 @@
 #include <QtCore/QVariant>
 
 #include "HistoWidget.h"
+
+#ifdef USE_NEW_PLOTSUBWIDGET
+#include "CQPlotSubwidget.h"
+typedef CQPlotSubwidget PlotWindowType;
+#else
 #include "PlotSubwidget.h"
+typedef PlotSubWidget PlotWindowType;
+#endif
 
 #include "UI/CCopasiSelectionDialog.h"
 #include "UI/qtUtilities.h"
@@ -24,7 +23,7 @@
 #include "resourcesUI/CQIconResource.h"
 
 HistoWidget::HistoWidget(QWidget* parent, const char* /* name */, Qt::WindowFlags fl)
-    : QWidget(parent, fl)
+  : QWidget(parent, fl)
 {
   setupUi(this);
 
@@ -50,8 +49,8 @@ void HistoWidget::buttonPressedX()
 
   std::vector< const CCopasiObject * > objects =
     CCopasiSelectionDialog::getObjectVector(this,
-                                            CQSimpleSelectionTree::NumericValues,
-                                            &oldSelection);
+        CQSimpleSelectionTree::NumericValues,
+        &oldSelection);
 
   if (objects.size() && objects[0])
     {
@@ -69,10 +68,10 @@ void HistoWidget::buttonPressedX()
   //check if more than one object was selected...
   if (objects.size() > 1)
     {
-      PlotSubwidget* pParent;
+      PlotWindowType* pParent;
       QObject* tmp = this;
 
-      while (!(pParent = dynamic_cast<PlotSubwidget *>(tmp)) && this)
+      while (!(pParent = dynamic_cast<PlotWindowType *>(tmp)) && this)
         tmp = tmp->parent();
 
       if (pParent) //tell the parent to create the remaining histogram descriptions.

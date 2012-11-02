@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<comment> Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+ <comment> All rights reserved. </comment>
+ <class>CQPlotSubwidget</class>
+ <widget class="CopasiWidget" name="CQPlotSubwidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>539</width>
+    <height>416</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <layout class="QFormLayout" name="formLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="labelTitle">
+         <property name="text">
+          <string>Plot title</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <layout class="QHBoxLayout" name="layoutTitle">
+         <item>
+          <widget class="QLineEdit" name="titleLineEdit"/>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="activeCheckBox">
+           <property name="text">
+            <string>active?</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="labelType">
+         <property name="text">
+          <string>Type</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="typeLineEdit">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>2D Plot</string>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="labelScale">
+         <property name="text">
+          <string>Axis scales</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QCheckBox" name="checkLogX">
+           <property name="text">
+            <string>log X-axis</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkLogY">
+           <property name="text">
+            <string>log Y-axis</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="0">
+      <widget class="Line" name="line1">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <layout class="QHBoxLayout" name="layoutCurves">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMinimumSize</enum>
+       </property>
+       <item>
+        <widget class="QLabel" name="labelCurves">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Curve specifications</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="spacerCurves">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QToolButton" name="addCurveButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>New curve...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="addHistoButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>New histogram</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="deleteCurveButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Delete</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="4" column="0">
+      <widget class="Line" name="lineButton">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <layout class="QHBoxLayout" name="layoutButtons">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMinimumSize</enum>
+       </property>
+       <item>
+        <widget class="QPushButton" name="startPlotButton">
+         <property name="text">
+          <string>Commit</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="resetButton">
+         <property name="text">
+          <string>Revert</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="addPlotButton">
+         <property name="text">
+          <string>New Plot</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="deletePlotButton">
+         <property name="text">
+          <string>Delete plot</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="3" column="0">
+      <widget class="QSplitter" name="splitter">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="opaqueResize">
+        <bool>true</bool>
+       </property>
+       <property name="childrenCollapsible">
+        <bool>false</bool>
+       </property>
+       <widget class="QListWidget" name="mpListPlotItems">
+        <property name="selectionMode">
+         <enum>QAbstractItemView::ExtendedSelection</enum>
+        </property>
+       </widget>
+       <widget class="QStackedWidget" name="mpStack"/>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CopasiWidget</class>
+   <extends>QWidget</extends>
+   <header>copasi/UI/copasiWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>addCurveButton</sender>
+   <signal>clicked()</signal>
+   <receiver>CQPlotSubwidget</receiver>
+   <slot>addCurveSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>338</x>
+     <y>159</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>283</x>
+     <y>139</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>addHistoButton</sender>
+   <signal>clicked()</signal>
+   <receiver>CQPlotSubwidget</receiver>
+   <slot>addHistoSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>416</x>
+     <y>158</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>400</x>
+     <y>138</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>deleteCurveButton</sender>
+   <signal>clicked()</signal>
+   <receiver>CQPlotSubwidget</receiver>
+   <slot>removeCurve()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>515</x>
+     <y>154</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>521</x>
+     <y>140</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>startPlotButton</sender>
+   <signal>clicked()</signal>
+   <receiver>CQPlotSubwidget</receiver>
+   <slot>commitPlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>107</x>
+     <y>415</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>41</x>
+     <y>401</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>resetButton</sender>
+   <signal>clicked()</signal>
+   <receiver>CQPlotSubwidget</receiver>
+   <slot>resetPlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>172</x>
+     <y>414</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>174</x>
+     <y>398</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>addPlotButton</sender>
+   <signal>clicked()</signal>
+   <receiver>CQPlotSubwidget</receiver>
+   <slot>addPlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>357</x>
+     <y>416</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>356</x>
+     <y>398</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>deletePlotButton</sender>
+   <signal>clicked()</signal>
+   <receiver>CQPlotSubwidget</receiver>
+   <slot>deletePlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>477</x>
+     <y>414</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>514</x>
+     <y>399</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpListPlotItems</sender>
+   <signal>itemSelectionChanged()</signal>
+   <receiver>CQPlotSubwidget</receiver>
+   <slot>itemSelectionChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>266</x>
+     <y>248</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>269</x>
+     <y>207</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>addCurveSlot()</slot>
+  <slot>addHistoSlot()</slot>
+  <slot>removeCurve()</slot>
+  <slot>commitPlot()</slot>
+  <slot>deletePlot()</slot>
+  <slot>addPlot()</slot>
+  <slot>resetPlot()</slot>
+  <slot>typeChanged()</slot>
+  <slot>itemSelectionChanged()</slot>
+ </slots>
+</ui>
