@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-//   $Revision: 1.50 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:11:20 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -45,56 +37,56 @@ CRandom * COptItem::mpRandom = NULL;
 
 COptItem::COptItem(const CCopasiContainer * pParent,
                    const std::string & name):
-    CCopasiParameterGroup(name, pParent),
-    mpParmObjectCN(NULL),
-    mpParmLowerBound(NULL),
-    mpParmUpperBound(NULL),
-    mpParmStartValue(NULL),
-    mpObject(NULL),
-    mpMethod(NULL),
-    mpObjectValue(NULL),
-    mpLowerObject(NULL),
-    mpLowerBound(NULL),
-    mLowerBound(0.0),
-    mpUpperObject(NULL),
-    mpUpperBound(NULL),
-    mUpperBound(0.0)
+  CCopasiParameterGroup(name, pParent),
+  mpParmObjectCN(NULL),
+  mpParmLowerBound(NULL),
+  mpParmUpperBound(NULL),
+  mpParmStartValue(NULL),
+  mpObject(NULL),
+  mpMethod(NULL),
+  mpObjectValue(NULL),
+  mpLowerObject(NULL),
+  mpLowerBound(NULL),
+  mLowerBound(0.0),
+  mpUpperObject(NULL),
+  mpUpperBound(NULL),
+  mUpperBound(0.0)
 {initializeParameter();}
 
 COptItem::COptItem(const COptItem & src,
                    const CCopasiContainer * pParent):
-    CCopasiParameterGroup(src, (pParent != NULL) ? pParent : src.getObjectDataModel()),
-    mpParmObjectCN(NULL),
-    mpParmLowerBound(NULL),
-    mpParmUpperBound(NULL),
-    mpParmStartValue(NULL),
-    mpObject(NULL),
-    mpMethod(NULL),
-    mpObjectValue(NULL),
-    mpLowerObject(NULL),
-    mpLowerBound(NULL),
-    mLowerBound(0.0),
-    mpUpperObject(NULL),
-    mpUpperBound(NULL),
-    mUpperBound(0.0)
+  CCopasiParameterGroup(src, (pParent != NULL) ? pParent : src.getObjectDataModel()),
+  mpParmObjectCN(NULL),
+  mpParmLowerBound(NULL),
+  mpParmUpperBound(NULL),
+  mpParmStartValue(NULL),
+  mpObject(NULL),
+  mpMethod(NULL),
+  mpObjectValue(NULL),
+  mpLowerObject(NULL),
+  mpLowerBound(NULL),
+  mLowerBound(0.0),
+  mpUpperObject(NULL),
+  mpUpperBound(NULL),
+  mUpperBound(0.0)
 {initializeParameter();}
 
 COptItem::COptItem(const CCopasiParameterGroup & group,
                    const CCopasiContainer * pParent):
-    CCopasiParameterGroup(group, (pParent != NULL) ? pParent : group.getObjectDataModel()),
-    mpParmObjectCN(NULL),
-    mpParmLowerBound(NULL),
-    mpParmUpperBound(NULL),
-    mpParmStartValue(NULL),
-    mpObject(NULL),
-    mpMethod(NULL),
-    mpObjectValue(NULL),
-    mpLowerObject(NULL),
-    mpLowerBound(NULL),
-    mLowerBound(0.0),
-    mpUpperObject(NULL),
-    mpUpperBound(NULL),
-    mUpperBound(0.0)
+  CCopasiParameterGroup(group, (pParent != NULL) ? pParent : group.getObjectDataModel()),
+  mpParmObjectCN(NULL),
+  mpParmLowerBound(NULL),
+  mpParmUpperBound(NULL),
+  mpParmStartValue(NULL),
+  mpObject(NULL),
+  mpMethod(NULL),
+  mpObjectValue(NULL),
+  mpLowerObject(NULL),
+  mpLowerBound(NULL),
+  mLowerBound(0.0),
+  mpUpperObject(NULL),
+  mpUpperBound(NULL),
+  mUpperBound(0.0)
 {initializeParameter();}
 
 COptItem::~COptItem()
@@ -105,9 +97,9 @@ void COptItem::initializeParameter()
   mpParmObjectCN =
     assertParameter("ObjectCN", CCopasiParameter::CN, CCopasiObjectName(""))->getValue().pCN;
   mpParmLowerBound =
-    assertParameter("LowerBound", CCopasiParameter::CN, CCopasiObjectName("-inf"))->getValue().pCN;
+    assertParameter("LowerBound", CCopasiParameter::CN, CCopasiObjectName("1e-06"))->getValue().pCN;
   mpParmUpperBound =
-    assertParameter("UpperBound", CCopasiParameter::CN, CCopasiObjectName("inf"))->getValue().pCN;
+    assertParameter("UpperBound", CCopasiParameter::CN, CCopasiObjectName("1e+06"))->getValue().pCN;
   mpParmStartValue =
     assertParameter("StartValue", CCopasiParameter::DOUBLE, NaN)->getValue().pDOUBLE;
 }
@@ -338,7 +330,7 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
 
   if ((mpObject =
          getObjectDataModel()->ObjectFromName(listOfContainer,
-                                              getObjectCN())) != NULL &&
+             getObjectCN())) != NULL &&
       mpObject->isValueDbl())
     mpObjectValue = (C_FLOAT64 *) mpObject->getValuePointer();
 
@@ -453,7 +445,7 @@ bool COptItem::compileLowerBound(const std::vector< CCopasiContainer * > & listO
     }
   else if ((mpLowerObject =
               getObjectDataModel()->ObjectFromName(listOfContainer,
-                                                   *mpParmLowerBound)) != NULL &&
+                  *mpParmLowerBound)) != NULL &&
            mpLowerObject->isValueDbl())
     {
       mpLowerBound = (C_FLOAT64 *) mpLowerObject->getValuePointer();
@@ -483,7 +475,7 @@ bool COptItem::compileUpperBound(const std::vector< CCopasiContainer * > & listO
     }
   else if ((mpUpperObject =
               getObjectDataModel()->ObjectFromName(listOfContainer,
-                                                   *mpParmUpperBound)) != NULL &&
+                  *mpParmUpperBound)) != NULL &&
            mpUpperObject->isValueDbl())
     {
       mpUpperBound = (C_FLOAT64 *) mpUpperObject->getValuePointer();
