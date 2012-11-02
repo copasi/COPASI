@@ -1,11 +1,3 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQParameterOverviewDM.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:49:57 $
-// End CVS Header
-
 // Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -33,9 +25,9 @@
 #define COLUMN_COUNT   6
 
 CQParameterOverviewDM::CQParameterOverviewDM(QObject * pParent):
-    QAbstractItemModel(pParent),
-    mpModelParameterSet(NULL),
-    mFramework(0)
+  QAbstractItemModel(pParent),
+  mpModelParameterSet(NULL),
+  mFramework(0)
 {
 }
 
@@ -142,7 +134,6 @@ QVariant CQParameterOverviewDM::headerData(int section, Qt::Orientation orientat
   return QVariant();
 }
 
-
 // virtual
 QModelIndex CQParameterOverviewDM::index(int row, int column, const QModelIndex & parent) const
 {
@@ -183,7 +174,6 @@ int CQParameterOverviewDM::rowCount(const QModelIndex & parent) const
         return 1;
       else
         return 0;
-
     }
 
   CModelParameter * pParent = nodeFromIndex(parent);
@@ -287,7 +277,7 @@ int CQParameterOverviewDM::getRow(const CModelParameter * pNode)
   CModelParameterGroup::const_iterator it = pParent->begin();
   CModelParameterGroup::const_iterator end = pParent->end();
 
-  for (int i; it != end; ++it, ++i)
+  for (int i = 0; it != end; ++it, ++i)
     {
       if (*it == pNode)
         {
