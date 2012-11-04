@@ -277,4 +277,6 @@ set_target_properties (libCOPASIUI PROPERTIES OUTPUT_NAME "COPASIUI")
     add_subdirectory(ViewCurrentUI)  
   endif(BUILD_VIEWCURRENT)
     
+  add_subdirectory(CopasiSBW)
+	
 endif(BUILD_GUI)
