@@ -51,9 +51,9 @@ public:
   const unsigned C_INT32 &getOutCrossingsLimit() const;
 
   /**
-   * Function to get mpFlagLimitTime
+   * Function to get mpFlagLimitOutTime
    */
-  bool getFlagLimitTime() const;
+  bool getFlagLimitOutTime() const;
 
   /**
    * Function to get mpTimeLimit
@@ -136,9 +136,9 @@ public:
   void setOutCrossingsLimit(const unsigned C_INT32 &crossingLimit);
 
   /**
-   * Function to set mpFlagLimitTime
+   * Function to set mpFlagLimitOutTime
    */
-  void setFlagLimitTime(bool flagLimitTime);
+  void setFlagLimitOutTime(bool flagLimitTime);
 
   /**
    * Function to set mpTimeLimit
@@ -245,11 +245,11 @@ private:
   unsigned C_INT32 * mpOutCrossingsLimit;
 
   /**
-   * this flag indicates whether the calculation should be stopped after a given time.
+   * this flag indicates whether output should be selected after a delay
    *
    * this member variable is mapped to a CCopasiParameter
    */
-  bool * mpFlagLimitTime;
+  bool * mpFlagLimitOutTime;
 
   /**
    * this variable holds the trigger expression

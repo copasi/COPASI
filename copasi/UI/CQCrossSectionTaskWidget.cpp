@@ -125,6 +125,7 @@ void CQCrossSectionTaskWidget::commitInput()
   mpCrossSectionProblem->setOutCrossingsLimit(mpTxtOutCrossings->text().toULong());
   mpCrossSectionProblem->setTimeLimit(mpTxtTime->text().toDouble());
   mpCrossSectionProblem->setOutputStartTime(mpTxtOutTime->text().toDouble());
+  mpCrossSectionProblem->setFlagLimitOutTime(mpCheckOutputDelay->isChecked());
   mpCrossSectionProblem->setFlagLimitConvergence(mpCheckSimConvergence->isChecked());
   mpCrossSectionProblem->setConvergenceTolerance(mpTxtConvergence->text().toDouble());
   mpCrossSectionProblem->setFlagLimitOutConvergence(mpCheckOutputConvergence->isChecked());
@@ -178,8 +179,12 @@ bool CQCrossSectionTaskWidget::saveTask()
 
   pProblem->setSingleObjectCN(mpSingleVariable);
 
+  pProblem->setFlagLimitOutTime(mpCheckOutputDelay->isChecked());
+
   if (mpCheckOutputDelay->isChecked())
-    pProblem->setOutputStartTime(mpTxtOutTime->text().toDouble());
+    {
+      pProblem->setOutputStartTime(mpTxtOutTime->text().toDouble());
+    }
 
   pProblem->setFlagLimitCrossings(mpCheckSimCrossings->isChecked());
   pProblem->setCrossingsLimit(mpTxtCrossings->text().toULong());
@@ -294,14 +299,7 @@ bool CQCrossSectionTaskWidget::loadTask()
     mpTxtOutCrossings->setText("");
 
   //mpCheckLT->setChecked(pProblem->getFlagLimitTime());
-  mpTxtTime->setEnabled(pProblem->getFlagLimitTime());
-
-  if (pProblem->getFlagLimitTime())
-    mpTxtTime->setText(QString::number(pProblem->getTimeLimit()));
-  else
-    mpTxtTime->setText("");
-
-  if (pProblem->getOutputStartTime() > 0.0)
+  if (pProblem->getFlagLimitOutTime())
     {
       mpCheckOutputDelay->setChecked(true);
       mpTxtOutTime->setEnabled(true);
@@ -313,6 +311,8 @@ bool CQCrossSectionTaskWidget::loadTask()
       mpTxtOutTime->setEnabled(false);
       mpTxtOutTime->setText("");
     }
+
+  mpTxtTime->setText(QString::number(pProblem->getTimeLimit()));
 
   mpValidatorCrossing->saved();
   mpValidatorTolerance->saved();
@@ -334,7 +334,7 @@ void CQCrossSectionTaskWidget::slotChooseVariable()
 {
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
-                                            CQSimpleSelectionTree::Variables + CQSimpleSelectionTree::ObservedValues, mpSingleVariable);
+        CQSimpleSelectionTree::Variables + CQSimpleSelectionTree::ObservedValues, mpSingleVariable);
 
   setSingleObject(pObject);
 }

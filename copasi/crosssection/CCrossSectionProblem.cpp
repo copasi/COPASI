@@ -16,7 +16,7 @@ CCrossSectionProblem::CCrossSectionProblem(const CCopasiContainer * pParent):
   mpConvergenceOutTolerance(NULL),
   mpFlagLimitOutCrossings(NULL),
   mpOutCrossingsLimit(NULL),
-  mpFlagLimitTime(NULL),
+  mpFlagLimitOutTime(NULL),
   mSingleObjectCN(NULL),
   mpFlagPositiveDirection(NULL),
   mpThreshold(NULL)
@@ -37,7 +37,7 @@ CCrossSectionProblem::CCrossSectionProblem(const CCrossSectionProblem & src,
   mpConvergenceOutTolerance(NULL),
   mpFlagLimitOutCrossings(NULL),
   mpOutCrossingsLimit(NULL),
-  mpFlagLimitTime(NULL),
+  mpFlagLimitOutTime(NULL),
   mSingleObjectCN(NULL),
   mpFlagPositiveDirection(NULL),
   mpThreshold(NULL)
@@ -51,7 +51,7 @@ void CCrossSectionProblem::initializeParameter()
 {
   mpFlagLimitCrossings  = assertParameter("LimitCrossings", CCopasiParameter::BOOL, false)->getValue().pBOOL;
   mpCrossingsLimit  = assertParameter("NumCrossingsLimit", CCopasiParameter::UINT, (unsigned C_INT32)0)->getValue().pUINT;
-  mpFlagLimitTime  = assertParameter("LimitTime", CCopasiParameter::BOOL, true)->getValue().pBOOL;
+  mpFlagLimitOutTime  = assertParameter("LimitOutTime", CCopasiParameter::BOOL, true)->getValue().pBOOL;
   mpFlagLimitOutCrossings  = assertParameter("LimitOutCrossings", CCopasiParameter::BOOL, false)->getValue().pBOOL;
   mpFlagPositiveDirection  = assertParameter("PositiveDirection", CCopasiParameter::BOOL, true)->getValue().pBOOL;
   mpOutCrossingsLimit  = assertParameter("NumOutCrossingsLimit", CCopasiParameter::UINT, (unsigned C_INT32)0)->getValue().pUINT;
@@ -100,8 +100,8 @@ bool CCrossSectionProblem::getFlagLimitOutCrossings() const
 const unsigned C_INT32 & CCrossSectionProblem::getOutCrossingsLimit() const
 {return *mpOutCrossingsLimit;}
 
-bool CCrossSectionProblem::getFlagLimitTime() const
-{return *mpFlagLimitTime;}
+bool CCrossSectionProblem::getFlagLimitOutTime() const
+{return *mpFlagLimitOutTime;}
 
 const C_FLOAT64 & CCrossSectionProblem::getTimeLimit() const
 {return *mpDuration;}
@@ -127,8 +127,8 @@ void CCrossSectionProblem::setFlagLimitOutCrossings(bool flagLimitCrossing)
 void CCrossSectionProblem::setOutCrossingsLimit(const unsigned C_INT32 &crossingLimit)
 {*mpOutCrossingsLimit = crossingLimit;}
 
-void CCrossSectionProblem::setFlagLimitTime(bool flagLimitTime)
-{*mpFlagLimitTime = flagLimitTime;}
+void CCrossSectionProblem::setFlagLimitOutTime(bool flagLimitTime)
+{*mpFlagLimitOutTime = flagLimitTime;}
 
 void CCrossSectionProblem::setTimeLimit(const C_FLOAT64 &timeLimit)
 {*mpDuration = timeLimit;}
