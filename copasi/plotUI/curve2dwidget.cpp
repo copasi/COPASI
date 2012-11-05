@@ -239,25 +239,23 @@ void Curve2DWidget::typeChanged(int linetype)
 {
   if (linetype == 0 || linetype == 3)
     {
-      mpBoxLineSubType->show();
-      mpSpinBoxWidth->show();
-      mpLblWidth->show();
+      mpBoxLineSubType->setEnabled(true);
+      mpSpinBoxWidth->setEnabled(true);
     }
   else
     {
-      mpBoxLineSubType->hide();
-      mpSpinBoxWidth->hide();
-      mpLblWidth->hide();
+      mpBoxLineSubType->setEnabled(false);
+      mpSpinBoxWidth->setEnabled(false);
     }
 
   //symbol type
   if (linetype == 2 || linetype == 3)
     {
-      mpBoxSymbolSubType->show();
+      mpBoxSymbolSubType->setEnabled(true);
     }
   else
     {
-      mpBoxSymbolSubType->hide();
+      mpBoxSymbolSubType->setEnabled(false);
     }
 }
 

@@ -22,9 +22,9 @@
 void BandedGraphWidget::setMultipleEditMode(bool mode)
 {
   mpEditTitle->setEnabled(!mode);
-  mpmpEditX->setEnabled(!mode);
-  mpmpEditYone->setEnabled(!mode);
-  mpmpEditYtwo->setEnabled(!mode);
+  mpEditX->setEnabled(!mode);
+  mpEditYone->setEnabled(!mode);
+  mpEditYtwo->setEnabled(!mode);
   mpBtnX->setEnabled(!mode);
   mpBtnYone->setEnabled(!mode);
   mpBtnYtwo->setEnabled(!mode);
