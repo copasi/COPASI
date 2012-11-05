@@ -62,7 +62,9 @@ std::vector<C_INT32> COutputAssistant::getListOfDefaultOutputDescriptions(const 
         {
           ret.push_back(it->first);
         }
-      else if (task->getType() == it->second.mTaskType || it->second.mTaskType == CCopasiTask::unset)
+      else if (task->getType() == it->second.mTaskType || it->second.mTaskType == CCopasiTask::unset ||
+               (task->getType() == CCopasiTask::crosssection && it->second.mTaskType == CCopasiTask::timeCourse)
+              )
         //add descriptions with matching task type
         {
           //if (secondaryTask matches) TODO
@@ -1249,7 +1251,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
           data2 = pTime;
         }
 
-      return createPlot(getItemName(id), data2, logX, data1, logY, getItem(id).mTaskType, pDataModel);
+      return createPlot(getItemName(id), data2, logX, data1, logY, getItem(id).mTaskType, pDataModel, task);
     }
 
   return NULL;
@@ -1263,8 +1265,9 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
     bool logX,
     const std::vector<const CCopasiObject*> & y,
     bool logY,
-    const CCopasiTask::Type & /* taskType */,
-    CCopasiDataModel* pDataModel)
+    const CCopasiTask::Type & taskType,
+    CCopasiDataModel* pDataModel,
+    CCopasiTask *task /*= NULL*/)
 {
   if (!x) return NULL;
 
@@ -1295,6 +1298,10 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
   std::string itemTitle;
   CPlotItem * plItem;
 
+  CScanProblem* problem = task != NULL ? dynamic_cast<CScanProblem*>(task->getProblem()) : NULL;
+  bool isCrossSection = (problem != NULL && problem->getSubtask() == CCopasiTask::crosssection) ||
+                        task->getType() == CCopasiTask::crosssection;
+
   for (it = y.begin(); it != itEnd; ++it)
     {
       if (!(*it)) continue;
@@ -1305,6 +1312,13 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
       plItem = pPl->createItem(itemTitle, CPlotItem::curve2d);
       plItem->addChannel(name1);
       plItem->addChannel(name2);
+
+      if (isCrossSection)
+        {
+          // disable line
+          plItem->setValue("Line type", (unsigned int) 2); // use symbols
+          plItem->setValue("Symbol subtype", (unsigned int)2); // use symbols
+        }
     }
 
   pPl->setLogX(logX);
