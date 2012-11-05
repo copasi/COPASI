@@ -16,6 +16,9 @@
 
 
 
+
+
+
  <comment> All rights reserved. </comment>
  <class>DefaultPlotDialog</class>
  <widget class="QDialog" name="DefaultPlotDialog">
@@ -28,7 +31,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form1</string>
+   <string>Output Assistent</string>
   </property>
   <layout class="QGridLayout">
    <item row="0" column="0" rowspan="4">
