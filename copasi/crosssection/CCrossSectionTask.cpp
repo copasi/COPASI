@@ -147,6 +147,7 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
 
   return success;
 }
+
 void CCrossSectionTask::createEvent()
 {
   if (mpEvent != NULL) return;
@@ -466,12 +467,18 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
   //now check if we can transition to the main state
   if (mState == TRANSIENT)
     {
-      if (*mpCurrentTime >= mOutputStartTime)
+      if (mpCrossSectionProblem->getFlagLimitTime() && *mpCurrentTime >= mOutputStartTime)
         mState = MAIN;
 
-      if (mNumCrossings >= mOutputStartNumCrossings)
+      if (mpCrossSectionProblem->getFlagLimitOutCrossings() && mNumCrossings >= mOutputStartNumCrossings)
         mState = MAIN;
 
+      //if output is not delayed by time and not delayed by number of crossings
+      //output is started immediately
+      if (!mpCrossSectionProblem->getFlagLimitOutCrossings()
+          && !mpCrossSectionProblem->getFlagLimitTime())
+        mState = MAIN;
+      
       //TODO convergence criterium
     }
 
@@ -484,7 +491,7 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
 
   //check if the conditions for stopping are met
   //we don't have to check for maximum duration, this is done elsewhere
-  if (mNumCrossings >= mMaxNumCrossings)
+  if (mMaxNumCrossings>0 && mNumCrossings >= mMaxNumCrossings)
     mState = FINISH;
 
   //TODO convergence criterium
