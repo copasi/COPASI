@@ -76,7 +76,7 @@ std::string Copasi2SBMLTranslator::translate(const std::string &sbmlString)
   CDirEntry::makePathAbsolute(tempFile, tempDir);
   tempFile = CDirEntry::fileName(tempFile);
   pDataModel->saveModel(tempFile, NULL, true);
-  std::ifstream ifs(tempFile);
+  std::ifstream ifs(tempFile.c_str());
   std::string str((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
   ifs.close();
   CDirEntry::remove(tempFile);
