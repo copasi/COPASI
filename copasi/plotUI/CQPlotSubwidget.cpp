@@ -90,6 +90,7 @@ void CQPlotSubwidget::storeChanges()
     {
       QString oldName = mLastSelection[0]->text();
       CPlotItem* item = mList[oldName];
+      updateItem(item);
 
       if (item == NULL) return;
 
