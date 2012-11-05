@@ -152,9 +152,7 @@ void CCrossSectionTask::createEvent()
   if (mpEvent != NULL) return;
 
   CModel* pModel = mpCrossSectionProblem->getModel();
-  size_t i;
 
-  // TODO: add event instead of selecting __cutplane
   if (!mpCrossSectionProblem->getSingleObjectCN().empty())
     {
       int count = 0;
@@ -213,12 +211,12 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
 
   if (mpCrossSectionProblem->getFlagLimitCrossings())
     mMaxNumCrossings = mpCrossSectionProblem->getCrossingsLimit();
-  else 
+  else
     mMaxNumCrossings = 0;
 
   if (mpCrossSectionProblem->getFlagLimitOutCrossings())
     mOutputStartNumCrossings = mpCrossSectionProblem->getOutCrossingsLimit();
-  else 
+  else
     mOutputStartNumCrossings = 0;
 
   output(COutputInterface::BEFORE);
@@ -237,8 +235,7 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
     }
 
   mState = TRANSIENT;
-  
-  
+
   mNumCrossings = 0;
 
   try
