@@ -14,6 +14,9 @@
 
 
 
+
+
+
 LIB = plotUI
 
 
@@ -29,6 +32,7 @@ HEADERS += BandedGraphWidget.h \
            CQPlotSubwidget.h \
            plotwindow.h \
            scrollbar.h \
+		   CQPlotEditWidget.h \
            scrollzoomer.h
 
 SOURCES += BandedGraphWidget.cpp \
@@ -41,6 +45,7 @@ SOURCES += BandedGraphWidget.cpp \
            CQPlotSubwidget.cpp \
            plotwindow.cpp \
            scrollbar.cpp \
+		   CQPlotEditWidget.cpp \
            scrollzoomer.cpp
 
 FORMS += BandedGraphWidget.ui

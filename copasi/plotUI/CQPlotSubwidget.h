@@ -18,6 +18,7 @@ class QListWidgetItem;
 class PlotWindow;
 class Curve2DWidget;
 class HistoWidget;
+class CQPlotEditWidget;
 
 #ifdef COPASI_BANDED_GRAPH
 class BandedGraphWidget;
@@ -30,18 +31,20 @@ class CQPlotSubwidget : public CopasiWidget, public Ui::CQPlotSubwidget
 private:
   Curve2DWidget *mpCurveWidget;
   HistoWidget *mpHistoWidget;
-
 #ifdef COPASI_BANDED_GRAPH
   BandedGraphWidget* mpBandedGraphWidget;
 #endif
+
+  CQPlotEditWidget* selectControl(CPlotItem::Type type);
+
   void addPlotItem(CPlotItem* item);
   void selectPlotItem(CPlotItem* item);
-
-  QWidget* getWidgetForIndex(int index);
 
   int getCurrentIndex();
   void setCurrentIndex(int index);
   void deleteCurve(int index);
+  void deleteCurve(QListWidgetItem* item);
+  int getRow(QListWidgetItem* item);
   void deleteCurves();
 
   QMap<QString, CPlotItem*> mList;

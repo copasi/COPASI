@@ -1,18 +1,11 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/curve2dwidget.cpp,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/05/03 14:25:48 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #include <qpainter.h>
 #include "curve2dwidget.h"
+#include "CQPlotEditWidget.h"
 
 #include "UI/CCopasiSelectionDialog.h"
 #include "UI/qtUtilities.h"
@@ -29,10 +22,9 @@
  *  name 'name' and widget flags set to 'f'.
  */
 Curve2DWidget::Curve2DWidget(QWidget* parent, const char* /* name */, Qt::WindowFlags fl)
-    : QWidget(parent, fl)
+  : CQPlotEditWidget(parent, fl)
 {
   setupUi(this);
-
 
   mpBtnX->setIcon(CQIconResource::icon(CQIconResource::copasi));
   mpBtnY->setIcon(CQIconResource::icon(CQIconResource::copasi));
@@ -156,7 +148,6 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
       mpBoxColor->setCurrentIndex(mpBoxColor->count() - 1);
     }
 
-
   //channel
   mpCheckBefore->setChecked(curve->getActivity() & COutputInterface::BEFORE);
   mpCheckDuring->setChecked(curve->getActivity() & COutputInterface::DURING);
@@ -268,11 +259,18 @@ void Curve2DWidget::typeChanged(int linetype)
     {
       mpBoxSymbolSubType->hide();
     }
-
 }
 
-
-void Curve2DWidget::setModel(const CModel * model)
+#if USE_NEW_PLOTSUBWIDGET
+/**
+ * In multiple edit mode, we don't want to edit name & channels
+ */
+void Curve2DWidget::setMultipleEditMode(bool mode)
 {
-  mpModel = model;
+  mpEditTitle->setEnabled(!mode);
+  mpEditX->setEnabled(!mode);
+  mpEditY->setEnabled(!mode);
+  mpBtnX->setEnabled(!mode);
+  mpBtnY->setEnabled(!mode);
 }
+#endif

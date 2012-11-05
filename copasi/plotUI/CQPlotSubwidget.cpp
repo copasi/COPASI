@@ -4,6 +4,7 @@
 // All rights reserved.
 
 #include "CQPlotSubwidget.h"
+#include "CQPlotEditWidget.h"
 
 #include "curve2dwidget.h"
 #include "HistoWidget.h"
@@ -22,11 +23,11 @@
 #include "copasi/UI/qtUtilities.h"
 #include "report/CCopasiRootContainer.h"
 
-//temporary
 #include "UI/CCopasiSelectionDialog.h"
 #include <QListWidgetItem>
 #include <QList>
 #include <QMap>
+#include <QMessageBox>
 //-----------------------------------------------------------------------------
 
 /*
@@ -68,31 +69,15 @@ CPlotItem* CQPlotSubwidget::updateItem(CPlotItem* item)
 
   if (item == NULL) return NULL;
 
-  QWidget *current = mpStack->currentWidget();
+  QWidget *widget = mpStack->currentWidget();
 
-  Curve2DWidget *curve = dynamic_cast<Curve2DWidget*>(current);
+  CQPlotEditWidget *current = dynamic_cast<CQPlotEditWidget*>(widget);
 
-  if (curve != NULL)
+  if (current != NULL)
     {
-      curve->SaveToCurveSpec(item);
+      current->SaveToCurveSpec(item);
     }
 
-  HistoWidget *hist = dynamic_cast<HistoWidget *>(current);
-
-  if (hist != NULL)
-    {
-      hist->SaveToCurveSpec(item);
-    }
-
-#ifdef COPASI_BANDED_GRAPH
-  BandedGraphWidget *band = dynamic_cast<BandedGraphWidget *>(current);
-
-  if (band != NULL)
-    {
-      band->SaveToCurveSpec(item);
-    }
-
-#endif
   return item;
 }
 
@@ -138,6 +123,7 @@ void CQPlotSubwidget::storeChanges()
           CPlotItem* newItem = new CPlotItem(*common);
           newItem->setTitle(current->getTitle());
           newItem->getChannels() = channels;
+          newItem->setType(current->getType());
 
           mList[(*it)->text()] = newItem;
 
@@ -146,11 +132,6 @@ void CQPlotSubwidget::storeChanges()
 
       // assign multiple
     }
-}
-
-QWidget* CQPlotSubwidget::getWidgetForIndex(int index)
-{
-  return mpCurveWidget;
 }
 
 //-----------------------------------------------------------------------------
@@ -186,7 +167,6 @@ void CQPlotSubwidget::addHistoSlot()
 int CQPlotSubwidget::getCurrentIndex()
 {
   return mpListPlotItems->currentRow();
-  //return tabs->count()
 }
 
 void CQPlotSubwidget::deleteCurves()
@@ -198,19 +178,33 @@ void CQPlotSubwidget::deleteCurves()
 
   mList.clear();
   mpListPlotItems->clear();
-  //while (tabs->currentWidget()) delete tabs->currentWidget();
 }
-void CQPlotSubwidget::deleteCurve(int index)
-{
-  QListWidgetItem *item = mpListPlotItems->item(index);
 
+int CQPlotSubwidget::getRow(QListWidgetItem* item)
+{
+  for (int i = 0; i < mpListPlotItems->count(); ++i)
+    {
+      if (mpListPlotItems->item(i)->text() == item->text())
+        return i;
+    }
+
+  return -1;
+}
+void CQPlotSubwidget::deleteCurve(QListWidgetItem* item)
+{
   if (item == NULL)
     return;
 
   delete mList[item->text()];
   mList.remove(item->text());
-  mpListPlotItems->removeItemWidget(item);
-  //delete tabs->currentWidget();
+
+  delete mpListPlotItems->takeItem(getRow(item));
+}
+
+void CQPlotSubwidget::deleteCurve(int index)
+{
+  QListWidgetItem *item = mpListPlotItems->item(index);
+  deleteCurve(item);
 }
 
 void CQPlotSubwidget::setCurrentIndex(int index)
@@ -232,43 +226,48 @@ void CQPlotSubwidget::addPlotItem(CPlotItem* item)
   selectPlotItem(item);
 }
 
-void CQPlotSubwidget::selectPlotItem(CPlotItem* item)
+CQPlotEditWidget* CQPlotSubwidget::selectControl(CPlotItem::Type type)
 {
-  switch (item->getType())
+
+  switch (type)
     {
 #ifdef COPASI_BANDED_GRAPH
 
       case CPlotItem::bandedGraph:
       {
-        assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-        mpBandedGraphWidget->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
-        mpBandedGraphWidget->LoadFromCurveSpec(item);
         mpStack->setCurrentIndex(2);
+        return mpBandedGraphWidget;
       }
-      break;
+
 #endif
 
       case CPlotItem::histoItem1d:
       {
-        assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-        mpHistoWidget->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
-        mpHistoWidget->LoadFromCurveSpec(item);
         mpStack->setCurrentIndex(1);
+        return mpHistoWidget;
       }
-      break;
 
       case CPlotItem::curve2d:
       {
-        assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-        mpCurveWidget->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
-        mpCurveWidget->LoadFromCurveSpec(item);
         mpStack->setCurrentIndex(0);
+        return mpCurveWidget;
       }
-      break;
 
       default:
-        break;
+        return NULL;
     }
+}
+
+void CQPlotSubwidget::selectPlotItem(CPlotItem* item)
+{
+  if (item == NULL) return;
+
+  CQPlotEditWidget* current = selectControl(item->getType());
+
+  if (current == NULL) return;
+
+  current->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
+  current->LoadFromCurveSpec(item);
 }
 
 void CQPlotSubwidget::addCurveTab(const std::string & title,
@@ -630,7 +629,19 @@ void CQPlotSubwidget::createHistograms(std::vector<const CCopasiObject* >objects
 
 void CQPlotSubwidget::removeCurve()
 {
-  deleteCurve(getCurrentIndex());
+  QList<QListWidgetItem*> selection = mpListPlotItems->selectedItems();
+
+  if (selection.size() == 0)
+    return;
+
+  if (QMessageBox::question(this, "Delete Curves", QString("Do you really want to delete the %1 selected curve(s)?").arg(selection.size()), QMessageBox::Yes, QMessageBox::No | QMessageBox::Default) == QMessageBox::Yes)
+    {
+
+      for (int index = selection.size() - 1; index >= 0; --index)
+        {
+          deleteCurve(selection.at(index));
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -839,20 +850,24 @@ bool CQPlotSubwidget::areOfSameType(QList<QListWidgetItem*>& items)
 {
   if (items.size() <= 1) return true;
 
-  QList<CPlotItem::Type> temp;
+  QList<CPlotItem::Type> listOfUniqueTypes;
 
-  QList<QListWidgetItem*>::iterator it;
+  QList<QListWidgetItem*>::const_iterator it = items.begin();
 
-  for (it = items.begin(); it != items.end(); ++it)
+  while (it != items.end())
     {
-      CPlotItem *item = mList[(*it)->text()];
+      QString currentText = (*it)->text();
+      CPlotItem *item = mList[currentText];
 
-      if (!temp.contains(item->getType()))
-        temp.append(item->getType());
+      if (!listOfUniqueTypes.contains(item->getType()))
+        listOfUniqueTypes.append(item->getType());
+
+      ++it;
     }
 
-  return temp.size() == 1;
+  return listOfUniqueTypes.size() == 1;
 }
+
 void CQPlotSubwidget::itemSelectionChanged()
 {
   storeChanges();
@@ -866,6 +881,7 @@ void CQPlotSubwidget::itemSelectionChanged()
     {
       mpStack->setEnabled(true);
       selectPlotItem(mList[current[0]->text()]);
+      (static_cast<CQPlotEditWidget*>(mpStack->currentWidget()))->setMultipleEditMode(false);
     }
   else
     {
@@ -877,6 +893,7 @@ void CQPlotSubwidget::itemSelectionChanged()
         {
           mpStack->setEnabled(true);
           selectPlotItem(mList[current[0]->text()]);
+          (static_cast<CQPlotEditWidget*>(mpStack->currentWidget()))->setMultipleEditMode(true);
         }
     }
 

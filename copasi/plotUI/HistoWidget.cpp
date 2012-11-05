@@ -6,6 +6,7 @@
 #include <QtCore/QVariant>
 
 #include "HistoWidget.h"
+#include "CQPlotEditWidget.h"
 
 #ifdef USE_NEW_PLOTSUBWIDGET
 #include "CQPlotSubwidget.h"
@@ -23,7 +24,7 @@ typedef PlotSubwidget PlotWindowType;
 #include "resourcesUI/CQIconResource.h"
 
 HistoWidget::HistoWidget(QWidget* parent, const char* /* name */, Qt::WindowFlags fl)
-  : QWidget(parent, fl)
+  : CQPlotEditWidget(parent, fl)
 {
   setupUi(this);
 
@@ -148,7 +149,14 @@ bool HistoWidget::SaveToCurveSpec(CPlotItem * curve) const
   return true;
 }
 
-void HistoWidget::setModel(const CModel * model)
+#if USE_NEW_PLOTSUBWIDGET
+/**
+ * In multiple edit mode, we don't want to edit name & channels
+ */
+void HistoWidget::setMultipleEditMode(bool mode)
 {
-  mpModel = model;
+  mpEditTitle->setEnabled(!mode);
+  mpEditVariable->setEnabled(!mode);
+  mpBtnVariable->setEnabled(!mode);
 }
+#endif

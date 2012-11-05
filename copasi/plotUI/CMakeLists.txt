@@ -19,7 +19,7 @@
 # 
 # Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
+# All rights reserved. 
 #
 ###############################################################################
 

@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/plotUI/BandedGraphWidget.cpp,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: tjohann $
-//   $Date: 2011/09/05 11:53:01 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,6 +7,7 @@
 
 #include "UI/CCopasiSelectionDialog.h"
 #include "UI/qtUtilities.h"
+#include "CQPlotEditWidget.h"
 
 #include "copasi.h"
 
@@ -22,12 +15,28 @@
 #include "plot/CPlotItem.h"
 #include "resourcesUI/CQIconResource.h"
 
+#if USE_NEW_PLOTSUBWIDGET
+/**
+ * In multiple edit mode, we don't want to edit name & channels
+ */
+void BandedGraphWidget::setMultipleEditMode(bool mode)
+{
+  mpEditTitle->setEnabled(!mode);
+  mpmpEditX->setEnabled(!mode);
+  mpmpEditYone->setEnabled(!mode);
+  mpmpEditYtwo->setEnabled(!mode);
+  mpBtnX->setEnabled(!mode);
+  mpBtnYone->setEnabled(!mode);
+  mpBtnYtwo->setEnabled(!mode);
+}
+#endif
+
 /*
  *  Constructs a BandedGraphWidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 BandedGraphWidget::BandedGraphWidget(QWidget* parent, const char* /* name */, Qt::WindowFlags fl)
-    : QWidget(parent, fl)
+  : CQPlotEditWidget(parent, fl)
 {
   setupUi(this);
 
@@ -83,7 +92,6 @@ BandedGraphWidget::LoadFromCurveSpec(const CPlotItem * curve)
 
   if (mpObjectYtwo)
     mpEditYtwo->setText(FROM_UTF8(mpObjectYtwo->getObjectDisplayName()));
-
 
   const void* tmp;
 
@@ -208,16 +216,8 @@ BandedGraphWidget::buttonPressedYtwo()
                                          + "|"
                                          + mpObjectX->getObjectDisplayName()));
 
-
       //TODO update tab title
     }
   else
     mpEditYtwo->setText("");
 }
-
-void
-BandedGraphWidget::setModel(const CModel * model)
-{
-  mpModel = model;
-}
-

@@ -12,6 +12,9 @@
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
+
+
+
 ######################################################################
 # $Revision: 1.142 $ $Author: shoops $ $Date: 2012/06/26 22:30:00 $  
 ######################################################################
@@ -110,6 +113,10 @@ DEFINES += WITH_CSPMETHOD
 
 # flag to use Svens SBML unit identification framework
 #define USE_SBMLUNIT
+
+# enable this to use the new listwidget based plot specification window
+DEFINES += USE_NEW_PLOTSUBWIDGET
+
 
 debug {
   DEFINES += COPASI_DEBUG
