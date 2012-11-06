@@ -204,11 +204,10 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
   //the output starts only after "outputStartTime" has passed
   mOutputStartTime = *mpCurrentTime + mpCrossSectionProblem->getOutputStartTime();
   const C_FLOAT64 EndTime = *mpCurrentTime + MaxDuration;
-  const C_FLOAT64 StartTime = *mpCurrentTime;
-  C_FLOAT64 CompareEndTime;
+  mStartTime = *mpCurrentTime;
 
   // It suffices to reach the end time within machine precision
-  CompareEndTime = EndTime - 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
+  C_FLOAT64 CompareEndTime = EndTime - 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
 
   if (mpCrossSectionProblem->getFlagLimitCrossings())
     mMaxNumCrossings = mpCrossSectionProblem->getCrossingsLimit();
@@ -223,16 +222,16 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
   output(COutputInterface::BEFORE);
 
   bool flagProceed = true;
-  C_FLOAT64 handlerFactor = 100.0 / MaxDuration;
-  C_FLOAT64 Percentage = 0;
+  mProgressFactor = 1000.0 / MaxDuration;
+  mProgressValue = 0;
 
   if (mpCallBack != NULL)
     {
       mpCallBack->setName("performing simulation...");
-      C_FLOAT64 hundred = 100;
+      mProgressMax = 1000;
       mhProgress = mpCallBack->addItem("Completion",
-                                       Percentage,
-                                       &hundred);
+                                       mProgressValue,
+                                       &mProgressMax);
     }
 
   mState = TRANSIENT;
@@ -244,12 +243,6 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
       do
         {
           flagProceed &= processStep(EndTime);
-
-          if (mpCallBack != NULL)
-            {
-              Percentage = (*mpCurrentTime - StartTime) * handlerFactor;
-              flagProceed &= mpCallBack->progressItem(mhProgress);
-            }
         }
       while ((*mpCurrentTime < CompareEndTime) && flagProceed);
     }
@@ -455,9 +448,26 @@ void CCrossSectionTask::EventCallBack(void* pCSTask, CEvent::Type type)
 
 void CCrossSectionTask::eventCallBack(CEvent::Type type)
 {
-  std::cout << "event call back: " << type << std::endl;
+//  std::cout << "event call back: " << type << std::endl;
+  
+  //do progress reporting
+  if (mpCallBack != NULL)
+  {
+    mProgressValue = (*mpCurrentTime - mStartTime) * mProgressFactor;
+    if (mMaxNumCrossings > 0)
+    {
+      C_FLOAT64 tmp = 1000.0*mNumCrossings/mMaxNumCrossings;
+      if (tmp>mProgressValue)
+        mProgressValue=tmp;
+    }
+    bool flag = mpCallBack->progressItem(mhProgress);
+    if (!flag) 
+      mState=FINISH;
+  }
 
-  //do nothing if the event is not representing a cut plane
+  
+
+  //do nothing else if the event is not representing a cut plane
   if (type != CEvent::CutPlane)
     return;
 

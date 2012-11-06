@@ -79,6 +79,11 @@ private:
    */
   C_FLOAT64 mOutputStartTime;
 
+  /**
+   * time at which the simulation starts.
+   */
+  C_FLOAT64 mStartTime;
+
   size_t mNumCrossings;
 
   size_t mOutputStartNumCrossings;
@@ -90,6 +95,21 @@ private:
    */
   size_t mhProgress;
 
+  /**
+   * this holds the max value for the progress reporting
+   */
+  C_FLOAT64 mProgressMax;
+
+  /**
+   * this holds the current value for the progress reporting
+   */
+  C_FLOAT64 mProgressValue;
+
+  /**
+   * this holds the current value for the progress reporting
+   */
+  C_FLOAT64 mProgressFactor;
+  
   /**
    * temporary event
    */
