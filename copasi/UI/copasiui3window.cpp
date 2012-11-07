@@ -363,10 +363,8 @@ void CopasiUI3Window::createToolBar()
   tb->addWidget(mpBoxSelectFramework);
 
   connect(mpBoxSelectFramework, SIGNAL(activated(int)), this, SLOT(slotFrameworkChanged(int)));
-  
-  
+
   setUnifiedTitleAndToolBarOnMac(true);
-  
 }
 
 void CopasiUI3Window::createMenuBar()
@@ -741,6 +739,18 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
     }
 
   CCopasiMessage msg = CCopasiMessage::getLastMessage();
+
+  if (msg.getNumber() == 6303 &&
+      (msg.getText().find("'sbml'") != std::string::npos || msg.getText().find(":sbml'") != std::string::npos))
+    {
+      // someone attempted to open an SBML file but failed, instead of displaying the message
+      //   XML (3): Unknown element 'sbml' encountered at line '3'.
+      // we just open the SBML file!
+
+      emit slotImportSBML(mNewFile);
+
+      return;
+    }
 
   if (msg.getNumber() != MCCopasiMessage + 1)
     {
