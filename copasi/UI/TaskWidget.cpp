@@ -327,6 +327,14 @@ bool TaskWidget::commonBeforeRunTask()
 
   if (!mpTask) return false;
 
+  if (mProgressBar != NULL)
+    {
+      CQMessageBox::critical(this, "Task in Progress",
+                             "A task is currently running, another cannot be started before the current task ended.",
+                             QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      return false;
+    }
+
   // if overwrite is enabled and the file exists, then ask
   if (!mpTask->getReport().getTarget().empty() &&
       mpTask->getReport().confirmOverwrite() &&
