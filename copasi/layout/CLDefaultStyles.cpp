@@ -1,9 +1,3 @@
-// Begin git Header 
-//   Commit: 96a835d0b017bbcdf3f9683a5d4c491081280849 
-//   Author: Frank T. Bergmann fbergman@caltech.edu 
-//   Date: 2012-10-12 14:28:30 +0200 
-// End git Header 
-
 // Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -187,7 +181,7 @@ const char* DEFAULT_STYLES_STRING = \
                                     "    </style>\n"
                                     "  </listOfStyles>\n"
                                     "</renderInformation>\n"
-                                    "  <renderInformation id=\"default\" name=\"Blue Gradient Species; colored modifiers\"  backgroundColor=\"#FFFFFFFF\">\n"
+                                    "  <renderInformation id=\"default\" name=\"Blue Gradient Species\"  backgroundColor=\"#FFFFFFFF\">\n"
                                     "    <listOfColorDefinitions>\n"
                                     "      <colorDefinition id=\"speciesColor\" value=\"#D2D2E6\"/>\n"
                                     "      <colorDefinition id=\"compartmentColor\" value=\"#BCCABA\"/>\n"
@@ -305,7 +299,7 @@ const char* DEFAULT_STYLES_STRING = \
                                     "      </style>\n"
                                     "    </listOfStyles>\n"
                                     "  </renderInformation>\n"
-                                    "  <renderInformation id=\"lightBlue\" name=\"Light-blue Species; colored modifiers\"  backgroundColor=\"#FFFFFFFF\">\n"
+                                    "  <renderInformation id=\"lightBlue\" name=\"blue Species; colored modifiers\"  backgroundColor=\"#FFFFFFFF\">\n"
                                     "    <listOfColorDefinitions>\n"
                                     "      <colorDefinition id=\"lightBlue\" value=\"#ADD8E6\"/>\n"
                                     "      <colorDefinition id=\"white\" value=\"#FFFFFF\"/>\n"
