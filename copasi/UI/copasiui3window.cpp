@@ -743,12 +743,18 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
   if (msg.getNumber() == 6303 &&
       (msg.getText().find("'sbml'") != std::string::npos || msg.getText().find(":sbml'") != std::string::npos))
     {
+
       // someone attempted to open an SBML file but failed, instead of displaying the message
       //   XML (3): Unknown element 'sbml' encountered at line '3'.
       // we just open the SBML file!
+      if (CQMessageBox::question(this, QString("Import SBML?"), QString("You tried to open an SBML file. COPASI is not able to open SBML files but is able to import it. Would you like to import it?"),
+                                 QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes)
+        {
+          emit slotImportSBML(mNewFile);
+          return;
+        }
 
-      emit slotImportSBML(mNewFile);
-
+      newDoc();
       return;
     }
 
