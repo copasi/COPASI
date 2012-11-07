@@ -72,6 +72,7 @@
 #include "function/CFunctionDB.h"
 #include "function/CEvaluationTree.h"
 #include "function/CExpression.h"
+#include "function/CFunctionParameters.h"
 #include "report/CCopasiObjectReference.h"
 #include "utilities/CCopasiTree.h"
 #include "utilities/CNodeIterator.h"
@@ -1749,7 +1750,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
 }
 
 /**
- * Creates and returns a Copasi CReaction object from the given SBML
+ * Creates and returns a COPASI CReaction object from the given SBML
  * Reaction object.
  */
 CReaction*
@@ -1782,6 +1783,12 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
   /* create a new reaction with the unique name */
   CReaction* copasiReaction = copasiModel->createReaction(name + appendix);
+
+  if (copasiReaction == NULL)
+    {
+      fatalError();
+    }
+
   copasiReaction->setReversible(sbmlReaction->getReversible());
 
   if (this->mLevel == 1)
@@ -1794,11 +1801,6 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
     }
 
   copasi2sbmlmap[copasiReaction] = const_cast<Reaction*>(sbmlReaction);
-
-  if (copasiReaction == NULL)
-    {
-      fatalError();
-    }
 
   if (sbmlReaction->isSetFast() && sbmlReaction->getFast() == true)
     {
@@ -1821,7 +1823,6 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
       if (sr == NULL)
         {
-
           delete copasiReaction;
           fatalError();
         }
@@ -2177,7 +2178,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
             }
 
           /* if it is a single compartment reaction, we have to divide the whole kinetic
-          ** equation by the compartment because copasi expects
+          ** equation by the compartment because COPASI expects
           ** kinetic laws that specify concentration/time for single compartment
           ** reactions.
           */
@@ -2316,7 +2317,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                       std::vector<CEvaluationNodeObject*>* v = NULL;
 
                       // only check for mass action if there is no conversion factor involved
-                      // for any of the species invloded in the reaction (substrates and products)
+                      // for any of the species involved in the reaction (substrates and products)
                       if (!mConversionFactorNeeded)
                         {
                           v = this->isMassAction(tree, copasiReaction->getChemEq(), static_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
@@ -2435,7 +2436,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                       std::vector<CEvaluationNodeObject*>* v = NULL;
 
                       // only check for mass action if there is no conversion factor involved
-                      // for any of the species invloded in the reaction (substrates and products)
+                      // for any of the species involved in the reaction (substrates and products)
                       if (!mConversionFactorNeeded)
                         {
                           v = this->isMassAction(pTmpTree, copasiReaction->getChemEq());
@@ -2544,6 +2545,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
   //DebugFile << "Created reaction: " << copasiReaction->getObjectName() << std::endl;
   SBMLImporter::importMIRIAM(sbmlReaction, copasiReaction);
   SBMLImporter::importNotes(copasiReaction, sbmlReaction);
+
   return copasiReaction;
 }
 
@@ -4553,7 +4555,7 @@ void SBMLImporter::replaceCallNodeNames(ASTNode* pASTNode)
 /**
  * The methods gets a function where all the parameters have a usage of "PARAMETER".
  * In addition it get the root node of a call to that function which is an expression
- * and contains the acutal objects with which the function is called in a certain reaction.
+ * and contains the actual objects with which the function is called in a certain reaction.
  * From this expression we can determine if there already is a function in the database
  * that does the same. Or we can find out if this function is a Mass Action kinetic.
  */
@@ -5248,7 +5250,8 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
     }
   else
     {
-      size_t i, iMax = pCopasiReaction->getFunction()->getVariables().size();
+      const CFunctionParameters & Variables = pCopasiReaction->getFunction()->getVariables();
+      size_t i, iMax = Variables.size();
       const CEvaluationNodeObject* pChild = dynamic_cast<const CEvaluationNodeObject*>(pCallNode->getChild());
 
       for (i = 0; i < iMax; ++i)
@@ -5272,6 +5275,58 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
           const std::string& objectKey = pObject->getKey();
 
           pCopasiReaction->setParameterMapping(i, objectKey);
+
+          // We guess what the role of a variable of newly imported function is:
+          if (Variables[i]->getUsage() == CFunctionParameter::VARIABLE)
+            {
+              CFunctionParameter::Role Role = CFunctionParameter::PARAMETER;
+
+              if (pObject->getObjectType() == "Metabolite")
+                {
+                  CCopasiVector < CChemEqElement >::const_iterator it = pCopasiReaction->getChemEq().getSubstrates().begin();
+                  CCopasiVector < CChemEqElement >::const_iterator end = pCopasiReaction->getChemEq().getSubstrates().end();
+
+                  for (; it != end; ++it)
+                    {
+                      if ((*it)->getMetaboliteKey() == objectKey)
+                        {
+                          Role = CFunctionParameter::SUBSTRATE;
+                          break;
+                        }
+                    }
+
+                  if (Role == CFunctionParameter::PARAMETER)
+                    {
+                      it = pCopasiReaction->getChemEq().getProducts().begin();
+                      end = pCopasiReaction->getChemEq().getProducts().end();
+
+                      for (; it != end; ++it)
+                        {
+                          if ((*it)->getMetaboliteKey() == objectKey)
+                            {
+                              Role = CFunctionParameter::PRODUCT;
+                              break;
+                            }
+                        }
+                    }
+
+                  // It is not a substrate and not a product therefore we must have a modifier
+                  if (Role == CFunctionParameter::PARAMETER)
+                    {
+                      Role = CFunctionParameter::MODIFIER;
+                    }
+                }
+              else if (pObject->getObjectType() == "Model")
+                {
+                  Role = CFunctionParameter::TIME;
+                }
+              else if (pObject->getObjectType() == "Compartment")
+                {
+                  Role = CFunctionParameter::VOLUME;
+                }
+
+              const_cast< CFunctionParameter * >(Variables[i])->setUsage(Role);
+            }
 
           pChild = dynamic_cast<const CEvaluationNodeObject*>(pChild->getSibling());
         }
@@ -9297,7 +9352,7 @@ void SBMLImporter::findDirectDependencies(const ASTNode* pNode, std::set<std::st
  * by a node that references a new global parameter which the function
  * creates. The global parameter gets an expression which corresponds to the
  * delay call.
- * This is necessary because all knetic laws in COPASI are function calls and
+ * This is necessary because all kinetic laws in COPASI are function calls and
  * function definitions should not contain a call to delay.
  */
 void SBMLImporter::replace_delay_nodes(ConverterASTNode* pASTNode, Model* pModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Reaction* pSBMLReaction, std::map<std::string, std::string>& localReplacementMap)
