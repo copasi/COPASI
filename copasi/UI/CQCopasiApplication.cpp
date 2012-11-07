@@ -9,6 +9,7 @@
 #include "CQCopasiApplication.h"
 #include "copasiui3window.h"
 #include "listviews.h"
+#include "utilities/CCopasiException.h"
 
 #ifdef WIN32
 
@@ -94,3 +95,27 @@ void CQCopasiApplication::setMainWindow(CopasiUI3Window * pMainWindow)
   mpMainWindow->openInitialDocument(mFile);
   mStarting = false;
 }
+
+#ifdef COPASI_DEBUG
+bool CQCopasiApplication::notify(QObject * pObject, QEvent * pEvent)
+{
+  bool success = false;
+
+  try
+    {
+      success = QApplication::notify(pObject, pEvent);
+    }
+
+  catch (CCopasiException & e)
+    {
+      std::cout << "Unhandled Exception: " << e.getMessage().getText() << std::endl;
+    }
+
+  catch (...)
+    {
+      std::cout << "Unhandled Exception: Unknown Source" << std::endl;
+    }
+
+  return success;
+}
+#endif
