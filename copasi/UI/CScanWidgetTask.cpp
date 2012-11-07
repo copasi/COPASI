@@ -191,6 +191,9 @@ void CScanWidgetTask::typeChanged(int n)
   switch (n)
     {
       case 1:
+#if COPASI_NONLIN_DYN
+      case 8:
+#endif
         checkOutput->setChecked(true);
         break;
 
