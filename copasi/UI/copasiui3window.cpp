@@ -1073,7 +1073,10 @@ void CopasiUI3Window::slotFilePrint()
 void CopasiUI3Window::about()
 {
   QString text =
-    QString(AboutDialog::text).arg(FROM_UTF8(CVersion::VERSION.getVersion()));
+    QString(AboutDialog::text)
+    .arg(FROM_UTF8(CVersion::VERSION.getVersion()))
+    .arg(LIBSBML_DOTTED_VERSION);
+
   AboutDialog* aboutDialog = new AboutDialog(this, text, 76, 30);
   aboutDialog->setWindowTitle(FixedTitle);
   aboutDialog->exec();

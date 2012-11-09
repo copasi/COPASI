@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/AboutDialog.cpp,v $
-//   $Revision: 1.20 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/26 14:23:31 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -68,7 +60,7 @@ const char* AboutDialog::text =
   "<li>Qwt 5.2.0</li>"
   "<li>QwtPlot3D 0.2.7</li>"
   "<li>Expat 2.0.1 XML parser</li>"
-  "<li>libsbml 4.2.0</li>"
+  "<li>libSBML %2</li>"
   "<li>raptor 1.4.21</li>"
   "<li>Systems Biology Workbench 2.7.10</li>"
   "<li>CLAPACK 3.0, LAPACK 3.1.0, or Intel Math Kernel Library</li>"
@@ -83,10 +75,10 @@ AboutDialog::AboutDialog(QWidget* parent,
                          const QString & text,
                          const int & width,
                          const int & heigth):
-    QDialog(parent),
-    closeButton(NULL),
-    textEdit(NULL),
-    mainLayout(NULL)
+  QDialog(parent),
+  closeButton(NULL),
+  textEdit(NULL),
+  mainLayout(NULL)
 {
   this->setModal(true);
   this->mainLayout = new QVBoxLayout(this);
@@ -97,7 +89,6 @@ AboutDialog::AboutDialog(QWidget* parent,
   Palette.setBrush(QPalette::Base, QBrush(QPixmap((const char**)copasi_beta_background_xpm)));
 
   textEdit->setPalette(Palette);
-
 
   QFontMetrics FontMetrics = this->fontMetrics();
   int w = width * (FontMetrics.width('W') + FontMetrics.width('I')) / 2;
