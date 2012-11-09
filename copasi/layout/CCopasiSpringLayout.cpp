@@ -358,25 +358,25 @@ void CCopasiSpringLayout::finalizeState()
           if (pRG->getListOfMetabReferenceGlyphs()[j]->getRole() == CLMetabReferenceGlyph::SUBSTRATE)
             {
               s_c += 1.0;
-              s = s + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getPosition();
+              s = s + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getBoundingBox().getCenter();
             }
 
           if (pRG->getListOfMetabReferenceGlyphs()[j]->getRole() == CLMetabReferenceGlyph::SIDESUBSTRATE)
             {
               s_c += 0.1;
-              s = s + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getPosition() * 0.1;
+              s = s + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getBoundingBox().getCenter() * 0.1;
             }
 
           if (pRG->getListOfMetabReferenceGlyphs()[j]->getRole() == CLMetabReferenceGlyph::PRODUCT)
             {
               p_c += 1.0;
-              p = p + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getPosition();
+              p = p + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getBoundingBox().getCenter();
             }
 
           if (pRG->getListOfMetabReferenceGlyphs()[j]->getRole() == CLMetabReferenceGlyph::SIDEPRODUCT)
             {
               p_c += 0.1;
-              p = p + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getPosition() * 0.1;
+              p = p + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getBoundingBox().getCenter() * 0.1;
             }
         }
 
@@ -395,8 +395,8 @@ void CCopasiSpringLayout::finalizeState()
       if (dir.getX() == 0 && dir.getY() == 0)
         dir = CLPoint(1, 0);
 
-      CLPoint reaction_s = pRG->getPosition() - (dir * 0.1);
-      CLPoint reaction_p = pRG->getPosition() + (dir * 0.1);
+      CLPoint reaction_s = pRG->getPosition() - (dir * 0.05);
+      CLPoint reaction_p = pRG->getPosition() + (dir * 0.05);
 
       pRG->getCurve().clear();
       pRG->getCurve().addCurveSegment(CLLineSegment(reaction_s, reaction_p));
@@ -409,6 +409,7 @@ void CCopasiSpringLayout::finalizeState()
           CLMetabReferenceGlyph* pMRG = pRG->getListOfMetabReferenceGlyphs()[j];
           CLPoint reactionPoint;
           double direction;
+          double modifierLength = -0.2;
 
           switch (pMRG->getRole())
             {
@@ -429,7 +430,7 @@ void CCopasiSpringLayout::finalizeState()
                 reactionPoint = pRG->getPosition();
             }
 
-          CLPoint metabPoint = borderProjection(pMRG->getMetabGlyph(), reactionPoint + dir * (direction * 1.5), 5);
+          CLPoint metabPoint = borderProjection(pMRG->getMetabGlyph(), reactionPoint + dir * (modifierLength * 1.5), 5);
 
           pMRG->getCurve().clear();
           pMRG->getCurve().addCurveSegment(CLLineSegment(reactionPoint,
@@ -448,7 +449,7 @@ void CCopasiSpringLayout::finalizeState()
 
 CLPoint CCopasiSpringLayout::borderProjection(CLGraphicalObject* go, const CLPoint & p, double d)
 {
-  CLPoint center = CLPoint(go->getX() + 0.5 * go->getWidth(), go->getY() + 0.5 * go->getHeight());
+  CLPoint center = go->getBoundingBox().getCenter();
   CLPoint diff = p - center;
 
   CLPoint ret;

@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLBase.h,v $
-//   $Revision: 1.13 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:35:20 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -63,10 +55,10 @@ protected:
 public:
 
   CLPoint():
-      mX(0.0)
-      , mY(0.0)
+    mX(0.0)
+    , mY(0.0)
 #ifdef USE_CRENDER_EXTENSION
-      , mZ(0.0)
+    , mZ(0.0)
 #endif // USE_CRENDER_EXTENSION
   {};
 
@@ -76,10 +68,10 @@ public:
           , const C_FLOAT64 & z = 0.0
 #endif // USE_CRENDER_EXTENSION
          ):
-      mX(x)
-      , mY(y)
+    mX(x)
+    , mY(y)
 #ifdef USE_CRENDER_EXTENSION
-      , mZ(z)
+    , mZ(z)
 #endif // USE_CRENDER_EXTENSION
   {};
 
@@ -139,19 +131,19 @@ public:
 
   CLPoint operator*(const double & rhs) const
   {
-    return CLPoint(this->mX*rhs,
-                   this->mY*rhs
+    return CLPoint(this->mX * rhs,
+                   this->mY * rhs
 #ifdef USE_CRENDER_EXTENSION
-                   , this->mZ*rhs
+                   , this->mZ * rhs
 #endif // USE_CRENDER_EXTENSION
                   );
   };
 
   C_FLOAT64 dot(const CLPoint & rhs) const
   {
-    return this->mX*rhs.mX + this->mY*rhs.mY
+    return this->mX * rhs.mX + this->mY * rhs.mY
 #ifdef USE_CRENDER_EXTENSION
-           + this->mZ*rhs.mZ
+           + this->mZ * rhs.mZ
 #endif // USE_CRENDER_EXTENSION
            ;
   };
@@ -182,6 +174,8 @@ public:
    */
   Point getSBMLPoint() const;
 
+  bool isEmpty() const {return mX == 0 && mY == 0 && mZ == 0;}
+
   /**
     * insert operator
     */
@@ -204,10 +198,10 @@ protected:
 public:
 
   CLDimensions() :
-      mWidth(0.0)
-      , mHeight(0.0)
+    mWidth(0.0)
+    , mHeight(0.0)
 #ifdef USE_CRENDER_EXTENSION
-      , mDepth(0.0)
+    , mDepth(0.0)
 #endif // USE_CRENDER_EXTENSION
 
   {};
@@ -218,10 +212,10 @@ public:
                , const C_FLOAT64 & d = 0.0
 #endif // USE_CRENDER_EXTENSION
               ):
-      mWidth(w)
-      , mHeight(h)
+    mWidth(w)
+    , mHeight(h)
 #ifdef USE_CRENDER_EXTENSION
-      , mDepth(d)
+    , mDepth(d)
 #endif // USE_CRENDER_EXTENSION
   {};
 
@@ -282,10 +276,10 @@ protected:
 public:
 
   CLBoundingBox()
-      : mPosition(), mDimensions() {};
+    : mPosition(), mDimensions() {};
 
   CLBoundingBox(const CLPoint & p, const CLDimensions & d)
-      : mPosition(p), mDimensions(d) {};
+    : mPosition(p), mDimensions(d) {};
 
   /**
    * constructor from libsbml object
@@ -296,6 +290,7 @@ public:
   const CLDimensions & getDimensions() const {return mDimensions;};
 
   CLPoint & getPosition() {return mPosition;};
+  CLPoint getCenter() {return CLPoint(mPosition.getX() + 0.5 * mDimensions.getWidth(), mPosition.getY() + 0.5 * mDimensions.getHeight());};
   CLDimensions & getDimensions() {return mDimensions;};
 
   void setPosition(const CLPoint & p) {mPosition = p;};
