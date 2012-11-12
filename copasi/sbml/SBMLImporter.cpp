@@ -1572,6 +1572,26 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
   return pFun;
 }
 
+
+CFunction* getFunctionForKey(CCopasiVectorN<CFunction> &functionDb, const std::string& key)
+{
+  CFunction* pFunc = NULL;
+  CCopasiVectorN<CFunction>::iterator it = functionDb.begin(), endit = functionDb.end();
+
+  while (it != endit)
+    {
+      if ((*it)->getKey() == key)
+        {
+          pFunc = dynamic_cast<CFunction*>(*it);
+          break;
+        }
+
+      ++it;
+    }
+  return pFunc;
+}
+
+
 /**
  * Creates and returns a COPASI CCompartment from the SBML Compartment
  * given as argument.
@@ -2401,20 +2421,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                                   // in order to get around the const_casts, I
                                   // have to find the function in the
                                   // functiondb
-                                  CFunction* pNonconstFun = NULL;
-                                  CCopasiVectorN<CFunction>::iterator it = this->functionDB->loadedFunctions().begin(), endit = this->functionDB->loadedFunctions().end();
-
-                                  while (it != endit)
-                                    {
-                                      if ((*it)->getKey() == copasiReaction->getFunction()->getKey())
-                                        {
-                                          pNonconstFun = dynamic_cast<CFunction*>(*it);
-                                          break;
-                                        }
-
-                                      ++it;
-                                    }
-
+                                  CFunction* pNonconstFun = getFunctionForKey(functionDB->loadedFunctions(), copasiReaction->getFunction()->getKey());
                                   assert(pNonconstFun != NULL);
 
                                   // code to fix Bug 1015
@@ -2494,20 +2501,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                                   // in order to get around the const_casts, I
                                   // have to find the function in the
                                   // functiondb
-                                  CFunction* pNonconstFun = NULL;
-                                  CCopasiVectorN<CFunction>::iterator it = this->functionDB->loadedFunctions().begin(), endit = this->functionDB->loadedFunctions().end();
-
-                                  while (it != endit)
-                                    {
-                                      if ((*it)->getKey() == copasiReaction->getFunction()->getKey())
-                                        {
-                                          pNonconstFun = dynamic_cast<CFunction*>(*it);
-                                          break;
-                                        }
-
-                                      ++it;
-                                    }
-
+                                  CFunction* pNonconstFun = getFunctionForKey(functionDB->loadedFunctions(), copasiReaction->getFunction()->getKey());
                                   assert(pNonconstFun != NULL);
 
                                   // code to fix Bug 1015

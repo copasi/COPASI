@@ -1289,7 +1289,7 @@ bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CC
           // contains CFunctionParameters that don't have the usage PARAMETER
 
           // create a unique name first
-          std::string functionName = "function_4_" + this->getObjectName();
+          std::string functionName = "Function for " + this->getObjectName();
 
           std::string appendix = "";
           unsigned int counter = 0;

@@ -2618,7 +2618,7 @@ void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
                 {
                   // the function exists in the model, but it is not used in any
                   // expression
-                  if (pFun->getObjectName().find("function_4_") == 0)
+                  if (pFun->getObjectName().find("function_4_") == 0 || pFun->getObjectName().find("Function for ") == 0)
                     {
                       // store the function definition that is to be removed
                       toRemove.insert(pFunDef->getId());
