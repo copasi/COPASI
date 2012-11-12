@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-//   $Revision: 1.61 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/17 18:11:30 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -40,24 +32,24 @@
 #include "sbml/Reaction.h"
 
 CEvaluationNodeObject::CEvaluationNodeObject():
-    CEvaluationNode(CEvaluationNode::INVALID, ""),
-    mpObject(NULL),
-    mRegisteredObjectCN("")
+  CEvaluationNode(CEvaluationNode::INVALID, ""),
+  mpObject(NULL),
+  mRegisteredObjectCN("")
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
     const Data & data):
-    CEvaluationNode((Type)(CEvaluationNode::OBJECT | subType), data),
-    mpObject(NULL),
-    mRegisteredObjectCN(data.substr(1, data.length() - 2))
+  CEvaluationNode((Type)(CEvaluationNode::OBJECT | subType), data),
+  mpObject(NULL),
+  mRegisteredObjectCN(data.substr(1, data.length() - 2))
 {
   mPrecedence = PRECEDENCE_NUMBER;
 }
 
 CEvaluationNodeObject::CEvaluationNodeObject(const C_FLOAT64 * pValue):
-    CEvaluationNode((Type)(CEvaluationNode::OBJECT | POINTER), "pointer"),
-    mpObject(NULL),
-    mRegisteredObjectCN("")
+  CEvaluationNode((Type)(CEvaluationNode::OBJECT | POINTER), "pointer"),
+  mpObject(NULL),
+  mRegisteredObjectCN("")
 {
   mPrecedence = PRECEDENCE_NUMBER;
   mpValue = pValue;
@@ -65,9 +57,9 @@ CEvaluationNodeObject::CEvaluationNodeObject(const C_FLOAT64 * pValue):
 }
 
 CEvaluationNodeObject::CEvaluationNodeObject(const CEvaluationNodeObject & src):
-    CEvaluationNode(src),
-    mpObject(src.mpObject),
-    mRegisteredObjectCN(src.mRegisteredObjectCN)
+  CEvaluationNode(src),
+  mpObject(src.mpObject),
+  mRegisteredObjectCN(src.mRegisteredObjectCN)
 {
   mpValue = src.mpValue;
 }
@@ -124,7 +116,6 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
             mpValue = &mValue;
             return false;
           }
-
 
         mData = "<" + mRegisteredObjectCN + ">";
       }
@@ -229,7 +220,6 @@ std::string CEvaluationNodeObject::getXPPString(const std::vector< std::string >
   return mData;
 }
 
-
 // static
 CEvaluationNode * CEvaluationNodeObject::fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children)
 {
@@ -244,6 +234,7 @@ CEvaluationNode * CEvaluationNodeObject::fromAST(const ASTNode * pASTNode, const
       case AST_NAME:
         pNode = new CEvaluationNodeObject(CN, CCopasiObjectName(std::string("<") + pASTNode->getName() + std::string(">")));
         break;
+
       default:
         break;
     }
@@ -255,6 +246,23 @@ ASTNode* CEvaluationNodeObject::toAST(const CCopasiDataModel* pDataModel) const
 {
   ASTNode* node = new ASTNode();
   node->setType(AST_NAME);
+
+  if (mRegisteredObjectCN == "rateOf")
+    {
+      node->setType(AST_FUNCTION);
+      const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
+
+      if (child == NULL) fatalError();
+
+      const CEvaluationNodeObject* sibling = dynamic_cast<const CEvaluationNodeObject*>(this->getChild()->getSibling());
+
+      if (sibling == NULL) fatalError();
+
+      node->setName(sibling->getObjectCN().c_str());
+      node->addChild(child->toAST(pDataModel));
+      return node;
+    }
+
   // since I can not get the model in which this node is located, I just
   // assume that it will always be the current global model.
   const CCopasiObject* pOrigObject = pDataModel->getDataObject(mRegisteredObjectCN);

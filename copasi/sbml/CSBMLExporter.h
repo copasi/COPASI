@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.h,v $
-//   $Revision: 1.38 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/24 16:32:33 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -148,7 +140,7 @@ public:
    * with an already existing sbml id which came from the sbmlid attribute in a
    * copasi file or directly by importing an SBML file.
    */
-  static const std::string createUniqueId(const std::map<std::string, const SBase*>& idMap, const std::string& prefix);
+  static const std::string createUniqueId(const std::map<std::string, const SBase*>& idMap, const std::string& prefix, bool addIndexForFirst = true);
 
 #if LIBSBML_VERSION >= 40001
   /**
@@ -651,7 +643,6 @@ protected:
    * there is an assignment to a volume.
    */
   bool hasVolumeAssignment(const CCopasiDataModel& dataModel);
-
 
   /**
    * This method multiplies a given expression by the given object.
