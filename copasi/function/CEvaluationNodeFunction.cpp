@@ -962,6 +962,7 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
 {
   SubType subType = (SubType)CEvaluationNode::subType(this->getType());
   ASTNode* node = new ASTNode();
+  bool needFirstArg = true;
 
   switch (subType)
     {
@@ -1112,12 +1113,55 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
         break;
 
       case RUNIFORM:
+      {
+        needFirstArg = false;
+        node->setType(AST_FUNCTION);
+        node->setName("RUNIFORM");
+        const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
+        const CEvaluationNode* sibling = dynamic_cast<const CEvaluationNode*>(child->getSibling());
+        node->addChild(child->toAST(pDataModel));
+        node->addChild(sibling->toAST(pDataModel));
+      }
+      break;
+
       case RNORMAL:
+      {
+        needFirstArg = false;
+        node->setType(AST_FUNCTION);
+        node->setName("RNORMAL");
+        const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
+        const CEvaluationNode* sibling = dynamic_cast<const CEvaluationNode*>(child->getSibling());
+        node->addChild(child->toAST(pDataModel));
+        node->addChild(sibling->toAST(pDataModel));
+      }
+      break;
+
       case MAX:
+      {
+        needFirstArg = false;
+        node->setType(AST_FUNCTION);
+        node->setName("MAX");
+        const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
+        const CEvaluationNode* sibling = dynamic_cast<const CEvaluationNode*>(child->getSibling());
+        node->addChild(child->toAST(pDataModel));
+        node->addChild(sibling->toAST(pDataModel));
+      }
+      break;
+
       case MIN:
-        // :TODO: Bug 894: Implement me.
-        fatalError();
-        break;
+      {
+        needFirstArg = false;
+        node->setType(AST_FUNCTION);
+        node->setName("MIN");
+        const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
+        const CEvaluationNode* sibling = dynamic_cast<const CEvaluationNode*>(child->getSibling());
+        node->addChild(child->toAST(pDataModel));
+        node->addChild(sibling->toAST(pDataModel));
+      }
+      break;
+      // :TODO: Bug 894: Implement me.
+      //fatalError();
+      break;
     }
 
   if (subType != INVALID)
@@ -1135,9 +1179,11 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
           node->addChild(pDegreeNode);
         }
 
-      const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
-
-      node->addChild(child->toAST(pDataModel));
+      if (needFirstArg)
+        {
+          const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
+          node->addChild(child->toAST(pDataModel));
+        }
     }
 
   return node;

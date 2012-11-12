@@ -2701,7 +2701,22 @@ void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
         }
     }
 
-  pModel->getListOfFunctionDefinitions()->clear(true);
+  // don't want to remove the new custom function definitions if present
+  // pModel->getListOfFunctionDefinitions()->clear(true);
+  for (int i = ((int)pModel->getNumFunctionDefinitions()) - 1; i >= 0; --i)
+    {
+      FunctionDefinition* current = pModel->getFunctionDefinition(i);
+
+      if (current != NULL &&
+          current->isSetAnnotation() &&
+          current->getAnnotation()->getNumChildren() == 1 &&
+          current->getAnnotation()->getChild(0).getURI().find("http://sbml.org/annotations/") != std::string::npos)
+        continue;
+
+      // if we are here it is not one of the custom ones, so delete it
+      FunctionDefinition* toDelete = pModel->removeFunctionDefinition(i);
+      delete toDelete;
+    }
 
   std::vector<CFunction*>::iterator it = functionsVect.begin(), endit = functionsVect.end();
 
@@ -3184,17 +3199,17 @@ const std::set<CEvaluationNodeFunction::SubType> CSBMLExporter::createUnsupporte
       // is ARCCOTH since we would need a piecewise for that which is not
       // supported in Level 1
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCOTH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RNORMAL);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RUNIFORM);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RNORMAL);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RUNIFORM);
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::MAX);
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::MIN);
     }
   else
     {
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RNORMAL);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RUNIFORM);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::MAX);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::MIN);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RNORMAL);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RUNIFORM);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::MAX);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::MIN);
     }
 
   return unsupportedFunctionTypes;
@@ -6448,6 +6463,159 @@ XMLNode* CSBMLExporter::replaceChild(const XMLNode* pParent, const XMLNode* pNew
   return pResult;
 }
 
+std::string hasFunctionDefinitionForURI(SBMLDocument* pSBMLDocument,
+                                        const std::string& sNamespace,
+                                        const std::string& elementName,
+                                        const std::string& definition)
+{
+  if (pSBMLDocument == NULL || pSBMLDocument->getModel() == NULL) return false;
+
+  for (unsigned int i = 0; i < pSBMLDocument->getModel()->getNumFunctionDefinitions(); ++i)
+    {
+      FunctionDefinition* current = pSBMLDocument->getModel()->getFunctionDefinition(i);
+
+      if (current == NULL) continue;
+
+      if (!current->isSetAnnotation()) continue;
+
+      const XMLNode* element = current->getAnnotation();
+
+      if (element == NULL) continue;
+
+      for (unsigned int i = 0 ; i < element->getNumChildren(); ++i)
+        {
+          const XMLNode& annot = element->getChild(i);
+
+          if (annot.getURI() == sNamespace &&
+              annot.getName() == elementName &&
+              annot.getAttrValue("definition") == definition)
+            {
+              return current->getId();
+            }
+        }
+    }
+
+  return "";
+}
+
+std::string createFunctionDefinitonForURI(SBMLDocument* pSBMLDocument,
+    std::map<std::string, const SBase*>& idMap,
+    const char* id,
+    const std::string& sNamespace,
+    const std::string& elementName,
+    const std::string& definition,
+    const std::string& lambda)
+{
+  if (pSBMLDocument == NULL || pSBMLDocument->getModel() == NULL) return id;
+
+  std::string newId = CSBMLExporter::createUniqueId(idMap, id);
+
+  FunctionDefinition *def = pSBMLDocument->getModel()->createFunctionDefinition();
+  def -> setId(newId);
+  def -> setMath(SBML_parseFormula(lambda.c_str()));
+
+  std::stringstream annotation;
+  std::string annotElement = pSBMLDocument->getLevel() == 1 ? "annotations" : "annotation";
+  annotation << "<" << annotElement << "> <" << elementName
+             << " xmlns='" << sNamespace
+             << "' definition='" << definition
+             << "' /> </" << annotElement << ">";
+
+  def->setAnnotation(annotation.str());
+
+  return newId;
+}
+
+std::string getUserDefinedFuctionForName(SBMLDocument* pSBMLDocument,
+    std::map<std::string, const SBase*>& idMap,
+    const char* id)
+{
+  std::string newId;
+
+  if (id == std::string("RNORMAL"))
+    {
+      newId = hasFunctionDefinitionForURI(pSBMLDocument,
+                                          "http://sbml.org/annotations/distribution",
+                                          "distribution",
+                                          "http://www.uncertml.org/distributions/normal");
+
+      if (!newId.empty()) return newId;
+
+      newId = createFunctionDefinitonForURI(
+                pSBMLDocument,
+                idMap,
+                id,
+                "http://sbml.org/annotations/distribution",
+                "distribution",
+                "http://www.uncertml.org/distributions/normal",
+                "lambda(m,s,m)"
+              );
+      return newId;
+    }
+  else if (id == std::string("RUNIFORM"))
+    {
+      newId = hasFunctionDefinitionForURI(pSBMLDocument,
+                                          "http://sbml.org/annotations/distribution",
+                                          "distribution",
+                                          "http://www.uncertml.org/distributions/uniform");
+
+      if (!newId.empty()) return newId;
+
+      newId = createFunctionDefinitonForURI(
+                pSBMLDocument,
+                idMap,
+                id,
+                "http://sbml.org/annotations/distribution",
+                "distribution",
+                "http://www.uncertml.org/distributions/uniform",
+                "lambda(a,b,(a+b)/2)"
+              );
+      return newId;
+    }
+  else if (id == std::string("MAX"))
+    {
+      newId = hasFunctionDefinitionForURI(pSBMLDocument,
+                                          "http://sbml.org/annotations/function",
+                                          "function",
+                                          "http://sbml.org/annotations/function/max");
+
+      if (!newId.empty()) return newId;
+
+      newId = createFunctionDefinitonForURI(
+                pSBMLDocument,
+                idMap,
+                id,
+                "http://sbml.org/annotations/function",
+                "function",
+                "http://sbml.org/annotations/function/max",
+                "lambda(a,b,piecewise(a,geq(a,b),b))"
+              );
+      return newId;
+    }
+  else if (id == std::string("MIN"))
+    {
+      newId = hasFunctionDefinitionForURI(pSBMLDocument,
+                                          "http://sbml.org/annotations/function",
+                                          "function",
+                                          "http://sbml.org/annotations/function/min");
+
+      if (!newId.empty()) return newId;
+
+      newId = createFunctionDefinitonForURI(
+                pSBMLDocument,
+                idMap,
+                id,
+                "http://sbml.org/annotations/function",
+                "function",
+                "http://sbml.org/annotations/function/min",
+                "lambda(a,b,piecewise(a,leq(a,b),b))"
+              );
+      return newId;
+    }
+
+  return id;
+}
+
 ASTNode* CSBMLExporter::convertToASTNode(const CEvaluationNode* pOrig, CCopasiDataModel& dataModel)
 {
   // first go through the tree and check that all function calls are to
@@ -6455,6 +6623,17 @@ ASTNode* CSBMLExporter::convertToASTNode(const CEvaluationNode* pOrig, CCopasiDa
   // if they don't, we have to set one
   this->setFunctionSBMLIds(pOrig, dataModel);
   ASTNode* pResult = pOrig->toAST(&dataModel);
+
+  if (pResult != NULL && pResult->getType() == AST_FUNCTION)
+    {
+      std::string adjustedName = getUserDefinedFuctionForName(
+                                   mpSBMLDocument,
+                                   mIdMap,
+                                   pResult->getName()
+                                 );
+      pResult->setName(adjustedName .c_str());
+    }
+
   return pResult;
 }
 
