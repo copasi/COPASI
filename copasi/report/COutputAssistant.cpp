@@ -1300,7 +1300,7 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
 
   CScanProblem* problem = task != NULL ? dynamic_cast<CScanProblem*>(task->getProblem()) : NULL;
   bool isCrossSection = (problem != NULL && problem->getSubtask() == CCopasiTask::crosssection) ||
-                        task->getType() == CCopasiTask::crosssection;
+                        (task != NULL && task->getType() == CCopasiTask::crosssection);
 
   for (it = y.begin(); it != itEnd; ++it)
     {
