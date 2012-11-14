@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000069.cpp,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/11 11:52:00 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -175,7 +167,7 @@ void test000069::test_bug1069()
   const CFunction* pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction1");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction1");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -190,7 +182,7 @@ void test000069::test_bug1069()
   pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction2");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction2");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -205,7 +197,7 @@ void test000069::test_bug1069()
   pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction3");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction3");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -220,7 +212,7 @@ void test000069::test_bug1069()
   pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction4");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction4");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -235,7 +227,7 @@ void test000069::test_bug1069()
   pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction5");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction5");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -250,7 +242,7 @@ void test000069::test_bug1069()
   pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction6");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction6");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -488,7 +480,7 @@ const char* test000069::MODEL_STRING1 =
   "        <ParameterDescription key=\"FunctionParameter_267\" name=\"k3\" order=\"2\" role=\"variable\"/>\n"
   "      </ListOfParameterDescriptions>\n"
   "    </Function>\n"
-  "    <Function key=\"Function_54\" name=\"function_4_reaction1\" type=\"UserDefined\" reversible=\"unspecified\">\n"
+  "    <Function key=\"Function_54\" name=\"Function for reaction1\" type=\"UserDefined\" reversible=\"unspecified\">\n"
   "      <Expression>\n"
   "        3*parameter_1\n"
   "      </Expression>\n"
@@ -496,7 +488,7 @@ const char* test000069::MODEL_STRING1 =
   "        <ParameterDescription key=\"FunctionParameter_269\" name=\"parameter_1\" order=\"0\" role=\"constant\"/>\n"
   "      </ListOfParameterDescriptions>\n"
   "    </Function>\n"
-  "    <Function key=\"Function_55\" name=\"function_4_reaction2\" type=\"UserDefined\" reversible=\"unspecified\">\n"
+  "    <Function key=\"Function_55\" name=\"Function for reaction2\" type=\"UserDefined\" reversible=\"unspecified\">\n"
   "      <Expression>\n"
   "        parameter_2+parameter_1\n"
   "      </Expression>\n"
@@ -505,7 +497,7 @@ const char* test000069::MODEL_STRING1 =
   "        <ParameterDescription key=\"FunctionParameter_273\" name=\"parameter_2\" order=\"1\" role=\"constant\"/>\n"
   "      </ListOfParameterDescriptions>\n"
   "    </Function>\n"
-  "    <Function key=\"Function_56\" name=\"function_4_reaction3\" type=\"UserDefined\" reversible=\"unspecified\">\n"
+  "    <Function key=\"Function_56\" name=\"Function for reaction3\" type=\"UserDefined\" reversible=\"unspecified\">\n"
   "      <Expression>\n"
   "        species_2-parameter_1*1.3\n"
   "      </Expression>\n"
@@ -514,7 +506,7 @@ const char* test000069::MODEL_STRING1 =
   "        <ParameterDescription key=\"FunctionParameter_277\" name=\"species_2\" order=\"1\" role=\"product\"/>\n"
   "      </ListOfParameterDescriptions>\n"
   "    </Function>\n"
-  "    <Function key=\"Function_57\" name=\"function_4_reaction4\" type=\"UserDefined\" reversible=\"true\">\n"
+  "    <Function key=\"Function_57\" name=\"Function for reaction4\" type=\"UserDefined\" reversible=\"true\">\n"
   "      <Expression>\n"
   "        function_2(species_1,species_2)/2\n"
   "      </Expression>\n"
@@ -523,7 +515,7 @@ const char* test000069::MODEL_STRING1 =
   "        <ParameterDescription key=\"FunctionParameter_281\" name=\"species_2\" order=\"1\" role=\"product\"/>\n"
   "      </ListOfParameterDescriptions>\n"
   "    </Function>\n"
-  "    <Function key=\"Function_58\" name=\"function_4_reaction5\" type=\"UserDefined\" reversible=\"unspecified\">\n"
+  "    <Function key=\"Function_58\" name=\"Function for reaction5\" type=\"UserDefined\" reversible=\"unspecified\">\n"
   "      <Expression>\n"
   "        function_3(species_2,parameter_1)+(function_1(parameter_3)-5.23)\n"
   "      </Expression>\n"
@@ -533,7 +525,7 @@ const char* test000069::MODEL_STRING1 =
   "        <ParameterDescription key=\"FunctionParameter_287\" name=\"species_2\" order=\"2\" role=\"product\"/>\n"
   "      </ListOfParameterDescriptions>\n"
   "    </Function>\n"
-  "    <Function key=\"Function_59\" name=\"function_4_reaction6\" type=\"UserDefined\" reversible=\"unspecified\">\n"
+  "    <Function key=\"Function_59\" name=\"Function for reaction6\" type=\"UserDefined\" reversible=\"unspecified\">\n"
   "      <Expression>\n"
   "        function_5(parameter_1,parameter_2,parameter_3)\n"
   "      </Expression>\n"

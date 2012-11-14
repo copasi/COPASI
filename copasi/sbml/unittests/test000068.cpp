@@ -1,12 +1,12 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 #include "test000068.h"
 
@@ -158,7 +158,7 @@ void test000068::test_bug1068()
   const CFunction* pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction1");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction1");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -173,7 +173,7 @@ void test000068::test_bug1068()
   pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction2");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction2");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -188,7 +188,7 @@ void test000068::test_bug1068()
   pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction3");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction3");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -203,7 +203,7 @@ void test000068::test_bug1068()
   pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction4");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction4");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -218,7 +218,7 @@ void test000068::test_bug1068()
   pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction5");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction5");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -233,7 +233,7 @@ void test000068::test_bug1068()
   pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction6");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction6");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 

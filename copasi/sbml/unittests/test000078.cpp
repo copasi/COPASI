@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000078.cpp,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/05/16 06:24:49 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -467,7 +459,7 @@ void test000078::test_l2v4_import_unordered_functions()
   const CFunction* pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction1");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction1");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -482,7 +474,7 @@ void test000078::test_l2v4_import_unordered_functions()
   pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction2");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction2");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -497,7 +489,7 @@ void test000078::test_l2v4_import_unordered_functions()
   pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction3");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction3");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -512,7 +504,7 @@ void test000078::test_l2v4_import_unordered_functions()
   pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction4");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction4");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -527,7 +519,7 @@ void test000078::test_l2v4_import_unordered_functions()
   pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction5");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction5");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -542,7 +534,7 @@ void test000078::test_l2v4_import_unordered_functions()
   pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction6");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction6");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 }

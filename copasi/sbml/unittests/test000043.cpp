@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000043.cpp,v $
-//   $Revision: 1.9 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/04/20 09:23:41 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -116,7 +108,7 @@ void test000043::test_hasOnlySubstanceUnits()
   // check the kinetic law
   pKineticFunction = pReaction2->getFunction();
   CPPUNIT_ASSERT(pKineticFunction != NULL);
-  CPPUNIT_ASSERT(pKineticFunction->getObjectName() == std::string("function_4_reaction_1"));
+  CPPUNIT_ASSERT(pKineticFunction->getObjectName() == std::string("Function for reaction_1"));
   const CFunctionParameters* pFunctionParameters = &pKineticFunction->getVariables();
   CPPUNIT_ASSERT(pFunctionParameters->size() == 4);
   const CFunctionParameter* pFunctionParameter = (*pFunctionParameters)[0];

@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_compare_utilities.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/05/16 06:24:48 $
-// End CVS Header
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -315,7 +307,7 @@ const char* test_compare_utilities::MODEL_STRING1 =
   "      </ListOfParameterDescriptions>\n"
   "    </Function>\n"
   "    <!--"
-  "    <Function key=\"Function_54\" name=\"function_4_reaction1\" type=\"UserDefined\" reversible=\"unspecified\">\n"
+  "    <Function key=\"Function_54\" name=\"Function for reaction1\" type=\"UserDefined\" reversible=\"unspecified\">\n"
   "      <Expression>\n"
   "        3*parameter_1\n"
   "      </Expression>\n"
@@ -323,7 +315,7 @@ const char* test_compare_utilities::MODEL_STRING1 =
   "        <ParameterDescription key=\"FunctionParameter_269\" name=\"parameter_1\" order=\"0\" role=\"constant\"/>\n"
   "      </ListOfParameterDescriptions>\n"
   "    </Function>\n"
-  "    <Function key=\"Function_55\" name=\"function_4_reaction2\" type=\"UserDefined\" reversible=\"unspecified\">\n"
+  "    <Function key=\"Function_55\" name=\"Function for reaction2\" type=\"UserDefined\" reversible=\"unspecified\">\n"
   "      <Expression>\n"
   "        parameter_2+parameter_1\n"
   "      </Expression>\n"
@@ -332,7 +324,7 @@ const char* test_compare_utilities::MODEL_STRING1 =
   "        <ParameterDescription key=\"FunctionParameter_273\" name=\"parameter_2\" order=\"1\" role=\"constant\"/>\n"
   "      </ListOfParameterDescriptions>\n"
   "    </Function>\n"
-  "    <Function key=\"Function_56\" name=\"function_4_reaction3\" type=\"UserDefined\" reversible=\"unspecified\">\n"
+  "    <Function key=\"Function_56\" name=\"Function for reaction3\" type=\"UserDefined\" reversible=\"unspecified\">\n"
   "      <Expression>\n"
   "        species_2-parameter_1*1.3\n"
   "      </Expression>\n"
@@ -341,7 +333,7 @@ const char* test_compare_utilities::MODEL_STRING1 =
   "        <ParameterDescription key=\"FunctionParameter_277\" name=\"species_2\" order=\"1\" role=\"product\"/>\n"
   "      </ListOfParameterDescriptions>\n"
   "    </Function>\n"
-  "    <Function key=\"Function_57\" name=\"function_4_reaction4\" type=\"UserDefined\" reversible=\"true\">\n"
+  "    <Function key=\"Function_57\" name=\"Function for reaction4\" type=\"UserDefined\" reversible=\"true\">\n"
   "      <Expression>\n"
   "        function_2(species_1,species_2)/2\n"
   "      </Expression>\n"
@@ -350,7 +342,7 @@ const char* test_compare_utilities::MODEL_STRING1 =
   "        <ParameterDescription key=\"FunctionParameter_281\" name=\"species_2\" order=\"1\" role=\"product\"/>\n"
   "      </ListOfParameterDescriptions>\n"
   "    </Function>\n"
-  "    <Function key=\"Function_58\" name=\"function_4_reaction5\" type=\"UserDefined\" reversible=\"unspecified\">\n"
+  "    <Function key=\"Function_58\" name=\"Function for reaction5\" type=\"UserDefined\" reversible=\"unspecified\">\n"
   "      <Expression>\n"
   "        function_3(species_2,parameter_1)+(function_1(parameter_3)-5.23)\n"
   "      </Expression>\n"
@@ -360,7 +352,7 @@ const char* test_compare_utilities::MODEL_STRING1 =
   "        <ParameterDescription key=\"FunctionParameter_287\" name=\"species_2\" order=\"2\" role=\"product\"/>\n"
   "      </ListOfParameterDescriptions>\n"
   "    </Function>\n"
-  "    <Function key=\"Function_59\" name=\"function_4_reaction6\" type=\"UserDefined\" reversible=\"unspecified\">\n"
+  "    <Function key=\"Function_59\" name=\"Function for reaction6\" type=\"UserDefined\" reversible=\"unspecified\">\n"
   "      <Expression>\n"
   "        function_5(parameter_1,parameter_2,parameter_3)\n"
   "      </Expression>\n"

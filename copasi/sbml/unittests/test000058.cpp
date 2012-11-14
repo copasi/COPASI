@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000058.cpp,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/23 12:42:55 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -1066,7 +1058,7 @@ const char* test000058::MODEL_STRING2 =
   "<!-- generated with COPASI 4.3.25 (Debug) (http://www.copasi.org) at 2008-04-29 13:08:40 UTC -->\n"
   "<COPASI xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://www.copasi.org/static/schema.xsd\" versionMajor=\"1\" versionMinor=\"0\" versionDevel=\"25\">\n"
   "  <ListOfFunctions>\n"
-  "    <Function key=\"Function_40\" name=\"function_4_reaction_1\" type=\"UserDefined\" reversible=\"true\">\n"
+  "    <Function key=\"Function_40\" name=\"Function for reaction_1\" type=\"UserDefined\" reversible=\"true\">\n"
   "      <Expression>\n"
   "        parameter_1*species_1\n"
   "      </Expression>\n"

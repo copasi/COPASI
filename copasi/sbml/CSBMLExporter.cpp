@@ -6682,7 +6682,7 @@ void adjustNames(ASTNode* node, SBMLDocument* pSBMLDocument, std::map<std::strin
       node->setName(adjustedName .c_str());
     }
 
-  for (int i = 0; i < node->getNumChildren(); ++i)
+  for (unsigned int i = 0; i < node->getNumChildren(); ++i)
     {
       adjustNames(node->getChild(i), pSBMLDocument, idMap);
     }
