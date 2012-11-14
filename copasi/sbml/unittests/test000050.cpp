@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000050.cpp,v $
-//   $Revision: 1.8 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/11 11:52:00 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -20,16 +12,17 @@
 
 #include <sstream>
 #include "utilities.hpp"
+
+#include <sbml/SBMLDocument.h>
+#include <sbml/Model.h>
+#include <sbml/Rule.h>
+#include <sbml/Species.h>
+#include <sbml/FunctionDefinition.h>
+#include <sbml/Parameter.h>
+#include <sbml/math/ASTNode.h>
+
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 #include "copasi/utilities/CCopasiMessage.h"
-
-#include "sbml/SBMLDocument.h"
-#include "sbml/Model.h"
-#include "sbml/Rule.h"
-#include "sbml/Species.h"
-#include "sbml/Parameter.h"
-#include "sbml/math/ASTNode.h"
-
 #include "copasi/report/CCopasiRootContainer.h"
 
 CCopasiDataModel* test000050::pCOPASIDATAMODEL = NULL;
@@ -57,43 +50,23 @@ void test000050::test_bug894()
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
 
-  try
-    {
-      CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 3).empty() == true);
-    }
-  catch (...)
-    {
-      // check if the correct error message has been created
-      CPPUNIT_ASSERT(pDataModel->getCurrentSBMLDocument() == NULL);
-      // last message should be an exception
-      CCopasiMessage message = CCopasiMessage::getLastMessage();
-      CPPUNIT_ASSERT(message.getType() == CCopasiMessage::EXCEPTION);
-      // see if the incompatibility message is there
-      bool found = false;
+  std::string sbml = pDataModel->exportSBMLToString(NULL, 2, 3);
+  CPPUNIT_ASSERT(sbml.empty() == false);
+  SBMLDocument* doc = pDataModel->getCurrentSBMLDocument();
+  CPPUNIT_ASSERT(doc != NULL);
+  CPPUNIT_ASSERT(doc->getModel() != NULL);
+  CPPUNIT_ASSERT(doc->getModel()->getNumFunctionDefinitions() > 0);
 
-      while (CCopasiMessage::size() > 0)
-        {
-          message = CCopasiMessage::getLastMessage();
+  SBase* def = doc->getModel()->getFunctionDefinition(0);
+  CPPUNIT_ASSERT(def != NULL);
 
-          if (message.getType() == CCopasiMessage::RAW)
-            {
-              std::string s = message.getText();
-
-              if (s.find(std::string("Call to function \"uniform\" used in mathematical expression for initial expression for object named \"K\" which can not be exported to SBML")) != std::string::npos)
-                {
-                  found = true;
-                  break;
-                }
-            }
-        }
-
-      CPPUNIT_ASSERT_MESSAGE("Error message not found.", found == true);
-
-      return;
-    }
-
-  // we should not get this far
-  CPPUNIT_ASSERT(false);
+  FunctionDefinition* fDef = dynamic_cast<FunctionDefinition*>(def);
+  CPPUNIT_ASSERT(def != NULL);
+  CPPUNIT_ASSERT(def->isSetAnnotation() == true);
+  CPPUNIT_ASSERT(def->getAnnotation() != NULL);
+  CPPUNIT_ASSERT(def->getAnnotation()->getNumChildren() == 1);
+  CPPUNIT_ASSERT(def->getAnnotation()->getChild(0).getURI() == "http://sbml.org/annotations/distribution");
+  CPPUNIT_ASSERT(def->getAnnotation()->getChild(0).getAttrValue("definition") == "http://www.uncertml.org/distributions/uniform");
 }
 
 const char* test000050::MODEL_STRING =
