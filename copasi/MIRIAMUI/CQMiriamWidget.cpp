@@ -13,9 +13,8 @@
 #include <QtGui/QHeaderView>
 #include <QtGui/QClipboard>
 #include <QtGui/QKeyEvent>
-
-#include <QDesktopServices>
-#include <QUrl>
+#include <QtGui/QDesktopServices>
+#include <QtCore/QUrl>
 
 #include "copasi.h"
 
