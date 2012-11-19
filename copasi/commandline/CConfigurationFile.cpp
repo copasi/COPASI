@@ -106,7 +106,6 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
   mpRecentSBMLFiles(NULL),
   mpRecentMIRIAMResources(NULL),
   mpApplicationFont(NULL),
-  mpWebBrowser(NULL),
   mpValidateUnits(NULL),
   mpWorkingDirectory(NULL)
 {initializeParameter();}
@@ -118,7 +117,6 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
   mpRecentSBMLFiles(NULL),
   mpRecentMIRIAMResources(NULL),
   mpApplicationFont(NULL),
-  mpWebBrowser(NULL),
   mpValidateUnits(NULL),
   mpWorkingDirectory(NULL)
 {initializeParameter();}
@@ -130,7 +128,6 @@ CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
   mpRecentSBMLFiles(NULL),
   mpRecentMIRIAMResources(NULL),
   mpApplicationFont(NULL),
-  mpWebBrowser(NULL),
   mpValidateUnits(NULL),
   mpWorkingDirectory(NULL)
 {initializeParameter();}
@@ -168,9 +165,6 @@ void CConfigurationFile::initializeParameter()
 
   mpApplicationFont =
     assertParameter("Application Font", CCopasiParameter::STRING, std::string(""))->getValue().pSTRING;
-
-  mpWebBrowser =
-    assertParameter("Application for opening URLs", CCopasiParameter::STRING, std::string(""))->getValue().pSTRING;
 
   assertGroup("MIRIAM Resources");
 
@@ -252,16 +246,6 @@ const std::string CConfigurationFile::getApplicationFont() const
 void CConfigurationFile::setApplicationFont(const std::string & applicationFont)
 {
   *mpApplicationFont = applicationFont;
-}
-
-const std::string CConfigurationFile::getWebBrowser() const
-{
-  return *mpWebBrowser;
-}
-
-void CConfigurationFile::setWebBrowser(const std::string & webBrowser)
-{
-  *mpWebBrowser = webBrowser;
 }
 
 bool CConfigurationFile::validateUnits() const

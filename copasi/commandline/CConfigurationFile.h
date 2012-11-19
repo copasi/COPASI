@@ -165,18 +165,6 @@ public:
   void setApplicationFont(const std::string & applicationFont);
 
   /**
-   * Retrieve the web browser
-   * @return const std::string & webBrowser
-   */
-  const std::string getWebBrowser() const;
-
-  /**
-   * Set the web browser.
-   * @param const std::string & webBrowser
-   */
-  void setWebBrowser(const std::string & webBrowser);
-
-  /**
    * Always perform unit validation
    * @return a flag indicating whether unit validation should always be performed
    */
@@ -284,11 +272,6 @@ private:
    * A pointer to the application font
    */
   std::string * mpApplicationFont;
-
-  /**
-   * A pointer to the application which handles opening URLs
-   */
-  std::string * mpWebBrowser;
 
   /**
    * A pointer indicating whether units will always be validated
