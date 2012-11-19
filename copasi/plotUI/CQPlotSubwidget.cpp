@@ -216,15 +216,25 @@ void CQPlotSubwidget::setCurrentIndex(int index)
   if (index >= mpListPlotItems->count())
     index = mpListPlotItems->count() - 1;
 
-  //tabs->setCurrentIndex(storeTab);
   mpListPlotItems->setCurrentRow(index);
 }
 
 void CQPlotSubwidget::addPlotItem(CPlotItem* item)
 {
-  mpListPlotItems->addItem(FROM_UTF8(item->getTitle()));
+  QString title = FROM_UTF8(item->getTitle());
+  int count = 0;
+
+  while (mList.contains(title))
+    {
+      title = (FROM_UTF8(item->getTitle()) + " %1").arg(++count);
+    }
+
+  item->setTitle(title.ascii());
+
+  QListWidgetItem *listItem = new QListWidgetItem(FROM_UTF8(item->getTitle()));
+  mpListPlotItems->addItem(listItem);
   mList.insert(FROM_UTF8(item->getTitle()), new CPlotItem(*item), true);
-  selectPlotItem(item);
+  mpListPlotItems->setCurrentRow(mpListPlotItems->count() - 1);
 }
 
 CQPlotEditWidget* CQPlotSubwidget::selectControl(CPlotItem::Type type)
@@ -741,7 +751,6 @@ bool CQPlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
   switch (mType)
     {
 #ifdef COPASI_BANDED_GRAPH
-
       case CPlotItem::bandedGraph:
 #endif // COPASI_BANDED_GRAPH
       case CPlotItem::plot2d:

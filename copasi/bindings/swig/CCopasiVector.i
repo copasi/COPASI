@@ -150,6 +150,7 @@
 %rename(getIndexByName) CCopasiVectorN<CPlotSpecification>::getIndex(const std::string& name) const;
 
 %template(OutputDefinitionStdVector) std::vector<CPlotSpecification*>;
+%template(PlotDataChannelSpecStdVector) std::vector<CPlotDataChannelSpec>;
 %template(OutputDefinitionVector) CCopasiVector<CPlotSpecification>;
 %template(OutputDefinitionVectorN) CCopasiVectorN<CPlotSpecification>;
 
