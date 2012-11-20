@@ -2415,45 +2415,14 @@ bool CModel::appendDependentReactions(std::set< const CCopasiObject * > candidat
   for (; it != end; ++it)
     if (candidates.find(*it) == candidates.end())
       {
-        std::set< const CCopasiObject * > Ignored;
-
-        // We need to ignore our own local reaction parameters.
-        CCopasiParameterGroup::index_iterator itParameter = (*it)->getParameters().beginIndex();
-        CCopasiParameterGroup::index_iterator endParameter = (*it)->getParameters().endIndex();
-        CCopasiObject::DataObjectSet::iterator itIgnored;
-
-        for (; itParameter != endParameter; ++itParameter)
+        // Check whether the reaction is already in the list of deleted objects
+        if (candidates.find(*it) == candidates.end())
           {
-            if ((itIgnored = candidates.find((*itParameter)->getValueReference())) != candidates.end())
+            if ((*it)->mustBeDeleted(candidates))
               {
-                Ignored.insert(*itIgnored);
-                candidates.erase(itIgnored);
+                dependents.insert(*it);
               }
           }
-
-        if ((*it)->dependsOn(candidates))
-          {
-            dependents.insert((*it));
-            continue;
-          }
-
-        CCopasiObject::DataObjectSet DeletedObjects = (*it)->getDeletedObjects();
-        itSet = DeletedObjects.begin();
-        endSet = DeletedObjects.end();
-
-        for (; itSet != endSet; ++itSet)
-          if (candidates.find(*itSet) == candidates.end() &&
-              (*itSet)->dependsOn(candidates))
-            {
-              dependents.insert((*it));
-              break;
-            }
-
-        // Add the ignored parameters back.
-        std::set< const CCopasiObject * >::iterator endIgnored = Ignored.end();
-
-        for (itIgnored = Ignored.begin(); itIgnored != endIgnored; ++itIgnored)
-          candidates.insert(*itIgnored);
       }
 
   return Size < dependents.size();
@@ -2481,37 +2450,16 @@ bool CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
       end = (*itComp)->getMetabolites().end();
 
       for (; it != end; ++it)
-        if (candidates.find((*it)->getCompartment()) != candidates.end())
-          dependents.insert((*it));
-        else if (candidates.find(*it) == candidates.end())
-          {
-            if (candidates.find(static_cast< const CCopasiObject * >((*it)->getCompartment()->getObject(CCopasiObjectName("Reference=Volume")))) != candidates.end() ||
-                (*it)->dependsOn(candidates))
-              {
-                dependents.insert((*it));
-                continue;
-              }
-
-            std::set< const CCopasiObject * > DeletedObjects = (*it)->getDeletedObjects();
-
-            if ((*it)->getStatus() == REACTIONS)
-              {
-                DeletedObjects.erase((*it)->getRateReference());
-                DeletedObjects.erase((*it)->getConcentrationRateReference());
-                DeletedObjects.erase(static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=TransitionTime"))));
-              }
-
-            itSet = DeletedObjects.begin();
-            endSet = DeletedObjects.end();
-
-            for (; itSet != endSet; ++itSet)
-              if (candidates.find(*itSet) == candidates.end() &&
-                  (*itSet)->dependsOn(candidates))
+        {
+          // Check whether the species is already in the list of deleted objects
+          if (candidates.find(*it) == candidates.end())
+            {
+              if ((*it)->mustBeDeleted(candidates))
                 {
-                  dependents.insert((*it));
-                  break;
+                  dependents.insert(*it);
                 }
-          }
+            }
+        }
     }
 
   return Size < dependents.size();
@@ -2531,26 +2479,16 @@ bool CModel::appendDependentCompartments(std::set< const CCopasiObject * > candi
   std::set< const CCopasiObject * >::const_iterator endSet;
 
   for (; it != end; ++it)
-    if (candidates.find(*it) == candidates.end())
-      {
-        if ((*it)->dependsOn(candidates))
-          {
-            dependents.insert((*it));
-            continue;
-          }
-
-        std::set< const CCopasiObject * > DeletedObjects = (*it)->getDeletedObjects();
-        itSet = DeletedObjects.begin();
-        endSet = DeletedObjects.end();
-
-        for (; itSet != endSet; ++itSet)
-          if (candidates.find(*itSet) == candidates.end() &&
-              (*itSet)->dependsOn(candidates))
+    {
+      // Check whether the compartment is already in the list of deleted objects
+      if (candidates.find(*it) == candidates.end())
+        {
+          if ((*it)->mustBeDeleted(candidates))
             {
-              dependents.insert((*it));
-              break;
+              dependents.insert(*it);
             }
-      }
+        }
+    }
 
   return Size < dependents.size();
 }
@@ -2569,25 +2507,14 @@ bool CModel::appendDependentModelValues(std::set< const CCopasiObject * > candid
   std::set< const CCopasiObject * >::const_iterator endSet;
 
   for (; it != end; ++it)
+
+    // Check whether the model value is already in the list of deleted objects
     if (candidates.find(*it) == candidates.end())
       {
-        if ((*it)->dependsOn(candidates))
+        if ((*it)->mustBeDeleted(candidates))
           {
-            dependents.insert((*it));
-            continue;
+            dependents.insert(*it);
           }
-
-        std::set< const CCopasiObject * > DeletedObjects = (*it)->getDeletedObjects();
-        itSet = DeletedObjects.begin();
-        endSet = DeletedObjects.end();
-
-        for (; itSet != endSet; ++itSet)
-          if (candidates.find(*itSet) == candidates.end() &&
-              (*itSet)->dependsOn(candidates))
-            {
-              dependents.insert((*it));
-              break;
-            }
       }
 
   return Size < dependents.size();
@@ -2607,11 +2534,13 @@ bool CModel::appendDependentEvents(std::set< const CCopasiObject * > candidates,
   std::set< const CCopasiObject * >::const_iterator endSet;
 
   for (; it != end; ++it)
+
+    // Check whether the model value is already in the list of deleted objects
     if (candidates.find(*it) == candidates.end())
       {
-        if ((*it)->dependsOn(candidates))
+        if ((*it)->mustBeDeleted(candidates))
           {
-            dependents.insert((*it));
+            dependents.insert(*it);
           }
       }
 

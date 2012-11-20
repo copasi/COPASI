@@ -208,6 +208,14 @@ public:
   virtual const std::string & getKey() const;
 
   /**
+   * Check whether an object must be deleted because its prerequisites can
+   * no longer be fulfilled due to the given deleted objects
+   * @param const DataObjectSet deletedObjects
+   * @return bool mustBeDeleted
+   */
+  virtual bool mustBeDeleted(DataObjectSet deletedObjects) const;
+
+  /**
    * Compile the event.
    * @param std::vector< CCopasiContainer * > listOfContainer
    * @return bool success

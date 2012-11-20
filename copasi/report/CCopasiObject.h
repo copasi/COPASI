@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-//   $Revision: 1.87 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/20 12:08:24 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -123,18 +115,18 @@ private:
 
 private:
   RefreshTemplate():
-      Refresh(),
-      mpInstance(NULL),
-      mMethod(NULL)
+    Refresh(),
+    mpInstance(NULL),
+    mMethod(NULL)
   {}
 
 public:
   // constructor - takes pointer to an object and pointer to a member and stores
   // them in two private variables
   RefreshTemplate(CClass * pInstance, void (CClass::*method)(void)):
-      Refresh(),
-      mpInstance(pInstance),
-      mMethod(method)
+    Refresh(),
+    mpInstance(pInstance),
+    mMethod(method)
   {}
 
   virtual ~RefreshTemplate() {};
@@ -230,7 +222,6 @@ class CCopasiObject: public CObjectInterface
 
 public:
   typedef std::set< const CCopasiObject * > DataObjectSet;
-
 
   //Attributes
 protected:
@@ -408,6 +399,14 @@ public:
    */
   void getAllDependencies(DataObjectSet & dependencies,
                           const DataObjectSet & context) const;
+
+  /**
+   * Check whether an object must be deleted because its prerequisites can
+   * no longer be fulfilled due to the given deleted objects
+   * @param const DataObjectSet deletedObjects
+   * @return bool mustBeDeleted
+   */
+  virtual bool mustBeDeleted(DataObjectSet deletedObjects) const;
 
   /**
    * Check whether the current object depends on any objects in the candidates.

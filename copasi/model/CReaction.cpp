@@ -952,6 +952,39 @@ std::set< const CCopasiObject * > CReaction::getDeletedObjects() const
   return Deleted;
 }
 
+// virtual
+bool CReaction::mustBeDeleted(CCopasiObject::DataObjectSet deletedObjects) const
+{
+  bool MustBeDeleted = false;
+
+  DataObjectSet ChildObjects = getDeletedObjects();
+
+  DataObjectSet::const_iterator it = ChildObjects.begin();
+  DataObjectSet::const_iterator end = ChildObjects.end();
+
+  for (; it != end; ++it)
+    {
+      if (*it == this)
+        {
+          if ((*it)->CCopasiObject::mustBeDeleted(deletedObjects))
+            {
+              MustBeDeleted = true;
+              break;
+            }
+
+          continue;
+        }
+
+      if ((*it)->mustBeDeleted(deletedObjects))
+        {
+          MustBeDeleted = true;
+          break;
+        }
+    }
+
+  return MustBeDeleted;
+}
+
 std::ostream & operator<<(std::ostream &os, const CReaction & d)
 {
   os << "CReaction:  " << d.getObjectName() << std::endl;

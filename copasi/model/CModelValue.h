@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-//   $Revision: 1.39 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/08/12 15:25:51 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -202,6 +194,14 @@ public:
    * @return std::set< const CCopasiObject * > deletedObjects
    */
   virtual std::set< const CCopasiObject * > getDeletedObjects() const;
+
+  /**
+   * Check whether an object must be deleted because its prerequisites can
+   * no longer be fulfilled due to the given deleted objects
+   * @param const DataObjectSet deletedObjects
+   * @return bool mustBeDeleted
+   */
+  virtual bool mustBeDeleted(DataObjectSet deletedObjects) const;
 
   /**
    * Sets the SBMLId.

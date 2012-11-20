@@ -277,6 +277,60 @@ const std::string & CEvent::getKey() const
   return mKey;
 }
 
+// virtual
+bool CEvent::mustBeDeleted(CCopasiObject::DataObjectSet deletedObjects) const
+{
+  bool MustBeDeleted = false;
+
+  CCopasiObject::DataObjectSet ChildObjects;
+
+  if (mpTriggerExpression != NULL)
+    {
+      ChildObjects.insert(mpTriggerExpression);
+    }
+
+  if (mpDelayExpression != NULL)
+    {
+      ChildObjects.insert(mpDelayExpression);
+    }
+
+  if (mpPriorityExpression != NULL)
+    {
+      ChildObjects.insert(mpPriorityExpression);
+    }
+
+  // We need to add all assignment targets and expressions
+  CCopasiVector< CEventAssignment >::const_iterator itAssignment = mAssignments.begin();
+  CCopasiVector< CEventAssignment >::const_iterator endAssignment = mAssignments.end();
+
+  for (; itAssignment != endAssignment; ++itAssignment)
+    {
+      if ((*itAssignment)->getTargetObject() != NULL)
+        {
+          ChildObjects.insert((*itAssignment)->getTargetObject());
+        }
+
+      if ((*itAssignment)->getExpressionPtr() != NULL)
+        {
+          ChildObjects.insert((*itAssignment)->getExpressionPtr());
+        }
+    }
+
+  DataObjectSet::const_iterator it = ChildObjects.begin();
+  DataObjectSet::const_iterator end = ChildObjects.end();
+
+  for (; it != end; ++it)
+    {
+      if ((*it)->mustBeDeleted(deletedObjects))
+        {
+          MustBeDeleted = true;
+          break;
+        }
+    }
+
+  return MustBeDeleted;
+}
+
 bool CEvent::compile(std::vector< CCopasiContainer * > listOfContainer)
 {
   bool success = true;

@@ -886,6 +886,7 @@ public:
   bool appendDependentReactions(std::set< const CCopasiObject * > candidates,
                                 std::set< const CCopasiObject * > & dependents) const;
 
+private:
   /**
    * Appends pointers to metabolites which are dependent on the candidates to the
    * list.
@@ -926,6 +927,7 @@ public:
   bool appendDependentEvents(std::set< const CCopasiObject * > candidates,
                              std::set< const CCopasiObject * > & dependents) const;
 
+public:
   /**
    * Remove all model objects which depend on the deleted objects
    * @param const std::set<const CCopasiObject*> & deletedObjects
@@ -1602,7 +1604,7 @@ public:
    * @return const CVector< CMathTrigger::CRootFinder * > & rootFinders
    */
   const CVector< CMathTrigger::CRootFinder * > & getRootFinders() const;
-    
+
   const CMathModel* getMathModel() const;
   CMathModel* getMathModel();
 };
