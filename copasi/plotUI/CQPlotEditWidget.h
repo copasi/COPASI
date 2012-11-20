@@ -18,7 +18,7 @@ public:
   virtual ~CQPlotEditWidget();
 
   virtual bool LoadFromCurveSpec(const CPlotItem * curve) = 0;
-  virtual bool SaveToCurveSpec(CPlotItem * curve) const = 0;
+  virtual bool SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original = NULL) const = 0;
   virtual void setModel(const CModel * model);
 
 #if USE_NEW_PLOTSUBWIDGET

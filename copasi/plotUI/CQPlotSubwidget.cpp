@@ -41,6 +41,7 @@ CQPlotSubwidget::CQPlotSubwidget(QWidget* parent, const char* name, Qt::WFlags f
 #ifdef COPASI_BANDED_GRAPH
   , mpBandedGraphWidget(NULL)
 #endif
+  , mLastItem(NULL)
 {
   setupUi(this);
 
@@ -58,7 +59,7 @@ CQPlotSubwidget::CQPlotSubwidget(QWidget* parent, const char* name, Qt::WFlags f
   layoutCurves->addWidget(buttonBandedGraph);
   connect(buttonBandedGraph, SIGNAL(clicked()), this, SLOT(addBandedGraphSlot()));
 
-  mpBandedGraphWidget = new BandedGraphWidget(this)
+  mpBandedGraphWidget = new BandedGraphWidget(this);
   mpStack->addWidget(mpBandedGraphWidget);
 
 #endif // COPASI_BANDED_GRAPH
@@ -75,7 +76,10 @@ CPlotItem* CQPlotSubwidget::updateItem(CPlotItem* item)
 
   if (current != NULL)
     {
-      current->SaveToCurveSpec(item);
+      if (!current->SaveToCurveSpec(item, mLastItem))
+        {
+          return NULL;
+        }
     }
 
   return item;
@@ -107,8 +111,32 @@ void CQPlotSubwidget::storeChanges()
     }
   else
     {
+      if (!areOfSameType(mLastSelection))
+        return;
+
       CPlotItem *common = new CPlotItem("nope");
-      updateItem(common);
+
+      if (mpStack->currentWidget() == mpHistoWidget)
+        {
+          common->setType(CPlotItem::histoItem1d);
+        }
+
+#if COPASI_BANDED_GRAPH
+      else if (mpStack->currentWidget() == mpBandedGraphWidget)
+        {
+          common->setType(CPlotItem::bandedGraph);
+        }
+
+#endif
+      else
+        {
+          common->setType(CPlotItem::curve2d);
+        }
+
+      common = updateItem(common);
+
+      if (common == NULL)
+        return;
 
       QList<QListWidgetItem*>::const_iterator it;
 
@@ -125,6 +153,13 @@ void CQPlotSubwidget::storeChanges()
           newItem->setTitle(current->getTitle());
           newItem->getChannels() = channels;
           newItem->setType(current->getType());
+          (CCopasiParameterGroup)(*newItem) = (CCopasiParameterGroup)(*newItem);
+
+          //if (mpStack->currentWidget() == mpHistoWidget)
+          //{
+          //  double increment= *common->getValue("increment").pDOUBLE;
+          //  newItem->setValue("increment", increment);
+          //}
 
           mList[(*it)->text()] = newItem;
 
@@ -279,6 +314,11 @@ void CQPlotSubwidget::selectPlotItem(CPlotItem* item)
 
   current->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
   current->LoadFromCurveSpec(item);
+
+  if (mLastItem != NULL)
+    delete mLastItem;
+
+  mLastItem = new CPlotItem(*item);
 }
 
 void CQPlotSubwidget::addCurveTab(const std::string & title,
@@ -557,7 +597,7 @@ void CQPlotSubwidget::addBandedGraph()
         }
     }
 
-  C_INT32 storeTab = tabs->count();
+  C_INT32 storeTab = getCurrentIndex();
 
   if (objects1.size() == 1)
     {
@@ -597,7 +637,7 @@ void CQPlotSubwidget::addBandedGraph()
         }
     }
 
-  tabs->setCurrentIndex(storeTab);
+  setCurrentIndex(storeTab);
 }
 #endif // COPASI_BANDED_GRAPH
 

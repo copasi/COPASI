@@ -124,17 +124,8 @@ bool HistoWidget::LoadFromCurveSpec(const CPlotItem * curve)
   return true; //TODO
 }
 
-bool HistoWidget::SaveToCurveSpec(CPlotItem * curve) const
+bool HistoWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original /*= NULL*/) const
 {
-  //title
-  curve->setTitle(TO_UTF8(mpEditTitle->text()));
-
-  //channels
-  curve->getChannels().clear();
-  curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("")));
-
-  //other parameters: TODO
-  curve->setValue("increment", mpEditIncrement->text().toDouble());
 
   C_INT32 Activity = 0;
 
@@ -143,6 +134,44 @@ bool HistoWidget::SaveToCurveSpec(CPlotItem * curve) const
   if (mpCheckDuring->isChecked()) Activity += COutputInterface::DURING;
 
   if (mpCheckAfter->isChecked()) Activity += COutputInterface::AFTER;
+
+  std::string title = TO_UTF8(mpEditTitle->text());
+  CCopasiObjectName name = mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("");
+  C_FLOAT64 increment = mpEditIncrement->text().toDouble();
+
+  bool thingsChanged = false;
+
+  if (original != NULL)
+    {
+      if (original->getType() != CPlotItem::histoItem1d)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getTitle() != title)
+        thingsChanged = true;
+
+      if (thingsChanged || *original->getValue("increment").pDOUBLE != increment)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getChannels().size() != 1)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getChannels()[0] != name)
+        thingsChanged = true;
+    }
+  else thingsChanged = true;
+
+  if (!thingsChanged)
+    return false;
+
+  //title
+  curve->setTitle(title);
+
+  //channels
+  curve->getChannels().clear();
+  curve->getChannels().push_back(CPlotDataChannelSpec(name));
+
+  //other parameters: TODO
+  curve->setValue("increment", increment);
 
   curve->setActivity((COutputInterface::Activity) Activity);
 

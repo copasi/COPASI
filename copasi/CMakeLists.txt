@@ -143,6 +143,10 @@ if (ENABLE_CRENDER_EXTENSION)
 set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DUSE_CRENDER_EXTENSION=1)
 endif(ENABLE_CRENDER_EXTENSION)
 
+if (ENABLE_COPASI_BANDED_GRAPH)
+set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_BANDED_GRAPH=1)
+endif(ENABLE_COPASI_BANDED_GRAPH)
+
 if (ENABLE_CELLDESIGNER_IMPORT)
 set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCELLDESIGNER_IMPORT=1)
 endif(ENABLE_CELLDESIGNER_IMPORT)
@@ -276,14 +280,14 @@ set_target_properties (libCOPASIUI PROPERTIES OUTPUT_NAME "COPASIUI")
 
   add_subdirectory(CopasiUI)
   add_dependencies(CopasiUI ${SE_DEPENDENCIES} libCOPASIUI ${UI_DEPENDENCIES})
-  
+
   option(BUILD_VIEWCURRENT "Build the viewer for optimization / fitting tasks (ViewCurrent)." OFF)
   mark_as_advanced(BUILD_VIEWCURRENT)
-  
+
   if(BUILD_VIEWCURRENT)
-    add_subdirectory(ViewCurrentUI)  
+    add_subdirectory(ViewCurrentUI)
   endif(BUILD_VIEWCURRENT)
-    
+
   add_subdirectory(CopasiSBW)
-	
+
 endif(BUILD_GUI)

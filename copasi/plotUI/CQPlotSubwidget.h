@@ -48,6 +48,7 @@ private:
   void deleteCurves();
 
   QMap<QString, CPlotItem*> mList;
+  CPlotItem *mLastItem;
   QList<QListWidgetItem*> mLastSelection;
 
   bool areOfSameType(QList<QListWidgetItem*>& items);

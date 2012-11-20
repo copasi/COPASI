@@ -22,7 +22,7 @@ public:
   ~HistoWidget();
 
   virtual bool LoadFromCurveSpec(const CPlotItem * curve);
-  virtual bool SaveToCurveSpec(CPlotItem * curve) const;
+  virtual bool SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original = NULL) const;
 
 #if USE_NEW_PLOTSUBWIDGET
   /**

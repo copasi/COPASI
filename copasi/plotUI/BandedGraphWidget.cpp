@@ -105,16 +105,15 @@ BandedGraphWidget::LoadFromCurveSpec(const CPlotItem * curve)
 }
 
 bool
-BandedGraphWidget::SaveToCurveSpec(CPlotItem * curve) const
+BandedGraphWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original /*= NULL*/) const
 {
-  //title
-  curve->setTitle(TO_UTF8(mpEditTitle->text()));
+  //curve->setType(CPlotItem::bandedGraph);
 
-  //channels
-  curve->getChannels().clear();
-  curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("")));
-  curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectYone ? mpObjectYone->getCN() : CCopasiObjectName("")));
-  curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectYtwo ? mpObjectYtwo->getCN() : (mpObjectYone ? mpObjectYone->getCN() : CCopasiObjectName(""))));
+  std::string title = TO_UTF8(mpEditTitle->text());
+
+  CCopasiObjectName xName = mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("");
+  CCopasiObjectName yName1 = mpObjectYone ? mpObjectYone->getCN() : CCopasiObjectName("");
+  CCopasiObjectName yName2 = mpObjectYtwo ? mpObjectYtwo->getCN() : (mpObjectYone ? mpObjectYone->getCN() : CCopasiObjectName(""));
 
   C_INT32 Activity = 0;
 
@@ -123,6 +122,46 @@ BandedGraphWidget::SaveToCurveSpec(CPlotItem * curve) const
   if (mpCheckDuring->isChecked()) Activity += COutputInterface::DURING;
 
   if (mpCheckAfter->isChecked()) Activity += COutputInterface::AFTER;
+
+  bool thingsChanged = false;
+
+  if (original != NULL)
+    {
+      // compare whether things changed
+      if (original->getTitle() != title)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getType() != CPlotItem::bandedGraph)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getActivity() != Activity)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getChannels().size() != 3)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getChannels()[0] != xName)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getChannels()[1] != yName1)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getChannels()[2] != yName2)
+        thingsChanged = true;
+    }
+  else thingsChanged = true;
+
+  if (!thingsChanged)
+    return false;
+
+  //title
+  curve->setTitle(title);
+
+  //channels
+  curve->getChannels().clear();
+  curve->getChannels().push_back(CPlotDataChannelSpec(xName));
+  curve->getChannels().push_back(CPlotDataChannelSpec(yName1));
+  curve->getChannels().push_back(CPlotDataChannelSpec(yName2));
 
   curve->setActivity((COutputInterface::Activity) Activity);
 

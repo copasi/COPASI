@@ -156,25 +156,18 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
   return true; //TODO
 }
 
-bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve) const
+bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original /*= NULL*/) const
 {
   //if (!(mpObjectX && mpObjectY)) return false;
 
-  //title
-  curve->setTitle(TO_UTF8(mpEditTitle->text()));
+  //curve->setType(CPlotItem::curve2d);
 
-  //channels
-  curve->getChannels().clear();
-  curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("")));
-  curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectY ? mpObjectY->getCN() : CCopasiObjectName("")));
-
-  curve->setValue("Line type", (unsigned C_INT32)mpBoxType->currentIndex());
-  curve->setValue("Line subtype", (unsigned C_INT32)mpBoxLineSubType->currentIndex());
-  curve->setValue("Symbol subtype", (unsigned C_INT32)mpBoxSymbolSubType->currentIndex());
-  curve->setValue("Line width", (C_FLOAT64)mpSpinBoxWidth->value());
-
-  //color
-  curve->setValue("Color", std::string(TO_UTF8(mpBoxColor->currentText())));
+  std::string title = TO_UTF8(mpEditTitle->text());
+  unsigned C_INT32 lineType = (unsigned C_INT32)mpBoxType->currentIndex();
+  unsigned C_INT32 lineSubType = (unsigned C_INT32)mpBoxLineSubType->currentIndex();
+  unsigned C_INT32 symbolSubType = (unsigned C_INT32)mpBoxSymbolSubType->currentIndex();
+  C_FLOAT64 lineWidth = (C_FLOAT64)mpSpinBoxWidth->value();
+  std::string color = TO_UTF8(mpBoxColor->currentText());
 
   C_INT32 Activity = 0;
 
@@ -183,6 +176,68 @@ bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve) const
   if (mpCheckDuring->isChecked()) Activity += COutputInterface::DURING;
 
   if (mpCheckAfter->isChecked()) Activity += COutputInterface::AFTER;
+
+  CCopasiObjectName xName = mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("");
+  CCopasiObjectName yName = mpObjectY ? mpObjectY->getCN() : CCopasiObjectName("");
+
+  bool thingsChanged = false;
+
+  if (original != NULL)
+    {
+      // compare whether things changed
+      if (original->getTitle() != title)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getType() != CPlotItem::curve2d)
+        thingsChanged = true;
+
+      if (thingsChanged || *original->getValue("Line type").pUINT != lineType)
+        thingsChanged = true;
+
+      if (thingsChanged || *original->getValue("Line subtype").pUINT != lineSubType)
+        thingsChanged = true;
+
+      if (thingsChanged || *original->getValue("Symbol subtype").pUINT != symbolSubType)
+        thingsChanged = true;
+
+      if (thingsChanged || *original->getValue("Line width").pDOUBLE != lineWidth)
+        thingsChanged = true;
+
+      if (thingsChanged || *original->getValue("Color").pSTRING != color)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getActivity() != Activity)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getChannels().size() != 2)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getChannels()[0] != xName)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getChannels()[1] != yName)
+        thingsChanged = true;
+    }
+  else thingsChanged = true;
+
+  if (!thingsChanged)
+    return false;
+
+  //title
+  curve->setTitle(title);
+
+  //channels
+  curve->getChannels().clear();
+  curve->getChannels().push_back(CPlotDataChannelSpec(xName));
+  curve->getChannels().push_back(CPlotDataChannelSpec(yName));
+
+  curve->setValue("Line type", lineType);
+  curve->setValue("Line subtype", lineSubType);
+  curve->setValue("Symbol subtype", symbolSubType);
+  curve->setValue("Line width", lineWidth);
+
+  //color
+  curve->setValue("Color", color);
 
   curve->setActivity((COutputInterface::Activity) Activity);
 
