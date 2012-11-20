@@ -953,11 +953,27 @@ std::set< const CCopasiObject * > CReaction::getDeletedObjects() const
 }
 
 // virtual
-bool CReaction::mustBeDeleted(CCopasiObject::DataObjectSet deletedObjects) const
+bool CReaction::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObjects) const
 {
   bool MustBeDeleted = false;
 
-  DataObjectSet ChildObjects = getDeletedObjects();
+  DataObjectSet DeletedObjects = deletedObjects;
+  // We need to ignore all local reaction parameters
+  CCopasiParameterGroup::index_iterator itParameter = mParameters.beginIndex();
+  CCopasiParameterGroup::index_iterator endParameter = mParameters.endIndex();
+
+  for (; itParameter != endParameter ; ++itParameter)
+    {
+      if (isLocalParameter((*itParameter)->getObjectName()))
+        {
+          DeletedObjects.erase((*itParameter)->getValueReference());
+        }
+    }
+
+  DataObjectSet ChildObjects;
+  ChildObjects.insert(this);
+  ChildObjects.insert(mpFluxReference);
+  ChildObjects.insert(mpParticleFluxReference);
 
   DataObjectSet::const_iterator it = ChildObjects.begin();
   DataObjectSet::const_iterator end = ChildObjects.end();
@@ -966,7 +982,7 @@ bool CReaction::mustBeDeleted(CCopasiObject::DataObjectSet deletedObjects) const
     {
       if (*it == this)
         {
-          if ((*it)->CCopasiObject::mustBeDeleted(deletedObjects))
+          if ((*it)->CCopasiObject::mustBeDeleted(DeletedObjects))
             {
               MustBeDeleted = true;
               break;
@@ -975,7 +991,7 @@ bool CReaction::mustBeDeleted(CCopasiObject::DataObjectSet deletedObjects) const
           continue;
         }
 
-      if ((*it)->mustBeDeleted(deletedObjects))
+      if ((*it)->mustBeDeleted(DeletedObjects))
         {
           MustBeDeleted = true;
           break;

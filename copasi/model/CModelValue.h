@@ -198,10 +198,10 @@ public:
   /**
    * Check whether an object must be deleted because its prerequisites can
    * no longer be fulfilled due to the given deleted objects
-   * @param const DataObjectSet deletedObjects
+   * @param const DataObjectSet & deletedObjects
    * @return bool mustBeDeleted
    */
-  virtual bool mustBeDeleted(DataObjectSet deletedObjects) const;
+  virtual bool mustBeDeleted(const DataObjectSet & deletedObjects) const;
 
   /**
    * Sets the SBMLId.

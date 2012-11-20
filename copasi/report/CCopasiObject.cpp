@@ -366,7 +366,7 @@ void CCopasiObject::getAllDependencies(CCopasiObject::DataObjectSet & dependenci
 }
 
 // virtual
-bool CCopasiObject::mustBeDeleted(CCopasiObject::DataObjectSet deletedObjects) const
+bool CCopasiObject::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObjects) const
 {
   bool MustBeDeleted = false;
 

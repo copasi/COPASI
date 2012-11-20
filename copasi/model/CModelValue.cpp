@@ -591,7 +591,7 @@ std::set< const CCopasiObject * > CModelEntity::getDeletedObjects() const
 }
 
 // virtual
-bool CModelEntity::mustBeDeleted(CCopasiObject::DataObjectSet deletedObjects) const
+bool CModelEntity::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObjects) const
 {
   bool MustBeDeleted = false;
 

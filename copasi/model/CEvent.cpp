@@ -278,7 +278,7 @@ const std::string & CEvent::getKey() const
 }
 
 // virtual
-bool CEvent::mustBeDeleted(CCopasiObject::DataObjectSet deletedObjects) const
+bool CEvent::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObjects) const
 {
   bool MustBeDeleted = false;
 

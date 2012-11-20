@@ -748,7 +748,7 @@ CCopasiObject::DataObjectSet CMetab::getDeletedObjects() const
 }
 
 // virtual
-bool CMetab::mustBeDeleted(CCopasiObject::DataObjectSet deletedObjects) const
+bool CMetab::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObjects) const
 {
   bool MustBeDeleted = false;
 
