@@ -228,7 +228,10 @@ void CQOptimizationWidget::init()
   mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::lyap]] = CCopasiTask::lyap;
   mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::sens]));
   mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::sens]] = CCopasiTask::sens;
-
+#ifdef COPASI_DEBUG
+  mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CCopasiTask::TypeName[CCopasiTask::parameterFitting]));
+  mSubtaskMap[CCopasiTask::TypeName[CCopasiTask::parameterFitting]] = CCopasiTask::parameterFitting;
+#endif
   mpParameters->setItemType(CQFittingItemWidget::OPT_ITEM);
 
   connect(mpParameters, SIGNAL(numberChanged(int)), this, SLOT(slotParameterNumberChanged(int)));
