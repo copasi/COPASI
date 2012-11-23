@@ -153,13 +153,8 @@ void CQPlotSubwidget::storeChanges()
           newItem->setTitle(current->getTitle());
           newItem->getChannels() = channels;
           newItem->setType(current->getType());
+          newItem->setActivity(common->getActivity());
           (CCopasiParameterGroup)(*newItem) = (CCopasiParameterGroup)(*newItem);
-
-          //if (mpStack->currentWidget() == mpHistoWidget)
-          //{
-          //  double increment= *common->getValue("increment").pDOUBLE;
-          //  newItem->setValue("increment", increment);
-          //}
 
           mList[(*it)->text()] = newItem;
 
@@ -791,6 +786,7 @@ bool CQPlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
   switch (mType)
     {
 #ifdef COPASI_BANDED_GRAPH
+
       case CPlotItem::bandedGraph:
 #endif // COPASI_BANDED_GRAPH
       case CPlotItem::plot2d:
