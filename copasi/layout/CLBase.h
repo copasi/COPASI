@@ -174,7 +174,15 @@ public:
    */
   Point getSBMLPoint() const;
 
-  bool isEmpty() const {return mX == 0 && mY == 0 && mZ == 0;}
+  bool isEmpty() const
+  {
+    return mX == 0
+           && mY == 0
+#ifdef USE_CRENDER_EXTENSION
+           && mZ == 0
+#endif // USE_CRENDER_EXTENSION
+           ;
+  }
 
   /**
     * insert operator
