@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajAdaptiveSA.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/04 17:37:43 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -40,29 +32,29 @@
 
 #define mtxIdx(row,col,intv)  ((row)+(col)*(intv))
 CTrajAdaptiveSA::CReactionDependencies::CReactionDependencies():
-    mMethodSpeciesIndex(0),
-    mSpeciesMultiplier(0),
-    mMethodSpecies(0),
-    mModelSpecies(0),
-    mCalculations(),
-    mDependentReactions(0),
-    mSubstrateMultiplier(0),
-    mMethodSubstrates(0),
-    mModelSubstrates(0),
-    mpParticleFlux(NULL)
+  mMethodSpeciesIndex(0),
+  mSpeciesMultiplier(0),
+  mMethodSpecies(0),
+  mModelSpecies(0),
+  mCalculations(),
+  mDependentReactions(0),
+  mSubstrateMultiplier(0),
+  mMethodSubstrates(0),
+  mModelSubstrates(0),
+  mpParticleFlux(NULL)
 {}
 
 CTrajAdaptiveSA::CReactionDependencies::CReactionDependencies(const CReactionDependencies & src):
-    mMethodSpeciesIndex(src.mMethodSpeciesIndex),
-    mSpeciesMultiplier(src.mSpeciesMultiplier),
-    mMethodSpecies(src.mMethodSpecies),
-    mModelSpecies(src.mModelSpecies),
-    mCalculations(src.mCalculations),
-    mDependentReactions(src.mDependentReactions),
-    mSubstrateMultiplier(src.mSubstrateMultiplier),
-    mMethodSubstrates(src.mMethodSubstrates),
-    mModelSubstrates(src.mModelSubstrates),
-    mpParticleFlux(src.mpParticleFlux)
+  mMethodSpeciesIndex(src.mMethodSpeciesIndex),
+  mSpeciesMultiplier(src.mSpeciesMultiplier),
+  mMethodSpecies(src.mMethodSpecies),
+  mModelSpecies(src.mModelSpecies),
+  mCalculations(src.mCalculations),
+  mDependentReactions(src.mDependentReactions),
+  mSubstrateMultiplier(src.mSubstrateMultiplier),
+  mMethodSubstrates(src.mMethodSubstrates),
+  mModelSubstrates(src.mModelSubstrates),
+  mpParticleFlux(src.mpParticleFlux)
 {}
 
 CTrajAdaptiveSA::CReactionDependencies::~CReactionDependencies()
@@ -94,58 +86,58 @@ CTrajAdaptiveSA * CTrajAdaptiveSA::createTauLeapMethod()
 }
 
 CTrajAdaptiveSA::CTrajAdaptiveSA(const CCopasiContainer * pParent):
-    CTrajectoryMethod(CCopasiMethod::adaptiveSA, pParent),
-    mMaxReactionFiring(0),
-    mReactionFiring(0),
-    mPartitionedReactionFiring(0),
-    mAvgDX(0),
-    mSigDX(0),
-    mpMethodSpecies(NULL),
-    mSpeciesAfterTau(0),
-    mpRandomGenerator(CRandom::createGenerator(CRandom::mt19937)),
-    mpModel(NULL),
-    mNumReactions(0),
-    mNumSpecies(0),
-    mMaxSteps(1000000),
-    mNextReactionTime(0.0),
-    mNextReactionIndex(C_INVALID_INDEX),
-    mDoCorrection(true),
-    mAmu(0),
-    mPartitionedAmu(0),
-    mMethodState(),
-    mReactionDependencies(0),
-    mPartitionedDependencies(0),
-    mA0(0.0),
-    mMaxStepsReached(false)
+  CTrajectoryMethod(CCopasiMethod::adaptiveSA, pParent),
+  mMaxReactionFiring(0),
+  mReactionFiring(0),
+  mPartitionedReactionFiring(0),
+  mAvgDX(0),
+  mSigDX(0),
+  mpMethodSpecies(NULL),
+  mSpeciesAfterTau(0),
+  mpRandomGenerator(CRandom::createGenerator(CRandom::mt19937)),
+  mpModel(NULL),
+  mNumReactions(0),
+  mNumSpecies(0),
+  mMaxSteps(1000000),
+  mNextReactionTime(0.0),
+  mNextReactionIndex(C_INVALID_INDEX),
+  mDoCorrection(true),
+  mAmu(0),
+  mPartitionedAmu(0),
+  mMethodState(),
+  mReactionDependencies(0),
+  mPartitionedDependencies(0),
+  mA0(0.0),
+  mMaxStepsReached(false)
 {
   initializeParameter();
 }
 
 CTrajAdaptiveSA::CTrajAdaptiveSA(const CTrajAdaptiveSA & src,
                                  const CCopasiContainer * pParent):
-    CTrajectoryMethod(src, pParent),
-    mMaxReactionFiring(src.mMaxReactionFiring),
-    mReactionFiring(src.mReactionFiring),
-    mPartitionedReactionFiring(src.mPartitionedReactionFiring),
-    mAvgDX(src.mAvgDX),
-    mSigDX(src.mSigDX),
-    mpMethodSpecies(src.mpMethodSpecies),
-    mSpeciesAfterTau(src.mSpeciesAfterTau),
-    mpRandomGenerator(CRandom::createGenerator(CRandom::mt19937)),
-    mpModel(src.mpModel),
-    mNumReactions(src.mNumReactions),
-    mNumSpecies(src.mNumSpecies),
-    mMaxSteps(src.mMaxSteps),
-    mNextReactionTime(src.mNextReactionTime),
-    mNextReactionIndex(src.mNextReactionIndex),
-    mDoCorrection(src.mDoCorrection),
-    mAmu(src.mAmu),
-    mPartitionedAmu(src.mPartitionedAmu),
-    mMethodState(src.mMethodState),
-    mReactionDependencies(src.mReactionDependencies),
-    mPartitionedDependencies(src.mPartitionedDependencies),
-    mA0(src.mA0),
-    mMaxStepsReached(src.mMaxStepsReached)
+  CTrajectoryMethod(src, pParent),
+  mMaxReactionFiring(src.mMaxReactionFiring),
+  mReactionFiring(src.mReactionFiring),
+  mPartitionedReactionFiring(src.mPartitionedReactionFiring),
+  mAvgDX(src.mAvgDX),
+  mSigDX(src.mSigDX),
+  mpMethodSpecies(src.mpMethodSpecies),
+  mSpeciesAfterTau(src.mSpeciesAfterTau),
+  mpRandomGenerator(CRandom::createGenerator(CRandom::mt19937)),
+  mpModel(src.mpModel),
+  mNumReactions(src.mNumReactions),
+  mNumSpecies(src.mNumSpecies),
+  mMaxSteps(src.mMaxSteps),
+  mNextReactionTime(src.mNextReactionTime),
+  mNextReactionIndex(src.mNextReactionIndex),
+  mDoCorrection(src.mDoCorrection),
+  mAmu(src.mAmu),
+  mPartitionedAmu(src.mPartitionedAmu),
+  mMethodState(src.mMethodState),
+  mReactionDependencies(src.mReactionDependencies),
+  mPartitionedDependencies(src.mPartitionedDependencies),
+  mA0(src.mA0),
+  mMaxStepsReached(src.mMaxStepsReached)
 {
   initializeParameter();
 }
@@ -268,7 +260,8 @@ void CTrajAdaptiveSA::start(const CState * initialState)
         {
           *pValue = floor(*pValue + 0.5);
 
-          if ((*ppEntity)->getStatus() == CModelEntity::REACTIONS)
+          if ((*ppEntity)->getStatus() == CModelEntity::REACTIONS &&
+              (*ppEntity)->isUsed())
             {
               *pSpeciesAfterTau = *pValue;
               pSpeciesAfterTau++;
@@ -309,7 +302,6 @@ void CTrajAdaptiveSA::start(const CState * initialState)
           continue;
         }
 
-
       itDependencies->mpParticleFlux = (C_FLOAT64 *)(*it)->getParticleFluxReference()->getValuePointer();
 
       itDependencies->mMethodSpeciesIndex.resize(Balances.size());
@@ -349,7 +341,6 @@ void CTrajAdaptiveSA::start(const CState * initialState)
       itDependencies->mSpeciesMultiplier.resize(Index, true);
       itDependencies->mMethodSpecies.resize(Index, true);
       itDependencies->mModelSpecies.resize(Index, true);
-
 
       itDependencies->mSubstrateMultiplier.resize(Substrates.size());
       itDependencies->mMethodSubstrates.resize(Substrates.size());
