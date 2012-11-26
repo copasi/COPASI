@@ -85,7 +85,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, Qt::WFlags f)
 
   comboType = new QComboBox(this);
   //+++
-  comboType->insertItem("Parameter Scan");
+  comboType->insertItem("Scan");
   comboType->insertItem("Repeat");
   comboType->insertItem("Random distribution");
   //comboType->insertItem("Output separator");
