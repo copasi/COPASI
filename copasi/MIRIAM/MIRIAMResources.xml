@@ -9,6 +9,9 @@
 <!-- and The University of Manchester. -->
 <!-- All rights reserved. -->
 
+
+
+<ParameterGroup name="Configuration">
 <ParameterGroup name="MIRIAM Resources">
   <Parameter name="Frequency" type="unsignedInteger" value="604800"/>
   <Parameter name="LastUpdateDate" type="unsignedInteger" value="1350661335"/>
@@ -1487,4 +1490,5 @@
       <Parameter name="URI" type="string" value="urn:miriam:mirbase"/>
     </ParameterGroup>
   </ParameterGroup>
+</ParameterGroup>
 </ParameterGroup>

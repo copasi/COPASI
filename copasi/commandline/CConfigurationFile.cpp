@@ -215,8 +215,11 @@ bool CConfigurationFile::load()
       if (XMLMIRIAMResource.CCopasiXMLInterface::load(MIRIAMResourceFile,
           MIRIAMResourceFile))
         {
-          *mpRecentMIRIAMResources =
-            *XMLMIRIAMResource.getConfiguration().getGroup("MIRIAM Resources");
+          const CCopasiParameterGroup* group = XMLMIRIAMResource.getConfiguration().getGroup("MIRIAM Resoures");
+
+          if (group == NULL) return false;
+
+          *mpRecentMIRIAMResources = *group;
           mpRecentMIRIAMResources->initializeParameter();
         }
       else
