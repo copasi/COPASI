@@ -290,7 +290,7 @@ const MESSAGES Messages[] =
   {MCSBML + 93, "SBML (93): The model uses units on numbers which COPASI currently can't handle. Please be aware that the display of units in COPASI might therefore be incorrect,"},
   {MCSBML + 94, "SBML (94): %s for species reference found in model. Only initial assignments and assignment rules to species references are currently supported in COPASI. The %s has been ignored. The results produced by this model might therefore not be what you expect."},
   {MCSBML + 95, "SBML (95): The model uses species reference ids in mathematical expressions. This model can currently not be imported by COPASI."},
-  {MCSBML + 96, "SBML (96): Model can't be imported because it requires a package that is unkonwn to COPASI."},
+  {MCSBML + 96, "SBML (96): Model can't be imported because it requires a package that is unknown to COPASI."},
   {MCSBML + 97, "SBML (97): COPASI can't handle the initial value on event triggers yet, COPASI will set the initial values of event triggers to \"true\". This may change results for time course simualtions."},
   {MCSBML + 98, "SBML (98): COPASI can't handle event priorities yet, COPASI removed all priorities. This may change results for time course simulations."},
   {MCSBML + 99, "SBML (99): COPASI can't handle non-persistent event triggers, the persistent flag on all triggers has been set to true. This may change results of time course simulations."},
