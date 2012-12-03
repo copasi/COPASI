@@ -157,3 +157,13 @@ add_dependencies(binding_csharp_managed_lib binding_csharp_swig)
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/copasicsP.dll DESTINATION bindings/csharp) 
 file(GLOB examples ${CMAKE_CURRENT_SOURCE_DIR}/examples/*.cs)
 INSTALL(FILES ${examples} DESTINATION bindings/csharp/examples) 
+
+# compile cs examples if needed to test whether 
+# they still work with the current objectmodel
+option (BUILD_CS_EXAMPLES "Build the C# examples." OFF)
+mark_as_advanced(BUILD_CS_EXAMPLES)
+if (BUILD_CS_EXAMPLES)
+add_subdirectory(examples)
+endif(BUILD_CS_EXAMPLES)
+
+

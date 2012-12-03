@@ -247,7 +247,7 @@ class example6
 
         CModel model=dataModel.getModel();
         Debug.Assert(model!=null);
-        CCopasiObject timeReference=model.getObject(new CCopasiObjectName("Reference=Time"));
+        CCopasiObject timeReference=model.getValueReference();
         Debug.Assert(timeReference != null);
         objectMap.setObjectCN(0,timeReference.getCN().getString());
        
@@ -256,21 +256,21 @@ class example6
         objectMap.setRole(1,CExperiment.dependent);
         CMetab metab=metabVector[0];
         Debug.Assert(metab != null);
-        CCopasiObject particleReference=metab.getObject(new CCopasiObjectName("Reference=Concentration"));
+        CCopasiObject particleReference=metab.getConcentrationReference();
         Debug.Assert(particleReference != null);
         objectMap.setObjectCN(1,particleReference.getCN().getString());
 
         objectMap.setRole(2,CExperiment.dependent);
         metab=metabVector[1];
         Debug.Assert(metab != null);
-        particleReference=metab.getObject(new CCopasiObjectName("Reference=Concentration"));
+        particleReference=metab.getConcentrationReference();
         Debug.Assert(particleReference != null);
         objectMap.setObjectCN(2,particleReference.getCN().getString());
 
         objectMap.setRole(3,CExperiment.dependent);
         metab=metabVector[2];
         Debug.Assert(metab != null);
-        particleReference=metab.getObject(new CCopasiObjectName("Reference=Concentration"));
+        particleReference=metab.getConcentrationReference();
         Debug.Assert(particleReference != null);
         objectMap.setObjectCN(3,particleReference.getCN().getString());
         
@@ -290,7 +290,7 @@ class example6
         Debug.Assert(parameter != null);
         
         // define a CFitItem
-        CCopasiObject parameterReference=parameter.getObject(new CCopasiObjectName("Reference=Value"));
+        CCopasiObject parameterReference=parameter.getValueReference();
         Debug.Assert(parameterReference != null);
         CFitItem fitItem1=new CFitItem(dataModel);
         Debug.Assert(fitItem1 !=null);
@@ -310,7 +310,7 @@ class example6
         Debug.Assert(parameter != null);
         
         // define a CFitItem
-        parameterReference=parameter.getObject(new CCopasiObjectName("Reference=Value"));
+        parameterReference=parameter.getValueReference();
         Debug.Assert(parameterReference != null);
         CFitItem fitItem2=new CFitItem(dataModel);
         Debug.Assert(fitItem2 !=null);
