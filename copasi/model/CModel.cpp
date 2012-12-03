@@ -246,20 +246,6 @@ std::string CModel::getChildObjectUnits(const CCopasiObject * pObject) const
   return "";
 }
 
-void CModel::cleanup()
-{
-  /* The real objects */
-  mCompartments.cleanup();
-  mSteps.cleanup();
-  mMoieties.cleanup();
-
-  /* The references */
-  //mStepsInd.resize(0);
-  mMetabolites.clear();
-  mMetabolitesX.clear();
-  mParticleFluxes.resize(0);
-}
-
 C_INT32 CModel::load(CReadConfig & configBuffer)
 {
   C_INT32 Size = 0;

@@ -213,11 +213,6 @@ public:
   virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
 
   /**
-   * Cleanup
-   */
-  void cleanup();
-
-  /**
    * Converts the set of reactions to a set of reactions where all reactions are irreversible.
   */
   bool convert2NonReversible();

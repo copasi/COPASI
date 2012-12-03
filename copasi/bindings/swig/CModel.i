@@ -67,11 +67,6 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %ignore CModel::getL;
 %ignore CModel::getModelParameterSets() const;
 
-// Disallow the use of CModel::cleanup in language bindings, cleanup *partially* 
-// deletes the model, possibly bringing the dataModel into a a bad state. 
-// And caused the JVM to come crashing down. 
-%ignore CModel::cleanup;
-
 // suppress warnings on nested structures
 %warnfilter(325) CLinkMatrixView;
 
