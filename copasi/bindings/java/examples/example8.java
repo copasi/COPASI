@@ -1,16 +1,10 @@
-// Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example8.java,v $ 
-//   $Revision: 1.2 $ 
-//   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:00 $ 
-// End CVS Header 
-
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
+
+
+
 
 /**
  * This is an example on how to calculate and output the Jacobian matrix
@@ -91,7 +85,7 @@ public class example8
         // forward to find out which column/row corresponds to which species
         CStateTemplate stateTemplate = model.getStateTemplate();
         // and we need the user order
-        ULongVector userOrder = stateTemplate.getUserOrder();
+        SizeTVector userOrder = stateTemplate.getUserOrder();
         // from those two, we can construct an new vector that contains
         // the names of the entities in the jacobian in the order in which they appear in
         // the jacobian

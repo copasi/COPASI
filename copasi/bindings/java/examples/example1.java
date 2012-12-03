@@ -1,15 +1,14 @@
-// Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example1.java,v $ 
-//   $Revision: 1.2 $ 
-//   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2009/03/05 15:28:46 $ 
-// End CVS Header 
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
+
+
 
 /**
  * This is an example on how to build models with the COPASI backend API.
@@ -45,7 +44,7 @@ public class example1
      // create a compartment with the name cell and an initial volume of 5.0
      // microliter
      CCompartment compartment = model.createCompartment("cell", 5.0);
-     CCopasiObject object = compartment.getObject(new CCopasiObjectName("Reference=InitialVolume"));
+     CCopasiObject object = compartment.getInitialValueReference();
      assert object != null;
      changedObjects.add(object);
      assert compartment != null;
@@ -55,7 +54,7 @@ public class example1
      // the metabolite belongs to the compartment we created and is is to be
      // fixed
      CMetab glucose = model.createMetabolite("glucose", compartment.getObjectName(), 10.0, CMetab.FIXED);
-     object = glucose.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
+     object = glucose.getInitialValueReference();
      assert object != null;
      changedObjects.add(object);
      assert glucose != null;
@@ -64,21 +63,21 @@ public class example1
      // concentration of 0. This metabolite is to be changed by reactions
      CMetab g6p = model.createMetabolite("glucose-6-phosphate", compartment.getObjectName(), 0.0, CMetab.REACTIONS);
      assert g6p != null;
-     object = g6p.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
+     object = g6p.getInitialValueReference();
      assert object != null;
      changedObjects.add(object);
      assert model.getMetabolites().size() == 2;
      // another metabolite for ATP, also fixed
      CMetab atp = model.createMetabolite("ATP", compartment.getObjectName(), 10.0, CMetab.FIXED);
      assert atp != null;
-     object = atp.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
+     object = atp.getInitialValueReference();
      assert object != null;
      changedObjects.add(object);
      assert model.getMetabolites().size() == 3;
      // and one for ADP
      CMetab adp = model.createMetabolite("ADP", compartment.getObjectName(), 0.0, CMetab.REACTIONS);
      assert adp != null;
-     object = adp.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
+     object = adp.getInitialValueReference();
      assert object != null;
      changedObjects.add(object);
      assert model.getMetabolites().size() == 4;
@@ -141,7 +140,7 @@ public class example1
          // now we set the value of the parameter to 0.5
          assert parameter.getType() == CCopasiParameter.DOUBLE;
          parameter.setDblValue(0.5);
-         object = parameter.getObject(new CCopasiObjectName("Reference=Value"));
+         object = parameter.getValueReference();
          assert object != null;
          changedObjects.add(object);
      }
@@ -190,7 +189,7 @@ public class example1
      // it gets the name rateConstant and an initial value of 1.56
      CModelValue modelValue = model.createModelValue("rateConstant", 1.56);
      assert modelValue != null;
-     object = modelValue.getObject(new CCopasiObjectName("Reference=InitialValue"));
+     object = modelValue.getInitialValueReference();
      assert object != null;
      changedObjects.add(object);
      assert model.getModelValues().size() == 1;

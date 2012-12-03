@@ -162,3 +162,12 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/copasi.jar
         DESTINATION bindings/java) 
 file(GLOB examples ${CMAKE_CURRENT_SOURCE_DIR}/examples/*.java)
 install(FILES ${examples} DESTINATION bindings/java/examples) 
+
+# compile java examples if needed to test whether 
+# they still work with the current objectmodel
+option (BUILD_JAVA_EXAMPLES "Build the Java examples." OFF)
+mark_as_advanced(BUILD_JAVA_EXAMPLES)
+if (BUILD_JAVA_EXAMPLES)
+add_subdirectory(examples)
+endif(BUILD_JAVA_EXAMPLES)
+

@@ -1,14 +1,13 @@
-// Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example5.java,v $ 
-//   $Revision: 1.3 $ 
-//   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2009/09/01 13:51:30 $ 
-// End CVS Header 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
+
 
 /**
  * This is an example on how to run an optimization task.
@@ -49,8 +48,8 @@ public class example5
      // that COPASI can update the values that depend on those
      model.compileIfNecessary();
      ObjectStdVector changedObjects=new ObjectStdVector();
-     changedObjects.add(fixedModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")));
-     changedObjects.add(variableModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")));
+     changedObjects.add(fixedModelValue.getInitialValueReference());
+     changedObjects.add(variableModelValue.getInitialValueReference());
      model.updateInitialValues(changedObjects);
      
      // now we set up the optimization

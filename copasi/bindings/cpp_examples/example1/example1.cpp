@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example1/example1.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/16 18:04:56 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -23,7 +15,6 @@
 #include <vector>
 #include <string>
 #include <set>
-
 
 #define COPASI_MAIN
 
@@ -39,7 +30,6 @@
 #include "copasi/function/CFunctionDB.h"
 #include "copasi/function/CFunction.h"
 #include "copasi/function/CEvaluationTree.h"
-
 
 int main()
 {
@@ -222,7 +212,7 @@ int main()
   // it gets the name rateConstant and an initial value of 1.56
   CModelValue* pModelValue = pModel->createModelValue("rateConstant", 1.56);
   assert(pModelValue != NULL);
-  pObject = pModelValue->getInitialValueReference();;
+  pObject = pModelValue->getInitialValueReference();
   assert(pObject != NULL);
   changedObjects.insert(pObject);
   assert(pModel->getModelValues().size() == 1);
