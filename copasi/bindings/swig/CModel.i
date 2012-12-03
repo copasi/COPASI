@@ -1,23 +1,20 @@
-// Begin git Header 
-//   Commit: 28d5663ff3fc99993d3b249dec626841cb5247ab 
-//   Author: Frank T. Bergmann fbergman@caltech.edu 
-//   Date: 2012-08-29 10:43:00 +0200 
-// End git Header 
-
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
+
+
+
+
 
 %{
 
@@ -69,6 +66,11 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %ignore CModel::getRootFinders;
 %ignore CModel::getL;
 %ignore CModel::getModelParameterSets() const;
+
+// Disallow the use of CModel::cleanup in language bindings, cleanup *partially* 
+// deletes the model, possibly bringing the dataModel into a a bad state. 
+// And caused the JVM to come crashing down. 
+%ignore CModel::cleanup;
 
 // suppress warnings on nested structures
 %warnfilter(325) CLinkMatrixView;
