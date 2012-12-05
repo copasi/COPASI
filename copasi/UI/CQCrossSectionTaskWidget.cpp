@@ -72,12 +72,12 @@ void CQCrossSectionTaskWidget::init()
 
   mpHeaderWidget->setTaskName("Cross Section");
 
-  outerLayout->insertWidget(0, mpHeaderWidget);
+  verticalLayout->insertWidget(0, mpHeaderWidget);
 
   mpMethodWidget->showMethodParameters(true);
 
-  outerLayout->addWidget(mpMethodWidget);
-  outerLayout->addWidget(mpBtnWidget);
+  verticalLayout->addWidget(mpMethodWidget);
+  verticalLayout->addWidget(mpBtnWidget);
 
   mpValidatorCrossing = new CQValidatorDouble(mpLineEditValue);
   mpLineEditValue->setValidator(mpValidatorCrossing);
