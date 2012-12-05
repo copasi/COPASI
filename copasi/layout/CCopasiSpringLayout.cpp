@@ -430,7 +430,7 @@ void CCopasiSpringLayout::finalizeState()
                 reactionPoint = pRG->getPosition();
             }
 
-          CLPoint metabPoint = borderProjection(pMRG->getMetabGlyph(), reactionPoint + dir * (modifierLength * 1.5), 5);
+          CLPoint metabPoint = borderProjection(pMRG->getMetabGlyph(), reactionPoint + dir * direction /*(modifierLength * 1.5)*/, 5);
 
           pMRG->getCurve().clear();
           pMRG->getCurve().addCurveSegment(CLLineSegment(reactionPoint,
@@ -454,7 +454,7 @@ CLPoint CCopasiSpringLayout::borderProjection(CLGraphicalObject* go, const CLPoi
 
   CLPoint ret;
 
-  if (fabs(diff.getX()) * fabs(go->getHeight()) * 0.5 + d > fabs(diff.getY()) * fabs(go->getWidth()) * 0.5 + d)
+  if (fabs(diff.getX()) * (fabs(go->getHeight()) * 0.5 + d) > fabs(diff.getY()) * (fabs(go->getWidth()) * 0.5 + d))
     {
       double f = (fabs(go->getWidth()) * 0.5 + d) / fabs(diff.getX());
       ret = center + diff * f;
