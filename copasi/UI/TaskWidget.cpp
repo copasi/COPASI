@@ -516,13 +516,19 @@ CCopasiTask* TaskWidget::getTask()
 }
 //*********************************************************************
 
-bool TaskWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+bool TaskWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & C_UNUSED(key))
 {
   if (mIgnoreUpdates) return true;
 
   switch (objectType)
     {
       case ListViews::MODEL:
+        if (action == ListViews::ADD &&
+            mpMethodWidget != NULL)
+          {
+            mpMethodWidget->clearHistory();
+          }
+
         break;
 
       default:
