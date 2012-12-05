@@ -209,6 +209,7 @@ void CQPlotSubwidget::deleteCurves()
 
   mList.clear();
   mpListPlotItems->clear();
+  mLastSelection.clear();
 }
 
 int CQPlotSubwidget::getRow(QListWidgetItem* item)
@@ -228,6 +229,7 @@ void CQPlotSubwidget::deleteCurve(QListWidgetItem* item)
 
   delete mList[item->text()];
   mList.remove(item->text());
+  mLastSelection.remove(item);
 
   delete mpListPlotItems->takeItem(getRow(item));
 }
@@ -687,6 +689,8 @@ void CQPlotSubwidget::removeCurve()
         {
           deleteCurve(selection.at(index));
         }
+
+      mLastSelection.clear();
     }
 }
 
