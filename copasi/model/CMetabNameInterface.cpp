@@ -168,6 +168,7 @@ bool CMetabNameInterface::doesExist(const CModel* model,
     return (model->findMetabByName(metabolite) != C_INVALID_INDEX);
 }
 
+// static
 std::pair< std::string, std::string > CMetabNameInterface::splitDisplayName(const std::string & name)
 {
   // parse the description into a linked node tree
@@ -189,6 +190,39 @@ std::pair< std::string, std::string > CMetabNameInterface::splitDisplayName(cons
     }
 
   return Result;
+}
+
+// static
+std::string CMetabNameInterface::unQuote(const std::string & displayName)
+{
+  // parse the description into a linked node tree
+  std::stringstream buffer(displayName + " ->");
+
+  CChemEqParser Parser(&buffer);
+
+  std::pair< std::string, std::string > Names;
+
+  if (Parser.yyparse() != 0)
+    {
+      Names.first = "";
+      Names.second = "";
+    }
+  else
+    {
+      Names.first = Parser.getSubstrateNames()[0];
+      Names.second = Parser.getSubstrateCompartments()[0];
+    }
+
+  std::string Name = Names.first;
+
+  if (Names.second != "")
+    {
+      Name += "{" + Names.second + "}";
+    }
+
+  std::cout << displayName << " => " << Name << std::endl;
+
+  return Name;
 }
 
 #ifdef XXXX

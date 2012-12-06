@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetabNameInterface.h,v $
-//   $Revision: 1.14 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/10 16:03:09 $
-// End CVS Header
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -41,7 +33,7 @@ class CModel;
 class CMetab;
 
 /**
- * This class handels the display names of metabolites. It converts "Species" to
+ * This class handles the display names of metabolites. It converts "Species" to
  * "Species {Compartment}" if the metabolite name is not unique. If it is unique
  * (that means it occurs in only one compartment) then the "{Compartment}" is not added.
  */
@@ -54,21 +46,21 @@ public:
   ~CMetabNameInterface();
 
   /**
-   * This returns a name to use for display in the gui. If the name of the
+   * This returns a name to use for display in the GUI. If the name of the
    * metabolite is unique it is used unaltered. If it is not then the compartment
    * is added to the name to make it unique.
    */
   static std::string getDisplayName(const CModel* model, const std::string & key, const bool & quoted);
 
   /**
-   * This returns a name to use for display in the gui. If the name of the
+   * This returns a name to use for display in the GUI. If the name of the
    * metabolite is unique it is used unaltered. If it is not then the compartment
    * is added to the name to make it unique.
    */
   static std::string getDisplayName(const CModel* model, const CMetab & metab, const bool & quoted);
 
   /**
-   * This returns a name to use for display in the gui. If the name of the
+   * This returns a name to use for display in the GUI. If the name of the
    * metabolite is unique it is used unaltered. If it is not then the compartment
    * is added to the name to make it unique.
    */
@@ -79,7 +71,7 @@ public:
 
   /**
    * This tries to find the metabolite with the given name. If the name is not unique and
-   * is given without a compartment then the first occurence of a metabolite with this name
+   * is given without a compartment then the first occurrence of a metabolite with this name
    * is returned.
    */
   static std::string getMetaboliteKey(const CModel* model,
@@ -106,12 +98,14 @@ public:
 
   static std::pair< std::string, std::string > splitDisplayName(const std::string & name);
 
+  static std::string unQuote(const std::string & displayName);
+
 #ifdef XXXX
   /**
    * This extracts the compartment name from the given metabolite display name. If no compartment name is
    * present in the given metabolite name then the name of the (first) compartment the metabolite is really
    * in is given. If the metabolite does not exist and the name does not contain a compartment
-   * then the name of the first compatmnet in the model is returned.
+   * then the name of the first compartment in the model is returned.
    */
   static std::string extractCompartmentName(const std::string & name);
 

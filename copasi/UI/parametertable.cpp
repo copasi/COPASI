@@ -96,7 +96,7 @@ const std::vector<std::string> ParameterTable::getListOfAllMetabNames(const CMod
 
   for (sourceIt = lll.begin(); sourceIt != sourceItEnd; ++sourceIt)
     {
-      std::string Source = unQuote(*sourceIt);
+      std::string Source = CMetabNameInterface::unQuote(*sourceIt);
       searchItEnd = ret.end();
 
       for (searchIt = ret.begin(); searchIt != searchItEnd; ++searchIt)
@@ -112,7 +112,7 @@ const std::vector<std::string> ParameterTable::getListOfAllMetabNames(const CMod
 
   for (sourceIt = lll.begin(); sourceIt != sourceItEnd; ++sourceIt)
     {
-      std::string Source = unQuote(*sourceIt);
+      std::string Source = CMetabNameInterface::unQuote(*sourceIt);
       searchItEnd = ret.end();
 
       for (searchIt = ret.begin(); searchIt != searchItEnd; ++searchIt)
@@ -128,7 +128,7 @@ const std::vector<std::string> ParameterTable::getListOfAllMetabNames(const CMod
 
   for (sourceIt = lll.begin(); sourceIt != sourceItEnd; ++sourceIt)
     {
-      std::string Source = unQuote(*sourceIt);
+      std::string Source = CMetabNameInterface::unQuote(*sourceIt);
       searchItEnd = ret.end();
 
       for (searchIt = ret.begin(); searchIt != searchItEnd; ++searchIt)
@@ -207,6 +207,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
 
   CFunctionParameter::Role usage;
   QString qUsage;
+  bool locked = false;
   QColor color;
   const std::vector<std::string> * metabNames;
 
@@ -230,6 +231,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
       // set the stuff that is different for the specific usages
       usage = ri.getUsage(i);
       qUsage = FROM_UTF8(CFunctionParameter::RoleNameDisplay[usage]);
+      locked = ri.isLocked(i);
 
       switch (usage)
         {
@@ -286,7 +288,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
           && (usage != CFunctionParameter::VOLUME)
           && (usage != CFunctionParameter::TIME))
         {
-          if (ri.isLocked(i))
+          if (locked)
             item->setPixmap(CQIconResource::icon(CQIconResource::locked).pixmap(QSize(40, 20), QIcon::Normal, QIcon::On));
           else
             item->setPixmap(CQIconResource::icon(CQIconResource::unlocked).pixmap(QSize(40, 20), QIcon::Normal, QIcon::On));
@@ -325,17 +327,27 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
             vectorOfStrings2QStringList(getListOfAllMetabNames(model, ri), qsl);
           else //only get the modifiers from the ChemEq
             {
-              if (!ri.isLocked(i))
-                vectorOfStrings2QStringList(ri.getListOfMetabs(usage), qsl);
+              if (!locked)
+                {
+                  qsl.clear();
+
+                  std::vector<std::string>::const_iterator it = ri.getListOfMetabs(usage).begin();
+                  std::vector<std::string>::const_iterator end = ri.getListOfMetabs(usage).end();
+
+                  for (; it != end; ++it)
+                    {
+                      qsl += FROM_UTF8(CMetabNameInterface::unQuote(*it));
+                    }
+                }
             }
 
           metabNames = &(ri.getMappings(i));
 
           if (!ri.isVector(i))
             {
-              if (ri.isLocked(i))
+              if (locked)
                 {
-                  item = new ColorTableItem(this, Q3TableItem::Never, color, FROM_UTF8((*metabNames)[0]));
+                  item = new ColorTableItem(this, Q3TableItem::Never, color, FROM_UTF8(CMetabNameInterface::unQuote((*metabNames)[0])));
                   setItem((int) rowCounter, 3, item);
                 }
               else
@@ -343,13 +355,13 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
                   //combo = new ComboItem(this, QTableItem::WhenCurrent, color, qsl);
                   combo = new Q3ComboTableItem(this, qsl);
                   //combo->setText(FROM_UTF8((*metabNames)[0]));
-                  combo->setCurrentItem(FROM_UTF8(unQuote((*metabNames)[0])));
+                  combo->setCurrentItem(FROM_UTF8(CMetabNameInterface::unQuote((*metabNames)[0])));
                   setItem((int) rowCounter, 3, combo);
                 }
             }
           else
             {
-              if (ri.isLocked(i))
+              if (locked)
                 {
                   item = new ColorTableItem(this, Q3TableItem::Never, color, "");
                   setItem((int) rowCounter, 3, item);
