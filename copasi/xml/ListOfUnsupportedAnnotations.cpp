@@ -263,6 +263,7 @@ void CCopasiXMLParser::ListOfUnsupportedAnnotationsElement::end(const XML_Char *
 
         mParser.popElementHandler();
         mCurrentElement = START_ELEMENT;
+        mLastKnownElement = START_ELEMENT;
 
         /* Tell the parent element we are done. */
         mParser.onEndElement(pszName);
