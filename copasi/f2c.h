@@ -22,7 +22,6 @@ typedef unsigned long uinteger;
 typedef long logical;
 #endif
 
-typedef unsigned int uinteger;
 typedef char *address;
 typedef short int shortint;
 typedef float real;
