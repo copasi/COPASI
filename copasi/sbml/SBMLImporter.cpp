@@ -1572,7 +1572,6 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
   return pFun;
 }
 
-
 CFunction* getFunctionForKey(CCopasiVectorN<CFunction> &functionDb, const std::string& key)
 {
   CFunction* pFunc = NULL;
@@ -1588,9 +1587,9 @@ CFunction* getFunctionForKey(CCopasiVectorN<CFunction> &functionDb, const std::s
 
       ++it;
     }
+
   return pFunc;
 }
-
 
 /**
  * Creates and returns a COPASI CCompartment from the SBML Compartment
@@ -9931,7 +9930,27 @@ bool SBMLImporter::importNotes(CAnnotation* pAnno, const SBase* pSBase)
       if (current.getName() == "RDF" || current.getName() == "COPASI")
         continue;
 
-      pAnno->addUnsupportedAnnotation(current.getNamespaceURI(current.getPrefix()), current.toXMLString());
+      const std::string &prefix = current.getPrefix();
+      std::string &nsUri = current.getNamespaceURI(prefix);
+
+      if (nsUri.empty() && !prefix.empty())
+        {
+          // this is bad, libSBML really should let me know where the namespace is defined
+          // it could be defined anywhere upwards of this xml element
+          nsUri = node->getNamespaceURI(prefix);
+
+          if (nsUri.empty() && pSBase->getSBMLDocument() != NULL)
+            nsUri = pSBase->getSBMLDocument()->getSBMLNamespaces()->getNamespaces()->getURI(prefix);
+
+          if (!nsUri.empty())
+            {
+              // we need to store the prefix on the element, as the COPASI object structure
+              // does not support the annotation without prefix
+              const_cast<XMLNode&>(current).addNamespace(nsUri, prefix);
+            }
+        }
+
+      pAnno->addUnsupportedAnnotation(nsUri, current.toXMLString());
     }
 
   return result;
