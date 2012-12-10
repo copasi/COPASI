@@ -9930,8 +9930,8 @@ bool SBMLImporter::importNotes(CAnnotation* pAnno, const SBase* pSBase)
       if (current.getName() == "RDF" || current.getName() == "COPASI")
         continue;
 
-      const std::string &prefix = current.getPrefix();
-      std::string &nsUri = current.getNamespaceURI(prefix);
+      const std::string & prefix = current.getPrefix();
+      std::string nsUri = current.getNamespaceURI(prefix);
 
       if (nsUri.empty() && !prefix.empty())
         {
