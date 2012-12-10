@@ -29,7 +29,7 @@ public:
   virtual ~CQCrossSectionTaskWidget();
 
   virtual bool runTask();
-  //virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
 
 protected:
   void commitInput();
@@ -43,6 +43,7 @@ protected slots:
 private:
   void init();
   void destroy();
+  void showUnits();
 
   void updateValues();
 

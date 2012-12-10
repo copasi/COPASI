@@ -51,7 +51,7 @@ void CCrossSectionProblem::initializeParameter()
 {
   mpFlagLimitCrossings  = assertParameter("LimitCrossings", CCopasiParameter::BOOL, false)->getValue().pBOOL;
   mpCrossingsLimit  = assertParameter("NumCrossingsLimit", CCopasiParameter::UINT, (unsigned C_INT32)0)->getValue().pUINT;
-  mpFlagLimitOutTime  = assertParameter("LimitOutTime", CCopasiParameter::BOOL, true)->getValue().pBOOL;
+  mpFlagLimitOutTime  = assertParameter("LimitOutTime", CCopasiParameter::BOOL, false)->getValue().pBOOL;
   mpFlagLimitOutCrossings  = assertParameter("LimitOutCrossings", CCopasiParameter::BOOL, false)->getValue().pBOOL;
   mpFlagPositiveDirection  = assertParameter("PositiveDirection", CCopasiParameter::BOOL, true)->getValue().pBOOL;
   mpOutCrossingsLimit  = assertParameter("NumOutCrossingsLimit", CCopasiParameter::UINT, (unsigned C_INT32)0)->getValue().pUINT;

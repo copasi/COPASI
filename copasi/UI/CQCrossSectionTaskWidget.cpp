@@ -237,6 +237,8 @@ bool CQCrossSectionTaskWidget::loadTask()
   loadCommon();
   loadMethod();
 
+  showUnits();
+
   // load Problem
   CCrossSectionProblem* pProblem =
     dynamic_cast<CCrossSectionProblem *>(pTask->getProblem());
@@ -531,4 +533,41 @@ void CQCrossSectionTaskWidget::updateValues()
 
   mpLineEditValue->setText(QString::number(mpCrossSectionProblem->getThreshold()));
   mpValidatorCrossing->revalidate();
+}
+
+// virtual
+bool CQCrossSectionTaskWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & /* key */)
+{
+  switch (objectType)
+    {
+      case ListViews::MODEL:
+
+        if (action == ListViews::CHANGE)
+          {
+            showUnits();
+          }
+
+        break;
+
+      default:
+        break;
+    }
+
+  return true;
+}
+
+void CQCrossSectionTaskWidget::showUnits()
+{
+  const CModel * pModel = NULL;
+
+  QString TimeUnits;
+
+  if (mpDataModel != NULL &&
+      (pModel = mpDataModel->getModel()) != NULL)
+    {
+      TimeUnits = " (" + FROM_UTF8(pModel->getTimeUnitsDisplayString()) + ")";
+    }
+
+  mpLblDurationLimit->setText("Duration Limit" + TimeUnits);
+  mpCheckOutputDelay->setText("suppress before" + TimeUnits);
 }

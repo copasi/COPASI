@@ -12,7 +12,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>606</width>
+    <width>597</width>
     <height>327</height>
    </rect>
   </property>
@@ -116,7 +116,7 @@
        <item>
         <widget class="QRadioButton" name="mpDirectionPositive">
          <property name="text">
-          <string>positive direction</string>
+          <string>positive Direction</string>
          </property>
         </widget>
        </item>
@@ -159,9 +159,9 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QLabel" name="mpLblLT_2">
+      <widget class="QLabel" name="mpLblDurationLimit">
        <property name="text">
-        <string>Limit Time to</string>
+        <string>Duration Limit</string>
        </property>
       </widget>
      </item>
@@ -193,7 +193,7 @@
      <item row="4" column="1">
       <widget class="QCheckBox" name="mpCheckSimCrossings">
        <property name="text">
-        <string>Limit # crossings to</string>
+        <string>Crossings Limit (#)</string>
        </property>
       </widget>
      </item>
@@ -222,7 +222,7 @@
      <item row="5" column="1">
       <widget class="QCheckBox" name="mpCheckSimConvergence">
        <property name="text">
-        <string>until convergence with tolerance </string>
+        <string>until Convergence with Tolerance </string>
        </property>
       </widget>
      </item>
@@ -274,7 +274,7 @@
      <item row="7" column="1">
       <widget class="QCheckBox" name="mpCheckOutputDelay">
        <property name="text">
-        <string>Delay output until</string>
+        <string>suppress before</string>
        </property>
       </widget>
      </item>
@@ -306,7 +306,7 @@
      <item row="8" column="1">
       <widget class="QCheckBox" name="mpCheckOutputCrossings">
        <property name="text">
-        <string>Collect after # crossings</string>
+        <string>suppress before Crossings (#)</string>
        </property>
       </widget>
      </item>
@@ -338,7 +338,7 @@
      <item row="9" column="1">
       <widget class="QCheckBox" name="mpCheckOutputConvergence">
        <property name="text">
-        <string>Delay output until convergence with tolerance</string>
+        <string>suppress until Convergence with Tolerance</string>
        </property>
       </widget>
      </item>
