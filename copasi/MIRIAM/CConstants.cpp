@@ -137,7 +137,14 @@ std::string CMIRIAMResourceObject::getURI() const
 
 std::string CMIRIAMResourceObject::getIdentifiersOrgURL() const
 {
-  return (mpResources->getMIRIAMResource(mResource)).getIdentifiersOrgURL() + "/" + mId;
+  std::string URL = mpResources->getMIRIAMResource(mResource).getIdentifiersOrgURL();
+
+  if (URL == "http://identifiers.org/unknown")
+    {
+      return mId;
+    }
+
+  return URL + "/" + mId;
 }
 
 bool CMIRIAMResourceObject::setNode(CRDFNode * pNode)
