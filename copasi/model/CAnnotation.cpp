@@ -146,11 +146,21 @@ bool CAnnotation::addUnsupportedAnnotation(const std::string & name, const std::
   // We need to check whether we have valid XML.
   if (!isValidXML(xml))
     {
+      CCopasiMessage(CCopasiMessage::ERROR, MCAnnotation + 5, name.c_str());
       return false;
     }
 
+  // The name must not be empty
+  if (name == "")
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCAnnotation + 7);
+      return false;
+    }
+
+  // The name must be unique
   if (mUnsupportedAnnotations.find(name) != mUnsupportedAnnotations.end())
     {
+      CCopasiMessage(CCopasiMessage::ERROR, MCAnnotation + 6, name.c_str());
       return false;
     }
 
@@ -164,11 +174,14 @@ bool CAnnotation::replaceUnsupportedAnnotation(const std::string & name, const s
   // We need to check whether we have valid XML.
   if (!isValidXML(xml))
     {
+      CCopasiMessage(CCopasiMessage::ERROR, MCAnnotation + 5, name.c_str());
       return false;
     }
 
+  // The annotation must exist
   if (mUnsupportedAnnotations.find(name) == mUnsupportedAnnotations.end())
     {
+      CCopasiMessage(CCopasiMessage::ERROR, MCAnnotation + 8, name.c_str());
       return false;
     }
 

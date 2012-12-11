@@ -167,7 +167,7 @@ bool CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport)
     }
   else
     CCopasiMessage(CCopasiMessage::ERROR,
-                   MCMiriam + 3,
+                   MCAnnotation + 3,
                    pProxy->soap_fault_string(),
                    pProxy->soap_fault_detail());
 

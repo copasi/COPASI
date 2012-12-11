@@ -122,7 +122,7 @@ bool CMIRIAMResourceObject::setURI(const std::string & URI)
 
   if (mResource == C_INVALID_INDEX)
     {
-      CCopasiMessage(CCopasiMessage::WARNING, MCMiriam + 4, URI.c_str());
+      CCopasiMessage(CCopasiMessage::WARNING, MCAnnotation + 4, URI.c_str());
     }
 
   extractId(URI);

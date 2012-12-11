@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFParser.cpp,v $
-//   $Revision: 1.14 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:30:18 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -46,8 +38,8 @@ CRDFGraph * CRDFParser::graphFromXml(const std::string & xml)
 }
 
 CRDFParser::CRDFParser() :
-    CRaptorInit(),
-    mpParser(NULL)
+  CRaptorInit(),
+  mpParser(NULL)
 {
   mpParser = raptor_new_parser("rdfxml");
 
@@ -239,7 +231,7 @@ unsigned char * CRDFParser::GenerateIdHandler(void * pGraph,
 // static
 void CRDFParser::FatalErrorHandler(void *, raptor_locator * pLocator, const char * message)
 {
-  CCopasiMessage(CCopasiMessage::ERROR, MCMiriam + 1,
+  CCopasiMessage(CCopasiMessage::ERROR, MCAnnotation + 1,
                  raptor_locator_line(pLocator),
                  raptor_locator_column(pLocator),
                  message);
@@ -248,7 +240,7 @@ void CRDFParser::FatalErrorHandler(void *, raptor_locator * pLocator, const char
 // static
 void CRDFParser::ErrorHandler(void *, raptor_locator * pLocator, const char * message)
 {
-  CCopasiMessage(CCopasiMessage::ERROR, MCMiriam + 1,
+  CCopasiMessage(CCopasiMessage::ERROR, MCAnnotation + 1,
                  raptor_locator_line(pLocator),
                  raptor_locator_column(pLocator),
                  message);
@@ -257,7 +249,7 @@ void CRDFParser::ErrorHandler(void *, raptor_locator * pLocator, const char * me
 // static
 void CRDFParser::WarningHandler(void *, raptor_locator * pLocator, const char * message)
 {
-  CCopasiMessage(CCopasiMessage::WARNING, MCMiriam + 1,
+  CCopasiMessage(CCopasiMessage::WARNING, MCAnnotation + 1,
                  raptor_locator_line(pLocator),
                  raptor_locator_column(pLocator),
                  message);

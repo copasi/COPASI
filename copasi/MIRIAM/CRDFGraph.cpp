@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraph.cpp,v $
-//   $Revision: 1.44 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/24 16:32:36 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -39,18 +31,18 @@
 #include "CConstants.h"
 
 CRDFGraph::CRDFGraph():
-    mpAbout(NULL),
-    mPrefix2Namespace(),
-    mBlankNodeId2Node(),
-    mLocalResource2Node(),
-    mRemoteResourceNodes(),
-    mLiteralNodes(),
-    mTriplets(),
-    mSubject2Triplet(),
-    mObject2Triplet(),
-    mPredicate2Triplet(),
-    mGeneratedIds(),
-    mIdMap()
+  mpAbout(NULL),
+  mPrefix2Namespace(),
+  mBlankNodeId2Node(),
+  mLocalResource2Node(),
+  mRemoteResourceNodes(),
+  mLiteralNodes(),
+  mTriplets(),
+  mSubject2Triplet(),
+  mObject2Triplet(),
+  mPredicate2Triplet(),
+  mGeneratedIds(),
+  mIdMap()
 {}
 
 CRDFGraph::~CRDFGraph()
@@ -141,7 +133,7 @@ bool CRDFGraph::addNameSpace(const std::string & prefix, const std::string & uri
   if (inserted.second || (inserted.first->second == uri))
     return true;
 
-  CCopasiMessage(CCopasiMessage::ERROR, MCMiriam + 2,
+  CCopasiMessage(CCopasiMessage::ERROR, MCAnnotation + 2,
                  prefix.c_str(), inserted.first->second.c_str(), uri.c_str());
   return false;
 }
