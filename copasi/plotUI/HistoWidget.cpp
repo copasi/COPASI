@@ -152,6 +152,9 @@ bool HistoWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original /
       if (thingsChanged || *original->getValue("increment").pDOUBLE != increment)
         thingsChanged = true;
 
+      if (thingsChanged || original->getActivity() != Activity)
+        thingsChanged = true;
+
       if (thingsChanged || original->getChannels().size() != 1)
         thingsChanged = true;
 

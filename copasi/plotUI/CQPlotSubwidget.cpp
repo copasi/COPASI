@@ -68,7 +68,7 @@ CQPlotSubwidget::CQPlotSubwidget(QWidget* parent, const char* name, Qt::WFlags f
 CPlotItem* CQPlotSubwidget::updateItem(CPlotItem* item)
 {
 
-  if (item == NULL) return NULL;
+  if (item == NULL || !mpStack->isEnabled()) return NULL;
 
   QWidget *widget = mpStack->currentWidget();
 
@@ -111,7 +111,7 @@ void CQPlotSubwidget::storeChanges()
     }
   else
     {
-      if (!areOfSameType(mLastSelection))
+      if (!areOfSameType(mLastSelection) || !mpStack->isEnabled())
         return;
 
       CPlotItem *common = new CPlotItem("nope");
@@ -150,9 +150,9 @@ void CQPlotSubwidget::storeChanges()
           std::vector<CPlotDataChannelSpec> channels = current->getChannels();
 
           CPlotItem* newItem = new CPlotItem(*common);
+          newItem->setType(current->getType());
           newItem->setTitle(current->getTitle());
           newItem->getChannels() = channels;
-          newItem->setType(current->getType());
           newItem->setActivity(common->getActivity());
           (CCopasiParameterGroup)(*newItem) = (CCopasiParameterGroup)(*newItem);
 
@@ -202,6 +202,8 @@ int CQPlotSubwidget::getCurrentIndex()
 
 void CQPlotSubwidget::deleteCurves()
 {
+  mLastSelection.clear();
+
   for (int i = mpListPlotItems->count(); i >= 0; --i)
     {
       deleteCurve(i);
@@ -242,19 +244,29 @@ void CQPlotSubwidget::deleteCurve(int index)
 
 void CQPlotSubwidget::setCurrentIndex(int index)
 {
+  if (index < 0)
+    {
+      mpListPlotItems->clearSelection();
+      return;
+    }
+
+  if (mpListPlotItems->count() == 0)
+    return;
+
   if (index < 0 && mpListPlotItems->count() > 0)
     index = 0;
 
   if (index >= mpListPlotItems->count())
     index = mpListPlotItems->count() - 1;
 
-  mpListPlotItems->setCurrentRow(index);
+  mpListPlotItems->setCurrentRow(index, QItemSelectionModel::Select);
 }
 
 void CQPlotSubwidget::addPlotItem(CPlotItem* item)
 {
   QString title = FROM_UTF8(item->getTitle());
   int count = 0;
+  mpListPlotItems->clearSelection();
 
   while (mList.contains(title))
     {
@@ -307,7 +319,11 @@ void CQPlotSubwidget::selectPlotItem(CPlotItem* item)
 
   CQPlotEditWidget* current = selectControl(item->getType());
 
-  if (current == NULL) return;
+  if (current == NULL)
+    {
+      mpStack->setEnabled(false);
+      return;
+    }
 
   current->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
   current->LoadFromCurveSpec(item);
@@ -433,8 +449,6 @@ void CQPlotSubwidget::addCurve2D()
         }
     }
 
-  C_INT32 storeTab = getCurrentIndex();
-
   if (objects1.size() == 1)
     {
       for (i = 0; i < objects2.size(); ++i)
@@ -472,8 +486,6 @@ void CQPlotSubwidget::addCurve2D()
                       objects1[i], objects2[i]);
         }
     }
-
-  setCurrentIndex(storeTab);
 }
 
 #ifdef COPASI_BANDED_GRAPH
@@ -594,8 +606,6 @@ void CQPlotSubwidget::addBandedGraph()
         }
     }
 
-  C_INT32 storeTab = getCurrentIndex();
-
   if (objects1.size() == 1)
     {
       for (i = 0; i < objects2.size(); ++i)
@@ -633,8 +643,6 @@ void CQPlotSubwidget::addBandedGraph()
                             objects1[i], objects2[i]);
         }
     }
-
-  setCurrentIndex(storeTab);
 }
 #endif // COPASI_BANDED_GRAPH
 
@@ -650,9 +658,7 @@ void CQPlotSubwidget::addHisto1DTab(const std::string & title,
 
 void CQPlotSubwidget::addHisto1D()
 {
-  C_INT32 storeTab = getCurrentIndex();
   addHisto1DTab("Histogram", CPlotDataChannelSpec(CCopasiObjectName("")), 1.0);
-  setCurrentIndex(storeTab);
 }
 
 void CQPlotSubwidget::createHistograms(std::vector<const CCopasiObject* >objects, const C_FLOAT64 & incr)
@@ -803,8 +809,6 @@ bool CQPlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
         break;
     }
 
-  C_INT32 oldIndex = getCurrentIndex();
-
   //clear tabWidget
   deleteCurves();
 
@@ -817,7 +821,10 @@ bool CQPlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
       addPlotItem(curves[i]);
     }
 
-  setCurrentIndex(oldIndex);
+  mpListPlotItems->clearSelection();
+
+  if (imax > 0)
+    mpListPlotItems->setCurrentRow(0, QItemSelectionModel::Select);
 
   return true; //TODO really check
 }
