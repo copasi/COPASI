@@ -230,7 +230,7 @@ def main(args):
 
    # we don't want to set the initial conditions of the model to the end
    # state of the last run
-   scanProblem.setAdjustInitialConditions(False)
+   scanProblem.setContinueFromCurrentState(False)
 
    try:
        # now we run the actual trajectory

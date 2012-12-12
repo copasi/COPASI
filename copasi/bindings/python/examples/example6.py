@@ -25,7 +25,7 @@ from random import random
 
 MODEL_STRING="""<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <!-- Created by COPASI version 4.5.30 (Debug) on 2009-03-30 08:01 with libSBML version 3.3.2. -->
-<sbml xmlns=\"http:#www.sbml.org/sbml/level2\" level=\"2\" version=\"1\">
+<sbml xmlns=\"http://www.sbml.org/sbml/level2\" level=\"2\" version=\"1\">
   <model metaid=\"COPASI1\" id=\"Model_1\" name=\"Model\">
     <listOfUnitDefinitions>
       <unitDefinition id=\"volume\">
@@ -48,7 +48,7 @@ MODEL_STRING="""<?xml version=\"1.0\" encoding=\"UTF-8\"?>
       <species id=\"species_3\" name=\"C\" compartment=\"compartment_1\" initialConcentration=\"0\"/>
     </listOfSpecies>
     <listOfReactions>
-      <reaction id=\"reaction_1\" name=\"reaction\" reversible=\"False\">
+      <reaction id=\"reaction_1\" name=\"reaction\" reversible=\"false\">
         <listOfReactants>
           <speciesReference species=\"species_1\"/>
         </listOfReactants>
@@ -56,7 +56,7 @@ MODEL_STRING="""<?xml version=\"1.0\" encoding=\"UTF-8\"?>
           <speciesReference species=\"species_2\"/>
         </listOfProducts>
         <kineticLaw>
-          <math xmlns=\"http:#www.w3.org/1998/Math/MathML\">
+          <math xmlns=\"http://www.w3.org/1998/Math/MathML\">
             <apply>
               <times/>
               <ci> compartment_1 </ci>
@@ -69,7 +69,7 @@ MODEL_STRING="""<?xml version=\"1.0\" encoding=\"UTF-8\"?>
           </listOfParameters>
         </kineticLaw>
       </reaction>
-      <reaction id=\"reaction_2\" name=\"reaction_1\" reversible=\"False\">
+      <reaction id=\"reaction_2\" name=\"reaction_1\" reversible=\"false\">
         <listOfReactants>
           <speciesReference species=\"species_2\"/>
         </listOfReactants>
@@ -77,7 +77,7 @@ MODEL_STRING="""<?xml version=\"1.0\" encoding=\"UTF-8\"?>
           <speciesReference species=\"species_3\"/>
         </listOfProducts>
         <kineticLaw>
-          <math xmlns=\"http:#www.w3.org/1998/Math/MathML\">
+          <math xmlns=\"http://www.w3.org/1998/Math/MathML\">
             <apply>
               <times/>
               <ci> compartment_1 </ci>
@@ -115,7 +115,7 @@ def main():
    assert trajectoryTask != None
    # if there isn't one
    if trajectoryTask == None:
-       # create a one
+       # create one
        trajectoryTask = CTrajectoryTask()
 
        # add the time course task to the task list
@@ -151,9 +151,11 @@ def main():
    result=True
    try:
        # now we run the actual trajectory
-       result=trajectoryTask.process(True)
+       result=trajectoryTask.processWithOutputFlags(True, CCopasiTask.ONLY_TIME_SERIES)
    except:
        print >> sys.stderr,  "Error. Running the time course simulation failed." 
+       print >> sys.stderr, trajectoryTask.getProcessWarning()
+       print >> sys.stderr, trajectoryTask.getProcessError()
        # check if there are additional error messages
        if CCopasiMessage.size() > 0:
            # print the messages in chronological order
@@ -161,6 +163,9 @@ def main():
        return 1
    if result==False:
        print >> sys.stderr,  "An error occured while running the time course simulation." 
+       dataModel.saveModel('test.cps', True)
+       print >> sys.stderr, trajectoryTask.getProcessWarning()
+       print >> sys.stderr, trajectoryTask.getProcessError()
        # check if there are additional error messages
        if CCopasiMessage.size() > 0:
            # print the messages in chronological order
@@ -285,7 +290,7 @@ def main():
 
    model=dataModel.getModel()
    assert model!=None
-   timeReference=model.getObject(CCopasiObjectName("Reference=Time"))
+   timeReference=model.getValueReference()
    assert timeReference != None
    objectMap.setObjectCN(0,timeReference.getCN().getString())
   
@@ -294,21 +299,21 @@ def main():
    objectMap.setRole(1,CExperiment.dependent)
    metab=metabVector[0]
    assert metab != None
-   particleReference=metab.getObject(CCopasiObjectName("Reference=Concentration"))
+   particleReference=metab.getConcentrationReference()
    assert particleReference != None
    objectMap.setObjectCN(1,particleReference.getCN().getString())
 
    objectMap.setRole(2,CExperiment.dependent)
    metab=metabVector[1]
    assert metab != None
-   particleReference=metab.getObject(CCopasiObjectName("Reference=Concentration"))
+   particleReference=metab.getConcentrationReference()
    assert particleReference != None
    objectMap.setObjectCN(2,particleReference.getCN().getString())
 
    objectMap.setRole(3,CExperiment.dependent)
    metab=metabVector[2]
    assert metab != None
-   particleReference=metab.getObject(CCopasiObjectName("Reference=Concentration"))
+   particleReference=metab.getConcentrationReference()
    assert particleReference != None
    objectMap.setObjectCN(3,particleReference.getCN().getString())
    
@@ -328,7 +333,7 @@ def main():
    assert parameter != None
    
    # define a CFitItem
-   parameterReference=parameter.getObject(CCopasiObjectName("Reference=Value"))
+   parameterReference=parameter.getValueReference()
    assert parameterReference != None
    fitItem1=CFitItem(dataModel)
    assert fitItem1 !=None
@@ -348,7 +353,7 @@ def main():
    assert parameter != None
    
    # define a CFitItem
-   parameterReference=parameter.getObject(CCopasiObjectName("Reference=Value"))
+   parameterReference=parameter.getValueReference()
    assert parameterReference != None
    fitItem2=CFitItem(dataModel)
    assert fitItem2 !=None
@@ -363,10 +368,20 @@ def main():
    try:
      # running the task for this example will probably take some time
      print "This can take some time..."
-     result=fitTask.process(True)
+     result=fitTask.processWithOutputFlags(True, CCopasiTask.ONLY_TIME_SERIES)
    except:
      print >> sys.stderr, "Error. Parameter fitting failed."
      return 1
+   if result==False:
+       print >> sys.stderr,  "An error occured while running the Parameter estimation." 
+       dataModel.saveModel('test.cps', True)
+       print >> sys.stderr, fitTask.getProcessWarning()
+       print >> sys.stderr, fitTask.getProcessError()
+       # check if there are additional error messages
+       if CCopasiMessage.size() > 0:
+           # print the messages in chronological order
+           print >> sys.stderr, CCopasiMessage.getAllMessageText(True)
+       return 1
    assert result == True
    # assert that there are two optimization items
    assert len(fitProblem.getOptItemList()) == 2

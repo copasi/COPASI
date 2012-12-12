@@ -78,8 +78,7 @@
 
 
 %extend CCopasiTask{
-  #if (defined SWIGJAVA || defined SWIGCSHARP)                     
-  // this has to be checked each time the bindings are released
+  
   static const unsigned int CCopasiTask::NO_OUTPUT=0;
   static const unsigned int CCopasiTask::OUTPUT_BEFORE=1;
   static const unsigned int CCopasiTask::OUTPUT_AFTER=2;
@@ -87,8 +86,7 @@
   static const unsigned int CCopasiTask::OUTPUT_SE=55;
   static const unsigned int CCopasiTask::OUTPUT_UI=119;
   static const unsigned int CCopasiTask::ONLY_TIME_SERIES=71;
-
-  #endif //SWIGJAVA || SWIGCSHARP                      
+              
 
   std::vector<C_INT32> getValidMethods() const
     {
@@ -111,10 +109,104 @@
     {
 	return self->Warning;
     }
-    
-    virtual bool process(bool useInitialValues) 
+  
+ 
+    bool processWithOutputFlags(bool useInitialValues, int outputFlags) 
       {
         bool success = true;
+        
+        CCopasiMessage::clearDeque();
+        CCopasiDataModel* pDataModel=self->getObjectDataModel();
+        assert(pDataModel!=NULL);
+        
+        self->Warning = "";
+        self->Error = "";
+        
+        // Initialize the task
+        try
+        {
+          if (!self->initialize((CCopasiTask::OutputFlag)outputFlags, pDataModel, NULL))
+          {
+            throw CCopasiException(CCopasiMessage::peekLastMessage());
+          }
+        }
+
+        catch (CCopasiException & Exception)
+        {
+          if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+          {
+            self->Error = CCopasiMessage::getAllMessageText();
+			success = false;
+			
+			goto restore;
+          }
+        }
+
+        if (CCopasiMessage::getHighestSeverity() >= CCopasiMessage::COMMANDLINE)
+        {
+          self->Error = CCopasiMessage::getAllMessageText();
+          success = false;
+			
+		  goto restore;
+        }
+
+        CCopasiMessage::clearDeque();
+        
+        try 
+        {
+          success = self->process(useInitialValues);
+        }
+        
+        catch (CCopasiException & Exception)
+        {
+          success = false;
+        }
+        
+        if (!success && CCopasiMessage::size() != 0)
+        {
+          self->Error = CCopasiMessage::getAllMessageText();
+          success = false;
+        }
+        else if (CCopasiMessage::getHighestSeverity() >= CCopasiMessage::COMMANDLINE)
+        {
+          self->Warning = CCopasiMessage::getAllMessageText();
+          success = true;
+        }
+        
+        restore:
+        
+        CCopasiMessage::clearDeque();
+
+        try 
+        {
+          self->restore();
+        }
+
+        catch (CCopasiException & Exception)
+        {
+          if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+          { 
+            self->Error = CCopasiMessage::getAllMessageText();
+          }
+        }
+
+        catch (...) {}
+
+        if (CCopasiMessage::getHighestSeverity() >= CCopasiMessage::COMMANDLINE)
+        {
+		  self->Warning = CCopasiMessage::getAllMessageText();
+        }
+
+        CCopasiMessage::clearDeque();
+
+        pDataModel->finish();
+        
+        return success;
+      }  
+     
+    virtual bool process(bool useInitialValues) 
+      {
+	bool success = true;
         
         CCopasiMessage::clearDeque();
         CCopasiDataModel* pDataModel=self->getObjectDataModel();
@@ -186,7 +278,7 @@
         catch (CCopasiException & Exception)
         {
           if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-          {
+          { 
             self->Error = CCopasiMessage::getAllMessageText();
           }
         }
@@ -203,8 +295,8 @@
         pDataModel->finish();
         
         return success;
-      }  
-   
+      }
+
 #ifdef SWIGR
    bool setMethodType(const CCopasiMethod::SubType& type)
    {
