@@ -1,21 +1,16 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example1.py,v $ 
-#   $Revision: 1.2 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2012/03/05 18:09:32 $ 
-# End CVS Header 
+# Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual </comment>
+# Properties, Inc., University of Heidelberg, and The University </comment>
+# of Manchester. </comment>
+# All rights reserved. </comment>
 
-# Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., University of Heidelberg, and The University 
-# of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+# and The University of Manchester. </comment>
+# All rights reserved. </comment>
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
+
+
 
 # This is an example on how to build models with the COPASI backend API.
 
@@ -48,7 +43,7 @@ def main():
   # create a compartment with the name cell and an initial volume of 5.0
   # microliter
   compartment = model.createCompartment("cell", 5.0)
-  object = compartment.getObject(CCopasiObjectName("Reference=InitialVolume"))
+  object = compartment.getInitialValueReference()
   assert object != None
   changedObjects.push_back(object)
   assert compartment != None
@@ -59,7 +54,7 @@ def main():
   # fixed
   glucose = model.createMetabolite("glucose", compartment.getObjectName(), 10.0, CMetab.FIXED)
   assert glucose != None
-  object = glucose.getObject(CCopasiObjectName("Reference=InitialConcentration"))
+  object = glucose.getInitialConcentrationReference()
   assert object != None
   changedObjects.push_back(object)
   assert model.getMetabolites().size() == 1
@@ -67,21 +62,21 @@ def main():
   # concentration of 0. This metabolite is to be changed by reactions
   g6p = model.createMetabolite("glucose-6-phosphate", compartment.getObjectName(), 0.0, CMetab.REACTIONS)
   assert g6p != None
-  object = g6p.getObject(CCopasiObjectName("Reference=InitialConcentration"))
+  object = g6p.getInitialConcentrationReference()
   assert object != None
   changedObjects.push_back(object)
   assert model.getMetabolites().size() == 2
   # another metabolite for ATP, also fixed
   atp = model.createMetabolite("ATP", compartment.getObjectName(), 10.0, CMetab.FIXED)
   assert atp != None
-  object = atp.getObject(CCopasiObjectName("Reference=InitialConcentration"))
+  object = atp.getInitialConcentrationReference()
   assert object != None
   changedObjects.push_back(object)
   assert model.getMetabolites().size() == 3
   # and one for ADP
   adp = model.createMetabolite("ADP", compartment.getObjectName(), 0.0, CMetab.REACTIONS)
   assert adp != None
-  object = adp.getObject(CCopasiObjectName("Reference=InitialConcentration"))
+  object = adp.getInitialConcentrationReference()
   assert object != None
   changedObjects.push_back(object)
   assert model.getMetabolites().size() == 4
@@ -139,7 +134,7 @@ def main():
       assert reaction.isLocalParameter(parameter.getObjectName())
       # now we set the value of the parameter to 0.5
       parameter.setValue(0.5)
-      object = parameter.getObject(CCopasiObjectName("Reference=Value"))
+      object = parameter.getValueReference()
       assert object != None
       changedObjects.push_back(object)
   else:
@@ -185,7 +180,7 @@ def main():
   # it gets the name rateConstant and an initial value of 1.56
   modelValue = model.createModelValue("rateConstant", 1.56)
   assert modelValue != None
-  object = modelValue.getObject(CCopasiObjectName("Reference=InitialValue"))
+  object = modelValue.getInitialValueReference()
   assert object != None
   changedObjects.push_back(object)
   assert model.getModelValues().size() == 1
