@@ -134,6 +134,14 @@ bool CScanTask::process(const bool & useInitialValues)
 
   bool success = true;
 
+#if COPASI_NONLIN_DYN
+  CCrossSectionTask* task = dynamic_cast<CCrossSectionTask*>(mpSubtask);
+  
+  if (task != NULL)
+    task->createEvent();
+  
+#endif
+
   if (useInitialValues)
     {
       mpProblem->getModel()->applyInitialValues();
@@ -144,13 +152,6 @@ bool CScanTask::process(const bool & useInitialValues)
   // initialize the method (parsing the ScanItems)
   pMethod->setProblem(pProblem);
 
-#if COPASI_NONLIN_DYN
-  CCrossSectionTask* task = dynamic_cast<CCrossSectionTask*>(mpSubtask);
-
-  if (task != NULL)
-    task->createEvent();
-
-#endif
 
   if (!pMethod->init()) return false;
 
