@@ -1392,8 +1392,81 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   return this->mpCopasiModel;
 }
 
+std::string isKnownCustomFunctionDefinition(const FunctionDefinition* sbmlFunction,
+    const std::string& sNamespace,
+    const std::string& elementName,
+    const std::string& definition)
+{
+  FunctionDefinition* current = const_cast<FunctionDefinition*>(sbmlFunction);
+
+  if (current == NULL) return "";
+
+  if (!current->isSetAnnotation()) return "";
+
+  const XMLNode* element = current->getAnnotation();
+
+  if (element == NULL) return "";
+
+  for (unsigned int i = 0 ; i < element->getNumChildren(); ++i)
+    {
+      const XMLNode& annot = element->getChild(i);
+
+      if (annot.getURI() == sNamespace &&
+          annot.getName() == elementName &&
+          annot.getAttrValue("definition") == definition)
+        {
+          return current->getId();
+        }
+    }
+
+  return "";
+}
+
+bool addToKnownFunctionToMap(std::map<std::string, std::string>& map, const FunctionDefinition* sbmlFunction)
+{
+  if (!sbmlFunction->isSetAnnotation())
+    return false;
+
+  std::string id = isKnownCustomFunctionDefinition(sbmlFunction,
+                   "http://sbml.org/annotations/symbols",
+                   "symbols",
+                   "http://en.wikipedia.org/wiki/Derivative");
+
+  if (!id.empty())
+    {
+      map[id] = "RATE";
+      return true;
+    }
+
+  id = isKnownCustomFunctionDefinition(sbmlFunction,
+                                       "http://sbml.org/annotations/distribution",
+                                       "distribution",
+                                       "http://www.uncertml.org/distributions/normal");
+
+  if (!id.empty())
+    {
+      map[id] = "RNORMAL";
+      return true;
+    }
+
+  id = isKnownCustomFunctionDefinition(sbmlFunction,
+                                       "http://sbml.org/annotations/distribution",
+                                       "distribution",
+                                       "http://www.uncertml.org/distributions/uniform");
+
+  if (!id.empty())
+    {
+      map[id] = "RUNIFORM";
+      return true;
+    }
+
+  return false;
+}
+
 CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction, CFunctionDB* pTmpFunctionDB, Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
+
+  addToKnownFunctionToMap(mKnownCustomUserDefinedFunctions, sbmlFunction);
 
   CFunction* pTmpFunction = this->createCFunctionFromFunctionTree(sbmlFunction, pSBMLModel, copasi2sbmlmap);
 
@@ -2688,9 +2761,10 @@ SBMLImporter::SBMLImporter():
 # if LIBSBML_VERSION >= 40200
   mEventPrioritiesIgnored(false),
   mInitialTriggerValues(false),
-  mNonPersistentTriggerFound(false)
+  mNonPersistentTriggerFound(false),
 # endif // LIBSBML_VERSION >= 40200
 #endif // LIBSBML_VERSION >= 40100
+  mKnownCustomUserDefinedFunctions()
 {
   this->speciesMap = std::map<std::string, CMetab*>();
   this->functionDB = NULL;
@@ -4533,14 +4607,30 @@ void SBMLImporter::replaceCallNodeNames(ASTNode* pASTNode)
         {
           std::map<std::string, std::string>::const_iterator pos = this->mFunctionNameMapping.find(itNode->getName());
 
+          std::map<std::string, std::string>::const_iterator knownPos = mKnownCustomUserDefinedFunctions.find(itNode->getName());
+
           if (pos == this->mFunctionNameMapping.end())
             {
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 47, itNode->getName());
             }
 
-          std::string newName = pos->second;
-          itNode->setName(newName.c_str());
-          this->mUsedFunctions.insert(newName);
+          if (knownPos != mKnownCustomUserDefinedFunctions.end() &&
+              (knownPos->second == "RATE" && itNode->getNumChildren() == 1))
+            {
+              // replace the known function with the correct calls.
+              // replace rateOf with the rate of whatever is inside
+              std::string symbol = itNode->getChild(0)->getName();
+              itNode->removeChild(0);
+              itNode->setType(AST_NAME);
+              itNode->setName(symbol.c_str());
+              itNode->setUserData(strdup("RATE"));
+            }
+          else
+            {
+              std::string newName = pos->second;
+              itNode->setName(newName.c_str());
+              this->mUsedFunctions.insert(newName);
+            }
         }
     }
 }
@@ -6359,6 +6449,7 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
           if (itNode->getType() == AST_NAME)
             {
               std::string name = itNode->getName();
+              bool haveData = itNode->getUserData() != NULL;
               // the id can either belong to a compartment, a species, a reaction or a
               // global parameter
               std::map<CCopasiObject*, SBase*>::const_iterator it = copasi2sbmlmap.begin();
@@ -6392,7 +6483,10 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
 
                             if (!initialExpression)
                               {
-                                itNode->setName((pObject->getCN() + ",Reference=Volume").c_str());
+                                if (haveData)
+                                  itNode->setName((pObject->getCN() + ",Reference=Rate").c_str());
+                                else
+                                  itNode->setName((pObject->getCN() + ",Reference=Volume").c_str());
                               }
                             else
                               {
@@ -6411,7 +6505,10 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
                               {
                                 if (!initialExpression)
                                   {
-                                    itNode->setName((pObject->getCN() + ",Reference=Concentration").c_str());
+                                    if (haveData)
+                                      itNode->setName((pObject->getCN() + ",Reference=Rate").c_str());
+                                    else
+                                      itNode->setName((pObject->getCN() + ",Reference=Concentration").c_str());
                                   }
                                 else
                                   {
@@ -6422,7 +6519,10 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
                               {
                                 if (!initialExpression)
                                   {
-                                    itNode->setName((pObject->getCN() + ",Reference=ParticleNumber").c_str());
+                                    if (haveData)
+                                      itNode->setName((pObject->getCN() + ",Reference=Rate").c_str());
+                                    else
+                                      itNode->setName((pObject->getCN() + ",Reference=ParticleNumber").c_str());
                                   }
                                 else
                                   {
@@ -6446,7 +6546,10 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
 
                             if (!initialExpression)
                               {
-                                itNode->setName((pObject->getCN() + ",Reference=Value").c_str());
+                                if (haveData)
+                                  itNode->setName((pObject->getCN() + ",Reference=Rate").c_str());
+                                else
+                                  itNode->setName((pObject->getCN() + ",Reference=Value").c_str());
                               }
                             else
                               {
@@ -9262,6 +9365,25 @@ CFunctionDB* SBMLImporter::importFunctionDefinitions(Model* pSBMLModel, std::map
             }
 
           assert(pFun != NULL);
+
+          std::map<std::string, std::string>::const_iterator pos = mKnownCustomUserDefinedFunctions.find(it->first->getId());
+
+          if (pos != mKnownCustomUserDefinedFunctions.end())
+            {
+              if (pos->second == "RUNIFORM")
+                {
+                  // replace call to function with call to uniform
+                  pFun->setInfix("UNIFORM(a, b)");
+                  pFun->compile();
+                }
+              else if (pos->second == "RNORMAL")
+                {
+                  // replace call to function with call to normal
+                  pFun->setInfix("NORMAL(a, b)");
+                  pFun->compile();
+                }
+            }
+
           copasi2sbmlmap[pFun] = const_cast<FunctionDefinition*>(it->first);
           this->mFunctionNameMapping[it->first->getId()] = pFun->getObjectName();
           // next we delete the imported function definitions from the dependencies of

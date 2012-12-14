@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-//   $Revision: 1.97 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/15 15:57:16 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -99,7 +91,7 @@ protected:
   std::set<std::string> mUsedSBMLIds;
   bool mUsedSBMLIdsPopulated;
   bool mAvogadroSet;
-
+  std::map<std::string, std::string> mKnownCustomUserDefinedFunctions;
 
 #if LIBSBML_VERSION >= 40100
   // this map is used for storing the parameters that are used as factors that have to be applied to the multiplicities
@@ -714,7 +706,6 @@ public:
    */
   static bool importNotes(CAnnotation* pAnno, const SBase* pSBase);
 
-
 #if LIBSBML_VERSION >= 40100
   /**
    * This method check if a unit has been set on a number node.
@@ -734,7 +725,6 @@ public:
   static void updateSBMLSpeciesReferenceIds(const Model* pModel, std::set<std::string>& ids);
 
 #endif // LIBSBML_VERSION
-
 };
 
 #endif // SBMLIMPORTER_H__
