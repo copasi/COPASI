@@ -10,6 +10,8 @@
 <comment> and The University of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+
+
  <comment> All rights reserved. </comment>
  <class>CQMiriamWidget</class>
  <widget class="CopasiWidget" name="CQMiriamWidget">
@@ -61,7 +63,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Double click on Reference / Description to open it in browser</string>
+        <string>Double click on the number of Reference / Description to view.</string>
        </property>
       </widget>
      </item>
