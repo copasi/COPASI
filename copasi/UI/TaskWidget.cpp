@@ -329,9 +329,9 @@ bool TaskWidget::commonBeforeRunTask()
 
   if (mProgressBar != NULL)
     {
-      CQMessageBox::critical(this, "Task in Progress",
-                             "A task is currently running, another cannot be started before the current task ended.",
-                             QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      //CQMessageBox::critical(this, "Task in Progress",
+      //                       "A task is currently running, another cannot be started before the current task ended.",
+      //                       QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
       return false;
     }
 
