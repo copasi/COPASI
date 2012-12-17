@@ -2749,6 +2749,7 @@ SBMLImporter::SBMLImporter():
   mUsedSBMLIds(),
   mUsedSBMLIdsPopulated(false),
   mAvogadroSet(false),
+  mKnownCustomUserDefinedFunctions(),
 #if LIBSBML_VERSION >= 40100
   mpModelConversionFactor(NULL),
   mChemEqElementSpeciesIdMap(),
@@ -2761,10 +2762,9 @@ SBMLImporter::SBMLImporter():
 # if LIBSBML_VERSION >= 40200
   mEventPrioritiesIgnored(false),
   mInitialTriggerValues(false),
-  mNonPersistentTriggerFound(false),
+  mNonPersistentTriggerFound(false)
 # endif // LIBSBML_VERSION >= 40200
 #endif // LIBSBML_VERSION >= 40100
-  mKnownCustomUserDefinedFunctions()
 {
   this->speciesMap = std::map<std::string, CMetab*>();
   this->functionDB = NULL;

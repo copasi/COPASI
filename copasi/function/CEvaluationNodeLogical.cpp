@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.cpp,v $
-//   $Revision: 1.27 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/05/17 23:48:56 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -27,14 +19,16 @@
 #include "sbml/math/ASTNode.h"
 
 CEvaluationNodeLogical::CEvaluationNodeLogical():
-    CEvaluationNode(CEvaluationNode::INVALID, "")
+  CEvaluationNode(CEvaluationNode::INVALID, ""),
+  mpLeft(NULL),
+  mpRight(NULL)
 {}
 
 CEvaluationNodeLogical::CEvaluationNodeLogical(const SubType & subType,
     const Data & data):
-    CEvaluationNode((Type)(CEvaluationNode::LOGICAL | subType), data),
-    mpLeft(NULL),
-    mpRight(NULL)
+  CEvaluationNode((Type)(CEvaluationNode::LOGICAL | subType), data),
+  mpLeft(NULL),
+  mpRight(NULL)
 {
   switch (mType & 0x00FFFFFF)
     {
@@ -77,7 +71,9 @@ CEvaluationNodeLogical::CEvaluationNodeLogical(const SubType & subType,
 }
 
 CEvaluationNodeLogical::CEvaluationNodeLogical(const CEvaluationNodeLogical & src):
-    CEvaluationNode(src)
+  CEvaluationNode(src),
+  mpLeft(NULL),
+  mpRight(NULL)
 {}
 
 CEvaluationNodeLogical::~CEvaluationNodeLogical() {}
@@ -102,7 +98,7 @@ std::string CEvaluationNodeLogical::getInfix(const std::vector< std::string > & 
     {
       Data Infix;
 
-      if (*mpLeft < *(CEvaluationNode *)this)
+      if (*mpLeft < * (CEvaluationNode *)this)
         Infix = "(" + children[0] + ")";
       else
         Infix = children[0];
@@ -127,7 +123,7 @@ std::string CEvaluationNodeLogical::getDisplayString(const std::vector< std::str
     {
       Data DisplayString;
 
-      if (*mpLeft < *(CEvaluationNode *)this)
+      if (*mpLeft < * (CEvaluationNode *)this)
         DisplayString = "(" + children[0] + ")";
       else
         DisplayString = children[0] + " ";
@@ -158,27 +154,35 @@ std::string CEvaluationNodeLogical::getCCodeString(const std::vector< std::strin
           case AND:
             data = "&&";
             break;
+
           case OR:
             data = "||";
             break;
+
           case EQ:
             data = "==";
             break;
+
           case GE:
             data = ">=";
             break;
+
           case GT:
             data = ">";
             break;
+
           case LE:
             data = "<=";
             break;
+
           case LT:
             data = "<";
             break;
+
           case NE:
             data = "!=";
             break;
+
           default:
             /*
              * case XOR:
@@ -187,7 +191,7 @@ std::string CEvaluationNodeLogical::getCCodeString(const std::vector< std::strin
             break;
         }
 
-      if (*mpLeft < *(CEvaluationNode *)this)
+      if (*mpLeft < * (CEvaluationNode *)this)
         DisplayString = "(" + children[0] + ")";
       else
         DisplayString = children[0] + " ";
@@ -218,35 +222,43 @@ std::string CEvaluationNodeLogical::getBerkeleyMadonnaString(const std::vector< 
           case AND:
             data = "AND";
             break;
+
           case OR:
             data = "OR";
             break;
+
             /* case XOR:
                break; */
           case EQ:
             data = "=";
             break;
+
           case GE:
             data = ">=";
             break;
+
           case GT:
             data = ">";
             break;
+
           case LE:
             data = "<=";
             break;
+
           case LT:
             data = "<";
             break;
+
           case NE:
             data = "<>";
             break;
+
           default:
             data = "@";
             break;
         }
 
-      if (*mpLeft < *(CEvaluationNode *)this)
+      if (*mpLeft < * (CEvaluationNode *)this)
         DisplayString = "(" + children[0] + ")";
       else
         DisplayString = children[0] + " ";
@@ -277,27 +289,35 @@ std::string CEvaluationNodeLogical::getXPPString(const std::vector< std::string 
           case AND:
             data = "&";
             break;
+
           case OR:
             data = "|";
             break;
+
           case EQ:
             data = "==";
             break;
+
           case GE:
             data = ">=";
             break;
+
           case GT:
             data = ">";
             break;
+
           case LE:
             data = "<=";
             break;
+
           case LT:
             data = "<";
             break;
+
           case NE:
             data = "!=";
             break;
+
           default:
             /* case XOR: */
             CCopasiMessage(CCopasiMessage::WARNING, " TODO   ");
@@ -305,7 +325,7 @@ std::string CEvaluationNodeLogical::getXPPString(const std::vector< std::string 
             break;
         }
 
-      if (*mpLeft < *(CEvaluationNode *)this)
+      if (*mpLeft < * (CEvaluationNode *)this)
         DisplayString = "(" + children[0] + ")";
       else
         DisplayString = children[0] + " ";
@@ -340,38 +360,47 @@ CEvaluationNode * CEvaluationNodeLogical::fromAST(const ASTNode * pASTNode, cons
         subType = AND;
         data = "and";
         break;
+
       case AST_LOGICAL_OR:
         subType = OR;
         data = "or";
         break;
+
       case AST_LOGICAL_XOR:
         subType = XOR;
         data = "xor";
         break;
+
       case AST_RELATIONAL_EQ:
         subType = EQ;
         data = "eq";
         break;
+
       case AST_RELATIONAL_GEQ:
         subType = GE;
         data = "ge";
         break;
+
       case AST_RELATIONAL_GT:
         subType = GT;
         data = "gt";
         break;
+
       case AST_RELATIONAL_LEQ:
         subType = LE;
         data = "le";
         break;
+
       case AST_RELATIONAL_LT:
         subType = LT;
         data = "lt";
         break;
+
       case AST_RELATIONAL_NEQ:
         subType = NE;
         data = "ne";
         break;
+
       default:
         subType = INVALID;
         break;
@@ -472,32 +501,42 @@ ASTNode* CEvaluationNodeLogical::toAST(const CCopasiDataModel* pDataModel) const
       case AND:
         node->setType(AST_LOGICAL_AND);
         break;
+
       case OR:
         node->setType(AST_LOGICAL_OR);
         break;
+
       case XOR:
         node->setType(AST_LOGICAL_XOR);
         break;
+
       case EQ:
         node->setType(AST_RELATIONAL_EQ);
         break;
+
       case NE:
         node->setType(AST_RELATIONAL_NEQ);
         break;
+
       case GT:
         node->setType(AST_RELATIONAL_GT);
         break;
+
       case GE:
         node->setType(AST_RELATIONAL_GEQ);
         break;
+
       case LT:
         node->setType(AST_RELATIONAL_LT);
         break;
+
       case LE:
         node->setType(AST_RELATIONAL_LEQ);
         break;
+
       case INVALID:
         break;
+
       default:
         subType = INVALID;
         break;
@@ -533,30 +572,39 @@ std::string CEvaluationNodeLogical::getMMLString(const std::vector< std::string 
           case AND:
             data = " and ";
             break;
+
           case OR:
             data = " or ";
             break;
+
           case XOR:
             data = " xor ";
             break;
+
           case EQ:
             data = "=";
             break;
+
           case GE:
             data = "&gt;=";
             break;
+
           case GT:
             data = "&gt;";
             break;
+
           case LE:
             data = "&lt;=";
             break;
+
           case LT:
             data = "&lt;";
             break;
+
           case NE:
             data = "&NotEqual;";
             break;
+
           default:
             /*
              *
@@ -567,7 +615,7 @@ std::string CEvaluationNodeLogical::getMMLString(const std::vector< std::string 
 
       out << "<mrow>" << std::endl;
 
-      flag = ((*mpLeft < *(CEvaluationNode *)this));
+      flag = ((*mpLeft < * (CEvaluationNode *)this));
 
       if (flag) out << "<mfenced>" << std::endl;
 

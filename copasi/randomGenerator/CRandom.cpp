@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/CRandom.cpp,v $
-//   $Revision: 1.26 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/19 18:06:36 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -86,7 +78,15 @@ CRandom * CRandom::createGenerator(CRandom::Type type,
 
   return RandomGenerator;
 }
-CRandom::CRandom()
+
+CRandom::CRandom():
+  mNumberU(0),
+  mNumberS(0),
+  mFloat(0.0),
+  mType(CRandom::unkown),
+  mModulus(1),
+  mModulusInv(1.0),
+  mModulusInv1(1.0)
 {
   varp.a0 = -0.5;
   varp.a1 = 0.3333333;
@@ -151,7 +151,6 @@ unsigned C_INT32 CRandom::getSystemSeed()
              (ThreadId & 0x00ff0000UL) >> 8 | (ThreadId & 0xff000000UL) >> 24;
 
   unsigned C_INT32 Time = (unsigned C_INT32)(CCopasiTimeVariable::getCurrentWallTime().getMicroSeconds() & 0xffffffffUL);
-
 
   // We use XOR so that we do not favor set or unset bits.
   unsigned C_INT32 Seed = ThreadId ^ Time;
@@ -300,7 +299,7 @@ C_FLOAT64 CRandom::getRandomNormalPositive(const C_FLOAT64 & mean,
 {
   C_FLOAT64 x;
 
-  while ((x = getRandomNormal(mean, sd)) < 0) ;
+  while ((x = getRandomNormal(mean, sd)) < 0);
 
   return x;
 }
@@ -334,7 +333,7 @@ S10:
   varp.difmuk = mu - varp.fk;
   varp.u = getRandomCC();
 
-  if (varp.d*varp.u >= varp.difmuk*varp.difmuk*varp.difmuk) return varp.ignpoi;
+  if (varp.d * varp.u >= varp.difmuk * varp.difmuk * varp.difmuk) return varp.ignpoi;
 
 S20:
 
@@ -357,7 +356,7 @@ S30:
   goto S70;
 S40:
 
-  if (varp.fy - varp.u*varp.fy <= varp.py*exp(varp.px - varp.fx)) return varp.ignpoi;
+  if (varp.fy - varp.u * varp.fy <= varp.py * exp(varp.px - varp.fx)) return varp.ignpoi;
 
 S50:
   varp.e = getRandomExp();
@@ -374,7 +373,7 @@ S50:
   goto S70;
 S60:
 
-  if (varp.c*fabs(varp.u) > varp.py*exp(varp.px + varp.e) - varp.fy*exp(varp.fx + varp.e)) goto S50;
+  if (varp.c * fabs(varp.u) > varp.py * exp(varp.px + varp.e) - varp.fy * exp(varp.fx + varp.e)) goto S50;
 
   return varp.ignpoi;
 S70:

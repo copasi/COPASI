@@ -1,17 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/CRandom.h,v $
-   $Revision: 1.18 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2010/02/03 21:15:17 $
-   End CVS Header */
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -44,7 +41,7 @@ public:
     C_INT32 ignpoi, j, k, kflag, l, ll, m;
 
     C_FLOAT64 b1, b2, c, c0, c1, c2, c3, d, del, difmuk, e, fk, fx, fy, g, omega, p, p0, px, py, q, s,
-    t, u, v, x, xx, pp[35];
+              t, u, v, x, xx, pp[35];
   };
 
   struct ExpVars
@@ -59,7 +56,8 @@ public:
   {
     r250 = 0,
     mt19937,
-    mt19937HR
+    mt19937HR,
+    unkown
   };
 
   /**
@@ -80,7 +78,7 @@ protected:
   unsigned C_INT32 mNumberU;
 
   /**
-   * A singned 32-bit integer random number.
+   * A signed 32-bit integer random number.
    */
   C_INT32 mNumberS;
 

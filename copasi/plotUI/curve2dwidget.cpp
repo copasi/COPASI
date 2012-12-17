@@ -21,8 +21,10 @@
  *  Constructs a Curve2DWidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-Curve2DWidget::Curve2DWidget(QWidget* parent, const char* /* name */, Qt::WindowFlags fl)
-  : CQPlotEditWidget(parent, fl)
+Curve2DWidget::Curve2DWidget(QWidget* parent, const char* /* name */, Qt::WindowFlags fl):
+  CQPlotEditWidget(parent, fl),
+  mpObjectY(NULL),
+  mpObjectX(NULL)
 {
   setupUi(this);
 

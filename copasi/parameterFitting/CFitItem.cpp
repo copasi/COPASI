@@ -139,11 +139,9 @@ C_FLOAT64 CFitItem::getConstraintViolation() const
       case 1:
         return mLocalValue - *mpUpperBound;
         break;
-
-      default:
-        return 0.0;
-        break;
     }
+
+  return 0.0;
 }
 
 std::ostream &operator<<(std::ostream &os, const CFitItem & o)

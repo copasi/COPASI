@@ -60,7 +60,16 @@ CCrossSectionTask::CCrossSectionTask(const CCopasiContainer * pParent):
   mpCurrentState(NULL),
   mpCurrentTime(NULL),
   mOutputStartTime(0.0),
-  mpEvent(NULL)
+  mStartTime(0.0),
+  mNumCrossings(0),
+  mOutputStartNumCrossings(0),
+  mMaxNumCrossings(std::numeric_limits< size_t >::max()),
+  mhProgress(C_INVALID_INDEX),
+  mProgressMax(1),
+  mProgressValue(0),
+  mProgressFactor(1),
+  mpEvent(NULL),
+  mState(CCrossSectionTask::TRANSIENT)
 {
   mpProblem = new CCrossSectionProblem(this);
   mpMethod = createMethod(CCopasiMethod::deterministic);
@@ -78,7 +87,16 @@ CCrossSectionTask::CCrossSectionTask(const CCrossSectionTask & src,
   mpCurrentState(NULL),
   mpCurrentTime(NULL),
   mOutputStartTime(0.0),
-  mpEvent(NULL)
+  mStartTime(0.0),
+  mNumCrossings(0),
+  mOutputStartNumCrossings(0),
+  mMaxNumCrossings(std::numeric_limits< size_t >::max()),
+  mhProgress(C_INVALID_INDEX),
+  mProgressMax(1),
+  mProgressValue(0),
+  mProgressFactor(1),
+  mpEvent(NULL),
+  mState(CCrossSectionTask::TRANSIENT)
 {
   mpProblem =
     new CCrossSectionProblem(*static_cast< CCrossSectionProblem * >(src.mpProblem), this);
@@ -449,23 +467,25 @@ void CCrossSectionTask::EventCallBack(void* pCSTask, CEvent::Type type)
 void CCrossSectionTask::eventCallBack(CEvent::Type type)
 {
 //  std::cout << "event call back: " << type << std::endl;
-  
+
   //do progress reporting
   if (mpCallBack != NULL)
-  {
-    mProgressValue = (*mpCurrentTime - mStartTime) * mProgressFactor;
-    if (mMaxNumCrossings > 0)
     {
-      C_FLOAT64 tmp = 1000.0*mNumCrossings/mMaxNumCrossings;
-      if (tmp>mProgressValue)
-        mProgressValue=tmp;
-    }
-    bool flag = mpCallBack->progressItem(mhProgress);
-    if (!flag) 
-      mState=FINISH;
-  }
+      mProgressValue = (*mpCurrentTime - mStartTime) * mProgressFactor;
 
-  
+      if (mMaxNumCrossings > 0)
+        {
+          C_FLOAT64 tmp = 1000.0 * mNumCrossings / mMaxNumCrossings;
+
+          if (tmp > mProgressValue)
+            mProgressValue = tmp;
+        }
+
+      bool flag = mpCallBack->progressItem(mhProgress);
+
+      if (!flag)
+        mState = FINISH;
+    }
 
   //do nothing else if the event is not representing a cut plane
   if (type != CEvent::CutPlane)

@@ -35,8 +35,11 @@ void BandedGraphWidget::setMultipleEditMode(bool mode)
  *  Constructs a BandedGraphWidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-BandedGraphWidget::BandedGraphWidget(QWidget* parent, const char* /* name */, Qt::WindowFlags fl)
-  : CQPlotEditWidget(parent, fl)
+BandedGraphWidget::BandedGraphWidget(QWidget* parent, const char* /* name */, Qt::WindowFlags fl):
+  CQPlotEditWidget(parent, fl),
+  mpObjectYone(NULL),
+  mpObjectYtwo(NULL),
+  mpObjectX(NULL)
 {
   setupUi(this);
 
