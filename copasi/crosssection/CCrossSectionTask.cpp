@@ -117,6 +117,13 @@ CCrossSectionTask::~CCrossSectionTask()
 void CCrossSectionTask::cleanup()
 {
   pdelete(mpCurrentState);
+  
+  std::vector<CState*>::iterator it;
+  for (it=mvStatesRing.begin(); it!=mvStatesRing.end(); ++it)
+  {
+    pdelete(*it);
+  }
+  mvStatesRing.clear();
 }
 
 bool CCrossSectionTask::initialize(const OutputFlag & of,
@@ -146,6 +153,20 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
   mpCurrentState = new CState(mpCrossSectionProblem->getModel()->getState());
   mpCurrentTime = &mpCurrentState->getTime();
 
+  //init the ring buffer for the states
+  std::vector<CState*>::iterator it;
+  for (it=mvStatesRing.begin(); it!=mvStatesRing.end(); ++it)
+  {
+    pdelete(*it);
+  }
+  mvStatesRing.resize(16);
+  for (it=mvStatesRing.begin(); it!=mvStatesRing.end(); ++it)
+  {
+    *it = new CState(mpCrossSectionProblem->getModel()->getState());
+  }
+  mStatesRingCounter=0;
+
+  
   // Handle the time series as a regular output.
   mTimeSeriesRequested = true;//mpCrossSectionProblem->timeSeriesRequested();
 
@@ -491,9 +512,17 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
   if (type != CEvent::CutPlane)
     return;
 
+  mpProblem->getModel()->setState(*mpCurrentState);
+  mpProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
+  
+  
   //count the crossings
   ++mNumCrossings;
 
+  //store state in ring buffer
+  *(mvStatesRing[mStatesRingCounter % 16]) = *mpCurrentState;
+  ++mStatesRingCounter;
+  
   //now check if we can transition to the main state
   if (mState == TRANSIENT)
     {
@@ -503,13 +532,25 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
       if (mpCrossSectionProblem->getFlagLimitOutCrossings() && mNumCrossings >= mOutputStartNumCrossings)
         mState = MAIN;
 
+      if (mpCrossSectionProblem->getFlagLimitOutConvergence())
+      {
+        if (mStatesRingCounter>1)
+        { C_FLOAT64 tmp = relativeDifferenceOfStates(mvStatesRing[(mStatesRingCounter-1)%16],
+                                                     mvStatesRing[(mStatesRingCounter-2)%16]);
+          if (tmp < mpCrossSectionProblem->getConvergenceOutTolerance())
+            mState = MAIN;
+          std::cout << tmp     << std::endl;
+        }
+      }
+      
       //if output is not delayed by time and not delayed by number of crossings
+      // and also not delayed by convergence 
       //output is started immediately
       if (!mpCrossSectionProblem->getFlagLimitOutCrossings()
-          && !mpCrossSectionProblem->getFlagLimitOutTime())
+          && !mpCrossSectionProblem->getFlagLimitOutTime()
+          && !mpCrossSectionProblem->getFlagLimitOutConvergence())
         mState = MAIN;
 
-      //TODO convergence criterium
     }
 
   if (mState == MAIN)
@@ -526,3 +567,26 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
 
   //TODO convergence criterium
 }
+
+//static
+C_FLOAT64 CCrossSectionTask::relativeDifferenceOfStates(CState* s1, CState* s2)
+{
+  if (!s1 || !s2)
+    return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+    
+  if (s1->endIndependent()-s1->beginIndependent() 
+      != s2->endIndependent()-s2->beginIndependent() )
+    return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+  
+  C_FLOAT64 ret=0;
+  const C_FLOAT64* p1, *p2;
+  for (p1=s1->beginIndependent(), p2=s2->beginIndependent();
+       p1 != s1->endIndependent(); ++p1, ++p2)
+  {
+    ret += fabs(*p1 - *p2)/(*p1 + *p2);
+  }
+  
+  return ret;
+  
+}
+

@@ -126,6 +126,12 @@ private:
   };
 
   STATE mState;
+  
+  std::vector<CState*> mvStatesRing; 
+  
+  //the number of states already pushed to the ring buffer
+  size_t mStatesRingCounter;
+  
 
 public:
   /**
@@ -241,5 +247,7 @@ private:
    * -resets call back function
    */
   void finish();
+  
+  static C_FLOAT64 relativeDifferenceOfStates(CState* s1, CState* s2);
 };
 #endif // COPASI_CCrossSectionTask
