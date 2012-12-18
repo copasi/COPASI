@@ -539,7 +539,7 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
                                                      mvStatesRing[(mStatesRingCounter-2)%16]);
           if (tmp < mpCrossSectionProblem->getConvergenceOutTolerance())
             mState = MAIN;
-          std::cout << tmp     << std::endl;
+          //std::cout << tmp     << std::endl;
         }
       }
       
