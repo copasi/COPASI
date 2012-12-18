@@ -1,17 +1,9 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.h,v $
-   $Revision: 1.28 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2012/04/20 14:53:47 $
-   End CVS Header */
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -83,6 +75,17 @@ std::string unQuote(const std::string & name);
  */
 std::string quote(const std::string & name,
                   const std::string & additionalEscapes = "");
+/**
+ * Replaces the all occurrences of target string in str with the replacement
+ * and returns true if the target string was replaced
+ * @param std::string & str
+ * @param const std::string & target
+ * @param const std::string & replacement
+ * @return bool replaced
+ */
+bool stringReplace(std::string & str,
+                   const std::string & target,
+                   const std::string & replacement);
 
 /*
  * Fixes a string to be a SName element from SBML
@@ -90,12 +93,6 @@ std::string quote(const std::string & name,
  *
  */
 void FixSName(const std::string &original, std::string &fixed)
-;
-
-/*
- * Fixes a string to a XHTML valid equivalent
- */
-void FixXHTML(const std::string &original, std::string &fixed)
 ;
 
 /**
@@ -180,6 +177,5 @@ void * stringToPointer(const std::string str);
  * @return std::string str
  */
 std::string pointerToString(const void * pVoid);
-
 
 #endif // COPASI_utilities

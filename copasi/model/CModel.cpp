@@ -2909,7 +2909,7 @@ bool CModel::convert2NonReversible()
 
   bool success = true;
 
-  std::vector<std::string> reactionsToDelete;
+  std::vector< CReaction * > reactionsToDelete;
 
   CReaction *reac0, *reac1, *reac2;
   CReactionInterface ri1(this), ri2(this);
@@ -3118,14 +3118,203 @@ bool CModel::convert2NonReversible()
         reac1->compile();
         reac2->compile();
 
-        //remove the old reaction
-        reactionsToDelete.push_back(reac0->getObjectName());
+        // TODO CRITICAL BUG 1848. We need to replace all references to the flux and particle flux
+        // with the difference of the forward and backward reaction fluxes and particle fluxes, i.e,
+        // flux = forward.flux - backward.flux
+
+        std::string Old = "<" + reac0->getFluxReference()->getCN() + ">";
+        std::string New = "(<" + reac1->getFluxReference()->getCN() + "> - <" + reac2->getFluxReference()->getCN() + ">)";
+
+        // Find all objects which directly depend on the flux or particle flux.
+        std::set< const CCopasiObject * > Flux;
+        Flux.insert(reac0->getFluxReference());
+        std::set< const CCopasiObject * > FluxDependents;
+
+        // Initial Expression and Expression
+        appendDependentCompartments(Flux, FluxDependents);
+        appendDependentModelValues(Flux, FluxDependents);
+        appendDependentMetabolites(Flux, FluxDependents);
+
+        std::set< const CCopasiObject * >::iterator it = FluxDependents.begin();
+        std::set< const CCopasiObject * >::iterator end = FluxDependents.end();
+
+        for (; it != end; ++it)
+          {
+            CModelEntity * pEntity = static_cast< CModelEntity * >(const_cast< CCopasiObject * >(*it));
+
+            // Expression
+            std::string Infix = pEntity->getExpression();
+
+            if (stringReplace(Infix, Old, New))
+              {
+                pEntity->setExpression(Infix);
+              }
+
+            // Initial Expression
+            if (pEntity->getStatus() != CModelEntity::ASSIGNMENT)
+              {
+                Infix = pEntity->getInitialExpression();
+
+                if (stringReplace(Infix, Old, New))
+                  {
+                    pEntity->setInitialExpression(Infix);
+                  }
+              }
+          }
+
+        FluxDependents.clear();
+
+        // Trigger and Assignments
+        appendDependentEvents(Flux, FluxDependents);
+
+        it = FluxDependents.begin();
+        end = FluxDependents.end();
+
+        for (; it != end; ++it)
+          {
+            CEvent * pEvent = static_cast< CEvent * >(const_cast< CCopasiObject * >(*it));
+
+            // Trigger Expression
+            std::string Infix = pEvent->getTriggerExpression();
+
+            if (stringReplace(Infix, Old, New))
+              {
+                pEvent->setTriggerExpression(Infix);
+              }
+
+            // Delay Expression
+            Infix = pEvent->getDelayExpression();
+
+            if (stringReplace(Infix, Old, New))
+              {
+                pEvent->setDelayExpression(Infix);
+              }
+
+            // Priority Expression
+            Infix = pEvent->getPriorityExpression();
+
+            if (stringReplace(Infix, Old, New))
+              {
+                pEvent->setPriorityExpression(Infix);
+              }
+
+            // Assignments
+            CCopasiVector< CEventAssignment >::iterator itAssignment = pEvent->getAssignments().begin();
+            CCopasiVector< CEventAssignment >::iterator endAssignment = pEvent->getAssignments().end();
+
+            for (; itAssignment != endAssignment; ++itAssignment)
+              {
+                Infix = (*itAssignment)->getExpression();
+
+                if (stringReplace(Infix, Old, New))
+                  {
+                    (*itAssignment)->setExpression(Infix);
+                  }
+              }
+          }
+
+        FluxDependents.clear();
+        Flux.clear();
+
+        // particleFlux = forward.particleFlux - backward.particleFlux
+        Old = "<" + reac0->getParticleFluxReference()->getCN() + ">";
+        New = "(<" + reac1->getParticleFluxReference()->getCN() + "> - <" + reac2->getParticleFluxReference()->getCN() + ">)";
+
+        Flux.insert(reac0->getParticleFluxReference());
+
+        // Initial Expression and Expression
+        appendDependentCompartments(Flux, FluxDependents);
+        appendDependentModelValues(Flux, FluxDependents);
+        appendDependentMetabolites(Flux, FluxDependents);
+
+        it = FluxDependents.begin();
+        end = FluxDependents.end();
+
+        for (; it != end; ++it)
+          {
+            CModelEntity * pEntity = static_cast< CModelEntity * >(const_cast< CCopasiObject * >(*it));
+
+            // Expression
+            std::string Infix = pEntity->getExpression();
+
+            if (stringReplace(Infix, Old, New))
+              {
+                pEntity->setExpression(Infix);
+              }
+
+            // Initial Expression
+            if (pEntity->getStatus() != CModelEntity::ASSIGNMENT)
+              {
+                Infix = pEntity->getInitialExpression();
+
+                if (stringReplace(Infix, Old, New))
+                  {
+                    pEntity->setInitialExpression(Infix);
+                  }
+              }
+          }
+
+        FluxDependents.clear();
+
+        // Trigger and Assignments
+        appendDependentEvents(Flux, FluxDependents);
+
+        it = FluxDependents.begin();
+        end = FluxDependents.end();
+
+        for (; it != end; ++it)
+          {
+            CEvent * pEvent = static_cast< CEvent * >(const_cast< CCopasiObject * >(*it));
+
+            // Trigger Expression
+            std::string Infix = pEvent->getTriggerExpression();
+
+            if (stringReplace(Infix, Old, New))
+              {
+                pEvent->setTriggerExpression(Infix);
+              }
+
+            // Delay Expression
+            Infix = pEvent->getDelayExpression();
+
+            if (stringReplace(Infix, Old, New))
+              {
+                pEvent->setDelayExpression(Infix);
+              }
+
+            // Priority Expression
+            Infix = pEvent->getPriorityExpression();
+
+            if (stringReplace(Infix, Old, New))
+              {
+                pEvent->setPriorityExpression(Infix);
+              }
+
+            // Assignments
+            CCopasiVector< CEventAssignment >::iterator itAssignment = pEvent->getAssignments().begin();
+            CCopasiVector< CEventAssignment >::iterator endAssignment = pEvent->getAssignments().end();
+
+            for (; itAssignment != endAssignment; ++itAssignment)
+              {
+                Infix = (*itAssignment)->getExpression();
+
+                if (stringReplace(Infix, Old, New))
+                  {
+                    (*itAssignment)->setExpression(Infix);
+                  }
+              }
+          }
+
+        // Schedule the old reaction for removal.
+        reactionsToDelete.push_back(reac0);
       }
 
   imax = reactionsToDelete.size();
 
   for (i = 0; i < imax; ++i)
-    steps.remove(reactionsToDelete[i]);
+    {
+      steps.remove(reactionsToDelete[i]->getObjectName());
+    }
 
   return success;
 }

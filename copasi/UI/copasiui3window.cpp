@@ -1503,6 +1503,8 @@ void CopasiUI3Window::slotConvertToIrreversible()
       CCopasiMessage::clearDeque();
     }
 
+  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
 }
 

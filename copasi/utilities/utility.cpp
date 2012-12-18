@@ -1,12 +1,9 @@
-/* Begin CVS Header
-$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-$Revision: 1.42 $
-$Name:  $
-$Author: shoops $
-$Date: 2012/04/23 21:45:51 $
-End CVS Header */
+// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -163,6 +160,23 @@ std::string quote(const std::string & name,
 #undef toBeEscaped
 }
 
+bool stringReplace(std::string & str, const std::string & target, const std::string & replacement)
+{
+  bool replaced = false;
+
+  std::string::size_type pos = str.find(target, 0);
+
+  while (pos != std::string::npos)
+    {
+      replaced = true;
+
+      str.replace(pos, target.length(), replacement, 0, std::string::npos);
+      pos = str.find(target, 0);
+    }
+
+  return replaced;
+}
+
 /*
  * Fixes a string to be a SName element from SBML
  * (this is a destructive function, some changes are irreversible)
@@ -306,333 +320,6 @@ void FixSName(const std::string &original, std::string &fixed)
       fixed [i] = '_';
 }
 
-/*
- * Fixes a string to a XHTML valid equivalent
- */
-void FixXHTML(const std::string &original, std::string &fixed)
-{
-  size_t i, p, len;
-  std::string Str;
-  // find the next illegal character
-  Str = original;
-  fixed.erase();
-
-  for (i = 0; i != std::string::npos;)
-    {
-      p = Str.find_first_of("&><\"¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ");
-      fixed += Str.substr(0, p)
-               ;
-      len = Str.length();
-      i = Str.find_first_of("&><\"¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ");
-
-      if (i != std::string::npos)
-        {
-          switch (Str[i])
-            {
-              case '&':
-                fixed += "&amp; ";
-                break;
-              case '>':
-                fixed += "&gt; ";
-                break;
-              case '<':
-                fixed += "&lt; ";
-                break;
-              case '"':
-                fixed += "&quot; ";
-                break;
-              case '¡':
-                fixed += "&#161; ";
-                break;
-              case '¢':
-                fixed += "&#162; ";
-                break;
-              case '£':
-                fixed += "&#163; ";
-                break;
-              case '¤':
-                fixed += "&#164; ";
-                break;
-              case '¥':
-                fixed += "&#165; ";
-                break;
-              case '¦':
-                fixed += "&#166; ";
-                break;
-              case '§':
-                fixed += "&#167; ";
-                break;
-              case '¨':
-                fixed += "&#168; ";
-                break;
-              case '©':
-                fixed += "&#169; ";
-                break;
-              case 'ª':
-                fixed += "&#170; ";
-                break;
-              case '«':
-                fixed += "&#171; ";
-                break;
-              case '¬':
-                fixed += "&#172; ";
-                break;
-              case '­':
-                fixed += "&#173; ";
-                break;
-              case '®':
-                fixed += "&#174; ";
-                break;
-              case '¯':
-                fixed += "&#175; ";
-                break;
-              case '°':
-                fixed += "&#176; ";
-                break;
-              case '±':
-                fixed += "&#177; ";
-                break;
-              case '²':
-                fixed += "&#178; ";
-                break;
-              case '³':
-                fixed += "&#179; ";
-                break;
-              case '´':
-                fixed += "&#180; ";
-                break;
-              case 'µ':
-                fixed += "&#181; ";
-                break;
-              case '¶':
-                fixed += "&#182; ";
-                break;
-              case '·':
-                fixed += "&#183; ";
-                break;
-              case '¸':
-                fixed += "&#184; ";
-                break;
-              case '¹':
-                fixed += "&#185; ";
-                break;
-              case 'º':
-                fixed += "&#186; ";
-                break;
-              case '»':
-                fixed += "&#187; ";
-                break;
-              case '¼':
-                fixed += "&#188; ";
-                break;
-              case '½':
-                fixed += "&#189; ";
-                break;
-              case '¾':
-                fixed += "&#190; ";
-                break;
-              case '¿':
-                fixed += "&#191; ";
-                break;
-              case 'À':
-                fixed += "&#192; ";
-                break;
-              case 'Á':
-                fixed += "&#193; ";
-                break;
-              case 'Â':
-                fixed += "&#194; ";
-                break;
-              case 'Ã':
-                fixed += "&#195; ";
-                break;
-              case 'Ä':
-                fixed += "&#196; ";
-                break;
-              case 'Å':
-                fixed += "&#197; ";
-                break;
-              case 'Æ':
-                fixed += "&#198; ";
-                break;
-              case 'Ç':
-                fixed += "&#199; ";
-                break;
-              case 'È':
-                fixed += "&#200; ";
-                break;
-              case 'É':
-                fixed += "&#201; ";
-                break;
-              case 'Ê':
-                fixed += "&#202; ";
-                break;
-              case 'Ë':
-                fixed += "&#203; ";
-                break;
-              case 'Ì':
-                fixed += "&#204; ";
-                break;
-              case 'Í':
-                fixed += "&#205; ";
-                break;
-              case 'Î':
-                fixed += "&#206; ";
-                break;
-              case 'Ï':
-                fixed += "&#207; ";
-                break;
-              case 'Ð':
-                fixed += "&#208; ";
-                break;
-              case 'Ñ':
-                fixed += "&#209; ";
-                break;
-              case 'Ò':
-                fixed += "&#210; ";
-                break;
-              case 'Ó':
-                fixed += "&#211; ";
-                break;
-              case 'Ô':
-                fixed += "&#212; ";
-                break;
-              case 'Õ':
-                fixed += "&#213; ";
-                break;
-              case 'Ö':
-                fixed += "&#214; ";
-                break;
-              case '×':
-                fixed += "&#215; ";
-                break;
-              case 'Ø':
-                fixed += "&#216; ";
-                break;
-              case 'Ù':
-                fixed += "&#217; ";
-                break;
-              case 'Ú':
-                fixed += "&#218; ";
-                break;
-              case 'Û':
-                fixed += "&#219; ";
-                break;
-              case 'Ü':
-                fixed += "&#220; ";
-                break;
-              case 'Ý':
-                fixed += "&#221; ";
-                break;
-              case 'Þ':
-                fixed += "&#222; ";
-                break;
-              case 'ß':
-                fixed += "&#223; ";
-                break;
-              case 'à':
-                fixed += "&#224; ";
-                break;
-              case 'á':
-                fixed += "&#225; ";
-                break;
-              case 'â':
-                fixed += "&#226; ";
-                break;
-              case 'ã':
-                fixed += "&#227; ";
-                break;
-              case 'ä':
-                fixed += "&#228; ";
-                break;
-              case 'å':
-                fixed += "&#229; ";
-                break;
-              case 'æ':
-                fixed += "&#230; ";
-                break;
-              case 'ç':
-                fixed += "&#231; ";
-                break;
-              case 'è':
-                fixed += "&#232; ";
-                break;
-              case 'é':
-                fixed += "&#233; ";
-                break;
-              case 'ê':
-                fixed += "&#234; ";
-                break;
-              case 'ë':
-                fixed += "&#235; ";
-                break;
-              case 'ì':
-                fixed += "&#236; ";
-                break;
-              case 'í':
-                fixed += "&#237; ";
-                break;
-              case 'î':
-                fixed += "&#238; ";
-                break;
-              case 'ï':
-                fixed += "&#239; ";
-                break;
-              case 'ð':
-                fixed += "&#240; ";
-                break;
-              case 'ñ':
-                fixed += "&#241; ";
-                break;
-              case 'ò':
-                fixed += "&#242; ";
-                break;
-              case 'ó':
-                fixed += "&#243; ";
-                break;
-              case 'ô':
-                fixed += "&#244; ";
-                break;
-              case 'õ':
-                fixed += "&#245; ";
-                break;
-              case 'ö':
-                fixed += "&#246; ";
-                break;
-              case '÷':
-                fixed += "&#247; ";
-                break;
-              case 'ø':
-                fixed += "&#248; ";
-                break;
-              case 'ù':
-                fixed += "&#249; ";
-                break;
-              case 'ú':
-                fixed += "&#250; ";
-                break;
-              case 'û':
-                fixed += "&#251; ";
-                break;
-              case 'ü':
-                fixed += "&#252; ";
-                break;
-              case 'ý':
-                fixed += "&#253; ";
-                break;
-              case 'þ':
-                fixed += "&#254; ";
-                break;
-              case 'ÿ':
-                fixed += "&#255; ";
-                break;
-            }
-        }
-
-      Str = Str.substr(len - i - 1);
-    }
-}
-
 double strToDouble(const char * str,
                    char const ** pTail)
 {
@@ -722,7 +409,6 @@ unsigned C_INT32 strToUnsignedInt(const char * str,
   return Value;
 }
 
-
 void * stringToPointer(const std::string str)
 {
   std::istringstream Pointer;
@@ -759,4 +445,3 @@ std::string pointerToString(const void * pVoid)
 
   return Pointer.str();
 }
-
