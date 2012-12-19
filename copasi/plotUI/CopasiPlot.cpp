@@ -912,7 +912,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
               switch (linesubtype) //symbol type
                 {
                   case 1:
-                    pCurve->setPen(QPen(QBrush(color), width, Qt::DotLine));
+                    pCurve->setPen(QPen(QBrush(color), width, Qt::DotLine, Qt::FlatCap));
                     break;
 
                   case 2:
@@ -936,6 +936,8 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
           if (linetype == 1) //points
             {
+              C_FLOAT64 width = *pItem->getValue("Line width").pUDOUBLE;
+              pCurve->setPen(QPen(color, width, Qt::SolidLine, Qt::RoundCap));
               pCurve->setStyle(QwtPlotCurve::Dots);
             }
 

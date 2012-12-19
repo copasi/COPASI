@@ -91,6 +91,14 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
       mpSpinBoxWidth->setValue(*(C_FLOAT64*)tmp);
     }
 
+  // points
+  if (linetype == 1)
+    {
+      if (!(tmp = curve->getValue("Line width").pVOID)) return false;
+
+      mpSpinBoxWidth->setValue(*(C_FLOAT64*)tmp);
+    }
+
   //symbol type
   if (linetype == 2 || linetype == 3)
     {
@@ -294,14 +302,14 @@ void Curve2DWidget::buttonPressedY()
 
 void Curve2DWidget::typeChanged(int linetype)
 {
-  if (linetype == 0 || linetype == 3)
+  if (linetype == 0 || linetype == 3 || linetype == 1)
     {
-      mpBoxLineSubType->setEnabled(true);
+      mpBoxLineSubType->setEnabled(linetype != 1);
       mpSpinBoxWidth->setEnabled(true);
     }
   else
     {
-      mpBoxLineSubType->setEnabled(false);
+      mpBoxLineSubType->setEnabled(linetype == 1);
       mpSpinBoxWidth->setEnabled(false);
     }
 
