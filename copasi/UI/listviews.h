@@ -162,6 +162,10 @@ public:
   CQFittingWidget* getFittingWidget();
   CQOptimizationWidget* getOptimizationWidget();
 
+#if COPASI_NONLIN_DYN
+  CQCrossSectionTaskWidget* getCrossSectionWidget();
+#endif
+
 signals:
   void signalFolderChanged(const QModelIndex & index);
 

@@ -1001,3 +1001,10 @@ CQOptimizationWidget* ListViews::getOptimizationWidget()
 {
   return optimizationWidget;
 }
+
+#ifdef COPASI_NONLIN_DYN
+CQCrossSectionTaskWidget* ListViews::getCrossSectionWidget()
+{
+  return crossSectionTaskWidget;
+}
+#endif
