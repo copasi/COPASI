@@ -126,6 +126,8 @@ void CCrossSectionTask::cleanup()
   mvStatesRing.clear();
 }
 
+#define RING_SIZE 16
+
 bool CCrossSectionTask::initialize(const OutputFlag & of,
                                    COutputHandler * pOutputHandler,
                                    std::ostream * pOstream)
@@ -159,7 +161,7 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
   {
     pdelete(*it);
   }
-  mvStatesRing.resize(16);
+  mvStatesRing.resize(RING_SIZE);
   for (it=mvStatesRing.begin(); it!=mvStatesRing.end(); ++it)
   {
     *it = new CState(mpCrossSectionProblem->getModel()->getState());
@@ -274,6 +276,7 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
     }
 
   mState = TRANSIENT;
+  mStatesRingCounter=0;
 
   mNumCrossings = 0;
 
@@ -524,19 +527,34 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
   if (mState == TRANSIENT)
     {
       if (mpCrossSectionProblem->getFlagLimitOutTime() && *mpCurrentTime >= mOutputStartTime)
+      {
         mState = MAIN;
+        mStatesRingCounter=0;
+      }
 
       if (mpCrossSectionProblem->getFlagLimitOutCrossings() && mNumCrossings >= mOutputStartNumCrossings)
+      {
         mState = MAIN;
+        mStatesRingCounter=0;
+      }
 
       if (mpCrossSectionProblem->getFlagLimitOutConvergence())
       {
         if (mStatesRingCounter>0)
-        { C_FLOAT64 tmp = relativeDifferenceOfStates(mvStatesRing[(mStatesRingCounter-1)%16],
+        { 
+          int i;
+          for (i=mStatesRingCounter-1; i>=0 && i>=((int)mStatesRingCounter)-RING_SIZE; --i)
+          {
+            C_FLOAT64 tmp = relativeDifferenceOfStates(mvStatesRing[i%RING_SIZE],
                                                      mpCurrentState);
-          if (tmp < mpCrossSectionProblem->getConvergenceOutTolerance())
-            mState = MAIN;
-          //std::cout << tmp     << std::endl;
+            if (tmp < mpCrossSectionProblem->getConvergenceOutTolerance())
+            {
+              mState = MAIN;
+              mStatesRingCounter=0;
+              break;
+            }
+            //std::cout << i << "  " << tmp     << std::endl;
+          }
         }
       }
       
@@ -554,6 +572,27 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
     {
       output(COutputInterface::DURING);
 
+      //check for convergence (actually for the occurence of similar states)
+      if (mpCrossSectionProblem->getFlagLimitConvergence())
+      {
+        if (mStatesRingCounter>0)
+        { 
+          int i;
+          for (i=mStatesRingCounter-1; i>=0 && i>=((int)mStatesRingCounter)-RING_SIZE; --i)
+          {
+            C_FLOAT64 tmp = relativeDifferenceOfStates(mvStatesRing[i%RING_SIZE],
+                                                       mpCurrentState);
+            if (tmp < mpCrossSectionProblem->getConvergenceTolerance())
+            {
+              mState = FINISH;
+              break;
+            }
+            //std::cout << "MAIN" << i << "  " << tmp     << std::endl;
+          }
+        }
+      }
+
+      
       //TODO store the state, ...
     }
 
@@ -562,8 +601,9 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
   if (mMaxNumCrossings > 0 && mNumCrossings >= mMaxNumCrossings)
     mState = FINISH;
 
+  
   //store state in ring buffer
-  *(mvStatesRing[mStatesRingCounter % 16]) = *mpCurrentState;
+  *(mvStatesRing[mStatesRingCounter % RING_SIZE]) = *mpCurrentState;
   ++mStatesRingCounter;
 }
 
