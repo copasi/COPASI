@@ -519,9 +519,6 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
   //count the crossings
   ++mNumCrossings;
 
-  //store state in ring buffer
-  *(mvStatesRing[mStatesRingCounter % 16]) = *mpCurrentState;
-  ++mStatesRingCounter;
   
   //now check if we can transition to the main state
   if (mState == TRANSIENT)
@@ -534,9 +531,9 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
 
       if (mpCrossSectionProblem->getFlagLimitOutConvergence())
       {
-        if (mStatesRingCounter>1)
+        if (mStatesRingCounter>0)
         { C_FLOAT64 tmp = relativeDifferenceOfStates(mvStatesRing[(mStatesRingCounter-1)%16],
-                                                     mvStatesRing[(mStatesRingCounter-2)%16]);
+                                                     mpCurrentState);
           if (tmp < mpCrossSectionProblem->getConvergenceOutTolerance())
             mState = MAIN;
           //std::cout << tmp     << std::endl;
@@ -565,7 +562,9 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
   if (mMaxNumCrossings > 0 && mNumCrossings >= mMaxNumCrossings)
     mState = FINISH;
 
-  //TODO convergence criterium
+  //store state in ring buffer
+  *(mvStatesRing[mStatesRingCounter % 16]) = *mpCurrentState;
+  ++mStatesRingCounter;
 }
 
 //static
@@ -583,10 +582,10 @@ C_FLOAT64 CCrossSectionTask::relativeDifferenceOfStates(CState* s1, CState* s2)
   for (p1=s1->beginIndependent(), p2=s2->beginIndependent();
        p1 != s1->endIndependent(); ++p1, ++p2)
   {
-    ret += fabs(*p1 - *p2)/(*p1 + *p2);
+    ret += pow(fabs(*p1 - *p2)/((*p1 + *p2)<1e-12 ? 1e-12 : (*p1 + *p2)), 2);
   }
   
-  return ret;
+  return sqrt(ret);
   
 }
 
