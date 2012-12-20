@@ -82,7 +82,8 @@ public:
     SteadyState,
     TimeSeries,
     ParameterEstimation,
-    Optimization
+    Optimization, 
+    CrossSection
     //LyapunovExp
   };
 

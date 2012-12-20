@@ -538,6 +538,11 @@ bool CSensMethod::initialize(CSensProblem* problem)
         mpSubTask = dynamic_cast<CCopasiTask*>
                     ((*pDataModel->getTaskList())["Optimization"]);
         break;
+
+      case CSensProblem::CrossSection:
+        mpSubTask = dynamic_cast<CCopasiTask*>
+        ((*pDataModel->getTaskList())["Cross Section"]);
+        break;
     }
 
   if (mpSubTask)

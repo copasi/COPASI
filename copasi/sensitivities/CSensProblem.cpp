@@ -130,6 +130,7 @@ const std::string CSensProblem::SubTaskName[] =
   "Time Series",
   "Parameter Estimation",
   "Optimization",
+  "Cross Section"
   //"Lyapunov Exponents",
   ""
 };
@@ -141,6 +142,7 @@ const char * CSensProblem::XMLSubTask[] =
   "TimeSeries",
   "ParameterEstimation",
   "Optimization",
+  "CrossSection",
   //"LyapunovExponents",
   NULL
 };
@@ -489,6 +491,7 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
 
       case(CSensProblem::ParameterEstimation):
       case(CSensProblem::Optimization):
+      case(CSensProblem::CrossSection):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         break;
 
@@ -551,6 +554,14 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
         list.push_back(CObjectLists::SINGLE_OBJECT);
         break;
 
+      case(CSensProblem::CrossSection):
+        list.push_back(CObjectLists::SINGLE_OBJECT);
+        list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
+        list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
+        list.push_back(CObjectLists::METAB_INITIAL_CONCENTRATIONS);
+        list.push_back(CObjectLists::ALL_PARAMETER_AND_INITIAL_VALUES);
+        break;
+        
         /*case (LyapunovExp):
                 list.push_back(CObjectLists::SINGLE_OBJECT);
                 list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
