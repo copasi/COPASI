@@ -3,19 +3,21 @@
 
 # The dblatex installation directory
 # DBLATEX_PATH=/home/usr
-DBLATEX_PATH=/sw
-# DBLATEX_PATH=/usr/
+#DBLATEX_PATH=/sw
+DBLATEX_PATH=/usr/
 
 # directory where the profiling/profile.xsl file is located
 PROFILE_DIR=/usr/share/xml/docbook/stylesheet/nwalsh/
-PROFILE_XSL=/sw/share/xml/xsl/docbook-xsl/profiling/profile.xsl
+#PROFILE_XSL=/sw/share/xml/xsl/docbook-xsl/profiling/profile.xsl
+PROFILE_XSL=/usr/share/xml/docbook/stylesheet/docbook-xsl/profiling/profile.xsl 
 
 # These should be correct after DBLATEX_PATH
 DBLATEX=$(DBLATEX_PATH)/bin/dblatex
 DBLATEX_TEXINPUTS=$(DBLATEX_PATH)/share/dblatex/latex//:$(TEXINPUTS)
 DBLATEX_SGML_CATALOG_FILES=$(SGML_CATALOG_FILES):/etc/xml/catalog
 
-PDFLATEX = /sw/bin/pdflatex
+#PDFLATEX = /sw/bin/pdflatex
+PDFLATEX = pdflatex
 
 SOURCES = copasi.xml \
 	copasi_GUI.xml \
@@ -111,7 +113,7 @@ COPASI_TEXINPUTS=.:$(COPASI_DBLATEX):$(DBLATEX_TEXINPUTS):$(TEXINPUTS)
 
 .PHONY: clean all
 
-all: UserManual.pdf
+all: copasi.pdf copasi_bindings_java.pdf copasi_bindings_python.pdf copasi_bindings_cpp.pdf 
 
 copasi.tex: $(SOURCES) copasi_bindings_cpp.xml copasi_bindings_java.xml copasi_bindings_python.xml
 	SGML_CATALOG_FILES=$(DBLATEX_SGML_CATALOG_FILES) $(DBLATEX) -p $(COPASI_DBLATEX)/copasi.xsl -t tex copasi.xml
@@ -147,11 +149,37 @@ copasi.html: copasi.tex $(IMAGES) copasi_bindings_cpp.xml copasi_bindings_java.x
 copasi_bindings_cpp.xml: copasi_bindings.xml $(CPP_EXAMPLES)
 	xsltproc --stringparam profile.condition "CPP" $(PROFILE_XSL) $< | sed -e '1d' > $@
 
+copasi_bindings_cpp.tex: $(SOURCES) copasi_bindings_cpp.xml 
+	SGML_CATALOG_FILES=$(DBLATEX_SGML_CATALOG_FILES) $(DBLATEX) -p $(COPASI_DBLATEX)/copasi.xsl -t tex copasi_bindings_cpp.xml
+
+copasi_bindings_cpp.pdf: copasi_bindings_cpp.tex $(IMAGES) 
+	TEXINPUTS=$(COPASI_TEXINPUTS) $(PDFLATEX) $< 
+	TEXINPUTS=$(COPASI_TEXINPUTS) $(PDFLATEX) $<
+	TEXINPUTS=$(COPASI_TEXINPUTS) $(PDFLATEX) $<
+
+
 copasi_bindings_java.xml: copasi_bindings.xml $(JAVA_EXAMPLES)
 	xsltproc --stringparam profile.condition "JAVA" $(PROFILE_XSL) $< | sed -e '1d' > $@
 
+copasi_bindings_java.tex: $(SOURCES) copasi_bindings_java.xml 
+	SGML_CATALOG_FILES=$(DBLATEX_SGML_CATALOG_FILES) $(DBLATEX) -p $(COPASI_DBLATEX)/copasi.xsl -t tex copasi_bindings_java.xml
+
+copasi_bindings_java.pdf: copasi_bindings_java.tex $(IMAGES) 
+	TEXINPUTS=$(COPASI_TEXINPUTS) $(PDFLATEX) $< 
+	TEXINPUTS=$(COPASI_TEXINPUTS) $(PDFLATEX) $<
+	TEXINPUTS=$(COPASI_TEXINPUTS) $(PDFLATEX) $<
+
 copasi_bindings_python.xml: copasi_bindings.xml $(PYTHON_EXAMPLES)
 	xsltproc --stringparam profile.condition "PYTHON" $(PROFILE_XSL) $< | sed -e '1d' > $@
+
+copasi_bindings_python.tex: $(SOURCES) copasi_bindings_python.xml 
+	SGML_CATALOG_FILES=$(DBLATEX_SGML_CATALOG_FILES) $(DBLATEX) -p $(COPASI_DBLATEX)/copasi.xsl -t tex copasi_bindings_python.xml
+
+copasi_bindings_python.pdf: copasi_bindings_python.tex $(IMAGES) 
+	TEXINPUTS=$(COPASI_TEXINPUTS) $(PDFLATEX) $< 
+	TEXINPUTS=$(COPASI_TEXINPUTS) $(PDFLATEX) $<
+	TEXINPUTS=$(COPASI_TEXINPUTS) $(PDFLATEX) $<
+
 
 UserManual.xhtml: UserManual.html
 	./html2xhtml $<
