@@ -1,4 +1,4 @@
-# Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -126,6 +126,7 @@ DISTFILES += \
         copasi.h \
         ArtisticLicense.txt \
         CopasiVersion.h \
+        CopasiVersion.h.in \
         copasi.pro \
         lapack.h \
         app.pri \
