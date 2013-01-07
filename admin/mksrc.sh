@@ -70,12 +70,14 @@ cp --parent admin/install-sh copasi-${buildname}-src
 cp --parent admin/missing copasi-${buildname}-src
 cp --parent admin/mkbuild.sh copasi-${buildname}-src
 cp --parent admin/yacc.sh copasi-${buildname}-src
+cp --parent admin/include.sh copasi-${buildname}-src
+cp --parent admin/libs.sh copasi-${buildname}-src
 chmod 755 copasi-${buildname}-src/admin/*
 
 cp --parent cvs_admin/c++style copasi-${buildname}-src
 chmod 755 copasi-${buildname}-src/cvs_admin/*
 
-cp configure.in copasi-${buildname}-src
+cp admin/configure.in copasi-${buildname}-src
 cp admin/configure.bat copasi-${buildname}-src
 
 #include GL/glext.h

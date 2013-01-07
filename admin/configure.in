@@ -1,0 +1,387 @@
+# Original Author was Kalle@kde.org
+# I lifted it in some mater. (Stephan Kulow)
+# I used much code from Janos Farkas
+
+dnl Process this file with autoconf to produce a configure script.
+
+AC_INIT(acinclude.m4) dnl a source file from your sub dir
+
+dnl This is so we can use kde-common
+AC_CONFIG_AUX_DIR(admin)
+
+dnl Perform program name transformation
+AC_ARG_PROGRAM
+
+dnl Automake doc recommends to do this only here. (Janos)
+AM_INIT_AUTOMAKE(copasi,4.0.20)
+
+dnl make /usr/local the default for the installation
+AC_PREFIX_DEFAULT(/usr/local)
+
+dnl determine whether we build release or debug binaries
+AC_ARG_ENABLE([debug],
+  AS_HELP_STRING([--enable-debug],
+                 [enable debug build (default: enabled)]),
+  [ENABLE_DEBUG=$enable_debug],
+  [ENABLE_DEBUG="yes"])
+
+AC_ARG_ENABLE([release],
+  AS_HELP_STRING([--enable-release],
+                 [enable release build (disables debug, default: disabled)]),
+  [ENABLE_RELEASE=$enable_release],
+  [ENABLE_RELEASE="no"])
+  
+AC_ARG_ENABLE([package],
+  AS_HELP_STRING([--enable-package],
+                 [enable package build (disables debug, enables release default: disabled)]),
+  [ENABLE_PACKAGE=$enable_package],
+  [ENABLE_PACKAGE="no"])
+
+if test x"${ENABLE_PACKAGE}" != x"no"; then
+  ENABLE_RELEASE=${ENABLE_PACKAGE}
+  QMAKE_ARG="$QMAKE_ARG PACKAGE=${ENABLE_PACKAGE}"
+fi;
+
+if test x"${ENABLE_RELEASE}" != x"yes" -a x"${ENABLE_DEBUG}" != x"no"; then
+  QMAKE_ARG="$QMAKE_ARG CONFIG+=debug CONFIG-=release"
+else
+  QMAKE_ARG="$QMAKE_ARG CONFIG+=release CONFIG-=debug"
+fi
+
+
+dnl determine whether we link against static libraries
+AC_ARG_ENABLE([static],
+  AS_HELP_STRING([--enable-static],
+                 [enable static linkage (default: disabled)]),
+  [ENABLE_STATIC=$enable_static],
+  [ENABLE_STATIC="no"])
+  
+if test x"${ENABLE_STATIC}" != x"yes"; then
+  QMAKE_ARG="$QMAKE_ARG STATIC_LINKAGE=no"
+else
+  QMAKE_ARG="$QMAKE_ARG STATIC_LINKAGE=yes"
+fi
+
+dnl enable or disable build of GUI
+AC_ARG_ENABLE([gui],
+  AS_HELP_STRING([--enable-gui],
+                 [enable build of GUI (default: enabled)]),
+  [ENABLE_GUI=$enable_gui],
+  [ENABLE_GUI="yes"])
+QMAKE_ARG="$QMAKE_ARG BUILD_GUI=$ENABLE_GUI"
+
+
+dnl qwt library
+AC_ARG_WITH([qwt],
+  AS_HELP_STRING([--with-qwt=PATH],
+                 [Path to QWT Library ]),
+  [QWT_PATH=$withval])
+
+if test x"${QWT_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG QWT_PATH=$QWT_PATH"
+fi
+
+
+dnl qwt library
+AC_ARG_WITH([qtmml],
+  AS_HELP_STRING([--with-qtmml=PATH],
+                 [Path to Qt MML Widget Library ]),
+  [QTMML_PATH=$withval])
+
+if test x"${QTMML_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG QTMML_PATH=$QTMML_PATH"
+fi
+
+
+dnl qwt3d library
+AC_ARG_WITH([qwt3d],
+  AS_HELP_STRING([--with-qwt3d=PATH],
+                 [Path to QWT3D Library ]),
+  [QWT3D_PATH=$withval])
+
+if test x"${QWT3D_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG QWT3D_PATH=$QWT3D_PATH"
+fi
+
+
+dnl expat library   
+AC_ARG_WITH([expat],
+  AC_HELP_STRING([--with-expat=PATH],
+                 [Path to Expat XML Library ]),
+  [EXPAT_PATH=$withval])
+
+if test x"${EXPAT_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG EXPAT_PATH=$EXPAT_PATH"
+fi
+
+
+dnl raptor library   
+AC_ARG_WITH([raptor],
+  AC_HELP_STRING([--with-raptor=PATH],
+                 [Path to raptor RDF Library ]),
+  [RAPTOR_PATH=$withval])
+
+if test x"${RAPTOR_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG RAPTOR_PATH=$RAPTOR_PATH"
+fi
+
+
+dnl cppunit library
+AC_ARG_WITH([cppunit],
+  AS_HELP_STRING([--with-cppunit=PATH],
+                 [Path to CPPUNIT Library ]),
+  [CPPUNIT_PATH=$withval])
+
+if test x"${CPPUNIT_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG CPPUNIT_PATH=$CPPUNIT_PATH"
+fi
+
+dnl sbw library
+AC_ARG_WITH([sbw],
+  AS_HELP_STRING([--with-sbw=PATH],
+                 [Path to SBW Library ]),
+  [SBW_PATH=$withval])
+
+if test x"${SBW_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG SBW_PATH=$SBW_PATH"
+fi
+
+
+dnl sbml library
+AC_ARG_WITH([sbml],
+  AS_HELP_STRING([--with-sbml=PATH],
+                 [Path to SBML Library ]),
+  [SBML_PATH=$withval])
+
+if test x"${SBML_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG SBML_PATH=$SBML_PATH"
+fi
+
+
+dnl LAPACK library alternatives
+AC_ARG_WITH([clapack],
+  AS_HELP_STRING([--with-clapack=PATH],
+                 [Path to CLAPACK Library ]),
+  [CLAPACK_PATH=$withval])
+
+if test x"${CLAPACK_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG CLAPACK_PATH=$CLAPACK_PATH"
+fi
+
+
+AC_ARG_WITH([lapack],
+  AS_HELP_STRING([--with-lapack=PATH],
+                 [Path to LAPACK Library ]),
+  [LAPACK_PATH=$withval])
+
+if test x"${LAPACK_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG LAPACK_PATH=$LAPACK_PATH"
+fi
+
+
+AC_ARG_WITH([mkl],
+  AS_HELP_STRING([--with-mkl=PATH],
+                 [Path to MKL Library ]),
+  [MKL_PATH=$withval])
+
+if test x"${MKL_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG MKL_PATH=$MKL_PATH"
+fi
+
+
+dnl bindings
+AC_ARG_WITH([swig],
+  AS_HELP_STRING([--with-swig=PATH],
+                 [Path to swig]),
+  [SWIG_PATH=$withval])
+
+if test x"${SWIG_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG SWIG_PATH=$SWIG_PATH"
+fi
+
+
+AC_ARG_ENABLE([python],
+  AS_HELP_STRING([--enable-python],
+                 [build python wrappers (default: disabled)]),
+  [ENABLE_PYTHON=$enable_python],
+  [ENABLE_PYTHON="no"])
+
+if test x"${ENABLE_PYTHON}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG ENABLE_PYTHON=$ENABLE_PYTHON"
+fi
+
+
+AC_ARG_WITH([python],
+  AS_HELP_STRING([--with-python=PATH],
+                 [Path to python]),
+  [PYTHON_PATH=$withval])
+
+if test x"${PYTHON_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG PYTHON_PATH=$PYTHON_PATH"
+fi
+
+
+AC_ARG_WITH([python-includes],
+  AS_HELP_STRING([--with-python-includes=PATH],
+                 [Path to python include files]),
+  [PYTHON_INCLUDE_PATH=$withval])
+
+if test x"${PYTHON_INCLUDE_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG PYTHON_INCLUDE_PATH=$PYTHON_INCLUDE_PATH"
+fi
+
+
+AC_ARG_WITH([python-libs],
+  AS_HELP_STRING([--with-python-libs=PATH],
+                 [Path to python library files]),
+  [PYTHON_LIB_PATH=$withval])
+
+if test x"${PYTHON_LIB_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG PYTHON_LIB_PATH=$PYTHON_LIB_PATH"
+fi
+
+
+AC_ARG_ENABLE([java],
+  AS_HELP_STRING([--enable-java],
+                 [build java wrappers (default: disabled)]),
+  [ENABLE_JAVA=$enable_java],
+  [ENABLE_JAVA="no"])
+
+if test x"${ENABLE_JAVA}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG ENABLE_JAVA=$ENABLE_JAVA"
+fi
+
+
+AC_ARG_WITH([java],
+  AS_HELP_STRING([--with-java=PATH],
+                 [Path to Java]),
+  [JAVA_PATH=$withval;JAVA_HOME=$withval;JAVA_INCLUDE_PATH=$JAVA_PATH/include;JAVA_LIB_PATH=$JAVA_PATH/lib])
+
+if test x"${JAVA_HOME}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG JAVA_HOME=$JAVA_HOME"
+fi
+
+
+AC_ARG_WITH([java-includes],
+  AS_HELP_STRING([--with-java-includes=PATH],
+                 [Path to Java include files]),
+  [JAVA_INCLUDE_PATH=$withval])
+
+if test x"${JAVA_INCLUDE_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG JAVA_INCLUDE_PATH=$JAVA_INCLUDE_PATH"
+fi
+
+
+AC_ARG_WITH([java-libs],
+  AS_HELP_STRING([--with-java-libs=PATH],
+                 [Path to Java libraries]),
+  [JAVA_LIB_PATH=$withval])
+
+if test x"${JAVA_LIB_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG JAVA_LIB_PATH=$JAVA_LIB_PATH"
+fi
+
+AC_ARG_ENABLE([octave],
+  AS_HELP_STRING([--enable-octave],
+                 [build octave wrappers (default: disabled)]),
+  [ENABLE_OCTAVE=$enable_octave],
+  [ENABLE_OCTAVE="no"])
+
+if test x"${ENABLE_OCTAVE}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG ENABLE_OCTAVE=$ENABLE_OCTAVE"
+fi
+
+AC_ARG_WITH([mkoctfile],
+  AS_HELP_STRING([--with-mkoctfile=PATH],
+                 [Full path of mkoctfile executable]),
+  [MKOCTFILE_BIN=$withval])
+
+if test x"${MKOCTFILE_BIN}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG MKOCTFILE_BIN=$MKOCTFILE_BIN"
+fi
+
+AC_ARG_ENABLE([perl],
+  AS_HELP_STRING([--enable-perl],
+                 [build perl wrappers (default: disabled)]),
+  [ENABLE_PERL=$enable_perl],
+  [ENABLE_PERL="no"])
+
+if test x"${ENABLE_PERL}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG ENABLE_PERL=$ENABLE_PERL"
+fi
+
+AC_ARG_WITH([perlbin],
+  AS_HELP_STRING([--with-perlbin=PATH],
+                 [Full path of perl executable]),
+  [PERL_BIN=$withval])
+
+if test x"${PERL_BIN}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG PERL_BIN=$PERL_BIN"
+fi
+
+
+AC_ARG_WITH([junit],
+  AS_HELP_STRING([--with-junit=PATH],
+                 [Path to junit]),
+  [JUNIT_PATH=$withval;])
+
+if test x"${JUNIT_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG JUNIT_PATH=$JUNIT_PATH"
+fi
+
+
+AC_ARG_ENABLE([lex-yacc],
+  AS_HELP_STRING([--enable-lex-yacc],
+                 [Specify whether to compile lex and yacc sources (default: no).]),
+  [ENABLE_LEX_YACC=$enable_lex_yacc],
+  [ENABLE_LEX_YACC="no"])
+  
+if test x"$ENABLE_LEX_YACC" = x"yes"; then
+  QMAKE_ARG="$QMAKE_ARG BUILD_PARSER=yes"
+fi
+
+
+if test "x$prefix" = "xNONE"; then
+  prefix=$ac_default_prefix
+  ac_configure_args="$ac_configure_args --prefix $prefix"
+fi
+
+if test x"${QTDIR}" = x; then
+  QMAKE="qmake" 
+else
+  QMAKE="${QTDIR}/bin/qmake"
+fi
+
+(
+dnl to prevent calling aclocal, automake and configure again
+ touch configure.in
+ touch aclocal.m4 
+ touch Makefile.in
+ touch configure
+
+ QMAKE_ARG="BUILD_ROOT=`pwd` $QMAKE_ARG"
+ 
+ find copasi -type f -name Makefile -exec rm {} \;
+
+ cd copasi && \
+ echo executing in `pwd`: && \
+ rm -f .qmake.internal.cache */.qmake.internal.cache && \
+ echo "  $QMAKE $QMAKE_ARG" && \
+ $QMAKE $QMAKE_ARG && \
+ cat Makefile | \
+ sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' \
+     -e 's!QMAKE.*=.*qmake!QMAKE = '$QMAKE'!'> $$.tmp && \
+ mv $$.tmp Makefile && \
+ echo depend:  >> Makefile && \
+ echo "	touch Makefile" >> Makefile && \
+ rm -f \
+       commandline/CConfigurationFile.o \
+       UI/copasiui3window.o \
+       UI/CQSplashWidget.o \
+       CopasiSE/CopasiSE.o \
+       CopasiUI/main.o && \ 
+ cd ..
+)
+
+dnl add here all your Makefiles. These will be created by configure
+AC_OUTPUT(Makefile)
