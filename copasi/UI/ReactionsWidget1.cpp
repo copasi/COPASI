@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -426,6 +426,7 @@ void ReactionsWidget1::FillWidgetFromRI()
 void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
 {
   size_t Index = index;
+  bool SkipFillWidget = false;
 
   // setValue
   if (mpRi->getUsage(Index) == CFunctionParameter::PARAMETER)
@@ -433,7 +434,10 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
       if (sub != 0) return;
 
       if (mpRi->isLocalValue(Index))
-        mpRi->setLocalValue(Index, newValue.toDouble()); // TODO: check
+        {
+          mpRi->setLocalValue(Index, newValue.toDouble()); // TODO: check
+          SkipFillWidget = true;
+        }
       else
         mpRi->setMapping(Index, TO_UTF8(newValue));
     }
@@ -454,7 +458,11 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
   // update the widget
   int rrr = table->currentRow();
   int ccc = table->currentColumn();
-  FillWidgetFromRI();
+
+  // We must avoid this call when only a local parameter value is changed.
+  if (!SkipFillWidget)
+    FillWidgetFromRI();
+
   table->setCurrentCell(rrr, ccc);
 }
 
