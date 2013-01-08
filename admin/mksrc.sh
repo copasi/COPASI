@@ -53,6 +53,8 @@ sed -e 's/COPASI_VERSION_MAJOR.*/COPASI_VERSION_MAJOR '${major}'/' \
     -e 's/COPASI_VERSION_COMMENT.*/COPASI_VERSION_COMMENT "'${comment}'"/' \
     -e 's/COPASI_VERSION_CREATOR.*/COPASI_VERSION_CREATOR "'${creator}'"/' \
     copasi/CopasiVersion.h.in > copasi-${buildname}-src/copasi/CopasiVersion.h
+
+cp copasi-${buildname}-src/copasi/CopasiVersion.h copasi-${buildname}-src/copasi/CopasiVersion.h.in
     
 IFS=$SAVEIFS
 
@@ -79,6 +81,7 @@ chmod 755 copasi-${buildname}-src/cvs_admin/*
 
 cp admin/configure.in copasi-${buildname}-src
 cp admin/configure.bat copasi-${buildname}-src
+cp admin/Makefile.am copasi-${buildname}-src
 
 #include GL/glext.h
 cp --parent copasi/GL/glext.h copasi-${buildname}-src
@@ -89,13 +92,6 @@ aclocal
 autoconf
 automake
 rm -rf autom4te.cache
-
-# remove any reference to CROSSVALIDATION
-# CleanFiles=`find . -type f -exec grep -Hq '#ifdef COPASI_CROSSVALIDATION' {} \; -exec echo {} \; | sort -u`
-# 
-# for file in $CleanFiles; do
-#   gawk -- ' BEGIN {keep = 1} $0 ~ "#ifdef COPASI_CROSSVALIDATION" {keep = 0} {if (keep == 1) {print $0}} $0 ~ "#endif // COPASI_CROSSVALIDATION" {keep = 1}' $file > $$.tmp && mv $$.tmp $file;
-# done;
 
 cd ..
 

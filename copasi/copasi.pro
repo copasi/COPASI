@@ -126,7 +126,6 @@ DISTFILES += \
         copasi.h \
         ArtisticLicense.txt \
         CopasiVersion.h \
-        CopasiVersion.h.in \
         copasi.pro \
         lapack.h \
         app.pri \
