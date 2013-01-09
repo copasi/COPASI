@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1099,15 +1099,18 @@ void CQNewMainWindow::setGraphToolbar()
 void CQNewMainWindow::setAnimationMenu()
 {
   this->mpPlayMenu->menuAction()->setVisible(true);
+#if COPASI_AUTOLAYOUT
   this->mpLayoutMenu->menuAction()->setVisible(false);
-
+#endif
   this->mpOptionsMenu->menuAction()->setVisible(true);
 }
 
 void CQNewMainWindow::setGraphMenu()
 {
   this->mpPlayMenu->menuAction()->setVisible(false);
+#if COPASI_AUTOLAYOUT
   this->mpLayoutMenu->menuAction()->setVisible(true);
+#endif
   this->mpOptionsMenu->menuAction()->setVisible(false);
 }
 
