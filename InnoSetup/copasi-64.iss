@@ -158,7 +158,7 @@ end;
 
 function isWindows8(): Boolean;
 var
-  TWindowsVersion: Version;
+  Version: TWindowsVersion;
 
 begin
   GetWindowsVersionEx(Version);
