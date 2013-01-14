@@ -80,11 +80,11 @@ void setBooleanRequired(CEvaluationNode * pNode, const bool & booleanRequired)
 %left TOKEN_OPERATOR_PLUS
 %left TOKEN_OPERATOR_MODULUS
 %left TOKEN_OPERATOR_MULTIPLY
+%right TOKEN_SIGN 
 %right TOKEN_OPERATOR_POWER
 %right TOKEN_CALL // Will never occur
 %right TOKEN_FUNCTION // Will never occur
 %right TOKEN_FUNCTION_2 // Will never occur
-%right TOKEN_SIGN // Will never occur
 %right TOKEN_LOGICAL_CHOICE // Will never occur
 
 /* Grammar follows */

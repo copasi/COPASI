@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1298,16 +1298,23 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(const std::vector<CEvalua
 
 std::string CEvaluationNodeFunction::handleSign(const std::string & str) const
 {
-  Data Result = mData;
+  Data Result;
 
   Type T = mpArg1->getType();
 
   if ((T & 0xFF000000) == OPERATOR)
     {
-      Result += "(" + str + ")";
+      Result = mData + "(" + str + ")";
+    }
+  else if (getParent() != NULL &&
+           static_cast< const CEvaluationNode * >(getParent())->getType() == (OPERATOR | CEvaluationNodeOperator::POWER))
+    {
+      Result = "(" + mData + str + ")";
     }
   else
-    Result += str;
+    {
+      Result = mData + str;
+    }
 
   return Result;
 }
@@ -1524,6 +1531,8 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
             flag1 = ((T & 0xFF000000) == OPERATOR &&
                      this == static_cast<const CEvaluationNode *>(pParent->getChild()->getSibling()));
+
+            flag1 |= (T == (OPERATOR | CEvaluationNodeOperator::POWER));
 
             if (flag1) out << "<mfenced>" << std::endl;
 
