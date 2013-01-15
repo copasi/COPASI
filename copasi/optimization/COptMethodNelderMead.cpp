@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodNelderMead.cpp,v $
-//   $Revision: 1.14 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/20 21:16:37 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -36,7 +28,7 @@
 #include "report/CCopasiObjectReference.h"
 
 COptMethodNelderMead::COptMethodNelderMead(const CCopasiContainer * pParent):
-    COptMethod(CCopasiTask::optimization, CCopasiMethod::NelderMead, pParent)
+  COptMethod(CCopasiTask::optimization, CCopasiMethod::NelderMead, pParent)
 {
   addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 200);
   addParameter("Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.e-005);
@@ -47,7 +39,7 @@ COptMethodNelderMead::COptMethodNelderMead(const CCopasiContainer * pParent):
 
 COptMethodNelderMead::COptMethodNelderMead(const COptMethodNelderMead & src,
     const CCopasiContainer * pParent):
-    COptMethod(src, pParent)
+  COptMethod(src, pParent)
 {initObjects();}
 
 COptMethodNelderMead::~COptMethodNelderMead()
@@ -225,7 +217,7 @@ bool COptMethodNelderMead::optimise()
     {
       const COptItem & OptItem = *(*mpOptItem)[i];
 
-      switch (OptItem.checkConstraint())
+      switch (OptItem.checkConstraint(OptItem.getStartValue()))
         {
           case - 1:
             mCurrent[i] = *OptItem.getLowerBoundValue();
@@ -311,10 +303,12 @@ First:
   /* ---- Simplex construction complete; now do some work. ---- */
 
   while (!found && !quit && mContinue)
-    {/* ---- take some steps ---- */
+    {
+      /* ---- take some steps ---- */
 
       for (jcount = 1; jcount <= konvge; ++jcount)
-        {/* ---- take a single step ---- */
+        {
+          /* ---- take a single step ---- */
 
           /* ---- find highest and lowest y values.  yhi (=y[iWorst]) indicates
              the vertex of the simplex to be replaced.   */
@@ -343,7 +337,8 @@ First:
              excepting that with the y value yhi. (largest objective value)  */
 
           for (i = 0; i < mVariableSize; ++i)
-            {/* -- calculate the average in each dimension -- */
+            {
+              /* -- calculate the average in each dimension -- */
               z = 0.0;
 
               for (j = 0; j < np1; ++j)
@@ -398,7 +393,8 @@ First:
               extnok = (mEvaluationValue < ylo);    /* -- 1 if we continue moved downhill -- */
 
               if (extnok)
-                {/* ---- retain extension ---- */
+                {
+                  /* ---- retain extension ---- */
                   ylo = mEvaluationValue;
 
                   for (i = 0; i < mVariableSize; ++i)
@@ -464,7 +460,8 @@ First:
                   contok = (mEvaluationValue <= mValue[iWorst]);  /* -- 1 if we have not gone uphill -- */
 
                   if (contok) /* then */
-                    {/* ---- retain contraction ---- */
+                    {
+                      /* ---- retain contraction ---- */
                       for (i = 0; i < mVariableSize; ++i)
                         mSimplex[i][iWorst] = mCurrent[i];
 
@@ -488,7 +485,8 @@ First:
                           mValue[j] = evaluate();
 
                           if (mEvaluationValue < mBestValue)
-                            {/* ---- retain extension ---- */
+                            {
+                              /* ---- retain extension ---- */
                               // and store that value
                               mBestValue = mEvaluationValue;
                               mContinue &= mpOptProblem->setSolution(mBestValue, mCurrent);
@@ -560,7 +558,8 @@ First:
     (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
 
   for (i = 0; i < mVariableSize; ++i)
-    {/* ---- check along each dimension ---- */
+    {
+      /* ---- check along each dimension ---- */
       C_FLOAT64 delta = mStep[i] * 1.0e-03;
 
       /* -- check along one direction -- */

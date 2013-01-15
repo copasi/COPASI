@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.cpp,v $
-//   $Revision: 1.25 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:11:21 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -32,8 +24,8 @@
 #include "report/CCopasiObjectReference.h"
 
 COptMethodSteepestDescent::COptMethodSteepestDescent(const CCopasiContainer * pParent):
-    COptMethod(CCopasiTask::optimization, CCopasiMethod::SteepestDescent, pParent),
-    mpDescent(new FDescentTemplate<COptMethodSteepestDescent>(this, &COptMethodSteepestDescent::descentLine))
+  COptMethod(CCopasiTask::optimization, CCopasiMethod::SteepestDescent, pParent),
+  mpDescent(new FDescentTemplate<COptMethodSteepestDescent>(this, &COptMethodSteepestDescent::descentLine))
 {
   addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 100);
   addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1e-6);
@@ -41,7 +33,7 @@ COptMethodSteepestDescent::COptMethodSteepestDescent(const CCopasiContainer * pP
 
 COptMethodSteepestDescent::COptMethodSteepestDescent(const COptMethodSteepestDescent & src,
     const CCopasiContainer * pParent): COptMethod(src, pParent),
-    mpDescent(new FDescentTemplate<COptMethodSteepestDescent>(this, &COptMethodSteepestDescent::descentLine))
+  mpDescent(new FDescentTemplate<COptMethodSteepestDescent>(this, &COptMethodSteepestDescent::descentLine))
 {}
 
 COptMethodSteepestDescent::~COptMethodSteepestDescent()
@@ -65,7 +57,7 @@ bool COptMethodSteepestDescent::optimise()
     {
       const COptItem & OptItem = *(*mpOptItem)[i];
 
-      switch (OptItem.checkConstraint())
+      switch (OptItem.checkConstraint(OptItem.getStartValue()))
         {
           case - 1:
             mIndividual[i] = *OptItem.getLowerBoundValue();

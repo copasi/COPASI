@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodLevenbergMarquardt.cpp,v $
-//   $Revision: 1.24 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/04 14:40:24 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -40,25 +32,25 @@
 #define LAMBDA_MAX 1e80
 
 COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CCopasiContainer * pParent):
-    COptMethod(CCopasiTask::optimization, CCopasiMethod::LevenbergMarquardt, pParent),
-    mIterationLimit(2000),
-    mTolerance(1.e-006),
-    mModulation(1.e-006),
-    mIteration(0),
-    mhIteration(C_INVALID_INDEX),
-    mVariableSize(0),
-    mCurrent(),
-    mBest(),
-    mGradient(),
-    mStep(),
-    mHessian(),
-    mHessianLM(),
-    mTemp(),
-    mBestValue(std::numeric_limits< C_FLOAT64 >::infinity()),
-    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::infinity()),
-    mContinue(true),
-    mHaveResiduals(false),
-    mResidualJacobianT()
+  COptMethod(CCopasiTask::optimization, CCopasiMethod::LevenbergMarquardt, pParent),
+  mIterationLimit(2000),
+  mTolerance(1.e-006),
+  mModulation(1.e-006),
+  mIteration(0),
+  mhIteration(C_INVALID_INDEX),
+  mVariableSize(0),
+  mCurrent(),
+  mBest(),
+  mGradient(),
+  mStep(),
+  mHessian(),
+  mHessianLM(),
+  mTemp(),
+  mBestValue(std::numeric_limits< C_FLOAT64 >::infinity()),
+  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::infinity()),
+  mContinue(true),
+  mHaveResiduals(false),
+  mResidualJacobianT()
 {
   addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 2000);
   addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-006);
@@ -72,25 +64,25 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CCopasiContaine
 
 COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const COptMethodLevenbergMarquardt & src,
     const CCopasiContainer * pParent):
-    COptMethod(src, pParent),
-    mIterationLimit(src.mIterationLimit),
-    mTolerance(src.mTolerance),
-    mModulation(src.mModulation),
-    mIteration(0),
-    mhIteration(C_INVALID_INDEX),
-    mVariableSize(0),
-    mCurrent(),
-    mBest(),
-    mGradient(),
-    mStep(),
-    mHessian(),
-    mHessianLM(),
-    mTemp(),
-    mBestValue(std::numeric_limits< C_FLOAT64 >::infinity()),
-    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::infinity()),
-    mContinue(true),
-    mHaveResiduals(false),
-    mResidualJacobianT()
+  COptMethod(src, pParent),
+  mIterationLimit(src.mIterationLimit),
+  mTolerance(src.mTolerance),
+  mModulation(src.mModulation),
+  mIteration(0),
+  mhIteration(C_INVALID_INDEX),
+  mVariableSize(0),
+  mCurrent(),
+  mBest(),
+  mGradient(),
+  mStep(),
+  mHessian(),
+  mHessianLM(),
+  mTemp(),
+  mBestValue(std::numeric_limits< C_FLOAT64 >::infinity()),
+  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::infinity()),
+  mContinue(true),
+  mHaveResiduals(false),
+  mResidualJacobianT()
 {initObjects();}
 
 COptMethodLevenbergMarquardt::~COptMethodLevenbergMarquardt()
@@ -143,7 +135,7 @@ bool COptMethodLevenbergMarquardt::optimise()
     {
       const COptItem & OptItem = *(*mpOptItem)[i];
 
-      switch (OptItem.checkConstraint())
+      switch (OptItem.checkConstraint(OptItem.getStartValue()))
         {
           case -1:
             mCurrent[i] = *OptItem.getLowerBoundValue();
