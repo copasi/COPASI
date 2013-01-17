@@ -317,7 +317,7 @@ bool CCopasiXMLInterface::saveXhtml(const std::string & xhtml)
 
   std::string::size_type start = xhtml.find_first_not_of("\x0a\x0d\t ");
 
-  if (xhtml[start] == '<')
+  if (start != std::string::npos && xhtml[start] == '<')
     {
       std::string::size_type pos = xhtml.find('>');
       std::string FirstElement = xhtml.substr(0, pos);
