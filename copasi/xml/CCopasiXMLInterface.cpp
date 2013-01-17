@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -311,6 +311,10 @@ bool CCopasiXMLInterface::saveData(const std::string & data)
 
 bool CCopasiXMLInterface::saveXhtml(const std::string & xhtml)
 {
+  // if there is nothing to save bail
+  if (xhtml.empty())
+    return true;
+
   std::string::size_type start = xhtml.find_first_not_of("\x0a\x0d\t ");
 
   if (xhtml[start] == '<')
