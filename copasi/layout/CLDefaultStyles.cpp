@@ -280,7 +280,7 @@ const char* DEFAULT_STYLES_STRING = \
                                     "        </g>\n"
                                     "      </style>\n"
                                     "      <style id=\"textGlyphStyle\" typeList=\"TEXTGLYPH\">\n"
-                                    "        <g stroke=\"textColor\" stroke-width=\"1.0\" font-size=\"20\" text-anchor=\"middle\" font-family=\"sans\"/>\n"
+                                    "        <g stroke=\"textColor\" stroke-width=\"1.0\" font-size=\"16\" text-anchor=\"middle\" font-family=\"sans\"/>\n"
                                     "      </style>\n"
                                     "      <style  id=\"productStyle\" roleList=\"product sideproduct\">\n"
                                     "        <g stroke=\"speciesReferenceColor\" stroke-width=\"2.0\" endHead=\"TransitionHead\"/>\n"

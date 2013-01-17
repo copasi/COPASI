@@ -1719,7 +1719,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
   // we need a multimap that stores the association between a metabolite and it's glyph
   std::map<const CMetab*, CLMetabGlyph*> metabGlyphMap;
 
-  QFont font = QFont("Helvetica", 20);
+  QFont font = QFont("Helvetica", 16);
   QFontMetrics metrics = QFontMetrics(font);
   QRect textBounds;
 
@@ -1752,7 +1752,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
         }
 
       // make the metab glyph 120% the size of the text
-      pMetabGlyph = CQNewMainWindow::createMetabGlyph((*metabIt)->getKey(), width * 1.2, height * 1.2);
+      pMetabGlyph = CQNewMainWindow::createMetabGlyph((*metabIt)->getKey(), width + 4, height + 4);
       assert(pMetabGlyph != NULL);
       metabGlyphMap[*metabIt] = pMetabGlyph;
       this->mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
