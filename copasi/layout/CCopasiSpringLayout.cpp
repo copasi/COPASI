@@ -141,7 +141,9 @@ CLCompartmentGlyph* CCopasiSpringLayout::findCompartmentForReactionNode(CLReacti
       if (mapIt == mCompartmentMap.end())
         {
           //there is no information in the map. Should not happen.
+#ifdef COPASI_DEBUG
           std::cout << "No compartment info for a species glyph!!!" << std::endl;
+#endif
           continue;
         }
 
@@ -188,7 +190,6 @@ bool CCopasiSpringLayout::createVariables()
   // add variables for text glyphs that are not fixed to anything.
   //TODO
 
-  std::cout << "Number of variables for auto layout: " << mInitialState.size() << std::endl;
   return true;
 }
 
@@ -319,7 +320,9 @@ bool CCopasiSpringLayout::setState(const std::vector<double> & vars)
             break;
 
           default:
+#ifdef COPASI_DEBUG
             std::cout << "Unknown Action!!!" << std::endl;
+#endif
             break;
         };
     }
@@ -682,7 +685,9 @@ double CCopasiSpringLayout::getPotential()
       if (mapIt == mCompartmentMap.end())
         {
           //there is no information in the map. Should not happen.
+#ifdef COPASI_DEBUG
           std::cout << "No compartment info for a species glyph!!!" << std::endl;
+#endif
           continue;
         }
 
@@ -701,7 +706,9 @@ double CCopasiSpringLayout::getPotential()
       if (mapIt == mCompartmentMap.end())
         {
           //there is no information in the map. Should not happen.
+#ifdef COPASI_DEBUG
           std::cout << "No compartment info for a reaction glyph!!!" << std::endl;
+#endif
           continue;
         }
 
