@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -262,11 +262,11 @@ void CopasiUI3Window::createActions()
 
   mpaOpenCopasiFiles = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "COP&ASI Files...", this);
   connect(mpaOpenCopasiFiles, SIGNAL(activated()), this, SLOT(slotFileExamplesCopasiFiles()));
-  mpaOpenCopasiFiles->setShortcut(Qt::CTRL + Qt::Key_A);
+  mpaOpenCopasiFiles->setShortcut(Qt::CTRL + Qt::Key_1);
 
   mpaOpenSBMLFiles = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "S&BML Files...", this);
   connect(mpaOpenSBMLFiles, SIGNAL(activated()), this, SLOT(slotFileExamplesSBMLFiles()));
-  mpaOpenSBMLFiles->setShortcut(Qt::CTRL + Qt::Key_B);
+  mpaOpenSBMLFiles->setShortcut(Qt::CTRL + Qt::Key_2);
 
   mpaSave = new QAction(CQIconResource::icon(CQIconResource::fileSave), "&Save", this);
   connect(mpaSave, SIGNAL(activated()), this, SLOT(slotFileSave()));
