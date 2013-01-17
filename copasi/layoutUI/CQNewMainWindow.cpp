@@ -1736,6 +1736,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
   // we need this to later place the text glyph
   // on top of the metab glyph
   std::map<CLMetabGlyph*, CLTextGlyph*> textGlyphMap;
+  std::map<CLMetabGlyph*, CLTextGlyph*> textGlyphMap2;
   // we need to store which compartment contains which metabolite glyphs
   std::map<const CCompartment*, std::set<CLMetabGlyph*> > compmetmap;
 
@@ -1759,6 +1760,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
       assert(pTextGlyph != NULL);
       this->mpCurrentLayout->addTextGlyph(pTextGlyph);
       textGlyphMap[pMetabGlyph] = pTextGlyph;
+      textGlyphMap2[pMetabGlyph] = pTextGlyph;
       totalarea += width * height * 1.2 * 1.2;
 
       if (areaMap.find((*metabIt)->getCompartment()) != areaMap.end())
@@ -1967,7 +1969,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
                   // becasue it might be used in another reaction as well, so we don't need
                   // to delete it
                   // also copy the corresponding text glyph
-                  pTextGlyph = textGlyphMap[pMetabGlyph];
+                  pTextGlyph = textGlyphMap2[pMetabGlyph];
                   assert(pTextGlyph != NULL);
                   pTextGlyph = new CLTextGlyph(*pTextGlyph);
                   pMetabGlyph = new CLMetabGlyph(*(linkedElements.find(pMetab)->second));
@@ -1989,7 +1991,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
                       // we make a copy and place the original in the duplicateNodesList
                       duplicateNodes.insert(pMetabGlyph);
                       // also copy the corresponding text glyph
-                      pTextGlyph = textGlyphMap[pMetabGlyph];
+                      pTextGlyph = textGlyphMap2[pMetabGlyph];
                       assert(pTextGlyph != NULL);
                       pTextGlyph = new CLTextGlyph(*pTextGlyph);
                       pMetabGlyph = new CLMetabGlyph(*pMetabGlyph);
@@ -2051,7 +2053,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
                   // becasue it might be used in another reaction as well, so we don't need
                   // to delete it
                   // also copy the corresponding text glyph
-                  pTextGlyph = textGlyphMap[pMetabGlyph];
+                  pTextGlyph = textGlyphMap2[pMetabGlyph];
                   assert(pTextGlyph != NULL);
                   pTextGlyph = new CLTextGlyph(*pTextGlyph);
                   pMetabGlyph = new CLMetabGlyph(*(linkedElements.find(pMetab)->second));
@@ -2073,7 +2075,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
                       // we make a copy and place the original in the duplicateNodesList
                       duplicateNodes.insert(pMetabGlyph);
                       // also copy the corresponding text glyph
-                      pTextGlyph = textGlyphMap[pMetabGlyph];
+                      pTextGlyph = textGlyphMap2[pMetabGlyph];
                       assert(pTextGlyph != NULL);
                       pTextGlyph = new CLTextGlyph(*pTextGlyph);
                       pMetabGlyph = new CLMetabGlyph(*pMetabGlyph);
@@ -2140,7 +2142,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
                   // we make a copy and place the original in the duplicateNodesList
                   duplicateNodes.insert(pMetabGlyph);
                   // also copy the corresponding text glyph
-                  pTextGlyph = textGlyphMap[pMetabGlyph];
+                  pTextGlyph = textGlyphMap2[pMetabGlyph];
                   assert(pTextGlyph != NULL);
                   pTextGlyph = new CLTextGlyph(*pTextGlyph);
                   pMetabGlyph = new CLMetabGlyph(*pMetabGlyph);
@@ -2184,7 +2186,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
   while (duplicateIt != duplicateEndit)
     {
       pMetabGlyph = *duplicateIt;
-      pTextGlyph = textGlyphMap[pMetabGlyph];
+      pTextGlyph = textGlyphMap2[pMetabGlyph];
       assert(pTextGlyph != NULL);
       // the glyph has to be in there
       r = textGlyphs.remove(pTextGlyph);
