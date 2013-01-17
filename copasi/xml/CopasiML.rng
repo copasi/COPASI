@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., University of Heidelberg, and The University -->
 <!-- of Manchester. -->
 <!-- All rights reserved. -->
@@ -859,8 +859,11 @@
       </data>
     </attribute>
     <ref name="name.attribute"/>
-    <attribute name="order">
-      <data type="nonNegativeInteger"/>
+    <attribute name="fireAtInitialTime">
+      <data type="boolean"/>
+    </attribute>
+    <attribute name="persistentTrigger">
+      <data type="boolean"/>
     </attribute>
     <ref name="annotation.datatype"/>
     <element name="TriggerExpression">
