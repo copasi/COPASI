@@ -398,8 +398,13 @@ void CCopasiSpringLayout::finalizeState()
       if (dir.getX() == 0 && dir.getY() == 0)
         dir = CLPoint(1, 0);
 
+      CLPoint ortho_dir = CLPoint(dir.getY(), -dir.getX() );
+      ortho_dir.scale(1/sqrt(  pow(ortho_dir.getX(),2)+pow(ortho_dir.getY(),2)));
+      
       CLPoint reaction_s = pRG->getPosition() - (dir * 0.05);
       CLPoint reaction_p = pRG->getPosition() + (dir * 0.05);
+      CLPoint reaction_m1 = pRG->getPosition() + ortho_dir*10;
+      CLPoint reaction_m2 = pRG->getPosition() - ortho_dir*10;
 
       pRG->getCurve().clear();
       pRG->getCurve().addCurveSegment(CLLineSegment(reaction_s, reaction_p));
@@ -418,28 +423,53 @@ void CCopasiSpringLayout::finalizeState()
             {
               case CLMetabReferenceGlyph::SUBSTRATE :
               case CLMetabReferenceGlyph::SIDESUBSTRATE :
+              {
                 reactionPoint = reaction_s;
                 direction = -0.1;
+                CLPoint metabPoint = borderProjection(pMRG->getMetabGlyph(), reactionPoint + dir * direction /*(modifierLength * 1.5)*/, 5);
+                pMRG->getCurve().clear();
+                pMRG->getCurve().addCurveSegment(CLLineSegment(reactionPoint,
+                                                               metabPoint,
+                                                               reactionPoint + dir * direction,
+                                                               (reactionPoint + dir * (direction * 1.5) + metabPoint) * 0.5));
+              }
                 break;
 
               case CLMetabReferenceGlyph::PRODUCT :
               case CLMetabReferenceGlyph::SIDEPRODUCT :
+              {
                 reactionPoint = reaction_p;
                 direction = 0.1;
+                CLPoint metabPoint = borderProjection(pMRG->getMetabGlyph(), reactionPoint + dir * direction /*(modifierLength * 1.5)*/, 5);
+                pMRG->getCurve().clear();
+                pMRG->getCurve().addCurveSegment(CLLineSegment(reactionPoint,
+                                                               metabPoint,
+                                                               reactionPoint + dir * direction,
+                                                               (reactionPoint + dir * (direction * 1.5) + metabPoint) * 0.5));
+              }
                 break;
 
               default:
-                direction = 0.0;
-                reactionPoint = pRG->getPosition();
+              {
+                if (ortho_dir.dot(pRG->getPosition()-pMRG->getMetabGlyph()->getPosition()   )<0)
+                {
+                direction = +10.0;
+                reactionPoint = reaction_m1;
+                }
+                else 
+                {
+                  direction = -10.0;
+                  reactionPoint = reaction_m2;
+                }
+                CLPoint metabPoint = borderProjection(pMRG->getMetabGlyph(), reactionPoint + dir * 0*direction /*(modifierLength * 1.5)*/, 5);
+                pMRG->getCurve().clear();
+                pMRG->getCurve().addCurveSegment(CLLineSegment(metabPoint,
+                                                               reactionPoint,
+                                                               (reactionPoint + dir * (0*direction * 1.5) + metabPoint) * 0.5,
+                                                               reactionPoint + ortho_dir * direction));
+              }
             }
 
-          CLPoint metabPoint = borderProjection(pMRG->getMetabGlyph(), reactionPoint + dir * direction /*(modifierLength * 1.5)*/, 5);
-
-          pMRG->getCurve().clear();
-          pMRG->getCurve().addCurveSegment(CLLineSegment(reactionPoint,
-                                           metabPoint,
-                                           reactionPoint + dir * direction,
-                                           (reactionPoint + dir * (direction * 1.5) + metabPoint) * 0.5));
         }
     }
 
