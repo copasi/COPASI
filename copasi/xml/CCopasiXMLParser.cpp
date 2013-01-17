@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1031,14 +1031,14 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
                   }
               }
 
-            mCommon.KeyMap.addFix(mKey , mCommon.pFunction);
+            addFix(mKey , mCommon.pFunction);
 
             std::map< size_t, std::string >::const_iterator it = mCommon.mFunctionParameterKeyMap.begin();
             std::map< size_t, std::string >::const_iterator end = mCommon.mFunctionParameterKeyMap.end();
 
             for (; it != end; ++it)
               {
-                mCommon.KeyMap.addFix(it->second, mCommon.pFunction->getVariables()[it->first]);
+                addFix(it->second, mCommon.pFunction->getVariables()[it->first]);
               }
           }
 
@@ -1478,7 +1478,7 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
 
         if (mCommon.mPredefinedFunction)
           {
-            mCommon.KeyMap.addFix(Key, pFunction->getVariables()[Name]);
+            addFix(Key, pFunction->getVariables()[Name]);
           }
         else
           {
@@ -1657,7 +1657,7 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         // We remove the default parameter set:
         mCommon.pModel->getModelParameterSets().CCopasiVector< CModelParameterSet >::remove((size_t) 0);
 
-        mCommon.KeyMap.addFix(mKey, mCommon.pModel);
+        addFix(mKey, mCommon.pModel);
         mCommon.pModel->setObjectName(Name);
         mCommon.pModel->setTimeUnit(TimeUnit);
         mCommon.pModel->setVolumeUnit(VolumeUnit);
@@ -2243,7 +2243,7 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
             Dimensionality = mParser.getAttributeValue("dimensionality", papszAttrs, "3");
 
             mpCompartment = new CCompartment();
-            mCommon.KeyMap.addFix(mKey, mpCompartment);
+            addFix(mKey, mpCompartment);
 
             mpCompartment->setObjectName(Name);
             mpCompartment->setStatus(SimulationType);
@@ -2548,7 +2548,7 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
             Compartment = mParser.getAttributeValue("compartment", papszAttrs);
 
             mpMetabolite = new CMetab();
-            mCommon.KeyMap.addFix(mKey, mpMetabolite);
+            addFix(mKey, mpMetabolite);
             mpMetabolite->setObjectName(Name);
             mpMetabolite->setStatus(SimulationType);
 
@@ -2861,7 +2861,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
             SimulationType = toEnum(simulationType, CModelEntity::XMLStatus, CModelEntity::FIXED);
 
             mpMV = new CModelValue();
-            mCommon.KeyMap.addFix(mKey, mpMV);
+            addFix(mKey, mpMV);
             mpMV->setObjectName(Name);
             mpMV->setStatus(SimulationType);
 
@@ -3193,7 +3193,7 @@ void CCopasiXMLParser::EventElement::start(const XML_Char *pszName,
               mParser.toBool(mParser.getAttributeValue("persistentTrigger", papszAttrs, false));
 
             mCommon.pEvent = new CEvent();
-            mCommon.KeyMap.addFix(mKey, mCommon.pEvent);
+            addFix(mKey, mCommon.pEvent);
             mCommon.pEvent->setObjectName(Name);
             mCommon.pEvent->setDelayAssignment(DelayAssignment);
             mCommon.pEvent->setFireAtInitialTime(FireAtInitialTime);
@@ -3739,7 +3739,7 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
             Reversible = mParser.toBool(reversible);
 
             mCommon.pReaction = new CReaction();
-            mCommon.KeyMap.addFix(mKey, mCommon.pReaction);
+            addFix(mKey, mCommon.pReaction);
             mCommon.pReaction->setObjectName(Name);
             mCommon.pReaction->setReversible(Reversible);
             SBMLId = mParser.getAttributeValue("sbmlid", papszAttrs, "");
@@ -4611,8 +4611,8 @@ void CCopasiXMLParser::ConstantElement::start(const XML_Char *pszName,
                                      CCopasiParameter::DOUBLE,
                                      (C_FLOAT64) CCopasiXMLInterface::DBL(Value));
 
-        mCommon.KeyMap.addFix(Key,
-                              mCommon.pReaction->getParameters().getParameter(Name));
+        addFix(Key,
+               mCommon.pReaction->getParameters().getParameter(Name));
 
         break;
 
@@ -4908,7 +4908,10 @@ void CCopasiXMLParser::CallParameterElement::start(const XML_Char *pszName,
         mCommon.pFunctionVariable =
           dynamic_cast< CFunctionParameter* >(mCommon.KeyMap.get(FunctionParameter));
 
-        if (!mCommon.pFunctionVariable) fatalError();
+        if (!mCommon.pFunctionVariable)
+          {
+            fatalError();
+          }
 
         break;
 
@@ -6282,7 +6285,7 @@ void CCopasiXMLParser::CurveElement::start(const XML_Char *pszName, const XML_Ch
                   mCommon.pReactionGlyph->setModelObjectKey(pReaction->getKey());
 
                   mCommon.pCurrentLayout->addReactionGlyph(mCommon.pReactionGlyph);
-                  mCommon.KeyMap.addFix(key, mCommon.pReactionGlyph);*/
+                  addFix(key, mCommon.pReactionGlyph);*/
         }
         return;
         break;
@@ -6516,7 +6519,7 @@ void CCopasiXMLParser::CompartmentGlyphElement::start(const XML_Char *pszName, c
             }
 
           mCommon.pCurrentLayout->addCompartmentGlyph(mCommon.pCompartmentGlyph);
-          mCommon.KeyMap.addFix(key, mCommon.pCompartmentGlyph);
+          addFix(key, mCommon.pCompartmentGlyph);
         }
         return;
         break;
@@ -6776,7 +6779,7 @@ void CCopasiXMLParser::MetaboliteGlyphElement::start(const XML_Char *pszName, co
             }
 
           mCommon.pCurrentLayout->addMetaboliteGlyph(mCommon.pMetaboliteGlyph);
-          mCommon.KeyMap.addFix(key, mCommon.pMetaboliteGlyph);
+          addFix(key, mCommon.pMetaboliteGlyph);
         }
         return;
         break;
@@ -7040,7 +7043,7 @@ void CCopasiXMLParser::MetaboliteReferenceGlyphElement::start(const XML_Char *ps
             mCommon.pMetaboliteReferenceGlyph->setRole(CLMetabReferenceGlyph::Role(i));
 
           mCommon.pReactionGlyph->addMetabReferenceGlyph(mCommon.pMetaboliteReferenceGlyph);
-          mCommon.KeyMap.addFix(key, mCommon.pMetaboliteReferenceGlyph);
+          addFix(key, mCommon.pMetaboliteReferenceGlyph);
         }
         return;
         break;
@@ -7318,7 +7321,7 @@ void CCopasiXMLParser::ReactionGlyphElement::start(const XML_Char *pszName, cons
             }
 
           mCommon.pCurrentLayout->addReactionGlyph(mCommon.pReactionGlyph);
-          mCommon.KeyMap.addFix(key, mCommon.pReactionGlyph);
+          addFix(key, mCommon.pReactionGlyph);
         }
         return;
         break;
@@ -7627,7 +7630,7 @@ void CCopasiXMLParser::TextGlyphElement::start(const XML_Char *pszName, const XM
             }
 
           mCommon.pCurrentLayout->addTextGlyph(mCommon.pTextGlyph);
-          mCommon.KeyMap.addFix(key, mCommon.pTextGlyph);
+          addFix(key, mCommon.pTextGlyph);
         }
         return;
         break;
@@ -7868,7 +7871,7 @@ void CCopasiXMLParser::AdditionalGOElement::start(const XML_Char *pszName, const
 
 #endif // USE_CRENDER_EXTENSION
           mCommon.pCurrentLayout->addGraphicalObject(mCommon.pAdditionalGO);
-          mCommon.KeyMap.addFix(key, mCommon.pAdditionalGO);
+          addFix(key, mCommon.pAdditionalGO);
         }
         return;
         break;
@@ -8101,7 +8104,7 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
           name = mParser.getAttributeValue("name", papszAttrs);
 
           mCommon.pCurrentLayout = new CLayout();
-          mCommon.KeyMap.addFix(key, mCommon.pCurrentLayout);
+          addFix(key, mCommon.pCurrentLayout);
           mCommon.pCurrentLayout->setObjectName(name);
         }
         return;
@@ -8658,7 +8661,7 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
 
             if (Key != NULL)
               {
-                mCommon.KeyMap.addFix(Key, mCommon.pCurrentTask);
+                addFix(Key, mCommon.pCurrentTask);
               }
           }
 
@@ -9649,7 +9652,7 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
 
         /* We have a new report and add it to the list */
         mCommon.pReportList->add(mCommon.pReport, true);
-        mCommon.KeyMap.addFix(Key, mCommon.pReport);
+        addFix(Key, mCommon.pReport);
         return;
         break;
 
@@ -10788,7 +10791,7 @@ void CCopasiXMLParser::SliderElement::start(const XML_Char *pszName,
         if (mCommon.KeyMap.get(AssociatedEntityKey))
           {
             pSlider = new CSlider("slider", mCommon.pGUI->getSliderList());
-            mCommon.KeyMap.addFix(Key, pSlider);
+            addFix(Key, pSlider);
 
             if (strncmp(AssociatedEntityKey, "", 1))
               {

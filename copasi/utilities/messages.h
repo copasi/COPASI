@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -170,6 +170,7 @@ const MESSAGES Messages[] =
   {MCXML + 19, "XML (19): %s with key '%s' references a model element that no longer exists. The reference has been deleted and the element might not be displayed correctly in the layout."},
   {MCXML + 20, "XML (20): Could not determine text for TextGlyph with key '%s'. \"unset\" will be displayed instead."},
   {MCXML + 21, "XML (21): One or more layout elements reference model objects that no longer exists. These references have been deleted."},
+  {MCXML + 22, "XML (22): Duplicate XML Id '%s' encountered in line '%d'."},
 
   // CCopasiMessage
   {MCCopasiMessage + 1, "Message (1): No more messages."},
