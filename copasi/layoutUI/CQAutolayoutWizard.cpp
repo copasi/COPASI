@@ -536,7 +536,12 @@ void CQSelectionWizardPage::fillContainers(std::set<const CCompartment*>& compar
 
           pItem2 = pChild->child(0);
           // get the All species item
-          assert(pItem2 != NULL);
+          if (pItem2 == NULL) 
+          {
+            ++i;
+            continue; 
+          }
+          
           j = 0;
           jMax = pItem2->childCount();
 
