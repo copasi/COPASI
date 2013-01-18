@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -535,8 +535,9 @@ std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> removeTextGlyph
   while (it != hits.end())
     {
       CLTextGlyph* glyph = dynamic_cast<CLTextGlyph*>((*it));
+      CLMetabReferenceGlyph* refGlyph = dynamic_cast<CLMetabReferenceGlyph*>((*it));
 
-      if (glyph == NULL)
+      if (glyph == NULL && refGlyph == NULL)
         {
           result.insert(*it);
         }
