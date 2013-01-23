@@ -487,6 +487,22 @@ void COptMethodLevenbergMarquardt::gradient()
     }
 }
 
+C_FLOAT64 one_sided_derivative(const C_FLOAT64 & x, const C_FLOAT64 & modulation, const C_FLOAT64 & min_mod)
+{
+  if (fabs(modulation*x) > min_mod )
+  {
+    return x*(1.0+modulation);
+  }
+  else
+  {
+    if (x>=0)
+      return x+min_mod;
+    else
+      return x-min_mod;
+  }
+    
+}
+
 //evaluate the Hessian
 void COptMethodLevenbergMarquardt::hessian()
 {
@@ -512,13 +528,21 @@ void COptMethodLevenbergMarquardt::hessian()
       const C_FLOAT64 * pEnd = CurrentResiduals.array() + ResidualSize;
       const C_FLOAT64 * pResiduals;
 
-      C_FLOAT64 Delta;
-      C_FLOAT64 x;
+      C_FLOAT64 inverse_delta;
+      C_FLOAT64 original_x;
+      C_FLOAT64 upper_x;
 
       for (i = 0; i < mVariableSize && mContinue; i++)
         {
 //REVIEW:START
-          if ((x = mCurrent[i]) != 0.0)
+          
+          original_x=mCurrent[i]; //store original parameter value
+          upper_x = one_sided_derivative(original_x, mModulation, mMinModulation);
+          
+          inverse_delta = 1.0/(upper_x-original_x);
+          (*(*mpSetCalculateVariable)[i])(upper_x); //change the parameter
+          
+/*          if ((x = mCurrent[i]) != 0.0)
             {
               Delta = 1.0 / (x * mModulation);
               (*(*mpSetCalculateVariable)[i])(x * mod1);
@@ -530,16 +554,16 @@ void COptMethodLevenbergMarquardt::hessian()
               (*(*mpSetCalculateVariable)[i])(mModulation);
 //REVIEW:END
             }
-
+*/
           // evaluate another column of the Jacobian
           evaluate();
           pCurrentResiduals = CurrentResiduals.array();
           pResiduals = Residuals.array();
 
           for (; pCurrentResiduals != pEnd; pCurrentResiduals++, pResiduals++, pJacobianT++)
-            *pJacobianT = (*pResiduals - *pCurrentResiduals) * Delta;
+            *pJacobianT = (*pResiduals - *pCurrentResiduals) * inverse_delta;
 
-          (*(*mpSetCalculateVariable)[i])(x);
+          (*(*mpSetCalculateVariable)[i])(original_x); //restore parameter value
         }
 
 #ifdef XXXX
