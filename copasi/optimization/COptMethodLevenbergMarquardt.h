@@ -112,7 +112,12 @@ private:
    * The modulation factor
    */
   C_FLOAT64 mModulation;
-  
+
+  /**
+   * The minimal modulation factor
+   */
+  C_FLOAT64 mMinModulation;
+
   /**
    * indicates whether numerical derivation is two-sided
    */

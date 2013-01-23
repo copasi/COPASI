@@ -36,6 +36,7 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CCopasiContaine
   mIterationLimit(2000),
   mTolerance(1.e-006),
   mModulation(1.e-006),
+  mMinModulation(1.e-9),
   mSymmetricDerivatives(false),
   mIteration(0),
   mhIteration(C_INVALID_INDEX),
@@ -58,6 +59,7 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CCopasiContaine
 
 #ifdef COPASI_DEBUG
   addParameter("Modulation", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-006);
+  addParameter("Minimal modulation", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-009);
   addParameter("Symmetric derivatives", CCopasiParameter::BOOL, (bool) true);
 #endif // COPASI_DEBUG
 
@@ -70,6 +72,7 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const COptMethodLeven
   mIterationLimit(src.mIterationLimit),
   mTolerance(src.mTolerance),
   mModulation(src.mModulation),
+  mMinModulation(src.mMinModulation),
   mSymmetricDerivatives(src.mSymmetricDerivatives),
   mIteration(0),
   mhIteration(C_INVALID_INDEX),
@@ -97,6 +100,7 @@ void COptMethodLevenbergMarquardt::initObjects()
 
 #ifndef COPASI_DEBUG
   removeParameter("Modulation");
+  removeParameter("Minimal modulation");
   removeParameter("Symmetric derivatives");
 #endif
 }
@@ -411,6 +415,7 @@ bool COptMethodLevenbergMarquardt::initialize()
 
 #ifdef COPASI_DEBUG
   mModulation = * getValue("Modulation").pDOUBLE;
+  mMinModulation = * getValue("Minimal modulation").pDOUBLE;
   mSymmetricDerivatives = *getValue("Symmetric derivatives").pBOOL;
 #endif // COPASI_DEBUG
 
