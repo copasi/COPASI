@@ -36,6 +36,7 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CCopasiContaine
   mIterationLimit(2000),
   mTolerance(1.e-006),
   mModulation(1.e-006),
+  mSymmetricDerivatives(false),
   mIteration(0),
   mhIteration(C_INVALID_INDEX),
   mVariableSize(0),
@@ -57,6 +58,7 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CCopasiContaine
 
 #ifdef COPASI_DEBUG
   addParameter("Modulation", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-006);
+  addParameter("Symmetric derivatives", CCopasiParameter::BOOL, (bool) true);
 #endif // COPASI_DEBUG
 
   initObjects();
@@ -68,6 +70,7 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const COptMethodLeven
   mIterationLimit(src.mIterationLimit),
   mTolerance(src.mTolerance),
   mModulation(src.mModulation),
+  mSymmetricDerivatives(src.mSymmetricDerivatives),
   mIteration(0),
   mhIteration(C_INVALID_INDEX),
   mVariableSize(0),
@@ -94,6 +97,7 @@ void COptMethodLevenbergMarquardt::initObjects()
 
 #ifndef COPASI_DEBUG
   removeParameter("Modulation");
+  removeParameter("Symmetric derivatives");
 #endif
 }
 
@@ -407,6 +411,7 @@ bool COptMethodLevenbergMarquardt::initialize()
 
 #ifdef COPASI_DEBUG
   mModulation = * getValue("Modulation").pDOUBLE;
+  mSymmetricDerivatives = *getValue("Symmetric derivatives").pBOOL;
 #endif // COPASI_DEBUG
 
   mIteration = 0;
@@ -487,7 +492,7 @@ void COptMethodLevenbergMarquardt::hessian()
 
   if (mHaveResiduals)
     {
-      evaluate();
+      evaluate(); //Are there situations where this has not already been done?
 
       const CVector< C_FLOAT64 > & Residuals =
         static_cast<CFitProblem *>(mpOptProblem)->getResiduals();

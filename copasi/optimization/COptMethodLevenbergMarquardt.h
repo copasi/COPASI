@@ -112,6 +112,11 @@ private:
    * The modulation factor
    */
   C_FLOAT64 mModulation;
+  
+  /**
+   * indicates whether numerical derivation is two-sided
+   */
+  bool mSymmetricDerivatives;
 
   /**
    * The number of iterations
