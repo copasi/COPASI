@@ -454,38 +454,6 @@ bool COptMethodLevenbergMarquardt::initialize()
   return true;
 }
 
-// evaluate the value of the gradient by forward finite differences
-void COptMethodLevenbergMarquardt::gradient()
-{
-  size_t i;
-
-  C_FLOAT64 y;
-  C_FLOAT64 x;
-  C_FLOAT64 mod1;
-
-  mod1 = 1.0 + mModulation;
-
-  y = evaluate();
-
-  for (i = 0; i < mVariableSize && mContinue; i++)
-    {
-//REVIEW:START
-      if ((x = mCurrent[i]) != 0.0)
-        {
-          (*(*mpSetCalculateVariable)[i])(x * mod1);
-          mGradient[i] = (evaluate() - y) / (x * mModulation);
-        }
-
-      else
-        {
-          (*(*mpSetCalculateVariable)[i])(mModulation);
-          mGradient[i] = (evaluate() - y) / mModulation;
-        }
-
-//REVIEW:END
-      (*(*mpSetCalculateVariable)[i])(x);
-    }
-}
 
 C_FLOAT64 one_sided_derivative(const C_FLOAT64 & x, const C_FLOAT64 & modulation, const C_FLOAT64 & min_mod)
 {
@@ -503,96 +471,155 @@ C_FLOAT64 one_sided_derivative(const C_FLOAT64 & x, const C_FLOAT64 & modulation
     
 }
 
+void two_sided_derivative(const C_FLOAT64 & x, const C_FLOAT64 & modulation, const C_FLOAT64 & min_mod,
+                               C_FLOAT64 & x1, C_FLOAT64 & x2)
+{
+  if (fabs(2.0*modulation*x) > min_mod )
+  {
+    x1 = x*(1.0+modulation);
+    x2 = x*(1.0-modulation);
+  }
+  else if (2.0*fabs(x) > min_mod)
+  {
+    x1 = x + 0.5*min_mod;
+    x2 = x - 0.5*min_mod;
+  }
+  else if (x>=0.0)
+  {
+    x1 = min_mod;
+    x2 = 0.0;
+  }
+  else
+  {
+    x1 = 0.0;
+    x2 = -min_mod;
+  }
+}
+
+// evaluate the value of the gradient by forward finite differences
+void COptMethodLevenbergMarquardt::gradient()
+{
+  size_t i;
+  
+  C_FLOAT64 y;
+  C_FLOAT64 x1;
+  C_FLOAT64 x2;
+  C_FLOAT64 inverse_delta;
+  C_FLOAT64 x_orig;
+  
+  //C_FLOAT64 mod1;
+  
+  //mod1 = 1.0 + mModulation;
+  
+  if (!mSymmetricDerivatives)
+    y = evaluate();
+  
+  for (i = 0; i < mVariableSize && mContinue; i++)
+  {
+    x_orig = mCurrent[i]; //store original parameter value
+    
+    if (mSymmetricDerivatives)
+    {
+      two_sided_derivative(mCurrent[i], mModulation, mMinModulation, x1, x2);
+    }
+    else
+    {
+      x1=mCurrent[i];
+      x2=one_sided_derivative(mCurrent[i], mModulation, mMinModulation);
+    }
+    inverse_delta = 1.0/(x2-x1);
+
+    if (mSymmetricDerivatives)
+    {
+      (*(*mpSetCalculateVariable)[i])(x1);
+      y=evaluate();
+    }
+
+    (*(*mpSetCalculateVariable)[i])(x2);
+    mGradient[i] = (evaluate() - y)*inverse_delta;	
+
+    (*(*mpSetCalculateVariable)[i])(x_orig); //restore original parameter value
+  }
+}
+
+
 //evaluate the Hessian
 void COptMethodLevenbergMarquardt::hessian()
 {
   size_t i, j;
-  C_FLOAT64 mod1;
-
-  mod1 = 1.0 + mModulation;
 
   if (mHaveResiduals)
     {
-      evaluate(); //Are there situations where this has not already been done?
-
-      const CVector< C_FLOAT64 > & Residuals =
-        static_cast<CFitProblem *>(mpOptProblem)->getResiduals();
-
-      const CVector< C_FLOAT64 > CurrentResiduals = Residuals;
-
+      const CVector< C_FLOAT64 > & Residuals = static_cast<CFitProblem *>(mpOptProblem)->getResiduals();
       size_t ResidualSize = Residuals.size();
 
+      CVector< C_FLOAT64 > Residuals1;
+      CVector< C_FLOAT64 > Original_Residuals;
+      
       C_FLOAT64 * pJacobianT = mResidualJacobianT.array();
-
-      const C_FLOAT64 * pCurrentResiduals;
-      const C_FLOAT64 * pEnd = CurrentResiduals.array() + ResidualSize;
+      
+      evaluate();  //Are there situations where this has not already been done?
+      Original_Residuals = Residuals;
+      Residuals1 = Residuals;
+      //in any case we need the original residuals. The question is whether we can assume
+      //that they are up-to-date when this method is called.
+      
+      const C_FLOAT64 * pResiduals1;
+      const C_FLOAT64 * pEnd = Residuals1.array() + ResidualSize;
       const C_FLOAT64 * pResiduals;
 
       C_FLOAT64 inverse_delta;
       C_FLOAT64 original_x;
       C_FLOAT64 upper_x;
+      C_FLOAT64 lower_x; //upper_x is not necessarily larger than lower_x
 
       for (i = 0; i < mVariableSize && mContinue; i++)
         {
-//REVIEW:START
-          
           original_x=mCurrent[i]; //store original parameter value
-          upper_x = one_sided_derivative(original_x, mModulation, mMinModulation);
-          
-          inverse_delta = 1.0/(upper_x-original_x);
-          (*(*mpSetCalculateVariable)[i])(upper_x); //change the parameter
-          
-/*          if ((x = mCurrent[i]) != 0.0)
-            {
-              Delta = 1.0 / (x * mModulation);
-              (*(*mpSetCalculateVariable)[i])(x * mod1);
-            }
 
+          if (mSymmetricDerivatives)
+            two_sided_derivative(original_x, mModulation, mMinModulation, upper_x, lower_x);
           else
-            {
-              Delta = 1.0 / mModulation;
-              (*(*mpSetCalculateVariable)[i])(mModulation);
-//REVIEW:END
-            }
-*/
-          // evaluate another column of the Jacobian
+          {
+            upper_x = one_sided_derivative(original_x, mModulation, mMinModulation);
+            lower_x = original_x;
+          }
+          
+          inverse_delta = 1.0/(upper_x-lower_x);
+          
+          if (mSymmetricDerivatives)
+          {
+            (*(*mpSetCalculateVariable)[i])(lower_x); //change the parameter
+            evaluate();
+            Residuals1 = Residuals;
+          }
+          
+          (*(*mpSetCalculateVariable)[i])(upper_x); //change the parameter
           evaluate();
-          pCurrentResiduals = CurrentResiduals.array();
+          
+          // evaluate another column of the Jacobian
+          pResiduals1 = Residuals1.array();
           pResiduals = Residuals.array();
 
-          for (; pCurrentResiduals != pEnd; pCurrentResiduals++, pResiduals++, pJacobianT++)
-            *pJacobianT = (*pResiduals - *pCurrentResiduals) * inverse_delta;
+          for (; pResiduals1 != pEnd; pResiduals1++, pResiduals++, pJacobianT++)
+            *pJacobianT = (*pResiduals - *pResiduals1) * inverse_delta;
 
           (*(*mpSetCalculateVariable)[i])(original_x); //restore parameter value
         }
 
-#ifdef XXXX
       // calculate the gradient
-      C_INT m = 1;
-      C_INT n = mGradient.size();
-      C_INT k = mResidualJacobianT.numCols(); /* == CurrentResiduals.size() */
-
-      char op = 'N';
-
-      C_FLOAT64 Alpha = 1.0;
-      C_FLOAT64 Beta = 0.0;
-
-      dgemm_("N", "T", &m, &n, &k, &Alpha,
-             const_cast<C_FLOAT64 *>(CurrentResiduals.array()), &m,
-             mResidualJacobianT.array(), &n, &Beta,
-             const_cast<C_FLOAT64 *>(mGradient.array()), &m);
-#endif //XXXX
-
       C_FLOAT64 * pGradient = mGradient.array();
       pJacobianT = mResidualJacobianT.array();
 
+      pEnd = Original_Residuals.array()+ResidualSize;
       for (i = 0; i < mVariableSize; i++, pGradient++)
         {
           *pGradient = 0.0;
-          pCurrentResiduals = CurrentResiduals.array();
 
-          for (; pCurrentResiduals != pEnd; pCurrentResiduals++, pJacobianT++)
-            *pGradient += *pJacobianT * *pCurrentResiduals;
+          for (pResiduals = Original_Residuals.array(); 
+               pResiduals != pEnd;
+               pResiduals++, pJacobianT++)
+            *pGradient += *pJacobianT * *pResiduals;
 
           // This is formally correct but cancels out with factor 2 below
           // *pGradient *= 2.0;
@@ -621,11 +648,12 @@ void COptMethodLevenbergMarquardt::hessian()
             }
         }
     }
-  else
+  else //without using the residuals
     {
-      C_FLOAT64 Delta;
-      C_FLOAT64 x;
-
+      C_FLOAT64 inverse_delta;
+      C_FLOAT64 original_x;
+      C_FLOAT64 upper_x;
+      
       // calculate the gradient
       gradient();
 
@@ -635,28 +663,20 @@ void COptMethodLevenbergMarquardt::hessian()
       // calculate rows of the Hessian
       for (i = 0; i < mVariableSize; i++)
         {
-//REVIEW:START
-          if ((x = mCurrent[i]) != 0.0)
-            {
-              mCurrent[i] = x * mod1;
-              Delta = 1.0 / (x * mModulation);
-            }
-          else
-            {
-              mCurrent[i] = mModulation;
-              Delta = 1.0 / mModulation;
-//REVIEW:END
-            }
-
-          (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+          
+          original_x=mCurrent[i]; //store original parameter value
+          upper_x = one_sided_derivative(original_x, mModulation, mMinModulation);
+          
+          inverse_delta = 1.0/(upper_x-original_x);
+          (*(*mpSetCalculateVariable)[i])(mCurrent[i]); //change the parameter
           gradient();
 
           for (j = 0; j <= i; j++)
-            mHessian[i][j] = (mGradient[j] - mTemp[j]) * Delta;
+            mHessian[i][j] = (mGradient[j] - mTemp[j]) * inverse_delta;
 
           // restore the original parameter value
-          mCurrent[i] = x;
-          (*(*mpSetCalculateVariable)[i])(x);
+          mCurrent[i] = original_x;
+          (*(*mpSetCalculateVariable)[i])(original_x);
         }
 
       // restore the gradient
