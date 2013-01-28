@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1463,8 +1463,74 @@ bool addToKnownFunctionToMap(std::map<std::string, std::string>& map, const Func
   return false;
 }
 
+int
+AstStrCmp(const void *s1, const void *s2)
+{
+  return strcmp(
+           static_cast<const ASTNode *>(s1)->getName(),
+           static_cast<const ASTNode *>(s2)->getName());
+}
+
+/**
+ * This function checks the function definition for unused arguments (that would not
+ * be properly displayed in the CopasiUI). If found, the function body will be replaced
+ * with one including all arguments.
+ */
+void ensureAllArgsAreBeingUsedInFunctionDefinition(const FunctionDefinition* sbmlFunction)
+{
+  if (sbmlFunction == NULL || sbmlFunction->getNumArguments() == 0) return;
+
+  // get all variables
+  List *variables = sbmlFunction->getBody()->getListOfNodes(ASTNode_isName);
+
+  // find unused ones
+  std::vector<std::string> unused;
+
+  for (unsigned int i = 0; i < sbmlFunction->getNumArguments(); ++i)
+    {
+      const ASTNode *arg = sbmlFunction->getArgument(i);
+
+      if (variables->find(arg, AstStrCmp) == NULL)
+        {
+          unused.push_back(arg->getName());
+        }
+    }
+
+  // get rid of the list
+  delete variables;
+
+  // let us hope this is empty
+  if (unused.size() == 0)
+    return;
+
+  // it is not, so modify the function definition to include all of them
+  std::stringstream str;
+  str << "lambda(";
+
+  for (unsigned int i = 0; i < sbmlFunction->getNumArguments(); ++i)
+    str << sbmlFunction->getArgument(i)->getName() << ", ";
+
+  char* formula = SBML_formulaToString(sbmlFunction->getBody());
+  str << formula;
+
+  std::vector<std::string>::iterator it;
+
+  for (it = unused.begin(); it != unused.end(); ++it)
+    str << " + 0*" << *it;
+
+  str << ")";
+
+  // update the function definition
+  const_cast<FunctionDefinition*>(sbmlFunction)->setMath(SBML_parseFormula(str.str().c_str()));
+
+  // free the formula
+  free(formula);
+}
+
 CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction, CFunctionDB* pTmpFunctionDB, Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
+
+  ensureAllArgsAreBeingUsedInFunctionDefinition(sbmlFunction);
 
   addToKnownFunctionToMap(mKnownCustomUserDefinedFunctions, sbmlFunction);
 
