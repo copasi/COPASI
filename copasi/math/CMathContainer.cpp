@@ -679,7 +679,7 @@ void CMathContainer::allocate()
 
   assert(pArray == mValues.array() + mValues.size());
 
-  mObjects.resize(mValues.size());
+  mObjects.resize(mValues.size(),false);
 }
 
 void CMathContainer::initializeObjects(CMath::sPointers & p)
