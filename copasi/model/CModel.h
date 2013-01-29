@@ -1602,6 +1602,11 @@ public:
 
   const CMathModel* getMathModel() const;
   CMathModel* getMathModel();
+  
+  bool prepareSymbolicJacobian();
+  
+  CEvaluationNode* prepareElasticity(const CReaction * pReaction, const CModelEntity* pVar);
+
 };
 
 #endif // CModel
