@@ -1130,7 +1130,13 @@ bool CFitProblem::createObjectiveFunction()
 bool CFitProblem::setResidualsRequired(const bool & required)
 {
   if (required)
-    mResiduals.resize(mpExperimentSet->getDataPointCount());
+  {
+    mResiduals.resize(mpExperimentSet->getDataPointCount(), false);
+    memset(mResiduals.array(), 0, sizeof(C_FLOAT64)*mResiduals.size() );
+    //int ii;
+    //for (ii=0; ii<mResiduals.size(); ++ii)
+    //  mResiduals[ii]=std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  }
   else
     mResiduals.resize(0);
 
@@ -1247,8 +1253,10 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
           if (CalculateFIM)
             for (j = 0; j < jmax; j++)
+            {
               dyp(i, j) = (mExperimentDependentValues[j] - DependentValues[j]) * Delta;
-
+            }
+          
           // Restore the value
           (*mUpdateMethods[i])(Current);
         }
