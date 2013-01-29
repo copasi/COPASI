@@ -189,11 +189,11 @@ bool COptMethodLevenbergMarquardt::optimise()
       {
         int iii;
         double store = mModulation;
-        for (iii=0; iii<30; ++iii)
+        for (iii=0; iii<1; ++iii)
         {
           std::cout << mModulation << "\t";
           hessian();
-          mModulation /= 2.0;
+          mModulation /= 5.0;
         }
         mModulation=store;
       }
@@ -617,9 +617,10 @@ void COptMethodLevenbergMarquardt::hessian()
             *pJacobianT = (*pResiduals - *pResiduals1) * inverse_delta;
             std::cout << *pJacobianT << "\t";
           }
-          
+          std::cout << std::endl;
           (*(*mpSetCalculateVariable)[i])(original_x); //restore parameter value
         }
+      std::cout << std::endl;
 
       // calculate the gradient
       C_FLOAT64 * pGradient = mGradient.array();
@@ -661,9 +662,13 @@ void COptMethodLevenbergMarquardt::hessian()
               for (; pJacobianT != pEnd; pJacobianT++, pJacobian++)
                 *pHessian += *pJacobianT * *pJacobian;
 
+              std::cout << *pHessian << "\t";
+
               // This is formally correct but cancels out with factor 2 above
               // *pHessian *= 2.0;
             }
+          std::cout << std::endl;
+
         }
     }
   else //without using the residuals
