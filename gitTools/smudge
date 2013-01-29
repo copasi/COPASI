@@ -5,7 +5,7 @@ GitTools="`git config copasi.gittools`"
 
 smudge="cat"
 
-GitCommitDate=`git log -1 --pretty=%at -- $1`
+GitCommitDate=`git log -1 ${branch} --pretty=%at -- $1`
 
 if [ ${GitCommitDate:-0} -gt ${GitStart} ]; then
   smudge="$smudge | ${GitTools}/header --smudge $1" 
