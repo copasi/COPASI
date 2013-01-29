@@ -78,6 +78,9 @@ fi
 # The date at which git has taken over the control.
 GitStart=1342718698
 
+# Determine the current branch
+branch=`git rev-parse --abbrev-ref HEAD`
+
 function debug () {
   if [ _${GitLog} != _ ]; then
     echo '['`date +'%Y.%m.%d %H:%M:%S'`']' $@ >> ${GitLog}

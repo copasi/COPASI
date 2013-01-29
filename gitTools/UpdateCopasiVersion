@@ -6,7 +6,6 @@ GitTools="`git config copasi.gittools`"
 GAWK=`gitTool gawk`
 WGET=`gitTool wget`
 
-branch=`git rev-parse --abbrev-ref HEAD`
 remoteCommit=`git rev-parse origin/${branch} 2>/dev/null`
 
 # We only register a build.
@@ -26,7 +25,7 @@ else
   lastModified=
 fi
 
-localCommit=`git log -1 --pretty=%H`
+localCommit=`git log -1 ${branch} --pretty=%H`
 localChanges=`git status --untracked-files=no --short | wc -l`
 
 # If nothing has changed we stop here.

@@ -41,9 +41,9 @@ if [ _"$PrologEnd" == _unspecified -o \
   PrologEnd=0
 fi
 
-Commit="`git log -1 --pretty=%H -- "$1"`"
-Author="`git log -1 --pretty="%an %ae" -- "$1"`"
-Date="`git log -1 --pretty=%ai -- "$1"`"
+Commit="`git log -1 ${branch} --pretty=%H -- "$1"`"
+Author="`git log -1 ${branch} --pretty="%an %ae" -- "$1"`"
+Date="`git log -1 ${branch} --pretty=%ai -- "$1"`"
 
 GAWK=`gitTool gawk`
 [ x"$GAWK" == x ] && CommentStart=
