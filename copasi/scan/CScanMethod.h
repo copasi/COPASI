@@ -42,12 +42,15 @@ protected:
   CCopasiObject * mpInitialObject;
 
   C_FLOAT64 mStoreValue;
+  C_INT32 mStoreValueInt;
 
   size_t mIndex;
 
   bool mFlagFinished;
 
   bool mIsStateVariable;
+  
+  bool mIsInteger;
 
 public:
   static

@@ -75,9 +75,11 @@ CScanItem::CScanItem():
   mpObject(NULL),
   mpInitialObject(NULL),
   mStoreValue(0.0),
+  mStoreValueInt(0),
   mIndex(0),
   mFlagFinished(false),
-  mIsStateVariable(false)
+  mIsStateVariable(false),
+  mIsInteger(false)
 {}
 
 CScanItem::CScanItem(CCopasiParameterGroup* si,
@@ -86,9 +88,11 @@ CScanItem::CScanItem(CCopasiParameterGroup* si,
   mpObject(NULL),
   mpInitialObject(NULL),
   mStoreValue(0.0),
+  mStoreValueInt(0),
   mIndex(0),
   mFlagFinished(false),
-  mIsStateVariable(false)
+  mIsStateVariable(false),
+  mIsInteger(false)
 {
   assert(si != NULL);
 
@@ -99,11 +103,18 @@ CScanItem::CScanItem(CCopasiParameterGroup* si,
   assert(pDataModel != NULL);
   CCopasiObject * tmpObject = pDataModel->getDataObject(tmpString);
 
-  if (tmpObject == NULL || !tmpObject->isValueDbl())
+  if (tmpObject == NULL)
     {
       return;
     }
 
+  if (tmpObject->isValueDbl())
+    mIsInteger=false;
+  else if (tmpObject->isValueInt())
+    mIsInteger=true;
+  else
+    return;
+  
   mpInitialObject = tmpObject;
 
   if (continueFromCurrentState)
@@ -133,14 +144,22 @@ size_t CScanItem::getNumSteps() const {return mNumSteps;};
 void CScanItem::restoreValue() const
 {
   if (mpObject)
-    mpObject->setObjectValue(mStoreValue);
+    {
+      if (mIsInteger)
+        mpObject->setObjectValue(mStoreValueInt);
+      else
+        mpObject->setObjectValue(mStoreValue);
+    }
 };
 
 void CScanItem::storeValue()
 {
   if (mpObject)
     {
-      assert(mpObject->isValueDbl());
+    //assert(mpObject->isValueDbl());
+    if (mIsInteger)
+      mStoreValueInt = * (C_INT32 *) mpObject->getValuePointer();
+    else
       mStoreValue = * (C_FLOAT64 *) mpObject->getValuePointer();
     }
 };
@@ -238,8 +257,13 @@ void CScanItemLinear::step()
   if (mIndex > mNumSteps)
     mFlagFinished = true;
 
-  if (mpObject) mpObject->setObjectValue(Value);
-
+  if (mpObject)
+    {
+      if (mIsInteger)
+        mpObject->setObjectValue((C_INT32)Value);
+      else
+        mpObject->setObjectValue(Value);
+    }
   ++mIndex;
 }
 
