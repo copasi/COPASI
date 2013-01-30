@@ -314,7 +314,6 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
   if (createdObjects ||
       DeletedParameters.size() != 0)
     {
-      std::cout << "CQReactionDM::setEquation (3): " << index.row() << std::endl;
       emit notifyGUI(ListViews::MODEL, ListViews::CHANGE, "");
     }
   else if (createdMetabs)

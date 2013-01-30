@@ -220,8 +220,6 @@ std::string CMetabNameInterface::unQuote(const std::string & displayName)
       Name += "{" + Names.second + "}";
     }
 
-  std::cout << displayName << " => " << Name << std::endl;
-
   return Name;
 }
 
