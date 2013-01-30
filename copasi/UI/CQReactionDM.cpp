@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -314,7 +314,6 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QModelIndex& index, 
   if (createdObjects ||
       DeletedParameters.size() != 0)
     {
-      std::cout << "CQReactionDM::setEquation (3): " << index.row() << std::endl;
       emit notifyGUI(ListViews::MODEL, ListViews::CHANGE, "");
     }
   else if (createdMetabs)
