@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-//   $Revision: 1.156 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/10 16:03:09 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -53,15 +45,15 @@ C_FLOAT64 CMetab::convertToConcentration(const C_FLOAT64 & number,
 
 CMetab::CMetab(const std::string & name,
                const CCopasiContainer * pParent):
-    CModelEntity(name, pParent, "Metabolite",
-                 CCopasiObject::NonUniqueName),
-    mConc(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mIConc(0.0),
-    mConcRate(0.0),
-    mTT(0.0),
-    mpCompartment(NULL),
-    mpMoiety(NULL),
-    mIsInitialConcentrationChangeAllowed(true)
+  CModelEntity(name, pParent, "Metabolite",
+               CCopasiObject::NonUniqueName),
+  mConc(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+  mIConc(0.0),
+  mConcRate(0.0),
+  mTT(0.0),
+  mpCompartment(NULL),
+  mpMoiety(NULL),
+  mIsInitialConcentrationChangeAllowed(true)
 {
   mKey = CCopasiRootContainer::getKeyFactory()->add("Metabolite", this);
   initObjects();
@@ -81,14 +73,14 @@ CMetab::CMetab(const std::string & name,
 
 CMetab::CMetab(const CMetab & src,
                const CCopasiContainer * pParent):
-    CModelEntity(src, pParent),
-    mConc(src.mConc),
-    mIConc(src.mIConc),
-    mConcRate(src.mConcRate),
-    mTT(src.mTT),
-    mpCompartment(NULL),
-    mpMoiety(src.mpMoiety),
-    mIsInitialConcentrationChangeAllowed(src.mIsInitialConcentrationChangeAllowed)
+  CModelEntity(src, pParent),
+  mConc(src.mConc),
+  mIConc(src.mIConc),
+  mConcRate(src.mConcRate),
+  mTT(src.mTT),
+  mpCompartment(NULL),
+  mpMoiety(src.mpMoiety),
+  mIsInitialConcentrationChangeAllowed(src.mIsInitialConcentrationChangeAllowed)
 {
   mKey = CCopasiRootContainer::getKeyFactory()->add("Metabolite", this);
 
@@ -517,6 +509,7 @@ bool CMetab::compile()
         Dependencies.clear();
 
         break;
+
       default:
         break;
     }
@@ -754,6 +747,49 @@ CCopasiObject::DataObjectSet CMetab::getDeletedObjects() const
   return Deleted;
 }
 
+// virtual
+bool CMetab::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObjects) const
+{
+  bool MustBeDeleted = false;
+
+  DataObjectSet ChildObjects = getDeletedObjects();
+
+  DataObjectSet::const_iterator it = ChildObjects.begin();
+  DataObjectSet::const_iterator end = ChildObjects.end();
+
+  for (; it != end; ++it)
+    {
+      if (*it == this)
+        {
+          if ((*it)->CCopasiObject::mustBeDeleted(deletedObjects))
+            {
+              MustBeDeleted = true;
+              break;
+            }
+
+          continue;
+        }
+
+      // The following objects are automatically corrected, i.e., they
+      // are no reasons for being deleted.
+      if (getStatus() == REACTIONS &&
+          (*it == this->mpConcRateReference ||
+           *it == this->mpRateReference ||
+           *it == this->mpTTReference))
+        {
+          continue;
+        }
+
+      if ((*it)->mustBeDeleted(deletedObjects))
+        {
+          MustBeDeleted = true;
+          break;
+        }
+    }
+
+  return MustBeDeleted;
+}
+
 CCopasiObject * CMetab::getInitialConcentrationReference() const
 {return mpIConcReference;}
 
@@ -892,18 +928,18 @@ const CMoiety * CMetab::getMoiety() const
 
 CMetabOld::CMetabOld(const std::string & name,
                      const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Old Metabolite"),
-    mIConc(1.0),
-    mStatus(CModelEntity::REACTIONS),
-    mCompartment()
+  CCopasiContainer(name, pParent, "Old Metabolite"),
+  mIConc(1.0),
+  mStatus(CModelEntity::REACTIONS),
+  mCompartment()
 {CONSTRUCTOR_TRACE;}
 
 CMetabOld::CMetabOld(const CMetabOld & src,
                      const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    mIConc(src.mIConc),
-    mStatus(src.mStatus),
-    mCompartment(src.mCompartment)
+  CCopasiContainer(src, pParent),
+  mIConc(src.mIConc),
+  mStatus(src.mStatus),
+  mCompartment(src.mCompartment)
 {CONSTRUCTOR_TRACE;}
 
 CMetabOld::~CMetabOld() {DESTRUCTOR_TRACE;}
@@ -976,8 +1012,8 @@ CCopasiObject::DataObjectSet CConcentrationReference::EmptyDependencies;
 CConcentrationReference::CConcentrationReference(const std::string & name,
     const CCopasiContainer * pParent,
     C_FLOAT64 & reference) :
-    CCopasiObjectReference< C_FLOAT64 >(name, pParent, reference),
-    mpApplyInitialValuesRefresh(NULL)
+  CCopasiObjectReference< C_FLOAT64 >(name, pParent, reference),
+  mpApplyInitialValuesRefresh(NULL)
 {
   const CMetab * pMetab = static_cast< const CMetab * >(pParent);
 
@@ -988,8 +1024,8 @@ CConcentrationReference::CConcentrationReference(const std::string & name,
 
 CConcentrationReference::CConcentrationReference(const CConcentrationReference & src,
     const CCopasiContainer * pParent) :
-    CCopasiObjectReference< C_FLOAT64 >(src, pParent),
-    mpApplyInitialValuesRefresh(NULL)
+  CCopasiObjectReference< C_FLOAT64 >(src, pParent),
+  mpApplyInitialValuesRefresh(NULL)
 {
   const CMetab * pMetab = static_cast< const CMetab * >(pParent);
 
@@ -1027,12 +1063,12 @@ CCopasiObject::DataObjectSet CParticleReference::EmptyDependencies;
 CParticleReference::CParticleReference(const std::string & name,
                                        const CCopasiContainer * pParent,
                                        C_FLOAT64 & reference) :
-    CCopasiObjectReference< C_FLOAT64 >(name, pParent, reference)
+  CCopasiObjectReference< C_FLOAT64 >(name, pParent, reference)
 {}
 
 CParticleReference::CParticleReference(const CParticleReference & src,
                                        const CCopasiContainer * pParent) :
-    CCopasiObjectReference< C_FLOAT64 >(src, pParent)
+  CCopasiObjectReference< C_FLOAT64 >(src, pParent)
 {}
 
 CParticleReference::~CParticleReference()
@@ -1084,4 +1120,3 @@ CParticleReference::getDirectDependencies(const CCopasiObject::DataObjectSet & c
 
   return EmptyDependencies;
 }
-

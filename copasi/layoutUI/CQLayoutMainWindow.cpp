@@ -1,24 +1,17 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQLayoutMainWindow.cpp,v $
-//   $Revision: 1.111 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/05/10 08:36:34 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
 #include "CQLayoutMainWindow.h"
 
 #include <QAction>
@@ -33,7 +26,7 @@
 #include <QSplitter>
 #include <QVBoxLayout>
 #include <QToolBar>
-#include <qwt_slider.h>
+#include <QSlider>
 #include <QGridLayout>
 #include <QPixmap>
 #include <QCloseEvent>
@@ -62,6 +55,8 @@
 #include "load_data.xpm"
 #endif // USE_CRENDER_EXTENSION
 
+#include "resourcesUI/CQIconResource.h"
+
 #ifdef DEBUG_UI
 #include <QtDebug>
 #endif
@@ -71,50 +66,47 @@ using namespace std;
 const char* const CQLayoutMainWindow::ZOOM_FACTOR_STRINGS[] = {"1%", "2%", "3%", "4%", "5%", "10%", "20%", "25%", "30%", "40%", "50%", "75%", "100%", "150%", "200%", "300%", "400%", "500%", "1000%"};
 const double CQLayoutMainWindow::ZOOM_FACTORS[] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
 
-
 #ifndef USE_CRENDER_EXTENSION
 CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout):
-    QMainWindow(NULL)
+  QMainWindow(NULL)
 #else
 CQLayoutMainWindow::CQLayoutMainWindow(QWidget* pParent):
-    QFrame(pParent)
+  QFrame(pParent)
 #endif // USE_CRENDER_EXTENSION
-    , mpVisParameters(new CVisParameters)
-    , mpParaPanel(new CQParaPanel)
-    , mpValTable(new CQCurrentValueTable)
-    , mpMainBox(new QFrame(this))
-    , mpSplitter(new QSplitter(Qt::Horizontal, this->mpMainBox))
-    , mpGLViewport(NULL)
-    , mpTimeSlider(new QwtSlider(NULL, Qt::Horizontal, QwtSlider::BottomScale, QwtSlider::BgTrough))
-    , mpFrame(new QFrame)
-    , mpInfoBox(new QFrame)
-    , mpControlWidget(new CQPlayerControlWidget)
-    , mDataPresent(false)
-    , mCurrentPlace(QString::null)
-    , mpZoomActionGroup(new QActionGroup(this))
+  , mpVisParameters(new CVisParameters)
+  , mpParaPanel(new CQParaPanel)
+  , mpValTable(new CQCurrentValueTable)
+  , mpMainBox(new QFrame(this))
+  , mpSplitter(new QSplitter(Qt::Horizontal, this->mpMainBox))
+  , mpGLViewport(NULL)
+  , mpTimeSlider(new QSlider(Qt::Horizontal))
+  , mpFrame(new QFrame)
+  , mpInfoBox(new QFrame)
+  , mpControlWidget(new CQPlayerControlWidget)
+  , mDataPresent(false)
+  , mCurrentPlace(QString::null)
+  , mpZoomActionGroup(new QActionGroup(this))
 #ifdef USE_CRENDER_EXTENSION
-    , mpLayout(NULL)
+  , mpLayout(NULL)
 #else
-    , mpLayout(pLayout)
+  , mpLayout(pLayout)
 #endif // USE_CRENDER_EXTENSION
 {
-#ifndef USE_CRENDER_EXTENSION
-  this->setWindowTitle(tr("Reaction network graph"));
-  this->setCentralWidget(mpMainBox);
-#else
-  this->QFrame::setLayout(new QVBoxLayout);
-  this->layout()->addWidget(this->mpMainBox);
-#endif // USE_CRENDER_EXTENSION
-  this->mpMainBox->setLayout(new QVBoxLayout());
+
+#ifndef Darwin
+  setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
+#endif // not Darwin
+
+  QVBoxLayout* mainLayout = new QVBoxLayout(mpMainBox);
+  QVBoxLayout* infoLayout = new QVBoxLayout(mpInfoBox);
+  mpSplitter->addWidget(this->mpInfoBox);
 
   // create split window with parameter panel and graph panel
-  this->mpMainBox->layout()->addWidget(this->mpSplitter);
+  mainLayout->addWidget(this->mpSplitter);
 
-  this->mpSplitter->addWidget(this->mpInfoBox);
-  this->mpInfoBox->setLayout(new QVBoxLayout);
-
-  this->mpInfoBox->layout()->addWidget(this->mpParaPanel);
-  this->mpInfoBox->layout()->addWidget(this->mpValTable);
+  infoLayout->addWidget(this->mpParaPanel);
+  infoLayout->addWidget(this->mpValTable);
+  this->mpInfoBox->setLayout(infoLayout);
 
   // Create OpenGL widget
   // we initialize it here because the parent has to be present
@@ -130,8 +122,6 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget* pParent):
   this->mpSplitter->setStretchFactor(this->mpSplitter->indexOf(this->mpInfoBox), 0);
   this->mpSplitter->setStretchFactor(this->mpSplitter->indexOf(this->mpGLViewport), 1);
 
-  this->mpMainBox->layout()->addWidget(this->mpFrame);
-
   connect(this->mpControlWidget, SIGNAL(play()), this, SLOT(startAnimation()));
   connect(this->mpControlWidget, SIGNAL(pause()), this, SLOT(pauseAnimation()));
   connect(this->mpControlWidget, SIGNAL(stop()), this, SLOT(stopAnimation()));
@@ -140,23 +130,32 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget* pParent):
   connect(this->mpControlWidget, SIGNAL(step_backward()), this, SLOT(stepBackwardAnimation()));
   connect(this->mpControlWidget, SIGNAL(step_forward()), this, SLOT(stepForwardAnimation()));
 
-  this->mpTimeSlider->setRange(0, 100, 1, 0);
-  this->mpTimeSlider->setValue(0.0);
+  this->mpTimeSlider->setRange(0, 100);
+  this->mpTimeSlider->setValue(0);
   this->mpTimeSlider->setEnabled(false);
 
   this->mpTimeSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-  this->mpFrame->setFixedHeight(68);
-  connect(this->mpTimeSlider, SIGNAL(valueChanged(double)),
-          this, SLOT(showStep(double)));
+  connect(this->mpTimeSlider, SIGNAL(valueChanged(int)), this, SLOT(showStep(int)));
 
-  QGridLayout* pGridLayout = new QGridLayout();
+  QHBoxLayout* pGridLayout = new QHBoxLayout(mpFrame);
+  pGridLayout->addWidget(this->mpControlWidget);
+  pGridLayout->addWidget(this->mpTimeSlider);
   this->mpFrame->setLayout(pGridLayout);
-  pGridLayout->addWidget(this->mpTimeSlider, 1, 1, 2, 1, Qt::AlignTop);
-  pGridLayout->addWidget(this->mpControlWidget, 0, 0, 4, 1, Qt::AlignTop);
-  QSpacerItem* pSpacer = new QSpacerItem(20, 20);
-  pGridLayout->addItem(pSpacer, 1, 0);
+
+  mainLayout->addWidget(this->mpFrame);
+
+  this->mpMainBox->setLayout(mainLayout);
 
 #ifndef USE_CRENDER_EXTENSION
+  this->setWindowTitle(tr("Reaction network graph"));
+  this->setCentralWidget(mpMainBox);
+#else
+  this->QFrame::setLayout(new QVBoxLayout);
+  this->layout()->addWidget(this->mpMainBox);
+#endif // USE_CRENDER_EXTENSION
+
+#ifndef USE_CRENDER_EXTENSION
+
   loadData(); // try to load data (if already present)
   // the action have to be created before mpLoadDataAction is used below
   // the menus have to be created after the player control widget is created
@@ -638,7 +637,8 @@ void CQLayoutMainWindow::startAnimation()
     this->loadData(); // look for data
 
   if (this->mDataPresent)
-    {// only if time series data present
+    {
+      // only if time series data present
       this->mpVisParameters->mAnimationRunning = true;
       this->mpTimeSlider->setEnabled(false);
       this->mpGLViewport->getPainter()->runAnimation();
@@ -713,6 +713,7 @@ void CQLayoutMainWindow::saveImage()
                       }
 
                     break;
+
                   case CQScreenshotOptionsDialog::USER_DEFINED_FRAMES:
                     v.insert(v.begin(), pDialog->getFrameSet().begin(), pDialog->getFrameSet().end());
 
@@ -725,6 +726,7 @@ void CQLayoutMainWindow::saveImage()
                       }
 
                     break;
+
                   default:
                     v.push_back(step);
                     break;
@@ -782,7 +784,7 @@ void CQLayoutMainWindow::endOfAnimationReached()
     }
 }
 
-void CQLayoutMainWindow::showStep(double i)
+void CQLayoutMainWindow::showStep(int i)
 {
   this->mpControlWidget->setCurrentStep(static_cast<int>(i));
   mpGLViewport->getPainter()->showStep(static_cast<int>(i));
@@ -976,7 +978,6 @@ bool CQLayoutMainWindow::maybeSave()
   return true;
 }
 
-
 /**
  * Make the layout fit the screen.
  * Return the new zoom factor.
@@ -1009,11 +1010,11 @@ double CQLayoutMainWindow::slotFitToScreen()
 
   if (this->mpZoomComboBox->count() > n)
     {
-      this->mpZoomComboBox->setItemText(0, QString("%1").arg(zoom*100).append("%"));
+      this->mpZoomComboBox->setItemText(0, QString("%1").arg(zoom * 100).append("%"));
     }
   else
     {
-      this->mpZoomComboBox->insertItem(0, QString("%1").arg(zoom*100).append("%"));
+      this->mpZoomComboBox->insertItem(0, QString("%1").arg(zoom * 100).append("%"));
     }
 
   this->mpZoomComboBox->setCurrentIndex(0);

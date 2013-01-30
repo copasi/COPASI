@@ -1,15 +1,21 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotUI.pro,v $ 
-#   $Revision: 1.14 $ 
-#   $Name:  $ 
-#   $Author: ssahle $ 
-#   $Date: 2012/05/02 23:40:07 $ 
-# End CVS Header 
-
-# Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
+
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
+
+
+
+
+
 
 LIB = plotUI
 
@@ -23,8 +29,10 @@ HEADERS += BandedGraphWidget.h \
            curve2dwidget.h \
            HistoWidget.h \
            PlotSubwidget.h \
+           CQPlotSubwidget.h \
            plotwindow.h \
            scrollbar.h \
+		   CQPlotEditWidget.h \
            scrollzoomer.h
 
 SOURCES += BandedGraphWidget.cpp \
@@ -34,12 +42,15 @@ SOURCES += BandedGraphWidget.cpp \
            curve2dwidget.cpp \
            HistoWidget.cpp \
            PlotSubwidget.cpp \
+           CQPlotSubwidget.cpp \
            plotwindow.cpp \
            scrollbar.cpp \
+		   CQPlotEditWidget.cpp \
            scrollzoomer.cpp
 
 FORMS += BandedGraphWidget.ui
 FORMS +=  PlotSubwidget.ui
+FORMS +=  CQPlotSubwidget.ui
 FORMS +=  HistoWidget.ui
 FORMS +=  curve2dwidget.ui
 

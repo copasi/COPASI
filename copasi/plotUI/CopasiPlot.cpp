@@ -1,14 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-//   $Revision: 1.81 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/05/02 23:45:03 $
-// End CVS Header
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <qstring.h>
@@ -40,29 +41,29 @@
 
 //********************  data  *********************************************
 C2DCurveData::C2DCurveData():
-    QwtData(),
-    mpX(NULL),
-    mpY(NULL),
-    mSize(0),
-    mMaxSize(0),
-    mLastRectangle(0),
-    mMinX(std::numeric_limits<double>::quiet_NaN()),
-    mMaxX(std::numeric_limits<double>::quiet_NaN()),
-    mMinY(std::numeric_limits<double>::quiet_NaN()),
-    mMaxY(std::numeric_limits<double>::quiet_NaN())
+  QwtData(),
+  mpX(NULL),
+  mpY(NULL),
+  mSize(0),
+  mMaxSize(0),
+  mLastRectangle(0),
+  mMinX(std::numeric_limits<double>::quiet_NaN()),
+  mMaxX(std::numeric_limits<double>::quiet_NaN()),
+  mMinY(std::numeric_limits<double>::quiet_NaN()),
+  mMaxY(std::numeric_limits<double>::quiet_NaN())
 {}
 
 C2DCurveData::C2DCurveData(const CVector< C_FLOAT64 > & x, const CVector< C_FLOAT64 > & y, size_t size):
-    QwtData(),
-    mpX(x.array()),
-    mpY(y.array()),
-    mSize(size),
-    mMaxSize(x.size()),
-    mLastRectangle(0),
-    mMinX(std::numeric_limits<double>::quiet_NaN()),
-    mMaxX(std::numeric_limits<double>::quiet_NaN()),
-    mMinY(std::numeric_limits<double>::quiet_NaN()),
-    mMaxY(std::numeric_limits<double>::quiet_NaN())
+  QwtData(),
+  mpX(x.array()),
+  mpY(y.array()),
+  mSize(size),
+  mMaxSize(x.size()),
+  mLastRectangle(0),
+  mMinX(std::numeric_limits<double>::quiet_NaN()),
+  mMaxX(std::numeric_limits<double>::quiet_NaN()),
+  mMinY(std::numeric_limits<double>::quiet_NaN()),
+  mMaxY(std::numeric_limits<double>::quiet_NaN())
 {
   assert(x.size() == y.size());
   assert(mSize <= mMaxSize);
@@ -207,34 +208,34 @@ C2DCurveData & C2DCurveData::operator = (const C2DCurveData & rhs)
 
 //********************  CBandedGraphData  *********************************
 CBandedGraphData::CBandedGraphData():
-    QwtData(),
-    mpX(NULL),
-    mpY1(NULL),
-    mpY2(NULL),
-    mSize(0),
-    mMaxSize(0),
-    mLastRectangle(0),
-    mMinX(std::numeric_limits<double>::quiet_NaN()),
-    mMaxX(std::numeric_limits<double>::quiet_NaN()),
-    mMinY(std::numeric_limits<double>::quiet_NaN()),
-    mMaxY(std::numeric_limits<double>::quiet_NaN())
+  QwtData(),
+  mpX(NULL),
+  mpY1(NULL),
+  mpY2(NULL),
+  mSize(0),
+  mMaxSize(0),
+  mLastRectangle(0),
+  mMinX(std::numeric_limits<double>::quiet_NaN()),
+  mMaxX(std::numeric_limits<double>::quiet_NaN()),
+  mMinY(std::numeric_limits<double>::quiet_NaN()),
+  mMaxY(std::numeric_limits<double>::quiet_NaN())
 {}
 
 CBandedGraphData::CBandedGraphData(const CVector< double > & x,
                                    const CVector< double > & y1,
                                    const CVector< double > & y2,
                                    size_t size):
-    QwtData(),
-    mpX(x.array()),
-    mpY1(y1.array()),
-    mpY2(y2.array()),
-    mSize(size),
-    mMaxSize(x.size()),
-    mLastRectangle(0),
-    mMinX(std::numeric_limits<double>::quiet_NaN()),
-    mMaxX(std::numeric_limits<double>::quiet_NaN()),
-    mMinY(std::numeric_limits<double>::quiet_NaN()),
-    mMaxY(std::numeric_limits<double>::quiet_NaN())
+  QwtData(),
+  mpX(x.array()),
+  mpY1(y1.array()),
+  mpY2(y2.array()),
+  mSize(size),
+  mMaxSize(x.size()),
+  mLastRectangle(0),
+  mMinX(std::numeric_limits<double>::quiet_NaN()),
+  mMaxX(std::numeric_limits<double>::quiet_NaN()),
+  mMinY(std::numeric_limits<double>::quiet_NaN()),
+  mMaxY(std::numeric_limits<double>::quiet_NaN())
 {
   assert(x.size() == y1.size());
   assert(x.size() == y2.size());
@@ -256,8 +257,7 @@ CBandedGraphData::copy() const
 
 size_t
 CBandedGraphData::size() const
-{return 2*mSize;}
-
+{return 2 * mSize;}
 
 double CBandedGraphData::x(size_t i) const
 {
@@ -424,37 +424,37 @@ CBandedGraphData & CBandedGraphData::operator = (const CBandedGraphData & rhs)
 
 //********************  data  *********************************************
 CHistoCurveData::CHistoCurveData():
-    QwtData(),
-    mpX(NULL),
-    mSize(0),
-    mMaxSize(0),
-    mLastRectangle(0),
-    mMinX(std::numeric_limits<double>::quiet_NaN()),
-    mMaxX(std::numeric_limits<double>::quiet_NaN()),
-    mMinY(std::numeric_limits<double>::quiet_NaN()),
-    mMaxY(std::numeric_limits<double>::quiet_NaN()),
-    mIncrement(1.0),
-    mMap(),
-    mHistoX(0),
-    mHistoY(0)
+  QwtData(),
+  mpX(NULL),
+  mSize(0),
+  mMaxSize(0),
+  mLastRectangle(0),
+  mMinX(std::numeric_limits<double>::quiet_NaN()),
+  mMaxX(std::numeric_limits<double>::quiet_NaN()),
+  mMinY(std::numeric_limits<double>::quiet_NaN()),
+  mMaxY(std::numeric_limits<double>::quiet_NaN()),
+  mIncrement(1.0),
+  mMap(),
+  mHistoX(0),
+  mHistoY(0)
 {}
 
 CHistoCurveData::CHistoCurveData(const CVector< C_FLOAT64 > & x,
                                  size_t size,
                                  const C_FLOAT64 & increment):
-    QwtData(),
-    mpX(x.array()),
-    mSize(size),
-    mMaxSize(x.size()),
-    mLastRectangle(0),
-    mMinX(std::numeric_limits<double>::quiet_NaN()),
-    mMaxX(std::numeric_limits<double>::quiet_NaN()),
-    mMinY(std::numeric_limits<double>::quiet_NaN()),
-    mMaxY(std::numeric_limits<double>::quiet_NaN()),
-    mIncrement(increment),
-    mMap(),
-    mHistoX(0),
-    mHistoY(0)
+  QwtData(),
+  mpX(x.array()),
+  mSize(size),
+  mMaxSize(x.size()),
+  mLastRectangle(0),
+  mMinX(std::numeric_limits<double>::quiet_NaN()),
+  mMaxX(std::numeric_limits<double>::quiet_NaN()),
+  mMinY(std::numeric_limits<double>::quiet_NaN()),
+  mMaxY(std::numeric_limits<double>::quiet_NaN()),
+  mIncrement(increment),
+  mMap(),
+  mHistoX(0),
+  mHistoY(0)
 {
   assert(mSize <= mMaxSize);
 }
@@ -760,21 +760,35 @@ void C2DPlotCurve::drawSymbols(QPainter *painter, const QwtSymbol &symbol,
 C_FLOAT64 CopasiPlot::MissingValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
 CopasiPlot::CopasiPlot(QWidget* parent):
-    QwtPlot(parent),
-    mCurveMap(),
-    mpPlotSpecification(NULL),
-    mNextPlotTime(),
-    mIgnoreUpdate(false),
-    mpZoomer(NULL)
+  QwtPlot(parent),
+  mCurveMap(),
+  mDataBefore(0),
+  mDataDuring(0),
+  mDataAfter(0),
+  mHaveBefore(false),
+  mHaveDuring(false),
+  mHaveAfter(false),
+  mpPlotSpecification(NULL),
+  mNextPlotTime(),
+  mIgnoreUpdate(false),
+  mpZoomer(NULL),
+  mReplotFinished(false)
 {}
 
 CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
-    QwtPlot(parent),
-    mCurveMap(),
-    mpPlotSpecification(NULL),
-    mNextPlotTime(),
-    mIgnoreUpdate(false),
-    mpZoomer(NULL)
+  QwtPlot(parent),
+  mCurveMap(),
+  mDataBefore(0),
+  mDataDuring(0),
+  mDataAfter(0),
+  mHaveBefore(false),
+  mHaveDuring(false),
+  mHaveAfter(false),
+  mpPlotSpecification(NULL),
+  mNextPlotTime(),
+  mIgnoreUpdate(false),
+  mpZoomer(NULL),
+  mReplotFinished(false)
 {
   QwtLegend *legend = new QwtLegend;
   legend->setItemMode(QwtLegend::CheckableItem);
@@ -865,7 +879,6 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
       mCurves[k] = pCurve;
       mCurveMap[pItem->CCopasiParameter::getKey()] = pCurve;
 
-
       //color handling should be similar for different curve types
       QColor color;
 
@@ -899,17 +912,21 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
               switch (linesubtype) //symbol type
                 {
                   case 1:
-                    pCurve->setPen(QPen(QBrush(color), width, Qt::DotLine));
+                    pCurve->setPen(QPen(QBrush(color), width, Qt::DotLine, Qt::FlatCap));
                     break;
+
                   case 2:
                     pCurve->setPen(QPen(QBrush(color), width, Qt::DashLine));
                     break;
+
                   case 3:
                     pCurve->setPen(QPen(QBrush(color), width, Qt::DashDotLine));
                     break;
+
                   case 4:
                     pCurve->setPen(QPen(QBrush(color), width, Qt::DashDotDotLine));
                     break;
+
                   case 0:
                   default:
                     pCurve->setPen(QPen(QBrush(color), width, Qt::SolidLine));
@@ -919,6 +936,8 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
           if (linetype == 1) //points
             {
+              C_FLOAT64 width = *pItem->getValue("Line width").pUDOUBLE;
+              pCurve->setPen(QPen(color, width, Qt::SolidLine, Qt::RoundCap));
               pCurve->setStyle(QwtPlotCurve::Dots);
             }
 
@@ -937,17 +956,17 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
                   case 1:
                     pCurve->setSymbol(QwtSymbol(QwtSymbol::Cross, QBrush(), QPen(QBrush(color), 2), QSize(7, 7)));
                     break;
+
                   case 2:
                     pCurve->setSymbol(QwtSymbol(QwtSymbol::Ellipse, QBrush(), QPen(QBrush(color), 1), QSize(8, 8)));
                     break;
+
                   case 0:
                   default:
                     pCurve->setSymbol(QwtSymbol(QwtSymbol::Cross, QBrush(color), QPen(QBrush(color), 1), QSize(5, 5)));
                     break;
                 }
-
             }
-
         } //2d curves and banded graphs
 
       if (pCurve->getType() == CPlotItem::bandedGraph)
@@ -965,10 +984,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
           pCurve->setStyle(QwtPlotCurve::Steps);
           pCurve->setYAxis(QwtPlot::yRight);
           pCurve->setCurveAttribute(QwtPlotCurve::Inverted);
-
         }
-
-
     }
 
   // Remove unused curves if definition has changed

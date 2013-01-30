@@ -1,14 +1,15 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.13 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/03/21 15:21:13 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /*
@@ -40,7 +41,7 @@
  *  name 'name'.'
  */
 CQFittingResult::CQFittingResult(QWidget* parent, const char* name)
-    : CopasiWidget(parent, name)
+  : CopasiWidget(parent, name)
 {
   setupUi(this);
 
@@ -137,7 +138,6 @@ bool CQFittingResult::enterProtected()
 
   //the parameters table
   mpParameters->setRowCount((int) imax);
-
 
   QColor BackgroundColor = mpParameters->palette().brush(QPalette::Active, QPalette::Base).color();
 
@@ -520,8 +520,8 @@ void CQFittingResult::slotSave(void)
   if (imax)
     {
       // Set up the cross validations table
-      file << std::endl << "Cross Validations:" << std::endl;
-      file << "Cross Validation Experiment\t Objective Value\tRoot Mean Square\tError Mean\tError Mean Std. Deviation" << std::endl;
+      file << std::endl << "Validations:" << std::endl;
+      file << "Validation Experiment\t Objective Value\tRoot Mean Square\tError Mean\tError Mean Std. Deviation" << std::endl;
 
       // Loop over the cross validations
       for (i = 0; i != imax; i++)
@@ -543,8 +543,8 @@ void CQFittingResult::slotSave(void)
   if (imax)
     {
       // Set up the fitted values table
-      file << std::endl << "Cross Validation Fitted Values:" << std::endl;
-      file << "CV Fitted Value\tObjective Value\tRoot Mean Square\tError Mean\tError Mean Std. Deviation" << std::endl;
+      file << std::endl << "Validation Fitted Values:" << std::endl;
+      file << "Validation Fitted Value\tObjective Value\tRoot Mean Square\tError Mean\tError Mean Std. Deviation" << std::endl;
 
       // Loop over the fitted values objects
       for (i = 0; i != imax; i++)

@@ -1,24 +1,17 @@
-// Begin CVS Header 
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CFunctionDB.i,v $ 
-//   $Revision: 1.9 $ 
-//   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2011/04/01 15:06:41 $ 
-// End CVS Header 
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
+
 
 %{
 

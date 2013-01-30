@@ -1,34 +1,31 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.h,v $
-//   $Revision: 1.31 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:28:18 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /**
  * CFunctionParameters
  *
- * Created for Copasi by Stefan Hoops
+ * Created for COPASI by Stefan Hoops
  * (C) Stefan Hoops 2001
  */
 
 #ifndef COPASI_CFunctionParameters
 #define COPASI_CFunctionParameters
 
-#include "utilities/CReadConfig.h"
-#include "utilities/CCopasiVector.h"
-#include "function/CFunctionParameter.h"
-#include "report/CCopasiContainer.h"
+#include "copasi/utilities/CReadConfig.h"
+#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/function/CFunctionParameter.h"
+#include "copasi/report/CCopasiContainer.h"
 
 /** @dia:pos 10.7176,6.51973 */
 class CFunctionParameters : public CCopasiContainer

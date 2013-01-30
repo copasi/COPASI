@@ -1,17 +1,14 @@
-/* Begin CVS Header
-$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
-$Revision: 1.21 $
-$Name:  $
-$Author: shoops $
-$Date: 2012/04/23 21:13:05 $
-End CVS Header */
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -28,19 +25,19 @@ End CVS Header */
 #include "utilities/utility.h"
 
 CTableCell::CTableCell(const char & separator):
-    mSeparator(separator),
-    mName(""),
-    mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mIsValue(false),
-    mIsEmpty(true)
+  mSeparator(separator),
+  mName(""),
+  mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+  mIsValue(false),
+  mIsEmpty(true)
 {}
 
 CTableCell::CTableCell(const CTableCell & src):
-    mSeparator(src.mSeparator),
-    mName(src.mName),
-    mValue(src.mValue),
-    mIsValue(src.mIsValue),
-    mIsEmpty(src.mIsEmpty)
+  mSeparator(src.mSeparator),
+  mName(src.mName),
+  mValue(src.mValue),
+  mIsValue(src.mIsValue),
+  mIsEmpty(src.mIsEmpty)
 {}
 
 CTableCell::~CTableCell() {}
@@ -126,15 +123,17 @@ std::istream & operator >> (std::istream &is, CTableCell & cell)
 
 CTableRow::CTableRow(const size_t & size,
                      const char & separator):
-    mCells(0),
-    mSeparator(separator),
-    mIsEmpty(true)
+  mCells(0),
+  mSeparator(separator),
+  mIsEmpty(true),
+  mLastFilledCell(C_INVALID_INDEX)
 {resize(size);}
 
 CTableRow::CTableRow(const CTableRow & src):
-    mCells(src.mCells),
-    mSeparator(src.mSeparator),
-    mIsEmpty(src.mIsEmpty)
+  mCells(src.mCells),
+  mSeparator(src.mSeparator),
+  mIsEmpty(src.mIsEmpty),
+  mLastFilledCell(C_INVALID_INDEX)
 {}
 
 CTableRow::~CTableRow() {}

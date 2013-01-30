@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -135,7 +135,7 @@ protected:
   /**
    * The filename if available
    */
-  std::string mFilename;
+  std::string mPWD;
 
   // Operations
 public:

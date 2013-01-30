@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.cpp,v $
-//   $Revision: 1.17 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/11 12:35:17 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,10 +10,10 @@
  *      Author: shoops
  */
 
-#include <QWebFrame>
-#include <QProcess>
-#include <QXmlInputSource>
-#include <QXmlSimpleReader>
+#include <QtWebKit/QWebFrame>
+#include <QtXml/QXmlInputSource>
+#include <QtXml/QXmlSimpleReader>
+#include <QtGui/QDesktopServices>
 
 #include "CQNotes.h"
 #include "resourcesUI/CQIconResource.h"
@@ -38,9 +30,9 @@
 #include "commandline/CConfigurationFile.h"
 
 CQValidatorXML::CQValidatorXML(QPlainTextEdit * parent, const char * name):
-    CQValidator< QPlainTextEdit >(parent, &QPlainTextEdit::toPlainText, name),
-    mIsFreeText(true),
-    mNeedsWrap(false)
+  CQValidator< QPlainTextEdit >(parent, &QPlainTextEdit::toPlainText, name),
+  mIsFreeText(true),
+  mNeedsWrap(false)
 {}
 
 // virtual
@@ -79,10 +71,10 @@ const bool & CQValidatorXML::needsWrap() const
 }
 
 CQNotesContentHandler::CQNotesContentHandler():
-    QXmlDefaultHandler(),
-    mIsFreeText(true),
-    mNeedsWrap(true),
-    mLevel(0)
+  QXmlDefaultHandler(),
+  mIsFreeText(true),
+  mNeedsWrap(true),
+  mLevel(0)
 {}
 
 CQNotesContentHandler:: ~CQNotesContentHandler()
@@ -138,11 +130,11 @@ bool CQNotesContentHandler::needsWrap() const
 }
 
 CQNotes::CQNotes(QWidget* parent, const char* name) :
-    CopasiWidget(parent, name),
-    mEditMode(false),
-    mChanged(false),
-    mpValidatorXML(NULL),
-    mValidity(QValidator::Acceptable)
+  CopasiWidget(parent, name),
+  mEditMode(false),
+  mChanged(false),
+  mpValidatorXML(NULL),
+  mValidity(QValidator::Acceptable)
 
 {
   setupUi(this);
@@ -377,49 +369,6 @@ void CQNotes::save()
 
 void CQNotes::slotOpenUrl(const QUrl & url)
 {
-  QString Commandline = FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWebBrowser());
-
-  if (Commandline == "")
-    {
-#ifdef Q_WS_MAC
-      Commandline = "open %1";
-#else
-# ifdef Q_WS_WIN
-      Commandline = "cmd /c start %1";
-# else
-      CQMessageBox::critical(this, "Unable to open link",
-                             "COPASI requires you to specify an application for opening URLs for links to work.\n\nPlease go to the preferences and set an appropriate application in the format:\n  command [options] %1");
-
-      return;
-# endif  // Q_WS_WIN
-#endif // Q_WS_MAC
-
-      CCopasiRootContainer::getConfiguration()->setWebBrowser(TO_UTF8(Commandline));
-    }
-
-#ifdef Q_WS_WIN
-
-  if (Commandline == "cmd /c start %1")
-    {
-      if (QProcess::execute(Commandline.arg(url.toString())) != 0)
-        {
-          CQMessageBox::critical(this, "Unable to open link",
-                                 "COPASI requires you to specify an application for opening links. The currently provided command:\n  " +
-                                 Commandline + "\nis not working properly.\n\nPlease go to the preferences and set an appropriate application in the format:\n  application [options] %1");
-        }
-
-      return;
-    }
-
-#endif // Q_WS_WIN
-
-  if (!QProcess::startDetached(Commandline.arg(url.toString())))
-    {
-      CQMessageBox::critical(this, "Unable to open link",
-                             "COPASI requires you to specify an application for opening links. The currently provided command:\n  " +
-                             Commandline + "\nis not working properly.\n\nPlease go to the preferences and set an appropriate application in the format:\n  application [options] %1");
-    }
-
+  QDesktopServices::openUrl(url);
   return;
 }
-

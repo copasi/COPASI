@@ -66,7 +66,7 @@ ADD_CUSTOM_COMMAND(
 	        ${SWIG_DEPENDENCIES}
     COMMENT "Swig Perl source") 
 
-add_custom_target(binding_perl_swig ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp)
+add_custom_target(binding_perl_swig ALL DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/perl.i)
 
 	
 ####################################################################
@@ -132,7 +132,7 @@ if (UNIX OR CYGWIN)
   string(REPLACE ";" "" PERL_PLATFORM ${PERL_PLATFORM})
   string(REPLACE "archname=" "" PERL_PLATFORM ${PERL_PLATFORM})
   set(PERL_PACKAGE_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/perl5/site-perl/${PERL_VERSION}/${PERL_PLATFORM})
-  set(PERL_PACKAGE_INSTALL_BIN_DIR ${PERL_PACKAGE_INSTALL_DIR}/auto/libSBML)
+  set(PERL_PACKAGE_INSTALL_BIN_DIR ${PERL_PACKAGE_INSTALL_DIR}/auto/COPASI)
 else()
   set(PERL_PACKAGE_INSTALL_DIR ${MISC_PREFIX}bindings/perl)
   set(PERL_PACKAGE_INSTALL_BIN_DIR ${PERL_PACKAGE_INSTALL_DIR})

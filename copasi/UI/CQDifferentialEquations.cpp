@@ -1,24 +1,21 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDifferentialEquations.cpp,v $
-//   $Revision: 1.18 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/02/23 16:09:10 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "CQDifferentialEquations.h"
 
 #include <QtCore/QVariant>
+#include <QPainter>
 
 #include "CQDifferentialEquations.h"
 
@@ -52,9 +49,19 @@
  *  name 'name'.'
  */
 CQDifferentialEquations::CQDifferentialEquations(QWidget* parent, const char* name)
-    : CopasiWidget(parent, name)
+  : CopasiWidget(parent, name)
 {
   setupUi(this);
+
+  mpScrollView->setBackgroundColor(QColor(Qt::white));
+
+#ifdef WIN32
+  // on windows there ought to be a border around the MML widget
+  // otherwise it is difficult to distinguish the formula from the rest of the
+  // dialog
+  mpScrollView->setFrameShape(QFrame::Panel);
+  mpScrollView->setFrameStyle(QFrame::Panel | QFrame::Plain);
+#endif
 
   init();
 }
@@ -161,6 +168,24 @@ void CQDifferentialEquations::saveTeX(const QString outfilename)
   ofile.close();
 }
 
+void CQDifferentialEquations::savePNG(const QString outfilename)
+{
+  QtMmlDocument doc;
+  doc.setBaseFontPointSize(20);
+  doc.setFontName(QtMmlWidget::NormalFont, qApp->font().family());
+  doc.setContent(FROM_UTF8(mml.str()));
+
+  const QSize &size = doc.size();
+  QPixmap pixmap(size.width(), size.height());
+  QPainter painter(&pixmap);
+  painter.setRenderHint(QPainter::Antialiasing);
+  painter.setRenderHint(QPainter::SmoothPixmapTransform);
+  painter.setRenderHint(QPainter::HighQualityAntialiasing);
+  painter.fillRect(0, 0, size.width(), size.height(), Qt::white);
+  doc.paint(&painter, QPoint(0, 0));
+  pixmap.save(outfilename, "PNG");
+}
+
 void CQDifferentialEquations::slotSave()
 {
   QString outfilename;
@@ -173,7 +198,7 @@ void CQDifferentialEquations::slotSave()
         CopasiFileDialog::getSaveFileName(this,
                                           "Save File Dialog",
                                           "untitled.mml",
-                                          "MathML (*.mml);;TeX (*.tex)",
+                                          "MathML (*.mml);;TeX (*.tex);;PNG (*.png)",
                                           "Save Formula to Disk", new QString);
 
       if (outfilename.isEmpty()) return;
@@ -189,8 +214,20 @@ void CQDifferentialEquations::slotSave()
   qDebug() << "outfilename = " << outfilename;
 #endif
 
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+
   if (outfilename.contains(".tex"))
-    saveTeX(outfilename);
+    {
+      saveTeX(outfilename);
+    }
+  else if (outfilename.contains(".png"))
+    {
+      savePNG(outfilename);
+    }
   else
-    saveMML(outfilename);
+    {
+      saveMML(outfilename);
+    }
+
+  QApplication::restoreOverrideCursor();
 }

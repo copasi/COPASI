@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000068.cpp,v $
-//   $Revision: 1.9 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:33:09 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -166,7 +158,7 @@ void test000068::test_bug1068()
   const CFunction* pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction1");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction1");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -181,7 +173,7 @@ void test000068::test_bug1068()
   pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction2");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction2");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -196,7 +188,7 @@ void test000068::test_bug1068()
   pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction3");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction3");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -211,7 +203,7 @@ void test000068::test_bug1068()
   pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction4");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction4");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -226,7 +218,7 @@ void test000068::test_bug1068()
   pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction5");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction5");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -241,7 +233,7 @@ void test000068::test_bug1068()
   pFunction = pReaction->getFunction();
   CPPUNIT_ASSERT(pFunction != NULL);
   CPPUNIT_ASSERT(pFunction->getType() == CEvaluationTree::UserDefined);
-  CPPUNIT_ASSERT(pFunction->getObjectName() == "function_4_reaction6");
+  CPPUNIT_ASSERT(pFunction->getObjectName() == "Function for reaction6");
   pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
 
@@ -255,7 +247,7 @@ void test000068::test_bug1068()
   // and reimport the exported model
   // This will also lead to a Level 2 Version 1 model since we convert all Level 1 model to
   //  Level 2 Version 1 on import, but we can at least test if the export worked.
-  pCOPASIDATAMODEL->newModel(NULL, NULL, NULL, true);
+  pCOPASIDATAMODEL->newModel(NULL, true);
   CPPUNIT_ASSERT(pCOPASIDATAMODEL->importSBMLFromString(s));
   // check the sbml model
   const SBMLDocument* pDocument = pCOPASIDATAMODEL->getCurrentSBMLDocument();

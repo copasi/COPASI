@@ -1,17 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectReference.h,v $
-   $Revision: 1.39 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2009/09/01 13:47:08 $
-   End CVS Header */
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -40,7 +37,9 @@ private:
 
   //Operations
 private:
-  CCopasiObjectReference() {};
+  CCopasiObjectReference():
+    mpReference(NULL)
+  {};
 
   void updateMethod(const CType & value)
   {*mpReference = value;}
@@ -50,17 +49,17 @@ public:
                          const CCopasiContainer * pParent,
                          referenceType & reference,
                          const unsigned C_INT32 & flag = 0):
-      CCopasiObject(name, pParent, "Reference",
-                    CCopasiObject::Reference |
-                    CCopasiObject::NonUniqueName |
-                    flag),
-      mpReference(&reference)
+    CCopasiObject(name, pParent, "Reference",
+                  CCopasiObject::Reference |
+                  CCopasiObject::NonUniqueName |
+                  flag),
+    mpReference(&reference)
   {assert(pParent != NULL);}
 
   CCopasiObjectReference(const CCopasiObjectReference< referenceType > & src,
                          const CCopasiContainer * pParent):
-      CCopasiObject(src, pParent),
-      mpReference(src.mpReference)
+    CCopasiObject(src, pParent),
+    mpReference(src.mpReference)
   {}
 
   virtual ~CCopasiObjectReference() {}
@@ -118,12 +117,12 @@ CCopasiObjectReference<C_FLOAT64>::CCopasiObjectReference(const std::string & na
     const CCopasiContainer * pParent,
     referenceType & reference,
     const unsigned C_INT32 & flag):
-    CCopasiObject(name, pParent, "Reference",
-                  CCopasiObject::Reference |
-                  CCopasiObject::NonUniqueName |
-                  CCopasiObject::ValueDbl |
-                  flag),
-    mpReference(&reference)
+  CCopasiObject(name, pParent, "Reference",
+                CCopasiObject::Reference |
+                CCopasiObject::NonUniqueName |
+                CCopasiObject::ValueDbl |
+                flag),
+  mpReference(&reference)
 {
   assert(pParent != NULL);
   setUpdateMethod(this, &CCopasiObjectReference<C_FLOAT64>::updateMethod);
@@ -134,12 +133,12 @@ CCopasiObjectReference<C_INT32>::CCopasiObjectReference(const std::string & name
     const CCopasiContainer * pParent,
     referenceType & reference,
     const unsigned C_INT32 & flag):
-    CCopasiObject(name, pParent, "Reference",
-                  CCopasiObject::Reference |
-                  CCopasiObject::NonUniqueName |
-                  CCopasiObject::ValueInt |
-                  flag),
-    mpReference(&reference)
+  CCopasiObject(name, pParent, "Reference",
+                CCopasiObject::Reference |
+                CCopasiObject::NonUniqueName |
+                CCopasiObject::ValueInt |
+                flag),
+  mpReference(&reference)
 {
   assert(pParent != NULL);
   setUpdateMethod(this, &CCopasiObjectReference<C_INT32>::updateMethod);
@@ -150,12 +149,12 @@ CCopasiObjectReference<bool>::CCopasiObjectReference(const std::string & name,
     const CCopasiContainer * pParent,
     referenceType & reference,
     const unsigned C_INT32 & flag):
-    CCopasiObject(name, pParent, "Reference",
-                  CCopasiObject::Reference |
-                  CCopasiObject::NonUniqueName |
-                  CCopasiObject::ValueBool |
-                  flag),
-    mpReference(&reference)
+  CCopasiObject(name, pParent, "Reference",
+                CCopasiObject::Reference |
+                CCopasiObject::NonUniqueName |
+                CCopasiObject::ValueBool |
+                flag),
+  mpReference(&reference)
 {
   assert(pParent != NULL);
   setUpdateMethod(this, &CCopasiObjectReference<bool>::updateMethod);
@@ -172,24 +171,26 @@ private:
 
   //Operations
 private:
-  CCopasiVectorReference() {};
+  CCopasiVectorReference():
+    mReference(CType())
+  {};
 
 public:
   CCopasiVectorReference(const std::string & name,
                          const CCopasiContainer * pParent,
                          referenceType & reference,
                          const unsigned C_INT32 & flag = 0):
-      CCopasiObject(name, pParent, "Reference",
-                    CCopasiObject::Reference |
-                    CCopasiObject::NonUniqueName |
-                    flag),
-      mReference(reference)
+    CCopasiObject(name, pParent, "Reference",
+                  CCopasiObject::Reference |
+                  CCopasiObject::NonUniqueName |
+                  flag),
+    mReference(reference)
   {assert(pParent != NULL);}
 
   CCopasiVectorReference(const CCopasiVectorReference< referenceType > & src,
                          const CCopasiContainer * pParent):
-      CCopasiObject(src, pParent),
-      mReference(src.mReference)
+    CCopasiObject(src, pParent),
+    mReference(src.mReference)
   {}
 
   virtual ~CCopasiVectorReference() {}
@@ -235,24 +236,26 @@ private:
 
   //Operations
 private:
-  CCopasiMatrixReference() {};
+  CCopasiMatrixReference():
+    mReference(CType())
+  {};
 
 public:
   CCopasiMatrixReference(const std::string & name,
                          const CCopasiContainer * pParent,
                          referenceType & reference,
                          const unsigned C_INT32 & flag = 0):
-      CCopasiObject(name, pParent, "Reference",
-                    CCopasiObject::Reference |
-                    CCopasiObject::NonUniqueName |
-                    flag),
-      mReference(reference)
+    CCopasiObject(name, pParent, "Reference",
+                  CCopasiObject::Reference |
+                  CCopasiObject::NonUniqueName |
+                  flag),
+    mReference(reference)
   {assert(pParent != NULL);}
 
   CCopasiMatrixReference(const CCopasiMatrixReference< referenceType > & src,
                          const CCopasiContainer * pParent):
-      CCopasiObject(src, pParent),
-      mReference(src.mReference)
+    CCopasiObject(src, pParent),
+    mReference(src.mReference)
   {}
 
   virtual ~CCopasiMatrixReference() {}

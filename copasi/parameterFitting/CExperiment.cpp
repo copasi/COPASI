@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-//   $Revision: 1.83 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/07 02:46:13 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -83,36 +75,36 @@ const char* CExperiment::WeightMethodType[] =
 
 CExperiment::CExperiment(const CCopasiContainer * pParent,
                          const std::string & name):
-    CCopasiParameterGroup(name, pParent),
-    mpFileName(NULL),
-    mpFirstRow(NULL),
-    mpLastRow(NULL),
-    mpTaskType(NULL),
-    mpSeparator(NULL),
-    mpRowOriented(NULL),
-    mpHeaderRow(NULL),
-    mpNumColumns(NULL),
-    mColumnName(),
-    mpObjectMap(NULL),
-    mDataTime(0),
-    mDataIndependent(0, 0),
-    mDataDependent(0, 0),
-    mScale(0, 0),
-    mMeans(0),
-    mColumnScale(0),
-    mDefaultColumnScale(0),
-    mDependentValues(0),
-    mIndependentUpdateMethods(0),
-    mRefreshMethods(),
-    mIndependentObjects(),
-    mIndependentValues(0),
-    mNumDataRows(0),
-    mpDataDependentCalculated(NULL),
-    mDependentObjects(),
-    mFittingPoints("Fitted Points", this),
-    mExtendedTimeSeries(),
-    mStorageIt(),
-    mExtendedTimeSeriesSize(0)
+  CCopasiParameterGroup(name, pParent),
+  mpFileName(NULL),
+  mpFirstRow(NULL),
+  mpLastRow(NULL),
+  mpTaskType(NULL),
+  mpSeparator(NULL),
+  mpRowOriented(NULL),
+  mpHeaderRow(NULL),
+  mpNumColumns(NULL),
+  mColumnName(),
+  mpObjectMap(NULL),
+  mDataTime(0),
+  mDataIndependent(0, 0),
+  mDataDependent(0, 0),
+  mScale(0, 0),
+  mMeans(0),
+  mColumnScale(0),
+  mDefaultColumnScale(0),
+  mDependentValues(0),
+  mIndependentUpdateMethods(0),
+  mRefreshMethods(),
+  mIndependentObjects(),
+  mIndependentValues(0),
+  mNumDataRows(0),
+  mpDataDependentCalculated(NULL),
+  mDependentObjects(),
+  mFittingPoints("Fitted Points", this),
+  mExtendedTimeSeries(),
+  mStorageIt(),
+  mExtendedTimeSeriesSize(0)
 
 {
   mStorageIt = mExtendedTimeSeries.array();
@@ -122,36 +114,36 @@ CExperiment::CExperiment(const CCopasiContainer * pParent,
 
 CExperiment::CExperiment(const CExperiment & src,
                          const CCopasiContainer * pParent):
-    CCopasiParameterGroup(src, static_cast< const CCopasiContainer * >((pParent != NULL) ? pParent : src.getObjectDataModel())),
-    mpFileName(NULL),
-    mpFirstRow(NULL),
-    mpLastRow(NULL),
-    mpTaskType(NULL),
-    mpSeparator(NULL),
-    mpRowOriented(NULL),
-    mpHeaderRow(NULL),
-    mpNumColumns(NULL),
-    mColumnName(src.mColumnName),
-    mpObjectMap(NULL),
-    mDataTime(src.mDataTime),
-    mDataIndependent(src.mDataIndependent),
-    mDataDependent(src.mDataDependent),
-    mScale(src.mScale),
-    mMeans(src.mMeans),
-    mColumnScale(src.mColumnScale),
-    mDefaultColumnScale(src.mDefaultColumnScale),
-    mDependentValues(src.mDependentValues),
-    mIndependentUpdateMethods(src.mIndependentUpdateMethods),
-    mRefreshMethods(src.mRefreshMethods),
-    mIndependentObjects(src.mIndependentObjects),
-    mIndependentValues(src.mIndependentValues),
-    mNumDataRows(src.mNumDataRows),
-    mpDataDependentCalculated(src.mpDataDependentCalculated),
-    mDependentObjects(src.mDependentObjects),
-    mFittingPoints(src.mFittingPoints, this),
-    mExtendedTimeSeries(src.mExtendedTimeSeries),
-    mStorageIt(),
-    mExtendedTimeSeriesSize(src.mExtendedTimeSeriesSize)
+  CCopasiParameterGroup(src, static_cast< const CCopasiContainer * >((pParent != NULL) ? pParent : src.getObjectDataModel())),
+  mpFileName(NULL),
+  mpFirstRow(NULL),
+  mpLastRow(NULL),
+  mpTaskType(NULL),
+  mpSeparator(NULL),
+  mpRowOriented(NULL),
+  mpHeaderRow(NULL),
+  mpNumColumns(NULL),
+  mColumnName(src.mColumnName),
+  mpObjectMap(NULL),
+  mDataTime(src.mDataTime),
+  mDataIndependent(src.mDataIndependent),
+  mDataDependent(src.mDataDependent),
+  mScale(src.mScale),
+  mMeans(src.mMeans),
+  mColumnScale(src.mColumnScale),
+  mDefaultColumnScale(src.mDefaultColumnScale),
+  mDependentValues(src.mDependentValues),
+  mIndependentUpdateMethods(src.mIndependentUpdateMethods),
+  mRefreshMethods(src.mRefreshMethods),
+  mIndependentObjects(src.mIndependentObjects),
+  mIndependentValues(src.mIndependentValues),
+  mNumDataRows(src.mNumDataRows),
+  mpDataDependentCalculated(src.mpDataDependentCalculated),
+  mDependentObjects(src.mDependentObjects),
+  mFittingPoints(src.mFittingPoints, this),
+  mExtendedTimeSeries(src.mExtendedTimeSeries),
+  mStorageIt(),
+  mExtendedTimeSeriesSize(src.mExtendedTimeSeriesSize)
 
 {
   mStorageIt = mExtendedTimeSeries.array() + (src.mStorageIt - src.mExtendedTimeSeries.array());
@@ -161,36 +153,36 @@ CExperiment::CExperiment(const CExperiment & src,
 
 CExperiment::CExperiment(const CCopasiParameterGroup & group,
                          const CCopasiContainer * pParent):
-    CCopasiParameterGroup(group, static_cast< const CCopasiContainer * >((pParent != NULL) ? pParent : group.getObjectDataModel())),
-    mpFileName(NULL),
-    mpFirstRow(NULL),
-    mpLastRow(NULL),
-    mpTaskType(NULL),
-    mpSeparator(NULL),
-    mpRowOriented(NULL),
-    mpHeaderRow(NULL),
-    mpNumColumns(NULL),
-    mColumnName(),
-    mpObjectMap(NULL),
-    mDataTime(0),
-    mDataIndependent(0, 0),
-    mDataDependent(0, 0),
-    mScale(0, 0),
-    mMeans(0),
-    mColumnScale(0),
-    mDefaultColumnScale(0),
-    mDependentValues(0),
-    mIndependentUpdateMethods(0),
-    mRefreshMethods(),
-    mIndependentObjects(),
-    mIndependentValues(0),
-    mNumDataRows(0),
-    mpDataDependentCalculated(NULL),
-    mDependentObjects(),
-    mFittingPoints("Fitted Points", this),
-    mExtendedTimeSeries(),
-    mStorageIt(),
-    mExtendedTimeSeriesSize(0)
+  CCopasiParameterGroup(group, static_cast< const CCopasiContainer * >((pParent != NULL) ? pParent : group.getObjectDataModel())),
+  mpFileName(NULL),
+  mpFirstRow(NULL),
+  mpLastRow(NULL),
+  mpTaskType(NULL),
+  mpSeparator(NULL),
+  mpRowOriented(NULL),
+  mpHeaderRow(NULL),
+  mpNumColumns(NULL),
+  mColumnName(),
+  mpObjectMap(NULL),
+  mDataTime(0),
+  mDataIndependent(0, 0),
+  mDataDependent(0, 0),
+  mScale(0, 0),
+  mMeans(0),
+  mColumnScale(0),
+  mDefaultColumnScale(0),
+  mDependentValues(0),
+  mIndependentUpdateMethods(0),
+  mRefreshMethods(),
+  mIndependentObjects(),
+  mIndependentValues(0),
+  mNumDataRows(0),
+  mpDataDependentCalculated(NULL),
+  mDependentObjects(),
+  mFittingPoints("Fitted Points", this),
+  mExtendedTimeSeries(),
+  mStorageIt(),
+  mExtendedTimeSeriesSize(0)
 
 {
   mStorageIt = mExtendedTimeSeries.array();
@@ -350,7 +342,11 @@ void CExperiment::updateFittedPointValues(const size_t & index, bool includeSimu
 
   for (; it != end; ++it, ++pScale, ++pDataDependentCalculated, ++pDataDependent)
     {
+#ifdef COASI_PARAMETERFITTING_RESIDUAL_SCALING
+      Residual = (*pDataDependentCalculated - *pDataDependent) / (*pDataDependentCalculated > 1 ? *pDataDependentCalculated : 1.0);
+#else
       Residual = (*pDataDependentCalculated - *pDataDependent) * *pScale;
+#endif
 
       (*it)->setValues(Independent,
                        *pDataDependent,
@@ -381,12 +377,11 @@ void CExperiment::updateFittedPointValuesFromExtendedTimeSeries(const size_t & i
 
   for (i = 1; it != end; ++it, ++i)
     {
-      (*it)->setValues(mExtendedTimeSeries[index *(mDataDependent.numCols()+1)],
+      (*it)->setValues(mExtendedTimeSeries[index * (mDataDependent.numCols() + 1)],
                        std::numeric_limits<C_FLOAT64>::quiet_NaN(),
-                       mExtendedTimeSeries[index *(mDataDependent.numCols()+1)+i] ,
+                       mExtendedTimeSeries[index * (mDataDependent.numCols() + 1) + i] ,
                        std::numeric_limits<C_FLOAT64>::quiet_NaN());
     }
-
 }
 
 C_FLOAT64 CExperiment::sumOfSquares(const size_t & index,
@@ -414,7 +409,12 @@ C_FLOAT64 CExperiment::sumOfSquares(const size_t & index,
           {
             if (isnan(*pDataDependent)) continue;
 
+#ifdef COASI_PARAMETERFITTING_RESIDUAL_SCALING
+            *residuals = (*pDataDependent - **ppDependentValues) / std::max(1.0, **ppDependentValues);
+#else
             *residuals = (*pDataDependent - **ppDependentValues) * *pScale;
+#endif
+
             s += *residuals * *residuals;
           }
       else
@@ -423,7 +423,12 @@ C_FLOAT64 CExperiment::sumOfSquares(const size_t & index,
           {
             if (isnan(*pDataDependent)) continue;
 
+#ifdef COASI_PARAMETERFITTING_RESIDUAL_SCALING
+            Residual = (*pDataDependent - **ppDependentValues) / std::max(1.0, **ppDependentValues);
+#else
             Residual = (*pDataDependent - **ppDependentValues) * *pScale;
+#endif
+
             s += Residual * Residual;
           }
     }
@@ -433,14 +438,25 @@ C_FLOAT64 CExperiment::sumOfSquares(const size_t & index,
         for (; pDataDependent != pEnd;
              pDataDependent++, ppDependentValues++, pScale++, residuals++)
           {
+#ifdef COASI_PARAMETERFITTING_RESIDUAL_SCALING
+            *residuals = (*pDataDependent - **ppDependentValues) / std::max(1.0, **ppDependentValues);
+#else
             *residuals = (*pDataDependent - **ppDependentValues) * *pScale;
+#endif
+
             s += *residuals * *residuals;
           }
       else
         for (; pDataDependent != pEnd;
              pDataDependent++, ppDependentValues++, pScale++)
           {
+
+#ifdef COASI_PARAMETERFITTING_RESIDUAL_SCALING
+            Residual = (*pDataDependent - **ppDependentValues) / std::max(1.0, **ppDependentValues);
+#else
             Residual = (*pDataDependent - **ppDependentValues) * *pScale;
+#endif
+
             s += Residual * Residual;
           }
     }
@@ -477,7 +493,12 @@ C_FLOAT64 CExperiment::sumOfSquaresStore(const size_t & index,
 
           if (isnan(*pDataDependent)) continue;
 
+#ifdef COASI_PARAMETERFITTING_RESIDUAL_SCALING
+          Residual = (*pDataDependent - *dependentValues) / std::max(1.0, *dependentValues);
+#else
           Residual = (*pDataDependent - *dependentValues) * *pScale;
+#endif
+
           s += Residual * Residual;
         }
     }
@@ -487,7 +508,13 @@ C_FLOAT64 CExperiment::sumOfSquaresStore(const size_t & index,
            pDataDependent++, ppDependentValues++, pScale++, dependentValues++)
         {
           *dependentValues = **ppDependentValues;
+
+#ifdef COASI_PARAMETERFITTING_RESIDUAL_SCALING
+          Residual = (*pDataDependent - *dependentValues) / std::max(1.0, *dependentValues);
+#else
           Residual = (*pDataDependent - *dependentValues) * *pScale;
+#endif
+
           s += Residual * Residual;
         }
     }
@@ -498,7 +525,7 @@ C_FLOAT64 CExperiment::sumOfSquaresStore(const size_t & index,
 void CExperiment::initExtendedTimeSeries(size_t s)
 {
   mExtendedTimeSeriesSize = s;
-  mExtendedTimeSeries.resize(s*(this->getDependentData().numCols() + 1)); //+1 for time
+  mExtendedTimeSeries.resize(s * (this->getDependentData().numCols() + 1)); //+1 for time
   mStorageIt = mExtendedTimeSeries.array();
 }
 
@@ -579,7 +606,12 @@ bool CExperiment::calculateStatistics()
     {
       for (j = 0; j < numCols; j++, pDataDependentCalculated++, pDataDependent++, pScale++)
         {
+
+#ifdef COASI_PARAMETERFITTING_RESIDUAL_SCALING
+          Residual = (*pDataDependentCalculated - *pDataDependent) * std::max(1.0, *pDataDependentCalculated);
+#else
           Residual = (*pDataDependentCalculated - *pDataDependent) * *pScale;
+#endif
 
           if (isnan(Residual)) continue;
 
@@ -633,7 +665,12 @@ bool CExperiment::calculateStatistics()
     {
       for (j = 0; j < numCols; j++, pDataDependentCalculated++, pDataDependent++, pScale++)
         {
+
+#ifdef COASI_PARAMETERFITTING_RESIDUAL_SCALING
+          Residual = mMean - (*pDataDependentCalculated - *pDataDependent) / std::max(1.0, *pDataDependentCalculated);
+#else
           Residual = mMean - (*pDataDependentCalculated - *pDataDependent) * *pScale;
+#endif
 
           if (isnan(Residual)) continue;
 
@@ -1460,7 +1497,7 @@ const C_FLOAT64 & CExperiment::getErrorMeanSD() const
 C_FLOAT64 CExperiment::getObjectiveValue(CCopasiObject *const& pObject) const
 {
   std::map< CCopasiObject *, size_t >::const_iterator it
-  = mDependentObjects.find(pObject);
+    = mDependentObjects.find(pObject);
 
   if (it != mDependentObjects.end())
     return mColumnObjectiveValue[it->second];
@@ -1471,7 +1508,7 @@ C_FLOAT64 CExperiment::getObjectiveValue(CCopasiObject *const& pObject) const
 C_FLOAT64 CExperiment::getDefaultScale(const CCopasiObject * const& pObject) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
-  = mDependentObjects.find(const_cast<CCopasiObject*>(pObject));
+    = mDependentObjects.find(const_cast<CCopasiObject*>(pObject));
 
   if (it == mDependentObjects.end())
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -1482,7 +1519,7 @@ C_FLOAT64 CExperiment::getDefaultScale(const CCopasiObject * const& pObject) con
 C_FLOAT64 CExperiment::getRMS(CCopasiObject *const& pObject) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
-  = mDependentObjects.find(pObject);
+    = mDependentObjects.find(pObject);
 
   if (it != mDependentObjects.end())
     return mColumnRMS[it->second];
@@ -1493,7 +1530,7 @@ C_FLOAT64 CExperiment::getRMS(CCopasiObject *const& pObject) const
 C_FLOAT64 CExperiment::getErrorMean(CCopasiObject *const& pObject) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
-  = mDependentObjects.find(pObject);
+    = mDependentObjects.find(pObject);
 
   if (it == mDependentObjects.end() ||
       mpDataDependentCalculated == NULL)
@@ -1526,7 +1563,7 @@ C_FLOAT64 CExperiment::getErrorMeanSD(CCopasiObject *const& pObject,
                                       const C_FLOAT64 & errorMean) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
-  = mDependentObjects.find(pObject);
+    = mDependentObjects.find(pObject);
 
   if (it == mDependentObjects.end() ||
       mpDataDependentCalculated == NULL)
@@ -1545,7 +1582,12 @@ C_FLOAT64 CExperiment::getErrorMeanSD(CCopasiObject *const& pObject,
   for (; pDataDependentCalculated != pEnd;
        pDataDependentCalculated += numCols, pDataDependent += numCols)
     {
+
+#ifdef COASI_PARAMETERFITTING_RESIDUAL_SCALING
+      Residual = errorMean - (*pDataDependentCalculated - *pDataDependent) / std::max(1.0, *pDataDependentCalculated);
+#else
       Residual = errorMean - (*pDataDependentCalculated - *pDataDependent) * *pScale;
+#endif
 
       if (isnan(Residual)) continue;
 
@@ -1558,7 +1600,7 @@ C_FLOAT64 CExperiment::getErrorMeanSD(CCopasiObject *const& pObject,
 size_t CExperiment::getCount(CCopasiObject *const& pObject) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
-  = mDependentObjects.find(pObject);
+    = mDependentObjects.find(pObject);
 
   if (it != mDependentObjects.end())
     return mColumnCount[it->second];
@@ -1604,20 +1646,20 @@ void CExperiment::initializeScalingMatrix()
 
 CFittingPoint::CFittingPoint(const std::string & name,
                              const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Fitted Point"),
-    mIndependentValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mMeasuredValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mFittedValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mWeightedError(std::numeric_limits<C_FLOAT64>::quiet_NaN())
+  CCopasiContainer(name, pParent, "Fitted Point"),
+  mIndependentValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+  mMeasuredValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+  mFittedValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+  mWeightedError(std::numeric_limits<C_FLOAT64>::quiet_NaN())
 {initObjects();}
 
 CFittingPoint::CFittingPoint(const CFittingPoint & src,
                              const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    mIndependentValue(src.mIndependentValue),
-    mMeasuredValue(src.mMeasuredValue),
-    mFittedValue(src.mFittedValue),
-    mWeightedError(src.mWeightedError)
+  CCopasiContainer(src, pParent),
+  mIndependentValue(src.mIndependentValue),
+  mMeasuredValue(src.mMeasuredValue),
+  mFittedValue(src.mFittedValue),
+  mWeightedError(src.mWeightedError)
 {initObjects();}
 
 CFittingPoint::~CFittingPoint() {}

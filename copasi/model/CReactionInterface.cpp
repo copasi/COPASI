@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-//   $Revision: 1.45 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/10 16:03:09 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -33,10 +25,10 @@
 #include "report/CCopasiRootContainer.h"
 
 CReactionInterface::CReactionInterface(CModel * pModel):
-    mpModel(pModel),
-    mChemEqI(pModel),
-    mpFunction(NULL),
-    mpParameters(NULL)
+  mpModel(pModel),
+  mChemEqI(pModel),
+  mpFunction(NULL),
+  mpParameters(NULL)
 {
   assert(mpModel != NULL);
   emptyString = "";
@@ -193,14 +185,32 @@ bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
                 break;
 
               case CFunctionParameter::PARAMETER:
+              {
+                const CCopasiParameter * pParameter = rea.getParameters().getParameter(getParameterName(i));
+
+                if (pParameter != NULL)
+                  {
+                    mValues[i] = * pParameter->getValue().pDOUBLE;
+                  }
+                else
+                  {
+                    mValues[i] = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+                  }
+
                 mIsLocal[i] = rea.isLocalParameter(i);
-                mValues[i] = rea.getParameterValue(getParameterName(i));
-                pObj = dynamic_cast<const CModelValue*>(CCopasiRootContainer::getKeyFactory()->get(*(it->begin())));
 
-                //assert(pObj);
-                if (pObj) SubList[0] = pObj->getObjectName();
+                if (!mIsLocal[i])
+                  {
+                    pObj = dynamic_cast<const CModelValue*>(CCopasiRootContainer::getKeyFactory()->get(*(it->begin())));
 
-                break;
+                    if (pObj)
+                      {
+                        SubList[0] = pObj->getObjectName();
+                        mValues[i] = pObj->getInitialValue();
+                      }
+                  }
+              }
+              break;
 
               default:
                 break;
@@ -533,7 +543,7 @@ std::set< const CCopasiObject * > CReactionInterface::getDeletedParameters() con
   // We need to compare the current visible local parameter with the one stored
   // in the reaction.
   const CReaction * pReaction
-  = dynamic_cast< CReaction *>(CCopasiRootContainer::getKeyFactory()->get(mReactionReferenceKey));
+    = dynamic_cast< CReaction *>(CCopasiRootContainer::getKeyFactory()->get(mReactionReferenceKey));
 
   if (pReaction == NULL)
     return ToBeDeleted;
@@ -542,7 +552,7 @@ std::set< const CCopasiObject * > CReactionInterface::getDeletedParameters() con
     return ToBeDeleted;
 
   const CFunctionParameters & OriginalParameters
-  = pReaction->getFunction()->getVariables();
+    = pReaction->getFunction()->getVariables();
 
   size_t j, jmax = size();
   size_t i, imax = OriginalParameters.size();

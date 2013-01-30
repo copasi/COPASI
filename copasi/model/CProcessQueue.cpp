@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.cpp,v $
-//   $Revision: 1.26 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/10 16:35:50 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -26,19 +18,19 @@
 #include "function/CExpression.h"
 
 CProcessQueue::CKey::CKey() :
-    mExecutionTime(0.0),
-    mCascadingLevel(0),
-    mEquality(false),
-    mOrder(0),
-    mEventId(std::numeric_limits<size_t>::max())
+  mExecutionTime(0.0),
+  mCascadingLevel(0),
+  mEquality(false),
+  mOrder(0),
+  mEventId(std::numeric_limits<size_t>::max())
 {}
 
 CProcessQueue::CKey::CKey(const CKey & src) :
-    mExecutionTime(src.mExecutionTime),
-    mCascadingLevel(src.mCascadingLevel),
-    mEquality(src.mEquality),
-    mOrder(src.mOrder),
-    mEventId(src.mEventId)
+  mExecutionTime(src.mExecutionTime),
+  mCascadingLevel(src.mCascadingLevel),
+  mEquality(src.mEquality),
+  mOrder(src.mOrder),
+  mEventId(src.mEventId)
 {}
 
 CProcessQueue::CKey::CKey(const C_FLOAT64 & executionTime,
@@ -46,11 +38,11 @@ CProcessQueue::CKey::CKey(const C_FLOAT64 & executionTime,
                           const size_t & order,
                           const size_t & eventId,
                           const size_t & cascadingLevel) :
-    mExecutionTime(executionTime),
-    mCascadingLevel(cascadingLevel),
-    mEquality(equality),
-    mOrder(order),
-    mEventId(eventId)
+  mExecutionTime(executionTime),
+  mCascadingLevel(cascadingLevel),
+  mEquality(equality),
+  mOrder(order),
+  mEventId(eventId)
 {}
 
 CProcessQueue::CKey::~CKey()
@@ -73,41 +65,44 @@ bool CProcessQueue::CKey::operator < (const CProcessQueue::CKey & rhs) const
   return mEventId < rhs.mEventId;
 }
 
+//*********************************************************
+
 CProcessQueue::CAction::CAction() :
-    mpTarget(NULL),
-    mValue(),
-    mpExpression(NULL),
-    mpEvent(NULL),
-    mpProcessQueue(NULL)
+  mpTarget(NULL),
+  mValue(),
+  mpExpression(NULL),
+  mpEvent(NULL),
+  mpProcessQueue(NULL)
 {}
 
 CProcessQueue::CAction::CAction(const CAction & src) :
-    mpTarget(src.mpTarget),
-    mValue(src.mValue),
-    mpExpression(src.mpExpression),
-    mpEvent(src.mpEvent),
-    mpProcessQueue(src.mpProcessQueue)
+  mpTarget(src.mpTarget),
+  mValue(src.mValue),
+  mpExpression(src.mpExpression),
+  mpEvent(src.mpEvent),
+  mpProcessQueue(src.mpProcessQueue)
 {}
 
 CProcessQueue::CAction::CAction(C_FLOAT64 * pTarget,
                                 const C_FLOAT64 & value,
-                                CMathEvent * pEvent) :
-    mpTarget(pTarget),
-    mValue(value),
-    mpExpression(NULL),
-    mpEvent(pEvent),
-    mpProcessQueue(NULL)
+                                CMathEvent * pEvent,
+                                CProcessQueue * pProcessQueue) :
+  mpTarget(pTarget),
+  mValue(value),
+  mpExpression(NULL),
+  mpEvent(pEvent),
+  mpProcessQueue(pProcessQueue)
 {}
 
 CProcessQueue::CAction::CAction(C_FLOAT64 * pTarget,
                                 CExpression * pExpression,
                                 CMathEvent * pEvent,
                                 CProcessQueue * pProcessQueue) :
-    mpTarget(pTarget),
-    mValue(),
-    mpExpression(pExpression),
-    mpEvent(pEvent),
-    mpProcessQueue(pProcessQueue)
+  mpTarget(pTarget),
+  mValue(),
+  mpExpression(pExpression),
+  mpEvent(pEvent),
+  mpProcessQueue(pProcessQueue)
 {}
 
 CProcessQueue::CAction::~CAction()
@@ -131,44 +126,63 @@ void CProcessQueue::CAction::process(const size_t & eventId)
     }
   else
     {
-      *mpTarget = mValue;
+      C_INT32 result = 0;
+
+      //there may be special events in the queue that do
+      //not have an assignment at all
+      //These are represented by a CAction without target
+      if (mpTarget)
+        {
+          *mpTarget = mValue;
+        }
+
+      if (mpProcessQueue->mpEventCallBack)
+        (*mpProcessQueue->mpEventCallBack)(mpProcessQueue->mpCallbackTask, mpEvent->getType());
     }
 }
 
+//*********************************************************
+
 CProcessQueue::CProcessQueue() :
-    mCalculations(),
-    mAssignments(),
-    mExecutionLimit(10000),
-    mExecutionCounter(0),
-    mTime(0.0),
-    mEquality(true),
-    mCascadingLevel(0),
-    mSimultaneousAssignments(false),
-    mEventIdSet(),
-    mRootsFound(0),
-    mRootValues1(0),
-    mRootValues2(0),
-    mpRootValuesBefore(&mRootValues1),
-    mpRootValuesAfter(&mRootValues2),
-    mpResolveSimultaneousAssignments(NULL)
+  mCalculations(),
+  mAssignments(),
+  mExecutionLimit(10000),
+  mExecutionCounter(0),
+  mTime(0.0),
+  mEquality(true),
+  mCascadingLevel(0),
+  mSimultaneousAssignments(false),
+  mEventIdSet(),
+  mpMathModel(NULL),
+  mRootsFound(0),
+  mRootValues1(0),
+  mRootValues2(0),
+  mpRootValuesBefore(&mRootValues1),
+  mpRootValuesAfter(&mRootValues2),
+  mpResolveSimultaneousAssignments(NULL),
+  mpCallbackTask(NULL),
+  mpEventCallBack(NULL)
 {}
 
 CProcessQueue::CProcessQueue(const CProcessQueue & src):
-    mCalculations(src.mCalculations),
-    mAssignments(src.mAssignments),
-    mExecutionLimit(src.mExecutionLimit),
-    mExecutionCounter(src.mExecutionCounter),
-    mTime(src.mTime),
-    mEquality(src.mEquality),
-    mCascadingLevel(src.mCascadingLevel),
-    mSimultaneousAssignments(src.mSimultaneousAssignments),
-    mEventIdSet(src.mEventIdSet),
-    mRootsFound(src.mRootsFound),
-    mRootValues1(src.mRootValues1),
-    mRootValues2(src.mRootValues2),
-    mpRootValuesBefore(&src.mRootValues1 == src.mpRootValuesBefore ? &mRootValues1 : &mRootValues2),
-    mpRootValuesAfter(&src.mRootValues1 == src.mpRootValuesAfter ? &mRootValues1 : &mRootValues2),
-    mpResolveSimultaneousAssignments(src.mpResolveSimultaneousAssignments)
+  mCalculations(src.mCalculations),
+  mAssignments(src.mAssignments),
+  mExecutionLimit(src.mExecutionLimit),
+  mExecutionCounter(src.mExecutionCounter),
+  mTime(src.mTime),
+  mEquality(src.mEquality),
+  mCascadingLevel(src.mCascadingLevel),
+  mSimultaneousAssignments(src.mSimultaneousAssignments),
+  mEventIdSet(src.mEventIdSet),
+  mpMathModel(src.mpMathModel),
+  mRootsFound(src.mRootsFound),
+  mRootValues1(src.mRootValues1),
+  mRootValues2(src.mRootValues2),
+  mpRootValuesBefore(&src.mRootValues1 == src.mpRootValuesBefore ? &mRootValues1 : &mRootValues2),
+  mpRootValuesAfter(&src.mRootValues1 == src.mpRootValuesAfter ? &mRootValues1 : &mRootValues2),
+  mpResolveSimultaneousAssignments(src.mpResolveSimultaneousAssignments),
+  mpCallbackTask(src.mpCallbackTask),
+  mpEventCallBack(src.mpEventCallBack)
 {}
 
 CProcessQueue::~CProcessQueue()
@@ -195,7 +209,7 @@ bool CProcessQueue::addAssignment(const C_FLOAT64 & executionTime,
                                           order,
                                           eventId,
                                           CascadingLevel),
-                                     CAction(pTarget, value, pEvent)));
+                                     CAction(pTarget, value, pEvent, this)));
 
   return true;
 }
@@ -222,9 +236,9 @@ bool CProcessQueue::addCalculation(const C_FLOAT64 & executionTime,
                                       eventId,
                                       CascadingLevel),
                                       CAction(pTarget,
-                                              pExpression,
-                                              pEvent,
-                                              this)));
+                                          pExpression,
+                                          pEvent,
+                                          this)));
 
   return true;
 }
@@ -303,8 +317,7 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
       if (rootsFound())
         {
           // We have to deal with both types of found roots.
-          mpMathModel->processRoots(mTime, true, false, mRootsFound);
-          mpMathModel->processRoots(mTime, false, false, mRootsFound);
+          mpMathModel->processRoots(mTime, mRootsFound);
         }
 
       // Note, applying the events may have added new events to the queue.
@@ -524,12 +537,12 @@ bool CProcessQueue::rootsFound()
     {
       if ((*ppRootFinder)->isEquality())
         {
-          if (*pValueBefore < 0.0 && *pValueAfter >= 0.0)
+          if (*pValueBefore < 0.0 && *pValueAfter >= 0.0 && !(*ppRootFinder)->isTrue())
             {
               *pRootFound = 1;
               rootsFound = true;
             }
-          else if (*pValueAfter < 0.0 && *pValueBefore >= 0.0)
+          else if (*pValueAfter < 0.0 && *pValueBefore >= 0.0 && (*ppRootFinder)->isTrue())
             {
               *pRootFound = 1;
               rootsFound = true;
@@ -541,12 +554,12 @@ bool CProcessQueue::rootsFound()
         }
       else
         {
-          if (*pValueBefore > 0.0 && *pValueAfter <= 0.0)
+          if (*pValueBefore > 0.0 && *pValueAfter <= 0.0 && (*ppRootFinder)->isTrue())
             {
               *pRootFound = 1;
               rootsFound = true;
             }
-          else if (*pValueBefore < 0.0 && *pValueAfter > 0.0)
+          else if (*pValueBefore < 0.0 && *pValueAfter > 0.0 && !(*ppRootFinder)->isTrue())
             {
               *pRootFound = 1;
               rootsFound = true;
@@ -613,4 +626,58 @@ const C_FLOAT64 & CProcessQueue::getProcessQueueExecutionTime() const
 bool CProcessQueue::isEmpty() const
 {
   return (mAssignments.size() == 0) && (mCalculations.size() == 0);
+}
+
+void CProcessQueue::setEventCallBack(void* pTask, EventCallBack ecb)
+{
+  mpCallbackTask = pTask;
+  mpEventCallBack = ecb;
+}
+
+std::ostream &operator<<(std::ostream &os, const CProcessQueue & o)
+{
+  os << "Process Queue" << std::endl;
+  std::multimap< CProcessQueue::CKey, CProcessQueue::CAction >::const_iterator it;
+
+  if (o.mCalculations.size()) os << " Calculations:" << std::endl;
+
+  for (it = o.mCalculations.begin(); it != o.mCalculations.end(); ++it)
+    {
+      os << "exec time " << it->first.mExecutionTime << ", cascading lvl "
+         << it->first.mCascadingLevel << ", "
+         << (it->first.mEquality ? "equality, " : "inequality, ")
+         << "order " << it->first.mOrder << ", event ID "
+         << it->first.mEventId;
+
+      os << std::endl;
+
+      os << "target (" << it->second.mpTarget << "->" << (it->second.mpTarget ? *it->second.mpTarget : -999.999) << ")"
+         << ", value " << it->second.mValue
+         << ", expr " << it->second.mpExpression
+         << ", event (" << it->second.mpEvent << (it->second.mpEvent->getType() == CEvent::CutPlane ? " cut plane)" : ")");
+
+      os << std::endl << std::endl;
+    }
+
+  if (o.mAssignments.size()) os << " Assignments:" << std::endl;
+
+  for (it = o.mAssignments.begin(); it != o.mAssignments.end(); ++it)
+    {
+      os << "exec time " << it->first.mExecutionTime << ", cascading lvl "
+         << it->first.mCascadingLevel << ", "
+         << (it->first.mEquality ? "equality, " : "inequality, ")
+         << "order " << it->first.mOrder << ", event ID "
+         << it->first.mEventId;
+
+      os << std::endl;
+
+      os << "target " << it->second.mpTarget
+         << ", value " << it->second.mValue
+         << ", expr " << it->second.mpExpression
+         << ", event " << it->second.mpEvent;
+
+      os << std::endl << std::endl;
+    }
+
+  return os;
 }

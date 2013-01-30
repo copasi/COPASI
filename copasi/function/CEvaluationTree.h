@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-//   $Revision: 1.42 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/15 15:56:39 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -34,7 +26,7 @@ class ASTNode;
 template <class CType> class CCopasiVectorN;
 
 class CEvaluationTree:
-    public CCopasiContainer
+  public CCopasiContainer
 {
 public:
   /**
@@ -122,7 +114,7 @@ public:
    * @param CEvaluationNode* root node of the tree
    * @return bool success
    */
-  bool setRoot(CEvaluationNode* pRootNode);
+  virtual bool setRoot(CEvaluationNode* pRootNode);
 
   /**
    * Sets the complete tree from an SBML ASTNode.
@@ -335,15 +327,9 @@ protected:
   C_FLOAT64 mValue;
 
   /**
-   * Indicates whether the tree must evaluate to a boolean value.
-   */
-  bool mBooleanRequired;
-
-  /**
    * A vector of nodes which need to be calculated in sequence
    */
   std::vector< CEvaluationNode * > mCalculationSequence;
-
 };
 
 #endif // COPASI_CEvaluationTree

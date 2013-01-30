@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.8 (Build 35) (http://www.copasi.org) at 2012-01-24 16:11:48 UTC -->
+<!-- generated with COPASI 4.9.37+ (Debug) (http://www.copasi.org) at 2012-10-09 17:57:45 UTC -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
-<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="1" versionMinor="0" versionDevel="35">
+<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="9" versionDevel="37" copasiSourcesModified="1">
   <ListOfFunctions>
     <Function key="Function_8" name="Henri-Michaelis-Menten (irreversible)" type="PreDefined" reversible="false">
       <MiriamAnnotation>
@@ -24,10 +24,10 @@
         <ParameterDescription key="FunctionParameter_45" name="V" order="2" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_235" name="C3_phos" type="UserDefined" reversible="false">
+    <Function key="Function_55" name="C3_phos" type="UserDefined" reversible="false">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_235">
+  <rdf:Description rdf:about="#Function_55">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-10-07T15:27:58Z</dcterms:W3CDTF>
@@ -40,16 +40,16 @@
         vz*s10*T2/default
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_799" name="T2" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_801" name="default" order="1" role="volume"/>
-        <ParameterDescription key="FunctionParameter_797" name="s10" order="2" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_426" name="vz" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_414" name="T2" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_416" name="default" order="1" role="volume"/>
+        <ParameterDescription key="FunctionParameter_412" name="s10" order="2" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_410" name="vz" order="3" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_83" name="transkription" type="UserDefined" reversible="unspecified">
+    <Function key="Function_56" name="transkription" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_83">
+  <rdf:Description rdf:about="#Function_56">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-10-07T15:28:48Z</dcterms:W3CDTF>
@@ -62,18 +62,18 @@
         vx*T2/(kx+s11^hill)/default
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_798" name="T2" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_809" name="default" order="1" role="volume"/>
-        <ParameterDescription key="FunctionParameter_807" name="hill" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_803" name="kx" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_805" name="s11" order="4" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_802" name="vx" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_413" name="T2" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_424" name="default" order="1" role="volume"/>
+        <ParameterDescription key="FunctionParameter_422" name="hill" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_418" name="kx" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_420" name="s11" order="4" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_417" name="vx" order="5" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_86" name="degradation" type="UserDefined" reversible="false">
+    <Function key="Function_57" name="degradation" type="UserDefined" reversible="false">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_86">
+  <rdf:Description rdf:about="#Function_57">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-10-07T15:29:48Z</dcterms:W3CDTF>
@@ -86,17 +86,17 @@
         vxdegr*T2*s9/(kxdegr+s9)/default
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_806" name="T2" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_813" name="default" order="1" role="volume"/>
-        <ParameterDescription key="FunctionParameter_811" name="kxdegr" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_796" name="s9" order="3" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_810" name="vxdegr" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_421" name="T2" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_428" name="default" order="1" role="volume"/>
+        <ParameterDescription key="FunctionParameter_426" name="kxdegr" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_411" name="s9" order="3" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_425" name="vxdegr" order="4" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_87" name="C3_degr" type="UserDefined" reversible="false">
+    <Function key="Function_58" name="C3_degr" type="UserDefined" reversible="false">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_87">
+  <rdf:Description rdf:about="#Function_58">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-10-07T15:28:22Z</dcterms:W3CDTF>
@@ -109,17 +109,17 @@
         vydegr*T2*s10/(kydegr+s10)/default
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_800" name="T2" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_818" name="default" order="1" role="volume"/>
-        <ParameterDescription key="FunctionParameter_816" name="kydegr" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_808" name="s10" order="3" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_814" name="vydegr" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_415" name="T2" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_433" name="default" order="1" role="volume"/>
+        <ParameterDescription key="FunctionParameter_431" name="kydegr" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_423" name="s10" order="3" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_429" name="vydegr" order="4" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_84" name="C3_phosdegr" type="UserDefined" reversible="false">
+    <Function key="Function_59" name="C3_phosdegr" type="UserDefined" reversible="false">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_84">
+  <rdf:Description rdf:about="#Function_59">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-10-07T15:28:50Z</dcterms:W3CDTF>
@@ -132,17 +132,17 @@
         vzdegr*T2*s11/(kzdegr+s11)/default
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_815" name="T2" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_823" name="default" order="1" role="volume"/>
-        <ParameterDescription key="FunctionParameter_821" name="kzdegr" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_812" name="s11" order="3" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_819" name="vzdegr" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_430" name="T2" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_438" name="default" order="1" role="volume"/>
+        <ParameterDescription key="FunctionParameter_436" name="kzdegr" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_427" name="s11" order="3" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_434" name="vzdegr" order="4" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_217" name="translation" type="UserDefined" reversible="unspecified">
+    <Function key="Function_60" name="translation" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_217">
+  <rdf:Description rdf:about="#Function_60">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-10-07T15:29:28Z</dcterms:W3CDTF>
@@ -155,16 +155,16 @@
         vy*s9*T2/default
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_817" name="T2" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_826" name="default" order="1" role="volume"/>
-        <ParameterDescription key="FunctionParameter_820" name="s9" order="2" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_824" name="vy" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_432" name="T2" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_441" name="default" order="1" role="volume"/>
+        <ParameterDescription key="FunctionParameter_435" name="s9" order="2" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_439" name="vy" order="3" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_218" name="Rate Law for temperature dependent mass action" type="UserDefined" reversible="unspecified">
+    <Function key="Function_61" name="Rate Law for temperature dependent mass action" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_218">
+  <rdf:Description rdf:about="#Function_61">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-10-06T12:53:07Z</dcterms:W3CDTF>
@@ -177,15 +177,15 @@
         T2*k*s
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_827" name="T2" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_804" name="k" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_828" name="s" order="2" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_442" name="T2" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_419" name="k" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_443" name="s" order="2" role="substrate"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_216" name="Rate Law for temperatur dependent Michaelis Menten" type="UserDefined" reversible="unspecified">
+    <Function key="Function_62" name="Rate Law for temperatur dependent Michaelis Menten" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_216">
+  <rdf:Description rdf:about="#Function_62">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-10-06T12:54:31Z</dcterms:W3CDTF>
@@ -198,16 +198,16 @@
         V_deg*T2*s/(k_deg+s)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_829" name="V_deg" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_825" name="T2" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_831" name="s" order="2" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_833" name="k_deg" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_444" name="V_deg" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_440" name="T2" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_446" name="s" order="2" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_448" name="k_deg" order="3" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_82" name="Rate law for variable complex formation" type="UserDefined" reversible="unspecified">
+    <Function key="Function_63" name="Rate law for variable complex formation" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_82">
+  <rdf:Description rdf:about="#Function_63">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-10-07T15:21:49Z</dcterms:W3CDTF>
@@ -220,20 +220,20 @@
         k*s1^a*s2*T2
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_834" name="k" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_830" name="s1" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_835" name="a" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_837" name="s2" order="3" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_839" name="T2" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_449" name="k" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_445" name="s1" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_450" name="a" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_452" name="s2" order="3" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_454" name="T2" order="4" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
   </ListOfFunctions>
-  <Model key="Model_1" name="circadianC1C3complex" simulationType="time" timeUnit="h" volumeUnit="l" areaUnit="m²" lengthUnit="m" quantityUnit="nmol" type="deterministic" avogadroConstant="6.02214e+23">
+  <Model key="Model_0" name="circadianC1C3complex" simulationType="time" timeUnit="h" volumeUnit="l" areaUnit="m²" lengthUnit="m" quantityUnit="nmol" type="deterministic" avogadroConstant="6.02214e+23">
     <MiriamAnnotation>
 <rdf:RDF
    xmlns:dcterms="http://purl.org/dc/terms/"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Model_1">
+  <rdf:Description rdf:about="#Model_0">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-09-27T16:44:17Z</dcterms:W3CDTF>
@@ -437,10 +437,10 @@
       </Metabolite>
     </ListOfMetabolites>
     <ListOfModelValues>
-      <ModelValue key="ModelValue_11" name="T" simulationType="fixed">
+      <ModelValue key="ModelValue_0" name="T" simulationType="fixed">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_11">
+  <rdf:Description rdf:about="#ModelValue_0">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-10-07T15:57:05Z</dcterms:W3CDTF>
@@ -450,10 +450,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_10" name="T2" simulationType="fixed">
+      <ModelValue key="ModelValue_54" name="T2" simulationType="fixed">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_10">
+  <rdf:Description rdf:about="#ModelValue_54">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-10-06T12:53:52Z</dcterms:W3CDTF>
@@ -463,7 +463,7 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_9" name="aphase" simulationType="assignment">
+      <ModelValue key="ModelValue_55" name="aphase" simulationType="assignment">
         <Expression>
           if(&lt;CN=Root,Model=circadianC1C3complex,Vector=Compartments[default],Vector=Metabolites[C3_mRNA],Reference=Concentration&gt; lt 10,&lt;CN=Root,Model=circadianC1C3complex,Reference=Time&gt;,0)
         </Expression>
@@ -519,22 +519,22 @@
           <Product metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1226" name="vz" value="0.1"/>
-          <Constant key="Parameter_1225" name="T2" value="1"/>
+          <Constant key="Parameter_1735" name="vz" value="0.1"/>
+          <Constant key="Parameter_1734" name="T2" value="1"/>
         </ListOfConstants>
-        <KineticLaw function="Function_235">
+        <KineticLaw function="Function_55">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_799">
-              <SourceParameter reference="ModelValue_10"/>
+            <CallParameter functionParameter="FunctionParameter_414">
+              <SourceParameter reference="ModelValue_54"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_801">
+            <CallParameter functionParameter="FunctionParameter_416">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_797">
+            <CallParameter functionParameter="FunctionParameter_412">
               <SourceParameter reference="Metabolite_12"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_426">
-              <SourceParameter reference="Parameter_1226"/>
+            <CallParameter functionParameter="FunctionParameter_410">
+              <SourceParameter reference="Parameter_1735"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -561,30 +561,30 @@
           <Modifier metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_1228" name="hill" value="2"/>
-          <Constant key="Parameter_1229" name="vx" value="2"/>
-          <Constant key="Parameter_1230" name="kx" value="0.4"/>
-          <Constant key="Parameter_1231" name="T2" value="1"/>
+          <Constant key="Parameter_1632" name="hill" value="2"/>
+          <Constant key="Parameter_1631" name="vx" value="2"/>
+          <Constant key="Parameter_1630" name="kx" value="0.4"/>
+          <Constant key="Parameter_1738" name="T2" value="1"/>
         </ListOfConstants>
-        <KineticLaw function="Function_83">
+        <KineticLaw function="Function_56">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_798">
-              <SourceParameter reference="ModelValue_10"/>
+            <CallParameter functionParameter="FunctionParameter_413">
+              <SourceParameter reference="ModelValue_54"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_809">
+            <CallParameter functionParameter="FunctionParameter_424">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_807">
-              <SourceParameter reference="Parameter_1228"/>
+            <CallParameter functionParameter="FunctionParameter_422">
+              <SourceParameter reference="Parameter_1632"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_803">
-              <SourceParameter reference="Parameter_1230"/>
+            <CallParameter functionParameter="FunctionParameter_418">
+              <SourceParameter reference="Parameter_1630"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_805">
+            <CallParameter functionParameter="FunctionParameter_420">
               <SourceParameter reference="Metabolite_13"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_802">
-              <SourceParameter reference="Parameter_1229"/>
+            <CallParameter functionParameter="FunctionParameter_417">
+              <SourceParameter reference="Parameter_1631"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -608,25 +608,25 @@
           <Product metabolite="Metabolite_26" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1232" name="vxdegr" value="5"/>
-          <Constant key="Parameter_1233" name="kxdegr" value="0.8"/>
-          <Constant key="Parameter_1234" name="T2" value="1"/>
+          <Constant key="Parameter_1737" name="vxdegr" value="5"/>
+          <Constant key="Parameter_1736" name="kxdegr" value="0.8"/>
+          <Constant key="Parameter_1639" name="T2" value="1"/>
         </ListOfConstants>
-        <KineticLaw function="Function_86">
+        <KineticLaw function="Function_57">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_806">
-              <SourceParameter reference="ModelValue_10"/>
+            <CallParameter functionParameter="FunctionParameter_421">
+              <SourceParameter reference="ModelValue_54"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_813">
+            <CallParameter functionParameter="FunctionParameter_428">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_811">
+            <CallParameter functionParameter="FunctionParameter_426">
               <SourceParameter reference="ModelValue_57"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_796">
+            <CallParameter functionParameter="FunctionParameter_411">
               <SourceParameter reference="Metabolite_11"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_810">
+            <CallParameter functionParameter="FunctionParameter_425">
               <SourceParameter reference="ModelValue_56"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -651,26 +651,26 @@
           <Product metabolite="Metabolite_26" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1235" name="vydegr" value="2.2"/>
-          <Constant key="Parameter_1236" name="kydegr" value="0.2"/>
-          <Constant key="Parameter_1237" name="T2" value="1"/>
+          <Constant key="Parameter_1638" name="vydegr" value="2.2"/>
+          <Constant key="Parameter_1637" name="kydegr" value="0.2"/>
+          <Constant key="Parameter_1636" name="T2" value="1"/>
         </ListOfConstants>
-        <KineticLaw function="Function_87">
+        <KineticLaw function="Function_58">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_800">
-              <SourceParameter reference="ModelValue_10"/>
+            <CallParameter functionParameter="FunctionParameter_415">
+              <SourceParameter reference="ModelValue_54"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_818">
+            <CallParameter functionParameter="FunctionParameter_433">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_816">
-              <SourceParameter reference="Parameter_1236"/>
+            <CallParameter functionParameter="FunctionParameter_431">
+              <SourceParameter reference="Parameter_1637"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_808">
+            <CallParameter functionParameter="FunctionParameter_423">
               <SourceParameter reference="Metabolite_12"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_814">
-              <SourceParameter reference="Parameter_1235"/>
+            <CallParameter functionParameter="FunctionParameter_429">
+              <SourceParameter reference="Parameter_1638"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -694,26 +694,26 @@
           <Product metabolite="Metabolite_26" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1238" name="vzdegr" value="1.5"/>
-          <Constant key="Parameter_1239" name="kzdegr" value="1.4"/>
-          <Constant key="Parameter_1240" name="T2" value="1"/>
+          <Constant key="Parameter_1635" name="vzdegr" value="1.5"/>
+          <Constant key="Parameter_1634" name="kzdegr" value="1.4"/>
+          <Constant key="Parameter_1633" name="T2" value="1"/>
         </ListOfConstants>
-        <KineticLaw function="Function_84">
+        <KineticLaw function="Function_59">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_815">
-              <SourceParameter reference="ModelValue_10"/>
+            <CallParameter functionParameter="FunctionParameter_430">
+              <SourceParameter reference="ModelValue_54"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_823">
+            <CallParameter functionParameter="FunctionParameter_438">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_821">
-              <SourceParameter reference="Parameter_1239"/>
+            <CallParameter functionParameter="FunctionParameter_436">
+              <SourceParameter reference="Parameter_1634"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_812">
+            <CallParameter functionParameter="FunctionParameter_427">
               <SourceParameter reference="Metabolite_13"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_819">
-              <SourceParameter reference="Parameter_1238"/>
+            <CallParameter functionParameter="FunctionParameter_434">
+              <SourceParameter reference="Parameter_1635"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -740,22 +740,22 @@
           <Modifier metabolite="Metabolite_11" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_1241" name="vy" value="0.3"/>
-          <Constant key="Parameter_1591" name="T2" value="1"/>
+          <Constant key="Parameter_1706" name="vy" value="0.3"/>
+          <Constant key="Parameter_1707" name="T2" value="1"/>
         </ListOfConstants>
-        <KineticLaw function="Function_217">
+        <KineticLaw function="Function_60">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_817">
-              <SourceParameter reference="ModelValue_10"/>
+            <CallParameter functionParameter="FunctionParameter_432">
+              <SourceParameter reference="ModelValue_54"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_826">
+            <CallParameter functionParameter="FunctionParameter_441">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_820">
+            <CallParameter functionParameter="FunctionParameter_435">
               <SourceParameter reference="Metabolite_11"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_824">
-              <SourceParameter reference="Parameter_1241"/>
+            <CallParameter functionParameter="FunctionParameter_439">
+              <SourceParameter reference="Parameter_1706"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -779,18 +779,18 @@
           <Product metabolite="Metabolite_15" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1590" name="T2" value="0.1"/>
-          <Constant key="Parameter_1385" name="k" value="4"/>
+          <Constant key="Parameter_1708" name="T2" value="0.1"/>
+          <Constant key="Parameter_1709" name="k" value="4"/>
         </ListOfConstants>
-        <KineticLaw function="Function_218">
+        <KineticLaw function="Function_61">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_827">
-              <SourceParameter reference="ModelValue_10"/>
+            <CallParameter functionParameter="FunctionParameter_442">
+              <SourceParameter reference="ModelValue_54"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_804">
-              <SourceParameter reference="Parameter_1385"/>
+            <CallParameter functionParameter="FunctionParameter_419">
+              <SourceParameter reference="Parameter_1709"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_828">
+            <CallParameter functionParameter="FunctionParameter_443">
               <SourceParameter reference="Metabolite_16"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -816,26 +816,26 @@
           <Product metabolite="Metabolite_18" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1384" name="k" value="20"/>
-          <Constant key="Parameter_1592" name="T2" value="0.1"/>
-          <Constant key="Parameter_1589" name="a" value="2"/>
+          <Constant key="Parameter_1710" name="k" value="20"/>
+          <Constant key="Parameter_1711" name="T2" value="0.1"/>
+          <Constant key="Parameter_1704" name="a" value="2"/>
         </ListOfConstants>
-        <KineticLaw function="Function_82">
+        <KineticLaw function="Function_63">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_834">
-              <SourceParameter reference="Parameter_1384"/>
+            <CallParameter functionParameter="FunctionParameter_449">
+              <SourceParameter reference="Parameter_1710"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_830">
+            <CallParameter functionParameter="FunctionParameter_445">
               <SourceParameter reference="Metabolite_13"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_835">
-              <SourceParameter reference="Parameter_1589"/>
+            <CallParameter functionParameter="FunctionParameter_450">
+              <SourceParameter reference="Parameter_1704"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_837">
+            <CallParameter functionParameter="FunctionParameter_452">
               <SourceParameter reference="Metabolite_17"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_839">
-              <SourceParameter reference="ModelValue_10"/>
+            <CallParameter functionParameter="FunctionParameter_454">
+              <SourceParameter reference="ModelValue_54"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -859,8 +859,8 @@
           <Product metabolite="Metabolite_17" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1588" name="Km" value="0.2"/>
-          <Constant key="Parameter_1587" name="V" value="4"/>
+          <Constant key="Parameter_1705" name="Km" value="0.2"/>
+          <Constant key="Parameter_1703" name="V" value="4"/>
         </ListOfConstants>
         <KineticLaw function="Function_8">
           <ListOfCallParameters>
@@ -868,10 +868,10 @@
               <SourceParameter reference="Metabolite_15"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_30">
-              <SourceParameter reference="Parameter_1588"/>
+              <SourceParameter reference="Parameter_1705"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_45">
-              <SourceParameter reference="Parameter_1587"/>
+              <SourceParameter reference="Parameter_1703"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -895,23 +895,23 @@
           <Product metabolite="Metabolite_26" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1405" name="V_deg" value="16"/>
-          <Constant key="Parameter_1404" name="T2" value="0.1"/>
-          <Constant key="Parameter_1403" name="k_deg" value="20"/>
+          <Constant key="Parameter_1702" name="V_deg" value="16"/>
+          <Constant key="Parameter_1701" name="T2" value="0.1"/>
+          <Constant key="Parameter_1698" name="k_deg" value="20"/>
         </ListOfConstants>
-        <KineticLaw function="Function_216">
+        <KineticLaw function="Function_62">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_829">
-              <SourceParameter reference="Parameter_1405"/>
+            <CallParameter functionParameter="FunctionParameter_444">
+              <SourceParameter reference="Parameter_1702"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_825">
-              <SourceParameter reference="ModelValue_10"/>
+            <CallParameter functionParameter="FunctionParameter_440">
+              <SourceParameter reference="ModelValue_54"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_831">
+            <CallParameter functionParameter="FunctionParameter_446">
               <SourceParameter reference="Metabolite_15"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_833">
-              <SourceParameter reference="Parameter_1403"/>
+            <CallParameter functionParameter="FunctionParameter_448">
+              <SourceParameter reference="Parameter_1698"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -935,23 +935,23 @@
           <Product metabolite="Metabolite_26" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1402" name="V_deg" value="16"/>
-          <Constant key="Parameter_1494" name="T2" value="0.1"/>
-          <Constant key="Parameter_1492" name="k_deg" value="20"/>
+          <Constant key="Parameter_1697" name="V_deg" value="16"/>
+          <Constant key="Parameter_1696" name="T2" value="0.1"/>
+          <Constant key="Parameter_1700" name="k_deg" value="20"/>
         </ListOfConstants>
-        <KineticLaw function="Function_216">
+        <KineticLaw function="Function_62">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_829">
-              <SourceParameter reference="Parameter_1402"/>
+            <CallParameter functionParameter="FunctionParameter_444">
+              <SourceParameter reference="Parameter_1697"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_825">
-              <SourceParameter reference="ModelValue_11"/>
+            <CallParameter functionParameter="FunctionParameter_440">
+              <SourceParameter reference="ModelValue_0"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_831">
+            <CallParameter functionParameter="FunctionParameter_446">
               <SourceParameter reference="Metabolite_19"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_833">
-              <SourceParameter reference="Parameter_1492"/>
+            <CallParameter functionParameter="FunctionParameter_448">
+              <SourceParameter reference="Parameter_1700"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -975,8 +975,8 @@
           <Product metabolite="Metabolite_20" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1582" name="Km" value="0.2"/>
-          <Constant key="Parameter_1586" name="V" value="4"/>
+          <Constant key="Parameter_1699" name="Km" value="0.2"/>
+          <Constant key="Parameter_1695" name="V" value="4"/>
         </ListOfConstants>
         <KineticLaw function="Function_8">
           <ListOfCallParameters>
@@ -984,10 +984,10 @@
               <SourceParameter reference="Metabolite_19"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_30">
-              <SourceParameter reference="Parameter_1582"/>
+              <SourceParameter reference="Parameter_1699"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_45">
-              <SourceParameter reference="Parameter_1586"/>
+              <SourceParameter reference="Parameter_1695"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -1012,26 +1012,26 @@
           <Product metabolite="Metabolite_22" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1466" name="k" value="20"/>
-          <Constant key="Parameter_1460" name="a" value="2"/>
-          <Constant key="Parameter_1469" name="T2" value="0.1"/>
+          <Constant key="Parameter_1694" name="k" value="20"/>
+          <Constant key="Parameter_1693" name="a" value="2"/>
+          <Constant key="Parameter_1692" name="T2" value="0.1"/>
         </ListOfConstants>
-        <KineticLaw function="Function_82">
+        <KineticLaw function="Function_63">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_834">
-              <SourceParameter reference="Parameter_1466"/>
+            <CallParameter functionParameter="FunctionParameter_449">
+              <SourceParameter reference="Parameter_1694"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_830">
+            <CallParameter functionParameter="FunctionParameter_445">
               <SourceParameter reference="Metabolite_21"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_835">
-              <SourceParameter reference="Parameter_1460"/>
+            <CallParameter functionParameter="FunctionParameter_450">
+              <SourceParameter reference="Parameter_1693"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_837">
+            <CallParameter functionParameter="FunctionParameter_452">
               <SourceParameter reference="Metabolite_20"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_839">
-              <SourceParameter reference="ModelValue_11"/>
+            <CallParameter functionParameter="FunctionParameter_454">
+              <SourceParameter reference="ModelValue_0"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -1055,18 +1055,18 @@
           <Product metabolite="Metabolite_19" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1491" name="T2" value="0.1"/>
-          <Constant key="Parameter_1461" name="k" value="4"/>
+          <Constant key="Parameter_1691" name="T2" value="0.1"/>
+          <Constant key="Parameter_1690" name="k" value="4"/>
         </ListOfConstants>
-        <KineticLaw function="Function_218">
+        <KineticLaw function="Function_61">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_827">
-              <SourceParameter reference="ModelValue_11"/>
+            <CallParameter functionParameter="FunctionParameter_442">
+              <SourceParameter reference="ModelValue_0"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_804">
-              <SourceParameter reference="Parameter_1461"/>
+            <CallParameter functionParameter="FunctionParameter_419">
+              <SourceParameter reference="Parameter_1690"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_828">
+            <CallParameter functionParameter="FunctionParameter_443">
               <SourceParameter reference="Metabolite_16"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -1094,22 +1094,22 @@
           <Modifier metabolite="Metabolite_24" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_1465" name="T2" value="0.1"/>
-          <Constant key="Parameter_1407" name="vy" value="0.3"/>
+          <Constant key="Parameter_1689" name="T2" value="0.1"/>
+          <Constant key="Parameter_1688" name="vy" value="0.3"/>
         </ListOfConstants>
-        <KineticLaw function="Function_217">
+        <KineticLaw function="Function_60">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_817">
-              <SourceParameter reference="ModelValue_11"/>
+            <CallParameter functionParameter="FunctionParameter_432">
+              <SourceParameter reference="ModelValue_0"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_826">
+            <CallParameter functionParameter="FunctionParameter_441">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_820">
+            <CallParameter functionParameter="FunctionParameter_435">
               <SourceParameter reference="Metabolite_24"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_824">
-              <SourceParameter reference="Parameter_1407"/>
+            <CallParameter functionParameter="FunctionParameter_439">
+              <SourceParameter reference="Parameter_1688"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -1133,26 +1133,26 @@
           <Product metabolite="Metabolite_26" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1406" name="T2" value="0.1"/>
-          <Constant key="Parameter_1041" name="kzdegr" value="1.4"/>
-          <Constant key="Parameter_1040" name="vzdegr" value="1.5"/>
+          <Constant key="Parameter_1687" name="T2" value="0.1"/>
+          <Constant key="Parameter_1684" name="kzdegr" value="1.4"/>
+          <Constant key="Parameter_1685" name="vzdegr" value="1.5"/>
         </ListOfConstants>
-        <KineticLaw function="Function_84">
+        <KineticLaw function="Function_59">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_815">
-              <SourceParameter reference="ModelValue_11"/>
+            <CallParameter functionParameter="FunctionParameter_430">
+              <SourceParameter reference="ModelValue_0"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_823">
+            <CallParameter functionParameter="FunctionParameter_438">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_821">
-              <SourceParameter reference="Parameter_1041"/>
+            <CallParameter functionParameter="FunctionParameter_436">
+              <SourceParameter reference="Parameter_1684"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_812">
+            <CallParameter functionParameter="FunctionParameter_427">
               <SourceParameter reference="Metabolite_21"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_819">
-              <SourceParameter reference="Parameter_1040"/>
+            <CallParameter functionParameter="FunctionParameter_434">
+              <SourceParameter reference="Parameter_1685"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -1176,26 +1176,26 @@
           <Product metabolite="Metabolite_26" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1039" name="T2" value="0.1"/>
-          <Constant key="Parameter_1038" name="kxdegr" value="0.2"/>
-          <Constant key="Parameter_1027" name="vxdegr" value="2.2"/>
+          <Constant key="Parameter_1686" name="T2" value="0.1"/>
+          <Constant key="Parameter_1683" name="kxdegr" value="0.2"/>
+          <Constant key="Parameter_1682" name="vxdegr" value="2.2"/>
         </ListOfConstants>
-        <KineticLaw function="Function_86">
+        <KineticLaw function="Function_57">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_806">
-              <SourceParameter reference="ModelValue_11"/>
+            <CallParameter functionParameter="FunctionParameter_421">
+              <SourceParameter reference="ModelValue_0"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_813">
+            <CallParameter functionParameter="FunctionParameter_428">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_811">
-              <SourceParameter reference="Parameter_1038"/>
+            <CallParameter functionParameter="FunctionParameter_426">
+              <SourceParameter reference="Parameter_1683"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_796">
+            <CallParameter functionParameter="FunctionParameter_411">
               <SourceParameter reference="Metabolite_23"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_810">
-              <SourceParameter reference="Parameter_1027"/>
+            <CallParameter functionParameter="FunctionParameter_425">
+              <SourceParameter reference="Parameter_1682"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -1219,25 +1219,25 @@
           <Product metabolite="Metabolite_26" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1036" name="T2" value="0.1"/>
-          <Constant key="Parameter_1026" name="kxdegr" value="0.8"/>
-          <Constant key="Parameter_1037" name="vxdegr" value="4.1986"/>
+          <Constant key="Parameter_1679" name="T2" value="0.1"/>
+          <Constant key="Parameter_1680" name="kxdegr" value="0.8"/>
+          <Constant key="Parameter_1677" name="vxdegr" value="4.1986"/>
         </ListOfConstants>
-        <KineticLaw function="Function_86">
+        <KineticLaw function="Function_57">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_806">
-              <SourceParameter reference="ModelValue_11"/>
+            <CallParameter functionParameter="FunctionParameter_421">
+              <SourceParameter reference="ModelValue_0"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_813">
+            <CallParameter functionParameter="FunctionParameter_428">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_811">
+            <CallParameter functionParameter="FunctionParameter_426">
               <SourceParameter reference="ModelValue_57"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_796">
+            <CallParameter functionParameter="FunctionParameter_411">
               <SourceParameter reference="Metabolite_24"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_810">
+            <CallParameter functionParameter="FunctionParameter_425">
               <SourceParameter reference="ModelValue_56"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -1265,30 +1265,30 @@
           <Modifier metabolite="Metabolite_21" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_1025" name="T2" value="0.1"/>
-          <Constant key="Parameter_1024" name="hill" value="2"/>
-          <Constant key="Parameter_1660" name="kx" value="0.4"/>
-          <Constant key="Parameter_1661" name="vx" value="2"/>
+          <Constant key="Parameter_1678" name="T2" value="0.1"/>
+          <Constant key="Parameter_1681" name="hill" value="2"/>
+          <Constant key="Parameter_1676" name="kx" value="0.4"/>
+          <Constant key="Parameter_1675" name="vx" value="2"/>
         </ListOfConstants>
-        <KineticLaw function="Function_83">
+        <KineticLaw function="Function_56">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_798">
-              <SourceParameter reference="ModelValue_11"/>
+            <CallParameter functionParameter="FunctionParameter_413">
+              <SourceParameter reference="ModelValue_0"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_809">
+            <CallParameter functionParameter="FunctionParameter_424">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_807">
-              <SourceParameter reference="Parameter_1024"/>
+            <CallParameter functionParameter="FunctionParameter_422">
+              <SourceParameter reference="Parameter_1681"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_803">
-              <SourceParameter reference="Parameter_1660"/>
+            <CallParameter functionParameter="FunctionParameter_418">
+              <SourceParameter reference="Parameter_1676"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_805">
+            <CallParameter functionParameter="FunctionParameter_420">
               <SourceParameter reference="Metabolite_21"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_802">
-              <SourceParameter reference="Parameter_1661"/>
+            <CallParameter functionParameter="FunctionParameter_417">
+              <SourceParameter reference="Parameter_1675"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -1312,34 +1312,32 @@
           <Product metabolite="Metabolite_21" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1662" name="T2" value="0.1"/>
-          <Constant key="Parameter_1651" name="vz" value="0.1"/>
+          <Constant key="Parameter_1673" name="T2" value="0.1"/>
+          <Constant key="Parameter_1672" name="vz" value="0.1"/>
         </ListOfConstants>
-        <KineticLaw function="Function_235">
+        <KineticLaw function="Function_55">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_799">
-              <SourceParameter reference="ModelValue_11"/>
+            <CallParameter functionParameter="FunctionParameter_414">
+              <SourceParameter reference="ModelValue_0"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_801">
+            <CallParameter functionParameter="FunctionParameter_416">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_797">
+            <CallParameter functionParameter="FunctionParameter_412">
               <SourceParameter reference="Metabolite_23"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_426">
-              <SourceParameter reference="Parameter_1651"/>
+            <CallParameter functionParameter="FunctionParameter_410">
+              <SourceParameter reference="Parameter_1672"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
     </ListOfReactions>
     <ListOfEvents>
-      <Event key="Event_2" name="Period" order="1">
+      <Event key="Event_0" name="Period" fireAtInitialTime="0" persistentTrigger="0">
         <MiriamAnnotation>
-<rdf:RDF
-   xmlns:dcterms="http://purl.org/dc/terms/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Event_2">
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#Event_0">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-10-11T18:02:57Z</dcterms:W3CDTF>
@@ -1347,7 +1345,6 @@
     </dcterms:created>
   </rdf:Description>
 </rdf:RDF>
-
         </MiriamAnnotation>
         <TriggerExpression>
           &lt;CN=Root,Model=circadianC1C3complex,Reference=Time&gt; gt 160 and &lt;CN=Root,Model=circadianC1C3complex,Vector=Compartments[default],Vector=Metabolites[C1_phos],Reference=Concentration&gt; gt 10 and &lt;CN=Root,Model=circadianC1C3complex,Vector=Compartments[default],Vector=Metabolites[C1_phos],Reference=Rate&gt; le 0 and &lt;CN=Root,Model=circadianC1C3complex,Vector=Values[peak 1],Reference=Value&gt; eq 0
@@ -1360,12 +1357,10 @@
           </Assignment>
         </ListOfAssignments>
       </Event>
-      <Event key="Event_1" name="Period 2" order="2">
+      <Event key="Event_3" name="Period 2" fireAtInitialTime="0" persistentTrigger="0">
         <MiriamAnnotation>
-<rdf:RDF
-   xmlns:dcterms="http://purl.org/dc/terms/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Event_1">
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#Event_3">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2010-10-11T18:03:02Z</dcterms:W3CDTF>
@@ -1373,7 +1368,6 @@
     </dcterms:created>
   </rdf:Description>
 </rdf:RDF>
-
         </MiriamAnnotation>
         <TriggerExpression>
           &lt;CN=Root,Model=circadianC1C3complex,Reference=Time&gt; gt 180 and &lt;CN=Root,Model=circadianC1C3complex,Vector=Compartments[default],Vector=Metabolites[C1_phos],Reference=Rate&gt; le 0 and &lt;CN=Root,Model=circadianC1C3complex,Vector=Compartments[default],Vector=Metabolites[C1_phos],Reference=Concentration&gt; gt 5 and &lt;CN=Root,Model=circadianC1C3complex,Vector=Values[peak2],Reference=Value&gt; eq 0
@@ -1388,7 +1382,7 @@
       </Event>
     </ListOfEvents>
     <StateTemplate>
-      <StateTemplateVariable objectReference="Model_1"/>
+      <StateTemplateVariable objectReference="Model_0"/>
       <StateTemplateVariable objectReference="Metabolite_26"/>
       <StateTemplateVariable objectReference="Metabolite_12"/>
       <StateTemplateVariable objectReference="Metabolite_15"/>
@@ -1403,25 +1397,25 @@
       <StateTemplateVariable objectReference="Metabolite_25"/>
       <StateTemplateVariable objectReference="Metabolite_18"/>
       <StateTemplateVariable objectReference="Metabolite_22"/>
-      <StateTemplateVariable objectReference="ModelValue_9"/>
+      <StateTemplateVariable objectReference="ModelValue_55"/>
       <StateTemplateVariable objectReference="Metabolite_10"/>
       <StateTemplateVariable objectReference="Metabolite_14"/>
       <StateTemplateVariable objectReference="Metabolite_16"/>
-      <StateTemplateVariable objectReference="ModelValue_11"/>
-      <StateTemplateVariable objectReference="ModelValue_10"/>
+      <StateTemplateVariable objectReference="Compartment_1"/>
+      <StateTemplateVariable objectReference="ModelValue_0"/>
+      <StateTemplateVariable objectReference="ModelValue_54"/>
       <StateTemplateVariable objectReference="ModelValue_56"/>
       <StateTemplateVariable objectReference="ModelValue_57"/>
       <StateTemplateVariable objectReference="ModelValue_58"/>
       <StateTemplateVariable objectReference="ModelValue_59"/>
-      <StateTemplateVariable objectReference="Compartment_1"/>
     </StateTemplate>
     <InitialState type="initialState">
-      0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 602214150000000.1 0 602214150000000.1 1 2 3.025 2 0 0 1 
+      0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 602214150000000.1 0 602214150000000.1 1 1 2 3.025 2 0 0 
     </InitialState>
   </Model>
   <ListOfTasks>
-    <Task key="Task_23" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
-      <Report reference="Report_8" target="" append="1"/>
+    <Task key="Task_13" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
+      <Report reference="Report_18" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="1"/>
         <Parameter name="StabilityAnalysisRequested" type="bool" value="1"/>
@@ -1438,8 +1432,8 @@
         <Parameter name="Maximum duration for backward integration" type="unsignedFloat" value="1000000"/>
       </Method>
     </Task>
-    <Task key="Task_13" name="Time-Course" type="timeCourse" scheduled="true" updateModel="false">
-      <Report reference="Report_16" target="EventTest15.1.txt" append="0"/>
+    <Task key="Task_1" name="Time-Course" type="timeCourse" scheduled="true" updateModel="false">
+      <Report reference="Report_7" target="EventTest15.1.txt" append="0" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="10800"/>
         <Parameter name="StepSize" type="float" value="0.02"/>
@@ -1455,16 +1449,16 @@
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_14" name="Scan" type="scan" scheduled="false" updateModel="false">
+    <Task key="Task_2" name="Scan" type="scan" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="1"/>
         <ParameterGroup name="ScanItems">
           <ParameterGroup name="ScanItem">
-            <Parameter name="Number of steps" type="unsignedInteger" value="5"/>
-            <Parameter name="Type" type="unsignedInteger" value="1"/>
-            <Parameter name="Object" type="cn" value="CN=Root,Model=circadianC1C3complex,Vector=Reactions[C1_phos],ParameterGroup=Parameters,Parameter=V,Reference=Value"/>
-            <Parameter name="Minimum" type="float" value="2"/>
             <Parameter name="Maximum" type="float" value="8"/>
+            <Parameter name="Minimum" type="float" value="2"/>
+            <Parameter name="Number of steps" type="unsignedInteger" value="5"/>
+            <Parameter name="Object" type="cn" value="CN=Root,Model=circadianC1C3complex,Vector=Reactions[C1_phos],ParameterGroup=Parameters,Parameter=V,Reference=Value"/>
+            <Parameter name="Type" type="unsignedInteger" value="1"/>
             <Parameter name="log" type="bool" value="0"/>
           </ParameterGroup>
         </ParameterGroup>
@@ -1474,15 +1468,15 @@
       <Method name="Scan Framework" type="ScanFramework">
       </Method>
     </Task>
-    <Task key="Task_15" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
-      <Report reference="Report_9" target="" append="1"/>
+    <Task key="Task_3" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
+      <Report reference="Report_0" target="" append="1" confirmOverwrite="0"/>
       <Problem>
       </Problem>
       <Method name="EFM Algorithm" type="EFMAlgorithm">
       </Method>
     </Task>
-    <Task key="Task_16" name="Optimization" type="optimization" scheduled="false" updateModel="false">
-      <Report reference="Report_10" target="" append="1"/>
+    <Task key="Task_4" name="Optimization" type="optimization" scheduled="false" updateModel="false">
+      <Report reference="Report_1" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Subtask" type="cn" value="Vector=TaskList[Steady-State]"/>
         <ParameterText name="ObjectiveExpression" type="expression">
@@ -1502,8 +1496,8 @@
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_17" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
-      <Report reference="Report_11" target="" append="1"/>
+    <Task key="Task_5" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
+      <Report reference="Report_2" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Maximize" type="bool" value="0"/>
         <Parameter name="Randomize Start Values" type="bool" value="0"/>
@@ -1524,17 +1518,17 @@
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_18" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_12" target="" append="1"/>
+    <Task key="Task_6" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_3" target="" append="1" confirmOverwrite="0"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_23"/>
+        <Parameter name="Steady-State" type="key" value="Task_13"/>
       </Problem>
       <Method name="MCA Method (Reder)" type="MCAMethod(Reder)">
         <Parameter name="Modulation Factor" type="unsignedFloat" value="1e-09"/>
       </Method>
     </Task>
-    <Task key="Task_19" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
-      <Report reference="Report_13" target="" append="1"/>
+    <Task key="Task_7" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
+      <Report reference="Report_4" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="ExponentNumber" type="unsignedInteger" value="3"/>
         <Parameter name="DivergenceRequested" type="bool" value="1"/>
@@ -1548,8 +1542,8 @@
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_20" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
-      <Report reference="Report_14" target="" append="1"/>
+    <Task key="Task_8" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
+      <Report reference="Report_5" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="SubtaskType" type="unsignedInteger" value="1"/>
         <ParameterGroup name="TargetFunctions">
@@ -1568,14 +1562,14 @@
         <Parameter name="Delta minimum" type="unsignedFloat" value="1e-12"/>
       </Method>
     </Task>
-    <Task key="Task_21" name="Moieties" type="moieties" scheduled="false" updateModel="false">
+    <Task key="Task_9" name="Moieties" type="moieties" scheduled="false" updateModel="false">
       <Problem>
       </Problem>
       <Method name="Householder Reduction" type="Householder">
       </Method>
     </Task>
-    <Task key="Task_34" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_21" target="" append="1"/>
+    <Task key="Task_10" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_6" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
@@ -1587,9 +1581,39 @@
         <Parameter name="Deuflhard Tolerance" type="unsignedFloat" value="1e-06"/>
       </Method>
     </Task>
+    <Task key="Task_11" name="Cross Section" type="crosssection" scheduled="false" updateModel="false">
+      <Problem>
+        <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
+        <Parameter name="StepSize" type="float" value="0.01"/>
+        <Parameter name="Duration" type="float" value="1"/>
+        <Parameter name="TimeSeriesRequested" type="bool" value="1"/>
+        <Parameter name="OutputStartTime" type="float" value="0"/>
+        <Parameter name="Output Event" type="bool" value="0"/>
+        <Parameter name="LimitCrossings" type="bool" value="0"/>
+        <Parameter name="NumCrossingsLimit" type="unsignedInteger" value="0"/>
+        <Parameter name="LimitTime" type="bool" value="1"/>
+        <ParameterText name="TriggerExpression" type="expression">
+          
+        </ParameterText>
+      </Problem>
+      <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
+        <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-06"/>
+        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
+        <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
+      </Method>
+    </Task>
+    <Task key="Task_0" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
+      <Report reference="Report_8" target="" append="1" confirmOverwrite="1"/>
+      <Problem>
+        <Parameter name="Steady-State" type="key" value="Task_13"/>
+      </Problem>
+      <Method name="Linear Noise Approximation" type="LinearNoiseApproximation">
+      </Method>
+    </Task>
   </ListOfTasks>
   <ListOfReports>
-    <Report key="Report_8" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
+    <Report key="Report_18" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1599,7 +1623,7 @@
         <Object cn="CN=Root,Vector=TaskList[Steady-State]"/>
       </Footer>
     </Report>
-    <Report key="Report_9" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
+    <Report key="Report_0" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1609,7 +1633,7 @@
         <Object cn="CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_10" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
+    <Report key="Report_1" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1635,7 +1659,7 @@
         <Object cn="CN=Root,Vector=TaskList[Optimization],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_11" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
+    <Report key="Report_2" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1661,7 +1685,7 @@
         <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_12" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_3" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1675,7 +1699,7 @@
         <Object cn="CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_13" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
+    <Report key="Report_4" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1689,7 +1713,7 @@
         <Object cn="CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_14" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
+    <Report key="Report_5" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1703,7 +1727,7 @@
         <Object cn="CN=Root,Vector=TaskList[Sensitivities],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_21" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_6" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -1717,7 +1741,7 @@
         <Object cn="CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_16" name="Events" taskType="timeCourse" separator="&#x09;" precision="6">
+    <Report key="Report_7" name="Events" taskType="timeCourse" separator="&#x09;" precision="7">
       <Comment>
         A table of time, variable species concentrations, variable compartment volumes, and variable global quantity values.
       </Comment>
@@ -1742,6 +1766,18 @@
         <Object cn="CN=Root,Model=circadianC1C3complex,Vector=Values[peak2],Reference=Value"/>
       </Table>
     </Report>
+    <Report key="Report_8" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
+      <Comment>
+        Automatically generated report.
+      </Comment>
+      <Header>
+        <Object cn="CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Description"/>
+      </Header>
+      <Footer>
+        <Object cn="String=&#x0a;"/>
+        <Object cn="CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"/>
+      </Footer>
+    </Report>
   </ListOfReports>
   <ListOfPlots>
     <PlotSpecification name="Concentrations, Volumes, and Global Quantity Values" type="Plot2D" active="1">
@@ -1749,136 +1785,204 @@
       <Parameter name="log Y" type="bool" value="0"/>
       <ListOfPlotItems>
         <PlotItem name="[C3_mRNA]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Vector=Compartments[default],Vector=Metabolites[C3_mRNA],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[C_3]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Vector=Compartments[default],Vector=Metabolites[C_3],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[C_3_P]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Vector=Compartments[default],Vector=Metabolites[C_3_P],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[C1]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Vector=Compartments[default],Vector=Metabolites[C1],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[C1_phos]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Vector=Compartments[default],Vector=Metabolites[C1_phos],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[c1c3complex]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Vector=Compartments[default],Vector=Metabolites[c1c3complex],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[K_C1]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Vector=Compartments[default],Vector=Metabolites[K_C1],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[K_C1_P]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Vector=Compartments[default],Vector=Metabolites[K_C1_P],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[K_C3_P]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Vector=Compartments[default],Vector=Metabolites[K_C3_P],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[K_complex]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Vector=Compartments[default],Vector=Metabolites[K_complex],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[K_C3]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Vector=Compartments[default],Vector=Metabolites[K_C3],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[K_C3_mRNA]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Vector=Compartments[default],Vector=Metabolites[K_C3_mRNA],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[K_C3_pre]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Vector=Compartments[default],Vector=Metabolites[K_C3_pre],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="[junk]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Vector=Compartments[default],Vector=Metabolites[junk],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[aphase]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Vector=Values[aphase],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[peak 1]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Vector=Values[peak 1],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[peak2]" type="Curve2D">
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=circadianC1C3complex,Vector=Values[peak2],Reference=Value"/>
@@ -1889,13 +1993,13 @@
   </ListOfPlots>
   <GUI>
     <ListOfSliders>
-      <Slider key="Slider_0" associatedEntityKey="Task_13" objectCN="CN=Root,Model=circadianC1C3complex,Vector=Values[v7],Reference=InitialValue" objectType="float" objectValue="3.025" minValue="2.5" maxValue="10" tickNumber="1000" tickFactor="100" scaling="linear"/>
-      <Slider key="Slider_1" associatedEntityKey="Task_13" objectCN="CN=Root,Model=circadianC1C3complex,Vector=Values[k7],Reference=InitialValue" objectType="float" objectValue="2" minValue="0.5" maxValue="2" tickNumber="1000" tickFactor="100" scaling="linear"/>
+      <Slider key="Slider_0" associatedEntityKey="Task_1" objectCN="CN=Root,Model=circadianC1C3complex,Vector=Values[v7],Reference=InitialValue" objectType="float" objectValue="3.025" minValue="2.5" maxValue="10" tickNumber="1000" tickFactor="100" scaling="linear"/>
+      <Slider key="Slider_1" associatedEntityKey="Task_1" objectCN="CN=Root,Model=circadianC1C3complex,Vector=Values[k7],Reference=InitialValue" objectType="float" objectValue="2" minValue="0.5" maxValue="2" tickNumber="1000" tickFactor="100" scaling="linear"/>
     </ListOfSliders>
   </GUI>
-  <SBMLReference file="../../../../COPASI Files/double-goodwin24h-mod.xml">
-    <SBMLMap SBMLid="T" COPASIkey="ModelValue_11"/>
-    <SBMLMap SBMLid="T2" COPASIkey="ModelValue_10"/>
+  <SBMLReference file="double-goodwin24h-mod.xml">
+    <SBMLMap SBMLid="T" COPASIkey="ModelValue_0"/>
+    <SBMLMap SBMLid="T2" COPASIkey="ModelValue_54"/>
     <SBMLMap SBMLid="default" COPASIkey="Compartment_1"/>
     <SBMLMap SBMLid="re12" COPASIkey="Reaction_19"/>
     <SBMLMap SBMLid="re13" COPASIkey="Reaction_20"/>

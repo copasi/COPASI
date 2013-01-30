@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -692,7 +692,7 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet, CCopasiDataModel * 
 
   if (mCrossValidation)
     {
-      setWindowTitle("Cross Validation Data");
+      setWindowTitle("Validation Data");
       mpLblWeight->show();
       mpEditWeight->show();
       mpLblThreshold->show();

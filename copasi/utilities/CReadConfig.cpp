@@ -1,12 +1,9 @@
-/* Begin CVS Header
-$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CReadConfig.cpp,v $
-$Revision: 1.23 $
-$Name:  $
-$Author: shoops $
-$Date: 2012/05/23 17:04:50 $
-End CVS Header */
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -20,43 +17,53 @@ End CVS Header */
 // New Class based on pmutils read functionality
 // (C) Stefan Hoops 2001
 
-#include <string>
-#include <iostream>
-#include <fstream>
+#include <sstream>
 #include <stdlib.h>
 #include <assert.h>
 
 #include "copasi.h"
+
 #include "CCopasiMessage.h"
 #include "CReadConfig.h"
 #include "utility.h"
 #include "commandline/CLocaleString.h"
 
-// char *initInputBuffer(char *name);
+// char *initFileBuffer(char *name);
 // static C_INT32 GetFileSize(const char *name);
 
-CReadConfig::CReadConfig(void)
+CReadConfig::CReadConfig(void):
+  mpBuffer(NULL),
+  mLineNumber(-1),
+  mMode(CReadConfig::NEXT),
+  mFail(0),
+  mVersion(),
+  mFilename(),
+  mFileBuffer()
+{}
+
+CReadConfig::CReadConfig(const std::string& name):
+  mpBuffer(NULL),
+  mLineNumber(-1),
+  mMode(CReadConfig::NEXT),
+  mFail(0),
+  mVersion(),
+  mFilename(name),
+  mFileBuffer()
 {
-  // initialize everything
-  mLineNumber = 0;
-  mMode = CReadConfig::NEXT;
-  mFail = 0;
-
-  initInputBuffer();
-}
-
-CReadConfig::CReadConfig(const std::string& name)
-{
-  // initialize everything
-  mFilename = name;
-  mLineNumber = 0;
-  mMode = CReadConfig::NEXT;
-  mFail = 0;
-
-  initInputBuffer();
+  initFileBuffer();
 
   getVariable("Version", "string", &mVersion);
 }
+
+CReadConfig::CReadConfig(std::istream & in):
+  mpBuffer(&in),
+  mLineNumber(-1),
+  mMode(CReadConfig::NEXT),
+  mFail(0),
+  mVersion(),
+  mFilename(),
+  mFileBuffer()
+{}
 
 CReadConfig::~CReadConfig(void)
 {}
@@ -95,9 +102,9 @@ C_INT32 CReadConfig::getVariable(const std::string& name,
 
       while (true)
         {
-          mBuffer.read(c, 1);
+          mpBuffer->read(c, 1);
 
-          if (*c == '\n' || mBuffer.eof())
+          if (*c == '\n' || mpBuffer->eof())
             break;
 
           //YH: here we need to delete ^M carriage return, it is \r
@@ -148,7 +155,7 @@ C_INT32 CReadConfig::getVariable(const std::string& name,
 
       if (mode & CReadConfig::SEARCH)
         {
-          if (mBuffer.eof())
+          if (mpBuffer->eof())
             {
               if (!(mode & CReadConfig::LOOP))
                 CCopasiMessage(CCopasiMessage::EXCEPTION, MCReadConfig + 1,
@@ -206,9 +213,9 @@ C_INT32 CReadConfig::getVariable(const std::string& name,
 
           while (true)
             {
-              mBuffer.read(c, 1);
+              mpBuffer->read(c, 1);
 
-              if (*c == '\n' || mBuffer.eof())
+              if (*c == '\n' || mpBuffer->eof())
                 break;
 
               //YH: here we need to delete ^M carriage return, it is \r
@@ -272,9 +279,11 @@ C_INT32 CReadConfig::getVariable(const std::string& name,
   return mFail;
 }
 
-C_INT32 CReadConfig::initInputBuffer()
+C_INT32 CReadConfig::initFileBuffer()
 {
   char c[] = " ";
+
+  mpBuffer = & mFileBuffer;
 
   // read the configuration file into the configuration buffer
   std::ifstream File(CLocaleString::fromUtf8(mFilename).c_str());
@@ -282,7 +291,6 @@ C_INT32 CReadConfig::initInputBuffer()
   if (File.fail())
     CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 2,
                    mFilename.c_str());
-
 
   while (true)
     {
@@ -295,7 +303,7 @@ C_INT32 CReadConfig::initInputBuffer()
         CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 3,
                        mFilename.c_str());
 
-      mBuffer << c;
+      mFileBuffer << c;
     }
 
   File.clear();
@@ -311,20 +319,20 @@ C_INT32 CReadConfig::initInputBuffer()
 
 std::string CReadConfig::lookAhead()
 {
-  std::streampos pos = mBuffer.tellg();
+  std::streampos pos = mpBuffer->tellg();
 
   std::string Line;
-  mBuffer >> Line;
+  *mpBuffer >> Line;
 
-  mBuffer.seekg(pos - mBuffer.tellg(), std::ios_base::cur);
+  mpBuffer->seekg(pos - mpBuffer->tellg(), std::ios_base::cur);
 
   return Line.substr(0, Line.find("="));
 }
 
 void CReadConfig::rewind()
 {
-  mBuffer.clear();
-  mBuffer.seekg(0, std::ios_base::beg);
+  mpBuffer->clear();
+  mpBuffer->seekg(0, std::ios_base::beg);
   mLineNumber = 0;
 
   return;

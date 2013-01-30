@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/plotUI/BandedGraphWidget.h,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: tjohann $
-//   $Date: 2011/09/05 11:53:01 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,12 +9,13 @@
 #include <QVariant>
 
 #include "copasi/plotUI/ui_BandedGraphWidget.h"
+#include "copasi/plotUI/CQPlotEditWidget.h"
 
 class CCopasiObject;
 class CModel;
 class CPlotItem;
 
-class BandedGraphWidget : public QWidget, public Ui::BandedGraphWidget
+class BandedGraphWidget : public CQPlotEditWidget, public Ui::BandedGraphWidget
 {
   Q_OBJECT
 
@@ -31,14 +24,19 @@ public:
   ~BandedGraphWidget();
 
   virtual bool LoadFromCurveSpec(const CPlotItem * curve);
-  virtual bool SaveToCurveSpec(CPlotItem * curve) const;
-  virtual void setModel(const CModel * model);
+  virtual bool SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original = NULL) const;
+
+#if USE_NEW_PLOTSUBWIDGET
+  /**
+   * In multiple edit mode, we don't want to edit name & channels
+   */
+  virtual void setMultipleEditMode(bool mode);
+#endif
 
 protected:
   const CCopasiObject* mpObjectYone;
   const CCopasiObject* mpObjectYtwo;
   const CCopasiObject* mpObjectX;
-  const CModel* mpModel;
 
 protected slots:
 

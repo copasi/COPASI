@@ -1,29 +1,21 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.h,v $
-//   $Revision: 1.13 $
-//   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2012/06/04 11:04:27 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /**
  *  CTSSAMethod class.
  *  This class describes the interface to all time scale separation analysis methods.
- *  The variaous method like ILDM or CSP have to be derived from
+ *  The various method like ILDM or CSP have to be derived from
  *  this class.
  *
  */
@@ -32,14 +24,15 @@
 #define COPASI_CTSSAMethod
 
 #include <string>
+#include <sstream>
 
-#include "utilities/CCopasiMethod.h"
-#include "utilities/CVector.h"
-#include "odepack++/CLSODA.h"
-#include "utilities/CMatrix.h"
+#include "copasi/utilities/CCopasiMethod.h"
+#include "copasi/utilities/CVector.h"
+#include "copasi/odepack++/CLSODA.h"
+#include "copasi/utilities/CMatrix.h"
 
-#include "utilities/CAnnotatedMatrix.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/utilities/CAnnotatedMatrix.h"
+#include "copasi/report/CCopasiObjectReference.h"
 
 class CTSSAProblem;
 class CModel;
@@ -104,7 +97,6 @@ public:
   std::map< std::string, CArrayAnnotation* > mapTableToName;
   std::vector<std::string>  tableNames;
 
-
   const std::vector<std::string> getTableName() const
   {return tableNames;}
 
@@ -120,10 +112,9 @@ public:
   void setModel(CModel* model);
 
   /**
-  * Predifine the CArrayAnnotation for plots
+  * Predefine the CArrayAnnotation for plots
   */
   virtual void predifineAnnotation();
-
 
   /**
    *  Set a pointer to the current state.
@@ -164,7 +155,7 @@ public:
   virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
   /**
-   *  Intialize the method parameter
+   *  Initialize the method parameter
    */
   virtual void initializeParameter();
 
@@ -194,7 +185,7 @@ protected:
   C_FLOAT64 * mY;
 
   /**
-   * Vector containig the derivatives after calling eval
+   * Vector containing the derivatives after calling eval
    */
   CVector< C_FLOAT64 > mYdot;
 
@@ -357,7 +348,7 @@ protected:
   // Operations
 
   /**
-   * Intialize integration method parameters
+   * Initialize integration method parameters
    */
 
   void initializeIntegrationsParameter();
@@ -503,7 +494,6 @@ public:
    * input for each CArraAnnotations is a seperate CMatrix
    **/
   void createAnnotationsM();
-
 };
 
 #endif // COPASI_CTSSAMethod

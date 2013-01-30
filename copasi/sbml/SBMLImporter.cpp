@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -72,6 +72,7 @@
 #include "function/CFunctionDB.h"
 #include "function/CEvaluationTree.h"
 #include "function/CExpression.h"
+#include "function/CFunctionParameters.h"
 #include "report/CCopasiObjectReference.h"
 #include "utilities/CCopasiTree.h"
 #include "utilities/CNodeIterator.h"
@@ -1391,8 +1392,147 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   return this->mpCopasiModel;
 }
 
+std::string isKnownCustomFunctionDefinition(const FunctionDefinition* sbmlFunction,
+    const std::string& sNamespace,
+    const std::string& elementName,
+    const std::string& definition)
+{
+  FunctionDefinition* current = const_cast<FunctionDefinition*>(sbmlFunction);
+
+  if (current == NULL) return "";
+
+  if (!current->isSetAnnotation()) return "";
+
+  const XMLNode* element = current->getAnnotation();
+
+  if (element == NULL) return "";
+
+  for (unsigned int i = 0 ; i < element->getNumChildren(); ++i)
+    {
+      const XMLNode& annot = element->getChild(i);
+
+      if (annot.getURI() == sNamespace &&
+          annot.getName() == elementName &&
+          annot.getAttrValue("definition") == definition)
+        {
+          return current->getId();
+        }
+    }
+
+  return "";
+}
+
+bool addToKnownFunctionToMap(std::map<std::string, std::string>& map, const FunctionDefinition* sbmlFunction)
+{
+  if (!sbmlFunction->isSetAnnotation())
+    return false;
+
+  std::string id = isKnownCustomFunctionDefinition(sbmlFunction,
+                   "http://sbml.org/annotations/symbols",
+                   "symbols",
+                   "http://en.wikipedia.org/wiki/Derivative");
+
+  if (!id.empty())
+    {
+      map[id] = "RATE";
+      return true;
+    }
+
+  id = isKnownCustomFunctionDefinition(sbmlFunction,
+                                       "http://sbml.org/annotations/distribution",
+                                       "distribution",
+                                       "http://www.uncertml.org/distributions/normal");
+
+  if (!id.empty())
+    {
+      map[id] = "RNORMAL";
+      return true;
+    }
+
+  id = isKnownCustomFunctionDefinition(sbmlFunction,
+                                       "http://sbml.org/annotations/distribution",
+                                       "distribution",
+                                       "http://www.uncertml.org/distributions/uniform");
+
+  if (!id.empty())
+    {
+      map[id] = "RUNIFORM";
+      return true;
+    }
+
+  return false;
+}
+
+int
+AstStrCmp(const void *s1, const void *s2)
+{
+  return strcmp(
+           static_cast<const ASTNode *>(s1)->getName(),
+           static_cast<const ASTNode *>(s2)->getName());
+}
+
+/**
+ * This function checks the function definition for unused arguments (that would not
+ * be properly displayed in the CopasiUI). If found, the function body will be replaced
+ * with one including all arguments.
+ */
+void ensureAllArgsAreBeingUsedInFunctionDefinition(const FunctionDefinition* sbmlFunction)
+{
+  if (sbmlFunction == NULL || sbmlFunction->getNumArguments() == 0) return;
+
+  // get all variables
+  List *variables = sbmlFunction->getBody()->getListOfNodes(ASTNode_isName);
+
+  // find unused ones
+  std::vector<std::string> unused;
+
+  for (unsigned int i = 0; i < sbmlFunction->getNumArguments(); ++i)
+    {
+      const ASTNode *arg = sbmlFunction->getArgument(i);
+
+      if (variables->find(arg, AstStrCmp) == NULL)
+        {
+          unused.push_back(arg->getName());
+        }
+    }
+
+  // get rid of the list
+  delete variables;
+
+  // let us hope this is empty
+  if (unused.size() == 0)
+    return;
+
+  // it is not, so modify the function definition to include all of them
+  std::stringstream str;
+  str << "lambda(";
+
+  for (unsigned int i = 0; i < sbmlFunction->getNumArguments(); ++i)
+    str << sbmlFunction->getArgument(i)->getName() << ", ";
+
+  char* formula = SBML_formulaToString(sbmlFunction->getBody());
+  str << formula;
+
+  std::vector<std::string>::iterator it;
+
+  for (it = unused.begin(); it != unused.end(); ++it)
+    str << " + 0*" << *it;
+
+  str << ")";
+
+  // update the function definition
+  const_cast<FunctionDefinition*>(sbmlFunction)->setMath(SBML_parseFormula(str.str().c_str()));
+
+  // free the formula
+  free(formula);
+}
+
 CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction, CFunctionDB* pTmpFunctionDB, Model* pSBMLModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
+
+  ensureAllArgsAreBeingUsedInFunctionDefinition(sbmlFunction);
+
+  addToKnownFunctionToMap(mKnownCustomUserDefinedFunctions, sbmlFunction);
 
   CFunction* pTmpFunction = this->createCFunctionFromFunctionTree(sbmlFunction, pSBMLModel, copasi2sbmlmap);
 
@@ -1569,6 +1709,25 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
     }
 
   return pFun;
+}
+
+CFunction* getFunctionForKey(CCopasiVectorN<CFunction> &functionDb, const std::string& key)
+{
+  CFunction* pFunc = NULL;
+  CCopasiVectorN<CFunction>::iterator it = functionDb.begin(), endit = functionDb.end();
+
+  while (it != endit)
+    {
+      if ((*it)->getKey() == key)
+        {
+          pFunc = dynamic_cast<CFunction*>(*it);
+          break;
+        }
+
+      ++it;
+    }
+
+  return pFunc;
 }
 
 /**
@@ -1749,7 +1908,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
 }
 
 /**
- * Creates and returns a Copasi CReaction object from the given SBML
+ * Creates and returns a COPASI CReaction object from the given SBML
  * Reaction object.
  */
 CReaction*
@@ -1782,6 +1941,12 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
   /* create a new reaction with the unique name */
   CReaction* copasiReaction = copasiModel->createReaction(name + appendix);
+
+  if (copasiReaction == NULL)
+    {
+      fatalError();
+    }
+
   copasiReaction->setReversible(sbmlReaction->getReversible());
 
   if (this->mLevel == 1)
@@ -1794,11 +1959,6 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
     }
 
   copasi2sbmlmap[copasiReaction] = const_cast<Reaction*>(sbmlReaction);
-
-  if (copasiReaction == NULL)
-    {
-      fatalError();
-    }
 
   if (sbmlReaction->isSetFast() && sbmlReaction->getFast() == true)
     {
@@ -1821,7 +1981,6 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
       if (sr == NULL)
         {
-
           delete copasiReaction;
           fatalError();
         }
@@ -2177,7 +2336,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
             }
 
           /* if it is a single compartment reaction, we have to divide the whole kinetic
-          ** equation by the compartment because copasi expects
+          ** equation by the compartment because COPASI expects
           ** kinetic laws that specify concentration/time for single compartment
           ** reactions.
           */
@@ -2316,7 +2475,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                       std::vector<CEvaluationNodeObject*>* v = NULL;
 
                       // only check for mass action if there is no conversion factor involved
-                      // for any of the species invloded in the reaction (substrates and products)
+                      // for any of the species involved in the reaction (substrates and products)
                       if (!mConversionFactorNeeded)
                         {
                           v = this->isMassAction(tree, copasiReaction->getChemEq(), static_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
@@ -2400,20 +2559,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                                   // in order to get around the const_casts, I
                                   // have to find the function in the
                                   // functiondb
-                                  CFunction* pNonconstFun = NULL;
-                                  CCopasiVectorN<CFunction>::iterator it = this->functionDB->loadedFunctions().begin(), endit = this->functionDB->loadedFunctions().end();
-
-                                  while (it != endit)
-                                    {
-                                      if ((*it)->getKey() == copasiReaction->getFunction()->getKey())
-                                        {
-                                          pNonconstFun = dynamic_cast<CFunction*>(*it);
-                                          break;
-                                        }
-
-                                      ++it;
-                                    }
-
+                                  CFunction* pNonconstFun = getFunctionForKey(functionDB->loadedFunctions(), copasiReaction->getFunction()->getKey());
                                   assert(pNonconstFun != NULL);
 
                                   // code to fix Bug 1015
@@ -2435,7 +2581,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                       std::vector<CEvaluationNodeObject*>* v = NULL;
 
                       // only check for mass action if there is no conversion factor involved
-                      // for any of the species invloded in the reaction (substrates and products)
+                      // for any of the species involved in the reaction (substrates and products)
                       if (!mConversionFactorNeeded)
                         {
                           v = this->isMassAction(pTmpTree, copasiReaction->getChemEq());
@@ -2493,20 +2639,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                                   // in order to get around the const_casts, I
                                   // have to find the function in the
                                   // functiondb
-                                  CFunction* pNonconstFun = NULL;
-                                  CCopasiVectorN<CFunction>::iterator it = this->functionDB->loadedFunctions().begin(), endit = this->functionDB->loadedFunctions().end();
-
-                                  while (it != endit)
-                                    {
-                                      if ((*it)->getKey() == copasiReaction->getFunction()->getKey())
-                                        {
-                                          pNonconstFun = dynamic_cast<CFunction*>(*it);
-                                          break;
-                                        }
-
-                                      ++it;
-                                    }
-
+                                  CFunction* pNonconstFun = getFunctionForKey(functionDB->loadedFunctions(), copasiReaction->getFunction()->getKey());
                                   assert(pNonconstFun != NULL);
 
                                   // code to fix Bug 1015
@@ -2544,6 +2677,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
   //DebugFile << "Created reaction: " << copasiReaction->getObjectName() << std::endl;
   SBMLImporter::importMIRIAM(sbmlReaction, copasiReaction);
   SBMLImporter::importNotes(copasiReaction, sbmlReaction);
+
   return copasiReaction;
 }
 
@@ -2645,11 +2779,58 @@ SBMLImporter::replaceBvars(const ASTNode* node, std::map<std::string, ASTNode*> 
  * Constructor that initializes speciesMap and the FunctionDB object
  */
 SBMLImporter::SBMLImporter():
+  mIgnoredSBMLMessages(),
+  speciesMap(),
+  functionDB(NULL),
+  mIncompleteModel(false),
+  mUnsupportedRuleFound(false),
+  mUnsupportedRateRuleFound(false),
+  mUnsupportedAssignmentRuleFound(false),
+  mUnitOnNumberFound(false),
+  mAssignmentToSpeciesReferenceFound(false),
+  mLevel(0),
+  mOriginalLevel(0),
+  mVersion(0),
+  sbmlIdMap(),
+  mUsedFunctions(),
   mpDataModel(NULL),
   mpCopasiModel(NULL),
-  mImportCOPASIMIRIAM(false),
+  mFunctionNameMapping(),
+  mDivisionByCompartmentReactions(),
+  mpImportHandler(NULL),
+  mImportStep(0),
+  mhImportStep(C_INVALID_INDEX),
+  mTotalSteps(0),
+  mSubstanceOnlySpecies(),
+  mFastReactions(),
+  mReactionsWithReplacedLocalParameters(),
+  mExplicitelyTimeDependentFunctionDefinitions(),
+  mIgnoredParameterUnits(),
+  mStoichiometricExpressionMap(),
+  mDelayFound(false),
+  mPotentialAvogadroNumbers(),
+  mAvogadroCreated(false),
+  mImportCOPASIMIRIAM(true),
+  mDelayNodeMap(),
+  mUsedSBMLIds(),
   mUsedSBMLIdsPopulated(false),
-  mAvogadroSet(false)
+  mAvogadroSet(false),
+  mKnownCustomUserDefinedFunctions(),
+#if LIBSBML_VERSION >= 40100
+  mpModelConversionFactor(NULL),
+  mChemEqElementSpeciesIdMap(),
+  mSpeciesConversionParameterMap(),
+  mSBMLIdModelValueMap(),
+  mSBMLSpeciesReferenceIds(),
+  mRateRuleForSpeciesReferenceIgnored(false),
+  mEventAssignmentForSpeciesReferenceIgnored(false),
+  mConversionFactorFound(false),
+# if LIBSBML_VERSION >= 40200
+  mEventPrioritiesIgnored(false),
+  mInitialTriggerValues(false),
+  mNonPersistentTriggerFound(false)
+# endif // LIBSBML_VERSION >= 40200
+#endif // LIBSBML_VERSION >= 40100
 {
   this->speciesMap = std::map<std::string, CMetab*>();
   this->functionDB = NULL;
@@ -4249,6 +4430,7 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
 void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pSBMLModel, double factor, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   CNodeIterator< ConverterASTNode > itNode(pASTNode);
+  itNode.setProcessingModes(CNodeIteratorMode::Before);
 
   while (itNode.next() != itNode.end())
     {
@@ -4257,7 +4439,123 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pS
           continue;
         }
 
-      if (itNode->getType() == AST_NAME)
+      // check if there is already a multiplication with the avogadro number
+      // if so, we just replace that multiplication instead of adding an additional division
+      //
+      // we only do this, if there are two children to the multiplication because otherwise we would have to do sophisticated checks
+      // whether the multiplication is really only between a certain species and the avogadro number
+      if (itNode->getType() == AST_TIMES && itNode->getNumChildren() == 2)
+        {
+          std::set<const Parameter*>::const_iterator avoIt = this->mPotentialAvogadroNumbers.begin();
+          std::set<const Parameter*>::const_iterator avoEndit = this->mPotentialAvogadroNumbers.end();
+          // check if one of the potantial avogrador numbers is a child to this multiplication
+          ASTNode* pChild1 = itNode->getChild(0);
+          ASTNode* pChild2 = itNode->getChild(1);
+          assert(pChild1 != NULL);
+          assert(pChild2 != NULL);
+
+          if (pChild1->getType() == AST_NAME && pChild2->getType() == AST_NAME)
+            {
+              std::string id1 = pChild1->getName();
+              std::string id2 = pChild2->getName();
+              ASTNode *pAvogadro = NULL, *pSpecies = NULL;
+
+              if (pChild1 != NULL && pChild2 != NULL)
+                {
+                  while (avoIt != avoEndit)
+                    {
+                      if (id1 == (*avoIt)->getId())
+                        {
+                          pAvogadro = pChild1;
+                          pSpecies = pChild2;
+                          // store the id of the species in id1 for use below
+                          id1 = id2;
+                          break;
+                        }
+                      else if (id2 == (*avoIt)->getId())
+                        {
+                          pAvogadro = pChild2;
+                          pSpecies = pChild1;
+                          break;
+                        }
+
+                      ++avoIt;
+                    }
+
+                  if (pAvogadro != NULL)
+                    {
+                      // check if the potential speices node is really a substance only species
+                      //
+                      std::map<Species*, Compartment*>::const_iterator it = this->mSubstanceOnlySpecies.begin();
+                      std::map<Species*, Compartment*>::const_iterator endit = this->mSubstanceOnlySpecies.end();
+
+                      while (it != endit)
+                        {
+                          if (it->first->getId() == id1)
+                            {
+                              // now we know that we can change the current node
+                              // to represent the species
+                              itNode->setType(AST_NAME);
+                              itNode->setName(id1.c_str());
+                              itNode.skipChildren();
+                              // delete the two children
+                              itNode->removeChild(1);
+                              itNode->removeChild(0);
+                              pdelete(pChild1);
+                              pdelete(pChild2);
+                              break;
+                            }
+
+                          ++it;
+                        }
+                    }
+                }
+            }
+          else if ((pChild1->getType() == AST_NAME && (pChild2->getType() == AST_REAL || pChild2->getType() == AST_REAL_E)) ||
+                   (pChild2->getType() == AST_NAME && (pChild1->getType() == AST_REAL || pChild1->getType() == AST_REAL_E)))
+            {
+              double value = 0.0;
+              std::string id;
+
+              if (pChild1->getType() == AST_NAME)
+                {
+                  value = pChild2->getMantissa() * pow(10.0, (double)pChild2->getExponent());
+                  id = pChild1->getName();
+                }
+              else
+                {
+                  value = pChild1->getMantissa() * pow(10.0, (double)pChild1->getExponent());
+                  id = pChild2->getName();
+                }
+
+              if (areApproximatelyEqual(factor, value, 1e-3))
+                {
+                  std::map<Species*, Compartment*>::const_iterator it = this->mSubstanceOnlySpecies.begin();
+                  std::map<Species*, Compartment*>::const_iterator endit = this->mSubstanceOnlySpecies.end();
+
+                  while (it != endit)
+                    {
+                      if (it->first->getId() == id)
+                        {
+                          // now we know that we can change the current node
+                          // to represent the species
+                          itNode->setType(AST_NAME);
+                          itNode->setName(id.c_str());
+                          itNode.skipChildren();
+                          // delete the two children
+                          itNode->removeChild(1);
+                          itNode->removeChild(0);
+                          pdelete(pChild1);
+                          pdelete(pChild2);
+                          break;
+                        }
+
+                      ++it;
+                    }
+                }
+            }
+        }
+      else if (itNode->getType() == AST_NAME)
         {
           // check if pNode is a reference to a hasOnlySubstance species
           std::string id = itNode->getName();
@@ -4375,14 +4673,30 @@ void SBMLImporter::replaceCallNodeNames(ASTNode* pASTNode)
         {
           std::map<std::string, std::string>::const_iterator pos = this->mFunctionNameMapping.find(itNode->getName());
 
+          std::map<std::string, std::string>::const_iterator knownPos = mKnownCustomUserDefinedFunctions.find(itNode->getName());
+
           if (pos == this->mFunctionNameMapping.end())
             {
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 47, itNode->getName());
             }
 
-          std::string newName = pos->second;
-          itNode->setName(newName.c_str());
-          this->mUsedFunctions.insert(newName);
+          if (knownPos != mKnownCustomUserDefinedFunctions.end() &&
+              (knownPos->second == "RATE" && itNode->getNumChildren() == 1))
+            {
+              // replace the known function with the correct calls.
+              // replace rateOf with the rate of whatever is inside
+              std::string symbol = itNode->getChild(0)->getName();
+              itNode->removeChild(0);
+              itNode->setType(AST_NAME);
+              itNode->setName(symbol.c_str());
+              itNode->setUserData(strdup("RATE"));
+            }
+          else
+            {
+              std::string newName = pos->second;
+              itNode->setName(newName.c_str());
+              this->mUsedFunctions.insert(newName);
+            }
         }
     }
 }
@@ -4390,7 +4704,7 @@ void SBMLImporter::replaceCallNodeNames(ASTNode* pASTNode)
 /**
  * The methods gets a function where all the parameters have a usage of "PARAMETER".
  * In addition it get the root node of a call to that function which is an expression
- * and contains the acutal objects with which the function is called in a certain reaction.
+ * and contains the actual objects with which the function is called in a certain reaction.
  * From this expression we can determine if there already is a function in the database
  * that does the same. Or we can find out if this function is a Mass Action kinetic.
  */
@@ -5085,7 +5399,8 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
     }
   else
     {
-      size_t i, iMax = pCopasiReaction->getFunction()->getVariables().size();
+      const CFunctionParameters & Variables = pCopasiReaction->getFunction()->getVariables();
+      size_t i, iMax = Variables.size();
       const CEvaluationNodeObject* pChild = dynamic_cast<const CEvaluationNodeObject*>(pCallNode->getChild());
 
       for (i = 0; i < iMax; ++i)
@@ -5109,6 +5424,58 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
           const std::string& objectKey = pObject->getKey();
 
           pCopasiReaction->setParameterMapping(i, objectKey);
+
+          // We guess what the role of a variable of newly imported function is:
+          if (Variables[i]->getUsage() == CFunctionParameter::VARIABLE)
+            {
+              CFunctionParameter::Role Role = CFunctionParameter::PARAMETER;
+
+              if (pObject->getObjectType() == "Metabolite")
+                {
+                  CCopasiVector < CChemEqElement >::const_iterator it = pCopasiReaction->getChemEq().getSubstrates().begin();
+                  CCopasiVector < CChemEqElement >::const_iterator end = pCopasiReaction->getChemEq().getSubstrates().end();
+
+                  for (; it != end; ++it)
+                    {
+                      if ((*it)->getMetaboliteKey() == objectKey)
+                        {
+                          Role = CFunctionParameter::SUBSTRATE;
+                          break;
+                        }
+                    }
+
+                  if (Role == CFunctionParameter::PARAMETER)
+                    {
+                      it = pCopasiReaction->getChemEq().getProducts().begin();
+                      end = pCopasiReaction->getChemEq().getProducts().end();
+
+                      for (; it != end; ++it)
+                        {
+                          if ((*it)->getMetaboliteKey() == objectKey)
+                            {
+                              Role = CFunctionParameter::PRODUCT;
+                              break;
+                            }
+                        }
+                    }
+
+                  // It is not a substrate and not a product therefore we must have a modifier
+                  if (Role == CFunctionParameter::PARAMETER)
+                    {
+                      Role = CFunctionParameter::MODIFIER;
+                    }
+                }
+              else if (pObject->getObjectType() == "Model")
+                {
+                  Role = CFunctionParameter::TIME;
+                }
+              else if (pObject->getObjectType() == "Compartment")
+                {
+                  Role = CFunctionParameter::VOLUME;
+                }
+
+              const_cast< CFunctionParameter * >(Variables[i])->setUsage(Role);
+            }
 
           pChild = dynamic_cast<const CEvaluationNodeObject*>(pChild->getSibling());
         }
@@ -6148,6 +6515,7 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
           if (itNode->getType() == AST_NAME)
             {
               std::string name = itNode->getName();
+              bool haveData = itNode->getUserData() != NULL;
               // the id can either belong to a compartment, a species, a reaction or a
               // global parameter
               std::map<CCopasiObject*, SBase*>::const_iterator it = copasi2sbmlmap.begin();
@@ -6181,7 +6549,10 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
 
                             if (!initialExpression)
                               {
-                                itNode->setName((pObject->getCN() + ",Reference=Volume").c_str());
+                                if (haveData)
+                                  itNode->setName((pObject->getCN() + ",Reference=Rate").c_str());
+                                else
+                                  itNode->setName((pObject->getCN() + ",Reference=Volume").c_str());
                               }
                             else
                               {
@@ -6200,7 +6571,10 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
                               {
                                 if (!initialExpression)
                                   {
-                                    itNode->setName((pObject->getCN() + ",Reference=Concentration").c_str());
+                                    if (haveData)
+                                      itNode->setName((pObject->getCN() + ",Reference=Rate").c_str());
+                                    else
+                                      itNode->setName((pObject->getCN() + ",Reference=Concentration").c_str());
                                   }
                                 else
                                   {
@@ -6211,7 +6585,10 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
                               {
                                 if (!initialExpression)
                                   {
-                                    itNode->setName((pObject->getCN() + ",Reference=ParticleNumber").c_str());
+                                    if (haveData)
+                                      itNode->setName((pObject->getCN() + ",Reference=Rate").c_str());
+                                    else
+                                      itNode->setName((pObject->getCN() + ",Reference=ParticleNumber").c_str());
                                   }
                                 else
                                   {
@@ -6235,7 +6612,10 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
 
                             if (!initialExpression)
                               {
-                                itNode->setName((pObject->getCN() + ",Reference=Value").c_str());
+                                if (haveData)
+                                  itNode->setName((pObject->getCN() + ",Reference=Rate").c_str());
+                                else
+                                  itNode->setName((pObject->getCN() + ",Reference=Value").c_str());
                               }
                             else
                               {
@@ -7070,6 +7450,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
                   default:
                     fatalError();
+                    break;
                 }
 
               delete pTmpUdef2;
@@ -8298,6 +8679,7 @@ void SBMLImporter::createHasOnlySubstanceUnitFactor(Model* pSBMLModel, double fa
 void SBMLImporter::multiplySubstanceOnlySpeciesByVolume(ConverterASTNode* pASTNode)
 {
   CNodeIterator< ConverterASTNode > itNode(pASTNode);
+  itNode.setProcessingModes(CNodeIteratorMode::Before);
 
   while (itNode.next() != itNode.end())
     {
@@ -8306,10 +8688,52 @@ void SBMLImporter::multiplySubstanceOnlySpeciesByVolume(ConverterASTNode* pASTNo
           continue;
         }
 
-      if (itNode->getType() == AST_NAME)
+      std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin(), endit = this->mSubstanceOnlySpecies.end();
+
+      if (itNode->getType() == AST_DIVIDE)
+        {
+          // check if the first child is a has only substance species and the second
+          // is the compartment the species belongs to
+          // in that case, we just change the node to being the species node
+          assert(itNode->getNumChildren() == 2);
+
+          if (itNode->getNumChildren() == 2)
+            {
+              const ASTNode* pChild1 = itNode->getChild(0);
+              const ASTNode* pChild2 = itNode->getChild(1);
+
+              if (pChild1->getType() == AST_NAME && pChild2->getType() == AST_NAME)
+                {
+                  std::string id = pChild1->getName();
+
+                  while (it != endit)
+                    {
+                      if (it->first->getId() == id)
+                        {
+                          break;
+                        }
+
+                      ++it;
+                    }
+
+                  if (it != endit && it->second->getSpatialDimensions() != 0 && pChild2->getName() == it->second->getId())
+                    {
+                      // change the current node to represent the species
+                      itNode->setType(AST_NAME);
+                      itNode->setName(pChild1->getName());
+                      itNode.skipChildren();
+                      // delete the children
+                      itNode->removeChild(1);
+                      itNode->removeChild(0);
+                      pdelete(pChild1);
+                      pdelete(pChild2);
+                    }
+                }
+            }
+        }
+      else if (itNode->getType() == AST_NAME)
         {
           std::string id = itNode->getName();
-          std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin(), endit = this->mSubstanceOnlySpecies.end();
 
           while (it != endit)
             {
@@ -8739,7 +9163,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
   // now we convert the node to a CEvaluationNode
   CExpression* pExpression = dynamic_cast<CExpression*>(CEvaluationTree::create(CEvaluationTree::Expression));
 
-  pExpression->setBooleanRequired(true);
+  pExpression->setIsBoolean(true);
 
   pExpression->setTree(*pTmpNode);
 
@@ -9007,6 +9431,25 @@ CFunctionDB* SBMLImporter::importFunctionDefinitions(Model* pSBMLModel, std::map
             }
 
           assert(pFun != NULL);
+
+          std::map<std::string, std::string>::const_iterator pos = mKnownCustomUserDefinedFunctions.find(it->first->getId());
+
+          if (pos != mKnownCustomUserDefinedFunctions.end())
+            {
+              if (pos->second == "RUNIFORM")
+                {
+                  // replace call to function with call to uniform
+                  pFun->setInfix("UNIFORM(a, b)");
+                  pFun->compile();
+                }
+              else if (pos->second == "RNORMAL")
+                {
+                  // replace call to function with call to normal
+                  pFun->setInfix("NORMAL(a, b)");
+                  pFun->compile();
+                }
+            }
+
           copasi2sbmlmap[pFun] = const_cast<FunctionDefinition*>(it->first);
           this->mFunctionNameMapping[it->first->getId()] = pFun->getObjectName();
           // next we delete the imported function definitions from the dependencies of
@@ -9090,7 +9533,7 @@ void SBMLImporter::findDirectDependencies(const ASTNode* pNode, std::set<std::st
  * by a node that references a new global parameter which the function
  * creates. The global parameter gets an expression which corresponds to the
  * delay call.
- * This is necessary because all knetic laws in COPASI are function calls and
+ * This is necessary because all kinetic laws in COPASI are function calls and
  * function definitions should not contain a call to delay.
  */
 void SBMLImporter::replace_delay_nodes(ConverterASTNode* pASTNode, Model* pModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, Reaction* pSBMLReaction, std::map<std::string, std::string>& localReplacementMap)
@@ -9610,55 +10053,92 @@ bool SBMLImporter::importNotes(CAnnotation* pAnno, const SBase* pSBase)
 {
   bool result = true;
 
-  if (pAnno != NULL && pSBase != NULL)
+  if (pAnno == NULL || pSBase == NULL)
+    return result;
+
+  if (pSBase->isSetNotes())
     {
-      if (pSBase->isSetNotes())
+
+      std::string s = const_cast<SBase*>(pSBase)->getNotesString();
+      size_t pos = s.find_first_not_of(" \n\t\r");
+
+      if (pos != std::string::npos)
         {
-          std::string s = const_cast<SBase*>(pSBase)->getNotesString();
-          size_t pos = s.find_first_not_of(" \n\t\r");
-
-          if (pos != std::string::npos)
+          // the getNotesString method from libsbml seems to add the
+          // <notes> tag to the string as well which is not OK, so we
+          // have to remove it again.
+          if (s.substr(pos, 6) == "<notes")
             {
-              // the getNotesString method from libsbml seems to add the
-              // <notes> tag to the string as well which is not OK, so we
-              // have to remove it again.
-              if (s.substr(pos, 6) == "<notes")
+              // find the closing bracket
+              size_t pos2 = s.find(">", pos);
+              assert(pos2 != std::string::npos);
+
+              if (pos2 != std::string::npos && pos2 != (s.length() - 1))
                 {
-                  // find the closing bracket
-                  size_t pos2 = s.find(">", pos);
-                  assert(pos2 != std::string::npos);
-
-                  if (pos2 != std::string::npos && pos2 != (s.length() - 1))
-                    {
-                      s = s.substr(pos2 + 1);
-                    }
-                  else
-                    {
-                      return false;
-                    }
-
-                  // also remove the closing </notes> tag
-                  pos = s.rfind("</notes>");
-                  assert(pos != std::string::npos);
-
-                  if (pos != std::string::npos)
-                    {
-                      s = s.substr(0, pos);
-                    }
-                  else
-                    {
-                      return false;
-                    }
+                  s = s.substr(pos2 + 1);
                 }
-              else if (s.substr(pos, 8) == "<notes/>")
+              else
                 {
-                  // the notes element is empty
-                  return true;
+                  return false;
+                }
+
+              // also remove the closing </notes> tag
+              pos = s.rfind("</notes>");
+              assert(pos != std::string::npos);
+
+              if (pos != std::string::npos)
+                {
+                  s = s.substr(0, pos);
+                }
+              else
+                {
+                  return false;
                 }
             }
-
-          pAnno->setNotes(s);
+          else if (s.substr(pos, 8) == "<notes/>")
+            {
+              // the notes element is empty
+              return true;
+            }
         }
+
+      pAnno->setNotes(s);
+    }
+
+  if (!pSBase->isSetAnnotation())
+    return result;
+
+  const XMLNode* node = const_cast<SBase*>(pSBase)->getAnnotation();
+
+  for (unsigned int i = 0; i < node->getNumChildren(); ++i)
+    {
+      const XMLNode& current = node->getChild(i);
+
+      // skip over all miriam and RDF stuff as that is handled elsewhere
+      if (current.getName() == "RDF" || current.getName() == "COPASI")
+        continue;
+
+      const std::string & prefix = current.getPrefix();
+      std::string nsUri = current.getNamespaceURI(prefix);
+
+      if (nsUri.empty() && !prefix.empty())
+        {
+          // this is bad, libSBML really should let me know where the namespace is defined
+          // it could be defined anywhere upwards of this xml element
+          nsUri = node->getNamespaceURI(prefix);
+
+          if (nsUri.empty() && pSBase->getSBMLDocument() != NULL)
+            nsUri = pSBase->getSBMLDocument()->getSBMLNamespaces()->getNamespaces()->getURI(prefix);
+
+          if (!nsUri.empty())
+            {
+              // we need to store the prefix on the element, as the COPASI object structure
+              // does not support the annotation without prefix
+              const_cast<XMLNode&>(current).addNamespace(nsUri, prefix);
+            }
+        }
+
+      pAnno->addUnsupportedAnnotation(nsUri, current.toXMLString());
     }
 
   return result;

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,8 +14,7 @@
 
 //
 
-#include <string.h>
-#include <limits.h>
+#include <sstream>
 #include <string>
 #include <vector>
 #include <limits>
@@ -31,6 +30,7 @@
 #include "CModel.h"
 #include "CState.h"
 #include "CModelValue.h"
+#include "CObjectLists.h"
 #include "function/CFunctionDB.h"
 #include "report/CCopasiObjectReference.h"
 #include "report/CKeyFactory.h"
@@ -244,20 +244,6 @@ std::string CModel::getChildObjectUnits(const CCopasiObject * pObject) const
     return getTimeUnitName();
 
   return "";
-}
-
-void CModel::cleanup()
-{
-  /* The real objects */
-  mCompartments.cleanup();
-  mSteps.cleanup();
-  mMoieties.cleanup();
-
-  /* The references */
-  //mStepsInd.resize(0);
-  mMetabolites.clear();
-  mMetabolitesX.clear();
-  mParticleFluxes.resize(0);
 }
 
 C_INT32 CModel::load(CReadConfig & configBuffer)
@@ -479,11 +465,12 @@ bool CModel::compile()
   if (!success)
     {
       mIsAutonomous = false;
-      return false;
     }
-
-  mCompileIsNecessary = false;
-  determineIsAutonomous();
+  else
+    {
+      mCompileIsNecessary = false;
+      determineIsAutonomous();
+    }
 
   //writeDependenciesToDotFile();
 
@@ -493,7 +480,7 @@ bool CModel::compile()
   CMathContainer MathModel(*this);
 #endif // TST_DEPENDENCYGRAPH
 
-  return true;
+  return success;
 }
 
 #ifdef TST_DEPENDENCYGRAPH
@@ -1155,20 +1142,17 @@ const CVector<size_t> & CModel::getMetabolitePermutation() const
 /**
  *        Returns the index of the metab
  */
-size_t CModel::findMetabByName(const std::string & Target) const
+size_t CModel::findMetabByName(const std::string & name) const
 {
-  size_t i, s;
-  std::string name;
+  size_t i, imax = mMetabolites.size();
+  CCopasiVector< CMetab >::const_iterator Target = mMetabolites.begin();
 
-  s = mMetabolites.size();
+  std::string Name = unQuote(name);
 
-  for (i = 0; i < s; i++)
-    {
-      name = mMetabolites[i]->getObjectName();
-
-      if (name == Target)
-        return i;
-    }
+  for (i = 0; i < imax; i++, Target++)
+    if (*Target &&
+        ((*Target)->getObjectName() == name ||
+         (*Target)->getObjectName() == Name)) return i;
 
   return C_INVALID_INDEX;
 }
@@ -2417,45 +2401,14 @@ bool CModel::appendDependentReactions(std::set< const CCopasiObject * > candidat
   for (; it != end; ++it)
     if (candidates.find(*it) == candidates.end())
       {
-        std::set< const CCopasiObject * > Ignored;
-
-        // We need to ignore our own local reaction parameters.
-        CCopasiParameterGroup::index_iterator itParameter = (*it)->getParameters().beginIndex();
-        CCopasiParameterGroup::index_iterator endParameter = (*it)->getParameters().endIndex();
-        CCopasiObject::DataObjectSet::iterator itIgnored;
-
-        for (; itParameter != endParameter; ++itParameter)
+        // Check whether the reaction is already in the list of deleted objects
+        if (candidates.find(*it) == candidates.end())
           {
-            if ((itIgnored = candidates.find((*itParameter)->getValueReference())) != candidates.end())
+            if ((*it)->mustBeDeleted(candidates))
               {
-                Ignored.insert(*itIgnored);
-                candidates.erase(itIgnored);
+                dependents.insert(*it);
               }
           }
-
-        if ((*it)->dependsOn(candidates))
-          {
-            dependents.insert((*it));
-            continue;
-          }
-
-        CCopasiObject::DataObjectSet DeletedObjects = (*it)->getDeletedObjects();
-        itSet = DeletedObjects.begin();
-        endSet = DeletedObjects.end();
-
-        for (; itSet != endSet; ++itSet)
-          if (candidates.find(*itSet) == candidates.end() &&
-              (*itSet)->dependsOn(candidates))
-            {
-              dependents.insert((*it));
-              break;
-            }
-
-        // Add the ignored parameters back.
-        std::set< const CCopasiObject * >::iterator endIgnored = Ignored.end();
-
-        for (itIgnored = Ignored.begin(); itIgnored != endIgnored; ++itIgnored)
-          candidates.insert(*itIgnored);
       }
 
   return Size < dependents.size();
@@ -2483,37 +2436,16 @@ bool CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
       end = (*itComp)->getMetabolites().end();
 
       for (; it != end; ++it)
-        if (candidates.find((*it)->getCompartment()) != candidates.end())
-          dependents.insert((*it));
-        else if (candidates.find(*it) == candidates.end())
-          {
-            if (candidates.find(static_cast< const CCopasiObject * >((*it)->getCompartment()->getObject(CCopasiObjectName("Reference=Volume")))) != candidates.end() ||
-                (*it)->dependsOn(candidates))
-              {
-                dependents.insert((*it));
-                continue;
-              }
-
-            std::set< const CCopasiObject * > DeletedObjects = (*it)->getDeletedObjects();
-
-            if ((*it)->getStatus() == REACTIONS)
-              {
-                DeletedObjects.erase((*it)->getRateReference());
-                DeletedObjects.erase((*it)->getConcentrationRateReference());
-                DeletedObjects.erase(static_cast< const CCopasiObject * >((*it)->getObject(CCopasiObjectName("Reference=TransitionTime"))));
-              }
-
-            itSet = DeletedObjects.begin();
-            endSet = DeletedObjects.end();
-
-            for (; itSet != endSet; ++itSet)
-              if (candidates.find(*itSet) == candidates.end() &&
-                  (*itSet)->dependsOn(candidates))
+        {
+          // Check whether the species is already in the list of deleted objects
+          if (candidates.find(*it) == candidates.end())
+            {
+              if ((*it)->mustBeDeleted(candidates))
                 {
-                  dependents.insert((*it));
-                  break;
+                  dependents.insert(*it);
                 }
-          }
+            }
+        }
     }
 
   return Size < dependents.size();
@@ -2533,26 +2465,16 @@ bool CModel::appendDependentCompartments(std::set< const CCopasiObject * > candi
   std::set< const CCopasiObject * >::const_iterator endSet;
 
   for (; it != end; ++it)
-    if (candidates.find(*it) == candidates.end())
-      {
-        if ((*it)->dependsOn(candidates))
-          {
-            dependents.insert((*it));
-            continue;
-          }
-
-        std::set< const CCopasiObject * > DeletedObjects = (*it)->getDeletedObjects();
-        itSet = DeletedObjects.begin();
-        endSet = DeletedObjects.end();
-
-        for (; itSet != endSet; ++itSet)
-          if (candidates.find(*itSet) == candidates.end() &&
-              (*itSet)->dependsOn(candidates))
+    {
+      // Check whether the compartment is already in the list of deleted objects
+      if (candidates.find(*it) == candidates.end())
+        {
+          if ((*it)->mustBeDeleted(candidates))
             {
-              dependents.insert((*it));
-              break;
+              dependents.insert(*it);
             }
-      }
+        }
+    }
 
   return Size < dependents.size();
 }
@@ -2571,25 +2493,14 @@ bool CModel::appendDependentModelValues(std::set< const CCopasiObject * > candid
   std::set< const CCopasiObject * >::const_iterator endSet;
 
   for (; it != end; ++it)
+
+    // Check whether the model value is already in the list of deleted objects
     if (candidates.find(*it) == candidates.end())
       {
-        if ((*it)->dependsOn(candidates))
+        if ((*it)->mustBeDeleted(candidates))
           {
-            dependents.insert((*it));
-            continue;
+            dependents.insert(*it);
           }
-
-        std::set< const CCopasiObject * > DeletedObjects = (*it)->getDeletedObjects();
-        itSet = DeletedObjects.begin();
-        endSet = DeletedObjects.end();
-
-        for (; itSet != endSet; ++itSet)
-          if (candidates.find(*itSet) == candidates.end() &&
-              (*itSet)->dependsOn(candidates))
-            {
-              dependents.insert((*it));
-              break;
-            }
       }
 
   return Size < dependents.size();
@@ -2609,11 +2520,13 @@ bool CModel::appendDependentEvents(std::set< const CCopasiObject * > candidates,
   std::set< const CCopasiObject * >::const_iterator endSet;
 
   for (; it != end; ++it)
+
+    // Check whether the model value is already in the list of deleted objects
     if (candidates.find(*it) == candidates.end())
       {
-        if ((*it)->dependsOn(candidates))
+        if ((*it)->mustBeDeleted(candidates))
           {
-            dependents.insert((*it));
+            dependents.insert(*it);
           }
       }
 
@@ -2996,7 +2909,7 @@ bool CModel::convert2NonReversible()
 
   bool success = true;
 
-  std::vector<std::string> reactionsToDelete;
+  std::vector< CReaction * > reactionsToDelete;
 
   CReaction *reac0, *reac1, *reac2;
   CReactionInterface ri1(this), ri2(this);
@@ -3050,9 +2963,9 @@ bool CModel::convert2NonReversible()
                 continue;
               }
 
-            if (tmp.first) CCopasiRootContainer::getFunctionList()->addAndAdaptName(tmp.first);
+            tmp.first = CCopasiRootContainer::getFunctionList()->addAndAdaptName(tmp.first);
 
-            if (tmp.second) CCopasiRootContainer::getFunctionList()->addAndAdaptName(tmp.second);
+            tmp.second = CCopasiRootContainer::getFunctionList()->addAndAdaptName(tmp.second);
           }
 
         size_t i, imax;
@@ -3129,12 +3042,48 @@ bool CModel::convert2NonReversible()
                 switch (fp->getUsage())
                   {
                     case CFunctionParameter::SUBSTRATE:
-                    case CFunctionParameter::PRODUCT:
-                    case CFunctionParameter::MODIFIER:
                       reac1->setParameterMapping(fp->getObjectName(),
                                                  reac0->getParameterMapping(fp->getObjectName())[0]);
+
+                      // It is possible (see Bug 1830) that the split function may have additional modifier.
+                      // This will happen e.g. if the product is referenced in the forward part of the reaction.
+                      if (reac2->setParameterMapping(fp->getObjectName(),
+                                                     reac0->getParameterMapping(fp->getObjectName())[0]))
+                        {
+                          reac2->addModifier(reac0->getParameterMapping(fp->getObjectName())[0]);
+                        }
+
+                      break;
+
+                    case CFunctionParameter::PRODUCT:
+
+                      // It is possible (see Bug 1830) that the split function may have additional modifier.
+                      // This will happen e.g. if the product is referenced in the forward part of the reaction.
+                      if (reac1->setParameterMapping(fp->getObjectName(),
+                                                     reac0->getParameterMapping(fp->getObjectName())[0]))
+                        {
+                          reac1->addModifier(reac0->getParameterMapping(fp->getObjectName())[0]);
+                        }
+
                       reac2->setParameterMapping(fp->getObjectName(),
                                                  reac0->getParameterMapping(fp->getObjectName())[0]);
+                      break;
+
+                    case CFunctionParameter::MODIFIER:
+                      if (reac1->setParameterMapping(fp->getObjectName(),
+                                                     reac0->getParameterMapping(fp->getObjectName())[0]))
+                        {
+                          // Add the modifier
+                          reac1->addModifier(reac0->getParameterMapping(fp->getObjectName())[0]);
+                        }
+
+                      if (reac2->setParameterMapping(fp->getObjectName(),
+                                                     reac0->getParameterMapping(fp->getObjectName())[0]))
+                        {
+                          // Add the modifier
+                          reac2->addModifier(reac0->getParameterMapping(fp->getObjectName())[0]);
+                        }
+
                       break;
 
                     case CFunctionParameter::PARAMETER:
@@ -3169,14 +3118,205 @@ bool CModel::convert2NonReversible()
         reac1->compile();
         reac2->compile();
 
-        //remove the old reaction
-        reactionsToDelete.push_back(reac0->getObjectName());
+        // TODO CRITICAL BUG 1848. We need to replace all references to the flux and particle flux
+        // with the difference of the forward and backward reaction fluxes and particle fluxes, i.e,
+        // flux = forward.flux - backward.flux
+
+        std::string Old = "<" + reac0->getFluxReference()->getCN() + ">";
+        std::string New = "(<" + reac1->getFluxReference()->getCN() + "> - <" + reac2->getFluxReference()->getCN() + ">)";
+
+        // Find all objects which directly depend on the flux or particle flux.
+        std::set< const CCopasiObject * > Flux;
+        Flux.insert(reac0->getFluxReference());
+        std::set< const CCopasiObject * > FluxDependents;
+
+        // Initial Expression and Expression
+        appendDependentCompartments(Flux, FluxDependents);
+        appendDependentModelValues(Flux, FluxDependents);
+        appendDependentMetabolites(Flux, FluxDependents);
+
+        std::set< const CCopasiObject * >::iterator it = FluxDependents.begin();
+        std::set< const CCopasiObject * >::iterator end = FluxDependents.end();
+
+        for (; it != end; ++it)
+          {
+            CModelEntity * pEntity = static_cast< CModelEntity * >(const_cast< CCopasiObject * >(*it));
+
+            // Expression
+            std::string Infix = pEntity->getExpression();
+
+            if (stringReplace(Infix, Old, New))
+              {
+                pEntity->setExpression(Infix);
+              }
+
+            // Initial Expression
+            if (pEntity->getStatus() != CModelEntity::ASSIGNMENT)
+              {
+                Infix = pEntity->getInitialExpression();
+
+                if (stringReplace(Infix, Old, New))
+                  {
+                    pEntity->setInitialExpression(Infix);
+                  }
+              }
+          }
+
+        FluxDependents.clear();
+
+        // Trigger and Assignments
+        appendDependentEvents(Flux, FluxDependents);
+
+        it = FluxDependents.begin();
+        end = FluxDependents.end();
+
+        for (; it != end; ++it)
+          {
+            CEvent * pEvent = static_cast< CEvent * >(const_cast< CCopasiObject * >(*it));
+
+            // Trigger Expression
+            std::string Infix = pEvent->getTriggerExpression();
+
+            if (stringReplace(Infix, Old, New))
+              {
+                pEvent->setTriggerExpression(Infix);
+              }
+
+            // Delay Expression
+            Infix = pEvent->getDelayExpression();
+
+            if (stringReplace(Infix, Old, New))
+              {
+                pEvent->setDelayExpression(Infix);
+              }
+
+            // Priority Expression
+            Infix = pEvent->getPriorityExpression();
+
+            if (stringReplace(Infix, Old, New))
+              {
+                pEvent->setPriorityExpression(Infix);
+              }
+
+            // Assignments
+            CCopasiVector< CEventAssignment >::iterator itAssignment = pEvent->getAssignments().begin();
+            CCopasiVector< CEventAssignment >::iterator endAssignment = pEvent->getAssignments().end();
+
+            for (; itAssignment != endAssignment; ++itAssignment)
+              {
+                Infix = (*itAssignment)->getExpression();
+
+                if (stringReplace(Infix, Old, New))
+                  {
+                    (*itAssignment)->setExpression(Infix);
+                  }
+              }
+          }
+
+        FluxDependents.clear();
+        Flux.clear();
+
+        // particleFlux = forward.particleFlux - backward.particleFlux
+        Old = "<" + reac0->getParticleFluxReference()->getCN() + ">";
+        New = "(<" + reac1->getParticleFluxReference()->getCN() + "> - <" + reac2->getParticleFluxReference()->getCN() + ">)";
+
+        Flux.insert(reac0->getParticleFluxReference());
+
+        // Initial Expression and Expression
+        appendDependentCompartments(Flux, FluxDependents);
+        appendDependentModelValues(Flux, FluxDependents);
+        appendDependentMetabolites(Flux, FluxDependents);
+
+        it = FluxDependents.begin();
+        end = FluxDependents.end();
+
+        for (; it != end; ++it)
+          {
+            CModelEntity * pEntity = static_cast< CModelEntity * >(const_cast< CCopasiObject * >(*it));
+
+            // Expression
+            std::string Infix = pEntity->getExpression();
+
+            if (stringReplace(Infix, Old, New))
+              {
+                pEntity->setExpression(Infix);
+              }
+
+            // Initial Expression
+            if (pEntity->getStatus() != CModelEntity::ASSIGNMENT)
+              {
+                Infix = pEntity->getInitialExpression();
+
+                if (stringReplace(Infix, Old, New))
+                  {
+                    pEntity->setInitialExpression(Infix);
+                  }
+              }
+          }
+
+        FluxDependents.clear();
+
+        // Trigger and Assignments
+        appendDependentEvents(Flux, FluxDependents);
+
+        it = FluxDependents.begin();
+        end = FluxDependents.end();
+
+        for (; it != end; ++it)
+          {
+            CEvent * pEvent = static_cast< CEvent * >(const_cast< CCopasiObject * >(*it));
+
+            // Trigger Expression
+            std::string Infix = pEvent->getTriggerExpression();
+
+            if (stringReplace(Infix, Old, New))
+              {
+                pEvent->setTriggerExpression(Infix);
+              }
+
+            // Delay Expression
+            Infix = pEvent->getDelayExpression();
+
+            if (stringReplace(Infix, Old, New))
+              {
+                pEvent->setDelayExpression(Infix);
+              }
+
+            // Priority Expression
+            Infix = pEvent->getPriorityExpression();
+
+            if (stringReplace(Infix, Old, New))
+              {
+                pEvent->setPriorityExpression(Infix);
+              }
+
+            // Assignments
+            CCopasiVector< CEventAssignment >::iterator itAssignment = pEvent->getAssignments().begin();
+            CCopasiVector< CEventAssignment >::iterator endAssignment = pEvent->getAssignments().end();
+
+            for (; itAssignment != endAssignment; ++itAssignment)
+              {
+                Infix = (*itAssignment)->getExpression();
+
+                if (stringReplace(Infix, Old, New))
+                  {
+                    (*itAssignment)->setExpression(Infix);
+                  }
+              }
+          }
+
+        // Schedule the old reaction for removal.
+        reactionsToDelete.push_back(reac0);
       }
 
   imax = reactionsToDelete.size();
 
   for (i = 0; i < imax; ++i)
-    steps.remove(reactionsToDelete[i]);
+    {
+      steps.remove(reactionsToDelete[i]->getObjectName());
+    }
+
+  success &= compile();
 
   return success;
 }
@@ -3333,7 +3473,7 @@ std::string CModel::suitableForStochasticSimulation() const
 
   for (i = 0; i < mMetabolites.size(); ++i)
     {
-      if (mMetabolites[i]->getInitialValue() > LLONG_MAX)
+      if (mMetabolites[i]->getInitialValue() > std::numeric_limits< C_INT64 >::max())
         return "At least one particle number in the initial state is too big.";
     }
 
@@ -3636,6 +3776,82 @@ void CModel::determineIsAutonomous()
     setInitialValue(0.0);
 }
 
+bool CModel::isStateVariable(const CCopasiObject * pObject) const
+{
+  if (pObject == NULL)
+    {
+      return false;
+    }
+
+  // We check whether the object itself or the parent object is a state variable
+  // A state variable is an independent model entity, a dependent species, or
+  // a fixed entity, which is an event target.
+
+  const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(pObject);
+
+  if (pEntity == NULL)
+    {
+      pEntity = dynamic_cast< const CModelEntity * >(pObject->getObjectParent());
+    }
+
+  if (pEntity == NULL)
+    {
+      return false;
+    }
+
+  CModelEntity * const* it = mStateTemplate.beginIndependent();
+  CModelEntity * const* end = mStateTemplate.endDependent();
+
+  for (; it != end; ++it)
+    {
+      if (*it == pEntity)
+        {
+          return true;
+        }
+    }
+
+  std::set< const CModelEntity * > EventTargets = CObjectLists::getEventTargets(this);
+  std::set< const CModelEntity * >::const_iterator itSet = EventTargets.begin();
+  std::set< const CModelEntity * >::const_iterator endSet = EventTargets.end();
+
+  for (; itSet != endSet; ++itSet)
+    {
+      if (*itSet == pEntity)
+        {
+          return true;
+        }
+    }
+
+  return false;
+}
+
+CCopasiObject * CModel::getCorrespondingTransientObject(const CCopasiObject * pObject) const
+{
+  // CModelEntities and derived classes are the only object which have initial and transient values
+  // Note, for species we have distinguish between particle number and concentration.
+
+  const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(pObject);
+
+  if (pEntity == NULL)
+    {
+      pEntity = dynamic_cast< const CModelEntity * >(pObject->getObjectParent());
+    }
+
+  if (pEntity == NULL)
+    {
+      return const_cast< CCopasiObject * >(pObject);
+    }
+
+  const CMetab * pMetab = dynamic_cast< const CMetab * >(pEntity);
+
+  if (pMetab != NULL && pMetab->getInitialConcentrationReference() == pObject)
+    {
+      return pMetab->getConcentrationReference();
+    }
+
+  return pEntity->getValueReference();
+}
+
 std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() const
 {
   std::vector< const CEvaluationTree * > TreesWithDiscontinuities;
@@ -3651,7 +3867,8 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
           case ODE:
           case ASSIGNMENT:
 
-            if ((*ppEntity)->getExpressionPtr()->hasDiscontinuity())
+            if ((*ppEntity)->getExpressionPtr() &&
+                (*ppEntity)->getExpressionPtr()->hasDiscontinuity())
               {
                 TreesWithDiscontinuities.push_back((*ppEntity)->getExpressionPtr());
               }
@@ -3669,7 +3886,8 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
 
   for (; itReaction != endReaction; ++itReaction)
     {
-      if ((*itReaction)->getFunction()->hasDiscontinuity())
+      if ((*itReaction)->getFunction() &&
+          (*itReaction)->getFunction()->hasDiscontinuity())
         {
           TreesWithDiscontinuities.push_back((*itReaction)->getFunction());
         }
@@ -3681,7 +3899,8 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
 
   for (; itEvent != endEvent; ++itEvent)
     {
-      if ((*itEvent)->getTriggerExpressionPtr()->hasDiscontinuity())
+      if ((*itEvent)->getTriggerExpressionPtr() &&
+          (*itEvent)->getTriggerExpressionPtr()->hasDiscontinuity())
         {
           TreesWithDiscontinuities.push_back((*itEvent)->getTriggerExpressionPtr());
         }
@@ -4259,3 +4478,9 @@ const CVector< CMathTrigger::CRootFinder * > & CModel::getRootFinders() const
 {
   return mpMathModel->getRootFinders();
 }
+
+const CMathModel* CModel::getMathModel() const
+{return mpMathModel;}
+
+CMathModel* CModel::getMathModel()
+{return mpMathModel;}

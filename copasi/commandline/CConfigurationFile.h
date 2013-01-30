@@ -1,22 +1,14 @@
-/* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.h,v $
-  $Revision: 1.10 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2012/05/25 12:08:46 $
-  End CVS Header */
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -173,18 +165,6 @@ public:
   void setApplicationFont(const std::string & applicationFont);
 
   /**
-   * Retrieve the web browser
-   * @return const std::string & webBrowser
-   */
-  const std::string getWebBrowser() const;
-
-  /**
-   * Set the web browser.
-   * @param const std::string & webBrowser
-   */
-  void setWebBrowser(const std::string & webBrowser);
-
-  /**
    * Always perform unit validation
    * @return a flag indicating whether unit validation should always be performed
    */
@@ -195,6 +175,18 @@ public:
    * @param bool validateUnits
    */
   void setValidateUnits(bool validateUnits);
+
+  /**
+   * Retrieve the web working directory
+   * @return const std::string & workingDirectory
+   */
+  const std::string getWorkingDirectory() const;
+
+  /**
+   * Set the working directory.
+   * @param const std::string & workingDirectory
+   */
+  void setWorkingDirectory(const std::string & workingDirectory);
 
 private:
   /**
@@ -282,14 +274,14 @@ private:
   std::string * mpApplicationFont;
 
   /**
-   * A pointer to the application which handles opening URLs
-   */
-  std::string * mpWebBrowser;
-
-  /**
-  * A pointer indicating whether units will always be validated
+   * A pointer indicating whether units will always be validated
    */
   bool * mpValidateUnits;
+
+  /**
+   * A pointer to the last used working directory of the GUI.
+   */
+  std::string * mpWorkingDirectory;
 };
 
 #endif // COPASI_CConfigurationFile

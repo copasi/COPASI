@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -104,7 +104,7 @@ CCopasiXML::~CCopasiXML() {}
 bool CCopasiXML::save(std::ostream & os,
                       const std::string & relativeTo)
 {
-  mFilename = relativeTo;
+  mPWD = relativeTo;
 
   os.imbue(std::locale::classic());
   os.precision(16);
@@ -171,7 +171,7 @@ bool CCopasiXML::save(std::ostream & os,
 bool CCopasiXML::load(std::istream & is,
                       const std::string & relativeTo)
 {
-  mFilename = relativeTo;
+  mPWD = relativeTo;
 
   is.imbue(std::locale::classic());
   is.precision(16);
@@ -237,8 +237,7 @@ bool CCopasiXML::load(std::istream & is,
     }
 
   if (!CVersion::VERSION.isCompatible(FileVersion))
-    CCopasiMessage(CCopasiMessage::WARNING, MCXML + 9,
-                   mFilename.c_str(), FileVersion.getVersion().c_str());
+    CCopasiMessage(CCopasiMessage::WARNING, MCXML + 9, FileVersion.getVersion().c_str());
 
   return success;
 }
@@ -1190,7 +1189,7 @@ bool CCopasiXML::saveTaskList()
           std::string Target = tReport.getTarget();
 
           if (!CDirEntry::isRelativePath(Target) &&
-              !CDirEntry::makePathRelative(Target, mFilename))
+              !CDirEntry::makePathRelative(Target, mPWD))
             Target = CDirEntry::fileName(Target);
 
           Attributes.add("target", Target);
@@ -1804,7 +1803,7 @@ bool CCopasiXML::saveSBMLReference()
   std::string SBMLFile = this->mpDataModel->getSBMLFileName();
 
   if (!CDirEntry::isRelativePath(SBMLFile) &&
-      !CDirEntry::makePathRelative(SBMLFile, mFilename))
+      !CDirEntry::makePathRelative(SBMLFile, mPWD))
     SBMLFile = CDirEntry::fileName(SBMLFile);
 
   Attributes.add("file", SBMLFile);

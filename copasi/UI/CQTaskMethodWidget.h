@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskMethodWidget.h,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/01/06 19:13:44 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,9 +9,9 @@
 #include <QtCore/QVariant>
 
 #include "copasi/UI/ui_CQTaskMethodWidget.h"
+#include "copasi/utilities/CCopasiMethod.h"
 
 class CCopasiTask;
-class CCopasiMethod;
 
 class CQTaskMethodWidget: public QWidget, public Ui::CQTaskMethodWidget
 {
@@ -40,14 +32,23 @@ public:
 
   bool saveMethod();
 
+  void clearHistory();
 
 protected slots:
 
   void changeMethod(int);
 
 protected:
+  void addToHistory(CCopasiMethod * pMethod);
+  void removeFromHistory(CCopasiMethod * pMethod);
+  CCopasiMethod * getFromHistory(const CCopasiMethod::SubType & Type) const;
+  void setActiveMethod(const CCopasiMethod::SubType & Type);
+
+protected:
   CCopasiTask * mpTask;
   CCopasiMethod * mpMethod;
+  CCopasiMethod * mpActiveMethod;
+  std::map< CCopasiMethod::SubType, CCopasiMethod * > mMethodHistory;
   bool mShowMethods;
   bool mShowMethodParameters;
 };

@@ -1,22 +1,19 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/common.pri,v $ 
-#   $Revision: 1.142 $ 
-#   $Name:  $ 
-# End CVS Header 
-
-# Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-# and The University of Manchester.
-# All rights reserved.
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
 
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
+# Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
+
+
+
 
 ######################################################################
 # $Revision: 1.142 $ $Author: shoops $ $Date: 2012/06/26 22:30:00 $  
@@ -117,8 +114,13 @@ DEFINES += WITH_CSPMETHOD
 # flag to use Svens SBML unit identification framework
 #define USE_SBMLUNIT
 
+# enable this to use the new listwidget based plot specification window
+DEFINES += USE_NEW_PLOTSUBWIDGET
+
+
 debug {
   DEFINES += COPASI_DEBUG
+  DEFINES += COPASI_DEBUG_TRACE
   DEFINES += COPASI_EXTUNIT
   # DEFINES += WITH_MERGEMODEL
   DEFINES += COPASI_NONLIN_DYN
@@ -771,6 +773,7 @@ contains(BUILD_OS, Linux) {
       DEFINES += HAVE_MML
     }
 
+	LIBS *= -lGLU
 # only needed for the class CLSimpleImageTexturizer which is only
 # needed if we want to create bitmaps from layouts in the backend
 #contains(DEFINES,USE_CRENDER_EXTENSION) {           

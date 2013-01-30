@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example4.py,v $ 
-#   $Revision: 1.5 $ 
-#   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2009/03/05 21:36:23 $ 
-# End CVS Header 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+# Properties, Inc., University of Heidelberg, and The University </comment>
+# of Manchester. </comment>
+# All rights reserved. </comment>
+
+# Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+# and The University of Manchester. </comment>
+# All rights reserved. </comment>
 
 # 
 # This is an example on how to import an sbml file
@@ -230,7 +228,7 @@ def main(args):
 
    # we don't want to set the initial conditions of the model to the end
    # state of the last run
-   scanProblem.setAdjustInitialConditions(False)
+   scanProblem.setContinueFromCurrentState(False)
 
    try:
        # now we run the actual trajectory

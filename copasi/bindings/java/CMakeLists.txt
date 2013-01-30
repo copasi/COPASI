@@ -75,27 +75,29 @@ endif()
 #
 #
 add_custom_command(	
-	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 	       
-	       ${CMAKE_CURRENT_BINARY_DIR}/java-java_files/org/COPASI/COPASIJNI.java
-	COMMAND "${CMAKE_COMMAND}"
-	ARGS    -E make_directory  ${CMAKE_CURRENT_BINARY_DIR}/java-files/org/COPASI
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 	       
+         ${CMAKE_CURRENT_BINARY_DIR}/java-files
+         ${CMAKE_CURRENT_BINARY_DIR}/gui
+         ${CMAKE_CURRENT_BINARY_DIR}/java-files/org/COPASI/COPASIJNI.java
+    COMMAND "${CMAKE_COMMAND}"
+    ARGS    -E make_directory  ${CMAKE_CURRENT_BINARY_DIR}/java-files/org/COPASI
     COMMAND "${SWIG_EXECUTABLE}"
     ARGS -I${CMAKE_CURRENT_SOURCE_DIR}/../swig/
-	     -I${CMAKE_CURRENT_SOURCE_DIR}/../../
+         -I${CMAKE_CURRENT_SOURCE_DIR}/../../
          -I${CMAKE_CURRENT_SOURCE_DIR}
-		 -c++
-		 -java
-		 -package org.COPASI
-		 ${SWIG_EXTRA_ARGS}
-		 -outdir ${CMAKE_CURRENT_BINARY_DIR}/java-files/org/COPASI
+         -c++
+         -java
+         -package org.COPASI
+         ${SWIG_EXTRA_ARGS}
+         -outdir ${CMAKE_CURRENT_BINARY_DIR}/java-files/org/COPASI
          -o ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
          ${CMAKE_CURRENT_SOURCE_DIR}/java.i
     MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/java.i
-	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
-	        ${SWIG_DEPENDENCIES}
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
+         ${SWIG_DEPENDENCIES}
     COMMENT "Swig Java source") 
 	
-add_custom_target(binding_java_swig DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp)
+add_custom_target(binding_java_swig DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/java.i)
 
 	
 include(../../common.cmake)
@@ -128,12 +130,13 @@ if(APPLE)
 	set_target_properties (binding_java_lib PROPERTIES SUFFIX ".jnilib")
 endif()
 
-install(TARGETS binding_java_lib DESTINATION COPASI/bindings/java )
+install(TARGETS binding_java_lib DESTINATION bindings/java )
 
 target_link_libraries(binding_java_lib ${SE_EXTERNAL_LIBS} ${SE_LIBS} )
 
 add_custom_command(	
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/copasi.jar
+	       ${CMAKE_CURRENT_BINARY_DIR}/copasi-gui.jar
 	COMMAND "${CMAKE_COMMAND}"
 	ARGS -DJava_JAVAC_EXECUTABLE=\"${Java_JAVAC_EXECUTABLE}\"
 		 -DJava_JAR_EXECUTABLE=\"${Java_JAR_EXECUTABLE}\"
@@ -143,7 +146,8 @@ add_custom_command(
 		 -DPATH_SEP=${PATH_SEP}
 		 -P "${CMAKE_CURRENT_SOURCE_DIR}/compile-native-files.cmake"
 	
-	WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/java-files
     COMMENT "Building: copasi.jar"
 	) 
 
@@ -153,7 +157,17 @@ add_custom_target(binding_java_jar ALL DEPENDS
 	
 add_dependencies(binding_java_jar binding_java_swig)
 	
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/copasi.jar DESTINATION COPASI/bindings/java) 
-	
-	
-	
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/copasi.jar 
+	  ${CMAKE_CURRENT_BINARY_DIR}/copasi-gui.jar 
+        DESTINATION bindings/java) 
+file(GLOB examples ${CMAKE_CURRENT_SOURCE_DIR}/examples/*.java)
+install(FILES ${examples} DESTINATION bindings/java/examples) 
+
+# compile java examples if needed to test whether 
+# they still work with the current objectmodel
+option (BUILD_JAVA_EXAMPLES "Build the Java examples." OFF)
+mark_as_advanced(BUILD_JAVA_EXAMPLES)
+if (BUILD_JAVA_EXAMPLES)
+add_subdirectory(examples)
+endif(BUILD_JAVA_EXAMPLES)
+

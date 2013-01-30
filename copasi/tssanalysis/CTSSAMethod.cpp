@@ -1,32 +1,26 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSAMethod.cpp,v $
-//   $Revision: 1.33 $
-//   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2012/06/04 11:05:02 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /**
  *  CTSSAMethod class.
  *  This class describes the interface to all  time scale separation analysis methods.
- *  The variaous method like ILDM or CSP have to be derived from
+ *  The various method like ILDM or CSP have to be derived from
  *  this class.
  *
  */
+
+#include <sstream>
 
 #include "copasi.h"
 
@@ -63,6 +57,7 @@ CTSSAMethod::createMethod(CCopasiMethod::SubType subType)
         break;
 
 #ifdef  WITH_CSPMETHOD
+
       case tssCSP:
         pMethod = new CCSPMethod();
         break;
@@ -70,6 +65,7 @@ CTSSAMethod::createMethod(CCopasiMethod::SubType subType)
 
       default:
         fatalError();
+        break;
     }
 
   return pMethod;
@@ -80,12 +76,51 @@ CTSSAMethod::createMethod(CCopasiMethod::SubType subType)
  */
 CTSSAMethod::CTSSAMethod(const CCopasiMethod::SubType & subType,
                          const CCopasiContainer * pParent) :
-    CCopasiMethod(CCopasiTask::tssAnalysis, subType, pParent),
-    mpCurrentState(NULL),
-    mpProblem(NULL),
-    mpState(NULL),
-    mY(NULL)
-{CONSTRUCTOR_TRACE;}
+  CCopasiMethod(CCopasiTask::tssAnalysis, subType, pParent),
+  mpCurrentState(NULL),
+  mpProblem(NULL),
+  mpState(NULL),
+  mData(),
+  mY(NULL),
+  mYdot(),
+  mY_initial(),
+  mTime(0.0),
+  mJacobian(),
+  mJacobian_initial(),
+  mQ(),
+  mQ_desc(),
+  mR(),
+  mR_desc(),
+  mTd(),
+  mTdInverse(),
+  mQz(),
+  mTd_save(),
+  mTdInverse_save(),
+  mCfast(),
+  mY_cons(),
+  mVslow(),
+  mVslow_metab(),
+  mVslow_space(),
+  mVfast_space(),
+  mSlow(0),
+  mLsodaStatus(1),
+  mReducedModel(false),
+  mRtol(1e-5),
+  mAtol(),
+  mErrorMsg(),
+  mLSODA(),
+  mState(0),
+  mDWork(),
+  mIWork(),
+  mJType(0),
+  mpModel(NULL),
+  mDtol(1e-6),
+  mEPS(0.01),
+  mVec_SlowModes(),
+  mCurrentTime(),
+  mVec_TimeScale(),
+  mCurrentStep(0)
+{}
 
 /**
  *  Copy constructor.
@@ -93,16 +128,57 @@ CTSSAMethod::CTSSAMethod(const CCopasiMethod::SubType & subType,
  */
 CTSSAMethod::CTSSAMethod(const CTSSAMethod & src,
                          const CCopasiContainer * pParent):
-    CCopasiMethod(src, pParent),
-    mpCurrentState(src.mpCurrentState),
-    mpProblem(src.mpProblem)
-{CONSTRUCTOR_TRACE;}
+  CCopasiMethod(src, pParent),
+  mpCurrentState(src.mpCurrentState),
+  mpProblem(src.mpProblem),
+  mpState(NULL),
+  mData(),
+  mY(NULL),
+  mYdot(),
+  mY_initial(),
+  mTime(src.mTime),
+  mJacobian(),
+  mJacobian_initial(),
+  mQ(),
+  mQ_desc(),
+  mR(),
+  mR_desc(),
+  mTd(),
+  mTdInverse(),
+  mQz(),
+  mTd_save(),
+  mTdInverse_save(),
+  mCfast(),
+  mY_cons(),
+  mVslow(),
+  mVslow_metab(),
+  mVslow_space(),
+  mVfast_space(),
+  mSlow(0),
+  mLsodaStatus(1),
+  mReducedModel(src.mReducedModel),
+  mRtol(src.mRtol),
+  mAtol(src.mAtol),
+  mErrorMsg(),
+  mLSODA(),
+  mState(0),
+  mDWork(),
+  mIWork(),
+  mJType(0),
+  mpModel(NULL),
+  mDtol(src.mDtol),
+  mEPS(src.mEPS),
+  mVec_SlowModes(),
+  mCurrentTime(),
+  mVec_TimeScale(),
+  mCurrentStep(0)
+{}
 
 /**
  *  Destructor.
  */
 CTSSAMethod::~CTSSAMethod()
-{DESTRUCTOR_TRACE;}
+{}
 
 void CTSSAMethod::setCurrentState(CState * currentState)
 {
@@ -154,7 +230,6 @@ void CTSSAMethod::predifineAnnotation()
 bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
 
-
   if (!CCopasiMethod::isValidProblem(pProblem)) return false;
 
   const CTSSAProblem * pTP = dynamic_cast<const CTSSAProblem *>(pProblem);
@@ -195,6 +270,7 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
 
           default:
             fatalError();
+            break;
         }
     }
 
@@ -247,7 +323,6 @@ C_FLOAT64 CTSSAMethod::returnCurrentTime(int step)
   else
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 };
-
 
 void CTSSAMethod::initializeParameter()
 {return;}
@@ -405,7 +480,7 @@ void CTSSAMethod::integrationStep(const double & deltaT)
   mpState->setTime(mTime);
   *mpCurrentState = *mpState;
 
-  return ;
+  return;
 }
 /**
 MAT_ANAL_MOD:  mathematical analysis of matrices mTdInverse for post-analysis
@@ -823,12 +898,12 @@ void CTSSAMethod::schur(C_INT &info)
   C_INT SDIM = 0;
 
   CVector<C_FLOAT64> R;
-  R.resize(dim*dim);
+  R.resize(dim * dim);
   C_INT i, j;
 
   for (i = 0; i < dim; i++)
     for (j = 0; j < dim; j++)
-      R[j + dim*i] = mJacobian_initial(j, i);
+      R[j + dim * i] = mJacobian_initial(j, i);
 
   CVector<C_FLOAT64> eval_r;
   CVector<C_FLOAT64> eval_i;
@@ -836,11 +911,11 @@ void CTSSAMethod::schur(C_INT &info)
   eval_i.resize(dim);
 
   CVector<C_FLOAT64> Q;
-  Q.resize(dim*dim);
+  Q.resize(dim * dim);
 
   C_INT lwork = 10 * dim;
   CVector< C_FLOAT64 > work;
-  work.resize(10*dim);
+  work.resize(10 * dim);
 
   CVector< C_INT > Bwork;
   Bwork.resize(dim);
@@ -921,6 +996,7 @@ void CTSSAMethod::schur(C_INT &info)
 
               default:
                 fatalError();
+                break;
             }
 
           //ILDM : if (index[count + 1] < index[count])
@@ -1249,12 +1325,12 @@ void CTSSAMethod::schur_desc(C_INT &info)
   C_INT SDIM = 0;
 
   CVector<C_FLOAT64> R;
-  R.resize(dim*dim);
+  R.resize(dim * dim);
   C_INT i, j;
 
   for (i = 0; i < dim; i++)
     for (j = 0; j < dim; j++)
-      R[j + dim*i] = mJacobian_initial(j, i);
+      R[j + dim * i] = mJacobian_initial(j, i);
 
   CVector<C_FLOAT64> eval_r;
   CVector<C_FLOAT64> eval_i;
@@ -1262,11 +1338,11 @@ void CTSSAMethod::schur_desc(C_INT &info)
   eval_i.resize(dim);
 
   CVector<C_FLOAT64> Q;
-  Q.resize(dim*dim);
+  Q.resize(dim * dim);
 
   C_INT lwork = 10 * dim;
   CVector< C_FLOAT64 > work;
-  work.resize(10*dim);
+  work.resize(10 * dim);
 
   CVector< C_INT > Bwork;
   Bwork.resize(dim);
@@ -1527,24 +1603,24 @@ void CTSSAMethod::sylvester(C_INT slow, C_INT & info)
   C_FLOAT64 scale = -1;
 
   CVector<C_FLOAT64> st_slow;
-  st_slow.resize(slow*slow);
+  st_slow.resize(slow * slow);
 
   CVector<C_FLOAT64> st_fast;
-  st_fast.resize(fast*fast);
+  st_fast.resize(fast * fast);
 
   CVector<C_FLOAT64> st_coup;
-  st_coup.resize(slow*fast);
+  st_coup.resize(slow * fast);
 
   CMatrix<C_FLOAT64> S_coup;
   S_coup.resize(slow, fast);
 
   for (i = 0; i < slow; i++)
     for (j = 0; j < slow; j++)
-      st_slow[j + slow*i] = mR(j, i);
+      st_slow[j + slow * i] = mR(j, i);
 
   for (i = 0; i < fast; i++)
     for (j = 0; j < fast; j++)
-      st_fast[j + fast*i] = mR(j + slow, i + slow);
+      st_fast[j + fast * i] = mR(j + slow, i + slow);
 
   for (i = 0; i < slow; i++)
     for (j = 0; j < fast; j++)
@@ -1552,7 +1628,7 @@ void CTSSAMethod::sylvester(C_INT slow, C_INT & info)
 
   for (j = 0; j < fast; j++)
     for (i = 0; i < slow; i++)
-      st_coup[i + slow*j] = -S_coup(i, j);
+      st_coup[i + slow * j] = -S_coup(i, j);
 
   /*     int dtrsyl_(char *trana, char *tranb, integer *isgn, integer
    *     *m, integer *n, doublereal *a, integer *lda, doublereal *b, integer *
@@ -1778,7 +1854,6 @@ void CTSSAMethod::calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64 * Y1)
   C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
   //C_FLOAT64 number2conc = 1.;
 
-
   for (i = 0; i < imax; ++i)
     Y1[i] *= number2conc;
 
@@ -1791,7 +1866,6 @@ void CTSSAMethod::calculateDerivativesX(C_FLOAT64 * X1, C_FLOAT64 * Y1)
 
   return;
 }
-
 
 void CTSSAMethod::calculateDerivatives(C_FLOAT64 * X1, C_FLOAT64 * Y1)
 {
@@ -1999,7 +2073,6 @@ void CTSSAMethod::integrationMethodStart(const CState * initialState)
   mpState = new CState(*initialState);
   mY = mpState->beginIndependent();
 
-
   mTime = mpState->getTime();
 
   if (mReducedModel)
@@ -2010,7 +2083,6 @@ void CTSSAMethod::integrationMethodStart(const CState * initialState)
     {
       mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentReactionMetabs();
     }
-
 
   mYdot.resize(mData.dim);
   // mY_initial.resize(mData.dim);

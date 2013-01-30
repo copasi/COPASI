@@ -52,20 +52,20 @@ ADD_CUSTOM_COMMAND(
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp
     COMMAND "${SWIG_EXECUTABLE}"
     ARGS	-I${CMAKE_CURRENT_SOURCE_DIR}/../swig/
-	        -I${CMAKE_CURRENT_SOURCE_DIR}/../../
+            -I${CMAKE_CURRENT_SOURCE_DIR}/../../
             -I${CMAKE_CURRENT_SOURCE_DIR}
-			-c++
-			-python		
-			${SWIG_EXTRA_ARGS}		 
-			-o ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
-			${CMAKE_CURRENT_SOURCE_DIR}/python.i
+            -c++
+            -python		
+            ${SWIG_EXTRA_ARGS}		 
+            -o ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
+            ${CMAKE_CURRENT_SOURCE_DIR}/python.i
 
     MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/python.i
-	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
-	        ${SWIG_DEPENDENCIES}
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
+            ${SWIG_DEPENDENCIES}
     COMMENT "Swig Python source") 
 
-add_custom_target(binding_python_swig ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp)
+add_custom_target(binding_python_swig ALL DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/python.i)
 
 	
 ####################################################################
@@ -126,3 +126,5 @@ INSTALL(TARGETS binding_python_lib DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/cop
 file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/copasi.pth" "copasi\n")
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/copasi.pth  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR})
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/copasi.py  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/copasi )
+file(GLOB examples ${CMAKE_CURRENT_SOURCE_DIR}/examples/*.py)
+INSTALL(FILES ${examples} DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}) 

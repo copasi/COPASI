@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CCellDesignerImporter.cpp,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:11:54 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -91,9 +83,9 @@
  * to directly convert the CellDesigner layout if there is one.
  */
 CCellDesignerImporter::CCellDesignerImporter(SBMLDocument* pDocument):
-    mpDocument(pDocument),
-    mpLayout(NULL),
-    mpLocalRenderInfo(NULL)
+  mpDocument(pDocument),
+  mpLayout(NULL),
+  mpLocalRenderInfo(NULL)
 {
   if (this->mpDocument != NULL &&
       this->mpDocument->getModel() != NULL &&
@@ -440,7 +432,6 @@ bool CCellDesignerImporter::convertCellDesignerLayout(const XMLNode* pCellDesign
               result = false;
             }
 
-
           if (result == true)
             {
               // handle the modelDisplay element
@@ -549,13 +540,13 @@ bool CCellDesignerImporter::convertCellDesignerLayout(const XMLNode* pCellDesign
               //       if(annoIt != this->mSpeciesAnnotationMap.end())
               //       {
               //           annoIt->second.mIdentity.mSpeciesClass=it->second;
-              //       }
+              //}
               //       else
               //       {
               //           result=false;
-              //       }
+              //}
               //       ++it;
-              //   }
+              //}
             }
 
           // go through all species glyphs and create a style for each one
@@ -563,7 +554,6 @@ bool CCellDesignerImporter::convertCellDesignerLayout(const XMLNode* pCellDesign
             {
               result = this->createSpeciesStyles();
             }
-
         }
 
       // clean up
@@ -599,7 +589,6 @@ bool CCellDesignerImporter::convertCellDesignerLayout(const XMLNode* pCellDesign
 
   return result;
 }
-
 
 /**
  * Creates the compartment glyphs from the given node
@@ -875,7 +864,7 @@ bool CCellDesignerImporter::createSpeciesStyles()
                         {
                           alias = pCurrent->getData();
                           assert(!alias.empty());
-                          // find the corresponsing SpeciesAlias entry
+                          // find the corresponding SpeciesAlias entry
                           alias_pos = this->mSpeciesAliases.find(alias);
                           assert(alias_pos != this->mSpeciesAliases.end());
                           bool is_included = false;
@@ -944,7 +933,6 @@ bool CCellDesignerImporter::createSpeciesStyles()
                                     }
 
                                   // TODO gradients are currently not considered
-
                                 }
                               else
                                 {
@@ -1095,10 +1083,10 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
 
             if (pEllipse != NULL)
               {
-                pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width*0.5, 0.0));
-                pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height*0.5, 0.0));
-                pEllipse->setRX(RelAbsVector(shortside*0.5, 0.0));
-                pEllipse->setRY(RelAbsVector(shortside*0.5, 0.0));
+                pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width * 0.5, 0.0));
+                pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height * 0.5, 0.0));
+                pEllipse->setRX(RelAbsVector(shortside * 0.5, 0.0));
+                pEllipse->setRY(RelAbsVector(shortside * 0.5, 0.0));
                 pEllipse->setStrokeWidth(stroke_width);
                 pEllipse->setStroke(stroke_color);
                 pEllipse->setFillColor(fill_color);
@@ -1109,6 +1097,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
+
           case UNKNOWN_CLASS:
             // unknown has no edge
           {
@@ -1119,10 +1108,10 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               {
                 double width = bounds.getDimensions()->getWidth();
                 double height = bounds.getDimensions()->getHeight();
-                pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width*0.5, 0.0));
-                pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height*0.5, 0.0));
-                pEllipse->setRX(RelAbsVector(bounds.getDimensions()->getWidth()*0.5, 0.0));
-                pEllipse->setRY(RelAbsVector(bounds.getDimensions()->getHeight()*0.5, 0.0));
+                pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width * 0.5, 0.0));
+                pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height * 0.5, 0.0));
+                pEllipse->setRX(RelAbsVector(bounds.getDimensions()->getWidth() * 0.5, 0.0));
+                pEllipse->setRY(RelAbsVector(bounds.getDimensions()->getHeight() * 0.5, 0.0));
                 pEllipse->setFillColor(fill_color);
               }
             else
@@ -1131,6 +1120,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
+
           case DRUG_CLASS:
             // actually drug is a rectangle with rounded sides
           {
@@ -1147,8 +1137,8 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               {
                 pRectangle->setX(RelAbsVector(offset.x() + bounds.getPosition()->x(), 0.0));
                 pRectangle->setY(RelAbsVector(offset.y() + bounds.getPosition()->y(), 0.0));
-                pRectangle->setRadiusX(RelAbsVector(height*0.5, 0.0));
-                pRectangle->setRadiusY(RelAbsVector(height*0.5, 0.0));
+                pRectangle->setRadiusX(RelAbsVector(height * 0.5, 0.0));
+                pRectangle->setRadiusY(RelAbsVector(height * 0.5, 0.0));
                 pRectangle->setWidth(RelAbsVector(width, 0.0));
                 pRectangle->setHeight(RelAbsVector(height, 0.0));
 
@@ -1169,8 +1159,8 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               {
                 pRectangle->setX(RelAbsVector(offset.x() + bounds.getPosition()->x() + 5, 0.0));
                 pRectangle->setY(RelAbsVector(offset.y() + bounds.getPosition()->y() + 5, 0.0));
-                pRectangle->setRadiusX(RelAbsVector(height*0.5 - 5, 0.0));
-                pRectangle->setRadiusY(RelAbsVector(height*0.5 - 5, 0.0));
+                pRectangle->setRadiusX(RelAbsVector(height * 0.5 - 5, 0.0));
+                pRectangle->setRadiusY(RelAbsVector(height * 0.5 - 5, 0.0));
                 pRectangle->setWidth(RelAbsVector(width - 10, 0.0));
                 pRectangle->setHeight(RelAbsVector(height - 10, 0.0));
 
@@ -1184,6 +1174,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
+
           case SIMPLE_MOLECULE_CLASS:
           {
             Ellipse* pEllipse = pGroup->createEllipse();
@@ -1193,10 +1184,10 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               {
                 double width = bounds.getDimensions()->getWidth();
                 double height = bounds.getDimensions()->getHeight();
-                pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width*0.5, 0.0));
-                pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height*0.5, 0.0));
-                pEllipse->setRX(RelAbsVector(bounds.getDimensions()->getWidth()*0.5, 0.0));
-                pEllipse->setRY(RelAbsVector(bounds.getDimensions()->getHeight()*0.5, 0.0));
+                pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width * 0.5, 0.0));
+                pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height * 0.5, 0.0));
+                pEllipse->setRX(RelAbsVector(bounds.getDimensions()->getWidth() * 0.5, 0.0));
+                pEllipse->setRY(RelAbsVector(bounds.getDimensions()->getHeight() * 0.5, 0.0));
                 pEllipse->setStrokeWidth(stroke_width);
                 pEllipse->setStroke(stroke_color);
                 pEllipse->setFillColor(fill_color);
@@ -1207,6 +1198,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
+
           case DEGRADED_CLASS:
           {
             Ellipse* pEllipse = pGroup->createEllipse();
@@ -1216,11 +1208,11 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               {
                 double width = bounds.getDimensions()->getWidth();
                 double height = bounds.getDimensions()->getHeight();
-                pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width*0.5, 0.0));
-                pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height*0.5, 0.0));
+                pEllipse->setCX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width * 0.5, 0.0));
+                pEllipse->setCY(RelAbsVector(offset.y() + bounds.getPosition()->y() + height * 0.5, 0.0));
                 double short_side = (width > height) ? height : width;
-                pEllipse->setRX(RelAbsVector(short_side*0.5, 0.0));
-                pEllipse->setRY(RelAbsVector(short_side*0.5, 0.0));
+                pEllipse->setRX(RelAbsVector(short_side * 0.35, 0.0));
+                pEllipse->setRY(RelAbsVector(short_side * 0.35, 0.0));
                 pEllipse->setStrokeWidth(stroke_width);
                 pEllipse->setStroke(stroke_color);
                 pEllipse->setFillColor(fill_color);
@@ -1236,15 +1228,15 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
 
                     if (pP != NULL)
                       {
-                        pP->setX((short_side - width)*0.5);
-                        pP->setY((short_side - height)*0.5 + short_side);
+                        pP->setX((short_side - width) * 0.5);
+                        pP->setY((short_side - height) * 0.5 + short_side);
                         pP = pCurve->createPoint();
                         assert(pP != NULL);
 
                         if (pP != NULL)
                           {
-                            pP->setX((short_side - width)*0.5 + short_side);
-                            pP->setY((short_side - height)*0.5);
+                            pP->setX((short_side - width) * 0.5 + short_side);
+                            pP->setY((short_side - height) * 0.5);
                           }
                         else
                           {
@@ -1267,6 +1259,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
+
           case TRUNCATED_CLASS:
           {
             // TODO the left corners should be rounded, but for now this is close enough
@@ -1317,7 +1310,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                     if (pP != NULL)
                       {
                         pP->setX(RelAbsVector(width, 0.0));
-                        pP->setY(RelAbsVector(0.8*height, 0.0));
+                        pP->setY(RelAbsVector(0.8 * height, 0.0));
                       }
                     else
                       {
@@ -1331,8 +1324,8 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
 
                     if (pP != NULL)
                       {
-                        pP->setX(RelAbsVector(0.8*width, 0.0));
-                        pP->setY(RelAbsVector(0.5*height, 0.0));
+                        pP->setX(RelAbsVector(0.8 * width, 0.0));
+                        pP->setY(RelAbsVector(0.5 * height, 0.0));
                       }
                     else
                       {
@@ -1346,7 +1339,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
 
                     if (pP != NULL)
                       {
-                        pP->setX(RelAbsVector(0.8*width, 0.0));
+                        pP->setX(RelAbsVector(0.8 * width, 0.0));
                         pP->setY(RelAbsVector(height, 0.0));
                       }
                     else
@@ -1429,6 +1422,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
+
           case PROTEIN_CLASS:
             // make a rectangle with rounded edges
           {
@@ -1452,8 +1446,22 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               {
                 result = false;
               }
+
+            if (result == true)
+              {
+                // handle modifications
+                std::vector<SpeciesModification>::const_iterator it = si.mState.mModifications.begin(), endit = si.mState.mModifications.end();
+
+                while (it != endit)
+                  {
+                    result = this->createProteinModification(pGroup, *it, bounds, stroke_color);
+                    assert(result == true);
+                    ++it;
+                  }
+              }
           }
           break;
+
           case PHENOTYPE_CLASS:
           {
             // we assume the width is larger
@@ -1558,6 +1566,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
+
           case RNA_CLASS:
             // make a trapezoid
           {
@@ -1633,6 +1642,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
+
           case ANTISENSE_RNA_CLASS:
             // make a trapzoid
           {
@@ -1708,6 +1718,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
+
           case COMPLEX_CLASS:
             // rectangle with cut edges
           {
@@ -1727,7 +1738,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
 
                 if (pP != NULL)
                   {
-                    pP->setX(RelAbsVector(0.0, 10.0*ratio));
+                    pP->setX(RelAbsVector(0.0, 10.0 * ratio));
                     pP->setY(RelAbsVector(0.0, 0.0));
                   }
                 else
@@ -1741,7 +1752,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
 
                     if (pP != NULL)
                       {
-                        pP->setX(RelAbsVector(0.0, 100.0 - 10.0*ratio));
+                        pP->setX(RelAbsVector(0.0, 100.0 - 10.0 * ratio));
                         pP->setY(RelAbsVector(0.0, 0.0));
                       }
                     else
@@ -1786,7 +1797,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
 
                     if (pP != NULL)
                       {
-                        pP->setX(RelAbsVector(0.0, 100.0 - 10.0*ratio));
+                        pP->setX(RelAbsVector(0.0, 100.0 - 10.0 * ratio));
                         pP->setY(RelAbsVector(0.0, 100.0));
                       }
                     else
@@ -1801,7 +1812,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
 
                     if (pP != NULL)
                       {
-                        pP->setX(RelAbsVector(0.0, 10.0*ratio));
+                        pP->setX(RelAbsVector(0.0, 10.0 * ratio));
                         pP->setY(RelAbsVector(0.0, 100.0));
                       }
                     else
@@ -1846,6 +1857,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
+
           case RECEPTOR_CLASS:
           {
             // we assume the width is larger
@@ -1950,6 +1962,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
+
           case CHANNEL_CLASS:
             // make two rectangles with rounded corners
           {
@@ -1964,7 +1977,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
                 pRect->setY(RelAbsVector(offset.y() + bounds.getPosition()->y(), 0.0));
                 pRect->setRadiusX(RelAbsVector(6.0, 0.0));
                 pRect->setRadiusY(RelAbsVector(6.0, 0.0));
-                pRect->setWidth(RelAbsVector(width*0.75, 0.0));
+                pRect->setWidth(RelAbsVector(width * 0.75, 0.0));
                 pRect->setHeight(RelAbsVector(height, 0.0));
                 pRect->setStrokeWidth(stroke_width);
                 pRect->setStroke(stroke_color);
@@ -1982,7 +1995,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               {
                 pRect->setX(RelAbsVector(offset.x() + bounds.getPosition()->x() + width * 0.75, 0.0));
                 pRect->setY(RelAbsVector(offset.y() + bounds.getPosition()->y(), 0.0));
-                pRect->setWidth(RelAbsVector(width*0.25, 0.0));
+                pRect->setWidth(RelAbsVector(width * 0.25, 0.0));
                 pRect->setHeight(RelAbsVector(height, 0.0));
                 pRect->setRadiusX(RelAbsVector(6.0, 0.0));
                 pRect->setRadiusY(RelAbsVector(6.0, 0.0));
@@ -1996,6 +2009,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
+
           case GENE_CLASS:
           {
             Rectangle* pRect = pGroup->createRectangle();
@@ -2017,6 +2031,7 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               }
           }
           break;
+
           default:
             result = false;
             break;
@@ -2035,9 +2050,9 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
               pText->setTextAnchor(Text::ANCHOR_MIDDLE);
               pText->setVTextAnchor(Text::ANCHOR_MIDDLE);
               // middle of the box
-              pText->setX(RelAbsVector(bounds.getPosition()->x() + offset.x() + 0.5*bounds.getDimensions()->getWidth(), 0.0));
+              pText->setX(RelAbsVector(bounds.getPosition()->x() + offset.x() + 0.5 * bounds.getDimensions()->getWidth(), 0.0));
               // middle of the box
-              pText->setY(RelAbsVector(bounds.getPosition()->y() + offset.y() + 0.5*bounds.getDimensions()->getHeight(), 0.0));
+              pText->setY(RelAbsVector(bounds.getPosition()->y() + offset.y() + 0.5 * bounds.getDimensions()->getHeight(), 0.0));
               pText->setText(text);
               // TODO we need the font size and the font family
               // TODO for now we use a default
@@ -2059,7 +2074,113 @@ bool CCellDesignerImporter::createPrimitive(RenderGroup* pGroup,
   return result;
 }
 
+/**
+ * Takes a protein modification description and creates the corresponding primitive.
+ */
+bool CCellDesignerImporter::createProteinModification(RenderGroup* pGroup,
+    const SpeciesModification& smod,
+    const BoundingBox& bounds,
+    const std::string& stroke_color
+                                                     )
+{
+  // TODO this method will place all modification in exactly the same spot, so
+  // TODO if a protein has several modifications, they will sit on top of each other
+  // TODO One would have to play around with CellDesigner to see how it is done there
+  // TODO because there does not seem to be any stored information on where the
+  // TODO modification symbol is supposed to be placed
+  bool result = true;
+  // this is a filled circle
+  // the fill color is white
+  Ellipse* pEllipse = pGroup->createEllipse();
+  assert(pEllipse != NULL);
 
+  if (pEllipse != NULL)
+    {
+      pEllipse->setCX(RelAbsVector(0.0, 0.0));
+      pEllipse->setCY(RelAbsVector(0.0, 0.0));
+      pEllipse->setRX(RelAbsVector(7.0, 0.0));
+      pEllipse->setRY(RelAbsVector(7.0, 0.0));
+      pEllipse->setStrokeWidth(1.0);
+      pEllipse->setStroke(stroke_color);
+      pEllipse->setFillColor("#FFFFFFFF");
+      // depending on the type of modification, the string displayed in the circle varies
+      std::string mod_string("");
+
+      switch (smod.mType)
+        {
+          case PHOSPHORYLATED_MOD_TYPE:
+            mod_string = "P";
+            break;
+
+          case ACETYLATED_MOD_TYPE:
+            mod_string = "Ac";
+            break;
+
+          case UBIQUITINATED_MOD_TYPE:
+            mod_string = "Ub";
+            break;
+
+          case METHYLATED_MOD_TYPE:
+            mod_string = "Me";
+            break;
+
+          case HYDROXYLATED_MOD_TYPE:
+            mod_string = "OH";
+            break;
+
+          case DONTCARE_MOD_TYPE:
+            mod_string = "*";
+            break;
+
+          case UNKNOWN_MOD_TYPE:
+            mod_string = "?";
+            break;
+
+          case GLYCOSYLATED_MOD_TYPE:
+            mod_string = "G";
+            break;
+
+          case MYRISTOYLATED_MOD_TYPE:
+            mod_string = "My";
+            break;
+
+          case PALMYTOYLATED_MOD_TYPE:
+            mod_string = "Pa";
+            break;
+
+          case PRENYLATED_MOD_TYPE:
+            mod_string = "Pr";
+            break;
+
+          case PROTONATED_MOD_TYPE:
+            mod_string = "H";
+            break;
+
+          case SUFLATED_MOD_TYPE:
+            mod_string = "S";
+            break;
+
+          default:
+            break;
+        }
+
+      Text* pText = pGroup->createText();
+      pText->setTextAnchor(Text::ANCHOR_MIDDLE);
+      pText->setVTextAnchor(Text::ANCHOR_MIDDLE);
+      pText->setX(RelAbsVector(0.0, 0.0));
+      pText->setY(RelAbsVector(0.0, 0.0));
+      pText->setText(mod_string);
+      pText->setFontFamily("serif");
+      pText->setFontSize(RelAbsVector(8.0, 0.0));
+      pText->setStroke("#000000FF");
+    }
+  else
+    {
+      result = false;
+    }
+
+  return result;
+}
 
 /**
  * Creates a unique id with the given prefix.
@@ -2273,9 +2394,9 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                                 Curve* pCurve = pRGlyph->getCurve();
                                 assert(pCurve != NULL);
                                 LineSegment* pLS = pCurve->createLineSegment();
-                                Point center(new LayoutPkgNamespaces(), (p3.x() + p2.x())*0.5, (p3.y() + p2.y())*0.5);
-                                pLS->setStart(center.x() - distance*v.x(), center.y() - distance*v.y());
-                                pLS->setEnd(center.x() + distance*v.x(), center.y() + distance*v.y());
+                                Point center(new LayoutPkgNamespaces(), (p3.x() + p2.x()) * 0.5, (p3.y() + p2.y()) * 0.5);
+                                pLS->setStart(center.x() - distance * v.x(), center.y() - distance * v.y());
+                                pLS->setEnd(center.x() + distance * v.x(), center.y() + distance * v.y());
                                 // add a new substrate point
                                 // the substrate points are in reverse order
                                 reactantPoints.push_back(*pLS->getStart());
@@ -2356,6 +2477,7 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                           }
                       }
                       break;
+
                       case DISSOCIATION_RTYPE:
                       case TRUNCATION_RTYPE:
                       {
@@ -2406,9 +2528,9 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                             pos2 != this->mCDBounds.end() &&
                             pos3 != this->mCDBounds.end())
                           {
-                            Point p1(new LayoutPkgNamespaces(), pos1->second.getPosition()->x() + pos1->second.getDimensions()->getWidth()*0.5, pos1->second.getPosition()->y() + pos1->second.getDimensions()->getHeight()*0.5);
-                            Point p2(new LayoutPkgNamespaces(), pos2->second.getPosition()->x() + pos2->second.getDimensions()->getWidth()*0.5, pos2->second.getPosition()->y() + pos2->second.getDimensions()->getHeight()*0.5);
-                            Point p3(new LayoutPkgNamespaces(), pos3->second.getPosition()->x() + pos3->second.getDimensions()->getWidth()*0.5, pos3->second.getPosition()->y() + pos3->second.getDimensions()->getHeight()*0.5);
+                            Point p1(new LayoutPkgNamespaces(), pos1->second.getPosition()->x() + pos1->second.getDimensions()->getWidth() * 0.5, pos1->second.getPosition()->y() + pos1->second.getDimensions()->getHeight() * 0.5);
+                            Point p2(new LayoutPkgNamespaces(), pos2->second.getPosition()->x() + pos2->second.getDimensions()->getWidth() * 0.5, pos2->second.getPosition()->y() + pos2->second.getDimensions()->getHeight() * 0.5);
+                            Point p3(new LayoutPkgNamespaces(), pos3->second.getPosition()->x() + pos3->second.getDimensions()->getWidth() * 0.5, pos3->second.getPosition()->y() + pos3->second.getDimensions()->getHeight() * 0.5);
                             Point v1(new LayoutPkgNamespaces(), p2.x() - p1.x(), p2.y() - p1.y());
                             Point v2(new LayoutPkgNamespaces(), p3.x() - p1.x(), p3.y() - p1.y());
                             Point p(new LayoutPkgNamespaces(), p1.x() + connectionPoint.x()*v1.x() + connectionPoint.y()*v2.x(), p1.y() + connectionPoint.x()*v1.y() + connectionPoint.y()*v2.y());
@@ -2461,7 +2583,7 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                                             dist = 15.0;
                                           }
 
-                                        pLS->setStart(p.x() + dist*v.x(), p.y() + dist*v.y());
+                                        pLS->setStart(p.x() + dist * v.x(), p.y() + dist * v.y());
 
                                         // create the species reference glyphs
                                         // since we already know the endpoint for the substrate, we start
@@ -2607,7 +2729,6 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                                                 result = false;
                                               }
                                           }
-
                                       }
                                     else
                                       {
@@ -2630,6 +2751,7 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                           }
                       }
                       break;
+
                       case HETERODIMER_ASSOCIATION_RTYPE:
                       {
                         assert(ranno.mBaseReactants.size() == 2);
@@ -2679,9 +2801,9 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                             pos2 != this->mCDBounds.end() &&
                             pos3 != this->mCDBounds.end())
                           {
-                            Point p1(new LayoutPkgNamespaces(), pos1->second.getPosition()->x() + pos1->second.getDimensions()->getWidth()*0.5, pos1->second.getPosition()->y() + pos1->second.getDimensions()->getHeight()*0.5);
-                            Point p2(new LayoutPkgNamespaces(), pos2->second.getPosition()->x() + pos2->second.getDimensions()->getWidth()*0.5, pos2->second.getPosition()->y() + pos2->second.getDimensions()->getHeight()*0.5);
-                            Point p3(new LayoutPkgNamespaces(), pos3->second.getPosition()->x() + pos3->second.getDimensions()->getWidth()*0.5, pos3->second.getPosition()->y() + pos3->second.getDimensions()->getHeight()*0.5);
+                            Point p1(new LayoutPkgNamespaces(), pos1->second.getPosition()->x() + pos1->second.getDimensions()->getWidth() * 0.5, pos1->second.getPosition()->y() + pos1->second.getDimensions()->getHeight() * 0.5);
+                            Point p2(new LayoutPkgNamespaces(), pos2->second.getPosition()->x() + pos2->second.getDimensions()->getWidth() * 0.5, pos2->second.getPosition()->y() + pos2->second.getDimensions()->getHeight() * 0.5);
+                            Point p3(new LayoutPkgNamespaces(), pos3->second.getPosition()->x() + pos3->second.getDimensions()->getWidth() * 0.5, pos3->second.getPosition()->y() + pos3->second.getDimensions()->getHeight() * 0.5);
 
                             Point p = CCellDesignerImporter::calculateAbsoluteValue(connectionPoint, p1, p2, p3);
 
@@ -2728,7 +2850,7 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                                             dist = 15.0;
                                           }
 
-                                        pLS->setEnd(p.x() + dist*v.x(), p.y() + dist*v.y());
+                                        pLS->setEnd(p.x() + dist * v.x(), p.y() + dist * v.y());
 
                                         // create the species reference glyphs
                                         // since we already know the endpoint for the product, we start
@@ -2874,7 +2996,6 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                                                 result = false;
                                               }
                                           }
-
                                       }
                                     else
                                       {
@@ -2890,7 +3011,6 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                               {
                                 result = false;
                               }
-
                           }
                         else
                           {
@@ -2898,6 +3018,7 @@ bool CCellDesignerImporter::convertReactionAnnotation(Reaction* pReaction, const
                           }
                       }
                       break;
+
                       default:
                         result = false;
                         break;
@@ -3136,7 +3257,6 @@ bool CCellDesignerImporter::createSpeciesReferenceGlyphs(ReactionGlyph* pRGlyph,
   return result;
 }
 
-
 /**
  * Takes a bounding box and a position string and retirns the position on the bounding box that corresponds
  * to the given position.
@@ -3156,73 +3276,89 @@ Point CCellDesignerImporter::getPositionPoint(const BoundingBox& box, POSITION p
         x = bx + bw * 0.5;
         y = by;
         break;
+
       case POSITION_NNE:
         x = bx + bw * 0.75;
         y = by;
         break;
+
       case POSITION_NE:
         // top right
         x = bx + bw;
         y = by;
         break;
+
       case POSITION_ENE:
         x = bx + bw;
         y = by + 0.25 * bh;
         break;
+
       case POSITION_E:
         // right middle
         x = bx + bw;
         y = by + bh * 0.5;
         break;
+
       case POSITION_ESE:
         x = bx + bw;
         y = by + 0.75 * bh;
         break;
+
       case POSITION_SE:
         // right bottom
         x = bx + bw;
         y = by + bh;
         break;
+
       case POSITION_SSE:
         x = bx + 0.75 * bw;
         y = by + bh;
         break;
+
       case POSITION_S:
         // bottom
         x = bx + bw * 0.5;
         y = by + bh;
         break;
+
       case POSITION_SSW:
         x = bx + 0.25 * bw;
         y = by + bh;
         break;
+
       case POSITION_SW:
         // bottom left
         x = bx;
         y = by + bh;
         break;
+
       case POSITION_WSW:
         x = bx;
         y = by + 0.75 * bh;
         break;
+
       case POSITION_W:
         // left
         x = bx;
         y = by + bh * 0.5;
         break;
+
       case POSITION_WNW:
         x = bx;
         y = by + 0.25 * bh;
         break;
+
       case POSITION_NW:
         // top left
         x = bx;
         y = by;
         break;
+
       case POSITION_NNW:
         x = bx + 0.25 * bw;
         y = by;
         break;
+
       default:
         break;
     }
@@ -3314,7 +3450,6 @@ bool CCellDesignerImporter::convertCompartmentAnnotations()
                               ++pos;
                             }
                           while (pos != this->mModelIdToLayoutElement.end() && pos->first == pCompartment->getId());
-
                         }
                       else
                         {
@@ -3374,7 +3509,7 @@ bool CCellDesignerImporter::convertSpeciesAnnotations()
                       std::string name = pSpecies->getName();
 
                       //result=this->findNameForSpeciesIdentity(sanno.mIdentity,name);
-                      if (result && !name.empty())
+                      if (result && !name.empty() && sanno.mIdentity.mSpeciesClass != DEGRADED_CLASS)
                         {
                           // create the text glyph if there is a SpeciesGlyph
                           std::multimap<std::string, GraphicalObject*>::const_iterator pos = this->mModelIdToLayoutElement.find(pSpecies->getId());
@@ -3788,7 +3923,6 @@ bool CCellDesignerImporter::parseProteinModification(const XMLNode* pNode, Prote
   return result;
 }
 
-
 /**
  * Tries to parse the compartment annotation in the given node and stores the data in the given
  * CompartmentAnnotation structure.
@@ -3899,6 +4033,7 @@ bool CCellDesignerImporter::parseSpeciesIdentity(const XMLNode* pNode, SpeciesId
                   }
               }
               break;
+
               case PROTEIN_CLASS:
                 // we expect a protein reference
               {
@@ -3914,6 +4049,7 @@ bool CCellDesignerImporter::parseSpeciesIdentity(const XMLNode* pNode, SpeciesId
                   }
               }
               break;
+
               default:
                 // we don't handle all other cases
                 // for now
@@ -3933,7 +4069,6 @@ bool CCellDesignerImporter::parseSpeciesIdentity(const XMLNode* pNode, SpeciesId
         {
           result = CCellDesignerImporter::parseSpeciesState(pChild, identity.mState);
         }
-
     }
   else
     {
@@ -4030,7 +4165,6 @@ bool CCellDesignerImporter::parseSpeciesModification(const XMLNode* pNode, Speci
 
   return result;
 }
-
 
 /**
  * Searches for a child with a certain name and a certain prefix
@@ -4344,7 +4478,6 @@ REACTION_TYPE CCellDesignerImporter::reactionTypeToEnum(std::string s)
 
   return result;
 }
-
 
 /**
  * Converts the given modification link type string to the corresponding enum.
@@ -4664,8 +4797,6 @@ PAINT_SCHEME CCellDesignerImporter::paintSchemeToEnum(std::string s)
   return result;
 }
 
-
-
 /**
  * Converts the given class string to the correspnding SPECIES_CLASS enum value.
  * If no enum is found, UNDEFINED is returned.
@@ -4811,7 +4942,6 @@ bool CCellDesignerImporter::parseReactionElements(const XMLNode* pNode, std::vec
               elements.push_back(l);
             }
         }
-
     }
   else
     {
@@ -5605,7 +5735,6 @@ bool CCellDesignerImporter::parseReactionModification(const XMLNode* pNode, Reac
                         }
                     }
                 }
-
             }
         }
       else
@@ -5673,7 +5802,6 @@ bool CCellDesignerImporter::parsePointsString(const std::string& s, std::vector<
                         {
                           result = false;
                         }
-
                     }
                   else
                     {
@@ -5692,7 +5820,6 @@ bool CCellDesignerImporter::parsePointsString(const std::string& s, std::vector<
 
   return result;
 }
-
 
 /**
  * Splits the given string at each character occurs in splitChars.
@@ -5818,6 +5945,7 @@ bool CCellDesignerImporter::parseCompartmentAlias(const XMLNode* pNode, Compartm
                                         ca.mBounds.setWidth(ld.getWidth() - tmp.x());
                                         ca.mBounds.setHeight(ld.getHeight() - tmp.y());
                                         break;
+
                                       case SQUARE_NE_CLASS:
                                         // the point determines the north eastern point of the compartment
                                         // so the compartment fills the space from that point to the lower left
@@ -5827,6 +5955,7 @@ bool CCellDesignerImporter::parseCompartmentAlias(const XMLNode* pNode, Compartm
                                         ca.mBounds.setWidth(tmp.x());
                                         ca.mBounds.setHeight(ld.getHeight() - tmp.y());
                                         break;
+
                                       case SQUARE_SW_CLASS:
                                         // the point determines the south western point of the compartment
                                         // so the compartment fills the space from that point to the upper right
@@ -5836,6 +5965,7 @@ bool CCellDesignerImporter::parseCompartmentAlias(const XMLNode* pNode, Compartm
                                         ca.mBounds.setWidth(ld.getWidth() - tmp.x());
                                         ca.mBounds.setHeight(tmp.y());
                                         break;
+
                                       case SQUARE_SE_CLASS:
                                         // the point determines the southern eastern point of the compartment
                                         // so the compartment fills the space from that point to the upper left
@@ -5845,6 +5975,7 @@ bool CCellDesignerImporter::parseCompartmentAlias(const XMLNode* pNode, Compartm
                                         ca.mBounds.setWidth(tmp.x());
                                         ca.mBounds.setHeight(tmp.y());
                                         break;
+
                                       case SQUARE_N_CLASS:
                                         // the compartment fills the lower part of the layout up to the
                                         // y value in the given point
@@ -5853,6 +5984,7 @@ bool CCellDesignerImporter::parseCompartmentAlias(const XMLNode* pNode, Compartm
                                         ca.mBounds.setWidth(ld.getWidth());
                                         ca.mBounds.setHeight(ld.getHeight() - tmp.y());
                                         break;
+
                                       case SQUARE_E_CLASS:
                                         // the compartment fills the left part of the layout up to the
                                         // y value in the given point
@@ -5861,6 +5993,7 @@ bool CCellDesignerImporter::parseCompartmentAlias(const XMLNode* pNode, Compartm
                                         ca.mBounds.setWidth(tmp.x());
                                         ca.mBounds.setHeight(ld.getHeight());
                                         break;
+
                                       case SQUARE_W_CLASS:
                                         // the compartment fills the right part of the layout up to the
                                         // y value in the given point
@@ -5869,6 +6002,7 @@ bool CCellDesignerImporter::parseCompartmentAlias(const XMLNode* pNode, Compartm
                                         ca.mBounds.setWidth(ld.getWidth() - tmp.x());
                                         ca.mBounds.setHeight(ld.getHeight());
                                         break;
+
                                       case SQUARE_S_CLASS:
                                         // the compartment fills the upper part of the layout up to the
                                         // y value in the given point
@@ -5877,6 +6011,7 @@ bool CCellDesignerImporter::parseCompartmentAlias(const XMLNode* pNode, Compartm
                                         ca.mBounds.setWidth(ld.getWidth());
                                         ca.mBounds.setHeight(tmp.y());
                                         break;
+
                                       default:
                                         result = false;
                                         break;
@@ -6045,7 +6180,6 @@ bool CCellDesignerImporter::parseSpeciesAlias(const XMLNode* pNode, SpeciesAlias
                   result = false;
                 }
             }
-
         }
       else
         {
@@ -6106,7 +6240,6 @@ bool CCellDesignerImporter::parsePoint(const XMLNode* pNode, Point& p)
 
   return result;
 }
-
 
 /**
  * Parse the data in the given node assuming that this is a node that represents a point
@@ -6328,7 +6461,6 @@ bool CCellDesignerImporter::parseBoxSize(const XMLNode* pNode, Dimensions& d)
   return result;
 }
 
-
 /**
  * Parses the given XMLNode which represents a double line element.
  * The parsed data is stored in the given DoubleLine structure.
@@ -6439,7 +6571,6 @@ bool CCellDesignerImporter::parsePaint(const XMLNode* pNode, Paint& p)
   return result;
 }
 
-
 /**
  * This method creates a new local style based on the passed in CompartmentAlias object.
  * The style is associated with the object via the given id.
@@ -6514,8 +6645,8 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                             pRect->setStrokeWidth(d);
                             pRect->setCoordinates(RelAbsVector(0.0, 0.0), RelAbsVector(0.0, 0.0), RelAbsVector(0.0, 0.0));
                             pRect->setSize(RelAbsVector(width, 0.0), RelAbsVector(height, 0.0));
-                            pRect->setRadiusX(RelAbsVector(small_side*0.1, 0.0));
-                            pRect->setRadiusY(RelAbsVector(small_side*0.1, 0.0));
+                            pRect->setRadiusX(RelAbsVector(small_side * 0.1, 0.0));
+                            pRect->setRadiusY(RelAbsVector(small_side * 0.1, 0.0));
                           }
                         else
                           {
@@ -6530,10 +6661,10 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                           {
                             pRect->setStroke(color_id);
                             pRect->setStrokeWidth(2.0);
-                            pRect->setCoordinates(RelAbsVector(-0.5*d, 0.0), RelAbsVector(-0.5*d, 0.0), RelAbsVector(0.0, 0.0));
+                            pRect->setCoordinates(RelAbsVector(-0.5 * d, 0.0), RelAbsVector(-0.5 * d, 0.0), RelAbsVector(0.0, 0.0));
                             pRect->setSize(RelAbsVector(width + d, 0.0), RelAbsVector(height + d, 0.0));
-                            pRect->setRadiusX(RelAbsVector((small_side + d)*0.1, 0.0));
-                            pRect->setRadiusY(RelAbsVector((small_side + d)*0.1, 0.0));
+                            pRect->setRadiusX(RelAbsVector((small_side + d) * 0.1, 0.0));
+                            pRect->setRadiusY(RelAbsVector((small_side + d) * 0.1, 0.0));
                           }
                         else
                           {
@@ -6548,48 +6679,49 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                           {
                             pRect->setStroke(color_id);
                             pRect->setStrokeWidth(1.0);
-                            pRect->setCoordinates(RelAbsVector(0.5*d, 0.0), RelAbsVector(0.5*d, 0.0), RelAbsVector(0.0, 0.0));
+                            pRect->setCoordinates(RelAbsVector(0.5 * d, 0.0), RelAbsVector(0.5 * d, 0.0), RelAbsVector(0.0, 0.0));
                             pRect->setSize(RelAbsVector(width - d, 0.0), RelAbsVector(height - d, 0.0));
-                            pRect->setRadiusX(RelAbsVector((small_side - d)*0.1, 0.0));
-                            pRect->setRadiusY(RelAbsVector((small_side - d)*0.1, 0.0));
+                            pRect->setRadiusX(RelAbsVector((small_side - d) * 0.1, 0.0));
+                            pRect->setRadiusY(RelAbsVector((small_side - d) * 0.1, 0.0));
                           }
                         else
                           {
                             result = false;
                           }
-
                       }
                       break;
+
                       case OVAL_CLASS:
                       {
                         // we need three ellipses
                         // the bottom one is the one with the transparent color
                         // and the full width
                         Ellipse* pEllipse = pGroup->createEllipse();
-                        pEllipse->setCX(RelAbsVector(width*0.5, 0.0));
-                        pEllipse->setCY(RelAbsVector(height*0.5, 0.0));
-                        pEllipse->setRX(RelAbsVector(width*0.5, 0.0));
-                        pEllipse->setRY(RelAbsVector(height*0.5, 0.0));
+                        pEllipse->setCX(RelAbsVector(width * 0.5, 0.0));
+                        pEllipse->setCY(RelAbsVector(height * 0.5, 0.0));
+                        pEllipse->setRX(RelAbsVector(width * 0.5, 0.0));
+                        pEllipse->setRY(RelAbsVector(height * 0.5, 0.0));
                         pEllipse->setStrokeWidth(d);
                         pEllipse->setStroke(inner_color_id);
                         // the outer one has a width of 2 and has the non-transparent color
                         pEllipse = pGroup->createEllipse();
-                        pEllipse->setCX(RelAbsVector(width*0.5, 0.0));
-                        pEllipse->setCY(RelAbsVector(height*0.5, 0.0));
-                        pEllipse->setRX(RelAbsVector(width*0.5 + d*0.5, 0.0));
-                        pEllipse->setRY(RelAbsVector(height*0.5 + d*0.5, 0.0));
+                        pEllipse->setCX(RelAbsVector(width * 0.5, 0.0));
+                        pEllipse->setCY(RelAbsVector(height * 0.5, 0.0));
+                        pEllipse->setRX(RelAbsVector(width * 0.5 + d * 0.5, 0.0));
+                        pEllipse->setRY(RelAbsVector(height * 0.5 + d * 0.5, 0.0));
                         pEllipse->setStrokeWidth(2.0);
                         pEllipse->setStroke(color_id);
                         // the inner one has a width of 1 and has the non-transparent color
                         pEllipse = pGroup->createEllipse();
-                        pEllipse->setCX(RelAbsVector(width*0.5, 0.0));
-                        pEllipse->setCY(RelAbsVector(height*0.5, 0.0));
-                        pEllipse->setRX(RelAbsVector(width*0.5 - d*0.5, 0.0));
-                        pEllipse->setRY(RelAbsVector(height*0.5 - d*0.5, 0.0));
+                        pEllipse->setCX(RelAbsVector(width * 0.5, 0.0));
+                        pEllipse->setCY(RelAbsVector(height * 0.5, 0.0));
+                        pEllipse->setRX(RelAbsVector(width * 0.5 - d * 0.5, 0.0));
+                        pEllipse->setRY(RelAbsVector(height * 0.5 - d * 0.5, 0.0));
                         pEllipse->setStrokeWidth(1.0);
                         pEllipse->setStroke(color_id);
                       }
                       break;
+
                       case SQUARE_NW_CLASS:
                         // thick line with thicker edge to the northwest
                       {
@@ -6611,7 +6743,6 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               {
                                 pP->setX(0.0);
                                 pP->setY(height);
-
                               }
                             else
                               {
@@ -6625,7 +6756,6 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               {
                                 pP->setX(0.0);
                                 pP->setY(radius);
-
                               }
                             else
                               {
@@ -6680,9 +6810,8 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pP != NULL)
                               {
-                                pP->setX(-d*0.5);
+                                pP->setX(-d * 0.5);
                                 pP->setY(height);
-
                               }
                             else
                               {
@@ -6694,9 +6823,8 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pP != NULL)
                               {
-                                pP->setX(-d*0.5);
+                                pP->setX(-d * 0.5);
                                 pP->setY(radius);
-
                               }
                             else
                               {
@@ -6708,12 +6836,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pCB != NULL)
                               {
-                                pCB->setBasePoint1_X(-d*0.5);
-                                pCB->setBasePoint1_Y(-d*0.5);
-                                pCB->setBasePoint2_X(-d*0.5);
-                                pCB->setBasePoint2_Y(-d*0.5);
+                                pCB->setBasePoint1_X(-d * 0.5);
+                                pCB->setBasePoint1_Y(-d * 0.5);
+                                pCB->setBasePoint2_X(-d * 0.5);
+                                pCB->setBasePoint2_Y(-d * 0.5);
                                 pCB->setX(radius);
-                                pCB->setY(-d*0.5);
+                                pCB->setY(-d * 0.5);
                               }
                             else
                               {
@@ -6726,7 +6854,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                             if (pP != NULL)
                               {
                                 pP->setX(width);
-                                pP->setY(-d*0.5);
+                                pP->setY(-d * 0.5);
                               }
                             else
                               {
@@ -6751,9 +6879,8 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pP != NULL)
                               {
-                                pP->setX(d*0.5);
+                                pP->setX(d * 0.5);
                                 pP->setY(height);
-
                               }
                             else
                               {
@@ -6765,9 +6892,8 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pP != NULL)
                               {
-                                pP->setX(d*0.5);
+                                pP->setX(d * 0.5);
                                 pP->setY(radius);
-
                               }
                             else
                               {
@@ -6779,12 +6905,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pCB != NULL)
                               {
-                                pCB->setBasePoint1_X(d*0.5);
-                                pCB->setBasePoint1_Y(d*0.5);
-                                pCB->setBasePoint2_X(d*0.5);
-                                pCB->setBasePoint2_Y(d*0.5);
+                                pCB->setBasePoint1_X(d * 0.5);
+                                pCB->setBasePoint1_Y(d * 0.5);
+                                pCB->setBasePoint2_X(d * 0.5);
+                                pCB->setBasePoint2_Y(d * 0.5);
                                 pCB->setX(radius);
-                                pCB->setY(d*0.5);
+                                pCB->setY(d * 0.5);
                               }
                             else
                               {
@@ -6797,7 +6923,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                             if (pP != NULL)
                               {
                                 pP->setX(width);
-                                pP->setY(d*0.5);
+                                pP->setY(d * 0.5);
                               }
                             else
                               {
@@ -6808,9 +6934,9 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                           {
                             result = false;
                           }
-
                       }
                       break;
+
                       case SQUARE_NE_CLASS:
                         // thick line with thicker edge to the northeast
                       {
@@ -6832,7 +6958,6 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               {
                                 pP->setX(0.0);
                                 pP->setY(0.0);
-
                               }
                             else
                               {
@@ -6846,7 +6971,6 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               {
                                 pP->setX(width - radius);
                                 pP->setY(0.0);
-
                               }
                             else
                               {
@@ -6902,8 +7026,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                             if (pP != NULL)
                               {
                                 pP->setX(0.0);
-                                pP->setY(-d*0.5);
-
+                                pP->setY(-d * 0.5);
                               }
                             else
                               {
@@ -6916,8 +7039,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                             if (pP != NULL)
                               {
                                 pP->setX(width - radius);
-                                pP->setY(-d*0.5);
-
+                                pP->setY(-d * 0.5);
                               }
                             else
                               {
@@ -6929,11 +7051,11 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pCB != NULL)
                               {
-                                pCB->setBasePoint1_X(width + 0.5*d);
-                                pCB->setBasePoint1_Y(-0.5*d);
-                                pCB->setBasePoint2_X(width + 0.5*d);
-                                pCB->setBasePoint2_Y(-0.5*d);
-                                pCB->setX(width + 0.5*d);
+                                pCB->setBasePoint1_X(width + 0.5 * d);
+                                pCB->setBasePoint1_Y(-0.5 * d);
+                                pCB->setBasePoint2_X(width + 0.5 * d);
+                                pCB->setBasePoint2_Y(-0.5 * d);
+                                pCB->setX(width + 0.5 * d);
                                 pCB->setY(radius);
                               }
                             else
@@ -6946,7 +7068,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pP != NULL)
                               {
-                                pP->setX(width + 0.5*d);
+                                pP->setX(width + 0.5 * d);
                                 pP->setY(height);
                               }
                             else
@@ -6973,8 +7095,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                             if (pP != NULL)
                               {
                                 pP->setX(0.0);
-                                pP->setY(0.5*d);
-
+                                pP->setY(0.5 * d);
                               }
                             else
                               {
@@ -6987,8 +7108,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                             if (pP != NULL)
                               {
                                 pP->setX(width - radius);
-                                pP->setY(0.5*d);
-
+                                pP->setY(0.5 * d);
                               }
                             else
                               {
@@ -7000,11 +7120,11 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pCB != NULL)
                               {
-                                pCB->setBasePoint1_X(width - 0.5*d);
-                                pCB->setBasePoint1_Y(0.5*d);
-                                pCB->setBasePoint2_X(width - 0.5*d);
-                                pCB->setBasePoint2_Y(0.5*d);
-                                pCB->setX(width - 0.5*d);
+                                pCB->setBasePoint1_X(width - 0.5 * d);
+                                pCB->setBasePoint1_Y(0.5 * d);
+                                pCB->setBasePoint2_X(width - 0.5 * d);
+                                pCB->setBasePoint2_Y(0.5 * d);
+                                pCB->setX(width - 0.5 * d);
                                 pCB->setY(radius);
                               }
                             else
@@ -7017,7 +7137,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pP != NULL)
                               {
-                                pP->setX(width - 0.5*d);
+                                pP->setX(width - 0.5 * d);
                                 pP->setY(height);
                               }
                             else
@@ -7029,9 +7149,9 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                           {
                             result = false;
                           }
-
                       }
                       break;
+
                       case SQUARE_SW_CLASS:
                         // thick line with thicker edge to the southwest
                       {
@@ -7053,7 +7173,6 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               {
                                 pP->setX(0.0);
                                 pP->setY(0.0);
-
                               }
                             else
                               {
@@ -7067,7 +7186,6 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               {
                                 pP->setX(0.0);
                                 pP->setY(height - radius);
-
                               }
                             else
                               {
@@ -7122,9 +7240,8 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pP != NULL)
                               {
-                                pP->setX(-0.5*d);
+                                pP->setX(-0.5 * d);
                                 pP->setY(0.0);
-
                               }
                             else
                               {
@@ -7136,9 +7253,8 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pP != NULL)
                               {
-                                pP->setX(-d*0.5);
+                                pP->setX(-d * 0.5);
                                 pP->setY(height - radius);
-
                               }
                             else
                               {
@@ -7150,12 +7266,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pCB != NULL)
                               {
-                                pCB->setBasePoint1_X(-d*0.5);
-                                pCB->setBasePoint1_Y(height + d*0.5);
-                                pCB->setBasePoint2_X(-d*0.5);
-                                pCB->setBasePoint2_Y(height + d*0.5);
+                                pCB->setBasePoint1_X(-d * 0.5);
+                                pCB->setBasePoint1_Y(height + d * 0.5);
+                                pCB->setBasePoint2_X(-d * 0.5);
+                                pCB->setBasePoint2_Y(height + d * 0.5);
                                 pCB->setX(radius);
-                                pCB->setY(height + d*0.5);
+                                pCB->setY(height + d * 0.5);
                               }
                             else
                               {
@@ -7168,7 +7284,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                             if (pP != NULL)
                               {
                                 pP->setX(width);
-                                pP->setY(height + d*0.5);
+                                pP->setY(height + d * 0.5);
                               }
                             else
                               {
@@ -7193,9 +7309,8 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pP != NULL)
                               {
-                                pP->setX(d*0.5);
+                                pP->setX(d * 0.5);
                                 pP->setY(0.0);
-
                               }
                             else
                               {
@@ -7207,9 +7322,8 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pP != NULL)
                               {
-                                pP->setX(d*0.5);
+                                pP->setX(d * 0.5);
                                 pP->setY(height - radius);
-
                               }
                             else
                               {
@@ -7221,12 +7335,12 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pCB != NULL)
                               {
-                                pCB->setBasePoint1_X(d*0.5);
-                                pCB->setBasePoint1_Y(height - d*0.5);
-                                pCB->setBasePoint2_X(d*0.5);
-                                pCB->setBasePoint2_Y(height - d*0.5);
+                                pCB->setBasePoint1_X(d * 0.5);
+                                pCB->setBasePoint1_Y(height - d * 0.5);
+                                pCB->setBasePoint2_X(d * 0.5);
+                                pCB->setBasePoint2_Y(height - d * 0.5);
                                 pCB->setX(radius);
-                                pCB->setY(height - d*0.5);
+                                pCB->setY(height - d * 0.5);
                               }
                             else
                               {
@@ -7239,7 +7353,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                             if (pP != NULL)
                               {
                                 pP->setX(width);
-                                pP->setY(height - d*0.5);
+                                pP->setY(height - d * 0.5);
                               }
                             else
                               {
@@ -7250,9 +7364,9 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                           {
                             result = false;
                           }
-
                       }
                       break;
+
                       case SQUARE_SE_CLASS:
                         // thick line with thicker edge to the southeast
                       {
@@ -7274,7 +7388,6 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               {
                                 pP->setX(0.0);
                                 pP->setY(height);
-
                               }
                             else
                               {
@@ -7288,7 +7401,6 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               {
                                 pP->setX(width - radius);
                                 pP->setY(height);
-
                               }
                             else
                               {
@@ -7344,8 +7456,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                             if (pP != NULL)
                               {
                                 pP->setX(0.0);
-                                pP->setY(height + 0.5*d);
-
+                                pP->setY(height + 0.5 * d);
                               }
                             else
                               {
@@ -7358,8 +7469,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                             if (pP != NULL)
                               {
                                 pP->setX(width - radius);
-                                pP->setY(height + 0.5*d);
-
+                                pP->setY(height + 0.5 * d);
                               }
                             else
                               {
@@ -7371,11 +7481,11 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pCB != NULL)
                               {
-                                pCB->setBasePoint1_X(width + d*0.5);
-                                pCB->setBasePoint1_Y(height + 0.5*d);
-                                pCB->setBasePoint2_X(width + d*0.5);
-                                pCB->setBasePoint2_Y(height + d*0.5);
-                                pCB->setX(width + 0.5*d);
+                                pCB->setBasePoint1_X(width + d * 0.5);
+                                pCB->setBasePoint1_Y(height + 0.5 * d);
+                                pCB->setBasePoint2_X(width + d * 0.5);
+                                pCB->setBasePoint2_Y(height + d * 0.5);
+                                pCB->setX(width + 0.5 * d);
                                 pCB->setY(height - radius);
                               }
                             else
@@ -7388,7 +7498,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pP != NULL)
                               {
-                                pP->setX(width + 0.5*d);
+                                pP->setX(width + 0.5 * d);
                                 pP->setY(0.0);
                               }
                             else
@@ -7415,8 +7525,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                             if (pP != NULL)
                               {
                                 pP->setX(0.0);
-                                pP->setY(height - 0.5*d);
-
+                                pP->setY(height - 0.5 * d);
                               }
                             else
                               {
@@ -7429,8 +7538,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                             if (pP != NULL)
                               {
                                 pP->setX(width - radius);
-                                pP->setY(height - 0.5*d);
-
+                                pP->setY(height - 0.5 * d);
                               }
                             else
                               {
@@ -7442,11 +7550,11 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pCB != NULL)
                               {
-                                pCB->setBasePoint1_X(width - d*0.5);
-                                pCB->setBasePoint1_Y(height - d*0.5);
-                                pCB->setBasePoint2_X(width - d*0.5);
-                                pCB->setBasePoint2_Y(height - d*0.5);
-                                pCB->setX(width - 0.5*d);
+                                pCB->setBasePoint1_X(width - d * 0.5);
+                                pCB->setBasePoint1_Y(height - d * 0.5);
+                                pCB->setBasePoint2_X(width - d * 0.5);
+                                pCB->setBasePoint2_Y(height - d * 0.5);
+                                pCB->setX(width - 0.5 * d);
                                 pCB->setY(height - radius);
                               }
                             else
@@ -7459,7 +7567,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pP != NULL)
                               {
-                                pP->setX(width - 0.5*d);
+                                pP->setX(width - 0.5 * d);
                                 pP->setY(0.0);
                               }
                             else
@@ -7471,9 +7579,9 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                           {
                             result = false;
                           }
-
                       }
                       break;
+
                       case SQUARE_N_CLASS:
                         // thick line with thicker edge to the north
                       {
@@ -7493,7 +7601,6 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               {
                                 pP->setX(0.0);
                                 pP->setY(0.0);
-
                               }
                             else
                               {
@@ -7507,7 +7614,6 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               {
                                 pP->setX(width);
                                 pP->setY(0.0);
-
                               }
                             else
                               {
@@ -7533,8 +7639,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                             if (pP != NULL)
                               {
                                 pP->setX(0.0);
-                                pP->setY(-0.5*d);
-
+                                pP->setY(-0.5 * d);
                               }
                             else
                               {
@@ -7547,8 +7652,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                             if (pP != NULL)
                               {
                                 pP->setX(width);
-                                pP->setY(-0.5*d);
-
+                                pP->setY(-0.5 * d);
                               }
                             else
                               {
@@ -7574,8 +7678,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                             if (pP != NULL)
                               {
                                 pP->setX(0.0);
-                                pP->setY(0.5*d);
-
+                                pP->setY(0.5 * d);
                               }
                             else
                               {
@@ -7588,8 +7691,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                             if (pP != NULL)
                               {
                                 pP->setX(width);
-                                pP->setY(0.5*d);
-
+                                pP->setY(0.5 * d);
                               }
                             else
                               {
@@ -7600,10 +7702,9 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                           {
                             result = false;
                           }
-
-
                       }
                       break;
+
                       case SQUARE_E_CLASS:
                         // thick line with thicker edge to the east
                       {
@@ -7623,7 +7724,6 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               {
                                 pP->setX(width);
                                 pP->setY(0.0);
-
                               }
                             else
                               {
@@ -7637,7 +7737,6 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               {
                                 pP->setX(width);
                                 pP->setY(height);
-
                               }
                             else
                               {
@@ -7662,9 +7761,8 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pP != NULL)
                               {
-                                pP->setX(width + 0.5*d);
+                                pP->setX(width + 0.5 * d);
                                 pP->setY(0.0);
-
                               }
                             else
                               {
@@ -7676,9 +7774,8 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pP != NULL)
                               {
-                                pP->setX(width + 0.5*d);
+                                pP->setX(width + 0.5 * d);
                                 pP->setY(height);
-
                               }
                             else
                               {
@@ -7703,9 +7800,8 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pP != NULL)
                               {
-                                pP->setX(width - 0.5*d);
+                                pP->setX(width - 0.5 * d);
                                 pP->setY(0.0);
-
                               }
                             else
                               {
@@ -7717,9 +7813,8 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pP != NULL)
                               {
-                                pP->setX(width - 0.5*d);
+                                pP->setX(width - 0.5 * d);
                                 pP->setY(height);
-
                               }
                             else
                               {
@@ -7730,10 +7825,9 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                           {
                             result = false;
                           }
-
-
                       }
                       break;
+
                       case SQUARE_W_CLASS:
                         // thick line with thicker edge to the west
                       {
@@ -7753,7 +7847,6 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               {
                                 pP->setX(0.0);
                                 pP->setY(0.0);
-
                               }
                             else
                               {
@@ -7767,7 +7860,6 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               {
                                 pP->setX(0.0);
                                 pP->setY(height);
-
                               }
                             else
                               {
@@ -7792,9 +7884,8 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pP != NULL)
                               {
-                                pP->setX(-0.5*d);
+                                pP->setX(-0.5 * d);
                                 pP->setY(0.0);
-
                               }
                             else
                               {
@@ -7806,9 +7897,8 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pP != NULL)
                               {
-                                pP->setX(-0.5*d);
+                                pP->setX(-0.5 * d);
                                 pP->setY(height);
-
                               }
                             else
                               {
@@ -7833,9 +7923,8 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pP != NULL)
                               {
-                                pP->setX(0.5*d);
+                                pP->setX(0.5 * d);
                                 pP->setY(0.0);
-
                               }
                             else
                               {
@@ -7847,9 +7936,8 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
 
                             if (pP != NULL)
                               {
-                                pP->setX(0.5*d);
+                                pP->setX(0.5 * d);
                                 pP->setY(height);
-
                               }
                             else
                               {
@@ -7860,10 +7948,9 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                           {
                             result = false;
                           }
-
-
                       }
                       break;
+
                       case SQUARE_S_CLASS:
                         // thick line with thicker edge to the south
                       {
@@ -7883,7 +7970,6 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               {
                                 pP->setX(0.0);
                                 pP->setY(height);
-
                               }
                             else
                               {
@@ -7897,7 +7983,6 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                               {
                                 pP->setX(width);
                                 pP->setY(height);
-
                               }
                             else
                               {
@@ -7923,8 +8008,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                             if (pP != NULL)
                               {
                                 pP->setX(0.0);
-                                pP->setY(height + d*0.5);
-
+                                pP->setY(height + d * 0.5);
                               }
                             else
                               {
@@ -7937,8 +8021,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                             if (pP != NULL)
                               {
                                 pP->setX(width);
-                                pP->setY(height + d*0.5);
-
+                                pP->setY(height + d * 0.5);
                               }
                             else
                               {
@@ -7964,8 +8047,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                             if (pP != NULL)
                               {
                                 pP->setX(0.0);
-                                pP->setY(height - d*0.5);
-
+                                pP->setY(height - d * 0.5);
                               }
                             else
                               {
@@ -7978,8 +8060,7 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                             if (pP != NULL)
                               {
                                 pP->setX(width);
-                                pP->setY(height - d*0.5);
-
+                                pP->setY(height - d * 0.5);
                               }
                             else
                               {
@@ -7990,15 +8071,13 @@ bool CCellDesignerImporter::createCompartmentStyle(const CompartmentAlias& ca, c
                           {
                             result = false;
                           }
-
-
                       }
                       break;
+
                       default:
                         result = false;
                         break;
                     }
-
                 }
 
               // don't forget to associate the style and the layout object via the id
@@ -8093,7 +8172,6 @@ bool CCellDesignerImporter::createSpeciesStyle(const SpeciesAlias& sa,const std:
                     {
                         result=false;
                     }
-
                 }
                 // don't forget to associate the style and the layout object via the id
                 pStyle->addId(objectReference);
@@ -8106,7 +8184,7 @@ bool CCellDesignerImporter::createSpeciesStyle(const SpeciesAlias& sa,const std:
     }
     return result;
 }
-*/
+ */
 
 /**
  * Creates a local style for a certain text glyph.
@@ -8173,13 +8251,13 @@ bool CCellDesignerImporter::createTextGlyphStyle(double size, Text::TEXT_ANCHOR 
  * TODO right now, we use default styles for species reference glyphs
  * TODO and reaction glyphs.
  * TODO These are created here.
- * TODO later we have to create individua lstyles based on the type of reaction
+ * TODO later we have to create individual styles based on the type of reaction
  * TODO and the color set in the CellDesigner annotation.
  */
 bool CCellDesignerImporter::createDefaultStyles()
 {
-  // we define a black line of width 1
   bool result = true;
+  this->mModificationLinkStyleMap.clear();
 
   if (this->mpLocalRenderInfo != NULL)
     {
@@ -8187,6 +8265,7 @@ bool CCellDesignerImporter::createDefaultStyles()
       result = (result && this->createDefaultModifierStyle());
       result = (result && this->createDefaultInhibitorStyle());
       result = (result && this->createDefaultActivatorStyle());
+      result = (result && this->createCatalysisStyles());
       result = (result && this->createDefaultProductStyle());
       result = (result && this->createDefaultSubstrateStyle());
     }
@@ -8197,7 +8276,6 @@ bool CCellDesignerImporter::createDefaultStyles()
 
   return result;
 }
-
 
 /**
  * Create default style for reaction glyphs.
@@ -8226,7 +8304,7 @@ bool CCellDesignerImporter::createDefaultReactionGlyphStyle()
                 }
               else
                 {
-                  pStyle->getGroup()->setStroke("000000FF");
+                  pStyle->getGroup()->setStroke("#000000FF");
                 }
 
               pStyle->getGroup()->setStrokeWidth(1.0);
@@ -8252,7 +8330,6 @@ bool CCellDesignerImporter::createDefaultReactionGlyphStyle()
 
   return result;
 }
-
 
 /**
  * Create default style for modifiers.
@@ -8376,7 +8453,7 @@ bool CCellDesignerImporter::createDefaultModifierStyle()
                     }
                   else
                     {
-                      pStyle->getGroup()->setStroke("000000FF");
+                      pStyle->getGroup()->setStroke("#000000FF");
                     }
 
                   pStyle->getGroup()->setStrokeWidth(1.0);
@@ -8401,7 +8478,6 @@ bool CCellDesignerImporter::createDefaultModifierStyle()
 
   return result;
 }
-
 
 /**
  * Create default style for inhibitors.
@@ -8481,7 +8557,7 @@ bool CCellDesignerImporter::createDefaultInhibitorStyle()
                     }
                   else
                     {
-                      pStyle->getGroup()->setStroke("000000FF");
+                      pStyle->getGroup()->setStroke("#000000FF");
                     }
 
                   pStyle->getGroup()->setStrokeWidth(1.0);
@@ -8506,7 +8582,6 @@ bool CCellDesignerImporter::createDefaultInhibitorStyle()
 
   return result;
 }
-
 
 /**
  * Create default style for activators.
@@ -8619,7 +8694,7 @@ bool CCellDesignerImporter::createDefaultActivatorStyle()
                     }
                   else
                     {
-                      pStyle->getGroup()->setStroke("000000FF");
+                      pStyle->getGroup()->setStroke("#000000FF");
                     }
 
                   pStyle->getGroup()->setStrokeWidth(1.0);
@@ -8645,6 +8720,156 @@ bool CCellDesignerImporter::createDefaultActivatorStyle()
   return result;
 }
 
+/**
+ * Create style for catalysis.
+ */
+bool CCellDesignerImporter::createCatalysisStyles()
+{
+  bool result = true;
+
+  if (this->mpLocalRenderInfo != NULL)
+    {
+      // we need a head for products
+      LineEnding* pLE = this->mpLocalRenderInfo->createLineEnding();
+      assert(pLE != NULL);
+      BoundingBox box;
+      Point pos(new LayoutPkgNamespaces());
+      Dimensions dim(new LayoutPkgNamespaces());
+      RenderGroup* pGroup = NULL;
+      std::string headId;
+
+      if (pLE != NULL)
+        {
+          pLE->setEnableRotationalMapping(true);
+          headId = this->createUniqueId("catalysis_arrow");
+          pLE->setId(headId);
+          this->mIdMap.insert(std::pair<std::string, const SBase*>(headId, pLE));
+          pos = Point(new LayoutPkgNamespaces(), -5.0, -5.0);
+          dim = Dimensions(new LayoutPkgNamespaces(), 10.0, 10.0);
+          box.setPosition(&pos);
+          box.setDimensions(&dim);
+          pLE->setBoundingBox(&box);
+          pGroup = pLE->getGroup();
+          assert(pGroup != NULL);
+
+          if (pGroup != NULL)
+            {
+              Ellipse* pEllipse = pGroup->createEllipse();
+              assert(pEllipse != NULL);
+
+              if (pEllipse != NULL)
+                {
+                  pEllipse->setCX(RelAbsVector(5.0, 0.0));
+                  pEllipse->setCY(RelAbsVector(5.0, 0.0));
+                  pEllipse->setRX(RelAbsVector(5.0, 0.0));
+                  pEllipse->setRY(RelAbsVector(5.0, 0.0));
+                  pEllipse->setStrokeWidth(1.0);
+                  pEllipse->setStroke("#000000");
+                  pEllipse->setFillColor("none");
+                }
+              else
+                {
+                  result = false;
+                }
+            }
+          else
+            {
+              result = false;
+            }
+        }
+      else
+        {
+          result = false;
+        }
+
+      if (result == true)
+        {
+          std::string style_id = this->createUniqueId("CatalysisStyle");
+          LocalStyle* pStyle = this->mpLocalRenderInfo->createStyle(style_id);
+
+          if (pStyle != NULL)
+            {
+              this->mIdMap.insert(std::pair<std::string, const SBase*>(style_id, pStyle));
+              assert(pStyle->getGroup() != NULL);
+
+              if (pStyle->getGroup() != NULL)
+                {
+                  std::map<std::string, std::string>::const_iterator pos = this->mColorStringMap.find("#000000FF");
+
+                  if (pos != this->mColorStringMap.end())
+                    {
+                      pStyle->getGroup()->setStroke(pos->second);
+                    }
+                  else
+                    {
+                      pStyle->getGroup()->setStroke("#000000FF");
+                    }
+
+                  pStyle->getGroup()->setStrokeWidth(1.0);
+                  pStyle->getGroup()->setEndHead(headId);
+                  this->mModificationLinkStyleMap.insert(std::pair<MODIFICATION_LINK_TYPE, LocalStyle*>(CATALYSIS_ML_TYPE, pStyle));
+                }
+              else
+                {
+                  result = false;
+                }
+            }
+          else
+            {
+              result = false;
+            }
+        }
+
+      if (result == true)
+        {
+          std::string style_id = this->createUniqueId("UnknownCatalysisStyle");
+          LocalStyle* pStyle = this->mpLocalRenderInfo->createStyle(style_id);
+
+          if (pStyle != NULL)
+            {
+              this->mIdMap.insert(std::pair<std::string, const SBase*>(style_id, pStyle));
+              assert(pStyle->getGroup() != NULL);
+
+              if (pStyle->getGroup() != NULL)
+                {
+                  std::map<std::string, std::string>::const_iterator pos = this->mColorStringMap.find("#000000FF");
+
+                  if (pos != this->mColorStringMap.end())
+                    {
+                      pStyle->getGroup()->setStroke(pos->second);
+                    }
+                  else
+                    {
+                      pStyle->getGroup()->setStroke("#000000FF");
+                    }
+
+                  pStyle->getGroup()->setStrokeWidth(1.0);
+                  std::vector<unsigned int> dashes;
+                  dashes.push_back(5);
+                  dashes.push_back(5);
+                  pStyle->getGroup()->setDashArray(dashes);
+                  // Unknown Catalysis has a dashed stroke pattern
+                  pStyle->getGroup()->setEndHead(headId);
+                  this->mModificationLinkStyleMap.insert(std::pair<MODIFICATION_LINK_TYPE, LocalStyle*>(UNKNOWN_CATALYSIS_ML_TYPE, pStyle));
+                }
+              else
+                {
+                  result = false;
+                }
+            }
+          else
+            {
+              result = false;
+            }
+        }
+    }
+  else
+    {
+      result = false;
+    }
+
+  return result;
+}
 
 /**
  * Create default style for products.
@@ -8758,7 +8983,7 @@ bool CCellDesignerImporter::createDefaultProductStyle()
                     }
                   else
                     {
-                      pStyle->getGroup()->setStroke("000000FF");
+                      pStyle->getGroup()->setStroke("#000000FF");
                     }
 
                   pStyle->getGroup()->setStrokeWidth(1.0);
@@ -8784,7 +9009,6 @@ bool CCellDesignerImporter::createDefaultProductStyle()
 
   return result;
 }
-
 
 /**
  * Create default style for substrates.
@@ -8813,7 +9037,7 @@ bool CCellDesignerImporter::createDefaultSubstrateStyle()
                 }
               else
                 {
-                  pStyle->getGroup()->setStroke("000000FF");
+                  pStyle->getGroup()->setStroke("#000000FF");
                 }
 
               pStyle->getGroup()->setStrokeWidth(1.0);
@@ -8836,8 +9060,6 @@ bool CCellDesignerImporter::createDefaultSubstrateStyle()
     }    return result;
 }
 
-
-
 /**
  * Adds all possible POSITION enums to the given vector.
  * The vector is cleared first.
@@ -8855,7 +9077,6 @@ void CCellDesignerImporter::addAllPositions(std::vector<POSITION>& v)
       pos = (POSITION)((int)pos + 1);
     }
 }
-
 
 /**
  * Finds the shortest connection between two objects given the potential
@@ -9031,7 +9252,6 @@ POSITION CCellDesignerImporter::findShortestConnection(const Point& p, std::vect
   return result;
 }
 
-
 /**
  * Calculate the distance between the two points.
  */
@@ -9200,10 +9420,12 @@ bool CCellDesignerImporter::setSpeciesReferenceId(SpeciesReferenceGlyph* pGlyph,
                   case SPECIES_ROLE_SIDESUBSTRATE:
                     pList = pReaction->getListOfReactants();
                     break;
+
                   case SPECIES_ROLE_PRODUCT:
                   case SPECIES_ROLE_SIDEPRODUCT:
                     pList = pReaction->getListOfProducts();
                     break;
+
                   default:
                     pList = pReaction->getListOfModifiers();
                     break;
@@ -9239,7 +9461,6 @@ bool CCellDesignerImporter::setSpeciesReferenceId(SpeciesReferenceGlyph* pGlyph,
 
   return result;
 }
-
 
 /**
  * Creates the structures for the modification links
@@ -9303,21 +9524,27 @@ bool CCellDesignerImporter::handleModificationLinks(ReactionGlyph* pRGlyph, Reac
                           case 4:
                             r_pos = POSITION_NW;
                             break;
+
                           case 2:
                             r_pos = POSITION_N;
                             break;
+
                           case 5:
                             r_pos = POSITION_NE;
                             break;
+
                           case 6:
                             r_pos = POSITION_SW;
                             break;
+
                           case 3:
                             r_pos = POSITION_S;
                             break;
+
                           case 7:
                             r_pos = POSITION_SE;
                             break;
+
                           default:
                             r_pos = POSITION_N;
                             break;
@@ -9349,7 +9576,7 @@ bool CCellDesignerImporter::handleModificationLinks(ReactionGlyph* pRGlyph, Reac
                           width = (width < 10.0) ? 10.0 : width;
                           height = (height < 10.0) ? 10.0 : height;
                           BoundingBox r_box;
-                          Point position(new LayoutPkgNamespaces(), x1 - width*0.5, y1 - height*0.5);
+                          Point position(new LayoutPkgNamespaces(), x1 - width * 0.5, y1 - height * 0.5);
                           Dimensions dim(new LayoutPkgNamespaces(), width, height);
                           r_box.setPosition(&position);
                           r_box.setDimensions(&dim);
@@ -9362,13 +9589,13 @@ bool CCellDesignerImporter::handleModificationLinks(ReactionGlyph* pRGlyph, Reac
                           if (angle == angle)
                             {
                               // transfer box center to the origin before rotation
-                              connectionPoint.setX(connectionPoint.x() - (x1 + x2)*0.5);
-                              connectionPoint.setY(connectionPoint.y() - (y1 + y2)*0.5);
+                              connectionPoint.setX(connectionPoint.x() - (x1 + x2) * 0.5);
+                              connectionPoint.setY(connectionPoint.y() - (y1 + y2) * 0.5);
                               CCellDesignerImporter::rotate(connectionPoint, angle, tmpP);
                               connectionPoint = tmpP;
                               // transform result back to the original place
-                              connectionPoint.setX(connectionPoint.x() + (x1 + x2)*0.5);
-                              connectionPoint.setY(connectionPoint.y() + (y1 + y2)*0.5);
+                              connectionPoint.setX(connectionPoint.x() + (x1 + x2) * 0.5);
+                              connectionPoint.setY(connectionPoint.y() + (y1 + y2) * 0.5);
                             }
 
                           std::string alias = mod.mAliases[0];
@@ -9422,12 +9649,50 @@ bool CCellDesignerImporter::handleModificationLinks(ReactionGlyph* pRGlyph, Reac
                                       case TRANSLATIONAL_INHIBITION_ML_TYPE:
                                         pSRefGlyph->setRole(SPECIES_ROLE_INHIBITOR);
                                         break;
+
                                       case CATALYSIS_ML_TYPE:
+                                        // find the stye that belongs to CATALYSIS
+                                        // add the id of the species reference glyph to it
+                                      {
+                                        std::map<MODIFICATION_LINK_TYPE, LocalStyle*>::iterator pos = this->mModificationLinkStyleMap.find(CATALYSIS_ML_TYPE);
+                                        assert(pos != this->mModificationLinkStyleMap.end());
+
+                                        if (pos != this->mModificationLinkStyleMap.end())
+                                          {
+                                            assert(pos->second != NULL);
+
+                                            if (pos->second != NULL)
+                                              {
+                                                pos->second->addId(pSRefGlyph->getId());
+                                              }
+                                          }
+                                      }
+                                      break;
+
                                       case UNKNOWN_CATALYSIS_ML_TYPE:
+                                        // find the stye that belongs to UNKNOWN_CATALYSIS
+                                        // add the id of the species reference glyph to it
+                                      {
+                                        std::map<MODIFICATION_LINK_TYPE, LocalStyle*>::iterator pos = this->mModificationLinkStyleMap.find(UNKNOWN_CATALYSIS_ML_TYPE);
+                                        assert(pos != this->mModificationLinkStyleMap.end());
+
+                                        if (pos != this->mModificationLinkStyleMap.end())
+                                          {
+                                            assert(pos->second != NULL);
+
+                                            if (pos->second != NULL)
+                                              {
+                                                pos->second->addId(pSRefGlyph->getId());
+                                              }
+                                          }
+                                      }
+                                      break;
+
                                       case TRANSCRIPTIONAL_ACTIVATION_ML_TYPE:
                                       case TRANSLATIONAL_ACTIVATION_ML_TYPE:
                                         pSRefGlyph->setRole(SPECIES_ROLE_ACTIVATOR);
                                         break;
+
                                       default:
                                         pSRefGlyph->setRole(SPECIES_ROLE_MODIFIER);
                                         break;
@@ -9545,7 +9810,6 @@ bool CCellDesignerImporter::handleModificationLinks(ReactionGlyph* pRGlyph, Reac
 
   return result;
 }
-
 
 /**
  * Creates the structures for the extra product links.
@@ -9859,7 +10123,6 @@ bool CCellDesignerImporter::findNameForSpeciesIdentity(const SpeciesIdentity& id
 }
  */
 
-
 /**
  * Goes through the dependency graph
  * and tries to find the root element for the given species alias id.
@@ -9981,7 +10244,6 @@ bool CCellDesignerImporter::handleIncludedSpecies(const XMLNode* pNode)
                               pair.second = sident;
                             }
                         }
-
                     }
 
                   this->mIncludedSpeciesNameMap.insert(std::pair<std::string, std::pair<std::string, SpeciesIdentity> >(id, pair));
@@ -9991,7 +10253,6 @@ bool CCellDesignerImporter::handleIncludedSpecies(const XMLNode* pNode)
                   result = false;
                 }
             }
-
         }
     }
 
@@ -10055,7 +10316,6 @@ bool CCellDesignerImporter::createOrthogonal(const Point& v1, Point& v2)
   return result;
 }
 
-
 /**
  * Calculates the angle between the given vector and the positive x axis.
  * The result is returned in radians.
@@ -10080,7 +10340,6 @@ double CCellDesignerImporter::angle(const Point& v)
 
   return result;
 }
-
 
 /**
  * Calculates the position of point p after rotation by angle a
@@ -10163,6 +10422,11 @@ SPECIES_MODIFICATION_TYPE CCellDesignerImporter::speciesModificationTypeToEnum(s
     {
       result = DONTCARE_MOD_TYPE;
     }
+  else if (cl == "EMPTY") // "empty" is not mentioned in the specification, but it seems to occur in SBML files written by CellDesigner
+    {
+      // actually as far as I can see from the rendering in CellDesigner, "empty" means "draw the circle, but leave it unfilled"
+      result = EMPTY_MOD_TYPE;
+    }
   else if (cl == "UNKNOWN")
     {
       result = UNKNOWN_MOD_TYPE;
@@ -10219,160 +10483,152 @@ std::string CCellDesignerImporter::getColorString(const std::string& color_id) c
 }
 
 ReactionModification::ReactionModification() :
-    mAliases()
-    , mModifiers()
-    , mType(UNDEFINED_ML_TYPE)
-    , mTargetLineIndex(std::numeric_limits<int>::max())
-    , mEditPoints()
-    , mNum0(std::numeric_limits<int>::max())
-    , mNum1(std::numeric_limits<int>::max())
-    , mNum2(std::numeric_limits<int>::max())
-    , mModType(UNDEFINED_MTYPE)
-    , mOffset(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
+  mAliases()
+  , mModifiers()
+  , mType(UNDEFINED_ML_TYPE)
+  , mTargetLineIndex(std::numeric_limits<int>::max())
+  , mEditPoints()
+  , mNum0(std::numeric_limits<int>::max())
+  , mNum1(std::numeric_limits<int>::max())
+  , mNum2(std::numeric_limits<int>::max())
+  , mModType(UNDEFINED_MTYPE)
+  , mOffset(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
 {}
 
 ReactionAnnotation::ReactionAnnotation() :
-    mName("")
-    , mType(UNDEFINED_RTYPE)
-    , mBaseReactants()
-    , mBaseProducts()
-    , mReactantLinks()
-    , mProductLinks()
-    , mConnectScheme()
-    , mOffset(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
-    , mEditPoints()
-    , mLine(Line())
-    , mModifications()
+  mName("")
+  , mType(UNDEFINED_RTYPE)
+  , mBaseReactants()
+  , mBaseProducts()
+  , mReactantLinks()
+  , mProductLinks()
+  , mConnectScheme()
+  , mOffset(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
+  , mEditPoints()
+  , mLine(Line())
+  , mModifications()
 {}
 
 CompartmentAlias::CompartmentAlias() :
-    mId("")
-    , mCompartment("")
-    , mClass(UNDEFINED_CLASS)
-    , mNamePoint(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
-    , mDoubleLine()
-    , mPaint()
-    , mBounds()
-    , mFontSize(12.0)
+  mId("")
+  , mCompartment("")
+  , mClass(UNDEFINED_CLASS)
+  , mNamePoint(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
+  , mDoubleLine()
+  , mPaint()
+  , mBounds()
+  , mFontSize(12.0)
 {}
 
 UsualView::UsualView() :
-    mInnerPosition(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
-    , mBoxSize(Dimensions(new LayoutPkgNamespaces(), 0.0, 0.0))
-    , mLineWidth(0.0)
-    , mPaint()
+  mInnerPosition(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
+  , mBoxSize(Dimensions(new LayoutPkgNamespaces(), 0.0, 0.0))
+  , mLineWidth(0.0)
+  , mPaint()
 {}
 
 LinkTarget::LinkTarget() :
-    mAlias(""),
-    mSpecies(""),
-    mPosition(POSITION_UNDEFINED)
+  mAlias(""),
+  mSpecies(""),
+  mPosition(POSITION_UNDEFINED)
 {}
 
 SpeciesModification::SpeciesModification() :
-    mResidue("")
-    , mType(UNDEFINED_MOD_TYPE)
+  mResidue("")
+  , mType(UNDEFINED_MOD_TYPE)
 {}
 
 SpeciesState::SpeciesState():
-    mModifications()
+  mModifications()
 {}
 
 SpeciesIdentity::SpeciesIdentity():
-    mSpeciesClass(UNDEFINED_CLASS),
-    mNameOrReference("")
+  mSpeciesClass(UNDEFINED_CLASS),
+  mNameOrReference("")
 {}
 
 SpeciesAnnotation::SpeciesAnnotation():
-    mPosition(UNDEFINED_POSITION),
-    mParentComplex(""),
-    mIdentity(SpeciesIdentity())
+  mPosition(UNDEFINED_POSITION),
+  mParentComplex(""),
+  mIdentity(SpeciesIdentity())
 {}
 
 CompartmentAnnotation::CompartmentAnnotation():
-    mName("")
+  mName("")
 {}
 
 Line::Line():
-    mColor("#FF000000"),
-    mWidth(0.0),
-    mCurve(false)
+  mColor("#FF000000"),
+  mWidth(0.0),
+  mCurve(false)
 {}
 
 LineDirection::LineDirection() :
-    mIndex(std::numeric_limits<int>::max())
-    , mArm(std::numeric_limits<int>::max())
-    , mValue(DIRECTION_UNDEFINED)
+  mIndex(std::numeric_limits<int>::max())
+  , mArm(std::numeric_limits<int>::max())
+  , mValue(DIRECTION_UNDEFINED)
 {}
 
 ConnectScheme::ConnectScheme() :
-    mPolicy(POLICY_UNDEFINED)
-    , mRectangleIndex(0)
-    , mLineDirections()
+  mPolicy(POLICY_UNDEFINED)
+  , mRectangleIndex(0)
+  , mLineDirections()
 {}
 
 EditPoints::EditPoints() :
-    mNum0(std::numeric_limits<int>::max())
-    , mNum1(std::numeric_limits<int>::max())
-    , mNum2(std::numeric_limits<int>::max())
-    , mOmittedShapeIndex(std::numeric_limits<int>::max())
-    , mTShapeIndex(std::numeric_limits<int>::max())
-    , mPoints()
+  mNum0(std::numeric_limits<int>::max())
+  , mNum1(std::numeric_limits<int>::max())
+  , mNum2(std::numeric_limits<int>::max())
+  , mOmittedShapeIndex(std::numeric_limits<int>::max())
+  , mTShapeIndex(std::numeric_limits<int>::max())
+  , mPoints()
 {}
 
 ReactantLink::ReactantLink() :
-    mAlias("")
-    , mReactant("")
-    , mTargetLineIndex(std::numeric_limits<int>::max())
-    , mPosition(POSITION_UNDEFINED)
-    , mLine()
+  mAlias("")
+  , mReactant("")
+  , mTargetLineIndex(std::numeric_limits<int>::max())
+  , mPosition(POSITION_UNDEFINED)
+  , mLine()
 {}
 
 CellDesignerSpecies::CellDesignerSpecies() :
-    mId("")
-    , mName("")
-    , mCompartment("")
-    , mAnnotation()
+  mId("")
+  , mName("")
+  , mCompartment("")
+  , mAnnotation()
 {}
 
 Paint::Paint() :
-    mColor("#FF000000")
-    , mScheme(PAINT_UNDEFINED)
+  mColor("#FF000000")
+  , mScheme(PAINT_UNDEFINED)
 {}
 
 DoubleLine::DoubleLine() :
-    mInnerWidth(0.0)
-    , mOuterWidth(0.0)
-    , mThickness(0.0)
+  mInnerWidth(0.0)
+  , mOuterWidth(0.0)
+  , mThickness(0.0)
 {}
 
 SpeciesAlias::SpeciesAlias() :
-    mId("")
-    , mSpecies("")
-    , mComplexSpeciesAlias("")
-    , mCompartmentAlias("")
-    , mFontSize(12.0)
-    , mComplex(false)
-    , mBounds()
-    , mUView()
+  mId("")
+  , mSpecies("")
+  , mComplexSpeciesAlias("")
+  , mCompartmentAlias("")
+  , mFontSize(12.0)
+  , mComplex(false)
+  , mBounds()
+  , mUView()
 {}
 
 ProteinModification::ProteinModification() :
-    mId(""),
-    mName(""),
-    mAngle(0.0)
+  mId(""),
+  mName(""),
+  mAngle(0.0)
 {}
 
 Protein::Protein():
-    mId(""),
-    mName(""),
-    mType(PROTEIN_CLASS)
+  mId(""),
+  mName(""),
+  mType(PROTEIN_CLASS)
 {}
-
-
-
-
-
-
-
-

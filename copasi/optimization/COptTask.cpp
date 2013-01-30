@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-//   $Revision: 1.43 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/20 21:17:11 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -60,8 +52,8 @@ const unsigned int COptTask::ValidMethods[] =
   CCopasiMethod::SimulatedAnnealing,
 #ifdef COPASI_DEBUG
   CCopasiMethod::CoranaWalk,
-  CCopasiMethod::DifferentialEvolution,
 #endif // COPASI_DEBUG
+  CCopasiMethod::DifferentialEvolution,
   CCopasiMethod::SRES,
   CCopasiMethod::SteepestDescent,
   CCopasiMethod::unset
@@ -69,7 +61,7 @@ const unsigned int COptTask::ValidMethods[] =
 
 COptTask::COptTask(const CCopasiTask::Type & type,
                    const CCopasiContainer * pParent):
-    CCopasiTask(type, pParent)
+  CCopasiTask(type, pParent)
 {
   mpProblem = new COptProblem(type, this);
   mpMethod = COptMethod::createMethod();
@@ -80,7 +72,7 @@ COptTask::COptTask(const CCopasiTask::Type & type,
 
 COptTask::COptTask(const COptTask & src,
                    const CCopasiContainer * pParent):
-    CCopasiTask(src, pParent)
+  CCopasiTask(src, pParent)
 {
   mpProblem = new COptProblem(*(COptProblem *) src.mpProblem, this);
   mpMethod = COptMethod::createMethod(src.mpMethod->getSubType());

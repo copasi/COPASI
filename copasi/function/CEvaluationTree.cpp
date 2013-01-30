@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -137,7 +137,6 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
   mpNodeList(NULL),
   mpRoot(NULL),
   mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-  mBooleanRequired(false),
   mCalculationSequence()
 {
   initObjects();
@@ -154,7 +153,6 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
   mpNodeList(NULL),
   mpRoot(NULL),
   mValue(src.mValue),
-  mBooleanRequired(src.mBooleanRequired),
   mCalculationSequence()
 {
   initObjects();
@@ -242,12 +240,6 @@ bool CEvaluationTree::parse()
 
   mpNodeList = Parser.getNodeList();
   mpRoot = Parser.getRootNode();
-
-  // Check whether the expression has the expected type.
-  if (mBooleanRequired && mpRoot != NULL)
-    {
-      success &= mpRoot->isBoolean();
-    }
 
   // clean up if parsing failed
   if (!success)

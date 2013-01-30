@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpecieDM.cpp,v $
-//   $Revision: 1.17 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/10 16:27:18 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -28,10 +20,10 @@
 #include "qtUtilities.h"
 
 CQSpecieDM::CQSpecieDM(QObject *parent):
-    CQBaseDataModel(parent),
-    mFlagConc(true),
-    mpSpecies(NULL),
-    mNotify(true)
+  CQBaseDataModel(parent),
+  mFlagConc(true),
+  mpSpecies(NULL),
+  mNotify(true)
 {
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::REACTIONS]));
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
@@ -134,8 +126,10 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
             {
               case COL_ROW_NUMBER:
                 return QVariant(QString(""));
+
               case COL_NAME_SPECIES:
                 return QVariant(QString("New Species"));
+
               case COL_COMPARTMENT:
               {
                 const CCopasiVector < CCompartment > & compartments =
@@ -146,23 +140,26 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
                 else
                   return QVariant(QString(""));
               }
+
               case COL_TYPE_SPECIES:
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[0]])));
 
               case COL_ICONCENTRATION:
               {
                 if (mFlagConc)
-                  return QVariant(QString("1.0"));
+                  return QVariant(QString::number(1.0, 'g', 10));
                 else
                   return QVariant(QString(""));
               }
+
               case COL_INUMBER:
               {
                 if (mFlagConc)
                   return QVariant(QString(""));
                 else
-                  return QVariant(QString("100.0"));
+                  return QVariant(QString::number(100.0, 'g', 10));
               }
+
               default:
                 return QVariant(QString(""));
             }
@@ -200,6 +197,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
                 else
                   return QVariant(mpSpecies->getInitialValue());
               }
+
               case COL_CONCENTRATION:
                 return QVariant(mpSpecies->getConcentration());
 
@@ -226,6 +224,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
 
                 return QVariant(QString(""));
               }
+
               case COL_EXPRESSION_SPECIES:
               {
                 const CExpression * pExpression = mpSpecies->getExpressionPtr();
@@ -291,28 +290,40 @@ QVariant CQSpecieDM::headerData(int section, Qt::Orientation orientation,
         {
           case COL_ROW_NUMBER:
             return QVariant(QString("#"));
+
           case COL_NAME_SPECIES:
             return QVariant(QString("Name"));
+
           case COL_COMPARTMENT:
             return QVariant(QString("Compartment"));
+
           case COL_TYPE_SPECIES:
             return QVariant(QString("     Type     "));
+
           case COL_ICONCENTRATION:
             return QVariant("Initial Concentration" + ValueUnits);
+
           case COL_INUMBER:
             return QVariant(QString("Initial Number"));
+
           case COL_CONCENTRATION:
             return QVariant("Concentration" + ValueUnits);
+
           case COL_NUMBER:
             return QVariant(QString("Number"));
+
           case COL_CRATE:
             return QVariant("Rate" + RateUnits);
+
           case COL_NRATE:
             return QVariant("Number Rate" + FrequencyUnits);
+
           case COL_IEXPRESSION_SPECIES:
             return QVariant("Initial Expression" + ValueUnits);
+
           case COL_EXPRESSION_SPECIES:
             return QVariant("Expression" + ExpressionUnits);
+
           default:
             return QVariant();
         }

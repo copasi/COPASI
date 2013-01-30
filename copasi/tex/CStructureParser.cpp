@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,10 +23,17 @@
 #include <iostream>
 #include "UI/qtUtilities.h"
 
-CStructureParser::CStructureParser(int n)
-{
-  sumColumns = n;
-}
+CStructureParser::CStructureParser(int n):
+  indent(),
+  texHead(),
+  tex(),
+  texTail(),
+  tagName(),
+  needToWriteColumnAllignment(false),
+  sumColumns(n),
+  indexColumns(0),
+  mListOfUncompletedTags()
+{}
 
 bool CStructureParser::startDocument()
 {

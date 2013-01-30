@@ -81,4 +81,9 @@ if (ENABLE_SBW_INTEGRATION)
 target_link_libraries(CopasiUI ${SBW_LIBRARIES})
 endif(ENABLE_SBW_INTEGRATION)
 
+if (UNIX AND NOT APPLE)
+target_link_libraries(CopasiUI pthread z)
+endif()
+
+
 install(TARGETS CopasiUI DESTINATION COPASI)

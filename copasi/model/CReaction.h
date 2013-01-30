@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-//   $Revision: 1.112 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/30 17:16:35 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -115,6 +107,14 @@ public:
    * @return std::set< const CCopasiObject * > deletedObjects
    */
   virtual std::set< const CCopasiObject * > getDeletedObjects() const;
+
+  /**
+   * Check whether an object must be deleted because its prerequisites can
+   * no longer be fulfilled due to the given deleted objects
+   * @param const DataObjectSet & deletedObjects
+   * @return bool mustBeDeleted
+   */
+  virtual bool mustBeDeleted(const DataObjectSet & deletedObjects) const;
 
   /**
    *  Retrieves the key of the reaction
@@ -239,8 +239,9 @@ public:
    * Sets a parameter mapping for the named parameter.
    * @param const std::string & parameterName
    * @param const std::string & key
+   * @return bool success
    */
-  void setParameterMapping(const std::string & parameterName, const std::string & key);
+  bool setParameterMapping(const std::string & parameterName, const std::string & key);
 
   /**
    * Add a parameter mapping for the named parameter.
@@ -367,7 +368,6 @@ public:
    */
   const CCopasiObject * getFluxReference() const;
 
-
   /**
    * Retrieve object referencing the propensity
    * @return CCopasiObject * propensityReference
@@ -379,7 +379,6 @@ public:
    * @return const CCallParameters< C_FLOAT64 > & callParameters
    */
   const CCallParameters< C_FLOAT64 > & getCallParameters() const;
-
 
 private:
   /**

@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-//   $Revision: 1.64 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:34:54 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -67,13 +59,13 @@ Message;
 #define MCTSSAMethod             MCopasiBase + 4000
 #define MCTSSAProblem            MCopasiBase + 4100
 #define MCEigen                  MCopasiBase + 4200
-#define MCMiriam                 MCopasiBase + 4300
+#define MCAnnotation             MCopasiBase + 4300
 #define MCMathModel              MCopasiBase + 4400
 #define MCModelMerging           MCopasiBase + 4500
 #define MCModelExpansion         MCopasiBase + 4600
 #define MCEFMAnalysis            MCopasiBase + 4700
 #define MCLayout                 MCopasiBase + 4800
-
+#define MCScan                   MCopasiBase + 4900
 /**
  *  This throws an exception with information where the error occurred.
  */
@@ -130,6 +122,12 @@ private:
    */
   static std::deque< CCopasiMessage > mMessageDeque;
 #endif // not WIN32
+
+  /**
+   * A flag indicating whether the COPASI is running as commandline or
+   * GUI
+   */
+  static bool IsGUI;
 
   // Operations
 
@@ -201,6 +199,14 @@ public:
    * @return bool found
    */
   static bool checkForMessage(const size_t & number);
+
+  /**
+   * Set whether the messages are created from COPASI as GUI or commandline.
+   * This method is called from CCopasiRootContainer::init and there should be
+   * no need to call it otherwise.
+   * @param const bool & isGUI
+   */
+  static void setIsGUI(const bool & isGUI);
 
   /**
    *  Default constructor.

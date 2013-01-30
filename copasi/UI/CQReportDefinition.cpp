@@ -1,19 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.cpp,v $
-//   $Revision: 1.16 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/17 14:58:05 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "CQReportDefinition.h"
@@ -31,13 +27,12 @@
 #include "report/CCopasiRootContainer.h"
 #include "xml/CCopasiXMLInterface.h"
 
-
 /*
  *  Constructs a CQReportDefinition which is a child of 'parent', with the
  *  name 'name'.'
  */
 CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
-    : CopasiWidget(parent, name)
+  : CopasiWidget(parent, name)
 {
   setupUi(this);
 
@@ -367,7 +362,6 @@ void CQReportDefinition::btnDeleteReportClicked()
 
         size_t Size = pReportList->size();
 
-
         if (Size > 0)
           enter((*pReportList)[std::min(Index, Size - 1)]->getKey());
         else
@@ -376,7 +370,6 @@ void CQReportDefinition::btnDeleteReportClicked()
         protectedNotify(ListViews::REPORT, ListViews::DELETE, DeletedKey);
         break;
       }
-
 
       default:
         break;
@@ -416,6 +409,16 @@ bool CQReportDefinition::update(ListViews::ObjectType objectType,
                                 ListViews::Action action,
                                 const std::string & key)
 {
+  // If the model is deleted or a new model is loaded the existing pointer
+  // becomes invalid.
+  if (objectType == ListViews::MODEL &&
+      (action == ListViews::DELETE ||
+       action == ListViews::ADD))
+    {
+      mpReportDefinition = NULL;
+      return true;
+    }
+
   if (mIgnoreUpdates ||
       objectType != ListViews::REPORT ||
       key != mKey ||

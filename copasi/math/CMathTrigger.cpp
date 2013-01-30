@@ -1,20 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathTrigger.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/16 12:15:30 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+#include <cmath>
 
 #include "copasi.h"
 
@@ -23,24 +12,26 @@
 #include "report/CCopasiObjectReference.h"
 
 CMathTrigger::CRootFinder::CRootFinder(const CCopasiContainer * pParent) :
-    CCopasiContainer("Root", pParent),
-    mRoot("Expression", this),
-    mpRootValue(NULL),
-    mEquality(false),
-    mDiscrete(false),
-    mTrue(0.0)
+  CCopasiContainer("Root", pParent),
+  mRoot("Expression", this),
+  mpRootValue(NULL),
+  mEquality(false),
+  mDiscrete(false),
+  mTrue(0.0),
+  mLastToggleTime(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
 {
   initObjects();
 }
 
 CMathTrigger::CRootFinder::CRootFinder(const CMathTrigger::CRootFinder & src,
                                        const CCopasiContainer * pParent) :
-    CCopasiContainer(src, pParent),
-    mRoot(src.mRoot, this),
-    mpRootValue(NULL),
-    mEquality(src.mEquality),
-    mDiscrete(src.mDiscrete),
-    mTrue(src.mTrue)
+  CCopasiContainer(src, pParent),
+  mRoot(src.mRoot, this),
+  mpRootValue(NULL),
+  mEquality(src.mEquality),
+  mDiscrete(src.mDiscrete),
+  mTrue(src.mTrue),
+  mLastToggleTime(src.mLastToggleTime)
 {
   initObjects();
 }
@@ -97,27 +88,63 @@ CEvaluationNode * CMathTrigger::CRootFinder::getTrueExpression() const
   return pTrueExpression;
 }
 
-void CMathTrigger::CRootFinder::toggle(const bool & equality)
+void CMathTrigger::CRootFinder::toggle(const C_FLOAT64 & time,
+                                       const bool & equality,
+                                       const bool & continous)
 {
   // This function must only be called if we found a root, i.e., the
   // value of the root expression changes sign. In that case it is save
   // to toggle the activity.
 
+  if (continous &&
+      !isnan(mLastToggleTime) &&
+      mLastToggleTime == time)
+    {
+      return;
+    }
+
   if (mDiscrete &&
       equality == true)
     {
       mTrue = (mTrue > 0.5) ? 0.0 : 1.0;
+      mLastToggleTime = time;
     }
-  else if (!mDiscrete &&
-           equality == mEquality)
+  else if (!mDiscrete)
     {
-      mTrue = (mTrue > 0.5) ? 0.0 : 1.0;
+      if (equality == mEquality && mTrue < 0.5)
+        {
+          mTrue = 1.0;
+          mLastToggleTime = time;
+        }
+      else if (equality != mEquality && mTrue > 0.5)
+        {
+          mTrue = 0.0;
+          mLastToggleTime = time;
+        }
     }
 
   return;
 }
 
-void CMathTrigger::CRootFinder::calculateInitialTrue()
+void CMathTrigger::CRootFinder::toggle(const C_FLOAT64 & time)
+{
+  // This function must only be called if we found a root, i.e., the
+  // value of the root expression changes sign. In that case it is save
+  // to toggle the activity.
+
+  mTrue = (mTrue > 0.5) ? 0.0 : 1.0;
+  mLastToggleTime = time;
+
+  return;
+}
+
+void CMathTrigger::CRootFinder::applyInitialValues()
+{
+  calculateTrueValue();
+  mLastToggleTime = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+}
+
+void CMathTrigger::CRootFinder::calculateTrueValue()
 {
   if ((*mpRootValue < 0.0) ||
       ((*mpRootValue <= 0.0) && !mEquality))
@@ -136,32 +163,44 @@ C_FLOAT64 * CMathTrigger::CRootFinder::getRootValuePtr()
 }
 
 CMathTrigger::CMathTrigger(const CCopasiContainer * pParent) :
-    CCopasiContainer("MathTrigger", pParent, "MathTrigger"),
-    mTrueExpression("TrueExpression", this),
-    mRootFinders("ListOfRoots", this),
-    mFunctionVariableMap()
+  CCopasiContainer("MathTrigger", pParent, "MathTrigger"),
+  mTrueExpression("TrueExpression", this),
+  mRootFinders("ListOfRoots", this),
+  mFunctionVariableMap()
 {}
 
 CMathTrigger::CMathTrigger(const CMathTrigger & src,
                            const CCopasiContainer * pParent) :
-    CCopasiContainer(src, pParent),
-    mTrueExpression(src.mTrueExpression, this),
-    mRootFinders(src.mRootFinders, this),
-    mFunctionVariableMap()
+  CCopasiContainer(src, pParent),
+  mTrueExpression(src.mTrueExpression, this),
+  mRootFinders(src.mRootFinders, this),
+  mFunctionVariableMap()
 {}
 
 CMathTrigger::~CMathTrigger()
 {}
 
-void CMathTrigger::calculateInitialTrue()
+void CMathTrigger::applyInitialValues()
 {
-  // Calculate the initial activity for the root finders
+  // Calculate the initial truth value for the root finders
   CCopasiVector< CRootFinder >::iterator itRoot = mRootFinders.begin();
   CCopasiVector< CRootFinder >::iterator endRoot = mRootFinders.end();
 
   for (; itRoot != endRoot; ++itRoot)
     {
-      (*itRoot)->calculateInitialTrue();
+      (*itRoot)->applyInitialValues();
+    }
+}
+
+void CMathTrigger::calculateTrueValue()
+{
+  // Calculate the current truth value for the root finders
+  CCopasiVector< CRootFinder >::iterator itRoot = mRootFinders.begin();
+  CCopasiVector< CRootFinder >::iterator endRoot = mRootFinders.end();
+
+  for (; itRoot != endRoot; ++itRoot)
+    {
+      (*itRoot)->calculateTrueValue();
     }
 }
 
@@ -649,12 +688,20 @@ CEvaluationNode * CMathTrigger::copyBranch(const CEvaluationNode * pSource)
 {
   if (pSource->getType() == CEvaluationNode::VARIABLE)
     {
-      assert(!mFunctionVariableMap.empty());
+      if (!mFunctionVariableMap.empty())
+        {
+          size_t Index = static_cast< const CEvaluationNodeVariable * >(pSource)->getIndex();
 
-      size_t Index =
-        static_cast< const CEvaluationNodeVariable * >(pSource)->getIndex();
+          if (Index != C_INVALID_INDEX &&
+              Index < mFunctionVariableMap.top().size())
+            {
+              return mFunctionVariableMap.top()[Index]->copyBranch();
+            }
+        }
 
-      return mFunctionVariableMap.top()[Index]->copyBranch();
+      // We have an invalid variables and therefore create an constant node with the
+      // variable name and value NaN.
+      return new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, pSource->getData());
     }
 
   return pSource->copyBranch();

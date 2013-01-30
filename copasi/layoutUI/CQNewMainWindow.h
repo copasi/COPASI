@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQNewMainWindow.h,v $
-//   $Revision: 1.9 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/11/09 15:05:30 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,9 +6,10 @@
 #ifndef CQNEWMAINWINDOW_H__
 #define CQNEWMAINWINDOW_H__
 
-#include <QMainWindow>
+#include <UI/CWindowInterface.h>
 #include <QString>
 #include <QIcon>
+#include <QRectF>
 #include <string>
 #include <vector>
 #include <set>
@@ -52,30 +45,40 @@ class CLMetabGlyph;
 class CLTextGlyph;
 #endif // COPASI_AUTOLAYOUT
 
-class CQNewMainWindow : public QMainWindow
+class CQNewMainWindow : public CWindowInterface
 {
   Q_OBJECT
 
 public:
+
+  enum DISPLAY_MODE
+  {
+    GRAPH_MODE,
+    ANIMATION_MODE
+  };
+
+  void setMode(DISPLAY_MODE mode = GRAPH_MODE);
+
 #ifdef ELEMENTARY_MODE_DISPLAY
   enum REACTION_SELECTION_BITS
   {
     ROLE_UNSPECIFIED          =   1 // metab reference glyphs without role
-    , ROLE_SUBSTRATE            =   2
-    , ROLE_SIDESUBSTRATE        =   4
-    , ROLE_PRODUCT              =   8
-    , ROLE_SIDEPRODUCT          =  16
-    , ROLE_MODIFIER             =  32
-    , ROLE_ACTIVATOR            =  64
-    , ROLE_INHIBITOR            = 128
-    , REACTION_GLYPH            = 256 // the reaction glyph itself
-    , ASSOCIATED_SPECIES_GLYPHS = 512
+                                  , ROLE_SUBSTRATE            =   2
+                                      , ROLE_SIDESUBSTRATE        =   4
+                                          , ROLE_PRODUCT              =   8
+                                              , ROLE_SIDEPRODUCT          =  16
+                                                  , ROLE_MODIFIER             =  32
+                                                      , ROLE_ACTIVATOR            =  64
+                                                          , ROLE_INHIBITOR            = 128
+                                                              , REACTION_GLYPH            = 256 // the reaction glyph itself
+                                                                  , ASSOCIATED_SPECIES_GLYPHS = 512
   };
 
 #endif // ELEMENTARY_MODE_DISPLAY
 
-
   CQNewMainWindow(CCopasiDataModel* pDatamodel);
+
+  virtual QMenu *getWindowMenu() const;
 
   void updateRenderer();
 protected:
@@ -122,6 +125,11 @@ private slots:
   void slotScreenshot();
 
   /**
+   * exports a bit map of the currently displayed image with the given scale.
+   */
+  void export_bitmap(const QString& filename, double scale = 4.0);
+
+  /**
    * Exports a bitmap of the given size to
    * the file with the given name.
    */
@@ -156,7 +164,6 @@ private slots:
    */
   void selectReaction(const CReaction* pReaction, unsigned int selectionMask, std::set<const CLGraphicalObject*>& s);
 
-
   /**
    * Selected the given metabolite object by selecting all
    * corresponding CLMetabGlyph objects in the current layout.
@@ -164,7 +171,6 @@ private slots:
    * set given as the third element.
    */
   void selectMetabolite(const CMetab* pMetab, std::set<const CLGraphicalObject*>& s);
-
 
   /**
    * Is called when the menu entry for toggling highlighting
@@ -198,8 +204,9 @@ private slots:
 
 #endif // ELEMENTARY_MODE_DISPLAY
 
-#ifdef COPASI_AUTOLAYOUT
   virtual void closeEvent(QCloseEvent * event);
+
+#ifdef COPASI_AUTOLAYOUT
 
   /**
    * Creates a CLMetabGlyph for the given CMetab object.
@@ -237,16 +244,15 @@ protected slots:
    */
   void slotStopClicked();
 
-  void slotRunSpringLayout();
-#endif // COPASI_AUTOLAYOUT 
+  void slotRunRandomizeLayout();
 
+  void slotRunSpringLayout();
+
+  void slotCalculateDimensions();
+
+#endif // COPASI_AUTOLAYOUT
 
 private:
-  enum DISPLAY_MODE
-  {
-    GRAPH_MODE,
-    ANIMATION_MODE
-  };
 
   void createActions();
   void createMenus();
@@ -261,9 +267,10 @@ private:
   QStackedWidget* mpWidgetStack;
   QMenu *mpFileMenu;
   QMenu *mpPlayMenu;
+  QMenu *mpLayoutMenu;
   QMenu *mpViewMenu;
   QMenu *mpOptionsMenu;
-  QMenu *mpHelpMenu;
+  QMenu *mpWindowMenu;
   QMenu *mpZoomMenu;
 #ifdef ELEMENTARY_MODE_DISPLAY
   QMenu *mpElementaryModesMenu;
@@ -313,7 +320,6 @@ private:
       bool result = (this->mReactionKey < other.mReactionKey);
       return result;
     }
-
   };
 
   // we need to store the highlighted reactions and the
@@ -322,7 +328,6 @@ private:
   // more complicated
   std::set<std::string> mHighlightedMetabolites;
   std::set<REACTION_SELECTION_ITEM> mHighlightedReactions;
-
 
   // It does not make sense to update
   // the elementary flux modes menu each time
@@ -346,6 +351,9 @@ private:
   bool mStopLayout;
 
   QAction* mpStopLayoutAction;
+
+  QAction* mpRandomizeLayout;
+  QAction* mpCalculateDimensions;
 
 public:
   void redrawNow();
@@ -371,7 +379,6 @@ public:
    */
   void createSpringLayout(int numIterations, int updateInterval);
 #endif // COPASI_AUTOLAYOUT
-
 };
 
 #endif /* CQNEWMAINWINDOW_H__ */

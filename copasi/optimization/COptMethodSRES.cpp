@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSRES.cpp,v $
-//   $Revision: 1.20 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/20 21:16:37 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -41,16 +33,16 @@
 #define childrate 7
 
 COptMethodSRES::COptMethodSRES(const CCopasiContainer * pParent):
-    COptMethod(CCopasiTask::optimization, CCopasiMethod::SRES, pParent),
-    mGenerations(0),
-    mPopulationSize(0),
-    mpRandom(NULL),
-    mVariableSize(0),
-    mIndividual(0),
-    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-    mValue(0),
-    mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
-    mGeneration(0)
+  COptMethod(CCopasiTask::optimization, CCopasiMethod::SRES, pParent),
+  mGenerations(0),
+  mPopulationSize(0),
+  mpRandom(NULL),
+  mVariableSize(0),
+  mIndividual(0),
+  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
+  mValue(0),
+  mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
+  mGeneration(0)
 
 {
   addParameter("Number of Generations", CCopasiParameter::UINT, (unsigned C_INT32) 200);
@@ -64,16 +56,16 @@ COptMethodSRES::COptMethodSRES(const CCopasiContainer * pParent):
 
 COptMethodSRES::COptMethodSRES(const COptMethodSRES & src,
                                const CCopasiContainer * pParent):
-    COptMethod(src, pParent),
-    mGenerations(0),
-    mPopulationSize(0),
-    mpRandom(NULL),
-    mVariableSize(0),
-    mIndividual(0),
-    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-    mValue(0),
-    mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
-    mGeneration(0)
+  COptMethod(src, pParent),
+  mGenerations(0),
+  mPopulationSize(0),
+  mpRandom(NULL),
+  mVariableSize(0),
+  mIndividual(0),
+  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
+  mValue(0),
+  mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
+  mGeneration(0)
 {initObjects();}
 
 COptMethodSRES::~COptMethodSRES()
@@ -203,7 +195,7 @@ bool COptMethodSRES::mutate()
             {
               // update the parameter for the variances
               *pVariance =
-                std::min(*pVariance * exp(tau1 * v1 + tau2 * mpRandom->getRandomNormal01()), *pMaxVariance);
+                std::min(*pVariance * exp(mTauPrime * v1 + mTau * mpRandom->getRandomNormal01()), *pMaxVariance);
 
               for (l = 0; l < 10; l++)
                 {
@@ -370,7 +362,7 @@ bool COptMethodSRES::creation(size_t first)
           (*(*mpSetCalculateVariable)[j])(mut);
 
           // Set the variance for this parameter.
-          *pVariance = *pMaxVariance;
+          *pVariance = std::min(*OptItem.getUpperBoundValue() - mut, mut - *OptItem.getLowerBoundValue()) / sqrt(double(mVariableSize));
         }
 
       Continue = evaluate(**it);
@@ -486,7 +478,7 @@ bool COptMethodSRES::creation(size_t first)
           (*(*mpSetCalculateVariable)[j])(mut);
 
           // Set the variance for this parameter.
-          *pVariance = *pMaxVariance;
+          *pVariance = std::min(*OptItem.getUpperBoundValue() - mut, mut - *OptItem.getLowerBoundValue()) / sqrt(double(mVariableSize));
         }
 
       // calculate its fitness
@@ -573,12 +565,19 @@ bool COptMethodSRES::initialize()
 
   try
     {
-      tau1 = 1 / sqrt(2 * sqrt(double(mVariableSize)));
-      tau2 = 1 / sqrt(2 * double(mVariableSize));
+      /*
+      C_FLOAT64 alpha = 0.2;
+      C_FLOAT64 chi = 1 / (2 * sqrt(double(mVariableSize))) + 1 / (2 * double(mVariableSize));
+      C_FLOAT64 varphi = sqrt(2/chi * log(1/alpha) *exp(chi/2 -(1-alpha)));
+      */
+
+      C_FLOAT64 varphi = 1;
+      mTau = varphi / sqrt(2 * sqrt(double(mVariableSize)));
+      mTauPrime = varphi / sqrt(2 * double(mVariableSize));
     }
   catch (...)
     {
-      tau1 = tau2 = 1;
+      mTau = mTauPrime = 1;
     }
 
   return true;

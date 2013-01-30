@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathEnum.h,v $
-//   $Revision: 1.8 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/21 14:12:02 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,19 +17,19 @@ template <class Enum> class CMathFlags
 {
 public:
   CMathFlags():
-      mFlags(0)
+    mFlags(0)
   {}
 
   CMathFlags(const CMathFlags & src):
-      mFlags(src.mFlags)
+    mFlags(src.mFlags)
   {}
 
   CMathFlags(const Enum & flag):
-      mFlags((int) flag)
+    mFlags((int) flag)
   {}
 
   CMathFlags(const int & flag):
-      mFlags(flag)
+    mFlags(flag)
   {}
 
   ~CMathFlags() {}
@@ -93,13 +85,14 @@ class CMath
 public:
   struct sPointers
   {
-public:
+  public:
     C_FLOAT64 * pInitialExtensiveValues;
     C_FLOAT64 * pInitialIntensiveValues;
     C_FLOAT64 * pInitialExtensiveRates;
     C_FLOAT64 * pInitialIntensiveRates;
     C_FLOAT64 * pInitialParticleFluxes;
     C_FLOAT64 * pInitialFluxes;
+    C_FLOAT64 * pInitialTotalMasses;
     C_FLOAT64 * pInitialEventTriggers;
 
     C_FLOAT64 * pExtensiveValues;
@@ -108,6 +101,7 @@ public:
     C_FLOAT64 * pIntensiveRates;
     C_FLOAT64 * pParticleFluxes;
     C_FLOAT64 * pFluxes;
+    C_FLOAT64 * pTotalMasses;
     C_FLOAT64 * pEventTriggers;
 
     C_FLOAT64 * pEventDelays;
@@ -116,7 +110,6 @@ public:
     C_FLOAT64 * pEventRoots;
     C_FLOAT64 * pEventRootStates;
     C_FLOAT64 * pPropensities;
-    C_FLOAT64 * pTotalMasses;
     C_FLOAT64 * pDependentMasses;
     C_FLOAT64 * pDiscontinuous;
 
@@ -126,6 +119,7 @@ public:
     CMathObject * pInitialIntensiveRatesObject;
     CMathObject * pInitialParticleFluxesObject;
     CMathObject * pInitialFluxesObject;
+    CMathObject * pInitialTotalMassesObject;
     CMathObject * pInitialEventTriggersObject;
 
     CMathObject * pExtensiveValuesObject;
@@ -134,6 +128,7 @@ public:
     CMathObject * pIntensiveRatesObject;
     CMathObject * pParticleFluxesObject;
     CMathObject * pFluxesObject;
+    CMathObject * pTotalMassesObject;
     CMathObject * pEventTriggersObject;
 
     CMathObject * pEventDelaysObject;
@@ -142,7 +137,6 @@ public:
     CMathObject * pEventRootsObject;
     CMathObject * pEventRootStatesObject;
     CMathObject * pPropensitiesObject;
-    CMathObject * pTotalMassesObject;
     CMathObject * pDependentMassesObject;
     CMathObject * pDiscontinuousObject;
   };
@@ -208,7 +202,6 @@ public:
     Moiety,
     Event
   };
-
 
   template < class Type > class Variables: public std::vector< std::vector< Type > > {};
 

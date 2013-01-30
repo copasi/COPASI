@@ -1,3 +1,8 @@
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
+
 /**
  * This is an example on how to export the math model from a copasi file.
  */
@@ -5,7 +10,6 @@ import org.COPASI.*;
 
 public class exampleMathExport
 {
-
 	public static void main(String[] args)
 	{
 		System.loadLibrary("CopasiJava");
@@ -16,7 +20,7 @@ public class exampleMathExport
 		
 		if (args.length != 2)
 		{
-			System.err.println("Need to arguments, filename and filter.");
+			System.err.println("Need two arguments: filename and filter.");
 			System.exit(1);
 		}
 		
@@ -42,7 +46,21 @@ public class exampleMathExport
 		}
 		try
 		{
-			System.out.println(dataModel.exportMathModelToString(args[1]));
+			// clear warnings / error messages
+			CCopasiMessage.clearDeque();
+			
+			// convert
+			String translation = dataModel.exportMathModelToString(args[1]);
+			
+			// if conversion failed print message
+			if (translation.length() == 0)
+			{
+				System.err.println("Translation failed: ");
+				System.err.println(CCopasiMessage.getAllMessageText());
+			}
+			
+			// print translation 
+			System.out.println(translation);
 		}
 		catch(java.lang.Exception ex)
 		{

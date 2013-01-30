@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-//   $Revision: 1.77 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/11/23 15:45:43 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -60,23 +52,15 @@
 #define MCA_SINGULAR 1
 
 #ifdef min
-#undef min
+# undef min
 #endif
 
 #ifdef max
-#undef max
+# undef max
 #endif
-#if (defined __SUNPRO_CC && defined Linux)
-#ifndef LLONG_MAX
-#define  LLONG_MAX _RWSTD_LLONG_MAX
-#endif
-#endif // Sun C++ Compiler under Linux
 
 #if (defined SunOS || defined __CYGWIN__ || defined Darwin)
 # define C_INT64 long long int
-# ifndef LLONG_MAX
-#  define  LLONG_MAX LONG_LONG_MAX
-# endif
 # define LLONG_CONST(n) n ## LL
 # define C_INT32 int
 # define C_INT16 short
@@ -86,9 +70,6 @@
 #else
 #ifdef WIN32
 # define C_INT64 __int64
-# ifndef LLONG_MAX
-#  define LLONG_MAX _I64_MAX
-# endif
 # define LLONG_CONST(n) n ## i64
 # define C_INT32 int
 # define C_INT16 short
@@ -107,9 +88,6 @@
 # define abs64 _abs64
 #else
 # define C_INT64 long long int
-# ifndef LLONG_MAX
-#  define  LLONG_MAX LONG_LONG_MAX
-# endif
 # define LLONG_CONST(n) n ## LL
 # define C_INT32 int
 # define C_INT16 short
@@ -129,7 +107,7 @@
 # define ios_base ios
 #endif
 
-#if (defined USE_MKL || defined USE_SUNPERF || (defined Darwin && defined __LP64__))
+#if (defined USE_MKL || defined USE_SUNPERF || ((defined Darwin || defined USE_CLAPACK || defined USE_LAPACK ) && defined __LP64__))
 # define C_INT int
 #else
 # if (defined USE_CLAPACK || defined USE_LAPACK || defined Darwin || defined __x86_64)
@@ -166,7 +144,7 @@ QMutex * pCopasiGuiMutex = NULL;
 #endif
 
 /* Define Constructor/Destructor Trace */
-#ifdef COPASI_DEBUG
+#ifdef COPASI_DEBUG_TRACE
 # include <time.h>
 # include <sys/timeb.h>
 
@@ -201,10 +179,10 @@ extern std::ofstream DebugFile;
 #  include <typeinfo>
 #  define CONSTRUCTOR_TRACE \
   {DebugFile << "Construct:\t" << typeid(*this).name() \
-    << "\tAddress:\t" << (void *) this << std::endl;}
+             << "\tAddress:\t" << (void *) this << std::endl;}
 #  define DESTRUCTOR_TRACE \
   {DebugFile << "Destruct:\t" << typeid(*this).name() \
-    << "\tAddress:\t" << (void *) this << std::endl;}
+             << "\tAddress:\t" << (void *) this << std::endl;}
 # endif // COPASI_TRACE_CONSTRUCTION
 
 # define DEBUG_OUT(s) {DebugFile << (s) << std::endl;}
@@ -213,7 +191,7 @@ extern std::ofstream DebugFile;
 #  define NDEBUG
 # endif // not NDEBUG
 # define DEBUG_OUT(s)
-#endif // COPASI_DEBUG
+#endif // COPASI_DEBUG_TRACE
 
 #ifndef CONSTRUCTOR_TRACE
 # define CONSTRUCTOR_TRACE

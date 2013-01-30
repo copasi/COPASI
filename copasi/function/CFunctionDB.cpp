@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-//   $Revision: 1.87 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/16 18:06:53 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -43,9 +35,9 @@
 
 CFunctionDB::CFunctionDB(const std::string & name,
                          const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "FunctionDB"),
-    mFilename(),
-    mLoadedFunctions("Functions", this)
+  CCopasiContainer(name, pParent, "FunctionDB"),
+  mFilename(),
+  mLoadedFunctions("Functions", this)
 {
   initObjects();
   CONSTRUCTOR_TRACE;
@@ -241,9 +233,9 @@ bool CFunctionDB::add(CFunction * pFunction,
                       const bool & adopt)
 {return mLoadedFunctions.add(pFunction, adopt);}
 
-void CFunctionDB::addAndAdaptName(CFunction * pFunction)
+CFunction * CFunctionDB::addAndAdaptName(CFunction * pFunction)
 {
-  if (!pFunction) return;
+  if (!pFunction) return NULL;
 
   std::string basename = pFunction->getObjectName();
   std::string name = basename;
@@ -252,16 +244,26 @@ void CFunctionDB::addAndAdaptName(CFunction * pFunction)
   //= this->loadedFunctions();
   int i = 0;
 
-  while (mLoadedFunctions.getIndex(name) != C_INVALID_INDEX)
+  size_t Index = C_INVALID_INDEX;
+
+  while ((Index = mLoadedFunctions.getIndex(name)) != C_INVALID_INDEX)
     {
+      // Check whether the new functions and the old are the same.
+      if (*mLoadedFunctions[Index] == *pFunction)
+        {
+          pdelete(pFunction);
+          return mLoadedFunctions[Index];
+        }
+
       i++;
-      std::ostringstream ss; ss << "_" << i;
+      std::ostringstream ss; ss << "[" << i << "]";
       name = basename + ss.str();
     }
 
   pFunction->setObjectName(name);
-
   this->add(pFunction, true);
+
+  return pFunction;
 }
 
 bool CFunctionDB::removeFunction(size_t index)

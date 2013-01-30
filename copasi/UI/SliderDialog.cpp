@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-//   $Revision: 1.97 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/23 17:05:06 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -55,6 +47,12 @@
 #include "trajectory/CTrajectoryTask.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CMCATask.h"
+
+#if COPASI_NONLIN_DYN
+#include <crosssection/CCrossSectionTask.h>
+#include <UI/CQCrossSectionTaskWidget.h>
+#endif
+
 #include "lna/CLNATask.h"
 #include "scan/CScanTask.h"
 #include "parameterFitting/CFitTask.h"
@@ -62,11 +60,20 @@
 #include "utilities/CSlider.h"
 #include "model/CModel.h"
 #include "CCopasiSelectionDialog.h"
+#include "resourcesUI/CQIconResource.h"
 
+#if COPASI_NONLIN_DYN
+size_t SliderDialog::numMappings = 14;
+#else
 size_t SliderDialog::numMappings = 12;
+#endif
 size_t SliderDialog::folderMappings[][2] =
 {
   {21, 21}, {211, 21}, {23, 23}, {231, 23}, {24, 24} , {241, 24} , {31, 31}, {32, 32}, {321, 32}, {33, 33}, {331, 33}, {35, 35}
+
+#if COPASI_NONLIN_DYN
+  , {28, 28}, {281, 28}
+#endif
 };
 
 //size_t SliderDialog::numKnownTasks = 4;
@@ -74,24 +81,28 @@ size_t SliderDialog::folderMappings[][2] =
 //const char* SliderDialog::knownTaskNames[] = {"Steady State", "Time Course", "MCA" , "Scan"};
 
 SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl):
-    QDialog(parent, fl),
-    mpParentWindow(NULL),
-    mpRunTaskButton(NULL),
-    mpNewSliderButton(NULL),
-    mpAutoRunCheckBox(NULL),
-    mpAutoModifyRangesCheckBox(NULL),
-    mpScrollView(NULL),
-    mpSliderBox(NULL),
-    mpContextMenu(NULL),
-    mpCurrSlider(NULL),
-    mSliderMap(),
-    mTaskMap(),
-    mCurrentFolderId(0),
-    mSliderValueChanged(false),
-    mSliderPressed(false),
-    mFramework(0),
-    mChanged(false)
+  QDialog(parent, fl),
+  mpParentWindow(NULL),
+  mpRunTaskButton(NULL),
+  mpNewSliderButton(NULL),
+  mpAutoRunCheckBox(NULL),
+  mpAutoModifyRangesCheckBox(NULL),
+  mpScrollView(NULL),
+  mpSliderBox(NULL),
+  mpContextMenu(NULL),
+  mpCurrSlider(NULL),
+  mSliderMap(),
+  mTaskMap(),
+  mCurrentFolderId(0),
+  mSliderValueChanged(false),
+  mSliderPressed(false),
+  mFramework(0),
+  mChanged(false)
 {
+#ifndef Darwin
+  setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
+#endif // not Darwin
+
   setObjectName(QString::fromUtf8(name));
   setModal(modal);
   QVBoxLayout* pMainLayout = new QVBoxLayout(this);
@@ -101,7 +112,7 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
   pLayout2->setContentsMargins(3, 3, 3, 3);
   pLayout2->addStretch();
   this->mpNewSliderButton = new QPushButton(0);
-  this->mpNewSliderButton->setText("new sliders");
+  this->mpNewSliderButton->setText("&new sliders");
   this->mpNewSliderButton->setEnabled(true);
   pLayout2->addWidget(this->mpNewSliderButton);
   pLayout2->addStretch();
@@ -119,7 +130,7 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
   pLayout1->addStretch();
   this->mpAutoModifyRangesCheckBox = new QCheckBox(0);
   this->mpAutoModifyRangesCheckBox->setChecked(true);
-  this->mpAutoModifyRangesCheckBox->setText("update ranges");
+  this->mpAutoModifyRangesCheckBox->setText("&update ranges");
   pLayout1->addWidget(this->mpAutoModifyRangesCheckBox);
   pLayout1->addStretch();
   pMainLayout->addSpacing(10);
@@ -129,7 +140,7 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
   pLayout1->addStretch();
   this->mpAutoRunCheckBox = new QCheckBox(0);
   this->mpAutoRunCheckBox->setChecked(true);
-  this->mpAutoRunCheckBox->setText("update automatically");
+  this->mpAutoRunCheckBox->setText("update &automatically");
   pLayout1->addWidget(this->mpAutoRunCheckBox);
   pLayout1->addStretch();
   pMainLayout->addSpacing(10);
@@ -138,7 +149,7 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
   pLayout2 = new QHBoxLayout(0);
   pLayout2->addStretch();
   this->mpRunTaskButton = new QPushButton(0);
-  this->mpRunTaskButton->setText("run task");
+  this->mpRunTaskButton->setText("&run task");
   this->mpRunTaskButton->setEnabled(true);
   pLayout2->addWidget(this->mpRunTaskButton);
   pLayout2->addStretch();
@@ -160,6 +171,9 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
   this->mTaskMap[35] = &SliderDialog::runLNATask;
   this->mTaskMap[33] = &SliderDialog::runParameterEstimationTask;
   this->mTaskMap[32] = &SliderDialog::runOptimizationTask;
+#if COPASI_NONLIN_DYN
+  this->mTaskMap[28] = &SliderDialog::runCrossSectionTask;
+#endif
 
   connect(this->mpRunTaskButton, SIGNAL(clicked()), this, SLOT(runTask()));
   connect(this->mpNewSliderButton, SIGNAL(clicked()), this, SLOT(createNewSlider()));
@@ -279,6 +293,7 @@ void SliderDialog::createNewSlider()
                       case QMessageBox::YesToAll:
                         // set the flag
                         yesToAll = true;
+
                       case QMessageBox::Yes:
                         // reset the range
                         pEquivalentSlider->resetRange();
@@ -292,6 +307,7 @@ void SliderDialog::createNewSlider()
                           }
 
                         break;
+
                       case QMessageBox::NoToAll:
                         // set the flag
                         noToAll = true;
@@ -686,7 +702,6 @@ void SliderDialog::fillSliderBox()
                       this->mpCurrSlider->setEnabled(true);
                       this->mpCurrSlider->setToolTip("");
                     }
-
                 }
             }
 
@@ -814,6 +829,18 @@ void SliderDialog::runParameterEstimationTask()
     }
 }
 
+#ifdef COPASI_NONLIN_DYN
+void SliderDialog::runCrossSectionTask()
+{
+  if (mpParentWindow)
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      mpParentWindow->getMainWidget()->getCrossSectionWidget()->enter((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Cross Section"]->getKey());
+      mpParentWindow->getMainWidget()->getCrossSectionWidget()->runTask();
+    }
+}
+#endif
+
 void SliderDialog::runOptimizationTask()
 {
   if (mpParentWindow)
@@ -845,24 +872,37 @@ CCopasiTask* SliderDialog::getTaskForFolderId(size_t folderId)
       case 21:
         task = dynamic_cast<CSteadyStateTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Steady-State"]);
         break;
+
       case 23:
         task = dynamic_cast<CTrajectoryTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time-Course"]);
         break;
+
       case 24:
         task = dynamic_cast<CMCATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Metabolic Control Analysis"]);
         break;
+
       case 31:
         task = dynamic_cast<CScanTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Scan"]);
         break;
+
       case 35:
         task = dynamic_cast<CLNATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Linear Noise Approximation"]);
         break;
+
       case 33:
         task = dynamic_cast<CFitTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Parameter Estimation"]);
         break;
+
       case 32:
         task = dynamic_cast<COptTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Optimization"]);
         break;
+#if COPASI_NONLIN_DYN
+
+      case 28:
+        task = dynamic_cast<CCrossSectionTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Cross Section"]);
+        break;
+#endif
+
       default:
         task = NULL;
         break;
@@ -1098,7 +1138,6 @@ const CCopasiObject* SliderDialog::determineCorrectObjectForSlider(const CCopasi
                   pResult = pMetab->getInitialValueReference();
                   assert(pResult != NULL);
                 }
-
             }
         }
     }
@@ -1203,7 +1242,6 @@ bool SliderDialog::setCorrectSliderObject(CopasiSlider* pSlider)
   return result;
 }
 
-
 void SliderDialog::showEvent(QShowEvent* pEvent)
 {
   // make sure only valid sliders are shown
@@ -1267,4 +1305,3 @@ void SliderDialog::setChanged(bool changed)
 {
   this->mChanged = changed;
 }
-

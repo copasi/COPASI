@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPlotsWidget.cpp,v $
-//   $Revision: 1.12 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/02 18:58:45 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -38,7 +30,7 @@
  *  name 'name'.'
  */
 CQPlotsWidget::CQPlotsWidget(QWidget* parent, const char* name)
-    : CopasiWidget(parent, name)
+  : CopasiWidget(parent, name)
 {
   setupUi(this);
 
@@ -63,6 +55,8 @@ CQPlotsWidget::CQPlotsWidget(QWidget* parent, const char* name)
           this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
+  connect(mpBtnActivateAll, SIGNAL(pressed()), this, SLOT(slotBtnActivateAllClicked()));
+  connect(mpBtnDeactivateAll, SIGNAL(pressed()), this, SLOT(slotBtnDeactivateAllClicked()));
 }
 
 /*
@@ -73,6 +67,40 @@ CQPlotsWidget::~CQPlotsWidget()
   pdelete(mpProxyModel);
   pdelete(mpPlotDM);
   // no need to delete child widgets, Qt does it all for us
+}
+
+void CQPlotsWidget::slotBtnActivateAllClicked()
+{
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+
+  if (!pDataModel->getModel())
+    return;
+
+  for (size_t i = 0; i < pDataModel->getPlotDefinitionList()->size(); i++)
+    {
+      CPlotSpecification *pPS = static_cast<CPlotSpecification *>(pDataModel->getPlotDefinitionList()->operator[](i));
+      pPS->setActive(true);
+    }
+
+  mpTblPlots->doItemsLayout();
+}
+
+void CQPlotsWidget::slotBtnDeactivateAllClicked()
+{
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+
+  if (!pDataModel->getModel())
+    return;
+
+  for (size_t i = 0; i < pDataModel->getPlotDefinitionList()->size(); i++)
+    {
+      CPlotSpecification *pPS = static_cast<CPlotSpecification *>(pDataModel->getPlotDefinitionList()->operator[](i));
+      pPS->setActive(false);
+    }
+
+  mpTblPlots->doItemsLayout();
 }
 
 void CQPlotsWidget::slotBtnNewClicked()

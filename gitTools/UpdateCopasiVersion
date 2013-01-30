@@ -22,7 +22,6 @@ if [ -e ${GitTools}/.UpdateCopasiVersion ]; then
   . ${GitTools}/.UpdateCopasiVersion
 else
   lastCommit=
-  lastModified=
 fi
 
 localCommit=`git log -1 ${branch} --pretty=%H`
@@ -36,7 +35,6 @@ fi
 
 # Save information about current run
 echo lastCommit=$localCommit > ${GitTools}/.UpdateCopasiVersion
-echo lastModified=$modified >> ${GitTools}/.UpdateCopasiVersion
 
 echo Updating ${GitTools}/../copasi/CopasiVersion.h
 
@@ -105,6 +103,14 @@ done;
 compatibility="${compatibility}${current_build}}"
 
 rm $$
+
+if [ "`echo $buildList | grep ${localCommit}`" -a $localChanges == 0 ]; then
+  creator=copasi.org
+  modified=false
+else
+  creator=`git config user.email`
+  modified=true
+fi
 
 IFS=$(echo -en "\n\b")
 

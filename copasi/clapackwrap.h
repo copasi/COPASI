@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/clapackwrap.h,v $
-//   $Revision: 1.14 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/11/15 14:59:44 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -1248,10 +1245,15 @@ extern "C"
 # endif // USE_MKL
 #endif // USE_MKL || (WIN32 && USE_LAPACK)
 
-#if (defined USE_CLAPACK || defined USE_LAPACK)
+#if (defined USE_LAPACK)
 # include "f2c.h"
 # include "lapack.h"
-#endif // USE_CLAPACK || USE_LAPACK
+#endif // USE_LAPACK
+
+#if (defined USE_CLAPACK)
+# include "f2c.h"
+# include "clapack.h"
+#endif // USE_CLAPACK
 
 #ifdef USE_SUNPERF
 # include "sunperf.h"

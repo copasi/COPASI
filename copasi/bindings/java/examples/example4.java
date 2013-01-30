@@ -1,15 +1,14 @@
-// Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example4.java,v $ 
-//   $Revision: 1.4 $ 
-//   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2009/03/05 21:36:23 $ 
-// End CVS Header 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
+
+
 
 /**
  * This is an example on how to import an sbml file
@@ -170,7 +169,7 @@ class example4
 
         // we don't want to set the initial conditions of the model to the end
         // state of the last run
-        scanProblem.setAdjustInitialConditions(false);
+        scanProblem.setContinueFromCurrentState(false);
 
         try
         {

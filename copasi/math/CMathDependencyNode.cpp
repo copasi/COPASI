@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathDependencyNode.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/23 12:56:39 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,19 +10,19 @@
 #include "CMathDependencyNodeIterator.h"
 
 CMathDependencyNode::CMathDependencyNode():
-    mpObject(NULL),
-    mPrerequisites(),
-    mDependents(),
-    mChanged(false),
-    mRequested(false)
+  mpObject(NULL),
+  mPrerequisites(),
+  mDependents(),
+  mChanged(false),
+  mRequested(false)
 {}
 
 CMathDependencyNode::CMathDependencyNode(const CObjectInterface * pObject):
-    mpObject(pObject),
-    mPrerequisites(),
-    mDependents(),
-    mChanged(false),
-    mRequested(false)
+  mpObject(pObject),
+  mPrerequisites(),
+  mDependents(),
+  mChanged(false),
+  mRequested(false)
 {}
 
 CMathDependencyNode::~CMathDependencyNode()
@@ -147,7 +139,7 @@ bool CMathDependencyNode::buildUpdateSequence(const CMath::SimulationContextFlag
 
             // This check is not needed as unchanged or unrequested nodes
             // are skipped in Before processing.
-            if (!itNode->isChanged() || !itNode->isRequested())
+            if (itNode->isChanged() && itNode->isRequested())
               {
                 const CMathObject * pObject = NULL;
 
@@ -200,4 +192,3 @@ const bool & CMathDependencyNode::isRequested() const
 {
   return mRequested;
 }
-

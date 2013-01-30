@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-//   $Revision: 1.101 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/07 12:35:52 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -45,18 +37,20 @@
 #include "blaswrap.h"
 
 CNewtonMethod::CNewtonMethod(const CCopasiContainer * pParent):
-    CSteadyStateMethod(CCopasiMethod::Newton, pParent),
-    mIpiv(NULL),
-    mpTrajectory(NULL)
+  CSteadyStateMethod(CCopasiMethod::Newton, pParent),
+  mIpiv(NULL),
+  mpTrajectory(NULL),
+  mStartState()
 {
   initializeParameter();
 }
 
 CNewtonMethod::CNewtonMethod(const CNewtonMethod & src,
                              const CCopasiContainer * pParent):
-    CSteadyStateMethod(src, pParent),
-    mIpiv(NULL),
-    mpTrajectory(NULL)
+  CSteadyStateMethod(src, pParent),
+  mIpiv(NULL),
+  mpTrajectory(NULL),
+  mStartState()
 {
   initializeParameter();
 }
@@ -195,7 +189,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
   C_FLOAT64 maxDuration = forward ? mMaxDurationForward : -mMaxDurationBackward;
   //minimum duration is either hardcoded or equal to maximum duration, whichever is smaller.
   C_FLOAT64 minDuration = forward ? (mMaxDurationForward < 1e-1 ? mMaxDurationForward : 1e-1)
-                              : -(mMaxDurationBackward < 1e-2 ? mMaxDurationBackward : 1e-2);
+                            : -(mMaxDurationBackward < 1e-2 ? mMaxDurationBackward : 1e-2);
 
   //progress bar
   size_t hProcess;
@@ -234,9 +228,12 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
 
       try
         {
-          stepLimitReached = !mpTrajectory->process(true); //single step
+          // We must not use useInitialValues = true here as this will interfere with scan continuation.
+          mpModel->setState(mStartState);
+          stepLimitReached = !mpTrajectory->process(false); //single step
         }
-      catch (CCopasiException & Exception)
+
+      catch (CCopasiException & /*Exception*/)
         {
           *mpSteadyState = *mpTrajectory->getState();
 
@@ -245,8 +242,6 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
 
           break;
         }
-
-      // mpParentTask->output(COutputInterface::DURING);
 
       *mpSteadyState = *mpTrajectory->getState();
 
@@ -262,7 +257,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
         {
           if (mKeepProtocol)
             mMethodLog << "  Integration with duration " << duration
-            << " resulted in negative concentrations.\n\n";
+                       << " resulted in negative concentrations.\n\n";
 
           break;
         }
@@ -276,7 +271,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
 
           if (mKeepProtocol)
             mMethodLog << "  Integration with duration " << duration
-            << ". Criterium matched by " << value << ".\n\n";
+                       << ". Criterium matched by " << value << ".\n\n";
 
           return CNewtonMethod::found;
         }
@@ -284,7 +279,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
         {
           if (mKeepProtocol)
             mMethodLog << "  Integration with duration " << duration
-            << ". Criterium not matched by " << value << ".\n\n";
+                       << ". Criterium not matched by " << value << ".\n\n";
         }
 
       if (mUseNewton)
@@ -309,7 +304,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
         {
           if (mKeepProtocol)
             mMethodLog << "  Integration with duration " << duration
-            << " reached internal step limit.\n";
+                       << " reached internal step limit.\n";
 
           break;
         }
@@ -330,6 +325,7 @@ CSteadyStateMethod::ReturnCode CNewtonMethod::processInternal()
   if (mpCallBack)
     mpCallBack->setName("performing steady state calculation...");
 
+  mStartState = * mpSteadyState;
   mpX = mpSteadyState->beginIndependent();
 
   NewtonResultCode returnCode;
@@ -464,7 +460,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentV
         mMethodLog << "    Regular Newton step.      New value: " << currentValue << "\n";
       else
         mMethodLog << "    Newton step with damping. New value: " << currentValue
-        << " (" << i - 1 << " damping iteration(s))\n";
+                   << " (" << i - 1 << " damping iteration(s))\n";
     }
 
   return CNewtonMethod::stepSuccesful;
@@ -651,7 +647,7 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
   C_FLOAT64 TargetValue = std::max(RelativeDistance, AbsoluteDistance);
 
   if (Error < TargetValue)
-    return TargetValue *(1.0 + Error);
+    return TargetValue * (1.0 + Error);
   else
     return Error;
 }

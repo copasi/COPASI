@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -181,8 +181,6 @@ bool CMathExpression::compile()
       mUsable = true;
     }
 
-  assert(mUsable);
-
   buildCalculationSequence();
 
   return mUsable;
@@ -229,6 +227,11 @@ bool CMathExpression::convertToInitialExpression()
     }
 
   return true;
+}
+
+bool CMathExpression::setRoot(CEvaluationNode* pRootNode)
+{
+  return CEvaluationTree::setRoot(pRootNode);
 }
 
 CEvaluationNode * CMathExpression::createNodeFromValue(const C_FLOAT64 * pDataValue)

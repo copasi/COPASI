@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CCellDesignerImporter.h,v $
-//   $Revision: 1.9 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:11:54 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -92,6 +84,7 @@ enum SPECIES_MODIFICATION_TYPE
   , PRENYLATED_MOD_TYPE
   , PROTONATED_MOD_TYPE
   , SUFLATED_MOD_TYPE
+  , EMPTY_MOD_TYPE
 };
 
 enum POSITION_TO_COMPARTMENT
@@ -244,7 +237,6 @@ struct SpeciesState
   SpeciesState();
 };
 
-
 struct SpeciesIdentity
 {
   SPECIES_CLASS mSpeciesClass;
@@ -273,7 +265,6 @@ struct CompartmentAnnotation
   // Default constructor
   CompartmentAnnotation();
 };
-
 
 struct Line
 {
@@ -427,7 +418,6 @@ struct Paint
 
   // default constructor
   Paint();
-
 };
 
 struct DoubleLine
@@ -456,7 +446,6 @@ struct CompartmentAlias
   // default constructor
   CompartmentAlias();
 };
-
 
 struct UsualView
 {
@@ -511,7 +500,6 @@ struct Protein
   // default constructor
   Protein();
 };
-
 
 /**
  * This class converts CellDesigner layout information
@@ -605,6 +593,12 @@ protected:
    * a map that stores the name of a CellDesigner species with its id.
    */
   std::map<std::string, std::pair<std::string, SpeciesIdentity> > mIncludedSpeciesNameMap;;
+
+  /**
+   * a map that associated a modifier type with  the corresponding style.
+   */
+  std::map<MODIFICATION_LINK_TYPE, LocalStyle*> mModificationLinkStyleMap;
+
 public:
   /**
    * Constructor that takes a pointer to an
@@ -715,7 +709,6 @@ protected:
    * These are used to create text glyphs associated with species.
    */
   bool convertSpeciesAnnotations();
-
 
   /**
    * Looks for CellDesigner annotation in the given reaction and ries to convert
@@ -926,7 +919,6 @@ protected:
    */
   static bool parseReactionModifications(const XMLNode* pNode, std::vector<ReactionModification>& rmods);
 
-
   /**
    * Tries to parse the link target in the given node and stores the data in the given
    * vector of LinkTarget structure.
@@ -969,13 +961,11 @@ protected:
    */
   static bool parseProteinModification(const XMLNode* pNode, ProteinModification& mod);
 
-
   /**
    * Tries to parse the CellDesigner species in the listOfincludedSpecies.
    * If parsing fails, false is returned.
    */
   bool handleIncludedSpecies(const XMLNode* pNode);
-
 
   /**
    * Converts the given paint scheme string to the correspnding PAINT_SCHEME enum value.
@@ -1005,7 +995,6 @@ protected:
    * If there is no enum that corresponds to the string, UNDEFINED_RTYPE is returned.
    */
   static REACTION_TYPE reactionTypeToEnum(std::string s);
-
 
   /**
    * Converts the given modification link type string to the corresponding enum.
@@ -1044,7 +1033,6 @@ protected:
    * If something goes wrong false is returned.
    */
   static bool splitString(const std::string& s, std::vector<std::string>& parts, const std::string& splitChars);
-
 
   /**
    * This method creates a new local style based on the passed in CompartmentAlias object.
@@ -1098,7 +1086,6 @@ protected:
    * values we can't use for calculations (ing,NAN), POSITION_UNDEFINED
    */
   static POSITION findShortestConnection(const Point& p, std::vector<POSITION>& pos, const BoundingBox& box);
-
 
   /**
    * Calculate the distance between the two points.
@@ -1161,6 +1148,11 @@ protected:
   bool createDefaultModifierStyle();
 
   /**
+   * Create style for catalysis.
+   */
+  bool createCatalysisStyles();
+
+  /**
    * Create default style for inhibitors.
    */
   bool createDefaultInhibitorStyle();
@@ -1196,6 +1188,15 @@ protected:
                        const std::string& fill_color,
                        const std::string& text = ""
                       );
+
+  /**
+   * Takes a protein modification description and creates the corresponding primitive.
+   */
+  bool createProteinModification(RenderGroup* pGroup,
+                                 const SpeciesModification& smod,
+                                 const BoundingBox& bounds,
+                                 const std::string& stroke_color
+                                );
 
   /**
    * Creates styles for all species glyphs.
@@ -1301,8 +1302,6 @@ protected:
    * or an empty string if the color id was not found.
    */
   std::string getColorString(const std::string& color_id) const;
-
 };
-
 
 #endif // CCellDesignerImporter_H__

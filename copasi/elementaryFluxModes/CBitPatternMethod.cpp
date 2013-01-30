@@ -1,19 +1,6 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CBitPatternMethod.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/11/15 14:59:44 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
 // All rights reserved.
 
 #include <stdlib.h>
@@ -38,70 +25,69 @@
 #define DEBUG_MATRIX
 
 CBitPatternMethod::CBitPatternMethod(const CCopasiContainer * pParent):
-    CEFMMethod(CCopasiTask::fluxMode, CCopasiMethod::EFMBitPatternAlgorithm, pParent),
-    mpModel(NULL),
-    mProgressCounter(0),
-    mProgressCounterMax(0),
-    mhProgressCounter(0),
-    mProgressCounter2(0),
-    mProgressCounter2Max(0),
-    mhProgressCounter2(0),
-    mReactionForward(),
-    mReactionPivot(0),
-    mExpandedStoiTranspose(0, 0),
-    mpStepMatrix(NULL),
-    mMinimumSetSize(0),
-    mStep(0),
-    mContinueCombination(true)
+  CEFMMethod(CCopasiTask::fluxMode, CCopasiMethod::EFMBitPatternAlgorithm, pParent),
+  mpModel(NULL),
+  mProgressCounter(0),
+  mProgressCounterMax(0),
+  mhProgressCounter(0),
+  mProgressCounter2(0),
+  mProgressCounter2Max(0),
+  mhProgressCounter2(0),
+  mReactionForward(),
+  mReactionPivot(0),
+  mExpandedStoiTranspose(0, 0),
+  mpStepMatrix(NULL),
+  mMinimumSetSize(0),
+  mStep(0),
+  mContinueCombination(true)
 {
   initObjects();
 }
 
 CBitPatternMethod::CBitPatternMethod(const CCopasiMethod::SubType subType,
                                      const CCopasiContainer * pParent):
-    CEFMMethod(CCopasiTask::fluxMode, subType, pParent),
-    mpModel(NULL),
-    mProgressCounter(0),
-    mProgressCounterMax(0),
-    mhProgressCounter(0),
-    mProgressCounter2(0),
-    mProgressCounter2Max(0),
-    mhProgressCounter2(0),
-    mReactionForward(),
-    mReactionPivot(0),
-    mExpandedStoiTranspose(0, 0),
-    mpStepMatrix(NULL),
-    mMinimumSetSize(0),
-    mStep(0),
-    mContinueCombination(true)
+  CEFMMethod(CCopasiTask::fluxMode, subType, pParent),
+  mpModel(NULL),
+  mProgressCounter(0),
+  mProgressCounterMax(0),
+  mhProgressCounter(0),
+  mProgressCounter2(0),
+  mProgressCounter2Max(0),
+  mhProgressCounter2(0),
+  mReactionForward(),
+  mReactionPivot(0),
+  mExpandedStoiTranspose(0, 0),
+  mpStepMatrix(NULL),
+  mMinimumSetSize(0),
+  mStep(0),
+  mContinueCombination(true)
 {
   initObjects();
 }
 
 CBitPatternMethod::CBitPatternMethod(const CBitPatternMethod & src,
                                      const CCopasiContainer * pParent):
-    CEFMMethod(src, pParent),
-    mpModel(src.mpModel),
-    mProgressCounter(src.mProgressCounter),
-    mProgressCounterMax(src.mProgressCounterMax),
-    mhProgressCounter(src.mhProgressCounter),
-    mProgressCounter2(src.mProgressCounter2),
-    mProgressCounter2Max(src.mProgressCounter2Max),
-    mhProgressCounter2(src.mhProgressCounter2),
-    mReactionForward(src.mReactionForward),
-    mReactionPivot(src.mReactionPivot),
-    mExpandedStoiTranspose(src.mExpandedStoiTranspose),
-    mpStepMatrix(src.mpStepMatrix),
-    mMinimumSetSize(src.mMinimumSetSize),
-    mStep(src.mStep),
-    mContinueCombination(src.mContinueCombination)
+  CEFMMethod(src, pParent),
+  mpModel(src.mpModel),
+  mProgressCounter(src.mProgressCounter),
+  mProgressCounterMax(src.mProgressCounterMax),
+  mhProgressCounter(src.mhProgressCounter),
+  mProgressCounter2(src.mProgressCounter2),
+  mProgressCounter2Max(src.mProgressCounter2Max),
+  mhProgressCounter2(src.mhProgressCounter2),
+  mReactionForward(src.mReactionForward),
+  mReactionPivot(src.mReactionPivot),
+  mExpandedStoiTranspose(src.mExpandedStoiTranspose),
+  mpStepMatrix(src.mpStepMatrix),
+  mMinimumSetSize(src.mMinimumSetSize),
+  mStep(src.mStep),
+  mContinueCombination(src.mContinueCombination)
 {
   initObjects();
 }
 
 CBitPatternMethod::~CBitPatternMethod()
 {
-
 }
 
 void CBitPatternMethod::initObjects()
@@ -582,7 +568,7 @@ void CBitPatternMethod::convertToIntegers(CMatrix< C_FLOAT64 > & values)
           m01 = m10 = 0;
 
           /* loop finding terms until denom gets too big */
-          while (m10 *(ai = (size_t) x) + m11 <= maxden)
+          while (m10 * (ai = (size_t) x) + m11 <= maxden)
             {
               size_t t;
               t = m00 * ai + m01;
@@ -599,7 +585,7 @@ void CBitPatternMethod::convertToIntegers(CMatrix< C_FLOAT64 > & values)
               x = 1 / (x - (C_FLOAT64) ai);
             }
 
-          if ((C_FLOAT64) m10 *(C_FLOAT64) ai + (C_FLOAT64) m11 > (C_FLOAT64) maxden)
+          if ((C_FLOAT64) m10 * (C_FLOAT64) ai + (C_FLOAT64) m11 > (C_FLOAT64) maxden)
             {
               Problems = true;
             }
@@ -813,7 +799,7 @@ bool CBitPatternMethod::CalculateKernel(CMatrix< C_INT64 > & matrix,
           for (; pActiveRow < pActiveRowEnd; ++pActiveRow, ++pCurrent)
             {
               // Assert that we do not have a numerical overflow.
-              assert(fabs(((C_FLOAT64) alpha) *((C_FLOAT64) * pCurrent) - ((C_FLOAT64) beta) *((C_FLOAT64) * pActiveRow)) < std::numeric_limits< C_INT64 >::max());
+              assert(fabs(((C_FLOAT64) alpha) * ((C_FLOAT64) * pCurrent) - ((C_FLOAT64) beta) * ((C_FLOAT64) * pActiveRow)) < std::numeric_limits< C_INT64 >::max());
 
               *pCurrent = alpha * *pCurrent - beta * *pActiveRow;
 
@@ -975,13 +961,13 @@ void CBitPatternMethod::buildFluxModeMatrix(CStepMatrix * fluxModeMatrix,
   while (!kernelStack.empty())
     {
       KernelCol = kernelStack.top();
-#ifdef COPASI_DEBUG
+#ifdef COPASI_DEBUG_TRACE
       DebugFile << "Current Column: " << *KernelCol << std::endl;
-#endif // COPASI_DEBUG      
+#endif // COPASI_DEBUG_TRACE
       CMatrix<C_INT64> RankKernel = performRankTest(KernelCol);
-#ifdef COPASI_DEBUG
+#ifdef COPASI_DEBUG_TRACE
       DebugFile << "New Rank Kernel " << RankKernel << std::endl;
-#endif // COPASI_DEBUG      
+#endif // COPASI_DEBUG_TRACE
 
       if (RankKernel.numCols() == 1)
         {
@@ -1021,4 +1007,4 @@ The end result is that SF will contain only flux modes, but not all possible flu
 Through this method we never have to remove any elements from the matrix.
 
 After this we then build the initial step matrix from SF.
-*/
+ */

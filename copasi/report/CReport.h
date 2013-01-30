@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,7 +17,7 @@
  * Created: Tue Aug 11 2003
  *      by: Liang Xu
  *
- *  Created for Copasi by Liang Xu
+ *  Created for COPASI by Liang Xu
  ****************************************************************************/
 
 #ifndef COPASI_CReport
@@ -149,32 +149,37 @@ public:
   /**
    * returns the target of the Report Tag
    */
-  const std::string& getTarget() const;
+  const std::string & getTarget() const;
 
   /**
    * sets the reference to the report
+   * @param const std::string & target
    */
-  void setTarget(std::string target);
+  void setTarget(const std::string & target);
 
   /**
    * Returns whether the Report Tag is appended or not
+   * @return const bool & append
    */
-  bool append() const;
+  const bool & append() const;
 
   /**
    * sets the append attribute if the report tag
+   * @param const bool & append
    */
-  void setAppend(bool append);
+  void setAppend(const bool & append);
 
   /**
    * Returns whether a confirmation should be issued when overwriting a report
+   * @return const bool & confirmOverwite
    */
-  bool confirmOverwrite() const;
+  const bool & confirmOverwrite() const;
 
   /**
    * sets the confirmOverwrite attribute if the report tag
+   * @param const bool & confirmOverwrite
    */
-  void setConfirmOverwrite(bool confirmOverwrite);
+  void setConfirmOverwrite(const bool & confirmOverwrite);
 
 private:
   /**

@@ -1,20 +1,13 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQCurrentValueTable.cpp,v $
-//   $Revision: 1.14 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:29:16 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
+
 #include "CQCurrentValueTable.h"
 
 #include <QHeaderView>
@@ -24,6 +17,7 @@
 #include <QLayout>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QButtonGroup>
 
 #include <iostream>
 
@@ -31,7 +25,7 @@
 #include "copasi/layoutUI/CQLayoutMainWindow.h"
 
 CQCurrentValueTable::CQCurrentValueTable(QWidget *parent)
-    : QWidget(parent)
+  : QWidget(parent)
 {
   init();
   this->show();
@@ -54,11 +48,12 @@ void CQCurrentValueTable::init()
   pItem = new QTableWidgetItem("NaN");
   this->mpTable->setItem(0, 1, pItem);
   this->mpTable->item(0, 0)->setFlags(this->mpTable->item(0, 0)->flags() & ~Qt::ItemIsEditable);
-  QFrame* pHBox = new QFrame(this);
-  pHBox->setLayout(new QHBoxLayout());
-  pLayout->addWidget(pHBox);
-  this->mpCheckAllButton = new QPushButton("Check all", pHBox);
-  this->mpUncheckAllButton = new QPushButton("Uncheck all", pHBox);
+  QHBoxLayout *hLayout = new QHBoxLayout();
+  this->mpCheckAllButton = new QPushButton("Check all", this);
+  this->mpUncheckAllButton = new QPushButton("Uncheck all", this);
+  hLayout->addWidget(mpCheckAllButton);
+  hLayout->addWidget(mpUncheckAllButton);
+  pLayout->addLayout(hLayout);
   connect(this->mpTable, SIGNAL(cellChanged(int, int)), this, SLOT(tableValueChanged(int, int)));
   connect(this->mpCheckAllButton, SIGNAL(clicked()), this, SLOT(slotCheckAllClicked()));
   connect(this->mpUncheckAllButton, SIGNAL(clicked()), this, SLOT(slotUncheckAllClicked()));
@@ -112,7 +107,8 @@ void CQCurrentValueTable::setAllBoxesChecked(bool checked)
       assert(pCell != NULL);
 
       if (pCell->flags() & Qt::ItemIsUserCheckable)
-        {// is cell a QCheckTableItem?
+        {
+          // is cell a QCheckTableItem?
           pCell->setCheckState(checked ? Qt::Checked : Qt::Unchecked);
           CQLayoutMainWindow * pTmp = dynamic_cast<CQLayoutMainWindow *>(parentWidget()->parentWidget()->parentWidget()->parentWidget());
           assert(pTmp);

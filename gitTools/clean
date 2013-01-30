@@ -4,12 +4,7 @@ GitTools="`git config copasi.gittools`"
 . ${GitTools}/functions
 
 clean="cat"
-
-GitCommitDate=`git log -1 --pretty=%at -- $1`
-
-if [ ${GitCommitDate:-0} -gt ${GitStart} ]; then
-  clean="$clean | ${GitTools}/header --clean $1" 
-fi
+clean="$clean | ${GitTools}/header --clean $1" 
 
 debug clean: $clean
 eval $clean

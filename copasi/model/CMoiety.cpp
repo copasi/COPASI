@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-//   $Revision: 1.59 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/10 16:03:09 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -21,6 +13,7 @@
 // All rights reserved.
 
 #include <stdio.h>
+#include <sstream>
 
 #include "copasi.h"
 #include "CMoiety.h"
@@ -42,16 +35,16 @@ const C_FLOAT64 CMoiety::DefaultFactor(1.0);
 
 CMoiety::CMoiety(const std::string & name,
                  const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Moiety"),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Moiety", this)), //By G
-    mNumber(0),
-    mINumber(0),
-    mIAmount(0),
-    mEquation(),
-    mpINumberReference(NULL),
-    mpNumberReference(NULL),
-    mpDNumberReference(NULL),
-    mpConversionFactor(&CMoiety::DefaultFactor)
+  CCopasiContainer(name, pParent, "Moiety"),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("Moiety", this)), //By G
+  mNumber(0),
+  mINumber(0),
+  mIAmount(0),
+  mEquation(),
+  mpINumberReference(NULL),
+  mpNumberReference(NULL),
+  mpDNumberReference(NULL),
+  mpConversionFactor(&CMoiety::DefaultFactor)
 {
   initObjects();
   CONSTRUCTOR_TRACE;
@@ -59,16 +52,16 @@ CMoiety::CMoiety(const std::string & name,
 
 CMoiety::CMoiety(const CMoiety & src,
                  const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Moiety", this)), //By G
-    mNumber(src.mNumber),
-    mINumber(src.mINumber),
-    mIAmount(src.mIAmount),
-    mEquation(src.mEquation),
-    mpINumberReference(NULL),
-    mpNumberReference(NULL),
-    mpDNumberReference(NULL),
-    mpConversionFactor(src.mpConversionFactor)
+  CCopasiContainer(src, pParent),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("Moiety", this)), //By G
+  mNumber(src.mNumber),
+  mINumber(src.mINumber),
+  mIAmount(src.mIAmount),
+  mEquation(src.mEquation),
+  mpINumberReference(NULL),
+  mpNumberReference(NULL),
+  mpDNumberReference(NULL),
+  mpConversionFactor(src.mpConversionFactor)
 {
   initObjects();
   CONSTRUCTOR_TRACE;

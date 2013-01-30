@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,11 +15,11 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <QMainWindow>
 #include <QToolButton>
 
 #include "copasi.h"
 #include "UI/CopasiFileDialog.h"
+#include "UI/CWindowInterface.h"
 #include "utilities/COutputHandler.h"
 
 class QAction;
@@ -31,8 +31,9 @@ class CCopasiContainer;
 class COutputHandlerPlot;
 class CopasiUI3Window;
 class QMenu;
+class QAction;
 
-class PlotWindow : public QMainWindow, public COutputInterface
+class PlotWindow : public CWindowInterface, public COutputInterface
 {
   Q_OBJECT
 
@@ -44,7 +45,20 @@ private:
   CopasiUI3Window * mpMainWindow;
   QMenu* mpWindowMenu;
 
+  QAction *mpaCloseWindow;
+  QAction *mpaShowAll;
+  QAction *mpaHideAll;
+  QAction *mpaPrint;
+  QAction *mpaSaveImage;
+  QAction *mpaSaveData;
+  QAction *mpaZoomOut;
+  QAction *mpaToggleLogX;
+  QAction *mpaToggleLogY;
+
+  bool initializing;
+
   void createToolBar();
+  void createMenus();
   void createActions();
 
 public:
@@ -57,23 +71,10 @@ public:
   CopasiPlot * getPlot() const;
 
   /**
-   * Navigating multiple plot windows is still difficult. So it would be
-   * way better to have the window menu not just on the main window, but
-   * also on the plot windows. Though this function really ought to be
-   * in a separate base class, so it could be re-used and the mainwindow
-   * would not have to know about plotwindows.
    *
    * @return a pointer to this plot windows 'window' menu.
    */
-  QMenu *getMenu() const;
-
-  QToolButton * zoomButton;
-  QToolButton * printButton;
-  QToolButton * print2Button;
-  QToolButton * saveButton;
-
-  QToolButton * mpSelectAll;
-  QToolButton * mpDeselectAll;
+  virtual QMenu *getWindowMenu() const;
 
   /**
    * compile the object list from name vector
@@ -110,6 +111,12 @@ private slots:
   //void enableZoom();
 
   //void mouseReleased(const QMouseEvent &e);
+
+  // toggle log X
+  void toggleLogX(bool);
+
+  // toggle log Y
+  void toggleLogY(bool);
 
   // Print the plot to printer
   void printPlot();

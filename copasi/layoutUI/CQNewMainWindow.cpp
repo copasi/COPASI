@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -69,6 +69,7 @@
 #endif // COPASI_AUTOLAYOUT
 
 #include "../UI/icons/photo.xpm"
+#include "resourcesUI/CQIconResource.h"
 #include "revert_curve.xpm"
 #include "film_strip.xpm"
 #include "graph.xpm"
@@ -84,7 +85,7 @@ const double CQNewMainWindow::ZOOM_FACTORS[] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.
 // TODO implement signals that allow enabling and disabling the save and save as actions.
 
 CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
-  QMainWindow(),
+  CWindowInterface(),
   mMode(CQNewMainWindow::GRAPH_MODE),
   mpWidgetStack(NULL),
   mpLayoutViewer(NULL),
@@ -105,8 +106,15 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
 #ifdef COPASI_AUTOLAYOUT
   , mStopLayout(false)
   , mpStopLayoutAction(NULL)
+  , mpRandomizeLayout(NULL)
+  , mpCalculateDimensions(NULL)
 #endif //  COPASI_AUTOLAYOUT
 {
+
+#ifndef Darwin
+  setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
+#endif // not Darwin
+
   // first we load the default styles if they don't already exist
   if (DEFAULT_STYLES == NULL)
     {
@@ -115,7 +123,6 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
 
   this->mCurDir = pDatamodel->getReferenceDirectory();
   this->mpWidgetStack = new QStackedWidget(this);
-  this->setCentralWidget(this->mpWidgetStack);
   this->mpLayoutViewer = new CQGLLayoutViewer(this->mpWidgetStack);
   // add the first page
   this->mpWidgetStack->addWidget(this->mpLayoutViewer);
@@ -128,6 +135,7 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   createToolBars();
   createStatusBar();
 
+  this->setCentralWidget(this->mpWidgetStack);
   setUnifiedTitleAndToolBarOnMac(true);
   this->addGlobalRenderInfoItemsToList();
   this->addDefaultRenderInfoItemsToList();
@@ -144,11 +152,17 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
 #endif // ELEMENTARY_MODE_DISPLAY
 }
 
+QMenu *CQNewMainWindow::getWindowMenu() const
+{
+  return mpWindowMenu;
+}
+
 void CQNewMainWindow::createActions()
 {
 
-  mpSwitchModeAct = new QAction(mAnimationIcon, tr("animation mode"), this);
+  mpSwitchModeAct = new QAction(mAnimationIcon, tr("Animation Mode"), this);
   mpSwitchModeAct->setStatusTip(tr("Switch to animation mode."));
+  mpSwitchModeAct->setShortcut(Qt::CTRL + Qt::Key_M);
   mpSwitchModeAct->setEnabled(true);
   connect(mpSwitchModeAct, SIGNAL(triggered()), this, SLOT(switchMode()));
   mpRevertCurveAct = new QAction(QPixmap(revert_curve_xpm), tr("Revert curve"), this);
@@ -158,43 +172,54 @@ void CQNewMainWindow::createActions()
 
   mpScreenshotAct = new QAction(QPixmap(photo), tr("Export bitmap..."), this);
   mpScreenshotAct->setStatusTip(tr("Export diagram as bitmap."));
+  mpScreenshotAct->setShortcut(Qt::CTRL + Qt::Key_E);
   mpScreenshotAct->setEnabled(true);
   connect(mpScreenshotAct, SIGNAL(triggered()), this, SLOT(slotScreenshot()));
 
   mpCloseAct = new QAction(tr("Close"), this);
-  mpCloseAct->setShortcut(tr("Ctrl+Q"));
-  mpCloseAct->setStatusTip(tr("Exit the application"));
+  mpCloseAct->setShortcut(tr("Ctrl+W"));
+  mpCloseAct->setStatusTip(tr("Close Diagram"));
   connect(mpCloseAct, SIGNAL(triggered()), this, SLOT(close()));
 
-  mpLoadDataAct = new QAction(QPixmap(load_data_xpm), tr("update trajectory data"), this);
+  mpLoadDataAct = new QAction(QPixmap(load_data_xpm), tr("Update Trajectory Data"), this);
   mpLoadDataAct->setStatusTip(tr("Update time course data"));
   mpLoadDataAct->setEnabled(true);
   connect(this->mpLoadDataAct, SIGNAL(activated()), this->mpAnimationWindow, SLOT(loadData()));
 
   mpRectangularShape = new QAction("Rectangle", this);
-  mpRectangularShape->setShortcut(Qt::CTRL + Qt::Key_R);
+  //mpRectangularShape->setShortcut(Qt::CTRL + Qt::Key_R);
   mpRectangularShape->setStatusTip("Show labels as rectangles");
   connect(mpRectangularShape, SIGNAL(activated()), this->mpAnimationWindow, SLOT(mapLabelsToRectangles()));
 
   mpCircularShape = new QAction("Circle", this);
-  mpCircularShape->setShortcut(Qt::CTRL + Qt::Key_C);
+  //mpCircularShape->setShortcut(Qt::CTRL + Qt::Key_C);
   mpCircularShape->setStatusTip("Show labels as circles");
   connect(mpCircularShape, SIGNAL(activated()), this->mpAnimationWindow, SLOT(mapLabelsToCircles()));
 
   mpMimaNodeSizes = new QAction("Set Min/Max Node Sizes", this);
-  mpMimaNodeSizes->setShortcut(Qt::CTRL + Qt::Key_M);
+  //mpMimaNodeSizes->setShortcut(Qt::CTRL + Qt::Key_M);
   mpMimaNodeSizes->setToolTip("Change Min/Max for node sizes within animation");
   connect(mpMimaNodeSizes, SIGNAL(activated()), this->mpAnimationWindow, SLOT(changeMinMaxNodeSizes()));
 
   mpSFontSize = new QAction("Set Font Size", this);
-  mpSFontSize->setShortcut(Qt::CTRL + Qt::Key_F);
+  //mpSFontSize->setShortcut(Qt::CTRL + Qt::Key_F);
   mpSFontSize->setToolTip("Change the font size of the node labels in the graph view");
   connect(mpSFontSize, SIGNAL(activated()), this->mpAnimationWindow, SLOT(changeFontSize()));
 #ifdef COPASI_AUTOLAYOUT
   this->mpStopLayoutAction = new QAction(QPixmap(layout_start_xpm), tr("Stop"), this);
   this->mpStopLayoutAction->setEnabled(true);
-  this->mpStopLayoutAction->setToolTip("run spring layout algorithm");
+  this->mpStopLayoutAction->setToolTip("Run Spring Layout Algorithm");
   connect(this->mpStopLayoutAction, SIGNAL(triggered()), this, SLOT(slotRunSpringLayout()));
+
+  mpRandomizeLayout = new QAction(CQIconResource::icon(CQIconResource::roll), tr("Randomize Layout"), this);
+  mpRandomizeLayout->setToolTip("Randomize current Layout");
+  mpRandomizeLayout->setShortcut(Qt::CTRL + Qt::Key_F5);
+  connect(this->mpRandomizeLayout, SIGNAL(triggered()), this, SLOT(slotRunRandomizeLayout()));
+
+  mpCalculateDimensions = new QAction(tr("&Calculate Dimensions"), this);
+  mpCalculateDimensions->setToolTip("Calculates Dimensions of this Layout.");
+  connect(this->mpCalculateDimensions, SIGNAL(triggered()), this, SLOT(slotCalculateDimensions()));
+
 #endif // COPASI_AUTOLAYOUT
 }
 
@@ -203,10 +228,21 @@ void CQNewMainWindow::createMenus()
   mpFileMenu = menuBar()->addMenu(tr("&File"));
   mpFileMenu->addAction(mpSwitchModeAct);
   mpFileMenu->addSeparator();
+  mpFileMenu->addAction(this->mpScreenshotAct);
+  mpFileMenu->addSeparator();
   mpFileMenu->addAction(mpCloseAct);
 
+#ifdef COPASI_AUTOLAYOUT
+
+  mpLayoutMenu = menuBar()->addMenu(tr("&Layout"));
+  mpLayoutMenu->addAction(mpStopLayoutAction);
+  mpLayoutMenu->addAction(mpRandomizeLayout);
+  mpLayoutMenu->addSeparator();
+  mpLayoutMenu->addAction(mpCalculateDimensions);
+#endif
+
   // play menu
-  mpPlayMenu = menuBar()->addMenu(tr("Play"));
+  mpPlayMenu = menuBar()->addMenu(tr("&Play"));
   mpPlayMenu->setVisible(false);
   this->mpPlayMenu->addAction(this->mpAnimationWindow->getControlWidget()->getPlayAction());
   this->mpPlayMenu->addAction(this->mpAnimationWindow->getControlWidget()->getPauseAction());
@@ -216,7 +252,7 @@ void CQNewMainWindow::createMenus()
   this->mpPlayMenu->addAction(this->mpAnimationWindow->getControlWidget()->getStepForwardAction());
   this->mpPlayMenu->addAction(this->mpAnimationWindow->getControlWidget()->getStepBackwardAction());
   this->mpPlayMenu->addSeparator();
-  this->mpLoopItemAction = this->mpPlayMenu->addAction(tr("loop animation"));
+  this->mpLoopItemAction = this->mpPlayMenu->addAction(tr("Loop Animation"));
   this->mpLoopItemAction->setCheckable(true);
   this->mpLoopItemAction->setChecked(false);
   connect(this->mpLoopItemAction, SIGNAL(toggled(bool)) , this->mpAnimationWindow, SLOT(slotLoopActivated(bool)));
@@ -224,10 +260,10 @@ void CQNewMainWindow::createMenus()
   this->mpPlayMenu->addAction(this->mpLoadDataAct);
 
   // view menu
-  mpViewMenu = menuBar()->addMenu(tr("View"));
-  mpViewMenu->addAction(tr("Reset View"), this, SLOT(slotResetView()));
-  mpViewMenu->addAction(tr("Fit to Screen"), this, SLOT(slotFitToScreen()));
-  this->mpZoomMenu = this->mpViewMenu->addMenu(tr("Zoom"));
+  mpViewMenu = menuBar()->addMenu(tr("&View"));
+  mpViewMenu->addAction(tr("&Reset View"), this, SLOT(slotResetView()));
+  mpViewMenu->addAction(tr("&Fit to Screen"), this, SLOT(slotFitToScreen()));
+  this->mpZoomMenu = this->mpViewMenu->addMenu(tr("&Zoom"));
   this->mpZoomActionGroup = new QActionGroup(this);
   QAction* pAction = this->mpZoomActionGroup->addAction("1%");
   pAction->setCheckable(true);
@@ -268,23 +304,21 @@ void CQNewMainWindow::createMenus()
   this->mpZoomMenu->addActions(this->mpZoomActionGroup->actions());
 #ifdef ELEMENTARY_MODE_DISPLAY
   this->mpViewMenu->addSeparator();
-  this->mpHighlightModeAction = this->mpViewMenu->addAction(tr("highlight"));
+  this->mpHighlightModeAction = this->mpViewMenu->addAction(tr("Highlight"));
   this->mpHighlightModeAction->setCheckable(true);
   this->mpHighlightModeAction->setChecked(true);
-  this->mpHighlightModeAction->setToolTip(tr("determines whether selected elements are highlighted or if unselected items are toned down."));
+  this->mpHighlightModeAction->setToolTip(tr("Toggle whether selected elements are highlighted or unselected items toned down."));
   connect(this->mpHighlightModeAction, SIGNAL(toggled(bool)), this, SLOT(toggleHighlightSlot(bool)));
-  this->mpFogDensityAction = this->mpViewMenu->addAction(tr("fog density ..."));
+  this->mpFogDensityAction = this->mpViewMenu->addAction(tr("Fog Density ..."));
   connect(this->mpFogDensityAction, SIGNAL(triggered(bool)), this, SLOT(fogDensitySlot(bool)));
-  this->mpChangeColorAction = this->mpViewMenu->addAction(tr("highlight color ..."));
+  this->mpChangeColorAction = this->mpViewMenu->addAction(tr("Highlight Color ..."));
   connect(this->mpChangeColorAction, SIGNAL(triggered(bool)), this, SLOT(changeColorSlot(bool)));
-  this->mpChangeColorAction->setToolTip(tr("depending on the highlight mode lets you select the color for highlighting or down toning elements"));
-  this->mpElementaryModesMenu = this->mpViewMenu->addMenu("ElementaryModes");
-  this->mpElementaryModesMenu->setToolTip(tr("displays a list of elementary modes if any have been calculated and lets you select one or more that are emphasized in the layout displayed"));
-  this->mpElementaryModesMenu->addAction(tr("none"));
+  this->mpChangeColorAction->setToolTip(tr("When higlighted, sets the highlight color, or the toned down one otherwise."));
+  this->mpElementaryModesMenu = this->mpViewMenu->addMenu("Elementary Modes");
+  this->mpElementaryModesMenu->setToolTip(tr("Displays a list of elementary modes when they have been calculated and lets you select one or more that are emphasized in the layout displayed."));
+  this->mpElementaryModesMenu->addAction(tr("None"));
   connect(this->mpElementaryModesMenu, SIGNAL(aboutToShow()), this, SLOT(checkForElementaryModesSlot()));
 #endif // ELEMENTARY_MODE_DISPLAY
-  this->mpViewMenu->addSeparator();
-  this->mpViewMenu->addAction(this->mpScreenshotAct);
 
   // options menu
   mpOptionsMenu = menuBar()->addMenu(tr("Options"));
@@ -297,7 +331,7 @@ void CQNewMainWindow::createMenus()
 
   menuBar()->addSeparator();
 
-  mpHelpMenu = menuBar()->addMenu(tr("&Help"));
+  mpWindowMenu = menuBar()->addMenu(tr("&Window"));
 }
 
 void CQNewMainWindow::createToolBars()
@@ -311,38 +345,38 @@ void CQNewMainWindow::createToolBars()
 #ifdef COPASI_AUTOLAYOUT
   this->mpFileToolBar->addSeparator();
   this->mpFileToolBar->addAction(this->mpStopLayoutAction);
+  this->mpFileToolBar->addAction(this->mpRandomizeLayout);
 #endif // COPASI_AUTOLAYOUT
 
   // add a toolbar for the selection widgets
   mpSelectionToolBar = addToolBar(tr("Select"));
   QFrame* pFrame1 = new QFrame;
-  QVBoxLayout* pLayout = new QVBoxLayout;
+  QHBoxLayout* pLayout = new QHBoxLayout;
   pLayout->setSpacing(3);
   QLabel* pLabel = new QLabel(tr("Layout:"));
   pLayout->addWidget(pLabel);
   this->mpLayoutDropdown = new QComboBox;
-  this->mpLayoutDropdown->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
+  this->mpLayoutDropdown->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
   pFrame1->setLayout(pLayout);
   pLayout->addWidget(this->mpLayoutDropdown);
 
   QFrame* pFrame2 = new QFrame;
-  pLayout = new QVBoxLayout;
+  pLayout = new QHBoxLayout;
   pLayout->setSpacing(3);
   pFrame2->setLayout(pLayout);
   this->mpRenderLabel = new QLabel(tr("Render Information:"));
   pLayout->addWidget(this->mpRenderLabel);
   this->mpRenderDropdown = new QComboBox;
-  this->mpRenderDropdown->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
+  this->mpRenderDropdown->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
   pLayout->addWidget(this->mpRenderDropdown);
 
   QFrame* pFrame3 = new QFrame;
-  pLayout = new QVBoxLayout;
+  pLayout = new QHBoxLayout;
   pLayout->setSpacing(3);
   pFrame3->setLayout(pLayout);
   pLabel = new QLabel(tr("Zoom Factor:"));
   pLayout->addWidget(pLabel);
   this->mpZoomDropdown = new QComboBox;
-  this->mpZoomDropdown->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
   pLayout->addWidget(this->mpZoomDropdown);
   // fill the zoom factor box
   unsigned int i, iMax = sizeof(CQNewMainWindow::ZOOM_FACTOR_STRINGS) / sizeof(char*);
@@ -357,6 +391,8 @@ void CQNewMainWindow::createToolBars()
           defaultIndex = i;
         }
     }
+
+  this->mpZoomDropdown->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
 
   // set 100% as the default zoom factor
   assert(defaultIndex != -1);
@@ -374,7 +410,18 @@ void CQNewMainWindow::createStatusBar()
 {
   statusBar()->showMessage(tr("Ready"));
 }
+void CQNewMainWindow::setMode(DISPLAY_MODE mode)
+{
+  // be sure to disconnect screenshot action
+  if (mMode == GRAPH_MODE)
+    disconnect(mpScreenshotAct, SIGNAL(triggered()), this, SLOT(slotScreenshot()));
+  else
+    disconnect(this->mpScreenshotAct, SIGNAL(triggered()), this->mpAnimationWindow, SLOT(saveImage()));
 
+  // need to invert to have the toggle work
+  mMode = mode == GRAPH_MODE ? ANIMATION_MODE : GRAPH_MODE;
+  switchMode();
+}
 void CQNewMainWindow::updateRenderer()
 {
   // pass the datamodel, the layout and the render info to the
@@ -569,9 +616,10 @@ void CQNewMainWindow::updateRenderInformationList()
 
           if (!pTmpRenderInfo->getName().empty())
             {
-              text += " (";
-              text += pTmpRenderInfo->getName();
-              text += ")";
+              text = pTmpRenderInfo->getName();
+              //text += " (";
+              //text += pTmpRenderInfo->getName();
+              //text += ")";
             }
 
           this->mpRenderDropdown->insertItem(0, QString(text.c_str()));
@@ -674,9 +722,10 @@ void CQNewMainWindow::addGlobalRenderInfoItemsToList()
 
       if (!pTmpRenderInfo->getName().empty())
         {
-          text += " (";
-          text += pTmpRenderInfo->getName();
-          text += ")";
+          text = pTmpRenderInfo->getName();
+          //text += " (";
+          //text += pTmpRenderInfo->getName();
+          //text += ")";
         }
 
       this->mpRenderDropdown->addItem(QString(text.c_str()));
@@ -700,9 +749,10 @@ void CQNewMainWindow::addDefaultRenderInfoItemsToList()
 
       if (!pTmpRenderInfo->getName().empty())
         {
-          text += " (";
-          text += pTmpRenderInfo->getName();
-          text += ")";
+          text = pTmpRenderInfo->getName();
+          //text += " (";
+          //text += pTmpRenderInfo->getName();
+          //text += ")";
         }
 
       this->mpRenderDropdown->addItem(QString(text.c_str()));
@@ -805,32 +855,57 @@ void CQNewMainWindow::slotScreenshot()
 {
   CQGLLayoutPainter* pPainter = this->mpLayoutViewer->getPainter();
 
-  if (pPainter != NULL)
+  if (pPainter == NULL)
+    return;
+
+  double layoutX = pPainter->minX();
+  double layoutY = pPainter->minY();
+  double layoutWidth = pPainter->maxX() - layoutX;
+  double layoutHeight = pPainter->maxY() - layoutY;
+  double x = pPainter->getCurrentPositionX();
+  double y = pPainter->getCurrentPositionY();
+  double width = pPainter->getCurrentWidth();
+  double height = pPainter->getCurrentHeight();
+#ifndef USE_SCREENSHOT_OPTIONS
+
+  QString fileName = CopasiFileDialog::getSaveFileName(this, QString("Export to"), "", QString("PNG (*.png);;All files (*)"));
+
+  if (!fileName.isEmpty())
+    export_bitmap(fileName, 2.0);
+
+#else
+  CQScreenshotOptionsDialog* pDialog = new CQScreenshotOptionsDialog(layoutX, layoutY, layoutWidth, layoutHeight,
+      x, y, width, height, pPainter->width() , pPainter->height(), -1, this);
+
+  if (pDialog->exec() == QDialog::Accepted)
     {
-      double layoutX = pPainter->minX();
-      double layoutY = pPainter->minY();
-      double layoutWidth = pPainter->maxX() - layoutX;
-      double layoutHeight = pPainter->maxY() - layoutY;
-      double x = pPainter->getCurrentPositionX();
-      double y = pPainter->getCurrentPositionY();
-      double width = pPainter->getCurrentWidth();
-      double height = pPainter->getCurrentHeight();
-      CQScreenshotOptionsDialog* pDialog = new CQScreenshotOptionsDialog(layoutX, layoutY, layoutWidth, layoutHeight,
-          x, y, width, height, pPainter->width() , pPainter->height(), -1, this);
 
-      if (pDialog->exec() == QDialog::Accepted)
+      // ask for the filename
+      QString fileName = CopasiFileDialog::getSaveFileName(this, QString("Export to"), "", QString("PNG (*.png);;All files (*)"));
+
+      if (!fileName.isEmpty())
         {
-          // ask for the filename
-          QString fileName = CopasiFileDialog::getSaveFileName(this, QString("Export to"), "", QString("PNG (*.png);;All files (*)"));
-
-          if (!fileName.isEmpty())
-            {
-              export_bitmap(fileName, pDialog->getX(), pDialog->getY(), pDialog->getWidth(), pDialog->getHeight(), pDialog->getImageWidth(), pDialog->getImageHeight(), pDialog->isSetDrawSelectionDecoration());
-            }
+          export_bitmap(fileName, pDialog->getX(), pDialog->getY(), pDialog->getWidth(), pDialog->getHeight(), pDialog->getImageWidth(), pDialog->getImageHeight(), pDialog->isSetDrawSelectionDecoration());
         }
-
-      delete pDialog;
     }
+
+  delete pDialog;
+#endif
+}
+
+void CQNewMainWindow::export_bitmap(const QString& filename, double scale /*= 4.0*/)
+{
+  CQGLLayoutPainter* pPainter = this->mpLayoutViewer->getPainter();
+
+  if (pPainter == NULL)
+    return;
+
+  double layoutX = pPainter->minX();
+  double layoutY = pPainter->minY();
+  double layoutWidth = pPainter->maxX() - layoutX;
+  double layoutHeight = pPainter->maxY() - layoutY;
+
+  export_bitmap(filename, layoutX, layoutY, layoutWidth, layoutHeight, layoutWidth * scale, layoutHeight * scale, false);
 }
 
 /**
@@ -842,68 +917,65 @@ void CQNewMainWindow::export_bitmap(const QString& filename, double x, double y,
   // check if the size of the final image is ok.
   double size = imageWidth * imageHeight * 4;
 
+  // TODO: not sure we really need to restrict this, if the user *needs* a higher resolution image
+  // TODO: what speeks against it? (Though in praxis resolutions above 4320p are unlikely)
   // I don't think we should write images that are larger than 500MB
-  if (size < 5e8)
-    {
-      //
-      // before we even start, we check if the file can be written to at all
-      // if not, we don't have to do anything
-      QFileInfo info(filename);
-
-      if (info.exists())
-        {
-          if (!info.isFile())
-            {
-              // create an error message and cancel saving
-              CQMessageBox::critical(this, tr("Not a file"),
-                                     tr("Path exists, but it is not a file."));
-              return;
-            }
-          else
-            {
-              if (!info.isWritable())
-                {
-                  // create an error message and cancel saving
-                  CQMessageBox::critical(this, tr("Not writable"),
-                                         tr("Can't write to file."));
-                  return;
-                }
-            }
-        }
-      else
-        {
-          // check if the directory exists.
-        }
-
-      // now we try to create the image
-      CQGLLayoutPainter* pPainter = this->mpLayoutViewer->getPainter();
-
-      if (pPainter != NULL)
-        {
-          GLubyte* pImageData = pPainter->export_bitmap(x, y, width, height, imageWidth, imageHeight, drawSelection);
-
-          if (pImageData != NULL)
-            {
-              QImage* pImage = new QImage(pImageData, imageWidth, imageHeight, 4 * imageWidth, QImage::Format_ARGB32);
-              bool result = pImage->save(filename, "PNG");
-
-              if (result == false)
-                {
-                  CQMessageBox::critical(this, tr("Save error"),
-                                         tr("An error occured while saving the file.\nThe file might be invalid."));
-                }
-
-              delete pImage;
-              delete[] pImageData;
-            }
-        }
-    }
-  else
+  if (size > 5e8)
     {
       // give an error message that the image is to large
       CQMessageBox::critical(this, tr("Image too large"),
                              tr("Sorry, refusing to create images that are larger than 500MB."));
     }
+
+  //
+  // before we even start, we check if the file can be written to at all
+  // if not, we don't have to do anything
+  QFileInfo info(filename);
+
+  if (info.exists())
+    {
+      if (!info.isFile())
+        {
+          // create an error message and cancel saving
+          CQMessageBox::critical(this, tr("Not a file"),
+                                 tr("Path exists, but it is not a file."));
+          return;
+        }
+      else
+        {
+          if (!info.isWritable())
+            {
+              // create an error message and cancel saving
+              CQMessageBox::critical(this, tr("Not writable"),
+                                     tr("Can't write to file."));
+              return;
+            }
+        }
+    }
+
+  // now we try to create the image
+  CQGLLayoutPainter* pPainter = this->mpLayoutViewer->getPainter();
+
+  if (pPainter == NULL)
+    return;
+
+  GLubyte* pImageData = pPainter->export_bitmap(x, y, width, height, imageWidth, imageHeight, drawSelection);
+
+  if (pImageData == NULL)
+    return;
+
+  // create QImage for buffer
+  QImage* pImage = new QImage(pImageData, imageWidth, imageHeight, 4 * imageWidth, QImage::Format_ARGB32);
+  bool result = pImage->save(filename, "PNG");
+
+  if (result == false)
+    {
+      CQMessageBox::critical(this, tr("Save error"),
+                             tr("An error occured while saving the file.\nThe file might be invalid."));
+    }
+
+  delete pImage;
+  delete[] pImageData;
 }
 
 void CQNewMainWindow::updateLayoutList()
@@ -922,9 +994,10 @@ void CQNewMainWindow::updateLayoutList()
 
       if (!pTmpLayout->getObjectName().empty())
         {
-          text += "(";
-          text += pTmpLayout->getObjectName();
-          text += ")";
+          text = pTmpLayout->getObjectName();
+          //text += "(";
+          //text += pTmpLayout->getObjectName();
+          //text += ")";
         }
 
       this->mpLayoutDropdown->addItem(text.c_str());
@@ -958,7 +1031,7 @@ void CQNewMainWindow::switchMode()
         connect(this->mpScreenshotAct, SIGNAL(triggered()), this->mpAnimationWindow, SLOT(saveImage()));
         this->mpSwitchModeAct->setIcon(mGraphIcon);
         this->mpSwitchModeAct->setStatusTip(tr("Switch to graph mode."));
-        this->mpSwitchModeAct->setText(tr("graph mode"));
+        this->mpSwitchModeAct->setText(tr("Graph Mode"));
         this->mMode = CQNewMainWindow::ANIMATION_MODE;
         this->setAnimationToolbar();
         this->setAnimationMenu();
@@ -985,7 +1058,7 @@ void CQNewMainWindow::switchMode()
         connect(mpScreenshotAct, SIGNAL(triggered()), this, SLOT(slotScreenshot()));
         this->mpSwitchModeAct->setIcon(mAnimationIcon);
         this->mpSwitchModeAct->setStatusTip(tr("Switch to animation mode."));
-        this->mpSwitchModeAct->setText(tr("animation mode"));
+        this->mpSwitchModeAct->setText(tr("Animation Mode"));
         this->mMode = CQNewMainWindow::GRAPH_MODE;
         this->setGraphToolbar();
         this->setGraphMenu();
@@ -1007,6 +1080,7 @@ void CQNewMainWindow::setAnimationToolbar()
   this->mpLoadDataAct->setVisible(true);
   // hide the render information box
   this->mpRenderLabel->hide();
+  this->mpRevertCurveAct->setVisible(false);
   this->mpRenderDropdown->hide();
 }
 
@@ -1018,18 +1092,25 @@ void CQNewMainWindow::setGraphToolbar()
   this->mpRevertCurveAct->setVisible(true);
   // show the render information box
   this->mpRenderLabel->show();
+  this->mpRevertCurveAct->setVisible(false);
   this->mpRenderDropdown->show();
 }
 
 void CQNewMainWindow::setAnimationMenu()
 {
   this->mpPlayMenu->menuAction()->setVisible(true);
+#if COPASI_AUTOLAYOUT
+  this->mpLayoutMenu->menuAction()->setVisible(false);
+#endif
   this->mpOptionsMenu->menuAction()->setVisible(true);
 }
 
 void CQNewMainWindow::setGraphMenu()
 {
   this->mpPlayMenu->menuAction()->setVisible(false);
+#if COPASI_AUTOLAYOUT
+  this->mpLayoutMenu->menuAction()->setVisible(true);
+#endif
   this->mpOptionsMenu->menuAction()->setVisible(false);
 }
 
@@ -1638,7 +1719,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
   // we need a multimap that stores the association between a metabolite and it's glyph
   std::map<const CMetab*, CLMetabGlyph*> metabGlyphMap;
 
-  QFont font = QFont("Helvetica", 20);
+  QFont font = QFont("Helvetica", 16);
   QFontMetrics metrics = QFontMetrics(font);
   QRect textBounds;
 
@@ -1655,6 +1736,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
   // we need this to later place the text glyph
   // on top of the metab glyph
   std::map<CLMetabGlyph*, CLTextGlyph*> textGlyphMap;
+  std::map<CLMetabGlyph*, CLTextGlyph*> textGlyphMap2;
   // we need to store which compartment contains which metabolite glyphs
   std::map<const CCompartment*, std::set<CLMetabGlyph*> > compmetmap;
 
@@ -1670,7 +1752,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
         }
 
       // make the metab glyph 120% the size of the text
-      pMetabGlyph = CQNewMainWindow::createMetabGlyph((*metabIt)->getKey(), width * 1.2, height * 1.2);
+      pMetabGlyph = CQNewMainWindow::createMetabGlyph((*metabIt)->getKey(), width + 4, height + 4);
       assert(pMetabGlyph != NULL);
       metabGlyphMap[*metabIt] = pMetabGlyph;
       this->mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
@@ -1678,6 +1760,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
       assert(pTextGlyph != NULL);
       this->mpCurrentLayout->addTextGlyph(pTextGlyph);
       textGlyphMap[pMetabGlyph] = pTextGlyph;
+      textGlyphMap2[pMetabGlyph] = pTextGlyph;
       totalarea += width * height * 1.2 * 1.2;
 
       if (areaMap.find((*metabIt)->getCompartment()) != areaMap.end())
@@ -1886,7 +1969,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
                   // becasue it might be used in another reaction as well, so we don't need
                   // to delete it
                   // also copy the corresponding text glyph
-                  pTextGlyph = textGlyphMap[pMetabGlyph];
+                  pTextGlyph = textGlyphMap2[pMetabGlyph];
                   assert(pTextGlyph != NULL);
                   pTextGlyph = new CLTextGlyph(*pTextGlyph);
                   pMetabGlyph = new CLMetabGlyph(*(linkedElements.find(pMetab)->second));
@@ -1908,7 +1991,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
                       // we make a copy and place the original in the duplicateNodesList
                       duplicateNodes.insert(pMetabGlyph);
                       // also copy the corresponding text glyph
-                      pTextGlyph = textGlyphMap[pMetabGlyph];
+                      pTextGlyph = textGlyphMap2[pMetabGlyph];
                       assert(pTextGlyph != NULL);
                       pTextGlyph = new CLTextGlyph(*pTextGlyph);
                       pMetabGlyph = new CLMetabGlyph(*pMetabGlyph);
@@ -1970,7 +2053,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
                   // becasue it might be used in another reaction as well, so we don't need
                   // to delete it
                   // also copy the corresponding text glyph
-                  pTextGlyph = textGlyphMap[pMetabGlyph];
+                  pTextGlyph = textGlyphMap2[pMetabGlyph];
                   assert(pTextGlyph != NULL);
                   pTextGlyph = new CLTextGlyph(*pTextGlyph);
                   pMetabGlyph = new CLMetabGlyph(*(linkedElements.find(pMetab)->second));
@@ -1992,7 +2075,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
                       // we make a copy and place the original in the duplicateNodesList
                       duplicateNodes.insert(pMetabGlyph);
                       // also copy the corresponding text glyph
-                      pTextGlyph = textGlyphMap[pMetabGlyph];
+                      pTextGlyph = textGlyphMap2[pMetabGlyph];
                       assert(pTextGlyph != NULL);
                       pTextGlyph = new CLTextGlyph(*pTextGlyph);
                       pMetabGlyph = new CLMetabGlyph(*pMetabGlyph);
@@ -2059,7 +2142,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
                   // we make a copy and place the original in the duplicateNodesList
                   duplicateNodes.insert(pMetabGlyph);
                   // also copy the corresponding text glyph
-                  pTextGlyph = textGlyphMap[pMetabGlyph];
+                  pTextGlyph = textGlyphMap2[pMetabGlyph];
                   assert(pTextGlyph != NULL);
                   pTextGlyph = new CLTextGlyph(*pTextGlyph);
                   pMetabGlyph = new CLMetabGlyph(*pMetabGlyph);
@@ -2103,7 +2186,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
   while (duplicateIt != duplicateEndit)
     {
       pMetabGlyph = *duplicateIt;
-      pTextGlyph = textGlyphMap[pMetabGlyph];
+      pTextGlyph = textGlyphMap2[pMetabGlyph];
       assert(pTextGlyph != NULL);
       // the glyph has to be in there
       r = textGlyphs.remove(pTextGlyph);
@@ -2189,7 +2272,7 @@ void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
             {
               l.finalizeState(); //makes the layout ready for drawing;
               // redraw
-              this->redrawNow();
+              slotCalculateDimensions();
             }
 
           if (pDispatcher->hasPendingEvents())
@@ -2203,7 +2286,7 @@ void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
 
       if (!doUpdate || (i % updateInterval != 0))
         {
-          this->redrawNow();
+          slotCalculateDimensions();
         }
     }
 
@@ -2212,7 +2295,7 @@ void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
   disconnect(this->mpStopLayoutAction, SIGNAL(triggered()), this, SLOT(slotStopClicked()));
   connect(this->mpStopLayoutAction, SIGNAL(triggered()), this, SLOT(slotRunSpringLayout()));
   this->mpStopLayoutAction->setIcon(QPixmap(layout_start_xpm));
-  this->mpStopLayoutAction->setToolTip("run spring layout algorithm");
+  this->mpStopLayoutAction->setToolTip("Run Spring Layout Algorithm");
 }
 
 /**
@@ -2229,9 +2312,115 @@ void CQNewMainWindow::slotRunSpringLayout()
   this->createSpringLayout(1000, 1);
 }
 
+QRectF getBounds(const std::vector<CCopasiSpringLayout::UpdateAction>& updates)
+{
+  QRectF result(1000, 1000, -1000, -1000);
+  std::vector<CCopasiSpringLayout::UpdateAction>::const_iterator it, itEnd = updates.end();
+
+  for (it = updates.begin(); it != itEnd; ++it)
+    {
+      switch (it->mAction)
+        {
+          case CCopasiSpringLayout::UpdateAction::COMPARTMENT_4V:
+          {
+            CLCompartmentGlyph* current = ((CLCompartmentGlyph*)(it->mpTarget));
+            result.setLeft(qMin(result.left(), current->getX()));
+            result.setTop(qMin(result.top(), current->getY()));
+            result.setRight(qMax(result.right(), current->getX() + current->getWidth()));
+            result.setBottom(qMax(result.bottom(), current->getY() + current->getHeight()));
+          }
+          break;
+
+          case CCopasiSpringLayout::UpdateAction::SPECIES_2V:
+          {
+            CLMetabGlyph* current = ((CLMetabGlyph*)(it->mpTarget));
+            result.setLeft(qMin(result.left(), current->getX()));
+            result.setTop(qMin(result.top(), current->getY()));
+            result.setRight(qMax(result.right(), current->getX() + current->getWidth()));
+            result.setBottom(qMax(result.bottom(), current->getY() + current->getHeight()));
+          }
+          break;
+
+          case CCopasiSpringLayout::UpdateAction::REACTION_2V:
+          {
+            CLReactionGlyph* current = ((CLReactionGlyph*)(it->mpTarget));
+            result.setLeft(qMin(result.left(), current->getX()));
+            result.setTop(qMin(result.top(), current->getY()));
+            result.setRight(qMax(result.right(), current->getX() + current->getWidth()));
+            result.setBottom(qMax(result.bottom(), current->getY() + current->getHeight()));
+          }
+          break;
+
+          default:
+            break;
+        };
+    }
+
+  return result;
+}
+
+void CQNewMainWindow::slotCalculateDimensions()
+{
+  if (this->mpCurrentLayout == NULL ||
+      (this->mpCurrentLayout->getListOfCompartmentGlyphs().size() == 0 && this->mpCurrentLayout->getListOfMetaboliteGlyphs().size() == 0))
+    return;
+
+  mpLayoutViewer->getPainter()->calculateAndAssignBounds(mpCurrentLayout);
+  // redraw
+  this->redrawNow();
+}
+
+void CQNewMainWindow::slotRunRandomizeLayout()
+{
+  if (this->mpCurrentLayout == NULL ||
+      (this->mpCurrentLayout->getListOfCompartmentGlyphs().size() == 0 && this->mpCurrentLayout->getListOfMetaboliteGlyphs().size() == 0))
+    return;
+
+  // create the spring layout
+  CCopasiSpringLayout l(this->mpCurrentLayout);
+  l.createVariables();
+
+  CRandom* pRandom = CRandom::createGenerator(CRandom::mt19937, CRandom::getSystemSeed());
+
+  const std::vector<CCopasiSpringLayout::UpdateAction>& updateActions = l.getUpdateActions();
+  std::vector<double> initialValues = l.getInitialValues();
+
+  std::vector<CCopasiSpringLayout::UpdateAction>::const_iterator it, itEnd = updateActions.end();
+
+  double right = mpCurrentLayout->getDimensions().getWidth();
+  double bottom = mpCurrentLayout->getDimensions().getHeight();
+  double left = right / 2.0;
+  double top = 0.0;//bottom/2.0;
+
+  for (it = updateActions.begin(); it != itEnd; ++it)
+    {
+      switch (it->mAction)
+        {
+          case CCopasiSpringLayout::UpdateAction::COMPARTMENT_4V:
+          case CCopasiSpringLayout::UpdateAction::SPECIES_2V:
+            //case CCopasiSpringLayout::UpdateAction::REACTION_2V:
+            initialValues[it->mIndex1] = left + pRandom->getRandomCC() * right;
+            initialValues[it->mIndex2] = top + pRandom->getRandomCC() * bottom;
+            break;
+
+          default:
+            break;
+        };
+    }
+
+  l.setState(initialValues);
+  l.finalizeState(); //makes the layout ready for drawing;
+
+  slotCalculateDimensions();
+}
+
+#endif // COPASI_AUTOLAYOUT
+
 void CQNewMainWindow::closeEvent(QCloseEvent * event)
 {
+#ifdef COPASI_AUTOLAYOUT
   this->slotStopClicked();
+#endif // COPASI_AUTOLAYOUT
+  removeFromMainWindow();
   this->QMainWindow::closeEvent(event);
 }
-#endif // COPASI_AUTOLAYOUT

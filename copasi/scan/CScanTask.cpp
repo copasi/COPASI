@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -11,10 +11,6 @@
 // Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-
-
-
-
 
 /**
  * CScanTask class.
@@ -47,8 +43,17 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 
+#if COPASI_NONLIN_DYN
+#include <crosssection/CCrossSectionTask.h>
+#endif
+
 CScanTask::CScanTask(const CCopasiContainer * pParent):
-  CCopasiTask(CCopasiTask::scan, pParent)
+  CCopasiTask(CCopasiTask::scan, pParent),
+  mProgress(0),
+  mhProgress(C_INVALID_INDEX),
+  mpSubtask(NULL),
+  mOutputInSubtask(false),
+  mUseInitialValues(true)
 {
   mpProblem = new CScanProblem(this);
   mpMethod = createMethod(CCopasiMethod::scanMethod);
@@ -58,7 +63,12 @@ CScanTask::CScanTask(const CCopasiContainer * pParent):
 
 CScanTask::CScanTask(const CScanTask & src,
                      const CCopasiContainer * pParent):
-  CCopasiTask(src, pParent)
+  CCopasiTask(src, pParent),
+  mProgress(0),
+  mhProgress(C_INVALID_INDEX),
+  mpSubtask(NULL),
+  mOutputInSubtask(false),
+  mUseInitialValues(true)
 {
   mpProblem = new CScanProblem(*(CScanProblem *) src.mpProblem, this);
   mpMethod = createMethod(CCopasiMethod::scanMethod);
@@ -114,8 +124,6 @@ bool CScanTask::process(const bool & useInitialValues)
 
   if (!mpMethod) fatalError();
 
-  //mpMethod->isValidProblem(mpProblem);
-
   CScanProblem * pProblem = dynamic_cast<CScanProblem *>(mpProblem);
 
   if (!pProblem) fatalError();
@@ -126,7 +134,13 @@ bool CScanTask::process(const bool & useInitialValues)
 
   bool success = true;
 
-  //initSubtask();
+#if COPASI_NONLIN_DYN
+  CCrossSectionTask* task = dynamic_cast<CCrossSectionTask*>(mpSubtask);
+
+  if (task != NULL)
+    task->createEvent();
+
+#endif
 
   if (useInitialValues)
     {
@@ -135,7 +149,7 @@ bool CScanTask::process(const bool & useInitialValues)
 
   //TODO: reports
 
-  //initialize the method (parsing the ScanItems)
+  // initialize the method (parsing the ScanItems)
   pMethod->setProblem(pProblem);
 
   if (!pMethod->init()) return false;
@@ -162,6 +176,13 @@ bool CScanTask::process(const bool & useInitialValues)
   //calling the scanner, output is done in the callback
   if (!pMethod->scan()) success = false;
 
+#if COPASI_NONLIN_DYN
+
+  if (task != NULL)
+    task->removeEvent();
+
+#endif
+
   //finishing progress bar and output
   //if (mpCallBack) mpCallBack->finish();
   //if (mpOutputHandler) mpOutputHandler->finish();
@@ -175,7 +196,7 @@ bool CScanTask::process(const bool & useInitialValues)
 
 bool CScanTask::processCallback()
 {
-  bool success = mpSubtask->process(!mAdjustInitialConditions);
+  bool success = mpSubtask->process(mUseInitialValues);
 
   //do output
   if (success && !mOutputInSubtask)
@@ -264,15 +285,20 @@ bool CScanTask::initSubtask(const OutputFlag & /* of */,
                     ((*pDataModel->getTaskList())["Linear Noise Approximation"]);
         break;
 
+#ifdef COPASI_NONLIN_DYN
+
+      case CCopasiTask::crosssection:
+        mpSubtask = dynamic_cast<CCopasiTask*>
+                    ((*pDataModel->getTaskList())["Cross Section"]);
+        break;
+#endif
+
       default:
         mpSubtask = NULL;
     }
 
   mOutputInSubtask = * pProblem->getValue("Output in subtask").pBOOL;
-  //if (type != CCopasiTask::timeCourse)
-  //  mOutputInSubtask = false;
-
-  mAdjustInitialConditions = * pProblem->getValue("Adjust initial conditions").pBOOL;
+  mUseInitialValues = !pProblem->getContinueFromCurrentState();
 
   if (!mpSubtask) return false;
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -31,6 +31,7 @@ CEvaluationNodeCall::CEvaluationNodeCall():
   mpExpression(NULL),
   mCallNodes(),
   mpCallParameters(NULL),
+  mQuotesRequired(false),
   mBooleanRequired(false),
   mRegisteredFunctionCN()
 {mPrecedence = PRECEDENCE_NUMBER;}
@@ -76,7 +77,8 @@ CEvaluationNodeCall::CEvaluationNodeCall(const CEvaluationNodeCall & src):
   mCallNodes(src.mCallNodes),
   mpCallParameters(NULL),
   mQuotesRequired(src.mQuotesRequired),
-  mBooleanRequired(src.mBooleanRequired)
+  mBooleanRequired(src.mBooleanRequired),
+  mRegisteredFunctionCN(src.mRegisteredFunctionCN)
 {mpCallParameters = buildParameters(mCallNodes);}
 
 CEvaluationNodeCall::~CEvaluationNodeCall() {}

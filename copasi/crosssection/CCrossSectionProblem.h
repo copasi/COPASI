@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/crosssection/CCrossSectionProblem.h,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: pwilly $
-//   $Date: 2010/05/26 18:51:05 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,9 +6,9 @@
 #ifndef CCROSSSECTIONPROBLEM_H
 #define CCROSSSECTIONPROBLEM_H
 
-#include "utilities/CCopasiProblem.h"
+#include "trajectory/CTrajectoryProblem.h"
 
-class CCrossSectionProblem : public CCopasiProblem
+class CCrossSectionProblem : public CTrajectoryProblem
 {
 public:
   /**
@@ -49,9 +41,19 @@ public:
   const unsigned C_INT32 &getCrossingsLimit() const;
 
   /**
-   * Function to get mpFlagLimitTime
+   * Function to get mpFlagLimitOutCrossings
    */
-  bool getFlagLimitTime() const;
+  bool getFlagLimitOutCrossings() const;
+
+  /**
+   * Function to get mpOutCrossingsLimit
+   */
+  const unsigned C_INT32 &getOutCrossingsLimit() const;
+
+  /**
+   * Function to get mpFlagLimitOutTime
+   */
+  bool getFlagLimitOutTime() const;
 
   /**
    * Function to get mpTimeLimit
@@ -59,9 +61,59 @@ public:
   const C_FLOAT64 &getTimeLimit() const;
 
   /**
-   * Function to get mpOutputStartTime
+   * return the variable
    */
-  const C_FLOAT64 &getOutputStartTime() const;
+  const std::string& getSingleObjectCN() const;
+  /*
+   * set the variable
+   */
+  void setSingleObjectCN(const std::string& cn);
+  void setSingleObjectCN(const CCopasiObject* pObject);
+  const C_FLOAT64& getThreshold() const;
+  void setThreshold(const C_FLOAT64 &threshold);
+
+  /**
+   * Function to get mpFlagLimitConvergence
+   */
+  bool getFlagLimitConvergence() const;
+
+  /**
+   * Function to get mpConvergenceTolerance
+   */
+  const C_FLOAT64 &getConvergenceTolerance() const;
+
+  /**
+  * Function to set mpFlagLimitConvergence
+  */
+  void setFlagLimitConvergence(bool flagLimitConvergence);
+
+  /**
+   * Function to set mpConvergenceTolerance
+   */
+  void setConvergenceTolerance(const C_FLOAT64 &convergenceTolerance);
+
+  /**
+   * Function to get mpFlagLimitOutConvergence
+   */
+  bool getFlagLimitOutConvergence() const;
+
+  /**
+   * Function to get mpConvergenceOutTolerance
+   */
+  const C_FLOAT64 &getConvergenceOutTolerance() const;
+
+  /**
+  * Function to set mpFlagLimitOutConvergence
+  */
+  void setFlagLimitOutConvergence(bool flagLimitConvergence);
+
+  /**
+   * Function to set mpConvergenceOutTolerance
+   */
+  void setConvergenceOutTolerance(const C_FLOAT64 &convergenceTolerance);
+
+  bool isPositiveDirection() const;
+  void setPositiveDirection(bool isPositive);
 
   /**
    * Function to set mpFlagLimitCrossings
@@ -74,19 +126,24 @@ public:
   void setCrossingsLimit(const unsigned C_INT32 &crossingLimit);
 
   /**
-   * Function to set mpFlagLimitTime
+   * Function to set mpFlagLimitOutCrossings
    */
-  void setFlagLimitTime(bool flagLimitTime);
+  void setFlagLimitOutCrossings(bool flagLimitCrossing);
+
+  /**
+   * Function to set mpOutCrossingsLimit
+   */
+  void setOutCrossingsLimit(const unsigned C_INT32 &crossingLimit);
+
+  /**
+   * Function to set mpFlagLimitOutTime
+   */
+  void setFlagLimitOutTime(bool flagLimitTime);
 
   /**
    * Function to set mpTimeLimit
    */
   void setTimeLimit(const C_FLOAT64 &timeLimit);
-
-  /**
-   * Function to set mpOutputStartTime
-   */
-  void setOutputStartTime(const C_FLOAT64 &outputStartTime);
 
   /**
    * This is the output method for any result of a problem. The default implementation
@@ -112,6 +169,16 @@ public:
 
 private:
 
+  //overload these member functions just to make sure they are not used in this
+  //derived class
+  unsigned C_INT32 getStepNumber() const {return 0;}
+  C_FLOAT64 getStepSize() const {return 0.0;}
+
+  /**
+   * Initialize the parameters
+   */
+  void initializeParameter();
+
   void initObjects();
 
   /**
@@ -131,26 +198,58 @@ private:
   unsigned C_INT32 * mpCrossingsLimit;
 
   /**
-   * this flag indicates whether the calculation should be stopped after a given time.
+   * this flag indicates whether the calculation should be stopped when convergence is reached
    *
    * this member variable is mapped to a CCopasiParameter
    */
-  bool * mpFlagLimitTime;
+  bool * mpFlagLimitConvergence;
 
   /**
-   * this variable indicates how long the calculation should run
+   * this variable indicates the tolerance after which the calculation should be considered
+   * converged
+   *
+   * this member variable is mapped to a CCopasiParameter
+   */
+  C_FLOAT64 * mpConvergenceTolerance;
+
+  /**
+   * this flag indicates whether the output should only be collected once
+   * convergence is reached
+   *
+   * this member variable is mapped to a CCopasiParameter
+   */
+  bool * mpFlagLimitOutConvergence;
+
+  /**
+   * this variable indicates the tolerance after which the calculation should be considered
+   * converged and output should commence
+   *
+   * this member variable is mapped to a CCopasiParameter
+   */
+  C_FLOAT64 * mpConvergenceOutTolerance;
+
+  /**
+  * this flag indicates whether the output should be collected after a given number
+  * of detected crossings
+  *
+  * this member variable is mapped to a CCopasiParameter
+  */
+  bool * mpFlagLimitOutCrossings;
+
+  /**
+   * this variable indicates after how many crossings the output should start
    * if the corresponding flag is true.
    *
    * this member variable is mapped to a CCopasiParameter
    */
-  C_FLOAT64 * mpTimeLimit;
+  unsigned C_INT32 * mpOutCrossingsLimit;
 
   /**
-   * this variable indicates at what time the output is started
+   * this flag indicates whether output should be selected after a delay
    *
    * this member variable is mapped to a CCopasiParameter
    */
-  C_FLOAT64 * mpOutputStartTime;
+  bool * mpFlagLimitOutTime;
 
   /**
    * this variable holds the trigger expression
@@ -158,7 +257,9 @@ private:
    * this member variable is mapped to a CCopasiParameter
    */
   std::string * mpTriggerExpression;
-
+  std::string * mSingleObjectCN;
+  bool * mpFlagPositiveDirection;
+  C_FLOAT64 * mpThreshold;
 };
 
 #endif // CCROSSSECTIONPROBLEM_H

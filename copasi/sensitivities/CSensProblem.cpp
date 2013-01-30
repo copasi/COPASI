@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-//   $Revision: 1.36 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/20 13:05:22 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -28,7 +20,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 
 CSensItem::CSensItem()
-    : mSingleObjectCN(),
+  : mSingleObjectCN(),
     mListType(CObjectLists::SINGLE_OBJECT)
 {}
 
@@ -130,6 +122,7 @@ const std::string CSensProblem::SubTaskName[] =
   "Time Series",
   "Parameter Estimation",
   "Optimization",
+  "Cross Section",
   //"Lyapunov Exponents",
   ""
 };
@@ -141,6 +134,7 @@ const char * CSensProblem::XMLSubTask[] =
   "TimeSeries",
   "ParameterEstimation",
   "Optimization",
+  "CrossSection",
   //"LyapunovExponents",
   NULL
 };
@@ -196,13 +190,13 @@ void CSensProblem::copyParameterGroupToSensItem(const CCopasiParameterGroup *pg,
  *  @param "CModel *" pModel
  */
 CSensProblem::CSensProblem(const CCopasiContainer * pParent):
-    CCopasiProblem(CCopasiTask::sens, pParent),
-    mpSubTaskType(NULL),
-    mpTargetFunctions(NULL),
-    mpVariablesGroup(NULL),
-    mpResultAnnotation(NULL),
-    mpScaledResultAnnotation(NULL),
-    mpCollapsedResultAnnotation(NULL)
+  CCopasiProblem(CCopasiTask::sens, pParent),
+  mpSubTaskType(NULL),
+  mpTargetFunctions(NULL),
+  mpVariablesGroup(NULL),
+  mpResultAnnotation(NULL),
+  mpScaledResultAnnotation(NULL),
+  mpCollapsedResultAnnotation(NULL)
 {
   addParameter("SubtaskType", CCopasiParameter::UINT, (unsigned C_INT32) 0);
   mpSubTaskType = (CSensProblem::SubTaskType*)getValue("SubtaskType").pUINT;
@@ -238,13 +232,13 @@ CSensProblem::CSensProblem(const CCopasiContainer * pParent):
  */
 CSensProblem::CSensProblem(const CSensProblem & src,
                            const CCopasiContainer * pParent):
-    CCopasiProblem(src, pParent),
-    mpSubTaskType(NULL),
-    mpTargetFunctions(NULL),
-    mpVariablesGroup(NULL),
-    mpResultAnnotation(NULL),
-    mpScaledResultAnnotation(NULL),
-    mpCollapsedResultAnnotation(NULL)
+  CCopasiProblem(src, pParent),
+  mpSubTaskType(NULL),
+  mpTargetFunctions(NULL),
+  mpVariablesGroup(NULL),
+  mpResultAnnotation(NULL),
+  mpScaledResultAnnotation(NULL),
+  mpCollapsedResultAnnotation(NULL)
 {
   mpSubTaskType = (CSensProblem::SubTaskType*)getValue("SubtaskType").pUINT;
   mpTargetFunctions = dynamic_cast<CCopasiParameterGroup*>(getParameter("TargetFunctions"));
@@ -451,7 +445,7 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
   //   getTargetFunctionName()
   switch (type)
     {
-      case(CSensProblem::Evaluation):
+      case (CSensProblem::Evaluation):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::REACTION_CONC_FLUXES);
         list.push_back(CObjectLists::REACTION_PART_FLUXES);
@@ -460,7 +454,7 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
         list.push_back(CObjectLists::GLOBAL_PARAMETER_RATES);
         break;
 
-      case(CSensProblem::SteadyState):
+      case (CSensProblem::SteadyState):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::ALL_VARIABLES);
         list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
@@ -474,7 +468,7 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
         list.push_back(CObjectLists::REDUCED_JACOBIAN_EV_IM);
         break;
 
-      case(CSensProblem::TimeSeries):
+      case (CSensProblem::TimeSeries):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::ALL_VARIABLES);
         list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
@@ -487,8 +481,9 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
         //TODO all model variables
         break;
 
-      case(CSensProblem::ParameterEstimation):
-      case(CSensProblem::Optimization):
+      case (CSensProblem::ParameterEstimation):
+      case (CSensProblem::Optimization):
+      case (CSensProblem::CrossSection):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         break;
 
@@ -518,7 +513,7 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
   //   getVariableName()
   switch (type)
     {
-      case(Evaluation):
+      case (Evaluation):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
         list.push_back(CObjectLists::METAB_CONCENTRATIONS);
@@ -529,7 +524,7 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
         list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
         break;
 
-      case(SteadyState):
+      case (SteadyState):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
         list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
@@ -537,7 +532,7 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
         //TODO all const values, all model parameters
         break;
 
-      case(TimeSeries):
+      case (TimeSeries):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
         list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
@@ -546,9 +541,17 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
         //TODO all const values, all model parameters, all initial values
         break;
 
-      case(CSensProblem::ParameterEstimation):
-      case(CSensProblem::Optimization):
+      case (CSensProblem::ParameterEstimation):
+      case (CSensProblem::Optimization):
         list.push_back(CObjectLists::SINGLE_OBJECT);
+        break;
+
+      case (CSensProblem::CrossSection):
+        list.push_back(CObjectLists::SINGLE_OBJECT);
+        list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
+        list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
+        list.push_back(CObjectLists::METAB_INITIAL_CONCENTRATIONS);
+        list.push_back(CObjectLists::ALL_PARAMETER_AND_INITIAL_VALUES);
         break;
 
         /*case (LyapunovExp):
@@ -610,7 +613,7 @@ std::ostream &operator<<(std::ostream &os, const CSensProblem & o)
   os << o.getTargetFunctions().print(pDataModel) << std::endl << std::endl;
 
   os << "Calculation to perform: "
-  << CSensProblem::SubTaskName[o.getSubTaskType()] << std::endl << std::endl;
+     << CSensProblem::SubTaskName[o.getSubTaskType()] << std::endl << std::endl;
 
   size_t i, imax = o.getNumberOfVariables();
 

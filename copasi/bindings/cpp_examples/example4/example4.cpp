@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example4/example4.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/01/03 18:34:54 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -215,8 +207,7 @@ int main()
 
   // we don't want to set the initial conditions of the model to the end
   // state of the last run
-  pScanProblem->setAdjustInitialConditions(false);
-
+  pScanProblem->setContinueFromCurrentState(false);
 
   try
     {
@@ -247,7 +238,6 @@ int main()
   // clean up the library
   CCopasiRootContainer::destroy();
 }
-
 
 const char* MODEL_STRING =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"

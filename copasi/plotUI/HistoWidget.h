@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/HistoWidget.h,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/15 17:04:48 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,12 +7,13 @@
 #define HISTOWIDGET_H
 
 #include "copasi/plotUI/ui_HistoWidget.h"
+#include "copasi/plotUI/CQPlotEditWidget.h"
 
 class CCopasiObject;
 class CModel;
 class CPlotItem;
 
-class HistoWidget : public QWidget, public Ui::HistoWidget
+class HistoWidget : public CQPlotEditWidget, public Ui::HistoWidget
 {
   Q_OBJECT
 
@@ -29,12 +22,17 @@ public:
   ~HistoWidget();
 
   virtual bool LoadFromCurveSpec(const CPlotItem * curve);
-  virtual bool SaveToCurveSpec(CPlotItem * curve) const;
-  virtual void setModel(const CModel * model);
+  virtual bool SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original = NULL) const;
+
+#if USE_NEW_PLOTSUBWIDGET
+  /**
+   * In multiple edit mode, we don't want to edit name & channels
+   */
+  virtual void setMultipleEditMode(bool mode);
+#endif
 
 protected:
   const CCopasiObject* mpObjectX;
-  const CModel* mpModel;
 
 protected slots:
 

@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.cpp,v $
-//   $Revision: 1.27 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/16 16:26:32 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -27,28 +19,28 @@
 #include "clapackwrap.h"
 
 CMathModel::CMathModel(const CCopasiContainer * pParent) :
-    CCopasiContainer("MathModel", pParent, "CMathModel"),
-    mpModel(NULL),
-    mProcessQueue(),
-    mEvents("ListOfMathEvents", this),
-    mRootValues(),
-    mRootDiscrete(),
-    mRootRefreshes(),
-    mRootIndex2Event(),
-    mRootIndex2RootFinder()
+  CCopasiContainer("MathModel", pParent, "CMathModel"),
+  mpModel(NULL),
+  mProcessQueue(),
+  mEvents("ListOfMathEvents", this),
+  mRootValues(),
+  mRootDiscrete(),
+  mRootRefreshes(),
+  mRootIndex2Event(),
+  mRootIndex2RootFinder()
 {}
 
 CMathModel::CMathModel(const CMathModel & src,
                        const CCopasiContainer * pParent) :
-    CCopasiContainer(src, pParent),
-    mpModel(src.mpModel),
-    mProcessQueue(src.mProcessQueue),
-    mEvents("ListOfMathEvents", this),
-    mRootValues(),
-    mRootDiscrete(),
-    mRootRefreshes(),
-    mRootIndex2Event(),
-    mRootIndex2RootFinder()
+  CCopasiContainer(src, pParent),
+  mpModel(src.mpModel),
+  mProcessQueue(src.mProcessQueue),
+  mEvents("ListOfMathEvents", this),
+  mRootValues(),
+  mRootDiscrete(),
+  mRootRefreshes(),
+  mRootIndex2Event(),
+  mRootIndex2RootFinder()
 {
   // Compile the math model.
   compile(mpModel);
@@ -258,7 +250,7 @@ void CMathModel::processRoots(const C_FLOAT64 & time,
           // We reevaluate the state of the non found roots, which should be save.
           if (*pFoundRoot < 1 && (*ppRootFinder)->isEquality() == equality)
             {
-              (*ppRootFinder)->calculateInitialTrue();
+              (*ppRootFinder)->calculateTrueValue();
             }
 
           ++pFoundRoot; ++ppRootFinder;
@@ -285,7 +277,7 @@ void CMathModel::processRoots(const C_FLOAT64 & time,
           // We must only toggle the roots which are marked.
           if (*pFoundRoot > 0)
             {
-              (*ppRootFinder)->toggle(equality);
+              (*ppRootFinder)->toggle(time, equality, correct);
             }
 
           ++pFoundRoot; ++ppEvent; ++ppRootFinder;
@@ -304,9 +296,94 @@ void CMathModel::processRoots(const C_FLOAT64 & time,
   return;
 }
 
+void CMathModel::processRoots(const C_FLOAT64 & time,
+                              const CVector< C_INT > & foundRoots)
+{
+  // Apply all needed refresh calls to calculate the current root values.
+  std::vector< Refresh * >::const_iterator itRefresh = mRootRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endRefresh = mRootRefreshes.end();
+
+  while (itRefresh != endRefresh)
+    (**itRefresh++)();
+
+  assert(foundRoots.size() == mRootIndex2Event.size());
+
+  // All events associated with the found roots need to be evaluated whether they fire.
+  // In case one fires the corresponding event needs to be scheduled in the process queue.
+
+  const C_INT *pFoundRoot = foundRoots.array();
+  const C_INT *pFoundRootEnd = pFoundRoot + foundRoots.size();
+
+  CMathEvent ** ppEvent = mRootIndex2Event.array();
+  CMathEvent * pProcessEvent = NULL;
+
+  CMathTrigger::CRootFinder **ppRootFinder = mRootIndex2RootFinder.array();
+
+  while (pFoundRoot != pFoundRootEnd)
+    {
+      // We reevaluate the state of the non found roots, which should be save.
+      if (*pFoundRoot < 1)
+        {
+          (*ppRootFinder)->calculateTrueValue();
+        }
+
+      ++pFoundRoot; ++ppRootFinder;
+    }
+
+  pFoundRoot = foundRoots.array();
+  ppRootFinder = mRootIndex2RootFinder.array();
+
+  // We go through the list of roots and process the events
+  // which need to be checked whether they fire.
+  bool TriggerBefore = true;
+
+  while (pFoundRoot != pFoundRootEnd)
+    {
+      pProcessEvent = *ppEvent;
+      TriggerBefore = pProcessEvent->getMathTrigger().calculate();
+
+      // Process the events for which we have found a root.
+      // A found root is indicated by roots[i] = 1 or 0 otherwise.
+      while (pFoundRoot != pFoundRootEnd &&
+             *ppEvent == pProcessEvent)
+        {
+          // We must only toggle the roots which are marked.
+          if (*pFoundRoot > 0)
+            {
+              (*ppRootFinder)->toggle(time);
+            }
+
+          ++pFoundRoot; ++ppEvent; ++ppRootFinder;
+        }
+
+      bool TriggerAfter = pProcessEvent->getMathTrigger().calculate();
+
+      // Check whether the event fires
+      if (TriggerAfter == true &&
+          TriggerBefore == false)
+        {
+          // We are dealing with discrete root processing and can not distinguish
+          // between equality and inequality. Thus we just pick equality = true
+          pProcessEvent->fire(time, true, mProcessQueue);
+        }
+    }
+
+  return;
+}
+
 const C_FLOAT64 & CMathModel::getProcessQueueExecutionTime() const
 {
   return mProcessQueue.getProcessQueueExecutionTime();
+}
+
+const CProcessQueue & CMathModel::getProcessQueue() const
+{
+  return mProcessQueue;
+}
+
+CProcessQueue & CMathModel::getProcessQueue()
+{
+  return mProcessQueue;
 }
 
 void CMathModel::applyInitialValues()
@@ -329,7 +406,7 @@ void CMathModel::applyInitialValues()
   // for each event
   for (; itMathEvent != endMathEvent; ++itMathEvent)
     {
-      (*itMathEvent)->getMathTrigger().calculateInitialTrue();
+      (*itMathEvent)->getMathTrigger().applyInitialValues();
     }
 
   // We need to schedule events which fire at t > t_0
@@ -518,7 +595,7 @@ bool CMathModel::determineInitialRoots(CVector< C_INT > & foundRoots)
           if ((*ppRootFinder)->isEquality() &&
               *pDerivative < 0.0)
             {
-              (*ppRootFinder)->toggle(true);
+              (*ppRootFinder)->toggle(std::numeric_limits< C_FLOAT64 >::quiet_NaN(), true, false);
             }
         }
 

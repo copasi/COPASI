@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-//   $Revision: 1.95 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/20 12:08:24 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -54,28 +46,28 @@ const CRenameHandler * CCopasiObject::smpRenameHandler = NULL;
 UpdateMethod CCopasiObject::mDefaultUpdateMethod;
 
 CCopasiObject::CCopasiObject():
-    CObjectInterface(),
-    mObjectName("No Name"),
-    mObjectType("Unknown Type"),
-    mpObjectParent(NULL),
-    mpObjectDisplayName(NULL),
-    mObjectFlag(0),
-    mpUpdateMethod(&this->mDefaultUpdateMethod),
-    mpRefresh(NULL)
+  CObjectInterface(),
+  mObjectName("No Name"),
+  mObjectType("Unknown Type"),
+  mpObjectParent(NULL),
+  mpObjectDisplayName(NULL),
+  mObjectFlag(0),
+  mpUpdateMethod(&this->mDefaultUpdateMethod),
+  mpRefresh(NULL)
 {}
 
 CCopasiObject::CCopasiObject(const std::string & name,
                              const CCopasiContainer * pParent,
                              const std::string & type,
                              const unsigned C_INT32 & flag):
-    CObjectInterface(),
-    mObjectName((name == "") ? "No Name" : name),
-    mObjectType(type),
-    mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
-    mpObjectDisplayName(NULL),
-    mObjectFlag(flag),
-    mpUpdateMethod(&this->mDefaultUpdateMethod),
-    mpRefresh(NULL)
+  CObjectInterface(),
+  mObjectName((name == "") ? "No Name" : name),
+  mObjectType(type),
+  mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
+  mpObjectDisplayName(NULL),
+  mObjectFlag(flag),
+  mpUpdateMethod(&this->mDefaultUpdateMethod),
+  mpRefresh(NULL)
 {
   if (mpObjectParent != NULL)
     if (mpObjectParent->isContainer()) mpObjectParent->add(this);
@@ -83,14 +75,14 @@ CCopasiObject::CCopasiObject(const std::string & name,
 
 CCopasiObject::CCopasiObject(const CCopasiObject & src,
                              const CCopasiContainer * pParent):
-    CObjectInterface(),
-    mObjectName(src.mObjectName),
-    mObjectType(src.mObjectType),
-    mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
-    mpObjectDisplayName(NULL),
-    mObjectFlag(src.mObjectFlag),
-    mpUpdateMethod(&this->mDefaultUpdateMethod),
-    mpRefresh(NULL)
+  CObjectInterface(),
+  mObjectName(src.mObjectName),
+  mObjectType(src.mObjectType),
+  mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
+  mpObjectDisplayName(NULL),
+  mObjectFlag(src.mObjectFlag),
+  mpUpdateMethod(&this->mDefaultUpdateMethod),
+  mpRefresh(NULL)
 {if (mpObjectParent != NULL) mpObjectParent->add(this);}
 
 CCopasiObject::~CCopasiObject()
@@ -127,7 +119,7 @@ CCopasiObjectName CCopasiObject::getCN() const
         tmp << "[" << static_cast<const CCopasiVector< CCopasiObject > *>(mpObjectParent)->getIndex(this) << "]";
       else
         tmp << "," << CCopasiObjectName::escape(mObjectType)
-        << "=" << CCopasiObjectName::escape(mObjectName);
+            << "=" << CCopasiObjectName::escape(mObjectName);
 
       CN = tmp.str();
     }
@@ -371,6 +363,26 @@ void CCopasiObject::getAllDependencies(CCopasiObject::DataObjectSet & dependenci
       // Add all the dependencies of the direct dependency *it.
       (*it)->getAllDependencies(dependencies, context);
     }
+}
+
+// virtual
+bool CCopasiObject::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObjects) const
+{
+  bool MustBeDeleted = false;
+
+  DataObjectSet::const_iterator it = mDependencies.begin();
+  DataObjectSet::const_iterator end = mDependencies.end();
+
+  for (; it != end; ++it)
+    {
+      if (deletedObjects.find(*it) != deletedObjects.end())
+        {
+          MustBeDeleted = true;
+          break;
+        }
+    }
+
+  return MustBeDeleted;
 }
 
 bool CCopasiObject::dependsOn(CCopasiObject::DataObjectSet candidates,

@@ -69,12 +69,26 @@ if (NOT EXISTS ${LAPACK_F2C_LIBRARY})
 set (LAPACK_F2C_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/libf2c.lib CACHE FILEPATH "lapack library" FORCE)
 endif()
 
+# cpp unit
+if (NOT EXISTS ${CPPUNIT_INCLUDE_DIR})
+set (CPPUNIT_INCLUDE_DIR ${COPASI_DEPENDENCY_DIR}/include CACHE PATH "cpp unit include directory" FORCE)
+endif()
+if (NOT EXISTS ${CPPUNIT_LIBRARY})
+set (CPPUNIT_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/cppunit.lib CACHE FILEPATH "cppunit library" FORCE)
+endif()
+
 # expat
 if (NOT EXISTS ${LIBEXPAT_INCLUDE_DIR})
 set (LIBEXPAT_INCLUDE_DIR ${COPASI_DEPENDENCY_DIR}/include CACHE PATH "expat include directory" FORCE)
 endif()
 if (NOT EXISTS ${LIBEXPAT_LIBRARY})
 set (LIBEXPAT_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/expat.lib CACHE FILEPATH "expat library" FORCE)
+endif()
+if (NOT EXISTS ${EXPAT_INCLUDE_DIR})
+set (EXPAT_INCLUDE_DIR ${COPASI_DEPENDENCY_DIR}/include CACHE PATH "expat include directory" FORCE)
+endif()
+if (NOT EXISTS ${EXPAT_LIBRARY})
+set (EXPAT_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/expat.lib CACHE FILEPATH "expat library" FORCE)
 endif()
 
 # mml
@@ -147,12 +161,27 @@ set (LAPACK_F2C_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/libf2c.a CACHE FILEPATH "la
 endif()
 endif()
 
+# cpp unit
+if (NOT EXISTS ${CPPUNIT_INCLUDE_DIR})
+set (CPPUNIT_INCLUDE_DIR ${COPASI_DEPENDENCY_DIR}/include CACHE PATH "cpp unit include directory" FORCE)
+endif()
+if (NOT EXISTS ${CPPUNIT_LIBRARY})
+set (CPPUNIT_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/libcppunit.a CACHE FILEPATH "cppunit library" FORCE)
+endif()
+
 # expat
 if (NOT EXISTS ${LIBEXPAT_INCLUDE_DIR})
 set (LIBEXPAT_INCLUDE_DIR ${COPASI_DEPENDENCY_DIR}/include CACHE PATH "expat include directory" FORCE)
 endif()
 if (NOT EXISTS ${LIBEXPAT_LIBRARY})
 set (LIBEXPAT_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/libexpat.a CACHE FILEPATH "expat library" FORCE)
+endif()
+
+if (NOT EXISTS ${EXPAT_INCLUDE_DIR})
+set (EXPAT_INCLUDE_DIR ${COPASI_DEPENDENCY_DIR}/include CACHE PATH "expat include directory" FORCE)
+endif()
+if (NOT EXISTS ${EXPAT_LIBRARY})
+set (EXPAT_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/libexpat.a CACHE FILEPATH "expat library" FORCE)
 endif()
 
 # mml
@@ -182,4 +211,4 @@ endif()
 
 endif()
 
-endif(COPASI_DEPENDENCY_DIR)
+endif()

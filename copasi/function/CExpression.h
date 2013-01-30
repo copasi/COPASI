@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-//   $Revision: 1.28 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/16 23:10:01 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -75,8 +67,9 @@ private:
 public:
   /**
    * Set whether this a boolean expression or not
+   * @param const bool & isBoolean
    */
-  void setBooleanRequired(const bool & booleanRequired);
+  void setIsBoolean(const bool & booleanRequired);
 
   /**
    * Set the infix description of the tree and compile it.
@@ -166,6 +159,11 @@ protected:
    * Human readable display string.
    */
   std::string mDisplayString;
+
+  /**
+   * Indicates whether the expression is boolean or not.
+   */
+  bool mIsBoolean;
 };
 
 #endif // COPASI_CExpression

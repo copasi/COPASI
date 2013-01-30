@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/CSBMLExporter.cpp,v $
-//   $Revision: 1.105 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/15 15:57:18 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -39,6 +31,7 @@
 
 #include <sbml/packages/layout/extension/LayoutModelPlugin.h>
 #include <sbml/packages/layout/extension/LayoutExtension.h>
+#include <sbml/conversion/ConversionProperties.h>
 
 #ifdef USE_CRENDER_EXTENSION
 #include <sbml/packages/render/extension/RenderExtension.h>
@@ -105,6 +98,187 @@
 #include "utilities/CVersion.h"
 #include "commandline/CLocaleString.h"
 
+// helper functions for function definitions
+
+std::string hasFunctionDefinitionForURI(SBMLDocument* pSBMLDocument,
+                                        const std::string& sNamespace,
+                                        const std::string& elementName,
+                                        const std::string& definition)
+{
+  if (pSBMLDocument == NULL || pSBMLDocument->getModel() == NULL) return false;
+
+  for (unsigned int i = 0; i < pSBMLDocument->getModel()->getNumFunctionDefinitions(); ++i)
+    {
+      FunctionDefinition* current = pSBMLDocument->getModel()->getFunctionDefinition(i);
+
+      if (current == NULL) continue;
+
+      if (!current->isSetAnnotation()) continue;
+
+      const XMLNode* element = current->getAnnotation();
+
+      if (element == NULL) continue;
+
+      for (unsigned int i = 0 ; i < element->getNumChildren(); ++i)
+        {
+          const XMLNode& annot = element->getChild(i);
+
+          if (annot.getURI() == sNamespace &&
+              annot.getName() == elementName &&
+              annot.getAttrValue("definition") == definition)
+            {
+              return current->getId();
+            }
+        }
+    }
+
+  return "";
+}
+
+std::string createFunctionDefinitonForURI(SBMLDocument* pSBMLDocument,
+    std::map<std::string, const SBase*>& idMap,
+    const char* id,
+    const std::string& sNamespace,
+    const std::string& elementName,
+    const std::string& definition,
+    const std::string& lambda)
+{
+  if (pSBMLDocument == NULL || pSBMLDocument->getModel() == NULL) return id;
+
+  std::string newId = CSBMLExporter::createUniqueId(idMap, id, false);
+
+  FunctionDefinition *def = pSBMLDocument->getModel()->createFunctionDefinition();
+  def -> setId(newId);
+  def -> setMath(SBML_parseFormula(lambda.c_str()));
+
+  std::stringstream annotation;
+  std::string annotElement = pSBMLDocument->getLevel() == 1 ? "annotations" : "annotation";
+  annotation << "<" << annotElement << "> <" << elementName
+             << " xmlns='" << sNamespace
+             << "' definition='" << definition
+             << "' /> </" << annotElement << ">";
+
+  def->setAnnotation(annotation.str());
+
+  return newId;
+}
+
+std::string addRateOfIfItDoesNotExist(SBMLDocument* pSBMLDocument,
+                                      std::map<std::string, const SBase*>& idMap,
+                                      const char* id)
+{
+  std::string newId = hasFunctionDefinitionForURI(pSBMLDocument,
+                      "http://sbml.org/annotations/symbols",
+                      "symbols",
+                      "http://en.wikipedia.org/wiki/Derivative");
+
+  if (!newId.empty()) return newId;
+
+  newId = createFunctionDefinitonForURI(
+            pSBMLDocument,
+            idMap,
+            id,
+            "http://sbml.org/annotations/symbols",
+            "symbols",
+            "http://en.wikipedia.org/wiki/Derivative",
+            "lambda(a,NaN)"
+          );
+  return newId;
+}
+
+std::string getUserDefinedFuctionForName(SBMLDocument* pSBMLDocument,
+    std::map<std::string, const SBase*>& idMap,
+    const char* id)
+{
+  std::string newId;
+
+  if (id == std::string("RNORMAL"))
+    {
+      newId = hasFunctionDefinitionForURI(pSBMLDocument,
+                                          "http://sbml.org/annotations/distribution",
+                                          "distribution",
+                                          "http://www.uncertml.org/distributions/normal");
+
+      if (!newId.empty()) return newId;
+
+      newId = createFunctionDefinitonForURI(
+                pSBMLDocument,
+                idMap,
+                id,
+                "http://sbml.org/annotations/distribution",
+                "distribution",
+                "http://www.uncertml.org/distributions/normal",
+                "lambda(m,s,m)"
+              );
+      return newId;
+    }
+  else if (id == std::string("RUNIFORM"))
+    {
+      newId = hasFunctionDefinitionForURI(pSBMLDocument,
+                                          "http://sbml.org/annotations/distribution",
+                                          "distribution",
+                                          "http://www.uncertml.org/distributions/uniform");
+
+      if (!newId.empty()) return newId;
+
+      newId = createFunctionDefinitonForURI(
+                pSBMLDocument,
+                idMap,
+                id,
+                "http://sbml.org/annotations/distribution",
+                "distribution",
+                "http://www.uncertml.org/distributions/uniform",
+                "lambda(a,b,(a+b)/2)"
+              );
+      return newId;
+    }
+  else if (id == std::string("MAX"))
+    {
+      newId = hasFunctionDefinitionForURI(pSBMLDocument,
+                                          "http://sbml.org/annotations/function",
+                                          "function",
+                                          "http://sbml.org/annotations/function/max");
+
+      if (!newId.empty()) return newId;
+
+      newId = createFunctionDefinitonForURI(
+                pSBMLDocument,
+                idMap,
+                id,
+                "http://sbml.org/annotations/function",
+                "function",
+                "http://sbml.org/annotations/function/max",
+                "lambda(a,b,piecewise(a,geq(a,b),b))"
+              );
+      return newId;
+    }
+  else if (id == std::string("MIN"))
+    {
+      newId = hasFunctionDefinitionForURI(pSBMLDocument,
+                                          "http://sbml.org/annotations/function",
+                                          "function",
+                                          "http://sbml.org/annotations/function/min");
+
+      if (!newId.empty()) return newId;
+
+      newId = createFunctionDefinitonForURI(
+                pSBMLDocument,
+                idMap,
+                id,
+                "http://sbml.org/annotations/function",
+                "function",
+                "http://sbml.org/annotations/function/min",
+                "lambda(a,b,piecewise(a,leq(a,b),b))"
+              );
+      return newId;
+    }
+  else if (id == std::string("rateOf"))
+    {
+      return addRateOfIfItDoesNotExist(pSBMLDocument, idMap, id);
+    }
+
+  return id;
+}
 
 #ifdef USE_SBMLUNIT
 # include "sbmlunit/CUnitInterfaceSBML.h"
@@ -154,60 +328,70 @@ void CSBMLExporter::createTimeUnit(const CCopasiDataModel& dataModel)
         unit.setScale(0);
         unit.setMultiplier(86400);
         break;
+
       case CModel::h:
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(0);
         unit.setMultiplier(3600);
         break;
+
       case CModel::min:
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(0);
         unit.setMultiplier(60);
         break;
+
       case CModel::s:
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(0);
         unit.setMultiplier(1);
         break;
+
       case CModel::ms:
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(-3);
         unit.setMultiplier(1);
         break;
+
       case CModel::micros:
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(-6);
         unit.setMultiplier(1);
         break;
+
       case CModel::ns:
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(-9);
         unit.setMultiplier(1);
         break;
+
       case CModel::ps:
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(-12);
         unit.setMultiplier(1);
         break;
+
       case CModel::fs:
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(-15);
         unit.setMultiplier(1);
         break;
+
       case CModel::dimensionlessTime:
         unit.setKind(UNIT_KIND_DIMENSIONLESS);
         unit.setExponent(1);
         unit.setScale(0);
         unit.setMultiplier(1);
         break;
+
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi time unit.");
         break;
@@ -246,7 +430,7 @@ void CSBMLExporter::createTimeUnit(const CCopasiDataModel& dataModel)
       pSBMLModel->setTimeUnits(uDef.getId());
     }
 
-#endif // LIBSBML_VERSION 
+#endif // LIBSBML_VERSION
 }
 
 /**
@@ -269,41 +453,49 @@ void CSBMLExporter::createVolumeUnit(const CCopasiDataModel& dataModel)
         unit.setExponent(1);
         unit.setScale(0);
         break;
+
       case CModel::ml:
         unit.setKind(UNIT_KIND_LITRE);
         unit.setExponent(1);
         unit.setScale(-3);
         break;
+
       case CModel::microl:
         unit.setKind(UNIT_KIND_LITRE);
         unit.setExponent(1);
         unit.setScale(-6);
         break;
+
       case CModel::nl:
         unit.setKind(UNIT_KIND_LITRE);
         unit.setExponent(1);
         unit.setScale(-9);
         break;
+
       case CModel::pl:
         unit.setKind(UNIT_KIND_LITRE);
         unit.setExponent(1);
         unit.setScale(-12);
         break;
+
       case CModel::fl:
         unit.setKind(UNIT_KIND_LITRE);
         unit.setExponent(1);
         unit.setScale(-15);
         break;
+
       case CModel::m3:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(3);
         unit.setScale(0);
         break;
+
       case CModel::dimensionlessVolume:
         unit.setKind(UNIT_KIND_DIMENSIONLESS);
         unit.setExponent(1);
         unit.setScale(0);
         break;
+
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi volume unit.");
         break;
@@ -341,7 +533,7 @@ void CSBMLExporter::createVolumeUnit(const CCopasiDataModel& dataModel)
       pSBMLModel->setVolumeUnits(uDef.getId());
     }
 
-#endif // LIBSBML_VERSION 
+#endif // LIBSBML_VERSION
 }
 
 /**
@@ -364,41 +556,49 @@ void CSBMLExporter::createSubstanceUnit(const CCopasiDataModel& dataModel)
         unit.setExponent(1);
         unit.setScale(0);
         break;
+
       case CModel::mMol:
         unit.setKind(UNIT_KIND_MOLE);
         unit.setExponent(1);
         unit.setScale(-3);
         break;
+
       case CModel::microMol:
         unit.setKind(UNIT_KIND_MOLE);
         unit.setExponent(1);
         unit.setScale(-6);
         break;
+
       case CModel::nMol:
         unit.setKind(UNIT_KIND_MOLE);
         unit.setExponent(1);
         unit.setScale(-9);
         break;
+
       case CModel::pMol:
         unit.setKind(UNIT_KIND_MOLE);
         unit.setExponent(1);
         unit.setScale(-12);
         break;
+
       case CModel::fMol:
         unit.setKind(UNIT_KIND_MOLE);
         unit.setExponent(1);
         unit.setScale(-15);
         break;
+
       case CModel::number:
         unit.setKind(UNIT_KIND_ITEM);
         unit.setExponent(1);
         unit.setScale(0);
         break;
+
       case CModel::dimensionlessQuantity:
         unit.setKind(UNIT_KIND_DIMENSIONLESS);
         unit.setExponent(1);
         unit.setScale(0);
         break;
+
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi quantity unit.");
         break;
@@ -437,10 +637,9 @@ void CSBMLExporter::createSubstanceUnit(const CCopasiDataModel& dataModel)
       // here we also set the extends unit to the same unit as the substance unit
       // because COPASI does not know about different extend units
       pSBMLModel->setExtentUnits(uDef.getId());
-
     }
 
-#endif // LIBSBML_VERSION 
+#endif // LIBSBML_VERSION
 }
 
 /**
@@ -463,46 +662,55 @@ void CSBMLExporter::createLengthUnit(const CCopasiDataModel& dataModel)
         unit.setExponent(1);
         unit.setScale(0);
         break;
+
       case CModel::dm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(1);
         unit.setScale(-1);
         break;
+
       case CModel::cm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(1);
         unit.setScale(-2);
         break;
+
       case CModel::mm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(1);
         unit.setScale(-3);
         break;
+
       case CModel::microm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(1);
         unit.setScale(-6);
         break;
+
       case CModel::nm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(1);
         unit.setScale(-9);
         break;
+
       case CModel::pm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(1);
         unit.setScale(-12);
         break;
+
       case CModel::fm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(1);
         unit.setScale(-15);
         break;
+
       case CModel::dimensionlessLength:
         unit.setKind(UNIT_KIND_DIMENSIONLESS);
         unit.setExponent(1);
         unit.setScale(0);
         break;
+
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi length unit.");
         break;
@@ -540,7 +748,7 @@ void CSBMLExporter::createLengthUnit(const CCopasiDataModel& dataModel)
       pSBMLModel->setLengthUnits(uDef.getId());
     }
 
-#endif // LIBSBML_VERSION 
+#endif // LIBSBML_VERSION
 }
 
 /**
@@ -563,46 +771,55 @@ void CSBMLExporter::createAreaUnit(const CCopasiDataModel& dataModel)
         unit.setExponent(2);
         unit.setScale(0);
         break;
+
       case CModel::dm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(2);
         unit.setScale(-1);
         break;
+
       case CModel::cm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(2);
         unit.setScale(-2);
         break;
+
       case CModel::mm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(2);
         unit.setScale(-3);
         break;
+
       case CModel::microm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(2);
         unit.setScale(-6);
         break;
+
       case CModel::nm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(2);
         unit.setScale(-9);
         break;
+
       case CModel::pm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(2);
         unit.setScale(-12);
         break;
+
       case CModel::fm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(2);
         unit.setScale(-15);
         break;
+
       case CModel::dimensionlessLength:
         unit.setKind(UNIT_KIND_DIMENSIONLESS);
         unit.setExponent(1);
         unit.setScale(0);
         break;
+
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi area unit.");
         break;
@@ -644,7 +861,7 @@ void CSBMLExporter::createAreaUnit(const CCopasiDataModel& dataModel)
       pSBMLModel->setAreaUnits(uDef.getId());
     }
 
-#endif // LIBSBML_VERSION 
+#endif // LIBSBML_VERSION
 }
 
 /**
@@ -866,6 +1083,7 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
             }
 
 #endif // LIBSBML_VERSION
+
           // clear the spatialSizeUnits attribute if there is any
           if (this->mSBMLLevel > 2 || (this->mSBMLLevel == 2 && this->mSBMLVersion >= 3))
             {
@@ -925,7 +1143,7 @@ void CSBMLExporter::createMetabolite(CMetab& metab)
       // so we also have to set the initial amount
       if (pSBMLSpecies->isSetInitialAmount() || this->mVariableVolumes == true || pSBMLSpecies->getLevel() == 1)
         {
-          pSBMLSpecies->setInitialAmount(value*metab.getCompartment()->getInitialValue());
+          pSBMLSpecies->setInitialAmount(value * metab.getCompartment()->getInitialValue());
         }
       else
         {
@@ -1476,7 +1694,6 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
                       pOrigNode = pNode;
                     }
                 }
-
             }
         }
 
@@ -1727,7 +1944,6 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
                       pOrigNode = pNode;
                     }
                 }
-
             }
         }
 
@@ -1937,11 +2153,23 @@ const std::map<std::string, const SBase*> CSBMLExporter::createIdMap(const Model
  * with an already existing SBML id which came from the sbmlid attribute in a
  * COPASI file or directly by importing an SBML file.
  */
-const std::string CSBMLExporter::createUniqueId(const std::map<std::string, const SBase*>& idMap, const std::string& prefix)
+const std::string CSBMLExporter::createUniqueId(const std::map < std::string,
+    const SBase* > & idMap,
+    const std::string& prefix,
+    bool addIndexForFirst /*=true*/)
 {
-  unsigned int i = 1;
+  unsigned int i = 0;
   std::ostringstream numberStream;
-  numberStream << prefix << i;
+
+  if (addIndexForFirst)
+    {
+      ++i;
+      numberStream << prefix << i;
+    }
+  else
+    {
+      numberStream << prefix;
+    }
 
   while (idMap.find(numberStream.str()) != idMap.end())
     {
@@ -2054,7 +2282,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CEvaluationTree& e
                     }
                   else
                     {
-                      if (pObject->getObjectName() != "Volume")
+                      if (pObject->getObjectName() != "Volume" && pObject->getObjectName() != "Rate")
                         {
                           result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "compartment", pObjectParent->getObjectName().c_str()));
                         }
@@ -2072,7 +2300,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CEvaluationTree& e
                     }
                   else
                     {
-                      if (pObject->getObjectName() != "Concentration" && pObject->getObjectName() != "ParticleNumber")
+                      if (pObject->getObjectName() != "Concentration" && pObject->getObjectName() != "ParticleNumber" && pObject->getObjectName() != "Rate")
                         {
                           result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "metabolite", pObjectParent->getObjectName().c_str()));
                         }
@@ -2090,7 +2318,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CEvaluationTree& e
                     }
                   else
                     {
-                      if (pObject->getObjectName() != "Value")
+                      if (pObject->getObjectName() != "Value" && pObject->getObjectName() != "Rate")
                         {
                           result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "parameter", pObjectParent->getObjectName().c_str()));
                         }
@@ -2266,15 +2494,19 @@ void CSBMLExporter::check_for_spatial_size_units(const CCopasiDataModel& dataMod
                                         // spatialDimensionsUnit attribute
                                         CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 83 , pSBMLSpecies->getId().c_str());
                                         break;
+
                                       case 1:
                                         pUDef1 = SBMLImporter::getSBMLUnitDefinitionForId("length", pSBMLDocument->getModel());
                                         break;
+
                                       case 2:
                                         pUDef1 = SBMLImporter::getSBMLUnitDefinitionForId("area", pSBMLDocument->getModel());
                                         break;
+
                                       case 3:
                                         pUDef1 = SBMLImporter::getSBMLUnitDefinitionForId("volume", pSBMLDocument->getModel());
                                         break;
+
                                       default:
                                         CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 82 , pCompartment->getId().c_str());
                                         break;
@@ -2580,7 +2812,7 @@ void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
                 {
                   // the function exists in the model, but it is not used in any
                   // expression
-                  if (pFun->getObjectName().find("function_4_") == 0)
+                  if (pFun->getObjectName().find("function_4_") == 0 || pFun->getObjectName().find("Function for ") == 0)
                     {
                       // store the function definition that is to be removed
                       toRemove.insert(pFunDef->getId());
@@ -2663,7 +2895,22 @@ void CSBMLExporter::createFunctionDefinitions(CCopasiDataModel& dataModel)
         }
     }
 
-  pModel->getListOfFunctionDefinitions()->clear(true);
+  // don't want to remove the new custom function definitions if present
+  // pModel->getListOfFunctionDefinitions()->clear(true);
+  for (int i = ((int)pModel->getNumFunctionDefinitions()) - 1; i >= 0; --i)
+    {
+      FunctionDefinition* current = pModel->getFunctionDefinition(i);
+
+      if (current != NULL &&
+          current->isSetAnnotation() &&
+          current->getAnnotation()->getNumChildren() == 1 &&
+          current->getAnnotation()->getChild(0).getURI().find("http://sbml.org/annotations/") != std::string::npos)
+        continue;
+
+      // if we are here it is not one of the custom ones, so delete it
+      FunctionDefinition* toDelete = pModel->removeFunctionDefinition(i);
+      delete toDelete;
+    }
 
   std::vector<CFunction*>::iterator it = functionsVect.begin(), endit = functionsVect.end();
 
@@ -2940,7 +3187,6 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   // update the comments on the model
   this->mpSBMLDocument->getModel()->setName(pModel->getObjectName());
 
-
   if (pModel != NULL && this->mpSBMLDocument->getModel() != NULL)
     {
       CSBMLExporter::setSBMLNotes(this->mpSBMLDocument->getModel(), pModel);
@@ -3080,7 +3326,18 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
 
   // In case the document is just a clone of an old model, we have to set the level and version
   if (this->mpSBMLDocument->getLevel() != this->mSBMLLevel || this->mpSBMLDocument->getVersion() != this->mSBMLVersion)
-    this->mpSBMLDocument->setLevelAndVersion(this->mSBMLLevel, this->mSBMLVersion);
+    {
+#if LIBSBML_VERSION >= 50400
+      ConversionProperties prop(new SBMLNamespaces(mSBMLLevel, mSBMLVersion));
+      prop.addOption("strict", false);
+      prop.addOption("setLevelAndVersion", true);
+      prop.addOption("ignorePackages", true);
+
+      mpSBMLDocument->convert(prop);
+#else
+      this->mpSBMLDocument->setLevelAndVersion(this->mSBMLLevel, this->mSBMLVersion);
+#endif
+    }
 
   if (this->mpSBMLDocument->getLevel() != this->mSBMLLevel || this->mpSBMLDocument->getVersion() != this->mSBMLVersion)
     {
@@ -3136,17 +3393,17 @@ const std::set<CEvaluationNodeFunction::SubType> CSBMLExporter::createUnsupporte
       // is ARCCOTH since we would need a piecewise for that which is not
       // supported in Level 1
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::ARCCOTH);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RNORMAL);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RUNIFORM);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RNORMAL);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RUNIFORM);
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::MAX);
       unsupportedFunctionTypes.insert(CEvaluationNodeFunction::MIN);
     }
   else
     {
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RNORMAL);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RUNIFORM);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::MAX);
-      unsupportedFunctionTypes.insert(CEvaluationNodeFunction::MIN);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RNORMAL);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::RUNIFORM);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::MAX);
+      //unsupportedFunctionTypes.insert(CEvaluationNodeFunction::MIN);
     }
 
   return unsupportedFunctionTypes;
@@ -3352,19 +3609,23 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(cons
             case 1:
               CSBMLExporter::isModelSBMLL2V1Compatible(dataModel, result);
               break;
+
             case 2:
             case 3:
               CSBMLExporter::isModelSBMLL2V3Compatible(dataModel, result);
               break;
+
             default:
               result.push_back(SBMLIncompatibility(6, sbmlLevel, sbmlVersion));
               break;
           }
 
         break;
+
       case 1:
         CSBMLExporter::isModelSBMLL1Compatible(dataModel, result);
         break;
+
       default:
         result.push_back(SBMLIncompatibility(6, sbmlLevel, sbmlVersion));
         break;
@@ -3769,6 +4030,7 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
               }
 
             break;
+
           case SBML_SPECIES:
             pSBMLSpecies = dynamic_cast<Species*>(pSBase);
             assert(pSBMLSpecies != NULL);
@@ -3779,6 +4041,7 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
               }
 
             break;
+
           case SBML_PARAMETER:
             pSBMLParameter = dynamic_cast<Parameter*>(pSBase);
             assert(pSBMLParameter != NULL);
@@ -3789,6 +4052,7 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
               }
 
             break;
+
           default:
             fatalError();
             break;
@@ -3946,8 +4210,9 @@ void CSBMLExporter::updateCOPASI2SBMLMap(const CCopasiDataModel& dataModel)
   // objects updated with objects from the copied
   // model
   this->mCOPASI2SBMLMap.clear();
-  std::map<CCopasiObject*, SBase*>::const_iterator it = const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap().begin();
-  std::map<CCopasiObject*, SBase*>::const_iterator endit = const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap().end();
+  std::map<CCopasiObject*, SBase*>& modelMap = const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap();
+  std::map<CCopasiObject*, SBase*>::const_iterator it = modelMap.begin();
+  std::map<CCopasiObject*, SBase*>::const_iterator endit = modelMap.end();
 
   while (it != endit)
     {
@@ -4021,6 +4286,7 @@ KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataMode
 
                   pSBMLPara->setId(pPara->getObjectName().c_str());
 #endif // LIBSBML_VERSION
+
                   // don't call setName on level 1 objects because this will also
                   // change the id
                   if (this->mpSBMLDocument->getLevel() > 1)
@@ -4691,6 +4957,7 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
     {
       case AST_FUNCTION_PIECEWISE:
         break;
+
       case AST_CONSTANT_E:
         // replace by exp(1)
         pResult = new ASTNode(AST_FUNCTION_EXP);
@@ -4698,6 +4965,7 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
         pChild->setValue(1.0);
         pResult->addChild(pChild);
         break;
+
       case AST_CONSTANT_PI:
         // replace by 2*ASIN(1.0)
         pResult = new ASTNode(AST_TIMES);
@@ -4709,6 +4977,7 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
         pChild->setValue(1.0);
         pResult->getChild(1)->addChild(pChild);
         break;
+
       case AST_FUNCTION_SEC:
         pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
         assert(pChild);
@@ -4716,6 +4985,7 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
         // replace by 1/cos(X)
         delete pChild;
         break;
+
       case AST_FUNCTION_CSC:
         // replace by 1/sin(X)
         pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
@@ -4723,6 +4993,7 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
         pResult = replace_CSC(pChild);
         delete pChild;
         break;
+
       case AST_FUNCTION_COT:
         // replace by 1/tan(X)
         pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
@@ -4730,6 +5001,7 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
         pResult = replace_COT(pChild);
         delete pChild;
         break;
+
       case AST_FUNCTION_SINH:
         // replace by (e^X-e^(-X))/2
         pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
@@ -4737,6 +5009,7 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
         pResult = replace_SINH(pChild);
         delete pChild;
         break;
+
       case AST_FUNCTION_COSH:
         // replace by (e^X+e^(-X))/2
         pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
@@ -4744,6 +5017,7 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
         pResult = replace_COSH(pChild);
         delete pChild;
         break;
+
       case AST_FUNCTION_TANH:
         // replace by (e^X-e^(-X))/(e^X+e^(-X))
         pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
@@ -4751,6 +5025,7 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
         pResult = replace_TANH(pChild);
         delete pChild;
         break;
+
       case AST_FUNCTION_SECH:
         // replace by 2/(e^X+e^(-X))
         pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
@@ -4758,6 +5033,7 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
         pResult = replace_SECH(pChild);
         delete pChild;
         break;
+
       case AST_FUNCTION_CSCH:
         // replace by 2/(e^X-e^(-X))
         pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
@@ -4765,6 +5041,7 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
         pResult = replace_CSCH(pChild);
         delete pChild;
         break;
+
       case AST_FUNCTION_COTH:
         // replace by (e^X+e^(-X))/(e^X-e^(-X))
         pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
@@ -4772,6 +5049,7 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
         pResult = replace_COTH(pChild);
         delete pChild;
         break;
+
       case AST_FUNCTION_ARCSINH:
         // replace by log(X + sqrt(X^2 + 1))
         pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
@@ -4779,6 +5057,7 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
         pResult = replace_ARCSINH(pChild);
         delete pChild;
         break;
+
       case AST_FUNCTION_ARCCOSH:
         // replace by log(X + sqrt(X-1) * sqrt(X+1))
         pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
@@ -4786,6 +5065,7 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
         pResult = replace_ARCCOSH(pChild);
         delete pChild;
         break;
+
       case AST_FUNCTION_ARCTANH:
         // replace by 1/2 * (log(1+X) - log(1-X))
         pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
@@ -4793,6 +5073,7 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
         pResult = replace_ARCTANH(pChild);
         delete pChild;
         break;
+
       case AST_FUNCTION_ARCSECH:
         // replace by log(sqrt((1/X)-1) * sqrt(1+(1/X)) + 1/X)
         pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
@@ -4800,6 +5081,7 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
         pResult = replace_ARCSECH(pChild);
         delete pChild;
         break;
+
       case AST_FUNCTION_ARCCSCH:
         // replace by log(sqrt(1+ (1/ (X^2)))+(1/X))
         pChild = CSBMLExporter::replaceL1IncompatibleNodes(pNode->getChild(0));
@@ -4807,11 +5089,13 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
         pResult = replace_ARCCSCH(pChild);
         delete pChild;
         break;
+
       case AST_FUNCTION_ARCCOTH:
         // this one is difficult since it would need a piecewise definition which
         // is not available in SBML Level 1
         fatalError();
         break;
+
       case AST_REAL:
 
         // for nan and inf
@@ -4839,6 +5123,7 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
           }
 
         break;
+
       default:
         // copy the node
         pResult = ConverterASTNode::shallowCopy(pNode);
@@ -5473,6 +5758,13 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                       pResult = pOrigNode->copyBranch();
                     }
                 }
+              else if (pObject->getObjectName() == "Rate")
+                {
+                  std::string id = addRateOfIfItDoesNotExist(mpSBMLDocument, mIdMap, "rateOf");
+                  pResult = new CEvaluationNodeObject(CEvaluationNodeObject::INVALID, "<rateOf>");
+                  pResult->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pObject->getObjectParent()->getObject(CCopasiObjectName("Reference=Concentration"))->getCN() + ">"));
+                  pResult->addChild(new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + id + ">"));
+                }
               else if (pObject->getObjectName() == "InitialParticleNumber" || pObject->getObjectName() == "ParticleNumber")
                 {
                   // if the units are not set to particle numbers anyway,
@@ -5769,6 +6061,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             cvTerm.setModelQualifierType(BQM_UNKNOWN);
             cvTerm.setBiologicalQualifierType(BQB_ENCODES);
             break;
+
           case CRDFPredicate::bqbiol_hasPart:
           case CRDFPredicate::copasi_hasPart:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -5777,6 +6070,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             cvTerm.setModelQualifierType(BQM_UNKNOWN);
             cvTerm.setBiologicalQualifierType(BQB_HAS_PART);
             break;
+
           case CRDFPredicate::bqbiol_hasVersion:
           case CRDFPredicate::copasi_hasVersion:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -5785,6 +6079,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             cvTerm.setModelQualifierType(BQM_UNKNOWN);
             cvTerm.setBiologicalQualifierType(BQB_HAS_VERSION);
             break;
+
           case CRDFPredicate::bqbiol_is:
           case CRDFPredicate::copasi_is:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -5793,6 +6088,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             cvTerm.setModelQualifierType(BQM_UNKNOWN);
             cvTerm.setBiologicalQualifierType(BQB_IS);
             break;
+
             // IS DESCRIBED BY is handled in the references below
             //case bqbiol_isDescribedBy:
             //    break;
@@ -5804,6 +6100,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             cvTerm.setModelQualifierType(BQM_UNKNOWN);
             cvTerm.setBiologicalQualifierType(BQB_IS_ENCODED_BY);
             break;
+
           case CRDFPredicate::bqbiol_isHomologTo:
           case CRDFPredicate::copasi_isHomologTo:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -5812,6 +6109,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             cvTerm.setModelQualifierType(BQM_UNKNOWN);
             cvTerm.setBiologicalQualifierType(BQB_IS_HOMOLOG_TO);
             break;
+
           case CRDFPredicate::bqbiol_isPartOf:
           case CRDFPredicate::copasi_isPartOf:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -5820,6 +6118,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             cvTerm.setModelQualifierType(BQM_UNKNOWN);
             cvTerm.setBiologicalQualifierType(BQB_IS_PART_OF);
             break;
+
           case CRDFPredicate::bqbiol_isVersionOf:
           case CRDFPredicate::copasi_isVersionOf:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -5829,6 +6128,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             cvTerm.setBiologicalQualifierType(BQB_IS_VERSION_OF);
             break;
 #if LIBSBML_VERSION >= 40100
+
             // This qualifier is supported in libsbml 4.1
           case CRDFPredicate::bqbiol_occursIn:
           case CRDFPredicate::copasi_occursIn:
@@ -5839,6 +6139,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             cvTerm.setBiologicalQualifierType(BQB_OCCURS_IN);
             break;
 #endif // LIBSBML_VERSION
+
           case CRDFPredicate::bqmodel_is:
             cvTerm.setQualifierType(MODEL_QUALIFIER);
             // libsbml does not reset the model qualifier type and the
@@ -5846,6 +6147,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
             cvTerm.setModelQualifierType(BQM_IS);
             break;
+
             // IS DESCRIBED BY is handled in the references below
             //case bqmodel_isDescribedBy:
             //    break;
@@ -5926,6 +6228,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             cvTerm.setModelQualifierType(BQM_UNKNOWN);
             cvTerm.setBiologicalQualifierType(BQB_IS_DESCRIBED_BY);
             break;
+
           case CRDFPredicate::bqmodel_isDescribedBy:
             cvTerm.setQualifierType(MODEL_QUALIFIER);
             // libsbml does not reset the model qualifier type and the
@@ -5933,6 +6236,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
             cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
             cvTerm.setModelQualifierType(BQM_IS_DESCRIBED_BY);
             break;
+
           default:
             cvTerm.setQualifierType(UNKNOWN_QUALIFIER);
             break;
@@ -5962,7 +6266,6 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           pSBMLObject->addCVTerm(&cvTerm, true);
         }
     }
-
 
   // starting with SBML L3 all model elements that are derived from SBase can have
   // a model history
@@ -6185,7 +6488,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
               pCOPASIAnnotation->addChild(pMIRIAMNode->getChild(0));
 #else
               pCOPASIAnnotation->addChild(*pMIRIAMNode);
-#endif // LIBSBML_VERSION < 40001 
+#endif // LIBSBML_VERSION < 40001
               // delete the MIRIAM node since addChild made a copy
               delete pMIRIAMNode;
             }
@@ -6361,6 +6664,30 @@ XMLNode* CSBMLExporter::replaceChild(const XMLNode* pParent, const XMLNode* pNew
   return pResult;
 }
 
+void adjustNames(ASTNode* node, SBMLDocument* pSBMLDocument, std::map<std::string, const SBase*>& idMap)
+{
+  if (node == NULL)
+    return;
+
+  if (node->isNumber() || node->isConstant() || node->isName())
+    return;
+
+  if (node->getType() == AST_FUNCTION)
+    {
+      std::string adjustedName = getUserDefinedFuctionForName(
+                                   pSBMLDocument,
+                                   idMap,
+                                   node->getName()
+                                 );
+      node->setName(adjustedName .c_str());
+    }
+
+  for (unsigned int i = 0; i < node->getNumChildren(); ++i)
+    {
+      adjustNames(node->getChild(i), pSBMLDocument, idMap);
+    }
+}
+
 ASTNode* CSBMLExporter::convertToASTNode(const CEvaluationNode* pOrig, CCopasiDataModel& dataModel)
 {
   // first go through the tree and check that all function calls are to
@@ -6368,6 +6695,9 @@ ASTNode* CSBMLExporter::convertToASTNode(const CEvaluationNode* pOrig, CCopasiDa
   // if they don't, we have to set one
   this->setFunctionSBMLIds(pOrig, dataModel);
   ASTNode* pResult = pOrig->toAST(&dataModel);
+
+  adjustNames(pResult, mpSBMLDocument, mIdMap);
+
   return pResult;
 }
 
@@ -6757,7 +7087,7 @@ void CSBMLExporter::collectIds(const CCopasiDataModel& dataModel, std::map<std::
 
       if (!id.empty())
         {
-          idMap.insert(std::pair<const std::string, const SBase*>(id, NULL));
+          idMap.insert(std::pair<const std::string, const SBase*>(id, (const SBase*)NULL));
         }
     }
 
@@ -6767,7 +7097,7 @@ void CSBMLExporter::collectIds(const CCopasiDataModel& dataModel, std::map<std::
 
   if (!id.empty())
     {
-      idMap.insert(std::pair<const std::string, const SBase*>(id, NULL));
+      idMap.insert(std::pair<const std::string, const SBase*>(id, (const SBase*)NULL));
     }
 
   iMax = pModel->getCompartments().size();
@@ -6779,7 +7109,7 @@ void CSBMLExporter::collectIds(const CCopasiDataModel& dataModel, std::map<std::
 
       if (!id.empty())
         {
-          idMap.insert(std::pair<const std::string, const SBase*>(id, NULL));
+          idMap.insert(std::pair<const std::string, const SBase*>(id, (const SBase*)NULL));
         }
     }
 
@@ -6792,7 +7122,7 @@ void CSBMLExporter::collectIds(const CCopasiDataModel& dataModel, std::map<std::
 
       if (!id.empty())
         {
-          idMap.insert(std::pair<const std::string, const SBase*>(id, NULL));
+          idMap.insert(std::pair<const std::string, const SBase*>(id, (const SBase*)NULL));
         }
     }
 
@@ -6805,7 +7135,7 @@ void CSBMLExporter::collectIds(const CCopasiDataModel& dataModel, std::map<std::
 
       if (!id.empty())
         {
-          idMap.insert(std::pair<const std::string, const SBase*>(id, NULL));
+          idMap.insert(std::pair<const std::string, const SBase*>(id, (const SBase*)NULL));
         }
     }
 
@@ -6818,7 +7148,7 @@ void CSBMLExporter::collectIds(const CCopasiDataModel& dataModel, std::map<std::
 
       if (!id.empty())
         {
-          idMap.insert(std::pair<const std::string, const SBase*>(id, NULL));
+          idMap.insert(std::pair<const std::string, const SBase*>(id, (const SBase*)NULL));
         }
     }
 
@@ -6831,7 +7161,7 @@ void CSBMLExporter::collectIds(const CCopasiDataModel& dataModel, std::map<std::
 
       if (!id.empty())
         {
-          idMap.insert(std::pair<const std::string, const SBase*>(id, NULL));
+          idMap.insert(std::pair<const std::string, const SBase*>(id, (const SBase*)NULL));
         }
     }
 }
@@ -6847,13 +7177,12 @@ void CSBMLExporter::assignSBMLIdsToReactions(CModel* pModel)
         {
           sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, "reaction_");
           (*it)->setSBMLId(sbmlId);
-          this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, NULL));
+          this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, (const SBase*)NULL));
         }
 
       ++it;
     }
 }
-
 
 /**
  * This method goes through all compartments and events and checks if
@@ -6931,7 +7260,6 @@ bool CSBMLExporter::hasVolumeAssignment(const CCopasiDataModel& dataModel)
   return result;
 }
 
-
 /**
  * This method multiplies a given expression by the given object.
  * The caller is responsible for freeing the memory for the new expression.
@@ -6983,83 +7311,32 @@ bool CSBMLExporter::setSBMLNotes(SBase* pSBase, const CAnnotation* pAnno)
 {
   bool result = true;
 
-  if (pSBase != NULL && pAnno != NULL)
+  if (pSBase == NULL || pAnno == NULL)
+    return false;
+
+  if ((!pAnno->getNotes().empty()) && !(pAnno->getNotes().find_first_not_of(" \n\t\r") == std::string::npos))
     {
-      if ((!pAnno->getNotes().empty()) && !(pAnno->getNotes().find_first_not_of(" \n\t\r") == std::string::npos))
-        {
 #if LIBSBML_VERSION >= 40100
-          // the new method to create notes does not add the notes tag around the notes any
-          // more because libsbml 4 checks if it is there and adds it if it isn't
-          XMLNode* pNotes = CSBMLExporter::createSBMLNotes(pAnno->getNotes());
+      // the new method to create notes does not add the notes tag around the notes any
+      // more because libsbml 4 checks if it is there and adds it if it isn't
+      XMLNode* pNotes = CSBMLExporter::createSBMLNotes(pAnno->getNotes());
 #else
-          // if we are compiling agains libsbml 3, we use the old way of setting the notes
-          std::string comments = "<notes>" + pAnno->getNotes() + "</notes>";
-          // the convertStringToXMLNode has changed behavior between libsbml 3 and libsbml 4
-          // in libsbml it creates a dummy node and in libsbml 4 it doesn't
-          // somehow this never did affect the notes because they were exported correctly with
-          // libsbml 3 already
-          XMLNode* pNotes = XMLNode::convertStringToXMLNode(comments);
+      // if we are compiling agains libsbml 3, we use the old way of setting the notes
+      std::string comments = "<notes>" + pAnno->getNotes() + "</notes>";
+      // the convertStringToXMLNode has changed behavior between libsbml 3 and libsbml 4
+      // in libsbml it creates a dummy node and in libsbml 4 it doesn't
+      // somehow this never did affect the notes because they were exported correctly with
+      // libsbml 3 already
+      XMLNode* pNotes = XMLNode::convertStringToXMLNode(comments);
 #endif // LIBSBML_VERSION
 
-          if (pNotes != NULL)
+      if (pNotes != NULL)
+        {
+          int notes_result = pSBase->setNotes(pNotes);
+
+          if (notes_result != LIBSBML_OPERATION_SUCCESS)
             {
-              int notes_result = pSBase->setNotes(pNotes);
-
-              if (notes_result != LIBSBML_OPERATION_SUCCESS)
-                {
-                  // issue some warning
-                  std::string target;
-
-                  switch (pSBase->getTypeCode())
-                    {
-                      case SBML_MODEL:
-                        target = "the SBML model";
-                        break;
-                      case SBML_COMPARTMENT:
-                        target = " compartment \"";
-                        target += pSBase->getName();
-                        target += "\"";
-                        break;
-                      case SBML_SPECIES:
-                        target =
-                          target = "species \"";
-                        target += pSBase->getName();
-                        target += "\"";
-                        break;
-                      case SBML_PARAMETER:
-                        target =
-                          target = "parameter \"";
-                        target += pSBase->getName();
-                        target += "\"";
-                        break;
-                      case SBML_REACTION:
-                        target = "reaction \"";
-                        target += pSBase->getName();
-                        target += "\"";
-                        break;
-                      case SBML_EVENT:
-                        target = "event \"";
-                        target += pSBase->getName();
-                        target += "\"";
-                        break;
-                      default:
-                        target = "object \"";
-                        target += pSBase->getName();
-                        target += "\"";
-                        break;
-                    }
-
-                  std::string warning = "Warning, notes could not be set on ";
-                  warning += target;
-                  warning += ", please consider reporting this to the COPASI developers.";
-                  CCopasiMessage(CCopasiMessage::WARNING, warning.c_str());
-                  result = false;
-                }
-
-              delete pNotes;
-            }
-          else
-            {
+              // issue some warning
               std::string target;
 
               switch (pSBase->getTypeCode())
@@ -7067,33 +7344,39 @@ bool CSBMLExporter::setSBMLNotes(SBase* pSBase, const CAnnotation* pAnno)
                   case SBML_MODEL:
                     target = "the SBML model";
                     break;
+
                   case SBML_COMPARTMENT:
                     target = " compartment \"";
                     target += pSBase->getName();
                     target += "\"";
                     break;
+
                   case SBML_SPECIES:
                     target =
                       target = "species \"";
                     target += pSBase->getName();
                     target += "\"";
                     break;
+
                   case SBML_PARAMETER:
                     target =
                       target = "parameter \"";
                     target += pSBase->getName();
                     target += "\"";
                     break;
+
                   case SBML_REACTION:
                     target = "reaction \"";
                     target += pSBase->getName();
                     target += "\"";
                     break;
+
                   case SBML_EVENT:
                     target = "event \"";
                     target += pSBase->getName();
                     target += "\"";
                     break;
+
                   default:
                     target = "object \"";
                     target += pSBase->getName();
@@ -7107,11 +7390,74 @@ bool CSBMLExporter::setSBMLNotes(SBase* pSBase, const CAnnotation* pAnno)
               CCopasiMessage(CCopasiMessage::WARNING, warning.c_str());
               result = false;
             }
+
+          delete pNotes;
+        }
+      else
+        {
+          std::string target;
+
+          switch (pSBase->getTypeCode())
+            {
+              case SBML_MODEL:
+                target = "the SBML model";
+                break;
+
+              case SBML_COMPARTMENT:
+                target = " compartment \"";
+                target += pSBase->getName();
+                target += "\"";
+                break;
+
+              case SBML_SPECIES:
+                target =
+                  target = "species \"";
+                target += pSBase->getName();
+                target += "\"";
+                break;
+
+              case SBML_PARAMETER:
+                target =
+                  target = "parameter \"";
+                target += pSBase->getName();
+                target += "\"";
+                break;
+
+              case SBML_REACTION:
+                target = "reaction \"";
+                target += pSBase->getName();
+                target += "\"";
+                break;
+
+              case SBML_EVENT:
+                target = "event \"";
+                target += pSBase->getName();
+                target += "\"";
+                break;
+
+              default:
+                target = "object \"";
+                target += pSBase->getName();
+                target += "\"";
+                break;
+            }
+
+          std::string warning = "Warning, notes could not be set on ";
+          warning += target;
+          warning += ", please consider reporting this to the COPASI developers.";
+          CCopasiMessage(CCopasiMessage::WARNING, warning.c_str());
+          result = false;
         }
     }
-  else
+
+  const std::map<std::string, std::string>& map = pAnno->getUnsupportedAnnotations();
+
+  if (map.size() > 0)
     {
-      result = false;
+      std::map<std::string, std::string>::const_iterator iter;
+
+      for (iter = map.begin(); iter != map.end(); ++iter)
+        pSBase->appendAnnotation(XMLNode::convertStringToXMLNode((*iter).second));
     }
 
   return result;
@@ -7340,13 +7686,13 @@ void CSBMLExporter::convert_to_l1v1(std::string& l1v2_string)
   // in between pos and pos2 there needs to be the number 2 and maybe some whitespace.
   // We don't want to make this to complicated and just assume that there is only one character in between the two quotation marks
   // Actually the 1 is already set in the rest of the exporting routines, so this is just there to be save
-  if (pos2 != pos + 2 || (l1v2_string[pos+1] != '2' && l1v2_string[pos+1] != '1'))
+  if (pos2 != pos + 2 || (l1v2_string[pos + 1] != '2' && l1v2_string[pos + 1] != '1'))
     {
       // throw an exception
       CCopasiMessage(CCopasiMessage::EXCEPTION, "Error. Version attribute value not what we expected. Can't convert string to SBML Level 1 Version 1.");
     }
 
-  l1v2_string[pos+1] = '1';
+  l1v2_string[pos + 1] = '1';
   //
   // change all species elements to specie
   start_pos = l1v2_string.find("<species ");
@@ -7379,5 +7725,3 @@ void CSBMLExporter::convert_to_l1v1(std::string& l1v2_string)
 }
 
 #endif // LIBSBML_VERSION
-
-

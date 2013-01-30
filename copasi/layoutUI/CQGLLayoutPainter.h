@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLLayoutPainter.h,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/11/09 15:05:30 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,7 +7,7 @@
 #define CQGLLAYOUTPAINTER_H__
 
 #include <QGLWidget>
-
+#include <QRectF>
 #include <set>
 
 class CCopasiDataModel;
@@ -97,11 +89,25 @@ public:
 
   double minX() const;
 
+  void setMinX(double x);
+
   double minY() const;
+
+  void setMinY(double y);
 
   double maxX() const;
 
+  void setMaxX(double x);
+
   double maxY() const;
+
+  void setMaxY(double y);
+
+  void setBounds(double minX, double minY, double maxX, double maxY);
+
+  void setBounds(const QRectF& rect);
+
+  void calculateAndAssignBounds(CLayout* pLayout);
 
   void update(const CCopasiDataModel* pDocument, CLayout* pLayout, const CLRenderInformationBase* pRenderInfo, const QString& baseDir);
 
@@ -184,7 +190,6 @@ public:
    */
   void setFogDensity(GLfloat dens);
 
-
   /**
    * Sets the fog color.
    */
@@ -195,7 +200,6 @@ public:
    * The array has a size of 4 elements.
    */
   const GLfloat* getFogColor() const;
-
 
   /**
    * Toggles the flag that determines if highlighted objects
@@ -215,7 +219,6 @@ public:
   bool getHighlightFlag() const;
 
 #endif // ELEMENTARY_MODE_DISPLAY
-
 
   /**
    * Sets the aspect for the renderer.

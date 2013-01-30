@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CReference.cpp,v $
-//   $Revision: 1.12 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/02/19 19:50:46 $
-// End CVS Header
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -24,23 +21,23 @@
 
 CReference::CReference(const std::string & objectName,
                        const CCopasiContainer * pParent):
-    CCopasiContainer(objectName, pParent, "Reference"),
-    mTriplet(),
-    mNodePath(),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Reference", this)),
-    mIdTriplet(),
-    mResource(NULL)
+  CCopasiContainer(objectName, pParent, "Reference"),
+  mTriplet(),
+  mNodePath(),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("Reference", this)),
+  mIdTriplet(),
+  mResource(NULL)
 {}
 
 CReference::CReference(const CRDFTriplet & triplet,
                        const std::string & objectName,
                        const CCopasiContainer * pParent):
-    CCopasiContainer(objectName, pParent, "Reference"),
-    mTriplet(triplet),
-    mNodePath(),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Creator", this)),
-    mIdTriplet(),
-    mResource(NULL)
+  CCopasiContainer(objectName, pParent, "Reference"),
+  mTriplet(triplet),
+  mNodePath(),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("Creator", this)),
+  mIdTriplet(),
+  mResource(NULL)
 {
   if (!mTriplet)
     return;
@@ -48,12 +45,12 @@ CReference::CReference(const CRDFTriplet & triplet,
   mNodePath = mTriplet.pObject->getPath();
 
   CRDFPredicate::ePredicateType Predicates[] =
-    {
-      CRDFPredicate::copasi_isDescribedBy,
-      CRDFPredicate::bqbiol_isDescribedBy,
-      CRDFPredicate::bqmodel_isDescribedBy,
-      CRDFPredicate::end
-    };
+  {
+    CRDFPredicate::copasi_isDescribedBy,
+    CRDFPredicate::bqbiol_isDescribedBy,
+    CRDFPredicate::bqmodel_isDescribedBy,
+    CRDFPredicate::end
+  };
 
   std::set< CRDFTriplet > Triples;
 
@@ -75,12 +72,12 @@ CReference::CReference(const CRDFTriplet & triplet,
 
 CReference::CReference(const CReference & src,
                        const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    mTriplet(src.mTriplet),
-    mNodePath(src.mNodePath),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Creator", this)),
-    mIdTriplet(src.mIdTriplet),
-    mResource(src.mResource)
+  CCopasiContainer(src, pParent),
+  mTriplet(src.mTriplet),
+  mNodePath(src.mNodePath),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("Creator", this)),
+  mIdTriplet(src.mIdTriplet),
+  mResource(src.mResource)
 {}
 
 CReference::~CReference()
@@ -89,13 +86,17 @@ CReference::~CReference()
 }
 
 const CRDFTriplet & CReference::getTriplet() const
-  {return mTriplet;}
+{return mTriplet;}
+const CMIRIAMResourceObject & CReference::getMIRIAMResourceObject() const
+{
+  return mResource;
+}
 
 const std::string & CReference::getKey() const
-  {return mKey;}
+{return mKey;}
 
 std::string CReference::getResource() const
-  {return mResource.getDisplayName();}
+{return mResource.getDisplayName();}
 
 void CReference::setResource(const std::string & resource)
 {
@@ -154,7 +155,7 @@ std::string CReference::getURI() const
 {return mResource.getURI();}
 
 const std::string & CReference::getDescription() const
-  {return mTriplet.pObject->getFieldValue(CRDFPredicate::dcterms_description);}
+{return mTriplet.pObject->getFieldValue(CRDFPredicate::dcterms_description);}
 
 void CReference::setDescription(const std::string & description)
 {

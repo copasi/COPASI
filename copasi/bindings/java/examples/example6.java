@@ -1,14 +1,13 @@
-// Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example6.java,v $ 
-//   $Revision: 1.3 $ 
-//   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2009/09/01 13:51:30 $ 
-// End CVS Header 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
+
 
 /**
  * This is an example on how to run an parameter fitting task.
@@ -256,7 +255,7 @@ public class example6
 
         CModel model=dataModel.getModel();
         assert model!=null;
-        CCopasiObject timeReference=model.getObject(new CCopasiObjectName("Reference=Time"));
+        CCopasiObject timeReference=model.getValueReference();
         assert timeReference != null;
         objectMap.setObjectCN(0,timeReference.getCN().getString());
        
@@ -265,21 +264,21 @@ public class example6
         objectMap.setRole(1,CExperiment.dependent);
         CMetab metab=metabVector.elementAt(0);
         assert metab != null;
-        CCopasiObject particleReference=metab.getObject(new CCopasiObjectName("Reference=Concentration"));
+        CCopasiObject particleReference=metab.getConcentrationReference();
         assert particleReference != null;
         objectMap.setObjectCN(1,particleReference.getCN().getString());
 
         objectMap.setRole(2,CExperiment.dependent);
         metab=metabVector.elementAt(1);
         assert metab != null;
-        particleReference=metab.getObject(new CCopasiObjectName("Reference=Concentration"));
+        particleReference=metab.getConcentrationReference();
         assert particleReference != null;
         objectMap.setObjectCN(2,particleReference.getCN().getString());
 
         objectMap.setRole(3,CExperiment.dependent);
         metab=metabVector.elementAt(2);
         assert metab != null;
-        particleReference=metab.getObject(new CCopasiObjectName("Reference=Concentration"));
+        particleReference=metab.getConcentrationReference();
         assert particleReference != null;
         objectMap.setObjectCN(3,particleReference.getCN().getString());
         
@@ -299,7 +298,7 @@ public class example6
         assert parameter != null;
         
         // define a CFitItem
-        CCopasiObject parameterReference=parameter.getObject(new CCopasiObjectName("Reference=Value"));
+        CCopasiObject parameterReference=parameter.getValueReference();
         assert parameterReference != null;
         CFitItem fitItem1=new CFitItem(dataModel);
         assert fitItem1 !=null;
@@ -319,7 +318,7 @@ public class example6
         assert parameter != null;
         
         // define a CFitItem
-        parameterReference=parameter.getObject(new CCopasiObjectName("Reference=Value"));
+        parameterReference=parameter.getValueReference();
         assert parameterReference != null;
         CFitItem fitItem2=new CFitItem(dataModel);
         assert fitItem2 !=null;

@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-//   $Revision: 1.124 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:11:21 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -58,37 +50,37 @@
 //  Default constructor
 COptProblem::COptProblem(const CCopasiTask::Type & type,
                          const CCopasiContainer * pParent):
-    CCopasiProblem(type, pParent),
-    mWorstValue(0.0),
-    mpParmSubtaskCN(NULL),
-    mpParmObjectiveExpression(NULL),
-    mpParmMaximize(NULL),
-    mpParmRandomizeStartValues(NULL),
-    mpParmCalculateStatistics(NULL),
-    mpGrpItems(NULL),
-    mpGrpConstraints(NULL),
-    mpOptItems(NULL),
-    mpConstraintItems(NULL),
-    mpSubtask(NULL),
-    mpObjectiveExpression(NULL),
-    mUpdateMethods(),
-    mInitialRefreshMethods(),
-    mRefreshMethods(),
-    mRefreshConstraints(),
-    mCalculateValue(0),
-    mSolutionVariables(),
-    mOriginalVariables(),
-    mSolutionValue(0),
-    mCounter(0),
-    mFailedCounter(0),
-    mConstraintCounter(0),
-    mFailedConstraintCounter(0),
-    mCPUTime(CCopasiTimer::PROCESS, this),
-    mhSolutionValue(C_INVALID_INDEX),
-    mhCounter(C_INVALID_INDEX),
-    mStoreResults(false),
-    mHaveStatistics(false),
-    mGradient(0)
+  CCopasiProblem(type, pParent),
+  mWorstValue(0.0),
+  mpParmSubtaskCN(NULL),
+  mpParmObjectiveExpression(NULL),
+  mpParmMaximize(NULL),
+  mpParmRandomizeStartValues(NULL),
+  mpParmCalculateStatistics(NULL),
+  mpGrpItems(NULL),
+  mpGrpConstraints(NULL),
+  mpOptItems(NULL),
+  mpConstraintItems(NULL),
+  mpSubtask(NULL),
+  mpObjectiveExpression(NULL),
+  mUpdateMethods(),
+  mInitialRefreshMethods(),
+  mRefreshMethods(),
+  mRefreshConstraints(),
+  mCalculateValue(0),
+  mSolutionVariables(),
+  mOriginalVariables(),
+  mSolutionValue(0),
+  mCounter(0),
+  mFailedCounter(0),
+  mConstraintCounter(0),
+  mFailedConstraintCounter(0),
+  mCPUTime(CCopasiTimer::PROCESS, this),
+  mhSolutionValue(C_INVALID_INDEX),
+  mhCounter(C_INVALID_INDEX),
+  mStoreResults(false),
+  mHaveStatistics(false),
+  mGradient(0)
 {
   initializeParameter();
   initObjects();
@@ -97,37 +89,37 @@ COptProblem::COptProblem(const CCopasiTask::Type & type,
 // copy constructor
 COptProblem::COptProblem(const COptProblem& src,
                          const CCopasiContainer * pParent):
-    CCopasiProblem(src, pParent),
-    mWorstValue(src.mWorstValue),
-    mpParmSubtaskCN(NULL),
-    mpParmObjectiveExpression(NULL),
-    mpParmMaximize(NULL),
-    mpParmRandomizeStartValues(NULL),
-    mpParmCalculateStatistics(NULL),
-    mpGrpItems(NULL),
-    mpGrpConstraints(NULL),
-    mpOptItems(NULL),
-    mpConstraintItems(NULL),
-    mpSubtask(NULL),
-    mpObjectiveExpression(NULL),
-    mUpdateMethods(),
-    mInitialRefreshMethods(),
-    mRefreshMethods(),
-    mRefreshConstraints(),
-    mCalculateValue(src.mCalculateValue),
-    mSolutionVariables(src.mSolutionVariables),
-    mOriginalVariables(src.mOriginalVariables),
-    mSolutionValue(src.mSolutionValue),
-    mCounter(0),
-    mFailedCounter(0),
-    mConstraintCounter(0),
-    mFailedConstraintCounter(0),
-    mCPUTime(CCopasiTimer::PROCESS, this),
-    mhSolutionValue(C_INVALID_INDEX),
-    mhCounter(C_INVALID_INDEX),
-    mStoreResults(src.mStoreResults),
-    mHaveStatistics(src.mHaveStatistics),
-    mGradient(src.mGradient)
+  CCopasiProblem(src, pParent),
+  mWorstValue(src.mWorstValue),
+  mpParmSubtaskCN(NULL),
+  mpParmObjectiveExpression(NULL),
+  mpParmMaximize(NULL),
+  mpParmRandomizeStartValues(NULL),
+  mpParmCalculateStatistics(NULL),
+  mpGrpItems(NULL),
+  mpGrpConstraints(NULL),
+  mpOptItems(NULL),
+  mpConstraintItems(NULL),
+  mpSubtask(NULL),
+  mpObjectiveExpression(NULL),
+  mUpdateMethods(),
+  mInitialRefreshMethods(),
+  mRefreshMethods(),
+  mRefreshConstraints(),
+  mCalculateValue(src.mCalculateValue),
+  mSolutionVariables(src.mSolutionVariables),
+  mOriginalVariables(src.mOriginalVariables),
+  mSolutionValue(src.mSolutionValue),
+  mCounter(0),
+  mFailedCounter(0),
+  mConstraintCounter(0),
+  mFailedConstraintCounter(0),
+  mCPUTime(CCopasiTimer::PROCESS, this),
+  mhSolutionValue(C_INVALID_INDEX),
+  mhCounter(C_INVALID_INDEX),
+  mStoreResults(src.mStoreResults),
+  mHaveStatistics(src.mHaveStatistics),
+  mGradient(src.mGradient)
 {
   initializeParameter();
   initObjects();
@@ -560,7 +552,7 @@ bool COptProblem::calculate()
       mCalculateValue = *mpParmMaximize ? -mpObjectiveExpression->calcValue() : mpObjectiveExpression->calcValue();
     }
 
-  catch (CCopasiException & Exception)
+  catch (CCopasiException & /*Exception*/)
     {
       // We do not want to clog the message cue.
       CCopasiMessage::getLastMessage();
@@ -630,7 +622,7 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
 
           if (fabs(Current) > resolution)
             {
-              (*mUpdateMethods[i])(Current *(1.0 + factor));
+              (*mUpdateMethods[i])(Current * (1.0 + factor));
               Delta = 1.0 / (Current * factor);
             }
           else
@@ -837,8 +829,8 @@ void COptProblem::printResult(std::ostream * ostream) const
 
   os << "    Function Evaluations:\t" << mCounter << std::endl;
   os << "    CPU Time [s]:\t"
-  << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
-  << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
+     << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
+     << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
   os << "    Evaluations/Second [1/s]:\t" << mCounter / (C_FLOAT64)(CPUTime.getMilliSeconds() / 1e3) << std::endl;
   os << std::endl;
 
@@ -852,7 +844,7 @@ void COptProblem::printResult(std::ostream * ostream) const
   for (i = 0; itItem != endItem; ++itItem, i++)
     {
       os << "    " << (*itItem)->getObjectDisplayName() << ": "
-      << mSolutionVariables[i] << std::endl;
+         << mSolutionVariables[i] << std::endl;
     }
 }
 

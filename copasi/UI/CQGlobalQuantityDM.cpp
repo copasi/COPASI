@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQGlobalQuantityDM.cpp,v $
-//   $Revision: 1.8 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/04/27 17:05:34 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -28,7 +20,7 @@
 #include "qtUtilities.h"
 
 CQGlobalQuantityDM::CQGlobalQuantityDM(QObject *parent)
-    : CQBaseDataModel(parent)
+  : CQBaseDataModel(parent)
 
 {
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
@@ -96,12 +88,16 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
             {
               case COL_ROW_NUMBER:
                 return QVariant(QString(""));
+
               case COL_NAME_GQ:
                 return QVariant(QString("New Quantity"));
+
               case COL_TYPE_GQ:
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[0]])));
+
               case COL_INITIAL_GQ:
-                return QVariant(QString("0.0"));
+                return QVariant(QString::number(0.0, 'g', 10));
+
               default:
                 return QVariant(QString(""));
             }
@@ -123,12 +119,11 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[pGQ->getStatus()])));
 
               case COL_INITIAL_GQ:
-              {
                 if (role == Qt::EditRole)
                   return QVariant(QString::number(pGQ->getInitialValue(), 'g', 10));
                 else
                   return QVariant(pGQ->getInitialValue());
-              }
+
               case COL_TRANSIENT_GQ:
                 return QVariant(pGQ->getValue());
 
@@ -136,7 +131,6 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
                 return QVariant(pGQ->getRate());
 
               case COL_IEXPRESSION_GQ:
-              {
                 if (pGQ->getInitialExpression() != "")
                   {
                     pExpression = pGQ->getInitialExpressionPtr();
@@ -146,7 +140,8 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
                     else
                       return QVariant();
                   }
-              }
+
+                break;
 
               case COL_EXPRESSION_GQ:
               {
@@ -176,20 +171,28 @@ QVariant CQGlobalQuantityDM::headerData(int section, Qt::Orientation orientation
         {
           case COL_ROW_NUMBER:
             return QVariant(QString("#"));
+
           case COL_NAME_GQ:
             return QVariant(QString("Name"));
+
           case COL_TYPE_GQ:
             return QVariant(QString("     Type     "));
+
           case COL_INITIAL_GQ:
             return QVariant("Initial Value");
+
           case COL_TRANSIENT_GQ:
             return QVariant("Transient Value");
+
           case COL_RATE_GQ:
             return QVariant("Rate");
+
           case COL_IEXPRESSION_GQ:
             return QVariant("Initial Expression");
+
           case COL_EXPRESSION_GQ:
             return QVariant("Expression");
+
           default:
             return QVariant();
         }

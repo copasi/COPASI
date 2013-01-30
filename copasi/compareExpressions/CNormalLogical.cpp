@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLogical.cpp,v $
-//   $Revision: 1.38 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:26:19 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -905,7 +897,7 @@ bool CNormalLogical::generateCanonicalDNF(ItemSetOfSets& tmpAndSets) const
             {
               // create a new row for the truth table
               // the bits in i can be mapped to the truth values
-              std::bitset<16> bitSet(i);
+              std::bitset<16> bitSet((unsigned long long)i);
               unsigned int j, jMax = itemVector.size();
 
               for (j = 0; j < jMax; ++j)

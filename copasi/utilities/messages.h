@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -147,14 +147,14 @@ const MESSAGES Messages[] =
     "A possible reason is that the variable is a reserved string within the function description."
   },
   {
-    MCXML + 9, "XML (9): The file '%s'\nis written in a newer version '%s' of the COPASI file format.\n"
-    "This file might include features your version of COPASI does not support.\n"
+    MCXML + 9, "XML (9): The content is created with a newer version '%s' of COPASI.\n"
+    "This means it might include features your version of COPASI does not support.\n"
     "To assure full compatibility please download the newest version at http://www.copasi.org."
   },
   {MCXML + 10, "XML (10): Invalid element '<%s>' expecting '<%s>' encountered at line '%d'."},
   {MCXML + 11, "XML (11): Invalid closing element '</%s>' expecting '</%s>' encountered at line '%d'."},
   {MCXML + 12, "XML (12): Order '%d' out of range for variable '%s' in function '%s' encountered at line '%d'. "},
-  {MCXML + 13, "XML (13): Unrecognized format in file '%s'."},
+  {MCXML + 13, "XML (13): Unrecognized content format."},
   {
     MCXML + 14, "XML (14): Local reaction parameters may no longer be used in any expression in the model. "
     " The following automatic corrections have been applied:\n%s"
@@ -170,6 +170,7 @@ const MESSAGES Messages[] =
   {MCXML + 19, "XML (19): %s with key '%s' references a model element that no longer exists. The reference has been deleted and the element might not be displayed correctly in the layout."},
   {MCXML + 20, "XML (20): Could not determine text for TextGlyph with key '%s'. \"unset\" will be displayed instead."},
   {MCXML + 21, "XML (21): One or more layout elements reference model objects that no longer exists. These references have been deleted."},
+  {MCXML + 22, "XML (22): Duplicate XML Id '%s' encountered in line '%d'."},
 
   // CCopasiMessage
   {MCCopasiMessage + 1, "Message (1): No more messages."},
@@ -290,7 +291,7 @@ const MESSAGES Messages[] =
   {MCSBML + 93, "SBML (93): The model uses units on numbers which COPASI currently can't handle. Please be aware that the display of units in COPASI might therefore be incorrect,"},
   {MCSBML + 94, "SBML (94): %s for species reference found in model. Only initial assignments and assignment rules to species references are currently supported in COPASI. The %s has been ignored. The results produced by this model might therefore not be what you expect."},
   {MCSBML + 95, "SBML (95): The model uses species reference ids in mathematical expressions. This model can currently not be imported by COPASI."},
-  {MCSBML + 96, "SBML (96): Model can't be imported because it requires a package that is unkonwn to COPASI."},
+  {MCSBML + 96, "SBML (96): Model can't be imported because it requires a package that is unknown to COPASI."},
   {MCSBML + 97, "SBML (97): COPASI can't handle the initial value on event triggers yet, COPASI will set the initial values of event triggers to \"true\". This may change results for time course simualtions."},
   {MCSBML + 98, "SBML (98): COPASI can't handle event priorities yet, COPASI removed all priorities. This may change results for time course simulations."},
   {MCSBML + 99, "SBML (99): COPASI can't handle non-persistent event triggers, the persistent flag on all triggers has been set to true. This may change results of time course simulations."},
@@ -422,12 +423,20 @@ const MESSAGES Messages[] =
   {MCEigen + 3, "CEigen (3): Unable to sort Eigen values."},
   {MCEigen + 4, "CEigen (4): Eigen values do not satisfy selection criteria after reordering."},
 
-  {MCMiriam + 1, "CMiriam (1): Problem parsing RDF at line '%d', column '%d':\n %s"},
-  {MCMiriam + 2, "CMiriam (2): Namespace prefix redefinition for '%s' from '%s' to '%s'."},
+  {MCAnnotation + 1, "CAnnotation (1): Problem parsing RDF at line '%d', column '%d':\n %s"},
+  {MCAnnotation + 2, "CAnnotation (2): Namespace prefix redefinition for '%s' from '%s' to '%s'."},
   {
-    MCMiriam + 3, "CMiriam (3): Updating the MIRIRAM resource information failed. "
+    MCAnnotation + 3, "CAnnotation (3): Updating the MIRIRAM resource information failed. "
     "Please try again. The server responded:   \n%s   \n%s"
   },
+  {
+    MCAnnotation + 4, "CAnnotation (4): The MIRIAM resource '%s' is unknown to COPASI. "
+    "Please try to update the list of resources by running Update MIRIAM from the tools menu."
+  },
+  {MCAnnotation + 5, "CAnnotation (5): The annotation '%s' contains invalid XML."},
+  {MCAnnotation + 6, "CAnnotation (6): An annotation with then name '%s' already exists."},
+  {MCAnnotation + 7, "CAnnotation (7): The name of an annotation must not be empty."},
+  {MCAnnotation + 8, "CAnnotation (8): An annotation with the name '%s' already exists."},
 
   // Messages generated by the mathematical model an all its classes.
   {
@@ -454,6 +463,9 @@ const MESSAGES Messages[] =
   {MCEFMAnalysis + 3, "CEFMAnalysis (3): Non integer stoichiometry found for reaction '%s'."},
 
   {MCLayout + 1, "CLayout (1): Could not open image file '%s'."},
+
+  {MCScan + 1, "CScan (1): The scan item '%s' set the initial value of a state variable and is ignored when Continue from Current State is checked."},
+
   // This must be the last element of the message list! Do not delete!
   {0, NULL}
 };

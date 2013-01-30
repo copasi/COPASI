@@ -1,17 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CXMLHandler.h,v $
-   $Revision: 1.11 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2012/05/25 12:13:30 $
-   End CVS Header */
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -19,7 +16,7 @@
  * CXMLHandler class.
  * This class is the base class of all XML event handlers.
  *
- * Created for Copasi by Stefan Hoops 2003
+ * Created for COPASI by Stefan Hoops 2003
  * Copyright Stefan Hoops
  */
 
@@ -28,8 +25,11 @@
 
 #include <stack>
 #include <string>
+#include <iostream>
 
 #include "expat.h"
+
+class CCopasiObject;
 
 template<class CType, class CCommon>
 class CXMLElementHandler
@@ -67,11 +67,11 @@ public:
    * Constructor
    */
   CXMLElementHandler(CType & parser, CCommon & common):
-      mParser(parser),
-      mCommon(common),
-      mCurrentElement(-1),
-      mpCurrentHandler(NULL),
-      mLastKnownElement(-1)
+    mParser(parser),
+    mCommon(common),
+    mCurrentElement(-1),
+    mpCurrentHandler(NULL),
+    mLastKnownElement(-1)
   {}
 
   /**
@@ -113,6 +113,14 @@ protected:
       {
         delete mpCurrentHandler;
         mpCurrentHandler = NULL;
+      }
+  }
+
+  void addFix(const std::string & key, CCopasiObject * pObject)
+  {
+    if (!mCommon.KeyMap.addFix(key, pObject))
+      {
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 22, key.c_str(), mParser.getCurrentLineNumber());
       }
   }
 };

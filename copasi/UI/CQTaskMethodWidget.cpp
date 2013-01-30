@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskMethodWidget.cpp,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/09 21:32:18 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,11 +13,13 @@
 #include "utilities/utility.h"
 
 CQTaskMethodWidget::CQTaskMethodWidget(QWidget* parent, Qt::WindowFlags f):
-    QWidget(parent, f),
-    mpTask(NULL),
-    mpMethod(NULL),
-    mShowMethods(false),
-    mShowMethodParameters(false)
+  QWidget(parent, f),
+  mpTask(NULL),
+  mpMethod(NULL),
+  mpActiveMethod(NULL),
+  mMethodHistory(),
+  mShowMethods(false),
+  mShowMethodParameters(false)
 {
   setupUi(this);
 
@@ -42,7 +36,7 @@ CQTaskMethodWidget::CQTaskMethodWidget(QWidget* parent, Qt::WindowFlags f):
 
 CQTaskMethodWidget::~CQTaskMethodWidget()
 {
-  // TODO Auto-generated destructor stub
+  clearHistory();
 }
 
 void CQTaskMethodWidget::changeMethod(int /* index */)
@@ -50,18 +44,29 @@ void CQTaskMethodWidget::changeMethod(int /* index */)
   if (mpTask == NULL)
     return;
 
-  if (mpMethod != mpTask->getMethod())
-    pdelete(mpMethod);
+  // We update the active methods parameters
+  if (mShowMethodParameters)
+    {
+      unsigned C_INT32 i;
+      QString Value;
+
+      for (i = 0; i < mpActiveMethod->size(); i++)
+        {
+          if (!mpTableParameter->item(i, 0))
+            continue;
+
+          Value = mpTableParameter->item(i, 0)->text();
+          setParameterValue(mpActiveMethod, i, Value);
+        }
+    }
 
   CCopasiMethod::SubType Type =
     toEnum(TO_UTF8(mpBoxMethod->currentText()), CCopasiMethod::SubTypeName, CCopasiMethod::unset);
 
-  mpMethod = mpTask->createMethod(Type);
-
+  setActiveMethod(Type);
   loadMethod();
 
   return;
-
 }
 
 void CQTaskMethodWidget::setTask(CCopasiTask * pTask)
@@ -71,10 +76,17 @@ void CQTaskMethodWidget::setTask(CCopasiTask * pTask)
   if (mpTask != NULL)
     {
       mpMethod = mpTask->getMethod();
+
+      if (mpMethod != NULL)
+        {
+          setActiveMethod(mpMethod->getSubType());
+          *mpActiveMethod = *mpMethod;
+        }
     }
   else
     {
       mpMethod = NULL;
+      mpActiveMethod = NULL;
     }
 }
 
@@ -123,29 +135,29 @@ bool CQTaskMethodWidget::loadMethod()
 {
   if (!mpTask) return false;
 
-  if (!mpMethod) return false;
+  if (!mpActiveMethod) return false;
 
   if (mShowMethods)
     {
-      mpBoxMethod->setCurrentIndex(mpBoxMethod->findText(FROM_UTF8(CCopasiMethod::SubTypeName[mpMethod->getSubType()])));
+      mpBoxMethod->setCurrentIndex(mpBoxMethod->findText(FROM_UTF8(CCopasiMethod::SubTypeName[mpActiveMethod->getSubType()])));
     }
 
   if (mShowMethodParameters)
     {
       QString Value;
 
-      mpTableParameter->setRowCount((int) mpMethod->size());
+      mpTableParameter->setRowCount((int) mpActiveMethod->size());
 
       unsigned C_INT32 i;
       CCopasiParameter::Type Type;
 
-      for (i = 0; i < mpMethod->size(); i++)
+      for (i = 0; i < mpActiveMethod->size(); i++)
         {
           // create item of the current row and give it a name
           mpTableParameter->setVerticalHeaderItem(i, new QTableWidgetItem());
-          mpTableParameter->verticalHeaderItem(i)->setText(FROM_UTF8(mpMethod->getName(i)));
+          mpTableParameter->verticalHeaderItem(i)->setText(FROM_UTF8(mpActiveMethod->getName(i)));
 
-          Value = getParameterValue(mpMethod, i, &Type);
+          Value = getParameterValue(mpActiveMethod, i, &Type);
 
           QTableWidgetItem *pValueItem = new QTableWidgetItem();
           pValueItem->setData(Qt::EditRole, QVariant(Value));
@@ -171,9 +183,9 @@ bool CQTaskMethodWidget::saveMethod()
 
   if (mShowMethods)
     {
-      if (pMethod->getSubType() != mpMethod->getSubType())
+      if (pMethod->getSubType() != mpActiveMethod->getSubType())
         {
-          mpTask->setMethodType(mpMethod->getSubType());
+          mpTask->setMethodType(mpActiveMethod->getSubType());
           changed = true;
         }
     }
@@ -202,4 +214,82 @@ bool CQTaskMethodWidget::saveMethod()
     }
 
   return changed;
+}
+
+void CQTaskMethodWidget::addToHistory(CCopasiMethod * pMethod)
+{
+  if (pMethod == NULL)
+    {
+      return;
+    }
+
+  std::map< CCopasiMethod::SubType, CCopasiMethod * >::iterator found = mMethodHistory.find(pMethod->getSubType());
+
+  if (found != mMethodHistory.end())
+    {
+      if (found->second != pMethod)
+        {
+          delete found->second;
+          found->second = pMethod;
+        }
+
+      return;
+    }
+
+  mMethodHistory[pMethod->getSubType()] = pMethod;
+}
+
+void CQTaskMethodWidget::removeFromHistory(CCopasiMethod * pMethod)
+{
+  if (pMethod == NULL)
+    {
+      return;
+    }
+
+  std::map< CCopasiMethod::SubType, CCopasiMethod * >::iterator found = mMethodHistory.find(pMethod->getSubType());
+
+  if (found != mMethodHistory.end())
+    {
+      mMethodHistory.erase(found);
+    }
+}
+
+CCopasiMethod * CQTaskMethodWidget::getFromHistory(const CCopasiMethod::SubType & Type) const
+{
+  std::map< CCopasiMethod::SubType, CCopasiMethod * >::const_iterator found = mMethodHistory.find(Type);
+
+  if (found != mMethodHistory.end())
+    {
+      return found->second;
+    }
+
+  return NULL;
+}
+
+void CQTaskMethodWidget::setActiveMethod(const CCopasiMethod::SubType & Type)
+{
+  mpActiveMethod = getFromHistory(Type);
+
+  if (mpActiveMethod == NULL)
+    {
+      mpActiveMethod = mpTask->createMethod(Type);
+      addToHistory(mpActiveMethod);
+    }
+
+  assert(mpActiveMethod != NULL);
+
+  return;
+}
+
+void CQTaskMethodWidget::clearHistory()
+{
+  std::map< CCopasiMethod::SubType, CCopasiMethod * >::iterator it = mMethodHistory.begin();
+  std::map< CCopasiMethod::SubType, CCopasiMethod * >::iterator end = mMethodHistory.end();
+
+  for (; it != end; ++it)
+    {
+      delete it->second;
+    }
+
+  mMethodHistory.clear();
 }

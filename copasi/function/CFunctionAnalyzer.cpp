@@ -1,24 +1,18 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.cpp,v $
-//   $Revision: 1.25 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/25 10:42:20 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+#include <sstream>
 
 #include "CFunctionAnalyzer.h"
 
@@ -314,7 +308,8 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::CValue::generalize(const double & d
 void CFunctionAnalyzer::CValue::Or(const CValue & v) //  {mStatus = Status(mStatus | s);};
 {
   if ((this->mStatus & known) && (v.mStatus & known) && (this->mDouble != v.mDouble))
-    {//the two CValues have different known values
+    {
+      //the two CValues have different known values
       CValue tmp = generalize(this->mDouble);
       tmp.Or(generalize(v.mDouble));
       *this = tmp;
@@ -406,7 +401,7 @@ bool CFunctionAnalyzer::CValue::operator==(const CValue & rhs) const
 //***********************************************************************************************
 
 CFunctionAnalyzer::Result::Result()
-    : mpFunction(NULL),
+  : mpFunction(NULL),
     mIrreversibleKineticsWithProducts(false),
     mReversibleNonSplitable(false)
 {};
@@ -1369,9 +1364,13 @@ std::string CFunctionAnalyzer::write(int level, bool rt, const std::string & tex
   switch (level)
     {
       case 0: color = "\"#008000\""; break;
+
       case 1: color = "\"#909000\""; break;
+
       case 2: color = "\"#800000\""; break;
+
       case 3: color = "\"#c04040\""; break;
+
       default: color = "\"#0000a0\""; break;
     }
 

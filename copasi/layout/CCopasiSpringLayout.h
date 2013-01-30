@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CCopasiSpringLayout.h,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:10:44 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -64,12 +56,10 @@ public:
    */
   void finalizeState();
 
-
 //  virtual bool getState(std::vector<double> & vars);
 
   virtual double getPotential();
-  virtual std::vector<double> getInitialValues();
-
+  virtual const std::vector<double> & getInitialValues() const;
 
   /**
    * if all participants of a reaction are in a single compartment return the compartment
@@ -81,7 +71,6 @@ protected:
 
   /// performs all initializations that are later needed to calculate the potential
   bool initFromLayout(CLayout* layout);
-
 
   ///create variables for size and position of a compartment glyph
   void addCompartmentVariables(CLCompartmentGlyph* cg);
@@ -95,7 +84,7 @@ protected:
   static inline double distance(const double & x1, const double & y1,
                                 const double & x2, const double & y2)
   {
-    return sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2));
+    return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
     //return fabs(x1-x2)<fabs(y1-y2)?fabs(y1-y2):fabs(x1-x2);
   }
 
@@ -133,6 +122,7 @@ protected:
 
   std::vector<double> mInitialState;
 
+public:
   ///this describes one update action that has to be performed during setState()
   struct UpdateAction
   {
@@ -144,7 +134,7 @@ protected:
     };
 
     UpdateAction(Update_Enum action, CLBase* target, int index1 = -1, int index2 = -1, int index3 = -1, int index4 = -1)
-        : mAction(action),
+      : mAction(action),
         mpTarget(target),
         mIndex1(index1),
         mIndex2(index2),
@@ -160,6 +150,7 @@ protected:
     int mIndex4;
   };
 
+protected:
   ///this is the list of all update actions that have to be performed during setState();
   std::vector<UpdateAction> mUpdateActions;
 
@@ -179,6 +170,9 @@ protected:
 
   /// a list of fixed positon relations between objects. Should be constructed in initFromLayout()
   std::vector<CoordinateRelation> mFixedRelations;
+
+public:
+  virtual const std::vector<UpdateAction>& getUpdateActions() const;
 };
 
 #endif // CCopasiSpringLayout_H

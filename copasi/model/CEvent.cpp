@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CEvent.cpp,v $
-//   $Revision: 1.32 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/29 16:19:26 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -42,11 +34,11 @@
 
 CEventAssignment::CEventAssignment(const std::string & targetKey,
                                    const CCopasiContainer * pParent) :
-    CCopasiContainer(targetKey, pParent, "EventAssignment"),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("EventAssignment", this)),
-    mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
-    mpTarget(NULL),
-    mpExpression(NULL)
+  CCopasiContainer(targetKey, pParent, "EventAssignment"),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("EventAssignment", this)),
+  mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
+  mpTarget(NULL),
+  mpExpression(NULL)
 {
   if (mpModel != NULL)
     {
@@ -56,11 +48,11 @@ CEventAssignment::CEventAssignment(const std::string & targetKey,
 
 CEventAssignment::CEventAssignment(const CEventAssignment & src,
                                    const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("EventAssignment", this)),
-    mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
-    mpTarget(src.mpTarget),
-    mpExpression(NULL)
+  CCopasiContainer(src, pParent),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("EventAssignment", this)),
+  mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
+  mpTarget(src.mpTarget),
+  mpExpression(NULL)
 {
   if (mpModel != NULL)
     {
@@ -232,36 +224,40 @@ CExpression* CEventAssignment::getExpressionPtr()
   return mpExpression;
 }
 
+//****************************************************************
+
 CEvent::CEvent(const std::string & name,
                const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Event"),
-    CAnnotation(),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Event", this)),
-    mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
-    mAssignments("ListOfAssignments", this),
-    mDelayAssignment(true),
-    mFireAtInitialTime(false),
-    mPersistentTrigger(false),
-    mpTriggerExpression(NULL),
-    mpDelayExpression(NULL),
-    mpPriorityExpression(NULL)
+  CCopasiContainer(name, pParent, "Event"),
+  CAnnotation(),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("Event", this)),
+  mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
+  mAssignments("ListOfAssignments", this),
+  mDelayAssignment(true),
+  mFireAtInitialTime(false),
+  mPersistentTrigger(false),
+  mpTriggerExpression(NULL),
+  mpDelayExpression(NULL),
+  mpPriorityExpression(NULL),
+  mType(Assignment)
 {
   initObjects();
 }
 
 CEvent::CEvent(const CEvent & src,
                const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    CAnnotation(src),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Event", this)),
-    mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
-    mAssignments(src.mAssignments, this),
-    mDelayAssignment(src.mDelayAssignment),
-    mFireAtInitialTime(src.mFireAtInitialTime),
-    mPersistentTrigger(src.mPersistentTrigger),
-    mpTriggerExpression(src.mpTriggerExpression != NULL ? new CExpression(*src.mpTriggerExpression, this) : NULL),
-    mpDelayExpression(src.mpDelayExpression != NULL ? new CExpression(*src.mpDelayExpression, this) : NULL),
-    mpPriorityExpression(src.mpPriorityExpression != NULL ? new CExpression(*src.mpPriorityExpression, this) : NULL)
+  CCopasiContainer(src, pParent),
+  CAnnotation(src),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("Event", this)),
+  mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
+  mAssignments(src.mAssignments, this),
+  mDelayAssignment(src.mDelayAssignment),
+  mFireAtInitialTime(src.mFireAtInitialTime),
+  mPersistentTrigger(src.mPersistentTrigger),
+  mpTriggerExpression(src.mpTriggerExpression != NULL ? new CExpression(*src.mpTriggerExpression, this) : NULL),
+  mpDelayExpression(src.mpDelayExpression != NULL ? new CExpression(*src.mpDelayExpression, this) : NULL),
+  mpPriorityExpression(src.mpPriorityExpression != NULL ? new CExpression(*src.mpPriorityExpression, this) : NULL),
+  mType(src.mType)
 {
   initObjects();
 
@@ -279,6 +275,60 @@ CEvent::~CEvent()
 const std::string & CEvent::getKey() const
 {
   return mKey;
+}
+
+// virtual
+bool CEvent::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObjects) const
+{
+  bool MustBeDeleted = false;
+
+  CCopasiObject::DataObjectSet ChildObjects;
+
+  if (mpTriggerExpression != NULL)
+    {
+      ChildObjects.insert(mpTriggerExpression);
+    }
+
+  if (mpDelayExpression != NULL)
+    {
+      ChildObjects.insert(mpDelayExpression);
+    }
+
+  if (mpPriorityExpression != NULL)
+    {
+      ChildObjects.insert(mpPriorityExpression);
+    }
+
+  // We need to add all assignment targets and expressions
+  CCopasiVector< CEventAssignment >::const_iterator itAssignment = mAssignments.begin();
+  CCopasiVector< CEventAssignment >::const_iterator endAssignment = mAssignments.end();
+
+  for (; itAssignment != endAssignment; ++itAssignment)
+    {
+      if ((*itAssignment)->getTargetObject() != NULL)
+        {
+          ChildObjects.insert((*itAssignment)->getTargetObject());
+        }
+
+      if ((*itAssignment)->getExpressionPtr() != NULL)
+        {
+          ChildObjects.insert((*itAssignment)->getExpressionPtr());
+        }
+    }
+
+  DataObjectSet::const_iterator it = ChildObjects.begin();
+  DataObjectSet::const_iterator end = ChildObjects.end();
+
+  for (; it != end; ++it)
+    {
+      if ((*it)->mustBeDeleted(deletedObjects))
+        {
+          MustBeDeleted = true;
+          break;
+        }
+    }
+
+  return MustBeDeleted;
 }
 
 bool CEvent::compile(std::vector< CCopasiContainer * > listOfContainer)
@@ -413,7 +463,7 @@ bool CEvent::setTriggerExpression(const std::string & expression)
   if (mpTriggerExpression == NULL)
     {
       mpTriggerExpression = new CExpression("TriggerExpression", this);
-      mpTriggerExpression->setBooleanRequired(true);
+      mpTriggerExpression->setIsBoolean(true);
     }
 
   if (mpTriggerExpression->getInfix() != expression &&
@@ -559,7 +609,6 @@ bool CEvent::setPriorityExpression(const std::string & expression)
   return mpPriorityExpression->setInfix(expression);
 }
 
-
 bool CEvent::setPriorityExpressionPtr(CExpression* pExpression)
 {
   if (pExpression == mpPriorityExpression) return true;
@@ -632,4 +681,14 @@ void CEvent::deleteAssignment(const std::string & key)
     {
       mAssignments.CCopasiVector< CEventAssignment >::remove(pAssignment);
     }
+}
+
+const CEvent::Type & CEvent::getType() const
+{
+  return mType;
+}
+
+void CEvent::setType(const CEvent::Type & type)
+{
+  mType = type;
 }

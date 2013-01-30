@@ -1,23 +1,6 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodCoranaWalk.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/04 14:40:24 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 // written by Pedro Mendes, January 2012
@@ -42,7 +25,7 @@
 #define K 1.0
 
 COptMethodCoranaWalk::COptMethodCoranaWalk(const CCopasiContainer * pParent):
-    COptMethod(CCopasiTask::optimization, CCopasiMethod::CoranaWalk, pParent)
+  COptMethod(CCopasiTask::optimization, CCopasiMethod::CoranaWalk, pParent)
 {
   addParameter("Temperature", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0);
   addParameter("Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 100);
@@ -54,7 +37,7 @@ COptMethodCoranaWalk::COptMethodCoranaWalk(const CCopasiContainer * pParent):
 
 COptMethodCoranaWalk::COptMethodCoranaWalk(const COptMethodCoranaWalk & src,
     const CCopasiContainer * pParent):
-    COptMethod(src, pParent)
+  COptMethod(src, pParent)
 {initObjects();}
 
 COptMethodCoranaWalk::~COptMethodCoranaWalk()
@@ -99,7 +82,7 @@ bool COptMethodCoranaWalk::optimise()
     {
       const COptItem & OptItem = *(*mpOptItem)[i];
 
-      switch (OptItem.checkConstraint())
+      switch (OptItem.checkConstraint(OptItem.getStartValue()))
         {
           case - 1:
             mCurrent[i] = *OptItem.getLowerBoundValue();

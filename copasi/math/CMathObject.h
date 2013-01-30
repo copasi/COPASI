@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathObject.h,v $
-//   $Revision: 1.9 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/19 14:33:11 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -161,7 +153,6 @@ public:
    */
   const bool & isInitialValue() const;
 
-
   /**
    * Set the expression and compile the object.
    * @param const CExpression & expression,
@@ -177,19 +168,6 @@ public:
    * @return bool success
    */
   bool setExpressionPtr(CMathExpression * pMathExpression);
-
-  /**
-   * Set the expression and compile the object.
-   * @param const std::string & name
-   * @param const std::string & infix
-   * @param const std::vector< const CEvaluationNode * > & variables,
-   * @param CMathContainer & container
-   * @return bool success
-   */
-  bool setFunction(const std::string & name,
-                   const std::string & infix,
-                   const std::vector< const CEvaluationNode * > & variables,
-                   CMathContainer & container);
 
   /**
    * Retrieve a pointer to the math expression.

@@ -33,7 +33,7 @@ class example7
      // create a compartment with the name cell and an initial volume of 5.0
      // microliter
      CCompartment compartment = model.createCompartment("cell", 5.0);
-     CCopasiObject obj = compartment.getObject(new CCopasiObjectName("Reference=InitialVolume"));
+     CCopasiObject obj = compartment.getValueReference();
      Debug.Assert(obj != null);
      changedObjects.Add(obj);
      Debug.Assert(compartment != null);
@@ -43,7 +43,7 @@ class example7
      // the metabolite belongs to the compartment we created and is is to be
      // fixed
      CMetab S = model.createMetabolite("S", compartment.getObjectName(), 10.0, CMetab.FIXED);
-     obj = S.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
+     obj = S.getInitialConcentrationReference();
      Debug.Assert((obj != null));
      changedObjects.Add(obj);
      Debug.Assert((compartment != null));
@@ -53,7 +53,7 @@ class example7
      // concentration of 0. This metabolite is to be changed by reactions
      CMetab P = model.createMetabolite("P", compartment.getObjectName(), 0.0, CMetab.REACTIONS);
      Debug.Assert(P != null);
-     obj = P.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
+     obj = P.getInitialConcentrationReference();
      Debug.Assert(obj != null);
      changedObjects.Add(obj);
      Debug.Assert(model.getMetabolites().size() == 2);
@@ -79,7 +79,7 @@ class example7
      // set the status to FIXED
      MV.setStatus(CModelValue.FIXED);
      Debug.Assert(MV != null);
-     obj = MV.getObject(new CCopasiObjectName("Reference=InitialValue"));
+     obj = MV.getInitialValueReference();
      Debug.Assert(obj != null);
      changedObjects.Add(obj);
      Debug.Assert(model.getModelValues().size() == 1);

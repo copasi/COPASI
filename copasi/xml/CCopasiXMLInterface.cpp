@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -279,7 +279,7 @@ CCopasiXMLInterface::~CCopasiXMLInterface() {}
 bool CCopasiXMLInterface::load(const std::string & fileName,
                                const std::string & relativeTo)
 {
-  mFilename = relativeTo;
+  mPWD = relativeTo;
 
   std::ifstream is(CLocaleString::fromUtf8(fileName).c_str());
 
@@ -291,7 +291,7 @@ bool CCopasiXMLInterface::load(const std::string & fileName,
 bool CCopasiXMLInterface::save(const std::string & fileName,
                                const std::string & relativeTo)
 {
-  mFilename = relativeTo;
+  mPWD = relativeTo;
 
   std::ofstream os(CLocaleString::fromUtf8(fileName).c_str());
 
@@ -311,7 +311,13 @@ bool CCopasiXMLInterface::saveData(const std::string & data)
 
 bool CCopasiXMLInterface::saveXhtml(const std::string & xhtml)
 {
-  if (xhtml[0] == '<')
+  // if there is nothing to save bail
+  if (xhtml.empty())
+    return true;
+
+  std::string::size_type start = xhtml.find_first_not_of("\x0a\x0d\t ");
+
+  if (start != std::string::npos && xhtml[start] == '<')
     {
       std::string::size_type pos = xhtml.find('>');
       std::string FirstElement = xhtml.substr(0, pos);
@@ -433,7 +439,7 @@ bool CCopasiXMLInterface::saveParameter(const CCopasiParameter & parameter)
         File = * parameter.getValue().pFILE;
 
         if (!CDirEntry::isRelativePath(File) &&
-            !CDirEntry::makePathRelative(File, mFilename))
+            !CDirEntry::makePathRelative(File, mPWD))
           File = CDirEntry::fileName(File);
 
         Attributes.add("value", File);

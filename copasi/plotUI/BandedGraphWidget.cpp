@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/plotUI/BandedGraphWidget.cpp,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: tjohann $
-//   $Date: 2011/09/05 11:53:01 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,6 +7,7 @@
 
 #include "UI/CCopasiSelectionDialog.h"
 #include "UI/qtUtilities.h"
+#include "CQPlotEditWidget.h"
 
 #include "copasi.h"
 
@@ -22,12 +15,31 @@
 #include "plot/CPlotItem.h"
 #include "resourcesUI/CQIconResource.h"
 
+#if USE_NEW_PLOTSUBWIDGET
+/**
+ * In multiple edit mode, we don't want to edit name & channels
+ */
+void BandedGraphWidget::setMultipleEditMode(bool mode)
+{
+  mpEditTitle->setEnabled(!mode);
+  mpEditX->setEnabled(!mode);
+  mpEditYone->setEnabled(!mode);
+  mpEditYtwo->setEnabled(!mode);
+  mpBtnX->setEnabled(!mode);
+  mpBtnYone->setEnabled(!mode);
+  mpBtnYtwo->setEnabled(!mode);
+}
+#endif
+
 /*
  *  Constructs a BandedGraphWidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-BandedGraphWidget::BandedGraphWidget(QWidget* parent, const char* /* name */, Qt::WindowFlags fl)
-    : QWidget(parent, fl)
+BandedGraphWidget::BandedGraphWidget(QWidget* parent, const char* /* name */, Qt::WindowFlags fl):
+  CQPlotEditWidget(parent, fl),
+  mpObjectYone(NULL),
+  mpObjectYtwo(NULL),
+  mpObjectX(NULL)
 {
   setupUi(this);
 
@@ -84,7 +96,6 @@ BandedGraphWidget::LoadFromCurveSpec(const CPlotItem * curve)
   if (mpObjectYtwo)
     mpEditYtwo->setText(FROM_UTF8(mpObjectYtwo->getObjectDisplayName()));
 
-
   const void* tmp;
 
   if (!(tmp = curve->getValue("Line type").pVOID)) return false;
@@ -97,16 +108,15 @@ BandedGraphWidget::LoadFromCurveSpec(const CPlotItem * curve)
 }
 
 bool
-BandedGraphWidget::SaveToCurveSpec(CPlotItem * curve) const
+BandedGraphWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original /*= NULL*/) const
 {
-  //title
-  curve->setTitle(TO_UTF8(mpEditTitle->text()));
+  //curve->setType(CPlotItem::bandedGraph);
 
-  //channels
-  curve->getChannels().clear();
-  curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("")));
-  curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectYone ? mpObjectYone->getCN() : CCopasiObjectName("")));
-  curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectYtwo ? mpObjectYtwo->getCN() : (mpObjectYone ? mpObjectYone->getCN() : CCopasiObjectName(""))));
+  std::string title = TO_UTF8(mpEditTitle->text());
+
+  CCopasiObjectName xName = mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("");
+  CCopasiObjectName yName1 = mpObjectYone ? mpObjectYone->getCN() : CCopasiObjectName("");
+  CCopasiObjectName yName2 = mpObjectYtwo ? mpObjectYtwo->getCN() : (mpObjectYone ? mpObjectYone->getCN() : CCopasiObjectName(""));
 
   C_INT32 Activity = 0;
 
@@ -115,6 +125,46 @@ BandedGraphWidget::SaveToCurveSpec(CPlotItem * curve) const
   if (mpCheckDuring->isChecked()) Activity += COutputInterface::DURING;
 
   if (mpCheckAfter->isChecked()) Activity += COutputInterface::AFTER;
+
+  bool thingsChanged = false;
+
+  if (original != NULL)
+    {
+      // compare whether things changed
+      if (original->getTitle() != title)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getType() != CPlotItem::bandedGraph)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getActivity() != Activity)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getChannels().size() != 3)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getChannels()[0] != xName)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getChannels()[1] != yName1)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getChannels()[2] != yName2)
+        thingsChanged = true;
+    }
+  else thingsChanged = true;
+
+  if (!thingsChanged)
+    return false;
+
+  //title
+  curve->setTitle(title);
+
+  //channels
+  curve->getChannels().clear();
+  curve->getChannels().push_back(CPlotDataChannelSpec(xName));
+  curve->getChannels().push_back(CPlotDataChannelSpec(yName1));
+  curve->getChannels().push_back(CPlotDataChannelSpec(yName2));
 
   curve->setActivity((COutputInterface::Activity) Activity);
 
@@ -208,16 +258,8 @@ BandedGraphWidget::buttonPressedYtwo()
                                          + "|"
                                          + mpObjectX->getObjectDisplayName()));
 
-
       //TODO update tab title
     }
   else
     mpEditYtwo->setText("");
 }
-
-void
-BandedGraphWidget::setModel(const CModel * model)
-{
-  mpModel = model;
-}
-

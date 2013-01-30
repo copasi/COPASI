@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQMiriamWidget.cpp,v $
-//   $Revision: 1.23 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/02 18:56:24 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -21,6 +13,8 @@
 #include <QtGui/QHeaderView>
 #include <QtGui/QClipboard>
 #include <QtGui/QKeyEvent>
+#include <QtGui/QDesktopServices>
+#include <QtCore/QUrl>
 
 #include "copasi.h"
 
@@ -36,7 +30,7 @@
  *  name 'name'.'
  */
 CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
-    : CopasiWidget(parent, name)
+  : CopasiWidget(parent, name)
 {
   setupUi(this);
 
@@ -105,6 +99,9 @@ CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
       connect((*itDM), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
               this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
     }
+
+  connect(mpTblDescription, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(slotBtnBrowseDescription(const QModelIndex&)));
+  connect(mpTblReferences, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(slotBtnBrowseReference(const QModelIndex&)));
 
   // Build the list of known resources
   updateResourcesList();
@@ -195,6 +192,40 @@ void CQMiriamWidget::deleteSelectedModifieds()
     {mappedSelRows.append(mpModifiedPDM->mapToSource(*i));}
 
   mpModifiedDM->removeRows(mappedSelRows);
+}
+
+void openMiriamReference(const std::string &reference)
+{
+  if (reference == "" || reference.length() < 7)
+    return;
+
+  QDesktopServices::openUrl(QUrl(reference.c_str()));
+}
+
+void CQMiriamWidget::slotBtnBrowseReference(const QModelIndex& index)
+{
+  if (mpMIRIAMInfo == NULL ||
+      index.column() > 1 ||
+      index.row() < 0 ||
+      index.row() >= (int)mpMIRIAMInfo->getReferences().size())
+    return;
+
+  const CReference *pRef = mpMIRIAMInfo->getReferences()[index.row()];
+
+  openMiriamReference(pRef->getMIRIAMResourceObject().getIdentifiersOrgURL() + "?profile=most_reliable");
+}
+
+void CQMiriamWidget::slotBtnBrowseDescription(const QModelIndex& index)
+{
+  if (mpMIRIAMInfo == NULL ||
+      index.column() > 1 ||
+      index.row() < 0 ||
+      index.row() >= (int)mpMIRIAMInfo->getBiologicalDescriptions().size())
+    return;
+
+  const CBiologicalDescription *pRef = mpMIRIAMInfo->getBiologicalDescriptions()[index.row()];
+
+  openMiriamReference(pRef->getMIRIAMResourceObject().getIdentifiersOrgURL() + "?profile=most_reliable");
 }
 
 void CQMiriamWidget::slotBtnClearClicked()
@@ -290,6 +321,8 @@ bool CQMiriamWidget::enterProtected()
   if (mKey == "")
     return false;
 
+  CCopasiMessage::clearDeque();
+
   mpMIRIAMInfo->load(mKey);
 
   //Set Models for the 4 TableViews
@@ -320,6 +353,26 @@ bool CQMiriamWidget::enterProtected()
   else
     {
       mpDTCreated->setDateTime(QDateTime::currentDateTime());
+    }
+
+  if (CCopasiMessage::size() > 0)
+    {
+      switch (CCopasiMessage::getHighestSeverity())
+        {
+          case CCopasiMessage::WARNING:
+            CQMessageBox::information(this, "Information", FROM_UTF8(CCopasiMessage::getAllMessageText()));
+            break;
+
+          case CCopasiMessage::ERROR:
+          case CCopasiMessage::EXCEPTION:
+            CQMessageBox::critical(this, "Error", FROM_UTF8(CCopasiMessage::getAllMessageText()));
+            break;
+
+          default:
+            break;
+        }
+
+      CCopasiMessage::clearDeque();
     }
 
   return true;

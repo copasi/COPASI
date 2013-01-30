@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.15 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/04/27 16:00:44 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -37,12 +29,13 @@ public:
   virtual ~CQCrossSectionTaskWidget();
 
   virtual bool runTask();
-  //virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
 
 protected:
+  void commitInput();
   virtual bool saveTask();
   virtual bool loadTask();
-//  virtual bool taskFinishedEvent();
+  virtual bool taskFinishedEvent();
   virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
 
 protected slots:
@@ -50,24 +43,41 @@ protected slots:
 private:
   void init();
   void destroy();
+  void showUnits();
 
   void updateValues();
+
+  void setSingleObject(const CCopasiObject * pSingleVariable);
 
   const CCopasiObject * mpSingleVariable;
   CCrossSectionProblem * mpCrossSectionProblem;
 
   CQValidatorInt * mpValidatorLC;
-  CQValidatorDouble * mpValidatorLT;
-  CQValidatorDouble * mpValidator;
+  CQValidatorDouble * mpValidatorTime;
+  CQValidatorDouble * mpValidatorTolerance;
+  CQValidatorInt * mpValidatorOutLC;
+  CQValidatorDouble * mpValidatorOutTime;
+  CQValidatorDouble * mpValidatorOutTolerance;
   CQValidatorDouble * mpValidatorCrossing;
 
 private slots:
 
   void slotChooseVariable();
   void slotValueRate();
-  void slotUpdateLC(bool);
-  void slotUpdateLT(bool);
-  void slotUpdateSupress(bool);
+  void slotUpdateCrossings(bool);
+  void slotUpdateConvergence(bool);
+
+  void slotOutputDelay(bool);
+  void slotOutputCrossings(bool);
+  void slotOutputConvergence(bool);
+
+  void slotUpdateTime();
+  void slotUpdateConvergenceTolerance();
+  void slotUpdateCrossingsLimit();
+
+  void slotOutputConvergenceTolerance();
+  void slotOutputCrossingsLimit();
+  void slotOutputDelayTime();
 };
 
 #endif

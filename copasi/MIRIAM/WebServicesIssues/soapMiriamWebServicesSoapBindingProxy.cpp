@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/WebServicesIssues/soapMiriamWebServicesSoapBindingProxy.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:17:18 $
-// End CVS Header
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -113,7 +110,7 @@ int MiriamWebServicesSoapBindingProxy::getName(std::string _uri, std::string &_g
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -187,7 +184,7 @@ int MiriamWebServicesSoapBindingProxy::getLocation(std::string _uri, std::string
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -262,7 +259,7 @@ int MiriamWebServicesSoapBindingProxy::getURI(std::string _name, std::string _id
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -336,7 +333,7 @@ int MiriamWebServicesSoapBindingProxy::getDataResources(std::string _nickname, s
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -409,7 +406,7 @@ int MiriamWebServicesSoapBindingProxy::getServicesInfo(std::string &getServicesI
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -482,7 +479,7 @@ int MiriamWebServicesSoapBindingProxy::getServicesVersion(std::string &getServic
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -555,7 +552,7 @@ int MiriamWebServicesSoapBindingProxy::getJavaLibraryVersion(std::string &getJav
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -628,7 +625,7 @@ int MiriamWebServicesSoapBindingProxy::getDataTypeURI(std::string _name, std::st
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -701,7 +698,7 @@ int MiriamWebServicesSoapBindingProxy::getDataTypeURIs(std::string _name, struct
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -774,7 +771,7 @@ int MiriamWebServicesSoapBindingProxy::getDataTypeDef(std::string _nickname, std
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -847,7 +844,7 @@ int MiriamWebServicesSoapBindingProxy::getLocations(std::string _nickname, std::
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -920,7 +917,7 @@ int MiriamWebServicesSoapBindingProxy::getLocations_(std::string _nickname, std:
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -994,7 +991,7 @@ int MiriamWebServicesSoapBindingProxy::isDeprecated(std::string _uri, std::strin
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -1068,7 +1065,7 @@ int MiriamWebServicesSoapBindingProxy::getOfficialDataTypeURI(std::string _uri, 
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -1142,7 +1139,7 @@ int MiriamWebServicesSoapBindingProxy::getMiriamURI(std::string _uri, std::strin
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -1216,7 +1213,7 @@ int MiriamWebServicesSoapBindingProxy::getDataTypePattern(std::string _nickname,
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -1290,7 +1287,7 @@ int MiriamWebServicesSoapBindingProxy::getResourceInfo(std::string _id, std::str
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -1364,7 +1361,7 @@ int MiriamWebServicesSoapBindingProxy::getResourceInstitution(std::string _id, s
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -1438,7 +1435,7 @@ int MiriamWebServicesSoapBindingProxy::getResourceLocation(std::string _id, std:
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -1511,7 +1508,7 @@ int MiriamWebServicesSoapBindingProxy::getDataTypeSynonyms(std::string _name, st
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -1583,7 +1580,7 @@ int MiriamWebServicesSoapBindingProxy::getNames(std::string _uri, struct ns2__ge
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -1655,7 +1652,7 @@ int MiriamWebServicesSoapBindingProxy::getDataTypesName(struct ns2__getDataTypes
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -1726,7 +1723,7 @@ int MiriamWebServicesSoapBindingProxy::getDataTypesId(struct ns2__getDataTypesId
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -1798,7 +1795,7 @@ int MiriamWebServicesSoapBindingProxy::checkRegExp(std::string _identifier, std:
   const char *soap_action = NULL;
 
   if (!soap_endpoint)
-    soap_endpoint = "http://www.ebi.ac.uk/compneur-srv/miriamws-main/MiriamWebServices";
+    soap_endpoint = "http://www.ebi.ac.uk/miriamws/main/MiriamWebServices";
 
   soap_action = "";
   soap->encodingStyle = "http://schemas.xmlsoap.org/soap/encoding/";

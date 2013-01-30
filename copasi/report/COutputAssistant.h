@@ -1,22 +1,14 @@
-/* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.h,v $
-  $Revision: 1.9 $
-  $Name:  $
-  $Author: ssahle $
-  $Date: 2012/04/23 06:50:52 $
-  End CVS Header */
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -40,11 +32,11 @@ class CDefaultOutputDescription
 public:
 
   CDefaultOutputDescription():
-      name(""),
-      description(""),
-      isPlot(true),
-      mTaskType(CCopasiTask::steadyState),
-      mSecondaryTask(CCopasiTask::unset)
+    name(""),
+    description(""),
+    isPlot(true),
+    mTaskType(CCopasiTask::steadyState),
+    mSecondaryTask(CCopasiTask::unset)
   {}
 
   //C_INT32 id;
@@ -122,7 +114,8 @@ private:           //************************************
                                  const std::vector<const CCopasiObject*> & y,
                                  bool logY,
                                  const CCopasiTask::Type & taskType,
-                                 CCopasiDataModel* pDataModel);
+                                 CCopasiDataModel* pDataModel,
+                                 CCopasiTask *task = NULL);
 
   static
   CReportDefinition* createTable(const std::string & name,

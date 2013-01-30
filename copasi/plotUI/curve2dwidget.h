@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/curve2dwidget.h,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/05/03 14:25:48 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,13 +6,14 @@
 #ifndef CURVE2DWIDGET_H
 #define CURVE2DWIDGET_H
 
+#include "copasi/plotUI/CQPlotEditWidget.h"
 #include "copasi/plotUI/ui_curve2dwidget.h"
 
 class CCopasiObject;
 class CModel;
 class CPlotItem;
 
-class Curve2DWidget : public QWidget, public Ui::Curve2DWidget
+class Curve2DWidget : public CQPlotEditWidget, public Ui::Curve2DWidget
 {
   Q_OBJECT
 
@@ -29,13 +22,18 @@ public:
   ~Curve2DWidget();
 
   virtual bool LoadFromCurveSpec(const CPlotItem * curve);
-  virtual bool SaveToCurveSpec(CPlotItem * curve) const;
-  virtual void setModel(const CModel * model);
+  virtual bool SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original = NULL) const;
+
+#if USE_NEW_PLOTSUBWIDGET
+  /**
+   * In multiple edit mode, we don't want to edit name & channels
+   */
+  virtual void setMultipleEditMode(bool mode);
+#endif
 
 protected:
   const CCopasiObject* mpObjectY;
   const CCopasiObject* mpObjectX;
-  const CModel* mpModel;
 
 protected slots:
 

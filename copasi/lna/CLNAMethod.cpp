@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lna/CLNAMethod.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:11:04 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,7 +17,6 @@
 #include "blaswrap.h"
 #include "clapackwrap.h"
 
-
 // static
 CLNAMethod * CLNAMethod::createMethod(CCopasiMethod::SubType /* subType */)
 {
@@ -36,27 +27,25 @@ CLNAMethod * CLNAMethod::createMethod(CCopasiMethod::SubType /* subType */)
  * Default constructor
  */
 CLNAMethod::CLNAMethod(const CCopasiContainer* pParent):
-    CCopasiMethod(CCopasiTask::lna, CCopasiMethod::linearNoiseApproximation, pParent),
-    mpModel(NULL),
-    mSteadyStateResolution(1.0e-9),
-    mSSStatus(CSteadyStateMethod::notFound)
+  CCopasiMethod(CCopasiTask::lna, CCopasiMethod::linearNoiseApproximation, pParent),
+  mpModel(NULL),
+  mSteadyStateResolution(1.0e-9),
+  mSSStatus(CSteadyStateMethod::notFound)
 {
   initializeParameter();
   initObjects();
 }
-
 
 CLNAMethod::CLNAMethod(const CLNAMethod & src,
                        const CCopasiContainer * pParent):
-    CCopasiMethod(src, pParent),
-    mpModel(NULL),
-    mSteadyStateResolution(src.mSteadyStateResolution),
-    mSSStatus(CSteadyStateMethod::notFound)
+  CCopasiMethod(src, pParent),
+  mpModel(NULL),
+  mSteadyStateResolution(src.mSteadyStateResolution),
+  mSSStatus(CSteadyStateMethod::notFound)
 {
   initializeParameter();
   initObjects();
 }
-
 
 void CLNAMethod::initObjects()
 {
@@ -87,7 +76,6 @@ void CLNAMethod::initObjects()
   mCovarianceMatrixAnn = tmp;
 }
 
-
 /**
  * Deconstructor
  */
@@ -95,7 +83,6 @@ CLNAMethod::~CLNAMethod()
 {
   DESTRUCTOR_TRACE;
 }
-
 
 void CLNAMethod::initializeParameter()
 {
@@ -111,13 +98,11 @@ void CLNAMethod::initializeParameter()
   */
 }
 
-
 bool CLNAMethod::elevateChildren()
 {
   initializeParameter();
   return true;
 }
-
 
 void CLNAMethod::resizeAllMatrices()
 {
@@ -138,7 +123,6 @@ void CLNAMethod::resizeAllMatrices()
   mCovarianceMatrixAnn->setCopasiVector(0, &mpModel->getMetabolitesX());
   mCovarianceMatrixAnn->setCopasiVector(1, &mpModel->getMetabolitesX());
 }
-
 
 int CLNAMethod::calculateCovarianceMatrixReduced()
 {
@@ -213,7 +197,6 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
 
   // finally, solve the Lyapunov equation A*C + C*A^T + B = 0 for C
   // using the Bartels & Stewart algorithm (1972)
-
 
   // 1. (Schur) transform the Jacobian matrix A (reduced) and its transpose At
 
@@ -418,7 +401,6 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
   std::cout << "Unitary Matrix At:" << std::endl << vs_At << std::endl;
   //#endif // DEBUG
 
-
   // 2. transform the mBMatrixReduced B to new coordinates
   //    BMatrixReduced_transformed = (unitary At)^T * mBMatrixReduced * (unitary A);
 
@@ -467,7 +449,6 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
   std::cout << "Transformed B Matrix (reduced):" << std::endl << BMatrixReduced_transformed << std::endl;
   //#endif // DEBUG
 
-
   // 3. Solve the simplified Lyapunov (Sylvester) Equation
 
   char trana = 'N'; // no transpose of A
@@ -503,7 +484,6 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
       // TODO(juergen): add appropriate exception message(s)!
       //      CCopasiMessage(CCopasiMessage::EXCEPTION, MCLNA + 1, -mInfo);
     }
-
 
   // 4. Calculate the original matrix C: -(unitary At)*BMatrixReduced_transformed*(unitary A)^T;
 
@@ -578,7 +558,7 @@ void CLNAMethod::calculateCovarianceMatrixFull()
 
   for (i = 0; i < numDependentMetabs; i++)
     for (j = 0; j < numIndependentMetabs; j++)
-      mL[(size_t)i+(size_t)numIndependentMetabs][(size_t)j] = mL0[(size_t)i][(size_t)j];
+      mL[(size_t)i + (size_t)numIndependentMetabs][(size_t)j] = mL0[(size_t)i][(size_t)j];
 
   //#ifdef DEBUG
   std::cout << "Link Matrix:" << std::endl << mL << std::endl;
@@ -642,7 +622,6 @@ void CLNAMethod::calculateCovarianceMatrixFull()
   //#endif // DEBUG
 }
 
-
 /**
  * Set the Model
  */
@@ -650,7 +629,6 @@ void CLNAMethod::setModel(CModel* model)
 {
   mpModel = model;
 }
-
 
 /**
  * the LNA entry point
@@ -677,7 +655,6 @@ int CLNAMethod::CalculateLNA()
   return LNA_NOT_OK;
 }
 
-
 /**
  * Read some parameters from configuration file.
  */
@@ -692,7 +669,6 @@ C_INT32 CLNAMethod::load(CReadConfig & C_UNUSED(configBuffer))
   */
   return Fail;
 }
-
 
 bool CLNAMethod::process()
 {
@@ -715,12 +691,10 @@ void CLNAMethod::setSteadyStateResolution(C_FLOAT64 resolution)
   this->mSteadyStateResolution = resolution;
 }
 
-
 const CModel* CLNAMethod::getModel() const
 {
   return this->mpModel;
 }
-
 
 //virtual
 bool CLNAMethod::isValidProblem(const CCopasiProblem * pProblem)
@@ -755,11 +729,11 @@ bool CLNAMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  if (pModel->getCompartments().size() > 1)
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, "LNA is not applicable for a system with more than one compartment.");
-      return false;
-    }
+  //if (pModel->getCompartments().size() > 1)
+  //  {
+  //    CCopasiMessage(CCopasiMessage::ERROR, "LNA is not applicable for a system with more than one compartment.");
+  //    return false;
+  //}
 
   // Check if the model has a compartment with an assignment or ODE
   CCopasiVector< CCompartment >::const_iterator it = pModel->getCompartments().begin();

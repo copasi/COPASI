@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMTask.cpp,v $
-//   $Revision: 1.18 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/10 16:03:08 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -27,6 +19,9 @@
  * of a problem and a method.
  *
  */
+
+#include <sstream>
+
 #include "copasi.h"
 
 #include "CEFMTask.h"
@@ -58,7 +53,7 @@ const unsigned int CEFMTask::ValidMethods[] =
 };
 
 CEFMTask::CEFMTask(const CCopasiContainer * pParent):
-    CCopasiTask(CCopasiTask::fluxMode, pParent)
+  CCopasiTask(CCopasiTask::fluxMode, pParent)
 {
   mpProblem = new CEFMProblem(this);
   mpMethod = CEFMMethod::createMethod();
@@ -68,7 +63,7 @@ CEFMTask::CEFMTask(const CCopasiContainer * pParent):
 
 CEFMTask::CEFMTask(const CEFMTask & src,
                    const CCopasiContainer * pParent):
-    CCopasiTask(src, pParent)
+  CCopasiTask(src, pParent)
 {
   mpProblem = new CCopasiProblem(*static_cast< CEFMProblem * >(src.mpProblem), this);
   mpMethod = CEFMMethod::createMethod(src.mpMethod->getSubType());
@@ -168,8 +163,8 @@ std::string CEFMTask::getFluxModeDescription(const CFluxMode & fluxMode) const
             }
 
           tmp << FluxModes[index].getMultiplier(j) << " * "
-          << ReorderedReactions[FluxModes[index].getReactionIndex(j)]->getObjectName()
-          << addstrng;
+              << ReorderedReactions[FluxModes[index].getReactionIndex(j)]->getObjectName()
+              << addstrng;
         }
     }
   else
@@ -179,7 +174,7 @@ std::string CEFMTask::getFluxModeDescription(const CFluxMode & fluxMode) const
         if (j) tmp << "\n";
 
         tmp << itMode->second << " * "
-        << ReorderedReactions[itMode->first]->getObjectName();
+            << ReorderedReactions[itMode->first]->getObjectName();
       }
 
   return tmp.str();

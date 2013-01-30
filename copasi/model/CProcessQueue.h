@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CProcessQueue.h,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/21 15:48:16 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -23,6 +15,7 @@
 #include <set>
 
 #include "copasi/utilities/CVector.h"
+#include "copasi/model/CEvent.h"
 
 class CExpression;
 class CMathModel;
@@ -33,6 +26,8 @@ class CProcessQueue
 private:
   class CKey
   {
+    friend std::ostream &operator<<(std::ostream &os, const CProcessQueue & o);
+
     // Operations
   public:
     /**
@@ -84,6 +79,8 @@ private:
      */
     inline const C_FLOAT64 & getExecutionTime() const {return mExecutionTime;}
 
+    friend std::ostream &operator<<(std::ostream &os, const CKey & o);
+
     // Attributes
   private:
     /**
@@ -113,6 +110,8 @@ private:
     size_t mEventId;
   };
 
+  friend std::ostream &operator<<(std::ostream &os, const CKey & o);
+
   class CAction
   {
     // Operations
@@ -137,7 +136,8 @@ private:
      */
     CAction(C_FLOAT64 * pTarget,
             const C_FLOAT64 & value,
-            CMathEvent * pEvent);
+            CMathEvent * pEvent,
+            CProcessQueue * pProcessQueue);
 
     /**
      * Specific constructor
@@ -168,6 +168,8 @@ private:
      */
     inline CMathEvent * getEvent() const {return mpEvent;}
 
+    friend std::ostream &operator<<(std::ostream &os, const CAction & o);
+
     // Attributes
   public:
     /**
@@ -197,17 +199,24 @@ private:
     CProcessQueue * mpProcessQueue;
   };
 
+  friend std::ostream &operator<<(std::ostream &os, const CAction & o);
+
   // Type definitions
 public:
   typedef std::multimap< CKey, CAction >::iterator iterator;
 
   typedef std::pair < std::multimap< CKey, CAction >::iterator,
-  std::multimap< CKey, CAction >::iterator > range;
+          std::multimap< CKey, CAction >::iterator > range;
 
   typedef range(*resolveSimultaneousAssignments)(const std::multimap< CKey, CAction > & /* assignments */,
       const C_FLOAT64 & /* time */,
       const bool & /* equality */,
       const size_t & /* cascadingLevel */);
+
+  /**
+   * This is the type for an event call back function
+   */
+  typedef void (*EventCallBack)(void*, CEvent::Type type);
 
   // Operations
 public:
@@ -298,6 +307,25 @@ public:
    * @return bool isEmpty
    */
   bool isEmpty() const;
+
+  /**
+   * Sets an event call back. The call back function must be a static function
+   * that receives a "this" pointer as first argument.
+   * The function is called when the actual assignment takes place,
+   * or when the assignment would take place in case the event
+   * has no assignment.
+   * The function is called with an integer argument:
+   *    1:  An assignment has happened
+   *    2:  A cut plane was crossed
+   */
+  void setEventCallBack(void* pTask, EventCallBack ecb);
+
+  /**
+   * This prints debugging info to stdout
+   */
+  void printDebug() const {std::cout << *this; };
+
+  friend std::ostream &operator<<(std::ostream &os, const CProcessQueue & o);
 
 private:
   /**
@@ -426,6 +454,16 @@ private:
    * A pointer to a call back method for resolving simultaneous event assignments
    */
   resolveSimultaneousAssignments mpResolveSimultaneousAssignments;
+
+  /**
+   * the object to which the call back function belongs
+   */
+  void * mpCallbackTask;
+
+  /**
+   * the pointer to the call back function
+   */
+  EventCallBack mpEventCallBack;
 };
 
 #endif // COPASI_CProcessQueue

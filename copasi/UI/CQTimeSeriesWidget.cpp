@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTimeSeriesWidget.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/17 18:31:20 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,10 +11,14 @@
 
 #include "trajectory/CTrajectoryTask.h"
 
+#if COPASI_NONLIN_DYN
+#include <crosssection/CCrossSectionTask.h>
+#endif
+
 CQTimeSeriesWidget::CQTimeSeriesWidget(QWidget* parent):
-    CopasiWidget(parent),
-    mpTask(NULL),
-    mpDataModel(NULL)
+  CopasiWidget(parent),
+  mpTimeSeries(NULL),
+  mpDataModel(NULL)
 {
   setupUi(this);
 
@@ -71,19 +67,34 @@ bool CQTimeSeriesWidget::leave()
   return true;
 }
 
+void CQTimeSeriesWidget::setTitle(const QString &title)
+{
+  mpLblResult->setText(title);
+}
+
+const CTimeSeries* getTimeSeriesFromTask(const CCopasiTask * pTask)
+{
+  const CTrajectoryTask *traj = dynamic_cast<const CTrajectoryTask *>(pTask);
+
+  if (traj != NULL)
+    return &traj->getTimeSeries();
+
+#if COPASI_NONLIN_DYN
+  const CCrossSectionTask* cross = dynamic_cast<const CCrossSectionTask *>(pTask);
+
+  if (cross != NULL)
+    return &cross->getTimeSeries();
+
+#endif
+
+  return NULL;
+}
+
 // virtual
 bool CQTimeSeriesWidget::loadResult(const CCopasiTask * pTask)
 {
-  mpTask = dynamic_cast<const CTrajectoryTask *>(pTask);
-
-  if (mpTask != NULL)
-    {
-      mpDataModel->setTimeSeries(&mpTask->getTimeSeries());
-    }
-  else
-    {
-      mpDataModel->setTimeSeries(NULL);
-    }
+  mpTimeSeries = getTimeSeriesFromTask(pTask);
+  mpDataModel->setTimeSeries(mpTimeSeries);
 
   // mpTableView->resizeRowsToContents(); This is to slow
   int RowCount = mpDataModel->rowCount();
@@ -116,7 +127,7 @@ bool CQTimeSeriesWidget::enterProtected()
 
 void CQTimeSeriesWidget::slotSave()
 {
-  if (mpTask == NULL) return;
+  if (mpTimeSeries == NULL) return;
 
   C_INT32 Answer = QMessageBox::No;
   QString fileName;
@@ -135,13 +146,11 @@ void CQTimeSeriesWidget::slotSave()
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  const CTimeSeries & TimeSeries = mpTask->getTimeSeries();
-
   int failed = 0;
 
   QCursor oldCursor = cursor();
   setCursor(Qt::WaitCursor);
-  failed = TimeSeries.save(TO_UTF8(fileName), (mFramework == 1), "\t");
+  failed = mpTimeSeries->save(TO_UTF8(fileName), (mFramework == 1), "\t");
   setCursor(oldCursor);
 
   if (failed)

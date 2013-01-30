@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CMIRIAMResource.cpp,v $
-//   $Revision: 1.11 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:30:19 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -31,26 +23,26 @@
 
 CMIRIAMResources::CMIRIAMResources(const std::string & name,
                                    const CCopasiContainer * pParent) :
-    CCopasiParameterGroup(name, pParent),
-    mpLastUpdateDate(NULL),
-    mpUpdateFrequency(NULL),
-    mpMIRIAMResources(NULL)
+  CCopasiParameterGroup(name, pParent),
+  mpLastUpdateDate(NULL),
+  mpUpdateFrequency(NULL),
+  mpMIRIAMResources(NULL)
 {initializeParameter();}
 
 CMIRIAMResources::CMIRIAMResources(const CMIRIAMResources & src,
                                    const CCopasiContainer * pParent):
-    CCopasiParameterGroup(src, pParent),
-    mpLastUpdateDate(NULL),
-    mpUpdateFrequency(NULL),
-    mpMIRIAMResources(NULL)
+  CCopasiParameterGroup(src, pParent),
+  mpLastUpdateDate(NULL),
+  mpUpdateFrequency(NULL),
+  mpMIRIAMResources(NULL)
 {initializeParameter();}
 
 CMIRIAMResources::CMIRIAMResources(const CCopasiParameterGroup & group,
                                    const CCopasiContainer * pParent):
-    CCopasiParameterGroup(group, pParent),
-    mpLastUpdateDate(NULL),
-    mpUpdateFrequency(NULL),
-    mpMIRIAMResources(NULL)
+  CCopasiParameterGroup(group, pParent),
+  mpLastUpdateDate(NULL),
+  mpUpdateFrequency(NULL),
+  mpMIRIAMResources(NULL)
 {initializeParameter();}
 
 void CMIRIAMResources::initializeParameter()
@@ -175,7 +167,7 @@ bool CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport)
     }
   else
     CCopasiMessage(CCopasiMessage::ERROR,
-                   MCMiriam + 3,
+                   MCAnnotation + 3,
                    pProxy->soap_fault_string(),
                    pProxy->soap_fault_detail());
 
@@ -252,6 +244,7 @@ void CMIRIAMResources::createURIMap()
     {
       pResource = static_cast< CMIRIAMResource * >(*it);
       mURI2Resource[pResource->getMIRIAMURI() + ":"] = Index;
+      mURI2Resource[pResource->getIdentifiersOrgURL() + "/"] = Index;
 
       const CCopasiParameterGroup * pDeprecated = &pResource->getMIRIAMDeprecated();
       CCopasiParameterGroup::index_iterator itDeprecated = pDeprecated->beginIndex();
@@ -349,29 +342,29 @@ CMIRIAMResources::~CMIRIAMResources()
 /////////////////////////////////////////////////////////////////////////////////////
 CMIRIAMResource::CMIRIAMResource(const std::string & name,
                                  const CCopasiContainer * pParent) :
-    CCopasiParameterGroup(name, pParent),
-    mpDisplayName(NULL),
-    mpURI(NULL),
-    mpCitation(NULL),
-    mpDeprecated(NULL)
+  CCopasiParameterGroup(name, pParent),
+  mpDisplayName(NULL),
+  mpURI(NULL),
+  mpCitation(NULL),
+  mpDeprecated(NULL)
 {initializeParameter();}
 
 CMIRIAMResource::CMIRIAMResource(const CMIRIAMResource & src,
                                  const CCopasiContainer * pParent):
-    CCopasiParameterGroup(src, pParent),
-    mpDisplayName(NULL),
-    mpURI(NULL),
-    mpCitation(NULL),
-    mpDeprecated(NULL)
+  CCopasiParameterGroup(src, pParent),
+  mpDisplayName(NULL),
+  mpURI(NULL),
+  mpCitation(NULL),
+  mpDeprecated(NULL)
 {initializeParameter();}
 
 CMIRIAMResource::CMIRIAMResource(const CCopasiParameterGroup & group,
                                  const CCopasiContainer * pParent):
-    CCopasiParameterGroup(group, pParent),
-    mpDisplayName(NULL),
-    mpURI(NULL),
-    mpCitation(NULL),
-    mpDeprecated(NULL)
+  CCopasiParameterGroup(group, pParent),
+  mpDisplayName(NULL),
+  mpURI(NULL),
+  mpCitation(NULL),
+  mpDeprecated(NULL)
 {initializeParameter();}
 
 void CMIRIAMResource::initializeParameter()
@@ -424,6 +417,11 @@ void CMIRIAMResource::setMIRIAMURI(const std::string & URI)
 
 const std::string & CMIRIAMResource::getMIRIAMURI() const
 {return * mpURI;}
+
+std::string CMIRIAMResource::getIdentifiersOrgURL() const
+{
+  return "http://identifiers.org/" + mpURI->substr(11);
+}
 
 void CMIRIAMResource::setMIRIAMPattern(const std::string & pattern)
 {*mpPattern = pattern;}

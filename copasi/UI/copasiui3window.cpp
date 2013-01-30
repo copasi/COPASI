@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -42,6 +42,7 @@
 #include "CQPreferenceDialog.h"
 #include "CQSBMLFileDialog.h"
 #include "copasi/UI/qtUtilities.h"
+#include "copasi/UI/CQTabWidget.h"
 #include "copasiWidget.h"
 #include "TaskWidget.h"
 #include "resourcesUI/CQIconResource.h"
@@ -65,7 +66,7 @@
 #include "model/CModelMerging.h"
 #endif
 #include "model/CModelExpansion.h"
-#include <plotUI/plotwindow.h>
+#include <UI/CWindowInterface.h>
 
 #define AutoSaveInterval 10*60*1000
 
@@ -261,11 +262,11 @@ void CopasiUI3Window::createActions()
 
   mpaOpenCopasiFiles = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "COP&ASI Files...", this);
   connect(mpaOpenCopasiFiles, SIGNAL(activated()), this, SLOT(slotFileExamplesCopasiFiles()));
-  mpaOpenCopasiFiles->setShortcut(Qt::CTRL + Qt::Key_A);
+  mpaOpenCopasiFiles->setShortcut(Qt::CTRL + Qt::Key_1);
 
   mpaOpenSBMLFiles = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "S&BML Files...", this);
   connect(mpaOpenSBMLFiles, SIGNAL(activated()), this, SLOT(slotFileExamplesSBMLFiles()));
-  mpaOpenSBMLFiles->setShortcut(Qt::CTRL + Qt::Key_B);
+  mpaOpenSBMLFiles->setShortcut(Qt::CTRL + Qt::Key_2);
 
   mpaSave = new QAction(CQIconResource::icon(CQIconResource::fileSave), "&Save", this);
   connect(mpaSave, SIGNAL(activated()), this, SLOT(slotFileSave()));
@@ -362,6 +363,8 @@ void CopasiUI3Window::createToolBar()
   tb->addWidget(mpBoxSelectFramework);
 
   connect(mpBoxSelectFramework, SIGNAL(activated(int)), this, SLOT(slotFrameworkChanged(int)));
+
+  setUnifiedTitleAndToolBarOnMac(true);
 }
 
 void CopasiUI3Window::createMenuBar()
@@ -612,6 +615,11 @@ void CopasiUI3Window::newDoc()
 
   updateTitle();
   mpListView->switchToOtherWidget(1, "");
+  CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
+
+  if (widget != NULL)
+    widget->selectTab(0);
+
   mSaveAsRequired = true;
   mCommitRequired = true;
 }
@@ -732,6 +740,24 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
 
   CCopasiMessage msg = CCopasiMessage::getLastMessage();
 
+  if (msg.getNumber() == 6303 &&
+      (msg.getText().find("'sbml'") != std::string::npos || msg.getText().find(":sbml'") != std::string::npos))
+    {
+
+      // someone attempted to open an SBML file but failed, instead of displaying the message
+      //   XML (3): Unknown element 'sbml' encountered at line '3'.
+      // we just open the SBML file!
+      if (CQMessageBox::question(this, QString("Import SBML?"), QString("You tried to open an SBML file. COPASI is not able to open SBML files but is able to import it. Would you like to import it?"),
+                                 QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes)
+        {
+          emit slotImportSBML(mNewFile);
+          return;
+        }
+
+      newDoc();
+      return;
+    }
+
   if (msg.getNumber() != MCCopasiMessage + 1)
     {
       QString Message = "Problem while loading file " + mNewFile + QString("!\n\n");
@@ -772,6 +798,10 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
 
   updateTitle();
   mpListView->switchToOtherWidget(1, "");
+  CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
+
+  if (widget != NULL)
+    widget->selectTab(0);
 
   refreshRecentFileMenu();
 
@@ -855,7 +885,7 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
 
           assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-          assert((*CCopasiRootContainer::getDatamodelList())[1]->newModel(NULL, NULL, NULL, true));
+          assert((*CCopasiRootContainer::getDatamodelList())[1]->newModel(NULL, true));
         }
 
       CCopasiMessage msg = CCopasiMessage::getLastMessage();
@@ -1043,7 +1073,10 @@ void CopasiUI3Window::slotFilePrint()
 void CopasiUI3Window::about()
 {
   QString text =
-    QString(AboutDialog::text).arg(FROM_UTF8(CVersion::VERSION.getVersion()));
+    QString(AboutDialog::text)
+    .arg(FROM_UTF8(CVersion::VERSION.getVersion()))
+    .arg(LIBSBML_DOTTED_VERSION);
+
   AboutDialog* aboutDialog = new AboutDialog(this, text, 76, 30);
   aboutDialog->setWindowTitle(FixedTitle);
   aboutDialog->exec();
@@ -1189,6 +1222,10 @@ void CopasiUI3Window::slotImportSBMLFromStringFinished(bool success)
   //       mpFileMenu->setItemEnabled(nsave_menu_id, true);
 
   mpListView->switchToOtherWidget(1, "");
+  CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
+
+  if (widget != NULL)
+    widget->selectTab(0);
 
   updateTitle();
 
@@ -1295,6 +1332,10 @@ void CopasiUI3Window::slotImportSBMLFinished(bool success)
   mpaExportODE->setEnabled(true);
 
   mpListView->switchToOtherWidget(1, "");
+  CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
+
+  if (widget != NULL)
+    widget->selectTab(0);
 
   refreshRecentSBMLFileMenu();
 
@@ -1461,6 +1502,8 @@ void CopasiUI3Window::slotConvertToIrreversible()
                                 QMessageBox::NoButton);
       CCopasiMessage::clearDeque();
     }
+
+  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
 
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
 }
@@ -1723,7 +1766,7 @@ void CopasiUI3Window::refreshWindowsMenu()
 
   for (int index = 0; index < mWindows.count(); ++index)
     {
-      QMenu* menu = ((PlotWindow*)mWindows[index])->getMenu();
+      QMenu* menu = ((CWindowInterface*)mWindows[index])->getWindowMenu();
       menu->clear();
       menu->addAction(mpaCloseAllWindows);
       menu->addSeparator();
@@ -1748,7 +1791,7 @@ void CopasiUI3Window::refreshWindowsMenu()
 
       for (int index = 0; index < mWindows.count(); ++index)
         {
-          QMenu* menu = ((PlotWindow*)mWindows[index])->getMenu();
+          QMenu* menu = ((CWindowInterface*)mWindows[index])->getWindowMenu();
           menu->addAction(pAction);
         }
     }
@@ -2444,6 +2487,31 @@ void CopasiUI3Window::dragEnterEvent(QDragEnterEvent *event)
     event->acceptProposedAction();
 }
 
+/**
+ * Utility function for guessing whether the file might
+ * be an SBML file. If soit should contain an SBML tag in the
+ * first couple of lines.
+ */
+bool isProabablySBML(QString &fileName)
+{
+  QFile file(fileName);
+
+  if (!file.open(QIODevice::ReadOnly))
+    return false;
+
+  for (int i = 0; i < 5; ++i)
+    {
+      QByteArray array = file.readLine();
+
+      if (QString(array).contains("<sbml"))
+        return true;
+    }
+
+  file.close();
+
+  return false;
+}
+
 void CopasiUI3Window::dropEvent(QDropEvent *event)
 {
   QList<QUrl> urls = event->mimeData()->urls();
@@ -2456,7 +2524,10 @@ void CopasiUI3Window::dropEvent(QDropEvent *event)
   if (fileName.isEmpty())
     return;
 
-  slotFileOpen(fileName);
+  if (isProabablySBML(fileName))
+    slotImportSBML(fileName);
+  else
+    slotFileOpen(fileName);
 }
 /**
  * The slider dialog has to be disabled before

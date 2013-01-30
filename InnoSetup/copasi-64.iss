@@ -133,12 +133,14 @@ Root: HKCR; SubKey: COPASI.document\Shell\Open\Command; ValueType: string; Value
 Root: HKCR; Subkey: COPASI.document\DefaultIcon; ValueType: string; ValueData: {app}\share\copasi\icons\CopasiDoc.ico,-1; Flags: uninsdeletevalue; Check: IsAdminUser
 Root: HKLM; Subkey: SYSTEM\CurrentControlSet\Control\Session Manager\Environment; ValueType: string; ValueName: COPASIDIR; ValueData: {app}; Check: IsAdminUser
 Root: HKLM; Subkey: SYSTEM\CurrentControlSet\Control\Session Manager\Environment; ValueType: expandsz; ValueName: Path; ValueData: "%COPASIDIR%\bin;{olddata}"; Check: UpdateSystemPath
+Root: HKLM; Subkey: Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers; ValueType: string; ValueName: "{app}\bin\CopasiUI.exe"; ValueData: "~ WIN7RTM"; Flags: uninsdeletevalue; Check: IsAdminUserAndWindows8
 Root: HKCU; SubKey: Software\Classes\.cps; ValueType: string; ValueData: COPASI.document; Flags: uninsdeletekey; Check: IsRegularUser
 Root: HKCU; SubKey: Software\Classes\COPASI.document; ValueType: string; ValueData: COPASI File; Flags: uninsdeletekey; Check: IsRegularUser
 Root: HKCU; SubKey: Software\Classes\COPASI.document\Shell\Open\Command; ValueType: string; ValueData: """{app}\bin\CopasiUI.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsRegularUser
 Root: HKCU; Subkey: Software\Classes\COPASI.document\DefaultIcon; ValueType: string; ValueData: {app}\share\copasi\icons\CopasiDoc.ico,-1; Flags: uninsdeletevalue; Check: IsRegularUser
 Root: HKCU; Subkey: Environment; ValueType: string; ValueName: COPASIDIR; ValueData: {app}; Check: IsRegularUser
 Root: HKCU; Subkey: Environment; ValueType: expandsz; ValueName: Path; ValueData: "%COPASIDIR%\bin;{olddata}"; Check: UpdateUserPath
+Root: HKCU; Subkey: Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers; ValueType: string; ValueName: "{app}\bin\CopasiUI.exe"; ValueData: "~ WIN7RTM"; Flags: uninsdeletevalue; Check: IsRegularUserAndWindows8
 
 [Code]
 type
@@ -152,6 +154,26 @@ end;
 function IsRegularUser(): Boolean;
 begin
   Result := not (IsAdminLoggedOn or IsPowerUserLoggedOn);
+end;
+
+function isWindows8(): Boolean;
+var
+  Version: TWindowsVersion;
+
+begin
+  GetWindowsVersionEx(Version);
+
+  Result := ((Version.Major = 6) and (Version.Minor = 2));
+end;
+
+function IsAdminUserAndWindows8(): Boolean;
+begin
+  Result := (IsAdminUser() and isWindows8());
+end;
+
+function IsRegularUserAndWindows8(): Boolean;
+begin
+  Result := (IsRegularUser() and isWindows8());
 end;
 
 function IsCopasiInSystemPath(): Boolean;
@@ -530,7 +552,7 @@ end;
 
 function DefDirRoot(Param: String): String;
 begin
-  if IsRegularUser then
+  if IsRegularUser() then
     Result := ExpandConstant('{localappdata}')
   else
     Result := ExpandConstant('{pf}')

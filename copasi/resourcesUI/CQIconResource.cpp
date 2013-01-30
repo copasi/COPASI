@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/resourcesUI/CQIconResource.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/16 15:31:54 $
-// End CVS Header
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -72,6 +64,14 @@ void CQIconResource::init()
   Icons[tool].addFile(QString::fromUtf8(":/images/tool.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[unlocked].addFile(QString::fromUtf8(":/images/unlocked.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[zoomOut].addFile(QString::fromUtf8(":/images/zoomOut.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[play].addFile(QString::fromUtf8(":/images/media-playback-start.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[pause].addFile(QString::fromUtf8(":/images/media-playback-pause.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[stop].addFile(QString::fromUtf8(":/images/media-playback-stop.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[backward].addFile(QString::fromUtf8(":/images/media-seek-backward.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[forward].addFile(QString::fromUtf8(":/images/media-seek-forward.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[skipBackward].addFile(QString::fromUtf8(":/images/media-skip-backward.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[skipForward].addFile(QString::fromUtf8(":/images/media-skip-forward.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[roll].addFile(QString::fromUtf8(":/images/roll.png"), QSize(), QIcon::Normal, QIcon::On);
 
   needInit = false;
 }
@@ -86,5 +86,3 @@ const QIcon & CQIconResource::icon(const CQIconResource::IconID & id)
 
   return Icons[unknown];
 }
-
-

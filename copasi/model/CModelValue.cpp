@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-//   $Revision: 1.79 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/05/09 08:52:56 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -71,17 +63,17 @@ CModelEntity::CModelEntity(const std::string & name,
                            const CCopasiContainer * pParent,
                            const std::string & type,
                            const unsigned C_INT32 & flag):
-    CCopasiContainer(name, pParent, type, (flag | CCopasiObject::Container | CCopasiObject::ValueDbl | CCopasiObject::ModelEntity)),
-    CAnnotation(),
-    mKey(""),
-    mpValue(NULL),
-    mpIValue(NULL),
-    mRate(0.0),
-    mpExpression(NULL),
-    mpInitialExpression(NULL),
-    mStatus(FIXED),
-    mUsed(false),
-    mpModel(NULL)
+  CCopasiContainer(name, pParent, type, (flag | CCopasiObject::Container | CCopasiObject::ValueDbl | CCopasiObject::ModelEntity)),
+  CAnnotation(),
+  mKey(""),
+  mpValue(NULL),
+  mpIValue(NULL),
+  mRate(0.0),
+  mpExpression(NULL),
+  mpInitialExpression(NULL),
+  mStatus(FIXED),
+  mUsed(false),
+  mpModel(NULL)
 {
   initObjects();
 
@@ -93,17 +85,17 @@ CModelEntity::CModelEntity(const std::string & name,
 
 CModelEntity::CModelEntity(const CModelEntity & src,
                            const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    CAnnotation(src),
-    mKey(""),
-    mpValue(NULL),
-    mpIValue(NULL),
-    mRate(src.mRate),
-    mpExpression(src.mpExpression ? new CExpression(*src.mpExpression, this) : NULL),
-    mpInitialExpression(src.mpInitialExpression ? new CExpression(*src.mpInitialExpression, this) : NULL),
-    mStatus(FIXED),
-    mUsed(false),
-    mpModel(NULL)
+  CCopasiContainer(src, pParent),
+  CAnnotation(src),
+  mKey(""),
+  mpValue(NULL),
+  mpIValue(NULL),
+  mRate(src.mRate),
+  mpExpression(src.mpExpression ? new CExpression(*src.mpExpression, this) : NULL),
+  mpInitialExpression(src.mpInitialExpression ? new CExpression(*src.mpInitialExpression, this) : NULL),
+  mStatus(FIXED),
+  mUsed(false),
+  mpModel(NULL)
 {
   initObjects();
 
@@ -598,6 +590,39 @@ std::set< const CCopasiObject * > CModelEntity::getDeletedObjects() const
   return Deleted;
 }
 
+// virtual
+bool CModelEntity::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObjects) const
+{
+  bool MustBeDeleted = false;
+
+  DataObjectSet ChildObjects = getDeletedObjects();
+
+  DataObjectSet::const_iterator it = ChildObjects.begin();
+  DataObjectSet::const_iterator end = ChildObjects.end();
+
+  for (; it != end; ++it)
+    {
+      if (*it == this)
+        {
+          if ((*it)->CCopasiObject::mustBeDeleted(deletedObjects))
+            {
+              MustBeDeleted = true;
+              break;
+            }
+
+          continue;
+        }
+
+      if ((*it)->mustBeDeleted(deletedObjects))
+        {
+          MustBeDeleted = true;
+          break;
+        }
+    }
+
+  return MustBeDeleted;
+}
+
 void CModelEntity::setSBMLId(const std::string& id)
 {
   this->mSBMLId = id;
@@ -618,7 +643,7 @@ const bool & CModelEntity::isUsed() const
 
 CModelValue::CModelValue(const std::string & name,
                          const CCopasiContainer * pParent):
-    CModelEntity(name, pParent, "ModelValue")
+  CModelEntity(name, pParent, "ModelValue")
 {
   mKey = CCopasiRootContainer::getKeyFactory()->add("ModelValue", this);
   initObjects();
@@ -628,7 +653,7 @@ CModelValue::CModelValue(const std::string & name,
 
 CModelValue::CModelValue(const CModelValue & src,
                          const CCopasiContainer * pParent):
-    CModelEntity(src, pParent)
+  CModelEntity(src, pParent)
 {
   mKey = CCopasiRootContainer::getKeyFactory()->add("ModelValue", this);
   initObjects();

@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMathModel.h,v $
-//   $Revision: 1.15 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/10 16:35:49 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -87,7 +79,9 @@ public:
 
   /**
    * Check whether the roots which have value 1 lead to firing of
-   * events and schedule them if needed.
+   * events and schedule them if needed. This method is intended to be
+   * called from integration methods, which can distinguish between equality
+   * and inequality.
    * @param const C_FLOAT64 & time
    * @param const bool & equality
    * @param const bool & correct
@@ -99,10 +93,26 @@ public:
                     const CVector< C_INT > & roots);
 
   /**
+   * Check whether the roots which have value 1 lead to firing of
+   * events and schedule them if needed. This method is intended to be
+   * called during discrete event processing e.g. while processing the
+   * event queue.
+   * @param const C_FLOAT64 & time
+   * @param const bool & equality
+   * @param const bool & correct
+   * @param const CVector< C_INT > & roots
+   */
+  void processRoots(const C_FLOAT64 & time,
+                    const CVector< C_INT > & roots);
+
+  /**
    * Retrieve the next execution time scheduled in the process queue
    * @return const C_FLOAT64 & processQueueExecutionTime
    */
   const C_FLOAT64 & getProcessQueueExecutionTime() const;
+
+  const CProcessQueue & getProcessQueue() const;
+  CProcessQueue & getProcessQueue();
 
   /**
    * Initialize all values of the math model with their initial values.

@@ -11,12 +11,12 @@
 # Properties, Inc., University of Heidelberg, and The University
 # of Manchester.
 # All rights reserved.
-# 
+#
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 # and The University of Manchester.
 # All rights reserved.
-# 
+#
 # Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc. and EML Research, gGmbH.
 # All rights reserved.
@@ -61,30 +61,30 @@ endif(COPASI_DEPENDENCY_DIR AND EXISTS ${COPASI_DEPENDENCY_DIR})
 
 message(STATUS "-----------------------------------------------------------
  Building COPASI
- 
+
    Source Dir        = ${CMAKE_SOURCE_DIR}
    Binary Dir        = ${CMAKE_BINARY_DIR}
    Install Prefix    = ${CMAKE_INSTALL_PREFIX}
-                     
- Dependencies:       
-                     
+
+ Dependencies:
+
    Raptor Lib        = ${RAPTOR_LIBRARY}
    Raptor include    = ${RAPTOR_INCLUDE_DIR}
-                     
+
    libSBML lib       = ${LIBSBML_LIBRARY}
    libSBML include   = ${LIBSBML_INCLUDE_DIR}
-                     
+
    QWT lib           = ${QWT_LIBRARIES}
    QWT include       = ${QWT_INCLUDE_DIR}
-   
+
    qwtplot3d lib     = ${QWTPLOT3D_LIBRARIES}
    qwtplot3d include = ${QWTPLOT3D_INCLUDE_DIR}
-   
+
    SBW lib           = ${SBW_LIBRARIES}
    SBW include       = ${SBW_INCLUDE_DIR}
-   
- Options: 
- 
+
+ Options:
+
    CellDesigner import      = ${ENABLE_CELLDESIGNER_IMPORT}
    Combined layout          = ${ENABLE_COMBINED_LAYOUT}
    Auto layout              = ${ENABLE_COPASI_AUTOLAYOUT}
@@ -99,28 +99,28 @@ message(STATUS "-----------------------------------------------------------
    SBW integration          = ${ENABLE_SBW_INTEGRATION}
    SBML Unit                = ${ENABLE_USE_SBMLUNIT}
    Model Merging            = ${ENABLE_WITH_MERGEMODEL}
-                            
-  Language Bindings:        
-                            
-   SWIG                     = ${SWIG_EXECUTABLE} 
+
+  Language Bindings:
+
+   SWIG                     = ${SWIG_EXECUTABLE}
    .NET Bindings            = ${ENABLE_CSHARP}
    Java Bindings            = ${ENABLE_JAVA}
    Python Bindings          = ${ENABLE_PYTHON}
    Perl Bindings            = ${ENABLE_PERL}
-                            
-  Building:                 
-                           
+
+  Building:
+
    COPASI SE               = ${BUILD_SE}
    COPASI UI               = ${BUILD_GUI}
-                           
+
    C++ Examples            = ${BUILD_CXX_EXAMPLES}
-                           
+
    SBML TestRunner         = ${BUILD_SBML_TESTSUITE}
    Franks TestRunner       = ${BUILD_FRANKS_TESTSUITE}
    Semantic Testsuite      = ${BUILD_SEMANTIC_TESTSUITE}
    Stochastic Testsuite    = ${BUILD_STOCHASTIC_TESTSUITE}
    Steady State TestRunner = ${BUILD_STEADY_STATE_RUNNER}
-   
+
 -----------------------------------------------------------
 ")
 
@@ -141,15 +141,58 @@ endif(BUILD_TESTS)
 
 set (DEFAULT_EXTUNIT OFF)
 set (DEFAULT_NONLIN OFF)
+set (DEFAULT_DEBUG OFF)
+set (DEFAULT_DEBUG_TRACING OFF)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 # for the debug version we need to enable
 # COPASI_DEBUG
-add_definitions(-DCOPASI_DEBUG)
 
 set (DEFAULT_EXTUNIT ON)
 set (DEFAULT_NONLIN ON)
+set (DEFAULT_DEBUG ON)
+set (DEFAULT_DEBUG_TRACING ON)
 
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
+
+# there should be an option to disable the debug flag, as it litters the
+# file system with trace files all over the place (or rather everywhere the
+# program is started)
+option(ENABLE_COPASI_DEBUG "Enable COPASI Debug" ${DEFAULT_DEBUG})
+if(ENABLE_COPASI_DEBUG)
+  add_definitions(-DCOPASI_DEBUG)
+endif(ENABLE_COPASI_DEBUG)
+
+option(ENABLE_COPASI_DEBUG_TRACE "Enable COPASI Debug Tracing" ${DEFAULT_DEBUG_TRACING})
+if(ENABLE_COPASI_DEBUG_TRACE)
+  add_definitions(-DCOPASI_DEBUG_TRACE)
+endif(ENABLE_COPASI_DEBUG_TRACE)
+
+
+# Sven developed an option of scaling the residuals in the parameter estimation
+# by the current simulation value (instead of 0) this removes the bias when
+# using value scaled experimental data.
+option(ENABLE_COASI_PARAMETERFITTING_RESIDUAL_SCALING "Scale parameter estimation residuals with the simulation value" OFF)
+if (ENABLE_COASI_PARAMETERFITTING_RESIDUAL_SCALING)
+
+add_definitions(-DCOASI_PARAMETERFITTING_RESIDUAL_SCALING)
+
+endif(ENABLE_COASI_PARAMETERFITTING_RESIDUAL_SCALING)
+
+option(ENABLE_NEW_PLOTSUBWIDGET "Enable new listview based plot subwidget" ON)
+if (ENABLE_NEW_PLOTSUBWIDGET)
+add_definitions(-DUSE_NEW_PLOTSUBWIDGET)
+endif(ENABLE_NEW_PLOTSUBWIDGET)
+
+option(ENABLE_COPASI_BANDED_GRAPH "Enable the banded graph widget" OFF)
+if (ENABLE_COPASI_BANDED_GRAPH)
+add_definitions(-DCOPASI_BANDED_GRAPH)
+endif(ENABLE_COPASI_BANDED_GRAPH)
+
+
+option(ENABLE_COPASI_NONLIN_DYN_OSCILLATION "Oscillation Widget" OFF)
+if (ENABLE_COPASI_NONLIN_DYN_OSCILLATION)
+add_definitions(-DCOPASI_NONLIN_DYN_OSCILLATION)
+endif()
 
 option(ENABLE_COPASI_NONLIN_DYN "Non linear Dynamics" ${DEFAULT_NONLIN})
 if (ENABLE_COPASI_NONLIN_DYN)
@@ -205,10 +248,10 @@ if(APPLE)
 add_definitions(-DDarwin)
 # COPASI dos not compile with apple llvm
 if(CMAKE_GENERATOR AND XCODE_VERSION)
-if(CMAKE_GENERATOR MATCHES "Xcode" AND (${XCODE_VERSION} VERSION_EQUAL 4 OR ${XCODE_VERSION} VERSION_GREATER 4)) 
-# Xcode 4 defaults to the Apple LLVM Compiler. 
-# Override the default compiler selection because Blender only compiles with gcc 
-set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "com.apple.compilers.llvmgcc42") 
+if(CMAKE_GENERATOR MATCHES "Xcode" AND (${XCODE_VERSION} VERSION_EQUAL 4 OR ${XCODE_VERSION} VERSION_GREATER 4))
+# Xcode 4 defaults to the Apple LLVM Compiler.
+# Override the default compiler selection because Blender only compiles with gcc
+set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "com.apple.compilers.llvmgcc42")
 endif()
 endif()
 else()
@@ -278,29 +321,31 @@ if (LAPACK_USE_CLAPACK)
  if (EXISTS ${LAPACK_CLAPACK_LIBRARY})
 	set (CLAPACK_FOUND "yes")
  endif()
- if (EXISTS "${LAPACK_CLAPACK_INCLUDE_DIR}/f2c.h")
-   configure_file("${LAPACK_CLAPACK_INCLUDE_DIR}/f2c.h" "${CMAKE_SOURCE_DIR}/copasi/f2c.h")
-  endif()
-  if (EXISTS "${LAPACK_CLAPACK_INCLUDE_DIR}/clapack.h")
-   configure_file("${LAPACK_CLAPACK_INCLUDE_DIR}/clapack.h" "${CMAKE_SOURCE_DIR}/copasi/lapack.h")
-  endif()
- 
+
+ # this should no longer be necessary
+ #if (EXISTS "${LAPACK_CLAPACK_INCLUDE_DIR}/f2c.h")
+ #  configure_file("${LAPACK_CLAPACK_INCLUDE_DIR}/f2c.h" "${CMAKE_SOURCE_DIR}/copasi/f2c.h")
+ # endif()
+ # if (EXISTS "${LAPACK_CLAPACK_INCLUDE_DIR}/clapack.h")
+ #  configure_file("${LAPACK_CLAPACK_INCLUDE_DIR}/clapack.h" "${CMAKE_SOURCE_DIR}/copasi/lapack.h")
+ # endif()
+
 endif()
 
 ## # if we use the intel compiler, we should look for the MKL first, otherwise
 ## # we check for CLAPACK and if we can't find that, we look for lapack
 ## # if we use CLAPACK, we should find a way to check whether it was compiled with BLASWRAP or not
-## 
+##
 ## # TODO this actuall checks for several different flavors and it can probably
 ## # TODO be used to find out whether we can use MKL, CLAPACK or LAPACK
-## 
+##
 ## # right now, we only support static linkage
 ## set(BLA_STATIC on)
-## 
+##
 ## # first we check for the MKL
 ## set(BLA_VENDOR "Intel(mkl)")
 ## find_package(LAPACK)
-## 
+##
 ##   if (LAPACK_FOUND)
 ##     set(USE_MKL "yes")
 ##     add_definitions(-DUSE_MKL)
@@ -308,12 +353,12 @@ endif()
 ##    # now we search for a generic lapack implementation
 ##    set(BLA_VENDOR "Generic")
 ##    find_package(LAPACK)
-## 
+##
 ##    if (LAPACK_FOUND)
 ##      # TODO find out if it is LAPACK or CLAPACK
 ##      set(USE_LAPACK "yes")
 ##      add_definitions(-DUSE_LAPACK)
-## 
+##
 ##    else (LAPACK_FOUND)
 ##       # check for AMD (ACML)
 ##       # ACML needs -lgfortran and acml.h needs to be included somewhere
@@ -327,7 +372,7 @@ endif()
 ##       else (LAPACK_FOUND)
 ## 	    if (WIN32)
 ## 		  # simply allow the LAPACK LIBRARIES to be specified
-## 		  
+##
 ## 		else()
 ##         message("Could not find a static lapack implementation, COPASI can't be build without one.")
 ## 		endif()
@@ -335,7 +380,7 @@ endif()
 ##       return()
 ##     endif (LAPACK_FOUND)
 ## endif (LAPACK_FOUND)
-## 
+##
 ##   if(USE_LAPACK OR USE_CLAPACK)
 ##     # TODO find out how many bytes a blas integer has
 ##     # TODO and set a macro for C_INT that references a C integer type
@@ -358,14 +403,14 @@ if(BUILD_GUI)
   find_package(QwtQt4 REQUIRED)
   # check for qwtplot3d
   find_package(Qwtplot3dQt4 REQUIRED)
-  
+
   # check for sbw
   option(ENABLE_SBW_INTEGRATION "Enable SBW Integration" ON)
   if (ENABLE_SBW_INTEGRATION)
   find_package(SBW REQUIRED)
   include_directories(${SBW_INCLUDE_DIR})
   add_definitions(-DCOPASI_SBW_INTEGRATION)
-  
+
   # set up definitions for SBW
   if(UNIX)
   if(APPLE)
@@ -373,7 +418,7 @@ if(BUILD_GUI)
   endif()
   add_definitions(-DLINUX)
   endif()
-  
+
   endif(ENABLE_SBW_INTEGRATION)
 
 
@@ -485,7 +530,7 @@ find_path(MML_INCLUDE_DIR qtmmlwidget.h
     /usr/freeware/include
 )
 
-find_library(MML_LIBRARY 
+find_library(MML_LIBRARY
     NAMES mml
     PATHS
     ~/Library/Frameworks
@@ -562,15 +607,15 @@ endif()
 #DEFINES -= UNICODE
 #DEFINES += _CRT_SECURE_NO_WARNINGS
 # windows need to define the runtime MD, MDd, MT or MTd
-# windows has some nodefaultlib 
+# windows has some nodefaultlib
 #    QMAKE_LFLAGS *= /NODEFAULTLIB:"msvcrt.lib"
 #    QMAKE_LFLAGS *= /NODEFAULTLIB:"msvcrtd.lib"
 #    QMAKE_LFLAGS *= /NODEFAULTLIB:"msvcprt.lib"
 #    QMAKE_LFLAGS *= /NODEFAULTLIB:"msvcprtd.lib"
-#    
+#
 #    release: QMAKE_LFLAGS *= /NODEFAULTLIB:"libcmtd.lib"
 #    debug: QMAKE_LFLAGS *= /NODEFAULTLIB:"libcmt.lib"
- 
+
 add_subdirectory(copasi)
 
 if(BUILD_SEMANTIC_TESTSUITE)

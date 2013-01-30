@@ -1,27 +1,27 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationParser_yacc.h,v $
-//   $Revision: 1.26 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/16 23:11:32 $
-// End CVS Header
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-/* A Bison parser, made by GNU Bison 2.3.  */
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-/* Skeleton interface for Bison's Yacc-like parsers in C
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
-   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
-   Free Software Foundation, Inc.
+/* A Bison parser, made by GNU Bison 2.6.5.  */
 
-   This program is free software; you can redistribute it and/or modify
+/* Bison interface for Yacc-like parsers in C
+
+      Copyright (C) 1984, 1989-1990, 2000-2012 Free Software Foundation, Inc.
+
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -29,9 +29,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor,
-   Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -45,6 +43,16 @@
 
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
+
+#ifndef YY_CEVALUATIONPARSER_CEVALUATIONPARSER_TAB_HPP_INCLUDED
+# define YY_CEVALUATIONPARSER_CEVALUATIONPARSER_TAB_HPP_INCLUDED
+/* Enabling traces.  */
+#ifndef YYDEBUG
+# define YYDEBUG 1
+#endif
+#if YYDEBUG
+extern int CEvaluationParserdebug;
+#endif
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -82,44 +90,28 @@ enum yytokentype
   TOKEN_STRUCTURE_VECTOR_CLOSE = 284
 };
 #endif
-/* Tokens.  */
-#define TOKEN_NUMBER 258
-#define TOKEN_VARIABLE 259
-#define TOKEN_CALL 260
-#define TOKEN_FUNCTION 261
-#define TOKEN_FUNCTION_2 262
-#define TOKEN_SIGN 263
-#define TOKEN_OPERATOR_POWER 264
-#define TOKEN_OPERATOR_MULTIPLY 265
-#define TOKEN_OPERATOR_MODULUS 266
-#define TOKEN_OPERATOR_PLUS 267
-#define TOKEN_LOGICAL_CHOICE 268
-#define TOKEN_LOGICAL_VALUE 269
-#define TOKEN_LOGICAL_NOT 270
-#define TOKEN_LOGICAL_OR 271
-#define TOKEN_LOGICAL_XOR 272
-#define TOKEN_LOGICAL_AND 273
-#define TOKEN_LOGICAL_EQ 274
-#define TOKEN_LOGICAL_NE 275
-#define TOKEN_LOGICAL_GT 276
-#define TOKEN_LOGICAL_GE 277
-#define TOKEN_LOGICAL_LT 278
-#define TOKEN_LOGICAL_LE 279
-#define TOKEN_STRUCTURE_OPEN 280
-#define TOKEN_STRUCTURE_VECTOR_OPEN 281
-#define TOKEN_STRUCTURE_COMMA 282
-#define TOKEN_STRUCTURE_CLOSE 283
-#define TOKEN_STRUCTURE_VECTOR_CLOSE 284
-
-
-
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef int YYSTYPE;
+# define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
-# define YYSTYPE_IS_TRIVIAL 1
 #endif
 
 extern YYSTYPE CEvaluationParserlval;
 
+#ifdef YYPARSE_PARAM
+#if defined __STDC__ || defined __cplusplus
+int CEvaluationParserparse(void *YYPARSE_PARAM);
+#else
+int CEvaluationParserparse();
+#endif
+#else /* ! YYPARSE_PARAM */
+#if defined __STDC__ || defined __cplusplus
+int CEvaluationParserparse(void);
+#else
+int CEvaluationParserparse();
+#endif
+#endif /* ! YYPARSE_PARAM */
+
+#endif /* !YY_CEVALUATIONPARSER_CEVALUATIONPARSER_TAB_HPP_INCLUDED  */

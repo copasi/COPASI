@@ -5,7 +5,7 @@ echo @echo off > config.status.bat
 echo echo running: configure.bat %* >> config.status.bat
 echo configure.bat %* >> config.status.bat
 
-set arguments=
+set arguments=BUILD_ROOT=%~dp0
 set PROJECT=%QMAKESPEC%
 
 :LOOP
@@ -94,3 +94,4 @@ nmake qmake_all
 cd ..
 
 cd ..
+

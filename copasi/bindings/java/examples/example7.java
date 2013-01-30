@@ -1,15 +1,14 @@
-// Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example7.java,v $ 
-//   $Revision: 1.2 $ 
-//   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2009/09/01 11:33:57 $ 
-// End CVS Header 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
+
+
 
 /**
  * This is an example on how to create user defined kinetic functions with the COPASI API
@@ -45,7 +44,7 @@ public class example7
      // create a compartment with the name cell and an initial volume of 5.0
      // microliter
      CCompartment compartment = model.createCompartment("cell", 5.0);
-     CCopasiObject object = compartment.getObject(new CCopasiObjectName("Reference=InitialVolume"));
+     CCopasiObject object = compartment.getValueReference();
      assert object != null;
      changedObjects.add(object);
      assert compartment != null;
@@ -55,7 +54,7 @@ public class example7
      // the metabolite belongs to the compartment we created and is is to be
      // fixed
      CMetab S = model.createMetabolite("S", compartment.getObjectName(), 10.0, CMetab.FIXED);
-     object = S.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
+     object = S.getInitialConcentrationReference();
      assert(object != null);
      changedObjects.add(object);
      assert(compartment != null);
@@ -65,7 +64,7 @@ public class example7
      // concentration of 0. This metabolite is to be changed by reactions
      CMetab P = model.createMetabolite("P", compartment.getObjectName(), 0.0, CMetab.REACTIONS);
      assert P != null;
-     object = P.getObject(new CCopasiObjectName("Reference=InitialConcentration"));
+     object = P.getInitialConcentrationReference();
      assert object != null;
      changedObjects.add(object);
      assert model.getMetabolites().size() == 2;
@@ -91,7 +90,7 @@ public class example7
      // set the status to FIXED
      MV.setStatus(CModelValue.FIXED);
      assert MV != null;
-     object = MV.getObject(new CCopasiObjectName("Reference=InitialValue"));
+     object = MV.getInitialValueReference();
      assert object != null;
      changedObjects.add(object);
      assert model.getModelValues().size() == 1;

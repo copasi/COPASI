@@ -1,19 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventWidget1.cpp,v $
-//   $Revision: 1.30 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/09 21:32:16 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "CQEventWidget1.h"
@@ -40,7 +36,7 @@
  *  name 'name'.'
  */
 CQEventWidget1::CQEventWidget1(QWidget * parent, const char * name)
-    : CopasiWidget(parent, name)
+  : CopasiWidget(parent, name)
 {
   setupUi(this);
 
@@ -65,7 +61,6 @@ void CQEventWidget1::slotBtnDelete()
 
   if (pModel == NULL)
     return;
-
 
   pDataModel->getModel()->removeEvent(mKey);
 
@@ -124,8 +119,8 @@ void CQEventWidget1::init()
   // ----- correlated to GUI layout of the event assignment ----
 
   // hide the label and widget with respect to expression
-  mpLabelEA->hide();
-  mpExpressionEA->hide();
+  mpLabelEA->setEnabled(false);
+  mpExpressionEA->setEnabled(false);
 
   // Set the icons for the buttons
   mpBtnSelectObject->setIcon(CQIconResource::icon(CQIconResource::copasi));
@@ -172,7 +167,6 @@ void CQEventWidget1::slotDeleteTarget()
   mAssignments.remove(ToBeDeleted);
 
   mCurrentTarget = mpLBTarget->currentIndex().row();
-
 }
 
 /*! Load all values with respect to a chosen saved event */
@@ -431,7 +425,7 @@ void CQEventWidget1::slotSelectObject()
 
   if (mAssignments[mCurrentTarget]->setTargetKey(pME->getKey()))
     {
-      // If the target key change was successfull we need to update the label.
+      // If the target key change was successful we need to update the label.
       mpLBTarget->item((int) mCurrentTarget)->setText(FROM_UTF8(pME->getObjectDisplayName()));
     }
 }
@@ -459,16 +453,16 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
   if (mCurrentTarget == C_INVALID_INDEX) // no target anymore
     {
       // hide the label and widget with respect to expression
-      mpLabelEA->hide();
-      mpExpressionEA->hide();
+      mpLabelEA->setEnabled(false);
+      mpExpressionEA->setEnabled(false);
 
       return;
     }
   else
     {
       // show the label and widget with respect to expression
-      mpLabelEA->show();
-      mpExpressionEA->show();
+      mpLabelEA->setEnabled(true);
+      mpExpressionEA->setEnabled(true);
 
       mpExpressionEA->mpExpressionWidget->setExpression(mAssignments[mCurrentTarget]->getExpression());
       mpExpressionEA->updateWidget();
@@ -478,17 +472,16 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
 /*! Slot to apply the Delay Expression Widget */
 void CQEventWidget1::slotApplyDelay(bool show)
 {
+  mpBtnDelayAssignment->setEnabled(show);
+  mpBtnDelayCalculation->setEnabled(show);
+
   if (show)
     {
-      mpBtnDelayAssignment->show();
-      mpBtnDelayCalculation->show();
       mpLabelDelayExpression->show();
       mpExpressionDelay->show();
     }
   else
     {
-      mpBtnDelayAssignment->hide();
-      mpBtnDelayCalculation->hide();
       mpLabelDelayExpression->hide();
       mpExpressionDelay->hide();
     }

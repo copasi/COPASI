@@ -31,15 +31,15 @@ class example5
      variableModelValue.setStatus(CModelEntity.ASSIGNMENT);
      // we create a very simple assignment that is easy on the optimization
      // a parabole with the minimum at x=6 should do just fine
-     string s=fixedModelValue.getObject(new CCopasiObjectName("Reference=Value")).getCN().getString();
+     string s=fixedModelValue.getValueReference().getCN().getString();
      s="(<"+s+"> - 6.0)^2";
      variableModelValue.setExpression(s);
      // now we compile the model and tell COPASI which values have changed so
      // that COPASI can update the values that depend on those
      model.compileIfNecessary();
      ObjectStdVector changedObjects=new ObjectStdVector();
-     changedObjects.Add(fixedModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")));
-     changedObjects.Add(variableModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")));
+     changedObjects.Add(fixedModelValue.getInitialValueReference());
+     changedObjects.Add(variableModelValue.getInitialValueReference());
      model.updateInitialValues(changedObjects);
      
      // now we set up the optimization

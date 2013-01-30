@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000093.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/05/16 06:24:49 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -293,7 +285,7 @@ void test000093::test_bug1503_1()
   CPPUNIT_ASSERT(pChild2->getName() == pCompartment->getId());
 
   // now we reimport the model and check if the divisions and mutliplications by the compartment have been reverted
-  pDataModel->newModel(NULL, NULL, NULL, true);
+  pDataModel->newModel(NULL, true);
   CPPUNIT_ASSERT(pDataModel->getModel()->getCompartments().size() == 0);
   bool result = pDataModel->importSBMLFromString(content);
   CPPUNIT_ASSERT(result == true);
@@ -570,7 +562,6 @@ void test000093::test_bug1503_1()
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObjectNode->getSibling() == NULL);
-
 }
 
 void test000093::test_bug1503_2()
@@ -780,7 +771,7 @@ void test000093::test_bug1503_2()
   CPPUNIT_ASSERT(pChild2->getName() == pCompartment->getId());
 
   // now we reimport the model and check if the divisions and mutliplications by the compartment have been reverted
-  pDataModel->newModel(NULL, NULL, NULL, true);
+  pDataModel->newModel(NULL, true);
   CPPUNIT_ASSERT(pDataModel->getModel()->getCompartments().size() == 0);
   bool result = pDataModel->importSBMLFromString(content);
   CPPUNIT_ASSERT(result == true);
@@ -1021,7 +1012,6 @@ void test000093::test_bug1503_2()
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObjectNode->getSibling() == NULL);
-
 }
 
 const char* test000093::MODEL_STRING_1 =

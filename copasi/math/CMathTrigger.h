@@ -1,19 +1,6 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathTrigger.h,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/04/01 17:34:31 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
 // All rights reserved.
 
 #ifndef COPASI_CMathTrigger
@@ -63,7 +50,7 @@ public:
     bool compile(std::vector< CCopasiContainer * > listOfContainer);
 
     /**
-     * Determine whether the root only changes during dicrete events.
+     * Determine whether the root only changes during discrete events.
      * The root must be compiled before calling this method.
      * @param const std::set< const CCopasiObject *> & stateVariables
      */
@@ -96,14 +83,30 @@ public:
     /**
      * Toggle the root status dependent on the
      * processed equality status
+     * @param const C_FLOAT64 & time
      * @param const bool & equality
+     * @param const bool & continuous
      */
-    void toggle(const bool & equality);
+    void toggle(const C_FLOAT64 & time,
+                const bool & equality,
+                const bool & continous);
+
+    /**
+     * Toggle the root status dependent on the
+     * processed equality status
+     * @param const C_FLOAT64 & time
+     */
+    void toggle(const C_FLOAT64 & time);
+
+    /**
+     * Initialize all values of the math model with their initial values.
+     */
+    void applyInitialValues();
 
     /**
      * Determine the truth value for the initial conditions.
      */
-    void calculateInitialTrue();
+    void calculateTrueValue();
 
     /**
      * Retrieve a pointer to the current value of the root.
@@ -137,6 +140,11 @@ public:
      * This should be a bool but the CExpressionTree only handles double
      */
     C_FLOAT64 mTrue;
+
+    /**
+     * The time at which the last toggle of the trueth value occured
+     */
+    C_FLOAT64 mLastToggleTime;
   };
 
   // Operations
@@ -161,9 +169,14 @@ public:
   virtual ~CMathTrigger();
 
   /**
+   * Initialize all values of the math model with their initial values.
+   */
+  void applyInitialValues();
+
+  /**
    * Determine the true value for the initial conditions.
    */
-  void calculateInitialTrue();
+  void calculateTrueValue();
 
   /**
    * Determine the activity for the initial conditions.

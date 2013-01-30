@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsWidget.cpp,v $
-//   $Revision: 1.18 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/02 18:58:45 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -46,9 +38,10 @@
 # include "copasi/layoutUI/CQAutolayoutWizard.h"
 #endif // COPASI_AUTOLAYOUT
 
+#include <sstream>
 
 CQLayoutsWidget::CQLayoutsWidget(QWidget* parent)
-    : CopasiWidget(parent)
+  : CopasiWidget(parent)
 {
   setupUi(this);
 
@@ -156,7 +149,6 @@ void CQLayoutsWidget::deleteSelectedLayouts()
   mpLayoutsDM->removeRows(mappedSelRows);
 }
 
-
 void CQLayoutsWidget::updateDeleteBtns()
 {
   mpBtnDelete->setEnabled(mpTblLayouts->selectionModel()->selectedRows().size() > 0);
@@ -171,7 +163,6 @@ bool CQLayoutsWidget::enterProtected()
       disconnect(mpTblLayouts->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
                  this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
     }
-
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CListOfLayouts * pListOfLayouts = (*CCopasiRootContainer::getDatamodelList())[0]->getListOfLayouts();
@@ -203,9 +194,8 @@ bool CQLayoutsWidget::enterProtected()
       // if this layout does not have an entry in the layout window map, add one
       if (pos == mLayoutWindowMap.end())
         {
-          mLayoutWindowMap.insert(std::pair<std::string, LayoutWindow*>((*it)->getKey(), NULL));
+          mLayoutWindowMap.insert(std::pair<std::string, LayoutWindow*>((*it)->getKey(), (LayoutWindow*)NULL));
         }
-
     }
 
   connect(mpTblLayouts->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
@@ -215,7 +205,6 @@ bool CQLayoutsWidget::enterProtected()
 
   return true;
 }
-
 
 void CQLayoutsWidget::showButtons()
 {
@@ -227,15 +216,41 @@ void CQLayoutsWidget::showButtons()
     }
 }
 
+bool hasLayout(const CListOfLayouts& layouts, const std::string &name)
+{
+
+  for (size_t i = 0; i < layouts.size(); ++i)
+    {
+      const CLayout *layout = layouts[i];
+      const std::string &current = layout->getObjectName();
+
+      if (current == name)
+        return true;
+    }
+
+  return false;
+}
 
 // virtual
 void CQLayoutsWidget::slotBtnNewClicked()
 {
 #ifdef COPASI_AUTOLAYOUT
-  CLayout* pLayout = new CLayout("COPASI autolayout");
+
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   const CModel* pModel = pDataModel->getModel();
   assert(pModel != NULL);
+
+  std::string name = "COPASI autolayout";
+  int ncount = 1;
+
+  while (hasLayout(*(pDataModel->getListOfLayouts()), name))
+    {
+      std::stringstream str;
+      str << "COPASI autolayout " << ncount++;
+      name = str.str();
+    }
+
+  CLayout* pLayout = new CLayout(name);
   CQAutolayoutWizard* pWizard = new CQAutolayoutWizard(*pModel);
 
   if (pWizard->exec() == QDialog::Accepted)
@@ -258,13 +273,14 @@ void CQLayoutsWidget::slotBtnNewClicked()
           // create the random layout
           pWin->createRandomLayout(pWizard->getSelectedCompartments(), pWizard->getSelectedReactions(), pWizard->getSelectedMetabolites(), pWizard->getSideMetabolites());
           pWin->updateRenderer();
+          pWin->addToMainWindow();
+          pWin->setMode();
           // show the new layout
           pWin->show();
           pWin->redrawNow();
           // now we create the spring layout
           pWin->createSpringLayout(1000, 1);
         }
-
     }
   else
     {
@@ -280,7 +296,6 @@ void CQLayoutsWidget::slotBtnDeleteClicked()
   if (mpTblLayouts->hasFocus())
     {deleteSelectedLayouts();}
 }
-
 
 // virtual
 void CQLayoutsWidget::slotBtnClearClicked()
@@ -301,7 +316,6 @@ void CQLayoutsWidget::slotSelectionChanged(const QItemSelection & /* selected */
 {
   updateDeleteBtns();
 }
-
 
 // virtual
 void CQLayoutsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
@@ -331,7 +345,6 @@ void CQLayoutsWidget::slotFilterChanged()
   mpProxyModel->setFilterRegExp(regExp);
 }
 
-
 /**
  * This creates a new layout window and return a pointer to it.
  * In case of an error, NULL is returned.
@@ -347,7 +360,8 @@ CQLayoutsWidget::LayoutWindow * CQLayoutsWidget::createLayoutWindow(int row, CLa
   LayoutWindow * pWin = new CQLayoutMainWindow(pLayout);
 #endif // USE_CRENDER_EXTENSION
 
-  pWin->setWindowTitle(pLayout->getObjectName().c_str());
+  std::string title = "COPASI Diagram: "  + pLayout->getObjectName();
+  pWin->setWindowTitle(title.c_str());
   pWin->resize(900, 600);
   mLayoutWindowMap[pLayout->getKey()] = pWin;
 
@@ -384,6 +398,8 @@ void CQLayoutsWidget::slotShowLayout(int row)
         {
 #ifdef USE_CRENDER_EXTENSION
           pLayoutWindow->slotLayoutChanged(row);
+          pLayoutWindow->addToMainWindow();
+          pLayoutWindow->setMode();
 #endif // USE_CRENDER_EXTENSION
           pLayoutWindow->show();
           pLayoutWindow->showNormal();
@@ -395,4 +411,3 @@ void CQLayoutsWidget::slotShowLayout(int row)
       //std::cerr << "Could not find layout." << std::endl;
     }
 }
-

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -141,7 +141,9 @@ CLCompartmentGlyph* CCopasiSpringLayout::findCompartmentForReactionNode(CLReacti
       if (mapIt == mCompartmentMap.end())
         {
           //there is no information in the map. Should not happen.
+#ifdef COPASI_DEBUG
           std::cout << "No compartment info for a species glyph!!!" << std::endl;
+#endif
           continue;
         }
 
@@ -188,7 +190,6 @@ bool CCopasiSpringLayout::createVariables()
   // add variables for text glyphs that are not fixed to anything.
   //TODO
 
-  std::cout << "Number of variables for auto layout: " << mInitialState.size() << std::endl;
   return true;
 }
 
@@ -319,7 +320,9 @@ bool CCopasiSpringLayout::setState(const std::vector<double> & vars)
             break;
 
           default:
+#ifdef COPASI_DEBUG
             std::cout << "Unknown Action!!!" << std::endl;
+#endif
             break;
         };
     }
@@ -358,25 +361,25 @@ void CCopasiSpringLayout::finalizeState()
           if (pRG->getListOfMetabReferenceGlyphs()[j]->getRole() == CLMetabReferenceGlyph::SUBSTRATE)
             {
               s_c += 1.0;
-              s = s + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getPosition();
+              s = s + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getBoundingBox().getCenter();
             }
 
           if (pRG->getListOfMetabReferenceGlyphs()[j]->getRole() == CLMetabReferenceGlyph::SIDESUBSTRATE)
             {
               s_c += 0.1;
-              s = s + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getPosition() * 0.1;
+              s = s + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getBoundingBox().getCenter() * 0.1;
             }
 
           if (pRG->getListOfMetabReferenceGlyphs()[j]->getRole() == CLMetabReferenceGlyph::PRODUCT)
             {
               p_c += 1.0;
-              p = p + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getPosition();
+              p = p + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getBoundingBox().getCenter();
             }
 
           if (pRG->getListOfMetabReferenceGlyphs()[j]->getRole() == CLMetabReferenceGlyph::SIDEPRODUCT)
             {
               p_c += 0.1;
-              p = p + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getPosition() * 0.1;
+              p = p + pRG->getListOfMetabReferenceGlyphs()[j]->getMetabGlyph()->getBoundingBox().getCenter() * 0.1;
             }
         }
 
@@ -395,8 +398,13 @@ void CCopasiSpringLayout::finalizeState()
       if (dir.getX() == 0 && dir.getY() == 0)
         dir = CLPoint(1, 0);
 
-      CLPoint reaction_s = pRG->getPosition() - (dir * 0.1);
-      CLPoint reaction_p = pRG->getPosition() + (dir * 0.1);
+      CLPoint ortho_dir = CLPoint(dir.getY(), -dir.getX());
+      ortho_dir.scale(1 / sqrt(pow(ortho_dir.getX(), 2) + pow(ortho_dir.getY(), 2)));
+
+      CLPoint reaction_s = pRG->getPosition() - (dir * 0.05);
+      CLPoint reaction_p = pRG->getPosition() + (dir * 0.05);
+      CLPoint reaction_m1 = pRG->getPosition() + ortho_dir * 10;
+      CLPoint reaction_m2 = pRG->getPosition() - ortho_dir * 10;
 
       pRG->getCurve().clear();
       pRG->getCurve().addCurveSegment(CLLineSegment(reaction_s, reaction_p));
@@ -407,35 +415,60 @@ void CCopasiSpringLayout::finalizeState()
           //we will need to consider the size of the glyphs, role of the metab in the reaction, etc.
           //For now, only a primitive implementation: TODO: improve
           CLMetabReferenceGlyph* pMRG = pRG->getListOfMetabReferenceGlyphs()[j];
-          CLPoint reactionPoint;
           double direction;
+          double modifierLength = -0.2;
 
           switch (pMRG->getRole())
             {
               case CLMetabReferenceGlyph::SUBSTRATE :
               case CLMetabReferenceGlyph::SIDESUBSTRATE :
-                reactionPoint = reaction_s;
+              {
                 direction = -0.1;
-                break;
+                CLPoint metabPoint = borderProjection(pMRG->getMetabGlyph(), reaction_s + dir * direction /*(modifierLength * 1.5)*/, 5);
+                pMRG->getCurve().clear();
+                pMRG->getCurve().addCurveSegment(CLLineSegment(reaction_s,
+                                                 metabPoint,
+                                                 reaction_s + dir * direction,
+                                                 (reaction_s + dir * (direction * 1.5) + metabPoint) * 0.5));
+              }
+              break;
 
               case CLMetabReferenceGlyph::PRODUCT :
               case CLMetabReferenceGlyph::SIDEPRODUCT :
-                reactionPoint = reaction_p;
+              {
                 direction = 0.1;
-                break;
+                CLPoint metabPoint = borderProjection(pMRG->getMetabGlyph(), reaction_p + dir * direction /*(modifierLength * 1.5)*/, 5);
+                pMRG->getCurve().clear();
+                pMRG->getCurve().addCurveSegment(CLLineSegment(reaction_p,
+                                                 metabPoint,
+                                                 reaction_p + dir * direction,
+                                                 (reaction_p + dir * (direction * 1.5) + metabPoint) * 0.5));
+              }
+              break;
 
               default:
-                direction = 0.0;
-                reactionPoint = pRG->getPosition();
+              {
+                CLPoint reactionPoint;
+
+                if (ortho_dir.dot(pRG->getPosition() - pMRG->getMetabGlyph()->getPosition()) < 0)
+                  {
+                    direction = +10.0;
+                    reactionPoint = reaction_m1;
+                  }
+                else
+                  {
+                    direction = -10.0;
+                    reactionPoint = reaction_m2;
+                  }
+
+                CLPoint metabPoint = borderProjection(pMRG->getMetabGlyph(), reactionPoint + dir * 0 * direction /*(modifierLength * 1.5)*/, 5);
+                pMRG->getCurve().clear();
+                pMRG->getCurve().addCurveSegment(CLLineSegment(metabPoint,
+                                                 reactionPoint,
+                                                 (reactionPoint + dir * (0 * direction * 1.5) + metabPoint) * 0.5,
+                                                 reactionPoint + ortho_dir * direction));
+              }
             }
-
-          CLPoint metabPoint = borderProjection(pMRG->getMetabGlyph(), reactionPoint + dir * (direction * 1.5), 5);
-
-          pMRG->getCurve().clear();
-          pMRG->getCurve().addCurveSegment(CLLineSegment(reactionPoint,
-                                           metabPoint,
-                                           reactionPoint + dir * direction,
-                                           (reactionPoint + dir * (direction * 1.5) + metabPoint) * 0.5));
         }
     }
 
@@ -448,12 +481,12 @@ void CCopasiSpringLayout::finalizeState()
 
 CLPoint CCopasiSpringLayout::borderProjection(CLGraphicalObject* go, const CLPoint & p, double d)
 {
-  CLPoint center = CLPoint(go->getX() + 0.5 * go->getWidth(), go->getY() + 0.5 * go->getHeight());
+  CLPoint center = go->getBoundingBox().getCenter();
   CLPoint diff = p - center;
 
   CLPoint ret;
 
-  if (fabs(diff.getX()) * fabs(go->getHeight()) * 0.5 + d > fabs(diff.getY()) * fabs(go->getWidth()) * 0.5 + d)
+  if (fabs(diff.getX()) * (fabs(go->getHeight()) * 0.5 + d) > fabs(diff.getY()) * (fabs(go->getWidth()) * 0.5 + d))
     {
       double f = (fabs(go->getWidth()) * 0.5 + d) / fabs(diff.getX());
       ret = center + diff * f;
@@ -681,7 +714,9 @@ double CCopasiSpringLayout::getPotential()
       if (mapIt == mCompartmentMap.end())
         {
           //there is no information in the map. Should not happen.
+#ifdef COPASI_DEBUG
           std::cout << "No compartment info for a species glyph!!!" << std::endl;
+#endif
           continue;
         }
 
@@ -700,7 +735,9 @@ double CCopasiSpringLayout::getPotential()
       if (mapIt == mCompartmentMap.end())
         {
           //there is no information in the map. Should not happen.
+#ifdef COPASI_DEBUG
           std::cout << "No compartment info for a reaction glyph!!!" << std::endl;
+#endif
           continue;
         }
 
@@ -735,7 +772,12 @@ double CCopasiSpringLayout::getPotential()
   return tmp;
 }
 
-std::vector<double> CCopasiSpringLayout::getInitialValues()
+const std::vector<double> & CCopasiSpringLayout::getInitialValues() const
 {
   return mInitialState;
+}
+
+const std::vector<CCopasiSpringLayout::UpdateAction>& CCopasiSpringLayout::getUpdateActions() const
+{
+  return mUpdateActions;
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -102,11 +102,11 @@ public:
   /**
    * Load information from a given istream.
    * @param std::istream & is
-   * @param const std::string & relativeTo
+   * @param const std::string & pwd
    * @return bool success
    */
   virtual bool load(std::istream & is,
-                    const std::string & relativeTo);
+                    const std::string & pwd);
 
   /**
    * Set the model.

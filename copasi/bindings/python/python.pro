@@ -1,24 +1,16 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/python.pro,v $ 
-#   $Revision: 1.37 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2012/06/20 20:54:16 $ 
-# End CVS Header 
-
-# Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-# and The University of Manchester.
-# All rights reserved.
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
 
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
+# Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
+# All rights reserved. 
 
 TEMPLATE = lib
 CONFIG -= qt
@@ -49,7 +41,7 @@ INCLUDEPATH *= $${BUILD_ROOT}/copasi
 contains(BUILD_OS,Linux) {
   LIBS = -L$${BUILD_ROOT}/copasi/lib  $$join(COPASI_LIBS, " -l", -l) $${LIBS}
 
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  $${BUILD_ROOT}/copasi/lib/lib", $${BUILD_ROOT}/copasi/lib/lib, .a)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  $${BUILD_ROOT}/copasi/lib/lib", $${BUILD_ROOT}/copasi/lib/lib, .a)
 
   !isEmpty(PYTHON_PATH){
     LIBS += $$system($${PYTHON_PATH}/bin/python-config --ldflags)
@@ -78,7 +70,7 @@ contains(BUILD_OS, Darwin) {
   LIBS = $$join(COPASI_LIBS, ".a  $${BUILD_ROOT}/copasi/lib/lib", $${BUILD_ROOT}/copasi/lib/lib, .a) \
          $${LIBS}
   
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  $${BUILD_ROOT}/copasi/lib/lib", $${BUILD_ROOT}/copasi/lib/lib, .a)
+  POST_TARGETDEPS += $$join(COPASI_LIBS, ".a  $${BUILD_ROOT}/copasi/lib/lib", $${BUILD_ROOT}/copasi/lib/lib, .a)
 
   QMAKE_LFLAGS_SHLIB += -unexported_symbols_list unexported_symbols.list
   QMAKE_PRE_LINK = nm -g $${SBML_PATH}/lib/libsbml.a | grep "^[0-9]" | cut -d\" \" -f3  > unexported_symbols.list; \

@@ -1,22 +1,17 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/UI/CQExpressionMmlStackedWidget.cpp,v $
-//   $Revision: 1.2 $
-//   $Name: HEAD $
-//   $Author: pwilly $
-//   $Date: 2009/10/01 12:58:00 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
 #include "CQExpressionMmlStackedWidget.h"
+
+#include <QString>
+#include <QPainter>
 
 #include "utilities/CCopasiException.h"
 
@@ -25,17 +20,27 @@
 #include "CopasiFileDialog.h"
 #include "tex/CMathMLToTeX.h"
 #include "commandline/CLocaleString.h"
-
 #include "resourcesUI/CQIconResource.h"
 
+#include <utilities/CCopasiMessage.h>
+// turns out that the fatalError definition in copasi message is incompatible
+// with the mml widget
+#undef fatalError()
+
+#ifdef HAVE_MML
+# include <qtmmlwidget.h>
+#endif // HAVE_MML
+
+#ifdef DEBUG_UI
 #include <QtDebug>
+#endif
 
 /*
  *  Constructs a CQExpressionMmlStackedWidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 CQExpressionMmlStackedWidget::CQExpressionMmlStackedWidget(QWidget* parent)
-    : QStackedWidget(parent)
+  : QStackedWidget(parent)
 {
   setupUi(this);
 
@@ -43,6 +48,16 @@ CQExpressionMmlStackedWidget::CQExpressionMmlStackedWidget(QWidget* parent)
   mpBtnViewExpression->setIcon(CQIconResource::icon(CQIconResource::renderMathML));
   mpBtnEditExpression->setIcon(CQIconResource::icon(CQIconResource::edit));
   mpBtnSaveExpression->setIcon(CQIconResource::icon(CQIconResource::fileExport));
+
+  mpMmlScrollView->setBackgroundColor(QColor(Qt::white));
+
+#ifdef WIN32
+  // on windows there ought to be a border around the MML widget
+  // otherwise it is difficult to distinguish the formula from the rest of the
+  // dialog
+  mpMmlScrollView->setFrameShape(QFrame::Panel);
+  mpMmlScrollView->setFrameStyle(QFrame::Panel | QFrame::Plain);
+#endif
 
   init();
 }
@@ -159,7 +174,7 @@ void CQExpressionMmlStackedWidget::slotSaveExpression()
         CopasiFileDialog::getSaveFileName(this,
                                           "Save File Dialog",
                                           "untitled.mml",
-                                          "MathML (*.mml);;TeX (*.tex)",
+                                          "MathML (*.mml);;TeX (*.tex);;PNG (*.png)",
 //                                          "Save Expression to Disk", new QString);
                                           "Save Expression to Disk", filter);
 
@@ -176,10 +191,32 @@ void CQExpressionMmlStackedWidget::slotSaveExpression()
   qDebug() << "\non CQEMSW::slotSaveExpression -> filter = " << *filter << "\n";
 #endif
 
-  if (filter->contains("tex"))
+  if (filter->contains(".tex"))
     saveTeX(outfilename);
+  else if (filter->contains(".png"))
+    savePNG(outfilename);
   else
     saveMML(outfilename);
+}
+
+void CQExpressionMmlStackedWidget::savePNG(const QString outfilename)
+{
+  std::ostringstream mml;
+  mpExpressionWidget->writeMathML(mml);
+  QtMmlDocument doc;
+  doc.setBaseFontPointSize(20);
+  doc.setFontName(QtMmlWidget::NormalFont, qApp->font().family());
+  doc.setContent(FROM_UTF8(mml.str()));
+
+  const QSize &size = doc.size();
+  QPixmap pixmap(size.width(), size.height());
+  QPainter painter(&pixmap);
+  painter.setRenderHint(QPainter::Antialiasing);
+  painter.setRenderHint(QPainter::SmoothPixmapTransform);
+  painter.setRenderHint(QPainter::HighQualityAntialiasing);
+  painter.fillRect(0, 0, size.width(), size.height(), Qt::white);
+  doc.paint(&painter, QPoint(0, 0));
+  pixmap.save(outfilename, "PNG");
 }
 
 void CQExpressionMmlStackedWidget::saveMML(const QString outfilename)

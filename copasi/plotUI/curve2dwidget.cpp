@@ -1,18 +1,11 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/curve2dwidget.cpp,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/05/03 14:25:48 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #include <qpainter.h>
 #include "curve2dwidget.h"
+#include "CQPlotEditWidget.h"
 
 #include "UI/CCopasiSelectionDialog.h"
 #include "UI/qtUtilities.h"
@@ -28,11 +21,12 @@
  *  Constructs a Curve2DWidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-Curve2DWidget::Curve2DWidget(QWidget* parent, const char* /* name */, Qt::WindowFlags fl)
-    : QWidget(parent, fl)
+Curve2DWidget::Curve2DWidget(QWidget* parent, const char* /* name */, Qt::WindowFlags fl):
+  CQPlotEditWidget(parent, fl),
+  mpObjectY(NULL),
+  mpObjectX(NULL)
 {
   setupUi(this);
-
 
   mpBtnX->setIcon(CQIconResource::icon(CQIconResource::copasi));
   mpBtnY->setIcon(CQIconResource::icon(CQIconResource::copasi));
@@ -97,6 +91,14 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
       mpSpinBoxWidth->setValue(*(C_FLOAT64*)tmp);
     }
 
+  // points
+  if (linetype == 1)
+    {
+      if (!(tmp = curve->getValue("Line width").pVOID)) return false;
+
+      mpSpinBoxWidth->setValue(*(C_FLOAT64*)tmp);
+    }
+
   //symbol type
   if (linetype == 2 || linetype == 3)
     {
@@ -156,7 +158,6 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
       mpBoxColor->setCurrentIndex(mpBoxColor->count() - 1);
     }
 
-
   //channel
   mpCheckBefore->setChecked(curve->getActivity() & COutputInterface::BEFORE);
   mpCheckDuring->setChecked(curve->getActivity() & COutputInterface::DURING);
@@ -165,25 +166,18 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
   return true; //TODO
 }
 
-bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve) const
+bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original /*= NULL*/) const
 {
   //if (!(mpObjectX && mpObjectY)) return false;
 
-  //title
-  curve->setTitle(TO_UTF8(mpEditTitle->text()));
+  //curve->setType(CPlotItem::curve2d);
 
-  //channels
-  curve->getChannels().clear();
-  curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("")));
-  curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectY ? mpObjectY->getCN() : CCopasiObjectName("")));
-
-  curve->setValue("Line type", (unsigned C_INT32)mpBoxType->currentIndex());
-  curve->setValue("Line subtype", (unsigned C_INT32)mpBoxLineSubType->currentIndex());
-  curve->setValue("Symbol subtype", (unsigned C_INT32)mpBoxSymbolSubType->currentIndex());
-  curve->setValue("Line width", (C_FLOAT64)mpSpinBoxWidth->value());
-
-  //color
-  curve->setValue("Color", std::string(TO_UTF8(mpBoxColor->currentText())));
+  std::string title = TO_UTF8(mpEditTitle->text());
+  unsigned C_INT32 lineType = (unsigned C_INT32)mpBoxType->currentIndex();
+  unsigned C_INT32 lineSubType = (unsigned C_INT32)mpBoxLineSubType->currentIndex();
+  unsigned C_INT32 symbolSubType = (unsigned C_INT32)mpBoxSymbolSubType->currentIndex();
+  C_FLOAT64 lineWidth = (C_FLOAT64)mpSpinBoxWidth->value();
+  std::string color = TO_UTF8(mpBoxColor->currentText());
 
   C_INT32 Activity = 0;
 
@@ -192,6 +186,68 @@ bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve) const
   if (mpCheckDuring->isChecked()) Activity += COutputInterface::DURING;
 
   if (mpCheckAfter->isChecked()) Activity += COutputInterface::AFTER;
+
+  CCopasiObjectName xName = mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("");
+  CCopasiObjectName yName = mpObjectY ? mpObjectY->getCN() : CCopasiObjectName("");
+
+  bool thingsChanged = false;
+
+  if (original != NULL)
+    {
+      // compare whether things changed
+      if (original->getTitle() != title)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getType() != CPlotItem::curve2d)
+        thingsChanged = true;
+
+      if (thingsChanged || *original->getValue("Line type").pUINT != lineType)
+        thingsChanged = true;
+
+      if (thingsChanged || *original->getValue("Line subtype").pUINT != lineSubType)
+        thingsChanged = true;
+
+      if (thingsChanged || *original->getValue("Symbol subtype").pUINT != symbolSubType)
+        thingsChanged = true;
+
+      if (thingsChanged || *original->getValue("Line width").pDOUBLE != lineWidth)
+        thingsChanged = true;
+
+      if (thingsChanged || *original->getValue("Color").pSTRING != color)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getActivity() != Activity)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getChannels().size() != 2)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getChannels()[0] != xName)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getChannels()[1] != yName)
+        thingsChanged = true;
+    }
+  else thingsChanged = true;
+
+  if (!thingsChanged)
+    return false;
+
+  //title
+  curve->setTitle(title);
+
+  //channels
+  curve->getChannels().clear();
+  curve->getChannels().push_back(CPlotDataChannelSpec(xName));
+  curve->getChannels().push_back(CPlotDataChannelSpec(yName));
+
+  curve->setValue("Line type", lineType);
+  curve->setValue("Line subtype", lineSubType);
+  curve->setValue("Symbol subtype", symbolSubType);
+  curve->setValue("Line width", lineWidth);
+
+  //color
+  curve->setValue("Color", color);
 
   curve->setActivity((COutputInterface::Activity) Activity);
 
@@ -246,33 +302,38 @@ void Curve2DWidget::buttonPressedY()
 
 void Curve2DWidget::typeChanged(int linetype)
 {
-  if (linetype == 0 || linetype == 3)
+  if (linetype == 0 || linetype == 3 || linetype == 1)
     {
-      mpBoxLineSubType->show();
-      mpSpinBoxWidth->show();
-      mpLblWidth->show();
+      mpBoxLineSubType->setEnabled(linetype != 1);
+      mpSpinBoxWidth->setEnabled(true);
     }
   else
     {
-      mpBoxLineSubType->hide();
-      mpSpinBoxWidth->hide();
-      mpLblWidth->hide();
+      mpBoxLineSubType->setEnabled(linetype == 1);
+      mpSpinBoxWidth->setEnabled(false);
     }
 
   //symbol type
   if (linetype == 2 || linetype == 3)
     {
-      mpBoxSymbolSubType->show();
+      mpBoxSymbolSubType->setEnabled(true);
     }
   else
     {
-      mpBoxSymbolSubType->hide();
+      mpBoxSymbolSubType->setEnabled(false);
     }
-
 }
 
-
-void Curve2DWidget::setModel(const CModel * model)
+#if USE_NEW_PLOTSUBWIDGET
+/**
+ * In multiple edit mode, we don't want to edit name & channels
+ */
+void Curve2DWidget::setMultipleEditMode(bool mode)
 {
-  mpModel = model;
+  mpEditTitle->setEnabled(!mode);
+  mpEditX->setEnabled(!mode);
+  mpEditY->setEnabled(!mode);
+  mpBtnX->setEnabled(!mode);
+  mpBtnY->setEnabled(!mode);
 }
+#endif

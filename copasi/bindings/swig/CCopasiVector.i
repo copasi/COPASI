@@ -1,24 +1,24 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CCopasiVector.i,v $
-//   $Revision: 1.29 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/04/11 15:40:26 $
-// End CVS Header
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+
+
+
+
+
+
+
 
 %{
 
@@ -150,6 +150,7 @@
 %rename(getIndexByName) CCopasiVectorN<CPlotSpecification>::getIndex(const std::string& name) const;
 
 %template(OutputDefinitionStdVector) std::vector<CPlotSpecification*>;
+%template(PlotDataChannelSpecStdVector) std::vector<CPlotDataChannelSpec>;
 %template(OutputDefinitionVector) CCopasiVector<CPlotSpecification>;
 %template(OutputDefinitionVectorN) CCopasiVectorN<CPlotSpecification>;
 
@@ -225,7 +226,9 @@
 %template(ParameterVector) std::vector<CCopasiParameter*>;
 
 %template(IntStdVector) std::vector<C_INT32>;
+#if !SWIGPYTHON && !SWIGR
 %template(UIntStdVector) std::vector<unsigned int>;
+#endif
 %template(SizeTStdVector) std::vector<size_t>;
 
 %template(StringStdVector) std::vector<std::string>;
@@ -280,8 +283,10 @@ typedef CCopasiVector<CChemEqElement> CChemEqElementVector;
 
 typedef CCopasiVector<CCopasiDataModel> DataModelVector;
 
+#if !SWIGPYTHON && !SWIGR
 typedef std::vector<C_INT32> IntStdVector;
 typedef std::vector<unsigned int> UIntStdVector;
+#endif
 typedef std::vector<size_t> SizeTStdVector;
 typedef std::vector<C_FLOAT64> FloatStdVector;
 

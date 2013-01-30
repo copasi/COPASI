@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathExpression.h,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/15 15:56:59 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -96,6 +88,15 @@ public:
   bool convertToInitialExpression();
 
 private:
+  /**
+   * Sets the root node of the tree.
+   * Note: This is private to assure that only valid root node representing
+   *       mathematical expressions are set.
+   * @param CEvaluationNode* root node of the tree
+   * @return bool success
+   */
+  virtual bool setRoot(CEvaluationNode* pRootNode);
+
   /**
    * Create a node based on the given pointer to a data value
    * @param const C_FLOAT64 * pDataValue

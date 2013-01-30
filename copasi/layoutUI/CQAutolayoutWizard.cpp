@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQAutolayoutWizard.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/26 21:09:34 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -43,8 +35,8 @@ class QStringList;
  * by the item.
  */
 CQModelElementTreeWidgetItem::CQModelElementTreeWidgetItem(const QStringList & strings, const std::string& key, int type) :
-    QTreeWidgetItem(strings, type)
-    , mKey(key)
+  QTreeWidgetItem(strings, type)
+  , mKey(key)
 {
 }
 
@@ -75,7 +67,7 @@ CCopasiObject* CQModelElementTreeWidgetItem::getObject() const
 // Error dialog if nothing has been selected int the tree
 
 CQNoSelectionErrorWizardPage::CQNoSelectionErrorWizardPage():
-    QWizardPage()
+  QWizardPage()
 {
   this->setTitle(tr("No selection Error"));
   QVBoxLayout* pLayout = new QVBoxLayout;
@@ -83,7 +75,7 @@ CQNoSelectionErrorWizardPage::CQNoSelectionErrorWizardPage():
   QLabel* pLabel = new QLabel("<font color='red'>Please go back to the selection page and select some model elements for which to create a layout.</font>");
   QFont font = pLabel->font();
   font.setBold(true);
-  font.setPointSize(font.pointSize()*2);
+  font.setPointSize(font.pointSize() * 2);
   pLabel->setFont(font);
   pLabel->setWordWrap(true);
   pLayout->addWidget(pLabel);
@@ -96,14 +88,12 @@ bool CQNoSelectionErrorWizardPage::isComplete() const
 
 // Selection Page
 
-
-
 CQSelectionWizardPage::CQSelectionWizardPage(const CModel& model) :
-    QWizardPage()
-    , mCreateCompartmentElements(false)
-    , mpSelectionTree(new QTreeWidget)
-    , mpCompartmentsItem(new QTreeWidgetItem((QTreeWidget*)NULL, QStringList(QString(tr("Compartments")))))
-    , mpReactionsItem(new QTreeWidgetItem((QTreeWidget*)NULL, QStringList(QString(tr("Reactions")))))
+  QWizardPage()
+  , mCreateCompartmentElements(false)
+  , mpSelectionTree(new QTreeWidget)
+  , mpCompartmentsItem(new QTreeWidgetItem((QTreeWidget*)NULL, QStringList(QString(tr("Compartments")))))
+  , mpReactionsItem(new QTreeWidgetItem((QTreeWidget*)NULL, QStringList(QString(tr("Reactions")))))
 {
   this->setTitle(tr("Model Element Selection"));
   this->setSubTitle("Please select the model elements for which you want to create layout elements.\nPlease Note the the \"All ...\" elements only turn their immediate children on or off.");
@@ -398,7 +388,6 @@ void CQSelectionWizardPage::slotCreateCompartments(int state)
   connect(this->mpSelectionTree, SIGNAL(itemChanged(QTreeWidgetItem*, int)), this, SLOT(slotItemChanged(QTreeWidgetItem*, int)));
 }
 
-
 // fills the selection tree with elements from the model
 void CQSelectionWizardPage::fillTree(const CModel& model)
 {
@@ -535,8 +524,14 @@ void CQSelectionWizardPage::fillContainers(std::set<const CCompartment*>& compar
             }
 
           pItem2 = pChild->child(0);
+
           // get the All species item
-          assert(pItem2 != NULL);
+          if (pItem2 == NULL)
+            {
+              ++i;
+              continue;
+            }
+
           j = 0;
           jMax = pItem2->childCount();
 
@@ -555,7 +550,6 @@ void CQSelectionWizardPage::fillContainers(std::set<const CCompartment*>& compar
 
               ++j;
             }
-
 
           ++i;
         }
@@ -591,13 +585,12 @@ void CQSelectionWizardPage::fillContainers(std::set<const CCompartment*>& compar
     }
 }
 
-
 // this is the page where one can select the side compounds
 // constructor which takes a string that is displayed for the item
 // and the key of a model object
 CQSideCompoundWizardPage::CQListWidgetModelItem::CQListWidgetModelItem(const QString& text, const std::string& key):
-    QListWidgetItem(text)
-    , mKey(key)
+  QListWidgetItem(text)
+  , mKey(key)
 {
 }
 
@@ -621,11 +614,11 @@ CCopasiObject* CQSideCompoundWizardPage::CQListWidgetModelItem::getObject() cons
 
 // default constructor
 CQSideCompoundWizardPage::CQSideCompoundWizardPage() :
-    QWizardPage()
-    , mpSpeciesList(new QListWidget)
-    , mpSideCompoundList(new QListWidget)
-    , mpAddButton(new QPushButton(">>"))
-    , mpRemoveButton(new QPushButton("<<"))
+  QWizardPage()
+  , mpSpeciesList(new QListWidget)
+  , mpSideCompoundList(new QListWidget)
+  , mpAddButton(new QPushButton(">>"))
+  , mpRemoveButton(new QPushButton("<<"))
 {
   this->setTitle("Side Compounds");
   this->setSubTitle("Please select the species that you want to be considered as side compounds in the layout.\n\nSide compounds can be duplicated for each reaction they occur in and they might be treated differently by the layout algorithm.");
@@ -888,8 +881,6 @@ void CQSideCompoundWizardPage::slotSideCompoundSelectionChanged()
     }
 }
 
-
-
 // Now comes the wizard itself
 
 /**
@@ -897,9 +888,9 @@ void CQSideCompoundWizardPage::slotSideCompoundSelectionChanged()
  * a COPASI model.
  */
 CQAutolayoutWizard::CQAutolayoutWizard(const CModel& model, QWidget * parent , Qt::WindowFlags flags):
-    QWizard(parent, flags)
-    , mModel(model)
-    , mLastPageId(CQAutolayoutWizard::NO_PAGE)
+  QWizard(parent, flags)
+  , mModel(model)
+  , mLastPageId(CQAutolayoutWizard::NO_PAGE)
 {
   this->setOptions(this->options() | QWizard::HaveFinishButtonOnEarlyPages);
   this->setOptions(this->options() & ~QWizard::NoCancelButton);
@@ -916,7 +907,6 @@ CQAutolayoutWizard::~CQAutolayoutWizard()
 {
   // do nothing
 }
-
 
 // creates the first page for the wizard
 // This is the page where the user selects the model elements
@@ -947,7 +937,6 @@ QWizardPage* CQAutolayoutWizard::createErrorPage()
 {
   return new CQNoSelectionErrorWizardPage;
 }
-
 
 void CQAutolayoutWizard::done(int result)
 {
@@ -1050,11 +1039,14 @@ int CQAutolayoutWizard::nextId() const
           }
 
         break;
+
       case NO_SELECTION_ERROR_PAGE_ID:
         break;
+
       case SIDE_COMPOUND_PAGE_ID:
         //nextPage=LAYOUT_PARAMETER_PAGE_ID;
         break;
+
       case LAYOUT_PARAMETER_PAGE_ID:
         break;
     }

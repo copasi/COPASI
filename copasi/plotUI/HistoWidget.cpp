@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/HistoWidget.cpp,v $
-//   $Revision: 1.8 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/15 17:04:47 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,7 +6,15 @@
 #include <QtCore/QVariant>
 
 #include "HistoWidget.h"
+#include "CQPlotEditWidget.h"
+
+#ifdef USE_NEW_PLOTSUBWIDGET
+#include "CQPlotSubwidget.h"
+typedef CQPlotSubwidget PlotWindowType;
+#else
 #include "PlotSubwidget.h"
+typedef PlotSubwidget PlotWindowType;
+#endif
 
 #include "UI/CCopasiSelectionDialog.h"
 #include "UI/qtUtilities.h"
@@ -24,7 +24,7 @@
 #include "resourcesUI/CQIconResource.h"
 
 HistoWidget::HistoWidget(QWidget* parent, const char* /* name */, Qt::WindowFlags fl)
-    : QWidget(parent, fl)
+  : CQPlotEditWidget(parent, fl)
 {
   setupUi(this);
 
@@ -50,8 +50,8 @@ void HistoWidget::buttonPressedX()
 
   std::vector< const CCopasiObject * > objects =
     CCopasiSelectionDialog::getObjectVector(this,
-                                            CQSimpleSelectionTree::NumericValues,
-                                            &oldSelection);
+        CQSimpleSelectionTree::NumericValues,
+        &oldSelection);
 
   if (objects.size() && objects[0])
     {
@@ -69,10 +69,10 @@ void HistoWidget::buttonPressedX()
   //check if more than one object was selected...
   if (objects.size() > 1)
     {
-      PlotSubwidget* pParent;
+      PlotWindowType* pParent;
       QObject* tmp = this;
 
-      while (!(pParent = dynamic_cast<PlotSubwidget *>(tmp)) && this)
+      while (!(pParent = dynamic_cast<PlotWindowType *>(tmp)) && this)
         tmp = tmp->parent();
 
       if (pParent) //tell the parent to create the remaining histogram descriptions.
@@ -124,17 +124,8 @@ bool HistoWidget::LoadFromCurveSpec(const CPlotItem * curve)
   return true; //TODO
 }
 
-bool HistoWidget::SaveToCurveSpec(CPlotItem * curve) const
+bool HistoWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original /*= NULL*/) const
 {
-  //title
-  curve->setTitle(TO_UTF8(mpEditTitle->text()));
-
-  //channels
-  curve->getChannels().clear();
-  curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("")));
-
-  //other parameters: TODO
-  curve->setValue("increment", mpEditIncrement->text().toDouble());
 
   C_INT32 Activity = 0;
 
@@ -144,12 +135,60 @@ bool HistoWidget::SaveToCurveSpec(CPlotItem * curve) const
 
   if (mpCheckAfter->isChecked()) Activity += COutputInterface::AFTER;
 
+  std::string title = TO_UTF8(mpEditTitle->text());
+  CCopasiObjectName name = mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("");
+  C_FLOAT64 increment = mpEditIncrement->text().toDouble();
+
+  bool thingsChanged = false;
+
+  if (original != NULL)
+    {
+      if (original->getType() != CPlotItem::histoItem1d)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getTitle() != title)
+        thingsChanged = true;
+
+      if (thingsChanged || *original->getValue("increment").pDOUBLE != increment)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getActivity() != Activity)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getChannels().size() != 1)
+        thingsChanged = true;
+
+      if (thingsChanged || original->getChannels()[0] != name)
+        thingsChanged = true;
+    }
+  else thingsChanged = true;
+
+  if (!thingsChanged)
+    return false;
+
+  //title
+  curve->setTitle(title);
+
+  //channels
+  curve->getChannels().clear();
+  curve->getChannels().push_back(CPlotDataChannelSpec(name));
+
+  //other parameters: TODO
+  curve->setValue("increment", increment);
+
   curve->setActivity((COutputInterface::Activity) Activity);
 
   return true;
 }
 
-void HistoWidget::setModel(const CModel * model)
+#if USE_NEW_PLOTSUBWIDGET
+/**
+ * In multiple edit mode, we don't want to edit name & channels
+ */
+void HistoWidget::setMultipleEditMode(bool mode)
 {
-  mpModel = model;
+  mpEditTitle->setEnabled(!mode);
+  mpEditVariable->setEnabled(!mode);
+  mpBtnVariable->setEnabled(!mode);
 }
+#endif

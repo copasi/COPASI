@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-//   $Revision: 1.24 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:54:55 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -34,35 +26,35 @@
 
 CFitItem::CFitItem(const CCopasiContainer * pParent,
                    const std::string & name):
-    COptItem(pParent, name),
-    mpGrpAffectedExperiments(NULL),
+  COptItem(pParent, name),
+  mpGrpAffectedExperiments(NULL),
 #ifdef COPASI_CROSSVALIDATION
-    mpGrpAffectedCrossValidations(NULL),
+  mpGrpAffectedCrossValidations(NULL),
 #endif // COPASI_CROSSVALIDATION
-    mLocalValue(0),
-    mpLocalMethod(new SpecificUpdateMethod<CFitItem, C_FLOAT64>(this, &CFitItem::setLocalValue))
+  mLocalValue(0),
+  mpLocalMethod(new SpecificUpdateMethod<CFitItem, C_FLOAT64>(this, &CFitItem::setLocalValue))
 {initializeParameter();}
 
 CFitItem::CFitItem(const CFitItem & src,
                    const CCopasiContainer * pParent):
-    COptItem(src, pParent),
-    mpGrpAffectedExperiments(NULL),
+  COptItem(src, pParent),
+  mpGrpAffectedExperiments(NULL),
 #ifdef COPASI_CROSSVALIDATION
-    mpGrpAffectedCrossValidations(NULL),
+  mpGrpAffectedCrossValidations(NULL),
 #endif // COPASI_CROSSVALIDATION
-    mLocalValue(0),
-    mpLocalMethod(new SpecificUpdateMethod<CFitItem, C_FLOAT64>(this, &CFitItem::setLocalValue))
+  mLocalValue(0),
+  mpLocalMethod(new SpecificUpdateMethod<CFitItem, C_FLOAT64>(this, &CFitItem::setLocalValue))
 {initializeParameter();}
 
 CFitItem::CFitItem(const CCopasiParameterGroup & group,
                    const CCopasiContainer * pParent):
-    COptItem(group, pParent),
-    mpGrpAffectedExperiments(NULL),
+  COptItem(group, pParent),
+  mpGrpAffectedExperiments(NULL),
 #ifdef COPASI_CROSSVALIDATION
-    mpGrpAffectedCrossValidations(NULL),
+  mpGrpAffectedCrossValidations(NULL),
 #endif // COPASI_CROSSVALIDATION
-    mLocalValue(0),
-    mpLocalMethod(new SpecificUpdateMethod<CFitItem, C_FLOAT64>(this, &CFitItem::setLocalValue))
+  mLocalValue(0),
+  mpLocalMethod(new SpecificUpdateMethod<CFitItem, C_FLOAT64>(this, &CFitItem::setLocalValue))
 {initializeParameter();}
 
 CFitItem::~CFitItem()
@@ -147,11 +139,9 @@ C_FLOAT64 CFitItem::getConstraintViolation() const
       case 1:
         return mLocalValue - *mpUpperBound;
         break;
-
-      default:
-        return 0.0;
-        break;
     }
+
+  return 0.0;
 }
 
 std::ostream &operator<<(std::ostream &os, const CFitItem & o)
@@ -174,7 +164,7 @@ std::ostream &operator<<(std::ostream &os, const CFitItem & o)
 #ifdef COPASI_CROSSVALIDATION
   imax = o.mpGrpAffectedCrossValidations->size();
 
-  os << "    Affected Cross Validation Experiments:" << std::endl << "      ";
+  os << "    Affected Validation Experiments:" << std::endl << "      ";
 
   if (imax == 0) os << "all";
 
@@ -315,23 +305,23 @@ bool CFitItem::updateBounds(std::vector<COptItem * >::iterator it)
 
 CFitConstraint::CFitConstraint(const CCopasiContainer * pParent,
                                const std::string & name):
-    CFitItem(pParent, name),
-    mCheckConstraint(0),
-    mConstraintViolation(0.0)
+  CFitItem(pParent, name),
+  mCheckConstraint(0),
+  mConstraintViolation(0.0)
 {}
 
 CFitConstraint::CFitConstraint(const CFitConstraint & src,
                                const CCopasiContainer * pParent):
-    CFitItem(src, pParent),
-    mCheckConstraint(src.mCheckConstraint),
-    mConstraintViolation(src.mConstraintViolation)
+  CFitItem(src, pParent),
+  mCheckConstraint(src.mCheckConstraint),
+  mConstraintViolation(src.mConstraintViolation)
 {}
 
 CFitConstraint::CFitConstraint(const CCopasiParameterGroup & group,
                                const CCopasiContainer * pParent):
-    CFitItem(group, pParent),
-    mCheckConstraint(0),
-    mConstraintViolation(0.0)
+  CFitItem(group, pParent),
+  mCheckConstraint(0),
+  mConstraintViolation(0.0)
 {}
 
 CFitConstraint::~CFitConstraint() {}
