@@ -3313,10 +3313,13 @@ bool CModel::convert2NonReversible()
 
   for (i = 0; i < imax; ++i)
     {
-      steps.remove(reactionsToDelete[i]->getObjectName());
+      delete reactionsToDelete[i];
     }
 
-  success &= compile();
+  if (imax != 0)
+    {
+      setCompileFlag(true);
+    }
 
   return success;
 }
