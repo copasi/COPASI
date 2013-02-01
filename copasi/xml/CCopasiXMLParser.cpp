@@ -12280,6 +12280,7 @@ void CCopasiXMLParser::RenderCurveElement::start(const XML_Char * pszName,
             pRenderCurve->setEndHead(EndHead);
           }
 
+        assert(mCommon.pGroup != NULL);
         mCommon.pGroup->addChildElement(pRenderCurve);
         // delete the polygon again since the addElement method made a copy
         delete pRenderCurve;
@@ -12939,20 +12940,39 @@ void CCopasiXMLParser::GroupElement::end(const XML_Char * pszName)
   switch (mCurrentElement)
     {
       case Group:
-
+      {
         if (strcmp(pszName, "Group"))
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Group", mParser.getCurrentLineNumber());
 
+        assert(mCommon.pGroup != NULL);
+
         // if the group is part of another group, we have to set mCommon.pGroup
         // to that group, otherwise, we have to set it to NULL
-        if (dynamic_cast<CLGroup*>(mCommon.pGroup->getObjectParent()) != NULL)
+        // a group is part of another group, if its grandFather is a group
+        // (as group elements are stored in a separate vector)
+        CCopasiContainer* parent = mCommon.pGroup->getObjectParent();
+        CCopasiContainer* grandFather = (parent == NULL ? NULL : parent->getObjectParent());
+
+        if (grandFather != NULL && dynamic_cast<CLGroup*>(grandFather) != NULL)
           {
-            mCommon.pGroup = dynamic_cast<CLGroup*>(mCommon.pGroup->getObjectParent());
+            mCommon.pGroup = dynamic_cast<CLGroup*>(grandFather);
+            //tell the handler where to continue
+
+            mParser.popElementHandler();
+
+            //reset handler
+            mCurrentElement = Group;
+            //call parent handler
+            mParser.onEndElement(pszName);
+
+            //no need to delete Handler (since it is the only one the destructor
+            //will handle it)
+            break;
           }
         else
           {
-            if (dynamic_cast<CLStyle*>(mCommon.pGroup->getObjectParent()) != NULL)
+            if (dynamic_cast<CLStyle*>(parent) != NULL)
               {
                 // if this group is the child of a style, we should set some default values on attributes
                 // so that they are set explicitly
@@ -13022,6 +13042,7 @@ void CCopasiXMLParser::GroupElement::end(const XML_Char * pszName)
         //call parent handler
         mParser.onEndElement(pszName);
         break;
+      }
 
       case GroupChild:
 

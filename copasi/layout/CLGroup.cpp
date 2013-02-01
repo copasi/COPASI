@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGroup.cpp,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:52 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -51,17 +43,18 @@
  * Constructor.
  */
 CLGroup::CLGroup(CCopasiContainer* pParent):
-    CLGraphicalPrimitive2D(),
-    CCopasiContainer("RenderGroup", pParent),
-    mFontFamily(""),
-    mFontSize(CLRelAbsVector(std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN())),
-    mFontWeight(CLText::WEIGHT_UNSET),
-    mFontStyle(CLText::STYLE_UNSET),
-    mTextAnchor(CLText::ANCHOR_UNSET),
-    mVTextAnchor(CLText::ANCHOR_UNSET),
-    mStartHead(""),
-    mEndHead(""),
-    mKey("")
+  CLGraphicalPrimitive2D(),
+  CCopasiContainer("RenderGroup", pParent),
+  mFontFamily(""),
+  mFontSize(CLRelAbsVector(std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN())),
+  mFontWeight(CLText::WEIGHT_UNSET),
+  mFontStyle(CLText::STYLE_UNSET),
+  mTextAnchor(CLText::ANCHOR_UNSET),
+  mVTextAnchor(CLText::ANCHOR_UNSET),
+  mStartHead(""),
+  mEndHead(""),
+  mElements("GroupElements", this),
+  mKey("")
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("RenderGroup", this);
 }
@@ -70,17 +63,18 @@ CLGroup::CLGroup(CCopasiContainer* pParent):
  * Copy constructor.
  */
 CLGroup::CLGroup(const CLGroup& source, CCopasiContainer* pParent):
-    CLGraphicalPrimitive2D(source),
-    CCopasiContainer(source, pParent),
-    mFontFamily(source.mFontFamily),
-    mFontSize(source.mFontSize),
-    mFontWeight(source.mFontWeight),
-    mFontStyle(source.mFontStyle),
-    mTextAnchor(source.mTextAnchor),
-    mVTextAnchor(source.mVTextAnchor),
-    mStartHead(source.mStartHead),
-    mEndHead(source.mEndHead),
-    mKey("")
+  CLGraphicalPrimitive2D(source),
+  CCopasiContainer(source, pParent),
+  mFontFamily(source.mFontFamily),
+  mFontSize(source.mFontSize),
+  mFontWeight(source.mFontWeight),
+  mFontStyle(source.mFontStyle),
+  mTextAnchor(source.mTextAnchor),
+  mVTextAnchor(source.mVTextAnchor),
+  mStartHead(source.mStartHead),
+  mEndHead(source.mEndHead),
+  mElements("GroupElements", this),
+  mKey("")
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("RenderGroup", this);
   // copy the elements
@@ -126,13 +120,14 @@ CLGroup::CLGroup(const CLGroup& source, CCopasiContainer* pParent):
  * Constructor to generate object from the corresponding SBML object.
  */
 CLGroup::CLGroup(const RenderGroup& source, CCopasiContainer* pParent):
-    CLGraphicalPrimitive2D(source),
-    CCopasiContainer("RenderGroup", pParent),
-    mFontFamily(source.getFontFamily()),
-    mFontSize(source.getFontSize()),
-    mStartHead(source.getStartHead()),
-    mEndHead(source.getEndHead()),
-    mKey("")
+  CLGraphicalPrimitive2D(source),
+  CCopasiContainer("RenderGroup", pParent),
+  mFontFamily(source.getFontFamily()),
+  mFontSize(source.getFontSize()),
+  mStartHead(source.getStartHead()),
+  mEndHead(source.getEndHead()),
+  mElements("GroupElements", this),
+  mKey("")
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("RenderGroup", this);
 
@@ -142,9 +137,11 @@ CLGroup::CLGroup(const RenderGroup& source, CCopasiContainer* pParent):
       case Text::WEIGHT_UNSET:
         this->setFontWeight(CLText::WEIGHT_UNSET);
         break;
+
       case Text::WEIGHT_BOLD:
         this->setFontWeight(CLText::WEIGHT_BOLD);
         break;
+
       default:
         this->setFontWeight(CLText::WEIGHT_NORMAL);
         break;
@@ -155,9 +152,11 @@ CLGroup::CLGroup(const RenderGroup& source, CCopasiContainer* pParent):
       case Text::STYLE_UNSET:
         this->setFontStyle(CLText::STYLE_UNSET);
         break;
+
       case Text::STYLE_ITALIC:
         this->setFontStyle(CLText::STYLE_ITALIC);
         break;
+
       default:
         this->setFontStyle(CLText::STYLE_NORMAL);
         break;
@@ -168,12 +167,15 @@ CLGroup::CLGroup(const RenderGroup& source, CCopasiContainer* pParent):
       case Text::ANCHOR_UNSET:
         this->setTextAnchor(CLText::ANCHOR_UNSET);
         break;
+
       case Text::ANCHOR_END:
         this->setTextAnchor(CLText::ANCHOR_END);
         break;
+
       case Text::ANCHOR_MIDDLE:
         this->setTextAnchor(CLText::ANCHOR_MIDDLE);
         break;
+
       default:
         this->setTextAnchor(CLText::ANCHOR_START);
         break;
@@ -184,12 +186,15 @@ CLGroup::CLGroup(const RenderGroup& source, CCopasiContainer* pParent):
       case Text::ANCHOR_UNSET:
         this->setVTextAnchor(CLText::ANCHOR_UNSET);
         break;
+
       case Text::ANCHOR_BOTTOM:
         this->setVTextAnchor(CLText::ANCHOR_BOTTOM);
         break;
+
       case Text::ANCHOR_MIDDLE:
         this->setVTextAnchor(CLText::ANCHOR_MIDDLE);
         break;
+
       default:
         this->setVTextAnchor(CLText::ANCHOR_TOP);
         break;
@@ -538,6 +543,10 @@ void CLGroup::addChildElement(const CLTransformation2D* pChild)
     {
       this->mElements.add(new CLImage(*static_cast<const CLImage*>(pChild), this), true);
     }
+  else if (dynamic_cast<const CLGroup*>(pChild))
+    {
+      this->mElements.add(new CLGroup(*static_cast<const CLGroup*>(pChild), this), true);
+    }
 }
 
 /**
@@ -806,9 +815,11 @@ RenderGroup* CLGroup::toSBML(unsigned int level, unsigned int version) const
       case CLText::WEIGHT_UNSET:
         pGroup->setFontWeight(Text::WEIGHT_UNSET);
         break;
+
       case CLText::WEIGHT_BOLD:
         pGroup->setFontWeight(Text::WEIGHT_BOLD);
         break;
+
       default:
         pGroup->setFontWeight(Text::WEIGHT_NORMAL);
         break;
@@ -819,9 +830,11 @@ RenderGroup* CLGroup::toSBML(unsigned int level, unsigned int version) const
       case CLText::STYLE_UNSET:
         pGroup->setFontStyle(Text::STYLE_UNSET);
         break;
+
       case CLText::STYLE_ITALIC:
         pGroup->setFontStyle(Text::STYLE_ITALIC);
         break;
+
       default:
         pGroup->setFontStyle(Text::STYLE_NORMAL);
         break;
@@ -832,12 +845,15 @@ RenderGroup* CLGroup::toSBML(unsigned int level, unsigned int version) const
       case CLText::ANCHOR_UNSET:
         pGroup->setTextAnchor(Text::ANCHOR_UNSET);
         break;
+
       case CLText::ANCHOR_END:
         pGroup->setTextAnchor(Text::ANCHOR_END);
         break;
+
       case CLText::ANCHOR_MIDDLE:
         pGroup->setTextAnchor(Text::ANCHOR_MIDDLE);
         break;
+
       default:
         pGroup->setTextAnchor(Text::ANCHOR_START);
         break;
@@ -848,12 +864,15 @@ RenderGroup* CLGroup::toSBML(unsigned int level, unsigned int version) const
       case CLText::ANCHOR_UNSET:
         pGroup->setTextAnchor(Text::ANCHOR_UNSET);
         break;
+
       case CLText::ANCHOR_BOTTOM:
         pGroup->setTextAnchor(Text::ANCHOR_BOTTOM);
         break;
+
       case CLText::ANCHOR_MIDDLE:
         pGroup->setTextAnchor(Text::ANCHOR_MIDDLE);
         break;
+
       default:
         pGroup->setTextAnchor(Text::ANCHOR_TOP);
         break;
