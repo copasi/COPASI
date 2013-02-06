@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -34,7 +34,10 @@
 #include <sbml/conversion/ConversionProperties.h>
 
 #ifdef USE_CRENDER_EXTENSION
+#include "layout/CLDefaultStyles.h"
 #include <sbml/packages/render/extension/RenderExtension.h>
+#include <sbml/packages/render/extension/RenderListOfLayoutsPlugin.h>
+#include <sbml/packages/render/sbml/GlobalRenderInformation.h>
 #endif
 
 #define INIT_DEFAULTS(element) \
@@ -3044,11 +3047,35 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
 
   if (this->mpSBMLDocument && this->mpSBMLDocument->getModel())
     {
-      LayoutModelPlugin* lmPlugin = (LayoutModelPlugin*)this->mpSBMLDocument->getModel()->getPlugin("layout");
+      LayoutModelPlugin* lmPlugin = static_cast<LayoutModelPlugin*>(this->mpSBMLDocument->getModel()->getPlugin("layout"));
 
       if (lmPlugin != NULL)
-        dataModel.getListOfLayouts()->exportToSBML(lmPlugin->getListOfLayouts(),
-            this->mCOPASI2SBMLMap, mIdMap, this->mpSBMLDocument->getLevel(), this->mpSBMLDocument->getVersion());
+        {
+          dataModel.getListOfLayouts()->exportToSBML(lmPlugin->getListOfLayouts(),
+              this->mCOPASI2SBMLMap, mIdMap, this->mpSBMLDocument->getLevel(), this->mpSBMLDocument->getVersion());
+
+#if LIBSBML_VERSION >= 50400
+
+#ifdef USE_CRENDER_EXTENSION
+
+          // also ensure ther is one global render information object
+          if (lmPlugin->getNumLayouts() > 0 && getNumDefaultStyles() > 0)
+            {
+              RenderListOfLayoutsPlugin* plugin = static_cast<RenderListOfLayoutsPlugin *>(lmPlugin->getListOfLayouts()->getPlugin("render"));
+
+              if (plugin != NULL)
+                {
+                  if (plugin->getNumGlobalRenderInformationObjects() == 0)
+                    {
+                      GlobalRenderInformation* info = plugin->createGlobalRenderInformation();
+                      getDefaultStyle(0)->toSBML(info, this->mpSBMLDocument->getLevel(), this->mpSBMLDocument->getVersion());
+                    }
+                }
+            }
+
+#endif // USE_RENDER_EXTENSION
+#endif // LIBSBML_VERSION >= 50400
+        }
     }
 
 #ifdef USE_SBMLUNIT
