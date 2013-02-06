@@ -410,6 +410,8 @@ void CLRenderInformationBase::addSBMLAttributes(RenderInformationBase* pBase
 {
   pBase->setReferenceRenderInformationId(this->getReferenceRenderInformationKey());
   pBase->setBackgroundColor(this->getBackgroundColor());
+  pBase->setId(getKey());
+  pBase->setName(getName());
   size_t i, iMax = this->mListOfColorDefinitions.size();
   int result;
 
