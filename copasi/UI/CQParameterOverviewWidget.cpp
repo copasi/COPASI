@@ -7,7 +7,11 @@
 
 #include "CQParameterOverviewWidget.h"
 #include "CQParameterOverviewDM.h"
+#include "CQMessageBox.h"
+#include "CopasiFileDialog.h"
+#include "qtUtilities.h"
 
+#include "commandline/CLocaleString.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModelParameterSet.h"
 #include "model/CModel.h"
@@ -15,6 +19,7 @@
 
 CQParameterOverviewWidget::CQParameterOverviewWidget(QWidget* parent, const char* name):
   CopasiWidget(parent, name),
+  mpParameterSet(NULL),
   mpParameterSetCopy(NULL),
   mpParameterSetDM(NULL),
   mpParameterSetSortDM(NULL)
@@ -142,6 +147,50 @@ void CQParameterOverviewWidget::slotBtnSaveToFile()
 {
   // Commit all changes
   slotBtnCommit();
+
+  C_INT32 Answer = QMessageBox::No;
+  QString fileName;
+
+  while (Answer == QMessageBox::No)
+    {
+      fileName =
+        CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
+                                          "untitled.tsv", "Tab Separated Files (*.tsv);;Comma Separated Files (*.csv);;TEXT Files (*.txt)", "Save as");
+
+      if (fileName.isEmpty()) return;
+
+      // Checks whether the file exists
+      Answer = checkSelection(fileName);
+
+      if (Answer == QMessageBox::Cancel) return;
+    }
+
+  std::ofstream file(CLocaleString::fromUtf8(TO_UTF8(fileName)).c_str());
+
+  if (file.fail()) return;
+
+  std::string mode;
+  std::string separator;
+
+  if (fileName.endsWith(".txt"))
+    {
+      mode = "report";
+      separator = "\t";
+    }
+  else if (fileName.endsWith(".csv"))
+    {
+      mode = "table";
+      separator = ",";
+    }
+  else
+    {
+      mode = "table";
+      separator = "\t";
+    }
+
+  mpParameterSet->saveToStream(file, mode, separator);
+
+  file.close();
 }
 
 // virtual

@@ -564,6 +564,18 @@ bool CModelParameter::refreshFromModel()
   return success;
 }
 
+// virtual
+size_t CModelParameter::getNumChildren() const
+{
+  return 0;
+}
+
+// virtual
+const CModelParameter * CModelParameter::getChild(const size_t & index) const
+{
+  return NULL;
+}
+
 CModelParameterCompartment::CModelParameterCompartment(CModelParameterGroup * pParent, const CModelParameter::Type & type):
   CModelParameter(pParent, type),
   mSpecies()

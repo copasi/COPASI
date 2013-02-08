@@ -98,6 +98,14 @@ public:
    */
   void assignSetContent(const CModelParameterSet & src);
 
+  /**
+   * Save the parameter set to a stream
+   * @param std::ostream & os
+   * @param const std::string & mode (report or table)
+   * @param const std::string & separator
+   */
+  bool saveToStream(std::ostream & os, const std::string & mode, const std::string & separator);
+
 private:
   /**
    * The unique key of the set

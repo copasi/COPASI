@@ -232,6 +232,10 @@ public:
    */
   virtual bool refreshFromModel();
 
+  // These methods are only here so that we can use CNodeIterator to traverse the tree.
+  virtual size_t getNumChildren() const;
+  virtual const CModelParameter * getChild(const size_t & index) const;
+
 protected:
   /**
    * Determine the parameter name based on the CN of the corresponding object

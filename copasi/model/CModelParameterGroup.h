@@ -130,6 +130,10 @@ public:
    */
   CModelParameter * getModelParameter(const std::string & cn) const;
 
+  // These methods are only here so that we can use CNodeIterator to traverse the tree.
+  virtual size_t getNumChildren() const;
+  virtual const CModelParameter * getChild(const size_t & index) const;
+
 protected:
   /**
    * Assign the content of the source group to this, i.e., copy all

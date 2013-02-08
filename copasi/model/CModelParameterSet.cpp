@@ -10,6 +10,7 @@
 #include "report/CCopasiRootContainer.h"
 #include "report/CKeyFactory.h"
 #include "report/CCopasiStaticString.h"
+#include "utilities/CNodeIterator.h"
 
 CModelParameterSet::CModelParameterSet(const std::string & name,
                                        const CCopasiContainer * pParent):
@@ -223,4 +224,82 @@ void CModelParameterSet::assignSetContent(const CModelParameterSet & src)
 {
   assignGroupContent(src);
   compile();
+}
+
+bool CModelParameterSet::saveToStream(std::ostream & os, const std::string & mode, const std::string & separator)
+{
+  bool success = true;
+
+  CNodeIterator< const CModelParameter > itNode(this);
+
+  if (mode == "report")
+    {
+      itNode.setProcessingModes(CNodeIteratorMode::Before);
+
+      while (itNode.next() != itNode.end())
+        {
+          if (*itNode != NULL)
+            {
+              for (unsigned int i = 1; i < itNode.level(); i++)
+                {
+                  os << separator;
+                }
+
+              os << itNode->getName();
+
+              for (unsigned int i = itNode.level(); i < 6; i++)
+                {
+                  os << separator;
+                }
+
+              if (itNode->getType() != Group &&
+                  itNode->getType() != Set)
+                {
+                  os << itNode->getValue() << " " << itNode->getUnit();
+                }
+
+              os << std::endl;
+            }
+        }
+    }
+  else if (mode == "table")
+    {
+      itNode.setProcessingModes(CNodeIteratorMode::After);
+
+      while (itNode.next() != itNode.end())
+        {
+          if (*itNode != NULL)
+            {
+              if (itNode->getType() != Group &&
+                  itNode->getType() != Set)
+                {
+                  os << itNode->getName() << separator;
+                }
+            }
+        }
+
+      os << std::endl;
+
+      itNode = CNodeIterator< const CModelParameter >(this);
+
+      while (itNode.next() != itNode.end())
+        {
+          if (*itNode != NULL)
+            {
+              if (itNode->getType() != Group &&
+                  itNode->getType() != Set)
+                {
+                  os << itNode->getValue() << separator;
+                }
+            }
+        }
+
+      os << std::endl;
+    }
+  else
+    {
+      success = false;
+    }
+
+  return success;
 }

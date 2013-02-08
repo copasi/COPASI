@@ -308,3 +308,20 @@ CModelParameter * CModelParameterGroup::getModelParameter(const std::string & cn
 
   return pModelParameter;
 }
+
+// virtual
+size_t CModelParameterGroup::getNumChildren() const
+{
+  return size();
+}
+
+// virtual
+const CModelParameter * CModelParameterGroup::getChild(const size_t & index) const
+{
+  if (index < size())
+    {
+      return mModelParameters[index];
+    }
+
+  return NULL;
+}
