@@ -202,6 +202,15 @@ public:
   //****************************************************************************************
 
   /**
+   * Retrieve the index of the given parameter name in the function call. If pType is not
+   * NULL the type of the parameter is returned
+   * @param const std::string & parameterName
+   * @param CFunctionParameter::DataType * pType (default: NULL)
+   * @return size_t index;
+   */
+  size_t getParameterIndex(const std::string & parameterName, CFunctionParameter::DataType * pType = NULL) const;
+
+  /**
    * Sets a parameter value
    * if updateStatus==true the status is also updated to make sure
    * the value is actually used (instead of a global value that may

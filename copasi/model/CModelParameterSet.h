@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameterSet.h,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/13 18:32:47 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,37 +17,96 @@ class CModel;
 class CModelParameterSet: public CCopasiContainer, public CModelParameterGroup, public CAnnotation
 {
 public:
+  /**
+   * Constructor
+   * @param const std::string & name
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
   CModelParameterSet(const std::string & name,
                      const CCopasiContainer * pParent = NULL);
 
+  /**
+   * Copy constructor
+   * @param const CModelParameterSet & src
+   * @param const CCopasiContainer * pParent (default: NULL)
+   */
   CModelParameterSet(const CModelParameterSet & src,
                      const CCopasiContainer * pParent = NULL);
 
-  virtual const std::string & getKey() const;
-
-  virtual bool setObjectParent(const CCopasiContainer * pParent);
-
+  /**
+   * Destructor
+   */
   virtual ~CModelParameterSet();
 
+  /**
+   * Retrieve the unique key of the set.
+   * @return const std::string & key
+   */
+  virtual const std::string & getKey() const;
+
+  /**
+   * Set the object parent
+   * @param const CCopasiContainer * pParent
+   * @return bool success
+   */
+  virtual bool setObjectParent(const CCopasiContainer * pParent);
+
+  /**
+   * Set the model the parameter set is storing values for
+   * @param const CModel * pModel
+   */
   void setModel(const CModel * pModel);
 
-  CModel * getModel();
+  /**
+   * Retrieve the model the parameter set is storing values for
+   * @return CModel * pModel
+   */
+  CModel * getModel() const;
 
+  /**
+   * Create the parameter set from the assigned model
+   */
   void createFromModel();
 
+  /**
+   * Compare the parameter set with the assigned model
+   */
   bool compareWithModel();
 
+  /**
+   * Retrieve the name of the parameter set
+   * @return std::string name
+   */
   virtual std::string getName() const;
 
+  /**
+   * Update the corresponding model object with the current parameter settings
+   */
   virtual bool updateModel();
 
+  /**
+   * Determine whether this is parameter set is currently active, i.e., it is synchronized
+   * with the model.
+   * @return bool isActive
+   */
   bool isActive() const;
 
-private:
-  std::string mName;
+  /**
+   * Assign the content of the source set to this, i.e., copy all
+   * contained parameters and groups.
+   * @param const CModelParameterSet & src
+   */
+  void assignSetContent(const CModelParameterSet & src);
 
+private:
+  /**
+   * The unique key of the set
+   */
   std::string mKey;
 
+  /**
+   * A pointer to the model the parameter set is storing values for
+   */
   CModel * mpModel;
 };
 

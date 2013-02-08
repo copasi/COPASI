@@ -814,41 +814,58 @@ bool CCopasiXML::saveModel()
 #ifdef COPASI_PARAMETER_SETS
 
   // Save the model parameter sets
-  if ((imax = mpModel->getModelParameterSets().size()) > 0)
+  Attributes.erase();
+  const CModelParameterSet * pSet = & mpModel->getModelParameterSet();
+  Attributes.add("activeSet", pSet->getKey());
+
+  startSaveElement("ListOfModelParameterSets", Attributes);
+
+  Attributes.erase();
+  Attributes.add("key", "");
+  Attributes.add("name", "");
+
+  pSet = & mpModel->getModelParameterSet();
+
+  Attributes.setValue(0, pSet->getKey());
+  Attributes.setValue(1, pSet->getObjectName());
+
+  startSaveElement("ModelParameterSet", Attributes);
+
+  saveAnnotation(pSet);
+
+  CModelParameterGroup::const_iterator itSet = pSet->begin();
+  CModelParameterGroup::const_iterator endSet = pSet->end();
+
+  for (; itSet != endSet; ++itSet)
     {
-      Attributes.erase();
-      Attributes.add("activeSet", mpModel->getActiveParameterSetKey());
+      saveModelParameter(*itSet);
+    }
 
-      startSaveElement("ListOfModelParameterSets", Attributes);
+  endSaveElement("ModelParameterSet");
 
-      Attributes.erase();
-      Attributes.add("key", "");
-      Attributes.add("name", "");
+  for (i = 0; i < imax; i++)
+    {
+      pSet = mpModel->getModelParameterSets()[i];
 
-      for (i = 0; i < imax; i++)
+      Attributes.setValue(0, pSet->getKey());
+      Attributes.setValue(1, pSet->getObjectName());
+
+      startSaveElement("ModelParameterSet", Attributes);
+
+      saveAnnotation(pSet);
+
+      itSet = pSet->begin();
+      endSet = pSet->end();
+
+      for (; itSet != endSet; ++itSet)
         {
-          CModelParameterSet * pSet = mpModel->getModelParameterSets()[i];
-
-          Attributes.setValue(0, pSet->getKey());
-          Attributes.setValue(1, pSet->getObjectName());
-
-          startSaveElement("ModelParameterSet", Attributes);
-
-          saveAnnotation(pSet);
-
-          CModelParameterGroup::const_iterator itSet = pSet->begin();
-          CModelParameterGroup::const_iterator endSet = pSet->end();
-
-          for (; itSet != endSet; ++itSet)
-            {
-              saveModelParameter(*itSet);
-            }
-
-          endSaveElement("ModelParameterSet");
+          saveModelParameter(*itSet);
         }
 
-      endSaveElement("ListOfModelParameterSets");
+      endSaveElement("ModelParameterSet");
     }
+
+  endSaveElement("ListOfModelParameterSets");
 
 #endif // COPASI_PARAMETER_SETS
   startSaveElement("StateTemplate");
@@ -950,6 +967,7 @@ bool CCopasiXML::saveModelParameter(const CModelParameter * pModelParameter)
       Attributes.add("cn", pModelParameter->getCN());
       Attributes.add("value", pModelParameter->getValue());
       Attributes.add("type", CModelParameter::TypeNames[pModelParameter->getType()]);
+      Attributes.add("simulationType", CModelEntity::XMLStatus[pModelParameter->getSimulationType()]);
 
       if (pModelParameter->getInitialExpression() != "")
         {

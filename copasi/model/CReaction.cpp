@@ -276,6 +276,21 @@ bool CReaction::setFunction(CFunction * pFunction)
 //****************************************
 
 // TODO: check if function is set and map initialized in the following methods
+/**
+ * Retrieve the index of the given parameter name in the function call
+ * @param const std::string & parameterName
+ * @return size_t index;
+ */
+size_t CReaction::getParameterIndex(const std::string & parameterName, CFunctionParameter::DataType * pType) const
+{
+  if (pType != NULL)
+    {
+      return mMap.findParameterByName(parameterName, *pType);
+    }
+
+  CFunctionParameter::DataType Type;
+  return mMap.findParameterByName(parameterName, Type);
+}
 
 void CReaction::setParameterValue(const std::string & parameterName,
                                   const C_FLOAT64 & value,
@@ -290,8 +305,7 @@ void CReaction::setParameterValue(const std::string & parameterName,
   //make sure that this local parameter is actually used:
 
   //first find index
-  CFunctionParameter::DataType Type;
-  size_t index = mMap.findParameterByName(parameterName, Type);
+  size_t index = getParameterIndex(parameterName);
 
   if (index == C_INVALID_INDEX) return;
 
@@ -337,8 +351,7 @@ bool CReaction::setParameterMapping(const std::string & parameterName, const std
   if (!mpFunction) fatalError();
 
   CFunctionParameter::DataType type;
-  size_t index;
-  index = mMap.findParameterByName(parameterName, type);
+  size_t index = getParameterIndex(parameterName, &type);
 
   if (C_INVALID_INDEX == index)
     return false;
@@ -356,7 +369,7 @@ void CReaction::addParameterMapping(const std::string & parameterName, const std
 
   CFunctionParameter::DataType type;
   size_t index;
-  index = mMap.findParameterByName(parameterName, type);
+  index = getParameterIndex(parameterName, &type);
 
   if (C_INVALID_INDEX == index)
     return;
@@ -373,7 +386,7 @@ void CReaction::setParameterMappingVector(const std::string & parameterName,
 
   CFunctionParameter::DataType type;
   size_t index;
-  index = mMap.findParameterByName(parameterName, type);
+  index = getParameterIndex(parameterName, &type);
 
   if (C_INVALID_INDEX == index)
     return;
@@ -389,7 +402,7 @@ void CReaction::clearParameterMapping(const std::string & parameterName)
 
   CFunctionParameter::DataType type;
   size_t index;
-  index = mMap.findParameterByName(parameterName, type);
+  index = getParameterIndex(parameterName, &type);
 
   if (C_INVALID_INDEX == index)
     return;
@@ -412,9 +425,7 @@ const std::vector<std::string> & CReaction::getParameterMapping(const std::strin
 {
   if (!mpFunction) fatalError();
 
-  CFunctionParameter::DataType type;
-  size_t index;
-  index = mMap.findParameterByName(parameterName, type);
+  size_t index = getParameterIndex(parameterName);
 
   if (C_INVALID_INDEX == index)
     return mMetabKeyMap[0]; //TODO this is kind of ugly!
@@ -442,8 +453,7 @@ bool CReaction::isLocalParameter(const std::string & parameterName) const
   if (!mpFunction) fatalError();
 
   CFunctionParameter::DataType type;
-  size_t index;
-  index = mMap.findParameterByName(parameterName, type);
+  size_t index = getParameterIndex(parameterName, &type);
 
   if (C_INVALID_INDEX == index)
     return false;
@@ -517,14 +527,13 @@ void CReaction::initializeParameters()
   /* Remove parameters not fitting current function */
   CCopasiParameterGroup::index_iterator it = mParameters.beginIndex();
   CCopasiParameterGroup::index_iterator end = mParameters.endIndex();
-  CFunctionParameter::DataType Type;
   std::vector< std::string > ToBeDeleted;
 
   for (; it != end; ++it)
     {
       name = (*it)->getObjectName();
 
-      if (mMap.findParameterByName(name, Type) == C_INVALID_INDEX)
+      if (getParameterIndex(name) == C_INVALID_INDEX)
         ToBeDeleted.push_back(name);
     }
 

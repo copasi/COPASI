@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpeciesDetail.cpp,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/09 21:32:18 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -29,16 +21,16 @@
  *  name 'name'.'
  */
 CQSpeciesDetail::CQSpeciesDetail(QWidget* parent, const char* name) :
-    CopasiWidget(parent, name),
-    mChanged(false),
-    mInitialNumberLastChanged(true),
-    mpMetab(NULL),
-    mpCurrentCompartment(NULL),
-    mItemToType(),
-    mInitialNumber(0.0),
-    mInitialConcentration(0.0),
-    mExpressionValid(false),
-    mInitialExpressionValid(false)
+  CopasiWidget(parent, name),
+  mChanged(false),
+  mInitialNumberLastChanged(true),
+  mpMetab(NULL),
+  mpCurrentCompartment(NULL),
+  mItemToType(),
+  mInitialNumber(0.0),
+  mInitialConcentration(0.0),
+  mExpressionValid(false),
+  mInitialExpressionValid(false)
 {
   setupUi(this);
 
@@ -106,6 +98,7 @@ bool CQSpeciesDetail::update(ListViews::ObjectType objectType,
         if (action == ListViews::ADD)
           {
             mKey = "";
+            mpObject = NULL;
             mpMetab = NULL;
           }
 
@@ -117,6 +110,7 @@ bool CQSpeciesDetail::update(ListViews::ObjectType objectType,
         if (action == ListViews::DELETE && mKey == key)
           {
             mKey = "";
+            mpObject = NULL;
             mpMetab = NULL;
           }
 

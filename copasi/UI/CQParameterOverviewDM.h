@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQParameterOverviewDM.h,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:49:57 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -67,7 +59,7 @@ private:
 
   QVariant valueData(const CModelParameter * pNode, int role) const;
 
-  static QVariant unitData(const CModelParameter * pNode, int role);
+  QVariant unitData(const CModelParameter * pNode, int role) const;
 
   static QVariant assignmentData(const CModelParameter * pNode, int role);
 

@@ -1,22 +1,14 @@
-/* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.h,v $
- $Revision: 1.10 $
- $Name:  $
- $Author: shoops $
- $Date: 2011/03/07 19:34:55 $
- End CVS Header */
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -27,7 +19,7 @@
 #include <vector>
 #include "copasi.h"
 
-class CCopasiDataModel;
+class CModel;
 
 /**
  * CDimension class.
@@ -53,7 +45,7 @@ public:
   void setDimension(const C_FLOAT64 & d1, const C_FLOAT64 & d2, const C_FLOAT64 & d3,
                     const C_FLOAT64 & d4, const C_FLOAT64 & d5);
 
-  std::string getDisplayString(const CCopasiDataModel* pDataModel) const;
+  std::string getDisplayString(const CModel* pModel) const;
   std::string getDebugString() const;
 
   bool operator==(const CDimension & rhs) const;
@@ -74,7 +66,7 @@ public:
    * insert operator
    */
   //friend std::ostream & operator<<(std::ostream &os, const CDimension & d);
-  std::string print(const CCopasiDataModel* pDataModel) const;
+  std::string print(const CModel* pModel) const;
 
 private:
 
@@ -146,13 +138,13 @@ public:
   /**
    * find the dimensions for both a one-compartment and a multi-compartment reaction
    */
-  std::vector<std::string> findDimensionsBoth(const CCopasiDataModel* pDataModel);
+  std::vector<std::string> findDimensionsBoth(const CModel* pModel);
 
   const std::vector<CDimension> & getDimensions() const;
 
   //print the content of mDimensions to cout
 #ifdef COPASI_DEBUG
-  void printDebugOutput(const CCopasiDataModel* pDataModel) const;
+  void printDebugOutput(const CModel* pModel) const;
 #endif // COPASI_DEBUG
 
   void setUseHeuristics(bool flag);

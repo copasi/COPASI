@@ -1,19 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.cpp,v $
-//   $Revision: 1.20 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/09 21:32:17 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "CQModelValue.h"
@@ -34,7 +30,7 @@
  *  name 'name'.'
  */
 CQModelValue::CQModelValue(QWidget* parent, const char* name)
-    : CopasiWidget(parent, name)
+  : CopasiWidget(parent, name)
 {
   setupUi(this);
 
@@ -203,10 +199,47 @@ void CQModelValue::init()
 void CQModelValue::destroy()
 {}
 
-bool CQModelValue::update(ListViews::ObjectType /* objectType */,
-                          ListViews::Action /* action */,
-                          const std::string & /* key */)
+bool CQModelValue::update(ListViews::ObjectType  objectType,
+                          ListViews::Action action,
+                          const std::string & key)
 {
+  switch (objectType)
+    {
+      case ListViews::MODEL:
+
+        // For a new model we need to remove references to no longer existing metabolites
+        if (action == ListViews::ADD)
+          {
+            mKey = "";
+            mpObject = NULL;
+            mpModelValue = NULL;
+          }
+
+        break;
+
+      case ListViews::MODELVALUE:
+
+        // If the currently displayed metabolite is deleted we need to remove its references.
+        if (action == ListViews::DELETE && mKey == key)
+          {
+            mKey = "";
+            mpObject = NULL;
+            mpModelValue = NULL;
+          }
+
+        break;
+
+      case ListViews::STATE:
+        break;
+
+      default:
+        return true;
+        break;
+    }
+
+  if (isVisible() && !mIgnoreUpdates)
+    load();
+
   return true;
 }
 

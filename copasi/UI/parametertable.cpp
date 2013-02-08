@@ -314,7 +314,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
       CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
       assert(pDataModel != NULL);
       item = new ColorTableItem(this, Q3TableItem::Never, color,
-                                FROM_UTF8(" " + units.getDimensions()[i].getDisplayString(pDataModel)));
+                                FROM_UTF8(" " + units.getDimensions()[i].getDisplayString(&model)));
       setItem((int) rowCounter, 4, item);
 
       // add a line for a metabolite Parameter

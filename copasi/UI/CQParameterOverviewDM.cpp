@@ -115,7 +115,7 @@ QVariant CQParameterOverviewDM::headerData(int section, Qt::Orientation orientat
         break;
 
       case COL_TYPE:
-        return QVariant("Status");
+        return QVariant("Type");
         break;
 
       case COL_VALUE:
@@ -139,9 +139,10 @@ QModelIndex CQParameterOverviewDM::index(int row, int column, const QModelIndex 
 {
   CModelParameterGroup * pParent = static_cast< CModelParameterGroup *>(nodeFromIndex(parent));
 
-  if (pParent == NULL) return createIndex(row, column, static_cast< CModelParameter * >(mpModelParameterSet));
-
-  std::cout << *pParent << std::endl;
+  if (pParent == NULL)
+    {
+      return createIndex(row, column, *(mpModelParameterSet->begin() + row));
+    }
 
   if (row < (int) pParent->size())
     return createIndex(row, column, *(pParent->begin() + row));
@@ -159,8 +160,12 @@ QModelIndex CQParameterOverviewDM::parent(const QModelIndex & index) const
       return QModelIndex();
     }
 
+  if (pNode->getParent() == mpModelParameterSet)
+    {
+      return QModelIndex();
+    }
+
   CModelParameter * pParent = static_cast< CModelParameter * >(pNode->getParent());
-  std::cout << *pParent << std::endl;
 
   return createIndex(getRow(pParent), 0, pParent);
 }
@@ -171,7 +176,7 @@ int CQParameterOverviewDM::rowCount(const QModelIndex & parent) const
   if (!parent.isValid())
     {
       if (mpModelParameterSet != NULL)
-        return 1;
+        return 5;
       else
         return 0;
     }
@@ -219,7 +224,13 @@ void CQParameterOverviewDM::setModelParameterset(CModelParameterSet * pModelPara
 
 void CQParameterOverviewDM::setFramework(const int & framework)
 {
-  mFramework = framework;
+  if (mpModelParameterSet != NULL
+      && mFramework != framework)
+    {
+      beginResetModel();
+      mFramework = framework;
+      endResetModel();
+    }
 }
 
 QModelIndex CQParameterOverviewDM::index(CModelParameter * pNode) const
@@ -252,9 +263,6 @@ CModelParameter * CQParameterOverviewDM::nodeFromIndex(const QModelIndex & index
       Tmp = static_cast< const QSortFilterProxyModel *>(pModel)->mapToSource(index);
       pModel = Tmp.model();
     }
-
-  if (Tmp.internalPointer())
-    std::cout << *static_cast< CModelParameter * >(Tmp.internalPointer()) << std::endl;
 
   return static_cast< CModelParameter * >(Tmp.internalPointer());
 }
@@ -308,6 +316,22 @@ QVariant CQParameterOverviewDM::diffData(const CModelParameter * pNode, int role
 // static
 QVariant CQParameterOverviewDM::typeData(const CModelParameter * pNode, int role)
 {
+  switch (pNode->getType())
+    {
+      case CModelParameter::Group:
+      case CModelParameter::Set:
+        break;
+
+      default:
+
+        if (role == Qt::DisplayRole)
+          {
+            return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[pNode->getSimulationType()])));
+          }
+
+        break;
+    }
+
   return QVariant();
 }
 
@@ -332,9 +356,13 @@ QVariant CQParameterOverviewDM::valueData(const CModelParameter * pNode, int rol
   return QVariant();
 }
 
-// static
-QVariant CQParameterOverviewDM::unitData(const CModelParameter * pNode, int role)
+QVariant CQParameterOverviewDM::unitData(const CModelParameter * pNode, int role) const
 {
+  if (role == Qt::DisplayRole)
+    {
+      return QVariant(QString(FROM_UTF8(pNode->getUnit(static_cast< CModelParameter::Framework >(mFramework)))));
+    }
+
   return QVariant();
 }
 
@@ -343,6 +371,19 @@ QVariant CQParameterOverviewDM::assignmentData(const CModelParameter * pNode, in
 {
   if (role == Qt::DisplayRole)
     {
+      if (pNode->getType() == CModelParameter::ReactionParameter)
+        {
+          CCopasiObjectName GlobalQuantityCN = static_cast< const CModelParameterReactionParameter *>(pNode)->getGlobalQuantityCN();
+          CModelParameter * pGlobalQuantity = pNode->getSet()->getModelParameter(GlobalQuantityCN);
+
+          if (pGlobalQuantity != NULL)
+            {
+              return QVariant(QString("<- " + FROM_UTF8(pGlobalQuantity->getName())));
+            }
+
+          return QVariant(QString(FROM_UTF8(GlobalQuantityCN)));
+        }
+
       return QVariant(QString(FROM_UTF8(pNode->getInitialExpression())));
     }
 

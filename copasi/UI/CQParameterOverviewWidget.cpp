@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQParameterOverviewWidget.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/09 21:32:15 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,13 +8,16 @@
 #include "CQParameterOverviewWidget.h"
 #include "CQParameterOverviewDM.h"
 
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModelParameterSet.h"
+#include "model/CModel.h"
+#include "report/CCopasiRootContainer.h"
 
 CQParameterOverviewWidget::CQParameterOverviewWidget(QWidget* parent, const char* name):
-    CopasiWidget(parent, name),
-    mpParameterSet(NULL),
-    mpParameterSetDM(NULL),
-    mpParameterSetSortDM(NULL)
+  CopasiWidget(parent, name),
+  mpParameterSetCopy(NULL),
+  mpParameterSetDM(NULL),
+  mpParameterSetSortDM(NULL)
 {
   setupUi(this);
 
@@ -38,7 +33,9 @@ CQParameterOverviewWidget::CQParameterOverviewWidget(QWidget* parent, const char
   mpTreeView->setModel(mpParameterSetSortDM);
   mpTreeView->sortByColumn(0, Qt::AscendingOrder);
 
-  mpTreeView->expand(mpParameterSetSortDM->mapFromSource(mpParameterSetDM->index(0, 0, QModelIndex())));
+  // mpTreeView->expand(mpParameterSetSortDM->mapFromSource(mpParameterSetDM->index(0, 0, QModelIndex())));
+
+  // mpTreeView->setRowHidden(1, mpParameterSetSortDM->mapFromSource(mpParameterSetDM->index(0, 0, QModelIndex())), true);
 }
 
 CQParameterOverviewWidget::~CQParameterOverviewWidget()
@@ -50,14 +47,45 @@ CQParameterOverviewWidget::~CQParameterOverviewWidget()
 bool CQParameterOverviewWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
   // placeholder, ensure compilation under MSVC
+  // We need to handle at lease STATE CHANGE, and MODEL ADD/DELETE
+
   return true;
 }
 
 // virtual
 bool CQParameterOverviewWidget::leave()
 {
-  // placeholder, ensure compilation under MSVC
+  if (mpParameterSet == NULL)
+    {
+      return false;
+    }
+
+  if (mpParameterSetCopy->diff(*mpParameterSet) != CModelParameter::Identical)
+    {
+      mpParameterSet->assignSetContent(*mpParameterSetCopy);
+
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+
+      if (mpParameterSet->isActive())
+        {
+          mpParameterSet->updateModel();
+          protectedNotify(ListViews::STATE, ListViews::CHANGE, "");
+        }
+      else
+        {
+          protectedNotify(ListViews::PARAMETERSET, ListViews::CHANGE, mKey);
+        }
+    }
+
   return true;
+}
+
+// virtual
+void CQParameterOverviewWidget::setFramework(int framework)
+{
+  mpParameterSetDM->setFramework(framework);
+  mpTreeView->expandAll();
 }
 
 // virtual
@@ -67,39 +95,57 @@ bool CQParameterOverviewWidget::enterProtected()
 
   if (!mpParameterSet)
     {
+      mpParameterSetDM->setModelParameterset(NULL);
+      pdelete(mpParameterSetCopy);
 
       mpListView->switchToOtherWidget(1, "");
       return false;
     }
 
-  mpParameterSetDM->setModelParameterset(mpParameterSet);
+  CModelParameterSet * pOldParameterSet = mpParameterSetCopy;
+  mpParameterSetCopy = new CModelParameterSet(*mpParameterSet, mpDataModel);
+  mpParameterSetDM->setModelParameterset(mpParameterSetCopy);
+  pdelete(pOldParameterSet);
+
+  if (mpParameterSet->isActive())
+    {
+      mpTreeView->header()->hideSection(1);
+    }
+
   mpTreeView->expandAll();
 
+  for (int i = 0; i < 6; i++)
+    {
+      mpTreeView->resizeColumnToContents(i);
+    }
+
   return true;
-
 }
 
 // virtual
-void CQParameterOverviewWidget::slotBtnNew()
+void CQParameterOverviewWidget::slotBtnRevert()
 {
-
+  mpBtnRevert->setFocus();
+  enterProtected();
 }
 
 // virtual
-void CQParameterOverviewWidget::slotBtnDelete()
+void CQParameterOverviewWidget::slotBtnCommit()
 {
-
+  mpBtnCommit->setFocus();
+  leave();
+  enterProtected();
 }
 
 // virtual
-void CQParameterOverviewWidget::slotBtnSave()
+void CQParameterOverviewWidget::slotBtnSaveToFile()
 {
-
+  // Commit all changes
+  slotBtnCommit();
 }
 
 // virtual
-void CQParameterOverviewWidget::dataChanged(const QModelIndex& topLeft,
-    const QModelIndex& bottomRight)
+void CQParameterOverviewWidget::dataChanged(const QModelIndex& /* topLeft */,
+    const QModelIndex& /* bottomRight */)
 {
-
 }

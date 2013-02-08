@@ -226,7 +226,7 @@ private:
   CQFittingWidget *paramFittingWidget;
   CQFittingResult *mpFittingResultWidget;
   ParametersWidget *parametersWidget;
-  CQTabWidget * mpParameterOverviewWidget;
+  CQParameterOverviewWidget * mpParameterOverviewWidget;
   CQPlotsWidget *mpPlotsWidget;
   PlotWindowType *mpPlotSubwidget;
   CQReactionsWidget *mpReactionsWidget;

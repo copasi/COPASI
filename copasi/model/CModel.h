@@ -367,27 +367,27 @@ public:
 
   /**
    * Return the non model parameter sets
-   * @return CCopasiVectorN< CModelParameterSet > & values
+   * @return CCopasiVectorN< CModelParameterSet > & modelParameterSets
    */
   const CCopasiVectorN< CModelParameterSet > & getModelParameterSets() const;
   CCopasiVectorN< CModelParameterSet > & getModelParameterSets();
 
   /**
-   * Set the key of the active parameter set
-   * @param const std::string & activeParameterSetKey
+   * Retrieve the parameter set
+   * @return const CModelParameterSet & modelParameterSet
    */
-  void setActiveParameterSetKey(const std::string & activeParameterSetKey);
-
-  /**
-   * Retrieve the key of the active parameter set
-   * @return const std::string & activeParameterSetKey
-   */
-  const std::string & getActiveParameterSetKey() const;
+  const CModelParameterSet & getModelParameterSet() const;
+  CModelParameterSet & getModelParameterSet();
 
   /**
    * Update the model initial values from the active parameter set.
    */
   void applyActiveParameterSet();
+
+  /**
+   * refresh the active parameter set from the model initial values
+   */
+  void refreshActiveParameterSet();
 
   //********** TT *****************************
 
@@ -1154,14 +1154,13 @@ public:
    * Retrieve the area units
    * @return std::string volumeUnits
    */
-
-  //std::string getAreaUnitsDisplayString() const;
+  std::string getAreaUnitsDisplayString() const;
 
   /**
-   * Retrieve the volume units
+   * Retrieve the length units
    * @return std::string volumeUnits
    */
-  //std::string getLengthUnitsDisplayString() const;
+  std::string getLengthUnitsDisplayString() const;
 
   /**
    * Retrieve the volume rate units
@@ -1367,7 +1366,12 @@ private:
   CCopasiVectorN< CModelValue > mValues;
 
   /**
-   *  vector of non concentration values in the model
+   * The parameter set of the model itself
+   */
+  CModelParameterSet mParameterSet;
+
+  /**
+   * Vector of parameter sets
    */
   CCopasiVectorN< CModelParameterSet > mParameterSets;
 

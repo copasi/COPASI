@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQBrowserPaneDM.cpp,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/11 16:53:05 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -31,12 +23,12 @@
 #include "model/CMetabNameInterface.h"
 
 CQBrowserPaneDM::CQBrowserPaneDM(QObject * pParent):
-    QAbstractItemModel(pParent),
-    mpRoot(NULL),
-    mpCopasiDM(NULL),
-    mpGuiDM(NULL),
-    mEmitDataChanged(true),
-    mFlags(CQBrowserPaneDM::Model | CQBrowserPaneDM::Tasks | CQBrowserPaneDM::Output | CQBrowserPaneDM::FunctionDB)
+  QAbstractItemModel(pParent),
+  mpRoot(NULL),
+  mpCopasiDM(NULL),
+  mpGuiDM(NULL),
+  mEmitDataChanged(true),
+  mFlags(CQBrowserPaneDM::Model | CQBrowserPaneDM::Tasks | CQBrowserPaneDM::Output | CQBrowserPaneDM::FunctionDB)
 {
   // setSortRole(Qt::EditRole);
   createStaticDM();
@@ -175,7 +167,6 @@ bool CQBrowserPaneDM::removeRows(int row, int count, const QModelIndex & parent)
   return true;
 }
 
-
 CQBrowserPaneDM::CNode * CQBrowserPaneDM::findNodeFromId(const size_t & id) const
 {
   CCopasiTree< CNode >::iterator it = mpRoot;
@@ -225,7 +216,6 @@ std::string CQBrowserPaneDM::getKeyFromIndex(const QModelIndex & index) const
 
   return pNode->getKey();
 }
-
 
 void CQBrowserPaneDM::remove(const std::string & key)
 {
@@ -312,7 +302,6 @@ void CQBrowserPaneDM::setGuiDM(const DataModelGUI * pDataModel)
     }
 }
 
-
 void CQBrowserPaneDM::load()
 {
   findNodeFromId(1)->setKey(mpCopasiDM->getModel()->getKey());
@@ -326,7 +315,7 @@ void CQBrowserPaneDM::load()
   findNodeFromId(117)->setKey(mpCopasiDM->getModel()->getKey()); // Parameter Overview
 
 #ifdef COPASI_PARAMETER_SETS
-  findNodeFromId(118)->setKey(mpCopasiDM->getModel()->getActiveParameterSetKey()); // Parameter Set
+  findNodeFromId(118)->setKey(mpCopasiDM->getModel()->getModelParameterSet().getKey()); // Parameter Set
 #endif // COPASI_PARAMETER_SETS
 
   findNodeFromId(21)->setKey((*mpCopasiDM->getTaskList())["Steady-State"]->getKey());
@@ -348,7 +337,6 @@ void CQBrowserPaneDM::load()
   findNodeFromId(33)->setKey((*mpCopasiDM->getTaskList())["Parameter Estimation"]->getKey());
   findNodeFromId(34)->setKey((*mpCopasiDM->getTaskList())["Sensitivities"]->getKey());
   findNodeFromId(35)->setKey((*mpCopasiDM->getTaskList())["Linear Noise Approximation"]->getKey());
-
 
   findNodeFromId(42)->setKey(mpCopasiDM->getPlotDefinitionList()->getKey());
   load(42); // Plot Specifications
@@ -388,6 +376,10 @@ void CQBrowserPaneDM::load(const size_t & id)
 
       case 116: // Events
         pVector = reinterpret_cast< const CCopasiVector< CCopasiObject > * >(&pModel->getEvents());
+        break;
+
+      case 119: // Parameter Sets
+        pVector = reinterpret_cast< const CCopasiVector< CCopasiObject > * >(&pModel->getModelParameterSets());
         break;
 
       case 42: // Plot Specifications
@@ -571,7 +563,6 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
               remove(key);
               break;
 
-
             default:
               break;
           }
@@ -627,7 +618,6 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
 
   return true;
 }
-
 
 QModelIndex CQBrowserPaneDM::index(CQBrowserPaneDM::CNode * pNode) const
 {
@@ -743,16 +733,15 @@ void CQBrowserPaneDM::clear()
   findNodeFromId(5)->deleteChildren(); // Functions
 }
 
-
 CQBrowserPaneDM::CNode::CNode():
-    CCopasiNode< CQBrowserPaneDM::SData >()
+  CCopasiNode< CQBrowserPaneDM::SData >()
 {}
 
 CQBrowserPaneDM::CNode::CNode(const size_t & id,
                               const std::string & key,
                               const QString & displayRole,
                               CNode * pParent):
-    CCopasiNode< CQBrowserPaneDM::SData >(pParent)
+  CCopasiNode< CQBrowserPaneDM::SData >(pParent)
 {
   mData.mId = id;
   mData.mKey = key;

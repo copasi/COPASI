@@ -22,7 +22,8 @@ static char DataModeltxt[] =
   "11:116:Events\n"
   "11:117:Parameter Overview\n"
 #ifdef COPASI_PARAMETER_SETS
-  "11:118:Parameter Set\n"
+  "11:118:Parameter Overview (Qt4)\n"
+  "11:119:Parameter Sets\n"
 #endif // COPASI_PARAMETER_SETS
   "1:12:Mathematical\n"
   //"12:122:Used Functions\n"

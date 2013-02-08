@@ -723,6 +723,15 @@
         <value type="string">ReactionParameter</value>
       </choice>
     </attribute>
+    <attribute name="simulationType">
+      <choice>
+        <value type="string">time</value>
+        <value type="string">ode</value>
+        <value type="string">assignment</value>
+        <value type="string">reactions</value>
+        <value type="string">fixed</value>
+      </choice>
+    </attribute>
     <optional>
       <ref name="initialExpression.element"/>
     </optional>

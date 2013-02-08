@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameter.cpp,v $
-//   $Revision: 1.8 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/04 17:36:43 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,12 +11,13 @@
 #include "CModelParameterGroup.h"
 #include "CModelParameterSet.h"
 #include "CMetabNameInterface.h"
-
+#include "CReaction.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "function/CExpression.h"
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
 #include "report/CCopasiObject.h"
+#include "utilities/CDimension.h"
 
 // static
 const char * CModelParameter::TypeNames[] =
@@ -63,27 +56,29 @@ std::string CModelParameter::nameFromCN(const CCopasiObjectName & cn)
 }
 
 CModelParameter::CModelParameter(CModelParameterGroup * pParent, const CModelParameter::Type & type):
-    mpParent(static_cast< CModelParameterGroup * >(pParent)),
-    mType(type),
-    mCN(),
-    mValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
-    mpInitialExpression(NULL),
-    mCompareResult(CModelParameter::Identical),
-    mpObject(NULL),
-    mIsInitialExpressionValid(true)
+  mpParent(static_cast< CModelParameterGroup * >(pParent)),
+  mType(type),
+  mCN(),
+  mSimulationType(type == CModelParameter::Model ? CModelEntity::TIME : CModelEntity::FIXED),
+  mValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mpInitialExpression(NULL),
+  mCompareResult(CModelParameter::Identical),
+  mpObject(NULL),
+  mIsInitialExpressionValid(true)
 {
   assert(mType == Set || mpParent != NULL);
 }
 
 CModelParameter::CModelParameter(const CModelParameter & src, CModelParameterGroup * pParent):
-    mpParent(pParent),
-    mType(src.mType),
-    mCN(src.mCN),
-    mValue(src.mValue),
-    mpInitialExpression(NULL),
-    mCompareResult(src.mCompareResult),
-    mpObject(src.mpObject),
-    mIsInitialExpressionValid(src.mIsInitialExpressionValid)
+  mpParent(pParent),
+  mType(src.mType),
+  mCN(src.mCN),
+  mSimulationType(src.mSimulationType),
+  mValue(src.mValue),
+  mpInitialExpression(NULL),
+  mCompareResult(src.mCompareResult),
+  mpObject(src.mpObject),
+  mIsInitialExpressionValid(src.mIsInitialExpressionValid)
 {
   assert(mType == Set || mpParent != NULL);
 
@@ -114,6 +109,82 @@ const CModelParameter::Type & CModelParameter::getType() const
   return mType;
 }
 
+const std::string CModelParameter::getUnit(const Framework & framework) const
+{
+  std::string Unit;
+
+  switch (mType)
+    {
+      case Model:
+        return getModel()->getTimeUnitsDisplayString();
+        break;
+
+      case Compartment:
+      {
+        const CCompartment * pCompartment = static_cast< const CCompartment * >(mpObject);
+
+        if (pCompartment == NULL)
+          {
+            return "";
+          }
+
+        return pCompartment->getChildObjectUnits(pCompartment->getInitialValueReference());
+      }
+      break;
+
+      case Species:
+      {
+        const CMetab * pSpecies = static_cast< const CMetab * >(mpObject);
+
+        if (pSpecies == NULL)
+          {
+            return "";
+          }
+
+        if (framework == Concentration)
+          {
+            return pSpecies->getChildObjectUnits(pSpecies->getInitialConcentrationReference());
+          }
+
+        return pSpecies->getChildObjectUnits(pSpecies->getInitialValueReference());
+      }
+      break;
+
+      case ModelValue:
+        break;
+
+      case ReactionParameter:
+      {
+        const CReaction * pReaction = static_cast< const CModelParameterReactionParameter * >(this)->getReaction();
+
+        if (pReaction == NULL)
+          {
+            return "";
+          }
+
+        const CModel * pModel = getModel();
+
+        CFindDimensions Units(pReaction->getFunction(),
+                              pModel->getQuantityUnitEnum() == CModel::dimensionlessQuantity,
+                              pModel->getVolumeUnitEnum() == CModel::dimensionlessVolume,
+                              pModel->getTimeUnitEnum() == CModel::dimensionlessTime,
+                              pModel->getAreaUnitEnum() == CModel::dimensionlessArea,
+                              pModel->getLengthUnitEnum() == CModel::dimensionlessLength);
+        Units.setUseHeuristics(true);
+        Units.setChemicalEquation(&pReaction->getChemEq());
+        Units.findDimensions(pReaction->getCompartmentNumber() > 1);
+
+        return Units.getDimensions()[pReaction->getParameterIndex(getName())].getDisplayString(pModel);
+      }
+      break;
+
+      default:
+        break;
+    }
+
+  return "";
+}
+
 // virtual
 void CModelParameter::setCN(const CCopasiObjectName & cn)
 {
@@ -123,6 +194,49 @@ void CModelParameter::setCN(const CCopasiObjectName & cn)
 const CCopasiObjectName & CModelParameter::getCN() const
 {
   return mCN;
+}
+
+bool CModelParameter::setSimulationType(const CModelEntity::Status & simulationType)
+{
+  bool success = true;
+
+  switch (mType)
+    {
+      case Model:
+        success = (simulationType == CModelEntity::TIME);
+        break;
+
+      case Species:
+        success = (simulationType != CModelEntity::TIME);
+        break;
+
+      case ReactionParameter:
+        success = (simulationType == CModelEntity::FIXED ||
+                   simulationType == CModelEntity::ASSIGNMENT);
+        break;
+
+      case ModelValue:
+      case Compartment:
+        success = (simulationType != CModelEntity::TIME &&
+                   simulationType != CModelEntity::REACTIONS);
+        break;
+
+      default:
+        success = (simulationType == CModelEntity::FIXED);
+        break;
+    }
+
+  if (success)
+    {
+      mSimulationType = simulationType;
+    }
+
+  return success;
+}
+
+const CModelEntity::Status & CModelParameter::getSimulationType() const
+{
+  return mSimulationType;
 }
 
 // virtual
@@ -180,12 +294,10 @@ const CModelParameter::CompareResult & CModelParameter::getCompareResult() const
   return mCompareResult;
 }
 
-
 size_t CModelParameter::getIndex() const
 {
   CModelParameterGroup::const_iterator it = mpParent->begin();
   CModelParameterGroup::const_iterator end = mpParent->end();
-
 
   size_t Index = 0;
 
@@ -201,7 +313,8 @@ bool CModelParameter::isReadOnly() const
 {
   if (mType == Group ||
       mType == Set ||
-      (mIsInitialExpressionValid && getInitialExpression() == ""))
+      (mType == Model && getModel()->isAutonomous()) ||
+      (mIsInitialExpressionValid && getInitialExpression() != ""))
     {
       return true;
     }
@@ -248,7 +361,6 @@ CModel * CModelParameter::getModel() const
   return NULL;
 }
 
-
 bool CModelParameter::isInitialExpressionValid() const
 {
   return mIsInitialExpressionValid;
@@ -259,14 +371,7 @@ std::string CModelParameter::getName() const
 {
   if (mpObject != NULL)
     {
-      if (mType == Species)
-        {
-          return mpObject->getObjectDisplayName();
-        }
-      else
-        {
-          return mpObject->getObjectName();
-        }
+      return mpObject->getObjectName();
     }
 
   return nameFromCN(mCN);
@@ -298,7 +403,7 @@ void CModelParameter::compile()
             mType = Species;
           else if (dynamic_cast< CModelValue * >(mpObject) != NULL)
             mType = ModelValue;
-          else if (dynamic_cast< CModelValue * >(mpObject) != NULL)
+          else if (dynamic_cast< CCopasiParameter * >(mpObject) != NULL)
             mType = ReactionParameter;
         }
     }
@@ -397,28 +502,89 @@ bool CModelParameter::updateModel()
   return success;
 }
 
+// virtual
+bool CModelParameter::refreshFromModel()
+{
+  bool success = true;
+
+  if (mpObject != NULL)
+    {
+      switch (mType)
+        {
+          case Model:
+          {
+            CModel * pModel = static_cast< CModel * >(mpObject);
+
+            if (!pModel->isAutonomous())
+              {
+                mValue = pModel->getInitialValue();
+              }
+            else
+              {
+                mValue = 0.0;
+              }
+          }
+          break;
+
+          case Compartment:
+          case Species:
+          case ModelValue:
+          {
+            CModelEntity * pEntity = static_cast< CModelEntity * >(mpObject);
+
+            mValue = pEntity->getInitialValue();
+          }
+          break;
+
+          case ReactionParameter:
+          {
+            CCopasiParameter * pParameter = static_cast< CCopasiParameter * >(mpObject);
+            mValue = * pParameter->getValue().pDOUBLE;
+
+            CCopasiObjectName GlobalQuantityCN = static_cast< CModelParameterReactionParameter * >(this)->getGlobalQuantityCN();
+
+            if (GlobalQuantityCN != "")
+              {
+                CModelParameter * pGlobalQuantity = getSet()->getModelParameter(GlobalQuantityCN);
+
+                if (pGlobalQuantity != NULL)
+                  {
+                    mValue = pGlobalQuantity->getValue();
+                  }
+              }
+          }
+          break;
+
+          default:
+            success = false;
+            break;
+        }
+    }
+
+  return success;
+}
+
 CModelParameterCompartment::CModelParameterCompartment(CModelParameterGroup * pParent, const CModelParameter::Type & type):
-    CModelParameter(pParent, type),
-    mSpecies()
+  CModelParameter(pParent, type),
+  mSpecies()
 {}
 
-
 CModelParameterCompartment::CModelParameterCompartment(const CModelParameterCompartment & src, CModelParameterGroup * pParent):
-    CModelParameter(src, pParent),
-    mSpecies()
+  CModelParameter(src, pParent),
+  mSpecies()
 {}
 
 // virtual
 CModelParameterCompartment::~CModelParameterCompartment()
 {
-  // If a compartment is deleted all contained species are also deleted.
+  // If a compartment is deleted all contained species are not deleted however
+  // their compartment is set to NULL.
   std::set< CModelParameterSpecies * >::iterator it = mSpecies.begin();
   std::set< CModelParameterSpecies * >::iterator end = mSpecies.end();
 
   for (; it != end; ++it)
     {
       (*it)->mpCompartment = NULL;
-      delete *it;
     }
 }
 
@@ -457,19 +623,18 @@ void CModelParameterCompartment::removeSpecies(CModelParameterSpecies * pSpecies
   mSpecies.erase(pSpecies);
 }
 
-
 CModelParameterSpecies::CModelParameterSpecies(CModelParameterGroup * pParent, const CModelParameter::Type & type):
-    CModelParameter(pParent, type),
-    mCompartmentCN(),
-    mpCompartment(NULL),
-    mConcentration(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  CModelParameter(pParent, type),
+  mCompartmentCN(),
+  mpCompartment(NULL),
+  mConcentration(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
 {}
 
 CModelParameterSpecies::CModelParameterSpecies(const CModelParameterSpecies & src, CModelParameterGroup * pParent):
-    CModelParameter(src, pParent),
-    mCompartmentCN(src.mCompartmentCN),
-    mpCompartment(src.mpCompartment),
-    mConcentration(src.mConcentration)
+  CModelParameter(src, pParent),
+  mCompartmentCN(src.mCompartmentCN),
+  mpCompartment(NULL),
+  mConcentration(src.mConcentration)
 {}
 
 // virtual
@@ -491,7 +656,7 @@ std::string CModelParameterSpecies::getName() const
       return CMetabNameInterface::getDisplayName(pModel, *static_cast< CMetab * >(mpObject), false);
     }
 
-  return nameFromCN(mCN) + '{' + nameFromCN(getCompartmentCN()) + '}';
+  return nameFromCN(mCN) + '{' + nameFromCN(mCompartmentCN) + '}';
 }
 
 // virtual
@@ -507,7 +672,7 @@ void CModelParameterSpecies::compile()
     }
 
   // Update the concentration if possible
-  setValue(mValue);
+  setValue(mValue, ParticleNumbers);
 }
 
 // virtual
@@ -526,14 +691,13 @@ void CModelParameterSpecies::setCN(const CCopasiObjectName & cn)
       mCompartmentCN += Separator + Primary;
       Separator = ",";
 
-      if (Primary.getObjectType() == "Vector" ||
+      if (Primary.getObjectType() == "Vector" &&
           Primary.getObjectName() == "Compartments")
         {
           break;
         }
     }
 }
-
 
 // virtual
 void CModelParameterSpecies::setValue(const C_FLOAT64 & value, const Framework & framework)
@@ -594,4 +758,76 @@ std::ostream &operator<<(std::ostream &os, const CModelParameter & o)
   os << "  Diff:       " << o.mCompareResult << std::endl;
 
   return os;
+}
+
+CModelParameterReactionParameter::CModelParameterReactionParameter(CModelParameterGroup * pParent, const CModelParameter::Type & type):
+  CModelParameter(pParent, type),
+  mpReaction(NULL),
+  mGlobalQuantityCN(),
+  mpGlobalQuantity(NULL)
+{}
+
+CModelParameterReactionParameter::CModelParameterReactionParameter(const CModelParameterReactionParameter & src, CModelParameterGroup * pParent):
+  CModelParameter(src, pParent),
+  mpReaction(NULL),
+  mGlobalQuantityCN(src.mGlobalQuantityCN),
+  mpGlobalQuantity(NULL)
+{}
+
+// virtual
+CModelParameterReactionParameter::~CModelParameterReactionParameter()
+{}
+
+// virtual
+void CModelParameterReactionParameter::compile()
+{
+  CModelParameter::compile();
+
+  mGlobalQuantityCN = std::string();
+
+  std::string Infix = getInitialExpression();
+
+  if (Infix.length() > 2)
+    {
+      // Infix: <CN,Reference=InitialValue> or <CN,Reference=Value>
+      CCopasiObjectName Tmp = Infix.substr(1, Infix.length() - 2);
+      std::string Separator = "";
+
+      for (; Tmp != ""; Tmp = Tmp.getRemainder())
+        {
+          CCopasiObjectName Primary = Tmp.getPrimary();
+
+          if (Primary.getObjectType() == "Reference")
+            {
+              break;
+            }
+
+          mGlobalQuantityCN += Separator + Primary;
+          Separator = ",";
+        }
+    }
+
+  mpGlobalQuantity = this->getSet()->getModelParameter(mGlobalQuantityCN);
+
+  if (mpGlobalQuantity != NULL)
+    {
+      mValue = mpGlobalQuantity->getValue();
+    }
+
+  std::vector< CCopasiContainer * > ListOfContainer;
+
+  CModel * pModel = getModel();
+  ListOfContainer.push_back(pModel);
+
+  mpReaction = static_cast< CReaction * >(pModel->getObjectDataModel()->ObjectFromName(ListOfContainer, mpParent->getCN()));
+}
+
+const CReaction * CModelParameterReactionParameter::getReaction() const
+{
+  return mpReaction;
+}
+
+const CRegisteredObjectName & CModelParameterReactionParameter::getGlobalQuantityCN() const
+{
+  return mGlobalQuantityCN;
 }

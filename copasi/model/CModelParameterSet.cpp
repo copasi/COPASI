@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameterSet.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/13 18:32:47 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,24 +13,31 @@
 
 CModelParameterSet::CModelParameterSet(const std::string & name,
                                        const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent),
-    CModelParameterGroup(NULL, CModelParameter::Set),
-    CAnnotation(),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("ModelParameterSet", this)),
-    mpModel(NULL)
+  CCopasiContainer(name, pParent),
+  CModelParameterGroup(NULL, CModelParameter::Set),
+  CAnnotation(),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("ModelParameterSet", this)),
+  mpModel(NULL)
 {
   setObjectParent(pParent);
 }
 
 CModelParameterSet::CModelParameterSet(const CModelParameterSet & src,
                                        const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    CModelParameterGroup(src, NULL),
-    CAnnotation(src),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("ModelParameterSet", this)),
-    mpModel(NULL)
+  CCopasiContainer(src, pParent),
+  CModelParameterGroup(src, NULL),
+  CAnnotation(src),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("ModelParameterSet", this)),
+  mpModel(NULL)
 {
   setObjectParent(pParent);
+
+  if (mpModel == NULL)
+    {
+      mpModel = src.getModel();
+    }
+
+  compile();
 }
 
 // virtual
@@ -63,9 +62,8 @@ bool CModelParameterSet::setObjectParent(const CCopasiContainer * pParent)
   return success;
 }
 
-
 // virtual
-CModel * CModelParameterSet::getModel()
+CModel * CModelParameterSet::getModel() const
 {
   assert(mpModel != NULL);
 
@@ -102,12 +100,13 @@ void CModelParameterSet::createFromModel()
     {
       pParameter = pGroup->add(Compartment);
       pParameter->setCN((*itCompartment)->getCN());
+      pParameter->setSimulationType((*itCompartment)->getStatus());
       pParameter->setValue((*itCompartment)->getInitialValue());
       pParameter->setInitialExpression((*itCompartment)->getInitialExpression());
     }
 
   pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
-  pGroup->setCN(CCopasiStaticString("Initial Species Concentrations").getCN());
+  pGroup->setCN(CCopasiStaticString("Initial Species Values").getCN());
 
   CCopasiVector< CMetab >::const_iterator itSpecies = mpModel->getMetabolites().begin();
   CCopasiVector< CMetab >::const_iterator endSpecies = mpModel->getMetabolites().end();
@@ -116,6 +115,7 @@ void CModelParameterSet::createFromModel()
     {
       pParameter = pGroup->add(Species);
       pParameter->setCN((*itSpecies)->getCN());
+      pParameter->setSimulationType((*itSpecies)->getStatus());
       pParameter->setValue((*itSpecies)->getInitialValue());
       pParameter->setInitialExpression((*itSpecies)->getInitialExpression());
     }
@@ -130,6 +130,7 @@ void CModelParameterSet::createFromModel()
     {
       pParameter = pGroup->add(ModelValue);
       pParameter->setCN((*itModelValue)->getCN());
+      pParameter->setSimulationType((*itModelValue)->getStatus());
       pParameter->setValue((*itModelValue)->getInitialValue());
       pParameter->setInitialExpression((*itModelValue)->getInitialExpression());
     }
@@ -156,10 +157,12 @@ void CModelParameterSet::createFromModel()
           // Check whether this refers to a global quantity.
           if ((*itReaction)->isLocalParameter((*itParameter)->getObjectName()))
             {
+              pParameter->setSimulationType(CModelEntity::FIXED);
               pParameter->setValue(*(*itParameter)->getValue().pDOUBLE);
             }
           else
             {
+              pParameter->setSimulationType(CModelEntity::ASSIGNMENT);
               const std::vector<std::string> ModelValue = (*itReaction)->getParameterMapping((*itParameter)->getObjectName());
 
               assert(ModelValue.size() == 1);
@@ -184,7 +187,7 @@ bool CModelParameterSet::compareWithModel()
   CModelParameterSet Tmp("Current", mpModel);
   Tmp.createFromModel();
 
-  return diff(Tmp);
+  return (diff(Tmp) == CModelParameter::Identical);
 }
 
 // virtual
@@ -213,5 +216,11 @@ bool CModelParameterSet::isActive() const
       return false;
     }
 
-  return (mpModel->getActiveParameterSetKey() == mKey);
+  return (mpModel->getModelParameterSet().getKey() == mKey);
+}
+
+void CModelParameterSet::assignSetContent(const CModelParameterSet & src)
+{
+  assignGroupContent(src);
+  compile();
 }

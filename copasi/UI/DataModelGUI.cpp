@@ -612,6 +612,11 @@ void DataModelGUI::refreshInitialValues()
 
   for (; it != end; ++it)
     (**it)();
+
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+
+  pModel->refreshActiveParameterSet();
 }
 
 void DataModelGUI::setFramework(int framework)

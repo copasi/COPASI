@@ -209,18 +209,9 @@ void CQTabWidget::slotBtnNew()
 {
   mpBtnNew->setFocus();
 
+  leave();
+
   mIgnoreLeave = true;
-
-  // We cannot call leave as it is ignored
-  save();
-
-  std::vector< CopasiWidget * >::iterator it = mPages.begin();
-  std::vector< CopasiWidget * >::iterator end = mPages.end();
-
-  for (; it != end; ++it)
-    (*it)->leave();
-
   emit newClicked();
-
   mIgnoreLeave = false;
 }

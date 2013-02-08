@@ -380,7 +380,7 @@ void ListViews::ConstructNodeWidgets()
   parametersWidget->hide();
 
   if (!mpParameterOverviewWidget)
-    mpParameterOverviewWidget = new CQTabWidget(ListViews::PARAMETERSET, new CQParameterOverviewWidget(this), this);
+    mpParameterOverviewWidget = new CQParameterOverviewWidget(this);
 
   mpParameterOverviewWidget->hide();
 

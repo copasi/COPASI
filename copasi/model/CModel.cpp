@@ -111,6 +111,7 @@ CModel::CModel(CCopasiContainer* pParent):
   mEvents("Events", this),
   mParticleFluxes(),
   mValues("Values", this),
+  mParameterSet("Parameter Set", this),
   mParameterSets("ParameterSets", this),
   mActiveParameterSetKey(""),
   mMoieties("Moieties", this),
@@ -479,6 +480,11 @@ bool CModel::compile()
 
   CMathContainer MathModel(*this);
 #endif // TST_DEPENDENCYGRAPH
+
+#ifdef COPASI_PARAMETER_SETS
+  // Update the parameter set
+  mParameterSet.createFromModel();
+#endif // COPASI_PARAMTER_SETS
 
   return success;
 }
@@ -1017,14 +1023,14 @@ const CCopasiVectorN< CModelParameterSet > & CModel::getModelParameterSets() con
 CCopasiVectorN< CModelParameterSet > & CModel::getModelParameterSets()
 {return mParameterSets;}
 
-void CModel::setActiveParameterSetKey(const std::string & activeParameterSetKey)
+const CModelParameterSet & CModel::getModelParameterSet() const
 {
-  mActiveParameterSetKey = activeParameterSetKey;
+  return mParameterSet;
 }
 
-const std::string & CModel::getActiveParameterSetKey() const
+CModelParameterSet & CModel::getModelParameterSet()
 {
-  return mActiveParameterSetKey;
+  return mParameterSet;
 }
 
 void CModel::applyActiveParameterSet()
@@ -1038,11 +1044,19 @@ void CModel::applyActiveParameterSet()
     }
   else
     {
-      CModelParameterSet * pParameterSet = new CModelParameterSet("Default");
+      CModelParameterSet * pParameterSet = new CModelParameterSet(UTCTimeStamp());
       mParameterSets.add(pParameterSet, true);
       mActiveParameterSetKey = pParameterSet->getKey();
       pParameterSet->createFromModel();
     }
+
+  mParameterSet.createFromModel();
+  mActiveParameterSetKey = mParameterSet.getKey();
+}
+
+void CModel::refreshActiveParameterSet()
+{
+  mParameterSet.refreshFromModel();
 }
 
 CCopasiVectorN < CEvent > & CModel::getEvents()
@@ -4286,7 +4300,7 @@ std::string CModel::printParameterOverview()
 
                     oss << "    " << params[j]->getObjectName() << " \t"
                         << *par->getValue().pDOUBLE << " "
-                        << units.getDimensions()[j].getDisplayString(getObjectDataModel()) << "\n";
+                        << units.getDimensions()[j].getDisplayString(this) << "\n";
                   }
                 else
                   {
@@ -4296,7 +4310,7 @@ std::string CModel::printParameterOverview()
 
                     oss << "    " << params[j]->getObjectName() << " \t"
                         << "-> " + par->getObjectName()
-                        << " (" << units.getDimensions()[j].getDisplayString(getObjectDataModel()) << ")\n";
+                        << " (" << units.getDimensions()[j].getDisplayString(this) << ")\n";
                   }
               }
 
@@ -4329,6 +4343,22 @@ std::string CModel::getVolumeUnitsDisplayString() const
     return "";
 
   return VolumeUnitNames[mVolumeUnit];
+}
+
+std::string CModel::getAreaUnitsDisplayString() const
+{
+  if (mAreaUnit == dimensionlessArea)
+    return "";
+
+  return AreaUnitNames[mAreaUnit];
+}
+
+std::string CModel::getLengthUnitsDisplayString() const
+{
+  if (mLengthUnit == dimensionlessLength)
+    return "";
+
+  return LengthUnitNames[mLengthUnit];
 }
 
 std::string CModel::getVolumeRateUnitsDisplayString() const

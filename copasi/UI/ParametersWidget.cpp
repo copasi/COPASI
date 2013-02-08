@@ -432,10 +432,6 @@ bool ParametersWidget::loadFromModel()
 
             if (!obj) continue;
 
-            assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-            CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-            assert(pDataModel != NULL);
-
             if (reac->isLocalParameter(j))
               {
                 CCopasiParameter * par = dynamic_cast<CCopasiParameter*>(obj); //must be a CCopasiParameter
@@ -444,7 +440,7 @@ bool ParametersWidget::loadFromModel()
 
                 new CParameterListItem(tmp, FROM_UTF8(params[j]->getObjectName()), par,
                                        * par->getValue().pDOUBLE,
-                                       FROM_UTF8(units.getDimensions()[j].getDisplayString(pDataModel)));
+                                       FROM_UTF8(units.getDimensions()[j].getDisplayString(model)));
               }
             else
               {
@@ -455,7 +451,7 @@ bool ParametersWidget::loadFromModel()
                 new CParameterListItem(tmp, FROM_UTF8(params[j]->getObjectName()), par,
                                        FROM_UTF8("-> " + par->getObjectName() + " (" + QString::number(par->getInitialValue()).ascii() + ")"),
 
-                                       FROM_UTF8(units.getDimensions()[j].getDisplayString(pDataModel)));
+                                       FROM_UTF8(units.getDimensions()[j].getDisplayString(model)));
               }
           }
     }

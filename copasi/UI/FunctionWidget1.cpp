@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-//   $Revision: 1.179 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/09 21:32:17 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -55,11 +47,11 @@
  *  name 'name' and widget flags set to 'f'.
  */
 FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, Qt::WindowFlags fl):
-    CopasiWidget(parent, name, fl),
-    flagChanged(false),
-    isValid(false),
-    mIgnoreFcnDescriptionChange(false),
-    mpFunction(NULL)
+  CopasiWidget(parent, name, fl),
+  flagChanged(false),
+  isValid(false),
+  mIgnoreFcnDescriptionChange(false),
+  mpFunction(NULL)
 {
   setupUi(this);
 
@@ -140,7 +132,7 @@ bool FunctionWidget1::loadParameterTable()
                      );
 
   ddd.setUseHeuristics(true);
-  std::vector<std::string> units = ddd.findDimensionsBoth(pDataModel);
+  std::vector<std::string> units = ddd.findDimensionsBoth(pModel);
 
   CFunctionParameter::Role usage;
   QString qUsage;
@@ -166,24 +158,31 @@ bool FunctionWidget1::loadParameterTable()
           case CFunctionParameter::SUBSTRATE:
             color = subsColor;
             break;
+
           case CFunctionParameter::PRODUCT:
             color = prodColor;
             break;
+
           case CFunctionParameter::MODIFIER:
             color = modiColor;
             break;
+
           case CFunctionParameter::PARAMETER:
             color = paraColor;
             break;
+
           case CFunctionParameter::VOLUME:
             color = volColor;
             break;
+
           case CFunctionParameter::TIME:
             color = timeColor;
             break;
+
           case CFunctionParameter::VARIABLE:
             color = QColor(250, 250, 250);
             break;
+
           default :
             qUsage = "unknown";
             color = QColor(255, 20, 20);
@@ -289,8 +288,8 @@ bool FunctionWidget1::loadUsageTable()
           else
             {
               ss << "Exactly "
-              << mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE)
-              << " substrate";
+                 << mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE)
+                 << " substrate";
 
               if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE) > 1)
                 ss << "s"; //plural
@@ -319,8 +318,8 @@ bool FunctionWidget1::loadUsageTable()
           else
             {
               ss << "Exactly "
-              << mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::PRODUCT)
-              << " product";
+                 << mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::PRODUCT)
+                 << " product";
 
               if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::PRODUCT) > 1)
                 ss << "s"; //plural
@@ -415,7 +414,6 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   mReadOnly = (mpFunction->getType() == CFunction::PreDefined ||
                mpFunction->getType() == CFunction::MassAction);
 
-
   RadioButton1->setEnabled(!mReadOnly);
   RadioButton2->setEnabled(!mReadOnly);
   RadioButton3->setEnabled(!mReadOnly);
@@ -428,7 +426,6 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   mIgnoreFcnDescriptionChange = false;
 
   mpExpressionEMSW->updateWidget();
-
 
   //radio buttons
   loadReversibility(mpFunction->isReversible());
@@ -481,7 +478,8 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
             }
         }
       else
-        {// match not found
+        {
+          // match not found
           //changed = true;
           functParam.add(*pfunctParam[i]);
         }
@@ -644,7 +642,6 @@ void FunctionWidget1::slotReversibilityChanged()
 
 //**************** slots for buttons *********************************************
 
-
 //! Slot for being activated wehenver New button is clicked
 void FunctionWidget1::slotBtnNew()
 {
@@ -652,7 +649,7 @@ void FunctionWidget1::slotBtnNew()
   int i = 0;
   CFunction* pFunc;
   CCopasiVectorN<CFunction>& FunctionList
-  = CCopasiRootContainer::getFunctionList()->loadedFunctions();
+    = CCopasiRootContainer::getFunctionList()->loadedFunctions();
 
   while (FunctionList.getIndex(name) != C_INVALID_INDEX)
     {
@@ -705,7 +702,6 @@ void FunctionWidget1::slotBtnDelete()
 }
 
 //***********  slot for editing requests on the function formula (mMmlWidget) *****
-
 
 //************************  standard interface to COPASI widgets ******************
 

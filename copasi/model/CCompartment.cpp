@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-//   $Revision: 1.77 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:11:04 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -43,9 +35,9 @@
 
 CCompartment::CCompartment(const std::string & name,
                            const CCopasiContainer * pParent):
-    CModelEntity(name, pParent, "Compartment"),
-    mMetabolites("Metabolites", this),
-    mDimensionality(3)
+  CModelEntity(name, pParent, "Compartment"),
+  mMetabolites("Metabolites", this),
+  mDimensionality(3)
 {
   initObjects();
 
@@ -60,9 +52,9 @@ CCompartment::CCompartment(const std::string & name,
 
 CCompartment::CCompartment(const CCompartment & src,
                            const CCopasiContainer * pParent):
-    CModelEntity(src, pParent),
-    mMetabolites(src.mMetabolites, this),
-    mDimensionality(src.mDimensionality)
+  CModelEntity(src, pParent),
+  mMetabolites(src.mMetabolites, this),
+  mDimensionality(src.mDimensionality)
 {
   mKey = CCopasiRootContainer::getKeyFactory()->add("Compartment", this);
   CONSTRUCTOR_TRACE;
@@ -80,13 +72,50 @@ std::string CCompartment::getChildObjectUnits(const CCopasiObject * pObject) con
 {
   if (mpModel == NULL) return "";
 
-  const std::string & Name = pObject->getObjectName();
+  if (pObject == mpValueReference ||
+      pObject == mpIValueReference)
+    {
+      switch (mDimensionality)
+        {
+          case 1:
+            return mpModel->getLengthUnitsDisplayString();
+            break;
 
-  if (Name == "InitialVolume" ||
-      Name == "Volume")
-    return mpModel->getVolumeUnitName();
-  else if (Name == "Rate")
-    return mpModel->getVolumeUnitName() + "/" + mpModel->getTimeUnitName();
+          case 2:
+            return mpModel->getAreaUnitsDisplayString();
+            break;
+
+          case 3:
+            return mpModel->getVolumeUnitsDisplayString();
+            break;
+
+          default:
+            return "";
+            break;
+        }
+    }
+  else if (pObject == mpRateReference)
+    {
+      std::string Unit = getChildObjectUnits(mpValueReference);
+      std::string TimeUnit = mpModel->getTimeUnitsDisplayString();
+
+      if (Unit == "")
+        {
+          if (TimeUnit == "")
+            {
+              return "";
+            }
+
+          return "1/" + TimeUnit;
+        }
+
+      if (TimeUnit == "")
+        {
+          return Unit;
+        }
+
+      return Unit + "/" + TimeUnit;
+    }
 
   return "";
 }

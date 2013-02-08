@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelParameterGroup.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/30 17:55:53 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,16 +8,28 @@
 
 #include "CModelParameterGroup.h"
 
-
 CModelParameterGroup::CModelParameterGroup(CModelParameterGroup * pParent, const CModelParameter::Type & type):
-    CModelParameter(pParent, type),
-    mModelParameters()
+  CModelParameter(pParent, type),
+  mModelParameters()
 {}
 
 CModelParameterGroup::CModelParameterGroup(const CModelParameterGroup & src, CModelParameterGroup * pParent):
-    CModelParameter(src, pParent),
-    mModelParameters()
+  CModelParameter(src, pParent),
+  mModelParameters()
 {
+  assignGroupContent(src);
+}
+
+// virtual
+CModelParameterGroup::~CModelParameterGroup()
+{
+  clear();
+}
+
+void CModelParameterGroup::assignGroupContent(const CModelParameterGroup & src)
+{
+  clear();
+
   mModelParameters.resize(src.mModelParameters.size());
 
   const_iterator itSrc = src.begin();
@@ -44,9 +48,12 @@ CModelParameterGroup::CModelParameterGroup(const CModelParameterGroup & src, CMo
             *it = new CModelParameterSpecies(*static_cast< CModelParameterSpecies *>(*itSrc), this);
             break;
 
+          case ReactionParameter:
+            *it = new CModelParameterReactionParameter(*static_cast< CModelParameterReactionParameter *>(*itSrc), this);
+            break;
+
           case Model:
           case ModelValue:
-          case ReactionParameter:
             *it = new CModelParameter(**itSrc, this);
             break;
 
@@ -56,16 +63,8 @@ CModelParameterGroup::CModelParameterGroup(const CModelParameterGroup & src, CMo
 
           default:
             break;
-
         }
     }
-}
-
-
-// virtual
-CModelParameterGroup::~CModelParameterGroup()
-{
-  clear();
 }
 
 CModelParameter * CModelParameterGroup::add(const CModelParameter::Type & type)
@@ -82,9 +81,12 @@ CModelParameter * CModelParameterGroup::add(const CModelParameter::Type & type)
         pModelParameter = new CModelParameterSpecies(this);
         break;
 
+      case ReactionParameter:
+        pModelParameter = new CModelParameterReactionParameter(this, type);
+        break;
+
       case Model:
       case ModelValue:
-      case ReactionParameter:
         pModelParameter = new CModelParameter(this, type);
         break;
 
@@ -135,8 +137,6 @@ void CModelParameterGroup::remove(const size_t & index)
 
 size_t CModelParameterGroup::size() const
 {
-  std::cout << getName() << ": " << mModelParameters.size() << std::endl;
-
   return mModelParameters.size();
 }
 
@@ -184,8 +184,9 @@ void CModelParameterGroup::clear()
       (*it)->setParent(NULL);
       pdelete(*it);
     }
-}
 
+  mModelParameters.clear();
+}
 
 // virtual
 const CModelParameter::CompareResult & CModelParameterGroup::diff(const CModelParameter & other)
@@ -269,6 +270,22 @@ bool CModelParameterGroup::updateModel()
   return success;
 }
 
+// virtual
+bool CModelParameterGroup::refreshFromModel()
+{
+  bool success = true;
+
+  iterator it = begin();
+  iterator End = end();
+
+  for (; it != End; ++it)
+    {
+      success &= (*it)->refreshFromModel();
+    }
+
+  return success;
+}
+
 CModelParameter * CModelParameterGroup::getModelParameter(const std::string & cn) const
 {
   CModelParameter * pModelParameter = NULL;
@@ -291,4 +308,3 @@ CModelParameter * CModelParameterGroup::getModelParameter(const std::string & cn
 
   return pModelParameter;
 }
-

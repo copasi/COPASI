@@ -119,20 +119,87 @@ std::string CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
 {
   if (mpModel == NULL) return "";
 
-  const std::string & Name = pObject->getObjectName();
+  if (pObject == mpIValueReference ||
+      pObject == mpValueReference)
+    {
+      return "";
+    }
+  else if (pObject == mpRateReference)
+    {
+      return mpModel->getFrequencyUnitsDisplayString();
+    }
+  else if (pObject == mpTTReference)
+    {
+      return mpModel->getTimeUnitsDisplayString();
+    }
+  else if (mpCompartment != NULL)
+    {
+      std::string Unit = mpModel->getQuantityUnitsDisplayString();
+      std::string CompartmentUnit = mpCompartment->getChildObjectUnits(mpCompartment->getInitialValueReference());
+      std::string TimeUnit = mpModel->getTimeUnitsDisplayString();
 
-  if (Name == "InitialParticleNumber" ||
-      Name == "ParticleNumber")
-    return "";
-  else if (Name == "ParticleNumberRate")
-    return mpModel->getFrequencyUnitsDisplayString();
-  else if (Name == "InitialConcentration" ||
-           Name == "Concentration")
-    return mpModel->getConcentrationUnitsDisplayString();
-  else if (Name == "Rate")
-    return mpModel->getConcentrationRateUnitsDisplayString();
-  else if (Name == "TransitionTime")
-    return mpModel->getTimeUnitsDisplayString();
+      if (pObject == mpIConcReference ||
+          pObject == mpConcReference)
+        {
+          if (Unit == "")
+            {
+              if (CompartmentUnit == "")
+                {
+                  return "";
+                }
+
+              return "1/" + CompartmentUnit;
+            }
+
+          if (CompartmentUnit == "")
+            {
+              return Unit;
+            }
+
+          return Unit + "/" + CompartmentUnit;
+        }
+      else if (pObject == this->mpConcRateReference)
+        {
+          if (Unit == "")
+            {
+              if (CompartmentUnit == "")
+                {
+                  if (TimeUnit == "")
+                    {
+                      return "";
+                    }
+
+                  return "1/" + TimeUnit;
+                }
+
+              if (TimeUnit == "")
+                {
+                  return "1/" + CompartmentUnit;
+                }
+
+              return "1/(" + CompartmentUnit + "*" + TimeUnit + ")";
+            }
+          else
+            {
+              if (CompartmentUnit == "")
+                {
+                  if (TimeUnit == "")
+                    {
+                      return Unit;
+                    }
+
+                  return Unit + "/" + TimeUnit;
+                }
+
+              if (TimeUnit == "")
+                {
+                  return Unit + "/" + CompartmentUnit;
+                }
+
+              return Unit + "/(" + CompartmentUnit + "*" + TimeUnit + ")";
+            }
+        }
+    }
 
   return "";
 }
