@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -187,7 +187,6 @@ void PlotWindow::createToolBar()
 
   //TODO button icons...
 
-  
   setUnifiedTitleAndToolBarOnMac(true);
 //  plotTools->setStretchableWidget(new QWidget(plotTools));
 }
@@ -284,7 +283,7 @@ void PlotWindow::printAsImage()
                        QString::null, "PNG Files (*.png);;SVG Files (*.svg)", "Save to");
       */
       fileName = CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                 "untitled.png", "PNG Files (*.png);;SVG Files (*.svg)", "Save Plot as Image", new QString);
+                 "untitled.png", "PDF Files (*.pdf);;PNG Files (*.png);;SVG Files (*.svg)", "Save Plot as Image", new QString);
 
       if (fileName.isEmpty()) return;
 
@@ -304,7 +303,6 @@ void PlotWindow::printAsImage()
 
   // print plot as an image
 
-  QPainter painter;
   QRect rect;
   rect.setSize(this->size());
 
@@ -312,20 +310,29 @@ void PlotWindow::printAsImage()
     {
       QPixmap pixmap(rect.width(), rect.height());
       pixmap.fill();
-
+      QPainter painter(&pixmap);
       painter.begin(&pixmap);
       mpPlot->print(&painter, rect, PrintFilter());
       painter.end();
 
       pixmap.save(fileName, "PNG");
     }
-
-  if (fileName.endsWith(".svg"))
+  else if (fileName.endsWith(".svg"))
     {
       QSvgGenerator generator;
       generator.setFileName(fileName);
-
+      QPainter painter(&generator);
       painter.begin(&generator);
+      mpPlot->print(&painter, rect, PrintFilter());
+      painter.end();
+    }
+  else if (fileName.endsWith(".pdf"))
+    {
+      QPrinter printer;
+      printer.setOutputFileName(fileName);
+      printer.setOutputFormat(QPrinter::PdfFormat);
+      QPainter painter(&printer);
+      painter.begin(&printer);
       mpPlot->print(&painter, rect, PrintFilter());
       painter.end();
     }
