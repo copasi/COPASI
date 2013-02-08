@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderInformationBase.cpp,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:52 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -32,15 +24,14 @@
 #include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
-
 /**
  * Constructor.
  */
 CLRenderInformationBase::CLRenderInformationBase(const std::string& name, CCopasiContainer* pParent):
-    CLBase(),
-    CCopasiContainer(name, pParent),
-    mKey(""),
-    mName("")
+  CLBase(),
+  CCopasiContainer(name, pParent),
+  mKey(""),
+  mName("")
 {
 }
 
@@ -48,15 +39,15 @@ CLRenderInformationBase::CLRenderInformationBase(const std::string& name, CCopas
  * Copy constructor.
  */
 CLRenderInformationBase::CLRenderInformationBase(const CLRenderInformationBase& source, CCopasiContainer* pParent):
-    CLBase(source),
-    CCopasiContainer(source, pParent),
-    mReferenceRenderInformation(source.mReferenceRenderInformation),
-    mBackgroundColor(source.mBackgroundColor),
-    mListOfColorDefinitions(source.mListOfColorDefinitions, this),
-    mListOfGradientDefinitions(source.mListOfGradientDefinitions, this),
-    mListOfLineEndings(source.mListOfLineEndings, this),
-    mKey(""),
-    mName(source.mName)
+  CLBase(source),
+  CCopasiContainer(source, pParent),
+  mReferenceRenderInformation(source.mReferenceRenderInformation),
+  mBackgroundColor(source.mBackgroundColor),
+  mListOfColorDefinitions(source.mListOfColorDefinitions, this),
+  mListOfGradientDefinitions(source.mListOfGradientDefinitions, this),
+  mListOfLineEndings(source.mListOfLineEndings, this),
+  mKey(""),
+  mName(source.mName)
 {
 }
 
@@ -72,12 +63,12 @@ CLRenderInformationBase::CLRenderInformationBase(const RenderInformationBase& so
     */
     CCopasiContainer* pParent):
 
-    CLBase(),
-    CCopasiContainer(name, pParent),
-    mReferenceRenderInformation(source.getReferenceRenderInformationId()),
-    mBackgroundColor(source.getBackgroundColor()),
-    mKey(""),
-    mName(source.getName())
+  CLBase(),
+  CCopasiContainer(name, pParent),
+  mReferenceRenderInformation(source.getReferenceRenderInformationId()),
+  mBackgroundColor(source.getBackgroundColor()),
+  mKey(""),
+  mName(source.getName())
 {
   size_t i, iMax = source.getNumColorDefinitions();
   const ColorDefinition* pCD = NULL;
@@ -419,12 +410,22 @@ void CLRenderInformationBase::addSBMLAttributes(RenderInformationBase* pBase
 {
   pBase->setReferenceRenderInformationId(this->getReferenceRenderInformationKey());
   pBase->setBackgroundColor(this->getBackgroundColor());
+  pBase->setId(getKey());
+
+  if (!mName.empty())
+    {
+      pBase->setName(mName);
+    }
+
   size_t i, iMax = this->mListOfColorDefinitions.size();
   int result;
 
+  unsigned int level = pBase->getLevel();
+  unsigned int version = pBase->getVersion();
+
   for (i = 0; i < iMax; ++i)
     {
-      ColorDefinition* pCD = this->getColorDefinition(i)->toSBML(pBase->getLevel(), pBase->getVersion());
+      ColorDefinition* pCD = this->getColorDefinition(i)->toSBML(level, version);
       result = pBase->addColorDefinition(pCD);
       assert(result == LIBSBML_OPERATION_SUCCESS);
       //colorKeyToIdMap.insert(std::pair<std::string,std::string>(this->getColorDefinition(i)->getKey(),pCD->getId()));
@@ -441,11 +442,11 @@ void CLRenderInformationBase::addSBMLAttributes(RenderInformationBase* pBase
 
       if (dynamic_cast<const CLRadialGradient*>(pLGB))
         {
-          pGB = static_cast<const CLRadialGradient*>(pLGB)->toSBML(pBase->getLevel(), pBase->getVersion());
+          pGB = static_cast<const CLRadialGradient*>(pLGB)->toSBML(level, version);
         }
       else
         {
-          pGB = static_cast<const CLLinearGradient*>(pLGB)->toSBML(pBase->getLevel(), pBase->getVersion());
+          pGB = static_cast<const CLLinearGradient*>(pLGB)->toSBML(level, version);
         }
 
       result = pBase->addGradientDefinition(pGB);
@@ -458,7 +459,8 @@ void CLRenderInformationBase::addSBMLAttributes(RenderInformationBase* pBase
 
   for (i = 0; i < iMax; ++i)
     {
-      LineEnding* pLE = this->getLineEnding(i)->toSBML(pBase->getLevel(), pBase->getVersion());
+      const CLLineEnding* lineEnding = this->getLineEnding(i);
+      LineEnding* pLE = lineEnding->toSBML(level, version);
       result = pBase->addLineEnding(pLE);
       assert(result == LIBSBML_OPERATION_SUCCESS);
       //lineEndingKeyToIdMap.insert(std::pair<std::string,std::string>(this->getLineEnding(i)->getKey(),pLE->getId()));

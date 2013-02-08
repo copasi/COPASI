@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLText.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:51 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,19 +14,19 @@
 
 // Ctor
 CLText::CLText(CCopasiContainer* pParent):
-    CLGraphicalPrimitive1D(),
-    CCopasiObject("RenderText", pParent),
-    mX(CLRelAbsVector(0.0, 0.0)),
-    mY(CLRelAbsVector(0.0, 0.0)),
-    mZ(CLRelAbsVector(0.0, 0.0)),
-    mFontFamily(""),
-    mFontSize(CLRelAbsVector(std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN())),
-    mFontWeight(CLText::WEIGHT_UNSET),
-    mFontStyle(CLText::STYLE_UNSET),
-    mTextAnchor(CLText::ANCHOR_UNSET),
-    mVTextAnchor(CLText::ANCHOR_UNSET),
-    mText(""),
-    mKey("")
+  CLGraphicalPrimitive1D(),
+  CCopasiObject("RenderText", pParent),
+  mX(CLRelAbsVector(0.0, 0.0)),
+  mY(CLRelAbsVector(0.0, 0.0)),
+  mZ(CLRelAbsVector(0.0, 0.0)),
+  mFontFamily(""),
+  mFontSize(CLRelAbsVector(std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN())),
+  mFontWeight(CLText::WEIGHT_UNSET),
+  mFontStyle(CLText::STYLE_UNSET),
+  mTextAnchor(CLText::ANCHOR_UNSET),
+  mVTextAnchor(CLText::ANCHOR_UNSET),
+  mText(""),
+  mKey("")
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("RenderText", this);
 }
@@ -43,19 +35,19 @@ CLText::CLText(CCopasiContainer* pParent):
  * Constructor with optional coordinates.
  */
 CLText::CLText(const CLRelAbsVector& x, const CLRelAbsVector& y, const CLRelAbsVector& z, CCopasiContainer* pParent):
-    CLGraphicalPrimitive1D(),
-    CCopasiObject("RenderText", pParent),
-    mX(x),
-    mY(y),
-    mZ(z),
-    mFontFamily(""),
-    mFontSize(CLRelAbsVector(std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN())),
-    mFontWeight(CLText::WEIGHT_UNSET),
-    mFontStyle(CLText::STYLE_UNSET),
-    mTextAnchor(CLText::ANCHOR_UNSET),
-    mVTextAnchor(CLText::ANCHOR_UNSET),
-    mText(""),
-    mKey("")
+  CLGraphicalPrimitive1D(),
+  CCopasiObject("RenderText", pParent),
+  mX(x),
+  mY(y),
+  mZ(z),
+  mFontFamily(""),
+  mFontSize(CLRelAbsVector(std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN())),
+  mFontWeight(CLText::WEIGHT_UNSET),
+  mFontStyle(CLText::STYLE_UNSET),
+  mTextAnchor(CLText::ANCHOR_UNSET),
+  mVTextAnchor(CLText::ANCHOR_UNSET),
+  mText(""),
+  mKey("")
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("RenderText", this);
 }
@@ -64,19 +56,19 @@ CLText::CLText(const CLRelAbsVector& x, const CLRelAbsVector& y, const CLRelAbsV
  * Copy constructor.
  */
 CLText::CLText(const CLText& source, CCopasiContainer* pParent):
-    CLGraphicalPrimitive1D(source),
-    CCopasiObject(source, pParent),
-    mX(source.mX),
-    mY(source.mY),
-    mZ(source.mZ),
-    mFontFamily(source.mFontFamily),
-    mFontSize(source.mFontSize),
-    mFontWeight(source.mFontWeight),
-    mFontStyle(source.mFontStyle),
-    mTextAnchor(source.mTextAnchor),
-    mVTextAnchor(source.mVTextAnchor),
-    mText(source.mText),
-    mKey("")
+  CLGraphicalPrimitive1D(source),
+  CCopasiObject(source, pParent),
+  mX(source.mX),
+  mY(source.mY),
+  mZ(source.mZ),
+  mFontFamily(source.mFontFamily),
+  mFontSize(source.mFontSize),
+  mFontWeight(source.mFontWeight),
+  mFontStyle(source.mFontStyle),
+  mTextAnchor(source.mTextAnchor),
+  mVTextAnchor(source.mVTextAnchor),
+  mText(source.mText),
+  mKey("")
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("RenderText", this);
 }
@@ -85,15 +77,15 @@ CLText::CLText(const CLText& source, CCopasiContainer* pParent):
  * Constructor to generate object from the corresponding SBML object.
  */
 CLText::CLText(const Text& source, CCopasiContainer* pParent):
-    CLGraphicalPrimitive1D(source),
-    CCopasiObject("RenderText", pParent),
-    mX(source.getX()),
-    mY(source.getY()),
-    mZ(source.getZ()),
-    mFontFamily(source.getFontFamily()),
-    mFontSize(source.getFontSize()),
-    mText(source.getText()),
-    mKey("")
+  CLGraphicalPrimitive1D(source),
+  CCopasiObject("RenderText", pParent),
+  mX(source.getX()),
+  mY(source.getY()),
+  mZ(source.getZ()),
+  mFontFamily(source.getFontFamily()),
+  mFontSize(source.getFontSize()),
+  mText(source.getText()),
+  mKey("")
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("RenderText", this);
 
@@ -102,9 +94,11 @@ CLText::CLText(const Text& source, CCopasiContainer* pParent):
       case Text::WEIGHT_UNSET:
         this->setFontWeight(CLText::WEIGHT_UNSET);
         break;
+
       case Text::WEIGHT_BOLD:
         this->setFontWeight(CLText::WEIGHT_BOLD);
         break;
+
       default:
         this->setFontWeight(CLText::WEIGHT_NORMAL);
         break;
@@ -115,9 +109,11 @@ CLText::CLText(const Text& source, CCopasiContainer* pParent):
       case Text::STYLE_UNSET:
         this->setFontStyle(CLText::STYLE_UNSET);
         break;
+
       case Text::STYLE_ITALIC:
         this->setFontStyle(CLText::STYLE_ITALIC);
         break;
+
       default:
         this->setFontStyle(CLText::STYLE_NORMAL);
         break;
@@ -128,12 +124,15 @@ CLText::CLText(const Text& source, CCopasiContainer* pParent):
       case Text::ANCHOR_UNSET:
         this->setTextAnchor(CLText::ANCHOR_UNSET);
         break;
+
       case Text::ANCHOR_END:
         this->setTextAnchor(CLText::ANCHOR_END);
         break;
+
       case Text::ANCHOR_MIDDLE:
         this->setTextAnchor(CLText::ANCHOR_MIDDLE);
         break;
+
       default:
         this->setTextAnchor(CLText::ANCHOR_START);
         break;
@@ -144,12 +143,15 @@ CLText::CLText(const Text& source, CCopasiContainer* pParent):
       case Text::ANCHOR_UNSET:
         this->setVTextAnchor(CLText::ANCHOR_UNSET);
         break;
+
       case Text::ANCHOR_BOTTOM:
         this->setVTextAnchor(CLText::ANCHOR_BOTTOM);
         break;
+
       case Text::ANCHOR_MIDDLE:
         this->setVTextAnchor(CLText::ANCHOR_MIDDLE);
         break;
+
       default:
         this->setVTextAnchor(CLText::ANCHOR_TOP);
         break;
@@ -455,9 +457,11 @@ Text* CLText::toSBML(unsigned int level, unsigned int version) const
       case CLText::WEIGHT_UNSET:
         pText->setFontWeight(Text::WEIGHT_UNSET);
         break;
+
       case CLText::WEIGHT_BOLD:
         pText->setFontWeight(Text::WEIGHT_BOLD);
         break;
+
       default:
         pText->setFontWeight(Text::WEIGHT_NORMAL);
         break;
@@ -468,9 +472,11 @@ Text* CLText::toSBML(unsigned int level, unsigned int version) const
       case CLText::STYLE_UNSET:
         pText->setFontStyle(Text::STYLE_UNSET);
         break;
+
       case CLText::STYLE_ITALIC:
         pText->setFontStyle(Text::STYLE_ITALIC);
         break;
+
       default:
         pText->setFontStyle(Text::STYLE_NORMAL);
         break;
@@ -481,12 +487,15 @@ Text* CLText::toSBML(unsigned int level, unsigned int version) const
       case CLText::ANCHOR_UNSET:
         pText->setTextAnchor(Text::ANCHOR_UNSET);
         break;
+
       case CLText::ANCHOR_END:
         pText->setTextAnchor(Text::ANCHOR_END);
         break;
+
       case CLText::ANCHOR_MIDDLE:
         pText->setTextAnchor(Text::ANCHOR_MIDDLE);
         break;
+
       default:
         pText->setTextAnchor(Text::ANCHOR_START);
         break;
@@ -495,16 +504,19 @@ Text* CLText::toSBML(unsigned int level, unsigned int version) const
   switch (this->getVTextAnchor())
     {
       case CLText::ANCHOR_UNSET:
-        pText->setTextAnchor(Text::ANCHOR_UNSET);
+        pText->setVTextAnchor(Text::ANCHOR_UNSET);
         break;
+
       case CLText::ANCHOR_BOTTOM:
-        pText->setTextAnchor(Text::ANCHOR_BOTTOM);
+        pText->setVTextAnchor(Text::ANCHOR_BOTTOM);
         break;
+
       case CLText::ANCHOR_MIDDLE:
-        pText->setTextAnchor(Text::ANCHOR_MIDDLE);
+        pText->setVTextAnchor(Text::ANCHOR_MIDDLE);
         break;
+
       default:
-        pText->setTextAnchor(Text::ANCHOR_TOP);
+        pText->setVTextAnchor(Text::ANCHOR_TOP);
         break;
     }
 

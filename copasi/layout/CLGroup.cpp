@@ -862,19 +862,19 @@ RenderGroup* CLGroup::toSBML(unsigned int level, unsigned int version) const
   switch (this->getVTextAnchor())
     {
       case CLText::ANCHOR_UNSET:
-        pGroup->setTextAnchor(Text::ANCHOR_UNSET);
+        pGroup->setVTextAnchor(Text::ANCHOR_UNSET);
         break;
 
       case CLText::ANCHOR_BOTTOM:
-        pGroup->setTextAnchor(Text::ANCHOR_BOTTOM);
+        pGroup->setVTextAnchor(Text::ANCHOR_BOTTOM);
         break;
 
       case CLText::ANCHOR_MIDDLE:
-        pGroup->setTextAnchor(Text::ANCHOR_MIDDLE);
+        pGroup->setVTextAnchor(Text::ANCHOR_MIDDLE);
         break;
 
       default:
-        pGroup->setTextAnchor(Text::ANCHOR_TOP);
+        pGroup->setVTextAnchor(Text::ANCHOR_TOP);
         break;
     }
 
