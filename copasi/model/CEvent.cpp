@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -109,6 +109,15 @@ bool CEventAssignment::compile(std::vector< CCopasiContainer * > listOfContainer
       // We need use the virtual method getValueObject to retrieve the
       // target value from the model entity
       mpTarget = pEntity->getValueObject();
+    }
+  else if (pEntity != NULL &&
+           pEntity->getStatus() == CModelEntity::ASSIGNMENT)
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, "Invalid EventAssignment for '%s': an Assignment Rule already exists", pEntity->getObjectName().c_str());
+    }
+  else if (pEntity == NULL)
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, "Invalid EventAssignment for '%s': object does not exist.", getObjectName().c_str());
     }
 
   if (mpTarget == NULL)
