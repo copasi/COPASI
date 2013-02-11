@@ -267,6 +267,13 @@ ASTNode* CEvaluationNodeObject::toAST(const CCopasiDataModel* pDataModel) const
   // assume that it will always be the current global model.
   const CCopasiObject* pOrigObject = pDataModel->getDataObject(mRegisteredObjectCN);
   assert(pOrigObject);
+
+  if (pOrigObject == NULL)
+    {
+      node->setName(mRegisteredObjectCN.c_str());
+      return node;
+    }
+
   const CCopasiObject* pObject = pOrigObject;
 
   // if it is a reference, we get the parent of the reference
