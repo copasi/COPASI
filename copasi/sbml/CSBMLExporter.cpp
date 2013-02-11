@@ -3159,11 +3159,11 @@ void removeStickyTagFromElements(SBMLDocument *pSBMLDocument)
     return;
 
   // reset sticky parameters
-  for (int i = 0; i < pSBMLDocument->getModel()->getNumParameters(); ++i)
+  for (unsigned int i = 0; i < pSBMLDocument->getModel()->getNumParameters(); ++i)
     pSBMLDocument->getModel()->getParameter(i)->setUserData(NULL);
 
   // reset sticky initial assignments
-  for (int i = 0; i < pSBMLDocument->getModel()->getNumInitialAssignments(); ++i)
+  for (unsigned int i = 0; i < pSBMLDocument->getModel()->getNumInitialAssignments(); ++i)
     pSBMLDocument->getModel()->getInitialAssignment(i)->setUserData(NULL);
 }
 
