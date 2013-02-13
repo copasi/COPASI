@@ -635,7 +635,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
   return true;
 }
 
-std::string CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler, int sbmlLevel, int sbmlVersion)
+std::string CCopasiDataModel::exportSBMLToString(CProcessReport* /*pExportHandler*/, int sbmlLevel, int sbmlVersion)
 {
   CCopasiMessage::clearDeque();
   SBMLDocument* pOrigSBMLDocument = NULL;
@@ -656,27 +656,6 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler,
     }
 
 #endif // LIBSBML_VERSION
-  CCopasiMessage::clearDeque();
-  static std::string failedCompile("The model cannot be exported, as it failed to compile. \n%s");
-
-  try
-    {
-      if (!mData.pModel->compileIfNecessary(pExportHandler))
-        {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(), CCopasiMessage::getAllMessageText().c_str());
-          return false;
-        }
-    }
-  catch (CCopasiException&)
-    {
-      // don't add the exception twice
-      throw;
-    }
-  catch (...)
-    {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(), CCopasiMessage::getAllMessageText().c_str());
-      return false;
-    }
 
   CSBMLExporter exporter;
   // Per default export COPASIs MIRIAM annotation.
@@ -758,25 +737,14 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
         }
     }
 
-  CCopasiMessage::clearDeque();
-  static std::string failedCompile("The model cannot be exported, as it failed to compile. \n%s");
-
   try
     {
       if (!mData.pModel->compileIfNecessary(pExportHandler))
-        {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(), CCopasiMessage::getAllMessageText().c_str());
-          return false;
-        }
+        return false;
     }
-  catch (CCopasiException&)
-    {
-      // don't add the exception twice
-      throw;
-    }
+
   catch (...)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(), CCopasiMessage::getAllMessageText().c_str());
       return false;
     }
 

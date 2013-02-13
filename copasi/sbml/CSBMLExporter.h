@@ -76,7 +76,6 @@ protected:
   std::set<std::string> mSpatialSizeUnitsSpecies;
   ListOfFunctionDefinitions mExportedFunctions;
   std::map<const FunctionDefinition*, const CCopasiObject*> mFunctionMap;
-  std::map<const std::string, Parameter*> mInitialValueMap;
 
 public:
   /**
@@ -262,7 +261,7 @@ protected:
    * Checks the given expression for references to objects
    * that can not be exported to SBML.
    */
-  static void checkForUnsupportedObjectReferences(const CEvaluationTree& expression, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, std::vector<SBMLIncompatibility>& result, bool initialExpression = false, std::map<const std::string, Parameter*>* initialMap = NULL);
+  static void checkForUnsupportedObjectReferences(const CEvaluationTree& expression, const CCopasiDataModel& dataModel, unsigned int sbmlLevel, unsigned int sbmlVersion, std::vector<SBMLIncompatibility>& result, bool initialExpression = false);
 
   /**
    * Checks all expressions in the given datamodel for piecewise defined
@@ -324,7 +323,7 @@ protected:
    * contain a number of messages that specify why it can't be exported.
    */
   static void isExpressionSBMLCompatible(const CEvaluationTree& expr, const CCopasiDataModel& dataModel, int sbmlLevel, int sbmlVersion, std::vector<SBMLIncompatibility>& result,
-                                         const std::string& objectDescription, bool initialExression = false, std::map<const std::string, Parameter*>* initialMap = NULL);
+                                         const std::string& objectDescription, bool initialExression = false);
 
   /**
    * Checks wether the rule in the given model entity can be exported to SBML Level2 Version1.

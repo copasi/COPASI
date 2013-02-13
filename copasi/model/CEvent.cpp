@@ -110,15 +110,6 @@ bool CEventAssignment::compile(std::vector< CCopasiContainer * > listOfContainer
       // target value from the model entity
       mpTarget = pEntity->getValueObject();
     }
-  else if (pEntity != NULL &&
-           pEntity->getStatus() == CModelEntity::ASSIGNMENT)
-    {
-      CCopasiMessage(CCopasiMessage::WARNING, "Invalid EventAssignment for '%s': an Assignment Rule already exists", pEntity->getObjectName().c_str());
-    }
-  else if (pEntity == NULL)
-    {
-      CCopasiMessage(CCopasiMessage::WARNING, "Invalid EventAssignment for '%s': object does not exist.", getObjectName().c_str());
-    }
 
   if (mpTarget == NULL)
     {
