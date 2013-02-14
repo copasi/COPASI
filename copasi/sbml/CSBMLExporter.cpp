@@ -108,7 +108,7 @@ std::string hasFunctionDefinitionForURI(SBMLDocument* pSBMLDocument,
                                         const std::string& elementName,
                                         const std::string& definition)
 {
-  if (pSBMLDocument == NULL || pSBMLDocument->getModel() == NULL) return false;
+  if (pSBMLDocument == NULL || pSBMLDocument->getModel() == NULL) return "";
 
   for (unsigned int i = 0; i < pSBMLDocument->getModel()->getNumFunctionDefinitions(); ++i)
     {
