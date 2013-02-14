@@ -664,7 +664,7 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler,
       if (!mData.pModel->compileIfNecessary(pExportHandler))
         {
           CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(), CCopasiMessage::getAllMessageText().c_str());
-          return false;
+          return "";
         }
     }
   catch (CCopasiException&)
@@ -675,7 +675,7 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler,
   catch (...)
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(), CCopasiMessage::getAllMessageText().c_str());
-      return false;
+      return "";
     }
 
   CSBMLExporter exporter;
