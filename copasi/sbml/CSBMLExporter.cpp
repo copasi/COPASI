@@ -2250,7 +2250,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CCopasiDataModel& 
 
       if (pME != NULL)
         {
-          checkForUnsupportedObjectReferences(*pME->getExpressionPtr(), dataModel, sbmlLevel, sbmlVersion, result, &mInitialValueMap);
+          checkForUnsupportedObjectReferences(*pME->getExpressionPtr(), dataModel, sbmlLevel, sbmlVersion, result, false, &mInitialValueMap);
         }
     }
 
@@ -2264,7 +2264,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CCopasiDataModel& 
 
       if (pME != NULL)
         {
-          checkForUnsupportedObjectReferences(*pME->getExpressionPtr(), dataModel, sbmlLevel, sbmlVersion, result, &mInitialValueMap);
+          checkForUnsupportedObjectReferences(*pME->getExpressionPtr(), dataModel, sbmlLevel, sbmlVersion, result, false, &mInitialValueMap);
         }
     }
 
@@ -2278,7 +2278,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CCopasiDataModel& 
 
       if (pME != NULL)
         {
-          checkForUnsupportedObjectReferences(*pME->getInitialExpressionPtr(), dataModel, sbmlLevel, sbmlVersion, result, &mInitialValueMap);
+          checkForUnsupportedObjectReferences(*pME->getInitialExpressionPtr(), dataModel, sbmlLevel, sbmlVersion, result, false, &mInitialValueMap);
         }
     }
 }
@@ -2370,7 +2370,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(
                     {
                       if (pObject->getObjectName() == "InitialVolume"
                           && initialMap != NULL
-                          && (sbmlLevel > 2 || sbmlLevel == 2 && sbmlVersion > 1))
+                          && (sbmlLevel > 2 || (sbmlLevel == 2 && sbmlVersion > 1)))
                         {
                           // add new parameter for the initial value
                           addToInitialValueMap(initialMap, pObject, pObjectParent, sbmlLevel, sbmlVersion);
@@ -2396,7 +2396,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(
                     {
                       if (pObject->getObjectName() == "InitialConcentration"
                           && initialMap != NULL
-                          && (sbmlLevel > 2 || sbmlLevel == 2 && sbmlVersion > 1))
+                          && (sbmlLevel > 2 || (sbmlLevel == 2 && sbmlVersion > 1)))
                         {
                           // add new parameter for the initial value
                           addToInitialValueMap(initialMap, pObject, pObjectParent, sbmlLevel, sbmlVersion);
@@ -2424,7 +2424,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(
                     {
                       if (pObject->getObjectName() == "InitialValue"
                           && initialMap != NULL
-                          && (sbmlLevel > 2 || sbmlLevel == 2 && sbmlVersion > 1))
+                          && (sbmlLevel > 2 || (sbmlLevel == 2 && sbmlVersion > 1)))
                         {
                           // add new parameter for the initial value
                           addToInitialValueMap(initialMap, pObject, pObjectParent, sbmlLevel, sbmlVersion);
@@ -3309,15 +3309,20 @@ void addInitialAssignmentsToModel(SBMLDocument* doc
       Parameter* param = it->second;
       // add parameter to model
       int result = doc->getModel()->addParameter(param);
-      doc->getModel()->getParameter(param->getId())->setUserData("1");
+      doc->getModel()->getParameter(param->getId())->setUserData((void*)"1");
 
-      // create initial assignment of that parameter to the model value it belongs to
       const CCopasiObject *obj = static_cast<const CCopasiObject *>(dataModel.getObject(it->first));
       const std::string &sbmlId = (static_cast<const CModelEntity*>(obj->getObjectParent()))->getSBMLId();
-      InitialAssignment* ia = doc->getModel()->createInitialAssignment();
-      ia->setSymbol(sbmlId);
-      ia->setMath(SBML_parseFormula(it->second->getId().c_str()));
-      ia->setUserData("1");
+
+      // create initial assignment of that parameter to the model value it belongs to
+      // if the object does not have an assignment rule
+      if (doc->getModel()->getRule(sbmlId) == NULL)
+        {
+          InitialAssignment* ia = doc->getModel()->createInitialAssignment();
+          ia->setSymbol(sbmlId);
+          ia->setMath(SBML_parseFormula(it->second->getId().c_str()));
+          ia->setUserData((void*)"1");
+        }
 
       delete param;
     }
@@ -3991,8 +3996,11 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
     }
 
   const std::string& changedExpression = convertExpression(pExpression->getInfix(), mInitialValueMap);
+
   CEvaluationTree tree;
+
   tree.setInfix(changedExpression);
+
   const CEvaluationNode* pOrigNode = tree.getRoot();
 
   //const CEvaluationNode* pOrigNode = pExpression->getRoot();
@@ -4456,7 +4464,7 @@ void CSBMLExporter::updateCOPASI2SBMLMap(const CCopasiDataModel& dataModel)
 
       if (pos != this->mIdMap.end())
         {
-          this->mCOPASI2SBMLMap.insert(std::pair<const CCopasiObject* const, SBase*>(it->first, const_cast<SBase*>(pos->second)));
+          this->mCOPASI2SBMLMap.insert(std::pair<const CCopasiObject * const, SBase*>(it->first, const_cast<SBase*>(pos->second)));
         }
 
       ++it;
@@ -5955,12 +5963,11 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
       std::vector<CCopasiContainer*> containers;
       containers.push_back(const_cast<CModel*>(dataModel.getModel()));
       const CCopasiObject* pObject = dataModel.ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pOrigNode)->getObjectCN());
-      assert(pObject);
 
       if (pObject == NULL)
         {
           // this will be the object from the mInitialValueMap
-          pResult = new CEvaluationNodeObject(CEvaluationNodeObject::SubType::CN, pOrigNode->getData());
+          pResult = new CEvaluationNodeObject(CEvaluationNodeObject::CN, pOrigNode->getData());
           return pResult;
         }
 
@@ -6107,9 +6114,8 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
           std::vector<CCopasiContainer*> containers;
           containers.push_back(const_cast<CModel*>(dataModel.getModel()));
           const CCopasiObject* pObject = dataModel.ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pLeft)->getObjectCN());
-          assert(pObject);
 
-          if (pObject->isReference())
+          if (pObject != NULL && pObject->isReference())
             {
               const CCopasiObject* pParent = pObject->getObjectParent();
               // check if the parent is a metabolite
@@ -6135,9 +6141,8 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                   else if (CEvaluationNode::type(pRight->getType()) == CEvaluationNode::OBJECT)
                     {
                       const CCopasiObject* pObject2 = dataModel.ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN());
-                      assert(pObject2);
 
-                      if (pObject2->isReference())
+                      if (pObject2 != NULL && pObject2->isReference())
                         {
                           const CCopasiObject* pObjectParent2 = pObject2->getObjectParent();
                           const CModelValue* pMV = dynamic_cast<const CModelValue*>(pObjectParent2);
@@ -6161,9 +6166,8 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                     {
                       // check if pRight is a reference to a species
                       const CCopasiObject* pObject2 = dataModel.ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN());
-                      assert(pObject2);
 
-                      if (pObject2->isReference())
+                      if (pObject2 != NULL && pObject2->isReference())
                         {
                           const CCopasiObject* pParent2 = pObject2->getObjectParent();
                           // check if the parent is a metabolite
@@ -6176,9 +6180,8 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                               if (CEvaluationNode::type(pLeft->getType()) == CEvaluationNode::OBJECT)
                                 {
                                   const CCopasiObject* pObject2 = dataModel.ObjectFromName(containers, dynamic_cast<const CEvaluationNodeObject*>(pLeft)->getObjectCN());
-                                  assert(pObject2);
 
-                                  if (pObject2->isReference())
+                                  if (pObject2 != NULL && pObject2->isReference())
                                     {
                                       const CCopasiObject* pObjectParent2 = pObject2->getObjectParent();
                                       const CModelValue* pMV = dynamic_cast<const CModelValue*>(pObjectParent2);
