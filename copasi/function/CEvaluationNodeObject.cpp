@@ -266,7 +266,6 @@ ASTNode* CEvaluationNodeObject::toAST(const CCopasiDataModel* pDataModel) const
   // since I can not get the model in which this node is located, I just
   // assume that it will always be the current global model.
   const CCopasiObject* pOrigObject = pDataModel->getDataObject(mRegisteredObjectCN);
-  assert(pOrigObject);
 
   if (pOrigObject == NULL)
     {
