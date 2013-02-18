@@ -11,12 +11,12 @@
 # Properties, Inc., University of Heidelberg, and The University
 # of Manchester.
 # All rights reserved.
-# 
+#
 # Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 # and The University of Manchester.
 # All rights reserved.
-# 
+#
 # Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 # Properties, Inc. and EML Research, gGmbH.
 # All rights reserved.
@@ -54,7 +54,7 @@ if(WIN32 AND NOT CYGWIN)
 endif(WIN32 AND NOT CYGWIN)
 
 if (APPLE)
- 
+
 set(COPASI_UI_FLAGS MACOSX_BUNDLE)
 set(MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/CopasiUI.plist )
 set(MACOSX_BUNDLE_ICON_FILE ${CMAKE_SOURCE_DIR}/copasi.icns )
@@ -71,11 +71,11 @@ endif(APPLE)
 add_executable(CopasiUI ${COPASI_UI_FLAGS} ${SOURCES} ${HEADERS})
 
 
-target_link_libraries(CopasiUI 
-	${SE_EXTERNAL_LIBS} ${SE_LIBS} ${UI_LIBS} 
-	${QT_LIBRARIES} ${QT_QTWEBKIT_LIBRARY} 
-	${OPENGL_gl_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${OPENGL_glu_LIBRARY} 
-	${QWTPLOT3D_LIBRARIES} 
+target_link_libraries(CopasiUI
+	${SE_EXTERNAL_LIBS} ${SE_LIBS} ${UI_LIBS}
+	${QT_LIBRARIES} ${QT_QTWEBKIT_LIBRARY}
+	${OPENGL_gl_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${OPENGL_glu_LIBRARY}
+	${QWTPLOT3D_LIBRARIES}
 	${QT_QTSVG_LIBRARY} ${ZLIB_LIBRARY} ${QWT_LIBRARIES} )
 
 if (ENABLE_SBW_INTEGRATION)
@@ -85,13 +85,27 @@ endif(ENABLE_SBW_INTEGRATION)
 if (UNIX AND NOT APPLE)
 target_link_libraries(CopasiUI pthread z)
 endif()
-get_target_property(LOC CopasiUI "LOCATION")
+
+if(NOT APPLE)
 SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/CopasiUI${CMAKE_EXECUTABLE_SUFFIX}" CACHE INTERNAL "")
 install(TARGETS CopasiUI DESTINATION bin)
-# ensure that next to the binaries also dependencies are copied  
+# ensure that next to the binaries also dependencies are copied
 install(CODE "
     include(BundleUtilities)
     fixup_bundle(\"${APPS}\" \"\" \"${DIRS}\")
     " COMPONENT Runtime)
+
+else()
+# on OS X everything is different, here we need to first fix the app bundle,
+# and only then install it
+SET(APPS "${CMAKE_CURRENT_BINARY_DIR}/CopasiUI.app" CACHE INTERNAL "")
+# ensure that next to the binaries also dependencies are copied
+install(CODE "
+    include(BundleUtilities)
+    fixup_bundle(\"${APPS}\" \"\" \"${DIRS}\")
+    " COMPONENT Runtime)
+install(TARGETS CopasiUI DESTINATION COPASI)
+endif()
+
 include(InstallRequiredSystemLibraries)
 
