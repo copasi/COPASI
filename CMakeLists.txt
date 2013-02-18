@@ -46,6 +46,10 @@ include (CheckTypeSize)
 
 CHECK_TYPE_SIZE("void*"  CMAKE_SIZEOF_VOID_P)
 
+set(CMAKE_INSTALL_LIBDIR lib CACHE PATH "Full path to the library output directory")
+mark_as_advanced(CMAKE_INSTALL_LIBDIR)
+
+
 set(COPASI_BUILD_TYPE "native")
 if (CMAKE_SIZEOF_VOID_P EQUAL 4)
   set(COPASI_BUILD_TYPE "32bit")
@@ -55,6 +59,8 @@ endif()
 if (APPLE AND ENABLE_UNIVERSAL)
   set(COPASI_BUILD_TYPE "universal")
 endif()
+
+
 
 set(COPASI_DEPENDENCY_DIR "" CACHE PATH "Dependency Directory containing, when set dependencies will be overwritten" )
 mark_as_advanced(COPASI_DEPENDENCY_DIR)
