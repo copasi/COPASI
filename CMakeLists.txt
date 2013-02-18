@@ -27,6 +27,12 @@
 cmake_minimum_required (VERSION 2.8)
 project (COPASI)
 
+#todo: write test program that compiles against CopasiVersion.h and
+#      determines the version
+set(COPASI_VERSION_MAJOR 4)
+set(COPASI_VERSION_MINOR 9)
+set(COPASI_VERSION_BUILD 45)
+
 include (CMakeTestCCompiler)
 include (CheckCSourceCompiles)
 include (CheckCXXSourceCompiles)
@@ -50,7 +56,7 @@ if (APPLE AND ENABLE_UNIVERSAL)
   set(COPASI_BUILD_TYPE "universal")
 endif()
 
-set(COPASI_DEPENDENCY_DIR "" CACHE STRING "Dependency Directory containing, when set dependencies will be overwritten" )
+set(COPASI_DEPENDENCY_DIR "" CACHE PATH "Dependency Directory containing, when set dependencies will be overwritten" )
 mark_as_advanced(COPASI_DEPENDENCY_DIR)
 
 if (COPASI_DEPENDENCY_DIR AND EXISTS ${COPASI_DEPENDENCY_DIR})
@@ -616,6 +622,42 @@ endif()
 #    release: QMAKE_LFLAGS *= /NODEFAULTLIB:"libcmtd.lib"
 #    debug: QMAKE_LFLAGS *= /NODEFAULTLIB:"libcmt.lib"
 
+
+
+set(APPS "" CACHE INTERNAL "")
+set(DIRS "${QT_DOC_DIR}/../bin;${COPASI_DEPENDENCY_DIR}/bin;${COPASI_DEPENDENCY_DIR}/lib" CACHE INTERNAL "")
+
+
+
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "COPASI is a software application for simulation and analysis of biochemical networks and their dynamics..")
+set(CPACK_PACKAGE_NAME "COPASI")
+set(CPACK_PACKAGE_VENDOR "The COPASI Team")
+set(CPACK_PACKAGE_CONTACT "COPASI Team <copasi-devel@vbi.vt.edu>")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/copasi/ArtisticLicense.txt")
+set(CPACK_PACKAGE_VERSION_MAJOR "${COPASI_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${COPASI_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${COPASI_VERSION_BUILD}")
+set(CPACK_RPM_PACKAGE_LICENSE "Artistic License")
+set(CPACK_RPM_PACKAGE_GROUP "Applications/Engineering")
+set(CPACK_DEBIAN_PACKAGE_SECTION "Applications")
+
+set(CPACK_SOURCE_IGNORE_FILES "${CMAKE_CURRENT_BINARY_DIR};/.svn/;/.libs/;/.deps/;/.bzr/;.*.o$;.*.lo$;.*.la$;${CPACK_SOURCE_IGNORE_FILES};/.DS_Store;/.svnignore;blib;libsbml-dist")
+
+if(UNIX)
+    set(CPACK_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
+    set(CPACK_SET_DESTDIR "ON")
+endif()
+
+if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+    set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386")
+    set(CPACK_RPM_PACKAGE_ARCHITECTURE "i386")
+else()
+    set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
+    set(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
+endif()
+
+include(CPack)
+
 add_subdirectory(copasi)
 
 if(BUILD_SEMANTIC_TESTSUITE)
@@ -638,3 +680,20 @@ if(BUILD_STEADY_STATE_RUNNER)
 add_subdirectory(steady_state_test_wrapper)
 endif (BUILD_STEADY_STATE_RUNNER)
 
+# also install additional files and examples
+file(GLOB_RECURSE WIZARD_HELP_FILES "${PROJECT_SOURCE_DIR}/copasi/wizard/help_html" copasi/wizard/help_html/*.html)
+file(GLOB_RECURSE WIZARD_IMAGE_FILES "${PROJECT_SOURCE_DIR}/copasi/wizard/help_html/figures" copasi/wizard/help_html/figures/*.png)
+file(GLOB_RECURSE EXAMPLE_FILES "${PROJECT_SOURCE_DIR}/TestSuite/distribution" TestSuite/distribution/*.*)
+install(FILES ${WIZARD_HELP_FILES} DESTINATION share/copasi/doc/html)
+install(FILES ${WIZARD_IMAGE_FILES} DESTINATION share/copasi/doc/html/figures)
+install(FILES ${EXAMPLE_FILES} DESTINATION share/copasi/examples)
+install(FILES  
+		"${PROJECT_SOURCE_DIR}/copasi/UI/icons/Copasi.ico"
+		"${PROJECT_SOURCE_DIR}/copasi/UI/icons/CopasiDoc.ico"
+        DESTINATION share/copasi/icons)
+install(FILES  
+		"${PROJECT_SOURCE_DIR}/copasi/MIRIAM/MIRIAMResources.xml"
+        DESTINATION share/copasi/config)
+
+# set up variables for cpack
+include(InstallRequiredSystemLibraries)

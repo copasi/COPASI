@@ -58,7 +58,7 @@ if (APPLE)
 set(COPASI_UI_FLAGS MACOSX_BUNDLE)
 set(MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/CopasiUI.plist )
 set(MACOSX_BUNDLE_ICON_FILE ${CMAKE_SOURCE_DIR}/copasi.icns )
-set(MACOSX_BUNDLE_BUNDLE_VERSION  "4.8.35")
+set(MACOSX_BUNDLE_BUNDLE_VERSION  "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
 set(MACOSX_BUNDLE_INFO_STRING "COPASI ${MACOSX_BUNDLE_BUNDLE_VERSION} is distributed under the Artistic License 2.0." )
 set(MACOSX_BUNDLE_GUI_IDENTIFIER  "org.copasi.CopasiUI" )
 set(MACOSX_BUNDLE_BUNDLE_NAME "CopasiUI")
@@ -69,6 +69,7 @@ set(MACOSX_BUNDLE_COPYRIGHT ${MACOSX_BUNDLE_INFO_STRING})
 endif(APPLE)
 
 add_executable(CopasiUI ${COPASI_UI_FLAGS} ${SOURCES} ${HEADERS})
+
 
 target_link_libraries(CopasiUI 
 	${SE_EXTERNAL_LIBS} ${SE_LIBS} ${UI_LIBS} 
@@ -84,6 +85,13 @@ endif(ENABLE_SBW_INTEGRATION)
 if (UNIX AND NOT APPLE)
 target_link_libraries(CopasiUI pthread z)
 endif()
+get_target_property(LOC CopasiUI "LOCATION")
+SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/CopasiUI${CMAKE_EXECUTABLE_SUFFIX}" CACHE INTERNAL "")
+install(TARGETS CopasiUI DESTINATION bin)
+# ensure that next to the binaries also dependencies are copied  
+install(CODE "
+    include(BundleUtilities)
+    fixup_bundle(\"${APPS}\" \"\" \"${DIRS}\")
+    " COMPONENT Runtime)
+include(InstallRequiredSystemLibraries)
 
-
-install(TARGETS CopasiUI DESTINATION COPASI)

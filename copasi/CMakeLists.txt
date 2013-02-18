@@ -31,8 +31,6 @@ cmake_policy(SET CMP0011 NEW)
 
 include (common.cmake)
 
-
-
 execute_process(
 	COMMAND "${CMAKE_COMMAND}"
 	ARGS -DSRC_DIRECTORY=\"${CMAKE_SOURCE_DIR}\"
@@ -289,5 +287,6 @@ set_target_properties (libCOPASIUI PROPERTIES OUTPUT_NAME "COPASIUI")
   endif(BUILD_VIEWCURRENT)
 
   add_subdirectory(CopasiSBW)
-
+  
 endif(BUILD_GUI)
+
