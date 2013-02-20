@@ -507,14 +507,16 @@ public:
   C_FLOAT64 getRMS(CCopasiObject *const& pObject) const;
 
   /**
-   * Retrieve the error mean for the object.
+   * Retrieve the sum of errors (scaled residuals) for the object.
    * @param CCopasiObject *const& pObject
-   * @return C_FLOAT64 errorMean
+   * @return C_FLOAT64 errorSum
    */
-  C_FLOAT64 getErrorMean(CCopasiObject *const& pObject) const;
+  C_FLOAT64 getErrorSum(CCopasiObject *const& pObject) const;
 
   /**
    * Retrieve the error mean std. deviations for the object.
+   * More specifically this is the sum of the squared deviations of the residuals
+   * from the provided errorMean. The sum is over all data points for the object. 
    * @param CCopasiObject *const& pObject
    * @param C_FLOAT64 errorMean
    * @return C_FLOAT64 errorMeanSD

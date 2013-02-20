@@ -198,7 +198,7 @@ bool CExperimentSet::calculateStatistics()
               Tmp = (*it)->getRMS(*ppObject);
               mDependentRMS[i] += Tmp * Tmp * Count;
 
-              mDependentErrorMean[i] += (*it)->getErrorMean(*ppObject);
+              mDependentErrorMean[i] += (*it)->getErrorSum(*ppObject);
 
               mDependentDataCount[i] += Count;
             }
@@ -226,7 +226,7 @@ bool CExperimentSet::calculateStatistics()
   it = mpExperiments->begin() + mNonExperiments;
 
   // We need to loop again to calculate the std. deviation.
-  for (; it != end; ++it)
+  for (; it != end; ++it)  //over experiments
     {
       CCopasiObject *const* ppObject = mDependentObjects.array();
       CCopasiObject *const* ppEnd = ppObject + mDependentObjects.size();

@@ -1527,7 +1527,7 @@ C_FLOAT64 CExperiment::getRMS(CCopasiObject *const& pObject) const
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 }
 
-C_FLOAT64 CExperiment::getErrorMean(CCopasiObject *const& pObject) const
+C_FLOAT64 CExperiment::getErrorSum(CCopasiObject *const& pObject) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
     = mDependentObjects.find(pObject);
