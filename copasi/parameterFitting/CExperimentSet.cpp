@@ -173,7 +173,7 @@ bool CExperimentSet::calculateStatistics()
   mDependentDataCount.resize(mDependentObjects.size());
   mDependentDataCount = 0;
 
-  // calclate the per experiment and per dependent value statistics.
+  // calculate the per experiment and per dependent value statistics.
   std::vector< CExperiment * >::iterator it = mpExperiments->begin() + mNonExperiments;
   std::vector< CExperiment * >::iterator end = mpExperiments->end();
 
