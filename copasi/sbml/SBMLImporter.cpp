@@ -37,6 +37,7 @@
 #include <sbml/LocalParameter.h>
 
 #if LIBSBML_VERSION >= 50400
+#include <sbml/conversion/ConversionProperties.h>
 #include <sbml/packages/layout/extension/LayoutModelPlugin.h>
 #define INIT_DEFAULTS(element) \
   {\
@@ -81,6 +82,7 @@
 #include "MIRIAM/CRDFGraphConverter.h"
 #include "compareExpressions/CEvaluationNodeNormalizer.h"
 #include "commandline/CLocaleString.h"
+#include "commandline/COptions.h"
 
 #include "SBMLImporter.h"
 #include "SBMLUtils.h"
@@ -3131,9 +3133,36 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
             }
         }
 
-      // TODO we need some code that check for required packages that we can't handle.
-      // TODO Since the current libsbml does not support this yet, we will have to wait for
-      // TODO libsbml 5, or write some code to check this ourselves.
+#if LIBSBML_VERSION >= 50700
+
+      if (sbmlDoc->getPlugin("comp") != NULL && sbmlDoc->isSetPackageRequired("comp"))
+        {
+          // the sbml comp package is used, and the required flag is set, so it stands to reason
+          // that we need to flatten the document
+          sbmlDoc->getErrorLog()->clearLog();
+
+          // in case we use external model references these might be relative
+          // to the last opened file
+          std::string PWD;
+          COptions::getValue("PWD", PWD);
+
+          ConversionProperties props;
+          props.addOption("flatten comp");
+          props.addOption("leavePorts", false);
+          props.addOption("basePath", PWD);
+
+          if (sbmlDoc->convert(props) != LIBSBML_OPERATION_SUCCESS)
+            {
+              std::string message =
+                "The SBML model you are trying to import does use the Hierarchical Modeling extension. "
+                "In order to import this model in COPASI, it has to be flattened, however flattening failed "
+                "with the following errors:\n" + sbmlDoc->getErrorLog()->toString();
+
+              CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
+            }
+        }
+
+#endif
 
       if (sbmlDoc->getModel() == NULL)
         {
