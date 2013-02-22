@@ -139,6 +139,8 @@ void CCopasiXMLParser::ListOfModelParameterSetsElement::end(const XML_Char *pszN
         break;
     }
 
+  mLastKnownElement = mCurrentElement;
+
   return;
 }
 
