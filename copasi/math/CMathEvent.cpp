@@ -43,7 +43,8 @@ bool CMathEventN::CAssignment::compile(CEventAssignment * pDataAssignment,
   // Determine the target object
   mpTarget = container.getMathObject(pDataAssignment->getTargetObject());
 
-  if (mpTarget->getSimulationType() == CMath::Fixed)
+  if (mpTarget != NULL &&
+      mpTarget->getSimulationType() == CMath::Fixed)
     {
       mpTarget->setSimulationType(CMath::EventTarget);
     }
