@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQComboDelegate.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/13 17:23:14 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -24,10 +16,10 @@
 #include "copasi.h"
 
 CQComboDelegate::CQComboDelegate(const QStringList *pComboItems, QObject *parent):
-    QItemDelegate(parent),
-    mpComboItems(pComboItems),
-    mEditorToRow(),
-    mRowToItems()
+  QItemDelegate(parent),
+  mpComboItems(pComboItems),
+  mEditorToIndex(),
+  mRowToItems()
 {}
 
 CQComboDelegate::~CQComboDelegate()
@@ -56,13 +48,13 @@ QWidget *CQComboDelegate::createEditor(QWidget *parent,
     {
       QMap< int, const QStringList * >::const_iterator found = mRowToItems.find(SourceIndex.row());
 
-      if (found != mRowToItems.end() && found.data() != NULL)
+      if (found != mRowToItems.end() && found.value() != NULL)
         {
-          pEditor->addItems(*found.data());
+          pEditor->addItems(*found.value());
         }
     }
 
-  mEditorToRow[pEditor] = SourceIndex.row();
+  mEditorToIndex[pEditor] = SourceIndex;
 
   connect(pEditor, SIGNAL(currentIndexChanged(int)), this, SLOT(slotCurrentIndexChanged(int)));
   connect(pEditor, SIGNAL(destroyed(QObject *)), this, SLOT(slotEditorDeleted(QObject *)));
@@ -103,22 +95,22 @@ void CQComboDelegate::slotCurrentIndexChanged(int index)
 
   if (pEditor)
     {
-      QMap< QWidget * , int >::const_iterator found = mEditorToRow.find(pEditor);
+      QMap< QWidget * , QModelIndex >::const_iterator found = mEditorToIndex.find(pEditor);
 
-      if (found != mEditorToRow.end())
+      if (found != mEditorToIndex.end())
         {
-          emit currentIndexChanged(found.data(), index);
+          emit currentIndexChanged(found.value().row(), index);
         }
     }
 }
 
 void CQComboDelegate::slotEditorDeleted(QObject * pObject)
 {
-  mEditorToRow.erase(static_cast< QWidget * >(pObject));
+  mEditorToIndex.erase(static_cast< QWidget * >(pObject));
 }
 
 CQIndexComboDelegate::CQIndexComboDelegate(const QStringList *pComboItems, QObject *parent)
-    : CQComboDelegate(pComboItems, parent)
+  : CQComboDelegate(pComboItems, parent)
 {}
 
 CQIndexComboDelegate::~CQIndexComboDelegate()

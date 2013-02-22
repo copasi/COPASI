@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.11 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/14 11:09:51 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -45,7 +37,7 @@
  *  name 'name'.'
  */
 CQMoietiesTaskResult::CQMoietiesTaskResult(QWidget* parent, const char* name)
-    : CopasiWidget(parent, name)
+  : CopasiWidget(parent, name)
 {
   setupUi(this);
 
@@ -83,7 +75,7 @@ void CQMoietiesTaskResult::init()
   CQPushButtonDelegate * pDelegate = new CQPushButtonDelegate(CQIconResource::icon(CQIconResource::tool), "",  CQPushButtonDelegate::ToolButton, this);
   mpMoieties->setItemDelegateForColumn(COL_BTN, pDelegate);
 
-  connect(pDelegate, SIGNAL(clicked(int)), this, SLOT(slotCreateGlobalQuantity(int)));
+  connect(pDelegate, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotCreateGlobalQuantity(const QModelIndex &)));
 
   // Initialize the stoichiometry tab
   mpStoichiometry->setLegendEnabled(true);
@@ -258,8 +250,10 @@ void CQMoietiesTaskResult::slotSave(void)
   return;
 }
 
-void CQMoietiesTaskResult::slotCreateGlobalQuantity(int row)
+void CQMoietiesTaskResult::slotCreateGlobalQuantity(const QModelIndex & index)
 {
+  int row = index.row();
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CModel * pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 

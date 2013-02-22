@@ -111,7 +111,7 @@ CModel::CModel(CCopasiContainer* pParent):
   mEvents("Events", this),
   mParticleFluxes(),
   mValues("Values", this),
-  mParameterSet("Parameter Set", this),
+  mParameterSet("Initial State", this),
   mParameterSets("ParameterSets", this),
   mActiveParameterSetKey(""),
   mMoieties("Moieties", this),
@@ -1044,10 +1044,12 @@ void CModel::applyActiveParameterSet()
     }
   else
     {
+      /*
       CModelParameterSet * pParameterSet = new CModelParameterSet(UTCTimeStamp());
       mParameterSets.add(pParameterSet, true);
       mActiveParameterSetKey = pParameterSet->getKey();
       pParameterSet->createFromModel();
+      */
     }
 
   mParameterSet.createFromModel();

@@ -73,6 +73,11 @@ void CQModelValue::slotBtnNew()
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
+void CQModelValue::slotBtnCopy()
+{
+  QMessageBox::warning(this, "Warning", "Not Implemented");
+}
+
 void CQModelValue::slotBtnDelete()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);

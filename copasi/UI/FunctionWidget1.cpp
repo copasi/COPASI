@@ -666,6 +666,11 @@ void FunctionWidget1::slotBtnNew()
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
+void FunctionWidget1::slotBtnCopy()
+{
+  QMessageBox::warning(this, "Warning", "Not Implemented");
+}
+
 //! Slot for being activated whenever Delete button is clicked
 void FunctionWidget1::slotBtnDelete()
 {

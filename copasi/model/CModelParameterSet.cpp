@@ -24,9 +24,10 @@ CModelParameterSet::CModelParameterSet(const std::string & name,
 }
 
 CModelParameterSet::CModelParameterSet(const CModelParameterSet & src,
-                                       const CCopasiContainer * pParent):
+                                       const CCopasiContainer * pParent,
+                                       const bool & createMissing):
   CCopasiContainer(src, pParent),
-  CModelParameterGroup(src, NULL),
+  CModelParameterGroup(src, NULL, createMissing),
   CAnnotation(src),
   mKey(CCopasiRootContainer::getKeyFactory()->add("ModelParameterSet", this)),
   mpModel(NULL)
@@ -89,7 +90,7 @@ void CModelParameterSet::createFromModel()
 
   pParameter = pGroup->add(Model);
   pParameter->setCN(mpModel->getCN());
-  pParameter->setValue(mpModel->getInitialTime());
+  pParameter->setValue(mpModel->getInitialTime(), ParticleNumbers);
 
   pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
   pGroup->setCN(CCopasiStaticString("Initial Compartment Sizes").getCN());
@@ -102,7 +103,7 @@ void CModelParameterSet::createFromModel()
       pParameter = pGroup->add(Compartment);
       pParameter->setCN((*itCompartment)->getCN());
       pParameter->setSimulationType((*itCompartment)->getStatus());
-      pParameter->setValue((*itCompartment)->getInitialValue());
+      pParameter->setValue((*itCompartment)->getInitialValue(), ParticleNumbers);
       pParameter->setInitialExpression((*itCompartment)->getInitialExpression());
     }
 
@@ -117,7 +118,7 @@ void CModelParameterSet::createFromModel()
       pParameter = pGroup->add(Species);
       pParameter->setCN((*itSpecies)->getCN());
       pParameter->setSimulationType((*itSpecies)->getStatus());
-      pParameter->setValue((*itSpecies)->getInitialValue());
+      pParameter->setValue((*itSpecies)->getInitialValue(), ParticleNumbers);
       pParameter->setInitialExpression((*itSpecies)->getInitialExpression());
     }
 
@@ -132,7 +133,7 @@ void CModelParameterSet::createFromModel()
       pParameter = pGroup->add(ModelValue);
       pParameter->setCN((*itModelValue)->getCN());
       pParameter->setSimulationType((*itModelValue)->getStatus());
-      pParameter->setValue((*itModelValue)->getInitialValue());
+      pParameter->setValue((*itModelValue)->getInitialValue(), ParticleNumbers);
       pParameter->setInitialExpression((*itModelValue)->getInitialExpression());
     }
 
@@ -144,7 +145,7 @@ void CModelParameterSet::createFromModel()
 
   for (; itReaction != endReaction; ++itReaction)
     {
-      CModelParameterGroup * pReaction = static_cast< CModelParameterGroup *>(pGroup->add(Group));
+      CModelParameterGroup * pReaction = static_cast< CModelParameterGroup *>(pGroup->add(Reaction));
       pReaction->setCN((*itReaction)->getCN());
 
       CCopasiParameterGroup::index_iterator itParameter = (*itReaction)->getParameters().beginIndex();
@@ -159,7 +160,7 @@ void CModelParameterSet::createFromModel()
           if ((*itReaction)->isLocalParameter((*itParameter)->getObjectName()))
             {
               pParameter->setSimulationType(CModelEntity::FIXED);
-              pParameter->setValue(*(*itParameter)->getValue().pDOUBLE);
+              pParameter->setValue(*(*itParameter)->getValue().pDOUBLE, ParticleNumbers);
             }
           else
             {
@@ -169,7 +170,7 @@ void CModelParameterSet::createFromModel()
               assert(ModelValue.size() == 1);
 
               const CModelValue * pModelValue = static_cast< CModelValue * >(CCopasiRootContainer::getKeyFactory()->get(ModelValue[0]));
-              pParameter->setValue(pModelValue->getInitialValue());
+              pParameter->setValue(pModelValue->getInitialValue(), ParticleNumbers);
               pParameter->setInitialExpression("<" + pModelValue->getInitialValueReference()->getCN() + ">");
             }
         }
@@ -178,7 +179,7 @@ void CModelParameterSet::createFromModel()
   compile();
 }
 
-bool CModelParameterSet::compareWithModel()
+bool CModelParameterSet::compareWithModel(const CModelParameter::Framework & framework)
 {
   if (mpModel == NULL)
     {
@@ -188,7 +189,7 @@ bool CModelParameterSet::compareWithModel()
   CModelParameterSet Tmp("Current", mpModel);
   Tmp.createFromModel();
 
-  return (diff(Tmp) == CModelParameter::Identical);
+  return (diff(Tmp, framework, true) == CModelParameter::Identical);
 }
 
 // virtual
@@ -220,13 +221,17 @@ bool CModelParameterSet::isActive() const
   return (mpModel->getModelParameterSet().getKey() == mKey);
 }
 
-void CModelParameterSet::assignSetContent(const CModelParameterSet & src)
+void CModelParameterSet::assignSetContent(const CModelParameterSet & src,
+    const bool & createMissing)
 {
-  assignGroupContent(src);
+  assignGroupContent(src, createMissing);
   compile();
 }
 
-bool CModelParameterSet::saveToStream(std::ostream & os, const std::string & mode, const std::string & separator)
+bool CModelParameterSet::saveToStream(std::ostream & os,
+                                      const CModelParameter::Framework & framework,
+                                      const std::string & mode,
+                                      const std::string & separator)
 {
   bool success = true;
 
@@ -255,7 +260,7 @@ bool CModelParameterSet::saveToStream(std::ostream & os, const std::string & mod
               if (itNode->getType() != Group &&
                   itNode->getType() != Set)
                 {
-                  os << itNode->getValue() << " " << itNode->getUnit();
+                  os << itNode->getValue(framework) << " " << itNode->getUnit(framework);
                 }
 
               os << std::endl;
@@ -273,7 +278,7 @@ bool CModelParameterSet::saveToStream(std::ostream & os, const std::string & mod
               if (itNode->getType() != Group &&
                   itNode->getType() != Set)
                 {
-                  os << itNode->getName() << separator;
+                  os << itNode->getName() << " " << itNode->getUnit(framework) << separator;
                 }
             }
         }
@@ -281,6 +286,7 @@ bool CModelParameterSet::saveToStream(std::ostream & os, const std::string & mod
       os << std::endl;
 
       itNode = CNodeIterator< const CModelParameter >(this);
+      itNode.setProcessingModes(CNodeIteratorMode::After);
 
       while (itNode.next() != itNode.end())
         {
@@ -289,7 +295,7 @@ bool CModelParameterSet::saveToStream(std::ostream & os, const std::string & mod
               if (itNode->getType() != Group &&
                   itNode->getType() != Set)
                 {
-                  os << itNode->getValue() << separator;
+                  os << itNode->getValue(framework) << separator;
                 }
             }
         }

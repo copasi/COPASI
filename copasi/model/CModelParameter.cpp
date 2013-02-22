@@ -27,6 +27,7 @@ const char * CModelParameter::TypeNames[] =
   "Species",
   "ModelValue",
   "ReactionParameter",
+  "Reaction",
   "Group",
   "Set",
   "unknown",
@@ -311,7 +312,8 @@ size_t CModelParameter::getIndex() const
 
 bool CModelParameter::isReadOnly() const
 {
-  if (mType == Group ||
+  if (mType == Reaction ||
+      mType == Group ||
       mType == Set ||
       (mType == Model && getModel()->isAutonomous()) ||
       (mIsInitialExpressionValid && getInitialExpression() != ""))
@@ -414,10 +416,33 @@ void CModelParameter::compile()
     }
 }
 
-const CModelParameter::CompareResult & CModelParameter::diff(const CModelParameter & other)
+const CModelParameter::CompareResult & CModelParameter::diff(const CModelParameter & other,
+    const CModelParameter::Framework & framework,
+    const bool & /* createMissing */)
 {
+  switch (mType)
+    {
+      case Compartment:
+      case Species:
+      case ModelValue:
+        if (other.getObject() != NULL &&
+            mpObject != NULL &&
+            static_cast< CModelEntity *>(mpObject)->getStatus() == CModelEntity::ASSIGNMENT &&
+            (getValue(ParticleNumbers) != other.getValue(ParticleNumbers) ||
+             getInitialExpression() != ""))
+          {
+            mCompareResult = Conflict;
+            return mCompareResult;
+          }
+
+        break;
+
+      default:
+        break;
+    }
+
   if (getInitialExpression() != other.getInitialExpression() ||
-      mValue != other.getValue())
+      getValue(framework) != other.getValue(framework))
     {
       mCompareResult = Modified;
     }
@@ -458,11 +483,15 @@ bool CModelParameter::updateModel()
           case ModelValue:
           {
             CModelEntity * pEntity = static_cast< CModelEntity * >(mpObject);
-            pEntity->setInitialValue(mValue);
 
-            if (mIsInitialExpressionValid)
+            if (pEntity->getStatus() != CModelEntity::ASSIGNMENT)
               {
-                pEntity->setInitialExpression(getInitialExpression());
+                pEntity->setInitialValue(mValue);
+
+                if (mIsInitialExpressionValid)
+                  {
+                    pEntity->setInitialExpression(getInitialExpression());
+                  }
               }
           }
           break;
@@ -470,7 +499,7 @@ bool CModelParameter::updateModel()
           case ReactionParameter:
           {
             CCopasiParameter * pParameter = static_cast< CCopasiParameter * >(mpObject);
-            pParameter->setValue(mValue);
+            CReaction * pReaction = static_cast< CReaction * >(mpObject->getObjectAncestor("Reaction"));
 
             if (mIsInitialExpressionValid &&
                 getInitialExpression() != "")
@@ -487,8 +516,18 @@ bool CModelParameter::updateModel()
 
                 assert(pObject != NULL);
 
-                CReaction * pReaction = static_cast< CReaction * >(mpObject->getObjectAncestor("Reaction"));
+                // We assign the object value
+                pParameter->setValue(* (C_FLOAT64 *) pObject->getValuePointer());
+
+                // We map the parameter to the global quantity
                 pReaction->setParameterMapping(pParameter->getObjectName(), pObject->getObjectParent()->getKey());
+              }
+            else
+              {
+                pParameter->setValue(mValue);
+
+                // We need to remove the existing mapping to a global quantity1.
+                pReaction->setParameterMapping(pParameter->getObjectName(), pParameter->getKey());
               }
           }
           break;
@@ -549,7 +588,7 @@ bool CModelParameter::refreshFromModel()
 
                 if (pGlobalQuantity != NULL)
                   {
-                    mValue = pGlobalQuantity->getValue();
+                    mValue = pGlobalQuantity->getValue(ParticleNumbers);
                   }
               }
           }
@@ -571,7 +610,7 @@ size_t CModelParameter::getNumChildren() const
 }
 
 // virtual
-const CModelParameter * CModelParameter::getChild(const size_t & index) const
+const CModelParameter * CModelParameter::getChild(const size_t & /* index */) const
 {
   return NULL;
 }
@@ -722,7 +761,7 @@ void CModelParameterSpecies::setValue(const C_FLOAT64 & value, const Framework &
 
       if (mpCompartment != NULL && pModel != NULL)
         {
-          mValue = mConcentration * mpCompartment->getValue() * pModel->getQuantity2NumberFactor();
+          mValue = mConcentration * mpCompartment->getValue(ParticleNumbers) * pModel->getQuantity2NumberFactor();
         }
       else
         {
@@ -735,7 +774,7 @@ void CModelParameterSpecies::setValue(const C_FLOAT64 & value, const Framework &
 
       if (mpCompartment != NULL && pModel != NULL)
         {
-          mConcentration = mValue / mpCompartment->getValue() * pModel->getNumber2QuantityFactor();
+          mConcentration = mValue / mpCompartment->getValue(ParticleNumbers) * pModel->getNumber2QuantityFactor();
         }
       else
         {
@@ -817,13 +856,19 @@ void CModelParameterReactionParameter::compile()
           mGlobalQuantityCN += Separator + Primary;
           Separator = ",";
         }
+
+      setSimulationType(CModelEntity::ASSIGNMENT);
+    }
+  else
+    {
+      setSimulationType(CModelEntity::FIXED);
     }
 
   mpGlobalQuantity = this->getSet()->getModelParameter(mGlobalQuantityCN);
 
   if (mpGlobalQuantity != NULL)
     {
-      mValue = mpGlobalQuantity->getValue();
+      mValue = mpGlobalQuantity->getValue(ParticleNumbers);
     }
 
   std::vector< CCopasiContainer * > ListOfContainer;
@@ -837,6 +882,20 @@ void CModelParameterReactionParameter::compile()
 const CReaction * CModelParameterReactionParameter::getReaction() const
 {
   return mpReaction;
+}
+
+void CModelParameterReactionParameter::setGlobalQuantityCN(const std::string & globalQuantityCN)
+{
+  if (globalQuantityCN == "")
+    {
+      setInitialExpression("");
+    }
+  else
+    {
+      setInitialExpression("<" + globalQuantityCN + ">");
+    }
+
+  compile();
 }
 
 const CRegisteredObjectName & CModelParameterReactionParameter::getGlobalQuantityCN() const

@@ -13,11 +13,13 @@ CModelParameterGroup::CModelParameterGroup(CModelParameterGroup * pParent, const
   mModelParameters()
 {}
 
-CModelParameterGroup::CModelParameterGroup(const CModelParameterGroup & src, CModelParameterGroup * pParent):
+CModelParameterGroup::CModelParameterGroup(const CModelParameterGroup & src,
+    CModelParameterGroup * pParent,
+    const bool & createMissing):
   CModelParameter(src, pParent),
   mModelParameters()
 {
-  assignGroupContent(src);
+  assignGroupContent(src, createMissing);
 }
 
 // virtual
@@ -26,7 +28,8 @@ CModelParameterGroup::~CModelParameterGroup()
   clear();
 }
 
-void CModelParameterGroup::assignGroupContent(const CModelParameterGroup & src)
+void CModelParameterGroup::assignGroupContent(const CModelParameterGroup & src,
+    const bool & createMissing)
 {
   clear();
 
@@ -36,34 +39,47 @@ void CModelParameterGroup::assignGroupContent(const CModelParameterGroup & src)
   const_iterator endSrc = src.end();
   iterator it = begin();
 
-  for (; itSrc != endSrc; ++itSrc, ++it)
+  for (; itSrc != endSrc; ++itSrc)
     {
-      switch ((*itSrc)->getType())
+      if (createMissing ||
+          (*itSrc)->getCompareResult() != Missing)
         {
-          case Compartment:
-            *it = new CModelParameterCompartment(*static_cast< CModelParameterCompartment *>(*itSrc), this);
-            break;
+          switch ((*itSrc)->getType())
+            {
+              case Compartment:
+                *it = new CModelParameterCompartment(*static_cast< CModelParameterCompartment *>(*itSrc), this);
+                break;
 
-          case Species:
-            *it = new CModelParameterSpecies(*static_cast< CModelParameterSpecies *>(*itSrc), this);
-            break;
+              case Species:
+                *it = new CModelParameterSpecies(*static_cast< CModelParameterSpecies *>(*itSrc), this);
+                break;
 
-          case ReactionParameter:
-            *it = new CModelParameterReactionParameter(*static_cast< CModelParameterReactionParameter *>(*itSrc), this);
-            break;
+              case ReactionParameter:
+                *it = new CModelParameterReactionParameter(*static_cast< CModelParameterReactionParameter *>(*itSrc), this);
+                break;
 
-          case Model:
-          case ModelValue:
-            *it = new CModelParameter(**itSrc, this);
-            break;
+              case Model:
+              case ModelValue:
+                *it = new CModelParameter(**itSrc, this);
+                break;
 
-          case Group:
-            *it = new CModelParameterGroup(*static_cast< CModelParameterGroup *>(*itSrc), this);
-            break;
+              case Reaction:
+              case Group:
+                *it = new CModelParameterGroup(*static_cast< CModelParameterGroup *>(*itSrc), this, createMissing);
+                break;
 
-          default:
-            break;
+              default:
+                break;
+            }
+
+          // We need to advance the insert point.
+          ++it;
         }
+    }
+
+  if (it != mModelParameters.end())
+    {
+      mModelParameters.erase(it, mModelParameters.end());
     }
 }
 
@@ -90,6 +106,7 @@ CModelParameter * CModelParameterGroup::add(const CModelParameter::Type & type)
         pModelParameter = new CModelParameter(this, type);
         break;
 
+      case Reaction:
       case Group:
         pModelParameter = new CModelParameterGroup(this, type);
         break;
@@ -189,12 +206,16 @@ void CModelParameterGroup::clear()
 }
 
 // virtual
-const CModelParameter::CompareResult & CModelParameterGroup::diff(const CModelParameter & other)
+const CModelParameter::CompareResult & CModelParameterGroup::diff(const CModelParameter & other,
+    const CModelParameter::Framework & framework,
+    const bool & createMissing)
 {
   mCompareResult = Identical;
 
-  // We can only work on groups or sets.
-  assert(other.getType() == Group || other.getType() == Set);
+  // We can only work on reactions, groups or sets.
+  assert(other.getType() == Reaction ||
+         other.getType() == Group ||
+         other.getType() == Set);
 
   const CModelParameterGroup * pOther = dynamic_cast< const CModelParameterGroup * >(&other);
 
@@ -223,7 +244,7 @@ const CModelParameter::CompareResult & CModelParameterGroup::diff(const CModelPa
           continue;
         }
 
-      if ((*itThis)->diff(*itOther->second) != Identical)
+      if ((*itThis)->diff(*itOther->second, framework, createMissing) != Identical)
         {
           mCompareResult = Modified;
         }
@@ -231,24 +252,30 @@ const CModelParameter::CompareResult & CModelParameterGroup::diff(const CModelPa
       Map.erase(itOther->first);
     }
 
-  std::map< CCopasiObjectName, CModelParameter * >::const_iterator itMissing = Map.begin();
-  std::map< CCopasiObjectName, CModelParameter * >::const_iterator endMissing = Map.end();
-
-  for (; itMissing != endMissing; ++itMissing)
+  if (createMissing)
     {
-      CModelParameter * pMissing;
+      std::map< CCopasiObjectName, CModelParameter * >::const_iterator itMissing = Map.begin();
+      std::map< CCopasiObjectName, CModelParameter * >::const_iterator endMissing = Map.end();
 
-      if (itMissing->second->getType() != Group)
+      for (; itMissing != endMissing; ++itMissing)
         {
-          pMissing = new CModelParameterGroup(*static_cast< CModelParameterGroup *>(itMissing->second), this);
-        }
-      else
-        {
-          pMissing = new CModelParameter(*itMissing->second, this);
-        }
+          CModelParameter * pMissing;
 
-      pMissing->setCompareResult(Missing);
-      mCompareResult = Modified;
+          if (itMissing->second->getType() == Reaction ||
+              itMissing->second->getType() == Group)
+            {
+              pMissing = new CModelParameterGroup(*static_cast< CModelParameterGroup *>(itMissing->second), this, createMissing);
+            }
+          else
+            {
+              pMissing = new CModelParameter(*itMissing->second, this);
+            }
+
+          pMissing->setCompareResult(Missing);
+          mModelParameters.push_back(pMissing);
+
+          mCompareResult = Modified;
+        }
     }
 
   return mCompareResult;
@@ -299,10 +326,37 @@ CModelParameter * CModelParameterGroup::getModelParameter(const std::string & cn
         {
           pModelParameter = *it;
         }
-      else if ((*it)->getType() == CModelParameter::Group ||
+      else if ((*it)->getType() == CModelParameter::Reaction ||
+               (*it)->getType() == CModelParameter::Group ||
                (*it)->getType() == CModelParameter::Set)
         {
           pModelParameter = static_cast< const CModelParameterGroup * >(*it)->getModelParameter(cn);
+        }
+    }
+
+  return pModelParameter;
+}
+
+CModelParameter * CModelParameterGroup::getModelParameter(const std::string & name,
+    const CModelParameter::Type & type) const
+{
+  CModelParameter * pModelParameter = NULL;
+
+  const_iterator it = begin();
+  const_iterator End = end();
+
+  for (; it != End && pModelParameter == NULL; ++it)
+    {
+      if (type == (*it)->getType() &&
+          name == (*it)->getName())
+        {
+          pModelParameter = *it;
+        }
+      else if ((*it)->getType() == CModelParameter::Reaction ||
+               (*it)->getType() == CModelParameter::Group ||
+               (*it)->getType() == CModelParameter::Set)
+        {
+          pModelParameter = static_cast< const CModelParameterGroup * >(*it)->getModelParameter(name, type);
         }
     }
 

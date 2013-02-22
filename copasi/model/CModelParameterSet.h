@@ -28,10 +28,12 @@ public:
   /**
    * Copy constructor
    * @param const CModelParameterSet & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CCopasiContainer * pParent
+   * @param const bool & createMissing (default: false)
    */
   CModelParameterSet(const CModelParameterSet & src,
-                     const CCopasiContainer * pParent = NULL);
+                     const CCopasiContainer * pParent,
+                     const bool & createMissing = false);
 
   /**
    * Destructor
@@ -71,7 +73,7 @@ public:
   /**
    * Compare the parameter set with the assigned model
    */
-  bool compareWithModel();
+  bool compareWithModel(const CModelParameter::Framework & framework);
 
   /**
    * Retrieve the name of the parameter set
@@ -95,16 +97,22 @@ public:
    * Assign the content of the source set to this, i.e., copy all
    * contained parameters and groups.
    * @param const CModelParameterSet & src
+   * @param const bool & createMissing
    */
-  void assignSetContent(const CModelParameterSet & src);
+  void assignSetContent(const CModelParameterSet & src,
+                        const bool & createMissing);
 
   /**
    * Save the parameter set to a stream
    * @param std::ostream & os
+   * @param const CModelParameter::Framework & framework
    * @param const std::string & mode (report or table)
    * @param const std::string & separator
    */
-  bool saveToStream(std::ostream & os, const std::string & mode, const std::string & separator);
+  bool saveToStream(std::ostream & os,
+                    const CModelParameter::Framework & framework,
+                    const std::string & mode,
+                    const std::string & separator);
 
 private:
   /**

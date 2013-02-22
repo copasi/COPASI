@@ -843,6 +843,8 @@ bool CCopasiXML::saveModel()
 
   endSaveElement("ModelParameterSet");
 
+  imax = mpModel->getModelParameterSets().size();
+
   for (i = 0; i < imax; i++)
     {
       pSet = mpModel->getModelParameterSets()[i];
@@ -962,10 +964,11 @@ bool CCopasiXML::saveModelParameter(const CModelParameter * pModelParameter)
 
   CXMLAttributeList Attributes;
 
-  if (pModelParameter->getType() != CModelParameter::Group)
+  if (pModelParameter->getType() != CModelParameter::Reaction &&
+      pModelParameter->getType() != CModelParameter::Group)
     {
       Attributes.add("cn", pModelParameter->getCN());
-      Attributes.add("value", pModelParameter->getValue());
+      Attributes.add("value", pModelParameter->getValue(CModelParameter::ParticleNumbers));
       Attributes.add("type", CModelParameter::TypeNames[pModelParameter->getType()]);
       Attributes.add("simulationType", CModelEntity::XMLStatus[pModelParameter->getSimulationType()]);
 
@@ -985,6 +988,7 @@ bool CCopasiXML::saveModelParameter(const CModelParameter * pModelParameter)
   else
     {
       Attributes.add("cn", pModelParameter->getCN());
+      Attributes.add("type", CModelParameter::TypeNames[pModelParameter->getType()]);
 
       startSaveElement("ModelParameterGroup", Attributes);
 

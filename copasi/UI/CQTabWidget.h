@@ -45,10 +45,12 @@ private slots:
   void slotBtnRevert();
   void slotBtnDelete();
   void slotBtnNew();
+  void slotBtnCopy();
 
 signals:
   void deleteClicked();
   void newClicked();
+  void copyClicked();
 
 private:
   std::vector< CopasiWidget * > mPages;

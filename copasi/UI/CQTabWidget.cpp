@@ -34,8 +34,15 @@ CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget 
     {
       case  ListViews::MODEL:
         mpBtnNew->hide();
+        mpBtnCopy->hide();
         mpBtnDelete->hide();
         break;
+
+      case ListViews::MODELPARAMETERSET:
+        mpBtnNew->setText("Apply");
+        mpBtnNew->setToolTip("Apply the current parameters to the model.");
+
+        // The break statement is intentionally missing
 
       default:
         CQNotes* pNotes = new CQNotes(mpTabWidget);
@@ -43,6 +50,7 @@ CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget 
         mpTabWidget->addTab(pNotes, "Notes");
 
         connect(this, SIGNAL(newClicked()), pCopasiWidget, SLOT(slotBtnNew()));
+        connect(this, SIGNAL(copyClicked()), pCopasiWidget, SLOT(slotBtnCopy()));
         connect(this, SIGNAL(deleteClicked()), pCopasiWidget, SLOT(slotBtnDelete()));
         break;
     }
@@ -213,5 +221,16 @@ void CQTabWidget::slotBtnNew()
 
   mIgnoreLeave = true;
   emit newClicked();
+  mIgnoreLeave = false;
+}
+
+void CQTabWidget::slotBtnCopy()
+{
+  mpBtnCopy->setFocus();
+
+  leave();
+
+  mIgnoreLeave = true;
+  emit copyClicked();
   mIgnoreLeave = false;
 }

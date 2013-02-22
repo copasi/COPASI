@@ -10,19 +10,24 @@
 #include "CQMessageBox.h"
 #include "CopasiFileDialog.h"
 #include "qtUtilities.h"
+#include "CQNameSelectionDialog.h"
+#include "CQPushButtonDelegate.h"
+#include "CQComboDelegate.h"
 
 #include "commandline/CLocaleString.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModelParameterSet.h"
 #include "model/CModel.h"
 #include "report/CCopasiRootContainer.h"
+#include "report/CCopasiStaticString.h"
 
 CQParameterOverviewWidget::CQParameterOverviewWidget(QWidget* parent, const char* name):
   CopasiWidget(parent, name),
   mpParameterSet(NULL),
   mpParameterSetCopy(NULL),
   mpParameterSetDM(NULL),
-  mpParameterSetSortDM(NULL)
+  mpParameterSetSortDM(NULL),
+  mGlobalQuantities()
 {
   setupUi(this);
 
@@ -38,9 +43,15 @@ CQParameterOverviewWidget::CQParameterOverviewWidget(QWidget* parent, const char
   mpTreeView->setModel(mpParameterSetSortDM);
   mpTreeView->sortByColumn(0, Qt::AscendingOrder);
 
-  // mpTreeView->expand(mpParameterSetSortDM->mapFromSource(mpParameterSetDM->index(0, 0, QModelIndex())));
+  CQPushButtonDelegate * pPushButtonDelegate = new CQPushButtonDelegate(CQPushButtonDelegate::PushButton, this);
+  mpTreeView->setItemDelegateForColumn(1, pPushButtonDelegate);
+  connect(pPushButtonDelegate, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotResolve(const QModelIndex &)));
 
-  // mpTreeView->setRowHidden(1, mpParameterSetSortDM->mapFromSource(mpParameterSetDM->index(0, 0, QModelIndex())), true);
+  CQComboDelegate * pComboDelegate = new CQComboDelegate(&mGlobalQuantities, this);
+  mpTreeView->setItemDelegateForColumn(5, pComboDelegate);
+
+  connect(mpParameterSetDM, SIGNAL(signalOpenEditor(const QModelIndex &)), this, SLOT(slotOpenEditor(const QModelIndex &)));
+  connect(mpParameterSetDM, SIGNAL(signalCloseEditor(const QModelIndex &)), this, SLOT(slotCloseEditor(const QModelIndex &)));
 }
 
 CQParameterOverviewWidget::~CQParameterOverviewWidget()
@@ -51,8 +62,56 @@ CQParameterOverviewWidget::~CQParameterOverviewWidget()
 // virtual
 bool CQParameterOverviewWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
-  // placeholder, ensure compilation under MSVC
-  // We need to handle at lease STATE CHANGE, and MODEL ADD/DELETE
+  if (mIgnoreUpdates)
+    {
+      return true;
+    }
+
+  switch (objectType)
+    {
+      case ListViews::STATE:
+        enterProtected();
+        break;
+
+      case ListViews::MODEL:
+        if (action == ListViews::ADD ||
+            action == ListViews::DELETE)
+          {
+            mKey = "";
+            mpObject = NULL;
+
+            enterProtected();
+          }
+
+        break;
+
+      case ListViews::PARAMETEROVERVIEW:
+      case ListViews::MODELPARAMETERSET:
+        if (mKey == key)
+          {
+            switch (action)
+              {
+                case ListViews::DELETE:
+                  mKey = "";
+                  mpObject = NULL;
+
+                  enterProtected();
+                  break;
+
+                case ListViews::CHANGE:
+                  enterProtected();
+                  break;
+
+                default:
+                  break;
+              }
+          }
+
+        break;
+
+      default:
+        break;
+    }
 
   return true;
 }
@@ -62,12 +121,14 @@ bool CQParameterOverviewWidget::leave()
 {
   if (mpParameterSet == NULL)
     {
-      return false;
+      return true;
     }
 
-  if (mpParameterSetCopy->diff(*mpParameterSet) != CModelParameter::Identical)
+  if (mpParameterSet->diff(*mpParameterSetCopy,
+                           static_cast< CModelParameter::Framework >(mFramework),
+                           false) != CModelParameter::Identical)
     {
-      mpParameterSet->assignSetContent(*mpParameterSetCopy);
+      mpParameterSet->assignSetContent(*mpParameterSetCopy, false);
 
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
       (*CCopasiRootContainer::getDatamodelList())[0]->changed();
@@ -79,7 +140,7 @@ bool CQParameterOverviewWidget::leave()
         }
       else
         {
-          protectedNotify(ListViews::PARAMETERSET, ListViews::CHANGE, mKey);
+          protectedNotify(ListViews::MODELPARAMETERSET, ListViews::CHANGE, mKey);
         }
     }
 
@@ -89,8 +150,21 @@ bool CQParameterOverviewWidget::leave()
 // virtual
 void CQParameterOverviewWidget::setFramework(int framework)
 {
+  CopasiWidget::setFramework(framework);
+
+  if (mpParameterSet == NULL)
+    {
+      return;
+    }
+
+  if (!mpParameterSet->isActive())
+    {
+      mpParameterSetCopy->compareWithModel(static_cast< CModelParameter::Framework >(mFramework));
+    }
+
   mpParameterSetDM->setFramework(framework);
   mpTreeView->expandAll();
+  mpTreeView->resizeColumnToContents(3);
 }
 
 // virtual
@@ -103,25 +177,53 @@ bool CQParameterOverviewWidget::enterProtected()
       mpParameterSetDM->setModelParameterset(NULL);
       pdelete(mpParameterSetCopy);
 
-      mpListView->switchToOtherWidget(1, "");
       return false;
     }
 
+  // We need to make sure the original is fully compiled.
+  mpParameterSet->compile();
+
   CModelParameterSet * pOldParameterSet = mpParameterSetCopy;
-  mpParameterSetCopy = new CModelParameterSet(*mpParameterSet, mpDataModel);
-  mpParameterSetDM->setModelParameterset(mpParameterSetCopy);
-  pdelete(pOldParameterSet);
+  mpParameterSetCopy = new CModelParameterSet(*mpParameterSet, mpDataModel, false);
+
+  mGlobalQuantities.clear();
 
   if (mpParameterSet->isActive())
     {
       mpTreeView->header()->hideSection(1);
     }
+  else
+    {
+      mpParameterSetCopy->compareWithModel(static_cast< CModelParameter::Framework >(mFramework));
+      mpHeaderWidget->hide();
+      mpBtnWidget->hide();
+    }
+
+  mpParameterSetDM->setModelParameterset(mpParameterSetCopy);
+  pdelete(pOldParameterSet);
 
   mpTreeView->expandAll();
 
   for (int i = 0; i < 6; i++)
     {
       mpTreeView->resizeColumnToContents(i);
+    }
+
+  // We build the selection for the global parameters for kinetic constants.
+  const CModelParameterGroup *pGlobalQuantities =
+    static_cast< CModelParameterGroup * >(mpParameterSetCopy->getModelParameter(CCopasiStaticString("Initial Global Quantities").getCN()));
+
+  CModelParameterGroup::const_iterator it = pGlobalQuantities->begin();
+  CModelParameterGroup::const_iterator end = pGlobalQuantities->end();
+
+  mGlobalQuantities.append("");
+
+  for (; it != end; ++it)
+    {
+      if ((*it)->getCompareResult() != CModelParameter::Missing)
+        {
+          mGlobalQuantities.append(FROM_UTF8((*it)->getName()));
+        }
     }
 
   return true;
@@ -140,6 +242,110 @@ void CQParameterOverviewWidget::slotBtnCommit()
   mpBtnCommit->setFocus();
   leave();
   enterProtected();
+}
+
+// virtual
+void CQParameterOverviewWidget::slotBtnDelete()
+{
+  if (mpParameterSet == NULL)
+    {
+      return;
+    }
+
+  CModel * pModel = mpParameterSet->getModel();
+
+  if (pModel == NULL)
+    {
+      return;
+    }
+
+  mpParameterSetDM->setModelParameterset(NULL);
+
+  pModel->getModelParameterSets().remove(mpParameterSet->getObjectName());
+
+  // Notify the GUI of the delete.
+  protectedNotify(ListViews::MODELPARAMETERSET, ListViews::DELETE, mKey);
+}
+
+// virtual
+void CQParameterOverviewWidget::slotBtnNew()
+{
+  // This button is shown as Apply and is used to assign the parameter values to the model.
+
+  // commit all changes
+  slotBtnCommit();
+
+  // Sanity checks
+  if (mpParameterSet == NULL)
+    {
+      return;
+    }
+
+  CModel * pModel = mpParameterSet->getModel();
+
+  if (pModel == NULL)
+    {
+      return;
+    }
+
+  // We first asked whether the user wants to save the current model values
+  if (CQMessageBox::question(this, "Save current Model Parameters?",
+                             "You are about to overwrite the current model values.\n"
+                             "Do you want to save them?",
+                             QMessageBox::Ok | QMessageBox::Cancel,
+                             QMessageBox::Ok) == QMessageBox::Ok)
+    {
+      // Save the parameter set to a new or existing set
+      CQNameSelectionDialog Dialog(this);
+
+      CCopasiVectorN< CModelParameterSet > & Sets = pModel->getModelParameterSets();
+
+      CCopasiVectorN< CModelParameterSet >::const_iterator it = Sets.begin();
+      CCopasiVectorN< CModelParameterSet >::const_iterator end = Sets.end();
+      QStringList SelectionList;
+
+      for (; it != end; ++it)
+        {
+          SelectionList.append(FROM_UTF8((*it)->getName()));
+        }
+
+      Dialog.setSelectionList(SelectionList);
+      QString Name;
+
+      if (Dialog.exec() != QDialog::Rejected &&
+          (Name = Dialog.getSelection()) != "")
+        {
+          if (SelectionList.indexOf(Name) == -1)
+            {
+              CModelParameterSet * pNew = new CModelParameterSet(pModel->getModelParameterSet(), pModel, false);
+              pNew->setObjectName(TO_UTF8(Name));
+              Sets.add(pNew, true);
+
+              // Notify the GUI of the insert
+              protectedNotify(ListViews::MODELPARAMETERSET, ListViews::ADD, pNew->getKey());
+            }
+          else
+            {
+              CModelParameterSet * pExisting = Sets[TO_UTF8(Name)];
+              pExisting->assignSetContent(pModel->getModelParameterSet(), false);
+
+              // Notify the GUI of the insert
+              protectedNotify(ListViews::MODELPARAMETERSET, ListViews::CHANGE, pExisting->getKey());
+            }
+        }
+    }
+
+  mpParameterSet->updateModel();
+
+  // Notify the GUI that the model state has changed.
+  protectedNotify(ListViews::STATE, ListViews::CHANGE, pModel->getKey());
+
+  enterProtected();
+}
+
+void CQParameterOverviewWidget::slotBtnCopy()
+{
+  QMessageBox::warning(this, "Warning", "Not Implemented");
 }
 
 // virtual
@@ -188,13 +394,136 @@ void CQParameterOverviewWidget::slotBtnSaveToFile()
       separator = "\t";
     }
 
-  mpParameterSet->saveToStream(file, mode, separator);
+  mpParameterSet->saveToStream(file, static_cast< CModelParameter::Framework >(mFramework), mode, separator);
 
   file.close();
 }
 
 // virtual
-void CQParameterOverviewWidget::dataChanged(const QModelIndex& /* topLeft */,
-    const QModelIndex& /* bottomRight */)
+void CQParameterOverviewWidget::slotBtnSaveAs()
 {
+  // commit all changes
+  slotBtnCommit();
+
+  if (mpParameterSet == NULL)
+    {
+      return;
+    }
+
+  CModel * pModel = mpParameterSet->getModel();
+
+  if (pModel == NULL)
+    {
+      return;
+    }
+
+  // Save the parameter set to a new or existing set
+  CQNameSelectionDialog Dialog(this);
+
+  CCopasiVectorN< CModelParameterSet > & Sets = pModel->getModelParameterSets();
+
+  CCopasiVectorN< CModelParameterSet >::const_iterator it = Sets.begin();
+  CCopasiVectorN< CModelParameterSet >::const_iterator end = Sets.end();
+  QStringList SelectionList;
+
+  for (; it != end; ++it)
+    {
+      SelectionList.append(FROM_UTF8((*it)->getName()));
+    }
+
+  Dialog.setSelectionList(SelectionList);
+
+  if (Dialog.exec() == QDialog::Rejected)
+    {
+      return;
+    }
+
+  QString Name = Dialog.getSelection();
+
+  if (Name == "")
+    {
+      return;
+    }
+
+  if (SelectionList.indexOf(Name) == -1)
+    {
+      CModelParameterSet * pNew = new CModelParameterSet(*mpParameterSet, pModel, false);
+      pNew->setObjectName(TO_UTF8(Name));
+      Sets.add(pNew, true);
+
+      // Notify the GUI of the insert
+      protectedNotify(ListViews::MODELPARAMETERSET, ListViews::ADD, pNew->getKey());
+    }
+  else
+    {
+      CModelParameterSet * pExisting = Sets[TO_UTF8(Name)];
+      pExisting->assignSetContent(*mpParameterSet, false);
+
+      // Notify the GUI of the insert
+      protectedNotify(ListViews::MODELPARAMETERSET, ListViews::CHANGE, pExisting->getKey());
+    }
+
+  return;
+}
+
+void CQParameterOverviewWidget::slotOpenEditor(const QModelIndex & index)
+{
+  QModelIndex Tmp = index;
+  const QAbstractItemModel *pModel = Tmp.model();
+
+  while (pModel->inherits("QSortFilterProxyModel"))
+    {
+      Tmp = static_cast< const QSortFilterProxyModel *>(pModel)->mapToSource(index);
+      pModel = Tmp.model();
+    }
+
+  mpTreeView->openPersistentEditor(mpParameterSetSortDM->mapFromSource(Tmp));
+}
+
+void CQParameterOverviewWidget::slotCloseEditor(const QModelIndex & index)
+{
+  QModelIndex Tmp = index;
+  const QAbstractItemModel *pModel = Tmp.model();
+
+  while (pModel->inherits("QSortFilterProxyModel"))
+    {
+      Tmp = static_cast< const QSortFilterProxyModel *>(pModel)->mapToSource(index);
+      pModel = Tmp.model();
+    }
+
+  mpTreeView->closePersistentEditor(Tmp);
+}
+
+void CQParameterOverviewWidget::slotResolve(const QModelIndex & index)
+{
+  CModelParameter * pModelParameter = mpParameterSetDM->nodeFromIndex(index);
+
+  if (pModelParameter == NULL)
+    {
+      return;
+    }
+
+  // We update the node with the model data.
+  switch (pModelParameter->getCompareResult())
+    {
+      case CModelParameter::Obsolete:
+        // We need to delete the parameter. If it is a reaction parameter we need to
+        // make sure that it is deleted to if it is the only remaining one.
+        break;
+
+      case CModelParameter::Missing:
+        // Add the missing parameter. Create missing parents.
+        break;
+
+      case CModelParameter::Conflict:
+        // Update the parameter to have the same type and value.
+        break;
+
+      case CModelParameter::Modified:
+        // Update the parameter to have the same value.
+        break;
+
+      default:
+        break;
+    }
 }

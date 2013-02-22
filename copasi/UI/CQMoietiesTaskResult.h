@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/UI/CQMoietiesTaskResult.h,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/07/16 15:47:26 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -52,7 +44,7 @@ private:
 
 private slots:
   void slotSave(void);
-  void slotCreateGlobalQuantity(int row);
+  void slotCreateGlobalQuantity(const QModelIndex & index);
 };
 
 #endif // CQMOIETIESTASKRESULT_H

@@ -96,6 +96,11 @@ void CQEventWidget1::slotBtnNew()
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
+void CQEventWidget1::slotBtnCopy()
+{
+  QMessageBox::warning(this, "Warning", "Not Implemented");
+}
+
 /*! */
 void CQEventWidget1::init()
 {

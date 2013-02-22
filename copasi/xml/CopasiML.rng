@@ -698,6 +698,12 @@
           <attribute name="cn">
             <data type="string"/>
           </attribute>
+          <attribute name="type">
+            <choice>
+              <value type="string">Reaction</value>
+              <value type="string">Group</value>
+            </choice>
+          </attribute>
           <ref name="modelParameterGroup.datatype"/>
         </element>
         <element name="ModelParameter">

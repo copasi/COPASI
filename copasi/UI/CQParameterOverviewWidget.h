@@ -34,9 +34,14 @@ protected:
 protected slots:
   virtual void slotBtnRevert();
   virtual void slotBtnCommit();
+  virtual void slotBtnNew();
+  virtual void slotBtnCopy();
+  virtual void slotBtnDelete();
   virtual void slotBtnSaveToFile();
-  virtual void dataChanged(const QModelIndex& topLeft,
-                           const QModelIndex& bottomRight);
+  virtual void slotBtnSaveAs();
+  void slotOpenEditor(const QModelIndex & index);
+  void slotCloseEditor(const QModelIndex & index);
+  void slotResolve(const QModelIndex & index);
 
 private:
   CModelParameterSet * mpParameterSet;
@@ -46,6 +51,8 @@ private:
   CQParameterOverviewDM * mpParameterSetDM;
 
   QSortFilterProxyModel * mpParameterSetSortDM;
+
+  QStringList mGlobalQuantities;
 };
 
 #endif // COPASI_CQParameterOverviewWidget

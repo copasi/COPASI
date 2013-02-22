@@ -50,6 +50,7 @@
 #include "CQSpeciesDetail.h"
 #include "CQGlobalQuantitiesWidget.h"
 #include "CQModelValue.h"
+#include "CQParameterSetsWidget.h"
 #include "CQEFMWidget.h"
 #include "CQEFMResultWidget.h"
 #include "CQMoietiesTaskResult.h"
@@ -128,7 +129,8 @@ const std::string ListViews::ObjectTypeName[] =
   "Event", // EVENT
   "Annotation", //  MIRIAM
   "Layout", // LAYOUT
-  "Parameter Set" // PARAMETERSET
+  "Parameter Overview", // PARAMETEROVERVIEW
+  "Parameter Set", // MODELPARAMETERSET
   ""
 };
 
@@ -184,6 +186,8 @@ ListViews::ListViews(QWidget *parent, const char *name):
   mpFittingResultWidget(NULL),
   parametersWidget(NULL),
   mpParameterOverviewWidget(NULL),
+  mpParameterSetsWidget(NULL),
+  mpParameterSetWidget(NULL),
   mpPlotsWidget(NULL),
   mpPlotSubwidget(NULL),
   mpReactionsWidget(NULL),
@@ -384,6 +388,16 @@ void ListViews::ConstructNodeWidgets()
 
   mpParameterOverviewWidget->hide();
 
+  if (!mpParameterSetsWidget)
+    mpParameterSetsWidget = new CQParameterSetsWidget(this);
+
+  mpParameterSetsWidget->hide();
+
+  if (!mpParameterSetWidget)
+    mpParameterSetWidget = new CQTabWidget(ListViews::MODELPARAMETERSET, new CQParameterOverviewWidget(this), this);
+
+  mpParameterSetWidget->hide();
+
   if (!mpCMCAResultWidget) mpCMCAResultWidget = new CMCAResultWidget(this);
 
   mpCMCAResultWidget->hide();
@@ -561,6 +575,10 @@ CopasiWidget* ListViews::findWidgetFromIndex(const QModelIndex & index) const
         return eventWidget1;
         break;
 
+      case 119:
+        return mpParameterSetWidget;
+        break;
+
       case 43:
         return tableDefinition1;
         break;
@@ -620,6 +638,11 @@ CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
       case 118:
         return mpParameterOverviewWidget;
         break;
+
+      case 119:
+        return mpParameterSetsWidget;
+        break;
+
         //case 122:
         //  return functionSymbols;
         //  break;

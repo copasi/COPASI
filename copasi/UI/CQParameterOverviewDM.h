@@ -44,10 +44,14 @@ public:
 
   void setFramework(const int & framework);
 
+  static CModelParameter * nodeFromIndex(const QModelIndex & index);
+
+signals:
+  void signalOpenEditor(const QModelIndex &) const;
+  void signalCloseEditor(const QModelIndex &) const;
+
 private:
   QModelIndex index(CModelParameter * pNode) const;
-
-  static CModelParameter * nodeFromIndex(const QModelIndex & index);
 
   static int getRow(const CModelParameter * pNode);
 

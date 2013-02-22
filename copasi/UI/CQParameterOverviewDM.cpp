@@ -14,6 +14,7 @@
 #include "qtUtilities.h"
 
 #include "model/CModelParameterSet.h"
+#include "resourcesUI/CQIconResource.h"
 
 #define COL_NAME       0
 #define COL_DIFF       1
@@ -95,11 +96,37 @@ Qt::ItemFlags CQParameterOverviewDM::flags(const QModelIndex &index) const
       return QAbstractItemModel::flags(index)  | Qt::ItemIsEditable | Qt::ItemIsEnabled;
     }
 
+  if (index.column() == COL_DIFF)
+    {
+      if (pNode->getCompareResult() != CModelParameter::Identical &&
+          pNode->getType() != CModelParameter::Group &&
+          pNode->getType() != CModelParameter::Set)
+        {
+          emit signalOpenEditor(index);
+
+          return QAbstractItemModel::flags(index)  | Qt::ItemIsEditable | Qt::ItemIsEnabled;
+        }
+
+      emit signalCloseEditor(index);
+    }
+
+  if (index.column() == COL_ASSIGNMENT)
+    {
+      if (pNode->getType() == CModelParameter::ReactionParameter)
+        {
+          emit signalOpenEditor(index);
+
+          return QAbstractItemModel::flags(index)  | Qt::ItemIsEditable | Qt::ItemIsEnabled;
+        }
+
+      emit signalCloseEditor(index);
+    }
+
   return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable;
 }
 
 // virtual
-QVariant CQParameterOverviewDM::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant CQParameterOverviewDM::headerData(int section, Qt::Orientation /* orientation */, int role) const
 {
   if (role != Qt::DisplayRole)
     return QVariant();
@@ -185,6 +212,7 @@ int CQParameterOverviewDM::rowCount(const QModelIndex & parent) const
 
   switch (pParent->getType())
     {
+      case CModelParameter::Reaction:
       case CModelParameter::Group:
       case CModelParameter::Set:
         return (int) static_cast< CModelParameterGroup * >(pParent) ->size();
@@ -198,18 +226,41 @@ int CQParameterOverviewDM::rowCount(const QModelIndex & parent) const
 }
 
 // virtual
-bool CQParameterOverviewDM::setData(const QModelIndex &index, const QVariant &value, int role)
+bool CQParameterOverviewDM::setData(const QModelIndex &_index, const QVariant &value, int role)
 {
-  CModelParameter * pNode = nodeFromIndex(index);
+  CModelParameter * pNode = nodeFromIndex(_index);
+  bool success = false;
 
   if (pNode != NULL &&
-      index.column() == COL_VALUE &&
       role == Qt::EditRole)
     {
-      pNode->setValue(value.toDouble(), static_cast< CModelParameter::Framework >(mFramework));
+      switch (_index.column())
+        {
+          case COL_VALUE:
+            pNode->setValue(value.toDouble(), static_cast< CModelParameter::Framework >(mFramework));
+            success = true;
+            break;
+
+          case COL_ASSIGNMENT:
+          {
+            CModelParameter * pGlobalQuantity = pNode->getSet()->getModelParameter(TO_UTF8(value.toString()), CModelParameter::ModelValue);
+
+            if (pGlobalQuantity != NULL)
+              {
+                static_cast< CModelParameterReactionParameter * >(pNode)->setGlobalQuantityCN(pGlobalQuantity->getCN());
+              }
+            else
+              {
+                static_cast< CModelParameterReactionParameter * >(pNode)->setGlobalQuantityCN("");
+              }
+          }
+
+          success = true;
+          break;
+        }
     }
 
-  return false;
+  return success;
 }
 
 void CQParameterOverviewDM::setModelParameterset(CModelParameterSet * pModelParameterSet)
@@ -310,6 +361,72 @@ QVariant CQParameterOverviewDM::nameData(const CModelParameter * pNode, int role
 // static
 QVariant CQParameterOverviewDM::diffData(const CModelParameter * pNode, int role)
 {
+  if (pNode->getType() == CModelParameter::Group ||
+      pNode->getType() == CModelParameter::Set)
+    {
+      return QVariant();
+    }
+
+  switch (role)
+    {
+      case Qt::DecorationRole:
+        switch (pNode->getCompareResult())
+          {
+            case CModelParameter::Obsolete:
+              return QVariant(CQIconResource::icon(CQIconResource::parameterObsolete));
+              break;
+
+            case CModelParameter::Missing:
+              return QVariant(CQIconResource::icon(CQIconResource::parameterMissing));
+              break;
+
+            case CModelParameter::Modified:
+              return QVariant(CQIconResource::icon(CQIconResource::parameterModified));
+              break;
+
+            case CModelParameter::Conflict:
+              return QVariant(CQIconResource::icon(CQIconResource::parameterConflict));
+              break;
+
+            case CModelParameter::Identical:
+              return QVariant();
+              break;
+          }
+
+        break;
+
+      case Qt::ToolTipRole:
+        switch (pNode->getCompareResult())
+          {
+            case CModelParameter::Obsolete:
+              return QVariant(QString("The item is no longer present in the model."));
+              break;
+
+            case CModelParameter::Missing:
+              return QVariant(QString("The item is present in the model but is missing in the parameter set."));
+              break;
+
+            case CModelParameter::Modified:
+              return QVariant(QString("The item's value differs from the current model."));
+              break;
+
+            case CModelParameter::Conflict:
+              return QVariant(QString("The item's value cannot be assigned to the model object since the\n"
+                                      "object is determined by an assignment."));
+              break;
+
+            case CModelParameter::Identical:
+              return QVariant(QString("The item's value is identical with the current model."));
+              break;
+          }
+
+        break;
+
+      case Qt::SizeHintRole:
+        return QVariant(QSize(20, 20));
+        break;
+    }
+
   return QVariant();
 }
 
@@ -318,6 +435,7 @@ QVariant CQParameterOverviewDM::typeData(const CModelParameter * pNode, int role
 {
   switch (pNode->getType())
     {
+      case CModelParameter::Reaction:
       case CModelParameter::Group:
       case CModelParameter::Set:
         break;
@@ -339,6 +457,7 @@ QVariant CQParameterOverviewDM::valueData(const CModelParameter * pNode, int rol
 {
   switch (pNode->getType())
     {
+      case CModelParameter::Reaction:
       case CModelParameter::Group:
       case CModelParameter::Set:
         break;
@@ -378,7 +497,7 @@ QVariant CQParameterOverviewDM::assignmentData(const CModelParameter * pNode, in
 
           if (pGlobalQuantity != NULL)
             {
-              return QVariant(QString("<- " + FROM_UTF8(pGlobalQuantity->getName())));
+              return QVariant(QString(FROM_UTF8(pGlobalQuantity->getName())));
             }
 
           return QVariant(QString(FROM_UTF8(GlobalQuantityCN)));

@@ -341,6 +341,11 @@ void ReactionsWidget1::slotBtnNew()
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
+void ReactionsWidget1::slotBtnCopy()
+{
+  QMessageBox::warning(this, "Warning", "Not Implemented");
+}
+
 // Just added 5/18/04
 void ReactionsWidget1::slotBtnDelete()
 {

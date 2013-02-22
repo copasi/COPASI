@@ -48,6 +48,10 @@ void CQIconResource::init()
   Icons[miriam].addFile(QString::fromUtf8(":/images/miriam.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[moveDown].addFile(QString::fromUtf8(":/images/moveDown.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[moveUp].addFile(QString::fromUtf8(":/images/moveUp.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[parameterConflict].addFile(QString::fromUtf8(":/images/parameterConflict.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[parameterMissing].addFile(QString::fromUtf8(":/images/parameterMissing.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[parameterModified].addFile(QString::fromUtf8(":/images/parameterModified.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[parameterObsolete].addFile(QString::fromUtf8(":/images/parameterObsolete.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[playerKill].addFile(QString::fromUtf8(":/images/playerKill.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[playerPause].addFile(QString::fromUtf8(":/images/playerPause.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[playerStart].addFile(QString::fromUtf8(":/images/playerStart.png"), QSize(), QIcon::Normal, QIcon::On);

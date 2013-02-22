@@ -68,6 +68,7 @@ QVariant CQBrowserPaneDM::data(const QModelIndex & index, int role) const
             case 114:
             case 115:
             case 116:
+            case 119:
               return QVariant(pNode->getDisplayRole() + " (" + QString::number(pNode->getNumChildren()) + ")");
               break;
 
@@ -312,10 +313,12 @@ void CQBrowserPaneDM::load()
   load(115); // Global Quantities
   load(116); // Events
 
-  findNodeFromId(117)->setKey(mpCopasiDM->getModel()->getKey()); // Parameter Overview
-
 #ifdef COPASI_PARAMETER_SETS
   findNodeFromId(118)->setKey(mpCopasiDM->getModel()->getModelParameterSet().getKey()); // Parameter Set
+  findNodeFromId(119)->setKey(mpCopasiDM->getModel()->getKey());
+  load(119); // Model Parameter Sets
+#else
+  findNodeFromId(117)->setKey(mpCopasiDM->getModel()->getKey()); // Parameter Overview
 #endif // COPASI_PARAMETER_SETS
 
   findNodeFromId(21)->setKey((*mpCopasiDM->getTaskList())["Steady-State"]->getKey());
@@ -535,7 +538,7 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
             case ListViews::REPORT:
             case ListViews::FUNCTION:
             case ListViews::LAYOUT:
-            case ListViews::PARAMETERSET:
+            case ListViews::MODELPARAMETERSET:
               rename(key, DisplayRole);
               break;
 
@@ -559,7 +562,7 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
             case ListViews::REPORT:
             case ListViews::FUNCTION:
             case ListViews::LAYOUT:
-            case ListViews::PARAMETERSET:
+            case ListViews::MODELPARAMETERSET:
               remove(key);
               break;
 
@@ -595,6 +598,10 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
 
             case ListViews::EVENT:
               add(C_INVALID_INDEX, key, DisplayRole, 116);
+              break;
+
+            case ListViews::MODELPARAMETERSET:
+              add(C_INVALID_INDEX, key, DisplayRole, 119);
               break;
 
             case ListViews::PLOT:
@@ -728,6 +735,9 @@ void CQBrowserPaneDM::clear()
   findNodeFromId(114)->deleteChildren(); // Reactions
   findNodeFromId(115)->deleteChildren(); // Global Quantities
   findNodeFromId(116)->deleteChildren(); // Events
+#ifdef COPASI_PARAMETER_SETS
+  findNodeFromId(119)->deleteChildren(); // Model Parameter Sets
+#endif // COPASI_PARAMETER_SETS
   findNodeFromId(42)->deleteChildren(); // Plot Specifications
   findNodeFromId(43)->deleteChildren(); // Report Specifications
   findNodeFromId(5)->deleteChildren(); // Functions

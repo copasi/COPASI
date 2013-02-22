@@ -51,6 +51,7 @@ class CQMoietiesTaskResult;
 class CQMoietiesTaskWidget;
 class ParametersWidget;
 class CQParameterOverviewWidget;
+class CQParameterSetsWidget;
 class ReactionsWidget1;
 class CQReactionsWidget;
 class SteadyStateWidget;
@@ -134,7 +135,8 @@ public:
                    , EVENT
                    , MIRIAM
                    , LAYOUT
-                   , PARAMETERSET
+                   , PARAMETEROVERVIEW
+                   , MODELPARAMETERSET
                   };
 
   void setDataModel(DataModelGUI* pDM);
@@ -227,6 +229,8 @@ private:
   CQFittingResult *mpFittingResultWidget;
   ParametersWidget *parametersWidget;
   CQParameterOverviewWidget * mpParameterOverviewWidget;
+  CQParameterSetsWidget * mpParameterSetsWidget;
+  CQTabWidget * mpParameterSetWidget;
   CQPlotsWidget *mpPlotsWidget;
   PlotWindowType *mpPlotSubwidget;
   CQReactionsWidget *mpReactionsWidget;

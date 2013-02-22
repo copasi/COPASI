@@ -63,11 +63,13 @@ HEADERS	+= \
   CQModelWidget.h \
   CQMoietiesTaskWidget.h \
   CQMoietiesTaskResult.h \
+  CQNameSelectionDialog.h \
   CQNotes.h \
   CQOptimizationWidget.h \
   CQOptimizationResult.h \
   CQOscillationTaskWidget.h \
   CQParameterOverviewWidget.h \
+  CQParameterSetsWidget.h \
   CQPlotsWidget.h \
   CQPreferenceDialog.h \
   CQProgressDialog.h \
@@ -138,6 +140,7 @@ HEADERS	+= \
   CQMessageBox.h \
   CQMmlScrollView.h \
   CQParameterOverviewDM.h \
+  CQParameterSetsDM.h \
   CQPlotDM.h \
   CQPushButtonDelegate.h \
   CQReactionDM.h \
@@ -211,11 +214,13 @@ SOURCES	+= \
   CQModelWidget.cpp \
   CQMoietiesTaskWidget.cpp \
   CQMoietiesTaskResult.cpp \
+  CQNameSelectionDialog.cpp \
   CQNotes.cpp \
   CQOptimizationWidget.cpp \
   CQOptimizationResult.cpp \
   CQOscillationTaskWidget.cpp \
   CQParameterOverviewWidget.cpp \
+  CQParameterSetsWidget.cpp \
   CQPlotsWidget.cpp \
   CQPreferenceDialog.cpp \
   CQProgressDialog.cpp \
@@ -288,6 +293,7 @@ SOURCES	+= \
   CQMessageBox.cpp \
   CQMmlScrollView.cpp \
   CQParameterOverviewDM.cpp \
+  CQParameterSetsDM.cpp \
   CQPlotDM.cpp \
   CQPushButtonDelegate.cpp \
   CQReactionDM.cpp \
@@ -354,11 +360,13 @@ FORMS += CQModelValue.ui
 FORMS += CQModelWidget.ui
 FORMS += CQMoietiesTaskWidget.ui
 FORMS += CQMoietiesTaskResult.ui
+FORMS += CQNameSelectionDialog.ui
 FORMS += CQNotes.ui
 FORMS += CQOptimizationWidget.ui
 FORMS += CQOptimizationResult.ui
 FORMS += CQOscillationTaskWidget.ui
 FORMS += CQParameterOverviewWidget.ui
+FORMS += CQParameterSetsWidget.ui
 FORMS += CQPlotsWidget.ui
 FORMS += CQPreferenceDialog.ui
 FORMS += CQProgressDialog.ui

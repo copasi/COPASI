@@ -30,6 +30,7 @@ public:
     Species,
     ModelValue,
     ReactionParameter,
+    Reaction,
     Group,
     Set,
     unknown
@@ -42,6 +43,7 @@ public:
     Obsolete,
     Missing,
     Modified,
+    Conflict,
     Identical
   };
 
@@ -99,7 +101,7 @@ public:
    * @param const Framework & framework (default: ParticleNumbers)
    * @return const std::string unit
    */
-  const std::string getUnit(const Framework & framework = ParticleNumbers) const;
+  const std::string getUnit(const Framework & framework) const;
 
   /**
    * Set the CN of the object represented by the parameter
@@ -131,16 +133,16 @@ public:
   /**
    * Set the value of the parameter based on the current framework
    * @param const double & value
-   * @param const Framework & framework (default: ParticleNumbers)
+   * @param const Framework & framework
    */
-  virtual void setValue(const double & value, const Framework& framework = ParticleNumbers);
+  virtual void setValue(const double & value, const Framework& framework);
 
   /**
    * Retrieve the value of the parameter based on the current framework
-   * @param const Framework & framework (default: ParticleNumbers)
+   * @param const Framework & framework
    * @return const double & value
    */
-  const virtual double& getValue(const Framework & framework = ParticleNumbers) const;
+  const virtual double& getValue(const Framework & framework) const;
 #endif
 
   /**
@@ -218,8 +220,12 @@ public:
   /**
    * Compare the parameter to an other
    * @param const CModelParameter & other
+   * @param const CModelParameter::Framework & framework (default: ParticleNumbers)
+   * @param const bool & createMissing = false
    */
-  const virtual CompareResult & diff(const CModelParameter& other);
+  const virtual CompareResult & diff(const CModelParameter& other,
+                                     const CModelParameter::Framework & framework = ParticleNumbers,
+                                     const bool & createMissing = false);
 #endif
 
   /**
@@ -316,9 +322,9 @@ public:
   /**
    * Set the value of the parameter based on the current framework
    * @param const double & value
-   * @param const Framework & framework (default: ParticleNumbers)
+   * @param const Framework & framework
    */
-  virtual void setValue(const C_FLOAT64 & value, const Framework & framework = ParticleNumbers);
+  virtual void setValue(const C_FLOAT64 & value, const Framework & framework);
 
   /**
    * Add a pointer to a species parameter to the compartment
@@ -378,16 +384,16 @@ public:
   /**
    * Set the value of the parameter based on the current framework
    * @param const double & value
-   * @param const Framework & framework (default: ParticleNumbers)
+   * @param const Framework & framework
    */
-  virtual void setValue(const C_FLOAT64 & value, const Framework & framework = ParticleNumbers);
+  virtual void setValue(const C_FLOAT64 & value, const Framework & framework);
 
   /**
    * Retrieve the value of the parameter based on the current framework
-   * @param const Framework & framework (default: ParticleNumbers)
+   * @param const Framework & framework
    * @return const double & value
    */
-  virtual const C_FLOAT64 & getValue(const Framework & framework = ParticleNumbers) const;
+  virtual const C_FLOAT64 & getValue(const Framework & framework) const;
 
 private:
   /**
@@ -440,6 +446,13 @@ public:
    * @return const CReaction * reaction
    */
   const CReaction * getReaction() const;
+
+  /**
+   * Set the CN of the assigned global quantity. If the CN is empty
+   * the assignment is removed.
+   * @param const std::string & globalQuantityCN
+   */
+  void setGlobalQuantityCN(const std::string & globalQuantityCN);
 
   /**
    * Retrieve the CN of the assigned global quantity

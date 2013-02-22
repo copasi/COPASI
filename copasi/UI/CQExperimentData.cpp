@@ -791,7 +791,7 @@ void CQExperimentData::init()
   CQPushButtonDelegate * pButtonDelegate = new CQPushButtonDelegate(CQIconResource::icon(CQIconResource::copasi), QString(),
       CQPushButtonDelegate::ToolButton, this);
   mpTable->setItemDelegateForColumn(COL_BTN, pButtonDelegate);
-  connect(pButtonDelegate, SIGNAL(clicked(int)), this, SLOT(slotModelObject(int)));
+  connect(pButtonDelegate, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotModelObject(const QModelIndex &)));
 
   const std::string * pWeightMethod = CExperiment::WeightMethodName;
 
@@ -1082,7 +1082,12 @@ void CQExperimentData::syncExperiments()
 void CQExperimentData::slotUpdateTable()
 {loadTable(mpExperiment, true);}
 
-void CQExperimentData::slotModelObject(int row)
+void CQExperimentData::slotModelObject(const QModelIndex & index)
+{
+  selectModelObject(index.row());
+}
+
+void CQExperimentData::selectModelObject(const int & row)
 {
   CQSimpleSelectionTree::ObjectClasses Classes;
   CExperiment::Type Type = static_cast< CExperiment::Type >(mpTable->item(row, COL_TYPE_HIDDEN)->data(Qt::DisplayRole).asInt());
@@ -1111,7 +1116,7 @@ void CQExperimentData::slotModelObjectDelayed()
 {
   if (mModelObjectRow != -1)
     {
-      slotModelObject(mModelObjectRow);
+      selectModelObject(mModelObjectRow);
     }
 
   mModelObjectRow = -1;

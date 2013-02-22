@@ -74,7 +74,7 @@ CQLayoutsWidget::CQLayoutsWidget(QWidget* parent)
           this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
-  connect(mpPushButtonDelegate, SIGNAL(clicked(int)), this, SLOT(slotShowLayout(int)));
+  connect(mpPushButtonDelegate, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotShowLayout(const QModelIndex &)));
 }
 
 // virtual
@@ -326,7 +326,7 @@ void CQLayoutsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
 
   if (row >= mpLayoutsDM->rowCount() || row < 0) return;
 
-  slotShowLayout(row);
+  slotShowLayout(index);
 }
 
 // virtual
@@ -368,8 +368,10 @@ CQLayoutsWidget::LayoutWindow * CQLayoutsWidget::createLayoutWindow(int row, CLa
   return pWin;
 }
 
-void CQLayoutsWidget::slotShowLayout(int row)
+void CQLayoutsWidget::slotShowLayout(const QModelIndex & index)
 {
+  int row = index.row();
+
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CListOfLayouts* pListOfLayouts = (*CCopasiRootContainer::getDatamodelList())[0]->getListOfLayouts();
 

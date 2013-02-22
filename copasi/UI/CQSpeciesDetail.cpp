@@ -492,6 +492,11 @@ void CQSpeciesDetail::slotBtnDelete()
     }
 }
 
+void CQSpeciesDetail::slotBtnCopy()
+{
+  QMessageBox::warning(this, "Warning", "Not Implemented");
+}
+
 void CQSpeciesDetail::slotBtnNew()
 {
   save();

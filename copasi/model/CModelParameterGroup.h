@@ -32,8 +32,11 @@ public:
    * Copy constructor
    * @param const CModelParameterGroup & src
    * @param CModelParameterGroup * pParent
+   * @param const bool & createMissing
    */
-  CModelParameterGroup(const CModelParameterGroup & src, CModelParameterGroup * pParent);
+  CModelParameterGroup(const CModelParameterGroup & src,
+                       CModelParameterGroup * pParent,
+                       const bool & createMissing);
 
   /**
    * Destructor
@@ -107,11 +110,17 @@ public:
    */
   void clear();
 
+#ifndef SWIG
   /**
    * Compare the parameter to an other
    * @param const CModelParameter & other
+   * @param const CModelParameter::Framework & framework
+   * @param const bool & createMissing = false
    */
-  virtual const CompareResult & diff(const CModelParameter & other);
+  const virtual CompareResult & diff(const CModelParameter& other,
+                                     const CModelParameter::Framework & framework,
+                                     const bool & createMissing = false);
+#endif //SWIG
 
   /**
    * Update the corresponding model object with the current parameter settings
@@ -130,6 +139,15 @@ public:
    */
   CModelParameter * getModelParameter(const std::string & cn) const;
 
+  /**
+   * Retrieve a pointer to the parameter with the given name and type
+   * @param const std::string & name
+   * @param const CModelParameter::Type & type
+   * @return CModelParameter * pModelParameter
+   */
+  CModelParameter * getModelParameter(const std::string & name,
+                                      const CModelParameter::Type & type) const;
+
   // These methods are only here so that we can use CNodeIterator to traverse the tree.
   virtual size_t getNumChildren() const;
   virtual const CModelParameter * getChild(const size_t & index) const;
@@ -139,8 +157,10 @@ protected:
    * Assign the content of the source group to this, i.e., copy all
    * contained parameters.
    * @param const CModelParameterGroup & src
+   * @param const bool & createMissing
    */
-  void assignGroupContent(const CModelParameterGroup & src);
+  void assignGroupContent(const CModelParameterGroup & src,
+                          const bool & createMissing);
 
 private:
   /**

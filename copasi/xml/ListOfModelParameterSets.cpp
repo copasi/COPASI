@@ -96,23 +96,6 @@ void CCopasiXMLParser::ListOfModelParameterSetsElement::end(const XML_Char *pszN
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "ListOfModelParameterSets", mParser.getCurrentLineNumber());
 
-        {
-          const CModelParameterSet * pModelParameterSet = dynamic_cast< CModelParameterSet * >(mCommon.KeyMap.get(mActiveSet));
-
-          if (pModelParameterSet != NULL)
-            {
-              size_t Size = CCopasiMessage::size();
-
-              mCommon.pModel->getModelParameterSet().assignSetContent(*pModelParameterSet);
-              delete pModelParameterSet;
-
-              // Remove error messages created by setExpression as this may fail
-              // due to incomplete model specification at this time.
-              while (CCopasiMessage::size() > Size)
-                CCopasiMessage::getLastMessage();
-            }
-        }
-
         mParser.popElementHandler();
         mCurrentElement = START_ELEMENT;
 
@@ -125,6 +108,24 @@ void CCopasiXMLParser::ListOfModelParameterSetsElement::end(const XML_Char *pszN
         if (strcmp(pszName, "ModelParameterSet"))
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "ModelParameterSet", mParser.getCurrentLineNumber());
+
+        {
+          const CModelParameterSet * pModelParameterSet = dynamic_cast< CModelParameterSet * >(mCommon.KeyMap.get(mActiveSet));
+
+          if (pModelParameterSet != NULL)
+            {
+              size_t Size = CCopasiMessage::size();
+
+              mCommon.pModel->getModelParameterSet().assignSetContent(*pModelParameterSet, false);
+              delete pModelParameterSet;
+              mActiveSet = "";
+
+              // Remove error messages created by setExpression as this may fail
+              // due to incomplete model specification at this time.
+              while (CCopasiMessage::size() > Size)
+                CCopasiMessage::getLastMessage();
+            }
+        }
 
         mCurrentElement = ListOfModelParameterSets;
         break;
@@ -186,9 +187,17 @@ void CCopasiXMLParser::ModelParameterSetElement::start(const XML_Char *pszName,
 
             {
               CModelParameterSet * pModelParameterSet = new CModelParameterSet(Name);
-              mCommon.pModel->getModelParameterSets().add(pModelParameterSet, true);
-              mCommon.ModelParameterGroupStack.push(pModelParameterSet);
+              int index = 1;
 
+              // We need to resolve naming conflicts.
+              while (!mCommon.pModel->getModelParameterSets().add(pModelParameterSet, true))
+                {
+                  std::ostringstream NewName;
+                  NewName << Name << "[" << index++ << "]";
+                  pModelParameterSet->setObjectName(NewName.str());
+                }
+
+              mCommon.ModelParameterGroupStack.push(pModelParameterSet);
               mCommon.KeyMap.addFix(mKey, pModelParameterSet);
             }
             return;
@@ -351,6 +360,8 @@ void CCopasiXMLParser::ModelParameterGroupElement::start(const XML_Char *pszName
     const XML_Char **papszAttrs)
 {
   const char * CN;
+  const char * pType;
+  CModelParameter::Type Type;
 
   mpCurrentHandler = NULL;
   mCurrentElement = mLastKnownElement;
@@ -371,9 +382,11 @@ void CCopasiXMLParser::ModelParameterGroupElement::start(const XML_Char *pszName
 
             // Element specific code.
             CN = mParser.getAttributeValue("cn", papszAttrs);
+            pType = mParser.getAttributeValue("type", papszAttrs);
+            Type = toEnum(pType, CModelParameter::TypeNames, CModelParameter::Group);
 
             {
-              CModelParameterGroup * pModelParameterGroup = new CModelParameterGroup(mCommon.ModelParameterGroupStack.top());
+              CModelParameterGroup * pModelParameterGroup = new CModelParameterGroup(mCommon.ModelParameterGroupStack.top(), Type);
               pModelParameterGroup->setCN(std::string(CN));
               mCommon.ModelParameterGroupStack.push(pModelParameterGroup);
             }
@@ -544,7 +557,7 @@ void CCopasiXMLParser::ModelParameterElement::start(const XML_Char *pszName,
             SimulationType = toEnum(pSimulationType, CModelEntity::XMLStatus, CModelEntity::FIXED);
             mCommon.pCurrentModelParameter->setSimulationType(SimulationType);
 
-            mCommon.pCurrentModelParameter->setValue(Value);
+            mCommon.pCurrentModelParameter->setValue(Value, CModelParameter::ParticleNumbers);
             return;
 
           case InitialExpression:
