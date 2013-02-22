@@ -1779,7 +1779,11 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
 
   if (dimensionality > 3)
     {
-      fatalError();
+      CCopasiMessage Message(CCopasiMessage::WARNING,
+                             "Reaction with id \"%s\" has dimensions of %d, this is not supported by COPASI. COPASI will assume that the compartment is three dimensional."
+                             , sbmlCompartment->getId().c_str(), dimensionality);
+      dimensionality = 3;
+      //fatalError();
     }
 
   std::string name = sbmlCompartment->getName();
@@ -3141,15 +3145,10 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
           // that we need to flatten the document
           sbmlDoc->getErrorLog()->clearLog();
 
-          // in case we use external model references these might be relative
-          // to the last opened file
-          std::string PWD;
-          COptions::getValue("PWD", PWD);
-
           ConversionProperties props;
           props.addOption("flatten comp");
           props.addOption("leavePorts", false);
-          props.addOption("basePath", PWD);
+          props.addOption("basePath", pDataModel->getReferenceDirectory());
 
           if (sbmlDoc->convert(props) != LIBSBML_OPERATION_SUCCESS)
             {

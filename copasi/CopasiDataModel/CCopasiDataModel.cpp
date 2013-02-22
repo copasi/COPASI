@@ -566,6 +566,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
   // Later this will be settable by the user in the preferences dialog
   importer.setImportCOPASIMIRIAM(true);
   importer.setImportHandler(pImportHandler);
+
   CModel* pModel = NULL;
 
   SBMLDocument * pSBMLDocument = NULL;
@@ -577,6 +578,10 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
 
   try
     {
+      // store the file name and reference dir, so the importer can use it
+      mData.mSBMLFileName = CDirEntry::normalize(FileName);
+      mData.mReferenceDir = CDirEntry::dirName(mData.mSBMLFileName);
+
       pModel = importer.readSBML(FileName, CCopasiRootContainer::getFunctionList(),
                                  pSBMLDocument, Copasi2SBMLMap, pLol, this);
     }
