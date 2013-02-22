@@ -4154,8 +4154,8 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
   this->exportEventAssignments(event, pSBMLEvent, dataModel);
 
   // check if the event has event assignments, if not, we have to delete
-  // the event and create an error message
-  if (pSBMLEvent->getNumEventAssignments() == 0)
+  // the event and create an error message (for SBML Levels < 3)
+  if (pSBMLEvent->getNumEventAssignments() == 0 && mpSBMLDocument->getLevel() < 3)
     {
       unsigned int i, iMax = this->mpSBMLDocument->getModel()->getNumEvents();
 
@@ -4171,14 +4171,16 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
 
       delete pSBMLEvent;
       this->mCOPASI2SBMLMap.erase(&event);
+      pSBMLEvent = NULL;
+
+      CCopasiMessage(CCopasiMessage::WARNING, "The event '%s' contained no event assignments, this is only supported for SBML Level 3 onwards. The event has not been exported.", event.getObjectDisplayName().c_str());
     }
 
   if (pSBMLEvent != NULL)
     {
       CSBMLExporter::setSBMLNotes(pSBMLEvent, &event);
+      CSBMLExporter::updateMIRIAMAnnotation(&event, pSBMLEvent, this->mMetaIdMap);
     }
-
-  CSBMLExporter::updateMIRIAMAnnotation(&event, pSBMLEvent, this->mMetaIdMap);
 }
 
 void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEvent, CCopasiDataModel& dataModel)
