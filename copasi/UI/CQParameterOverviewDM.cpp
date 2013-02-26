@@ -398,20 +398,24 @@ QVariant CQParameterOverviewDM::diffData(const CModelParameter * pNode, int role
         switch (pNode->getCompareResult())
           {
             case CModelParameter::Obsolete:
-              return QVariant(QString("The item is no longer present in the model."));
+              return QVariant(QString("The item is no longer present in the model. \n\n"
+                                      "Click to remove from the set."));
               break;
 
             case CModelParameter::Missing:
-              return QVariant(QString("The item is present in the model but is missing in the parameter set."));
+              return QVariant(QString("The item is present in the model but is missing in the parameter set. \n\n"
+                                      "Click to add to the set."));
               break;
 
             case CModelParameter::Modified:
-              return QVariant(QString("The item's value differs from the current model."));
+              return QVariant(QString("The item's value differs from the current model. \n\n"
+                                      "Click to update the sets value."));
               break;
 
             case CModelParameter::Conflict:
               return QVariant(QString("The item's value cannot be assigned to the model object since the\n"
-                                      "object is determined by an assignment."));
+                                      "object is determined by an assignment. \n\n"
+                                      "Click to resolve conflict."));
               break;
 
             case CModelParameter::Identical:

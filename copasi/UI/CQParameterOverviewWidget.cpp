@@ -199,6 +199,8 @@ bool CQParameterOverviewWidget::enterProtected()
       mpBtnWidget->hide();
     }
 
+  buildSelectionList();
+
   mpParameterSetDM->setModelParameterset(mpParameterSetCopy);
   pdelete(pOldParameterSet);
 
@@ -209,6 +211,11 @@ bool CQParameterOverviewWidget::enterProtected()
       mpTreeView->resizeColumnToContents(i);
     }
 
+  return true;
+}
+
+void CQParameterOverviewWidget::buildSelectionList()
+{
   // We build the selection for the global parameters for kinetic constants.
   const CModelParameterGroup *pGlobalQuantities =
     static_cast< CModelParameterGroup * >(mpParameterSetCopy->getModelParameter(CCopasiStaticString("Initial Global Quantities").getCN()));
@@ -216,6 +223,7 @@ bool CQParameterOverviewWidget::enterProtected()
   CModelParameterGroup::const_iterator it = pGlobalQuantities->begin();
   CModelParameterGroup::const_iterator end = pGlobalQuantities->end();
 
+  mGlobalQuantities.clear();
   mGlobalQuantities.append("");
 
   for (; it != end; ++it)
@@ -225,8 +233,6 @@ bool CQParameterOverviewWidget::enterProtected()
           mGlobalQuantities.append(FROM_UTF8((*it)->getName()));
         }
     }
-
-  return true;
 }
 
 // virtual
@@ -506,6 +512,9 @@ void CQParameterOverviewWidget::slotResolve(const QModelIndex & index)
   pModelParameter->refreshFromModel(true);
 
   mpParameterSetCopy->compareWithModel(static_cast< CModelParameter::Framework >(mFramework));
+
+  buildSelectionList();
+
   mpParameterSetDM->setFramework(mFramework);
 
   mpTreeView->expandAll();

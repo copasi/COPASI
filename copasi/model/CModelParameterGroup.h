@@ -163,6 +163,15 @@ protected:
   void assignGroupContent(const CModelParameterGroup & src,
                           const bool & createMissing);
 
+  /**
+   * Copy the existing parameter and add it to the group
+   * @param const CModelParameter & src
+   * @param const bool & createMissing
+   * @return CModelParameter * pCopy
+   */
+  CModelParameter * copy(const CModelParameter & src,
+                         const bool & createMissing);
+
 private:
   /**
    * A vector of pointer to the contained parameters.

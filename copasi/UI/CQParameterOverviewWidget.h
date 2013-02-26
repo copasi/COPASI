@@ -28,7 +28,7 @@ public:
 
 private:
   virtual bool enterProtected();
-
+  void buildSelectionList();
 protected:
 
 protected slots:

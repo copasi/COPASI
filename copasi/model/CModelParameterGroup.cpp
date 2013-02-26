@@ -33,54 +33,63 @@ void CModelParameterGroup::assignGroupContent(const CModelParameterGroup & src,
 {
   clear();
 
-  mModelParameters.resize(src.mModelParameters.size());
-
   const_iterator itSrc = src.begin();
   const_iterator endSrc = src.end();
-  iterator it = begin();
 
   for (; itSrc != endSrc; ++itSrc)
     {
       if (createMissing ||
           (*itSrc)->getCompareResult() != Missing)
         {
-          switch ((*itSrc)->getType())
-            {
-              case Compartment:
-                *it = new CModelParameterCompartment(*static_cast< CModelParameterCompartment *>(*itSrc), this);
-                break;
-
-              case Species:
-                *it = new CModelParameterSpecies(*static_cast< CModelParameterSpecies *>(*itSrc), this);
-                break;
-
-              case ReactionParameter:
-                *it = new CModelParameterReactionParameter(*static_cast< CModelParameterReactionParameter *>(*itSrc), this);
-                break;
-
-              case Model:
-              case ModelValue:
-                *it = new CModelParameter(**itSrc, this);
-                break;
-
-              case Reaction:
-              case Group:
-                *it = new CModelParameterGroup(*static_cast< CModelParameterGroup *>(*itSrc), this, createMissing);
-                break;
-
-              default:
-                break;
-            }
-
-          // We need to advance the insert point.
-          ++it;
+          copy(**itSrc, createMissing);
         }
     }
+}
 
-  if (it != mModelParameters.end())
+/**
+ * Copy the existing parameter and add it to the group
+ * @param const CModelParameter & src
+ * @return CModelParameter * pCopy
+ */
+CModelParameter * CModelParameterGroup::copy(const CModelParameter & src,
+    const bool & createMissing)
+{
+  CModelParameter * pCopy = NULL;
+
+  switch (src.getType())
     {
-      mModelParameters.erase(it, mModelParameters.end());
+      case Compartment:
+        pCopy = new CModelParameterCompartment(*static_cast< const  CModelParameterCompartment * >(&src), this);
+        break;
+
+      case Species:
+        pCopy = new CModelParameterSpecies(*static_cast< const CModelParameterSpecies * >(&src), this);
+        break;
+
+      case ReactionParameter:
+        pCopy = new CModelParameterReactionParameter(*static_cast< const  CModelParameterReactionParameter * >(&src), this);
+        break;
+
+      case Model:
+      case ModelValue:
+        pCopy = new CModelParameter(src, this);
+        break;
+
+      case Reaction:
+      case Group:
+        pCopy = new CModelParameterGroup(*static_cast< const  CModelParameterGroup * >(&src), this, createMissing);
+        break;
+
+      default:
+        break;
     }
+
+  if (pCopy)
+    {
+      mModelParameters.push_back(pCopy);
+    }
+
+  return pCopy;
 }
 
 CModelParameter * CModelParameterGroup::add(const CModelParameter::Type & type)
@@ -265,38 +274,12 @@ const CModelParameter::CompareResult & CModelParameterGroup::diff(const CModelPa
 
       for (; itMissing != endMissing; ++itMissing)
         {
-          CModelParameter * pMissing;
+          CModelParameter * pMissing = copy(*itMissing->second, createMissing);
 
-          switch (itMissing->second->getType())
+          if (pMissing != NULL)
             {
-              case Compartment:
-                pMissing = new CModelParameterCompartment(*static_cast< CModelParameterCompartment *>(itMissing->second), this);
-                break;
-
-              case Species:
-                pMissing = new CModelParameterSpecies(*static_cast< CModelParameterSpecies *>(itMissing->second), this);
-                break;
-
-              case ReactionParameter:
-                pMissing = new CModelParameterReactionParameter(*static_cast< CModelParameterReactionParameter *>(itMissing->second), this);
-                break;
-
-              case Model:
-              case ModelValue:
-                pMissing = new CModelParameter(*itMissing->second, this);
-                break;
-
-              case Reaction:
-              case Group:
-                pMissing = new CModelParameterGroup(*static_cast< CModelParameterGroup *>(itMissing->second), this, createMissing);
-                break;
-
-              default:
-                break;
+              pMissing->setCompareResult(Missing);
             }
-
-          pMissing->setCompareResult(Missing);
-          mModelParameters.push_back(pMissing);
 
           mCompareResult = Modified;
         }
