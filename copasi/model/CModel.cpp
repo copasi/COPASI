@@ -1058,7 +1058,7 @@ void CModel::applyActiveParameterSet()
 
 void CModel::refreshActiveParameterSet()
 {
-  mParameterSet.refreshFromModel();
+  mParameterSet.refreshFromModel(false);
 }
 
 CCopasiVectorN < CEvent > & CModel::getEvents()

@@ -235,8 +235,9 @@ public:
 
   /**
    * Refresh the parameter from the corresponding model object
+   * @param const bool & modifyExistence
    */
-  virtual bool refreshFromModel();
+  virtual bool refreshFromModel(const bool & modifyExistence);
 
   // These methods are only here so that we can use CNodeIterator to traverse the tree.
   virtual size_t getNumChildren() const;

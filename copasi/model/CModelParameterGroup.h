@@ -129,8 +129,9 @@ public:
 
   /**
    * Refresh the parameter from the corresponding model object
+   * @param const bool & modifyExistence
    */
-  virtual bool refreshFromModel();
+  virtual bool refreshFromModel(const bool & modifyExistence);
 
   /**
    * Retrieve a pointer to the parameter with the given CN

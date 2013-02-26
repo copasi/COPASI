@@ -275,8 +275,7 @@ void CQParameterOverviewDM::setModelParameterset(CModelParameterSet * pModelPara
 
 void CQParameterOverviewDM::setFramework(const int & framework)
 {
-  if (mpModelParameterSet != NULL
-      && mFramework != framework)
+  if (mpModelParameterSet != NULL)
     {
       beginResetModel();
       mFramework = framework;

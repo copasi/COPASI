@@ -15,6 +15,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "function/CExpression.h"
 #include "model/CModel.h"
+#include "report/CCopasiRootContainer.h"
 #include "report/CKeyFactory.h"
 #include "report/CCopasiObject.h"
 #include "utilities/CDimension.h"
@@ -420,6 +421,12 @@ const CModelParameter::CompareResult & CModelParameter::diff(const CModelParamet
     const CModelParameter::Framework & framework,
     const bool & /* createMissing */)
 {
+  if (mCompareResult == Missing ||
+      mCompareResult == Obsolete)
+    {
+      return mCompareResult;
+    }
+
   switch (mType)
     {
       case Compartment:
@@ -542,9 +549,30 @@ bool CModelParameter::updateModel()
 }
 
 // virtual
-bool CModelParameter::refreshFromModel()
+bool CModelParameter::refreshFromModel(const bool & modifyExistence)
 {
   bool success = true;
+
+  if (modifyExistence)
+    {
+      if (mCompareResult == CModelParameter::Obsolete)
+        {
+          delete this;
+
+          return true;
+        }
+
+      if (mCompareResult == CModelParameter::Missing)
+        {
+          mCompareResult = CModelParameter::Identical;
+        }
+
+      if (mType != ReactionParameter &&
+          mpObject != NULL)
+        {
+          mSimulationType = static_cast< CModelEntity * >(mpObject)->getStatus();
+        }
+    }
 
   if (mpObject != NULL)
     {
@@ -579,6 +607,29 @@ bool CModelParameter::refreshFromModel()
           {
             CCopasiParameter * pParameter = static_cast< CCopasiParameter * >(mpObject);
             mValue = * pParameter->getValue().pDOUBLE;
+
+            // We need to update the mapping
+            // Check whether this refers to a global quantity.
+            const CReaction * pReaction = static_cast< CModelParameterReactionParameter * >(this)->getReaction();
+
+            if (pReaction != NULL)
+              {
+                if (pReaction->isLocalParameter(getName()))
+                  {
+                    mSimulationType = CModelEntity::FIXED;
+                    static_cast< CModelParameterReactionParameter * >(this)->setGlobalQuantityCN("");
+                  }
+                else
+                  {
+                    mSimulationType = CModelEntity::ASSIGNMENT;
+                    const std::vector<std::string> ModelValue = pReaction->getParameterMapping(getName());
+
+                    assert(ModelValue.size() == 1);
+
+                    CModelValue * pModelValue = static_cast< CModelValue * >(CCopasiRootContainer::getKeyFactory()->get(ModelValue[0]));
+                    static_cast< CModelParameterReactionParameter * >(this)->setGlobalQuantityCN(pModelValue->getInitialValueReference()->getCN());
+                  }
+              }
 
             CCopasiObjectName GlobalQuantityCN = static_cast< CModelParameterReactionParameter * >(this)->getGlobalQuantityCN();
 

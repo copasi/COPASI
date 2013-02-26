@@ -503,27 +503,11 @@ void CQParameterOverviewWidget::slotResolve(const QModelIndex & index)
       return;
     }
 
-  // We update the node with the model data.
-  switch (pModelParameter->getCompareResult())
-    {
-      case CModelParameter::Obsolete:
-        // We need to delete the parameter. If it is a reaction parameter we need to
-        // make sure that it is deleted to if it is the only remaining one.
-        break;
+  pModelParameter->refreshFromModel(true);
 
-      case CModelParameter::Missing:
-        // Add the missing parameter. Create missing parents.
-        break;
+  mpParameterSetCopy->compareWithModel(static_cast< CModelParameter::Framework >(mFramework));
+  mpParameterSetDM->setFramework(mFramework);
 
-      case CModelParameter::Conflict:
-        // Update the parameter to have the same type and value.
-        break;
-
-      case CModelParameter::Modified:
-        // Update the parameter to have the same value.
-        break;
-
-      default:
-        break;
-    }
+  mpTreeView->expandAll();
+  mpTreeView->resizeColumnToContents(3);
 }

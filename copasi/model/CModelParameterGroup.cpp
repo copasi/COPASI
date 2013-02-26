@@ -210,12 +210,18 @@ const CModelParameter::CompareResult & CModelParameterGroup::diff(const CModelPa
     const CModelParameter::Framework & framework,
     const bool & createMissing)
 {
-  mCompareResult = Identical;
-
   // We can only work on reactions, groups or sets.
   assert(other.getType() == Reaction ||
          other.getType() == Group ||
          other.getType() == Set);
+
+  if (mCompareResult == Missing ||
+      mCompareResult == Obsolete)
+    {
+      return mCompareResult;
+    }
+
+  mCompareResult = Identical;
 
   const CModelParameterGroup * pOther = dynamic_cast< const CModelParameterGroup * >(&other);
 
@@ -261,20 +267,52 @@ const CModelParameter::CompareResult & CModelParameterGroup::diff(const CModelPa
         {
           CModelParameter * pMissing;
 
-          if (itMissing->second->getType() == Reaction ||
-              itMissing->second->getType() == Group)
+          switch (itMissing->second->getType())
             {
-              pMissing = new CModelParameterGroup(*static_cast< CModelParameterGroup *>(itMissing->second), this, createMissing);
-            }
-          else
-            {
-              pMissing = new CModelParameter(*itMissing->second, this);
+              case Compartment:
+                pMissing = new CModelParameterCompartment(*static_cast< CModelParameterCompartment *>(itMissing->second), this);
+                break;
+
+              case Species:
+                pMissing = new CModelParameterSpecies(*static_cast< CModelParameterSpecies *>(itMissing->second), this);
+                break;
+
+              case ReactionParameter:
+                pMissing = new CModelParameterReactionParameter(*static_cast< CModelParameterReactionParameter *>(itMissing->second), this);
+                break;
+
+              case Model:
+              case ModelValue:
+                pMissing = new CModelParameter(*itMissing->second, this);
+                break;
+
+              case Reaction:
+              case Group:
+                pMissing = new CModelParameterGroup(*static_cast< CModelParameterGroup *>(itMissing->second), this, createMissing);
+                break;
+
+              default:
+                break;
             }
 
           pMissing->setCompareResult(Missing);
           mModelParameters.push_back(pMissing);
 
           mCompareResult = Modified;
+        }
+    }
+  else if (Map.size() > 0)
+    {
+      std::map< CCopasiObjectName, CModelParameter * >::const_iterator itMissing = Map.begin();
+      std::map< CCopasiObjectName, CModelParameter * >::const_iterator endMissing = Map.end();
+
+      for (; itMissing != endMissing; ++itMissing)
+        {
+          if (itMissing->second->getCompareResult() != CModelParameter::Missing)
+            {
+              mCompareResult = Modified;
+              break;
+            }
         }
     }
 
@@ -298,16 +336,49 @@ bool CModelParameterGroup::updateModel()
 }
 
 // virtual
-bool CModelParameterGroup::refreshFromModel()
+bool CModelParameterGroup::refreshFromModel(const bool & modifyExistence)
 {
   bool success = true;
+
+  if (modifyExistence)
+    {
+      if (mCompareResult == CModelParameter::Obsolete)
+        {
+          delete this;
+
+          return true;
+        }
+
+      if (mCompareResult == CModelParameter::Missing)
+        {
+          mCompareResult = CModelParameter::Identical;
+        }
+    }
 
   iterator it = begin();
   iterator End = end();
 
+  std::vector< CModelParameter * > ToBeDeleted;
+
   for (; it != End; ++it)
     {
-      success &= (*it)->refreshFromModel();
+      if (modifyExistence &&
+          (*it)->getCompareResult() == CModelParameter::Obsolete)
+        {
+          ToBeDeleted.push_back(*it);
+        }
+      else
+        {
+          success &= (*it)->refreshFromModel(modifyExistence);
+        }
+    }
+
+  std::vector< CModelParameter * >::iterator itDelete = ToBeDeleted.begin();
+  std::vector< CModelParameter * >::iterator endDelete = ToBeDeleted.end();
+
+  for (; itDelete != endDelete; ++itDelete)
+    {
+      success &= (*itDelete)->refreshFromModel(modifyExistence);
     }
 
   return success;
