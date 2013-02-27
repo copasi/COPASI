@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-//   $Revision: 1.47 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/01 17:25:01 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -165,6 +157,35 @@ void COptions::init(C_INT argc, char *argv[])
 
   std::string CopasiDir;
   getValue("CopasiDir", CopasiDir);
+
+#if !defined(DARWIN)
+
+  if (CopasiDir.empty() && argc > 0)
+    {
+      // in case the directory was not defined on the command line,
+      // or via environment variableinstead of defaulting to *most
+      // likely* non-existing folders, let us default to the most
+      // usual case, that people received the binaries from us, in
+      // that case we know that the binaries are located in
+      // <copasi>/bin while the remaining data is in <copasi>/share
+      // (excluding OSX for the time being as that one ought to have
+      // files bundled up).
+
+      CopasiDir = argv[0];
+
+      // if relative, make it an absolute path
+      if (CDirEntry::isRelativePath(CopasiDir))
+        CDirEntry::makePathAbsolute(CopasiDir, getPWD());
+
+      // strip the executable
+      CopasiDir = CDirEntry::dirName(CopasiDir);
+
+      // strip the bin directory
+      CopasiDir = CDirEntry::dirName(CopasiDir);
+    }
+
+#endif
+
   std::string Home;
   getValue("Home", Home);
 
@@ -355,9 +376,9 @@ std::string COptions::getHome(void)
     {
       std::ostringstream error;
       error << std::endl
-      << "  use --home HOME" << std::endl
-      << "  or set the environment variable HOME" << std::endl
-      << "  to point to your home directory" << std::endl;
+            << "  use --home HOME" << std::endl
+            << "  or set the environment variable HOME" << std::endl
+            << "  to point to your home directory" << std::endl;
 
       throw copasi::option_error(error.str());
     }
