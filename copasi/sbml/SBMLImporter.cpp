@@ -115,7 +115,7 @@ bool SBMLImporter::areApproximatelyEqual(const double & x, const double & y, con
   return 2 * fabs(x - y) < Scale;
 }
 
-std::string getOriginalSBMLId(const Parameter* parameter)
+std::string getOriginalSBMLId(Parameter* parameter)
 {
   if (parameter == NULL) return "";
 
