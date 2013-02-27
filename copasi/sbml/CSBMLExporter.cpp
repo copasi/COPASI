@@ -2283,6 +2283,14 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CCopasiDataModel& 
     }
 }
 
+std::string getAnnotationStringFor(const CCopasiObject* pObjectParent)
+{
+  std::stringstream str;
+  str << "<initialValue xmlns='http://copasi.org/initialValue' ";
+  str << "parent='" << ((CModelEntity*)pObjectParent)->getSBMLId() <<  "' />";
+  return str.str();
+}
+
 /*
  * Adds the given object to the initialMap, and creates a new parameter
  * for it.
@@ -2305,6 +2313,7 @@ void addToInitialValueMap(std::map<const std::string, Parameter*>* initialMap
     }
 
   Parameter* initial = new Parameter(sbmlLevel, sbmlVersion);
+  initial->setAnnotation(getAnnotationStringFor(pObjectParent));
   initial->initDefaults();
   initial->setId(pObjectParent->getKey());
   initial->setName("Initial for " + pObjectParent->getObjectName());
