@@ -3314,15 +3314,12 @@ void addInitialAssignmentsToModel(SBMLDocument* doc
       const CCopasiObject *obj = static_cast<const CCopasiObject *>(dataModel.getObject(it->first));
       const std::string &sbmlId = (static_cast<const CModelEntity*>(obj->getObjectParent()))->getSBMLId();
 
-      // create initial assignment of that parameter to the model value it belongs to
-      // if the object does not have an assignment rule
-      if (doc->getModel()->getRule(sbmlId) == NULL)
-        {
-          InitialAssignment* ia = doc->getModel()->createInitialAssignment();
-          ia->setSymbol(sbmlId);
-          ia->setMath(SBML_parseFormula(it->second->getId().c_str()));
-          ia->setUserData((void*)"1");
-        }
+      // create an initial assignment for the newly created initial quantity
+      // to synchronize it with the original element.
+      InitialAssignment* ia = doc->getModel()->createInitialAssignment();
+      ia->setSymbol(it->second->getId());
+      ia->setMath(SBML_parseFormula(sbmlId.c_str()));
+      ia->setUserData((void*)"1");
 
       delete param;
     }
