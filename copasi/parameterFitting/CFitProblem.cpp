@@ -1130,7 +1130,14 @@ bool CFitProblem::createObjectiveFunction()
 bool CFitProblem::setResidualsRequired(const bool & required)
 {
   if (required)
-    mResiduals.resize(mpExperimentSet->getDataPointCount());
+  {
+    mResiduals.resize(mpExperimentSet->getDataPointCount(), false);
+    size_t ii;
+    for (ii=0; ii<mResiduals.size(); ++ii)
+      mResiduals[ii]=0.0; //std::numeric_limits<C_FLOAT64>::quiet_NaN();
+                          //it would make sense to initialize it with NaN,
+                          //but some methods expect 0.0 as the residual for a missing data point
+  }
   else
     mResiduals.resize(0);
 
