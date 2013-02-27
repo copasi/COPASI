@@ -138,13 +138,6 @@ std::string getOriginalSBMLId(Parameter* parameter)
   return "";
 }
 
-std::string getOriginalSBMLId(const SBMLDocument* doc, const std::string& id)
-{
-  if (doc == NULL || doc->getModel() == NULL) return "";
-
-  return getOriginalSBMLId(doc->getModel()->getParameter(id));
-}
-
 std::string getInitialCNForSBase(SBase* sbase, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   std::map<CCopasiObject*, SBase*>::const_iterator it;
