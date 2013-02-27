@@ -1907,6 +1907,21 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
   return copasiMetabolite;
 }
 
+CFunction* findFunction(CCopasiVectorN < CFunction > &  db, const CFunction* func)
+{
+  size_t i, iMax = db.size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      CFunction* pFun = (db[i]);
+
+      if (pFun == func)
+        return pFun;
+    }
+
+  return NULL;
+}
+
 /**
  * Creates and returns a COPASI CReaction object from the given SBML
  * Reaction object.
@@ -2520,7 +2535,12 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                         }
                       else
                         {
-                          CFunction* pExistingFunction = this->findCorrespondingFunction(tree, copasiReaction);
+                          // find corresponding reaction does *not* return the function if it is already in the function db
+                          // we better change this to return this instance.
+                          CFunction* pExistingFunction = findFunction(functionDB->loadedFunctions(), tree);
+
+                          if (pExistingFunction == NULL)
+                            pExistingFunction = this->findCorrespondingFunction(tree, copasiReaction);
 
                           // if it does, we set the existing function for this reaction
                           if (pExistingFunction)
@@ -2551,6 +2571,12 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
                               CEvaluationTree* pTmpTree2 = CEvaluationTree::create(CEvaluationTree::Expression);
                               pTmpTree2->setRoot(pTmpExpression);
+
+                              // code to fix bug 1874
+                              // since this is a user defined function, we want to retain the original name
+                              // next setFunctionFromExpressionTree will take this name if it is not 'Expression'
+                              // (the default)
+                              pTmpTree2->setObjectName(functionName);
                               copasiReaction->setFunctionFromExpressionTree(pTmpTree2, copasi2sbmlmap, this->functionDB);
                               delete pTmpTree2;
 
