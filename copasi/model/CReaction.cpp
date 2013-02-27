@@ -1349,6 +1349,9 @@ bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CC
           // create a unique name first
           std::string functionName = "Function for " + this->getObjectName();
 
+          if (tree->getObjectName() != "Expression")
+            functionName = tree->getObjectName();
+
           std::string appendix = "";
           unsigned int counter = 0;
           std::ostringstream numberStream;
