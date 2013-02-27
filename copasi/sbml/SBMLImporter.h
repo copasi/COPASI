@@ -92,6 +92,7 @@ protected:
   bool mUsedSBMLIdsPopulated;
   bool mAvogadroSet;
   std::map<std::string, std::string> mKnownCustomUserDefinedFunctions;
+  std::map<std::string, std::string> mKnownInitalValues;
 
 #if LIBSBML_VERSION >= 40100
   // this map is used for storing the parameters that are used as factors that have to be applied to the multiplicities

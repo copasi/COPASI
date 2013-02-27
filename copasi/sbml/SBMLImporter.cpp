@@ -115,6 +115,64 @@ bool SBMLImporter::areApproximatelyEqual(const double & x, const double & y, con
   return 2 * fabs(x - y) < Scale;
 }
 
+std::string getOriginalSBMLId(const Parameter* parameter)
+{
+  if (parameter == NULL) return "";
+
+  if (!parameter->isSetAnnotation()) return "";
+
+  XMLNode* node = parameter->getAnnotation();
+
+  if (node->getNumChildren() < 1) return "";
+
+  for (unsigned int i = 0; i < node->getNumChildren(); ++i)
+    {
+      const XMLNode& current = node->getChild(i);
+
+      if (current.getNamespaces().containsUri("http://copasi.org/initialValue"))
+        {
+          return current.getAttrValue("parent");
+        }
+    }
+
+  return "";
+}
+
+std::string getOriginalSBMLId(const SBMLDocument* doc, const std::string& id)
+{
+  if (doc == NULL || doc->getModel() == NULL) return "";
+
+  return getOriginalSBMLId(doc->getModel()->getParameter(id));
+}
+
+std::string getInitialCNForSBase(SBase* sbase, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+{
+  std::map<CCopasiObject*, SBase*>::const_iterator it;
+
+  for (it = copasi2sbmlmap.begin(); it != copasi2sbmlmap.end(); ++it)
+    {
+      if (it->second != sbase)
+        continue;
+
+      CMetab *metab = dynamic_cast<CMetab*>(it->first);
+
+      if (metab != NULL)
+        return metab->getInitialConcentrationReference()->getCN();
+
+      CCompartment *comp = dynamic_cast<CCompartment*>(it->first);
+
+      if (comp != NULL)
+        return comp->getInitialValueReference()->getCN();
+
+      CModelValue *param = dynamic_cast<CModelValue*>(it->first);
+
+      if (param != NULL)
+        return param->getInitialValueReference()->getCN();
+    }
+
+  return "";
+}
+
 /**
  * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
  */
@@ -1001,6 +1059,36 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
       try
         {
+          std::string sbmlId = getOriginalSBMLId(sbmlParameter);
+
+          // don't import parameter if it is one of our special ones instead get the cn to the target
+          if (!sbmlId.empty())
+            {
+              Species* species = sbmlModel->getSpecies(sbmlId);
+
+              if (species != NULL)
+                {
+                  mKnownInitalValues[sbmlParameter->getId()] = getInitialCNForSBase(species, copasi2sbmlmap);
+                  continue;
+                }
+
+              Compartment *comp = sbmlModel->getCompartment(sbmlId);
+
+              if (comp != NULL)
+                {
+                  mKnownInitalValues[sbmlParameter->getId()] = getInitialCNForSBase(comp, copasi2sbmlmap);
+                  continue;
+                }
+
+              Parameter* param = sbmlModel->getParameter(sbmlId);
+
+              if (param != NULL)
+                {
+                  mKnownInitalValues[sbmlParameter->getId()] = getInitialCNForSBase(param, copasi2sbmlmap);
+                  continue;
+                }
+            }
+
           this->createCModelValueFromParameter(sbmlParameter, this->mpCopasiModel, copasi2sbmlmap);
         }
       catch (...)
@@ -6577,6 +6665,14 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
               CReaction* pReaction;
               CModelEntity* pModelEntity;
 
+              std::map<std::string, std::string>::const_iterator knownit = mKnownInitalValues.find(name);
+
+              if (knownit != mKnownInitalValues.end())
+                {
+                  itNode->setName(knownit->second.c_str());
+                  continue;
+                }
+
               while (it != endit)
                 {
                   CCopasiObject* pObject = it->first;
@@ -8419,6 +8515,13 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
       if (pInitialAssignment != NULL)
         {
           std::string symbol = pInitialAssignment->getSymbol();
+          std::map<std::string, std::string>::const_iterator knownit = mKnownInitalValues.find(symbol);
+
+          if (knownit != mKnownInitalValues.end())
+            {
+              continue;
+            }
+
           std::map<std::string, CCopasiObject*>::iterator pos = id2copasiMap.find(symbol);
 
           if (pos != id2copasiMap.end())
