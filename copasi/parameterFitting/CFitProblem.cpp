@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1130,14 +1130,10 @@ bool CFitProblem::createObjectiveFunction()
 bool CFitProblem::setResidualsRequired(const bool & required)
 {
   if (required)
-  {
-    mResiduals.resize(mpExperimentSet->getDataPointCount(), false);
-    size_t ii;
-    for (ii=0; ii<mResiduals.size(); ++ii)
-      mResiduals[ii]=0.0; //std::numeric_limits<C_FLOAT64>::quiet_NaN();
-                          //it would make sense to initialize it with NaN,
-                          //but some methods expect 0.0 as the residual for a missing data point
-  }
+    {
+      mResiduals.resize(mpExperimentSet->getDataPointCount(), false);
+      mResiduals = 0;
+    }
   else
     mResiduals.resize(0);
 
