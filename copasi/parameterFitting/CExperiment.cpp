@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -81,6 +81,7 @@ CExperiment::CExperiment(const CCopasiContainer * pParent,
   mpLastRow(NULL),
   mpTaskType(NULL),
   mpSeparator(NULL),
+  mpWeightMethod(NULL),
   mpRowOriented(NULL),
   mpHeaderRow(NULL),
   mpNumColumns(NULL),
@@ -90,6 +91,7 @@ CExperiment::CExperiment(const CCopasiContainer * pParent,
   mDataIndependent(0, 0),
   mDataDependent(0, 0),
   mScale(0, 0),
+  mMissingData(false),
   mMeans(0),
   mColumnScale(0),
   mDefaultColumnScale(0),
@@ -100,12 +102,20 @@ CExperiment::CExperiment(const CCopasiContainer * pParent,
   mIndependentValues(0),
   mNumDataRows(0),
   mpDataDependentCalculated(NULL),
+  mMean(0),
+  mMeanSD(0),
+  mObjectiveValue(0),
+  mRMS(0),
+  mRowObjectiveValue(0),
+  mRowRMS(0),
+  mColumnObjectiveValue(0),
+  mColumnRMS(0),
+  mColumnValidValueCount(0),
   mDependentObjects(),
   mFittingPoints("Fitted Points", this),
-  mExtendedTimeSeries(),
-  mStorageIt(),
+  mExtendedTimeSeries(0),
+  mStorageIt(NULL),
   mExtendedTimeSeriesSize(0)
-
 {
   mStorageIt = mExtendedTimeSeries.array();
 
@@ -120,6 +130,7 @@ CExperiment::CExperiment(const CExperiment & src,
   mpLastRow(NULL),
   mpTaskType(NULL),
   mpSeparator(NULL),
+  mpWeightMethod(NULL),
   mpRowOriented(NULL),
   mpHeaderRow(NULL),
   mpNumColumns(NULL),
@@ -129,6 +140,7 @@ CExperiment::CExperiment(const CExperiment & src,
   mDataIndependent(src.mDataIndependent),
   mDataDependent(src.mDataDependent),
   mScale(src.mScale),
+  mMissingData(src.mMissingData),
   mMeans(src.mMeans),
   mColumnScale(src.mColumnScale),
   mDefaultColumnScale(src.mDefaultColumnScale),
@@ -139,10 +151,19 @@ CExperiment::CExperiment(const CExperiment & src,
   mIndependentValues(src.mIndependentValues),
   mNumDataRows(src.mNumDataRows),
   mpDataDependentCalculated(src.mpDataDependentCalculated),
+  mMean(src.mMean),
+  mMeanSD(src.mMeanSD),
+  mObjectiveValue(0),
+  mRMS(src.mRMS),
+  mRowObjectiveValue(src.mRowObjectiveValue),
+  mRowRMS(src.mRowRMS),
+  mColumnObjectiveValue(src.mColumnObjectiveValue),
+  mColumnRMS(src.mColumnRMS),
+  mColumnValidValueCount(src.mColumnValidValueCount),
   mDependentObjects(src.mDependentObjects),
   mFittingPoints(src.mFittingPoints, this),
   mExtendedTimeSeries(src.mExtendedTimeSeries),
-  mStorageIt(),
+  mStorageIt(src.mStorageIt),
   mExtendedTimeSeriesSize(src.mExtendedTimeSeriesSize)
 
 {
@@ -159,6 +180,7 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
   mpLastRow(NULL),
   mpTaskType(NULL),
   mpSeparator(NULL),
+  mpWeightMethod(NULL),
   mpRowOriented(NULL),
   mpHeaderRow(NULL),
   mpNumColumns(NULL),
@@ -168,6 +190,7 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
   mDataIndependent(0, 0),
   mDataDependent(0, 0),
   mScale(0, 0),
+  mMissingData(false),
   mMeans(0),
   mColumnScale(0),
   mDefaultColumnScale(0),
@@ -178,12 +201,20 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
   mIndependentValues(0),
   mNumDataRows(0),
   mpDataDependentCalculated(NULL),
+  mMean(0),
+  mMeanSD(0),
+  mObjectiveValue(0),
+  mRMS(0),
+  mRowObjectiveValue(0),
+  mRowRMS(0),
+  mColumnObjectiveValue(0),
+  mColumnRMS(0),
+  mColumnValidValueCount(0),
   mDependentObjects(),
   mFittingPoints("Fitted Points", this),
-  mExtendedTimeSeries(),
-  mStorageIt(),
+  mExtendedTimeSeries(0),
+  mStorageIt(NULL),
   mExtendedTimeSeriesSize(0)
-
 {
   mStorageIt = mExtendedTimeSeries.array();
 
@@ -573,7 +604,7 @@ bool CExperiment::calculateStatistics()
   mMeanSD = 0.0;
   mObjectiveValue = 0.0;
   mRMS = 0.0;
-  size_t Count = 0;
+  size_t ValidValueCount = 0;
 
   // per row statistic;
   mRowObjectiveValue.resize(numRows);
@@ -589,8 +620,8 @@ bool CExperiment::calculateStatistics()
   mColumnObjectiveValue = 0.0;
   mColumnRMS.resize(numCols);
   mColumnRMS = 0.0;
-  mColumnCount.resize(numCols);
-  mColumnCount = 0;
+  mColumnValidValueCount.resize(numCols);
+  mColumnValidValueCount = 0;
 
   size_t i, j;
   C_FLOAT64 Residual;
@@ -620,20 +651,20 @@ bool CExperiment::calculateStatistics()
           Residual = Residual * Residual;
 
           mObjectiveValue += Residual;
-          Count++;
+          ValidValueCount++;
 
           mRowObjectiveValue[i] += Residual;
           RowCount[i]++;
 
           mColumnObjectiveValue[j] += Residual;
-          mColumnCount[j]++;
+          mColumnValidValueCount[j]++;
         }
     }
 
-  if (Count)
+  if (ValidValueCount)
     {
-      mMean /= Count;
-      mRMS = sqrt(mObjectiveValue / Count);
+      mMean /= ValidValueCount;
+      mRMS = sqrt(mObjectiveValue / ValidValueCount);
     }
   else
     {
@@ -651,8 +682,8 @@ bool CExperiment::calculateStatistics()
 
   for (j = 0; j < numCols; j++)
     {
-      if (mColumnCount[j])
-        mColumnRMS[j] = sqrt(mColumnObjectiveValue[j] / mColumnCount[j]);
+      if (mColumnValidValueCount[j])
+        mColumnRMS[j] = sqrt(mColumnObjectiveValue[j] / mColumnValidValueCount[j]);
       else
         mColumnRMS[j] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
     }
@@ -661,7 +692,7 @@ bool CExperiment::calculateStatistics()
   pDataDependent = mDataDependent.array();
   pScale = mScale.array();
 
-  for (i = 0, Count = 0; i < numRows; i++)
+  for (i = 0; i < numRows; i++)
     {
       for (j = 0; j < numCols; j++, pDataDependentCalculated++, pDataDependent++, pScale++)
         {
@@ -675,13 +706,11 @@ bool CExperiment::calculateStatistics()
           if (isnan(Residual)) continue;
 
           mMeanSD += Residual * Residual;
-
-          Count++;
         }
     }
 
-  if (Count)
-    mMeanSD = sqrt(mMeanSD / Count);
+  if (ValidValueCount)
+    mMeanSD = sqrt(mMeanSD / ValidValueCount);
   else
     mMeanSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
@@ -813,8 +842,8 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   mColumnObjectiveValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mColumnRMS.resize(numCols);
   mColumnRMS = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-  mColumnCount.resize(numCols);
-  mColumnCount = std::numeric_limits<size_t>::quiet_NaN();
+  mColumnValidValueCount.resize(numCols);
+  mColumnValidValueCount = std::numeric_limits<size_t>::quiet_NaN();
 
   CModel * pModel =
     dynamic_cast< CModel * >(getObjectDataModel()->ObjectFromName(listOfContainer, CCopasiObjectName("Model=" + CCopasiObjectName::escape(getObjectDataModel()->getModel()->getObjectName()))));
@@ -876,6 +905,7 @@ bool CExperiment::read(std::istream & in,
   mMeans.resize(DependentCount);
   mColumnScale.resize(DependentCount);
   mDefaultColumnScale.resize(DependentCount);
+  mColumnValidValueCount.resize(DependentCount);
 
   if (!TimeCount && *mpTaskType == CCopasiTask::timeCourse)
     {
@@ -1009,14 +1039,13 @@ bool CExperiment::calculateWeights()
   CVector< C_FLOAT64 > MeanSquares(DependentCount);
   CVector< C_FLOAT64 > ColumnEpsilons(DependentCount);
   C_FLOAT64 * pColumnEpsilon;
-  CVector< size_t > Counts(DependentCount);
   size_t i, j;
 
   mMeans = 0.0;
   MeanSquares = 0.0;
   ColumnEpsilons = std::numeric_limits< C_FLOAT64 >::infinity();
 
-  Counts = 0;
+  mColumnValidValueCount = 0;
   mMissingData = false;
 
   // Calculate the means
@@ -1027,7 +1056,7 @@ bool CExperiment::calculateWeights()
 
         if (!isnan(Data))
           {
-            Counts[j]++;
+            mColumnValidValueCount[j]++;
             mMeans[j] += Data;
             MeanSquares[j] += Data * Data;
 
@@ -1049,10 +1078,10 @@ bool CExperiment::calculateWeights()
           *pColumnEpsilon = 1e8 * std::numeric_limits< C_FLOAT64 >::epsilon();
         }
 
-      if (Counts[j])
+      if (mColumnValidValueCount[j])
         {
-          mMeans[j] /= Counts[j];
-          MeanSquares[j] /= Counts[j];
+          mMeans[j] /= mColumnValidValueCount[j];
+          MeanSquares[j] /= mColumnValidValueCount[j];
         }
       else
         {
@@ -1597,13 +1626,13 @@ C_FLOAT64 CExperiment::getErrorMeanSD(CCopasiObject *const& pObject,
   return MeanSD;
 }
 
-size_t CExperiment::getCount(CCopasiObject *const& pObject) const
+size_t CExperiment::getColumnValidValueCount(CCopasiObject *const& pObject) const
 {
   std::map< CCopasiObject *, size_t>::const_iterator it
     = mDependentObjects.find(pObject);
 
   if (it != mDependentObjects.end())
-    return mColumnCount[it->second];
+    return mColumnValidValueCount[it->second];
   else
     return 0;
 }

@@ -1,17 +1,14 @@
-/* Begin CVS Header
-$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-$Revision: 1.37 $
-$Name:  $
-$Author: shoops $
-$Date: 2012/05/01 14:42:21 $
-End CVS Header */
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -32,23 +29,44 @@ End CVS Header */
 
 CExperimentSet::CExperimentSet(const CCopasiContainer * pParent,
                                const std::string & name):
-    CCopasiParameterGroup(name, pParent, "CExperimentSet"),
-    mpExperiments(NULL),
-    mNonExperiments(0)
+  CCopasiParameterGroup(name, pParent, "CExperimentSet"),
+  mpExperiments(NULL),
+  mNonExperiments(0),
+  mDependentObjects(0),
+  mDependentObjectiveValues(0),
+  mDependentRMS(0),
+  mDependentErrorMean(0),
+  mDependentErrorMeanSD(0),
+  mDependentDataCount(0),
+  mValidValueCount(0)
 {initializeParameter();}
 
 CExperimentSet::CExperimentSet(const CExperimentSet & src,
                                const CCopasiContainer * pParent):
-    CCopasiParameterGroup(src, static_cast< const CCopasiContainer * >((pParent != NULL) ? pParent : src.getObjectDataModel())),
-    mpExperiments(NULL),
-    mNonExperiments(0)
+  CCopasiParameterGroup(src, static_cast< const CCopasiContainer * >((pParent != NULL) ? pParent : src.getObjectDataModel())),
+  mpExperiments(NULL),
+  mNonExperiments(0),
+  mDependentObjects(0),
+  mDependentObjectiveValues(0),
+  mDependentRMS(0),
+  mDependentErrorMean(0),
+  mDependentErrorMeanSD(0),
+  mDependentDataCount(0),
+  mValidValueCount(0)
 {initializeParameter();}
 
 CExperimentSet::CExperimentSet(const CCopasiParameterGroup & group,
                                const CCopasiContainer * pParent):
-    CCopasiParameterGroup(group, static_cast< const CCopasiContainer * >((pParent != NULL) ? pParent : group.getObjectDataModel())),
-    mpExperiments(NULL),
-    mNonExperiments(0)
+  CCopasiParameterGroup(group, static_cast< const CCopasiContainer * >((pParent != NULL) ? pParent : group.getObjectDataModel())),
+  mpExperiments(NULL),
+  mNonExperiments(0),
+  mDependentObjects(0),
+  mDependentObjectiveValues(0),
+  mDependentRMS(0),
+  mDependentErrorMean(0),
+  mDependentErrorMeanSD(0),
+  mDependentDataCount(0),
+  mValidValueCount(0)
 {initializeParameter();}
 
 CExperimentSet::~CExperimentSet() {}
@@ -119,11 +137,11 @@ bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfConta
       if (!(*it)->compile(listOfContainer)) return false;
 
       const std::map< CCopasiObject *, size_t > & ExpDependentObjects
-      = (*it)->getDependentObjects();
+        = (*it)->getDependentObjects();
       std::map< CCopasiObject *, size_t >::const_iterator itObject
-      = ExpDependentObjects.begin();
+        = ExpDependentObjects.begin();
       std::map< CCopasiObject *, size_t >::const_iterator endObject
-      = ExpDependentObjects.end();
+        = ExpDependentObjects.end();
 
       for (; itObject != endObject; ++itObject)
         DependentObjects.insert(itObject->first);
@@ -172,6 +190,7 @@ bool CExperimentSet::calculateStatistics()
 
   mDependentDataCount.resize(mDependentObjects.size());
   mDependentDataCount = 0;
+  mValidValueCount = 0;
 
   // calclate the per experiment and per dependent value statistics.
   std::vector< CExperiment * >::iterator it = mpExperiments->begin() + mNonExperiments;
@@ -189,7 +208,7 @@ bool CExperimentSet::calculateStatistics()
 
       for (i = 0; ppObject != ppEnd; ++ppObject, ++i)
         {
-          Count = (*it)->getCount(*ppObject);
+          Count = (*it)->getColumnValidValueCount(*ppObject);
 
           if (Count)
             {
@@ -201,6 +220,7 @@ bool CExperimentSet::calculateStatistics()
               mDependentErrorMean[i] += (*it)->getErrorMean(*ppObject);
 
               mDependentDataCount[i] += Count;
+              mValidValueCount += Count;
             }
         }
     }
@@ -233,7 +253,7 @@ bool CExperimentSet::calculateStatistics()
 
       for (i = 0; ppObject != ppEnd; ++ppObject, ++i)
         {
-          Count = (*it)->getCount(*ppObject);
+          Count = (*it)->getColumnValidValueCount(*ppObject);
 
           if (Count)
             mDependentErrorMeanSD[i] +=
@@ -438,26 +458,31 @@ size_t CExperimentSet::getDataPointCount() const
   return Count;
 }
 
+const size_t & CExperimentSet::getValidValueCount() const
+{
+  return mValidValueCount;
+}
+
 #ifdef COPASI_CROSSVALIDATION
 CCrossValidationSet::CCrossValidationSet(const CCopasiContainer * pParent,
     const std::string & name):
-    CExperimentSet(name, pParent),
-    mpWeight(NULL),
-    mpThreshold(NULL)
+  CExperimentSet(name, pParent),
+  mpWeight(NULL),
+  mpThreshold(NULL)
 {initializeParameter();}
 
 CCrossValidationSet::CCrossValidationSet(const CCrossValidationSet & src,
     const CCopasiContainer * pParent):
-    CExperimentSet(src, pParent),
-    mpWeight(NULL),
-    mpThreshold(NULL)
+  CExperimentSet(src, pParent),
+  mpWeight(NULL),
+  mpThreshold(NULL)
 {initializeParameter();}
 
 CCrossValidationSet::CCrossValidationSet(const CCopasiParameterGroup & group,
     const CCopasiContainer * pParent):
-    CExperimentSet(group, pParent),
-    mpWeight(NULL),
-    mpThreshold(NULL)
+  CExperimentSet(group, pParent),
+  mpWeight(NULL),
+  mpThreshold(NULL)
 {initializeParameter();}
 
 CCrossValidationSet::~CCrossValidationSet() {}

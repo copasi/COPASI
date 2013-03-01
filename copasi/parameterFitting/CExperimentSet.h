@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -171,10 +171,16 @@ public:
   std::vector< std::string > getFileNames() const;
 
   /**
-   * Retreive the number of data points of all experiments combined.
+   * Retrieve the number of data points of all experiments combined.
    * @return size_t dataPointCount
    */
   size_t getDataPointCount() const;
+
+  /**
+   * Retrieve the count of valid data points of all experiments combined.
+   * @return size_t count
+   */
+  const size_t & getValidValueCount() const;
 
   /**
    * Retrieve the list of dependent data objects
@@ -254,6 +260,11 @@ private:
    * A list of the number of data points for each dependent object;
    */
   CVector< size_t > mDependentDataCount;
+
+  /**
+   * The total count of valid data values.
+   */
+  size_t mValidValueCount;
 };
 
 #ifdef COPASI_CROSSVALIDATION

@@ -1177,12 +1177,13 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   // The statistics need to be calculated for the result, i.e., now.
   mpExperimentSet->calculateStatistics();
+  size_t ValidDataCount = mpExperimentSet->getValidValueCount();
 
-  if (jmax)
-    mRMS = sqrt(mSolutionValue / jmax);
+  if (ValidDataCount)
+    mRMS = sqrt(mSolutionValue / ValidDataCount);
 
-  if (jmax > imax)
-    mSD = sqrt(mSolutionValue / (jmax - imax));
+  if (ValidDataCount > imax)
+    mSD = sqrt(mSolutionValue / (ValidDataCount - imax));
 
 #ifdef COPASI_CROSSVALIDATION
   calculateCrossValidation();
