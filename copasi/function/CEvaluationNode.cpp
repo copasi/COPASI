@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-//   $Revision: 1.61 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/21 15:58:03 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -31,13 +23,13 @@
 
 CEvaluationNode::CPrecedence::CPrecedence(const size_t & left,
     const size_t & right):
-    left(left),
-    right(right)
+  left(left),
+  right(right)
 {}
 
 CEvaluationNode::CPrecedence::CPrecedence(const CPrecedence & src):
-    left(src.left),
-    right(src.right)
+  left(src.left),
+  right(src.right)
 {}
 
 CEvaluationNode::CPrecedence::~CPrecedence() {}
@@ -132,32 +124,32 @@ CEvaluationNode::Type CEvaluationNode::type(const Type & type)
 {return (Type)(type & 0xFF000000);}
 
 CEvaluationNode::CEvaluationNode():
-    CCopasiNode<Data>(""),
-    mType(CEvaluationNode::INVALID),
-    mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mpValue(NULL),
-    mPrecedence(PRECEDENCE_DEFAULT)
+  CCopasiNode<Data>(""),
+  mType(CEvaluationNode::INVALID),
+  mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+  mpValue(NULL),
+  mPrecedence(PRECEDENCE_DEFAULT)
 {
   mpValue = & mValue;
 }
 
 CEvaluationNode::CEvaluationNode(const Type & type,
                                  const Data & data):
-    CCopasiNode<Data>(data),
-    mType(type),
-    mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mpValue(NULL),
-    mPrecedence(PRECEDENCE_DEFAULT)
+  CCopasiNode<Data>(data),
+  mType(type),
+  mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+  mpValue(NULL),
+  mPrecedence(PRECEDENCE_DEFAULT)
 {
   mpValue = & mValue;
 }
 
 CEvaluationNode::CEvaluationNode(const CEvaluationNode & src):
-    CCopasiNode<Data>(src),
-    mType(src.mType),
-    mValue(src.mValue),
-    mpValue(NULL),
-    mPrecedence(src.mPrecedence)
+  CCopasiNode<Data>(src),
+  mType(src.mType),
+  mValue(src.mValue),
+  mpValue(NULL),
+  mPrecedence(src.mPrecedence)
 {
   mpValue = & mValue;
 }
@@ -251,7 +243,6 @@ std::string CEvaluationNode::buildCCodeString() const
   return CCodeString;
 }
 
-
 // virtual
 std::string CEvaluationNode::getBerkeleyMadonnaString(const std::vector< std::string > & /* children */) const
 {return mData;}
@@ -305,7 +296,6 @@ std::string CEvaluationNode::buildXPPString() const
 
   return BerkeleyMadonnaString;
 }
-
 
 const CEvaluationNode::Type & CEvaluationNode::getType() const
 {return mType;}
@@ -529,7 +519,9 @@ const CEvaluationNode * CEvaluationNode::findTopMinus(const std::vector<CFunctio
           continue;
         }
 
+#ifdef COPASI_DEBUG
       std::cout << itNode->getData() << std::endl;
+#endif
 
       switch (itNode.processingMode())
         {
@@ -582,7 +574,6 @@ const CEvaluationNode * CEvaluationNode::findTopMinus(const std::vector<CFunctio
                       pMinus = itNode.context()[1];
                     else
                       pMinus = NULL;
-
                   }
                 else
                   {
@@ -669,6 +660,7 @@ bool CEvaluationNode::operator<(const CEvaluationNode& right) const
           case CEvaluationNode::WHITESPACE:
             result = (this->getData() < right.getData());
             break;
+
           case CEvaluationNode::OPERATOR:
           case CEvaluationNode::FUNCTION:
           case CEvaluationNode::CHOICE:
