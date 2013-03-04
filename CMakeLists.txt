@@ -214,8 +214,6 @@ add_definitions(-DWITH_MERGEMODEL)
 
 endif(ENABLE_WITH_MERGEMODEL)
 
-add_definitions(-DCOPASI_DEBUG)
-
 option (BUILD_GUI "Enable this if you want to build the COPASI frontend (CopasiUI)." OFF)
 
 find_package(OpenGL)
