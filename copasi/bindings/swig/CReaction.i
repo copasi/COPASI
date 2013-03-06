@@ -1,23 +1,17 @@
-// Begin git Header 
-//   Commit: 28d5663ff3fc99993d3b249dec626841cb5247ab 
-//   Author: Frank T. Bergmann fbergman@caltech.edu 
-//   Date: 2012-08-29 10:43:00 +0200 
-// End git Header 
-
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
+
 
 %{
 
@@ -44,18 +38,19 @@
 
 
 %extend CReaction{
-#if(defined SWIGJAVA || defined SWIGCSHARP)
+
+
   // the CAnnotation functionality has to be added manually because
   // Java does not know about multiple inheritance
   void setNotes(const std::string& notes)
   {
     self->setNotes(notes);
-  } 
+  }
 
   const std::string& getNotes() const
   {
     return self->getNotes();
-  } 
+  }
 
   const std::string& getMiriamAnnotation() const
   {
@@ -66,10 +61,77 @@
                            const std::string& newId,
                            const std::string& oldId)
   {
-    self->setMiriamAnnotation(miriamAnnotation,newId,oldId);
-  } 
-#endif // SWIGJAVA
+	self->setMiriamAnnotation(miriamAnnotation,newId,oldId);
+  }
 
+  std::string getUnsupportedAnnotation(std::string name)
+  {
+  	return $self->getUnsupportedAnnotations()[name];
+  }
+  
+  bool hasUnsupportedAnnotation(std::string name)
+  {
+  	const std::string& annot = $self->getUnsupportedAnnotations()[name];
+  	return !(annot.empty());
+  }
+  
+  int getNumUnsupportedAnnotations()
+  {
+  	return (int)$self->getUnsupportedAnnotations().size();
+  }
+  
+  std::string getUnsupportedAnnotation(int index)
+  {		
+  	std::map< std::string, std::string > &anot = $self->getUnsupportedAnnotations();
+  	if (index >= anot.size()) 
+  		return "";
+  	std::map< std::string, std::string >::iterator iter = anot.begin();
+  	for (int i = 0; i < index; ++i)
+  		++iter;
+  	return (*iter).second;
+  }
+  
+  std::string getUnsupportedAnnotationName(int index)
+  {		
+  	std::map< std::string, std::string > &anot = $self->getUnsupportedAnnotations();
+  	if (index >= anot.size()) 
+  		return "";
+  	std::map< std::string, std::string >::iterator iter = anot.begin();
+  	for (int i = 0; i < index; ++i)
+  		++iter;
+  	return (*iter).first;
+  }
+   
+  bool addUnsupportedAnnotation(const std::string & name, const std::string & xml)
+  {
+	try
+	{
+		return $self->addUnsupportedAnnotation(name, xml);
+	}
+	catch(...)
+	{
+		return false;
+	}
+  }
+  
+  bool replaceUnsupportedAnnotation(const std::string & name, const std::string & xml)
+  {
+	try
+	{	
+		return $self->replaceUnsupportedAnnotation(name, xml);
+	}
+	catch(...)
+	{
+		return false;
+	}
+  }
+  
+  bool removeUnsupportedAnnotation(const std::string & name)
+  {
+  	return $self->removeUnsupportedAnnotation(name);
+  }
+
+  
 #ifdef SWIGR
 
 //  /**
