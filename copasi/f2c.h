@@ -1,4 +1,4 @@
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -12,7 +12,8 @@
 #ifndef F2C_INCLUDE
 #define F2C_INCLUDE
 
-#ifdef __LP64__
+// for compatibility with default CLAPACK f2c
+#if ((defined __LP64__) && !(defined USE_CLAPACK))
 typedef int integer;
 typedef unsigned int uinteger;
 typedef int logical;
