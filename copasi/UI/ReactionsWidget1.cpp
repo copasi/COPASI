@@ -94,6 +94,13 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
                                | Qt::AlignRight));
   ReactionsWidget1Layout->addWidget(TextLabel8, 6, 0);
 
+  QPushButton* editKinetics = new QPushButton(this, "editKinetics");
+  editKinetics->setText(trUtf8("&Edit Rate Law"));
+  ReactionsWidget1Layout->addWidget(editKinetics, 6, 3);
+  
+  connect(editKinetics, SIGNAL(clicked()), this, SLOT(slotGotoFunction()));
+
+  
   LineEdit3 = new QLineEdit(this, "LineEdit3");
   LineEdit3->setEnabled(false);
   ReactionsWidget1Layout->addMultiCellWidget(LineEdit3, 6, 6, 1, 2);
@@ -483,6 +490,19 @@ void ReactionsWidget1::slotParameterStatusChanged(int index, bool local)
   int ccc = table->currentColumn();
   FillWidgetFromRI();
   table->setCurrentCell(rrr, ccc);
+}
+
+
+void ReactionsWidget1::slotGotoFunction()
+{
+  CReaction * pReaction =
+    dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+  if (pReaction == NULL) return;
+  const CFunction * pFunc = pReaction->getFunction();
+  if (pFunc == NULL) return;
+  
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, pFunc->getKey());
+  
 }
 
 void ReactionsWidget1::slotNewFunction()
