@@ -67,6 +67,7 @@ protected slots:
   virtual void slotCheckBoxClicked();
   virtual void slotComboBoxSelectionChanged(const QString &);
   virtual void slotLineEditChanged();
+  virtual void slotGotoFunction();
   virtual void slotNewFunction();
 
   //  public slots:
