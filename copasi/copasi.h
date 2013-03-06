@@ -107,7 +107,7 @@
 # define ios_base ios
 #endif
 
-#if (defined USE_MKL || defined USE_SUNPERF || ((defined Darwin || defined USE_CLAPACK || defined USE_LAPACK ) && defined __LP64__))
+#if (defined USE_MKL || defined USE_SUNPERF || ((defined Darwin || defined USE_LAPACK ) && defined __LP64__))
 # define C_INT int
 #else
 # if (defined USE_CLAPACK || defined USE_LAPACK || defined Darwin || defined __x86_64)
