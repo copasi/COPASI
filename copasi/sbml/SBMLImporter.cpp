@@ -5465,6 +5465,22 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
     }
 }
 
+bool containsKey(const CCopasiVector < CChemEqElement >& list, const std::string& key)
+{
+  CCopasiVector < CChemEqElement >::const_iterator it = list.begin();
+  CCopasiVector < CChemEqElement >::const_iterator end = list.end();
+
+  for (; it != end; ++it)
+    {
+      if ((*it)->getMetaboliteKey() == key)
+        {
+          return true;
+        }
+    }
+
+  return false;
+}
+
 void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCall* pCallNode)
 {
   // map the first argument of the call node to the first variable of the function of the reaction
@@ -5560,6 +5576,9 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
 
           pCopasiReaction->setParameterMapping(i, objectKey);
 
+          const CChemEq& eqn = pCopasiReaction->getChemEq();
+          bool reversible = eqn.getReversibility();
+
           // We guess what the role of a variable of newly imported function is:
           if (Variables[i]->getUsage() == CFunctionParameter::VARIABLE)
             {
@@ -5567,31 +5586,18 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
 
               if (pObject->getObjectType() == "Metabolite")
                 {
-                  CCopasiVector < CChemEqElement >::const_iterator it = pCopasiReaction->getChemEq().getSubstrates().begin();
-                  CCopasiVector < CChemEqElement >::const_iterator end = pCopasiReaction->getChemEq().getSubstrates().end();
+                  if (containsKey(eqn.getSubstrates(), objectKey))
+                    Role = CFunctionParameter::SUBSTRATE;
 
-                  for (; it != end; ++it)
+                  if (Role == CFunctionParameter::PARAMETER &&
+                      containsKey(eqn.getProducts(), objectKey))
                     {
-                      if ((*it)->getMetaboliteKey() == objectKey)
-                        {
-                          Role = CFunctionParameter::SUBSTRATE;
-                          break;
-                        }
-                    }
-
-                  if (Role == CFunctionParameter::PARAMETER)
-                    {
-                      it = pCopasiReaction->getChemEq().getProducts().begin();
-                      end = pCopasiReaction->getChemEq().getProducts().end();
-
-                      for (; it != end; ++it)
-                        {
-                          if ((*it)->getMetaboliteKey() == objectKey)
-                            {
-                              Role = CFunctionParameter::PRODUCT;
-                              break;
-                            }
-                        }
+                      // Fix for Bug 1882: if not reversible, only mark as product if it does
+                      // not appear in the list of modifiers
+                      if (!reversible && containsKey(eqn.getModifiers(), objectKey))
+                        Role =  CFunctionParameter::MODIFIER;
+                      else
+                        Role =  CFunctionParameter::PRODUCT;
                     }
 
                   // It is not a substrate and not a product therefore we must have a modifier
