@@ -1150,7 +1150,6 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 {
   // Set the current values to the solution values.
   size_t i, imax = mSolutionVariables.size();
-  size_t j, jmax = mExperimentDependentValues.size();
   size_t l;
 
   mRMS = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -1172,8 +1171,10 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   for (i = 0; i < imax; i++)
     (*mUpdateMethods[i])(mSolutionVariables[i]);
 
+  // For Output
   mStoreResults = true;
   calculate();
+  mStoreResults = false;
 
   // The statistics need to be calculated for the result, i.e., now.
   mpExperimentSet->calculateStatistics();
@@ -1210,21 +1211,28 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   if (*mpParmCalculateStatistics)
     {
-      // Keep the results
-      CVector< C_FLOAT64 > DependentValues = mExperimentDependentValues;
+      setResidualsRequired(true);
+      size_t j, jmax = mResiduals.size();
+      calculate();
 
-      CMatrix< C_FLOAT64 > dyp;
+      // Keep the results
+      CVector< C_FLOAT64 > SolutionResiduals = mResiduals;
+
+      CMatrix< C_FLOAT64 > DeltaResidualDeltaParameter;
+
       bool CalculateFIM = true;
 
       try
         {
-          dyp.resize(imax, jmax);
+          DeltaResidualDeltaParameter.resize(imax, jmax);
         }
 
       catch (CCopasiException & /*Exception*/)
         {
           CalculateFIM = false;
         }
+
+      C_FLOAT64 * pDeltaResidualDeltaParameter = DeltaResidualDeltaParameter.array();
 
       C_FLOAT64 Current;
       C_FLOAT64 Delta;
@@ -1249,9 +1257,12 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
           mGradient[i] = (mCalculateValue - mSolutionValue) * Delta;
 
+          C_FLOAT64 * pSolutionResidual = SolutionResiduals.array();
+          C_FLOAT64 * pResidual = mResiduals.array();
+
           if (CalculateFIM)
-            for (j = 0; j < jmax; j++)
-              dyp(i, j) = (mExperimentDependentValues[j] - DependentValues[j]) * Delta;
+            for (j = 0; j < jmax; j++, ++pDeltaResidualDeltaParameter, ++pSolutionResidual, ++pResidual)
+              *pDeltaResidualDeltaParameter = (*pResidual - *pSolutionResidual) * Delta;
 
           // Restore the value
           (*mUpdateMethods[i])(Current);
@@ -1274,11 +1285,15 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
             tmp = 0.0;
 
-            for (j = 0; j < jmax; j++)
-              tmp += dyp(i, j) * dyp(l, j);
+            C_FLOAT64 * pI = DeltaResidualDeltaParameter[i];
+            C_FLOAT64 * pL = DeltaResidualDeltaParameter[l];
+
+            for (j = 0; j < jmax; j++, ++pI, ++pL)
+              tmp += *pI * *pL;
 
             tmp *= 2.0;
 
+            // The Fisher matrix is symmetric.
             if (l != i)
               mFisher(l, i) = tmp;
           }
@@ -1446,6 +1461,8 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
         for (l = 0; l < imax; l++)
           mCorrelation(i, l) *= S[i] * S[l];
 
+      setResidualsRequired(false);
+      mStoreResults = true;
       // This is necessary so that CExperiment::printResult shows the correct data.
       calculate();
 
