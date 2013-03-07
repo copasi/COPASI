@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-//   $Revision: 1.36 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/04 19:36:08 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -140,7 +132,7 @@ public:
   virtual ~CExperiment();
 
   /**
-   * Assignement operator
+   * Assignment operator
    * @param const CExperiment & rhs
    * @return CExperiment & lhs
    */
@@ -204,7 +196,6 @@ public:
    */
   C_FLOAT64 sumOfSquaresStore(const size_t & index,
                               C_FLOAT64 *& dependentValues);
-
 
   /**
    * Initialize the storage of an extended time series for plotting.
@@ -516,7 +507,7 @@ public:
   /**
    * Retrieve the error mean std. deviations for the object.
    * More specifically this is the sum of the squared deviations of the residuals
-   * from the provided errorMean. The sum is over all data points for the object. 
+   * from the provided errorMean. The sum is over all data points for the object.
    * @param CCopasiObject *const& pObject
    * @param C_FLOAT64 errorMean
    * @return C_FLOAT64 errorMeanSD
@@ -526,10 +517,10 @@ public:
 
   /**
    * Retrieve the data point count for the object.
-   * @param CCopasiObject *const& pObject
+   * @param CCopasiObject * const & pObject
    * @return size_t count
    */
-  size_t getCount(CCopasiObject *const& pObject) const;
+  size_t getColumnValidValueCount(CCopasiObject * const & pObject) const;
 
   /**
    * Retrieve the list of independent objects
@@ -544,15 +535,13 @@ private:
    */
   void initializeParameter();
 
+  /**
+   * Initialize the scaling matrix
+   */
   void initializeScalingMatrix();
 
 private:
   // Attributes
-
-  /**
-   * The key of the experiment
-   */
-  //    const std::string mKey;
 
   /**
    * This is realized as a CCopasiParameter type STRING
@@ -598,11 +587,6 @@ private:
    * This is realized as a CCopasiParameter type UINT
    */
   unsigned C_INT32 * mpNumColumns;
-
-  /**
-   * This is realized as a CCopasiParameter type GROUP
-   */
-  //    CCopasiParameterGroup * mpColumnType;
 
   /**
    * The column names if available after reading a file
@@ -672,7 +656,7 @@ private:
 
   CVector< C_FLOAT64 > mColumnObjectiveValue;
   CVector< C_FLOAT64 > mColumnRMS;
-  CVector< size_t > mColumnCount;
+  CVector< size_t > mColumnValidValueCount;
 
   /**
    * A map of all dependent data objects to dependent data columns;

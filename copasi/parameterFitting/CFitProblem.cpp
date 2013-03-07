@@ -1130,14 +1130,16 @@ bool CFitProblem::createObjectiveFunction()
 bool CFitProblem::setResidualsRequired(const bool & required)
 {
   if (required)
-  {
-    mResiduals.resize(mpExperimentSet->getDataPointCount(), false);
-    size_t ii;
-    for (ii=0; ii<mResiduals.size(); ++ii)
-      mResiduals[ii]=0.0; //std::numeric_limits<C_FLOAT64>::quiet_NaN();
-                          //it would make sense to initialize it with NaN,
-                          //but some methods expect 0.0 as the residual for a missing data point
-  }
+    {
+      mResiduals.resize(mpExperimentSet->getDataPointCount(), false);
+      size_t ii;
+
+      for (ii = 0; ii < mResiduals.size(); ++ii)
+        mResiduals[ii] = 0.0; //std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+      //it would make sense to initialize it with NaN,
+      //but some methods expect 0.0 as the residual for a missing data point
+    }
   else
     mResiduals.resize(0);
 
@@ -1181,12 +1183,13 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   // The statistics need to be calculated for the result, i.e., now.
   mpExperimentSet->calculateStatistics();
+  size_t ValidDataCount = mpExperimentSet->getValidValueCount();
 
-  if (jmax)
-    mRMS = sqrt(mSolutionValue / jmax);
+  if (ValidDataCount)
+    mRMS = sqrt(mSolutionValue / ValidDataCount);
 
-  if (jmax > imax)
-    mSD = sqrt(mSolutionValue / (jmax - imax));
+  if (ValidDataCount > imax)
+    mSD = sqrt(mSolutionValue / (ValidDataCount - imax));
 
 #ifdef COPASI_CROSSVALIDATION
   calculateCrossValidation();
