@@ -438,7 +438,12 @@ C_FLOAT64 CExperiment::sumOfSquares(const size_t & index,
         for (; pDataDependent != pEnd;
              pDataDependent++, ppDependentValues++, pScale++, residuals++)
           {
-            if (isnan(*pDataDependent)) continue;
+            if (isnan(*pDataDependent))
+              {
+                // We ignore missing data, i.e., the residual is 0.
+                *residuals = 0.0;
+                continue;
+              }
 
 #ifdef COASI_PARAMETERFITTING_RESIDUAL_SCALING
             *residuals = (*pDataDependent - **ppDependentValues) / std::max(1.0, **ppDependentValues);
