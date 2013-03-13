@@ -159,7 +159,7 @@ add_definitions(-DWITH_MERGEMODEL)
 
 endif(ENABLE_WITH_MERGEMODEL)
 
-option (BUILD_GUI "Enable this if you want to build the COPASI frontend (CopasiUI)." OFF)
+option (BUILD_GUI "Disable this if you do not want to build the COPASI GUI (CopasiUI)." ON)
 
 find_package(OpenGL)
 
@@ -616,10 +616,10 @@ message(STATUS "-----------------------------------------------------------
    libSBML lib       = ${LIBSBML_LIBRARY}
    libSBML include   = ${LIBSBML_INCLUDE_DIR}
 
-   QWT lib           = ${QWT_LIBRARIES}
+   QWT lib           = ${QWT_LIBRARY}
    QWT include       = ${QWT_INCLUDE_DIR}
 
-   qwtplot3d lib     = ${QWTPLOT3D_LIBRARIES}
+   qwtplot3d lib     = ${QWTPLOT3D_LIBRARY}
    qwtplot3d include = ${QWTPLOT3D_INCLUDE_DIR}
 
    qtmml lib         = ${MML_LIBRARY}
@@ -651,6 +651,8 @@ message(STATUS "-----------------------------------------------------------
    Java Bindings            = ${ENABLE_JAVA}
    Python Bindings          = ${ENABLE_PYTHON}
    Perl Bindings            = ${ENABLE_PERL}
+   Octave Bindings          = ${ENABLE_OCTAVE}
+   R Bindings               = ${ENABLE_R}
 
   Building:
 

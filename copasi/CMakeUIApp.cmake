@@ -7,10 +7,10 @@ include_directories(BEFORE ${SBW_INCLUDE_DIR})
 endif()
 
 #setup qwt
-set(UI_LIBS ${QWT_LIBRARIES} ${UI_LIBS})
+set(UI_LIBS ${QWT_LIBRARY} ${UI_LIBS})
 include_directories(BEFORE ${QWT_INCLUDE_DIR})
 
 #setup qwtplot3d
-set(UI_LIBS ${QWTPLOT3D_LIBRARIES} ${UI_LIBS})
+set(UI_LIBS ${QWTPLOT3D_LIBRARY} ${UI_LIBS})
 include_directories(BEFORE ${QWTPLOT3D_INCLUDE_DIR})
 
