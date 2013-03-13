@@ -5,7 +5,20 @@
 #  QWT_INCLUDE_DIR - the qwt include directory
 #  QWT_LIBRARIES - Link these to use qwt
 
-find_path(QWT_INCLUDE_DIR qwt.h)
+find_path(QWT_INCLUDE_DIR qwt.h
+    PATHS $ENV{QWT_DIR}/include
+          $ENV{QWT_DIR}
+          ~/Library/Frameworks
+          /Library/Frameworks
+          /usr/local/include
+          /usr/include/
+          /sw/include # Fink
+          /opt/local/include # DarwinPorts
+          /opt/csw/include # Blastwave
+          /opt/include
+          /usr/freeware/include
+    PATH_SUFFIXES qwt qwt-qt4
+)
 
 find_library(QWT_LIBRARIES NAMES qwt-qt4 libqwt-qt4 qwt libqwt)
 

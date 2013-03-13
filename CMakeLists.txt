@@ -71,71 +71,6 @@ endif(COPASI_DEPENDENCY_DIR AND EXISTS ${COPASI_DEPENDENCY_DIR})
 
 
 
-message(STATUS "-----------------------------------------------------------
- Building COPASI
-
-   Source Dir        = ${CMAKE_SOURCE_DIR}
-   Binary Dir        = ${CMAKE_BINARY_DIR}
-   Install Prefix    = ${CMAKE_INSTALL_PREFIX}
-
- Dependencies:
-
-   Raptor Lib        = ${RAPTOR_LIBRARY}
-   Raptor include    = ${RAPTOR_INCLUDE_DIR}
-
-   libSBML lib       = ${LIBSBML_LIBRARY}
-   libSBML include   = ${LIBSBML_INCLUDE_DIR}
-
-   QWT lib           = ${QWT_LIBRARIES}
-   QWT include       = ${QWT_INCLUDE_DIR}
-
-   qwtplot3d lib     = ${QWTPLOT3D_LIBRARIES}
-   qwtplot3d include = ${QWTPLOT3D_INCLUDE_DIR}
-
-   SBW lib           = ${SBW_LIBRARIES}
-   SBW include       = ${SBW_INCLUDE_DIR}
-
- Options:
-
-   CellDesigner import      = ${ENABLE_CELLDESIGNER_IMPORT}
-   Combined layout          = ${ENABLE_COMBINED_LAYOUT}
-   Auto layout              = ${ENABLE_COPASI_AUTOLAYOUT}
-   COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
-   COPASI_NONLIN_DYN        = ${ENABLE_COPASI_NONLIN_DYN}
-   Parameter sets           = ${ENABLE_COPASI_PARAMETER_SETS}
-   Render Extension         = ${ENABLE_CRENDER_EXTENSION}
-   CSP Method               = ${ENABLE_CSPMETHOD}
-   Elementary mode display  = ${ENABLE_ELEMENTARY_MODE_DISPLAY}
-   Flux animation           = ${ENABLE_FLUX_ANIMATION}
-   Screenshots              = ${ENABLE_FRAMEBUFFER_SCREENSHOTS}
-   SBW integration          = ${ENABLE_SBW_INTEGRATION}
-   SBML Unit                = ${ENABLE_USE_SBMLUNIT}
-   Model Merging            = ${ENABLE_WITH_MERGEMODEL}
-
-  Language Bindings:
-
-   SWIG                     = ${SWIG_EXECUTABLE}
-   .NET Bindings            = ${ENABLE_CSHARP}
-   Java Bindings            = ${ENABLE_JAVA}
-   Python Bindings          = ${ENABLE_PYTHON}
-   Perl Bindings            = ${ENABLE_PERL}
-
-  Building:
-
-   COPASI SE               = ${BUILD_SE}
-   COPASI UI               = ${BUILD_GUI}
-
-   C++ Examples            = ${BUILD_CXX_EXAMPLES}
-
-   SBML TestRunner         = ${BUILD_SBML_TESTSUITE}
-   Franks TestRunner       = ${BUILD_FRANKS_TESTSUITE}
-   Semantic Testsuite      = ${BUILD_SEMANTIC_TESTSUITE}
-   Stochastic Testsuite    = ${BUILD_STOCHASTIC_TESTSUITE}
-   Steady State TestRunner = ${BUILD_STEADY_STATE_RUNNER}
-
------------------------------------------------------------
-")
-
 set(CMAKE_MODULE_PATH "${COPASI_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -152,7 +87,7 @@ find_library(CPPUNIT_LIBRARY NAMES cppunit)
 endif(BUILD_TESTS)
 
 set (DEFAULT_EXTUNIT OFF)
-set (DEFAULT_NONLIN OFF)
+# set (DEFAULT_NONLIN OFF)
 set (DEFAULT_DEBUG OFF)
 set (DEFAULT_DEBUG_TRACING OFF)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -200,18 +135,16 @@ if (ENABLE_COPASI_BANDED_GRAPH)
 add_definitions(-DCOPASI_BANDED_GRAPH)
 endif(ENABLE_COPASI_BANDED_GRAPH)
 
-
-option(ENABLE_COPASI_NONLIN_DYN_OSCILLATION "Oscillation Widget" OFF)
+option(ENABLE_COPASI_NONLIN_DYN_OSCILLATION "Oscillation Widget" ON)
 if (ENABLE_COPASI_NONLIN_DYN_OSCILLATION)
-add_definitions(-DCOPASI_NONLIN_DYN_OSCILLATION)
+  add_definitions(-DCOPASI_NONLIN_DYN_OSCILLATION)
 endif()
 
-option(ENABLE_COPASI_NONLIN_DYN "Non linear Dynamics" ${DEFAULT_NONLIN})
+option(ENABLE_COPASI_NONLIN_DYN "Non linear Dynamics" ON)
 if (ENABLE_COPASI_NONLIN_DYN)
-# COPASI_NONLIN_DYN
-add_definitions(-DCOPASI_NONLIN_DYN)
-
+  add_definitions(-DCOPASI_NONLIN_DYN)
 endif(ENABLE_COPASI_NONLIN_DYN)
+
 option(ENABLE_COPASI_EXTUNIT "Extended Unit Support" ${DEFAULT_EXTUNIT})
 if (ENABLE_COPASI_EXTUNIT)
 # COPASI_EXTUNIT
@@ -471,7 +404,7 @@ if(ENABLE_CRENDER_EXTENSION)
 add_definitions(-DUSE_CRENDER_EXTENSION)
 endif(ENABLE_CRENDER_EXTENSION)
 
-option (ENABLE_COPASI_AUTOLAYOUT "Build COPASI with support for generating automatic diagram layout." OFF)
+option (ENABLE_COPASI_AUTOLAYOUT "Build COPASI with support for generating automatic diagram layout." ON)
 mark_as_advanced(ENABLE_COPASI_AUTOLAYOUT)
 if(ENABLE_COPASI_AUTOLAYOUT)
 add_definitions(-DCOPASI_AUTOLAYOUT)
@@ -483,14 +416,13 @@ if(ENABLE_COPASI_PARAMETER_SETS)
 add_definitions(-DCOPASI_PARAMETER_SETS)
 endif(ENABLE_COPASI_PARAMETER_SETS)
 
-
-option (ENABLE_ELEMENTARY_MODE_DISPLAY "Build COPASI with support for highlighting elementary modes in diagrams." OFF)
+option (ENABLE_ELEMENTARY_MODE_DISPLAY "Build COPASI with support for highlighting elementary modes in diagrams." ON)
 mark_as_advanced(ENABLE_ELEMENTARY_MODE_DISPLAY)
 if(ENABLE_ELEMENTARY_MODE_DISPLAY)
 add_definitions(-DELEMENTARY_MODE_DISPLAY)
 endif(ENABLE_ELEMENTARY_MODE_DISPLAY)
 
-option (ENABLE_FLUX_ANIMATION "Enable support for animating fluxes in diagrams." OFF)
+option (ENABLE_FLUX_ANIMATION "Enable support for animating fluxes in diagrams." ON)
 mark_as_advanced(ENABLE_FLUX_ANIMATION)
 if(ENABLE_FLUX_ANIMATION)
 add_definitions(-DFLUX_ANIMATION)
@@ -514,49 +446,12 @@ if(ENABLE_USE_SBMLUNIT)
 add_definitions(-DUSE_SBMLUNIT)
 endif(ENABLE_USE_SBMLUNIT)
 
-option (ENABLE_COMBINED_LAYOUT "Transitional code to get rid of the two OpenGL renderer implementations." ON)
-mark_as_advanced(ENABLE_COMBINED_LAYOUT)
-if(ENABLE_COMBINED_LAYOUT)
-add_definitions(-DCOMBINED_LAYOUT)
-endif(ENABLE_COMBINED_LAYOUT)
+# if the MML widget is available, we need to enable "HAVE_MML"
 
 option(ENABLE_MML "Enable the MML widget" ON)
-if (ENABLE_MML)
+
+find_package(QtMmlQt4 REQUIRED)
 add_definitions(-DHAVE_MML)
-
-find_path(MML_INCLUDE_DIR qtmmlwidget.h
-    $ENV{LIBSBML_DIR}/include
-    $ENV{LIBSBML_DIR}
-	${CMAKE_SOURCE_DIR}/copasi/mml
-	${CMAKE_SOURCE_DIR}/../mml
-    ~/Library/Frameworks
-    /Library/Frameworks
-    /usr/local/include
-    /usr/include/
-    /sw/include # Fink
-    /opt/local/include # DarwinPorts
-    /opt/csw/include # Blastwave
-    /opt/include
-    /usr/freeware/include
-)
-
-find_library(MML_LIBRARY
-    NAMES mml
-    PATHS
-    ~/Library/Frameworks
-    /Library/Frameworks
-    /usr/local/lib
-    /usr/local/lib64
-    /usr/lib
-    /usr/lib64
-    /sw/lib
-    /opt/local/lib
-    /opt/csw/lib
-    /opt/lib
-    /usr/freeware/lib64
-)
-
-endif(ENABLE_MML)
 
 option (BUILD_SEMANTIC_TESTSUITE "Build the program to run the SBML semantic testsuite." OFF)
 option (BUILD_STEADY_STATE_RUNNER "Build the program to run the comparisons on steady state results." OFF)
@@ -589,8 +484,6 @@ endif()
 # perl binary
 # mkoctfile
 # R binary
-
-# if the MML widget is available, we need to enable "HAVE_MML"
 
 #if we link statically, which is the default under windows, we need the following defines
 # XML_STATIC
@@ -707,3 +600,71 @@ install(FILES
 
 # set up variables for cpack
 include(InstallRequiredSystemLibraries)
+
+message(STATUS "-----------------------------------------------------------
+ Building COPASI
+
+   Source Dir        = ${CMAKE_SOURCE_DIR}
+   Binary Dir        = ${CMAKE_BINARY_DIR}
+   Install Prefix    = ${CMAKE_INSTALL_PREFIX}
+
+ Dependencies:
+
+   Raptor Lib        = ${RAPTOR_LIBRARY}
+   Raptor include    = ${RAPTOR_INCLUDE_DIR}
+
+   libSBML lib       = ${LIBSBML_LIBRARY}
+   libSBML include   = ${LIBSBML_INCLUDE_DIR}
+
+   QWT lib           = ${QWT_LIBRARIES}
+   QWT include       = ${QWT_INCLUDE_DIR}
+
+   qwtplot3d lib     = ${QWTPLOT3D_LIBRARIES}
+   qwtplot3d include = ${QWTPLOT3D_INCLUDE_DIR}
+
+   qtmml lib         = ${MML_LIBRARY}
+   qtmml include     = ${MML_INCLUDE_DIR}
+   
+   SBW lib           = ${SBW_LIBRARIES}
+   SBW include       = ${SBW_INCLUDE_DIR}
+
+ Options:
+
+   CellDesigner import      = ${ENABLE_CELLDESIGNER_IMPORT}
+   Auto layout              = ${ENABLE_COPASI_AUTOLAYOUT}
+   COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
+   Non linear dynamics      = ${ENABLE_COPASI_NONLIN_DYN}
+   Parameter sets           = ${ENABLE_COPASI_PARAMETER_SETS}
+   Render Extension         = ${ENABLE_CRENDER_EXTENSION}
+   CSP Method               = ${ENABLE_CSPMETHOD}
+   Elementary mode display  = ${ENABLE_ELEMENTARY_MODE_DISPLAY}
+   Flux animation           = ${ENABLE_FLUX_ANIMATION}
+   Screenshots              = ${ENABLE_FRAMEBUFFER_SCREENSHOTS}
+   SBW integration          = ${ENABLE_SBW_INTEGRATION}
+   SBML Unit                = ${ENABLE_USE_SBMLUNIT}
+   Model Merging            = ${ENABLE_WITH_MERGEMODEL}
+
+  Language Bindings:
+
+   SWIG                     = ${SWIG_EXECUTABLE}
+   .NET Bindings            = ${ENABLE_CSHARP}
+   Java Bindings            = ${ENABLE_JAVA}
+   Python Bindings          = ${ENABLE_PYTHON}
+   Perl Bindings            = ${ENABLE_PERL}
+
+  Building:
+
+   COPASI SE               = ${BUILD_SE}
+   COPASI UI               = ${BUILD_GUI}
+
+   C++ Examples            = ${BUILD_CXX_EXAMPLES}
+
+   SBML TestRunner         = ${BUILD_SBML_TESTSUITE}
+   Franks TestRunner       = ${BUILD_FRANKS_TESTSUITE}
+   Semantic Testsuite      = ${BUILD_SEMANTIC_TESTSUITE}
+   Stochastic Testsuite    = ${BUILD_STOCHASTIC_TESTSUITE}
+   Steady State TestRunner = ${BUILD_STEADY_STATE_RUNNER}
+
+-----------------------------------------------------------
+")
+

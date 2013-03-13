@@ -25,25 +25,23 @@ find_path(LIBSBML_INCLUDE_DIR sbml/SBase.h
     /usr/freeware/include
 )
 
-# the real include dir is one above the directory that contains SBase.h
-set(LIBSBML_INCLUDE_DIR ${LIBSBML_INCLUDE_DIR})
-
-
-
 find_library(LIBSBML_LIBRARY 
-    NAMES sbml-static sbml
-    PATHS
-    ~/Library/Frameworks
-    /Library/Frameworks
-    /usr/local/lib
-    /usr/local/lib64
-    /usr/lib
-    /usr/lib64
-    /sw/lib
-    /opt/local/lib
-    /opt/csw/lib
-    /opt/lib
-    /usr/freeware/lib64
+    NAMES sbml-static 
+          sbml
+    PATHS $ENV{LIBSBML_DIR}/lib
+          $ENV{LIBSBML_DIR}
+          ~/Library/Frameworks
+          /Library/Frameworks
+          /usr/local/lib
+          /usr/local/lib64
+          /usr/lib
+          /usr/lib64
+          /sw/lib # Fink
+          /opt/local/lib # DarwinPorts
+          /opt/csw/lib # Blastwave
+          /opt/lib
+          /usr/freeware/lib64
+    NO_DEFAULT_PATH
 )
 
 if (NOT LIBSBML_INCLUDE_DIR)

@@ -29,9 +29,9 @@ find_path(RAPTOR_INCLUDE_DIR raptor.h
 find_library(RAPTOR_LIBRARY 
     NAMES raptor libraptor
     PATHS
-    $ENV{raptor_DIR}/lib
-    $ENV{raptor_DIR}/lib-dbg
-    $ENV{raptor_DIR}
+    $ENV{RAPTOR_DIR}/lib
+    $ENV{RAPTOR_DIR}/lib-dbg
+    $ENV{RAPTOR_DIR}
     ~/Library/Frameworks
     /Library/Frameworks
     /usr/local/lib
