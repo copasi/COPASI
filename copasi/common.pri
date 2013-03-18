@@ -264,6 +264,9 @@ contains(BUILD_OS, Darwin) {
     }
   }
 
+  QMAKE_CFLAGS_WARN_ON += -Wno-overloaded-virtual
+  QMAKE_CXXFLAGS_WARN_ON += -Wno-overloaded-virtual
+  
   LIBS += -framework Accelerate
   LIBS += -framework Carbon
   LIBS += -framework QuickTime
