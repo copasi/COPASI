@@ -150,9 +150,6 @@ void CQModelValue::slotTypeChanged(int type)
         break;
 
       case CModelEntity::ODE:
-        // add expression layout
-        gridLayout->addWidget(mpLblExpression, 2, 0);
-
         // show label, widget, and correct buttons
         mpLblExpression->show();   // show the label
         mpExpressionEMW->show();  // show the widget
