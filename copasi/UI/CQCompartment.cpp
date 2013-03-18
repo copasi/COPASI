@@ -1,19 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQCompartment.cpp,v $
-//   $Revision: 1.25 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/16 12:58:44 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "CQCompartment.h"
@@ -31,13 +27,17 @@
 #include "report/CKeyFactory.h"
 #include "report/CCopasiRootContainer.h"
 
-
 /*
  *  Constructs a CQCompartment which is a child of 'parent', with the
  *  name 'name'.'
  */
-CQCompartment::CQCompartment(QWidget* parent, const char* name)
-    : CopasiWidget(parent, name)
+CQCompartment::CQCompartment(QWidget* parent, const char* name):
+  CopasiWidget(parent, name),
+  mItemToType(),
+  mpCompartment(NULL),
+  mChanged(false),
+  mExpressionValid(true),
+  mInitialExpressionValid(true)
 {
   setupUi(this);
 

@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dPlot.cpp,v $
-//   $Revision: 1.19 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/08/22 21:39:53 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -41,10 +33,13 @@
 #include "copasi.h"
 
 CQBarChart::CQBarChart(QWidget* parent, const char* name) :
-    CQBaseWidget(parent, name),
-    mpColumnScale(NULL),
-    mpRowScale(NULL)
-
+  CQBaseWidget(parent, name),
+  mpBar(NULL),
+  mTitle(),
+  data(NULL),
+  mpColumnScale(NULL),
+  mpRowScale(NULL),
+  mColorLegend(true)
 {
   mpPlot->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   mpPlot->setRotation(30, 0, 15);
@@ -632,4 +627,3 @@ void CQBarChart::setPlotTitle(QString title)
 {
   mTitle = title;
 }
-
