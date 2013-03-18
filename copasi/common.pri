@@ -1,4 +1,4 @@
-# Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -264,6 +264,9 @@ contains(BUILD_OS, Darwin) {
     }
   }
 
+  QMAKE_CFLAGS_WARN_ON += -Wno-overloaded-virtual
+  QMAKE_CXXFLAGS_WARN_ON += -Wno-overloaded-virtual
+  
   LIBS += -framework Accelerate
   LIBS += -framework Carbon
   LIBS += -framework QuickTime
