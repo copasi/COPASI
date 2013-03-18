@@ -25,7 +25,16 @@
 
 COptMethodSteepestDescent::COptMethodSteepestDescent(const CCopasiContainer * pParent):
   COptMethod(CCopasiTask::optimization, CCopasiMethod::SteepestDescent, pParent),
-  mpDescent(new FDescentTemplate<COptMethodSteepestDescent>(this, &COptMethodSteepestDescent::descentLine))
+  mIterations(100),
+  mTolerance(1e-6),
+  mContinue(true),
+  mBestValue(std::numeric_limits< C_FLOAT64 >::infinity()),
+  mValue(0.0),
+  mVariableSize(0),
+  mIndividual(0),
+  mGradient(0),
+  mpDescent(new FDescentTemplate<COptMethodSteepestDescent>(this, &COptMethodSteepestDescent::descentLine)),
+  mCurrentIteration(0)
 {
   addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 100);
   addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1e-6);
@@ -33,7 +42,16 @@ COptMethodSteepestDescent::COptMethodSteepestDescent(const CCopasiContainer * pP
 
 COptMethodSteepestDescent::COptMethodSteepestDescent(const COptMethodSteepestDescent & src,
     const CCopasiContainer * pParent): COptMethod(src, pParent),
-  mpDescent(new FDescentTemplate<COptMethodSteepestDescent>(this, &COptMethodSteepestDescent::descentLine))
+  mIterations(src.mIterations),
+  mTolerance(src.mTolerance),
+  mContinue(src.mContinue),
+  mBestValue(src.mBestValue),
+  mValue(src.mValue),
+  mVariableSize(src.mVariableSize),
+  mIndividual(src.mIndividual),
+  mGradient(src.mGradient),
+  mpDescent(new FDescentTemplate<COptMethodSteepestDescent>(this, &COptMethodSteepestDescent::descentLine)),
+  mCurrentIteration(src.mCurrentIteration)
 {}
 
 COptMethodSteepestDescent::~COptMethodSteepestDescent()

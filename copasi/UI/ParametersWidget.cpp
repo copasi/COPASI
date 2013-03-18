@@ -163,8 +163,22 @@ protected:
 
 //****************************************************************************
 
-ParametersWidget::ParametersWidget(QWidget* parent, const char* name, Qt::WFlags fl)
-  : CopasiWidget(parent, name, fl)
+ParametersWidget::ParametersWidget(QWidget* parent, const char* name, Qt::WFlags fl):
+  CopasiWidget(parent, name, fl),
+  commitButton(NULL),
+  revertButton(NULL),
+  saveButton(NULL),
+  listView(NULL),
+  labelTitle(NULL),
+  ParametersWidgetLayout(NULL),
+  spacer2(NULL),
+  layoutLeft(NULL),
+  spacer1(NULL),
+  mTimeItem(NULL),
+  mCompItem(NULL),
+  mReacItem(NULL),
+  mMetabItem(NULL),
+  mParamItem(NULL)
 {
   if (!name)
     setName("ParametersWidget");

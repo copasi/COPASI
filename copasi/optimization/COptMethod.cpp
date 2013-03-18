@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
-//   $Revision: 1.41 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/20 21:16:37 $
-// End CVS Header
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -134,27 +126,36 @@ COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
 
 // Default constructor
 COptMethod::COptMethod():
-    CCopasiMethod(CCopasiTask::optimization, CCopasiMethod::unset),
-    mpOptProblem(NULL),
-    mpParentTask(NULL),
-    mBounds(false)
+  CCopasiMethod(CCopasiTask::optimization, CCopasiMethod::unset),
+  mpOptProblem(NULL),
+  mpParentTask(NULL),
+  mBounds(false),
+  mpSetCalculateVariable(NULL),
+  mpOptItem(NULL),
+  mpOptContraints(NULL)
 {CONSTRUCTOR_TRACE;}
 
 COptMethod::COptMethod(const CCopasiTask::Type & taskType,
                        const COptMethod::SubType & subType,
                        const CCopasiContainer * pParent):
-    CCopasiMethod(taskType, subType, pParent),
-    mpOptProblem(NULL),
-    mpParentTask(NULL),
-    mBounds(false)
+  CCopasiMethod(taskType, subType, pParent),
+  mpOptProblem(NULL),
+  mpParentTask(NULL),
+  mBounds(false),
+  mpSetCalculateVariable(NULL),
+  mpOptItem(NULL),
+  mpOptContraints(NULL)
 {CONSTRUCTOR_TRACE;}
 
 COptMethod::COptMethod(const COptMethod & src,
                        const CCopasiContainer * pParent):
-    CCopasiMethod(src, pParent),
-    mpOptProblem(src.mpOptProblem),
-    mpParentTask(src.mpParentTask),
-    mBounds(src.mBounds)
+  CCopasiMethod(src, pParent),
+  mpOptProblem(src.mpOptProblem),
+  mpParentTask(src.mpParentTask),
+  mBounds(src.mBounds),
+  mpSetCalculateVariable(src.mpSetCalculateVariable),
+  mpOptItem(src.mpOptItem),
+  mpOptContraints(src.mpOptContraints)
 {CONSTRUCTOR_TRACE;}
 
 //YOHE: seems "virtual" cannot be outside of class declaration

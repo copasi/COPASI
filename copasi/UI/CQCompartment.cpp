@@ -31,8 +31,13 @@
  *  Constructs a CQCompartment which is a child of 'parent', with the
  *  name 'name'.'
  */
-CQCompartment::CQCompartment(QWidget* parent, const char* name)
-  : CopasiWidget(parent, name)
+CQCompartment::CQCompartment(QWidget* parent, const char* name):
+  CopasiWidget(parent, name),
+  mItemToType(),
+  mpCompartment(NULL),
+  mChanged(false),
+  mExpressionValid(true),
+  mInitialExpressionValid(true)
 {
   setupUi(this);
 
