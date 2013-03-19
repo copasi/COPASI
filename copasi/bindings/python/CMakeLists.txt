@@ -85,11 +85,13 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../swig)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${PYTHON_INCLUDE_DIRS})
 
-if (MSVC)
+if (WIN32)
+if (MSVC OR USING_INTEL)
   # the build fails when compiled with packages as the object file is too 
   # big adding the big flag makes it work!
   add_definitions(/bigobj)
-endif(MSVC)
+endif(MSVC OR USING_INTEL)
+endif(WIN32)
 
 add_library(binding_python_lib SHARED copasi_wrapper.cpp)
 add_dependencies( binding_python_lib binding_python_swig) 
