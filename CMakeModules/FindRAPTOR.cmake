@@ -12,37 +12,36 @@
 # Modified by Ralph Gauges
 
 find_path(RAPTOR_INCLUDE_DIR raptor.h
-    $ENV{RAPTOR_DIR}/include
-    $ENV{RAPTOR_DIR}
-    ~/Library/Frameworks
-    /Library/Frameworks
-    /usr/local/include
-    /usr/include/
-    /sw/include # Fink
-    /opt/local/include # DarwinPorts
-    /opt/csw/include # Blastwave
-    /opt/include
-    /usr/freeware/include
+    PATHS $ENV{RAPTOR_DIR}/include
+          $ENV{RAPTOR_DIR}
+          ~/Library/Frameworks
+          /Library/Frameworks
+          /usr/local/include
+          /usr/include/
+          /sw/include        # Fink
+          /opt/local/include # MacPorts
+          /opt/csw/include   # Blastwave
+          /opt/include
+          /usr/freeware/include
 )
 
 
 find_library(RAPTOR_LIBRARY 
-    NAMES raptor libraptor
-    PATHS
-    $ENV{RAPTOR_DIR}/lib
-    $ENV{RAPTOR_DIR}/lib-dbg
-    $ENV{RAPTOR_DIR}
-    ~/Library/Frameworks
-    /Library/Frameworks
-    /usr/local/lib
-    /usr/local/lib64
-    /usr/lib
-    /usr/lib64
-    /sw/lib
-    /opt/local/lib
-    /opt/csw/lib
-    /opt/lib
-    /usr/freeware/lib64
+    NAMES raptor 
+    PATHS $ENV{RAPTOR_DIR}/lib
+          $ENV{RAPTOR_DIR}/lib-dbg
+          $ENV{RAPTOR_DIR}
+          ~/Library/Frameworks
+          /Library/Frameworks
+          /usr/local/lib
+          /usr/local/lib64
+          /usr/lib
+          /usr/lib64
+          /sw/lib        # Fink
+          /opt/local/lib # MacPorts
+          /opt/csw/lib   # Blastwave
+          /opt/lib
+          /usr/freeware/lib64
 )
 
 if (NOT RAPTOR_INCLUDE_DIR)

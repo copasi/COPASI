@@ -20,7 +20,9 @@ find_path(MML_INCLUDE_DIR qtmmlwidget.h
 )
 
 find_library(MML_LIBRARY
-    NAMES mml QtSolutions_MMLWidget-2.4
+    NAMES mml-static 
+          mml 
+          QtSolutions_MMLWidget-2.4
     PATHS $ENV{MML_DIR}/lib
           $ENV{MML_DIR}
           ~/Library/Frameworks
@@ -29,9 +31,9 @@ find_library(MML_LIBRARY
           /usr/local/lib64
           /usr/lib
           /usr/lib64
-          /sw/lib
-          /opt/local/lib
-          /opt/csw/lib
+          /sw/lib        # Fink
+          /opt/local/lib # MacPorts
+          /opt/csw/lib   # Blastwave
           /opt/lib
           /usr/freeware/lib64
 )

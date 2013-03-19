@@ -12,17 +12,17 @@
 # Modified by Ralph Gauges
 
 find_path(LIBSBML_INCLUDE_DIR sbml/SBase.h
-    $ENV{LIBSBML_DIR}/include
-    $ENV{LIBSBML_DIR}
-    ~/Library/Frameworks
-    /Library/Frameworks
-    /usr/local/include
-    /usr/include/
-    /sw/include # Fink
-    /opt/local/include # DarwinPorts
-    /opt/csw/include # Blastwave
-    /opt/include
-    /usr/freeware/include
+    PATHS $ENV{LIBSBML_DIR}/include
+          $ENV{LIBSBML_DIR}
+          ~/Library/Frameworks
+          /Library/Frameworks
+          /usr/local/include
+          /usr/include/
+          /sw/include        # Fink
+          /opt/local/include # MacPorts
+          /opt/csw/include   # Blastwave
+          /opt/include
+          /usr/freeware/include
 )
 
 find_library(LIBSBML_LIBRARY 
@@ -36,9 +36,9 @@ find_library(LIBSBML_LIBRARY
           /usr/local/lib64
           /usr/lib
           /usr/lib64
-          /sw/lib # Fink
-          /opt/local/lib # DarwinPorts
-          /opt/csw/lib # Blastwave
+          /sw/lib        # Fink
+          /opt/local/lib # MacPorts
+          /opt/csw/lib   # Blastwave
           /opt/lib
           /usr/freeware/lib64
     NO_DEFAULT_PATH

@@ -6,22 +6,22 @@
 #  SBW_LIBRARIES - Link these to use BZip2
 
 find_path(SBW_INCLUDE_DIR SBW/SBW.h
-    $ENV{SBW_DIR}/include
-    $ENV{SBW_DIR}
-    ~/Library/Frameworks
-    /Library/Frameworks
-    /usr/local/include
-    /usr/include/
-    /sw/include # Fink
-    /opt/local/include # DarwinPorts
-    /opt/csw/include # Blastwave
-    /opt/include
-    /usr/freeware/include
+    PATHS $ENV{SBW_DIR}/include
+          $ENV{SBW_DIR}
+          ~/Library/Frameworks
+          /Library/Frameworks
+          /usr/local/include
+          /usr/include/
+          /sw/include        # Fink
+          /opt/local/include # MacPorts
+          /opt/csw/include   # Blastwave
+          /opt/include
+          /usr/freeware/include
 )
 
 find_library(SBW_LIBRARIES
-    NAMES SBW 
-          SBW-static 
+    NAMES SBW-static
+          SBW
           sbw 
           libSBW 
           libsbw
@@ -33,9 +33,9 @@ find_library(SBW_LIBRARIES
           /usr/local/lib64
           /usr/lib
           /usr/lib64
-          /sw/lib # Fink
-          /opt/local/lib # DarwinPorts
-          /opt/csw/lib # Blastwave
+          /sw/lib        # Fink
+          /opt/local/lib # MacPorts
+          /opt/csw/lib   # Blastwave
           /opt/lib
           /usr/freeware/lib64
     NO_DEFAULT_PATH

@@ -21,7 +21,9 @@ find_path(QWTPLOT3D_INCLUDE_DIR qwt3d_plot.h
 )
 
 find_library(QWTPLOT3D_LIBRARY
-    NAMES qwtplot3d-qt4 qwtplot3d 
+    NAMES qwtplot3d-static
+          qwtplot3d-qt4
+          qwtplot3d
     PATHS $ENV{QWTPLOT3D_DIR}/lib
           $ENV{QWTPLOT3D_DIR}
           ~/Library/Frameworks
@@ -30,9 +32,9 @@ find_library(QWTPLOT3D_LIBRARY
           /usr/local/lib64
           /usr/lib
           /usr/lib64
-          /sw/lib
-          /opt/local/lib
-          /opt/csw/lib
+          /sw/lib        # Fink
+          /opt/local/lib # MacPorts
+          /opt/csw/lib   # Blastwave
           /opt/lib
           /usr/freeware/lib64
 )

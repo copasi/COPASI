@@ -12,16 +12,18 @@ find_path(QWT_INCLUDE_DIR qwt.h
           /Library/Frameworks
           /usr/local/include
           /usr/include/
-          /sw/include # Fink
-          /opt/local/include # DarwinPorts
-          /opt/csw/include # Blastwave
+          /sw/include        # Fink
+          /opt/local/include # MacPorts
+          /opt/csw/include   # Blastwave
           /opt/include
           /usr/freeware/include
     PATH_SUFFIXES qwt qwt-qt4
 )
 
 find_library(QWT_LIBRARY
-    NAMES qwt-qt4 qwt 
+    NAMES qwt-static
+          qwt-qt4
+          qwt
     PATHS $ENV{QWT_DIR}/lib
           $ENV{QWT_DIR}
           ~/Library/Frameworks
@@ -30,9 +32,9 @@ find_library(QWT_LIBRARY
           /usr/local/lib64
           /usr/lib
           /usr/lib64
-          /sw/lib
-          /opt/local/lib
-          /opt/csw/lib
+          /sw/lib        # Fink
+          /opt/local/lib # MacPorts
+          /opt/csw/lib   # Blastwave
           /opt/lib
           /usr/freeware/lib64
 )
