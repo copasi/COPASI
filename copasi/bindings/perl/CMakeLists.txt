@@ -102,11 +102,13 @@ if (NOT UNIX)
 	add_definitions(-DWIN32SCK_IS_STDSCK -DWIN32IO_IS_STDIO)
 endif ()
 
-if (MSVC)
+if (WIN32)
+if (MSVC OR USING_INTEL)
   # the build fails when compiled with packages as the object file is too 
   # big adding the big flag makes it work!
   add_definitions(/bigobj)
-endif(MSVC)
+endif(MSVC OR USING_INTEL)
+endif(WIN32)
 
 add_library(binding_perl_lib MODULE ${CMAKE_CURRENT_BINARY_DIR}/COPASI.cpp)
 set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/COPASI.cpp 
