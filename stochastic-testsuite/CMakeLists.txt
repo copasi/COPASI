@@ -35,6 +35,7 @@ include(../copasi/CMakeConsoleApp.cmake)
 
 
 add_executable(stochastic-testsuite ${SOURCES} ${HEADERS})
+install(TARGETS stochastic-testsuite DESTINATION bin)
 
 add_dependencies(stochastic-testsuite ${SE_DEPENDENCIES}) 
 target_link_libraries(stochastic-testsuite ${SE_EXTERNAL_LIBS} ${SE_LIBS} )

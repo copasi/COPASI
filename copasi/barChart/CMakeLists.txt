@@ -86,5 +86,5 @@ set(COPASI_UI_HEADERS ${COPASI_UI_HEADERS} ${HEADERS_BARCHART})
 # 
 # add_library(barChart STATIC ${SOURCES} ${HEADERS} ${HEADERS_FORMS} ${HEADERS_MOC})
 # 
-# target_link_libraries(barChart ${QWTPLOT3D_LIBRARIES} ${OPENGL_gl_LIBRARY})
+# target_link_libraries(barChart ${QWTPLOT3D_LIBRARY} ${OPENGL_gl_LIBRARY})
 

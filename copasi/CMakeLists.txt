@@ -31,8 +31,6 @@ cmake_policy(SET CMP0011 NEW)
 
 include (common.cmake)
 
-
-
 execute_process(
 	COMMAND "${CMAKE_COMMAND}"
 	ARGS -DSRC_DIRECTORY=\"${CMAKE_SOURCE_DIR}\"
@@ -189,12 +187,6 @@ if (ENABLE_SBW_INTEGRATION)
   add_definitions(-DCOPASI_SBW_INTEGRATION)
 endif(ENABLE_SBW_INTEGRATION)
 
-if (NOT MML_LIBRARY)
-  if (EXISTS ${CMAKE_SOURCE_DIR}/copasi/mml/qtmmlwidget.cpp)
-    set(COPASI_UI_SOURCES ${CMAKE_SOURCE_DIR}/copasi/mml/qtmmlwidget.cpp ${COPASI_UI_SOURCES})
-  endif(EXISTS ${CMAKE_SOURCE_DIR}/copasi/mml/qtmmlwidget.cpp)
-endif(NOT MML_LIBRARY)
-
 #if (COPASI_UI_MOC_OPTIONS)
 #  message(STATUS "Mocing with options: ${COPASI_UI_MOC_OPTIONS}")
 #endif(COPASI_UI_MOC_OPTIONS)
@@ -257,10 +249,7 @@ include_directories(${QT_QTXML_INCLUDE_DIR})
 include_directories(${QT_QTSVG_INCLUDE_DIR})
 
 add_library(libCOPASIUI STATIC ${COPASI_UI_SOURCES} ${COPASI_UI_HEADERS} ${HEADERS_UI_FORMS} ${COPASI_RCC_SOURCES} ${HEADERS_UI_MOC})
-target_link_libraries(libCOPASIUI libCOPASI ${OPENGL_glu_LIBRARY} ${QT_QTOPENGL_LIBRARY}  ${QWT_LIBRARIES} ${QT_LIBRARIES} ${QT_QTSVG_LIBRARY})
-if (ENABLE_MML AND MML_LIBRARY)
-  target_link_libraries(libCOPASIUI ${MML_LIBRARY})
-endif()
+target_link_libraries(libCOPASIUI libCOPASI ${OPENGL_glu_LIBRARY} ${QT_QTOPENGL_LIBRARY}  ${QWT_LIBRARY} ${QT_LIBRARIES} ${QT_QTSVG_LIBRARY} ${MML_LIBRARY})
 set_target_properties (libCOPASIUI PROPERTIES OUTPUT_NAME "COPASIUI")
 
   set(UI_LIBS
@@ -289,5 +278,6 @@ set_target_properties (libCOPASIUI PROPERTIES OUTPUT_NAME "COPASIUI")
   endif(BUILD_VIEWCURRENT)
 
   add_subdirectory(CopasiSBW)
-
+  
 endif(BUILD_GUI)
+

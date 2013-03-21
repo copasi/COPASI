@@ -105,14 +105,7 @@ list(REMOVE_ITEM SOURCES_UI
 
 endif(NOT ENABLE_COPASI_NONLIN_DYN)
 
-if(NOT ENABLE_MML)
-list(REMOVE_ITEM FORMS_UI   ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQDifferentialEquations.ui)
-list(REMOVE_ITEM HEADERS_UI ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQDifferentialEquations.h)
-list(REMOVE_ITEM SOURCES_UI ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQDifferentialEquations.cpp)
-else()
-  include_directories(${MML_INCLUDE_DIR})
-endif(NOT ENABLE_MML)
-
+include_directories(${MML_INCLUDE_DIR})
 
 set(SOURCES_RCC)
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/resourcesUI/CQIconResource.h)

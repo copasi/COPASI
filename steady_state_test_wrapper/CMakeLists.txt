@@ -35,6 +35,7 @@ include(../copasi/CMakeConsoleApp.cmake)
 
 
 add_executable(steady_state_test_wrapper ${SOURCES} ${HEADERS})
+install(TARGETS steady_state_test_wrapper DESTINATION bin)
 
 add_dependencies(steady_state_test_wrapper ${SE_DEPENDENCIES}) 
 target_link_libraries(steady_state_test_wrapper ${SE_EXTERNAL_LIBS} ${SE_LIBS} )

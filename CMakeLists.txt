@@ -27,6 +27,12 @@
 cmake_minimum_required (VERSION 2.8)
 project (COPASI)
 
+#todo: write test program that compiles against CopasiVersion.h and
+#      determines the version
+set(COPASI_VERSION_MAJOR 4)
+set(COPASI_VERSION_MINOR 9)
+set(COPASI_VERSION_BUILD 45)
+
 include (CMakeTestCCompiler)
 include (CheckCSourceCompiles)
 include (CheckCXXSourceCompiles)
@@ -40,6 +46,10 @@ include (CheckTypeSize)
 
 CHECK_TYPE_SIZE("void*"  CMAKE_SIZEOF_VOID_P)
 
+set(CMAKE_INSTALL_LIBDIR lib CACHE PATH "Full path to the library output directory")
+mark_as_advanced(CMAKE_INSTALL_LIBDIR)
+
+
 set(COPASI_BUILD_TYPE "native")
 if (CMAKE_SIZEOF_VOID_P EQUAL 4)
   set(COPASI_BUILD_TYPE "32bit")
@@ -50,7 +60,9 @@ if (APPLE AND ENABLE_UNIVERSAL)
   set(COPASI_BUILD_TYPE "universal")
 endif()
 
-set(COPASI_DEPENDENCY_DIR "" CACHE STRING "Dependency Directory containing, when set dependencies will be overwritten" )
+
+
+set(COPASI_DEPENDENCY_DIR "" CACHE PATH "Dependency Directory containing, when set dependencies will be overwritten" )
 mark_as_advanced(COPASI_DEPENDENCY_DIR)
 
 if (COPASI_DEPENDENCY_DIR AND EXISTS ${COPASI_DEPENDENCY_DIR})
@@ -58,71 +70,6 @@ include(cmake-set-dependencies.cmake)
 endif(COPASI_DEPENDENCY_DIR AND EXISTS ${COPASI_DEPENDENCY_DIR})
 
 
-
-message(STATUS "-----------------------------------------------------------
- Building COPASI
-
-   Source Dir        = ${CMAKE_SOURCE_DIR}
-   Binary Dir        = ${CMAKE_BINARY_DIR}
-   Install Prefix    = ${CMAKE_INSTALL_PREFIX}
-
- Dependencies:
-
-   Raptor Lib        = ${RAPTOR_LIBRARY}
-   Raptor include    = ${RAPTOR_INCLUDE_DIR}
-
-   libSBML lib       = ${LIBSBML_LIBRARY}
-   libSBML include   = ${LIBSBML_INCLUDE_DIR}
-
-   QWT lib           = ${QWT_LIBRARIES}
-   QWT include       = ${QWT_INCLUDE_DIR}
-
-   qwtplot3d lib     = ${QWTPLOT3D_LIBRARIES}
-   qwtplot3d include = ${QWTPLOT3D_INCLUDE_DIR}
-
-   SBW lib           = ${SBW_LIBRARIES}
-   SBW include       = ${SBW_INCLUDE_DIR}
-
- Options:
-
-   CellDesigner import      = ${ENABLE_CELLDESIGNER_IMPORT}
-   Combined layout          = ${ENABLE_COMBINED_LAYOUT}
-   Auto layout              = ${ENABLE_COPASI_AUTOLAYOUT}
-   COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
-   COPASI_NONLIN_DYN        = ${ENABLE_COPASI_NONLIN_DYN}
-   Parameter sets           = ${ENABLE_COPASI_PARAMETER_SETS}
-   Render Extension         = ${ENABLE_CRENDER_EXTENSION}
-   CSP Method               = ${ENABLE_CSPMETHOD}
-   Elementary mode display  = ${ENABLE_ELEMENTARY_MODE_DISPLAY}
-   Flux animation           = ${ENABLE_FLUX_ANIMATION}
-   Screenshots              = ${ENABLE_FRAMEBUFFER_SCREENSHOTS}
-   SBW integration          = ${ENABLE_SBW_INTEGRATION}
-   SBML Unit                = ${ENABLE_USE_SBMLUNIT}
-   Model Merging            = ${ENABLE_WITH_MERGEMODEL}
-
-  Language Bindings:
-
-   SWIG                     = ${SWIG_EXECUTABLE}
-   .NET Bindings            = ${ENABLE_CSHARP}
-   Java Bindings            = ${ENABLE_JAVA}
-   Python Bindings          = ${ENABLE_PYTHON}
-   Perl Bindings            = ${ENABLE_PERL}
-
-  Building:
-
-   COPASI SE               = ${BUILD_SE}
-   COPASI UI               = ${BUILD_GUI}
-
-   C++ Examples            = ${BUILD_CXX_EXAMPLES}
-
-   SBML TestRunner         = ${BUILD_SBML_TESTSUITE}
-   Franks TestRunner       = ${BUILD_FRANKS_TESTSUITE}
-   Semantic Testsuite      = ${BUILD_SEMANTIC_TESTSUITE}
-   Stochastic Testsuite    = ${BUILD_STOCHASTIC_TESTSUITE}
-   Steady State TestRunner = ${BUILD_STEADY_STATE_RUNNER}
-
------------------------------------------------------------
-")
 
 set(CMAKE_MODULE_PATH "${COPASI_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
@@ -140,7 +87,7 @@ find_library(CPPUNIT_LIBRARY NAMES cppunit)
 endif(BUILD_TESTS)
 
 set (DEFAULT_EXTUNIT OFF)
-set (DEFAULT_NONLIN OFF)
+# set (DEFAULT_NONLIN OFF)
 set (DEFAULT_DEBUG OFF)
 set (DEFAULT_DEBUG_TRACING OFF)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -188,18 +135,16 @@ if (ENABLE_COPASI_BANDED_GRAPH)
 add_definitions(-DCOPASI_BANDED_GRAPH)
 endif(ENABLE_COPASI_BANDED_GRAPH)
 
-
-option(ENABLE_COPASI_NONLIN_DYN_OSCILLATION "Oscillation Widget" OFF)
+option(ENABLE_COPASI_NONLIN_DYN_OSCILLATION "Oscillation Widget" ON)
 if (ENABLE_COPASI_NONLIN_DYN_OSCILLATION)
-add_definitions(-DCOPASI_NONLIN_DYN_OSCILLATION)
+  add_definitions(-DCOPASI_NONLIN_DYN_OSCILLATION)
 endif()
 
-option(ENABLE_COPASI_NONLIN_DYN "Non linear Dynamics" ${DEFAULT_NONLIN})
+option(ENABLE_COPASI_NONLIN_DYN "Non linear Dynamics" ON)
 if (ENABLE_COPASI_NONLIN_DYN)
-# COPASI_NONLIN_DYN
-add_definitions(-DCOPASI_NONLIN_DYN)
-
+  add_definitions(-DCOPASI_NONLIN_DYN)
 endif(ENABLE_COPASI_NONLIN_DYN)
+
 option(ENABLE_COPASI_EXTUNIT "Extended Unit Support" ${DEFAULT_EXTUNIT})
 if (ENABLE_COPASI_EXTUNIT)
 # COPASI_EXTUNIT
@@ -214,7 +159,7 @@ add_definitions(-DWITH_MERGEMODEL)
 
 endif(ENABLE_WITH_MERGEMODEL)
 
-option (BUILD_GUI "Enable this if you want to build the COPASI frontend (CopasiUI)." OFF)
+option (BUILD_GUI "Disable this if you do not want to build the COPASI GUI (CopasiUI)." ON)
 
 find_package(OpenGL)
 
@@ -459,7 +404,7 @@ if(ENABLE_CRENDER_EXTENSION)
 add_definitions(-DUSE_CRENDER_EXTENSION)
 endif(ENABLE_CRENDER_EXTENSION)
 
-option (ENABLE_COPASI_AUTOLAYOUT "Build COPASI with support for generating automatic diagram layout." OFF)
+option (ENABLE_COPASI_AUTOLAYOUT "Build COPASI with support for generating automatic diagram layout." ON)
 mark_as_advanced(ENABLE_COPASI_AUTOLAYOUT)
 if(ENABLE_COPASI_AUTOLAYOUT)
 add_definitions(-DCOPASI_AUTOLAYOUT)
@@ -471,14 +416,13 @@ if(ENABLE_COPASI_PARAMETER_SETS)
 add_definitions(-DCOPASI_PARAMETER_SETS)
 endif(ENABLE_COPASI_PARAMETER_SETS)
 
-
-option (ENABLE_ELEMENTARY_MODE_DISPLAY "Build COPASI with support for highlighting elementary modes in diagrams." OFF)
+option (ENABLE_ELEMENTARY_MODE_DISPLAY "Build COPASI with support for highlighting elementary modes in diagrams." ON)
 mark_as_advanced(ENABLE_ELEMENTARY_MODE_DISPLAY)
 if(ENABLE_ELEMENTARY_MODE_DISPLAY)
 add_definitions(-DELEMENTARY_MODE_DISPLAY)
 endif(ENABLE_ELEMENTARY_MODE_DISPLAY)
 
-option (ENABLE_FLUX_ANIMATION "Enable support for animating fluxes in diagrams." OFF)
+option (ENABLE_FLUX_ANIMATION "Enable support for animating fluxes in diagrams." ON)
 mark_as_advanced(ENABLE_FLUX_ANIMATION)
 if(ENABLE_FLUX_ANIMATION)
 add_definitions(-DFLUX_ANIMATION)
@@ -502,49 +446,12 @@ if(ENABLE_USE_SBMLUNIT)
 add_definitions(-DUSE_SBMLUNIT)
 endif(ENABLE_USE_SBMLUNIT)
 
-option (ENABLE_COMBINED_LAYOUT "Transitional code to get rid of the two OpenGL renderer implementations." ON)
-mark_as_advanced(ENABLE_COMBINED_LAYOUT)
-if(ENABLE_COMBINED_LAYOUT)
-add_definitions(-DCOMBINED_LAYOUT)
-endif(ENABLE_COMBINED_LAYOUT)
+# if the MML widget is available, we need to enable "HAVE_MML"
 
 option(ENABLE_MML "Enable the MML widget" ON)
-if (ENABLE_MML)
+
+find_package(QtMmlQt4 REQUIRED)
 add_definitions(-DHAVE_MML)
-
-find_path(MML_INCLUDE_DIR qtmmlwidget.h
-    $ENV{LIBSBML_DIR}/include
-    $ENV{LIBSBML_DIR}
-	${CMAKE_SOURCE_DIR}/copasi/mml
-	${CMAKE_SOURCE_DIR}/../mml
-    ~/Library/Frameworks
-    /Library/Frameworks
-    /usr/local/include
-    /usr/include/
-    /sw/include # Fink
-    /opt/local/include # DarwinPorts
-    /opt/csw/include # Blastwave
-    /opt/include
-    /usr/freeware/include
-)
-
-find_library(MML_LIBRARY
-    NAMES mml
-    PATHS
-    ~/Library/Frameworks
-    /Library/Frameworks
-    /usr/local/lib
-    /usr/local/lib64
-    /usr/lib
-    /usr/lib64
-    /sw/lib
-    /opt/local/lib
-    /opt/csw/lib
-    /opt/lib
-    /usr/freeware/lib64
-)
-
-endif(ENABLE_MML)
 
 option (BUILD_SEMANTIC_TESTSUITE "Build the program to run the SBML semantic testsuite." OFF)
 option (BUILD_STEADY_STATE_RUNNER "Build the program to run the comparisons on steady state results." OFF)
@@ -578,8 +485,6 @@ endif()
 # mkoctfile
 # R binary
 
-# if the MML widget is available, we need to enable "HAVE_MML"
-
 #if we link statically, which is the default under windows, we need the following defines
 # XML_STATIC
 # LIBSBML_STATIC
@@ -604,15 +509,76 @@ endif()
 # windows needs the following define
 #DEFINES -= UNICODE
 #DEFINES += _CRT_SECURE_NO_WARNINGS
-# windows need to define the runtime MD, MDd, MT or MTd
-# windows has some nodefaultlib
-#    QMAKE_LFLAGS *= /NODEFAULTLIB:"msvcrt.lib"
-#    QMAKE_LFLAGS *= /NODEFAULTLIB:"msvcrtd.lib"
-#    QMAKE_LFLAGS *= /NODEFAULTLIB:"msvcprt.lib"
-#    QMAKE_LFLAGS *= /NODEFAULTLIB:"msvcprtd.lib"
-#
-#    release: QMAKE_LFLAGS *= /NODEFAULTLIB:"libcmtd.lib"
-#    debug: QMAKE_LFLAGS *= /NODEFAULTLIB:"libcmt.lib"
+
+
+# are we using the intel compiler
+set(USING_INTEL)
+if (WIN32 AND CMAKE_C_COMPILER AND ${CMAKE_C_COMPILER} MATCHES ".*icl.*$")
+  message(STATUS "Detected Intel Compiler")
+  set(USING_INTEL TRUE)
+endif ()
+
+# if using msvc or intel windows compiler allow for the use of the static runtime
+if(MSVC OR USING_INTEL)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE)
+    set(BUILD_DEFINITIONS "${BUILD_DEFINITIONS} -D_CRT_SECURE_NO_WARNINGS")
+    option(WITH_STATIC_RUNTIME "Compile using the static MSVC Runtime." OFF)
+    if(WITH_STATIC_RUNTIME)
+        foreach(flag_var
+            CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+            CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO
+            CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE
+            CMAKE_C_FLAGS_MINSIZEREL CMAKE_C_FLAGS_RELWITHDEBINFO)
+
+            if(${flag_var} MATCHES "/MD")
+                string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+            endif(${flag_var} MATCHES "/MD")
+        endforeach(flag_var)
+    add_definitions( -D_MT)
+    endif(WITH_STATIC_RUNTIME)
+endif(MSVC OR USING_INTEL)
+
+
+
+set(APPS "" CACHE INTERNAL "")
+set(DIRS "${COPASI_DEPENDENCY_DIR}/bin;${COPASI_DEPENDENCY_DIR}/lib" CACHE INTERNAL "")
+if (QT_BINARY_DIR)
+  set(DIRS ${DIRS} ${QT_BINARY_DIR} CACHE INTERNAL "")
+endif()
+if (QT_LIBRARY_DIR)
+  set(DIRS ${DIRS} ${QT_LIBRARY_DIR} CACHE INTERNAL "")
+endif()
+
+
+
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "COPASI is a software application for simulation and analysis of biochemical networks and their dynamics..")
+set(CPACK_PACKAGE_NAME "COPASI")
+set(CPACK_PACKAGE_VENDOR "The COPASI Team")
+set(CPACK_PACKAGE_CONTACT "COPASI Team <copasi-devel@vbi.vt.edu>")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/copasi/ArtisticLicense.txt")
+set(CPACK_PACKAGE_VERSION_MAJOR "${COPASI_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${COPASI_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${COPASI_VERSION_BUILD}")
+set(CPACK_RPM_PACKAGE_LICENSE "Artistic License")
+set(CPACK_RPM_PACKAGE_GROUP "Applications/Engineering")
+set(CPACK_DEBIAN_PACKAGE_SECTION "Applications")
+
+set(CPACK_SOURCE_IGNORE_FILES "${CMAKE_CURRENT_BINARY_DIR};/.svn/;/.libs/;/.deps/;/.bzr/;.*.o$;.*.lo$;.*.la$;${CPACK_SOURCE_IGNORE_FILES};/.DS_Store;/.svnignore;blib;libsbml-dist")
+
+if(UNIX)
+    set(CPACK_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
+    set(CPACK_SET_DESTDIR "ON")
+endif()
+
+if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+    set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386")
+    set(CPACK_RPM_PACKAGE_ARCHITECTURE "i386")
+else()
+    set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
+    set(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
+endif()
+
+include(CPack)
 
 add_subdirectory(copasi)
 
@@ -635,4 +601,91 @@ endif (BUILD_FRANKS_TESTSUITE)
 if(BUILD_STEADY_STATE_RUNNER)
 add_subdirectory(steady_state_test_wrapper)
 endif (BUILD_STEADY_STATE_RUNNER)
+
+# also install additional files and examples
+file(GLOB_RECURSE WIZARD_HELP_FILES "${PROJECT_SOURCE_DIR}/copasi/wizard/help_html" copasi/wizard/help_html/*.html)
+file(GLOB_RECURSE WIZARD_IMAGE_FILES "${PROJECT_SOURCE_DIR}/copasi/wizard/help_html/figures" copasi/wizard/help_html/figures/*.png)
+file(GLOB_RECURSE EXAMPLE_FILES "${PROJECT_SOURCE_DIR}/TestSuite/distribution" TestSuite/distribution/*.*)
+install(FILES ${WIZARD_HELP_FILES} DESTINATION share/copasi/doc/html)
+install(FILES ${WIZARD_IMAGE_FILES} DESTINATION share/copasi/doc/html/figures)
+install(FILES ${EXAMPLE_FILES} DESTINATION share/copasi/examples)
+install(FILES  
+		"${PROJECT_SOURCE_DIR}/copasi/UI/icons/Copasi.ico"
+		"${PROJECT_SOURCE_DIR}/copasi/UI/icons/CopasiDoc.ico"
+        DESTINATION share/copasi/icons)
+install(FILES  
+		"${PROJECT_SOURCE_DIR}/copasi/MIRIAM/MIRIAMResources.xml"
+        DESTINATION share/copasi/config)
+
+# set up variables for cpack
+include(InstallRequiredSystemLibraries)
+
+message(STATUS "-----------------------------------------------------------
+ Building COPASI
+
+   Source Dir        = ${CMAKE_SOURCE_DIR}
+   Binary Dir        = ${CMAKE_BINARY_DIR}
+   Install Prefix    = ${CMAKE_INSTALL_PREFIX}
+
+ Dependencies:
+
+   Raptor Lib        = ${RAPTOR_LIBRARY}
+   Raptor include    = ${RAPTOR_INCLUDE_DIR}
+
+   libSBML lib       = ${LIBSBML_LIBRARY}
+   libSBML include   = ${LIBSBML_INCLUDE_DIR}
+
+   QWT lib           = ${QWT_LIBRARY}
+   QWT include       = ${QWT_INCLUDE_DIR}
+
+   qwtplot3d lib     = ${QWTPLOT3D_LIBRARY}
+   qwtplot3d include = ${QWTPLOT3D_INCLUDE_DIR}
+
+   qtmml lib         = ${MML_LIBRARY}
+   qtmml include     = ${MML_INCLUDE_DIR}
+   
+   SBW lib           = ${SBW_LIBRARIES}
+   SBW include       = ${SBW_INCLUDE_DIR}
+
+ Options:
+
+   CellDesigner import      = ${ENABLE_CELLDESIGNER_IMPORT}
+   Auto layout              = ${ENABLE_COPASI_AUTOLAYOUT}
+   COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
+   Non linear dynamics      = ${ENABLE_COPASI_NONLIN_DYN}
+   Parameter sets           = ${ENABLE_COPASI_PARAMETER_SETS}
+   Render Extension         = ${ENABLE_CRENDER_EXTENSION}
+   CSP Method               = ${ENABLE_CSPMETHOD}
+   Elementary mode display  = ${ENABLE_ELEMENTARY_MODE_DISPLAY}
+   Flux animation           = ${ENABLE_FLUX_ANIMATION}
+   Screenshots              = ${ENABLE_FRAMEBUFFER_SCREENSHOTS}
+   SBW integration          = ${ENABLE_SBW_INTEGRATION}
+   SBML Unit                = ${ENABLE_USE_SBMLUNIT}
+   Model Merging            = ${ENABLE_WITH_MERGEMODEL}
+
+  Language Bindings:
+
+   SWIG                     = ${SWIG_EXECUTABLE}
+   .NET Bindings            = ${ENABLE_CSHARP}
+   Java Bindings            = ${ENABLE_JAVA}
+   Python Bindings          = ${ENABLE_PYTHON}
+   Perl Bindings            = ${ENABLE_PERL}
+   Octave Bindings          = ${ENABLE_OCTAVE}
+   R Bindings               = ${ENABLE_R}
+
+  Building:
+
+   COPASI SE               = ${BUILD_SE}
+   COPASI UI               = ${BUILD_GUI}
+
+   C++ Examples            = ${BUILD_CXX_EXAMPLES}
+
+   SBML TestRunner         = ${BUILD_SBML_TESTSUITE}
+   Franks TestRunner       = ${BUILD_FRANKS_TESTSUITE}
+   Semantic Testsuite      = ${BUILD_SEMANTIC_TESTSUITE}
+   Stochastic Testsuite    = ${BUILD_STOCHASTIC_TESTSUITE}
+   Steady State TestRunner = ${BUILD_STEADY_STATE_RUNNER}
+
+-----------------------------------------------------------
+")
 
