@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelWidget.cpp,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/09 21:32:15 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,8 +17,8 @@
 #include "copasi/report/CCopasiRootContainer.h"
 
 CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
-    CopasiWidget(parent, name),
-    mpModel(NULL)
+  CopasiWidget(parent, name),
+  mpModel(NULL)
 {
   setupUi(this);
 
@@ -81,16 +73,6 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
   mpComboQuantityUnit->clear();
   mpComboQuantityUnit->insertItems(0, ComboEntries);
 
-  ComboEntries.clear();
-
-  for (pComboEntries = CModel::ModelTypeNames; *pComboEntries != NULL; ++pComboEntries)
-    {
-      ComboEntries.push_front(QString::fromUtf8(*pComboEntries));
-    }
-
-  mpComboModelType->clear();
-  mpComboModelType->insertItems(0, ComboEntries);
-
 #ifndef COPASI_EXTUNIT
   mpLblAreaUnit->hide();
   mpComboAreaUnit->hide();
@@ -113,11 +95,14 @@ void CQModelWidget::load()
   mpComboQuantityUnit->setCurrentIndex(mpComboQuantityUnit->findText(FROM_UTF8(mpModel->getQuantityUnitName())));
   mpComboAreaUnit->setCurrentIndex(mpComboAreaUnit->findText(FROM_UTF8(mpModel->getAreaUnitName())));
   mpComboLengthUnit->setCurrentIndex(mpComboLengthUnit->findText(FROM_UTF8(mpModel->getLengthUnitName())));
-  mpComboModelType->setCurrentIndex(mpComboModelType->findText(CModel::ModelTypeNames[mpModel->getModelType()]));
 
-  mpLblTimeUnit->setText("Time (" + mpComboTimeUnit->currentText() + ")");
+  mpCheckStochasticCorrection->setChecked(mpModel->getModelType() == CModel::deterministic);
+
+  mpLblInitialTime->setText("Initial Time (" + mpComboTimeUnit->currentText() + ")");
   mpEditInitialTime->setText(QString::number(mpModel->getInitialTime()));
   mpEditInitialTime->setReadOnly(mpModel->isAutonomous());
+
+  mpLblCurrentTime->setText("Time (" + mpComboTimeUnit->currentText() + ")");
   mpEditCurrentTime->setText(QString::number(mpModel->getTime()));
 
   return;
@@ -160,9 +145,17 @@ void CQModelWidget::save()
       changed = true;
     }
 
-  if (TO_UTF8(mpComboModelType->currentText()) != std::string(CModel::ModelTypeNames[mpModel->getModelType()]))
+  if (mpCheckStochasticCorrection->isChecked() != (mpModel->getModelType() == CModel::deterministic))
     {
-      mpModel->setModelType(toEnum(TO_UTF8(mpComboModelType->currentText()), CModel::ModelTypeNames, CModel::deterministic));
+      if (mpCheckStochasticCorrection->isChecked())
+        {
+          mpModel->setModelType(CModel::deterministic);
+        }
+      else
+        {
+          mpModel->setModelType(CModel::stochastic);
+        }
+
       changed = true;
     }
 
