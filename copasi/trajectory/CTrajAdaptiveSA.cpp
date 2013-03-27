@@ -499,7 +499,7 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const 
             {
               size_t TmpMax;
 
-              if ((TmpMax = (size_t) abs(**ppModelSpecies / *pMultiplicity)) < *pMaxReactionFiring)
+              if ((TmpMax = (size_t) fabs(**ppModelSpecies / *pMultiplicity)) < *pMaxReactionFiring)
                 {
                   *pMaxReactionFiring = TmpMax;
                 }
