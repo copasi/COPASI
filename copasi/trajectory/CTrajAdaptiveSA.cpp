@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -10,15 +10,14 @@
 # pragma warning (disable: 4355)
 #endif  // WIN32
 
-#include <limits.h>
+#include <limits>
 
 #include <vector>
 #include <numeric>
 #include <limits>
 #include <set>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <string>
+#include <cmath>
 
 #include "copasi.h"
 #include "CTrajAdaptiveSA.h"
@@ -30,7 +29,6 @@
 #include "model/CCompartment.h"
 #include "model/CModel.h"
 
-#define mtxIdx(row,col,intv)  ((row)+(col)*(intv))
 CTrajAdaptiveSA::CReactionDependencies::CReactionDependencies():
   mMethodSpeciesIndex(0),
   mSpeciesMultiplier(0),
@@ -759,6 +757,12 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleSSAStep(const C_FLOAT64 & curTime, const C_FL
       if (mA0 == 0)
         {
           return endTime - curTime;
+        }
+
+      // We need to throw an exception if mA0 is NaN
+      if (isnan(mA0))
+        {
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 27);
         }
 
       mNextReactionTime = curTime - log(mpRandomGenerator->getRandomOO()) / mA0;

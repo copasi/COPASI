@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.cpp,v $
-//   $Revision: 1.21 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/04 17:37:43 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -36,6 +28,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <cmath>
 
 #include "copasi.h"
 #include "CStochDirectMethod.h"
@@ -49,27 +42,27 @@
 #include "model/CModel.h"
 
 CStochDirectMethod::CReactionDependencies::CReactionDependencies():
-    mSpeciesMultiplier(0),
-    mMethodSpecies(0),
-    mModelSpecies(0),
-    mCalculations(),
-    mDependentReactions(0),
-    mSubstrateMultiplier(0),
-    mMethodSubstrates(0),
-    mModelSubstrates(0),
-    mpParticleFlux(NULL)
+  mSpeciesMultiplier(0),
+  mMethodSpecies(0),
+  mModelSpecies(0),
+  mCalculations(),
+  mDependentReactions(0),
+  mSubstrateMultiplier(0),
+  mMethodSubstrates(0),
+  mModelSubstrates(0),
+  mpParticleFlux(NULL)
 {}
 
 CStochDirectMethod::CReactionDependencies::CReactionDependencies(const CReactionDependencies & src):
-    mSpeciesMultiplier(src.mSpeciesMultiplier),
-    mMethodSpecies(src.mMethodSpecies),
-    mModelSpecies(src.mModelSpecies),
-    mCalculations(src.mCalculations),
-    mDependentReactions(src.mDependentReactions),
-    mSubstrateMultiplier(src.mSubstrateMultiplier),
-    mMethodSubstrates(src.mMethodSubstrates),
-    mModelSubstrates(src.mModelSubstrates),
-    mpParticleFlux(src.mpParticleFlux)
+  mSpeciesMultiplier(src.mSpeciesMultiplier),
+  mMethodSpecies(src.mMethodSpecies),
+  mModelSpecies(src.mModelSpecies),
+  mCalculations(src.mCalculations),
+  mDependentReactions(src.mDependentReactions),
+  mSubstrateMultiplier(src.mSubstrateMultiplier),
+  mMethodSubstrates(src.mMethodSubstrates),
+  mModelSubstrates(src.mModelSubstrates),
+  mpParticleFlux(src.mpParticleFlux)
 {}
 
 CStochDirectMethod::CReactionDependencies::~CReactionDependencies()
@@ -91,38 +84,38 @@ CStochDirectMethod::CReactionDependencies & CStochDirectMethod::CReactionDepende
 }
 
 CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent):
-    CTrajectoryMethod(CCopasiMethod::directMethod, pParent),
-    mpRandomGenerator(CRandom::createGenerator(CRandom::mt19937)),
-    mpModel(NULL),
-    mNumReactions(0),
-    mMaxSteps(1000000),
-    mNextReactionTime(0.0),
-    mNextReactionIndex(C_INVALID_INDEX),
-    mDoCorrection(true),
-    mAmu(0),
-    mA0(0.0),
-    mMethodState(),
-    mReactionDependencies(0),
-    mMaxStepsReached(false)
+  CTrajectoryMethod(CCopasiMethod::directMethod, pParent),
+  mpRandomGenerator(CRandom::createGenerator(CRandom::mt19937)),
+  mpModel(NULL),
+  mNumReactions(0),
+  mMaxSteps(1000000),
+  mNextReactionTime(0.0),
+  mNextReactionIndex(C_INVALID_INDEX),
+  mDoCorrection(true),
+  mAmu(0),
+  mA0(0.0),
+  mMethodState(),
+  mReactionDependencies(0),
+  mMaxStepsReached(false)
 {
   initializeParameter();
 }
 
 CStochDirectMethod::CStochDirectMethod(const CStochDirectMethod & src,
                                        const CCopasiContainer * pParent):
-    CTrajectoryMethod(src, pParent),
-    mpRandomGenerator(CRandom::createGenerator(CRandom::mt19937)),
-    mpModel(src.mpModel),
-    mNumReactions(src.mNumReactions),
-    mMaxSteps(src.mMaxSteps),
-    mNextReactionTime(src.mNextReactionTime),
-    mNextReactionIndex(src.mNextReactionIndex),
-    mDoCorrection(src.mDoCorrection),
-    mAmu(src.mAmu),
-    mA0(src.mA0),
-    mMethodState(src.mMethodState),
-    mReactionDependencies(src.mReactionDependencies),
-    mMaxStepsReached(src.mMaxStepsReached)
+  CTrajectoryMethod(src, pParent),
+  mpRandomGenerator(CRandom::createGenerator(CRandom::mt19937)),
+  mpModel(src.mpModel),
+  mNumReactions(src.mNumReactions),
+  mMaxSteps(src.mMaxSteps),
+  mNextReactionTime(src.mNextReactionTime),
+  mNextReactionIndex(src.mNextReactionIndex),
+  mDoCorrection(src.mDoCorrection),
+  mAmu(src.mAmu),
+  mA0(src.mA0),
+  mMethodState(src.mMethodState),
+  mReactionDependencies(src.mReactionDependencies),
+  mMaxStepsReached(src.mMaxStepsReached)
 {
   initializeParameter();
 }
@@ -440,6 +433,12 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(const C_FLOAT64 & curTime, const C_FL
       if (mA0 == 0)
         {
           return endTime - curTime;
+        }
+
+      // We need to throw an exception if mA0 is NaN
+      if (isnan(mA0))
+        {
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 27);
         }
 
       mNextReactionTime = curTime - log(mpRandomGenerator->getRandomOO()) / mA0;
