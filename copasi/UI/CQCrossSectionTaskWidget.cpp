@@ -75,8 +75,14 @@ void CQCrossSectionTaskWidget::init()
   verticalLayout->insertWidget(0, mpHeaderWidget);
 
   mpMethodWidget->showMethodParameters(true);
+  mpGridLayout->addWidget(mpMethodWidget->mpLblParameter, 11, 0, 1, 1);
+  mpGridLayout->addWidget(mpMethodWidget->mpTableParameter, 11, 1, 1, 2);
 
-  verticalLayout->addWidget(mpMethodWidget);
+  // unsigned int ValidMethods = CCopasiMethod::unset;
+  // mpMethodWidget->setValidMethods(&ValidMethods);
+  // mpMethodWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+
+  // verticalLayout->addWidget(mpMethodWidget);
   verticalLayout->addWidget(mpBtnWidget);
 
   mpValidatorCrossing = new CQValidatorDouble(mpLineEditValue);
@@ -565,9 +571,9 @@ void CQCrossSectionTaskWidget::showUnits()
   if (mpDataModel != NULL &&
       (pModel = mpDataModel->getModel()) != NULL)
     {
-      TimeUnits = " (" + FROM_UTF8(pModel->getTimeUnitsDisplayString()) + ")";
+      TimeUnits = "(" + FROM_UTF8(pModel->getTimeUnitsDisplayString()) + ")";
     }
 
-  mpLblDurationLimit->setText("Duration Limit" + TimeUnits);
-  mpCheckOutputDelay->setText("suppress before" + TimeUnits);
+  mpLblDurationLimit->setText("if detection time " + TimeUnits + " larger:");
+  mpCheckOutputDelay->setText("if time " + TimeUnits + " larger:");
 }

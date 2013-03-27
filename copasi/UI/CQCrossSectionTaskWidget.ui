@@ -12,8 +12,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>597</width>
-    <height>327</height>
+    <width>528</width>
+    <height>349</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,7 +21,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QGridLayout" name="gridLayout">
+    <layout class="QGridLayout" name="mpGridLayout">
      <item row="0" column="0">
       <widget class="QLabel" name="mpLblVariable">
        <property name="minimumSize">
@@ -34,7 +34,7 @@
         <string>Variable:</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
        </property>
       </widget>
      </item>
@@ -135,14 +135,7 @@
        </item>
       </layout>
      </item>
-     <item row="2" column="1" colspan="2">
-      <widget class="Line" name="line_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
+     <item row="2" column="0" colspan="2">
       <widget class="QLabel" name="label_4">
        <property name="minimumSize">
         <size>
@@ -151,17 +144,17 @@
         </size>
        </property>
        <property name="text">
-        <string>Simulation:</string>
+        <string>Stop detecting crossings after any condition is met:</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
        </property>
       </widget>
      </item>
      <item row="3" column="1">
       <widget class="QLabel" name="mpLblDurationLimit">
        <property name="text">
-        <string>Duration Limit</string>
+        <string>if detection time (s) larger:</string>
        </property>
       </widget>
      </item>
@@ -193,7 +186,7 @@
      <item row="4" column="1">
       <widget class="QCheckBox" name="mpCheckSimCrossings">
        <property name="text">
-        <string>Crossings Limit (#)</string>
+        <string>if crossings (#) larger:</string>
        </property>
       </widget>
      </item>
@@ -222,7 +215,7 @@
      <item row="5" column="1">
       <widget class="QCheckBox" name="mpCheckSimConvergence">
        <property name="text">
-        <string>until Convergence with Tolerance </string>
+        <string>if a crossing is repeated within tolerance:</string>
        </property>
       </widget>
      </item>
@@ -248,14 +241,7 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="1" colspan="2">
-      <widget class="Line" name="line_4">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
+     <item row="6" column="0" colspan="2">
       <widget class="QLabel" name="mpLblLT">
        <property name="minimumSize">
         <size>
@@ -264,17 +250,17 @@
         </size>
        </property>
        <property name="text">
-        <string>Output:</string>
+        <string>Find crossings after any condition is met:</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
        </property>
       </widget>
      </item>
      <item row="7" column="1">
       <widget class="QCheckBox" name="mpCheckOutputDelay">
        <property name="text">
-        <string>suppress before</string>
+        <string>if time (s) larger:</string>
        </property>
       </widget>
      </item>
@@ -306,7 +292,7 @@
      <item row="8" column="1">
       <widget class="QCheckBox" name="mpCheckOutputCrossings">
        <property name="text">
-        <string>suppress before Crossings (#)</string>
+        <string>if crossings (#) larger:</string>
        </property>
       </widget>
      </item>
@@ -338,7 +324,7 @@
      <item row="9" column="1">
       <widget class="QCheckBox" name="mpCheckOutputConvergence">
        <property name="text">
-        <string>suppress until Convergence with Tolerance</string>
+        <string>if a crossing is repeated within tolerance:</string>
        </property>
       </widget>
      </item>
