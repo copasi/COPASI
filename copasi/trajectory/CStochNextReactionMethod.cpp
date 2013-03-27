@@ -1,24 +1,18 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochNextReactionMethod.cpp,v $
-//   $Revision: 1.13 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/04 17:58:01 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+#include <cmath>
 
 #include "copasi.h"
 #include "CStochNextReactionMethod.h"
@@ -27,7 +21,7 @@
 #include "model/CModel.h"
 
 CStochNextReactionMethod::CStochNextReactionMethod()
-    : CStochMethod()
+  : CStochMethod()
 {}
 
 void CStochNextReactionMethod::initMethod(C_FLOAT64 start_time)
@@ -38,6 +32,12 @@ void CStochNextReactionMethod::initMethod(C_FLOAT64 start_time)
 C_FLOAT64 CStochNextReactionMethod::doSingleStep(C_FLOAT64 C_UNUSED(time), C_FLOAT64 endTime)
 {
   C_FLOAT64 steptime = mPQ.topKey();
+
+  // We need to throw an exception if mA0 is NaN
+  if (isnan(steptime))
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 27);
+    }
 
   if (steptime >= endTime)
     {
