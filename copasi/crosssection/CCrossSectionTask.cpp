@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,25 +28,9 @@
 #include "utilities/CCopasiException.h"
 #include  "CopasiDataModel/CCopasiDataModel.h"
 
-#define C_GET_STRING(target,args)\
-  {\
-    std::stringstream str; str << args;target = str.str();\
-  }
-
-using namespace std;
-
 const unsigned int CCrossSectionTask::ValidMethods[] =
 {
   CCopasiMethod::deterministic,
-  //  CCopasiMethod::stochastic,
-  //CCopasiMethod::directMethod,
-  //CCopasiMethod::tauLeap,
-  //CCopasiMethod::adaptiveSA,
-  //CCopasiMethod::hybrid,
-  //CCopasiMethod::hybridLSODA,
-#ifdef COPASI_DEBUG
-  CCopasiMethod::DsaLsodar,
-#endif // COPASI_DEBUG
   CCopasiMethod::unset
 };
 
@@ -69,7 +53,17 @@ CCrossSectionTask::CCrossSectionTask(const CCopasiContainer * pParent):
   mProgressValue(0),
   mProgressFactor(1),
   mpEvent(NULL),
-  mState(CCrossSectionTask::TRANSIENT)
+  mState(CCrossSectionTask::TRANSIENT),
+  mStatesRing(),
+  mStatesRingCounter(0),
+  mPreviousCrossingTime(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mPeriod(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mAveragePeriod(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mLastPeriod(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mPeriodicity(-1),
+  mLastFreq(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mFreq(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mAverageFreq(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
 {
   initObjects();
   mpProblem = new CCrossSectionProblem(this);
@@ -97,7 +91,17 @@ CCrossSectionTask::CCrossSectionTask(const CCrossSectionTask & src,
   mProgressValue(0),
   mProgressFactor(1),
   mpEvent(NULL),
-  mState(CCrossSectionTask::TRANSIENT)
+  mState(CCrossSectionTask::TRANSIENT),
+  mStatesRing(),
+  mStatesRingCounter(0),
+  mPreviousCrossingTime(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mPeriod(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mAveragePeriod(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mLastPeriod(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mPeriodicity(-1),
+  mLastFreq(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mFreq(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mAverageFreq(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
 {
   initObjects();
   mpProblem =
@@ -119,13 +123,6 @@ CCrossSectionTask::~CCrossSectionTask()
 void CCrossSectionTask::cleanup()
 {
   pdelete(mpCurrentState);
-  
-  std::vector<CState*>::iterator it;
-  for (it=mvStatesRing.begin(); it!=mvStatesRing.end(); ++it)
-  {
-    pdelete(*it);
-  }
-  mvStatesRing.clear();
 }
 
 void CCrossSectionTask::initObjects()
@@ -169,20 +166,9 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
   mpCurrentTime = &mpCurrentState->getTime();
 
   //init the ring buffer for the states
-  std::vector<CState*>::iterator it;
-  for (it=mvStatesRing.begin(); it!=mvStatesRing.end(); ++it)
-  {
-    pdelete(*it);
-  }
-  mvStatesRing.resize(RING_SIZE);
-  for (it=mvStatesRing.begin(); it!=mvStatesRing.end(); ++it)
-  {
-    *it = new CState(mpCrossSectionProblem->getModel()->getState());
-  }
-  //mvTimesRing.resize(RING_SIZE);
-  mStatesRingCounter=0;
+  mStatesRing.resize(RING_SIZE);
+  mStatesRingCounter = 0;
 
-  
   // Handle the time series as a regular output.
   mTimeSeriesRequested = true;//mpCrossSectionProblem->timeSeriesRequested();
 
@@ -215,19 +201,21 @@ void CCrossSectionTask::createEvent()
       std::string name = "__cutplane";
 
       while (pModel->getEvents().getIndex(name) != C_INVALID_INDEX)
-        C_GET_STRING(name, "__cutplane" << ++count);
+        {
+          std::stringstream str;
+          str << "__cutplane" << ++count;
+          name = str.str();
+        }
 
       mpEvent = pModel->createEvent(name);
-      mpEvent  -> setType(CEvent::CutPlane);
+      mpEvent->setType(CEvent::CutPlane);
+
       std::stringstream expression;
       expression << "<" << mpCrossSectionProblem->getSingleObjectCN() << "> "
                  << (mpCrossSectionProblem->isPositiveDirection() ? std::string(" > ") : std::string(" < "))
-                 << mpCrossSectionProblem->getThreshold()
-                 ;
+                 << mpCrossSectionProblem->getThreshold();
 
-      mpEvent ->setTriggerExpression(
-        expression.str()
-      );
+      mpEvent ->setTriggerExpression(expression.str());
     }
 
   pModel->setCompileFlag();
@@ -263,16 +251,24 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
   mFreq = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
   mAverageFreq = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
-  
   C_FLOAT64 MaxDuration = mpCrossSectionProblem->getDuration();
 
   //the output starts only after "outputStartTime" has passed
-  mOutputStartTime = *mpCurrentTime + mpCrossSectionProblem->getOutputStartTime();
+  if (mpCrossSectionProblem->getFlagLimitOutTime())
+    {
+      mOutputStartTime = *mpCurrentTime + mpCrossSectionProblem->getOutputStartTime();
+      MaxDuration += mpCrossSectionProblem->getOutputStartTime();
+    }
+  else
+    {
+      mOutputStartTime = *mpCurrentTime;
+    }
+
   const C_FLOAT64 EndTime = *mpCurrentTime + MaxDuration;
   mStartTime = *mpCurrentTime;
 
   // It suffices to reach the end time within machine precision
-  C_FLOAT64 CompareEndTime = EndTime - 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
+  C_FLOAT64 CompareEndTime = mOutputStartTime - 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
 
   if (mpCrossSectionProblem->getFlagLimitCrossings())
     mMaxNumCrossings = mpCrossSectionProblem->getCrossingsLimit();
@@ -287,20 +283,20 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
   output(COutputInterface::BEFORE);
 
   bool flagProceed = true;
-  mProgressFactor = 1000.0 / MaxDuration;
+  mProgressFactor = 100.0 / (MaxDuration + mpCrossSectionProblem->getOutputStartTime());
   mProgressValue = 0;
 
   if (mpCallBack != NULL)
     {
       mpCallBack->setName("performing simulation...");
-      mProgressMax = 1000;
+      mProgressMax = 100.0;
       mhProgress = mpCallBack->addItem("Completion",
                                        mProgressValue,
                                        &mProgressMax);
     }
 
   mState = TRANSIENT;
-  mStatesRingCounter=0;
+  mStatesRingCounter = 0;
 
   mNumCrossings = 0;
 
@@ -441,7 +437,6 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
 
 void CCrossSectionTask::finish()
 {
-
   //reset call back
   mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
 
@@ -514,25 +509,17 @@ void CCrossSectionTask::EventCallBack(void* pCSTask, CEvent::Type type)
 
 void CCrossSectionTask::eventCallBack(CEvent::Type type)
 {
-//  std::cout << "event call back: " << type << std::endl;
+  //  std::cout << "event call back: " << type << std::endl;
 
   //do progress reporting
   if (mpCallBack != NULL)
     {
       mProgressValue = (*mpCurrentTime - mStartTime) * mProgressFactor;
 
-      if (mMaxNumCrossings > 0)
+      if (!mpCallBack->progressItem(mhProgress))
         {
-          C_FLOAT64 tmp = 1000.0 * mNumCrossings / mMaxNumCrossings;
-
-          if (tmp > mProgressValue)
-            mProgressValue = tmp;
+          mState = FINISH;
         }
-
-      bool flag = mpCallBack->progressItem(mhProgress);
-
-      if (!flag)
-        mState = FINISH;
     }
 
   //do nothing else if the event is not representing a cut plane
@@ -541,105 +528,110 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
 
   mpProblem->getModel()->setState(*mpCurrentState);
   mpProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
-  
-  
-  //count the crossings
+
+  // count the crossings
   ++mNumCrossings;
 
-  
-  //now check if we can transition to the main state
+  // now check if we can transition to the main state
   if (mState == TRANSIENT)
     {
-      if (mpCrossSectionProblem->getFlagLimitOutTime() && *mpCurrentTime >= mOutputStartTime)
-      {
-        mState = MAIN;
-        mStatesRingCounter=0;
-      }
-
-      if (mpCrossSectionProblem->getFlagLimitOutCrossings() && mNumCrossings >= mOutputStartNumCrossings)
-      {
-        mState = MAIN;
-        mStatesRingCounter=0;
-      }
-
-        if (mStatesRingCounter>0)
-        { 
-          int i;
-          for (i=mStatesRingCounter-1; i>=0 && i>=((int)mStatesRingCounter)-RING_SIZE; --i)
-          {
-            C_FLOAT64 tmp = relativeDifferenceOfStates(mvStatesRing[i%RING_SIZE],
-                                                     mpCurrentState);
-            if (tmp < mpCrossSectionProblem->getConvergenceOutTolerance())
-            {
-              mPeriodicity=mStatesRingCounter - i;
-              mPeriod = *mpCurrentTime - mvStatesRing[i%RING_SIZE]->getTime();
-              mFreq = 1/mPeriod;
-              mAveragePeriod = mPeriod/((C_FLOAT64)mPeriodicity);
-              mAverageFreq = 1/mAveragePeriod;
-              
-              if (mpCrossSectionProblem->getFlagLimitOutConvergence())
-              {
-                mState = MAIN;
-                mStatesRingCounter=0; 
-              }
-              break;
-            }
-            //std::cout << i << "  " << tmp     << std::endl;
-          }
+      // if output is not delayed by time and not delayed by number of crossings
+      // and also not delayed by convergence
+      // output is started immediately
+      if (!mpCrossSectionProblem->getFlagLimitOutCrossings() &&
+          !mpCrossSectionProblem->getFlagLimitOutTime() &&
+          !mpCrossSectionProblem->getFlagLimitOutConvergence())
+        {
+          mState = MAIN;
         }
-      
-      //if output is not delayed by time and not delayed by number of crossings
-      // and also not delayed by convergence 
-      //output is started immediately
-      if (!mpCrossSectionProblem->getFlagLimitOutCrossings()
-          && !mpCrossSectionProblem->getFlagLimitOutTime()
-          && !mpCrossSectionProblem->getFlagLimitOutConvergence())
-        mState = MAIN;
+      else if (mpCrossSectionProblem->getFlagLimitOutTime() && *mpCurrentTime >= mOutputStartTime)
+        {
+          mState = MAIN;
+        }
+      else if (mpCrossSectionProblem->getFlagLimitOutCrossings() && mNumCrossings >= mOutputStartNumCrossings)
+        {
+          mState = MAIN;
+        }
+      else if (mpCrossSectionProblem->getFlagLimitOutConvergence() &&
+               mStatesRingCounter > 0)
+        {
+          int i;
 
+          for (i = mStatesRingCounter - 1; i >= 0 && i >= ((int) mStatesRingCounter) - RING_SIZE; --i)
+            {
+              C_FLOAT64 tmp = relativeDifferenceOfStates(&mStatesRing[i % RING_SIZE],
+                              mpCurrentState);
+
+              if (tmp < mpCrossSectionProblem->getConvergenceOutTolerance())
+                {
+                  mPeriodicity = mStatesRingCounter - i;
+                  mPeriod = *mpCurrentTime - mStatesRing[i % RING_SIZE].getTime();
+                  mFreq = 1 / mPeriod;
+                  mAveragePeriod = mPeriod / ((C_FLOAT64)mPeriodicity);
+                  mAverageFreq = 1 / mAveragePeriod;
+
+                  mState = MAIN;
+                  break;
+                }
+
+              //std::cout << i << "  " << tmp     << std::endl;
+            }
+        }
+
+      if (mState == MAIN)
+        {
+          mStatesRingCounter = 0;
+          mNumCrossings = 1;
+        }
     }
 
   if (mState == MAIN)
     {
-      //check for convergence (actually for the occurence of similar states)
-        if (mStatesRingCounter>0)
-        { 
+      //check for convergence (actually for the occurrence of similar states)
+      if (mStatesRingCounter > 0)
+        {
           int i;
-          for (i=mStatesRingCounter-1; i>=0 && i>=((int)mStatesRingCounter)-RING_SIZE; --i)
-          {
-            C_FLOAT64 tmp = relativeDifferenceOfStates(mvStatesRing[i%RING_SIZE],
-                                                       mpCurrentState);
-            if (tmp < mpCrossSectionProblem->getConvergenceTolerance())
+
+          for (i = mStatesRingCounter - 1; i >= 0 && i >= ((int) mStatesRingCounter) - RING_SIZE; --i)
             {
-              mPeriodicity=mStatesRingCounter - i;
-              mPeriod = *mpCurrentTime - mvStatesRing[i%RING_SIZE]->getTime();
-              mFreq = 1/mPeriod;
-              mAveragePeriod = mPeriod/((C_FLOAT64)mPeriodicity);
-              mAverageFreq = 1/mAveragePeriod;
-              
-              if (mpCrossSectionProblem->getFlagLimitConvergence())
-                mState = FINISH;
-              break;
+              C_FLOAT64 tmp = relativeDifferenceOfStates(&mStatesRing[i % RING_SIZE],
+                              mpCurrentState);
+
+              if (tmp < mpCrossSectionProblem->getConvergenceTolerance())
+                {
+                  mPeriodicity = mStatesRingCounter - i;
+                  mPeriod = *mpCurrentTime - mStatesRing[i % RING_SIZE].getTime();
+                  mFreq = 1 / mPeriod;
+                  mAveragePeriod = mPeriod / ((C_FLOAT64)mPeriodicity);
+                  mAverageFreq = 1 / mAveragePeriod;
+
+                  if (mpCrossSectionProblem->getFlagLimitConvergence())
+                    mState = FINISH;
+
+                  break;
+                }
+
+              //std::cout << "MAIN" << i << "  " << tmp     << std::endl;
             }
-            //std::cout << "MAIN" << i << "  " << tmp     << std::endl;
-          }
         }
-      
+
       if (!isnan(mPreviousCrossingTime))
-        mLastPeriod = *mpCurrentTime-mPreviousCrossingTime;
-      mLastFreq = 1/mLastPeriod;
-      
+        {
+          mLastPeriod = *mpCurrentTime - mPreviousCrossingTime;
+        }
+
+      mLastFreq = 1 / mLastPeriod;
+
       output(COutputInterface::DURING);
+
+      //check if the conditions for stopping are met
+      //we don't have to check for maximum duration, this is done elsewhere
+      if (mMaxNumCrossings > 0 && mNumCrossings >= mMaxNumCrossings)
+        mState = FINISH;
     }
 
-  //check if the conditions for stopping are met
-  //we don't have to check for maximum duration, this is done elsewhere
-  if (mMaxNumCrossings > 0 && mNumCrossings >= mMaxNumCrossings)
-    mState = FINISH;
-
-  
   //store state in ring buffer
-  *(mvStatesRing[mStatesRingCounter % RING_SIZE]) = *mpCurrentState;
-  //mvTimesRing[mStatesRingCounter % RING_SIZE]= *mpCurrentTime;
+  mStatesRing[mStatesRingCounter % RING_SIZE] = *mpCurrentState;
   mPreviousCrossingTime = *mpCurrentTime;
   ++mStatesRingCounter;
 }
@@ -648,21 +640,26 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
 C_FLOAT64 CCrossSectionTask::relativeDifferenceOfStates(CState* s1, CState* s2)
 {
   if (!s1 || !s2)
-    return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
-    
-  if (s1->endIndependent()-s1->beginIndependent() 
-      != s2->endIndependent()-s2->beginIndependent() )
-    return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
-  
-  C_FLOAT64 ret=0;
-  const C_FLOAT64* p1, *p2;
-  for (p1=s1->beginIndependent(), p2=s2->beginIndependent();
-       p1 != s1->endIndependent(); ++p1, ++p2)
-  {
-    ret += pow(fabs(*p1 - *p2)/((*p1 + *p2)<1e-12 ? 1e-12 : (*p1 + *p2)), 2);
-  }
-  
-  return sqrt(ret);
-  
-}
+    {
+      return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+    }
 
+  if (s1->endIndependent() - s1->beginIndependent()
+      != s2->endIndependent() - s2->beginIndependent())
+    {
+      return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+    }
+
+  C_FLOAT64 ret = 0;
+
+  const C_FLOAT64 * p1 = s1->beginIndependent();
+  const C_FLOAT64 * p1End = s1->endIndependent();
+  const C_FLOAT64 * p2 = s2->beginIndependent();
+
+  for (; p1 != p1End; ++p1, ++p2)
+    {
+      ret += (*p1 != *p2) ? pow((*p1 - *p2) / (fabs(*p1) + fabs(*p2)), 2) : 0.0;
+    }
+
+  return 2.0 * sqrt(ret);
+}

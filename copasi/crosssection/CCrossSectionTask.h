@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -109,7 +109,7 @@ private:
    * this holds the current value for the progress reporting
    */
   C_FLOAT64 mProgressFactor;
-  
+
   /**
    * temporary event
    */
@@ -126,13 +126,13 @@ private:
   };
 
   STATE mState;
-  
-  std::vector<CState*> mvStatesRing; 
+
+  std::vector< CState > mStatesRing;
   //std::vector<C_FLOAT64> mvTimesRing;
-  
+
   //the number of states already pushed to the ring buffer
   size_t mStatesRingCounter;
-  
+
   C_FLOAT64 mPreviousCrossingTime;
   C_FLOAT64 mPeriod;
   C_FLOAT64 mAveragePeriod;
@@ -141,7 +141,6 @@ private:
   C_FLOAT64 mLastFreq;
   C_FLOAT64 mFreq;
   C_FLOAT64 mAverageFreq;
-  
 
 public:
   /**
@@ -241,8 +240,7 @@ private:
    * initialize the object references
    */
   void initObjects();
-  
-  
+
   /**
    * this is the static call back function that is called by the
    * process queue when an event is executed-
@@ -263,7 +261,7 @@ private:
    * -resets call back function
    */
   void finish();
-  
+
   static C_FLOAT64 relativeDifferenceOfStates(CState* s1, CState* s2);
 };
 #endif // COPASI_CCrossSectionTask
