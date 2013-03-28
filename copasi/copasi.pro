@@ -133,6 +133,12 @@ DISTFILES += \
         lib.pri \
         srcDistribution.pri 
 
+DISTFILES += CMakeLists.txt
+DISTFILES += CMakeConsoleApp.cmake
+DISTFILES += CMakeUIApp.cmake
+DISTFILES += CMakeUILib.cmake
+DISTFILES += common.cmake
+
 include(srcDistribution.pri)
 
 src_distribution.commands = \

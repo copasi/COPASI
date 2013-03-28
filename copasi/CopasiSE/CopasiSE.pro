@@ -1,22 +1,14 @@
-# Begin CVS Header
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.pro,v $
-#   $Revision: 1.44 $
-#   $Name:  $
-#   $Author: shoops $
-#   $Date: 2011/05/25 15:12:15 $
-# End CVS Header
-
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
@@ -26,7 +18,8 @@
 
 TEMPLATE = app
 SRC_TARGET = CopasiSE
-DISTFILES = CopasiSE.pro
+DISTFILES += CopasiSE.pro
+DISTFILES += CMakeLists.txt
 
 CONFIG -= qt
 

@@ -64,19 +64,25 @@ cp README.Linux copasi-${buildname}-src
 cp README.SunOS copasi-${buildname}-src
 cp README.Win32 copasi-${buildname}-src
 cp README_MAC.rtf copasi-${buildname}-src
-
 cp copasi/ArtisticLicense.txt copasi-${buildname}-src/LICENSE.txt
 
-cp --parent admin/flex.sh copasi-${buildname}-src
-cp --parent admin/install-sh copasi-${buildname}-src
-cp --parent admin/missing copasi-${buildname}-src
-cp --parent admin/mkbuild.sh copasi-${buildname}-src
-cp --parent admin/yacc.sh copasi-${buildname}-src
-cp --parent admin/include.sh copasi-${buildname}-src
-cp --parent admin/libs.sh copasi-${buildname}-src
+cp CMakeLists.txt copasi-${buildname}-src
+cp *.cmake copasi-${buildname}-src
+mkdir copasi-${buildname}-src/CMakeModules
+cp CMakeModules/*.cmake copasi-${buildname}-src/CMakeModules
+
+mkdir copasi-${buildname}-src/admin
+cp admin/flex.sh copasi-${buildname}-src/admin
+cp admin/install-sh copasi-${buildname}-src/admin
+cp admin/missing copasi-${buildname}-src/admin
+cp admin/mkbuild.sh copasi-${buildname}-src/admin
+cp admin/yacc.sh copasi-${buildname}-src/admin
+cp admin/include.sh copasi-${buildname}-src/admin
+cp admin/libs.sh copasi-${buildname}-src/admin
 chmod 755 copasi-${buildname}-src/admin/*
 
-cp --parent cvs_admin/c++style copasi-${buildname}-src
+mkdir copasi-${buildname}-src/cvs_admin
+cp cvs_admin/c++style copasi-${buildname}-src/cvs_admin
 chmod 755 copasi-${buildname}-src/cvs_admin/*
 
 cp admin/configure.in copasi-${buildname}-src
@@ -84,7 +90,8 @@ cp admin/configure.bat copasi-${buildname}-src
 cp admin/Makefile.am copasi-${buildname}-src
 
 #include GL/glext.h
-cp --parent copasi/GL/glext.h copasi-${buildname}-src
+mkdir copasi-${buildname}-src/copasi/GL
+cp copasi/GL/glext.h copasi-${buildname}-src/copasi/GL
 
 cd copasi-${buildname}-src
 
