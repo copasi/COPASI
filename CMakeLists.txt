@@ -410,7 +410,7 @@ if(ENABLE_COPASI_AUTOLAYOUT)
 add_definitions(-DCOPASI_AUTOLAYOUT)
 endif(ENABLE_COPASI_AUTOLAYOUT)
 
-option (ENABLE_COPASI_PARAMETER_SETS "Build COPASI with support for parameter sets." ON)
+option (ENABLE_COPASI_PARAMETER_SETS "Build COPASI with support for parameter sets." OFF)
 mark_as_advanced(ENABLE_COPASI_PARAMETER_SETS)
 if(ENABLE_COPASI_PARAMETER_SETS)
 add_definitions(-DCOPASI_PARAMETER_SETS)

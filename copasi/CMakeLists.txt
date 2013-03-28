@@ -277,7 +277,12 @@ set_target_properties (libCOPASIUI PROPERTIES OUTPUT_NAME "COPASIUI")
     add_subdirectory(ViewCurrentUI)
   endif(BUILD_VIEWCURRENT)
 
-  add_subdirectory(CopasiSBW)
+  option(BUILD_COPASISBW "Build the CopasiML to SBML L3V1 tanslator for SBW." OFF)
+  mark_as_advanced(BUILD_COPASISBW)
+
+  if(BUILD_COPASISBW)
+    add_subdirectory(CopasiSBW)
+  endif(BUILD_COPASISBW)
   
 endif(BUILD_GUI)
 
