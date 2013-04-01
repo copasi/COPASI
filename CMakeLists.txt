@@ -213,6 +213,10 @@ add_definitions(-DWin32)
 endif()
 endif()
 
+IF(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+  add_definitions(-DFreeBSD)
+endif()
+
 set (BUILD_33 OFF)
 if (EXISTS ${CMAKE_SOURCE_DIR}/copasi/UI/objectdebug.cpp)
 set (BUILD_33 ON)
