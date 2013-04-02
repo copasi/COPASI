@@ -902,6 +902,7 @@ void CMathEventN::allocateDiscontinuous(CMathEventN * pEvent,
 }
 
 CMathEventN::CMathEventN():
+  mType(CEvent::Assignment),
   mTrigger(),
   mAssignments(),
   mpDelay(NULL),
