@@ -611,9 +611,9 @@ bool CMetab::compileInitialValueDependencies()
       mpIValueReference->setDirectDependencies(Dependencies);
       Dependencies.clear();
 
-      // If we have constant initial expression, we update the initial concentration.
-      if (mpInitialExpression->isUsable() &&
-          mpIConcReference->getDirectDependencies().size() == 0)
+      // If we have a valid initial expression, we update the initial value.
+      // In case the expression is constant this suffices others are updated lated again.
+      if (mpInitialExpression->isUsable())
         mIConc = mpInitialExpression->calcValue();
 
       return success;
