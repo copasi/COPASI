@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -175,9 +175,9 @@ bool CModelEntity::compile()
       success &= mpInitialExpression->compile(listOfContainer);
       mpIValueReference->setDirectDependencies(mpInitialExpression->getDirectDependencies());
 
-      // If we have constant initial expression, we update the initial value.
-      if (mpInitialExpression->isUsable() &&
-          mpIValueReference->getDirectDependencies().size() == 0)
+      // If we have a valid initial expression, we update the initial value.
+      // In case the expression is constant this suffices other are updated lated again.
+      if (mpInitialExpression->isUsable())
         *mpIValue = mpInitialExpression->calcValue();
     }
   else
