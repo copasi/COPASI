@@ -123,6 +123,61 @@ CEvaluationNode::Type CEvaluationNode::subType(const Type & type)
 CEvaluationNode::Type CEvaluationNode::type(const Type & type)
 {return (Type)(type & 0xFF000000);}
 
+// static
+const char * CEvaluationNode::Keywords[] =
+{
+  "log", "LOG",
+  "log10", "LOG10",
+  "exp", "EXP",
+  "sin", "SIN",
+  "cos", "COS",
+  "tan", "TAN",
+  "sec", "SEC",
+  "csc", "CSC",
+  "cot", "COT",
+  "sinh", "SINH",
+  "cosh", "COSH",
+  "tanh", "TANH",
+  "sech", "SECH",
+  "csch", "CSCH",
+  "coth", "COTH",
+  "asin", "ASIN",
+  "acos", "ACOS",
+  "atan", "ATAN",
+  "arcsec", "ARCSEC",
+  "arccsc", "ARCCSC",
+  "arccot", "ARCCOT",
+  "arcsinh", "ARCSINH",
+  "arccosh", "ARCCOSH",
+  "arctanh", "ARCTANH",
+  "arcsech", "ARCSECH",
+  "arccsch", "ARCCSCH",
+  "arccoth", "ARCCOTH",
+  "sqrt", "SQRT",
+  "abs", "ABS",
+  "floor", "FLOOR",
+  "ceil", "CEIL",
+  "factorial", "FACTORIAL",
+  "uniform", "UNIFORM",
+  "normal", "NORMAL",
+  "max", "MAX",
+  "min", "MIN",
+  "delay", "DELAY",
+  "if", "IF",
+  NULL
+};
+
+// static
+bool CEvaluationNode::isKeyword(const std::string & str)
+{
+  const char ** pKeyword = Keywords;
+
+  for (; *pKeyword != NULL; ++pKeyword)
+    if (!strcmp(str.c_str(), *pKeyword)) return true;
+
+  return false;
+}
+
 CEvaluationNode::CEvaluationNode():
   CCopasiNode<Data>(""),
   mType(CEvaluationNode::INVALID),
