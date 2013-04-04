@@ -32,7 +32,7 @@ case "$1" in
         tool="`which $3`"
       fi
 
-      setGitConfig $2 "${tool}" --path
+      setGitConfig copasi.$2 "${tool}" --path
     fi
     ;;
 

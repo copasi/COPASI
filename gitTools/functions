@@ -40,7 +40,7 @@ function checkGitTool () {
       echo "  use:"
     fi
 
-    echo "    initTools $1 '<application to use>'"
+    echo "    initTools --tool $1 '<application to use>'"
     echo
   fi
 }
