@@ -219,8 +219,6 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
   link_directories(/usr/local/lib)
 endif()
 
-# Add this to above conditional, if it works
-
 set (BUILD_33 OFF)
 if (EXISTS ${CMAKE_SOURCE_DIR}/copasi/UI/objectdebug.cpp)
 set (BUILD_33 ON)
