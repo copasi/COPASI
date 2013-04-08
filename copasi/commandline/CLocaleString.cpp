@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CLocaleString.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:26:18 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -98,7 +90,7 @@ CLocaleString CLocaleString::fromUtf8(const std::string & utf8)
 
   size_t Utf8Length = utf8.length();
   char * Utf8 = strdup(utf8.c_str());
-#if (defined FreeBSD | defined SunOS) // non standard iconv declaration :(
+#if (defined FreeBSD || defined SunOS) // non standard iconv declaration :(
   const char * pUtf8 = Utf8;
 #else
   char * pUtf8 = Utf8;
@@ -132,7 +124,7 @@ CLocaleString CLocaleString::fromUtf8(const std::string & utf8)
 
               Locale = new char[LocaleLength];
               memcpy(Locale, pTmp,
-                     sizeof(char) *(OldLength - SpaceLeft - 1));
+                     sizeof(char) * (OldLength - SpaceLeft - 1));
               pLocale = Locale + OldLength - SpaceLeft - 1;
               SpaceLeft += 2 * Utf8Length;
               delete [] pTmp;
@@ -161,17 +153,16 @@ CLocaleString CLocaleString::fromUtf8(const std::string & utf8)
 #endif
 }
 
-
 CLocaleString::CLocaleString():
-    mpStr(NULL)
+  mpStr(NULL)
 {}
 
 CLocaleString::CLocaleString(const CLocaleString::lchar * str):
-    mpStr((str != NULL) ? strdup(str) : NULL)
+  mpStr((str != NULL) ? strdup(str) : NULL)
 {}
 
 CLocaleString::CLocaleString(const CLocaleString & src):
-    mpStr((src.mpStr != NULL) ? strdup(src.mpStr) : NULL)
+  mpStr((src.mpStr != NULL) ? strdup(src.mpStr) : NULL)
 {}
 
 CLocaleString::~CLocaleString()
@@ -195,7 +186,6 @@ CLocaleString & CLocaleString::operator = (const CLocaleString & rhs)
 
   return *this;
 }
-
 
 CLocaleString & CLocaleString::operator = (const CLocaleString::lchar * rhs)
 {
@@ -296,7 +286,7 @@ std::string CLocaleString::toUtf8() const
 
               Utf8 = new char[Utf8Length];
               memcpy(Utf8, pTmp,
-                     sizeof(char) *(OldLength - SpaceLeft - 1));
+                     sizeof(char) * (OldLength - SpaceLeft - 1));
               pUtf8 = Utf8 + OldLength - SpaceLeft - 1;
               SpaceLeft += 2 * LocaleLength;
               delete [] pTmp;
@@ -330,5 +320,3 @@ const CLocaleString::lchar * CLocaleString::c_str() const
 {
   return mpStr;
 }
-
-
