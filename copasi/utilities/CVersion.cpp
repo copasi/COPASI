@@ -50,9 +50,10 @@ CVersion::CVersion(C_INT32 major,
   mCompatible()
 {
   C_INT32 Compatible[] = COPASI_VERSION_COMPATIBILITY;
+  int length = sizeof(Compatible) / sizeof(Compatible[0]);
   C_INT32 * pCompatible = Compatible;
 
-  for (; *pCompatible != mBuild; pCompatible++)
+  for (int count = 0; count < length && *pCompatible != mBuild; pCompatible++, count++)
     {
       mCompatible.insert(*pCompatible);
     }
