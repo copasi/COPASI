@@ -202,6 +202,7 @@ public:
   const CVector< CAssignment > & getAssignments() const;
 
 private:
+  CEvent::Type mType;
   CTrigger mTrigger;
   CVector< CAssignment > mAssignments;
   CMathObject * mpDelay;

@@ -1,4 +1,4 @@
-# Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -18,7 +18,8 @@
 
 TEMPLATE = app
 SRC_TARGET = CopasiUI
-DISTFILES = CopasiUI.pro
+DISTFILES += CopasiUI.pro
+DISTFILES += CMakeLists.txt
 
 CONFIG += qt
 

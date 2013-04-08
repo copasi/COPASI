@@ -51,6 +51,11 @@ CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
   mData = unQuote(mData);
 
   // We force quoting if the round trip unquote, quote does not recover the original input
+  if (isKeyword(mData))
+    {
+      mQuotesRequired = true;
+    }
+
   if (mData != data && quote(mData) != data)
     {
       mQuotesRequired = true;
@@ -203,12 +208,20 @@ bool CEvaluationNodeCall::calls(std::set< std::string > & list) const
 // virtual
 const CEvaluationNode::Data & CEvaluationNodeCall::getData() const
 {
+  // We determine whether quoting is required here since we can not be sure
+  // that the original infix is correct.
+
   std::string Data;
+
+  if (isKeyword(mData))
+    {
+      mQuotesRequired = true;
+    }
 
   if (mpFunction != NULL)
     {
       Data = mpFunction->getObjectName();
-      mQuotesRequired = mpFunction->getObjectName() != unQuote(quote(Data));
+      mQuotesRequired |= mpFunction->getObjectName() != unQuote(quote(Data));
 
       return mpFunction->getObjectName();
     }
@@ -216,7 +229,7 @@ const CEvaluationNode::Data & CEvaluationNodeCall::getData() const
   if (mpExpression != NULL)
     {
       Data = mpExpression->getObjectName();
-      mQuotesRequired = mpExpression->getObjectName() != unQuote(quote(Data));
+      mQuotesRequired |= mpExpression->getObjectName() != unQuote(quote(Data));
 
       return mpExpression->getObjectName();
     }
@@ -230,6 +243,11 @@ bool CEvaluationNodeCall::setData(const Data & data)
   mData = unQuote(data);
 
   // We force quoting if the round trip unquote, quote does not recover the original input
+  if (isKeyword(mData))
+    {
+      mQuotesRequired = true;
+    }
+
   if (mData != data && quote(mData) != data)
     {
       mQuotesRequired = true;
@@ -245,6 +263,7 @@ std::string CEvaluationNodeCall::getInfix(const std::vector< std::string > & chi
 {
   std::string Infix;
 
+  //We use getData instead of mData since getData also detects whether quoting is needed.
   const std::string & Data = getData();
 
   if (mQuotesRequired)
@@ -571,7 +590,14 @@ std::string CEvaluationNodeCall::getMMLString(const std::vector< std::string > &
           {
             out << "<mrow>" << std::endl;
 
-            out << "<mi>" << CMathMl::fixName(mData) << "</mi>" << std::endl;
+            std::string Data = getData();
+
+            if (mQuotesRequired)
+              {
+                Data = "\"" + quote(Data, "-+^*/%(){},\t\r\n\"") + "\"";
+              }
+
+            out << "<mi>" << CMathMl::fixName(Data) << "</mi>" << std::endl;
             out << "<mrow>" << std::endl;
             out << "<mo>(</mo>" << std::endl;
             out << "<mrow>" << std::endl;

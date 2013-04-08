@@ -127,7 +127,7 @@ private:
 
   STATE mState;
 
-  std::vector<CState*> mvStatesRing;
+  std::vector< CState > mStatesRing;
   //std::vector<C_FLOAT64> mvTimesRing;
 
   //the number of states already pushed to the ring buffer

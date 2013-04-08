@@ -133,6 +133,7 @@ const MESSAGES Messages[] =
   {MCTrajectoryMethod + 24, "CTrajectoryMethod (24): The model contains a species with an assignment. Hybrid simulation is not possible with this version of COPASI."},
   {MCTrajectoryMethod + 25, "CTrajectoryMethod (25): Invalid state at time '%f'."},
   {MCTrajectoryMethod + 26, "CTrajectoryMethod (26): A tau-Leap step encountered numerical problems.\nPlease check whether some particle numbers are large."},
+  {MCTrajectoryMethod + 27, "CTrajectoryMethod (27): Numerical problem: a propensity is NaN."},
 
   // XML Package
   {MCXML + 1, "XML (1): Required attribute '%s' not found (line: '%d')."},

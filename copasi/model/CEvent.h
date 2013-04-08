@@ -155,6 +155,7 @@ public:
   enum Type
   {
     Assignment,
+    Discontinuity,
     CutPlane
   };
 

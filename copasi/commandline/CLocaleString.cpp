@@ -98,7 +98,7 @@ CLocaleString CLocaleString::fromUtf8(const std::string & utf8)
 
   size_t Utf8Length = utf8.length();
   char * Utf8 = strdup(utf8.c_str());
-#ifdef SunOS // non standard iconv declaration :(
+#if (defined FreeBSD | defined SunOS) // non standard iconv declaration :(
   const char * pUtf8 = Utf8;
 #else
   char * pUtf8 = Utf8;
@@ -262,7 +262,7 @@ std::string CLocaleString::toUtf8() const
 
   size_t LocaleLength = strlen(mpStr);
   char * Locale = strdup(mpStr);
-#ifdef SunOS // non standard iconv declaration :(
+#if (defined FreeBSD | defined SunOS) // non standard iconv declaration :(
   const char * pLocale = Locale;
 #else
   char * pLocale = Locale;

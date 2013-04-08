@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,7 +25,7 @@ class CFunctionParameters;
 class CCopasiDataModel;
 
 /**
- * This is the class for nodes presenting opertors used in an evaluation trees.
+ * This is the class for nodes presenting operators used in an evaluation trees.
  */
 class CEvaluationNodeCall : public CEvaluationNode
 {
