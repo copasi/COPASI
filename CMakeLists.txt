@@ -183,6 +183,8 @@ include_directories(BEFORE ${LIBSBML_INCLUDE_DIR})
 # TODO test the SWIG version
 find_package(SWIG)
 
+# on non windows / osx systems we do need iconv
+find_package(ICONV)
 
 #platform specific defines
 

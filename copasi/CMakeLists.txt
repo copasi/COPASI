@@ -87,9 +87,20 @@ include_directories(
 
 )
 
+#need to include iconv dir
+if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
+  include_directories(${ICONV_INCLUDE_DIR})
+endif()
+
+
 add_library(libCOPASI STATIC ${COPASI_SOURCES} ${COPASI_HEADERS})
 target_link_libraries(libCOPASI ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES})
 set_target_properties (libCOPASI PROPERTIES OUTPUT_NAME "COPASISE")
+
+#need to link against iconv
+if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
+  target_link_libraries(libCOPASI ${ICONV_LIBRARIES})
+endif()
 
 # add all directories with libraries to the list of
 # directories the linker searches
