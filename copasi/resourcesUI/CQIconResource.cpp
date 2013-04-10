@@ -1,7 +1,7 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 /*
  * CQIconResource.cpp
@@ -29,6 +29,7 @@ void CQIconResource::init()
 
   Icons.resize(_size);
 
+  Icons[bars].addFile(QString::fromUtf8(":/images/bars.png"), QSize(), QIcon::Normal, QIcon::Off);
   Icons[captureImage].addFile(QString::fromUtf8(":/images/captureImage.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[copasi].addFile(QString::fromUtf8(":/images/copasi.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[checkMark].addFile(QString::fromUtf8(":/images/checkMark.png"), QSize(), QIcon::Normal, QIcon::On);
@@ -65,6 +66,7 @@ void CQIconResource::init()
   Icons[separator].addFile(QString::fromUtf8(":/images/separator.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[slider].addFile(QString::fromUtf8(":/images/slider.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[sToIs].addFile(QString::fromUtf8(":/images/sToIs.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[table].addFile(QString::fromUtf8(":/images/table.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[tool].addFile(QString::fromUtf8(":/images/tool.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[unlocked].addFile(QString::fromUtf8(":/images/unlocked.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[zoomOut].addFile(QString::fromUtf8(":/images/zoomOut.png"), QSize(), QIcon::Normal, QIcon::On);

@@ -1,24 +1,16 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQArrayAnnotationsWidget.cpp,v $
-//   $Revision: 1.50 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 15:41:45 $
-// End CVS Header
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #ifdef SunOS
 #include <ieeefp.h>
@@ -36,6 +28,8 @@
 #include <iostream>
 
 #include "barChart/qwt3dPlot.h"
+
+#include "resourcesUI/CQIconResource.h"  //icons for bars and table toggle button
 
 #ifdef DEBUG_UI
 #include <QtDebug>
@@ -602,7 +596,7 @@ void CQArrayAnnotationsWidget::switchToTable()
 
   if (mWithBarChart)
     {
-      mpButton->setText("Bars");
+      mpButton->setIcon(CQIconResource::icon(CQIconResource::bars));
       setFocusOnTable();
     }
 }
@@ -633,7 +627,7 @@ void CQArrayAnnotationsWidget::switchToBarChart()
       mpStack->setCurrentWidget(mpPlot3d);
       mpPlot3d->show();
 
-      mpButton->setText("Table");
+      mpButton->setIcon(CQIconResource::icon(CQIconResource::table));
     }
 }
 
@@ -999,6 +993,6 @@ void CQArrayAnnotationsWidget::createBarChart()
 
 //  mpStack->addWidget(mpPlot3d, 1);
   mpStack->addWidget(mpPlot3d);
-  mpButton->setText("Bars");
+  mpButton->setIcon(CQIconResource::icon(CQIconResource::bars));
   mBarChartFilled = false;
 }

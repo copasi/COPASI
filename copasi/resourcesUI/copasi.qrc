@@ -1,5 +1,6 @@
 <RCC>
   <qresource>
+    <file>images/bars.png</file>
     <file>images/captureImage.png</file>
     <file>images/checkMark.png</file>
     <file>images/copasi.png</file>
@@ -36,6 +37,7 @@
     <file>images/separator.png</file>
     <file>images/slider.png</file>
     <file>images/sToIs.png</file>
+    <file>images/table.png</file>
     <file>images/tool.png</file>
     <file>images/unlocked.png</file>
     <file>images/zoomOut.png</file>

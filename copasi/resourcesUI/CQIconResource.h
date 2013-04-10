@@ -1,7 +1,7 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #ifndef COPASI_CQIconResource
 #define COPASI_CQIconResource
@@ -14,7 +14,8 @@ class CQIconResource
 public:
   enum IconID
   {
-    captureImage = 0,
+    bars = 0,
+    captureImage,
     checkMark,
     copasi,
     edit,
@@ -50,6 +51,7 @@ public:
     separator,
     slider,
     sToIs,
+    table,
     tool,
     unlocked,
     zoomOut,
