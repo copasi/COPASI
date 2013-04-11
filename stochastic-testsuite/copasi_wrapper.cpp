@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #define COPASI_MAIN
 
@@ -31,8 +31,8 @@
 #include "copasi/trajectory/CTrajectoryTask.h"
 #include "copasi/trajectory/CTrajectoryMethod.h"
 #include "copasi/trajectory/CTrajectoryProblem.h"
-#include "copasi/report/CReportDefinitionVector.h"
-#include "copasi/report/CReportDefinition.h"
+#include "copasi/report/CReportTemplateVector.h"
+#include "copasi/report/CReportTemplate.h"
 #include "copasi/scan/CScanTask.h"
 #include "copasi/scan/CScanProblem.h"
 
@@ -162,8 +162,8 @@ int main(int argc, char *argv[])
 
       // create a report with the correct filename and all the species against
       // time.
-      CReportDefinitionVector* pReports = pDataModel->getReportDefinitionList();
-      CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for stochastic testsuite run");
+      CReportTemplateVector* pReports = pDataModel->getReportTemplateList();
+      CReportTemplate* pReport = pReports->createReportTemplate("Report", "Output for stochastic testsuite run");
       pReport->setTaskType(CCopasiTask::timeCourse);
       pReport->setIsTable(false);
 
@@ -213,7 +213,7 @@ int main(int argc, char *argv[])
       pTrajectoryTask->getProblem()->setModel(pDataModel->getModel());
       pTrajectoryTask->setScheduled(false);
 
-      //pTrajectoryTask->getReport().setReportDefinition(pReport);
+      //pTrajectoryTask->getReport().setReportTemplate(pReport);
       //pTrajectoryTask->getReport().setTarget(CWD + "/" + pOutputFilename);
       //pTrajectoryTask->getReport().setAppend(false);
 
@@ -239,7 +239,7 @@ int main(int argc, char *argv[])
 
       pScanTask->setScheduled(true);
 
-      pScanTask->getReport().setReportDefinition(pReport);
+      pScanTask->getReport().setReportTemplate(pReport);
       pScanTask->getReport().setTarget(CWD + "/" + pOutputFilename);
       pScanTask->getReport().setAppend(false);
 

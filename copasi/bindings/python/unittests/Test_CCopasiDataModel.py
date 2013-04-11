@@ -1,21 +1,17 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CCopasiDataModel.py,v $ 
-#   $Revision: 1.16 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2010/07/16 18:56:00 $ 
-# End CVS Header 
+# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+# Properties, Inc., University of Heidelberg, and The University </comment>
+# of Manchester. </comment>
+# All rights reserved. </comment>
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., University of Heidelberg, and The University 
-# of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+# and The University of Manchester. </comment>
+# All rights reserved. </comment>
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
+# Properties, Inc. and EML Research, gGmbH. </comment>
+# All rights reserved. </comment>
 
 import COPASI
 import unittest
@@ -82,16 +78,16 @@ class Test_CCopasiDataModel(unittest.TestCase):
     self.assert_(self.datamodel.getTaskList().size()!=0)
 
 
-  def test_getReportDefinitionList(self):
-    reportDefinitionList=self.datamodel.getReportDefinitionList()
-    self.assert_(reportDefinitionList.__class__==COPASI.CReportDefinitionVector)
+  def test_getReportTemplateList(self):
+    reportTemplateList=self.datamodel.getReportTemplateList()
+    self.assert_(reportTemplateList.__class__==COPASI.CReportTemplateVector)
 
   def test_addDefaultReports(self):
-    while(self.datamodel.getReportDefinitionList().size()!=0):
-        self.datamodel.getReportDefinitionList().remove(0)
-    self.assert_(self.datamodel.getReportDefinitionList().size()==0)
+    while(self.datamodel.getReportTemplateList().size()!=0):
+        self.datamodel.getReportTemplateList().remove(0)
+    self.assert_(self.datamodel.getReportTemplateList().size()==0)
     self.datamodel.addDefaultReports()
-    self.assert_(self.datamodel.getReportDefinitionList().size()!=0)
+    self.assert_(self.datamodel.getReportTemplateList().size()!=0)
 
   def test_getFileName(self):
     self.datamodel.loadModel(CPS_FILE)
@@ -110,8 +106,8 @@ class Test_CCopasiDataModel(unittest.TestCase):
     self.CHECK_CALCIUM_JUERGEN_MODEL()
     # test getTaskList
     taskList=self.datamodel.getTaskList()
-    # test getReportDefinitionList
-    reportDefinitionList=self.datamodel.getReportDefinitionList()
+    # test getReportTemplateList
+    reportTemplateList=self.datamodel.getReportTemplateList()
     # test getFileName
     fileName=self.datamodel.getFileName()
 
@@ -132,7 +128,7 @@ def suite():
          ,'test_getModel'
          ,'test_getTaskList'
          ,'test_addDefaultTasks'
-         ,'test_getReportDefinitionList'
+         ,'test_getReportTemplateList'
          ,'test_addDefaultReports'
          ,'test_getFileName'
          ,'test_getSBMLFileName'

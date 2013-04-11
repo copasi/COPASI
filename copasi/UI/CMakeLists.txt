@@ -61,7 +61,7 @@ list(REMOVE_ITEM HEADERS_UI
   ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQParameterTable.h    
   ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQCompartment.ui.h        
   ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQProgressItemBar.ui.h    
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQReportDefinition.ui.h   
+  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQReportTemplate.ui.h   
   ${CMAKE_CURRENT_SOURCE_DIR}/UI/CScanWidgetRepeat.ui.h    
   ${CMAKE_CURRENT_SOURCE_DIR}/UI/SliderSettingsDialog.ui.h
   ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQPrintAsDialog.ui.h      
@@ -133,13 +133,13 @@ set(COPASI_UI_HEADERS ${COPASI_UI_HEADERS} ${HEADERS_UI})
 # 
 # 
 # SET(COPASI_UI_HAVE_REPORTDEF_HEADER NO)
-# if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/CReportDefinitionSelect.h")
+# if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/CReportTemplateSelect.h")
 # SET(COPASI_UI_HAVE_REPORTDEF_HEADER YES)
 # endif()
 # 
 # 
 # SET(COPASI_UI_HAVE_CQREPORTDEF_HEADER NO)
-# if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/CQReportDefinitionSelect.h")
+# if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/CQReportTemplateSelect.h")
 # SET(COPASI_UI_HAVE_CQREPORTDEF_HEADER YES)
 # endif()
 # 
@@ -268,7 +268,7 @@ set(COPASI_UI_HEADERS ${COPASI_UI_HEADERS} ${HEADERS_UI})
 # set(HEADERS CQProgressItemBar.h ${HEADERS})
 # set(HEADERS CQProgressItemText.h ${HEADERS})
 # set(HEADERS CQReactionsWidget.h ${HEADERS})
-# set(HEADERS CQReportDefinition.h ${HEADERS})
+# set(HEADERS CQReportTemplate.h ${HEADERS})
 # set(HEADERS CQReportsWidget.h ${HEADERS})
 # set(HEADERS CQSensResultWidget.h ${HEADERS})
 # set(HEADERS CQSpeciesDetail.h ${HEADERS})
@@ -317,7 +317,7 @@ set(COPASI_UI_HEADERS ${COPASI_UI_HEADERS} ${HEADERS_UI})
 # set(HEADERS copasiui3window.h ${HEADERS})
 # set(HEADERS CProgressBar.h ${HEADERS})
 # if (COPASI_UI_HAVE_REPORTDEF_HEADER)
-# set(HEADERS CReportDefinitionSelect.h ${HEADERS})
+# set(HEADERS CReportTemplateSelect.h ${HEADERS})
 # endif(COPASI_UI_HAVE_REPORTDEF_HEADER)
 # set(HEADERS CQBaseDataModel.h ${HEADERS})
 # set(HEADERS CQComboDelegate.h ${HEADERS})
@@ -440,7 +440,7 @@ set(COPASI_UI_HEADERS ${COPASI_UI_HEADERS} ${HEADERS_UI})
 # set(SOURCES CQProgressItemBar.cpp ${SOURCES})
 # set(SOURCES CQProgressItemText.cpp ${SOURCES})
 # set(SOURCES CQReactionsWidget.cpp ${SOURCES})
-# set(SOURCES CQReportDefinition.cpp ${SOURCES})
+# set(SOURCES CQReportTemplate.cpp ${SOURCES})
 # set(SOURCES CQReportsWidget.cpp ${SOURCES})
 # set(SOURCES CQSensResultWidget.cpp ${SOURCES})
 # set(SOURCES CQSpeciesDetail.cpp ${SOURCES})
@@ -488,7 +488,7 @@ set(COPASI_UI_HEADERS ${COPASI_UI_HEADERS} ${HEADERS_UI})
 # set(SOURCES copasiui3window.cpp ${SOURCES})
 # set(SOURCES CProgressBar.cpp ${SOURCES})
 # if (COPASI_UI_HAVE_REPORTDEF_HEADER)
-# set(SOURCES CReportDefinitionSelect.cpp ${SOURCES})
+# set(SOURCES CReportTemplateSelect.cpp ${SOURCES})
 # endif(COPASI_UI_HAVE_REPORTDEF_HEADER)
 # set(SOURCES CQBaseDataModel.cpp ${SOURCES})
 # set(SOURCES CQComboDelegate.cpp ${SOURCES})
@@ -595,7 +595,7 @@ set(COPASI_UI_HEADERS ${COPASI_UI_HEADERS} ${HEADERS_UI})
 # set(FORMS CQProgressDialog.ui ${FORMS})
 # set(FORMS CQProgressItem.ui ${FORMS})
 # set(FORMS CQReactionsWidget.ui ${FORMS})
-# set(FORMS CQReportDefinition.ui ${FORMS})
+# set(FORMS CQReportTemplate.ui ${FORMS})
 # set(FORMS CQReportsWidget.ui ${FORMS})
 # set(FORMS CQSensResultWidget.ui ${FORMS})
 # set(FORMS CQSpeciesDetail.ui ${FORMS})
@@ -641,9 +641,9 @@ set(COPASI_UI_HEADERS ${COPASI_UI_HEADERS} ${HEADERS_UI})
 # 
 # 
 # if (COPASI_UI_HAVE_CQREPORTDEF_HEADER)
-# set (HEADERS ${HEADERS} CQReportDefinitionSelect.h )
-# set (SOURCES ${SOURCES} CQReportDefinitionSelect.cpp )
-# set(FORMS ${FORMS} CQReportDefinitionSelect.ui)
+# set (HEADERS ${HEADERS} CQReportTemplateSelect.h )
+# set (SOURCES ${SOURCES} CQReportTemplateSelect.cpp )
+# set(FORMS ${FORMS} CQReportTemplateSelect.ui)
 # endif(COPASI_UI_HAVE_CQREPORTDEF_HEADER)
 
 

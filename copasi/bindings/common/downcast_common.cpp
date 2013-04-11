@@ -1,15 +1,7 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/common/downcast_common.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/21 16:46:55 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // These are the downcast rules for the non Java languages
 // Out of some reason, Java does it differently
@@ -344,9 +336,9 @@ GetDowncastSwigTypeForCCopasiObject(CCopasiObject* object)
     {
       pInfo = GetDowncastSwigTypeForCCopasiContainer(static_cast<CCopasiContainer*>(object));
     }
-  else if (dynamic_cast<CReportDefinition*>(object))
+  else if (dynamic_cast<CReportTemplate*>(object))
     {
-      pInfo = SWIGTYPE_p_CReportDefinition;
+      pInfo = SWIGTYPE_p_CReportTemplate;
     }
   else if (dynamic_cast<CCopasiStaticString*>(object))
     {

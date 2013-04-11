@@ -1,21 +1,13 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example3.py,v $ 
-#   $Revision: 1.7 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2012/03/05 18:09:32 $ 
-# End CVS Header 
+# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+# Properties, Inc., University of Heidelberg, and The University </comment>
+# of Manchester. </comment>
+# All rights reserved. </comment>
 
-# Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., University of Heidelberg, and The University 
-# of Manchester. 
-# All rights reserved. 
-
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+# and The University of Manchester. </comment>
+# All rights reserved. </comment>
 
 # 
 # This is an example on how to import an sbml file
@@ -44,10 +36,10 @@ def main(args):
       assert model != None
       # create a report with the correct filename and all the species against
       # time.
-      reports = dataModel.getReportDefinitionList()
-      # create a report definition object
-      report = reports.createReportDefinition("Report", "Output for timecourse")
-      # set the task type for the report definition to timecourse
+      reports = dataModel.getReportTemplateList()
+      # create a report template object
+      report = reports.createReportTemplate("Report", "Output for timecourse")
+      # set the task type for the report template to timecourse
       report.setTaskType(CCopasiTask.timeCourse)
       # we don't want a table
       report.setIsTable(False)
@@ -107,7 +99,7 @@ def main(args):
       trajectoryTask.setScheduled(True)
 
       # set the report for the task
-      trajectoryTask.getReport().setReportDefinition(report)
+      trajectoryTask.getReport().setReportTemplate(report)
       # set the output filename
       trajectoryTask.getReport().setTarget("example3.txt")
       # don't append output if the file exists, but overwrite the file

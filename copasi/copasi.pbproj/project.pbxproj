@@ -663,19 +663,19 @@
 		1996A98307D6A3C900A80068 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			path = CReportDefinitionSelect.cpp;
+			path = CReportTemplateSelect.cpp;
 			refType = 4;
 		};
 		1996A98407D6A3C900A80068 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			path = CReportDefinitionSelect.h;
+			path = CReportTemplateSelect.h;
 			refType = 4;
 		};
 		1996A98507D6A3C900A80068 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			path = CReportDefinitionSelect.ui;
+			path = CReportTemplateSelect.ui;
 			refType = 4;
 		};
 		1996A98607D6A3C900A80068 = {
@@ -2922,25 +2922,25 @@
 		1996AAF007D6A3CA00A80068 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			path = CReportDefinition.cpp;
+			path = CReportTemplate.cpp;
 			refType = 4;
 		};
 		1996AAF107D6A3CA00A80068 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			path = CReportDefinition.h;
+			path = CReportTemplate.h;
 			refType = 4;
 		};
 		1996AAF207D6A3CA00A80068 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			path = CReportDefinitionVector.cpp;
+			path = CReportTemplateVector.cpp;
 			refType = 4;
 		};
 		1996AAF307D6A3CA00A80068 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			path = CReportDefinitionVector.h;
+			path = CReportTemplateVector.h;
 			refType = 4;
 		};
 		1996AAF507D6A3CA00A80068 = {
@@ -3811,7 +3811,7 @@
 		};
 		1996AB7607D6A3CA00A80068 = {
 			isa = PBXFileReference;
-			path = ReportDefinitionDialog.jpg;
+			path = ReportTemplateDialog.jpg;
 			refType = 4;
 		};
 		1996AB7707D6A3CA00A80068 = {

@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #define USE_LAYOUT 1
 
@@ -29,7 +29,7 @@
 #include "parameterFitting/CFitTask.h"
 #include "plot/COutputDefinitionVector.h"
 #include "report/CKeyFactory.h"
-#include "report/CReportDefinitionVector.h"
+#include "report/CReportTemplateVector.h"
 #include "sbml/CSBMLExporter.h"
 #include "sbml/SBMLImporter.h"
 #include "sbml/SBMLIncompatibility.h"
@@ -230,8 +230,8 @@ bool CCopasiDataModel::loadModel(std::istream & in,
 
       if (XML.getReportList() != NULL)
         {
-          mData.pReportDefinitionList = XML.getReportList();
-          add(mData.pReportDefinitionList, true);
+          mData.pReportTemplateList = XML.getReportList();
+          add(mData.pReportTemplateList, true);
         }
 
       if (XML.getPlotList() != NULL)
@@ -377,7 +377,7 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* p
 
   XML.setModel(mData.pModel);
   XML.setTaskList(mData.pTaskList);
-  XML.setReportList(mData.pReportDefinitionList);
+  XML.setReportList(mData.pReportTemplateList);
   XML.setPlotList(mData.pPlotDefinitionList);
   XML.setGUI(mData.pGUI);
   XML.setLayoutList(*mData.pListOfLayouts);
@@ -990,7 +990,7 @@ void CCopasiDataModel::deleteOldData()
 {
   pdelete(mOldData.pModel);
   pdelete(mOldData.pTaskList);
-  pdelete(mOldData.pReportDefinitionList);
+  pdelete(mOldData.pReportTemplateList);
   pdelete(mOldData.pPlotDefinitionList);
   pdelete(mOldData.pListOfLayouts);
   pdelete(mOldData.pGUI);
@@ -1121,16 +1121,16 @@ bool CCopasiDataModel::appendDependentTasks(std::set< const CCopasiObject * > ca
 
   for (; it != end; ++it)
     {
-      const CReportDefinition * pReportDefinition = dynamic_cast< const CReportDefinition * >(*it);
+      const CReportTemplate * pReportTemplate = dynamic_cast< const CReportTemplate * >(*it);
 
-      if (pReportDefinition == NULL)
+      if (pReportTemplate == NULL)
         continue;
 
       itTask = mData.pTaskList->begin();
 
       for (; itTask != endTask; ++itTask)
         {
-          if ((*itTask)->getReport().getReportDefinition() == pReportDefinition)
+          if ((*itTask)->getReport().getReportTemplate() == pReportTemplate)
             {
               dependentTasks.insert(*itTask);
             }
@@ -1140,14 +1140,14 @@ bool CCopasiDataModel::appendDependentTasks(std::set< const CCopasiObject * > ca
   return Size < dependentTasks.size();
 }
 
-CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskType)
+CReportTemplate * CCopasiDataModel::addReport(const CCopasiTask::Type & taskType)
 {
-  CReportDefinition * pReport = NULL;
+  CReportTemplate * pReport = NULL;
 
   switch (taskType)
     {
       case CCopasiTask::steadyState:
-        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+        pReport = new CReportTemplate(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
@@ -1164,7 +1164,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         break;
 
       case CCopasiTask::fluxMode:
-        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+        pReport = new CReportTemplate(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
@@ -1173,7 +1173,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         break;
 
       case CCopasiTask::optimization:
-        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+        pReport = new CReportTemplate(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
@@ -1202,7 +1202,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
 
         //**************************************************************************
       case CCopasiTask::parameterFitting:
-        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+        pReport = new CReportTemplate(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
@@ -1231,7 +1231,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
 
         //**************************************************************************
       case CCopasiTask::lyap:
-        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+        pReport = new CReportTemplate(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
@@ -1248,7 +1248,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
 
         //**************************************************************************
       case CCopasiTask::mca:
-        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+        pReport = new CReportTemplate(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
@@ -1265,7 +1265,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
 
         //**************************************************************************
       case CCopasiTask::lna:
-        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+        pReport = new CReportTemplate(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
@@ -1282,7 +1282,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
 
         //**************************************************************************
       case CCopasiTask::sens:
-        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+        pReport = new CReportTemplate(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
@@ -1299,7 +1299,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
 
         //**************************************************************************
       case CCopasiTask::tssAnalysis:
-        pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+        pReport = new CReportTemplate(CCopasiTask::TypeName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
@@ -1318,7 +1318,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
         return pReport;
     }
 
-  if (pReport) mData.pReportDefinitionList->add(pReport, true);
+  if (pReport) mData.pReportTemplateList->add(pReport, true);
 
   return pReport;
 }
@@ -1330,16 +1330,16 @@ bool CCopasiDataModel::addDefaultReports()
   for (i = 0; CCopasiTask::TypeName[i] != ""; i++)
     {
       //try to create the report if it doesn't exist
-      if (mData.pReportDefinitionList->getIndex(CCopasiTask::TypeName[i]) == C_INVALID_INDEX)
+      if (mData.pReportTemplateList->getIndex(CCopasiTask::TypeName[i]) == C_INVALID_INDEX)
         {
           addReport((CCopasiTask::Type) i);
         }
 
       //see if the report exists now
-      CReportDefinition* pReportDef = NULL;
+      CReportTemplate* pReportDef = NULL;
 
-      if (mData.pReportDefinitionList->getIndex(CCopasiTask::TypeName[i]) != C_INVALID_INDEX)
-        pReportDef = (*mData.pReportDefinitionList)[CCopasiTask::TypeName[i]];
+      if (mData.pReportTemplateList->getIndex(CCopasiTask::TypeName[i]) != C_INVALID_INDEX)
+        pReportDef = (*mData.pReportTemplateList)[CCopasiTask::TypeName[i]];
 
       //see if the task exists
       CCopasiTask* pTask = NULL;
@@ -1347,12 +1347,12 @@ bool CCopasiDataModel::addDefaultReports()
       if (mData.pTaskList->getIndex(CCopasiTask::TypeName[i]) != C_INVALID_INDEX)
         pTask = (*mData.pTaskList)[CCopasiTask::TypeName[i]];
 
-      if (pTask && pReportDef) //task and report definition exist
+      if (pTask && pReportDef) //task and report template exist
         {
-          //if there is no report definition set the default
-          if (!pTask->getReport().getReportDefinition())
+          //if there is no report template set the default
+          if (!pTask->getReport().getReportTemplate())
             {
-              pTask->getReport().setReportDefinition(pReportDef);
+              pTask->getReport().setReportTemplate(pReportDef);
             }
 
           //TODO: also set the default report if no target file is set
@@ -1363,20 +1363,20 @@ bool CCopasiDataModel::addDefaultReports()
   return true;
 }
 
-const CReportDefinitionVector * CCopasiDataModel::getReportDefinitionList() const
+const CReportTemplateVector * CCopasiDataModel::getReportTemplateList() const
 {
   if (mData.isValid())
-    return mData.pReportDefinitionList;
+    return mData.pReportTemplateList;
 
-  return mOldData.pReportDefinitionList;
+  return mOldData.pReportTemplateList;
 }
 
-CReportDefinitionVector * CCopasiDataModel::getReportDefinitionList()
+CReportTemplateVector * CCopasiDataModel::getReportTemplateList()
 {
   if (mData.isValid())
-    return mData.pReportDefinitionList;
+    return mData.pReportTemplateList;
 
-  return mOldData.pReportDefinitionList;
+  return mOldData.pReportTemplateList;
 }
 
 const COutputDefinitionVector * CCopasiDataModel::getPlotDefinitionList() const
@@ -1550,7 +1550,7 @@ const std::string& CCopasiDataModel::getReferenceDirectory() const
 CCopasiDataModel::CData::CData(const bool & withGUI):
   pModel(NULL),
   pTaskList(NULL),
-  pReportDefinitionList(NULL),
+  pReportTemplateList(NULL),
   pPlotDefinitionList(NULL),
   pListOfLayouts(NULL),
   pGUI(NULL),
@@ -1567,7 +1567,7 @@ CCopasiDataModel::CData::CData(const bool & withGUI):
 CCopasiDataModel::CData::CData(const CData & src):
   pModel(src.pModel),
   pTaskList(src.pTaskList),
-  pReportDefinitionList(src.pReportDefinitionList),
+  pReportTemplateList(src.pReportTemplateList),
   pPlotDefinitionList(src.pPlotDefinitionList),
   pListOfLayouts(src.pListOfLayouts),
   pGUI(src.pGUI),
@@ -1588,7 +1588,7 @@ CCopasiDataModel::CData & CCopasiDataModel::CData::operator = (const CData & rhs
 {
   pModel = rhs.pModel;
   pTaskList = rhs.pTaskList;
-  pReportDefinitionList = rhs.pReportDefinitionList;
+  pReportTemplateList = rhs.pReportTemplateList;
   pPlotDefinitionList = rhs.pPlotDefinitionList;
   pListOfLayouts = rhs.pListOfLayouts;
   pGUI = rhs.pGUI;
@@ -1609,7 +1609,7 @@ bool CCopasiDataModel::CData::isValid() const
 {
   return (pModel != NULL &&
           pTaskList != NULL &&
-          pReportDefinitionList != NULL &&
+          pReportTemplateList != NULL &&
           pPlotDefinitionList != NULL &&
           pListOfLayouts != NULL &&
           (pGUI != NULL || mWithGUI == false));
@@ -1620,7 +1620,7 @@ void CCopasiDataModel::pushData()
   // make sure the old data has been deleted.
   assert(mOldData.pModel == NULL &&
          mOldData.pTaskList == NULL &&
-         mOldData.pReportDefinitionList == NULL &&
+         mOldData.pReportTemplateList == NULL &&
          mOldData.pPlotDefinitionList == NULL &&
          mOldData.pListOfLayouts == NULL &&
          mOldData.pGUI == NULL &&
@@ -1635,7 +1635,7 @@ void CCopasiDataModel::popData()
   // Make sure the old data is valid
   assert(mOldData.pModel != NULL &&
          mOldData.pTaskList != NULL &&
-         mOldData.pReportDefinitionList != NULL &&
+         mOldData.pReportTemplateList != NULL &&
          mOldData.pPlotDefinitionList != NULL &&
          mOldData.pListOfLayouts != NULL &&
          (mOldData.pGUI != NULL || mOldData.mWithGUI == false));
@@ -1664,9 +1664,9 @@ void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,
       mData.pTaskList = new CCopasiVectorN< CCopasiTask >("TaskList", this);
     }
 
-  if (mData.pReportDefinitionList == NULL)
+  if (mData.pReportTemplateList == NULL)
     {
-      mData.pReportDefinitionList = new CReportDefinitionVector("ReportDefinitions", this);
+      mData.pReportTemplateList = new CReportTemplateVector("ReportTemplates", this);
     }
 
   if (mData.pPlotDefinitionList == NULL)
@@ -1701,14 +1701,14 @@ void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,
   else
     mOldData.pTaskList = NULL;
 
-  if (mOldData.pReportDefinitionList != NULL &&
-      mOldData.pReportDefinitionList != mData.pReportDefinitionList)
+  if (mOldData.pReportTemplateList != NULL &&
+      mOldData.pReportTemplateList != mData.pReportTemplateList)
     {
-      mOldData.pReportDefinitionList->setObjectParent(NULL);
-      remove(mOldData.pReportDefinitionList);
+      mOldData.pReportTemplateList->setObjectParent(NULL);
+      remove(mOldData.pReportTemplateList);
     }
   else
-    mOldData.pReportDefinitionList = NULL;
+    mOldData.pReportTemplateList = NULL;
 
   if (mOldData.pPlotDefinitionList != NULL &&
       mOldData.pPlotDefinitionList != mData.pPlotDefinitionList)

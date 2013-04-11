@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /*!
  \file CCopasiXML.cpp
@@ -43,7 +43,7 @@
 #include "model/CState.h"
 #include "function/CFunctionDB.h"
 #include "function/CEvaluationTree.h"
-#include "report/CReportDefinitionVector.h"
+#include "report/CReportTemplateVector.h"
 #include "utilities/CCopasiTask.h"
 #include "utilities/CCopasiMethod.h"
 #include "utilities/CCopasiProblem.h"
@@ -327,13 +327,13 @@ bool CCopasiXML::freePlotList()
 
 //************
 
-bool CCopasiXML::setReportList(CReportDefinitionVector * pReportList)
+bool CCopasiXML::setReportList(CReportTemplateVector * pReportList)
 {
   mpReportList = pReportList;
   return true;
 }
 
-CReportDefinitionVector * CCopasiXML::getReportList() const
+CReportTemplateVector * CCopasiXML::getReportList() const
 {return mpReportList;}
 
 bool CCopasiXML::haveReportList() const
@@ -1203,10 +1203,10 @@ bool CCopasiXML::saveTaskList()
       // Report Element
       CReport & tReport = pTask->getReport();
 
-      if (tReport.getReportDefinition())
+      if (tReport.getReportTemplate())
         {
           Attributes.erase();
-          Attributes.add("reference", tReport.getReportDefinition()->getKey());
+          Attributes.add("reference", tReport.getReportTemplate()->getKey());
 
           std::string Target = tReport.getTarget();
 
@@ -1296,7 +1296,7 @@ bool CCopasiXML::saveReportList()
   if (!imax) return success;
 
   CXMLAttributeList Attributes;
-  CReportDefinition * pReport = NULL;
+  CReportTemplate * pReport = NULL;
 
   startSaveElement("ListOfReports");
 

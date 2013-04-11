@@ -1,18 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
-#include "CQReportDefinition.h"
+#include "CQReportTemplate.h"
 
 #include "CCopasiSelectionDialog.h"
 #include "CQTextDialog.h"
@@ -21,23 +12,23 @@
 #include "CQReportListItem.h"
 
 #include "report/CKeyFactory.h"
-#include "report/CReportDefinition.h"
-#include "report/CReportDefinitionVector.h"
+#include "report/CReportTemplate.h"
+#include "report/CReportTemplateVector.h"
 #include "report/CCopasiStaticString.h"
 #include "report/CCopasiRootContainer.h"
 #include "xml/CCopasiXMLInterface.h"
 
 /*
- *  Constructs a CQReportDefinition which is a child of 'parent', with the
+ *  Constructs a CQReportTemplate which is a child of 'parent', with the
  *  name 'name'.'
  */
-CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
+CQReportTemplate::CQReportTemplate(QWidget* parent, const char* name)
   : CopasiWidget(parent, name)
 {
   setupUi(this);
 
   mKey = "";
-  mpReportDefinition = NULL;
+  mpReportTemplate = NULL;
 
   // We start with the table since this is simpler.
   setAdvancedMode(false);
@@ -51,28 +42,28 @@ CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
 /*
  *  Destroys the object and frees any allocated resources
  */
-CQReportDefinition::~CQReportDefinition()
+CQReportTemplate::~CQReportTemplate()
 {
   destroy();
   // no need to delete child widgets, Qt does it all for us
 }
 
-void CQReportDefinition::nameChanged(const QString & /* string */)
+void CQReportTemplate::nameChanged(const QString & /* string */)
 {mChanged = true;}
 
-void CQReportDefinition::taskChanged(const QString & /* string */)
+void CQReportTemplate::taskChanged(const QString & /* string */)
 {mChanged = true;}
 
-void CQReportDefinition::commentChanged()
+void CQReportTemplate::commentChanged()
 {mChanged = true;}
 
-void CQReportDefinition::separatorChanged(const QString & /* string */)
+void CQReportTemplate::separatorChanged(const QString & /* string */)
 {mChanged = true;}
 
-void CQReportDefinition::precisionChanged(const QString & /* string */)
+void CQReportTemplate::precisionChanged(const QString & /* string */)
 {mChanged = true;}
 
-void CQReportDefinition::chkTabClicked()
+void CQReportTemplate::chkTabClicked()
 {
   mChanged = true;
 
@@ -82,7 +73,7 @@ void CQReportDefinition::chkTabClicked()
     mpSeparator->setEnabled(true);
 }
 
-void CQReportDefinition::btnAdvancedClicked()
+void CQReportTemplate::btnAdvancedClicked()
 {
   if (mAdvanced)
     {
@@ -114,31 +105,31 @@ void CQReportDefinition::btnAdvancedClicked()
   else
     {
       // To achieve the same result as with the table we use the preCompileTable
-      // method of CReportDefinition. Since we must not change the existing report,
+      // method of CReportTemplate. Since we must not change the existing report,
       // which may only be done by btnCommitClicked or leave, we create a temporary
       // copy.
-      CReportDefinition * pStore = mpReportDefinition;
+      CReportTemplate * pStore = mpReportTemplate;
 
       // We avoid the renaming signal.
-      mpReportDefinition = new CReportDefinition(TO_UTF8(mpName->text()), mpDataModel);
+      mpReportTemplate = new CReportTemplate(TO_UTF8(mpName->text()), mpDataModel);
 
       mChanged = true;
       save();
 
-      mpReportDefinition->preCompileTable();
-      mpReportDefinition->setIsTable(false);
+      mpReportTemplate->preCompileTable();
+      mpReportTemplate->setIsTable(false);
 
       load();
 
-      delete mpReportDefinition;
+      delete mpReportTemplate;
 
-      mpReportDefinition = pStore;
+      mpReportTemplate = pStore;
 
       mChanged = true;
     }
 }
 
-void CQReportDefinition::btnItemClicked()
+void CQReportTemplate::btnItemClicked()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CModel* pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
@@ -169,7 +160,7 @@ void CQReportDefinition::btnItemClicked()
   return;
 }
 
-void CQReportDefinition::btnSeparatorClicked()
+void CQReportTemplate::btnSeparatorClicked()
 {
   CCopasiReportSeparator Separator;
 
@@ -185,7 +176,7 @@ void CQReportDefinition::btnSeparatorClicked()
   return;
 }
 
-void CQReportDefinition::btnTextClicked()
+void CQReportTemplate::btnTextClicked()
 {
   CQTextDialog * pDialog = new CQTextDialog(this);
 
@@ -204,7 +195,7 @@ void CQReportDefinition::btnTextClicked()
   return;
 }
 
-void CQReportDefinition::btnDeleteClicked()
+void CQReportTemplate::btnDeleteClicked()
 {
   QListWidget * pList = static_cast< QListWidget * >(mpReportSectionTab->currentPage());
 
@@ -245,7 +236,7 @@ void CQReportDefinition::btnDeleteClicked()
   return;
 }
 
-void CQReportDefinition::btnUpClicked()
+void CQReportTemplate::btnUpClicked()
 {
   QListWidget * pList = static_cast< QListWidget * >(mpReportSectionTab->currentPage());
   int i, to, multipleSelection;
@@ -282,7 +273,7 @@ void CQReportDefinition::btnUpClicked()
   return;
 }
 
-void CQReportDefinition::btnDownClicked()
+void CQReportTemplate::btnDownClicked()
 {
   QListWidget * pList = static_cast< QListWidget * >(mpReportSectionTab->currentPage());
   int i, imax, to, multipleSelection;
@@ -317,10 +308,10 @@ void CQReportDefinition::btnDownClicked()
   return;
 }
 
-void CQReportDefinition::chkTitleClicked()
+void CQReportTemplate::chkTitleClicked()
 {mChanged = true;}
 
-void CQReportDefinition::btnDeleteReportClicked()
+void CQReportTemplate::btnDeleteReportClicked()
 {
   if (mpDataModel == NULL)
     return;
@@ -338,7 +329,7 @@ void CQReportDefinition::btnDeleteReportClicked()
     {
       case QMessageBox::Ok:
       {
-        CCopasiVector< CReportDefinition > * pReportList = mpDataModel->getReportDefinitionList();
+        CCopasiVector< CReportTemplate > * pReportList = mpDataModel->getReportTemplateList();
 
         if (pReportList == NULL)
           return;
@@ -351,7 +342,7 @@ void CQReportDefinition::btnDeleteReportClicked()
             for (; it != end; ++it)
               {
                 const CCopasiTask * pTask = static_cast< const CCopasiTask *>(*it);
-                const_cast< CCopasiTask * >(pTask)->getReport().setReportDefinition(NULL);
+                const_cast< CCopasiTask * >(pTask)->getReport().setReportTemplate(NULL);
               }
           }
 
@@ -376,17 +367,17 @@ void CQReportDefinition::btnDeleteReportClicked()
     }
 }
 
-void CQReportDefinition::btnNewReportClicked()
+void CQReportTemplate::btnNewReportClicked()
 {
   btnCommitClicked();
 
   std::string Name = "report";
 
   int i = 0;
-  CReportDefinition* pRep;
+  CReportTemplate* pRep;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  while (!(pRep = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->createReportDefinition(Name, "")))
+  while (!(pRep = (*CCopasiRootContainer::getDatamodelList())[0]->getReportTemplateList()->createReportTemplate(Name, "")))
     {
       i++;
       Name = "report_";
@@ -399,13 +390,13 @@ void CQReportDefinition::btnNewReportClicked()
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
-void CQReportDefinition::btnRevertClicked()
+void CQReportTemplate::btnRevertClicked()
 {load();}
 
-void CQReportDefinition::btnCommitClicked()
+void CQReportTemplate::btnCommitClicked()
 {save();}
 
-bool CQReportDefinition::update(ListViews::ObjectType objectType,
+bool CQReportTemplate::update(ListViews::ObjectType objectType,
                                 ListViews::Action action,
                                 const std::string & key)
 {
@@ -415,7 +406,7 @@ bool CQReportDefinition::update(ListViews::ObjectType objectType,
       (action == ListViews::DELETE ||
        action == ListViews::ADD))
     {
-      mpReportDefinition = NULL;
+      mpReportTemplate = NULL;
       return true;
     }
 
@@ -428,7 +419,7 @@ bool CQReportDefinition::update(ListViews::ObjectType objectType,
   return load();
 }
 
-bool CQReportDefinition::leave()
+bool CQReportTemplate::leave()
 {
   mpBtnCommit->setFocus();
 
@@ -439,11 +430,11 @@ bool CQReportDefinition::leave()
   return true;
 }
 
-bool CQReportDefinition::enterProtected()
+bool CQReportTemplate::enterProtected()
 {
-  mpReportDefinition = dynamic_cast<CReportDefinition *>(mpObject);
+  mpReportTemplate = dynamic_cast<CReportTemplate *>(mpObject);
 
-  if (!mpReportDefinition)
+  if (!mpReportTemplate)
     {
       mpListView->switchToOtherWidget(43, "");
       return false;
@@ -456,9 +447,9 @@ bool CQReportDefinition::enterProtected()
   return true;
 }
 
-bool CQReportDefinition::load()
+bool CQReportTemplate::load()
 {
-  if (!mpReportDefinition) return false;
+  if (!mpReportTemplate) return false;
 
   // Reset everything.
   mpHeaderList->clear();
@@ -466,11 +457,11 @@ bool CQReportDefinition::load()
   mpFooterList->clear();
   mpTableList->clear();
 
-  mpName->setText(FROM_UTF8(mpReportDefinition->getObjectName()));
-  mpTaskBox->setCurrentItem(mpReportDefinition->getTaskType());
+  mpName->setText(FROM_UTF8(mpReportTemplate->getObjectName()));
+  mpTaskBox->setCurrentItem(mpReportTemplate->getTaskType());
 
   //separator
-  if (mpReportDefinition->getSeparator().getStaticString() == "\t")
+  if (mpReportTemplate->getSeparator().getStaticString() == "\t")
     {
       mpSeparator->setEnabled(false);
       mpTabCheck->setChecked(true);
@@ -479,23 +470,23 @@ bool CQReportDefinition::load()
     {
       mpSeparator->setEnabled(true);
       mpTabCheck->setChecked(false);
-      mpSeparator->setText(FROM_UTF8(mpReportDefinition->getSeparator().getStaticString()));
+      mpSeparator->setText(FROM_UTF8(mpReportTemplate->getSeparator().getStaticString()));
     }
 
-  mpPrecision->setText(QString::number(mpReportDefinition->getPrecision()));
+  mpPrecision->setText(QString::number(mpReportTemplate->getPrecision()));
 
   std::vector< CRegisteredObjectName > * pList = NULL;
   std::vector< CRegisteredObjectName >::const_iterator it;
   std::vector< CRegisteredObjectName >::const_iterator end;
 
   // Toggle the display mode.
-  if (mpReportDefinition->isTable())
+  if (mpReportTemplate->isTable())
     {
       setAdvancedMode(false);
 
-      mpTitleCheck->setChecked(mpReportDefinition->getTitle());
+      mpTitleCheck->setChecked(mpReportTemplate->getTitle());
 
-      pList = mpReportDefinition->getTableAddr();
+      pList = mpReportTemplate->getTableAddr();
 
       for (it = pList->begin(), end = pList->end(); it != end; ++it)
         mpTableList->addItem(new CQReportListItem(*it));
@@ -504,17 +495,17 @@ bool CQReportDefinition::load()
     {
       setAdvancedMode(true);
 
-      pList = mpReportDefinition->getHeaderAddr();
+      pList = mpReportTemplate->getHeaderAddr();
 
       for (it = pList->begin(), end = pList->end(); it != end; ++it)
         mpHeaderList->addItem(new CQReportListItem(*it));
 
-      pList = mpReportDefinition->getBodyAddr();
+      pList = mpReportTemplate->getBodyAddr();
 
       for (it = pList->begin(), end = pList->end(); it != end; ++it)
         mpBodyList->addItem(new CQReportListItem(*it));
 
-      pList = mpReportDefinition->getFooterAddr();
+      pList = mpReportTemplate->getFooterAddr();
 
       for (it = pList->begin(), end = pList->end(); it != end; ++it)
         mpFooterList->addItem(new CQReportListItem(*it));
@@ -524,18 +515,18 @@ bool CQReportDefinition::load()
   return true;
 }
 
-bool CQReportDefinition::save()
+bool CQReportTemplate::save()
 {
   if (!mChanged) return true;
 
-  if (!mpReportDefinition) return false;
+  if (!mpReportTemplate) return false;
 
-  if (mpReportDefinition->getObjectName() != TO_UTF8(mpName->text()))
+  if (mpReportTemplate->getObjectName() != TO_UTF8(mpName->text()))
     {
-      if (!mpReportDefinition->setObjectName(TO_UTF8(mpName->text())))
+      if (!mpReportTemplate->setObjectName(TO_UTF8(mpName->text())))
         {
           QString msg;
-          msg = "Unable to rename report '" + FROM_UTF8(mpReportDefinition->getObjectName()) + "'\n"
+          msg = "Unable to rename report '" + FROM_UTF8(mpReportTemplate->getObjectName()) + "'\n"
                 + "to '" + mpName->text() + "' since a report with that name already exists.";
 
           CQMessageBox::information(this,
@@ -543,13 +534,13 @@ bool CQReportDefinition::save()
                                     msg,
                                     QMessageBox::Ok, QMessageBox::Ok);
 
-          mpName->setText(FROM_UTF8(mpReportDefinition->getObjectName()));
+          mpName->setText(FROM_UTF8(mpReportTemplate->getObjectName()));
         }
       else
         protectedNotify(ListViews::REPORT, ListViews::RENAME, mKey);
     }
 
-  mpReportDefinition->setTaskType((CCopasiTask::Type) mpTaskBox->currentIndex());
+  mpReportTemplate->setTaskType((CCopasiTask::Type) mpTaskBox->currentIndex());
 
   CCopasiReportSeparator Separator;
 
@@ -558,23 +549,23 @@ bool CQReportDefinition::save()
   else
     Separator = TO_UTF8(mpSeparator->text());
 
-  mpReportDefinition->setSeparator(Separator);
+  mpReportTemplate->setSeparator(Separator);
 
-  mpReportDefinition->setPrecision(mpPrecision->text().toULong());
+  mpReportTemplate->setPrecision(mpPrecision->text().toULong());
 
-  mpReportDefinition->getHeaderAddr()->clear();
-  mpReportDefinition->getBodyAddr()->clear();
-  mpReportDefinition->getFooterAddr()->clear();
-  mpReportDefinition->getTableAddr()->clear();
+  mpReportTemplate->getHeaderAddr()->clear();
+  mpReportTemplate->getBodyAddr()->clear();
+  mpReportTemplate->getFooterAddr()->clear();
+  mpReportTemplate->getTableAddr()->clear();
 
   std::vector< CRegisteredObjectName > * pList = NULL;
   unsigned C_INT32 i, imax;
 
   if (mAdvanced)
     {
-      mpReportDefinition->setIsTable(false);
+      mpReportTemplate->setIsTable(false);
 
-      pList = mpReportDefinition->getHeaderAddr();
+      pList = mpReportTemplate->getHeaderAddr();
 
       for (i = 0, imax = mpHeaderList->count(); i < imax; i++)
         if (static_cast<CQReportListItem *>(mpHeaderList->item(i))->getCN().getObjectType()
@@ -583,7 +574,7 @@ bool CQReportDefinition::save()
         else
           pList->push_back(static_cast<CQReportListItem *>(mpHeaderList->item(i))->getCN());
 
-      pList = mpReportDefinition->getBodyAddr();
+      pList = mpReportTemplate->getBodyAddr();
 
       for (i = 0, imax = mpBodyList->count(); i < imax; i++)
         if (static_cast<CQReportListItem *>(mpBodyList->item(i))->getCN().getObjectType()
@@ -592,7 +583,7 @@ bool CQReportDefinition::save()
         else
           pList->push_back(static_cast<CQReportListItem *>(mpBodyList->item(i))->getCN());
 
-      pList = mpReportDefinition->getFooterAddr();
+      pList = mpReportTemplate->getFooterAddr();
 
       for (i = 0, imax = mpFooterList->count(); i < imax; i++)
         if (static_cast<CQReportListItem *>(mpFooterList->item(i))->getCN().getObjectType()
@@ -603,11 +594,11 @@ bool CQReportDefinition::save()
     }
   else
     {
-      mpReportDefinition->setIsTable(true);
+      mpReportTemplate->setIsTable(true);
 
-      mpReportDefinition->setTitle(mpTitleCheck->isChecked());
+      mpReportTemplate->setTitle(mpTitleCheck->isChecked());
 
-      pList = mpReportDefinition->getTableAddr();
+      pList = mpReportTemplate->getTableAddr();
 
       for (i = 0, imax = mpTableList->count(); i < imax; i++)
         pList->push_back(static_cast<CQReportListItem *>(mpTableList->item(i))->getCN());
@@ -620,7 +611,7 @@ bool CQReportDefinition::save()
   return false;
 }
 
-bool CQReportDefinition::setAdvancedMode(const bool & advanced)
+bool CQReportTemplate::setAdvancedMode(const bool & advanced)
 {
   if (advanced)
     {

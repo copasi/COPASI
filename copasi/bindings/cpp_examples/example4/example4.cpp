@@ -1,12 +1,12 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
 /**
  * This is an example on how to import an sbml model from a string
@@ -25,8 +25,8 @@
 #include "copasi/model/CModel.h"
 #include "copasi/model/CMetab.h"
 #include "copasi/report/CReport.h"
-#include "copasi/report/CReportDefinition.h"
-#include "copasi/report/CReportDefinitionVector.h"
+#include "copasi/report/CReportTemplate.h"
+#include "copasi/report/CReportTemplateVector.h"
 #include "copasi/trajectory/CTrajectoryTask.h"
 #include "copasi/trajectory/CTrajectoryMethod.h"
 #include "copasi/trajectory/CTrajectoryProblem.h"
@@ -62,10 +62,10 @@ int main()
   assert(pModel != NULL);
   // create a report with the correct filename and all the species against
   // time.
-  CReportDefinitionVector* pReports = pDataModel->getReportDefinitionList();
-  // create a new report definition object
-  CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for timecourse");
-  // set the task type for the report definition to timecourse
+  CReportTemplateVector* pReports = pDataModel->getReportTemplateList();
+  // create a new report template object
+  CReportTemplate* pReport = pReports->createReportTemplate("Report", "Output for timecourse");
+  // set the task type for the report template to timecourse
   pReport->setTaskType(CCopasiTask::timeCourse);
   // we don't want a table
   pReport->setIsTable(false);
@@ -188,7 +188,7 @@ int main()
   pScanTask->setScheduled(true);
 
   // set the report for the task
-  pScanTask->getReport().setReportDefinition(pReport);
+  pScanTask->getReport().setReportTemplate(pReport);
 
   // set the output file for the report
   pScanTask->getReport().setTarget("example4.txt");

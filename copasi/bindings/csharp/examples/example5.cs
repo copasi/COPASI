@@ -118,10 +118,10 @@ class example5
 
      // create a report with the correct filename and all the species against
      // time.
-     CReportDefinitionVector reports = dataModel.getReportDefinitionList();
-     // create a new report definition object
-     CReportDefinition report = reports.createReportDefinition("Report", "Output for optimization");
-     // set the task type for the report definition to timecourse
+     CReportTemplateVector reports = dataModel.getReportTemplateList();
+     // create a new report template object
+     CReportTemplate report = reports.createReportTemplate("Report", "Output for optimization");
+     // set the task type for the report template to timecourse
      report.setTaskType(CCopasiTask.optimization);
      // we don't want a table
      report.setIsTable(false);
@@ -147,7 +147,7 @@ class example5
 
      
      // set the report for the task
-     optTask.getReport().setReportDefinition(report);
+     optTask.getReport().setReportTemplate(report);
      // set the output filename
      optTask.getReport().setTarget("example5.txt");
      // don't append output if the file exists, but overwrite the file

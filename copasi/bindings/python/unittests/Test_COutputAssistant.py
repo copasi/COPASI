@@ -1,21 +1,17 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_COutputAssistant.py,v $ 
-#   $Revision: 1.6 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2012/03/05 18:09:29 $ 
-# End CVS Header 
+# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+# Properties, Inc., University of Heidelberg, and The University </comment>
+# of Manchester. </comment>
+# All rights reserved. </comment>
 
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., University of Heidelberg, and The University 
-# of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+# and The University of Manchester. </comment>
+# All rights reserved. </comment>
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
+# Properties, Inc. and EML Research, gGmbH. </comment>
+# All rights reserved. </comment>
 
 import COPASI
 import unittest
@@ -63,7 +59,7 @@ class Test_COutputAssistant(unittest.TestCase):
     index=COPASI.COutputAssistant.getDefaultReportIndex(self.problem)
     object=COPASI.COutputAssistant.createDefaultOutput(index,self.task,self.datamodel,True)
     self.assert_(object!=None)
-    self.assert_(object.__class__==COPASI.CReportDefinition) 
+    self.assert_(object.__class__==COPASI.CReportTemplate) 
 
 def suite():
   tests=[

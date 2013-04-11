@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -99,8 +99,8 @@ size_t INVALID_INDEX();
 %include "CPlotColors.i"
 %include "CPlotSpecification.i"
 %include "COutputDefinitionVector.i"
-%include "CReportDefinition.i"
-%include "CReportDefinitionVector.i"
+%include "CReportTemplate.i"
+%include "CReportTemplateVector.i"
 %include "CCopasiDataModel.i"
 %include "CTimeSeries.i"
 %include "CTrajectoryProblem.i"

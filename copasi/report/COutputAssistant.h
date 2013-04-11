@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #ifndef COPASI_COutputAssistant
 #define COPASI_COutputAssistant
@@ -23,7 +23,7 @@
 #include "utilities/CCopasiTask.h"
 
 class CPlotSpecification;
-class CReportDefinition;
+class CReportTemplate;
 class CCopasiObject;
 class CCopasiDataModel;
 
@@ -89,7 +89,7 @@ public:
 
   /**
    *  create a plot or report from template with index id.
-   *  returns a pointer to the plot or report definition (or NULL)
+   *  returns a pointer to the plot or report template (or NULL)
    *  if activate==true and the ouput is a report the report is set as
    *  the current report for the task (possibly replacing an already set report)
    */
@@ -118,7 +118,7 @@ private:           //************************************
                                  CCopasiTask *task = NULL);
 
   static
-  CReportDefinition* createTable(const std::string & name,
+  CReportTemplate* createTable(const std::string & name,
                                  const std::vector<const CCopasiObject*> & d,
                                  const std::string & comment,
                                  const CCopasiTask::Type & taskType,

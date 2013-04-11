@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #ifndef COPASI_CCopasiDataModel
 #define COPASI_CCopasiDataModel
@@ -21,7 +21,7 @@
 #include "utilities/CCopasiTask.h"
 
 class CModel;
-class CReportDefinitionVector;
+class CReportTemplateVector;
 class COutputDefinitionVector;
 class CFunctionDB;
 class CFunction;
@@ -82,7 +82,7 @@ private:
 
     CModel * pModel;
     CCopasiVectorN< CCopasiTask > * pTaskList;
-    CReportDefinitionVector * pReportDefinitionList;
+    CReportTemplateVector * pReportTemplateList;
     COutputDefinitionVector * pPlotDefinitionList;
     CListOfLayouts * pListOfLayouts;
     SCopasiXMLGUI * pGUI;
@@ -180,9 +180,9 @@ public:
   bool appendDependentTasks(std::set< const CCopasiObject * > candidates,
                             std::set< const CCopasiObject * > & dependentTasks) const;
 
-  const CReportDefinitionVector * getReportDefinitionList() const;
-  CReportDefinitionVector * getReportDefinitionList();
-  CReportDefinition * addReport(const CCopasiTask::Type & taskType);
+  const CReportTemplateVector * getReportTemplateList() const;
+  CReportTemplateVector * getReportTemplateList();
+  CReportTemplate * addReport(const CCopasiTask::Type & taskType);
   bool addDefaultReports();
 
   const COutputDefinitionVector * getPlotDefinitionList() const;

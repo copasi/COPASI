@@ -101,10 +101,10 @@ my $model = $dataModel->getModel();
 unless(defined($model)){warn "Assertion failed";die;}
 # create a report with the correct filename and all the species against
 # time.
-my $reports = $dataModel->getReportDefinitionList();
-# create a report definition object
-my $report = $reports->createReportDefinition("Report", "Output for timecourse");
-# set the task type for the report definition to timecourse
+my $reports = $dataModel->getReportTemplateList();
+# create a report template object
+my $report = $reports->createReportTemplate("Report", "Output for timecourse");
+# set the task type for the report template to timecourse
 $report->setTaskType($COPASI::CCopasiTask::timeCourse);
 # we don't want a table
 $report->setIsTable("");
@@ -204,7 +204,7 @@ $scanProblem->setModel($dataModel->getModel());
 $scanTask->setScheduled(1);
 
 # set the report for the task
-$scanTask->getReport()->setReportDefinition($report);
+$scanTask->getReport()->setReportTemplate($report);
 
 # set the output file for the report
 $scanTask->getReport()->setTarget("example4.txt");

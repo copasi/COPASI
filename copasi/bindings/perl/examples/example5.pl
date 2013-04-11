@@ -112,10 +112,10 @@ $parameter->setDblValue(1.0e-5);
 
 # create a report with the correct filename and all the species against
 # time.
-my $reports = $dataModel->getReportDefinitionList();
-# create a report definition object
-my $report = $reports->createReportDefinition("Report", "Output for optimization");
-# set the task type for the report definition to timecourse
+my $reports = $dataModel->getReportTemplateList();
+# create a report template object
+my $report = $reports->createReportTemplate("Report", "Output for optimization");
+# set the task type for the report template to timecourse
 $report->setTaskType($COPASI::CCopasiTask::optimization);
 # we don't want a table
 $report->setIsTable("");
@@ -141,7 +141,7 @@ $body->push(new COPASI::CRegisteredObjectName($fixedModelValue->getObject(new CO
 
 
 # set the report for the task
-$optTask->getReport()->setReportDefinition($report);
+$optTask->getReport()->setReportTemplate($report);
 # set the output filename
 $optTask->getReport()->setTarget("example5.txt");
 # don't append output if the file exists, but overwrite the file

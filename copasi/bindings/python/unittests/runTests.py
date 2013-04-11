@@ -1,21 +1,17 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/runTests.py,v $ 
-#   $Revision: 1.11 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2010/07/16 18:55:59 $ 
-# End CVS Header 
+# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+# Properties, Inc., University of Heidelberg, and The University </comment>
+# of Manchester. </comment>
+# All rights reserved. </comment>
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., University of Heidelberg, and The University 
-# of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+# and The University of Manchester. </comment>
+# All rights reserved. </comment>
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
+# Properties, Inc. and EML Research, gGmbH. </comment>
+# All rights reserved. </comment>
 
 import unittest
 import Test_CCopasiMessage
@@ -47,8 +43,8 @@ import Test_COutputAssistant
 import Test_CReaction
 import Test_CreateSimpleModel
 import Test_CReport
-import Test_CReportDefinition
-import Test_CReportDefinitionVector
+import Test_CReportTemplate
+import Test_CReportTemplateVector
 import Test_RunSimulations
 import Test_CState
 import Test_CTimeSeries
@@ -78,8 +74,8 @@ suites=[
          ,Test_CCopasiObjectName.suite()
          ,Test_CCopasiParameter.suite()
          ,Test_CCopasiParameterGroup.suite()
-         ,Test_CReportDefinition.suite()
-         ,Test_CReportDefinitionVector.suite()
+         ,Test_CReportTemplate.suite()
+         ,Test_CReportTemplateVector.suite()
          ,Test_CReaction.suite()
          ,Test_CModel.suite()
          ,Test_CCopasiProblem.suite()

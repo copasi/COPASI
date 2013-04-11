@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <QtDebug>
 #include <QFrame>
@@ -28,7 +28,7 @@
 #include "MyLineEdit.h"
 #include "CProgressBar.h"
 #include "copasiui3window.h"
-#include "CQReportDefinitionSelect.h"
+#include "CQReportTemplateSelect.h"
 #include "DefaultplotDialog.h"
 #include "CQTaskHeaderWidget.h"
 #include "CQTaskMethodWidget.h"
@@ -217,9 +217,9 @@ void TaskWidget::reportBtnClicked()
 {
   if (!mpTask) return;
 
-  CQReportDefinitionSelect * pSelectDlg = new CQReportDefinitionSelect(mpListView);
+  CQReportTemplateSelect * pSelectDlg = new CQReportTemplateSelect(mpListView);
   pSelectDlg->setReport(&mpTask->getReport());
-  pSelectDlg->loadReportDefinitionVector();
+  pSelectDlg->loadReportTemplateVector();
   pSelectDlg->exec();
 
   delete pSelectDlg;

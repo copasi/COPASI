@@ -1,28 +1,20 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDM.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:51 $
-// End CVS Header
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
 #include <QString>
 #include <QList>
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
-#include "report/CReportDefinition.h"
-#include "report/CReportDefinitionVector.h"
+#include "report/CReportTemplate.h"
+#include "report/CReportTemplateVector.h"
 
 #include "CQMessageBox.h"
 #include "CQReportDM.h"
@@ -36,7 +28,7 @@ CQReportDM::CQReportDM(QObject *parent)
 
 int CQReportDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->size() + 1;
+  return (int)(*CCopasiRootContainer::getDatamodelList())[0]->getReportTemplateList()->size() + 1;
 }
 int CQReportDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -81,7 +73,7 @@ QVariant CQReportDM::data(const QModelIndex &index, int role) const
         }
       else
         {
-          CReportDefinition *pRepDef = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->operator[](index.row());
+          CReportTemplate *pRepDef = (*CCopasiRootContainer::getDatamodelList())[0]->getReportTemplateList()->operator[](index.row());
 
           switch (index.column())
             {
@@ -134,7 +126,7 @@ bool CQReportDM::setData(const QModelIndex &index, const QVariant &value,
             return false;
         }
 
-      CReportDefinition *pRepDef = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->operator[](index.row());
+      CReportTemplate *pRepDef = (*CCopasiRootContainer::getDatamodelList())[0]->getReportTemplateList()->operator[](index.row());
 
       if (index.column() == COL_NAME_REPORTS)
         pRepDef->setObjectName(TO_UTF8(value.toString()));
@@ -155,8 +147,8 @@ bool CQReportDM::insertRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      CReportDefinition *pRepDef =
-        (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->createReportDefinition(TO_UTF8(createNewName("report", COL_NAME_REPORTS)), "");
+      CReportTemplate *pRepDef =
+        (*CCopasiRootContainer::getDatamodelList())[0]->getReportTemplateList()->createReportTemplate(TO_UTF8(createNewName("report", COL_NAME_REPORTS)), "");
       emit notifyGUI(ListViews::REPORT, ListViews::ADD, pRepDef->getKey());
     }
 
@@ -175,7 +167,7 @@ bool CQReportDM::removeRows(int position, int rows, const QModelIndex&)
   if (pDataModel == NULL)
     return false;
 
-  CCopasiVector< CReportDefinition > * pReportList = pDataModel->getReportDefinitionList();
+  CCopasiVector< CReportTemplate > * pReportList = pDataModel->getReportTemplateList();
 
   if (pReportList == NULL)
     return false;
@@ -184,7 +176,7 @@ bool CQReportDM::removeRows(int position, int rows, const QModelIndex&)
 
   for (int row = 0; row < rows; ++row)
     {
-      CReportDefinition * pReport = (*pReportList)[position];
+      CReportTemplate * pReport = (*pReportList)[position];
 
       if (pReport == NULL)
         continue;
@@ -201,7 +193,7 @@ bool CQReportDM::removeRows(int position, int rows, const QModelIndex&)
           for (; it != end; ++it)
             {
               const CCopasiTask * pTask = static_cast< const CCopasiTask *>(*it);
-              const_cast< CCopasiTask * >(pTask)->getReport().setReportDefinition(NULL);
+              const_cast< CCopasiTask * >(pTask)->getReport().setReportTemplate(NULL);
             }
         }
 
@@ -223,12 +215,12 @@ bool CQReportDM::removeRows(QModelIndexList rows, const QModelIndex&)
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
-  CCopasiVector< CReportDefinition > * pReportList = pDataModel->getReportDefinitionList();
+  CCopasiVector< CReportTemplate > * pReportList = pDataModel->getReportTemplateList();
 
   if (pReportList == NULL)
     return false;
 
-  QList< CReportDefinition * > Reports;
+  QList< CReportTemplate * > Reports;
 
   QModelIndexList::const_iterator i;
 
@@ -238,11 +230,11 @@ bool CQReportDM::removeRows(QModelIndexList rows, const QModelIndex&)
         Reports.append((*pReportList)[(*i).row()]);
     }
 
-  QList< CReportDefinition * >::const_iterator j;
+  QList< CReportTemplate * >::const_iterator j;
 
   for (j = Reports.begin(); j != Reports.end(); ++j)
     {
-      CReportDefinition * pReport = *j;
+      CReportTemplate * pReport = *j;
 
       size_t delRow = pReportList->getIndex(pReport);
 

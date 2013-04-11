@@ -1,12 +1,4 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/common/swig_files.pri,v $ 
-#   $Revision: 1.2 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2011/12/19 16:20:15 $ 
-# End CVS Header 
-
-# Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -49,8 +41,8 @@ SWIG_INTERFACE_FILES += ../swig/COutputHandler.i
 SWIG_INTERFACE_FILES += ../swig/CRandom.i 
 SWIG_INTERFACE_FILES += ../swig/CReaction.i 
 SWIG_INTERFACE_FILES += ../swig/CReport.i 
-SWIG_INTERFACE_FILES += ../swig/CReportDefinition.i 
-SWIG_INTERFACE_FILES += ../swig/CReportDefinitionVector.i 
+SWIG_INTERFACE_FILES += ../swig/CReportTemplate.i 
+SWIG_INTERFACE_FILES += ../swig/CReportTemplateVector.i 
 SWIG_INTERFACE_FILES += ../swig/CScanMethod.i 
 SWIG_INTERFACE_FILES += ../swig/CScanProblem.i 
 SWIG_INTERFACE_FILES += ../swig/CScanTask.i 

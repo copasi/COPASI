@@ -1,13 +1,15 @@
 <chapter id="NamingConventions" xreflabel="Naming Conventions">
-<!-- Begin CVS Header -->
-<!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/admin/documentation/CodeGuidelines_main.xml,v $ -->
-<!--   $Revision: 1.12 $ -->
-<!--   $Name:  $ -->
-<!--   $Author: shoops $ -->
-<!--   $Date: 2007/09/21 18:19:30 $ -->
-<!-- End CVS Header -->
+<!-- Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., University of Heidelberg, and The University -->
+<!-- of Manchester. -->
+<!-- All rights reserved. -->
 
-<!-- Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., EML Research, gGmbH, University of Heidelberg, -->
+<!-- and The University of Manchester. -->
+<!-- All rights reserved. -->
+
+<!-- Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc. and EML Research, gGmbH. -->
 <!-- All rights reserved. -->
 
@@ -1074,7 +1076,7 @@ location must be set by the user.
    |     |     |  +- ReactionDialog.jpg 
    |     |     |  +- ReactionOverview.jpg 
    |     |     |  +- ReactionOverviewEmpty.jpg 
-   |     |     |  +- ReportDefinitionDialog.jpg 
+   |     |     |  +- ReportTemplateDialog.jpg 
    |     |     |  +- TimeCourseDialog.jpg 
    |     |     |  +- ... 
    |     |     +- TutWiz-Step1.html 
@@ -1127,7 +1129,7 @@ X.
    |  |  |        |  +- ReactionDialog.jpg 
    |  |  |        |  +- ReactionOverview.jpg 
    |  |  |        |  +- ReactionOverviewEmpty.jpg 
-   |  |  |        |  +- ReportDefinitionDialog.jpg 
+   |  |  |        |  +- ReportTemplateDialog.jpg 
    |  |  |        |  +- TimeCourseDialog.jpg 
    |  |  |        |  +- ... 
    |  |  |        +- TutWiz-Step1.html 
@@ -1174,7 +1176,7 @@ Windows specific means.
    |     |     |  +- ReactionDialog.jpg 
    |     |     |  +- ReactionOverview.jpg 
    |     |     |  +- ReactionOverviewEmpty.jpg 
-   |     |     |  +- ReportDefinitionDialog.jpg 
+   |     |     |  +- ReportTemplateDialog.jpg 
    |     |     |  +- TimeCourseDialog.jpg 
    |     |     |  +- ... 
    |     |     +- TutWiz-Step1.html 

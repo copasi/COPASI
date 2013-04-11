@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /**
  * CCopasiXMLParser class.
@@ -32,8 +32,8 @@
 #include "model/CModel.h"
 #include "model/CModelParameterSet.h"
 #include "report/CKeyFactory.h"
-#include "report/CReportDefinitionVector.h"
-#include "report/CReportDefinition.h"
+#include "report/CReportTemplateVector.h"
+#include "report/CReportTemplate.h"
 
 #include "utilities/CVersion.h"
 #include "utilities/CCopasiParameter.h"
@@ -348,7 +348,7 @@ void CCopasiXMLParser::setFunctionList(CCopasiVectorN< CFunction > * pFunctionLi
 CModel * CCopasiXMLParser::getModel() const
 {return mCommon.pModel;}
 
-CReportDefinitionVector * CCopasiXMLParser::getReportList() const
+CReportTemplateVector * CCopasiXMLParser::getReportList() const
 {return mCommon.pReportList;}
 
 CCopasiVectorN< CCopasiTask > * CCopasiXMLParser::getTaskList() const
@@ -8750,8 +8750,8 @@ void CCopasiXMLParser::TaskElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Report", mParser.getCurrentLineNumber());
 
-        // do nothing, the pointer to the correct report definition can
-        // only be set after the report definitions have been read.
+        // do nothing, the pointer to the correct report template can
+        // only be set after the report templates have been read.
         break;
 
       case Problem:
@@ -9465,7 +9465,7 @@ void CCopasiXMLParser::ListOfReportsElement::start(const XML_Char *pszName,
                          pszName, "ListOfReports", mParser.getCurrentLineNumber());
 
         if (!mCommon.pReportList)
-          mCommon.pReportList = new CReportDefinitionVector;
+          mCommon.pReportList = new CReportTemplateVector;
 
         break;
 
@@ -9501,7 +9501,7 @@ void CCopasiXMLParser::ListOfReportsElement::end(const XML_Char *pszName)
 
   std::vector<CCopasiTask*>::iterator innerIt;
 
-  CReportDefinition* reportDefinition;
+  CReportTemplate* reportTemplate;
 
   std::map<std::string , std::vector < std::pair < std::vector <CRegisteredObjectName >*, size_t > > >::iterator outerIt;
 
@@ -9527,12 +9527,12 @@ void CCopasiXMLParser::ListOfReportsElement::end(const XML_Char *pszName)
 
         while (it != mCommon.taskReferenceMap.end())
           {
-            reportDefinition = dynamic_cast<CReportDefinition*>(mCommon.KeyMap.get((*it).first));
+            reportTemplate = dynamic_cast<CReportTemplate*>(mCommon.KeyMap.get((*it).first));
             innerIt = (*it).second.begin();
 
             while (innerIt != (*it).second.end())
               {
-                (*innerIt)->getReport().setReportDefinition(reportDefinition);
+                (*innerIt)->getReport().setReportTemplate(reportTemplate);
                 ++innerIt;
               }
 
@@ -9543,14 +9543,14 @@ void CCopasiXMLParser::ListOfReportsElement::end(const XML_Char *pszName)
 
         while (outerIt != mCommon.reportReferenceMap.end())
           {
-            reportDefinition = dynamic_cast<CReportDefinition*>(mCommon.KeyMap.get((*outerIt).first));
+            reportTemplate = dynamic_cast<CReportTemplate*>(mCommon.KeyMap.get((*outerIt).first));
             innerIt2 = (*outerIt).second.begin();
 
             while (innerIt2 != (*outerIt).second.end())
               {
                 reportIndex = (*innerIt2).second;
                 nameVector = (*innerIt2).first;
-                (*nameVector)[reportIndex] = reportDefinition->getCN();
+                (*nameVector)[reportIndex] = reportTemplate->getCN();
                 ++innerIt2;
               }
 
@@ -9630,7 +9630,7 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
         Precision = mParser.getAttributeValue("precision", papszAttrs, "6");
 
         // create a new report
-        mCommon.pReport = new CReportDefinition();
+        mCommon.pReport = new CReportTemplate();
         mCommon.pReport->setTaskType(type);
         mCommon.pReport->setSeparator(CCopasiReportSeparator(Separator));
         mCommon.pReport->setPrecision(strToUnsignedInt(Precision));

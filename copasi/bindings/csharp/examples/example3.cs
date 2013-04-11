@@ -33,10 +33,10 @@ class example3
           Debug.Assert(model != null);
           // create a report with the correct filename and all the species against
           // time.
-          CReportDefinitionVector reports = dataModel.getReportDefinitionList();
-          // create a new report definition object
-          CReportDefinition report = reports.createReportDefinition("Report", "Output for timecourse");
-          // set the task type for the report definition to timecourse
+          CReportTemplateVector reports = dataModel.getReportTemplateList();
+          // create a new report template object
+          CReportTemplate report = reports.createReportTemplate("Report", "Output for timecourse");
+          // set the task type for the report template to timecourse
           report.setTaskType(CCopasiTask.timeCourse);
           // we don't want a table
           report.setIsTable(false);
@@ -106,7 +106,7 @@ class example3
           trajectoryTask.setScheduled(true);
 
           // set the report for the task
-          trajectoryTask.getReport().setReportDefinition(report);
+          trajectoryTask.getReport().setReportTemplate(report);
           // set the output filename
           trajectoryTask.getReport().setTarget("example3.txt");
           // don't append output if the file exists, but overwrite the file

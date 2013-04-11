@@ -1,16 +1,8 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/perl/local.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/07/20 20:02:31 $
-// End CVS Header
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
 
 #ifdef SWIGPERL
 #undef NORMAL
@@ -37,7 +29,7 @@
 #include "model/CMoiety.h"
 #include "model/CEvent.h"
 #include "report/CCopasiStaticString.h"
-#include "report/CReportDefinition.h"
+#include "report/CReportTemplate.h"
 #include "utilities/CAnnotatedMatrix.h"
 #include "utilities/CMatrix.h"
 #include "steadystate/CSteadyStateTask.h"
@@ -102,7 +94,7 @@ typedef std::vector<CFunction> CFunctionStdVector;
 typedef CCopasiVector<CChemEqElement> CChemEqElementVector;
 
 typedef CCopasiVector<CModelValue> ModelValueVector;
-typedef CCopasiVectorN<CReportDefinition> CReportDefinitionVectorN;
+typedef CCopasiVectorN<CReportTemplate> CReportTemplateVectorN;
 typedef CCopasiVectorN<CMetab> MetabVectorN;
 typedef CCopasiVector<CCompartment> CompartmentVector;
 typedef CCopasiVectorN<CCompartment> CompartmentVectorN;
@@ -615,9 +607,9 @@ GetDowncastSwigTypeForCCopasiObject(CCopasiObject* object)
     {
       pInfo = GetDowncastSwigTypeForCCopasiContainer(static_cast<CCopasiContainer*>(object));
     }
-  else if (dynamic_cast<CReportDefinition*>(object))
+  else if (dynamic_cast<CReportTemplate*>(object))
     {
-      pInfo = SWIGTYPE_p_CReportDefinition;
+      pInfo = SWIGTYPE_p_CReportTemplate;
     }
   else if (dynamic_cast<CCopasiStaticString*>(object))
     {

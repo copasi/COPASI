@@ -1,19 +1,15 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/report.pro,v $ 
-#   $Revision: 1.24 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2011/03/07 19:32:38 $ 
-# End CVS Header 
-
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
 ######################################################################
@@ -37,8 +33,8 @@ HEADERS += ArtisticLicense.h \
            CKeyFactory.h \
            COutputAssistant.h \
            CRenameHandler.h \
-           CReportDefinition.h \
-           CReportDefinitionVector.h \
+           CReportTemplate.h \
+           CReportTemplateVector.h \
            CReport.h
 
 SOURCES += CArrayElementReference.cpp \
@@ -51,8 +47,8 @@ SOURCES += CArrayElementReference.cpp \
            CCopasiTimer.cpp \
            CKeyFactory.cpp \
            COutputAssistant.cpp \
-           CReportDefinition.cpp \
-           CReportDefinitionVector.cpp \
+           CReportTemplate.cpp \
+           CReportTemplateVector.cpp \
            CReport.cpp
 
 include(../lib.pri)

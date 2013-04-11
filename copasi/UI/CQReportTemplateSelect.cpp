@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinitionSelect.cpp,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/20 16:26:55 $
-// End CVS Header
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-#include "CQReportDefinitionSelect.h"
+#include "CQReportTemplateSelect.h"
 
 #include "copasi.h"
 
@@ -24,10 +16,10 @@
 #include "resourcesUI/CQIconResource.h"
 
 #include "report/CCopasiRootContainer.h"
-#include "report/CReportDefinitionVector.h"
+#include "report/CReportTemplateVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 
-CQReportDefinitionSelect::CQReportDefinitionSelect(QWidget * parent, Qt::WindowFlags f) :
+CQReportTemplateSelect::CQReportTemplateSelect(QWidget * parent, Qt::WindowFlags f) :
     QDialog(parent, f),
     mpListView(static_cast< ListViews * >(parent)),
     mpReport(NULL),
@@ -40,57 +32,57 @@ CQReportDefinitionSelect::CQReportDefinitionSelect(QWidget * parent, Qt::WindowF
 
 }
 
-CQReportDefinitionSelect::~CQReportDefinitionSelect()
+CQReportTemplateSelect::~CQReportTemplateSelect()
 {
   cleanup();
 }
 
-void CQReportDefinitionSelect::cleanup()
+void CQReportTemplateSelect::cleanup()
 {
   mpReport = NULL;
 }
 
-void CQReportDefinitionSelect::setReport(CReport * newReport)
+void CQReportTemplateSelect::setReport(CReport * newReport)
 {
   mpReport = newReport;
 }
 
-void CQReportDefinitionSelect::loadReportDefinitionVector()
+void CQReportTemplateSelect::loadReportTemplateVector()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CReportDefinitionVector* pReportDefinitionVector = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList();
+  CReportTemplateVector* pReportTemplateVector = (*CCopasiRootContainer::getDatamodelList())[0]->getReportTemplateList();
   unsigned C_INT32 i;
 
-  for (i = 0; i < pReportDefinitionVector->size(); i++)
+  for (i = 0; i < pReportTemplateVector->size(); i++)
     mpComboDefinition->
-    insertItem(mpComboDefinition->count(), FROM_UTF8((*(pReportDefinitionVector))[i]->getObjectName()));
+    insertItem(mpComboDefinition->count(), FROM_UTF8((*(pReportTemplateVector))[i]->getObjectName()));
 
   // if it is an empty list
   if (mpComboDefinition->count() == 0)
     {
-      std::string name = "ReportDefinition_0";
-      (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList()->createReportDefinition(name, "");
+      std::string name = "ReportTemplate_0";
+      (*CCopasiRootContainer::getDatamodelList())[0]->getReportTemplateList()->createReportTemplate(name, "");
       mpComboDefinition->insertItem(mpComboDefinition->count(), FROM_UTF8(name));
       mpComboDefinition->setCurrentIndex(1);
-      mpReport->setReportDefinition((*(*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList())[0]); //first one report definition
+      mpReport->setReportTemplate((*(*CCopasiRootContainer::getDatamodelList())[0]->getReportTemplateList())[0]); //first one report template
       mpReport->setAppend(mpCheckAppend->isChecked());
       mpReport->setConfirmOverwrite(mpCheckConfirmOverwrite->isChecked());
       mpReport->setTarget(TO_UTF8(mpEditTarget->text()));
       mpListView->getDataModel()->notify(ListViews::REPORT, ListViews::CHANGE, ""); //notify Table Definition to
 
-      if (CQMessageBox::question(NULL, "No Report Definition Defined",
-                                 "No report definition defined, COPASI has already created a new one for you.\n Do you want to switch to the GUI to edit it?",
+      if (CQMessageBox::question(NULL, "No Report Template Defined",
+                                 "No report template defined, COPASI has already created a new one for you.\n Do you want to switch to the GUI to edit it?",
                                  QMessageBox::Ok | QMessageBox::No, QMessageBox::Ok) == QMessageBox::Ok)
         slotEdit();
 
       return;
     }
 
-  if (!mpReport->getReportDefinition())
+  if (!mpReport->getReportTemplate())
     {
       C_INT32 row;
       row = mpComboDefinition->currentIndex();
-      mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
+      mpReport->setReportTemplate((*(pReportTemplateVector))[row]);
       mpReport->setAppend(mpCheckAppend->isChecked());
       mpReport->setConfirmOverwrite(mpCheckConfirmOverwrite->isChecked());
       mpReport->setTarget(TO_UTF8(mpEditTarget->text()));
@@ -102,7 +94,7 @@ void CQReportDefinitionSelect::loadReportDefinitionVector()
 
       // no use to compare the last one
       for (i = mpComboDefinition->count() - 1; i >= 1; i--)
-        if (mpComboDefinition->itemText(i) == FROM_UTF8(mpReport->getReportDefinition()->getObjectName()))
+        if (mpComboDefinition->itemText(i) == FROM_UTF8(mpReport->getReportTemplate()->getObjectName()))
           break;
 
       mpComboDefinition->setCurrentIndex(i);
@@ -112,7 +104,7 @@ void CQReportDefinitionSelect::loadReportDefinitionVector()
     }
 }
 
-int CQReportDefinitionSelect::exec()
+int CQReportTemplateSelect::exec()
 {
   if (mShow)
     return QDialog::exec();
@@ -120,17 +112,17 @@ int CQReportDefinitionSelect::exec()
     return QDialog::Accepted;
 }
 
-void CQReportDefinitionSelect::accept()
+void CQReportTemplateSelect::accept()
 {
   if (!mpReport)
     //exception made here
     return;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CReportDefinitionVector* pReportDefinitionVector = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList();
+  CReportTemplateVector* pReportTemplateVector = (*CCopasiRootContainer::getDatamodelList())[0]->getReportTemplateList();
   C_INT32 row;
   row = mpComboDefinition->currentIndex();
-  mpReport->setReportDefinition((*(pReportDefinitionVector))[row]);
+  mpReport->setReportTemplate((*(pReportTemplateVector))[row]);
   mpReport->setAppend(mpCheckAppend->isChecked());
   mpReport->setConfirmOverwrite(mpCheckConfirmOverwrite->isChecked());
   mpReport->setTarget(TO_UTF8(mpEditTarget->text()));
@@ -138,24 +130,24 @@ void CQReportDefinitionSelect::accept()
   QDialog::done(QDialog::Accepted);
 }
 
-void CQReportDefinitionSelect::reject()
+void CQReportTemplateSelect::reject()
 {
   cleanup();
   QDialog::done(QDialog::Rejected);
 }
 
-void CQReportDefinitionSelect::slotEdit()
+void CQReportTemplateSelect::slotEdit()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CReportDefinitionVector* pReportDefinitionVector = (*CCopasiRootContainer::getDatamodelList())[0]->getReportDefinitionList();
+  CReportTemplateVector* pReportTemplateVector = (*CCopasiRootContainer::getDatamodelList())[0]->getReportTemplateList();
   C_INT32 row;
   row = mpComboDefinition->currentIndex();
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, (*pReportDefinitionVector)[row]->getKey());
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, (*pReportTemplateVector)[row]->getKey());
   accept(); // if shown then close
   mShow = false; // if not shown then close
 }
 
-void CQReportDefinitionSelect::slotBrowse()
+void CQReportTemplateSelect::slotBrowse()
 {
   QString reportFile =
     CopasiFileDialog::getSaveFileName(this, "Save File Dialog", "untitled.txt", "TEXT Files (*.txt)",

@@ -1,24 +1,12 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/franks_testsuite/copasi_wrapper.cpp,v $
-//   $Revision: 1.11 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/04/10 09:51:05 $
-// End CVS Header
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
 #define COPASI_MAIN
 
@@ -39,8 +27,8 @@
 #include "copasi/trajectory/CTrajectoryTask.h"
 #include "copasi/trajectory/CTrajectoryMethod.h"
 #include "copasi/trajectory/CTrajectoryProblem.h"
-#include "copasi/report/CReportDefinitionVector.h"
-#include "copasi/report/CReportDefinition.h"
+#include "copasi/report/CReportTemplateVector.h"
+#include "copasi/report/CReportTemplate.h"
 
 int main(int argc, char *argv[])
 {
@@ -109,8 +97,8 @@ int main(int argc, char *argv[])
 
       // create a report with the correct filename and all the species against
       // time.
-      CReportDefinitionVector* pReports = pDataModel->getReportDefinitionList();
-      CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for batch run");
+      CReportTemplateVector* pReports = pDataModel->getReportTemplateList();
+      CReportTemplate* pReport = pReports->createReportTemplate("Report", "Output for batch run");
       pReport->setTaskType(CCopasiTask::timeCourse);
       pReport->setIsTable(false);
       pReport->setSeparator(CCopasiReportSeparator(", "));
@@ -192,7 +180,7 @@ int main(int argc, char *argv[])
 
       pTrajectoryTask->setScheduled(true);
 
-      pTrajectoryTask->getReport().setReportDefinition(pReport);
+      pTrajectoryTask->getReport().setReportTemplate(pReport);
       pTrajectoryTask->getReport().setTarget(CWD + "/" + pOutputFilename);
       pTrajectoryTask->getReport().setAppend(false);
 

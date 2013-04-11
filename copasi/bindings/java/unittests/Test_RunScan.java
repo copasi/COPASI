@@ -1,18 +1,11 @@
-// Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunScan.java,v $ 
-//   $Revision: 1.8 $ 
-//   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2009/03/06 08:21:44 $ 
-// End CVS Header 
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
 // All rights reserved. 
 
 package org.COPASI.unittests;
@@ -129,9 +122,9 @@ public class Test_RunScan extends TestCase
         //CCopasiMethod method=task.getMethod();
         //assertFalse(method==null);
         // create a report
-        CReportDefinitionVector reportDefs=mDataModel.getReportDefinitionList();
+        CReportTemplateVector reportDefs=mDataModel.getReportTemplateList();
         assertFalse(reportDefs==null);
-        CReportDefinition repDef=reportDefs.createReportDefinition("htmlConc","value table in HTML format");
+        CReportTemplate repDef=reportDefs.createReportTemplate("htmlConc","value table in HTML format");
         repDef.setIsTable(false);
         assertFalse(repDef==null);
         CCopasiStaticString htmlHeader=new CCopasiStaticString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n<body>\n<table>\n");
@@ -166,7 +159,7 @@ public class Test_RunScan extends TestCase
         repDef.setTaskType(CCopasiTask.timeCourse);
         CReport report=task.getReport();
         assertFalse(report==null);
-        report.setReportDefinition(repDef);
+        report.setReportTemplate(repDef);
         report.setAppend(false);
         report.setTarget("table.xhtml");
         //mDataModel.saveModel("testModel.cps",true);
@@ -178,7 +171,7 @@ public class Test_RunScan extends TestCase
         {
             assertFalse(true);
         }
-        report.setReportDefinition(null);
+        report.setReportTemplate(null);
         report.setTarget("");
         // store the result for R and K and set R and K
         // back to their initial values

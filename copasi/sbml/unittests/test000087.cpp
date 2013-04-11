@@ -1,20 +1,12 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000087.cpp,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/04/01 15:06:43 $
-// End CVS Header
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
 #include "test000087.h"
 
@@ -25,8 +17,8 @@
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 #include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/report/CCopasiRootContainer.h"
-#include "copasi/report/CReportDefinitionVector.h"
-#include "copasi/report/CReportDefinition.h"
+#include "copasi/report/CReportTemplateVector.h"
+#include "copasi/report/CReportTemplate.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CReaction.h"
 #include "copasi/model/CModelValue.h"
@@ -350,8 +342,8 @@ void test000087::test_simulate_reaction_flux_reference_1()
   std::ostringstream result;
   // create a report with the correct filename and all the species against
   // time.
-  CReportDefinitionVector* pReports = pCOPASIDATAMODEL->getReportDefinitionList();
-  CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for simulation");
+  CReportTemplateVector* pReports = pCOPASIDATAMODEL->getReportTemplateList();
+  CReportTemplate* pReport = pReports->createReportTemplate("Report", "Output for simulation");
   pReport->setTaskType(CCopasiTask::timeCourse);
   pReport->setIsTable(false);
   pReport->setSeparator(CCopasiReportSeparator(", "));
@@ -380,7 +372,7 @@ void test000087::test_simulate_reaction_flux_reference_1()
   pTrajectoryTask->getProblem()->setModel(pCOPASIDATAMODEL->getModel());
 
   pTrajectoryTask->setScheduled(true);
-  pTrajectoryTask->getReport().setReportDefinition(pReport);
+  pTrajectoryTask->getReport().setReportTemplate(pReport);
   // the target needs to be set in order to get output on the stream
   // object passed to the task in the call to initialize below
   pTrajectoryTask->getReport().setTarget("test.tmp");

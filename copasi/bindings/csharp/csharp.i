@@ -1,15 +1,7 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/csharp/csharp.i,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/04/11 16:21:16 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 /**
  * Make COPASI and wrapper constants Mono compile-time
@@ -84,7 +76,7 @@ enum CLASS_TYPE
   , COptTask_Type
   , CReaction_Type
   , CReference_Type
-  , CReportDefinition_Type
+  , CReportTemplate_Type
   , CPlotSpecification_Type  
   , CScanMethod_Type
   , CScanProblem_Type
@@ -114,8 +106,8 @@ enum CLASS_TYPE
   , ReactionVectorNS_Type
   , ReactionVectorN_Type
   , ReactionVector_Type
-  , ReportDefinitionVectorN_Type
-  , ReportDefinitionVector_Type
+  , ReportTemplateVectorN_Type
+  , ReportTemplateVector_Type
   , OutputDefinitionVectorN_Type
   , OutputDefinitionVector_Type
   , TaskVectorN_Type
@@ -594,13 +586,13 @@ int GetType_COptTask(COptTask* pPointer);
                     // return a EventAssignmentVector
                     ret = new EventAssignmentVector(cPtr,owner);
                     break;
-                case COPASI.ReportDefinitionVectorN_Type:
-                    // return a ReportDefinitionVectorN
-                    ret = new ReportDefinitionVectorN(cPtr,owner);
+                case COPASI.ReportTemplateVectorN_Type:
+                    // return a ReportTemplateVectorN
+                    ret = new ReportTemplateVectorN(cPtr,owner);
                     break;
-                case COPASI.ReportDefinitionVector_Type:
-                    // return a ReportDefinitionVector
-                    ret = new ReportDefinitionVector(cPtr,owner);
+                case COPASI.ReportTemplateVector_Type:
+                    // return a ReportTemplateVector
+                    ret = new ReportTemplateVector(cPtr,owner);
                     break;
                 case COPASI.MoietyVector_Type:
                     // return a MoietyVector
@@ -751,9 +743,9 @@ int GetType_COptTask(COptTask* pPointer);
                     // return a CPlotSpecification
                     ret = new CPlotSpecification(cPtr,owner);
                     break;
-                case COPASI.CReportDefinition_Type:
-                    // return a CReportDefinition
-                    ret = new CReportDefinition(cPtr,owner);
+                case COPASI.CReportTemplate_Type:
+                    // return a CReportTemplate
+                    ret = new CReportTemplate(cPtr,owner);
                     break;
                 case COPASI.CCopasiReportSeparator_Type:
                     // return a CCopasiReportSeparator

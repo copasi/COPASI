@@ -1,21 +1,17 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CReport.py,v $ 
-#   $Revision: 1.4 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2010/07/16 18:55:59 $ 
-# End CVS Header 
+# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+# Properties, Inc., University of Heidelberg, and The University </comment>
+# of Manchester. </comment>
+# All rights reserved. </comment>
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., University of Heidelberg, and The University 
-# of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+# and The University of Manchester. </comment>
+# All rights reserved. </comment>
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
+# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
+# Properties, Inc. and EML Research, gGmbH. </comment>
+# All rights reserved. </comment>
 
 import COPASI
 import unittest
@@ -28,17 +24,17 @@ class Test_CReport(unittest.TestCase):
     self.task=self.datamodel.getTask(0)
     self.report=self.task.getReport()
 
-  def test_getReportDefinition(self):
-    reportDefinition=self.report.getReportDefinition()
-    self.assert_(reportDefinition!=None)
-    self.assert_(reportDefinition.__class__==COPASI.CReportDefinition)
+  def test_getReportTemplate(self):
+    reportTemplate=self.report.getReportTemplate()
+    self.assert_(reportTemplate!=None)
+    self.assert_(reportTemplate.__class__==COPASI.CReportTemplate)
 
-  def test_setReportDefinition(self):
-    listOfReportDefinitions=self.datamodel.getReportDefinitionList()
-    reportDefinition=listOfReportDefinitions.createReportDefinition("MyReportDefinition","No Comment")
-    self.assert_(reportDefinition!=None)
-    self.report.setReportDefinition(reportDefinition)
-    self.assert_(self.report.getReportDefinition().getKey()==reportDefinition.getKey())
+  def test_setReportTemplate(self):
+    listOfReportTemplates=self.datamodel.getReportTemplateList()
+    reportTemplate=listOfReportTemplates.createReportTemplate("MyReportTemplate","No Comment")
+    self.assert_(reportTemplate!=None)
+    self.report.setReportTemplate(reportTemplate)
+    self.assert_(self.report.getReportTemplate().getKey()==reportTemplate.getKey())
 
   def test_getTarget(self):
     target=self.report.getTarget()
@@ -69,8 +65,8 @@ class Test_CReport(unittest.TestCase):
 
 def suite():
   tests=[
-          'test_getReportDefinition'                       
-         ,'test_setReportDefinition'                       
+          'test_getReportTemplate'                       
+         ,'test_setReportTemplate'                       
          ,'test_getTarget'                       
          ,'test_setTarget'                       
          ,'test_append'                       

@@ -110,10 +110,10 @@ def main(args):
    assert model != None
    # create a report with the correct filename and all the species against
    # time.
-   reports = dataModel.getReportDefinitionList()
-   # create a report definition object
-   report = reports.createReportDefinition("Report", "Output for timecourse")
-   # set the task type for the report definition to timecourse
+   reports = dataModel.getReportTemplateList()
+   # create a report template object
+   report = reports.createReportTemplate("Report", "Output for timecourse")
+   # set the task type for the report template to timecourse
    report.setTaskType(CCopasiTask.timeCourse)
    # we don't want a table
    report.setIsTable(False)
@@ -209,7 +209,7 @@ def main(args):
    scanTask.setScheduled(True)
 
    # set the report for the task
-   scanTask.getReport().setReportDefinition(report)
+   scanTask.getReport().setReportTemplate(report)
 
    # set the output file for the report
    scanTask.getReport().setTarget("example4.txt")

@@ -1,15 +1,7 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/common/local_common.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/12/19 16:20:15 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiMethod.h"
@@ -36,8 +28,8 @@
 #include "trajectory/CTrajectoryProblem.h"
 #include "trajectory/CTrajectoryMethod.h"
 #include "report/CCopasiStaticString.h"
-#include "report/CReportDefinition.h"
-#include "report/CReportDefinitionVector.h"
+#include "report/CReportTemplate.h"
+#include "report/CReportTemplateVector.h"
 #include "utilities/CAnnotatedMatrix.h"
 #include "utilities/CMatrix.h"
 #include "steadystate/CSteadyStateTask.h"
@@ -101,7 +93,7 @@ typedef std::vector<CFunction> CFunctionStdVector;
 typedef CCopasiVector<CChemEqElement> CChemEqElementVector;
 
 typedef CCopasiVector<CModelValue> ModelValueVector;
-typedef CCopasiVectorN<CReportDefinition> CReportDefinitionVectorN;
+typedef CCopasiVectorN<CReportTemplate> CReportTemplateVectorN;
 typedef CCopasiVectorN<CMetab> MetabVectorN;
 typedef CCopasiVector<CCompartment> CompartmentVector;
 typedef CCopasiVectorN<CCompartment> CompartmentVectorN;

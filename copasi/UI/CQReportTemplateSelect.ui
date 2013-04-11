@@ -1,30 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Begin CVS Header </comment>
-<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinitionSelect.ui,v $ </comment>
-<comment>   $Revision: 1.1 $ </comment>
-<comment>   $Name:  $ </comment>
-<comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2012/04/20 16:26:55 $ </comment>
-<comment> End CVS Header </comment>
-
-<comment> Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
- <class>CQReportDefinitionSelect</class>
- <widget class="QDialog" name="CQReportDefinitionSelect">
+ <comment> All rights reserved. </comment>
+ <class>CQReportTemplateSelect</class>
+ <widget class="QDialog" name="CQReportTemplateSelect">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>367</width>
-    <height>118</height>
+    <width>375</width>
+    <height>129</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>CQReportDefinitionSelect</string>
+   <string>CQReportTemplateSelect</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <property name="verticalSpacing">
@@ -61,7 +54,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="mpLblDefinition">
         <property name="text">
-         <string>Report Definition</string>
+         <string>Template</string>
         </property>
        </widget>
       </item>
@@ -71,7 +64,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="mpLblTarget">
         <property name="text">
-         <string>Target</string>
+         <string>Filename</string>
         </property>
        </widget>
       </item>
@@ -79,32 +72,29 @@
        <widget class="QLineEdit" name="mpEditTarget"/>
       </item>
       <item row="2" column="1">
-
-    <layout class="QHBoxLayout">
-     <item>
-       <widget class="QCheckBox" name="mpCheckAppend">
-        <property name="text">
-         <string>Append</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-     </item>
-     <item>
-       <widget class="QCheckBox" name="mpCheckConfirmOverwrite">
-        <property name="text">
-         <string>Confirm Overwrite</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout">
+        <item>
+         <widget class="QCheckBox" name="mpCheckAppend">
+          <property name="text">
+           <string>Append</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="mpCheckConfirmOverwrite">
+          <property name="text">
+           <string>Confirm Overwrite</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
-
-            </layout>
-            </item>
-
       <item row="0" column="2">
        <widget class="QToolButton" name="mpBtnEdit">
         <property name="text">
@@ -112,7 +102,6 @@
         </property>
        </widget>
       </item>
-
       <item row="1" column="2">
        <widget class="QToolButton" name="mpBtnBrowse">
         <property name="text">
@@ -138,7 +127,7 @@
   <connection>
    <sender>mpBtnBox</sender>
    <signal>accepted()</signal>
-   <receiver>CQReportDefinitionSelect</receiver>
+   <receiver>CQReportTemplateSelect</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -154,7 +143,7 @@
   <connection>
    <sender>mpBtnBox</sender>
    <signal>rejected()</signal>
-   <receiver>CQReportDefinitionSelect</receiver>
+   <receiver>CQReportTemplateSelect</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -170,7 +159,7 @@
   <connection>
    <sender>mpBtnEdit</sender>
    <signal>clicked()</signal>
-   <receiver>CQReportDefinitionSelect</receiver>
+   <receiver>CQReportTemplateSelect</receiver>
    <slot>slotEdit()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -186,7 +175,7 @@
   <connection>
    <sender>mpBtnBrowse</sender>
    <signal>clicked()</signal>
-   <receiver>CQReportDefinitionSelect</receiver>
+   <receiver>CQReportTemplateSelect</receiver>
    <slot>slotBrowse()</slot>
    <hints>
     <hint type="sourcelabel">

@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /****************************************************************************
  **  $ CopasiUI/listviews.cpp
@@ -84,7 +84,7 @@
 #include "CMCAResultWidget.h"
 #include "CQLNAWidget.h"
 #include "CLNAResultWidget.h"
-#include "CQReportDefinition.h"
+#include "CQReportTemplate.h"
 #include "CQPlotsWidget.h"
 #include "CQMathMatrixWidget.h"
 #include "MIRIAMUI/CQMiriamWidget.h"
@@ -97,7 +97,7 @@
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
-#include "report/CReportDefinitionVector.h"
+#include "report/CReportTemplateVector.h"
 #include "plot/COutputDefinitionVector.h"
 #ifdef USE_NEW_PLOTSUBWIDGET
 #include "plotUI/CQPlotSubwidget.h"
@@ -471,7 +471,7 @@ void ListViews::ConstructNodeWidgets()
 
   mpReportsWidget->hide();
 
-  if (!tableDefinition1) tableDefinition1 = new CQReportDefinition(this);
+  if (!tableDefinition1) tableDefinition1 = new CQReportTemplate(this);
 
   tableDefinition1->hide();
 

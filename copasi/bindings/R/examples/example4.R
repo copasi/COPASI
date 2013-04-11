@@ -32,24 +32,24 @@ model <- CCopasiDataModel_getModel(dataModel)
 stopifnot(!is.null(model))
 # create a report with the correct filename and all the species against
 # time.
-reports <- CCopasiDataModel_getReportDefinitionList(dataModel)
-# create a report definition object
-report <- CReportDefinitionVector_createReportDefinition(reports,"Report", "Output for timecourse")
-# set the task type for the report definition to timecourse
-invisible(CReportDefinition_setTaskType(report,"timeCourse"))
+reports <- CCopasiDataModel_getReportTemplateList(dataModel)
+# create a report template object
+report <- CReportTemplateVector_createReportTemplate(reports,"Report", "Output for timecourse")
+# set the task type for the report template to timecourse
+invisible(CReportTemplate_setTaskType(report,"timeCourse"))
 # we don't want a table
-invisible(CReportDefinition_setIsTable(report,FALSE))
+invisible(CReportTemplate_setIsTable(report,FALSE))
 # the entries in the output should be seperated by a ", "
-invisible(CReportDefinition_setSeparator(report,CCopasiReportSeparator(", ")))
+invisible(CReportTemplate_setSeparator(report,CCopasiReportSeparator(", ")))
 
 # we need a handle to the header and the body
 # the header will display the ids of the metabolites and "time" for
 # the first column
 # the body will contain the actual timecourse data
-sep <- CReportDefinition_getSeparator(report)
+sep <- CReportTemplate_getSeparator(report)
 sep_string <- CCopasiObjectName_getString(CCopasiObject_getCN(sep))
-header <- CReportDefinition_getHeaderAddr(report)
-body <- CReportDefinition_getBodyAddr(report)
+header <- CReportTemplate_getHeaderAddr(report)
+body <- CReportTemplate_getBodyAddr(report)
 time_string <- CCopasiObjectName_getString(CCopasiObjectName(paste(CCopasiObjectName_getString(CCopasiObject_getCN(model)), ",Reference=Time", sep = "")))
 invisible(ReportItemVector_push_back(body,CRegisteredObjectName(time_string)))
 invisible(ReportItemVector_push_back(body,CRegisteredObjectName(sep_string)))
@@ -146,7 +146,7 @@ invisible(CCopasiProblem_setModel(scanProblem,model))
 invisible(CCopasiTask_setScheduled(scanTask,TRUE))
 
 # set the report for the task
-invisible(CReport_setReportDefinition(CCopasiTask_getReport(scanTask), report))
+invisible(CReport_setReportTemplate(CCopasiTask_getReport(scanTask), report))
 
 # set the output file for the report
 invisible(CReport_setTarget(CCopasiTask_getReport(scanTask), "example4.txt"))

@@ -121,10 +121,10 @@ report/CReport.cpp
 report/CReport.h
 report/CReportBody.cpp
 report/CReportBody.h
-report/CReportDefinition.cpp
-report/CReportDefinition.h
-report/CReportDefinitionVector.cpp
-report/CReportDefinitionVector.h
+report/CReportTemplate.cpp
+report/CReportTemplate.h
+report/CReportTemplateVector.cpp
+report/CReportTemplateVector.h
 report/Makefile
 report/report.pro
 randomGenerator/Cmt19937.cpp
@@ -278,9 +278,9 @@ CopasiUI/copasiWidget.cpp
 CopasiUI/copasiWidget.h
 CopasiUI/CReactionInterface.cpp
 CopasiUI/CReactionInterface.h
-CopasiUI/CReportDefinitionSelect.cpp
-CopasiUI/CReportDefinitionSelect.h
-CopasiUI/CReportDefinitionSelect.ui
+CopasiUI/CReportTemplateSelect.cpp
+CopasiUI/CReportTemplateSelect.h
+CopasiUI/CReportTemplateSelect.ui
 CopasiUI/DataModel.cpp
 CopasiUI/DataModel.h
 CopasiUI/DataModel.txt.h
