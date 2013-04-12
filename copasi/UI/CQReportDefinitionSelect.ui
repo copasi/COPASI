@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Begin CVS Header </comment>
-<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinitionSelect.ui,v $ </comment>
-<comment>   $Revision: 1.1 $ </comment>
-<comment>   $Name:  $ </comment>
-<comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2012/04/20 16:26:55 $ </comment>
-<comment> End CVS Header </comment>
-
-<comment> Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -61,7 +53,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="mpLblDefinition">
         <property name="text">
-         <string>Report Definition</string>
+         <string>Report Template</string>
         </property>
        </widget>
       </item>
@@ -71,7 +63,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="mpLblTarget">
         <property name="text">
-         <string>Target</string>
+         <string>Filename</string>
         </property>
        </widget>
       </item>

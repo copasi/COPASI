@@ -1,15 +1,7 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinitionSelect.cpp,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/20 16:26:55 $
-// End CVS Header
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #include "CQReportDefinitionSelect.h"
 
@@ -78,7 +70,7 @@ void CQReportDefinitionSelect::loadReportDefinitionVector()
       mpReport->setTarget(TO_UTF8(mpEditTarget->text()));
       mpListView->getDataModel()->notify(ListViews::REPORT, ListViews::CHANGE, ""); //notify Table Definition to
 
-      if (CQMessageBox::question(NULL, "No Report Definition Defined",
+      if (CQMessageBox::question(NULL, "No Report Template Defined",
                                  "No report definition defined, COPASI has already created a new one for you.\n Do you want to switch to the GUI to edit it?",
                                  QMessageBox::Ok | QMessageBox::No, QMessageBox::Ok) == QMessageBox::Ok)
         slotEdit();
