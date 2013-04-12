@@ -37,6 +37,8 @@
 #include <sbml/LocalParameter.h>
 
 #if LIBSBML_VERSION >= 50400
+#include <sbml/SBMLTransforms.h>
+#include "IdList.h" // this file is missing from the libSBML distribution!
 #include <sbml/conversion/ConversionProperties.h>
 #include <sbml/packages/layout/extension/LayoutModelPlugin.h>
 #define INIT_DEFAULTS(element) \
@@ -2425,7 +2427,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
           // check for references to species references in the expression because we don't support them yet
           if (!SBMLImporter::findIdInASTTree(kLawMath, this->mSBMLSpeciesReferenceIds).empty())
             {
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 95);
+              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 95);
             }
 
           ConverterASTNode* node = new ConverterASTNode(*kLawMath);
@@ -4285,9 +4287,17 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
       Reaction* pSBMLReaction = NULL;
       Parameter* pSBMLParameter = NULL;
       std::string sbmlId;
-      CCopasiParameter* pParam = pParamGroup.getParameter(pNode->getName());
+      std::string name = pNode->getName();
+      CCopasiParameter* pParam = pParamGroup.getParameter(name);
 
-      if (pParam)
+      std::map<std::string, double>::const_iterator speciesReference = mSBMLSpeciesReferenceIds.find(name);
+      if (speciesReference  != mSBMLSpeciesReferenceIds.end())
+      {
+        // replace the name with the value
+        pNode->setType(AST_REAL);
+        pNode->setValue(mSBMLSpeciesReferenceIds[name]);        
+      }
+      else if (pParam)
         {
           pNode->setName(pParam->getCN().c_str());
         }
@@ -6447,7 +6457,7 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
   // check for references to species references in the expression because we don't support them yet
   if (!SBMLImporter::findIdInASTTree(rule->getMath(), this->mSBMLSpeciesReferenceIds).empty())
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 95);
+      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 95);
     }
 
   if (rule->getTypeCode() == SBML_ASSIGNMENT_RULE)
@@ -6602,6 +6612,30 @@ void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<CCopasiO
  * from the set it finds in the AST tree.
  * This is e.g. used to check if expression in L2V1 contain references to reaction ids.
  */
+std::string SBMLImporter::findIdInASTTree(const ASTNode* pASTNode, const std::map<std::string, double>& reactionIds)
+{
+  std::string id = "";
+  CNodeIterator< const ASTNode > itNode(pASTNode);
+
+  while (itNode.next() != itNode.end())
+    {
+      if (*itNode == NULL)
+        {
+          continue;
+        }
+
+      if (itNode->getType() == AST_NAME)
+        {
+          if (reactionIds.find(itNode->getName()) != reactionIds.end())
+            {
+              id = itNode->getName();
+              break;
+            }
+        }
+    }
+
+  return id;
+}
 std::string SBMLImporter::findIdInASTTree(const ASTNode* pASTNode, const std::set<std::string>& reactionIds)
 {
   std::string id = "";
@@ -6669,6 +6703,15 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
               if (knownit != mKnownInitalValues.end())
                 {
                   itNode->setName(knownit->second.c_str());
+                  continue;
+                }
+
+              std::map<std::string, double>::const_iterator speciesReference = mSBMLSpeciesReferenceIds.find(name);
+              if (speciesReference  != mSBMLSpeciesReferenceIds.end())
+                {
+                  // replace the name with the value
+                  itNode->setType(AST_REAL);
+                  itNode->setValue(mSBMLSpeciesReferenceIds[name]);
                   continue;
                 }
 
@@ -8539,7 +8582,7 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<CCopasiO
                     {
                       if (mpImportHandler) mpImportHandler->finishItem(hStep);
 
-                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 95);
+                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 95);
                     }
 
                   try
@@ -9305,7 +9348,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
   // check for references to species references in the expression because we don't support them yet
   if (!SBMLImporter::findIdInASTTree(pMath, this->mSBMLSpeciesReferenceIds).empty())
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 95);
+      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 95);
     }
 
   // convert and set math expression
@@ -9343,7 +9386,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
       // check for references to species references in the expression because we don't support them yet
       if (!SBMLImporter::findIdInASTTree(pMath, this->mSBMLSpeciesReferenceIds).empty())
         {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 95);
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 95);
         }
 
       // convert and set math expression
@@ -9452,7 +9495,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
       // check for references to species references in the expression because we don't support them yet
       if (!SBMLImporter::findIdInASTTree(pMath, this->mSBMLSpeciesReferenceIds).empty())
         {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 95);
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 95);
         }
 
       try
@@ -10092,7 +10135,7 @@ void SBMLImporter::applyConversionFactors()
 /**
  * Goes through all SBML reactions and collects the ids of all species references.
  */
-void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::set<std::string>& ids)
+void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::map<std::string, double>& ids)
 {
   ids.clear();
 
@@ -10102,6 +10145,9 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::set<s
   unsigned int j, jMax;
   const Reaction* pReaction = NULL;
   const SpeciesReference* pSpeciesReference = NULL;
+
+  SBMLTransforms transforms;
+  transforms.mapComponentValues(pModel);  
 
   for (i = 0; i < iMax; ++i)
     {
@@ -10125,7 +10171,8 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::set<s
                 {
                   // make sure all ids are unique
                   assert(ids.find(pSpeciesReference->getId()) == ids.end());
-                  ids.insert(pSpeciesReference->getId());
+                  ids.insert(std::pair<std::string, double>(pSpeciesReference->getId(), 
+                    transforms.evaluateASTNode(SBML_parseFormula(pSpeciesReference->getId().c_str()), pModel)));
                 }
             }
 
@@ -10141,7 +10188,8 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::set<s
                 {
                   // make sure all ids are unique
                   assert(ids.find(pSpeciesReference->getId()) == ids.end());
-                  ids.insert(pSpeciesReference->getId());
+                  ids.insert(std::pair<std::string, double>(pSpeciesReference->getId(), 
+                    transforms.evaluateASTNode(SBML_parseFormula(pSpeciesReference->getId().c_str()), pModel)));
                 }
             }
         }
