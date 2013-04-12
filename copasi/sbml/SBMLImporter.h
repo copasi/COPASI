@@ -109,7 +109,7 @@ protected:
   // in this set we store the ids of all SBML species references
   // so that we can later check if a reference to a species reference is used
   // in a mathematical expression
-  std::set<std::string> mSBMLSpeciesReferenceIds;
+  std::map<std::string, double> mSBMLSpeciesReferenceIds;
 
   bool mRateRuleForSpeciesReferenceIgnored;
   bool mEventAssignmentForSpeciesReferenceIgnored;
@@ -694,6 +694,7 @@ public:
    * This is e.g. used to check if expression in L2V1 contain references to reaction ids.
    */
   std::string findIdInASTTree(const ASTNode* pMath, const std::set<std::string>& reactionIds);
+  std::string findIdInASTTree(const ASTNode* pMath, const std::map<std::string, double>& reactionIds);
 
   /**
    * This method divides the given expression by the given object and returns a new expression.
@@ -723,7 +724,7 @@ public:
   /**
    * Goes through all SBML reactions and collects the ids of all species references.
    */
-  static void updateSBMLSpeciesReferenceIds(const Model* pModel, std::set<std::string>& ids);
+  static void updateSBMLSpeciesReferenceIds(const Model* pModel, std::map<std::string, double>& ids);
 
 #endif // LIBSBML_VERSION
 };
