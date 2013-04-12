@@ -74,10 +74,10 @@
 %ignore CCopasiDataModel::mpFunctionList;
 %ignore CCopasiDataModel::mpModel;
 %ignore CCopasiDataModel::mpTaskList;
-%ignore CCopasiDataModel::mpReportTemplateList;
+%ignore CCopasiDataModel::mpReportDefinitionList;
 %ignore CCopasiDataModel::mpPlotDefinitionList;
 %ignore CCopasiDataModel::ObjectFromName(std::vector<CCopasiContainer * > const &,CCopasiObjectName const &) const;
-%ignore CCopasiDataModel::getReportTemplateList() const;
+%ignore CCopasiDataModel::getReportDefinitionList() const;
 
 %catches(CCopasiException) CCopasiDataModel::newModel();
 %catches(CCopasiException) CCopasiDataModel::newModel(CProcessReport* pProcessReport,const bool& deleteOldData);
@@ -144,16 +144,16 @@
         return $self->newModel(NULL,false);
     }
 
-    CReportTemplate* getReportTemplate(unsigned C_INT32 index)
+    CReportDefinition* getReportDefinition(unsigned C_INT32 index)
     {
-      return (*$self->getReportTemplateList())[index];
+      return (*$self->getReportDefinitionList())[index];
     }
 
-    CReportTemplate* getReportTemplate(const std::string& name)
+    CReportDefinition* getReportDefinition(const std::string& name)
     {
       try
       {
-      return (*$self->getReportTemplateList())[name];
+      return (*$self->getReportDefinitionList())[name];
       }
       catch(...)
       {

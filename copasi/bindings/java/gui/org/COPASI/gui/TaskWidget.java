@@ -1,14 +1,17 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Begin CVS Header 
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/gui/org/COPASI/gui/TaskWidget.java,v $ 
+//   $Revision: 1.12 $ 
+//   $Name:  $ 
+//   $Author: gauges $ 
+//   $Date: 2009/03/04 19:22:40 $ 
+// End CVS Header 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
@@ -57,7 +60,7 @@ import org.COPASI.CCopasiMethod;
 import org.COPASI.CCopasiParameter;
 import org.COPASI.CRegisteredObjectName;
 import org.COPASI.CReport;
-import org.COPASI.CReportTemplate;
+import org.COPASI.CReportDefinition;
 import org.COPASI.COutputAssistant;
 import org.COPASI.CCopasiMessage;
 import org.COPASI.COPASIConstants;
@@ -573,7 +576,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
             }
             else if(e.getSource()==this.mButtonWidget.mReportButton)
             {
-                this.createDefaultReportTemplate();
+                this.createDefaultReportDefinition();
                 if(this.mTask.getReport().getTarget().equals(""))
                 {
                     // ask for a filename
@@ -801,16 +804,16 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 	/**
 	 * This method creats a report that is suitable for the task associated with the widget and activates it.
 	 */
-	public void createDefaultReportTemplate()
+	public void createDefaultReportDefinition()
 	{
 		if(!this.mDefaultReportCreated && this.mTask!=null)
 		{
                   //System.out.println("Creating default report.");;
 		  int index=COutputAssistant.getDefaultReportIndex(this.mTask.getProblem());
 		  CCopasiObject def=COutputAssistant.createDefaultOutput(index, this.mTask,mDataModel, true);
-		  if (def instanceof CReportTemplate) 
+		  if (def instanceof CReportDefinition) 
 		  {
-			 this.mTask.getReport().setReportTemplate((CReportTemplate)def);
+			 this.mTask.getReport().setReportDefinition((CReportDefinition)def);
 		  }
 		  this.mDefaultReportCreated=true;
 		}

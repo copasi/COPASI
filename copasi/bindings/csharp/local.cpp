@@ -1,7 +1,15 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Begin CVS Header
+//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/csharp/local.cpp,v $
+//   $Revision: 1.2 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2011/12/19 16:20:19 $
+// End CVS Header
+
+// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include "../common/local_common.cpp"
 #include "plot/CPlotSpecification.h"
@@ -211,29 +219,29 @@ int GetType_CCopasiContainer(CCopasiContainer* pPointer)
                       result = EventAssignmentVector_Type;
                     }
                 }
-              else if (dynamic_cast<CCopasiVector<CReportTemplate>* >(pPointer))
+              else if (dynamic_cast<CCopasiVector<CReportDefinition>* >(pPointer))
                 {
-                  if (dynamic_cast<CCopasiVectorN<CReportTemplate>* >(pPointer))
+                  if (dynamic_cast<CCopasiVectorN<CReportDefinition>* >(pPointer))
                     {
-                      // return a ReportTemplateVectorN
-                      result = ReportTemplateVectorN_Type;
+                      // return a ReportDefinitionVectorN
+                      result = ReportDefinitionVectorN_Type;
                     }
                   else
                     {
-                      // return a ReportTemplateVector
-                      result = ReportTemplateVector_Type;
+                      // return a ReportDefinitionVector
+                      result = ReportDefinitionVector_Type;
                     }
                 }
                 else if (dynamic_cast<CCopasiVector<CPlotSpecification>* >(pPointer))
                 {
                   if (dynamic_cast<CCopasiVectorN<CPlotSpecification>* >(pPointer))
                     {
-                      // return a ReportTemplateVectorN
+                      // return a ReportDefinitionVectorN
                       result = OutputDefinitionVectorN_Type;
                     }
                   else
                     {
-                      // return a ReportTemplateVector
+                      // return a ReportDefinitionVector
                       result = OutputDefinitionVector_Type;
                     }
                 }
@@ -414,10 +422,10 @@ int GetType_CCopasiObject(CCopasiObject* pPointer)
           result = CCopasiContainer_Type;
           //result = GetType_CCopasiContainer((CCopasiContainer*)pPointer);
         }
-      else if (dynamic_cast<CReportTemplate*>(pPointer))
+      else if (dynamic_cast<CReportDefinition*>(pPointer))
         {
-          // return a CReportTemplate
-          result = CReportTemplate_Type;
+          // return a CReportDefinition
+          result = CReportDefinition_Type;
         }
       else if (dynamic_cast<CCopasiStaticString*>(pPointer))
         {

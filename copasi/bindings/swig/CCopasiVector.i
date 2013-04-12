@@ -137,13 +137,13 @@
 %template(ModelValueVector) CCopasiVector<CModelValue>;
 %template(ModelValueVectorN) CCopasiVectorN<CModelValue>;
 
-%rename(removeObject) CCopasiVector<CReportTemplate>::remove(CCopasiObject* pObject);
-%rename(removeByName) CCopasiVectorN<CReportTemplate>::remove(const std::string& name);
-%rename(getIndexByName) CCopasiVectorN<CReportTemplate>::getIndex(const std::string& name) const;
+%rename(removeObject) CCopasiVector<CReportDefinition>::remove(CCopasiObject* pObject);
+%rename(removeByName) CCopasiVectorN<CReportDefinition>::remove(const std::string& name);
+%rename(getIndexByName) CCopasiVectorN<CReportDefinition>::getIndex(const std::string& name) const;
 
-%template(ReportTemplateStdVector) std::vector<CReportTemplate*>;
-%template(ReportTemplateVector) CCopasiVector<CReportTemplate>;
-%template(ReportTemplateVectorN) CCopasiVectorN<CReportTemplate>;
+%template(ReportDefinitionStdVector) std::vector<CReportDefinition*>;
+%template(ReportDefinitionVector) CCopasiVector<CReportDefinition>;
+%template(ReportDefinitionVectorN) CCopasiVectorN<CReportDefinition>;
 
 %rename(removeObject) CCopasiVector<CPlotSpecification>::remove(CCopasiObject* pObject);
 %rename(removeByName) CCopasiVectorN<CPlotSpecification>::remove(const std::string& name);

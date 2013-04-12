@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  **  $ CopasiUI/listviews.h                Modified on : 8th March, 2002
@@ -89,7 +89,7 @@ class CQMCAWidget;
 class CMCAResultWidget;
 class CQLNAWidget;
 class CLNAResultWidget;
-class CQReportTemplate;
+class CQReportDefinition;
 class CQLyapWidget;
 class CQLyapResultWidget;
 class CQModelValue;
@@ -241,7 +241,7 @@ private:
   CQSteadyStateResult *stateWidget;
   SteadyStateWidget *steadystateWidget;
   CQReportsWidget *mpReportsWidget;
-  CQReportTemplate *tableDefinition1;
+  CQReportDefinition *tableDefinition1;
 
   CQTimeSeriesWidget *timeSeriesWidget;
   CQTrajectoryWidget *trajectoryWidget;

@@ -1,12 +1,20 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example3/example3.cpp,v $
+//   $Revision: 1.4 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2011/12/19 16:20:16 $
+// End CVS Header
 
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 /**
  * This is an example on how to import an sbml file
@@ -25,8 +33,8 @@
 #include "copasi/model/CModel.h"
 #include "copasi/model/CMetab.h"
 #include "copasi/report/CReport.h"
-#include "copasi/report/CReportTemplate.h"
-#include "copasi/report/CReportTemplateVector.h"
+#include "copasi/report/CReportDefinition.h"
+#include "copasi/report/CReportDefinitionVector.h"
 #include "copasi/trajectory/CTrajectoryTask.h"
 #include "copasi/trajectory/CTrajectoryMethod.h"
 #include "copasi/trajectory/CTrajectoryProblem.h"
@@ -64,10 +72,10 @@ int main(int argc, char** argv)
       assert(pModel != NULL);
       // create a report with the correct filename and all the species against
       // time.
-      CReportTemplateVector* pReports = pDataModel->getReportTemplateList();
-      // create a new report template object
-      CReportTemplate* pReport = pReports->createReportTemplate("Report", "Output for timecourse");
-      // set the task type for the report template to timecourse
+      CReportDefinitionVector* pReports = pDataModel->getReportDefinitionList();
+      // create a new report definition object
+      CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for timecourse");
+      // set the task type for the report definition to timecourse
       pReport->setTaskType(CCopasiTask::timeCourse);
       // we don't want a table
       pReport->setIsTable(false);
@@ -154,7 +162,7 @@ int main(int argc, char** argv)
       pTrajectoryTask->setScheduled(true);
 
       // set the report for the task
-      pTrajectoryTask->getReport().setReportTemplate(pReport);
+      pTrajectoryTask->getReport().setReportDefinition(pReport);
       // set the output filename
       pTrajectoryTask->getReport().setTarget("example3.txt");
       // don't append output if the file exists, but overwrite the file

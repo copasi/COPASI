@@ -1,7 +1,14 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.h,v $
+//   $Revision: 1.40 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2007/02/23 18:51:39 $
+// End CVS Header
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  *
@@ -22,7 +29,7 @@
 #include "report/CCopasiStaticString.h"
 #include "utilities/CCopasiTask.h"
 
-class CReportTemplate;
+class CReportDefinition;
 class CComment;
 class CHeaderFooter;
 class CReportBody;
@@ -30,7 +37,7 @@ class CReportObject;
 class CReport;
 class CReportTable;
 
-class CReportTemplate : public CCopasiObject
+class CReportDefinition : public CCopasiObject
   {
     // Operations
   private:
@@ -52,19 +59,19 @@ class CReportTemplate : public CCopasiObject
     /**
      *  Default constructor.
      */
-    CReportTemplate(const std::string & name = "NoName",
+    CReportDefinition(const std::string & name = "NoName",
                       const CCopasiContainer * pParent = NULL);
 
     /**
      *  Copy constructor.
      */
-    CReportTemplate(const CReportTemplate & src,
+    CReportDefinition(const CReportDefinition & src,
                       const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor.
      */
-    ~CReportTemplate();
+    ~CReportDefinition();
 
     /**
      *cleanup

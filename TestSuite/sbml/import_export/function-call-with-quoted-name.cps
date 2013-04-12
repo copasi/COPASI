@@ -146,7 +146,7 @@ The called function name is not an ID and it contains spaces as well as the char
     </Task>
   </ListOfTasks>
   <ListOfReports>
-    <Report key="Report_0" name="ReportTemplate_0" taskType="timeCourse" separator="&#x09;">
+    <Report key="Report_0" name="ReportDefinition_0" taskType="timeCourse" separator="&#x09;">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           

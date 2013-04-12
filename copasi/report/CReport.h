@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  *
@@ -32,7 +32,7 @@
 
 #include "utilities/COutputHandler.h"
 
-class CReportTemplate;
+class CReportDefinition;
 class CReportTable;
 
 class CReport : public COutputInterface
@@ -60,7 +60,7 @@ private:
   std::ostream * mpOstream;
   bool mStreamOwner;
 
-  CReportTemplate *mpReportDef;
+  CReportDefinition *mpReportDef;
   std::string mTarget;
   bool mAppend;
   bool mConfirmOverwrite;
@@ -124,7 +124,7 @@ public:
   /**
    * returns the reference of the Report Tag
    */
-  CReportTemplate* getReportTemplate();
+  CReportDefinition* getReportDefinition();
 
   /**
    * Open the defined target stream or use the given argument
@@ -144,7 +144,7 @@ public:
   /**
    * sets the reference to the report
    */
-  void setReportTemplate(CReportTemplate *reportDef);
+  void setReportDefinition(CReportDefinition *reportDef);
 
   /**
    * returns the target of the Report Tag

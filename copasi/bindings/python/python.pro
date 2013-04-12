@@ -169,8 +169,8 @@ UNITTEST_FILES = unittests/Test_CChemEq.py \
                  unittests/Test_COutputAssistant.py \
                  unittests/Test_CReaction.py \
                  unittests/Test_CReport.py \
-                 unittests/Test_CReportTemplate.py \
-                 unittests/Test_CReportTemplateVector.py \
+                 unittests/Test_CReportDefinition.py \
+                 unittests/Test_CReportDefinitionVector.py \
                  unittests/Test_CState.py \
                  unittests/Test_CTimeSeries.py \
                  unittests/Test_CTrajectoryMethod.py \

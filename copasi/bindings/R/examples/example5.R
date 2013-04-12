@@ -119,24 +119,24 @@ invisible(CCopasiParameter_setDblValue(parameter,1.0e-5))
 
 # create a report with the correct filename and all the species against
 # time.
-reports <- CCopasiDataModel_getReportTemplateList(dataModel)
-# create a report template object
-report <- CReportTemplateVector_createReportTemplate(reports,"Report", "Output for optimization")
-# set the task type for the report template to timecourse
-invisible(CReportTemplate_setTaskType(report,"optimization"))
+reports <- CCopasiDataModel_getReportDefinitionList(dataModel)
+# create a report definition object
+report <- CReportDefinitionVector_createReportDefinition(reports,"Report", "Output for optimization")
+# set the task type for the report definition to timecourse
+invisible(CReportDefinition_setTaskType(report,"optimization"))
 # we don't want a table
-invisible(CReportTemplate_setIsTable(report,FALSE))
+invisible(CReportDefinition_setIsTable(report,FALSE))
 # the entries in the output should be seperated by a ", "
-invisible(CReportTemplate_setSeparator(report,CCopasiReportSeparator(", ")))
+invisible(CReportDefinition_setSeparator(report,CCopasiReportSeparator(", ")))
 
 # we need a handle to the header and the body
 # the header will display the ids of the metabolites and "time" for
 # the first column
 # the body will contain the actual timecourse data
-header <- CReportTemplate_getHeaderAddr(report)
-body <- CReportTemplate_getBodyAddr(report)
+header <- CReportDefinition_getHeaderAddr(report)
+body <- CReportDefinition_getBodyAddr(report)
 
-sep <- CReportTemplate_getSeparator(report)
+sep <- CReportDefinition_getSeparator(report)
 sep_string <- CCopasiObjectName_getString(CCopasiObject_getCN(sep))
 # in the report header we write two strings and a separator
 s <- CCopasiObjectName_getString(CCopasiObject_getCN(CCopasiStaticString("best value of objective function")))
@@ -157,7 +157,7 @@ invisible(ReportItemVector_push_back(body, CRegisteredObjectName(s)))
 
 # set the report for the task
 rep <- CCopasiTask_getReport(optTask)
-invisible(CReport_setReportTemplate(rep,report))
+invisible(CReport_setReportDefinition(rep,report))
 # set the output filename
 invisible(CReport_setTarget(rep, "example5.txt"))
 # don't append output if the file exists, but overwrite the file

@@ -1,12 +1,20 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportsWidget.cpp,v $
+//   $Revision: 1.12 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2012/05/02 18:58:45 $
+// End CVS Header
 
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 #include "CQReportsWidget.h"
 
@@ -22,7 +30,7 @@
 #include "model/CModel.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
-#include "report/CReportTemplateVector.h"
+#include "report/CReportDefinitionVector.h"
 
 /*
  *  Constructs a CQReportsWidget which is a child of 'parent', with the
@@ -210,7 +218,7 @@ void CQReportsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
   if (!pDataModel->getModel())
     return;
 
-  std::string key = pDataModel->getReportTemplateList()->operator[](index.row())->getKey();
+  std::string key = pDataModel->getReportDefinitionList()->operator[](index.row())->getKey();
 
   if (CCopasiRootContainer::getKeyFactory()->get(key))
     mpListView->switchToOtherWidget(C_INVALID_INDEX, key);

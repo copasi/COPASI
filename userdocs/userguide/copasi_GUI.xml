@@ -1,15 +1,18 @@
  <chapter id="modelCreation" xreflabel="Model Creation">
-<!-- Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual -->
-<!-- Properties, Inc., University of Heidelberg, and The University -->
-<!-- of Manchester. -->
-<!-- All rights reserved. -->
+<!-- Begin CVS Header -->
+<!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_GUI.xml,v $ -->
+<!--   $Revision: 1.57 $ -->
+<!--   $Name:  $ -->
+<!--   $Author: shoops $ -->
+<!--   $Date: 2009/04/21 16:22:02 $ -->
+<!-- End CVS Header -->
 
-<!-- Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., EML Research, gGmbH, University of Heidelberg, -->
 <!-- and The University of Manchester. -->
 <!-- All rights reserved. -->
 
-<!-- Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc. and EML Research, gGmbH. -->
 <!-- All rights reserved. -->
 
@@ -2331,11 +2334,11 @@ predefined report for Steady-State calculations is <emphasis>Steady-State</empha
 The predefined reports print a description of the settings you provided
 for the calculation, usually (if it applies for the specific
 calculation) a table with intermediate results, and in the end a
-detailed report of the result. The report templates can be changed
+detailed report of the result. The report definitions can be changed
 or deleted using the mechanism described in the <xref
 linkend="manualOutputDefinitions" /> section. If you changed one of
 the predefined reports and want to go back to the original, just
-delete the report template and save the file. When you load it again
+delete the report definition and save the file. When you load it again
 the current missing default report will be generated automatically. 
 </para>
 <para>
@@ -2404,10 +2407,10 @@ is the topic of the next sections.
 </sect1>
 <sect1 id="manualOutputDefinitions" xreflabel="Manual Definition">
 <title>Manual Definition</title>
-<sect2 id="reportTemplates" xreflabel="Reports">
+<sect2 id="reportDefinitions" xreflabel="Reports">
 <title>Reports</title>
 <para>
-This section describes how to create or edit a report template. Keep
+This section describes how to create or edit a report definition. Keep
 in mind that you still have to select this report for the specific
 calculation task you want to perform. You can do this (and also choose
 a filename to write to) using the <guibutton>Report</guibutton> button as described below
@@ -2430,7 +2433,7 @@ in the sections about the different tasks.
 </screenshot>
 </para>
 <para>
-The dialog for defining report templates is located under the
+The dialog for defining report definitions is located under the
 <guibutton>Output-&gt;Reports</guibutton> branch in the object
 tree. Double clicking on an empty row in the table creates a new
 report object and opens the dialog for modifying the report
@@ -2474,7 +2477,7 @@ could state what this report is supposed to represent.
 </para>
 <para>
 Next you have to define the objects that you want to appear in the
-report. There are two modes to define a report template. Per
+report. There are two modes to define a report definition. Per
 default, the report is laid out as a table. For example, the report for a time
 course simulation will write one line per time step and each line will
 typically contain the time followed by one or more species
@@ -2485,13 +2488,13 @@ define the output for each of the sections separately by clicking on
 the corresponding tab. In order to get back to the standard table
 layout, you have to click on the <guibutton>Advanced</guibutton>
 again. COPASI will warn you that you might loose some information by
-converting from the advanced report template format to the table
+converting from the advanced report definition format to the table
 format. 
 </para>
 <para>
-Le us discuss how to define a report template with table layout
+Le us discuss how to define a report definition with table layout
 first since you will probably use this most of the time. To add a new
-object to the report template, you have to click on the button
+object to the report definition, you have to click on the button
 labeled <guibutton>Item</guibutton>. This will open the object browser
 dialog.
 </para>  
@@ -2583,7 +2586,7 @@ want, rather then selecting the individual concentrations you
 want. Once you are finished with selecting the objects for your
 report, you confirm the selection by clicking the
 <guibutton>OK</guibutton> button in the selection dialog. The objects
-you selected will now appear in the list box of the report template
+you selected will now appear in the list box of the report definition
 dialog.
 </para>
 <para>
@@ -2594,10 +2597,10 @@ dialog.
   <imagedata fileref="images/Reports_04.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>Report template dialog</phrase>
+   <phrase>Report definition dialog</phrase>
  </textobject>
  <caption>
-  <para>Report template dialog</para>
+  <para>Report definition dialog</para>
  </caption> 
 </mediaobject>
 </screenshot></para>
@@ -2638,28 +2641,28 @@ deactivate this check box.
   <imagedata fileref="images/Reports_05.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>Advanced report template dialog</phrase>
+   <phrase>Advanced report definition dialog</phrase>
  </textobject>
  <caption>
-  <para>Advanced report template</para>
+  <para>Advanced report definition</para>
  </caption> 
 </mediaobject>
 </screenshot></para>
 <para>
-As stated above, the advanced report template allows you to define
+As stated above, the advanced report definition allows you to define
 the output for the three parts of the report separately. The <emphasis>header</emphasis>
 part of the report is written once before the corresponding task, the
 output of the <emphasis>body</emphasis> elements occurs once per step of the corresponding
 task, e.g. for the time course once every time step, and the <emphasis>footer</emphasis> is
 written once after the task has finished. In this sense, the standard
-table report template is nothing but an advanced report template
+table report definition is nothing but an advanced report definition
 with a title header and a body that consists of the time and some
 species concentrations separated by separator items. The footer is
-empty. If you write your own advanced report template, you are
+empty. If you write your own advanced report definition, you are
 responsible to add separator tags where appropriate. An advantage to
-the advanced report template is that you can add arbitrary text to
+the advanced report definition is that you can add arbitrary text to
 any of the three sections. Everything else works as described for the
-standard report template, you can add and delete items by selecting
+standard report definition, you can add and delete items by selecting
 them from the object browser dialog. You can also move these items up and down 
 by selecting them and clicking on the <guibutton>Up</guibutton> or
 <guibutton>Down</guibutton> button. Separator items can be added by
@@ -2707,7 +2710,7 @@ objects. In order to add a new curve object you click on the
 </para>
 <para>
 A selection dialog similar to the one described for the <link
-linkend="reportTemplates">creation of reports</link> will
+linkend="reportDefinitions">creation of reports</link> will
 appear. The major difference is that you now have two tree views side
 by side instead of only one. The left tree is
 a single selection dialog that lets you specify the object 
@@ -2716,7 +2719,7 @@ this would be the simulation time. The right tree is, again, a
 multi-selection tree that lets you specify what would be drawn along
 the y-axis. In case of plotting concentrations against time, this would
 be one or more concentrations of species. Just as described for
-the report templates, you can switch between a simple tree and the
+the report definitions, you can switch between a simple tree and the
 full tree, but for most plots the simple tree will be enough.
 </para>
 <para>
@@ -3070,7 +3073,7 @@ this can be a large amount of data depending on the size of your model
 and/or on the number of intervals you want COPASI to calculate, you
 should disable this if you think the result might not fit into
 memory. The consequence of disabling this check box is that you need
-to <link linkend="reportTemplates">define a report</link> in order
+to <link linkend="reportDefinitions">define a report</link> in order
 to store the results of the time course simulation.
 </para>
 <para>
@@ -3139,11 +3142,11 @@ deterministic simulation and is called <emphasis>Hybrid
 called <emphasis>Hybrid (Runge-Kutta)</emphasis>.
 </para>
 <para>
-If you haven't created a report template yet, you can use the output
+If you haven't created a report definition yet, you can use the output
 assistant to easily create one by clicking on the corresponding button
 at the bottom of the time course dialog. Once you have <link
-linkend="reportTemplates">created a report template</link>, you
-have to associate this report template with a file for COPASI to be
+linkend="reportDefinitions">created a report definition</link>, you
+have to associate this report definition with a file for COPASI to be
 able to write the results to that file. To do that, you click on the
 <guibutton>Report</guibutton> button.
 </para>
@@ -4008,7 +4011,7 @@ prints a summary of the result. The easiest way to define a customized
 report is to use the <link linkend="outputAssistant">output
 assistant</link>. Alternatively, you can create a report manually as
 described in the <xref linkend="outputGeneration" /> section. Once you
-have created a report template for the optimization task, you click
+have created a report definition for the optimization task, you click
 on the <guibutton>report</guibutton> button at the bottom of the
 dialog. In the dialog that opens, you select the report you just
 created from the drop down list labeled <guilabel>Report

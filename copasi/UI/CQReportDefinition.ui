@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+<comment> Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc. and EML Research, gGmbH. </comment>
+<comment> All rights reserved. </comment>
+
  <comment> All rights reserved. </comment>
- <class>CQReportTemplate</class>
- <widget class="CopasiWidget" name="CQReportTemplate">
+ <class>CQReportDefinition</class>
+ <widget class="CopasiWidget" name="CQReportDefinition">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -518,7 +527,7 @@
   <connection>
    <sender>mpName</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>CQReportTemplate</receiver>
+   <receiver>CQReportDefinition</receiver>
    <slot>nameChanged(QString)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -534,7 +543,7 @@
   <connection>
    <sender>mpTaskBox</sender>
    <signal>activated(QString)</signal>
-   <receiver>CQReportTemplate</receiver>
+   <receiver>CQReportDefinition</receiver>
    <slot>taskChanged(QString)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -550,7 +559,7 @@
   <connection>
    <sender>mpSeparator</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>CQReportTemplate</receiver>
+   <receiver>CQReportDefinition</receiver>
    <slot>separatorChanged(QString)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -566,7 +575,7 @@
   <connection>
    <sender>mpPrecision</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>CQReportTemplate</receiver>
+   <receiver>CQReportDefinition</receiver>
    <slot>precisionChanged(QString)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -582,7 +591,7 @@
   <connection>
    <sender>mpTabCheck</sender>
    <signal>clicked()</signal>
-   <receiver>CQReportTemplate</receiver>
+   <receiver>CQReportDefinition</receiver>
    <slot>chkTabClicked()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -598,7 +607,7 @@
   <connection>
    <sender>mpTitleCheck</sender>
    <signal>clicked()</signal>
-   <receiver>CQReportTemplate</receiver>
+   <receiver>CQReportDefinition</receiver>
    <slot>chkTitleClicked()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -614,7 +623,7 @@
   <connection>
    <sender>mpBtnAdvanced</sender>
    <signal>clicked()</signal>
-   <receiver>CQReportTemplate</receiver>
+   <receiver>CQReportDefinition</receiver>
    <slot>btnAdvancedClicked()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -630,7 +639,7 @@
   <connection>
    <sender>mpBtnItem</sender>
    <signal>clicked()</signal>
-   <receiver>CQReportTemplate</receiver>
+   <receiver>CQReportDefinition</receiver>
    <slot>btnItemClicked()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -646,7 +655,7 @@
   <connection>
    <sender>mpBtnSeparator</sender>
    <signal>clicked()</signal>
-   <receiver>CQReportTemplate</receiver>
+   <receiver>CQReportDefinition</receiver>
    <slot>btnSeparatorClicked()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -662,7 +671,7 @@
   <connection>
    <sender>mpBtnText</sender>
    <signal>clicked()</signal>
-   <receiver>CQReportTemplate</receiver>
+   <receiver>CQReportDefinition</receiver>
    <slot>btnTextClicked()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -678,7 +687,7 @@
   <connection>
    <sender>mpBtnDelete</sender>
    <signal>clicked()</signal>
-   <receiver>CQReportTemplate</receiver>
+   <receiver>CQReportDefinition</receiver>
    <slot>btnDeleteClicked()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -694,7 +703,7 @@
   <connection>
    <sender>mpBtnUp</sender>
    <signal>clicked()</signal>
-   <receiver>CQReportTemplate</receiver>
+   <receiver>CQReportDefinition</receiver>
    <slot>btnUpClicked()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -710,7 +719,7 @@
   <connection>
    <sender>mpBtnDown</sender>
    <signal>clicked()</signal>
-   <receiver>CQReportTemplate</receiver>
+   <receiver>CQReportDefinition</receiver>
    <slot>btnDownClicked()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -726,7 +735,7 @@
   <connection>
    <sender>mpBtnCommit</sender>
    <signal>clicked()</signal>
-   <receiver>CQReportTemplate</receiver>
+   <receiver>CQReportDefinition</receiver>
    <slot>btnCommitClicked()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -742,7 +751,7 @@
   <connection>
    <sender>mpBtnRevert</sender>
    <signal>clicked()</signal>
-   <receiver>CQReportTemplate</receiver>
+   <receiver>CQReportDefinition</receiver>
    <slot>btnRevertClicked()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -758,7 +767,7 @@
   <connection>
    <sender>mpBtnNewReport</sender>
    <signal>clicked()</signal>
-   <receiver>CQReportTemplate</receiver>
+   <receiver>CQReportDefinition</receiver>
    <slot>btnNewReportClicked()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -774,7 +783,7 @@
   <connection>
    <sender>mpBtnDeleteReport</sender>
    <signal>clicked()</signal>
-   <receiver>CQReportTemplate</receiver>
+   <receiver>CQReportDefinition</receiver>
    <slot>btnDeleteReportClicked()</slot>
    <hints>
     <hint type="sourcelabel">

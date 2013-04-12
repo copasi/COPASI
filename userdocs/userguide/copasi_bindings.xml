@@ -1,10 +1,18 @@
 <chapter id="bindings" xreflabel="bindings">
-<!-- Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Begin CVS Header -->
+<!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_bindings.xml,v $ -->
+<!--   $Revision: 1.13 $ -->
+<!--   $Name:  $ -->
+<!--   $Author: gauges $ -->
+<!--   $Date: 2011/12/23 19:56:18 $ -->
+<!-- End CVS Header -->
+
+<!-- Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., University of Heidelberg, and The University -->
 <!-- of Manchester. -->
 <!-- All rights reserved. -->
 
-<!-- Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., EML Research, gGmbH, University of Heidelberg, -->
 <!-- and The University of Manchester. -->
 <!-- All rights reserved. -->
@@ -104,7 +112,7 @@ If you want to delete a datamodel before the end of your program, CCopasiVector 
 </para>
 
 <para>
-<emphasis>CCopasiDataModel</emphasis> contains the actual model which can be obtained with the method <emphasis>getModel()</emphasis>, the defined tasks which can be obtained with the method <emphasis>getTaskList()</emphasis>, the reports which are obtained via the method <emphasis>getReportTemplateList()</emphasis> and the function database which can be obtained with the <emphasis>getFunctionList()</emphasis>.
+<emphasis>CCopasiDataModel</emphasis> contains the actual model which can be obtained with the method <emphasis>getModel()</emphasis>, the defined tasks which can be obtained with the method <emphasis>getTaskList()</emphasis>, the reports which are obtained via the method <emphasis>getReportDefinitionList()</emphasis> and the function database which can be obtained with the <emphasis>getFunctionList()</emphasis>.
 In addition to these methods <emphasis>CCopasiDataModel</emphasis> provides some methods for loading COPASI files or importing SBML files, for saving COPASI files or exporting SBML files, for creating new models and for adding tasks to the task list.
 </para>
 </sect1>
@@ -123,7 +131,7 @@ New instances can be create by the static method addDatamodel in CCopasiRootCont
 </para>
 
 <para>
-<emphasis>CCopasiDataModel</emphasis> contains the actual model which can be obtained with the method <emphasis>getModel()</emphasis>, the defined tasks which can be obtained with the method <emphasis>getTaskList()</emphasis>, the reports which are obtained via the method <emphasis>getReportTemplateList()</emphasis> and the function database which can be obtained with the <emphasis>getFunctionList()</emphasis>.
+<emphasis>CCopasiDataModel</emphasis> contains the actual model which can be obtained with the method <emphasis>getModel()</emphasis>, the defined tasks which can be obtained with the method <emphasis>getTaskList()</emphasis>, the reports which are obtained via the method <emphasis>getReportDefinitionList()</emphasis> and the function database which can be obtained with the <emphasis>getFunctionList()</emphasis>.
 In addition to these methods <emphasis>CCopasiDataModel</emphasis> provides some methods for loading COPASI files or importing SBML files, for saving COPASI files or exporting SBML files, for creating new models and for adding tasks to the task list.
 </para>
 </sect2>
@@ -4539,37 +4547,37 @@ After running the fitting task, the fit result is stored in the individual fit i
 
 <para>
 Sometimes it is necessary to write the results of a calculation to a file instead of keeping it in memory. In order to achieve this, a report for the results has to be created and this report has to be associated with a task.
-In COPASI reports are represented by the class <emphasis>CReport</emphasis>. A report stored a so called report template that specifies what is being written and it contains a filename that determines where the report is written to.
+In COPASI reports are represented by the class <emphasis>CReport</emphasis>. A report stored a so called report definition that specifies what is being written and it contains a filename that determines where the report is written to.
 In order to set the filename, you can use the method <emphasis>setTarget</emphasis> with the path of the file as the argument. It is up to the programmer to make sure that the directory part of the path exists and that it is writable.
-To set the report template of a report instance, use the method <emphasis>setReportTemplate</emphasis>. The only argument to the call is an instance of class <emphasis>CReportTemplate</emphasis>.
-A report template can work in two modes. In the default mode, the report template is a table and all objects that are added to the report template are written separated by a user definable separator.
-In the second mode a report templates consists of three parts a header, a body and a footer. The part that is specified as the header is written before the associated task is executed, the body is executed for each step of the associated task and the footer is finally written after the task has finished.
-Each part is a container that holds zero or more report template items. To get the individual containers, the <emphasis>CReportTemplate</emphasis> class has the methods <emphasis>getTableAddr</emphasis> if the report template is in table mode or <emphasis>getHeaderAddr</emphasis>, <emphasis>getBodyAddr</emphasis> and <emphasis>getFooterAddr</emphasis> if it is not in table mode.
-To specify whether a report template is to run in table mode, you can use the method <emphasis>setIsTable</emphasis> which takes a boolean value that determines whether the report template is a table or not. The flag can be queried with the <emphasis>isTable</emphasis> method.
+To set the report definition of a report instance, use the method <emphasis>setReportDefinition</emphasis>. The only argument to the call is an instance of class <emphasis>CReportDefinition</emphasis>.
+A report definition can work in two modes. In the default mode, the report definition is a table and all objects that are added to the report definition are written separated by a user definable separator.
+In the second mode a report definitions consists of three parts a header, a body and a footer. The part that is specified as the header is written before the associated task is executed, the body is executed for each step of the associated task and the footer is finally written after the task has finished.
+Each part is a container that holds zero or more report definition items. To get the individual containers, the <emphasis>CReportDefinition</emphasis> class has the methods <emphasis>getTableAddr</emphasis> if the report definition is in table mode or <emphasis>getHeaderAddr</emphasis>, <emphasis>getBodyAddr</emphasis> and <emphasis>getFooterAddr</emphasis> if it is not in table mode.
+To specify whether a report definition is to run in table mode, you can use the method <emphasis>setIsTable</emphasis> which takes a boolean value that determines whether the report definition is a table or not. The flag can be queried with the <emphasis>isTable</emphasis> method.
 The individual items are of type <emphasis>CRegisteredObjectName</emphasis>. A new instance of <emphasis>CRegisteredObjectName</emphasis> can be created by calling the constructor with a string that represents the common name of the object that is to written.
-If the registered object name should represent a model entity, the string has to be the common name of the object. If you want to add an element the report that represents a simple stirng, you have to create an instance of <emphasis>CCopasiStaticString</emphasis> by calling the constructor of this class with the string that you want to add to the report template. Once you have an instance of <emphasis>CCopasiStaticString</emphasis>, you can create an instance of <emphasis>CRegisteredObjectName</emphasis> the same way as it is done for other objects, you take the string representation of the common name of your instance of <emphasis>CCopasiStaticString</emphasis> and use it as the argument to the constructor of <emphasis>CRegisteredObjectName</emphasis>.
+If the registered object name should represent a model entity, the string has to be the common name of the object. If you want to add an element the report that represents a simple stirng, you have to create an instance of <emphasis>CCopasiStaticString</emphasis> by calling the constructor of this class with the string that you want to add to the report definition. Once you have an instance of <emphasis>CCopasiStaticString</emphasis>, you can create an instance of <emphasis>CRegisteredObjectName</emphasis> the same way as it is done for other objects, you take the string representation of the common name of your instance of <emphasis>CCopasiStaticString</emphasis> and use it as the argument to the constructor of <emphasis>CRegisteredObjectName</emphasis>.
 </para>
 
 <para>
-In COPASI the reports templates are stored in the instances of <emphasis>CCopasiDataModel</emphasis>. To get this list use the method <emphasis>getReportTemplateList</emphasis> on the instance of <emphasis>CCopasiDataModel</emphasis>.
+In COPASI the reports definitions are stored in the instances of <emphasis>CCopasiDataModel</emphasis>. To get this list use the method <emphasis>getReportDefinitionList</emphasis> on the instance of <emphasis>CCopasiDataModel</emphasis>.
 </para>
 
 <para>
 <programlisting condition="JAVA">
-datamodel.getReportTemplateList();
+datamodel.getReportDefinitionList();
 </programlisting>
 <programlisting condition="CPP">
-pDataModel->getReportTemplateList();
+pDataModel->getReportDefinitionList();
 </programlisting>
 <programlisting condition="PYTHON">
-datamodel.getReportTemplateList()
+datamodel.getReportDefinitionList()
 </programlisting>
 </para>
 
 <para>
-The returned object is a container that stores all report templates. To create a new report template, use <emphasis>createReportTemplates</emphasis> which is a method of the container. The two arguments to the call are the name of the report template and a description. Once you have a report template object, you can use <emphasis>setTaskType</emphasis> to set the type of task the report is intended for. The method takes one argument which is one of the task types defined in <emphasis>CCopasiTask</emphasis>, e.g. <emphasis>CCopasiTask.timeCourse</emphasis> for the time course task.
-Next you can fill the tree sections (header, body, footer) of the report template or the table  with whatever has to be written to the output.
-Once the report template is finished, we have to tell the task to use it. This is done through the tasks report object which can be acquire with the <emphasis>getReport()</emphasis> method of <emphasis>CCopasiTask</emphasis>. The returned report object has a method <emphasis>setReportTemplate</emphasis> which takes the report template object as its argument.
+The returned object is a container that stores all report definitions. To create a new report definition, use <emphasis>createReportDefinitions</emphasis> which is a method of the container. The two arguments to the call are the name of the report definition and a description. Once you have a report definition object, you can use <emphasis>setTaskType</emphasis> to set the type of task the report is intended for. The method takes one argument which is one of the task types defined in <emphasis>CCopasiTask</emphasis>, e.g. <emphasis>CCopasiTask.timeCourse</emphasis> for the time course task.
+Next you can fill the tree sections (header, body, footer) of the report definition or the table  with whatever has to be written to the output.
+Once the report definition is finished, we have to tell the task to use it. This is done through the tasks report object which can be acquire with the <emphasis>getReport()</emphasis> method of <emphasis>CCopasiTask</emphasis>. The returned report object has a method <emphasis>setReportDefinition</emphasis> which takes the report definition object as its argument.
 Last but not least, we have to specify a filename where the report is written to which is done with the <emphasis>setTarget</emphasis> method of the same report object.
 The following example shows how to create a report for a time course simulation that writes the values of all global parameters as an xhtml file with a table for the values:
 </para>
@@ -4578,8 +4586,8 @@ The following example shows how to create a report for a time course simulation 
 <programlisting condition="JAVA">
 <![CDATA[
 ...
-CReportTemplateVector reportDefs=datamodel.getReportTemplateList();
-CReportTemplate repDef=reportDefs.createReportTemplate("htmlConc",
+CReportDefinitionVector reportDefs=datamodel.getReportDefinitionList();
+CReportDefinition repDef=reportDefs.createReportDefinition("htmlConc",
                                         "value table in HTML format");
 repDef.setIsTable(false);
 CCopasiStaticString htmlHeader=new CCopasiStaticString("<?xml version=\"1.0\"" 
@@ -4619,7 +4627,7 @@ s=new CCopasiStaticString("</tr>\n");
 body.add(new CRegisteredObjectName(s.getCN().getString()));
 repDef.setTaskType(CCopasiTask.timeCourse);
 CReport report=task.getReport();
-report.setReportTemplate(repDef);
+report.setReportDefinition(repDef);
 report.setAppend(false);
 report.setTarget("table.xhtml");
  ...]]>
@@ -4627,8 +4635,8 @@ report.setTarget("table.xhtml");
 <programlisting condition="CPP">
 <![CDATA[
 ...
-CReportTemplateVector* pReportDefs=pDataModel->getReportTemplateList();
-CReportTemplate* pRepDef=pReportDefs->createReportTemplate("htmlConc",
+CReportDefinitionVector* pReportDefs=pDataModel->getReportDefinitionList();
+CReportDefinition* pRepDef=pReportDefs->createReportDefinition("htmlConc",
                                         "value table in HTML format");
 pRepDef->setIsTable(false);
 CCopasiStaticString htmlHeader=CCopasiStaticString("<?xml version=\"1.0\"" 
@@ -4668,7 +4676,7 @@ s=CCopasiStaticString("</tr>\n");
 pBody->add(CRegisteredObjectName(s.getCN()));
 pRepDef->setTaskType(CCopasiTask::timeCourse);
 CReport* pReport=&pTask->getReport();
-pReport->setReportTemplate(pRepDef);
+pReport->setReportDefinition(pRepDef);
 pReport->setAppend(false);
 pReport->setTarget("table.xhtml");
  ...]]>
@@ -4676,8 +4684,8 @@ pReport->setTarget("table.xhtml");
 <programlisting condition="PYTHON">
 <![CDATA[
 ...
-reportDefs=datamodel.getReportTemplateList()
-repDef=reportDefs.createReportTemplate("htmlConc",
+reportDefs=datamodel.getReportDefinitionList()
+repDef=reportDefs.createReportDefinition("htmlConc",
                                         "value table in HTML format")
 repDef.setIsTable(False)
 htmlHeader=CCopasiStaticString("<?xml version=\"1.0\"" 
@@ -4714,7 +4722,7 @@ s=CCopasiStaticString("</tr>\n")
 body.push_back(CRegisteredObjectName(s.getCN().getString()))
 repDef.setTaskType(CCopasiTask.timeCourse)
 report=task.getReport()
-report.setReportTemplate(repDef)
+report.setReportDefinition(repDef)
 report.setAppend(False)
 report.setTarget("table.xhtml")
  ...]]>

@@ -1,7 +1,7 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 /*
  * CQNotes.cpp
@@ -25,7 +25,7 @@
 #include "model/CEvent.h"
 #include "function/CFunction.h"
 #include "report/CKeyFactory.h"
-#include "report/CReportTemplate.h"
+#include "report/CReportDefinition.h"
 #include "copasi/report/CCopasiRootContainer.h"
 #include "commandline/CConfigurationFile.h"
 
@@ -283,8 +283,8 @@ void CQNotes::load()
         pNotes = &static_cast< CReaction * >(mpObject)->getNotes();
       else if (dynamic_cast< CFunction * >(mpObject))
         pNotes = &static_cast< CFunction * >(mpObject)->getNotes();
-      else if (dynamic_cast< CReportTemplate * >(mpObject))
-        pNotes = & static_cast< CReportTemplate * >(mpObject)->getComment();
+      else if (dynamic_cast< CReportDefinition * >(mpObject))
+        pNotes = & static_cast< CReportDefinition * >(mpObject)->getComment();
 
       if (pNotes != NULL)
         {
@@ -324,8 +324,8 @@ void CQNotes::save()
         pNotes = &static_cast< CReaction * >(mpObject)->getNotes();
       else if (dynamic_cast< CFunction * >(mpObject))
         pNotes = &static_cast< CFunction * >(mpObject)->getNotes();
-      else if (dynamic_cast< CReportTemplate * >(mpObject))
-        pNotes = & static_cast< CReportTemplate * >(mpObject)->getComment();
+      else if (dynamic_cast< CReportDefinition * >(mpObject))
+        pNotes = & static_cast< CReportDefinition * >(mpObject)->getComment();
 
       if (pNotes &&
           mpEdit->toPlainText() != FROM_UTF8(*pNotes))
@@ -346,8 +346,8 @@ void CQNotes::save()
             static_cast< CReaction * >(mpObject)->setNotes(PlainText);
           else if (dynamic_cast< CFunction * >(mpObject))
             static_cast< CFunction * >(mpObject)->setNotes(PlainText);
-          else if (dynamic_cast< CReportTemplate * >(mpObject))
-            static_cast< CReportTemplate * >(mpObject)->setComment(PlainText);
+          else if (dynamic_cast< CReportDefinition * >(mpObject))
+            static_cast< CReportDefinition * >(mpObject)->setComment(PlainText);
 
           mChanged = true;
         }

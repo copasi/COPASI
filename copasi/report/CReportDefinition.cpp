@@ -1,11 +1,28 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
+//   $Revision: 1.47 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2012/04/20 12:08:24 $
+// End CVS Header
+
+// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
- *  CReportTemplate class.
- *  This class describes the Report Template
+ *  CReportDefinition class.
+ *  This class describes the Report Definition
  *
  *  Created for Copasi by Mudita Singhal
  */
@@ -13,7 +30,7 @@
 #include "copasi.h"
 
 #include "CKeyFactory.h"
-#include "CReportTemplate.h"
+#include "CReportDefinition.h"
 #include "CReport.h"
 
 #include "utilities/CCopasiMessage.h"
@@ -21,12 +38,12 @@
 
 //////////////////////////////////////////////////
 //
-//class CReportTemplate
+//class CReportDefinition
 //
 //////////////////////////////////////////////////
-CReportTemplate::CReportTemplate(const std::string & name,
+CReportDefinition::CReportDefinition(const std::string & name,
                                      const CCopasiContainer * pParent):
-    CCopasiObject(name, pParent, "ReportTemplate"),
+    CCopasiObject(name, pParent, "ReportDefinition"),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Report", this)),
     mComment(""),
     mTaskType(CCopasiTask::timeCourse),
@@ -36,7 +53,7 @@ CReportTemplate::CReportTemplate(const std::string & name,
     mPrecision(6)
 {}
 
-CReportTemplate::CReportTemplate(const CReportTemplate & src,
+CReportDefinition::CReportDefinition(const CReportDefinition & src,
                                      const CCopasiContainer * pParent):
     CCopasiObject(src, pParent),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Report", this)),
@@ -48,10 +65,10 @@ CReportTemplate::CReportTemplate(const CReportTemplate & src,
     mPrecision(src.mPrecision)
 {}
 
-CReportTemplate::~CReportTemplate()
+CReportDefinition::~CReportDefinition()
 {cleanup();}
 
-void CReportTemplate::cleanup()
+void CReportDefinition::cleanup()
 {
   CCopasiRootContainer::getKeyFactory()->remove(mKey);
   mHeaderVector.clear();
@@ -60,7 +77,7 @@ void CReportTemplate::cleanup()
   mTableVector.clear();
 }
 
-bool CReportTemplate::preCompileTable(const std::vector< CCopasiContainer * > & listOfContainer)
+bool CReportDefinition::preCompileTable(const std::vector< CCopasiContainer * > & listOfContainer)
 {
   bool success = true;
 
@@ -91,52 +108,52 @@ bool CReportTemplate::preCompileTable(const std::vector< CCopasiContainer * > & 
   return success;
 }
 
-std::vector<CRegisteredObjectName>* CReportTemplate::getBodyAddr()
+std::vector<CRegisteredObjectName>* CReportDefinition::getBodyAddr()
 {return &mBodyVector;}
 
-std::vector<CRegisteredObjectName>* CReportTemplate::getHeaderAddr()
+std::vector<CRegisteredObjectName>* CReportDefinition::getHeaderAddr()
 {return &mHeaderVector;}
 
-std::vector<CRegisteredObjectName>* CReportTemplate::getFooterAddr()
+std::vector<CRegisteredObjectName>* CReportDefinition::getFooterAddr()
 {return &mFooterVector;}
 
-std::vector<CRegisteredObjectName>* CReportTemplate::getTableAddr()
+std::vector<CRegisteredObjectName>* CReportDefinition::getTableAddr()
 {return &mTableVector;}
 
-bool CReportTemplate::setTaskType(const CCopasiTask::Type & taskType)
+bool CReportDefinition::setTaskType(const CCopasiTask::Type & taskType)
 {mTaskType = taskType; return true;}
 
-const CCopasiTask::Type & CReportTemplate::getTaskType() const
+const CCopasiTask::Type & CReportDefinition::getTaskType() const
 {return mTaskType;}
 
-void CReportTemplate::setSeparator(const CCopasiReportSeparator & Separator)
+void CReportDefinition::setSeparator(const CCopasiReportSeparator & Separator)
 {mSeparator = Separator;}
 
-const CCopasiReportSeparator & CReportTemplate::getSeparator() const
+const CCopasiReportSeparator & CReportDefinition::getSeparator() const
 {return mSeparator;}
 
-bool CReportTemplate::getTitle() const
+bool CReportDefinition::getTitle() const
 {return mbTitle;}
 
-void CReportTemplate::setTitle(bool title)
+void CReportDefinition::setTitle(bool title)
 {mbTitle = title;}
 
-bool CReportTemplate::isTable() const
+bool CReportDefinition::isTable() const
 {return mTable;}
 
-void CReportTemplate::setIsTable(bool table)
+void CReportDefinition::setIsTable(bool table)
 {mTable = table;}
 
-void CReportTemplate::setPrecision(const unsigned C_INT32 & precision)
+void CReportDefinition::setPrecision(const unsigned C_INT32 & precision)
 {mPrecision = precision;}
 
-const unsigned C_INT32 & CReportTemplate::getPrecision() const
+const unsigned C_INT32 & CReportDefinition::getPrecision() const
 {return mPrecision;}
 
-const std::string & CReportTemplate::getKey() const
+const std::string & CReportDefinition::getKey() const
 {return mKey;}
 
-void CReportTemplate::addTableElement(const CCopasiObject * pObject)
+void CReportDefinition::addTableElement(const CCopasiObject * pObject)
 {
   bool isFirst = false;
 

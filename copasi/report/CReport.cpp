@@ -1,20 +1,20 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "copasi.h"
 
-#include "CReportTemplate.h"
+#include "CReportDefinition.h"
 #include "CReport.h"
 #include "CCopasiContainer.h"
 #include "CCopasiTimer.h"
@@ -79,10 +79,10 @@ void CReport::cleanup()
   finish();
 }
 
-CReportTemplate* CReport::getReportTemplate()
+CReportDefinition* CReport::getReportDefinition()
 {return mpReportDef;}
 
-void CReport::setReportTemplate(CReportTemplate* reportDef)
+void CReport::setReportDefinition(CReportDefinition* reportDef)
 {mpReportDef = reportDef;}
 
 const std::string & CReport::getTarget() const
@@ -300,7 +300,7 @@ bool CReport::compile(std::vector< CCopasiContainer * > listOfContainer,
   bool success = true;
   COutputInterface::mObjects.clear();
 
-  // check if there is a Report Template Defined
+  // check if there is a Report Definition Defined
   if (!mpReportDef) return false;
 
   if (mpReportDef->isTable())
@@ -397,7 +397,7 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
 
   unsigned C_INT32 i;
   CCopasiObject * pSelected;
-  CReportTemplate * pReportTemplate;
+  CReportDefinition * pReportDefinition;
 
   for (i = 0; i < nameVector->size(); i++)
     {
@@ -409,10 +409,10 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
           continue;
         }
 
-      if (!i && (pReportTemplate = dynamic_cast< CReportTemplate * >(pSelected)) != NULL)
+      if (!i && (pReportDefinition = dynamic_cast< CReportDefinition * >(pSelected)) != NULL)
         {
           pReport = new CReport();
-          pReport->setReportTemplate(pReportTemplate);
+          pReport->setReportDefinition(pReportDefinition);
 
           return;
         }

@@ -1,12 +1,20 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example5/example5.cpp,v $
+//   $Revision: 1.9 $
+//   $Name:  $
+//   $Author: ssahle $
+//   $Date: 2012/04/22 15:42:45 $
+// End CVS Header
 
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 /**
  * This is an example on how to run an optimization task.
@@ -29,8 +37,8 @@
 #include "copasi/model/CModel.h"
 #include "copasi/model/CModelValue.h"
 #include "copasi/report/CReport.h"
-#include "copasi/report/CReportTemplate.h"
-#include "copasi/report/CReportTemplateVector.h"
+#include "copasi/report/CReportDefinition.h"
+#include "copasi/report/CReportDefinitionVector.h"
 #include "copasi/trajectory/CTrajectoryTask.h"
 #include "copasi/trajectory/CTrajectoryMethod.h"
 #include "copasi/trajectory/CTrajectoryProblem.h"
@@ -166,10 +174,10 @@ int main()
 
   // create a report with the correct filename and all the species against
   // time.
-  CReportTemplateVector* pReports = pDataModel->getReportTemplateList();
-  // create a new report template object
-  CReportTemplate* pReport = pReports->createReportTemplate("Report", "Output for optimization");
-  // set the task type for the report template to timecourse
+  CReportDefinitionVector* pReports = pDataModel->getReportDefinitionList();
+  // create a new report definition object
+  CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for optimization");
+  // set the task type for the report definition to timecourse
   pReport->setTaskType(CCopasiTask::optimization);
   // we don't want a table
   pReport->setIsTable(false);
@@ -194,7 +202,7 @@ int main()
   pBody->push_back(CRegisteredObjectName(pFixedModelValue->getObject(CCopasiObjectName("Reference=InitialValue"))->getCN()));
 
   // set the report for the task
-  pOptTask->getReport().setReportTemplate(pReport);
+  pOptTask->getReport().setReportDefinition(pReport);
   // set the output filename
   pOptTask->getReport().setTarget("example5.txt");
   // don't append output if the file exists, but overwrite the file

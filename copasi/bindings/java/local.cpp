@@ -1,16 +1,24 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/local.cpp,v $
+//   $Revision: 1.18 $
+//   $Name:  $
+//   $Author: bergmann $
+//   $Date: 2012/04/11 16:21:19 $
+// End CVS Header
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "utilities/CCopasiMethod.h"
 #include "utilities/CCopasiProblem.h"
@@ -36,8 +44,8 @@
 #include "trajectory/CTrajectoryProblem.h"
 #include "trajectory/CTrajectoryMethod.h"
 #include "report/CCopasiStaticString.h"
-#include "report/CReportTemplate.h"
-#include "report/CReportTemplateVector.h"
+#include "report/CReportDefinition.h"
+#include "report/CReportDefinitionVector.h"
 #include "utilities/CAnnotatedMatrix.h"
 #include "utilities/CMatrix.h"
 #include "steadystate/CSteadyStateTask.h"
@@ -102,7 +110,7 @@ typedef std::vector<CFunction> CFunctionStdVector;
 typedef CCopasiVector<CChemEqElement> CChemEqElementVector;
 
 typedef CCopasiVector<CModelValue> ModelValueVector;
-typedef CCopasiVectorN<CReportTemplate> CReportTemplateVectorN;
+typedef CCopasiVectorN<CReportDefinition> CReportDefinitionVectorN;
 typedef CCopasiVectorN<CMetab> MetabVectorN;
 typedef CCopasiVector<CCompartment> CompartmentVector;
 typedef CCopasiVectorN<CCompartment> CompartmentVectorN;
@@ -3070,12 +3078,12 @@ jobject DownCast_CCopasiContainer(JNIEnv* jenv, CCopasiContainer* pPointer)
                     }
                 }
             }
-          else if (dynamic_cast<CCopasiVector<CReportTemplate>* >(pPointer))
+          else if (dynamic_cast<CCopasiVector<CReportDefinition>* >(pPointer))
             {
-              if (dynamic_cast<CCopasiVectorN<CReportTemplate>* >(pPointer))
+              if (dynamic_cast<CCopasiVectorN<CReportDefinition>* >(pPointer))
                 {
-                  // return a CCReportTemplateVectorN
-                  jclass clazz = jenv->FindClass("org/COPASI/CReportTemplateVectorN");
+                  // return a CCReportDefinitionVectorN
+                  jclass clazz = jenv->FindClass("org/COPASI/CReportDefinitionVectorN");
 
                   if (clazz)
                     {
@@ -3084,15 +3092,15 @@ jobject DownCast_CCopasiContainer(JNIEnv* jenv, CCopasiContainer* pPointer)
                       if (mid)
                         {
                           jlong cptr = 0;
-                          *(CReportTemplateVectorN**)&cptr = static_cast<CReportTemplateVectorN*>(pPointer);
+                          *(CReportDefinitionVectorN**)&cptr = static_cast<CReportDefinitionVectorN*>(pPointer);
                           result = jenv->NewObject(clazz, mid, cptr, false);
                         }
                     }
                 }
               else
                 {
-                  // return a CReportTemplateVector
-                  jclass clazz = jenv->FindClass("org/COPASI/CReportTemplateVector");
+                  // return a CReportDefinitionVector
+                  jclass clazz = jenv->FindClass("org/COPASI/CReportDefinitionVector");
 
                   if (clazz)
                     {
@@ -3101,7 +3109,7 @@ jobject DownCast_CCopasiContainer(JNIEnv* jenv, CCopasiContainer* pPointer)
                       if (mid)
                         {
                           jlong cptr = 0;
-                          *(CReportTemplateVector**)&cptr = static_cast<CReportTemplateVector*>(pPointer);
+                          *(CReportDefinitionVector**)&cptr = static_cast<CReportDefinitionVector*>(pPointer);
                           result = jenv->NewObject(clazz, mid, cptr, false);
                         }
                     }
@@ -4520,12 +4528,12 @@ jobject DownCast_CCopasiObject(JNIEnv* jenv, CCopasiObject* pPointer)
                         }
                     }
                 }
-              else if (dynamic_cast<CCopasiVector<CReportTemplate>* >(pPointer))
+              else if (dynamic_cast<CCopasiVector<CReportDefinition>* >(pPointer))
                 {
-                  if (dynamic_cast<CCopasiVectorN<CReportTemplate>* >(pPointer))
+                  if (dynamic_cast<CCopasiVectorN<CReportDefinition>* >(pPointer))
                     {
-                      // return a CCReportTemplateVectorN
-                      jclass clazz = jenv->FindClass("org/COPASI/CReportTemplateVectorN");
+                      // return a CCReportDefinitionVectorN
+                      jclass clazz = jenv->FindClass("org/COPASI/CReportDefinitionVectorN");
 
                       if (clazz)
                         {
@@ -4534,15 +4542,15 @@ jobject DownCast_CCopasiObject(JNIEnv* jenv, CCopasiObject* pPointer)
                           if (mid)
                             {
                               jlong cptr = 0;
-                              *(CReportTemplateVectorN**)&cptr = static_cast<CReportTemplateVectorN*>(pPointer);
+                              *(CReportDefinitionVectorN**)&cptr = static_cast<CReportDefinitionVectorN*>(pPointer);
                               result = jenv->NewObject(clazz, mid, cptr, false);
                             }
                         }
                     }
                   else
                     {
-                      // return a CReportTemplateVector
-                      jclass clazz = jenv->FindClass("org/COPASI/CReportTemplateVector");
+                      // return a CReportDefinitionVector
+                      jclass clazz = jenv->FindClass("org/COPASI/CReportDefinitionVector");
 
                       if (clazz)
                         {
@@ -4551,7 +4559,7 @@ jobject DownCast_CCopasiObject(JNIEnv* jenv, CCopasiObject* pPointer)
                           if (mid)
                             {
                               jlong cptr = 0;
-                              *(CReportTemplateVector**)&cptr = static_cast<CReportTemplateVector*>(pPointer);
+                              *(CReportDefinitionVector**)&cptr = static_cast<CReportDefinitionVector*>(pPointer);
                               result = jenv->NewObject(clazz, mid, cptr, false);
                             }
                         }
@@ -4836,10 +4844,10 @@ jobject DownCast_CCopasiObject(JNIEnv* jenv, CCopasiObject* pPointer)
             }
         }
     }
-  else if (dynamic_cast<CReportTemplate*>(pPointer))
+  else if (dynamic_cast<CReportDefinition*>(pPointer))
     {
-      // return a CReportTemplate
-      jclass clazz = jenv->FindClass("org/COPASI/CReportTemplate");
+      // return a CReportDefinition
+      jclass clazz = jenv->FindClass("org/COPASI/CReportDefinition");
 
       if (clazz)
         {
@@ -4848,7 +4856,7 @@ jobject DownCast_CCopasiObject(JNIEnv* jenv, CCopasiObject* pPointer)
           if (mid)
             {
               jlong cptr = 0;
-              *(CReportTemplate**)&cptr = static_cast<CReportTemplate*>(pPointer);
+              *(CReportDefinition**)&cptr = static_cast<CReportDefinition*>(pPointer);
               result = jenv->NewObject(clazz, mid, cptr, false);
             }
         }

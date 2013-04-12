@@ -1,23 +1,23 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <sstream>
 
 #include "COutputAssistant.h"
 #include "CCopasiObject.h"
-#include "CReportTemplate.h"
-#include "CReportTemplateVector.h"
+#include "CReportDefinition.h"
+#include "CReportDefinitionVector.h"
 
 #include "utilities/CCopasiProblem.h"
 #include "utilities/CCopasiTask.h"
@@ -1203,15 +1203,15 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
             }
         }
 
-      CReportTemplate* pReportTemp = createTable(getItemName(id), data1, getItem(id).description, getItem(id).mTaskType, pDataModel);
+      CReportDefinition* pReportDef = createTable(getItemName(id), data1, getItem(id).description, getItem(id).mTaskType, pDataModel);
 
-      if (activate && pReportTemp)
+      if (activate && pReportDef)
         {
-          task->getReport().setReportTemplate(pReportTemp);
+          task->getReport().setReportDefinition(pReportDef);
           //TODO: also set a default filename?
         }
 
-      return pReportTemp;
+      return pReportDef;
     }
   else //plot
     {
@@ -1327,7 +1327,7 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
 }
 
 //static
-CReportTemplate* COutputAssistant::createTable(const std::string & name,
+CReportDefinition* COutputAssistant::createTable(const std::string & name,
     const std::vector<const CCopasiObject *> & d,
     const std::string & comment,
     const CCopasiTask::Type & taskType,
@@ -1337,12 +1337,12 @@ CReportTemplate* COutputAssistant::createTable(const std::string & name,
 
   //create plot with unique name
   unsigned C_INT32 i = 0;
-  CReportTemplate * pReport = NULL;
+  CReportDefinition * pReport = NULL;
   std::ostringstream sname;
   sname << name;
   assert(pDataModel != NULL);
 
-  while (!(pReport = pDataModel->getReportTemplateList()->createReportTemplate(sname.str(), comment)))
+  while (!(pReport = pDataModel->getReportDefinitionList()->createReportDefinition(sname.str(), comment)))
     {
       i++;
       sname.str("");

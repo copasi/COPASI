@@ -32,22 +32,22 @@ if (length(args) == 1) {
     stopifnot(!is.null(model))
     # create a report with the correct filename and all the species against
     # time.
-    reports <- CCopasiDataModel_getReportTemplateList(dataModel)
-    # create a report template object
-    report <- CReportTemplateVector_createReportTemplate(reports, "Report", "Output for timecourse")
-    # set the task type for the report template to timecourse
-    invisible(CReportTemplate_setTaskType(report,"timeCourse"))
+    reports <- CCopasiDataModel_getReportDefinitionList(dataModel)
+    # create a report definition object
+    report <- CReportDefinitionVector_createReportDefinition(reports, "Report", "Output for timecourse")
+    # set the task type for the report definition to timecourse
+    invisible(CReportDefinition_setTaskType(report,"timeCourse"))
     # we don't want a table
-    invisible(CReportTemplate_setIsTable(report,FALSE))
+    invisible(CReportDefinition_setIsTable(report,FALSE))
     # the entries in the output should be seperated by a ", "
-    invisible(CReportTemplate_setSeparator(report, CCopasiReportSeparator(", ")))
+    invisible(CReportDefinition_setSeparator(report, CCopasiReportSeparator(", ")))
 
     # we need a handle to the header and the body
     # the header will display the ids of the metabolites and "time" for
     # the first column
     # the body will contain the actual timecourse data
-    header <- CReportTemplate_getHeaderAddr(report)
-    body <- CReportTemplate_getBodyAddr(report)
+    header <- CReportDefinition_getHeaderAddr(report)
+    body <- CReportDefinition_getBodyAddr(report)
 
     cn <- CCopasiObject_getCN(model)
     stopifnot(!is.null(cn))
@@ -59,7 +59,7 @@ if (length(args) == 1) {
     stopifnot(!is.null(on))
     invisible(ReportItemVector_push_back(body, on))
 
-    separator <- CReportTemplate_getSeparator(report)
+    separator <- CReportDefinition_getSeparator(report)
     stopifnot(!is.null(separator))
     cn <- CCopasiObject_getCN(separator)
     stopifnot(!is.null(cn))
@@ -140,7 +140,7 @@ if (length(args) == 1) {
     invisible(CCopasiTask_setScheduled(trajectoryTask,TRUE))
 
     # set the report for the task
-    invisible(CReport_setReportTemplate(CCopasiTask_getReport(trajectoryTask),report))
+    invisible(CReport_setReportDefinition(CCopasiTask_getReport(trajectoryTask),report))
     # set the output filename
     invisible(CReport_setTarget(CCopasiTask_getReport(trajectoryTask),"example3.txt"))
     # don't append output if the file exists, but overwrite the file

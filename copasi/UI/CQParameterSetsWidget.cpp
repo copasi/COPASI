@@ -1,7 +1,7 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include "CQParameterSetsWidget.h"
 
@@ -17,7 +17,7 @@
 #include "model/CModel.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
-#include "report/CReportTemplateVector.h"
+#include "report/CReportDefinitionVector.h"
 
 /*
  *  Constructs a CQParameterSetsWidget which is a child of 'parent', with the

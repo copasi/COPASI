@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CCopasiXML class.
@@ -33,7 +33,7 @@ class CModelParameter;
 class CEvaluationTree;
 class CFunction;
 class CCopasiTask;
-class CReportTemplateVector;
+class CReportDefinitionVector;
 class COutputDefinitionVector;
 class CListOfLayouts;
 class CLPoint;
@@ -217,16 +217,16 @@ public:
 
   /**
    * Set the report list.
-   * @param CReportTemplateVector *pReportList
+   * @param CReportDefinitionVector *pReportList
    * @return bool success
    */
-  bool setReportList(CReportTemplateVector * pReportList);
+  bool setReportList(CReportDefinitionVector * pReportList);
 
   /**
    * Retrieve the report list.
-   * @return CReportTemplateVector * reportList
+   * @return CReportDefinitionVector * reportList
    */
-  CReportTemplateVector * getReportList() const;
+  CReportDefinitionVector * getReportList() const;
 
   /**
    * Retrieve whether the XML contains a report list.
@@ -564,7 +564,7 @@ private:
    * Pointer to a vector of reports which has been loaded or is to be saved.
    * The ownership is handed to the user.
    */
-  CReportTemplateVector * mpReportList;
+  CReportDefinitionVector * mpReportList;
 
   /**
    * Pointer to a vector of plots which has been loaded or is to be saved.

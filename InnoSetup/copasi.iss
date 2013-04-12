@@ -87,7 +87,7 @@ Source: ..\setup\copasi\share\copasi\doc\html\figures\PlotWindow.png; DestDir: {
 Source: ..\setup\copasi\share\copasi\doc\html\figures\ReactionDialog.png; DestDir: {app}\share\copasi\doc\html\figures
 Source: ..\setup\copasi\share\copasi\doc\html\figures\ReactionOverview.png; DestDir: {app}\share\copasi\doc\html\figures
 Source: ..\setup\copasi\share\copasi\doc\html\figures\ReactionOverviewEmpty.png; DestDir: {app}\share\copasi\doc\html\figures
-Source: ..\setup\copasi\share\copasi\doc\html\figures\ReportTemplateDialog.png; DestDir: {app}\share\copasi\doc\html\figures
+Source: ..\setup\copasi\share\copasi\doc\html\figures\ReportDefinitionDialog.png; DestDir: {app}\share\copasi\doc\html\figures
 Source: ..\setup\copasi\bin\vcredist_x86.exe; DestDir: {app}; Flags: deleteafterinstall
 Source: ..\setup\copasi\share\copasi\examples\YeastGlycolysis.gps; DestDir: {app}\share\copasi\examples
 Source: ..\setup\copasi\share\copasi\examples\brusselator.cps; DestDir: {app}\share\copasi\examples

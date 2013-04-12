@@ -111,10 +111,10 @@ parameter.setDblValue(1.0e-5);
 
 % create a report with the correct filename and all the species against
 % time.
-reports = dataModel.getReportTemplateList();
-% create a report template object
-report = reports.createReportTemplate("Report", "Output for optimization");
-% set the task type for the report template to timecourse
+reports = dataModel.getReportDefinitionList();
+% create a report definition object
+report = reports.createReportDefinition("Report", "Output for optimization");
+% set the task type for the report definition to timecourse
 report.setTaskType(CCopasiTask_optimization);
 % we don't want a table
 report.setIsTable(false);
@@ -140,7 +140,7 @@ body.push_back(CRegisteredObjectName(fixedModelValue.getObject(CCopasiObjectName
 
 
 % set the report for the task
-optTask.getReport().setReportTemplate(report);
+optTask.getReport().setReportDefinition(report);
 % set the output filename
 optTask.getReport().setTarget("example5.txt");
 % don't append output if the file exists, but overwrite the file

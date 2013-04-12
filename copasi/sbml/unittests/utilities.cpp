@@ -1,19 +1,19 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/xml/CCopasiXML.h"
 #include "copasi/function/CFunctionDB.h"
-#include "copasi/report/CReportTemplateVector.h"
+#include "copasi/report/CReportDefinitionVector.h"
 #include "copasi/model/CModel.h"
 #include "copasi/plot/COutputDefinitionVector.h"
 #include "copasi/layout/CListOfLayouts.h"
@@ -34,7 +34,7 @@ bool save_cps_model_to_stream(std::ostream& os, CCopasiDataModel* pDataModel)
 
       XML.setModel(pDataModel->getModel());
       XML.setTaskList(pDataModel->getTaskList());
-      XML.setReportList(pDataModel->getReportTemplateList());
+      XML.setReportList(pDataModel->getReportDefinitionList());
       XML.setPlotList(pDataModel->getPlotDefinitionList());
       XML.setGUI(pDataModel->getGUI());
       XML.setLayoutList(*pDataModel->getListOfLayouts());

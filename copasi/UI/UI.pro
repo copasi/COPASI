@@ -77,8 +77,8 @@ HEADERS	+= \
   CQProgressItemBar.h \
   CQProgressItemText.h \
   CQReactionsWidget.h \
-  CQReportTemplate.h \
-  CQReportTemplateSelect.h \
+  CQReportDefinition.h \
+  CQReportDefinitionSelect.h \
   CQReportsWidget.h \
   CQSensResultWidget.h \
   CQSpeciesDetail.h \
@@ -228,8 +228,8 @@ SOURCES	+= \
   CQProgressItemBar.cpp \
   CQProgressItemText.cpp \
   CQReactionsWidget.cpp \
-  CQReportTemplate.cpp \
-  CQReportTemplateSelect.cpp \
+  CQReportDefinition.cpp \
+  CQReportDefinitionSelect.cpp \
   CWindowInterface.cpp \
   CQReportsWidget.cpp \
   CQSensResultWidget.cpp \
@@ -374,8 +374,8 @@ FORMS += CQProgressItem.ui
 FORMS += CQProgressItemBar.ui
 FORMS += CQProgressItemText.ui
 FORMS += CQReactionsWidget.ui
-FORMS += CQReportTemplate.ui
-FORMS += CQReportTemplateSelect.ui 
+FORMS += CQReportDefinition.ui
+FORMS += CQReportDefinitionSelect.ui 
 FORMS += CQReportsWidget.ui
 FORMS += CQSensResultWidget.ui
 FORMS += CQSpeciesDetail.ui

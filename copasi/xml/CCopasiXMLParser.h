@@ -1,16 +1,24 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
+//   $Revision: 1.77 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2012/05/25 12:13:29 $
+// End CVS Header
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CCopasiXMLParser class.
@@ -48,7 +56,7 @@ class CFunction;
 class CExpression;
 class CFunctionParameter;
 class CCopasiXMLParser;
-class CReportTemplateVector;
+class CReportDefinitionVector;
 class COutputDefinitionVector;
 class CPlotSpecification;
 class CPlotItem;
@@ -58,7 +66,7 @@ class CCopasiParameterGroup;
 class CVersion;
 class CSlider;
 class SCopasiXMLGUI;
-class CReportTemplate;
+class CReportDefinition;
 class CCopasiTask;
 class CListOfLayouts;
 class CLayout;
@@ -201,7 +209,7 @@ public:
    * Pointer to a vector of reports which has been loaded or is to be saved.
    * The ownership is handed to the user.
    */
-  CReportTemplateVector * pReportList;
+  CReportDefinitionVector * pReportList;
 
   /**
    * Pointer to a vector of plots which has been loaded or is to be saved.
@@ -212,7 +220,7 @@ public:
   /**
    * Pointer to the currently processed report
    */
-  CReportTemplate * pReport;
+  CReportDefinition * pReport;
 
   /**
    * Pointer to the currently processed task
@@ -4922,9 +4930,9 @@ public:
 
   /**
    * Retrieve the list of loaded reports
-   * @return CReportTemplateVector * pReportList
+   * @return CReportDefinitionVector * pReportList
    */
-  CReportTemplateVector * getReportList() const;
+  CReportDefinitionVector * getReportList() const;
 
   /**
    * Retrieve the list of loaded functions

@@ -89,7 +89,7 @@ for node in domTree.childNodes:
         reportNode=domTree.createElement("Report")
         taskNode.appendChild(reportNode)
 
-        reportNode.setAttribute("reference","CReportTemplate_0")
+        reportNode.setAttribute("reference","CReportDefinition_0")
         reportNode.setAttribute("target",resultFilename)
         reportNode.setAttribute("append","0")
 
@@ -185,8 +185,8 @@ for node in domTree.childNodes:
         reportNode=domTree.createElement("Report")
         listOfReportsNode.appendChild(reportNode)
 
-        reportNode.setAttribute("key","CReportTemplate_0")
-        reportNode.setAttribute("name","ReportTemplate_0")
+        reportNode.setAttribute("key","CReportDefinition_0")
+        reportNode.setAttribute("name","ReportDefinition_0")
         reportNode.setAttribute("taskType","timeCourse")
 
         commentNode=domTree.createElement("Comment")

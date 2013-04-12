@@ -1,17 +1,24 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
-# Properties, Inc., University of Heidelberg, and The University </comment>
-# of Manchester. </comment>
-# All rights reserved. </comment>
+# Begin CVS Header 
+#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CReportDefinition.py,v $ 
+#   $Revision: 1.10 $ 
+#   $Name:  $ 
+#   $Author: gauges $ 
+#   $Date: 2008/04/21 10:27:07 $ 
+# End CVS Header 
+# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
 
 import COPASI
 import unittest
 from types import *
 
 
-class Test_CReportTemplate(unittest.TestCase):
+class Test_CReportDefinition(unittest.TestCase):
   def setUp(self):
-    self.repdef=COPASI.CReportTemplate("reportTemplate")
+    self.repdef=COPASI.CReportDefinition("reportDefinition")
     self.repdef.setComment("This is a test")
 
   def test_getComment(self):
@@ -120,7 +127,7 @@ def suite():
          ,'test_getHeaderAddr'
          ,'test_getBodyAddr'
         ]
-  return unittest.TestSuite(map(Test_CReportTemplate,tests))
+  return unittest.TestSuite(map(Test_CReportDefinition,tests))
 
 if(__name__ == '__main__'):
     unittest.TextTestRunner(verbosity=2).run(suite())

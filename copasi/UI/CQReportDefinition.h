@@ -1,24 +1,37 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Begin CVS Header
+//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.h,v $
+//   $Revision: 1.17 $
+//   $Name:  $
+//   $Author: shoops $
+//   $Date: 2011/10/17 14:58:05 $
+// End CVS Header
+
+// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 #ifndef CQREPORTDEFINITION_H
 #define CQREPORTDEFINITION_H
 
 #include <QtCore/QVariant>
 
-#include "copasi/UI/ui_CQReportTemplate.h"
+#include "copasi/UI/ui_CQReportDefinition.h"
 
-class CReportTemplate;
+class CReportDefinition;
 
-class CQReportTemplate : public CopasiWidget, public Ui::CQReportTemplate
+class CQReportDefinition : public CopasiWidget, public Ui::CQReportDefinition
 {
   Q_OBJECT
 
 public:
-  CQReportTemplate(QWidget* parent = 0, const char* name = 0);
-  ~CQReportTemplate();
+  CQReportDefinition(QWidget* parent = 0, const char* name = 0);
+  ~CQReportDefinition();
 
   virtual bool leave();
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
@@ -31,7 +44,7 @@ protected slots:
 private:
   bool mAdvanced;
   bool mChanged;
-  CReportTemplate * mpReportTemplate;
+  CReportDefinition * mpReportDefinition;
   QString mOldComment;
 
   bool load();

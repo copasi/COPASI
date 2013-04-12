@@ -1,7 +1,7 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include <sstream>
 
@@ -16,7 +16,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "utilities/CCopasiTask.h"
-#include "report/CReportTemplateVector.h"
+#include "report/CReportDefinitionVector.h"
 #include "plot/COutputDefinitionVector.h"
 #include "report/CCopasiRootContainer.h"
 #include "function/CFunctionDB.h"
@@ -344,7 +344,7 @@ void CQBrowserPaneDM::load()
   findNodeFromId(42)->setKey(mpCopasiDM->getPlotDefinitionList()->getKey());
   load(42); // Plot Specifications
 
-  findNodeFromId(43)->setKey(mpCopasiDM->getReportTemplateList()->getKey());
+  findNodeFromId(43)->setKey(mpCopasiDM->getReportDefinitionList()->getKey());
   load(43); // Report Specifications
 
   load(5); // Functions
@@ -390,7 +390,7 @@ void CQBrowserPaneDM::load(const size_t & id)
         break;
 
       case 43: // Report Specifications
-        pVector = reinterpret_cast< const CCopasiVector< CCopasiObject > * >(mpCopasiDM->getReportTemplateList());
+        pVector = reinterpret_cast< const CCopasiVector< CCopasiObject > * >(mpCopasiDM->getReportDefinitionList());
         break;
 
       case 5: // Functions
