@@ -11,5 +11,5 @@
 *.xml  filter=common CommentStart=<!-- CommentEnd=--> PrologEnd=>
 *.rng  filter=common CommentStart=<!-- CommentEnd=--> PrologEnd=>
 *.ui   filter=common CommentStart=<comment> CommentEnd=</comment> PrologEnd=<ui.*>
-*.py   filter=common CommentStart=# CommentEnd=</comment> PrologEnd=-\\*-
+*.py   filter=common CommentStart=# PrologEnd=-\\*-
 
