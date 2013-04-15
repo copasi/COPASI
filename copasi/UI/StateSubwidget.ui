@@ -14,8 +14,6 @@
 <comment> Properties, Inc. and EML Research, gGmbH. </comment>
 <comment> All rights reserved. </comment>
 
-
-
  <comment> All rights reserved. </comment>
  <class>StateSubwidget</class>
  <widget class="CopasiWidget" name="StateSubwidget">
@@ -259,6 +257,19 @@
           </property>
          </column>
         </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mpStabilityPage">
+      <attribute name="title">
+       <string>Stability</string>
+      </attribute>
+      <layout class="QVBoxLayout">
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QTextBrowser" name="stabilityTextEdit"/>
        </item>
       </layout>
      </widget>
@@ -518,19 +529,6 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="mpStabilityPage">
-      <attribute name="title">
-       <string>Stability</string>
-      </attribute>
-      <layout class="QVBoxLayout">
-       <property name="margin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QTextBrowser" name="stabilityTextEdit"/>
-       </item>
-      </layout>
-     </widget>
      <widget class="QWidget" name="mpProtocolPage">
       <attribute name="title">
        <string>Protocol</string>
@@ -551,15 +549,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>CQArrayAnnotationsWidget</class>
-   <extends>QWidget</extends>
-   <header>CQArrayAnnotationsWidget.h</header>
-  </customwidget>
-  <customwidget>
    <class>CopasiWidget</class>
    <extends>QWidget</extends>
    <header>copasi/UI/copasiWidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CQArrayAnnotationsWidget</class>
+   <extends>QWidget</extends>
+   <header>CQArrayAnnotationsWidget.h</header>
   </customwidget>
  </customwidgets>
  <includes>
