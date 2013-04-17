@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Begin CVS Header </comment>
-<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultSubWidget.ui,v $ </comment>
-<comment>   $Revision: 1.17 $ </comment>
-<comment>   $Name:  $ </comment>
-<comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/10/31 14:25:56 $ </comment>
-<comment> End CVS Header </comment>
-
-<comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc. and EML Research, gGmbH. </comment>
 <comment> All rights reserved. </comment>
 
  <comment> All rights reserved. </comment>
@@ -78,7 +79,7 @@ p, li { white-space: pre-wrap; }
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Save to File</string>
+        <string>save data</string>
        </property>
       </widget>
      </item>
