@@ -3138,7 +3138,15 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataMod
             }
 
           pLambda->addChild(pFunNode);
-          pFunDef->setMath(pLambda);
+
+          if (pFunDef->setMath(pLambda) != LIBSBML_OPERATION_SUCCESS)
+            {
+              CCopasiMessage(CCopasiMessage::WARNING,
+                             "The function '%s' uses an invalid expression '%s' that cannot be exported to SBML, the function definition is not exported."
+                             , function.getObjectName().c_str()
+                             , function.getInfix().c_str());
+            }
+
           this->mExportedFunctions.appendAndOwn(pFunDef);
           delete pLambda;
         }
