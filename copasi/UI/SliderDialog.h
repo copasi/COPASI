@@ -118,6 +118,9 @@ protected:
   CopasiSlider* findCopasiSliderForCSlider(CSlider* pCSlider);
   CSlider* equivalentSliderExists(CSlider* pCSlider);
   void clearSliderBox();
+  void createSlidersForFolder(std::vector<QWidget*>& v);
+  CopasiSlider *getCopasiSliderForCSlider(std::vector<QWidget*>& v, CSlider* slider);
+  CSlider *getCSliderForCopasiSlider(std::vector<CSlider*>& v, QWidget* slider);
   void fillSliderBox();
   std::vector<CSlider*>* getCSlidersForCurrentFolderId();
   CopasiSlider* findCopasiSliderAtPosition(const QPoint& p);

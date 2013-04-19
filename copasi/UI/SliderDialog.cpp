@@ -206,7 +206,7 @@ void SliderDialog::setCurrentSlider(CopasiSlider* pSlider)
 {
   mpCurrSlider = pSlider;
 
-  if (mpCurrSlider)
+  if (mpCurrSlider && isVisible())
     {
       mpCurrSlider->setFocus();
     }
@@ -565,10 +565,109 @@ void SliderDialog::setCurrentFolderId(size_t id)
     }
 
   clearSliderBox();
-
   mCurrentFolderId = id;
 
   fillSliderBox();
+}
+
+CSlider *SliderDialog::getCSliderForCopasiSlider(std::vector<CSlider*>& v, QWidget* slider)
+{
+  CopasiSlider* pTmpSlider = dynamic_cast<CopasiSlider*>(slider);
+
+  if (!pTmpSlider) return NULL;
+
+  std::vector<CSlider*>::const_iterator it;
+
+  for (it = v.begin(); it != v.end(); ++it)
+    {
+      if (pTmpSlider->getCSlider() == *it)
+        {
+          return *it;
+        }
+    }
+
+  return NULL;
+}
+
+CopasiSlider *SliderDialog::getCopasiSliderForCSlider(std::vector<QWidget*>& v, CSlider* slider)
+{
+  std::vector<QWidget*>::const_iterator it;
+
+  for (it = v.begin(); it != v.end(); ++it)
+    {
+      CopasiSlider* pTmpSlider = dynamic_cast<CopasiSlider*>(*it);
+
+      if (!pTmpSlider) break;
+
+      if (pTmpSlider->getCSlider() == slider)
+        {
+          return pTmpSlider;
+        }
+    }
+
+  return NULL;
+}
+
+void SliderDialog::createSlidersForFolder(std::vector<QWidget*>& v)
+{
+  if (mCurrentFolderId == C_INVALID_INDEX)
+    return;
+
+  std::vector<CSlider*>* pVector = getCSlidersForCurrentFolderId();
+  std::vector<CSlider*>::const_iterator it;
+  std::vector<QWidget*>::const_iterator wIt;
+  // maybe other program parts have added or deleted some sliders
+  assert(pVector);
+
+  // add CopasiSlider for all CSliders that don't have one.
+  bool issueWarning = false;
+
+  for (it = pVector->begin(); it != pVector->end(); ++it)
+    {
+      bool found = false;
+
+      // check whether we have a slider
+      CopasiSlider* pTmpSlider = getCopasiSliderForCSlider(v, *it);
+
+      if (pTmpSlider != NULL) continue;
+
+      // if not create one
+      setCurrentSlider(new CopasiSlider(*it, mpParentWindow->getDataModel(), mpSliderBox));
+      // make sure the slider points to the correct object
+      // for the currently set framework
+      this->setCorrectSliderObject(this->mpCurrSlider);
+      connect(mpCurrSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
+      connect(mpCurrSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
+      connect(mpCurrSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
+      connect(mpCurrSlider, SIGNAL(closeClicked(CopasiSlider*)), this, SLOT(removeSlider(CopasiSlider*)));
+      connect(mpCurrSlider, SIGNAL(editClicked(CopasiSlider*)), this, SLOT(editSlider(CopasiSlider*)));
+      mpCurrSlider->installEventFilter(this);
+      mpCurrSlider->setHidden(true);
+      mSliderMap[mCurrentFolderId].push_back(mpCurrSlider);
+    }
+
+  // delete CopasiSliders which have no correponding CSlider
+  for (wIt = v.begin(); wIt != v.end(); ++wIt)
+    {
+      bool found = getCSliderForCopasiSlider(*pVector, *wIt) != NULL;
+
+      if (!found)
+        {
+          CopasiSlider* pTmpSlider = dynamic_cast<CopasiSlider*>(*wIt);
+          assert(pTmpSlider);
+          deleteSlider(pTmpSlider);
+          mChanged = true;
+        }
+    }
+
+  if (issueWarning)
+    {
+      CQMessageBox::information(NULL, "Invalid Slider",
+                                "One or more sliders are invalid and have been disabled!",
+                                QMessageBox::Ok, QMessageBox::NoButton);
+    }
+
+  delete pVector;
 }
 
 void SliderDialog::fillSliderBox()
@@ -579,93 +678,7 @@ void SliderDialog::fillSliderBox()
   this->deleteInvalidSliders();
   std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
 
-  if (mCurrentFolderId != C_INVALID_INDEX)
-    {
-      std::vector<CSlider*>* pVector = getCSlidersForCurrentFolderId();
-      // maybe other program parts have added or deleted some sliders
-      assert(pVector);
-      size_t i, j, maxSliders, maxWidgets;
-      maxWidgets = v.size();
-      maxSliders = pVector->size();
-
-      // add CopasiSlider for all CSliders that don't have one.
-      bool issueWarning = false;
-
-      for (i = 0; i < maxSliders; ++i)
-        {
-          bool found = false;
-
-          if (!(*pVector)[i]->compile())
-            {
-              issueWarning = true;
-            }
-
-          for (j = 0; j < maxWidgets; j++)
-            {
-              CopasiSlider* pTmpSlider = dynamic_cast<CopasiSlider*>(v[j]);
-
-              if (!pTmpSlider) break;
-
-              if (pTmpSlider->getCSlider() == (*pVector)[i])
-                {
-                  found = true;
-                  break;
-                }
-            }
-
-          if (!found)
-            {
-              setCurrentSlider(new CopasiSlider((*pVector)[i], mpParentWindow->getDataModel(), mpSliderBox));
-              // make sure the slider points to the correct object
-              // for the currently set framework
-              this->setCorrectSliderObject(this->mpCurrSlider);
-              connect(mpCurrSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
-              connect(mpCurrSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
-              connect(mpCurrSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
-              connect(mpCurrSlider, SIGNAL(closeClicked(CopasiSlider*)), this, SLOT(removeSlider(CopasiSlider*)));
-              connect(mpCurrSlider, SIGNAL(editClicked(CopasiSlider*)), this, SLOT(editSlider(CopasiSlider*)));
-              mpCurrSlider->installEventFilter(this);
-              mpCurrSlider->setHidden(true);
-              mSliderMap[mCurrentFolderId].push_back(mpCurrSlider);
-            }
-        }
-
-      // delete CopasiSliders which have no correponding CSlider
-      for (j = 0; j < maxWidgets; ++j)
-        {
-          bool found = false;
-
-          for (i = 0; i < maxSliders; i++)
-            {
-              CopasiSlider* pTmpSlider = dynamic_cast<CopasiSlider*>(v[j]);
-
-              if (!pTmpSlider) break;
-
-              if (pTmpSlider->getCSlider() == (*pVector)[i])
-                {
-                  found = true;
-                  break;
-                }
-            }
-
-          if (!found)
-            {
-              CopasiSlider* pTmpSlider = dynamic_cast<CopasiSlider*>(v[j]);
-              assert(pTmpSlider);
-              deleteSlider(pTmpSlider);
-              mChanged = true;
-            }
-        }
-
-      if (issueWarning)
-        {
-          CQMessageBox::information(NULL, "Invalid Slider",
-                                    "One or more sliders are invalid and have been disabled!",
-                                    QMessageBox::Ok, QMessageBox::NoButton);
-        }
-
-      delete pVector;
-    }
+  createSlidersForFolder(v);
 
   v = mSliderMap[mCurrentFolderId];
   size_t i, maxCount = v.size();
@@ -1027,11 +1040,11 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject
 void SliderDialog::clearSliderBox()
 {
   std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
-  size_t i, maxCount = v.size();
+  std::vector<QWidget*>::const_reverse_iterator it;
 
-  for (i = 0; i < maxCount; ++i)
+  for (it = v.rbegin(); it != v.rend(); ++it)
     {
-      QWidget* widget = v[i];
+      QWidget* widget = *it;
       widget->setHidden(true);
       mpSliderBox->layout()->removeWidget(widget);
     }
@@ -1202,44 +1215,33 @@ void SliderDialog::setFramework(int framework)
  */
 bool SliderDialog::setCorrectSliderObject(CopasiSlider* pSlider)
 {
-  bool result = true;
+  if (pSlider == NULL)
+    return false;
 
-  if (pSlider != NULL)
+  CCopasiObject *pObject = NULL, *pTmpObject = NULL;
+  pObject = pSlider->object();
+
+  if (pObject == NULL)
+    return false;
+
+  pTmpObject = const_cast<CCopasiObject*>(this->determineCorrectObjectForSlider(pObject));
+
+  if (pTmpObject != pObject)
     {
-      CCopasiObject *pObject = NULL, *pTmpObject = NULL;
-      pObject = pSlider->object();
-      assert(pObject != NULL);
-
-      if (pObject != NULL)
-        {
-          pTmpObject = const_cast<CCopasiObject*>(this->determineCorrectObjectForSlider(pObject));
-
-          if (pTmpObject != pObject)
-            {
-              // we have to recalculate the range
-              double oldMin = pSlider->minValue();
-              double oldMax = pSlider->maxValue();
-              double oldValue = pSlider->value();
-              // we have to set the new object on the slider
-              pSlider->setObject(pTmpObject);
-              double newValue =  pSlider->value();
-              double newMin = (oldMin / oldValue) * newValue;
-              double newMax = (oldMax / oldValue) * newValue;
-              pSlider->setMinValue(newMin);
-              pSlider->setMaxValue(newMax);
-            }
-        }
-      else
-        {
-          result = false;
-        }
-    }
-  else
-    {
-      result = false;
+      // we have to recalculate the range
+      double oldMin = pSlider->minValue();
+      double oldMax = pSlider->maxValue();
+      double oldValue = pSlider->value();
+      // we have to set the new object on the slider
+      pSlider->setObject(pTmpObject);
+      double newValue =  pSlider->value();
+      double newMin = (oldMin / oldValue) * newValue;
+      double newMax = (oldMax / oldValue) * newValue;
+      pSlider->setMinValue(newMin);
+      pSlider->setMaxValue(newMax);
     }
 
-  return result;
+  return true;
 }
 
 void SliderDialog::showEvent(QShowEvent* pEvent)
