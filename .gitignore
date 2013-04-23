@@ -3,6 +3,7 @@
 *.app
 moc_*.cpp
 ui_*.h
+/doc/html
 /.cproject
 /.project
 /.settings/
