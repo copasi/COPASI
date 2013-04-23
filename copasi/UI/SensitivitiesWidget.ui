@@ -70,6 +70,9 @@
          <height>16777215</height>
         </size>
        </property>
+       <property name="toolTip">
+        <string>Function</string>
+       </property>
        <property name="text">
         <string>Effect</string>
        </property>
@@ -121,6 +124,9 @@
          <width>120</width>
          <height>16777215</height>
         </size>
+       </property>
+       <property name="toolTip">
+        <string>Variable</string>
        </property>
        <property name="text">
         <string>Cause</string>
@@ -176,8 +182,11 @@
          <height>16777215</height>
         </size>
        </property>
-       <property name="text">
+       <property name="toolTip">
         <string>Second Variable</string>
+       </property>
+       <property name="text">
+        <string>Secondary Cause</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
