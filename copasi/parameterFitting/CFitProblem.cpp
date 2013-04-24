@@ -1658,6 +1658,7 @@ bool CFitProblem::calculateCrossValidation()
                     for (; itRefresh != endRefresh; ++itRefresh)
                       (**itRefresh)();
 
+                    ppConstraint = mCrossValidationConstraints[i];
                     ppConstraintEnd = ppConstraint + mCrossValidationConstraints.numCols();
 
                     for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
