@@ -1622,10 +1622,36 @@ bool CFitProblem::calculateCrossValidation()
 
               case CCopasiTask::timeCourse:
 
+                size_t numIntermediateSteps;
+
+                if (mStoreResults)
+                  {
+                    //calculate a reasonable number of intermediate points
+                    numIntermediateSteps = 4; //TODO
+                    //resize the storage for the extended time series
+                    pExp->initExtendedTimeSeries(numIntermediateSteps * kmax - numIntermediateSteps + 1);
+                  }
+
                 for (j = 0; j < kmax && Continue; j++) // For each data row;
                   {
                     if (j)
                       {
+                        if (mStoreResults)
+                          {
+                            //do additional intermediate steps for nicer display
+                            C_FLOAT64 ttt;
+                            size_t ic;
+
+                            for (ic = 1; ic < numIntermediateSteps; ++ic)
+                              {
+                                ttt = pExp->getTimeData()[j - 1] + (pExp->getTimeData()[j] - pExp->getTimeData()[j - 1]) * (C_FLOAT64(ic) / numIntermediateSteps);
+                                mpTrajectory->processStep(ttt);
+                                //save the simulation results in the experiment
+                                pExp->storeExtendedTimeSeriesData(ttt);
+                              }
+                          }
+
+                        //do the regular step
                         mpTrajectory->processStep(pExp->getTimeData()[j]);
                       }
                     else
@@ -1642,6 +1668,7 @@ bool CFitProblem::calculateCrossValidation()
                         for (; itRefresh != endRefresh; ++itRefresh)
                           (**itRefresh)();
 
+                        static_cast< CTrajectoryProblem * >(mpTrajectory->getProblem())->setStepNumber(1);
                         mpTrajectory->processStart(true);
 
                         if (pExp->getTimeData()[0] != mpModel->getInitialTime())
@@ -1668,6 +1695,12 @@ bool CFitProblem::calculateCrossValidation()
                       CalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
                     else
                       CalculateValue += pExp->sumOfSquares(j, Residuals);
+
+                    if (mStoreResults)
+                      {
+                        //additionally also store the the simulation result for the extended time series
+                        pExp->storeExtendedTimeSeriesData(pExp->getTimeData()[j]);
+                      }
                   }
 
                 break;
