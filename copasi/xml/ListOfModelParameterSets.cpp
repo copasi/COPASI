@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/ListOfModelParameterSets.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/02 17:33:25 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,9 +18,9 @@
 // Model Parameter Sets
 CCopasiXMLParser::ListOfModelParameterSetsElement::ListOfModelParameterSetsElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
-    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
-    mActiveSet(),
-    mpModelParameterSetElement(NULL)
+  CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+  mActiveSet(),
+  mpModelParameterSetElement(NULL)
 {}
 
 // virtual
@@ -91,7 +83,6 @@ void CCopasiXMLParser::ListOfModelParameterSetsElement::start(const XML_Char *ps
     }
 
   mParser.onStartElement(pszName, papszAttrs);
-
 }
 
 // virtual
@@ -122,9 +113,12 @@ void CCopasiXMLParser::ListOfModelParameterSetsElement::end(const XML_Char *pszN
 
         mParser.popElementHandler();
         mCurrentElement = START_ELEMENT;
+        mLastKnownElement = mCurrentElement;
 
         /* Tell the parent element we are done. */
         mParser.onEndElement(pszName);
+        return;
+
         break;
 
       case ModelParameterSet:
@@ -153,10 +147,10 @@ void CCopasiXMLParser::ListOfModelParameterSetsElement::end(const XML_Char *pszN
 
 CCopasiXMLParser::ModelParameterSetElement::ModelParameterSetElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
-    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
-    mKey(),
-    mpModelParameterGroupElement(NULL),
-    mpModelParameterElement(NULL)
+  CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+  mKey(),
+  mpModelParameterGroupElement(NULL),
+  mpModelParameterElement(NULL)
 {}
 
 CCopasiXMLParser::ModelParameterSetElement::~ModelParameterSetElement()
@@ -306,7 +300,6 @@ void CCopasiXMLParser::ModelParameterSetElement::end(const XML_Char *pszName)
         mCommon.CharacterData = "";
         break;
 
-
       case ListOfUnkownAnnotations:
         break;
 
@@ -344,9 +337,9 @@ void CCopasiXMLParser::ModelParameterSetElement::end(const XML_Char *pszName)
 
 CCopasiXMLParser::ModelParameterGroupElement::ModelParameterGroupElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
-    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
-    mpModelParameterGroupElement(NULL),
-    mpModelParameterElement(NULL)
+  CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+  mpModelParameterGroupElement(NULL),
+  mpModelParameterElement(NULL)
 {}
 
 CCopasiXMLParser::ModelParameterGroupElement::~ModelParameterGroupElement()
@@ -427,7 +420,6 @@ void CCopasiXMLParser::ModelParameterGroupElement::start(const XML_Char *pszName
   return;
 }
 
-
 void CCopasiXMLParser::ModelParameterGroupElement::end(const XML_Char *pszName)
 {
   switch (mCurrentElement)
@@ -482,7 +474,7 @@ void CCopasiXMLParser::ModelParameterGroupElement::end(const XML_Char *pszName)
 
 CCopasiXMLParser::ModelParameterElement::ModelParameterElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
-    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+  CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
 {}
 
 CCopasiXMLParser::ModelParameterElement::~ModelParameterElement()
@@ -571,7 +563,6 @@ void CCopasiXMLParser::ModelParameterElement::start(const XML_Char *pszName,
   return;
 }
 
-
 void CCopasiXMLParser::ModelParameterElement::end(const XML_Char *pszName)
 {
   switch (mCurrentElement)
@@ -622,4 +613,3 @@ void CCopasiXMLParser::ModelParameterElement::end(const XML_Char *pszName)
 
   return;
 }
-
