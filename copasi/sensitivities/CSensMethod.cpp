@@ -62,6 +62,7 @@ CSensMethod::CSensMethod(CCopasiMethod::SubType subType,
   mInitialRefreshes(),
   mpDeltaFactor(NULL),
   mpMinDelta(NULL),
+  mStoreSubtasktUpdateFlag(false),
   mProgressHandler(C_INVALID_INDEX),
   mProgress(0),
   mCounter(0),
@@ -92,6 +93,7 @@ CSensMethod::CSensMethod(const CSensMethod & src,
   mInitialRefreshes(),
   mpDeltaFactor(NULL),
   mpMinDelta(NULL),
+  mStoreSubtasktUpdateFlag(false),
   mProgressHandler(C_INVALID_INDEX),
   mProgress(0),
   mCounter(0),
@@ -547,6 +549,10 @@ bool CSensMethod::initialize(CSensProblem* problem)
 
   if (mpSubTask)
     {
+      //the subtask should not change the initial state of the model
+      mStoreSubtasktUpdateFlag = mpSubTask->isUpdateModel();
+      mpSubTask->setUpdateModel(false);
+      
       mpSubTask->getProblem()->setModel(mpProblem->getModel());
       mpSubTask->setCallBack(NULL);
       success &= mpSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
@@ -668,8 +674,12 @@ bool CSensMethod::restore(const bool & /* updateModel */)
   bool success = true;
 
   if (mpSubTask != NULL)
+  {
     success &= mpSubTask->restore();
 
+    //restore the update model flag
+    mpSubTask->setUpdateModel(mStoreSubtasktUpdateFlag);
+  }
   return success;
 }
 
