@@ -177,6 +177,9 @@ protected:
 
   C_FLOAT64 * mpDeltaFactor;
   C_FLOAT64 * mpMinDelta;
+  
+  ///stores the update model flag of the subtask
+  bool mStoreSubtasktUpdateFlag;
 
 private:
   size_t mProgressHandler;
