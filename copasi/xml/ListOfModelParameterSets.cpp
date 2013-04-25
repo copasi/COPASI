@@ -98,9 +98,12 @@ void CCopasiXMLParser::ListOfModelParameterSetsElement::end(const XML_Char *pszN
 
         mParser.popElementHandler();
         mCurrentElement = START_ELEMENT;
+        mLastKnownElement = mCurrentElement;
 
         /* Tell the parent element we are done. */
         mParser.onEndElement(pszName);
+        return;
+
         break;
 
       case ModelParameterSet:
