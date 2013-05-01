@@ -17,8 +17,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>307</width>
-    <height>177</height>
+    <width>555</width>
+    <height>180</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -62,39 +62,25 @@
      <widget class="QWidget" name="page_4"/>
     </widget>
    </item>
-   <item row="1" column="0" alignment="Qt::AlignRight">
-    <widget class="QCheckBox" name="mpCheckDelay">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::LeftToRight</enum>
-     </property>
-     <property name="text">
-      <string>Delay</string>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QRadioButton" name="mpBtnDelayCalculation">
-       <property name="text">
-        <string>Calculation</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QRadioButton" name="mpBtnDelayAssignment">
-       <property name="text">
-        <string>Assignment</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
+      <widget class="QComboBox" name="mpComboBoxDelay">
+       <item>
+        <property name="text">
+         <string>None</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Calculation and Assignment</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Assignment only</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item>
@@ -111,25 +97,6 @@
       </spacer>
      </item>
     </layout>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="mpLabelDelayExpression">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Expression</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
-     </property>
-     <property name="wordWrap">
-      <bool>false</bool>
-     </property>
-    </widget>
    </item>
    <item row="2" column="1" colspan="2">
     <widget class="CQExpressionMmlStackedWidget" name="mpExpressionDelay">
@@ -282,6 +249,38 @@
      <widget class="QWidget" name="page_2"/>
     </widget>
    </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="mpLabelDelayExpression">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Expression</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="mpLabelDelay">
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="text">
+      <string>Delay</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
@@ -300,8 +299,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mpBtnDelayCalculation</tabstop>
-  <tabstop>mpBtnDelayAssignment</tabstop>
   <tabstop>mpLBTarget</tabstop>
   <tabstop>mpBtnSelectObject</tabstop>
   <tabstop>mpBtnAddTarget</tabstop>
@@ -322,8 +319,8 @@
    <slot>slotAddTarget()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>299</x>
+     <y>126</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -338,8 +335,8 @@
    <slot>slotDeleteTarget()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>299</x>
+     <y>144</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -354,8 +351,8 @@
    <slot>slotSelectObject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>299</x>
+     <y>108</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>

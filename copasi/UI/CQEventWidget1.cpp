@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include "CQEventWidget1.h"
 
@@ -104,10 +104,10 @@ void CQEventWidget1::slotBtnCopy()
 /*! */
 void CQEventWidget1::init()
 {
-  slotApplyDelay(false);
+  applyDelay(false);
 
   // SIGNAL-SLOT connections
-  connect(mpCheckDelay, SIGNAL(toggled(bool)), this, SLOT(slotApplyDelay(bool)));
+  connect(mpComboBoxDelay, SIGNAL(currentIndexChanged(int)), this, SLOT(slotChooseDelay(int)));
   connect(mpLBTarget, SIGNAL(currentRowChanged(int)), this, SLOT(slotActualizeAssignmentExpression(int)));
 
 //  mpExpressionTrigger->mpExpressionWidget->setBoolean(true);
@@ -194,17 +194,15 @@ bool CQEventWidget1::loadFromEvent()
 
   if (mpEvent->getDelayExpression() == "")
     {
-      mpCheckDelay->setChecked(false);
+      mpComboBoxDelay->setCurrentIndex(0); // Set Delay to "None"
     }
   else if (mpEvent->getDelayAssignment())
     {
-      mpBtnDelayAssignment->setChecked(true);
-      mpCheckDelay->setChecked(true);
+      mpComboBoxDelay->setCurrentIndex(2); // Assignment only
     }
   else
     {
-      mpBtnDelayCalculation->setChecked(true);
-      mpCheckDelay->setChecked(true);
+      mpComboBoxDelay->setCurrentIndex(1); // Calculation and Assignment
     }
 
   // copy assignment from event
@@ -282,7 +280,7 @@ void CQEventWidget1::saveToEvent()
       mChanged = true;
     }
 
-  if (mpCheckDelay->isChecked())
+  if (mpComboBoxDelay->currentIndex() != 0)
     {
       if (mpEvent->getDelayExpression() != mpExpressionDelay->mpExpressionWidget->getExpression())
         {
@@ -290,9 +288,9 @@ void CQEventWidget1::saveToEvent()
           mChanged = true;
         }
 
-      if (mpEvent->getDelayAssignment() != mpBtnDelayAssignment->isChecked())
+      if (mpComboBoxDelay->currentIndex() == 2)  // Assignment only
         {
-          mpEvent->setDelayAssignment(mpBtnDelayAssignment->isChecked());
+          mpEvent->setDelayAssignment(true);
           mChanged = true;
         }
     }
@@ -474,11 +472,10 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
     }
 }
 
-/*! Slot to apply the Delay Expression Widget */
-void CQEventWidget1::slotApplyDelay(bool show)
+
+/*! Function to apply the Delay Expression Widget */
+void CQEventWidget1::applyDelay(bool show)
 {
-  mpBtnDelayAssignment->setEnabled(show);
-  mpBtnDelayCalculation->setEnabled(show);
 
   if (show)
     {
@@ -489,5 +486,18 @@ void CQEventWidget1::slotApplyDelay(bool show)
     {
       mpLabelDelayExpression->hide();
       mpExpressionDelay->hide();
+    }
+}
+
+//Slot to handle delay options
+void CQEventWidget1::slotChooseDelay(int choice)
+{
+  if (choice != 0) // Not "None"
+    {
+      applyDelay(true);
+    }
+  else
+    {
+      applyDelay(false);
     }
 }

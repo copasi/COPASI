@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #ifndef CQEVENTWIDGET1_H
 #define CQEVENTWIDGET1_H
@@ -56,6 +56,7 @@ private:
   void init();
   bool loadFromEvent();
   void saveToEvent();
+  void applyDelay(bool display);
 
 private slots:
   void slotBtnNew();
@@ -65,7 +66,7 @@ private slots:
   void slotDeleteTarget();
   void slotSelectObject();
   void slotActualizeAssignmentExpression(int index);
-  void slotApplyDelay(bool display);
+  void slotChooseDelay(int choice);
 };
 
 #endif // CQEVENTWIDGET1_H
