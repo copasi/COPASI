@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CCSPMethod.cpp,v $
-//   $Revision: 1.28 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/05 21:12:30 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -42,9 +34,9 @@
 #include "blaswrap.h"           // BLAS
 
 CCSPMethod::CCSPMethod(const CCopasiContainer * pParent):
-    CTSSAMethod(CCopasiMethod::tssCSP, pParent) //,
-    //mpState(NULL),
-    //mY(NULL)
+  CTSSAMethod(CCopasiMethod::tssCSP, pParent) //,
+  //mpState(NULL),
+  //mY(NULL)
 {
   assert((void *) &mData == (void *) &mData.dim);
 
@@ -57,9 +49,9 @@ CCSPMethod::CCSPMethod(const CCopasiContainer * pParent):
 
 CCSPMethod::CCSPMethod(const CCSPMethod & src,
                        const CCopasiContainer * pParent):
-    CTSSAMethod(src, pParent) //,
-    //mpState(NULL),
-    //mY(NULL)
+  CTSSAMethod(src, pParent) //,
+  //mpState(NULL),
+  //mY(NULL)
 {
   assert((void *) &mData == (void *) &mData.dim);
 
@@ -68,7 +60,6 @@ CCSPMethod::CCSPMethod(const CCSPMethod & src,
 
   createAnnotationsM();
   //emptyVectors();
-
 }
 
 CCSPMethod::~CCSPMethod()
@@ -80,7 +71,6 @@ void CCSPMethod::initializeParameter()
 {
   initializeIntegrationsParameter();
 
-
   assertParameter("Integrate Reduced Model", CCopasiParameter::BOOL, (bool) false)->getValue().pBOOL;
   assertParameter("Ratio of Modes Separation", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-2);
   assertParameter("Maximum Relative Error", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-5);
@@ -89,8 +79,6 @@ void CCSPMethod::initializeParameter()
 
   //createAnnotationsM();
   //emptyVectors();
-
-
 }
 
 /* multiply submatrix */
@@ -363,7 +351,6 @@ void CCSPMethod::findCandidatesNumber(C_INT & n, C_INT & k, CVector< C_FLOAT64 >
 
       if (eigen[i + 1] == 0.) return;
 
-
       if (eigen[i] != eigen[i + 1])
         {
           tmp = eigen[i + 1 ] / eigen[i];
@@ -455,10 +442,7 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
       mYerror[j] = mRerror * y[j] + mAerror * comp->getInitialValue();
     }
 
-
-
   J = mJacobian;
-
 
 #ifdef CSPDEBUG
   std::cout << "current Jacobian " << std::endl;
@@ -483,7 +467,6 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
   mJacobian_initial.resize(N, N);
   mQ.resize(N, N);
   mR.resize(N, N);
-
 
   mQ = 0.;
   mR = 0.;
@@ -554,21 +537,17 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
 
   //findTimeScaleSeparation(N, M, eigen, info);
 
-
-
   findCandidatesNumber(N, M, eigen, info);
 
 #ifdef CSPDEBUG
   std::cout << " Candidates number " << M << std::endl;
 #endif
 
-
   if (info)
     {
       /*  the fastest of slow modes has positive eigen value  */
       CCopasiMessage(CCopasiMessage::WARNING,
                      MCTSSAMethod + 15, mTime);
-
     }
 
   if (M == N)
@@ -688,7 +667,6 @@ analyseMmodes:
 
       std::cout << F(i, 0) << std::endl;
     }
-
 
 #endif
 
@@ -954,7 +932,6 @@ cspiteration:
   CCopasiMessage(CCopasiMessage::WARNING,
                  MCTSSAMethod + 12, mTime);
 
-
   return;
 }
 /*  compute  the norm C  of the off-diagonal blocks   */
@@ -1094,7 +1071,6 @@ void CCSPMethod::emptyOutputData(C_INT & N, C_INT & M, C_INT & R)
   for (r = 0; r < R; r++)
     mSlowParticipationIndex[r] = 0;
 
-
   for (i = 0; i < N; i++)
     for (r = 0; r < R; r++)
       mImportanceIndex(r, i) = 0;
@@ -1142,12 +1118,10 @@ void CCSPMethod::step(const double & deltaT)
   else
     mpModel->calculateJacobian(mJacobian, 1e-6, 1e-12, false);
 
-
   cspstep(deltaT, N, M, A, B);
 
   mB = B;
   mTStep = 1;
-
 
   if (M > 0)
     setVectors(M);
@@ -1155,7 +1129,6 @@ void CCSPMethod::step(const double & deltaT)
     setVectorsToNaN();
 
   setAnnotationM(mCurrentStep); // need for ploting
-
 
   mCurrentStep += 1;
 
@@ -1170,7 +1143,6 @@ void CCSPMethod::start(const CState * initialState)
 {
 
   mReducedModel = *getValue("Integrate Reduced Model").pBOOL;
-
 
   emptyVectors();
 
@@ -1242,36 +1214,29 @@ void CCSPMethod::start(const CState * initialState)
       metabs[j] = metab;
     }
 
-
   mImportanceIndexTab.resize(reacs_size, mData.dim);
   pImportanceIndexAnn->resize();
   pImportanceIndexAnn->setCopasiVector(0, &mpModel->getReactions());
   pImportanceIndexAnn->setCopasiVector(1, &metabs);
 
-
   mFastParticipationIndexTab.resize(reacs_size, 1);
   pFastParticipationIndexAnn->resize();
   pFastParticipationIndexAnn->setCopasiVector(0, &mpModel->getReactions());
-
 
   mSlowParticipationIndexTab.resize(reacs_size, 1);
   pSlowParticipationIndexAnn->resize();
   pSlowParticipationIndexAnn->setCopasiVector(0, &mpModel->getReactions());
 
-
   mVec_mFastParticipationIndex[0].resize(reacs_size, 1);
   mVec_mSlowParticipationIndex[0].resize(reacs_size, 1);
   mVec_mImportanceIndex[0].resize(reacs_size, mData.dim);
-
 
   mImportanceIndexTab = mVec_mImportanceIndex[0];
   mFastParticipationIndexTab = mVec_mFastParticipationIndex[0];
   mSlowParticipationIndexTab = mVec_mSlowParticipationIndex[0];
 #endif
 
-
   mSetVectors = 0;
-
 
   return;
 }
@@ -1302,7 +1267,6 @@ void CCSPMethod::CSPOutput(C_INT & N, C_INT & M, C_INT & R)
         std::cout <<
                   mpModel->getStateTemplate().beginIndependent()[i]->getObjectName()
                   << "   : " << mRadicalPointer(i, m) << std::endl;
-
     }
 
   std::cout << std::endl;
@@ -1476,7 +1440,6 @@ void CCSPMethod::CSPParticipationIndex(C_INT & N, C_INT & M, C_FLOAT64 & tauM1, 
   C_INT reacs_size = (C_INT) mpModel->getReactions().size();
   const CCopasiVector< CReaction > & reacs = mpModel->getReactions();
 
-
   CMatrix< C_FLOAT64 >  redStoi;
 
   if (mReducedModel)
@@ -1499,7 +1462,6 @@ void CCSPMethod::CSPParticipationIndex(C_INT & N, C_INT & M, C_FLOAT64 & tauM1, 
   for (r = 0; r < reacs_size; ++r)
     flux[r] = reacs[r]->calculateParticleFlux();
 
-
   for (i = 0; i < N; ++i)
     {
       ampl[i] = 0;
@@ -1520,12 +1482,10 @@ void CCSPMethod::CSPParticipationIndex(C_INT & N, C_INT & M, C_FLOAT64 & tauM1, 
       for (j = 0; j < N; ++j)
         {
           tmp += B0(i, j) * mYerror[j];
-
         }
 
       estim[i] = fabs(tmp / tauM1);
     }
-
 
   for (i = 0; i < N; ++i)
     {
@@ -1538,7 +1498,6 @@ void CCSPMethod::CSPParticipationIndex(C_INT & N, C_INT & M, C_FLOAT64 & tauM1, 
         }
     }
 
-
   for (r = 0; r < reacs_size; ++r)
     {
       C_FLOAT64 PI = 0.;
@@ -1548,10 +1507,8 @@ void CCSPMethod::CSPParticipationIndex(C_INT & N, C_INT & M, C_FLOAT64 & tauM1, 
 
       mFastParticipationIndex[r] = PI;
 
-
       for (i = M; i < N; ++i)
         PI += fabs(mParticipationIndex(r, i));
-
 
       mFastParticipationIndex[r] /= PI;
       // TEST:  mFastParticipationIndex[r] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -1560,9 +1517,7 @@ void CCSPMethod::CSPParticipationIndex(C_INT & N, C_INT & M, C_FLOAT64 & tauM1, 
         mSlowParticipationIndex[r] += fabs(mParticipationIndex(r, i));
 
       mSlowParticipationIndex[r] /= PI;
-
     }
-
 
   /* the Participation Index normed by column */
 
@@ -1612,7 +1567,6 @@ void CCSPMethod::CSPImportanceIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_FLO
     redStoi = mpModel->getRedStoi();
   else
     redStoi = mpModel->getStoiReordered();
-
 
   CVector<C_FLOAT64> flux;
   flux.resize(reacs_size);
@@ -1850,7 +1804,6 @@ void CCSPMethod::predifineAnnotation()
       N = mpModel->getNumIndependentReactionMetabs() + mpModel->getNumDependentReactionMetabs();
     }
 
-
   CCopasiVector<CMetab>  metabs;
   metabs.resize(N);
 
@@ -1867,7 +1820,6 @@ void CCSPMethod::predifineAnnotation()
       metabs[j] = metab;
     }
 
-
   mImportanceIndexTab.resize(mpModel->getReactions().size(),
                              N);
 
@@ -1875,21 +1827,16 @@ void CCSPMethod::predifineAnnotation()
   pImportanceIndexAnn->setCopasiVector(0, &mpModel->getReactions());
   pImportanceIndexAnn->setCopasiVector(1, &metabs);
 
-
   mFastParticipationIndexTab.resize(mpModel->getReactions().size(), 1);
   pFastParticipationIndexAnn->resize();
 
   pFastParticipationIndexAnn->setCopasiVector(0, &mpModel->getReactions());
 
-
   mSlowParticipationIndexTab.resize(mpModel->getReactions().size(), 1);
   pSlowParticipationIndexAnn->resize();
 
   pSlowParticipationIndexAnn->setCopasiVector(0, &mpModel->getReactions());
-
-
 }
-
 
 /**
  * Create the CArraAnnotations for tables  in the CQTSSAResultSubWidget.
@@ -1916,7 +1863,6 @@ void CCSPMethod::createAnnotationsM()
 
 #endif
 
-
   name = "Radical Pointer";
   tableNames.push_back(name);
 
@@ -1934,7 +1880,6 @@ void CCSPMethod::createAnnotationsM()
 
   name = "Fast Reaction Pointer";
   tableNames.push_back(name);
-
 
   CArrayAnnotation *
   pTmp3 = new CArrayAnnotation("Fast Reaction Pointer", this,
@@ -1981,7 +1926,6 @@ void CCSPMethod::createAnnotationsM()
   name = "Normed Participation Index (by column)";
   tableNames.push_back(name);
 
-
   CArrayAnnotation *
   pTmp4NormedColumn = new CArrayAnnotation("Normed Participation Index (by column)", this,
       new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mParticipationIndexNormedColumnTab), true);
@@ -1992,8 +1936,7 @@ void CCSPMethod::createAnnotationsM()
   pTmp4NormedColumn->setDimensionDescription(1, "Time Scales");
   pParticipationIndexNormedColumnAnn = pTmp4NormedColumn;
 
-
-  mapTableToName[name] = pParticipationIndexNormedColumnAnn ;
+  mapTableToName[name] = pParticipationIndexNormedColumnAnn;
 
   name = "Normed Participation Index (by row)";
   tableNames.push_back(name);
@@ -2008,13 +1951,10 @@ void CCSPMethod::createAnnotationsM()
   pTmp4NormedRow->setDimensionDescription(1, "Time Scales");
   pParticipationIndexNormedRowAnn = pTmp4NormedRow;
 
-
   mapTableToName[name] = pParticipationIndexNormedRowAnn;
-
 
   name = "Fast Participation Index";
   tableNames.push_back(name);
-
 
   CArrayAnnotation *
   pTmp4Fast = new CArrayAnnotation("Fast Participation Index", this,
@@ -2028,10 +1968,8 @@ void CCSPMethod::createAnnotationsM()
 
   mapTableToName[name] = pFastParticipationIndexAnn;
 
-
   name = "Slow Participation Index";
   tableNames.push_back(name);
-
 
   CArrayAnnotation *
   pTmp4Slow = new CArrayAnnotation("Slow Participation Index", this,
@@ -2046,8 +1984,6 @@ void CCSPMethod::createAnnotationsM()
 
   mapTableToName[name] = pSlowParticipationIndexAnn;
 
-
-
   name = "Importance Index";
   tableNames.push_back(name);
 
@@ -2061,10 +1997,9 @@ void CCSPMethod::createAnnotationsM()
   pTmp5->setDimensionDescription(1, "Species");
   pImportanceIndexAnn = pTmp5;
 
-
   mapTableToName[name] =  pImportanceIndexAnn;
 
-  name = "Normed Importance Index (by row)" ;
+  name = "Normed Importance Index (by row)";
   tableNames.push_back(name);
 
   CArrayAnnotation *
@@ -2078,8 +2013,6 @@ void CCSPMethod::createAnnotationsM()
   pImportanceIndexNormedRowAnn = pTmp5NormedRow;
 
   mapTableToName[name] = pImportanceIndexNormedRowAnn;
-
-
 }
 
 /**
@@ -2110,8 +2043,6 @@ bool CCSPMethod::setAnnotationM(size_t step)
       N = mpModel->getNumIndependentReactionMetabs() + mpModel->getNumDependentReactionMetabs();
     }
 
-
-
   //TEST : if (step == 0) return false;
 
   //if (mVec_SlowModes.size() == 0) return false;
@@ -2119,6 +2050,12 @@ bool CCSPMethod::setAnnotationM(size_t step)
   //if (step > mVec_SlowModes.size()) return false;
 
   // TEST : step -= 1;
+
+  if (mVec_SlowModes.size() <= step)
+    {
+      return false;
+    }
+
   M = mVec_SlowModes[step];
 
   // fill pAmplitudeAnn
@@ -2176,7 +2113,6 @@ bool CCSPMethod::setAnnotationM(size_t step)
 
       metabs[j] = metab;
     }
-
 
   pRadicalPointerAnn->setCopasiVector(0, &metabs);
 
@@ -2327,32 +2263,26 @@ bool CCSPMethod::setAnnotationM(size_t step)
 
   // fill pFastParticipationIndexAnn
 
-
   mFastParticipationIndexTab.resize(mpModel->getReactions().size(), 1);
   mFastParticipationIndexTab = mVec_mFastParticipationIndex[step];
   pFastParticipationIndexAnn->resize();
-
 
   sstr << "   ";
   str = sstr.str();
   pFastParticipationIndexAnn->setAnnotationString(1, 0, str);
   pFastParticipationIndexAnn->setCopasiVector(0, &mpModel->getReactions());
 
-
   // fill pSlowParticipationIndexAnn
-
 
   //mSlowParticipationIndexTab.resize(mpModel->getReactions().size(),1);
   mSlowParticipationIndexTab = mVec_mSlowParticipationIndex[step];
 
   //pSlowParticipationIndexAnn->resize();
 
-
   //sstr << "   ";
   //str = sstr.str();
   //pSlowParticipationIndexAnn->setAnnotationString(1, 0, str);
   //pSlowParticipationIndexAnn->setCopasiVector(0, &mpModel->getReactions());
-
 
   // fill pmImportanceIndexAnn
   mImportanceIndexTab.resize(mVec_mImportanceIndex[step].numCols(),
@@ -2371,18 +2301,17 @@ bool CCSPMethod::setAnnotationM(size_t step)
   pImportanceIndexNormedRowAnn->setCopasiVector(1, &metabs);
 
   return true;
-
 }
 
 /**
-*  set vectors to NaN when the reduction was not possible
+ *  set vectors to NaN when the reduction was not possible
  **/
 void CCSPMethod::setVectorsToNaN()
 {
 
   mVec_TimeScale.push_back(mCurrentStep);
   mVec_TimeScale[mCurrentStep].resize(mData.dim);
-  C_INT i, r, m, fast ;
+  C_INT i, r, m, fast;
   C_INT reacs_size = (C_INT) mpModel->getReactions().size();
 
   fast = mData.dim;
@@ -2392,7 +2321,6 @@ void CCSPMethod::setVectorsToNaN()
 
   mVec_SlowModes.push_back(mCurrentStep);
   mVec_SlowModes[mCurrentStep] = 0;
-
 
   mVec_mRadicalPointer.push_back(mCurrentStep);
 
@@ -2425,7 +2353,6 @@ void CCSPMethod::setVectorsToNaN()
     for (i = 0; i < fast; i++)
       mVec_mParticipationIndex[mCurrentStep][r][i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-
   mVec_mFastParticipationIndex.push_back(mCurrentStep);
   mVec_mFastParticipationIndex[mCurrentStep].resize(reacs_size, 1);
 
@@ -2437,7 +2364,6 @@ void CCSPMethod::setVectorsToNaN()
 
   for (i = 0; i < reacs_size; i++)
     mVec_mSlowParticipationIndex[mCurrentStep][i][0] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-
 
   mVec_mParticipationIndexNormedColumn.push_back(mCurrentStep);
   mVec_mParticipationIndexNormedColumn[mCurrentStep].resize(reacs_size, mData.dim);
@@ -2460,14 +2386,12 @@ void CCSPMethod::setVectorsToNaN()
     for (i = 0; i < mData.dim; i++)
       mVec_mImportanceIndex[mCurrentStep][r][i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-
   mVec_mImportanceIndexNormedRow.push_back(mCurrentStep);
   mVec_mImportanceIndexNormedRow[mCurrentStep].resize(reacs_size, mData.dim);
 
   for (r = 0; r < reacs_size; r++)
     for (i = 0; i < mData.dim; i++)
       mVec_mImportanceIndexNormedRow[mCurrentStep][r][i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-
 
   mCurrentTime.push_back(mCurrentStep);
   mCurrentTime[mCurrentStep] = mTime;
@@ -2545,7 +2469,6 @@ void CCSPMethod::setVectors(int fast)
   for (i = 0; i < reacs_size; i++)
     mVec_mSlowParticipationIndex[mCurrentStep][i][0] = mSlowParticipationIndex[i];
 
-
   mVec_mParticipationIndexNormedColumn.push_back(mCurrentStep);
   mVec_mParticipationIndexNormedColumn[mCurrentStep].resize(mParticipationIndexNormedColumn.numCols(), mParticipationIndexNormedColumn.numRows());
   mVec_mParticipationIndexNormedColumn[mCurrentStep] = mParticipationIndexNormedColumn;
@@ -2591,8 +2514,6 @@ void CCSPMethod::emptyVectors()
   mVec_mSlowParticipationIndex.erase(mVec_mSlowParticipationIndex.begin(), mVec_mSlowParticipationIndex.end());
   mVec_mImportanceIndex.erase(mVec_mImportanceIndex.begin(), mVec_mImportanceIndex.end());
   mVec_mImportanceIndexNormedRow.erase(mVec_mImportanceIndexNormedRow.begin(), mVec_mImportanceIndexNormedRow.end());
-
-
 }
 
 void CCSPMethod::printResult(std::ostream * ostream) const
@@ -2645,7 +2566,6 @@ void CCSPMethod::printResult(std::ostream * ostream) const
 
   os << std::endl;
 
-
   os << "%%% Number of fast modes:  " << std::endl;
 
   for (istep = 0; istep < stepNumber; istep++)
@@ -2679,10 +2599,8 @@ void CCSPMethod::printResult(std::ostream * ostream) const
           os  << mVec_TimeScale[istep][i] << " ";
         }
 
-
       os << std::endl;
     }
-
 
   os << std::endl;
   os << "% Radical Pointer   " << std::endl;
@@ -2711,7 +2629,6 @@ void CCSPMethod::printResult(std::ostream * ostream) const
             RP(i, m) = 0;
         }
 
-
       os << std::endl;
 
       for (i = 0; i <  mData.dim; i++)
@@ -2722,10 +2639,8 @@ void CCSPMethod::printResult(std::ostream * ostream) const
           os << std::endl;
         }
 
-
       os << std::endl;
     }
-
 
   os << std::endl;
   os << "%%%% Participation Index : " << std::endl;
@@ -2738,7 +2653,6 @@ void CCSPMethod::printResult(std::ostream * ostream) const
       os << std::endl;
       os << "%%%  Time step " << istep + 1  << std::endl;
       os << std::endl;
-
 
       //  os <<  istep + 1 << " ";
 
@@ -2778,6 +2692,3 @@ void CCSPMethod::printResult(std::ostream * ostream) const
 
   return;
 }
-
-
-
