@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "CQEventWidget1.h"
 
@@ -104,7 +104,7 @@ void CQEventWidget1::slotBtnCopy()
 /*! */
 void CQEventWidget1::init()
 {
-  applyDelay(false);
+  showDelayExpression(false);
 
   // SIGNAL-SLOT connections
   connect(mpComboBoxDelay, SIGNAL(currentIndexChanged(int)), this, SLOT(slotChooseDelay(int)));
@@ -472,11 +472,9 @@ void CQEventWidget1::slotActualizeAssignmentExpression(int index)
     }
 }
 
-
 /*! Function to apply the Delay Expression Widget */
-void CQEventWidget1::applyDelay(bool show)
+void CQEventWidget1::showDelayExpression(bool show)
 {
-
   if (show)
     {
       mpLabelDelayExpression->show();
@@ -494,10 +492,10 @@ void CQEventWidget1::slotChooseDelay(int choice)
 {
   if (choice != 0) // Not "None"
     {
-      applyDelay(true);
+      showDelayExpression(true);
     }
   else
     {
-      applyDelay(false);
+      showDelayExpression(false);
     }
 }
