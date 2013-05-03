@@ -203,7 +203,20 @@ public:
     Event
   };
 
-  template < class Type > class Variables: public std::vector< std::vector< Type > > {};
+  template < class Type > class Variables: public std::vector< Type >
+  {
+  public:
+    Variables():
+      std::vector< Type >()
+    {}
+
+    Variables(const std::vector< Type > & src):
+      std::vector< Type >(src)
+    {}
+
+    ~Variables()
+    {}
+  };
 
   class CVariableStack
   {

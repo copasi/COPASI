@@ -32,11 +32,13 @@ private:
   public:
     CMathEventN * pEvent;
     CMathObject * pDiscontinuous;
+    /*
     CMathObject * pEventDelay;
     CMathObject * pEventPriority;
     CMathObject * pEventAssignment;
     CMathObject * pEventTrigger;
     CMathObject * pEventRoot;
+    */
   };
 
   /**
@@ -136,12 +138,6 @@ public:
       const std::vector< CEvaluationNode * > & children);
 
   /**
-   * Determine the additional allocation requirements needed for handling discontinuities.
-   * @param CMath::CAllocationStack::CAllocation & allocations
-   */
-  void determineDiscontinuityAllocationRequirement(CMath::CAllocationStack::CAllocation & allocations) const;
-
-  /**
    * Retrieve the pointer to the corresponding initial value
    * @param const C_FLOAT64 * pValue
    * @return C_FLOAT64 * pInitialvalue
@@ -149,19 +145,6 @@ public:
   C_FLOAT64 * getInitialValuePointer(const C_FLOAT64 * pValue) const;
 
 private:
-  /**
-   * Determine the additional allocation requirements needed for handling discontinuities in the
-   * descendants of the given Node.
-   * @param const CEvaluationNode * pNode
-   * @param CMath::CVariableStack & variableStack
-   * @param CMath::CAllocationStack & allocationStack
-   * @param CMath::CAllocationStack::CAllocation & allocations
-   */
-  void determineDiscontinuityAllocationRequirement(const CEvaluationNode * pNode,
-      CMath::CVariableStack & variableStack,
-      CMath::CAllocationStack & allocationStack,
-      CMath::CAllocationStack::CAllocation & allocations) const;
-
   /**
    * Initialize the mathematical model
    */
@@ -177,6 +160,14 @@ private:
    * @param sPointers & pointers
    */
   void initializePointers(CMath::sPointers & pointers);
+
+#ifdef COPASI_DEBUG
+  /**
+   * Print pointer state
+   * @param sPointers & pointers
+   */
+  void printPointers(CMath::sPointers & pointers);
+#endif // COAPSI_DEBUG
 
   /**
    * Initialize the pointers used for the conversion of
@@ -289,6 +280,32 @@ private:
   void map(CCopasiObject * pDataObject, CMathObject * pMathObject);
 
   /**
+   * Create an event of type CEvent::Discontinuity for each discontinuity in the model
+   */
+  void createDiscontinuityEvents();
+
+  /**
+   * Create an event of type CEvent::Discontinuity for each discontinuity the tree with root pNode
+   * @param const CEvaluationNode * pNode
+   * @param const CMath::Variables< CEvaluationNode * > & variables
+   */
+  void createDiscontinuityEvents(const CEvaluationNode * pNode,
+                                 const CMath::Variables< CEvaluationNode * > & variables);
+
+  /**
+   * Create an event of type CEvent::Discontinuity for the given node
+   * @param const CEvaluationNode * pNode
+   */
+  void createDiscontinuityDataEvent(const CEvaluationNode * pNode);
+
+  /**
+   * Create the infix for trigger of the event which tracks changes in a discontinuity
+   * represented by the node.
+   * @param const CEvaluationNode * pNode
+   */
+  std::string createDiscontinuityTriggerInfix(const CEvaluationNode * pNode);
+
+  /**
    * A pointer to the data model which mathematics are contained
    */
   CModel * mpModel;
@@ -355,6 +372,23 @@ private:
    * A map from data objects values to math objects
    */
   std::map< C_FLOAT64 *, CMathObject * > mDataValue2MathObject;
+
+  /**
+   * A vector of data events for discontinuities
+   */
+  CCopasiVector< CEvent > mDiscontinuityEvents;
+
+  /**
+   * A map from the infix of the expression of a discontinuity to the object
+   * representing it.
+   */
+  std::map< std::string, CMathObject * > mDiscontinuityInfix2Object;
+
+  /**
+   * A map from the discontinuity trigger infix of to event
+   * representing it.
+   */
+  std::map< std::string,  CMathEventN * > mTriggerInfix2Event;
 };
 
 #endif // COPASI_CMathContainer

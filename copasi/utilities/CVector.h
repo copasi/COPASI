@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-//   $Revision: 1.45 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/03/28 09:46:48 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -61,8 +53,8 @@ public:
    * Default constructor
    */
   CVectorCore() :
-      mSize(0),
-      mVector(NULL)
+    mSize(0),
+    mVector(NULL)
   {}
 
   /**
@@ -72,8 +64,8 @@ public:
    */
   CVectorCore(const size_t & size,
               CType * vector):
-      mSize(size),
-      mVector(vector)
+    mSize(size),
+    mVector(vector)
   {}
 
   /**
@@ -169,7 +161,7 @@ public:
    * @param size_t size (default = 0)
    */
   CVector(size_t size = 0) :
-      CVectorCore< CType >()
+    CVectorCore< CType >()
   {resize(size);}
 
   /**
@@ -177,7 +169,7 @@ public:
    * @param const CVector <CType> & src
    */
   CVector(const CVector <CType> & src):
-      CVectorCore< CType >()
+    CVectorCore< CType >()
   {
     resize(src.CVectorCore< CType >::mSize);
 
@@ -215,7 +207,7 @@ public:
         try
           {
             // We need to detect size_t overflow
-            if ((C_FLOAT64) CVectorCore< CType >::mSize *(C_FLOAT64) sizeof(CType) >= (C_FLOAT64) std::numeric_limits< size_t >::max())
+            if ((C_FLOAT64) CVectorCore< CType >::mSize * (C_FLOAT64) sizeof(CType) >= (C_FLOAT64) std::numeric_limits< size_t >::max())
               {
                 CVectorCore< CType >::mVector = NULL;
               }
@@ -236,7 +228,9 @@ public:
         CVectorCore< CType >::mVector != NULL &&
         OldVector != NULL)
       {
-        memcpy(CVectorCore< CType >::mVector, OldVector, std::min(CVectorCore< CType >::mSize, OldSize) * sizeof(CType));
+        memcpy((void *) CVectorCore< CType >::mVector,
+               (void *) OldVector,
+               std::min(CVectorCore< CType >::mSize, OldSize) * sizeof(CType));
       }
 
     if (OldVector != NULL)

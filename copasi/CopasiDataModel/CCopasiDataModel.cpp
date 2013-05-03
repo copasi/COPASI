@@ -1501,6 +1501,12 @@ CObjectInterface * CCopasiDataModel::ObjectFromCN(const std::vector< CCopasiCont
        containerIndex++)
     {
       pContainer = listOfContainer[containerIndex];
+
+      if (pContainer == NULL)
+        {
+          continue;
+        }
+
       ContainerName = pContainer->getCN();
 
       while (ContainerName.getRemainder() != "")

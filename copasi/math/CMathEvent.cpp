@@ -60,15 +60,14 @@ bool CMathEventN::CAssignment::compile(CEventAssignment * pDataAssignment,
   return success;
 }
 
-bool CMathEventN::CAssignment::compileDiscontinuous(const CMathObject * pObject,
-    CMathContainer & /* container */)
+void CMathEventN::CAssignment::setTarget(CMathObject * pTarget)
 {
-  bool success = true;
+  mpTarget = pTarget;
+}
 
-  mpTarget = const_cast< CMathObject * >(pObject);
-  mpAssignment = const_cast< CMathObject * >(pObject);
-
-  return success;
+void CMathEventN::CAssignment::setExpression(CMathObject * pExpression)
+{
+  mpAssignment = pExpression;
 }
 
 CMathEventN::CTrigger::CRoot::CRoot():
@@ -85,12 +84,14 @@ void CMathEventN::CTrigger::CRoot::initialize(CMath::sPointers & pointers)
 {
   // Initialize the root object!
   mpRoot = pointers.pEventRootsObject;
+  *pointers.pEventRoots = 1.0;
   CMathObject::initialize(pointers.pEventRootsObject, pointers.pEventRoots,
                           CMath::EventRoot, CMath::Event, CMath::SimulationTypeUndefined,
                           false, false, NULL);
 
   // Initialize the root state object!
   mpRootState = pointers.pEventRootStatesObject;
+  *pointers.pEventRootStates = 1.0;
   CMathObject::initialize(pointers.pEventRootStatesObject, pointers.pEventRootStates,
                           CMath::EventRootState, CMath::Event, CMath::SimulationTypeUndefined,
                           false, false, NULL);
@@ -165,12 +166,14 @@ void CMathEventN::CTrigger::initialize(CMath::sPointers & pointers)
 {
   // Initialize trigger object.
   mpTrigger = pointers.pEventTriggersObject;
+  *pointers.pEventTriggers = 1.0;
   CMathObject::initialize(pointers.pEventTriggersObject, pointers.pEventTriggers,
                           CMath::EventTrigger, CMath::Event, CMath::SimulationTypeUndefined,
                           false, false, NULL);
 
   // Initialize initial trigger object.
   mpInitialTrigger = pointers.pInitialEventTriggersObject;
+  *pointers.pInitialEventTriggers = 1.0;
   CMathObject::initialize(pointers.pInitialEventTriggersObject, pointers.pInitialEventTriggers,
                           CMath::EventTrigger, CMath::Event, CMath::SimulationTypeUndefined,
                           false, true, NULL);
@@ -197,7 +200,16 @@ bool CMathEventN::CTrigger::compile(CEvent * pDataEvent,
 
   CExpression DataTrigger("DataTrigger", &container);
   DataTrigger.setIsBoolean(true);
-  DataTrigger.setInfix(pDataEvent->getTriggerExpression());
+
+  if (pDataEvent != NULL)
+    {
+      DataTrigger.setInfix(pDataEvent->getTriggerExpression());
+      mDualAction = false;
+    }
+  else
+    {
+      DataTrigger.setInfix(mpTrigger->getExpressionPtr()->getInfix());
+    }
 
   success &= DataTrigger.compile();
 
@@ -213,127 +225,34 @@ bool CMathEventN::CTrigger::compile(CEvent * pDataEvent,
 
   success &= mpTrigger->setExpressionPtr(pTrigger);
 
-  mDualAction = false;
-
-  return success;
-}
-
-bool CMathEventN::CTrigger::compileDiscontinuous(const CMathObject * pObject,
-    CMathContainer & container)
-{
-  bool success = true;
-
-  std::vector< CCopasiContainer * > ListOfContainer;
-  ListOfContainer.push_back(const_cast< CMathContainer * >(&container));
-
-  // The trigger depends on the root node of the expression of the
-  // discontinuous object.
-  CExpression DataTrigger("DataTrigger", &container);
-  DataTrigger.setIsBoolean(true);
-  const CEvaluationNode * pNode = pObject->getExpressionPtr()->getRoot();
-
-  switch ((int) pNode->getType())
-    {
-      case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
-      {
-        success &= DataTrigger.setInfix(static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix());
-        mDualAction = true;
-
-        // Modify discontinuous object expression.
-        CMathObject * pMathObject = const_cast< CMathObject * >(pObject);
-        CMathExpression * pMathExpression = const_cast< CMathExpression * >(pObject->getExpressionPtr());
-        CEvaluationNode * pMathRoot = pMathExpression->getRoot();
-
-        // We replace the conditional expression with the value of the trigger
-        delete pMathRoot->getChild();
-        success &= pMathRoot->addChild(new CEvaluationNodeObject((C_FLOAT64 *) mpTrigger->getValuePointer()), pMathRoot);
-
-        success &= pMathExpression->compile();
-        success &= pMathObject->compile(container);
-      }
-
-      break;
-
-      case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
-      {
-        const CEvaluationNode * pArg = static_cast< const CEvaluationNode * >(pNode->getChild());
-
-        CEvaluationNode * pOR = new CEvaluationNodeLogical(CEvaluationNodeLogical::XOR, "XOR");
-
-        CEvaluationNode * pLT = new CEvaluationNodeLogical(CEvaluationNodeLogical::LT, "LT");
-        pLT->addChild(container.copyBranch(pArg, false));
-        pLT->addChild(new CEvaluationNodeObject((C_FLOAT64 *) pObject->getValuePointer()));
-        pOR->addChild(pLT);
-
-        CEvaluationNode * pLE = new CEvaluationNodeLogical(CEvaluationNodeLogical::LE, "LE");
-
-        CEvaluationNode * pPlus = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS, "+");
-        pPlus->addChild(new CEvaluationNodeObject((C_FLOAT64 *) pObject->getValuePointer()));
-        pPlus->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0"));
-        pLE->addChild(pPlus);
-
-        pLE->addChild(container.copyBranch(pArg, false));
-        pOR->addChild(pLE);
-
-        success &= DataTrigger.setRoot(pOR);
-        success &= DataTrigger.updateTree();
-        mDualAction = false;
-      }
-      break;
-
-      case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
-      {
-        const CEvaluationNode * pArg = static_cast< const CEvaluationNode * >(pNode->getChild());
-
-        CEvaluationNode * pOR = new CEvaluationNodeLogical(CEvaluationNodeLogical::XOR, "XOR");
-
-        CEvaluationNode * pLE = new CEvaluationNodeLogical(CEvaluationNodeLogical::LE, "LE");
-        pLE->addChild(container.copyBranch(pArg, false));
-
-        CEvaluationNode * pMinus = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
-        pMinus->addChild(new CEvaluationNodeObject((C_FLOAT64 *) pObject->getValuePointer()));
-        pMinus->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1.0"));
-        pLE->addChild(pMinus);
-
-        pOR->addChild(pLE);
-
-        CEvaluationNode * pLT = new CEvaluationNodeLogical(CEvaluationNodeLogical::LT, "LT");
-        pLT->addChild(new CEvaluationNodeObject((C_FLOAT64 *) pObject->getValuePointer()));
-        pLT->addChild(container.copyBranch(pArg, false));
-        pOR->addChild(pLT);
-
-        success &= DataTrigger.setRoot(pOR);
-        success &= DataTrigger.updateTree();
-        mDualAction = false;
-      }
-      break;
-
-      default:
-        success = false;
-        break;
-    }
-
-  success &= DataTrigger.compile(ListOfContainer);
-
-  CEvaluationNode * pTriggerRoot = NULL;
-  CRoot * pRoot = mRoots.array();
-
-  CMath::Variables< CEvaluationNode * > Variables;
-
-  pTriggerRoot =  compile(DataTrigger.getRoot(), Variables, pRoot, container);
-
-  assert(pRoot == mRoots.array() + mRoots.size());
-
-  CMathExpression * pTrigger = new CMathExpression("EventTrigger", container);
-  success &= static_cast< CEvaluationTree * >(pTrigger)->setRoot(pTriggerRoot);
-  success &= mpTrigger->setExpressionPtr(pTrigger);
-
   return success;
 }
 
 const CVector< CMathEventN::CTrigger::CRoot > & CMathEventN::CTrigger::getRoots() const
 {
   return mRoots;
+}
+
+void CMathEventN::CTrigger::setExpression(const std::string & infix,
+    CMathContainer & container)
+{
+  assert(mpTrigger != NULL);
+
+  mpTrigger->setExpression(infix, true, container);
+
+  compile(NULL, container);
+
+  std::cout << *mpTrigger;
+  std::cout << *mpInitialTrigger;
+
+  CRoot * pRoot = mRoots.array();
+  CRoot * pRootEnd = pRoot + mRoots.size();
+
+  for (; pRoot != pRootEnd; ++pRoot)
+    {
+      std::cout << *pRoot->mpRoot;
+      std::cout << *pRoot->mpRootState;
+    }
 }
 
 // static
@@ -491,23 +410,10 @@ size_t CMathEventN::CTrigger::countRootsEQ(const CEvaluationNode * pNode,
 size_t CMathEventN::CTrigger::countRootsFUNCTION(const CEvaluationNode * pNode,
     const std::vector< size_t > & children)
 {
-  // We need to mimic the process in CMathContainer::copyBranch;
-  CMath::Variables< size_t > Variables;
-
-  std::vector< size_t >::const_iterator it = children.begin();
-  std::vector< size_t >::const_iterator end = children.end();
-
-  for (; it != end; ++it)
-    {
-      CMath::Variables< size_t >::value_type Variable;
-      Variable.push_back(*it);
-      Variables.push_back(Variable);
-    }
-
   const CEvaluationNode * pTreeRoot =
     static_cast< const CEvaluationNodeCall * >(pNode)->getCalledTree()->getRoot();
 
-  size_t nRoots = countRoots(pTreeRoot, Variables);
+  size_t nRoots = countRoots(pTreeRoot, children);
 
   return nRoots;
 }
@@ -524,7 +430,7 @@ size_t CMathEventN::CTrigger::countRootsVARIABLE(const CEvaluationNode * pNode,
       return 0;
     }
 
-  return variables[Index][0];
+  return variables[Index];
 }
 
 // static
@@ -557,7 +463,7 @@ CEvaluationNode * CMathEventN::CTrigger::compile(const CEvaluationNode * pTrigge
 
                 if (Index != C_INVALID_INDEX &&
                     Index < variables.size() &&
-                    variables[Index][0]->isBoolean())
+                    variables[Index]->isBoolean())
                   {
                     continue;
                   }
@@ -568,7 +474,7 @@ CEvaluationNode * CMathEventN::CTrigger::compile(const CEvaluationNode * pTrigge
                 // Since a variable may be referred to multiple times we need to copy it.
                 if (Index != C_INVALID_INDEX)
                   {
-                    pNode = variables[Index][0]->copyBranch();
+                    pNode = variables[Index]->copyBranch();
                   }
                 else
                   {
@@ -830,27 +736,16 @@ CEvaluationNode * CMathEventN::CTrigger::compileFUNCTION(const CEvaluationNode *
     CMathEventN::CTrigger::CRoot *& pRoot,
     CMathContainer & container)
 {
-  // We need to mimic the process in CMathContainer::copyBranch;
+  const CEvaluationNode * pCalledNode =
+    static_cast< const CEvaluationNodeCall * >(pTriggerNode)->getCalledTree()->getRoot();
 
-  CMath::Variables< CEvaluationNode * > Variables;
+  CEvaluationNode * pNode = compile(pCalledNode, children, pRoot, container);
 
+  // We need to delete the children as the variables have been copied in place.
   std::vector< CEvaluationNode * >::const_iterator it = children.begin();
   std::vector< CEvaluationNode * >::const_iterator end = children.end();
 
   for (; it != end; ++it)
-    {
-      CMath::Variables< CEvaluationNode * >::value_type Variable;
-      Variable.push_back(*it);
-      Variables.push_back(Variable);
-    }
-
-  const CEvaluationNode * pCalledNode =
-    static_cast< const CEvaluationNodeCall * >(pTriggerNode)->getCalledTree()->getRoot();
-
-  CEvaluationNode * pNode = compile(pCalledNode, Variables, pRoot, container);
-
-  // We need to delete the children as the variables have been copied in place.
-  for (it = children.begin(); it != end; ++it)
     {
       delete *it;
     }
@@ -873,7 +768,7 @@ CEvaluationNode * CMathEventN::CTrigger::compileVARIABLE(const CEvaluationNode *
       Index < variables.size())
     {
       // Since a variable may be referred to multiple times we need to copy it.
-      return variables[Index][0]->copyBranch();
+      return variables[Index]->copyBranch();
     }
   else
     {
@@ -890,15 +785,6 @@ void CMathEventN::allocate(CMathEventN * pEvent,
 {
   pEvent->mTrigger.allocate(pDataEvent, container);
   pEvent->mAssignments.resize(pDataEvent->getAssignments().size());
-}
-
-// static
-void CMathEventN::allocateDiscontinuous(CMathEventN * pEvent,
-                                        const size_t & nRoots,
-                                        const CMathContainer & container)
-{
-  pEvent->mTrigger.allocateDiscontinuous(nRoots, container);
-  pEvent->mAssignments.resize(1);
 }
 
 CMathEventN::CMathEventN():
@@ -989,32 +875,49 @@ bool CMathEventN::compile(CEvent * pDataEvent,
   return success;
 }
 
-bool CMathEventN::compileDiscontinuous(const CMathObject * pObject,
-                                       CMathContainer & container)
+bool CMathEventN::compile(CMathContainer & container)
 {
   bool success = true;
 
-  mFireAtInitialTime = false;
-  mPersistentTrigger = false;
-  mDelayAssignment = false;
-
   // Compile Trigger
-  success &= mTrigger.compileDiscontinuous(pObject, container);
+  success &= mTrigger.compile(NULL, container);
 
   // Compile assignments.
-  success &= mAssignments[0].compileDiscontinuous(pObject, container);
+  // Nothing to do since the target and expression objects are already compiled
 
-  // Compile the delay object.
-  CExpression DelayExpression("DelayExpression", &container);
-  success &= DelayExpression.setInfix("");
-  success &= mpDelay->setExpression(DelayExpression, container);
-
-  // Compile the priority object.
-  CExpression PriorityExpression("PriorityExpression", &container);
-  success &= PriorityExpression.setInfix("");
-  success &= mpPriority->setExpression(PriorityExpression, container);
+  // The delay object is already compiled.
+  // The priority object is already compiled.
 
   return success;
+}
+
+void CMathEventN::setTriggerExpression(const std::string & infix, CMathContainer & container)
+{
+  mTrigger.setExpression(infix, container);
+}
+
+void CMathEventN::setDelayExpression(const std::string & infix, CMathContainer & container)
+{
+  assert(mpDelay != NULL);
+
+  mpDelay->setExpression(infix, false, container);
+}
+
+void CMathEventN::setPriorityExpression(const std::string & infix, CMathContainer & container)
+{
+  assert(mpPriority != NULL);
+
+  mpPriority->setExpression(infix, false, container);
+}
+
+void CMathEventN::addAssignment(CMathObject * pTarget, CMathObject * pExpression)
+{
+  size_t OldSize = mAssignments.size();
+  mAssignments.resize(OldSize + 1, true);
+
+  CAssignment & Assignment = mAssignments[OldSize];
+  Assignment.setTarget(pTarget);
+  Assignment.setExpression(pExpression);
 }
 
 const CVector< CMathEventN::CAssignment > & CMathEventN::getAssignments() const

@@ -154,6 +154,17 @@ public:
   const bool & isInitialValue() const;
 
   /**
+   * Set the expression's infix  and compile the object.
+   * @param const std::string & infix,
+   * @param const bool & isBoolean,
+   * @param CMathContainer & container
+   * @return bool success
+   */
+  bool setExpression(const std::string & infix,
+                     const bool & isBoolean,
+                     CMathContainer & container);
+
+  /**
    * Set the expression and compile the object.
    * @param const CExpression & expression,
    * @param CMathContainer & container

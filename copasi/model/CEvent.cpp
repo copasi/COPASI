@@ -447,6 +447,13 @@ bool CEvent::setObjectParent(const CCopasiContainer * pParent)
     }
 
   bool success = CCopasiContainer::setObjectParent(pParent);
+
+  CCopasiContainer * pMathContainer = getObjectAncestor("CMathContainer");
+  {
+    mpModel = NULL;
+    return success;
+  }
+
   mpModel = static_cast<CModel *>(getObjectAncestor("Model"));
 
   if (mpModel != NULL)

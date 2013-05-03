@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/math/CMathObject.cpp,v $
-//   $Revision: 1.14 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/30 17:12:31 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -48,17 +40,17 @@ void CMathObject::initialize(CMathObject *& pObject,
 }
 
 CMathObject::CMathObject():
-    CObjectInterface(),
-    mpExpression(NULL),
-    mpValue(&InvalidValue),
-    mPrerequisites(),
-    mValueType(CMath::ValueTypeUndefined),
-    mEntityType(CMath::EntityTypeUndefined),
-    mSimulationType(CMath::SimulationTypeUndefined),
-    mIsIntensiveProperty(false),
-    mIsInitialValue(false),
-    mpIntensiveProperty(NULL),
-    mpDataObject(NULL)
+  CObjectInterface(),
+  mpExpression(NULL),
+  mpValue(&InvalidValue),
+  mPrerequisites(),
+  mValueType(CMath::ValueTypeUndefined),
+  mEntityType(CMath::EntityTypeUndefined),
+  mSimulationType(CMath::SimulationTypeUndefined),
+  mIsIntensiveProperty(false),
+  mIsInitialValue(false),
+  mpIntensiveProperty(NULL),
+  mpDataObject(NULL)
 {}
 
 // virtual
@@ -168,7 +160,7 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
           {
             switch ((int) mpExpression->getRoot()->getType())
               {
-                case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+                case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
                 {
                   const CMathObject * pMathObject = dynamic_cast< const CMathObject * >(pObject);
 
@@ -182,11 +174,11 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
                 }
                 break;
 
-                case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
+                case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
                   return false;
                   break;
 
-                case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+                case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
                   return false;
                   break;
 
@@ -200,7 +192,6 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
 
       default:
         return true;
-
     }
 
   // This should never be reached.
@@ -272,6 +263,23 @@ const bool & CMathObject::isInitialValue() const
   return mIsInitialValue;
 }
 
+bool CMathObject::setExpression(const std::string & infix,
+                                const bool & isBoolean,
+                                CMathContainer & container)
+{
+  bool success = true;
+  CExpression Expression;
+  Expression.setIsBoolean(isBoolean);
+
+  success &= Expression.setInfix(infix);
+  std::vector< CCopasiContainer * > ListOfContainer;
+  ListOfContainer.push_back(&container);
+  success &= Expression.compile(ListOfContainer);
+  success &= setExpression(Expression, container);
+
+  return success;
+}
+
 bool CMathObject::setExpression(const CExpression & expression,
                                 CMathContainer & container)
 {
@@ -313,18 +321,6 @@ bool CMathObject::compile(CMathContainer & container)
 {
 
   bool success = true;
-
-  // The default value is NaN
-  *mpValue = InvalidValue;
-
-  // Remove any existing expression
-  if (mValueType != CMath::Discontinuous)
-    {
-      pdelete(mpExpression);
-    }
-
-  // Reset the prerequisites
-  mPrerequisites.clear();
 
   switch (mValueType)
     {
@@ -370,15 +366,6 @@ bool CMathObject::compile(CMathContainer & container)
         break;
 
       case CMath::Discontinuous:
-
-        if (mpExpression != NULL)
-          {
-            success &= mpExpression->compile();
-            compileExpression();
-          }
-
-        break;
-
       case CMath::EventDelay:
       case CMath::EventPriority:
       case CMath::EventAssignment:
@@ -391,14 +378,18 @@ bool CMathObject::compile(CMathContainer & container)
         break;
     }
 
-  std::cout << *this;
-
   return success;
 }
 
 bool CMathObject::compileInitialValue(CMathContainer & container)
 {
   bool success = true;
+
+  // The default value is NaN
+  *mpValue = InvalidValue;
+
+  // Reset the prerequisites
+  mPrerequisites.clear();
 
   const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(mpDataObject->getObjectParent());
 
@@ -467,6 +458,12 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
 bool CMathObject::compileValue(CMathContainer & container)
 {
   bool success = true;
+
+  // The default value is NaN
+  *mpValue = InvalidValue;
+
+  // Reset the prerequisites
+  mPrerequisites.clear();
 
   if (mIsIntensiveProperty)
     {
@@ -549,6 +546,12 @@ bool CMathObject::compileRate(CMathContainer & container)
 {
   bool success = true;
 
+  // The default value is NaN
+  *mpValue = InvalidValue;
+
+  // Reset the prerequisites
+  mPrerequisites.clear();
+
   if (mIsIntensiveProperty)
     {
       // Only species have intensive properties.
@@ -627,6 +630,12 @@ bool CMathObject::compileParticleFlux(CMathContainer & container)
 {
   bool success = true;
 
+  // The default value is NaN
+  *mpValue = InvalidValue;
+
+  // Reset the prerequisites
+  mPrerequisites.clear();
+
   const CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
 
   mpExpression = new CMathExpression(*pReaction->getFunction(),
@@ -641,6 +650,12 @@ bool CMathObject::compileParticleFlux(CMathContainer & container)
 bool CMathObject::compileFlux(CMathContainer & container)
 {
   bool success = true;
+
+  // The default value is NaN
+  *mpValue = InvalidValue;
+
+  // Reset the prerequisites
+  mPrerequisites.clear();
 
   const CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
 
@@ -663,13 +678,17 @@ bool CMathObject::compileFlux(CMathContainer & container)
   return success;
 }
 
-
 bool CMathObject::compilePropensity(CMathContainer & container)
 {
   bool success = true;
 
-  const CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
+  // The default value is NaN
+  *mpValue = InvalidValue;
 
+  // Reset the prerequisites
+  mPrerequisites.clear();
+
+  const CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
@@ -752,6 +771,13 @@ bool CMathObject::compilePropensity(CMathContainer & container)
 bool CMathObject::compileTotalMass(CMathContainer & container)
 {
   bool success = true;
+
+  // The default value is NaN
+  *mpValue = InvalidValue;
+
+  // Reset the prerequisites
+  mPrerequisites.clear();
+
   const CMoiety * pMoiety = static_cast< const CMoiety *>(mpDataObject->getObjectParent());
 
   std::ostringstream Infix;
@@ -795,6 +821,13 @@ bool CMathObject::compileTotalMass(CMathContainer & container)
 bool CMathObject::compileDependentMass(CMathContainer & container)
 {
   bool success = true;
+
+  // The default value is NaN
+  *mpValue = InvalidValue;
+
+  // Reset the prerequisites
+  mPrerequisites.clear();
+
   const CMoiety * pMoiety = static_cast< const CMoiety *>(mpDataObject->getObjectParent());
 
   std::ostringstream Infix;
@@ -1006,7 +1039,7 @@ bool CMathObject::createExtensiveODERateExpression(const CMetab * pSpecies,
 
   /*
     mRate = mpModel->getQuantity2NumberFactor() *
-      mpCompartment->getValue() * mpExpression->calcValue() ;
+      mpCompartment->getValue() * mpExpression->calcValue();
    */
 
   std::ostringstream Infix;
@@ -1120,6 +1153,7 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
       os << "Data Object = NULL" << std::endl;
     }
 
+  os << "  Pointer:               " << &o << std::endl;
   os << "  Value Type:            ";
 
   switch (o.mValueType)

@@ -50,7 +50,10 @@ CMathContainer::CMathContainer():
   mEvents(),
   mCreateDiscontinuousPointer(),
   mDataObject2MathObject(),
-  mDataValue2MathObject()
+  mDataValue2MathObject(),
+  mDiscontinuityEvents("Discontinuities", this),
+  mDiscontinuityInfix2Object(),
+  mTriggerInfix2Event()
 {}
 
 CMathContainer::CMathContainer(CModel & model):
@@ -88,7 +91,10 @@ CMathContainer::CMathContainer(CModel & model):
   mObjects(),
   mEvents(),
   mDataObject2MathObject(),
-  mDataValue2MathObject()
+  mDataValue2MathObject(),
+  mDiscontinuityEvents("Discontinuities", this),
+  mDiscontinuityInfix2Object(),
+  mTriggerInfix2Event()
 {
   // We do not want the model to know about the math container therefore we
   // do not use &model in the constructor of CCopasiContainer
@@ -190,14 +196,32 @@ void CMathContainer::init()
 
   CMath::sPointers Pointers;
   initializePointers(Pointers);
+  printPointers(Pointers);
+
   initializeDiscontinuousCreationPointer();
 
   initializeObjects(Pointers);
   initializeEvents(Pointers);
 
+  mDiscontinuityEvents.clear();
+
   compileObjects();
   compileEvents();
 
+#ifdef COPASI_DEBUG
+  CMathObject *pObject = mObjects.array();
+  CMathObject *pObjectEnd = pObject + mObjects.size();
+
+  for (; pObject != pObjectEnd; ++pObject)
+    {
+      std::cout << *pObject;
+    }
+
+  std::cout << std::endl;
+#endif // COPASI_DEBUG
+
+  // TODO CRITICAL We may have unused event triggers and roots due to optimization
+  // in the discontinuities.
   createDependencyGraphs();
 }
 
@@ -263,7 +287,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
             if (Index != C_INVALID_INDEX &&
                 Index < variables.size())
               {
-                pCopy = variables[Index][0]->copyBranch();
+                pCopy = variables[Index]->copyBranch();
               }
             else
               {
@@ -276,23 +300,15 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
           case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
           {
-            CMath::Variables< CEvaluationNode * > Variables;
-            std::vector< CEvaluationNode * >::iterator it = itNode.context().begin();
-            std::vector< CEvaluationNode * >::iterator end = itNode.context().end();
-
-            for (; it != end; ++it)
-              {
-                CMath::Variables< CEvaluationNode * >::value_type Variable;
-                Variable.push_back(*it);
-                Variables.push_back(Variable);
-              }
-
             const CEvaluationNode * pCalledNode =
               static_cast< const CEvaluationNodeCall * >(*itNode)->getCalledTree()->getRoot();
 
-            pCopy = copyBranch(pCalledNode, Variables, replaceDiscontinuousNodes);
+            pCopy = copyBranch(pCalledNode, itNode.context(), replaceDiscontinuousNodes);
 
             // The variables have been copied into place we need to delete them.
+            std::vector< CEvaluationNode * >::iterator it = itNode.context().begin();
+            std::vector< CEvaluationNode * >::iterator end = itNode.context().end();
+
             for (; it != end; ++it)
               {
                 delete *it;
@@ -304,6 +320,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
           case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
           case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+          case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
 
             if (replaceDiscontinuousNodes)
               {
@@ -341,228 +358,69 @@ CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
 {
   bool success = true;
 
-  // Create a node pointing to the discontinuous object.
-  CEvaluationNode * pCopy =
-    new CEvaluationNodeObject((C_FLOAT64 *) mCreateDiscontinuousPointer.pDiscontinuous->getValuePointer());
+  CEvaluationNode * pNode = pSrc->copyNode(children);
+  std::string DiscontinuityInfix = pNode->buildInfix();
 
-  // Compile the discontinuous object
-  CMathExpression * pExpression = new CMathExpression("DiscontinuousExpression", *this);
+  // Check whether we have the discontinuous node already created. This can happen if the
+  // discontinuity was part of an expression for a variable in a function call.
+  std::map< std::string, CMathObject * >::iterator itObject = mDiscontinuityInfix2Object.find(DiscontinuityInfix);
 
-  success &= static_cast< CEvaluationTree * >(pExpression)->setRoot(pSrc->copyNode(children));
-  success &= mCreateDiscontinuousPointer.pDiscontinuous->setExpressionPtr(pExpression);
+  if (itObject != mDiscontinuityInfix2Object.end())
+    {
+      // No need to copy we have already on object
+      CMathObject * pDiscontinuity = itObject->second;
 
+      // We need to advance both creation pointer to assure that we have the correct allocation
+      mCreateDiscontinuousPointer.pDiscontinuous += 1;
+      mCreateDiscontinuousPointer.pEvent += 1;
+
+      pdelete(pNode);
+
+      // Return a pointer to a node pointing to the value of discontinuous object.
+      return new CEvaluationNodeObject((C_FLOAT64 *) pDiscontinuity->getValuePointer());
+    }
+
+  // We have a new discontinuity
+  CMathObject * pDiscontinuity = mCreateDiscontinuousPointer.pDiscontinuous;
   mCreateDiscontinuousPointer.pDiscontinuous += 1;
 
-#ifdef XXXX // TODO CRITICAL We postpone the creation of events for discontinuous nodes till later.
-  success &= mCreateDiscontinuousPointer.pEvent->compileDiscontinuous(mCreateDiscontinuousPointer.pDiscontinuous, *this);
+  // Map the discontinuity infix to the discontinuous object.
+  mDiscontinuityInfix2Object[DiscontinuityInfix] = pDiscontinuity;
 
-  // Since the children are copied first it is better to defer advancing the pointers
+  // Create the expression to calculate the discontinuous object
+  CMathExpression * pExpression = new CMathExpression("DiscontinuousExpression", *this);
+  success &= static_cast< CEvaluationTree * >(pExpression)->setRoot(pNode);
+  success &= pDiscontinuity->setExpressionPtr(pExpression);
+
+  CMathEventN * pEvent = NULL;
+
+  // Check whether we have already an event with the current trigger
+  std::string TriggerInfix = createDiscontinuityTriggerInfix(pNode);
+  std::map< std::string, CMathEventN * >::iterator itEvent = mTriggerInfix2Event.find(TriggerInfix);
+
+  // We need to create an event.
+  if (itEvent == mTriggerInfix2Event.end())
+    {
+      pEvent = mCreateDiscontinuousPointer.pEvent;
+
+      // Set the trigger
+      pEvent->setTriggerExpression(TriggerInfix, *this);
+
+      // Map the trigger infix to the event.
+      mTriggerInfix2Event[TriggerInfix] = pEvent;
+    }
+  else
+    {
+      pEvent = itEvent->second;
+    }
+
   mCreateDiscontinuousPointer.pEvent += 1;
-  mCreateDiscontinuousPointer.pEventDelay += 1;
-  mCreateDiscontinuousPointer.pEventPriority += 1;
-  mCreateDiscontinuousPointer.pEventAssignment += 1;
-  mCreateDiscontinuousPointer.pEventTrigger += 1;
 
-  // TODO CRITICAL This is not correct we need the corresponding information
-  // from CMath::CAllocationStack::CAllocation
-  mCreateDiscontinuousPointer.pEventRoot += 2;
-#endif // XXXX
+  // Add the current discontinuity as an assignment.
+  pEvent->addAssignment(pDiscontinuity, pDiscontinuity);
 
-  assert(success);
-
-  return pCopy;
-}
-
-void CMathContainer::determineDiscontinuityAllocationRequirement(CMath::CAllocationStack::CAllocation & allocations) const
-{
-  allocations.nDiscontinuous = 0;
-  allocations.nTotalRoots = 0;
-  allocations.nRootsPerDiscontinuity.clear();
-
-  // We need to create events for nodes which are capable of introducing
-  // discontinuous changes.
-  std::vector< const CEvaluationTree * > TreesWithDiscontinuities =  mpModel->getTreesWithDiscontinuities();
-  std::vector< const CEvaluationTree * >::const_iterator it = TreesWithDiscontinuities.begin();
-  std::vector< const CEvaluationTree * >::const_iterator end = TreesWithDiscontinuities.end();
-
-  for (; it != end; ++it)
-    {
-      CMath::CVariableStack::StackElement Variables;
-      CMath::CVariableStack::Buffer VariableBuffer;
-      CMath::CVariableStack VariableStack(VariableBuffer);
-
-      CMath::CAllocationStack::StackElement Allocations;
-      CMath::CAllocationStack::Buffer AllocationBuffer;
-      CMath::CAllocationStack AllocationStack(AllocationBuffer);
-
-      CEvaluationNodeConstant Variable(CEvaluationNodeConstant::_NaN, "NAN");
-      const CFunction * pFunction = dynamic_cast< const CFunction * >(*it);
-
-      if (pFunction != NULL)
-        {
-          Variables.resize(pFunction->getVariables().size());
-          CMath::CVariableStack::StackElement::iterator itVar = Variables.begin();
-          CMath::CVariableStack::StackElement::iterator endVar = Variables.end();
-
-          for (; itVar != endVar; ++itVar)
-            {
-              *itVar = &Variable;
-            }
-
-          VariableStack.push(Variables);
-
-          Allocations.resize(pFunction->getVariables().size());
-          AllocationStack.push(Allocations);
-        }
-
-      determineDiscontinuityAllocationRequirement((*it)->getRoot(),
-          VariableStack,
-          AllocationStack,
-          allocations);
-
-      std::cout << (*it)->getInfix() << " " << allocations << std::endl << std::endl;
-
-      if (pFunction != NULL)
-        {
-          VariableStack.pop();
-          AllocationStack.pop();
-        }
-    }
-
-  return;
-}
-
-void CMathContainer::determineDiscontinuityAllocationRequirement(const CEvaluationNode * pNode,
-    CMath::CVariableStack & variableStack,
-    CMath::CAllocationStack & allocationStack,
-    CMath::CAllocationStack::CAllocation & allocations) const
-{
-  // TODO CRITICAL We need to analyze the trees with discontinuities to determine how many
-  // events need to be created and how many roots each event trigger has.
-
-  // We need to replace variables, expand called trees, and handle discrete nodes.
-  switch ((int) pNode->getType())
-    {
-        // Handle variables
-      case (CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
-
-        // We do not need to do anything
-        if (false)
-          {
-            // We only need to add the allocation requirements from the stack to the
-            size_t Index =
-              static_cast< const CEvaluationNodeVariable * >(pNode)->getIndex();
-
-            if (Index != C_INVALID_INDEX &&
-                Index < allocationStack.size())
-              {
-                allocations += allocationStack[Index];
-              }
-          }
-
-        break;
-
-        // Handle call nodes
-      case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
-      case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
-      {
-        CMath::CVariableStack::StackElement Variables;
-        CMath::CAllocationStack::StackElement Allocations;
-
-        const CEvaluationNode * pChild =
-          static_cast< const CEvaluationNode * >(pNode->getChild());
-
-        // We determine the allocations requirements for each variable.
-        while (pChild != NULL)
-          {
-            CMath::CAllocationStack::CAllocation Allocation;
-
-            determineDiscontinuityAllocationRequirement(pChild,
-                variableStack,
-                allocationStack,
-                allocations);
-
-            Allocations.push_back(Allocation);
-            Variables.push_back(pChild);
-
-            pChild = static_cast< const CEvaluationNode * >(pChild->getSibling());
-          }
-
-        variableStack.push(Variables);
-        allocationStack.push(Allocations);
-
-        const CEvaluationNode * pCalledNode =
-          static_cast< const CEvaluationNodeCall * >(pNode)->getCalledTree()->getRoot();
-
-        determineDiscontinuityAllocationRequirement(pCalledNode,
-            variableStack,
-            allocationStack,
-            allocations);
-
-        variableStack.pop();
-        allocationStack.pop();
-      }
-      break;
-
-      // Handle discrete nodes
-      case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
-      {
-        const CEvaluationNode * pIf = static_cast< const CEvaluationNode * >(pNode->getChild());
-        const CEvaluationNode * pTrue = static_cast< const CEvaluationNode * >(pIf->getSibling());
-        const CEvaluationNode * pFalse = static_cast< const CEvaluationNode * >(pTrue->getSibling());
-
-        // We need to analyze the true and false expression.
-        determineDiscontinuityAllocationRequirement(pTrue,
-            variableStack,
-            allocationStack,
-            allocations);
-
-        determineDiscontinuityAllocationRequirement(pFalse,
-            variableStack,
-            allocationStack,
-            allocations);
-      }
-
-      // TODO CRITICAL We need to analyze the condition to determine how many roots
-      // are actually created.
-      allocations.nDiscontinuous++;
-      allocations.nTotalRoots += 2;
-      allocations.nRootsPerDiscontinuity.push_back(2);
-
-      break;
-
-      case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
-      case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
-        determineDiscontinuityAllocationRequirement(static_cast< const CEvaluationNode * >(pNode->getChild()),
-            variableStack,
-            allocationStack,
-            allocations);
-
-        allocations.nDiscontinuous++;
-        allocations.nTotalRoots += 2;
-        allocations.nRootsPerDiscontinuity.push_back(2);
-
-        break;
-
-      default:
-        // Handle all other nodes.
-        const CEvaluationNode * pChild =
-          static_cast< const CEvaluationNode * >(pNode->getChild());
-
-        while (pChild != NULL)
-          {
-            determineDiscontinuityAllocationRequirement(pChild,
-                variableStack,
-                allocationStack,
-                allocations);
-
-            pChild = static_cast< const CEvaluationNode * >(pChild->getSibling());
-          }
-
-        break;
-    }
-
-  // std::cout << pNode->getInfix() << ": " << allocations << std::endl;
+  // Return a pointer to a node pointing to the value of discontinuous object.
+  return new CEvaluationNodeObject((C_FLOAT64 *) pDiscontinuity->getValuePointer());
 }
 
 void CMathContainer::allocate()
@@ -575,52 +433,52 @@ void CMathContainer::allocate()
   size_t nReactions = mpModel->getReactions().size();
   size_t nMoieties = mpModel->getMoieties().size();
 
+  size_t nDiscontinuities = 0;
   size_t nEvents = 0;
   size_t nEventAssignments = 0;
   size_t nEventRoots = 0;
 
   // Determine the space requirements for events.
+  // We need to create events for nodes which are capable of introducing
+  // discontinuous changes.
+  createDiscontinuityEvents();
+  nDiscontinuities += mDiscontinuityEvents.size();
+  nEvents += nDiscontinuities;
+
+  // User defined events
   const CCopasiVector< CEvent > & Events = mpModel->getEvents();
   CCopasiVector< CEvent >::const_iterator itEvent = Events.begin();
   CCopasiVector< CEvent >::const_iterator endEvent = Events.end();
 
   nEvents += Events.size();
   mEvents.resize(nEvents);
+
   CMathEventN * pEvent = mEvents.array();
 
   for (; itEvent != endEvent; ++itEvent, ++pEvent)
     {
       CMathEventN::allocate(pEvent, *itEvent, *this);
 
-      nEventAssignments += pEvent->getAssignments().size();
       nEventRoots += pEvent->getTrigger().getRoots().size();
+      nEventAssignments += pEvent->getAssignments().size();
     }
 
-  // We need to create events for nodes which are capable of introducing
-  // discontinuous changes.
+  itEvent = mDiscontinuityEvents.begin();
+  endEvent = mDiscontinuityEvents.end();
 
-  CMath::CAllocationStack::CAllocation AllocationRequirement;
-
-  determineDiscontinuityAllocationRequirement(AllocationRequirement);
-
-# ifdef XXXX // TODO CRITICAL We postpone the creation of events for discontinuous nodes till later
-  std::vector< size_t >::const_iterator itDiscontinuous = AllocationRequirement.nRootsPerDiscontinuity.begin();
-  std::vector< size_t >::const_iterator endDiscontinuous = AllocationRequirement.nRootsPerDiscontinuity.end();
-
-  for (; itDiscontinuous != endDiscontinuous; ++itDiscontinuous, ++pEvent)
+  for (; itEvent != endEvent; ++itEvent, ++pEvent)
     {
-      CMathEventN::allocateDiscontinuous(pEvent, *itDiscontinuous, *this);
-
-      nEventAssignments += pEvent->getAssignments().size();
+      CMathEventN::allocate(pEvent, *itEvent, *this);
       nEventRoots += pEvent->getTrigger().getRoots().size();
-    }
 
-# endif // XXXX
+      // We do not have to allocate an assignment as discontinuity object suffices
+      // as target and assignment expression.
+    }
 
   mValues.resize(4 * (nExtensiveValues + nIntensiveValues) +
                  5 * nReactions +
                  3 * nMoieties +
-                 AllocationRequirement.nDiscontinuous +
+                 nDiscontinuities +
                  4 * nEvents + nEventAssignments + 2 * nEventRoots);
   mValues = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
@@ -674,8 +532,8 @@ void CMathContainer::allocate()
   pArray += nReactions;
   mDependentMasses = CVectorCore< C_FLOAT64 >(nMoieties, pArray);
   pArray += nMoieties;
-  mDiscontinuous = CVectorCore< C_FLOAT64 >(AllocationRequirement.nDiscontinuous, pArray);
-  pArray += AllocationRequirement.nDiscontinuous;
+  mDiscontinuous = CVectorCore< C_FLOAT64 >(nDiscontinuities, pArray);
+  pArray += nDiscontinuities;
 
   assert(pArray == mValues.array() + mValues.size());
 
@@ -849,14 +707,16 @@ bool CMathContainer::compileEvents()
 {
   bool success = true;
 
-  CMathEventN * pEvent = mEvents.array();
+  CMathEventN * pItEvent = mEvents.array();
   CCopasiVector< CEvent >::const_iterator itEvent = mpModel->getEvents().begin();
   CCopasiVector< CEvent >::const_iterator endEvent = mpModel->getEvents().end();
 
-  for (; itEvent != endEvent; ++pEvent, ++itEvent)
+  for (; itEvent != endEvent; ++pItEvent, ++itEvent)
     {
-      success &= pEvent->compile(*itEvent, *this);
+      success &= pItEvent->compile(*itEvent, *this);
     }
+
+  // Events representing discontinuities are already compiled.
 
   return success;
 }
@@ -942,7 +802,7 @@ void CMathContainer::initializePointers(CMath::sPointers & p)
   p.pInitialTotalMasses = mInitialTotalMasses.array();
   p.pInitialEventTriggers = mInitialEventTriggers.array();
 
-  p.pExtensiveValues = mInitialEventTriggers.array();
+  p.pExtensiveValues = mExtensiveValues.array();
   p.pIntensiveValues = mIntensiveValues.array();
   p.pExtensiveRates = mExtensiveRates.array();
   p.pIntensiveRates = mIntensiveRates.array();
@@ -991,6 +851,65 @@ void CMathContainer::initializePointers(CMath::sPointers & p)
   p.pDiscontinuousObject = pObjects + (p.pDiscontinuous - pValues);
 }
 
+#ifdef COPASI_DEBUG
+void CMathContainer::printPointers(CMath::sPointers & p)
+{
+  size_t Index;
+  std::cout << "Values:" << std::endl;
+  Index = p.pInitialExtensiveValues - mInitialExtensiveValues.array();
+  std::cout << "  mInitialExtensiveValues:[" << Index << "]" << ((mInitialExtensiveValues.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pInitialIntensiveValues - mInitialIntensiveValues.array();
+  std::cout << "  mInitialIntensiveValues:[" << Index << "]" << ((mInitialIntensiveValues.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pInitialExtensiveRates - mInitialExtensiveRates.array();
+  std::cout << "  mInitialExtensiveRates:[" << Index << "]" << ((mInitialExtensiveRates.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pInitialIntensiveRates - mInitialIntensiveRates.array();
+  std::cout << "  mInitialIntensiveRates:[" << Index << "]" << ((mInitialIntensiveRates.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pInitialParticleFluxes - mInitialParticleFluxes.array();
+  std::cout << "  mInitialParticleFluxes:[" << Index << "]" << ((mInitialParticleFluxes.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pInitialFluxes - mInitialFluxes.array();
+  std::cout << "  mInitialFluxes:[" << Index << "]" << ((mInitialFluxes.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pInitialTotalMasses - mInitialTotalMasses.array();
+  std::cout << "  mInitialTotalMasses:[" << Index << "]" << ((mInitialTotalMasses.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pInitialEventTriggers - mInitialEventTriggers.array();
+  std::cout << "  mInitialEventTriggers:[" << Index << "]" << ((mInitialEventTriggers.size() <= Index) ? " Error" : "") << std::endl;
+
+  Index = p.pExtensiveValues - mExtensiveValues.array();
+  std::cout << "  mExtensiveValues:[" << Index << "]" << ((mExtensiveValues.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pIntensiveValues - mIntensiveValues.array();
+  std::cout << "  mIntensiveValues:[" << Index << "]" << ((mIntensiveValues.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pExtensiveRates - mExtensiveRates.array();
+  std::cout << "  mExtensiveRates:[" << Index << "]" << ((mExtensiveRates.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pIntensiveRates - mIntensiveRates.array();
+  std::cout << "  mIntensiveRates:[" << Index << "]" << ((mIntensiveRates.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pParticleFluxes - mParticleFluxes.array();
+  std::cout << "  mParticleFluxes:[" << Index << "]" << ((mParticleFluxes.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pFluxes - mFluxes.array();
+  std::cout << "  mFluxes:[" << Index << "]" << ((mFluxes.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pTotalMasses - mTotalMasses.array();
+  std::cout << "  mTotalMasses:[" << Index << "]" << ((mTotalMasses.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pEventTriggers - mEventTriggers.array();
+  std::cout << "  mEventTriggers:[" << Index << "]" << ((mEventTriggers.size() <= Index) ? " Error" : "") << std::endl;
+
+  Index = p.pEventDelays - mEventDelays.array();
+  std::cout << "  mEventDelays:[" << Index << "]" << ((mEventDelays.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pEventPriorities - mEventPriorities.array();
+  std::cout << "  mEventPriorities:[" << Index << "]" << ((mEventPriorities.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pEventAssignments - mEventAssignments.array();
+  std::cout << "  mEventAssignments:[" << Index << "]" << ((mEventAssignments.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pEventRoots - mEventRoots.array();
+  std::cout << "  mEventRoots:[" << Index << "]" << ((mEventRoots.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pEventRootStates - mEventRootStates.array();
+  std::cout << "  mEventRootStates:[" << Index << "]" << ((mEventRootStates.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pPropensities - mPropensities.array();
+  std::cout << "  mPropensities:[" << Index << "]" << ((mPropensities.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pDependentMasses - mDependentMasses.array();
+  std::cout << "  mDependentMasses:[" << Index << "]" << ((mDependentMasses.size() <= Index) ? " Error" : "") << std::endl;
+  Index = p.pDiscontinuous - mDiscontinuous.array();
+  std::cout << "  mDiscontinuous:[" << Index << "]" << ((mDiscontinuous.size() <= Index) ? " Error" : "") << std::endl;
+  std::cout << std::endl;
+}
+#endif // COAPSI_DEBUG
+
 void CMathContainer::initializeDiscontinuousCreationPointer()
 {
   C_FLOAT64 * pValues = mValues.array();
@@ -998,16 +917,17 @@ void CMathContainer::initializeDiscontinuousCreationPointer()
 
   size_t nDiscontinuous = mDiscontinuous.size();
   size_t nEvents = mEvents.size() - nDiscontinuous;
-  size_t nEventAssignments = mEventAssignments.size() - nDiscontinuous;
-  size_t nEventRoots = mEventRoots.size() - 2 * nDiscontinuous;
 
   mCreateDiscontinuousPointer.pEvent = mEvents.array() + nEvents;
   mCreateDiscontinuousPointer.pDiscontinuous = pObjects + (mDiscontinuous.array() - pValues);
+
+  /*
   mCreateDiscontinuousPointer.pEventDelay = pObjects + (mEventDelays.array() - pValues) + nEvents;
   mCreateDiscontinuousPointer.pEventPriority = pObjects + (mEventPriorities.array() - pValues) + nEvents;
   mCreateDiscontinuousPointer.pEventAssignment = pObjects + (mEventAssignments.array() - pValues) + nEventAssignments;
   mCreateDiscontinuousPointer.pEventTrigger = pObjects + (mEventTriggers.array() - pValues) + nEvents;
   mCreateDiscontinuousPointer.pEventRoot = pObjects + (mEventRoots.array() - pValues) + nEventRoots;
+  */
 }
 
 // static
@@ -1284,4 +1204,116 @@ C_FLOAT64 * CMathContainer::getInitialValuePointer(const C_FLOAT64 * pValue) con
     }
 
   return const_cast< C_FLOAT64 * >(pInitialValue);
+}
+
+void CMathContainer::createDiscontinuityEvents()
+{
+  CEvaluationNodeConstant VariableNode(CEvaluationNodeConstant::_NaN, "NAN");
+  size_t i, imax;
+
+  // We need to create events for nodes which are capable of introducing
+  // discontinuous changes.
+
+  // Retrieve expression trees which contain discontinuities.
+  std::vector< const CEvaluationTree * > TreesWithDiscontinuities =  mpModel->getTreesWithDiscontinuities();
+  std::vector< const CEvaluationTree * >::const_iterator it = TreesWithDiscontinuities.begin();
+  std::vector< const CEvaluationTree * >::const_iterator end = TreesWithDiscontinuities.end();
+
+  for (; it != end; ++it)
+    {
+      CMath::Variables< CEvaluationNode * > Variables;
+
+      const CFunction * pFunction = dynamic_cast< const CFunction * >(*it);
+
+      if (pFunction != NULL)
+        {
+          imax = pFunction->getVariables().size();
+
+          for (i = 0; i < imax; ++i)
+            {
+              Variables.push_back(&VariableNode);
+            }
+        }
+
+      createDiscontinuityEvents((*it)->getRoot(), Variables);
+    }
+}
+
+void CMathContainer::createDiscontinuityEvents(const CEvaluationNode * pNode,
+    const CMath::Variables< CEvaluationNode * > & variables)
+{
+  CEvaluationNodeConstant VariableNode(CEvaluationNodeConstant::_NaN, "NAN");
+  size_t i, imax;
+
+  CNodeIterator< const CEvaluationNode > itNode(pNode);
+  CEvent * pEvent  = NULL;
+
+  while (itNode.next() != itNode.end())
+    {
+      if (*itNode == NULL)
+        {
+          continue;
+        }
+
+      switch ((int) itNode->getType())
+        {
+          case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
+          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+          case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
+            createDiscontinuityDataEvent(*itNode);
+            break;
+
+            // Call nodes may include discontinuities but each called tree is handled
+            // separately.
+          case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
+          case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+            break;
+
+          default:
+            break;
+        }
+    }
+
+  return;
+}
+
+void CMathContainer::createDiscontinuityDataEvent(const CEvaluationNode * pNode)
+{
+  // We can create a data event without knowing the variables as the number
+  // of roots is independent from the variable value.
+  CEvent * pEvent = new CEvent();
+  pEvent->setType(CEvent::Discontinuity);
+  mDiscontinuityEvents.add(pEvent, true);
+
+  pEvent->setTriggerExpression(createDiscontinuityTriggerInfix(pNode));
+}
+
+std::string CMathContainer::createDiscontinuityTriggerInfix(const CEvaluationNode * pNode)
+{
+  std::string TriggerInfix;
+
+  // We need to define a data event for each discontinuity.
+  switch ((int) pNode->getType())
+    {
+      case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+        TriggerInfix = static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix();
+        break;
+
+      case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
+      case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+        TriggerInfix = "sin(PI*(" + static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix() + ")) > 0";
+        break;
+
+      case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
+        TriggerInfix = "sin(PI*(" + static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix();
+        TriggerInfix += ")) > 0 || sin(PI*(" + static_cast< const CEvaluationNode * >(pNode->getChild()->getSibling())->buildInfix() + ")) > 0";
+        break;
+
+      default:
+        fatalError();
+        break;
+    }
+
+  return TriggerInfix;
 }

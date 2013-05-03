@@ -62,9 +62,7 @@ CMathExpression::CMathExpression(const CFunction & src,
 
         for (; it != end; ++it)
           {
-            CMath::Variables< CEvaluationNode * >::value_type Variable;
-            Variable.push_back(createNodeFromValue(it->value));
-            Variables.push_back(Variable);
+            Variables.push_back(createNodeFromValue(it->value));
           }
 
         // Create a converted copy of the existing expression tree.

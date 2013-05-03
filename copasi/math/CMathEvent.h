@@ -38,8 +38,9 @@ public:
     bool compile(CEventAssignment * pDataAssignment,
                  CMathContainer & container);
 
-    bool compileDiscontinuous(const CMathObject * pObject,
-                              CMathContainer & container);
+    void setTarget(CMathObject * pTarget);
+
+    void setExpression(CMathObject * pExpression);
 
   private:
     CMathObject * mpTarget;
@@ -70,7 +71,7 @@ public:
 
       CEvaluationNode * createTriggerExpressionNode() const;
 
-    private:
+    public:
       CMathObject * mpRoot;
       CMathObject * mpRootState;
       bool mEquality;
@@ -98,10 +99,14 @@ public:
     bool compile(CEvent * pDataEvent,
                  CMathContainer & container);
 
-    bool compileDiscontinuous(const CMathObject * pObject,
-                              CMathContainer & container);
-
     const CVector< CRoot > & getRoots() const;
+
+    /**
+     * Set the trigger expression
+     * @param const std::string & infix
+     * @param CMathContainer & container
+     */
+    void setExpression(const std::string & infix, CMathContainer & container);
 
   private:
     static size_t countRoots(const CEvaluationNode * pNode,
@@ -185,17 +190,40 @@ public:
                        const CEvent * pDataEvent,
                        const CMathContainer & container);
 
-  static void allocateDiscontinuous(CMathEventN * pEvent,
-                                    const size_t & nRoots,
-                                    const CMathContainer & container);
-
   void initialize(CMath::sPointers & pointers);
 
   bool compile(CEvent * pDataEvent,
                CMathContainer & container);
 
-  bool compileDiscontinuous(const CMathObject * pObject,
-                            CMathContainer & container);
+  bool compile(CMathContainer & container);
+
+  /**
+   * Set the trigger expression
+   * @param const std::string & infix
+   * @param CMathContainer & container
+   */
+  void setTriggerExpression(const std::string & infix, CMathContainer & container);
+
+  /**
+   * Set the delay expression
+   * @param const std::string & infix
+   * @param CMathContainer & container
+   */
+  void setDelayExpression(const std::string & infix, CMathContainer & container);
+
+  /**
+   * Set the priority expression
+   * @param const std::string & infix
+   * @param CMathContainer & container
+   */
+  void setPriorityExpression(const std::string & infix, CMathContainer & container);
+
+  /**
+   * Add an assignment
+   * @param CMathObject * pTarget
+   * @param CMathObject * pExpression
+   */
+  void addAssignment(CMathObject * pTarget, CMathObject * pExpression);
 
   const CTrigger & getTrigger() const;
 

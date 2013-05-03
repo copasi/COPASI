@@ -692,6 +692,7 @@ bool CEvaluationTree::hasDiscontinuity() const
           case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
           case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
           case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+          case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
             // We found a discontinuity.
             return true;
             break;
