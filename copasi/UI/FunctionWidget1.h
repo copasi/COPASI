@@ -69,6 +69,8 @@ private:
   void init();
 
   bool mReadOnly;
+
+  std::string mKeyToCopy;
 };
 
 #endif // FunctionWidget1

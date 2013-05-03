@@ -51,7 +51,8 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, Qt::WindowFl
   flagChanged(false),
   isValid(false),
   mIgnoreFcnDescriptionChange(false),
-  mpFunction(NULL)
+  mpFunction(NULL),
+  mKeyToCopy("")
 {
   setupUi(this);
 
@@ -662,13 +663,14 @@ void FunctionWidget1::slotBtnNew()
 
   std::string key = pFunc->getKey();
   protectedNotify(ListViews::FUNCTION, ListViews::ADD, key);
-  enter(key);
+  // enter(key);
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
 void FunctionWidget1::slotBtnCopy()
 {
-  QMessageBox::warning(this, "Warning", "Not Implemented");
+  mKeyToCopy = mKey;
+  slotBtnNew();
 }
 
 //! Slot for being activated whenever Delete button is clicked
@@ -920,7 +922,17 @@ bool FunctionWidget1::leave()
 
 bool FunctionWidget1::enterProtected()
 {
-  CFunction* func = dynamic_cast<CFunction*>(mpObject);
+  CFunction * func = NULL;
+
+  if (mKeyToCopy != "")
+    {
+      func = dynamic_cast<CFunction*>(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy));
+      mKeyToCopy = "";
+    }
+  else
+    {
+      func = dynamic_cast<CFunction*>(mpObject);
+    }
 
   if (func)
     return loadFromFunction(func);
