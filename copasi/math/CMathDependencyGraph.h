@@ -61,10 +61,12 @@ public:
   void exportDOTFormat(std::ostream & os, const std::string & name) const;
 
 private:
-  static std::string getDOTNodeId(const CObjectInterface * pObject);
+  std::string getDOTNodeId(const CObjectInterface * pObject) const;
 
   // Attributes
   NodeMap mObjects2Nodes;
+
+  mutable std::map< const CObjectInterface *, size_t > mObject2Index;
 };
 
 #endif // COPASI_CMathDependencyGraph

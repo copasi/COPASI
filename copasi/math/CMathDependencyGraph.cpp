@@ -1,7 +1,9 @@
-// Copyright (C) 2011 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
+
+#include <sstream>
 
 #include "copasi.h"
 
@@ -14,7 +16,8 @@
 #include "utilities/CCopasiMessage.h"
 
 CMathDependencyGraph::CMathDependencyGraph():
-    mObjects2Nodes()
+  mObjects2Nodes(),
+  mObject2Index()
 {}
 
 CMathDependencyGraph::~CMathDependencyGraph()
@@ -24,8 +27,8 @@ CMathDependencyGraph::~CMathDependencyGraph()
 
 void CMathDependencyGraph::clear()
 {
-    iterator it = mObjects2Nodes.begin();
-    iterator end = mObjects2Nodes.end();
+  iterator it = mObjects2Nodes.begin();
+  iterator end = mObjects2Nodes.end();
 
   for (; it != end; ++it)
     {
@@ -129,6 +132,8 @@ void CMathDependencyGraph::exportDOTFormat(std::ostream & os, const std::string 
   os << "digraph " << name << " {" << std::endl;
   os << "rankdir=LR;" << std::endl;
 
+  mObject2Index.clear();
+
   const_iterator it = mObjects2Nodes.begin();
   const_iterator end = mObjects2Nodes.end();
 
@@ -153,7 +158,7 @@ void CMathDependencyGraph::exportDOTFormat(std::ostream & os, const std::string 
 }
 
 // static
-std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
+std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject) const
 {
   const CCopasiObject * pDataObject = dynamic_cast< const CCopasiObject * >(pObject);
   const CMathObject * pMathObject = dynamic_cast< const CMathObject * >(pObject);
@@ -170,7 +175,85 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
 
   if (pDataObject == NULL)
     {
-      return "\"Propensity (internal)\"";
+      std::ostringstream os;
+      os << "\"";
+
+      switch (pMathObject->getValueType())
+        {
+          case CMath::ValueTypeUndefined:
+            os << "ValueTypeUndefined";
+            break;
+
+          case CMath::Value:
+            os << "Value";
+            break;
+
+          case CMath::Rate:
+            os << "ValueRate";
+            break;
+
+          case CMath::ParticleFlux:
+            os << "ParticleFlux";
+            break;
+
+          case CMath::Flux:
+            os << "Flux";
+            break;
+
+          case CMath::Propensity:
+            os << "Propensity";
+            break;
+
+          case CMath::TotalMass:
+            os << "TotalMass";
+            break;
+
+          case CMath::DependentMass:
+            os << "DependentMass";
+            break;
+
+          case CMath::Discontinuous:
+            os << "Discontinuous";
+            break;
+
+          case CMath::EventDelay:
+            os << "EventDelay";
+            break;
+
+          case CMath::EventPriority:
+            os << "EventPriority";
+            break;
+
+          case CMath::EventAssignment:
+            os << "EventAssignment";
+            break;
+
+          case CMath::EventTrigger:
+            os << "EventTrigger";
+            break;
+
+          case CMath::EventRoot:
+            os << "EventRoot";
+            break;
+
+          case CMath::EventRootState:
+            os << "EventRootState";
+            break;
+        }
+
+      std::map< const CObjectInterface *, size_t >::const_iterator found = mObject2Index.find(pMathObject);
+
+      if (found != mObject2Index.end())
+        {
+          os << "::"  << found->second << "\"";
+        }
+      else
+        {
+          os << "::"  << mObject2Index.size() << "\"";
+          mObject2Index[pMathObject] = mObject2Index.size();
+        }
+
+      return os.str();
     }
 
   return "\"" + pDataObject->getObjectParent()->getObjectName() + "::" + pDataObject->getObjectName() + "\"";
