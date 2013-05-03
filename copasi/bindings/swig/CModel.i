@@ -16,6 +16,9 @@
 
 
 
+
+
+
 %{
 
 #include "model/CModel.h"
@@ -106,27 +109,99 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 
     CReaction* getReaction(unsigned C_INT32 index)
     {
+	   try
+	   {
         return self->getReactions()[index];
+	   }
+	   catch (...)
+	   {
+		return NULL;
+	   }
+    }
+	
+	 CReaction* getReaction(const std::string& name)
+    {
+	   try
+	   {
+        return self->getReactions()[name];
+	   }
+	   catch (...)
+	   {
+		return NULL;
+	   }
     }
 
     CCompartment* getCompartment(unsigned C_INT32 index)
     {
+	   try
+	   {
         return self->getCompartments()[index];
+		}
+	   catch (...)
+	   {
+		return NULL;
+	   }
     }
 
-    CMetab* getMetabolite(unsigned C_INT32 index)
+	CCompartment* getCompartment(const std::string& name)
     {
+	   try
+	   {
+        return self->getCompartments()[name];
+		}
+	   catch (...)
+	   {
+		return NULL;
+	   }
+    }
+
+	
+    CMetab* getMetabolite(unsigned C_INT32 index)
+    {	
+		try
+		{
         return self->getMetabolites()[index];
+		}
+	   catch (...)
+	   {
+		return NULL;
+	   }
+    }
+	
+	CMetab* getMetabolite(const std::string& name)
+    {	
+		try
+		{
+        return self->getMetabolites()[$self->findMetabByName(name)];
+		}
+	   catch (...)
+	   {
+		return NULL;
+	   }
     }
 
     CModelValue* getModelValue(unsigned C_INT32 index)
     {
+		try
+		{
         return self->getModelValues()[index];
+		}
+	   catch (...)
+	   {
+		return NULL;
+	   }
     }
 
     CMoiety* getMoiety(unsigned C_INT32 index)
     {
+		try
+		{
         return self->getMoieties()[index];
+		}
+	   catch (...)
+	   {
+		return NULL;
+	   }
     }
 
     bool forceCompile()
@@ -158,7 +233,26 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 
     CModelValue* getModelValue(const std::string& name)
     {
+		try
+		{
         return $self->getModelValues()[name];
+		}
+		catch(...)
+		{
+		return NULL;
+		}
+    }
+	
+	CEvent* getEvent(const std::string& name)
+    {
+		try
+		{
+        return $self->getEvents()[name];
+		}
+		catch(...)
+		{
+		return NULL;
+		}
     }
 
     // for backwards compatibility
@@ -197,7 +291,15 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 
    CEvent* getEvent(unsigned C_INT32 index)
    {
+		try
+		{
         return $self->getEvents()[index];
+		}
+		catch(...)
+		{
+		return NULL;
+		}
+		
    }
 }
 
