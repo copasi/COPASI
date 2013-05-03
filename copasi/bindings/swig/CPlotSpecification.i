@@ -4,6 +4,7 @@
 // All rights reserved. 
 
 
+
 %{
 
 #include "plot/CPlotSpecification.h"
@@ -27,7 +28,14 @@
 
 	CPlotItem* getItem(int index) const
 	{
+	try
+	{
 		return $self->getItems()[index];
+	}
+	   catch (...)
+	   {
+		return NULL;
+	   }
 	}
 
 }

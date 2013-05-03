@@ -22,6 +22,9 @@
 
 
 
+
+
+
 %{
 
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -146,7 +149,14 @@
 
     CReportDefinition* getReportDefinition(unsigned C_INT32 index)
     {
+	try
+	{
       return (*$self->getReportDefinitionList())[index];
+	  }
+      catch(...)
+      {
+	return NULL;
+      }
     }
 
     CReportDefinition* getReportDefinition(const std::string& name)
@@ -163,7 +173,14 @@
     
     CPlotSpecification* getPlotSpecification(unsigned C_INT32 index)
     {
+	try
+	{
       return (*$self->getPlotDefinitionList())[index];
+	  }
+      catch(...)
+      {
+	return NULL;
+      }
     }
 
     CPlotSpecification* getPlotSpecification(const std::string& name)
@@ -180,7 +197,14 @@
 
     CCopasiTask* getTask(unsigned C_INT32 index)
     {
+	try
+	{	
       return (*$self->getTaskList())[index];
+	  }
+      catch(...)
+      {
+	return NULL;
+      }
     }
 
     CCopasiTask* getTask(const std::string& name)

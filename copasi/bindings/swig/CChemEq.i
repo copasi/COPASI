@@ -1,24 +1,20 @@
-// Begin CVS Header 
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CChemEq.i,v $ 
-//   $Revision: 1.6 $ 
-//   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:26 $ 
-// End CVS Header 
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
+
+
+
+
 
 %{
 
@@ -37,22 +33,50 @@
 {
     CChemEqElement* getSubstrate(unsigned C_INT32 index)
     {
+	try
+	{
       return self->getSubstrates()[index];
+	}
+	catch(...)
+	{
+	return NULL;
+	}
     }
 
     CChemEqElement* getProduct(unsigned C_INT32 index)
     {
+	try
+	{
       return self->getProducts()[index];
+	  }
+	catch(...)
+	{
+	return NULL;
+	}
     }
 
     CChemEqElement* getModifier(unsigned C_INT32 index)
     {
+	try
+	{
       return self->getModifiers()[index];
+	  }
+	catch(...)
+	{
+	return NULL;
+	}
     }
 
     CChemEqElement const* getBalance(unsigned C_INT32 index)
     {
+	try
+	{
       return self->getBalances()[index];
+	  }
+	catch(...)
+	{
+	return NULL;
+	}
     }
 }
 

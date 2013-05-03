@@ -20,6 +20,9 @@
 
 
 
+
+
+
 %{
 
 #include "utilities/CCopasiVector.h"
@@ -70,7 +73,14 @@
 {
   virtual CCopasiObject* get(unsigned C_INT32 index)
   {
+  try
+  {
       return (CCopasiObject*)((*self)[index]);
+	  }
+      catch(...)
+      {
+	return NULL;
+      }
   }
 
   // this method is needed because I haven't found out how to disown
@@ -101,7 +111,14 @@
 {
   virtual CCopasiObject* getByName(const std::string& name)
   {
+  try
+  {
       return (CCopasiObject*)((*self)[name]);
+	  }
+      catch(...)
+      {
+	return NULL;
+      }
   }
 }
 
