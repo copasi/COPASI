@@ -1,7 +1,7 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #include <QFileOpenEvent>
 #include <QString>
@@ -48,6 +48,17 @@ CQCopasiApplication::CQCopasiApplication(int & argc, char ** argv):
     setStyle(new QWindowsVistaStyle);
 
 #endif
+
+// Alter styles using Qt's CSS-like mechanism
+QString globalStyleSheet =
+"QLineEdit[readOnly=\"true\"] {\n"  // When readOnly
+"  color: gray;\n"                  // make text gray and
+"  border: false;\n"                // remove box border.
+"}\n";   //can add future items after this (move semicolon down)     
+
+qApp->setStyleSheet(globalStyleSheet);
+
+
 }
 
 CQCopasiApplication::~CQCopasiApplication()
