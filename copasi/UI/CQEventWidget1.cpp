@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include "CQEventWidget1.h"
 
@@ -35,8 +35,9 @@
  *  Constructs a CQEventWidget1 which is a child of 'parent', with the
  *  name 'name'.'
  */
-CQEventWidget1::CQEventWidget1(QWidget * parent, const char * name)
-  : CopasiWidget(parent, name)
+CQEventWidget1::CQEventWidget1(QWidget * parent, const char * name):
+  CopasiWidget(parent, name),
+  mKeyToCopy("")
 {
   setupUi(this);
 
@@ -92,13 +93,13 @@ void CQEventWidget1::slotBtnNew()
 
   std::string key = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getEvents()[name]->getKey();
   protectedNotify(ListViews::EVENT, ListViews::ADD, key);
-  enter(key);
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
 void CQEventWidget1::slotBtnCopy()
 {
-  QMessageBox::warning(this, "Warning", "Not Implemented");
+  mKeyToCopy = mKey;
+  slotBtnNew();
 }
 
 /*! */
@@ -388,16 +389,33 @@ bool CQEventWidget1::update(ListViews::ObjectType /* objectType */, ListViews::A
 /*! Function to interact with an object of class CEvent */
 bool CQEventWidget1::enterProtected()
 {
-  mpEvent = dynamic_cast< CEvent * >(mpObject);
+  bool success = true;
+
+  if (mKeyToCopy != "")
+    {
+      mpEvent = dynamic_cast<CEvent*>(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy));
+      mKeyToCopy = "";
+    }
+  else
+    {
+      mpEvent = dynamic_cast<CEvent*>(mpObject);
+    }
+
   mCurrentTarget = C_INVALID_INDEX;
 
   if (mpEvent)
     {
-      return loadFromEvent();
+      success =  loadFromEvent();
     }
 
-  mpListView->switchToOtherWidget(114, ""); //TODO
-  return false;
+  mpEvent = dynamic_cast<CEvent*>(mpObject);
+
+  if (!success)
+    {
+      mpListView->switchToOtherWidget(114, ""); //TODO
+    }
+
+  return success;
 }
 
 /*! The slot to be done before leaving the active event widget */
