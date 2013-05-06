@@ -159,6 +159,14 @@
 }
 
 %catches(CCopasiException) CReaction::getLargestCompartment() const;
+%catches(CCopasiException) CReaction::addParameterMapping;
+%catches(CCopasiException) CReaction::setParameterMapping;
+%catches(CCopasiException) CReaction::clearParameterMapping;
+%catches(CCopasiException) CReaction::getParameterMapping;
+%catches(CCopasiException) CReaction::getParameterValue;
+%catches(CCopasiException) CReaction::setParameterValue;
+%catches(CCopasiException) CReaction::setFunction;
+%catches(CCopasiException) CReaction::isLocalParameter;
 
 // suppress warnings on multiple inheritance
 %warnfilter(813) CReaction;
