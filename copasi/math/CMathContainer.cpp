@@ -196,7 +196,9 @@ void CMathContainer::init()
 
   CMath::sPointers Pointers;
   initializePointers(Pointers);
+#ifdef COPASI_DEBUG
   printPointers(Pointers);
+#endif
 
   initializeDiscontinuousCreationPointer();
 
