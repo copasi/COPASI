@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-//   $Revision: 1.24 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/10 16:03:12 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -46,33 +38,33 @@ std::string CTimeSeries::mDummyString("");
 C_FLOAT64 CTimeSeries::mDummyFloat(0.0);
 
 CTimeSeries::CTimeSeries():
-    COutputInterface(),
-    CMatrix< C_FLOAT64 >(),
-    mAllocatedSteps(0),
-    mRecordedSteps(0),
-    mpIt(mArray),
-    mpEnd(mArray + size()),
-    mpState(NULL),
-    mTitles(),
-    mCompartment(),
-    mPivot(),
-    mKeys(),
-    mNumberToQuantityFactor(0.0)
+  COutputInterface(),
+  CMatrix< C_FLOAT64 >(),
+  mAllocatedSteps(0),
+  mRecordedSteps(0),
+  mpIt(mArray),
+  mpEnd(mArray + size()),
+  mpState(NULL),
+  mTitles(),
+  mCompartment(),
+  mPivot(),
+  mKeys(),
+  mNumberToQuantityFactor(0.0)
 {}
 
 CTimeSeries::CTimeSeries(const CTimeSeries & src):
-    COutputInterface(src),
-    CMatrix< C_FLOAT64 >(src),
-    mAllocatedSteps(src.mAllocatedSteps),
-    mRecordedSteps(src.mRecordedSteps),
-    mpIt(mArray + mRecordedSteps * mCols),
-    mpEnd(mArray + size()),
-    mpState(src.mpState),
-    mTitles(src.mTitles),
-    mCompartment(src.mCompartment),
-    mPivot(src.mPivot),
-    mKeys(src.mKeys),
-    mNumberToQuantityFactor(src.mNumberToQuantityFactor)
+  COutputInterface(src),
+  CMatrix< C_FLOAT64 >(src),
+  mAllocatedSteps(src.mAllocatedSteps),
+  mRecordedSteps(src.mRecordedSteps),
+  mpIt(mArray + mRecordedSteps * mCols),
+  mpEnd(mArray + size()),
+  mpState(src.mpState),
+  mTitles(src.mTitles),
+  mCompartment(src.mCompartment),
+  mPivot(src.mPivot),
+  mKeys(src.mKeys),
+  mNumberToQuantityFactor(src.mNumberToQuantityFactor)
 {}
 
 CTimeSeries::~CTimeSeries()
@@ -82,6 +74,23 @@ void CTimeSeries::allocate(const size_t & steps)
 {
   // The actual allocation is deferred to compile
   mAllocatedSteps = steps;
+}
+
+void CTimeSeries::increaseAllocation()
+{
+  size_t diff;
+  diff = mAllocatedSteps / 4;
+
+  if (diff < 10)
+    diff = 10;
+  else if (diff > 10000)
+    diff = 10000;
+
+  mAllocatedSteps += diff;
+  CMatrix< C_FLOAT64 >::resize(mAllocatedSteps, mCols, true);
+
+  mpIt = mArray + mRecordedSteps * mCols;
+  mpEnd = mArray + size();
 }
 
 void CTimeSeries::clear()
@@ -178,19 +187,7 @@ void CTimeSeries::output(const COutputInterface::Activity & activity)
   // We may have to reallocate due to additional output caused from events
   if (mpIt == mpEnd)
     {
-      size_t diff;
-      diff = mAllocatedSteps / 4;
-
-      if (diff < 10)
-        diff = 10;
-      else if (diff > 10000)
-        diff = 10000;
-
-      mAllocatedSteps += diff;
-      CMatrix< C_FLOAT64 >::resize(mAllocatedSteps, mCols, true);
-
-      mpIt = mArray + mRecordedSteps * mCols;
-      mpEnd = mArray + size();
+      increaseAllocation();
     }
 
   if (mpIt != mpEnd)
@@ -204,6 +201,12 @@ void CTimeSeries::output(const COutputInterface::Activity & activity)
 // virtual
 void CTimeSeries::separate(const COutputInterface::Activity & /* activity */)
 {
+  // We may have to reallocate due to additional output caused from events
+  if (mpIt == mpEnd)
+    {
+      increaseAllocation();
+    }
+
   if (mpIt != mpEnd)
     {
       C_FLOAT64 * pIt = mpIt;
@@ -301,6 +304,7 @@ std::string CTimeSeries::getSBMLId(const size_t & var, const CCopasiDataModel* p
                       }
 
                     break;
+
                   case SBML_SPECIES:
                     pSBMLSpecies = dynamic_cast<const Species*>(pSBMLObject);
 
@@ -310,6 +314,7 @@ std::string CTimeSeries::getSBMLId(const size_t & var, const CCopasiDataModel* p
                       }
 
                     break;
+
                   case SBML_PARAMETER:
                     pSBMLParameter = dynamic_cast<const Parameter*>(pSBMLObject);
 
@@ -319,6 +324,7 @@ std::string CTimeSeries::getSBMLId(const size_t & var, const CCopasiDataModel* p
                       }
 
                     break;
+
                   case SBML_MODEL:
                     pSBMLModel = dynamic_cast<const Model*>(pSBMLObject);
 
@@ -328,6 +334,7 @@ std::string CTimeSeries::getSBMLId(const size_t & var, const CCopasiDataModel* p
                       }
 
                     break;
+
                   default:
                     break;
                 }
