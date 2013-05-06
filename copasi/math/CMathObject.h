@@ -35,6 +35,15 @@ public:
   virtual ~CMathObject();
 
   /**
+   * Copy an existing object
+   * @param const CMathObject & src
+   * @param CMathContainer & container
+   * @param const size_t & valueOffset
+   * @param const size_t & objectOffset
+   */
+  void copy(const CMathObject & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset);
+
+  /**
    * Retrieve the CN of the object
    * @return CCopasiObjectName
    */

@@ -106,6 +106,93 @@ CMathContainer::CMathContainer(CModel & model):
   init();
 }
 
+CMathContainer::CMathContainer(const CMathContainer & src):
+  CCopasiContainer(src, NULL),
+  mpModel(src.mpModel),
+  mpAvogadro(src.mpAvogadro),
+  mpQuantity2NumberFactor(src.mpQuantity2NumberFactor),
+  mValues(src.mValues),
+  mInitialExtensiveValues(),
+  mInitialIntensiveValues(),
+  mInitialExtensiveRates(),
+  mInitialIntensiveRates(),
+  mInitialParticleFluxes(),
+  mInitialFluxes(),
+  mInitialTotalMasses(),
+  mInitialEventTriggers(),
+  mExtensiveValues(),
+  mIntensiveValues(),
+  mExtensiveRates(),
+  mIntensiveRates(),
+  mParticleFluxes(),
+  mFluxes(),
+  mTotalMasses(),
+  mEventTriggers(),
+  mEventDelays(),
+  mEventPriorities(),
+  mEventAssignments(),
+  mEventRoots(),
+  mEventRootStates(),
+  mPropensities(),
+  mDependentMasses(),
+  mDiscontinuous(),
+  mInitialDependencies(),
+  mTransientDependencies(),
+  mObjects(src.mObjects.size()),
+  mEvents(),
+  mDataObject2MathObject(),
+  mDataValue2MathObject(),
+  mDiscontinuityEvents("Discontinuities", this),
+  mDiscontinuityInfix2Object(),
+  mTriggerInfix2Event()
+{
+  // We do not want the model to know about the math container therefore we
+  // do not use &model in the constructor of CCopasiContainer
+  setObjectParent(mpModel);
+
+  // To create the objects
+  size_t ValueOffset = ((size_t) mValues.array()) - ((size_t) src.mValues.array());
+  size_t ObjectOffset = ((size_t) mObjects.array()) - ((size_t) src.mObjects.array());
+
+  // Update the mappings
+  std::map< CCopasiObject *, CMathObject * >::const_iterator itData = src.mDataObject2MathObject.begin();
+  std::map< CCopasiObject *, CMathObject * >::const_iterator endData = src.mDataObject2MathObject.end();
+
+  std::cout << "src: mObjects = " << src.mObjects.array() << std::endl;
+  std::cout << "cpy: mObjects = " << mObjects.array() << std::endl;
+  std::cout << "object offset = " << ObjectOffset << std::endl;
+
+  for (; itData != endData; ++itData)
+    {
+      std::cout << "src: mDataObject2MathObject[" << itData->first << "] = mObjects[" << itData->second - src.mObjects.array() << "] = " << itData->second << std::endl;
+      mDataObject2MathObject[itData->first] = (CMathObject *)(((size_t) itData->second) + ObjectOffset);
+      std::cout << "cpy: mDataObject2MathObject[" << itData->first << "] = mObjects[" << mDataObject2MathObject[itData->first] - mObjects.array() << "] = " << mDataObject2MathObject[itData->first] << std::endl;
+    }
+
+  std::cout << std::endl;
+
+  std::map< C_FLOAT64 *, CMathObject * >::const_iterator itValue = src.mDataValue2MathObject.begin();
+  std::map< C_FLOAT64 *, CMathObject * >::const_iterator endValue = src.mDataValue2MathObject.end();
+
+  for (; itValue != endValue; ++itValue)
+    {
+      std::cout << "src: mDataValue2MathObject[" << itValue->first << "] = mObjects[" << itValue->second - src.mObjects.array() << "] = " << itValue->second << std::endl;
+      mDataValue2MathObject[itValue->first] = (CMathObject *)(((size_t) itValue->second) + ObjectOffset);
+      std::cout << "cpy: mDataValue2MathObject[" << itValue->first << "] = mObjects[" << mDataValue2MathObject[itValue->first] - mObjects.array() << "] = " << mDataValue2MathObject[itValue->first] << std::endl;
+    }
+
+  CMathObject * pObject = mObjects.array();
+  CMathObject * pObjectEnd = pObject + mObjects.size();
+  const CMathObject * pObjectSrc = src.mObjects.array();
+
+  for (; pObject != pObjectEnd; ++pObject, ++pObjectSrc)
+    {
+      pObject->copy(*pObjectSrc, *this, ValueOffset, ObjectOffset);
+    }
+
+  createDependencyGraphs();
+}
+
 CMathContainer::~CMathContainer()
 {}
 
@@ -205,10 +292,14 @@ void CMathContainer::init()
   initializeObjects(Pointers);
   initializeEvents(Pointers);
 
-  mDiscontinuityEvents.clear();
-
   compileObjects();
   compileEvents();
+
+  // These are only used during initialization for setting up the tracking of
+  // discontinuities and are cleared afterwards.
+  mDiscontinuityEvents.clear();
+  mDiscontinuityInfix2Object.clear();
+  mTriggerInfix2Event.clear();
 
 #ifdef COPASI_DEBUG
   CMathObject *pObject = mObjects.array();
@@ -1253,10 +1344,7 @@ void CMathContainer::createDiscontinuityEvents(const CEvaluationNode * pNode,
     const CMath::Variables< CEvaluationNode * > & variables)
 {
   CEvaluationNodeConstant VariableNode(CEvaluationNodeConstant::_NaN, "NAN");
-  size_t i, imax;
-
   CNodeIterator< const CEvaluationNode > itNode(pNode);
-  CEvent * pEvent  = NULL;
 
   while (itNode.next() != itNode.end())
     {

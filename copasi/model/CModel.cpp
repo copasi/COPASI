@@ -479,6 +479,9 @@ bool CModel::compile()
   buildDependencyGraphs();
 
   CMathContainer MathModel(*this);
+
+  CMathContainer CopyModel(MathModel);
+
 #endif // TST_DEPENDENCYGRAPH
 
 #ifdef COPASI_PARAMETER_SETS

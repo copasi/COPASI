@@ -59,6 +59,49 @@ CMathObject::~CMathObject()
   pdelete(mpExpression);
 }
 
+void CMathObject::copy(const CMathObject & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset)
+{
+  mpValue = (C_FLOAT64 *)((size_t) src.mpValue + valueOffset);
+  mValueType = src.mValueType;
+  mEntityType = src.mEntityType;
+  mSimulationType = src.mSimulationType;
+  mIsIntensiveProperty = src.mIsIntensiveProperty;
+  mIsInitialValue = src.mIsInitialValue;
+  mpDataObject = src.mpDataObject;
+
+  if (src.mpIntensiveProperty != NULL)
+    {
+      mpIntensiveProperty = (CMathObject *)((size_t) src.mpIntensiveProperty + objectOffset);
+    }
+  else
+    {
+      mpIntensiveProperty = NULL;
+    }
+
+  if (src.mpExpression != NULL)
+    {
+      mpExpression = CMathExpression::copy(*src.mpExpression, container, valueOffset, objectOffset);
+    }
+  else
+    {
+      mpExpression = NULL;
+    }
+
+  ObjectSet::const_iterator it = src.getPrerequisites().begin();
+  ObjectSet::const_iterator end = src.getPrerequisites().end();
+
+  for (; it != end; ++it)
+    {
+      mPrerequisites.insert((CMathObject *)((size_t) *it + objectOffset));
+    }
+
+  if (mpExpression != NULL &&
+      mPrerequisites.empty())
+    {
+      calculate();
+    }
+}
+
 // virtual
 CCopasiObjectName CMathObject::getCN() const
 {

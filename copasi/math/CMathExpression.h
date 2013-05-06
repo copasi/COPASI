@@ -64,6 +64,18 @@ public:
   virtual ~CMathExpression();
 
   /**
+   * Copy an expression with the given offsets
+   * @param const CMathExpression & src
+   * @param CMathContainer & container
+   * @param const size_t & valueOffset
+   * @param const size_t & objectOffset
+   */
+  static CMathExpression * copy(const CMathExpression & src,
+                                CMathContainer & container,
+                                const size_t & valueOffset,
+                                const size_t & objectOffset);
+
+  /**
    * Evaluate the expression
    * @return const C_FLOAT64 & value
    */

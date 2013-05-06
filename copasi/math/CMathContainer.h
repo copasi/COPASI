@@ -55,6 +55,12 @@ public:
   CMathContainer(CModel & model);
 
   /**
+   * Copy constructor
+   * @param const CMathContainer & src
+   */
+  CMathContainer(const CMathContainer & src);
+
+  /**
    * Destructor
    */
   virtual ~CMathContainer();

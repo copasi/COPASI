@@ -13,6 +13,8 @@
 #include "function/CEvaluationNode.h"
 #include "function/CEvaluationNodeObject.h"
 
+#include "utilities/CCopasiTree.h"
+
 #define mpContainer static_cast< const CMathContainer * >(getObjectParent())
 
 CMathExpression::CMathExpression():
@@ -117,6 +119,34 @@ CMathExpression::CMathExpression(const CFunction & src,
 // virtual
 CMathExpression::~CMathExpression()
 {}
+
+// static
+CMathExpression * CMathExpression::copy(const CMathExpression & src,
+                                        CMathContainer & container,
+                                        const size_t & valueOffset,
+                                        const size_t & objectOffset)
+{
+  CMathExpression * pExpression = new CMathExpression(src.getObjectName(), container);
+
+  pExpression->setRoot(src.getRoot()->copyBranch());
+
+  // Apply the offset to all nodes
+  CCopasiTree<CEvaluationNode>::iterator it = pExpression->getRoot();
+  CCopasiTree<CEvaluationNode>::iterator end = NULL;
+
+  for (; it != end; ++it)
+    {
+      if (it->getType() == (CEvaluationNode::OBJECT | CEvaluationNodeObject::POINTER))
+        {
+          C_FLOAT64 * pPointer = (C_FLOAT64 *) stringToPointer(it->getData());
+          static_cast< CEvaluationNodeObject * >(&*it)->setObjectValuePtr((C_FLOAT64 *)((size_t) pPointer + valueOffset));
+        }
+    }
+
+  pExpression->compile();
+
+  return pExpression;
+}
 
 const C_FLOAT64 & CMathExpression::value()
 {
