@@ -10,6 +10,8 @@
 
 
 
+
+
 /**
  * This is an example on how to import an sbml file
  * create a report for a time course simulation 
@@ -174,16 +176,17 @@ class example4
         try
         {
             // now we run the actual trajectory
-            scanTask.process(true);
+            scanTask.processWithOutputFlags(true, (int)CCopasiTask.ONLY_TIME_SERIES);
         }
         catch (java.lang.Exception ex)
         {
             System.err.println( "Error. Running the scan failed.");
+           			String lastError = scanTask.getProcessError();
             // check if there are additional error messages
-            if (CCopasiMessage.size() > 0)
+            if (lastError.length() > 0)
             {
                 // print the messages in chronological order
-                System.err.println( CCopasiMessage.getAllMessageText(true));
+                System.err.println(lastError);
             }
             System.exit(1);
         }

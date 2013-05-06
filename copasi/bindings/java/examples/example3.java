@@ -1,15 +1,14 @@
-// Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example3.java,v $ 
-//   $Revision: 1.6 $ 
-//   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2009/03/06 16:36:40 $ 
-// End CVS Header 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
+
+
 
 /**
  * This is an example on how to import an sbml file
@@ -148,17 +147,18 @@ public class example3
           try
           {
               // now we run the actual trajectory
-              result=trajectoryTask.process(true);
+              result=trajectoryTask.processWithOutputFlags(true, (int)CCopasiTask.ONLY_TIME_SERIES);
           }
           catch (java.lang.Exception ex)
           {
               System.err.println( "Error. Running the time course simulation failed." );
-              // check if there are additional error messages
-              if (CCopasiMessage.size() > 0)
-              {
-                  // print the messages in chronological order
-                  System.err.println(CCopasiMessage.getAllMessageText(true));
-              }
+              			String lastError = trajectoryTask.getProcessError();
+            // check if there are additional error messages
+            if (lastError.length() > 0)
+            {
+                // print the messages in chronological order
+                System.err.println(lastError);
+            }
               System.exit(1);
           }
           if(result==false)

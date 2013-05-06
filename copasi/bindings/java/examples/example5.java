@@ -9,6 +9,8 @@
 // All rights reserved. 
 
 
+
+
 /**
  * This is an example on how to run an optimization task.
  * And how to access the result of an optimization.
@@ -167,16 +169,30 @@ public class example5
      boolean result=false;
      try
      {
-       result=optTask.process(true);
+       result=optTask.processWithOutputFlags(true, (int)CCopasiTask.ONLY_TIME_SERIES);
      }
      catch(Exception e)
      {
          System.err.println("ERROR: "+e.getMessage());
+		 			String lastError = optTask.getProcessError();
+            // check if there are additional error messages
+            if (lastError.length() > 0)
+            {
+                // print the messages in chronological order
+                System.err.println(lastError);
+            }
          System.exit(1);
      }
      if(!result)
      {
          System.err.println("Running the optimization failed.");
+		 			String lastError = optTask.getProcessError();
+            // check if there are additional error messages
+            if (lastError.length() > 0)
+            {
+                // print the messages in chronological order
+                System.err.println(lastError);
+            }
          System.exit(1);
      }
      // now we check if the optimization actually got the correct result

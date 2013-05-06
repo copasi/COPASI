@@ -9,6 +9,8 @@
 // All rights reserved. 
 
 
+
+
 /**
  * This is an example on how to run an parameter fitting task.
  * The example creates a simple model and runs a time course simulation on it.
@@ -88,16 +90,17 @@ public class example6
         try
         {
             // now we run the actual trajectory
-            result=trajectoryTask.process(true);
+            result=trajectoryTask.processWithOutputFlags(true, (int)CCopasiTask.ONLY_TIME_SERIES);
         }
         catch (java.lang.Exception ex)
         {
             System.err.println( "Error. Running the time course simulation failed." );
+			String lastError = trajectoryTask.getProcessError();
             // check if there are additional error messages
-            if (CCopasiMessage.size() > 0)
+            if (lastError.length() > 0)
             {
                 // print the messages in chronological order
-                System.err.println(CCopasiMessage.getAllMessageText(true));
+                System.err.println(lastError);
             }
             System.exit(1);
         }
@@ -334,11 +337,18 @@ public class example6
         {
           // running the task for this example will probably take some time
           System.out.println("This can take some time...");
-          result=fitTask.process(true);
+          result=fitTask.processWithOutputFlags(true, (int)CCopasiTask.ONLY_TIME_SERIES);
         }
         catch(Exception e)
         {
           System.err.println("Error. Parameter fitting failed.");
+			String lastError = fitTask.getProcessError();
+            // check if there are additional error messages
+            if (lastError.length() > 0)
+            {
+                // print the messages in chronological order
+                System.err.println(lastError);
+            }
           System.exit(1);
         }
         assert result == true;

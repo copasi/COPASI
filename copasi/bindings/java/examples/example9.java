@@ -5,6 +5,7 @@
 
 
 
+
 /**
  * This example is similar to example 8. We also calculate the jacobian,
  * but this time we want the jacobian at the steady state.
@@ -78,18 +79,19 @@ public class example9
    try
    {
        // now we run the actual trajectory
-       task.process(true);
+       task.processWithOutputFlags(true, (int)CCopasiTask.ONLY_TIME_SERIES);
    }
    catch (java.lang.Exception e)
    {
        System.err.println("Error. Running the scan failed.");
 
-       // check if there are additional error messages
-       if (CCopasiMessage.size() > 0)
-       {
-           // print the messages in chronological order
-           System.err.println(CCopasiMessage.getAllMessageText(true));
-       }
+       			String lastError = task.getProcessError();
+            // check if there are additional error messages
+            if (lastError.length() > 0)
+            {
+                // print the messages in chronological order
+                System.err.println(lastError);
+            }
        return;
    }
 

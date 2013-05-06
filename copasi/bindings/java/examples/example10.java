@@ -1,7 +1,8 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
+
 
 
 /**
@@ -146,19 +147,18 @@ public class example10
           // initialize the trajectory task
           // we want complete output (HEADER, BODY and FOOTER)
           // now we run the actual trajectory
-          pTask.process(true);
+          pTask.processWithOutputFlags(true, (int)CCopasiTask.ONLY_TIME_SERIES);
         }
       catch (java.lang.Exception ex)
         {
           System.err.println("Error. Doing the metabolic control analysis failed.");
-
-          // check if there are additional error messages
-          if (CCopasiMessage.size() > 0)
+			String lastError = pTask.getProcessError();
+            // check if there are additional error messages
+            if (lastError.length() > 0)
             {
-              // print the messages in chronological order
-              System.err.println(CCopasiMessage.getAllMessageText(true));
+                // print the messages in chronological order
+                System.err.println(lastError);
             }
-
           // final cleanup
           CCopasiRootContainer.destroy();
           return;
