@@ -1,23 +1,20 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/java.i,v $
-//   $Revision: 1.16 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 15:45:05 $
-// End CVS Header
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+
+
+
 
 %include <std_string.i>
 %include <exception.i>
@@ -29,6 +26,118 @@
 %include "enumsimple.swg"
 %javaconst(1);
 
+%pragma(java) modulecode =
+%{
+	public static CCopasiObject DowncastCCopasiObject(long cPtr, boolean owner)
+	{
+		if (cPtr == 0) return null;
+	
+		CCopasiObject co = new CCopasiObject(cPtr,false);
+		String type = co.getObjectType();
+		
+		if (type.equals("Metabolite"))
+		{
+			return new CMetab(cPtr, owner);
+		}
+		else if (type.equals("Chemical Equation"))
+		{
+			return new CChemEq(cPtr, owner);
+		}
+		else if (type.equals("Compartment"))
+		{
+			return new CCompartment(cPtr, owner);
+		}
+		else if (type.equals("EventAssignment"))
+		{
+			return new CEventAssignment(cPtr, owner);
+		}
+		else if (type.equals("Event"))
+		{
+			return new CEvent(cPtr, owner);
+		}
+		else if (type.equals("Model"))
+		{
+			return new CModel(cPtr, owner);
+		}
+		else if (type.equals("ModelValue"))
+		{
+			return new CModelValue(cPtr, owner);
+		}
+		else if (type.equals("Moiety"))
+		{
+			return new CMoiety(cPtr, owner);
+		}
+		else if (type.equals("Reaction"))
+		{
+			return new CReaction(cPtr, owner);
+		}
+		else if (type.equals("CN"))
+		{
+			return new CCopasiDataModel(cPtr, owner);
+		}
+		else if (type.equals("PlotItem"))
+		{
+			return new CPlotItem(cPtr, owner);
+		}
+		else if (type.equals("ReportDefinition"))
+		{
+			return new CReportDefinition(cPtr, owner);
+		}
+		else if (type.equals("Array"))
+		{
+			return new CArrayAnnotation(cPtr, owner);
+		}
+		else if (type.equals("Method"))
+		{
+			return new CCopasiMethod(cPtr, owner);
+		}
+		else if (type.equals("Parameter"))
+		{
+			return new CCopasiParameter(cPtr, owner);
+		}
+		else if (type.equals("Problem"))
+		{
+			return new CCopasiProblem(cPtr, owner);
+		}
+		else if (type.equals("Task"))
+		{
+			return new CCopasiTask(cPtr, owner);
+		}
+		else
+		{
+			if (System.getenv("COPASI_JAVA_DEBUG") != null)
+			System.err.println("WRAPPER: encountered unwrapped type: '" + type + "'");
+		}
+	return new CCopasiObject(cPtr, owner);
+  }
+
+  public static CObjectInterface DowncastCObjectInterface(long cPtr, boolean owner)
+  {
+    if (cPtr == 0) return null;
+	
+    CObjectInterface temp = new CObjectInterface(cPtr, false);
+	CCopasiObject co = temp.toObject();
+	if (co != null)
+		return DowncastCCopasiObject(cPtr, owner);	
+	return new CObjectInterface(cPtr, owner);	
+  }
+%}
+
+/**
+ * Convert CCopasiObject objects into the most specific object possible.
+ */
+%typemap("javaout") CCopasiObject*
+{
+  return COPASI.DowncastCCopasiObject($jnicall, $owner);
+}
+
+/**
+ * Convert CCopasiObject objects into the most specific object possible.
+ */
+%typemap("javaout") CObjectInterface*
+{
+  return COPASI.DowncastCObjectInterface($jnicall, $owner);
+}
 
 void initCopasi();
 
@@ -408,7 +517,6 @@ void initCopasi();
     }
 }
 */
-
 
 
 %javaexception("java.lang.Exception") CCopasiTask::process {
