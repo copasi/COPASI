@@ -3,7 +3,7 @@
  * create a report for a time course simulation 
  * and run a scan for a stochastic time course simulation
  */
-
+using System;
 using org.COPASI;
 using System.Diagnostics;
 
@@ -163,17 +163,19 @@ class example4
         try
         {
             // now we run the actual trajectory
-            scanTask.process(true);
+            scanTask.processWithOutputFlags(true, (int)CCopasiTask.ONLY_TIME_SERIES);
         }
         catch 
         {
             System.Console.Error.WriteLine( "Error. Running the scan failed.");
-            // check if there are additional error messages
-            if (CCopasiMessage.size() > 0)
-            {
-                // print the messages in chronological order
-                System.Console.Error.WriteLine( CCopasiMessage.getAllMessageText(true));
-            }
+                      String lastErrors =  scanTask.getProcessError();
+          // check if there are additional error messages
+          if (!string.IsNullOrEmpty(lastErrors))
+          {
+              // print the messages in chronological order
+              System.Console.Error.WriteLine(lastErrors);
+          }
+
             System.Environment.Exit(1);
         }
     }

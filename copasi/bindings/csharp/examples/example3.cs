@@ -3,7 +3,7 @@
  * create a report for a time course simulation 
  * and run a time course simulation
  */
-
+using System;
 using org.COPASI;
 using System.Diagnostics;
 
@@ -136,28 +136,32 @@ class example3
           try
           {
               // now we run the actual trajectory
-              result=trajectoryTask.process(true);
+              result=trajectoryTask.processWithOutputFlags(true, (int)CCopasiTask.ONLY_TIME_SERIES);
           }
           catch
           {
               System.Console.Error.WriteLine( "Error. Running the time course simulation failed." );
-              // check if there are additional error messages
-              if (CCopasiMessage.size() > 0)
-              {
-                  // print the messages in chronological order
-                  System.Console.Error.WriteLine(CCopasiMessage.getAllMessageText(true));
-              }
+                        String lastErrors =  trajectoryTask.getProcessError();
+          // check if there are additional error messages
+          if (!string.IsNullOrEmpty(lastErrors))
+          {
+              // print the messages in chronological order
+              System.Console.Error.WriteLine(lastErrors);
+          }
+
               System.Environment.Exit(1);
           }
           if(result==false)
           {
               System.Console.Error.WriteLine( "An error occured while running the time course simulation." );
-              // check if there are additional error messages
-              if (CCopasiMessage.size() > 0)
-              {
-                  // print the messages in chronological order
-                  System.Console.Error.WriteLine(CCopasiMessage.getAllMessageText(true));
-              }
+                        String lastErrors =  trajectoryTask.getProcessError();
+          // check if there are additional error messages
+          if (!string.IsNullOrEmpty(lastErrors))
+          {
+              // print the messages in chronological order
+              System.Console.Error.WriteLine(lastErrors);
+          }
+
               System.Environment.Exit(1);
           }
 

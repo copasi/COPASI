@@ -8,6 +8,7 @@
  * So in this example, we learn how to work with annotated matrices.
  */
 using org.COPASI;
+using System;
 using System.Diagnostics;
 
 class example9
@@ -72,18 +73,20 @@ class example9
    try
    {
        // now we run the actual trajectory
-       task.process(true);
+       task.processWithOutputFlags(true, (int)CCopasiTask.ONLY_TIME_SERIES);
    }
    catch
    {
        System.Console.Error.WriteLine("Error. Running the scan failed.");
 
-       // check if there are additional error messages
-       if (CCopasiMessage.size() > 0)
-       {
-           // print the messages in chronological order
-           System.Console.Error.WriteLine(CCopasiMessage.getAllMessageText(true));
-       }
+                String lastErrors =  task.getProcessError();
+          // check if there are additional error messages
+          if (!string.IsNullOrEmpty(lastErrors))
+          {
+              // print the messages in chronological order
+              System.Console.Error.WriteLine(lastErrors);
+          }
+
        System.Environment.Exit(1);
    }
 
@@ -124,20 +127,20 @@ class example9
 
        for (int i = 0; i < annotations.Count; ++i)
        {
-           System.Console.Out.WriteLine(System.String.Format("{0,7}",annotations[i]));
+           Console.Out.WriteLine(System.String.Format("{0,7}",annotations[i]));
        }
 
-       System.Console.WriteLine(System.String.Format("{0}", System.Environment.NewLine));
+       Console.WriteLine(System.String.Format("{0}", System.Environment.NewLine));
 
        for (int i = 0; i < annotations.Count; ++i)
        {
-           System.Console.Out.WriteLine(System.String.Format("{0,7}", annotations[i]));
+           System.Console.Out.WriteLine(System.String.Format("{0,7} ", annotations[i]));
            index[0]=(uint)i;
 
            for (int j = 0; j < annotations.Count; ++j)
            {
                index[1]=(uint)j;
-               System.Console.Out.WriteLine(System.String.Format("{0,7:0.###}",aj.array().get(index)));
+               System.Console.Out.WriteLine(System.String.Format("{0,7:G2} ",aj.array().get(index)));
            }
            System.Console.WriteLine(System.String.Format("{0}", System.Environment.NewLine));
        }

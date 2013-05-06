@@ -6,6 +6,7 @@
  */
 
 
+using System;
 using org.COPASI;
 using System.Diagnostics;
 
@@ -29,7 +30,7 @@ class example6
               System.Console.Error.WriteLine( "Error while importing the model.");
               System.Environment.Exit(1);
           }
-          
+		            
         // now we need to run some time course simulation to get data to fit
         // against
 
@@ -78,27 +79,30 @@ class example6
         try
         {
             // now we run the actual trajectory
-            result=trajectoryTask.process(true);
+            result=trajectoryTask.processWithOutputFlags(true, (int)CCopasiTask.ONLY_TIME_SERIES);
         }
         catch
         {
             System.Console.Error.WriteLine( "Error. Running the time course simulation failed." );
-            // check if there are additional error messages
-            if (CCopasiMessage.size() > 0)
-            {
-                // print the messages in chronological order
-                System.Console.Error.WriteLine(CCopasiMessage.getAllMessageText(true));
-            }
+            String lastErrors =  trajectoryTask.getProcessError();
+          // check if there are additional error messages
+          if (!string.IsNullOrEmpty(lastErrors))
+          {
+              // print the messages in chronological order
+              System.Console.Error.WriteLine(lastErrors);
+          }
+
             System.Environment.Exit(1);
         }
         if(result==false)
         {
-            System.Console.Error.WriteLine( "An error occured while running the time course simulation." );
+            System.Console.Error.WriteLine( "An error occured while running the time course simulation.");
+			String lastErrors =  trajectoryTask.getProcessError();
             // check if there are additional error messages
-            if (CCopasiMessage.size() > 0)
+            if (!string.IsNullOrEmpty(lastErrors))
             {
                 // print the messages in chronological order
-                System.Console.Error.WriteLine(CCopasiMessage.getAllMessageText(true));
+                System.Console.Error.WriteLine(lastErrors);
             }
             System.Environment.Exit(1);
         }
@@ -326,13 +330,22 @@ class example6
         {
           // running the task for this example will probably take some time
           System.Console.WriteLine("This can take some time...");
-          result=fitTask.process(true);
+          result=fitTask.processWithOutputFlags(true, (int)CCopasiTask.ONLY_TIME_SERIES);
         }
         catch
         {
           System.Console.Error.WriteLine("Error. Parameter fitting failed.");
+          String lastErrors =  fitTask.getProcessError();
+          // check if there are additional error messages
+          if (!string.IsNullOrEmpty(lastErrors))
+          {
+              // print the messages in chronological order
+              System.Console.Error.WriteLine(lastErrors);
+          }
+
           System.Environment.Exit(1);
         }
+		
         Debug.Assert(result == true);
         // assert that there are two optimization items
         Debug.Assert(fitProblem.getOptItemList().Count == 2);
@@ -348,6 +361,7 @@ class example6
         Debug.Assert((System.Math.Abs(fitProblem.getSolutionVariables().get(0) - 0.03) / 0.03) < 3e-2);
         Debug.Assert((System.Math.Abs(fitProblem.getSolutionVariables().get(1) - 0.004) / 0.004) < 3e-2);
  
+
     }
 
     static string MODEL_STRING=

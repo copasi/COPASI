@@ -3,7 +3,7 @@
  * And how to access the result of an optimization.
  */
 
-
+using System;
 using org.COPASI;
 using System.Diagnostics;
 
@@ -157,16 +157,32 @@ class example5
      bool result=false;
      try
      {
-       result=optTask.process(true);
+       result=optTask.processWithOutputFlags(true, (int)CCopasiTask.ONLY_TIME_SERIES);
      }
      catch(System.ApplicationException e)
      {
          System.Console.Error.WriteLine("ERROR: "+e.Message);
+		           String lastErrors =  optTask.getProcessError();
+          // check if there are additional error messages
+          if (!string.IsNullOrEmpty(lastErrors))
+          {
+              // print the messages in chronological order
+              System.Console.Error.WriteLine(lastErrors);
+          }
+
          System.Environment.Exit(1);
      }
      if(!result)
      {
          System.Console.Error.WriteLine("Running the optimization failed.");
+		           String lastErrors =  optTask.getProcessError();
+          // check if there are additional error messages
+          if (!string.IsNullOrEmpty(lastErrors))
+          {
+              // print the messages in chronological order
+              System.Console.Error.WriteLine(lastErrors);
+          }
+
          System.Environment.Exit(1);
      }
      // now we check if the optimization actually got the correct result
