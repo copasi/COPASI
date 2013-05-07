@@ -81,11 +81,11 @@ public:
   /**
    * Build the sequence of objects which need to be updated to calculate the object value.
    * @param const CMath::SimulationContextFlag & context
-   * @param std::vector< CObjectInterface * > & updateSequence
+   * @param CObjectInterface::UpdateSequence & updateSequence
    * @return bool success
    */
   bool buildUpdateSequence(const CMath::SimulationContextFlag & context,
-                           std::vector< CObjectInterface * > & updateSequence);
+                           CObjectInterface::UpdateSequence & updateSequence);
 
   /**
    * Set whether the current node has changed its value

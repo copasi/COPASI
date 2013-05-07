@@ -155,6 +155,7 @@ class CObjectInterface
 {
 public:
   typedef std::set< const CObjectInterface * > ObjectSet;
+  typedef std::vector< CObjectInterface * > UpdateSequence;
 
   /**
    * Constructor

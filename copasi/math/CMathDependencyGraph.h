@@ -50,13 +50,13 @@ public:
    * @param const CMath::SimulationContextFlag & context
    * @param const CObjectInterface::ObjectSet & changedObjects
    * @param const CObjectInterface::ObjectSet & requestedObjects
-   * @param std::vector< CObjectInterface * > & updateSequence)
+   * @param CObjectInterface::UpdateSequence & updateSequence)
    * @return bool success
    */
   bool getUpdateSequence(const CMath::SimulationContextFlag & context,
                          const CObjectInterface::ObjectSet & changedObjects,
                          const CObjectInterface::ObjectSet & requestedObjects,
-                         std::vector< CObjectInterface * > & updateSequence);
+                         CObjectInterface::UpdateSequence & updateSequence);
 
   void exportDOTFormat(std::ostream & os, const std::string & name) const;
 

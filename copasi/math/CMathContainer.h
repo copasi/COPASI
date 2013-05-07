@@ -16,7 +16,8 @@
 
 #include "copasi/utilities/CVector.h"
 
-class CModel;
+#include "copasi/model/CModelParameter.h"
+
 class CModelEntity;
 class CReaction;
 class CMoiety;
@@ -66,6 +67,31 @@ public:
   virtual ~CMathContainer();
 
   /**
+   * Retrieve the values of all mathematical objects
+   * @param const CVector< C_FLOAT64 > & values
+   */
+  const CVector< C_FLOAT64 > & getValues() const;
+
+  /**
+   * Retrieve the values of all mathematical objects
+   * @return const CVector< C_FLOAT64 > & values
+   */
+  void setValues(const CVector< C_FLOAT64 > & values);
+
+  /**
+   * Calculate all dependent initial values based on initial extensive
+   * or intensive values
+   * @param const CModelParameter::Framework & framework
+   */
+  void synchronizeInitialValues(const CModelParameter::Framework & framework);
+
+  /**
+   * Set the transient values to the initial values and calculate all
+   * dependent values
+   */
+  void applyInitialValues();
+
+  /**
    * Retrieve the CN of the math container
    * The math container provides values for the numerical values of model objects.
    * For the CN mechanism to work properly it has to pretend to be the model.
@@ -75,7 +101,6 @@ public:
 
   /**
    * Retrieve a descendant object by its CN.
-   * If the
    */
   virtual const CObjectInterface * getObject(const CCopasiObjectName & cn) const;
 
@@ -229,6 +254,16 @@ private:
   void createDependencyGraphs();
 
   /**
+   * Create the update sequence needed to synchronize the initial values
+   */
+  void createSynchronizeInitialValuesSequence();
+
+  /**
+   * Create the update sequence used when applying the initial state
+   */
+  void createApplyInitialValuesSequence();
+
+  /**
    * Determine the entity type of an entity
    * @param const CModelEntity * pEntity
    * @return CMath::EntityType entityType
@@ -356,6 +391,23 @@ private:
    * Dependency graph for transient value calculations
    */
   CMathDependencyGraph mTransientDependencies;
+
+  /**
+   * The sequence of updates needed to synchronize the initial values based
+   * on extensive values, i.e., species amounts
+   */
+  CObjectInterface::UpdateSequence mSynchronizeInitialValuesSequenceExtensive;
+
+  /**
+   * The sequence of updates needed to synchronize the initial values based
+   * on intensive values, i.e., species concentrations.
+   */
+  CObjectInterface::UpdateSequence mSynchronizeInitialValuesSequenceIntensive;
+
+  /**
+   * The sequence of updates needed to apply the initial values
+   */
+  CObjectInterface::UpdateSequence mApplyInitialValuesSequence;
 
   /**
    * A vector containing all math objects.

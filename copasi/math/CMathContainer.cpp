@@ -46,6 +46,9 @@ CMathContainer::CMathContainer():
   mDiscontinuous(),
   mInitialDependencies(),
   mTransientDependencies(),
+  mSynchronizeInitialValuesSequenceExtensive(),
+  mSynchronizeInitialValuesSequenceIntensive(),
+  mApplyInitialValuesSequence(),
   mObjects(),
   mEvents(),
   mCreateDiscontinuousPointer(),
@@ -88,6 +91,9 @@ CMathContainer::CMathContainer(CModel & model):
   mDiscontinuous(),
   mInitialDependencies(),
   mTransientDependencies(),
+  mSynchronizeInitialValuesSequenceExtensive(),
+  mSynchronizeInitialValuesSequenceIntensive(),
+  mApplyInitialValuesSequence(),
   mObjects(),
   mEvents(),
   mDataObject2MathObject(),
@@ -138,6 +144,9 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mDiscontinuous(),
   mInitialDependencies(),
   mTransientDependencies(),
+  mSynchronizeInitialValuesSequenceExtensive(),
+  mSynchronizeInitialValuesSequenceIntensive(),
+  mApplyInitialValuesSequence(),
   mObjects(src.mObjects.size()),
   mEvents(),
   mDataObject2MathObject(),
@@ -150,37 +159,79 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   // do not use &model in the constructor of CCopasiContainer
   setObjectParent(mpModel);
 
-  // To create the objects
+  // Determine the offsets
   size_t ValueOffset = ((size_t) mValues.array()) - ((size_t) src.mValues.array());
   size_t ObjectOffset = ((size_t) mObjects.array()) - ((size_t) src.mObjects.array());
+
+  mInitialExtensiveValues = CVectorCore< C_FLOAT64 >(src.mInitialExtensiveValues.size(),
+                            (C_FLOAT64 *)((size_t) src.mInitialExtensiveValues.array() + ValueOffset));
+  mInitialIntensiveValues = CVectorCore< C_FLOAT64 >(src.mInitialIntensiveValues.size(),
+                            (C_FLOAT64 *)((size_t) src.mInitialIntensiveValues.array() + ValueOffset));
+  mInitialExtensiveRates = CVectorCore< C_FLOAT64 >(src.mInitialExtensiveRates.size(),
+                           (C_FLOAT64 *)((size_t) src.mInitialExtensiveRates.array() + ValueOffset));
+  mInitialIntensiveRates = CVectorCore< C_FLOAT64 >(src.mInitialIntensiveRates.size(),
+                           (C_FLOAT64 *)((size_t) src.mInitialIntensiveRates.array() + ValueOffset));
+  mInitialParticleFluxes = CVectorCore< C_FLOAT64 >(src.mInitialParticleFluxes.size(),
+                           (C_FLOAT64 *)((size_t) src.mInitialParticleFluxes.array() + ValueOffset));
+  mInitialFluxes = CVectorCore< C_FLOAT64 >(src.mInitialFluxes.size(),
+                   (C_FLOAT64 *)((size_t) src.mInitialFluxes.array() + ValueOffset));
+  mInitialTotalMasses = CVectorCore< C_FLOAT64 >(src.mInitialTotalMasses.size(),
+                        (C_FLOAT64 *)((size_t) src.mInitialTotalMasses.array() + ValueOffset));
+  mInitialEventTriggers = CVectorCore< C_FLOAT64 >(src.mInitialEventTriggers.size(),
+                          (C_FLOAT64 *)((size_t) src.mInitialEventTriggers.array() + ValueOffset));
+
+  mExtensiveValues = CVectorCore< C_FLOAT64 >(src.mExtensiveValues.size(),
+                     (C_FLOAT64 *)((size_t) src.mExtensiveValues.array() + ValueOffset));
+  mIntensiveValues = CVectorCore< C_FLOAT64 >(src.mIntensiveValues.size(),
+                     (C_FLOAT64 *)((size_t) src.mIntensiveValues.array() + ValueOffset));
+  mExtensiveRates = CVectorCore< C_FLOAT64 >(src.mExtensiveRates.size(),
+                    (C_FLOAT64 *)((size_t) src.mExtensiveRates.array() + ValueOffset));
+  mIntensiveRates = CVectorCore< C_FLOAT64 >(src.mIntensiveRates.size(),
+                    (C_FLOAT64 *)((size_t) src.mIntensiveRates.array() + ValueOffset));
+  mParticleFluxes = CVectorCore< C_FLOAT64 >(src.mParticleFluxes.size(),
+                    (C_FLOAT64 *)((size_t) src.mParticleFluxes.array() + ValueOffset));
+  mFluxes = CVectorCore< C_FLOAT64 >(src.mFluxes.size(),
+                                     (C_FLOAT64 *)((size_t) src.mFluxes.array() + ValueOffset));
+  mTotalMasses = CVectorCore< C_FLOAT64 >(src.mTotalMasses.size(),
+                                          (C_FLOAT64 *)((size_t) src.mTotalMasses.array() + ValueOffset));
+  mEventTriggers = CVectorCore< C_FLOAT64 >(src.mEventTriggers.size(),
+                   (C_FLOAT64 *)((size_t) src.mEventTriggers.array() + ValueOffset));
+
+  mEventDelays = CVectorCore< C_FLOAT64 >(src.mEventDelays.size(),
+                                          (C_FLOAT64 *)((size_t) src.mEventDelays.array() + ValueOffset));
+  mEventPriorities = CVectorCore< C_FLOAT64 >(src.mEventPriorities.size(),
+                     (C_FLOAT64 *)((size_t) src.mEventPriorities.array() + ValueOffset));
+  mEventAssignments = CVectorCore< C_FLOAT64 >(src.mEventAssignments.size(),
+                      (C_FLOAT64 *)((size_t) src.mEventAssignments.array() + ValueOffset));
+  mEventRoots = CVectorCore< C_FLOAT64 >(src.mEventRoots.size(),
+                                         (C_FLOAT64 *)((size_t) src.mEventRoots.array() + ValueOffset));
+  mEventRootStates = CVectorCore< C_FLOAT64 >(src.mEventRootStates.size(),
+                     (C_FLOAT64 *)((size_t) src.mEventRootStates.array() + ValueOffset));
+  mPropensities = CVectorCore< C_FLOAT64 >(src.mPropensities.size(),
+                  (C_FLOAT64 *)((size_t) src.mPropensities.array() + ValueOffset));
+  mDependentMasses = CVectorCore< C_FLOAT64 >(src.mDependentMasses.size(),
+                     (C_FLOAT64 *)((size_t) src.mDependentMasses.array() + ValueOffset));
+  mDiscontinuous = CVectorCore< C_FLOAT64 >(src.mDiscontinuous.size(),
+                   (C_FLOAT64 *)((size_t) src.mDiscontinuous.array() + ValueOffset));
 
   // Update the mappings
   std::map< CCopasiObject *, CMathObject * >::const_iterator itData = src.mDataObject2MathObject.begin();
   std::map< CCopasiObject *, CMathObject * >::const_iterator endData = src.mDataObject2MathObject.end();
 
-  std::cout << "src: mObjects = " << src.mObjects.array() << std::endl;
-  std::cout << "cpy: mObjects = " << mObjects.array() << std::endl;
-  std::cout << "object offset = " << ObjectOffset << std::endl;
-
   for (; itData != endData; ++itData)
     {
-      std::cout << "src: mDataObject2MathObject[" << itData->first << "] = mObjects[" << itData->second - src.mObjects.array() << "] = " << itData->second << std::endl;
       mDataObject2MathObject[itData->first] = (CMathObject *)(((size_t) itData->second) + ObjectOffset);
-      std::cout << "cpy: mDataObject2MathObject[" << itData->first << "] = mObjects[" << mDataObject2MathObject[itData->first] - mObjects.array() << "] = " << mDataObject2MathObject[itData->first] << std::endl;
     }
-
-  std::cout << std::endl;
 
   std::map< C_FLOAT64 *, CMathObject * >::const_iterator itValue = src.mDataValue2MathObject.begin();
   std::map< C_FLOAT64 *, CMathObject * >::const_iterator endValue = src.mDataValue2MathObject.end();
 
   for (; itValue != endValue; ++itValue)
     {
-      std::cout << "src: mDataValue2MathObject[" << itValue->first << "] = mObjects[" << itValue->second - src.mObjects.array() << "] = " << itValue->second << std::endl;
       mDataValue2MathObject[itValue->first] = (CMathObject *)(((size_t) itValue->second) + ObjectOffset);
-      std::cout << "cpy: mDataValue2MathObject[" << itValue->first << "] = mObjects[" << mDataValue2MathObject[itValue->first] - mObjects.array() << "] = " << mDataValue2MathObject[itValue->first] << std::endl;
     }
 
+  // Copy the objects
   CMathObject * pObject = mObjects.array();
   CMathObject * pObjectEnd = pObject + mObjects.size();
   const CMathObject * pObjectSrc = src.mObjects.array();
@@ -195,6 +246,57 @@ CMathContainer::CMathContainer(const CMathContainer & src):
 
 CMathContainer::~CMathContainer()
 {}
+
+const CVector< C_FLOAT64 > & CMathContainer::getValues() const
+{
+  return mValues;
+}
+
+void CMathContainer::setValues(const CVector< C_FLOAT64 > & values)
+{
+  mValues = values;
+}
+
+void CMathContainer::synchronizeInitialValues(const CModelParameter::Framework & framework)
+{
+  UpdateSequence * pUpdateSequence;
+
+  switch (framework)
+    {
+      case CModelParameter::Concentration:
+        pUpdateSequence = &mSynchronizeInitialValuesSequenceIntensive;
+        break;
+
+      case CModelParameter::ParticleNumbers:
+        pUpdateSequence = &mSynchronizeInitialValuesSequenceExtensive;
+        break;
+    }
+
+  UpdateSequence::iterator it = pUpdateSequence->begin();
+  UpdateSequence::iterator end = pUpdateSequence->end();
+
+  for (; it != end; ++it)
+    {
+      static_cast< CMathObject * >(*it)->calculate();
+    }
+}
+
+void CMathContainer::applyInitialValues()
+{
+  C_FLOAT64 * pInitial = mInitialExtensiveValues.array();
+  C_FLOAT64 * pTransient = mExtensiveValues.array();
+
+  memcpy(pTransient, pInitial, (pTransient - pInitial) * sizeof(C_FLOAT64));
+
+  // Calculate all values which are needed for the simulation
+  UpdateSequence::iterator it = mApplyInitialValuesSequence.begin();
+  UpdateSequence::iterator end = mApplyInitialValuesSequence.end();
+
+  for (; it != end; ++it)
+    {
+      static_cast< CMathObject * >(*it)->calculate();
+    }
+}
 
 // virtual
 CCopasiObjectName CMathContainer::getCN() const
@@ -889,7 +991,94 @@ void CMathContainer::createDependencyGraphs()
   mTransientDependencies.exportDOTFormat(TransientDependencies, "TransientDependencies");
 #endif // COPASI_DEBUG
 
+  createSynchronizeInitialValuesSequence();
+  createApplyInitialValuesSequence();
+
   return;
+}
+
+void CMathContainer::createSynchronizeInitialValuesSequence()
+{
+  // Collect all the changed objects, which are all transient values
+  CObjectInterface::ObjectSet ChangedExtensive;
+  CObjectInterface::ObjectSet ChangedIntensive;
+  const CMathObject * pObject = mObjects.array();
+  const CMathObject * pObjectEnd = pObject + (mInitialExtensiveRates.array() - mValues.array());
+
+  for (; pObject != pObjectEnd; ++pObject)
+    {
+      if (pObject->getEntityType() != CMath::Species)
+        {
+          ChangedExtensive.insert(pObject);
+          ChangedIntensive.insert(pObject);
+        }
+      else if (pObject->isIntensiveProperty())
+        {
+          ChangedIntensive.insert(pObject);
+        }
+      else
+        {
+          ChangedExtensive.insert(pObject);
+        }
+    }
+
+  // Collect all the requested objects
+  CObjectInterface::ObjectSet RequestedExtensive;
+  CObjectInterface::ObjectSet RequestedIntensive;
+  pObject = mObjects.array();
+
+  for (; pObject != pObjectEnd; ++pObject)
+    {
+      if (pObject->getEntityType() != CMath::Species)
+        {
+          continue;
+        }
+      else if (pObject->isIntensiveProperty())
+        {
+          RequestedExtensive.insert(pObject);
+        }
+      else
+        {
+          RequestedIntensive.insert(pObject);
+        }
+    }
+
+  pObjectEnd = mObjects.array() + (mExtensiveValues.array() - mValues.array());
+
+  for (; pObject != pObjectEnd; ++pObject)
+    {
+      RequestedExtensive.insert(pObject);
+      RequestedIntensive.insert(pObject);
+    }
+
+  // Build the update sequence
+  mInitialDependencies.getUpdateSequence(CMath::UpdateMoities, ChangedExtensive, RequestedExtensive, mSynchronizeInitialValuesSequenceExtensive);
+  mInitialDependencies.getUpdateSequence(CMath::UpdateMoities, ChangedIntensive, RequestedIntensive, mSynchronizeInitialValuesSequenceIntensive);
+}
+
+void CMathContainer::createApplyInitialValuesSequence()
+{
+  // Collect all the changed objects, which are all transient values
+  CObjectInterface::ObjectSet Changed;
+  const CMathObject * pObject = mObjects.array() + (mExtensiveValues.array() - mValues.array());
+  const CMathObject * pObjectEnd = mObjects.array() + (mEventDelays.array() - mValues.array());
+
+  for (; pObject != pObjectEnd; ++pObject)
+    {
+      Changed.insert(pObject);
+    }
+
+  // Collect all the requested objects
+  CObjectInterface::ObjectSet Requested;
+  pObjectEnd = mObjects.array() + mObjects.size();
+
+  for (; pObject != pObjectEnd; ++pObject)
+    {
+      Requested.insert(pObject);
+    }
+
+  // Build the update sequence
+  mTransientDependencies.getUpdateSequence(CMath::SimulationContextUndefined, Changed, Requested, mApplyInitialValuesSequence);
 }
 
 void CMathContainer::initializePointers(CMath::sPointers & p)

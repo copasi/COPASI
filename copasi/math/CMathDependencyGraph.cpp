@@ -70,21 +70,35 @@ CMathDependencyGraph::iterator CMathDependencyGraph::addObject(const CObjectInte
 bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag & context,
     const CObjectInterface::ObjectSet & changedObjects,
     const CObjectInterface::ObjectSet & requestedObjects,
-    std::vector< CObjectInterface * > & updateSequence)
+    CObjectInterface::UpdateSequence & updateSequence)
 {
   bool success = true;
+  iterator found;
+  iterator notFound = mObjects2Nodes.end();
+
   updateSequence.clear();
 
   CObjectInterface::ObjectSet::const_iterator it = changedObjects.begin();
   CObjectInterface::ObjectSet::const_iterator end = changedObjects.end();
 
+  const_iterator itCheck = mObjects2Nodes.begin();
+  const_iterator endCheck = mObjects2Nodes.end();
+
   // Mark all nodes which are changed or need to be calculated
   for (; it != end && success; ++it)
     {
-      CMathDependencyNode * pNode = mObjects2Nodes[*it];
+      found = mObjects2Nodes.find(*it);
 
-      success &= pNode->updateDependentState(context, changedObjects);
+      if (found != notFound)
+        {
+          success &= found->second->updateDependentState(context, changedObjects);
+          continue;
+        }
+
+      success = false;
     }
+
+  if (!success) goto finish;
 
   it = requestedObjects.begin();
   end = requestedObjects.end();
@@ -92,30 +106,45 @@ bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag 
   // Mark all nodes which are requested and its prerequisites.
   for (; it != end && success; ++it)
     {
-      CMathDependencyNode * pNode = mObjects2Nodes[*it];
+      found = mObjects2Nodes.find(*it);
 
-      pNode->setRequested(true);
-      success &= pNode->updatePrerequisiteState(context, changedObjects);
+      if (found != notFound)
+        {
+          found->second->setRequested(true);
+          success &= found->second->updatePrerequisiteState(context, changedObjects);
+          continue;
+        }
+
+      success = false;
     }
+
+  if (!success) goto finish;
 
   it = requestedObjects.begin();
   end = requestedObjects.end();
 
   for (; it != end && success; ++it)
     {
-      CMathDependencyNode * pNode = mObjects2Nodes[*it];
+      found = mObjects2Nodes.find(*it);
 
-      success &= pNode->buildUpdateSequence(context, updateSequence);
+      if (found != notFound)
+        {
+          success &= found->second->buildUpdateSequence(context, updateSequence);
+          continue;
+        }
+
+      success = false;
     }
 
-  const_iterator itCheck = mObjects2Nodes.begin();
-  const_iterator endCheck = mObjects2Nodes.end();
+  if (!success) goto finish;
 
   for (; itCheck != endCheck; ++itCheck)
     {
       // Reset the dependency nodes for the next call.
       itCheck->second->setChanged(false);
     }
+
+finish:
 
   if (!success)
     {
