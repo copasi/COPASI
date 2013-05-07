@@ -83,7 +83,7 @@ public:
    * or intensive values
    * @param const CModelParameter::Framework & framework
    */
-  void synchronizeInitialValues(const CModelParameter::Framework & framework);
+  void updateInitialValues(const CModelParameter::Framework & framework);
 
   /**
    * Set the transient values to the initial values and calculate all

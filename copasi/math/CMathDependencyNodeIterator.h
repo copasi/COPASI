@@ -47,7 +47,7 @@ public:
     After = 0x02,
     Intermediate = 0x04,
     End = 0x08,
-    Recursive = 0x16
+    Recursive = 0x10
   };
 
   /**

@@ -257,7 +257,7 @@ void CMathContainer::setValues(const CVector< C_FLOAT64 > & values)
   mValues = values;
 }
 
-void CMathContainer::synchronizeInitialValues(const CModelParameter::Framework & framework)
+void CMathContainer::updateInitialValues(const CModelParameter::Framework & framework)
 {
   UpdateSequence * pUpdateSequence;
 
@@ -999,6 +999,9 @@ void CMathContainer::createDependencyGraphs()
 
 void CMathContainer::createSynchronizeInitialValuesSequence()
 {
+  // TODO CRITICAL Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
+  // and link matrices.
+
   // Collect all the changed objects, which are all transient values
   CObjectInterface::ObjectSet ChangedExtensive;
   CObjectInterface::ObjectSet ChangedIntensive;

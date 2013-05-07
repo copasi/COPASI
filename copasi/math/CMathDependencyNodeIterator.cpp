@@ -104,12 +104,12 @@ void CMathDependencyNodeIterator::increment()
 
           if (mVisited.find(pNode) != mVisited.end())
             {
-              mStack.push(CStackElement(*Current.mItChild, Current.mType, Current.mpNode));
-              mCurrentState = Before;
+              mCurrentState = Recursive;
             }
           else
             {
-              mCurrentState = Recursive;
+              mStack.push(CStackElement(*Current.mItChild, Current.mType, Current.mpNode));
+              mCurrentState = Before;
             }
 
           return;
