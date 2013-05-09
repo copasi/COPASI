@@ -351,7 +351,41 @@ void CQParameterOverviewWidget::slotBtnNew()
 
 void CQParameterOverviewWidget::slotBtnCopy()
 {
-  QMessageBox::warning(this, "Warning", "Not Implemented");
+  // commit all changes
+  slotBtnCommit();
+
+  // Sanity checks
+  if (mpParameterSet == NULL)
+    {
+      return;
+    }
+
+  CModel * pModel = mpParameterSet->getModel();
+
+  if (pModel == NULL)
+    {
+      return;
+    }
+
+  CCopasiVectorN< CModelParameterSet > & Sets = pModel->getModelParameterSets();
+  std::string Name = "Parameter Set";
+  int i = 0;
+
+  while (Sets.getIndex(Name) != C_INVALID_INDEX)
+    {
+      i++;
+      Name = "Parameter Set ";
+      Name += TO_UTF8(QString::number(i));
+    }
+
+  CModelParameterSet * pNew = new CModelParameterSet(pModel->getModelParameterSet(), pModel, false);
+  pNew->setObjectName(Name);
+  Sets.add(pNew, true);
+
+  // Notify the GUI of the insert
+  protectedNotify(ListViews::MODELPARAMETERSET, ListViews::ADD, pNew->getKey());
+
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, pNew->getKey());
 }
 
 // virtual
