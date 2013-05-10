@@ -431,6 +431,12 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
   // The default value is NaN
   *mpValue = InvalidValue;
 
+  // Initial values are taken from the data model
+  if (mpDataObject != NULL)
+    {
+      *mpValue = * (C_FLOAT64 *) mpDataObject->getValuePointer();
+    }
+
   // Reset the prerequisites
   mPrerequisites.clear();
 
@@ -681,10 +687,25 @@ bool CMathObject::compileParticleFlux(CMathContainer & container)
 
   const CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
 
-  mpExpression = new CMathExpression(*pReaction->getFunction(),
-                                     pReaction->getCallParameters(),
-                                     container,
-                                     !mIsInitialValue);
+  // We need to check whether this reaction is a single compartment reaction and scale
+  // it if true.
+  //   mParticleFlux = *mUnitScalingFactor * mFlux;
+  //   mUnitScalingFactor = & pModel->getQuantity2NumberFactor();
+
+  std::ostringstream Infix;
+  Infix.imbue(std::locale::classic());
+  Infix.precision(16);
+
+  Infix << container.getModel().getQuantity2NumberFactor();
+  Infix << "*<";
+  Infix << pReaction->getFluxReference()->getCN();
+  Infix << ">";
+
+  CExpression E("ParticleExpression", &container);
+
+  success &= E.setInfix(Infix.str());
+
+  mpExpression = new CMathExpression(E, container, !mIsInitialValue);
   compileExpression();
 
   return success;
@@ -702,20 +723,29 @@ bool CMathObject::compileFlux(CMathContainer & container)
 
   const CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
 
-  std::ostringstream Infix;
-  Infix.imbue(std::locale::classic());
-  Infix.precision(16);
+  // We need to check whether this reaction is a single compartment reaction and scale it if true.
+  //   mFlux = *mScalingFactor * mpFunction->calcValue(mMap.getPointers());
+  //   mScalingFactor = compartment volume or 1
 
-  Infix << container.getModel().getNumber2QuantityFactor();
-  Infix << "*<";
-  Infix << pReaction->getParticleFluxReference()->getCN();
-  Infix << ">";
+  mpExpression = new CMathExpression(*pReaction->getFunction(),
+                                     pReaction->getCallParameters(),
+                                     container,
+                                     !mIsInitialValue);
 
-  CExpression E("FluxExpression", &container);
+  std::set< const CCompartment * > Compartments = pReaction->getChemEq().getCompartments();
 
-  success &= E.setInfix(Infix.str());
+  if (Compartments.size() == 1)
+    {
+      CExpression Tmp(mpExpression->getObjectName(), &container);
 
-  mpExpression = new CMathExpression(E, container, !mIsInitialValue);
+      std::string Infix = "<" + (*Compartments.begin())->getValueReference()->getCN() + ">*(" + mpExpression->getInfix() + ")";
+      success &= Tmp.setInfix(Infix);
+      success &= Tmp.compile();
+
+      pdelete(mpExpression);
+      mpExpression = new CMathExpression(Tmp, container, false);
+    }
+
   compileExpression();
 
   return success;
