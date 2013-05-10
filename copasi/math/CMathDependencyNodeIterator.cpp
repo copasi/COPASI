@@ -6,8 +6,8 @@
 #include "copasi.h"
 
 #include "CMathDependencyNodeIterator.h"
-
 #include "CMathDependencyNode.h"
+#include "CMathObject.h"
 
 CMathDependencyNodeIterator::CStackElement::CStackElement():
   mpNode(NULL),
@@ -87,6 +87,12 @@ CMathDependencyNodeIterator::~CMathDependencyNodeIterator()
 
 void CMathDependencyNodeIterator::increment()
 {
+  // We must not further process any recursive
+  if (mCurrentState == Recursive)
+    {
+      mStack.pop();
+    }
+
   if (mStack.empty())
     {
       mCurrentState = End;
@@ -102,20 +108,29 @@ void CMathDependencyNodeIterator::increment()
         {
           CMathDependencyNode * pNode = *Current.mItChild;
 
+          mStack.push(CStackElement(*Current.mItChild, Current.mType, Current.mpNode));
+
+          // This will process any children since the iterator is context unaware.
+          // It is therefore expected that we encounter recursive dependencies for
+          // intensive/extensive value pairs.
+          Current.mItChild++;
+
           if (mVisited.find(pNode) != mVisited.end())
             {
+              // Indicate that this node is already in the stack and processing would lead to an
+              // infinite recursion.
               mCurrentState = Recursive;
             }
           else
             {
-              mStack.push(CStackElement(*Current.mItChild, Current.mType, Current.mpNode));
+              mVisited.insert(pNode);
               mCurrentState = Before;
             }
 
           return;
         }
 
-      if (Current.mItChild != Current.mEndChild)
+      if (Current.mItChild == Current.mEndChild)
         {
           mCurrentState = After;
 
@@ -163,7 +178,7 @@ bool CMathDependencyNodeIterator::next()
       increment();
     }
 
-  return mCurrentState & ~(End | Recursive);
+  return mCurrentState & ~End;
 }
 
 const CMathDependencyNodeIterator::State & CMathDependencyNodeIterator::skipChildren()

@@ -61,6 +61,18 @@ bool CMathDependencyNode::updateDependentState(const CMath::SimulationContextFla
 
   while (itNode.next())
     {
+      // If we have a recursive dependency we need make sure that this is due to
+      // an intensive/extensive value pair
+      if (itNode.state() == CMathDependencyNodeIterator::Recursive)
+        {
+          if (itNode->getObject()->isPrerequisiteForContext(itNode.parent()->getObject(), context, changedObjects))
+            {
+              return false;
+            }
+
+          continue;
+        }
+
       // The node itself is not modified.
       if (*itNode == this)
         {
@@ -91,6 +103,18 @@ bool CMathDependencyNode::updatePrerequisiteState(const CMath::SimulationContext
 
   while (itNode.next())
     {
+      // If we have a recursive dependency we need make sure that this is due to
+      // an intensive/extensive value pair
+      if (itNode.state() == CMathDependencyNodeIterator::Recursive)
+        {
+          if (itNode.parent()->getObject()->isPrerequisiteForContext(itNode->getObject(), context, changedObjects))
+            {
+              return false;
+            }
+
+          continue;
+        }
+
       // The node itself is not modified.
       if (*itNode == this)
         {
@@ -158,6 +182,7 @@ bool CMathDependencyNode::buildUpdateSequence(const CMath::SimulationContextFlag
                     pObject->getValueType() != CMath::Value)
                   {
                     updateSequence.push_back(const_cast< CObjectInterface * >(itNode->getObject()));
+                    itNode->setChanged(false);
                   }
               }
 
