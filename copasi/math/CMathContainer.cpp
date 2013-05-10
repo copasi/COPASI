@@ -259,25 +259,15 @@ void CMathContainer::setValues(const CVector< C_FLOAT64 > & values)
 
 void CMathContainer::updateInitialValues(const CModelParameter::Framework & framework)
 {
-  UpdateSequence * pUpdateSequence;
-
   switch (framework)
     {
       case CModelParameter::Concentration:
-        pUpdateSequence = &mSynchronizeInitialValuesSequenceIntensive;
+        applyUpdateSequence(mSynchronizeInitialValuesSequenceIntensive);
         break;
 
       case CModelParameter::ParticleNumbers:
-        pUpdateSequence = &mSynchronizeInitialValuesSequenceExtensive;
+        applyUpdateSequence(mSynchronizeInitialValuesSequenceExtensive);
         break;
-    }
-
-  UpdateSequence::iterator it = pUpdateSequence->begin();
-  UpdateSequence::iterator end = pUpdateSequence->end();
-
-  for (; it != end; ++it)
-    {
-      static_cast< CMathObject * >(*it)->calculate();
     }
 }
 
@@ -288,9 +278,13 @@ void CMathContainer::applyInitialValues()
 
   memcpy(pTransient, pInitial, (pTransient - pInitial) * sizeof(C_FLOAT64));
 
-  // Calculate all values which are needed for the simulation
-  UpdateSequence::iterator it = mApplyInitialValuesSequence.begin();
-  UpdateSequence::iterator end = mApplyInitialValuesSequence.end();
+  applyUpdateSequence(mApplyInitialValuesSequence);
+}
+
+void CMathContainer::applyUpdateSequence(const CObjectInterface::UpdateSequence & updateSequence)
+{
+  UpdateSequence::const_iterator it = updateSequence.begin();
+  UpdateSequence::const_iterator end = updateSequence.end();
 
   for (; it != end; ++it)
     {
@@ -403,6 +397,12 @@ void CMathContainer::init()
   mDiscontinuityInfix2Object.clear();
   mTriggerInfix2Event.clear();
 
+  // TODO CRITICAL We may have unused event triggers and roots due to optimization
+  // in the discontinuities.
+  createDependencyGraphs();
+
+  updateInitialValues(CModelParameter::ParticleNumbers);
+
 #ifdef COPASI_DEBUG
   CMathObject *pObject = mObjects.array();
   CMathObject *pObjectEnd = pObject + mObjects.size();
@@ -414,10 +414,6 @@ void CMathContainer::init()
 
   std::cout << std::endl;
 #endif // COPASI_DEBUG
-
-  // TODO CRITICAL We may have unused event triggers and roots due to optimization
-  // in the discontinuities.
-  createDependencyGraphs();
 }
 
 const CModel & CMathContainer::getModel() const

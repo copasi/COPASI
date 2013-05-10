@@ -92,6 +92,12 @@ public:
   void applyInitialValues();
 
   /**
+   * Apply the given update sequence to the mathematical objects in the container
+   * @param const CObjectInterface::UpdateSequence & updateSequence
+   */
+  void applyUpdateSequence(const CObjectInterface::UpdateSequence & updateSequence);
+
+  /**
    * Retrieve the CN of the math container
    * The math container provides values for the numerical values of model objects.
    * For the CN mechanism to work properly it has to pretend to be the model.
