@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include "CQModelValue.h"
 
@@ -30,7 +30,8 @@
  *  name 'name'.'
  */
 CQModelValue::CQModelValue(QWidget* parent, const char* name)
-  : CopasiWidget(parent, name)
+  : CopasiWidget(parent, name),
+    mKeyToCopy("")
 {
   setupUi(this);
 
@@ -50,14 +51,14 @@ CQModelValue::~CQModelValue()
 void CQModelValue::slotBtnNew()
 {
   // save the current setting values
-  save();
+  leave();
 
   // standard name
-  std::string name = "quantity";
+  std::string name = "quantity_1";
 
   // if the standard name already exists then creating the new event will fail
   // thus, a growing index will automatically be added to the standard name
-  int i = 0;
+  int i = 1;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
   while (!(mpModelValue = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createModelValue(name)))
@@ -68,14 +69,14 @@ void CQModelValue::slotBtnNew()
     }
 
   std::string key = mpModelValue->getKey();
-  enter(key);
   protectedNotify(ListViews::MODELVALUE, ListViews::ADD, key);
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
 void CQModelValue::slotBtnCopy()
 {
-  QMessageBox::warning(this, "Warning", "Not Implemented");
+  mKeyToCopy = mKey;
+  slotBtnNew();
 }
 
 void CQModelValue::slotBtnDelete()
@@ -266,7 +267,17 @@ bool CQModelValue::leave()
 
 bool CQModelValue::enterProtected()
 {
-  mpModelValue = dynamic_cast< CModelValue * >(mpObject);
+  mpModelValue = NULL;
+
+  if (mKeyToCopy != "")
+    {
+      mpModelValue = dynamic_cast<CModelValue *>(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy));
+      mKeyToCopy = "";
+    }
+  else
+    {
+      mpModelValue = dynamic_cast<CModelValue *>(mpObject);
+    }
 
   if (!mpModelValue)
     {
@@ -275,6 +286,9 @@ bool CQModelValue::enterProtected()
     }
 
   load();
+  
+  mpModelValue = dynamic_cast<CModelValue *>(mpObject);
+  
   return true;
 }
 
