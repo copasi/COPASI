@@ -480,7 +480,7 @@ bool CModel::compile()
 
   CMathContainer MathModel(*this);
 
-  CMathContainer CopyModel(MathModel);
+  // CMathContainer CopyModel(MathModel);
 
 #endif // TST_DEPENDENCYGRAPH
 

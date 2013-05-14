@@ -13,6 +13,7 @@
 #include "copasi/math/CMathObject.h"
 #include "copasi/math/CMathEvent.h"
 #include "copasi/math/CMathDependencyGraph.h"
+#include "copasi/math/CMathReaction.h"
 
 #include "copasi/utilities/CVector.h"
 
@@ -33,13 +34,6 @@ private:
   public:
     CMathEventN * pEvent;
     CMathObject * pDiscontinuous;
-    /*
-    CMathObject * pEventDelay;
-    CMathObject * pEventPriority;
-    CMathObject * pEventAssignment;
-    CMathObject * pEventTrigger;
-    CMathObject * pEventRoot;
-    */
   };
 
   /**
@@ -424,6 +418,11 @@ private:
    * A vector containing all math events.
    */
   CVector< CMathEventN > mEvents;
+
+  /**
+   * A vector containing all math reactions.
+   */
+  CVector< CMathReaction > mReactions;
 
   sDiscontinuous mCreateDiscontinuousPointer;
 

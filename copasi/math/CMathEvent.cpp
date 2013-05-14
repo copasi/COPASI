@@ -34,6 +34,15 @@ void CMathEventN::CAssignment::initialize(CMath::sPointers & pointers)
                           false, false, NULL);
 }
 
+void CMathEventN::CAssignment::copy(const CMathEventN::CAssignment & src,
+                                    CMathContainer & /* container */,
+                                    const size_t & /* valueOffset */,
+                                    const size_t & objectOffset)
+{
+  mpTarget = src.mpTarget + objectOffset;
+  mpAssignment = src.mpAssignment + objectOffset;
+}
+
 bool CMathEventN::CAssignment::compile(CEventAssignment * pDataAssignment,
                                        CMathContainer & container)
 {
@@ -95,6 +104,17 @@ void CMathEventN::CTrigger::CRoot::initialize(CMath::sPointers & pointers)
   CMathObject::initialize(pointers.pEventRootStatesObject, pointers.pEventRootStates,
                           CMath::EventRootState, CMath::Event, CMath::SimulationTypeUndefined,
                           false, false, NULL);
+}
+
+void CMathEventN::CTrigger::CRoot::copy(const CMathEventN::CTrigger::CRoot::CRoot & src,
+                                        CMathContainer & /* container */,
+                                        const size_t & /* valueOffset */,
+                                        const size_t & objectOffset)
+{
+  mpRoot = src.mpRoot + objectOffset;
+  mpRootState = src.mpRootState + objectOffset;
+  mEquality = src.mEquality;
+  mDiscrete = src.mDiscrete;
 }
 
 bool CMathEventN::CTrigger::CRoot::compile(CEvaluationNode * pRootNode,
@@ -186,6 +206,27 @@ void CMathEventN::CTrigger::initialize(CMath::sPointers & pointers)
     {
       pRoot->initialize(pointers);
     }
+}
+
+void CMathEventN::CTrigger::copy(const CMathEventN::CTrigger & src,
+                                 CMathContainer & container,
+                                 const size_t & valueOffset,
+                                 const size_t & objectOffset)
+{
+  mpTrigger = src.mpTrigger + objectOffset;
+  mpInitialTrigger = src.mpInitialTrigger + objectOffset;
+
+  mRoots.resize(src.mRoots.size());
+  CRoot * pRoot = mRoots.array();
+  CRoot * pRootEnd = pRoot + mRoots.size();
+  const CRoot * pRootSrc = src.mRoots.array();
+
+  for (; pRoot != pRootEnd; ++pRoot, ++pRootSrc)
+    {
+      pRoot->copy(*pRootSrc, container, valueOffset, objectOffset);
+    }
+
+  mDualAction = src.mDualAction;
 }
 
 bool CMathEventN::CTrigger::compile(CEvent * pDataEvent,
@@ -833,6 +874,28 @@ void CMathEventN::initialize(CMath::sPointers & pointers)
   CMathObject::initialize(pointers.pEventPrioritiesObject, pointers.pEventPriorities,
                           CMath::EventPriority, CMath::Event, CMath::SimulationTypeUndefined,
                           false, false, NULL);
+}
+
+void CMathEventN::copy(const CMathEventN & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset)
+{
+  mType = src.mType;
+  mTrigger.copy(src.mTrigger, container, valueOffset, objectOffset);
+
+  mAssignments.resize(src.mAssignments.size());
+  CAssignment * pAssignment = mAssignments.array();
+  CAssignment * pAssignmentEnd = pAssignment + mAssignments.size();
+  const CAssignment * pAssignmentSrc = src.mAssignments.array();
+
+  for (; pAssignment != pAssignmentEnd; ++pAssignment, ++pAssignmentSrc)
+    {
+      pAssignment->copy(*pAssignmentSrc, container, valueOffset, objectOffset);
+    }
+
+  mpDelay = src.mpDelay + objectOffset;
+  mpPriority = src.mpPriority + objectOffset;
+  mFireAtInitialTime = src.mFireAtInitialTime;
+  mPersistentTrigger = src.mPersistentTrigger;
+  mDelayAssignment = src.mDelayAssignment;
 }
 
 bool CMathEventN::compile(CEvent * pDataEvent,

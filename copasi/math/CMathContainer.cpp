@@ -51,6 +51,7 @@ CMathContainer::CMathContainer():
   mApplyInitialValuesSequence(),
   mObjects(),
   mEvents(),
+  mReactions(),
   mCreateDiscontinuousPointer(),
   mDataObject2MathObject(),
   mDataValue2MathObject(),
@@ -96,6 +97,7 @@ CMathContainer::CMathContainer(CModel & model):
   mApplyInitialValuesSequence(),
   mObjects(),
   mEvents(),
+  mReactions(),
   mDataObject2MathObject(),
   mDataValue2MathObject(),
   mDiscontinuityEvents("Discontinuities", this),
@@ -149,6 +151,7 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mApplyInitialValuesSequence(),
   mObjects(src.mObjects.size()),
   mEvents(),
+  mReactions(),
   mDataObject2MathObject(),
   mDataValue2MathObject(),
   mDiscontinuityEvents("Discontinuities", this),
@@ -239,6 +242,26 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   for (; pObject != pObjectEnd; ++pObject, ++pObjectSrc)
     {
       pObject->copy(*pObjectSrc, *this, ValueOffset, ObjectOffset);
+    }
+
+  mEvents.resize(src.mEvents.size());
+  CMathEventN * pEvent = mEvents.array();
+  CMathEventN * pEventEnd = pEvent + mEvents.size();
+  const CMathEventN * pEventSrc = src.mEvents.array();
+
+  for (; pEvent != pEventEnd; ++pEvent, ++pEventSrc)
+    {
+      pEvent->copy(*pEventSrc, *this, ValueOffset, ObjectOffset);
+    }
+
+  mReactions.resize(src.mReactions.size());
+  CMathReaction * pReaction = mReactions.array();
+  CMathReaction * pReactionEnd = pReaction + mReactions.size();
+  const CMathReaction * pReactionSrc = src.mReactions.array();
+
+  for (; pReaction != pReactionEnd; ++pReaction, ++pReactionSrc)
+    {
+      pReaction->copy(*pReactionSrc, *this, ValueOffset, ObjectOffset);
     }
 
   createDependencyGraphs();
@@ -400,6 +423,16 @@ void CMathContainer::init()
   // TODO CRITICAL We may have unused event triggers and roots due to optimization
   // in the discontinuities.
   createDependencyGraphs();
+
+  mReactions.resize(mpModel->getReactions().size());
+  CMathReaction * pReaction = mReactions.array();
+  CMathReaction * pReactionEnd = pReaction + mReactions.size();
+  CCopasiVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
+
+  for (; pReaction != pReactionEnd; ++itReaction, ++pReaction)
+    {
+      pReaction->initialize(*itReaction, *this);
+    }
 
   updateInitialValues(CModelParameter::ParticleNumbers);
 

@@ -1,4 +1,4 @@
-# Copyright (C) 2011 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -16,6 +16,7 @@ HEADERS += CMathContainer.h
 HEADERS += CMathEnum.h
 HEADERS += CMathEvent.h
 HEADERS += CMathObject.h
+HEADERS += CMathReaction.h
 HEADERS += CMathTrigger.h
 
 SOURCES += CMathDependencyGraph.cpp
@@ -26,6 +27,7 @@ SOURCES += CMathContainer.cpp
 SOURCES += CMathEnum.cpp
 SOURCES += CMathEvent.cpp
 SOURCES += CMathObject.cpp
+SOURCES += CMathReaction.cpp
 SOURCES += CMathTrigger.cpp
 
 include(../lib.pri)

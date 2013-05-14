@@ -205,6 +205,9 @@ CCopasiObject * CReaction::getParticleFluxReference()
 CCopasiObject * CReaction::getPropensityReference()
 {return mpPropensityReference;}
 
+const CCopasiObject * CReaction::getPropensityReference() const
+{return mpPropensityReference;}
+
 const CCallParameters< C_FLOAT64 > & CReaction::getCallParameters() const
 {
   return mMap.getPointers();

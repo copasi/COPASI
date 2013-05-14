@@ -384,6 +384,12 @@ public:
   CCopasiObject * getPropensityReference();
 
   /**
+   * Retrieve object referencing the propensity
+   * @return CCopasiObject * propensityReference
+   */
+  const CCopasiObject * getPropensityReference() const;
+
+  /**
    * Retrieve the call parameter given to the kinetic function.
    * @return const CCallParameters< C_FLOAT64 > & callParameters
    */

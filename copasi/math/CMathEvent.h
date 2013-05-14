@@ -35,6 +35,15 @@ public:
 
     void initialize(CMath::sPointers & pointers);
 
+    /**
+     * Copy an existing object
+     * @param const CAssignment & src
+     * @param CMathContainer & container
+     * @param const size_t & valueOffset
+     * @param const size_t & objectOffset
+     */
+    void copy(const CAssignment & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset);
+
     bool compile(CEventAssignment * pDataAssignment,
                  CMathContainer & container);
 
@@ -64,6 +73,15 @@ public:
       ~CRoot();
 
       void initialize(CMath::sPointers & pointers);
+
+      /**
+       * Copy an existing object
+       * @param const CRoot & src
+       * @param CMathContainer & container
+       * @param const size_t & valueOffset
+       * @param const size_t & objectOffset
+       */
+      void copy(const CRoot & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset);
 
       bool compile(CEvaluationNode * pRootNode,
                    const bool & equality,
@@ -95,6 +113,15 @@ public:
                                const CMathContainer & container);
 
     void initialize(CMath::sPointers & pointers);
+
+    /**
+     * Copy an existing object
+     * @param const CTrigger & src
+     * @param CMathContainer & container
+     * @param const size_t & valueOffset
+     * @param const size_t & objectOffset
+     */
+    void copy(const CTrigger & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset);
 
     bool compile(CEvent * pDataEvent,
                  CMathContainer & container);
@@ -191,6 +218,15 @@ public:
                        const CMathContainer & container);
 
   void initialize(CMath::sPointers & pointers);
+
+  /**
+   * Copy an existing object
+   * @param const CMathEventN & src
+   * @param CMathContainer & container
+   * @param const size_t & valueOffset
+   * @param const size_t & objectOffset
+   */
+  void copy(const CMathEventN & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset);
 
   bool compile(CEvent * pDataEvent,
                CMathContainer & container);
