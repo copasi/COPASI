@@ -79,7 +79,6 @@ if(NOT CMAKE_BUILD_TYPE)
       FORCE)
 endif(NOT CMAKE_BUILD_TYPE)
 
-
 if (BUILD_TESTS)
 find_path(CPPUNIT_INCLUDE_DIR cppunit/Test.h )
 find_library(CPPUNIT_LIBRARY NAMES cppunit)
@@ -88,15 +87,14 @@ endif(BUILD_TESTS)
 
 set (DEFAULT_EXTUNIT OFF)
 # set (DEFAULT_NONLIN OFF)
-set (DEFAULT_DEBUG OFF)
 set (DEFAULT_DEBUG_TRACING OFF)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 # for the debug version we need to enable
 # COPASI_DEBUG
 
+add_definitions(-DCOPASI_DEBUG)
 set (DEFAULT_EXTUNIT ON)
 set (DEFAULT_NONLIN ON)
-set (DEFAULT_DEBUG ON)
 set (DEFAULT_DEBUG_TRACING ON)
 
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -104,10 +102,6 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 # there should be an option to disable the debug flag, as it litters the
 # file system with trace files all over the place (or rather everywhere the
 # program is started)
-option(ENABLE_COPASI_DEBUG "Enable COPASI Debug" ${DEFAULT_DEBUG})
-if(ENABLE_COPASI_DEBUG)
-  add_definitions(-DCOPASI_DEBUG)
-endif(ENABLE_COPASI_DEBUG)
 
 option(ENABLE_COPASI_DEBUG_TRACE "Enable COPASI Debug Tracing" ${DEFAULT_DEBUG_TRACING})
 if(ENABLE_COPASI_DEBUG_TRACE)
@@ -633,6 +627,8 @@ install(FILES
 # set up variables for cpack
 include(InstallRequiredSystemLibraries)
 
+get_directory_property(DirDefs COMPILE_DEFINITIONS)
+
 message(STATUS "-----------------------------------------------------------
  Building COPASI
 
@@ -675,6 +671,8 @@ message(STATUS "-----------------------------------------------------------
    SBW integration          = ${ENABLE_SBW_INTEGRATION}
    SBML Unit                = ${ENABLE_USE_SBMLUNIT}
    Model Merging            = ${ENABLE_WITH_MERGEMODEL}
+
+   Additional Defines       = ${DirDefs}
 
   Language Bindings:
 
