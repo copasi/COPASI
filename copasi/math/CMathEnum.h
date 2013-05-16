@@ -144,14 +144,18 @@ public:
 public:
   enum SimulationContext
   {
-    SimulationContextUndefined = 0x0,
+    Default = 0x0,
+    // This is used to indicate deterministic simulation
+    Deterministic = 0x1,
     // This must be set when using the reduced model
-    UseMoities = 0x1,
+    UseMoieties = 0x2,
     // This updates the total mass of a moiety and must be set
     // at the beginning of the simulation or after events
-    UpdateMoities = 0x2,
+    UpdateMoieties = 0x4,
+    // This is used to indicate stochastic simulation
+    Stochastic = 0x8,
     // Event handling
-    EventHandling = 0x4
+    EventHandling = 0x10
   };
 
   typedef CMathFlags< SimulationContext > SimulationContextFlag;

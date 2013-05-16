@@ -62,15 +62,93 @@ public:
 
   /**
    * Retrieve the values of all mathematical objects
-   * @param const CVector< C_FLOAT64 > & values
+   * @return const CVectorCore< C_FLOAT64 > & values
    */
-  const CVector< C_FLOAT64 > & getValues() const;
+  const CVectorCore< C_FLOAT64 > & getValues() const;
 
   /**
    * Retrieve the values of all mathematical objects
-   * @return const CVector< C_FLOAT64 > & values
+   * @return CVectorCore< C_FLOAT64 > & values
    */
-  void setValues(const CVector< C_FLOAT64 > & values);
+  CVectorCore< C_FLOAT64 > & getValues();
+
+  /**
+   * Set the values of all mathematical objects
+   * @param const CVectorCore< C_FLOAT64 > & values
+   */
+  void setValues(const CVectorCore< C_FLOAT64 > & values);
+
+  /**
+   * Retrieves the initial state values, i.e., all initial values of objects of
+   * simulation type Fixed, Time, ODE, Dependent, and Independent. It includes only
+   * extensive values for species.
+   * @return const CVectorCore< C_FLOAT64 > & initialState
+   */
+  const CVectorCore< C_FLOAT64 > & getInitialState() const;
+
+  /**
+   * Retrieves the initial state values, i.e., all initial values of objects of
+   * simulation type Fixed, Time, ODE, Dependent, and Independent. It includes only
+   * extensive values for species.
+   * @return CVectorCore< C_FLOAT64 > & initialState
+   */
+  CVectorCore< C_FLOAT64 > & getInitialState();
+
+  /**
+   * Set the initial state values, i.e., all initial values of objects of
+   * simulation type Fixed, Time, ODE, Dependent, and Independent. It includes only
+   * extensive values for species.
+   * @param const CVectorCore< C_FLOAT64 > & initialState
+   */
+  void setInitialState(const CVectorCore< C_FLOAT64 > & initialState);
+
+  /**
+   * Retrieves the state values, i.e., all initial values of objects of
+   * simulation type Time, ODE, Dependent, and Independent. It includes only
+   * extensive values for species.
+   * @return const CVectorCore< C_FLOAT64 > & state
+   */
+  const CVectorCore< C_FLOAT64 > & getState() const;
+
+  /**
+   * Retrieves the state values, i.e., all initial values of objects of
+   * simulation type Time, ODE, Dependent, and Independent. It includes only
+   * extensive values for species.
+   * @return const CVectorCore< C_FLOAT64 > & state
+   */
+  CVectorCore< C_FLOAT64 > & getState();
+
+  /**
+   * Set the state values, i.e., all initial values of objects of
+   * simulation type Time, ODE, Dependent, and Independent. It includes only
+   * extensive values for species.
+   * @param const CVectorCore< C_FLOAT64 > & state
+   */
+  void setState(const CVectorCore< C_FLOAT64 > & state);
+
+  /**
+   * Retrieves the state values, i.e., all initial values of objects of
+   * simulation type Time, ODE, and Dependent. It includes only
+   * extensive values for species.
+   * @return const CVectorCore< C_FLOAT64 > & stateReduced
+   */
+  const CVectorCore< C_FLOAT64 > & getStateReduced() const;
+
+  /**
+   * Retrieves the reduced state values, i.e., all initial values of objects of
+   * simulation type Time, ODE, and Dependent. It includes only
+   * extensive values for species.
+   * @return const CVectorCore< C_FLOAT64 > & stateReduced
+   */
+  CVectorCore< C_FLOAT64 > & getStateReduced();
+
+  /**
+   * Set the reduced state values, i.e., all initial values of objects of
+   * simulation type Time, ODE, Dependent, and Independent. It includes only
+   * extensive values for species.
+   * @param const CVectorCore< C_FLOAT64 > & stateReduced
+   */
+  void setStateReduced(const CVectorCore< C_FLOAT64 > & stateReduced);
 
   /**
    * Calculate all dependent initial values based on initial extensive
@@ -81,9 +159,16 @@ public:
 
   /**
    * Set the transient values to the initial values and calculate all
-   * dependent values
+   * dependent values. Please call updateInitialValues before calling this
+   * method to assure that all values are up to date.
    */
   void applyInitialValues();
+
+  /**
+   * Calculate all values required for simulation based on the current state
+   * @param const bool & useMoieties
+   */
+  void updateSimulatedValues(const bool & useMoieties);
 
   /**
    * Apply the given update sequence to the mathematical objects in the container
@@ -254,7 +339,7 @@ private:
   void createDependencyGraphs();
 
   /**
-   * Create the update sequence needed to synchronize the initial values
+   * Create the update sequences needed to synchronize the initial values
    */
   void createSynchronizeInitialValuesSequence();
 
@@ -262,6 +347,11 @@ private:
    * Create the update sequence used when applying the initial state
    */
   void createApplyInitialValuesSequence();
+
+  /**
+   * Create the update sequences used to calculate all values required for simulation
+   */
+  void createUpdateSimulationValuesSequence();
 
   /**
    * Determine the entity type of an entity
@@ -346,6 +436,8 @@ private:
    */
   std::string createDiscontinuityTriggerInfix(const CEvaluationNode * pNode);
 
+  // Attributes
+
   /**
    * A pointer to the data model which mathematics are contained
    */
@@ -382,6 +474,28 @@ private:
   CVectorCore< C_FLOAT64 > mDependentMasses;
   CVectorCore< C_FLOAT64 > mDiscontinuous;
 
+  size_t mFixedCount;
+  size_t mEventTargetCount;
+  size_t mODECount;
+  size_t mIndependentCount;
+  size_t mDependentCount;
+  size_t mAssignmentCount;
+
+  /**
+   * The initial state contains also all fixed values
+   */
+  CVectorCore< C_FLOAT64 > mInitialState;
+
+  /**
+   * The state contains values of type Time, ODE, Independent, and Dependent
+   */
+  CVectorCore< C_FLOAT64 > mState;
+
+  /**
+   * The state contains values of type Time, ODE, Independent
+   */
+  CVectorCore< C_FLOAT64 > mStateReduced;
+
   /**
    * Dependency graph for initial value calculations
    */
@@ -410,6 +524,54 @@ private:
   CObjectInterface::UpdateSequence mApplyInitialValuesSequence;
 
   /**
+   * The sequence of updates needed to calculate all simulation required values based
+   * on the assumption that all state values may have changed
+   */
+  CObjectInterface::UpdateSequence mSimulationValuesSequence;
+
+  /**
+   * The sequence of updates needed to calculate all simulation required values based
+   * on the assumption that all state values may have changed
+   */
+  CObjectInterface::UpdateSequence mSimulationValuesSequenceReduced;
+
+  /**
+   * The set of objects which determine the initial state of the model based on extensive
+   * values
+   */
+  CObjectInterface::ObjectSet mInitialStateValueExtensive;
+
+  /**
+   * The set of objects which determine the initial state of the model based on intensive
+   * values
+   */
+  CObjectInterface::ObjectSet mInitialStateValueIntensive;
+
+  /**
+   * The set of objects which determine the transient state of the model
+   */
+  CObjectInterface::ObjectSet mStateValues;
+
+  /**
+   * The set of objects which determine the transient state of the reduced model
+   */
+  CObjectInterface::ObjectSet mReducedStateValues;
+
+  /**
+   * The objects which are required to be up to date for simulation of the full model,
+   * i.e., the right hand side of ODEs, rates of species determined by reaction,
+   * and event roots.
+   */
+  CObjectInterface::ObjectSet mSimulationRequiredValues;
+
+  /**
+   * The objects which are required to be up to date for simulation of the reduced model,
+   * i.e., the right hand side of ODEs, rates of independent species determined by reaction,
+   * and event roots.
+   */
+  // CObjectInterface::ObjectSet mSimulationRequiredValuesReduced;
+
+  /**
    * A vector containing all math objects.
    */
   CVector< CMathObject > mObjects;
@@ -424,6 +586,9 @@ private:
    */
   CVector< CMathReaction > mReactions;
 
+  /**
+   * Structure of pointers used for creating discontinuities.
+   */
   sDiscontinuous mCreateDiscontinuousPointer;
 
   /**

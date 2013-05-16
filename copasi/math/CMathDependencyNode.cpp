@@ -174,9 +174,9 @@ bool CMathDependencyNode::buildUpdateSequence(const CMath::SimulationContextFlag
                 //
                 // The solution is that the moiety automatically updates the value in conjunction
                 // with the dependency graph omitting the value in the update sequence if the context
-                // is CMath::UseMoities.
+                // is CMath::UseMoieties.
 
-                if (!(context & CMath::UseMoities) ||
+                if (!(context & CMath::UseMoieties) ||
                     (pObject = dynamic_cast< const CMathObject *>(itNode->getObject())) == NULL ||
                     pObject->getSimulationType() != CMath::Dependent ||
                     pObject->getValueType() != CMath::Value)

@@ -144,13 +144,13 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
     {
       case CMath::Moiety:
 
-        if ((context & CMath::UpdateMoities) &&
+        if ((context & CMath::UpdateMoieties) &&
             mValueType == CMath::TotalMass)
           {
             return true;
           }
 
-        if ((context & CMath::UseMoities) &&
+        if ((context & CMath::UseMoieties) &&
             mValueType == CMath::DependentMass)
           {
             return true;
@@ -165,11 +165,16 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
         if (mValueType != CMath::Value)
           return true;
 
-        if ((context & CMath::UseMoities) &&
-            mSimulationType == CMath::Independent &&
+        if ((context & CMath::UseMoieties) &&
+            mSimulationType == CMath::Dependent &&
             !mIsIntensiveProperty)
           {
-            return true;
+            if (mpIntensiveProperty != pObject)
+              {
+                return true;
+              }
+
+            return false;
           }
 
         // If the value is in the context, it does not depend on the object.
@@ -268,7 +273,7 @@ void CMathObject::calculate()
   //
   // The solution is that the moiety automatically updates the value in conjunction
   // with the dependency graph omitting the value in the update sequence if the context
-  // is CMath::UseMoities.
+  // is CMath::UseMoieties.
 }
 
 const CCopasiObject * CMathObject::getDataObject() const

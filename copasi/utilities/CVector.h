@@ -50,22 +50,23 @@ protected:
   // Operations
 public:
   /**
-   * Default constructor
+   * Specific constructor
+   * @param const size_t & size (default: 0)
+   * @param CType * vector (default: NULL)
    */
-  CVectorCore() :
-    mSize(0),
-    mVector(NULL)
+  CVectorCore(const size_t & size = 0,
+              CType * vector = NULL):
+    mSize(size),
+    mVector(vector)
   {}
 
   /**
-   * Specific constructor
-   * @param const size_t & size
-   * @param CType * vector
+   * Copy constructor
+   * @param const CVectorCore< CType > & src
    */
-  CVectorCore(const size_t & size,
-              CType * vector):
-    mSize(size),
-    mVector(vector)
+  CVectorCore(const CVectorCore< CType > & src):
+    mSize(src.mSize),
+    mVector(src.mVector)
   {}
 
   /**
@@ -73,6 +74,23 @@ public:
    */
   ~CVectorCore()
   {}
+
+  /**
+   * Assignment operator
+   * @param const CType & value
+   */
+  CVectorCore< CType> & operator = (const CType & value)
+  {
+    size_t i;
+    CType * tmp = mVector;
+
+    for (i = 0; i < mSize; i++, tmp++)
+      {
+        *tmp = value;
+      }
+
+    return *this;
+  }
 
   /**
    * The number of elements stored in the vector.
@@ -144,6 +162,55 @@ public:
                                        const CVectorCore< CType > & A);
 #endif // WIN32
 #endif // SWIG
+
+  /**
+   * Reorder the elements according to the provided pivots
+   * @param const CVectorCore<size_t> & pivot
+   * @return bool success
+   */
+  bool applyPivot(const CVectorCore<size_t> & pivot)
+  {
+    if (pivot.size() != mSize) return false;
+
+    bool * pApplied = new bool[mSize];
+    CVectorCore < bool > Applied(mSize, pApplied);
+
+    Applied = false;
+    CType tmp;
+
+    size_t i;
+    size_t to;
+    size_t from;
+
+    for (i = 0; i < mSize; i++)
+      if (!Applied[i])
+        {
+          to = i;
+          from = pivot[i];
+
+          if (to != from)
+            {
+              tmp = mVector[i];
+
+              while (from != i)
+                {
+                  mVector[to] = mVector[from];
+                  Applied[to] = true;
+
+                  to = from;
+                  from = pivot[to];
+                }
+
+              mVector[to] = tmp;
+            }
+
+          Applied[to] = true;
+        }
+
+    delete [] pApplied;
+
+    return true;
+  }
 };
 
 /**
@@ -161,28 +228,70 @@ public:
    * @param size_t size (default = 0)
    */
   CVector(size_t size = 0) :
-    CVectorCore< CType >()
-  {resize(size);}
+    CVectorCore< CType >(0, NULL)
+  {
+    resize(size);
+  }
 
   /**
    * Copy constructor
    * @param const CVector <CType> & src
    */
   CVector(const CVector <CType> & src):
-    CVectorCore< CType >()
+    CVectorCore< CType >(0, NULL)
   {
-    resize(src.CVectorCore< CType >::mSize);
-
-    if (CVectorCore< CType >::mSize)
-      memcpy(CVectorCore< CType >::mVector,
-             src.CVectorCore< CType >::mVector, CVectorCore< CType >::mSize * sizeof(CType));
+    copy(src);
   }
 
   /**
    * Destructor.
    */
   ~CVector()
-  {if (CVectorCore< CType >::mVector) delete [] CVectorCore< CType >::mVector;}
+  {
+    if (CVectorCore< CType >::mVector != NULL)
+      delete [] CVectorCore< CType >::mVector;
+  }
+
+  /**
+   * Assignment operator
+   * @param const CVectorCore <CType> & rhs
+   * @return CVector <CType> & lhs
+   */
+  CVector< CType > & operator = (const CVectorCore <CType> & rhs)
+  {
+    copy(rhs);
+
+    return * this;
+  }
+
+  /**
+   * Assignment operator
+   * @param const CVector <CType> & rhs
+   * @return CVector <CType> & lhs
+   */
+  CVector< CType > & operator = (const CVector <CType> & rhs)
+  {
+    copy(rhs);
+
+    return * this;
+  }
+
+  /**
+   * Assignment operator
+   * @param const CType & value
+   */
+  CVector< CType> & operator = (const CType & value)
+  {
+    size_t i;
+    CType * tmp = CVectorCore< CType >::mVector;
+
+    for (i = 0; i < CVectorCore< CType >::mSize; i++, tmp++)
+      {
+        *tmp = value;
+      }
+
+    return *this;
+  }
 
   /**
    * Resize the vector. The previous content is lost
@@ -246,89 +355,23 @@ public:
       }
   }
 
-  /**
-   * Assignment operator
-   * @param const CVector <CType> & rhs
-   * @return CVector <CType> & lhs
-   */
-  CVector <CType> & operator = (const CVector <CType> & rhs)
+protected:
+  void copy(const CVectorCore <CType> & rhs)
   {
-    if (this == &rhs)
+    if (this != &rhs)
       {
-        return * this;
+        if (CVectorCore< CType >::mSize != rhs.size())
+          {
+            resize(rhs.size());
+          }
+
+        if (CVectorCore< CType >::mSize != 0)
+          {
+            memcpy((void *) CVectorCore< CType >::mVector,
+                   (void *) rhs.array(),
+                   CVectorCore< CType >::mSize * sizeof(CType));
+          }
       }
-
-    if (CVectorCore< CType >::mSize != rhs.CVectorCore< CType >::mSize)
-      resize(rhs.CVectorCore< CType >::mSize);
-
-    memcpy(CVectorCore< CType >::mVector,
-           rhs.CVectorCore< CType >::mVector,
-           CVectorCore< CType >::mSize * sizeof(CType));
-
-    return * this;
-  }
-
-  /**
-   * Assignment operator
-   * @param const CType & value
-   * @return CVector <CType> & lhs
-   */
-  CVector< CType > & operator = (const CType & value)
-  {
-    size_t i;
-    CType * tmp = CVectorCore< CType >::mVector;
-
-    for (i = 0; i < CVectorCore< CType >::mSize; i++, tmp++)
-      {
-        *tmp = value;
-      }
-
-    return *this;
-  }
-
-  /**
-   * Reorder the elements according to the provided pivots
-   * @param const CVector<size_t> & pivot
-   * @return bool success
-   */
-  bool applyPivot(const CVector<size_t> & pivot)
-  {
-    if (pivot.size() != CVectorCore< CType >::mSize) return false;
-
-    CVector< bool > Applied(CVectorCore< CType >::mSize);
-    Applied = false;
-    CType tmp;
-
-    size_t i;
-    size_t to;
-    size_t from;
-
-    for (i = 0; i < CVectorCore< CType >::mSize; i++)
-      if (!Applied[i])
-        {
-          to = i;
-          from = pivot[i];
-
-          if (to != from)
-            {
-              tmp = CVectorCore< CType >::mVector[i];
-
-              while (from != i)
-                {
-                  CVectorCore< CType >::mVector[to] = CVectorCore< CType >::mVector[from];
-                  Applied[to] = true;
-
-                  to = from;
-                  from = pivot[to];
-                }
-
-              CVectorCore< CType >::mVector[to] = tmp;
-            }
-
-          Applied[to] = true;
-        }
-
-    return true;
   }
 };
 

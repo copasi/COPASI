@@ -72,7 +72,10 @@ bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag 
     const CObjectInterface::ObjectSet & requestedObjects,
     CObjectInterface::UpdateSequence & updateSequence)
 {
+  std::ofstream GetUpdateSequence("GetUpdateSequence.dot");
+
   bool success = true;
+
   iterator found;
   iterator notFound = mObjects2Nodes.end();
 
@@ -118,6 +121,9 @@ bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag 
       success = false;
     }
 
+  exportDOTFormat(GetUpdateSequence, "GetUpdateSequence");
+  GetUpdateSequence.close();
+
   if (!success) goto finish;
 
   it = requestedObjects.begin();
@@ -142,6 +148,7 @@ bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag 
     {
       // Reset the dependency nodes for the next call.
       itCheck->second->setChanged(false);
+      itCheck->second->setRequested(false);
     }
 
 finish:
@@ -152,6 +159,18 @@ finish:
 
       CCopasiMessage(CCopasiMessage::ERROR, MCMathModel + 3, (*it)->getCN().c_str());
     }
+
+  CObjectInterface::UpdateSequence::const_iterator itSeq = updateSequence.begin();
+  CObjectInterface::UpdateSequence::const_iterator endSeq = updateSequence.end();
+
+  std::cout << std::endl <<  "Start" << std::endl;
+
+  for (; itSeq != endSeq; ++itSeq)
+    {
+      std::cout << *static_cast< const CMathObject * >(*itSeq);
+    }
+
+  std::cout << "End" << std::endl;
 
   return success;
 }
@@ -176,9 +195,17 @@ void CMathDependencyGraph::exportDOTFormat(std::ostream & os, const std::string 
 
       for (; itDep != endDep; ++itDep)
         {
+          os << "\"";
           os << getDOTNodeId(pObject);
+          os << ((it->second->isChanged()) ? "\\nC" : "\\no");
+          os << ((it->second->isRequested()) ? "R" : "o");
+          os << "\"";
           os << " -> ";
+          os << "\"";
           os << getDOTNodeId((*itDep)->getObject());
+          os << (((*itDep)->isChanged()) ? "\\nC" : "\\no");
+          os << (((*itDep)->isRequested()) ? "R" : "o");
+          os << "\"";
           os << ";" << std::endl;
         }
     }
@@ -194,7 +221,7 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
 
   if (pDataObject == NULL && pMathObject == NULL)
     {
-      return "\"Invalid Node\"";
+      return "Invalid Node";
     }
 
   if (pDataObject == NULL)
@@ -205,7 +232,6 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
   if (pDataObject == NULL)
     {
       std::ostringstream os;
-      os << "\"";
 
       switch (pMathObject->getValueType())
         {
@@ -274,16 +300,16 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
 
       if (found != mObject2Index.end())
         {
-          os << "::"  << found->second << "\"";
+          os << "::"  << found->second;
         }
       else
         {
-          os << "::"  << mObject2Index.size() << "\"";
+          os << "::"  << mObject2Index.size();
           mObject2Index[pMathObject] = mObject2Index.size();
         }
 
       return os.str();
     }
 
-  return "\"" + pDataObject->getObjectParent()->getObjectName() + "::" + pDataObject->getObjectName() + "\"";
+  return pDataObject->getObjectParent()->getObjectName() + "::" + pDataObject->getObjectName();
 }

@@ -187,11 +187,6 @@ const CMathDependencyNodeIterator::State & CMathDependencyNodeIterator::skipChil
   Current.mItChild = Current.mEndChild;
   mCurrentState = After;
 
-  if (!(mProcessingModes & mCurrentState))
-    {
-      next();
-    }
-
   return mCurrentState;
 }
 
