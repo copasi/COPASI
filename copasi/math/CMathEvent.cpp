@@ -106,7 +106,7 @@ void CMathEventN::CTrigger::CRoot::initialize(CMath::sPointers & pointers)
                           false, false, NULL);
 }
 
-void CMathEventN::CTrigger::CRoot::copy(const CMathEventN::CTrigger::CRoot::CRoot & src,
+void CMathEventN::CTrigger::CRoot::copy(const CMathEventN::CTrigger::CRoot & src,
                                         CMathContainer & /* container */,
                                         const size_t & /* valueOffset */,
                                         const size_t & objectOffset)
