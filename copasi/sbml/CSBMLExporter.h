@@ -141,7 +141,10 @@ public:
    * with an already existing sbml id which came from the sbmlid attribute in a
    * copasi file or directly by importing an SBML file.
    */
-  static const std::string createUniqueId(const std::map<std::string, const SBase*>& idMap, const std::string& prefix, bool addIndexForFirst = true);
+  static const std::string createUniqueId(const std::map<std::string, const SBase*>& idMap,
+                                          const std::string& prefix,
+                                          bool addIndexForFirst,
+                                          const std::string & separator = "_");
 
 #if LIBSBML_VERSION >= 40001
   /**

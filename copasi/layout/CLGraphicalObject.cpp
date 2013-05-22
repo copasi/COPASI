@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalObject.cpp,v $
-//   $Revision: 1.18 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:51 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -31,7 +23,6 @@
 
 #include <sbml/packages/layout/sbml/GraphicalObject.h>
 
-
 #include "CLGraphicalObject.h"
 
 #include "report/CKeyFactory.h"
@@ -40,7 +31,7 @@
 
 CLGraphicalObject::CLGraphicalObject(const std::string & name,
                                      const CCopasiContainer * pParent)
-    : CLBase(),
+  : CLBase(),
     CCopasiContainer(name, pParent, "LayoutElement"),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
     mModelObjectKey(""),
@@ -52,7 +43,7 @@ CLGraphicalObject::CLGraphicalObject(const std::string & name,
 
 CLGraphicalObject::CLGraphicalObject(const CLGraphicalObject & src,
                                      const CCopasiContainer * pParent)
-    : CLBase(src),
+  : CLBase(src),
     CCopasiContainer(src, pParent),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
     mModelObjectKey(src.mModelObjectKey),
@@ -65,7 +56,7 @@ CLGraphicalObject::CLGraphicalObject(const CLGraphicalObject & src,
 CLGraphicalObject::CLGraphicalObject(const GraphicalObject & sbml,
                                      std::map<std::string, std::string> & layoutmap,
                                      const CCopasiContainer * pParent)
-    : CLBase(sbml),
+  : CLBase(sbml),
     CCopasiContainer(sbml.getId(), pParent, "LayoutElement"),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
     mModelObjectKey(""),
@@ -149,8 +140,6 @@ std::string CLGraphicalObject::getModelObjectDisplayName(bool /* regular */, boo
     }
 }
 
-
-
 void CLGraphicalObject::exportToSBML(GraphicalObject * sbmlobject,
                                      const std::map<const CCopasiObject*, SBase*> & /* copasimodelmap */,
                                      std::map<std::string, const SBase*>& sbmlIDs) const
@@ -158,7 +147,7 @@ void CLGraphicalObject::exportToSBML(GraphicalObject * sbmlobject,
   if (!sbmlobject) return;
 
   //Name and ID
-  std::string id = CSBMLExporter::createUniqueId(sbmlIDs, "layout_glyph_");
+  std::string id = CSBMLExporter::createUniqueId(sbmlIDs, "layout_glyph", true);
   sbmlobject->setId(id);
   sbmlIDs.insert(std::pair<const std::string, const SBase*>(id, sbmlobject));
 
@@ -263,7 +252,6 @@ bool CLGraphicalObject::hasValidModelReference() const
             }
 
           pParent = pParent->getObjectParent();
-
         }
 
       assert(pDM2 != NULL);

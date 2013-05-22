@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayout.cpp,v $
-//   $Revision: 1.22 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/05/10 08:55:15 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -43,7 +35,7 @@
 
 CLayout::CLayout(const std::string & name,
                  const CCopasiContainer * pParent)
-    : CLBase(),
+  : CLBase(),
     CCopasiContainer(name, pParent, "Layout"),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
     mDimensions(),
@@ -59,7 +51,7 @@ CLayout::CLayout(const std::string & name,
 
 CLayout::CLayout(const CLayout & src,
                  const CCopasiContainer * pParent)
-    : CLBase(src),
+  : CLBase(src),
     CCopasiContainer(src, pParent),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
     mDimensions(src.mDimensions),
@@ -79,7 +71,7 @@ CLayout::CLayout(const CLayout & src,
 CLayout::CLayout(const Layout & sbml,
                  std::map<std::string, std::string> & layoutmap,
                  const CCopasiContainer * pParent)
-    : CLBase(sbml),
+  : CLBase(sbml),
     CCopasiContainer(sbml.getId(), pParent, "Layout"),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
     mDimensions(*sbml.getDimensions()),
@@ -267,7 +259,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
   if (!layout) return;
 
   //Name and ID
-  std::string id = CSBMLExporter::createUniqueId(sbmlIDs, "layout_");
+  std::string id = CSBMLExporter::createUniqueId(sbmlIDs, "layout", true);
   layout->setId(id);
   sbmlIDs.insert(std::pair<const std::string, const SBase*>(id, layout));
   //we do not check if the layout is already present in the libsbml data

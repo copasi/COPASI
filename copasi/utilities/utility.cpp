@@ -445,3 +445,51 @@ std::string pointerToString(const void * pVoid)
 
   return Pointer.str();
 }
+
+std::string nameToSbmlId(const std::string & name)
+{
+  // We convert all non allowed characters to '_'
+  // letter ::= ’a’..’z’,’A’..’Z’
+  // digit  ::= ’0’..’9’
+  // idChar ::= letter | digit | ’_’
+  // SId    ::= (letter | ’_’ ) idChar*
+
+  std::ostringstream IdStream;
+
+  std::string::const_iterator it = name.begin();
+  std::string::const_iterator end = name.end();
+
+  if ('0' <= *it && *it <= '9')
+    {
+      IdStream << '_';
+    }
+
+  for (; it != end; ++it)
+    {
+      // second, third or forth character of a multi-byte encoding
+      if (0x80 == (*it & 0xc0))
+        {
+          continue;
+        }
+
+      if (('0' <= *it && *it <= '9') ||
+          ('a' <= *it && *it <= 'z') ||
+          ('A' <= *it && *it <= 'Z'))
+        {
+          IdStream << *it;
+        }
+      else
+        {
+          IdStream << '_';
+        }
+    }
+
+  std::string Id = IdStream.str();
+
+  if (Id[Id.length() - 1] != '_')
+    {
+      return Id;
+    }
+
+  return Id.substr(0, Id.length() - 1);
+}

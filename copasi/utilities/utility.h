@@ -178,4 +178,10 @@ void * stringToPointer(const std::string str);
  */
 std::string pointerToString(const void * pVoid);
 
+/**
+ * Convert a utf8 encoded name to a XmlId
+ * @param const std::string & name
+ * @return std::string SbmlId
+ */
+std::string nameToSbmlId(const std::string & name);
 #endif // COPASI_utilities
