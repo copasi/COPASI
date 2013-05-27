@@ -44,11 +44,19 @@ protected:
   CModel* pModel;
 
 protected slots:
+
+  /// handles activation or deactivation of a compartment
   void slotCompartmentActivated(QTreeWidgetItem* pItem, int col);
+  
+  /// handles change of linear/rectangular mode
+  void slotMode();
 
 private:
+
   void load();
+
 private slots:
+
   void slotOK();
   void slotCancel();
 };

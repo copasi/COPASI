@@ -45,9 +45,7 @@ CQExpandModelData::~CQExpandModelData()
 
 void CQExpandModelData::load()
 {
-
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-
 
   pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 
@@ -58,22 +56,17 @@ void CQExpandModelData::load()
     pItem->setText(0,  FROM_UTF8(pModel->getCompartments()[i]->getObjectName()));
     pItem->setCheckState(0, Qt::Unchecked);
     mItemCompartmentMap[pItem] = pModel->getCompartments()[i];
-    //mCompartmentSignalMapper
     mpTreeWidget->addTopLevelItem(pItem);
     }
   
   connect(mpTreeWidget, SIGNAL(itemChanged(QTreeWidgetItem*, int)), this, SLOT(slotCompartmentActivated(QTreeWidgetItem*, int)));
-
-  //mpEditNumber->setText(QString::number(1));
-  //mpEditNumber->setEnabled(true);
-
-   
+  
+  connect(mpRadioButtonLin, SIGNAL(toggled(bool)), this, SLOT(slotMode()));
+  connect(mpRadioButtonRec, SIGNAL(toggled(bool)), this, SLOT(slotMode()));
 }
 
 void CQExpandModelData::slotCompartmentActivated(QTreeWidgetItem* pItem, int col)
 {
-  std::cout << pItem << "  " << col << std::endl;
-  
   //only do something if a checkbox in the first column is clicked
   if (col != 0)
     return;
@@ -159,22 +152,24 @@ void CQExpandModelData::slotOK()
   
   // std::string name =  static_cast<std::string >(mpBoxCompartmentName->currentText().toUtf8());     //toStdString();
 
-  //int mult =  mpEditNumber->text().toInt();
-
- /* if (mult < 0)
-    {
-
-      CQMessageBox::critical(this, QString("Error"),
-                             QString("The choise of the Number of copies is incorect  ! "),
-                             QMessageBox::Ok, QMessageBox::Ok);
-
-      return;
-    }*/
-
 }
 
 void CQExpandModelData::slotCancel()
 {
   reject();
+}
+
+void CQExpandModelData::slotMode()
+{
+  if (mpRadioButtonLin->isChecked())
+    {
+    mpLabelCross->setEnabled(false);
+    mpLineEditSizeY->setEnabled(false);
+    }
+  else if (mpRadioButtonRec->isChecked())
+    {
+    mpLabelCross->setEnabled(true);
+    mpLineEditSizeY->setEnabled(true);
+    }
 }
 
