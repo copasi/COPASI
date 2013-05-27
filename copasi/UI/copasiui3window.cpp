@@ -418,9 +418,9 @@ void CopasiUI3Window::createMenuBar()
 #endif
 
   mpTools->addSeparator();
+  mpTools->addAction(mpaExpandModel);
 #ifdef COPASI_DEBUG
   mpTools->addAction(mpaObjectBrowser);
-  mpTools->addAction(mpaExpandModel);
   mpTools->addSeparator();
 #endif // COPASI_DEBUG
 
