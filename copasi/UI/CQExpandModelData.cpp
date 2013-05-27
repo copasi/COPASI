@@ -19,33 +19,25 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModelExpansion.h"
 #include "report/CCopasiRootContainer.h"
-#include "UI/CCopasiSelectionDialog.h"
-#include "CQMessageBox.h"
+//#include "UI/CCopasiSelectionDialog.h"
 
 #include "UI/qtUtilities.h"
-#include <qsignalmapper.h>
-#include <qcombobox.h>
-#include <qapplication.h>
 
-#include <QHeaderView>
 #include <QString>
+#include <QIntValidator>
 #include "CQExpandModelData.h"
-
-/*
- *  Constructs a CQExpandModelData which is a child of 'parent', with the
- *  name 'name'.'
- */
 
 CQExpandModelData::CQExpandModelData(QWidget* parent, Qt::WindowFlags fl)
     : QDialog(parent, fl)
 {
   setupUi(this);
+  
+  mpLineEditSizeX->setValidator(new QIntValidator(1, 10000, this));
+  mpLineEditSizeY->setValidator(new QIntValidator(1, 10000, this));
 
   load();
 }
-/*
- *  Destroys the object and frees any allocated resources
- */
+
 CQExpandModelData::~CQExpandModelData()
 {
   // no need to delete child widgets, Qt does it all for us
@@ -56,61 +48,120 @@ void CQExpandModelData::load()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  mpComboMap = NULL;
-
-  pdelete(mpComboMap);
-  mpComboMap = new QSignalMapper(this);
-  connect(mpComboMap, SIGNAL(mapped(int)), this, SLOT(slotCompartmentChanged(/* int */)));
-  connect(mpCheckDiffusion, SIGNAL(toggled(bool)), this, SLOT(slotApplyDiffusion(bool)));
 
   pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 
   size_t i, imax = pModel->getCompartments().size();
-
-  mCompartmentName.resize(imax);
-
-  for (i = 0; i < imax; ++i)
+  for(i=0; i<imax; ++i)
     {
-      const CCompartment* comp = pModel->getCompartments()[i];
-      mCompartmentName[i] =  comp->getObjectName();
+    QTreeWidgetItem * pItem = new QTreeWidgetItem((QTreeWidget*)NULL, 1000);
+    pItem->setText(0,  FROM_UTF8(pModel->getCompartments()[i]->getObjectName()));
+    pItem->setCheckState(0, Qt::Unchecked);
+    mItemCompartmentMap[pItem] = pModel->getCompartments()[i];
+    //mCompartmentSignalMapper
+    mpTreeWidget->addTopLevelItem(pItem);
     }
+  
+  connect(mpTreeWidget, SIGNAL(itemChanged(QTreeWidgetItem*, int)), this, SLOT(slotCompartmentActivated(QTreeWidgetItem*, int)));
 
-  for (i = 0; i < imax; ++i)
-    mpBoxCompartmentName->insertItem(mpBoxCompartmentName->count(), FROM_UTF8(mCompartmentName[i]));
+  //mpEditNumber->setText(QString::number(1));
+  //mpEditNumber->setEnabled(true);
 
-  for (i = 0; i < imax; i++)
-    {
-
-      mpBoxCompartmentName->setEditable(false);
-
-      mpComboMap->setMapping(mpBoxCompartmentName, (int) i);
-      connect(mpBoxCompartmentName, SIGNAL(activated(int)), mpComboMap, SLOT(map()));
-    }
-
-  mpEditNumber->setText(QString::number(1));
-  mpEditNumber->setEnabled(true);
-
-  mpCheckDiffusion->setChecked(false);
-  slotApplyDiffusion(false);
-
-  if (mpCheckDiffusion->isChecked()) slotApplyDiffusion(true);
+   
 }
+
+void CQExpandModelData::slotCompartmentActivated(QTreeWidgetItem* pItem, int col)
+{
+  std::cout << pItem << "  " << col << std::endl;
+  
+  //only do something if a checkbox in the first column is clicked
+  if (col != 0)
+    return;
+  
+  const CCompartment* pComp = NULL;
+  std::map<QTreeWidgetItem*, const CCompartment*>::const_iterator it = mItemCompartmentMap.find(pItem);
+  if (it != mItemCompartmentMap.end())
+    pComp = it->second;
+  if (!pComp)
+    return;
+  
+  //checked
+  if (pItem->checkState(0) == Qt::Checked)
+  {
+    size_t i, imax = pComp->getMetabolites().size();
+    for(i=0; i<imax; ++i)
+    {
+      QTreeWidgetItem * pChild = new QTreeWidgetItem(pItem, 1001);
+      pChild->setText(0,  FROM_UTF8(pComp->getMetabolites()[i]->getObjectName()));
+      pChild->setCheckState(1, Qt::Unchecked);
+      mItemMetabMap[pChild]=pComp->getMetabolites()[i];
+    }
+    pItem->setExpanded(true);
+  }
+  
+  //unchecked
+  if (pItem->checkState(0) == Qt::Unchecked)
+  {
+    //remove children
+    size_t i, imax = pItem->childCount();
+    for (i=0; i<imax; ++i)
+    {
+      pItem->removeChild(pItem->child(0));
+    }
+  }
+}
+
+
 void CQExpandModelData::slotOK()
 {
-  std::string name =  static_cast<std::string >(mpBoxCompartmentName->currentText().toUtf8());     //toStdString();
+  CModelExpansion::SetOfModelElements modelelements;
+  std::set<std::string> metabkeys;
+  
+  std::map<QTreeWidgetItem*, const CCompartment*>::const_iterator it;
+  for (it=mItemCompartmentMap.begin(); it != mItemCompartmentMap.end(); ++it)
+  {
+    if (it->first->checkState(0)==Qt::Checked)
+    { //the compartment is included
+      modelelements.addCompartment(it->second);
+      
+      //check whether diffusion is requested for the metabolites inside
+      size_t i;
+      for (i=0; i<it->first->childCount(); ++i)
+      {
+        if (it->first->child(i)->checkState(1)==Qt::Checked)
+        {
+          std::map<QTreeWidgetItem*, const CMetab*>::const_iterator itMetab = mItemMetabMap.find(it->first->child(i));
+          const CMetab* pMetab=NULL;
+          if (itMetab != mItemMetabMap.end())
+            metabkeys.insert(itMetab->second->getKey());
+        }
+        
+      }
+      
+      
+    }
+  }
 
-  size_t i, imax = pModel->getCompartments().size();
+  CModelExpansion me(pModel);
+  modelelements.fillDependencies(pModel);
+  
+  int multx, multy;
+  multx=mpLineEditSizeX->text().toInt();
+  multy=mpLineEditSizeY->text().toInt();
+  
+  if (mpRadioButtonLin->isChecked())
+    me.createLinearArray(modelelements, multx, metabkeys);
+  else if (mpRadioButtonRec->isChecked())
+    me.createRectangularArray(modelelements, multx, multy, metabkeys);
+  
+  accept();
 
-  std::string key;
+  
+  // std::string name =  static_cast<std::string >(mpBoxCompartmentName->currentText().toUtf8());     //toStdString();
 
-  const CCompartment* source;
+  //int mult =  mpEditNumber->text().toInt();
 
-  for (i = 0; i < imax; ++i)
-    if (mCompartmentName[i] ==  name) source =  pModel->getCompartments()[i];
-
-  int mult =  mpEditNumber->text().toInt();
-
-  if (mult < 0)
+ /* if (mult < 0)
     {
 
       CQMessageBox::critical(this, QString("Error"),
@@ -118,52 +169,8 @@ void CQExpandModelData::slotOK()
                              QMessageBox::Ok, QMessageBox::Ok);
 
       return;
-    }
+    }*/
 
-  std::string metabname;
-  const CMetab* metab;
-  bool diff = mpCheckDiffusion->isChecked();
-
-  if (diff)
-    imax = source->getMetabolites().size();
-
-  std::vector< std::string  > listOfMetabolites;
-
-  if (diff)
-    for (i = 0; i < imax; ++i)
-      {
-        pCheckBox = dynamic_cast< QCheckBox* >(mpSpeciesTable->cellWidget((int) i, 1));
-
-        if (pCheckBox == NULL)
-          {
-            // TODO
-            ;
-          }
-
-        if (pCheckBox->isChecked())
-          {
-            metab = source->getMetabolites()[i];
-            listOfMetabolites.push_back(metab->getKey());
-          }
-      }
-
-#if 0
-  std::vector< std::string >::iterator it = listOfMetabolites.begin();
-  std::vector< std::string >::iterator end = listOfMetabolites.end();
-
-  while (it != end)
-    {
-
-      std::cout << (*it)  << std::endl;
-      ++it;
-    }
-
-#endif
-
-  CModelExpansion me(pModel);
-  me.simpleCall(source, listOfMetabolites, mult, diff);
-
-  accept();
 }
 
 void CQExpandModelData::slotCancel()
@@ -171,70 +178,3 @@ void CQExpandModelData::slotCancel()
   reject();
 }
 
-void CQExpandModelData::slotCompartmentChanged(/* int row */)
-{
-
-  mpEditNumber->setText(QString::number(1));
-
-  std::string name =  static_cast<std::string >(mpBoxCompartmentName->currentText().toUtf8());     //toStdString();
-
-  size_t i, imax = pModel->getCompartments().size();
-
-  std::string key;
-
-  const CCompartment* source;
-
-  for (i = 0; i < imax; ++i)
-    if (mCompartmentName[i] ==  name) source =  pModel->getCompartments()[i];
-
-  if (mpCheckDiffusion->isChecked())
-    slotApplyDiffusion(true);
-  else
-    slotApplyDiffusion(false);
-
-  return;
-}
-
-void CQExpandModelData::slotApplyDiffusion(bool show)
-{
-
-  mpSpeciesTable->clearContents();
-
-  if (show)
-    {
-
-      std::string name =  static_cast<std::string >(mpBoxCompartmentName->currentText().toUtf8());
-
-      size_t i, imax = pModel->getCompartments().size();
-
-      const CCompartment* comp;
-
-      for (i = 0; i < imax; ++i)
-        if (mCompartmentName[i] ==  name) comp =  pModel->getCompartments()[i];
-
-      imax = comp->getMetabolites().size();
-      mMetaboliteName.resize(imax);
-
-      for (i = 0; i < imax; ++i)
-        {
-          const CMetab* metab = comp->getMetabolites()[i];
-          mMetaboliteName[i] = metab->getObjectName();
-        }
-
-      mpSpeciesTable->setRowCount((int) imax);
-
-      for (i = 0; i < imax; i++)
-        {
-          QTableWidgetItem *nameItem = new QTableWidgetItem();
-          nameItem->setText(FROM_UTF8(mMetaboliteName[i]));
-          mpSpeciesTable->setItem((int) i, 0, nameItem);
-
-          pCheckBox = new QCheckBox(mpSpeciesTable);
-          mpSpeciesTable->setCellWidget((int) i, 1, pCheckBox);
-
-          pCheckBox->setChecked(false);
-        }
-    }
-
-  mpSpeciesTable->resizeColumnToContents(0);
-}

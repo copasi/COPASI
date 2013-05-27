@@ -26,881 +26,882 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 
+
+void CModelExpansion::SetOfModelElements::addCompartment(const CCompartment* x)
+{
+  mCompartments.insert(x);
+}
+
+void CModelExpansion::SetOfModelElements::addMetab(const CMetab* x)
+{
+  mMetabs.insert(x);
+}
+
+void CModelExpansion::SetOfModelElements::addReaction(const CReaction* x)
+{
+  mReactions.insert(x);
+}
+
+void CModelExpansion::SetOfModelElements::addGlobalQuantity(const CModelEntity* x)
+{
+  mGlobalQuantities.insert(x);
+}
+
+void CModelExpansion::SetOfModelElements::addEvent(const CEvent* x)
+{
+  mEvents.insert(x);
+}
+
+bool CModelExpansion::SetOfModelElements::contains(const CCopasiObject* x) const
+{
+  if (mCompartments.find(static_cast<const CCompartment*>(x)) != mCompartments.end())
+    return true;
+  if (mMetabs.find(static_cast<const CMetab*>(x)) != mMetabs.end())
+    return true;
+  if (mReactions.find(static_cast<const CReaction*>(x)) != mReactions.end())
+    return true;
+  if (mGlobalQuantities.find(static_cast<const CModelEntity*>(x)) != mGlobalQuantities.end())
+    return true;
+  if (mEvents.find(static_cast<const CEvent*>(x)) != mEvents.end())
+    return true;
+  
+  return false;
+}
+
+bool CModelExpansion::SetOfModelElements::contains(const std::string & key) const
+{
+  const CCopasiObject* tmp = CCopasiRootContainer::getKeyFactory()->get(key);
+  if (tmp)
+    return contains(tmp);
+  else
+    return false;
+}
+
+
+void CModelExpansion::SetOfModelElements::fillDependencies(const CModel* pModel)
+{
+  if (!pModel) return;
+  
+  //create a combined set of all elements we know are to be copied
+  std::set< const CCopasiObject * > combinedSet;
+  
+  std::set<const CCompartment*>::const_iterator itComp;
+  for (itComp=mCompartments.begin(); itComp != mCompartments.end(); ++itComp)
+    {
+    std::set< const CCopasiObject * > tmp = (*itComp)->getDeletedObjects();
+    combinedSet.insert(tmp.begin(), tmp.end());
+    }
+  
+  std::set<const CMetab*>::const_iterator itMetab;
+  for (itMetab=mMetabs.begin(); itMetab != mMetabs.end(); ++itMetab)
+    {
+    std::set< const CCopasiObject * > tmp = (*itMetab)->getDeletedObjects();
+    combinedSet.insert(tmp.begin(), tmp.end());
+    }
+  
+  std::set<const CReaction*>::const_iterator itReac;
+  for (itReac=mReactions.begin(); itReac != mReactions.end(); ++itReac)
+    {
+    std::set< const CCopasiObject * > tmp = (*itReac)->getDeletedObjects();
+    combinedSet.insert(tmp.begin(), tmp.end());
+    }
+  
+  std::set<const CModelEntity*>::const_iterator itQuant;
+  for (itQuant=mGlobalQuantities.begin(); itQuant != mGlobalQuantities.end(); ++itQuant)
+    {
+    std::set< const CCopasiObject * > tmp = (*itQuant)->getDeletedObjects();
+    combinedSet.insert(tmp.begin(), tmp.end());
+    }
+  
+  std::set<const CEvent*>::const_iterator itEvent;
+  for (itEvent=mEvents.begin(); itEvent != mEvents.end(); ++itEvent)
+    {
+    std::set< const CCopasiObject * > tmp = (*itQuant)->getDeletedObjects();
+    combinedSet.insert(tmp.begin(), tmp.end());
+    }
+  
+  //ask the model for the dependencies
+
+  std::set< const CCopasiObject * > reacs, metabs, comps, values, events;
+  pModel->appendDependentModelObjects(combinedSet, reacs, metabs, comps, values, events);
+
+  //incorporate the results into the local sets
+  std::set< const CCopasiObject * >::const_iterator it;
+  
+  for (it=reacs.begin(); it != reacs.end(); ++it)
+    addReaction(dynamic_cast<const CReaction*>(*it));
+  for (it=metabs.begin(); it != metabs.end(); ++it)
+    addMetab(dynamic_cast<const CMetab*>(*it));
+  for (it=comps.begin(); it != comps.end(); ++it)
+    addCompartment(dynamic_cast<const CCompartment*>(*it));
+  for (it=values.begin(); it != values.end(); ++it)
+    addGlobalQuantity(dynamic_cast<const CModelEntity*>(*it));
+  for (it=events.begin(); it != events.end(); ++it)
+    addEvent(dynamic_cast<const CEvent*>(*it));
+}
+
+//***************************************************************************************
+
+bool CModelExpansion::ElementsMap::exists(const CCopasiObject* source) const
+{
+  std::map<const CCopasiObject*, CCopasiObject*>::const_iterator it;
+  it = mMap.find(source);
+  return (it != mMap.end() && it->second != NULL);
+}
+
+bool CModelExpansion::ElementsMap::exists(const std::string & sourceKey) const
+{
+  const CCopasiObject* tmp = CCopasiRootContainer::getKeyFactory()->get(sourceKey);
+  return exists(tmp);
+}
+
+
+void CModelExpansion::ElementsMap::add(const CCopasiObject* source, CCopasiObject* copy)
+{
+  mMap[source] = copy;
+}
+
+CCopasiObject* CModelExpansion::ElementsMap::getDuplicatePtr(const CCopasiObject* source) const
+{
+  std::map<const CCopasiObject*, CCopasiObject*>::const_iterator it;
+  it = mMap.find(source);
+  if (it != mMap.end())
+    return it->second;
+  else
+    return NULL;
+}
+
+std::string CModelExpansion::ElementsMap::getDuplicateKey(const std::string & sourceKey) const
+{
+  const CCopasiObject* tmp = CCopasiRootContainer::getKeyFactory()->get(sourceKey);
+  if (tmp)
+    {
+      const CCopasiObject* retObj = getDuplicatePtr(tmp);
+      if (retObj)
+        return retObj->getKey();
+      else
+        return "";
+    }
+  else
+    return "";
+}
+
+
+//***************************************************************************************
+
+
+
 CModelExpansion::CModelExpansion(CModel* pModel)
     : mpModel(pModel)
 {
-  this->initializeNameSets();
 }
 
 void CModelExpansion::setModel(CModel* pModel)
 {
   mpModel = pModel;
-  this->initializeNameSets();
 }
 
 void CModelExpansion::simpleCall(const CCompartment * source, std::vector< std::string  > listOfMetabolites,  int  mult, bool diff)
 {
-
   if (!mpModel) return;
+  if (!source) return;
+  
+  //First we create a SetOfModelElements object. It will contain the list of all things in the model that
+  //should be duplicated. (This means that we can duplicate also parts of models, not only complete models)
+  SetOfModelElements originalSet;
+  
+  //We start by specifying one compartment that we want to duplicate
+  originalSet.addCompartment(source);
+  
+  //Now we (automatically) include everything that needs to be duplicated with the compartment.
+  //(The species in the compartment, the reactions incolving these species)
+  originalSet.fillDependencies(mpModel);
+  
+  //now we want to create one copy. indexstring contains a postfix that will be added to the names of
+  //the duplicated model parts to identify them
+  std::string indexstr = "[1]";
+  
+  //the ElementsMap object will contain a mapping between original and duplicated objects
+  //after the duplicating has been performed. This means we will be able to access the duplicated
+  //objects e.g. for creating diffusion reactions.
+  ElementsMap map_1;
+  
+  //this performes the actual duplication:
+  duplicate(originalSet, indexstr, map_1);
+  
+  //now a second copy (this can easily be put in a loop)
+  indexstr = "[2]";
+  ElementsMap map_2;
+  duplicate(originalSet, indexstr, map_2);
+  
+  //and a third
+  indexstr = "[3]";
+  ElementsMap map_3;
+  duplicate(originalSet, indexstr, map_3);
 
-  if (!mpModel->getCompartments().size()) return;
-
-  ci.keyMap[mpModel->getKey()] = "";
-
-  size_t i, imax;
-
-  imax = mpModel->getCompartments().size();
-
-  for (i = 0; i < imax; ++i)
+  if (listOfMetabolites.size()>0)
     {
-      const CCompartment* sourceComp = mpModel->getCompartments()[i];
+    //now create the diffusion reactions:
+    //we pick a metab for which we want to create diffusion reactions
+    std::string original_metab_key = listOfMetabolites[0];
+  
+    //create a global quantity that will be used as the diffusion parameter
+    CModelValue* pMV = mpModel->createModelValue("Diff_glu", 7);
+  
+    //create first reaction.
+    //the maps let us find the duplicates of the original metab. 
+    createDiffusionReaction("Diff_glu[1-2]",
+                            map_1.getDuplicateKey(original_metab_key),
+                            map_2.getDuplicateKey(original_metab_key), pMV->getKey());
 
-      ci.keyMap[sourceComp->getKey()] = "";
-      //nameInSet(sourceComp->getObjectName());
+    //create second reaction (this can easily be put in a loop)
+    createDiffusionReaction("Diff_glu[2-3]",
+                            map_2.getDuplicateKey(original_metab_key),
+                            map_3.getDuplicateKey(original_metab_key), pMV->getKey());
     }
-
-  imax = mpModel->getMetabolites().size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      const CMetab* sourceMetab = mpModel->getMetabolites()[i];
-
-      ci.keyMap[sourceMetab->getKey()] = "";
-    }
-
-  imax = mpModel->getReactions().size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      // CReaction * sourceReac = mpModel->getReactions()[i];
-
-      //nameInSet(sourceReac->getObjectName());
-    }
-
-  imax = mpModel->getModelValues().size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      const CModelValue* sourceModVal = mpModel->getModelValues()[i];
-
-      ci.keyMap[sourceModVal->getKey()] = "";
-      //nameInSet(sourceModVal->getObjectName());
-
-    }
-
-  imax = mpModel->getEvents().size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      // const CEvent* sourceEvent = mpModel->getEvents()[i];
-
-      //nameInSet(sourceEvent->getObjectName());
-    }
-
-  bool progress;
-
-  C_INT32 m;
-
-  std::vector< std::vector<std::string> > metabMap;
-
-  if (diff)
-    {
-      imax = listOfMetabolites.size();
-      metabMap.resize(imax);
-
-      for (i = 0; i < imax; ++i)
-        {
-          metabMap[i].resize(mult + 1);
-          metabMap[i][0] = listOfMetabolites[i];
-        }
-    }
-
-  for (m = 0; m < mult; ++m)
-    {
-      std::ostringstream newname;
-      newname << "copy_" << m;
-      name = newname.str();
-
-      std::vector<CModelExpansion::CompartmentInfo> v = copyCompartment(source, 1);
-      assert(v.size() == 1);
-      ci = v[0];
-
-      progress  =     copyCompartmentsExpressions(source)
-                      &&  copyMetabolitesExpressions(source)
-                      &&  copyModelValuesExpressions(name)
-                      &&  copyEvents(name);
-
-      if (diff)
-        for (i = 0; i < imax; ++i)
-          metabMap[i][m+1] = ci.keyMap[listOfMetabolites[i]];
-    }
-
-  if (diff)
-    {
-      std::ostringstream k;
-      k << "k{diffusion}";
-
-      std::string newparam = testName(k.str(), this->mModelValueNameSet);
-
-      CModelValue* modval = mpModel->createModelValue(newparam, 1.);
-      modval->setStatus(CModelValue::FIXED);
-
-      for (m = 0; m < mult; ++m)
-        {
-
-          for (i = 0; i < imax; ++i)
-            {
-              std::ostringstream reacname;
-              reacname <<  "diffusion" << m << "_" << i;
-
-              CReaction* reac = mpModel->createReaction(testName(reacname.str(), this->mReactionNameSet));
-
-              if (!reac) continue;
-
-              reac->setReversible(true);
-
-              reac->addSubstrate(metabMap[i][m], 1);
-              reac->addProduct(metabMap[i][m+1], 1);
-              reac->setFunction("Mass action (reversible)");
-              reac->addParameterMapping("substrate", metabMap[i][m]);
-              reac->addParameterMapping("product", metabMap[i][m+1]);
-
-              reac->setParameterMapping(0, modval->getKey());
-              reac->setParameterMapping(2, modval->getKey());
-
-            }
-        }
-    }
-
-  if (!progress)
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCModelExpansion + 1);
-      return;
-    }
-
+  
   mpModel->compileIfNecessary(NULL);
 }
 
-/**
- **      This method tests whether the given C name already assigned,
- **      put the new name (in cappital letters:
- **      all names can be upper or lower case)
- **      in the set of assigned names
- **      or  modify the name
- **/
-
-std::string CModelExpansion::testName(const std::string & mname, std::set<std::string>& nameSet)
+void CModelExpansion::createLinearArray(const SetOfModelElements & source, size_t n, const std::set< std::string  > & setOfMetabolites)
 {
-  //std::locale C("C");
-  //char ch;
+  if (!mpModel) return;
 
-  std::ostringstream newname;
-
-  //size_t name_size = mname.size();
-  //size_t i;
-
-  /*
-  for (i = 0; i < name_size; i++)
+  //create global quantities for the diffusion constants
+  std::vector<CModelEntity*> diffusionConstants;
+  std::set<std::string>::const_iterator itMetab;
+  for (itMetab=setOfMetabolites.begin(); itMetab != setOfMetabolites.end(); ++itMetab)
     {
-      ch = mname[i];
-
-      if (std::isalpha(ch, C) && std::islower(ch, C))
-        tmp << (char) toupper(ch);
-      else
-        tmp << ch;
+    //try creating the object until we find a name that is not yet used
+    CModelEntity* newObj;
+    const CMetab* pMetab = dynamic_cast<const CMetab*>(CCopasiRootContainer::getKeyFactory()->get(*itMetab));
+    if (!pMetab)
+      continue;
+    std::string name = "diff_" + pMetab->getCompartment()->getObjectName() + "_" + pMetab->getObjectName();
+    do
+      {
+      newObj = mpModel->createModelValue(name, 1.0);
+      name += "_";
+      }
+    while (!newObj);
+    diffusionConstants.push_back(newObj);
     }
-  */
-
-  newname << mname;
-  std::set<std::string>::const_iterator end = nameSet.end();
-  unsigned int index = 1;
-
-  while (nameSet.find(newname.str()) != end)
+  
+  //now create the copies
+  size_t i;
+  std::vector<ElementsMap> maps;
+  maps.resize(n);
+  
+  for (i=0; i<n; ++i)
     {
-      newname.str(mname);
-      newname << "_" << index;
-      ++index;
-    }
+    std::ostringstream indexstr;
+    indexstr << "[" << i << "]";
+    duplicate(source, indexstr.str(), maps[i]);
 
-  nameSet.insert(newname.str());
-  return newname.str();
+    //Diffusion
+    if (i)
+      {
+      std::vector<CModelEntity*>::const_iterator itDiff;
+      for (itMetab=setOfMetabolites.begin(), itDiff=diffusionConstants.begin();
+           itMetab != setOfMetabolites.end();
+           ++itMetab, ++itDiff)
+        {
+        std::ostringstream diffname;
+        diffname << (*itDiff)->getObjectName() << "[" << i-1 << "-" << i << "]";
+        createDiffusionReaction(diffname.str(),
+                                maps[i-1].getDuplicateKey(*itMetab),
+                                maps[i].getDuplicateKey(*itMetab), (*itDiff)->getKey());
+        
+        }
+      
+      }
+    }
+  mpModel->compileIfNecessary(NULL);
 }
 
-void CModelExpansion::nameInSet(const std::string & mname, std::set<std::string>& nameSet)
+void CModelExpansion::createRectangularArray(const SetOfModelElements & source, size_t nx, size_t ny, const std::set< std::string  > & setOfMetabolites)
 {
-  //std::locale C("C");
-  //char ch;
-
-  //std::ostringstream newname, tmp;
-
-  //size_t name_size = mname.size();
-  //size_t i;
-
-  //for (i = 0; i < name_size; i++)
-  //  {
-  //    ch = mname[i];
-  //
-  //    if (std::isalpha(ch, C) && std::islower(ch, C))
-  //      tmp << (char) toupper(ch);
-  //    else
-  //      tmp << ch;
-  //  }
-
-  nameSet.insert(mname);
-
-  return;
+  if (!mpModel) return;
+  
+  //create global quantities for the diffusion constants
+  std::vector<CModelEntity*> diffusionConstants;
+  std::set<std::string>::const_iterator itMetab;
+  for (itMetab=setOfMetabolites.begin(); itMetab != setOfMetabolites.end(); ++itMetab)
+    {
+    //try creating the object until we find a name that is not yet used
+    CModelEntity* newObj;
+    const CMetab* pMetab = dynamic_cast<const CMetab*>(CCopasiRootContainer::getKeyFactory()->get(*itMetab));
+    if (!pMetab)
+      continue;
+    std::string name = "diff_" + pMetab->getCompartment()->getObjectName() + "_" + pMetab->getObjectName();
+    do
+      {
+      newObj = mpModel->createModelValue(name, 1.0);
+      name += "_";
+      }
+    while (!newObj);
+    diffusionConstants.push_back(newObj);
+    }
+  
+  //now create the copies
+  size_t i, j;
+  std::vector<std::vector<ElementsMap> > maps;
+  maps.resize(nx);
+  for (i=0; i<nx; ++i)
+    maps[i].resize(ny);
+  
+  for (i=0; i<nx; ++i)
+    for (j=0; j<ny; ++j)
+    {
+    std::ostringstream indexstr;
+    indexstr << "[" << i << "," << j << "]";
+    duplicate(source, indexstr.str(), maps[i][j]);
+    
+    //Diffusion
+    if (i)
+      {
+      std::vector<CModelEntity*>::const_iterator itDiff;
+      for (itMetab=setOfMetabolites.begin(), itDiff=diffusionConstants.begin();
+           itMetab != setOfMetabolites.end();
+           ++itMetab, ++itDiff)
+        {
+        std::ostringstream diffname;
+        diffname << (*itDiff)->getObjectName() << "[" << i-1 << "-" << i << "," << j << "]";
+        createDiffusionReaction(diffname.str(),
+                                maps[i-1][j].getDuplicateKey(*itMetab),
+                                maps[i][j].getDuplicateKey(*itMetab), (*itDiff)->getKey());
+        
+        }
+      
+      }
+    if (j)
+      {
+      std::vector<CModelEntity*>::const_iterator itDiff;
+      for (itMetab=setOfMetabolites.begin(), itDiff=diffusionConstants.begin();
+           itMetab != setOfMetabolites.end();
+           ++itMetab, ++itDiff)
+        {
+        std::ostringstream diffname;
+        diffname << (*itDiff)->getObjectName() << "[" << i << "," << j-1 << "-" << j << "]";
+        createDiffusionReaction(diffname.str(),
+                                maps[i][j-1].getDuplicateKey(*itMetab),
+                                maps[i][j].getDuplicateKey(*itMetab), (*itDiff)->getKey());
+        
+        }
+      
+      }
+    }
+  mpModel->compileIfNecessary(NULL);
 }
 
-std::vector<CModelExpansion::CompartmentInfo> CModelExpansion::copyCompartment(const CCompartment* source, unsigned int numCopies)
+
+bool CModelExpansion::duplicate(const SetOfModelElements & source, const std::string & index, ElementsMap & emap)
 {
-  std::vector<CModelExpansion::CompartmentInfo> ret;
-
-  if (!mpModel || !source || numCopies == 0) return ret;
-
-  unsigned int num = 0;
-  // we make a set that contains all reactions that involve the given compartment
-  std::set<const CReaction*> relevantReactions;
-  size_t i = 0, iMax = this->mpModel->getReactions().size();
-  const CReaction* pReact = NULL;
-
-  while (i < iMax)
+  std::set<const CCompartment*>::const_iterator itComp;
+  for (itComp=source.mCompartments.begin(); itComp != source.mCompartments.end(); ++itComp)
     {
-      pReact = this->mpModel->getReactions()[i];
-
-      if (reactionInvolvesCompartment(pReact, source))
-        {
-          relevantReactions.insert(pReact);
-        }
-
-      ++i;
+    duplicateCompartment(*itComp, index, source, emap);
     }
 
-  while (num < numCopies)
+  std::set<const CMetab*>::const_iterator itMetab;
+  for (itMetab=source.mMetabs.begin(); itMetab != source.mMetabs.end(); ++itMetab)
     {
-      CompartmentInfo info;
-      //create new compartment
-      CCompartment* newComp = mpModel->createCompartment(testName(name, this->mCompartmentNameSet), source->getInitialValue());
+    duplicateMetab(*itMetab, index, source, emap);
+    }
 
-      if (!newComp)
+  std::set<const CReaction*>::const_iterator itReac;
+  for (itReac=source.mReactions.begin(); itReac != source.mReactions.end(); ++itReac)
+    {
+    duplicateReaction(*itReac, index, source, emap);
+    }
+
+  std::set<const CModelEntity*>::const_iterator itME;
+  for (itME=source.mGlobalQuantities.begin(); itME != source.mGlobalQuantities.end(); ++itME)
+    {
+    duplicateGlobalQuantity(*itME, index, source, emap);
+    }
+
+  std::set<const CEvent*>::const_iterator itEvent;
+  for (itEvent=source.mEvents.begin(); itEvent != source.mEvents.end(); ++itEvent)
+    {
+    duplicateEvent(const_cast<CEvent*>(*itEvent), index, source, emap);
+    //the event can be changed. Potentially it is not duplicated in its entirety but only some event assignments are duplicated.  
+    }
+}
+
+void CModelExpansion::duplicateCompartment(const CCompartment* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap)
+{
+  //if the source object has already been duplicated: do nothing
+  if (emap.exists(source))
+    return;
+  
+  //try creating the object until we find a name that is not yet used
+  CCompartment* newObj;
+  std::ostringstream infix;
+  do
+    {
+    std::ostringstream name;
+    name << source->getObjectName() << infix.str() << index;
+    newObj = mpModel->createCompartment(name.str(), source->getInitialValue());
+    infix << "_";
+    }
+  while (!newObj);
+
+  //now copy the contents of the object
+  newObj->setDimensionality(source->getDimensionality());
+  
+  //status
+  newObj->setStatus(source->getStatus());
+  
+  //expression (for assignment or ODE)
+  newObj->setExpression(source->getExpression());
+  updateExpression(newObj->getExpressionPtr(), index, sourceSet, emap );
+  
+  //initial expression
+  newObj->setInitialExpression(source->getInitialExpression());
+  updateExpression(newObj->getInitialExpressionPtr(), index, sourceSet, emap );
+
+  //add duplicated object to the map
+  emap.add(source, newObj);
+}
+
+void CModelExpansion::duplicateMetab(const CMetab* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap)
+{
+  //if the source object has already been duplicated: do nothing
+  if (emap.exists(source))
+    return;
+  
+  //is the containing compartment also duplicated?
+  const CCompartment* sourceParent = source->getCompartment();
+  const CCompartment * parent = NULL;
+  bool nameflag;
+  if (!sourceSet.contains(sourceParent))
+    {
+    parent = sourceParent; //use the original parent compartment
+    nameflag = true; //metab needs renaming
+    }
+  else //use a copy of the parent compartment
+    {
+    nameflag = false; //no renaming necessary (since the copy is in a different compartment)
+    //create copy if it does not exist
+    if (!emap.exists(sourceParent))
         {
-          ret.clear();
-          return ret;
+        duplicateCompartment(sourceParent, index, sourceSet, emap);
         }
+    parent = dynamic_cast<CCompartment *>(emap.getDuplicatePtr(sourceParent));
+    }
+    
+  //try creating the object until we find a name that is not yet used
+  CMetab* newObj;
+  std::ostringstream infix;
+  do
+    {
+    std::ostringstream name;
+    name << source->getObjectName() << infix.str();
+    if (nameflag)
+      name << index;
+    
+    newObj = mpModel->createMetabolite(name.str(), parent->getObjectName(), source->getInitialConcentration(), source->getStatus());
 
-      info.key = newComp->getKey();
+    infix << "_";
+    }
+  while (!newObj);
+  
+  //expression (for assignment or ODE)
+  newObj->setExpression(source->getExpression());
+  updateExpression(newObj->getExpressionPtr(), index, sourceSet, emap );
+  
+  //initial expression
+  newObj->setInitialExpression(source->getInitialExpression());
+  updateExpression(newObj->getInitialExpressionPtr(), index, sourceSet, emap );
+  
+  //add duplicated object to the map
+  emap.add(source, newObj);
+}
 
-      newComp->setDimensionality(source->getDimensionality());
+void CModelExpansion::duplicateReaction(const CReaction* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap)
+{
+  //if the source object has already been duplicated: do nothing
+  if (emap.exists(source))
+    return;
+  
+  //try creating the object until we find a name that is not yet used
+  CReaction* newObj;
+  std::ostringstream infix;
+  do
+    {
+    std::ostringstream name;
+    name << source->getObjectName() << infix.str() << index;
+    newObj = mpModel->createReaction(name.str());
+    infix << "_";
+    }
+  while (!newObj);
+  
+  //now copy the chemical equation
+  size_t i;
+  for(i=0; i<source->getChemEq().getSubstrates().size(); ++i)
+    {
+    const CChemEqElement * sourceElement = source->getChemEq().getSubstrates()[i];
+    const CMetab* pMetab = NULL;
+    if (sourceSet.contains(sourceElement->getMetabolite()))
+      {
+        if (!emap.exists(sourceElement->getMetabolite()))
+          duplicateMetab(sourceElement->getMetabolite(), index, sourceSet, emap);
+        pMetab = dynamic_cast<const CMetab*>(emap.getDuplicatePtr(sourceElement->getMetabolite()));
+      }
+    else //add the original metab
+      {
+        pMetab = sourceElement->getMetabolite();
+      }
+    if (pMetab)
+      newObj->addSubstrate(pMetab->getKey(), sourceElement->getMultiplicity());
+    }
+  for(i=0; i<source->getChemEq().getProducts().size(); ++i)
+    {
+    const CChemEqElement * sourceElement = source->getChemEq().getProducts()[i];
+    const CMetab* pMetab = NULL;
+    if (sourceSet.contains(sourceElement->getMetabolite()))
+      {
+      if (!emap.exists(sourceElement->getMetabolite()))
+        duplicateMetab(sourceElement->getMetabolite(), index, sourceSet, emap);
+      pMetab = dynamic_cast<const CMetab*>(emap.getDuplicatePtr(sourceElement->getMetabolite()));
+      }
+    else //add the original metab
+      {
+      pMetab = sourceElement->getMetabolite();
+      }
+    if (pMetab)
+      newObj->addProduct(pMetab->getKey(), sourceElement->getMultiplicity());
+    }
+  for(i=0; i<source->getChemEq().getModifiers().size(); ++i)
+    {
+    const CChemEqElement * sourceElement = source->getChemEq().getModifiers()[i];
+    const CMetab* pMetab = NULL;
+    if (sourceSet.contains(sourceElement->getMetabolite()))
+      {
+      if (!emap.exists(sourceElement->getMetabolite()))
+        duplicateMetab(sourceElement->getMetabolite(), index, sourceSet, emap);
+      pMetab = dynamic_cast<const CMetab*>(emap.getDuplicatePtr(sourceElement->getMetabolite()));
+      }
+    else //add the original metab
+      {
+      pMetab = sourceElement->getMetabolite();
+      }
+    if (pMetab)
+      newObj->addModifier(pMetab->getKey());
+    }
+  
+  newObj->setReversible(source->isReversible());
+  
+  //set the kinetic function
+  newObj->setFunction(const_cast<CFunction*>(source->getFunction()));
 
-      info.keyMap[source->getKey()] = newComp->getKey();
-
-      //create copies of the metabs
-      size_t i, imax = source->getMetabolites().size();
-
-      for (i = 0; i < imax; ++i)
+  //mapping and local parameters
+  for (i = 0; i < newObj->getFunctionParameters().size(); ++i)
+    {
+    switch (newObj->getFunctionParameters()[i]->getUsage())
+      {
+        case CFunctionParameter::SUBSTRATE:
+        case CFunctionParameter::PRODUCT:
+        case CFunctionParameter::MODIFIER:
         {
-          CMetab* pSourceMetab = source->getMetabolites()[i];
-          CMetab* pNewMetab = mpModel->createMetabolite(pSourceMetab->getObjectName(), newComp->getObjectName(), pSourceMetab->getInitialConcentration());
-
-          if (!pNewMetab)
-            continue; //TODO error handling, should not happen
-
-          pNewMetab->setStatus(pSourceMetab->getStatus());
-
-          info.keyMap[pSourceMetab->getKey()] = pNewMetab->getKey();
-        }
-
-      newComp->setStatus(source->getStatus());
-
-      //create copies of the relevant reactions
-      std::set<const CReaction*>::const_iterator reactIt = relevantReactions.begin(), reactEndit = relevantReactions.end();
-      imax = mpModel->getReactions().size();
-
-      while (reactIt != reactEndit)
-        {
-          pReact = *reactIt;
-
-          std::ostringstream newname;
-          newname << pReact->getObjectName() <<  "{" << newComp->getObjectName()  << "}";
-
-          CReaction* pNewReac = mpModel->createReaction(testName(newname.str(), this->mReactionNameSet));
-
-          if (!pNewReac)
-            {
-              ret.clear();
-              return ret; //should not happen TODO: error handling
-            }
-
-          //copy the chemical equation. If the involved metabs are among those that
-          //were copied with the compartment, replace them. Otherwise keep the original metab
-          pNewReac->setReversible(pReact->isReversible());
-          std::map<std::string, std::string>::const_iterator mapIt;
+        bool isVector = (newObj->getFunctionParameters()[i]->getType() == CFunctionParameter::VFLOAT64);
+        if (isVector)
+          newObj->clearParameterMapping(i);
+        
+        size_t k;
+        for (k = 0; k < source->getParameterMappings()[i].size(); ++k)
+          {
+          //we assume that by now the metab was copied if necessary.
+          //therefore we only need to check the map. 
           std::string targetKey;
-          size_t j, jmax = pReact->getChemEq().getSubstrates().size();
-
-          for (j = 0; j < jmax; ++j)
-            {
-              const CChemEqElement * sourceElement = pReact->getChemEq().getSubstrates()[j];
-              //check if the metab is in the map. If yes, translate it, otherwise not.
-              mapIt = info.keyMap.find(sourceElement->getMetaboliteKey());
-
-              if (mapIt == info.keyMap.end())
-                {
-                  targetKey = sourceElement->getMetaboliteKey();
-                }
-              else
-                {
-                  targetKey = mapIt->second;
-                }
-
-              pNewReac->addSubstrate(targetKey, sourceElement->getMultiplicity());
-            }
-
-          jmax = pReact->getChemEq().getProducts().size();
-
-          for (j = 0; j < jmax; ++j)
-            {
-              const CChemEqElement * sourceElement = pReact->getChemEq().getProducts()[j];
-              //check if the metab is in the map. If yes, translate it, otherwise not.
-              mapIt = info.keyMap.find(sourceElement->getMetaboliteKey());
-
-              if (mapIt == info.keyMap.end())
-                {
-                  targetKey = sourceElement->getMetaboliteKey();
-                }
-              else
-                {
-                  targetKey = mapIt->second;
-                }
-
-              pNewReac->addProduct(targetKey, sourceElement->getMultiplicity());
-            }
-
-          jmax = pReact->getChemEq().getModifiers().size();
-
-          for (j = 0; j < jmax; ++j)
-            {
-              const CChemEqElement * sourceElement = pReact->getChemEq().getModifiers()[j];
-              //check if the metab is in the map. If yes, translate it, otherwise not.
-              mapIt = info.keyMap.find(sourceElement->getMetaboliteKey());
-
-              if (mapIt == info.keyMap.end())
-                {
-                  targetKey = sourceElement->getMetaboliteKey();
-                }
-              else
-                {
-                  targetKey = mapIt->second;
-                }
-
-              pNewReac->addModifier(targetKey);
-            }
-
-          //set the kinetic function
-          pNewReac->setFunction(const_cast<CFunction*>(pReact->getFunction()));
-
-          //mapping and local parameters
-          for (j = 0; j < pNewReac->getFunctionParameters().size(); ++j)
-            {
-              switch (pNewReac->getFunctionParameters()[j]->getUsage())
-                {
-                  case CFunctionParameter::SUBSTRATE:
-                  case CFunctionParameter::PRODUCT:
-                  case CFunctionParameter::MODIFIER:
-                    //translate the metab keys
-                  {
-                    bool isVector = (pNewReac->getFunctionParameters()[j]->getType() == CFunctionParameter::VFLOAT64);
-
-                    //we assume that only SUBSTRATE, PRODUCT, MODIFIER can be vectors
-                    if (isVector)
-                      {
-                        pNewReac->clearParameterMapping(j);
-                      }
-
-                    size_t k;
-
-                    for (k = 0; k < pReact->getParameterMappings()[j].size(); ++k)
-                      {
-                        mapIt = info.keyMap.find(pReact->getParameterMappings()[j][k]);
-
-                        if (mapIt == info.keyMap.end())
-                          {
-                            targetKey = pReact->getParameterMappings()[j][k];
-                          }
-                        else
-                          {
-                            targetKey = mapIt->second;
-                          }
-
-                        if (isVector)
-                          {
-                            pNewReac->addParameterMapping(j, targetKey);
-                          }
-                        else
-                          {
-                            pNewReac->setParameterMapping(j, targetKey);
-                          }
-                      }
-                  }
-                  break;
-
-                  case CFunctionParameter::TIME:
-                    //just copy the key
-                    pNewReac->setParameterMapping(j, pReact->getParameterMappings()[j][0]);
-                    break;
-
-                  case CFunctionParameter::VOLUME:
-
-                    //translate the compartment key if necessary
-                    if (pReact->getParameterMappings()[j][0] == source->getKey())
-                      {
-                        pNewReac->setParameterMapping(j, newComp->getKey());
-                      }
-                    else
-                      {
-                        pNewReac->setParameterMapping(j, pReact->getParameterMappings()[j][0]);
-                      }
-
-                    //TODO: this needs to be adapted when sets of compartments will be copied
-                    break;
-
-                  case CFunctionParameter::PARAMETER:
-
-                    if (pReact->isLocalParameter(j))
-                      {
-                        pNewReac->setParameterValue(pNewReac->getFunctionParameters()[j]->getObjectName(),
-                                                    pReact->getParameterValue(pNewReac->getFunctionParameters()[j]->getObjectName()));
-                      }
-                    else
-                      {
-                        pNewReac->setParameterMapping(j, pReact->getParameterMappings()[j][0]);
-                      }
-
-                    break;
-
-                  default:
-                    //TODO: error handling
-                    break;
-                }
-            }
-
-          ++reactIt;
+          if (emap.exists(source->getParameterMappings()[i][k]))
+            targetKey = emap.getDuplicateKey(source->getParameterMappings()[i][k]);
+          else
+            targetKey = source->getParameterMappings()[i][k];
+          
+          if (isVector)
+            newObj->addParameterMapping(i, targetKey);
+          else
+            newObj->setParameterMapping(i, targetKey);
+          }
         }
+        break;
+        
+        case CFunctionParameter::TIME:
+        newObj->setParameterMapping(i, source->getParameterMappings()[i][0]);
+        break;
+        
+        case CFunctionParameter::VOLUME:
+        if (sourceSet.contains(source->getParameterMappings()[i][0]))
+          {
+          if (!emap.exists(source->getParameterMappings()[i][0]))
+            {
+            const CCompartment* pSource = dynamic_cast<const CCompartment*>(
+                    (CCopasiRootContainer::getKeyFactory()->get(source->getParameterMappings()[i][0])));
+            duplicateCompartment(pSource, index, sourceSet, emap);
+            }
+          newObj->setParameterMapping(i, emap.getDuplicateKey(source->getParameterMappings()[i][0]));
+          }
+        else //add the original metab
+          {
+          newObj->setParameterMapping(i, source->getParameterMappings()[i][0]);
+          }
+        break;
+        
+        case CFunctionParameter::PARAMETER:
+        if (newObj->isLocalParameter(i))
+          {
+          //just copy the value
+          newObj->setParameterValue(newObj->getFunctionParameters()[i]->getObjectName(),
+                                    source->getParameterValue(newObj->getFunctionParameters()[i]->getObjectName()));
+          }
+        else
+          {
+          if (sourceSet.contains(source->getParameterMappings()[i][0]))
+            {
+            if (!emap.exists(source->getParameterMappings()[i][0]))
+              {
+              const CModelEntity* pSource = dynamic_cast<const CModelEntity*>(
+                  (CCopasiRootContainer::getKeyFactory()->get(source->getParameterMappings()[i][0])));
+              duplicateGlobalQuantity(pSource, index, sourceSet, emap);
+              }
+            newObj->setParameterMapping(i, emap.getDuplicateKey(source->getParameterMappings()[i][0]));
+            }
+          else //add the original global quantity
+            {
+            newObj->setParameterMapping(i, source->getParameterMappings()[i][0]);
+            }
+          }
+        break;
+        
+        default:
+        //TODO: error handling
+        break;
+      }
 
-      ret.push_back(info);
-      ++num;
     }
-
-  return ret;
+  //add duplicated object to the map
+  emap.add(source, newObj);
 }
 
-//static
-bool CModelExpansion::reactionInvolvesCompartment(const CReaction * reac, const CCompartment* comp)
+void CModelExpansion::duplicateGlobalQuantity(const CModelEntity* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap)
 {
-  if (!reac) return false;
+  //if the source object has already been duplicated: do nothing
+  if (emap.exists(source))
+    return;
+  
+  //try creating the object until we find a name that is not yet used
+  CModelEntity* newObj;
+  std::ostringstream infix;
+  do
+    {
+    std::ostringstream name;
+    name << source->getObjectName() << infix.str() << index;
+    newObj = mpModel->createModelValue(name.str(), source->getInitialValue());
+    infix << "_";
+    }
+  while (!newObj);
+  
+  //status
+  newObj->setStatus(source->getStatus());
+  
+  //expression (for assignment or ODE)
+  newObj->setExpression(source->getExpression());
+  updateExpression(newObj->getExpressionPtr(), index, sourceSet, emap );
+  
+  //initial expression
+  newObj->setInitialExpression(source->getInitialExpression());
+  updateExpression(newObj->getInitialExpressionPtr(), index, sourceSet, emap );
+  
+  
+  //add duplicated object to the map
+  emap.add(source, newObj);
+}
 
-  if (!comp) return false;
+void CModelExpansion::duplicateEvent(CEvent* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap)
+{
+  //if the source object has already been duplicated: do nothing
+  if (emap.exists(source))
+    return;
 
-  size_t i, imax = reac->getChemEq().getSubstrates().size();
+  CEvent* newObj = NULL;
+  
+  if (expressionContainsObject(source->getTriggerExpressionPtr(), sourceSet)
+      || expressionContainsObject(source->getDelayExpressionPtr(), sourceSet) )
+    {
+    //we need to duplicate the event itself (because the trigger refers to a duplicated object)
+    
+    //try creating the object until we find a name that is not yet used
+    std::ostringstream infix;
+    do
+      {
+      std::ostringstream name;
+      name << source->getObjectName() << infix.str() << index;
+      newObj = mpModel->createEvent(name.str());
+      infix << "_";
+      }
+    while (!newObj);
+    
+    //now do the trigger
+    newObj->setTriggerExpression(source->getTriggerExpression());
+    newObj->getTriggerExpressionPtr()->compile(); //I don't know why this is necessary
+    updateExpression(newObj->getTriggerExpressionPtr(), index, sourceSet, emap);
+    
+    //delay
+    newObj->setDelayExpression(source->getDelayExpression());
+    newObj->getDelayExpressionPtr()->compile(); //I don't know why this is necessary
+    updateExpression(newObj->getDelayExpressionPtr(), index, sourceSet, emap);
+    
+    newObj->setDelayAssignment(source->getDelayAssignment());
+    
+    }
+  else
+    newObj = source; //no copying necessary
+  
+  //now the event assignments...
+  size_t i;
+  for (i=0; i < source->getAssignments().size(); ++i)
+    {
+    const CEventAssignment* pSourceAssignment = source->getAssignments()[i];
+    //const CModelEntity * pSourceTarget = dynamic_cast<const CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get(pSourceAssignment->getTargetKey()));
+    if (sourceSet.contains(pSourceAssignment->getTargetKey()) )
+        {
+        //we assume that the duplicate of the target object already exists.
+        //this should be true since events are duplicated last. 
+        if (!emap.exists(pSourceAssignment->getTargetKey()))
+          continue;
+        
+        //create duplicate of assignment (this can be either in the original event or in the
+        //duplicate of an event)
+        CEventAssignment * pNewAssignment = new CEventAssignment( emap.getDuplicateKey(pSourceAssignment->getTargetKey()));
+        newObj->getAssignments().add( pNewAssignment, true );
+        
+        //we do an assumption:
+        //It should not happen that the assignment expression contains a reference to an object that is duplicated,
+        //but the assignment target is not duplicated.
+        
+        //now copy the expression
+        pNewAssignment->setExpression(pSourceAssignment->getExpression());
+        pNewAssignment->getExpressionPtr()->compile();
+        updateExpression(pNewAssignment->getExpressionPtr(), index, sourceSet, emap);
+        
+        }
+    
+    }
+  
+  //add duplicated object to the map
+  emap.add(source, newObj);
+}
 
-  for (i = 0; i < imax; ++i)
-    if (reac->getChemEq().getSubstrates()[i]->getMetabolite()->getCompartment() == comp)
+void CModelExpansion::updateExpression(CExpression* exp, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap)
+{
+  if (!exp)
+    return;
+  
+  //we loop through the complete expression
+  std::vector< CEvaluationNode * >::const_iterator it = exp->getNodeList().begin();
+  std::vector< CEvaluationNode * >::const_iterator end = exp->getNodeList().end();
+  for (; it != end; ++it)
+    {
+    CEvaluationNodeObject * node = dynamic_cast<CEvaluationNodeObject*>(*it);
+    if (!node)
+      continue;
+    
+    //std::cout << node->getData() << std::endl;
+    const CCopasiObject * pObj = dynamic_cast<const CCopasiObject*>(node->getObjectInterfacePtr());
+    std::string refname = "";
+    std::string reftype = "";
+    if (pObj)
+      {
+      refname = pObj->getObjectName();
+      reftype = pObj->getObjectType();
+      pObj = pObj->getObjectParent();
+      }
+        
+    //is the object one that is/should be copied?
+    if (sourceSet.contains(pObj))
+      {
+      if (!emap.exists(pObj))
+        { //we have to create the duplicate
+        std::cout << "!!!" << std::endl;
+        if (dynamic_cast<const CCompartment*>(pObj))
+          duplicateCompartment(dynamic_cast<const CCompartment*>(pObj), index, sourceSet, emap);
+        if (dynamic_cast<const CMetab*>(pObj))
+            duplicateMetab(dynamic_cast<const CMetab*>(pObj), index, sourceSet, emap);
+        if (dynamic_cast<const CModelEntity*>(pObj))
+            duplicateGlobalQuantity(dynamic_cast<const CModelEntity*>(pObj), index, sourceSet, emap);
+        if (dynamic_cast<const CReaction*>(pObj))
+            duplicateReaction(dynamic_cast<const CReaction*>(pObj), index, sourceSet, emap);
+          
+        }
+        
+      //find the duplicate
+      const CCopasiObject* duplicate = emap.getDuplicatePtr(pObj);
+      if (duplicate)
+        {
+        //get the reference object
+        const CCopasiObject* pRef = dynamic_cast<const CCopasiObject*>(duplicate->getObject(reftype + "=" + refname));
+        //update the node
+        if (pRef)
+          node->setData("<" + pRef->getCN() + ">");
+        //std::cout << node->getData() << std::endl;
+        }
+      }
+    
+    }
+  
+}
+
+bool CModelExpansion::expressionContainsObject(const CExpression* exp, const SetOfModelElements & sourceSet)
+{
+  if (!exp)
+    return false;
+  
+  //we loop through the complete expression
+  std::vector< CEvaluationNode * >::const_iterator it = exp->getNodeList().begin();
+  std::vector< CEvaluationNode * >::const_iterator end = exp->getNodeList().end();
+  for (; it != end; ++it)
+    {
+    CEvaluationNodeObject * node = dynamic_cast<CEvaluationNodeObject*>(*it);
+    if (!node)
+      continue;
+    
+    //std::cout << node->getData() << std::endl;
+    const CCopasiObject * pObj = dynamic_cast<const CCopasiObject*>(node->getObjectInterfacePtr());
+    if (pObj)
+      {
+      pObj = pObj->getObjectParent();
+      }
+    
+    //is the object one that should be copied?
+    if (sourceSet.contains(pObj))
       return true;
-
-  imax = reac->getChemEq().getProducts().size();
-
-  for (i = 0; i < imax; ++i)
-    if (reac->getChemEq().getProducts()[i]->getMetabolite()->getCompartment() == comp)
-      return true;
-
-  imax = reac->getChemEq().getModifiers().size();
-
-  for (i = 0; i < imax; ++i)
-    if (reac->getChemEq().getModifiers()[i]->getMetabolite()->getCompartment() == comp)
-      return true;
-
+    }
   return false;
 }
 
-bool CModelExpansion::copyModelValuesExpressions(std::string copyname)
+void CModelExpansion::createDiffusionReaction(const std::string & name,
+                                              const std::string & metabkey1, const std::string & metabkey2,
+                                              const std::string & parameterkey)
 {
-  bool info = false;
-
-  size_t i, imax = mpModel->getModelValues().size();
-
-  for (i = 0; i < imax; ++i)
+  //try creating the object until we find a name that is not yet used
+  CReaction* newObj;
+  std::ostringstream name_;
+  name_ << name;
+  do
     {
-      CModelValue* source = mpModel->getModelValues()[i];
-
-      if (!source) return info;
-
-      std::string infix = "";
-      std::string newInfix = "";
-
-      const CExpression* pExpression = source->getExpressionPtr();
-      CModelValue* newModVal;
-
-      if (pExpression != NULL)
-        {
-          infix = pExpression->getInfix().c_str();
-          newInfix = copyExpression(pExpression);
-
-          if (infix != newInfix)
-            {
-              std::ostringstream newname;
-              newname << source->getObjectName() << "{" << copyname << "}";
-
-              newModVal = mpModel->createModelValue(testName(newname.str(), this->mModelValueNameSet), source->getInitialValue());
-              newModVal->setStatus(source->getStatus());
-              newModVal->setExpression(newInfix);
-
-              ci.keyMap[source->getKey()] = newModVal->getKey();
-            }
-        }
-
-      if (source->getInitialExpression() != "")
-        {
-          pExpression = source->getInitialExpressionPtr();
-
-          infix = pExpression->getInfix().c_str();
-          newInfix = copyExpression(pExpression);
-
-          if (infix != newInfix)
-            if (ci.keyMap[source->getKey()] == "")
-              {
-                std::ostringstream newname;
-                newname << source->getObjectName() << "{" << copyname << "}";
-
-                newModVal = mpModel->createModelValue(testName(newname.str(), this->mModelValueNameSet), source->getInitialValue());
-                newModVal->setStatus(source->getStatus());
-
-                const CExpression* tmpExpression = source->getExpressionPtr();
-
-                if (tmpExpression != NULL)
-                  newModVal->setExpression(tmpExpression->getInfix().c_str());
-
-                newModVal->setInitialExpression(newInfix);
-
-                ci.keyMap[source->getKey()] = newModVal->getKey();
-              }
-            else
-              newModVal->setInitialExpression(newInfix);
-        }
+    newObj = mpModel->createReaction(name_.str());
+    name_ << "_";
     }
-
-  return true;
+  while (!newObj);
+  
+  newObj->setReversible(true);
+  newObj->addSubstrate(metabkey1, 1);
+  newObj->addProduct(metabkey2, 1);
+  newObj->setFunction("Mass action (reversible)");
+  newObj->addParameterMapping("substrate", metabkey1);
+  newObj->addParameterMapping("product", metabkey2);
+  newObj->setParameterMapping(0, parameterkey);
+  newObj->setParameterMapping(2, parameterkey);
 }
-
-bool CModelExpansion::copyMetabolitesExpressions(const CCompartment* source)
-{
-  bool info = false;
-
-  size_t i, imax = source->getMetabolites().size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      CMetab* pSourceMetab = source->getMetabolites()[i];
-
-      if (!pSourceMetab) return info;
-
-      std::string newKey = ci.keyMap[pSourceMetab->getKey()];
-
-      CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(newKey));
-
-      CMetab*  newMetab = dynamic_cast< CMetab * >(pObject);
-
-      if (!newMetab) return info;
-
-      std::string infix = "";
-
-      const CExpression* pExpression = pSourceMetab->getExpressionPtr();
-
-      if (pExpression != NULL)
-        {
-          infix = copyExpression(pExpression);
-          newMetab->setExpression(infix);
-        }
-
-      if (pSourceMetab->getInitialExpression() != "")
-        {
-          infix = copyExpression(pSourceMetab->getInitialExpressionPtr());
-          newMetab->setInitialExpression(infix);
-        }
-    }
-
-  return true;
-}
-
-bool CModelExpansion::copyCompartmentsExpressions(const CCompartment* source)
-{
-
-  bool info = false;
-
-  std::string newKey = ci.keyMap[source->getKey()];
-
-  CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(newKey));
-
-  CCompartment*  newComp = dynamic_cast< CCompartment * >(pObject);
-
-  if (!newComp) return info;
-
-  std::string infix = "";
-
-  const CExpression* pExpression = source->getExpressionPtr();
-
-  if (pExpression != NULL)
-    {
-      infix = copyExpression(pExpression);
-      newComp->setExpression(infix);
-    }
-
-  if (source->getInitialExpression() != "")
-    {
-      infix = copyExpression(source->getInitialExpressionPtr());
-      newComp->setInitialExpression(infix);
-    }
-
-  return true;
-}
-
-std::string CModelExpansion::copyExpression(const CExpression * pExpression)
-{
-
-  CExpression* tmp;
-  tmp = new CExpression(*pExpression, mpModel);
-
-  const std::vector<CEvaluationNode*>& objectNodes = tmp->getNodeList();
-  size_t j, jmax = objectNodes.size();
-
-  for (j = 0; j < jmax; ++j)
-    {
-      if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
-        {
-          CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
-
-          assert(pObjectNode != NULL);
-
-          CCopasiObjectName cn = pObjectNode->getObjectCN();
-
-          const CCopasiObject* mObject =
-            static_cast< const CCopasiObject * >(mpModel->getObjectDataModel()->getObject(cn));
-
-          assert(mObject != NULL);
-
-          std::string host = "";
-
-          if (mObject->isReference())
-            {
-              host = ",Reference=" + mObject->getObjectName();
-              mObject = mObject->getObjectParent();
-            }
-
-          assert(mObject != NULL);
-
-          std::string key;
-
-          key = ci.keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
-
-          if (key == "") key = (dynamic_cast<const CModelEntity * >(mObject))->getKey();
-
-          CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
-
-          cn = pObject->getCN() + host;
-
-          pObjectNode->setData("<" + cn + ">");
-        }
-    }
-
-  tmp->updateTree();
-
-  return tmp->getInfix().c_str();
-}
-
-bool CModelExpansion::copyEvents(std::string copyname)
-{
-
-  bool info = false;
-
-  size_t i, imax = mpModel->getEvents().size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      const CEvent* sourceEvent = mpModel->getEvents()[i];
-      CEvent* newEvent;
-
-      std::string infix = "";
-      std::string trigger = "";
-      std::string  delay = "";
-      std::string assignment = "";
-
-      if (!sourceEvent) return info;
-
-      /* handle trigger expression */
-
-      const CExpression* pExpression;
-
-      pExpression = sourceEvent->getTriggerExpressionPtr();
-
-      if (pExpression != NULL)
-        {
-          trigger = pExpression->getInfix().c_str();
-          infix = copyExpression(pExpression);
-
-          if (trigger != infix)
-            {
-              trigger = infix;
-
-              std::ostringstream newname;
-              newname << sourceEvent->getObjectName() << "{" << copyname << "}";
-
-              newEvent = mpModel->createEvent(testName(newname.str(), this->mEventNameSet));
-              newEvent->setTriggerExpression(trigger);
-            }
-        }
-
-      /* handle  delay expression */
-
-      pExpression = sourceEvent->getDelayExpressionPtr();
-
-      if (sourceEvent->getDelayAssignment() &&  pExpression != NULL)
-        {
-          delay = pExpression->getInfix().c_str();
-          infix = copyExpression(pExpression);
-
-          if (delay != infix)
-            {
-              delay = infix;
-
-              if (newEvent == NULL)
-                {
-                  std::ostringstream newname;
-                  newname << sourceEvent->getObjectName() << "{" << copyname << "}";
-
-                  newEvent = mpModel->createEvent(testName(newname.str(), this->mEventNameSet));
-                  newEvent->setTriggerExpression(trigger);
-                }
-            }
-
-          if (newEvent != NULL)
-            {
-              newEvent->setDelayAssignment(sourceEvent->getDelayAssignment());
-              newEvent->setDelayExpression(delay);
-            }
-        }
-
-      /* handle event  assignments */
-
-      CEvent * tmpEvent;
-
-      tmpEvent = mpModel->createEvent(sourceEvent->getObjectName() + "tmp");
-
-      bool identic = true;
-
-      size_t j, jmax = sourceEvent->getAssignments().size();
-
-      for (j = 0; j < jmax; ++j)
-        {
-          const CEventAssignment* sourceAssignment = sourceEvent->getAssignments()[j];
-
-          std::string key = sourceAssignment->getTargetKey();
-
-          CEventAssignment* tmpAssignment = new CEventAssignment;
-
-          tmpEvent->getAssignments().add(tmpAssignment);
-
-          if (ci.keyMap[key] == "")  tmpAssignment->setTargetKey(key);
-          else
-            {
-              tmpAssignment->setTargetKey(ci.keyMap[key]);
-              identic = false;
-            }
-
-          pExpression = sourceAssignment->getExpressionPtr();
-
-          if (pExpression != NULL)
-            {
-              assignment = pExpression->getInfix().c_str();
-              infix = copyExpression(pExpression);
-
-              if (assignment != infix)
-                {
-                  tmpAssignment->setExpression(infix);
-                  identic = false;
-                }
-              else
-                tmpAssignment->setExpression(assignment);
-            }
-        }
-
-      if (newEvent == NULL && !identic)
-        {
-          std::ostringstream newname;
-          newname << sourceEvent->getObjectName() << "{" << copyname << "}";
-          newEvent = mpModel->createEvent(testName(newname.str(), this->mEventNameSet));
-          newEvent->setTriggerExpression(trigger);
-          newEvent->setDelayExpression(delay);
-          newEvent->setDelayAssignment(sourceEvent->getDelayAssignment());
-        }
-
-      if (newEvent != NULL)
-
-        for (j = 0; j < jmax; ++j)
-          {
-            const CEventAssignment* tmpAssignment = tmpEvent->getAssignments()[j];
-
-            CEventAssignment* newAssignment = new CEventAssignment;
-
-            newEvent->getAssignments().add(newAssignment, true);
-
-            newAssignment->setTargetKey(tmpAssignment->getTargetKey());
-
-            pExpression = tmpAssignment->getExpressionPtr();
-
-            if (pExpression != NULL)
-              newAssignment->setExpression(pExpression->getInfix().c_str());
-          }
-
-      mpModel->removeEvent(tmpEvent, true);
-    }
-
-  return true;
-}
-
-void CModelExpansion::initializeNameSets()
-{
-  this->mCompartmentNameSet.clear();
-  this->mReactionNameSet.clear();
-  this->mModelValueNameSet.clear();
-  this->mEventNameSet.clear();
-
-  if (this->mpModel != NULL)
-    {
-      size_t i, iMax = this->mpModel->getCompartments().size();
-
-      for (i = 0; i < iMax; ++i)
-        {
-          this->mCompartmentNameSet.insert(this->mpModel->getCompartments()[i]->getObjectName());
-        }
-
-      iMax = this->mpModel->getReactions().size();
-
-      for (i = 0; i < iMax; ++i)
-        {
-          this->mReactionNameSet.insert(this->mpModel->getReactions()[i]->getObjectName());
-        }
-
-      iMax = this->mpModel->getModelValues().size();
-
-      for (i = 0; i < iMax; ++i)
-        {
-          this->mModelValueNameSet.insert(this->mpModel->getModelValues()[i]->getObjectName());
-        }
-
-      iMax = this->mpModel->getEvents().size();
-
-      for (i = 0; i < iMax; ++i)
-        {
-          this->mEventNameSet.insert(this->mpModel->getEvents()[i]->getObjectName());
-        }
-    }
-}
-

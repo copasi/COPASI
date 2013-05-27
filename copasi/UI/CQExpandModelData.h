@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 
-class QSignalMapper;
+class QTreeWidgetItem;
 
 #include "model/CModel.h"
 
@@ -37,16 +37,14 @@ public:
   CQExpandModelData(QWidget* parent = 0, Qt::WindowFlags fl = 0);
   ~CQExpandModelData();
 
-  std::vector< std::string > mCompartmentName;
-  std::vector< std::string > mMetaboliteName;
 protected:
-  QCheckBox* pCheckBox;
-  QSignalMapper * mpComboMap;
+  
+  std::map<QTreeWidgetItem*, const CCompartment*> mItemCompartmentMap;
+  std::map<QTreeWidgetItem*, const CMetab*> mItemMetabMap;
   CModel* pModel;
 
 protected slots:
-  void slotCompartmentChanged(/* int row */);
-  void slotApplyDiffusion(bool show);
+  void slotCompartmentActivated(QTreeWidgetItem* pItem, int col);
 
 private:
   void load();
