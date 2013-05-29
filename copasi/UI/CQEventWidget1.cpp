@@ -77,11 +77,11 @@ void CQEventWidget1::slotBtnNew()
   saveToEvent();
 
   // standard name
-  std::string name = "event";
+  std::string name = "event_1";
 
   // if the standard name already exists then creating the new event will fail
   // thus, a growing index will automatically be added to the standard name
-  int i = 0;
+  int i = 1;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
   while (!(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createEvent(name))
