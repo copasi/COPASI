@@ -1,12 +1,12 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
 #include "CQSpeciesDetail.h"
 #include "CQMessageBox.h"
@@ -29,7 +29,8 @@ CQSpeciesDetail::CQSpeciesDetail(QWidget* parent, const char* name) :
   mInitialNumber(0.0),
   mInitialConcentration(0.0),
   mExpressionValid(false),
-  mInitialExpressionValid(false)
+  mInitialExpressionValid(false),
+  mKeyToCopy("")
 {
   setupUi(this);
 
@@ -232,7 +233,17 @@ void CQSpeciesDetail::setFramework(int framework)
 
 bool CQSpeciesDetail::enterProtected()
 {
-  mpMetab = dynamic_cast< CMetab * >(mpObject);
+  mpMetab = NULL;
+
+  if (mKeyToCopy != "")
+    {
+      mpMetab = dynamic_cast<CMetab *>(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy));
+      mKeyToCopy = "";
+    }
+  else
+    {
+      mpMetab = dynamic_cast< CMetab * >(mpObject);
+    }
 
   if (!mpMetab)
     {
@@ -242,6 +253,9 @@ bool CQSpeciesDetail::enterProtected()
     }
 
   load();
+
+  mpMetab = dynamic_cast<CMetab *>(mpObject);
+
   return true;
 }
 
@@ -420,7 +434,6 @@ void CQSpeciesDetail::save()
           mChanged = true;
         }
     }
-
   if (mChanged)
     {
       if (mpDataModel)
@@ -498,12 +511,13 @@ void CQSpeciesDetail::slotBtnDelete()
 
 void CQSpeciesDetail::slotBtnCopy()
 {
-  QMessageBox::warning(this, "Warning", "Not Implemented");
+  mKeyToCopy = mKey;
+  slotBtnNew();
 }
 
 void CQSpeciesDetail::slotBtnNew()
 {
-  save();
+  leave();
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
@@ -517,10 +531,16 @@ void CQSpeciesDetail::slotBtnNew()
   if (pModel->getCompartments().size() == 0)
     pModel->createCompartment("compartment");
 
-  std::string name = "species";
-  int i = 0;
+  std::string name = "species_1";
+  int i = 1;
 
-  while (!(mpMetab = pModel->createMetabolite(name, "", 1.0, CModelEntity::REACTIONS)))
+  std::string Compartment = "";
+
+  if (mKeyToCopy != "")
+    {
+      Compartment = mpMetab->getCompartment()->getObjectName();
+    }
+  while (!(mpMetab = pModel->createMetabolite(name, Compartment, 1.0, CModelEntity::REACTIONS)))
     {
       i++;
       name = "species_";
@@ -539,7 +559,6 @@ void CQSpeciesDetail::slotBtnNew()
     }
 
   std::string key = mpMetab->getKey();
-  enter(key);
   protectedNotify(ListViews::METABOLITE, ListViews::ADD, key);
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
@@ -552,7 +571,6 @@ void CQSpeciesDetail::slotCompartmentChanged(int compartment)
 
   if (pModel == NULL)
     return;
-
   QString Compartment = mpComboBoxCompartment->itemText(compartment);
   const CCompartment * pNewCompartment =
     pModel->getCompartments()[TO_UTF8(Compartment)];
