@@ -5,6 +5,7 @@
 
 
 
+
 /**
  This example is similar to example 9.
  Instead of calculating the Jacobian, we do a metabolic control
@@ -124,10 +125,10 @@ public class example10
       assert(pSSTask != null);
       CSteadyStateMethod pSSMethod = (CSteadyStateMethod)(pSSTask.getMethod());
       assert(pSSMethod != null);
-      pMCAMethod.getParameter("Use Newton").setBoolValue(true);
+      pSSMethod.getParameter("Use Newton").setBoolValue(true);
       // sometime the setValue methods needs to passed the correct type
       // to disambiguate the function call
-      pMCAMethod.getParameter("Iteration Limit").setIntValue(70);
+      pSSMethod.getParameter("Iteration Limit").setIntValue(70);
 
       // again, better safe than sorry, we check if the task was actually there and if not, we delete it
       if (pSSTask == null)
@@ -264,13 +265,9 @@ public class example10
     {
       // give a usage message
       System.err.println(  "Usage: example10 SBMLFILE" );
-      // final cleanup
-      CCopasiRootContainer.destroy();
       return;
     }
 
-  // final cleanup
-  CCopasiRootContainer.destroy();
  }
 }
 
