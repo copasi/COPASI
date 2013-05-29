@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -234,6 +234,9 @@ void CQPlotsWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
 void CQPlotsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
 {
   QModelIndex index = mpProxyModel->mapToSource(proxyIndex);
+
+  if (index.row() < 0)
+    return;
 
   if (mpPlotDM->isDefaultRow(index))
     {
