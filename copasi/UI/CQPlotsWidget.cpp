@@ -235,6 +235,9 @@ void CQPlotsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
 {
   QModelIndex index = mpProxyModel->mapToSource(proxyIndex);
 
+  if (index.row() < 0)
+    return;
+
   if (mpPlotDM->isDefaultRow(index))
     {
       slotBtnNewClicked();

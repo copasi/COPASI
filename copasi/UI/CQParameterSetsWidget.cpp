@@ -211,6 +211,9 @@ void CQParameterSetsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
 {
   QModelIndex index = mpProxyModel->mapToSource(proxyIndex);
 
+  if (index.row() < 0)
+    return;
+
   if (mpParameterSetsDM->isDefaultRow(index))
     {
       slotBtnNewClicked();

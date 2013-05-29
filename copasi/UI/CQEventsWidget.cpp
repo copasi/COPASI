@@ -1,19 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEventsWidget.cpp,v $
-//   $Revision: 1.32 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/02 18:58:45 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "CQEventsWidget.h"
@@ -35,7 +31,7 @@
  *  name 'name'.'
  */
 CQEventsWidget::CQEventsWidget(QWidget* parent, const char* name)
-    : CopasiWidget(parent, name)
+  : CopasiWidget(parent, name)
 {
   setupUi(this);
 
@@ -101,7 +97,6 @@ void CQEventsWidget::deleteSelectedEvents()
 
   if (mappedSelRows.empty())
     {return;}
-
 
   mpEventDM->removeRows(mappedSelRows);
 }
@@ -200,6 +195,9 @@ void CQEventsWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
 void CQEventsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
 {
   QModelIndex index = mpProxyModel->mapToSource(proxyIndex);
+
+  if (index.row() < 0)
+    return;
 
   if (mpEventDM->isDefaultRow(index))
     {
