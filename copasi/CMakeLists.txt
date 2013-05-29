@@ -89,7 +89,9 @@ include_directories(
 
 #need to include iconv dir
 if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
+  if (EXISTS ${ICONV_INCLUDE_DIR})
   include_directories(${ICONV_INCLUDE_DIR})
+  endif()
 endif()
 
 
@@ -99,7 +101,9 @@ set_target_properties (libCOPASI PROPERTIES OUTPUT_NAME "COPASISE")
 
 #need to link against iconv
 if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
+  if (ICONV_LIBRARIES)
   target_link_libraries(libCOPASI ${ICONV_LIBRARIES})
+  endif()
 endif()
 
 # add all directories with libraries to the list of
