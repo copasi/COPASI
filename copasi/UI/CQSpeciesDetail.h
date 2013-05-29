@@ -37,7 +37,6 @@ protected slots:
 
 private:
   bool mChanged;
-  bool mInitialNumberLastChanged;
   CMetab * mpMetab;
   const CCompartment * mpCurrentCompartment;
   std::vector< int > mItemToType;

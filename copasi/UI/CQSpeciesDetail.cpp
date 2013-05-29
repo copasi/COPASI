@@ -23,7 +23,6 @@
 CQSpeciesDetail::CQSpeciesDetail(QWidget* parent, const char* name) :
   CopasiWidget(parent, name),
   mChanged(false),
-  mInitialNumberLastChanged(true),
   mpMetab(NULL),
   mpCurrentCompartment(NULL),
   mItemToType(),
@@ -292,8 +291,6 @@ void CQSpeciesDetail::load()
   // Initial Number handled in slotTypeChanged
   mInitialNumber = mpMetab->getInitialValue();
 
-  mInitialNumberLastChanged = true;
-
   // Transition Time
   mpEditTransitionTime->setText(QString::number(mpMetab->getTransitionTime(), 'g', 10));
 
@@ -379,18 +376,25 @@ void CQSpeciesDetail::save()
     }
 
   // Initial Concentration and Initial Number
-  if (mInitialNumberLastChanged)
+  switch (mFramework)
     {
-      if (mpMetab->getInitialValue() != mInitialNumber)
-        {
-          mpMetab->setInitialValue(mInitialNumber);
-          mChanged = true;
-        }
-    }
-  else
-    {
-      mpMetab->setInitialConcentration(mInitialConcentration);
-      mChanged = true;
+      case 0:
+        if (mpMetab->getInitialConcentration() != mInitialConcentration)
+          {
+            mpMetab->setInitialConcentration(mInitialConcentration);
+            mChanged = true;
+          }
+
+        break;
+
+      case 1:
+        if (mpMetab->getInitialValue() != mInitialNumber)
+          {
+            mpMetab->setInitialValue(mInitialNumber);
+            mChanged = true;
+          }
+
+        break;
     }
 
   // Expression
@@ -613,8 +617,6 @@ void CQSpeciesDetail::slotInitialValueLostFocus()
         mInitialNumber = CMetab::convertToNumber(mInitialConcentration,
                          *mpCurrentCompartment,
                          *pModel);
-
-        mInitialNumberLastChanged = false;
         break;
 
       case 1:
@@ -626,8 +628,6 @@ void CQSpeciesDetail::slotInitialValueLostFocus()
         mInitialConcentration = CMetab::convertToConcentration(mInitialNumber,
                                 *mpCurrentCompartment,
                                 *pModel);
-
-        mInitialNumberLastChanged = true;
         break;
     }
 }
