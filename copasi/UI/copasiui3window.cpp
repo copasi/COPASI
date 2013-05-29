@@ -825,18 +825,24 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
 {
   //DataModelGUI* mdataModel; // to keep track of temporary  data model..
 
-  bool success = true;
+  //bool success = true;
 
-  mpDataModelGUI->commit();
+  disconnect(this, SIGNAL(signalLoadFile(QString)), this, SLOT(slotFileOpen(QString)));
+  
+  if (mCommitRequired)
+    {
+    mpDataModelGUI->commit();
+    }
 
-  if (!(*CCopasiRootContainer::getDatamodelList())[0]->getModel())
+
+/*  if (!(*CCopasiRootContainer::getDatamodelList())[0]->getModel())
     {
       newDoc();
       mSaveAsRequired = true;
     }
 
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
-                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());*/
 
   QString newFile = "";
 
@@ -856,57 +862,20 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
 
       mpListView->switchToOtherWidget(0, "");
 
-      if (!mpDataModelGUI)
-        mpDataModelGUI = new DataModelGUI(this); // create a new data model
+    //if (!mpDataModelGUI)
+    //    mpDataModelGUI = new DataModelGUI(this); // create a new data model
 
-      QCursor oldCursor = this->cursor();
+    //QCursor oldCursor = this->cursor();
       this->setCursor(Qt::WaitCursor);
 
       CCopasiMessage::clearDeque();
 
-      try
-        {
-          success = mpDataModelGUI->addModel(TO_UTF8(newFile));
-        }
-      catch (...)
-        {
-          success = false;
-        }
+      mNewFile = newFile;
+      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotAddFileOpenFinished(bool)));
+      mpDataModelGUI->addModel(TO_UTF8(newFile));
+    
+  /*
 
-      setCursor(oldCursor);
-
-      if (!success)
-        {
-          QString Message = "Error while loading file " + newFile + QString("!\n\n");
-          Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
-
-          CQMessageBox::critical(this, QString("File Error"), Message,
-                                 QMessageBox::Ok, QMessageBox::Ok);
-
-          assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-
-          assert((*CCopasiRootContainer::getDatamodelList())[1]->newModel(NULL, true));
-        }
-
-      CCopasiMessage msg = CCopasiMessage::getLastMessage();
-
-      if (msg.getNumber() != MCCopasiMessage + 1)
-        {
-          QString Message = "Problem while loading file " + newFile + QString("!\n\n");
-          Message += FROM_UTF8(msg.getText());
-
-          msg = CCopasiMessage::getLastMessage();
-
-          while (msg.getNumber() != MCCopasiMessage + 1)
-            {
-              Message += "\n";
-              Message += FROM_UTF8(msg.getText());
-              msg = CCopasiMessage::getLastMessage();
-            }
-
-          CQMessageBox::warning(this, QString("File Warning"), Message,
-                                QMessageBox::Ok, QMessageBox::Ok);
-        }
 
       if (success)  slotAddModel();
 
@@ -923,9 +892,66 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
       updateTitle();
       mpListView->switchToOtherWidget(1, "");
 
-      refreshRecentFileMenu();
+      refreshRecentFileMenu();*/
     }
 }
+
+void CopasiUI3Window::slotAddFileOpenFinished(bool success)
+{
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotAddFileOpenFinished(bool)));
+  unsetCursor();
+  mCommitRequired = true;
+
+  if (!success)
+    {
+    QString Message = "Error while loading file " + mNewFile + QString("!\n\n");
+    Message += FROM_UTF8(CCopasiMessage::getAllMessageText(true));
+    
+    CQMessageBox::critical(this, QString("File Error"), Message,
+                           QMessageBox::Ok, QMessageBox::Ok);
+    //mpDataModelGUI->createModel(); //TODO: is that right?
+    //assert((*CCopasiRootContainer::getDatamodelList())[1]->newModel(NULL, true));
+    }
+
+  CCopasiMessage msg = CCopasiMessage::getLastMessage();
+
+  // TODO potentially include handling of SBML files here. 
+  
+  if (msg.getNumber() != MCCopasiMessage + 1)
+    {
+    QString Message = "Problem while loading file " + mNewFile + QString("!\n\n");
+    Message += FROM_UTF8(msg.getText());
+    
+    msg = CCopasiMessage::getLastMessage();
+    
+    while (msg.getNumber() != MCCopasiMessage + 1)
+      {
+      Message += "\n";
+      Message += FROM_UTF8(msg.getText());
+      msg = CCopasiMessage::getLastMessage();
+      }
+    
+    CQMessageBox::warning(this, QString("File Warning"), Message,
+                          QMessageBox::Ok, QMessageBox::Ok);
+    }
+  
+
+  //if (success)  slotAddModel();
+
+  
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE,
+                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+  
+  mpaSave->setEnabled(true);
+  mpaSaveAs->setEnabled(true);
+  mpaExportSBML->setEnabled(true);
+  mpaExportODE->setEnabled(true);
+
+  refreshRecentFileMenu();
+  mNewFile = "";
+  
+}
+
 
 #endif
 

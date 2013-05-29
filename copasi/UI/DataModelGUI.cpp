@@ -46,6 +46,9 @@
 #include "commandline/CConfigurationFile.h"
 #include "utilities/CCopasiTree.h"
 
+//#include "model/CModelMerging.h"
+#include "model/CModelExpansion.h"
+
 #ifdef CELLDESIGNER_IMPORT
 
 #define USE_LAYOUT 1
@@ -125,32 +128,61 @@ void DataModelGUI::linkDataModelToGUI()
 //*****************************************************************
 #ifdef WITH_MERGEMODEL
 
-bool DataModelGUI::addModel(const std::string & fileName)
+void DataModelGUI::addModel(const std::string & fileName)
 {
-  CProgressBar* pProgressBar = CProgressBar::create();
-
-  bool success = true;
-
-  try
-    {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      success = CCopasiRootContainer::addDatamodel()->loadModel(fileName, pProgressBar);
-    }
-
-  catch (...)
-    {
-      success = false;
-    }
-
-  if (success)
-    {
-      CCopasiRootContainer::getConfiguration()->getRecentFiles().addFile(fileName);
-    }
-
-  pdelete(pProgressBar);
-
-  return success;
+  mpProgressBar = CProgressBar::create();
+  
+  mSuccess = true;
+  mFileName = fileName;
+  
+  mpThread = new CQThread(this, &DataModelGUI::addModelRun);
+  connect(mpThread, SIGNAL(finished()), this, SLOT(addModelFinished()));
+  mpThread->start();
 }
+
+void DataModelGUI::addModelRun()
+{
+  try
+  {
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  mSuccess = CCopasiRootContainer::addDatamodel()->loadModel(mFileName, mpProgressBar, false);
+  }
+  
+  catch (...)
+  {
+  mSuccess = false;
+  }
+  
+  CModel *pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+  CModel *mModel = (*CCopasiRootContainer::getDatamodelList())[1]->getModel();
+
+  //CModelAdd add(pModel, mModel);
+  //add.simpleCall();
+
+  CModelExpansion expand(pModel);
+  expand.copyCompleteModel(mModel);
+  
+  notify(ListViews::MODEL, ListViews::CHANGE, "");
+
+  
+}
+
+void DataModelGUI::addModelFinished()
+{
+  if (mSuccess)
+    {
+    CCopasiRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
+    
+    //    mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
+    //linkDataModelToGUI();
+    }
+  
+  disconnect(mpThread, SIGNAL(finished()), this, SLOT(addModelFinished()));
+  
+  threadFinished();
+}
+
+
 
 #endif
 

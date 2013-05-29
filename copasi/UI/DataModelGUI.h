@@ -53,7 +53,8 @@ public:
   void saveModel(const std::string & fileName, bool overwriteFile = false);
 
 #ifdef WITH_MERGEMODEL
-  bool addModel(const std::string & fileName);
+  void addModel(const std::string & fileName);
+  void addModelRun();
 #endif
 
   void importSBML(const std::string & fileName);
@@ -81,6 +82,7 @@ public slots:
   void importSBMLFromStringFinished();
   void exportSBMLToStringFinished();
   void exportMathModelFinished();
+  void addModelFinished();
 
 public:
   bool updateMIRIAM(CMIRIAMResources & miriamResources);
