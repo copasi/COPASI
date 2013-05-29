@@ -165,43 +165,23 @@ public:
                                const std::string & metabkey1, const std::string & metabkey2,
                                const std::string & parameterkey);
 
+  void replaceInModel(const ElementsMap & emap);
+  
+  void replaceInCompartment(CCompartment* pX, const ElementsMap & emap);
+  void replaceInMetab(CMetab* pX, const ElementsMap & emap);
+  void replaceInReaction(CReaction* pX, const ElementsMap & emap);
+  void replaceInGlobalQuantity(CModelEntity* pX, const ElementsMap & emap);
+  void replaceInEvent(CEvent* pX, const ElementsMap & emap);
+  
+  void replaceInExpression(CExpression* exp, const ElementsMap & emap);
+  
+  
+
+  
 protected:
 
 
-  //CompartmentInfo ci;
-
-  //void initializeNameSets();
-
-  /**
-   * determine whether the one of the substrate, products, or modifiers of the reaction
-   * is located in the given compartmen
-   */
-  //static bool reactionInvolvesCompartment(const CReaction * reac, const CCompartment* comp);
-
-  /**
-   *   handle non constant model entities
-   **/
-
-  //bool  copyCompartmentsExpressions(const CCompartment *source);
-  //bool  copyMetabolitesExpressions(const CCompartment *source);
-
-  //bool  copyModelValuesExpressions(std::string copyname);
-  //bool  copyEvents(std::string copyname);
-
-  //std::string copyExpression(const CExpression *pExpression);
-  //std::string testName(const std::string & mname, std::set<std::string>& nameSet);
-  //void  nameInSet(const std::string & mname, std::set<std::string>& nameSet);
-
   CModel * mpModel;
-
-  // we use several sets for the entities that need to have unique names
-  // This will speed up processing for large models
-  //std::set<std::string> mCompartmentNameSet;
-  //std::set<std::string> mReactionNameSet;
-  //std::set<std::string> mModelValueNameSet;
-  //std::set<std::string> mEventNameSet;
-
-  //std::string name;
 };
 
 #endif // CMODELEXPANSION_H

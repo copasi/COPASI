@@ -993,3 +993,163 @@ void CModelExpansion::createDiffusionReaction(const std::string & name,
   newObj->setParameterMapping(0, parameterkey);
   newObj->setParameterMapping(2, parameterkey);
 }
+
+void CModelExpansion::replaceInModel(const ElementsMap & emap)
+{
+  if (!mpModel)
+    return;
+  
+  size_t i;
+  for (i=0; i<mpModel->getCompartments().size(); ++i)
+    replaceInCompartment(mpModel->getCompartments()[i], emap);
+  for (i=0; i<mpModel->getMetabolites().size(); ++i)
+    replaceInMetab(mpModel->getMetabolites()[i], emap);
+  for (i=0; i<mpModel->getReactions().size(); ++i)
+    replaceInReaction(mpModel->getReactions()[i], emap);
+  for (i=0; i<mpModel->getModelValues().size(); ++i)
+    replaceInGlobalQuantity(mpModel->getModelValues()[i], emap);
+  for (i=0; i<mpModel->getEvents().size(); ++i)
+    replaceInEvent(mpModel->getEvents()[i], emap);
+  
+}
+
+void CModelExpansion::replaceInCompartment(CCompartment* pX, const ElementsMap & emap)
+{
+  replaceInGlobalQuantity(pX, emap);
+}
+
+void CModelExpansion::replaceInMetab(CMetab* pX, const ElementsMap & emap)
+{
+  replaceInGlobalQuantity(pX, emap);
+  
+  //compartment
+}
+
+void CModelExpansion::replaceInReaction(CReaction* pX, const ElementsMap & emap)
+{
+  //replace in the chemical equation
+  size_t i;
+  for(i=0; i<pX->getChemEq().getSubstrates().size(); ++i)
+    {
+    CChemEqElement * sourceElement = pX->getChemEq().getSubstrates()[i];
+    const CMetab* pMetab = dynamic_cast<const CMetab*>(emap.getDuplicatePtr(sourceElement->getMetabolite()));
+    if (pMetab)
+      {
+      sourceElement->setMetabolite(pMetab->getKey());
+      }
+    }
+  for(i=0; i<pX->getChemEq().getProducts().size(); ++i)
+    {
+    CChemEqElement * sourceElement = pX->getChemEq().getProducts()[i];
+    const CMetab* pMetab = dynamic_cast<const CMetab*>(emap.getDuplicatePtr(sourceElement->getMetabolite()));
+    if (pMetab)
+      {
+      sourceElement->setMetabolite(pMetab->getKey());
+      }
+    }
+  for(i=0; i<pX->getChemEq().getModifiers().size(); ++i)
+    {
+    CChemEqElement * sourceElement = pX->getChemEq().getModifiers()[i];
+    const CMetab* pMetab = dynamic_cast<const CMetab*>(emap.getDuplicatePtr(sourceElement->getMetabolite()));
+    if (pMetab)
+      {
+      sourceElement->setMetabolite(pMetab->getKey());
+      }
+    }
+  
+  //mapping and local parameters
+  for (i = 0; i < pX->getFunctionParameters().size(); ++i)
+    {
+    switch (pX->getFunctionParameters()[i]->getUsage())
+      {
+        case CFunctionParameter::SUBSTRATE:
+        case CFunctionParameter::PRODUCT:
+        case CFunctionParameter::MODIFIER:
+        case CFunctionParameter::VOLUME:
+        case CFunctionParameter::PARAMETER:
+        {
+        size_t k;
+        for (k = 0; k < pX->getParameterMappings()[i].size(); ++k)
+          {
+          std::string targetKey = emap.getDuplicateKey(pX->getParameterMappings()[i][k]);
+          if (targetKey != "")
+            pX->getParameterMappings()[i][k]=targetKey;
+          }
+        }
+        break;
+        
+        case CFunctionParameter::TIME:
+        default:
+        break;
+      }
+    
+    }
+  
+}
+
+void CModelExpansion::replaceInGlobalQuantity(CModelEntity* pX, const ElementsMap & emap)
+{
+  //expression (for assignment or ODE)
+  replaceInExpression(pX->getExpressionPtr(), emap);
+  
+  //initial expression
+  replaceInExpression(pX->getInitialExpressionPtr(), emap);
+}
+
+void CModelExpansion::replaceInEvent(CEvent* pX, const ElementsMap & emap)
+{
+  replaceInExpression(pX->getTriggerExpressionPtr(), emap);
+  replaceInExpression(pX->getDelayExpressionPtr(), emap);
+  
+  //now the event assignments...
+  size_t i;
+  for (i=0; i < pX->getAssignments().size(); ++i)
+    {
+    CEventAssignment* pAssignment = pX->getAssignments()[i];
+    replaceInExpression(pAssignment->getExpressionPtr(), emap);
+    
+    std::string replacekey = emap.getDuplicateKey(pAssignment->getTargetKey());
+    if (replacekey != "")
+      pAssignment->setTargetKey(replacekey);
+    }
+}
+
+
+void CModelExpansion::replaceInExpression(CExpression* exp, const ElementsMap & emap)
+{
+  if (!exp)
+    return;
+  
+  //we loop through the complete expression
+  std::vector< CEvaluationNode * >::const_iterator it = exp->getNodeList().begin();
+  std::vector< CEvaluationNode * >::const_iterator end = exp->getNodeList().end();
+  for (; it != end; ++it)
+    {
+    CEvaluationNodeObject * node = dynamic_cast<CEvaluationNodeObject*>(*it);
+    if (!node)
+      continue;
+    
+    //std::cout << node->getData() << std::endl;
+    const CCopasiObject * pObj = dynamic_cast<const CCopasiObject*>(node->getObjectInterfacePtr());
+    std::string refname = "";
+    std::string reftype = "";
+    if (pObj)
+      {
+      refname = pObj->getObjectName();
+      reftype = pObj->getObjectType();
+      pObj = pObj->getObjectParent();
+      }
+    
+    const CCopasiObject* duplicate = emap.getDuplicatePtr(pObj);
+    if (duplicate)
+        {
+        //get the reference object
+        const CCopasiObject* pRef = dynamic_cast<const CCopasiObject*>(duplicate->getObject(reftype + "=" + refname));
+        //update the node
+        if (pRef)
+          node->setData("<" + pRef->getCN() + ">");
+        //std::cout << node->getData() << std::endl;
+        }
+    }
+}
+
