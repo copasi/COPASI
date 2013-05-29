@@ -67,6 +67,11 @@ public:
    */
   void fillDependencies(const CModel* pModel);
   
+  /**
+   * enters all the objects from pModel
+   */
+  void fillComplete(const CModel* pModel);
+  
   //protected:
   std::set<const CCompartment*> mCompartments;
   std::set<const CMetab*> mMetabs;
@@ -119,6 +124,11 @@ public:
    * the metabs in listOfMetabolites, so that a rectangular array is formed.
    */
   void createRectangularArray(const SetOfModelElements & source, size_t nx, size_t ny, const std::set< std::string  > & setOfMetabolites);
+
+  /**
+   * adds the contents of the source model to the current model
+   */
+  void copyCompleteModel(const CModel* pSourceModel);
 
   
   /**

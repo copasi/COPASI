@@ -144,6 +144,25 @@ void CModelExpansion::SetOfModelElements::fillDependencies(const CModel* pModel)
     addEvent(dynamic_cast<const CEvent*>(*it));
 }
 
+void CModelExpansion::SetOfModelElements::fillComplete(const CModel* pModel)
+{
+  if (!pModel)
+    return;
+  
+  size_t i;
+  for (i=0; i<pModel->getCompartments().size(); ++i)
+    addCompartment(pModel->getCompartments()[i]);
+  for (i=0; i<pModel->getMetabolites().size(); ++i)
+    addMetab(pModel->getMetabolites()[i]);
+  for (i=0; i<pModel->getReactions().size(); ++i)
+    addReaction(pModel->getReactions()[i]);
+  for (i=0; i<pModel->getModelValues().size(); ++i)
+    addGlobalQuantity(pModel->getModelValues()[i]);
+  for (i=0; i<pModel->getEvents().size(); ++i)
+    addEvent(pModel->getEvents()[i]);
+}
+
+
 //***************************************************************************************
 
 bool CModelExpansion::ElementsMap::exists(const CCopasiObject* source) const
@@ -407,6 +426,14 @@ void CModelExpansion::createRectangularArray(const SetOfModelElements & source, 
       }
 
   mpModel->compileIfNecessary(NULL);
+}
+
+void CModelExpansion::copyCompleteModel(const CModel* pSourceModel)
+{
+  SetOfModelElements sourceElements;
+  sourceElements.fillComplete(pSourceModel);
+  ElementsMap map;
+  duplicate(sourceElements, "[merge]", map);
 }
 
 bool CModelExpansion::duplicate(const SetOfModelElements & source, const std::string & index, ElementsMap & emap)
