@@ -19,6 +19,9 @@
 
 
 
+
+
+
 %{
 
 #include "model/CReaction.h"
@@ -32,6 +35,7 @@
 %ignore CReaction::calculatePartialDerivative;
 %ignore CReaction::getExpressionTree;
 %ignore CReaction::getDeletedObjects;
+%ignore CReaction::getPropensityReference() const;
 %ignore CReaction::getParticleFluxReference() const;
 %ignore CReaction::getFluxReference() const;
 

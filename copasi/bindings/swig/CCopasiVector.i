@@ -23,10 +23,14 @@
 
 
 
+
+
+
 %{
 
 #include "utilities/CCopasiVector.h"
 #include "plot/CPlotSpecification.h"
+#include <copasi/elementaryFluxModes/CFluxMode.h>
 #include <layout/CLBase.h>
 #include <layout/CLCurve.h>
 #include <model/CObjectLists.h>
@@ -149,6 +153,9 @@
 %rename(removeObject) CCopasiVector<CModelValue>::remove(CCopasiObject* pObject);
 %rename(removeByName) CCopasiVectorN<CModelValue>::remove(const std::string& name);
 %rename(getIndexByName) CCopasiVectorN<CModelValue>::getIndex(const std::string& name) const;
+
+%template(FluxModeStdVector) std::vector<CFluxMode*>;
+
 
 %template(ModelValueStdVector) std::vector<CModelValue*>;
 %template(ModelValueVector) CCopasiVector<CModelValue>;

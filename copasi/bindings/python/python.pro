@@ -12,6 +12,9 @@
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
+
+
+
 TEMPLATE = lib
 CONFIG -= qt
 
@@ -230,7 +233,7 @@ isEmpty(SWIG_PATH) {
       # we force the rebuild of the wrapper sources
       wrapper_source.depends = FORCE
 
-      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} & $${SWIG_PATH}/swig.exe $${DEFINE_COMMANDLINE} -I$${BUILD_ROOT}/copasi -c++ -python -o $${wrapper_source.target} python.i
+      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} & $${SWIG_PATH}/swig.exe $${DEFINE_COMMANDLINE}  -I$${BUILD_ROOT}-I$${BUILD_ROOT}/copasi -c++ -python -o $${wrapper_source.target} python.i
 
       QMAKE_EXTRA_TARGETS += wrapper_source
       debug {
@@ -248,7 +251,7 @@ isEmpty(SWIG_PATH) {
     !contains(BUILD_OS, WIN32){
       wrapper_source.target = copasi_wrapper.cpp
       wrapper_source.depends = $${SWIG_INTERFACE_FILES} python.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} ; $${SWIG_PATH}/bin/swig $${DEFINE_COMMANDLINE} -classic -I$${BUILD_ROOT}/copasi -c++ -python -o $${wrapper_source.target} python.i
+      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} ; $${SWIG_PATH}/bin/swig $${DEFINE_COMMANDLINE} -classic  -I$${BUILD_ROOT} -I$${BUILD_ROOT}/copasi -c++ -python -o $${wrapper_source.target} python.i
   
       QMAKE_EXTRA_TARGETS += wrapper_source
       QMAKE_CLEAN += copasi_wrapper.cpp 

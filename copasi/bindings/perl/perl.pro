@@ -3,6 +3,7 @@
 # of Manchester. 
 # All rights reserved. 
 
+
 TEMPLATE = lib
 CONFIG -= qt
 
@@ -167,7 +168,7 @@ isEmpty(SWIG_PATH){
       # we force the rebuild of the wrapper sources
       wrapper_source.depends = FORCE
 
-      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} & $${SWIG_PATH}\\swig.exe $${DEFINE_COMMANDLINE} -I..\\.. -c++ -perl -o $${wrapper_source.target} perl.i
+      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} & $${SWIG_PATH}\\swig.exe $${DEFINE_COMMANDLINE} -I..\\..\\..  -I..\\.. -c++ -perl -o $${wrapper_source.target} perl.i
 
       QMAKE_EXTRA_TARGETS += wrapper_source
       debug {
@@ -184,7 +185,7 @@ isEmpty(SWIG_PATH){
     !contains(BUILD_OS, WIN32){
       wrapper_source.target = copasi_wrapper.cpp
       wrapper_source.depends = $${SWIG_INTERFACE_FILES} perl.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} ; $${SWIG_PATH}/bin/swig $${DEFINE_COMMANDLINE} -I../.. -c++ -perl -o $${wrapper_source.target} perl.i
+      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} ; $${SWIG_PATH}/bin/swig $${DEFINE_COMMANDLINE}  -I../../.. -I../.. -c++ -perl -o $${wrapper_source.target} perl.i
   
       QMAKE_EXTRA_TARGETS += wrapper_source
       QMAKE_CLEAN += copasi_wrapper.cpp 

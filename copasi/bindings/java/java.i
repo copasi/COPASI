@@ -16,9 +16,8 @@
 
 
 
-
-
-
+%include <std_pair.i>
+%include <std_map.i>
 %include <std_string.i>
 %include <exception.i>
 
@@ -48,10 +47,10 @@
 		{	
 			return new CScanTask(cPtr, owner);
 		}
-		//else if (taskType == CCopasiTask.fluxMode)
-		//{	
-		//	return new CEFMTask(cPtr, owner);
-		//}
+		else if (taskType == CCopasiTask.fluxMode)
+		{	
+			return new CEFMTask(cPtr, owner);
+		}
 		else if (taskType == CCopasiTask.optimization)
 		{	
 			return new COptTask(cPtr, owner);
@@ -68,26 +67,26 @@
 		{	
 			return new CLyapTask(cPtr, owner);
 		}		
-		//else if (taskType == CCopasiTask.tssAnalysis)
-		//{	
-		//	return new CLyapTask(cPtr, owner);
-		//}
+		else if (taskType == CCopasiTask.tssAnalysis)
+		{	
+			return new CTSSATask(cPtr, owner);
+		}
 		else if (taskType == CCopasiTask.sens)
 		{	
 			return new CSensTask(cPtr, owner);
 		}
-		//else if (taskType == CCopasiTask.moieties)
-		//{	
-		//	return new CSensTask(cPtr, owner);
-		//}
-		//else if (taskType == CCopasiTask.crosssection)
-		//{	
-		//	return new CSensTask(cPtr, owner);
-		//}
-		//else if (taskType == CCopasiTask.lna)
-		//{	
-		//	return new CSensTask(cPtr, owner);
-		//}
+		else if (taskType == CCopasiTask.moieties)
+		{	
+			return new CMoietiesTask(cPtr, owner);
+		}
+		else if (taskType == CCopasiTask.crosssection)
+		{	
+			return new CCrossSectionTask(cPtr, owner);
+		}
+		else if (taskType == CCopasiTask.lna)
+		{	
+			return new CLNATask(cPtr, owner);
+		}
 
 		return new CCopasiTask(cPtr, owner);
 	}
@@ -110,6 +109,26 @@
 		else if (methodType == CCopasiTask.mca)
 		{
 			return new CMCAMethod(cPtr, owner);
+		}
+		else if (methodType == CCopasiTask.tssAnalysis)
+		{
+			return new  CTSSAMethod(cPtr, owner);
+		}
+		else if (methodType == CCopasiTask.moieties)
+		{
+			return new CMoietiesMethod(cPtr, owner);
+		}
+		else if (methodType == CCopasiTask.crosssection)
+		{
+			return new CCrossSectionMethod(cPtr, owner);
+		}
+		else if (methodType == CCopasiTask.lna)
+		{
+			return new CLNAMethod(cPtr, owner);
+		}
+		else if (methodType == CCopasiTask.fluxMode)
+		{
+			return new CEFMMethod(cPtr, owner);
 		}
 		else if (methodType == CCopasiTask.steadyState)
 		{
@@ -198,10 +217,10 @@
 		{	
 			return new CScanProblem(cPtr, owner);
 		}
-		//else if (problemType == CCopasiTask.fluxMode)
-		//{	
-		//	return new CEFMProblem(cPtr, owner);
-		//}
+		else if (problemType == CCopasiTask.fluxMode)
+		{	
+			return new CEFMProblem(cPtr, owner);
+		}
 		else if (problemType == CCopasiTask.optimization)
 		{	
 			return new COptProblem(cPtr, owner);
@@ -218,26 +237,26 @@
 		{	
 			return new CLyapProblem(cPtr, owner);
 		}
-		//else if (problemType == CCopasiTask.tssAnalysis)
-		//{	
-		//	return new CLyapProblem(cPtr, owner);
-		//}
+		else if (problemType == CCopasiTask.tssAnalysis)
+		{	
+			return new CTSSAProblem(cPtr, owner);
+		}
 		else if (problemType == CCopasiTask.sens)
 		{	
 			return new CSensProblem(cPtr, owner);
 		}
-		//else if (problemType == CCopasiTask.moieties)
-		//{	
-		//	return new CSensProblem(cPtr, owner);
-		//}
-		//else if (problemType == CCopasiTask.crosssection)
-		//{	
-		//	return new CSensProblem(cPtr, owner);
-		//}
-		//else if (problemType == CCopasiTask.lna)
-		//{	
-		//	return new CSensProblem(cPtr, owner);
-		//}
+		else if (problemType == CCopasiTask.moieties)
+		{	
+			return new CMoietiesProblem(cPtr, owner);
+		}
+		else if (problemType == CCopasiTask.crosssection)
+		{	
+			return new CCrossSectionProblem(cPtr, owner);
+		}
+		else if (problemType == CCopasiTask.lna)
+		{	
+			return new CLNAProblem(cPtr, owner);
+		}
 
 		return new CCopasiProblem(cPtr, owner);
 	}

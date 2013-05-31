@@ -25,6 +25,9 @@
 
 
 
+
+
+
 %{
 
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -38,11 +41,20 @@
 
 %ignore CCopasiDataModel::CCopasiDataModel(const bool);
 %ignore CCopasiDataModel::autoSave();
-%ignore CCopasiDataModel::loadModel(const std::string& fileName,CProcessReport* pProcessReport);
+%ignore CCopasiDataModel::print;
+%ignore CCopasiDataModel::loadModel(const std::string& fileName,CProcessReport* pProcessReport,
+                 const bool & deleteOldData = true);
+%ignore CCopasiDataModel::loadModel(std::istream & in,
+                 const std::string & pwd,
+                 CProcessReport* pProcessReport,
+                 const bool & deleteOldData = true);
+
 %ignore CCopasiDataModel::saveModel(const std::string& fileName,CProcessReport* pProcessReport, bool overwriteFile=false , const bool& autoSave=false);
 %ignore CCopasiDataModel::newModel;
-%ignore CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler);
-%ignore CCopasiDataModel::importSBML(const std::string& fileName,CProcessReport* pImportHandler);
+%ignore CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler,
+                 const bool & deleteOldData = true);
+%ignore CCopasiDataModel::importSBML(const std::string& fileName,CProcessReport* pImportHandler,
+                 const bool & deleteOldData = true);
 %ignore CCopasiDataModel::exportSBML(const std::string& fileName,bool overwriteFile,int sbmlLevel, int sbmlVersion,bool exportIncomplete ,bool exportCOPASIMIRIAM=false,CProcessReport* pExportHandler = NULL );
 %ignore CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler,int sbmlLevel, int sbmlVersion);
 %ignore CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessReport* pProcessReport, const std::string & filter, bool overwriteFile = false);
@@ -86,6 +98,7 @@
 %catches(CCopasiException) CCopasiDataModel::newModel(CProcessReport* pProcessReport,const bool& deleteOldData);
 %catches(CCopasiException) CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler = NULL,const bool& deleteOldData = true);
 %catches(CCopasiException) CCopasiDataModel::importSBML(const std::string&,CProcessReport*,const bool& deleteOldData = true);
+%catches(CCopasiException) CCopasiDataModel::importSBMLFromString(const std::string&,CProcessReport*,const bool& deleteOldData = true);
 %catches(CCopasiException) CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler , int sbmlLevel,int sbmlVersion);
 %catches(CCopasiException) CCopasiDataModel::exportSBML(const std::string& fileName, bool overwriteFile=false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM, CProcessReport* pExportHandler = NULL);
 
@@ -109,6 +122,31 @@
 
 %extend CCopasiDataModel
 {
+	bool importSBMLFromString(const std::string& content)
+	{
+	try
+	{
+		return self->importSBMLFromString(content, NULL);
+	}
+	catch(...)
+	{
+	return false;
+	}
+	}
+    bool loadModelFromString(const std::string& content, const std::string& path)
+	{
+		try
+		{
+		  std::istringstream is(content);
+		  return $self->loadModel(is,
+                 path,
+                 NULL);
+		}
+		catch(...)
+		{
+		return false;
+		}
+	}
     bool loadModel(const std::string& fileName)
     {
         return $self->loadModel(fileName,NULL);

@@ -90,6 +90,8 @@ add_custom_command(
     ARGS -I${CMAKE_CURRENT_SOURCE_DIR}/../swig/
          -I${CMAKE_CURRENT_SOURCE_DIR}/../../
          -I${CMAKE_CURRENT_SOURCE_DIR}
+         -I${CMAKE_SOURCE_DIR}
+         -I${LIBSBML_INCLUDE_DIR}
          -c++
          -java
          -package org.COPASI

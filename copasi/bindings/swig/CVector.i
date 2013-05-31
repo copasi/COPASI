@@ -18,6 +18,9 @@
 
 
 
+
+
+
 %{
 
 #include "utilities/CVector.h"
@@ -31,6 +34,7 @@
 %ignore operator()(const size_t & ) const;
 %ignore operator = (const CType &);
 %ignore operator = (const CVector <CType> &);
+%ignore CVector::operator=;
 %ignore CVectorCore::array() const;
 %ignore CVectorCore::array();
 %ignore CVector::resize;

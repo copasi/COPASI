@@ -54,6 +54,7 @@ ADD_CUSTOM_COMMAND(
     ARGS	-I${CMAKE_CURRENT_SOURCE_DIR}/../swig/
 	        -I${CMAKE_CURRENT_SOURCE_DIR}/../../
             -I${CMAKE_CURRENT_SOURCE_DIR}
+			-I${CMAKE_SOURCE_DIR}
 			-c++
 			-python		
 			${SWIG_EXTRA_ARGS}		 

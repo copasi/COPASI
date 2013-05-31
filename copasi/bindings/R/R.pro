@@ -3,6 +3,7 @@
 # of Manchester. 
 # All rights reserved. 
 
+
 TEMPLATE = lib
 CONFIG -= qt
 # the plugin config option disables the 
@@ -120,7 +121,7 @@ isEmpty(SWIG_PATH){
       # we force the rebuild of the wrapper sources
       wrapper_source.depends = FORCE
 
-      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} & $${SWIG_PATH}\\swig.exe $${DEFINE_COMMANDLINE} -I..\.. -c++ -r -o $${wrapper_source.target} R.i
+      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} & $${SWIG_PATH}\\swig.exe $${DEFINE_COMMANDLINE} -I..\..  -I..\..\.. -c++ -r -o $${wrapper_source.target} R.i
 
       QMAKE_EXTRA_TARGETS += wrapper_source
       debug {
@@ -137,7 +138,7 @@ isEmpty(SWIG_PATH){
     !contains(BUILD_OS, WIN32){
       wrapper_source.target = COPASI.cpp
       wrapper_source.depends = $${SWIG_INTERFACE_FILES} R.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} ; $${SWIG_PATH}/bin/swig $${DEFINE_COMMANDLINE} -I../.. -c++ -r -o $${wrapper_source.target} R.i
+      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} ; $${SWIG_PATH}/bin/swig $${DEFINE_COMMANDLINE} -I../.. -I../../.. -c++ -r -o $${wrapper_source.target} R.i
   
       QMAKE_EXTRA_TARGETS += wrapper_source
       QMAKE_CLEAN += COPASI.cpp 

@@ -19,6 +19,9 @@
 
 
 
+
+
+
 %{
 
 #include "model/CModel.h"
@@ -50,6 +53,7 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 // according to Stefan, the method to calculate the elasticities is no longer used
 // and might actually not work at all
 %ignore CModel::calculateElasticityMatrix(const C_FLOAT64&,const C_FLOAT64&);
+%ignore CModel::getModelParameterSet() const;
 %ignore CModel::getMetabolites() const;
 %ignore CModel::getMetabolitesX() const;
 %ignore CModel::getModelValues() const;

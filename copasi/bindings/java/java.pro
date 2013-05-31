@@ -12,6 +12,9 @@
 # Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
+
+
+
 TEMPLATE = lib
 CONFIG -= qt
 
@@ -194,7 +197,7 @@ isEmpty(SWIG_PATH){
       wrapper_source.depends = FORCE
 
       # using the -C switch with jar from JDK 1.6 seems to lead to errors, so I am switching paths explicitely
-      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} & $(MKDIR) $${JAVA_FILE_PATH}\\java_files\\org\\COPASI & $(DEL_FILE) $${JAVA_FILE_PATH}\\java_files\\org\\COPASI\\*.java & $(DEL_FILE) $${JAVA_FILE_PATH}\\java_files\\org\\COPASI\\*.class & $(DEL_FILE) gui\\org\\COPASI\\gui\\*.class & $${SWIG_PATH}\\swig.exe $${DEFINE_COMMANDLINE} -I..\\.. -c++ -java -o $${wrapper_source.target} -package org.COPASI -outdir $${JAVA_FILE_PATH}\\java_files\\org\\COPASI  java.i  & $${JAVA_HOME}\\bin\\javac.exe $${JAVAC_DEBUG_OPTIONS} -classpath .\\$${JAVA_FILE_PATH}\\java_files -d .\\$${JAVA_FILE_PATH}\\java_files .\\$${JAVA_FILE_PATH}\\java_files\\org\\COPASI\\*.java & cd .\\$${JAVA_FILE_PATH}\java_files & $${JAVA_HOME}\\bin\\jar.exe cvf ..\\copasi.jar org\\COPASI\\*.java org\\COPASI\\*.class & cd ..\..\gui & $${JAVA_HOME}\\bin\\javac.exe $${JAVAC_DEBUG_OPTIONS} -classpath .;..\\$${JAVA_FILE_PATH}\\copasi.jar -d . .\\org\\COPASI\\gui\\*.java & $${JAVA_HOME}\\bin\\jar.exe cvf ..\\$${JAVA_FILE_PATH}\\copasi_gui.jar org\\COPASI\\gui\\*.java org\\COPASI\\gui\\*.class & cd .. 
+      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target} & $(MKDIR) $${JAVA_FILE_PATH}\\java_files\\org\\COPASI & $(DEL_FILE) $${JAVA_FILE_PATH}\\java_files\\org\\COPASI\\*.java & $(DEL_FILE) $${JAVA_FILE_PATH}\\java_files\\org\\COPASI\\*.class & $(DEL_FILE) gui\\org\\COPASI\\gui\\*.class & $${SWIG_PATH}\\swig.exe $${DEFINE_COMMANDLINE} -I..\\.. -I..\\..\\.. -c++ -java -o $${wrapper_source.target} -package org.COPASI -outdir $${JAVA_FILE_PATH}\\java_files\\org\\COPASI  java.i  & $${JAVA_HOME}\\bin\\javac.exe $${JAVAC_DEBUG_OPTIONS} -classpath .\\$${JAVA_FILE_PATH}\\java_files -d .\\$${JAVA_FILE_PATH}\\java_files .\\$${JAVA_FILE_PATH}\\java_files\\org\\COPASI\\*.java & cd .\\$${JAVA_FILE_PATH}\java_files & $${JAVA_HOME}\\bin\\jar.exe cvf ..\\copasi.jar org\\COPASI\\*.java org\\COPASI\\*.class & cd ..\..\gui & $${JAVA_HOME}\\bin\\javac.exe $${JAVAC_DEBUG_OPTIONS} -classpath .;..\\$${JAVA_FILE_PATH}\\copasi.jar -d . .\\org\\COPASI\\gui\\*.java & $${JAVA_HOME}\\bin\\jar.exe cvf ..\\$${JAVA_FILE_PATH}\\copasi_gui.jar org\\COPASI\\gui\\*.java org\\COPASI\\gui\\*.class & cd .. 
       
       QMAKE_EXTRA_TARGETS += wrapper_source
 
@@ -219,7 +222,7 @@ isEmpty(SWIG_PATH){
 
       wrapper_source.target = copasi_wrapper.cpp
       wrapper_source.depends = $${SWIG_INTERFACE_FILES} java.i local.cpp
-      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target}; $(DEL_FILE) java_files/org/COPASI/*; $(DEL_FILE) gui/org/COPASI/gui/*.class ; mkdir -p java_files/org/COPASI ; $${SWIG_PATH}/bin/swig $${DEFINE_COMMANDLINE} -I../.. -c++ -java -o $${wrapper_source.target} -package org.COPASI -outdir java_files/org/COPASI/  java.i; cd java_files; $${JAVA_HOME}/bin/javac $${JAVAC_DEBUG_OPTIONS} -classpath . -d . org/COPASI/*.java ;rm -f  copasi.jar;$${JAVA_HOME}/bin/jar cf ../copasi.jar org ; cd .. ; cd  gui; $${JAVA_HOME}/bin/javac $${JAVAC_DEBUG_OPTIONS} -classpath ../copasi.jar:. -d . org/COPASI/gui/*.java ; $${JAVA_HOME}/bin/jar cf ../copasi_gui.jar org/COPASI/gui/*.class org/COPASI/gui/*.java 
+      wrapper_source.commands = $(DEL_FILE) $${wrapper_source.target}; $(DEL_FILE) java_files/org/COPASI/*; $(DEL_FILE) gui/org/COPASI/gui/*.class ; mkdir -p java_files/org/COPASI ; $${SWIG_PATH}/bin/swig $${DEFINE_COMMANDLINE} -I../.. -I../../.. -c++ -java -o $${wrapper_source.target} -package org.COPASI -outdir java_files/org/COPASI/  java.i; cd java_files; $${JAVA_HOME}/bin/javac $${JAVAC_DEBUG_OPTIONS} -classpath . -d . org/COPASI/*.java ;rm -f  copasi.jar;$${JAVA_HOME}/bin/jar cf ../copasi.jar org ; cd .. ; cd  gui; $${JAVA_HOME}/bin/javac $${JAVAC_DEBUG_OPTIONS} -classpath ../copasi.jar:. -d . org/COPASI/gui/*.java ; $${JAVA_HOME}/bin/jar cf ../copasi_gui.jar org/COPASI/gui/*.class org/COPASI/gui/*.java 
       QMAKE_EXTRA_TARGETS += wrapper_source
       
       QMAKE_CLEAN += copasi.jar 
