@@ -2073,7 +2073,7 @@ void CopasiUI3Window::slotMergeModels()
   else
     {
 
-      CQMergingData *widget = new CQMergingData;
+      CQMergingData *widget = new CQMergingData(NULL, 0, true);
       widget->exec();
 
       mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");

@@ -1,26 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Begin CVS Header </comment>
-<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMergingData.ui,v $ </comment>
-<comment>   $Revision: 1.1 $ </comment>
-<comment>   $Name:  $ </comment>
-<comment>   $Author: nsimus $ </comment>
-<comment>   $Date: 2009/10/30 16:11:56 $ </comment>
-<comment> End CVS Header </comment>
-
-<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
-<comment> and The University of Manchester. </comment>
-<comment> All rights reserved. </comment>
-
+ <comment> All rights reserved. </comment>
  <class>CQMergingData</class>
  <widget class="QDialog" name="CQMergingData">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>654</width>
-    <height>209</height>
+    <width>582</width>
+    <height>364</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,62 +19,103 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QTableWidget" name="mpTable">
-     <row>
-      <property name="text">
-       <string>1</string>
-      </property>
-     </row>
-     <row>
-      <property name="text">
-       <string>2</string>
-      </property>
-     </row>
-     <row>
-      <property name="text">
-       <string>3</string>
-      </property>
-     </row>
-     <column>
-      <property name="text">
-       <string>Column Name</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Status</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Hidden</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>&lt;&gt;</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Model Object</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Hidden</string>
-      </property>
-     </column>
+    <widget class="QStackedWidget" name="mpStack">
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="page">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QTableWidget" name="mpTable">
+         <row>
+          <property name="text">
+           <string>1</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>2</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>3</string>
+          </property>
+         </row>
+         <column>
+          <property name="text">
+           <string>Column Name</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Status</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Hidden</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>&lt;&gt;</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Model Object</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Hidden</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="page_2">
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Replace:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>with:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QTreeWidget" name="mpTree1">
+         <column>
+          <property name="text">
+           <string notr="true">1</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QTreeWidget" name="mpTree2">
+         <column>
+          <property name="text">
+           <string notr="true">1</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item>
     <layout class="QHBoxLayout" name="_2">
-     <property name="spacing">
-      <number>6</number>
-     </property>
-     <property name="margin">
-      <number>0</number>
-     </property>
      <item>
       <widget class="QPushButton" name="mpBtnMerge">
        <property name="text">
