@@ -511,9 +511,6 @@ void CModelExpansion::duplicateCompartment(const CCompartment* source, const std
   newObj->setInitialExpression(source->getInitialExpression());
   updateExpression(newObj->getInitialExpressionPtr(), index, sourceSet, emap);
 
-  newObj->setNotes(source->getNotes());
-  newObj->setMiriamAnnotation(source->getMiriamAnnotation(), newObj->getKey(), source->getKey());
-
   //add duplicated object to the map
   emap.add(source, newObj);
 }
@@ -572,10 +569,6 @@ void CModelExpansion::duplicateMetab(const CMetab* source, const std::string & i
   //initial expression
   newObj->setInitialExpression(source->getInitialExpression());
   updateExpression(newObj->getInitialExpressionPtr(), index, sourceSet, emap);
-
-  newObj->setNotes(source->getNotes());
-  newObj->setMiriamAnnotation(source->getMiriamAnnotation(), newObj->getKey(), source->getKey());
-
 
   //add duplicated object to the map
   emap.add(source, newObj);
@@ -763,9 +756,6 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
         }
     }
 
-  newObj->setNotes(source->getNotes());
-  newObj->setMiriamAnnotation(source->getMiriamAnnotation(), newObj->getKey(), source->getKey());
-
   //add duplicated object to the map
   emap.add(source, newObj);
 }
@@ -799,9 +789,6 @@ void CModelExpansion::duplicateGlobalQuantity(const CModelEntity* source, const 
   //initial expression
   newObj->setInitialExpression(source->getInitialExpression());
   updateExpression(newObj->getInitialExpressionPtr(), index, sourceSet, emap);
-
-  newObj->setNotes(source->getNotes());
-  newObj->setMiriamAnnotation(source->getMiriamAnnotation(), newObj->getKey(), source->getKey());
 
   //add duplicated object to the map
   emap.add(source, newObj);
@@ -877,9 +864,6 @@ void CModelExpansion::duplicateEvent(CEvent* source, const std::string & index, 
           updateExpression(pNewAssignment->getExpressionPtr(), index, sourceSet, emap);
         }
     }
-
-  newObj->setNotes(source->getNotes());
-  newObj->setMiriamAnnotation(source->getMiriamAnnotation(), newObj->getKey(), source->getKey());
 
   //add duplicated object to the map
   emap.add(source, newObj);

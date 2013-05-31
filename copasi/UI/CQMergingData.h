@@ -39,12 +39,9 @@ class CQMergingData : public QDialog, public Ui::CQMergingData
   Q_OBJECT
 
 public:
-  CQMergingData(QWidget* parent = 0, Qt::WindowFlags fl = 0, bool simple = false);
+  CQMergingData(QWidget* parent = 0, Qt::WindowFlags fl = 0);
   ~CQMergingData();
 
-  std::map<QTreeWidgetItem*, CModelEntity*> mItemMap1;
-  std::map<QTreeWidgetItem*, CModelEntity*> mItemMap2;
-  
   std::vector< std::string > mObjectKey;
   std::vector< std::string > mColumnKey;
   std::vector< std::string > mColumnName;
@@ -60,10 +57,6 @@ protected slots:
   void slotTypeChanged(int row);
 
 private:
- 
-  void fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTreeWidgetItem*, CModelEntity*>& itemMap);
-
-  
   std::string findMetaboliteKeyByName(std::string name);
 //  void init();
   void load();

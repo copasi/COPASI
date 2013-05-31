@@ -16,7 +16,6 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include <map>
 #include <QSignalMapper>
 #include <QComboBox>
 
@@ -26,7 +25,6 @@
 #include "model/CMetab.h"
 #include "model/CModelValue.h"
 #include "model/CModelMerging.h"
-#include "model/CModelExpansion.h"
 #include "report/CCopasiRootContainer.h"
 #include "UI/CCopasiSelectionDialog.h"
 #include "CQMessageBox.h"
@@ -52,16 +50,11 @@ class CModelEntity;
  *  name 'name'.'
  */
 
-CQMergingData::CQMergingData(QWidget* parent, Qt::WindowFlags fl, bool simple)
+CQMergingData::CQMergingData(QWidget* parent, Qt::WindowFlags fl)
     : QDialog(parent, fl)
 {
   setupUi(this);
 
-  if (simple)
-    mpStack->setCurrentIndex(1);
-  else
-    mpStack->setCurrentIndex(0);
-  
   load();
 }
 /*
@@ -70,32 +63,6 @@ CQMergingData::CQMergingData(QWidget* parent, Qt::WindowFlags fl, bool simple)
 CQMergingData::~CQMergingData()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTreeWidgetItem*, CModelEntity*> & itemMap)
-{
-  size_t i, imax = pModel->getCompartments().size();
-  for(i=0; i<imax; ++i)
-    {
-    QTreeWidgetItem * pItem = new QTreeWidgetItem((QTreeWidget*)NULL, 1000);
-    pItem->setText(0,  FROM_UTF8(pModel->getCompartments()[i]->getObjectName()));
-    pItem->setCheckState(0, Qt::Unchecked);
-    itemMap[pItem] = pModel->getCompartments()[i];
-    pW->addTopLevelItem(pItem);
-    
-    QTreeWidgetItem * pChild;
-    size_t j, jmax = pModel->getCompartments()[i]->getMetabolites().size();
-    for(j=0; j<jmax; ++j)
-      {
-      QTreeWidgetItem * pChild = new QTreeWidgetItem(pItem, 1001);
-      pChild->setText(0,  FROM_UTF8(pModel->getCompartments()[i]->getMetabolites()[j]->getObjectName()));
-      pChild->setCheckState(0, Qt::Unchecked);
-      itemMap[pChild]=pModel->getCompartments()[i]->getMetabolites()[j];
-      }
-    pItem->setExpanded(true);
-
-    }
-
 }
 
 void CQMergingData::load()
@@ -123,13 +90,6 @@ void CQMergingData::load()
 
   pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 
-  //simple
-  
-  fillTree(mpTree1, pModel, mItemMap1);
-  fillTree(mpTree2, pModel, mItemMap2);
-  
-  //end simple
-  
   size_t i, imax = pModel->getMetabolites().size();
   mColumnName.resize(imax);
   mColumnKey.resize(imax);
@@ -211,38 +171,9 @@ void CQMergingData::load()
 }
 void CQMergingData::slotBtnMerge()
 {
-  //simple, preliminary
-  CModelEntity* p1=NULL;
-  CModelEntity* p2=NULL;
-  
-  std::map<QTreeWidgetItem*, CModelEntity*>::const_iterator it;
-  for (it=mItemMap1.begin(); it != mItemMap1.end(); ++it)
-    {
-    if (it->first->checkState(0)==Qt::Checked)
-      {
-      p1=it->second;
-      break;
-      }
-    }
-  for (it=mItemMap2.begin(); it != mItemMap2.end(); ++it)
-    {
-    if (it->first->checkState(0)==Qt::Checked)
-      {
-      p2=it->second;
-      break;
-      }
-    }
-  
-  pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
-  CModelExpansion expa(pModel);
-  CModelExpansion::ElementsMap emap;
-  emap.add(p1, p2);
-  expa.replaceInModel(emap);
-  
-  
-  
-  //CModelMerging merging(pModel);
-  //merging.simpleCall(mColumnKey, mObjectKey);
+
+  CModelMerging merging(pModel);
+  merging.simpleCall(mColumnKey, mObjectKey);
 
   accept();
 }
