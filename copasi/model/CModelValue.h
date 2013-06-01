@@ -373,7 +373,7 @@ private:
 /*
 Table of possible CModelEntity objects with different Status
 
-  current status        corresponding sbml object
+                        current status        corresponding sbml object
 -------------------------------------------------------------------------------------------------
 CMetab:                                       Species
 
@@ -381,8 +381,8 @@ FIXED                   implemented           constant=true
 UNUSED                  implemented           ?
 SUBJECT_TO_REACTION     implemented           constant=false, boundaryCondition=false
 DEPENDENT               implemented           constant=false, boundaryCondition=false
-ODE                     not implemented       constant=false, boundaryCondition=true, rate rule
-ASSIGNMENT              not implemented       constant=false, boundaryCondition=true, assignment rule
+ODE                     implemented           constant=false, boundaryCondition=true, rate rule
+ASSIGNMENT              implemented           constant=false, boundaryCondition=true, assignment rule
 TIME                    -
 
 CCompartment:                                 Compartment
@@ -391,8 +391,8 @@ FIXED                   implemented           constant=true
 UNUSED                  not implemented
 SUBJECT_TO_REACTION     -
 DEPENDENT               -
-ODE                     not implemented       constant=false, rate rule
-ASSIGNMENT              not implemented       constant=false, assignment rule
+ODE                     implemented           constant=false, rate rule
+ASSIGNMENT              implemented           constant=false, assignment rule
 TIME                    -
 
 CModelValue:                                  Parameter
@@ -401,8 +401,8 @@ FIXED                   implemented           constant=true
 UNUSED                  not implemented
 SUBJECT_TO_REACTION     -
 DEPENDENT               -
-ODE                     not implemented       constant=false, rate rule
-ASSIGNMENT              not implemented       constant=false, rate rule
+ODE                     implemented           constant=false, rate rule
+ASSIGNMENT              implemented           constant=false, rate rule
 TIME                    -
 
 CModel:                                       implicitly represented in sbml file
