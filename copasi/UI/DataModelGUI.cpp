@@ -159,21 +159,21 @@ void DataModelGUI::addModelRun()
   //CModelAdd add(pModel, mModel);
   //add.simpleCall();
 
-  CModelExpansion expand(pModel);
-  expand.copyCompleteModel(mModel);
+  if (mSuccess && pModel && mModel)
+    {
+    CModelExpansion expand(pModel);
+    expand.copyCompleteModel(mModel);
   
-  notify(ListViews::MODEL, ListViews::CHANGE, "");
-
-  
+    }
 }
 
 void DataModelGUI::addModelFinished()
 {
   if (mSuccess)
     {
-    CCopasiRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
+    notify(ListViews::MODEL, ListViews::CHANGE, "");
     
-    //    mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
+    CCopasiRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
     //linkDataModelToGUI();
     }
   

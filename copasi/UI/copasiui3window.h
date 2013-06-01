@@ -170,7 +170,6 @@ protected slots:
 #ifdef WITH_MERGEMODEL
   void slotAddFileOpen(QString file = QString::null);
   void slotAddFileOpenFinished(bool success);
-  void slotAddModel();
   void slotMergeModels();
 #endif
 

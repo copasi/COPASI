@@ -63,9 +63,9 @@
 #include "copasi/utilities/CVersion.h"
 #include "model/CModelExpansion.h"
 #ifdef WITH_MERGEMODEL
-#include "model/CModelMerging.h"
-#endif
+//#include "model/CModelMerging.h"
 #include "model/CModelExpansion.h"
+#endif
 #include <UI/CWindowInterface.h>
 
 #define AutoSaveInterval 10*60*1000
@@ -823,10 +823,6 @@ void CopasiUI3Window::slotFileExamplesSBMLFiles(QString file)
 #ifdef WITH_MERGEMODEL
 void CopasiUI3Window::slotAddFileOpen(QString file)
 {
-  //DataModelGUI* mdataModel; // to keep track of temporary  data model..
-
-  //bool success = true;
-
   disconnect(this, SIGNAL(signalLoadFile(QString)), this, SLOT(slotFileOpen(QString)));
   
   if (mCommitRequired)
@@ -834,18 +830,7 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
     mpDataModelGUI->commit();
     }
 
-
-/*  if (!(*CCopasiRootContainer::getDatamodelList())[0]->getModel())
-    {
-      newDoc();
-      mSaveAsRequired = true;
-    }
-
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
-                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());*/
-
   QString newFile = "";
-
   if (file == "")
     newFile =
       CopasiFileDialog::getOpenFileName(this, "Open File Dialog", QString::null,
@@ -854,18 +839,12 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
   else
     newFile = file;
 
-  // gives the file information to the datamodel to handle it
-
   if (!newFile.isNull())
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+    
+    //mpListView->switchToOtherWidget(0, "");
 
-      mpListView->switchToOtherWidget(0, "");
-
-    //if (!mpDataModelGUI)
-    //    mpDataModelGUI = new DataModelGUI(this); // create a new data model
-
-    //QCursor oldCursor = this->cursor();
       this->setCursor(Qt::WaitCursor);
 
       CCopasiMessage::clearDeque();
@@ -874,25 +853,6 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotAddFileOpenFinished(bool)));
       mpDataModelGUI->addModel(TO_UTF8(newFile));
     
-  /*
-
-
-      if (success)  slotAddModel();
-
-      //(*CCopasiRootContainer::getDatamodelList())[1]->getModel()->cleanup();
-      CCopasiRootContainer::removeDatamodel(1);
-
-      mSaveAsRequired = true;
-
-      mpaSave->setEnabled(true);
-      mpaSaveAs->setEnabled(true);
-      mpaExportSBML->setEnabled(true);
-      mpaExportODE->setEnabled(true);
-
-      updateTitle();
-      mpListView->switchToOtherWidget(1, "");
-
-      refreshRecentFileMenu();*/
     }
 }
 
@@ -909,8 +869,6 @@ void CopasiUI3Window::slotAddFileOpenFinished(bool success)
     
     CQMessageBox::critical(this, QString("File Error"), Message,
                            QMessageBox::Ok, QMessageBox::Ok);
-    //mpDataModelGUI->createModel(); //TODO: is that right?
-    //assert((*CCopasiRootContainer::getDatamodelList())[1]->newModel(NULL, true));
     }
 
   CCopasiMessage msg = CCopasiMessage::getLastMessage();
@@ -919,7 +877,7 @@ void CopasiUI3Window::slotAddFileOpenFinished(bool success)
   
   if (msg.getNumber() != MCCopasiMessage + 1)
     {
-    QString Message = "Problem while loading file " + mNewFile + QString("!\n\n");
+    QString Message = "Problem while merging file " + mNewFile + QString("!\n\n");
     Message += FROM_UTF8(msg.getText());
     
     msg = CCopasiMessage::getLastMessage();
@@ -935,9 +893,6 @@ void CopasiUI3Window::slotAddFileOpenFinished(bool success)
                           QMessageBox::Ok, QMessageBox::Ok);
     }
   
-
-  //if (success)  slotAddModel();
-
   
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE,
                          (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
@@ -2047,16 +2002,6 @@ void CopasiUI3Window::slotExpandModel()
 #ifdef WITH_MERGEMODEL
 
 #include "UI/CQMergingData.h"
-void CopasiUI3Window::slotAddModel()
-{
-
-  CModel *pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
-  CModel *mModel = (*CCopasiRootContainer::getDatamodelList())[1]->getModel();
-  CModelAdd add(pModel, mModel);
-  add.simpleCall();
-
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
-}
 
 void CopasiUI3Window::slotMergeModels()
 {
@@ -2066,18 +2011,10 @@ void CopasiUI3Window::slotMergeModels()
 
   CModel *pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
 
-  if (pModel->getMetabolites().size() == 0)
-    CQMessageBox::critical(this, QString("File Error"),
-                           QString("Error. Could not merge!"),
-                           QMessageBox::Ok, QMessageBox::Ok);
-  else
-    {
+  CQMergingData *widget = new CQMergingData(NULL, 0, true);
+  widget->exec();
 
-      CQMergingData *widget = new CQMergingData(NULL, 0, true);
-      widget->exec();
-
-      mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
-    }
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
 }
 #endif
 
