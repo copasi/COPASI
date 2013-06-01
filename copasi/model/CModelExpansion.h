@@ -28,11 +28,12 @@
 #include "copasi.h"
 #include <vector>
 
+class CModelEntity;
 class CModel;
 class CMetab;
 class CCompartment;
 class CReaction;
-class CModelEntity;
+class CModelValue;
 class CExpression;
 class CEvent;
 class CCopasiObject;
@@ -53,7 +54,7 @@ public:
   void addCompartment(const CCompartment* x);
   void addMetab(const CMetab* x);
   void addReaction(const CReaction* x);
-  void addGlobalQuantity(const CModelEntity* x);
+  void addGlobalQuantity(const CModelValue* x);
   void addEvent(const CEvent* x);
 
   /**
@@ -76,7 +77,7 @@ public:
   std::set<const CCompartment*> mCompartments;
   std::set<const CMetab*> mMetabs;
   std::set<const CReaction*> mReactions;
-  std::set<const CModelEntity*> mGlobalQuantities;
+  std::set<const CModelValue*> mGlobalQuantities;
   std::set<const CEvent*> mEvents;
   };
 
@@ -99,6 +100,8 @@ public:
 
   ///find the key of the duplicated object from the source object (if it exists)
   std::string getDuplicateKey(const std::string & sourceKey) const;
+  
+  const std::map<const CCopasiObject*, CCopasiObject*> & getMap() const;
   
   protected:
   
@@ -140,7 +143,7 @@ public:
   void duplicateCompartment(const CCompartment* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap);
   void duplicateMetab(const CMetab* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap);
   void duplicateReaction(const CReaction* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap);
-  void duplicateGlobalQuantity(const CModelEntity* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap);
+  void duplicateGlobalQuantity(const CModelValue* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap);
   void duplicateEvent(CEvent* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap);
  
   /**
@@ -165,12 +168,12 @@ public:
                                const std::string & metabkey1, const std::string & metabkey2,
                                const std::string & parameterkey);
 
-  void replaceInModel(const ElementsMap & emap);
+  void replaceInModel(const ElementsMap & emap, bool remove);
   
   void replaceInCompartment(CCompartment* pX, const ElementsMap & emap);
   void replaceInMetab(CMetab* pX, const ElementsMap & emap);
   void replaceInReaction(CReaction* pX, const ElementsMap & emap);
-  void replaceInGlobalQuantity(CModelEntity* pX, const ElementsMap & emap);
+  void replaceInModelEntity(CModelEntity* pX, const ElementsMap & emap);
   void replaceInEvent(CEvent* pX, const ElementsMap & emap);
   
   void replaceInExpression(CExpression* exp, const ElementsMap & emap);

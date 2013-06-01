@@ -33,7 +33,7 @@ void CModelExpansion::SetOfModelElements::addReaction(const CReaction* x)
   mReactions.insert(x);
 }
 
-void CModelExpansion::SetOfModelElements::addGlobalQuantity(const CModelEntity* x)
+void CModelExpansion::SetOfModelElements::addGlobalQuantity(const CModelValue* x)
 {
   mGlobalQuantities.insert(x);
 }
@@ -54,7 +54,7 @@ bool CModelExpansion::SetOfModelElements::contains(const CCopasiObject* x) const
   if (mReactions.find(static_cast<const CReaction*>(x)) != mReactions.end())
     return true;
 
-  if (mGlobalQuantities.find(static_cast<const CModelEntity*>(x)) != mGlobalQuantities.end())
+  if (mGlobalQuantities.find(static_cast<const CModelValue*>(x)) != mGlobalQuantities.end())
     return true;
 
   if (mEvents.find(static_cast<const CEvent*>(x)) != mEvents.end())
@@ -104,7 +104,7 @@ void CModelExpansion::SetOfModelElements::fillDependencies(const CModel* pModel)
       combinedSet.insert(tmp.begin(), tmp.end());
     }
 
-  std::set<const CModelEntity*>::const_iterator itQuant;
+  std::set<const CModelValue*>::const_iterator itQuant;
 
   for (itQuant = mGlobalQuantities.begin(); itQuant != mGlobalQuantities.end(); ++itQuant)
     {
@@ -138,7 +138,7 @@ void CModelExpansion::SetOfModelElements::fillDependencies(const CModel* pModel)
     addCompartment(dynamic_cast<const CCompartment*>(*it));
 
   for (it = values.begin(); it != values.end(); ++it)
-    addGlobalQuantity(dynamic_cast<const CModelEntity*>(*it));
+    addGlobalQuantity(dynamic_cast<const CModelValue*>(*it));
 
   for (it = events.begin(); it != events.end(); ++it)
     addEvent(dynamic_cast<const CEvent*>(*it));
@@ -209,6 +209,11 @@ std::string CModelExpansion::ElementsMap::getDuplicateKey(const std::string & so
     }
   else
     return "";
+}
+
+const std::map<const CCopasiObject*, CCopasiObject*> & CModelExpansion::ElementsMap::getMap() const
+{
+  return mMap;
 }
 
 //***************************************************************************************
@@ -291,13 +296,13 @@ void CModelExpansion::createLinearArray(const SetOfModelElements & source, size_
   if (!mpModel) return;
 
   //create global quantities for the diffusion constants
-  std::vector<CModelEntity*> diffusionConstants;
+  std::vector<CModelValue*> diffusionConstants;
   std::set<std::string>::const_iterator itMetab;
 
   for (itMetab = setOfMetabolites.begin(); itMetab != setOfMetabolites.end(); ++itMetab)
     {
       //try creating the object until we find a name that is not yet used
-      CModelEntity* newObj;
+      CModelValue* newObj;
       const CMetab* pMetab = dynamic_cast<const CMetab*>(CCopasiRootContainer::getKeyFactory()->get(*itMetab));
 
       if (!pMetab)
@@ -329,7 +334,7 @@ void CModelExpansion::createLinearArray(const SetOfModelElements & source, size_
       //Diffusion
       if (i)
         {
-          std::vector<CModelEntity*>::const_iterator itDiff;
+          std::vector<CModelValue*>::const_iterator itDiff;
 
           for (itMetab = setOfMetabolites.begin(), itDiff = diffusionConstants.begin();
                itMetab != setOfMetabolites.end();
@@ -352,13 +357,13 @@ void CModelExpansion::createRectangularArray(const SetOfModelElements & source, 
   if (!mpModel) return;
 
   //create global quantities for the diffusion constants
-  std::vector<CModelEntity*> diffusionConstants;
+  std::vector<CModelValue*> diffusionConstants;
   std::set<std::string>::const_iterator itMetab;
 
   for (itMetab = setOfMetabolites.begin(); itMetab != setOfMetabolites.end(); ++itMetab)
     {
       //try creating the object until we find a name that is not yet used
-      CModelEntity* newObj;
+      CModelValue* newObj;
       const CMetab* pMetab = dynamic_cast<const CMetab*>(CCopasiRootContainer::getKeyFactory()->get(*itMetab));
 
       if (!pMetab)
@@ -394,7 +399,7 @@ void CModelExpansion::createRectangularArray(const SetOfModelElements & source, 
         //Diffusion
         if (i)
           {
-            std::vector<CModelEntity*>::const_iterator itDiff;
+            std::vector<CModelValue*>::const_iterator itDiff;
 
             for (itMetab = setOfMetabolites.begin(), itDiff = diffusionConstants.begin();
                  itMetab != setOfMetabolites.end();
@@ -410,7 +415,7 @@ void CModelExpansion::createRectangularArray(const SetOfModelElements & source, 
 
         if (j)
           {
-            std::vector<CModelEntity*>::const_iterator itDiff;
+            std::vector<CModelValue*>::const_iterator itDiff;
 
             for (itMetab = setOfMetabolites.begin(), itDiff = diffusionConstants.begin();
                  itMetab != setOfMetabolites.end();
@@ -434,6 +439,8 @@ void CModelExpansion::copyCompleteModel(const CModel* pSourceModel)
   sourceElements.fillComplete(pSourceModel);
   ElementsMap map;
   duplicate(sourceElements, "[merge]", map);
+  mpModel->compileIfNecessary(NULL);
+
 }
 
 bool CModelExpansion::duplicate(const SetOfModelElements & source, const std::string & index, ElementsMap & emap)
@@ -459,7 +466,7 @@ bool CModelExpansion::duplicate(const SetOfModelElements & source, const std::st
       duplicateReaction(*itReac, index, source, emap);
     }
 
-  std::set<const CModelEntity*>::const_iterator itME;
+  std::set<const CModelValue*>::const_iterator itME;
 
   for (itME = source.mGlobalQuantities.begin(); itME != source.mGlobalQuantities.end(); ++itME)
     {
@@ -742,7 +749,7 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
                   {
                     if (!emap.exists(source->getParameterMappings()[i][0]))
                       {
-                        const CModelEntity* pSource = dynamic_cast<const CModelEntity*>(
+                        const CModelValue* pSource = dynamic_cast<const CModelValue*>(
                                                         (CCopasiRootContainer::getKeyFactory()->get(source->getParameterMappings()[i][0])));
                         duplicateGlobalQuantity(pSource, index, sourceSet, emap);
                       }
@@ -758,7 +765,6 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
             break;
 
           default:
-            //TODO: error handling
             break;
         }
     }
@@ -770,7 +776,7 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
   emap.add(source, newObj);
 }
 
-void CModelExpansion::duplicateGlobalQuantity(const CModelEntity* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap)
+void CModelExpansion::duplicateGlobalQuantity(const CModelValue* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap)
 {
   //if the source object has already been duplicated: do nothing
   if (emap.exists(source))
@@ -927,8 +933,8 @@ void CModelExpansion::updateExpression(CExpression* exp, const std::string & ind
               if (dynamic_cast<const CMetab*>(pObj))
                 duplicateMetab(dynamic_cast<const CMetab*>(pObj), index, sourceSet, emap);
 
-              if (dynamic_cast<const CModelEntity*>(pObj))
-                duplicateGlobalQuantity(dynamic_cast<const CModelEntity*>(pObj), index, sourceSet, emap);
+              if (dynamic_cast<const CModelValue*>(pObj))
+                duplicateGlobalQuantity(dynamic_cast<const CModelValue*>(pObj), index, sourceSet, emap);
 
               if (dynamic_cast<const CReaction*>(pObj))
                 duplicateReaction(dynamic_cast<const CReaction*>(pObj), index, sourceSet, emap);
@@ -1010,7 +1016,7 @@ void CModelExpansion::createDiffusionReaction(const std::string & name,
   newObj->setParameterMapping(2, parameterkey);
 }
 
-void CModelExpansion::replaceInModel(const ElementsMap & emap)
+void CModelExpansion::replaceInModel(const ElementsMap & emap, bool remove)
 {
   if (!mpModel)
     return;
@@ -1018,27 +1024,92 @@ void CModelExpansion::replaceInModel(const ElementsMap & emap)
   size_t i;
   for (i=0; i<mpModel->getCompartments().size(); ++i)
     replaceInCompartment(mpModel->getCompartments()[i], emap);
+  std::vector<CMetab*> metvec;
   for (i=0; i<mpModel->getMetabolites().size(); ++i)
-    replaceInMetab(mpModel->getMetabolites()[i], emap);
+    metvec.push_back(mpModel->getMetabolites()[i]);
+  for (i=0; i<metvec.size(); ++i)
+    replaceInMetab(metvec[i], emap);
   for (i=0; i<mpModel->getReactions().size(); ++i)
     replaceInReaction(mpModel->getReactions()[i], emap);
   for (i=0; i<mpModel->getModelValues().size(); ++i)
-    replaceInGlobalQuantity(mpModel->getModelValues()[i], emap);
+    replaceInModelEntity(mpModel->getModelValues()[i], emap);
   for (i=0; i<mpModel->getEvents().size(); ++i)
     replaceInEvent(mpModel->getEvents()[i], emap);
+  
+  mpModel->forceCompile(NULL);
+  
+  if (remove)
+    {
+    std::map<const CCopasiObject*, CCopasiObject*>::const_iterator it;
+    for (it = emap.getMap().begin(); it !=emap.getMap().end(); ++it)
+      {
+      if (dynamic_cast<const CCompartment*>(it->first))
+        {
+        mpModel->removeCompartment(const_cast<CCompartment*>(dynamic_cast<const CCompartment*>(it->first)), true);
+        break;
+        }
+      if (dynamic_cast<const CMetab*>(it->first))
+        {
+        mpModel->removeMetabolite(const_cast<CMetab*>(dynamic_cast<const CMetab*>(it->first)), true);
+        break;
+        }
+      if (dynamic_cast<const CReaction*>(it->first))
+        {
+        mpModel->removeReaction(const_cast<CReaction*>(dynamic_cast<const CReaction*>(it->first)), true);
+        break;
+        }
+      if (dynamic_cast<const CModelValue*>(it->first))
+        {
+        mpModel->removeModelValue(const_cast<CModelValue*>(dynamic_cast<const CModelValue*>(it->first)), true);
+        break;
+        }
+      if (dynamic_cast<const CEvent*>(it->first))
+        {
+        mpModel->removeEvent(const_cast<CEvent*>(dynamic_cast<const CEvent*>(it->first)), true);
+        break;
+        }
+      }
+    }
   
 }
 
 void CModelExpansion::replaceInCompartment(CCompartment* pX, const ElementsMap & emap)
 {
-  replaceInGlobalQuantity(pX, emap);
+  replaceInModelEntity(pX, emap);
 }
 
 void CModelExpansion::replaceInMetab(CMetab* pX, const ElementsMap & emap)
 {
-  replaceInGlobalQuantity(pX, emap);
-  
-  //compartment
+  replaceInModelEntity(pX, emap);
+
+  //is the metab in a compartment that needs to be replaced?
+  if (emap.exists( pX->getCompartment()))
+    {
+    //move the metab to the new compartment
+    CCompartment* oldComp = const_cast<CCompartment*>( pX->getCompartment());
+    CCompartment* newComp = dynamic_cast<CCompartment*>( emap.getDuplicatePtr(pX->getCompartment()));
+    bool success=false;
+    do
+      {
+      success = newComp->addMetabolite(pX);
+
+      if (success)
+        {
+        oldComp->getMetabolites().remove(pX->getObjectName());
+        mpModel->setCompileFlag();
+        mpModel->initializeMetabolites();
+        }
+      else
+        {
+        //rename the metab so that it can be added to the new compartment
+        pX->setObjectName(pX->getObjectName()+"_");
+        //TODO: check if the renaming actually worked
+        }
+      
+      }
+    while (!success);
+    
+    }
 }
 
 void CModelExpansion::replaceInReaction(CReaction* pX, const ElementsMap & emap)
@@ -1103,7 +1174,7 @@ void CModelExpansion::replaceInReaction(CReaction* pX, const ElementsMap & emap)
   
 }
 
-void CModelExpansion::replaceInGlobalQuantity(CModelEntity* pX, const ElementsMap & emap)
+void CModelExpansion::replaceInModelEntity(CModelEntity* pX, const ElementsMap & emap)
 {
   //expression (for assignment or ODE)
   replaceInExpression(pX->getExpressionPtr(), emap);
