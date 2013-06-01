@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>582</width>
-    <height>364</height>
+    <width>639</width>
+    <height>480</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,103 +19,75 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QStackedWidget" name="mpStack">
-     <property name="currentIndex">
-      <number>1</number>
-     </property>
-     <widget class="QWidget" name="page">
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QTableWidget" name="mpTable">
-         <row>
-          <property name="text">
-           <string>1</string>
-          </property>
-         </row>
-         <row>
-          <property name="text">
-           <string>2</string>
-          </property>
-         </row>
-         <row>
-          <property name="text">
-           <string>3</string>
-          </property>
-         </row>
-         <column>
-          <property name="text">
-           <string>Column Name</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Status</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Hidden</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>&lt;&gt;</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Model Object</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Hidden</string>
-          </property>
-         </column>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="page_2">
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Replace:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>with:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QTreeWidget" name="mpTree1">
-         <column>
-          <property name="text">
-           <string notr="true">1</string>
-          </property>
-         </column>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QTreeWidget" name="mpTree2">
-         <column>
-          <property name="text">
-           <string notr="true">1</string>
-          </property>
-         </column>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Replace:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>with:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QTreeWidget" name="mpTree1">
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectItems</enum>
+       </property>
+       <attribute name="headerVisible">
+        <bool>false</bool>
+       </attribute>
+       <column>
+        <property name="text">
+         <string notr="true">1</string>
+        </property>
+       </column>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QTreeWidget" name="mpTree2">
+       <attribute name="headerVisible">
+        <bool>false</bool>
+       </attribute>
+       <column>
+        <property name="text">
+         <string notr="true">1</string>
+        </property>
+       </column>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <layout class="QHBoxLayout" name="_2">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mpBtnCancel">
+       <property name="text">
+        <string>Done</string>
+       </property>
+       <property name="shortcut">
+        <string>Alt+C</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QPushButton" name="mpBtnMerge">
        <property name="text">
@@ -126,24 +98,18 @@
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QPushButton" name="mpBtnCancel">
-       <property name="text">
-        <string>&amp;Cancel</string>
-       </property>
-       <property name="shortcut">
-        <string>Alt+C</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
   </layout>
+  <zorder>mpBtnCancel</zorder>
+  <zorder>label_2</zorder>
+  <zorder>label</zorder>
+  <zorder>mpTree1</zorder>
+  <zorder>mpTree2</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>mpBtnMerge</tabstop>
-  <tabstop>mpBtnCancel</tabstop>
  </tabstops>
  <includes>
   <include location="global">string</include>

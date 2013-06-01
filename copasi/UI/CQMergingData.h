@@ -23,12 +23,7 @@
 #include <vector>
 
 #include <QPixmap>
-
-class QSignalMapper;
-
 #include <QtGui/QDialog>
-#include <QtGui/QWidget>
-#include <QToolButton>
 
 #include "model/CModel.h"
 
@@ -45,30 +40,17 @@ public:
   std::map<QTreeWidgetItem*, CModelEntity*> mItemMap1;
   std::map<QTreeWidgetItem*, CModelEntity*> mItemMap2;
   
-  std::vector< std::string > mObjectKey;
-  std::vector< std::string > mColumnKey;
-  std::vector< std::string > mColumnName;
-
 protected:
-  QSignalMapper * mpBtnMap;
-  QSignalMapper * mpComboMap;
-  QStringList ColumnTypes;
-  CModel* pModel;
+  CModel* mpModel;
 
 protected slots:
-  void slotModelObject(int row);
-  void slotTypeChanged(int row);
 
 private:
  
   void fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTreeWidgetItem*, CModelEntity*>& itemMap);
 
-  
-  std::string findMetaboliteKeyByName(std::string name);
-//  void init();
   void load();
-//  void save();
-//  void destroy();
+
 private slots:
   void slotBtnMerge();
   void slotBtnCancel();
