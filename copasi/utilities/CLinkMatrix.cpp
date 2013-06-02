@@ -3,6 +3,8 @@
 // of Manchester.
 // All rights reserved.
 
+#include <cmath>
+
 #include "copasi.h"
 
 #include "CLinkMatrix.h"
