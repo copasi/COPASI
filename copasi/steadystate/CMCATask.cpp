@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-//   $Revision: 1.17 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:33:41 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -46,7 +38,7 @@
 #define XXXX_Reporting
 
 CMCATask::CMCATask(const CCopasiContainer * pParent):
-    CCopasiTask(CCopasiTask::mca, pParent)
+  CCopasiTask(CCopasiTask::mca, pParent)
 {
   mpProblem = new CMCAProblem(this);
 
@@ -56,7 +48,7 @@ CMCATask::CMCATask(const CCopasiContainer * pParent):
 
 CMCATask::CMCATask(const CMCATask & src,
                    const CCopasiContainer * pParent):
-    CCopasiTask(src, pParent)
+  CCopasiTask(src, pParent)
 {
   mpProblem =
     new CMCAProblem(*(CMCAProblem *) src.mpProblem, this);
@@ -162,11 +154,11 @@ bool CMCATask::process(const bool & useInitialValues)
           mpProblem->getModel()->applyInitialValues();
         }
 
-      pMethod->setSteadyStateStatus(pSubTask->getResult());
+      pMethod->setSteadyStateTask(pSubTask);
     }
   else
     {
-      pMethod->setSteadyStateStatus(CSteadyStateMethod::notFound);
+      pMethod->setSteadyStateTask(NULL);
 
       if (useInitialValues)
         {

@@ -1,4 +1,4 @@
-# Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -35,6 +35,7 @@ HEADERS += CAnnotatedMatrix.h \
            CDimension.h \
            CDirEntry.h \
            CIndexedPriorityQueue.h \
+           CLinkMatrix.h \
            CluX.h \
            CMatrix.h \
            CNodeIterator.h \
@@ -64,6 +65,7 @@ SOURCES += CAnnotatedMatrix.cpp \
            CDimension.cpp \
            CDirEntry.cpp \
            CIndexedPriorityQueue.cpp \
+           CLinkMatrix.cpp \
            CluX.cpp \
            CopasiTime.cpp \
            COutputHandler.cpp \

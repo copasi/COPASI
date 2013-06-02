@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
-//   $Revision: 1.41 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/03/28 09:46:47 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -101,9 +93,9 @@ public:
    * @param size_t cols (default = 0)
    */
   CMatrix(size_t rows = 0, size_t cols = 0) :
-      mRows(0),
-      mCols(0),
-      mArray(NULL)
+    mRows(0),
+    mCols(0),
+    mArray(NULL)
   {
     resize(rows, cols);
   }
@@ -113,9 +105,9 @@ public:
    * @param const CMatrix <CType> & src
    */
   CMatrix(const CMatrix <CType> & src):
-      mRows(0),
-      mCols(0),
-      mArray(NULL)
+    mRows(0),
+    mCols(0),
+    mArray(NULL)
   {
     resize(src.mRows, src.mCols);
 
@@ -168,7 +160,7 @@ public:
             try
               {
                 // We need to detect size_t overflow
-                if ((C_FLOAT64) rows *(C_FLOAT64) cols *(C_FLOAT64) sizeof(CType) >= (C_FLOAT64) std::numeric_limits< size_t >::max())
+                if ((C_FLOAT64) rows * (C_FLOAT64) cols * (C_FLOAT64) sizeof(CType) >= (C_FLOAT64) std::numeric_limits< size_t >::max())
                   {
                     mArray = NULL;
                   }
@@ -231,10 +223,10 @@ public:
    */
   virtual CMatrix <CType> & operator = (const CType & value)
   {
-    size_t i, imax = mRows * mCols;
-    CType * tmp = mArray;
+    CType * pIt = mArray;
+    CType * pEnd = pIt + mRows * mCols;
 
-    for (i = 0; i < imax; i++, tmp++) *tmp = value;
+    for (; pIt != pEnd; ++pIt) *pIt = value;
 
     return *this;
   }
@@ -261,7 +253,7 @@ public:
    * @return CMatrix <CType> & lhs
    */
   virtual CMatrix <CType> & operator / (const CType & value)
-  {return (*this) *(1.0 / value);}
+  {return (*this) * (1.0 / value);}
 
   /**
    * + operator
@@ -415,7 +407,7 @@ private:
 
 public:
   CFortranAccess(Matrix & A):
-      mA(A)
+    mA(A)
   {}
 
   ~CFortranAccess() {}
@@ -469,8 +461,8 @@ private:
 
 public:
   CUpperTriangularView(const Matrix & A, const elementType zero):
-      mA(A),
-      mZero(zero)
+    mA(A),
+    mZero(zero)
   {}
 
   ~CUpperTriangularView() {}
@@ -537,8 +529,8 @@ private:
 
 public:
   CLowerTriangularView(const Matrix & A, const elementType zero):
-      mA(A),
-      mZero(zero)
+    mA(A),
+    mZero(zero)
   {}
 
   ~CLowerTriangularView() {}
@@ -608,9 +600,9 @@ public:
   CUnitUpperTriangularView(const Matrix & A,
                            const elementType zero,
                            const elementType unit):
-      mA(A),
-      mZero(zero),
-      mUnit(unit)
+    mA(A),
+    mZero(zero),
+    mUnit(unit)
   {}
 
   ~CUnitUpperTriangularView() {}
@@ -682,9 +674,9 @@ public:
   CUnitLowerTriangularView(const Matrix & A,
                            const elementType zero,
                            const elementType unit):
-      mA(A),
-      mZero(zero),
-      mUnit(unit)
+    mA(A),
+    mZero(zero),
+    mUnit(unit)
   {}
 
   ~CUnitLowerTriangularView() {}

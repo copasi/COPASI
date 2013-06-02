@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-//   $Revision: 1.52 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:11:53 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -24,12 +16,13 @@
 #include <limits>
 
 #include "copasi.h"
-#include "utilities/CReadConfig.h"
-#include "utilities/utility.h"
-#include "model/CModel.h"
-#include "utilities/CCopasiTask.h"
 #include "CMCAMethod.h"
 #include "CMCAProblem.h"
+#include "CSteadyStateTask.h"
+#include "model/CModel.h"
+#include "utilities/CReadConfig.h"
+#include "utilities/utility.h"
+#include "utilities/CLinkMatrix.h"
 
 #include "blaswrap.h"
 #include "clapackwrap.h"
@@ -47,11 +40,12 @@ CMCAMethod * CMCAMethod::createMethod(CCopasiMethod::SubType /* subType */)
  * Default constructor
  */
 CMCAMethod::CMCAMethod(const CCopasiContainer* pParent):
-    CCopasiMethod(CCopasiTask::mca, CCopasiMethod::mcaMethodReder, pParent),
-    mpModel(NULL),
-    mFactor(1.0e-9),
-    mSteadyStateResolution(1.0e-9),
-    mSSStatus(CSteadyStateMethod::notFound)
+  CCopasiMethod(CCopasiTask::mca, CCopasiMethod::mcaMethodReder, pParent),
+  mpModel(NULL),
+  mFactor(1.0e-9),
+  mSteadyStateResolution(1.0e-9),
+  mSSStatus(CSteadyStateMethod::notFound),
+  mpSteadyStateTask(NULL)
 {
   initializeParameter();
   initObjects();
@@ -59,11 +53,12 @@ CMCAMethod::CMCAMethod(const CCopasiContainer* pParent):
 
 CMCAMethod::CMCAMethod(const CMCAMethod & src,
                        const CCopasiContainer * pParent):
-    CCopasiMethod(src, pParent),
-    mpModel(NULL),
-    mFactor(src.mFactor),
-    mSteadyStateResolution(src.mSteadyStateResolution),
-    mSSStatus(CSteadyStateMethod::notFound)
+  CCopasiMethod(src, pParent),
+  mpModel(NULL),
+  mFactor(src.mFactor),
+  mSteadyStateResolution(src.mSteadyStateResolution),
+  mSSStatus(CSteadyStateMethod::notFound),
+  mpSteadyStateTask(NULL)
 {
   initializeParameter();
   initObjects();
@@ -535,6 +530,8 @@ int CMCAMethod::CalculateMCA(C_FLOAT64 res)
 
   if (mSSStatus == CSteadyStateMethod::found)
     {
+      createLinkMatrix();
+
       ret = calculateUnscaledConcentrationCC();
       calculateUnscaledFluxCC(ret);
     }
@@ -542,12 +539,24 @@ int CMCAMethod::CalculateMCA(C_FLOAT64 res)
     {
       mUnscaledConcCC = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
       mUnscaledFluxCC = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
-
     }
 
   scaleMCA(ret, res);
 
   return ret;
+}
+
+bool CMCAMethod::createLinkMatrix()
+{
+  if (mpSteadyStateTask == NULL)
+    {
+      return false;
+    }
+
+  CLinkMatrix L;
+  L.build(mpSteadyStateTask->getJacobian());
+
+  return true;
 }
 
 /**
@@ -581,9 +590,18 @@ bool CMCAMethod::process()
   return true;
 }
 
-void CMCAMethod::setSteadyStateStatus(CSteadyStateMethod::ReturnCode SSStatus)
+void CMCAMethod::setSteadyStateTask(CSteadyStateTask * pSteadyStateTask)
 {
-  mSSStatus = SSStatus;
+  mpSteadyStateTask = pSteadyStateTask;
+
+  if (mpSteadyStateTask != NULL)
+    {
+      mSSStatus = mpSteadyStateTask->getResult();
+    }
+  else
+    {
+      mSSStatus = CSteadyStateMethod::notFound;
+    }
 }
 
 void CMCAMethod::setFactor(C_FLOAT64 factor)
