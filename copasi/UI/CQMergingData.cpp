@@ -55,7 +55,7 @@ CQMergingData::~CQMergingData()
   // no need to delete child widgets, Qt does it all for us
 }
 
-void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTreeWidgetItem*, CModelEntity*> & itemMap)
+void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTreeWidgetItem*, CModelEntity*> & itemMap, const std::set<CCopasiObject*> & added)
 {
   itemMap.clear();
   pW->clear();
@@ -65,6 +65,11 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTr
     QTreeWidgetItem * pItem = new QTreeWidgetItem((QTreeWidget*)NULL, 1000);
     pItem->setText(0,  FROM_UTF8(pModel->getCompartments()[i]->getObjectName()));
     //pItem->setCheckState(0, Qt::Unchecked);
+    
+    std::set<CCopasiObject*>::const_iterator it = added.find(pModel->getCompartments()[i]);
+    if (it != added.end())
+      pItem->setBackgroundColor(0, QColor(200,200,250));
+    
     itemMap[pItem] = pModel->getCompartments()[i];
     pW->addTopLevelItem(pItem);
     
@@ -75,6 +80,11 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTr
       QTreeWidgetItem * pChild = new QTreeWidgetItem(pItem, 1001);
       pChild->setText(0,  FROM_UTF8(pModel->getCompartments()[i]->getMetabolites()[j]->getObjectName()));
       //pChild->setCheckState(0, Qt::Unchecked);
+
+      std::set<CCopasiObject*>::const_iterator it = added.find(pModel->getCompartments()[i]->getMetabolites()[j]);
+      if (it != added.end())
+        pChild->setBackgroundColor(0, QColor(200,200,250));
+      
       itemMap[pChild]=pModel->getCompartments()[i]->getMetabolites()[j];
       }
     pItem->setExpanded(true);
@@ -91,8 +101,8 @@ void CQMergingData::load()
 
   mpModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
   
-  fillTree(mpTree1, mpModel, mItemMap1);
-  fillTree(mpTree2, mpModel, mItemMap2);
+  fillTree(mpTree1, mpModel, mItemMap1, (*CCopasiRootContainer::getDatamodelList())[0]->mLastAddedObjects);
+  fillTree(mpTree2, mpModel, mItemMap2, (*CCopasiRootContainer::getDatamodelList())[0]->mLastAddedObjects);
   
  }
 

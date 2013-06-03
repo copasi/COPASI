@@ -162,7 +162,7 @@ void DataModelGUI::addModelRun()
   if (mSuccess && pModel && mModel)
     {
     CModelExpansion expand(pModel);
-    expand.copyCompleteModel(mModel);
+    (*CCopasiRootContainer::getDatamodelList())[0]->mLastAddedObjects = expand.copyCompleteModel(mModel);
   
     }
 }

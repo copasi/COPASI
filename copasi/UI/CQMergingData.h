@@ -47,7 +47,13 @@ protected slots:
 
 private:
  
-  void fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTreeWidgetItem*, CModelEntity*>& itemMap);
+  /**
+   * fills a tree widget with the items of the model. All tree items are mapped to the model items 
+   * in itemMap.
+   * const std::set<CCopasiObject*> & added : contains the model elements that were added by the latest
+   * model adding operation. They will be highlighted. 
+   */
+  void fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTreeWidgetItem*, CModelEntity*>& itemMap, const std::set<CCopasiObject*> & added);
 
   void load();
 

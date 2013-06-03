@@ -63,7 +63,6 @@
 #include "copasi/utilities/CVersion.h"
 #include "model/CModelExpansion.h"
 #ifdef WITH_MERGEMODEL
-//#include "model/CModelMerging.h"
 #include "model/CModelExpansion.h"
 #endif
 #include <UI/CWindowInterface.h>
