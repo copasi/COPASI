@@ -327,7 +327,7 @@ bool CLinkMatrix::buildRedStoi(const CMatrix< C_FLOAT64 > & matrix)
       memcpy(pRedStoi, matrix[*pRowPivot], sizeof(C_FLOAT64) * numCols);
     }
 
-#ifdef DEBUG_MATRIX
+#if defined(DEBUG_MATRIX) && defined(COPASI_DEBUG_TRACE)
   DebugFile << "Reduced Stoichiometry Matrix" << std::endl;
   DebugFile << mRedStoi << std::endl;
 #endif
