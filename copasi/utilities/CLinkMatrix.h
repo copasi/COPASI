@@ -41,14 +41,34 @@ public:
    */
   const CVector< size_t > & getRowPivots() const;
 
+  /**
+   * Retrieve the number of linear independent rows of the input matrix
+   * @return const size_t & numIndependent
+   */
+  const size_t & getNumIndependent() const;
+
+  /**
+   * Retrieve the number of linear dependent rows of the input matrix
+   * @return const size_t & numDependent
+   */
+  const size_t & getNumDependent() const;
+
+  /**
+   * Apply the row pivot
+   * @param CMatrix< C_FLOAT64 > & matrix
+   * @return bool success
+   */
+  bool applyRowPivot(CMatrix< C_FLOAT64 > & matrix) const;
+
+  /**
+   * Apply the row pivot
+   * @param CVectorCore< C_FLOAT64 > & vector
+   * @return bool success
+   */
+  bool applyRowPivot(CVectorCore< C_FLOAT64 > & vector) const;
+
 private:
-
-  bool buildLinkZero(const CMatrix< C_FLOAT64 > & matrix);
-  bool buildRedStoi(const CMatrix< C_FLOAT64 > & matrix);
-
   CMatrix< C_FLOAT64 > mL0;
-
-  CMatrix< C_FLOAT64 > mRedStoi;
 
   CVector< size_t > mRowPivots;
 

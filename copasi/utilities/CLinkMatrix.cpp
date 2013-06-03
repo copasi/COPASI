@@ -16,7 +16,6 @@
 
 CLinkMatrix::CLinkMatrix():
   mL0(),
-  mRedStoi(),
   mRowPivots(),
   mIndependent(0)
 {}
@@ -35,16 +34,6 @@ const CVector< size_t > & CLinkMatrix::getRowPivots() const
 }
 
 bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix)
-{
-  bool success = true;
-
-  success &= buildLinkZero(matrix);
-  success &= buildRedStoi(matrix);
-
-  return success;
-}
-
-bool CLinkMatrix::buildLinkZero(const CMatrix< C_FLOAT64 > & matrix)
 {
   bool success = true;
 
@@ -310,27 +299,101 @@ bool CLinkMatrix::buildLinkZero(const CMatrix< C_FLOAT64 > & matrix)
   return success;
 }
 
-bool CLinkMatrix::buildRedStoi(const CMatrix< C_FLOAT64 > & matrix)
+const size_t & CLinkMatrix::getNumIndependent() const
 {
-  bool success = true;
+  return mIndependent;
+}
 
-  size_t numCols = matrix.numCols();
+const size_t & CLinkMatrix::getNumDependent() const
+{
+  return mL0.numRows();
+}
 
-  mRedStoi.resize(mIndependent, numCols);
-
-  C_FLOAT64 * pRedStoi = mRedStoi.array();
-  size_t * pRowPivot = mRowPivots.array();
-  size_t * pRowPivotEnd = pRowPivot + mIndependent;
-
-  for (; pRowPivot !=  pRowPivotEnd; pRowPivot++, pRedStoi += numCols)
+bool CLinkMatrix::applyRowPivot(CMatrix< C_FLOAT64 > & matrix) const
+{
+  if (matrix.numRows() != mRowPivots.size())
     {
-      memcpy(pRedStoi, matrix[*pRowPivot], sizeof(C_FLOAT64) * numCols);
+      return false;
     }
 
-#if defined(DEBUG_MATRIX) && defined(COPASI_DEBUG_TRACE)
-  DebugFile << "Reduced Stoichiometry Matrix" << std::endl;
-  DebugFile << mRedStoi << std::endl;
-#endif
+  CVector< bool > Applied(mRowPivots.size());
+  Applied = false;
 
-  return success;
+  CVector< C_FLOAT64 > Tmp(matrix.numCols());
+
+  size_t i, imax = mRowPivots.size();
+  size_t to;
+  size_t from;
+  size_t numCols = matrix.numCols();
+
+  for (i = 0; i < imax; i++)
+    if (!Applied[i])
+      {
+        to = i;
+        from = mRowPivots[to];
+
+        if (from != i)
+          {
+            memcpy(Tmp.array(), matrix[to], sizeof(C_FLOAT64) * numCols);
+
+            while (from != i)
+              {
+                memcpy(matrix[to], matrix[from], sizeof(C_FLOAT64) * numCols);
+                Applied[to] = true;
+
+                to = from;
+                from = mRowPivots[to];
+              }
+
+            memcpy(matrix[to], Tmp.array(), sizeof(C_FLOAT64) * numCols);
+          }
+
+        Applied[to] = true;
+      }
+
+  return true;
+}
+
+bool CLinkMatrix::applyRowPivot(CVectorCore< C_FLOAT64 > & vector) const
+{
+  if (vector.size() != mRowPivots.size())
+    {
+      return false;
+    }
+
+  CVector< bool > Applied(mRowPivots.size());
+  Applied = false;
+
+  C_FLOAT64 Tmp;
+
+  size_t i, imax = mRowPivots.size();
+  size_t to;
+  size_t from;
+
+  for (i = 0; i < imax; i++)
+    if (!Applied[i])
+      {
+        to = i;
+        from = mRowPivots[to];
+
+        if (from != i)
+          {
+            Tmp = vector[to];
+
+            while (from != i)
+              {
+                vector[to] = vector[from];
+                Applied[to] = true;
+
+                to = from;
+                from = mRowPivots[to];
+              }
+
+            vector[to] = Tmp;
+          }
+
+        Applied[to] = true;
+      }
+
+  return true;
 }
