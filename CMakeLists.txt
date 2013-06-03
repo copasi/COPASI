@@ -27,6 +27,12 @@
 cmake_minimum_required (VERSION 2.8)
 project (COPASI)
 
+# preferably link against the static versions 
+# as compared to the dynamic ones
+if (NOT WIN32)
+ SET(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
+endif()
+
 #todo: write test program that compiles against CopasiVersion.h and
 #      determines the version
 set(COPASI_VERSION_MAJOR 4)
