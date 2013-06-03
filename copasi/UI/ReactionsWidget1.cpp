@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /*********************************************************************
  **  $ CopasiUI/ReactionsWidget1.cpp
@@ -50,7 +50,8 @@
 
 ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlags f)
   : CopasiWidget(parent, name, f),
-    mpRi(NULL)
+    mpRi(NULL),
+    mKeyToCopy("")
 {
   if (!name)
     setName("ReactionsWidget1");
@@ -257,7 +258,7 @@ bool ReactionsWidget1::saveToReaction()
   bool createdObjects = mpRi->createOtherObjects();
 
   //this writes all changes to the reaction
-  mpRi->writeBackToReaction(NULL);
+  mpRi->writeBackToReaction(reac);
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   //(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->compile();
@@ -329,8 +330,8 @@ void ReactionsWidget1::slotLineEditChanged()
 // added 5/19/04
 void ReactionsWidget1::slotBtnNew()
 {
-  std::string name = "reaction";
-  size_t i = 0;
+  std::string name = "reaction_1";
+  size_t i = 1;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
@@ -344,13 +345,14 @@ void ReactionsWidget1::slotBtnNew()
 
   std::string key = pDataModel->getModel()->getReactions()[name]->getKey();
   protectedNotify(ListViews::REACTION, ListViews::ADD, key);
-  enter(key);
+//  enter(key);
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
 void ReactionsWidget1::slotBtnCopy()
 {
-  QMessageBox::warning(this, "Warning", "Not Implemented");
+  mKeyToCopy = mKey;
+  slotBtnNew();
 }
 
 // Just added 5/18/04
@@ -561,7 +563,17 @@ bool ReactionsWidget1::leave()
 
 bool ReactionsWidget1::enterProtected()
 {
-  CReaction* reac = dynamic_cast< CReaction * >(mpObject);
+  CReaction* reac = NULL;
+
+  if (mKeyToCopy != "")
+    {
+      reac = dynamic_cast<CReaction *>(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy));
+      mKeyToCopy = "";
+    }
+  else
+    {
+      reac = dynamic_cast< CReaction * >(mpObject);
+    }
 
   if (reac)
     return loadFromReaction(reac);
