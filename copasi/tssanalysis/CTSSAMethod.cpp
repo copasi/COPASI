@@ -2160,6 +2160,11 @@ void CTSSAMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C_FLOAT6
 //  flag_norm =0 for printing "norm story"
 //  flag_orthog =0 to print the matrices proved the orthogonality of transformation
 
+const int & CTSSAMethod::getCurrentStep() const
+{
+  return mCurrentStep;
+}
+
 /**
  * return mVec_TimeScale for visualization in ILDM-tab
  * in the CQTSSAResultSubWidget

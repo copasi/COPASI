@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSAResultWidget.cpp,v $
-//   $Revision: 1.14 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/23 18:39:00 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -44,7 +36,7 @@ CTSSAMethod* pTSSILDM;
  *  name 'name' and widget flags set to 'f'.
  */
 CQTSSAResultWidget::CQTSSAResultWidget(QWidget* parent, const char* name, Qt::WFlags fl)
-    : CopasiWidget(parent, name, fl)
+  : CopasiWidget(parent, name, fl)
 {
   if (!name)
     setObjectName("CQTSSAResultWidget");
@@ -132,7 +124,7 @@ bool CQTSSAResultWidget::enterProtected()
     dynamic_cast<CTSSATask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Time Scale Separation Analysis"]);
   pTSSILDM = dynamic_cast<CTSSAMethod*>(pTask->getMethod());
 
-  if (!pTSSILDM->mCurrentStep)
+  if (!pTSSILDM->getCurrentStep())
     {
 #if 0
       mCentralWidget->setStepSelectionDisabled(true);

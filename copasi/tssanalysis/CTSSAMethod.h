@@ -453,8 +453,6 @@ protected:
      **/
   double orthog(C_INT & number1, C_INT & number2);
 
-public:
-
   /**
     *vectors contain whole data for all calculationsteps
     **/
@@ -466,6 +464,12 @@ public:
   * stepcounter
   **/
   int mCurrentStep;
+
+public:
+  /**
+   * Retrieve the current step
+   */
+  const int & getCurrentStep() const;
 
   /**
   * return mVec_TimeScale for visualization in ILDM-tab
