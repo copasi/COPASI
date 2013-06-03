@@ -242,12 +242,16 @@ protected:
   CData mData;
   CData mOldData;
   CDataModelRenameHandler mRenameHandler;
+  
 
 public:
   /**
    *  This is a hack at the moment to be able to read Gepasi model files
    */
   CCopasiVectorS < CMetabOld > * pOldMetabolites;
+
+  //the objects that were added by the last model adding action.
+  std::set<CCopasiObject*> mLastAddedObjects;
 
 protected:
   void removeSBMLIdFromFunctions();
