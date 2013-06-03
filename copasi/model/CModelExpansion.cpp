@@ -433,7 +433,7 @@ void CModelExpansion::createRectangularArray(const SetOfModelElements & source, 
   mpModel->compileIfNecessary(NULL);
 }
 
-void CModelExpansion::copyCompleteModel(const CModel* pSourceModel)
+std::set<CCopasiObject*> CModelExpansion::copyCompleteModel(const CModel* pSourceModel)
 {
   SetOfModelElements sourceElements;
   sourceElements.fillComplete(pSourceModel);
@@ -441,6 +441,15 @@ void CModelExpansion::copyCompleteModel(const CModel* pSourceModel)
   duplicate(sourceElements, "[merge]", map);
   mpModel->compileIfNecessary(NULL);
 
+  std::set<CCopasiObject*> ret;
+  std::map<const CCopasiObject*, CCopasiObject*>::const_iterator it;
+  for (it=map.getMap().begin(); it != map.getMap().end(); ++it)
+    {
+    ret.insert(it->second);
+    //std::cout << it->second->getObjectDisplayName() << std::endl;
+    }
+    
+  return ret;
 }
 
 bool CModelExpansion::duplicate(const SetOfModelElements & source, const std::string & index, ElementsMap & emap)

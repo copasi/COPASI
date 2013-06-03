@@ -129,9 +129,10 @@ public:
   void createRectangularArray(const SetOfModelElements & source, size_t nx, size_t ny, const std::set< std::string  > & setOfMetabolites);
 
   /**
-   * adds the contents of the source model to the current model
+   * adds the contents of the source model to the current model.
+   * A list of created model elements is returned
    */
-  void copyCompleteModel(const CModel* pSourceModel);
+  std::set<CCopasiObject*> copyCompleteModel(const CModel* pSourceModel);
 
   
   /**
