@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include "CQCompartment.h"
 
@@ -37,7 +37,8 @@ CQCompartment::CQCompartment(QWidget* parent, const char* name):
   mpCompartment(NULL),
   mChanged(false),
   mExpressionValid(true),
-  mInitialExpressionValid(true)
+  mInitialExpressionValid(true),
+  mKeyToCopy("")
 {
   setupUi(this);
 
@@ -76,10 +77,10 @@ CQCompartment::~CQCompartment()
 
 void CQCompartment::slotBtnNew()
 {
-  save();
+  leave();
 
-  std::string name = "compartment";
-  int i = 0;
+  std::string name = "compartment_1";
+  int i = 1;
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
@@ -91,14 +92,15 @@ void CQCompartment::slotBtnNew()
     }
 
   std::string key = mpCompartment->getKey();
-  enter(key);
+//  enter(key);
   protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, key);
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
 void CQCompartment::slotBtnCopy()
 {
-  QMessageBox::warning(this, "Warning", "Not Implemented");
+  mKeyToCopy = mKey;
+  slotBtnNew();
 }
 
 void CQCompartment::slotBtnDelete()
@@ -237,7 +239,15 @@ void CQCompartment::slotInitialExpressionValid(bool valid)
 
 bool CQCompartment::enterProtected()
 {
-  mpCompartment = dynamic_cast< CCompartment * >(mpObject);
+  if (mKeyToCopy != "")
+    {
+      mpCompartment = dynamic_cast<CCompartment*>(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy));
+      mKeyToCopy = "";
+    }
+  else
+    {
+      mpCompartment = dynamic_cast< CCompartment * >(mpObject);
+    }
 
   if (!mpCompartment)
     {
@@ -246,6 +256,9 @@ bool CQCompartment::enterProtected()
     }
 
   load();
+
+  mpCompartment = dynamic_cast<CCompartment*>(mpObject);
+
   return true;
 }
 
