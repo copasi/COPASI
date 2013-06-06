@@ -51,34 +51,37 @@ public:
   {
   public:
   
-  void addCompartment(const CCompartment* x);
-  void addMetab(const CMetab* x);
-  void addReaction(const CReaction* x);
-  void addGlobalQuantity(const CModelValue* x);
-  void addEvent(const CEvent* x);
+    void addCompartment(const CCompartment* x);
+    void addMetab(const CMetab* x);
+    void addReaction(const CReaction* x);
+    void addGlobalQuantity(const CModelValue* x);
+    void addEvent(const CEvent* x);
 
-  /**
-   * Checks whether an object is present in this set
-   */
-  bool contains(const CCopasiObject* x) const;
-  bool contains(const std::string & key) const;
-  
-  /**
-   * Determines which other object have to be publicated based on those already present.
-   */
-  void fillDependencies(const CModel* pModel);
-  
-  /**
-   * enters all the objects from pModel
-   */
-  void fillComplete(const CModel* pModel);
-  
-  //protected:
-  std::set<const CCompartment*> mCompartments;
-  std::set<const CMetab*> mMetabs;
-  std::set<const CReaction*> mReactions;
-  std::set<const CModelValue*> mGlobalQuantities;
-  std::set<const CEvent*> mEvents;
+    bool addObject(const CCopasiObject* x);
+
+    
+    /**
+     * Checks whether an object is present in this set
+     */
+    bool contains(const CCopasiObject* x) const;
+    bool contains(const std::string & key) const;
+    
+    /**
+     * Determines which other object have to be duplicated based on those already present.
+     */
+    void fillDependencies(const CModel* pModel);
+    
+    /**
+     * enters all the objects from pModel
+     */
+    void fillComplete(const CModel* pModel);
+    
+    //protected:
+    std::set<const CCompartment*> mCompartments;
+    std::set<const CMetab*> mMetabs;
+    std::set<const CReaction*> mReactions;
+    std::set<const CModelValue*> mGlobalQuantities;
+    std::set<const CEvent*> mEvents;
   };
 
   /**
@@ -179,7 +182,10 @@ public:
   
   void replaceInExpression(CExpression* exp, const ElementsMap & emap);
   
-  
+    /**
+     *  Tests if there are model elements that refer to the given model entity
+     */
+    bool existDependentEntities(const CCopasiObject* pObj);
 
   
 protected:

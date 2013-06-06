@@ -43,6 +43,36 @@ void CModelExpansion::SetOfModelElements::addEvent(const CEvent* x)
   mEvents.insert(x);
 }
 
+bool CModelExpansion::SetOfModelElements::addObject(const CCopasiObject* x)
+{
+    if (dynamic_cast<const CCompartment*>(x))
+      {
+        addCompartment(dynamic_cast<const CCompartment*>(x));
+        return true;
+      }
+    if (dynamic_cast<const CMetab*>(x))
+      {
+        addMetab(dynamic_cast<const CMetab*>(x));
+        return true;
+      }
+    if (dynamic_cast<const CReaction*>(x))
+      {
+        addReaction(dynamic_cast<const CReaction*>(x));
+        return true;
+      }
+    if (dynamic_cast<const CModelValue*>(x))
+      {
+        addGlobalQuantity(dynamic_cast<const CModelValue*>(x));
+        return true;
+      }
+    if (dynamic_cast<const CEvent*>(x))
+      {
+        addEvent(dynamic_cast<const CEvent*>(x));
+        return true;
+      }
+}
+
+
 bool CModelExpansion::SetOfModelElements::contains(const CCopasiObject* x) const
 {
   if (mCompartments.find(static_cast<const CCompartment*>(x)) != mCompartments.end())
@@ -1248,4 +1278,39 @@ void CModelExpansion::replaceInExpression(CExpression* exp, const ElementsMap & 
         }
     }
 }
+
+bool CModelExpansion::existDependentEntities(const CCopasiObject* pObj)
+{
+    SetOfModelElements sme;
+    if (!sme.addObject(pObj))
+        return false;
+    
+    /*std::cout << sme.mCompartments.size() << " "
+    << sme.mMetabs.size() << " "
+    << sme.mReactions.size() << " "
+    << sme.mGlobalQuantities.size() << " "
+    << sme.mEvents.size() << " " << std::endl;*/
+
+    size_t s1 = sme.mCompartments.size();
+    size_t s2 = sme.mMetabs.size();
+    size_t s3 = sme.mReactions.size();
+    size_t s4 = sme.mGlobalQuantities.size();
+    size_t s5 = sme.mEvents.size();
+
+    sme.fillDependencies(mpModel);
+        
+    if (s1 < sme.mCompartments.size())
+        return true;
+    if (s2 < sme.mMetabs.size())
+        return true;
+    if (s3 < sme.mReactions.size())
+        return true;
+    if (s4 < sme.mGlobalQuantities.size())
+        return true;
+    if (s5 < sme.mEvents.size())
+        return true;
+
+    return false;
+}
+
 
