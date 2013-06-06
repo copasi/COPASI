@@ -42,9 +42,11 @@ class CModelEntity;
 CQMergingData::CQMergingData(QWidget* parent, Qt::WindowFlags fl, bool simple)
     : QDialog(parent, fl)
 {
-  setupUi(this);
+    setupUi(this);
+    connect(mpTree1, SIGNAL(currentItemChanged(QTreeWidgetItem * , QTreeWidgetItem *)), this, SLOT(treeSelectionChanged()));
+    connect(mpTree2, SIGNAL(currentItemChanged(QTreeWidgetItem * , QTreeWidgetItem *)), this, SLOT(treeSelectionChanged()));
 
-  load();
+    load();
 }
 
 /*
@@ -55,42 +57,82 @@ CQMergingData::~CQMergingData()
   // no need to delete child widgets, Qt does it all for us
 }
 
-void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTreeWidgetItem*, CModelEntity*> & itemMap, const std::set<CCopasiObject*> & added)
+void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTreeWidgetItem*, CCopasiObject*> & itemMap,
+                             const std::set<CCopasiObject*> & added,
+                             bool highlightInvolved)
 {
-  itemMap.clear();
-  pW->clear();
-  size_t i, imax = pModel->getCompartments().size();
-  for(i=0; i<imax; ++i)
-    {
-    QTreeWidgetItem * pItem = new QTreeWidgetItem((QTreeWidget*)NULL, 1000);
-    pItem->setText(0,  FROM_UTF8(pModel->getCompartments()[i]->getObjectName()));
-    //pItem->setCheckState(0, Qt::Unchecked);
-    
-    std::set<CCopasiObject*>::const_iterator it = added.find(pModel->getCompartments()[i]);
-    if (it != added.end())
-      pItem->setBackgroundColor(0, QColor(200,200,250));
-    
-    itemMap[pItem] = pModel->getCompartments()[i];
-    pW->addTopLevelItem(pItem);
-    
-    QTreeWidgetItem * pChild;
-    size_t j, jmax = pModel->getCompartments()[i]->getMetabolites().size();
-    for(j=0; j<jmax; ++j)
+    itemMap.clear();
+    pW->clear();
+    CModelExpansion mex(const_cast<CModel*>(pModel));
+    size_t i, imax = pModel->getCompartments().size();
+    for(i=0; i<imax; ++i)
       {
-      QTreeWidgetItem * pChild = new QTreeWidgetItem(pItem, 1001);
-      pChild->setText(0,  FROM_UTF8(pModel->getCompartments()[i]->getMetabolites()[j]->getObjectName()));
-      //pChild->setCheckState(0, Qt::Unchecked);
+        CCopasiObject * pObj = pModel->getCompartments()[i];
+        QTreeWidgetItem * pItem = new QTreeWidgetItem((QTreeWidget*)NULL, 1000);
+        pItem->setText(0,  FROM_UTF8(pObj->getObjectName()));
+        //pItem->setCheckState(0, Qt::Unchecked);
+        
+        //highlight new objects
+        std::set<CCopasiObject*>::const_iterator it = added.find(pObj);
+        if (it != added.end())
+            pItem->setBackgroundColor(0, QColor(200,200,250));
+        
+        //highlight objects that are referred to by others
+        if (highlightInvolved)
+          {
+            if (!mex.existDependentEntities(pObj))
+                pItem->setTextColor(0, QColor(130,130,130));
+          }
+        
+        itemMap[pItem] = pObj;
+        pW->addTopLevelItem(pItem);
+        
+        QTreeWidgetItem * pChild;
+        size_t j, jmax = pModel->getCompartments()[i]->getMetabolites().size();
+        for(j=0; j<jmax; ++j)
+          {
+            pObj = pModel->getCompartments()[i]->getMetabolites()[j];
+            QTreeWidgetItem * pChild = new QTreeWidgetItem(pItem, 1001);
+            pChild->setText(0,  FROM_UTF8(pObj->getObjectName()));
+            //pChild->setCheckState(0, Qt::Unchecked);
+            
+            //highlight new objects
+            std::set<CCopasiObject*>::const_iterator it = added.find(pObj);
+            if (it != added.end())
+                pChild->setBackgroundColor(0, QColor(200,200,250));
 
-      std::set<CCopasiObject*>::const_iterator it = added.find(pModel->getCompartments()[i]->getMetabolites()[j]);
-      if (it != added.end())
-        pChild->setBackgroundColor(0, QColor(200,200,250));
-      
-      itemMap[pChild]=pModel->getCompartments()[i]->getMetabolites()[j];
+            //highlight objects that are referred to by others
+            if (highlightInvolved)
+              {
+                if (!mex.existDependentEntities(pObj))
+                    pChild->setTextColor(0, QColor(130,130,130));
+              }
+            
+            itemMap[pChild]=pObj;
+          }
+        pItem->setExpanded(true);
+        
       }
-    pItem->setExpanded(true);
+    
+    
+}
 
-    }
-
+void CQMergingData::treeSelectionChanged()
+{
+    // only enable the merging button if the selected items match and are not identical
+    CCopasiObject* p1=NULL;
+    CCopasiObject* p2=NULL;
+    std::map<QTreeWidgetItem*, CCopasiObject*>::const_iterator it;
+    it = mItemMap1.find(mpTree1->currentItem());
+    if (it != mItemMap1.end())
+        p1 = it->second;
+    it = mItemMap2.find(mpTree2->currentItem());
+    if (it != mItemMap2.end())
+        p2 = it->second;
+    if (!p1 || !p2 || p1->getObjectType()!=p2->getObjectType() || p1==p2)
+        mpBtnMerge->setEnabled(false);
+    else
+        mpBtnMerge->setEnabled(true);
 }
 
 void CQMergingData::load()
@@ -101,18 +143,19 @@ void CQMergingData::load()
 
   mpModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
   
-  fillTree(mpTree1, mpModel, mItemMap1, (*CCopasiRootContainer::getDatamodelList())[0]->mLastAddedObjects);
-  fillTree(mpTree2, mpModel, mItemMap2, (*CCopasiRootContainer::getDatamodelList())[0]->mLastAddedObjects);
+  fillTree(mpTree1, mpModel, mItemMap1, (*CCopasiRootContainer::getDatamodelList())[0]->mLastAddedObjects, true);
+  fillTree(mpTree2, mpModel, mItemMap2, (*CCopasiRootContainer::getDatamodelList())[0]->mLastAddedObjects, false);
   
+    treeSelectionChanged();
  }
 
 void CQMergingData::slotBtnMerge()
 {
   //simple, preliminary
-  CModelEntity* p1=NULL;
-  CModelEntity* p2=NULL;
+  CCopasiObject* p1=NULL;
+  CCopasiObject* p2=NULL;
   
-  std::map<QTreeWidgetItem*, CModelEntity*>::const_iterator it;
+  std::map<QTreeWidgetItem*, CCopasiObject*>::const_iterator it;
   it = mItemMap1.find(mpTree1->currentItem());
   if (it != mItemMap1.end())
     p1 = it->second;

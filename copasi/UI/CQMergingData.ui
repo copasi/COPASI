@@ -96,16 +96,14 @@
        <property name="shortcut">
         <string>Alt+O</string>
        </property>
+       <property name="default">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
     </layout>
    </item>
   </layout>
-  <zorder>mpBtnCancel</zorder>
-  <zorder>label_2</zorder>
-  <zorder>label</zorder>
-  <zorder>mpTree1</zorder>
-  <zorder>mpTree2</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
