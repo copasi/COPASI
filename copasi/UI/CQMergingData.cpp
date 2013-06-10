@@ -58,24 +58,32 @@ CQMergingData::~CQMergingData()
 }
 
 void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTreeWidgetItem*, CCopasiObject*> & itemMap,
+                             bool flagGlobalQuantities, bool flagReactions,
                              const std::set<CCopasiObject*> & added,
                              bool highlightInvolved)
 {
     itemMap.clear();
     pW->clear();
     CModelExpansion mex(const_cast<CModel*>(pModel));
+    QFont tmpFont;
     size_t i, imax = pModel->getCompartments().size();
     for(i=0; i<imax; ++i)
       {
         CCopasiObject * pObj = pModel->getCompartments()[i];
         QTreeWidgetItem * pItem = new QTreeWidgetItem((QTreeWidget*)NULL, 1000);
+        if (!i)
+          {
+            tmpFont = pItem->font(0);
+            tmpFont.setItalic(true);
+          }
         pItem->setText(0,  FROM_UTF8(pObj->getObjectName()));
         //pItem->setCheckState(0, Qt::Unchecked);
         
         //highlight new objects
         std::set<CCopasiObject*>::const_iterator it = added.find(pObj);
         if (it != added.end())
-            pItem->setBackgroundColor(0, QColor(200,200,250));
+            pItem->setFont(0, tmpFont);
+        //pItem->setBackgroundColor(0, QColor(200,200,250));
         
         //highlight objects that are referred to by others
         if (highlightInvolved)
@@ -99,7 +107,8 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTr
             //highlight new objects
             std::set<CCopasiObject*>::const_iterator it = added.find(pObj);
             if (it != added.end())
-                pChild->setBackgroundColor(0, QColor(200,200,250));
+                pChild->setFont(0, tmpFont);
+            //pChild->setBackgroundColor(0, QColor(200,200,250));
 
             //highlight objects that are referred to by others
             if (highlightInvolved)
@@ -113,7 +122,71 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTr
         pItem->setExpanded(true);
         
       }
-    
+
+    if (flagGlobalQuantities)
+      {
+        QTreeWidgetItem * pItem = new QTreeWidgetItem((QTreeWidget*)NULL, 1000);
+        pItem->setText(0, "Global Quantities");
+        pW->addTopLevelItem(pItem);
+
+        
+        QTreeWidgetItem * pChild;
+        size_t j, jmax = pModel->getModelValues().size();
+        for(j=0; j<jmax; ++j)
+          {
+            CCopasiObject * pObj = pModel->getModelValues()[j];
+            QTreeWidgetItem * pChild = new QTreeWidgetItem(pItem, 1001);
+            pChild->setText(0,  FROM_UTF8(pObj->getObjectName()));
+            //pChild->setCheckState(0, Qt::Unchecked);
+            
+            //highlight new objects
+            std::set<CCopasiObject*>::const_iterator it = added.find(pObj);
+            if (it != added.end())
+                pChild->setFont(0, tmpFont);
+            //pChild->setBackgroundColor(0, QColor(200,200,250));
+            
+            //highlight objects that are referred to by others
+            if (highlightInvolved)
+              {
+                if (!mex.existDependentEntities(pObj))
+                    pChild->setTextColor(0, QColor(130,130,130));
+              }
+            
+            itemMap[pChild]=pObj;
+          }
+      }
+    if (flagReactions)
+      {
+        QTreeWidgetItem * pItem = new QTreeWidgetItem((QTreeWidget*)NULL, 1000);
+        pItem->setText(0, "Reaction");
+        pW->addTopLevelItem(pItem);
+        
+        
+        QTreeWidgetItem * pChild;
+        size_t j, jmax = pModel->getReactions().size();
+        for(j=0; j<jmax; ++j)
+          {
+            CCopasiObject * pObj = pModel->getReactions()[j];
+            QTreeWidgetItem * pChild = new QTreeWidgetItem(pItem, 1001);
+            pChild->setText(0,  FROM_UTF8(pObj->getObjectName()));
+            //pChild->setCheckState(0, Qt::Unchecked);
+            
+            //highlight new objects
+            std::set<CCopasiObject*>::const_iterator it = added.find(pObj);
+            if (it != added.end())
+                pChild->setFont(0, tmpFont);
+            //pChild->setBackgroundColor(0, QColor(200,200,250));
+            
+            //highlight objects that are referred to by others
+            if (highlightInvolved)
+              {
+                if (!mex.existDependentEntities(pObj))
+                    pChild->setTextColor(0, QColor(130,130,130));
+              }
+            
+            itemMap[pChild]=pObj;
+          }
+      }
     
 }
 
@@ -143,8 +216,8 @@ void CQMergingData::load()
 
   mpModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
   
-  fillTree(mpTree1, mpModel, mItemMap1, (*CCopasiRootContainer::getDatamodelList())[0]->mLastAddedObjects, true);
-  fillTree(mpTree2, mpModel, mItemMap2, (*CCopasiRootContainer::getDatamodelList())[0]->mLastAddedObjects, false);
+  fillTree(mpTree1, mpModel, mItemMap1, true, true, (*CCopasiRootContainer::getDatamodelList())[0]->mLastAddedObjects, true);
+  fillTree(mpTree2, mpModel, mItemMap2, true, true, (*CCopasiRootContainer::getDatamodelList())[0]->mLastAddedObjects, false);
   
     treeSelectionChanged();
  }

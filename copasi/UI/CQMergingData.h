@@ -58,6 +58,7 @@ private:
    * highlighted (these are the items that it is useful to replace)
    */
   void fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTreeWidgetItem*, CCopasiObject*>& itemMap,
+                bool flagGlobalQuantities, bool flagReactions,
                 const std::set<CCopasiObject*> & added,
                 bool highlightInvolved);
 
