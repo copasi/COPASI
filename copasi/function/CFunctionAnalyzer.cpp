@@ -431,7 +431,11 @@ bool CFunctionAnalyzer::Result::writeResult(std::ostream & os, bool rt, bool ver
   bool isReversible = (mpFunction->isReversible() == TriTrue);
 
   std::ostringstream tmpss;
-  bool eee = mOriginalFunction.writeAnalysis(tmpss, rt, isReversible);
+    
+  //only interprete the results if the kinetic law has specified reversibility.
+  bool eee = true;
+  if (mpFunction->isReversible() != TriUnspecified)
+    eee = mOriginalFunction.writeAnalysis(tmpss, rt, isReversible);
 
   if (eee) ret = true;
 
