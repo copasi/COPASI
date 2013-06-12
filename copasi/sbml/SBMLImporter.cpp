@@ -4291,12 +4291,13 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBas
       CCopasiParameter* pParam = pParamGroup.getParameter(name);
 
       std::map<std::string, double>::const_iterator speciesReference = mSBMLSpeciesReferenceIds.find(name);
+
       if (speciesReference  != mSBMLSpeciesReferenceIds.end())
-      {
-        // replace the name with the value
-        pNode->setType(AST_REAL);
-        pNode->setValue(mSBMLSpeciesReferenceIds[name]);        
-      }
+        {
+          // replace the name with the value
+          pNode->setType(AST_REAL);
+          pNode->setValue(mSBMLSpeciesReferenceIds[name]);
+        }
       else if (pParam)
         {
           pNode->setName(pParam->getCN().c_str());
@@ -5539,6 +5540,11 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
           CCopasiObject* pObject = mpDataModel->ObjectFromName(listOfContainers, objectCN);
           assert(pObject);
 
+          if (!pObject)
+            {
+              fatalError();
+            }
+
           if (pObject->isReference())
             {
               pObject = pObject->getObjectParent();
@@ -5575,6 +5581,11 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
           objectCN = objectCN.substr(1, objectCN.length() - 2);
           CCopasiObject* pObject = mpDataModel->ObjectFromName(listOfContainers, objectCN);
           assert(pObject);
+
+          if (!pObject)
+            {
+              fatalError();
+            }
 
           if (pObject->isReference())
             {
@@ -6707,6 +6718,7 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<CCopasiObje
                 }
 
               std::map<std::string, double>::const_iterator speciesReference = mSBMLSpeciesReferenceIds.find(name);
+
               if (speciesReference  != mSBMLSpeciesReferenceIds.end())
                 {
                   // replace the name with the value
@@ -10147,7 +10159,7 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::map<s
   const SpeciesReference* pSpeciesReference = NULL;
 
   SBMLTransforms transforms;
-  transforms.mapComponentValues(pModel);  
+  transforms.mapComponentValues(pModel);
 
   for (i = 0; i < iMax; ++i)
     {
@@ -10171,8 +10183,8 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::map<s
                 {
                   // make sure all ids are unique
                   assert(ids.find(pSpeciesReference->getId()) == ids.end());
-                  ids.insert(std::pair<std::string, double>(pSpeciesReference->getId(), 
-                    transforms.evaluateASTNode(SBML_parseFormula(pSpeciesReference->getId().c_str()), pModel)));
+                  ids.insert(std::pair<std::string, double>(pSpeciesReference->getId(),
+                             transforms.evaluateASTNode(SBML_parseFormula(pSpeciesReference->getId().c_str()), pModel)));
                 }
             }
 
@@ -10188,8 +10200,8 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::map<s
                 {
                   // make sure all ids are unique
                   assert(ids.find(pSpeciesReference->getId()) == ids.end());
-                  ids.insert(std::pair<std::string, double>(pSpeciesReference->getId(), 
-                    transforms.evaluateASTNode(SBML_parseFormula(pSpeciesReference->getId().c_str()), pModel)));
+                  ids.insert(std::pair<std::string, double>(pSpeciesReference->getId(),
+                             transforms.evaluateASTNode(SBML_parseFormula(pSpeciesReference->getId().c_str()), pModel)));
                 }
             }
         }
