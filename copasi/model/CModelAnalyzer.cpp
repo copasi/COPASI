@@ -355,7 +355,8 @@ bool CModelAnalyzer::ReactionResult::writeResult(std::ostream & os, bool rt, boo
 
   //reaction results
   if (mKineticUnspecifiedReversibility)
-    os << CFunctionAnalyzer::write(1, rt, "The kinetic function has unspecified reversibility.", "");
+    os << CFunctionAnalyzer::write(1, rt, "The kinetic function has unspecified reversibility.",
+                                   "This means that checking the kinetic function will be less strict.");
 
   if (mReversibilityMismatch)
     os << CFunctionAnalyzer::write(3, rt, "The reversibility of the reaction and the kinetic function doesn't match.", "");
