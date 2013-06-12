@@ -13,7 +13,9 @@
 # All rights reserved. 
 
 LIB = MIRIAM
+
 DISTFILES = MIRIAM.pro
+DISTFILES += MIRIAMResources.xml
 
 CONFIG -= qt
 
