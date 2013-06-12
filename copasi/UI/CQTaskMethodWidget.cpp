@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -186,11 +186,11 @@ bool CQTaskMethodWidget::saveMethod()
       if (pMethod->getSubType() != mpActiveMethod->getSubType())
         {
           mpTask->setMethodType(mpActiveMethod->getSubType());
+          mpMethod = mpTask->getMethod();
+
           changed = true;
         }
     }
-
-  mpMethod = mpTask->getMethod();
 
   if (mShowMethodParameters)
     {
@@ -198,19 +198,24 @@ bool CQTaskMethodWidget::saveMethod()
       QString Value;
       CCopasiParameter::Type Type;
 
-      for (i = 0; i < mpMethod->size(); i++)
+      for (i = 0; i < mpActiveMethod->size(); i++)
         {
           if (!mpTableParameter->item(i, 0))
             continue;
 
           Value = mpTableParameter->item(i, 0)->text();
 
-          if (Value != getParameterValue(mpMethod, i, &Type))
+          if (Value != getParameterValue(mpActiveMethod, i, &Type))
             {
-              setParameterValue(mpMethod, i, Value);
+              setParameterValue(mpActiveMethod, i, Value);
               changed = true;
             }
         }
+    }
+
+  if (changed)
+    {
+      *mpMethod = *mpActiveMethod;
     }
 
   return changed;
