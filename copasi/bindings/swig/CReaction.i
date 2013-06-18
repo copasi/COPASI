@@ -31,7 +31,7 @@
 %ignore CReaction::load;
 %ignore CReaction::getSmallestCompartment() const; // not implemented
 %ignore CReaction::getParameterMappings() const; 
-%ignore CReaction::setFunctionFromExpressionTree(CEvaluationTree* , std::map<CCopasiObject*, SBase*> & , CFunctionDB* );
+%ignore CReaction::setFunctionFromExpressionTree(const CExpression & tree , std::map<CCopasiObject*, SBase*> & , CFunctionDB* );
 %ignore CReaction::calculatePartialDerivative;
 %ignore CReaction::getExpressionTree;
 %ignore CReaction::getDeletedObjects;

@@ -1337,7 +1337,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           // and if so, add the message text to the current exception
           if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
             {
-              // we only want the message, not the timestamp line
+              // we only want the message, not the time stamp line
               std::string text = CCopasiMessage::peekLastMessage().getText();
               os << text.substr(text.find("\n"));
             }
@@ -1358,7 +1358,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   // TODO Create all constraints
   // TODO Since we don't have constraints yet, there is no code here.
   // TODO When implementing import of constraints, don't forget to replace calls to
-  // TODO explicitely time dependent functions in the constraints math exptression.
+  // TODO explicitly time dependent functions in the constraints math expression.
 
   // import all events
   // events should be imported after reactions because we use the mSBMLSpeciesReferenceIds to determine if an
@@ -1649,29 +1649,46 @@ CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDef
           functionName = sbmlFunction->getId();
         }
 
-      unsigned int counter = 2;
+      unsigned int counter = 1;
       std::ostringstream numberStream;
       std::string appendix = "";
+      CFunction * pExistingFunction = NULL;
 
-      while (this->functionDB->findFunction(functionName + appendix))
+      while ((pExistingFunction = functionDB->findFunction(functionName + appendix)))
         {
+          if (areEqualFunctions(pExistingFunction, pTmpFunction))
+            {
+              pdelete(pTmpFunction);
+              pTmpFunction = pExistingFunction;
+
+              break;
+            }
+
+          // We need to check whether the functions are identical.
           numberStream.str("");
           numberStream << "_" << counter;
           counter++;
           appendix = numberStream.str();
         }
 
-      pTmpFunction->setObjectName(functionName + appendix);
-      pTmpFunctionDB->add(pTmpFunction, false);
-      this->functionDB->add(pTmpFunction, true);
+      if (pTmpFunction != pExistingFunction)
+        {
+          pTmpFunction->setObjectName(functionName + appendix);
+          functionDB->add(pTmpFunction, true);
+          pTmpFunctionDB->add(pTmpFunction, false);
+        }
+
+      if (pTmpFunction->getType() == CEvaluationTree::UserDefined)
+        {
+          SBMLImporter::importMIRIAM(sbmlFunction, pTmpFunction);
+          SBMLImporter::importNotes(pTmpFunction, sbmlFunction);
+        }
     }
   else
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 14, sbmlFunction->getId().c_str());
     }
 
-  SBMLImporter::importMIRIAM(sbmlFunction, pTmpFunction);
-  SBMLImporter::importNotes(pTmpFunction, sbmlFunction);
   return pTmpFunction;
 }
 
@@ -2004,7 +2021,7 @@ CFunction* findFunction(CCopasiVectorN < CFunction > &  db, const CFunction* fun
     {
       CFunction* pFun = (db[i]);
 
-      if (pFun == func)
+      if (*pFun == *func)
         return pFun;
     }
 
@@ -2517,8 +2534,9 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
           if (pExpressionTreeRoot)
             {
-              CEvaluationTree* pTmpTree = CEvaluationTree::create(CEvaluationTree::Expression);
-              pTmpTree->setRoot(pExpressionTreeRoot);
+              CExpression KineticLawExpression;
+              KineticLawExpression.setRoot(pExpressionTreeRoot);
+
               // check if the expression is constant flux
               CCopasiObject* pParamObject = SBMLImporter::isConstantFlux(pExpressionTreeRoot, copasiModel, pTmpFunctionDB);
 
@@ -2574,15 +2592,15 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                     {
                       // if yes, we check if it corresponds to an already existing function
                       std::string functionName = pExpressionTreeRoot->getData();
-                      CFunction* tree = dynamic_cast<CFunction*>(pTmpFunctionDB->findFunction(functionName));
-                      assert(tree);
+                      CFunction* pImportedFunction = dynamic_cast<CFunction*>(functionDB->findFunction(functionName));
+                      assert(pImportedFunction);
                       std::vector<CEvaluationNodeObject*>* v = NULL;
 
                       // only check for mass action if there is no conversion factor involved
                       // for any of the species involved in the reaction (substrates and products)
                       if (!mConversionFactorNeeded)
                         {
-                          v = this->isMassAction(tree, copasiReaction->getChemEq(), static_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
+                          v = this->isMassAction(pImportedFunction, copasiReaction->getChemEq(), static_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
 
                           if (!v)
                             {
@@ -2626,10 +2644,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                         {
                           // find corresponding reaction does *not* return the function if it is already in the function db
                           // we better change this to return this instance.
-                          CFunction* pExistingFunction = findFunction(functionDB->loadedFunctions(), tree);
-
-                          if (pExistingFunction == NULL)
-                            pExistingFunction = this->findCorrespondingFunction(tree, copasiReaction);
+                          CFunction* pExistingFunction = findCorrespondingFunction(&KineticLawExpression, copasiReaction);
 
                           // if it does, we set the existing function for this reaction
                           if (pExistingFunction)
@@ -2641,9 +2656,9 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                           // else we take the function from the pTmpFunctionDB, copy it and set the usage correctly
                           else
                             {
-                              // replace the variable nodes in tree with  nodes from
+                              // replace the variable nodes in pImportedFunction with  nodes from
                               std::map<std::string, std::string > arguments;
-                              const CFunctionParameters& funParams = tree->getVariables();
+                              const CFunctionParameters& funParams = pImportedFunction->getVariables();
                               const CEvaluationNode* pTmpNode = static_cast<const CEvaluationNode*>(pExpressionTreeRoot->getChild());
                               size_t i, iMax = funParams.size();
 
@@ -2656,35 +2671,33 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                                 }
 
                               assert((i == iMax) && pTmpNode == NULL);
-                              CEvaluationNode* pTmpExpression = this->variables2objects(tree->getRoot(), arguments);
 
-                              CEvaluationTree* pTmpTree2 = CEvaluationTree::create(CEvaluationTree::Expression);
-                              pTmpTree2->setRoot(pTmpExpression);
+                              CEvaluationNode* pTmpExpression = variables2objects(pImportedFunction->getRoot()->copyBranch(), arguments);
+
+                              CExpression TmpTree2;
+                              TmpTree2.setRoot(pTmpExpression);
 
                               // code to fix bug 1874
                               // since this is a user defined function, we want to retain the original name
                               // next setFunctionFromExpressionTree will take this name if it is not 'Expression'
                               // (the default)
-                              pTmpTree2->setObjectName(functionName);
-                              copasiReaction->setFunctionFromExpressionTree(pTmpTree2, copasi2sbmlmap, this->functionDB);
-                              delete pTmpTree2;
+                              TmpTree2.setObjectName(functionName);
 
-                              if (copasiReaction->getFunction()->getType() == CEvaluationTree::UserDefined)
+                              CFunction * pNewFunction = copasiReaction->setFunctionFromExpressionTree(TmpTree2, copasi2sbmlmap, this->functionDB);
+
+                              if (pNewFunction != NULL &&
+                                  pNewFunction->getType() == CEvaluationTree::UserDefined)
                                 {
-                                  // in order to get around the const_casts, I
-                                  // have to find the function in the
-                                  // functiondb
-                                  CFunction* pNonconstFun = getFunctionForKey(functionDB->loadedFunctions(), copasiReaction->getFunction()->getKey());
-                                  assert(pNonconstFun != NULL);
-
                                   // code to fix Bug 1015
-                                  if (!pNonconstFun->isSuitable(copasiReaction->getChemEq().getSubstrates().size(), copasiReaction->getChemEq().getProducts().size(), copasiReaction->isReversible() ? TriTrue : TriFalse))
+                                  if (!pNewFunction->isSuitable(copasiReaction->getChemEq().getSubstrates().size(),
+                                                                copasiReaction->getChemEq().getProducts().size(),
+                                                                copasiReaction->isReversible() ? TriTrue : TriFalse))
                                     {
-                                      pNonconstFun->setReversible(TriUnspecified);
+                                      pNewFunction->setReversible(TriUnspecified);
                                     }
 
-                                  pTmpFunctionDB->add(pNonconstFun, false);
-                                  this->mUsedFunctions.insert(pNonconstFun->getObjectName());
+                                  pTmpFunctionDB->add(pNewFunction, false);
+                                  mUsedFunctions.insert(pNewFunction->getObjectName());
                                 }
                             }
                         }
@@ -2699,7 +2712,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                       // for any of the species involved in the reaction (substrates and products)
                       if (!mConversionFactorNeeded)
                         {
-                          v = this->isMassAction(pTmpTree, copasiReaction->getChemEq());
+                          v = this->isMassAction(&KineticLawExpression, copasiReaction->getChemEq());
 
                           if (!v)
                             {
@@ -2742,39 +2755,27 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                         }
                       else
                         {
-                          if (!copasiReaction->setFunctionFromExpressionTree(pTmpTree, copasi2sbmlmap, this->functionDB))
+                          CFunction* pNonconstFun = copasiReaction->setFunctionFromExpressionTree(KineticLawExpression, copasi2sbmlmap, this->functionDB);
+
+                          if (pNonconstFun != NULL &&
+                              pNonconstFun->getType() == CEvaluationTree::UserDefined)
                             {
-                              // error message
-                              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 9, copasiReaction->getObjectName().c_str());
-                            }
-                          else
-                            {
-                              if (copasiReaction->getFunction()->getType() == CEvaluationTree::UserDefined)
+                              // code to fix Bug 1015
+                              if (!pNonconstFun->isSuitable(copasiReaction->getChemEq().getSubstrates().size(),
+                                                            copasiReaction->getChemEq().getProducts().size(),
+                                                            copasiReaction->isReversible() ? TriTrue : TriFalse))
                                 {
-                                  // in order to get around the const_casts, I
-                                  // have to find the function in the
-                                  // functiondb
-                                  CFunction* pNonconstFun = getFunctionForKey(functionDB->loadedFunctions(), copasiReaction->getFunction()->getKey());
-                                  assert(pNonconstFun != NULL);
-
-                                  // code to fix Bug 1015
-                                  if (!pNonconstFun->isSuitable(copasiReaction->getChemEq().getSubstrates().size(), copasiReaction->getChemEq().getProducts().size(), copasiReaction->isReversible() ? TriTrue : TriFalse))
-                                    {
-                                      pNonconstFun->setReversible(TriUnspecified);
-                                    }
-
-                                  pTmpFunctionDB->add(pNonconstFun, false);
-                                  this->mUsedFunctions.insert(copasiReaction->getFunction()->getObjectName());
+                                  pNonconstFun->setReversible(TriUnspecified);
                                 }
+
+                              pTmpFunctionDB->add(pNonconstFun, false);
+                              mUsedFunctions.insert(pNonconstFun->getObjectName());
                             }
                         }
 
                       pdelete(v);
                     }
                 }
-
-              // delete the temporary tree and all the nodes
-              delete pTmpTree;
             }
           else
             {
@@ -4854,32 +4855,74 @@ void SBMLImporter::replaceCallNodeNames(ASTNode* pASTNode)
  * From this expression we can determine if there already is a function in the database
  * that does the same. Or we can find out if this function is a Mass Action kinetic.
  */
-CFunction* SBMLImporter::findCorrespondingFunction(const CFunction* tree, const CReaction* pCopasiReaction)
+CFunction* SBMLImporter::findCorrespondingFunction(const CExpression * pExpression, const CReaction* pCopasiReaction)
 {
+  // We are certain at this point that pExpression is a simple function call.
+
+  // Check whether a function with the name exists in COPASI and whether it is suitable
   CFunction* pCorrespondingFunction = NULL;
-  std::vector<CFunction*> functions = this->functionDB->suitableFunctions(
-                                        pCopasiReaction->getChemEq().getSubstrates().size(),
-                                        pCopasiReaction->getChemEq().getProducts().size(),
-                                        pCopasiReaction->isReversible() ? TriTrue : TriFalse);
+
+  std::string Name = pExpression->getRoot()->getData();
+  pCorrespondingFunction = functionDB->findFunction(Name);
+
+  if (pCorrespondingFunction != NULL)
+    {
+      const CFunctionParameters & Variables = pCorrespondingFunction->getVariables();
+
+      for (size_t i = 0; i < Variables.size(); ++i)
+        {
+          if (pCopasiReaction->getParameterIndex(Variables[i]->getObjectName()) == C_INVALID_INDEX)
+            {
+              pCorrespondingFunction = NULL;
+              break;
+            }
+        }
+    }
+
+  if (pCorrespondingFunction != NULL)
+    {
+      return pCorrespondingFunction;
+    }
+
+  // TODO This has never worked
+#ifdef XXXX
+  // Check for suitable functions which have a different name but have the same call tree as
+  std::vector< CFunction * > functions = functionDB->suitableFunctions(pCopasiReaction->getChemEq().getSubstrates().size(),
+                                         pCopasiReaction->getChemEq().getProducts().size(),
+                                         pCopasiReaction->isReversible() ? TriTrue : TriFalse);
   size_t i, iMax = functions.size();
 
   for (i = 0; i < iMax; ++i)
     {
-      CFunction* pFun = (functions[i]);
+      pCorrespondingFunction = (functions[i]);
 
       // make sure the function is not compared to itself since it can already
       // be in the database if it has been used a call in another function
       // don't compare the mass action kinetics
-      if ((pFun != tree) && (!dynamic_cast<CMassAction*>(pFun)) && this->areEqualFunctions(pFun, tree))
+      if ((pCorrespondingFunction != tree) && (!dynamic_cast<CMassAction*>(pCorrespondingFunction)) && areEqualFunctions(pCorrespondingFunction, tree))
         {
+          const CFunctionParameters & Variables = pFun->getVariables();
+
+          for (size_t i = 0; i < Variables.size(); ++i)
+            {
+              if (pCopasiReaction->getParameterIndex(Variables[i]->getObjectName()) == C_INVALID_INDEX)
+                {
+                  pCorrespondingFunction = NULL;
+                  break;
+                }
+            }
+
           pCorrespondingFunction = pFun;
           break;
         }
     }
 
+#endif // XXXX
+
   return pCorrespondingFunction;
 }
 
+// static
 bool SBMLImporter::areEqualFunctions(const CFunction* pFun, const CFunction* pFun2)
 {
   bool result = true;
@@ -4906,7 +4949,7 @@ bool SBMLImporter::areEqualFunctions(const CFunction* pFun, const CFunction* pFu
         {
           const CEvaluationNode* pNodeFun1 = static_cast<const CEvaluationNode*>(pFun->getRoot());
           const CEvaluationNode* pNodeFun2 = static_cast<const CEvaluationNode*>(pFun2->getRoot());
-          result = this->areEqualSubtrees(pNodeFun1, pNodeFun2);
+          result = areEqualSubtrees(pNodeFun1, pNodeFun2);
         }
     }
   else
@@ -4917,15 +4960,17 @@ bool SBMLImporter::areEqualFunctions(const CFunction* pFun, const CFunction* pFu
   return result;
 }
 
+// static
 bool SBMLImporter::areEqualSubtrees(const CEvaluationNode* pNode1, const CEvaluationNode* pNode2)
 {
+  // TODO CRITICAL We need to use a node iterator
   bool result = ((pNode1->getType() == pNode2->getType()) && (pNode1->getData() == pNode2->getData()));
   const CEvaluationNode* pChild1 = static_cast<const CEvaluationNode*>(pNode1->getChild());
   const CEvaluationNode* pChild2 = static_cast<const CEvaluationNode*>(pNode2->getChild());
 
   while (result && pChild1 && pChild2)
     {
-      result = this->areEqualSubtrees(pChild1, pChild2);
+      result = areEqualSubtrees(pChild1, pChild2);
       pChild1 = static_cast<const CEvaluationNode*>(pChild1->getSibling());
       pChild2 = static_cast<const CEvaluationNode*>(pChild2->getSibling());
     }
@@ -4946,6 +4991,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassAction(const CEvaluatio
     {
       case CEvaluationTree::Function:
       case CEvaluationTree::UserDefined:
+      case CEvaluationTree::PreDefined:
         pChildNode = static_cast<const CEvaluationNode*>(pCallNode->getChild());
 
         while (pChildNode)
@@ -5510,12 +5556,15 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
       std::string objectCN = pChild->getData();
       objectCN = objectCN.substr(1, objectCN.length() - 2);
       CCopasiObject* pObject = mpDataModel->ObjectFromName(listOfContainers, objectCN);
-      assert(pObject);
+
+      if (!pObject)
+        {
+          fatalError();
+        }
 
       if (pObject->isReference())
         {
           pObject = pObject->getObjectParent();
-          assert(pObject);
         }
 
       const std::string& objectKey = pObject->getKey();
@@ -5538,7 +5587,6 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
           std::string objectCN = pChild->getData();
           objectCN = objectCN.substr(1, objectCN.length() - 2);
           CCopasiObject* pObject = mpDataModel->ObjectFromName(listOfContainers, objectCN);
-          assert(pObject);
 
           if (!pObject)
             {
@@ -5548,7 +5596,6 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
           if (pObject->isReference())
             {
               pObject = pObject->getObjectParent();
-              assert(pObject);
             }
 
           const std::string& objectKey = pObject->getKey();
@@ -5580,7 +5627,6 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
           std::string objectCN = pChild->getData();
           objectCN = objectCN.substr(1, objectCN.length() - 2);
           CCopasiObject* pObject = mpDataModel->ObjectFromName(listOfContainers, objectCN);
-          assert(pObject);
 
           if (!pObject)
             {
@@ -5590,7 +5636,6 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
           if (pObject->isReference())
             {
               pObject = pObject->getObjectParent();
-              assert(pObject);
             }
 
           const std::string& objectKey = pObject->getKey();
@@ -6037,15 +6082,18 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<C
 
       // here we could have a dialog asking the user if unused functions should
       // be removed.
-      while (pTmpFunctionDB->loadedFunctions().size() != 0)
+
+      CCopasiVectorN < CFunction >::const_iterator it = pTmpFunctionDB->loadedFunctions().begin();
+      CCopasiVectorN < CFunction >::const_iterator end = pTmpFunctionDB->loadedFunctions().end();
+
+      for (; it != end; ++it)
         {
-          CEvaluationTree* pTree = pTmpFunctionDB->loadedFunctions()[0];
-          pTmpFunctionDB->removeFunction(pTree->getKey());
+          CEvaluationTree * pTree = *it;
 
           if (functionNameSet.find(pTree->getObjectName()) == functionNameSet.end())
             {
-              this->mUsedFunctions.erase(pTree->getObjectName());
-              pFunctionDB->removeFunction(pTree->getKey());
+              mUsedFunctions.erase(pTree->getObjectName());
+              pFunctionDB->loadedFunctions().remove(pTree->getObjectName());
               // delete the entry from the copasi2sbmlmap.
               std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(pTree);
               assert(pos != copasi2sbmlmap.end());

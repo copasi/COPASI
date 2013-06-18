@@ -398,15 +398,17 @@ protected:
                       std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
                       Reaction* pSBMLReaction = NULL);
 
-  CFunction* findCorrespondingFunction(const CFunction* tree, const CReaction* reaction);
+  CFunction* findCorrespondingFunction(const CExpression * pExpression, const CReaction* reaction);
 
-  bool areEqualFunctions(const CFunction* pFun, const CFunction* pFun2);
+public:
+  static bool areEqualFunctions(const CFunction* pFun, const CFunction* pFun2);
 
   /**
    * Compares to CEvaluationNode based subtrees recursively.
    */
-  bool areEqualSubtrees(const CEvaluationNode* pNode1, const CEvaluationNode* pNode2);
+  static bool areEqualSubtrees(const CEvaluationNode* pNode1, const CEvaluationNode* pNode2);
 
+protected:
   std::vector<CEvaluationNodeObject*>* isMassAction(const CEvaluationTree* pTree,
       const CChemEq& chemicalEquation,
       const CEvaluationNodeCall* pCallNode = NULL);

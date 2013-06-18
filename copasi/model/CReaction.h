@@ -428,9 +428,9 @@ public:
    * Converts an expression tree into a CFunction object
    * and sets the mapping for the reaction.
    */
-  bool setFunctionFromExpressionTree(CEvaluationTree* tree,
-                                     std::map<CCopasiObject*, SBase*> & copasi2sbmlmap,
-                                     CFunctionDB* pFunctionDB);
+  CFunction * setFunctionFromExpressionTree(const CExpression & tree,
+      std::map<CCopasiObject*, SBase*> & copasi2sbmlmap,
+      CFunctionDB* pFunctionDB);
 
   /**
    * Converts the function tree into the corresponding expression tree.
