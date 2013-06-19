@@ -71,11 +71,10 @@ CDataModelRenameHandler::CDataModelRenameHandler()
 
 bool CDataModelRenameHandler::handle(const std::string & oldCN, const std::string & newCN) const
 {
-  const std::set<CRegisteredObjectName*> nameSet = CRegisteredObjectName::getSet();
+  std::set<CRegisteredObjectName*>::const_iterator it = CRegisteredObjectName::getSet().begin();
+  std::set<CRegisteredObjectName*>::const_iterator itEnd = CRegisteredObjectName::getSet().end();
 
-  std::set<CRegisteredObjectName*>::const_iterator it, itEnd = nameSet.end();
-
-  for (it = nameSet.begin(); it != itEnd; ++it)
+  for (; it != itEnd; ++it)
     {
       // We need to make sure that we not change partial names
       if (((*it)->size() == oldCN.size() ||

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -200,6 +200,15 @@ public:
   bool setFunction(CFunction * pFunction);
 
   //****************************************************************************************
+
+  /**
+   * Retrieve the index of the given parameter name in the function call. If pType is not
+   * NULL the type of the parameter is returned
+   * @param const std::string & parameterName
+   * @param CFunctionParameter::DataType * pType (default: NULL)
+   * @return size_t index;
+   */
+  size_t getParameterIndex(const std::string & parameterName, CFunctionParameter::DataType * pType = NULL) const;
 
   /**
    * Sets a parameter value
@@ -413,9 +422,9 @@ public:
    * Converts an expression tree into a CFunction object
    * and sets the mapping for the reaction.
    */
-  bool setFunctionFromExpressionTree(CEvaluationTree* tree,
-                                     std::map<CCopasiObject*, SBase*> & copasi2sbmlmap,
-                                     CFunctionDB* pFunctionDB);
+  CFunction * setFunctionFromExpressionTree(const CExpression & tree,
+      std::map<CCopasiObject*, SBase*> & copasi2sbmlmap,
+      CFunctionDB* pFunctionDB);
 
   /**
    * Converts the function tree into the corresponding expression tree.

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -44,6 +44,7 @@
 #include "sbml/Species.h"
 #include "sbml/Parameter.h"
 #include "sbml/Compartment.h"
+#include "sbml/SBMLImporter.h"
 
 C_FLOAT64 CReaction::mDefaultScalingFactor = 1.0;
 
@@ -276,6 +277,21 @@ bool CReaction::setFunction(CFunction * pFunction)
 //****************************************
 
 // TODO: check if function is set and map initialized in the following methods
+/**
+ * Retrieve the index of the given parameter name in the function call
+ * @param const std::string & parameterName
+ * @return size_t index;
+ */
+size_t CReaction::getParameterIndex(const std::string & parameterName, CFunctionParameter::DataType * pType) const
+{
+  if (pType != NULL)
+    {
+      return mMap.findParameterByName(parameterName, *pType);
+    }
+
+  CFunctionParameter::DataType Type;
+  return mMap.findParameterByName(parameterName, Type);
+}
 
 void CReaction::setParameterValue(const std::string & parameterName,
                                   const C_FLOAT64 & value,
@@ -290,8 +306,7 @@ void CReaction::setParameterValue(const std::string & parameterName,
   //make sure that this local parameter is actually used:
 
   //first find index
-  CFunctionParameter::DataType Type;
-  size_t index = mMap.findParameterByName(parameterName, Type);
+  size_t index = getParameterIndex(parameterName);
 
   if (index == C_INVALID_INDEX) return;
 
@@ -337,8 +352,7 @@ bool CReaction::setParameterMapping(const std::string & parameterName, const std
   if (!mpFunction) fatalError();
 
   CFunctionParameter::DataType type;
-  size_t index;
-  index = mMap.findParameterByName(parameterName, type);
+  size_t index = getParameterIndex(parameterName, &type);
 
   if (C_INVALID_INDEX == index)
     return false;
@@ -356,7 +370,7 @@ void CReaction::addParameterMapping(const std::string & parameterName, const std
 
   CFunctionParameter::DataType type;
   size_t index;
-  index = mMap.findParameterByName(parameterName, type);
+  index = getParameterIndex(parameterName, &type);
 
   if (C_INVALID_INDEX == index)
     return;
@@ -373,7 +387,7 @@ void CReaction::setParameterMappingVector(const std::string & parameterName,
 
   CFunctionParameter::DataType type;
   size_t index;
-  index = mMap.findParameterByName(parameterName, type);
+  index = getParameterIndex(parameterName, &type);
 
   if (C_INVALID_INDEX == index)
     return;
@@ -389,7 +403,7 @@ void CReaction::clearParameterMapping(const std::string & parameterName)
 
   CFunctionParameter::DataType type;
   size_t index;
-  index = mMap.findParameterByName(parameterName, type);
+  index = getParameterIndex(parameterName, &type);
 
   if (C_INVALID_INDEX == index)
     return;
@@ -412,9 +426,7 @@ const std::vector<std::string> & CReaction::getParameterMapping(const std::strin
 {
   if (!mpFunction) fatalError();
 
-  CFunctionParameter::DataType type;
-  size_t index;
-  index = mMap.findParameterByName(parameterName, type);
+  size_t index = getParameterIndex(parameterName);
 
   if (C_INVALID_INDEX == index)
     return mMetabKeyMap[0]; //TODO this is kind of ugly!
@@ -442,8 +454,7 @@ bool CReaction::isLocalParameter(const std::string & parameterName) const
   if (!mpFunction) fatalError();
 
   CFunctionParameter::DataType type;
-  size_t index;
-  index = mMap.findParameterByName(parameterName, type);
+  size_t index = getParameterIndex(parameterName, &type);
 
   if (C_INVALID_INDEX == index)
     return false;
@@ -517,14 +528,13 @@ void CReaction::initializeParameters()
   /* Remove parameters not fitting current function */
   CCopasiParameterGroup::index_iterator it = mParameters.beginIndex();
   CCopasiParameterGroup::index_iterator end = mParameters.endIndex();
-  CFunctionParameter::DataType Type;
   std::vector< std::string > ToBeDeleted;
 
   for (; it != end; ++it)
     {
       name = (*it)->getObjectName();
 
-      if (mMap.findParameterByName(name, Type) == C_INVALID_INDEX)
+      if (getParameterIndex(name) == C_INVALID_INDEX)
         ToBeDeleted.push_back(name);
     }
 
@@ -1315,80 +1325,91 @@ CEvaluationNode* CReaction::objects2variables(const CEvaluationNode* pNode, std:
   return pResult;
 }
 
-bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pFunctionDB)
+CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & expression, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pFunctionDB)
 {
   // walk the tree and replace all object nodes with variable nodes.
-  CFunction* pFun = NULL;
+  CFunction* pTmpFunction = NULL;
 
-  if (dynamic_cast<CExpression*>(tree))
+  const CEvaluationNode * pOrigNode = expression.getRoot();
+
+  std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> > replacementMap = std::map<std::string , std::pair<CCopasiObject*, CFunctionParameter*> >();
+
+  CEvaluationNode* pFunctionTree = objects2variables(pOrigNode->copyBranch(), replacementMap, copasi2sbmlmap);
+
+  if (pFunctionTree)
     {
-      CEvaluationNode* pOrigNode = tree->getRoot();
+      // create the function object
 
-      std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> > replacementMap = std::map<std::string , std::pair<CCopasiObject*, CFunctionParameter*> >();
+      // later I might have to find out if I have to create a generic
+      // function or a kinetic function
+      // this can be distinguished by looking if the replacement map
+      // contains CFunctionParameters that don't have the usage PARAMETER
 
-      CEvaluationNode* pFunctionTree = this->objects2variables(pOrigNode, replacementMap, copasi2sbmlmap);
+      // create a unique name first
+      pTmpFunction = new CKinFunction("\t"); // tab is an invalid name
 
-      if (pFunctionTree)
+      pTmpFunction->setRoot(pFunctionTree);
+      pTmpFunction->setReversible(this->isReversible() ? TriTrue : TriFalse);
+
+      pFunctionDB->add(pTmpFunction, true);
+      // add the variables
+      // and do the mapping
+      std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >::iterator it = replacementMap.begin();
+      std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >::iterator endIt = replacementMap.end();
+
+      while (it != endIt)
         {
-          // create the function object
-
-          // later I might have to find out if I have to create a generic
-          // function or a kinetic function
-          // this can be distinguished by looking if the replacement map
-          // contains CFunctionParameters that don't have the usage PARAMETER
-
-          // create a unique name first
-          std::string functionName = "Function for " + this->getObjectName();
-
-          if (tree->getObjectName() != "Expression")
-            functionName = tree->getObjectName();
-
-          std::string appendix = "";
-          unsigned int counter = 0;
-          std::ostringstream numberStream;
-
-          while (pFunctionDB->findFunction(functionName + appendix) != NULL)
-            {
-              counter++;
-              numberStream.str("");
-              numberStream << "_" << counter;
-              appendix = numberStream.str();
-            }
-
-          pFun = new CKinFunction(functionName + appendix);
-          pFun->setRoot(pFunctionTree);
-          pFun->setReversible(this->isReversible() ? TriTrue : TriFalse);
-
-          pFunctionDB->add(pFun, true);
-          // add the variables
-          // and do the mapping
-          std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >::iterator it = replacementMap.begin();
-          std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >::iterator endIt = replacementMap.end();
-
-          while (it != endIt)
-            {
-              CFunctionParameter* pFunPar = it->second.second;
-              pFun->addVariable(pFunPar->getObjectName(), pFunPar->getUsage(), pFunPar->getType());
-              ++it;
-            }
-
-          pFun->compile();
-
-          this->setFunction(pFun);
-          it = replacementMap.begin();
-
-          while (it != endIt)
-            {
-              CFunctionParameter* pFunPar = it->second.second;
-              std::string id = it->first;
-              this->setParameterMapping(pFunPar->getObjectName(), it->second.first->getKey());
-              delete pFunPar;
-              ++it;
-            }
+          CFunctionParameter* pFunPar = it->second.second;
+          pTmpFunction->addVariable(pFunPar->getObjectName(), pFunPar->getUsage(), pFunPar->getType());
+          ++it;
         }
+
+      pTmpFunction->compile();
+
+      setFunction(pTmpFunction);
+      it = replacementMap.begin();
+
+      while (it != endIt)
+        {
+          CFunctionParameter* pFunPar = it->second.second;
+          std::string id = it->first;
+          setParameterMapping(pFunPar->getObjectName(), it->second.first->getKey());
+          delete pFunPar;
+          ++it;
+        }
+
+      std::string functionName = "Function for " + this->getObjectName();
+
+      if (expression.getObjectName() != "Expression")
+        {
+          functionName = expression.getObjectName();
+        }
+
+      std::string appendix = "";
+      unsigned int counter = 0;
+      std::ostringstream numberStream;
+      CFunction * pExistingFunction = NULL;
+
+      while ((pExistingFunction = pFunctionDB->findFunction(functionName + appendix)) != NULL)
+        {
+          if (SBMLImporter::areEqualFunctions(pExistingFunction, pTmpFunction))
+            {
+              pdelete(pTmpFunction);
+              setFunction(pExistingFunction);
+
+              return NULL;
+            }
+
+          counter++;
+          numberStream.str("");
+          numberStream << "_" << counter;
+          appendix = numberStream.str();
+        }
+
+      pTmpFunction->setObjectName(functionName + appendix);
     }
 
-  return pFun != NULL;
+  return pTmpFunction;
 }
 
 CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
