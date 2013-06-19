@@ -100,7 +100,6 @@ void CQCompartment::slotBtnNew()
 void CQCompartment::slotBtnCopy()
 {
   mKeyToCopy = mKey;
-  slotBtnNew();
 }
 
 void CQCompartment::slotBtnDelete()
@@ -382,6 +381,7 @@ void CQCompartment::load()
 
 void CQCompartment::save()
 {
+
   if (mpCompartment == NULL) return;
 
 #ifdef COPASI_EXTUNIT

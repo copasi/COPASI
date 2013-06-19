@@ -1,7 +1,7 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #include "CQTabWidget.h"
 
@@ -52,6 +52,7 @@ CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget 
         connect(this, SIGNAL(newClicked()), pCopasiWidget, SLOT(slotBtnNew()));
         connect(this, SIGNAL(copyClicked()), pCopasiWidget, SLOT(slotBtnCopy()));
         connect(this, SIGNAL(deleteClicked()), pCopasiWidget, SLOT(slotBtnDelete()));
+        connect(this, SIGNAL(copyClicked()), pNotes, SLOT(slotBtnCopy()));
         break;
     }
 
@@ -232,5 +233,6 @@ void CQTabWidget::slotBtnCopy()
 
   mIgnoreLeave = true;
   emit copyClicked();
+  emit newClicked();
   mIgnoreLeave = false;
 }

@@ -1,15 +1,7 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQNotes.h,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/04 15:58:37 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #ifndef COPASI_CQNotes
 #define COPASI_CQNotes
@@ -87,6 +79,7 @@ protected slots:
   void slotToggleMode();
   void slotOpenUrl(const QUrl & url);
   void slotValidateXML();
+  void slotBtnCopy();
 
 protected:
   virtual bool enterProtected();
@@ -99,6 +92,8 @@ private:
   bool mChanged;
   CQValidatorXML * mpValidatorXML;
   QValidator::State mValidity;
+
+  std::string mKeyToCopy;
 };
 
 

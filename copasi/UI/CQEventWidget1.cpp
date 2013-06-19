@@ -99,7 +99,6 @@ void CQEventWidget1::slotBtnNew()
 void CQEventWidget1::slotBtnCopy()
 {
   mKeyToCopy = mKey;
-  slotBtnNew();
 }
 
 /*! */

@@ -670,7 +670,6 @@ void FunctionWidget1::slotBtnNew()
 void FunctionWidget1::slotBtnCopy()
 {
   mKeyToCopy = mKey;
-  slotBtnNew();
 }
 
 //! Slot for being activated whenever Delete button is clicked

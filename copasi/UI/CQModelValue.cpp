@@ -76,7 +76,6 @@ void CQModelValue::slotBtnNew()
 void CQModelValue::slotBtnCopy()
 {
   mKeyToCopy = mKey;
-  slotBtnNew();
 }
 
 void CQModelValue::slotBtnDelete()

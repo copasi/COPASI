@@ -352,7 +352,6 @@ void ReactionsWidget1::slotBtnNew()
 void ReactionsWidget1::slotBtnCopy()
 {
   mKeyToCopy = mKey;
-  slotBtnNew();
 }
 
 // Just added 5/18/04

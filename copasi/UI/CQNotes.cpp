@@ -1,7 +1,7 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 /*
  * CQNotes.cpp
@@ -134,7 +134,8 @@ CQNotes::CQNotes(QWidget* parent, const char* name) :
   mEditMode(false),
   mChanged(false),
   mpValidatorXML(NULL),
-  mValidity(QValidator::Acceptable)
+  mValidity(QValidator::Acceptable),
+  mKeyToCopy("")
 
 {
   setupUi(this);
@@ -151,6 +152,11 @@ CQNotes::CQNotes(QWidget* parent, const char* name) :
 
 CQNotes::~CQNotes()
 {}
+
+void CQNotes::slotBtnCopy()
+{
+    mKeyToCopy = mKey;
+}
 
 // virtual
 bool CQNotes::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
@@ -212,7 +218,18 @@ bool CQNotes::leave()
 // virtual
 bool CQNotes::enterProtected()
 {
-  load();
+  if (mKeyToCopy == "")
+    {
+      load();
+    }
+  else
+    {
+      mpObject = CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy);
+      load();
+      mpObject = CCopasiRootContainer::getKeyFactory()->get(mKey);
+      save();
+      mKeyToCopy = "";
+    }
 
   return true;
 }

@@ -512,7 +512,6 @@ void CQSpeciesDetail::slotBtnDelete()
 void CQSpeciesDetail::slotBtnCopy()
 {
   mKeyToCopy = mKey;
-  slotBtnNew();
 }
 
 void CQSpeciesDetail::slotBtnNew()
