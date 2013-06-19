@@ -20,8 +20,61 @@
 #include "utilities/CCopasiMessage.h"
 #include "xml/CCopasiXMLParser.h"
 #include "utilities/CVersion.h"
+#include "report/CKeyFactory.h"
+#include "model/CModelValue.h"
+#include "model/CReaction.h"
+#include "model/CEvent.h"
+#include "function/CFunction.h"
+#include "report/CCopasiRootContainer.h"
+
+// static
+CAnnotation * CAnnotation::castObject(CCopasiObject * pObject)
+{
+  CModelEntity * pEntity = NULL;
+  CEvent * pEvent = NULL;
+  CReaction * pReaction = NULL;
+  CFunction * pFunction = NULL;
+
+  if ((pEntity = dynamic_cast< CModelEntity * >(pObject)) != NULL)
+    return static_cast< CAnnotation * >(pEntity);
+
+  if ((pEvent = dynamic_cast< CEvent * >(pObject)) != NULL)
+    return static_cast< CAnnotation * >(pEvent);
+
+  if ((pReaction = dynamic_cast< CReaction * >(pObject)) != NULL)
+    return static_cast< CAnnotation * >(pReaction);
+
+  if ((pFunction = dynamic_cast< CFunction * >(pObject)) != NULL)
+    return static_cast< CAnnotation * >(pFunction);
+
+  return NULL;
+}
+
+// static
+const CAnnotation * CAnnotation::castObject(const CCopasiObject * pObject)
+{
+  const CModelEntity * pEntity = NULL;
+  const CEvent * pEvent = NULL;
+  const CReaction * pReaction = NULL;
+  const CFunction * pFunction = NULL;
+
+  if ((pEntity = dynamic_cast< const CModelEntity * >(pObject)) != NULL)
+    return static_cast< const CAnnotation * >(pEntity);
+
+  if ((pEvent = dynamic_cast< const CEvent * >(pObject)) != NULL)
+    return static_cast< const CAnnotation * >(pEvent);
+
+  if ((pReaction = dynamic_cast< const CReaction * >(pObject)) != NULL)
+    return static_cast< const CAnnotation * >(pReaction);
+
+  if ((pFunction = dynamic_cast< const CFunction * >(pObject)) != NULL)
+    return static_cast< const CAnnotation * >(pFunction);
+
+  return NULL;
+}
 
 CAnnotation::CAnnotation():
+  mKey(""),
   mNotes(),
   mMiriamAnnotation(),
   mXMLId(),
@@ -29,6 +82,7 @@ CAnnotation::CAnnotation():
 {}
 
 CAnnotation::CAnnotation(const CAnnotation & src):
+  mKey(""),
   mNotes(src.mNotes),
   mMiriamAnnotation(src.mMiriamAnnotation),
   mXMLId(src.mXMLId),
@@ -36,7 +90,15 @@ CAnnotation::CAnnotation(const CAnnotation & src):
 {}
 
 CAnnotation::~CAnnotation()
-{}
+{
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+}
+
+// virtual
+const std::string & CAnnotation::getKey() const
+{
+  return mKey;
+}
 
 void CAnnotation::setMiriamAnnotation(const std::string & miriamAnnotation,
                                       const std::string & newId,

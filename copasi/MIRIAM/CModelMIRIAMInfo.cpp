@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CModelMIRIAMInfo.cpp,v $
-//   $Revision: 1.36 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:30:19 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -43,16 +35,16 @@
 #include "copasi/report/CCopasiRootContainer.h"
 
 CMIRIAMInfo::CMIRIAMInfo() :
-    CCopasiContainer("CMIRIAMInfoObject", NULL, "CMIRIAMInfo"),
-    mKey(""),
-    mCreators("Creators", this),
-    mReferences("References", this),
-    mModifications("Modifieds", this),
-    mBiologicalDescriptions("BiologicalDescriptions", this),
-    mCreatedObj(),
-    mpRDFGraph(NULL),
-    mTriplet(NULL, CRDFPredicate::about, NULL),
-    mCreated()
+  CCopasiContainer("CMIRIAMInfoObject", NULL, "CMIRIAMInfo"),
+  mKey(""),
+  mCreators("Creators", this),
+  mReferences("References", this),
+  mModifications("Modifieds", this),
+  mBiologicalDescriptions("BiologicalDescriptions", this),
+  mCreatedObj(),
+  mpRDFGraph(NULL),
+  mTriplet(NULL, CRDFPredicate::about, NULL),
+  mCreated()
 {}
 
 CMIRIAMInfo::~CMIRIAMInfo()
@@ -415,14 +407,12 @@ void CMIRIAMInfo::load(const std::string& key)
     {
       const std::string * pMiriamAnnotation = NULL;
 
-      if (dynamic_cast< CModelEntity * >(pCopasiObject))
-        pMiriamAnnotation = &static_cast< CModelEntity * >(pCopasiObject)->getMiriamAnnotation();
-      else if (dynamic_cast< CEvent * >(pCopasiObject))
-        pMiriamAnnotation = &static_cast< CEvent * >(pCopasiObject)->getMiriamAnnotation();
-      else if (dynamic_cast< CReaction * >(pCopasiObject))
-        pMiriamAnnotation = &static_cast< CReaction * >(pCopasiObject)->getMiriamAnnotation();
-      else if (dynamic_cast< CFunction * >(pCopasiObject))
-        pMiriamAnnotation = &static_cast< CFunction * >(pCopasiObject)->getMiriamAnnotation();
+      CAnnotation * pAnnotation = CAnnotation::castObject(pCopasiObject);
+
+      if (pAnnotation != NULL)
+        {
+          pMiriamAnnotation = &pAnnotation->getMiriamAnnotation();
+        }
 
       if (pMiriamAnnotation && *pMiriamAnnotation != "")
         mpRDFGraph = CRDFParser::graphFromXml(*pMiriamAnnotation);
@@ -467,21 +457,14 @@ bool CMIRIAMInfo::save()
 
       std::string XML = CRDFWriter::xmlFromGraph(mpRDFGraph);
 
-      CModelEntity * pEntity = NULL;
-      CEvent * pEvent = NULL;
-      CReaction * pReaction = NULL;
-      CFunction * pFunction = NULL;
+      CAnnotation * pAnnotation = CAnnotation::castObject(pCopasiObject);
 
-      if ((pEntity = dynamic_cast< CModelEntity * >(pCopasiObject)) != NULL)
-        pEntity->setMiriamAnnotation(XML, pEntity->getKey(), pEntity->getKey());
-      else if ((pEvent = dynamic_cast< CEvent * >(pCopasiObject)) != NULL)
-        pEvent->setMiriamAnnotation(XML, pEvent->getKey(), pEvent->getKey());
-      else if ((pReaction = dynamic_cast< CReaction * >(pCopasiObject)) != NULL)
-        pReaction->setMiriamAnnotation(XML, pReaction->getKey(), pReaction->getKey());
-      else if ((pFunction = dynamic_cast< CFunction * >(pCopasiObject)) != NULL)
-        pFunction->setMiriamAnnotation(XML, pFunction->getKey(), pFunction->getKey());
-      else
-        return false;
+      if (pAnnotation == NULL)
+        {
+          return false;
+        }
+
+      pAnnotation->setMiriamAnnotation(XML, pAnnotation->getKey(), pAnnotation->getKey());
 
       return true;
     }

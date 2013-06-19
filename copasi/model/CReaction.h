@@ -536,11 +536,6 @@ private:
   static C_FLOAT64 mDefaultScalingFactor;
 
   /**
-   *  The key of the reaction
-   */
-  std::string mKey;
-
-  /**
    *  The chemical equation
    */
   CChemEq mChemEq;

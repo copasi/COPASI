@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CAnnotation.h,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/25 12:12:29 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,6 +9,8 @@
 #include <string>
 #include <map>
 
+class CCopasiObject;
+
 class CAnnotation
 {
 public:
@@ -24,6 +18,9 @@ public:
 
   // Operations
 public:
+  static CAnnotation * castObject(CCopasiObject * pObject);
+  static const CAnnotation * castObject(const CCopasiObject * pObject);
+
   /**
    * Default constructor
    */
@@ -38,7 +35,13 @@ public:
   /**
    * Destructor
    */
-  ~CAnnotation();
+  virtual ~CAnnotation();
+
+  /**
+   * Retrieve the key
+   * @return std::string key
+   */
+  virtual const std::string & getKey() const;
 
   /**
    * Set the RDF/XML representation of the MIRIAM annotation
@@ -75,7 +78,6 @@ public:
    */
   bool operator == (const CAnnotation & rhs) const;
 
-
   /**
    * Retrieve the unsupported annotations in xml format.
    * @return std::map< std::string, std::string > & unsupportedAnnotations
@@ -110,6 +112,12 @@ private:
   static bool isValidXML(const std::string & xml);
 
   // Attributes
+protected:
+  /**
+   *  Key of the model entity. It is stored here, but constructed in the derived classes.
+   */
+  std::string mKey;
+
 private:
   /**
    * Notes in XHTML format

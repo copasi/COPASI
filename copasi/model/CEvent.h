@@ -406,12 +406,6 @@ public:
 
   // Attributes
 private:
-
-  /**
-   *  The key of the event
-   */
-  std::string mKey;
-
   /**
    * The parent model
    */

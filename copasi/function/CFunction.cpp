@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-//   $Revision: 1.91 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/21 14:11:22 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -33,25 +25,27 @@
 CFunction::CFunction(const std::string & name,
                      const CCopasiContainer * pParent,
                      const CEvaluationTree::Type & type):
-    CEvaluationTree(name, pParent, type),
-    CAnnotation(),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Function", this)),
-    mSBMLId(""),
-    mVariables("Function Parameters", this),
-    mCallParametersBegin(),
-    mReversible(TriUnspecified)
-{}
+  CEvaluationTree(name, pParent, type),
+  CAnnotation(),
+  mSBMLId(""),
+  mVariables("Function Parameters", this),
+  mCallParametersBegin(),
+  mReversible(TriUnspecified)
+{
+  mKey = CCopasiRootContainer::getKeyFactory()->add("Function", this);
+}
 
 CFunction::CFunction(const CFunction & src,
                      const CCopasiContainer * pParent):
-    CEvaluationTree(src, pParent),
-    CAnnotation(src),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Function", this)),
-    mSBMLId(src.mSBMLId),
-    mVariables(src.mVariables, this),
-    mCallParametersBegin(src.mCallParametersBegin),
-    mReversible(src.mReversible)
+  CEvaluationTree(src, pParent),
+  CAnnotation(src),
+  mSBMLId(src.mSBMLId),
+  mVariables(src.mVariables, this),
+  mCallParametersBegin(src.mCallParametersBegin),
+  mReversible(src.mReversible)
 {
+  mKey = CCopasiRootContainer::getKeyFactory()->add("Function", this);
+
   setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
   compile();
 }
@@ -62,7 +56,9 @@ CFunction::~CFunction()
 }
 
 const std::string & CFunction::getKey() const
-{return mKey;}
+{
+  return CAnnotation::getKey();
+}
 
 void CFunction::setSBMLId(const std::string& id)
 {
@@ -126,7 +122,6 @@ bool CFunction::operator == (const CFunction & rhs) const
 
   return true;
 }
-
 
 size_t CFunction::getVariableIndex(const std::string & name) const
 {
@@ -334,7 +329,6 @@ bool CFunction::completeFunctionList(std::vector< CFunction * > & list,
   else
     return true;
 }
-
 
 void CFunction::createListOfParametersForMathML(std::vector<std::vector<std::string> > & env)
 {

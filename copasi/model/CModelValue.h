@@ -40,11 +40,6 @@ class CModelEntity : public CCopasiContainer, public CAnnotation
 {
 protected:
   /**
-   *  Key of the model entity. It is stored here, but constructed in the derived classes.
-   */
-  std::string mKey;
-
-  /**
    * The id of the corresponding parameter in an SBML file.
    * This value is either set upon importing an SBML file,
    * or when the object is first exported to an SBML file.

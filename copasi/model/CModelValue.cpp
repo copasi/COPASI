@@ -32,7 +32,7 @@
 #include "report/CCopasiObjectReference.h"
 #include "report/CKeyFactory.h"
 #include "utilities/utility.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "report/CCopasiRootContainer.h"
 
 //static
 const std::string CModelEntity::StatusName[] =
@@ -65,7 +65,6 @@ CModelEntity::CModelEntity(const std::string & name,
                            const unsigned C_INT32 & flag):
   CCopasiContainer(name, pParent, type, (flag | CCopasiObject::Container | CCopasiObject::ValueDbl | CCopasiObject::ModelEntity)),
   CAnnotation(),
-  mKey(""),
   mpValue(NULL),
   mpIValue(NULL),
   mRate(0.0),
@@ -75,6 +74,8 @@ CModelEntity::CModelEntity(const std::string & name,
   mUsed(false),
   mpModel(NULL)
 {
+  mKey = CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this);
+
   initObjects();
 
   *mpIValue = 1.0;
@@ -87,7 +88,6 @@ CModelEntity::CModelEntity(const CModelEntity & src,
                            const CCopasiContainer * pParent):
   CCopasiContainer(src, pParent),
   CAnnotation(src),
-  mKey(""),
   mpValue(NULL),
   mpIValue(NULL),
   mRate(src.mRate),
@@ -97,6 +97,8 @@ CModelEntity::CModelEntity(const CModelEntity & src,
   mUsed(false),
   mpModel(NULL)
 {
+  mKey = CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this);
+
   initObjects();
 
   setStatus(src.mStatus);
@@ -125,7 +127,11 @@ CModelEntity::~CModelEntity()
   DESTRUCTOR_TRACE;
 }
 
-const std::string & CModelEntity::getKey() const {return mKey;}
+// virtual
+const std::string & CModelEntity::getKey() const
+{
+  return CAnnotation::getKey();
+}
 
 const C_FLOAT64 & CModelEntity::getValue() const {return *mpValue;}
 
@@ -645,7 +651,6 @@ CModelValue::CModelValue(const std::string & name,
                          const CCopasiContainer * pParent):
   CModelEntity(name, pParent, "ModelValue")
 {
-  mKey = CCopasiRootContainer::getKeyFactory()->add("ModelValue", this);
   initObjects();
 
   CONSTRUCTOR_TRACE;
@@ -655,15 +660,12 @@ CModelValue::CModelValue(const CModelValue & src,
                          const CCopasiContainer * pParent):
   CModelEntity(src, pParent)
 {
-  mKey = CCopasiRootContainer::getKeyFactory()->add("ModelValue", this);
   initObjects();
   CONSTRUCTOR_TRACE;
 }
 
 CModelValue::~CModelValue()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
-
   DESTRUCTOR_TRACE;
 }
 

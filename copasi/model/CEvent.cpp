@@ -239,7 +239,6 @@ CEvent::CEvent(const std::string & name,
                const CCopasiContainer * pParent):
   CCopasiContainer(name, pParent, "Event"),
   CAnnotation(),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Event", this)),
   mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
   mAssignments("ListOfAssignments", this),
   mDelayAssignment(true),
@@ -250,6 +249,8 @@ CEvent::CEvent(const std::string & name,
   mpPriorityExpression(NULL),
   mType(Assignment)
 {
+  mKey = (CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this));
+
   initObjects();
 }
 
@@ -257,7 +258,6 @@ CEvent::CEvent(const CEvent & src,
                const CCopasiContainer * pParent):
   CCopasiContainer(src, pParent),
   CAnnotation(src),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Event", this)),
   mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
   mAssignments(src.mAssignments, this),
   mDelayAssignment(src.mDelayAssignment),
@@ -268,6 +268,8 @@ CEvent::CEvent(const CEvent & src,
   mpPriorityExpression(src.mpPriorityExpression != NULL ? new CExpression(*src.mpPriorityExpression, this) : NULL),
   mType(src.mType)
 {
+  mKey = (CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this));
+
   initObjects();
 
   setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
@@ -281,9 +283,10 @@ CEvent::~CEvent()
   pdelete(mpPriorityExpression);
 }
 
+// virtual
 const std::string & CEvent::getKey() const
 {
-  return mKey;
+  return CAnnotation::getKey();
 }
 
 // virtual

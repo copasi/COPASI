@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-//   $Revision: 1.55 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/21 14:11:22 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -35,7 +27,7 @@
  editing and displaying (with help of MathML) the function to calculating the function value.
  */
 class CFunction:
-    public CEvaluationTree, public CAnnotation
+  public CEvaluationTree, public CAnnotation
 {
   // Operations
 public:
@@ -185,7 +177,6 @@ public:
   static bool completeFunctionList(std::vector< CFunction * > & list,
                                    const size_t & added = 0);
 
-
 protected:
   /**
    * Function to initialize the parameters
@@ -195,11 +186,6 @@ protected:
 
   // Attributes
 private:
-
-  /**
-   * The unique key of the functions
-   */
-  std::string mKey;
 
   /**
    * The id of the corresponding function in an SBML file.

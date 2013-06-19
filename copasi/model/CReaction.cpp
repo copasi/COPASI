@@ -52,7 +52,6 @@ CReaction::CReaction(const std::string & name,
                      const CCopasiContainer * pParent):
   CCopasiContainer(name, pParent, "Reaction"),
   CAnnotation(),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Reaction", this)),
   mChemEq("Chemical Equation", this),
   mpFunction(NULL),
   mFlux(0),
@@ -66,6 +65,8 @@ CReaction::CReaction(const std::string & name,
   mMetabKeyMap(),
   mParameters("Parameters", this)
 {
+  mKey = CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this);
+
   CONSTRUCTOR_TRACE;
   initObjects();
   setFunction(CCopasiRootContainer::getUndefinedFunction());
@@ -75,7 +76,6 @@ CReaction::CReaction(const CReaction & src,
                      const CCopasiContainer * pParent):
   CCopasiContainer(src, pParent),
   CAnnotation(src),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Reaction", this)),
   mChemEq(src.mChemEq, this),
   mpFunction(src.mpFunction),
   mFlux(src.mFlux),
@@ -90,6 +90,8 @@ CReaction::CReaction(const CReaction & src,
   mMetabKeyMap(src.mMetabKeyMap),
   mParameters(src.mParameters, this)
 {
+  mKey = CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this);
+
   CONSTRUCTOR_TRACE;
   initObjects();
 
@@ -183,7 +185,7 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
   return Fail;
 }
 
-const std::string & CReaction::getKey() const {return mKey;}
+const std::string & CReaction::getKey() const {return CAnnotation::getKey();}
 
 const C_FLOAT64 & CReaction::getFlux() const
 {return mFlux;}
