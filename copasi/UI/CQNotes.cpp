@@ -1,7 +1,7 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 /*
  * CQNotes.cpp
@@ -155,7 +155,7 @@ CQNotes::~CQNotes()
 
 void CQNotes::slotBtnCopy()
 {
-    mKeyToCopy = mKey;
+  mKeyToCopy = mKey;
 }
 
 // virtual
@@ -290,35 +290,33 @@ void CQNotes::load()
 {
   if (mpObject != NULL)
     {
-      const std::string * pNotes = NULL;
+      QString Notes;
 
-      if (dynamic_cast< CModelEntity * >(mpObject))
-        pNotes = &static_cast< CModelEntity * >(mpObject)->getNotes();
-      else if (dynamic_cast< CEvent * >(mpObject))
-        pNotes = &static_cast< CEvent * >(mpObject)->getNotes();
-      else if (dynamic_cast< CReaction * >(mpObject))
-        pNotes = &static_cast< CReaction * >(mpObject)->getNotes();
-      else if (dynamic_cast< CFunction * >(mpObject))
-        pNotes = &static_cast< CFunction * >(mpObject)->getNotes();
-      else if (dynamic_cast< CReportDefinition * >(mpObject))
-        pNotes = & static_cast< CReportDefinition * >(mpObject)->getComment();
+      CAnnotation * pAnnotation = CAnnotation::castObject(mpObject);
+      CReportDefinition * pReportDefinition = static_cast< CReportDefinition * >(mpObject);
 
-      if (pNotes != NULL)
+      if (pAnnotation != NULL)
         {
-          // The notes are UTF8 encoded however the html does not specify an encoding
-          // thus Qt uses locale settings.
-          mpWebView->setHtml(FROM_UTF8(*pNotes));
-          mpEdit->setPlainText(FROM_UTF8(*pNotes));
-          mpValidatorXML->saved();
-          slotValidateXML();
-
-          if (!mpValidatorXML->isFreeText() && mEditMode)
-            {
-              slotToggleMode();
-            }
-
-          mValidity = QValidator::Acceptable;
+          Notes = FROM_UTF8(pAnnotation->getNotes());
         }
+      else if (pReportDefinition != NULL)
+        {
+          Notes = FROM_UTF8(pReportDefinition->getComment());
+        }
+
+      // The notes are UTF8 encoded however the html does not specify an encoding
+      // thus Qt uses locale settings.
+      mpWebView->setHtml(Notes);
+      mpEdit->setPlainText(Notes);
+      mpValidatorXML->saved();
+      slotValidateXML();
+
+      if (!mpValidatorXML->isFreeText() && mEditMode)
+        {
+          slotToggleMode();
+        }
+
+      mValidity = QValidator::Acceptable;
     }
 
   mChanged = false;
@@ -331,21 +329,21 @@ void CQNotes::save()
   if (mpObject != NULL &&
       mValidity == QValidator::Acceptable)
     {
-      const std::string * pNotes = NULL;
+      QString Notes;
 
-      if (dynamic_cast< CModelEntity * >(mpObject))
-        pNotes = &static_cast< CModelEntity * >(mpObject)->getNotes();
-      else if (dynamic_cast< CEvent * >(mpObject))
-        pNotes = &static_cast< CEvent * >(mpObject)->getNotes();
-      else if (dynamic_cast< CReaction * >(mpObject))
-        pNotes = &static_cast< CReaction * >(mpObject)->getNotes();
-      else if (dynamic_cast< CFunction * >(mpObject))
-        pNotes = &static_cast< CFunction * >(mpObject)->getNotes();
-      else if (dynamic_cast< CReportDefinition * >(mpObject))
-        pNotes = & static_cast< CReportDefinition * >(mpObject)->getComment();
+      CAnnotation * pAnnotation = CAnnotation::castObject(mpObject);
+      CReportDefinition * pReportDefinition = static_cast< CReportDefinition * >(mpObject);
 
-      if (pNotes &&
-          mpEdit->toPlainText() != FROM_UTF8(*pNotes))
+      if (pAnnotation != NULL)
+        {
+          Notes = FROM_UTF8(pAnnotation->getNotes());
+        }
+      else if (pReportDefinition != NULL)
+        {
+          Notes = FROM_UTF8(pReportDefinition->getComment());
+        }
+
+      if (mpEdit->toPlainText() != Notes)
         {
           std::string PlainText = TO_UTF8(mpEdit->toPlainText());
 
@@ -355,16 +353,14 @@ void CQNotes::save()
               PlainText = "<body xmlns=\"http://www.w3.org/1999/xhtml\">" + PlainText + "</body>";
             }
 
-          if (dynamic_cast< CModelEntity * >(mpObject))
-            static_cast< CModelEntity * >(mpObject)->setNotes(PlainText);
-          else if (dynamic_cast< CEvent * >(mpObject))
-            static_cast< CEvent * >(mpObject)->setNotes(PlainText);
-          else if (dynamic_cast< CReaction * >(mpObject))
-            static_cast< CReaction * >(mpObject)->setNotes(PlainText);
-          else if (dynamic_cast< CFunction * >(mpObject))
-            static_cast< CFunction * >(mpObject)->setNotes(PlainText);
-          else if (dynamic_cast< CReportDefinition * >(mpObject))
-            static_cast< CReportDefinition * >(mpObject)->setComment(PlainText);
+          if (pAnnotation != NULL)
+            {
+              pAnnotation->setNotes(PlainText);
+            }
+          else if (pReportDefinition != NULL)
+            {
+              pReportDefinition->setComment(PlainText);
+            }
 
           mChanged = true;
         }
