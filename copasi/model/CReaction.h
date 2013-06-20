@@ -458,6 +458,18 @@ public:
 
   void printDebug() const;
 
+  /**
+   * Set whether the reaction is to be treated as fast
+   * @param const bool & fast
+   */
+  void setFast(const bool & fast);
+
+  /**
+   * Check whether the reaction needs to be treated as fast
+   * @ return const bool & fast
+   */
+  const bool & isFast() const;
+
 private:
 
   /**
@@ -598,6 +610,12 @@ private:
    * or when the object is first exported to an SBML file.
    */
   std::string mSBMLId;
+
+  /**
+   * This flag indicates whether the reaction is treated as fast. The interpretation of fast
+   * is up to to the integration algorithm.
+   */
+  bool mFast;
 };
 
 #endif // COPASI_CReaction

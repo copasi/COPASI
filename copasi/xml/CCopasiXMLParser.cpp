@@ -3713,6 +3713,8 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
   const char * Compartment; // Default Compartment_00
   const char * reversible;
   bool Reversible;
+  const char * fast;
+  bool Fast;
   const char * SBMLId;
 
   mCurrentElement = mLastKnownElement;
@@ -3738,10 +3740,14 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
             reversible = mParser.getAttributeValue("reversible", papszAttrs);
             Reversible = mParser.toBool(reversible);
 
+            fast = mParser.getAttributeValue("fast", papszAttrs, "false");
+            Fast = mParser.toBool(fast);
+
             mCommon.pReaction = new CReaction();
             addFix(mKey, mCommon.pReaction);
             mCommon.pReaction->setObjectName(Name);
             mCommon.pReaction->setReversible(Reversible);
+            mCommon.pReaction->setFast(Fast);
             SBMLId = mParser.getAttributeValue("sbmlid", papszAttrs, "");
 
             if (std::string(SBMLId) != std::string(""))

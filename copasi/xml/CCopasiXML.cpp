@@ -582,6 +582,7 @@ bool CCopasiXML::saveModel()
       Attributes.add("key", "");
       Attributes.add("name", "");
       Attributes.add("reversible", "");
+      Attributes.add("fast", "");
 
       for (i = 0; i < imax; i++)
         {
@@ -590,6 +591,7 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(0, pReaction->getKey());
           Attributes.setValue(1, pReaction->getObjectName());
           Attributes.setValue(2, pReaction->isReversible() ? "true" : "false");
+          Attributes.setValue(3, pReaction->isFast() ? "true" : "false");
 
           if (pReaction->getSBMLId() != "")
             mSBMLReference[pReaction->getSBMLId()] = pReaction->getKey();

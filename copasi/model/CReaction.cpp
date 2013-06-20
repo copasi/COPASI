@@ -63,7 +63,8 @@ CReaction::CReaction(const std::string & name,
   mScalingFactor(&mDefaultScalingFactor),
   mUnitScalingFactor(&mDefaultScalingFactor),
   mMetabKeyMap(),
-  mParameters("Parameters", this)
+  mParameters("Parameters", this),
+  mFast(false)
 {
   mKey = CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this);
 
@@ -88,7 +89,8 @@ CReaction::CReaction(const CReaction & src,
   mUnitScalingFactor(src.mUnitScalingFactor),
   mMap(src.mMap),
   mMetabKeyMap(src.mMetabKeyMap),
-  mParameters(src.mParameters, this)
+  mParameters(src.mParameters, this),
+  mFast(src.mFast)
 {
   mKey = CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this);
 
@@ -1679,3 +1681,17 @@ std::string CReaction::getObjectDisplayName(bool regular, bool richtext) const
 
 void CReaction::printDebug() const
 {}
+
+void CReaction::setFast(const bool & fast)
+{
+  mFast = fast;
+}
+
+/**
+ * Check whether the reaction needs to be treated as fast
+ * @ return const bool & fast
+ */
+const bool & CReaction::isFast() const
+{
+  return mFast;
+}

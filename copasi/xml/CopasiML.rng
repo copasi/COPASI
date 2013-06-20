@@ -761,6 +761,9 @@
     <attribute name="reversible">
       <data type="boolean"/>
     </attribute>
+    <attribute name="fast">
+      <data type="boolean"/>
+    </attribute>
     <ref name="annotation.datatype"/>
     <optional>
       <element name="ListOfSubstrates">

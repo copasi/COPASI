@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /*********************************************************************
  **  $ CopasiUI/ReactionsWidget1.cpp
@@ -98,10 +98,9 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
   QPushButton* editKinetics = new QPushButton(this, "editKinetics");
   editKinetics->setText(trUtf8("&Edit Rate Law"));
   ReactionsWidget1Layout->addWidget(editKinetics, 6, 3);
-  
+
   connect(editKinetics, SIGNAL(clicked()), this, SLOT(slotGotoFunction()));
 
-  
   LineEdit3 = new QLineEdit(this, "LineEdit3");
   LineEdit3->setEnabled(false);
   ReactionsWidget1Layout->addMultiCellWidget(LineEdit3, 6, 6, 1, 2);
@@ -121,10 +120,19 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
   CheckBox->setText(trUtf8("Reversible"));
   ReactionsWidget1Layout->addWidget(CheckBox, 3, 1);
 
+  mpFast = new QCheckBox(this, "mpFast");
+  mpFast->setText(trUtf8("Fast"));
+  mpFast->setEnabled(true);
+  ReactionsWidget1Layout->addWidget(mpFast, 3, 2);
+
   mpMultiCompartment = new QCheckBox(this, "mpMultiCompartment");
   mpMultiCompartment->setText(trUtf8("Multi Compartment"));
   mpMultiCompartment->setEnabled(false);
-  ReactionsWidget1Layout->addWidget(mpMultiCompartment, 3, 2);
+  ReactionsWidget1Layout->addWidget(mpMultiCompartment, 3, 3);
+
+#ifndef COPASI_DEBUG
+  mpFast->hide();
+#endif
 
   Line4 = new QFrame(this, "Line4");
   Line4->setFrameShape(QFrame::HLine);
@@ -175,6 +183,8 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
   // update the widget.
   FillWidgetFromRI();
 
+  mpFast->setChecked(reaction->isFast());
+
   return true; //TODO: really check
 }
 
@@ -197,6 +207,11 @@ bool ReactionsWidget1::saveToReaction()
   CModel * pModel = pDataModel->getModel();
 
   if (pModel == NULL) return false;
+
+  if (reac->isFast() != mpFast->isChecked())
+    {
+      reac->setFast(mpFast->isChecked());
+    }
 
   // Before we save any changes we must check whether any local reaction parameters,
   // which are used in any mathematical expression in the model are removed.
@@ -493,17 +508,18 @@ void ReactionsWidget1::slotParameterStatusChanged(int index, bool local)
   table->setCurrentCell(rrr, ccc);
 }
 
-
 void ReactionsWidget1::slotGotoFunction()
 {
   CReaction * pReaction =
     dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+
   if (pReaction == NULL) return;
+
   const CFunction * pFunc = pReaction->getFunction();
+
   if (pFunc == NULL) return;
-  
+
   mpListView->switchToOtherWidget(C_INVALID_INDEX, pFunc->getKey());
-  
 }
 
 void ReactionsWidget1::slotNewFunction()
