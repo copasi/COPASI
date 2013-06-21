@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/csharp/local.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/12/19 16:20:19 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -232,7 +224,7 @@ int GetType_CCopasiContainer(CCopasiContainer* pPointer)
                       result = ReportDefinitionVector_Type;
                     }
                 }
-                else if (dynamic_cast<CCopasiVector<CPlotSpecification>* >(pPointer))
+              else if (dynamic_cast<CCopasiVector<CPlotSpecification>* >(pPointer))
                 {
                   if (dynamic_cast<CCopasiVectorN<CPlotSpecification>* >(pPointer))
                     {
@@ -245,7 +237,7 @@ int GetType_CCopasiContainer(CCopasiContainer* pPointer)
                       result = OutputDefinitionVector_Type;
                     }
                 }
-				else if (dynamic_cast<CCopasiVector<CMoiety>* >(pPointer))
+              else if (dynamic_cast<CCopasiVector<CMoiety>* >(pPointer))
                 {
                   // return a MoietyVector
                   result = MoietyVector_Type;
@@ -348,7 +340,6 @@ int GetType_CCopasiContainer(CCopasiContainer* pPointer)
   return (int)result;
 }
 
-
 // Determine type for CCopasiMethod
 int GetType_CCopasiMethod(CCopasiMethod* pPointer)
 {
@@ -426,6 +417,11 @@ int GetType_CCopasiObject(CCopasiObject* pPointer)
         {
           // return a CReportDefinition
           result = CReportDefinition_Type;
+        }
+      else if (dynamic_cast<CCopasiParameter*>(pPointer))
+        {
+          // return a CCopasiParameter
+          result = CCopasiParameter_Type;
         }
       else if (dynamic_cast<CCopasiStaticString*>(pPointer))
         {
@@ -581,7 +577,6 @@ int GetType_CCopasiProblem(CCopasiProblem* pPointer)
   return (int)result;
 }
 
-
 // Determine type for CCopasiTask
 int GetType_CCopasiTask(CCopasiTask* pPointer)
 {
@@ -680,7 +675,6 @@ int GetType_CFitItem(CFitItem* pPointer)
   return (int)result;
 }
 
-
 // Determine type for CModelEntity
 int GetType_CModelEntity(CModelEntity* pPointer)
 {
@@ -717,7 +711,6 @@ int GetType_CModelEntity(CModelEntity* pPointer)
 
   return (int)result;
 }
-
 
 // Determine type for COptItem
 int GetType_COptItem(COptItem* pPointer)
@@ -787,7 +780,6 @@ int GetType_COptProblem(COptProblem* pPointer)
   return (int)result;
 }
 
-
 // Determine type for COptTask
 int GetType_COptTask(COptTask* pPointer)
 {
@@ -810,10 +802,7 @@ int GetType_COptTask(COptTask* pPointer)
   return (int)result;
 }
 
-
 void initCopasi()
 {
   CCopasiRootContainer::init(0, NULL, false);
 }
-
-

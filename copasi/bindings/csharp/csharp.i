@@ -1,15 +1,9 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/csharp/csharp.i,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/04/11 16:21:16 $
-// End CVS Header
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+
 
 /**
  * Make COPASI and wrapper constants Mono compile-time
@@ -747,6 +741,9 @@ int GetType_COptTask(COptTask* pPointer);
                 case COPASI.CCopasiContainer_Type:
                     ret = InstantiateConcrete_CCopasiContainer(cPtr, owner);
                     break;
+				case COPASI.CCopasiParameter_Type:
+					ret = InstantiateConcrete_CCopasiParameter(cPtr, owner);
+					break;
                 case COPASI.CPlotSpecification_Type:
                     // return a CPlotSpecification
                     ret = new CPlotSpecification(cPtr,owner);
@@ -962,10 +959,34 @@ int GetType_COptTask(COptTask* pPointer);
         return ret;
     }
 
+	public static CObjectInterface DowncastCObjectInterface(IntPtr cPtr, bool owner)
+    {
+      if (cPtr == IntPtr.Zero) return null;
+	  
+      CObjectInterface temp = new CObjectInterface(cPtr, false);
+	  CCopasiObject co = temp.toObject();
+	  if (co != null)
+	  	return InstantiateConcrete_CCopasiObject(cPtr, owner);	
+	  return new CObjectInterface(cPtr, owner);	
+    }
+	
 %}
 
 
 // now we need some typemaps that actually use the methods above
+
+
+/**
+ * Convert CObjectInterface objects into the most specific object possible.
+ */
+%typemap("csout") 
+  CObjectInterface *,
+  const CObjectInterface *,
+  CObjectInterface &,
+  const CObjectInterface &
+{
+  return $modulePINVOKE.DowncastCObjectInterface($imcall, $owner);
+}
 
 // CCopasiObject
 %typemap(csout, excode=SWIGEXCODE)
@@ -1087,7 +1108,29 @@ int GetType_COptTask(COptTask* pPointer);
     return ret;
 }
 
+// COptItem
+%typemap(csout, excode=SWIGEXCODE)
+  COptItem *,
+  const COptItem *,
+  COptItem &,
+  const COptItem &
+{
+    IntPtr cPtr = $imcall;
+    $csclassname ret = ($csclassname) $modulePINVOKE.InstantiateConcrete_COptItem(cPtr, $owner);$excode
+    return ret;
+}
 
+// CFitItem
+%typemap(csout, excode=SWIGEXCODE)
+  CFitItem *,
+  const CFitItem *,
+  CFitItem &,
+  const CFitItem &
+{
+    IntPtr cPtr = $imcall;
+    $csclassname ret = ($csclassname) $modulePINVOKE.InstantiateConcrete_CFitItem(cPtr, $owner);$excode
+    return ret;
+}
 
 /**
  * C# does not handle exceptions the same way as java. The code below will have to be adjusted
