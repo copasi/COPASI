@@ -1,12 +1,12 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
 #ifndef CQMIRIAMWIDGET_H
 #define CQMIRIAMWIDGET_H
@@ -65,6 +65,7 @@ private:
   void deleteSelectedBiologicalDescriptions();
   void deleteSelectedModifieds();
   void keyPressEvent(QKeyEvent* ev);
+  std::string mKeyToCopy;
 
 protected slots:
   virtual void slotBtnDeleteClicked();
@@ -74,6 +75,7 @@ protected slots:
   virtual void slotCreatedDTChanged(QDateTime newDT);
   virtual void dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight);
   virtual void slotCopyEvent();
+  virtual void slotBtnCopy();
 };
 
 #endif // CQMIRIAMWIDGET_H

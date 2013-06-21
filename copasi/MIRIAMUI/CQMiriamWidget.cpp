@@ -1,12 +1,12 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
 #include "CQMiriamWidget.h"
 
@@ -22,6 +22,8 @@
 #include "UI/CQMessageBox.h"
 
 #include "MIRIAM/CModelMIRIAMInfo.h"
+#include "function/CFunction.h"
+#include "report/CKeyFactory.h"
 #include "report/CCopasiRootContainer.h"
 #include "commandline/CConfigurationFile.h"
 
@@ -30,7 +32,8 @@
  *  name 'name'.'
  */
 CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
-  : CopasiWidget(parent, name)
+  : CopasiWidget(parent, name),
+    mKeyToCopy("")
 {
   setupUi(this);
 
@@ -323,6 +326,19 @@ bool CQMiriamWidget::enterProtected()
 
   CCopasiMessage::clearDeque();
 
+  if(mKeyToCopy != "")
+    {
+      CAnnotation * pAnnotation = CAnnotation::castObject(dynamic_cast< CCopasiObject * >(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy)));
+
+      std::string pMiriamAnnotation = pAnnotation->getMiriamAnnotation();
+
+      pAnnotation = CAnnotation::castObject(mpObject);
+
+      pAnnotation->setMiriamAnnotation(pMiriamAnnotation, mKey, mKeyToCopy);
+
+      mKeyToCopy = "";
+    }
+
   mpMIRIAMInfo->load(mKey);
 
   //Set Models for the 4 TableViews
@@ -480,4 +496,9 @@ void CQMiriamWidget::slotCopyEvent()
     }
 
   QApplication::clipboard()->setText(str);
+}
+
+void CQMiriamWidget::slotBtnCopy()
+{
+  mKeyToCopy = mKey;
 }

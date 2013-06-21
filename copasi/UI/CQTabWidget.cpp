@@ -59,6 +59,7 @@ CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget 
   CQMiriamWidget* pMIRIAMWidget = new CQMiriamWidget(mpTabWidget);
   mPages.push_back(pMIRIAMWidget);
   mpTabWidget->addTab(pMIRIAMWidget, "Annotation");
+  connect(this, SIGNAL(copyClicked()), pMIRIAMWidget, SLOT(slotBtnCopy()));
 
   CQRDFTreeView* pRDFTreeView = new CQRDFTreeView(mpTabWidget);
   mPages.push_back(pRDFTreeView);
