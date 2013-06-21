@@ -576,7 +576,7 @@ set(CPACK_RPM_PACKAGE_LICENSE "Artistic License")
 set(CPACK_RPM_PACKAGE_GROUP "Applications/Engineering")
 set(CPACK_DEBIAN_PACKAGE_SECTION "Applications")
 
-set(CPACK_SOURCE_IGNORE_FILES "${CMAKE_CURRENT_BINARY_DIR};/.svn/;/.libs/;/.deps/;/.bzr/;.*.o$;.*.lo$;.*.la$;${CPACK_SOURCE_IGNORE_FILES};/.DS_Store;/.svnignore;blib;libsbml-dist")
+set(CPACK_SOURCE_IGNORE_FILES "${CMAKE_CURRENT_BINARY_DIR};/.git/;/.svn/;/.libs/;/.deps/;/.bzr/;.*.o$;.*.lo$;.*.la$;${CPACK_SOURCE_IGNORE_FILES};/.DS_Store;/.svnignore;blib;libsbml-dist")
 
 if(UNIX)
     set(CPACK_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
