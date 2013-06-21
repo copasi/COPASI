@@ -3110,9 +3110,9 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataMod
 
   if (function.getRoot() == NULL)
     {
-      std::string errorMessage = std::string("Can not export function");
+      std::string errorMessage = std::string("Can not export function '");
       errorMessage += function.getObjectName();
-      errorMessage += std::string(". Function does not have a valid root node.");
+      errorMessage += std::string("'. Function does not have a valid root node.");
       CCopasiMessage(CCopasiMessage::EXCEPTION, errorMessage.c_str());
     }
   else
