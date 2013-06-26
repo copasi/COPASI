@@ -2651,7 +2651,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                             {
                               copasiReaction->setFunction(pExistingFunction);
                               // do the mapping
-                              this->doMapping(copasiReaction, dynamic_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
+                              doMapping(copasiReaction, dynamic_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
                             }
                           // else we take the function from the pTmpFunctionDB, copy it and set the usage correctly
                           else
@@ -2684,6 +2684,8 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                               TmpTree2.setObjectName(functionName);
 
                               CFunction * pNewFunction = copasiReaction->setFunctionFromExpressionTree(TmpTree2, copasi2sbmlmap, this->functionDB);
+                              // do the mapping
+                              doMapping(copasiReaction, dynamic_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
 
                               if (pNewFunction != NULL &&
                                   pNewFunction->getType() == CEvaluationTree::UserDefined)
@@ -4278,6 +4280,8 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
 
 bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CCopasiParameterGroup& pParamGroup)
 {
+  // TODO CRITICAL We need to use a node iterator
+
   bool success = true;
   unsigned int i, iMax = pNode->getNumChildren();
 
@@ -4871,6 +4875,7 @@ CFunction* SBMLImporter::findCorrespondingFunction(const CExpression * pExpressi
 
       for (size_t i = 0; i < Variables.size(); ++i)
         {
+          // This fails for global parameters but those are handled in a second attempt
           if (pCopasiReaction->getParameterIndex(Variables[i]->getObjectName()) == C_INVALID_INDEX)
             {
               pCorrespondingFunction = NULL;
@@ -4981,6 +4986,7 @@ bool SBMLImporter::areEqualSubtrees(const CEvaluationNode* pNode1, const CEvalua
 
 std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassAction(const CEvaluationTree* pTree, const CChemEq& chemicalEquation, const CEvaluationNodeCall* pCallNode)
 {
+  // TODO CRITICAL We need to use a node iterator
   CEvaluationTree::Type type = pTree->getType();
   std::vector< std::vector< std::string > > functionArgumentCNs;
   const CEvaluationNode* pChildNode = NULL;
@@ -5230,7 +5236,9 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                                       multiplicityMap[pMetab] = pChildNode->getValue();
                                     }
                                 }
-                              else if (type == CEvaluationNode::FUNCTION && (CEvaluationNodeFunction::SubType)CEvaluationNode::subType(pChildNode->getType()) == CEvaluationNodeFunction::MINUS && CEvaluationNode::type(((CEvaluationNode*)pChildNode->getChild())->getType()) == CEvaluationNode::NUMBER)
+                              else if (type == CEvaluationNode::FUNCTION &&
+                                       (CEvaluationNodeFunction::SubType)CEvaluationNode::subType(pChildNode->getType()) == CEvaluationNodeFunction::MINUS &&
+                                       CEvaluationNode::type(((CEvaluationNode*)pChildNode->getChild())->getType()) == CEvaluationNode::NUMBER)
                                 {
                                   const CMetab* pMetab = static_cast<const CMetab*>(pObject);
                                   multiplicityMap[pMetab] = -1 * ((CEvaluationNodeNumber*)(pChildNode->getChild()))->getValue();
@@ -5344,6 +5352,7 @@ CEvaluationTree* SBMLImporter::createExpressionFromFunction(const CFunction* pFu
 
 void SBMLImporter::separateProductArguments(const CEvaluationNode* pRootNode, std::vector<const CEvaluationNode*>& arguments)
 {
+  // TODO CRITICAL We need to use a node iterator
   const CEvaluationNodeOperator* pMultiplyNode = dynamic_cast<const CEvaluationNodeOperator*>(pRootNode);
 
   if (pMultiplyNode && (((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pMultiplyNode->getType())) == CEvaluationNodeOperator::MULTIPLY))
@@ -5804,6 +5813,7 @@ ConverterASTNode* SBMLImporter::isMultipliedByVolume(const ASTNode* node, const 
 
 CEvaluationNode* SBMLImporter::variables2objects(const CEvaluationNode* pOrigNode, const std::map<std::string, std::string>& replacementMap)
 {
+  // TODO CRITICAL We need to use a node iterator
   CEvaluationNode* pResultNode = NULL;
 
   if (dynamic_cast<const CEvaluationNodeVariable*>(pOrigNode))
@@ -9197,7 +9207,9 @@ CCopasiObject* SBMLImporter::isConstantFlux(const CEvaluationNode* pRoot, CModel
       {
         // the function call may only have one child
         // which must be o object node
-        if (pRoot->getChild() != NULL && pRoot->getChild()->getSibling() == NULL && CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(pRoot->getChild())->getType()) == CEvaluationNode::OBJECT)
+        if (pRoot->getChild() != NULL &&
+            pRoot->getChild()->getSibling() == NULL &&
+            CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(pRoot->getChild())->getType()) == CEvaluationNode::OBJECT)
           {
             const CEvaluationTree* pTree = pFunctionDB->findFunction(pRoot->getData());
             assert(pTree != NULL);
@@ -9771,6 +9783,7 @@ void SBMLImporter::findDirectDependencies(const FunctionDefinition* pFunDef, std
  */
 void SBMLImporter::findDirectDependencies(const ASTNode* pNode, std::set<std::string>& dependencies)
 {
+  // TODO CRITICAL We need to use a node iterator
   assert(pNode != NULL);
 
   if (pNode->getType() == AST_FUNCTION)

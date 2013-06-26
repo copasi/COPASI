@@ -1401,8 +1401,11 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
         {
           if (SBMLImporter::areEqualFunctions(pExistingFunction, pTmpFunction))
             {
+              removeDirectDependency(mpFunction);
+              mpFunction = pExistingFunction;
+              addDirectDependency(mpFunction);
+
               pdelete(pTmpFunction);
-              setFunction(pExistingFunction);
 
               return NULL;
             }
