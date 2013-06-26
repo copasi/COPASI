@@ -591,7 +591,10 @@ void CODEExporterC::setExportNameOfFunction(const CEvaluationNode* pNode, std::s
     }
 }
 
-bool CODEExporterC::exportSingleObject(std::ostringstream & which, std::string & name, std::string & expression, std::string & comments)
+bool CODEExporterC::exportSingleObject(std::ostringstream & which,
+                                       const std::string & name,
+                                       const std::string & expression,
+                                       const std::string & comments)
 {
   which << name << " = " << expression << ";"
         << '\t' << "//" << comments << std::endl;

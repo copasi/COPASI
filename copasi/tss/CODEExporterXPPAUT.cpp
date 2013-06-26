@@ -322,9 +322,9 @@ void CODEExporterXPPAUT::exportSingleLine(const std::string & line, std::ostring
 }
 
 bool CODEExporterXPPAUT::exportSingleObject(std::ostringstream & which,
-    std::string & name,
-    std::string & expression,
-    std::string & /* comments */)
+    const std::string & name,
+    const std::string & expression,
+    const std::string & /* comments */)
 {
   std::ostringstream line;
 
