@@ -417,11 +417,9 @@ private:
 
   /**
    * Create an event of type CEvent::Discontinuity for each discontinuity the tree with root pNode
-   * @param const CEvaluationNode * pNode
-   * @param const CMath::Variables< CEvaluationNode * > & variables
+   * @param const CEvaluationTree * pTree
    */
-  void createDiscontinuityEvents(const CEvaluationNode * pNode,
-                                 const CMath::Variables< CEvaluationNode * > & variables);
+  void createDiscontinuityEvents(const CEvaluationTree * pTree);
 
   /**
    * Create an event of type CEvent::Discontinuity for the given node

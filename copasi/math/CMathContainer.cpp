@@ -1744,29 +1744,14 @@ void CMathContainer::createDiscontinuityEvents()
 
   for (; it != end; ++it)
     {
-      CMath::Variables< CEvaluationNode * > Variables;
-
-      const CFunction * pFunction = dynamic_cast< const CFunction * >(*it);
-
-      if (pFunction != NULL)
-        {
-          imax = pFunction->getVariables().size();
-
-          for (i = 0; i < imax; ++i)
-            {
-              Variables.push_back(&VariableNode);
-            }
-        }
-
-      createDiscontinuityEvents((*it)->getRoot(), Variables);
+      createDiscontinuityEvents(*it);
     }
 }
 
-void CMathContainer::createDiscontinuityEvents(const CEvaluationNode * pNode,
-    const CMath::Variables< CEvaluationNode * > & variables)
+void CMathContainer::createDiscontinuityEvents(const CEvaluationTree * pTree)
 {
   CEvaluationNodeConstant VariableNode(CEvaluationNodeConstant::_NaN, "NAN");
-  CNodeIterator< const CEvaluationNode > itNode(pNode);
+  CNodeIterator< const CEvaluationNode > itNode(pTree->getRoot());
 
   while (itNode.next() != itNode.end())
     {
@@ -1788,6 +1773,7 @@ void CMathContainer::createDiscontinuityEvents(const CEvaluationNode * pNode,
             // separately.
           case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
           case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+            createDiscontinuityEvents(static_cast< const CEvaluationNodeCall * >(*itNode)->getCalledTree());
             break;
 
           default:
