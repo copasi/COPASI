@@ -1227,9 +1227,9 @@ std::string CODEExporter::setConcentrationName(const std::string & /* objName */
 {return " ";}
 
 bool CODEExporter::exportSingleObject(std::ostringstream & /* which */,
-                                      std::string & /* name */,
-                                      std::string & /* expression */,
-                                      std::string & /* comments */)
+                                      const std::string & /* name */,
+                                      const std::string & /* expression */,
+                                      const std::string & /* comments */)
 {return true;}
 
 bool CODEExporter::exportSingleMetabolite(const CMetab * /* metab */,

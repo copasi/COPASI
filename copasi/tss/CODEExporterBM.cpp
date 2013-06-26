@@ -204,7 +204,10 @@ std::string CODEExporterBM::setODEName(const std::string & objName)
   return "d/dt(" + objName + ")";
 }
 
-bool CODEExporterBM::exportSingleObject(std::ostringstream & which, std::string & name, std::string & expression, std::string & comments)
+bool CODEExporterBM::exportSingleObject(std::ostringstream & which,
+                                        const std::string & name,
+                                        const std::string & expression,
+                                        const std::string & comments)
 {
   which << name << " = " << expression
         << '\t' << '\t' << "; " << comments << std::endl;

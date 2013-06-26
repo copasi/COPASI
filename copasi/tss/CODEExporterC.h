@@ -48,7 +48,10 @@ public:
 
   std::string testName(const std::string & name);
 
-  virtual bool exportSingleObject(std::ostringstream & which, std::string & name, std::string & expression, std::string & comments);
+  virtual bool exportSingleObject(std::ostringstream & which,
+                                  const std::string & name,
+                                  const std::string & expression,
+                                  const std::string & comments);
 
   virtual bool exportSingleMetabolite(const CMetab* metab, std::string & expression, std::string & comments);
 
