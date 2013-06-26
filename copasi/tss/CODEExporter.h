@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/CODEExporter.h,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/19 18:07:56 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -72,6 +64,12 @@ public:
 
   bool exportModelEntityExpression(CCopasiObject * obj, const CCopasiDataModel* pDataModel);
 
+  bool exportModelValuesExpressions(const CModel* copasiModel);
+
+  void findFunctionsCalls(const CEvaluationNode* pNode, std::set<std::string>& isExported);
+
+  virtual bool exportSingleFunction(const CFunction *func, std::set<std::string>& isExported);
+
   std::string isModelEntityExpressionODEExporterCompatible(CModelEntity * tmp, const CExpression* pExpression, const CCopasiDataModel* pDataModel);
 
   std::string exportExpression(const CExpression* pExpression, const CCopasiDataModel* pDataModel);
@@ -110,6 +108,7 @@ public:
   virtual std::string getDisplayFunctionString(CFunction * func);
 
   bool exportSingleFunction(CEvaluationNode* pNode, const CReaction *reac, size_t &index);
+  bool exportSingleFunction(CEvaluationNode* pNode, const std::string& key, size_t &index);
 
   virtual bool exportKineticFunction(CReaction* reac);
 
