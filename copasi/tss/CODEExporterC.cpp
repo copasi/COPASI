@@ -54,6 +54,40 @@
 CODEExporterC::CODEExporterC()
 {}
 
+bool startsWith(const std::string& str, const std::string& sub)
+{
+  if (str.length() < sub.length()) return false;
+
+  if (sub.empty()) return true;
+
+  for (size_t i = 0; i < sub.length(); ++i)
+    if (str[i] != sub[i]) return false;
+
+  return true;
+}
+
+void printNameForKey(std::ostringstream& stream, CKeyFactory* kf, const std::string& key, const std::string prefix = "")
+{
+  CCopasiObject* obj = kf->get(key);
+
+  if (obj != NULL)
+    {
+      stream << "\"" << prefix << obj->getObjectName() << "\", ";
+    }
+  else if (startsWith(key, "sm_"))
+    {
+      printNameForKey(stream, kf, key.substr(3), "");
+    }
+  else if (startsWith(key, "ode_"))
+    {
+      printNameForKey(stream, kf, key.substr(4), "ODE ");
+    }
+  else
+    {
+      stream << "\"" << prefix << key << "\", ";
+    }
+}
+
 bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os)
 {
 
@@ -76,6 +110,90 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
       count = count + reac->getParameters().size();
     }
 
+  size_t numX = 0;
+  size_t numY = 0;
+  size_t numXC = 0;
+  size_t numYC = 0;
+  size_t numP = 0;
+  size_t numDX = 0;
+  size_t numCT = 0;
+
+  std::ostringstream p_names;  p_names  << "const char* p_names[] = {";
+  std::ostringstream x_names;  x_names  << "const char* x_names[] = {";
+  std::ostringstream y_names;  y_names  << "const char* y_names[] = {";
+  std::ostringstream xc_names; xc_names << "const char* xc_names[] = {";
+  std::ostringstream yc_names; yc_names << "const char* yc_names[] = {";
+  std::ostringstream dx_names; dx_names << "const char* dx_names[] = {";
+  std::ostringstream ct_names; ct_names << "const char* ct_names[] = {";
+
+  CKeyFactory* kf = CCopasiRootContainer::getKeyFactory();
+
+  std::map< std::string, std::string >::const_iterator it = NameMap.begin();
+
+  while (it != NameMap.end())
+    {
+      const std::string& abbrev = it->second;
+      const std::string& key = it->first;
+
+      if (startsWith(abbrev, "p["))
+        {
+          printNameForKey(p_names, kf, key);
+          ++numP;
+        }
+      else if (startsWith(abbrev, "x["))
+        {
+          printNameForKey(x_names, kf, key);
+          ++numX;
+        }
+      else if (startsWith(abbrev, "y["))
+        {
+          printNameForKey(y_names, kf, key);
+          ++numY;
+        }
+      else if (startsWith(abbrev, "dx["))
+        {
+          printNameForKey(dx_names, kf, key);
+          ++numDX;
+        }
+      else if (startsWith(abbrev, "ct["))
+        {
+          printNameForKey(ct_names, kf, key);
+          ++numCT;
+        }
+      else if (startsWith(abbrev, "x_c["))
+        {
+          CCopasiObject* obj = kf->get(key);
+
+          if (obj != NULL)
+            {
+              xc_names << "\"" << obj->getObjectName() << "\", ";
+            }
+          else
+            {
+              xc_names << "\"" << key << "\", ";
+            }
+
+          ++numXC;
+        }
+      else if (startsWith(abbrev, "y_c["))
+        {
+          CCopasiObject* obj = kf->get(key);
+
+          if (obj != NULL)
+            {
+              yc_names << "\"" << obj->getObjectName() << "\", ";
+            }
+          else
+            {
+              yc_names << "\"" << key << "\", ";
+            }
+
+          ++numYC;
+        }
+
+      ++it;
+    }
+
   os << "#ifdef SIZE_DEFINITIONS" << std::endl;
   os << "#define N_METABS " << metab_size << std::endl;
   os << "#define N_ODE_METABS " << ode_size << std::endl;
@@ -83,7 +201,15 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
   os << "#define N_COMPARTMENTS " << comps_size << std::endl;
   os << "#define N_GLOBAL_PARAMS " << modvals_size << std::endl;
   os << "#define N_KIN_PARAMS " << count << std::endl;
-  os << "#define N_REACTIONS " << reacs_size << std::endl;
+  os << "#define N_REACTIONS " << reacs_size << std::endl << std::endl;
+
+  os << "#define N_ARRAY_SIZE_P  " << numP  << "\t// number of parameters" << std::endl;
+  os << "#define N_ARRAY_SIZE_X  " << numX  << "\t// number of initials" << std::endl;
+  os << "#define N_ARRAY_SIZE_Y  " << numY  << "\t// number of assigned elements" << std::endl;
+  os << "#define N_ARRAY_SIZE_XC " << numXC << "\t// number of x concentration" << std::endl;
+  os << "#define N_ARRAY_SIZE_YC " << numYC << "\t// number of y concentration" << std::endl;
+  os << "#define N_ARRAY_SIZE_DX " << numDX << "\t// number of ODEs " << std::endl;
+  os << "#define N_ARRAY_SIZE_CT " << numCT << "\t// number of conserved totals" << std::endl << std::endl;
 
   os << "#endif // SIZE_DEFINITIONS" << std::endl;
   os << std::endl;
@@ -91,6 +217,17 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
   os << "#ifdef TIME" << std::endl;
   os << "#define T  <set here a user name for the time variable> " << std::endl;
   os << "#endif // TIME" << std::endl;
+
+  os << std::endl;
+  os << "#ifdef NAME_ARRAYS" << std::endl;
+  os << p_names.str()  << " \"\" };" << std::endl;
+  os << x_names.str()  << " \"\" };" << std::endl;
+  os << y_names.str()  << " \"\" };" << std::endl;
+  os << xc_names.str() << " \"\" };" << std::endl;
+  os << yc_names.str() << " \"\" };" << std::endl;
+  os << dx_names.str() << " \"\" };" << std::endl;
+  os << ct_names.str() << " \"\" };" << std::endl;
+  os << "#endif // NAME_ARRAYS" << std::endl;
 
   return true;
 }
@@ -650,14 +787,14 @@ bool CODEExporterC::exportKineticFunction(CReaction* /* reac */)
 bool CODEExporterC::exportKineticFunctionGroup(const CModel* copasiModel)
 {
   const CCopasiVector< CReaction > & reacs = copasiModel->getReactions();
-  size_t reacs_size = reacs.size();
+  size_t size = reacs.size();
   CReaction* reac;
 
   std::set<std::string> isExported;
 
   size_t i;
 
-  for (i = 0; i < reacs_size; ++i)
+  for (i = 0; i < size; ++i)
     {
       reac = reacs[i];
       const CFunction* func = reac->getFunction();
@@ -672,33 +809,6 @@ bool CODEExporterC::exportKineticFunctionGroup(const CModel* copasiModel)
     }
 
   return true;
-}
-
-void CODEExporterC::findFunctionsCalls(const CEvaluationNode* pNode, std::set<std::string>& isExported)
-{
-  if (pNode)
-    {
-      CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
-      CCopasiTree<CEvaluationNode>::const_iterator treeIt = pNode;
-
-      while (treeIt != NULL)
-        {
-          if (CEvaluationNode::type(treeIt->getType()) == CEvaluationNode::CALL)
-            {
-              const CFunction* ifunc;
-              ifunc = static_cast<CFunction*>(pFunctionDB->findFunction((*treeIt).getData()));
-
-              findFunctionsCalls(ifunc->getRoot(), isExported);
-
-              if (ifunc->getType() != CEvaluationTree::MassAction)
-                {
-                  if (!exportSingleFunction(ifunc, isExported)) return;
-                }
-            }
-
-          ++treeIt;
-        }
-    }
 }
 
 bool CODEExporterC::exportSingleFunction(const CFunction *func, std::set<std::string>& isExported)
@@ -770,8 +880,16 @@ bool CODEExporterC::exportSingleFunction(const CFunction *func, std::set<std::st
         {
           size_t j, varbs_size = tmpfunc->getVariables().size();
 
-          functions << "double " << NameMap[func->getKey()] << "(";
-          headers << "double " << NameMap[func->getKey()] << "(";
+          std::string mappedName = NameMap[func->getKey()];
+
+          if (mappedName.empty())
+            {
+              NameMap[func->getKey()]  = translateObjectName(name);
+              mappedName = NameMap[func->getKey()];
+            }
+
+          functions << "double " << mappedName << "(";
+          headers << "double " << mappedName << "(";
 
           for (j = 0; j < varbs_size; ++j)
             {
@@ -970,10 +1088,10 @@ std::string CODEExporterC::exportTitleString(const size_t tmp)
         return "#ifdef ASSIGNMENT";
 
       case HEADERS:
-        return "#ifdef  FUNCTIONS_HEADERS";
+        return "#ifdef FUNCTIONS_HEADERS";
 
       case FUNCTIONS:
-        return "#ifdef  FUNCTIONS";
+        return "#ifdef FUNCTIONS";
 
       case ODEs:
         return "#ifdef ODEs";
