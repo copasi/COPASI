@@ -1,17 +1,14 @@
-/* Begin CVS Header
-$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
-$Revision: 1.23 $
-$Name:  $
-$Author: shoops $
-$Date: 2012/05/04 19:36:08 $
-End CVS Header */
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -29,23 +26,23 @@ End CVS Header */
 
 CExperimentObjectMap::CExperimentObjectMap(const std::string & name,
     const CCopasiContainer * pParent):
-    CCopasiParameterGroup(name, pParent),
-    mObjects(0),
-    mLastColumn(0)
+  CCopasiParameterGroup(name, pParent),
+  mObjects(0),
+  mLastColumn(0)
 {initializeParameter();}
 
 CExperimentObjectMap::CExperimentObjectMap(const CExperimentObjectMap & src,
     const CCopasiContainer * pParent):
-    CCopasiParameterGroup(src, pParent),
-    mObjects(src.mObjects),
-    mLastColumn(src.mLastColumn)
+  CCopasiParameterGroup(src, pParent),
+  mObjects(src.mObjects),
+  mLastColumn(src.mLastColumn)
 {initializeParameter();}
 
 CExperimentObjectMap::CExperimentObjectMap(const CCopasiParameterGroup & group,
     const CCopasiContainer * pParent):
-    CCopasiParameterGroup(group, pParent),
-    mObjects(0),
-    mLastColumn(0)
+  CCopasiParameterGroup(group, pParent),
+  mObjects(0),
+  mLastColumn(0)
 {initializeParameter();}
 
 CExperimentObjectMap::~CExperimentObjectMap() {}
@@ -275,30 +272,30 @@ const size_t & CExperimentObjectMap::getLastColumn() const
 
 CExperimentObjectMap::CDataColumn::CDataColumn(const std::string & name,
     const CCopasiContainer * pParent) :
-    CCopasiParameterGroup(name, pParent),
-    mpRole(NULL),
-    mpObjectCN(NULL),
-    mpScale(NULL)
+  CCopasiParameterGroup(name, pParent),
+  mpRole(NULL),
+  mpObjectCN(NULL),
+  mpScale(NULL)
 {
   initializeParameter();
 }
 
 CExperimentObjectMap::CDataColumn::CDataColumn(const CDataColumn & src,
     const CCopasiContainer * pParent) :
-    CCopasiParameterGroup(src, pParent),
-    mpRole(NULL),
-    mpObjectCN(NULL),
-    mpScale(NULL)
+  CCopasiParameterGroup(src, pParent),
+  mpRole(NULL),
+  mpObjectCN(NULL),
+  mpScale(NULL)
 {
   initializeParameter();
 }
 
 CExperimentObjectMap::CDataColumn::CDataColumn(const CCopasiParameterGroup & group,
     const CCopasiContainer * pParent) :
-    CCopasiParameterGroup(group, pParent),
-    mpRole(NULL),
-    mpObjectCN(NULL),
-    mpScale(NULL)
+  CCopasiParameterGroup(group, pParent),
+  mpRole(NULL),
+  mpObjectCN(NULL),
+  mpScale(NULL)
 {
   initializeParameter();
 }
@@ -401,7 +398,10 @@ bool CExperimentObjectMap::CDataColumn::setScale(const C_FLOAT64 & weight)
     }
 
   if (mpScale != NULL)
-    removeParameter("Weight");
+    {
+      removeParameter("Weight");
+      mpScale = NULL;
+    }
 
   return true;
 }
