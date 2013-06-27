@@ -24,6 +24,7 @@
 #include "model/CModelValue.h"
 #include "model/CReaction.h"
 #include "model/CEvent.h"
+#include "model/CModelParameterSet.h"
 #include "function/CFunction.h"
 #include "report/CCopasiRootContainer.h"
 
@@ -34,6 +35,7 @@ CAnnotation * CAnnotation::castObject(CCopasiObject * pObject)
   CEvent * pEvent = NULL;
   CReaction * pReaction = NULL;
   CFunction * pFunction = NULL;
+  CModelParameterSet * pParameterSet = NULL;
 
   if ((pEntity = dynamic_cast< CModelEntity * >(pObject)) != NULL)
     return static_cast< CAnnotation * >(pEntity);
@@ -43,6 +45,9 @@ CAnnotation * CAnnotation::castObject(CCopasiObject * pObject)
 
   if ((pReaction = dynamic_cast< CReaction * >(pObject)) != NULL)
     return static_cast< CAnnotation * >(pReaction);
+
+  if ((pParameterSet = dynamic_cast< CModelParameterSet * >(pObject)) != NULL)
+    return static_cast< CAnnotation * >(pParameterSet);
 
   if ((pFunction = dynamic_cast< CFunction * >(pObject)) != NULL)
     return static_cast< CAnnotation * >(pFunction);
