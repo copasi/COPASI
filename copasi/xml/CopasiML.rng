@@ -965,7 +965,7 @@
       </data>
     </attribute>
     <attribute name="target">
-      <data type="anyURI"/>
+      <data type="string"/>
     </attribute>
     <attribute name="append">
       <data type="boolean"/>
@@ -1276,7 +1276,29 @@
   </define>
 
   <define name="curveSegment.element" combine="choice">
+    <element name="CurveSegment">
+      <attribute ns="http://www.w3.org/2001/XMLSchema-instance" name="type">
+        <data type="string">
+          <param name="pattern">LineSegment</param>
+        </data>
+      </attribute>
+      <ref name="lineSegment.datatype"/>
+    </element>
+  </define>
+  
+  <define name="curveSegment.element" combine="choice">
     <element name="CubicBezier">
+      <ref name="cubicBezier.datatype"/>
+    </element>
+  </define>
+
+  <define name="curveSegment.element" combine="choice">
+    <element name="CurveSegment">
+      <attribute ns="http://www.w3.org/2001/XMLSchema-instance" name="type">
+        <data type="string">
+          <param name="pattern">CubicBezier</param>
+        </data>
+      </attribute>
       <ref name="cubicBezier.datatype"/>
     </element>
   </define>
