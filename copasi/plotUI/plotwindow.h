@@ -64,7 +64,7 @@ private:
 public:
   PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* ptrSpec, CopasiUI3Window * pMainWindow);
 
-  ~PlotWindow();
+  virtual ~PlotWindow();
 
   bool initFromSpec(const CPlotSpecification* ptrSpec);
 
