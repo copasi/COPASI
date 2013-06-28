@@ -96,7 +96,9 @@ bool CExpression::setInfix(const std::string & infix)
 
 bool CExpression::compile(std::vector< CCopasiContainer * > listOfContainer)
 {
+  listOfContainer.push_back(getObjectParent());
   mpListOfContainer = & listOfContainer;
+
   bool success = compileNodes();
 
   if (mpRoot)

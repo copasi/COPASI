@@ -104,9 +104,6 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
           }
         else if (mpObject != NULL)
           {
-            // TODO CRITICAL SH: I like to avoid these for the time being
-            assert(false);
-
             mpValue = (C_FLOAT64 *) mpObject->getValuePointer();
           }
 

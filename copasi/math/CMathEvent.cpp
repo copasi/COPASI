@@ -14,6 +14,7 @@
 #include "model/CMathModel.h"
 #include "model/CEvent.h"
 
+#include "function/CFunction.h"
 #include "report/CCopasiRootContainer.h"
 #include "utilities/CNodeIterator.h"
 
@@ -170,10 +171,24 @@ void CMathEventN::CTrigger::allocate(const CEvent * pDataEvent,
 
   CExpression Trigger("EventTrigger", &container);
   Trigger.setIsBoolean(true);
-  Trigger.setInfix(pDataEvent->getTriggerExpression());
-  Trigger.compile();
 
-  mRoots.resize(countRoots(Trigger.getRoot(), Variables));
+  if (Trigger.setInfix(pDataEvent->getTriggerExpression()))
+    {
+      Trigger.compile(Container);
+      mRoots.resize(countRoots(Trigger.getRoot(), Variables));
+    }
+  else
+    {
+      CFunction TriggerFunction("EventTrigger", &container);
+
+      if (TriggerFunction.setInfix(pDataEvent->getTriggerExpression()))
+        {
+          TriggerFunction.compile();
+          mRoots.resize(countRoots(TriggerFunction.getRoot(), Variables));
+        }
+    }
+
+  return;
 }
 
 void CMathEventN::CTrigger::allocateDiscontinuous(const size_t & nRoots,
