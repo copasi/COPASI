@@ -7779,6 +7779,37 @@ XMLNode* CSBMLExporter::createSBMLNotes(const std::string& notes_string)
                           int tmp = pResult->addNamespace("http://www.w3.org/1999/xhtml", prefix);
                           assert(tmp == LIBSBML_OPERATION_SUCCESS);
                         }
+
+                      // If it is a html element assure that we have a head.
+                      if (elementName == "html")
+                        {
+                          if (!pResult->hasChild("head"))
+                            {
+                              // Add a head and title element
+                              std::string Head = "<head xmlns=\"http://www.w3.org/1999/xhtml\"><title xmlns=\"http://www.w3.org/1999/xhtml\"></title></head>";
+                              XMLNode * pHead = XMLNode::convertStringToXMLNode(Head);
+
+                              pResult->insertChild(0, *pHead);
+                              delete pHead;
+                            }
+                          else
+                            {
+                              XMLNode Head = pResult->getChild("head");
+
+                              if (!Head.hasChild("title"))
+                                {
+                                  // Add a title element
+                                  std::string Title = "<title xmlns=\"http://www.w3.org/1999/xhtml\"></title>";
+                                  XMLNode * pTitle = XMLNode::convertStringToXMLNode(Title);
+
+                                  Head.insertChild(0, *pTitle);
+                                  delete pTitle;
+
+                                  pResult->removeChild(pResult->getIndex("head"));
+                                  pResult->insertChild(0, Head);
+                                }
+                            }
+                        }
                     }
                   else
                     {
