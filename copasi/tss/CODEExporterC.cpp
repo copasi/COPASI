@@ -543,7 +543,7 @@ bool CODEExporterC::preprocess(const CModel* copasiModel)
 
       for (j = 0; j < params_size; ++j)
         {
-          if (!reacs[i]->isLocalParameter(j))
+          if (!reacs[i]->isLocalParameter(reacs[i]->getParameters().getParameter(j)->getObjectName()))
             continue;
 
           std::ostringstream name;

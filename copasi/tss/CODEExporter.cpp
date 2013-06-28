@@ -104,11 +104,6 @@ bool CODEExporter::exportModelValuesExpressions(const CModel *copasiModel)
 
           findFunctionsCalls(entity->getExpressionPtr()->getRoot(), isExported);
           exportModelEntityExpression(entity, entity->getObjectDataModel());
-          //findFunctionsCalls(entity->getExpressionPtr()->getRoot(), isExported);
-          //std::string comment = "assignment for '" + entity->getObjectName() +"'";
-          //exportSingleObject(assignment, NameMap[entity->getKey()],
-          //  exportExpression(entity->getExpressionPtr(), entity->getObjectDataModel()),
-          //  comment);
         }
     }
 
@@ -125,11 +120,6 @@ bool CODEExporter::exportModelValuesExpressions(const CModel *copasiModel)
 
           findFunctionsCalls(entity->getExpressionPtr()->getRoot(), isExported);
           exportModelEntityExpression(entity, entity->getObjectDataModel());
-          //findFunctionsCalls(entity->getExpressionPtr()->getRoot(), isExported);
-          //std::string comment = "assignment for '" + entity->getObjectName() +"'";
-          //exportSingleObject(assignment, NameMap[entity->getKey()],
-          //  exportExpression(entity->getExpressionPtr(), entity->getObjectDataModel()),
-          //  comment);
         }
     }
 
@@ -146,11 +136,6 @@ bool CODEExporter::exportModelValuesExpressions(const CModel *copasiModel)
 
           findFunctionsCalls(entity->getExpressionPtr()->getRoot(), isExported);
           exportModelEntityExpression(entity, entity->getObjectDataModel());
-          //findFunctionsCalls(entity->getExpressionPtr()->getRoot(), isExported);
-          //std::string comment = "assignment for '" + entity->getObjectName() +"'";
-          //exportSingleObject(assignment, NameMap[entity->getKey()],
-          //  exportExpression(entity->getExpressionPtr(), entity->getObjectDataModel()),
-          //  comment);
         }
     }
 
