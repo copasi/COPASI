@@ -601,10 +601,7 @@ void CODEExporterC::setExportNameOfFunction(const CEvaluationNode* pNode, std::s
     }
 }
 
-bool CODEExporterC::exportSingleObject(std::ostringstream & which,
-                                       const std::string & name,
-                                       const std::string & expression,
-                                       const std::string & comments)
+bool CODEExporterC::exportSingleObject(std::ostringstream & which, const std::string & name, const std::string & expression, const std::string & comments)
 {
   which << name << " = " << expression << ";"
         << '\t' << "//" << comments << std::endl;
@@ -942,11 +939,12 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
       const CFunctionParameters & params = reac->getFunctionParameters();
       size_t k, params_size = params.size();
       const std::vector<std::vector<std::string> > & keyMap = reac->getParameterMappings();
-
+      std::string name;
       equation << NameMap[reac->getFunction()->getKey()] << "(";
 
       for (k = 0; k < params_size; ++k)
         {
+
           CFunctionParameter::Role role = params[k]->getUsage();
 
           CCopasiObject * obj = CCopasiRootContainer::getKeyFactory()->get(keyMap[k][0]);
@@ -956,9 +954,9 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
               || (role == CFunctionParameter::MODIFIER))
             {
               if (obj)
-                equation << NameMap[obj->getKey()];
+                name = NameMap[obj->getKey()];
               else
-                equation << "unknown";
+                name = "unknown";
             }
 
           if (role == CFunctionParameter::PARAMETER)
@@ -967,13 +965,13 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
                 {
                   CModelValue* modval;
                   modval = dynamic_cast< CModelValue * >(obj);
-                  equation << NameMap[modval->getKey()];
+                  name = NameMap[modval->getKey()];
                 }
               else
                 {
                   CCopasiParameter* param;
                   param = dynamic_cast< CCopasiParameter * >(obj);
-                  equation << NameMap[param->getKey()];
+                  name = NameMap[param->getKey()];
                 }
             }
 
@@ -981,15 +979,24 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
             {
               CCompartment* comp;
               comp = dynamic_cast< CCompartment * >(obj);
-              equation << NameMap[comp->getKey()];
+              name = NameMap[comp->getKey()];
             }
 
           if (role == CFunctionParameter::TIME)
             {
-              equation << "T";
+              name = "T";
             }
 
-          if (k != params_size - 1) equation << ", ";
+          if (name.empty())
+            {
+              std::string message = "Could not export C code, since one of the arguments could not be resolved. Please consider filing a bug with the COPASI tracker: http://www.copasi.org/tracker";
+              CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
+            }
+
+          equation << name;
+
+          if (k != params_size - 1)
+            equation << ", ";
         }
 
       equation << ")";
