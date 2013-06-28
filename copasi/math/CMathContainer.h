@@ -177,6 +177,16 @@ public:
   void applyUpdateSequence(const CObjectInterface::UpdateSequence & updateSequence);
 
   /**
+   * Fetch the initial state from the associated model
+   */
+  void fetchInitialState();
+
+  /**
+   * Push the initial state to the associated model
+   */
+  void pushInitialState();
+
+  /**
    * Retrieve the CN of the math container
    * The math container provides values for the numerical values of model objects.
    * For the CN mechanism to work properly it has to pretend to be the model.

@@ -1209,11 +1209,6 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
 
   success &= E.setInfix(Infix.str());
 
-  if (!success)
-    {
-      std::cout << Infix.str() << std::endl;
-    }
-
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
   compileExpression();
 

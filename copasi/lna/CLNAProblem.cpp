@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lna/CLNAProblem.cpp,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: jpahle $
-//   $Date: 2011/05/24 17:33:44 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -36,10 +28,10 @@
  *  @param "CModel *" pModel
  */
 CLNAProblem::CLNAProblem(const CCopasiContainer * pParent):
-    CCopasiProblem(CCopasiTask::lna, pParent),
-    mInitialState()
+  CCopasiProblem(CCopasiTask::lna, pParent),
+  mInitialState()
 {
-  addParameter("Steady-State", CCopasiParameter::KEY, std::string(""))
+  addParameter("Steady-State", CCopasiParameter::KEY, std::string(""));
   CONSTRUCTOR_TRACE;
 }
 
@@ -49,7 +41,7 @@ CLNAProblem::CLNAProblem(const CCopasiContainer * pParent):
  */
 CLNAProblem::CLNAProblem(const CLNAProblem & src,
                          const CCopasiContainer * pParent):
-    CCopasiProblem(src, pParent)
+  CCopasiProblem(src, pParent)
 {CONSTRUCTOR_TRACE;}
 
 /**

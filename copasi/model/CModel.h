@@ -37,6 +37,7 @@
 
 #ifdef TST_DEPENDENCYGRAPH
 # include "copasi/math/CMathDependencyGraph.h"
+class CMathContainer;
 #endif // TST_DEPENDENCYGRAPH
 
 //class CCompartment;
@@ -1543,6 +1544,10 @@ private:
    */
   CMathModel * mpMathModel;
 
+#ifdef TST_DEPENDENCYGRAPH
+  CMathContainer * mpMathContainer;
+#endif // TST_DEPENDENCYGRAPH
+
   // Operations
 public:
   /**
@@ -1606,6 +1611,20 @@ public:
 
   const CMathModel* getMathModel() const;
   CMathModel* getMathModel();
+
+#ifdef TST_DEPENDENCYGRAPH
+  /**
+   * Retrieve the container of all mathematical objects
+   * @return const CMathContainer * pMathContainer
+   */
+  const CMathContainer* getMathContainer() const;
+
+  /**
+   * Retrieve the container of all mathematical objects
+   * @return CMathContainer * pMathContainer
+   */
+  CMathContainer * getMathContainer();
+#endif // TST_DEPENDENCYGRAPH
 };
 
 #endif // CModel

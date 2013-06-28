@@ -140,6 +140,9 @@ CModel::CModel(CCopasiContainer* pParent):
   mIsAutonomous(true),
   mBuildInitialSequence(true),
   mpMathModel(NULL)
+#ifdef TST_DEPENDENCYGRAPH
+  , mpMathContainer(NULL)
+#endif TST_DEPENDENCYGRAPH
 {
   initObjects();
 
@@ -231,6 +234,10 @@ CModel::~CModel()
   pdelete(mpStoiAnnotation);
   pdelete(mpRedStoiAnnotation);
   pdelete(mpLinkMatrixAnnotation);
+
+#ifdef TST_DEPENDENCYGRAPH
+  pdelete(mpMathContainer);
+#endif TST_DEPENDENCYGRAPH
 
   CCopasiRootContainer::getKeyFactory()->remove(mKey);
 
@@ -478,10 +485,10 @@ bool CModel::compile()
 #ifdef TST_DEPENDENCYGRAPH
   buildDependencyGraphs();
 
-  CMathContainer MathModel(*this);
+  pdelete(mpMathContainer);
+  mpMathContainer = new CMathContainer(*this);
 
   // CMathContainer CopyModel(MathModel);
-
 #endif // TST_DEPENDENCYGRAPH
 
 #ifdef COPASI_PARAMETER_SETS
@@ -4522,3 +4529,11 @@ const CMathModel* CModel::getMathModel() const
 
 CMathModel* CModel::getMathModel()
 {return mpMathModel;}
+
+#ifdef TST_DEPENDENCYGRAPH
+const CMathContainer* CModel::getMathContainer() const
+{return mpMathContainer;}
+
+CMathContainer* CModel::getMathContainer()
+{return mpMathContainer;}
+#endif // TST_DEPENDENCYGRAPH

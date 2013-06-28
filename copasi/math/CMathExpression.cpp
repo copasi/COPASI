@@ -54,8 +54,6 @@ CMathExpression::CMathExpression(const CFunction & src,
       case CEvaluationTree::PreDefined:
       case CEvaluationTree::UserDefined:
       {
-        std::cout << src.getObjectName() << ": " << src.getInfix() << std::endl;
-
         // Create a vector of CEvaluationNodeObject for each variable
         CMath::Variables< CEvaluationNode * > Variables;
 

@@ -439,6 +439,44 @@ void CMathContainer::applyUpdateSequence(const CObjectInterface::UpdateSequence 
     }
 }
 
+void CMathContainer::fetchInitialState()
+{
+  C_FLOAT64 * pValue = mInitialState.array();
+  C_FLOAT64 * pValueEnd = pValue + mInitialState.size();
+  CMathObject * pObject = mObjects.array();
+
+  for (; pValue != pValueEnd; ++pValue, ++pObject)
+    {
+      const CCopasiObject * pDataObject = pObject->getDataObject();
+
+      if (pDataObject != NULL)
+        {
+          *pValue = *(C_FLOAT64 *)pDataObject->getValuePointer();
+        }
+    }
+
+  return;
+}
+
+void CMathContainer::pushInitialState()
+{
+  C_FLOAT64 * pValue = mInitialState.array();
+  C_FLOAT64 * pValueEnd = pValue + mInitialState.size();
+  CMathObject * pObject = mObjects.array();
+
+  for (; pValue != pValueEnd; ++pValue, ++pObject)
+    {
+      const CCopasiObject * pDataObject = pObject->getDataObject();
+
+      if (pDataObject != NULL)
+        {
+          *(C_FLOAT64 *)pDataObject->getValuePointer() = *pValue;
+        }
+    }
+
+  return;
+}
+
 // virtual
 CCopasiObjectName CMathContainer::getCN() const
 {
