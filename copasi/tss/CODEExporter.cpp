@@ -775,8 +775,13 @@ bool CODEExporter::preprocess(const CModel* copasiModel)
       params_size = reacs[i]->getParameters().size();
 
       for (j = 0; j < params_size; ++j)
-        NameMap[reacs[i]->getParameters().getParameter(j)->getKey()] =
-          translateObjectName(reacs[i]->getParameters().getParameter(j)->getObjectName());
+        {
+          if (reacs[i]->isLocalParameter(j))
+            {
+              NameMap[reacs[i]->getParameters().getParameter(j)->getKey()] =
+                translateObjectName(reacs[i]->getParameters().getParameter(j)->getObjectName());
+            }
+        }
     }
 
   return true;
@@ -1120,6 +1125,9 @@ bool CODEExporter::exportReacParamsAndFuncs(const CModel* copasiModel)
 
       for (j = 0; j < params_size; ++j)
         {
+          if (!reac->isLocalParameter(j))
+            continue;
+
           std::ostringstream comments;
           std::ostringstream expression;
 

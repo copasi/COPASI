@@ -98,7 +98,7 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
   size_t modvals_size = copasiModel->getModelValues().size();
   size_t reacs_size = copasiModel->getReactions().size();
 
-  size_t i, count;
+  size_t i, j, num_params, count;
   const CCopasiVector< CReaction > & reacs = copasiModel->getReactions();
   CReaction* reac;
 
@@ -106,8 +106,15 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
 
   for (i = 0; i < reacs_size; ++i)
     {
+
       reac = reacs[i];
-      count = count + reac->getParameters().size();
+      num_params = reac->getParameters().size();
+
+      for (j = 0; j < num_params; ++j)
+        {
+          if (reac->isLocalParameter(j))
+            ++count;
+        }
     }
 
   size_t numX = 0;
@@ -536,6 +543,9 @@ bool CODEExporterC::preprocess(const CModel* copasiModel)
 
       for (j = 0; j < params_size; ++j)
         {
+          if (!reacs[i]->isLocalParameter(j))
+            continue;
+
           std::ostringstream name;
 
           name << "p[" << n[0] << "]";
@@ -763,9 +773,14 @@ bool CODEExporterC::exportSingleModelEntity(const CModelEntity* tmp, std::string
 
       case CModelEntity::ASSIGNMENT:
       {
+        // prevent assignment from being written multiple times ...
+        if (Frequancy[name] == 1)
+          break;
+
         if (!exportSingleObject(assignment, name, expression, comments))
           return false;
 
+        Frequancy[name] = 1;
         break;
       }
 
