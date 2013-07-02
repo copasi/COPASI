@@ -96,6 +96,9 @@ void CScanWidgetTask::load(const CScanProblem * pg)
         n = 8;
         break;
 #endif
+        case CCopasiTask::tssAnalysis:
+          n = 9;
+          break;
 
       default:
         n = 0;
@@ -159,6 +162,9 @@ bool CScanWidgetTask::save(CScanProblem * pg) const
         Type = CCopasiTask::crosssection;
         break;
 #endif
+        case 9:
+          Type = CCopasiTask::tssAnalysis;
+          break;
 
       default :
         Type = CCopasiTask::steadyState;
