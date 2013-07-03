@@ -1,18 +1,6 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-//   $Revision: 1.49 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/05/03 14:50:01 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <stdexcept>
@@ -47,7 +35,6 @@
 # include "UI/qtUtilities.h"
 #endif // Darwin
 
-
 #include <worker.h>
 #include <arguments.h>
 
@@ -55,7 +42,7 @@ int main(int argc, char *argv[])
 {
   CQCopasiApplication a(argc, argv);
 
-    // parse args
+  // parse args
   Arguments args(argc, argv);
 
   a.setAttribute(Qt::AA_DontShowIconsInMenus, false);
@@ -92,10 +79,9 @@ int main(int argc, char *argv[])
   // instantiate model and apply all changes
   args.prepareModel();
 
-
   // Create the main application window.
   CopasiUI3Window *pWindow = CopasiUI3Window::create();
-
+  Worker* pWorker = NULL;
 #ifdef COPASI_SBW_INTEGRATION
 
   if (COptions::compareValue("SBWRegister", true))
@@ -111,7 +97,7 @@ int main(int argc, char *argv[])
 
       // pass control to the worker
       if (args.isValid())
-      Worker worker(pWindow, &args);
+        pWorker = new Worker(pWindow, &args);
 
       a.exec();
     }
@@ -120,6 +106,12 @@ finish:
 
   try // To suppress any access violations during destruction works only under Windows
     {
+      if (pWorker != NULL)
+        {
+          delete pWorker;
+          pWorker = NULL;
+        }
+
       CCopasiRootContainer::destroy();
     }
   catch (...)

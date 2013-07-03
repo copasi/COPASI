@@ -1,3 +1,8 @@
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 #include "arguments.h"
 #include "string.h"
 
@@ -9,7 +14,6 @@
 #include "optimization/COptTask.h"
 #include "optimization/COptProblem.h"
 
-
 #include "report/CCopasiRootContainer.h"
 #include "report/COutputAssistant.h"
 #include "plot/CPlotSpecification.h"
@@ -17,17 +21,19 @@
 
 #include "utilities/CCopasiMethod.h"
 
-
 Arguments::Arguments(int argc, char* argv[])
   : mFilename("")
+  , mOutputDir("")
   , mTask("")
   , mReportFile("")
+  , mFileType("pdf")
   , mRunScheduled(false)
   , mSetSolutionStatistic(false)
   , mDisableStatistic(false)
   , mDisablePlots(false)
   , mDisableRandomizeStartValues(false)
   , mHideWindow(false)
+  , mQuitAfterTaskExecution(false)
   , mClearTargets(false)
   , mSwitchToTask(-1)
   , mGenerateOutput(-1)
@@ -40,25 +46,30 @@ Arguments::Arguments(int argc, char* argv[])
 CCopasiTask* Arguments::getFirstScheduledTask()
 {
   CCopasiVectorN<CCopasiTask> &taskList = *(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList();
-  for(size_t i = 0; i < taskList.size(); ++i)
-  {
-    CCopasiTask *current = taskList[i];
-    if (current->isScheduled())
-      return current;
-  }
+
+  for (size_t i = 0; i < taskList.size(); ++i)
+    {
+      CCopasiTask *current = taskList[i];
+
+      if (current->isScheduled())
+        return current;
+    }
+
   return NULL;
 }
-
 
 CCopasiTask* Arguments::getTaskForName(const std::string& name) const
 {
   CCopasiVectorN<CCopasiTask> &taskList = *(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList();
-  for(size_t i = 0; i < taskList.size(); ++i)
-  {
-    CCopasiTask *current = taskList[i];
-    if (current->getObjectName() == name)
-      return current;
-  }
+
+  for (size_t i = 0; i < taskList.size(); ++i)
+    {
+      CCopasiTask *current = taskList[i];
+
+      if (current->getObjectName() == name)
+        return current;
+    }
+
   return NULL;
 }
 
@@ -66,6 +77,7 @@ CCopasiTask* Arguments::getTask() const
 {
   if (haveTaskName())
     return getTaskForName(mTask);
+
   return getFirstScheduledTask();
 }
 
@@ -77,6 +89,16 @@ bool Arguments::isGenerateOutput() const
 int Arguments::getOutputToGenerate() const
 {
   return mGenerateOutput;
+}
+
+bool Arguments::haveOutputDir() const
+{
+  return !mOutputDir.empty();
+}
+
+const std::string& Arguments::getOutputDir() const
+{
+  return mOutputDir;
 }
 
 bool Arguments::haveReportFile() const
@@ -91,65 +113,79 @@ const std::string& Arguments::getReportFile() const
 
 void Arguments::parseArgs(int argc, char* argv[])
 {
-  for (int i = 1; i < argc; ++i )
-  {
-    QString current(argv[i]);
-    QString lower = current.toLower();
+  for (int i = 1; i < argc; ++i)
+    {
+      QString current(argv[i]);
+      QString lower = current.toLower();
 
-    if (lower == "-r" || lower == "--run-scheduled" )
-    {
-      mRunScheduled = true;
+      if (lower == "-r" || lower == "--run-scheduled")
+        {
+          mRunScheduled = true;
+        }
+      else if (lower == "-q" || lower == "--quit-after-task-execution")
+        {
+          mQuitAfterTaskExecution = true;
+        }
+      else if (i + 1 < argc && (lower == "--switch-to-task"))
+        {
+          mSwitchToTask = QString(argv[i + 1]).toInt();
+          ++i;
+        }
+      else if (i + 1 < argc && (lower == "--task"))
+        {
+          mTask = argv[i + 1];
+          ++i;
+        }
+      else if (lower == "--set-solution-statistic")
+        {
+          mSetSolutionStatistic = true;
+        }
+      else if (lower == "--disable-calculate-statistic")
+        {
+          mDisableStatistic = true;
+        }
+      else if (lower == "--disable-other-plots")
+        {
+          mDisablePlots = true;
+        }
+      else if (lower == "--hide")
+        {
+          mHideWindow = true;
+        }
+      else if (lower == "--clear-targets")
+        {
+          mClearTargets = true;
+        }
+      else if (lower == "--disable-randomize-startvalues")
+        {
+          mDisableRandomizeStartValues = true;
+        }
+      else if (i + 1 < argc && (lower == "-g" || lower == "--generate-output"))
+        {
+          mGenerateOutput = QString(argv[i + 1]).toInt();
+          ++i;
+        }
+      else if (i + 1 < argc && (lower == "-f" || lower == "--set-report-file"))
+        {
+          mReportFile = argv[i + 1];
+          ++i;
+        }
+      else if (i + 1 < argc && (lower == "-o" || lower == "--set-output-dir"))
+        {
+          mOutputDir = argv[i + 1];
+          ++i;
+        }
+      else if (i + 1 < argc && (lower == "-t" || lower == "--set-file-type"))
+        {
+          mFileType = argv[i + 1];
+          ++i;
+        }
+      else if (QFile(current).exists() && mFilename.empty())
+        {
+          // only if we don't have a file yet, we assume this to be the copasi file
+          mFilename = current.ascii();
+        }
     }
-    else if (i+1 < argc && (lower == "--switch-to-task"))
-    {
-      mSwitchToTask = QString(argv[i+1]).toInt();
-      ++i;
-    }
-    else if (i+1 < argc && (lower == "--task"))
-    {
-      mTask = argv[i+1];
-      ++i;
-    }
-    else if (lower == "--set-solution-statistic")
-    {
-      mSetSolutionStatistic=true;
-    }
-    else if (lower == "--disable-calculate-statistic")
-    {
-      mDisableStatistic=true;
-    }
-    else if (lower == "--disable-other-plots")
-    {
-      mDisablePlots=true;
-    }
-    else if (lower == "--hide")
-    {
-      mHideWindow=true;
-    }
-    else if (lower == "--clear-targets")
-    {
-      mClearTargets=true;
-    }
-    else if (lower == "--disable-randomize-startvalues")
-    {
-      mDisableRandomizeStartValues=true;
-    }
-    else if (i+1 < argc && (lower == "-g" || lower == "--generate-output"))
-    {
-      mGenerateOutput = QString(argv[i+1]).toInt();
-      ++i;
-    }
-    else if (i+1 < argc && (lower == "-f" || lower == "--set-report-file"))
-    {
-      mReportFile = argv[i+1];
-      ++i;
-    }
-    else if (QFile(current).exists() && mFilename.empty())
-    {
-      // only if we don't have a file yet, we assume this to be the copasi file
-      mFilename = current.ascii();
-    }
-  }
 }
 
 bool Arguments::isSwitchToTask() const
@@ -164,9 +200,9 @@ int Arguments::getTaskToSwitchTo() const
 
 char** Arguments::getInitArgs() const
 {
-  char ** result = (char**)malloc(sizeof(char*)*2);
+  char ** result = (char**)malloc(sizeof(char*) * 2);
   result[0] = strdup(mArgv[0]);
-  result[1] = strdup((mFilename + ".view.cps").c_str() );
+  result[1] = strdup((mFilename + ".view.cps").c_str());
   return result;
 }
 
@@ -175,9 +211,14 @@ const std::string& Arguments::getFilename() const
   return mFilename;
 }
 
+const std::string& Arguments::getFileType() const
+{
+  return mFileType;
+}
+
 bool Arguments::haveFile() const
 {
-  return mFilename.empty();
+  return !mFilename.empty();
 }
 
 bool Arguments::isRunScheduled() const
@@ -215,18 +256,24 @@ bool Arguments::isDisablePlots() const
   return mDisablePlots;
 }
 
-  bool Arguments::isHideWindow() const
-  {
-    return mHideWindow;
-  }
+bool Arguments::isHideWindow() const
+{
+  return mHideWindow;
+}
 
-  bool Arguments::isValid() const
-  {
-  	if (!haveFile()) return false;
-  	if (!QFile(mFilename.c_str()).exists()) return false;
-  	return true;
-  }
+bool Arguments::isQuitAfterTaskExecution() const
+{
+  return mQuitAfterTaskExecution;
+}
 
+bool Arguments::isValid() const
+{
+  if (!haveFile()) return false;
+
+  if (!QFile(mFilename.c_str()).exists()) return false;
+
+  return true;
+}
 
 std::string Arguments::prepareModel() const
 {
@@ -236,49 +283,53 @@ std::string Arguments::prepareModel() const
   model->loadModel(getFilename(), NULL);
 
   if (mDisablePlots)
-  {
-    for(size_t index = 0; index < model->getPlotDefinitionList()->size(); ++index)
     {
-      (*model->getPlotDefinitionList())[index]->setActive(false);
+      for (size_t index = 0; index < model->getPlotDefinitionList()->size(); ++index)
+        {
+          (*model->getPlotDefinitionList())[index]->setActive(false);
+        }
     }
-  }
 
   if (mClearTargets)
-  {
-    for(size_t index = 0; index < model->getTaskList()->size(); ++index)
     {
-      (*model->getTaskList())[index]->getReport().setTarget("");
+      for (size_t index = 0; index < model->getTaskList()->size(); ++index)
+        {
+          (*model->getTaskList())[index]->getReport().setTarget("");
+        }
     }
-  }
 
   CCopasiTask *task = getTask();
+
   if (task != NULL)
-  {
-    if (isGenerateOutput())
     {
-      // calls initialize which is private
-      COutputAssistant::getListOfDefaultOutputDescriptions();
+      if (isGenerateOutput())
+        {
+          // calls initialize which is private
+          COutputAssistant::getListOfDefaultOutputDescriptions();
 
-      // generate the output
-      COutputAssistant::createDefaultOutput(mGenerateOutput, task, model);
+          // generate the output
+          COutputAssistant::createDefaultOutput(mGenerateOutput, task, model);
+        }
+
+      if (haveReportFile())
+        task->getReport().setTarget(mReportFile);
+
+      COptTask* optTask = dynamic_cast<COptTask*>(task);
+
+      if (optTask != NULL)
+        {
+          COptProblem *problem = (COptProblem *)optTask->getProblem();
+
+          if (mSetSolutionStatistic)
+            optTask->setMethodType(CCopasiMethod::Statistics);
+
+          if (isDisableRandomizeStartValues())
+            problem->setRandomizeStartValues(false);
+
+          if (isDisableStatistic())
+            problem->setCalculateStatistics(false);
+        }
     }
-
-    if (haveReportFile())
-      task->getReport().setTarget(mReportFile);
-
-    COptTask* optTask = dynamic_cast<COptTask*>(task);
-    if (optTask != NULL)
-    {
-      COptProblem *problem = (COptProblem *)optTask->getProblem();
-      if (mSetSolutionStatistic)
-        optTask->setMethodType(CCopasiMethod::Statistics);
-      if (isDisableRandomizeStartValues())
-        problem->setRandomizeStartValues(false);
-      if (isDisableStatistic())
-        problem->setCalculateStatistics(false);
-
-    }
-  }
 
   model->saveModel(getFilename() + ".view.cps", NULL, true);
   return getFilename() + ".view.cps";

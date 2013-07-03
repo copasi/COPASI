@@ -102,6 +102,13 @@ public:
   virtual void finish();
 
   /**
+   * Saves the current plot to the given filename.
+   *
+   * This implementation supports PDF, SVG and PNG
+   */
+  virtual void saveToFile(const QString& fileName) const;
+
+  /**
    * Retrieve the list of objects handled by the interface
    * @return const std::set< const CCopasiObject * > & objects
    */

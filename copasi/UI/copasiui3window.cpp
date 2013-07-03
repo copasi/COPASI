@@ -823,13 +823,14 @@ void CopasiUI3Window::slotFileExamplesSBMLFiles(QString file)
 void CopasiUI3Window::slotAddFileOpen(QString file)
 {
   disconnect(this, SIGNAL(signalLoadFile(QString)), this, SLOT(slotFileOpen(QString)));
-  
+
   if (mCommitRequired)
     {
-    mpDataModelGUI->commit();
+      mpDataModelGUI->commit();
     }
 
   QString newFile = "";
+
   if (file == "")
     newFile =
       CopasiFileDialog::getOpenFileName(this, "Open File Dialog", QString::null,
@@ -841,8 +842,8 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
   if (!newFile.isNull())
     {
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-    
-    //mpListView->switchToOtherWidget(0, "");
+
+      //mpListView->switchToOtherWidget(0, "");
 
       this->setCursor(Qt::WaitCursor);
 
@@ -851,7 +852,6 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
       mNewFile = newFile;
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotAddFileOpenFinished(bool)));
       mpDataModelGUI->addModel(TO_UTF8(newFile));
-    
     }
 }
 
@@ -863,39 +863,38 @@ void CopasiUI3Window::slotAddFileOpenFinished(bool success)
 
   if (!success)
     {
-    QString Message = "Error while loading file " + mNewFile + QString("!\n\n");
-    Message += FROM_UTF8(CCopasiMessage::getAllMessageText(true));
-    
-    CQMessageBox::critical(this, QString("File Error"), Message,
-                           QMessageBox::Ok, QMessageBox::Ok);
+      QString Message = "Error while loading file " + mNewFile + QString("!\n\n");
+      Message += FROM_UTF8(CCopasiMessage::getAllMessageText(true));
+
+      CQMessageBox::critical(this, QString("File Error"), Message,
+                             QMessageBox::Ok, QMessageBox::Ok);
     }
 
   CCopasiMessage msg = CCopasiMessage::getLastMessage();
 
-  // TODO potentially include handling of SBML files here. 
-  
+  // TODO potentially include handling of SBML files here.
+
   if (msg.getNumber() != MCCopasiMessage + 1)
     {
-    QString Message = "Problem while merging file " + mNewFile + QString("!\n\n");
-    Message += FROM_UTF8(msg.getText());
-    
-    msg = CCopasiMessage::getLastMessage();
-    
-    while (msg.getNumber() != MCCopasiMessage + 1)
-      {
-      Message += "\n";
+      QString Message = "Problem while merging file " + mNewFile + QString("!\n\n");
       Message += FROM_UTF8(msg.getText());
+
       msg = CCopasiMessage::getLastMessage();
-      }
-    
-    CQMessageBox::warning(this, QString("File Warning"), Message,
-                          QMessageBox::Ok, QMessageBox::Ok);
+
+      while (msg.getNumber() != MCCopasiMessage + 1)
+        {
+          Message += "\n";
+          Message += FROM_UTF8(msg.getText());
+          msg = CCopasiMessage::getLastMessage();
+        }
+
+      CQMessageBox::warning(this, QString("File Warning"), Message,
+                            QMessageBox::Ok, QMessageBox::Ok);
     }
-  
-  
+
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE,
                          (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
-  
+
   mpaSave->setEnabled(true);
   mpaSaveAs->setEnabled(true);
   mpaExportSBML->setEnabled(true);
@@ -903,9 +902,7 @@ void CopasiUI3Window::slotAddFileOpenFinished(bool success)
 
   refreshRecentFileMenu();
   mNewFile = "";
-  
 }
-
 
 #endif
 
@@ -1723,6 +1720,11 @@ void CopasiUI3Window::slotExportSBMLToStringFinished(bool success)
                              QMessageBox::Ok, QMessageBox::Ok);
       CCopasiMessage::clearDeque();
     }
+}
+
+const QList< QMainWindow * >& CopasiUI3Window::getWindows() const
+{
+  return mWindows;
 }
 
 void CopasiUI3Window::addWindow(QMainWindow * pWindow)

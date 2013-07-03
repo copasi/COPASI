@@ -1,3 +1,8 @@
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 #ifndef VIEW_CURRRENT_ARGUMENTS_H
 #define VIEW_CURRRENT_ARGUMENTS_H
 
@@ -5,7 +10,8 @@
 
 class CCopasiTask;
 
-class Arguments {
+class Arguments
+{
 
 public:
 
@@ -35,9 +41,15 @@ public:
 
   const std::string& getReportFile() const;
 
+  bool haveOutputDir() const;
+
+  const std::string& getOutputDir() const;
+
   bool haveTaskName() const;
 
   const std::string& getTaskName() const;
+
+  const std::string& getFileType() const;
 
   bool isSolutionStatistic() const;
 
@@ -48,6 +60,8 @@ public:
   bool isDisableRandomizeStartValues() const;
 
   bool isHideWindow() const;
+
+  bool isQuitAfterTaskExecution() const;
 
   static CCopasiTask* getFirstScheduledTask();
 
@@ -61,9 +75,13 @@ private:
 
   std::string mFilename;
 
+  std::string mOutputDir;
+
   std::string mTask;
 
   std::string mReportFile;
+
+  std::string mFileType;
 
   bool mRunScheduled;
 
@@ -77,6 +95,8 @@ private:
 
   bool mHideWindow;
 
+  bool mQuitAfterTaskExecution;
+
   bool mClearTargets;
 
   int mSwitchToTask;
@@ -86,7 +106,6 @@ private:
   int mArgc;
 
   char** mArgv;
-
 };
 
 #endif

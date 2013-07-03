@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -99,6 +99,11 @@ public:
   void setMessageShown(const bool & shown);
 
   const bool & messageShown() const;
+
+  /**
+   * Returns the list of current windows
+   */
+  const QList< QMainWindow * >& getWindows() const;
 
 signals:
   void signalLoadFile(QString newFile);

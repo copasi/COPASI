@@ -266,6 +266,42 @@ void PlotWindow::toggleLogY(bool logY)
 }*/
 
 //-----------------------------------------------------------------------------
+void PlotWindow::saveToFile(const QString& fileName) const
+{
+  QRect rect;
+  rect.setSize(this->size());
+
+  if (fileName.endsWith(".png"))
+    {
+      QPixmap pixmap(rect.width(), rect.height());
+      pixmap.fill();
+      QPainter painter(&pixmap);
+      painter.begin(&pixmap);
+      mpPlot->print(&painter, rect, PrintFilter());
+      painter.end();
+
+      pixmap.save(fileName, "PNG");
+    }
+  else if (fileName.endsWith(".svg"))
+    {
+      QSvgGenerator generator;
+      generator.setFileName(fileName);
+      QPainter painter(&generator);
+      painter.begin(&generator);
+      mpPlot->print(&painter, rect, PrintFilter());
+      painter.end();
+    }
+  else if (fileName.endsWith(".pdf"))
+    {
+      QPrinter printer;
+      printer.setOutputFileName(fileName);
+      printer.setOutputFormat(QPrinter::PdfFormat);
+      QPainter painter(&printer);
+      painter.begin(&printer);
+      mpPlot->print(&painter, rect, PrintFilter());
+      painter.end();
+    }
+}
 
 void PlotWindow::printAsImage()
 {
@@ -302,40 +338,7 @@ void PlotWindow::printAsImage()
     }
 
   // print plot as an image
-
-  QRect rect;
-  rect.setSize(this->size());
-
-  if (fileName.endsWith(".png"))
-    {
-      QPixmap pixmap(rect.width(), rect.height());
-      pixmap.fill();
-      QPainter painter(&pixmap);
-      painter.begin(&pixmap);
-      mpPlot->print(&painter, rect, PrintFilter());
-      painter.end();
-
-      pixmap.save(fileName, "PNG");
-    }
-  else if (fileName.endsWith(".svg"))
-    {
-      QSvgGenerator generator;
-      generator.setFileName(fileName);
-      QPainter painter(&generator);
-      painter.begin(&generator);
-      mpPlot->print(&painter, rect, PrintFilter());
-      painter.end();
-    }
-  else if (fileName.endsWith(".pdf"))
-    {
-      QPrinter printer;
-      printer.setOutputFileName(fileName);
-      printer.setOutputFormat(QPrinter::PdfFormat);
-      QPainter painter(&printer);
-      painter.begin(&printer);
-      mpPlot->print(&painter, rect, PrintFilter());
-      painter.end();
-    }
+  saveToFile(fileName);
 }
 
 void PlotWindow::printPlot()

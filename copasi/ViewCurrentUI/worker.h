@@ -1,10 +1,16 @@
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 #ifndef VIEW_CURRENT_WORKER
 #define VIEW_CURRENT_WORKER
 
 #include <QObject>
+#include "copasi/UI/DataModelGUI.h"
+#include "copasi/UI/listviews.h"
 
-class CopasiUI3Window ;
-class DataModelGUI ;
+class CopasiUI3Window;
 class Arguments;
 class CCopasiTask;
 class TaskWidget;
@@ -13,7 +19,7 @@ class Worker : public QObject
 {
   Q_OBJECT
 
-public: 
+public:
 
   Worker(CopasiUI3Window* window, Arguments* args);
 
@@ -22,6 +28,8 @@ public:
 public slots:
 
   void finishedLoading(bool success);
+
+  bool slotNotify(ListViews::ObjectType objectType, ListViews::Action action, std::string key = "");
 
 private:
 
@@ -35,7 +43,7 @@ private:
 
   Arguments *mpArgs;
 
+  bool mTaskStarted;
 };
 
 #endif
-

@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -11,6 +11,7 @@ class QWidget;
 class CopasiUI3Window;
 
 #include <QMainWindow>
+#include <QString>
 
 class CWindowInterface : public QMainWindow
 {
@@ -20,6 +21,13 @@ public:
   virtual ~CWindowInterface();
 
   virtual QMenu *getWindowMenu() const = 0;
+
+  /**
+   * Saves the current window to the given filename.
+   *
+   * This default implementation does nothing
+   */
+  virtual void saveToFile(const QString& fileName) const;
 
   void addToMainWindow(CopasiUI3Window *window = NULL);
   void removeFromMainWindow(CopasiUI3Window *window = NULL);
