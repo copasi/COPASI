@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifdef SunOS
 #include <ieeefp.h>
@@ -37,21 +37,21 @@
 
 CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* name,
     bool /* barChart */ , bool slider) :
-    QWidget(parent, name),
-    mWithBarChart(false),
-    mUseSliders(slider),
-    data(NULL),
-    mColors(),
-    mpArray(NULL),
-    mpColorScale(NULL),
-    mAutomaticColorScaling(false),
-    mRowIndex(C_INVALID_INDEX),
-    mColIndex(C_INVALID_INDEX),
-    mSelectedCell(),
-    mBarChartFilled(false),
-    mOneDimensional(false),
-    mComboEntries(),
-    mpComboDelegate(NULL)
+  QWidget(parent, name),
+  mWithBarChart(false),
+  mUseSliders(slider),
+  data(NULL),
+  mColors(),
+  mpArray(NULL),
+  mpColorScale(NULL),
+  mAutomaticColorScaling(false),
+  mRowIndex(C_INVALID_INDEX),
+  mColIndex(C_INVALID_INDEX),
+  mSelectedCell(),
+  mBarChartFilled(false),
+  mOneDimensional(false),
+  mComboEntries(),
+  mpComboDelegate(NULL)
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in constructor -- \n";
@@ -165,7 +165,6 @@ void CQArrayAnnotationsWidget::setArrayAnnotation(const CArrayAnnotation * pArra
       *itCell = 0;
     }
 
-
   switch (imax)
     {
       case 0:
@@ -251,7 +250,7 @@ void CQArrayAnnotationsWidget::initSelectionTable()
   mpSelectionTable->resizeColumnsToContents();
   mpSelectionTable->resizeRowsToContents();
 
-  mpSelectionTable->setMaximumHeight(mpSelectionTable->verticalHeader()->sectionSize(0) *(mpArray->dimensionality() + 1));
+  mpSelectionTable->setMaximumHeight(mpSelectionTable->verticalHeader()->sectionSize(0) * (mpArray->dimensionality() + 1));
 }
 
 void CQArrayAnnotationsWidget::clearWidget()
@@ -321,7 +320,6 @@ void CQArrayAnnotationsWidget::slotColumnSelectionChanged(int col)
       mpSelectionTable->hideRow(mRowIndex);
     }
 
-
   mpSelectionTable->showRow(mColIndex);
   mColIndex = col;
   mpSelectionTable->hideRow(mColIndex);
@@ -334,7 +332,6 @@ void CQArrayAnnotationsWidget::slotCurrentSelectionIndexChanged(int row, int ind
   mSelectionIndex[row] = index;
   fillTable();
 }
-
 
 void CQArrayAnnotationsWidget::fillTable()
 {
@@ -379,7 +376,6 @@ void CQArrayAnnotationsWidget::fillTableN(size_t rowIndex, size_t colIndex,
   size_t i, imax = mpArray->size()[rowIndex];
   size_t j, jmax = mpArray->size()[colIndex];
 
-
   if (jmax == 0) return;
 
   int TableWidth = mpContentTable->size().width();
@@ -410,7 +406,6 @@ void CQArrayAnnotationsWidget::fillTableN(size_t rowIndex, size_t colIndex,
       qDebug() << "text on col " << j << " = " << FROM_UTF8(coldescr[j]).replace("; {", "\n{");
 #endif
     }
-
 
   CCopasiAbstractArray::index_type Index = index;
 
@@ -506,7 +501,6 @@ void CQArrayAnnotationsWidget::fillTable1(size_t rowIndex,
         {
           pItem->setBackground(QBrush(mpColorScale->getColor((*mpArray->array())[Index])));
         }
-
     }
 
   mOneDimensional = true;
@@ -808,7 +802,7 @@ void CQArrayAnnotationsWidget::setColumnSize(int col, int /*size0*/, int /*size*
   if (newSize < 5) newSize = 5;
 
   for (i = 0; i < mpContentTable->columnCount(); i++)
-    mpContentTable->setColumnWidth(i, ((int)(newSize*(i + 1))) - ((int)(newSize*i)));
+    mpContentTable->setColumnWidth(i, ((int)(newSize * (i + 1))) - ((int)(newSize * i)));
 
   mpContentTable->horizontalHeader()->repaint();
 
@@ -842,12 +836,23 @@ void CQArrayAnnotationsWidget::fillBarChart()
   if (!mOneDimensional)
     assert(mColIndex < mSelectedCell.size());
 
-  mpContentTable->setRowCount((int) mpArray->size()[mRowIndex]);
+  std::vector<size_t>& types = mpArray->size();
+  size_t imax =  types.size() > mRowIndex ? types[mRowIndex] : 0;
+  size_t jmax = mOneDimensional ? 1 : types.size() > mColIndex ? types[mColIndex] : 0;
+
+  if (imax == 0 || jmax == 0)
+    {
+      mpPlot3d->emptyPlot();
+      mBarChartFilled = false;
+      return;
+    }
+
+  mpContentTable->setRowCount((int) imax);
 
   if (mOneDimensional)
     mpContentTable->setColumnCount(1);
   else
-    mpContentTable->setColumnCount((int) mpArray->size()[mColIndex]);
+    mpContentTable->setColumnCount((int) jmax);
 
 //  mpContentTable->horizontalHeader()->setLabel(0, "");  --> ???
 
@@ -856,13 +861,8 @@ void CQArrayAnnotationsWidget::fillBarChart()
   if (!mOneDimensional)
     std::vector<std::string> coldescr = mpArray->getAnnotationsString(mColIndex);
 
-  size_t i, imax = mpArray->size()[mRowIndex];
-  size_t j, jmax;
-
-  if (mOneDimensional)
-    jmax = 1;
-  else
-    jmax = mpArray->size()[mColIndex];
+  size_t i;
+  size_t j;
 
   if (jmax > 0 && imax > 0)
     {
@@ -917,19 +917,22 @@ void CQArrayAnnotationsWidget::fillBarChart()
       double minZ, maxZ;
 
       if ((minValue < 0) && (maxValue < 0))
-        {//(all values < 0)
+        {
+          //(all values < 0)
           minZ = minValue;
           maxZ = 0;
         }
       else
         {
           if ((minValue > 0) && (maxValue > 0))
-            {//(all values > 0)
+            {
+              //(all values > 0)
               minZ = 0;
               maxZ = maxValue;
             }
           else
-            {//(values <> 0)
+            {
+              //(values <> 0)
               minZ = minValue;
               maxZ = maxValue;
             }
