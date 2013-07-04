@@ -9142,6 +9142,32 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
           if (pSBMLObject->isSetMetaId())
             metaid = pSBMLObject->getMetaId();
 
+          XMLNode* node = const_cast<XMLNode*>(pMIRIAMNode);
+
+          // BUG 1919: add all namespaces from the document, in case they will be used
+          // in the miriam element. (It is valid XML to declare a namespace, but not to
+          // use it, while on the other hand it is invalid to *not* define a namespace
+          // for a prefix).
+          if (pSBMLObject->getSBMLDocument() != NULL &&
+              pSBMLObject->getSBMLDocument()->getSBMLNamespaces() != NULL &&
+              pSBMLObject->getSBMLDocument()->getSBMLNamespaces()->getNamespaces() != NULL)
+            {
+              XMLNamespaces* ns = pSBMLObject->getSBMLDocument()->getSBMLNamespaces()->getNamespaces();
+
+              for (unsigned int i = 0; i < ns->getNumNamespaces(); ++i)
+                {
+                  const std::string prefix = ns->getPrefix(i);
+
+                  // don't add the default ns
+                  if (prefix.empty())
+                    continue;
+
+                  // only add prefix if it is not defined yet
+                  if (!node->hasAttr("xmlns:" + prefix))
+                    node->addAttr("xmlns:" + prefix, ns->getURI(i));
+                }
+            }
+
           std::string miriamString = XMLNode::convertXMLNodeToString(pMIRIAMNode);
           CRDFGraphConverter::SBML2Copasi(miriamString);
 
