@@ -2530,7 +2530,7 @@ void CCSPMethod::printResult(std::ostream * ostream) const
 
   CTSSAProblem* pProblem = dynamic_cast<CTSSAProblem*>(pTask->getProblem());
 
-  stepNumber = pProblem->getStepNumber();
+  stepNumber = (int)mVec_SlowModes.size();
 
   this->print(&os);
 
