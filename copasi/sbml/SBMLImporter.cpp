@@ -9154,7 +9154,7 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
             {
               XMLNamespaces* ns = pSBMLObject->getSBMLDocument()->getSBMLNamespaces()->getNamespaces();
 
-              for (unsigned int i = 0; i < ns->getNumNamespaces(); ++i)
+              for (int i = 0; i < ns->getNumNamespaces(); ++i)
                 {
                   const std::string prefix = ns->getPrefix(i);
 
