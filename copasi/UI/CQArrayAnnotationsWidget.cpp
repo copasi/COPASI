@@ -834,7 +834,7 @@ void CQArrayAnnotationsWidget::fillBarChart()
   if (!mOneDimensional)
     assert(mColIndex < mSelectedCell.size());
 
-  std::vector<size_t>& types = mpArray->size();
+  std::vector<size_t> types = mpArray->size();
   size_t imax =  types.size() > mRowIndex ? types[mRowIndex] : 0;
   size_t jmax = mOneDimensional ? 1 : types.size() > mColIndex ? types[mColIndex] : 0;
 
