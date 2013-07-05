@@ -9177,9 +9177,13 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
                   if (prefix.empty())
                     continue;
 
-                  // only add prefix if it is not defined yet
-                  if (!node->hasAttr("xmlns:" + prefix))
-                    node->addAttr("xmlns:" + prefix, ns->getURI(i));
+                  // If the prefix is already defined we do not need to add it.
+                  if (node->getNamespaceIndexByPrefix(ns->getPrefix(i)) != -1)
+                    {
+                      continue;
+                    }
+
+                  node->addNamespace(ns->getURI(i), ns->getPrefix(i));
                 }
             }
 
