@@ -84,6 +84,12 @@ const double CQNewMainWindow::ZOOM_FACTORS[] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.
 
 // TODO implement signals that allow enabling and disabling the save and save as actions.
 
+CQNewMainWindow::~CQNewMainWindow()
+{
+  // remove from window menu
+  removeFromMainWindow();
+}
+
 CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   CWindowInterface(),
   mMode(CQNewMainWindow::GRAPH_MODE),
@@ -1952,6 +1958,18 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
       CCopasiVector<CChemEqElement>::const_iterator sIt = substrates.begin(), sEndit = substrates.end();
       const CMetab* pMetab = NULL;
 
+      // if we have no substrates, add a dummy / invisible node for now
+      if (sIt == sEndit)
+        {
+          CLMetabGlyph* pMetabGlyph = new CLMetabGlyph;
+          pMetabGlyph->setDimensions(CLDimensions(1, 1));
+          pMetabGlyph->setObjectRole("invisible");
+          mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
+          CLMetabReferenceGlyph::Role role = CLMetabReferenceGlyph::SUBSTRATE;
+          CLMetabReferenceGlyph* pRefGlyph = CQNewMainWindow::createMetabReferenceGlyph("", pMetabGlyph->getKey(), role, 0, 0, 1, 1);
+          pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
+        }
+
       while (sIt != sEndit)
         {
           // check is the species reference is to be created at all
@@ -2035,6 +2053,18 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
       sIt = products.begin();
 
       sEndit = products.end();
+
+      // if we have no products, add a dummy / invisible node for now
+      if (sIt == sEndit)
+        {
+          CLMetabGlyph* pMetabGlyph = new CLMetabGlyph;
+          pMetabGlyph->setDimensions(CLDimensions(1, 1));
+          pMetabGlyph->setObjectRole("invisible");
+          mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
+          CLMetabReferenceGlyph::Role role = CLMetabReferenceGlyph::PRODUCT;
+          CLMetabReferenceGlyph* pRefGlyph = CQNewMainWindow::createMetabReferenceGlyph("", pMetabGlyph->getKey(), role, 0, 0, 1, 1);
+          pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
+        }
 
       while (sIt != sEndit)
         {

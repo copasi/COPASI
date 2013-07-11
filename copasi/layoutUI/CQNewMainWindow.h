@@ -77,6 +77,7 @@ public:
 #endif // ELEMENTARY_MODE_DISPLAY
 
   CQNewMainWindow(CCopasiDataModel* pDatamodel);
+  virtual ~CQNewMainWindow();
 
   virtual QMenu *getWindowMenu() const;
 
