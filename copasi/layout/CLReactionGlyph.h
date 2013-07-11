@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.h,v $
-//   $Revision: 1.17 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:35:21 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -115,6 +107,8 @@ public:
   const std::string & getRoleDisplayName() const
   {return RoleName[mRole];};
 
+  virtual void moveBy(const CLPoint &p);
+
   /**
    * This method writes the information of the COPASI layout object into the
    * corresponding SBML object
@@ -175,6 +169,8 @@ public:
   const CLCurve & getCurve() const {return mCurve;};
   CLCurve & getCurve() {return mCurve;};
   void setCurve(const CLCurve & c) {mCurve = c;};
+
+  virtual void moveBy(const CLPoint &p);
 
   /**
    * This method writes the information of the COPASI layout object into the
