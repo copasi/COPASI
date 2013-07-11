@@ -330,8 +330,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
 
       if (it == copasimodelmap.end()) //not found
         {
-          pG = new SpeciesGlyph;
-          layout->getListOfSpeciesGlyphs()->appendAndOwn(pG);
+          pG = layout->createSpeciesGlyph();
         }
       else
         {
@@ -357,8 +356,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
 
       if (it == copasimodelmap.end()) //not found
         {
-          pG = new ReactionGlyph;
-          layout->getListOfReactionGlyphs()->appendAndOwn(pG);
+          pG = layout->createReactionGlyph();
         }
       else
         {
@@ -387,8 +385,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
 
       if (it == copasimodelmap.end()) //not found
         {
-          pG = new TextGlyph;
-          layout->getListOfTextGlyphs()->appendAndOwn(pG);
+          pG = layout->createTextGlyph();
         }
       else
         {
@@ -414,8 +411,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
 
       if (it == copasimodelmap.end()) //not found
         {
-          pG = new GraphicalObject;
-          layout->getListOfAdditionalGraphicalObjects()->appendAndOwn(pG);
+          pG = layout->createAdditionalGraphicalObject();
         }
       else
         {
