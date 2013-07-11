@@ -22,6 +22,7 @@ class SBase;
 class BoundingBox;
 class Dimensions;
 class Point;
+class CLPoint;
 
 /**
  * This class does nothing at all at the moment.
@@ -37,6 +38,7 @@ public:
   // make CLBase polymorphic so that we can dynamic cast from CLBase to
   // CLGraphicalObject
   virtual ~CLBase() {};
+  virtual void moveBy(const CLPoint &p) {};
 };
 
 /**
@@ -127,6 +129,15 @@ public:
                    , this->mZ + rhs.mZ
 #endif // USE_CRENDER_EXTENSION
                   );
+  };
+
+  virtual void moveBy(const CLPoint &p)
+  {
+    mX += p.mX;
+    mY += p.mY;
+#ifdef USE_CRENDER_EXTENSION
+    mZ += p.mZ;
+#endif // USE_CRENDER_EXTENSION
   };
 
   CLPoint operator*(const double & rhs) const
@@ -303,6 +314,11 @@ public:
 
   void setPosition(const CLPoint & p) {mPosition = p;};
   void setDimensions(const CLDimensions & d) {mDimensions = d;};
+
+  virtual void moveBy(const CLPoint &p)
+  {
+    mPosition.moveBy(p);
+  };
 
   /**
    * convert to sbml bounding box

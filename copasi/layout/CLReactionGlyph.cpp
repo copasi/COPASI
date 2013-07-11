@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLReactionGlyph.cpp,v $
-//   $Revision: 1.23 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:51 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -61,7 +53,7 @@ const std::string CLMetabReferenceGlyph::XMLRole[] =
 
 CLMetabReferenceGlyph::CLMetabReferenceGlyph(const std::string & name,
     const CCopasiContainer * pParent)
-    : CLGraphicalObject(name, pParent),
+  : CLGraphicalObject(name, pParent),
     mMetabGlyphKey(),
     mCurve(),
     mRole(UNDEFINED)
@@ -69,7 +61,7 @@ CLMetabReferenceGlyph::CLMetabReferenceGlyph(const std::string & name,
 
 CLMetabReferenceGlyph::CLMetabReferenceGlyph(const CLMetabReferenceGlyph & src,
     const CCopasiContainer * pParent)
-    : CLGraphicalObject(src, pParent),
+  : CLGraphicalObject(src, pParent),
     mMetabGlyphKey(src.mMetabGlyphKey),
     mCurve(src.mCurve),
     mRole(src.mRole)
@@ -79,7 +71,7 @@ CLMetabReferenceGlyph::CLMetabReferenceGlyph(const SpeciesReferenceGlyph & sbml,
     const std::map<std::string, std::string> & modelmap,
     std::map<std::string, std::string> & layoutmap,
     const CCopasiContainer * pParent)
-    : CLGraphicalObject(sbml, layoutmap, pParent),
+  : CLGraphicalObject(sbml, layoutmap, pParent),
     mMetabGlyphKey(), //initialized in the body below
     mCurve(), //initialized in the body below
     mRole((Role)sbml.getRole())
@@ -92,7 +84,6 @@ CLMetabReferenceGlyph::CLMetabReferenceGlyph(const SpeciesReferenceGlyph & sbml,
       if (it != modelmap.end())
         setModelObjectKey(it->second);
     }
-
 
   //get the copasi key corresponding to the sbml id for the species glyph
   if (sbml.getSpeciesGlyphId() != "")
@@ -126,6 +117,12 @@ CLMetabGlyph* CLMetabReferenceGlyph::getMetabGlyph() const
 {
   CCopasiObject* tmp = CCopasiRootContainer::getKeyFactory()->get(mMetabGlyphKey);
   return dynamic_cast<CLMetabGlyph*>(tmp);
+}
+
+void CLMetabReferenceGlyph::moveBy(const CLPoint &p)
+{
+  CLGraphicalObject::moveBy(p);
+  mCurve.moveBy(p);
 }
 
 void CLMetabReferenceGlyph::exportToSBML(SpeciesReferenceGlyph * g,
@@ -177,7 +174,7 @@ std::ostream & operator<<(std::ostream &os, const CLMetabReferenceGlyph & g)
 
   if (tmp)
     os << "      refers to a MetabGlyph that refers to "
-    << tmp->getModelObjectDisplayName() << std::endl;
+       << tmp->getModelObjectDisplayName() << std::endl;
 
   os << g.mCurve;
 
@@ -191,14 +188,14 @@ void CLMetabReferenceGlyph::print(std::ostream * ostream) const
 
 CLReactionGlyph::CLReactionGlyph(const std::string & name,
                                  const CCopasiContainer * pParent)
-    : CLGraphicalObject(name, pParent),
+  : CLGraphicalObject(name, pParent),
     mCurve(),
     mvMetabReferences("ListOfMetabReferenceGlyphs", this)
 {}
 
 CLReactionGlyph::CLReactionGlyph(const CLReactionGlyph & src,
                                  const CCopasiContainer * pParent)
-    : CLGraphicalObject(src, pParent),
+  : CLGraphicalObject(src, pParent),
     mCurve(src.mCurve),
     mvMetabReferences(src.mvMetabReferences, this)
 {
@@ -209,7 +206,7 @@ CLReactionGlyph::CLReactionGlyph(const ReactionGlyph & sbml,
                                  const std::map<std::string, std::string> & modelmap,
                                  std::map<std::string, std::string> & layoutmap,
                                  const CCopasiContainer * pParent)
-    : CLGraphicalObject(sbml, layoutmap, pParent),
+  : CLGraphicalObject(sbml, layoutmap, pParent),
     mCurve(),
     mvMetabReferences("ListOfMetabReferenceGlyphs", this)
 {
@@ -228,7 +225,7 @@ CLReactionGlyph::CLReactionGlyph(const ReactionGlyph & sbml,
   for (i = 0; i < imax; ++i)
     {
       const SpeciesReferenceGlyph* tmp
-      = dynamic_cast<const SpeciesReferenceGlyph*>(sbml.getListOfSpeciesReferenceGlyphs()->get(i));
+        = dynamic_cast<const SpeciesReferenceGlyph*>(sbml.getListOfSpeciesReferenceGlyphs()->get(i));
 
       if (tmp)
         addMetabReferenceGlyph(new CLMetabReferenceGlyph(*tmp, modelmap, layoutmap));
@@ -260,6 +257,17 @@ void CLReactionGlyph::addMetabReferenceGlyph(CLMetabReferenceGlyph * glyph)
 {
   if (glyph)
     mvMetabReferences.add(glyph, true); //true means vector takes ownership
+}
+
+void CLReactionGlyph::moveBy(const CLPoint &p)
+{
+  CLGraphicalObject::moveBy(p);
+  mCurve.moveBy(p);
+
+  size_t i, imax = mvMetabReferences.size();
+
+  for (i = 0; i < imax; ++i)
+    mvMetabReferences[i]->moveBy(p);
 }
 
 void CLReactionGlyph::exportToSBML(ReactionGlyph * g,

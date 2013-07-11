@@ -125,6 +125,11 @@ CCopasiObject * CLGraphicalObject::getModelObject() const
   return pObject;
 }
 
+void CLGraphicalObject::moveBy(const CLPoint &p)
+{
+  mBBox.moveBy(p);
+}
+
 std::string CLGraphicalObject::getModelObjectName() const
 {
   CCopasiObject * tmp = getModelObject();

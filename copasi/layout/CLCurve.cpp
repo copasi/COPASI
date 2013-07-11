@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLCurve.cpp,v $
-//   $Revision: 1.15 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:52 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -28,7 +20,7 @@
 #include "CLCurve.h"
 
 CLLineSegment::CLLineSegment(const LineSegment & ls)
-    : CLBase(ls),
+  : CLBase(ls),
     mStart(*ls.getStart()),
     mEnd(*ls.getEnd()),
     mBase1(),
@@ -80,12 +72,12 @@ std::ostream & operator<<(std::ostream &os, const CLLineSegment & ls)
 //****************************************************
 
 CLCurve::CLCurve(const CLCurve & c)
-    : CLBase(c),
+  : CLBase(c),
     mvCurveSegments(c.mvCurveSegments)
 {}
 
 CLCurve::CLCurve(const Curve & sbmlcurve)
-    : CLBase(sbmlcurve),
+  : CLBase(sbmlcurve),
     mvCurveSegments()
 {
   //TODO
@@ -94,7 +86,7 @@ CLCurve::CLCurve(const Curve & sbmlcurve)
   for (i = 0; i < imax; ++i)
     {
       const LineSegment* tmp
-      = dynamic_cast<const LineSegment*>(sbmlcurve.getListOfCurveSegments()->get(i));
+        = dynamic_cast<const LineSegment*>(sbmlcurve.getListOfCurveSegments()->get(i));
 
       if (tmp)
         mvCurveSegments.push_back(CLLineSegment(*tmp));
@@ -190,6 +182,32 @@ std::ostream & operator<<(std::ostream &os, const CLCurve & c)
     }
 
   return os;
+}
+
+void CLCurve::moveBy(const CLPoint &p)
+{
+  CLLineSegment* pLS = NULL;
+  CLPoint* pP = NULL;
+  size_t i, iMax = this->getNumCurveSegments();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      pLS = this->getSegmentAt(i);
+      pP = &pLS->getStart();
+      pP->moveBy(p);
+
+      pP = &pLS->getEnd();
+      pP->moveBy(p);
+
+      if (pLS->isBezier())
+        {
+          pP = &pLS->getBase1();
+          pP->moveBy(p);
+
+          pP = &pLS->getBase2();
+          pP->moveBy(p);
+        }
+    }
 }
 
 /**

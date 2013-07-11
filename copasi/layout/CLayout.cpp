@@ -752,3 +752,49 @@ CLBoundingBox CLayout::calculateBoundingBox() const
 }
 
 #endif /* USE_CRENDER_EXTENSION */
+
+void CLayout::moveBy(const CLPoint &p)
+{
+  if (p.isEmpty()) return;
+
+  CLGraphicalObject* pObject = NULL;
+  size_t i, iMax = this->getListOfCompartmentGlyphs().size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      pObject = this->getListOfCompartmentGlyphs()[i];
+      pObject->moveBy(p);
+    }
+
+  iMax = this->getListOfMetaboliteGlyphs().size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      pObject = this->getListOfMetaboliteGlyphs()[i];
+      pObject->moveBy(p);
+    }
+
+  iMax = this->getListOfReactionGlyphs().size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      pObject = this->getListOfReactionGlyphs()[i];
+      pObject->moveBy(p);
+    }
+
+  iMax = this->getListOfTextGlyphs().size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      pObject = this->getListOfTextGlyphs()[i];
+      pObject->moveBy(p);
+    }
+
+  iMax = this->getListOfGraphicalObjects().size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      pObject = this->getListOfGraphicalObjects()[i];
+      pObject->moveBy(p);
+    }
+}
