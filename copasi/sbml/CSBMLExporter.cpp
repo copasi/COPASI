@@ -3351,23 +3351,6 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   if (pOldSBMLDocument == NULL)
     {
       this->mpSBMLDocument = new SBMLDocument(this->mSBMLLevel, this->mSBMLVersion);
-#if LIBSBML_VERSION >= 50000
-      const std::string uri = (this->mSBMLLevel < 3 ? LayoutExtension::getXmlnsL2() : LayoutExtension::getXmlnsL3V1V1());
-      this->mpSBMLDocument->enablePackage(uri, "layout", true);
-
-      if (this->mSBMLLevel > 2)
-        this->mpSBMLDocument->setPackageRequired("layout", false);
-
-#if USE_CRENDER_EXTENSION
-      const std::string renderuri = (this->mSBMLLevel < 3 ? RenderExtension::getXmlnsL2() : RenderExtension::getXmlnsL3V1V1());
-      this->mpSBMLDocument->enablePackage(uri, "render", true);
-
-      if (this->mSBMLLevel > 2)
-        this->mpSBMLDocument->setPackageRequired("render", false);
-
-#endif
-
-#endif
     }
   else
     {
@@ -3375,6 +3358,24 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
     }
 
   if (this->mpSBMLDocument == NULL) fatalError();
+
+#if LIBSBML_VERSION >= 50000
+  const std::string uri = (this->mSBMLLevel < 3 ? LayoutExtension::getXmlnsL2() : LayoutExtension::getXmlnsL3V1V1());
+  this->mpSBMLDocument->enablePackage(uri, "layout", true);
+
+  if (this->mSBMLLevel > 2)
+    this->mpSBMLDocument->setPackageRequired("layout", false);
+
+#if USE_CRENDER_EXTENSION
+  const std::string renderuri = (this->mSBMLLevel < 3 ? RenderExtension::getXmlnsL2() : RenderExtension::getXmlnsL3V1V1());
+  this->mpSBMLDocument->enablePackage(renderuri, "render", true);
+
+  if (this->mSBMLLevel > 2)
+    this->mpSBMLDocument->setPackageRequired("render", false);
+
+#endif
+
+#endif
 
   if (this->mpSBMLDocument->getModel() == NULL)
     {
