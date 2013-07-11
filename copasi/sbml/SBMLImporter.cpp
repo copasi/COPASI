@@ -9242,7 +9242,7 @@ CCopasiObject* SBMLImporter::isConstantFlux(const CEvaluationNode* pRoot, CModel
 
             // the function may only have one node which must be the
             // variable
-            if (pTree->getRoot() != NULL && pTree->getRoot()->getChild() == NULL && CEvaluationNode::type(pTree->getRoot()->getType()) == CEvaluationNode::VARIABLE)
+            if (pTree != NULL && pTree->getRoot() != NULL && pTree->getRoot()->getChild() == NULL && CEvaluationNode::type(pTree->getRoot()->getType()) == CEvaluationNode::VARIABLE)
               {
                 name = dynamic_cast<const CEvaluationNodeObject*>(pRoot->getChild())->getObjectCN();
                 assert(!name.empty());
