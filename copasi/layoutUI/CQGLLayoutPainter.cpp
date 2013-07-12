@@ -389,13 +389,19 @@ void CQGLLayoutPainter::calculateAndAssignBounds(CLayout* pLayout)
 
   // move into the origin
   CLPoint differenceToOrigin(
-    mMinX < 0 ? -mMinX : 0,
-    mMinY < 0 ? -mMinY : 0
+    -mMinX,
+    -mMinY
 #ifdef USE_CRENDER_EXTENSION
-    , bb.getPosition().getZ() < 0 ? -bb.getPosition().getZ() : 0
+    , -bb.getPosition().getZ()
 #endif
   );
   pLayout->moveBy(differenceToOrigin);
+
+  if (mMinX > 0)
+    bb.getDimensions().setWidth(bb.getDimensions().getWidth() + mMinX);
+
+  if (mMinY > 0)
+    bb.getDimensions().setHeight(bb.getDimensions().getHeight() + mMinY);
 
   mMinX = 0;
   mMinY = 0;
