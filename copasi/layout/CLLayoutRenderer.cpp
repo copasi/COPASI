@@ -5201,22 +5201,95 @@ std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> CLLayoutRendere
                 }
             }
 
-          iMax = this->mpLayout->getListOfGraphicalObjects().size();
 
+          
+          
+          
+          
+          
+          iMax = this->mpLayout->getListOfGeneralGlyphs().size();
+          
           for (i = 0; i < iMax; ++i)
             {
-              pGO = this->mpLayout->getListOfGraphicalObjects()[i];
-              pBB = &pGO->getBoundingBox();
-              bbx = pBB->getPosition().getX();
-              bby = pBB->getPosition().getY();
-              bbwidth = pBB->getDimensions().getWidth();
-              bbheight = pBB->getDimensions().getHeight();
-
-              if (x >= bbx && y >= bby && x <= (bbx + bbwidth) && y <= (bby + bbheight))
+              CLGeneralGlyph* pGG = this->mpLayout->getListOfGeneralGlyphs()[i];
+              assert(pGG != NULL);
+              
+              // we have to look at all points of the curve if there is one
+              if (pGG->getCurve().getNumCurveSegments() != 0)
                 {
-                  hits.insert(pGO);
+                  pCurve = &pGG->getCurve();
+                  assert(pCurve != NULL);
+                  kMax = pCurve->getNumCurveSegments();
+                  
+                  for (k = 0; k < kMax; ++k)
+                    {
+                      pLS = pCurve->getSegmentAt(k);
+                      assert(pLS != NULL);
+                      
+                      if (isSegmentHit(pLS, x, y, toleranceRadius))
+                        {
+                          hits.insert(pGG);
+                          break;
+                        }
+                    }
+                }
+              else
+                {
+                  pBB = &pGG->getBoundingBox();
+                  bbx = pBB->getPosition().getX();
+                  bby = pBB->getPosition().getY();
+                  bbwidth = pBB->getDimensions().getWidth();
+                  bbheight = pBB->getDimensions().getHeight();
+                  
+                  if (x >= bbx && y >= bby && x <= (bbx + bbwidth) && y <= (bby + bbheight))
+                    {
+                      hits.insert(pRG);
+                    }
+                }
+              
+              jMax = pGG->getListOfReferenceGlyphs().size();
+              
+              for (j = 0; j < jMax; ++j)
+                {
+                  CLReferenceGlyph* pRefG = pGG->getListOfReferenceGlyphs()[j];
+                  assert(pRefG != NULL);
+                  
+                  // we have to look at all points of the curve if there is one
+                  if (pRefG->getCurve().getNumCurveSegments() != 0)
+                    {
+                      pCurve = &pRefG->getCurve();
+                      assert(pCurve != NULL);
+                      kMax = pCurve->getNumCurveSegments();
+                      bool drawn = false;
+                      
+                      for (k = 0; k < kMax && !drawn; ++k)
+                        {
+                          pLS = pCurve->getSegmentAt(k);
+                          
+                          if (isSegmentHit(pLS, x, y, toleranceRadius))
+                            {
+                              hits.insert(pSRG);
+                              break;
+                            }
+                        }
+                    }
+                  else
+                    {
+                      pBB = &pRefG->getBoundingBox();
+                      bbx = pBB->getPosition().getX();
+                      bby = pBB->getPosition().getY();
+                      bbwidth = pBB->getDimensions().getWidth();
+                      bbheight = pBB->getDimensions().getHeight();
+                      
+                      if (x >= bbx && y >= bby && x <= (bbx + bbwidth) && y <= (bby + bbheight))
+                        {
+                          hits.insert(pRefG);
+                        }
+                    }
                 }
             }
+          
+          
         }
     }
 
@@ -6215,47 +6288,123 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
             }
         }
 
-      iMax = this->mpLayout->getListOfGraphicalObjects().size();
-
+      
+      iMax = this->mpLayout->getListOfGeneralGlyphs().size();
+      
       for (i = 0; i < iMax; ++i)
         {
-          pGO = this->mpLayout->getListOfGraphicalObjects()[i];
-          pBB = &pGO->getBoundingBox();
-          x = pBB->getPosition().getX();
-          y = pBB->getPosition().getY();
-
-          if (partial)
+          CLGeneralGlyph* pGG = this->mpLayout->getListOfGeneralGlyphs()[i];
+          assert(pGG != NULL);
+          
+          // we have to look at all points of the curve if there is one
+          if (pGG->getCurve().getNumCurveSegments() != 0)
             {
-              // if the upper left is right of or below the current viewport, the
-              // object is not drawn
-              if (!(x > rx || y > ry))
+              
+              bool drawn = CLLayoutRenderer::is_curve_visible(pGG->getCurve(), lx, ly, rx, ry, partial);
+              
+              if (drawn)
                 {
-                  // or if the lower right is left of or above the current viewport
-                  // the object is also not drawn
-                  x += pBB->getDimensions().getWidth();
-                  y += pBB->getDimensions().getHeight();
-
-                  if (!(x < lx || y < ly))
-                    {
-                      result.push_back(pGO);
-                    }
+                  result.push_back(pGG);
                 }
             }
           else
             {
-              // the object has to completly within the box
-              if (x >= lx && y >= ly)
+              pBB = &pGG->getBoundingBox();
+              x = pBB->getPosition().getX();
+              y = pBB->getPosition().getY();
+              
+              if (partial)
                 {
-                  x += pBB->getDimensions().getWidth();
-                  y += pBB->getDimensions().getHeight();
-
-                  if ((x <= rx && y <= ry))
+                  // if the upper left is right of or below the current viewport, the
+                  // object is not drawn
+                  if (!(x > rx || y > ry))
                     {
-                      result.push_back(pGO);
+                      // or if the lower right is left of or above the current viewport
+                      // the object is also not drawn
+                      x += pBB->getDimensions().getWidth();
+                      y += pBB->getDimensions().getHeight();
+                      
+                      if (!(x < lx || y < ly))
+                        {
+                          result.push_back(pGG);
+                        }
+                    }
+                }
+              else
+                {
+                  // the object has to completly within the box
+                  if (x >= lx && y >= ly)
+                    {
+                      x += pBB->getDimensions().getWidth();
+                      y += pBB->getDimensions().getHeight();
+                      
+                      if ((x <= rx && y <= ry))
+                        {
+                          result.push_back(pGO);
+                        }
+                    }
+                }
+            }
+          
+          jMax = pGG->getListOfReferenceGlyphs().size();
+          
+          for (j = 0; j < jMax; ++j)
+            {
+              CLReferenceGlyph* pRefG = pGG->getListOfReferenceGlyphs()[j];
+              assert(pRefG != NULL);
+              
+              // we have to look at all points of the curve if there is one
+              if (pRefG->getCurve().getNumCurveSegments() != 0)
+                {
+                  bool drawn = CLLayoutRenderer::is_curve_visible(pRefG->getCurve(), lx, ly, rx, ry, partial);
+                  
+                  if (drawn)
+                    {
+                      result.push_back(pRefG);
+                    }
+                }
+              else
+                {
+                  pBB = &pRefG->getBoundingBox();
+                  x = pBB->getPosition().getX();
+                  y = pBB->getPosition().getY();
+                  
+                  if (partial)
+                    {
+                      // if the upper left is right of or below the current viewport, the
+                      // object is not drawn
+                      if (!(x > rx || y > ry))
+                        {
+                          // or if the lower right is left of or above the current viewport
+                          // the object is also not drawn
+                          x += pBB->getDimensions().getWidth();
+                          y += pBB->getDimensions().getHeight();
+                          
+                          if (!(x < lx || y < ly))
+                            {
+                              result.push_back(pRefG);
+                            }
+                        }
+                    }
+                  else
+                    {
+                      // the object has to completly within the box
+                      if (x >= lx && y >= ly)
+                        {
+                          x += pBB->getDimensions().getWidth();
+                          y += pBB->getDimensions().getHeight();
+                          
+                          if ((x <= rx && y <= ry))
+                            {
+                              result.push_back(pGO);
+                            }
+                        }
                     }
                 }
             }
         }
+    
+      
     }
 
   return result;
@@ -6528,11 +6677,11 @@ void CLLayoutRenderer::update_associations()
             }
         }
 
-      iMax = this->mpLayout->getListOfGraphicalObjects().size();
+      iMax = this->mpLayout->getListOfGeneralGlyphs().size();
 
       for (i = 0; i < iMax; ++i)
         {
-          pGO = this->mpLayout->getListOfGraphicalObjects()[i];
+          pGO = this->mpLayout->getListOfGeneralGlyphs()[i];
           idMap[pGO->getKey()] = pGO;
         }
 

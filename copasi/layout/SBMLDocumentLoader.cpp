@@ -250,7 +250,9 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
       = dynamic_cast<const GraphicalObject*>(sbmlLayout.getListOfAdditionalGraphicalObjects()->get(i));
 
       if (tmp)
-        layout->addGraphicalObject(new CLGraphicalObject(*tmp, layoutmap));
+        layout->addGeneralGlyph(new CLGeneralGlyph(*tmp, modelmap, layoutmap));
+      
+      //TODO read SBML GeneralGlyph once libsbml supports it
     }
 
   //second pass text (the text glyph can refer to other glyphs. These references can)

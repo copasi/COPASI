@@ -21,7 +21,7 @@
 #include "CLayout.h"
 
 //static
-CLayout * CLayoutInitializer::createLayoutFromCModel(const CModel* model)
+/*CLayout * CLayoutInitializer::createLayoutFromCModel(const CModel* model)
 {
   if (!model) return NULL;
 
@@ -64,7 +64,7 @@ CLayout * CLayoutInitializer::createLayoutFromCModel(const CModel* model)
   //ofs.close();
 
   return layout;
-}
+}*/
 
 CLCompartmentGlyph * CLayoutInitializer::createCompartmentGlyph(const CCompartment * c)
 {

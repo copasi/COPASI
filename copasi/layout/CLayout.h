@@ -45,7 +45,7 @@ protected:
   CCopasiVector<CLMetabGlyph> mvMetabs;
   CCopasiVector<CLReactionGlyph> mvReactions;
   CCopasiVector<CLTextGlyph> mvLabels;
-  CCopasiVector<CLGraphicalObject> mvGraphicalObjects;
+  CCopasiVector<CLGeneralGlyph> mvGraphicalObjects;
 #ifdef USE_CRENDER_EXTENSION
   CCopasiVector<CLLocalRenderInformation> mvLocalRenderInformationObjects;
 #endif /* USE_CRENDER_EXTENSION */
@@ -128,13 +128,13 @@ public:
 
   //*******************
 
-  const CCopasiVector<CLGraphicalObject> & getListOfGraphicalObjects() const
+  const CCopasiVector<CLGeneralGlyph> & getListOfGeneralGlyphs() const
   {return mvGraphicalObjects;};
 
   /**
    *  add Glyph to layout. The layout takes ownership of the glyph.
    */
-  void addGraphicalObject(CLGraphicalObject * glyph);
+  void addGeneralGlyph(CLGeneralGlyph * glyph);
 
 #ifdef USE_CRENDER_EXTENSION
   //*******************

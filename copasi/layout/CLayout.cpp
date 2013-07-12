@@ -117,7 +117,7 @@ void CLayout::addTextGlyph(CLTextGlyph * glyph)
     mvLabels.add(glyph, true); //true means vector takes ownership
 }
 
-void CLayout::addGraphicalObject(CLGraphicalObject * glyph)
+void CLayout::addGeneralGlyph(CLGeneralGlyph* glyph)
 {
   if (glyph)
     mvGraphicalObjects.add(glyph, true); //true means vector takes ownership
@@ -393,7 +393,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
 
   for (i = 0; i < imax; ++i)
     {
-      CLGraphicalObject * tmp = mvGraphicalObjects[i];
+      CLGeneralGlyph * tmp = mvGraphicalObjects[i];
 
       //check if the glyph exists in the libsbml data
       std::map<const CCopasiObject*, SBase*>::const_iterator it;
@@ -411,7 +411,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
         }
 
       layoutmap.insert(std::pair<const CLBase*, const SBase*>(tmp, pG));
-      tmp->exportToSBML(pG, copasimodelmap, sbmlIDs);
+      tmp->exportToSBML(pG, copasimodelmap, sbmlIDs, layoutmap);
     }
 
   //now that we have all graphical objects in the layoutmap we can resolve the references
@@ -642,29 +642,88 @@ CLBoundingBox CLayout::calculateBoundingBox() const
       maxY = (maxY > y2) ? maxY : y2;
     }
 
-  iMax = this->getListOfGraphicalObjects().size();
+    size_t j, jMax;
+    const CLGeneralGlyph* pGG = NULL;
+    const CLReferenceGlyph* pRefG = NULL;
+    iMax = this->getListOfGeneralGlyphs().size();
 
-  for (i = 0; i < iMax; ++i)
-    {
-      pObject = this->getListOfGraphicalObjects()[i];
-      pBB = &pObject->getBoundingBox();
-      pP = &pBB->getPosition();
-      x = pP->getX();
-      y = pP->getY();
-      pDim = &pBB->getDimensions();
-      x2 = x + pDim->getWidth();
-      y2 = y + pDim->getHeight();
-      minX = (minX < x) ? minX : x;
-      minY = (minY < y) ? minY : y;
-      maxX = (maxX > x2) ? maxX : x2;
-      maxY = (maxY > y2) ? maxY : y2;
-    }
+    for (i = 0; i < iMax; ++i)
+      {
+        pGG = this->getListOfGeneralGlyphs()[i];
+        
+        if (pGG->getCurve().getNumCurveSegments() > 0)
+          {
+            pCurve = &pGG->getCurve();
+            CLBoundingBox bb = pCurve->calculateBoundingBox();
+            pP = &bb.getPosition();
+            x = pP->getX();
+            y = pP->getY();
+            pDim = &bb.getDimensions();
+            x2 = x + pDim->getWidth();
+            y2 = y + pDim->getHeight();
+            minX = (minX < x) ? minX : x;
+            minY = (minY < y) ? minY : y;
+            maxX = (maxX > x2) ? maxX : x2;
+            maxY = (maxY > y2) ? maxY : y2;
+          }
+        else
+          {
+            pBB = &pGG->getBoundingBox();
+            pP = &pBB->getPosition();
+            x = pP->getX();
+            y = pP->getY();
+            pDim = &pBB->getDimensions();
+            x2 = x + pDim->getWidth();
+            y2 = y + pDim->getHeight();
+            minX = (minX < x) ? minX : x;
+            minY = (minY < y) ? minY : y;
+            maxX = (maxX > x2) ? maxX : x2;
+            maxY = (maxY > y2) ? maxY : y2;
+          }
+        
+        jMax = pGG->getListOfReferenceGlyphs().size();
+        
+        for (j = 0; j < jMax; ++j)
+          {
+            pRefG = pGG->getListOfReferenceGlyphs()[j];
+            
+            if (pRefG->getCurve().getNumCurveSegments() > 0)
+              {
+                pCurve = &pRefG->getCurve();
+                CLBoundingBox bb = pCurve->calculateBoundingBox();
+                pP = &bb.getPosition();
+                x = pP->getX();
+                y = pP->getY();
+                pDim = &bb.getDimensions();
+                x2 = x + pDim->getWidth();
+                y2 = y + pDim->getHeight();
+                minX = (minX < x) ? minX : x;
+                minY = (minY < y) ? minY : y;
+                maxX = (maxX > x2) ? maxX : x2;
+                maxY = (maxY > y2) ? maxY : y2;
+              }
+            else
+              {
+                pBB = &pRefG->getBoundingBox();
+                pP = &pBB->getPosition();
+                x = pP->getX();
+                y = pP->getY();
+                pDim = &pBB->getDimensions();
+                x2 = x + pDim->getWidth();
+                y2 = y + pDim->getHeight();
+                minX = (minX < x) ? minX : x;
+                minY = (minY < y) ? minY : y;
+                maxX = (maxX > x2) ? maxX : x2;
+                maxY = (maxY > y2) ? maxY : y2;
+              }
+          }
+      }
+
 
   const CLReactionGlyph* pRG = NULL;
 
   const CLMetabReferenceGlyph* pSRG = NULL;
 
-  size_t j, jMax;
 
   iMax = this->getListOfReactionGlyphs().size();
 
@@ -782,11 +841,11 @@ void CLayout::moveBy(const CLPoint &p)
       pObject->moveBy(p);
     }
 
-  iMax = this->getListOfGraphicalObjects().size();
+  iMax = this->getListOfGeneralGlyphs().size();
 
   for (i = 0; i < iMax; ++i)
     {
-      pObject = this->getListOfGraphicalObjects()[i];
+      pObject = this->getListOfGeneralGlyphs()[i];
       pObject->moveBy(p);
     }
 }

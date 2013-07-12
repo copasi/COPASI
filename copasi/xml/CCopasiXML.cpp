@@ -1704,18 +1704,36 @@ bool CCopasiXML::saveLayoutList()
         }
 
       //additional graphical objects
-      if (pLayout->getListOfGraphicalObjects().size() > 0)
+      if (pLayout->getListOfGeneralGlyphs().size() > 0)
         {
           startSaveElement("ListOfAdditionalGraphicalObjects");
 
-          jmax = pLayout->getListOfGraphicalObjects().size();
+          jmax = pLayout->getListOfGeneralGlyphs().size();
 
           for (j = 0; j < jmax; ++j)
             {
-              CLGraphicalObject* cg = pLayout->getListOfGraphicalObjects()[j];
+              CLGeneralGlyph* cg = pLayout->getListOfGeneralGlyphs()[j];
               Attributes.erase();
               Attributes.add("key", cg->getKey());
               Attributes.add("name", cg->getObjectName());
+              
+              if (!cg->getModelObjectKey().empty() && cg->hasValidModelReference())
+                {
+                  Attributes.add("reference", cg->getModelObjectKey());
+                }
+              else
+                {
+                  // we set the model reference to the empty string so that
+                  // the warnings message only appears on the first save operation
+                  cg->setModelObjectKey("");
+                  
+                  if (!this->mMCXML21Issued)
+                    {
+                      CCopasiMessage(CCopasiMessage::WARNING, MCXML + 21);
+                      this->mMCXML21Issued = true;
+                    }
+                }
+              
 #ifdef USE_CRENDER_EXTENSION
 
               if (cg->getObjectRole().find_first_not_of(" \t\r\n") != std::string::npos)
@@ -1726,8 +1744,44 @@ bool CCopasiXML::saveLayoutList()
 #endif // USE_CRENDER_EXTENSION
               startSaveElement("AdditionalGraphicalObject", Attributes);
 
-              saveBoundingBox(cg->getBoundingBox());
+              if (cg->getCurve().getNumCurveSegments() == 0)
+                  saveBoundingBox(cg->getBoundingBox());
+              else
+                  saveCurve(cg->getCurve());
 
+              // metab reference glyphs
+              startSaveElement("ListOfReferenceGlyphs");
+              size_t k, kmax = cg->getListOfReferenceGlyphs().size();
+              
+              for (k = 0; k < kmax; ++k)
+                {
+                  CLReferenceGlyph * mrg = cg->getListOfReferenceGlyphs()[k];
+                  Attributes.erase();
+                  Attributes.add("key", mrg->getKey());
+                  Attributes.add("name", mrg->getObjectName());
+                  Attributes.add("glyph", mrg->getTargetGlyphKey());
+                  //Attributes.add("metaboliteReference", mrg->getXXX());
+                  //Attributes.add("role", mrg->getRoleStr()); TODO!
+#ifdef USE_CRENDER_EXTENSION
+                  
+                  if (mrg->getObjectRole().find_first_not_of(" \t\r\n") != std::string::npos)
+                    {
+                      Attributes.add("objectRole", mrg->getObjectRole());
+                    }
+                  
+#endif // USE_CRENDER_EXTENSION
+                  startSaveElement("ReferenceGlyph", Attributes);
+                  
+                  if (mrg->getCurve().getNumCurveSegments() == 0)
+                      saveBoundingBox(mrg->getBoundingBox());
+                  else
+                      saveCurve(mrg->getCurve());
+                  
+                  endSaveElement("ReferenceGlyph");
+                }
+              
+              endSaveElement("ListOfReferenceGlyphs");
+              
               endSaveElement("AdditionalGraphicalObject");
             }
 

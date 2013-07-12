@@ -235,7 +235,8 @@ CCopasiXMLParser::CCopasiXMLParser(CVersion & version) :
   mCommon.pMetaboliteGlyph = NULL;
   mCommon.pReactionGlyph = NULL;
   mCommon.pTextGlyph = NULL;
-  mCommon.pAdditionalGO = NULL;
+  //mCommon.pAdditionalGO = NULL;
+  mCommon.pGeneralGlyph = NULL;
   mCommon.pCurve = NULL;
   mCommon.pLineSegment = NULL;
   mCommon.pMetaboliteReferenceGlyph = NULL;
@@ -7866,18 +7867,18 @@ void CCopasiXMLParser::AdditionalGOElement::start(const XML_Char *pszName, const
           key = mParser.getAttributeValue("key", papszAttrs);
           name = mParser.getAttributeValue("name", papszAttrs);
 
-          mCommon.pAdditionalGO = new CLGraphicalObject(name);
+          mCommon.pGeneralGlyph = new CLGeneralGlyph(name);
 #ifdef USE_CRENDER_EXTENSION
           const char * objectRole = mParser.getAttributeValue("objectRole", papszAttrs, false);
 
           if (objectRole != NULL && objectRole[0] != 0)
             {
-              mCommon.pAdditionalGO->setObjectRole(objectRole);
+              mCommon.pGeneralGlyph->setObjectRole(objectRole);
             }
 
 #endif // USE_CRENDER_EXTENSION
-          mCommon.pCurrentLayout->addGraphicalObject(mCommon.pAdditionalGO);
-          addFix(key, mCommon.pAdditionalGO);
+          mCommon.pCurrentLayout->addGeneralGlyph(mCommon.pGeneralGlyph);
+          addFix(key, mCommon.pGeneralGlyph);
         }
         return;
         break;
@@ -7901,9 +7902,9 @@ void CCopasiXMLParser::AdditionalGOElement::start(const XML_Char *pszName, const
           //workload
           const char * attr;
           attr = mParser.getAttributeValue("x", papszAttrs);
-          mCommon.pAdditionalGO->setX(CCopasiXMLInterface::DBL(attr));
+          mCommon.pGeneralGlyph->setX(CCopasiXMLInterface::DBL(attr));
           attr = mParser.getAttributeValue("y", papszAttrs);
-          mCommon.pAdditionalGO->setY(CCopasiXMLInterface::DBL(attr));
+          mCommon.pGeneralGlyph->setY(CCopasiXMLInterface::DBL(attr));
           return;
         }
         break;
@@ -7918,9 +7919,9 @@ void CCopasiXMLParser::AdditionalGOElement::start(const XML_Char *pszName, const
           //workload
           const char * attr;
           attr = mParser.getAttributeValue("width", papszAttrs);
-          mCommon.pAdditionalGO->setWidth(CCopasiXMLInterface::DBL(attr));
+          mCommon.pGeneralGlyph->setWidth(CCopasiXMLInterface::DBL(attr));
           attr = mParser.getAttributeValue("height", papszAttrs);
-          mCommon.pAdditionalGO->setHeight(CCopasiXMLInterface::DBL(attr));
+          mCommon.pGeneralGlyph->setHeight(CCopasiXMLInterface::DBL(attr));
           return;
         }
         break;
@@ -14716,7 +14717,8 @@ SCopasiXMLParserCommon::SCopasiXMLParserCommon():
   pMetaboliteGlyph(NULL),
   pReactionGlyph(NULL),
   pTextGlyph(NULL),
-  pAdditionalGO(NULL),
+  //pAdditionalGO(NULL),
+  pGeneralGlyph(NULL),
   pCurve(NULL),
   pLineSegment(NULL),
   pMetaboliteReferenceGlyph(NULL),

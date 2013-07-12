@@ -42,7 +42,7 @@ class CLayoutInitializer
      * one layout element is created for every model element.
      * This acts as a pseudo constructor for a CLayout.
      */
-    static CLayout* createLayoutFromCModel(const CModel* model);
+    //static CLayout* createLayoutFromCModel(const CModel* model);
 
   protected:
     static CLCompartmentGlyph* createCompartmentGlyph(const CCompartment* c);

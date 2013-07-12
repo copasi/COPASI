@@ -73,6 +73,7 @@ class CLayout;
 class CLCompartmentGlyph;
 class CLMetabGlyph;
 class CLReactionGlyph;
+class CLGeneralGlyph;
 class CLTextGlyph;
 class CLGraphicalObject;
 class CLCurve;
@@ -285,7 +286,8 @@ public:
   CLMetabGlyph * pMetaboliteGlyph;
   CLReactionGlyph * pReactionGlyph;
   CLTextGlyph * pTextGlyph;
-  CLGraphicalObject * pAdditionalGO;
+    //CLGraphicalObject * pAdditionalGO;
+  CLGeneralGlyph * pGeneralGlyph;
   CLCurve *pCurve;
   CLLineSegment *pLineSegment;
   CLMetabReferenceGlyph* pMetaboliteReferenceGlyph;
