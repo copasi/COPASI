@@ -359,6 +359,24 @@ private:
 public:
   void redrawNow();
 
+  class CompartmentInfo
+  {
+  public:
+    unsigned int mNumItems;
+    double mAreaSum;
+    
+    CompartmentInfo()
+    :mNumItems(0),
+    mAreaSum(0.0)
+    {}
+    
+    void add(double area)
+    {
+      ++mNumItems;
+      mAreaSum+=area;
+    }
+  };
+    
   /**
    * This method creates a random layout using the elements
    * in the compartments, reactions, species and side species
@@ -370,6 +388,13 @@ public:
                           const std::set<const CMetab*>& sideMetabs
                          );
 
+  void createLayout(const std::set<const CCompartment*>& compartments,
+                            const std::set<const CReaction*>& reactions,
+                            const std::set<const CMetab*>& metabs,
+                            const std::set<const CMetab*>& sideMetabs
+                            );
+    
+    
   /**
    * Creates a spring layout.
    * The method takes the number of iterations for the
