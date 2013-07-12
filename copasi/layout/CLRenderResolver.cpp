@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderResolver.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:35:20 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -35,7 +27,7 @@
 CLRenderResolver::CLRenderResolver(const CLLocalRenderInformation& renderInformation,
                                    const CCopasiVector<CLLocalRenderInformation>& localList,
                                    const CCopasiVector<CLGlobalRenderInformation>& globalList)
-    : mpRenderInformation(CLRenderFlattener::flatten_render_information(renderInformation, localList, globalList)),
+  : mpRenderInformation(CLRenderFlattener::flatten_render_information(renderInformation, localList, globalList)),
     mLocal(true),
     mpBackgroundColor(NULL)
 {
@@ -80,7 +72,7 @@ void CLRenderResolver::setBackgroundColor()
  */
 CLRenderResolver::CLRenderResolver(const CLGlobalRenderInformation& renderInformation,
                                    const CCopasiVector<CLGlobalRenderInformation>& globalList)
-    : mpRenderInformation(CLRenderFlattener::flatten_render_information(renderInformation, globalList)),
+  : mpRenderInformation(CLRenderFlattener::flatten_render_information(renderInformation, globalList)),
     mLocal(false),
     mpBackgroundColor(NULL)
 {
@@ -234,6 +226,11 @@ const CLStyle* CLRenderResolver::resolveStyle(const CLGraphicalObject* pObject) 
   if (pResult == NULL)
     {
       std::string role = pObject->getObjectRole();
+      const CLReferenceGlyph* pRG = dynamic_cast<const CLReferenceGlyph*>(pObject);
+
+      if (pRG != NULL && role.empty())
+        role = pRG->getRole();
+
       const CLMetabReferenceGlyph* pSRG = dynamic_cast<const CLMetabReferenceGlyph*>(pObject);
 
       if (pSRG != NULL && role.empty())
@@ -245,24 +242,31 @@ const CLStyle* CLRenderResolver::resolveStyle(const CLGraphicalObject* pObject) 
               case CLMetabReferenceGlyph::SUBSTRATE:
                 role = "substrate";
                 break;
+
               case CLMetabReferenceGlyph::PRODUCT:
                 role = "product";
                 break;
+
               case CLMetabReferenceGlyph::SIDESUBSTRATE:
                 role = "sidesubstrate";
                 break;
+
               case CLMetabReferenceGlyph::SIDEPRODUCT:
                 role = "sideproduct";
                 break;
+
               case CLMetabReferenceGlyph::MODIFIER:
                 role = "modifier";
                 break;
+
               case CLMetabReferenceGlyph::ACTIVATOR:
                 role = "activator";
                 break;
+
               case CLMetabReferenceGlyph::INHIBITOR:
                 role = "inhibitor";
                 break;
+
               default:
                 role = "";
             }

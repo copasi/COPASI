@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLayoutRenderer.cpp,v $
-//   $Revision: 1.18 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/05/09 13:52:35 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -69,7 +61,6 @@
 # pragma warning(disable : 4996)
 #endif // _WIN32
 
-
 #ifdef __APPLE__
 #ifdef ELEMENTARY_MODE_DISPLAY
 #include <string>
@@ -111,28 +102,28 @@ const double CLLayoutRenderer::SELECTION_FRAME_WIDTH = 3.0;
  * constructor for global render information
  */
 CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLGlobalRenderInformation* pRenderInformation, const CCopasiVector<CLGlobalRenderInformation>* pGlobalRenderInformationList, const CModel* pModel, const std::string& baseDir):
-    mStateList(),
-    mCurrentAttributes(),
-    mpModel(pModel),
-    mpLayout(pLayout),
-    mpResolver(NULL),
-    mBaseDir(baseDir),
-    mZoomFactor(1.0),
-    mAspect(1.0),
-    mX(0.0),
-    mY(0.0),
-    mW(0.0),
-    mH(0.0),
-    mpGlobalRenderInfoList(pGlobalRenderInformationList),
-    mpFontRenderer(NULL),
-    mDeduceSpeciesReferenceRoles(false),
-    mpSelectionBox(NULL),
-    mpImageTexturizer(NULL)
+  mStateList(),
+  mCurrentAttributes(),
+  mpModel(pModel),
+  mpLayout(pLayout),
+  mpResolver(NULL),
+  mBaseDir(baseDir),
+  mZoomFactor(1.0),
+  mAspect(1.0),
+  mX(0.0),
+  mY(0.0),
+  mW(0.0),
+  mH(0.0),
+  mpGlobalRenderInfoList(pGlobalRenderInformationList),
+  mpFontRenderer(NULL),
+  mDeduceSpeciesReferenceRoles(false),
+  mpSelectionBox(NULL),
+  mpImageTexturizer(NULL)
 #ifdef ELEMENTARY_MODE_DISPLAY
-    , mHighlight(true)
-    , mFogDensity(0.8f)
-    , mGLFunctionsInitialized(false)
-    , mpGlFogCoordfEXT(NULL)
+  , mHighlight(true)
+  , mFogDensity(0.8f)
+  , mGLFunctionsInitialized(false)
+  , mpGlFogCoordfEXT(NULL)
 #endif // ELEMENTARY_MODE_DISPLAY
 {
 #ifdef ELEMENTARY_MODE_DISPLAY
@@ -148,32 +139,31 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLGlobalRenderInforma
   this->change_style(pRenderInformation);
 }
 
-
 /**
  * constructor for local render information
  */
 CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLLocalRenderInformation* pRenderInformation, const CCopasiVector<CLGlobalRenderInformation>* pGlobalRenderInformationList, const CModel* pModel, const std::string& baseDir):
-    mStateList(),
-    mCurrentAttributes(),
-    mpModel(pModel),
-    mpLayout(pLayout),
-    mpResolver(NULL),
-    mBaseDir(baseDir),
-    mZoomFactor(1.0),
-    mAspect(1.0),
-    mX(0.0),
-    mY(0.0),
-    mW(0.0),
-    mH(0.0),
-    mpGlobalRenderInfoList(pGlobalRenderInformationList),
-    mpFontRenderer(NULL),
-    mDeduceSpeciesReferenceRoles(false),
-    mpSelectionBox(NULL)
+  mStateList(),
+  mCurrentAttributes(),
+  mpModel(pModel),
+  mpLayout(pLayout),
+  mpResolver(NULL),
+  mBaseDir(baseDir),
+  mZoomFactor(1.0),
+  mAspect(1.0),
+  mX(0.0),
+  mY(0.0),
+  mW(0.0),
+  mH(0.0),
+  mpGlobalRenderInfoList(pGlobalRenderInformationList),
+  mpFontRenderer(NULL),
+  mDeduceSpeciesReferenceRoles(false),
+  mpSelectionBox(NULL)
 #ifdef ELEMENTARY_MODE_DISPLAY
-    , mHighlight(true)
-    , mFogDensity(0.8f)
-    , mGLFunctionsInitialized(false)
-    , mpGlFogCoordfEXT(NULL)
+  , mHighlight(true)
+  , mFogDensity(0.8f)
+  , mGLFunctionsInitialized(false)
+  , mpGlFogCoordfEXT(NULL)
 #endif // ELEMENTARY_MODE_DISPLAY
 {
 #ifdef ELEMENTARY_MODE_DISPLAY
@@ -383,7 +373,7 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
 
-  if (memcmp(mCurrentAttributes.mpTransform, CLTransformation::getIdentityMatrix(), 12*sizeof(double)))
+  if (memcmp(mCurrentAttributes.mpTransform, CLTransformation::getIdentityMatrix(), 12 * sizeof(double)))
     {
       // move back to the current offset
       glTranslated(this->mCurrentAttributes.mX, this->mCurrentAttributes.mY, this->mCurrentAttributes.mZ);
@@ -412,7 +402,7 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
   // TODO calculate it only once at startup, but for now this works well enough
   if (drawBasepoints == true)
     {
-      pCircleData = new GLdouble[3*(NUM_CIRCLE_SEGMENTS+2)];
+      pCircleData = new GLdouble[3 * (NUM_CIRCLE_SEGMENTS + 2)];
       pCircleData[0] = 0.0;
       pCircleData[1] = 0.0;
       pCircleData[2] = 0.0;
@@ -420,15 +410,15 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
       for (i = 1; i <= NUM_CIRCLE_SEGMENTS; ++i)
         {
           phi = i * delta_phi;
-          pCircleData[i*3] = cos(phi);
-          pCircleData[i*3+1] = sin(phi);
-          pCircleData[i*3+2] = 0.0;
+          pCircleData[i * 3] = cos(phi);
+          pCircleData[i * 3 + 1] = sin(phi);
+          pCircleData[i * 3 + 2] = 0.0;
         }
 
       // close the circle
-      pCircleData[i*3] = pCircleData[3];
-      pCircleData[i*3+1] = pCircleData[4];
-      pCircleData[i*3+2] = pCircleData[5];
+      pCircleData[i * 3] = pCircleData[3];
+      pCircleData[i * 3 + 1] = pCircleData[4];
+      pCircleData[i * 3 + 2] = pCircleData[5];
     }
 
   for (i = 0; i < iMax; ++i)
@@ -447,7 +437,7 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
 
               if (iMax > 1)
                 {
-                  pData = new GLdouble[3*iMax];
+                  pData = new GLdouble[3 * iMax];
                   size_t index = 0;
                   const simple_point* pSimple = NULL;
 
@@ -471,7 +461,7 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
           lastEnd = *pP2;
           pP3 = &pLineSegment->getBase1();
           pP4 = &pLineSegment->getBase2();
-          pData = new GLdouble[3*NUM_BEZIER_POINTS];
+          pData = new GLdouble[3 * NUM_BEZIER_POINTS];
           CLLayoutRenderer::calculate_cubicbezier(pP->getX(), pP->getY(), pP->getZ(),
                                                   pP3->getX(), pP3->getY(), pP3->getZ(),
                                                   pP4->getX(), pP4->getY(), pP4->getZ(),
@@ -503,52 +493,52 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
                   glColor4ub(c.mR, c.mG, c.mB, c.mA);
                   glPushMatrix();
                   glTranslated(pP->getX(), pP->getY(), pP->getZ());
-                  glScaled(mCurrentAttributes.mStrokeWidth*2.0, mCurrentAttributes.mStrokeWidth*2.0, 1.0);
+                  glScaled(mCurrentAttributes.mStrokeWidth * 2.0, mCurrentAttributes.mStrokeWidth * 2.0, 1.0);
                   glBegin(GL_TRIANGLE_FAN);
                   glVertex3f(0.0, 0.0, 0.0);
 
                   for (j = 0; j <= NUM_CIRCLE_SEGMENTS + 1; ++j)
                     {
-                      glVertex3d(pCircleData[3*j], pCircleData[3*j+1], pCircleData[3*j+2]);
+                      glVertex3d(pCircleData[3 * j], pCircleData[3 * j + 1], pCircleData[3 * j + 2]);
                     }
 
                   glEnd();
                   glPopMatrix();
                   glPushMatrix();
                   glTranslated(pP2->getX(), pP2->getY(), pP2->getZ());
-                  glScaled(mCurrentAttributes.mStrokeWidth*2.0, mCurrentAttributes.mStrokeWidth*2.0, 1.0);
+                  glScaled(mCurrentAttributes.mStrokeWidth * 2.0, mCurrentAttributes.mStrokeWidth * 2.0, 1.0);
                   glBegin(GL_TRIANGLE_FAN);
                   glVertex3d(0.0, 0.0, 0.0);
 
                   for (j = 0; j <= NUM_CIRCLE_SEGMENTS + 1; ++j)
                     {
-                      glVertex3d(pCircleData[3*j], pCircleData[3*j+1], pCircleData[3*j+2]);
+                      glVertex3d(pCircleData[3 * j], pCircleData[3 * j + 1], pCircleData[3 * j + 2]);
                     }
 
                   glEnd();
                   glPopMatrix();
                   glPushMatrix();
                   glTranslated(pP3->getX(), pP3->getY(), pP3->getZ());
-                  glScaled(mCurrentAttributes.mStrokeWidth*2.0, mCurrentAttributes.mStrokeWidth*2.0, 1.0);
+                  glScaled(mCurrentAttributes.mStrokeWidth * 2.0, mCurrentAttributes.mStrokeWidth * 2.0, 1.0);
                   glBegin(GL_TRIANGLE_FAN);
                   glVertex3d(0.0, 0.0, 0.0);
 
                   for (j = 0; j <= NUM_CIRCLE_SEGMENTS + 1; ++j)
                     {
-                      glVertex3d(pCircleData[3*j], pCircleData[3*j+1], pCircleData[3*j+2]);
+                      glVertex3d(pCircleData[3 * j], pCircleData[3 * j + 1], pCircleData[3 * j + 2]);
                     }
 
                   glEnd();
                   glPopMatrix();
                   glPushMatrix();
                   glTranslated(pP4->getX(), pP4->getY(), pP4->getZ());
-                  glScaled(mCurrentAttributes.mStrokeWidth*2.0, mCurrentAttributes.mStrokeWidth*2.0, 1.0);
+                  glScaled(mCurrentAttributes.mStrokeWidth * 2.0, mCurrentAttributes.mStrokeWidth * 2.0, 1.0);
                   glBegin(GL_TRIANGLE_FAN);
                   glVertex3d(0.0, 0.0, 0.0);
 
                   for (j = 0; j <= NUM_CIRCLE_SEGMENTS + 1; ++j)
                     {
-                      glVertex3d(pCircleData[3*j], pCircleData[3*j+1], pCircleData[3*j+2]);
+                      glVertex3d(pCircleData[3 * j], pCircleData[3 * j + 1], pCircleData[3 * j + 2]);
                     }
 
                   glEnd();
@@ -567,7 +557,7 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
 
               if (iMax > 1)
                 {
-                  pData = new GLdouble[3*iMax];
+                  pData = new GLdouble[3 * iMax];
                   size_t index = 0;
                   const simple_point* pSimple = NULL;
 
@@ -601,14 +591,14 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
                   glColor4ub(c.mR, c.mG, c.mB, c.mA);
                   glPushMatrix();
                   glTranslated(pP->getX(), pP->getY(), pP->getZ());
-                  glScaled(mCurrentAttributes.mStrokeWidth*2.0, mCurrentAttributes.mStrokeWidth*2.0, 1.0);
+                  glScaled(mCurrentAttributes.mStrokeWidth * 2.0, mCurrentAttributes.mStrokeWidth * 2.0, 1.0);
                   glBegin(GL_TRIANGLE_FAN);
                   glVertex3d(0.0, 0.0, 0.0);
                   size_t j;
 
                   for (j = 0; j <= NUM_CIRCLE_SEGMENTS + 1; ++j)
                     {
-                      glVertex3d(pCircleData[3*j], pCircleData[3*j+1], pCircleData[3*j+2]);
+                      glVertex3d(pCircleData[3 * j], pCircleData[3 * j + 1], pCircleData[3 * j + 2]);
                     }
 
                   glEnd();
@@ -634,14 +624,14 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
                   glColor4ub(c.mR, c.mG, c.mB, c.mA);
                   glPushMatrix();
                   glTranslated(pP->getX(), pP->getY(), pP->getZ());
-                  glScaled(mCurrentAttributes.mStrokeWidth*2.0, mCurrentAttributes.mStrokeWidth*2.0, 1.0);
+                  glScaled(mCurrentAttributes.mStrokeWidth * 2.0, mCurrentAttributes.mStrokeWidth * 2.0, 1.0);
                   glBegin(GL_TRIANGLE_FAN);
                   glVertex3d(0.0, 0.0, 0.0);
                   size_t j;
 
                   for (j = 0; j <= NUM_CIRCLE_SEGMENTS + 1; ++j)
                     {
-                      glVertex3d(pCircleData[3*j], pCircleData[3*j+1], pCircleData[3*j+2]);
+                      glVertex3d(pCircleData[3 * j], pCircleData[3 * j + 1], pCircleData[3 * j + 2]);
                     }
 
                   glEnd();
@@ -655,7 +645,7 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
 
   if (iMax > 1)
     {
-      pData = new GLdouble[3*iMax];
+      pData = new GLdouble[3 * iMax];
       size_t index = 0;
       const simple_point* pSimple = NULL;
 
@@ -689,7 +679,7 @@ void CLLayoutRenderer::draw_curve(const CLCurve* pCurve, bool drawBasepoints)
 
               for (j = 0; j <= NUM_CIRCLE_SEGMENTS + 1; ++j)
                 {
-                  glVertex3d(pCircleData[3*j], pCircleData[3*j+1], pCircleData[3*j+2]);
+                  glVertex3d(pCircleData[3 * j], pCircleData[3 * j + 1], pCircleData[3 * j + 2]);
                 }
 
               glEnd();
@@ -756,7 +746,7 @@ void CLLayoutRenderer::draw_curve(const CLRenderCurve* pCurve, const CLBoundingB
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
 
-  if (memcmp(mCurrentAttributes.mpTransform, CLTransformation::getIdentityMatrix(), 12*sizeof(double)))
+  if (memcmp(mCurrentAttributes.mpTransform, CLTransformation::getIdentityMatrix(), 12 * sizeof(double)))
     {
       // move back to the current offset
       glTranslated(this->mCurrentAttributes.mX, this->mCurrentAttributes.mY, this->mCurrentAttributes.mZ);
@@ -807,7 +797,7 @@ void CLLayoutRenderer::draw_curve(const CLRenderCurve* pCurve, const CLBoundingB
               p2 = convert_to_absolute(&end, pBB);
               p3 = convert_to_absolute(&bp1, pBB);
               p4 = convert_to_absolute(&bp2, pBB);
-              pData = new GLdouble[3*NUM_BEZIER_POINTS];
+              pData = new GLdouble[3 * NUM_BEZIER_POINTS];
               CLLayoutRenderer::calculate_cubicbezier(p1.getX(), p1.getY(), p1.getZ(),
                                                       p3.getX(), p3.getY(), p3.getZ(),
                                                       p4.getX(), p4.getY(), p4.getZ(),
@@ -844,7 +834,7 @@ void CLLayoutRenderer::draw_curve(const CLRenderCurve* pCurve, const CLBoundingB
 
       if (iMax > 1)
         {
-          pData = new GLdouble[3*iMax];
+          pData = new GLdouble[3 * iMax];
           size_t index = 0;
           const simple_point* pSimple = NULL;
 
@@ -947,9 +937,9 @@ const CLPoint CLLayoutRenderer::convert_to_absolute(const CLRenderPoint* pRender
   const CLRelAbsVector& z = pRenderPoint->z();
   const CLPoint* pPosition = &pBB->getPosition();
   const CLDimensions* pDimensions = &pBB->getDimensions();
-  return CLPoint((x.getAbsoluteValue() + pDimensions->getWidth()*x.getRelativeValue() / 100.0) + pPosition->getX(),
-                 (y.getAbsoluteValue() + pDimensions->getHeight()*y.getRelativeValue() / 100.0) + pPosition->getY(),
-                 (z.getAbsoluteValue() + pDimensions->getDepth()*z.getRelativeValue() / 100.0) + pPosition->getZ());
+  return CLPoint((x.getAbsoluteValue() + pDimensions->getWidth() * x.getRelativeValue() / 100.0) + pPosition->getX(),
+                 (y.getAbsoluteValue() + pDimensions->getHeight() * y.getRelativeValue() / 100.0) + pPosition->getY(),
+                 (z.getAbsoluteValue() + pDimensions->getDepth() * z.getRelativeValue() / 100.0) + pPosition->getZ());
 }
 
 /**
@@ -1018,6 +1008,8 @@ void CLLayoutRenderer::draw_layout()
       this->mCurrentAttributes.mWidth = this->mpLayout->getDimensions().getWidth();
       this->mCurrentAttributes.mHeight = this->mpLayout->getDimensions().getHeight();
       const CLReactionGlyph* pRG = NULL;
+      const CLGeneralGlyph* pGG = NULL;
+      const CLReferenceGlyph* pRefG = NULL;
       const CLMetabReferenceGlyph* pSRG = NULL;
       const CLTextGlyph* pTG = NULL;
       std::vector<const CLGraphicalObject*>::iterator it = this->mDrawables.begin(), endit = this->mDrawables.end();
@@ -1026,13 +1018,15 @@ void CLLayoutRenderer::draw_layout()
 // this is needed to highlight or fog certain elements in the diagram
       const CCopasiObject* pModelObject = NULL;
       std::set<const CLGraphicalObject*>::const_iterator end = this->mHighlightedObjects.end();
-#endif // ELEMENTARY_MODE_DISPLAY      
+#endif // ELEMENTARY_MODE_DISPLAY
 
       while (it != endit)
         {
           pGO = *it;
           pRG = dynamic_cast<const CLReactionGlyph*>(pGO);
+          pGG = dynamic_cast<const CLGeneralGlyph*>(pGO);
           pSRG = dynamic_cast<const CLMetabReferenceGlyph*>(pGO);
+          pRefG = dynamic_cast<const CLReferenceGlyph*>(pGO);
           pTG = dynamic_cast<const CLTextGlyph*>(pGO);
           std::map<const CLGraphicalObject*, const CLStyle*>::const_iterator styleIt = this->mStyleMap.find(pGO);
 
@@ -1042,13 +1036,17 @@ void CLLayoutRenderer::draw_layout()
               continue;
             }
 
-
 #ifdef ELEMENTARY_MODE_DISPLAY
 
 // this is needed to highlight or fog certain elements in the diagram
           const CLGraphicalObject* pGO2 = NULL;
 
           if (pSRG == NULL)
+            {
+              pModelObject = (pGO)->getModelObject();
+              pGO2 = pGO;
+            }
+          else if (pRefG == NULL)
             {
               pModelObject = (pGO)->getModelObject();
               pGO2 = pGO;
@@ -1071,7 +1069,6 @@ void CLLayoutRenderer::draw_layout()
                       pModelObject = pGO2->getModelObject();
                     }
                 }
-
             }
 
           if (this->mpGlFogCoordfEXT != NULL)
@@ -1122,6 +1119,40 @@ void CLLayoutRenderer::draw_layout()
                   delete pBB;
                 }
             }
+          else  if ((pRefG != NULL && pRefG->getCurve().getNumCurveSegments() != 0))
+            {
+              // draw the layout curve
+              // we need to set the state of the OpenGL state machine
+              // save the curent state
+              this->save_current_attributes();
+              CLLayoutRenderer::extract_group_attributes(styleIt->second, &mCurrentAttributes);
+
+              // only draw the line if the stroke width is a positive value
+              // greater zero and if there is a stroke color defined
+              if (mCurrentAttributes.mStrokeWidth > 0.0 && mCurrentAttributes.mStroke != "none")
+                {
+                  bool drawBasepoints = false;
+
+                  if (this->mSelection.size() == 1 && (*this->mSelection.begin()) == pRefG)
+                    {
+                      drawBasepoints = true;
+                    }
+
+                  this->draw_curve(&pRefG->getCurve(), drawBasepoints);
+                }
+
+              this->restore_current_attributes();
+
+              // if the curve is the only selected item, we draw the base points,
+              // otherwise we only draw the selection frame
+              if (this->mSelection.find(const_cast<CLGraphicalObject*>(pGO)) != this->mSelection.end())
+                {
+                  CLBoundingBox* pBB = getCurveBoundingBox(&pRefG->getCurve());
+                  this->drawSelectionBox(pBB->getPosition().getX(), pBB->getPosition().getY(),
+                                         pBB->getDimensions().getWidth(), pBB->getDimensions().getHeight(), this->mSelection.size() == 1);
+                  delete pBB;
+                }
+            }
           else if (pRG != NULL && pRG->getCurve().getNumCurveSegments() != 0)
             {
               // draw the layout curve
@@ -1133,7 +1164,8 @@ void CLLayoutRenderer::draw_layout()
               // only do something if the stroke width is a positive value
               // greater 0 and if there is a stroke color defined
               if (mCurrentAttributes.mStrokeWidth > 0.0 && mCurrentAttributes.mStroke != "none")
-                {// set the state
+                {
+                  // set the state
                   bool drawBasepoints = false;
 
                   if (this->mSelection.size() == 1 && (*this->mSelection.begin()) == pRG)
@@ -1152,6 +1184,42 @@ void CLLayoutRenderer::draw_layout()
               if (this->mSelection.find(const_cast<CLGraphicalObject*>(pGO)) != this->mSelection.end())
                 {
                   CLBoundingBox* pBB = getCurveBoundingBox(&pRG->getCurve());
+                  this->drawSelectionBox(pBB->getPosition().getX(), pBB->getPosition().getY(),
+                                         pBB->getDimensions().getWidth(), pBB->getDimensions().getHeight(), this->mSelection.size() == 1);
+                  delete pBB;
+                }
+            }
+          else if (pGG != NULL && pGG->getCurve().getNumCurveSegments() != 0)
+            {
+              // draw the layout curve
+              // we need to set the state of the OpenGL state machine
+              // save the curent state
+              this->save_current_attributes();
+              CLLayoutRenderer::extract_group_attributes(styleIt->second, &mCurrentAttributes);
+
+              // only do something if the stroke width is a positive value
+              // greater 0 and if there is a stroke color defined
+              if (mCurrentAttributes.mStrokeWidth > 0.0 && mCurrentAttributes.mStroke != "none")
+                {
+                  // set the state
+                  bool drawBasepoints = false;
+
+                  if (this->mSelection.size() == 1 && (*this->mSelection.begin()) == pGG)
+                    {
+                      drawBasepoints = true;
+                    }
+
+                  this->draw_curve(&pGG->getCurve(), drawBasepoints);
+                  // reset the original state
+                }
+
+              this->restore_current_attributes();
+
+              // if the curve is the only selected item, we draw the base points,
+              // otherwise we only draw the selection frame
+              if (this->mSelection.find(const_cast<CLGraphicalObject*>(pGO)) != this->mSelection.end())
+                {
+                  CLBoundingBox* pBB = getCurveBoundingBox(&pGG->getCurve());
                   this->drawSelectionBox(pBB->getPosition().getX(), pBB->getPosition().getY(),
                                          pBB->getDimensions().getWidth(), pBB->getDimensions().getHeight(), this->mSelection.size() == 1);
                   delete pBB;
@@ -1308,7 +1376,7 @@ void CLLayoutRenderer::draw_group(const CLGroup* pGroup, const CLBoundingBox* pB
   glPushMatrix();
 
   // apply the current transformation
-  if (memcmp(mCurrentAttributes.mpTransform, Transformation::getIdentityMatrix(), 12*sizeof(double)))
+  if (memcmp(mCurrentAttributes.mpTransform, Transformation::getIdentityMatrix(), 12 * sizeof(double)))
     {
       // move back to the current offset
       glTranslated(this->mCurrentAttributes.mX, this->mCurrentAttributes.mY, this->mCurrentAttributes.mZ);
@@ -1567,7 +1635,7 @@ void CLLayoutRenderer::draw_text(const CLTextTextureSpec* pTexture, double x, do
       glTranslated(xOffset, yOffset, zOffset);
 
       // apply the current transformation
-      if (memcmp(mCurrentAttributes.mpTransform, Transformation::getIdentityMatrix(), 12*sizeof(double)))
+      if (memcmp(mCurrentAttributes.mpTransform, Transformation::getIdentityMatrix(), 12 * sizeof(double)))
         {
           // move back to the current offset
           glTranslated(this->mCurrentAttributes.mX, this->mCurrentAttributes.mY, this->mCurrentAttributes.mZ);
@@ -1622,7 +1690,7 @@ void CLLayoutRenderer::draw_ellipse(const CLEllipse* pEllipse, const CLBoundingB
   // we add an additional datapoint to close the loop. This way we don't need
   // the draw_loop method, but all is handled in draw_line
   // this also makes line stippling easier for OpenGL < 2.0
-  GLdouble* pData = new GLdouble[3*(NUM_CIRCLE_SEGMENTS+1)];
+  GLdouble* pData = new GLdouble[3 * (NUM_CIRCLE_SEGMENTS + 1)];
   unsigned int i;
   double delta_phi = 2 * M_PI / NUM_CIRCLE_SEGMENTS;
   double phi = 0.0;
@@ -1696,7 +1764,7 @@ void CLLayoutRenderer::draw_image(const CLImage* pImage, const CLBoundingBox* pB
       glMatrixMode(GL_MODELVIEW);
       glPushMatrix();
 
-      if (memcmp(mCurrentAttributes.mpTransform, Transformation::getIdentityMatrix(), 12*sizeof(double)))
+      if (memcmp(mCurrentAttributes.mpTransform, Transformation::getIdentityMatrix(), 12 * sizeof(double)))
         {
           // move back to the current offset
           glTranslated(this->mCurrentAttributes.mX, this->mCurrentAttributes.mY, this->mCurrentAttributes.mZ);
@@ -1807,7 +1875,7 @@ void CLLayoutRenderer::draw_polygon(const CLPolygon* pPolygon, const CLBoundingB
               p2 = convert_to_absolute(&end, pBB);
               p3 = convert_to_absolute(&bp1, pBB);
               p4 = convert_to_absolute(&bp2, pBB);
-              pData = new GLdouble[3*NUM_BEZIER_POINTS];
+              pData = new GLdouble[3 * NUM_BEZIER_POINTS];
               CLLayoutRenderer::calculate_cubicbezier(p1.getX(), p1.getY(), p1.getZ(),
                                                       p3.getX(), p3.getY(), p3.getZ(),
                                                       p4.getX(), p4.getY(), p4.getZ(),
@@ -1844,7 +1912,7 @@ void CLLayoutRenderer::draw_polygon(const CLPolygon* pPolygon, const CLBoundingB
 
       if (iMax > 1)
         {
-          pData = new GLdouble[3*(iMax+1)];
+          pData = new GLdouble[3 * (iMax + 1)];
           size_t index = 0;
           const simple_point* pSimple = NULL;
 
@@ -1908,7 +1976,7 @@ void CLLayoutRenderer::draw_rectangle(const CLRectangle* pRectangle, const CLBou
   // we need to reserve space for all data points and each point has three
   // values
   // we add an additonal data point to close the loop
-  GLdouble* pData = new GLdouble[(numPoints+1)*3];
+  GLdouble* pData = new GLdouble[(numPoints + 1) * 3];
   double x = p.getX();
   double y = p.getY();
   double z = p.getZ();
@@ -1959,23 +2027,23 @@ void CLLayoutRenderer::draw_rectangle(const CLRectangle* pRectangle, const CLBou
           dy_inv = ry * cos(M_PI / 2.0 - phi);
           // the first corner is mirrored, so we switch dx and dy
           pData[index] = rx - dx_inv;
-          pData[index+1] = height - ry + dy_inv;
-          pData[index+2] = 0.0;
+          pData[index + 1] = height - ry + dy_inv;
+          pData[index + 2] = 0.0;
           // the second corner is actually the one, we calculate
           index += (NUM_CORNER_SEGMENTS + 1) * 3;
           pData[index] = width - rx + dx;
-          pData[index+1] = height - ry + dy;
-          pData[index+2] = 0.0;
+          pData[index + 1] = height - ry + dy;
+          pData[index + 2] = 0.0;
           // third corner is again mirrored
           index += (NUM_CORNER_SEGMENTS + 1) * 3;
           pData[index] = width - rx + dx_inv;
-          pData[index+1] = ry - dy_inv;
-          pData[index+2] = 0.0;
+          pData[index + 1] = ry - dy_inv;
+          pData[index + 2] = 0.0;
           // the fourth corner
           index += (NUM_CORNER_SEGMENTS + 1) * 3;
           pData[index] = rx - dx;
-          pData[index+1] = ry - dy;
-          pData[index+2] = 0.0;
+          pData[index + 1] = ry - dy;
+          pData[index + 2] = 0.0;
           phi += delta;
         }
     }
@@ -2072,11 +2140,11 @@ void CLLayoutRenderer::extract_transformation_attributes(const CLTransformation*
 
   if (pObject->isSetMatrix())
     {
-      memcpy(attributes->mpTransform, pObject->getMatrix(), 12*sizeof(double));
+      memcpy(attributes->mpTransform, pObject->getMatrix(), 12 * sizeof(double));
     }
   else
     {
-      memcpy(attributes->mpTransform, Transformation::getIdentityMatrix(), 12*sizeof(double));
+      memcpy(attributes->mpTransform, Transformation::getIdentityMatrix(), 12 * sizeof(double));
     }
 }
 
@@ -2333,7 +2401,7 @@ void CLLayoutRenderer::create_radial_gradient_texture(unsigned int size, GLubyte
 
                   if (dotProduct <= 0)
                     {
-                      assert(((double)j - fx)*(solution2x - fx) + ((double)i - fy)*(solution2y - fy) > 0);
+                      assert(((double)j - fx) * (solution2x - fx) + ((double)i - fy) * (solution2y - fy) > 0);
                       solution1x = solution2x;
                       solution1y = solution2y;
                     }
@@ -2375,7 +2443,7 @@ void CLLayoutRenderer::create_radial_gradient_texture(unsigned int size, GLubyte
 
                   if (dotProduct < 0)
                     {
-                      assert(((double)j - fx)*(solution2x - fx) + ((double)i - fy)*(solution2y - fy) > 0);
+                      assert(((double)j - fx) * (solution2x - fx) + ((double)i - fy) * (solution2y - fy) > 0);
                       solution1x = solution2x;
                       solution1y = solution2y;
                     }
@@ -2428,7 +2496,7 @@ void CLLayoutRenderer::create_radial_gradient_texture(unsigned int size, GLubyte
 
                   if (dotProduct < 0)
                     {
-                      assert(((double)j - fx)*(solution2x - fx) + ((double)i - fy)*(solution2y - fy) > 0);
+                      assert(((double)j - fx) * (solution2x - fx) + ((double)i - fy) * (solution2y - fy) > 0);
                       solution1x = solution2x;
                       solution1y = solution2y;
                     }
@@ -2491,6 +2559,7 @@ void CLLayoutRenderer::map_gradient_color(double rel_distance, const CLGradientB
           case CLGradientBase::PAD:
             rel_distance = 0.0;
             break;
+
           case CLGradientBase::REFLECT:
             // if the part of the distance before the decimal point
             // is devisible by 2, we just remove it
@@ -2508,6 +2577,7 @@ void CLLayoutRenderer::map_gradient_color(double rel_distance, const CLGradientB
               }
 
             break;
+
           case CLGradientBase::REPEAT:
             // we only need everything after the decimal point
             // and we need to subtract from 1.0
@@ -2523,6 +2593,7 @@ void CLLayoutRenderer::map_gradient_color(double rel_distance, const CLGradientB
           case CLGradientBase::PAD:
             rel_distance = 1.0;
             break;
+
           case CLGradientBase::REFLECT:
 
             // if the part of the distance before the decimal point
@@ -2539,6 +2610,7 @@ void CLLayoutRenderer::map_gradient_color(double rel_distance, const CLGradientB
               }
 
             break;
+
           case CLGradientBase::REPEAT:
             // we only need everything after the decimal point
             rel_distance = rel_distance - floor(rel_distance);
@@ -2644,7 +2716,7 @@ void CLLayoutRenderer::draw_datapoints(GLdouble* pData, size_t numPoints, const 
   glTranslatef(xOffset, yOffset, zOffset);
 
   // apply the current transformation
-  if (memcmp(mCurrentAttributes.mpTransform, Transformation::getIdentityMatrix(), 12*sizeof(double)))
+  if (memcmp(mCurrentAttributes.mpTransform, Transformation::getIdentityMatrix(), 12 * sizeof(double)))
     {
       // move back to the current offset
       glTranslated(this->mCurrentAttributes.mX, this->mCurrentAttributes.mY, this->mCurrentAttributes.mZ);
@@ -2708,18 +2780,18 @@ void CLLayoutRenderer::draw_datapoints(GLdouble* pData, size_t numPoints, const 
           gluTessCallback(pTess, GLU_TESS_COMBINE, (GLvoid(*)())CLLayoutRenderer::COMBINE_CALLBACK_GRADIENT);
 #endif // _WIN32
           stepsize = 5;
-          pNewData = new GLdouble[5*numPoints];
+          pNewData = new GLdouble[5 * numPoints];
           // assign the texture coordinates
           double width = pBB->getDimensions().getWidth();
           double height = pBB->getDimensions().getHeight();
 
           for (i = 0; i < numPoints; ++i)
             {
-              pNewData[5*i] = pData[3*i];
-              pNewData[5*i+1] = pData[3*i+1];
-              pNewData[5*i+2] = pData[3*i+2];
-              pNewData[5*i+3] = (pData[3*i] + xOffset - pBB->getPosition().getX()) / width;
-              pNewData[5*i+4] = (pData[3*i+1] + yOffset - pBB->getPosition().getY()) / height;
+              pNewData[5 * i] = pData[3 * i];
+              pNewData[5 * i + 1] = pData[3 * i + 1];
+              pNewData[5 * i + 2] = pData[3 * i + 2];
+              pNewData[5 * i + 3] = (pData[3 * i] + xOffset - pBB->getPosition().getX()) / width;
+              pNewData[5 * i + 4] = (pData[3 * i + 1] + yOffset - pBB->getPosition().getY()) / height;
             }
 
           pData = pNewData;
@@ -2767,12 +2839,15 @@ void CLLayoutRenderer::draw_datapoints(GLdouble* pData, size_t numPoints, const 
                 std::cerr << "No fill rule specified." << std::endl;
                 exit(1);
                 break;
+
               case CLGraphicalPrimitive2D::NONZERO:
                 gluTessProperty(pTess, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_NONZERO);
                 break;
+
               case CLGraphicalPrimitive2D::EVENODD:
                 gluTessProperty(pTess, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_ODD);
                 break;
+
               case CLGraphicalPrimitive2D::INHERIT:
                 // this should not happen
                 // inherit has to be replaced by something meaningfull
@@ -2793,7 +2868,7 @@ void CLLayoutRenderer::draw_datapoints(GLdouble* pData, size_t numPoints, const 
 
           while (j < jMax)
             {
-              gluTessVertex(pTess, &pData[j*stepsize], &pData[j*stepsize]);
+              gluTessVertex(pTess, &pData[j * stepsize], &pData[j * stepsize]);
               ++j;
             }
 
@@ -2835,7 +2910,7 @@ void CLLayoutRenderer::draw_datapoints(GLdouble* pData, size_t numPoints, const 
       this->draw_line(numPoints, pData);
       // draw the final cap
       size_t index = (numPoints - 2) * 3;
-      draw_cap(pData[index], pData[index+1], pData[index+2], pData[0], pData[1], pData[2], pData[3], pData[4], pData[5], mCurrentAttributes.mStrokeWidth);
+      draw_cap(pData[index], pData[index + 1], pData[index + 2], pData[0], pData[1], pData[2], pData[3], pData[4], pData[5], mCurrentAttributes.mStrokeWidth);
     }
 
   glPopMatrix();
@@ -2911,7 +2986,7 @@ void CLLayoutRenderer::map_arrow_head(const CLPoint& mapTo, const CLPoint& direc
       mCurrentAttributes.mEndHead = "none";
       // clear the transformation information since it does not belong to the
       // information that is inherited.
-      memcpy(mCurrentAttributes.mpTransform, Transformation::getIdentityMatrix(), 12*sizeof(double));
+      memcpy(mCurrentAttributes.mpTransform, Transformation::getIdentityMatrix(), 12 * sizeof(double));
       // draw the line ending
       this->draw_group(pLineEnding->getGroup(), pLineEnding->getBoundingBox());
       // restore the matrix
@@ -3051,7 +3126,7 @@ void CLLayoutRenderer::draw_line(size_t numPoints, GLdouble* pData)
             {
               iMax = (unsigned int)v.size();
               // we have to create a new dataset
-              pData = new GLdouble[3*iMax];
+              pData = new GLdouble[3 * iMax];
               pTextureCoordinates = new GLfloat[iMax];
               std::vector<simple_point>::const_iterator it = v.begin(), endit = v.end();
               unsigned int index = 0;
@@ -3097,11 +3172,11 @@ void CLLayoutRenderer::draw_line(size_t numPoints, GLdouble* pData)
         {
           if (pTextureCoordinates)
             {
-              draw_line_segment(pData[index], pData[index+1], pData[index+2], pData[index+3], pData[index+4], pData[index+5], mCurrentAttributes.mStrokeWidth, true, 0.0, pTextureCoordinates[i+1]);
+              draw_line_segment(pData[index], pData[index + 1], pData[index + 2], pData[index + 3], pData[index + 4], pData[index + 5], mCurrentAttributes.mStrokeWidth, true, 0.0, pTextureCoordinates[i + 1]);
             }
           else
             {
-              draw_line_segment(pData[index], pData[index+1], pData[index+2], pData[index+3], pData[index+4], pData[index+5], mCurrentAttributes.mStrokeWidth);
+              draw_line_segment(pData[index], pData[index + 1], pData[index + 2], pData[index + 3], pData[index + 4], pData[index + 5], mCurrentAttributes.mStrokeWidth);
             }
 
           index += 3;
@@ -3109,7 +3184,7 @@ void CLLayoutRenderer::draw_line(size_t numPoints, GLdouble* pData)
           // don't draw a cap after the last segment
           if (i != iMax - 1)
             {
-              draw_cap(pData[index-3], pData[index-2], pData[index-1], pData[index], pData[index+1], pData[index+2], pData[index+3], pData[index+4], pData[index+5], mCurrentAttributes.mStrokeWidth);
+              draw_cap(pData[index - 3], pData[index - 2], pData[index - 1], pData[index], pData[index + 1], pData[index + 2], pData[index + 3], pData[index + 4], pData[index + 5], mCurrentAttributes.mStrokeWidth);
             }
         }
 
@@ -3552,7 +3627,7 @@ void CLLayoutRenderer::update_textures_and_colors()
                   // make sure a usable texture name ha been created
                   assert(pSpec->mTextureName != 0);
                   val = (val > GRADIENT_TEXTURE_SIZE_LIMIT) ? GRADIENT_TEXTURE_SIZE_LIMIT : val;
-                  GLubyte* textureData = new GLubyte[4*val*val];
+                  GLubyte* textureData = new GLubyte[4 * val * val];
                   create_gradient_texture(val, textureData, pGradient);
                   glBindTexture(GL_TEXTURE_2D, pSpec->mTextureName);
                   assert(pSpec->mTextureName != 0);
@@ -4443,7 +4518,6 @@ std::pair<double, double> CLLayoutRenderer::calculate_intersection_point_2d(doub
         {
           result = std::pair<double, double>(p2x, p1y);
         }
-
     }
   else if (fabs(tx) <= ALMOST_ZERO)
     {
@@ -4465,7 +4539,7 @@ std::pair<double, double> CLLayoutRenderer::calculate_intersection_point_2d(doub
       //             b) intersection at
       //
       //  check if the lines are parallel
-      if (fabs(fabs((sx*tx + sy*ty) / (sqrt(sx*sx + sy*sy)*sqrt(tx*tx + ty*ty))) - 1) > ALMOST_ZERO)
+      if (fabs(fabs((sx * tx + sy * ty) / (sqrt(sx * sx + sy * sy)*sqrt(tx * tx + ty * ty))) - 1) > ALMOST_ZERO)
         {
           double ss = sy / sx;
           double st = ty / tx;
@@ -4519,7 +4593,6 @@ bool CLLayoutRenderer::segments_intersect_2d(double p1x1, double p1y1, double p1
   return result;
 }
 
-
 CLPoint* CLLayoutRenderer::calculate_intersection(double p1x, double p1y, double p1z, double sx, double sy, double sz,
     double p2x, double p2y, double p2z, double tx, double ty, double tz)
 {
@@ -4529,8 +4602,8 @@ CLPoint* CLLayoutRenderer::calculate_intersection(double p1x, double p1y, double
     {
       double m = (p1y - p2y + ((p2x / sx) - (p1x / sx)) * sy) / (ty - tx * sy / sx);
       double n = (p2x + m * tx - p1x) / sx;
-      pP = new CLPoint(p2x + m*tx, p2y + m*ty, p2z + m*tz);
-      CLPoint* pP2 = new CLPoint(p1x + n*sx, p1y + n*sy, p1z + n*sz);
+      pP = new CLPoint(p2x + m * tx, p2y + m * ty, p2z + m * tz);
+      CLPoint* pP2 = new CLPoint(p1x + n * sx, p1y + n * sy, p1z + n * sz);
 
       if (fabs(pP->getX()) > ALMOST_ZERO)
         {
@@ -4566,12 +4639,12 @@ CLPoint* CLLayoutRenderer::calculate_intersection(double p1x, double p1y, double
       // first line is in the yz plane or a plane parallel to it
       // the intersection must be at p2x=p1x
       double m = (p1x - p2x) / tx;
-      pP = new CLPoint(p2x + m*tx, p2y + m*ty, p2z + m*tz);
+      pP = new CLPoint(p2x + m * tx, p2y + m * ty, p2z + m * tz);
 
       if (fabs(sy) > ALMOST_ZERO)
         {
           double n = (pP->getY() - p1y) / sy;
-          CLPoint* pP2 = new CLPoint(p1x + n*sx, p1y + n*sy, p1z + n*sz);
+          CLPoint* pP2 = new CLPoint(p1x + n * sx, p1y + n * sy, p1z + n * sz);
 
           if (fabs(pP->getX()) > ALMOST_ZERO)
             {
@@ -4605,7 +4678,7 @@ CLPoint* CLLayoutRenderer::calculate_intersection(double p1x, double p1y, double
       else if (fabs(sz) > ALMOST_ZERO)
         {
           double n = (pP->getZ() - p1z) / sz;
-          CLPoint* pP2 = new CLPoint(p1x + n*sx, p1y + n*sy, p1z + n*sz);
+          CLPoint* pP2 = new CLPoint(p1x + n * sx, p1y + n * sy, p1z + n * sz);
 
           if (fabs(pP->getX()) > ALMOST_ZERO)
             {
@@ -4649,8 +4722,8 @@ CLPoint* CLLayoutRenderer::calculate_intersection(double p1x, double p1y, double
             {
               double m = (p1z - p2z + (p2y / sy) * sz) / (tz - ty / sy * sz);
               double n = (p2y + m * ty) / sy;
-              pP = new CLPoint(p2x + m*tx, p2y + m*ty, p2z + m*tz);
-              CLPoint* pP2 = new CLPoint(p1x + n*sx, p1y + n*sy, p1z + n*sz);
+              pP = new CLPoint(p2x + m * tx, p2y + m * ty, p2z + m * tz);
+              CLPoint* pP2 = new CLPoint(p1x + n * sx, p1y + n * sy, p1z + n * sz);
 
               if (fabs(pP->getX()) > ALMOST_ZERO)
                 {
@@ -4685,8 +4758,8 @@ CLPoint* CLLayoutRenderer::calculate_intersection(double p1x, double p1y, double
             {
               double n = (p2z - p1z + (p2y / ty) * tz) / (sz - sy / ty * tz);
               double m = (p1y + n * sy) / ty;
-              pP = new CLPoint(p2x + m*tx, p2y + m*ty, p2z + m*tz);
-              CLPoint* pP2 = new CLPoint(p1x + n*sx, p1y + n*sy, p1z + n*sz);
+              pP = new CLPoint(p2x + m * tx, p2y + m * ty, p2z + m * tz);
+              CLPoint* pP2 = new CLPoint(p1x + n * sx, p1y + n * sy, p1z + n * sz);
 
               if (fabs(pP->getX()) > ALMOST_ZERO)
                 {
@@ -4721,8 +4794,8 @@ CLPoint* CLLayoutRenderer::calculate_intersection(double p1x, double p1y, double
             {
               double m = (p1y - p2y + (p2z / sz) * sy) / (ty - tz / sz * sy);
               double n = (p2z + m * tz) / sz;
-              pP = new CLPoint(p2x + m*tx, p2y + m*ty, p2z + m*tz);
-              CLPoint* pP2 = new CLPoint(p1x + n*sx, p1y + n*sy, p1z + n*sz);
+              pP = new CLPoint(p2x + m * tx, p2y + m * ty, p2z + m * tz);
+              CLPoint* pP2 = new CLPoint(p1x + n * sx, p1y + n * sy, p1z + n * sz);
 
               if (fabs(pP->getX()) > ALMOST_ZERO)
                 {
@@ -5201,31 +5274,25 @@ std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> CLLayoutRendere
                 }
             }
 
-
-          
-          
-          
-          
-          
           iMax = this->mpLayout->getListOfGeneralGlyphs().size();
-          
+
           for (i = 0; i < iMax; ++i)
             {
               CLGeneralGlyph* pGG = this->mpLayout->getListOfGeneralGlyphs()[i];
               assert(pGG != NULL);
-              
+
               // we have to look at all points of the curve if there is one
               if (pGG->getCurve().getNumCurveSegments() != 0)
                 {
                   pCurve = &pGG->getCurve();
                   assert(pCurve != NULL);
                   kMax = pCurve->getNumCurveSegments();
-                  
+
                   for (k = 0; k < kMax; ++k)
                     {
                       pLS = pCurve->getSegmentAt(k);
                       assert(pLS != NULL);
-                      
+
                       if (isSegmentHit(pLS, x, y, toleranceRadius))
                         {
                           hits.insert(pGG);
@@ -5240,20 +5307,20 @@ std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> CLLayoutRendere
                   bby = pBB->getPosition().getY();
                   bbwidth = pBB->getDimensions().getWidth();
                   bbheight = pBB->getDimensions().getHeight();
-                  
+
                   if (x >= bbx && y >= bby && x <= (bbx + bbwidth) && y <= (bby + bbheight))
                     {
                       hits.insert(pRG);
                     }
                 }
-              
+
               jMax = pGG->getListOfReferenceGlyphs().size();
-              
+
               for (j = 0; j < jMax; ++j)
                 {
                   CLReferenceGlyph* pRefG = pGG->getListOfReferenceGlyphs()[j];
                   assert(pRefG != NULL);
-                  
+
                   // we have to look at all points of the curve if there is one
                   if (pRefG->getCurve().getNumCurveSegments() != 0)
                     {
@@ -5261,11 +5328,11 @@ std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> CLLayoutRendere
                       assert(pCurve != NULL);
                       kMax = pCurve->getNumCurveSegments();
                       bool drawn = false;
-                      
+
                       for (k = 0; k < kMax && !drawn; ++k)
                         {
                           pLS = pCurve->getSegmentAt(k);
-                          
+
                           if (isSegmentHit(pLS, x, y, toleranceRadius))
                             {
                               hits.insert(pSRG);
@@ -5280,7 +5347,7 @@ std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> CLLayoutRendere
                       bby = pBB->getPosition().getY();
                       bbwidth = pBB->getDimensions().getWidth();
                       bbheight = pBB->getDimensions().getHeight();
-                      
+
                       if (x >= bbx && y >= bby && x <= (bbx + bbwidth) && y <= (bby + bbheight))
                         {
                           hits.insert(pRefG);
@@ -5288,8 +5355,6 @@ std::multiset<CLGraphicalObject*, compareGraphicalObjectsBySize> CLLayoutRendere
                     }
                 }
             }
-          
-          
         }
     }
 
@@ -5347,14 +5412,14 @@ bool CLLayoutRenderer::isSegmentHit(const CLLineSegment* pLS, double x, double y
       if (x >= minX && y >= minY && x <= maxX && y <= maxY)
         {
           // calculate points to get line segments and check each one for a hit
-          GLdouble* pData = new GLdouble[3*NUM_BEZIER_POINTS];
+          GLdouble* pData = new GLdouble[3 * NUM_BEZIER_POINTS];
           CLLayoutRenderer::calculate_cubicbezier(x1, y1, 0.0, x2, y2, 0.0, x3, y3, 0.0, x4, y4, 0.0, NUM_BEZIER_POINTS, pData);
           size_t i;
           double distance = 0.0;
 
           for (i = 1; i < NUM_BEZIER_POINTS && !result; ++i)
             {
-              distance = distancePointLineSegment(x, y, pData[(i-1)*3], pData[(i-1)*3+1], pData[i*3], pData[i*3+1]);
+              distance = distancePointLineSegment(x, y, pData[(i - 1) * 3], pData[(i - 1) * 3 + 1], pData[i * 3], pData[i * 3 + 1]);
               result = (distance == distance && distance <= toleranceRadius);
             }
         }
@@ -5508,18 +5573,18 @@ void CLLayoutRenderer::drawSelectionBox(double x, double y, double width, double
   glColor3f(0.0, 0.0, 0.0);
   glBegin(GL_LINE_LOOP);
   glVertex3d(0.0, 0.0, 0.0);
-  glVertex3d(width + 2*SELECTION_FRAME_WIDTH, 0.0, 0.0);
-  glVertex3d(width + 2*SELECTION_FRAME_WIDTH, height + 2*SELECTION_FRAME_WIDTH, 0.0);
-  glVertex3d(0.0, height + 2*SELECTION_FRAME_WIDTH, 0.0);
+  glVertex3d(width + 2 * SELECTION_FRAME_WIDTH, 0.0, 0.0);
+  glVertex3d(width + 2 * SELECTION_FRAME_WIDTH, height + 2 * SELECTION_FRAME_WIDTH, 0.0);
+  glVertex3d(0.0, height + 2 * SELECTION_FRAME_WIDTH, 0.0);
   glEnd();
   // now we draw the same box again, but in white and with reversed line stippling
   glColor3f(1.0, 1.0, 1.0);
   glLineStipple(10, ~0x5555);
   glBegin(GL_LINE_LOOP);
   glVertex3d(0.0, 0.0, 0.0);
-  glVertex3d(width + 2*SELECTION_FRAME_WIDTH, 0.0, 0.0);
-  glVertex3d(width + 2*SELECTION_FRAME_WIDTH, height + 2*SELECTION_FRAME_WIDTH, 0.0);
-  glVertex3d(0.0, height + 2*SELECTION_FRAME_WIDTH, 0.0);
+  glVertex3d(width + 2 * SELECTION_FRAME_WIDTH, 0.0, 0.0);
+  glVertex3d(width + 2 * SELECTION_FRAME_WIDTH, height + 2 * SELECTION_FRAME_WIDTH, 0.0);
+  glVertex3d(0.0, height + 2 * SELECTION_FRAME_WIDTH, 0.0);
   glEnd();
   glDisable(GL_LINE_STIPPLE);
   /*
@@ -5933,7 +5998,7 @@ bool CLLayoutRenderer::is_curve_segment_visible(const CLLineSegment& segment, do
               // now we calculate the points
               // we have to include the start and end point
               numPoints += 2;
-              GLdouble* pData = new GLdouble[3*numPoints];
+              GLdouble* pData = new GLdouble[3 * numPoints];
               CLLayoutRenderer::calculate_cubicbezier(start.getX(), start.getY(), start.getZ(),
                                                       b1.getX(), b1.getY(), b1.getZ(),
                                                       b2.getX(), b2.getY(), b2.getZ(),
@@ -5951,10 +6016,10 @@ bool CLLayoutRenderer::is_curve_segment_visible(const CLLineSegment& segment, do
 
               for (unsigned int i = 1; i < numPoints; ++i)
                 {
-                  p.setX(pData[3*i]);
-                  p.setY(pData[3*i+1]);
+                  p.setX(pData[3 * i]);
+                  p.setY(pData[3 * i + 1]);
 #ifdef USE_CRENDER_EXTENSION
-                  p.setZ(pData[3*i+2]);
+                  p.setZ(pData[3 * i + 2]);
 #endif // USE_CRENDER_EXTENSION
                   temp_ls.setEnd(p);
 
@@ -5970,7 +6035,6 @@ bool CLLayoutRenderer::is_curve_segment_visible(const CLLineSegment& segment, do
               delete[] pData;
             }
         }
-
     }
   // if we have a line segment and so far it would not be drawn
   // we check if the end points lie outside the boundingbox, but
@@ -6004,7 +6068,6 @@ bool CLLayoutRenderer::is_curve_segment_visible(const CLLineSegment& segment, do
   return result;
 }
 
-
 /**
  * Checks if the given curve would be visible in the box determined by lx,ly,rx,ry.
  * If the curve in any way intersects the box, true is returned.
@@ -6030,7 +6093,6 @@ bool CLLayoutRenderer::is_curve_visible(const CLCurve& curve, double lx, double 
 
   return result;
 }
-
 
 /**
  * Returns all objects that are within a given bounding box.
@@ -6288,20 +6350,19 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
             }
         }
 
-      
       iMax = this->mpLayout->getListOfGeneralGlyphs().size();
-      
+
       for (i = 0; i < iMax; ++i)
         {
           CLGeneralGlyph* pGG = this->mpLayout->getListOfGeneralGlyphs()[i];
           assert(pGG != NULL);
-          
+
           // we have to look at all points of the curve if there is one
           if (pGG->getCurve().getNumCurveSegments() != 0)
             {
-              
+
               bool drawn = CLLayoutRenderer::is_curve_visible(pGG->getCurve(), lx, ly, rx, ry, partial);
-              
+
               if (drawn)
                 {
                   result.push_back(pGG);
@@ -6312,7 +6373,7 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
               pBB = &pGG->getBoundingBox();
               x = pBB->getPosition().getX();
               y = pBB->getPosition().getY();
-              
+
               if (partial)
                 {
                   // if the upper left is right of or below the current viewport, the
@@ -6323,7 +6384,7 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
                       // the object is also not drawn
                       x += pBB->getDimensions().getWidth();
                       y += pBB->getDimensions().getHeight();
-                      
+
                       if (!(x < lx || y < ly))
                         {
                           result.push_back(pGG);
@@ -6337,7 +6398,7 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
                     {
                       x += pBB->getDimensions().getWidth();
                       y += pBB->getDimensions().getHeight();
-                      
+
                       if ((x <= rx && y <= ry))
                         {
                           result.push_back(pGO);
@@ -6345,19 +6406,19 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
                     }
                 }
             }
-          
+
           jMax = pGG->getListOfReferenceGlyphs().size();
-          
+
           for (j = 0; j < jMax; ++j)
             {
               CLReferenceGlyph* pRefG = pGG->getListOfReferenceGlyphs()[j];
               assert(pRefG != NULL);
-              
+
               // we have to look at all points of the curve if there is one
               if (pRefG->getCurve().getNumCurveSegments() != 0)
                 {
                   bool drawn = CLLayoutRenderer::is_curve_visible(pRefG->getCurve(), lx, ly, rx, ry, partial);
-                  
+
                   if (drawn)
                     {
                       result.push_back(pRefG);
@@ -6368,7 +6429,7 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
                   pBB = &pRefG->getBoundingBox();
                   x = pBB->getPosition().getX();
                   y = pBB->getPosition().getY();
-                  
+
                   if (partial)
                     {
                       // if the upper left is right of or below the current viewport, the
@@ -6379,7 +6440,7 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
                           // the object is also not drawn
                           x += pBB->getDimensions().getWidth();
                           y += pBB->getDimensions().getHeight();
-                          
+
                           if (!(x < lx || y < ly))
                             {
                               result.push_back(pRefG);
@@ -6393,7 +6454,7 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
                         {
                           x += pBB->getDimensions().getWidth();
                           y += pBB->getDimensions().getHeight();
-                          
+
                           if ((x <= rx && y <= ry))
                             {
                               result.push_back(pGO);
@@ -6403,8 +6464,6 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
                 }
             }
         }
-    
-      
     }
 
   return result;
@@ -7113,7 +7172,6 @@ std::set<const CLGraphicalObject*>& CLLayoutRenderer::getHighlightedObjects()
   return this->mHighlightedObjects;
 }
 
-
 /**
  * Sets the highlight color.
  */
@@ -7153,7 +7211,6 @@ const GLfloat* CLLayoutRenderer::getFogColor() const
 {
   return this->mFogColor;
 }
-
 
 /**
  * Toggles the flag that determines if highlighted objects
@@ -7196,7 +7253,6 @@ GLfloat CLLayoutRenderer::getFogDensity() const
 {
   return this->mFogDensity;
 }
-
 
 /**
  * On non apple systems, we need to get the pointers to extension functions.
@@ -7251,5 +7307,3 @@ void * CLLayoutRenderer::MyNSGLGetProcAddress(const char *name)
 #endif // __APPLE__
 
 #endif // ELEMENTARY_MODE_DISPLAY
-
-

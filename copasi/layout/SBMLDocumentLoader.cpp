@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.cpp,v $
-//   $Revision: 1.23 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/05/21 09:55:01 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -32,6 +24,7 @@
 #include <sbml/packages/layout/sbml/Layout.h>
 #include <sbml/packages/layout/sbml/SpeciesGlyph.h>
 #include <sbml/packages/layout/sbml/ReactionGlyph.h>
+
 #include <sbml/packages/layout/sbml/SpeciesReferenceGlyph.h>
 #include <sbml/packages/layout/sbml/TextGlyph.h>
 #ifdef USE_CRENDER_EXTENSION
@@ -73,7 +66,6 @@ void SBMLDocumentLoader::readListOfLayouts(CListOfLayouts & lol,
     {
       const_cast<SBMLDocument *>(pLoL->getSBMLDocument())->enablePackage(RenderExtension::getXmlnsL3V1V1(), "render", true);
       rlolPlugin = (RenderListOfLayoutsPlugin*) pLoL ->getPlugin("render");
-
     }
 
   iMax = rlolPlugin->getNumGlobalRenderInformationObjects();
@@ -159,7 +151,7 @@ void SBMLDocumentLoader::readListOfLayouts(CListOfLayouts & lol,
     {
       std::map<std::string, std::string> layoutmap;
       const Layout* tmp
-      = dynamic_cast<const Layout*>(sbmlList.get(i));
+        = dynamic_cast<const Layout*>(sbmlList.get(i));
 
       if (tmp)
         {
@@ -199,7 +191,7 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
   for (i = 0; i < iMax; ++i)
     {
       const CompartmentGlyph* tmp
-      = dynamic_cast<const CompartmentGlyph*>(sbmlLayout.getListOfCompartmentGlyphs()->get(i));
+        = dynamic_cast<const CompartmentGlyph*>(sbmlLayout.getListOfCompartmentGlyphs()->get(i));
 
       if (tmp)
         layout->addCompartmentGlyph(new CLCompartmentGlyph(*tmp, modelmap, layoutmap));
@@ -211,7 +203,7 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
   for (i = 0; i < iMax; ++i)
     {
       const SpeciesGlyph* tmp
-      = dynamic_cast<const SpeciesGlyph*>(sbmlLayout.getListOfSpeciesGlyphs()->get(i));
+        = dynamic_cast<const SpeciesGlyph*>(sbmlLayout.getListOfSpeciesGlyphs()->get(i));
 
       if (tmp)
         layout->addMetaboliteGlyph(new CLMetabGlyph(*tmp, modelmap, layoutmap));
@@ -223,7 +215,7 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
   for (i = 0; i < iMax; ++i)
     {
       const ReactionGlyph* tmp
-      = dynamic_cast<const ReactionGlyph*>(sbmlLayout.getListOfReactionGlyphs()->get(i));
+        = dynamic_cast<const ReactionGlyph*>(sbmlLayout.getListOfReactionGlyphs()->get(i));
 
       if (tmp)
         layout->addReactionGlyph(new CLReactionGlyph(*tmp, modelmap, layoutmap));
@@ -235,7 +227,7 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
   for (i = 0; i < iMax; ++i)
     {
       const TextGlyph* tmp
-      = dynamic_cast<const TextGlyph*>(sbmlLayout.getListOfTextGlyphs()->get(i));
+        = dynamic_cast<const TextGlyph*>(sbmlLayout.getListOfTextGlyphs()->get(i));
 
       if (tmp)
         layout->addTextGlyph(new CLTextGlyph(*tmp, modelmap, layoutmap));
@@ -246,13 +238,11 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
 
   for (i = 0; i < iMax; ++i)
     {
-      const GraphicalObject* tmp
-      = dynamic_cast<const GraphicalObject*>(sbmlLayout.getListOfAdditionalGraphicalObjects()->get(i));
+      const GraphicalObject* graphical
+        = dynamic_cast<const GraphicalObject*>(sbmlLayout.getListOfAdditionalGraphicalObjects()->get(i));
 
-      if (tmp)
-        layout->addGeneralGlyph(new CLGeneralGlyph(*tmp, modelmap, layoutmap));
-      
-      //TODO read SBML GeneralGlyph once libsbml supports it
+      if (graphical)
+        layout->addGeneralGlyph(new CLGeneralGlyph(*graphical, modelmap, layoutmap));
     }
 
   //second pass text (the text glyph can refer to other glyphs. These references can)
@@ -262,7 +252,7 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
   for (i = 0; i < iMax; ++i)
     {
       const TextGlyph* tmp
-      = dynamic_cast<const TextGlyph*>(sbmlLayout.getListOfTextGlyphs()->get(i));
+        = dynamic_cast<const TextGlyph*>(sbmlLayout.getListOfTextGlyphs()->get(i));
 
       if (tmp)
         postprocessTextGlyph(*tmp, layoutmap);
