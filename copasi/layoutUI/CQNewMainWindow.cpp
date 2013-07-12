@@ -1722,7 +1722,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
   const double REACTION_SIZE = 20.0;
   std::set<CLMetabGlyph*> duplicateNodes;
 
-  // we need a multimap that stores the association between a metabolite and it's glyph
+  // we need a multimap that stores the association between a metabolite and its glyph
   std::map<const CMetab*, CLMetabGlyph*> metabGlyphMap;
 
   QFont font = QFont("Helvetica", 16);
