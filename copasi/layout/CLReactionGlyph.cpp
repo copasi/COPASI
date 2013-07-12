@@ -404,6 +404,11 @@ CLGeneralGlyph::CLGeneralGlyph(const GraphicalObject & sbml,
 
       if (it != modelmap.end())
         setModelObjectKey(it->second);
+
+      it = layoutmap.find(general->getReferenceId());
+
+      if (it != layoutmap.end())
+        setModelObjectKey(it->second);
     }
 
   //species reference glyphs
@@ -536,6 +541,19 @@ void CLGeneralGlyph::exportToSBML(GraphicalObject * g, //TODO
           if (it->second)
             general->setReferenceId(it->second->getId());
         }
+
+      const CLBase* base = dynamic_cast<const CLBase*>(tmp);
+
+      if (base)
+        {
+          std::map<const CLBase*, const SBase*>::const_iterator it2 = layoutmap.find(base);
+
+          if (it2 != layoutmap.end())
+            {
+              if (it2->second)
+                general->setReferenceId(it2->second->getId());
+            }
+        }
     }
 
   //curve
@@ -557,7 +575,6 @@ void CLGeneralGlyph::exportToSBML(GraphicalObject * g, //TODO
       if (it == copasimodelmap.end()) //not found
         {
           pG = general->createReferenceGlyph();
-          general->getListOfReferenceGlyphs()->appendAndOwn(pG);
         }
       else
         {
