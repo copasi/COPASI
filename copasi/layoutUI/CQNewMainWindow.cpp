@@ -2522,7 +2522,15 @@ void CQNewMainWindow::createLayout(const std::set<const CCompartment*>& compartm
 
 void CQNewMainWindow::randomizeLayout()
 {
-
+  size_t i;
+  
+  //compartment glyphs
+  
+  //metab glyphs
+  for (i=0; i<mpCurrentLayout->getListOfMetaboliteGlyphs().size(); ++i)
+    {
+    }
+  
   mpCurrentLayout   ;
 }
 
