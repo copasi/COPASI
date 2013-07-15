@@ -2489,11 +2489,34 @@ void CQNewMainWindow::createLayout(const std::set<const CCompartment*>& compartm
 
       
       } //reactions
-    
-    //delete pRandom;
+  
+  
+    //after all other glyphs are created, create the compartment glyphs
+    double xxx = 0;
+    std::set<const CCompartment*>::const_iterator compIt;
+    for(compIt=compartments.begin(); compIt != compartments.end(); ++compIt)
+      {
+        double compSize = 10000;
+        std::map<const CCompartment*, CompartmentInfo>::const_iterator ccIt;
+        ccIt = compInfo.find(*compIt);
+        if (ccIt != compInfo.end() )
+          { //some glyphs are placed inside this compartment glyph
+            compSize = ccIt->second.mAreaSum*40;
+          }
+
+        //create the glyph
+        CLCompartmentGlyph* pCompGlyph= new CLCompartmentGlyph;
+        pCompGlyph->setModelObjectKey((*compIt)->getKey());
+        pCompGlyph->setDimensions(CLDimensions(CLDimensions(sqrt(compSize), sqrt(compSize))));
+        pCompGlyph->setPosition(CLPoint(xxx, 5));
+        xxx += sqrt(compSize) + 10;
+        
+        mpCurrentLayout->addCompartmentGlyph(pCompGlyph);
+      }
+  
     // determine and set the layout dimensions
-    //CLBoundingBox box = this->mpCurrentLayout->calculateBoundingBox();
-    //this->mpCurrentLayout->setDimensions(CLDimensions(box.getDimensions().getWidth() + 30.0, box.getDimensions().getHeight() + 30.0));*/
+    CLBoundingBox box = this->mpCurrentLayout->calculateBoundingBox();
+    this->mpCurrentLayout->setDimensions(CLDimensions(box.getDimensions().getWidth() + 30.0, box.getDimensions().getHeight() + 30.0));
 }
 
 
