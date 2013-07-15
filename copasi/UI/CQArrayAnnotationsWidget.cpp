@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifdef SunOS
 #include <ieeefp.h>
@@ -769,8 +769,22 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
 
 void CQArrayAnnotationsWidget::slotContentCellClicked(int row, int col)
 {
-  mSelectedCell[mRowIndex] = row;
-  mSelectedCell[mColIndex] = col;
+  switch (mSelectedCell.size())
+    {
+      case 0:
+        break;
+
+      case 1:
+        mSelectedCell[mRowIndex] = row;
+        break;
+
+      default:
+        mSelectedCell[mRowIndex] = row;
+        mSelectedCell[mColIndex] = col;
+        break;
+    }
+
+  return;
 }
 
 void CQArrayAnnotationsWidget::slotContentDoubleClicked()
@@ -831,12 +845,7 @@ void CQArrayAnnotationsWidget::fillBarChart()
   qDebug() << "mRowIndex = " << mRowIndex << " - mIndex.size() = " << mSelectedCell.size();
 #endif
 
-  assert(mRowIndex < mSelectedCell.size());
-
-  if (!mOneDimensional)
-    assert(mColIndex < mSelectedCell.size());
-
-  const std::vector<size_t>& types = mpArray->size();
+  std::vector<size_t> types = mpArray->size();
   size_t imax =  types.size() > mRowIndex ? types[mRowIndex] : 0;
   size_t jmax = mOneDimensional ? 1 : types.size() > mColIndex ? types[mColIndex] : 0;
 
