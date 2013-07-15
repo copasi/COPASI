@@ -1719,9 +1719,9 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
     const std::set<const CMetab*>& sideMetabs
                                         )
 {
-  createLayout(compartments, reactions, metabs, sideMetabs);
-  slotRunRandomizeLayout();
-  return;
+  //createLayout(compartments, reactions, metabs, sideMetabs);
+  //slotRunRandomizeLayout();
+  //return;
 
   const double REACTION_SIZE = 20.0;
   std::set<CLMetabGlyph*> duplicateNodes;
