@@ -394,6 +394,7 @@ public:
                             const std::set<const CMetab*>& sideMetabs
                             );
     
+  void randomizeLayout();
     
   /**
    * Creates a spring layout.
