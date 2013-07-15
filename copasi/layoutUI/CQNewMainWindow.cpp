@@ -2258,33 +2258,15 @@ void CQNewMainWindow::createLayout(const std::set<const CCompartment*>& compartm
 {
     //mpCurrentLayout contains an empty layout
     
-    
-    
-    //const double REACTION_SIZE = 20.0;
-    //std::set<CLMetabGlyph*> duplicateNodes;
-    
-    // we need a multimap that stores the association between a metabolite and its glyph
-    //std::map<const CMetab*, CLMetabGlyph*> metabGlyphMap;
-    
     QFont font = QFont("Helvetica", 16);
     QFontMetrics metrics = QFontMetrics(font);
     QRect textBounds;
     
     // create a species glyph for each species in metabs
-    
-    //double totalarea = 0.0;
-    // store the area for each compartment in a map
-    std::map<const CCompartment*, double> areaMap;
-    // a map that associated text glpyhs with metab glyphs
-    // we need this to later place the text glyph
-    // on top of the metab glyph
-    //std::map<CLMetabGlyph*, CLTextGlyph*> textGlyphMap;
-    //std::map<CLMetabGlyph*, CLTextGlyph*> textGlyphMap2;
-    // we need to store which compartment contains which metabolite glyphs
-    //std::map<const CCompartment*, std::set<CLMetabGlyph*> > compmetmap;
-    
+        
     std::map<const CCompartment*, CompartmentInfo> compInfo;
-    
+    std::map<const CMetab*, CLMetabGlyph*> metabMap;
+  
     std::set<const CMetab*>::const_iterator metabIt;
     for(metabIt=metabs.begin(); metabIt != metabs.end(); ++metabIt)
       {
@@ -2303,6 +2285,7 @@ void CQNewMainWindow::createLayout(const std::set<const CCompartment*>& compartm
         pMetabGlyph->setModelObjectKey((*metabIt)->getKey());
         
         mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
+        metabMap[*metabIt] = pMetabGlyph;
 
         //create the text glyph for the label
         CLTextGlyph* pTextGlyph = new CLTextGlyph;
@@ -2325,8 +2308,100 @@ void CQNewMainWindow::createLayout(const std::set<const CCompartment*>& compartm
     std::set<const CReaction*>::const_iterator reactIt;
     for (reactIt=reactions.begin(); reactIt != reactions.end(); ++reactIt)
       {
+        CLReactionGlyph* pReactionGlyph = new CLReactionGlyph;
+        //pResult->setDimensions(CLDimensions(width, height));
+        pReactionGlyph->setModelObjectKey((*reactIt)->getKey());
+        //pReactionGlyph->getCurve().addCurveSegment(CLLineSegment(CLPoint(x, y),
+        //                                             CLPoint(x + length, y)));
         
-      }
+        mpCurrentLayout->addReactionGlyph(pReactionGlyph);
+        
+        //now add the species reference glyphs.
+        
+        //substrates
+        const CCopasiVector < CChemEqElement >& substrates = (*reactIt)->getChemEq().getSubstrates();
+        // if we have no substrates, add a dummy / invisible node for now
+        if (substrates.size()==0)
+        {
+          CLMetabGlyph* pMetabGlyph = new CLMetabGlyph;
+          pMetabGlyph->setDimensions(CLDimensions(1, 1));
+          pMetabGlyph->setObjectRole("invisible");
+          mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
+          
+          CLMetabReferenceGlyph* pRefGlyph = new CLMetabReferenceGlyph;
+          //pResult->setModelObjectKey(modelobjectkey);
+          pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
+          pRefGlyph->setRole(CLMetabReferenceGlyph::SUBSTRATE); //TODO side substr?
+          pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
+        }
+
+        CCopasiVector<CChemEqElement>::const_iterator elIt;
+        for (elIt = substrates.begin(); elIt != substrates.end(); ++elIt)
+        {
+          const CMetab* pMetab = (*elIt)->getMetabolite();
+          if (!pMetab)
+            continue;
+        
+          CLMetabGlyph* pMetabGlyph = NULL;
+          CLMetabReferenceGlyph::Role role; // = CLMetabReferenceGlyph::SUBSTRATE;
+          //is it a side reactant? If yes, create a new metab glyph
+          if (sideMetabs.find(pMetab) != sideMetabs.end())
+            {
+              //estimate the size of the glyph
+              textBounds = metrics.boundingRect(pMetab->getObjectName().c_str());
+              double width = (double)textBounds.width();
+              double height = (double)textBounds.height();
+              if (width < height)
+              {
+                width = height;
+              }
+            
+              //create the glyph
+              pMetabGlyph= new CLMetabGlyph;
+              pMetabGlyph->setDimensions(CLDimensions(width + 4, height + 4));
+              pMetabGlyph->setModelObjectKey(pMetab->getKey());
+                //TODO: mark as duplicate 
+              mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
+
+              //create the text glyph for the label
+              CLTextGlyph* pTextGlyph = new CLTextGlyph;
+              pTextGlyph->setDimensions(CLDimensions(width, height));
+              pTextGlyph->setGraphicalObjectKey(pMetabGlyph->getKey());
+              pTextGlyph->setModelObjectKey((*metabIt)->getKey());
+            
+              mpCurrentLayout->addTextGlyph(pTextGlyph);
+            
+              //add up the sizes for the compartment
+              const CCompartment* pComp=NULL;
+              if (compartments.find((*metabIt)->getCompartment()) != compartments.end() )
+                pComp = (*metabIt)->getCompartment();
+            
+              compInfo[pComp].add((width+4)*(height+4));
+            
+              role = CLMetabReferenceGlyph::SIDESUBSTRATE;
+            }
+          else
+            {  //find the existing metab glyph
+              std::map<const CMetab*, CLMetabGlyph*>::const_iterator mmIt;
+              mmIt = metabMap.find(pMetab);
+              if (mmIt != metabMap.end())
+                pMetabGlyph = mmIt->second;
+              
+              role = CLMetabReferenceGlyph::SUBSTRATE;
+            }
+        
+          if (!pMetabGlyph)
+            continue;
+        
+          CLMetabReferenceGlyph* pRefGlyph = new CLMetabReferenceGlyph;
+          //pResult->setModelObjectKey(modelobjectkey);
+          pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
+          pRefGlyph->setRole(role); 
+          pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
+        
+        } //substrates
+        
+      } //reactions
         
     /*
     
