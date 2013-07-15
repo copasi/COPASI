@@ -16,6 +16,7 @@
 
 #include "CQExpressionWidget.h"
 #include "CQMessageBox.h"
+#include "CQCompartmentCopyOptions.h"
 #include "qtUtilities.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -23,6 +24,8 @@
 #include "model/CMetab.h"
 #include "model/CCompartment.h"
 #include "model/CChemEqInterface.h"
+#include "model/CModelExpansion.h"    //for Copy button and options
+#include "model/CReactionInterface.h" //for Copy button internal reactions only
 #include "function/CExpression.h"
 #include "report/CKeyFactory.h"
 #include "report/CCopasiRootContainer.h"
@@ -38,7 +41,7 @@ CQCompartment::CQCompartment(QWidget* parent, const char* name):
   mChanged(false),
   mExpressionValid(true),
   mInitialExpressionValid(true),
-  mKeyToCopy("")
+  mKeyOfCopy("")
 {
   setupUi(this);
 
@@ -79,27 +82,121 @@ void CQCompartment::slotBtnNew()
 {
   leave();
 
-  std::string name = "compartment_1";
-  int i = 1;
-
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-
-  while (!(mpCompartment = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createCompartment(name)))
+  if (mKeyOfCopy == "")
     {
-      i++;
-      name = "compartment_";
-      name += TO_UTF8(QString::number(i));
-    }
+      std::string name = "compartment_1";
+      int i = 1;
 
-  std::string key = mpCompartment->getKey();
-//  enter(key);
-  protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
+      while (!(mpCompartment = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createCompartment(name)))
+        {
+          i++;
+          name = "compartment_";
+          name += TO_UTF8(QString::number(i));
+        }
+
+      std::string key = mpCompartment->getKey();
+
+      protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, key);
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+    }
+  else mKeyOfCopy = "";
 }
 
-void CQCompartment::slotBtnCopy()
-{
-  mKeyToCopy = mKey;
+void CQCompartment::copy()
+{   
+  CModel * pModel = mpDataModel->getModel();
+  CModelExpansion cModelExpObj = CModelExpansion(pModel);
+  CModelExpansion::SetOfModelElements compartmentObjectsToCopy;
+  CModelExpansion::ElementsMap origToCopyMappings;
+
+  CQCompartmentCopyOptions * pDialog = new CQCompartmentCopyOptions(this);
+  pDialog->exec();
+
+  bool success = false;
+
+  switch (pDialog->result())
+    {
+      case QDialog::Rejected:
+        break;
+
+      case CQCompartmentCopyOptions::COMP:      //compartment only
+
+        compartmentObjectsToCopy.addObject(mpObject);
+        success = true;
+        break;
+
+      case CQCompartmentCopyOptions::SPECIES: // include the species
+      {
+        compartmentObjectsToCopy.addObject(mpObject);
+        CCopasiVectorNS < CMetab > & Metabolites = mpCompartment->getMetabolites();
+        CCopasiVectorNS < CMetab >::const_iterator itMetab;
+
+        for (itMetab = Metabolites.begin(); itMetab != Metabolites.end(); ++itMetab)
+         {
+          compartmentObjectsToCopy.addMetab(*itMetab);
+         }
+      }
+        success = true;
+        break;
+
+      case CQCompartmentCopyOptions::INTREAC:    //also include the internal reactions
+      {
+        compartmentObjectsToCopy.addObject(mpObject);
+
+        // Get all the compartment's species first
+        CCopasiVectorNS < CMetab > & Metabolites = mpCompartment->getMetabolites();
+        CCopasiVectorNS < CMetab >::const_iterator itMetab;
+
+        for (itMetab = Metabolites.begin(); itMetab != Metabolites.end(); ++itMetab)
+         {
+          compartmentObjectsToCopy.addMetab(*itMetab);
+         }
+
+        // Now get the reactions which are not multi-compartment
+        CCopasiVectorN< CReaction >::const_iterator it = pModel->getReactions().begin();
+        CCopasiVectorN< CReaction >::const_iterator end = pModel->getReactions().end();
+        CReactionInterface * pRi = new CReactionInterface(pModel);
+
+        for (; it != end; ++it)
+          {
+            pRi->initFromReaction((*it)->getKey());
+
+            if(!pRi->isMulticompartment())
+            {
+                if(pRi->getChemEqInterface().getCompartment()->getKey() == mKey)
+                  compartmentObjectsToCopy.addReaction(*it);
+            }
+          }
+
+        pdelete(pRi);
+        success = true;
+        break;
+      }
+
+      case CQCompartmentCopyOptions::ALLREAC:    //get everything in compartment
+
+        compartmentObjectsToCopy.addObject(mpObject);
+        compartmentObjectsToCopy.fillDependencies(pModel);
+        success = true;
+        break;
+    }
+
+  pdelete(pDialog);
+
+  if(success)
+  {
+    cModelExpObj.duplicate(compartmentObjectsToCopy, "_copy", origToCopyMappings);
+
+    mKeyOfCopy = origToCopyMappings.getDuplicateKey(mKey);
+    protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, "");//Refresh all
+    protectedNotify(ListViews::METABOLITE, ListViews::DELETE, ""); //Refresh all
+    protectedNotify(ListViews::REACTION, ListViews::DELETE, "");   //Refresh all
+    mpListView->switchToOtherWidget(C_INVALID_INDEX, mKeyOfCopy);
+  }
+  else
+    mKeyOfCopy = "do_not_create_new_compartment";    //   just to skip statements when in slotBtnNew
 }
 
 void CQCompartment::slotBtnDelete()
@@ -238,25 +335,9 @@ void CQCompartment::slotInitialExpressionValid(bool valid)
 
 bool CQCompartment::enterProtected()
 {
-  if (mKeyToCopy != "")
-    {
-      mpCompartment = dynamic_cast<CCompartment*>(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy));
-      mKeyToCopy = "";
-    }
-  else
-    {
-      mpCompartment = dynamic_cast< CCompartment * >(mpObject);
-    }
-
-  if (!mpCompartment)
-    {
-      mpListView->switchToOtherWidget(111, "");
-      return false;
-    }
+  mpCompartment = dynamic_cast< CCompartment * >(mpObject);
 
   load();
-
-  mpCompartment = dynamic_cast<CCompartment*>(mpObject);
 
   return true;
 }

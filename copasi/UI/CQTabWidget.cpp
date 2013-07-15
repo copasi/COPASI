@@ -3,6 +3,8 @@
 // of Manchester. 
 // All rights reserved. 
 
+#include <QString>
+
 #include "CQTabWidget.h"
 
 #include "CQMessageBox.h"
@@ -15,6 +17,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "function/CFunction.h"
+#include "UI/CQCompartment.h"
 
 CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget * pCopasiWidget,
                          QWidget * parent, Qt::WindowFlags f) :
@@ -233,7 +236,18 @@ void CQTabWidget::slotBtnCopy()
   leave();
 
   mIgnoreLeave = true;
-  emit copyClicked();
+
+  // CQCompartments have copy options, use CModelExpansion, and do their own switching.
+  if(QString(mPages[0]->metaObject()->className()) == "CQCompartment")
+  {
+    CQCompartment * pQCompartment = dynamic_cast< CQCompartment * >(mPages[0]);
+    pQCompartment->copy();
+  }
+  else
+    emit copyClicked();
+
   emit newClicked();
   mIgnoreLeave = false;
+
+
 }

@@ -33,6 +33,7 @@ public:
 
   virtual bool leave();
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+  void copy();
 
 protected:
   virtual bool enterProtected();
@@ -52,11 +53,11 @@ private:
   void destroy();
   void loadMetaboliteTable();
 
-  std::string mKeyToCopy;
+  std::string mKeyOfCopy;
 
 private slots:
   void slotBtnNew();
-  void slotBtnCopy();
+  void slotBtnCopy(){}; //dummy, to bypass warnings from TabWidget connections
   void slotBtnDelete();
   void slotTypeChanged(int type);
   void slotInitialTypeChanged(bool useInitialAssignment);
