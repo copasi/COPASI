@@ -767,8 +767,22 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
 
 void CQArrayAnnotationsWidget::slotContentCellClicked(int row, int col)
 {
-  mSelectedCell[mRowIndex] = row;
-  mSelectedCell[mColIndex] = col;
+  switch (mSelectedCell.size())
+    {
+      case 0:
+        break;
+
+      case 1:
+        mSelectedCell[mRowIndex] = row;
+        break;
+
+      default:
+        mSelectedCell[mRowIndex] = row;
+        mSelectedCell[mColIndex] = col;
+        break;
+    }
+
+  return;
 }
 
 void CQArrayAnnotationsWidget::slotContentDoubleClicked()
@@ -828,11 +842,6 @@ void CQArrayAnnotationsWidget::fillBarChart()
 #ifdef DEBUG_UI
   qDebug() << "mRowIndex = " << mRowIndex << " - mIndex.size() = " << mSelectedCell.size();
 #endif
-
-  assert(mRowIndex < mSelectedCell.size());
-
-  if (!mOneDimensional)
-    assert(mColIndex < mSelectedCell.size());
 
   std::vector<size_t> types = mpArray->size();
   size_t imax =  types.size() > mRowIndex ? types[mRowIndex] : 0;
