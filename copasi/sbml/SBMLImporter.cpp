@@ -3253,6 +3253,17 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
 
       if (sbmlDoc->getPlugin("comp") != NULL && sbmlDoc->isSetPackageRequired("comp"))
         {
+
+          if (sbmlDoc->getNumErrors(LIBSBML_SEV_ERROR) > 0)
+            {
+              std::string message =
+                "The SBML model you are trying to import uses the Hierarchical Modeling extension. "
+                "In order to import this model in COPASI, it has to be flattened, however flattening is "
+                "not possible because of the following errors:\n" + sbmlDoc->getErrorLog()->toString();
+
+              CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
+            }
+
           // the sbml comp package is used, and the required flag is set, so it stands to reason
           // that we need to flatten the document
           sbmlDoc->getErrorLog()->clearLog();
@@ -3265,9 +3276,13 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
           if (sbmlDoc->convert(props) != LIBSBML_OPERATION_SUCCESS)
             {
               std::string message =
-                "The SBML model you are trying to import does use the Hierarchical Modeling extension. "
-                "In order to import this model in COPASI, it has to be flattened, however flattening failed "
-                "with the following errors:\n" + sbmlDoc->getErrorLog()->toString();
+                "The SBML model you are trying to import uses the Hierarchical Modeling extension. "
+                "In order to import this model in COPASI, it has to be flattened, however flattening failed";
+
+              if (sbmlDoc->getNumErrors() == 0)
+                message += ".";
+              else
+                message += " with the following errors:\n" + sbmlDoc->getErrorLog()->toString();
 
               CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
             }
