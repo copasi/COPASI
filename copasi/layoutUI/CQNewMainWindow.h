@@ -43,6 +43,7 @@ class CModel;
 class CLCompartmentGlyph;
 class CLMetabGlyph;
 class CLTextGlyph;
+class CRandom;
 #endif // COPASI_AUTOLAYOUT
 
 class CQNewMainWindow : public CWindowInterface
@@ -395,7 +396,13 @@ public:
                             );
     
   void randomizeLayout();
-    
+  
+  void placeTextGlyphs();
+  
+  void randomlyPlaceGlyphInCompartmentGlyph(CLGraphicalObject* pGl, const CLGraphicalObject* pContainer);
+ 
+   void randomlyPlaceGlyphInDimensions(CLGraphicalObject* pGl, const CLDimensions* pContainer);
+ 
   /**
    * Creates a spring layout.
    * The method takes the number of iterations for the
@@ -405,6 +412,10 @@ public:
    * at the end.
    */
   void createSpringLayout(int numIterations, int updateInterval);
+  
+protected:
+  CRandom* mpRandom;
+  
 #endif // COPASI_AUTOLAYOUT
 };
 

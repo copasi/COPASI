@@ -1719,9 +1719,10 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
     const std::set<const CMetab*>& sideMetabs
                                         )
 {
-  //createLayout(compartments, reactions, metabs, sideMetabs);
+  createLayout(compartments, reactions, metabs, sideMetabs);
   //slotRunRandomizeLayout();
-  //return;
+  randomizeLayout();
+  return;
 
   const double REACTION_SIZE = 20.0;
   std::set<CLMetabGlyph*> duplicateNodes;
@@ -2371,14 +2372,14 @@ void CQNewMainWindow::createLayout(const std::set<const CCompartment*>& compartm
               CLTextGlyph* pTextGlyph = new CLTextGlyph;
               pTextGlyph->setDimensions(CLDimensions(width, height));
               pTextGlyph->setGraphicalObjectKey(pMetabGlyph->getKey());
-              pTextGlyph->setModelObjectKey((*metabIt)->getKey());
+              pTextGlyph->setModelObjectKey(pMetab->getKey());
             
               mpCurrentLayout->addTextGlyph(pTextGlyph);
             
               //add up the sizes for the compartment
               const CCompartment* pComp=NULL;
-              if (compartments.find((*metabIt)->getCompartment()) != compartments.end() )
-                pComp = (*metabIt)->getCompartment();
+              if (compartments.find(pMetab->getCompartment()) != compartments.end() )
+                pComp = pMetab->getCompartment();
             
               compInfo[pComp].add((width+4)*(height+4));
             
@@ -2453,14 +2454,14 @@ void CQNewMainWindow::createLayout(const std::set<const CCompartment*>& compartm
               CLTextGlyph* pTextGlyph = new CLTextGlyph;
               pTextGlyph->setDimensions(CLDimensions(width, height));
               pTextGlyph->setGraphicalObjectKey(pMetabGlyph->getKey());
-              pTextGlyph->setModelObjectKey((*metabIt)->getKey());
+              pTextGlyph->setModelObjectKey(pMetab->getKey());
             
               mpCurrentLayout->addTextGlyph(pTextGlyph);
             
               //add up the sizes for the compartment
               const CCompartment* pComp=NULL;
-              if (compartments.find((*metabIt)->getCompartment()) != compartments.end() )
-                pComp = (*metabIt)->getCompartment();
+              if (compartments.find(pMetab->getCompartment()) != compartments.end() )
+                pComp = pMetab->getCompartment();
             
               compInfo[pComp].add((width+4)*(height+4));
             
@@ -2486,6 +2487,73 @@ void CQNewMainWindow::createLayout(const std::set<const CCompartment*>& compartm
           pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
         
         } //products
+
+        //products
+        const CCopasiVector < CChemEqElement >& modifiers = (*reactIt)->getChemEq().getModifiers();
+        for (elIt = modifiers.begin(); elIt != modifiers.end(); ++elIt)
+        {
+          const CMetab* pMetab = (*elIt)->getMetabolite();
+          if (!pMetab)
+            continue;
+        
+          CLMetabGlyph* pMetabGlyph = NULL;
+          CLMetabReferenceGlyph::Role role; // = CLMetabReferenceGlyph::SUBSTRATE;
+          //is it a side reactant? If yes, create a new metab glyph
+          if (sideMetabs.find(pMetab) != sideMetabs.end())
+            {
+              //estimate the size of the glyph
+              textBounds = metrics.boundingRect(pMetab->getObjectName().c_str());
+              double width = (double)textBounds.width();
+              double height = (double)textBounds.height();
+              if (width < height)
+              {
+                width = height;
+              }
+            
+              //create the glyph
+              pMetabGlyph= new CLMetabGlyph;
+              pMetabGlyph->setDimensions(CLDimensions(width + 4, height + 4));
+              pMetabGlyph->setModelObjectKey(pMetab->getKey());
+                //TODO: mark as duplicate 
+              mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
+
+              //create the text glyph for the label
+              CLTextGlyph* pTextGlyph = new CLTextGlyph;
+              pTextGlyph->setDimensions(CLDimensions(width, height));
+              pTextGlyph->setGraphicalObjectKey(pMetabGlyph->getKey());
+              pTextGlyph->setModelObjectKey(pMetab->getKey());
+            
+              mpCurrentLayout->addTextGlyph(pTextGlyph);
+            
+              //add up the sizes for the compartment
+              const CCompartment* pComp=NULL;
+              if (compartments.find(pMetab->getCompartment()) != compartments.end() )
+                pComp = pMetab->getCompartment();
+            
+              compInfo[pComp].add((width+4)*(height+4));
+            
+              role = CLMetabReferenceGlyph::MODIFIER; //TODO SIDEMODIFIER???
+            }
+          else
+            {  //find the existing metab glyph
+              std::map<const CMetab*, CLMetabGlyph*>::const_iterator mmIt;
+              mmIt = metabMap.find(pMetab);
+              if (mmIt != metabMap.end())
+                pMetabGlyph = mmIt->second;
+              
+              role = CLMetabReferenceGlyph::MODIFIER;
+            }
+        
+          if (!pMetabGlyph)
+            continue;
+        
+          CLMetabReferenceGlyph* pRefGlyph = new CLMetabReferenceGlyph;
+          //pResult->setModelObjectKey(modelobjectkey);
+          pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
+          pRefGlyph->setRole(role); 
+          pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
+        
+        } //modifiers
 
       
       } //reactions
@@ -2522,6 +2590,9 @@ void CQNewMainWindow::createLayout(const std::set<const CCompartment*>& compartm
 
 void CQNewMainWindow::randomizeLayout()
 {
+  mpRandom = CRandom::createGenerator(CRandom::mt19937, CRandom::getSystemSeed());
+
+
   size_t i;
   
   //compartment glyphs
@@ -2529,12 +2600,78 @@ void CQNewMainWindow::randomizeLayout()
   //metab glyphs
   for (i=0; i<mpCurrentLayout->getListOfMetaboliteGlyphs().size(); ++i)
     {
+      CLMetabGlyph* pMetabGlyph = mpCurrentLayout->getListOfMetaboliteGlyphs()[i];
+      const CMetab* pMetab = dynamic_cast<const CMetab*>( pMetabGlyph->getModelObject());
+      if (!pMetab)
+        continue;
+    
+      //find the compartment glyph
+      const CCompartment* pComp = pMetab->getCompartment();
+      if (!pComp)
+        continue;
+    
+      const CLCompartmentGlyph* pCompGlyph=NULL;
+      size_t j;
+      for (j=0; j<mpCurrentLayout->getListOfCompartmentGlyphs().size(); ++j)
+        if (mpCurrentLayout->getListOfCompartmentGlyphs()[j]->getModelObjectKey()
+              ==pComp->getKey())
+          {
+            pCompGlyph = mpCurrentLayout->getListOfCompartmentGlyphs()[j];
+            break;
+          }
+    
+      if (pCompGlyph)
+        randomlyPlaceGlyphInCompartmentGlyph(pMetabGlyph, pCompGlyph);
+      else
+        randomlyPlaceGlyphInDimensions(pMetabGlyph, &mpCurrentLayout->getDimensions());
     }
   
-  mpCurrentLayout   ;
+  //reaction glyphs
+  for (i=0; i<mpCurrentLayout->getListOfReactionGlyphs().size(); ++i)
+    {
+      CLReactionGlyph* pReactionGlyph = mpCurrentLayout->getListOfReactionGlyphs()[i];
+      //const CMetab* pMetab = dynamic_cast<const CMetab*>( pMetabGlyph->getModelObject());
+      //if (!pMetab)
+      //  continue;
+    
+      /*if (pCompGlyph)
+        randomlyPlaceGlyphInCompartmentGlyph(pMetabGlyph, pCompGlyph);
+      else
+        randomlyPlaceGlyphInDimensions(pMetabGlyph, &mpCurrentLayout->getDimensions());*/
+    }
+  
+  placeTextGlyphs();
+  delete mpRandom;
 }
 
+void CQNewMainWindow::randomlyPlaceGlyphInCompartmentGlyph(CLGraphicalObject* pGl, const CLGraphicalObject* pContainer)
+{
+  double x = pContainer->getPosition().getX()
+           + mpRandom->getRandomCC()*(pContainer->getDimensions().getWidth() -pGl->getDimensions().getWidth() );
+  double y = pContainer->getPosition().getY()
+           + mpRandom->getRandomCC()*(pContainer->getDimensions().getHeight() -pGl->getDimensions().getHeight() );
+  pGl->setPosition(CLPoint(x,y));
+}
 
+void CQNewMainWindow::randomlyPlaceGlyphInDimensions(CLGraphicalObject* pGl, const CLDimensions* pContainer)
+{
+  double x = mpRandom->getRandomCC()*(pContainer->getWidth() -pGl->getDimensions().getWidth() );
+  double y = mpRandom->getRandomCC()*(pContainer->getHeight() -pGl->getDimensions().getHeight() );
+  pGl->setPosition(CLPoint(x,y));
+}
+
+void CQNewMainWindow::placeTextGlyphs()
+{
+  size_t i;
+  for (i=0; i<mpCurrentLayout->getListOfTextGlyphs().size(); ++i)
+    {
+      CLTextGlyph* pTG = mpCurrentLayout->getListOfTextGlyphs()[i];
+      CLGraphicalObject* pGO = pTG->getGraphicalObject();
+      if (!pGO)
+        continue;
+      pTG->setPosition(CLPoint(pGO->getX()+2, pGO->getY()+2));
+    }
+}
 
 /**
  * Creates a spring layout.
@@ -2692,10 +2829,13 @@ void CQNewMainWindow::slotRunRandomizeLayout()
       (this->mpCurrentLayout->getListOfCompartmentGlyphs().size() == 0 && this->mpCurrentLayout->getListOfMetaboliteGlyphs().size() == 0))
     return;
 
+  randomizeLayout();
+  //return;
+
   // create the spring layout
   CCopasiSpringLayout l(this->mpCurrentLayout);
   l.createVariables();
-
+/*
   CRandom* pRandom = CRandom::createGenerator(CRandom::mt19937, CRandom::getSystemSeed());
 
   const std::vector<CCopasiSpringLayout::UpdateAction>& updateActions = l.getUpdateActions();
@@ -2725,6 +2865,7 @@ void CQNewMainWindow::slotRunRandomizeLayout()
     }
 
   l.setState(initialValues);
+*/
   l.finalizeState(); //makes the layout ready for drawing;
 
   slotCalculateDimensions();
