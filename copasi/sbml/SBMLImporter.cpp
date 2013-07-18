@@ -2095,6 +2095,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
   bool singleCompartment = true;
   const CCompartment* compartment = NULL;
   bool hasOnlySubstanceUnitPresent = false;
+  bool ignoreMassAction = false;
 
   for (counter = 0; counter < num; counter++)
     {
@@ -2108,13 +2109,32 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
       C_FLOAT64 stoi = 1.0;
 
-      if (this->mLevel < 3 && !sr->isSetStoichiometryMath())
+      if (this->mLevel < 3)
         {
-          stoi = sr->getStoichiometry() / sr->getDenominator();
+          // We may not use Mass Action kinetics if we do not know the actual stoichiometry.
+          if (sr->isSetStoichiometryMath())
+            {
+              ignoreMassAction = true;
+            }
+          else
+            {
+              stoi = sr->getStoichiometry() / sr->getDenominator();
+            }
         }
-      else if (this->mLevel >= 3 && sr->isSetStoichiometry())
+      else
         {
-          stoi = sr->getStoichiometry();
+          // We may not use Mass Action kinetics if we do not know the actual stoichiometry.
+          if (sr->isSetId() &&
+              (pSBMLModel->getInitialAssignment(sr->getId()) ||
+               pSBMLModel->getRule(sr->getId())))
+            {
+              ignoreMassAction = true;
+            }
+
+          if (sr->isSetStoichiometry())
+            {
+              stoi = sr->getStoichiometry();
+            }
         }
 
       std::map<std::string, CMetab*>::iterator pos;
@@ -2223,13 +2243,31 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
       C_FLOAT64 stoi = 1.0;
 
-      if (this->mLevel < 3 && !sr->isSetStoichiometryMath())
+      if (this->mLevel < 3)
         {
-          stoi = sr->getStoichiometry() / sr->getDenominator();
+          if (sr->isSetStoichiometryMath())
+            {
+              ignoreMassAction = true;
+            }
+          else
+            {
+              stoi = sr->getStoichiometry() / sr->getDenominator();
+            }
         }
-      else if (this->mLevel >= 3 && sr->isSetStoichiometry())
+      else
         {
-          stoi = sr->getStoichiometry();
+          // We may not use Mass Action kinetics if we do not know the actual stoichiometry.
+          if (sr->isSetId() &&
+              (pSBMLModel->getInitialAssignment(sr->getId()) ||
+               pSBMLModel->getRule(sr->getId())))
+            {
+              ignoreMassAction = true;
+            }
+
+          if (sr->isSetStoichiometry())
+            {
+              stoi = sr->getStoichiometry();
+            }
         }
 
       std::map<std::string, CMetab*>::iterator pos;
@@ -2598,7 +2636,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
                       // only check for mass action if there is no conversion factor involved
                       // for any of the species involved in the reaction (substrates and products)
-                      if (!mConversionFactorNeeded)
+                      if (!mConversionFactorNeeded && !ignoreMassAction)
                         {
                           v = this->isMassAction(pImportedFunction, copasiReaction->getChemEq(), static_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
 
@@ -2712,7 +2750,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
                       // only check for mass action if there is no conversion factor involved
                       // for any of the species involved in the reaction (substrates and products)
-                      if (!mConversionFactorNeeded)
+                      if (!mConversionFactorNeeded && !ignoreMassAction)
                         {
                           v = this->isMassAction(&KineticLawExpression, copasiReaction->getChemEq());
 
