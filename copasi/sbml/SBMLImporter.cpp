@@ -2684,8 +2684,6 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                               TmpTree2.setObjectName(functionName);
 
                               CFunction * pNewFunction = copasiReaction->setFunctionFromExpressionTree(TmpTree2, copasi2sbmlmap, this->functionDB);
-                              // do the mapping
-                              doMapping(copasiReaction, dynamic_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
 
                               if (pNewFunction != NULL &&
                                   pNewFunction->getType() == CEvaluationTree::UserDefined)
