@@ -309,7 +309,7 @@ public:
   const CLDimensions & getDimensions() const {return mDimensions;};
 
   CLPoint & getPosition() {return mPosition;};
-  CLPoint getCenter() {return CLPoint(mPosition.getX() + 0.5 * mDimensions.getWidth(), mPosition.getY() + 0.5 * mDimensions.getHeight());};
+  CLPoint getCenter() const {return CLPoint(mPosition.getX() + 0.5 * mDimensions.getWidth(), mPosition.getY() + 0.5 * mDimensions.getHeight());};
   CLDimensions & getDimensions() {return mDimensions;};
 
   void setPosition(const CLPoint & p) {mPosition = p;};
