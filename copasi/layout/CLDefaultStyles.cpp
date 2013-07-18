@@ -151,6 +151,12 @@ const char* DEFAULT_STYLES_STRING = \
                                     "        <rectangle x='0' y='0' width='100%' height='100%' rx='20' ry='20' />\n"
                                     "      </g>\n"
                                     "    </style>\n"
+                                    "    <style roleList='' typeList='ANY'>\n"
+                                    "      <!-- Unspecified Entity  -->\n"
+                                    "      <g  stroke='black' fill='#f0707070'>\n"
+                                    "        <rectangle x='0' y='0' width='100%' height='100%'  />\n"
+                                    "      </g>\n"
+                                    "    </style>\n"
                                     "  </listOfStyles>\n"
                                     "</renderInformation>\n"
 

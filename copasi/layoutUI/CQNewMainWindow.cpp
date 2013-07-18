@@ -1746,6 +1746,9 @@ void CQNewMainWindow::createLayout(const std::set<const CCompartment*>& compartm
     std::set<const CMetab*>::const_iterator metabIt;
     for(metabIt=metabs.begin(); metabIt != metabs.end(); ++metabIt)
       {
+        if (sideMetabs.find(*metabIt) != sideMetabs.end())
+          continue;
+      
         //estimate the size of the glyph
         textBounds = metrics.boundingRect((*metabIt)->getObjectName().c_str());
         double width = (double)textBounds.width();
@@ -1796,21 +1799,7 @@ void CQNewMainWindow::createLayout(const std::set<const CCompartment*>& compartm
         
         //substrates
         const CCopasiVector < CChemEqElement >& substrates = (*reactIt)->getChemEq().getSubstrates();
-        // if we have no substrates, add a dummy / invisible node for now
-        if (substrates.size()==0)
-        {
-          CLMetabGlyph* pMetabGlyph = new CLMetabGlyph;
-          pMetabGlyph->setDimensions(CLDimensions(1, 1));
-          pMetabGlyph->setObjectRole("invisible");
-          mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
-          
-          CLMetabReferenceGlyph* pRefGlyph = new CLMetabReferenceGlyph;
-          //pResult->setModelObjectKey(modelobjectkey);
-          pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
-          pRefGlyph->setRole(CLMetabReferenceGlyph::SUBSTRATE); //TODO side substr?
-          pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
-        }
-
+        bool substrateExists=false;
         CCopasiVector<CChemEqElement>::const_iterator elIt;
         for (elIt = substrates.begin(); elIt != substrates.end(); ++elIt)
         {
@@ -1874,13 +1863,12 @@ void CQNewMainWindow::createLayout(const std::set<const CCompartment*>& compartm
           pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
           pRefGlyph->setRole(role); 
           pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
+          substrateExists=true;
         
         } //substrates
 
-        //products
-        const CCopasiVector < CChemEqElement >& products = (*reactIt)->getChemEq().getProducts();
         // if we have no substrates, add a dummy / invisible node for now
-        if (products.size()==0)
+        if (!substrateExists)
         {
           CLMetabGlyph* pMetabGlyph = new CLMetabGlyph;
           pMetabGlyph->setDimensions(CLDimensions(1, 1));
@@ -1890,10 +1878,13 @@ void CQNewMainWindow::createLayout(const std::set<const CCompartment*>& compartm
           CLMetabReferenceGlyph* pRefGlyph = new CLMetabReferenceGlyph;
           //pResult->setModelObjectKey(modelobjectkey);
           pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
-          pRefGlyph->setRole(CLMetabReferenceGlyph::PRODUCT); //TODO side substr?
+          pRefGlyph->setRole(CLMetabReferenceGlyph::SUBSTRATE); //TODO side substr?
           pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
         }
 
+        //products
+        const CCopasiVector < CChemEqElement >& products = (*reactIt)->getChemEq().getProducts();
+        bool productExists=false;
         for (elIt = products.begin(); elIt != products.end(); ++elIt)
         {
           const CMetab* pMetab = (*elIt)->getMetabolite();
@@ -1956,8 +1947,23 @@ void CQNewMainWindow::createLayout(const std::set<const CCompartment*>& compartm
           pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
           pRefGlyph->setRole(role); 
           pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
+          productExists=true;
         
         } //products
+        // if we have no substrates, add a dummy / invisible node for now
+        if (!productExists)
+        {
+          CLMetabGlyph* pMetabGlyph = new CLMetabGlyph;
+          pMetabGlyph->setDimensions(CLDimensions(1, 1));
+          pMetabGlyph->setObjectRole("invisible");
+          mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
+          
+          CLMetabReferenceGlyph* pRefGlyph = new CLMetabReferenceGlyph;
+          //pResult->setModelObjectKey(modelobjectkey);
+          pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
+          pRefGlyph->setRole(CLMetabReferenceGlyph::PRODUCT); //TODO side substr?
+          pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
+        }
 
         //modifiers
         const CCopasiVector < CChemEqElement >& modifiers = (*reactIt)->getChemEq().getModifiers();
@@ -2049,7 +2055,7 @@ void CQNewMainWindow::createLayout(const std::set<const CCompartment*>& compartm
           
             CLReferenceGlyph* pRefGlyph = new CLReferenceGlyph;
             pRefGlyph->setTargetGlyphKey(pMetabGlyph->getKey());
-            pRefGlyph->setRole("rule connection");
+            pRefGlyph->setRole("ruleConnection");
             pGG->addReferenceGlyph(pRefGlyph);
 
           }
@@ -2079,9 +2085,16 @@ void CQNewMainWindow::createLayout(const std::set<const CCompartment*>& compartm
         mpCurrentLayout->addCompartmentGlyph(pCompGlyph);
       }
   
+    double sss = sqrt(compInfo[NULL].mAreaSum*40);
+  
     // determine and set the layout dimensions
     CLBoundingBox box = this->mpCurrentLayout->calculateBoundingBox();
-    this->mpCurrentLayout->setDimensions(CLDimensions(box.getDimensions().getWidth() + 30.0, box.getDimensions().getHeight() + 30.0));
+    if (box.getDimensions().getWidth()<sss)
+      box.getDimensions().setWidth(sss);
+    if (box.getDimensions().getHeight()<sss)
+      box.getDimensions().setHeight(sss);
+    this->mpCurrentLayout->setDimensions(CLDimensions(box.getDimensions().getWidth() + 30.0,
+                                      box.getDimensions().getHeight() + 30.0));
 }
 
 

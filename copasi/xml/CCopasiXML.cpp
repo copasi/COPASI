@@ -1727,11 +1727,13 @@ bool CCopasiXML::saveLayoutList()
                   // the warnings message only appears on the first save operation
                   cg->setModelObjectKey("");
 
-                  if (!this->mMCXML21Issued)
+                  //a general glyph does not necessarily have a model reference.
+                  //so no warning is issued
+                  /*if (!this->mMCXML21Issued)
                     {
                       CCopasiMessage(CCopasiMessage::WARNING, MCXML + 21);
                       this->mMCXML21Issued = true;
-                    }
+                    }*/
                 }
 
 #ifdef USE_CRENDER_EXTENSION
@@ -1749,7 +1751,7 @@ bool CCopasiXML::saveLayoutList()
               else
                 saveCurve(cg->getCurve());
 
-              // metab reference glyphs
+              // reference glyphs
               startSaveElement("ListOfReferenceGlyphs");
               size_t k, kmax = cg->getListOfReferenceGlyphs().size();
 
@@ -1761,7 +1763,6 @@ bool CCopasiXML::saveLayoutList()
                   Attributes.add("name", mrg->getObjectName());
                   Attributes.add("glyph", mrg->getTargetGlyphKey());
                   Attributes.add("role", mrg->getRole());
-                  //Attributes.add("metaboliteReference", mrg->getXXX());
                   //Attributes.add("role", mrg->getRoleStr()); TODO!
 #ifdef USE_CRENDER_EXTENSION
 
