@@ -2143,6 +2143,17 @@ void CQNewMainWindow::randomizeLayout()
         randomlyPlaceGlyphInDimensions(pMetabGlyph, &mpCurrentLayout->getDimensions());*/
     }
   
+  for (i=0; i<mpCurrentLayout->getListOfGeneralGlyphs().size(); ++i)
+    {
+      CLGeneralGlyph* pGG = mpCurrentLayout->getListOfGeneralGlyphs()[i];
+      if (pGG->getListOfReferenceGlyphs().size())
+        {
+          const CLGraphicalObject* pTargetGO = pGG->getListOfReferenceGlyphs()[0]->getTargetGlyph();
+          if (pTargetGO)
+            pGG->setPosition(pTargetGO->getBoundingBox().getCenter()+CLPoint(mpRandom->getRandomCC()*20-10, mpRandom->getRandomCC()*20-10));
+        }
+    }
+  
   placeTextGlyphs();
   delete mpRandom;
 }
@@ -2338,37 +2349,6 @@ void CQNewMainWindow::slotRunRandomizeLayout()
   // create the spring layout
   CCopasiSpringLayout l(this->mpCurrentLayout);
   l.createVariables();
-/*
-  CRandom* pRandom = CRandom::createGenerator(CRandom::mt19937, CRandom::getSystemSeed());
-
-  const std::vector<CCopasiSpringLayout::UpdateAction>& updateActions = l.getUpdateActions();
-  std::vector<double> initialValues = l.getInitialValues();
-
-  std::vector<CCopasiSpringLayout::UpdateAction>::const_iterator it, itEnd = updateActions.end();
-
-  double right = mpCurrentLayout->getDimensions().getWidth();
-  double bottom = mpCurrentLayout->getDimensions().getHeight();
-  double left = right / 2.0;
-  double top = 0.0;//bottom/2.0;
-
-  for (it = updateActions.begin(); it != itEnd; ++it)
-    {
-      switch (it->mAction)
-        {
-          case CCopasiSpringLayout::UpdateAction::COMPARTMENT_4V:
-          case CCopasiSpringLayout::UpdateAction::SPECIES_2V:
-            //case CCopasiSpringLayout::UpdateAction::REACTION_2V:
-            initialValues[it->mIndex1] = left + pRandom->getRandomCC() * right;
-            initialValues[it->mIndex2] = top + pRandom->getRandomCC() * bottom;
-            break;
-
-          default:
-            break;
-        };
-    }
-
-  l.setState(initialValues);
-*/
   l.finalizeState(); //makes the layout ready for drawing;
 
   slotCalculateDimensions();

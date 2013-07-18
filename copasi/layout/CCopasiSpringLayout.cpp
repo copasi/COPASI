@@ -472,11 +472,27 @@ void CCopasiSpringLayout::finalizeState()
         }
     }
 
-  //rearrange the text boxes
-  //TODO
+  //update the curves in the general glyph
+  for (i = 0; i < mpLayout->getListOfGeneralGlyphs().size() ; ++i)
+    {
+      CLGeneralGlyph* pGG = mpLayout->getListOfGeneralGlyphs()[i];
+
+      size_t j;
+      for (j=0; j<pGG->getListOfReferenceGlyphs().size(); ++j)
+        {
+          CLReferenceGlyph* pRG = pGG->getListOfReferenceGlyphs()[j];
+        
+          CLPoint refPoint = borderProjection(pRG->getTargetGlyph(), pRG->getBoundingBox().getCenter(), 5);
+          pRG->getCurve().clear();
+          pRG->getCurve().addCurveSegment(CLLineSegment(refPoint, pRG->getBoundingBox().getCenter()));
+
+        }
+    }
+  
+  
+
 
   //calculate bounding box for the layout, or recenter the layout
-  //for (i = 0; i < mpLayout->getListOfSpeciesGlyphs().size() ; ++i)
 
   const CLBoundingBox &bounds =  mpLayout->calculateBoundingBox();
 
