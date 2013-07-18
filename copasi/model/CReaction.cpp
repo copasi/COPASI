@@ -1405,6 +1405,11 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
               mpFunction = pExistingFunction;
               addDirectDependency(mpFunction);
 
+              // The functions and their signature are equal however the role of the variables
+              // might not be defined for the existing function if this is the first time it is used
+              mpFunction->setReversible(pTmpFunction->isReversible());
+              mpFunction->getVariables() = pTmpFunction->getVariables();
+
               pdelete(pTmpFunction);
 
               return NULL;
