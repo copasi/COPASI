@@ -33,6 +33,7 @@ HEADERS	+= \
   CQBrowserPane.h \
   CQBrowserPaneDM.h \
   CQCompartment.h \
+  CQCompartmentCopyOptions.h \
   CQCompartmentsWidget.h \
   CQCrossSectionTaskWidget.h \
   CQDifferentialEquations.h \
@@ -185,6 +186,7 @@ SOURCES	+= \
   CQBrowserPane.cpp \
   CQBrowserPaneDM.cpp \
   CQCompartment.cpp \
+  CQCompartmentCopyOptions.cpp \
   CQCompartmentsWidget.cpp \
   CQCrossSectionTaskWidget.cpp \
   CQDifferentialEquations.cpp \
@@ -331,6 +333,7 @@ FORMS += CMCAResultSubwidget.ui
 FORMS += CLNAResultSubwidget.ui
 FORMS += CQArrayAnnotationsWidget.ui
 FORMS += CQCompartment.ui
+FORMS += CQCompartmentCopyOptions.ui
 FORMS += CQCompartmentsWidget.ui
 FORMS += CQCrossSectionTaskWidget.ui
 FORMS += CQDifferentialEquations.ui
