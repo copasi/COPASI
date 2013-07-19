@@ -76,7 +76,7 @@ protected:
   void addCompartmentVariables(CLCompartmentGlyph* cg);
 
   ///create variables for the position of a species glyph
-  void addSpeciesVariables(CLMetabGlyph* mg);
+  void addPositionVariables(CLGraphicalObject* pGO);
 
   ///create variables for the position of a reaction glyph
   void addReactionVariables(CLReactionGlyph* rg);
@@ -129,7 +129,7 @@ public:
     enum Update_Enum
     {
       COMPARTMENT_4V,
-      SPECIES_2V,
+      POSITION_2V,
       REACTION_2V
     };
 

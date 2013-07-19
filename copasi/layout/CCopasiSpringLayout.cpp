@@ -178,13 +178,19 @@ bool CCopasiSpringLayout::createVariables()
   // add variables for the coordinates of all metabs
   for (i = 0; i < mpLayout->getListOfMetaboliteGlyphs().size() ; ++i)
     {
-      addSpeciesVariables(mpLayout->getListOfMetaboliteGlyphs()[i]);
+      addPositionVariables(mpLayout->getListOfMetaboliteGlyphs()[i]);
     }
 
   // add variables for the coordinates of all reaction glyphs
   for (i = 0; i < mpLayout->getListOfReactionGlyphs().size() ; ++i)
     {
       addReactionVariables(mpLayout->getListOfReactionGlyphs()[i]);
+    }
+
+  // add variables for the coordinates of all general glyphs
+  for (i = 0; i < mpLayout->getListOfGeneralGlyphs().size() ; ++i)
+    {
+      addPositionVariables(mpLayout->getListOfGeneralGlyphs()[i]);
     }
 
   // add variables for text glyphs that are not fixed to anything.
@@ -226,9 +232,9 @@ void CCopasiSpringLayout::addCompartmentVariables(CLCompartmentGlyph* cg)
   mUpdateActions.push_back(UpdateAction(UpdateAction::COMPARTMENT_4V, cg, first_index, first_index + 1, first_index + 2, first_index + 3));
 }
 
-void CCopasiSpringLayout::addSpeciesVariables(CLMetabGlyph* mg)
+void CCopasiSpringLayout::addPositionVariables(CLGraphicalObject* pGO)
 {
-  if (!mg)
+  if (!pGO)
     return;
 
   bool side = false; //TODO: find out if it is a side reactant
@@ -239,16 +245,16 @@ void CCopasiSpringLayout::addSpeciesVariables(CLMetabGlyph* mg)
   int first_index = mInitialState.size();
 
   //x position
-  mInitialState.push_back(mg->getX());
+  mInitialState.push_back(pGO->getX());
   mVarDescription.push_back(desc);
   mMassVector.push_back(side ? 0.1 : 1.0);
 
   //y position
-  mInitialState.push_back(mg->getY());
+  mInitialState.push_back(pGO->getY());
   mVarDescription.push_back(desc);
   mMassVector.push_back(side ? 0.1 : 1.0);
 
-  mUpdateActions.push_back(UpdateAction(UpdateAction::SPECIES_2V, mg, first_index, first_index + 1));
+  mUpdateActions.push_back(UpdateAction(UpdateAction::POSITION_2V, pGO, first_index, first_index + 1));
 }
 
 void CCopasiSpringLayout::addReactionVariables(CLReactionGlyph* rg)
@@ -309,9 +315,9 @@ bool CCopasiSpringLayout::setState(const std::vector<double> & vars)
             ((CLCompartmentGlyph*)(it->mpTarget))->setHeight(vars[it->mIndex4]);
             break;
 
-          case UpdateAction::SPECIES_2V:
-            ((CLMetabGlyph*)(it->mpTarget))->setX(vars[it->mIndex1]);
-            ((CLMetabGlyph*)(it->mpTarget))->setY(vars[it->mIndex2]);
+          case UpdateAction::POSITION_2V:
+            ((CLGraphicalObject*)(it->mpTarget))->setX(vars[it->mIndex1]);
+            ((CLGraphicalObject*)(it->mpTarget))->setY(vars[it->mIndex2]);
             break;
 
           case UpdateAction::REACTION_2V:

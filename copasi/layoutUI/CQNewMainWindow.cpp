@@ -2311,9 +2311,9 @@ QRectF getBounds(const std::vector<CCopasiSpringLayout::UpdateAction>& updates)
           }
           break;
 
-          case CCopasiSpringLayout::UpdateAction::SPECIES_2V:
+          case CCopasiSpringLayout::UpdateAction::POSITION_2V:
           {
-            CLMetabGlyph* current = ((CLMetabGlyph*)(it->mpTarget));
+            CLGraphicalObject* current = ((CLGraphicalObject*)(it->mpTarget));
             result.setLeft(qMin(result.left(), current->getX()));
             result.setTop(qMin(result.top(), current->getY()));
             result.setRight(qMax(result.right(), current->getX() + current->getWidth()));
