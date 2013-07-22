@@ -1797,3 +1797,18 @@ bool CFitProblem::calculateCrossValidation()
   return Continue;
 }
 #endif // COPASI_CROSSVALIDATION
+
+void CFitProblem::fixBuild55()
+{
+  if (mpExperimentSet != NULL)
+    {
+      mpExperimentSet->fixBuild55();
+    }
+
+  if (mpCrossValidationSet != NULL)
+    {
+      mpCrossValidationSet->fixBuild55();
+    }
+
+  return;
+}

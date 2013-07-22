@@ -371,6 +371,12 @@ private:
    */
   bool buildFunctionList();
 
+  /**
+   * Fix files written with Version 4.10.55, which wrote the square root of user defined weights for the
+   * parameter fitting task
+   */
+  void fixBuild55();
+
 #ifdef USE_CRENDER_EXTENSION
 
   /**

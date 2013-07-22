@@ -270,6 +270,22 @@ const CVector< CCopasiObject * > & CExperimentObjectMap::getMappedObjects() cons
 const size_t & CExperimentObjectMap::getLastColumn() const
 {return mLastColumn;}
 
+void CExperimentObjectMap::fixBuild55()
+{
+  CCopasiParameterGroup::index_iterator it = beginIndex();
+  CCopasiParameterGroup::index_iterator end = endIndex();
+
+  for (; it != end; ++it)
+    {
+      CDataColumn * pColumn = dynamic_cast< CDataColumn * >(*it);
+
+      if (pColumn != NULL)
+        {
+          pColumn->fixBuild55();
+        }
+    }
+}
+
 CExperimentObjectMap::CDataColumn::CDataColumn(const std::string & name,
     const CCopasiContainer * pParent) :
   CCopasiParameterGroup(name, pParent),
@@ -439,4 +455,12 @@ C_FLOAT64 CExperimentObjectMap::CDataColumn::getDefaultScale() const
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
   return pExperiment->getDefaultScale(pObject);
+}
+
+void CExperimentObjectMap::CDataColumn::fixBuild55()
+{
+  if (mpScale != NULL)
+    {
+      *mpScale *= *mpScale;
+    }
 }

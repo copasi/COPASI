@@ -78,7 +78,7 @@ public:
   bool calculateStatistics();
 
   /**
-   * Retreive the number of the experiments in the set
+   * Retrieve the number of the experiments in the set
    * @return size_t experimentCount
    */
   size_t getExperimentCount() const;
@@ -211,6 +211,12 @@ public:
    * @return const CVector< C_FLOAT64 > & dependentErrorMeanSD
    */
   const CVector< C_FLOAT64 > & getDependentErrorMeanSD() const;
+
+  /**
+   * Fix files written with Version 4.10.55, which wrote the square root of user defined weights for the
+   * parameter fitting task
+   */
+  void fixBuild55();
 
 private:
   /**
