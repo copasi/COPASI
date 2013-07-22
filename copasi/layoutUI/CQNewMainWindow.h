@@ -35,6 +35,7 @@ class CMetab;
 #ifdef COPASI_AUTOLAYOUT
 #include "copasi/copasi.h"
 #include "copasi/layout/CLReactionGlyph.h"
+#include "copasi/layout/CCopasiSpringLayout.h"
 
 class CCompartment;
 class CCopasiObject;
@@ -44,6 +45,7 @@ class CLCompartmentGlyph;
 class CLMetabGlyph;
 class CLTextGlyph;
 class CRandom;
+class QwtSlider;
 #endif // COPASI_AUTOLAYOUT
 
 class CQNewMainWindow : public CWindowInterface
@@ -356,10 +358,14 @@ private:
 
   QAction* mpRandomizeLayout;
   QAction* mpCalculateDimensions;
+  
+  std::vector<QwtSlider*> mLayoutSliders;
 
 public:
   void redrawNow();
 
+  CCopasiSpringLayout::Parameters mLayoutParameters;
+  
   class CompartmentInfo
   {
   public:
@@ -412,6 +418,9 @@ public:
    * at the end.
    */
   void createSpringLayout(int numIterations, int updateInterval);
+  
+public slots:
+  void slotLayoutSliderChanged();
   
 protected:
   CRandom* mpRandom;

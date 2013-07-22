@@ -57,7 +57,7 @@
 #endif // ELEMENTARY_MODE_DISPLAY
 
 #ifdef COPASI_AUTOLAYOUT
-#include "copasi/layout/CCopasiSpringLayout.h"
+//#include "copasi/layout/CCopasiSpringLayout.h"
 #include "copasi/layout/CLayoutEngine.h"
 #include "copasi/layout/CLayout.h"
 #include "copasi/layout/CLGlyphs.h"
@@ -66,6 +66,10 @@
 #include "copasi/randomGenerator/CRandom.h"
 #include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
+
+#include <qwt_slider.h>
+#include <qwt_scale_engine.h>
+
 #endif // COPASI_AUTOLAYOUT
 
 #include "../UI/icons/photo.xpm"
@@ -156,9 +160,62 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   this->mpHighlightColorPixmap->fill(QColor((int)(c[0] * 255.0), (int)(c[1] * 255.0), (int)(c[2] * 255.0), (int)(c[3] * 255.0)));
   this->mpChangeColorAction->setIcon(QIcon(*this->mpHighlightColorPixmap));
 #endif // ELEMENTARY_MODE_DISPLAY
+
+#ifdef COPASI_AUTOLAYOUT
+
+  QWidget* pParaWidget = new QWidget();
+  QVBoxLayout* pLayout = new QVBoxLayout;
+  pParaWidget->setLayout(pLayout);
+  size_t i;
+  for (i=0; i<mLayoutParameters.values.size(); ++i)
+  {
+    QLabel* label = new QLabel(mLayoutParameters.names[i].c_str());
+    pLayout->addWidget(label);
+    QwtSlider* slider = new QwtSlider(pParaWidget);
+    slider->setScalePosition(QwtSlider::BottomScale);
+    if (mLayoutParameters.isLog[i])
+    {
+      slider->setScaleEngine(new QwtLog10ScaleEngine);
+      slider->setRange(log10(mLayoutParameters.min[i]), log10(mLayoutParameters.max[i]));
+      slider->setScale(mLayoutParameters.min[i], mLayoutParameters.max[i]);
+      slider->setValue(log10(mLayoutParameters.values[i]));
+    }
+    else
+    {
+      slider->setRange(mLayoutParameters.min[i], mLayoutParameters.max[i]);
+      slider->setValue(mLayoutParameters.values[i]);
+    }
+
+    pLayout->addWidget(slider);
+    mLayoutSliders.push_back(slider);
+  
+    connect(slider, SIGNAL(valueChanged(double)), this, SLOT(slotLayoutSliderChanged()));
+  }
+  
+  
+  pParaWidget->show();
+
+#endif
+
 }
 
-QMenu *CQNewMainWindow::getWindowMenu() const
+#ifdef COPASI_AUTOLAYOUT
+
+void CQNewMainWindow::slotLayoutSliderChanged()
+{
+  //std::cout << "slider..." << std::endl;
+  size_t i;
+  for (i=0; i<mLayoutSliders.size(); ++i)
+  {
+    mLayoutParameters.values[i] = mLayoutSliders[i]->value();
+  }
+}
+
+
+#endif
+
+
+QMenu* CQNewMainWindow::getWindowMenu() const
 {
   return mpWindowMenu;
 }
@@ -2228,7 +2285,7 @@ void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
       (this->mpCurrentLayout->getListOfCompartmentGlyphs().size() > 0 || this->mpCurrentLayout->getListOfMetaboliteGlyphs().size() > 0))
     {
       // create the spring layout
-      CCopasiSpringLayout l(this->mpCurrentLayout);
+      CCopasiSpringLayout l(this->mpCurrentLayout, &mLayoutParameters);
       l.createVariables();
       CLayoutEngine le(&l, false);
       QAbstractEventDispatcher* pDispatcher = QAbstractEventDispatcher::instance();
@@ -2360,7 +2417,7 @@ void CQNewMainWindow::slotRunRandomizeLayout()
   //return;
 
   // create the spring layout
-  CCopasiSpringLayout l(this->mpCurrentLayout);
+  CCopasiSpringLayout l(this->mpCurrentLayout, &mLayoutParameters);
   l.createVariables();
   l.finalizeState(); //makes the layout ready for drawing;
 

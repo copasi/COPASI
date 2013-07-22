@@ -18,6 +18,8 @@ class CLCompartmentGlyph;
 class CLMetabGlyph;
 class CLReactionGlyph;
 class CLMetabReferenceGlyph;
+class CLReferenceGlyph;
+class CLGeneralGlyph;
 
 /**
  * This class defines how a layout optimization algorithm will see a COPASI
@@ -29,10 +31,57 @@ class CCopasiSpringLayout : public CAbstractLayoutInterface
 {
 public:
 
+  class Parameters
+  {
+  public:
+    std::vector<std::string> names;
+    std::vector<double> values;
+    std::vector<double> min;
+    std::vector<double> max;
+    std::vector<bool> isLog;
+
+    Parameters()
+    {
+      names.push_back("repulsion");
+      values.push_back(1.0);
+      min.push_back(1e-1);
+      max.push_back(1e6);
+      isLog.push_back(true);
+    
+      //1
+      names.push_back("edge length");
+      values.push_back(70);
+      min.push_back(10);
+      max.push_back(200);
+      isLog.push_back(false);
+
+      names.push_back("edge strength");
+      values.push_back(1.0);
+      min.push_back(1e-3);
+      max.push_back(1e3);
+      isLog.push_back(true);
+
+      //3
+      names.push_back("side edge length");
+      values.push_back(40);
+      min.push_back(10);
+      max.push_back(200);
+      isLog.push_back(false);
+
+      names.push_back("side edge strength");
+      values.push_back(0.1);
+      min.push_back(1e-3);
+      max.push_back(1e3);
+      isLog.push_back(true);
+    }
+  
+  };
+
+
   /**
    * generate a spring layout view of a COPASI layout.
    */
-  CCopasiSpringLayout(CLayout* layout);
+  CCopasiSpringLayout(CLayout* layout, Parameters* ppp);
 
   /**
    * generates the list of variables from the layout. This method will generate
@@ -70,7 +119,7 @@ public:
 protected:
 
   /// performs all initializations that are later needed to calculate the potential
-  bool initFromLayout(CLayout* layout);
+  bool initFromLayout(CLayout* layout, Parameters* ppp);
 
   ///create variables for size and position of a compartment glyph
   void addCompartmentVariables(CLCompartmentGlyph* cg);
@@ -106,6 +155,7 @@ protected:
   double potSpeciesReaction(const CLMetabGlyph & a, const CLReactionGlyph & b) const;
   double potReactionReaction(const CLReactionGlyph & a, const CLReactionGlyph & b) const;
   double potEdge(const CLMetabReferenceGlyph & e, const CLReactionGlyph & r) const;
+  double potGeneralEdge(const CLReferenceGlyph & e, const CLGeneralGlyph & r) const;
   //double potReaction(const CLReactionGlyph & r) const;
   double potSpeciesCompartment(const CLMetabGlyph & s, const CLCompartmentGlyph & c) const;
   double potReactionCompartment(const CLReactionGlyph & r, const CLCompartmentGlyph & c) const;
@@ -119,6 +169,8 @@ protected:
   CLPoint borderProjection(CLGraphicalObject* go, const CLPoint & p, double d);
 
   CLayout* mpLayout;
+  
+  Parameters* mpPar;
 
   std::vector<double> mInitialState;
 

@@ -63,17 +63,19 @@ void CCopasiSpringLayout::ReactionNode::updateFromState(const std::vector<double
 
 //*******************************************
 
-CCopasiSpringLayout::CCopasiSpringLayout(CLayout* layout)
+CCopasiSpringLayout::CCopasiSpringLayout(CLayout* layout, Parameters* ppp)
   : mpLayout(NULL)
 {
-  initFromLayout(layout);
+  initFromLayout(layout, ppp);
 }
 
-bool CCopasiSpringLayout::initFromLayout(CLayout* layout)
+bool CCopasiSpringLayout::initFromLayout(CLayout* layout, Parameters* ppp)
 {
   mpLayout = layout;
+  mpPar = ppp;
 
   if (!mpLayout) return false;
+  if (!ppp) return false;
 
   mCompartmentMap.clear();
 
@@ -537,11 +539,6 @@ double CCopasiSpringLayout::potSpeciesSpecies(const CLMetabGlyph & a, const CLMe
   if (tmp < 1) tmp = 1;
 
   return /*a.charge*b.charge*/ 1 / tmp; //TODO: reintroduce the charge
-
-  //if (tmp<30)
-  //  return 0.001*(30-tmp)*a.charge*b.charge;
-  //else
-  //  return 0;
 }
 
 double CCopasiSpringLayout::potSpeciesReaction(const CLMetabGlyph & a, const CLReactionGlyph & b) const
@@ -566,19 +563,31 @@ double CCopasiSpringLayout::potReactionReaction(const CLReactionGlyph & a, const
 
 double CCopasiSpringLayout::potEdge(const CLMetabReferenceGlyph & e, const CLReactionGlyph & r) const
 {
-  double dist = 70;
+  double dist = mpPar->values[1];
 
   if (e.getRole() == CLMetabReferenceGlyph::SIDESUBSTRATE || e.getRole() == CLMetabReferenceGlyph::SIDEPRODUCT)
-    dist = 40;
+    dist = mpPar->values[3];
 
   const CLMetabGlyph * pMG = e.getMetabGlyph();
   double tmp = distance(pMG->getX() + pMG->getWidth() / 2, pMG->getY() + pMG->getHeight() / 2,
                         r.getX() + r.getWidth() / 2, r.getY() + r.getHeight() / 2);
 
   if (e.getRole() == CLMetabReferenceGlyph::MODIFIER)
-    return 0.3 * pow(tmp - dist, 2);
+    return mpPar->values[4] * pow(tmp - dist, 2);
   else
-    return pow(tmp - dist, 2);
+    return mpPar->values[2] * pow(tmp - dist, 2);
+}
+
+double CCopasiSpringLayout::potGeneralEdge(const CLReferenceGlyph & e, const CLGeneralGlyph & r) const
+{
+  double dist = 30;
+
+
+  const CLGraphicalObject * pMG = e.getTargetGlyph();
+  double tmp = distance(pMG->getX() + pMG->getWidth() / 2, pMG->getY() + pMG->getHeight() / 2,
+                        r.getX() + r.getWidth() / 2, r.getY() + r.getHeight() / 2);
+
+  return pow(tmp - dist, 2);
 }
 
 /*
@@ -690,7 +699,7 @@ double CCopasiSpringLayout::getPotential()
     for (j = i + 1; j < mpLayout->getListOfMetaboliteGlyphs().size(); ++j)
       {
         if (i != j)
-          tmp += 100000 * potSpeciesSpecies(*mpLayout->getListOfMetaboliteGlyphs()[i], *mpLayout->getListOfMetaboliteGlyphs()[j]);
+          tmp += mpPar->values[0] * potSpeciesSpecies(*mpLayout->getListOfMetaboliteGlyphs()[i], *mpLayout->getListOfMetaboliteGlyphs()[j]);
       }
 
   // only if we have reactions!
@@ -700,7 +709,7 @@ double CCopasiSpringLayout::getPotential()
       for (i = 0; i < mpLayout->getListOfMetaboliteGlyphs().size(); ++i)
         for (j = 0; j < mpLayout->getListOfReactionGlyphs().size(); ++j)
           {
-            tmp += 100000 * potSpeciesReaction(*mpLayout->getListOfMetaboliteGlyphs()[i], *mpLayout->getListOfReactionGlyphs()[j]);
+            tmp += mpPar->values[0] * potSpeciesReaction(*mpLayout->getListOfMetaboliteGlyphs()[i], *mpLayout->getListOfReactionGlyphs()[j]);
           }
 
       //repulsion between reaction nodes
@@ -708,7 +717,7 @@ double CCopasiSpringLayout::getPotential()
         for (j = i + 1; j < mpLayout->getListOfReactionGlyphs().size(); ++j)
           {
             if (i != j)
-              tmp += 100000 * potReactionReaction(*mpLayout->getListOfReactionGlyphs()[i], *mpLayout->getListOfReactionGlyphs()[j]);
+              tmp += mpPar->values[0] * potReactionReaction(*mpLayout->getListOfReactionGlyphs()[i], *mpLayout->getListOfReactionGlyphs()[j]);
           }
     }
 
@@ -719,9 +728,20 @@ double CCopasiSpringLayout::getPotential()
 
       for (j = 0; j < pRG->getListOfMetabReferenceGlyphs().size(); ++j)
         {
-          tmp += 0.5 * potEdge(*pRG->getListOfMetabReferenceGlyphs()[j], *pRG);
+          tmp += potEdge(*pRG->getListOfMetabReferenceGlyphs()[j], *pRG);
         }
     }
+
+  for (i = 0; i < mpLayout->getListOfGeneralGlyphs().size(); ++i)
+    {
+      CLGeneralGlyph* pRG = mpLayout->getListOfGeneralGlyphs()[i];
+
+      for (j = 0; j < pRG->getListOfReferenceGlyphs().size(); ++j)
+        {
+          tmp += potGeneralEdge(*pRG->getListOfReferenceGlyphs()[j], *pRG);
+        }
+    }
+
 
   /*
       //forces at reaction nodes
