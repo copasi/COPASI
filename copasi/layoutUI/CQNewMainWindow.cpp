@@ -207,7 +207,10 @@ void CQNewMainWindow::slotLayoutSliderChanged()
   size_t i;
   for (i=0; i<mLayoutSliders.size(); ++i)
   {
-    mLayoutParameters.values[i] = mLayoutSliders[i]->value();
+    if (mLayoutParameters.isLog[i])
+     mLayoutParameters.values[i] = pow(10, mLayoutSliders[i]->value());
+    else
+     mLayoutParameters.values[i] = mLayoutSliders[i]->value();
   }
 }
 
