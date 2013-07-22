@@ -1,22 +1,14 @@
-/* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.h,v $
- $Revision: 1.11 $
- $Name:  $
- $Author: shoops $
- $Date: 2012/05/04 19:36:08 $
- End CVS Header */
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -130,6 +122,12 @@ public:
      * @return C_FLOAT64 defaultScale
      */
     C_FLOAT64 getDefaultScale() const;
+
+    /**
+     * Fix files written with Version 4.10.55, which wrote the square root of user defined weights for the
+     * parameter fitting task
+     */
+    void fixBuild55();
 
     // Attributes
   private:
@@ -281,6 +279,12 @@ public:
    * @return const size_t & lastColumn
    */
   const size_t & getLastColumn() const;
+
+  /**
+   * Fix files written with Version 4.10.55, which wrote the square root of user defined weights for the
+   * parameter fitting task
+   */
+  void fixBuild55();
 
 private:
   /**

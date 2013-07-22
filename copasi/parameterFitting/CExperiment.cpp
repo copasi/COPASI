@@ -1104,19 +1104,19 @@ bool CExperiment::calculateWeights()
       switch (*mpWeightMethod)
         {
           case SD:
-            DefaultColumScale = sqrt(MeanSquares[i] - mMeans[i] * mMeans[i]);
+            DefaultColumScale = MeanSquares[i] - mMeans[i] * mMeans[i];
             break;
 
           case MEAN:
-            DefaultColumScale = sqrt(mMeans[i] * mMeans[i]);
+            DefaultColumScale = mMeans[i] * mMeans[i];
             break;
 
           case MEAN_SQUARE:
-            DefaultColumScale = sqrt(MeanSquares[i]);
+            DefaultColumScale = MeanSquares[i];
             break;
 
           case VALUE_SCALING:
-            DefaultColumScale = ColumnEpsilons[i] * 1e-6;
+            DefaultColumScale = ColumnEpsilons[i] * ColumnEpsilons[i] * 1e-12;
             break;
         }
 
@@ -1578,7 +1578,7 @@ C_FLOAT64 CExperiment::getErrorSum(CCopasiObject *const& pObject) const
   const C_FLOAT64 *pDataDependentCalculated = mpDataDependentCalculated + it->second;
   const C_FLOAT64 *pEnd = pDataDependentCalculated + numRows * numCols;
   const C_FLOAT64 *pDataDependent = mDataDependent.array() + it->second;
-  const C_FLOAT64 & Weight = mColumnScale[it->second];
+  const C_FLOAT64 & Weight = sqrt(mColumnScale[it->second]);
 
   for (; pDataDependentCalculated != pEnd;
        pDataDependentCalculated += numCols, pDataDependent += numCols)
@@ -1666,16 +1666,22 @@ void CExperiment::initializeScalingMatrix()
           switch (*mpWeightMethod)
             {
               case VALUE_SCALING:
-                *pScale = 1.0 / std::max(*pData, *pColumnScale);
+                *pScale = 1.0 / std::max(fabs(*pData), *pColumnScale);
                 break;
 
               default:
-                *pScale = *pColumnScale;
+                *pScale = sqrt(*pColumnScale);
                 break;
             }
         }
     }
 }
+
+void CExperiment::fixBuild55()
+{
+  mpObjectMap->fixBuild55();
+}
+
 /* CFittingPoint Implementation */
 
 CFittingPoint::CFittingPoint(const std::string & name,

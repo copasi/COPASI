@@ -52,6 +52,7 @@
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotItem.h"
 #include "layout/CListOfLayouts.h"
+#include "parameterFitting/CFitTask.h"
 
 #ifdef USE_CRENDER_EXTENSION
 
@@ -234,6 +235,12 @@ bool CCopasiXML::load(std::istream & is,
       pdelete(mpTaskList);
       pdelete(mpPlotList);
       pdelete(mpLayoutList);
+    }
+
+  // The range in which the fix needs to be applied
+  if (36 <= FileVersion.getVersionDevel() && FileVersion.getVersionDevel() <= 58)
+    {
+      fixBuild55();
     }
 
   if (!CVersion::VERSION.isCompatible(FileVersion))
@@ -1921,6 +1928,23 @@ bool CCopasiXML::buildFunctionList()
   if (!setFunctionList(pFunctionList)) success = false;
 
   return success;
+}
+
+void CCopasiXML::fixBuild55()
+{
+  if (mpTaskList == NULL) return;
+
+  size_t Index = mpTaskList->getIndex("Parameter Estimation");
+
+  if (Index == C_INVALID_INDEX) return;
+
+  CFitTask * pFitTask = dynamic_cast< CFitTask * >((*mpTaskList)[Index]);
+
+  if (pFitTask == NULL) return;
+
+  pFitTask->fixBuild55();
+
+  return;
 }
 
 #ifdef USE_CRENDER_EXTENSION

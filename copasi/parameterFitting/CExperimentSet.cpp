@@ -463,6 +463,19 @@ const size_t & CExperimentSet::getValidValueCount() const
   return mValidValueCount;
 }
 
+void CExperimentSet::fixBuild55()
+{
+  std::vector< CExperiment * >::iterator it = mpExperiments->begin() + mNonExperiments;
+  std::vector< CExperiment * >::iterator end = mpExperiments->end();
+
+  for (; it != end; ++it)
+    {
+      (*it)->fixBuild55();
+    }
+
+  return;
+}
+
 #ifdef COPASI_CROSSVALIDATION
 CCrossValidationSet::CCrossValidationSet(const CCopasiContainer * pParent,
     const std::string & name):

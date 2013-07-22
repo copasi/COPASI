@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitTask.cpp,v $
-//   $Revision: 1.17 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/06/02 17:15:46 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -37,7 +29,7 @@
 
 CFitTask::CFitTask(const CCopasiTask::Type & type,
                    const CCopasiContainer * pParent):
-    COptTask(type, pParent)
+  COptTask(type, pParent)
 {
   pdelete(mpProblem);
   mpProblem = new CFitProblem(type, this);
@@ -50,7 +42,7 @@ CFitTask::CFitTask(const CCopasiTask::Type & type,
 
 CFitTask::CFitTask(const CFitTask & src,
                    const CCopasiContainer * pParent):
-    COptTask(src, pParent)
+  COptTask(src, pParent)
 {
   pdelete(mpProblem);
   mpProblem = new CFitProblem(*(CFitProblem *) src.mpProblem, this);
@@ -131,4 +123,15 @@ CCopasiMethod * CFitTask::createMethod(const int & type) const
   CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
 
   return CFitMethod::createMethod(Type);
+}
+
+void CFitTask::fixBuild55()
+{
+  CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(mpProblem);
+
+  if (pFitProblem == NULL) return;
+
+  pFitProblem->fixBuild55();
+
+  return;
 }
