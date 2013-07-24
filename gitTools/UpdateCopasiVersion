@@ -39,9 +39,9 @@ echo lastCommit=$localCommit > ${GitTools}/.UpdateCopasiVersion
 echo Updating ${GitTools}/../copasi/CopasiVersion.h
 
 current_major=4
-current_minor=8
-current_build=35
-current_commit=4224d80e365b0dc42a0b17a76b8656ce10e9de84
+current_minor=9
+current_build=45
+current_commit=daa20f3198bf8bb44e098ceb862943b36448d596
 
 commitList=`git log --pretty=%H $current_commit..HEAD`
 buildList=`${WGET} -qO- "git.copasi.org/buildnumber/list" | \
@@ -69,7 +69,7 @@ for b in $buildList; do
   commit=${b#*commit=}
   
   if [ `echo $commitList | grep ${commit}` ]; then
-    if [ $current_build == 35 ]; then 
+    if [ $current_build == 45 ]; then 
       current_major=${major}
       current_minor=${minor}
       current_build=${build}
@@ -83,8 +83,8 @@ done
 IFS=$SAVEIFS
 
 compatible=all
-previous=34
-next=35
+previous=44
+next=45
 
 compatibility={
 
