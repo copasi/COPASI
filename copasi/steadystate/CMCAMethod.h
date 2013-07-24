@@ -16,7 +16,7 @@
 #define COPASI_CMCAMethod_H__
 
 #include <vector>
-#include "utilities/CMatrix.h"
+#include "utilities/CLinkMatrix.h"
 #include "utilities/CCopasiMethod.h"
 #include "utilities/CAnnotatedMatrix.h"
 #include "steadystate/CSteadyStateMethod.h"
@@ -29,55 +29,6 @@ class CSteadyStateTask;
 
 class CMCAMethod: public CCopasiMethod
 {
-private:
-
-  CModel * mpModel;
-
-  /**
-   * MCA Matrices
-   */
-  CMatrix<C_FLOAT64> mUnscaledElasticities;
-  CArrayAnnotation* mUnscaledElasticitiesAnn;
-
-  CMatrix<C_FLOAT64> mUnscaledConcCC;
-  CArrayAnnotation* mUnscaledConcCCAnn;
-
-  CMatrix<C_FLOAT64> mUnscaledFluxCC;
-  CArrayAnnotation* mUnscaledFluxCCAnn;
-
-  CMatrix<C_FLOAT64> mScaledElasticities;
-  CArrayAnnotation* mScaledElasticitiesAnn;
-
-  CMatrix<C_FLOAT64> mScaledConcCC;
-  CArrayAnnotation* mScaledConcCCAnn;
-
-  CMatrix<C_FLOAT64> mScaledFluxCC;
-  CArrayAnnotation* mScaledFluxCCAnn;
-
-  /**
-   * 1 if MCA coeffs are to be unscaled
-   */
-  C_INT16 mSSReder;
-
-  /**
-   * If need to evaluate the elasticities, ss_x
-   * will be assigned in calculateTimeMCA()
-   */
-  std::vector <C_FLOAT64> mSsx;
-
-  /**
-   * Modulation factor for finite differences derivation
-   */
-  C_FLOAT64 mFactor;
-
-  C_FLOAT64 mSteadyStateResolution;
-
-  CSteadyStateMethod::ReturnCode mSSStatus;
-
-  CSteadyStateTask * mpSteadyStateTask;
-
-  void initObjects();
-
 public:
   /**
    * Create a MCA method.
@@ -211,11 +162,64 @@ public:
   virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
 private:
+  void initObjects();
+
   /**
    * Intialize the method parameter
    */
   void initializeParameter();
 
   bool createLinkMatrix();
+
+private:
+
+  CModel * mpModel;
+
+  /**
+   * MCA Matrices
+   */
+  CMatrix<C_FLOAT64> mUnscaledElasticities;
+  CArrayAnnotation* mUnscaledElasticitiesAnn;
+
+  CMatrix<C_FLOAT64> mUnscaledConcCC;
+  CArrayAnnotation* mUnscaledConcCCAnn;
+
+  CMatrix<C_FLOAT64> mUnscaledFluxCC;
+  CArrayAnnotation* mUnscaledFluxCCAnn;
+
+  CMatrix<C_FLOAT64> mScaledElasticities;
+  CArrayAnnotation* mScaledElasticitiesAnn;
+
+  CMatrix<C_FLOAT64> mScaledConcCC;
+  CArrayAnnotation* mScaledConcCCAnn;
+
+  CMatrix<C_FLOAT64> mScaledFluxCC;
+  CArrayAnnotation* mScaledFluxCCAnn;
+
+  /**
+   * 1 if MCA coeffs are to be unscaled
+   */
+  C_INT16 mSSReder;
+
+  /**
+   * If need to evaluate the elasticities, ss_x
+   * will be assigned in calculateTimeMCA()
+   */
+  std::vector <C_FLOAT64> mSsx;
+
+  /**
+   * Modulation factor for finite differences derivation
+   */
+  C_FLOAT64 mFactor;
+
+  C_FLOAT64 mSteadyStateResolution;
+
+  CSteadyStateMethod::ReturnCode mSSStatus;
+
+  CSteadyStateTask * mpSteadyStateTask;
+
+  CLinkMatrix mLinkZero;
+
+  CMatrix< C_FLOAT64 > mReducedStoichiometry;
 };
 #endif // COPASI_CMca

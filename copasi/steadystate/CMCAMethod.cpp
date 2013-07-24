@@ -45,7 +45,9 @@ CMCAMethod::CMCAMethod(const CCopasiContainer* pParent):
   mFactor(1.0e-9),
   mSteadyStateResolution(1.0e-9),
   mSSStatus(CSteadyStateMethod::notFound),
-  mpSteadyStateTask(NULL)
+  mpSteadyStateTask(NULL),
+  mLinkZero(),
+  mReducedStoichiometry()
 {
   initializeParameter();
   initObjects();
@@ -58,7 +60,9 @@ CMCAMethod::CMCAMethod(const CMCAMethod & src,
   mFactor(src.mFactor),
   mSteadyStateResolution(src.mSteadyStateResolution),
   mSSStatus(CSteadyStateMethod::notFound),
-  mpSteadyStateTask(NULL)
+  mpSteadyStateTask(NULL),
+  mLinkZero(src.mLinkZero),
+  mReducedStoichiometry(src.mReducedStoichiometry)
 {
   initializeParameter();
   initObjects();
@@ -275,6 +279,10 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
 int CMCAMethod::calculateUnscaledConcentrationCC()
 {
   assert(mpModel);
+  const CMatrix< C_FLOAT64 > & redStoi = mpModel->getRedStoi();
+
+  // Initialize the unscaled concentration control coefficients to 0.0
+  mUnscaledConcCC = 0.0;
 
   C_INT32 i, j, k;
   //size_t dim;
@@ -282,32 +290,65 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
 
   CMatrix<C_FLOAT64> aux1, aux2;
 
-  const CMatrix< C_FLOAT64 > & L = mpModel->getL0();
-  const CMatrix< C_FLOAT64 > & redStoi = mpModel->getRedStoi();
-
   char T = 'N';
-  C_INT M = (C_INT) mpModel->getNumIndependentReactionMetabs(); /* LDA, LDC */
+  C_INT M = (C_INT) mLinkZero.getNumIndependent(); /* LDA, LDC */
   C_INT N = (C_INT) mUnscaledElasticities.numRows();
-  C_INT K = (C_INT) mpModel->getNumDependentReactionMetabs();
+  C_INT K = (C_INT) mLinkZero.getNumDependent();
   C_INT LD = (C_INT) mUnscaledElasticities.numCols();
 
   C_FLOAT64 Alpha = 1.0;
   C_FLOAT64 Beta = 1.0;
 
-  aux1 = mUnscaledElasticities;
-  // aux1.resize(N, LD);
+  // TODO CRITICAL The columns of mUnscaledElasticities are not in the correct order
+
   // memcpy(aux1.array(), mUnscaledElasticities.array(), N * LD * sizeof(C_FLOAT64));
 
-  // aux1 = (E1, E2) (I, L0')' = E1 + E2 * L0
-  dgemm_(&T, &T, &M, &N, &K, &Alpha, const_cast<C_FLOAT64 *>(L.array()), &M,
+  // aux1 = (E1, E2) * (I, L0')' = E1 + E2 * L0
+  // _GEMM (TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC)
+  // C := alpha A B + beta C
+
+  aux1 = mUnscaledElasticities;
+  dgemm_(&T, &T, &M, &N, &K, &Alpha, mLinkZero.getLinkZero().array(), &M,
          mUnscaledElasticities.array() + M, &LD, &Beta, aux1.array(), &LD);
 
-  Beta = 0.0;
+  // Implementation without dgemm to avoid column swaps in aux1 and mUnscaledElasticities
+  const CVector< size_t > & p = mLinkZero.getRowPivots();
+  const CMatrix< C_FLOAT64 > L0 = mLinkZero.getLinkZero();
 
+  CMatrix< C_FLOAT64 > a1(N, LD);
+
+  for (i = 0; i < N; ++i)
+    {
+      for (j = 0; j < LD; ++j)
+        {
+          const size_t & pj = p[j];
+          C_FLOAT64 & a = a1(i, pj);
+          a = mUnscaledElasticities(i, pj);
+
+          if (M <= pj)
+            {
+              continue;
+            }
+
+          for (k = 0; k < LD; ++k)
+            {
+              const size_t & pk = p[k];
+
+              if (pk < M)
+                {
+                  continue;
+                }
+
+              a += mUnscaledElasticities(i, pk) * L0(pk - M, pj);
+            }
+        }
+    }
+
+  Beta = 0.0;
   aux2.resize(M, M);
 
   // aux2 = R * aux1
-  dgemm_(&T, &T, &M, &M, &N, &Alpha, aux1.array(), &LD,
+  dgemm_(&T, &T, &M, &M, &N, &Alpha, a1.array(), &LD,
          const_cast<C_FLOAT64 *>(redStoi.array()), &N, &Beta, aux2.array(), &M);
 
   CVector<C_INT> Ipiv(M);
@@ -335,33 +376,43 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
   aux1.resize(M + K, M);
   aux1 = 0.0;
 
-  // aux1 = - L * aux2 = (I, L0) * aux2 = (aux2, (L0 * aux2))
-  // :TODO: use memcpy and dgemm
-  for (i = 0; i < M; i++)
-    for (j = 0; j < M; j++)
-      aux1[i][j] = - aux2[i][j];
+  // aux1 = - L * aux2 = (I, L0')' * aux2 = -(aux2, (L0 * aux2)')'
+  // Implementation without dgemm to avoid column swaps in aux1 and aux2
+  for (i = 0; i < M + K; ++i)
+    {
+      const size_t & pi = p[i];
 
-  // M = independent species, K = dependent species
-  for (i = M ; i < M + K; i++)
-    for (j = 0; j < M; j++)
-      {
-        aux1[i][j] = 0.0;
+      for (j = 0; j < M; ++j)
+        {
 
-        for (k = 0; k < M; k++)
-          aux1[i][j] -= (C_FLOAT64)mpModel->getL()(i, k) * aux2[k][j];
-      }
+          if (pi < M)
+            {
+              aux1(pi, j) = - aux2(pi, j);
+              continue;
+            }
+
+          C_FLOAT64 & a = aux1(pi, j);
+          a = 0.0;
+
+          for (k = 0; k < M; ++k)
+            {
+              a -= L0(i - M, k) * aux2(k, j);
+            }
+        }
+    }
 
   // mGamma = aux1 * RedStoi
   // :TODO: use dgemm
+
   // M = independent species, K = dependent species
   //  mUnscaledConcCC.resize(M + K, N);
   for (i = 0; i < M + K; i++)
     for (j = 0; j < N; j++)
       {
-        mUnscaledConcCC[i][j] = 0;
+        C_FLOAT64 & c = mUnscaledConcCC(i, j);
 
         for (k = 0; k < M; k++)
-          mUnscaledConcCC[i][j] += aux1[i][k] * (C_FLOAT64) mpModel->getRedStoi()[k][j];
+          c += aux1(i, k) * redStoi(k, j);
       }
 
   //update annotations
@@ -379,22 +430,20 @@ void CMCAMethod::calculateUnscaledFluxCC(int condition)
 
   //  mUnscaledFluxCC.resize(mpModel->getTotSteps(), mpModel->getTotSteps());
 
-  if (condition == MCA_SINGULAR)
-    {
-      for (i = 0; i < mUnscaledFluxCC.numRows(); i++)
-        for (j = 0; j < mUnscaledFluxCC.numCols(); j++)
-          mUnscaledFluxCC[i][j] = 0.0;
-    }
-  else
+  for (i = 0; i < mUnscaledFluxCC.numRows(); i++)
+    for (j = 0; j < mUnscaledFluxCC.numCols(); j++)
+      mUnscaledFluxCC(i, j) = (i == j) ? 1.0 : 0.0;
+
+  if (condition != MCA_SINGULAR)
     {
       // unscaledFluxCC = I + unscaledElasticities * unscaledConcCC
       for (i = 0; i < mUnscaledFluxCC.numRows(); i++)
         for (j = 0; j < mUnscaledFluxCC.numCols(); j++)
           {
-            mUnscaledFluxCC[i][j] = (i == j) ? 1.0 : 0.0;
+            C_FLOAT64 & c = mUnscaledFluxCC(i, j);
 
             for (k = 0; k < mUnscaledConcCC.numRows(); k++)
-              mUnscaledFluxCC[i][j] += mUnscaledElasticities[i][k] * mUnscaledConcCC[k][j];
+              c += mUnscaledElasticities(i, k) * mUnscaledConcCC(k, j);
           }
     }
 
@@ -468,42 +517,71 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
   // Reactions are columns, species are rows
   //   mScaledConcCC.resize(mUnscaledConcCC.numRows(), mUnscaledConcCC.numCols());
 
-  for (itSpecies = metabs.begin(),
-       pUnscaled = mUnscaledConcCC.array(),
-       pScaled = mScaledConcCC.array();
-       itSpecies != endSpecies;
-       ++itSpecies)
-    for (itReaction = reacs.begin();
-         itReaction != endReaction;
-         ++itReaction, ++pUnscaled, ++pScaled)
-      {
-        if (fabs((*itSpecies)->getConcentration()) >= res)
-          *pScaled =
-            *pUnscaled * (*itReaction)->getParticleFlux() / (*itSpecies)->getValue();
-        else
-          *pScaled = std::numeric_limits<C_FLOAT64>::infinity();
-      }
+  itSpecies = metabs.begin();
+  pUnscaled = mUnscaledConcCC.array();
+  pScaled = mScaledConcCC.array();
+
+  for (; itSpecies != endSpecies; ++itSpecies)
+    {
+      C_FLOAT64 alt = fabs((*itSpecies)->getConcentration());
+
+      for (itReaction = reacs.begin(); itReaction != endReaction; ++itReaction, ++pUnscaled, ++pScaled)
+        {
+          if (alt >= res)
+            *pScaled =
+              *pUnscaled * (*itReaction)->getParticleFlux() / (*itSpecies)->getValue();
+          else
+            *pScaled = std::numeric_limits<C_FLOAT64>::infinity();
+        }
+    }
 
   CCopasiVector< CReaction >::const_iterator itReactionCol;
+  itReaction = reacs.begin();
+  pUnscaled = mUnscaledFluxCC.array();
+  pScaled = mScaledFluxCC.array();
 
-  for (itReaction = reacs.begin(),
-       pUnscaled = mUnscaledFluxCC.array(),
-       pScaled = mScaledFluxCC.array();
-       itReaction != endReaction;
-       ++itReaction)
+  for (; itReaction != endReaction; ++itReaction)
     {
-      C_FLOAT64 tmp =
-        fabs((*itReaction)->getFlux() / (*itReaction)->getLargestCompartment().getValue());
+      C_FLOAT64 Scale = (*itReaction)->getFlux() / (*itReaction)->getLargestCompartment().getValue();
 
-      for (itReactionCol = reacs.begin();
-           itReactionCol != endReaction;
-           ++itReactionCol, ++pUnscaled, ++pScaled)
+      if (fabs(Scale) < res)
         {
-          if (tmp >= res)
-            *pScaled =
-              *pUnscaled * (*itReactionCol)->getFlux() / (*itReaction)->getFlux();
+          Scale = 0.0;
+
+          // We use the summation theorem to scale
+          C_FLOAT64 *pSum = pUnscaled;
+          C_FLOAT64 *pSumEnd = pSum + mScaledFluxCC.numCols();
+
+          for (itReactionCol = reacs.begin(); pSum != pSumEnd; ++itReactionCol, ++pSum)
+            {
+              Scale += *pSum * (*itReactionCol)->getFlux();
+            }
+        }
+
+      if (fabs(Scale) < res)
+        {
+          Scale = std::numeric_limits< C_FLOAT64 >::infinity();
+        }
+
+      for (itReactionCol = reacs.begin(); itReactionCol != endReaction; ++itReactionCol, ++pUnscaled, ++pScaled)
+        {
+          // In the diagonal the scaling factors cancel.
+          if (itReactionCol == itReaction)
+            {
+              *pScaled = *pUnscaled;
+            }
+          else if (fabs(Scale) >= res)
+            {
+              *pScaled = *pUnscaled * (*itReactionCol)->getFlux() / Scale;
+            }
+          else if (fabs((*itReactionCol)->getFlux() / (*itReactionCol)->getLargestCompartment().getValue()) <= res)
+            {
+              *pScaled = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+            }
           else
-            *pScaled = (((*itReaction)->getFlux() < 0.0) ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
+            {
+              *pScaled = (((*itReaction)->getFlux() < 0.0) ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
+            }
         }
     }
 }
@@ -548,13 +626,17 @@ int CMCAMethod::CalculateMCA(C_FLOAT64 res)
 
 bool CMCAMethod::createLinkMatrix()
 {
-  if (mpSteadyStateTask == NULL)
+  if (mpModel == NULL ||
+      mpSteadyStateTask == NULL)
     {
       return false;
     }
 
-  CLinkMatrix L;
-  L.build(mpSteadyStateTask->getJacobian());
+  mLinkZero.build(mpSteadyStateTask->getJacobian());
+
+  mReducedStoichiometry = mpModel->getStoiReordered();
+  mLinkZero.applyRowPivot(mReducedStoichiometry);
+  mReducedStoichiometry.resize(mLinkZero.getNumIndependent(), mReducedStoichiometry.numCols());
 
   return true;
 }
