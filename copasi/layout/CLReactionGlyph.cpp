@@ -20,6 +20,10 @@
 #include <sbml/packages/layout/sbml/SpeciesReferenceGlyph.h>
 
 #if LIBSBML_VERSION >= 50800
+#include <sbml/packages/layout/sbml/GraphicalObject.h>
+#include <sbml/packages/layout/sbml/Layout.h>
+#include <sbml/packages/layout/sbml/SpeciesGlyph.h>
+#include <sbml/packages/layout/sbml/CompartmentGlyph.h>
 #include <sbml/packages/layout/sbml/GeneralGlyph.h>
 #include <sbml/packages/layout/sbml/ReferenceGlyph.h>
 #endif
@@ -370,16 +374,21 @@ void CLMetabReferenceGlyph::print(std::ostream * ostream) const
 
 CLGeneralGlyph::CLGeneralGlyph(const std::string & name,
                                const CCopasiContainer * pParent)
-  : CLGlyphWithCurve(name, pParent),
-    mvReferences("ListOfReferenceGlyphs", this)
+  : CLGlyphWithCurve(name, pParent)
+  , mvReferences("ListOfReferenceGlyphs", this)
+  , mvSubglyphs("ListOfSubglyphs", this)
 {}
 
 CLGeneralGlyph::CLGeneralGlyph(const CLGeneralGlyph & src,
                                const CCopasiContainer * pParent)
-  : CLGlyphWithCurve(src, pParent),
-    mvReferences(src.mvReferences, this)
+  : CLGlyphWithCurve(src, pParent)
+  , mvReferences(src.mvReferences, this)
+  , mvSubglyphs("ListOfSubglyphs", this)
 {
-  //TODO?
+  size_t i, imax = src.mvSubglyphs.size();
+
+  for (i = 0; i < imax; ++i)
+    addSubglyph(src.mvSubglyphs[i]->clone());
 }
 
 //TODO this is a placeholder for the upcoming sbml generalGlyph handling
@@ -387,8 +396,9 @@ CLGeneralGlyph::CLGeneralGlyph(const GraphicalObject & sbml,
                                const std::map<std::string, std::string> & modelmap,
                                std::map<std::string, std::string> & layoutmap,
                                const CCopasiContainer * pParent)
-  : CLGlyphWithCurve(sbml, modelmap, layoutmap, pParent),
-    mvReferences("ListOfReferenceGlyphs", this)
+  : CLGlyphWithCurve(sbml, modelmap, layoutmap, pParent)
+  , mvReferences("ListOfReferenceGlyphs", this)
+  , mvSubglyphs("ListOfSubglyphs", this)
 {
 #if LIBSBML_VERSION >= 50800
 
@@ -423,6 +433,25 @@ CLGeneralGlyph::CLGeneralGlyph(const GraphicalObject & sbml,
         addReferenceGlyph(new CLReferenceGlyph(*tmp, modelmap, layoutmap));
     }
 
+  imax = general->getListOfSubGlyphs()->size();
+
+  for (i = 0; i < imax; ++i)
+    {
+      const GraphicalObject* graphical = general->getListOfSubGlyphs()->get(i);
+      const TextGlyph* text = dynamic_cast<const TextGlyph*>(graphical);
+      const SpeciesGlyph* species = dynamic_cast<const SpeciesGlyph*>(graphical);
+      const CompartmentGlyph* comp = dynamic_cast<const CompartmentGlyph*>(graphical);
+
+      if (text)
+        addSubglyph(new CLTextGlyph(*text, modelmap, layoutmap));
+      else if (species)
+        addSubglyph(new CLMetabGlyph(*species, modelmap, layoutmap));
+      else if (comp)
+        addSubglyph(new CLCompartmentGlyph(*comp, modelmap, layoutmap));
+      else
+        addSubglyph(new CLGeneralGlyph(*graphical, modelmap, layoutmap));
+    }
+
 #endif // LIBSBML_VERSION >= 50800
 }
 
@@ -436,10 +465,24 @@ CLGeneralGlyph & CLGeneralGlyph::operator= (const CLGeneralGlyph & rhs)
 
   size_t i, imax = rhs.mvReferences.size();
 
+  mvReferences.clear();
+
   for (i = 0; i < imax; ++i)
     addReferenceGlyph(new CLReferenceGlyph(*rhs.mvReferences[i]));
 
+  imax = rhs.mvSubglyphs.size();
+  mvSubglyphs.clear();
+
+  for (i = 0; i < imax; ++i)
+    addSubglyph(rhs.mvSubglyphs[i]->clone());
+
   return *this;
+}
+
+void CLGeneralGlyph::addSubglyph(CLGraphicalObject * glyph)
+{
+  if (glyph)
+    mvSubglyphs.add(glyph, true); //true means vector takes ownership
 }
 
 void CLGeneralGlyph::addReferenceGlyph(CLReferenceGlyph * glyph)
@@ -456,62 +499,12 @@ void CLGeneralGlyph::moveBy(const CLPoint &p)
 
   for (i = 0; i < imax; ++i)
     mvReferences[i]->moveBy(p);
+
+  imax = mvSubglyphs.size();
+
+  for (i = 0; i < imax; ++i)
+    mvSubglyphs[i]->moveBy(p);
 }
-
-/*void CLGeneralGlyph::exportToSBML(ReactionGlyph * g,
-                                   const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
-                                   std::map<std::string, const SBase*>& sbmlIDs,
-                                   std::map<const CLBase*, const SBase*> & layoutmap) const
-{
-    if (!g) return;
-
-    //call the coresponding method of the base class
-    CLGraphicalObject::exportToSBML(g, copasimodelmap, sbmlIDs);
-
-    //reference to model objects
-    CCopasiObject* tmp = getModelObject();
-
-    if (tmp)
-      {
-        std::map<const CCopasiObject*, SBase*>::const_iterator it = copasimodelmap.find(tmp);
-
-        if (it != copasimodelmap.end())
-          {
-            if (it->second)
-                g->setReactionId(it->second->getId());
-          }
-      }
-
-    //curve
-    mCurve.exportToSBML(g->getCurve(), copasimodelmap);
-
-    //Metab reference  glyphs
-    size_t i, imax = mvReferences.size();
-
-    for (i = 0; i < imax; ++i)
-      {
-        CLReferenceGlyph * tmp = mvReferences[i];
-
-        //check if the glyph exists in the libsbml data
-        std::map<const CCopasiObject*, SBase*>::const_iterator it;
-        it = copasimodelmap.find(tmp);
-
-        SpeciesReferenceGlyph * pG;
-
-        if (it == copasimodelmap.end()) //not found
-          {
-            pG = new SpeciesReferenceGlyph;
-            g->getListOfSpeciesReferenceGlyphs()->appendAndOwn(pG);
-          }
-        else
-          {
-            pG = dynamic_cast<SpeciesReferenceGlyph*>(it->second);
-          }
-
-        layoutmap.insert(std::pair<const CLBase*, const SBase*>(tmp, pG));
-        tmp->exportToSBML(pG, copasimodelmap, sbmlIDs, layoutmap);
-      }
-}*/
 
 void CLGeneralGlyph::exportToSBML(GraphicalObject * g, //TODO
                                   const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
@@ -559,7 +552,7 @@ void CLGeneralGlyph::exportToSBML(GraphicalObject * g, //TODO
   //curve
   mCurve.exportToSBML(general->getCurve(), copasimodelmap);
 
-  //Metab reference  glyphs
+  //reference  glyphs
   size_t i, imax = mvReferences.size();
 
   for (i = 0; i < imax; ++i)
@@ -585,6 +578,54 @@ void CLGeneralGlyph::exportToSBML(GraphicalObject * g, //TODO
       tmp->exportToSBML(pG, copasimodelmap, sbmlIDs, layoutmap);
     }
 
+  imax = mvSubglyphs.size();
+
+  for (i = 0; i < imax; ++i)
+    {
+      CLGraphicalObject * tmp = mvSubglyphs[i];
+      CLMetabGlyph * metab =  dynamic_cast<CLMetabGlyph*>(tmp);
+      CLCompartmentGlyph* comp =  dynamic_cast<CLCompartmentGlyph*>(tmp);
+      CLGeneralGlyph* gg =  dynamic_cast<CLGeneralGlyph*>(tmp);
+      CLTextGlyph* text =  dynamic_cast<CLTextGlyph*>(tmp);
+
+      //check if the glyph exists in the libsbml data
+      std::map<const CCopasiObject*, SBase*>::const_iterator it;
+      it = copasimodelmap.find(tmp);
+
+      GraphicalObject * pG;
+
+      if (it == copasimodelmap.end()) //not found
+        {
+          if (metab)
+            pG = ((Layout*)g->getParentSBMLObject()->getParentSBMLObject())->createSpeciesGlyph();
+          else if (comp)
+            pG = ((Layout*)g->getParentSBMLObject()->getParentSBMLObject())->createCompartmentGlyph();
+          else if (gg)
+            pG = ((Layout*)g->getParentSBMLObject()->getParentSBMLObject())->createGeneralGlyph();
+          else if (text)
+            pG = ((Layout*)g->getParentSBMLObject()->getParentSBMLObject())->createTextGlyph();
+          else
+            pG = ((Layout*)g->getParentSBMLObject()->getParentSBMLObject())->createAdditionalGraphicalObject();
+        }
+      else
+        {
+          pG = dynamic_cast<GraphicalObject*>(it->second);
+        }
+
+      layoutmap.insert(std::pair<const CLBase*, const SBase*>(tmp, pG));
+
+      if (metab)
+        metab->exportToSBML(static_cast<SpeciesGlyph*>(pG), copasimodelmap, sbmlIDs);
+      else if (comp)
+        comp->exportToSBML(static_cast<CompartmentGlyph*>(pG), copasimodelmap, sbmlIDs);
+      else if (text)
+        text->exportToSBML(static_cast<TextGlyph*>(pG), copasimodelmap, sbmlIDs);
+      else if (gg)
+        gg->exportToSBML(pG, copasimodelmap, sbmlIDs, layoutmap);
+      else
+        tmp->exportToSBML(pG, copasimodelmap, sbmlIDs);
+    }
+
 #endif // LIBSBML_VERSION >= 50800
 }
 
@@ -601,6 +642,16 @@ std::ostream & operator<<(std::ostream &os, const CLGeneralGlyph & g)
 
       for (i = 0; i < imax; ++i)
         os << *g.mvReferences[i];
+    }
+
+  imax = g.mvSubglyphs.size();
+
+  if (imax)
+    {
+      os << "  List of reference glyphs: \n";
+
+      for (i = 0; i < imax; ++i)
+        os << *g.mvSubglyphs[i];
     }
 
   return os;

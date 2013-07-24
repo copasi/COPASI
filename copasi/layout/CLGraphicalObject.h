@@ -81,6 +81,8 @@ public:
   virtual const std::string & getKey() const
   {return mKey;};
 
+  virtual CLGraphicalObject* clone() const {return new CLGraphicalObject(*this, NULL);};
+
   virtual void moveBy(const CLPoint &p);
 
   const CLBoundingBox & getBoundingBox() const {return mBBox;};

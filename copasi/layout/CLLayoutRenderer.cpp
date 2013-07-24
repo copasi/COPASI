@@ -6407,6 +6407,48 @@ std::vector<CLGraphicalObject*> CLLayoutRenderer::getObjectsInBoundingBox(double
                 }
             }
 
+          jMax = pGG->getListOfSubglyphs().size();
+
+          for (j = 0; j < jMax; ++j)
+            {
+              CLGraphicalObject *pSubglyph = pGG->getListOfSubglyphs()[j];
+              pBB = &pSubglyph->getBoundingBox();
+              x = pBB->getPosition().getX();
+              y = pBB->getPosition().getY();
+
+              if (partial)
+                {
+                  // if the upper left is right of or below the current viewport, the
+                  // object is not drawn
+                  if (!(x > rx || y > ry))
+                    {
+                      // or if the lower right is left of or above the current viewport
+                      // the object is also not drawn
+                      x += pBB->getDimensions().getWidth();
+                      y += pBB->getDimensions().getHeight();
+
+                      if (!(x < lx || y < ly))
+                        {
+                          result.push_back(pSubglyph);
+                        }
+                    }
+                }
+              else
+                {
+                  // the object has to completly within the box
+                  if (x >= lx && y >= ly)
+                    {
+                      x += pBB->getDimensions().getWidth();
+                      y += pBB->getDimensions().getHeight();
+
+                      if ((x <= rx && y <= ry))
+                        {
+                          result.push_back(pSubglyph);
+                        }
+                    }
+                }
+            }
+
           jMax = pGG->getListOfReferenceGlyphs().size();
 
           for (j = 0; j < jMax; ++j)

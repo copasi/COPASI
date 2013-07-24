@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.h,v $
-//   $Revision: 1.16 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/12/13 19:49:58 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -58,6 +50,8 @@ public:
   CLMetabGlyph & operator= (const CLMetabGlyph & rhs);
 
   //virtual void scale (const double & scaleFactor){this->mBBox.scale(scaleFactor);}
+
+  virtual CLGraphicalObject* clone() const {return new CLMetabGlyph(*this, NULL);};
 
   /**
    * This method writes the information of the copasi layout object into the
@@ -106,6 +100,8 @@ public:
    */
   friend std::ostream & operator<<(std::ostream &os, const CLCompartmentGlyph & g);
   void print(std::ostream * ostream) const;
+
+  virtual CLGraphicalObject* clone() const {return new CLCompartmentGlyph(*this, NULL);};
 
   /**
    * This method writes the information of the copasi layout object into the
@@ -167,6 +163,8 @@ public:
   const std::string & getGraphicalObjectKey() const {return mGraphicalObjectKey;};
   CLGraphicalObject* getGraphicalObject() const;
   void setGraphicalObjectKey(const std::string & k);
+
+  virtual CLGraphicalObject* clone() const {return new CLTextGlyph(*this, NULL);};
 
   //virtual void scale (const double & scaleFactor){this->mBBox.scale(scaleFactor);}
 

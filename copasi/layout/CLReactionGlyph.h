@@ -111,6 +111,8 @@ public:
   CLGraphicalObject* getTargetGlyph() const;
   void setTargetGlyphKey(const std::string & k) {mGlyphKey = k;}
 
+  virtual CLGraphicalObject* clone() const {return new CLReferenceGlyph(*this, NULL);};
+
 #if LIBSBML_VERSION >= 50800
   /**
    * This method writes the information of the COPASI layout object into the
@@ -207,6 +209,8 @@ public:
   const std::string & getRoleDisplayName() const
   {return RoleName[mRole];};
 
+  virtual CLGraphicalObject* clone() const {return new CLMetabReferenceGlyph(*this, NULL);};
+
   /**
    * This method writes the information of the COPASI layout object into the
    * corresponding SBML object
@@ -232,6 +236,7 @@ class CLGeneralGlyph : public CLGlyphWithCurve
 {
 protected:
   CCopasiVector<CLReferenceGlyph> mvReferences;
+  CCopasiVector<CLGraphicalObject> mvSubglyphs;
 
 public:
   CLGeneralGlyph(const std::string & name = "GeneralGlyph",
@@ -262,23 +267,22 @@ public:
   const CCopasiVector<CLReferenceGlyph> & getListOfReferenceGlyphs() const
   {return mvReferences;};
 
+  const CCopasiVector<CLGraphicalObject> & getListOfSubglyphs() const
+  {return mvSubglyphs;};
+
   /**
-   *  add Glyph to reaction glyph. The reaction glyph takes ownership of the glyph.
+   *  add Glyph to general glyph. The general glyph takes ownership of the glyph.
    */
   void addReferenceGlyph(CLReferenceGlyph * glyph);
 
+  /**
+   *  add sub glyph to general glyph. The general glyph takes ownership of the glyph.
+   */
+  void addSubglyph(CLGraphicalObject * glyph);
+
   virtual void moveBy(const CLPoint &p);
 
-  /**
-   * This method writes the information of the COPASI layout object into the
-   * corresponding SBML object
-   * layoutmap contains a map from COPASI layout objects to libsbml layout objects.
-   * the exported metab reference glyphs will be added.
-   */
-//    virtual void exportToSBML(ReactionGlyph * g,
-//                              const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
-//                              std::map<std::string, const SBase*>& sbmlIDs,
-//                              std::map<const CLBase*, const SBase*> & layoutmap) const;
+  virtual CLGraphicalObject* clone() const {return new CLGeneralGlyph(*this, NULL);};
 
   /**
    * this exports the general glyph to a generic SBML GraphicalObject (throwing away most of the information)
@@ -335,6 +339,7 @@ public:
 
   virtual void moveBy(const CLPoint &p);
 
+  virtual CLGraphicalObject* clone() const {return new CLReactionGlyph(*this, NULL);};
   /**
    * This method writes the information of the COPASI layout object into the
    * corresponding SBML object
