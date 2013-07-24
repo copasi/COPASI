@@ -1,15 +1,15 @@
-*.cpp  filter=common format=cstyle CommentStart=//
-*.hpp  filter=common format=cstyle CommentStart=//
-*.c    filter=common format=cstyle CommentStart=//
-*.h    filter=common format=cstyle CommentStart=//
-*.h.in filter=common format=cstyle CommentStart=//
-*.i    filter=common CommentStart=//
-*.java filter=common CommentStart=//
-*.pro  filter=common CommentStart=#
-*.pri  filter=common CommentStart=#
-*.xsd  filter=common CommentStart=<!-- CommentEnd=--> PrologEnd=>
-*.xml  filter=common CommentStart=<!-- CommentEnd=--> PrologEnd=>
-*.rng  filter=common CommentStart=<!-- CommentEnd=--> PrologEnd=>
-*.ui   filter=common CommentStart=<comment> CommentEnd=</comment> PrologEnd=<ui.*>
-*.py   filter=common CommentStart=# PrologEnd=-\\*-
+*.cpp  format=cstyle CommentStart=//
+*.hpp  format=cstyle CommentStart=//
+*.c    format=cstyle CommentStart=//
+*.h    format=cstyle CommentStart=//
+*.h.in format=cstyle CommentStart=//
+*.i    CommentStart=//
+*.java CommentStart=//
+*.pro  CommentStart=#
+*.pri  CommentStart=#
+*.xsd  CommentStart=<!-- CommentEnd=--> PrologEnd=>
+*.xml  CommentStart=<!-- CommentEnd=--> PrologEnd=>
+*.rng  CommentStart=<!-- CommentEnd=--> PrologEnd=>
+*.ui   CommentStart=<comment> CommentEnd=</comment> PrologEnd=<ui.*>
+*.py   CommentStart=# PrologEnd=-\\*-
 
