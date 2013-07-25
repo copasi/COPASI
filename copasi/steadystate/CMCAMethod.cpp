@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <cmath>
 #include <limits>
@@ -308,7 +308,7 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
   // C := alpha A B + beta C
 
   aux1 = mUnscaledElasticities;
-  dgemm_(&T, &T, &M, &N, &K, &Alpha, mLinkZero.getLinkZero().array(), &M,
+  dgemm_(&T, &T, &M, &N, &K, &Alpha, const_cast< C_FLOAT64 * >(mLinkZero.getLinkZero().array()), &M,
          mUnscaledElasticities.array() + M, &LD, &Beta, aux1.array(), &LD);
 
   // Implementation without dgemm to avoid column swaps in aux1 and mUnscaledElasticities
