@@ -104,6 +104,7 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
   CCopasiParameterGroup(name, pParent),
   mpRecentFiles(NULL),
   mpRecentSBMLFiles(NULL),
+  mpRecentSEDMLFiles(NULL),
   mpRecentMIRIAMResources(NULL),
   mpApplicationFont(NULL),
   mpValidateUnits(NULL),
@@ -115,6 +116,7 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
   CCopasiParameterGroup(src, pParent),
   mpRecentFiles(NULL),
   mpRecentSBMLFiles(NULL),
+  mpRecentSEDMLFiles(NULL),
   mpRecentMIRIAMResources(NULL),
   mpApplicationFont(NULL),
   mpValidateUnits(NULL),
@@ -126,6 +128,7 @@ CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
   CCopasiParameterGroup(group, pParent),
   mpRecentFiles(NULL),
   mpRecentSBMLFiles(NULL),
+  mpRecentSEDMLFiles(NULL),
   mpRecentMIRIAMResources(NULL),
   mpApplicationFont(NULL),
   mpValidateUnits(NULL),
@@ -149,6 +152,11 @@ bool CConfigurationFile::elevateChildren()
 
   if (!mpRecentSBMLFiles) success = false;
 
+  mpRecentSEDMLFiles =
+      elevate<CRecentFiles, CCopasiParameterGroup>(getGroup("Recent SEDML Files"));
+
+    if (!mpRecentSEDMLFiles) success = false;
+
   mpRecentMIRIAMResources =
     elevate<CMIRIAMResources, CCopasiParameterGroup>(getGroup("MIRIAM Resources"));
   CMIRIAMResourceObject::setMIRIAMResources(mpRecentMIRIAMResources);
@@ -162,6 +170,7 @@ void CConfigurationFile::initializeParameter()
 {
   assertGroup("Recent Files");
   assertGroup("Recent SBML Files");
+  assertGroup("Recent SEDML Files");
 
   mpApplicationFont =
     assertParameter("Application Font", CCopasiParameter::STRING, std::string(""))->getValue().pSTRING;
@@ -235,6 +244,12 @@ CRecentFiles & CConfigurationFile::getRecentFiles()
 CRecentFiles & CConfigurationFile::getRecentSBMLFiles()
 {return *mpRecentSBMLFiles;}
 
+//TODO SEDML
+CRecentFiles & CConfigurationFile::getRecentSEDMLFiles()
+{return *mpRecentSEDMLFiles;}
+
+
+
 CMIRIAMResources & CConfigurationFile::getRecentMIRIAMResources()
 {return *mpRecentMIRIAMResources;}
 
@@ -278,6 +293,7 @@ CConfigurationFile::CXML::CXML():
   mConfiguration.assertGroup("Recent Files");
   mConfiguration.assertGroup("Recent SBML Files");
   mConfiguration.assertGroup("MIRIAM Resources");
+  mConfiguration.assertGroup("Recent SEDML Files");
 }
 
 CConfigurationFile::CXML::~CXML()

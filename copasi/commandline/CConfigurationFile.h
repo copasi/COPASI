@@ -144,6 +144,13 @@ public:
    */
   CRecentFiles & getRecentSBMLFiles();
 
+  //TODO SEDML
+  /**
+	 * Retrieve the list of recent SEDML files
+	 * @return CRecentFiles & recentSEDMLFiles
+	 */
+	CRecentFiles & getRecentSEDMLFiles();
+
   /**
    * Retrieve the list of recent MIRIAM Resources
    * @return CMIRIAMResources & recentMIRIAMResources
@@ -262,6 +269,13 @@ private:
    * A pointer to the list of recent files
    */
   CRecentFiles * mpRecentSBMLFiles;
+
+  //TODO SEDML
+	/**
+	 * A pointer to the list of recent files
+	 */
+	CRecentFiles * mpRecentSEDMLFiles;
+
 
   /**
    * A pointer to the list of MIRIAM Resources

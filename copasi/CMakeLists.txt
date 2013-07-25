@@ -77,6 +77,12 @@ include(tssanalysis/CMakeLists.txt)
 include(utilities/CMakeLists.txt)
 include(xml/CMakeLists.txt)
 
+if(ENABLE_COPASI_SEDML)
+include(sedml/CMakeLists.txt)
+include_directories(${LIBSEDML_INCLUDE_DIR})
+endif()
+
+
 include_directories(
   "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/.."
@@ -98,6 +104,11 @@ endif()
 add_library(libCOPASI STATIC ${COPASI_SOURCES} ${COPASI_HEADERS})
 target_link_libraries(libCOPASI ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES})
 set_target_properties (libCOPASI PROPERTIES OUTPUT_NAME "COPASISE")
+
+if(ENABLE_COPASI_SEDML)
+target_link_libraries(libCOPASI ${LIBSEDML_LIBRARY})
+endif()
+
 
 #need to link against iconv
 if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
@@ -262,6 +273,10 @@ include_directories(${QWTPLOT3D_INCLUDE_DIR})
 include_directories(${QT_QTWEBKIT_INCLUDE_DIR})
 include_directories(${QT_QTXML_INCLUDE_DIR})
 include_directories(${QT_QTSVG_INCLUDE_DIR})
+
+if(ENABLE_COPASI_SEDML)
+include_directories(${LIBSEDML_INCLUDE_DIR})
+endif()
 
 add_library(libCOPASIUI STATIC ${COPASI_UI_SOURCES} ${COPASI_UI_HEADERS} ${HEADERS_UI_FORMS} ${COPASI_RCC_SOURCES} ${HEADERS_UI_MOC})
 target_link_libraries(libCOPASIUI libCOPASI ${OPENGL_glu_LIBRARY} ${QT_QTOPENGL_LIBRARY}  ${QWT_LIBRARY} ${QT_LIBRARIES} ${QT_QTSVG_LIBRARY} ${MML_LIBRARY})

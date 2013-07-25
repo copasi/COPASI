@@ -299,6 +299,14 @@ const MESSAGES Messages[] =
   {MCSBML + 100, "SBML (100): Model with conversion factors encountered. In order to calculate correct results with this model COPASI has changed the stoichiometries of all species with conversion factors. Exporting this model again will lead to a model with changed stoichiometries."},
   {MCSBML + 101, "SBML (101): Assignment rule for species reference \"%s\" imported. Please be aware that COPASI does not support stoichiometries that change over time. The imported expression has therefore been converted to a constant value."},
 
+  // SEDML To be completed
+  {MCSEDML + 1, "SEDML (1): SEDML contains no simulation."},
+  {MCSEDML + 2, "SEDML (2): The SEDML document contains no model."},
+  {MCSEDML + 3, "SEDML (3): Presently only SBML model encoding is supported"},
+  {MCSEDML + 4, "SEDML (4): Could not open file \"%s\". Note: The reference SBML model in SEDML document must be saved in the same directory as the SEDML document using the source attribute value as the file name ."},
+  {MCSEDML + 5, "SEDML (5): Could not open file \"%s\"."},
+  {MCSEDML + 4, "SEDML (40): LIBSEDML %s %d at line %d column %d: %s."},
+
   {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
   {
     MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "

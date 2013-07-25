@@ -16,6 +16,14 @@
 
 #include <sbml/SBMLDocument.h>
 
+#ifdef COPASI_SEDML
+#include <sedml/SedDocument.h>
+#include "sedml/SEDMLImporter.h"
+#include "trajectory/CTrajectoryProblem.h"
+#include "trajectory/CTrajectoryTask.h"
+#endif
+
+
 #include "copasi.h"
 #include "CCopasiDataModel.h"
 
@@ -984,6 +992,327 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessRep
 
   return pExporter->exportToStream(this, os);
 }
+
+//TODO SEDML
+#ifdef COPASI_SEDML
+bool CCopasiDataModel::importSEDMLFromString(const std::string& sedmlDocumentText,
+    CProcessReport* pImportHandler,
+    const bool & deleteOldData)
+{
+  pushData();
+
+  CCopasiMessage::clearDeque();
+
+  SEDMLImporter importer;
+  // Right now we always import the COPASI MIRIAM annotation if it is there.
+  // Later this will be settable by the user in the preferences dialog
+ // importer.setImportCOPASIMIRIAM(true);
+  importer.setImportHandler(pImportHandler);
+  //mCopasi2SBMLMap.clear();
+  CModel* pModel = NULL;
+
+  SedDocument * pSEDMLDocument = NULL;
+  std::map<CCopasiObject*, SedBase*> Copasi2SEDMLMap;
+  std::map<CCopasiObject*, SBase*> Copasi2SBMLMap;
+
+  SBMLDocument * pSBMLDocument = NULL;
+  CTrajectoryTask *trajTask = NULL;
+  CListOfLayouts * pLol = NULL;
+  COutputDefinitionVector *pLotList = NULL; // = new COutputDefinitionVector("OutputDefinitions", this);
+  try
+    {
+      pModel = importer.parseSEDML(sedmlDocumentText, pImportHandler, CCopasiRootContainer::getFunctionList(), pSBMLDocument, pSEDMLDocument,
+                                   Copasi2SEDMLMap, Copasi2SBMLMap, pLol, trajTask, pLotList, this);
+    }
+
+  catch (CCopasiException & except)
+    {
+      importer.restoreFunctionDB();
+      importer.deleteCopasiModel();
+      popData();
+
+      throw except;
+    }
+
+  if (pModel == NULL)
+    {
+      importer.restoreFunctionDB();
+      importer.deleteCopasiModel();
+      popData();
+
+      return false;
+    }
+
+  if (pModel != NULL)
+    {
+      mData.pModel = pModel;
+      add(mData.pModel, true);
+    }
+
+  if (pLol != NULL)
+     {
+       mData.pListOfLayouts = pLol;
+       add(mData.pListOfLayouts, true);
+     }
+
+  mData.pCurrentSEDMLDocument = pSEDMLDocument;
+  mData.mCopasi2SEDMLMap = Copasi2SEDMLMap;
+  mData.mFileType = SEDML;
+
+  commonAfterLoad(pImportHandler, deleteOldData);
+
+  return true;
+}
+
+bool CCopasiDataModel::importSEDML(const std::string & fileName,
+                                  CProcessReport* pImportHandler,
+                                  const bool & deleteOldData)
+{
+  CCopasiMessage::clearDeque();
+
+  std::string PWD;
+  COptions::getValue("PWD", PWD);
+
+  std::string FileName = fileName;
+
+  if (CDirEntry::isRelativePath(FileName) &&
+      !CDirEntry::makePathAbsolute(FileName, PWD))
+    FileName = CDirEntry::fileName(FileName);
+
+  std::ifstream File(CLocaleString::fromUtf8(FileName).c_str());
+
+  SEDMLImporter importer;
+  // Later this will be settable by the user in the preferences dialog
+  // Later this will be settable by the user in the preferences dialog
+ //   importer.setImportCOPASIMIRIAM(true);
+  importer.setImportHandler(pImportHandler);
+
+  CModel* pModel = NULL;
+
+  SedDocument * pSEDMLDocument = NULL;
+  std::map<CCopasiObject*, SedBase*> Copasi2SEDMLMap;
+  std::map<CCopasiObject*, SBase*> Copasi2SBMLMap;
+
+  SBMLDocument * pSBMLDocument = NULL;
+  CTrajectoryTask *trajTask = NULL;
+  CListOfLayouts * pLol = NULL;
+  COutputDefinitionVector *pLotList = NULL;
+
+  pushData();
+
+  try
+    {
+      // store the file name and reference dir, so the importer can use it
+      mData.mSEDMLFileName = CDirEntry::normalize(FileName);
+      mData.mReferenceDir = CDirEntry::dirName(mData.mSEDMLFileName);
+
+      pModel = importer.readSEDML(FileName, pImportHandler, CCopasiRootContainer::getFunctionList(), pSBMLDocument, pSEDMLDocument,
+                                 Copasi2SEDMLMap, Copasi2SBMLMap, pLol, trajTask, pLotList, this);
+    }
+
+  catch (CCopasiException & except)
+    {
+      importer.restoreFunctionDB();
+      importer.deleteCopasiModel();
+      popData();
+
+      throw except;
+    }
+
+  if (pModel == NULL)
+    {
+      importer.restoreFunctionDB();
+      importer.deleteCopasiModel();
+      popData();
+
+      return false;
+    }
+
+  if (pModel != NULL)
+    {
+      mData.pModel = pModel;
+      add(mData.pModel, true);
+    }
+
+  if (pLol != NULL)
+    {
+      mData.pListOfLayouts = pLol;
+      add(mData.pListOfLayouts, true);
+    }
+
+  if (pLol != NULL)
+      {
+        mData.pPlotDefinitionList = pLotList;
+        add(mData.pPlotDefinitionList, true);
+      }
+
+  commonAfterLoad(pImportHandler, deleteOldData);
+
+  //update the Task List with new time course task
+  updateTaskList(CCopasiTask::timeCourse, trajTask);
+
+
+  mData.pCurrentSEDMLDocument = pSEDMLDocument;
+  mData.mCopasi2SEDMLMap = Copasi2SEDMLMap;
+  mData.mFileType = SEDML;
+
+
+  mData.mSaveFileName = CDirEntry::dirName(FileName)
+                        + CDirEntry::Separator
+                        + CDirEntry::baseName(FileName);
+
+  std::string Suffix = CDirEntry::suffix(FileName);
+
+  if (strcasecmp(Suffix.c_str(), ".xml") != 0)
+    mData.mSaveFileName += Suffix;
+
+  mData.mSaveFileName += ".cps";
+  mData.mSaveFileName = CDirEntry::normalize(mData.mSaveFileName);
+  // store the reference directory
+  mData.mReferenceDir = CDirEntry::dirName(mData.mSaveFileName);
+  mData.mSEDMLFileName = CDirEntry::normalize(FileName);
+
+  return true;
+}
+
+SedDocument* CCopasiDataModel::getCurrentSEDMLDocument()
+{
+  return mData.pCurrentSEDMLDocument;
+}
+
+bool CCopasiDataModel::setSEDMLFileName(const std::string & fileName)
+{
+  mData.mSEDMLFileName = CDirEntry::normalize(fileName);
+
+  if (CDirEntry::isRelativePath(mData.mSEDMLFileName) &&
+      !CDirEntry::makePathAbsolute(mData.mSEDMLFileName, mData.mSaveFileName))
+    mData.mSEDMLFileName = CDirEntry::fileName(mData.mSEDMLFileName);
+
+  return true;
+}
+
+const std::string & CCopasiDataModel::getSEDMLFileName() const
+{return mData.mSEDMLFileName;}
+
+std::map<CCopasiObject*, SedBase*>& CCopasiDataModel::getCopasi2SEDMLMap()
+{
+  return mData.mCopasi2SEDMLMap;
+}
+
+
+std::string CCopasiDataModel::exportSEDMLToString(CProcessReport* pExportHandler, int sedmlLevel, int sedmlVersion)
+{
+  CCopasiMessage::clearDeque();
+  SedDocument* pOrigSEDMLDocument = NULL;
+
+  CCopasiMessage::clearDeque();
+  static std::string failedCompile("The model cannot be exported, as it failed to compile. \n%s");
+
+  try
+    {
+      if (!mData.pModel->compileIfNecessary(pExportHandler))
+        {
+          CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(), CCopasiMessage::getAllMessageText().c_str());
+          return "";
+        }
+    }
+  catch (CCopasiException&)
+    {
+      // don't add the exception twice
+      throw;
+    }
+  catch (...)
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(), CCopasiMessage::getAllMessageText().c_str());
+      return "";
+    }
+  std::string str = "TODO"; // exporter.exportModelToString(*this, sedmlLevel, sedmlVersion);
+
+  return str;
+}
+
+void CCopasiDataModel::updateTaskList(const CCopasiTask::Type & taskType, CCopasiTask *upTask)
+{
+	switch (taskType)
+	{
+		case CCopasiTask::steadyState:
+		break;
+
+		case CCopasiTask::timeCourse:
+		//CTrajectoryTask *pTask = new CTrajectoryTask(mData.pTaskList);
+		CCopasiTask* pTask = (*mData.pTaskList)[CCopasiTask::timeCourse];
+		CTrajectoryTask * ppTask = static_cast<CTrajectoryTask *>(upTask);
+		CTrajectoryProblem* newProblem = static_cast<CTrajectoryProblem*>(pTask->getProblem());
+		CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(ppTask->getProblem());
+		newProblem->setDuration(tProblem->getDuration());
+		newProblem->setOutputStartTime(tProblem->getOutputStartTime());
+		newProblem->setStepNumber(tProblem->getStepNumber());
+		newProblem->setStepSize(tProblem->getStepSize());
+		//	pTask->getProblem()->setModel(mData.pModel);
+		break;
+	}
+
+}
+
+bool CCopasiDataModel::exportSEDML(const std::string & fileName, bool overwriteFile, int sedmlLevel, int sedmlVersion, bool /*exportIncomplete*/, bool exportCOPASIMIRIAM, CProcessReport* pExportHandler)
+{
+  CCopasiMessage::clearDeque();
+
+  if (fileName == "") return false;
+
+  std::string PWD;
+  COptions::getValue("PWD", PWD);
+
+  std::string FileName = fileName;
+
+  if (CDirEntry::isRelativePath(FileName) &&
+      !CDirEntry::makePathAbsolute(FileName, PWD))
+    FileName = CDirEntry::fileName(FileName);
+
+  if (CDirEntry::exist(FileName))
+    {
+      if (!overwriteFile)
+        {
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         MCDirEntry + 1,
+                         FileName.c_str());
+          return false;
+        }
+
+      if (!CDirEntry::isWritable(FileName))
+        {
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         MCDirEntry + 2,
+                         FileName.c_str());
+          return false;
+        }
+    }
+
+  CCopasiMessage::clearDeque();
+  static std::string failedCompile("The model cannot be exported, as it failed to compile. \n%s");
+
+  try
+    {
+      if (!mData.pModel->compileIfNecessary(pExportHandler))
+        {
+          CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(), CCopasiMessage::getAllMessageText().c_str());
+          return false;
+        }
+    }
+  catch (CCopasiException&)
+    {
+      // don't add the exception twice
+      throw;
+    }
+  catch (...)
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(), CCopasiMessage::getAllMessageText().c_str());
+      return false;
+    }
+  return true;
+}
+#endif
+
 
 void CCopasiDataModel::deleteOldData()
 {
