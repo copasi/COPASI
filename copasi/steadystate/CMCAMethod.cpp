@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <cmath>
 #include <limits>
@@ -325,7 +325,7 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
           C_FLOAT64 & a = a1(i, pj);
           a = mUnscaledElasticities(i, pj);
 
-          if (M <= pj)
+          if ((size_t)M <= pj)
             {
               continue;
             }
@@ -334,7 +334,7 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
             {
               const size_t & pk = p[k];
 
-              if (pk < M)
+              if (pk < (size_t)M)
                 {
                   continue;
                 }
@@ -385,7 +385,7 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
       for (j = 0; j < M; ++j)
         {
 
-          if (pi < M)
+          if (pi < (size_t)M)
             {
               aux1(pi, j) = - aux2(pi, j);
               continue;
