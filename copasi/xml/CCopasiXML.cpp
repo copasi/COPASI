@@ -1753,43 +1753,43 @@ bool CCopasiXML::saveLayoutList()
 #endif // USE_CRENDER_EXTENSION
               startSaveElement("AdditionalGraphicalObject", Attributes);
 
-              if (cg->getCurve().getNumCurveSegments() == 0)
-                saveBoundingBox(cg->getBoundingBox());
-              else
-                saveCurve(cg->getCurve());
+              //if (cg->getCurve().getNumCurveSegments() == 0)
+              saveBoundingBox(cg->getBoundingBox());
+              //else
+              //  saveCurve(cg->getCurve());
 
               // reference glyphs
-              startSaveElement("ListOfReferenceGlyphs");
-              size_t k, kmax = cg->getListOfReferenceGlyphs().size();
-
-              for (k = 0; k < kmax; ++k)
-                {
-                  CLReferenceGlyph * mrg = cg->getListOfReferenceGlyphs()[k];
-                  Attributes.erase();
-                  Attributes.add("key", mrg->getKey());
-                  Attributes.add("name", mrg->getObjectName());
-                  Attributes.add("glyph", mrg->getTargetGlyphKey());
-                  Attributes.add("role", mrg->getRole());
-                  //Attributes.add("role", mrg->getRoleStr()); TODO!
-#ifdef USE_CRENDER_EXTENSION
-
-                  if (mrg->getObjectRole().find_first_not_of(" \t\r\n") != std::string::npos)
-                    {
-                      Attributes.add("objectRole", mrg->getObjectRole());
-                    }
-
-#endif // USE_CRENDER_EXTENSION
-                  startSaveElement("ReferenceGlyph", Attributes);
-
-                  if (mrg->getCurve().getNumCurveSegments() == 0)
-                    saveBoundingBox(mrg->getBoundingBox());
-                  else
-                    saveCurve(mrg->getCurve());
-
-                  endSaveElement("ReferenceGlyph");
-                }
-
-              endSaveElement("ListOfReferenceGlyphs");
+//              startSaveElement("ListOfReferenceGlyphs");
+//              size_t k, kmax = cg->getListOfReferenceGlyphs().size();
+//
+//              for (k = 0; k < kmax; ++k)
+//                {
+//                  CLReferenceGlyph * mrg = cg->getListOfReferenceGlyphs()[k];
+//                  Attributes.erase();
+//                  Attributes.add("key", mrg->getKey());
+//                  Attributes.add("name", mrg->getObjectName());
+//                  Attributes.add("glyph", mrg->getTargetGlyphKey());
+//                  Attributes.add("role", mrg->getRole());
+//                  //Attributes.add("role", mrg->getRoleStr()); TODO!
+//#ifdef USE_CRENDER_EXTENSION
+//
+//                  if (mrg->getObjectRole().find_first_not_of(" \t\r\n") != std::string::npos)
+//                    {
+//                      Attributes.add("objectRole", mrg->getObjectRole());
+//}
+//
+//#endif // USE_CRENDER_EXTENSION
+//                  startSaveElement("ReferenceGlyph", Attributes);
+//
+//                  if (mrg->getCurve().getNumCurveSegments() == 0)
+//                    saveBoundingBox(mrg->getBoundingBox());
+//                  else
+//                    saveCurve(mrg->getCurve());
+//
+//                  endSaveElement("ReferenceGlyph");
+//}
+//
+//              endSaveElement("ListOfReferenceGlyphs");
 
               endSaveElement("AdditionalGraphicalObject");
             }
