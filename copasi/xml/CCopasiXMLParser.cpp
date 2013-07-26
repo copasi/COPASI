@@ -6299,105 +6299,93 @@ void CCopasiXMLParser::CurveElement::start(const XML_Char *pszName, const XML_Ch
 
       case ListOfCurveSegments:
 
-        if (strcmp(pszName, "ListOfCurveSegments"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "ListOfCurveSegments", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "ListOfCurveSegments"))
+          return;
 
-        return;
         break;
 
       case CurveSegment:
 
-        if (strcmp(pszName, "CurveSegment"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "CurveSegment", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "CurveSegment"))
+          {
+            //workload
+            const char * type;
+            type = mParser.getAttributeValue("xsi:type", papszAttrs);
 
-        {
-          //workload
-          const char * type;
-          type = mParser.getAttributeValue("xsi:type", papszAttrs);
+            if (!mCommon.pLineSegment)
+              mCommon.pLineSegment = new CLLineSegment;
 
-          if (!mCommon.pLineSegment)
-            mCommon.pLineSegment = new CLLineSegment;
+            mCommon.pLineSegment->setIsBezier(!strcmp(type, "CubicBezier"));
+          }
 
-          mCommon.pLineSegment->setIsBezier(!strcmp(type, "CubicBezier"));
-        }
         return;
         break;
 
       case Start:
 
-        if (strcmp(pszName, "Start"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "Start", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "Start"))
+          {
+            //workload
+            const char * attr;
+            attr = mParser.getAttributeValue("x", papszAttrs);
+            C_FLOAT64 dX = CCopasiXMLInterface::DBL(attr);
+            attr = mParser.getAttributeValue("y", papszAttrs);
+            C_FLOAT64 dY = CCopasiXMLInterface::DBL(attr);
+            mCommon.pLineSegment->setStart(CLPoint(dX, dY));
+            return;
+          }
 
-        {
-          //workload
-          const char * attr;
-          attr = mParser.getAttributeValue("x", papszAttrs);
-          C_FLOAT64 dX = CCopasiXMLInterface::DBL(attr);
-          attr = mParser.getAttributeValue("y", papszAttrs);
-          C_FLOAT64 dY = CCopasiXMLInterface::DBL(attr);
-          mCommon.pLineSegment->setStart(CLPoint(dX, dY));
-          return;
-        }
         return;
         break;
 
       case End:
 
-        if (strcmp(pszName, "End"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "End", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "End"))
+          {
+            //workload
+            const char * attr;
+            attr = mParser.getAttributeValue("x", papszAttrs);
+            C_FLOAT64 dX = CCopasiXMLInterface::DBL(attr);
+            attr = mParser.getAttributeValue("y", papszAttrs);
+            C_FLOAT64 dY = CCopasiXMLInterface::DBL(attr);
+            mCommon.pLineSegment->setEnd(CLPoint(dX, dY));
+            return;
+          }
 
-        {
-          //workload
-          const char * attr;
-          attr = mParser.getAttributeValue("x", papszAttrs);
-          C_FLOAT64 dX = CCopasiXMLInterface::DBL(attr);
-          attr = mParser.getAttributeValue("y", papszAttrs);
-          C_FLOAT64 dY = CCopasiXMLInterface::DBL(attr);
-          mCommon.pLineSegment->setEnd(CLPoint(dX, dY));
-          return;
-        }
         return;
         break;
 
       case BasePoint1:
 
-        if (strcmp(pszName, "BasePoint1"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "BasePoint1", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "BasePoint1"))
+          {
+            //workload
+            const char * attr;
+            attr = mParser.getAttributeValue("x", papszAttrs);
+            C_FLOAT64 dX = CCopasiXMLInterface::DBL(attr);
+            attr = mParser.getAttributeValue("y", papszAttrs);
+            C_FLOAT64 dY = CCopasiXMLInterface::DBL(attr);
+            mCommon.pLineSegment->setBase1(CLPoint(dX, dY));
+            return;
+          }
 
-        {
-          //workload
-          const char * attr;
-          attr = mParser.getAttributeValue("x", papszAttrs);
-          C_FLOAT64 dX = CCopasiXMLInterface::DBL(attr);
-          attr = mParser.getAttributeValue("y", papszAttrs);
-          C_FLOAT64 dY = CCopasiXMLInterface::DBL(attr);
-          mCommon.pLineSegment->setBase1(CLPoint(dX, dY));
-          return;
-        }
         return;
         break;
 
       case BasePoint2:
 
-        if (strcmp(pszName, "BasePoint2"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "BasePoint2", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "BasePoint2"))
+          {
+            //workload
+            const char * attr;
+            attr = mParser.getAttributeValue("x", papszAttrs);
+            C_FLOAT64 dX = CCopasiXMLInterface::DBL(attr);
+            attr = mParser.getAttributeValue("y", papszAttrs);
+            C_FLOAT64 dY = CCopasiXMLInterface::DBL(attr);
+            mCommon.pLineSegment->setBase2(CLPoint(dX, dY));
+            return;
+          }
 
-        {
-          //workload
-          const char * attr;
-          attr = mParser.getAttributeValue("x", papszAttrs);
-          C_FLOAT64 dX = CCopasiXMLInterface::DBL(attr);
-          attr = mParser.getAttributeValue("y", papszAttrs);
-          C_FLOAT64 dY = CCopasiXMLInterface::DBL(attr);
-          mCommon.pLineSegment->setBase2(CLPoint(dX, dY));
-          return;
-        }
         return;
         break;
 
@@ -6533,46 +6521,39 @@ void CCopasiXMLParser::CompartmentGlyphElement::start(const XML_Char *pszName, c
 
       case BoundingBox:
 
-        if (strcmp(pszName, "BoundingBox"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "BoundingBox", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "BoundingBox"))
+          return;
 
-        //mpCurrentHandler = new BoundingBoxElement(mParser, mCommon);
-        return;
         break;
 
       case Position:
 
-        if (strcmp(pszName, "Position"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "Position", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "Position"))
+          {
+            //workload
+            const char * attr;
+            attr = mParser.getAttributeValue("x", papszAttrs);
+            mCommon.pCompartmentGlyph->setX(CCopasiXMLInterface::DBL(attr));
+            attr = mParser.getAttributeValue("y", papszAttrs);
+            mCommon.pCompartmentGlyph->setY(CCopasiXMLInterface::DBL(attr));
+            return;
+          }
 
-        {
-          //workload
-          const char * attr;
-          attr = mParser.getAttributeValue("x", papszAttrs);
-          mCommon.pCompartmentGlyph->setX(CCopasiXMLInterface::DBL(attr));
-          attr = mParser.getAttributeValue("y", papszAttrs);
-          mCommon.pCompartmentGlyph->setY(CCopasiXMLInterface::DBL(attr));
-          return;
-        }
         break;
 
       case Dimensions:
 
-        if (strcmp(pszName, "Dimensions"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "Dimensions", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "Dimensions"))
+          {
+            //workload
+            const char * attr;
+            attr = mParser.getAttributeValue("width", papszAttrs);
+            mCommon.pCompartmentGlyph->setWidth(CCopasiXMLInterface::DBL(attr));
+            attr = mParser.getAttributeValue("height", papszAttrs);
+            mCommon.pCompartmentGlyph->setHeight(CCopasiXMLInterface::DBL(attr));
+            return;
+          }
 
-        {
-          //workload
-          const char * attr;
-          attr = mParser.getAttributeValue("width", papszAttrs);
-          mCommon.pCompartmentGlyph->setWidth(CCopasiXMLInterface::DBL(attr));
-          attr = mParser.getAttributeValue("height", papszAttrs);
-          mCommon.pCompartmentGlyph->setHeight(CCopasiXMLInterface::DBL(attr));
-          return;
-        }
         break;
 
       default:
@@ -6659,17 +6640,17 @@ void CCopasiXMLParser::ListOfCompartmentGlyphsElement::start(const XML_Char * ps
 
         //only one type of tags may occur here, so we can throw an exception.
         //No need to silently ignore unknown tags here.
-        if (strcmp(pszName, "CompartmentGlyph"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "CompartmentGlyph", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "CompartmentGlyph"))
+          {
+            //only one type of tags may occur here, so if the handler exists
+            //it must be the correct one
+            if (!mpCurrentHandler)
+              mpCurrentHandler = new CompartmentGlyphElement(mParser, mCommon);
 
-        //only one type of tags may occur here, so if the handler exists
-        //it must be the correct one
-        if (!mpCurrentHandler)
-          mpCurrentHandler = new CompartmentGlyphElement(mParser, mCommon);
+            mParser.pushElementHandler(mpCurrentHandler);
+            mpCurrentHandler->start(pszName, papszAttrs);
+          }
 
-        mParser.pushElementHandler(mpCurrentHandler);
-        mpCurrentHandler->start(pszName, papszAttrs);
         break;
 
       default:
@@ -6793,45 +6774,39 @@ void CCopasiXMLParser::MetaboliteGlyphElement::start(const XML_Char *pszName, co
 
       case BoundingBox:
 
-        if (strcmp(pszName, "BoundingBox"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "BoundingBox", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "BoundingBox"))
+          return;
 
-        return;
         break;
 
       case Position:
 
-        if (strcmp(pszName, "Position"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "Position", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "Position"))
+          {
+            //workload
+            const char * attr;
+            attr = mParser.getAttributeValue("x", papszAttrs);
+            mCommon.pMetaboliteGlyph->setX(CCopasiXMLInterface::DBL(attr));
+            attr = mParser.getAttributeValue("y", papszAttrs);
+            mCommon.pMetaboliteGlyph->setY(CCopasiXMLInterface::DBL(attr));
+            return;
+          }
 
-        {
-          //workload
-          const char * attr;
-          attr = mParser.getAttributeValue("x", papszAttrs);
-          mCommon.pMetaboliteGlyph->setX(CCopasiXMLInterface::DBL(attr));
-          attr = mParser.getAttributeValue("y", papszAttrs);
-          mCommon.pMetaboliteGlyph->setY(CCopasiXMLInterface::DBL(attr));
-          return;
-        }
         break;
 
       case Dimensions:
 
-        if (strcmp(pszName, "Dimensions"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "Dimensions", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "Dimensions"))
+          {
+            //workload
+            const char * attr;
+            attr = mParser.getAttributeValue("width", papszAttrs);
+            mCommon.pMetaboliteGlyph->setWidth(CCopasiXMLInterface::DBL(attr));
+            attr = mParser.getAttributeValue("height", papszAttrs);
+            mCommon.pMetaboliteGlyph->setHeight(CCopasiXMLInterface::DBL(attr));
+            return;
+          }
 
-        {
-          //workload
-          const char * attr;
-          attr = mParser.getAttributeValue("width", papszAttrs);
-          mCommon.pMetaboliteGlyph->setWidth(CCopasiXMLInterface::DBL(attr));
-          attr = mParser.getAttributeValue("height", papszAttrs);
-          mCommon.pMetaboliteGlyph->setHeight(CCopasiXMLInterface::DBL(attr));
-          return;
-        }
         break;
 
       default:
@@ -6916,19 +6891,15 @@ void CCopasiXMLParser::ListOfMetabGlyphsElement::start(const XML_Char * pszName,
 
       case MetaboliteGlyph:
 
-        //only one type of tags may occur here, so we can throw an exception.
-        //No need to silently ignore unknown tags here.
-        if (strcmp(pszName, "MetaboliteGlyph"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "MetaboliteGlyph", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "MetaboliteGlyph"))
+          {
+            if (!mpCurrentHandler)
+              mpCurrentHandler = new MetaboliteGlyphElement(mParser, mCommon);
 
-        //only one type of tags may occur here, so if the handler exists
-        //it must be the correct one
-        if (!mpCurrentHandler)
-          mpCurrentHandler = new MetaboliteGlyphElement(mParser, mCommon);
+            mParser.pushElementHandler(mpCurrentHandler);
+            mpCurrentHandler->start(pszName, papszAttrs);
+          }
 
-        mParser.pushElementHandler(mpCurrentHandler);
-        mpCurrentHandler->start(pszName, papszAttrs);
         break;
 
       default:
@@ -6962,12 +6933,8 @@ void CCopasiXMLParser::ListOfMetabGlyphsElement::end(const XML_Char * pszName)
 
       case MetaboliteGlyph:
 
-        if (strcmp(pszName, "MetaboliteGlyph"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "MetaboliteGlyph", mParser.getCurrentLineNumber());
-
-        //tell the handler where to continue
-        mCurrentElement = ListOfMetabGlyphs;
+        if (!strcmp(pszName, "MetaboliteGlyph"))
+          mCurrentElement = ListOfMetabGlyphs;
 
         //no need to delete Handler (since it is the only one the destructor
         //will handle it)
@@ -7057,49 +7024,39 @@ void CCopasiXMLParser::MetaboliteReferenceGlyphElement::start(const XML_Char *ps
 
       case BoundingBox:
 
-        if (strcmp(pszName, "BoundingBox"))
-          {
-            //CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-            //               pszName, "BoundingBox", mParser.getCurrentLineNumber());
-            mCurrentElement = Dimensions;
-          }
-        else
+        if (!strcmp(pszName, "BoundingBox"))
           return;
 
         break;
 
       case Position:
 
-        if (strcmp(pszName, "Position"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "Position", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "Position"))
+          {
+            //workload
+            const char * attr;
+            attr = mParser.getAttributeValue("x", papszAttrs);
+            mCommon.pMetaboliteReferenceGlyph->setX(CCopasiXMLInterface::DBL(attr));
+            attr = mParser.getAttributeValue("y", papszAttrs);
+            mCommon.pMetaboliteReferenceGlyph->setY(CCopasiXMLInterface::DBL(attr));
+            return;
+          }
 
-        {
-          //workload
-          const char * attr;
-          attr = mParser.getAttributeValue("x", papszAttrs);
-          mCommon.pMetaboliteReferenceGlyph->setX(CCopasiXMLInterface::DBL(attr));
-          attr = mParser.getAttributeValue("y", papszAttrs);
-          mCommon.pMetaboliteReferenceGlyph->setY(CCopasiXMLInterface::DBL(attr));
-          return;
-        }
         break;
 
       case Dimensions:
 
-        if (strcmp(pszName, "Dimensions"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "Dimensions", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "Dimensions"))
+          {
+            //workload
+            const char * attr;
+            attr = mParser.getAttributeValue("width", papszAttrs);
+            mCommon.pMetaboliteReferenceGlyph->setWidth(CCopasiXMLInterface::DBL(attr));
+            attr = mParser.getAttributeValue("height", papszAttrs);
+            mCommon.pMetaboliteReferenceGlyph->setHeight(CCopasiXMLInterface::DBL(attr));
+            return;
+          }
 
-        {
-          //workload
-          const char * attr;
-          attr = mParser.getAttributeValue("width", papszAttrs);
-          mCommon.pMetaboliteReferenceGlyph->setWidth(CCopasiXMLInterface::DBL(attr));
-          attr = mParser.getAttributeValue("height", papszAttrs);
-          mCommon.pMetaboliteReferenceGlyph->setHeight(CCopasiXMLInterface::DBL(attr));
-          return;
-        }
         break;
 
       case Curve:
@@ -7199,19 +7156,15 @@ void CCopasiXMLParser::ListOfMetaboliteReferenceGlyphsElement::start(const XML_C
 
       case MetaboliteReferenceGlyph:
 
-        //only one type of tags may occur here, so we can throw an exception.
-        //No need to silently ignore unknown tags here.
-        if (strcmp(pszName, "MetaboliteReferenceGlyph"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "MetaboliteReferenceGlyph", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "MetaboliteReferenceGlyph"))
+          {
+            if (!mpCurrentHandler)
+              mpCurrentHandler = new MetaboliteReferenceGlyphElement(mParser, mCommon);
 
-        //only one type of tags may occur here, so if the handler exists
-        //it must be the correct one
-        if (!mpCurrentHandler)
-          mpCurrentHandler = new MetaboliteReferenceGlyphElement(mParser, mCommon);
+            mParser.pushElementHandler(mpCurrentHandler);
+            mpCurrentHandler->start(pszName, papszAttrs);
+          }
 
-        mParser.pushElementHandler(mpCurrentHandler);
-        mpCurrentHandler->start(pszName, papszAttrs);
         break;
 
       default:
@@ -7245,12 +7198,8 @@ void CCopasiXMLParser::ListOfMetaboliteReferenceGlyphsElement::end(const XML_Cha
 
       case MetaboliteReferenceGlyph:
 
-        if (strcmp(pszName, "MetaboliteReferenceGlyph"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "MetaboliteReferenceGlyph", mParser.getCurrentLineNumber());
-
-        //tell the handler where to continue
-        mCurrentElement = ListOfMetaboliteReferenceGlyphs;
+        if (!strcmp(pszName, "MetaboliteReferenceGlyph"))
+          mCurrentElement = ListOfMetaboliteReferenceGlyphs;
 
         //no need to delete Handler (since it is the only one the destructor
         //will handle it)
@@ -7335,49 +7284,39 @@ void CCopasiXMLParser::ReactionGlyphElement::start(const XML_Char *pszName, cons
 
       case BoundingBox:
 
-        if (strcmp(pszName, "BoundingBox"))
-          {
-            //CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-            //               pszName, "BoundingBox", mParser.getCurrentLineNumber());
-            mCurrentElement = Dimensions;
-          }
-        else
+        if (!strcmp(pszName, "BoundingBox"))
           return;
 
         break;
 
       case Position:
 
-        if (strcmp(pszName, "Position"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "Position", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "Position"))
+          {
+            //workload
+            const char * attr;
+            attr = mParser.getAttributeValue("x", papszAttrs);
+            mCommon.pReactionGlyph->setX(CCopasiXMLInterface::DBL(attr));
+            attr = mParser.getAttributeValue("y", papszAttrs);
+            mCommon.pReactionGlyph->setY(CCopasiXMLInterface::DBL(attr));
+            return;
+          }
 
-        {
-          //workload
-          const char * attr;
-          attr = mParser.getAttributeValue("x", papszAttrs);
-          mCommon.pReactionGlyph->setX(CCopasiXMLInterface::DBL(attr));
-          attr = mParser.getAttributeValue("y", papszAttrs);
-          mCommon.pReactionGlyph->setY(CCopasiXMLInterface::DBL(attr));
-          return;
-        }
         break;
 
       case Dimensions:
 
-        if (strcmp(pszName, "Dimensions"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "Dimensions", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "Dimensions"))
+          {
+            //workload
+            const char * attr;
+            attr = mParser.getAttributeValue("width", papszAttrs);
+            mCommon.pReactionGlyph->setWidth(CCopasiXMLInterface::DBL(attr));
+            attr = mParser.getAttributeValue("height", papszAttrs);
+            mCommon.pReactionGlyph->setHeight(CCopasiXMLInterface::DBL(attr));
+            return;
+          }
 
-        {
-          //workload
-          const char * attr;
-          attr = mParser.getAttributeValue("width", papszAttrs);
-          mCommon.pReactionGlyph->setWidth(CCopasiXMLInterface::DBL(attr));
-          attr = mParser.getAttributeValue("height", papszAttrs);
-          mCommon.pReactionGlyph->setHeight(CCopasiXMLInterface::DBL(attr));
-          return;
-        }
         break;
 
       case Curve:
@@ -7485,19 +7424,15 @@ void CCopasiXMLParser::ListOfReactionGlyphsElement::start(const XML_Char * pszNa
 
       case ReactionGlyph:
 
-        //only one type of tags may occur here, so we can throw an exception.
-        //No need to silently ignore unknown tags here.
-        if (strcmp(pszName, "ReactionGlyph"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "ReactionGlyph", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "ReactionGlyph"))
+          {
+            if (!mpCurrentHandler)
+              mpCurrentHandler = new ReactionGlyphElement(mParser, mCommon);
 
-        //only one type of tags may occur here, so if the handler exists
-        //it must be the correct one
-        if (!mpCurrentHandler)
-          mpCurrentHandler = new ReactionGlyphElement(mParser, mCommon);
+            mParser.pushElementHandler(mpCurrentHandler);
+            mpCurrentHandler->start(pszName, papszAttrs);
+          }
 
-        mParser.pushElementHandler(mpCurrentHandler);
-        mpCurrentHandler->start(pszName, papszAttrs);
         break;
 
       default:
@@ -7531,12 +7466,8 @@ void CCopasiXMLParser::ListOfReactionGlyphsElement::end(const XML_Char * pszName
 
       case ReactionGlyph:
 
-        if (strcmp(pszName, "ReactionGlyph"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "ReactionGlyph", mParser.getCurrentLineNumber());
-
-        //tell the handler where to continue
-        mCurrentElement = ListOfReactionGlyphs;
+        if (!strcmp(pszName, "ReactionGlyph"))
+          mCurrentElement = ListOfReactionGlyphs;
 
         //no need to delete Handler (since it is the only one the destructor
         //will handle it)
@@ -7644,45 +7575,39 @@ void CCopasiXMLParser::TextGlyphElement::start(const XML_Char *pszName, const XM
 
       case BoundingBox:
 
-        if (strcmp(pszName, "BoundingBox"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "BoundingBox", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "BoundingBox"))
+          return;
 
-        return;
         break;
 
       case Position:
 
-        if (strcmp(pszName, "Position"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "Position", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "Position"))
+          {
+            //workload
+            const char * attr;
+            attr = mParser.getAttributeValue("x", papszAttrs);
+            mCommon.pTextGlyph->setX(CCopasiXMLInterface::DBL(attr));
+            attr = mParser.getAttributeValue("y", papszAttrs);
+            mCommon.pTextGlyph->setY(CCopasiXMLInterface::DBL(attr));
+            return;
+          }
 
-        {
-          //workload
-          const char * attr;
-          attr = mParser.getAttributeValue("x", papszAttrs);
-          mCommon.pTextGlyph->setX(CCopasiXMLInterface::DBL(attr));
-          attr = mParser.getAttributeValue("y", papszAttrs);
-          mCommon.pTextGlyph->setY(CCopasiXMLInterface::DBL(attr));
-          return;
-        }
         break;
 
       case Dimensions:
 
-        if (strcmp(pszName, "Dimensions"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "Dimensions", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "Dimensions"))
+          {
+            //workload
+            const char * attr;
+            attr = mParser.getAttributeValue("width", papszAttrs);
+            mCommon.pTextGlyph->setWidth(CCopasiXMLInterface::DBL(attr));
+            attr = mParser.getAttributeValue("height", papszAttrs);
+            mCommon.pTextGlyph->setHeight(CCopasiXMLInterface::DBL(attr));
+            return;
+          }
 
-        {
-          //workload
-          const char * attr;
-          attr = mParser.getAttributeValue("width", papszAttrs);
-          mCommon.pTextGlyph->setWidth(CCopasiXMLInterface::DBL(attr));
-          attr = mParser.getAttributeValue("height", papszAttrs);
-          mCommon.pTextGlyph->setHeight(CCopasiXMLInterface::DBL(attr));
-          return;
-        }
         break;
 
       default:
@@ -7767,19 +7692,15 @@ void CCopasiXMLParser::ListOfTextGlyphsElement::start(const XML_Char * pszName,
 
       case TextGlyph:
 
-        //only one type of tags may occur here, so we can throw an exception.
-        //No need to silently ignore unknown tags here.
-        if (strcmp(pszName, "TextGlyph"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "TextGlyph", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "TextGlyph"))
+          {
+            if (!mpCurrentHandler)
+              mpCurrentHandler = new TextGlyphElement(mParser, mCommon);
 
-        //only one type of tags may occur here, so if the handler exists
-        //it must be the correct one
-        if (!mpCurrentHandler)
-          mpCurrentHandler = new TextGlyphElement(mParser, mCommon);
+            mParser.pushElementHandler(mpCurrentHandler);
+            mpCurrentHandler->start(pszName, papszAttrs);
+          }
 
-        mParser.pushElementHandler(mpCurrentHandler);
-        mpCurrentHandler->start(pszName, papszAttrs);
         break;
 
       default:
@@ -7812,12 +7733,8 @@ void CCopasiXMLParser::ListOfTextGlyphsElement::end(const XML_Char * pszName)
 
       case TextGlyph:
 
-        if (strcmp(pszName, "TextGlyph"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "TextGlyph", mParser.getCurrentLineNumber());
-
-        //tell the handler where to continue
-        mCurrentElement = ListOfTextGlyphs;
+        if (!strcmp(pszName, "TextGlyph"))
+          mCurrentElement = ListOfTextGlyphs;
 
         //no need to delete Handler (since it is the only one the destructor
         //will handle it)
@@ -7885,45 +7802,39 @@ void CCopasiXMLParser::AdditionalGOElement::start(const XML_Char *pszName, const
 
       case BoundingBox:
 
-        if (strcmp(pszName, "BoundingBox"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "BoundingBox", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "BoundingBox"))
+          return;
 
-        return;
         break;
 
       case Position:
 
-        if (strcmp(pszName, "Position"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "Position", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "Position"))
+          {
+            //workload
+            const char * attr;
+            attr = mParser.getAttributeValue("x", papszAttrs);
+            mCommon.pGeneralGlyph->setX(CCopasiXMLInterface::DBL(attr));
+            attr = mParser.getAttributeValue("y", papszAttrs);
+            mCommon.pGeneralGlyph->setY(CCopasiXMLInterface::DBL(attr));
+            return;
+          }
 
-        {
-          //workload
-          const char * attr;
-          attr = mParser.getAttributeValue("x", papszAttrs);
-          mCommon.pGeneralGlyph->setX(CCopasiXMLInterface::DBL(attr));
-          attr = mParser.getAttributeValue("y", papszAttrs);
-          mCommon.pGeneralGlyph->setY(CCopasiXMLInterface::DBL(attr));
-          return;
-        }
         break;
 
       case Dimensions:
 
-        if (strcmp(pszName, "Dimensions"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "Dimensions", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "Dimensions"))
+          {
+            //workload
+            const char * attr;
+            attr = mParser.getAttributeValue("width", papszAttrs);
+            mCommon.pGeneralGlyph->setWidth(CCopasiXMLInterface::DBL(attr));
+            attr = mParser.getAttributeValue("height", papszAttrs);
+            mCommon.pGeneralGlyph->setHeight(CCopasiXMLInterface::DBL(attr));
+            return;
+          }
 
-        {
-          //workload
-          const char * attr;
-          attr = mParser.getAttributeValue("width", papszAttrs);
-          mCommon.pGeneralGlyph->setWidth(CCopasiXMLInterface::DBL(attr));
-          attr = mParser.getAttributeValue("height", papszAttrs);
-          mCommon.pGeneralGlyph->setHeight(CCopasiXMLInterface::DBL(attr));
-          return;
-        }
         break;
 
       default:
@@ -8008,19 +7919,15 @@ void CCopasiXMLParser::ListOfAdditionalGOsElement::start(const XML_Char * pszNam
 
       case AdditionalGO:
 
-        //only one type of tags may occur here, so we can throw an exception.
-        //No need to silently ignore unknown tags here.
-        if (strcmp(pszName, "AdditionalGraphicalObject"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "AdditionalGraphicalObject", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "AdditionalGraphicalObject"))
+          {
+            if (!mpCurrentHandler)
+              mpCurrentHandler = new AdditionalGOElement(mParser, mCommon);
 
-        //only one type of tags may occur here, so if the handler exists
-        //it must be the correct one
-        if (!mpCurrentHandler)
-          mpCurrentHandler = new AdditionalGOElement(mParser, mCommon);
+            mParser.pushElementHandler(mpCurrentHandler);
+            mpCurrentHandler->start(pszName, papszAttrs);
+          }
 
-        mParser.pushElementHandler(mpCurrentHandler);
-        mpCurrentHandler->start(pszName, papszAttrs);
         break;
 
       default:
@@ -8054,12 +7961,8 @@ void CCopasiXMLParser::ListOfAdditionalGOsElement::end(const XML_Char * pszName)
 
       case AdditionalGO:
 
-        if (strcmp(pszName, "AdditionalGraphicalObject"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "AdditionalGraphicalObject", mParser.getCurrentLineNumber());
-
-        //tell the handler where to continue
-        mCurrentElement = ListOfAdditionalGOs;
+        if (!strcmp(pszName, "AdditionalGraphicalObject"))
+          mCurrentElement = ListOfAdditionalGOs;
 
         //no need to delete Handler (since it is the only one the destructor
         //will handle it)
@@ -8118,10 +8021,10 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
         break;
 
       case Dimensions:
-        mLastKnownElement = Dimensions;
-
         if (!strcmp(pszName, "Dimensions"))
           {
+            mLastKnownElement = Dimensions;
+
             //workload
             const char * attr;
             attr = mParser.getAttributeValue("width", papszAttrs);
@@ -8137,52 +8040,59 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
         break;
 
       case ListOfCompartmentGlyphs:
-        mLastKnownElement = ListOfCompartmentGlyphs;
-
         if (!strcmp(pszName, "ListOfCompartmentGlyphs"))
-          mpCurrentHandler = new ListOfCompartmentGlyphsElement(mParser, mCommon);
+          {
+            mLastKnownElement = ListOfCompartmentGlyphs;
+            mpCurrentHandler = new ListOfCompartmentGlyphsElement(mParser, mCommon);
+          }
 
         break;
 
       case ListOfMetabGlyphs:
-        mLastKnownElement = ListOfMetabGlyphs;
 
         if (!strcmp(pszName, "ListOfMetabGlyphs"))
-          mpCurrentHandler = new ListOfMetabGlyphsElement(mParser, mCommon);
+          {
+            mLastKnownElement = ListOfMetabGlyphs;
+            mpCurrentHandler = new ListOfMetabGlyphsElement(mParser, mCommon);
+          }
 
         break;
 
       case ListOfReactionGlyphs:
-        mLastKnownElement = ListOfReactionGlyphs;
-
         if (!strcmp(pszName, "ListOfReactionGlyphs"))
-          mpCurrentHandler = new ListOfReactionGlyphsElement(mParser, mCommon);
+          {
+            mLastKnownElement = ListOfReactionGlyphs;
+            mpCurrentHandler = new ListOfReactionGlyphsElement(mParser, mCommon);
+          }
 
         break;
 
       case ListOfTextGlyphs:
-        mLastKnownElement = ListOfTextGlyphs;
-
         if (!strcmp(pszName, "ListOfTextGlyphs"))
-          mpCurrentHandler = new ListOfTextGlyphsElement(mParser, mCommon);
+          {
+            mLastKnownElement = ListOfTextGlyphs;
+            mpCurrentHandler = new ListOfTextGlyphsElement(mParser, mCommon);
+          }
 
         break;
 
       case ListOfAdditionalGOs:
-        mLastKnownElement = ListOfAdditionalGOs;
-
         if (!strcmp(pszName, "ListOfAdditionalGraphicalObjects"))
-          mpCurrentHandler = new ListOfAdditionalGOsElement(mParser, mCommon);
+          {
+            mLastKnownElement = ListOfAdditionalGOs;
+            mpCurrentHandler = new ListOfAdditionalGOsElement(mParser, mCommon);
+          }
 
         break;
 
 #ifdef USE_CRENDER_EXTENSION
 
       case ListOfLocalRenderInformation:
-        mLastKnownElement = ListOfLocalRenderInformation;
-
         if (!strcmp(pszName, "ListOfRenderInformation"))
-          mpCurrentHandler = new ListOfLocalRenderInformationElement(mParser, mCommon);
+          {
+            mLastKnownElement = ListOfLocalRenderInformation;
+            mpCurrentHandler = new ListOfLocalRenderInformationElement(mParser, mCommon);
+          }
 
         break;
 #endif /* USE_CRENDER_EXTENSION */
@@ -11188,19 +11098,17 @@ void CCopasiXMLParser::ListOfLocalRenderInformationElement::start(const XML_Char
 
       case LocalRenderInformation:
 
-        //only one type of tags may occur here, so we can throw an exception.
-        //No need to silently ignore unknown tags here.
-        if (strcmp(pszName, "RenderInformation"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "RenderInformation", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "RenderInformation"))
+          {
+            //only one type of tags may occur here, so if the handler exists
+            //it must be the correct one
+            if (!mpCurrentHandler)
+              mpCurrentHandler = new LocalRenderInformationElement(mParser, mCommon);
 
-        //only one type of tags may occur here, so if the handler exists
-        //it must be the correct one
-        if (!mpCurrentHandler)
-          mpCurrentHandler = new LocalRenderInformationElement(mParser, mCommon);
+            mParser.pushElementHandler(mpCurrentHandler);
+            mpCurrentHandler->start(pszName, papszAttrs);
+          }
 
-        mParser.pushElementHandler(mpCurrentHandler);
-        mpCurrentHandler->start(pszName, papszAttrs);
         break;
 
       default:
@@ -13755,20 +13663,19 @@ void CCopasiXMLParser::ListOfGradientDefinitionsElement::start(const XML_Char * 
           {
             if (!mpCurrentHandler)
               mpCurrentHandler = new RadialGradientElement(mParser, mCommon);
+
+            mParser.pushElementHandler(mpCurrentHandler);
+            mpCurrentHandler->start(pszName, papszAttrs);
           }
         else if (!strcmp(pszName, "LinearGradient"))
           {
             if (!mpCurrentHandler)
               mpCurrentHandler = new LinearGradientElement(mParser, mCommon);
-          }
-        else
-          {
-            CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                           pszName, "???", mParser.getCurrentLineNumber());
+
+            mParser.pushElementHandler(mpCurrentHandler);
+            mpCurrentHandler->start(pszName, papszAttrs);
           }
 
-        mParser.pushElementHandler(mpCurrentHandler);
-        mpCurrentHandler->start(pszName, papszAttrs);
         break;
 
       default:
@@ -13855,19 +13762,15 @@ void CCopasiXMLParser::ListOfLineEndingsElement::start(const XML_Char * pszName,
 
       case LineEnding:
 
-        //only one type of tags may occur here, so we can throw an exception.
-        //No need to silently ignore unknown tags here.
-        if (strcmp(pszName, "LineEnding"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "LineEnding", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "LineEnding"))
+          {
+            if (!mpCurrentHandler)
+              mpCurrentHandler = new LineEndingElement(mParser, mCommon);
 
-        //only one type of tags may occur here, so if the handler exists
-        //it must be the correct one
-        if (!mpCurrentHandler)
-          mpCurrentHandler = new LineEndingElement(mParser, mCommon);
+            mParser.pushElementHandler(mpCurrentHandler);
+            mpCurrentHandler->start(pszName, papszAttrs);
+          }
 
-        mParser.pushElementHandler(mpCurrentHandler);
-        mpCurrentHandler->start(pszName, papszAttrs);
         break;
 
       default:
@@ -13954,19 +13857,15 @@ void CCopasiXMLParser::ListOfLocalStylesElement::start(const XML_Char * pszName,
 
       case LocalStyle:
 
-        //only one type of tags may occur here, so we can throw an exception.
-        //No need to silently ignore unknown tags here.
-        if (strcmp(pszName, "Style"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "Style", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "Style"))
+          {
+            if (!mpCurrentHandler)
+              mpCurrentHandler = new LocalStyleElement(mParser, mCommon);
 
-        //only one type of tags may occur here, so if the handler exists
-        //it must be the correct one
-        if (!mpCurrentHandler)
-          mpCurrentHandler = new LocalStyleElement(mParser, mCommon);
+            mParser.pushElementHandler(mpCurrentHandler);
+            mpCurrentHandler->start(pszName, papszAttrs);
+          }
 
-        mParser.pushElementHandler(mpCurrentHandler);
-        mpCurrentHandler->start(pszName, papszAttrs);
         break;
 
       default:
@@ -14053,19 +13952,17 @@ void CCopasiXMLParser::ListOfGlobalStylesElement::start(const XML_Char * pszName
 
       case GlobalStyle:
 
-        //only one type of tags may occur here, so we can throw an exception.
-        //No need to silently ignore unknown tags here.
-        if (strcmp(pszName, "Style"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "Style", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "Style"))
+          {
+            //only one type of tags may occur here, so if the handler exists
+            //it must be the correct one
+            if (!mpCurrentHandler)
+              mpCurrentHandler = new GlobalStyleElement(mParser, mCommon);
 
-        //only one type of tags may occur here, so if the handler exists
-        //it must be the correct one
-        if (!mpCurrentHandler)
-          mpCurrentHandler = new GlobalStyleElement(mParser, mCommon);
+            mParser.pushElementHandler(mpCurrentHandler);
+            mpCurrentHandler->start(pszName, papszAttrs);
+          }
 
-        mParser.pushElementHandler(mpCurrentHandler);
-        mpCurrentHandler->start(pszName, papszAttrs);
         break;
 
       default:
@@ -14154,17 +14051,17 @@ void CCopasiXMLParser::ListOfCurveElementsElement::start(const XML_Char * pszNam
 
         //only one type of tags may occur here, so we can throw an exception.
         //No need to silently ignore unknown tags here.
-        if (strcmp(pszName, "Element"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "Element", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "Element"))
+          {
+            //only one type of tags may occur here, so if the handler exists
+            //it must be the correct one
+            if (!mpCurrentHandler)
+              mpCurrentHandler = new CurveElementElement(mParser, mCommon);
 
-        //only one type of tags may occur here, so if the handler exists
-        //it must be the correct one
-        if (!mpCurrentHandler)
-          mpCurrentHandler = new CurveElementElement(mParser, mCommon);
+            mParser.pushElementHandler(mpCurrentHandler);
+            mpCurrentHandler->start(pszName, papszAttrs);
+          }
 
-        mParser.pushElementHandler(mpCurrentHandler);
-        mpCurrentHandler->start(pszName, papszAttrs);
         break;
 
       default:
@@ -14598,24 +14495,24 @@ void CCopasiXMLParser::BoundingBoxElement::start(const XML_Char * pszName,
 
       case Position:
 
-        if (strcmp(pszName, "Position"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "Position", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "Position"))
+          {
+            X = mParser.getAttributeValue("x", papszAttrs);
+            Y = mParser.getAttributeValue("y", papszAttrs);
+            mCommon.pLineEnding->getBoundingBox()->setPosition(CLPoint(CCopasiXMLInterface::DBL(X), CCopasiXMLInterface::DBL(Y)));
+          }
 
-        X = mParser.getAttributeValue("x", papszAttrs);
-        Y = mParser.getAttributeValue("y", papszAttrs);
-        mCommon.pLineEnding->getBoundingBox()->setPosition(CLPoint(CCopasiXMLInterface::DBL(X), CCopasiXMLInterface::DBL(Y)));
         break;
 
       case Dimensions:
 
-        if (strcmp(pszName, "Dimensions"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "Dimensions", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "Dimensions"))
+          {
+            WIDTH = mParser.getAttributeValue("width", papszAttrs);
+            HEIGHT = mParser.getAttributeValue("height", papszAttrs);
+            mCommon.pLineEnding->getBoundingBox()->setDimensions(CLDimensions(CCopasiXMLInterface::DBL(WIDTH), CCopasiXMLInterface::DBL(HEIGHT)));
+          }
 
-        WIDTH = mParser.getAttributeValue("width", papszAttrs);
-        HEIGHT = mParser.getAttributeValue("height", papszAttrs);
-        mCommon.pLineEnding->getBoundingBox()->setDimensions(CLDimensions(CCopasiXMLInterface::DBL(WIDTH), CCopasiXMLInterface::DBL(HEIGHT)));
         break;
 
       default:
