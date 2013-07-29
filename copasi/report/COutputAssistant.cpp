@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <sstream>
 
@@ -288,7 +288,7 @@ bool COutputAssistant::initialize()
 
   //empty plot
   tmp.first = 998;
-  tmp.second.name = "Empty";
+  tmp.second.name = "Create New";
   tmp.second.description = "A plot with nothing in it.";
   tmp.second.isPlot = true;
   tmp.second.mTaskType = CCopasiTask::unset;
@@ -567,7 +567,7 @@ bool COutputAssistant::initialize()
   mMap.insert(tmp);
 
   tmp.first = 1999;
-  tmp.second.name = "Empty";
+  tmp.second.name = "Create New";
   tmp.second.description = "A table with nothing in it.";
   tmp.second.isPlot = false; //report
   tmp.second.mTaskType = CCopasiTask::unset;
