@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -288,7 +288,7 @@ bool COutputAssistant::initialize()
 
   //empty plot
   tmp.first = 998;
-  tmp.second.name = "Empty";
+  tmp.second.name = "Create New";
   tmp.second.description = "A plot with nothing in it.";
   tmp.second.isPlot = true;
   tmp.second.mTaskType = CCopasiTask::unset;
@@ -567,7 +567,7 @@ bool COutputAssistant::initialize()
   mMap.insert(tmp);
 
   tmp.first = 1999;
-  tmp.second.name = "Empty";
+  tmp.second.name = "Create New";
   tmp.second.description = "A table with nothing in it.";
   tmp.second.isPlot = false; //report
   tmp.second.mTaskType = CCopasiTask::unset;
