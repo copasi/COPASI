@@ -136,6 +136,7 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
   CKeyFactory* kf = CCopasiRootContainer::getKeyFactory();
 
   std::map< std::string, std::string >::const_iterator it = NameMap.begin();
+  std::map< std::string, std::string > reverse_map;
 
   while (it != NameMap.end())
     {
@@ -144,27 +145,27 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
 
       if (startsWith(abbrev, "p["))
         {
-          printNameForKey(p_names, kf, key);
+          reverse_map[abbrev] = key;
           ++numP;
         }
       else if (startsWith(abbrev, "x["))
         {
-          printNameForKey(x_names, kf, key);
+          reverse_map[abbrev] = key;
           ++numX;
         }
       else if (startsWith(abbrev, "y["))
         {
-          printNameForKey(y_names, kf, key);
+          reverse_map[abbrev] = key;
           ++numY;
         }
       else if (startsWith(abbrev, "dx["))
         {
-          printNameForKey(dx_names, kf, key);
+          reverse_map[abbrev] = key;
           ++numDX;
         }
       else if (startsWith(abbrev, "ct["))
         {
-          printNameForKey(ct_names, kf, key);
+          reverse_map[abbrev] = key;
           ++numCT;
         }
       else if (startsWith(abbrev, "x_c["))
@@ -173,11 +174,11 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
 
           if (obj != NULL)
             {
-              xc_names << "\"" << obj->getObjectName() << "\", ";
+              reverse_map[abbrev] = obj->getObjectName();
             }
           else
             {
-              xc_names << "\"" << key << "\", ";
+              reverse_map[abbrev] = key;
             }
 
           ++numXC;
@@ -188,17 +189,59 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
 
           if (obj != NULL)
             {
-              yc_names << "\"" << obj->getObjectName() << "\", ";
+              reverse_map[abbrev] = obj->getObjectName();
             }
           else
             {
-              yc_names << "\"" << key << "\", ";
+              reverse_map[abbrev] = key;
             }
 
           ++numYC;
         }
 
       ++it;
+    }
+
+  for (size_t i = 0; i < numP; ++i)
+    {
+      std::stringstream str; str << "p[" << i << "]";
+      printNameForKey(p_names, kf, reverse_map[str.str()]);
+    }
+
+  for (size_t i = 0; i < numX; ++i)
+    {
+      std::stringstream str; str << "x[" << i << "]";
+      printNameForKey(p_names, kf, reverse_map[str.str()]);
+    }
+
+  for (size_t i = 0; i < numY; ++i)
+    {
+      std::stringstream str; str << "y[" << i << "]";
+      printNameForKey(p_names, kf, reverse_map[str.str()]);
+    }
+
+  for (size_t i = 0; i < numDX; ++i)
+    {
+      std::stringstream str; str << "dx[" << i << "]";
+      printNameForKey(p_names, kf, reverse_map[str.str()]);
+    }
+
+  for (size_t i = 0; i < numCT; ++i)
+    {
+      std::stringstream str; str << "ct[" << i << "]";
+      printNameForKey(p_names, kf, reverse_map[str.str()]);
+    }
+
+  for (size_t i = 0; i < numXC; ++i)
+    {
+      std::stringstream str; str << "x_c[" << i << "]";
+      xc_names << "\"" << reverse_map[str.str()] << "\", ";
+    }
+
+  for (size_t i = 0; i < numYC; ++i)
+    {
+      std::stringstream str; str << "y_c[" << i << "]";
+      xc_names << "\"" << reverse_map[str.str()] << "\", ";
     }
 
   os << "#ifdef SIZE_DEFINITIONS" << std::endl;
