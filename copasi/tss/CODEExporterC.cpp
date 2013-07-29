@@ -211,25 +211,25 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
   for (size_t i = 0; i < numX; ++i)
     {
       std::stringstream str; str << "x[" << i << "]";
-      printNameForKey(p_names, kf, reverse_map[str.str()]);
+      printNameForKey(x_names, kf, reverse_map[str.str()]);
     }
 
   for (size_t i = 0; i < numY; ++i)
     {
       std::stringstream str; str << "y[" << i << "]";
-      printNameForKey(p_names, kf, reverse_map[str.str()]);
+      printNameForKey(y_names, kf, reverse_map[str.str()]);
     }
 
   for (size_t i = 0; i < numDX; ++i)
     {
       std::stringstream str; str << "dx[" << i << "]";
-      printNameForKey(p_names, kf, reverse_map[str.str()]);
+      printNameForKey(dx_names, kf, reverse_map[str.str()]);
     }
 
   for (size_t i = 0; i < numCT; ++i)
     {
       std::stringstream str; str << "ct[" << i << "]";
-      printNameForKey(p_names, kf, reverse_map[str.str()]);
+      printNameForKey(ct_names, kf, reverse_map[str.str()]);
     }
 
   for (size_t i = 0; i < numXC; ++i)
@@ -241,7 +241,7 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
   for (size_t i = 0; i < numYC; ++i)
     {
       std::stringstream str; str << "y_c[" << i << "]";
-      xc_names << "\"" << reverse_map[str.str()] << "\", ";
+      yc_names << "\"" << reverse_map[str.str()] << "\", ";
     }
 
   os << "#ifdef SIZE_DEFINITIONS" << std::endl;
