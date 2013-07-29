@@ -95,6 +95,7 @@ public slots:
   //TODO SEDML
 #ifdef COPASI_SEDML
   void importSEDMLFinished();
+  void exportSEDMLFinished();
   void importSEDMLFromStringFinished();
   void exportSEDMLToStringFinished();
 #endif

@@ -82,17 +82,17 @@ public:
 	/**
 	 * Creates the Tasks for SEDML.
 	 */
-	void createTasks(CCopasiDataModel& dataModel);
+	void createTasks(CCopasiDataModel& dataModel, std::string & simRef, std::string & modelRef);
 
 	/**
 	 * Creates the data generators for SEDML.
 	 */
-	void createDataGenerators(CCopasiDataModel & dataModel);
+	void createDataGenerators(CCopasiDataModel & dataModel, std::string & taskId);
 
 	/**
 	 * Creates the Tasks for SEDML.
 	 */
-	void createReports(CCopasiDataModel &dataModel);
+	//void createReports(CCopasiDataModel &dataModel);
 
 
 };

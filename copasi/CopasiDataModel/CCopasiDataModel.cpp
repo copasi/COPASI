@@ -19,6 +19,7 @@
 #ifdef COPASI_SEDML
 #include <sedml/SedDocument.h>
 #include "sedml/SEDMLImporter.h"
+#include "sedml/CSEDMLExporter.h"
 #include "trajectory/CTrajectoryProblem.h"
 #include "trajectory/CTrajectoryTask.h"
 #endif
@@ -1226,9 +1227,22 @@ std::string CCopasiDataModel::exportSEDMLToString(CProcessReport* pExportHandler
       CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(), CCopasiMessage::getAllMessageText().c_str());
       return "";
     }
-  std::string str = "TODO"; // exporter.exportModelToString(*this, sedmlLevel, sedmlVersion);
 
-  return str;
+  CSEDMLExporter exporter;
+ //  exporter.setExportCOPASIMIRIAM(exportCOPASIMIRIAM);
+
+  std::string sbmlDocument = "";
+  std::string str = exporter.exportModelAndTasksToString(*this, sbmlDocument, sedmlLevel, sedmlVersion);
+std::cout<<"sedml: "<<str<<std::endl;
+
+  // if we have saved the original SEDML model somewhere
+	// we have to reset it
+	if (pOrigSEDMLDocument != NULL)
+	{
+		mData.pCurrentSEDMLDocument = pOrigSEDMLDocument;
+	}
+
+		return str;
 }
 
 void CCopasiDataModel::updateTaskList(const CCopasiTask::Type & taskType, CCopasiTask *upTask)
@@ -1309,6 +1323,15 @@ bool CCopasiDataModel::exportSEDML(const std::string & fileName, bool overwriteF
       CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(), CCopasiMessage::getAllMessageText().c_str());
       return false;
     }
+
+
+  CSEDMLExporter exporter;
+  // exporter.setExportCOPASIMIRIAM(exportCOPASIMIRIAM);
+   SedDocument* pOrigSEDMLDocument = NULL;
+
+   //exporter.setExportHandler(pExportHandler);
+//   if (!exporter.exportModelAndTasks(*this, FileName, sedmlLevel, sedmlVersion, overwriteFile)) return false;
+
   return true;
 }
 #endif

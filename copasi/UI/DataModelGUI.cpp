@@ -918,6 +918,16 @@ void DataModelGUI::exportSEDML(const std::string & fileName, bool overwriteFile,
   mpThread->start();
 }
 
+void DataModelGUI::exportSEDMLFinished()
+{
+  if (mSuccess)
+    CCopasiRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(mFileName);
+
+  disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSEDMLFinished()));
+
+  threadFinished();
+}
+
 void DataModelGUI::exportSEDMLToString(std::string & sedmlDocumentText)
 {
   mpProgressBar = CProgressBar::create();
