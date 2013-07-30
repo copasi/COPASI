@@ -137,6 +137,7 @@ if(BUILD_GUI)
   include(MIRIAMUI/CMakeLists.txt)
   include(barChart/CMakeLists.txt)
   include(layoutUI/CMakeLists.txt)
+  include(qlayout/CMakeLists.txt)
   include(plotUI/CMakeLists.txt)
   include(tex/CMakeLists.txt)
   include(wizard/CMakeLists.txt)
@@ -226,7 +227,7 @@ MACRO (COPASI_QT4_WRAP_UI outfiles subdir )
 ENDMACRO (COPASI_QT4_WRAP_UI)
 
 foreach (dir
-  barChart layoutUI MIRIAMUI plotUI tex UI wizard
+  barChart layoutUI MIRIAMUI plotUI tex UI wizard qlayout
 )
 
   string(TOUPPER ${dir} suffix)

@@ -259,7 +259,14 @@ bool CLGraphicalObject::hasValidModelReference() const
           pParent = pParent->getObjectParent();
         }
 
-      assert(pDM2 != NULL);
+      //assert(pDM2 != NULL);
+      if (pDM1 != NULL && pDM2 == NULL)
+      {
+        // if we have been able to resolve the model reference, but
+        // don't have a datamodel parent, that is good enough
+        return true;
+      }
+
 
       if (pDM1 != NULL && pDM1 == pDM2)
         {
