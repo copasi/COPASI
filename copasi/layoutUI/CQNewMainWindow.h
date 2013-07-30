@@ -95,10 +95,13 @@ protected:
 
   void resetView();
 
+signals:
+
+  void layoutChanged();
+
 public slots:
   void slotLayoutChanged(int index);
 
-private slots:
   void slotResetView();
 
   /**

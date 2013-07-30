@@ -75,9 +75,17 @@
 #include "graph.xpm"
 #include "load_data.xpm"
 #ifdef COPASI_AUTOLAYOUT
+#include <QDockWidget>
 #include "layout_start.xpm"
 #include "layout_stop.xpm"
 #endif // COPASI_AUTOLAYOUT
+
+#include <QGraphicsView>
+#include <QPainter>
+#include <qlayout/qlayoutscene.h>
+#include <qlayout/qlayoutview.h>
+#include <layout/CLRenderResolver.h>
+
 
 const char* const CQNewMainWindow::ZOOM_FACTOR_STRINGS[] = {"1%", "2%", "3%", "4%", "5%", "10%", "20%", "25%", "30%", "40%", "50%", "75%", "100%", "150%", "200%", "300%", "400%", "500%", "1000%"};
 const double CQNewMainWindow::ZOOM_FACTORS[] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
@@ -156,6 +164,29 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   this->mpHighlightColorPixmap->fill(QColor((int)(c[0] * 255.0), (int)(c[1] * 255.0), (int)(c[2] * 255.0), (int)(c[3] * 255.0)));
   this->mpChangeColorAction->setIcon(QIcon(*this->mpHighlightColorPixmap));
 #endif // ELEMENTARY_MODE_DISPLAY
+
+  QDockWidget* pDockLayout = new QDockWidget("Layout View", this);
+  QLayoutScene *scene = new QLayoutScene( mpCurrentLayout );
+  CLRenderResolver* resolver = NULL;
+  CLLocalRenderInformation* local = dynamic_cast<CLLocalRenderInformation*>(mpCurrentRenderInformation);
+  if (local != NULL)
+    resolver = new CLRenderResolver(*local, mpCurrentLayout->getListOfLocalRenderInformationObjects(),   pDatamodel->getListOfLayouts()->getListOfGlobalRenderInformationObjects());    
+  else 
+    resolver = new CLRenderResolver(*dynamic_cast<CLGlobalRenderInformation*>(mpCurrentRenderInformation), pDatamodel->getListOfLayouts()->getListOfGlobalRenderInformationObjects());
+  scene->setResolver(resolver);
+  QGraphicsView *view = new QLayoutView( scene );
+  view->setInteractive(true);
+  view->setInteractive(true);
+  view->setRenderHints( QPainter::Antialiasing );
+  pDockLayout->setWidget(view);
+  pDockLayout->setFloating(true);
+  pDockLayout->hide();
+  connect(pDockLayout, SIGNAL(visibilityChanged(bool)), scene, SLOT(recreate()));
+  connect(this, SIGNAL(layoutChanged()), scene, SLOT(recreate()));
+  addDockWidget(Qt::NoDockWidgetArea, pDockLayout);
+  mpViewMenu->addSeparator();
+  mpViewMenu->addAction(pDockLayout->toggleViewAction());
+
 }
 
 QMenu *CQNewMainWindow::getWindowMenu() const
@@ -2145,6 +2176,8 @@ void CQNewMainWindow::randomizeLayout()
   
   placeTextGlyphs();
   delete mpRandom;
+  redrawNow();
+  emit layoutChanged();
 }
 
 void CQNewMainWindow::randomlyPlaceGlyphInCompartmentGlyph(CLGraphicalObject* pGl, const CLGraphicalObject* pContainer)
@@ -2235,6 +2268,8 @@ void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
             {
               pDispatcher->processEvents(QEventLoop::AllEvents);
             }
+
+          emit layoutChanged();
         }
 
       // redraw the layout
@@ -2252,6 +2287,7 @@ void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
   connect(this->mpStopLayoutAction, SIGNAL(triggered()), this, SLOT(slotRunSpringLayout()));
   this->mpStopLayoutAction->setIcon(QPixmap(layout_start_xpm));
   this->mpStopLayoutAction->setToolTip("Run Spring Layout Algorithm");
+  emit layoutChanged();
 }
 
 /**
