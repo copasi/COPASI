@@ -640,7 +640,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
             for (; it != end; ++it)
               {
-                std::string Name = (*it)->getObjectName();
+                std::string Name = (*it)->getModelObjectCN();
                 const CCopasiObject * pObject =
                   dynamic_cast< const CCopasiObject * >(pDataModel->getObject(Name));
 
@@ -776,7 +776,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
                 while (itItem != endItem)
                   {
-                    std::string Name = (*it++)->getObjectName();
+                    std::string Name = (*it++)->getModelObjectCN();
                     const CCopasiObject * pObject =
                       dynamic_cast< const CCopasiObject * >(pDataModel->getObject(Name));
 
@@ -851,7 +851,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
             for (; it != end; ++it)
               {
                 const CCopasiObject * pObject =
-                  dynamic_cast< const CCopasiObject * >(pDataModel->getObject((*it)->getObjectName()));
+                  dynamic_cast< const CCopasiObject * >(pDataModel->getObject((*it)->getModelObjectCN()));
 
                 if (pObject == NULL) continue;
 

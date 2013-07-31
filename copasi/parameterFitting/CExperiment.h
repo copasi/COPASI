@@ -39,6 +39,8 @@ public:
 
   virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
 
+  const std::string & getModelObjectCN() const;
+
   void setValues(const C_FLOAT64 & independent,
                  const C_FLOAT64 & measured,
                  const C_FLOAT64 & fitted,
@@ -49,6 +51,7 @@ private:
 
   // Attributes
 private:
+  CRegisteredObjectName mModelObjectCN;
   C_FLOAT64 mIndependentValue;
   C_FLOAT64 mMeasuredValue;
   C_FLOAT64 mFittedValue;
