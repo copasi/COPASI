@@ -1686,7 +1686,8 @@ void CExperiment::fixBuild55()
 
 CFittingPoint::CFittingPoint(const std::string & name,
                              const CCopasiContainer * pParent):
-  CCopasiContainer(name, pParent, "Fitted Point"),
+  CCopasiContainer("Fitting Point", pParent, "Fitted Point"),
+  mModelObjectCN(name),
   mIndependentValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mMeasuredValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mFittedValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
@@ -1696,6 +1697,7 @@ CFittingPoint::CFittingPoint(const std::string & name,
 CFittingPoint::CFittingPoint(const CFittingPoint & src,
                              const CCopasiContainer * pParent):
   CCopasiContainer(src, pParent),
+  mModelObjectCN(src.mModelObjectCN),
   mIndependentValue(src.mIndependentValue),
   mMeasuredValue(src.mMeasuredValue),
   mFittedValue(src.mFittedValue),
@@ -1714,7 +1716,7 @@ std::string CFittingPoint::getObjectDisplayName(bool regular, bool richtext) con
       return CCopasiContainer::getObjectDisplayName(regular, richtext);
     }
 
-  const CCopasiObject * pObject = dynamic_cast< const CCopasiObject * >(pDataModel->getObject(this->getObjectName()));
+  const CCopasiObject * pObject = dynamic_cast< const CCopasiObject * >(pDataModel->getObject(mModelObjectCN));
 
   if (pObject == NULL)
     {
@@ -1722,6 +1724,11 @@ std::string CFittingPoint::getObjectDisplayName(bool regular, bool richtext) con
     }
 
   return pObject->getObjectDisplayName(regular, richtext);
+}
+
+const std::string & CFittingPoint::getModelObjectCN() const
+{
+  return mModelObjectCN;
 }
 
 void CFittingPoint::setValues(const C_FLOAT64 & independent,
