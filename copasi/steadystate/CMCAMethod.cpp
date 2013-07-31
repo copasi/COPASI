@@ -308,12 +308,12 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
   // C := alpha A B + beta C
 
   aux1 = mUnscaledElasticities;
-  dgemm_(&T, &T, &M, &N, &K, &Alpha, const_cast< C_FLOAT64 * >(mLinkZero.getLinkZero().array()), &M,
+  dgemm_(&T, &T, &M, &N, &K, &Alpha, const_cast< C_FLOAT64 * >(mLinkZero.array()), &M,
          mUnscaledElasticities.array() + M, &LD, &Beta, aux1.array(), &LD);
 
   // Implementation without dgemm to avoid column swaps in aux1 and mUnscaledElasticities
   const CVector< size_t > & p = mLinkZero.getRowPivots();
-  const CMatrix< C_FLOAT64 > L0 = mLinkZero.getLinkZero();
+  const CMatrix< C_FLOAT64 > L0 = mLinkZero;
 
   CMatrix< C_FLOAT64 > a1(N, LD);
 

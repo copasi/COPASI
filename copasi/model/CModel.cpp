@@ -784,47 +784,35 @@ bool CModel::handleUnusedMetabolites()
 
 void CModel::buildRedStoi()
 {
-  size_t i;
-  size_t numCols = mStoi.numCols();
+  mRedStoi = mStoi;
+  mL.applyRowPivot(mRedStoi);
+  mRedStoi.resize(mNumMetabolitesReactionIndependent, mRedStoi.numCols());
 
-  mRedStoi.resize(mNumMetabolitesReactionIndependent, numCols);
-  mStoiReordered.resize(mStoi.numRows(), numCols);
+  // The first metabolites are determined by ODEs we therefore cannot simply
+  // apply the pivot.
 
-  C_FLOAT64 * pRedStoi = mRedStoi.array();
-  C_FLOAT64 * pStoiReordered = mStoiReordered.array();
-  size_t * pRow = mRowLU.array();
-
-  // Create a temporary copy of the metabolites determined by reactions to reorder them
-  // accordingly.
+  // Create a temporary copy of metabolites determined by reactions.
+  CVector< CMetab * > ReactionMetabolites(mNumMetabolitesReaction);
+  CMetab ** ppMetab = ReactionMetabolites.array();
+  CMetab ** ppMetabEnd = ppMetab + mNumMetabolitesReaction;
   CCopasiVector< CMetab >::iterator itMetabX = mMetabolitesX.begin() + mNumMetabolitesODE;
-  CCopasiVector< CMetab >::iterator endMetabX = itMetabX + mNumMetabolitesReaction;
-  std::vector< CMetab * > MetabolitesReaction;
-  MetabolitesReaction.resize(mNumMetabolitesReaction);
-  std::vector< CMetab * >::iterator itMetabolitesReaction = MetabolitesReaction.begin();
 
-  for (; itMetabX != endMetabX; ++itMetabX, ++itMetabolitesReaction)
-    *itMetabolitesReaction = *itMetabX;
+  for (; ppMetab != ppMetabEnd; ++ppMetab, ++itMetabX)
+    {
+      *ppMetab = *itMetabX;
+    }
 
-  /* just have to swap rows */
+  // Apply the pivot on the temporary copy
+  mL.applyRowPivot(ReactionMetabolites);
+
+  // Map the result on the actual metabolites
+  ppMetab = ReactionMetabolites.array();
   itMetabX = mMetabolitesX.begin() + mNumMetabolitesODE;
 
-  for (i = 0; i < mNumMetabolitesReactionIndependent; i++, pRow++, pRedStoi += numCols, pStoiReordered += numCols, itMetabX++)
+  for (; ppMetab != ppMetabEnd; ++ppMetab, ++itMetabX)
     {
-      memcpy(pRedStoi, mStoi[*pRow], sizeof(C_FLOAT64) * numCols);
-      memcpy(pStoiReordered, mStoi[*pRow], sizeof(C_FLOAT64) * numCols);
-      *itMetabX = MetabolitesReaction[*pRow];
+      *itMetabX = *ppMetab;
     }
-
-  for (; i < mNumMetabolitesReaction; i++, pRow++, pStoiReordered += numCols, itMetabX++)
-    {
-      memcpy(pStoiReordered, mStoi[*pRow], sizeof(C_FLOAT64) * numCols);
-      *itMetabX = MetabolitesReaction[*pRow];
-    }
-
-#ifdef DEBUG_MATRIX
-  DebugFile << "Reduced Stoichiometry Matrix" << std::endl;
-  DebugFile << mRedStoi << std::endl;
-#endif
 
   return;
 }
@@ -1133,7 +1121,7 @@ const CMatrix < C_FLOAT64 >& CModel::getStoiReordered() const
 const CCopasiVector < CMoiety > & CModel::getMoieties() const
 {return mMoieties;}
 
-const CModel::CLinkMatrixView & CModel::getL() const
+const CLinkMatrixView & CModel::getL() const
 {CCHECK return mLView;}
 
 const CMatrix< C_FLOAT64 > & CModel::getL0() const
@@ -1159,9 +1147,6 @@ void CModel::setTime(const C_FLOAT64 & time)
 
 const C_FLOAT64 & CModel::getTime() const
 {return *mpValue;}
-
-const CVector<size_t> & CModel::getMetabolitePermutation() const
-{CCHECK return mRowLU;}
 
 //**********************************************************************
 
@@ -3420,55 +3405,6 @@ bool CModel::hasReversibleReaction() const
   return false;
 }
 
-//**********************************************************************
-//                   CLinkMatrixView
-//**********************************************************************
-
-const CModel::CLinkMatrixView::elementType CModel::CLinkMatrixView::mZero = 0.0;
-const CModel::CLinkMatrixView::elementType CModel::CLinkMatrixView::mUnit = 1.0;
-
-CModel::CLinkMatrixView::CLinkMatrixView(const CMatrix< C_FLOAT64 > & A,
-    const size_t & numIndependent):
-  mA(A),
-  mNumIndependent(numIndependent)
-{CONSTRUCTOR_TRACE;}
-
-CModel::CLinkMatrixView::~CLinkMatrixView()
-{DESTRUCTOR_TRACE;}
-
-CModel::CLinkMatrixView &
-CModel::CLinkMatrixView::operator = (const CModel::CLinkMatrixView & rhs)
-{
-  const_cast< CMatrix< C_FLOAT64 > &>(mA) = rhs.mA;
-  const_cast< size_t & >(mNumIndependent) = rhs.mNumIndependent;
-
-  return *this;
-}
-
-size_t CModel::CLinkMatrixView::numRows() const
-{return mNumIndependent + mA.numRows();}
-
-size_t CModel::CLinkMatrixView::numCols() const
-{return mA.numCols();}
-
-std::ostream &operator<<(std::ostream &os,
-                         const CModel::CLinkMatrixView & A)
-{
-  size_t i, imax = A.numRows();
-  size_t j, jmax = A.numCols();
-  os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
-
-  for (i = 0; i < imax; i++)
-    {
-      for (j = 0; j < jmax; j++)
-        os << "\t" << A(i, j);
-
-      os << std::endl;
-    }
-
-  return os;
-}
-
 std::string CModel::suitableForStochasticSimulation() const
 {
   size_t i, reactSize = mSteps.size();
@@ -3516,264 +3452,10 @@ void CModel::check() const
 
 void CModel::buildLinkZero()
 {
-  // Prior to a call to buildLinkZero the stoichiometry matrix mStoi must
-  // have been constructed.
-
-  mRedStoi = mStoi;
-
-  C_INT NumReactions = (C_INT) mRedStoi.numCols();
-  C_INT NumSpecies = (C_INT) mRedStoi.numRows();
-  C_INT LDA = std::max<C_INT>(1, NumReactions);
-
-  CVector< C_INT > JPVT(NumSpecies);
-  JPVT = 0;
-
-  C_INT32 Dim = std::min(NumReactions, NumSpecies);
-
-  if (Dim == 0)
-    {
-      C_INT32 i;
-      mRowLU.resize(NumSpecies);
-
-      for (i = 0; i < NumSpecies; i++)
-        mRowLU[i] = i;
-
-      mNumMetabolitesReactionIndependent = 0;
-      mL.resize(NumSpecies - 0, 0);
-
-      return;
-    }
-
-  CVector< C_FLOAT64 > TAU(Dim);
-
-  CVector< C_FLOAT64 > WORK(1);
-  C_INT LWORK = -1;
-  C_INT INFO;
-
-  // QR factorization of the stoichiometry matrix
-  /*
-   *  -- LAPACK routine (version 3.0) --
-   *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-   *     Courant Institute, Argonne National Lab, and Rice University
-   *     June 30, 1999
-   *
-   *  Purpose
-   *  =======
-   *
-   *  DGEQP3 computes a QR factorization with column pivoting of a
-   *  matrix A:  A*P = Q*R  using Level 3 BLAS.
-   *
-   *  Arguments
-   *  =========
-   *
-   *  M       (input) INTEGER
-   *          The number of rows of the matrix A. M >= 0.
-   *
-   *  N       (input) INTEGER
-   *          The number of columns of the matrix A.  N >= 0.
-   *
-   *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
-   *          On entry, the M-by-N matrix A.
-   *          On exit, the upper triangle of the array contains the
-   *          min(M,N)-by-N upper trapezoidal matrix R; the elements below
-   *          the diagonal, together with the array TAU, represent the
-   *          orthogonal matrix Q as a product of min(M,N) elementary
-   *          reflectors.
-   *
-   *  LDA     (input) INTEGER
-   *          The leading dimension of the array A. LDA >= max(1,M).
-   *
-   *  JPVT    (input/output) INTEGER array, dimension (N)
-   *          On entry, if JPVT(J).ne.0, the J-th column of A is permuted
-   *          to the front of A*P (a leading column); if JPVT(J)=0,
-   *          the J-th column of A is a free column.
-   *          On exit, if JPVT(J)=K, then the J-th column of A*P was the
-   *          the K-th column of A.
-   *
-   *  TAU     (output) DOUBLE PRECISION array, dimension (min(M,N))
-   *          The scalar factors of the elementary reflectors.
-   *
-   *  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
-   *          On exit, if INFO=0, WORK(1) returns the optimal LWORK.
-   *
-   *  LWORK   (input) INTEGER
-   *          The dimension of the array WORK. LWORK >= 3*N+1.
-   *          For optimal performance LWORK >= 2*N+(N+1)*NB, where NB
-   *          is the optimal blocksize.
-   *
-   *          If LWORK = -1, then a workspace query is assumed; the routine
-   *          only calculates the optimal size of the WORK array, returns
-   *          this value as the first entry of the WORK array, and no error
-   *          message related to LWORK is issued by XERBLA.
-   *
-   *  INFO    (output) INTEGER
-   *          = 0: successful exit.
-   *          < 0: if INFO = -i, the i-th argument had an illegal value.
-   *
-   *  Further Details
-   *  ===============
-   *
-   *  The matrix Q is represented as a product of elementary reflectors
-   *
-   *     Q = H(1) H(2) . . . H(k), where k = min(m,n).
-   *
-   *  Each H(i) has the form
-   *
-   *     H(i) = I - tau * v * v'
-   *
-   *  where tau is a real/complex scalar, and v is a real/complex vector
-   *  with v(1:i-1) = 0 and v(i) = 1; v(i+1:m) is stored on exit in
-   *  A(i+1:m,i), and tau in TAU(i).
-   *
-   *  Based on contributions by
-   *    G. Quintana-Orti, Depto. de Informatica, Universidad Jaime I, Spain
-   *    X. Sun, Computer Science Dept., Duke University, USA
-   *
-   */
-
-#ifdef DEBUG_MATRIX
-  DebugFile << CTransposeView< CMatrix< C_FLOAT64 > >(mRedStoi) << std::endl;
-#endif
-
-  dgeqp3_(&NumReactions, &NumSpecies, mRedStoi.array(), &LDA,
-          JPVT.array(), TAU.array(), WORK.array(), &LWORK, &INFO);
-
-  if (INFO < 0) fatalError();
-
-  LWORK = (C_INT) WORK[0];
-  WORK.resize(LWORK);
-
-  dgeqp3_(&NumReactions, &NumSpecies, mRedStoi.array(), &LDA,
-          JPVT.array(), TAU.array(), WORK.array(), &LWORK, &INFO);
-
-  if (INFO < 0) fatalError();
-
-  C_INT32 i;
-  mRowLU.resize(NumSpecies);
-
-  for (i = 0; i < NumSpecies; i++)
-    mRowLU[i] = JPVT[i] - 1;
-
-#ifdef DEBUG_MATRIX
-  DebugFile << "QR Factorization:" << std::endl;
-  DebugFile << "Row permutation:\t" << mRowLU << std::endl;
-  DebugFile << CTransposeView< CMatrix< C_FLOAT64 > >(mRedStoi) << std::endl;
-#endif
-
-  C_INT independent = 0;
-
-  while (independent < Dim &&
-         fabs(mRedStoi(independent, independent)) > 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()) independent++;
-
-  // Resize mL
-  mNumMetabolitesReactionIndependent = independent;
-  mL.resize(NumSpecies - independent, independent);
-
-  if (NumSpecies == independent || independent == 0) return;
-
-  /* to take care of differences between fortran's and c's memory  access,
-     we need to take the transpose, i.e.,the upper triangular */
-  char cL = 'U';
-  char cU = 'N'; /* values in the diagonal of R */
-
-  // Calculate Row Echelon form of R.
-  // First invert R_1,1
-  /* int dtrtri_(char *uplo,
-   *             char *diag,
-   *             integer *n,
-   *             doublereal * A,
-   *             integer *lda,
-   *             integer *info);
-   *  -- LAPACK routine (version 3.0) --
-   *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-   *     Courant Institute, Argonne National Lab, and Rice University
-   *     March 31, 1993
-   *
-   *  Purpose
-   *  =======
-   *
-   *  DTRTRI computes the inverse of a real upper or lower triangular
-   *  matrix A.
-   *
-   *  This is the Level 3 BLAS version of the algorithm.
-   *
-   *  Arguments
-   *  =========
-   *
-   *  uplo    (input) CHARACTER*1
-   *          = 'U':  A is upper triangular;
-   *          = 'L':  A is lower triangular.
-   *
-   *  diag    (input) CHARACTER*1
-   *          = 'N':  A is non-unit triangular;
-   *          = 'U':  A is unit triangular.
-   *
-   *  n       (input) INTEGER
-   *          The order of the matrix A.  n >= 0.
-   *
-   *  A       (input/output) DOUBLE PRECISION array, dimension (lda,n)
-   *          On entry, the triangular matrix A.  If uplo = 'U', the
-   *          leading n-by-n upper triangular part of the array A contains
-   *          the upper triangular matrix, and the strictly lower
-   *          triangular part of A is not referenced.  If uplo = 'L', the
-   *          leading n-by-n lower triangular part of the array A contains
-   *          the lower triangular matrix, and the strictly upper
-   *          triangular part of A is not referenced.  If diag = 'U', the
-   *          diagonal elements of A are also not referenced and are
-   *          assumed to be 1.
-   *          On exit, the (triangular) inverse of the original matrix, in
-   *          the same storage format.
-   *
-   *  lda     (input) INTEGER
-   *          The leading dimension of the array A.  lda >= max(1,n).
-   *
-   *  info    (output) INTEGER
-   *          = 0: successful exit
-   *          < 0: if info = -i, the i-th argument had an illegal value
-   *          > 0: if info = i, A(i,i) is exactly zero.  The triangular
-   *               matrix is singular and its inverse can not be computed.
-   */
-  dtrtri_(&cL, &cU, &independent, mRedStoi.array(), &LDA, &INFO);
-
-  if (INFO < 0) fatalError();
-
-#ifdef DEBUG_MATRIX
-  DebugFile << "Invert R_1,1:" << std::endl;
-  DebugFile << CTransposeView< CMatrix< C_FLOAT64 > >(mRedStoi) << std::endl;
-#endif
-
-  C_INT32 j, k;
-
-  // Compute Link_0 = inverse(R_1,1) * R_1,2
-  // :TODO: Use dgemm
-  C_FLOAT64 * pTmp1 = &mL(0, 0);
-  C_FLOAT64 * pTmp2;
-  C_FLOAT64 * pTmp3;
-
-  for (j = 0; j < NumSpecies - independent; j++)
-    for (i = 0; i < independent; i++, pTmp1++)
-      {
-        pTmp2 = &mRedStoi(j + independent, i);
-        pTmp3 = &mRedStoi(i, i);
-
-        // assert(&mL(j, i) == pTmp3);
-        *pTmp1 = 0.0;
-
-        for (k = i; k < independent; k++, pTmp2++, pTmp3 += NumReactions)
-          {
-            // assert(&mRedStoi(j + independent, k) == pTmp2);
-            // assert(&mRedStoi(k, i) == pTmp3);
-
-            *pTmp1 += *pTmp3 * *pTmp2;
-          }
-
-        if (fabs(*pTmp1) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()) *pTmp1 = 0.0;
-      }
-
-#ifdef DEBUG_MATRIX
-  DebugFile << "Link Zero Matrix:" << std::endl;
-  DebugFile << mL << std::endl;
-#endif // DEBUG_MATRIX
+  mL.build(mStoi);
+  mNumMetabolitesReactionIndependent = mL.getNumIndependent();
+  mStoiReordered = mStoi;
+  mL.applyRowPivot(mStoiReordered);
 
   return;
 }

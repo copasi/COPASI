@@ -31,6 +31,7 @@
 
 #include "copasi/utilities/CVector.h"
 #include "copasi/utilities/CMatrix.h"
+#include "copasi/utilities/CLinkMatrix.h"
 #include "copasi/report/CCopasiContainer.h"
 
 #include "copasi/math/CMathTrigger.h"
@@ -113,79 +114,6 @@ public:
    * String representation of the valid model types.
    */
   static const char * ModelTypeNames[];
-
-  //Attributes
-public:
-  class CLinkMatrixView
-  {
-  public:
-    typedef C_FLOAT64 elementType;
-
-  private:
-    const CMatrix< C_FLOAT64 > & mA;
-    const size_t & mNumIndependent;
-    static const elementType mZero;
-    static const elementType mUnit;
-
-  public:
-    /**
-     * Default constructor
-     * @param const CMatrix< C_FLOAT64 > & A
-     * @param const size_t & mNumIndependent
-     */
-    CLinkMatrixView(const CMatrix< C_FLOAT64 > & A,
-                    const size_t & numIndependent);
-
-    /**
-     * Destructor.
-     */
-    ~CLinkMatrixView();
-
-    /**
-     * Assignment operator
-     * @param const CLinkMatrixView & rhs
-     * @return CLinkMatrixView & lhs
-     */
-    CLinkMatrixView & operator = (const CLinkMatrixView & rhs);
-
-    /**
-     * The number of rows of the matrix.
-     * @return size_t rows
-     */
-    size_t numRows() const;
-
-    /**
-     * The number of columns of the matrix
-     * @return size_t cols
-     */
-    size_t numCols() const;
-
-    /**
-     * Retrieve a matrix element  using the c-style indexing.
-     * @param const size_t & row
-     * @param const size_t & col
-     * @return elementType & element
-     */
-    inline elementType & operator()(const size_t & row,
-                                    const size_t & col) const
-    {
-      if (row >= mNumIndependent)
-        return const_cast< elementType & >(mA(row - mNumIndependent, col));
-      else if (row != col)
-        return * const_cast< elementType * >(&mZero);
-      else
-        return * const_cast< elementType * >(&mUnit);
-    }
-
-    /**
-     * Output stream operator
-     * @param ostream & os
-     * @param const CLinkMatrixView & A
-     * @return ostream & os
-     */
-    friend std::ostream &operator<<(std::ostream &os,
-                                    const CLinkMatrixView & A);
-  };
 
 private:
   /**
@@ -1026,12 +954,6 @@ public:
   //*************************
 
   /**
-   * Retrieve the metabolite permutation vector
-   * @return CVector< size_t > & permutation
-   */
-  const CVector< size_t > & getMetabolitePermutation() const;
-
-  /**
    * Retrieve the state template
    * @return const CModel::CStateTemplate & stateTemplate
    */
@@ -1419,7 +1341,7 @@ private:
   /**
    * Vector for storing the row interchanges during LU-Decomposition
    */
-  CVector< size_t > mRowLU;
+  // CVector< size_t > mRowLU;
 
   /**
    * Vector for storing the row and column interchanges needed to calculate
@@ -1456,7 +1378,7 @@ private:
   /**
    *   This matrix stores L
    */
-  CMatrix < C_FLOAT64 > mL;
+  CLinkMatrix mL;
 
   /**
    * Column and Row Annotation for the Link Matrix

@@ -781,7 +781,7 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
 {
 
   const CCopasiVector< CMetab > & metabs = copasiModel->getMetabolitesX();
-  const CModel::CLinkMatrixView & L = copasiModel->getL();
+  const CLinkMatrixView & L = copasiModel->getL();
 
   size_t metabs_size = metabs.size();
   size_t indep_size = copasiModel->getNumIndependentReactionMetabs();

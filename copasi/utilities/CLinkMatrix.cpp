@@ -9,24 +9,21 @@
 
 #include "CLinkMatrix.h"
 
+#include "CCopasiVector.h"
+
 #include "blaswrap.h"
 #include "clapackwrap.h"
 
 #define DEBUG_MATRIX
 
 CLinkMatrix::CLinkMatrix():
-  mL0(),
+  CMatrix< C_FLOAT64 >(),
   mRowPivots(),
   mIndependent(0)
 {}
 
 CLinkMatrix::~CLinkMatrix()
 {}
-
-const CMatrix< C_FLOAT64 > & CLinkMatrix::getLinkZero() const
-{
-  return mL0;
-}
 
 const CVector< size_t > & CLinkMatrix::getRowPivots() const
 {
@@ -56,7 +53,7 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix)
       for (i = 0; i < NumRows; i++)
         mRowPivots[i] = i;
 
-      mL0.resize(NumRows - 0, 0);
+      resize(NumRows, 0);
 
       return success;
     }
@@ -185,7 +182,7 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix)
   mIndependent = independent;
 
   // Resize mL
-  mL0.resize(NumRows - independent, independent);
+  resize(NumRows - independent, independent);
 
   if (NumRows == independent || independent == 0)
     {
@@ -267,7 +264,7 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix)
 
   // Compute Link_0 = inverse(R_1,1) * R_1,2
   // :TODO: Use dgemm
-  C_FLOAT64 * pTmp1 = mL0.array();
+  C_FLOAT64 * pTmp1 = array();
   C_FLOAT64 * pTmp2;
   C_FLOAT64 * pTmp3;
 
@@ -293,7 +290,7 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix)
 
 #ifdef DEBUG_MATRIX
   std::cout << "Link Zero Matrix:" << std::endl;
-  std::cout << mL0 << std::endl;
+  std::cout << *this << std::endl;
 #endif // DEBUG_MATRIX
 
   return success;
@@ -306,12 +303,12 @@ const size_t & CLinkMatrix::getNumIndependent() const
 
 const size_t & CLinkMatrix::getNumDependent() const
 {
-  return mL0.numRows();
+  return numRows();
 }
 
 bool CLinkMatrix::applyRowPivot(CMatrix< C_FLOAT64 > & matrix) const
 {
-  if (matrix.numRows() != mRowPivots.size())
+  if (matrix.numRows() < mRowPivots.size())
     {
       return false;
     }
@@ -354,46 +351,55 @@ bool CLinkMatrix::applyRowPivot(CMatrix< C_FLOAT64 > & matrix) const
   return true;
 }
 
-bool CLinkMatrix::applyRowPivot(CVectorCore< C_FLOAT64 > & vector) const
+//**********************************************************************
+//                   CLinkMatrixView
+//**********************************************************************
+
+const C_FLOAT64 CLinkMatrixView::mZero = 0.0;
+const C_FLOAT64 CLinkMatrixView::mUnit = 1.0;
+
+CLinkMatrixView::CLinkMatrixView(const CLinkMatrix & A,
+                                 const size_t & numIndependent):
+  mpA(&A),
+  mpNumIndependent(&numIndependent)
+{CONSTRUCTOR_TRACE;}
+
+CLinkMatrixView::~CLinkMatrixView()
+{DESTRUCTOR_TRACE;}
+
+CLinkMatrixView &
+CLinkMatrixView::operator = (const CLinkMatrixView & rhs)
 {
-  if (vector.size() != mRowPivots.size())
-    {
-      return false;
-    }
+  mpA = rhs.mpA;
+  mpNumIndependent = rhs.mpNumIndependent;
 
-  CVector< bool > Applied(mRowPivots.size());
-  Applied = false;
+  return *this;
+}
 
-  C_FLOAT64 Tmp;
+size_t CLinkMatrixView::numRows() const
+{
+  return *mpNumIndependent + mpA->numRows();
+}
 
-  size_t i, imax = mRowPivots.size();
-  size_t to;
-  size_t from;
+size_t CLinkMatrixView::numCols() const
+{
+  return mpA->numCols();
+}
+
+std::ostream &operator<<(std::ostream &os,
+                         const CLinkMatrixView & A)
+{
+  size_t i, imax = A.numRows();
+  size_t j, jmax = A.numCols();
+  os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
 
   for (i = 0; i < imax; i++)
-    if (!Applied[i])
-      {
-        to = i;
-        from = mRowPivots[to];
+    {
+      for (j = 0; j < jmax; j++)
+        os << "\t" << A(i, j);
 
-        if (from != i)
-          {
-            Tmp = vector[to];
+      os << std::endl;
+    }
 
-            while (from != i)
-              {
-                vector[to] = vector[from];
-                Applied[to] = true;
-
-                to = from;
-                from = mRowPivots[to];
-              }
-
-            vector[to] = Tmp;
-          }
-
-        Applied[to] = true;
-      }
-
-  return true;
+  return os;
 }
