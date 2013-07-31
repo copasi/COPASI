@@ -1330,7 +1330,9 @@ bool CCopasiDataModel::exportSEDML(const std::string & fileName, bool overwriteF
    SedDocument* pOrigSEDMLDocument = NULL;
 
    //exporter.setExportHandler(pExportHandler);
-//   if (!exporter.exportModelAndTasks(*this, FileName, sedmlLevel, sedmlVersion, overwriteFile)) return false;
+   const std::string& SBMLFileName = "";
+
+   if (!exporter.exportModelAndTasks(*this, FileName, SBMLFileName, sedmlLevel, sedmlVersion, overwriteFile)) return false;
 
   return true;
 }

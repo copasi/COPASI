@@ -71,6 +71,10 @@
 #endif
 #include <UI/CWindowInterface.h>
 
+#ifdef COPASI_SEDML
+#include "CQSEDMLFileDialog.h"
+#endif
+
 #define AutoSaveInterval 10*60*1000
 
 #ifdef DEBUG_UI
@@ -2848,7 +2852,7 @@ void CopasiUI3Window::slotExportSEDML()
         }
 
       std::pair<QString, std::pair<unsigned C_INT32, unsigned C_INT32> > nameAndVersion =
-        CQSBMLFileDialog::getSaveFileName(this, "Export SEDML Dialog", Default,
+        CQSEDMLFileDialog::getSaveFileName(this, "Export SEDML Dialog", Default,
                                           "Choose a filename and SEDML version for SEDML export.",
                                           sedmlLevel,
                                           sedmlVersion);

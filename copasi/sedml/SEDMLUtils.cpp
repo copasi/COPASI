@@ -8,6 +8,7 @@
 #include <zip.h>
 #include <sstream>
 #include <iostream>
+#include <vector>
 #include "SEDMLUtils.h"
 
 int SEDMLUtils::processArchive(const std::string & archiveFile,
@@ -46,6 +47,13 @@ int SEDMLUtils::processArchive(const std::string & archiveFile,
     return err;
 }
 
+/*void SEDMLUtils::resmoveUnwantedChars(std::string & str, char chars[]) {
+	for (unsigned int i = 0; i < strlen(chars); ++i) {
+
+		str.erase(std::remove(str.begin(), str.end(), chars[i]), str.end());
+	}
+}
+*/
 SEDMLUtils::SEDMLUtils() {
 	// TODO Auto-generated constructor stub
 

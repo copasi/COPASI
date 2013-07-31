@@ -72,12 +72,12 @@ public:
 	/**
 	 * Creates the simulations for SEDML.
 	 */
-	void createSimulations(CCopasiDataModel& dataModel);
+	void createSimulations(CCopasiDataModel& dataModel, std::string & simRef);
 
 	/**
 	 * Creates the models for SEDML.
 	 */
-	void createModels(CCopasiDataModel& dataModel);
+	void createModels(CCopasiDataModel& dataModel, std::string &modelRef);
 
 	/**
 	 * Creates the Tasks for SEDML.
