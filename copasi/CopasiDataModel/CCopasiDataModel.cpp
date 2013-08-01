@@ -1231,9 +1231,10 @@ std::string CCopasiDataModel::exportSEDMLToString(CProcessReport* pExportHandler
   CSEDMLExporter exporter;
  //  exporter.setExportCOPASIMIRIAM(exportCOPASIMIRIAM);
 
-  std::string sbmlDocument = "";
+  std::string sbmlDocument = this->exportSBMLToString(pExportHandler, 2, 4);
   std::string str = exporter.exportModelAndTasksToString(*this, sbmlDocument, sedmlLevel, sedmlVersion);
-std::cout<<"sedml: "<<str<<std::endl;
+  std::cout<<"sedml: "<<str<<std::endl;
+  std::cout<<sbmlDocument<<std::endl;
 
   // if we have saved the original SEDML model somewhere
 	// we have to reset it
@@ -1332,6 +1333,8 @@ bool CCopasiDataModel::exportSEDML(const std::string & fileName, bool overwriteF
    //exporter.setExportHandler(pExportHandler);
    const std::string& SBMLFileName = "";
 
+   std::string sbmlDocument = this->exportSBMLToString(pExportHandler, 2, 3);
+   std::cout<<sbmlDocument<<std::endl;
    if (!exporter.exportModelAndTasks(*this, FileName, SBMLFileName, sedmlLevel, sedmlVersion, overwriteFile)) return false;
 
   return true;

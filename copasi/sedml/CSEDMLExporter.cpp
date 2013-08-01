@@ -170,7 +170,7 @@ void CSEDMLExporter::createModels(CCopasiDataModel& dataModel, std::string & mod
 	SedModel *model = this->mpSEDMLDocument->createModel();
 	model->setId(modelRef);
 	model->setSource("model1.xml");
-	model->setLanguage("urn:sedml:sbml");
+	model->setLanguage("urn:sedml:language:sbml");
 }
 
 /**
@@ -228,49 +228,66 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
 		pPSedPlot->setId(plotIdStream.str());
 		pPSedPlot->setName(plotName);
 
-
 		size_t j, jmax = pPlot->getItems().size();
 		for (j = 0; j < jmax; j++) {
 			const CPlotItem* pPlotItem = pPlot->getItems()[j];
 
 			pPDGen = this->mpSEDMLDocument->createDataGenerator();
 
-			std::string strName = pPlotItem->getObjectName();
+		/*	std::string strName = pPlotItem->getObjectName();
 
 			//remove unwanted characters from the plot item object name
 			char chars [] = "[]";
 			for (unsigned int i = 0; i < strlen(chars); ++i) {
-
 				strName.erase(std::remove(strName.begin(), strName.end(), chars[i]), strName.end());
+			} */
+
+			CCopasiObject *objectX, *objectY;
+
+			if (pPlotItem->getChannels().size() >= 1)
+				objectX = dataModel.getDataObject(pPlotItem->getChannels()[0]);
+
+			if (pPlotItem->getChannels().size() >= 2)
+				objectY = dataModel.getDataObject(pPlotItem->getChannels()[1]);
+
+			std::string yAxis = objectY->getObjectDisplayName();
+
+			//remove unwanted characters from the plot item object name
+			char chars[] = "[]";
+			for (unsigned int i = 0; i < strlen(chars); ++i) {
+				yAxis.erase(std::remove(yAxis.begin(), yAxis.end(), chars[i]), yAxis.end());
 			}
 
 			std::ostringstream idStrStream;
-			idStrStream << strName;
+			idStrStream << yAxis;
 			idStrStream << "_";
 			idStrStream << j;
 			pPDGen->setId(idStrStream.str());
 
-			pPDGen->setName(strName);
-
-			pCurve = pPSedPlot->createCurve();
-			pCurve->setLogX(pPlot->isLogX());
-			pCurve->setLogY(pPlot->isLogY());
-			pCurve->setXDataReference(pTimeDGenp->getId());
-			pCurve->setYDataReference(pPDGen->getId());
+			pPDGen->setName(yAxis);
+			pPDGen->setMath(SBML_parseFormula(pPDGen->getName().c_str()));
 
 			SedVariable * pPVar = pPDGen->createVariable();
 			pPVar->setId(pPDGen->getName());
 			pPVar->setTaskReference(taskId);
 			pPVar->setName(pPDGen->getName());
 
-			//TODO
-			size_t k, kmax = pPlotItem->getNumChannels();
-			for (k = 0; k < kmax; k++) {
-				const CPlotDataChannelSpec pDataChannelSpec = pPlotItem->getChannels()[k];
-		//plot->setId(pDataChannelSpec.getObjectName());
+			//temporary method to set XPath target
+			std::ostringstream targetStrStream;
+			targetStrStream<<"/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='";
+			targetStrStream<<pPVar->getName();
+			targetStrStream<<"']";
+			pPVar->setTarget(targetStrStream.str());
 
-			}
-
+			pCurve = pPSedPlot->createCurve();
+			std::ostringstream idCurveStrStream;
+			idCurveStrStream<<"curve_";
+			idCurveStrStream<<j;
+			pCurve->setId(idCurveStrStream.str());
+			pCurve->setLogX(pPlot->isLogX());
+			pCurve->setLogY(pPlot->isLogY());
+			pCurve->setXDataReference(pTimeDGenp->getId());
+			pCurve->setYDataReference(pPDGen->getId());
 		}
 
 	}
