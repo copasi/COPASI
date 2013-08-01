@@ -14,7 +14,8 @@
 #include "blaswrap.h"
 #include "clapackwrap.h"
 
-#define DEBUG_MATRIX
+// Define to output debugging information
+// #define DEBUG_MATRIX
 
 CLinkMatrix::CLinkMatrix():
   CMatrix< C_FLOAT64 >(),
