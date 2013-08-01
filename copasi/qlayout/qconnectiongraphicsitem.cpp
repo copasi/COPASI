@@ -1,6 +1,7 @@
 #include <qpainter.h>
 
 #include <qlayout/qconnectiongraphicsitem.h>
+#include <qlayout/qrenderconverter.h>
 #include <layout/CLGlyphs.h>
 #include <layout/CLReactionGlyph.h>
 #include <layout/CLRenderResolver.h>
@@ -43,22 +44,29 @@ QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGl
   : QCopasiGraphicsItem(resolver, resolver != NULL ? resolver->resolveStyle(curveGlyph) : NULL)
 {
   QPainterPath& path = *getPath(curveGlyph->getCurve());
-  QGraphicsPathItem* item = new QGraphicsPathItem(path);
-  item->setPen(QPen(Qt::gray, 4));
-  addToGroup(item);
+  QGraphicsPathItem* item;
+  if (curveGlyph->getCurve().getNumCurveSegments() > 0)
+  {
+    item = new QGraphicsPathItem(path);
+    QRenderConverter::applyStyle(item, &curveGlyph->getBoundingBox(), mpStyle->getGroup(), resolver);  
+    addToGroup(item);
+  }
 
   const CLReactionGlyph* reaction = dynamic_cast<const CLReactionGlyph*>(curveGlyph);  
   if (reaction != NULL)
   {
-    auto list = reaction->getListOfMetabReferenceGlyphs();
+    const CCopasiVector<CLMetabReferenceGlyph> & list = reaction->getListOfMetabReferenceGlyphs();
     for(auto it = list.begin(); it != list.end(); ++it)
     {
-      path = *getPath((*it)->getCurve());
-      item = new QGraphicsPathItem(path);
-      item->setPen(QPen(Qt::gray, 4));
-      addToGroup(item);
+      if ((*it)->getCurve().getNumCurveSegments() > 0)
+      {
+        path = *getPath((*it)->getCurve());
+        item = new QGraphicsPathItem(path);
+        QRenderConverter::applyStyle(item, &(*it)->getBoundingBox(), mpStyle->getGroup(), resolver);      
+        addToGroup(item);
+      }
     }
-  }
+  }  
 }
 
 QConnectionGraphicsItem::~QConnectionGraphicsItem()
