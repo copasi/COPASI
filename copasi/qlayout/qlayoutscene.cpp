@@ -47,10 +47,19 @@ void QLayoutScene::addGlyph(const CLGraphicalObject* go)
   const CLGlyphWithCurve* curveGlyph = dynamic_cast<const CLGlyphWithCurve*>(go);
   const CLReactionGlyph* reaction = dynamic_cast<const CLReactionGlyph*>(go);
   const CLTextGlyph* text = dynamic_cast<const CLTextGlyph*>(go);
+  const CLGeneralGlyph* general = dynamic_cast<const CLGeneralGlyph*>(go);
   if (curveGlyph != NULL)
   {
-    addItem(new QConnectionGraphicsItem(curveGlyph, 
-      mpResolver == NULL ? NULL : mpResolver));
+    if (curveGlyph->getCurve().getNumCurveSegments() > 0)
+     addItem(new QConnectionGraphicsItem(curveGlyph, 
+       mpResolver == NULL ? NULL : mpResolver));
+      
+    if (general != NULL)
+    {        
+      addItem(new QStyledGraphicsItem(general, 
+        mpResolver == NULL ? NULL : mpResolver));      
+    }
+
   }
   else if (text != NULL)
   {        
@@ -99,6 +108,14 @@ void QLayoutScene::fillFromLayout(const CLayout* layout)
   {
     addGlyph(*itTexts);
     ++itTexts;
+  }
+
+  const CCopasiVector<CLGeneralGlyph> & list = layout->getListOfGeneralGlyphs();
+  auto itList = list.begin();
+  while (itList != list.end())   
+  {
+    addGlyph(*itList);
+    ++itList;
   }
 }
 
