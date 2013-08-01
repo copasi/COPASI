@@ -9,18 +9,9 @@
 QStyledGraphicsItem::QStyledGraphicsItem(const CLGraphicalObject* go, const CLRenderResolver* resolver)
   : QCopasiGraphicsItem(resolver, resolver != NULL ? resolver->resolveStyle(go) : NULL)
 {
+  //setFlag(QGraphicsItem::ItemIsMovable);
+  setFlag(QGraphicsItem::ItemIsSelectable);
   QRenderConverter::fillGroupFromStyle(this, &go->getBoundingBox(), mpStyle, mpResolver);
-  //addToGroup(
-  //  new QGraphicsRectItem(
-  //  go->getBoundingBox().getPosition().getX(), 
-  //    go->getBoundingBox().getPosition().getY(), 
-  //    go->getBoundingBox().getDimensions().getWidth(), 
-  //    go->getBoundingBox().getDimensions().getHeight()
-  //  ));    
-  //addRect(QRectF(
-  //    
-  //    ), QPen(Qt::black), QBrush(Qt::darkGreen) );
-  //
 }
 
 

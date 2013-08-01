@@ -1,7 +1,10 @@
 #include <qgraphicsitem.h>
 #include <qpen.h>
+#include <qfont.h>
+#include <QFontMetrics>
 
 #include <qlayout/qrenderconverter.h>
+#include <qlayout/qroundedrect.h>
 #include <layout/CLStyle.h>
 #include <layout/CLEllipse.h>
 #include <layout/CLRectangle.h>
@@ -36,6 +39,7 @@ QLinearGradient* getLinearGradient(const CLLinearGradient* linear, const CLBound
   double y1 = bounds->getPosition().getY() +linear->getYPoint1().getAbsoluteValue()  + (linear->getYPoint1().getRelativeValue() / 100.0 * bounds->getDimensions().getHeight());
   double x2 = bounds->getPosition().getX() + linear->getXPoint2().getAbsoluteValue()  + (linear->getXPoint2().getRelativeValue() / 100.0 * bounds->getDimensions().getWidth());
   double y2 = bounds->getPosition().getY() + linear->getYPoint2().getAbsoluteValue()  + (linear->getYPoint2().getRelativeValue() / 100.0 * bounds->getDimensions().getHeight());
+
   QLinearGradient* result = new QLinearGradient(x1, y1, x2, y2);
   switch (linear->getSpreadMethod())
   {
@@ -104,13 +108,71 @@ QGradient* getGradient(const CLGradientBase* base, const CLBoundingBox* bounds, 
   if (radial != NULL)
     return getRadialGradient(radial, bounds, resolver);
   return NULL;
-        
+
+}
+
+QFont* getFont(const CLText *item,const CLGroup *group, const CLRenderResolver* resolver, const CLBoundingBox *pBB)
+{
+  QString font("Verdana"); double fontSize=10, weight=50; bool italic=false;
+  if (item != NULL && item->isSetFontFamily())
+    font = item->getFontFamily().c_str();
+  else if (group != NULL && group->isSetFontFamily())
+    font = group->getFontFamily().c_str();
+
+  if (item != NULL && item->isSetFontSize())
+    fontSize = item->getFontSize().getAbsoluteValue() + item->getFontSize().getRelativeValue()/100.0 * pBB->getDimensions().getHeight();
+  else if (group != NULL && group->isSetFontSize())
+    fontSize = group->getFontSize().getAbsoluteValue() + group->getFontSize().getRelativeValue()/100.0 * pBB->getDimensions().getHeight();
+
+  if (item != NULL && item->isSetFontWeight())
+    switch(item->getFontWeight())
+  {
+    case CLText::WEIGHT_BOLD:
+      weight = QFont::Bold;
+      break;
+    case CLText::WEIGHT_NORMAL:
+    default:
+      weight = QFont::Normal;
+      break;
+  }
+  else if (group != NULL && group->isSetFontWeight())
+    switch(group->getFontWeight())
+  {
+    case CLText::WEIGHT_BOLD:
+      weight = QFont::Bold;
+      break;
+    case CLText::WEIGHT_NORMAL:
+    default:
+      weight = QFont::Normal;
+      break;
+  }
+
+  if (item != NULL && item->isSetFontStyle())
+    switch (item->getFontStyle())
+  {
+    case CLText::STYLE_ITALIC:
+      italic = true;
+      break;
+
+  }
+  else if (group != NULL && group->isSetFontStyle())
+    switch (group->getFontStyle())
+  {
+    case CLText::STYLE_ITALIC:
+      italic = true;
+      break;
+
+  }
+
+  QFont *result = new QFont(font, -1, weight, italic);
+  result->setPixelSizeFloat(fontSize);
+  return result;
 }
 
 QBrush* getBrush(const CLGraphicalPrimitive2D *item,const CLGroup *group, const CLRenderResolver* resolver, const CLBoundingBox *pBB)
 {
   QColor color;
-  if (item->isSetFill())
+  if (item != NULL && item->isSetFill())
   {
     const CLColorDefinition* cd = resolver->getColorDefinition(item->getFillColor());
     if (cd != NULL)
@@ -126,7 +188,7 @@ QBrush* getBrush(const CLGraphicalPrimitive2D *item,const CLGroup *group, const 
       }
     }
   } 
-  else if (group->isSetFill())
+  else if (group != NULL && group->isSetFill())
   {
     const CLColorDefinition* cd = resolver->getColorDefinition(group->getFillColor());
     if (cd != NULL)
@@ -135,7 +197,7 @@ QBrush* getBrush(const CLGraphicalPrimitive2D *item,const CLGroup *group, const 
     }
     else
     {
-       const CLGradientBase* base = resolver->getGradientBase(group->getFillColor());
+      const CLGradientBase* base = resolver->getGradientBase(group->getFillColor());
       if (base != NULL)
       {
         return new QBrush(*getGradient(base, pBB, resolver));
@@ -148,7 +210,7 @@ QBrush* getBrush(const CLGraphicalPrimitive2D *item,const CLGroup *group, const 
 QPen* getPen(const CLGraphicalPrimitive1D *item,const CLGroup *group, const CLRenderResolver* resolver, const CLBoundingBox *pBB)
 {
   QColor color; double width;
-  if (item->isSetStroke())
+  if (item != NULL && item->isSetStroke())
   {
     const CLColorDefinition* cd = resolver->getColorDefinition(item->getStroke());
     if (cd != NULL)
@@ -156,7 +218,7 @@ QPen* getPen(const CLGraphicalPrimitive1D *item,const CLGroup *group, const CLRe
       color = getColor(cd);
     }
   } 
-  else if (group->isSetStroke())
+  else if (group != NULL && group->isSetStroke())
   {
     const CLColorDefinition* cd = resolver->getColorDefinition(group->getStroke());
     if (cd != NULL)
@@ -165,20 +227,20 @@ QPen* getPen(const CLGraphicalPrimitive1D *item,const CLGroup *group, const CLRe
     }
   }
 
-  if (item->isSetStrokeWidth())
+  if (item != NULL && item->isSetStrokeWidth())
   {
     width = item->getStrokeWidth();
   }
-  else if (group->isSetStrokeWidth())
+  else if (group != NULL && group->isSetStrokeWidth())
   {
     width = group->getStrokeWidth();
   }
 
-  if (item->isSetDashArray())
+  if (item != NULL && item->isSetDashArray())
   {
 
   }
-  else if (group->isSetDashArray())
+  else if (group != NULL && group->isSetDashArray())
   {
   }
 
@@ -196,7 +258,7 @@ void fillItemFromEllipse(QGraphicsItemGroup *item, const CLBoundingBox *pBB,cons
   double ry = pEllipse->getRY().getAbsoluteValue() + pEllipse->getRY().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
 
   QGraphicsEllipseItem* ellipseItem = new QGraphicsEllipseItem(
-        x-rx, y-ry, rx*2, ry*2 );
+    x-rx, y-ry, rx*2, ry*2 );
   QPen *pen = getPen(pEllipse, group, resolver, pBB);
   ellipseItem->setPen(*pen);
   delete pen;
@@ -215,9 +277,9 @@ void fillItemFromRectangle(QGraphicsItemGroup *item, const CLBoundingBox *pBB,co
   double rx = pRect->getRadiusX().getAbsoluteValue() + pRect->getRadiusX().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
   double ry = pRect->getRadiusY().getAbsoluteValue() + pRect->getRadiusY().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
 
-  QGraphicsRectItem* result = new QGraphicsRectItem(
-        x,y,w,h);
-  QPen *pen = getPen(pRect, group, resolver, pBB);
+  QGraphicsRectItem* result = new QRoundedRect(
+    x,y,w,h,rx,ry);
+  QPen *pen = getPen(pRect, group, resolver, pBB);  
   result->setPen(*pen);
   delete pen;
   QBrush *brush = getBrush(pRect, group, resolver, pBB);
@@ -230,8 +292,14 @@ void fillItemFromGroup(QGraphicsItemGroup *item, const CLBoundingBox *bounds,con
 {
   if (group == NULL) 
     return;
+  size_t numElements = group->getNumElements();
 
-  for (size_t i = 0; i < group->getNumElements(); ++i)
+  if (numElements == 0)
+  {
+    return;
+  }
+
+  for (size_t i = 0; i < numElements; ++i)
   {
     const CCopasiObject* object = group->getElement(i);
     const CLEllipse* ellipse = dynamic_cast<const CLEllipse*>(group->getElement(i));
@@ -251,12 +319,90 @@ void fillItemFromGroup(QGraphicsItemGroup *item, const CLBoundingBox *bounds,con
     }
 
   }
+
+}
+
+void QRenderConverter::applyStyle(QGraphicsPathItem* item, const CLBoundingBox* bounds, const CLGroup *group, const CLRenderResolver* resolver)
+{
+  if (resolver == NULL || group == NULL || bounds == NULL || item == NULL) 
+    return;
+
+  QPen *pen = getPen(NULL, group, resolver, bounds);  
+  item->setPen(*pen);
+  delete pen;  
+
+}
+
+void QRenderConverter::applyStyle(QGraphicsItemGroup *group, const CLBoundingBox* bounds, const CLGroup *style, const CLRenderResolver* resolver)
+{
+  if (resolver == NULL || style == NULL || bounds == NULL || group== NULL) 
+    return;
+  for (int i = 0; i < group->childItems().size(); ++i)
+  {
+  }
+}
+
+void QRenderConverter::applyStyle(QGraphicsTextItem *item, const CLBoundingBox* bounds, const CLGroup *style, const CLRenderResolver* resolver)
+{
+  if (resolver == NULL || style == NULL || bounds == NULL || item == NULL) 
+    return;
   
+  item->setDefaultTextColor(getColor(style->getFillColor(), resolver));
+  QFont *font = getFont(NULL, style, resolver, bounds);
+
+  if (font != NULL)
+  {
+    item->setFont(*font);
+    if (style->isSetTextAnchor() || style->isSetVTextAnchor())
+    {
+      QFontMetricsF fm(*font);
+      //qreal width=fm.width(item->toPlainText()) + 1;  
+      qreal width = item->boundingRect().width();
+      qreal height = item->boundingRect().height();
+      QPointF pos = item->pos();
+      
+      if (style->isSetTextAnchor() && width  > 0)
+      {
+        switch(style->getTextAnchor())
+        {
+        case CLText::ANCHOR_MIDDLE:
+          pos.setX(bounds->getPosition().getX() + (bounds->getDimensions().getWidth() - width )/2.0);
+          break;
+        case CLText::ANCHOR_END:
+          pos.setX(bounds->getPosition().getX() + bounds->getDimensions().getWidth() - width );
+          break;
+        case CLText::ANCHOR_START:
+        default:
+          break;
+        }        
+      }
+
+      if (style->isSetVTextAnchor() && height > 0)
+      {
+        switch (style->getVTextAnchor())
+        {
+        case CLText::ANCHOR_MIDDLE:
+          pos.setY(bounds->getPosition().getY()+(bounds->getDimensions().getHeight()-height)/2.0);
+          break;
+        case CLText::ANCHOR_BOTTOM:
+          pos.setY(bounds->getPosition().getY()+(bounds->getDimensions().getHeight()-height));
+          break;
+        case CLText::ANCHOR_TOP:          
+        default:
+          break;
+        }
+      }
+
+      item->setPos(pos);        
+    }
+    delete font;
+  }
+
 }
 
 void QRenderConverter::fillGroupFromStyle(QGraphicsItemGroup *group, const CLBoundingBox *bounds, const CLStyle *style, const CLRenderResolver* resolver)
 {
-  if (resolver == NULL || style == NULL) 
+  if (resolver == NULL || style == NULL|| bounds == NULL || group == NULL) 
     return;
   fillItemFromGroup(group, bounds, style->getGroup(), resolver);
 }
