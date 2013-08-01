@@ -330,7 +330,7 @@ void CopasiUI3Window::createActions()
   connect(mpaMergeModels, SIGNAL(activated()), this, SLOT(slotMergeModels()));
 #endif
 
-  mpaCloseAllWindows = new QAction("Close all but Main Window", this);
+  mpaCloseAllWindows = new QAction("Close all windows", this);
   connect(mpaCloseAllWindows, SIGNAL(activated()), this, SLOT(slotCloseAllWindows()));
 }
 
