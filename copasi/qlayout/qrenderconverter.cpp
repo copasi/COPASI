@@ -2,6 +2,8 @@
 #include <qpen.h>
 #include <qfont.h>
 #include <QFontMetrics>
+#include <QPixmap>
+#include <QFile>
 
 #include <qlayout/qrenderconverter.h>
 #include <qlayout/qroundedrect.h>
@@ -12,10 +14,15 @@
 #include <layout/CLPolygon.h>
 #include <layout/CLText.h>
 #include <layout/CLCurve.h>
+#include <layout/CLRenderCurve.h>
+#include <layout/CLRenderCubicBezier.h>
+#include <layout/CLRenderPoint.h>
 #include <layout/CLLinearGradient.h>
 #include <layout/CLRadialGradient.h>
 #include <layout/CLRenderResolver.h>
 #include <layout/CLGraphicalPrimitive1D.h>
+#include <report/CCopasiRootContainer.h>
+#include <CopasiDataModel/CCopasiDataModel.h>
 
 QColor getColor(const CLColorDefinition* cd)
 {
@@ -25,6 +32,8 @@ QColor getColor(const CLColorDefinition* cd)
 
 QColor getColor(const std::string& color, const CLRenderResolver* resolver)
 {
+  if (color == "none")
+    return QColor(Qt::transparent);
   if (resolver->getColorDefinition(color)==NULL && resolver->getGradientBase(color) == NULL)
   {
     CLColorDefinition cd;cd.setColorValue(color);
@@ -117,7 +126,7 @@ QFont* getFont(const CLText *item,const CLGroup *group, const CLRenderResolver* 
   if (item != NULL && item->isSetFontFamily())
     font = item->getFontFamily().c_str();
   else if (group != NULL && group->isSetFontFamily())
-    font = group->getFontFamily().c_str();
+    font = group->getFontFamily().c_str();  
 
   if (item != NULL && item->isSetFontSize())
     fontSize = item->getFontSize().getAbsoluteValue() + item->getFontSize().getRelativeValue()/100.0 * pBB->getDimensions().getHeight();
@@ -166,6 +175,20 @@ QFont* getFont(const CLText *item,const CLGroup *group, const CLRenderResolver* 
 
   QFont *result = new QFont(font, -1, weight, italic);
   result->setPixelSizeFloat(fontSize);
+
+  if (font == "serif")
+  {
+    result->setStyleHint(QFont::Serif);
+  }
+  else if (font == "sans-serif" || font == "sans")
+  {
+    result->setStyleHint(QFont::SansSerif);
+  }
+  else if (font == "monospace")
+  {
+    result->setStyleHint(QFont::Monospace);
+  }
+
   return result;
 }
 
@@ -174,35 +197,21 @@ QBrush* getBrush(const CLGraphicalPrimitive2D *item,const CLGroup *group, const 
   QColor color;
   if (item != NULL && item->isSetFill())
   {
-    const CLColorDefinition* cd = resolver->getColorDefinition(item->getFillColor());
-    if (cd != NULL)
+    const CLGradientBase* base = resolver->getGradientBase(item->getFillColor());
+    if (base != NULL)
     {
-      return new QBrush( getColor(cd));
+      return new QBrush(*getGradient(base, pBB, resolver));
     }
-    else
-    {
-      const CLGradientBase* base = resolver->getGradientBase(item->getFillColor());
-      if (base != NULL)
-      {
-        return new QBrush(*getGradient(base, pBB, resolver));
-      }
-    }
+    return new QBrush(getColor(item->getFillColor(), resolver));
   } 
   else if (group != NULL && group->isSetFill())
   {
-    const CLColorDefinition* cd = resolver->getColorDefinition(group->getFillColor());
-    if (cd != NULL)
+    const CLGradientBase* base = resolver->getGradientBase(group->getFillColor());
+    if (base != NULL)
     {
-      return new QBrush( getColor(cd));
+      return new QBrush(*getGradient(base, pBB, resolver));
     }
-    else
-    {
-      const CLGradientBase* base = resolver->getGradientBase(group->getFillColor());
-      if (base != NULL)
-      {
-        return new QBrush(*getGradient(base, pBB, resolver));
-      }
-    }
+    return new QBrush(getColor(group->getFillColor(), resolver));
   }
   return new QBrush();
 }
@@ -212,20 +221,13 @@ QPen* getPen(const CLGraphicalPrimitive1D *item,const CLGroup *group, const CLRe
   QColor color; double width;
   if (item != NULL && item->isSetStroke())
   {
-    const CLColorDefinition* cd = resolver->getColorDefinition(item->getStroke());
-    if (cd != NULL)
-    {
-      color = getColor(cd);
-    }
+    color = getColor(item->getStroke(), resolver);
   } 
   else if (group != NULL && group->isSetStroke())
   {
-    const CLColorDefinition* cd = resolver->getColorDefinition(group->getStroke());
-    if (cd != NULL)
-    {
-      color = getColor(cd);
-    }
+    color = getColor(group->getStroke(), resolver);
   }
+  else return new QPen(Qt::transparent);
 
   if (item != NULL && item->isSetStrokeWidth())
   {
@@ -235,16 +237,38 @@ QPen* getPen(const CLGraphicalPrimitive1D *item,const CLGroup *group, const CLRe
   {
     width = group->getStrokeWidth();
   }
+  else return new QPen(Qt::transparent);
+
+
+  QPen *result = new QPen(color, width);
+
 
   if (item != NULL && item->isSetDashArray())
   {
-
+    const std::vector<unsigned int>& raw = item->getDashArray();
+    auto start = raw.begin();    
+    QVector<qreal> pattern; 
+    while (start != raw.end())
+    {
+      pattern << *start;
+      ++start;
+    }
+    result->setDashPattern(pattern);
   }
   else if (group != NULL && group->isSetDashArray())
   {
+    const std::vector<unsigned int>& raw = group->getDashArray();
+    auto start = raw.begin();    
+    QVector<qreal> pattern; 
+    while (start != raw.end())
+    {
+      pattern << *start;
+      ++start;
+    }
+    result->setDashPattern(pattern);
   }
 
-  return new QPen(color, width);
+  return result;
 
 
 }
@@ -266,6 +290,326 @@ void fillItemFromEllipse(QGraphicsItemGroup *item, const CLBoundingBox *pBB,cons
   ellipseItem->setBrush(*brush);
   delete brush;
   item->addToGroup(ellipseItem);
+}
+
+void fillItemFromCurve(QGraphicsItemGroup *item, const CLBoundingBox *pBB,const CLCurve* pCurve, const CLGroup *group, const CLRenderResolver* resolver)
+{
+  QPainterPath path; 
+
+  if (!pCurve->isContinuous())
+  {
+    for (size_t i = 0; i < pCurve->getNumCurveSegments(); ++i)
+    {
+      const CLLineSegment* current = pCurve->getSegmentAt(i);
+      path.moveTo(current->getStart().getX(), current->getStart().getY());
+      if (current->isBezier())
+      {
+        path.cubicTo(
+          current->getBase1().getX(), current->getBase1().getY(), 
+          current->getBase2().getX(), current->getBase2().getY(), 
+          current->getEnd().getX(), current->getEnd().getY());
+      }
+      else
+      {
+        path.lineTo(          
+          current->getEnd().getX(), current->getEnd().getY());
+      }
+
+    }
+  }
+  else if (pCurve->getListOfPoints().size() > 0)
+  {
+    for (size_t i = 0; i < pCurve->getNumCurveSegments(); ++i)
+    {
+      const CLLineSegment* current = pCurve->getSegmentAt(i);
+      if (i==0)
+        path.moveTo(current->getStart().getX(), current->getStart().getY());
+      if (current->isBezier())
+      {
+        path.cubicTo(
+          current->getBase1().getX(), current->getBase1().getY(), 
+          current->getBase2().getX(), current->getBase2().getY(), 
+          current->getEnd().getX(), current->getEnd().getY());
+      }
+      else
+      {
+        path.lineTo(          
+          current->getEnd().getX(), current->getEnd().getY());
+      }
+
+    }
+  }
+  else return;
+
+
+  QGraphicsPathItem *pathItem = new QGraphicsPathItem(path);
+  QPen *pen = getPen(NULL, group, resolver, pBB);
+  pathItem->setPen(*pen);
+  delete pen;
+  //QBrush *brush = getBrush(NULL, group, resolver, pBB);
+  //pathItem->setBrush(*brush);
+  //delete brush;
+  item->addToGroup(pathItem);
+}
+
+void fillItemFromRenderCurve(QGraphicsItemGroup *item, const CLBoundingBox *pBB,const CLRenderCurve* pCurve, const CLGroup *group, const CLRenderResolver* resolver)
+{
+  QPainterPath path; 
+
+  const std::vector<CLRenderPoint*>& elements = *pCurve->getListOfCurveElements();
+  std::vector<CLRenderPoint*>::const_iterator it = elements.begin();
+  bool first = true;
+  for (; it != elements.end(); ++it)
+  {
+    const CLRenderPoint* current = *it;
+    const CLRenderCubicBezier* cubic = dynamic_cast<const CLRenderCubicBezier*>(current);
+    if (first)
+    {
+      path.moveTo(
+        pBB->getPosition().getX() + current->getXOffset().getAbsoluteValue() + current->getXOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth(),
+        pBB->getPosition().getY() + current->getYOffset().getAbsoluteValue() + current->getYOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight()
+        );          
+      first = false;
+      continue;
+    }
+
+    if (cubic != NULL)
+    {
+      path.cubicTo(
+        pBB->getPosition().getX() + cubic->basePoint1_X().getAbsoluteValue() + cubic->basePoint1_X().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth(),
+        pBB->getPosition().getY() + cubic->basePoint1_Y().getAbsoluteValue() + cubic->basePoint1_Y().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight(),
+        pBB->getPosition().getX() + cubic->basePoint2_X().getAbsoluteValue() + cubic->basePoint2_X().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth(),
+        pBB->getPosition().getY() + cubic->basePoint2_Y().getAbsoluteValue() + cubic->basePoint2_Y().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight(),
+        pBB->getPosition().getX() + cubic->getXOffset().getAbsoluteValue() + cubic->getXOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth(),
+        pBB->getPosition().getY() + cubic->getYOffset().getAbsoluteValue() + cubic->getYOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight()
+        );
+    }
+    else
+    {
+      path.lineTo(          
+        pBB->getPosition().getX() + current->getXOffset().getAbsoluteValue() + current->getXOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth(),
+        pBB->getPosition().getY() + current->getYOffset().getAbsoluteValue() + current->getYOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight()
+        );
+    }
+
+  }
+
+
+
+  QGraphicsPathItem *pathItem = new QGraphicsPathItem(path);
+  QPen *pen = getPen(pCurve, group, resolver, pBB);
+  pathItem->setPen(*pen);
+  delete pen;
+  //QBrush *brush = getBrush(NULL, group, resolver, pBB);
+  //pathItem->setBrush(*brush);
+  //delete brush;
+  item->addToGroup(pathItem);
+}
+
+void addToPath(QPainterPath &path, const CLRenderCubicBezier* cubic, const CLBoundingBox *pBB)
+{
+  path.cubicTo(
+    pBB->getPosition().getX() + cubic->basePoint1_X().getAbsoluteValue() + cubic->basePoint1_X().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth(),
+    pBB->getPosition().getY() + cubic->basePoint1_Y().getAbsoluteValue() + cubic->basePoint1_Y().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight(),
+    pBB->getPosition().getX() + cubic->basePoint2_X().getAbsoluteValue() + cubic->basePoint2_X().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth(),
+    pBB->getPosition().getY() + cubic->basePoint2_Y().getAbsoluteValue() + cubic->basePoint2_Y().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight(),
+    pBB->getPosition().getX() + cubic->getXOffset().getAbsoluteValue() + cubic->getXOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth(),
+    pBB->getPosition().getY() + cubic->getYOffset().getAbsoluteValue() + cubic->getYOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight()
+    );
+}
+
+void addToPath(QPainterPath &path, const CLRenderPoint* current, const CLBoundingBox *pBB)
+{
+  path.lineTo(          
+    pBB->getPosition().getX() + current->getXOffset().getAbsoluteValue() + current->getXOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth(),
+    pBB->getPosition().getY() + current->getYOffset().getAbsoluteValue() + current->getYOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight()
+    );
+}
+void moveToPoint(QPainterPath &path, const CLRenderPoint* current, const CLBoundingBox *pBB)
+{
+  path.moveTo(          
+    pBB->getPosition().getX() + current->getXOffset().getAbsoluteValue() + current->getXOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth(),
+    pBB->getPosition().getY() + current->getYOffset().getAbsoluteValue() + current->getYOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight()
+    );
+}
+
+void fillItemFromPolygon(QGraphicsItemGroup *item, const CLBoundingBox *pBB,const CLPolygon* pPoly, const CLGroup *group, const CLRenderResolver* resolver)
+{
+  QPainterPath path; 
+  path.setFillRule(Qt::WindingFill);
+
+  const std::vector<CLRenderPoint*>& elements = *pPoly->getListOfElements();
+  if (elements.size() == 0) return;
+  std::vector<CLRenderPoint*>::const_iterator it = elements.begin();
+  const CLRenderPoint* last = *it;  
+  moveToPoint(path, last, pBB);
+  ++it;
+  for (; it != elements.end(); ++it)
+  {
+    const CLRenderPoint* current = *it;
+    const CLRenderCubicBezier* cubic = dynamic_cast<const CLRenderCubicBezier*>(current);
+    if (cubic != NULL)
+    {
+      addToPath(path, cubic, pBB);        
+    }
+    else
+    {
+      addToPath(path, current, pBB);     
+    }
+
+  }
+  path.closeSubpath();
+
+
+  QGraphicsPathItem *pathItem = new QGraphicsPathItem(path);
+  QPen *pen = getPen(pPoly, group, resolver, pBB);
+  pathItem->setPen(*pen);
+  delete pen;
+  QBrush *brush = getBrush(pPoly, group, resolver, pBB);
+  pathItem->setBrush(*brush);
+  delete brush;
+  item->addToGroup(pathItem);
+}
+
+void fillItemFromText(QGraphicsItemGroup *item, const CLBoundingBox *pBB,const CLText *pText, const CLGroup *group, const CLRenderResolver* resolver)
+{
+  double x = pBB->getPosition().getX() + pText->getX().getAbsoluteValue() + pText->getX().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
+  double y = pBB->getPosition().getY() + pText->getY().getAbsoluteValue() + pText->getY().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
+
+
+  QGraphicsTextItem* result = new QGraphicsTextItem(pText->getText().c_str());
+  result ->setPos(x, y);
+
+  if (pText->isSetStroke())
+  {
+    result->setDefaultTextColor(getColor(pText->getStroke(), resolver));
+  }
+  else if (group->isSetStroke())
+  {
+    result->setDefaultTextColor(getColor(group->getStroke(), resolver));
+  }
+  QFont *font = getFont(pText, group, resolver, pBB);
+
+  if (font != NULL)
+  {
+    result->setFont(*font);
+    if (group->isSetTextAnchor() || group->isSetVTextAnchor())
+    {
+      QFontMetricsF fm(*font);
+      qreal width = result->boundingRect().width();
+      qreal height = result->boundingRect().height();
+      QPointF pos = result->pos();
+
+      if (group->isSetTextAnchor() && width  > 0)
+      {
+        switch(group->getTextAnchor())
+        {
+        case CLText::ANCHOR_MIDDLE:
+          pos.setX(pBB->getPosition().getX() + (pBB->getDimensions().getWidth() - width )/2.0);
+          break;
+        case CLText::ANCHOR_END:
+          pos.setX(pBB->getPosition().getX() + pBB->getDimensions().getWidth() - width );
+          break;
+        case CLText::ANCHOR_START:
+        default:
+          break;
+        }        
+      }
+
+      if (group->isSetVTextAnchor() && height > 0)
+      {
+        switch (group->getVTextAnchor())
+        {
+        case CLText::ANCHOR_MIDDLE:
+          pos.setY(pBB->getPosition().getY()+(pBB->getDimensions().getHeight()-height)/2.0);
+          break;
+        case CLText::ANCHOR_BOTTOM:
+          pos.setY(pBB->getPosition().getY()+(pBB->getDimensions().getHeight()-height));
+          break;
+        case CLText::ANCHOR_TOP:          
+        default:
+          break;
+        }
+      }
+
+      result->setPos(pos);        
+    }
+
+    if (pText->isSetTextAnchor() || pText->isSetVTextAnchor())
+    {
+      QFontMetricsF fm(*font);
+      qreal width = result->boundingRect().width();
+      qreal height = result->boundingRect().height();
+      QPointF pos = result->pos();
+
+      if (pText->isSetTextAnchor() && width  > 0)
+      {
+        switch(pText->getTextAnchor())
+        {
+        case CLText::ANCHOR_MIDDLE:
+          pos.setX(pBB->getPosition().getX() + (pBB->getDimensions().getWidth() - width )/2.0);
+          break;
+        case CLText::ANCHOR_END:
+          pos.setX(pBB->getPosition().getX() + pBB->getDimensions().getWidth() - width );
+          break;
+        case CLText::ANCHOR_START:
+        default:
+          break;
+        }        
+      }
+
+      if (pText->isSetVTextAnchor() && height > 0)
+      {
+        switch (pText->getVTextAnchor())
+        {
+        case CLText::ANCHOR_MIDDLE:
+          pos.setY(pBB->getPosition().getY()+(pBB->getDimensions().getHeight()-height)/2.0);
+          break;
+        case CLText::ANCHOR_BOTTOM:
+          pos.setY(pBB->getPosition().getY()+(pBB->getDimensions().getHeight()-height));
+          break;
+        case CLText::ANCHOR_TOP:          
+        default:
+          break;
+        }
+      }
+
+      result->setPos(pos);        
+    }
+
+    delete font;
+  }
+
+  item->addToGroup(result);
+}
+
+void fillItemFromImage(QGraphicsItemGroup *item, const CLBoundingBox *pBB,const CLImage *pImage, const CLGroup *group, const CLRenderResolver* resolver)
+{
+  double x = pBB->getPosition().getX() + pImage->getX().getAbsoluteValue() + pImage->getX().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
+  double y = pBB->getPosition().getY() + pImage->getY().getAbsoluteValue() + pImage->getY().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
+  double w = pImage->getWidth().getAbsoluteValue() + pImage->getWidth().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
+  double h = pImage->getHeight().getAbsoluteValue() + pImage->getHeight().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
+
+  QFile *fileName = new QFile(pImage->getImageReference().c_str());
+  if (!fileName->exists())
+  {
+    delete fileName;    
+    std::string file = ((*CCopasiRootContainer::getDatamodelList())[0])->getReferenceDirectory() + "/" + pImage->getImageReference();
+    fileName = new QFile(file.c_str());
+  }
+  if (!fileName->exists())
+  {
+    delete fileName;
+    return;
+  }
+  QPixmap pixmap (fileName->fileName());
+  pixmap = pixmap.scaled(w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+  delete fileName;
+  QGraphicsPixmapItem* result = new QGraphicsPixmapItem(
+    pixmap);
+  result->setPos(x,y);
+
+  item->addToGroup(result);
 }
 
 void fillItemFromRectangle(QGraphicsItemGroup *item, const CLBoundingBox *pBB,const CLRectangle *pRect, const CLGroup *group, const CLRenderResolver* resolver)
@@ -306,18 +650,38 @@ void fillItemFromGroup(QGraphicsItemGroup *item, const CLBoundingBox *bounds,con
     const CLRectangle* rect = dynamic_cast<const CLRectangle*>(group->getElement(i));
     const CLPolygon* poly = dynamic_cast<const CLPolygon*>(group->getElement(i));
     const CLCurve* curve = dynamic_cast<const CLCurve*>(group->getElement(i));
+    const CLRenderCurve* rcurve = dynamic_cast<const CLRenderCurve*>(group->getElement(i));
     const CLText* text = dynamic_cast<const CLText*>(group->getElement(i));
     const CLImage* image = dynamic_cast<const CLImage*>(group->getElement(i));
 
     if (ellipse != NULL)
     {
-      fillItemFromEllipse(item,bounds, ellipse, group, resolver);      
+      fillItemFromEllipse(item,bounds, ellipse, group, resolver);
     }
     else if (rect != NULL)
     {
-      fillItemFromRectangle(item,bounds, rect, group, resolver);      
+      fillItemFromRectangle(item,bounds, rect, group, resolver);
     }
-
+    else if (text != NULL)
+    {
+      fillItemFromText(item,bounds, text, group, resolver);
+    }
+    else if (curve != NULL)
+    {
+      fillItemFromCurve(item,bounds, curve, group, resolver);
+    }
+    else if (rcurve != NULL)
+    {
+      fillItemFromRenderCurve(item,bounds, rcurve, group, resolver);
+    }
+    else if (poly != NULL)
+    {
+      fillItemFromPolygon(item,bounds, poly, group, resolver);
+    }
+    else if (image != NULL)
+    {
+      fillItemFromImage(item,bounds, image, group, resolver);
+    }
   }
 
 }
@@ -346,8 +710,10 @@ void QRenderConverter::applyStyle(QGraphicsTextItem *item, const CLBoundingBox* 
 {
   if (resolver == NULL || style == NULL || bounds == NULL || item == NULL) 
     return;
-  
-  item->setDefaultTextColor(getColor(style->getFillColor(), resolver));
+
+  if (style->isSetStroke())
+    item->setDefaultTextColor(getColor(style->getStroke(), resolver));
+
   QFont *font = getFont(NULL, style, resolver, bounds);
 
   if (font != NULL)
@@ -360,7 +726,7 @@ void QRenderConverter::applyStyle(QGraphicsTextItem *item, const CLBoundingBox* 
       qreal width = item->boundingRect().width();
       qreal height = item->boundingRect().height();
       QPointF pos = item->pos();
-      
+
       if (style->isSetTextAnchor() && width  > 0)
       {
         switch(style->getTextAnchor())

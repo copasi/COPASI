@@ -67,6 +67,22 @@ QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGl
       }
     }
   }  
+
+  const CLGeneralGlyph* general = dynamic_cast<const CLGeneralGlyph*>(curveGlyph);  
+  if (general != NULL)
+  {
+    const CCopasiVector<CLReferenceGlyph> & list = general->getListOfReferenceGlyphs();
+    for(auto it = list.begin(); it != list.end(); ++it)
+    {
+      if ((*it)->getCurve().getNumCurveSegments() > 0)
+      {
+        path = *getPath((*it)->getCurve());
+        item = new QGraphicsPathItem(path);
+        QRenderConverter::applyStyle(item, &(*it)->getBoundingBox(), mpStyle->getGroup(), resolver);      
+        addToGroup(item);
+      }
+    }
+  }  
 }
 
 QConnectionGraphicsItem::~QConnectionGraphicsItem()
