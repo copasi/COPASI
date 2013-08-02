@@ -85,6 +85,10 @@ public:
       defaultValues = values;
     }
   
+    void applyDefaults()
+    {
+      values = defaultValues;
+    }
   };
 
 
