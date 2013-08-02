@@ -61,6 +61,10 @@ public:
 
   bool isHideWindow() const;
 
+  bool isSaveLayout() const;
+
+  bool handleCommandLine() const;
+
   bool isQuitAfterTaskExecution() const;
 
   static CCopasiTask* getFirstScheduledTask();
@@ -84,6 +88,8 @@ private:
   std::string mFileType;
 
   bool mRunScheduled;
+
+  bool mSaveLayout;
 
   bool mSetSolutionStatistic;
 

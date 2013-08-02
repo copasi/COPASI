@@ -212,16 +212,8 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
 
 #endif
   QDockWidget* pDockLayout = new QDockWidget("Layout View", this);
-  QLayoutScene *scene = new QLayoutScene( mpCurrentLayout );
-  CLRenderResolver* resolver = NULL;
-  CLLocalRenderInformation* local = dynamic_cast<CLLocalRenderInformation*>(mpCurrentRenderInformation);
-  if (local != NULL)
-    resolver = new CLRenderResolver(*local, mpCurrentLayout->getListOfLocalRenderInformationObjects(),   pDatamodel->getListOfLayouts()->getListOfGlobalRenderInformationObjects());    
-  else 
-    resolver = new CLRenderResolver(*dynamic_cast<CLGlobalRenderInformation*>(mpCurrentRenderInformation), pDatamodel->getListOfLayouts()->getListOfGlobalRenderInformationObjects());
-  scene->setResolver(resolver);
+  QLayoutScene *scene = new QLayoutScene( mpCurrentLayout, pDatamodel, mpCurrentRenderInformation);
   QGraphicsView *view = new QLayoutView( scene );
-  view->setInteractive(true);
   view->setInteractive(true);
   view->setRenderHints( QPainter::Antialiasing );
   pDockLayout->setWidget(view);
