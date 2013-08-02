@@ -36,6 +36,7 @@ public:
   public:
     std::vector<std::string> names;
     std::vector<double> values;
+    std::vector<double> defaultValues;
     std::vector<double> min;
     std::vector<double> max;
     std::vector<bool> isLog;
@@ -43,9 +44,9 @@ public:
     Parameters()
     {
       names.push_back("repulsion");
-      values.push_back(1.0);
-      min.push_back(1e-1);
-      max.push_back(1e6);
+      values.push_back(100.0);
+      min.push_back(10);
+      max.push_back(1e7);
       isLog.push_back(true);
     
       //1
@@ -73,6 +74,15 @@ public:
       min.push_back(1e-3);
       max.push_back(1e3);
       isLog.push_back(true);
+
+      //5
+      names.push_back("2nd order edge strength");
+      values.push_back(0.1);
+      min.push_back(1e-3);
+      max.push_back(1e3);
+      isLog.push_back(true);
+    
+      defaultValues = values;
     }
   
   };
@@ -160,6 +170,7 @@ protected:
   double potSpeciesCompartment(const CLMetabGlyph & s, const CLCompartmentGlyph & c) const;
   double potReactionCompartment(const CLReactionGlyph & r, const CLCompartmentGlyph & c) const;
   //double potCompartmentCompartment(const CLCompartmentGlyph & c1, const CLCompartmentGlyph & c2) const;
+  double potSecondOrderEdge(const CLMetabReferenceGlyph & e1, const CLMetabReferenceGlyph & e2, double & dist) const;
 
   /**
    * calculate a point just outside the bounding box of a given graphical object

@@ -578,6 +578,17 @@ double CCopasiSpringLayout::potEdge(const CLMetabReferenceGlyph & e, const CLRea
     return mpPar->values[2] * pow(tmp - dist, 2);
 }
 
+double CCopasiSpringLayout::potSecondOrderEdge(const CLMetabReferenceGlyph & e1, const CLMetabReferenceGlyph & e2, double & dist) const
+{
+  const CLMetabGlyph * pMG1 = e1.getMetabGlyph();
+  const CLMetabGlyph * pMG2 = e2.getMetabGlyph();
+  double tmp = distance(pMG1->getX() + pMG1->getWidth() / 2, pMG1->getY() + pMG1->getHeight() / 2,
+                        pMG2->getX() + pMG2->getWidth() / 2, pMG2->getY() + pMG2->getHeight() / 2);
+
+  return pow(tmp - dist, 2);
+}
+
+
 double CCopasiSpringLayout::potGeneralEdge(const CLReferenceGlyph & e, const CLGeneralGlyph & r) const
 {
   double dist = 30;
@@ -729,8 +740,28 @@ double CCopasiSpringLayout::getPotential()
       for (j = 0; j < pRG->getListOfMetabReferenceGlyphs().size(); ++j)
         {
           tmp += potEdge(*pRG->getListOfMetabReferenceGlyphs()[j], *pRG);
+
+          //second order
+          CLMetabReferenceGlyph::Role role = pRG->getListOfMetabReferenceGlyphs()[j]->getRole();
+          if(role != CLMetabReferenceGlyph::SUBSTRATE && role != CLMetabReferenceGlyph::SIDESUBSTRATE)
+            continue;
+          double dist = role==CLMetabReferenceGlyph::SUBSTRATE ? mpPar->values[1] : mpPar->values[3];
+          size_t k;
+          for (k=0; k<pRG->getListOfMetabReferenceGlyphs().size(); ++k)
+            {
+              CLMetabReferenceGlyph::Role role2 = pRG->getListOfMetabReferenceGlyphs()[k]->getRole();
+              if(role2 != CLMetabReferenceGlyph::PRODUCT && role2 != CLMetabReferenceGlyph::SIDEPRODUCT)
+                continue;
+              dist += role2==CLMetabReferenceGlyph::PRODUCT ? mpPar->values[1] : mpPar->values[3];
+            
+              tmp+= mpPar->values[5] * potSecondOrderEdge(*pRG->getListOfMetabReferenceGlyphs()[j], *pRG->getListOfMetabReferenceGlyphs()[k], dist);
+
+            }
         }
     }
+
+
+
 
   for (i = 0; i < mpLayout->getListOfGeneralGlyphs().size(); ++i)
     {
