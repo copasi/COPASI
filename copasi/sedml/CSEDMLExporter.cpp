@@ -115,7 +115,10 @@ void CSEDMLExporter::createSEDMLDocument(CCopasiDataModel& dataModel)
 {
   const SedDocument* pOldSEDMLDocument = NULL; //dataModel.getCurrentSEDMLDocument();
   const CModel* pModel = dataModel.getModel();
+  COutputDefinitionVector *plotDef = dataModel.getPlotDefinitionList();
+  assert(plotDef != NULL); //need to emit a message
   assert(pModel != NULL);
+
 
   if (pOldSEDMLDocument == NULL) {
 		this->mpSEDMLDocument = new SedDocument();
@@ -222,9 +225,9 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
 		}
 
 		std::ostringstream plotIdStream;
-		plotIdStream << plotName;
-		plotIdStream << "_";
-		plotIdStream << i;
+		plotIdStream << "plot";
+	//	plotIdStream << "_";
+		plotIdStream << i+1;
 		pPSedPlot->setId(plotIdStream.str());
 		pPSedPlot->setName(plotName);
 
@@ -261,7 +264,7 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
 			std::ostringstream idStrStream;
 			idStrStream << yAxis;
 			idStrStream << "_";
-			idStrStream << j;
+			idStrStream << j+1;
 			pPDGen->setId(idStrStream.str());
 
 			pPDGen->setName(yAxis);
@@ -274,15 +277,15 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
 
 			//temporary method to set XPath target
 			std::ostringstream targetStrStream;
-			targetStrStream<<"/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='";
+			targetStrStream<<"/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=\'";
 			targetStrStream<<pPVar->getName();
-			targetStrStream<<"']";
+			targetStrStream<<"\']";
 			pPVar->setTarget(targetStrStream.str());
 
 			pCurve = pPSedPlot->createCurve();
 			std::ostringstream idCurveStrStream;
 			idCurveStrStream<<"curve_";
-			idCurveStrStream<<j;
+			idCurveStrStream<<j+1;
 			pCurve->setId(idCurveStrStream.str());
 			pCurve->setLogX(pPlot->isLogX());
 			pCurve->setLogY(pPlot->isLogY());

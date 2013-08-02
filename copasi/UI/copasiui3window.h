@@ -207,7 +207,7 @@ protected slots:
     void slotImportSEDMLFromStringFinished(bool success);
     void slotExportSEDML();
     void slotExportSEDMLFinished(bool success);
-   // void slotExportSEDMLToStringFinished(bool success);
+    void slotExportSEDMLToStringFinished(bool success);
     void slotOpenRecentSEDMLFile(QAction * pAction);
 #endif
 

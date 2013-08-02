@@ -1351,6 +1351,10 @@ void CCopasiDataModel::deleteOldData()
   pdelete(mOldData.pListOfLayouts);
   pdelete(mOldData.pGUI);
   pdelete(mOldData.pCurrentSBMLDocument);
+
+#ifdef COPASI_SEDML
+  pdelete(mOldData.pCurrentSEDMLDocument);
+#endif
 }
 
 const CModel * CCopasiDataModel::getModel() const
@@ -1924,6 +1928,9 @@ CCopasiDataModel::CData::CData(const bool & withGUI):
   mAutoSaveNeeded(false),
   mSBMLFileName(""),
   mReferenceDir("")
+#ifdef COPASI_SEDML
+, pCurrentSEDMLDocument(NULL)
+#endif
 {}
 
 CCopasiDataModel::CData::CData(const CData & src):
@@ -1941,6 +1948,9 @@ CCopasiDataModel::CData::CData(const CData & src):
   mAutoSaveNeeded(src.mAutoSaveNeeded),
   mSBMLFileName(src.mSBMLFileName),
   mReferenceDir(src.mReferenceDir)
+#ifdef COPASI_SEDML
+, pCurrentSEDMLDocument(src.pCurrentSEDMLDocument)
+#endif
 {}
 
 CCopasiDataModel::CData::~CData()
@@ -1963,7 +1973,9 @@ CCopasiDataModel::CData & CCopasiDataModel::CData::operator = (const CData & rhs
   mSBMLFileName = rhs.mSBMLFileName;
   mReferenceDir = rhs.mReferenceDir;
   mCopasi2SBMLMap = rhs.mCopasi2SBMLMap;
-
+#ifdef COPASI_SEDML
+  pCurrentSEDMLDocument = rhs.pCurrentSEDMLDocument;
+#endif
   return *this;
 }
 
@@ -1986,7 +1998,11 @@ void CCopasiDataModel::pushData()
          mOldData.pPlotDefinitionList == NULL &&
          mOldData.pListOfLayouts == NULL &&
          mOldData.pGUI == NULL &&
-         mOldData.pCurrentSBMLDocument == NULL);
+         mOldData.pCurrentSBMLDocument == NULL
+#ifdef COPASI_SEDML
+  	  	&& mOldData.pCurrentSEDMLDocument == NULL
+#endif
+  );
 
   mOldData = mData;
   mData = CData(mData.mWithGUI);
@@ -2101,6 +2117,11 @@ void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,
 
   if (mOldData.pCurrentSBMLDocument == mData.pCurrentSBMLDocument)
     mOldData.pCurrentSBMLDocument = NULL;
+
+#ifdef COPASI_SEDML
+  if (mOldData.pCurrentSEDMLDocument == mData.pCurrentSEDMLDocument)
+      mOldData.pCurrentSEDMLDocument = NULL;
+#endif
 
 #ifdef COPASI_PARAMETER_SETS
   mData.pModel->getModelParameterSet().updateModel();

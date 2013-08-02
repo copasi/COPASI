@@ -825,7 +825,7 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
 
 #ifdef COPASI_SEDML
   if (msg.getNumber() == 6303 &&
-         (msg.getText().find("'sedml'") != std::string::npos || msg.getText().find(":sedml'") != std::string::npos))
+         (msg.getText().find("'sedML'") != std::string::npos || msg.getText().find(":sedML'") != std::string::npos))
        {
 
          // someone attempted to open an SEDML file but failed, instead of displaying the message
@@ -2584,6 +2584,10 @@ void CopasiUI3Window::dropEvent(QDropEvent *event)
 
   if (isProabablySBML(fileName))
     slotImportSBML(fileName);
+#ifdef COPASI_SEDML
+  else if (isProabablySBML(fileName))
+	  slotImportSEDML(fileName);
+#endif
   else
     slotFileOpen(fileName);
 }
@@ -2610,6 +2614,32 @@ void CopasiUI3Window::disableSliders(bool disable)
 
 //TODO SEDML
 #ifdef COPASI_SEDML
+
+/**
+ * Utility function for guessing whether the file might
+ * be an SEDML file. If soit should contain an SEDML tag in the
+ * first couple of lines.
+ */
+bool isProabablySEDML(QString &fileName)
+{
+  QFile file(fileName);
+
+  if (!file.open(QIODevice::ReadOnly))
+    return false;
+
+  for (int i = 0; i < 5; ++i)
+    {
+      QByteArray array = file.readLine();
+
+      if (QString(array).contains("<sedML"))
+        return true;
+    }
+
+  file.close();
+
+  return false;
+}
+
 void CopasiUI3Window::slotFileExamplesSEDMLFiles(QString file)
 {
   CopasiFileDialog::openExampleDir(); //Sets CopasiFileDialog::LastDir
@@ -2807,6 +2837,36 @@ void CopasiUI3Window::refreshRecentSEDMLFileMenu()
     }
 }
 
+//TODO
+void CopasiUI3Window::exportSEDMLToString(std::string & SEDML)
+{
+  mpDataModelGUI->commit();
+
+  if (mpDataModelGUI)
+    {
+      setCursor(Qt::WaitCursor);
+      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportSEDMLToStringFinished(bool)));
+
+      mpDataModelGUI->exportSEDMLToString(SEDML);
+    }
+}
+
+void CopasiUI3Window::slotExportSEDMLToStringFinished(bool success)
+{
+  unsetCursor();
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportSEDMLToStringFinished(bool)));
+
+  if (!success)
+    {
+      QString Message = "Error while exporting SEDML model!\n\n";
+      Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
+
+      CQMessageBox::critical(this, QString("File Error"), Message,
+                             QMessageBox::Ok, QMessageBox::Ok);
+      CCopasiMessage::clearDeque();
+    }
+}
+
 void CopasiUI3Window::slotExportSEDMLFinished(bool /* success */)
 {
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportSEDMLFinished(bool)));
@@ -2841,7 +2901,6 @@ void CopasiUI3Window::slotExportSEDML()
         {
           Default = "untitled.xml";
         }
-
       // if there already is an SBML model, we present the user with the Level
       // and Version of that document as the selected Level and Version to
       // export to.
