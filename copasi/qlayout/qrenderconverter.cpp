@@ -1,9 +1,11 @@
+
 #include <qgraphicsitem.h>
 #include <qpen.h>
 #include <qfont.h>
 #include <QFontMetrics>
 #include <QPixmap>
 #include <QFile>
+#include <QGraphicsScene>
 
 #include <qlayout/qrenderconverter.h>
 #include <qlayout/qroundedrect.h>
@@ -23,6 +25,58 @@
 #include <layout/CLGraphicalPrimitive1D.h>
 #include <report/CCopasiRootContainer.h>
 #include <CopasiDataModel/CCopasiDataModel.h>
+
+#include <math.h>
+
+void transform(QGraphicsItem *item, const CLTransformation2D* trans, const CLGroup* group)
+{
+  if (trans != NULL && trans->isSetMatrix())
+  {
+    QRectF pathRect = item->boundingRect();
+    QTransform transform(
+      trans->getMatrix2D()[0], 
+      trans->getMatrix2D()[1], 
+      trans->getMatrix2D()[2], 
+      trans->getMatrix2D()[3], 
+      trans->getMatrix2D()[4], 
+      trans->getMatrix2D()[5]
+    );
+    
+    QTransform matrix;
+    matrix = matrix.translate(pathRect.x(), pathRect.y());
+    matrix = matrix.inverted();
+    matrix = matrix * transform;
+
+    QTransform translate; 
+    translate = translate.translate(pathRect.x(), pathRect.y());
+    matrix = matrix * translate;
+    item->setTransform(matrix, true);
+
+  }
+  else if (group != NULL && group->isSetMatrix())
+  {
+    QRectF pathRect = item->boundingRect();
+    QTransform transform(
+      group->getMatrix2D()[0], 
+      group->getMatrix2D()[1], 
+      group->getMatrix2D()[2], 
+      group->getMatrix2D()[3], 
+      group->getMatrix2D()[4], 
+      group->getMatrix2D()[5]
+    );
+    
+    QTransform matrix;
+    matrix = matrix.translate(pathRect.x(), pathRect.y());
+    matrix = matrix.inverted();
+    matrix = matrix * transform;
+
+    QTransform translate; 
+    translate = translate.translate(pathRect.x(), pathRect.y());
+    matrix = matrix * translate;
+    item->setTransform(matrix, true);
+
+  }
+}
 
 QColor getColor(const CLColorDefinition* cd)
 {
@@ -241,7 +295,8 @@ QPen* getPen(const CLGraphicalPrimitive1D *item,const CLGroup *group, const CLRe
 
 
   QPen *result = new QPen(color, width);
-
+  result->setCapStyle(Qt::RoundCap);
+  result->setJoinStyle(Qt::RoundJoin);
 
   if (item != NULL && item->isSetDashArray())
   {
@@ -289,6 +344,7 @@ void fillItemFromEllipse(QGraphicsItemGroup *item, const CLBoundingBox *pBB,cons
   QBrush *brush = getBrush(pEllipse, group, resolver, pBB);
   ellipseItem->setBrush(*brush);
   delete brush;
+  transform(ellipseItem, pEllipse, group);
   item->addToGroup(ellipseItem);
 }
 
@@ -352,60 +408,6 @@ void fillItemFromCurve(QGraphicsItemGroup *item, const CLBoundingBox *pBB,const 
   item->addToGroup(pathItem);
 }
 
-void fillItemFromRenderCurve(QGraphicsItemGroup *item, const CLBoundingBox *pBB,const CLRenderCurve* pCurve, const CLGroup *group, const CLRenderResolver* resolver)
-{
-  QPainterPath path; 
-
-  const std::vector<CLRenderPoint*>& elements = *pCurve->getListOfCurveElements();
-  std::vector<CLRenderPoint*>::const_iterator it = elements.begin();
-  bool first = true;
-  for (; it != elements.end(); ++it)
-  {
-    const CLRenderPoint* current = *it;
-    const CLRenderCubicBezier* cubic = dynamic_cast<const CLRenderCubicBezier*>(current);
-    if (first)
-    {
-      path.moveTo(
-        pBB->getPosition().getX() + current->getXOffset().getAbsoluteValue() + current->getXOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth(),
-        pBB->getPosition().getY() + current->getYOffset().getAbsoluteValue() + current->getYOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight()
-        );          
-      first = false;
-      continue;
-    }
-
-    if (cubic != NULL)
-    {
-      path.cubicTo(
-        pBB->getPosition().getX() + cubic->basePoint1_X().getAbsoluteValue() + cubic->basePoint1_X().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth(),
-        pBB->getPosition().getY() + cubic->basePoint1_Y().getAbsoluteValue() + cubic->basePoint1_Y().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight(),
-        pBB->getPosition().getX() + cubic->basePoint2_X().getAbsoluteValue() + cubic->basePoint2_X().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth(),
-        pBB->getPosition().getY() + cubic->basePoint2_Y().getAbsoluteValue() + cubic->basePoint2_Y().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight(),
-        pBB->getPosition().getX() + cubic->getXOffset().getAbsoluteValue() + cubic->getXOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth(),
-        pBB->getPosition().getY() + cubic->getYOffset().getAbsoluteValue() + cubic->getYOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight()
-        );
-    }
-    else
-    {
-      path.lineTo(          
-        pBB->getPosition().getX() + current->getXOffset().getAbsoluteValue() + current->getXOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth(),
-        pBB->getPosition().getY() + current->getYOffset().getAbsoluteValue() + current->getYOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight()
-        );
-    }
-
-  }
-
-
-
-  QGraphicsPathItem *pathItem = new QGraphicsPathItem(path);
-  QPen *pen = getPen(pCurve, group, resolver, pBB);
-  pathItem->setPen(*pen);
-  delete pen;
-  //QBrush *brush = getBrush(NULL, group, resolver, pBB);
-  //pathItem->setBrush(*brush);
-  //delete brush;
-  item->addToGroup(pathItem);
-}
-
 void addToPath(QPainterPath &path, const CLRenderCubicBezier* cubic, const CLBoundingBox *pBB)
 {
   path.cubicTo(
@@ -433,33 +435,250 @@ void moveToPoint(QPainterPath &path, const CLRenderPoint* current, const CLBound
     );
 }
 
-void fillItemFromPolygon(QGraphicsItemGroup *item, const CLBoundingBox *pBB,const CLPolygon* pPoly, const CLGroup *group, const CLRenderResolver* resolver)
-{
-  QPainterPath path; 
-  path.setFillRule(Qt::WindingFill);
 
-  const std::vector<CLRenderPoint*>& elements = *pPoly->getListOfElements();
-  if (elements.size() == 0) return;
+QPainterPath *getPath(const CLPolygon* pCurve, const CLBoundingBox *pBB)
+{
+  QPainterPath *path = new QPainterPath();
+
+  const std::vector<CLRenderPoint*>& elements = *pCurve->getListOfElements();
   std::vector<CLRenderPoint*>::const_iterator it = elements.begin();
-  const CLRenderPoint* last = *it;  
-  moveToPoint(path, last, pBB);
-  ++it;
+  bool first = true;
   for (; it != elements.end(); ++it)
   {
     const CLRenderPoint* current = *it;
     const CLRenderCubicBezier* cubic = dynamic_cast<const CLRenderCubicBezier*>(current);
+    if (first)
+    {
+      moveToPoint(*path, current, pBB);
+      first = false;
+      continue;
+    }
+
     if (cubic != NULL)
     {
-      addToPath(path, cubic, pBB);        
+      addToPath(*path, cubic, pBB);
     }
     else
     {
-      addToPath(path, current, pBB);     
+      addToPath(*path, current, pBB);
+    }
+  }
+  
+  path->closeSubpath();
+
+
+  return path;
+}
+
+
+QPainterPath *getPath(const CLRectangle* pRect, const CLBoundingBox *pBB)
+{
+
+  double x = pBB->getPosition().getX() + pRect->getX().getAbsoluteValue() + pRect->getX().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
+  double y = pBB->getPosition().getY() + pRect->getY().getAbsoluteValue() + pRect->getY().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
+  double w = pRect->getWidth().getAbsoluteValue() + pRect->getWidth().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
+  double h = pRect->getHeight().getAbsoluteValue() + pRect->getHeight().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
+  double rx = pRect->getRadiusX().getAbsoluteValue() + pRect->getRadiusX().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
+  double ry = pRect->getRadiusY().getAbsoluteValue() + pRect->getRadiusY().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
+
+  QPainterPath *path = new QPainterPath();
+
+  path->addRoundedRect(x, y, w, h, rx, ry);
+
+  return path;
+}
+
+QPainterPath *getPath(const CLEllipse* pEllipse, const CLBoundingBox *pBB)
+{
+
+  double x = pBB->getPosition().getX() + pEllipse->getCX().getAbsoluteValue() + pEllipse->getCX().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
+  double y = pBB->getPosition().getY() + pEllipse->getCY().getAbsoluteValue() + pEllipse->getCY().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
+  double z = pBB->getPosition().getZ() + pEllipse->getCZ().getAbsoluteValue() + pEllipse->getCZ().getRelativeValue() / 100.0 * pBB->getDimensions().getDepth();
+  double rx = pEllipse->getRX().getAbsoluteValue() + pEllipse->getRX().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
+  double ry = pEllipse->getRY().getAbsoluteValue() + pEllipse->getRY().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
+
+  QPainterPath *path = new QPainterPath();
+
+  path->addEllipse(x-rx, y-ry, 2*rx, 2*ry);
+
+  return path;
+}
+
+QPainterPath *getPath(const CLRenderCurve* pCurve, const CLBoundingBox *pBB)
+{
+  QPainterPath *path = new QPainterPath();
+
+  const std::vector<CLRenderPoint*>& elements = *pCurve->getListOfCurveElements();
+  std::vector<CLRenderPoint*>::const_iterator it = elements.begin();
+  bool first = true;
+  for (; it != elements.end(); ++it)
+  {
+    const CLRenderPoint* current = *it;
+    const CLRenderCubicBezier* cubic = dynamic_cast<const CLRenderCubicBezier*>(current);
+    if (first)
+    {
+      moveToPoint(*path, current, pBB);
+      first = false;
+      continue;
+    }
+
+    if (cubic != NULL)
+    {
+      addToPath(*path, cubic, pBB);
+    }
+    else
+    {
+      addToPath(*path, current, pBB);
+    }
+  }
+
+  return path;
+}
+
+QPointF normalizePoint(const QPointF& vector)
+{
+  qreal length = (qreal) sqrt(vector.x()*vector.x() + vector.y()*vector.y());
+    if (length == 0) length = 1;
+    return QPointF(vector.x()/length, vector.y()/length);
+}
+
+void applyRotationalMapping(QPainterPath& linePath, const CLLineEnding* ending, QPointF point, QPointF second)
+{
+  if (!ending->getIsEnabledRotationalMapping())
+    return;
+  
+  QPointF directionVector (point.x() - second.x(), point.y() - second.y());
+  directionVector = normalizePoint(directionVector);
+  
+  if (directionVector.x() == 0 && directionVector.y() == 0)
+    return;
+  
+  QPointF orthogonlVector;
+              
+  if (directionVector.x() == 0)
+      orthogonlVector = QPointF(directionVector.y(), 0);
+  else
+      orthogonlVector = QPointF(-directionVector.y()*directionVector.x(),
+                                    1 - directionVector.y()*directionVector.y());
+  orthogonlVector = normalizePoint(orthogonlVector);
+  
+  QTransform rotateMatrix (directionVector.x(), directionVector.y(), orthogonlVector.x(),
+                                    orthogonlVector.y(), 0, 0);
+  
+  linePath = rotateMatrix.map(linePath);
+  
+  
+}
+
+void addLineEndingToItem(QGraphicsPathItem* item, const CLLineEnding* ending, const CLGroup* group, const CLRenderResolver* resolver, QPointF point, QPointF second)
+{
+  const CLGroup* lineGroup = ending->getGroup();
+  for (size_t i = 0; i < lineGroup->getNumElements(); ++i)
+  {
+    const CLPolygon* poly = dynamic_cast<const CLPolygon*>(lineGroup->getElement(i));
+    const CLRenderCurve* rcurve = dynamic_cast<const CLRenderCurve*>(lineGroup->getElement(i));
+    const CLEllipse* ellipse = dynamic_cast<const CLEllipse*>(lineGroup->getElement(i));
+    const CLRectangle* rect = dynamic_cast<const CLRectangle*>(lineGroup->getElement(i));
+    if (rcurve != NULL)
+    {
+      QPainterPath path = item->path();
+      QPainterPath& linePath = *getPath(rcurve, ending->getBoundingBox());            
+      applyRotationalMapping(linePath, ending, point, second);      
+      linePath.translate(point);
+      path.addPath(linePath);
+      item->setPath(path);
+    } 
+    else if (poly != NULL)
+    {
+      QPainterPath path = item->path();
+      QPainterPath& linePath = *getPath(poly, ending->getBoundingBox());            
+      applyRotationalMapping(linePath, ending, point, second);      
+      linePath.translate(point);
+      path.addPath(linePath);
+      item->setPath(path);
+    }
+    else if (ellipse != NULL)
+    {
+      QPainterPath path = item->path();
+      QPainterPath& linePath = *getPath(ellipse, ending->getBoundingBox());            
+      applyRotationalMapping(linePath, ending, point, second);      
+      linePath.translate(point);
+      path.addPath(linePath);
+      item->setPath(path);
+    }
+    else if (rect != NULL)
+    {
+      QPainterPath path = item->path();
+      QPainterPath& linePath = *getPath(rect, ending->getBoundingBox());            
+      applyRotationalMapping(linePath, ending, point, second);      
+      linePath.translate(point);
+      path.addPath(linePath);
+      item->setPath(path);
+    }
+  }
+}
+
+void fillItemFromRenderCurve(QGraphicsItemGroup *item, const CLBoundingBox *pBB,const CLRenderCurve* pCurve, const CLGroup *group, const CLRenderResolver* resolver)
+{
+  QPainterPath& path = *getPath(pCurve, pBB); 
+
+  QGraphicsPathItem *pathItem = new QGraphicsPathItem(path);
+  QPen *pen = getPen(pCurve, group, resolver, pBB);
+  pathItem->setPen(*pen);
+  delete pen;
+  //QBrush *brush = getBrush(NULL, group, resolver, pBB);
+  //pathItem->setBrush(*brush);
+  //delete brush;
+
+  if (group -> isSetStartHead())
+  {
+    const CLLineEnding *line = resolver->getLineEnding(group->getStartHead());
+    addLineEndingToItem(pathItem, line, group, resolver, path.elementAt(0), path.elementAt(1));
+    
+  }
+   
+  if (group->isSetEndHead())
+  {
+    const CLLineEnding *line = resolver->getLineEnding(group->getEndHead());
+    addLineEndingToItem(pathItem, line, group, resolver, path.elementAt(path.elementCount()-1),path.elementAt(path.elementCount()-2));
+  }
+
+  item->addToGroup(pathItem);
+}
+
+
+void fillItemFromPolygon(QGraphicsItemGroup *item, const CLBoundingBox *pBB,const CLPolygon* pPoly, const CLGroup *group, const CLRenderResolver* resolver)
+{
+  QPainterPath& path = *getPath(pPoly, pBB); 
+  path.setFillRule(Qt::WindingFill);
+
+  if (pPoly->isSetFillRule())
+  {
+    switch(pPoly->getFillRule())
+    {
+    case CLGraphicalPrimitive2D::EVENODD:
+      path.setFillRule(Qt::OddEvenFill);
+      break;
+    case CLGraphicalPrimitive2D::NONZERO:
+      path.setFillRule(Qt::WindingFill);
+      break;
     }
 
   }
-  path.closeSubpath();
 
+  if (group->isSetFillRule())
+  {
+    switch(group->getFillRule())
+    {
+    case CLGraphicalPrimitive2D::EVENODD:
+      path.setFillRule(Qt::OddEvenFill);
+      break;
+    case CLGraphicalPrimitive2D::NONZERO:
+      path.setFillRule(Qt::WindingFill);
+      break;
+    }
+
+  } 
 
   QGraphicsPathItem *pathItem = new QGraphicsPathItem(path);
   QPen *pen = getPen(pPoly, group, resolver, pBB);
@@ -468,6 +687,9 @@ void fillItemFromPolygon(QGraphicsItemGroup *item, const CLBoundingBox *pBB,cons
   QBrush *brush = getBrush(pPoly, group, resolver, pBB);
   pathItem->setBrush(*brush);
   delete brush;
+  transform(pathItem, pPoly, group);
+  
+
   item->addToGroup(pathItem);
 }
 
@@ -608,6 +830,7 @@ void fillItemFromImage(QGraphicsItemGroup *item, const CLBoundingBox *pBB,const 
   QGraphicsPixmapItem* result = new QGraphicsPixmapItem(
     pixmap);
   result->setPos(x,y);
+  transform(result, pImage, group);
 
   item->addToGroup(result);
 }
@@ -629,6 +852,7 @@ void fillItemFromRectangle(QGraphicsItemGroup *item, const CLBoundingBox *pBB,co
   QBrush *brush = getBrush(pRect, group, resolver, pBB);
   result->setBrush(*brush);
   delete brush;
+  transform(result, pRect, group);
   item->addToGroup(result);
 }
 
@@ -653,6 +877,7 @@ void fillItemFromGroup(QGraphicsItemGroup *item, const CLBoundingBox *bounds,con
     const CLRenderCurve* rcurve = dynamic_cast<const CLRenderCurve*>(group->getElement(i));
     const CLText* text = dynamic_cast<const CLText*>(group->getElement(i));
     const CLImage* image = dynamic_cast<const CLImage*>(group->getElement(i));
+    const CLGroup* childGroup = dynamic_cast<const CLGroup*>(group->getElement(i));
 
     if (ellipse != NULL)
     {
@@ -682,8 +907,12 @@ void fillItemFromGroup(QGraphicsItemGroup *item, const CLBoundingBox *bounds,con
     {
       fillItemFromImage(item,bounds, image, group, resolver);
     }
+    else if(childGroup != NULL)
+    {
+      fillItemFromGroup(item, bounds, childGroup, resolver);
+    }
   }
-
+  transform(item, group, NULL);
 }
 
 void QRenderConverter::applyStyle(QGraphicsPathItem* item, const CLBoundingBox* bounds, const CLGroup *group, const CLRenderResolver* resolver)
@@ -692,8 +921,27 @@ void QRenderConverter::applyStyle(QGraphicsPathItem* item, const CLBoundingBox* 
     return;
 
   QPen *pen = getPen(NULL, group, resolver, bounds);  
-  item->setPen(*pen);
+  item->setPen(*pen);   
   delete pen;  
+   
+  QPointF start = item->path().elementAt(0);
+  QPointF second = item->path().elementAt(1);
+  QPointF end = item->path().elementAt(item->path().elementCount()-1);
+  QPointF secondLast = item->path().elementAt(item->path().elementCount()-2);
+
+   
+  if (group -> isSetStartHead())
+  {
+    const CLLineEnding *line = resolver->getLineEnding(group->getStartHead());
+    addLineEndingToItem(item, line, group, resolver, start, second);
+    
+  }
+   
+  if (group->isSetEndHead())
+  {
+    const CLLineEnding *line = resolver->getLineEnding(group->getEndHead());
+    addLineEndingToItem(item, line, group, resolver, end, secondLast);
+  }
 
 }
 
@@ -771,4 +1019,11 @@ void QRenderConverter::fillGroupFromStyle(QGraphicsItemGroup *group, const CLBou
   if (resolver == NULL || style == NULL|| bounds == NULL || group == NULL) 
     return;
   fillItemFromGroup(group, bounds, style->getGroup(), resolver);
+}
+
+void QRenderConverter::setBackground(QGraphicsScene *scene, const std::string& fill, const CLRenderResolver* resolver)
+{
+  if (resolver == NULL || scene == NULL) return;
+  QBrush brush(getColor(fill, resolver));
+  scene->setBackgroundBrush(brush);
 }

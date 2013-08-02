@@ -8,6 +8,7 @@
 
 #include <QString>
 #include <QFile>
+#include <QFileInfo>
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 
@@ -18,6 +19,9 @@
 #include "report/COutputAssistant.h"
 #include "plot/CPlotSpecification.h"
 #include "plot/COutputDefinitionVector.h"
+
+#include "qlayout/qlayoutscene.h"
+#include "layout/CListOfLayouts.h"
 
 #include "utilities/CCopasiMethod.h"
 
@@ -106,6 +110,32 @@ bool Arguments::haveReportFile() const
   return !mReportFile.empty();
 }
 
+bool Arguments::handleCommandLine() const
+{
+  if (!(mSaveLayout && haveFile() && haveOutputDir()))
+    return false;
+
+  CCopasiRootContainer::init(0, NULL, false);
+  CCopasiDataModel& model = *CCopasiRootContainer::addDatamodel();
+
+  if (!model.importSBML(mFilename, NULL))
+    model.loadModel(mFilename, NULL);
+
+  for (size_t i = 0; i < model.getListOfLayouts()->size(); ++i)
+  {
+    CLayout* layout = (*model.getListOfLayouts())[i];
+    QLayoutScene scene(layout, &model);
+    scene.recreate();
+    scene.saveToFile(mOutputDir + "/" + QFileInfo(mFilename.c_str()).baseName().ascii() + "_"+ layout->getObjectName() + "." + mFileType, mFileType);
+  }
+  return true;
+}
+
+bool Arguments::isSaveLayout() const
+{
+  return mSaveLayout;
+}
+
 const std::string& Arguments::getReportFile() const
 {
   return mReportFile;
@@ -160,6 +190,10 @@ void Arguments::parseArgs(int argc, char* argv[])
         {
           mDisableRandomizeStartValues = true;
         }
+      else if (lower == "--save-layout")
+        {
+          mSaveLayout = true;
+        }      
       else if (i + 1 < argc && (lower == "-g" || lower == "--generate-output"))
         {
           mGenerateOutput = QString(argv[i + 1]).toInt();

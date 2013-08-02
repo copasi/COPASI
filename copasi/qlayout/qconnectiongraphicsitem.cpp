@@ -12,10 +12,11 @@ QPainterPath* QConnectionGraphicsItem::getPath(const CLCurve& curve)
   for (size_t i = 0; i < curve.getNumCurveSegments(); ++i)
   {
     auto segment = curve.getSegmentAt(i);    
-    auto path =  QPainterPath(
+    auto path = QPainterPath(
       QPointF(
       segment->getStart().getX(),
       segment->getStart().getY()));
+
     if (segment->isBezier())
     {
       path.cubicTo(
@@ -58,11 +59,14 @@ QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGl
     const CCopasiVector<CLMetabReferenceGlyph> & list = reaction->getListOfMetabReferenceGlyphs();
     for(auto it = list.begin(); it != list.end(); ++it)
     {
-      if ((*it)->getCurve().getNumCurveSegments() > 0)
+      const CLMetabReferenceGlyph* metab = *it;
+      const CLStyle *style = resolver->resolveStyle(metab);
+ 
+      if (metab->getCurve().getNumCurveSegments() > 0)
       {
-        path = *getPath((*it)->getCurve());
+        path = *getPath(metab->getCurve());
         item = new QGraphicsPathItem(path);
-        QRenderConverter::applyStyle(item, &(*it)->getBoundingBox(), mpStyle->getGroup(), resolver);      
+        QRenderConverter::applyStyle(item, &metab->getBoundingBox(), style == NULL ? mpStyle->getGroup() : style->getGroup(), resolver);      
         addToGroup(item);
       }
     }
@@ -74,11 +78,14 @@ QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGl
     const CCopasiVector<CLReferenceGlyph> & list = general->getListOfReferenceGlyphs();
     for(auto it = list.begin(); it != list.end(); ++it)
     {
-      if ((*it)->getCurve().getNumCurveSegments() > 0)
+      const CLReferenceGlyph* glyph = *it;
+      const CLStyle *style = resolver->resolveStyle(glyph);
+
+      if (glyph ->getCurve().getNumCurveSegments() > 0)
       {
-        path = *getPath((*it)->getCurve());
+        path = *getPath(glyph ->getCurve());
         item = new QGraphicsPathItem(path);
-        QRenderConverter::applyStyle(item, &(*it)->getBoundingBox(), mpStyle->getGroup(), resolver);      
+        QRenderConverter::applyStyle(item, &glyph ->getBoundingBox(), style == NULL ? mpStyle->getGroup() : style->getGroup(), resolver);      
         addToGroup(item);
       }
     }

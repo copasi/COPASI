@@ -45,6 +45,11 @@ int main(int argc, char *argv[])
   // parse args
   Arguments args(argc, argv);
 
+  if (args.handleCommandLine())
+  {
+    return 0;
+  }
+
   a.setAttribute(Qt::AA_DontShowIconsInMenus, false);
 
   Q_INIT_RESOURCE(copasi);

@@ -6,7 +6,11 @@ class CLStyle;
 class CLGroup;
 class CLRenderResolver;
 class CLBoundingBox;
+class QGraphicsScene;
+
 #include <QGraphicsItemGroup>
+
+#include <string>
 
 class QRenderConverter
 {
@@ -15,6 +19,8 @@ public:
   static void applyStyle(QGraphicsTextItem *item, const CLBoundingBox* bounds, const CLGroup *style, const CLRenderResolver* resolver);
   static void applyStyle(QGraphicsPathItem *item, const CLBoundingBox* bounds, const CLGroup *style, const CLRenderResolver* resolver);
   static void applyStyle(QGraphicsItemGroup *item, const CLBoundingBox* bounds, const CLGroup *style, const CLRenderResolver* resolver);
+  static void setBackground(QGraphicsScene *scene, const std::string& fill, const CLRenderResolver* resolver);
+
 };
 
 #endif
