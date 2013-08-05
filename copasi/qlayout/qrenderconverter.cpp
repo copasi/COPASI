@@ -724,6 +724,93 @@ void fillItemFromPolygon(QGraphicsItemGroup *item, const CLBoundingBox *pBB,cons
   item->addToGroup(pathItem);
 }
 
+void adjustPosition(QGraphicsTextItem *item, const CLBoundingBox *pBB,const CLText *pText, const CLGroup *group)
+{
+  qreal width = item->boundingRect().width();
+  qreal height = item->boundingRect().height();
+  double bbWidth = pBB->getDimensions().getWidth();
+  double bbHeight = pBB->getDimensions().getHeight();
+
+
+  if (group != NULL && (group->isSetTextAnchor() || group->isSetVTextAnchor()))
+  {
+    QPointF pos = item->pos();
+
+    if (group->isSetTextAnchor() && width  > 0)
+    {
+      switch(group->getTextAnchor())
+      {
+      case CLText::ANCHOR_MIDDLE:
+        pos.setX(pBB->getPosition().getX() + (bbWidth - width )/2.0);
+        break;
+      case CLText::ANCHOR_END:
+        pos.setX(pBB->getPosition().getX() + bbWidth - width );
+        break;
+      case CLText::ANCHOR_START:
+      default:
+        break;
+      }        
+    }
+
+    if (group->isSetVTextAnchor() && height > 0)
+    {
+      switch (group->getVTextAnchor())
+      {
+      case CLText::ANCHOR_MIDDLE:
+        pos.setY(pBB->getPosition().getY()+(bbHeight-height)/2.0);
+        break;
+      case CLText::ANCHOR_BOTTOM:
+        pos.setY(pBB->getPosition().getY()+(bbHeight-height));
+        break;
+      case CLText::ANCHOR_TOP:          
+      default:
+        break;
+      }
+    }
+
+    item->setPos(pos);        
+  }
+
+  if (pText != NULL && (pText->isSetTextAnchor() || pText->isSetVTextAnchor()))
+  {
+    QPointF pos = item->pos();
+
+    if (pText->isSetTextAnchor() && width  > 0)
+    {
+      switch(pText->getTextAnchor())
+      {
+      case CLText::ANCHOR_MIDDLE:
+        pos.setX(pBB->getPosition().getX() + (bbWidth - width )/2.0);
+        break;
+      case CLText::ANCHOR_END:
+        pos.setX(pBB->getPosition().getX() + bbWidth - width );
+        break;
+      case CLText::ANCHOR_START:
+      default:
+        break;
+      }        
+    }
+
+    if (pText->isSetVTextAnchor() && height > 0)
+    {
+      switch (pText->getVTextAnchor())
+      {
+      case CLText::ANCHOR_MIDDLE:
+        pos.setY(pBB->getPosition().getY()+(bbHeight-height)/2.0);
+        break;
+      case CLText::ANCHOR_BOTTOM:
+        pos.setY(pBB->getPosition().getY()+bbHeight-height);
+        break;
+      case CLText::ANCHOR_TOP:          
+      default:
+        break;
+      }
+    }
+
+    item->setPos(pos);        
+  }
+}
+
 void fillItemFromText(QGraphicsItemGroup *item, const CLBoundingBox *pBB,const CLText *pText, const CLGroup *group, const CLRenderResolver* resolver)
 {
   double x = pBB->getPosition().getX() + pText->getX().getAbsoluteValue() + pText->getX().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
@@ -746,89 +833,8 @@ void fillItemFromText(QGraphicsItemGroup *item, const CLBoundingBox *pBB,const C
   if (font != NULL)
   {
     result->setFont(*font);
-    if (group->isSetTextAnchor() || group->isSetVTextAnchor())
-    {
-      QFontMetricsF fm(*font);
-      qreal width = result->boundingRect().width();
-      qreal height = result->boundingRect().height();
-      QPointF pos = result->pos();
 
-      if (group->isSetTextAnchor() && width  > 0)
-      {
-        switch(group->getTextAnchor())
-        {
-        case CLText::ANCHOR_MIDDLE:
-          pos.setX(pBB->getPosition().getX() + (pBB->getDimensions().getWidth() - width )/2.0);
-          break;
-        case CLText::ANCHOR_END:
-          pos.setX(pBB->getPosition().getX() + pBB->getDimensions().getWidth() - width );
-          break;
-        case CLText::ANCHOR_START:
-        default:
-          break;
-        }        
-      }
-
-      if (group->isSetVTextAnchor() && height > 0)
-      {
-        switch (group->getVTextAnchor())
-        {
-        case CLText::ANCHOR_MIDDLE:
-          pos.setY(pBB->getPosition().getY()+(pBB->getDimensions().getHeight()-height)/2.0);
-          break;
-        case CLText::ANCHOR_BOTTOM:
-          pos.setY(pBB->getPosition().getY()+(pBB->getDimensions().getHeight()-height));
-          break;
-        case CLText::ANCHOR_TOP:          
-        default:
-          break;
-        }
-      }
-
-      result->setPos(pos);        
-    }
-
-    if (pText->isSetTextAnchor() || pText->isSetVTextAnchor())
-    {
-      QFontMetricsF fm(*font);
-      qreal width = result->boundingRect().width();
-      qreal height = result->boundingRect().height();
-      QPointF pos = result->pos();
-
-      if (pText->isSetTextAnchor() && width  > 0)
-      {
-        switch(pText->getTextAnchor())
-        {
-        case CLText::ANCHOR_MIDDLE:
-          pos.setX(pBB->getPosition().getX() + (pBB->getDimensions().getWidth() - width )/2.0);
-          break;
-        case CLText::ANCHOR_END:
-          pos.setX(pBB->getPosition().getX() + pBB->getDimensions().getWidth() - width );
-          break;
-        case CLText::ANCHOR_START:
-        default:
-          break;
-        }        
-      }
-
-      if (pText->isSetVTextAnchor() && height > 0)
-      {
-        switch (pText->getVTextAnchor())
-        {
-        case CLText::ANCHOR_MIDDLE:
-          pos.setY(pBB->getPosition().getY()+(pBB->getDimensions().getHeight()-height)/2.0);
-          break;
-        case CLText::ANCHOR_BOTTOM:
-          pos.setY(pBB->getPosition().getY()+(pBB->getDimensions().getHeight()-height));
-          break;
-        case CLText::ANCHOR_TOP:          
-        default:
-          break;
-        }
-      }
-
-      result->setPos(pos);        
-    }
+    adjustPosition(result, pBB, pText, group);
 
     delete font;
   }
@@ -998,48 +1004,9 @@ void QRenderConverter::applyStyle(QGraphicsTextItem *item, const CLBoundingBox* 
   if (font != NULL)
   {
     item->setFont(*font);
-    if (style->isSetTextAnchor() || style->isSetVTextAnchor())
-    {
-      QFontMetricsF fm(*font);
-      //qreal width=fm.width(item->toPlainText()) + 1;  
-      qreal width = item->boundingRect().width();
-      qreal height = item->boundingRect().height();
-      QPointF pos = item->pos();
+   
+    adjustPosition(item, bounds, NULL, style);
 
-      if (style->isSetTextAnchor() && width  > 0)
-      {
-        switch(style->getTextAnchor())
-        {
-        case CLText::ANCHOR_MIDDLE:
-          pos.setX(bounds->getPosition().getX() + (bounds->getDimensions().getWidth() - width )/2.0);
-          break;
-        case CLText::ANCHOR_END:
-          pos.setX(bounds->getPosition().getX() + bounds->getDimensions().getWidth() - width );
-          break;
-        case CLText::ANCHOR_START:
-        default:
-          break;
-        }        
-      }
-
-      if (style->isSetVTextAnchor() && height > 0)
-      {
-        switch (style->getVTextAnchor())
-        {
-        case CLText::ANCHOR_MIDDLE:
-          pos.setY(bounds->getPosition().getY()+(bounds->getDimensions().getHeight()-height)/2.0);
-          break;
-        case CLText::ANCHOR_BOTTOM:
-          pos.setY(bounds->getPosition().getY()+(bounds->getDimensions().getHeight()-height));
-          break;
-        case CLText::ANCHOR_TOP:          
-        default:
-          break;
-        }
-      }
-
-      item->setPos(pos);        
-    }
     delete font;
   }
 
