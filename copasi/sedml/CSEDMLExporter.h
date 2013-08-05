@@ -67,7 +67,7 @@ public:
 	 * Copying the old one makes sure that if something goes wrong during
 	 * export, the original model is still consistent.
 	 */
-	void createSEDMLDocument(CCopasiDataModel& dataModel);
+	void createSEDMLDocument(CCopasiDataModel& dataModel, std::string modelRef);
 
 	/**
 	 * Creates the simulations for SEDML.

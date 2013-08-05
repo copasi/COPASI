@@ -169,6 +169,7 @@ CopasiUI3Window::CopasiUI3Window():
 #endif // COPASI_SBW_INTEGRATION
 
 #ifdef COPASI_SEDML
+, mpMenuSEDMLSupport(NULL)
 , mpMenuRecentSEDMLFiles(NULL)
 , mRecentSEDMLFilesActionMap()
 , mpRecentSEDMLFilesActionGroup(NULL)
@@ -426,12 +427,12 @@ void CopasiUI3Window::createMenuBar()
   pFileMenu->addAction(mpaExportODE);
 
   //TODO SEDML
-#ifdef COPASI_SEDML
-  pFileMenu->addSeparator();
+/*#ifdef COPASI_SEDML
+   pFileMenu->addSeparator();
    pFileMenu->addAction(mpaImportSEDML);
    pFileMenu->addAction(mpaExportSEDML);
 #endif
-
+*/
 #ifdef WITH_MERGEMODEL
   pFileMenu->addAction(mpaAddModel);
   //pFileMenu->addAction(mpaMergeModels);
@@ -449,10 +450,14 @@ void CopasiUI3Window::createMenuBar()
 
   //TODO SEDML
 #ifdef COPASI_SEDML
-    mpMenuRecentSEDMLFiles = pFileMenu->addMenu("Recent SEDML Files");
-    refreshRecentSEDMLFileMenu();
+	mpMenuSEDMLSupport = pFileMenu->addMenu("SEDML Support");
+	mpMenuSEDMLSupport->addAction(mpaImportSEDML);
+	mpMenuSEDMLSupport->addAction(mpaExportSEDML);
+	mpMenuRecentSEDMLFiles = mpMenuSEDMLSupport->addMenu("Recent SEDML Files");
+	//  mpMenuRecentSEDMLFiles = pFileMenu->addMenu("Recent SEDML Files");
+	refreshRecentSEDMLFileMenu();
 
-    pFileMenu->addSeparator();
+	pFileMenu->addSeparator();
 #endif
 
   pFileMenu->addAction(mpaQuit);

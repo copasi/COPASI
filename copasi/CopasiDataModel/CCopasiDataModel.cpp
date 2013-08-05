@@ -1230,7 +1230,6 @@ std::string CCopasiDataModel::exportSEDMLToString(CProcessReport* pExportHandler
 
   CSEDMLExporter exporter;
  //  exporter.setExportCOPASIMIRIAM(exportCOPASIMIRIAM);
-
   std::string sbmlDocument = this->exportSBMLToString(pExportHandler, 2, 4);
   std::string str = exporter.exportModelAndTasksToString(*this, sbmlDocument, sedmlLevel, sedmlVersion);
   std::cout<<"sedml: "<<str<<std::endl;
@@ -1331,11 +1330,17 @@ bool CCopasiDataModel::exportSEDML(const std::string & fileName, bool overwriteF
    SedDocument* pOrigSEDMLDocument = NULL;
 
    //exporter.setExportHandler(pExportHandler);
-   const std::string& SBMLFileName = "";
+ //  const std::string& SBMLFileName = "";
 
-   std::string sbmlDocument = this->exportSBMLToString(pExportHandler, 2, 3);
+   std::string sbmlDocument = "";
+   sbmlDocument = this->exportSBMLToString(pExportHandler, 2, 3);
    std::cout<<sbmlDocument<<std::endl;
-   if (!exporter.exportModelAndTasks(*this, FileName, SBMLFileName, sedmlLevel, sedmlVersion, overwriteFile)) return false;
+   if(sbmlDocument==""){
+	   CCopasiMessage(CCopasiMessage::EXCEPTION, "No support for exporting SEDML without SBML model");
+   }
+
+   if (!exporter.exportModelAndTasks(*this, FileName, sbmlDocument, sedmlLevel, sedmlVersion, overwriteFile)) return false;
+
 
   return true;
 }

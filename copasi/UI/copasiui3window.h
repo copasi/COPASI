@@ -295,6 +295,7 @@ private:
 
   //TODO SEDML
 #ifdef COPASI_SEDML
+   QMenu * mpMenuSEDMLSupport;
    QAction* mpaImportSEDML;
    QAction* mpaExportSEDML;
    QAction* mpaOpenSEDMLFiles;

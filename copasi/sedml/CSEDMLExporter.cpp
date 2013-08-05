@@ -35,6 +35,7 @@
 #include "utilities/CCopasiException.h"
 #include "utilities/CVersion.h"
 #include "utilities/CCopasiMessage.h"
+#include "utilities/CDirEntry.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotSpecification.h"
@@ -44,14 +45,14 @@
 
 
 const std::string CSEDMLExporter::exportModelAndTasksToString(CCopasiDataModel& dataModel,
-		std::string &sbmldocument,
+		std::string &sbmlModelSource,
 		unsigned int sedmlLevel,
 		unsigned int sedmlVersion)
 {
 	this->mSEDMLLevel = sedmlLevel;
 	this->mSEDMLVersion = sedmlVersion;
 	mHandledSEDMLObjects.clear();
-	this->createSEDMLDocument(dataModel);
+	this->createSEDMLDocument(dataModel, sbmlModelSource);
 
 	CSBMLExporter exporter;
 	SedWriter* writer = new SedWriter();
@@ -76,15 +77,33 @@ const std::string CSEDMLExporter::exportModelAndTasksToString(CCopasiDataModel& 
  */
 bool CSEDMLExporter::exportModelAndTasks(CCopasiDataModel& dataModel,
 		const std::string& filename,
-		const std::string& SBMLFileName,
+		const std::string& sbmlDocument,
 		unsigned int sedmlLevel,
 		unsigned int sedmlVersion,
 		bool overwrite)
 {
 	bool success = true;
 	/* create a string that represents the SBMLDocument */
-	std::string sbmldocument;
-	std::string str = this->exportModelAndTasksToString(dataModel, sbmldocument, sedmlLevel, sedmlVersion);
+	std::string sedmlModelSource ="model1.xml"; //always name of the SBML model to reference in SEDML document
+
+	std::string sbmlFileName;
+	sbmlFileName = CDirEntry::dirName(filename) + CDirEntry::Separator + sedmlModelSource;
+
+	std::ifstream sbmlFile (CLocaleString::fromUtf8(sbmlFileName).c_str(), std::ios::in);
+
+	if (sbmlFile && !overwrite) {
+		// create a CCopasiMessage with the appropriate error
+		CCopasiMessage(CCopasiMessage::ERROR, MCDirEntry + 1, sbmlFileName.c_str());
+		return false;
+	}
+
+	/* write the sbml model document to a file */
+	std::ofstream sbmlOutFile(CLocaleString::fromUtf8(sbmlFileName).c_str(), std::ios::out | std::ios::trunc);
+	sbmlOutFile << sbmlDocument;
+	sbmlOutFile.close();
+
+	std::string str = this->exportModelAndTasksToString(dataModel, sedmlModelSource, sedmlLevel, sedmlVersion);
+
 	std::cout<<str<<std::endl;
 
 	if (!str.empty()) {
@@ -111,7 +130,7 @@ bool CSEDMLExporter::exportModelAndTasks(CCopasiDataModel& dataModel,
 	return success;
 }
 
-void CSEDMLExporter::createSEDMLDocument(CCopasiDataModel& dataModel)
+void CSEDMLExporter::createSEDMLDocument(CCopasiDataModel& dataModel, std::string modelRef)
 {
   const SedDocument* pOldSEDMLDocument = NULL; //dataModel.getCurrentSEDMLDocument();
   const CModel* pModel = dataModel.getModel();
@@ -134,13 +153,10 @@ void CSEDMLExporter::createSEDMLDocument(CCopasiDataModel& dataModel)
 	// Later this will be settable by the user in the preferences dialog
 	//exporter.setExportCOPASIMIRIAM(true);
 
-	std::string simRef, modelRef;
+	std::string simRef;
     createSimulations(dataModel, simRef);
     createModels(dataModel, modelRef);
     createTasks(dataModel, simRef, modelRef);
-  //  createDataGenerators(dataModel);
-   // createReports(dataModel);
-
 }
 
 /**
@@ -169,10 +185,10 @@ void CSEDMLExporter::createSimulations(CCopasiDataModel& dataModel, std::string 
  * Creates the models for SEDML.
  */
 void CSEDMLExporter::createModels(CCopasiDataModel& dataModel, std::string & modelRef) {
-	modelRef = "model1";
+	std::string modelId = "model1"; // onlu one model
 	SedModel *model = this->mpSEDMLDocument->createModel();
-	model->setId(modelRef);
-	model->setSource("model1.xml");
+	model->setId(modelId);
+	model->setSource(modelRef);
 	model->setLanguage("urn:sedml:language:sbml");
 }
 
@@ -295,71 +311,6 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
 
 	}
 }
-
-/**
- * Creates the Tasks for SEDML.
- */
-//void CSEDMLExporter::createPlot2D(CCopasiDataModel &dataModel) //, SedPlot2D * pPSedPlot, std::string &curveId, std::string yDRef, bool logX, bool logY)
-//{
-	//SedPlot2D* pPSedPlot;
-//	pPSedPlot = this->mpSEDMLDocument->createPlot2D();
-/*	pPSedPlot->setId("plot1");
-	pPSedPlot->setName("S1 Timecourse");
-	SedCurve* pCurve = pPSedPlot->createCurve();
-	pCurve->setId(curveId);
-	//curve->setName(curveId);
-	pCurve->setLogX(logX);
-	pCurve->setLogY(logY);
-	pCurve->setXDataReference("time");
-	pCurve->setYDataReference(yDRef);
-*/
-	/*
-	size_t i, imax = dataModel.getPlotDefinitionList()->size();
-
-
-	//std::cerr << "Saving " << imax << " plots." << std::endl;
-	if (!imax)
-		CCopasiMessage(CCopasiMessage::EXCEPTION, "No plot definition for this SEDML document.");
-
-	//	  SedSimulation * sim = this->mpSEDMLDocument->createUniformTimeCourse();
-
-	for (i = 0; i < imax; i++) {
-		const CPlotSpecification* pPlot = (*dataModel.getPlotDefinitionList())[i];
-		size_t j, jmax = pPlot->getItems().size();
-
-		//std::cerr << "Saving " << jmax << "PlotItems." << std::endl;
-		for (j = 0; j < jmax; j++) {
-			const CPlotItem* pPlotItem = pPlot->getItems()[j];
-			pPSedlot = this->mpSEDMLDocument->createPlot2D();
-			pPSedlot->setId("curve_"+j);
-			pPSedlot->setId(pPlotItem->getCN()+"_" + j);
-			pPSedlot->setName(pPlotItem->getCN());
-
-			//TODO
-			size_t k, kmax = pPlotItem->getNumChannels();
-
-			//std::cerr << "Saving " << kmax << " Channels." << std::endl;
-			for (k = 0; k < kmax; k++) {
-				const CPlotDataChannelSpec pDataChannelSpec = pPlotItem->getChannels()[k];
-				//TODO
-				pModel->getMetabolites()[iMet]->getConcentrationReference();
-				plot->setId(pDataChannelSpec.get.get.getObjectName())
-
-				if (!pDataChannelSpec.minAutoscale) {
-					//TODO
-				}
-
-				if (!pDataChannelSpec.maxAutoscale) {
-					//TODO
-				}
-			}
-
-		}
-	}
-
-}*/
-
-
 
 CSEDMLExporter::CSEDMLExporter() {
 	// TODO Auto-generated constructor stub
