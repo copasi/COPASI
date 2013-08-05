@@ -26,9 +26,21 @@ QLayoutScene::QLayoutScene(CLayout* layout, CCopasiDataModel* model, CLRenderInf
   , mpLayout(layout)
   , mpRender(renderInformation)
   , mpResolver(NULL)
-{  
-  initializeResolver(model, renderInformation);
+{ 
+  initializeResolver(model, renderInformation);  
 }
+
+void QLayoutScene::setLayout(CLayout *layout, CCopasiDataModel* model, CLRenderInformationBase* renderInformation)
+{
+  mpLayout = layout;  
+  setRenderInformation(model, renderInformation);
+}
+
+void QLayoutScene::setRenderInformation(CCopasiDataModel* model, CLRenderInformationBase* renderInformation)
+{
+  initializeResolver(model, renderInformation);  
+}
+
 
 void QLayoutScene::saveToFile(const std::string& fileName, const std::string& fileType /*= "pdf"*/)
 {
@@ -100,6 +112,7 @@ void QLayoutScene::recreate()
   clear();
   fillFromLayout(mpLayout);
   QRenderConverter::setBackground(this, mpRender->getBackgroundColor(), mpResolver);
+  invalidate();
 }
 
 void QLayoutScene::addGlyph(const CLGraphicalObject* go)
@@ -112,7 +125,7 @@ void QLayoutScene::addGlyph(const CLGraphicalObject* go)
   const CLGeneralGlyph* general = dynamic_cast<const CLGeneralGlyph*>(go);
   if (curveGlyph != NULL)
   {
-    if (curveGlyph->getCurve().getNumCurveSegments() > 0)
+    if (curveGlyph->getCurve().getNumCurveSegments() > 0 || reaction != NULL)
      addItem(new QConnectionGraphicsItem(curveGlyph, 
        mpResolver == NULL ? NULL : mpResolver));
       

@@ -20,6 +20,8 @@ public:
   void setResolver(const CLRenderResolver* resolver);
   const CLRenderResolver* getResolver() const;
   void saveToFile(const std::string& fileName, const std::string& fileType = "pdf");
+  void setLayout(CLayout *layout, CCopasiDataModel* model=NULL, CLRenderInformationBase* renderInformation=NULL);
+  void setRenderInformation(CCopasiDataModel* model, CLRenderInformationBase* renderInformation);
 public slots:
   void recreate();
 protected:

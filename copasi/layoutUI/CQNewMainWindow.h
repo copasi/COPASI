@@ -31,6 +31,7 @@ class QToolBar;
 class CFluxMode;
 class CReaction;
 class CMetab;
+class QLayoutScene;
 
 #ifdef COPASI_AUTOLAYOUT
 #include "copasi/copasi.h"
@@ -301,6 +302,7 @@ private:
   QComboBox* mpZoomDropdown;
   CLayout* mpCurrentLayout;
   QLabel* mpRenderLabel;
+  QLayoutScene* mpCurrentScene;
   CLRenderInformationBase* mpCurrentRenderInformation;
   bool mDocumentChanged;
 
