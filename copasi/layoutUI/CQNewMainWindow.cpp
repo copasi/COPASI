@@ -212,15 +212,15 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
 
 #endif
   QDockWidget* pDockLayout = new QDockWidget("Layout View", this);
-  QLayoutScene *scene = new QLayoutScene( mpCurrentLayout, pDatamodel, mpCurrentRenderInformation);
-  QGraphicsView *view = new QLayoutView( scene );
+  mpCurrentScene = new QLayoutScene( mpCurrentLayout, pDatamodel, mpCurrentRenderInformation);
+  QGraphicsView *view = new QLayoutView( mpCurrentScene );
   view->setInteractive(true);
   view->setRenderHints( QPainter::Antialiasing );
   pDockLayout->setWidget(view);
   pDockLayout->setFloating(true);
   pDockLayout->hide();
-  connect(pDockLayout, SIGNAL(visibilityChanged(bool)), scene, SLOT(recreate()));
-  connect(this, SIGNAL(layoutChanged()), scene, SLOT(recreate()));
+  connect(pDockLayout, SIGNAL(visibilityChanged(bool)), mpCurrentScene, SLOT(recreate()));
+  connect(this, SIGNAL(layoutChanged()), mpCurrentScene, SLOT(recreate()));
   addDockWidget(Qt::NoDockWidgetArea, pDockLayout);
   mpViewMenu->addSeparator();
   mpViewMenu->addAction(pDockLayout->toggleViewAction());
@@ -627,6 +627,9 @@ void CQNewMainWindow::slotLayoutChanged(int index)
       // update the corresponding render information list
       this->updateRenderInformationList();
       this->updateRenderer();
+
+      mpCurrentScene->setLayout(mpCurrentLayout,mpDataModel, mpCurrentRenderInformation);
+      mpCurrentScene->recreate();
     }
 }
 
@@ -683,6 +686,9 @@ void CQNewMainWindow::slotRenderInfoChanged(int index)
           this->change_style();
         }
     }
+
+  mpCurrentScene->setRenderInformation(mpDataModel, mpCurrentRenderInformation);
+  mpCurrentScene->recreate();
 }
 
 void CQNewMainWindow::updateRenderInformationList()

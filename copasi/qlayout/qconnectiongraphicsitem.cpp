@@ -46,11 +46,14 @@ QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGl
 {
   QPainterPath& path = *getPath(curveGlyph->getCurve());
   QGraphicsPathItem* item;
+  QGraphicsItemGroup* itemGroup;
   if (curveGlyph->getCurve().getNumCurveSegments() > 0)
   {
     item = new QGraphicsPathItem(path);
-    QRenderConverter::applyStyle(item, &curveGlyph->getBoundingBox(), mpStyle->getGroup(), resolver);  
-    addToGroup(item);
+    itemGroup = new QGraphicsItemGroup();
+    itemGroup->addToGroup(item);
+    QRenderConverter::applyStyle(item, &curveGlyph->getBoundingBox(), mpStyle->getGroup(),resolver,itemGroup);      
+    addToGroup(itemGroup);
   }
 
   const CLReactionGlyph* reaction = dynamic_cast<const CLReactionGlyph*>(curveGlyph);  
@@ -66,8 +69,10 @@ QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGl
       {
         path = *getPath(metab->getCurve());
         item = new QGraphicsPathItem(path);
-        QRenderConverter::applyStyle(item, &metab->getBoundingBox(), style == NULL ? mpStyle->getGroup() : style->getGroup(), resolver);      
-        addToGroup(item);
+        itemGroup = new QGraphicsItemGroup();
+        itemGroup->addToGroup(item);
+        QRenderConverter::applyStyle(item, &metab->getBoundingBox(), style == NULL ? mpStyle->getGroup() : style->getGroup(), resolver,itemGroup);      
+        addToGroup(itemGroup);
       }
     }
   }  
@@ -85,8 +90,10 @@ QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGl
       {
         path = *getPath(glyph ->getCurve());
         item = new QGraphicsPathItem(path);
-        QRenderConverter::applyStyle(item, &glyph ->getBoundingBox(), style == NULL ? mpStyle->getGroup() : style->getGroup(), resolver);      
-        addToGroup(item);
+        itemGroup = new QGraphicsItemGroup();
+        itemGroup->addToGroup(item);
+        QRenderConverter::applyStyle(item, &glyph ->getBoundingBox(), style == NULL ? mpStyle->getGroup() : style->getGroup(), resolver, itemGroup);
+        addToGroup(itemGroup);
       }
     }
   }  

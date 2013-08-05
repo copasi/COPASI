@@ -107,13 +107,13 @@ QLinearGradient* getLinearGradient(const CLLinearGradient* linear, const CLBound
   switch (linear->getSpreadMethod())
   {
   case CLGradientBase::REFLECT:
-    result->setSpread(QConicalGradient::ReflectSpread);
+    result->setSpread(QGradient::ReflectSpread);
     break;
   case CLGradientBase::REPEAT:
-    result->setSpread(QConicalGradient::RepeatSpread);
+    result->setSpread(QGradient::RepeatSpread);
     break;
   case CLGradientBase::PAD:
-    result->setSpread(QConicalGradient::PadSpread);
+    result->setSpread(QGradient::PadSpread);
     break;
   default:
     break;
@@ -130,24 +130,23 @@ QLinearGradient* getLinearGradient(const CLLinearGradient* linear, const CLBound
 
 QRadialGradient* getRadialGradient(const CLRadialGradient* radial, const CLBoundingBox* bounds, const CLRenderResolver* resolver)
 {
-  double cx = radial->getCenterX().getAbsoluteValue()  + radial->getCenterX().getRelativeValue() / 100.0 * bounds->getDimensions().getWidth();
-  double cy = radial->getCenterY().getAbsoluteValue()  + radial->getCenterY().getRelativeValue() / 100.0 * bounds->getDimensions().getHeight();
-  double fx = radial->getFocalPointX().getAbsoluteValue()  + radial->getFocalPointX().getRelativeValue() / 100.0 * bounds->getDimensions().getWidth();
-  double fy = radial->getFocalPointY().getAbsoluteValue()  + radial->getFocalPointY().getRelativeValue() / 100.0 * bounds->getDimensions().getHeight();
-  double rx = radial->getRadius().getAbsoluteValue()  + radial->getRadius().getRelativeValue() / 100.0 * bounds->getDimensions().getWidth();
-  double ry = radial->getRadius().getAbsoluteValue()  + radial->getRadius().getRelativeValue() / 100.0 * bounds->getDimensions().getHeight();
+  double cx = bounds->getPosition().getX() + radial->getCenterX().getAbsoluteValue()  + radial->getCenterX().getRelativeValue() / 100.0 * bounds->getDimensions().getWidth();
+  double cy = bounds->getPosition().getY() + radial->getCenterY().getAbsoluteValue()  + radial->getCenterY().getRelativeValue() / 100.0 * bounds->getDimensions().getHeight();
+  double fx = bounds->getPosition().getX() + radial->getFocalPointX().getAbsoluteValue()  + radial->getFocalPointX().getRelativeValue() / 100.0 * bounds->getDimensions().getWidth();
+  double fy = bounds->getPosition().getY() + radial->getFocalPointY().getAbsoluteValue()  + radial->getFocalPointY().getRelativeValue() / 100.0 * bounds->getDimensions().getHeight();
+  double r = radial->getRadius().getAbsoluteValue()  + radial->getRadius().getRelativeValue() / 100.0 * bounds->getDimensions().getWidth();
 
-  QRadialGradient* result = new QRadialGradient(cx, cy, rx, fx, fy);
+  QRadialGradient* result = new QRadialGradient(cx, cy, r, fx, fy);
   switch (radial->getSpreadMethod())
   {
   case CLGradientBase::REFLECT:
-    result->setSpread(QConicalGradient::ReflectSpread);
+    result->setSpread(QGradient::ReflectSpread);
     break;
   case CLGradientBase::REPEAT:
-    result->setSpread(QConicalGradient::RepeatSpread);
+    result->setSpread(QGradient::RepeatSpread);
     break;
   case CLGradientBase::PAD:
-    result->setSpread(QConicalGradient::PadSpread);
+    result->setSpread(QGradient::PadSpread);
     break;
   default:
     break;
@@ -570,7 +569,7 @@ void applyRotationalMapping(QPainterPath& linePath, const CLLineEnding* ending, 
   
 }
 
-void addLineEndingToItem(QGraphicsPathItem* item, const CLLineEnding* ending, const CLGroup* group, const CLRenderResolver* resolver, QPointF point, QPointF second)
+void addLineEndingToItem(QGraphicsPathItem* item, const CLLineEnding* ending, const CLGroup* group, const CLRenderResolver* resolver, QPointF point, QPointF second, QGraphicsItemGroup* itemGroup)
 {
   const CLGroup* lineGroup = ending->getGroup();
   for (size_t i = 0; i < lineGroup->getNumElements(); ++i)
@@ -596,6 +595,17 @@ void addLineEndingToItem(QGraphicsPathItem* item, const CLLineEnding* ending, co
       linePath.translate(point);
       path.addPath(linePath);
       item->setPath(path);
+
+      if (poly->isSetFill() || group->isSetFill())
+      {
+        QBrush* brush = getBrush(poly, ending->getGroup(), resolver, ending->getBoundingBox());
+        QPen* pen = getPen(poly, ending->getGroup(), resolver, ending->getBoundingBox());
+        QGraphicsPathItem* outline = new QGraphicsPathItem(linePath);
+        outline->setPen(*pen);
+        outline->setBrush(*brush);
+        itemGroup->addToGroup(outline);
+      }
+
     }
     else if (ellipse != NULL)
     {
@@ -605,6 +615,16 @@ void addLineEndingToItem(QGraphicsPathItem* item, const CLLineEnding* ending, co
       linePath.translate(point);
       path.addPath(linePath);
       item->setPath(path);
+
+      if (ellipse->isSetFill() || group->isSetFill())
+      {
+        QBrush* brush = getBrush(ellipse, ending->getGroup(), resolver, ending->getBoundingBox());
+        QPen* pen = getPen(ellipse, ending->getGroup(), resolver, ending->getBoundingBox());
+        QGraphicsPathItem* outline = new QGraphicsPathItem(linePath);
+        outline->setPen(*pen);
+        outline->setBrush(*brush);
+        itemGroup->addToGroup(outline);
+      }
     }
     else if (rect != NULL)
     {
@@ -614,6 +634,17 @@ void addLineEndingToItem(QGraphicsPathItem* item, const CLLineEnding* ending, co
       linePath.translate(point);
       path.addPath(linePath);
       item->setPath(path);
+
+      if (rect->isSetFill() || group->isSetFill())
+      {
+        QBrush* brush = getBrush(rect, ending->getGroup(), resolver, ending->getBoundingBox());
+        QPen* pen = getPen(rect, ending->getGroup(), resolver, ending->getBoundingBox());
+        QGraphicsPathItem* outline = new QGraphicsPathItem(linePath);
+        outline->setPen(*pen);
+        outline->setBrush(*brush);
+        itemGroup->addToGroup(outline);
+      }
+
     }
   }
 }
@@ -626,6 +657,7 @@ void fillItemFromRenderCurve(QGraphicsItemGroup *item, const CLBoundingBox *pBB,
   QPen *pen = getPen(pCurve, group, resolver, pBB);
   pathItem->setPen(*pen);
   delete pen;
+  item->addToGroup(pathItem);
   //QBrush *brush = getBrush(NULL, group, resolver, pBB);
   //pathItem->setBrush(*brush);
   //delete brush;
@@ -633,17 +665,16 @@ void fillItemFromRenderCurve(QGraphicsItemGroup *item, const CLBoundingBox *pBB,
   if (group -> isSetStartHead())
   {
     const CLLineEnding *line = resolver->getLineEnding(group->getStartHead());
-    addLineEndingToItem(pathItem, line, group, resolver, path.elementAt(0), path.elementAt(1));
+    addLineEndingToItem(pathItem, line, group, resolver, path.elementAt(0), path.elementAt(1),item);
     
   }
    
   if (group->isSetEndHead())
   {
     const CLLineEnding *line = resolver->getLineEnding(group->getEndHead());
-    addLineEndingToItem(pathItem, line, group, resolver, path.elementAt(path.elementCount()-1),path.elementAt(path.elementCount()-2));
+    addLineEndingToItem(pathItem, line, group, resolver, path.elementAt(path.elementCount()-1),path.elementAt(path.elementCount()-2),item);
   }
 
-  item->addToGroup(pathItem);
 }
 
 
@@ -915,7 +946,7 @@ void fillItemFromGroup(QGraphicsItemGroup *item, const CLBoundingBox *bounds,con
   transform(item, group, NULL);
 }
 
-void QRenderConverter::applyStyle(QGraphicsPathItem* item, const CLBoundingBox* bounds, const CLGroup *group, const CLRenderResolver* resolver)
+void QRenderConverter::applyStyle(QGraphicsPathItem* item, const CLBoundingBox* bounds, const CLGroup *group, const CLRenderResolver* resolver, QGraphicsItemGroup* itemGroup)
 {
   if (resolver == NULL || group == NULL || bounds == NULL || item == NULL) 
     return;
@@ -933,14 +964,14 @@ void QRenderConverter::applyStyle(QGraphicsPathItem* item, const CLBoundingBox* 
   if (group -> isSetStartHead())
   {
     const CLLineEnding *line = resolver->getLineEnding(group->getStartHead());
-    addLineEndingToItem(item, line, group, resolver, start, second);
+    addLineEndingToItem(item, line, group, resolver, start, second,itemGroup);
     
   }
    
   if (group->isSetEndHead())
   {
     const CLLineEnding *line = resolver->getLineEnding(group->getEndHead());
-    addLineEndingToItem(item, line, group, resolver, end, secondLast);
+    addLineEndingToItem(item, line, group, resolver, end, secondLast,itemGroup);
   }
 
 }
