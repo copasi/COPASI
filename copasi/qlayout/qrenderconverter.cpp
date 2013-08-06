@@ -667,6 +667,11 @@ void fillItemFromRenderCurve(QGraphicsItemGroup *item, const CLBoundingBox *pBB,
     const CLLineEnding *line = resolver->getLineEnding(group->getStartHead());
     addLineEndingToItem(pathItem, line, group, resolver, path.elementAt(0), path.elementAt(1),item);
     
+  } 
+  else if (pCurve->isSetStartHead())
+  {
+    const CLLineEnding *line = resolver->getLineEnding(pCurve->getStartHead());
+    addLineEndingToItem(pathItem, line, line->getGroup(), resolver, path.elementAt(0), path.elementAt(1),item);
   }
    
   if (group->isSetEndHead())
@@ -674,7 +679,14 @@ void fillItemFromRenderCurve(QGraphicsItemGroup *item, const CLBoundingBox *pBB,
     const CLLineEnding *line = resolver->getLineEnding(group->getEndHead());
     addLineEndingToItem(pathItem, line, group, resolver, path.elementAt(path.elementCount()-1),path.elementAt(path.elementCount()-2),item);
   }
+  else if (pCurve->isSetEndHead())
+  {
+    const CLLineEnding *line = resolver->getLineEnding(pCurve->getEndHead());
+    addLineEndingToItem(pathItem, line, line->getGroup(), resolver, path.elementAt(path.elementCount()-1),path.elementAt(path.elementCount()-2),item);
+  }
 
+  
+  transform(pathItem, pCurve, group);
 }
 
 
@@ -838,7 +850,8 @@ void fillItemFromText(QGraphicsItemGroup *item, const CLBoundingBox *pBB,const C
 
     delete font;
   }
-
+  
+  transform(result, pText, group);
   item->addToGroup(result);
 }
 
