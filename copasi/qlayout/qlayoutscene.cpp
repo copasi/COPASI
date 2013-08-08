@@ -3,10 +3,12 @@
 #include <QPainter>
 #include <QPrinter>
 #include <QImage>
+#include <qgraphicseffect.h>
 
 #include <copasi.h>
 
 #include <qlayout/qlayoutscene.h>
+#include <qlayout/qcopasieffect.h>
 #include <qlayout/qlabelgraphicsitem.h>
 #include <qlayout/qstyledgraphicsitem.h>
 #include <qlayout/qconnectiongraphicsitem.h>
@@ -109,9 +111,7 @@ QLayoutScene::~QLayoutScene()
 
 void QLayoutScene::recreate()
 {
-  clear();
   fillFromLayout(mpLayout);
-  QRenderConverter::setBackground(this, mpRender->getBackgroundColor(), mpResolver);
   invalidate();
 }
 
@@ -123,35 +123,51 @@ void QLayoutScene::addGlyph(const CLGraphicalObject* go)
   const CLReactionGlyph* reaction = dynamic_cast<const CLReactionGlyph*>(go);
   const CLTextGlyph* text = dynamic_cast<const CLTextGlyph*>(go);
   const CLGeneralGlyph* general = dynamic_cast<const CLGeneralGlyph*>(go);
+  QGraphicsItem *item = NULL;
   if (curveGlyph != NULL)
   {
-    if (curveGlyph->getCurve().getNumCurveSegments() > 0 || reaction != NULL)
-     addItem(new QConnectionGraphicsItem(curveGlyph, 
-       mpResolver == NULL ? NULL : mpResolver));
-      
-    if (general != NULL)
-    {        
-      addItem(new QStyledGraphicsItem(general, 
-        mpResolver == NULL ? NULL : mpResolver));      
-    }
+    if (curveGlyph->getCurve().getNumCurveSegments() > 0 || reaction != NULL || general != NULL)
+     item = new QConnectionGraphicsItem(curveGlyph, 
+       mpResolver == NULL ? NULL : mpResolver);         
 
   }
   else if (text != NULL)
   {        
-    addItem(new QLabelGraphicsItem(text, 
-      mpResolver == NULL ? NULL : mpResolver));
+    item = new QLabelGraphicsItem(text, mpResolver == NULL ? NULL : mpResolver);
   }
   else 
   {
-    addItem(new QStyledGraphicsItem(go, 
-      mpResolver == NULL ? NULL : mpResolver));    
+    item = new QStyledGraphicsItem(go, mpResolver == NULL ? NULL : mpResolver);
   }
 
+  if (item != NULL)
+  {
+    CCopasiObject* obj = go->getModelObject();
+    if (obj != NULL && text == NULL)
+    {
+      item->setData(COPASI_OBJECT_CN, QString(obj->getCN().c_str()));      
+      mItems[obj->getCN()]= item;
+    }
+    addItem(item);
+  }
 }
   
+QGraphicsItem* QLayoutScene::getItemFor(const std::string& cn)
+{
+  return mItems[cn];
+}
+
 void QLayoutScene::fillFromLayout(const CLayout* layout)
 {
   if (layout == NULL) return;
+    
+  clear();
+  mItems.clear();
+
+  if (mpRender != NULL && mpResolver != NULL)
+  {
+      QRenderConverter::setBackground(this, mpRender->getBackgroundColor(), mpResolver);
+  }
 
   const CCopasiVector<CLCompartmentGlyph> & comps = layout->getListOfCompartmentGlyphs();
   auto itComp = comps.begin();

@@ -88,6 +88,7 @@
 #include <QPainter>
 #include <qlayout/qlayoutscene.h>
 #include <qlayout/qlayoutview.h>
+#include <qlayout/qanimationwindow.h>
 #include <layout/CLRenderResolver.h>
 
 
@@ -224,6 +225,10 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   addDockWidget(Qt::NoDockWidgetArea, pDockLayout);
   mpViewMenu->addSeparator();
   mpViewMenu->addAction(pDockLayout->toggleViewAction());
+  mpCurrentScene->recreate();
+  QAnimationWindow *window = new QAnimationWindow(); 
+  window->setScene(new QLayoutScene( mpCurrentLayout, pDatamodel, mpCurrentRenderInformation), pDatamodel);
+  window->show();
 
 
 

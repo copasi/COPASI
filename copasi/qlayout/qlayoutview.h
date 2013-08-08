@@ -9,6 +9,7 @@ class QLayoutView: public QGraphicsView
 {
   Q_OBJECT
 public:
+  QLayoutView(QWidget*parent=NULL);
   QLayoutView(QLayoutScene *scene);
   virtual ~QLayoutView();
 protected:

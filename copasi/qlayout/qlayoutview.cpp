@@ -8,6 +8,11 @@ QLayoutView::~QLayoutView()
 {
 }
 
+QLayoutView::QLayoutView(QWidget*parent)
+  : QGraphicsView(parent)
+{
+}
+
 QLayoutView::QLayoutView(QLayoutScene *scene)
   : QGraphicsView(scene)
 {

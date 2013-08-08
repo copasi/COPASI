@@ -12,6 +12,7 @@ QStyledGraphicsItem::QStyledGraphicsItem(const CLGraphicalObject* go, const CLRe
   //setFlag(QGraphicsItem::ItemIsMovable);
   setFlag(QGraphicsItem::ItemIsSelectable);
   QRenderConverter::fillGroupFromStyle(this, &go->getBoundingBox(), mpStyle, mpResolver);
+
 }
 
 
