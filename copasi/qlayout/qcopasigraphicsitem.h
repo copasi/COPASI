@@ -1,6 +1,8 @@
 #ifndef QCOPASI_GRAPHICS_ITEM
 #define QCOPASI_GRAPHICS_ITEM
 
+#define COPASI_OBJECT_CN 1
+
 class CLStyle;
 class CLRenderResolver;
 class QCopasiGraphicsItem
