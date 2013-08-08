@@ -29,7 +29,7 @@ void QCopasiEffect::draw(QPainter* painter)
   QRectF rect = pixmap.rect();
 
   QTransform trans = QTransform::fromScale(mScale, mScale);
-  QPixmap &transformed = pixmap.transformed(trans, Qt::SmoothTransformation);
+  QPixmap transformed = pixmap.transformed(trans, Qt::SmoothTransformation);
   QRectF transRect = transformed.rect();
 
   QPointF newOffset = offset + (rect.center() - transRect.center());

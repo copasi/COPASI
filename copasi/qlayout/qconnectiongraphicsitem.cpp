@@ -11,8 +11,8 @@ QPainterPath* QConnectionGraphicsItem::getPath(const CLCurve& curve)
   QPainterPath* result = new QPainterPath();
   for (size_t i = 0; i < curve.getNumCurveSegments(); ++i)
   {
-    auto segment = curve.getSegmentAt(i);    
-    auto path = QPainterPath(
+    const CLLineSegment* segment = curve.getSegmentAt(i);    
+    QPainterPath path = QPainterPath(
       QPointF(
       segment->getStart().getX(),
       segment->getStart().getY()));
@@ -60,7 +60,7 @@ QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGl
   if (reaction != NULL)
   {
     const CCopasiVector<CLMetabReferenceGlyph> & list = reaction->getListOfMetabReferenceGlyphs();
-    for(auto it = list.begin(); it != list.end(); ++it)
+    for(CCopasiVector<CLMetabReferenceGlyph>::const_iterator it = list.begin(); it != list.end(); ++it)
     {
       const CLMetabReferenceGlyph* metab = *it;
       const CLStyle *style = resolver->resolveStyle(metab);
@@ -81,7 +81,7 @@ QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGl
   if (general != NULL)
   {
     const CCopasiVector<CLReferenceGlyph> & list = general->getListOfReferenceGlyphs();
-    for(auto it = list.begin(); it != list.end(); ++it)
+    for(CCopasiVector<CLReferenceGlyph>::const_iterator it = list.begin(); it != list.end(); ++it)
     {
       const CLReferenceGlyph* glyph = *it;
       const CLStyle *style = resolver->resolveStyle(glyph);
