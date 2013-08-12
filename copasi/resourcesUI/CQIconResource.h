@@ -63,6 +63,10 @@ public:
     skipBackward,
     skipForward,
     roll,
+    viewmagMinus,
+    viewmagPlus,
+    viewmag1,
+    viewmagfit,
     // This is the default icon which is empty
     unknown,
     // This must be the last entry to automatically determine the size!

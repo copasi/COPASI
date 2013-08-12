@@ -1,152 +1,118 @@
 #include <qgraphicsitem.h>
 #include <qgraphicseffect.h>
+#include <QFileDialog>
 
+#include <qlayout/qcopasianimation.h>
+#include <qlayout/qanimationsettingseditor.h>
 #include <qlayout/qanimationwindow.h>
 #include <qlayout/qlayoutscene.h>
 #include <qlayout/qcopasieffect.h>
+#include <qlayout/qeffectdescription.h>
 #include <report/CCopasiObjectName.h>
 #include <report/CCopasiRootContainer.h>
 #include <resourcesUI/CQIconResource.h>
 
-qreal linear(qreal a, qreal b, qreal t)
-{
-    return a * (1 - t) + b * t;
-}
+#include <model/CModel.h>
+#include <model/CReaction.h>
+#include <elementaryFluxModes/CEFMTask.h>
+#include <elementaryFluxModes/CEFMProblem.h>
+#include <elementaryFluxModes/CFluxMode.h>
 
-/** 
- * Interpolate between a, and b
- * 
- * 0.0 <= t <= 1.0
+class QConservedSpeciesAnimation : public QCopasiAnimation
+{
+  virtual void initialize(const CCopasiDataModel &dataModel)
+  {
+    mpDataModel = &dataModel;
+    const CModel& model = *dataModel.getModel();
+    const CCopasiVector< CMetab > & metabs = model.getMetabolites();
+    CCopasiVector< CMetab >::const_iterator it = metabs.begin();
+    while(it != metabs.end())
+    {
+      mEntries.push_back(new QEffectDescription((*it)->getCN()));
+      //keyMap[(*it)->getCN()] = (*it)->getKey();
+      ++it;
+    }
+  }
+
+  virtual void getScales(std::vector<qreal>& scales, int step)
+  {
+   if (mpDataModel == NULL) return;
+   const CModel& model = *mpDataModel->getModel();
+   const CCopasiVector< CMoiety > & moieties = model.getMoieties();
+   if (moieties.size() <= (size_t)step) return;
+   const CMoiety* moiety = moieties[step];
+   const std::vector<std::pair< C_FLOAT64, CMetab * > > &eqn = moiety->getEquation();
+   std::map<std::string, double> cnValueMap;
+   std::vector<std::pair< C_FLOAT64, CMetab * > >::const_iterator it = eqn.begin();
+   while (it != eqn.end())
+   {
+     cnValueMap[(*it).second->getCN()] = (*it).first;
+     ++it;
+   }
+   for (size_t i = 0; i < mEntries.size(); ++i)
+      scales.push_back(cnValueMap[mEntries[i]->getCN()]);    
+  }
+
+};
+
+/**
+ * Animation, that displays one fluxmode per frame
  */
-QColor interpolate(const QColor &a, const QColor &b, float t)
-{
-  int ah, as, av, aa;
-  a.getHsv(&ah, &as, &av, &aa);
-
-  int bh, bs, bv, ba;
-  b.getHsv(&bh, &bs, &bv, &ba);
-
-  int rh, rs, rv, ra;
-  rh = linear(ah, bh, t);
-  rs = linear(as, bs, t);
-  rv = linear(av, bv, t);
-  ra = linear(aa, ba, t);
-    
-  return QColor::fromHsv(rh, rs, rv, ra);
-}
-
-class QEffectDescription
+class QFluxModeAnimation : public QCopasiAnimation
 {
 public:
-  enum Mode
+  virtual void initialize(const CCopasiDataModel &dataModel)
   {
-    DropShadow,
-    Colorize,
-    Scale
-  };
-
-  QEffectDescription(const std::string& cn)
-    : mCN(cn)
-    , mStartColor(Qt::white)
-    , mEndColor(Qt::red)
-    , mScaleStart(0.5)
-    , mScaleEnd(2.0)
-    , mMode(Scale)
-  {
-  }
-
-  const std::string& getCN()const
-  {
-    return mCN;
-  }
-
-  void applyToScene(QLayoutScene& scene, qreal t)
-  {
-    QGraphicsItem *item = scene.getItemFor(mCN);
-    if (item == NULL)
-      return;
-    switch(mMode)
+    mpDataModel = &dataModel;
+    const CModel& model = *dataModel.getModel();
+    const CCopasiVector< CReaction > & reactions = model.getReactions();
+    CCopasiVector< CReaction >::const_iterator it = reactions.begin();
+    size_t count = 0;
+    while(it != reactions.end())
     {
-    default:
-    case DropShadow:
-      {
-        QGraphicsDropShadowEffect* effect = new QGraphicsDropShadowEffect(&scene);
-        effect->setColor(interpolate(mStartColor, mEndColor, t));
-        effect->setBlurRadius(25);
-        effect->setEnabled(true);
-        effect->setOffset(0);
-        item->setGraphicsEffect(effect);
-      }
-      break;
-    case Colorize:
-      {
-        QGraphicsColorizeEffect* effect = new QGraphicsColorizeEffect(&scene);
-        effect->setColor(interpolate(mStartColor, mEndColor, t));
-        effect->setStrength(1);
-        effect->setEnabled(true);
-        item->setGraphicsEffect(effect);
-      }
-      break;
-    case Scale:
-      {
-        QCopasiEffect* effect = new QCopasiEffect();
-        effect->setScale(linear(mScaleStart, mScaleEnd, t));
-        effect->setEnabled(true);
-        item->setGraphicsEffect(effect);
-      }
-      break;
+      mEntries.push_back(new QEffectDescription((*it)->getCN(), QEffectDescription::Colorize));
+      indexMap[count] = (*it)->getCN();
+      ++it;
+      ++count;
     }
+  }
+  virtual void getScales(std::vector<qreal>& scales, int step)
+  {
+    if (mpDataModel == NULL) return;
+    CEFMTask *task = dynamic_cast< CEFMTask * >((*mpDataModel->getTaskList())["Elementary Flux Modes"]);
+    if (task == NULL) return;
+    const CEFMProblem* problem = dynamic_cast<const CEFMProblem*>(task->getProblem());
+    if (problem == NULL) return;
+    const std::vector< CFluxMode >& fluxModes = problem->getFluxModes();
+    if (fluxModes.size() <= (size_t)step) return;
+    const CFluxMode& mode = fluxModes[step];
+
+    const std::vector< const CReaction * > &reordered = problem->getReorderedReactions();
+    std::map<std::string, double> cnValueMap;
+    
+    CFluxMode::const_iterator modeIt = mode.begin();
+    while (modeIt  != mode.end())
+    {
+      const size_t reactionIndex = (*modeIt).first;
+      const double coefficient = (*modeIt).second;
+      cnValueMap[reordered[reactionIndex]->getCN()] = coefficient;
+      ++modeIt;
+    }
+
+    for (size_t i = 0; i < mEntries.size(); ++i)
+      scales.push_back(cnValueMap[mEntries[i]->getCN()]);      
   }
 
 protected:
-  std::string mCN;
-  QColor mStartColor;
-  QColor mEndColor;
-  qreal  mScaleStart;
-  qreal mScaleEnd;
-  Mode mMode;
+  std::map<size_t, std::string> indexMap;
+
 };
 
-class QCopasiAnimation
-{
-public: 
-  virtual ~QCopasiAnimation()
-  {
-    std::vector<QEffectDescription*>::iterator it = mEntries.begin();
-    while(it != mEntries.end())
-    {
-      delete *it;
-      ++it;
-    }
-    mEntries.clear();
-  }
-  
-  virtual void initialize(const CCopasiDataModel &model) = 0;
-  virtual void getScales(std::vector<qreal>& scales, int step) //= 0;
-  {
-    scales.clear();
-    std::vector<QEffectDescription*>::iterator it = mEntries.begin();
-    while(it != mEntries.end())
-    {
-      scales.push_back(step/100.0);
-      ++it;
-    }
-  }
-  virtual void applyToScene(QLayoutScene& scene, int step) 
-  {
-    std::vector<qreal> scales; getScales(scales, step);
-    if (scales.size() != mEntries.size())
-      return;
-    for (size_t i = 0; i < scales.size(); ++i)
-    {
-      mEntries[i]->applyToScene(scene, scales[i]);
-    }
-  }
-protected:
-  std::vector<QEffectDescription*> mEntries;
-};
 #include <model/CModel.h>
 #include <trajectory/CTrajectoryTask.h>
+/**
+ * Animation that displays the concentrations per time
+ */
 class QTimeCourseAnimation : public QCopasiAnimation
 {
 public: 
@@ -199,11 +165,11 @@ public:
     if (series->getRecordedSteps() < (size_t)step)
       return;
     
-    double max = mGlobalScaling ?getMax(series) : 0;
+    double max = mMode == QCopasiAnimation::Global ? getMax(series) : 0;
     
     for (size_t i = 0; i < mEntries.size(); ++i)
     {
-      if (!mGlobalScaling)
+      if (mMode == QCopasiAnimation::Individual)
         max  = getMax(series, getIndex(series, mEntries[i]->getCN()));
       double value = getValue(series, mEntries[i]->getCN(), step);
       scales.push_back(value/max);
@@ -224,49 +190,37 @@ public:
     }
 
   }
-protected:
-  const CCopasiDataModel* mpDataModel;
-  std::map<std::string, std::string> keyMap;
-  bool mGlobalScaling;
+protected: 
+  std::map<std::string, std::string> keyMap;  
 };
-/*
-void applyEffect(QLayoutScene& scene, const std::string& cn, int step, int vis)
-{
-  QGraphicsItem *item = scene.getItemFor(cn);
-  if (item == NULL)
-    return;
-
-  if (vis==1)
-  {
-    QCopasiEffect* effect = new QCopasiEffect();
-    effect->setScale(step/50.0);
-    effect->setEnabled(true);
-    item->setGraphicsEffect(effect);
-  }
-  if (vis==2)
-  {
-    QGraphicsColorizeEffect* effect = new QGraphicsColorizeEffect(&scene);
-    effect->setColor(QColor(step/100.0*255, 0, 0));
-    effect->setStrength(1);
-    effect->setEnabled(true);
-    item->setGraphicsEffect(effect);
-  }
-  if (vis==3)
-  {
-    QGraphicsDropShadowEffect* effect = new QGraphicsDropShadowEffect(&scene);
-    effect->setColor(QColor(step/100.0*255, 0, 0));
-    effect->setBlurRadius(step);
-    effect->setEnabled(true);
-    effect->setOffset(0);
-    item->setGraphicsEffect(effect);
-  }
-}*/
 
 QAnimationWindow::QAnimationWindow ()
   : mAnimation(NULL)
 {
   setupUi(this);    
   setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
+  setUnifiedTitleAndToolBarOnMac(true);
+
+  QMenu* viewMenu = menuBar()->addMenu(tr("&View"));
+  graphicsView->fillZoomMenu(viewMenu);
+
+  QToolBar* viewToolBar = this->addToolBar("View");
+  graphicsView->fillZoomTooBar(viewToolBar);
+  QToolBar* selectToolbar = this->addToolBar("Select");
+  graphicsView->fillSelectionToolBar(selectToolbar);
+
+  mpWindowMenu = menuBar()->addMenu(tr("&Window"));
+
+  addToMainWindow();
+}
+
+
+void QAnimationWindow::slotExportImage()
+{
+   QString fileName = QFileDialog::getSaveFileName(this, tr("Export Image"),
+                            "",
+                            tr("PDF files (*.pdf);;Images (*.png *.xpm *.jpg);;All files (*.*)"));
+   graphicsView->slotSaveToFile(fileName);
 }
 
 QAnimationWindow::~QAnimationWindow ()
@@ -280,27 +234,71 @@ void QAnimationWindow::setScene(QLayoutScene* scene, CCopasiDataModel* dataModel
   mpScene = scene;
   this->graphicsView->setScene(mpScene);
   mpScene->recreate();
+  graphicsView->setDataModel(dataModel);
   this->graphicsView->invalidateScene();
 
-  mAnimation = new QTimeCourseAnimation();
-  mAnimation->initialize(*dataModel);
+  //setAnimation(new QConservedSpeciesAnimation(), dataModel);
+  //setAnimation(new QFluxModeAnimation(), dataModel);
+  setAnimation(new QTimeCourseAnimation(), dataModel);
+}
 
+void QAnimationWindow::slotSwitchAnimation()
+{
+  QAction *action = dynamic_cast<QAction *>(sender());
+  if (action == NULL) return;
+  if (action->text() == "View Time Course")
+  {
+    setAnimation(new QTimeCourseAnimation(), graphicsView->getDataModel());
+  }
+  else if (action->text() == "View Elementary Modes")
+  {
+    setAnimation(new QFluxModeAnimation(), graphicsView->getDataModel());
+  }
+  else if (action->text() == "View Conserved Species")
+  {
+    setAnimation(new QConservedSpeciesAnimation(), graphicsView->getDataModel());
+  }
 }
 
 
+
+QMenu *QAnimationWindow::getWindowMenu() const
+{
+  return mpWindowMenu;
+}
+
+void QAnimationWindow::setAnimation(QCopasiAnimation* animation, CCopasiDataModel* dataModel)
+{
+  if (mAnimation != NULL)
+  {
+    mAnimation->removeFromScene(*mpScene);
+    delete mAnimation;    
+  }
+  mAnimation = animation;
+  mAnimation->initialize(*dataModel);
+}
 
 void QAnimationWindow::slotShowStep(int step)
 {
   statusBar()->message(QString("Displaying step %1").arg(step), 1000);
 
   if (mAnimation == NULL) return;
-  mAnimation->applyToScene(*mpScene, step);
-  //applyEffect(*mpScene,  "CN=Root,Model=BorisEJB,Vector=Compartments[compartment],Vector=Metabolites[MKKK]", step,1);
-  //applyEffect(*mpScene,  "CN=Root,Model=BorisEJB,Vector=Compartments[compartment],Vector=Metabolites[MKKK_P]", step,2);
-  //applyEffect(*mpScene,  "CN=Root,Model=BorisEJB,Vector=Compartments[compartment],Vector=Metabolites[MKK]", step,3);
-  //applyEffect(*mpScene,  "CN=Root,Model=BorisEJB,Vector=Compartments[compartment],Vector=Metabolites[MKK_P]", step,1);
-  //applyEffect(*mpScene,  "CN=Root,Model=BorisEJB,Vector=Compartments[compartment],Vector=Metabolites[MKK_PP]", step,2);
-  //applyEffect(*mpScene,  "CN=Root,Model=BorisEJB,Vector=Reactions[J0]", step,2);
-  //applyEffect(*mpScene,  "CN=Root,Model=BorisEJB,Vector=Reactions[J2]", step,3);
+    
+  mAnimation->applyToScene(*mpScene, step);  
   mpScene->update();
+}
+
+void QAnimationWindow::closeEvent(QCloseEvent *closeEvent)
+{
+  removeFromMainWindow();
+}
+
+void QAnimationWindow::slotEditSettings()
+{
+  QAnimationSettingsEditor editor;
+  editor.initFrom(mAnimation);
+  if (editor.exec() == QDialog::Accepted)
+  {
+    editor.saveTo(mAnimation);
+  }
 }

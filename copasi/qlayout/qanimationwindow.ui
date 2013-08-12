@@ -51,14 +51,78 @@
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menu_File">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="actionView_Time_Course"/>
+    <addaction name="actionView_Elementary_Modes"/>
+    <addaction name="actionView_Conserved_Species"/>
+    <addaction name="separator"/>
+    <addaction name="actionExport"/>
+    <addaction name="separator"/>
+    <addaction name="actionClose"/>
+   </widget>
+   <widget class="QMenu" name="menu_Edit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="action_Settings"/>
+   </widget>
+   <addaction name="menu_File"/>
+   <addaction name="menu_Edit"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="action">
+   <property name="text">
+    <string>-</string>
+   </property>
+  </action>
+  <action name="actionExport">
+   <property name="text">
+    <string>Export Image</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
+   </property>
+  </action>
+  <action name="action_Settings">
+   <property name="text">
+    <string>&amp;Settings</string>
+   </property>
+  </action>
+  <action name="actionView_Conserved_Species">
+   <property name="text">
+    <string>View Conserved Species</string>
+   </property>
+  </action>
+  <action name="actionView_Elementary_Modes">
+   <property name="text">
+    <string>View Elementary Modes</string>
+   </property>
+  </action>
+  <action name="actionView_Time_Course">
+   <property name="text">
+    <string>View Time Course</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
    <class>QLayoutView</class>
    <extends>QGraphicsView</extends>
    <header location="global">qlayout/qlayoutview.h</header>
+   <slots>
+    <slot>slotSaveToFile(QString)</slot>
+   </slots>
   </customwidget>
   <customwidget>
    <class>QAnimationControls</class>
@@ -88,8 +152,107 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionClose</sender>
+   <signal>triggered()</signal>
+   <receiver>QAnimationWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionExport</sender>
+   <signal>triggered()</signal>
+   <receiver>QAnimationWindow</receiver>
+   <slot>slotExportImage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Settings</sender>
+   <signal>triggered()</signal>
+   <receiver>QAnimationWindow</receiver>
+   <slot>slotEditSettings()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionView_Conserved_Species</sender>
+   <signal>triggered()</signal>
+   <receiver>QAnimationWindow</receiver>
+   <slot>slotSwitchAnimation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionView_Elementary_Modes</sender>
+   <signal>triggered()</signal>
+   <receiver>QAnimationWindow</receiver>
+   <slot>slotSwitchAnimation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionView_Time_Course</sender>
+   <signal>triggered()</signal>
+   <receiver>QAnimationWindow</receiver>
+   <slot>slotSwitchAnimation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slotShowStep(int)</slot>
+  <slot>slotExportImage()</slot>
+  <slot>slotEditSettings()</slot>
+  <slot>slotSwitchAnimation()</slot>
  </slots>
 </ui>

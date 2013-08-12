@@ -49,5 +49,9 @@
     <file>images/media-skip-backward.png</file>
     <file>images/media-skip-forward.png</file>
     <file>images/roll.png</file>
+    <file>images/viewmagMinus.png</file>
+    <file>images/viewmagPlus.png</file>
+    <file>images/viewmag1.png</file>
+    <file>images/viewmagfit.png</file>
   </qresource>
 </RCC>
