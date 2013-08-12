@@ -43,6 +43,16 @@ void QLayoutScene::setRenderInformation(CCopasiDataModel* model, CLRenderInforma
   initializeResolver(model, renderInformation);  
 }
 
+const CLayout* QLayoutScene::getCurrentLayout() const
+{
+  return mpLayout;
+}
+
+const CLRenderInformationBase* QLayoutScene::getCurrentRenderInfo() const
+{
+  return mpRender;
+}
+
 
 void QLayoutScene::saveToFile(const std::string& fileName, const std::string& fileType /*= "pdf"*/)
 {
@@ -59,11 +69,12 @@ void QLayoutScene::saveToFile(const std::string& fileName, const std::string& fi
   }
   else
   {
-    QImage image(QSize(width(), height()), QImage::Format_ARGB32);
+    const int scale = 2;
+    QImage image(QSize(width()*scale, height()*scale), QImage::Format_ARGB32);
     QPainter painter(&image);
     painter.setRenderHints(
       QPainter::Antialiasing |QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
-    render(&painter, QRect(), itemsBoundingRect());
+    render(&painter, image.rect(), itemsBoundingRect());
     painter.end();
     image.save(fileName.c_str(), fileType.c_str());
   }

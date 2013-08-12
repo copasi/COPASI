@@ -78,6 +78,10 @@ void CQIconResource::init()
   Icons[skipBackward].addFile(QString::fromUtf8(":/images/media-skip-backward.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[skipForward].addFile(QString::fromUtf8(":/images/media-skip-forward.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[roll].addFile(QString::fromUtf8(":/images/roll.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[viewmagMinus].addFile(QString::fromUtf8(":/images/viewmagMinus.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[viewmagPlus].addFile(QString::fromUtf8(":/images/viewmagPlus.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[viewmag1].addFile(QString::fromUtf8(":/images/viewmag1.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[viewmagfit].addFile(QString::fromUtf8(":/images/viewmagfit.png"), QSize(), QIcon::Normal, QIcon::On);
 
   needInit = false;
 }
