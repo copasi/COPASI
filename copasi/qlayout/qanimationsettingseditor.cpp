@@ -68,7 +68,7 @@ void QAnimationSettingsEditor::initFrom(QCopasiAnimation* other)
     QEffectDescription* current = *it;
 
     QListWidgetItem* item = new QListWidgetItem(current->getCN().c_str());
-    item->setData(Qt::UserRole, mEntries.size());
+    item->setData(Qt::UserRole, (int)mEntries.size());
     listWidget->addItem(item);
     mEntries.push_back(current);
 
