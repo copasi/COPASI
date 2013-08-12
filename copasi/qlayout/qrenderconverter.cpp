@@ -215,6 +215,8 @@ QFont* getFont(const CLText *item,const CLGroup *group, const CLRenderResolver* 
     case CLText::STYLE_ITALIC:
       italic = true;
       break;
+    default:
+      break;
 
   }
   else if (group != NULL && group->isSetFontStyle())
@@ -223,7 +225,8 @@ QFont* getFont(const CLText *item,const CLGroup *group, const CLRenderResolver* 
     case CLText::STYLE_ITALIC:
       italic = true;
       break;
-
+    default:
+      break;
   }
 
   QFont *result = new QFont(font, -1, weight, italic);
@@ -300,7 +303,7 @@ QPen* getPen(const CLGraphicalPrimitive1D *item,const CLGroup *group, const CLRe
   if (item != NULL && item->isSetDashArray())
   {
     const std::vector<unsigned int>& raw = item->getDashArray();
-    auto start = raw.begin();    
+    std::vector<unsigned int>::const_iterator start = raw.begin();    
     QVector<qreal> pattern; 
     while (start != raw.end())
     {
@@ -312,7 +315,7 @@ QPen* getPen(const CLGraphicalPrimitive1D *item,const CLGroup *group, const CLRe
   else if (group != NULL && group->isSetDashArray())
   {
     const std::vector<unsigned int>& raw = group->getDashArray();
-    auto start = raw.begin();    
+    std::vector<unsigned int>::const_iterator start = raw.begin();    
     QVector<qreal> pattern; 
     while (start != raw.end())
     {
@@ -703,6 +706,7 @@ void fillItemFromPolygon(QGraphicsItemGroup *item, const CLBoundingBox *pBB,cons
       path.setFillRule(Qt::OddEvenFill);
       break;
     case CLGraphicalPrimitive2D::NONZERO:
+    default:
       path.setFillRule(Qt::WindingFill);
       break;
     }
@@ -717,6 +721,7 @@ void fillItemFromPolygon(QGraphicsItemGroup *item, const CLBoundingBox *pBB,cons
       path.setFillRule(Qt::OddEvenFill);
       break;
     case CLGraphicalPrimitive2D::NONZERO:
+    default:
       path.setFillRule(Qt::WindingFill);
       break;
     }
