@@ -32,6 +32,10 @@ class QConservedSpeciesAnimation : public QCopasiAnimation
       //keyMap[(*it)->getCN()] = (*it)->getKey();
       ++it;
     }
+
+   // initialize number of steps
+   const CCopasiVector< CMoiety > & moieties = model.getMoieties();
+   mNumSteps = moieties.size();
   }
 
   virtual void getScales(std::vector<qreal>& scales, int step)
@@ -39,9 +43,10 @@ class QConservedSpeciesAnimation : public QCopasiAnimation
    if (mpDataModel == NULL) return;
    const CModel& model = *mpDataModel->getModel();
    const CCopasiVector< CMoiety > & moieties = model.getMoieties();
+   mNumSteps = moieties.size();
    if (moieties.size() <= (size_t)step) return;
    const CMoiety* moiety = moieties[step];
-   const std::vector<std::pair< C_FLOAT64, CMetab * > > &eqn = moiety->getEquation();
+   const std::vector<std::pair< C_FLOAT64, CMetab * > > &eqn = moiety->getEquation();   
    std::map<std::string, double> cnValueMap;
    std::vector<std::pair< C_FLOAT64, CMetab * > >::const_iterator it = eqn.begin();
    while (it != eqn.end())
@@ -75,6 +80,15 @@ public:
       ++it;
       ++count;
     }
+
+    // initialize number of steps
+    CEFMTask *task = dynamic_cast< CEFMTask * >((*mpDataModel->getTaskList())["Elementary Flux Modes"]);
+    if (task == NULL) return;
+    const CEFMProblem* problem = dynamic_cast<const CEFMProblem*>(task->getProblem());
+    if (problem == NULL) return;
+    const std::vector< CFluxMode >& fluxModes = problem->getFluxModes();
+    mNumSteps = fluxModes.size();    
+
   }
   virtual void getScales(std::vector<qreal>& scales, int step)
   {
@@ -84,6 +98,7 @@ public:
     const CEFMProblem* problem = dynamic_cast<const CEFMProblem*>(task->getProblem());
     if (problem == NULL) return;
     const std::vector< CFluxMode >& fluxModes = problem->getFluxModes();
+    mNumSteps = fluxModes.size();
     if (fluxModes.size() <= (size_t)step) return;
     const CFluxMode& mode = fluxModes[step];
 
@@ -161,7 +176,10 @@ public:
   {
     if (mpDataModel == NULL) return;
     CTrajectoryTask *task = dynamic_cast< CTrajectoryTask * >((*mpDataModel->getTaskList())["Time-Course"]);
+    if (task == NULL) return;
     const CTimeSeries* series = &task->getTimeSeries();
+    if (series == NULL) return;
+    mNumSteps = series->getRecordedSteps();
     if (series->getRecordedSteps() < (size_t)step)
       return;
     
@@ -189,13 +207,20 @@ public:
       ++it;
     }
 
+    // initialize number of steps
+    CTrajectoryTask *task = dynamic_cast< CTrajectoryTask * >((*mpDataModel->getTaskList())["Time-Course"]);
+    if (task == NULL) return;
+    const CTimeSeries* series = &task->getTimeSeries();
+    if (series == NULL) return;
+    mNumSteps = series->getRecordedSteps();
+
   }
 protected: 
   std::map<std::string, std::string> keyMap;  
 };
 
 QAnimationWindow::QAnimationWindow ()
-  : mAnimation(NULL)
+  : mAnimation(NULL)  
 {
   setupUi(this);    
   setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
@@ -276,6 +301,7 @@ void QAnimationWindow::setAnimation(QCopasiAnimation* animation, CCopasiDataMode
   }
   mAnimation = animation;
   mAnimation->initialize(*dataModel);
+  mpControls->setNumSteps(mAnimation->getNumSteps());
 }
 
 void QAnimationWindow::slotShowStep(int step)
@@ -283,8 +309,9 @@ void QAnimationWindow::slotShowStep(int step)
   statusBar()->message(QString("Displaying step %1").arg(step), 1000);
 
   if (mAnimation == NULL) return;
-    
+
   mAnimation->applyToScene(*mpScene, step);  
+  mpControls->setNumSteps(mAnimation->getNumSteps());
   mpScene->update();
 }
 

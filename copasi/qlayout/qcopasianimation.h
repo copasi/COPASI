@@ -20,9 +20,10 @@ public:
   QCopasiAnimation();
   virtual ~QCopasiAnimation();
   virtual void removeFromScene(QLayoutScene& scene);
-  virtual void initialize(const CCopasiDataModel &model) = 0;
+  virtual void initialize(const CCopasiDataModel &model) = 0;  
   virtual void getScales(std::vector<qreal>& scales, int step); //= 0;
   virtual void applyToScene(QLayoutScene& scene, int step);
+  virtual int getNumSteps();
   ScaleMode getScaleMode() const;
   void setScaleMode(ScaleMode mode);
   std::vector<QEffectDescription*>& getEntries();
@@ -30,6 +31,7 @@ protected:
   std::vector<QEffectDescription*> mEntries;
   const CCopasiDataModel* mpDataModel;
   ScaleMode mMode;
+  int mNumSteps; // populate with the number of steps
 };
 
 

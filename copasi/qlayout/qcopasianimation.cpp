@@ -3,6 +3,7 @@
 
 QCopasiAnimation::QCopasiAnimation()
   : mMode(QCopasiAnimation::Global)
+  , mNumSteps(0)
 {
 }
 
@@ -16,10 +17,17 @@ QCopasiAnimation::~QCopasiAnimation()
   }
   mEntries.clear();
 }
+
 std::vector<QEffectDescription*>& QCopasiAnimation::getEntries()
 {
   return mEntries;
 }
+
+int QCopasiAnimation::getNumSteps()
+{
+  return mNumSteps;
+}
+
 void QCopasiAnimation::removeFromScene(QLayoutScene& scene)
 {
   std::vector<QEffectDescription*>::iterator it = mEntries.begin();

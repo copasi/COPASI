@@ -32,11 +32,11 @@ void QAnimationControls::slotChangeInterval(int interval)
 
 void QAnimationControls::setNumSteps(size_t numSteps)
 {
+  if (mNumSteps == numSteps) return;
+  
   mNumSteps = numSteps;
   sldPosition->setMaximum(numSteps);
-  lblDuration->setText(QString::number(numSteps));
-  updateButtons();
-  updateActions();
+  lblDuration->setText(QString::number(numSteps));  
 }
 
 void QAnimationControls::setCurrentStep(size_t currentStep)

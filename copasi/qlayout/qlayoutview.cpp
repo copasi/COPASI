@@ -76,7 +76,7 @@ CLRenderInformationBase* updateRenderInformationList(QComboBox* list, CCopasiDat
   // bail
   if (skipGlobal)
   {
-    if (result == NULL)
+    if (result == NULL && dataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size() > 0)
       result = dataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects()[0];    
     return result;
   }
