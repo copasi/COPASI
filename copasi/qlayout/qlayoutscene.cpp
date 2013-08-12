@@ -181,7 +181,7 @@ void QLayoutScene::fillFromLayout(const CLayout* layout)
   }
 
   const CCopasiVector<CLCompartmentGlyph> & comps = layout->getListOfCompartmentGlyphs();
-  auto itComp = comps.begin();
+  CCopasiVector<CLCompartmentGlyph>::const_iterator itComp = comps.begin();
   while (itComp != comps.end())   
   {
     addGlyph(*itComp);
@@ -189,7 +189,7 @@ void QLayoutScene::fillFromLayout(const CLayout* layout)
   }
 
   const CCopasiVector<CLReactionGlyph> & reactions = layout->getListOfReactionGlyphs();
-  auto itReactions = reactions.begin();
+  CCopasiVector<CLReactionGlyph>::const_iterator itReactions = reactions.begin();
   while (itReactions != reactions.end())   
   {
     addGlyph(*itReactions);
@@ -197,7 +197,7 @@ void QLayoutScene::fillFromLayout(const CLayout* layout)
   }
   
   const CCopasiVector<CLMetabGlyph> & species = layout->getListOfMetaboliteGlyphs();
-  auto itSpecies = species.begin();
+  CCopasiVector<CLMetabGlyph>::const_iterator itSpecies = species.begin();
   while (itSpecies != species.end())   
   {
     addGlyph(*itSpecies);
@@ -205,7 +205,7 @@ void QLayoutScene::fillFromLayout(const CLayout* layout)
   }
   
   const CCopasiVector<CLTextGlyph> & texts = layout->getListOfTextGlyphs();
-  auto itTexts = texts.begin();
+  CCopasiVector<CLTextGlyph>::const_iterator itTexts = texts.begin();
   while (itTexts != texts.end())   
   {
     addGlyph(*itTexts);
@@ -213,7 +213,7 @@ void QLayoutScene::fillFromLayout(const CLayout* layout)
   }
 
   const CCopasiVector<CLGeneralGlyph> & list = layout->getListOfGeneralGlyphs();
-  auto itList = list.begin();
+  CCopasiVector<CLGeneralGlyph>::const_iterator itList = list.begin();
   while (itList != list.end())   
   {
     addGlyph(*itList);
