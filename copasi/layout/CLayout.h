@@ -28,6 +28,9 @@
 #endif /* USE_CRENDER_EXTENSION */
 
 class Layout;
+class CCompartment;
+class CReaction;
+class CMetab;
 
 /**
  * This class describes a reaction network layout. Its structure
@@ -179,6 +182,11 @@ public:
    */
   CLBoundingBox calculateBoundingBox() const;
 
+  /** 
+   * Calculates the Bounding Box, moves the layout to the origin and assigns it to the layout. 
+   */ 
+  void calculateAndAssignBounds();
+
   virtual void scale(const double & scaleFactor) {this->mDimensions.scale(scaleFactor);}
   /**
     * insert operator
@@ -201,6 +209,18 @@ public:
                     //    ,const std::map<std::string,std::map<std::string,std::string> >& globalLineEndingKeyToIdMapMap
 #endif /* USE_CRENDER_EXTENSION */
                    ) const;
+
+  /** 
+   * Randomizes the layout
+   */ 
+  void randomize();
+  static CLayout* createLayout(
+    CCopasiContainer* parent,
+      const std::set<const CCompartment*>& compartments,
+      const std::set<const CReaction*>& reactions,
+      const std::set<const CMetab*>& metabs,
+      const std::set<const CMetab*>& sideMetabs
+  );
 
 protected:
   void writeDotNode(std::ostream & os, const std::string & id,
