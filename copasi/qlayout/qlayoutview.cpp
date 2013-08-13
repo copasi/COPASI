@@ -25,7 +25,7 @@ QLayoutView::~QLayoutView()
 void updateLayoutList(QComboBox* list, CCopasiDataModel* dataModel)
 {
   if (list == NULL || dataModel == NULL) return;
-  list->clear();
+  list->clear();  
   CCopasiVector<CLayout> & layouts = *dataModel->getListOfLayouts();
   CCopasiVector<CLayout>::iterator it = layouts.begin();
   while(it != layouts.end())
@@ -257,6 +257,8 @@ void QLayoutView::createActions()
   connect(mpLayoutDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotLayoutChanged(int)));
   connect(mpRenderDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotRenderInformationChanged(int)));
   
+  setInteractive(true);
+  setRenderHints( QPainter::Antialiasing );
 
 }
 
@@ -311,12 +313,14 @@ CCopasiDataModel* QLayoutView::getDataModel()
   return mpDataModel;
 }
 
-void QLayoutView::setDataModel(CCopasiDataModel* dataModel)
+void QLayoutView::setDataModel(CCopasiDataModel* dataModel, CLayout* layout)
 {
   mpDataModel = dataModel;
 
-  updateLayoutList(mpLayoutDropdown, dataModel);
-  updateRenderInformationList(mpRenderDropdown, dataModel, NULL);
+  updateLayoutList(mpLayoutDropdown, dataModel);  
+  if (layout != NULL)
+    mpLayoutDropdown->setCurrentItem(mpLayoutDropdown->findText( layout->getObjectName().c_str()));
+  updateRenderInformationList(mpRenderDropdown, dataModel, layout);
   
 }
 

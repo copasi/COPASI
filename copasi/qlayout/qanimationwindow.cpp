@@ -8,6 +8,9 @@
 #include <qlayout/qlayoutscene.h>
 #include <qlayout/qcopasieffect.h>
 #include <qlayout/qeffectdescription.h>
+
+#include <layout/CLayout.h>
+
 #include <report/CCopasiObjectName.h>
 #include <report/CCopasiRootContainer.h>
 #include <resourcesUI/CQIconResource.h>
@@ -29,7 +32,6 @@ class QConservedSpeciesAnimation : public QCopasiAnimation
     while(it != metabs.end())
     {
       mEntries.push_back(new QEffectDescription((*it)->getCN()));
-      //keyMap[(*it)->getCN()] = (*it)->getKey();
       ++it;
     }
 
@@ -219,26 +221,50 @@ protected:
   std::map<std::string, std::string> keyMap;  
 };
 
+QAnimationWindow::QAnimationWindow (CLayout* layout, CCopasiDataModel* dataModel)
+  : mAnimation(NULL)  
+  , mStopLayout(false)
+{
+  init();
+  setScene(new QLayoutScene(layout, dataModel), dataModel);
+}
+
 QAnimationWindow::QAnimationWindow ()
   : mAnimation(NULL)  
+  , mStopLayout(false)
+{
+  init();
+}
+
+#include <QToolBar>
+void QAnimationWindow::init()
 {
   setupUi(this);    
   setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
   setUnifiedTitleAndToolBarOnMac(true);
 
+  actionAuto_Layout->setIcon(CQIconResource::icon(CQIconResource::play));
+  actionRandomize_Layout->setIcon(CQIconResource::icon(CQIconResource::roll));
+  actionExport->setIcon(CQIconResource::icon(CQIconResource::fileExport));
+
   QMenu* viewMenu = menuBar()->addMenu(tr("&View"));
   graphicsView->fillZoomMenu(viewMenu);
 
-  QToolBar* viewToolBar = this->addToolBar("View");
-  graphicsView->fillZoomTooBar(viewToolBar);
+  QToolBar* actionToolbar = this->addToolBar("Actions");
+  actionToolbar->addAction(actionExport);
+  actionToolbar->addAction(actionAuto_Layout);
+  actionToolbar->addAction(actionRandomize_Layout);
+
   QToolBar* selectToolbar = this->addToolBar("Select");
   graphicsView->fillSelectionToolBar(selectToolbar);
 
+  QToolBar* viewToolBar = this->addToolBar("View");
+  graphicsView->fillZoomTooBar(viewToolBar);
+
   mpWindowMenu = menuBar()->addMenu(tr("&Window"));
 
-  addToMainWindow();
+  //addToMainWindow();
 }
-
 
 void QAnimationWindow::slotExportImage()
 {
@@ -259,7 +285,7 @@ void QAnimationWindow::setScene(QLayoutScene* scene, CCopasiDataModel* dataModel
   mpScene = scene;
   this->graphicsView->setScene(mpScene);
   mpScene->recreate();
-  graphicsView->setDataModel(dataModel);
+  graphicsView->setDataModel(dataModel, scene->getCurrentLayout());
   this->graphicsView->invalidateScene();
 
   //setAnimation(new QConservedSpeciesAnimation(), dataModel);
@@ -284,8 +310,6 @@ void QAnimationWindow::slotSwitchAnimation()
     setAnimation(new QConservedSpeciesAnimation(), graphicsView->getDataModel());
   }
 }
-
-
 
 QMenu *QAnimationWindow::getWindowMenu() const
 {
@@ -329,3 +353,82 @@ void QAnimationWindow::slotEditSettings()
     editor.saveTo(mAnimation);
   }
 }
+
+void QAnimationWindow::slotRandomizeLayout()
+{
+  mStopLayout = true;
+  actionAuto_Layout->setChecked(false);
+  actionAuto_Layout->setText("Run Auto Layout");
+  actionAuto_Layout->setIcon(CQIconResource::icon(CQIconResource::play));
+  
+  mpScene->getCurrentLayout()->randomize();
+  mpScene->recreate();
+}
+
+#include <layout/CCopasiSpringLayout.h>
+#include <layout/CLayoutEngine.h>
+
+#include <QtCore/QAbstractEventDispatcher>
+
+void QAnimationWindow::slotAutoLayout()
+{
+  if (sender() != NULL && !actionAuto_Layout->isChecked())
+  {
+    mStopLayout = true;
+    actionAuto_Layout->setChecked(false);
+    actionAuto_Layout->setText("Run Auto Layout");
+    actionAuto_Layout->setIcon(CQIconResource::icon(CQIconResource::play));
+    return;
+  }
+  actionAuto_Layout->setChecked(true);
+  actionAuto_Layout->setText("Stop Auto Layout");
+  actionAuto_Layout->setIcon(CQIconResource::icon(CQIconResource::pause));
+  mStopLayout = false;
+  int numIterations = 1000;
+  int updateInterval = 1;
+  bool doUpdate = true;
+  // create the spring layout
+  CCopasiSpringLayout l(mpScene->getCurrentLayout());
+  l.createVariables();
+  CLayoutEngine le(&l, false);
+  QAbstractEventDispatcher* pDispatcher = QAbstractEventDispatcher::instance();
+  int i = 0;
+  double pot, oldPot = -1.0;
+
+  for (; (i < numIterations) && (mStopLayout) == false; ++i)
+  {
+    pot = le.step();
+
+    if (pot == 0.0 || fabs((pot - oldPot) / pot) < 1e-9)
+    {
+      break;
+    }
+    else
+    {
+      oldPot = pot;
+    }
+
+    if (doUpdate && (i % updateInterval == 0))
+    {
+      l.finalizeState(); //makes the layout ready for drawing;
+      // redraw
+      mpScene->recreate();
+    }
+
+    if (pDispatcher->hasPendingEvents())
+    {
+      pDispatcher->processEvents(QEventLoop::AllEvents);
+    }
+  }
+
+  // redraw the layout
+  l.finalizeState(); //makes the layout ready for drawing;
+
+  mpScene->recreate();
+
+  // once done restore the icon
+  actionAuto_Layout->setChecked(false);
+  actionAuto_Layout->setText("Run Auto Layout");
+  actionAuto_Layout->setIcon(CQIconResource::icon(CQIconResource::play));
+}
+

@@ -9,6 +9,7 @@ class QMenu;
 class QToolBar;
 class QComboBox;
 class CCopasiDataModel;
+class CLayout;
 
 class QLayoutView: public QGraphicsView
 {
@@ -20,7 +21,7 @@ public:
   void fillZoomMenu(QMenu* menu);
   void fillZoomTooBar(QToolBar* toolBar);
   void fillSelectionToolBar(QToolBar* toolBar);
-  void setDataModel(CCopasiDataModel* dataModel);
+  void setDataModel(CCopasiDataModel* dataModel, CLayout *layout=NULL);
   CCopasiDataModel* getDataModel();
 
 public slots:

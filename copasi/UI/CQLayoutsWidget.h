@@ -23,13 +23,17 @@ class CLayout;
 class CQLayoutsDM;
 class CQSortFilterProxyModel;
 class CQPushButtonDelegate;
+class CQPushButtonDelegate;
+#ifdef USE_CRENDER_EXTENSION
+# include "copasi/UI/CWindowInterface.h"
+#endif // USE_CRENDER_EXTENSION
 
 class CQLayoutsWidget : public CopasiWidget, public Ui::CQLayoutsWidget
 {
   Q_OBJECT
 
 #ifdef USE_CRENDER_EXTENSION
-  typedef CQNewMainWindow LayoutWindow;
+  typedef CWindowInterface LayoutWindow;
 #else
   typedef CQLayoutMainWindow LayoutWindow;
 #endif // USE_CRENDER_EXTENSION

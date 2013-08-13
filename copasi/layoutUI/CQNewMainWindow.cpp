@@ -82,9 +82,6 @@
 
 #include <QGraphicsView>
 #include <QPainter>
-#include <qlayout/qlayoutscene.h>
-#include <qlayout/qlayoutview.h>
-#include <qlayout/qanimationwindow.h>
 #include <layout/CLRenderResolver.h>
 
 
@@ -165,25 +162,7 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   this->mpHighlightColorPixmap->fill(QColor((int)(c[0] * 255.0), (int)(c[1] * 255.0), (int)(c[2] * 255.0), (int)(c[3] * 255.0)));
   this->mpChangeColorAction->setIcon(QIcon(*this->mpHighlightColorPixmap));
 #endif // ELEMENTARY_MODE_DISPLAY
-
-  QDockWidget* pDockLayout = new QDockWidget("Layout View", this);
-  mpCurrentScene = new QLayoutScene( mpCurrentLayout, pDatamodel, mpCurrentRenderInformation);
-  QGraphicsView *view = new QLayoutView( mpCurrentScene );
-  view->setInteractive(true);
-  view->setRenderHints( QPainter::Antialiasing );
-  pDockLayout->setWidget(view);
-  pDockLayout->setFloating(true);
-  pDockLayout->hide();
-  connect(pDockLayout, SIGNAL(visibilityChanged(bool)), mpCurrentScene, SLOT(recreate()));
-  connect(this, SIGNAL(layoutChanged()), mpCurrentScene, SLOT(recreate()));
-  addDockWidget(Qt::NoDockWidgetArea, pDockLayout);
-  mpViewMenu->addSeparator();
-  mpViewMenu->addAction(pDockLayout->toggleViewAction());
-  mpCurrentScene->recreate();
-  QAnimationWindow *window = new QAnimationWindow(); 
-  window->setScene(new QLayoutScene( mpCurrentLayout, pDatamodel, mpCurrentRenderInformation), pDatamodel);
-  window->show();
-
+  
 }
 
 QMenu *CQNewMainWindow::getWindowMenu() const
@@ -566,9 +545,6 @@ void CQNewMainWindow::slotLayoutChanged(int index)
       // update the corresponding render information list
       this->updateRenderInformationList();
       this->updateRenderer();
-
-      mpCurrentScene->setLayout(mpCurrentLayout,mpDataModel, mpCurrentRenderInformation);
-      mpCurrentScene->recreate();
     }
 }
 
@@ -626,8 +602,6 @@ void CQNewMainWindow::slotRenderInfoChanged(int index)
         }
     }
 
-  mpCurrentScene->setRenderInformation(mpDataModel, mpCurrentRenderInformation);
-  mpCurrentScene->recreate();
 }
 
 void CQNewMainWindow::updateRenderInformationList()
@@ -1754,9 +1728,7 @@ void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& co
                                         )
 {
   createLayout(compartments, reactions, metabs, sideMetabs);
-  //slotRunRandomizeLayout();
   randomizeLayout();
-  return;
 
 }
 
@@ -2180,7 +2152,7 @@ void CQNewMainWindow::randomizeLayout()
   placeTextGlyphs();
   delete mpRandom;
   redrawNow();
-  emit layoutChanged();
+  
 }
 
 void CQNewMainWindow::randomlyPlaceGlyphInCompartmentGlyph(CLGraphicalObject* pGl, const CLGraphicalObject* pContainer)
@@ -2271,8 +2243,6 @@ void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
             {
               pDispatcher->processEvents(QEventLoop::AllEvents);
             }
-
-          emit layoutChanged();
         }
 
       // redraw the layout
@@ -2290,7 +2260,6 @@ void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
   connect(this->mpStopLayoutAction, SIGNAL(triggered()), this, SLOT(slotRunSpringLayout()));
   this->mpStopLayoutAction->setIcon(QPixmap(layout_start_xpm));
   this->mpStopLayoutAction->setToolTip("Run Spring Layout Algorithm");
-  emit layoutChanged();
 }
 
 /**

@@ -21,6 +21,7 @@
 #include <layout/CLGlobalRenderInformation.h>
 #include <layout/CListOfLayouts.h>
 #include <layout/CLLocalRenderInformation.h>
+#include <layout/CLDefaultStyles.h>
 #include <CopasiDataModel/CCopasiDataModel.h>
 
 QLayoutScene::QLayoutScene(CLayout* layout, CCopasiDataModel* model, CLRenderInformationBase* renderInformation)
@@ -44,6 +45,11 @@ void QLayoutScene::setRenderInformation(CCopasiDataModel* model, CLRenderInforma
 }
 
 const CLayout* QLayoutScene::getCurrentLayout() const
+{
+  return mpLayout;
+}
+
+CLayout* QLayoutScene::getCurrentLayout()
 {
   return mpLayout;
 }
@@ -91,6 +97,8 @@ void QLayoutScene::initializeResolver(CCopasiDataModel* model, CLRenderInformati
       mpRender = mpLayout->getListOfLocalRenderInformationObjects()[0];
     else if (model->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size() > 0)
       mpRender = model->getListOfLayouts()->getListOfGlobalRenderInformationObjects()[0];
+    else
+      mpRender = getDefaultStyle(0);
   }
   else 
     mpRender = renderInformation;
