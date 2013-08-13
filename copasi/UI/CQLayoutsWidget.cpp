@@ -30,6 +30,7 @@
 
 #ifdef USE_CRENDER_EXTENSION
 # include "copasi/layoutUI/CQNewMainWindow.h"
+# include <qlayout/qanimationwindow.h>
 #else
 # include "copasi/layoutUI/CQLayoutMainWindow.h"
 #endif // USE_CRENDER_EXTENSION
@@ -250,42 +251,47 @@ void CQLayoutsWidget::slotBtnNewClicked()
       name = str.str();
     }
 
-  CLayout* pLayout = new CLayout(name);
   CQAutolayoutWizard* pWizard = new CQAutolayoutWizard(*pModel);
 
-  if (pWizard->exec() == QDialog::Accepted)
-    {
-      // add the layout to the datamodel
-      std::map<std::string, std::string> m;
+  if (pWizard->exec() != QDialog::Accepted)
+    return;
 
-      CListOfLayouts * pListOfLayouts = pDataModel->getListOfLayouts();
-      pListOfLayouts->addLayout(pLayout, m);
+  // add the layout to the datamodel
+  std::map<std::string, std::string> m;
 
-      // update the table
-      mpLayoutsDM->insertRows(pListOfLayouts->size() - 1, 1);
-      dataChanged(QModelIndex(), QModelIndex());
+  CListOfLayouts * pListOfLayouts = pDataModel->getListOfLayouts();
+  // create the random layout
+  CLayout* pLayout = CLayout::createLayout(pDataModel, pWizard->getSelectedCompartments(), pWizard->getSelectedReactions(), pWizard->getSelectedMetabolites(), pWizard->getSideMetabolites());
+  pLayout->setObjectName(name);
+  pListOfLayouts->addLayout(pLayout, m);
 
-      CQNewMainWindow* pWin = createLayoutWindow(pListOfLayouts->size() - 1, pLayout);
-      assert(pWin != NULL);
+  // update the table
+  mpLayoutsDM->insertRows(pListOfLayouts->size() - 1, 1);
+  dataChanged(QModelIndex(), QModelIndex());
 
-      if (pWin != NULL)
-        {
-          // create the random layout
-          pWin->createRandomLayout(pWizard->getSelectedCompartments(), pWizard->getSelectedReactions(), pWizard->getSelectedMetabolites(), pWizard->getSideMetabolites());
-          pWin->updateRenderer();
-          pWin->addToMainWindow();
-          pWin->setMode();
-          // show the new layout
-          pWin->show();
-          pWin->redrawNow();
-          // now we create the spring layout
-          pWin->createSpringLayout(1000, 1);
-        }
-    }
+  LayoutWindow *window = createLayoutWindow(pListOfLayouts->size() - 1, pLayout);
+  CQNewMainWindow* pWin = dynamic_cast<CQNewMainWindow*>(window);
+  QAnimationWindow* pAnim = dynamic_cast<QAnimationWindow*>(window);
+  if (pWin != NULL)
+  {
+    pWin->updateRenderer();
+    pWin->setMode();
+    // show the new layout
+    pWin->show();
+    pWin->redrawNow();
+    // now we create the spring layout
+    pWin->slotRunSpringLayout();
+  }
+  else if (pAnim != NULL)
+  {
+    pAnim->show();
+    // now we create the spring layout
+    pAnim->slotAutoLayout();
+  }
   else
-    {
-      delete pLayout;
-    }
+  {
+    delete pLayout;
+  }
 
 #endif // COPASI_AUTOLAYOUT
 }
@@ -354,14 +360,20 @@ CQLayoutsWidget::LayoutWindow * CQLayoutsWidget::createLayoutWindow(int row, CLa
   if (pLayout == NULL || row < 0) return NULL;
 
 #ifdef USE_CRENDER_EXTENSION
-  LayoutWindow * pWin = new CQNewMainWindow((*CCopasiRootContainer::getDatamodelList())[0]);
-  pWin->slotLayoutChanged(row);
+  //CQNewMainWindow * pWin = new CQNewMainWindow((*CCopasiRootContainer::getDatamodelList())[0]);
+  //pWin->slotLayoutChanged(row);  
+  
+  QAnimationWindow *pWin = new QAnimationWindow(pLayout, (*CCopasiRootContainer::getDatamodelList())[0]); 
+
 #else
   LayoutWindow * pWin = new CQLayoutMainWindow(pLayout);
 #endif // USE_CRENDER_EXTENSION
 
   std::string title = "COPASI Diagram: "  + pLayout->getObjectName();
   pWin->setWindowTitle(title.c_str());
+#ifdef USE_CRENDER_EXTENSION
+  pWin->addToMainWindow();
+#endif
   pWin->resize(900, 600);
   mLayoutWindowMap[pLayout->getKey()] = pWin;
 
@@ -399,9 +411,12 @@ void CQLayoutsWidget::slotShowLayout(const QModelIndex & index)
       if (pLayoutWindow != NULL)
         {
 #ifdef USE_CRENDER_EXTENSION
-          pLayoutWindow->slotLayoutChanged(row);
-          pLayoutWindow->addToMainWindow();
-          pLayoutWindow->setMode();
+          CQNewMainWindow* cqWin = dynamic_cast<CQNewMainWindow*>(pLayoutWindow);
+          if (cqWin != NULL)
+          {
+          cqWin ->slotLayoutChanged(row);
+          cqWin ->setMode();
+          }
 #endif // USE_CRENDER_EXTENSION
           pLayoutWindow->show();
           pLayoutWindow->showNormal();

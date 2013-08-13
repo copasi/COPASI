@@ -67,6 +67,9 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <addaction name="actionRandomize_Layout"/>
+    <addaction name="actionAuto_Layout"/>
+    <addaction name="separator"/>
     <addaction name="action_Settings"/>
    </widget>
    <addaction name="menu_File"/>
@@ -112,6 +115,19 @@
   <action name="actionView_Time_Course">
    <property name="text">
     <string>View Time Course</string>
+   </property>
+  </action>
+  <action name="actionRandomize_Layout">
+   <property name="text">
+    <string>Randomize Layout</string>
+   </property>
+  </action>
+  <action name="actionAuto_Layout">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Auto Layout</string>
    </property>
   </action>
  </widget>
@@ -248,11 +264,45 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionAuto_Layout</sender>
+   <signal>triggered()</signal>
+   <receiver>QAnimationWindow</receiver>
+   <slot>slotAutoLayout()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRandomize_Layout</sender>
+   <signal>triggered()</signal>
+   <receiver>QAnimationWindow</receiver>
+   <slot>slotRandomizeLayout()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slotShowStep(int)</slot>
   <slot>slotExportImage()</slot>
   <slot>slotEditSettings()</slot>
   <slot>slotSwitchAnimation()</slot>
+  <slot>slotRandomizeLayout()</slot>
+  <slot>slotAutoLayout()</slot>
  </slots>
 </ui>

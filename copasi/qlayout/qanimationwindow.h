@@ -11,10 +11,12 @@ class QCopasiAnimation;
 class CCopasiDataModel;
 class QCloseEvent;
 class QMenu;
+class CLayout;
 class QAnimationWindow : public CWindowInterface, public Ui::QAnimationWindow
 {
   Q_OBJECT
 public:
+  QAnimationWindow (CLayout* layout, CCopasiDataModel* dataModel=NULL);
   QAnimationWindow ();
   virtual ~QAnimationWindow ();
   void setScene(QLayoutScene* scene, CCopasiDataModel* dataModel);
@@ -25,7 +27,10 @@ public slots:
   void slotExportImage();
   void slotEditSettings();
   void slotSwitchAnimation();
-  
+  void slotRandomizeLayout();
+  void slotAutoLayout();
+private: 
+  void init();
 protected:
   virtual void closeEvent(QCloseEvent *closeEvent);
 
@@ -33,6 +38,7 @@ protected:
   CCopasiDataModel* mpModel;
   QMenu* mpWindowMenu;
   QCopasiAnimation* mAnimation;
+  bool mStopLayout;
 };
 
 #endif // QANIMATION_WINDOW_H

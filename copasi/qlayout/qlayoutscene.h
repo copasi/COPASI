@@ -26,6 +26,7 @@ public:
   void setRenderInformation(CCopasiDataModel* model, CLRenderInformationBase* renderInformation);
   QGraphicsItem* getItemFor(const std::string& cn);
   const CLayout* getCurrentLayout() const;
+  CLayout* getCurrentLayout();
   const CLRenderInformationBase* getCurrentRenderInfo() const;
 public slots:
   void recreate();

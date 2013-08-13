@@ -31,7 +31,6 @@ class QToolBar;
 class CFluxMode;
 class CReaction;
 class CMetab;
-class QLayoutScene;
 
 #ifdef COPASI_AUTOLAYOUT
 #include "copasi/copasi.h"
@@ -97,10 +96,6 @@ protected:
   void change_style(bool defaultStyle = false);
 
   void resetView();
-
-signals:
-
-  void layoutChanged();
 
 public slots:
   void slotLayoutChanged(int index);
@@ -245,6 +240,9 @@ public slots:
       CLMetabReferenceGlyph::Role role,
       double x1, double y1, double x2, double y2);
 
+public slots:
+  void slotRunSpringLayout();
+
 protected slots:
   /**
    * This slot is called when the stop button is presed.
@@ -253,8 +251,6 @@ protected slots:
   void slotStopClicked();
 
   void slotRunRandomizeLayout();
-
-  void slotRunSpringLayout();
 
   void slotCalculateDimensions();
 
@@ -304,7 +300,6 @@ private:
   QComboBox* mpZoomDropdown;
   CLayout* mpCurrentLayout;
   QLabel* mpRenderLabel;
-  QLayoutScene* mpCurrentScene;
   CLRenderInformationBase* mpCurrentRenderInformation;
   bool mDocumentChanged;
 
