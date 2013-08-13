@@ -501,10 +501,7 @@ void CCopasiSpringLayout::finalizeState()
 
 
   //calculate bounding box for the layout, or recenter the layout
-
-  const CLBoundingBox &bounds =  mpLayout->calculateBoundingBox();
-
-  mpLayout->setDimensions(CLDimensions(bounds.getPosition().getX() + bounds.getDimensions().getWidth(), bounds.getPosition().getY() + bounds.getDimensions().getHeight()));
+  mpLayout->calculateAndAssignBounds();
 }
 
 CLPoint CCopasiSpringLayout::borderProjection(CLGraphicalObject* go, const CLPoint & p, double d)
