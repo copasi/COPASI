@@ -66,6 +66,12 @@ void CCopasiSpringLayout::ReactionNode::updateFromState(const std::vector<double
 CCopasiSpringLayout::CCopasiSpringLayout(CLayout* layout, Parameters* ppp)
   : mpLayout(NULL)
 {
+  if (ppp == NULL)
+  {
+    // backward compatible 
+    ppp = new Parameters();
+  }
+
   initFromLayout(layout, ppp);
 }
 

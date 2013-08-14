@@ -101,6 +101,16 @@ void CQPreferenceDialog::init()
       new QTreeWidgetItem(mpTreeWidget, Values);
     }
 
+   pParameter = configFile->getParameter("Use OpenGL");
+
+  if (pParameter != NULL)
+    {
+      QStringList Values;
+      Values.append("Use OpenGL");
+      Values.append((*pParameter->getValue().pBOOL ? "YES" : "NO"));
+      new QTreeWidgetItem(mpTreeWidget, Values);
+    }
+
 }
 
 void CQPreferenceDialog::slotBtnOk()
@@ -168,6 +178,15 @@ void CQPreferenceDialog::slotBtnOk()
 
   Items = mpTreeWidget->findItems("Validate Units", 0, 0);
   pParameter = configFile->getParameter("Validate Units");
+
+  if (Items.size() > 0 &&
+      pParameter != NULL)
+    {
+      pParameter->setValue(Items[0]->text(COL_VALUE).toUpper() == "YES");
+    }
+
+  Items = mpTreeWidget->findItems("Use OpenGL", 0, 0);
+  pParameter = configFile->getParameter("Use OpenGL");
 
   if (Items.size() > 0 &&
       pParameter != NULL)

@@ -370,6 +370,9 @@ void QAnimationWindow::slotRandomizeLayout()
 
 #include <QtCore/QAbstractEventDispatcher>
 
+/// <summary>
+/// Slots the auto layout.
+/// </summary>
 void QAnimationWindow::slotAutoLayout()
 {
   if (sender() != NULL && !actionAuto_Layout->isChecked())

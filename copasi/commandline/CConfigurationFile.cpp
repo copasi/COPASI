@@ -107,6 +107,7 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
   mpRecentMIRIAMResources(NULL),
   mpApplicationFont(NULL),
   mpValidateUnits(NULL),
+  mpUseOpenGL(NULL),
   mpWorkingDirectory(NULL)
 {initializeParameter();}
 
@@ -118,6 +119,7 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
   mpRecentMIRIAMResources(NULL),
   mpApplicationFont(NULL),
   mpValidateUnits(NULL),
+  mpUseOpenGL(NULL),
   mpWorkingDirectory(NULL)
 {initializeParameter();}
 
@@ -129,6 +131,7 @@ CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
   mpRecentMIRIAMResources(NULL),
   mpApplicationFont(NULL),
   mpValidateUnits(NULL),
+  mpUseOpenGL(NULL),
   mpWorkingDirectory(NULL)
 {initializeParameter();}
 
@@ -169,6 +172,7 @@ void CConfigurationFile::initializeParameter()
   assertGroup("MIRIAM Resources");
 
   mpValidateUnits = assertParameter("Validate Units", CCopasiParameter::BOOL, false)->getValue().pBOOL;
+  mpUseOpenGL = assertParameter("Use OpenGL", CCopasiParameter::BOOL, false)->getValue().pBOOL;
   mpWorkingDirectory = assertParameter("Working Directory", CCopasiParameter::STRING, std::string(""))->getValue().pSTRING;
 
   elevateChildren();
@@ -249,6 +253,16 @@ const std::string CConfigurationFile::getApplicationFont() const
 void CConfigurationFile::setApplicationFont(const std::string & applicationFont)
 {
   *mpApplicationFont = applicationFont;
+}
+
+bool CConfigurationFile::useOpenGL() const
+{
+  return *mpUseOpenGL;
+}
+
+void CConfigurationFile::setUseOpenGL(bool useOpenGL)
+{
+  *mpUseOpenGL = useOpenGL;
 }
 
 bool CConfigurationFile::validateUnits() const

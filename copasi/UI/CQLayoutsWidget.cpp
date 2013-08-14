@@ -26,6 +26,7 @@
 #include "copasi/model/CModel.h"
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include <copasi/commandline/CConfigurationFile.h>
 #include "report/CCopasiRootContainer.h"
 
 #ifdef USE_CRENDER_EXTENSION
@@ -360,10 +361,16 @@ CQLayoutsWidget::LayoutWindow * CQLayoutsWidget::createLayoutWindow(int row, CLa
   if (pLayout == NULL || row < 0) return NULL;
 
 #ifdef USE_CRENDER_EXTENSION
-  //CQNewMainWindow * pWin = new CQNewMainWindow((*CCopasiRootContainer::getDatamodelList())[0]);
-  //pWin->slotLayoutChanged(row);  
-  
-  QAnimationWindow *pWin = new QAnimationWindow(pLayout, (*CCopasiRootContainer::getDatamodelList())[0]); 
+  LayoutWindow * pWin = NULL;
+  if (CCopasiRootContainer::getConfiguration()->useOpenGL())
+  {
+    pWin = new CQNewMainWindow((*CCopasiRootContainer::getDatamodelList())[0]);
+    (static_cast<CQNewMainWindow*>(pWin))->slotLayoutChanged(row);  
+  }
+  else 
+  {
+    pWin = new QAnimationWindow(pLayout, (*CCopasiRootContainer::getDatamodelList())[0]); 
+  }
 
 #else
   LayoutWindow * pWin = new CQLayoutMainWindow(pLayout);
@@ -414,8 +421,8 @@ void CQLayoutsWidget::slotShowLayout(const QModelIndex & index)
           CQNewMainWindow* cqWin = dynamic_cast<CQNewMainWindow*>(pLayoutWindow);
           if (cqWin != NULL)
           {
-          cqWin ->slotLayoutChanged(row);
-          cqWin ->setMode();
+            cqWin ->slotLayoutChanged(row);
+            cqWin ->setMode();
           }
 #endif // USE_CRENDER_EXTENSION
           pLayoutWindow->show();

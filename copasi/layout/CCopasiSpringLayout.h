@@ -44,7 +44,7 @@ public:
     Parameters()
     {
       names.push_back("repulsion");
-      values.push_back(100.0);
+      values.push_back(100000.0);
       min.push_back(10);
       max.push_back(1e7);
       isLog.push_back(true);
@@ -70,7 +70,7 @@ public:
       isLog.push_back(false);
 
       names.push_back("side edge strength");
-      values.push_back(0.1);
+      values.push_back(0.3);
       min.push_back(1e-3);
       max.push_back(1e3);
       isLog.push_back(true);
@@ -95,7 +95,7 @@ public:
   /**
    * generate a spring layout view of a COPASI layout.
    */
-  CCopasiSpringLayout(CLayout* layout, Parameters* ppp);
+  CCopasiSpringLayout(CLayout* layout, Parameters* ppp=NULL);
 
   /**
    * generates the list of variables from the layout. This method will generate

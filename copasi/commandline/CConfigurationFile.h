@@ -176,6 +176,16 @@ public:
    */
   void setValidateUnits(bool validateUnits);
 
+  /** 
+   * @return a flag on whether to use the open GL based rendering, or the Qt based one
+   */
+  bool useOpenGL() const;
+
+  /** 
+   *  Set whether the openGL based rendering is to be used (true), or the Qt based one.
+   */
+  void setUseOpenGL(bool useOpenGL);
+
   /**
    * Retrieve the web working directory
    * @return const std::string & workingDirectory
@@ -277,6 +287,11 @@ private:
    * A pointer indicating whether units will always be validated
    */
   bool * mpValidateUnits;
+
+  /**
+  * A pointer indicating whether to use the OpenGL rendering, or the Qt based one
+   */
+  bool *mpUseOpenGL;
 
   /**
    * A pointer to the last used working directory of the GUI.
