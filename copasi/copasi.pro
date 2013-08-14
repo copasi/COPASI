@@ -61,6 +61,7 @@ addSubdirs($${COPASISE_DIRS})
 !contains(BUILD_GUI, no) {
   # Now the UI libraries
   COPASIUI_DIRS += barChart
+  COPASIUI_DIRS += qlayout
   COPASIUI_DIRS += layoutUI
   COPASIUI_DIRS += MIRIAMUI
   COPASIUI_DIRS += plotUI
