@@ -120,6 +120,10 @@ DEFINES += USE_NEW_PLOTSUBWIDGET
 # enable cross validation 
 DEFINES += COPASI_CROSSVALIDATION
 
+# when using the standard clapack, as given with the copasi-dependency package
+# the wrapping will not be used, so you need to define the following
+# DEFINES += NO_BLAS_WRAP
+
 debug {
   DEFINES += COPASI_DEBUG
   DEFINES += COPASI_DEBUG_TRACE

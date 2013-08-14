@@ -88,7 +88,9 @@ HEADERS += CQFontRenderer.h \
 }
 
 contains(DEFINES,COPASI_AUTOLAYOUT) {
-HEADERS += CQAutolayoutWizard.h
+HEADERS += CQAutolayoutWizard.h \
+           CQSpringLayoutParameterWindow.h
+
 
 DISTFILES += layout_start.xpm
 DISTFILES += layout_stop.xpm
@@ -105,7 +107,9 @@ SOURCES += CQFontRenderer.cpp \
 }
 
 contains(DEFINES,COPASI_AUTOLAYOUT) {
-SOURCES += CQAutolayoutWizard.cpp
+SOURCES += CQAutolayoutWizard.cpp \
+           CQSpringLayoutParameterWindow.cpp
+
 }
 
 

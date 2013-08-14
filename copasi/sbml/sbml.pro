@@ -16,6 +16,9 @@ LIB = sbmlimport
 SRC_TARGET = sbml
 DISTFILES = sbml.pro
 
+include(../lib.pri)
+include(../common.pri)
+
 # Input
 HEADERS += StdException.h \
            CSBMLExporter.h \
@@ -45,7 +48,6 @@ contains(BUILD_OS, WIN32) {
   DEFINES += LIBSBML_STATIC
 }
 
-include(../lib.pri)
-include(../common.pri)
+
 include(../srcDistribution.pri)
 
