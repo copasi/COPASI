@@ -34,6 +34,7 @@ include(../../common.pri)
 CONFIG += qt
 
 COPASI_LIBS += barChart
+COPASI_LIBS += qlayout
 COPASI_LIBS += layoutUI
 COPASI_LIBS += MIRIAMUI
 COPASI_LIBS += plotUI

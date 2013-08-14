@@ -24,7 +24,6 @@ void setColor(QLabel *widget, const QColor& color)
   QImage image(widget->rect().size(), QImage::Format_ARGB32);
   image.fill(color);
   QPixmap pix = QPixmap::fromImage(image);
-  widget->setBackgroundColor(color);
   widget->setPixmap(pix);
 
 }
@@ -60,8 +59,8 @@ void QEffectDescriptionEdit::initFrom(const QEffectDescription* other, bool mult
 
 void QEffectDescriptionEdit::saveTo(QEffectDescription* other, bool multiple)
 {
-  other->setStartColor(txtColorStart->backgroundColor());
-  other->setEndColor(txtColorEnd->backgroundColor());
+  other->setStartColor(txtColorStart->palette().color(QPalette::Background));
+  other->setEndColor(txtColorEnd->palette().color(QPalette::Background));
   other->setScaleStart(txtScaleStart->text().toDouble());
   other->setScaleEnd(txtScaleEnd->text().toDouble());
 
@@ -78,8 +77,8 @@ QEffectDescription* QEffectDescriptionEdit::toDescription() const
 {
   QEffectDescription *result = new QEffectDescription(txtObjectName->text().toStdString());
 
-  result->setStartColor(txtColorStart->backgroundColor());
-  result->setEndColor(txtColorEnd->backgroundColor());
+  result->setStartColor(txtColorStart->palette().color(QPalette::Background));
+  result->setEndColor(txtColorEnd->palette().color(QPalette::Background));
   result->setScaleStart(txtScaleStart->text().toDouble());
   result->setScaleEnd(txtScaleEnd->text().toDouble());
 
@@ -111,10 +110,10 @@ void QEffectDescriptionEdit::slotSelectObject()
 
 void QEffectDescriptionEdit::slotSelectColorEnd()
 {
-  setColor(txtColorEnd, QColorDialog::getColor(txtColorEnd->backgroundColor(), this));
+  setColor(txtColorEnd, QColorDialog::getColor(txtColorEnd->palette().color(QPalette::Background), this));
 }
 
 void QEffectDescriptionEdit::slotSelectColorStart()
 {
-  setColor(txtColorStart, QColorDialog::getColor(txtColorStart->backgroundColor(), this));
+  setColor(txtColorStart, QColorDialog::getColor(txtColorStart->palette().color(QPalette::Background), this));
 }

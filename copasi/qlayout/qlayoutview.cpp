@@ -65,9 +65,9 @@ CLRenderInformationBase* updateRenderInformationList(QComboBox* list, CCopasiDat
       CLLocalRenderInformation* current = *it;
       if (result == NULL) result = current;
       if (current->getName().empty())
-      list->insertItem(current->getObjectName().c_str(), 0);
+      list->insertItem(0, current->getObjectName().c_str());
       else
-      list->insertItem(current->getName().c_str(), 0);
+      list->insertItem(0, current->getName().c_str());
       list->setItemData(0, QVariant::fromValue(1));
       ++it;
     }
@@ -92,7 +92,7 @@ CLRenderInformationBase* updateRenderInformationList(QComboBox* list, CCopasiDat
       if (current->getName().empty())
         list->addItem(current->getObjectName().c_str());
       else
-        list->insertItem(current->getName().c_str());
+        list->addItem(current->getName().c_str());
       ++it;
     }
 
@@ -188,7 +188,7 @@ void QLayoutView::slotSaveToFile(const QString& fileName)
 
   layoutScene->saveToFile(
     fileName.toStdString(), 
-    QFileInfo(fileName).extension().toStdString()
+    QFileInfo(fileName).suffix().toStdString()
     );
 
 }
@@ -319,7 +319,7 @@ void QLayoutView::setDataModel(CCopasiDataModel* dataModel, CLayout* layout)
 
   updateLayoutList(mpLayoutDropdown, dataModel);  
   if (layout != NULL)
-    mpLayoutDropdown->setCurrentItem(mpLayoutDropdown->findText( layout->getObjectName().c_str()));
+    mpLayoutDropdown->setCurrentIndex(mpLayoutDropdown->findText( layout->getObjectName().c_str()));
   updateRenderInformationList(mpRenderDropdown, dataModel, layout);
   
 }

@@ -45,6 +45,7 @@ macx:debug {
 
     COPASI_LIBS_UI += barChart
     COPASI_LIBS_UI += layoutUI
+    COPASI_LIBS_UI += qlayout
     COPASI_LIBS_UI += MIRIAMUI
     COPASI_LIBS_UI += plotUI
     COPASI_LIBS_UI += resourcesUI

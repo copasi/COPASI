@@ -230,7 +230,7 @@ QFont* getFont(const CLText *item,const CLGroup *group, const CLRenderResolver* 
   }
 
   QFont *result = new QFont(font, -1, weight, italic);
-  result->setPixelSizeFloat(fontSize);
+  result->setPointSizeF(fontSize*96.0/72.0);
 
   if (font == "serif")
   {

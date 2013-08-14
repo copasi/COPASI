@@ -339,7 +339,7 @@ void QAnimationWindow::setAnimation(QCopasiAnimation* animation, CCopasiDataMode
 
 void QAnimationWindow::slotShowStep(int step)
 {
-  statusBar()->message(QString("Displaying step %1").arg(step), 1000);
+  statusBar()->showMessage(QString("Displaying step %1").arg(step), 1000);
 
   if (mAnimation == NULL) return;
 

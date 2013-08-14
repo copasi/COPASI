@@ -38,7 +38,7 @@ public:
   // make CLBase polymorphic so that we can dynamic cast from CLBase to
   // CLGraphicalObject
   virtual ~CLBase() {};
-  virtual void moveBy(const CLPoint &p) {};
+  virtual void moveBy(const CLPoint &) {};
 };
 
 /**

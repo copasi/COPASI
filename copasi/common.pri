@@ -79,12 +79,12 @@ DEFINES += WITH_CSPMETHOD
 # DEFINES += USE_SBMLUNIT
 
 # enable this to build support for the render extension
-# DEFINES += USE_CRENDER_EXTENSION
+DEFINES += USE_CRENDER_EXTENSION
 
 # enable this to build with Svens layout generation code.
 # This allows users to create new layouts for their models.
 # This is not finished yet and should not be enabled per default 
-# DEFINES += COPASI_AUTOLAYOUT
+DEFINES += COPASI_AUTOLAYOUT
 #
 # This enables the code for displaying elementary mode analysis results 
 # in the graph.
@@ -104,7 +104,7 @@ DEFINES += WITH_CSPMETHOD
 # this flag enables new code to import layout information from 
 # CellDesigner annotations
 # Right now this is pretty much limited to the bare layout stuff.
-#DEFINES += CELLDESIGNER_IMPORT
+DEFINES += CELLDESIGNER_IMPORT
 
 # enable this to get screenshots from the OpenGL 
 # framebuffer. These should provide higher quality 
@@ -117,6 +117,8 @@ DEFINES += WITH_CSPMETHOD
 # enable this to use the new listwidget based plot specification window
 DEFINES += USE_NEW_PLOTSUBWIDGET
 
+# enable cross validation 
+DEFINES += COPASI_CROSSVALIDATION
 
 debug {
   DEFINES += COPASI_DEBUG
