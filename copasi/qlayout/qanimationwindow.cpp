@@ -1,5 +1,6 @@
 #include <qgraphicsitem.h>
 #include <qgraphicseffect.h>
+#include <qdockwidget.h>
 #include <QFileDialog>
 
 #include <qlayout/qcopasianimation.h>
@@ -8,6 +9,8 @@
 #include <qlayout/qlayoutscene.h>
 #include <qlayout/qcopasieffect.h>
 #include <qlayout/qeffectdescription.h>
+
+#include <layoutUI/CQSpringLayoutParameterWindow.h>
 
 #include <layout/CLayout.h>
 
@@ -263,6 +266,12 @@ void QAnimationWindow::init()
 
   mpWindowMenu = menuBar()->addMenu(tr("&Window"));
 
+  mpParameterWindow = new CQSpringLayoutParameterWindow("Layout Parameters", this);
+
+  addDockWidget(Qt::LeftDockWidgetArea, mpParameterWindow);
+  viewMenu->addSeparator();
+  viewMenu->addAction(mpParameterWindow->toggleViewAction());
+
   //addToMainWindow();
 }
 
@@ -361,7 +370,7 @@ void QAnimationWindow::slotRandomizeLayout()
   actionAuto_Layout->setText("Run Auto Layout");
   actionAuto_Layout->setIcon(CQIconResource::icon(CQIconResource::play));
   
-  mpScene->getCurrentLayout()->randomize();
+  mpScene->getCurrentLayout()->randomize(&mpParameterWindow->getLayoutParameters());
   mpScene->recreate();
 }
 
@@ -391,7 +400,7 @@ void QAnimationWindow::slotAutoLayout()
   int updateInterval = 1;
   bool doUpdate = true;
   // create the spring layout
-  CCopasiSpringLayout l(mpScene->getCurrentLayout());
+  CCopasiSpringLayout l(mpScene->getCurrentLayout(), &mpParameterWindow->getLayoutParameters());
   l.createVariables();
   CLayoutEngine le(&l, false);
   QAbstractEventDispatcher* pDispatcher = QAbstractEventDispatcher::instance();

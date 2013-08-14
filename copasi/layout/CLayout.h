@@ -27,10 +27,13 @@
 #include "copasi/layout/CLLocalRenderInformation.h"
 #endif /* USE_CRENDER_EXTENSION */
 
+#include <layout/CCopasiSpringLayout.h>
+
 class Layout;
 class CCompartment;
 class CReaction;
 class CMetab;
+
 
 /**
  * This class describes a reaction network layout. Its structure
@@ -213,13 +216,14 @@ public:
   /** 
    * Randomizes the layout
    */ 
-  void randomize();
+  void randomize(CCopasiSpringLayout::Parameters* params=NULL);
   static CLayout* createLayout(
     CCopasiContainer* parent,
       const std::set<const CCompartment*>& compartments,
       const std::set<const CReaction*>& reactions,
       const std::set<const CMetab*>& metabs,
-      const std::set<const CMetab*>& sideMetabs
+      const std::set<const CMetab*>& sideMetabs, 
+      CCopasiSpringLayout::Parameters* params = NULL
   );
 
 protected:

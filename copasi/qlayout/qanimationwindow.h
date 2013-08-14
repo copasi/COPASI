@@ -12,6 +12,7 @@ class CCopasiDataModel;
 class QCloseEvent;
 class QMenu;
 class CLayout;
+class CQSpringLayoutParameterWindow;
 class QAnimationWindow : public CWindowInterface, public Ui::QAnimationWindow
 {
   Q_OBJECT
@@ -39,6 +40,7 @@ protected:
   QMenu* mpWindowMenu;
   QCopasiAnimation* mAnimation;
   bool mStopLayout;
+  CQSpringLayoutParameterWindow* mpParameterWindow;
 };
 
 #endif // QANIMATION_WINDOW_H

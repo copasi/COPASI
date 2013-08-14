@@ -908,11 +908,13 @@ void placeTextGlyphs(CLayout* pLayout)
     }
 }
 
+#include <layout/CCopasiSpringLayout.h>
+
 /** 
  * This function produces a random layout. It first shufles around
  * metab glyphs and reaction centers, and finally corrects all ars
  */
-void CLayout::randomize()
+void CLayout::randomize(CCopasiSpringLayout::Parameters* params)
 {
   CRandom* pRandom = CRandom::createGenerator(CRandom::mt19937, CRandom::getSystemSeed());
 
@@ -972,7 +974,7 @@ void CLayout::randomize()
   placeTextGlyphs(this);
   delete pRandom;
 
-  CCopasiSpringLayout l(this);
+  CCopasiSpringLayout l(this, params);
   l.createVariables();
   l.finalizeState();
 
@@ -1008,7 +1010,8 @@ CLayout* CLayout::createLayout(
   const std::set<const CCompartment*>& compartments,
   const std::set<const CReaction*>& reactions,
   const std::set<const CMetab*>& metabs,
-  const std::set<const CMetab*>& sideMetabs
+  const std::set<const CMetab*>& sideMetabs, 
+  CCopasiSpringLayout::Parameters* params
   )
 {
   CLayout *pResult = new CLayout("Layout", parent);
@@ -1354,7 +1357,7 @@ CLayout* CLayout::createLayout(
   }
 
   // randomize
-  pResult->randomize();
+  pResult->randomize(params);
 
   // determine and set the layout dimensions
   CLBoundingBox box = pResult->calculateBoundingBox();
