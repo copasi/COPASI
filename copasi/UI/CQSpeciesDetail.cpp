@@ -10,11 +10,13 @@
 
 #include "CQSpeciesDetail.h"
 #include "CQMessageBox.h"
+#include "CQNameSelectionDialog.h"  // for Copy button compartment options
 #include "qtUtilities.h"
 
 #include "model/CModel.h"
 #include "model/CChemEqInterface.h"
 #include "report/CCopasiRootContainer.h"
+#include "model/CModelExpansion.h"    //for Copy button and options
 
 /*
  *  Constructs a CQSpeciesDetail which is a child of 'parent', with the
@@ -29,8 +31,7 @@ CQSpeciesDetail::CQSpeciesDetail(QWidget* parent, const char* name) :
   mInitialNumber(0.0),
   mInitialConcentration(0.0),
   mExpressionValid(false),
-  mInitialExpressionValid(false),
-  mKeyToCopy("")
+  mInitialExpressionValid(false)
 {
   setupUi(this);
 
@@ -233,17 +234,7 @@ void CQSpeciesDetail::setFramework(int framework)
 
 bool CQSpeciesDetail::enterProtected()
 {
-  mpMetab = NULL;
-
-  if (mKeyToCopy != "")
-    {
-      mpMetab = dynamic_cast<CMetab *>(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy));
-      mKeyToCopy = "";
-    }
-  else
-    {
-      mpMetab = dynamic_cast< CMetab * >(mpObject);
-    }
+  mpMetab = dynamic_cast< CMetab * >(mpObject);
 
   if (!mpMetab)
     {
@@ -253,8 +244,6 @@ bool CQSpeciesDetail::enterProtected()
     }
 
   load();
-
-  mpMetab = dynamic_cast<CMetab *>(mpObject);
 
   return true;
 }
@@ -509,9 +498,71 @@ void CQSpeciesDetail::slotBtnDelete()
     }
 }
 
-void CQSpeciesDetail::slotBtnCopy()
+void CQSpeciesDetail::copy()
 {
-  mKeyToCopy = mKey;
+  if (mpMetab == NULL) return;
+
+  CModel * pModel = NULL;
+  if (mpMetab) pModel = mpDataModel->getModel();
+
+  if (pModel == NULL) return; // for getting compartments and initializing cModelExpObj
+
+  // Create and customize compartment choices dialog
+  CQNameSelectionDialog * pDialog = new CQNameSelectionDialog(this);
+  pDialog->setWindowTitle("Choose a compartment");
+  pDialog->mpLblName->setText("compartment");
+  pDialog->mpSelectionBox->clear();
+  pDialog->mpSelectionBox->setDuplicatesEnabled(false);
+  pDialog->mpSelectionBox->setEditable(false); // at least for now, unless we want to add new compartment creation here.
+
+  // Use CModelExpansion for duplication
+  CModelExpansion cModelExpObj = CModelExpansion(pModel);
+  CModelExpansion::SetOfModelElements sourceObjects;
+  CModelExpansion::ElementsMap origToCopyMapping;
+
+  // for comboBox compartment list and setting compartment
+  CCopasiVectorNS< CCompartment > & Compartments = pModel->getCompartments();
+
+  CCopasiVectorN< CCompartment >::const_iterator it = Compartments.begin();
+  CCopasiVectorN< CCompartment >::const_iterator end = Compartments.end();
+  QStringList SelectionList;
+
+  // Collect and load list of compartment names in comboBox
+  for (; it != end; ++it)
+    {
+      SelectionList.append(FROM_UTF8((*it)->getObjectName()));
+    }
+
+  pDialog->setSelectionList(SelectionList);
+
+  //Set the current compartment as the default
+  mpCurrentCompartment = mpMetab->getCompartment();
+  // to use here, and for testing if compartment changed after executing the dialog
+  int origCompartmentIndex = pDialog->mpSelectionBox->findText(FROM_UTF8(mpCurrentCompartment->getObjectName()));
+  pDialog->mpSelectionBox->setCurrentIndex(origCompartmentIndex);
+
+  it = Compartments.begin(); // Reuse Compartments iterator to set compartment choice
+
+  if (pDialog->exec() != QDialog::Rejected)
+    {
+      // Put species in different compartment (without name modification) by making
+      // duplicateMetab think the other compartment was duplicated from the original
+      if(origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
+        {
+          sourceObjects.addCompartment(mpMetab->getCompartment());
+          origToCopyMapping.add(mpMetab->getCompartment(),*(it + pDialog->mpSelectionBox->currentIndex()));
+        }
+
+      sourceObjects.addMetab(mpMetab);
+      cModelExpObj.duplicateMetab(mpMetab, "_copy", sourceObjects, origToCopyMapping);
+
+      protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, "");//Refresh all
+      protectedNotify(ListViews::METABOLITE, ListViews::DELETE, ""); //Refresh all
+      protectedNotify(ListViews::REACTION, ListViews::DELETE, "");   //Refresh all
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, origToCopyMapping.getDuplicateKey(mKey));
+    }
+
+  pdelete(pDialog);
 }
 
 void CQSpeciesDetail::slotBtnNew()
@@ -533,13 +584,7 @@ void CQSpeciesDetail::slotBtnNew()
   std::string name = "species_1";
   int i = 1;
 
-  std::string Compartment = "";
-
-  if (mKeyToCopy != "")
-    {
-      Compartment = mpMetab->getCompartment()->getObjectName();
-    }
-  while (!(mpMetab = pModel->createMetabolite(name, Compartment, 1.0, CModelEntity::REACTIONS)))
+  while (!(mpMetab = pModel->createMetabolite(name, "", 1.0, CModelEntity::REACTIONS)))
     {
       i++;
       name = "species_";

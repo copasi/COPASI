@@ -30,6 +30,8 @@ public:
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual void setFramework(int framework);
 
+  void copy();
+
 protected:
   virtual bool enterProtected();
 
@@ -48,11 +50,10 @@ private:
   void load();
   void save();
   void loadReactionTable();
-  std::string mKeyToCopy;
 
 private slots:
   void slotBtnNew();
-  void slotBtnCopy();
+  void slotBtnCopy(){};
   void slotBtnDelete();
   void slotCompartmentChanged(int compartment);
   void slotTypeChanged(int type);

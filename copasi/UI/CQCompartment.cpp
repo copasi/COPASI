@@ -40,8 +40,7 @@ CQCompartment::CQCompartment(QWidget* parent, const char* name):
   mpCompartment(NULL),
   mChanged(false),
   mExpressionValid(true),
-  mInitialExpressionValid(true),
-  mKeyOfCopy("")
+  mInitialExpressionValid(true)
 {
   setupUi(this);
 
@@ -82,26 +81,22 @@ void CQCompartment::slotBtnNew()
 {
   leave();
 
-  if (mKeyOfCopy == "")
+  std::string name = "compartment_1";
+  int i = 1;
+
+  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
+  while (!(mpCompartment = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createCompartment(name)))
     {
-      std::string name = "compartment_1";
-      int i = 1;
-
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-
-      while (!(mpCompartment = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->createCompartment(name)))
-        {
-          i++;
-          name = "compartment_";
-          name += TO_UTF8(QString::number(i));
-        }
-
-      std::string key = mpCompartment->getKey();
-
-      protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, key);
-      mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+      i++;
+      name = "compartment_";
+      name += TO_UTF8(QString::number(i));
     }
-  else mKeyOfCopy = "";
+
+  std::string key = mpCompartment->getKey();
+
+  protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
 void CQCompartment::copy()
@@ -189,14 +184,11 @@ void CQCompartment::copy()
   {
     cModelExpObj.duplicate(compartmentObjectsToCopy, "_copy", origToCopyMappings);
 
-    mKeyOfCopy = origToCopyMappings.getDuplicateKey(mKey);
     protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, "");//Refresh all
     protectedNotify(ListViews::METABOLITE, ListViews::DELETE, ""); //Refresh all
     protectedNotify(ListViews::REACTION, ListViews::DELETE, "");   //Refresh all
-    mpListView->switchToOtherWidget(C_INVALID_INDEX, mKeyOfCopy);
+    mpListView->switchToOtherWidget(C_INVALID_INDEX, origToCopyMappings.getDuplicateKey(mKey));
   }
-  else
-    mKeyOfCopy = "do_not_create_new_compartment";    //   just to skip statements when in slotBtnNew
 }
 
 void CQCompartment::slotBtnDelete()

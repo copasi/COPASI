@@ -18,6 +18,7 @@
 #include "report/CCopasiRootContainer.h"
 #include "function/CFunction.h"
 #include "UI/CQCompartment.h"
+#include "UI/CQSpeciesDetail.h"
 
 CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget * pCopasiWidget,
                          QWidget * parent, Qt::WindowFlags f) :
@@ -237,16 +238,23 @@ void CQTabWidget::slotBtnCopy()
 
   mIgnoreLeave = true;
 
-  // CQCompartments have copy options, use CModelExpansion, and do their own switching.
+  // CQCompartments and CQSpecies have copy options, use CModelExpansion, and do their own switching.
   if(QString(mPages[0]->metaObject()->className()) == "CQCompartment")
   {
     CQCompartment * pQCompartment = dynamic_cast< CQCompartment * >(mPages[0]);
     pQCompartment->copy();
   }
+  else if(QString(mPages[0]->metaObject()->className()) == "CQSpeciesDetail")
+  {
+    CQSpeciesDetail * pQSpeciesDetail = dynamic_cast< CQSpeciesDetail * >(mPages[0]);
+    pQSpeciesDetail->copy();
+  }
   else
+  {
     emit copyClicked();
+    emit newClicked();
+  }
 
-  emit newClicked();
   mIgnoreLeave = false;
 
 

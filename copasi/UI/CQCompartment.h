@@ -53,8 +53,6 @@ private:
   void destroy();
   void loadMetaboliteTable();
 
-  std::string mKeyOfCopy;
-
 private slots:
   void slotBtnNew();
   void slotBtnCopy(){}; //dummy, to bypass warnings from TabWidget connections
