@@ -95,7 +95,7 @@ QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGl
         QRenderConverter::applyStyle(item, &glyph ->getBoundingBox(), style == NULL ? mpStyle->getGroup() : style->getGroup(), resolver, itemGroup);
         addToGroup(itemGroup);
       }
-    }
+    }    
   }  
 
   // add decorations on reactions

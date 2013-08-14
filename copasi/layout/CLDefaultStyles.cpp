@@ -121,7 +121,7 @@ const char* DEFAULT_STYLES_STRING = \
                                     "      <g stroke='#ffffff00' fill='#ffffff00'></g>\n"
                                     "    </style>\n"
                                     "    <style roleList='defaultText' typeList='TEXTGLYPH'>\n"
-                                    "      <g stroke='black' stroke-width='1' font-family='Verdana' font-size='12' font-weight='normal' font-style='normal' text-anchor='middle'></g>\n"
+                                    "      <g stroke='black' stroke-width='1' font-family='Verdana' font-size='12' font-weight='normal' font-style='normal' vtext-anchor='middle' text-anchor='middle'></g>\n"
                                     "    </style>\n"
                                     "    <style roleList='substrate sidesubstrate' typeList='REACTIONGLYPH'>\n"
                                     "      <g stroke='CurveColor' stroke-width='3.0' />\n"

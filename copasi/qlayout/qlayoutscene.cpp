@@ -169,6 +169,19 @@ void QLayoutScene::addGlyph(const CLGraphicalObject* go)
     }
     addItem(item);
   }
+
+  if (general != NULL)
+  {
+    const CCopasiVector<CLGraphicalObject> & subGlyphs = general->getListOfSubglyphs();
+    CCopasiVector<CLGraphicalObject>::const_iterator it = subGlyphs.begin();
+    while (it != subGlyphs.end())
+    {
+      addGlyph(*it);
+      ++it;
+    }
+
+  }
+
 }
   
 QGraphicsItem* QLayoutScene::getItemFor(const std::string& cn)
