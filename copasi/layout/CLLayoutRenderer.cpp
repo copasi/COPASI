@@ -52,6 +52,7 @@
 #include "copasi/layout/CLReactionGlyph.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CReaction.h"
+#include "copasi/utilities/CCopasiMessage.h"
 
 // opengl includes
 #ifdef _WIN32
@@ -2836,8 +2837,7 @@ void CLLayoutRenderer::draw_datapoints(GLdouble* pData, size_t numPoints, const 
             {
               case CLGraphicalPrimitive2D::UNSET:
                 // this should not happen
-                std::cerr << "No fill rule specified." << std::endl;
-                exit(1);
+                CCopasiMessage(CCopasiMessage::EXCEPTION, "Invalid Render Information: No fill rule specified");
                 break;
 
               case CLGraphicalPrimitive2D::NONZERO:
@@ -2851,8 +2851,7 @@ void CLLayoutRenderer::draw_datapoints(GLdouble* pData, size_t numPoints, const 
               case CLGraphicalPrimitive2D::INHERIT:
                 // this should not happen
                 // inherit has to be replaced by something meaningfull
-                std::cerr << "fill rule \"INHERIT\" specified." << std::endl;
-                exit(1);
+                CCopasiMessage(CCopasiMessage::EXCEPTION, "Invalid Render Information: fill rule \"INHERIT\" specified");
                 break;
             }
 
@@ -2998,8 +2997,7 @@ void CLLayoutRenderer::map_arrow_head(const CLPoint& mapTo, const CLPoint& direc
 void CLLayoutRenderer::TESS_ERROR(GLenum error)
 {
   const char *szError = (const char*)gluErrorString(error);
-  std::cerr << "tesselation error: " << szError << std::endl;
-  exit(1);
+  CCopasiMessage(CCopasiMessage::EXCEPTION, "tesselation error: %s", szError);  
 }
 
 void CLLayoutRenderer::COMBINE_CALLBACK(GLdouble coords[3], GLdouble** /*vertex_data[4]*/, GLfloat* /*weight[4]*/, GLdouble** dataOut)
