@@ -80,7 +80,7 @@ public:
     size_t count = 0;
     while(it != reactions.end())
     {
-      mEntries.push_back(new QEffectDescription((*it)->getCN(), QEffectDescription::Colorize));
+      mEntries.push_back(new QEffectDescription((*it)->getCN(), QEffectDescription::Colorize, Qt::black, Qt::red));
       indexMap[count] = (*it)->getCN();
       ++it;
       ++count;
@@ -207,7 +207,7 @@ public:
     CCopasiVector< CMetab >::const_iterator it = metabs.begin();
     while(it != metabs.end())
     {
-      mEntries.push_back(new QEffectDescription((*it)->getCN()));
+      mEntries.push_back(new QEffectDescription((*it)->getCN(), QEffectDescription::Scale));
       keyMap[(*it)->getCN()] = (*it)->getKey();
       ++it;
     }
