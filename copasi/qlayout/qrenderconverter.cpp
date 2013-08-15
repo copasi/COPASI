@@ -665,29 +665,31 @@ void fillItemFromRenderCurve(QGraphicsItemGroup *item, const CLBoundingBox *pBB,
   //pathItem->setBrush(*brush);
   //delete brush;
 
-  if (group -> isSetStartHead())
+  if (path.elementCount() > 1)
   {
-    const CLLineEnding *line = resolver->getLineEnding(group->getStartHead());
-    addLineEndingToItem(pathItem, line, group, resolver, path.elementAt(0), path.elementAt(1),item);
-    
-  } 
-  else if (pCurve->isSetStartHead())
-  {
-    const CLLineEnding *line = resolver->getLineEnding(pCurve->getStartHead());
-    addLineEndingToItem(pathItem, line, line->getGroup(), resolver, path.elementAt(0), path.elementAt(1),item);
+    if (group -> isSetStartHead())
+    {
+      const CLLineEnding *line = resolver->getLineEnding(group->getStartHead());
+      addLineEndingToItem(pathItem, line, group, resolver, path.elementAt(0), path.elementAt(1),item);
+      
+    } 
+    else if (pCurve->isSetStartHead())
+    {
+      const CLLineEnding *line = resolver->getLineEnding(pCurve->getStartHead());
+      addLineEndingToItem(pathItem, line, line->getGroup(), resolver, path.elementAt(0), path.elementAt(1),item);
+    }
+     
+    if (group->isSetEndHead())
+    {
+      const CLLineEnding *line = resolver->getLineEnding(group->getEndHead());
+      addLineEndingToItem(pathItem, line, group, resolver, path.elementAt(path.elementCount()-1),path.elementAt(path.elementCount()-2),item);
+    }
+    else if (pCurve->isSetEndHead())
+    {
+      const CLLineEnding *line = resolver->getLineEnding(pCurve->getEndHead());
+      addLineEndingToItem(pathItem, line, line->getGroup(), resolver, path.elementAt(path.elementCount()-1),path.elementAt(path.elementCount()-2),item);
+    }
   }
-   
-  if (group->isSetEndHead())
-  {
-    const CLLineEnding *line = resolver->getLineEnding(group->getEndHead());
-    addLineEndingToItem(pathItem, line, group, resolver, path.elementAt(path.elementCount()-1),path.elementAt(path.elementCount()-2),item);
-  }
-  else if (pCurve->isSetEndHead())
-  {
-    const CLLineEnding *line = resolver->getLineEnding(pCurve->getEndHead());
-    addLineEndingToItem(pathItem, line, line->getGroup(), resolver, path.elementAt(path.elementCount()-1),path.elementAt(path.elementCount()-2),item);
-  }
-
   
   transform(pathItem, pCurve, group);
 }
@@ -978,6 +980,9 @@ void QRenderConverter::applyStyle(QGraphicsPathItem* item, const CLBoundingBox* 
   QPen *pen = getPen(NULL, group, resolver, bounds);  
   item->setPen(*pen);   
   delete pen;  
+
+  if (item->path().elementCount() < 2) 
+    return;
    
   QPointF start = item->path().elementAt(0);
   QPointF second = item->path().elementAt(1);
