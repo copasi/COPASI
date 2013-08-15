@@ -15,7 +15,7 @@ QRoundedRect ::~QRoundedRect()
 {
 }
 
-void QRoundedRect::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void QRoundedRect::paint(QPainter *painter, const QStyleOptionGraphicsItem */*option*/, QWidget */*widget*/)
 {
   painter->save();
   painter->setPen(pen());

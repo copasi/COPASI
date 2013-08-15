@@ -5,8 +5,9 @@
 
 QAnimationControls::QAnimationControls (QWidget* parent)
   : QWidget(parent)
-  , mCurrentStep(0)
   , mNumSteps(100)
+  , mCurrentStep(0)
+  , mShouldLoop(true)
   , mpTimer(new QTimer(this))
 {
 
@@ -152,3 +153,4 @@ void QAnimationControls::updateButtons()
 void QAnimationControls::updateActions()
 {
 }
+

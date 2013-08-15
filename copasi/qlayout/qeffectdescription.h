@@ -18,6 +18,7 @@ public:
 
   QEffectDescription(const std::string& cn, qreal startScale, qreal endScale);
   QEffectDescription(const std::string& cn, Mode mode = Colorize, const QColor &startColor=Qt::white, const QColor& endColor=Qt::red);
+  virtual ~QEffectDescription();
 
   const std::string& getCN()const;
   void setCN(const std::string& cn);

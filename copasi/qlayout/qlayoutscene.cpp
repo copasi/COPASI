@@ -241,8 +241,3 @@ void QLayoutScene::fillFromLayout(const CLayout* layout)
     ++itList;
   }
 }
-
-void QLayoutScene::dragLeaveEvent ( QGraphicsSceneDragDropEvent * event )
-{
-	qDebug("dragLeaveEvent");
-}

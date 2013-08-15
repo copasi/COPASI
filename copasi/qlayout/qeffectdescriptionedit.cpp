@@ -57,7 +57,7 @@ void QEffectDescriptionEdit::initFrom(const QEffectDescription* other, bool mult
 
 }
 
-void QEffectDescriptionEdit::saveTo(QEffectDescription* other, bool multiple)
+void QEffectDescriptionEdit::saveTo(QEffectDescription* other, bool /* multiple*/)
 {
   other->setStartColor(txtColorStart->palette().color(QPalette::Background));
   other->setEndColor(txtColorEnd->palette().color(QPalette::Background));

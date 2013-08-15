@@ -31,7 +31,6 @@ public:
 public slots:
   void recreate();
 protected:
-  void dragLeaveEvent ( QGraphicsSceneDragDropEvent * event );
   void initializeResolver(CCopasiDataModel* model, CLRenderInformationBase* renderInformation);
 private: 
   void addGlyph(const CLGraphicalObject* go);

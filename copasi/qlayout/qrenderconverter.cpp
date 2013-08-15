@@ -173,7 +173,7 @@ QGradient* getGradient(const CLGradientBase* base, const CLBoundingBox* bounds, 
 
 }
 
-QFont* getFont(const CLText *item,const CLGroup *group, const CLRenderResolver* resolver, const CLBoundingBox *pBB)
+QFont* getFont(const CLText *item,const CLGroup *group, const CLRenderResolver* /*resolver*/, const CLBoundingBox *pBB)
 {
   QString font("Verdana"); double fontSize=10, weight=50; bool italic=false;
   if (item != NULL && item->isSetFontFamily())
@@ -272,7 +272,7 @@ QBrush* getBrush(const CLGraphicalPrimitive2D *item,const CLGroup *group, const 
   return new QBrush();
 }
 
-QPen* getPen(const CLGraphicalPrimitive1D *item,const CLGroup *group, const CLRenderResolver* resolver, const CLBoundingBox *pBB)
+QPen* getPen(const CLGraphicalPrimitive1D *item,const CLGroup *group, const CLRenderResolver* resolver, const CLBoundingBox */*pBB*/)
 {
   QColor color; double width;
   if (item != NULL && item->isSetStroke())
@@ -334,7 +334,6 @@ void fillItemFromEllipse(QGraphicsItemGroup *item, const CLBoundingBox *pBB,cons
 {
   double x = pBB->getPosition().getX() + pEllipse->getCX().getAbsoluteValue() + pEllipse->getCX().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
   double y = pBB->getPosition().getY() + pEllipse->getCY().getAbsoluteValue() + pEllipse->getCY().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
-  double z = pBB->getPosition().getZ() + pEllipse->getCZ().getAbsoluteValue() + pEllipse->getCZ().getRelativeValue() / 100.0 * pBB->getDimensions().getDepth();
   double rx = pEllipse->getRX().getAbsoluteValue() + pEllipse->getRX().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
   double ry = pEllipse->getRY().getAbsoluteValue() + pEllipse->getRY().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
 
@@ -495,7 +494,6 @@ QPainterPath *getPath(const CLEllipse* pEllipse, const CLBoundingBox *pBB)
 
   double x = pBB->getPosition().getX() + pEllipse->getCX().getAbsoluteValue() + pEllipse->getCX().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
   double y = pBB->getPosition().getY() + pEllipse->getCY().getAbsoluteValue() + pEllipse->getCY().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
-  double z = pBB->getPosition().getZ() + pEllipse->getCZ().getAbsoluteValue() + pEllipse->getCZ().getRelativeValue() / 100.0 * pBB->getDimensions().getDepth();
   double rx = pEllipse->getRX().getAbsoluteValue() + pEllipse->getRX().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
   double ry = pEllipse->getRY().getAbsoluteValue() + pEllipse->getRY().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
 
@@ -862,7 +860,7 @@ void fillItemFromText(QGraphicsItemGroup *item, const CLBoundingBox *pBB,const C
   item->addToGroup(result);
 }
 
-void fillItemFromImage(QGraphicsItemGroup *item, const CLBoundingBox *pBB,const CLImage *pImage, const CLGroup *group, const CLRenderResolver* resolver)
+void fillItemFromImage(QGraphicsItemGroup *item, const CLBoundingBox *pBB,const CLImage *pImage, const CLGroup *group, const CLRenderResolver* /* resolver*/)
 {
   double x = pBB->getPosition().getX() + pImage->getX().getAbsoluteValue() + pImage->getX().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
   double y = pBB->getPosition().getY() + pImage->getY().getAbsoluteValue() + pImage->getY().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
@@ -927,14 +925,14 @@ void fillItemFromGroup(QGraphicsItemGroup *item, const CLBoundingBox *bounds,con
   for (size_t i = 0; i < numElements; ++i)
   {
     const CCopasiObject* object = group->getElement(i);
-    const CLEllipse* ellipse = dynamic_cast<const CLEllipse*>(group->getElement(i));
-    const CLRectangle* rect = dynamic_cast<const CLRectangle*>(group->getElement(i));
-    const CLPolygon* poly = dynamic_cast<const CLPolygon*>(group->getElement(i));
-    const CLCurve* curve = dynamic_cast<const CLCurve*>(group->getElement(i));
-    const CLRenderCurve* rcurve = dynamic_cast<const CLRenderCurve*>(group->getElement(i));
-    const CLText* text = dynamic_cast<const CLText*>(group->getElement(i));
-    const CLImage* image = dynamic_cast<const CLImage*>(group->getElement(i));
-    const CLGroup* childGroup = dynamic_cast<const CLGroup*>(group->getElement(i));
+    const CLEllipse* ellipse = dynamic_cast<const CLEllipse*>(object);
+    const CLRectangle* rect = dynamic_cast<const CLRectangle*>(object);
+    const CLPolygon* poly = dynamic_cast<const CLPolygon*>(object);
+    const CLCurve* curve = dynamic_cast<const CLCurve*>(object);
+    const CLRenderCurve* rcurve = dynamic_cast<const CLRenderCurve*>(object);
+    const CLText* text = dynamic_cast<const CLText*>(object);
+    const CLImage* image = dynamic_cast<const CLImage*>(object);
+    const CLGroup* childGroup = dynamic_cast<const CLGroup*>(object);
 
     if (ellipse != NULL)
     {

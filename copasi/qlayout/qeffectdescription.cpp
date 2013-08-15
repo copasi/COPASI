@@ -51,6 +51,10 @@ QEffectDescription::QEffectDescription(const std::string& cn, qreal startScale, 
 {
 }
 
+QEffectDescription::~QEffectDescription()
+{
+}
+
 const std::string& QEffectDescription::getCN()const
 {
   return mCN;
