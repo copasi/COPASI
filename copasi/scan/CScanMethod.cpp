@@ -34,7 +34,7 @@
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
-
+#include <utilities/CCopasiMessage.h>
 // this will have to be defined somewhere else with the
 // values of other distribution types
 //#define SD_UNIFORM 0
@@ -316,9 +316,10 @@ void CScanItemRandom::step()
             break;
 
           case 2:             //poisson
+            if (mMin < 0)
+              CCopasiMessage(CCopasiMessage::WARNING, "Invalid ScanItem: Requested Poisson random variable for negative argument: %lf", mMin);
             Value = mRg->getRandomPoisson(mMin);
-            //if (mLog)
-            //  *mpObject = exp(*mpObject);
+
             break;
         }
     }

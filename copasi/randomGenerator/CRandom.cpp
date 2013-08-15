@@ -413,9 +413,9 @@ S120:
 
   if (mu >= 0.0) goto S125;
 
-  fprintf(stderr, "MU < 0 in IGNPOI: MU %16.6E\n", mu);
-  fputs("Abort\n", stderr);
-  exit(1);
+  // instead of quitting COPASI return a NaN
+  return std::numeric_limits<double>::quiet_NaN();
+
 S125:
   varp.muold = mu;
   varp.m = std::max(1L, (long)(mu));
