@@ -121,6 +121,7 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
   size_t numY = 0;
   size_t numXC = 0;
   size_t numYC = 0;
+  size_t numPC = 0;
   size_t numP = 0;
   size_t numDX = 0;
   size_t numCT = 0;
@@ -129,6 +130,7 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
   std::ostringstream x_names;  x_names  << "const char* x_names[] = {";
   std::ostringstream y_names;  y_names  << "const char* y_names[] = {";
   std::ostringstream xc_names; xc_names << "const char* xc_names[] = {";
+  std::ostringstream pc_names; pc_names << "const char* pc_names[] = {";
   std::ostringstream yc_names; yc_names << "const char* yc_names[] = {";
   std::ostringstream dx_names; dx_names << "const char* dx_names[] = {";
   std::ostringstream ct_names; ct_names << "const char* ct_names[] = {";
@@ -182,6 +184,21 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
             }
 
           ++numXC;
+        }
+      else if (startsWith(abbrev, "p_c["))
+        {
+          CCopasiObject* obj = kf->get(key);
+
+          if (obj != NULL)
+            {
+              reverse_map[abbrev] = obj->getObjectName();
+            }
+          else
+            {
+              reverse_map[abbrev] = key;
+            }
+
+          ++numPC;
         }
       else if (startsWith(abbrev, "y_c["))
         {
@@ -238,6 +255,12 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
       xc_names << "\"" << reverse_map[str.str()] << "\", ";
     }
 
+  for (size_t i = 0; i < numPC; ++i)
+    {
+      std::stringstream str; str << "p_c[" << i << "]";
+      pc_names << "\"" << reverse_map[str.str()] << "\", ";
+    }
+
   for (size_t i = 0; i < numYC; ++i)
     {
       std::stringstream str; str << "y_c[" << i << "]";
@@ -257,6 +280,7 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
   os << "#define N_ARRAY_SIZE_X  " << numX  << "\t// number of initials" << std::endl;
   os << "#define N_ARRAY_SIZE_Y  " << numY  << "\t// number of assigned elements" << std::endl;
   os << "#define N_ARRAY_SIZE_XC " << numXC << "\t// number of x concentration" << std::endl;
+  os << "#define N_ARRAY_SIZE_PC " << numPC << "\t// number of p concentration" << std::endl;
   os << "#define N_ARRAY_SIZE_YC " << numYC << "\t// number of y concentration" << std::endl;
   os << "#define N_ARRAY_SIZE_DX " << numDX << "\t// number of ODEs " << std::endl;
   os << "#define N_ARRAY_SIZE_CT " << numCT << "\t// number of conserved totals" << std::endl << std::endl;
@@ -274,6 +298,7 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
   os << x_names.str()  << " \"\" };" << std::endl;
   os << y_names.str()  << " \"\" };" << std::endl;
   os << xc_names.str() << " \"\" };" << std::endl;
+  os << pc_names.str() << " \"\" };" << std::endl;
   os << yc_names.str() << " \"\" };" << std::endl;
   os << dx_names.str() << " \"\" };" << std::endl;
   os << ct_names.str() << " \"\" };" << std::endl;
