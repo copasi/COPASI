@@ -348,7 +348,7 @@ void QAnimationWindow::slotShowStep(int step)
   mpScene->update();
 }
 
-void QAnimationWindow::closeEvent(QCloseEvent *closeEvent)
+void QAnimationWindow::closeEvent(QCloseEvent * /*closeEvent*/)
 {
   removeFromMainWindow();
 }
