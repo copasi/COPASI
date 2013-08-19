@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationResult.cpp,v $
-//   $Revision: 1.15 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/24 22:19:02 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -36,7 +28,7 @@
  *  name 'name'.'
  */
 CQOptimizationResult::CQOptimizationResult(QWidget* parent, const char* name)
-    : CopasiWidget(parent, name)
+  : CopasiWidget(parent, name)
 {
   setupUi(this);
 
@@ -71,6 +63,9 @@ bool CQOptimizationResult::leave()
 bool CQOptimizationResult::enterProtected()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  assert(pDataModel != NULL);
+
   mpTask =
     dynamic_cast<COptTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Optimization"]);
 
@@ -98,19 +93,24 @@ bool CQOptimizationResult::enterProtected()
   const CVector< C_FLOAT64 > & Gradients = mpProblem->getVariableGradients();
 
   imax = Items.size();
+  QTableWidgetItem * pItem;
 
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
   mpParameters->setRowCount((int) imax);
-  QTableWidgetItem * pItem;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
+  QColor BackgroundColor = mpParameters->palette().brush(QPalette::Active, QPalette::Base).color();
 
-  QFont smallFont(this->font());
-  smallFont.setPointSize(smallFont.pointSize() - 3);
+  int h, s, v;
+  BackgroundColor.getHsv(&h, &s, &v);
+
+  if (s < 20)
+    {
+      s = 20;
+    }
+
+  BackgroundColor.setHsv(0, s, v);
 
   for (i = 0; i != imax; i++)
     {
@@ -125,10 +125,16 @@ bool CQOptimizationResult::enterProtected()
 
       mpParameters->setItem((int) i, 0, pItem);
 
+      const C_FLOAT64 & Solution = Solutions[i];
+
       //2nd column: lower bound
       pItem = new QTableWidgetItem(FROM_UTF8(Items[i]->getLowerBound()));
-      pItem->setFont(smallFont);
       mpParameters->setItem((int) i, 1, pItem);
+
+      if (1.01 * *Items[i]->getLowerBoundValue() > Solution)
+        {
+          pItem->setBackgroundColor(BackgroundColor);
+        }
 
       //3rd column: start value
       pItem = new QTableWidgetItem(QString::number(Items[i]->getStartValue()));
@@ -136,14 +142,17 @@ bool CQOptimizationResult::enterProtected()
       mpParameters->setItem((int) i, 2, pItem);
 
       //4th column: solution value
-      const C_FLOAT64 & Solution = Solutions[i];
       pItem = new QTableWidgetItem(QString::number(Solution));
       mpParameters->setItem((int) i, 3, pItem);
 
       //5th column: upper bound
       pItem = new QTableWidgetItem(FROM_UTF8(Items[i]->getUpperBound()));
-      pItem->setFont(smallFont);
       mpParameters->setItem((int) i, 4, pItem);
+
+      if (0.99 * *Items[i]->getUpperBoundValue() < Solution)
+        {
+          pItem->setBackgroundColor(BackgroundColor);
+        }
 
       pItem = new QTableWidgetItem(QString::number(Gradients[i]));
       mpParameters->setItem((int) i, 5,  pItem);

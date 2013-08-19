@@ -86,6 +86,7 @@ bool CQFittingResult::enterProtected()
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
+
   mpTask =
     dynamic_cast<CFitTask *>((*pDataModel->getTaskList())["Parameter Estimation"]);
 

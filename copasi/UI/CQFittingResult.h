@@ -1,14 +1,15 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.13 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/03/21 15:21:13 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /*
@@ -21,7 +22,7 @@
 
 #include <QtCore/QVariant>
 
-#include "ui_CQFittingResult.h"
+#include "copasi/UI/ui_CQFittingResult.h"
 
 class CFitTask;
 class CFitProblem;
@@ -51,7 +52,6 @@ private:
 private slots:
   void slotSave(void);
   void slotUpdateModel();
-
 };
 
 #endif // CQFITTINGRESULT_H
