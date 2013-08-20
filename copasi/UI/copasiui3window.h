@@ -17,6 +17,7 @@
 #include <QMainWindow>
 #include <QModelIndex>
 #include <QMap>
+#include <qpointer.h>
 
 #ifdef COPASI_SBW_INTEGRATION
 #include <QApplication>
@@ -103,7 +104,7 @@ public:
   /**
    * Returns the list of current windows
    */
-  const QList< QMainWindow * >& getWindows() const;
+  const QList< QPointer<QMainWindow> >& getWindows() const;
 
 signals:
   void signalLoadFile(QString newFile);
@@ -265,7 +266,7 @@ private:
   bool mSliderDialogEnabled;
   bool mMessageShown;
 
-  QList< QMainWindow * > mWindows;
+  QList< QPointer<QMainWindow> > mWindows;
 
   static CopasiUI3Window * pMainWindow;
 
