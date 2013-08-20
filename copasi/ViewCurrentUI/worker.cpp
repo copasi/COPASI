@@ -46,20 +46,22 @@ bool Worker::slotNotify(ListViews::ObjectType objectType, ListViews::Action acti
 
       if (mpArgs->haveOutputDir())
         {
-          const QList<QMainWindow*>& windows = mpWindow->getWindows();
+          const QList< QPointer<QMainWindow> >& windows = mpWindow->getWindows();
 
           for (int index = 0; index < windows.count(); ++index)
-            {
-              const CWindowInterface* window = dynamic_cast<CWindowInterface*>(windows[index]);
+          {
+              const QMainWindow* mainWindow = windows[index];
+              if (mainWindow == NULL) continue;
+              const CWindowInterface* window = dynamic_cast<const CWindowInterface*>(mainWindow);
 
               if (window == NULL) continue;
 
               QString fileName = QString("%1/plot%2.%3")
-                                 .arg(mpArgs->getOutputDir().c_str())
-                                 .arg(index + 1)
-                                 .arg(mpArgs->getFileType().c_str());
+              .arg(mpArgs->getOutputDir().c_str())
+              .arg(index + 1)
+              .arg(mpArgs->getFileType().c_str());
               window->saveToFile(fileName);
-            }
+          }
         }
 
       if (mpArgs->isQuitAfterTaskExecution())
