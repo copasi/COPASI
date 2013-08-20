@@ -8,7 +8,7 @@
 #include <qlayout/qeffectdescription.h>
 #include <qlayout/qeffectdescriptionedit.h>
 
-#if QT_VERSION < 40800
+#if QT_VERSION < 0x040800
 #include <QPainter>
 #endif
 
@@ -32,7 +32,7 @@ void setColor(QLabel *widget, const QColor& color)
   widget->setPalette(palette);
   QImage image(widget->rect().size(), QImage::Format_ARGB32);
 
-#if QT_VERSION >= 40800
+#if QT_VERSION >= 0x040800
   image.fill(color);
 #else
   QPainter painter(&image);
