@@ -187,6 +187,16 @@ public:
   void pushInitialState();
 
   /**
+   * Fetch the state from the associated model
+   */
+  void fetchState();
+
+  /**
+   * Push the state to the associated model
+   */
+  void pushState();
+
+  /**
    * Retrieve the CN of the math container
    * The math container provides values for the numerical values of model objects.
    * For the CN mechanism to work properly it has to pretend to be the model.

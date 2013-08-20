@@ -477,6 +477,44 @@ void CMathContainer::pushInitialState()
   return;
 }
 
+void CMathContainer::fetchState()
+{
+  C_FLOAT64 * pValue = mState.array();
+  C_FLOAT64 * pValueEnd = pValue + mState.size();
+  CMathObject * pObject = mObjects.array();
+
+  for (; pValue != pValueEnd; ++pValue, ++pObject)
+    {
+      const CCopasiObject * pDataObject = pObject->getDataObject();
+
+      if (pDataObject != NULL)
+        {
+          *pValue = *(C_FLOAT64 *)pDataObject->getValuePointer();
+        }
+    }
+
+  return;
+}
+
+void CMathContainer::pushState()
+{
+  C_FLOAT64 * pValue = mState.array();
+  C_FLOAT64 * pValueEnd = pValue + mState.size();
+  CMathObject * pObject = mObjects.array();
+
+  for (; pValue != pValueEnd; ++pValue, ++pObject)
+    {
+      const CCopasiObject * pDataObject = pObject->getDataObject();
+
+      if (pDataObject != NULL)
+        {
+          *(C_FLOAT64 *)pDataObject->getValuePointer() = *pValue;
+        }
+    }
+
+  return;
+}
+
 // virtual
 CCopasiObjectName CMathContainer::getCN() const
 {
@@ -582,7 +620,7 @@ void CMathContainer::init()
   mDiscontinuityInfix2Object.clear();
   mTriggerInfix2Event.clear();
 
-  // TODO CRITICAL We may have unused event triggers and roots due to optimization
+  // TODO We may have unused event triggers and roots due to optimization
   // in the discontinuities.
   createDependencyGraphs();
 

@@ -3,6 +3,8 @@
 // of Manchester.
 // All rights reserved.
 
+#include <cmath>
+
 #include "copasi.h"
 
 #include "CMathObject.h"
@@ -265,6 +267,16 @@ void CMathObject::calculate()
   assert(mpExpression != NULL);
 
   *mpValue = mpExpression->value();
+
+#ifdef COPASI_DEBUG
+
+  // Check for NaN
+  if (isnan(*mpValue))
+    {
+      std::cout << "NaN Value for: " << getCN() << std::endl;
+    }
+
+#endif // COPASI_DEBUG
 
   // For an extensive transient value of a dependent species we have 2
   // possible assignments depending on the context.
