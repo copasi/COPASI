@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,6 +17,7 @@
 #include <QMainWindow>
 #include <QModelIndex>
 #include <QMap>
+#include <qpointer.h>
 
 #ifdef COPASI_SBW_INTEGRATION
 #include <QApplication>
@@ -99,6 +100,11 @@ public:
   void setMessageShown(const bool & shown);
 
   const bool & messageShown() const;
+
+  /**
+   * Returns the list of current windows
+   */
+  const QList< QPointer<QMainWindow> >& getWindows() const;
 
 signals:
   void signalLoadFile(QString newFile);
@@ -260,7 +266,7 @@ private:
   bool mSliderDialogEnabled;
   bool mMessageShown;
 
-  QList< QMainWindow * > mWindows;
+  QList< QPointer<QMainWindow> > mWindows;
 
   static CopasiUI3Window * pMainWindow;
 

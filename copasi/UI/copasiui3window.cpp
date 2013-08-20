@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <sbml/SBMLDocument.h>
 
@@ -76,6 +76,21 @@
 
 // static
 CopasiUI3Window * CopasiUI3Window::pMainWindow = NULL;
+
+QMainWindow* getWindowByTitle(const QList< QPointer< QMainWindow > > & list, const QString& title)
+{
+  for (int index = 0; index < list.count(); ++index)
+    {
+      QMainWindow *window = list[index];
+
+      if (window == NULL) continue;
+
+      if (window ->windowTitle() == title)
+        return window;
+    }
+
+  return NULL;
+}
 
 // static
 CopasiUI3Window * CopasiUI3Window::getMainWindow()
@@ -238,11 +253,13 @@ CopasiUI3Window::~CopasiUI3Window()
   pdelete(mpListView);
   pdelete(mpDataModelGUI);
 
-  QList< QMainWindow * >::iterator it = mWindows.begin();
-  QList< QMainWindow * >::iterator end = mWindows.end();
+  QList< QPointer<QMainWindow> >::iterator it = mWindows.begin();
+  QList< QPointer<QMainWindow> >::iterator end = mWindows.end();
 
   for (; it != end; ++it)
     {
+      if (*it == NULL)  continue;
+
       (*it)->close();
     }
 }
@@ -1745,6 +1762,11 @@ void CopasiUI3Window::slotExportSBMLToStringFinished(bool success)
     }
 }
 
+const QList< QPointer<QMainWindow> >& CopasiUI3Window::getWindows() const
+{
+  return mWindows;
+}
+
 void CopasiUI3Window::addWindow(QMainWindow * pWindow)
 {
   mWindows.append(pWindow);
@@ -1753,7 +1775,13 @@ void CopasiUI3Window::addWindow(QMainWindow * pWindow)
 
 void CopasiUI3Window::removeWindow(QMainWindow * pWindow)
 {
-  mWindows.remove(pWindow);
+  int index = mWindows.indexOf(pWindow);
+
+  if (index == -1)
+    return;
+
+  // only delete when there is such a window
+  mWindows.removeAt(index);
   refreshWindowsMenu();
 }
 
@@ -1766,7 +1794,12 @@ void CopasiUI3Window::refreshWindowsMenu()
 
   for (int index = 0; index < mWindows.count(); ++index)
     {
-      QMenu* menu = ((CWindowInterface*)mWindows[index])->getWindowMenu();
+      QMainWindow* mainWindow = mWindows[index];
+
+      if (mainWindow == NULL) continue;
+
+      CWindowInterface* window = dynamic_cast<CWindowInterface*>(mainWindow);
+      QMenu* menu = window->getWindowMenu();
       menu->clear();
       menu->addAction(mpaCloseAllWindows);
       menu->addSeparator();
@@ -1786,12 +1819,21 @@ void CopasiUI3Window::refreshWindowsMenu()
 
   for (int index = 0; index < mWindows.count(); ++index)
     {
+      QMainWindow* mActionWindow = mWindows[index];
+
+      if (mActionWindow == NULL) continue;
+
       pAction = new QAction(mWindows[index]->windowTitle(), mpWindowsActionGroup);
       mpWindowsMenu->addAction(pAction);
 
-      for (int index = 0; index < mWindows.count(); ++index)
+      for (int index1 = 0; index1 < mWindows.count(); ++index1)
         {
-          QMenu* menu = ((CWindowInterface*)mWindows[index])->getWindowMenu();
+          QMainWindow* mainWindow = mWindows[index1];
+
+          if (mainWindow == NULL) continue;
+
+          CWindowInterface* window = dynamic_cast<CWindowInterface*>(mainWindow);
+          QMenu* menu = window->getWindowMenu();
           menu->addAction(pAction);
         }
     }
@@ -1801,7 +1843,10 @@ void CopasiUI3Window::slotCloseAllWindows()
 {
   for (int index = mWindows.count() - 1; index >= 0 ; --index)
     {
-      mWindows[index]->close();
+      QMainWindow* window = mWindows[index];
+
+      if (window != NULL)
+        window->close();
     }
 
   refreshWindowsMenu();
@@ -1809,11 +1854,10 @@ void CopasiUI3Window::slotCloseAllWindows()
 
 void CopasiUI3Window::slowFindWindowTriggered(QAction* action)
 {
-  for (int index = 0; index < mWindows.count(); ++index)
-    {
-      if (mWindows[index]->windowTitle() == action->text())
-        mWindows[index]->activateWindow();
-    }
+  QMainWindow *window  = getWindowByTitle(mWindows, action->text());
+
+  if (window != NULL)
+    window ->activateWindow();
 }
 
 void CopasiUI3Window::setMessageShown(const bool & shown)
