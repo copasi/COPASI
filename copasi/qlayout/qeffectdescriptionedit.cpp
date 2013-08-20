@@ -1,7 +1,16 @@
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 #include <QColorDialog>
 
 #include <qlayout/qeffectdescription.h>
 #include <qlayout/qeffectdescriptionedit.h>
+
+#if QT_VERSION < 40800
+#include <QPainter>
+#endif
 
 QEffectDescriptionEdit::QEffectDescriptionEdit(QWidget* parent, Qt::WindowFlags f)
   : QWidget(parent, f)
@@ -15,17 +24,23 @@ QEffectDescriptionEdit::~QEffectDescriptionEdit()
 
 void setColor(QLabel *widget, const QColor& color)
 {
-  QPalette palette(color); 
-  palette.setColor(QPalette::Base, color); 
-  palette.setColor(QPalette::Background, color); 
-  palette.setColor(QPalette::Window, color); 
-  palette.setColor(QPalette::Foreground, color); 
-  widget->setPalette(palette);  
+  QPalette palette(color);
+  palette.setColor(QPalette::Base, color);
+  palette.setColor(QPalette::Background, color);
+  palette.setColor(QPalette::Window, color);
+  palette.setColor(QPalette::Foreground, color);
+  widget->setPalette(palette);
   QImage image(widget->rect().size(), QImage::Format_ARGB32);
+
+#if QT_VERSION >= 40800
   image.fill(color);
+#else
+  QPainter painter(&image);
+  painter.fillRect(widget->rect(), color);
+#endif
+
   QPixmap pix = QPixmap::fromImage(image);
   widget->setPixmap(pix);
-
 }
 
 void QEffectDescriptionEdit::initFrom(const QEffectDescription* other, bool multiple)
@@ -35,26 +50,27 @@ void QEffectDescriptionEdit::initFrom(const QEffectDescription* other, bool mult
 
   if (multiple)
     txtObjectName->setText("");
-  else 
+  else
     txtObjectName->setText(other->getCN().c_str());
 
   txtScaleStart->setText(QString::number(other->getScaleStart()));
   txtScaleEnd->setText(QString::number(other->getScaleEnd()));
 
-  switch(other->getMode())
-  {
-  case QEffectDescription::Colorize:
-    radColorize->setChecked(true);
-    break;
-  case QEffectDescription::DropShadow:
-    radShadow->setChecked(true);
-    break;
-  default:
-  case QEffectDescription::Scale:
-    radScale->setChecked(true);
-    break;
-  }
+  switch (other->getMode())
+    {
+      case QEffectDescription::Colorize:
+        radColorize->setChecked(true);
+        break;
 
+      case QEffectDescription::DropShadow:
+        radShadow->setChecked(true);
+        break;
+
+      default:
+      case QEffectDescription::Scale:
+        radScale->setChecked(true);
+        break;
+    }
 }
 
 void QEffectDescriptionEdit::saveTo(QEffectDescription* other, bool /* multiple*/)
@@ -68,9 +84,8 @@ void QEffectDescriptionEdit::saveTo(QEffectDescription* other, bool /* multiple*
     other->setMode(QEffectDescription::Colorize);
   else if (radShadow->isChecked())
     other->setMode(QEffectDescription::DropShadow);
-  else 
+  else
     other->setMode(QEffectDescription::Scale);
-
 }
 
 QEffectDescription* QEffectDescriptionEdit::toDescription() const
@@ -86,7 +101,7 @@ QEffectDescription* QEffectDescriptionEdit::toDescription() const
     result->setMode(QEffectDescription::Colorize);
   else if (radShadow->isChecked())
     result->setMode(QEffectDescription::DropShadow);
-  else 
+  else
     result->setMode(QEffectDescription::Scale);
 
   return result;
