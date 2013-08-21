@@ -35,6 +35,7 @@ public slots:
   void slotSwitchAnimation();
   void slotRandomizeLayout();
   void slotAutoLayout();
+  void slotStopLayout();
 private:
   void init();
   void toggleUI(bool isPlaying);

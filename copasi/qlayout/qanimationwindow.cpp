@@ -404,7 +404,7 @@ void QAnimationWindow::slotShowStep(int step)
 void QAnimationWindow::closeEvent(QCloseEvent * /*closeEvent*/)
 {
   // stop the autolayout
-  toggleUI(false);
+  slotStopLayout();
 }
 
 void QAnimationWindow::slotEditSettings()
@@ -420,7 +420,7 @@ void QAnimationWindow::slotEditSettings()
 
 void QAnimationWindow::slotRandomizeLayout()
 {
-  toggleUI(false);
+  slotStopLayout();
 
   mpScene->getCurrentLayout()->randomize(&mpParameterWindow->getLayoutParameters());
   mpScene->recreate();
@@ -431,6 +431,23 @@ void QAnimationWindow::slotRandomizeLayout()
 
 #include <QtCore/QAbstractEventDispatcher>
 #include <QtCore/QAbstractEventDispatcher>
+
+#include <qtimer.h>
+
+void QAnimationWindow::slotStopLayout()
+{
+  mStopLayout = true;
+
+  if (mIsRunning)
+    {
+      QTimer::singleShot(100, this, SLOT(slotStopLayout()));
+      return;
+    }
+
+  actionAuto_Layout->setChecked(false);
+  actionAuto_Layout->setText("Run Auto Layout");
+  actionAuto_Layout->setIcon(CQIconResource::icon(CQIconResource::play));
+}
 
 void QAnimationWindow::toggleUI(bool isPlaying)
 {
@@ -443,22 +460,7 @@ void QAnimationWindow::toggleUI(bool isPlaying)
     }
   else
     {
-      mStopLayout = true;
-
-      if (mIsRunning)
-        {
-          QAbstractEventDispatcher* pDispatcher = QAbstractEventDispatcher::instance();
-
-          // wait for it to stop
-          while (mIsRunning)
-            {
-              pDispatcher->processEvents(QEventLoop::AllEvents);
-            }
-        }
-
-      actionAuto_Layout->setChecked(false);
-      actionAuto_Layout->setText("Run Auto Layout");
-      actionAuto_Layout->setIcon(CQIconResource::icon(CQIconResource::play));
+      slotStopLayout();
     }
 }
 
@@ -469,7 +471,7 @@ void QAnimationWindow::slotAutoLayout()
 {
   if (sender() != NULL && !actionAuto_Layout->isChecked())
     {
-      toggleUI(false);
+      slotStopLayout();
       return;
     }
 
