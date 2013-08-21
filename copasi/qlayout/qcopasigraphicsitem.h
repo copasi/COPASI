@@ -1,7 +1,13 @@
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 #ifndef QCOPASI_GRAPHICS_ITEM
 #define QCOPASI_GRAPHICS_ITEM
 
 #define COPASI_OBJECT_CN 1
+#define COPASI_LAYOUT_KEY 2
 
 class CLStyle;
 class CLRenderResolver;

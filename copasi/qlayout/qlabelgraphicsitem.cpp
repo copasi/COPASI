@@ -1,3 +1,8 @@
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 #include <qlayout/qlabelgraphicsitem.h>
 #include <qlayout/qrenderconverter.h>
 #include <layout/CLGlyphs.h>
@@ -9,13 +14,12 @@ QLabelGraphicsItem::QLabelGraphicsItem(const CLTextGlyph* textGlyph, const CLRen
 {
   //setTextInteractionFlags(Qt::TextEditorInteraction);
   //setFlag(QGraphicsItem::ItemIsMovable);
-  setFlag(QGraphicsItem::ItemIsSelectable);
-  
+  //setFlag(QGraphicsItem::ItemIsSelectable);
+
   setPos(textGlyph->getBoundingBox().getPosition().getX(),
-    textGlyph->getBoundingBox().getPosition().getY());
+         textGlyph->getBoundingBox().getPosition().getY());
 
   QRenderConverter::applyStyle(this, &textGlyph->getBoundingBox(), mpStyle == NULL ? NULL : mpStyle->getGroup(), mpResolver);
-
 }
 
 QLabelGraphicsItem::~QLabelGraphicsItem()
