@@ -308,21 +308,21 @@ void moveObject(CLGraphicalObject* obj, const CLPoint& delta, CLayout* layout)
   // move species within compartments as well
   CLCompartmentGlyph* lcomp = dynamic_cast<CLCompartmentGlyph*>(obj);
 
-  if (lcomp != NULL)
+  if (lcomp == NULL)
+    return;
+
+  CCompartment*  comp = dynamic_cast<CCompartment*>(lcomp ->getModelObject());
+
+  if (comp == NULL)
+    return;
+
+  CCopasiVectorNS < CMetab > & metabs = comp->getMetabolites();
+  CCopasiVectorNS < CMetab >::const_iterator it = metabs.begin();
+
+  while (it != metabs.end())
     {
-      CCompartment*  comp = dynamic_cast<CCompartment*>(lcomp ->getModelObject());
-
-      if (comp != NULL)
-        {
-          CCopasiVectorNS < CMetab > & metabs = comp->getMetabolites();
-          CCopasiVectorNS < CMetab >::const_iterator it = metabs.begin();
-
-          while (it != metabs.end())
-            {
-              moveObject(getMetabGlyphForKey(layout, (*it)), delta, layout);
-              ++it;
-            }
-        }
+      moveObject(getMetabGlyphForKey(layout, (*it)), delta, layout);
+      ++it;
     }
 }
 
