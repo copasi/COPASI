@@ -374,12 +374,24 @@ void QAnimationWindow::setAnimation(QCopasiAnimation* animation, CCopasiDataMode
 
   mAnimation = animation;
   mAnimation->initialize(*dataModel);
-  mpControls->setNumSteps(mAnimation->getNumSteps());
+  size_t numSteps = mAnimation->getNumSteps();
+
+  if (numSteps > 0)
+    {
+      mpControls->setVisible(true);
+      mpControls->setNumSteps(numSteps);
+      slotShowStep(0);
+    }
+  else
+    {
+      mpControls->setVisible(false);
+      statusBar()->showMessage("No data for the animation! Run task first, and load data.", 1000);
+    }
 }
 
 void QAnimationWindow::slotShowStep(int step)
 {
-  statusBar()->showMessage(QString("Displaying step %1").arg(step), 1000);
+  statusBar()->showMessage(QString("Displaying step %1").arg(step + 1), 1000);
 
   if (mAnimation == NULL) return;
 
