@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /*********************************************************************
  **  $ CopasiUI/ReactionsWidget1.cpp
@@ -32,6 +32,7 @@
 #include "ChemEqValidator.h"
 #include "FunctionWidget1.h"
 #include "CQMessageBox.h"
+#include "CQNameSelectionDialog.h"  // for Copy button compartment options
 
 #include "utilities/CCopasiVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -41,6 +42,7 @@
 #include "function/CFunctionParameters.h"
 #include "function/CFunctionParameter.h"
 #include "report/CKeyFactory.h"
+#include "model/CModelExpansion.h"    //for Copy button and options
 
 /*
  *  Constructs a ReactionsWidget which is a child of 'parent', with the
@@ -50,8 +52,7 @@
 
 ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlags f)
   : CopasiWidget(parent, name, f),
-    mpRi(NULL),
-    mKeyToCopy("")
+    mpRi(NULL)
 {
   if (!name)
     setName("ReactionsWidget1");
@@ -364,9 +365,132 @@ void ReactionsWidget1::slotBtnNew()
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
-void ReactionsWidget1::slotBtnCopy()
+void ReactionsWidget1::copy()
 {
-  mKeyToCopy = mKey;
+  CReaction* reac = dynamic_cast< CReaction * >(mpObject);
+
+  if (reac == NULL) return;
+
+  CModel * pModel = NULL;
+  if (reac) pModel = mpDataModel->getModel();
+
+  if (pModel == NULL) return; // for getting compartments and initializing cModelExpObj
+
+  // Create and customize compartment choices dialog
+  CQNameSelectionDialog * pDialog = new CQNameSelectionDialog(this);
+  pDialog->resize(350, pDialog->height());
+  pDialog->setToolTip("Cancel to re-use original species");
+  pDialog->mpLblName->setText("compartment");
+  pDialog->mpSelectionBox->clear();
+  pDialog->mpSelectionBox->setDuplicatesEnabled(false);
+  pDialog->mpSelectionBox->setEditable(false); // at least for now, unless we want to add new compartment creation here.
+
+  // Use CModelExpansion for duplication
+  CModelExpansion cModelExpObj = CModelExpansion(pModel);
+  CModelExpansion::SetOfModelElements sourceObjects;
+  CModelExpansion::ElementsMap origToCopyMapping;
+
+  // for comboBox compartment list and setting compartment
+  CCopasiVectorNS< CCompartment > & Compartments = pModel->getCompartments();
+
+  CCopasiVectorN< CCompartment >::const_iterator Compartment_it = Compartments.begin();
+  CCopasiVectorN< CCompartment >::const_iterator end = Compartments.end();
+  QStringList SelectionList;
+
+  // Collect and load list of compartment names in comboBox
+  for (; Compartment_it != end; ++Compartment_it)
+    {
+      SelectionList.append(FROM_UTF8((*Compartment_it)->getObjectName()));
+    }
+
+  pDialog->setSelectionList(SelectionList);
+
+  const CCompartment * origCompartment = NULL;
+  // to use here, and for testing if compartment changed after executing the dialog
+  int origCompartmentIndex;
+
+  CCopasiVector< CChemEqElement >::const_iterator MetabIt;
+
+  const CCopasiVector< CChemEqElement > & substratesToCopy = reac->getChemEq().getSubstrates();
+  for (MetabIt = substratesToCopy.begin();MetabIt != substratesToCopy.end(); MetabIt++)
+  {
+      pDialog->setWindowTitle("Create copy of " + FROM_UTF8((*MetabIt)->getMetabolite()->getObjectName()) + "?");
+      origCompartment = (*MetabIt)->getMetabolite()->getCompartment();
+      origCompartmentIndex = pDialog->mpSelectionBox->findText(FROM_UTF8(origCompartment->getObjectName()));
+      pDialog->mpSelectionBox->setCurrentIndex(origCompartmentIndex);
+
+      Compartment_it = Compartments.begin(); // Reuse Compartments iterator to set compartment choice
+
+      if (pDialog->exec() != QDialog::Rejected)
+      {
+        // Put species in different compartment (without name modification) by making
+        // duplicateMetab think the other compartment was duplicated from the original
+        if(origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
+        {
+          sourceObjects.addCompartment(origCompartment);
+          origToCopyMapping.add(origCompartment,*(Compartment_it + pDialog->mpSelectionBox->currentIndex()));
+        }
+
+        sourceObjects.addMetab((*MetabIt)->getMetabolite());
+        cModelExpObj.duplicateMetab((*MetabIt)->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
+      }
+  }
+
+  const CCopasiVector< CChemEqElement > & productsToCopy = reac->getChemEq().getProducts();
+  for (MetabIt = productsToCopy.begin();MetabIt != productsToCopy.end(); MetabIt++)
+  {
+      pDialog->setWindowTitle("Create copy of " + FROM_UTF8((*MetabIt)->getMetabolite()->getObjectName()) + "?");
+      origCompartment = (*MetabIt)->getMetabolite()->getCompartment();
+      origCompartmentIndex = pDialog->mpSelectionBox->findText(FROM_UTF8(origCompartment->getObjectName()));
+      pDialog->mpSelectionBox->setCurrentIndex(origCompartmentIndex);
+
+      Compartment_it = Compartments.begin();
+
+      if (pDialog->exec() != QDialog::Rejected)
+      {
+        if(origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
+        {
+          sourceObjects.addCompartment(origCompartment);
+          origToCopyMapping.add(origCompartment,*(Compartment_it + pDialog->mpSelectionBox->currentIndex()));
+        }
+
+        sourceObjects.addMetab((*MetabIt)->getMetabolite());
+        cModelExpObj.duplicateMetab((*MetabIt)->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
+      }
+  }
+
+  const CCopasiVector< CChemEqElement > & modifiersToCopy = reac->getChemEq().getModifiers();
+  for (MetabIt = modifiersToCopy.begin();MetabIt != modifiersToCopy.end(); MetabIt++)
+  {
+      pDialog->setWindowTitle("Create copy of " + FROM_UTF8((*MetabIt)->getMetabolite()->getObjectName()) + "?");
+      origCompartment = (*MetabIt)->getMetabolite()->getCompartment();
+      origCompartmentIndex = pDialog->mpSelectionBox->findText(FROM_UTF8(origCompartment->getObjectName()));
+      pDialog->mpSelectionBox->setCurrentIndex(origCompartmentIndex);
+
+      Compartment_it = Compartments.begin();
+
+      if (pDialog->exec() != QDialog::Rejected)
+      {
+        if(origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
+        {
+          sourceObjects.addCompartment(origCompartment);
+          origToCopyMapping.add(origCompartment,*(Compartment_it + pDialog->mpSelectionBox->currentIndex()));
+        }
+
+        sourceObjects.addMetab((*MetabIt)->getMetabolite());
+        cModelExpObj.duplicateMetab((*MetabIt)->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
+      }
+  }
+
+  sourceObjects.addReaction(reac);
+  cModelExpObj.duplicateReaction(reac, "_copy", sourceObjects, origToCopyMapping);
+
+  protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, "");//Refresh all
+  protectedNotify(ListViews::METABOLITE, ListViews::DELETE, ""); //Refresh all
+  protectedNotify(ListViews::REACTION, ListViews::DELETE, "");   //Refresh all
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, origToCopyMapping.getDuplicateKey(mKey));
+
+  pdelete(pDialog);
 }
 
 // Just added 5/18/04
@@ -578,17 +702,7 @@ bool ReactionsWidget1::leave()
 
 bool ReactionsWidget1::enterProtected()
 {
-  CReaction* reac = NULL;
-
-  if (mKeyToCopy != "")
-    {
-      reac = dynamic_cast<CReaction *>(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy));
-      mKeyToCopy = "";
-    }
-  else
-    {
-      reac = dynamic_cast< CReaction * >(mpObject);
-    }
+  CReaction* reac = dynamic_cast< CReaction * >(mpObject);
 
   if (reac)
     return loadFromReaction(reac);

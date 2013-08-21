@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /****************************************************************************
  **  $ CopasiUI/ReactionsWidget1.h
@@ -52,10 +52,11 @@ public:
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
   virtual void setFramework(int framework);
+  void copy();
 
 protected slots:
   virtual void slotBtnNew();
-  virtual void slotBtnCopy();
+  virtual void slotBtnCopy(){}; //dummy, to bypass warnings from TabWidget connections
   virtual void slotBtnDelete();
   virtual void slotCheckBoxClicked();
   virtual void slotComboBoxSelectionChanged(const QString &);
@@ -93,10 +94,6 @@ protected:
   QCheckBox* CheckBox;
   QCheckBox * mpMultiCompartment;
   QCheckBox * mpFast;
-
-private:
-  std::string mKeyToCopy;
-  //QString name;
 };
 
 #endif // REACTIONSWIDGET1_H

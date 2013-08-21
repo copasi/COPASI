@@ -19,6 +19,7 @@
 #include "function/CFunction.h"
 #include "UI/CQCompartment.h"
 #include "UI/CQSpeciesDetail.h"
+#include "UI/ReactionsWidget1.h"
 
 CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget * pCopasiWidget,
                          QWidget * parent, Qt::WindowFlags f) :
@@ -248,6 +249,11 @@ void CQTabWidget::slotBtnCopy()
   {
     CQSpeciesDetail * pQSpeciesDetail = dynamic_cast< CQSpeciesDetail * >(mPages[0]);
     pQSpeciesDetail->copy();
+  }
+  else if(QString(mPages[0]->metaObject()->className()) == "ReactionsWidget1")
+  {
+    ReactionsWidget1 * pReactionsWidget1 = dynamic_cast< ReactionsWidget1 * >(mPages[0]);
+    pReactionsWidget1->copy();
   }
   else
   {
