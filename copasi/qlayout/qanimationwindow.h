@@ -1,3 +1,8 @@
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 #ifndef QANIMATION_WINDOW_H
 #define QANIMATION_WINDOW_H
 
@@ -17,9 +22,9 @@ class QAnimationWindow : public CWindowInterface, public Ui::QAnimationWindow
 {
   Q_OBJECT
 public:
-  QAnimationWindow (CLayout* layout, CCopasiDataModel* dataModel=NULL);
-  QAnimationWindow ();
-  virtual ~QAnimationWindow ();
+  QAnimationWindow(CLayout* layout, CCopasiDataModel* dataModel = NULL);
+  QAnimationWindow();
+  virtual ~QAnimationWindow();
   void setScene(QLayoutScene* scene, CCopasiDataModel* dataModel);
   void setAnimation(QCopasiAnimation* animation, CCopasiDataModel* dataModel);
   virtual QMenu *getWindowMenu() const;
@@ -30,8 +35,9 @@ public slots:
   void slotSwitchAnimation();
   void slotRandomizeLayout();
   void slotAutoLayout();
-private: 
+private:
   void init();
+  void toggleUI(bool isPlaying);
 protected:
   virtual void closeEvent(QCloseEvent *closeEvent);
 
@@ -40,6 +46,7 @@ protected:
   QMenu* mpWindowMenu;
   QCopasiAnimation* mAnimation;
   bool mStopLayout;
+  bool mIsRunning;
   CQSpringLayoutParameterWindow* mpParameterWindow;
 };
 
