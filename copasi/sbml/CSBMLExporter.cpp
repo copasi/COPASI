@@ -3949,6 +3949,12 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
       event.setSBMLId(sbmlId);
     }
 
+  // The attribute 'useValuesfromTriggerTime' is mandatory in L3V1
+  if (this->mSBMLLevel > 2)
+    {
+      pSBMLEvent->setUseValuesFromTriggerTime(event.getDelayAssignment());
+    }
+
 #if LIBSBML_VERSION >= 40200
 
   // if the event came from an SBML L3 model, we have to make sure that the
@@ -4142,18 +4148,17 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
           delete pNode;
           delete pDelay;
 
-          if ((this->mSBMLLevel == 2 && this->mSBMLVersion >= 4) || this->mSBMLLevel > 2)
+          if (this->mSBMLLevel == 2 && this->mSBMLVersion >= 4)
             {
               pSBMLEvent->setUseValuesFromTriggerTime(event.getDelayAssignment());
             }
-          else
+          // if the delayAssignment is set to false, we have a problem
+          // because the model semantic changes on export
+          else if (event.getDelayAssignment() == false &&
+                   this->mSBMLLevel <= 2 &&
+                   this->mSBMLVersion <= 3)
             {
-              // if the delayAssignment is set to false, we have a problem
-              // because the model semantic changes on export
-              if (event.getDelayAssignment() == false)
-                {
-                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 77, event.getObjectName().c_str(), this->mSBMLLevel, this->mSBMLVersion);
-                }
+              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 77, event.getObjectName().c_str(), this->mSBMLLevel, this->mSBMLVersion);
             }
         }
       else
