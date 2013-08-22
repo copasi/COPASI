@@ -87,7 +87,12 @@ void SBMLDocumentLoader::readListOfLayouts(CListOfLayouts & lol,
       //lineEndingIdToKeyMap.clear();
       //pGRI=new CLGlobalRenderInformation(*pLoL->getRenderInformation(i),colorIdToKeyMap,gradientIdToKeyMap,lineEndingIdToKeyMap,&lol);
       pGRI = new CLGlobalRenderInformation(*rlolPlugin->getRenderInformation(i), &lol);
-      idToKeyMap.insert(std::pair<std::string, std::string>(rlolPlugin->getRenderInformation(i)->getId(), pGRI->getKey()));
+
+      if (rlolPlugin->getRenderInformation(i)->isSetId())
+        idToKeyMap.insert(std::pair<std::string, std::string>(rlolPlugin->getRenderInformation(i)->getId(), pGRI->getKey()));
+      else
+        idToKeyMap.insert(std::pair<std::string, std::string>(pGRI->getKey(), pGRI->getKey()));
+
       //colorIdToKeyMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pGRI->getKey(),colorIdToKeyMap));
       //gradientIdToKeyMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pGRI->getKey(),gradientIdToKeyMap));
       //lineEndingIdToKeyMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pGRI->getKey(),lineEndingIdToKeyMap));
@@ -280,7 +285,12 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
       //lineEndingIdToKeyMap.clear();
       //pLRI=new CLLocalRenderInformation(*sbmlLayout.getRenderInformation(i),colorIdToKeyMap,gradientIdToKeyMap,lineEndingIdToKeyMap,layout);
       pLRI = new CLLocalRenderInformation(*rlPlugin->getRenderInformation(i), layout);
-      idToKeyMap.insert(std::pair<std::string, std::string>(rlPlugin->getRenderInformation(i)->getId(), pLRI->getKey()));
+
+      if (rlPlugin->getRenderInformation(i)->isSetId())
+        idToKeyMap.insert(std::pair<std::string, std::string>(rlPlugin->getRenderInformation(i)->getId(), pLRI->getKey()));
+      else
+        idToKeyMap.insert(std::pair<std::string, std::string>(pLRI->getKey(), pLRI->getKey()));
+
       //colorIdToKeyMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pLRI->getKey(),colorIdToKeyMap));
       //gradientIdToKeyMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pLRI->getKey(),gradientIdToKeyMap));
       //lineEndingIdToKeyMapMap.insert(std::pair<std::string,std::map<std::string,std::string> >(pLRI->getKey(),lineEndingIdToKeyMap));
