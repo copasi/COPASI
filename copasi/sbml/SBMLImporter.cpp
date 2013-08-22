@@ -3170,6 +3170,14 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
 
       bool checkResult = sbmlDoc->checkConsistency();
 
+#if LIBSBML_VERSION > 50800
+      // the new libsbml includes complete layout validation, and flags many
+      // things as errors, that would cause COPASI to reject the model (even
+      // though the layout code has been written to anticipate all these possible
+      // error sources). Thus downgrade these error messages
+      sbmlDoc->getErrorLog()->changeErrorSeverity(LIBSBML_SEV_ERROR, LIBSBML_SEV_WARNING, "layout");
+#endif
+
       if (mpImportHandler) mpImportHandler->finishItem(hStep);
 
       if (checkResult != 0)
@@ -3207,14 +3215,21 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
 
                   case LIBSBML_SEV_WARNING:
 
-                    if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
-                      {
-                        messageType = CCopasiMessage::WARNING_FILTERED;
-                      }
+#if LIBSBML_VERSION > 50800
+
+                    // filter layout warnings always
+                    if (pSBMLError->getPackage() == "layout")
+                      messageType = CCopasiMessage::WARNING_FILTERED;
                     else
-                      {
-                        messageType = CCopasiMessage::WARNING;
-                      }
+#endif
+                      if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
+                        {
+                          messageType = CCopasiMessage::WARNING_FILTERED;
+                        }
+                      else
+                        {
+                          messageType = CCopasiMessage::WARNING;
+                        }
 
                     CCopasiMessage(messageType, MCSBML + 40, "WARNING", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
                     break;
