@@ -858,7 +858,6 @@ void CLayout::moveBy(const CLPoint &p)
     }
 }
 
-
 void CLayout::calculateAndAssignBounds()
 {
   CLBoundingBox bb = calculateBoundingBox();
@@ -874,6 +873,7 @@ void CLayout::calculateAndAssignBounds()
   setDimensions(bb.getDimensions());
 }
 
+#ifdef COPASI_AUTOLAYOUT
 #include <randomGenerator/CRandom.h>
 #include <model/CCompartment.h>
 #include <model/CMetab.h>
@@ -882,35 +882,38 @@ void CLayout::calculateAndAssignBounds()
 void randomlyPlaceGlyphInCompartmentGlyph(CLGraphicalObject* pGl, const CLGraphicalObject* pContainer, CRandom *pRandom)
 {
   double x = pContainer->getPosition().getX()
-           + pRandom->getRandomCC()*(pContainer->getDimensions().getWidth() -pGl->getDimensions().getWidth() );
+             + pRandom->getRandomCC() * (pContainer->getDimensions().getWidth() - pGl->getDimensions().getWidth());
   double y = pContainer->getPosition().getY()
-           + pRandom->getRandomCC()*(pContainer->getDimensions().getHeight() -pGl->getDimensions().getHeight() );
-  pGl->setPosition(CLPoint(x,y));
+             + pRandom->getRandomCC() * (pContainer->getDimensions().getHeight() - pGl->getDimensions().getHeight());
+  pGl->setPosition(CLPoint(x, y));
 }
 
-void randomlyPlaceGlyphInDimensions(CLGraphicalObject* pGl, const CLDimensions* pContainer,CRandom *pRandom)
+void randomlyPlaceGlyphInDimensions(CLGraphicalObject* pGl, const CLDimensions* pContainer, CRandom *pRandom)
 {
-  double x = pRandom->getRandomCC()*(pContainer->getWidth() -pGl->getDimensions().getWidth() );
-  double y = pRandom->getRandomCC()*(pContainer->getHeight() -pGl->getDimensions().getHeight() );
-  pGl->setPosition(CLPoint(x,y));
+  double x = pRandom->getRandomCC() * (pContainer->getWidth() - pGl->getDimensions().getWidth());
+  double y = pRandom->getRandomCC() * (pContainer->getHeight() - pGl->getDimensions().getHeight());
+  pGl->setPosition(CLPoint(x, y));
 }
 
 void placeTextGlyphs(CLayout* pLayout)
 {
   size_t i;
-  for (i=0; i<pLayout->getListOfTextGlyphs().size(); ++i)
+
+  for (i = 0; i < pLayout->getListOfTextGlyphs().size(); ++i)
     {
       CLTextGlyph* pTG = pLayout->getListOfTextGlyphs()[i];
       CLGraphicalObject* pGO = pTG->getGraphicalObject();
+
       if (!pGO)
         continue;
-      pTG->setPosition(CLPoint(pGO->getX()+2, pGO->getY()+2));
+
+      pTG->setPosition(CLPoint(pGO->getX() + 2, pGO->getY() + 2));
     }
 }
 
 #include <layout/CCopasiSpringLayout.h>
 
-/** 
+/**
  * This function produces a random layout. It first shufles around
  * metab glyphs and reaction centers, and finally corrects all ars
  */
@@ -919,83 +922,86 @@ void CLayout::randomize(CCopasiSpringLayout::Parameters* params)
   CRandom* pRandom = CRandom::createGenerator(CRandom::mt19937, CRandom::getSystemSeed());
 
   size_t i;
-  
+
   //compartment glyphs
-  
+
   //metab glyphs
-  for (i=0; i<getListOfMetaboliteGlyphs().size(); ++i)
+  for (i = 0; i < getListOfMetaboliteGlyphs().size(); ++i)
     {
       CLMetabGlyph* pMetabGlyph = getListOfMetaboliteGlyphs()[i];
-      const CMetab* pMetab = dynamic_cast<const CMetab*>( pMetabGlyph->getModelObject());
+      const CMetab* pMetab = dynamic_cast<const CMetab*>(pMetabGlyph->getModelObject());
+
       if (!pMetab)
         continue;
-    
+
       //find the compartment glyph
       const CCompartment* pComp = pMetab->getCompartment();
+
       if (!pComp)
         continue;
-    
-      const CLCompartmentGlyph* pCompGlyph=NULL;
+
+      const CLCompartmentGlyph* pCompGlyph = NULL;
       size_t j;
-      for (j=0; j<getListOfCompartmentGlyphs().size(); ++j)
+
+      for (j = 0; j < getListOfCompartmentGlyphs().size(); ++j)
         if (getListOfCompartmentGlyphs()[j]->getModelObjectKey()
-              ==pComp->getKey())
+            == pComp->getKey())
           {
             pCompGlyph = getListOfCompartmentGlyphs()[j];
             break;
           }
-    
+
       if (pCompGlyph)
-        randomlyPlaceGlyphInCompartmentGlyph(pMetabGlyph, pCompGlyph,pRandom);
+        randomlyPlaceGlyphInCompartmentGlyph(pMetabGlyph, pCompGlyph, pRandom);
       else
-        randomlyPlaceGlyphInDimensions(pMetabGlyph, &getDimensions(),pRandom);
+        randomlyPlaceGlyphInDimensions(pMetabGlyph, &getDimensions(), pRandom);
     }
-  
+
   //reaction glyphs
-  for (i=0; i<getListOfReactionGlyphs().size(); ++i)
+  for (i = 0; i < getListOfReactionGlyphs().size(); ++i)
     {
       CLReactionGlyph* pReactionGlyph = getListOfReactionGlyphs()[i];
-      CLPoint center(0,0);
+      CLPoint center(0, 0);
       size_t count;
-      for (count = 0; count<pReactionGlyph->getListOfMetabReferenceGlyphs().size(); ++count)
+
+      for (count = 0; count < pReactionGlyph->getListOfMetabReferenceGlyphs().size(); ++count)
         center = center + pReactionGlyph->getListOfMetabReferenceGlyphs()[count]
-                        ->getMetabGlyph()->getBoundingBox().getCenter();
-      center = center*(1.0/pReactionGlyph->getListOfMetabReferenceGlyphs().size());
-      center = center + CLPoint( pRandom->getRandomCC()*20 -10,  pRandom->getRandomCC()*20 -10);
-    
+                 ->getMetabGlyph()->getBoundingBox().getCenter();
+
+      center = center * (1.0 / pReactionGlyph->getListOfMetabReferenceGlyphs().size());
+      center = center + CLPoint(pRandom->getRandomCC() * 20 - 10,  pRandom->getRandomCC() * 20 - 10);
+
       pReactionGlyph->setPosition(center);
-   
+
       /*if (pCompGlyph)
         randomlyPlaceGlyphInCompartmentGlyph(pMetabGlyph, pCompGlyph);
       else
         randomlyPlaceGlyphInDimensions(pMetabGlyph, &mpCurrentLayout->getDimensions());*/
     }
-  
+
   placeTextGlyphs(this);
   delete pRandom;
 
   CCopasiSpringLayout l(this, params);
   l.createVariables();
   l.finalizeState();
-
 }
-
 
 class CompartmentInfo
 {
 public:
   unsigned int mNumItems;
   double mAreaSum;
-  
+
   CompartmentInfo()
-  :mNumItems(0),
-  mAreaSum(0.0)
+    : mNumItems(0),
+      mAreaSum(0.0)
   {}
-  
+
   void add(double area)
   {
     ++mNumItems;
-    mAreaSum+=area;
+    mAreaSum += area;
   }
 };
 
@@ -1010,14 +1016,14 @@ CLayout* CLayout::createLayout(
   const std::set<const CCompartment*>& compartments,
   const std::set<const CReaction*>& reactions,
   const std::set<const CMetab*>& metabs,
-  const std::set<const CMetab*>& sideMetabs, 
+  const std::set<const CMetab*>& sideMetabs,
   CCopasiSpringLayout::Parameters* params
-  )
+)
 {
   CLayout *pResult = new CLayout("Layout", parent);
 
   double fontSize = 16.0;
-  double fontHeight = fontSize*1.5;
+  double fontHeight = fontSize * 1.5;
 
   // create a species glyph for each species in metabs
 
@@ -1025,336 +1031,358 @@ CLayout* CLayout::createLayout(
   std::map<const CMetab*, CLMetabGlyph*> metabMap;
 
   std::set<const CMetab*>::const_iterator metabIt;
-  for(metabIt=metabs.begin(); metabIt != metabs.end(); ++metabIt)
-  {
-    //estimate the size of the glyph
-    double width = (double)((*metabIt)->getObjectName().length()*fontSize);
-    double height = (double)fontHeight;
-    if (width < height)
+
+  for (metabIt = metabs.begin(); metabIt != metabs.end(); ++metabIt)
     {
-      width = height;
+      //estimate the size of the glyph
+      double width = (double)((*metabIt)->getObjectName().length() * fontSize);
+      double height = (double)fontHeight;
+
+      if (width < height)
+        {
+          width = height;
+        }
+
+      //create the glyph
+      CLMetabGlyph* pMetabGlyph = new CLMetabGlyph;
+      pMetabGlyph->setDimensions(CLDimensions(width + 4, height + 4));
+      pMetabGlyph->setModelObjectKey((*metabIt)->getKey());
+
+      pResult->addMetaboliteGlyph(pMetabGlyph);
+      metabMap[*metabIt] = pMetabGlyph;
+
+      //create the text glyph for the label
+      CLTextGlyph* pTextGlyph = new CLTextGlyph;
+      pTextGlyph->setDimensions(CLDimensions(width, height));
+      pTextGlyph->setGraphicalObjectKey(pMetabGlyph->getKey());
+      pTextGlyph->setModelObjectKey((*metabIt)->getKey());
+
+      pResult->addTextGlyph(pTextGlyph);
+
+      //add up the sizes for the compartment
+      const CCompartment* pComp = NULL;
+
+      if (compartments.find((*metabIt)->getCompartment()) != compartments.end())
+        pComp = (*metabIt)->getCompartment();
+
+      compInfo[pComp].add((width + 4) * (height + 4));
     }
-
-    //create the glyph
-    CLMetabGlyph* pMetabGlyph= new CLMetabGlyph;
-    pMetabGlyph->setDimensions(CLDimensions(width + 4, height + 4));
-    pMetabGlyph->setModelObjectKey((*metabIt)->getKey());
-
-    pResult->addMetaboliteGlyph(pMetabGlyph);
-    metabMap[*metabIt] = pMetabGlyph;
-
-    //create the text glyph for the label
-    CLTextGlyph* pTextGlyph = new CLTextGlyph;
-    pTextGlyph->setDimensions(CLDimensions(width, height));
-    pTextGlyph->setGraphicalObjectKey(pMetabGlyph->getKey());
-    pTextGlyph->setModelObjectKey((*metabIt)->getKey());
-
-    pResult->addTextGlyph(pTextGlyph);
-
-    //add up the sizes for the compartment
-    const CCompartment* pComp=NULL;
-    if (compartments.find((*metabIt)->getCompartment()) != compartments.end() )
-      pComp = (*metabIt)->getCompartment();
-
-    compInfo[pComp].add((width+4)*(height+4));
-  }
-
 
   //now the reaction glyphs
   std::set<const CReaction*>::const_iterator reactIt;
-  for (reactIt=reactions.begin(); reactIt != reactions.end(); ++reactIt)
-  {
-    CLReactionGlyph* pReactionGlyph = new CLReactionGlyph;
-    //pResult->setDimensions(CLDimensions(width, height));
-    pReactionGlyph->setModelObjectKey((*reactIt)->getKey());
-    //pReactionGlyph->getCurve().addCurveSegment(CLLineSegment(CLPoint(x, y),
-    //                                             CLPoint(x + length, y)));
 
-    pResult->addReactionGlyph(pReactionGlyph);
-
-    //now add the species reference glyphs.
-
-    //substrates
-    const CCopasiVector < CChemEqElement >& substrates = (*reactIt)->getChemEq().getSubstrates();
-    // if we have no substrates, add a dummy / invisible node for now
-    if (substrates.size()==0)
+  for (reactIt = reactions.begin(); reactIt != reactions.end(); ++reactIt)
     {
-      CLMetabGlyph* pMetabGlyph = new CLMetabGlyph;
-      pMetabGlyph->setDimensions(CLDimensions(1, 1));
-      pMetabGlyph->setObjectRole("invisible");
-      pResult->addMetaboliteGlyph(pMetabGlyph);
+      CLReactionGlyph* pReactionGlyph = new CLReactionGlyph;
+      //pResult->setDimensions(CLDimensions(width, height));
+      pReactionGlyph->setModelObjectKey((*reactIt)->getKey());
+      //pReactionGlyph->getCurve().addCurveSegment(CLLineSegment(CLPoint(x, y),
+      //                                             CLPoint(x + length, y)));
 
-      CLMetabReferenceGlyph* pRefGlyph = new CLMetabReferenceGlyph;
-      //pResult->setModelObjectKey(modelobjectkey);
-      pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
-      pRefGlyph->setRole(CLMetabReferenceGlyph::SUBSTRATE); //TODO side substr?
-      pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
-    }
+      pResult->addReactionGlyph(pReactionGlyph);
 
-    CCopasiVector<CChemEqElement>::const_iterator elIt;
-    for (elIt = substrates.begin(); elIt != substrates.end(); ++elIt)
-    {
-      const CMetab* pMetab = (*elIt)->getMetabolite();
-      if (!pMetab)
-        continue;
+      //now add the species reference glyphs.
 
-      CLMetabGlyph* pMetabGlyph = NULL;
-      CLMetabReferenceGlyph::Role role; // = CLMetabReferenceGlyph::SUBSTRATE;
-      //is it a side reactant? If yes, create a new metab glyph
-      if (sideMetabs.find(pMetab) != sideMetabs.end())
-      {
-        //estimate the size of the glyph
-        double width = (double)(pMetab->getObjectName().length()*fontSize);
-        double height = (double)fontHeight;
-        if (width < height)
+      //substrates
+      const CCopasiVector < CChemEqElement >& substrates = (*reactIt)->getChemEq().getSubstrates();
+
+      // if we have no substrates, add a dummy / invisible node for now
+      if (substrates.size() == 0)
         {
-          width = height;
+          CLMetabGlyph* pMetabGlyph = new CLMetabGlyph;
+          pMetabGlyph->setDimensions(CLDimensions(1, 1));
+          pMetabGlyph->setObjectRole("invisible");
+          pResult->addMetaboliteGlyph(pMetabGlyph);
+
+          CLMetabReferenceGlyph* pRefGlyph = new CLMetabReferenceGlyph;
+          //pResult->setModelObjectKey(modelobjectkey);
+          pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
+          pRefGlyph->setRole(CLMetabReferenceGlyph::SUBSTRATE); //TODO side substr?
+          pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
         }
 
-        //create the glyph
-        pMetabGlyph= new CLMetabGlyph;
-        pMetabGlyph->setDimensions(CLDimensions(width + 4, height + 4));
-        pMetabGlyph->setModelObjectKey(pMetab->getKey());
-        //TODO: mark as duplicate 
-        pResult->addMetaboliteGlyph(pMetabGlyph);
+      CCopasiVector<CChemEqElement>::const_iterator elIt;
 
-        //create the text glyph for the label
-        CLTextGlyph* pTextGlyph = new CLTextGlyph;
-        pTextGlyph->setDimensions(CLDimensions(width, height));
-        pTextGlyph->setGraphicalObjectKey(pMetabGlyph->getKey());
-        pTextGlyph->setModelObjectKey(pMetab->getKey());
-
-        pResult->addTextGlyph(pTextGlyph);
-
-        //add up the sizes for the compartment
-        const CCompartment* pComp=NULL;
-        if (compartments.find(pMetab->getCompartment()) != compartments.end() )
-          pComp = pMetab->getCompartment();
-
-        compInfo[pComp].add((width+4)*(height+4));
-
-        role = CLMetabReferenceGlyph::SIDESUBSTRATE;
-      }
-      else
-      {  //find the existing metab glyph
-        std::map<const CMetab*, CLMetabGlyph*>::const_iterator mmIt;
-        mmIt = metabMap.find(pMetab);
-        if (mmIt != metabMap.end())
-          pMetabGlyph = mmIt->second;
-
-        role = CLMetabReferenceGlyph::SUBSTRATE;
-      }
-
-      if (!pMetabGlyph)
-        continue;
-
-      CLMetabReferenceGlyph* pRefGlyph = new CLMetabReferenceGlyph;
-      //pResult->setModelObjectKey(modelobjectkey);
-      pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
-      pRefGlyph->setRole(role); 
-      pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
-
-    } //substrates
-
-    //products
-    const CCopasiVector < CChemEqElement >& products = (*reactIt)->getChemEq().getProducts();
-    // if we have no substrates, add a dummy / invisible node for now
-    if (products.size()==0)
-    {
-      CLMetabGlyph* pMetabGlyph = new CLMetabGlyph;
-      pMetabGlyph->setDimensions(CLDimensions(1, 1));
-      pMetabGlyph->setObjectRole("invisible");
-      pResult->addMetaboliteGlyph(pMetabGlyph);
-
-      CLMetabReferenceGlyph* pRefGlyph = new CLMetabReferenceGlyph;
-      //pResult->setModelObjectKey(modelobjectkey);
-      pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
-      pRefGlyph->setRole(CLMetabReferenceGlyph::PRODUCT); //TODO side substr?
-      pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
-    }
-
-    for (elIt = products.begin(); elIt != products.end(); ++elIt)
-    {
-      const CMetab* pMetab = (*elIt)->getMetabolite();
-      if (!pMetab)
-        continue;
-
-      CLMetabGlyph* pMetabGlyph = NULL;
-      CLMetabReferenceGlyph::Role role; // = CLMetabReferenceGlyph::SUBSTRATE;
-      //is it a side reactant? If yes, create a new metab glyph
-      if (sideMetabs.find(pMetab) != sideMetabs.end())
-      {
-        //estimate the size of the glyph
-        double width = (double)(pMetab->getObjectName().length()*fontSize);
-        double height = (double)fontHeight;
-        if (width < height)
+      for (elIt = substrates.begin(); elIt != substrates.end(); ++elIt)
         {
-          width = height;
+          const CMetab* pMetab = (*elIt)->getMetabolite();
+
+          if (!pMetab)
+            continue;
+
+          CLMetabGlyph* pMetabGlyph = NULL;
+          CLMetabReferenceGlyph::Role role; // = CLMetabReferenceGlyph::SUBSTRATE;
+
+          //is it a side reactant? If yes, create a new metab glyph
+          if (sideMetabs.find(pMetab) != sideMetabs.end())
+            {
+              //estimate the size of the glyph
+              double width = (double)(pMetab->getObjectName().length() * fontSize);
+              double height = (double)fontHeight;
+
+              if (width < height)
+                {
+                  width = height;
+                }
+
+              //create the glyph
+              pMetabGlyph = new CLMetabGlyph;
+              pMetabGlyph->setDimensions(CLDimensions(width + 4, height + 4));
+              pMetabGlyph->setModelObjectKey(pMetab->getKey());
+              //TODO: mark as duplicate
+              pResult->addMetaboliteGlyph(pMetabGlyph);
+
+              //create the text glyph for the label
+              CLTextGlyph* pTextGlyph = new CLTextGlyph;
+              pTextGlyph->setDimensions(CLDimensions(width, height));
+              pTextGlyph->setGraphicalObjectKey(pMetabGlyph->getKey());
+              pTextGlyph->setModelObjectKey(pMetab->getKey());
+
+              pResult->addTextGlyph(pTextGlyph);
+
+              //add up the sizes for the compartment
+              const CCompartment* pComp = NULL;
+
+              if (compartments.find(pMetab->getCompartment()) != compartments.end())
+                pComp = pMetab->getCompartment();
+
+              compInfo[pComp].add((width + 4) * (height + 4));
+
+              role = CLMetabReferenceGlyph::SIDESUBSTRATE;
+            }
+          else
+            {
+              //find the existing metab glyph
+              std::map<const CMetab*, CLMetabGlyph*>::const_iterator mmIt;
+              mmIt = metabMap.find(pMetab);
+
+              if (mmIt != metabMap.end())
+                pMetabGlyph = mmIt->second;
+
+              role = CLMetabReferenceGlyph::SUBSTRATE;
+            }
+
+          if (!pMetabGlyph)
+            continue;
+
+          CLMetabReferenceGlyph* pRefGlyph = new CLMetabReferenceGlyph;
+          //pResult->setModelObjectKey(modelobjectkey);
+          pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
+          pRefGlyph->setRole(role);
+          pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
+        } //substrates
+
+      //products
+      const CCopasiVector < CChemEqElement >& products = (*reactIt)->getChemEq().getProducts();
+
+      // if we have no substrates, add a dummy / invisible node for now
+      if (products.size() == 0)
+        {
+          CLMetabGlyph* pMetabGlyph = new CLMetabGlyph;
+          pMetabGlyph->setDimensions(CLDimensions(1, 1));
+          pMetabGlyph->setObjectRole("invisible");
+          pResult->addMetaboliteGlyph(pMetabGlyph);
+
+          CLMetabReferenceGlyph* pRefGlyph = new CLMetabReferenceGlyph;
+          //pResult->setModelObjectKey(modelobjectkey);
+          pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
+          pRefGlyph->setRole(CLMetabReferenceGlyph::PRODUCT); //TODO side substr?
+          pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
         }
 
-        //create the glyph
-        pMetabGlyph= new CLMetabGlyph;
-        pMetabGlyph->setDimensions(CLDimensions(width + 4, height + 4));
-        pMetabGlyph->setModelObjectKey(pMetab->getKey());
-        //TODO: mark as duplicate 
-        pResult->addMetaboliteGlyph(pMetabGlyph);
-
-        //create the text glyph for the label
-        CLTextGlyph* pTextGlyph = new CLTextGlyph;
-        pTextGlyph->setDimensions(CLDimensions(width, height));
-        pTextGlyph->setGraphicalObjectKey(pMetabGlyph->getKey());
-        pTextGlyph->setModelObjectKey(pMetab->getKey());
-
-        pResult->addTextGlyph(pTextGlyph);
-
-        //add up the sizes for the compartment
-        const CCompartment* pComp=NULL;
-        if (compartments.find(pMetab->getCompartment()) != compartments.end() )
-          pComp = pMetab->getCompartment();
-
-        compInfo[pComp].add((width+4)*(height+4));
-
-        role = CLMetabReferenceGlyph::SIDEPRODUCT;
-      }
-      else
-      {  //find the existing metab glyph
-        std::map<const CMetab*, CLMetabGlyph*>::const_iterator mmIt;
-        mmIt = metabMap.find(pMetab);
-        if (mmIt != metabMap.end())
-          pMetabGlyph = mmIt->second;
-
-        role = CLMetabReferenceGlyph::PRODUCT;
-      }
-
-      if (!pMetabGlyph)
-        continue;
-
-      CLMetabReferenceGlyph* pRefGlyph = new CLMetabReferenceGlyph;
-      //pResult->setModelObjectKey(modelobjectkey);
-      pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
-      pRefGlyph->setRole(role); 
-      pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
-
-    } //products
-
-    //modifiers
-    const CCopasiVector < CChemEqElement >& modifiers = (*reactIt)->getChemEq().getModifiers();
-    for (elIt = modifiers.begin(); elIt != modifiers.end(); ++elIt)
-    {
-      const CMetab* pMetab = (*elIt)->getMetabolite();
-      if (!pMetab)
-        continue;
-
-      CLMetabGlyph* pMetabGlyph = NULL;
-      CLMetabReferenceGlyph::Role role; // = CLMetabReferenceGlyph::SUBSTRATE;
-      //is it a side reactant? If yes, create a new metab glyph
-      if (sideMetabs.find(pMetab) != sideMetabs.end())
-      {
-        //estimate the size of the glyph
-        double width = (double)(pMetab->getObjectName().length()*fontSize);
-        double height = (double)fontHeight;
-        if (width < height)
+      for (elIt = products.begin(); elIt != products.end(); ++elIt)
         {
-          width = height;
-        }
+          const CMetab* pMetab = (*elIt)->getMetabolite();
 
-        //create the glyph
-        pMetabGlyph= new CLMetabGlyph;
-        pMetabGlyph->setDimensions(CLDimensions(width + 4, height + 4));
-        pMetabGlyph->setModelObjectKey(pMetab->getKey());
-        //TODO: mark as duplicate 
-        pResult->addMetaboliteGlyph(pMetabGlyph);
+          if (!pMetab)
+            continue;
 
-        //create the text glyph for the label
-        CLTextGlyph* pTextGlyph = new CLTextGlyph;
-        pTextGlyph->setDimensions(CLDimensions(width, height));
-        pTextGlyph->setGraphicalObjectKey(pMetabGlyph->getKey());
-        pTextGlyph->setModelObjectKey(pMetab->getKey());
+          CLMetabGlyph* pMetabGlyph = NULL;
+          CLMetabReferenceGlyph::Role role; // = CLMetabReferenceGlyph::SUBSTRATE;
 
-        pResult->addTextGlyph(pTextGlyph);
+          //is it a side reactant? If yes, create a new metab glyph
+          if (sideMetabs.find(pMetab) != sideMetabs.end())
+            {
+              //estimate the size of the glyph
+              double width = (double)(pMetab->getObjectName().length() * fontSize);
+              double height = (double)fontHeight;
 
-        //add up the sizes for the compartment
-        const CCompartment* pComp=NULL;
-        if (compartments.find(pMetab->getCompartment()) != compartments.end() )
-          pComp = pMetab->getCompartment();
+              if (width < height)
+                {
+                  width = height;
+                }
 
-        compInfo[pComp].add((width+4)*(height+4));
+              //create the glyph
+              pMetabGlyph = new CLMetabGlyph;
+              pMetabGlyph->setDimensions(CLDimensions(width + 4, height + 4));
+              pMetabGlyph->setModelObjectKey(pMetab->getKey());
+              //TODO: mark as duplicate
+              pResult->addMetaboliteGlyph(pMetabGlyph);
 
-        role = CLMetabReferenceGlyph::MODIFIER; //TODO SIDEMODIFIER???
-      }
-      else
-      {  //find the existing metab glyph
-        std::map<const CMetab*, CLMetabGlyph*>::const_iterator mmIt;
-        mmIt = metabMap.find(pMetab);
-        if (mmIt != metabMap.end())
-          pMetabGlyph = mmIt->second;
+              //create the text glyph for the label
+              CLTextGlyph* pTextGlyph = new CLTextGlyph;
+              pTextGlyph->setDimensions(CLDimensions(width, height));
+              pTextGlyph->setGraphicalObjectKey(pMetabGlyph->getKey());
+              pTextGlyph->setModelObjectKey(pMetab->getKey());
 
-        role = CLMetabReferenceGlyph::MODIFIER;
-      }
+              pResult->addTextGlyph(pTextGlyph);
 
-      if (!pMetabGlyph)
-        continue;
+              //add up the sizes for the compartment
+              const CCompartment* pComp = NULL;
 
-      CLMetabReferenceGlyph* pRefGlyph = new CLMetabReferenceGlyph;
-      //pResult->setModelObjectKey(modelobjectkey);
-      pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
-      pRefGlyph->setRole(role); 
-      pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
+              if (compartments.find(pMetab->getCompartment()) != compartments.end())
+                pComp = pMetab->getCompartment();
 
-    } //modifiers
+              compInfo[pComp].add((width + 4) * (height + 4));
 
+              role = CLMetabReferenceGlyph::SIDEPRODUCT;
+            }
+          else
+            {
+              //find the existing metab glyph
+              std::map<const CMetab*, CLMetabGlyph*>::const_iterator mmIt;
+              mmIt = metabMap.find(pMetab);
 
-  } //reactions
+              if (mmIt != metabMap.end())
+                pMetabGlyph = mmIt->second;
 
+              role = CLMetabReferenceGlyph::PRODUCT;
+            }
+
+          if (!pMetabGlyph)
+            continue;
+
+          CLMetabReferenceGlyph* pRefGlyph = new CLMetabReferenceGlyph;
+          //pResult->setModelObjectKey(modelobjectkey);
+          pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
+          pRefGlyph->setRole(role);
+          pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
+        } //products
+
+      //modifiers
+      const CCopasiVector < CChemEqElement >& modifiers = (*reactIt)->getChemEq().getModifiers();
+
+      for (elIt = modifiers.begin(); elIt != modifiers.end(); ++elIt)
+        {
+          const CMetab* pMetab = (*elIt)->getMetabolite();
+
+          if (!pMetab)
+            continue;
+
+          CLMetabGlyph* pMetabGlyph = NULL;
+          CLMetabReferenceGlyph::Role role; // = CLMetabReferenceGlyph::SUBSTRATE;
+
+          //is it a side reactant? If yes, create a new metab glyph
+          if (sideMetabs.find(pMetab) != sideMetabs.end())
+            {
+              //estimate the size of the glyph
+              double width = (double)(pMetab->getObjectName().length() * fontSize);
+              double height = (double)fontHeight;
+
+              if (width < height)
+                {
+                  width = height;
+                }
+
+              //create the glyph
+              pMetabGlyph = new CLMetabGlyph;
+              pMetabGlyph->setDimensions(CLDimensions(width + 4, height + 4));
+              pMetabGlyph->setModelObjectKey(pMetab->getKey());
+              //TODO: mark as duplicate
+              pResult->addMetaboliteGlyph(pMetabGlyph);
+
+              //create the text glyph for the label
+              CLTextGlyph* pTextGlyph = new CLTextGlyph;
+              pTextGlyph->setDimensions(CLDimensions(width, height));
+              pTextGlyph->setGraphicalObjectKey(pMetabGlyph->getKey());
+              pTextGlyph->setModelObjectKey(pMetab->getKey());
+
+              pResult->addTextGlyph(pTextGlyph);
+
+              //add up the sizes for the compartment
+              const CCompartment* pComp = NULL;
+
+              if (compartments.find(pMetab->getCompartment()) != compartments.end())
+                pComp = pMetab->getCompartment();
+
+              compInfo[pComp].add((width + 4) * (height + 4));
+
+              role = CLMetabReferenceGlyph::MODIFIER; //TODO SIDEMODIFIER???
+            }
+          else
+            {
+              //find the existing metab glyph
+              std::map<const CMetab*, CLMetabGlyph*>::const_iterator mmIt;
+              mmIt = metabMap.find(pMetab);
+
+              if (mmIt != metabMap.end())
+                pMetabGlyph = mmIt->second;
+
+              role = CLMetabReferenceGlyph::MODIFIER;
+            }
+
+          if (!pMetabGlyph)
+            continue;
+
+          CLMetabReferenceGlyph* pRefGlyph = new CLMetabReferenceGlyph;
+          //pResult->setModelObjectKey(modelobjectkey);
+          pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
+          pRefGlyph->setRole(role);
+          pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
+        } //modifiers
+    } //reactions
 
   //rules
   size_t i;
-  for (i=0; i<pResult->getListOfMetaboliteGlyphs().size(); ++i )
-  {
-    const CLMetabGlyph* pMetabGlyph = pResult->getListOfMetaboliteGlyphs()[i];
-    const CMetab* pMetab = dynamic_cast<const CMetab*>(pMetabGlyph->getModelObject());
-    if (!pMetab)
-      continue;
 
-    if (pMetab->getStatus() == CModelEntity::ODE || pMetab->getStatus() == CModelEntity::ASSIGNMENT)
+  for (i = 0; i < pResult->getListOfMetaboliteGlyphs().size(); ++i)
     {
-      CLGeneralGlyph* pGG = new CLGeneralGlyph;
-      pGG->setDimensions(CLDimensions(10,10));
-      pGG->setObjectRole("rule");
+      const CLMetabGlyph* pMetabGlyph = pResult->getListOfMetaboliteGlyphs()[i];
+      const CMetab* pMetab = dynamic_cast<const CMetab*>(pMetabGlyph->getModelObject());
 
-      pResult->addGeneralGlyph(pGG);
+      if (!pMetab)
+        continue;
 
-      CLReferenceGlyph* pRefGlyph = new CLReferenceGlyph;
-      pRefGlyph->setTargetGlyphKey(pMetabGlyph->getKey());
-      pRefGlyph->setRole("rule connection");
-      pGG->addReferenceGlyph(pRefGlyph);
+      if (pMetab->getStatus() == CModelEntity::ODE || pMetab->getStatus() == CModelEntity::ASSIGNMENT)
+        {
+          CLGeneralGlyph* pGG = new CLGeneralGlyph;
+          pGG->setDimensions(CLDimensions(10, 10));
+          pGG->setObjectRole("rule");
 
+          pResult->addGeneralGlyph(pGG);
+
+          CLReferenceGlyph* pRefGlyph = new CLReferenceGlyph;
+          pRefGlyph->setTargetGlyphKey(pMetabGlyph->getKey());
+          pRefGlyph->setRole("rule connection");
+          pGG->addReferenceGlyph(pRefGlyph);
+        }
     }
-
-  }
 
   //after all other glyphs are created, create the compartment glyphs
   double xxx = 0;
   std::set<const CCompartment*>::const_iterator compIt;
-  for(compIt=compartments.begin(); compIt != compartments.end(); ++compIt)
-  {
-    double compSize = 10000;
-    std::map<const CCompartment*, CompartmentInfo>::const_iterator ccIt;
-    ccIt = compInfo.find(*compIt);
-    if (ccIt != compInfo.end() )
-    { //some glyphs are placed inside this compartment glyph
-      compSize = ccIt->second.mAreaSum*40;
+
+  for (compIt = compartments.begin(); compIt != compartments.end(); ++compIt)
+    {
+      double compSize = 10000;
+      std::map<const CCompartment*, CompartmentInfo>::const_iterator ccIt;
+      ccIt = compInfo.find(*compIt);
+
+      if (ccIt != compInfo.end())
+        {
+          //some glyphs are placed inside this compartment glyph
+          compSize = ccIt->second.mAreaSum * 40;
+        }
+
+      //create the glyph
+      CLCompartmentGlyph* pCompGlyph = new CLCompartmentGlyph;
+      pCompGlyph->setModelObjectKey((*compIt)->getKey());
+      pCompGlyph->setDimensions(CLDimensions(CLDimensions(sqrt(compSize), sqrt(compSize))));
+      pCompGlyph->setPosition(CLPoint(xxx, 5));
+      xxx += sqrt(compSize) + 10;
+
+      pResult->addCompartmentGlyph(pCompGlyph);
     }
-
-    //create the glyph
-    CLCompartmentGlyph* pCompGlyph= new CLCompartmentGlyph;
-    pCompGlyph->setModelObjectKey((*compIt)->getKey());
-    pCompGlyph->setDimensions(CLDimensions(CLDimensions(sqrt(compSize), sqrt(compSize))));
-    pCompGlyph->setPosition(CLPoint(xxx, 5));
-    xxx += sqrt(compSize) + 10;
-
-    pResult->addCompartmentGlyph(pCompGlyph);
-  }
 
   // randomize
   pResult->randomize(params);
@@ -1365,3 +1393,5 @@ CLayout* CLayout::createLayout(
 
   return pResult;
 }
+
+#endif //COPASI_AUTOLAYOUT
