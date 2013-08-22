@@ -96,7 +96,10 @@ QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGl
       item = new QGraphicsPathItem(path);
       itemGroup = new QGraphicsItemGroup();
       itemGroup->addToGroup(item);
-      QRenderConverter::applyStyle(item, &curveGlyph->getBoundingBox(), mpStyle->getGroup(), resolver, itemGroup);
+
+      if (mpStyle != NULL)
+        QRenderConverter::applyStyle(item, &curveGlyph->getBoundingBox(), mpStyle->getGroup(), resolver, itemGroup);
+
       addToGroup(itemGroup);
     }
 
@@ -117,7 +120,9 @@ QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGl
               item = new QGraphicsPathItem(path);
               itemGroup = new QGraphicsItemGroup();
               itemGroup->addToGroup(item);
-              QRenderConverter::applyStyle(item, &metab->getBoundingBox(), style == NULL ? mpStyle->getGroup() : style->getGroup(), resolver, itemGroup);
+              QRenderConverter::applyStyle(item, &metab->getBoundingBox(), style == NULL ?
+                                           mpStyle == NULL ? NULL :  mpStyle->getGroup()
+                                             : style->getGroup(), resolver, itemGroup);
               addToGroup(itemGroup);
             }
         }
@@ -140,7 +145,9 @@ QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGl
               item = new QGraphicsPathItem(path);
               itemGroup = new QGraphicsItemGroup();
               itemGroup->addToGroup(item);
-              QRenderConverter::applyStyle(item, &glyph ->getBoundingBox(), style == NULL ? mpStyle->getGroup() : style->getGroup(), resolver, itemGroup);
+              QRenderConverter::applyStyle(item, &glyph ->getBoundingBox(), style == NULL ?
+                                           mpStyle == NULL ? NULL :  mpStyle->getGroup()
+                                             : style->getGroup(), resolver, itemGroup);
               addToGroup(itemGroup);
             }
         }
