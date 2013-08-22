@@ -307,6 +307,11 @@ void QAnimationWindow::init()
 
   mIsRunning = false;
   toggleUI(false);
+
+#ifndef COPASI_AUTOLAYOUT
+  actionAuto_Layout->setEnabled(false);
+  actionRandomize_Layout->setEnabled(false);
+#endif
 }
 
 void QAnimationWindow::slotExportImage()
@@ -421,9 +426,10 @@ void QAnimationWindow::slotEditSettings()
 void QAnimationWindow::slotRandomizeLayout()
 {
   slotStopLayout();
-
+#ifdef COPASI_AUTOLAYOUT
   mpScene->getCurrentLayout()->randomize(&mpParameterWindow->getLayoutParameters());
   mpScene->recreate();
+#endif //COPASI_AUTOLAYOUT
 }
 
 #include <layout/CCopasiSpringLayout.h>
@@ -475,6 +481,7 @@ void QAnimationWindow::slotAutoLayout()
       return;
     }
 
+#ifdef COPASI_AUTOLAYOUT
   toggleUI(true);
 
   int numIterations = 1000;
@@ -522,7 +529,7 @@ void QAnimationWindow::slotAutoLayout()
   if (mpScene == NULL) return;
 
   mpScene->recreate();
-
+#endif //COPASI_AUTOLAYOUT
   // once done restore the icon
   toggleUI(false);
 }
