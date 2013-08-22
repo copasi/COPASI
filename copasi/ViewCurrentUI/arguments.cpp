@@ -24,6 +24,9 @@
 #include "layout/CListOfLayouts.h"
 
 #include "utilities/CCopasiMethod.h"
+#include "utilities/CCopasiException.h"
+
+#include <iostream>
 
 Arguments::Arguments(int argc, char* argv[])
   : mFilename("")
@@ -118,16 +121,25 @@ bool Arguments::handleCommandLine() const
   CCopasiRootContainer::init(0, NULL, false);
   CCopasiDataModel& model = *CCopasiRootContainer::addDatamodel();
 
-  if (!model.importSBML(mFilename, NULL))
-    model.loadModel(mFilename, NULL);
+  try
+    {
+      if (!model.importSBML(mFilename, NULL))
+        model.loadModel(mFilename, NULL);
+    }
+  catch (CCopasiException &ex)
+    {
+      std::cerr << ex.getMessage().getAllMessageText() << std::endl;
+      return true;
+    }
 
   for (size_t i = 0; i < model.getListOfLayouts()->size(); ++i)
-  {
-    CLayout* layout = (*model.getListOfLayouts())[i];
-    QLayoutScene scene(layout, &model);
-    scene.recreate();
-    scene.saveToFile(mOutputDir + "/" + QFileInfo(mFilename.c_str()).baseName().ascii() + "_"+ layout->getObjectName() + "." + mFileType, mFileType);
-  }
+    {
+      CLayout* layout = (*model.getListOfLayouts())[i];
+      QLayoutScene scene(layout, &model);
+      scene.recreate();
+      scene.saveToFile(mOutputDir + "/" + QFileInfo(mFilename.c_str()).baseName().ascii() + "_" + layout->getObjectName() + "." + mFileType, mFileType);
+    }
+
   return true;
 }
 
@@ -193,7 +205,7 @@ void Arguments::parseArgs(int argc, char* argv[])
       else if (lower == "--save-layout")
         {
           mSaveLayout = true;
-        }      
+        }
       else if (i + 1 < argc && (lower == "-g" || lower == "--generate-output"))
         {
           mGenerateOutput = QString(argv[i + 1]).toInt();
