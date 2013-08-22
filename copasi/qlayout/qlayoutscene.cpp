@@ -339,10 +339,11 @@ void QLayoutScene::updatePosition(const QString& key, const QPointF& newPos)
   CLPoint delta(newPos.x(), newPos.y());
   moveObject(obj, delta, mpLayout);
 
+#ifdef COPASI_AUTOLAYOUT
   // restore lines
   CCopasiSpringLayout::Parameters p;
   CCopasiSpringLayout l(mpLayout, &p);
   l.finalizeState();
-
+#endif //COPASI_AUTOLAYOUT
   emit recreateNeeded();
 }
