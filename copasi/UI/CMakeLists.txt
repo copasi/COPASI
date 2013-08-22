@@ -58,7 +58,6 @@ list(REMOVE_ITEM FORMS_UI
 list(REMOVE_ITEM HEADERS_UI 
   ${CMAKE_CURRENT_SOURCE_DIR}/UI/CPlotSelectionDialog.h
   ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQSBMLSaveOptionsDialog.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQParameterTable.h    
   ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQCompartment.ui.h        
   ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQProgressItemBar.ui.h    
   ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQReportDefinition.ui.h   
@@ -83,7 +82,6 @@ list(REMOVE_ITEM SOURCES_UI
   ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQExpressionMmlWidgetStack.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/UI/CPlotSelectionDialog.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQSBMLSaveOptionsDialog.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQParameterTable.cpp
 )
 
 if (NOT ENABLE_COPASI_NONLIN_DYN)
