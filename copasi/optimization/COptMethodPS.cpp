@@ -351,7 +351,7 @@ bool COptMethodPS::initialize()
   if (mSwarmSize < 5)
     {
       mSwarmSize = 5;
-      setValue(" Swarm Size", mSwarmSize);
+      setValue("Swarm Size", mSwarmSize);
     }
 
   mVariance = *getValue("Std. Deviation").pUDOUBLE;
