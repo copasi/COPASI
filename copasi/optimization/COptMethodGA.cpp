@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-//   $Revision: 1.59 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/20 21:16:36 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -37,23 +29,23 @@
 #include "report/CCopasiObjectReference.h"
 
 COptMethodGA::COptMethodGA(const CCopasiContainer * pParent):
-    COptMethod(CCopasiTask::optimization, CCopasiMethod::GeneticAlgorithm, pParent),
-    mGenerations(0),
-    mPopulationSize(0),
-    mpRandom(NULL),
-    mVariableSize(0),
-    mIndividual(0),
-    mCrossOverFalse(0),
-    mCrossOver(0),
-    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-    mValue(0),
-    mShuffle(0),
-    mLosses(0),
-    mPivot(0),
-    mMutationVarians(0.1),
-    mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
-    mBestIndex(C_INVALID_INDEX),
-    mGeneration(0)
+  COptMethod(CCopasiTask::optimization, CCopasiMethod::GeneticAlgorithm, pParent),
+  mGenerations(0),
+  mPopulationSize(0),
+  mpRandom(NULL),
+  mVariableSize(0),
+  mIndividual(0),
+  mCrossOverFalse(0),
+  mCrossOver(0),
+  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
+  mValue(0),
+  mShuffle(0),
+  mLosses(0),
+  mPivot(0),
+  mMutationVarians(0.1),
+  mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
+  mBestIndex(C_INVALID_INDEX),
+  mGeneration(0)
 
 {
   addParameter("Number of Generations", CCopasiParameter::UINT, (unsigned C_INT32) 200);
@@ -66,23 +58,23 @@ COptMethodGA::COptMethodGA(const CCopasiContainer * pParent):
 
 COptMethodGA::COptMethodGA(const COptMethodGA & src,
                            const CCopasiContainer * pParent):
-    COptMethod(src, pParent),
-    mGenerations(0),
-    mPopulationSize(0),
-    mpRandom(NULL),
-    mVariableSize(0),
-    mIndividual(0),
-    mCrossOverFalse(0),
-    mCrossOver(0),
-    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-    mValue(0),
-    mShuffle(0),
-    mLosses(0),
-    mPivot(0),
-    mMutationVarians(0.1),
-    mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
-    mBestIndex(C_INVALID_INDEX),
-    mGeneration(0)
+  COptMethod(src, pParent),
+  mGenerations(0),
+  mPopulationSize(0),
+  mpRandom(NULL),
+  mVariableSize(0),
+  mIndividual(0),
+  mCrossOverFalse(0),
+  mCrossOver(0),
+  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
+  mValue(0),
+  mShuffle(0),
+  mLosses(0),
+  mPivot(0),
+  mMutationVarians(0.1),
+  mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
+  mBestIndex(C_INVALID_INDEX),
+  mGeneration(0)
 {initObjects();}
 
 COptMethodGA::~COptMethodGA()
@@ -278,7 +270,11 @@ bool COptMethodGA::select()
     for (j = 0; j < nopp; j++)
       {
         // get random opponent
-        opp = mpRandom->getRandomU((unsigned C_INT32)(TotalPopulation - 1));
+        do
+          {
+            opp = mpRandom->getRandomU((unsigned C_INT32)(TotalPopulation - 1));
+          }
+        while (i == opp);
 
         if (mValue[i] < mValue[opp])
           mLosses[opp]++;
@@ -423,16 +419,16 @@ bool COptMethodGA::initialize()
 
   mVariableSize = mpOptItem->size();
 
-  mIndividual.resize(2*mPopulationSize);
+  mIndividual.resize(2 * mPopulationSize);
 
-  for (i = 0; i < 2*mPopulationSize; i++)
+  for (i = 0; i < 2 * mPopulationSize; i++)
     mIndividual[i] = new CVector< C_FLOAT64 >(mVariableSize);
 
   mCrossOverFalse.resize(mVariableSize);
   mCrossOverFalse = false;
   mCrossOver.resize(mVariableSize);
 
-  mValue.resize(2*mPopulationSize);
+  mValue.resize(2 * mPopulationSize);
   mValue = std::numeric_limits<C_FLOAT64>::infinity();
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 
@@ -441,7 +437,7 @@ bool COptMethodGA::initialize()
   for (i = 0; i < mPopulationSize; i++)
     mShuffle[i] = i;
 
-  mLosses.resize(2*mPopulationSize);
+  mLosses.resize(2 * mPopulationSize);
 
   // Initialize the variance for mutations
   mMutationVarians = 0.1;

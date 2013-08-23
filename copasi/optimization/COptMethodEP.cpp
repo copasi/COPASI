@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.cpp,v $
-//   $Revision: 1.28 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/20 21:16:37 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -34,19 +26,19 @@
 #include "utilities/CSort.h"
 
 COptMethodEP::COptMethodEP(const CCopasiContainer * pParent):
-    COptMethod(CCopasiTask::optimization, CCopasiMethod::EvolutionaryProgram, pParent),
-    mGenerations(0),
-    mGeneration(0),
-    mPopulationSize(0),
-    mpRandom(NULL),
-    mBestIndex(C_INVALID_INDEX),
-    mLosses(0),
-    mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
-    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-    mValue(0),
-    mVariableSize(0),
-    mIndividual(0),
-    mVariance(0)
+  COptMethod(CCopasiTask::optimization, CCopasiMethod::EvolutionaryProgram, pParent),
+  mGenerations(0),
+  mGeneration(0),
+  mPopulationSize(0),
+  mpRandom(NULL),
+  mBestIndex(C_INVALID_INDEX),
+  mLosses(0),
+  mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
+  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
+  mValue(0),
+  mVariableSize(0),
+  mIndividual(0),
+  mVariance(0)
 {
   addParameter("Number of Generations", CCopasiParameter::UINT, (unsigned C_INT32) 200);
   addParameter("Population Size", CCopasiParameter::UINT, (unsigned C_INT32) 20);
@@ -58,18 +50,18 @@ COptMethodEP::COptMethodEP(const CCopasiContainer * pParent):
 
 COptMethodEP::COptMethodEP(const COptMethodEP & src,
                            const CCopasiContainer * pParent): COptMethod(src, pParent),
-    mGenerations(0),
-    mGeneration(0),
-    mPopulationSize(0),
-    mpRandom(NULL),
-    mBestIndex(C_INVALID_INDEX),
-    mLosses(0),
-    mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
-    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-    mValue(0),
-    mVariableSize(0),
-    mIndividual(0),
-    mVariance(0)
+  mGenerations(0),
+  mGeneration(0),
+  mPopulationSize(0),
+  mpRandom(NULL),
+  mBestIndex(C_INVALID_INDEX),
+  mLosses(0),
+  mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
+  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
+  mValue(0),
+  mVariableSize(0),
+  mIndividual(0),
+  mVariance(0)
 {initObjects();}
 
 COptMethodEP::~COptMethodEP()
@@ -191,19 +183,19 @@ bool COptMethodEP::initialize()
 
   mVariableSize = mpOptItem->size();
 
-  mIndividual.resize(2*mPopulationSize);
-  mVariance.resize(2*mPopulationSize);
+  mIndividual.resize(2 * mPopulationSize);
+  mVariance.resize(2 * mPopulationSize);
 
-  for (i = 0; i < 2*mPopulationSize; i++)
+  for (i = 0; i < 2 * mPopulationSize; i++)
     {
       mIndividual[i] = new CVector< C_FLOAT64 >(mVariableSize);
       mVariance[i] = new CVector< C_FLOAT64 >(mVariableSize);
     }
 
-  mValue.resize(2*mPopulationSize);
+  mValue.resize(2 * mPopulationSize);
   mValue = std::numeric_limits< C_FLOAT64 >::infinity();
 
-  mLosses.resize(2*mPopulationSize);
+  mLosses.resize(2 * mPopulationSize);
   mLosses = 0;
 
   // Initialize the parameters to update the variances
@@ -432,7 +424,11 @@ bool COptMethodEP::select()
     for (j = 0; j < nopp; j++)
       {
         // get random opponent
-        opp = mpRandom->getRandomU((unsigned C_INT32)(TotalPopulation - 1));
+        do
+          {
+            opp = mpRandom->getRandomU((unsigned C_INT32)(TotalPopulation - 1));
+          }
+        while (i == opp);
 
         if (mValue[i] < mValue[opp])
           mLosses[opp]++;
