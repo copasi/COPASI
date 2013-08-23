@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 static char DataModeltxt[] =
   "0:1:Model\n"
@@ -20,12 +20,8 @@ static char DataModeltxt[] =
   "11:114:Reactions\n"
   "11:115:Global Quantities\n"
   "11:116:Events\n"
-#ifdef COPASI_PARAMETER_SETS
   "11:118:Parameter Overview\n"
   "11:119:Parameter Sets\n"
-#else
-  "11:117:Parameter Overview\n"
-#endif // COPASI_PARAMETER_SETS
   "1:12:Mathematical\n"
   //"12:122:Used Functions\n"
 #ifdef HAVE_MML

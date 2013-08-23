@@ -1745,9 +1745,7 @@ void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,
   if (mOldData.pCurrentSBMLDocument == mData.pCurrentSBMLDocument)
     mOldData.pCurrentSBMLDocument = NULL;
 
-#ifdef COPASI_PARAMETER_SETS
   mData.pModel->getModelParameterSet().updateModel();
-#endif // COPASI_PARAMETER_SETS
 
   // We need to initialize all the task so that results are available
 
@@ -1776,9 +1774,6 @@ void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,
     {
       mData.pModel->compileIfNecessary(pProcessReport);
       mData.pModel->updateInitialValues();
-#ifdef COPASI_PARAMETER_SETS
-      // mData.pModel->applyActiveParameterSet();
-#endif // COPASI_PARAMTER_SETS
     }
 
   changed(false);

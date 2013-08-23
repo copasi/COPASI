@@ -55,7 +55,6 @@
 #include "CQEFMResultWidget.h"
 #include "CQMoietiesTaskResult.h"
 #include "CQMoietiesTaskWidget.h"
-#include "ParametersWidget.h"
 #include "CQParameterOverviewWidget.h"
 #include "CQReactionsWidget.h"
 #include "ReactionsWidget1.h"
@@ -184,7 +183,6 @@ ListViews::ListViews(QWidget *parent, const char *name):
   optResultWidget(NULL),
   paramFittingWidget(NULL),
   mpFittingResultWidget(NULL),
-  parametersWidget(NULL),
   mpParameterOverviewWidget(NULL),
   mpParameterSetsWidget(NULL),
   mpParameterSetWidget(NULL),
@@ -378,10 +376,6 @@ void ListViews::ConstructNodeWidgets()
     mpMoietiesTaskWidget = new CQMoietiesTaskWidget(this);
 
   mpMoietiesTaskWidget->hide();
-
-  if (!parametersWidget) parametersWidget = new ParametersWidget(this);
-
-  parametersWidget->hide();
 
   if (!mpParameterOverviewWidget)
     mpParameterOverviewWidget = new CQParameterOverviewWidget(this);
@@ -629,10 +623,6 @@ CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
 
       case 116:
         return eventsWidget;
-        break;
-
-      case 117:
-        return parametersWidget;
         break;
 
       case 118:

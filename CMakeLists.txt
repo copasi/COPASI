@@ -423,12 +423,6 @@ if(ENABLE_COPASI_AUTOLAYOUT)
 add_definitions(-DCOPASI_AUTOLAYOUT)
 endif(ENABLE_COPASI_AUTOLAYOUT)
 
-option (ENABLE_COPASI_PARAMETER_SETS "Build COPASI with support for parameter sets." OFF)
-mark_as_advanced(ENABLE_COPASI_PARAMETER_SETS)
-if(ENABLE_COPASI_PARAMETER_SETS)
-add_definitions(-DCOPASI_PARAMETER_SETS)
-endif(ENABLE_COPASI_PARAMETER_SETS)
-
 option (ENABLE_ELEMENTARY_MODE_DISPLAY "Build COPASI with support for highlighting elementary modes in diagrams." ON)
 mark_as_advanced(ENABLE_ELEMENTARY_MODE_DISPLAY)
 if(ENABLE_ELEMENTARY_MODE_DISPLAY)
@@ -668,7 +662,6 @@ message(STATUS "-----------------------------------------------------------
    Auto layout              = ${ENABLE_COPASI_AUTOLAYOUT}
    COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
    Non linear dynamics      = ${ENABLE_COPASI_NONLIN_DYN}
-   Parameter sets           = ${ENABLE_COPASI_PARAMETER_SETS}
    Render Extension         = ${ENABLE_CRENDER_EXTENSION}
    CSP Method               = ${ENABLE_CSPMETHOD}
    Elementary mode display  = ${ENABLE_ELEMENTARY_MODE_DISPLAY}

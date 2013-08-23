@@ -49,7 +49,6 @@ class CQEFMResultWidget;
 class CQGlobalQuantitiesWidget;
 class CQMoietiesTaskResult;
 class CQMoietiesTaskWidget;
-class ParametersWidget;
 class CQParameterOverviewWidget;
 class CQParameterSetsWidget;
 class ReactionsWidget1;
@@ -227,7 +226,6 @@ private:
   CQOptimizationResult *optResultWidget;
   CQFittingWidget *paramFittingWidget;
   CQFittingResult *mpFittingResultWidget;
-  ParametersWidget *parametersWidget;
   CQParameterOverviewWidget * mpParameterOverviewWidget;
   CQParameterSetsWidget * mpParameterSetsWidget;
   CQTabWidget * mpParameterSetWidget;

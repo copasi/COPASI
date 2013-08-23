@@ -169,7 +169,6 @@ HEADERS	+= \
   ObjectBrowserDialog.h \
   ObjectBrowserItem.h \
   ObjectBrowserWidget.h \
-  ParametersWidget.h \
   parametertable.h \
   qtUtilities.h \
   ReactionsWidget1.h \
@@ -320,7 +319,6 @@ SOURCES	+= \
   ObjectBrowserDialog.cpp \
   ObjectBrowserItem.cpp \
   ObjectBrowserWidget.cpp \
-  ParametersWidget.cpp \
   parametertable.cpp \
   qtUtilities.cpp \
   ReactionsWidget1.cpp \

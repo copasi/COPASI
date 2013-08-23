@@ -491,10 +491,8 @@ bool CModel::compile()
   // CMathContainer CopyModel(MathModel);
 #endif // TST_DEPENDENCYGRAPH
 
-#ifdef COPASI_PARAMETER_SETS
   // Update the parameter set
   mParameterSet.createFromModel();
-#endif // COPASI_PARAMTER_SETS
 
   return success;
 }

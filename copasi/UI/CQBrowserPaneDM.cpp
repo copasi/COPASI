@@ -313,13 +313,9 @@ void CQBrowserPaneDM::load()
   load(115); // Global Quantities
   load(116); // Events
 
-#ifdef COPASI_PARAMETER_SETS
   findNodeFromId(118)->setKey(mpCopasiDM->getModel()->getModelParameterSet().getKey()); // Parameter Set
   findNodeFromId(119)->setKey(mpCopasiDM->getModel()->getKey());
   load(119); // Model Parameter Sets
-#else
-  findNodeFromId(117)->setKey(mpCopasiDM->getModel()->getKey()); // Parameter Overview
-#endif // COPASI_PARAMETER_SETS
 
   findNodeFromId(21)->setKey((*mpCopasiDM->getTaskList())["Steady-State"]->getKey());
   findNodeFromId(221)->setKey((*mpCopasiDM->getTaskList())["Elementary Flux Modes"]->getKey());
@@ -735,9 +731,7 @@ void CQBrowserPaneDM::clear()
   findNodeFromId(114)->deleteChildren(); // Reactions
   findNodeFromId(115)->deleteChildren(); // Global Quantities
   findNodeFromId(116)->deleteChildren(); // Events
-#ifdef COPASI_PARAMETER_SETS
   findNodeFromId(119)->deleteChildren(); // Model Parameter Sets
-#endif // COPASI_PARAMETER_SETS
   findNodeFromId(42)->deleteChildren(); // Plot Specifications
   findNodeFromId(43)->deleteChildren(); // Report Specifications
   findNodeFromId(5)->deleteChildren(); // Functions
