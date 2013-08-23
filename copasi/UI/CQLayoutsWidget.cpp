@@ -31,7 +31,9 @@
 
 #ifdef USE_CRENDER_EXTENSION
 # include "copasi/layoutUI/CQNewMainWindow.h"
+#ifndef DISABLE_QT_LAYOUT_RENDERING
 # include <qlayout/qanimationwindow.h>
+#endif //DISABLE_QT_LAYOUT_RENDERING
 #else
 # include "copasi/layoutUI/CQLayoutMainWindow.h"
 #endif // USE_CRENDER_EXTENSION
@@ -280,28 +282,34 @@ void CQLayoutsWidget::slotBtnNewClicked()
 
   LayoutWindow *window = createLayoutWindow(pListOfLayouts->size() - 1, pLayout);
   CQNewMainWindow* pWin = dynamic_cast<CQNewMainWindow*>(window);
+
+#ifndef DISABLE_QT_LAYOUT_RENDERING
   QAnimationWindow* pAnim = dynamic_cast<QAnimationWindow*>(window);
 
-  if (pWin != NULL)
-    {
-      pWin->updateRenderer();
-      pWin->setMode();
-      // show the new layout
-      pWin->show();
-      pWin->redrawNow();
-      // now we create the spring layout
-      pWin->slotRunSpringLayout();
-    }
-  else if (pAnim != NULL)
+  if (pAnim != NULL)
     {
       pAnim->show();
       // now we create the spring layout
       pAnim->slotAutoLayout();
     }
   else
-    {
-      delete pLayout;
-    }
+#endif //DISABLE_QT_LAYOUT_RENDERING
+
+    if (pWin != NULL)
+      {
+        pWin->updateRenderer();
+        pWin->setMode();
+        // show the new layout
+        pWin->show();
+        pWin->redrawNow();
+        // now we create the spring layout
+        pWin->slotRunSpringLayout();
+      }
+
+    else
+      {
+        delete pLayout;
+      }
 
 #endif // COPASI_AUTOLAYOUT
 }
@@ -372,6 +380,8 @@ CQLayoutsWidget::LayoutWindow * CQLayoutsWidget::createLayoutWindow(int row, CLa
 #ifdef USE_CRENDER_EXTENSION
   LayoutWindow * pWin = NULL;
 
+#ifndef DISABLE_QT_LAYOUT_RENDERING
+
   if (CCopasiRootContainer::getConfiguration()->useOpenGL())
     {
       pWin = new CQNewMainWindow((*CCopasiRootContainer::getDatamodelList())[0]);
@@ -382,6 +392,10 @@ CQLayoutsWidget::LayoutWindow * CQLayoutsWidget::createLayoutWindow(int row, CLa
       pWin = new QAnimationWindow(pLayout, (*CCopasiRootContainer::getDatamodelList())[0]);
     }
 
+#else
+  pWin = new CQNewMainWindow((*CCopasiRootContainer::getDatamodelList())[0]);
+  (static_cast<CQNewMainWindow*>(pWin))->slotLayoutChanged(row);
+#endif //DISABLE_QT_LAYOUT_RENDERING
 #else
   LayoutWindow * pWin = new CQLayoutMainWindow(pLayout);
 #endif // USE_CRENDER_EXTENSION
