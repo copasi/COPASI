@@ -261,8 +261,16 @@ void CQLayoutsWidget::slotBtnNewClicked()
   std::map<std::string, std::string> m;
 
   CListOfLayouts * pListOfLayouts = pDataModel->getListOfLayouts();
+
   // create the random layout
-  CLayout* pLayout = CLayout::createLayout(pDataModel, pWizard->getSelectedCompartments(), pWizard->getSelectedReactions(), pWizard->getSelectedMetabolites(), pWizard->getSideMetabolites());
+  CCopasiSpringLayout::Parameters p;
+  CLayout* pLayout = CCopasiSpringLayout::createLayout(
+                       pDataModel, pWizard->getSelectedCompartments(),
+                       pWizard->getSelectedReactions(),
+                       pWizard->getSelectedMetabolites(),
+                       pWizard->getSideMetabolites(),
+                       &p);
+
   pLayout->setObjectName(name);
   pListOfLayouts->addLayout(pLayout, m);
 
@@ -273,26 +281,27 @@ void CQLayoutsWidget::slotBtnNewClicked()
   LayoutWindow *window = createLayoutWindow(pListOfLayouts->size() - 1, pLayout);
   CQNewMainWindow* pWin = dynamic_cast<CQNewMainWindow*>(window);
   QAnimationWindow* pAnim = dynamic_cast<QAnimationWindow*>(window);
+
   if (pWin != NULL)
-  {
-    pWin->updateRenderer();
-    pWin->setMode();
-    // show the new layout
-    pWin->show();
-    pWin->redrawNow();
-    // now we create the spring layout
-    pWin->slotRunSpringLayout();
-  }
+    {
+      pWin->updateRenderer();
+      pWin->setMode();
+      // show the new layout
+      pWin->show();
+      pWin->redrawNow();
+      // now we create the spring layout
+      pWin->slotRunSpringLayout();
+    }
   else if (pAnim != NULL)
-  {
-    pAnim->show();
-    // now we create the spring layout
-    pAnim->slotAutoLayout();
-  }
+    {
+      pAnim->show();
+      // now we create the spring layout
+      pAnim->slotAutoLayout();
+    }
   else
-  {
-    delete pLayout;
-  }
+    {
+      delete pLayout;
+    }
 
 #endif // COPASI_AUTOLAYOUT
 }
@@ -362,15 +371,16 @@ CQLayoutsWidget::LayoutWindow * CQLayoutsWidget::createLayoutWindow(int row, CLa
 
 #ifdef USE_CRENDER_EXTENSION
   LayoutWindow * pWin = NULL;
+
   if (CCopasiRootContainer::getConfiguration()->useOpenGL())
-  {
-    pWin = new CQNewMainWindow((*CCopasiRootContainer::getDatamodelList())[0]);
-    (static_cast<CQNewMainWindow*>(pWin))->slotLayoutChanged(row);  
-  }
-  else 
-  {
-    pWin = new QAnimationWindow(pLayout, (*CCopasiRootContainer::getDatamodelList())[0]); 
-  }
+    {
+      pWin = new CQNewMainWindow((*CCopasiRootContainer::getDatamodelList())[0]);
+      (static_cast<CQNewMainWindow*>(pWin))->slotLayoutChanged(row);
+    }
+  else
+    {
+      pWin = new QAnimationWindow(pLayout, (*CCopasiRootContainer::getDatamodelList())[0]);
+    }
 
 #else
   LayoutWindow * pWin = new CQLayoutMainWindow(pLayout);
@@ -419,11 +429,13 @@ void CQLayoutsWidget::slotShowLayout(const QModelIndex & index)
         {
 #ifdef USE_CRENDER_EXTENSION
           CQNewMainWindow* cqWin = dynamic_cast<CQNewMainWindow*>(pLayoutWindow);
+
           if (cqWin != NULL)
-          {
-            cqWin ->slotLayoutChanged(row);
-            cqWin ->setMode();
-          }
+            {
+              cqWin ->slotLayoutChanged(row);
+              cqWin ->setMode();
+            }
+
 #endif // USE_CRENDER_EXTENSION
           pLayoutWindow->show();
           pLayoutWindow->showNormal();

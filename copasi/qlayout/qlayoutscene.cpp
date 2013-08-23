@@ -326,6 +326,10 @@ void moveObject(CLGraphicalObject* obj, const CLPoint& delta, CLayout* layout)
     }
 }
 
+#ifdef COPASI_AUTOLAYOUT
+#include <layout/CCopasiSpringLayout.h>
+#endif
+
 void QLayoutScene::updatePosition(const QString& key, const QPointF& newPos)
 {
   CKeyFactory* kf = CCopasiRootContainer::getKeyFactory();

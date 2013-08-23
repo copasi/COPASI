@@ -355,57 +355,21 @@ private:
   // of the random layout should be stopped
   bool mStopLayout;
 
+  /**
+   * A flag indicating, that the autolayout is currently running
+   */
+  bool mIsRunning;
+
   QAction* mpStopLayoutAction;
 
   QAction* mpRandomizeLayout;
   QAction* mpCalculateDimensions;
-  
+
 public:
   void redrawNow();
-  
-  class CompartmentInfo
-  {
-  public:
-    unsigned int mNumItems;
-    double mAreaSum;
-    
-    CompartmentInfo()
-    :mNumItems(0),
-    mAreaSum(0.0)
-    {}
-    
-    void add(double area)
-    {
-      ++mNumItems;
-      mAreaSum+=area;
-    }
-  };
-    
-  /**
-   * This method creates a random layout using the elements
-   * in the compartments, reactions, species and side species
-   * containers.
-   */
-  void createRandomLayout(const std::set<const CCompartment*>& compartments,
-                          const std::set<const CReaction*>& reactions,
-                          const std::set<const CMetab*>& metabs,
-                          const std::set<const CMetab*>& sideMetabs
-                         );
 
-  void createLayout(const std::set<const CCompartment*>& compartments,
-                            const std::set<const CReaction*>& reactions,
-                            const std::set<const CMetab*>& metabs,
-                            const std::set<const CMetab*>& sideMetabs
-                            );
-    
   void randomizeLayout();
-  
-  void placeTextGlyphs();
-  
-  void randomlyPlaceGlyphInCompartmentGlyph(CLGraphicalObject* pGl, const CLGraphicalObject* pContainer);
- 
-   void randomlyPlaceGlyphInDimensions(CLGraphicalObject* pGl, const CLDimensions* pContainer);
- 
+
   /**
    * Creates a spring layout.
    * The method takes the number of iterations for the
@@ -415,12 +379,11 @@ public:
    * at the end.
    */
   void createSpringLayout(int numIterations, int updateInterval);
-  
-  
+
 protected:
   CRandom* mpRandom;
   CQSpringLayoutParameterWindow* mpParameterWindow;
-  
+
 #endif // COPASI_AUTOLAYOUT
 };
 

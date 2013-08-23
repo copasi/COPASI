@@ -427,7 +427,8 @@ void QAnimationWindow::slotRandomizeLayout()
 {
   slotStopLayout();
 #ifdef COPASI_AUTOLAYOUT
-  mpScene->getCurrentLayout()->randomize(&mpParameterWindow->getLayoutParameters());
+  CCopasiSpringLayout l(mpScene->getCurrentLayout(), &mpParameterWindow->getLayoutParameters());
+  l.randomize();
   mpScene->recreate();
 #endif //COPASI_AUTOLAYOUT
 }

@@ -23,6 +23,8 @@
 #include <QtGui/QToolBar>
 #include <QtGui/QVBoxLayout>
 
+#include <QTimer>
+
 // local includes
 #include "CQGLLayoutPainter.h"
 #include "CQGLLayoutViewer.h"
@@ -90,7 +92,6 @@
 #include <QPainter>
 #include <layout/CLRenderResolver.h>
 
-
 const char* const CQNewMainWindow::ZOOM_FACTOR_STRINGS[] = {"1%", "2%", "3%", "4%", "5%", "10%", "20%", "25%", "30%", "40%", "50%", "75%", "100%", "150%", "200%", "300%", "400%", "500%", "1000%"};
 const double CQNewMainWindow::ZOOM_FACTORS[] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
 
@@ -123,6 +124,7 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
 #endif // ELEMENTARY_MODE_DISPLAY
 #ifdef COPASI_AUTOLAYOUT
   , mStopLayout(false)
+  , mIsRunning(false)
   , mpStopLayoutAction(NULL)
   , mpRandomizeLayout(NULL)
   , mpCalculateDimensions(NULL)
@@ -136,9 +138,9 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
 
   // first we load the default styles if they don't already exist
   if (DEFAULT_STYLES == NULL)
-  {
-    DEFAULT_STYLES = loadDefaultStyles();
-  }
+    {
+      DEFAULT_STYLES = loadDefaultStyles();
+    }
 
   this->mCurDir = pDatamodel->getReferenceDirectory();
   this->mpWidgetStack = new QStackedWidget(this);
@@ -179,7 +181,6 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   mpViewMenu->addAction(mpParameterWindow->toggleViewAction());
 
 #endif
-
 }
 
 QMenu* CQNewMainWindow::getWindowMenu() const
@@ -413,14 +414,14 @@ void CQNewMainWindow::createToolBars()
   int defaultIndex = -1;
 
   for (i = 0; i < iMax; ++i)
-  {
-    this->mpZoomDropdown->addItem(QString(CQNewMainWindow::ZOOM_FACTOR_STRINGS[i]));
-
-    if (std::string(CQNewMainWindow::ZOOM_FACTOR_STRINGS[i]) == std::string("100%"))
     {
-      defaultIndex = i;
+      this->mpZoomDropdown->addItem(QString(CQNewMainWindow::ZOOM_FACTOR_STRINGS[i]));
+
+      if (std::string(CQNewMainWindow::ZOOM_FACTOR_STRINGS[i]) == std::string("100%"))
+        {
+          defaultIndex = i;
+        }
     }
-  }
 
   this->mpZoomDropdown->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
 
@@ -461,9 +462,9 @@ void CQNewMainWindow::updateRenderer()
   this->mpAnimationWindow->setLayout(this->mpCurrentLayout);
 
   if (this->mpCurrentRenderInformation == getDefaultStyle(0))
-  {
-    this->mpLayoutViewer->change_style(this->mpCurrentRenderInformation, true);
-  }
+    {
+      this->mpLayoutViewer->change_style(this->mpCurrentRenderInformation, true);
+    }
 }
 
 void CQNewMainWindow::resetView()
@@ -472,12 +473,12 @@ void CQNewMainWindow::resetView()
   int defaultIndex = -1;
 
   for (i = 0; i < iMax; ++i)
-  {
-    if (std::string(CQNewMainWindow::ZOOM_FACTOR_STRINGS[i]) == std::string("100%"))
     {
-      defaultIndex = i;
+      if (std::string(CQNewMainWindow::ZOOM_FACTOR_STRINGS[i]) == std::string("100%"))
+        {
+          defaultIndex = i;
+        }
     }
-  }
 
   // set 100% as the default zoom factor
   assert(defaultIndex != -1);
@@ -495,41 +496,41 @@ void CQNewMainWindow::slotResetView()
 }
 
 /**
-* This slot is called when the "Fit To Screen" menu item
-* is activated.
-*/
+ * This slot is called when the "Fit To Screen" menu item
+ * is activated.
+ */
 void CQNewMainWindow::slotFitToScreen()
 {
   double zoom = 1.0;
 
   if (this->mMode == CQNewMainWindow::ANIMATION_MODE)
-  {
-    zoom = this->mpAnimationWindow->slotFitToScreen();
-    // set the zoom factor on the other GL window
-    this->mpLayoutViewer->setZoomFactor(zoom);
-  }
+    {
+      zoom = this->mpAnimationWindow->slotFitToScreen();
+      // set the zoom factor on the other GL window
+      this->mpLayoutViewer->setZoomFactor(zoom);
+    }
   else
-  {
-    zoom = this->mpLayoutViewer->fitToScreen();
-    // set the zoom factor on the other GL window
-    this->mpAnimationWindow->setZoomFactor(zoom);
-  }
+    {
+      zoom = this->mpLayoutViewer->fitToScreen();
+      // set the zoom factor on the other GL window
+      this->mpAnimationWindow->setZoomFactor(zoom);
+    }
 
   // uncheck the zoom entry in the menu
   QList<QAction*> actions = this->mpZoomActionGroup->actions();
   QList<QAction*>::iterator it = actions.begin(), endit = actions.end();
 
   while (it != endit)
-  {
-    if ((*it)->isChecked())
     {
-      (*it)->setChecked(false);
-      // only one can be checked
-      break;
-    }
+      if ((*it)->isChecked())
+        {
+          (*it)->setChecked(false);
+          // only one can be checked
+          break;
+        }
 
-    ++it;
-  }
+      ++it;
+    }
 
   // add a new entry for the current zoom factor to the zoom dropdown list
   disconnect(this->mpZoomDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotZoomChanged(int)));
@@ -539,13 +540,13 @@ void CQNewMainWindow::slotFitToScreen()
   const size_t n = sizeof(CQNewMainWindow::ZOOM_FACTOR_STRINGS) / sizeof(char*);
 
   if ((size_t)this->mpZoomDropdown->count() > n)
-  {
-    this->mpZoomDropdown->setItemText(0, s);
-  }
+    {
+      this->mpZoomDropdown->setItemText(0, s);
+    }
   else
-  {
-    this->mpZoomDropdown->insertItem(0, s);
-  }
+    {
+      this->mpZoomDropdown->insertItem(0, s);
+    }
 
   this->mpZoomDropdown->setCurrentIndex(0);
   connect(this->mpZoomDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotZoomChanged(int)));
@@ -557,12 +558,12 @@ void CQNewMainWindow::slotLayoutChanged(int index)
   CLayout* pTmpLayout = (*this->mpDataModel->getListOfLayouts())[index];
 
   if (pTmpLayout != this->mpCurrentLayout)
-  {
-    this->mpCurrentLayout = pTmpLayout;
-    // update the corresponding render information list
-    this->updateRenderInformationList();
-    this->updateRenderer();
-  }
+    {
+      this->mpCurrentLayout = pTmpLayout;
+      // update the corresponding render information list
+      this->updateRenderInformationList();
+      this->updateRenderer();
+    }
 }
 
 void CQNewMainWindow::slotRenderInfoChanged(int index)
@@ -572,10 +573,10 @@ void CQNewMainWindow::slotRenderInfoChanged(int index)
 
   // the local render information is first in the list
   if (index == -1)
-  {
-    //std::cout << "index is -1" << std::endl;
-    return;
-  }
+    {
+      //std::cout << "index is -1" << std::endl;
+      return;
+    }
 
   size_t Index = (size_t) index;
 
@@ -583,42 +584,41 @@ void CQNewMainWindow::slotRenderInfoChanged(int index)
   size_t numFileRenderInfo = numLocalRenderInfo + this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size();
 
   if (Index >= numLocalRenderInfo)
-  {
-    // it is a global render information or a default render info
-    if (Index >= numFileRenderInfo)
     {
-      // it must be a default render information
-      pRenderInfo = getDefaultStyle(Index - numFileRenderInfo);
+      // it is a global render information or a default render info
+      if (Index >= numFileRenderInfo)
+        {
+          // it must be a default render information
+          pRenderInfo = getDefaultStyle(Index - numFileRenderInfo);
 
-      if (pRenderInfo != this->mpCurrentRenderInformation)
-      {
-        this->mpCurrentRenderInformation = pRenderInfo;
-        this->change_style(true);
-      }
-    }
-    else
-    {
-      pRenderInfo = this->mpDataModel->getListOfLayouts()->getRenderInformation(Index - numLocalRenderInfo);
+          if (pRenderInfo != this->mpCurrentRenderInformation)
+            {
+              this->mpCurrentRenderInformation = pRenderInfo;
+              this->change_style(true);
+            }
+        }
+      else
+        {
+          pRenderInfo = this->mpDataModel->getListOfLayouts()->getRenderInformation(Index - numLocalRenderInfo);
 
-      if (pRenderInfo != this->mpCurrentRenderInformation)
-      {
-        this->mpCurrentRenderInformation = pRenderInfo;
-        this->change_style();
-      }
+          if (pRenderInfo != this->mpCurrentRenderInformation)
+            {
+              this->mpCurrentRenderInformation = pRenderInfo;
+              this->change_style();
+            }
+        }
     }
-  }
   else
-  {
-    // it is a local render information
-    pRenderInfo = this->mpCurrentLayout->getRenderInformation(Index);
-
-    if (pRenderInfo != this->mpCurrentRenderInformation)
     {
-      this->mpCurrentRenderInformation = pRenderInfo;
-      this->change_style();
-    }
-  }
+      // it is a local render information
+      pRenderInfo = this->mpCurrentLayout->getRenderInformation(Index);
 
+      if (pRenderInfo != this->mpCurrentRenderInformation)
+        {
+          this->mpCurrentRenderInformation = pRenderInfo;
+          this->change_style();
+        }
+    }
 }
 
 void CQNewMainWindow::updateRenderInformationList()
@@ -629,110 +629,110 @@ void CQNewMainWindow::updateRenderInformationList()
   size_t num = this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size() + getNumDefaultStyles();
 
   while ((size_t) this->mpRenderDropdown->count() > num)
-  {
-    this->mpRenderDropdown->removeItem(0);
-  }
+    {
+      this->mpRenderDropdown->removeItem(0);
+    }
 
   // add the new local render information items
   if (this->mpCurrentLayout)
-  {
-    num = this->mpCurrentLayout->getListOfLocalRenderInformationObjects().size();
-    size_t i;
-    CLRenderInformationBase* pTmpRenderInfo = NULL;
-
-    for (i = num; i > 0; --i)
     {
-      pTmpRenderInfo = this->mpCurrentLayout->getRenderInformation(i - 1);
-      std::string text = pTmpRenderInfo->getKey();
+      num = this->mpCurrentLayout->getListOfLocalRenderInformationObjects().size();
+      size_t i;
+      CLRenderInformationBase* pTmpRenderInfo = NULL;
 
-      if (!pTmpRenderInfo->getName().empty())
-      {
-        text = pTmpRenderInfo->getName();
-        //text += " (";
-        //text += pTmpRenderInfo->getName();
-        //text += ")";
-      }
+      for (i = num; i > 0; --i)
+        {
+          pTmpRenderInfo = this->mpCurrentLayout->getRenderInformation(i - 1);
+          std::string text = pTmpRenderInfo->getKey();
 
-      this->mpRenderDropdown->insertItem(0, QString(text.c_str()));
+          if (!pTmpRenderInfo->getName().empty())
+            {
+              text = pTmpRenderInfo->getName();
+              //text += " (";
+              //text += pTmpRenderInfo->getName();
+              //text += ")";
+            }
+
+          this->mpRenderDropdown->insertItem(0, QString(text.c_str()));
+        }
     }
-  }
 
   // if the current render information is a global render information, keep
   // the selection
   // otherwise select the first render information if there is one
   if (dynamic_cast<const CLGlobalRenderInformation*>(this->mpCurrentRenderInformation))
-  {
-    // find the correct index
-    size_t i, iMax = this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size();
-
-    for (i = 0; i < iMax; ++i)
     {
-      if (this->mpCurrentRenderInformation == this->mpDataModel->getListOfLayouts()->getRenderInformation(i))
-      {
-        break;
-      }
-    }
-
-    if (i == iMax)
-    {
-      // it must be a default style
-      num += i;
-      iMax = getNumDefaultStyles();
+      // find the correct index
+      size_t i, iMax = this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size();
 
       for (i = 0; i < iMax; ++i)
-      {
-        if (this->mpCurrentRenderInformation == getDefaultStyle(i))
         {
-          break;
+          if (this->mpCurrentRenderInformation == this->mpDataModel->getListOfLayouts()->getRenderInformation(i))
+            {
+              break;
+            }
         }
-      }
 
-      assert(i != iMax);
-      this->mpRenderDropdown->setCurrentIndex((int)(num + i));
-    }
-    else
-    {
-      this->mpRenderDropdown->setCurrentIndex((int)(num + i));
-    }
-  }
-  else
-  {
-    if (this->mpRenderDropdown->count() > 0)
-    {
-      if (num > 0)
-      {
-        // take the first local render information
-        if (this->mpCurrentLayout != NULL)
+      if (i == iMax)
         {
-          this->mpCurrentRenderInformation = this->mpCurrentLayout->getRenderInformation(0);
+          // it must be a default style
+          num += i;
+          iMax = getNumDefaultStyles();
+
+          for (i = 0; i < iMax; ++i)
+            {
+              if (this->mpCurrentRenderInformation == getDefaultStyle(i))
+                {
+                  break;
+                }
+            }
+
+          assert(i != iMax);
+          this->mpRenderDropdown->setCurrentIndex((int)(num + i));
         }
-        else
+      else
+        {
+          this->mpRenderDropdown->setCurrentIndex((int)(num + i));
+        }
+    }
+  else
+    {
+      if (this->mpRenderDropdown->count() > 0)
+        {
+          if (num > 0)
+            {
+              // take the first local render information
+              if (this->mpCurrentLayout != NULL)
+                {
+                  this->mpCurrentRenderInformation = this->mpCurrentLayout->getRenderInformation(0);
+                }
+              else
+                {
+                  this->mpCurrentRenderInformation = NULL;
+                }
+
+              this->mpRenderDropdown->setCurrentIndex(0);
+            }
+          else if (this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size() > 0)
+            {
+              // take the first global render information
+              this->mpCurrentRenderInformation = this->mpDataModel->getListOfLayouts()->getRenderInformation(0);
+              this->mpRenderDropdown->setCurrentIndex((int) num);
+            }
+          else if (getNumDefaultStyles() > 0)
+            {
+              this->mpCurrentRenderInformation = getDefaultStyle(0);
+            }
+          else
+            {
+              this->mpCurrentRenderInformation = NULL;
+            }
+        }
+      else
         {
           this->mpCurrentRenderInformation = NULL;
         }
-
-        this->mpRenderDropdown->setCurrentIndex(0);
-      }
-      else if (this->mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size() > 0)
-      {
-        // take the first global render information
-        this->mpCurrentRenderInformation = this->mpDataModel->getListOfLayouts()->getRenderInformation(0);
-        this->mpRenderDropdown->setCurrentIndex((int) num);
-      }
-      else if (getNumDefaultStyles() > 0)
-      {
-        this->mpCurrentRenderInformation = getDefaultStyle(0);
-      }
-      else
-      {
-        this->mpCurrentRenderInformation = NULL;
-      }
     }
-    else
-    {
-      this->mpCurrentRenderInformation = NULL;
-    }
-  }
 
   // reconnect the slot
   connect(this->mpRenderDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotRenderInfoChanged(int)));
@@ -747,20 +747,20 @@ void CQNewMainWindow::addGlobalRenderInfoItemsToList()
   CLRenderInformationBase* pTmpRenderInfo = NULL;
 
   for (i = 0; i < iMax; ++i)
-  {
-    pTmpRenderInfo = this->mpDataModel->getListOfLayouts()->getRenderInformation(i);
-    std::string text = pTmpRenderInfo->getKey();
-
-    if (!pTmpRenderInfo->getName().empty())
     {
-      text = pTmpRenderInfo->getName();
-      //text += " (";
-      //text += pTmpRenderInfo->getName();
-      //text += ")";
-    }
+      pTmpRenderInfo = this->mpDataModel->getListOfLayouts()->getRenderInformation(i);
+      std::string text = pTmpRenderInfo->getKey();
 
-    this->mpRenderDropdown->addItem(QString(text.c_str()));
-  }
+      if (!pTmpRenderInfo->getName().empty())
+        {
+          text = pTmpRenderInfo->getName();
+          //text += " (";
+          //text += pTmpRenderInfo->getName();
+          //text += ")";
+        }
+
+      this->mpRenderDropdown->addItem(QString(text.c_str()));
+    }
 
   // reconnect the slot
   connect(this->mpRenderDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotRenderInfoChanged(int)));
@@ -774,20 +774,20 @@ void CQNewMainWindow::addDefaultRenderInfoItemsToList()
   CLRenderInformationBase* pTmpRenderInfo = NULL;
 
   for (i = 0; i < iMax; ++i)
-  {
-    pTmpRenderInfo = getDefaultStyle(i);
-    std::string text = pTmpRenderInfo->getKey();
-
-    if (!pTmpRenderInfo->getName().empty())
     {
-      text = pTmpRenderInfo->getName();
-      //text += " (";
-      //text += pTmpRenderInfo->getName();
-      //text += ")";
-    }
+      pTmpRenderInfo = getDefaultStyle(i);
+      std::string text = pTmpRenderInfo->getKey();
 
-    this->mpRenderDropdown->addItem(QString(text.c_str()));
-  }
+      if (!pTmpRenderInfo->getName().empty())
+        {
+          text = pTmpRenderInfo->getName();
+          //text += " (";
+          //text += pTmpRenderInfo->getName();
+          //text += ")";
+        }
+
+      this->mpRenderDropdown->addItem(QString(text.c_str()));
+    }
 
   // reconnect the slot
   connect(this->mpRenderDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotRenderInfoChanged(int)));
@@ -803,13 +803,13 @@ void CQNewMainWindow::slotZoomChanged(int index)
   const size_t n = sizeof(CQNewMainWindow::ZOOM_FACTOR_STRINGS) / sizeof(char*);
 
   if ((size_t)this->mpZoomDropdown->count() > n && index != 0)
-  {
-    --index;
-    disconnect(this->mpZoomDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotZoomChanged(int)));
-    this->mpZoomDropdown->removeItem(0);
-    this->mpZoomDropdown->setCurrentIndex(index);
-    connect(this->mpZoomDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotZoomChanged(int)));
-  }
+    {
+      --index;
+      disconnect(this->mpZoomDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotZoomChanged(int)));
+      this->mpZoomDropdown->removeItem(0);
+      this->mpZoomDropdown->setCurrentIndex(index);
+      connect(this->mpZoomDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotZoomChanged(int)));
+    }
 
   this->mpLayoutViewer->setZoomFactor(CQNewMainWindow::ZOOM_FACTORS[index]);
   // also change the zoom factor for the animation window
@@ -817,9 +817,9 @@ void CQNewMainWindow::slotZoomChanged(int index)
 
   // also set the zoom factor in the menu
   if ((int) index < this->mpZoomActionGroup->actions().size())
-  {
-    this->mpZoomActionGroup->actions().at(index)->setChecked(true);
-  }
+    {
+      this->mpZoomActionGroup->actions().at(index)->setChecked(true);
+    }
 }
 
 void CQNewMainWindow::slotZoomMenuItemActivated(QAction* pAction)
@@ -833,20 +833,20 @@ void CQNewMainWindow::slotZoomMenuItemActivated(QAction* pAction)
   const size_t n = sizeof(CQNewMainWindow::ZOOM_FACTOR_STRINGS) / sizeof(char*);
 
   if ((size_t)this->mpZoomDropdown->count() > n)
-  {
-    disconnect(this->mpZoomDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotZoomChanged(int)));
-    this->mpZoomDropdown->removeItem(0);
-    connect(this->mpZoomDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotZoomChanged(int)));
-  }
+    {
+      disconnect(this->mpZoomDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotZoomChanged(int)));
+      this->mpZoomDropdown->removeItem(0);
+      connect(this->mpZoomDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotZoomChanged(int)));
+    }
 
   this->mpLayoutViewer->setZoomFactor(CQNewMainWindow::ZOOM_FACTORS[index]);
   // also set the zoom factor in the combobox
   disconnect(this->mpZoomDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotZoomChanged(int)));
 
   if (index < this->mpZoomDropdown->count())
-  {
-    this->mpZoomDropdown->setCurrentIndex(index);
-  }
+    {
+      this->mpZoomDropdown->setCurrentIndex(index);
+    }
 
   connect(this->mpZoomDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotZoomChanged(int)));
 
@@ -860,28 +860,28 @@ void CQNewMainWindow::change_style(bool defaultStyle)
 }
 
 /**
-* This slot is called when something in the document changes.
-*/
+ * This slot is called when something in the document changes.
+ */
 void CQNewMainWindow::slotSingleCurveSelected(bool selected)
 {
   // check if a single curve is selected
   if (selected)
-  {
-    this->mpRevertCurveAct->setEnabled(true);
-  }
+    {
+      this->mpRevertCurveAct->setEnabled(true);
+    }
   else
-  {
-    this->mpRevertCurveAct->setEnabled(false);
-  }
+    {
+      this->mpRevertCurveAct->setEnabled(false);
+    }
 }
 
 /**
-* This slot initiates the export
-* of the layout as a bitmap.
-* The user gets to choose which part of the
-* layout is to be exported and how large the
-* resulting bitmap is supposed to be.
-*/
+ * This slot initiates the export
+ * of the layout as a bitmap.
+ * The user gets to choose which part of the
+ * layout is to be exported and how large the
+ * resulting bitmap is supposed to be.
+ */
 void CQNewMainWindow::slotScreenshot()
 {
   CQGLLayoutPainter* pPainter = this->mpLayoutViewer->getPainter();
@@ -906,19 +906,19 @@ void CQNewMainWindow::slotScreenshot()
 
 #else
   CQScreenshotOptionsDialog* pDialog = new CQScreenshotOptionsDialog(layoutX, layoutY, layoutWidth, layoutHeight,
-    x, y, width, height, pPainter->width() , pPainter->height(), -1, this);
+      x, y, width, height, pPainter->width() , pPainter->height(), -1, this);
 
   if (pDialog->exec() == QDialog::Accepted)
-  {
-
-    // ask for the filename
-    QString fileName = CopasiFileDialog::getSaveFileName(this, QString("Export to"), "", QString("PNG (*.png);;All files (*)"));
-
-    if (!fileName.isEmpty())
     {
-      export_bitmap(fileName, pDialog->getX(), pDialog->getY(), pDialog->getWidth(), pDialog->getHeight(), pDialog->getImageWidth(), pDialog->getImageHeight(), pDialog->isSetDrawSelectionDecoration());
+
+      // ask for the filename
+      QString fileName = CopasiFileDialog::getSaveFileName(this, QString("Export to"), "", QString("PNG (*.png);;All files (*)"));
+
+      if (!fileName.isEmpty())
+        {
+          export_bitmap(fileName, pDialog->getX(), pDialog->getY(), pDialog->getWidth(), pDialog->getHeight(), pDialog->getImageWidth(), pDialog->getImageHeight(), pDialog->isSetDrawSelectionDecoration());
+        }
     }
-  }
 
   delete pDialog;
 #endif
@@ -940,9 +940,9 @@ void CQNewMainWindow::export_bitmap(const QString& filename, double scale /*= 4.
 }
 
 /**
-* Exports a bitmap of the given size to
-* the file with the given name.
-*/
+ * Exports a bitmap of the given size to
+ * the file with the given name.
+ */
 void CQNewMainWindow::export_bitmap(const QString& filename, double x, double y, double width, double height, unsigned int imageWidth, unsigned int imageHeight, bool drawSelection)
 {
   // check if the size of the final image is ok.
@@ -952,11 +952,11 @@ void CQNewMainWindow::export_bitmap(const QString& filename, double x, double y,
   // TODO: what speeks against it? (Though in praxis resolutions above 4320p are unlikely)
   // I don't think we should write images that are larger than 500MB
   if (size > 5e8)
-  {
-    // give an error message that the image is to large
-    CQMessageBox::critical(this, tr("Image too large"),
-      tr("Sorry, refusing to create images that are larger than 500MB."));
-  }
+    {
+      // give an error message that the image is to large
+      CQMessageBox::critical(this, tr("Image too large"),
+                             tr("Sorry, refusing to create images that are larger than 500MB."));
+    }
 
   //
   // before we even start, we check if the file can be written to at all
@@ -964,25 +964,25 @@ void CQNewMainWindow::export_bitmap(const QString& filename, double x, double y,
   QFileInfo info(filename);
 
   if (info.exists())
-  {
-    if (!info.isFile())
     {
-      // create an error message and cancel saving
-      CQMessageBox::critical(this, tr("Not a file"),
-        tr("Path exists, but it is not a file."));
-      return;
+      if (!info.isFile())
+        {
+          // create an error message and cancel saving
+          CQMessageBox::critical(this, tr("Not a file"),
+                                 tr("Path exists, but it is not a file."));
+          return;
+        }
+      else
+        {
+          if (!info.isWritable())
+            {
+              // create an error message and cancel saving
+              CQMessageBox::critical(this, tr("Not writable"),
+                                     tr("Can't write to file."));
+              return;
+            }
+        }
     }
-    else
-    {
-      if (!info.isWritable())
-      {
-        // create an error message and cancel saving
-        CQMessageBox::critical(this, tr("Not writable"),
-          tr("Can't write to file."));
-        return;
-      }
-    }
-  }
 
   // now we try to create the image
   CQGLLayoutPainter* pPainter = this->mpLayoutViewer->getPainter();
@@ -1000,10 +1000,10 @@ void CQNewMainWindow::export_bitmap(const QString& filename, double x, double y,
   bool result = pImage->save(filename, "PNG");
 
   if (result == false)
-  {
-    CQMessageBox::critical(this, tr("Save error"),
-      tr("An error occured while saving the file.\nThe file might be invalid."));
-  }
+    {
+      CQMessageBox::critical(this, tr("Save error"),
+                             tr("An error occured while saving the file.\nThe file might be invalid."));
+    }
 
   delete pImage;
   delete[] pImageData;
@@ -1019,88 +1019,88 @@ void CQNewMainWindow::updateLayoutList()
   size_t i, iMax = this->mpDataModel->getListOfLayouts()->size();
 
   for (i = 0; i < iMax; ++i)
-  {
-    pTmpLayout = (*this->mpDataModel->getListOfLayouts())[i];
-    std::string text = pTmpLayout->getKey();
-
-    if (!pTmpLayout->getObjectName().empty())
     {
-      text = pTmpLayout->getObjectName();
-      //text += "(";
-      //text += pTmpLayout->getObjectName();
-      //text += ")";
+      pTmpLayout = (*this->mpDataModel->getListOfLayouts())[i];
+      std::string text = pTmpLayout->getKey();
+
+      if (!pTmpLayout->getObjectName().empty())
+        {
+          text = pTmpLayout->getObjectName();
+          //text += "(";
+          //text += pTmpLayout->getObjectName();
+          //text += ")";
+        }
+
+      this->mpLayoutDropdown->addItem(text.c_str());
     }
 
-    this->mpLayoutDropdown->addItem(text.c_str());
-  }
-
   if (iMax > 0)
-  {
-    this->mpCurrentLayout = (*this->mpDataModel->getListOfLayouts())[0];
-  }
+    {
+      this->mpCurrentLayout = (*this->mpDataModel->getListOfLayouts())[0];
+    }
 
   this->updateRenderInformationList();
 
   if (this->mpCurrentLayout && this->mpCurrentRenderInformation)
-  {
-    this->updateRenderer();
-  }
+    {
+      this->updateRenderer();
+    }
 
   connect(this->mpLayoutDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotLayoutChanged(int)));
 }
 
 /**
-* switches the display mode between animation mode and
-* graph mode.
-*/
+ * switches the display mode between animation mode and
+ * graph mode.
+ */
 void CQNewMainWindow::switchMode()
 {
   switch (this->mMode)
-  {
-  case CQNewMainWindow::GRAPH_MODE:
-    disconnect(mpScreenshotAct, SIGNAL(triggered()), this, SLOT(slotScreenshot()));
-    connect(this->mpScreenshotAct, SIGNAL(triggered()), this->mpAnimationWindow, SLOT(saveImage()));
-    this->mpSwitchModeAct->setIcon(mGraphIcon);
-    this->mpSwitchModeAct->setStatusTip(tr("Switch to graph mode."));
-    this->mpSwitchModeAct->setText(tr("Graph Mode"));
-    this->mMode = CQNewMainWindow::ANIMATION_MODE;
-    this->setAnimationToolbar();
-    this->setAnimationMenu();
-    this->mpWidgetStack->setCurrentIndex(1);
+    {
+      case CQNewMainWindow::GRAPH_MODE:
+        disconnect(mpScreenshotAct, SIGNAL(triggered()), this, SLOT(slotScreenshot()));
+        connect(this->mpScreenshotAct, SIGNAL(triggered()), this->mpAnimationWindow, SLOT(saveImage()));
+        this->mpSwitchModeAct->setIcon(mGraphIcon);
+        this->mpSwitchModeAct->setStatusTip(tr("Switch to graph mode."));
+        this->mpSwitchModeAct->setText(tr("Graph Mode"));
+        this->mMode = CQNewMainWindow::ANIMATION_MODE;
+        this->setAnimationToolbar();
+        this->setAnimationMenu();
+        this->mpWidgetStack->setCurrentIndex(1);
 #ifdef ELEMENTARY_MODE_DISPLAY
-    this->mpElementaryModesMenu->setEnabled(false);
-    this->mpHighlightModeAction->setEnabled(false);
-    this->mpChangeColorAction->setEnabled(false);
+        this->mpElementaryModesMenu->setEnabled(false);
+        this->mpHighlightModeAction->setEnabled(false);
+        this->mpChangeColorAction->setEnabled(false);
 #endif // ELEMENTARY_MODE_DISPLAY
 
 #ifdef COPASI_AUTOLAYOUT
-    updateLayoutList();
-    // reset current displayed layout, so we can get the updates displayed
-    this->mpAnimationWindow->setLayout(NULL);
-    // update with the new layout
-    this->mpAnimationWindow->setLayout(mpCurrentLayout);
-    // and fit it too screen
-    slotFitToScreen();
+        updateLayoutList();
+        // reset current displayed layout, so we can get the updates displayed
+        this->mpAnimationWindow->setLayout(NULL);
+        // update with the new layout
+        this->mpAnimationWindow->setLayout(mpCurrentLayout);
+        // and fit it too screen
+        slotFitToScreen();
 #endif
-    break;
+        break;
 
-  case CQNewMainWindow::ANIMATION_MODE:
-    disconnect(this->mpScreenshotAct, SIGNAL(triggered()), this->mpAnimationWindow, SLOT(saveImage()));
-    connect(mpScreenshotAct, SIGNAL(triggered()), this, SLOT(slotScreenshot()));
-    this->mpSwitchModeAct->setIcon(mAnimationIcon);
-    this->mpSwitchModeAct->setStatusTip(tr("Switch to animation mode."));
-    this->mpSwitchModeAct->setText(tr("Animation Mode"));
-    this->mMode = CQNewMainWindow::GRAPH_MODE;
-    this->setGraphToolbar();
-    this->setGraphMenu();
-    this->mpWidgetStack->setCurrentIndex(0);
+      case CQNewMainWindow::ANIMATION_MODE:
+        disconnect(this->mpScreenshotAct, SIGNAL(triggered()), this->mpAnimationWindow, SLOT(saveImage()));
+        connect(mpScreenshotAct, SIGNAL(triggered()), this, SLOT(slotScreenshot()));
+        this->mpSwitchModeAct->setIcon(mAnimationIcon);
+        this->mpSwitchModeAct->setStatusTip(tr("Switch to animation mode."));
+        this->mpSwitchModeAct->setText(tr("Animation Mode"));
+        this->mMode = CQNewMainWindow::GRAPH_MODE;
+        this->setGraphToolbar();
+        this->setGraphMenu();
+        this->mpWidgetStack->setCurrentIndex(0);
 #ifdef ELEMENTARY_MODE_DISPLAY
-    this->mpElementaryModesMenu->setEnabled(true);
-    this->mpHighlightModeAction->setEnabled(true);
-    this->mpChangeColorAction->setEnabled(true);
+        this->mpElementaryModesMenu->setEnabled(true);
+        this->mpHighlightModeAction->setEnabled(true);
+        this->mpChangeColorAction->setEnabled(true);
 #endif // ELEMENTARY_MODE_DISPLAY
-    break;
-  }
+        break;
+    }
 }
 
 void CQNewMainWindow::setAnimationToolbar()
@@ -1152,88 +1152,88 @@ void CQNewMainWindow::setStatusMessage(const QString& message, int timeout)
 
 #ifdef ELEMENTARY_MODE_DISPLAY
 /**
-* Checks for calculated elementary modes.
-*/
+ * Checks for calculated elementary modes.
+ */
 void CQNewMainWindow::checkForElementaryModesSlot()
 {
   bool fluxModesChanged = false;
 
   if (this->mpDataModel != NULL)
-  {
-    const CCopasiVectorN< CCopasiTask >* pTaskList = this->mpDataModel->getTaskList();
-    assert(pTaskList != NULL);
-
-    if (pTaskList != NULL)
     {
-      // get the metabolic control analysis task object
-      const CEFMTask* pTask = dynamic_cast<const CEFMTask*>((*pTaskList)["Elementary Flux Modes"]);
+      const CCopasiVectorN< CCopasiTask >* pTaskList = this->mpDataModel->getTaskList();
+      assert(pTaskList != NULL);
 
-      if (pTask != NULL)
-      {
-        const CEFMProblem* pProblem = dynamic_cast<const CEFMProblem*>(pTask->getProblem());
-
-        if (pProblem != NULL && !pProblem->getFluxModes().empty())
+      if (pTaskList != NULL)
         {
-          const std::vector< CFluxMode >& fluxModes = pProblem->getFluxModes();
-          size_t iMax = fluxModes.size();
+          // get the metabolic control analysis task object
+          const CEFMTask* pTask = dynamic_cast<const CEFMTask*>((*pTaskList)["Elementary Flux Modes"]);
 
-          if (this->mFluxModes.size() != iMax)
-          {
-            fluxModesChanged = true;
-          }
-          else
-          {
-            unsigned int i = 0;
-
-            while (i < iMax && fluxModesChanged == false)
+          if (pTask != NULL)
             {
-              if (&(fluxModes[i]) != this->mFluxModes[i])
-              {
-                fluxModesChanged = true;
-              }
+              const CEFMProblem* pProblem = dynamic_cast<const CEFMProblem*>(pTask->getProblem());
 
-              ++i;
+              if (pProblem != NULL && !pProblem->getFluxModes().empty())
+                {
+                  const std::vector< CFluxMode >& fluxModes = pProblem->getFluxModes();
+                  size_t iMax = fluxModes.size();
+
+                  if (this->mFluxModes.size() != iMax)
+                    {
+                      fluxModesChanged = true;
+                    }
+                  else
+                    {
+                      unsigned int i = 0;
+
+                      while (i < iMax && fluxModesChanged == false)
+                        {
+                          if (&(fluxModes[i]) != this->mFluxModes[i])
+                            {
+                              fluxModesChanged = true;
+                            }
+
+                          ++i;
+                        }
+                    }
+
+                  if (fluxModesChanged)
+                    {
+                      this->mpElementaryModesMenu->clear();
+                      this->mFluxModes.clear();
+
+                      if (fluxModes.empty())
+                        {
+                          this->mpElementaryModesMenu->addAction("None");
+                          disconnect(this->mpElementaryModesMenu, SIGNAL(triggered(QAction*)), this, SLOT(elementaryModeTriggeredSlot(QAction*)));
+                        }
+                      else
+                        {
+                          unsigned int i = 0;
+                          const CFluxMode* pFluxMode = NULL;
+
+                          while (i < iMax)
+                            {
+                              pFluxMode = &(fluxModes[i]);
+                              this->mFluxModes.push_back(pFluxMode);
+                              std::string desc = pTask->getFluxModeDescription(*pFluxMode);
+                              QAction* pAction = this->mpElementaryModesMenu->addAction(QString(desc.c_str()));
+                              pAction->setCheckable(true);
+                              ++i;
+                            }
+
+                          connect(this->mpElementaryModesMenu, SIGNAL(triggered(QAction*)), this, SLOT(elementaryModeTriggeredSlot(QAction*)));
+                        }
+                    }
+                }
             }
-          }
-
-          if (fluxModesChanged)
-          {
-            this->mpElementaryModesMenu->clear();
-            this->mFluxModes.clear();
-
-            if (fluxModes.empty())
-            {
-              this->mpElementaryModesMenu->addAction("None");
-              disconnect(this->mpElementaryModesMenu, SIGNAL(triggered(QAction*)), this, SLOT(elementaryModeTriggeredSlot(QAction*)));
-            }
-            else
-            {
-              unsigned int i = 0;
-              const CFluxMode* pFluxMode = NULL;
-
-              while (i < iMax)
-              {
-                pFluxMode = &(fluxModes[i]);
-                this->mFluxModes.push_back(pFluxMode);
-                std::string desc = pTask->getFluxModeDescription(*pFluxMode);
-                QAction* pAction = this->mpElementaryModesMenu->addAction(QString(desc.c_str()));
-                pAction->setCheckable(true);
-                ++i;
-              }
-
-              connect(this->mpElementaryModesMenu, SIGNAL(triggered(QAction*)), this, SLOT(elementaryModeTriggeredSlot(QAction*)));
-            }
-          }
         }
-      }
     }
-  }
 }
 
 /**
-* Checks which elementary mode has been toggled and updates the
-* highlighted objects list.
-*/
+ * Checks which elementary mode has been toggled and updates the
+ * highlighted objects list.
+ */
 void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
 {
   CQGLLayoutPainter* pPainter = this->mpLayoutViewer->getPainter();
@@ -1247,336 +1247,336 @@ void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
   unsigned int mask = CQNewMainWindow::REACTION_GLYPH | CQNewMainWindow::ROLE_SUBSTRATE | CQNewMainWindow::ROLE_PRODUCT | CQNewMainWindow::ROLE_SIDESUBSTRATE | CQNewMainWindow::ROLE_SIDEPRODUCT | CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS;
 
   if (pAction->isChecked())
-  {
-    const CFluxMode* pFlux = this->mFluxModes[index];
-    CFluxMode::const_iterator it = pFlux->begin(), endit = pFlux->end();
-    const CReaction* pReaction = NULL;
-    assert(this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL);
-    const CModel* pModel = this->mpDataModel->getModel();
-    const CEFMProblem* pProblem = NULL;
-    const CCopasiVectorN< CCopasiTask >* pTaskList = this->mpDataModel->getTaskList();
-    assert(pTaskList != NULL);
-
-    if (pTaskList != NULL)
     {
-      // get the metabolic control analysis task object
-      const CEFMTask* pTask = dynamic_cast<const CEFMTask*>((*pTaskList)["Elementary Flux Modes"]);
+      const CFluxMode* pFlux = this->mFluxModes[index];
+      CFluxMode::const_iterator it = pFlux->begin(), endit = pFlux->end();
+      const CReaction* pReaction = NULL;
+      assert(this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL);
+      const CModel* pModel = this->mpDataModel->getModel();
+      const CEFMProblem* pProblem = NULL;
+      const CCopasiVectorN< CCopasiTask >* pTaskList = this->mpDataModel->getTaskList();
+      assert(pTaskList != NULL);
 
-      if (pTask != NULL)
-      {
-        pProblem = dynamic_cast<const CEFMProblem*>(pTask->getProblem());
-      }
+      if (pTaskList != NULL)
+        {
+          // get the metabolic control analysis task object
+          const CEFMTask* pTask = dynamic_cast<const CEFMTask*>((*pTaskList)["Elementary Flux Modes"]);
+
+          if (pTask != NULL)
+            {
+              pProblem = dynamic_cast<const CEFMProblem*>(pTask->getProblem());
+            }
+        }
+
+      while (it != endit && pProblem != NULL)
+        {
+          assert(pModel->getReactions().size() > it->first);
+
+          // the index is the index of the reordered fluxes from the problem, so in order
+          // to find the correct reaction, we need to get the reaction from the problem
+          if (pProblem != NULL)
+            {
+              pReaction = pProblem->getReorderedReactions()[it->first];
+              assert(pReaction != NULL);
+              this->selectReaction(pReaction, mask, pPainter->getHighlightedObjects());
+            }
+
+          ++it;
+        }
     }
-
-    while (it != endit && pProblem != NULL)
-    {
-      assert(pModel->getReactions().size() > it->first);
-
-      // the index is the index of the reordered fluxes from the problem, so in order
-      // to find the correct reaction, we need to get the reaction from the problem
-      if (pProblem != NULL)
-      {
-        pReaction = pProblem->getReorderedReactions()[it->first];
-        assert(pReaction != NULL);
-        this->selectReaction(pReaction, mask, pPainter->getHighlightedObjects());
-      }
-
-      ++it;
-    }
-  }
   // if the node is unchecked, we need to remove all the reactions from the
   // highlighted objects, but only those that are not part of another selected flux mode
   else
-  {
-    // we first need to find all objects that belong to other flux modes
-    const QList<QAction*>& actions = this->mpElementaryModesMenu->actions();
-    QList<QAction*>::const_iterator ait = actions.begin(), aendit = actions.end();
-    unsigned int i;
-    const CFluxMode* pFlux = NULL;
-
-    // we remove all highlighted objects
-    std::set<const CLGraphicalObject*>& s = pPainter->getHighlightedObjects();
-    s.clear();
-    this->mHighlightedReactions.clear();
-
-    // and readd the ones that remain
-    while (ait != aendit)
     {
-      if ((*ait)->isChecked())
-      {
-        i = actions.indexOf(*ait);
-        assert(i < this->mFluxModes.size());
-        pFlux = this->mFluxModes[i];
-        CFluxMode::const_iterator it = pFlux->begin(), endit = pFlux->end();
-        const CReaction* pReaction = NULL;
-        assert(this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL);
-        const CModel* pModel = this->mpDataModel->getModel();
+      // we first need to find all objects that belong to other flux modes
+      const QList<QAction*>& actions = this->mpElementaryModesMenu->actions();
+      QList<QAction*>::const_iterator ait = actions.begin(), aendit = actions.end();
+      unsigned int i;
+      const CFluxMode* pFlux = NULL;
 
-        while (it != endit)
+      // we remove all highlighted objects
+      std::set<const CLGraphicalObject*>& s = pPainter->getHighlightedObjects();
+      s.clear();
+      this->mHighlightedReactions.clear();
+
+      // and readd the ones that remain
+      while (ait != aendit)
         {
-          assert(pModel->getReactions().size() > it->first);
-          pReaction = this->mpDataModel->getModel()->getReactions()[it->first];
-          assert(pReaction != NULL);
-          this->selectReaction(pReaction, mask, s);
-          ++it;
-        }
-      }
+          if ((*ait)->isChecked())
+            {
+              i = actions.indexOf(*ait);
+              assert(i < this->mFluxModes.size());
+              pFlux = this->mFluxModes[i];
+              CFluxMode::const_iterator it = pFlux->begin(), endit = pFlux->end();
+              const CReaction* pReaction = NULL;
+              assert(this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL);
+              const CModel* pModel = this->mpDataModel->getModel();
 
-      ++ait;
+              while (it != endit)
+                {
+                  assert(pModel->getReactions().size() > it->first);
+                  pReaction = this->mpDataModel->getModel()->getReactions()[it->first];
+                  assert(pReaction != NULL);
+                  this->selectReaction(pReaction, mask, s);
+                  ++it;
+                }
+            }
+
+          ++ait;
+        }
     }
-  }
 
   // redraw the GL window
   if (this->mMode == GRAPH_MODE)
-  {
-    this->mpLayoutViewer->getPainter()->update();
-  }
+    {
+      this->mpLayoutViewer->getPainter()->update();
+    }
 }
 
 /**
-* Selects the given reaction object by selecting all
-* corresponding CLReactionGlyph objects in the current layout.
-* The mask determines which parts of the reaction are selected.
-* With this, it can be specified that only the reaction glyph itself
-* or the reaction glyph plus several of the associated metab reference glyphs
-* are selected.
-* The graphical objects selected by this method are inserted into the
-* set given as the third element.
-*/
+ * Selects the given reaction object by selecting all
+ * corresponding CLReactionGlyph objects in the current layout.
+ * The mask determines which parts of the reaction are selected.
+ * With this, it can be specified that only the reaction glyph itself
+ * or the reaction glyph plus several of the associated metab reference glyphs
+ * are selected.
+ * The graphical objects selected by this method are inserted into the
+ * set given as the third element.
+ */
 void CQNewMainWindow::selectReaction(const CReaction* pReaction, unsigned int selectionMask, std::set<const CLGraphicalObject*>& s)
 {
   // we need a reaction and something to select in that
   // reaction
   if (pReaction != NULL && selectionMask != 0 && this->mpCurrentLayout != NULL)
-  {
-    CQNewMainWindow::REACTION_SELECTION_ITEM item;
-    item.mReactionKey = pReaction->getKey();
-    item.mSelectionMask = selectionMask;
-    this->mHighlightedReactions.insert(item);
-    // go through the metabolite glyphs and select
-    // all metabolite glyphs that are associated
-    const CCopasiVector<CLReactionGlyph>& v = this->mpCurrentLayout->getListOfReactionGlyphs();
-    CCopasiVector<CLReactionGlyph>::const_iterator it = v.begin(), endit = v.end();
-
-    while (it != endit)
     {
-      if ((*it)->getModelObject() == pReaction)
-      {
-        if (selectionMask & CQNewMainWindow::REACTION_GLYPH)
+      CQNewMainWindow::REACTION_SELECTION_ITEM item;
+      item.mReactionKey = pReaction->getKey();
+      item.mSelectionMask = selectionMask;
+      this->mHighlightedReactions.insert(item);
+      // go through the metabolite glyphs and select
+      // all metabolite glyphs that are associated
+      const CCopasiVector<CLReactionGlyph>& v = this->mpCurrentLayout->getListOfReactionGlyphs();
+      CCopasiVector<CLReactionGlyph>::const_iterator it = v.begin(), endit = v.end();
+
+      while (it != endit)
         {
-          s.insert((*it));
+          if ((*it)->getModelObject() == pReaction)
+            {
+              if (selectionMask & CQNewMainWindow::REACTION_GLYPH)
+                {
+                  s.insert((*it));
+                }
+
+              const CCopasiVector<CLMetabReferenceGlyph>& mrgv = (*it)->getListOfMetabReferenceGlyphs();
+
+              CCopasiVector<CLMetabReferenceGlyph>::const_iterator it2 = mrgv.begin(), endit2 = mrgv.end();
+
+              std::string key;
+
+              const CCopasiObject* pObject = NULL;
+
+              while (it2 != endit2)
+                {
+                  // check the role
+                  switch ((*it2)->getRole())
+                    {
+                      case CLMetabReferenceGlyph::UNDEFINED:
+
+                        if (selectionMask & CQNewMainWindow::ROLE_UNSPECIFIED)
+                          {
+                            s.insert(*it2);
+                            key = (*it2)->getMetabGlyphKey();
+                            pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+
+                            if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
+                              {
+                                s.insert(static_cast<const CLMetabGlyph*>(pObject));
+                              }
+                          }
+
+                        break;
+
+                      case CLMetabReferenceGlyph::SUBSTRATE:
+
+                        if (selectionMask & CQNewMainWindow::ROLE_SUBSTRATE)
+                          {
+                            s.insert(*it2);
+                            key = (*it2)->getMetabGlyphKey();
+                            pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+
+                            if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
+                              {
+                                s.insert(static_cast<const CLMetabGlyph*>(pObject));
+                              }
+                          }
+
+                        break;
+
+                      case CLMetabReferenceGlyph::PRODUCT:
+
+                        if (selectionMask & CQNewMainWindow::ROLE_PRODUCT)
+                          {
+                            s.insert(*it2);
+                            key = (*it2)->getMetabGlyphKey();
+                            pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+
+                            if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
+                              {
+                                s.insert(static_cast<const CLMetabGlyph*>(pObject));
+                              }
+                          }
+
+                        break;
+
+                      case CLMetabReferenceGlyph::SIDESUBSTRATE:
+
+                        if (selectionMask & CQNewMainWindow::ROLE_SIDESUBSTRATE)
+                          {
+                            s.insert(*it2);
+                            key = (*it2)->getMetabGlyphKey();
+                            pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+
+                            if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
+                              {
+                                s.insert(static_cast<const CLMetabGlyph*>(pObject));
+                              }
+                          }
+
+                        break;
+
+                      case CLMetabReferenceGlyph::SIDEPRODUCT:
+
+                        if (selectionMask & CQNewMainWindow::ROLE_SIDEPRODUCT)
+                          {
+                            s.insert(*it2);
+                            key = (*it2)->getMetabGlyphKey();
+                            pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+
+                            if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
+                              {
+                                s.insert(static_cast<const CLMetabGlyph*>(pObject));
+                              }
+                          }
+
+                        break;
+
+                      case CLMetabReferenceGlyph::MODIFIER:
+
+                        if (selectionMask & CQNewMainWindow::ROLE_MODIFIER)
+                          {
+                            s.insert(*it2);
+                            key = (*it2)->getMetabGlyphKey();
+                            pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+
+                            if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
+                              {
+                                s.insert(static_cast<const CLMetabGlyph*>(pObject));
+                              }
+                          }
+
+                        break;
+
+                      case CLMetabReferenceGlyph::ACTIVATOR:
+
+                        if (selectionMask & CQNewMainWindow::ROLE_ACTIVATOR)
+                          {
+                            s.insert(*it2);
+                            key = (*it2)->getMetabGlyphKey();
+                            pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+
+                            if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
+                              {
+                                s.insert(static_cast<const CLMetabGlyph*>(pObject));
+                              }
+                          }
+
+                        break;
+
+                      case CLMetabReferenceGlyph::INHIBITOR:
+
+                        if (selectionMask & CQNewMainWindow::ROLE_INHIBITOR)
+                          {
+                            s.insert(*it2);
+                            key = (*it2)->getMetabGlyphKey();
+                            pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+
+                            if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
+                              {
+                                s.insert(static_cast<const CLMetabGlyph*>(pObject));
+                              }
+                          }
+
+                        break;
+                    }
+
+                  ++it2;
+                }
+            }
+
+          ++it;
         }
-
-        const CCopasiVector<CLMetabReferenceGlyph>& mrgv = (*it)->getListOfMetabReferenceGlyphs();
-
-        CCopasiVector<CLMetabReferenceGlyph>::const_iterator it2 = mrgv.begin(), endit2 = mrgv.end();
-
-        std::string key;
-
-        const CCopasiObject* pObject = NULL;
-
-        while (it2 != endit2)
-        {
-          // check the role
-          switch ((*it2)->getRole())
-          {
-          case CLMetabReferenceGlyph::UNDEFINED:
-
-            if (selectionMask & CQNewMainWindow::ROLE_UNSPECIFIED)
-            {
-              s.insert(*it2);
-              key = (*it2)->getMetabGlyphKey();
-              pObject = CCopasiRootContainer::getKeyFactory()->get(key);
-
-              if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
-              {
-                s.insert(static_cast<const CLMetabGlyph*>(pObject));
-              }
-            }
-
-            break;
-
-          case CLMetabReferenceGlyph::SUBSTRATE:
-
-            if (selectionMask & CQNewMainWindow::ROLE_SUBSTRATE)
-            {
-              s.insert(*it2);
-              key = (*it2)->getMetabGlyphKey();
-              pObject = CCopasiRootContainer::getKeyFactory()->get(key);
-
-              if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
-              {
-                s.insert(static_cast<const CLMetabGlyph*>(pObject));
-              }
-            }
-
-            break;
-
-          case CLMetabReferenceGlyph::PRODUCT:
-
-            if (selectionMask & CQNewMainWindow::ROLE_PRODUCT)
-            {
-              s.insert(*it2);
-              key = (*it2)->getMetabGlyphKey();
-              pObject = CCopasiRootContainer::getKeyFactory()->get(key);
-
-              if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
-              {
-                s.insert(static_cast<const CLMetabGlyph*>(pObject));
-              }
-            }
-
-            break;
-
-          case CLMetabReferenceGlyph::SIDESUBSTRATE:
-
-            if (selectionMask & CQNewMainWindow::ROLE_SIDESUBSTRATE)
-            {
-              s.insert(*it2);
-              key = (*it2)->getMetabGlyphKey();
-              pObject = CCopasiRootContainer::getKeyFactory()->get(key);
-
-              if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
-              {
-                s.insert(static_cast<const CLMetabGlyph*>(pObject));
-              }
-            }
-
-            break;
-
-          case CLMetabReferenceGlyph::SIDEPRODUCT:
-
-            if (selectionMask & CQNewMainWindow::ROLE_SIDEPRODUCT)
-            {
-              s.insert(*it2);
-              key = (*it2)->getMetabGlyphKey();
-              pObject = CCopasiRootContainer::getKeyFactory()->get(key);
-
-              if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
-              {
-                s.insert(static_cast<const CLMetabGlyph*>(pObject));
-              }
-            }
-
-            break;
-
-          case CLMetabReferenceGlyph::MODIFIER:
-
-            if (selectionMask & CQNewMainWindow::ROLE_MODIFIER)
-            {
-              s.insert(*it2);
-              key = (*it2)->getMetabGlyphKey();
-              pObject = CCopasiRootContainer::getKeyFactory()->get(key);
-
-              if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
-              {
-                s.insert(static_cast<const CLMetabGlyph*>(pObject));
-              }
-            }
-
-            break;
-
-          case CLMetabReferenceGlyph::ACTIVATOR:
-
-            if (selectionMask & CQNewMainWindow::ROLE_ACTIVATOR)
-            {
-              s.insert(*it2);
-              key = (*it2)->getMetabGlyphKey();
-              pObject = CCopasiRootContainer::getKeyFactory()->get(key);
-
-              if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
-              {
-                s.insert(static_cast<const CLMetabGlyph*>(pObject));
-              }
-            }
-
-            break;
-
-          case CLMetabReferenceGlyph::INHIBITOR:
-
-            if (selectionMask & CQNewMainWindow::ROLE_INHIBITOR)
-            {
-              s.insert(*it2);
-              key = (*it2)->getMetabGlyphKey();
-              pObject = CCopasiRootContainer::getKeyFactory()->get(key);
-
-              if (pObject != NULL && dynamic_cast<const CLMetabGlyph*>(pObject) != NULL && (selectionMask & CQNewMainWindow::ASSOCIATED_SPECIES_GLYPHS))
-              {
-                s.insert(static_cast<const CLMetabGlyph*>(pObject));
-              }
-            }
-
-            break;
-          }
-
-          ++it2;
-        }
-      }
-
-      ++it;
     }
-  }
 }
 
 /**
-* Selected the given metabolite object by selecting all
-* corresponding CLMetabGlyph objects in the current layout.
-* The graphical objects selected by this method are inserted into the
-* set given as the third element.
-*/
+ * Selected the given metabolite object by selecting all
+ * corresponding CLMetabGlyph objects in the current layout.
+ * The graphical objects selected by this method are inserted into the
+ * set given as the third element.
+ */
 void CQNewMainWindow::selectMetabolite(const CMetab* pMetab, std::set<const CLGraphicalObject*>& s)
 {
   if (pMetab != NULL && this->mpCurrentLayout != NULL)
-  {
-    this->mHighlightedMetabolites.insert(pMetab->getKey());
-    // go through the metabolite glyphs and select
-    // all metabolite glyphs that are associated
-    const CCopasiVector<CLMetabGlyph>& v = this->mpCurrentLayout->getListOfMetaboliteGlyphs();
-    CCopasiVector<CLMetabGlyph>::const_iterator it = v.begin(), endit = v.end();
-
-    while (it != endit)
     {
-      if ((*it)->getModelObject() == pMetab)
-      {
-        s.insert((*it));
-      }
+      this->mHighlightedMetabolites.insert(pMetab->getKey());
+      // go through the metabolite glyphs and select
+      // all metabolite glyphs that are associated
+      const CCopasiVector<CLMetabGlyph>& v = this->mpCurrentLayout->getListOfMetaboliteGlyphs();
+      CCopasiVector<CLMetabGlyph>::const_iterator it = v.begin(), endit = v.end();
 
-      ++it;
+      while (it != endit)
+        {
+          if ((*it)->getModelObject() == pMetab)
+            {
+              s.insert((*it));
+            }
+
+          ++it;
+        }
     }
-  }
 }
 
 /**
-* Is called when the menu entry for toggling highlighting
-* of elementary modes is toggled.
-*/
+ * Is called when the menu entry for toggling highlighting
+ * of elementary modes is toggled.
+ */
 void CQNewMainWindow::toggleHighlightSlot(bool checked)
 {
   this->mpLayoutViewer->getPainter()->setHighlightFlag(checked);
 
   // update the icon and the text
   if (checked)
-  {
-    this->mpChangeColorAction->setText(tr("highlight color ..."));
-    this->mpChangeColorAction->setIcon(QIcon(*this->mpHighlightColorPixmap));
-  }
+    {
+      this->mpChangeColorAction->setText(tr("highlight color ..."));
+      this->mpChangeColorAction->setIcon(QIcon(*this->mpHighlightColorPixmap));
+    }
   else
-  {
-    this->mpChangeColorAction->setText(tr("fog color ..."));
-    this->mpChangeColorAction->setIcon(QIcon(*this->mpFogColorPixmap));
-  }
+    {
+      this->mpChangeColorAction->setText(tr("fog color ..."));
+      this->mpChangeColorAction->setIcon(QIcon(*this->mpFogColorPixmap));
+    }
 
   // we need to redraw the gl window
   if (this->mMode == GRAPH_MODE)
-  {
-    this->mpLayoutViewer->getPainter()->update();
-  }
+    {
+      this->mpLayoutViewer->getPainter()->update();
+    }
 }
 
 /**
-* Lets the user change the percentage of fog
-* that is added to the color.
-*/
+ * Lets the user change the percentage of fog
+ * that is added to the color.
+ */
 void CQNewMainWindow::fogDensitySlot(bool)
 {
   // show a dialog with a spin box that goes from 0 to 1.0
@@ -1598,69 +1598,69 @@ void CQNewMainWindow::fogDensitySlot(bool)
   connect(pBBox, SIGNAL(rejected()), pDialog, SLOT(reject()));
 
   if (pDialog->exec() == QDialog::Accepted)
-  {
-    c = pSpinBox->value();
-    this->mpLayoutViewer->getPainter()->setFogDensity(c);
-
-    // redraw the GL window
-    if (this->mMode == GRAPH_MODE)
     {
-      this->mpLayoutViewer->getPainter()->update();
+      c = pSpinBox->value();
+      this->mpLayoutViewer->getPainter()->setFogDensity(c);
+
+      // redraw the GL window
+      if (this->mMode == GRAPH_MODE)
+        {
+          this->mpLayoutViewer->getPainter()->update();
+        }
     }
-  }
 
   delete pDialog;
 }
 
 /**
-* This slot is triggered when the user wants to change
-* the fog or the highlighting color, depending on the current
-* highlighting mode.
-*/
+ * This slot is triggered when the user wants to change
+ * the fog or the highlighting color, depending on the current
+ * highlighting mode.
+ */
 void CQNewMainWindow::changeColorSlot(bool)
 {
   // find the correct color for the current mode
   const GLfloat* c = NULL;
 
   if (this->mpHighlightModeAction->isChecked())
-  {
-    c = this->mpLayoutViewer->getPainter()->getHighlightColor();
-  }
+    {
+      c = this->mpLayoutViewer->getPainter()->getHighlightColor();
+    }
   else
-  {
-    c = this->mpLayoutViewer->getPainter()->getFogColor();
-  }
+    {
+      c = this->mpLayoutViewer->getPainter()->getFogColor();
+    }
 
   // open a color selection dialog
   QColorDialog* pDialog = new QColorDialog(QColor((int)(c[0] * 255.0), (int)(c[1] * 255.0), (int)(c[2] * 255.0), (int)(c[3] * 255.0)), this);
 
   if (pDialog->exec() == QDialog::Accepted)
-  {
-    // the dialog has been closed with the OK button
-    // so we need to get the new color
-    QColor color = pDialog->selectedColor();
-    GLfloat newColor[4] = {((GLfloat)color.red()) / 255.0, ((GLfloat)color.green()) / 255.0, ((GLfloat)color.blue()) / 255.0, ((GLfloat)color.alpha()) / 255.0};
+    {
+      // the dialog has been closed with the OK button
+      // so we need to get the new color
+      QColor color = pDialog->selectedColor();
+      GLfloat newColor[4] = {((GLfloat)color.red()) / 255.0, ((GLfloat)color.green()) / 255.0, ((GLfloat)color.blue()) / 255.0, ((GLfloat)color.alpha()) / 255.0};
 
-    // update the pixmap and the icon for the mpHighlightModeAction
-    if (this->mpHighlightModeAction->isChecked())
-    {
-      this->mpLayoutViewer->getPainter()->setHighlightColor(newColor);
-      this->mpHighlightColorPixmap->fill(color);
-      this->mpChangeColorAction->setIcon(QIcon(*this->mpHighlightColorPixmap));
-    }
-    else
-    {
-      this->mpLayoutViewer->getPainter()->setFogColor(newColor);
-      this->mpFogColorPixmap->fill(color);
-      this->mpChangeColorAction->setIcon(QIcon(*this->mpFogColorPixmap));
-    }
+      // update the pixmap and the icon for the mpHighlightModeAction
+      if (this->mpHighlightModeAction->isChecked())
+        {
+          this->mpLayoutViewer->getPainter()->setHighlightColor(newColor);
+          this->mpHighlightColorPixmap->fill(color);
+          this->mpChangeColorAction->setIcon(QIcon(*this->mpHighlightColorPixmap));
+        }
+      else
+        {
+          this->mpLayoutViewer->getPainter()->setFogColor(newColor);
+          this->mpFogColorPixmap->fill(color);
+          this->mpChangeColorAction->setIcon(QIcon(*this->mpFogColorPixmap));
+        }
 
-    // redraw the GL window
-    if (this->mMode == GRAPH_MODE)
-    {
-      this->mpLayoutViewer->getPainter()->update();
+      // redraw the GL window
+      if (this->mMode == GRAPH_MODE)
+        {
+          this->mpLayoutViewer->getPainter()->update();
+        }
     }
-  }
 }
 #endif // ELEMENTARY_MODE_DISPLAY
 
@@ -1671,9 +1671,9 @@ void CQNewMainWindow::redrawNow()
 }
 
 /**
-* Creates a CLMetabGlyph for the given CMetab object.
-* If the creation failed, NULL is returned.
-*/
+ * Creates a CLMetabGlyph for the given CMetab object.
+ * If the creation failed, NULL is returned.
+ */
 CLMetabGlyph* CQNewMainWindow::createMetabGlyph(const std::string& modelobjectkey, double width, double height)
 {
   CLMetabGlyph* pResult = new CLMetabGlyph;
@@ -1683,8 +1683,8 @@ CLMetabGlyph* CQNewMainWindow::createMetabGlyph(const std::string& modelobjectke
 }
 
 /**
-* Creates a CLCompartmentGlyph for the given size and position
-*/
+ * Creates a CLCompartmentGlyph for the given size and position
+ */
 CLCompartmentGlyph* CQNewMainWindow::createCompartmentGlyph(const std::string& modelobjectkey, double x, double y, double width, double height)
 {
   CLCompartmentGlyph* pResult = new CLCompartmentGlyph;
@@ -1695,8 +1695,8 @@ CLCompartmentGlyph* CQNewMainWindow::createCompartmentGlyph(const std::string& m
 }
 
 /**
-* Creates a new reaction glyph with the given size.
-*/
+ * Creates a new reaction glyph with the given size.
+ */
 CLReactionGlyph* CQNewMainWindow::createReactionGlyph(const std::string& modelobjectkey, double x, double y, double length)
 {
   CLReactionGlyph* pResult = new CLReactionGlyph;
@@ -1708,8 +1708,8 @@ CLReactionGlyph* CQNewMainWindow::createReactionGlyph(const std::string& modelob
 }
 
 /**
-* Creates a CLTextGlyph for the given graphical object keys and size.
-*/
+ * Creates a CLTextGlyph for the given graphical object keys and size.
+ */
 CLTextGlyph* CQNewMainWindow::createTextGlyph(const std::string& modelobjectkey, const std::string& objectkey, double width, double height)
 {
   CLTextGlyph* pResult = new CLTextGlyph;
@@ -1720,8 +1720,8 @@ CLTextGlyph* CQNewMainWindow::createTextGlyph(const std::string& modelobjectkey,
 }
 
 /**
-* Creates a CLMetabReferenceGlyph for the given endpoints.
-*/
+ * Creates a CLMetabReferenceGlyph for the given endpoints.
+ */
 CLMetabReferenceGlyph* CQNewMainWindow::createMetabReferenceGlyph(const std::string& modelobjectkey, const std::string& metabglyphkey, CLMetabReferenceGlyph::Role role, double x1, double y1, double x2, double y2)
 {
   CLMetabReferenceGlyph* pResult = new CLMetabReferenceGlyph;
@@ -1733,538 +1733,22 @@ CLMetabReferenceGlyph* CQNewMainWindow::createMetabReferenceGlyph(const std::str
   return pResult;
 }
 
-/**
-* This method creates a random layout using the elements
-* in the compartments, reactions, species and side species
-* containers.
-*/
-void CQNewMainWindow::createRandomLayout(const std::set<const CCompartment*>& compartments,
-                                         const std::set<const CReaction*>& reactions,
-                                         const std::set<const CMetab*>& metabs,
-                                         const std::set<const CMetab*>& sideMetabs
-                                         )
-{
-  createLayout(compartments, reactions, metabs, sideMetabs);
-  randomizeLayout();
-}
-
-void CQNewMainWindow::createLayout(const std::set<const CCompartment*>& compartments,
-                                   const std::set<const CReaction*>& reactions,
-                                   const std::set<const CMetab*>& metabs,
-                                   const std::set<const CMetab*>& sideMetabs
-                                   )
-{
-  //mpCurrentLayout contains an empty layout
-
-  QFont font = QFont("Helvetica", 16);
-  QFontMetrics metrics = QFontMetrics(font);
-  QRect textBounds;
-
-  // create a species glyph for each species in metabs
-
-  std::map<const CCompartment*, CompartmentInfo> compInfo;
-  std::map<const CMetab*, CLMetabGlyph*> metabMap;
-
-  std::set<const CMetab*>::const_iterator metabIt;
-
-  for (metabIt = metabs.begin(); metabIt != metabs.end(); ++metabIt)
-  {
-    if (sideMetabs.find(*metabIt) != sideMetabs.end())
-      continue;
-
-    //estimate the size of the glyph
-    textBounds = metrics.boundingRect((*metabIt)->getObjectName().c_str());
-    double width = (double)textBounds.width();
-    double height = (double)textBounds.height();
-
-    if (width < height)
-    {
-      width = height;
-    }
-
-    //create the glyph
-    CLMetabGlyph* pMetabGlyph = new CLMetabGlyph;
-    pMetabGlyph->setDimensions(CLDimensions(width + 4, height + 4));
-    pMetabGlyph->setModelObjectKey((*metabIt)->getKey());
-
-    mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
-    metabMap[*metabIt] = pMetabGlyph;
-
-    //create the text glyph for the label
-    CLTextGlyph* pTextGlyph = new CLTextGlyph;
-    pTextGlyph->setDimensions(CLDimensions(width, height));
-    pTextGlyph->setGraphicalObjectKey(pMetabGlyph->getKey());
-    pTextGlyph->setModelObjectKey((*metabIt)->getKey());
-
-    mpCurrentLayout->addTextGlyph(pTextGlyph);
-
-    //add up the sizes for the compartment
-    const CCompartment* pComp = NULL;
-
-    if (compartments.find((*metabIt)->getCompartment()) != compartments.end())
-      pComp = (*metabIt)->getCompartment();
-
-    compInfo[pComp].add((width + 4) * (height + 4));
-  }
-
-  //now the reaction glyphs
-  std::set<const CReaction*>::const_iterator reactIt;
-
-  for (reactIt = reactions.begin(); reactIt != reactions.end(); ++reactIt)
-  {
-    CLReactionGlyph* pReactionGlyph = new CLReactionGlyph;
-    //pResult->setDimensions(CLDimensions(width, height));
-    pReactionGlyph->setModelObjectKey((*reactIt)->getKey());
-    //pReactionGlyph->getCurve().addCurveSegment(CLLineSegment(CLPoint(x, y),
-    //                                             CLPoint(x + length, y)));
-
-    mpCurrentLayout->addReactionGlyph(pReactionGlyph);
-
-    //now add the species reference glyphs.
-
-    //substrates
-    const CCopasiVector < CChemEqElement >& substrates = (*reactIt)->getChemEq().getSubstrates();
-    bool substrateExists = false;
-    CCopasiVector<CChemEqElement>::const_iterator elIt;
-
-    for (elIt = substrates.begin(); elIt != substrates.end(); ++elIt)
-    {
-      const CMetab* pMetab = (*elIt)->getMetabolite();
-
-      if (!pMetab)
-        continue;
-
-      CLMetabGlyph* pMetabGlyph = NULL;
-      CLMetabReferenceGlyph::Role role; // = CLMetabReferenceGlyph::SUBSTRATE;
-
-      //is it a side reactant? If yes, create a new metab glyph
-      if (sideMetabs.find(pMetab) != sideMetabs.end())
-      {
-        //estimate the size of the glyph
-        textBounds = metrics.boundingRect(pMetab->getObjectName().c_str());
-        double width = (double)textBounds.width();
-        double height = (double)textBounds.height();
-
-        if (width < height)
-        {
-          width = height;
-        }
-
-        //create the glyph
-        pMetabGlyph = new CLMetabGlyph;
-        pMetabGlyph->setDimensions(CLDimensions(width + 4, height + 4));
-        pMetabGlyph->setModelObjectKey(pMetab->getKey());
-        //TODO: mark as duplicate
-        mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
-
-        //create the text glyph for the label
-        CLTextGlyph* pTextGlyph = new CLTextGlyph;
-        pTextGlyph->setDimensions(CLDimensions(width, height));
-        pTextGlyph->setGraphicalObjectKey(pMetabGlyph->getKey());
-        pTextGlyph->setModelObjectKey(pMetab->getKey());
-
-        mpCurrentLayout->addTextGlyph(pTextGlyph);
-
-        //add up the sizes for the compartment
-        const CCompartment* pComp = NULL;
-
-        if (compartments.find(pMetab->getCompartment()) != compartments.end())
-          pComp = pMetab->getCompartment();
-
-        compInfo[pComp].add((width + 4) * (height + 4));
-
-        role = CLMetabReferenceGlyph::SIDESUBSTRATE;
-      }
-      else
-      {
-        //find the existing metab glyph
-        std::map<const CMetab*, CLMetabGlyph*>::const_iterator mmIt;
-        mmIt = metabMap.find(pMetab);
-
-        if (mmIt != metabMap.end())
-          pMetabGlyph = mmIt->second;
-
-        role = CLMetabReferenceGlyph::SUBSTRATE;
-      }
-
-      if (!pMetabGlyph)
-        continue;
-
-      CLMetabReferenceGlyph* pRefGlyph = new CLMetabReferenceGlyph;
-      //pResult->setModelObjectKey(modelobjectkey);
-      pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
-      pRefGlyph->setRole(role);
-      pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
-      substrateExists = true;
-    } //substrates
-
-    // if we have no substrates, add a dummy / invisible node for now
-    if (!substrateExists)
-    {
-      CLMetabGlyph* pMetabGlyph = new CLMetabGlyph;
-      pMetabGlyph->setDimensions(CLDimensions(1, 1));
-      pMetabGlyph->setObjectRole("invisible");
-      mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
-
-      CLMetabReferenceGlyph* pRefGlyph = new CLMetabReferenceGlyph;
-      //pResult->setModelObjectKey(modelobjectkey);
-      pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
-      pRefGlyph->setRole(CLMetabReferenceGlyph::SUBSTRATE); //TODO side substr?
-      pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
-    }
-
-    //products
-    const CCopasiVector < CChemEqElement >& products = (*reactIt)->getChemEq().getProducts();
-    bool productExists = false;
-
-    for (elIt = products.begin(); elIt != products.end(); ++elIt)
-    {
-      const CMetab* pMetab = (*elIt)->getMetabolite();
-
-      if (!pMetab)
-        continue;
-
-      CLMetabGlyph* pMetabGlyph = NULL;
-      CLMetabReferenceGlyph::Role role; // = CLMetabReferenceGlyph::SUBSTRATE;
-
-      //is it a side reactant? If yes, create a new metab glyph
-      if (sideMetabs.find(pMetab) != sideMetabs.end())
-      {
-        //estimate the size of the glyph
-        textBounds = metrics.boundingRect(pMetab->getObjectName().c_str());
-        double width = (double)textBounds.width();
-        double height = (double)textBounds.height();
-
-        if (width < height)
-        {
-          width = height;
-        }
-
-        //create the glyph
-        pMetabGlyph = new CLMetabGlyph;
-        pMetabGlyph->setDimensions(CLDimensions(width + 4, height + 4));
-        pMetabGlyph->setModelObjectKey(pMetab->getKey());
-        //TODO: mark as duplicate
-        mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
-
-        //create the text glyph for the label
-        CLTextGlyph* pTextGlyph = new CLTextGlyph;
-        pTextGlyph->setDimensions(CLDimensions(width, height));
-        pTextGlyph->setGraphicalObjectKey(pMetabGlyph->getKey());
-        pTextGlyph->setModelObjectKey(pMetab->getKey());
-
-        mpCurrentLayout->addTextGlyph(pTextGlyph);
-
-        //add up the sizes for the compartment
-        const CCompartment* pComp = NULL;
-
-        if (compartments.find(pMetab->getCompartment()) != compartments.end())
-          pComp = pMetab->getCompartment();
-
-        compInfo[pComp].add((width + 4) * (height + 4));
-
-        role = CLMetabReferenceGlyph::SIDEPRODUCT;
-      }
-      else
-      {
-        //find the existing metab glyph
-        std::map<const CMetab*, CLMetabGlyph*>::const_iterator mmIt;
-        mmIt = metabMap.find(pMetab);
-
-        if (mmIt != metabMap.end())
-          pMetabGlyph = mmIt->second;
-
-        role = CLMetabReferenceGlyph::PRODUCT;
-      }
-
-      if (!pMetabGlyph)
-        continue;
-
-      CLMetabReferenceGlyph* pRefGlyph = new CLMetabReferenceGlyph;
-      //pResult->setModelObjectKey(modelobjectkey);
-      pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
-      pRefGlyph->setRole(role);
-      pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
-      productExists = true;
-    } //products
-
-    // if we have no substrates, add a dummy / invisible node for now
-    if (!productExists)
-    {
-      CLMetabGlyph* pMetabGlyph = new CLMetabGlyph;
-      pMetabGlyph->setDimensions(CLDimensions(1, 1));
-      pMetabGlyph->setObjectRole("invisible");
-      mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
-
-      CLMetabReferenceGlyph* pRefGlyph = new CLMetabReferenceGlyph;
-      //pResult->setModelObjectKey(modelobjectkey);
-      pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
-      pRefGlyph->setRole(CLMetabReferenceGlyph::PRODUCT); //TODO side substr?
-      pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
-    }
-
-    //modifiers
-    const CCopasiVector < CChemEqElement >& modifiers = (*reactIt)->getChemEq().getModifiers();
-
-    for (elIt = modifiers.begin(); elIt != modifiers.end(); ++elIt)
-    {
-      const CMetab* pMetab = (*elIt)->getMetabolite();
-
-      if (!pMetab)
-        continue;
-
-      CLMetabGlyph* pMetabGlyph = NULL;
-      CLMetabReferenceGlyph::Role role; // = CLMetabReferenceGlyph::SUBSTRATE;
-
-      //is it a side reactant? If yes, create a new metab glyph
-      if (sideMetabs.find(pMetab) != sideMetabs.end())
-      {
-        //estimate the size of the glyph
-        textBounds = metrics.boundingRect(pMetab->getObjectName().c_str());
-        double width = (double)textBounds.width();
-        double height = (double)textBounds.height();
-
-        if (width < height)
-        {
-          width = height;
-        }
-
-        //create the glyph
-        pMetabGlyph = new CLMetabGlyph;
-        pMetabGlyph->setDimensions(CLDimensions(width + 4, height + 4));
-        pMetabGlyph->setModelObjectKey(pMetab->getKey());
-        //TODO: mark as duplicate
-        mpCurrentLayout->addMetaboliteGlyph(pMetabGlyph);
-
-        //create the text glyph for the label
-        CLTextGlyph* pTextGlyph = new CLTextGlyph;
-        pTextGlyph->setDimensions(CLDimensions(width, height));
-        pTextGlyph->setGraphicalObjectKey(pMetabGlyph->getKey());
-        pTextGlyph->setModelObjectKey(pMetab->getKey());
-
-        mpCurrentLayout->addTextGlyph(pTextGlyph);
-
-        //add up the sizes for the compartment
-        const CCompartment* pComp = NULL;
-
-        if (compartments.find(pMetab->getCompartment()) != compartments.end())
-          pComp = pMetab->getCompartment();
-
-        compInfo[pComp].add((width + 4) * (height + 4));
-
-        role = CLMetabReferenceGlyph::MODIFIER; //TODO SIDEMODIFIER???
-      }
-      else
-      {
-        //find the existing metab glyph
-        std::map<const CMetab*, CLMetabGlyph*>::const_iterator mmIt;
-        mmIt = metabMap.find(pMetab);
-
-        if (mmIt != metabMap.end())
-          pMetabGlyph = mmIt->second;
-
-        role = CLMetabReferenceGlyph::MODIFIER;
-      }
-
-      if (!pMetabGlyph)
-        continue;
-
-      CLMetabReferenceGlyph* pRefGlyph = new CLMetabReferenceGlyph;
-      //pResult->setModelObjectKey(modelobjectkey);
-      pRefGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
-      pRefGlyph->setRole(role);
-      pReactionGlyph->addMetabReferenceGlyph(pRefGlyph);
-    } //modifiers
-  } //reactions
-
-  //rules
-  size_t i;
-
-  for (i = 0; i < mpCurrentLayout->getListOfMetaboliteGlyphs().size(); ++i)
-  {
-    const CLMetabGlyph* pMetabGlyph = mpCurrentLayout->getListOfMetaboliteGlyphs()[i];
-    const CMetab* pMetab = dynamic_cast<const CMetab*>(pMetabGlyph->getModelObject());
-
-    if (!pMetab)
-      continue;
-
-    if (pMetab->getStatus() == CModelEntity::ODE || pMetab->getStatus() == CModelEntity::ASSIGNMENT)
-    {
-      CLGeneralGlyph* pGG = new CLGeneralGlyph;
-      pGG->setDimensions(CLDimensions(10, 10));
-      pGG->setObjectRole("rule");
-
-      mpCurrentLayout->addGeneralGlyph(pGG);
-
-      CLReferenceGlyph* pRefGlyph = new CLReferenceGlyph;
-      pRefGlyph->setTargetGlyphKey(pMetabGlyph->getKey());
-      pRefGlyph->setRole("ruleConnection");
-      pGG->addReferenceGlyph(pRefGlyph);
-    }
-  }
-
-  //after all other glyphs are created, create the compartment glyphs
-  double xxx = 0;
-  std::set<const CCompartment*>::const_iterator compIt;
-
-  for (compIt = compartments.begin(); compIt != compartments.end(); ++compIt)
-  {
-    double compSize = 10000;
-    std::map<const CCompartment*, CompartmentInfo>::const_iterator ccIt;
-    ccIt = compInfo.find(*compIt);
-
-    if (ccIt != compInfo.end())
-    {
-      //some glyphs are placed inside this compartment glyph
-      compSize = ccIt->second.mAreaSum * 40;
-    }
-
-    //create the glyph
-    CLCompartmentGlyph* pCompGlyph = new CLCompartmentGlyph;
-    pCompGlyph->setModelObjectKey((*compIt)->getKey());
-    pCompGlyph->setDimensions(CLDimensions(CLDimensions(sqrt(compSize), sqrt(compSize))));
-    pCompGlyph->setPosition(CLPoint(xxx, 5));
-    xxx += sqrt(compSize) + 10;
-
-    mpCurrentLayout->addCompartmentGlyph(pCompGlyph);
-  }
-
-  double sss = sqrt(compInfo[NULL].mAreaSum * 40);
-
-  // determine and set the layout dimensions
-  CLBoundingBox box = this->mpCurrentLayout->calculateBoundingBox();
-
-  if (box.getDimensions().getWidth() < sss)
-    box.getDimensions().setWidth(sss);
-
-  if (box.getDimensions().getHeight() < sss)
-    box.getDimensions().setHeight(sss);
-
-  this->mpCurrentLayout->setDimensions(CLDimensions(box.getDimensions().getWidth() + 30.0,
-    box.getDimensions().getHeight() + 30.0));
-}
-
 void CQNewMainWindow::randomizeLayout()
 {
-  mpRandom = CRandom::createGenerator(CRandom::mt19937, CRandom::getSystemSeed());
 
-  size_t i;
-
-  //compartment glyphs
-
-  //metab glyphs
-  for (i = 0; i < mpCurrentLayout->getListOfMetaboliteGlyphs().size(); ++i)
-  {
-    CLMetabGlyph* pMetabGlyph = mpCurrentLayout->getListOfMetaboliteGlyphs()[i];
-    const CMetab* pMetab = dynamic_cast<const CMetab*>(pMetabGlyph->getModelObject());
-
-    if (!pMetab)
-      continue;
-
-    //find the compartment glyph
-    const CCompartment* pComp = pMetab->getCompartment();
-
-    if (!pComp)
-      continue;
-
-    const CLCompartmentGlyph* pCompGlyph = NULL;
-    size_t j;
-
-    for (j = 0; j < mpCurrentLayout->getListOfCompartmentGlyphs().size(); ++j)
-      if (mpCurrentLayout->getListOfCompartmentGlyphs()[j]->getModelObjectKey()
-        == pComp->getKey())
-      {
-        pCompGlyph = mpCurrentLayout->getListOfCompartmentGlyphs()[j];
-        break;
-      }
-
-      if (pCompGlyph)
-        randomlyPlaceGlyphInCompartmentGlyph(pMetabGlyph, pCompGlyph);
-      else
-        randomlyPlaceGlyphInDimensions(pMetabGlyph, &mpCurrentLayout->getDimensions());
-  }
-
-  //reaction glyphs
-  for (i = 0; i < mpCurrentLayout->getListOfReactionGlyphs().size(); ++i)
-  {
-    CLReactionGlyph* pReactionGlyph = mpCurrentLayout->getListOfReactionGlyphs()[i];
-    CLPoint center(0, 0);
-    size_t count;
-
-    for (count = 0; count < pReactionGlyph->getListOfMetabReferenceGlyphs().size(); ++count)
-      center = center + pReactionGlyph->getListOfMetabReferenceGlyphs()[count]
-    ->getMetabGlyph()->getBoundingBox().getCenter();
-
-    center = center * (1.0 / pReactionGlyph->getListOfMetabReferenceGlyphs().size());
-    center = center + CLPoint(mpRandom->getRandomCC() * 20 - 10,  mpRandom->getRandomCC() * 20 - 10);
-
-    pReactionGlyph->setPosition(center);
-
-    /*if (pCompGlyph)
-    randomlyPlaceGlyphInCompartmentGlyph(pMetabGlyph, pCompGlyph);
-    else
-    randomlyPlaceGlyphInDimensions(pMetabGlyph, &mpCurrentLayout->getDimensions());*/
-  }
-
-  for (i = 0; i < mpCurrentLayout->getListOfGeneralGlyphs().size(); ++i)
-  {
-    CLGeneralGlyph* pGG = mpCurrentLayout->getListOfGeneralGlyphs()[i];
-
-    if (pGG->getListOfReferenceGlyphs().size())
-    {
-      const CLGraphicalObject* pTargetGO = pGG->getListOfReferenceGlyphs()[0]->getTargetGlyph();
-
-      if (pTargetGO)
-        pGG->setPosition(pTargetGO->getBoundingBox().getCenter() + CLPoint(mpRandom->getRandomCC() * 20 - 10, mpRandom->getRandomCC() * 20 - 10));
-    }
-  }
-
-  placeTextGlyphs();
-  delete mpRandom;
+  CCopasiSpringLayout l(mpCurrentLayout, &mpParameterWindow->getLayoutParameters());
+  l.randomize();
   redrawNow();
-
-}
-
-void CQNewMainWindow::randomlyPlaceGlyphInCompartmentGlyph(CLGraphicalObject* pGl, const CLGraphicalObject* pContainer)
-{
-  double x = pContainer->getPosition().getX()
-    + mpRandom->getRandomCC() * (pContainer->getDimensions().getWidth() - pGl->getDimensions().getWidth());
-  double y = pContainer->getPosition().getY()
-    + mpRandom->getRandomCC() * (pContainer->getDimensions().getHeight() - pGl->getDimensions().getHeight());
-  pGl->setPosition(CLPoint(x, y));
-}
-
-void CQNewMainWindow::randomlyPlaceGlyphInDimensions(CLGraphicalObject* pGl, const CLDimensions* pContainer)
-{
-  double x = mpRandom->getRandomCC() * (pContainer->getWidth() - pGl->getDimensions().getWidth());
-  double y = mpRandom->getRandomCC() * (pContainer->getHeight() - pGl->getDimensions().getHeight());
-  pGl->setPosition(CLPoint(x, y));
-}
-
-void CQNewMainWindow::placeTextGlyphs()
-{
-  size_t i;
-
-  for (i = 0; i < mpCurrentLayout->getListOfTextGlyphs().size(); ++i)
-  {
-    CLTextGlyph* pTG = mpCurrentLayout->getListOfTextGlyphs()[i];
-    CLGraphicalObject* pGO = pTG->getGraphicalObject();
-
-    if (!pGO)
-      continue;
-
-    pTG->setPosition(CLPoint(pGO->getX() + 2, pGO->getY() + 2));
-  }
 }
 
 /**
-* Creates a spring layout.
-* The method takes the number of iterations for the
-* layout algorithm and an update interval which tells the algorithm
-* how often to update the display.
-* A value of -1 means that the update of the display is only done once
-* at the end.
-*/
+ * Creates a spring layout.
+ * The method takes the number of iterations for the
+ * layout algorithm and an update interval which tells the algorithm
+ * how often to update the display.
+ * A value of -1 means that the update of the display is only done once
+ * at the end.
+ */
 void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
 {
   // reset the stop flag
@@ -2280,52 +1764,55 @@ void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
   if (updateInterval < 0) updateInterval = -1;
 
   bool doUpdate = (updateInterval != -1);
+  mIsRunning = true;
 
   if (numIterations > 0 && this->mpCurrentLayout != NULL &&
-    (this->mpCurrentLayout->getListOfCompartmentGlyphs().size() > 0 || this->mpCurrentLayout->getListOfMetaboliteGlyphs().size() > 0))
-  {
-    // create the spring layout
-    CCopasiSpringLayout l(this->mpCurrentLayout, &mpParameterWindow->getLayoutParameters());
-    l.createVariables();
-    CLayoutEngine le(&l, false);
-    QAbstractEventDispatcher* pDispatcher = QAbstractEventDispatcher::instance();
-    int i = 0;
-    double pot, oldPot = -1.0;
-
-    for (; (i < numIterations) && (this->mStopLayout) == false; ++i)
+      (this->mpCurrentLayout->getListOfCompartmentGlyphs().size() > 0 || this->mpCurrentLayout->getListOfMetaboliteGlyphs().size() > 0))
     {
-      pot = le.step();
+      // create the spring layout
+      CCopasiSpringLayout l(this->mpCurrentLayout, &mpParameterWindow->getLayoutParameters());
+      l.createVariables();
+      CLayoutEngine le(&l, false);
+      QAbstractEventDispatcher* pDispatcher = QAbstractEventDispatcher::instance();
+      int i = 0;
+      double pot, oldPot = -1.0;
 
-      if (pot == 0.0 || fabs((pot - oldPot) / pot) < 1e-9)
-      {
-        break;
-      }
-      else
-      {
-        oldPot = pot;
-      }
+      for (; (i < numIterations) && (this->mStopLayout) == false; ++i)
+        {
+          pot = le.step();
 
-      if (doUpdate && (i % updateInterval == 0))
-      {
-        l.finalizeState(); //makes the layout ready for drawing;
-        // redraw
-        slotCalculateDimensions();
-      }
+          if (pot == 0.0 || fabs((pot - oldPot) / pot) < 1e-9)
+            {
+              break;
+            }
+          else
+            {
+              oldPot = pot;
+            }
 
-      if (pDispatcher->hasPendingEvents())
-      {
-        pDispatcher->processEvents(QEventLoop::AllEvents);
-      }
+          if (doUpdate && (i % updateInterval == 0))
+            {
+              l.finalizeState(); //makes the layout ready for drawing;
+              // redraw
+              slotCalculateDimensions();
+            }
+
+          if (pDispatcher->hasPendingEvents())
+            {
+              pDispatcher->processEvents(QEventLoop::AllEvents);
+            }
+        }
+
+      // redraw the layout
+      l.finalizeState(); //makes the layout ready for drawing;
+
+      if (!doUpdate || (i % updateInterval != 0))
+        {
+          slotCalculateDimensions();
+        }
     }
 
-    // redraw the layout
-    l.finalizeState(); //makes the layout ready for drawing;
-
-    if (!doUpdate || (i % updateInterval != 0))
-    {
-      slotCalculateDimensions();
-    }
-  }
+  mIsRunning = false;
 
   // disable the stop button
   //this->mpStopLayoutAction->setEnabled(false);
@@ -2336,9 +1823,9 @@ void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
 }
 
 /**
-* This slot is called when the stop button is presed.
-* It notifies the layout method to stop the spring layout iterations.
-*/
+ * This slot is called when the stop button is presed.
+ * It notifies the layout method to stop the spring layout iterations.
+ */
 void CQNewMainWindow::slotStopClicked()
 {
   this->mStopLayout = true;
@@ -2355,43 +1842,43 @@ QRectF getBounds(const std::vector<CCopasiSpringLayout::UpdateAction>& updates)
   std::vector<CCopasiSpringLayout::UpdateAction>::const_iterator it, itEnd = updates.end();
 
   for (it = updates.begin(); it != itEnd; ++it)
-  {
-    switch (it->mAction)
     {
-    case CCopasiSpringLayout::UpdateAction::COMPARTMENT_4V:
-      {
-        CLCompartmentGlyph* current = ((CLCompartmentGlyph*)(it->mpTarget));
-        result.setLeft(qMin(result.left(), current->getX()));
-        result.setTop(qMin(result.top(), current->getY()));
-        result.setRight(qMax(result.right(), current->getX() + current->getWidth()));
-        result.setBottom(qMax(result.bottom(), current->getY() + current->getHeight()));
-      }
-      break;
+      switch (it->mAction)
+        {
+          case CCopasiSpringLayout::UpdateAction::COMPARTMENT_4V:
+          {
+            CLCompartmentGlyph* current = ((CLCompartmentGlyph*)(it->mpTarget));
+            result.setLeft(qMin(result.left(), current->getX()));
+            result.setTop(qMin(result.top(), current->getY()));
+            result.setRight(qMax(result.right(), current->getX() + current->getWidth()));
+            result.setBottom(qMax(result.bottom(), current->getY() + current->getHeight()));
+          }
+          break;
 
-    case CCopasiSpringLayout::UpdateAction::POSITION_2V:
-      {
-        CLGraphicalObject* current = ((CLGraphicalObject*)(it->mpTarget));
-        result.setLeft(qMin(result.left(), current->getX()));
-        result.setTop(qMin(result.top(), current->getY()));
-        result.setRight(qMax(result.right(), current->getX() + current->getWidth()));
-        result.setBottom(qMax(result.bottom(), current->getY() + current->getHeight()));
-      }
-      break;
+          case CCopasiSpringLayout::UpdateAction::POSITION_2V:
+          {
+            CLGraphicalObject* current = ((CLGraphicalObject*)(it->mpTarget));
+            result.setLeft(qMin(result.left(), current->getX()));
+            result.setTop(qMin(result.top(), current->getY()));
+            result.setRight(qMax(result.right(), current->getX() + current->getWidth()));
+            result.setBottom(qMax(result.bottom(), current->getY() + current->getHeight()));
+          }
+          break;
 
-    case CCopasiSpringLayout::UpdateAction::REACTION_2V:
-      {
-        CLReactionGlyph* current = ((CLReactionGlyph*)(it->mpTarget));
-        result.setLeft(qMin(result.left(), current->getX()));
-        result.setTop(qMin(result.top(), current->getY()));
-        result.setRight(qMax(result.right(), current->getX() + current->getWidth()));
-        result.setBottom(qMax(result.bottom(), current->getY() + current->getHeight()));
-      }
-      break;
+          case CCopasiSpringLayout::UpdateAction::REACTION_2V:
+          {
+            CLReactionGlyph* current = ((CLReactionGlyph*)(it->mpTarget));
+            result.setLeft(qMin(result.left(), current->getX()));
+            result.setTop(qMin(result.top(), current->getY()));
+            result.setRight(qMax(result.right(), current->getX() + current->getWidth()));
+            result.setBottom(qMax(result.bottom(), current->getY() + current->getHeight()));
+          }
+          break;
 
-    default:
-      break;
-    };
-  }
+          default:
+            break;
+        };
+    }
 
   return result;
 }
@@ -2399,7 +1886,7 @@ QRectF getBounds(const std::vector<CCopasiSpringLayout::UpdateAction>& updates)
 void CQNewMainWindow::slotCalculateDimensions()
 {
   if (this->mpCurrentLayout == NULL ||
-    (this->mpCurrentLayout->getListOfCompartmentGlyphs().size() == 0 && this->mpCurrentLayout->getListOfMetaboliteGlyphs().size() == 0))
+      (this->mpCurrentLayout->getListOfCompartmentGlyphs().size() == 0 && this->mpCurrentLayout->getListOfMetaboliteGlyphs().size() == 0))
     return;
 
   mpLayoutViewer->getPainter()->calculateAndAssignBounds(mpCurrentLayout);
@@ -2410,7 +1897,7 @@ void CQNewMainWindow::slotCalculateDimensions()
 void CQNewMainWindow::slotRunRandomizeLayout()
 {
   if (this->mpCurrentLayout == NULL ||
-    (this->mpCurrentLayout->getListOfCompartmentGlyphs().size() == 0 && this->mpCurrentLayout->getListOfMetaboliteGlyphs().size() == 0))
+      (this->mpCurrentLayout->getListOfCompartmentGlyphs().size() == 0 && this->mpCurrentLayout->getListOfMetaboliteGlyphs().size() == 0))
     return;
 
   randomizeLayout();

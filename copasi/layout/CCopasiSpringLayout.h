@@ -7,6 +7,7 @@
 #define CCopasiSpringLayout_H
 
 #include <map>
+#include <set>
 #include <cmath>
 
 #include "CAbstractLayoutInterface.h"
@@ -20,7 +21,10 @@ class CLReactionGlyph;
 class CLMetabReferenceGlyph;
 class CLReferenceGlyph;
 class CLGeneralGlyph;
-
+class CCopasiContainer;
+class CCompartment;
+class CReaction;
+class CMetab;
 /**
  * This class defines how a layout optimization algorithm will see a COPASI
  * layout, using a spring approach.
@@ -48,7 +52,7 @@ public:
       min.push_back(10);
       max.push_back(1e7);
       isLog.push_back(true);
-    
+
       //1
       names.push_back("edge length");
       values.push_back(70);
@@ -81,21 +85,20 @@ public:
       min.push_back(1e-3);
       max.push_back(1e3);
       isLog.push_back(true);
-    
+
       defaultValues = values;
     }
-  
+
     void applyDefaults()
     {
       values = defaultValues;
     }
   };
 
-
   /**
    * generate a spring layout view of a COPASI layout.
    */
-  CCopasiSpringLayout(CLayout* layout, Parameters* ppp=NULL);
+  CCopasiSpringLayout(CLayout* layout, Parameters* ppp = NULL);
 
   /**
    * generates the list of variables from the layout. This method will generate
@@ -118,6 +121,25 @@ public:
    * or storing
    */
   void finalizeState();
+
+  /**
+   * Randomizes the layout
+   */
+  void randomize();
+
+  /**
+   * This method creates a random layout using the elements
+   * in the compartments, reactions, species and side species
+   * containers.
+   */
+  static CLayout* createLayout(
+    CCopasiContainer* parent,
+    const std::set<const CCompartment*>& compartments,
+    const std::set<const CReaction*>& reactions,
+    const std::set<const CMetab*>& metabs,
+    const std::set<const CMetab*>& sideMetabs,
+    Parameters* mParams = NULL
+  );
 
 //  virtual bool getState(std::vector<double> & vars);
 
@@ -184,7 +206,7 @@ protected:
   CLPoint borderProjection(CLGraphicalObject* go, const CLPoint & p, double d);
 
   CLayout* mpLayout;
-  
+
   Parameters* mpPar;
 
   std::vector<double> mInitialState;
