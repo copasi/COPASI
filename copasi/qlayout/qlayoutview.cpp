@@ -1,3 +1,8 @@
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 #include <QApplication>
 #include <QWheelEvent>
 #include <QAction>
@@ -25,129 +30,155 @@ QLayoutView::~QLayoutView()
 void updateLayoutList(QComboBox* list, CCopasiDataModel* dataModel)
 {
   if (list == NULL || dataModel == NULL) return;
-  list->clear();  
+
+  list->clear();
   CCopasiVector<CLayout> & layouts = *dataModel->getListOfLayouts();
   CCopasiVector<CLayout>::iterator it = layouts.begin();
-  while(it != layouts.end())
-  {
-    const CLayout* layout = *it;    
-    list->addItem(layout->getObjectName().c_str());
-    ++it;
-  }
 
+  while (it != layouts.end())
+    {
+      const CLayout* layout = *it;
+      list->addItem(layout->getObjectName().c_str());
+      ++it;
+    }
 }
 
+#define RENDERINFORMATION_TYPE_GLOBAL 0
+#define RENDERINFORMATION_TYPE_LOCAL 1
+#define RENDERINFORMATION_TYPE_DEFAULT 2
 
 CLRenderInformationBase* updateRenderInformationList(QComboBox* list, CCopasiDataModel* dataModel, CLayout* layout)
 {
-  
+
   if (list == NULL || dataModel == NULL) return NULL;
+
   bool skipGlobal = list->count() > 0;
   CLRenderInformationBase* result = NULL;
 
   // remove oldItems
   if (skipGlobal)
-  {
-    for (size_t i = list->count()-1; i > 0; --i)
     {
-      if (list->itemData(i).isValid())
-        list->removeItem(i);
+      for (size_t i = list->count(); i > 0; --i)
+        {
+          QString current = list->itemText(i - 1);
+          int type = list->itemData(i - 1).toInt();
+
+          if (type == RENDERINFORMATION_TYPE_LOCAL)
+            list->removeItem(i - 1);
+        }
     }
-  }
 
   // add local information
   if (layout != NULL)
-  {
-    CCopasiVector<CLLocalRenderInformation> & render = layout->getListOfLocalRenderInformationObjects();
-    CCopasiVector<CLLocalRenderInformation>::iterator it = render.begin();
-    while (it != render.end())
     {
-      CLLocalRenderInformation* current = *it;
-      if (result == NULL) result = current;
-      if (current->getName().empty())
-      list->insertItem(0, current->getObjectName().c_str());
-      else
-      list->insertItem(0, current->getName().c_str());
-      list->setItemData(0, QVariant::fromValue(1));
-      ++it;
+      CCopasiVector<CLLocalRenderInformation> & render = layout->getListOfLocalRenderInformationObjects();
+      CCopasiVector<CLLocalRenderInformation>::iterator it = render.begin();
+
+      while (it != render.end())
+        {
+          CLLocalRenderInformation* current = *it;
+
+          if (result == NULL) result = current;
+
+          if (current->getName().empty())
+            list->insertItem(0, current->getKey().c_str(), QVariant::fromValue(RENDERINFORMATION_TYPE_LOCAL));
+          else
+            list->insertItem(0, current->getName().c_str(), QVariant::fromValue(RENDERINFORMATION_TYPE_LOCAL));
+
+          ++it;
+        }
     }
-  }
 
   // bail
   if (skipGlobal)
-  {
-    if (result == NULL && dataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size() > 0)
-      result = dataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects()[0];    
-    return result;
-  }
+    {
+      if (result == NULL && dataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size() > 0)
+        result = dataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects()[0];
+
+      if (result == NULL && getNumDefaultStyles() > 0)
+        result = getDefaultStyle(0);
+
+      return result;
+    }
 
   // add global ones
   {
     CCopasiVector<CLGlobalRenderInformation> & render = dataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects();
     CCopasiVector<CLGlobalRenderInformation>::const_iterator it = render.begin();
+
     while (it != render.end())
-    {
-       CLGlobalRenderInformation* current = *it;
-      if (result == NULL) result = current;
-      if (current->getName().empty())
-        list->addItem(current->getObjectName().c_str());
-      else
-        list->addItem(current->getName().c_str());
-      ++it;
-    }
+      {
+        CLGlobalRenderInformation* current = *it;
+
+        if (result == NULL) result = current;
+
+        if (current->getName().empty())
+          list->addItem(current->getKey().c_str(), QVariant::fromValue(RENDERINFORMATION_TYPE_GLOBAL));
+        else
+          list->addItem(current->getName().c_str(), QVariant::fromValue(RENDERINFORMATION_TYPE_GLOBAL));
+
+        ++it;
+      }
 
     // add default ones
     {
-     size_t i, iMax = getNumDefaultStyles();
-     CLRenderInformationBase* current = NULL;
-     
-     for (i = 0; i < iMax; ++i)
-       {
-         current = getDefaultStyle(i);
-         if (result == NULL) result = current;
-         std::string text = current->getKey();
-     
-         if (!current->getName().empty())
-           {
-             text = current->getName();
-           }     
-         list->addItem(text.c_str());
-       }
+      size_t i, iMax = getNumDefaultStyles();
+      CLRenderInformationBase* current = NULL;
+
+      for (i = 0; i < iMax; ++i)
+        {
+          current = getDefaultStyle(i);
+
+          if (result == NULL) result = current;
+
+          std::string text = current->getKey();
+
+          if (!current->getName().empty())
+            {
+              text = current->getName();
+            }
+
+          list->addItem(text.c_str(), QVariant::fromValue(RENDERINFORMATION_TYPE_DEFAULT));
+        }
     }
   }
 
   return result;
-
 }
 
 void QLayoutView::slotRenderInformationChanged(int index)
 {
   if (mIgnoreEvents || index < 0) return;
+
   if (mpDataModel == NULL) return;
+
   QLayoutScene* current = dynamic_cast<QLayoutScene*>(scene());
+
   if (current == NULL || current->getCurrentLayout() == NULL) return;
- 
+
   CLRenderInformationBase* render  = NULL;
   int numLocal = current->getCurrentLayout()->getListOfLocalRenderInformationObjects().size();
+
   if (numLocal > index)
-  {
-    render  = current->getCurrentLayout()->getListOfLocalRenderInformationObjects()[index];     
-  }
-  
+    {
+      render  = current->getCurrentLayout()->getListOfLocalRenderInformationObjects()[index];
+    }
+
   int numGlobal = mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size();
+
   if (render == NULL && numLocal + numGlobal > index)
-  {
-    render = mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects()[index-numLocal];
-  }
+    {
+      render = mpDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects()[index - numLocal];
+    }
 
   size_t numDefault = getNumDefaultStyles();
+
   if (render == NULL && numLocal + numGlobal + numDefault > (size_t)index)
-  {
-    render = getDefaultStyle(index - numGlobal -numLocal);
-  }
+    {
+      render = getDefaultStyle(index - numGlobal - numLocal);
+    }
 
-
-  if (render == NULL) 
+  if (render == NULL)
     return;
 
   current->setRenderInformation(mpDataModel, render);
@@ -157,19 +188,32 @@ void QLayoutView::slotRenderInformationChanged(int index)
 void QLayoutView::slotLayoutChanged(int index)
 {
   if (mIgnoreEvents || index < 0) return;
+
   if (mpDataModel == NULL) return;
+
   QLayoutScene* current = dynamic_cast<QLayoutScene*>(scene());
+
   if (current == NULL) return;
+
   CLayout* layout  = (*mpDataModel->getListOfLayouts())[index];
+
   if (layout == NULL || layout == current->getCurrentLayout()) return;
 
   mIgnoreEvents = true;
   // update the corresponding render information list
   CLRenderInformationBase* render = updateRenderInformationList(mpRenderDropdown, mpDataModel, layout);
+
+  if (render != NULL)
+    {
+      if (render->getName().empty())
+        mpRenderDropdown->setCurrentIndex(mpRenderDropdown->findText(render->getKey().c_str()));
+      else
+        mpRenderDropdown->setCurrentIndex(mpRenderDropdown->findText(render->getName().c_str()));
+    }
+
   mIgnoreEvents  = false;
-  current->setLayout(layout,mpDataModel, render);
+  current->setLayout(layout, mpDataModel, render);
   current->recreate();
-  
 }
 
 QLayoutView::QLayoutView(QWidget*parent)
@@ -184,13 +228,13 @@ QLayoutView::QLayoutView(QWidget*parent)
 void QLayoutView::slotSaveToFile(const QString& fileName)
 {
   QLayoutScene* layoutScene =  dynamic_cast<QLayoutScene*>(scene());
+
   if (layoutScene == NULL) return;
 
   layoutScene->saveToFile(
-    fileName.toStdString(), 
+    fileName.toStdString(),
     QFileInfo(fileName).suffix().toStdString()
-    );
-
+  );
 }
 
 QLayoutView::QLayoutView(QLayoutScene *scene)
@@ -206,9 +250,10 @@ QLayoutView::QLayoutView(QLayoutScene *scene)
 void QLayoutView::fillZoomMenu(QMenu* menu)
 {
   if (menu == NULL) return;
+
   menu->addAction(mpActFitOnScreen);
   menu->addAction(mpActZoomIn);
-  menu->addAction(mpActZoomOut);  
+  menu->addAction(mpActZoomOut);
   menu->addAction(mpActResetZoom);
 }
 
@@ -219,8 +264,7 @@ void QLayoutView::fillZoomTooBar(QToolBar* toolBar)
   toolBar->addAction(mpActFitOnScreen);
   toolBar->addAction(mpActZoomIn);
   toolBar->addAction(mpActZoomOut);
-  toolBar->addAction(mpActResetZoom);  
-
+  toolBar->addAction(mpActResetZoom);
 }
 
 void QLayoutView::createActions()
@@ -230,7 +274,7 @@ void QLayoutView::createActions()
   mpActFitOnScreen->setIcon(CQIconResource::icon(CQIconResource::viewmagfit));
   connect(mpActFitOnScreen, SIGNAL(triggered()), this, SLOT(slotFitOnScreen()));
   addAction(mpActFitOnScreen);
-  
+
   mpActResetZoom = new QAction(tr("Reset Zoom"), this);
   mpActResetZoom->setIcon(CQIconResource::icon(CQIconResource::viewmag1));
   connect(mpActResetZoom, SIGNAL(triggered()), this, SLOT(slotResetZoom()));
@@ -256,10 +300,9 @@ void QLayoutView::createActions()
 
   connect(mpLayoutDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotLayoutChanged(int)));
   connect(mpRenderDropdown, SIGNAL(currentIndexChanged(int)), this, SLOT(slotRenderInformationChanged(int)));
-  
-  setInteractive(true);
-  setRenderHints( QPainter::Antialiasing );
 
+  setInteractive(true);
+  setRenderHints(QPainter::Antialiasing);
 }
 
 void QLayoutView::fillSelectionToolBar(QToolBar* toolBar)
@@ -317,29 +360,33 @@ void QLayoutView::setDataModel(CCopasiDataModel* dataModel, CLayout* layout)
 {
   mpDataModel = dataModel;
 
-  updateLayoutList(mpLayoutDropdown, dataModel);  
+  updateLayoutList(mpLayoutDropdown, dataModel);
+
   if (layout != NULL)
-    mpLayoutDropdown->setCurrentIndex(mpLayoutDropdown->findText( layout->getObjectName().c_str()));
+    mpLayoutDropdown->setCurrentIndex(mpLayoutDropdown->findText(layout->getObjectName().c_str()));
+
   updateRenderInformationList(mpRenderDropdown, dataModel, layout);
-  
 }
 
-void QLayoutView::wheelEvent ( QWheelEvent* event )
+void QLayoutView::wheelEvent(QWheelEvent* event)
 {
   if (QApplication::keyboardModifiers() == Qt::ControlModifier ||
       QApplication::keyboardModifiers() == Qt::MetaModifier ||
       QApplication::keyboardModifiers() == Qt::ShiftModifier)
-  {
-    if(event->delta() > 0) {
-      // Zoom in
-      slotZoomIn();
-    } else {
-      // Zooming out
-      slotZoomOut();
+    {
+      if (event->delta() > 0)
+        {
+          // Zoom in
+          slotZoomIn();
+        }
+      else
+        {
+          // Zooming out
+          slotZoomOut();
+        }
     }
-  }
   else
-  {
-    QGraphicsView::wheelEvent(event);
-  }
+    {
+      QGraphicsView::wheelEvent(event);
+    }
 }
