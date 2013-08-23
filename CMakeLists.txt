@@ -226,12 +226,6 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
   link_directories(/usr/local/lib)
 endif()
 
-set (BUILD_33 OFF)
-if (EXISTS ${CMAKE_SOURCE_DIR}/copasi/UI/objectdebug.cpp)
-set (BUILD_33 ON)
-endif()
-
-
 #TODO if we are not on APPLE, we need MKL, CLAPACK or LAPACK
 if(NOT APPLE)
 

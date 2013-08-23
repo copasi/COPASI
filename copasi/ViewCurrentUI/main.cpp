@@ -1,7 +1,7 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #include <stdexcept>
 
@@ -12,7 +12,6 @@
 #include "copasi.h"
 
 #include "UI/CQCopasiApplication.h"
-//#include "UI/objectdebug.h"
 #include "UI/copasiui3window.h"
 #include "UI/DataModelGUI.h"
 #include "UI/CQMessageBox.h"
@@ -96,8 +95,6 @@ int main(int argc, char *argv[])
 
   if (pWindow != NULL)
     {
-      // ObjectDebug objwindow;
-      // objwindow.show();
       a.setMainWindow(pWindow);
 
       // pass control to the worker

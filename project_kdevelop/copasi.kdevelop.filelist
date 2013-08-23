@@ -327,10 +327,6 @@ CopasiUI/ObjectBrowser.h
 CopasiUI/ObjectBrowser.ui
 CopasiUI/ObjectBrowserItem.cpp
 CopasiUI/ObjectBrowserItem.h
-CopasiUI/objectdebug.cpp
-CopasiUI/objectdebug.h
-CopasiUI/objectdebug.ui
-CopasiUI/objectdebug.ui.h
 CopasiUI/OptimizationItemWidget.cpp
 CopasiUI/OptimizationItemWidget.h
 CopasiUI/OptimizationItemWidget.ui

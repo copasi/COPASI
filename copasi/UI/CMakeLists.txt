@@ -171,60 +171,6 @@ set(COPASI_UI_HEADERS ${COPASI_UI_HEADERS} ${HEADERS_UI})
 # endif()
 # set(HEADERS CQCompartment.h ${HEADERS})
 # set(HEADERS CQCompartmentsWidget.h ${HEADERS})
-# if (NOT BUILD_33)
-# set(HEADERS CQCrossSectionTaskWidget.h ${HEADERS})
-# set(SOURCES CQCrossSectionTaskWidget.cpp ${SOURCES})
-# set(FORMS CQCrossSectionTaskWidget.ui ${FORMS})
-# else()
-# set(HEADERS 
-# 
-# objectdebug.h 
-# CQExpressionMmlWidget.h
-# TimeSeriesSubwidget.h
-# CopasiTableWidget.h 
-# CQArrayAnnotationsWidget.h 
-# CQBarChart.h 
-#  CQDateTimeEditTableItem.h
-#   CQIcons.h
-#   CQLayoutsWidget.h
-#   CQMathMatrixWidget.h
-#   CTimeSeriesTable.h
-#   FunctionItemWidget.h 
-#   TimeSeriesWidget.h 
-#   Tree.h 
-#   #TSSWidget.h
-# 
-# ${HEADERS})
-# set(SOURCES 
-# 
-# objectdebug.cpp 
-# CQExpressionMmlWidget.cpp 
-# TimeSeriesSubwidget.cpp
-#  CopasiTableWidget.cpp
-#   CQArrayAnnotationsWidget.cpp 
-#   CQBarChart.cpp 
-#   CQDateTimeEditTableItem.cpp 
-#   CQIcons.cpp 
-#   CQLayoutsWidget.cpp 
-#   CQMathMatrixWidget.cpp
-#   CTimeSeriesTable.cpp
-#   FunctionItemWidget.cpp
-#   TaskWidget.cpp
-#   TimeSeriesWidget.cpp
-#   Tree.cpp
-#   #TSSWidget.cpp
-# 
-# ${SOURCES})
-# 
-# set(FORMS 
-# 
-# objectdebug.ui 
-#  CQExpressionMmlWidget.ui
-#  TimeSeriesSubwidget.ui
-# 
-# ${FORMS})
-# 
-# endif()
 # set(HEADERS CQEFMListWidget.h ${HEADERS})
 # set(HEADERS CQEFMResultWidget.h ${HEADERS})
 # set(HEADERS CQEFMWidget.h ${HEADERS})
@@ -622,13 +568,6 @@ set(COPASI_UI_HEADERS ${COPASI_UI_HEADERS} ${HEADERS_UI})
 # set(FORMS SteadyStateWidget.ui ${FORMS})
 # set(FORMS CQExpandModelData.ui ${FORMS})
 # 
-# if (NOT BUILD_33)
-# if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/CQTextDialog.ui)
-# set(FORMS CQTextDialog.ui ${FORMS})
-# endif()
-# endif()
-# 
-# 
 # if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/CQParameterOverviewDM.h)
 # set (HEADERS ${HEADERS} CQParameterOverviewDM.h CQParameterOverviewWidget.h)
 # set (SOURCES ${SOURCES} CQParameterOverviewDM.cpp CQParameterOverviewWidget.cpp)
@@ -651,13 +590,6 @@ set(COPASI_UI_HEADERS ${COPASI_UI_HEADERS} ${HEADERS_UI})
 # set(SOURCES CQDifferentialEquations.cpp ${SOURCES})
 # include_directories(${MML_INCLUDE_DIR})
 # endif(ENABLE_MML)
-# 
-
-# if (BUILD_33)
-# 
-# list(REMOVE_ITEM FORMS CQProgressItemBar.ui CQProgressItemText.ui)
-# 
-# endif()
 # 
 
 # include(../CMakeUILib.cmake)

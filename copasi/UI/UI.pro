@@ -103,7 +103,6 @@ HEADERS	+= \
   CScanWidgetTask.h \
   DefaultplotDialog.h \
   FunctionWidget1.h \
-  objectdebug.h \
   SensitivitiesWidget.h \
   SliderSettingsDialog.h \
   StateSubwidget.h \
@@ -257,7 +256,6 @@ SOURCES	+= \
   CUpDownSubwidget.cpp \
   DefaultplotDialog.cpp \
   FunctionWidget1.cpp \
-  objectdebug.cpp \
   SensitivitiesWidget.cpp \
   SliderSettingsDialog.cpp \
   StateSubwidget.cpp \
@@ -400,7 +398,6 @@ FORMS += CScanWidgetTask.ui
 FORMS += CUpDownSubwidget.ui
 FORMS += DefaultplotDialog.ui
 FORMS += FunctionWidget1.ui
-FORMS += objectdebug.ui
 FORMS += SensitivitiesWidget.ui
 FORMS += SliderSettingsDialog.ui
 FORMS += StateSubwidget.ui

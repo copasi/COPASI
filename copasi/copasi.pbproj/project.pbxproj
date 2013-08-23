@@ -1261,30 +1261,6 @@
 			path = ObjectBrowserWidget.h;
 			refType = 4;
 		};
-		1996A9E707D6A3CA00A80068 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			path = objectdebug.cpp;
-			refType = 4;
-		};
-		1996A9E807D6A3CA00A80068 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			path = objectdebug.h;
-			refType = 4;
-		};
-		1996A9E907D6A3CA00A80068 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			path = objectdebug.ui;
-			refType = 4;
-		};
-		1996A9EA07D6A3CA00A80068 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			path = objectdebug.ui.h;
-			refType = 4;
-		};
 		1996A9EB07D6A3CA00A80068 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
