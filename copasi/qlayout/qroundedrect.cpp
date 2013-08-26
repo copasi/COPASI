@@ -1,3 +1,8 @@
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 #include <QGraphicsRectItem>
 #include <QStyleOptionGraphicsItem>
 #include <QPainter>
@@ -15,7 +20,7 @@ QRoundedRect ::~QRoundedRect()
 {
 }
 
-void QRoundedRect::paint(QPainter *painter, const QStyleOptionGraphicsItem */*option*/, QWidget */*widget*/)
+void QRoundedRect::paint(QPainter *painter, const QStyleOptionGraphicsItem* /*option*/, QWidget* /*widget*/)
 {
   painter->save();
   painter->setPen(pen());
