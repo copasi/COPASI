@@ -1,24 +1,12 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQUpdatesWidget.cpp,v $
-//   $Revision: 1.16 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:12:27 $
-// End CVS Header
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
 #include <QTableWidget>
 #include <QTableWidgetItem>
@@ -45,7 +33,7 @@ CQUpdatesWidget::CQUpdatesWidget(QWidget* parent, const char* name, Qt::WFlags f
   if (!name)
     setObjectName("CQUpdatesWidget");
 
-  setCaption("CQUpdatesWidget");
+  setWindowTitle("CQUpdatesWidget");
 
   mWidgetLayout = new QGridLayout(this);
   mWidgetLayout->setMargin(11);
@@ -57,8 +45,7 @@ CQUpdatesWidget::CQUpdatesWidget(QWidget* parent, const char* name, Qt::WFlags f
   mLabelTitle = new QLabel(this);
   mLabelTitle->setObjectName("updatesLabel");
   mLabelTitle->setText("Sequences of assignments");
-  mLabelTitle->setAlignment(int(Qt::AlignVCenter
-                                | Qt::AlignLeft));
+  mLabelTitle->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
   mLabelTitle->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   mWidgetLayout->addWidget(mLabelTitle, 0, 0);
 

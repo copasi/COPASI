@@ -1,7 +1,7 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #include <QtGui/QPushButton>
 #include <QtGui/QToolButton>
@@ -138,6 +138,6 @@ void CQPushButtonDelegate::slotEditorDeleted(QObject * /* pObject */)
 
   if (pEditor)
     {
-      mEditorToIndex.erase(pEditor);
+      mEditorToIndex.remove(pEditor);
     }
 }

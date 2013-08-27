@@ -1,12 +1,12 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
 #include <QComboBox>
 #include <QtGui/QSortFilterProxyModel>
@@ -106,7 +106,7 @@ void CQComboDelegate::slotCurrentIndexChanged(int index)
 
 void CQComboDelegate::slotEditorDeleted(QObject * pObject)
 {
-  mEditorToIndex.erase(static_cast< QWidget * >(pObject));
+  mEditorToIndex.remove(static_cast< QWidget * >(pObject));
 }
 
 CQIndexComboDelegate::CQIndexComboDelegate(const QStringList *pComboItems, QObject *parent)
