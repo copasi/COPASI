@@ -1,23 +1,21 @@
-// Begin git Header 
-//   Commit: 28d5663ff3fc99993d3b249dec626841cb5247ab 
-//   Author: Frank T. Bergmann fbergman@caltech.edu 
-//   Date: 2012-08-29 10:43:00 +0200 
-// End git Header 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+
 
 %{
 #include "function/CEvaluationTree.h"
@@ -57,6 +55,12 @@
     {
         return (C_INT32)$self->getErrorPosition();
     }
+	
+	bool isFunction() const 
+	{
+		return (dynamic_cast<const CFunction*>($self) != NULL);
+	}
+	
 /* TODO: CEvaluationTree is no longer inheriting from annotation
 #if (defined SWIGJAVA || defined SWIGCSHARP)
   // the CAnnotation functionality has to be added manually because
