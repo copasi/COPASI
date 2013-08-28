@@ -3860,61 +3860,62 @@ void CSBMLExporter::createEvents(CCopasiDataModel& dataModel)
   if (this->mSBMLLevel == 1)
     {
       CSBMLExporter::checkForEvents(dataModel, this->mIncompatibilities);
+      return;
     }
-  else
+
+  // bail early
+  if (dataModel.getModel() == NULL)
+    return;
+
+  Model* pSBMLModel = this->mpSBMLDocument->getModel();
+
+  if (pSBMLModel == NULL)
+    return;
+
+  // remove all events from the SBML model and put them in a set
+  std::set<Event*> eventSet;
+
+  while (pSBMLModel->getNumEvents() != 0)
     {
-      // remove all events from the SBML model
-      // and put them in a set
-      std::set<Event*> eventSet;
-      Model* pSBMLModel = this->mpSBMLDocument->getModel();
-      assert(pSBMLModel != NULL);
+      Event* pEvent = pSBMLModel->getListOfEvents()->remove(pSBMLModel->getNumEvents() - 1);
+      assert(pEvent != NULL);
+      eventSet.insert(pEvent);
+    }
 
-      while (pSBMLModel->getNumEvents() != 0)
+  const CCopasiVectorN<CEvent>& events = dataModel.getModel()->getEvents();
+  CCopasiVectorN<CEvent>::const_iterator it = events.begin(), endit = events.end();
+  Event* pSBMLEvent = NULL;
+  std::map<const CCopasiObject*, SBase*>::const_iterator pos;
+
+  while (it != endit)
+    {
+      // find the old event if there is one
+      pos = this->mCOPASI2SBMLMap.find(*it);
+
+      if (pos != this->mCOPASI2SBMLMap.end())
         {
-          Event* pEvent = pSBMLModel->getEvent(pSBMLModel->getNumEvents() - 1);
-          assert(pEvent != NULL);
-          eventSet.insert(pEvent);
-          pSBMLModel->getListOfEvents()->remove(pSBMLModel->getNumEvents() - 1);
+          pSBMLEvent = dynamic_cast<Event*>(pos->second);
+        }
+      else
+        {
+          pSBMLEvent = NULL;
         }
 
-      if (dataModel.getModel() == 0) return;
+      // remove the event from the set
+      if (pSBMLEvent) eventSet.erase(pSBMLEvent);
 
-      const CCopasiVectorN<CEvent>& events = dataModel.getModel()->getEvents();
-      CCopasiVectorN<CEvent>::const_iterator it = events.begin(), endit = events.end();
-      Event* pSBMLEvent = NULL;
-      std::map<const CCopasiObject*, SBase*>::const_iterator pos;
+      this->createEvent(**it, pSBMLEvent, dataModel);
+      ++it;
+    }
 
-      while (it != endit)
-        {
-          // find the old event if there is one
-          pos = this->mCOPASI2SBMLMap.find(*it);
+  // make sure events that have already been deleted do not get
+  // exported
+  std::set<Event*>::iterator it2 = eventSet.begin(), endit2 = eventSet.end();
 
-          if (pos != this->mCOPASI2SBMLMap.end())
-            {
-              pSBMLEvent = dynamic_cast<Event*>(pos->second);
-              assert(pSBMLEvent != NULL);
-            }
-          else
-            {
-              pSBMLEvent = NULL;
-            }
-
-          // remove the event from the set
-          if (pSBMLEvent) eventSet.erase(pSBMLEvent);
-
-          this->createEvent(**it, pSBMLEvent, dataModel);
-          ++it;
-        }
-
-      // make sure events that have already been deleted do not get
-      // exported
-      std::set<Event*>::iterator it2 = eventSet.begin(), endit2 = eventSet.end();
-
-      while (it2 != endit2)
-        {
-          delete *it2;
-          ++it2;
-        }
+  while (it2 != endit2)
+    {
+      delete *it2;
+      ++it2;
     }
 }
 
@@ -3934,7 +3935,12 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
   else
     {
       // Read the event to the model
-      this->mpSBMLDocument->getModel()->getListOfEvents()->appendAndOwn(pSBMLEvent);
+      if (this->mpSBMLDocument->getModel()->getListOfEvents()->appendAndOwn(pSBMLEvent) != LIBSBML_OPERATION_SUCCESS)
+        {
+          // the existing event is not valid and cannot be added to the model, delete and create a new one instead
+          delete pSBMLEvent;
+          pSBMLEvent = this->mpSBMLDocument->getModel()->createEvent();
+        }
     }
 
   // add the object to the COPASI2SBMLMap
@@ -4045,7 +4051,7 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
 
   if (pNode != NULL)
     {
-      Trigger* pTrigger = new Trigger(this->mSBMLLevel, this->mSBMLVersion);
+      Trigger* pTrigger = pSBMLEvent->createTrigger();
       pTrigger->setMath(pNode);
 #if LIBSBML_VERSION >= 40200
 
@@ -4060,9 +4066,7 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
         }
 
 #endif  // LIBSBML_VERSION >= 40200
-      pSBMLEvent->setTrigger(pTrigger);
       delete pNode;
-      delete pTrigger;
     }
   else
     {
