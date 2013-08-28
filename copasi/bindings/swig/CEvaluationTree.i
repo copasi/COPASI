@@ -13,6 +13,10 @@
 // All rights reserved. 
 
 
+
+
+
+
 %{
 #include "function/CEvaluationTree.h"
 %}
@@ -51,6 +55,12 @@
     {
         return (C_INT32)$self->getErrorPosition();
     }
+	
+	bool isFunction() const 
+	{
+		return (dynamic_cast<const CFunction*>($self) != NULL);
+	}
+	
 /* TODO: CEvaluationTree is no longer inheriting from annotation
 #if (defined SWIGJAVA || defined SWIGCSHARP)
   // the CAnnotation functionality has to be added manually because

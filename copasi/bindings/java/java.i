@@ -16,6 +16,10 @@
 
 
 
+
+
+
+
 %include <std_pair.i>
 %include <std_map.i>
 %include <std_string.i>
@@ -351,7 +355,11 @@
 		}
 		else if (type.equals("Function"))
 		{
-			return new CFunction(cPtr, owner);
+		    CEvaluationTree temp = new CEvaluationTree(cPtr,false);
+			if (temp.isFunction())
+				return new CFunction(cPtr, owner);
+			else 
+				return new CEvaluationTree(cPtr, owner);
 		}		
 		else if (type.equals("FunctionDB"))
 		{
@@ -471,9 +479,29 @@
 	  	return (CCopasiContainer)DowncastCCopasiObject(cPtr, owner);	
 	  return new CCopasiContainer(cPtr, owner);	
     }
+
+	public static CEvaluationTree DowncastCEvaluationTree(long cPtr, boolean owner)
+    {
+      if (cPtr == 0) return null;
+	  
+      CEvaluationTree temp = new CEvaluationTree(cPtr, false);	
+	  if (temp.isFunction())
+	  	return new CFunction(cPtr, owner);	
+	  return new CEvaluationTree(cPtr, owner);	
+    }
+
 	
 	
 %}
+
+/**
+ * Convert CEvaluationTree objects into the most specific object possible.
+ */
+%typemap("javaout") CEvaluationTree*
+{
+  return COPASI.DowncastCEvaluationTree($jnicall, $owner);
+}
+
 
 /**
  * Convert CCopasiObject objects into the most specific object possible.
