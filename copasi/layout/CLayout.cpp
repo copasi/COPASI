@@ -60,17 +60,173 @@ CLayout::CLayout(const CLayout & src,
     CCopasiContainer(src, pParent),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
     mDimensions(src.mDimensions),
-    mvCompartments(src.mvCompartments, this),
-    mvMetabs(src.mvMetabs, this),
-    mvReactions(src.mvReactions, this),
-    mvLabels(src.mvLabels, this),
-    mvGraphicalObjects(src.mvGraphicalObjects, this)
+    mvCompartments("ListOfCompartmentGlyphs", this),
+    mvMetabs("ListOfMetaboliteGlyphs", this),
+    mvReactions("ListOfReactionGlyphs", this),
+    mvLabels("ListOfTextGlyphs", this),
+    mvGraphicalObjects("ListOfGraphicalObjects", this)
 #ifdef USE_CRENDER_EXTENSION
     , mvLocalRenderInformationObjects(src.mvLocalRenderInformationObjects, this)
 #endif /* USE_CRENDER_EXTENSION */
+
+//    mvCompartments(src.mvCompartments, this),
+//    mvMetabs(src.mvMetabs, this),
+//    mvReactions(src.mvReactions, this),
+//    mvLabels(src.mvLabels, this),
+//    mvGraphicalObjects(src.mvGraphicalObjects, this)
+//#ifdef USE_CRENDER_EXTENSION
+//    , mvLocalRenderInformationObjects(src.mvLocalRenderInformationObjects, this)
+//#endif /* USE_CRENDER_EXTENSION */
 {
   //TODO references from one glyph to another have to be reconstructed after
   //     copying. This applies to Labels and species reference glyphs
+
+  std::map<std::string, std::string> forward;
+  std::map<std::string, std::string> reverse;
+
+  CCopasiVector<CLCompartmentGlyph>::const_iterator compIt = src.mvCompartments.begin();
+
+  for (; compIt != src.mvCompartments.end(); ++compIt)
+    {
+      CLCompartmentGlyph *comp = new CLCompartmentGlyph(*(*compIt));
+      mvCompartments.add(comp, true);
+      forward[(*compIt)->getKey()] = comp->getKey();
+      reverse[comp->getKey()] = (*compIt)->getKey();
+    }
+
+  CCopasiVector<CLMetabGlyph>::const_iterator metabIt = src.mvMetabs.begin();
+
+  for (; metabIt != src.mvMetabs.end(); ++metabIt)
+    {
+      CLMetabGlyph *metab = new CLMetabGlyph(*(*metabIt));
+      mvMetabs.add(metab, true);
+      forward[(*metabIt)->getKey()] = metab->getKey();
+      reverse[metab->getKey()] = (*metabIt)->getKey();
+    }
+
+  CCopasiVector<CLReactionGlyph>::const_iterator reactIt = src.mvReactions.begin();
+
+  for (; reactIt != src.mvReactions.end(); ++reactIt)
+    {
+      CLReactionGlyph *r = new CLReactionGlyph(*(*reactIt));
+      mvReactions.add(r, true);
+      forward[(*reactIt)->getKey()] = r->getKey();
+      reverse[r->getKey()] = (*reactIt)->getKey();
+
+      for (size_t i = 0; i < r->getListOfMetabReferenceGlyphs().size(); ++i)
+        {
+          forward[(*reactIt)->getListOfMetabReferenceGlyphs()[i]->getKey()]
+            = r->getListOfMetabReferenceGlyphs()[i]->getKey();
+          reverse[r->getListOfMetabReferenceGlyphs()[i]->getKey()]
+            = (*reactIt)->getListOfMetabReferenceGlyphs()[i]->getKey();
+        }
+    }
+
+  CCopasiVector<CLTextGlyph>::const_iterator textIt = src.mvLabels.begin();
+
+  for (; textIt != src.mvLabels.end(); ++textIt)
+    {
+      CLTextGlyph *text = new CLTextGlyph(*(*textIt));
+      mvLabels.add(text, true);
+      forward[(*textIt)->getKey()] = text->getKey();
+      reverse[text->getKey()] = (*textIt)->getKey();
+    }
+
+  CCopasiVector<CLGeneralGlyph>::const_iterator generalIt = src.mvGraphicalObjects.begin();
+
+  for (; generalIt != src.mvGraphicalObjects.end(); ++generalIt)
+    {
+      CLGeneralGlyph *general = new CLGeneralGlyph(*(*generalIt));
+      mvGraphicalObjects.add(general, true);
+      forward[(*generalIt)->getKey()] = general->getKey();
+      reverse[general->getKey()] = (*generalIt)->getKey();
+
+      for (size_t i = 0; i < general->getListOfReferenceGlyphs().size(); ++i)
+        {
+          forward[(*generalIt)->getListOfReferenceGlyphs()[i]->getKey()]
+            = general->getListOfReferenceGlyphs()[i]->getKey();
+          reverse[general->getListOfReferenceGlyphs()[i]->getKey()]
+            = (*generalIt)->getListOfReferenceGlyphs()[i]->getKey();
+        }
+
+      for (size_t i = 0; i < general->getListOfSubglyphs().size(); ++i)
+        {
+          forward[(*generalIt)->getListOfSubglyphs()[i]->getKey()]
+            = general->getListOfSubglyphs()[i]->getKey();
+          reverse[general->getListOfSubglyphs()[i]->getKey()]
+            = (*generalIt)->getListOfSubglyphs()[i]->getKey();
+        }
+    }
+
+  {
+
+    // by now we have collected all keys, now we need to replace them
+    std::map<std::string, std::string>::const_iterator constIt;
+    CCopasiVector<CLTextGlyph>::iterator textIt = mvLabels.begin();
+
+    for (; textIt != mvLabels.end(); ++textIt)
+      {
+        CLTextGlyph *text = *textIt;
+        const std::string& key = text->getGraphicalObjectKey();
+        constIt = forward.find(key);
+
+        if (constIt == forward.end())
+          continue;
+
+        text->setGraphicalObjectKey(constIt->second);
+      }
+
+    CCopasiVector<CLReactionGlyph>::iterator reactIt = mvReactions.begin();
+
+    for (; reactIt != mvReactions.end(); ++reactIt)
+      {
+        CLReactionGlyph *r = *reactIt;
+        CCopasiVector<CLMetabReferenceGlyph>::iterator refIt = r->getListOfMetabReferenceGlyphs().begin();
+
+        for (; refIt != r->getListOfMetabReferenceGlyphs().end(); ++refIt)
+          {
+            CLMetabReferenceGlyph* current = *refIt;
+            const std::string& key = current->getMetabGlyphKey();
+            constIt = forward.find(key);
+
+            if (constIt == forward.end())
+              continue;
+
+            current->setMetabGlyphKey(constIt->second);
+          }
+      }
+
+    CCopasiVector<CLGeneralGlyph>::iterator generalIt = mvGraphicalObjects.begin();
+
+    for (; generalIt != mvGraphicalObjects.end(); ++generalIt)
+      {
+        CLGeneralGlyph *g = *generalIt;
+        CCopasiVector<CLReferenceGlyph>::iterator refIt = g->getListOfReferenceGlyphs().begin();
+
+        for (; refIt != g->getListOfReferenceGlyphs().end(); ++refIt)
+          {
+            CLReferenceGlyph* current = *refIt;
+            const std::string& key = current->getTargetGlyphKey();
+            constIt = forward.find(key);
+
+            if (constIt == forward.end())
+              continue;
+
+            current->setTargetGlyphKey(constIt->second);
+          }
+
+        //CCopasiVector<CLGraphicalObject>::iterator refIt = g->getListOfSubglyphs().begin();
+        //for(;refIt != g->getListOfReferenceGlyphs().end(); ++refIt)
+        //{
+        //  CLGraphicalObject* current = *refIt;
+        //  const std::string& key = current->getTargetGlyphKey();
+        //  constIt = forward.find(key);
+        //  if (constIt == forward.end())
+        //    continue;
+        //  current->setTargetGlyphKey(constIt->second);
+        //}
+      }
+  }
 }
 
 CLayout::CLayout(const Layout & sbml,

@@ -267,7 +267,13 @@ public:
   const CCopasiVector<CLReferenceGlyph> & getListOfReferenceGlyphs() const
   {return mvReferences;};
 
+  CCopasiVector<CLReferenceGlyph> & getListOfReferenceGlyphs()
+  {return mvReferences;};
+
   const CCopasiVector<CLGraphicalObject> & getListOfSubglyphs() const
+  {return mvSubglyphs;};
+
+  CCopasiVector<CLGraphicalObject> & getListOfSubglyphs()
   {return mvSubglyphs;};
 
   /**
@@ -330,6 +336,9 @@ public:
   CLReactionGlyph & operator= (const CLReactionGlyph & rhs);
 
   const CCopasiVector<CLMetabReferenceGlyph> & getListOfMetabReferenceGlyphs() const
+  {return mvMetabReferences;};
+
+  CCopasiVector<CLMetabReferenceGlyph> & getListOfMetabReferenceGlyphs()
   {return mvMetabReferences;};
 
   /**

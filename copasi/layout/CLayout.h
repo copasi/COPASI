@@ -85,6 +85,9 @@ public:
   const CCopasiVector<CLCompartmentGlyph> & getListOfCompartmentGlyphs() const
   {return mvCompartments;};
 
+  CCopasiVector<CLCompartmentGlyph> & getListOfCompartmentGlyphs()
+  {return mvCompartments;};
+
   /**
    *  add Glyph to layout. The layout takes ownership of the glyph.
    */
@@ -108,6 +111,9 @@ public:
   const CCopasiVector<CLReactionGlyph> & getListOfReactionGlyphs() const
   {return mvReactions;};
 
+  CCopasiVector<CLReactionGlyph> & getListOfReactionGlyphs()
+  {return mvReactions;};
+
   /**
    *  add Glyph to layout. The layout takes ownership of the glyph.
    */
@@ -129,6 +135,9 @@ public:
   //*******************
 
   const CCopasiVector<CLGeneralGlyph> & getListOfGeneralGlyphs() const
+  {return mvGraphicalObjects;};
+
+  CCopasiVector<CLGeneralGlyph> & getListOfGeneralGlyphs()
   {return mvGraphicalObjects;};
 
   /**
