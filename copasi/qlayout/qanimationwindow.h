@@ -7,8 +7,10 @@
 #define QANIMATION_WINDOW_H
 
 #include <QMainWindow>
+#include <qsharedpointer.h>
 
 #include <UI/CWindowInterface.h>
+
 #include <qlayout/ui_qanimationwindow.h>
 
 class QLayoutScene;
@@ -17,7 +19,8 @@ class CCopasiDataModel;
 class QCloseEvent;
 class QMenu;
 class CLayout;
-class CQSpringLayoutParameterWindow;
+class CQLayoutThread;
+
 class QAnimationWindow : public CWindowInterface, public Ui::QAnimationWindow
 {
   Q_OBJECT
@@ -36,9 +39,12 @@ public slots:
   void slotRandomizeLayout();
   void slotAutoLayout();
   void slotStopLayout();
+  void slotRedrawScene();
+  void slotLayoutCreated(QSharedPointer<CLayout> layout);
 private:
   void init();
   void toggleUI(bool isPlaying);
+  void reloadLayout(CLayout* layout);
 protected:
   virtual void closeEvent(QCloseEvent *closeEvent);
 
@@ -46,9 +52,7 @@ protected:
   CCopasiDataModel* mpModel;
   QMenu* mpWindowMenu;
   QCopasiAnimation* mAnimation;
-  bool mStopLayout;
-  bool mIsRunning;
-  CQSpringLayoutParameterWindow* mpParameterWindow;
+  CQLayoutThread* mpLayoutThread;
 };
 
 #endif // QANIMATION_WINDOW_H

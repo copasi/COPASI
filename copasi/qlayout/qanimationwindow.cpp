@@ -7,6 +7,7 @@
 #include <qgraphicseffect.h>
 #include <qdockwidget.h>
 #include <QFileDialog>
+#include <QDateTime>
 
 #include <qlayout/qcopasianimation.h>
 #include <qlayout/qanimationsettingseditor.h>
@@ -16,6 +17,7 @@
 #include <qlayout/qeffectdescription.h>
 
 #include <layoutUI/CQSpringLayoutParameterWindow.h>
+#include <layoutUI/CQLayoutThread.h>
 
 #include <layout/CLayout.h>
 
@@ -258,16 +260,22 @@ protected:
 };
 
 QAnimationWindow::QAnimationWindow(CLayout* layout, CCopasiDataModel* dataModel)
-  : mAnimation(NULL)
-  , mStopLayout(false)
+  : mpScene(NULL)
+  , mpModel(NULL)
+  , mpWindowMenu(NULL)
+  , mAnimation(NULL)
+  , mpLayoutThread(NULL)
 {
   init();
   setScene(new QLayoutScene(layout, dataModel), dataModel);
 }
 
 QAnimationWindow::QAnimationWindow()
-  : mAnimation(NULL)
-  , mStopLayout(false)
+  : mpScene(NULL)
+  , mpModel(NULL)
+  , mpWindowMenu(NULL)
+  , mAnimation(NULL)
+  , mpLayoutThread(NULL)
 {
   init();
 }
@@ -299,13 +307,16 @@ void QAnimationWindow::init()
 
   mpWindowMenu = menuBar()->addMenu(tr("&Window"));
 
-  mpParameterWindow = new CQSpringLayoutParameterWindow("Layout Parameters", this);
+  mpLayoutThread = new CQLayoutThread(this);
+  connect(mpLayoutThread, SIGNAL(layoutFinished()), this, SLOT(slotStopLayout()));
+  connect(mpLayoutThread, SIGNAL(layoutUpdated()), this, SLOT(slotRedrawScene()));
+  //connect(mpLayoutThread, SIGNAL(layoutCreated(QSharedPointer<CLayout>)), this, SLOT(slotLayoutCreated(QSharedPointer<CLayout>)));
 
-  addDockWidget(Qt::LeftDockWidgetArea, mpParameterWindow);
+  QDockWidget* pParameterWindow = mpLayoutThread->getParameterWindow();
+  addDockWidget(Qt::LeftDockWidgetArea, pParameterWindow);
   viewMenu->addSeparator();
-  viewMenu->addAction(mpParameterWindow->toggleViewAction());
+  viewMenu->addAction(pParameterWindow->toggleViewAction());
 
-  mIsRunning = false;
   toggleUI(false);
 
 #ifndef COPASI_AUTOLAYOUT
@@ -324,7 +335,7 @@ void QAnimationWindow::slotExportImage()
 
 QAnimationWindow::~QAnimationWindow()
 {
-  mStopLayout = true;
+  mpLayoutThread->terminateLayout();
 
   if (mAnimation)
     delete mAnimation;
@@ -332,14 +343,24 @@ QAnimationWindow::~QAnimationWindow()
   removeFromMainWindow();
 }
 
+void QAnimationWindow::slotRedrawScene()
+{
+  if (!mpLayoutThread->pause())
+    return;
+
+  mpLayoutThread->finalize();
+  mpScene->recreate();
+  mpLayoutThread->resume();
+}
+
 void QAnimationWindow::setScene(QLayoutScene* scene, CCopasiDataModel* dataModel)
 {
+  mpModel = dataModel;
   mpScene = scene;
   this->graphicsView->setScene(mpScene);
   mpScene->recreate();
   graphicsView->setDataModel(dataModel, scene->getCurrentLayout());
   this->graphicsView->invalidateScene();
-
   //setAnimation(new QConservedSpeciesAnimation(), dataModel);
   //setAnimation(new QFluxModeAnimation(), dataModel);
   setAnimation(new QTimeCourseAnimation(), dataModel);
@@ -409,7 +430,7 @@ void QAnimationWindow::slotShowStep(int step)
 void QAnimationWindow::closeEvent(QCloseEvent * /*closeEvent*/)
 {
   // stop the autolayout
-  slotStopLayout();
+  mpLayoutThread->stopLayout();
 }
 
 void QAnimationWindow::slotEditSettings()
@@ -425,11 +446,11 @@ void QAnimationWindow::slotEditSettings()
 
 void QAnimationWindow::slotRandomizeLayout()
 {
-  slotStopLayout();
+
 #ifdef COPASI_AUTOLAYOUT
-  CCopasiSpringLayout l(mpScene->getCurrentLayout(), &mpParameterWindow->getLayoutParameters());
-  l.randomize();
-  mpScene->recreate();
+  mpLayoutThread->stopLayout();
+  mpLayoutThread->wait();
+  mpLayoutThread->randomizeLayout(mpLayoutThread->getFinalLayout());
 #endif //COPASI_AUTOLAYOUT
 }
 
@@ -443,17 +464,24 @@ void QAnimationWindow::slotRandomizeLayout()
 
 void QAnimationWindow::slotStopLayout()
 {
-  mStopLayout = true;
-
-  if (mIsRunning)
-    {
-      QTimer::singleShot(100, this, SLOT(slotStopLayout()));
-      return;
-    }
-
+  //reloadLayout(mpLayoutThread->getFinalLayout());
   actionAuto_Layout->setChecked(false);
   actionAuto_Layout->setText("Run Auto Layout");
   actionAuto_Layout->setIcon(CQIconResource::icon(CQIconResource::play));
+}
+
+void QAnimationWindow::slotLayoutCreated(QSharedPointer<CLayout> layout)
+{
+  //reloadLayout(layout.data());
+}
+
+void QAnimationWindow::reloadLayout(CLayout* layout)
+{
+  if (mpScene == NULL)
+    return;
+
+  mpScene->setLayout(layout, mpModel, const_cast<CLRenderInformationBase*>(mpScene->getCurrentRenderInfo()));
+  mpScene->recreate();
 }
 
 void QAnimationWindow::toggleUI(bool isPlaying)
@@ -463,11 +491,10 @@ void QAnimationWindow::toggleUI(bool isPlaying)
       actionAuto_Layout->setChecked(true);
       actionAuto_Layout->setText("Stop Auto Layout");
       actionAuto_Layout->setIcon(CQIconResource::icon(CQIconResource::pause));
-      mStopLayout = false;
     }
   else
     {
-      slotStopLayout();
+      mpLayoutThread->stopLayout();
     }
 }
 
@@ -478,59 +505,14 @@ void QAnimationWindow::slotAutoLayout()
 {
   if (sender() != NULL && !actionAuto_Layout->isChecked())
     {
-      slotStopLayout();
+      mpLayoutThread->stopLayout();
       return;
     }
 
 #ifdef COPASI_AUTOLAYOUT
   toggleUI(true);
 
-  int numIterations = 1000;
-  int updateInterval = 1;
-  bool doUpdate = true;
-  // create the spring layout
-  CCopasiSpringLayout l(mpScene->getCurrentLayout(), &mpParameterWindow->getLayoutParameters());
-  l.createVariables();
-  CLayoutEngine le(&l, false);
-  QAbstractEventDispatcher* pDispatcher = QAbstractEventDispatcher::instance();
-  int i = 0;
-  double pot, oldPot = -1.0;
-  mIsRunning = true;
+  mpLayoutThread->createSpringLayout(mpScene->getCurrentLayout(), 100000);
 
-  for (; (i < numIterations) && (mStopLayout) == false; ++i)
-    {
-      pot = le.step();
-
-      if (pot == 0.0 || fabs((pot - oldPot) / pot) < 1e-9)
-        {
-          break;
-        }
-      else
-        {
-          oldPot = pot;
-        }
-
-      if (doUpdate && (i % updateInterval == 0))
-        {
-          l.finalizeState(); //makes the layout ready for drawing;
-          // redraw
-          mpScene->recreate();
-        }
-
-      if (pDispatcher->hasPendingEvents())
-        {
-          pDispatcher->processEvents(QEventLoop::AllEvents);
-        }
-    }
-
-  // redraw the layout
-  l.finalizeState(); //makes the layout ready for drawing;
-  mIsRunning = false;
-
-  if (mpScene == NULL) return;
-
-  mpScene->recreate();
 #endif //COPASI_AUTOLAYOUT
-  // once done restore the icon
-  toggleUI(false);
 }

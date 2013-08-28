@@ -1,3 +1,8 @@
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 #ifndef QANIMATION_CONTROLS_H
 #define QANIMATION_CONTROLS_H
 
@@ -11,13 +16,13 @@ class QAnimationControls : public QWidget, public Ui::QAnimationControls
 {
   Q_OBJECT
 public:
-  QAnimationControls (QWidget* parent = NULL);
-  virtual ~QAnimationControls ();
+  QAnimationControls(QWidget* parent = NULL);
+  virtual ~QAnimationControls();
 
   void setNumSteps(size_t numSteps);
   void setCurrentStep(size_t currentStep);
   bool isPlaying() const;
-    
+
 public slots:
   void slotChangeInterval(int);
   void slotBack();
@@ -38,9 +43,9 @@ signals:
   void step_backward();
   void showStep(int);
 
-protected: 
+protected:
   size_t mNumSteps;
-  size_t mCurrentStep;  
+  size_t mCurrentStep;
   bool mShouldLoop;
   QTimer *mpTimer;
 

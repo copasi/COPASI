@@ -1054,6 +1054,7 @@ void CopasiUI3Window::closeEvent(QCloseEvent* ce)
 // Cleanup all the temp .cps files created at runtime.
 void CopasiUI3Window::CleanUp()
 {
+  emit signalQuit();
   std::string tempDir;
   COptions::getValue("Tmp", tempDir);
 

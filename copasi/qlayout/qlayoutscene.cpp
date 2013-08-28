@@ -114,19 +114,19 @@ void QLayoutScene::initializeResolver(CCopasiDataModel* model, CLRenderInformati
   CLLocalRenderInformation* local = dynamic_cast<CLLocalRenderInformation*>(mpRender);
 
   if (local != NULL)
-    mpResolver = new CLRenderResolver(*local, mpLayout->getListOfLocalRenderInformationObjects(),   model->getListOfLayouts()->getListOfGlobalRenderInformationObjects());
+    mpResolver = QSharedPointer<CLRenderResolver>(new CLRenderResolver(*local, mpLayout->getListOfLocalRenderInformationObjects(),   model->getListOfLayouts()->getListOfGlobalRenderInformationObjects()));
   else
-    mpResolver = new CLRenderResolver(*dynamic_cast<CLGlobalRenderInformation*>(mpRender), model->getListOfLayouts()->getListOfGlobalRenderInformationObjects());
+    mpResolver = QSharedPointer<CLRenderResolver>(new CLRenderResolver(*dynamic_cast<CLGlobalRenderInformation*>(mpRender), model->getListOfLayouts()->getListOfGlobalRenderInformationObjects()));
 }
 
-void QLayoutScene::setResolver(const CLRenderResolver* resolver)
+void QLayoutScene::setResolver(CLRenderResolver* resolver)
 {
-  mpResolver = resolver;
+  mpResolver = QSharedPointer<CLRenderResolver>(resolver);
 }
 
 const CLRenderResolver* QLayoutScene::getResolver() const
 {
-  return mpResolver;
+  return mpResolver.data();
 }
 
 QLayoutScene::~QLayoutScene()
@@ -153,15 +153,15 @@ void QLayoutScene::addGlyph(const CLGraphicalObject* go)
     {
       if (curveGlyph->getCurve().getNumCurveSegments() > 0 || reaction != NULL || general != NULL)
         item = new QConnectionGraphicsItem(curveGlyph,
-                                           mpResolver == NULL ? NULL : mpResolver);
+                                           mpResolver == NULL ? NULL : mpResolver.data());
     }
   else if (text != NULL)
     {
-      item = new QLabelGraphicsItem(text, mpResolver == NULL ? NULL : mpResolver);
+      item = new QLabelGraphicsItem(text, mpResolver == NULL ? NULL : mpResolver.data());
     }
   else
     {
-      item = new QStyledGraphicsItem(go, mpResolver == NULL ? NULL : mpResolver);
+      item = new QStyledGraphicsItem(go, mpResolver == NULL ? NULL : mpResolver.data());
     }
 
   if (item != NULL)
@@ -204,7 +204,7 @@ void QLayoutScene::fillFromLayout(const CLayout* layout)
 
   if (mpRender != NULL && mpResolver != NULL)
     {
-      QRenderConverter::setBackground(this, mpRender->getBackgroundColor(), mpResolver);
+      QRenderConverter::setBackground(this, mpRender->getBackgroundColor(), mpResolver.data());
     }
 
   const CCopasiVector<CLCompartmentGlyph> & comps = layout->getListOfCompartmentGlyphs();

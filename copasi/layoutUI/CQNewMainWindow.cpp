@@ -65,14 +65,10 @@
 #include "copasi/layout/CLGlyphs.h"
 #include "copasi/layout/CLBase.h"
 #include "copasi/layout/CLCurve.h"
-#include "copasi/randomGenerator/CRandom.h"
 #include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
-#include <layoutUI/CQSpringLayoutParameterWindow.h>
-
-#include <qwt_slider.h>
-#include <qwt_scale_engine.h>
+#include <layoutUI/CQLayoutThread.h>
 
 #endif // COPASI_AUTOLAYOUT
 
@@ -88,10 +84,6 @@
 #include "layout_stop.xpm"
 #endif // COPASI_AUTOLAYOUT
 
-#include <QGraphicsView>
-#include <QPainter>
-#include <layout/CLRenderResolver.h>
-
 const char* const CQNewMainWindow::ZOOM_FACTOR_STRINGS[] = {"1%", "2%", "3%", "4%", "5%", "10%", "20%", "25%", "30%", "40%", "50%", "75%", "100%", "150%", "200%", "300%", "400%", "500%", "1000%"};
 const double CQNewMainWindow::ZOOM_FACTORS[] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
 
@@ -99,6 +91,8 @@ const double CQNewMainWindow::ZOOM_FACTORS[] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.
 
 CQNewMainWindow::~CQNewMainWindow()
 {
+  // ensure layout is terminated
+  mpLayoutThread->terminateLayout();
   // remove from window menu
   removeFromMainWindow();
 }
@@ -123,12 +117,11 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   , mpChangeColorAction(NULL)
 #endif // ELEMENTARY_MODE_DISPLAY
 #ifdef COPASI_AUTOLAYOUT
-  , mStopLayout(false)
-  , mIsRunning(false)
   , mpStopLayoutAction(NULL)
   , mpRandomizeLayout(NULL)
   , mpCalculateDimensions(NULL)
-  , mpParameterWindow(NULL)
+  , mpLayoutThread(NULL)
+
 #endif //  COPASI_AUTOLAYOUT
 {
 
@@ -174,11 +167,14 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
 
 #ifdef COPASI_AUTOLAYOUT
 
-  mpParameterWindow = new CQSpringLayoutParameterWindow("Layout Parameters", this);
+  mpLayoutThread = new CQLayoutThread(this);
+  connect(mpLayoutThread, SIGNAL(layoutUpdated()), this, SLOT(slotLayoutUpdated()));
+  connect(mpLayoutThread, SIGNAL(layoutFinished()), this, SLOT(slotLayoutFinished()));
+  QDockWidget* pParameterWindow = mpLayoutThread->getParameterWindow();
 
-  addDockWidget(Qt::LeftDockWidgetArea, mpParameterWindow);
+  addDockWidget(Qt::LeftDockWidgetArea, pParameterWindow);
   mpViewMenu->addSeparator();
-  mpViewMenu->addAction(mpParameterWindow->toggleViewAction());
+  mpViewMenu->addAction(pParameterWindow->toggleViewAction());
 
 #endif
 }
@@ -1670,6 +1666,8 @@ void CQNewMainWindow::redrawNow()
   this->mpLayoutViewer->getPainter()->update();
 }
 
+#ifdef INCLUDE_UNUSED_CODE
+
 /**
  * Creates a CLMetabGlyph for the given CMetab object.
  * If the creation failed, NULL is returned.
@@ -1733,11 +1731,12 @@ CLMetabReferenceGlyph* CQNewMainWindow::createMetabReferenceGlyph(const std::str
   return pResult;
 }
 
+#endif //INCLUDE_UNUSED_CODE
+
 void CQNewMainWindow::randomizeLayout()
 {
-
-  CCopasiSpringLayout l(mpCurrentLayout, &mpParameterWindow->getLayoutParameters());
-  l.randomize();
+  mpLayoutThread->stopLayout();
+  mpLayoutThread->randomizeLayout(mpCurrentLayout);
   redrawNow();
 }
 
@@ -1752,7 +1751,6 @@ void CQNewMainWindow::randomizeLayout()
 void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
 {
   // reset the stop flag
-  this->mStopLayout = false;
   disconnect(this->mpStopLayoutAction, SIGNAL(triggered()), this, SLOT(slotRunSpringLayout()));
   this->mpStopLayoutAction->setToolTip("stop spring layout algorithm");
   connect(this->mpStopLayoutAction, SIGNAL(triggered()), this, SLOT(slotStopClicked()));
@@ -1760,66 +1758,26 @@ void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
   this->mpStopLayoutAction->setEnabled(true);
   this->mpStopLayoutAction->setIcon(QPixmap(layout_stop_xpm));
 
-  // now we create the random layout
-  if (updateInterval < 0) updateInterval = -1;
+  mpLayoutThread->createSpringLayout(mpCurrentLayout, numIterations);
+}
 
-  bool doUpdate = (updateInterval != -1);
-  mIsRunning = true;
-
-  if (numIterations > 0 && this->mpCurrentLayout != NULL &&
-      (this->mpCurrentLayout->getListOfCompartmentGlyphs().size() > 0 || this->mpCurrentLayout->getListOfMetaboliteGlyphs().size() > 0))
-    {
-      // create the spring layout
-      CCopasiSpringLayout l(this->mpCurrentLayout, &mpParameterWindow->getLayoutParameters());
-      l.createVariables();
-      CLayoutEngine le(&l, false);
-      QAbstractEventDispatcher* pDispatcher = QAbstractEventDispatcher::instance();
-      int i = 0;
-      double pot, oldPot = -1.0;
-
-      for (; (i < numIterations) && (this->mStopLayout) == false; ++i)
-        {
-          pot = le.step();
-
-          if (pot == 0.0 || fabs((pot - oldPot) / pot) < 1e-9)
-            {
-              break;
-            }
-          else
-            {
-              oldPot = pot;
-            }
-
-          if (doUpdate && (i % updateInterval == 0))
-            {
-              l.finalizeState(); //makes the layout ready for drawing;
-              // redraw
-              slotCalculateDimensions();
-            }
-
-          if (pDispatcher->hasPendingEvents())
-            {
-              pDispatcher->processEvents(QEventLoop::AllEvents);
-            }
-        }
-
-      // redraw the layout
-      l.finalizeState(); //makes the layout ready for drawing;
-
-      if (!doUpdate || (i % updateInterval != 0))
-        {
-          slotCalculateDimensions();
-        }
-    }
-
-  mIsRunning = false;
-
-  // disable the stop button
-  //this->mpStopLayoutAction->setEnabled(false);
+void CQNewMainWindow::slotLayoutFinished()
+{
   disconnect(this->mpStopLayoutAction, SIGNAL(triggered()), this, SLOT(slotStopClicked()));
   connect(this->mpStopLayoutAction, SIGNAL(triggered()), this, SLOT(slotRunSpringLayout()));
   this->mpStopLayoutAction->setIcon(QPixmap(layout_start_xpm));
   this->mpStopLayoutAction->setToolTip("Run Spring Layout Algorithm");
+  redrawNow();
+}
+
+void CQNewMainWindow::slotLayoutUpdated()
+{
+  if (!mpLayoutThread->pause())
+    return;
+
+  mpLayoutThread->finalize();
+  redrawNow();
+  mpLayoutThread->resume();
 }
 
 /**
@@ -1828,7 +1786,7 @@ void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
  */
 void CQNewMainWindow::slotStopClicked()
 {
-  this->mStopLayout = true;
+  this->mpLayoutThread->stopLayout();
 }
 
 void CQNewMainWindow::slotRunSpringLayout()
@@ -1901,12 +1859,6 @@ void CQNewMainWindow::slotRunRandomizeLayout()
     return;
 
   randomizeLayout();
-  //return;
-
-  // create the spring layout
-  CCopasiSpringLayout l(this->mpCurrentLayout, &mpParameterWindow->getLayoutParameters());
-  l.createVariables();
-  l.finalizeState(); //makes the layout ready for drawing;
 
   slotCalculateDimensions();
 }

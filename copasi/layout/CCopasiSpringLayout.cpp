@@ -504,6 +504,8 @@ void CCopasiSpringLayout::finalizeState()
         {
           CLReferenceGlyph* pRG = pGG->getListOfReferenceGlyphs()[j];
 
+          if (pRG->getCurve().getNumCurveSegments() == 0) continue;
+
           CLPoint refPoint = borderProjection(pRG->getTargetGlyph(), pRG->getBoundingBox().getCenter(), 5);
           pRG->getCurve().clear();
           pRG->getCurve().addCurveSegment(CLLineSegment(refPoint, pRG->getBoundingBox().getCenter()));
@@ -1333,6 +1335,7 @@ CLayout* CCopasiSpringLayout::createLayout(
           pResult->addGeneralGlyph(pGG);
 
           CLReferenceGlyph* pRefGlyph = new CLReferenceGlyph;
+          pRefGlyph->setDimensions(CLDimensions(10, 10));
           pRefGlyph->setTargetGlyphKey(pMetabGlyph->getKey());
           pRefGlyph->setRole("rule connection");
           pGG->addReferenceGlyph(pRefGlyph);

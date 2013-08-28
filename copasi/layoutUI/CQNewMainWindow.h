@@ -44,9 +44,7 @@ class CModel;
 class CLCompartmentGlyph;
 class CLMetabGlyph;
 class CLTextGlyph;
-class CRandom;
-class QwtSlider;
-class CQSpringLayoutParameterWindow;
+class CQLayoutThread;
 #endif // COPASI_AUTOLAYOUT
 
 class CQNewMainWindow : public CWindowInterface
@@ -212,6 +210,8 @@ public slots:
 
 #ifdef COPASI_AUTOLAYOUT
 
+#ifdef INCLUDE_UNUSED_CODE
+
   /**
    * Creates a CLMetabGlyph for the given CMetab object.
    * If the creation failed, a NULL pointers is returned.
@@ -240,6 +240,7 @@ public slots:
       const std::string& metabglyphkey,
       CLMetabReferenceGlyph::Role role,
       double x1, double y1, double x2, double y2);
+#endif //INCLUDE_UNUSED_CODE
 
 public slots:
   void slotRunSpringLayout();
@@ -351,19 +352,14 @@ private:
 #endif // ELEMENTARY_MODE_DISPLAY
 
 #ifdef COPASI_AUTOLAYOUT
-  // a flag that determines if the iterations
-  // of the random layout should be stopped
-  bool mStopLayout;
-
-  /**
-   * A flag indicating, that the autolayout is currently running
-   */
-  bool mIsRunning;
 
   QAction* mpStopLayoutAction;
-
   QAction* mpRandomizeLayout;
   QAction* mpCalculateDimensions;
+
+public slots:
+  void slotLayoutFinished();
+  void slotLayoutUpdated();
 
 public:
   void redrawNow();
@@ -381,8 +377,7 @@ public:
   void createSpringLayout(int numIterations, int updateInterval);
 
 protected:
-  CRandom* mpRandom;
-  CQSpringLayoutParameterWindow* mpParameterWindow;
+  CQLayoutThread* mpLayoutThread;
 
 #endif // COPASI_AUTOLAYOUT
 };

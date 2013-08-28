@@ -7,6 +7,7 @@
 #define QLAYOUT_SCENE_H
 
 #include <QGraphicsScene>
+#include <qsharedpointer.h>
 
 #include <string>
 #include <map>
@@ -24,7 +25,7 @@ class QLayoutScene: public QGraphicsScene
 public:
   QLayoutScene(CLayout *layout, CCopasiDataModel* model = NULL, CLRenderInformationBase* renderInformation = NULL);
   virtual ~QLayoutScene();
-  void setResolver(const CLRenderResolver* resolver);
+  void setResolver(CLRenderResolver* resolver);
   const CLRenderResolver* getResolver() const;
   void saveToFile(const std::string& fileName, const std::string& fileType = "pdf");
   void setLayout(CLayout *layout, CCopasiDataModel* model = NULL, CLRenderInformationBase* renderInformation = NULL);
@@ -46,7 +47,7 @@ private:
 
   CLayout* mpLayout;
   CLRenderInformationBase* mpRender;
-  const CLRenderResolver* mpResolver;
+  QSharedPointer<CLRenderResolver> mpResolver;
 
   std::map< std::string, QGraphicsItem*> mItems;
 };

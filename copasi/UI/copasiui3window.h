@@ -108,6 +108,7 @@ public:
 
 signals:
   void signalLoadFile(QString newFile);
+  void signalQuit();
 
 protected:
   virtual void closeEvent(QCloseEvent* e);
