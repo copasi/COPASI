@@ -39,7 +39,7 @@
 #include "CHybridMethod.h"
 #include "CHybridMethodLSODA.h"
 #include "CTauLeapMethod.h"
-#include "CHybridMethodLSODA.h"
+#include "CHybridMethodODE45.h"
 #include "CTrajectoryMethodDsaLsodar.h"
 #include "CTrajectoryProblem.h"
 #include "model/CState.h"
@@ -81,6 +81,10 @@ CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType)
         pMethod = CHybridMethodLSODA::createHybridMethodLSODA();
         break;
 
+      case hybridODE45:
+        pMethod = new CHybridMethodODE45();
+        break;
+      
       case DsaLsodar:
         pMethod = new CTrajectoryMethodDsaLsodar();
         break;
