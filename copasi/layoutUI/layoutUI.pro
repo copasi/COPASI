@@ -29,6 +29,7 @@ HEADERS = CQGLNetworkPainter.h \
           CDataEntity.h \
           CVisParameters.h \
           CQCurrentValueTable.h \
+          CQLayoutThread.h \
           BezierCurve.h \
           FontChooser.h \
           ParaPanel.h \
@@ -47,6 +48,7 @@ SOURCES = CQLayoutMainWindow.cpp \
           CDataEntity.cpp \
           CVisParameters.cpp \
           CQCurrentValueTable.cpp \
+          CQLayoutThread.cpp \
           CQGLViewport.cpp \
           BezierCurve.cpp \
           FontChooser.cpp \
