@@ -204,7 +204,7 @@ std::string CMetabNameInterface::unQuote(const std::string & displayName)
 
   if (Parser.yyparse() != 0)
     {
-      Names.first = "";
+      Names.first = displayName;
       Names.second = "";
     }
   else
