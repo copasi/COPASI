@@ -187,9 +187,9 @@ extern std::ofstream DebugFile;
 
 # define DEBUG_OUT(s) {DebugFile << (s) << std::endl;}
 #else
-# ifndef NDEBUG
+# if !defined (NDEBUG) && !defined (_DEBUG)
 #  define NDEBUG
-# endif // not NDEBUG
+# endif // !defined (NDEBUG) && !defined (_DEBUG)
 # define DEBUG_OUT(s)
 #endif // COPASI_DEBUG_TRACE
 
