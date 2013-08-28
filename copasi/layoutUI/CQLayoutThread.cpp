@@ -13,6 +13,7 @@
 #include <layout/CCopasiSpringLayout.h>
 #include <layout/CLayoutEngine.h>
 #include <layout/CLayout.h>
+#include <layout/CLayoutState.h>
 
 #include <UI/copasiui3window.h>
 
@@ -25,7 +26,7 @@ CQLayoutThread::CQLayoutThread(QWidget* parent)
   , mPause(false)
   , mpCurrent(NULL)
 {
-  qRegisterMetaType<QSharedPointer<CLayout> >();
+  qRegisterMetaType<QSharedPointer<CLayoutState> >();
   mpParameterWindow = new CQSpringLayoutParameterWindow("Layout Parameters", parent);
   connect(CopasiUI3Window::getMainWindow(), SIGNAL(signalQuit()), this, SLOT(terminateLayout()), Qt::DirectConnection);
 }
@@ -78,6 +79,8 @@ void CQLayoutThread::randomizeLayout(CLayout* layout)
 
   CCopasiSpringLayout l(layout, &mpParameterWindow->getLayoutParameters());
   l.randomize();
+  emit layoutCreated(QSharedPointer<CLayoutState>(new CLayoutState(layout)));
+
   emit layoutUpdated();
 }
 
@@ -100,11 +103,6 @@ void CQLayoutThread::stopLayout()
 {
   mStopLayout = true;
   mPauseCond.wakeAll();
-}
-
-static void DeleteLayout(CLayout *l)
-{
-  delete l;
 }
 
 void CQLayoutThread::run()
@@ -158,13 +156,15 @@ void CQLayoutThread::run()
         {
           last = tick;
           // redraw
-          //finalize();
-          //emit layoutCreated(QSharedPointer<CLayout>(new CLayout(*mpCurrentLayout), &DeleteLayout));
+          finalize();
+          CLayoutState *state = new CLayoutState(mpCurrentLayout);
+          emit layoutCreated(QSharedPointer<CLayoutState>(state));
           emit layoutUpdated();
         }
     }
 
-  //finalize();
+  finalize();
+  emit layoutCreated(QSharedPointer<CLayoutState>(new CLayoutState(mpCurrentLayout)));
   // redraw the layout
   emit layoutUpdated();
   emit layoutFinished();

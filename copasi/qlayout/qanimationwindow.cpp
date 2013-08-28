@@ -310,7 +310,7 @@ void QAnimationWindow::init()
   mpLayoutThread = new CQLayoutThread(this);
   connect(mpLayoutThread, SIGNAL(layoutFinished()), this, SLOT(slotStopLayout()));
   connect(mpLayoutThread, SIGNAL(layoutUpdated()), this, SLOT(slotRedrawScene()));
-  //connect(mpLayoutThread, SIGNAL(layoutCreated(QSharedPointer<CLayout>)), this, SLOT(slotLayoutCreated(QSharedPointer<CLayout>)));
+  connect(mpLayoutThread, SIGNAL(layoutCreated(QSharedPointer<CLayoutState>)), this, SLOT(slotLayoutCreated(QSharedPointer<CLayoutState>)));
 
   QDockWidget* pParameterWindow = mpLayoutThread->getParameterWindow();
   addDockWidget(Qt::LeftDockWidgetArea, pParameterWindow);
@@ -345,12 +345,12 @@ QAnimationWindow::~QAnimationWindow()
 
 void QAnimationWindow::slotRedrawScene()
 {
-  if (!mpLayoutThread->pause())
-    return;
+  //if (!mpLayoutThread->pause())
+  //  return;
 
-  mpLayoutThread->finalize();
-  mpScene->recreate();
-  mpLayoutThread->resume();
+  //mpLayoutThread->finalize();
+  //mpScene->recreate();
+  //mpLayoutThread->resume();
 }
 
 void QAnimationWindow::setScene(QLayoutScene* scene, CCopasiDataModel* dataModel)
@@ -470,9 +470,10 @@ void QAnimationWindow::slotStopLayout()
   actionAuto_Layout->setIcon(CQIconResource::icon(CQIconResource::play));
 }
 
-void QAnimationWindow::slotLayoutCreated(QSharedPointer<CLayout> layout)
+void QAnimationWindow::slotLayoutCreated(QSharedPointer<CLayoutState> state)
 {
-  //reloadLayout(layout.data());
+  state->applyTo(mpScene->getCurrentLayout());
+  mpScene->recreate();
 }
 
 void QAnimationWindow::reloadLayout(CLayout* layout)
@@ -512,7 +513,10 @@ void QAnimationWindow::slotAutoLayout()
 #ifdef COPASI_AUTOLAYOUT
   toggleUI(true);
 
-  mpLayoutThread->createSpringLayout(mpScene->getCurrentLayout(), 100000);
+  // work on a copy!
+  CLayoutState::tagLayout(mpScene->getCurrentLayout());
+  mpLayoutThread->createSpringLayout(new CLayout(*mpScene->getCurrentLayout()), 100000);
+  //mpLayoutThread->createSpringLayout(mpScene->getCurrentLayout(), 100000);
 
 #endif //COPASI_AUTOLAYOUT
 }

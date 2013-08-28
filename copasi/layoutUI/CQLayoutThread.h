@@ -12,6 +12,8 @@
 #include <qsharedpointer.h>
 #include <qmetatype.h>
 
+#include <copasi.h>
+#include <layout/CLayoutState.h>
 #include <layout/CCopasiSpringLayout.h>
 
 class CQSpringLayoutParameterWindow;
@@ -49,7 +51,7 @@ public:
 signals:
   void layoutUpdated();
   void layoutFinished();
-  void layoutCreated(QSharedPointer<CLayout> newLayout);
+  void layoutCreated(QSharedPointer<CLayoutState> newLayout);
 
 public slots:
   void terminateLayout();
@@ -89,6 +91,6 @@ protected:
   CCopasiSpringLayout *mpCurrent;
 };
 
-Q_DECLARE_METATYPE(QSharedPointer<CLayout>)
+Q_DECLARE_METATYPE(QSharedPointer<CLayoutState>)
 
 #endif //CQ_LAYOUT_THREAD_H

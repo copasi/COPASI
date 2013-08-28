@@ -16,6 +16,7 @@
 #define CLBASE_H_
 
 #include "copasi.h"
+#include <string>
 
 class SBase;
 
@@ -32,13 +33,18 @@ class CLPoint;
 class CLBase
 {
 public:
-  CLBase() {};
-  CLBase(const CLBase &) {};
-  CLBase(const SBase &) {};
+  CLBase() : mTag("") {};
+  CLBase(const CLBase &b) : mTag(b.mTag)  {};
+  CLBase(const SBase &) : mTag("") {};
   // make CLBase polymorphic so that we can dynamic cast from CLBase to
   // CLGraphicalObject
   virtual ~CLBase() {};
   virtual void moveBy(const CLPoint &) {};
+  const std::string& getTag() const {return mTag;}
+  void setTag(const std::string& tag) {mTag = tag;}
+  bool hasTag() const {return mTag.empty();}
+protected:
+  std::string mTag;
 };
 
 /**

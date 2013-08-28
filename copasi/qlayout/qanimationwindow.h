@@ -11,6 +11,7 @@
 
 #include <UI/CWindowInterface.h>
 
+#include <layout/CLayoutState.h>
 #include <qlayout/ui_qanimationwindow.h>
 
 class QLayoutScene;
@@ -40,7 +41,7 @@ public slots:
   void slotAutoLayout();
   void slotStopLayout();
   void slotRedrawScene();
-  void slotLayoutCreated(QSharedPointer<CLayout> layout);
+  void slotLayoutCreated(QSharedPointer<CLayoutState> state);
 private:
   void init();
   void toggleUI(bool isPlaying);
