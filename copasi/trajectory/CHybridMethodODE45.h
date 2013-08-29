@@ -662,7 +662,7 @@ class CHybridMethodODE45 : public CTrajectoryMethod
   /**
    * A vector to record middle state for interpolation
    */
-  std::vector <C_FLOAT64> mStateRecord;
+  CVector <C_FLOAT64> mStateRecord;
 
   //================Stochastic Related================
   /**

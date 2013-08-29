@@ -207,7 +207,8 @@ void CHybridMethodODE45::initializeParameter()
       //-------------------------------------------------------------------
       setValue("Max Internal Steps", *pParm->getValue().pUINT);
       removeParameter("HYBRID.MaxSteps");
-
+      
+      /*
       if ((pParm = getParameter("HYBRID.LowerStochLimit")) != NULL)
         {
           setValue("Lower Limit", *pParm->getValue().pDOUBLE);
@@ -225,6 +226,7 @@ void CHybridMethodODE45::initializeParameter()
           setValue("Partitioning Interval", *pParm->getValue().pUINT);
           removeParameter("HYBRID.PartitioningInterval");
         }
+      */
       //-------------------------------------------------------------------
 
       if ((pParm = getParameter("UseRandomSeed")) != NULL)
@@ -338,7 +340,7 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
     mpRandomGenerator->initialize(mRandomSeed);
 
   mStoi = mpModel->getStoiReordered();
-  mUpdateSet.clear();// how to set this parameter?
+  mUpdateSet.clear();// how to set this parameter
   setupCalculateSet(); //should be done after setupBalances()
 
   setupDependencyGraph(); // initialize mDG
@@ -408,11 +410,16 @@ void CHybridMethodODE45::setupMetabFlags()
   size_t rctIndex;
   mMetabFlags.resize(mNumVariableMetabs);
 
+  std::vector<CHybridODE45MetabFlag>::iterator metabIt 
+    = mMetabFlags.begin();
+  const std::vector<CHybridODE45MetabFlag>::iterator metabEndIt
+    =mMetabFlags.end();
+
   // initialization
-  for (size_t metab=0; metab<mNumVariableMetabs; metab++)
+  for (; metabIt != metabEndIt; ++metabIt)
     {
-      mMetabFlags[metab].mFlag = SLOW;
-      mMetabFlags[metab].mFastReaction.clear();
+      metabIt->mFlag = SLOW;
+      metabIt->mFastReaction.clear();
     }
 
   CHybridODE45Balance * const pBalance;
@@ -445,16 +452,22 @@ void CHybridMethodODE45::setupReactionFlags()
   mHasStoiReaction = false;
   mHasDetermReaction = false;
   mReactionFlags.resize(mNumReactions);
-  for (int i=0; i<mNumReactions; i++)
+  
+  std::vector<size_t>::iterator flagIt = 
+    mReactionFlags.begin();
+  const std::vector<size_t>::iterator flagEndIt =
+    mReactionFlags.end();
+
+  for (; flagIt != flagEndIt; ++flagIt)
     {
-      if((*mpReactions)[i]->isChecked())
+      if((*mpReactions)[i]->isFast())
 	{
-	  mReactionFlags[i] = FAST;
+	  *flagIt = FAST;
 	  mHasDetermReaction = true;
 	}
       else
 	{
-	  mReactionFlags[i] = SLOW;
+	  *flagIt = SLOW;
 	  mHasStoiReaction = true;
 	}
     }
@@ -520,7 +533,7 @@ void CHybridMethodODE45::setupBalances()
 
 
 /**
- * Sets up the priority queue.
+ * Sets up the priority queue, for pure SSA.
  *
  * @param startTime The time at which the simulation starts.
  */
@@ -600,13 +613,22 @@ void CHybridMethodODE45::setupCalculateSet()
   mCalculateSet.clear();
 
   std::set<size_t>::iterator reactIt;
-  for (size_t metab=0; metab<mNumVariableMetabs; metab++)
+
+  std::vector<CHybridODE45MetabFlag>::iterator metabIt
+    = mMetabFlags.begin();
+  const std::vector<CHybridODE45MetabFlag>::iterator metabEndIt
+    = mMetabFlags.end();
+
+  std::vector< std::set<size_t> >::iterator m2rIt =
+    mMetab2React.begin();
+
+  for (; metabIt != metabEndIt; ++metabIt, ++m2rIt)
     {
       //for fast metabs, insert reaction into mCalculateSet
-      if(mMetabFlags[metab].mFlag == FAST) //fast metab
+      if(metabIt->mFlag == FAST) //fast metab
 	{
-	  for (reactIt  = mMetab2React[metab].begin(); 
-	       reactIt != mMetab2React[metab].end();
+	  for (reactIt  = m2rIt->begin(); 
+	       reactIt != m2rIt->end();
 	       reactIt++) // check all reactions that involves metab
 	    mCalculateSet.insert(*reactIt);
 	}
@@ -628,11 +650,11 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
   // :TODO: Bug 774: This assumes that the number of variable metabs is the number
   // of metabs determined by reaction. In addition they are expected at the beginning of the
   // MetabolitesX which is not the case if we have metabolites of type ODE.
-  for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++)
-    if (mpProblem->getModel()->getMetabolitesX()[i]->getValue() >= mMaxIntBeforeStep)
-      {
+  //for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++)
+  //  if (mpProblem->getModel()->getMetabolitesX()[i]->getValue() >= mMaxIntBeforeStep)
+  //    {
         // throw exception or something like that
-      }
+  //    }
 
   // do several steps
   C_FLOAT64 time = mpProblem->getModel()->getTime();
@@ -677,7 +699,7 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
   size_t rIndex = 0;
 
   //1----pure SSA method
-  if (mHasStoiReaction && !mHasDetermReaction) //has only deterministic reactions
+  if (mHasStoiReaction && !mHasDetermReaction) //has only stochastic reactions
     {
       getStochTimeAndIndex(ds, rIndex);
 
@@ -702,13 +724,18 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
 	  
 	  //update corresponding propensities
 	  size_t reactId;
-	  std::set <size_t>::iterator updateIt=mUpdateSet.begin();
-	  for (; updateIt != NULL; updateIt++)
+	  std::set <size_t>::iterator updateIt 
+	    = mUpdateSet.begin();
+	  const std::set <size_t>::iterator updateEndIt
+	    = mUpdateSet.end();
+
+	  for (; updateIt != updateEndIt; updateIt++)
 	    {
 	      reactId = *updateIt;
 	      calculateAmu(reactId);
 	    }
-
+	  
+	  mUpdateSet.clear();
 	  mODE45Status = NEW_STEP;
 	  //slow reaction propensities may change during integration,
 	  //so, PriorityQueue may not be suitable at this condition
@@ -726,9 +753,6 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
 
   return ds;
 }
-
-
-
 
 
 //========Function for ODE45========
@@ -770,7 +794,6 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
   //1----Set Parameters for ODE45 solver
   //=(1)= solver error message
   mErrorMsg.str("");
-  mODE45.setOstream(mErrorMsg);
 
   //=(2)= set state
   *mpState = mpProblem->getModel()->getState();
@@ -850,6 +873,7 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
     }
 
   //6----Has Event, Do Interpolation
+  // Put interpolation part into independent function, next
   if (mODE45Status == HAS_EVENT)
     {
       //==(1)==for one-step method, reset record each time when do interpolation
@@ -874,7 +898,7 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
       C_FLOAT64 * tmpY   = mpEventState->getArray() + 1;
       C_FLOAT64 * stateY = mpState->beginIndependent();
       for (size_t i=0; i<mData.dim-1; i++)
-	stateY[i] = tmpY[i];
+	stateY[i] = tmpY[i]; //write result into mpState
 
       mRestartODE45 = true;
 
@@ -926,7 +950,8 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C
   // propensities. 
   // I wonder, is there other choice, without changing
   // the values in mpState.
-  C_FLOAT64 * tmpY = mpState->beginIndependent();
+
+  C_FLOAT64 * tmpY = mpState->beginIndependent();//mpState is a local copy
   for (i=0; i<mData.dim-1; ++i)
     tmpY[i] = y[i];
 
