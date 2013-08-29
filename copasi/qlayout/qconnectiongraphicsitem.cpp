@@ -13,9 +13,9 @@
 #include <layout/CLReactionGlyph.h>
 #include <layout/CLRenderResolver.h>
 
-QPainterPath* QConnectionGraphicsItem::getPath(const CLCurve& curve)
+QSharedPointer<QPainterPath> QConnectionGraphicsItem::getPath(const CLCurve& curve)
 {
-  QPainterPath* result = new QPainterPath();
+  QSharedPointer<QPainterPath> result = QSharedPointer<QPainterPath>(new QPainterPath());
 
   for (size_t i = 0; i < curve.getNumCurveSegments(); ++i)
     {
@@ -87,13 +87,13 @@ QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGl
   setFlag(QGraphicsItem::ItemSendsGeometryChanges);
   setData(COPASI_LAYOUT_KEY, QString(curveGlyph->getKey().c_str()));
 
-  QPainterPath& path = *getPath(curveGlyph->getCurve());
+  QSharedPointer<QPainterPath> path = getPath(curveGlyph->getCurve());
   QGraphicsPathItem* item;
   QGraphicsItemGroup* itemGroup;
 
   if (curveGlyph->getCurve().getNumCurveSegments() > 0)
     {
-      item = new QGraphicsPathItem(path);
+      item = new QGraphicsPathItem(*path);
       itemGroup = new QGraphicsItemGroup();
       itemGroup->addToGroup(item);
 
@@ -116,8 +116,8 @@ QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGl
 
           if (metab->getCurve().getNumCurveSegments() > 0)
             {
-              path = *getPath(metab->getCurve());
-              item = new QGraphicsPathItem(path);
+              path = getPath(metab->getCurve());
+              item = new QGraphicsPathItem(*path);
               itemGroup = new QGraphicsItemGroup();
               itemGroup->addToGroup(item);
               QRenderConverter::applyStyle(item, &metab->getBoundingBox(), style == NULL ?
@@ -141,8 +141,8 @@ QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGl
 
           if (glyph ->getCurve().getNumCurveSegments() > 0)
             {
-              path = *getPath(glyph ->getCurve());
-              item = new QGraphicsPathItem(path);
+              path = getPath(glyph ->getCurve());
+              item = new QGraphicsPathItem(*path);
               itemGroup = new QGraphicsItemGroup();
               itemGroup->addToGroup(item);
               QRenderConverter::applyStyle(item, &glyph ->getBoundingBox(), style == NULL ?

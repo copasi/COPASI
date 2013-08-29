@@ -54,6 +54,7 @@ protected:
   QMenu* mpWindowMenu;
   QCopasiAnimation* mAnimation;
   CQLayoutThread* mpLayoutThread;
+  QLayout* mCopy;
 };
 
 #endif // QANIMATION_WINDOW_H

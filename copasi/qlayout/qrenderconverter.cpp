@@ -4,6 +4,7 @@
 // All rights reserved.
 
 #include <qgraphicsitem.h>
+#include <qsharedpointer.h>
 #include <qpen.h>
 #include <qfont.h>
 #include <QFontMetrics>
@@ -101,14 +102,14 @@ QColor getColor(const std::string& color, const CLRenderResolver* resolver)
   return getColor(resolver->getColorDefinition(color));
 }
 
-QLinearGradient* getLinearGradient(const CLLinearGradient* linear, const CLBoundingBox* bounds, const CLRenderResolver* resolver)
+QSharedPointer<QLinearGradient> getLinearGradient(const CLLinearGradient* linear, const CLBoundingBox* bounds, const CLRenderResolver* resolver)
 {
   double x1 = bounds->getPosition().getX() + linear->getXPoint1().getAbsoluteValue()  + (linear->getXPoint1().getRelativeValue() / 100.0 * bounds->getDimensions().getWidth());
   double y1 = bounds->getPosition().getY() + linear->getYPoint1().getAbsoluteValue()  + (linear->getYPoint1().getRelativeValue() / 100.0 * bounds->getDimensions().getHeight());
   double x2 = bounds->getPosition().getX() + linear->getXPoint2().getAbsoluteValue()  + (linear->getXPoint2().getRelativeValue() / 100.0 * bounds->getDimensions().getWidth());
   double y2 = bounds->getPosition().getY() + linear->getYPoint2().getAbsoluteValue()  + (linear->getYPoint2().getRelativeValue() / 100.0 * bounds->getDimensions().getHeight());
 
-  QLinearGradient* result = new QLinearGradient(x1, y1, x2, y2);
+  QSharedPointer<QLinearGradient> result = QSharedPointer<QLinearGradient>(new QLinearGradient(x1, y1, x2, y2));
 
   switch (linear->getSpreadMethod())
     {
@@ -137,7 +138,7 @@ QLinearGradient* getLinearGradient(const CLLinearGradient* linear, const CLBound
   return result;
 }
 
-QRadialGradient* getRadialGradient(const CLRadialGradient* radial, const CLBoundingBox* bounds, const CLRenderResolver* resolver)
+QSharedPointer<QRadialGradient> getRadialGradient(const CLRadialGradient* radial, const CLBoundingBox* bounds, const CLRenderResolver* resolver)
 {
   double cx = bounds->getPosition().getX() + radial->getCenterX().getAbsoluteValue()  + radial->getCenterX().getRelativeValue() / 100.0 * bounds->getDimensions().getWidth();
   double cy = bounds->getPosition().getY() + radial->getCenterY().getAbsoluteValue()  + radial->getCenterY().getRelativeValue() / 100.0 * bounds->getDimensions().getHeight();
@@ -145,7 +146,7 @@ QRadialGradient* getRadialGradient(const CLRadialGradient* radial, const CLBound
   double fy = bounds->getPosition().getY() + radial->getFocalPointY().getAbsoluteValue()  + radial->getFocalPointY().getRelativeValue() / 100.0 * bounds->getDimensions().getHeight();
   double r = radial->getRadius().getAbsoluteValue()  + radial->getRadius().getRelativeValue() / 100.0 * bounds->getDimensions().getWidth();
 
-  QRadialGradient* result = new QRadialGradient(cx, cy, r, fx, fy);
+  QSharedPointer<QRadialGradient> result = QSharedPointer<QRadialGradient>(new QRadialGradient(cx, cy, r, fx, fy));
 
   switch (radial->getSpreadMethod())
     {
@@ -174,7 +175,7 @@ QRadialGradient* getRadialGradient(const CLRadialGradient* radial, const CLBound
   return result;
 }
 
-QGradient* getGradient(const CLGradientBase* base, const CLBoundingBox* bounds, const CLRenderResolver* resolver)
+QSharedPointer<QGradient> getGradient(const CLGradientBase* base, const CLBoundingBox* bounds, const CLRenderResolver* resolver)
 {
   const CLLinearGradient* linear = dynamic_cast<const CLLinearGradient*>(base);
 
@@ -186,10 +187,10 @@ QGradient* getGradient(const CLGradientBase* base, const CLBoundingBox* bounds, 
   if (radial != NULL)
     return getRadialGradient(radial, bounds, resolver);
 
-  return NULL;
+  return QSharedPointer<QGradient>();
 }
 
-QFont* getFont(const CLText *item, const CLGroup *group, const CLRenderResolver* /*resolver*/, const CLBoundingBox *pBB)
+QSharedPointer<QFont> getFont(const CLText *item, const CLGroup *group, const CLRenderResolver* /*resolver*/, const CLBoundingBox *pBB)
 {
   QString font("Verdana"); double fontSize = 10, weight = 50; bool italic = false;
 
@@ -249,7 +250,7 @@ QFont* getFont(const CLText *item, const CLGroup *group, const CLRenderResolver*
           break;
       }
 
-  QFont *result = new QFont(font, -1, weight, italic);
+  QSharedPointer<QFont> result = QSharedPointer<QFont>(new QFont(font, -1, weight, italic));
   result->setPixelSize(fontSize);
 
   if (font == "serif")
@@ -268,7 +269,7 @@ QFont* getFont(const CLText *item, const CLGroup *group, const CLRenderResolver*
   return result;
 }
 
-QBrush* getBrush(const CLGraphicalPrimitive2D *item, const CLGroup *group, const CLRenderResolver* resolver, const CLBoundingBox *pBB)
+QSharedPointer<QBrush> getBrush(const CLGraphicalPrimitive2D *item, const CLGroup *group, const CLRenderResolver* resolver, const CLBoundingBox *pBB)
 {
   QColor color;
 
@@ -278,10 +279,10 @@ QBrush* getBrush(const CLGraphicalPrimitive2D *item, const CLGroup *group, const
 
       if (base != NULL)
         {
-          return new QBrush(*getGradient(base, pBB, resolver));
+          return QSharedPointer<QBrush>(new QBrush(*getGradient(base, pBB, resolver)));
         }
 
-      return new QBrush(getColor(item->getFillColor(), resolver));
+      return QSharedPointer<QBrush>(new QBrush(getColor(item->getFillColor(), resolver)));
     }
   else if (group != NULL && group->isSetFill())
     {
@@ -289,16 +290,16 @@ QBrush* getBrush(const CLGraphicalPrimitive2D *item, const CLGroup *group, const
 
       if (base != NULL)
         {
-          return new QBrush(*getGradient(base, pBB, resolver));
+          return QSharedPointer<QBrush>(new QBrush(*getGradient(base, pBB, resolver)));
         }
 
-      return new QBrush(getColor(group->getFillColor(), resolver));
+      return QSharedPointer<QBrush>(new QBrush(getColor(group->getFillColor(), resolver)));
     }
 
-  return new QBrush();
+  return QSharedPointer<QBrush>(new QBrush());
 }
 
-QPen* getPen(const CLGraphicalPrimitive1D *item, const CLGroup *group, const CLRenderResolver* resolver, const CLBoundingBox * /*pBB*/)
+QSharedPointer<QPen> getPen(const CLGraphicalPrimitive1D *item, const CLGroup *group, const CLRenderResolver* resolver, const CLBoundingBox * /*pBB*/)
 {
   QColor color; double width;
 
@@ -310,7 +311,7 @@ QPen* getPen(const CLGraphicalPrimitive1D *item, const CLGroup *group, const CLR
     {
       color = getColor(group->getStroke(), resolver);
     }
-  else return new QPen(Qt::transparent);
+  else return QSharedPointer<QPen>(new QPen(Qt::transparent));
 
   if (item != NULL && item->isSetStrokeWidth())
     {
@@ -320,9 +321,9 @@ QPen* getPen(const CLGraphicalPrimitive1D *item, const CLGroup *group, const CLR
     {
       width = group->getStrokeWidth();
     }
-  else return new QPen(Qt::transparent);
+  else return QSharedPointer<QPen>(new QPen(Qt::transparent));
 
-  QPen *result = new QPen(color, width);
+  QSharedPointer<QPen> result = QSharedPointer<QPen>(new QPen(color, width));
   result->setCapStyle(Qt::RoundCap);
   result->setJoinStyle(Qt::RoundJoin);
 
@@ -367,12 +368,12 @@ void fillItemFromEllipse(QGraphicsItemGroup *item, const CLBoundingBox *pBB, con
 
   QGraphicsEllipseItem* ellipseItem = new QGraphicsEllipseItem(
     x - rx, y - ry, rx * 2, ry * 2);
-  QPen *pen = getPen(pEllipse, group, resolver, pBB);
+  QSharedPointer<QPen> pen = getPen(pEllipse, group, resolver, pBB);
   ellipseItem->setPen(*pen);
-  delete pen;
-  QBrush *brush = getBrush(pEllipse, group, resolver, pBB);
+
+  QSharedPointer<QBrush> brush = getBrush(pEllipse, group, resolver, pBB);
   ellipseItem->setBrush(*brush);
-  delete brush;
+
   transform(ellipseItem, pEllipse, group);
   item->addToGroup(ellipseItem);
 }
@@ -428,9 +429,9 @@ void fillItemFromCurve(QGraphicsItemGroup *item, const CLBoundingBox *pBB, const
   else return;
 
   QGraphicsPathItem *pathItem = new QGraphicsPathItem(path);
-  QPen *pen = getPen(NULL, group, resolver, pBB);
+  QSharedPointer<QPen> pen = getPen(NULL, group, resolver, pBB);
   pathItem->setPen(*pen);
-  delete pen;
+
   //QBrush *brush = getBrush(NULL, group, resolver, pBB);
   //pathItem->setBrush(*brush);
   //delete brush;
@@ -464,9 +465,9 @@ void moveToPoint(QPainterPath &path, const CLRenderPoint* current, const CLBound
   );
 }
 
-QPainterPath *getPath(const CLPolygon* pCurve, const CLBoundingBox *pBB)
+QSharedPointer<QPainterPath> getPath(const CLPolygon* pCurve, const CLBoundingBox *pBB)
 {
-  QPainterPath *path = new QPainterPath();
+  QSharedPointer<QPainterPath> path = QSharedPointer<QPainterPath>(new QPainterPath());
 
   const std::vector<CLRenderPoint*>& elements = *pCurve->getListOfElements();
   std::vector<CLRenderPoint*>::const_iterator it = elements.begin();
@@ -499,7 +500,7 @@ QPainterPath *getPath(const CLPolygon* pCurve, const CLBoundingBox *pBB)
   return path;
 }
 
-QPainterPath *getPath(const CLRectangle* pRect, const CLBoundingBox *pBB)
+QSharedPointer<QPainterPath> getPath(const CLRectangle* pRect, const CLBoundingBox *pBB)
 {
 
   double x = pBB->getPosition().getX() + pRect->getX().getAbsoluteValue() + pRect->getX().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
@@ -509,14 +510,14 @@ QPainterPath *getPath(const CLRectangle* pRect, const CLBoundingBox *pBB)
   double rx = pRect->getRadiusX().getAbsoluteValue() + pRect->getRadiusX().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
   double ry = pRect->getRadiusY().getAbsoluteValue() + pRect->getRadiusY().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
 
-  QPainterPath *path = new QPainterPath();
+  QSharedPointer<QPainterPath> path = QSharedPointer<QPainterPath>(new QPainterPath());
 
   path->addRoundedRect(x, y, w, h, rx, ry);
 
   return path;
 }
 
-QPainterPath *getPath(const CLEllipse* pEllipse, const CLBoundingBox *pBB)
+QSharedPointer<QPainterPath> getPath(const CLEllipse* pEllipse, const CLBoundingBox *pBB)
 {
 
   double x = pBB->getPosition().getX() + pEllipse->getCX().getAbsoluteValue() + pEllipse->getCX().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
@@ -524,16 +525,16 @@ QPainterPath *getPath(const CLEllipse* pEllipse, const CLBoundingBox *pBB)
   double rx = pEllipse->getRX().getAbsoluteValue() + pEllipse->getRX().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
   double ry = pEllipse->getRY().getAbsoluteValue() + pEllipse->getRY().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
 
-  QPainterPath *path = new QPainterPath();
+  QSharedPointer<QPainterPath> path = QSharedPointer<QPainterPath>(new QPainterPath());
 
   path->addEllipse(x - rx, y - ry, 2 * rx, 2 * ry);
 
   return path;
 }
 
-QPainterPath *getPath(const CLRenderCurve* pCurve, const CLBoundingBox *pBB)
+QSharedPointer<QPainterPath> getPath(const CLRenderCurve* pCurve, const CLBoundingBox *pBB)
 {
-  QPainterPath *path = new QPainterPath();
+  QSharedPointer<QPainterPath> path = QSharedPointer<QPainterPath>(new QPainterPath());
 
   const std::vector<CLRenderPoint*>& elements = *pCurve->getListOfCurveElements();
   std::vector<CLRenderPoint*>::const_iterator it = elements.begin();
@@ -614,39 +615,39 @@ void addLineEndingToItem(QGraphicsPathItem* item, const CLLineEnding* ending, co
       if (rcurve != NULL)
         {
           QPainterPath path = item->path();
-          QPainterPath& linePath = *getPath(rcurve, ending->getBoundingBox());
-          applyRotationalMapping(linePath, ending, point, second);
-          linePath.translate(point);
-          path.addPath(linePath);
+          QSharedPointer<QPainterPath> linePath = getPath(rcurve, ending->getBoundingBox());
+          applyRotationalMapping(*linePath, ending, point, second);
+          linePath->translate(point);
+          path.addPath(*linePath.data());
           item->setPath(path);
         }
       else if (poly != NULL)
         {
           QPainterPath path = item->path();
-          QPainterPath& linePath = *getPath(poly, ending->getBoundingBox());
-          applyRotationalMapping(linePath, ending, point, second);
-          linePath.translate(point);
-          path.addPath(linePath);
+          QSharedPointer<QPainterPath> linePath = getPath(poly, ending->getBoundingBox());
+          applyRotationalMapping(*linePath, ending, point, second);
+          linePath->translate(point);
+          path.addPath(*linePath);
           item->setPath(path);
 
           if (poly->isSetFill() || group->isSetFill())
             {
-              QBrush* brush = getBrush(poly, ending->getGroup(), resolver, ending->getBoundingBox());
-              QPen* pen = getPen(poly, ending->getGroup(), resolver, ending->getBoundingBox());
+              QSharedPointer<QBrush> brush = getBrush(poly, ending->getGroup(), resolver, ending->getBoundingBox());
+              QSharedPointer<QPen> pen = getPen(poly, ending->getGroup(), resolver, ending->getBoundingBox());
 
-              linePath.setFillRule(Qt::WindingFill);
+              linePath->setFillRule(Qt::WindingFill);
 
               if (poly->isSetFillRule())
                 {
                   switch (poly->getFillRule())
                     {
                       case CLGraphicalPrimitive2D::EVENODD:
-                        linePath.setFillRule(Qt::OddEvenFill);
+                        linePath->setFillRule(Qt::OddEvenFill);
                         break;
 
                       case CLGraphicalPrimitive2D::NONZERO:
                       default:
-                        linePath.setFillRule(Qt::WindingFill);
+                        linePath->setFillRule(Qt::WindingFill);
                         break;
                     }
                 }
@@ -656,17 +657,17 @@ void addLineEndingToItem(QGraphicsPathItem* item, const CLLineEnding* ending, co
                   switch (group->getFillRule())
                     {
                       case CLGraphicalPrimitive2D::EVENODD:
-                        linePath.setFillRule(Qt::OddEvenFill);
+                        linePath->setFillRule(Qt::OddEvenFill);
                         break;
 
                       case CLGraphicalPrimitive2D::NONZERO:
                       default:
-                        linePath.setFillRule(Qt::WindingFill);
+                        linePath->setFillRule(Qt::WindingFill);
                         break;
                     }
                 }
 
-              QGraphicsPathItem* outline = new QGraphicsPathItem(linePath);
+              QGraphicsPathItem* outline = new QGraphicsPathItem(*linePath);
 
               outline->setPen(*pen);
               outline->setBrush(*brush);
@@ -676,17 +677,17 @@ void addLineEndingToItem(QGraphicsPathItem* item, const CLLineEnding* ending, co
       else if (ellipse != NULL)
         {
           QPainterPath path = item->path();
-          QPainterPath& linePath = *getPath(ellipse, ending->getBoundingBox());
-          applyRotationalMapping(linePath, ending, point, second);
-          linePath.translate(point);
-          path.addPath(linePath);
+          QSharedPointer<QPainterPath> linePath = getPath(ellipse, ending->getBoundingBox());
+          applyRotationalMapping(*linePath, ending, point, second);
+          linePath->translate(point);
+          path.addPath(*linePath);
           item->setPath(path);
 
           if (ellipse->isSetFill() || group->isSetFill())
             {
-              QBrush* brush = getBrush(ellipse, ending->getGroup(), resolver, ending->getBoundingBox());
-              QPen* pen = getPen(ellipse, ending->getGroup(), resolver, ending->getBoundingBox());
-              QGraphicsPathItem* outline = new QGraphicsPathItem(linePath);
+              QSharedPointer<QBrush> brush = getBrush(ellipse, ending->getGroup(), resolver, ending->getBoundingBox());
+              QSharedPointer<QPen> pen = getPen(ellipse, ending->getGroup(), resolver, ending->getBoundingBox());
+              QGraphicsPathItem* outline = new QGraphicsPathItem(*linePath);
               outline->setPen(*pen);
               outline->setBrush(*brush);
               itemGroup->addToGroup(outline);
@@ -695,17 +696,17 @@ void addLineEndingToItem(QGraphicsPathItem* item, const CLLineEnding* ending, co
       else if (rect != NULL)
         {
           QPainterPath path = item->path();
-          QPainterPath& linePath = *getPath(rect, ending->getBoundingBox());
-          applyRotationalMapping(linePath, ending, point, second);
-          linePath.translate(point);
-          path.addPath(linePath);
+          QSharedPointer<QPainterPath> linePath = getPath(rect, ending->getBoundingBox());
+          applyRotationalMapping(*linePath, ending, point, second);
+          linePath->translate(point);
+          path.addPath(*linePath);
           item->setPath(path);
 
           if (rect->isSetFill() || group->isSetFill())
             {
-              QBrush* brush = getBrush(rect, ending->getGroup(), resolver, ending->getBoundingBox());
-              QPen* pen = getPen(rect, ending->getGroup(), resolver, ending->getBoundingBox());
-              QGraphicsPathItem* outline = new QGraphicsPathItem(linePath);
+              QSharedPointer<QBrush> brush = getBrush(rect, ending->getGroup(), resolver, ending->getBoundingBox());
+              QSharedPointer<QPen> pen = getPen(rect, ending->getGroup(), resolver, ending->getBoundingBox());
+              QGraphicsPathItem* outline = new QGraphicsPathItem(*linePath);
               outline->setPen(*pen);
               outline->setBrush(*brush);
               itemGroup->addToGroup(outline);
@@ -716,39 +717,39 @@ void addLineEndingToItem(QGraphicsPathItem* item, const CLLineEnding* ending, co
 
 void fillItemFromRenderCurve(QGraphicsItemGroup *item, const CLBoundingBox *pBB, const CLRenderCurve* pCurve, const CLGroup *group, const CLRenderResolver* resolver)
 {
-  QPainterPath& path = *getPath(pCurve, pBB);
+  QSharedPointer<QPainterPath> path = getPath(pCurve, pBB);
 
-  QGraphicsPathItem *pathItem = new QGraphicsPathItem(path);
-  QPen *pen = getPen(pCurve, group, resolver, pBB);
+  QGraphicsPathItem *pathItem = new QGraphicsPathItem(*path);
+  QSharedPointer<QPen> pen = getPen(pCurve, group, resolver, pBB);
   pathItem->setPen(*pen);
-  delete pen;
+
   item->addToGroup(pathItem);
   //QBrush *brush = getBrush(NULL, group, resolver, pBB);
   //pathItem->setBrush(*brush);
   //delete brush;
 
-  if (path.elementCount() > 1)
+  if (path->elementCount() > 1)
     {
       if (group -> isSetStartHead())
         {
           const CLLineEnding *line = resolver->getLineEnding(group->getStartHead());
-          addLineEndingToItem(pathItem, line, group, resolver, path.elementAt(0), path.elementAt(1), item);
+          addLineEndingToItem(pathItem, line, group, resolver, path->elementAt(0), path->elementAt(1), item);
         }
       else if (pCurve->isSetStartHead())
         {
           const CLLineEnding *line = resolver->getLineEnding(pCurve->getStartHead());
-          addLineEndingToItem(pathItem, line, line->getGroup(), resolver, path.elementAt(0), path.elementAt(1), item);
+          addLineEndingToItem(pathItem, line, line->getGroup(), resolver, path->elementAt(0), path->elementAt(1), item);
         }
 
       if (group->isSetEndHead())
         {
           const CLLineEnding *line = resolver->getLineEnding(group->getEndHead());
-          addLineEndingToItem(pathItem, line, group, resolver, path.elementAt(path.elementCount() - 1), path.elementAt(path.elementCount() - 2), item);
+          addLineEndingToItem(pathItem, line, group, resolver, path->elementAt(path->elementCount() - 1), path->elementAt(path->elementCount() - 2), item);
         }
       else if (pCurve->isSetEndHead())
         {
           const CLLineEnding *line = resolver->getLineEnding(pCurve->getEndHead());
-          addLineEndingToItem(pathItem, line, line->getGroup(), resolver, path.elementAt(path.elementCount() - 1), path.elementAt(path.elementCount() - 2), item);
+          addLineEndingToItem(pathItem, line, line->getGroup(), resolver, path->elementAt(path->elementCount() - 1), path->elementAt(path->elementCount() - 2), item);
         }
     }
 
@@ -757,20 +758,20 @@ void fillItemFromRenderCurve(QGraphicsItemGroup *item, const CLBoundingBox *pBB,
 
 void fillItemFromPolygon(QGraphicsItemGroup *item, const CLBoundingBox *pBB, const CLPolygon* pPoly, const CLGroup *group, const CLRenderResolver* resolver)
 {
-  QPainterPath& path = *getPath(pPoly, pBB);
-  path.setFillRule(Qt::WindingFill);
+  QSharedPointer<QPainterPath> path = getPath(pPoly, pBB);
+  path->setFillRule(Qt::WindingFill);
 
   if (pPoly->isSetFillRule())
     {
       switch (pPoly->getFillRule())
         {
           case CLGraphicalPrimitive2D::EVENODD:
-            path.setFillRule(Qt::OddEvenFill);
+            path->setFillRule(Qt::OddEvenFill);
             break;
 
           case CLGraphicalPrimitive2D::NONZERO:
           default:
-            path.setFillRule(Qt::WindingFill);
+            path->setFillRule(Qt::WindingFill);
             break;
         }
     }
@@ -780,23 +781,22 @@ void fillItemFromPolygon(QGraphicsItemGroup *item, const CLBoundingBox *pBB, con
       switch (group->getFillRule())
         {
           case CLGraphicalPrimitive2D::EVENODD:
-            path.setFillRule(Qt::OddEvenFill);
+            path->setFillRule(Qt::OddEvenFill);
             break;
 
           case CLGraphicalPrimitive2D::NONZERO:
           default:
-            path.setFillRule(Qt::WindingFill);
+            path->setFillRule(Qt::WindingFill);
             break;
         }
     }
 
-  QGraphicsPathItem *pathItem = new QGraphicsPathItem(path);
-  QPen *pen = getPen(pPoly, group, resolver, pBB);
+  QGraphicsPathItem *pathItem = new QGraphicsPathItem(*path);
+  QSharedPointer<QPen> pen = getPen(pPoly, group, resolver, pBB);
   pathItem->setPen(*pen);
-  delete pen;
-  QBrush *brush = getBrush(pPoly, group, resolver, pBB);
+  QSharedPointer<QBrush> brush = getBrush(pPoly, group, resolver, pBB);
   pathItem->setBrush(*brush);
-  delete brush;
+
   transform(pathItem, pPoly, group);
 
   item->addToGroup(pathItem);
@@ -913,15 +913,13 @@ void fillItemFromText(QGraphicsItemGroup *item, const CLBoundingBox *pBB, const 
       result->setDefaultTextColor(getColor(group->getStroke(), resolver));
     }
 
-  QFont *font = getFont(pText, group, resolver, pBB);
+  QSharedPointer<QFont> font = getFont(pText, group, resolver, pBB);
 
-  if (font != NULL)
+  if (!font.isNull())
     {
       result->setFont(*font);
 
       adjustPosition(result, pBB, pText, group);
-
-      delete font;
     }
 
   transform(result, pText, group);
@@ -972,12 +970,12 @@ void fillItemFromRectangle(QGraphicsItemGroup *item, const CLBoundingBox *pBB, c
 
   QGraphicsRectItem* result = new QRoundedRect(
     x, y, w, h, rx, ry);
-  QPen *pen = getPen(pRect, group, resolver, pBB);
+  QSharedPointer<QPen> pen = getPen(pRect, group, resolver, pBB);
   result->setPen(*pen);
-  delete pen;
-  QBrush *brush = getBrush(pRect, group, resolver, pBB);
+
+  QSharedPointer<QBrush> brush = getBrush(pRect, group, resolver, pBB);
   result->setBrush(*brush);
-  delete brush;
+
   transform(result, pRect, group);
   item->addToGroup(result);
 }
@@ -1048,9 +1046,8 @@ void QRenderConverter::applyStyle(QGraphicsPathItem* item, const CLBoundingBox* 
   if (resolver == NULL || group == NULL || bounds == NULL || item == NULL)
     return;
 
-  QPen *pen = getPen(NULL, group, resolver, bounds);
+  QSharedPointer<QPen> pen = getPen(NULL, group, resolver, bounds);
   item->setPen(*pen);
-  delete pen;
 
   if (item->path().elementCount() < 2)
     return;
@@ -1091,15 +1088,13 @@ void QRenderConverter::applyStyle(QGraphicsTextItem *item, const CLBoundingBox* 
   if (style->isSetStroke())
     item->setDefaultTextColor(getColor(style->getStroke(), resolver));
 
-  QFont *font = getFont(NULL, style, resolver, bounds);
+  QSharedPointer<QFont> font = getFont(NULL, style, resolver, bounds);
 
-  if (font != NULL)
+  if (!font.isNull())
     {
       item->setFont(*font);
 
       adjustPosition(item, bounds, NULL, style);
-
-      delete font;
     }
 }
 

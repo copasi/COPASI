@@ -265,6 +265,7 @@ QAnimationWindow::QAnimationWindow(CLayout* layout, CCopasiDataModel* dataModel)
   , mpWindowMenu(NULL)
   , mAnimation(NULL)
   , mpLayoutThread(NULL)
+  , mCopy(NULL)
 {
   init();
   setScene(new QLayoutScene(layout, dataModel), dataModel);
@@ -276,6 +277,7 @@ QAnimationWindow::QAnimationWindow()
   , mpWindowMenu(NULL)
   , mAnimation(NULL)
   , mpLayoutThread(NULL)
+  , mCopy(NULL)
 {
   init();
 }
@@ -337,8 +339,17 @@ QAnimationWindow::~QAnimationWindow()
 {
   mpLayoutThread->terminateLayout();
 
-  if (mAnimation)
-    delete mAnimation;
+  if (mAnimation != NULL)
+    {
+      delete mAnimation;
+      mAnimation = NULL;
+    }
+
+  if (mCopy != NULL)
+    {
+      delete mCopy;
+      mCopy = NULL;
+    }
 
   removeFromMainWindow();
 }
@@ -464,6 +475,12 @@ void QAnimationWindow::slotRandomizeLayout()
 
 void QAnimationWindow::slotStopLayout()
 {
+  if (mCopy != NULL)
+    {
+      delete mCopy;
+      mCopy = NULL;
+    }
+
   //reloadLayout(mpLayoutThread->getFinalLayout());
   actionAuto_Layout->setChecked(false);
   actionAuto_Layout->setText("Run Auto Layout");
