@@ -265,7 +265,7 @@ QAnimationWindow::QAnimationWindow(CLayout* layout, CCopasiDataModel* dataModel)
   , mpWindowMenu(NULL)
   , mAnimation(NULL)
   , mpLayoutThread(NULL)
-  , mCopy(NULL)
+  , mpCopy(NULL)
 {
   init();
   setScene(new QLayoutScene(layout, dataModel), dataModel);
@@ -277,7 +277,7 @@ QAnimationWindow::QAnimationWindow()
   , mpWindowMenu(NULL)
   , mAnimation(NULL)
   , mpLayoutThread(NULL)
-  , mCopy(NULL)
+  , mpCopy(NULL)
 {
   init();
 }
@@ -311,8 +311,7 @@ void QAnimationWindow::init()
 
   mpLayoutThread = new CQLayoutThread(this);
   connect(mpLayoutThread, SIGNAL(layoutFinished()), this, SLOT(slotStopLayout()));
-  connect(mpLayoutThread, SIGNAL(layoutUpdated()), this, SLOT(slotRedrawScene()));
-  connect(mpLayoutThread, SIGNAL(layoutCreated(QSharedPointer<CLayoutState>)), this, SLOT(slotLayoutCreated(QSharedPointer<CLayoutState>)));
+  connect(mpLayoutThread, SIGNAL(layoutStateChanged(QSharedPointer<CLayoutState>)), this, SLOT(slotLayoutStateChanged(QSharedPointer<CLayoutState>)));
 
   QDockWidget* pParameterWindow = mpLayoutThread->getParameterWindow();
   addDockWidget(Qt::LeftDockWidgetArea, pParameterWindow);
@@ -345,23 +344,13 @@ QAnimationWindow::~QAnimationWindow()
       mAnimation = NULL;
     }
 
-  if (mCopy != NULL)
+  if (mpCopy != NULL)
     {
-      delete mCopy;
-      mCopy = NULL;
+      delete mpCopy;
+      mpCopy = NULL;
     }
 
   removeFromMainWindow();
-}
-
-void QAnimationWindow::slotRedrawScene()
-{
-  //if (!mpLayoutThread->pause())
-  //  return;
-
-  //mpLayoutThread->finalize();
-  //mpScene->recreate();
-  //mpLayoutThread->resume();
 }
 
 void QAnimationWindow::setScene(QLayoutScene* scene, CCopasiDataModel* dataModel)
@@ -461,7 +450,7 @@ void QAnimationWindow::slotRandomizeLayout()
 #ifdef COPASI_AUTOLAYOUT
   mpLayoutThread->stopLayout();
   mpLayoutThread->wait();
-  mpLayoutThread->randomizeLayout(mpLayoutThread->getFinalLayout());
+  mpLayoutThread->randomizeLayout(mpScene->getCurrentLayout());
 #endif //COPASI_AUTOLAYOUT
 }
 
@@ -475,30 +464,20 @@ void QAnimationWindow::slotRandomizeLayout()
 
 void QAnimationWindow::slotStopLayout()
 {
-  if (mCopy != NULL)
+  if (mpCopy != NULL)
     {
-      delete mCopy;
-      mCopy = NULL;
+      delete mpCopy;
+      mpCopy = NULL;
     }
 
-  //reloadLayout(mpLayoutThread->getFinalLayout());
   actionAuto_Layout->setChecked(false);
   actionAuto_Layout->setText("Run Auto Layout");
   actionAuto_Layout->setIcon(CQIconResource::icon(CQIconResource::play));
 }
 
-void QAnimationWindow::slotLayoutCreated(QSharedPointer<CLayoutState> state)
+void QAnimationWindow::slotLayoutStateChanged(QSharedPointer<CLayoutState> state)
 {
   state->applyTo(mpScene->getCurrentLayout());
-  mpScene->recreate();
-}
-
-void QAnimationWindow::reloadLayout(CLayout* layout)
-{
-  if (mpScene == NULL)
-    return;
-
-  mpScene->setLayout(layout, mpModel, const_cast<CLRenderInformationBase*>(mpScene->getCurrentRenderInfo()));
   mpScene->recreate();
 }
 
@@ -532,8 +511,15 @@ void QAnimationWindow::slotAutoLayout()
 
   // work on a copy!
   CLayoutState::tagLayout(mpScene->getCurrentLayout());
-  mpLayoutThread->createSpringLayout(new CLayout(*mpScene->getCurrentLayout()), 100000);
-  //mpLayoutThread->createSpringLayout(mpScene->getCurrentLayout(), 100000);
+
+  if (mpCopy != NULL)
+    {
+      delete mpCopy;
+      mpCopy = NULL;
+    }
+
+  mpCopy = new CLayout(*mpScene->getCurrentLayout());
+  mpLayoutThread->createSpringLayout(mpCopy, 100000);
 
 #endif //COPASI_AUTOLAYOUT
 }

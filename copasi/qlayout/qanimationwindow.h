@@ -40,12 +40,10 @@ public slots:
   void slotRandomizeLayout();
   void slotAutoLayout();
   void slotStopLayout();
-  void slotRedrawScene();
-  void slotLayoutCreated(QSharedPointer<CLayoutState> state);
+  void slotLayoutStateChanged(QSharedPointer<CLayoutState> state);
 private:
   void init();
   void toggleUI(bool isPlaying);
-  void reloadLayout(CLayout* layout);
 protected:
   virtual void closeEvent(QCloseEvent *closeEvent);
 
@@ -54,7 +52,7 @@ protected:
   QMenu* mpWindowMenu;
   QCopasiAnimation* mAnimation;
   CQLayoutThread* mpLayoutThread;
-  QLayout* mCopy;
+  CLayout* mpCopy;
 };
 
 #endif // QANIMATION_WINDOW_H

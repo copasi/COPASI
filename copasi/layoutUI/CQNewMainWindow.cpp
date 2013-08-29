@@ -93,6 +93,14 @@ CQNewMainWindow::~CQNewMainWindow()
 {
   // ensure layout is terminated
   mpLayoutThread->terminateLayout();
+
+  // delete layout copy
+  if (mpCopy != NULL)
+    {
+      delete mpCopy;
+      mpCopy = NULL;
+    }
+
   // remove from window menu
   removeFromMainWindow();
 }
@@ -121,7 +129,7 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   , mpRandomizeLayout(NULL)
   , mpCalculateDimensions(NULL)
   , mpLayoutThread(NULL)
-
+  , mpCopy(NULL)
 #endif //  COPASI_AUTOLAYOUT
 {
 
@@ -168,8 +176,10 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
 #ifdef COPASI_AUTOLAYOUT
 
   mpLayoutThread = new CQLayoutThread(this);
-  connect(mpLayoutThread, SIGNAL(layoutUpdated()), this, SLOT(slotLayoutUpdated()));
   connect(mpLayoutThread, SIGNAL(layoutFinished()), this, SLOT(slotLayoutFinished()));
+  connect(mpLayoutThread, SIGNAL(layoutStateChanged(QSharedPointer<CLayoutState>)),
+          this, SLOT(slotLayoutStateChanged(QSharedPointer<CLayoutState>)));
+  void slotLayoutStateChanged(QSharedPointer<CLayoutState> state);
   QDockWidget* pParameterWindow = mpLayoutThread->getParameterWindow();
 
   addDockWidget(Qt::LeftDockWidgetArea, pParameterWindow);
@@ -177,6 +187,12 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   mpViewMenu->addAction(pParameterWindow->toggleViewAction());
 
 #endif
+}
+
+void CQNewMainWindow::slotLayoutStateChanged(QSharedPointer<CLayoutState> state)
+{
+  state->applyTo(mpCurrentLayout);
+  redrawNow();
 }
 
 QMenu* CQNewMainWindow::getWindowMenu() const
@@ -1736,8 +1752,8 @@ CLMetabReferenceGlyph* CQNewMainWindow::createMetabReferenceGlyph(const std::str
 void CQNewMainWindow::randomizeLayout()
 {
   mpLayoutThread->stopLayout();
+  mpLayoutThread->wait();
   mpLayoutThread->randomizeLayout(mpCurrentLayout);
-  redrawNow();
 }
 
 /**
@@ -1750,6 +1766,9 @@ void CQNewMainWindow::randomizeLayout()
  */
 void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
 {
+  if (mpCurrentLayout == NULL)
+    return;
+
   // reset the stop flag
   disconnect(this->mpStopLayoutAction, SIGNAL(triggered()), this, SLOT(slotRunSpringLayout()));
   this->mpStopLayoutAction->setToolTip("stop spring layout algorithm");
@@ -1758,7 +1777,17 @@ void CQNewMainWindow::createSpringLayout(int numIterations, int updateInterval)
   this->mpStopLayoutAction->setEnabled(true);
   this->mpStopLayoutAction->setIcon(QPixmap(layout_stop_xpm));
 
-  mpLayoutThread->createSpringLayout(mpCurrentLayout, numIterations);
+  CLayoutState::tagLayout(mpCurrentLayout);
+
+  if (mpCopy != NULL)
+    {
+      delete mpCopy;
+      mpCopy = NULL;
+    }
+
+  mpCopy = new CLayout(*mpCurrentLayout);
+
+  mpLayoutThread->createSpringLayout(mpCopy, numIterations);
 }
 
 void CQNewMainWindow::slotLayoutFinished()
@@ -1767,17 +1796,14 @@ void CQNewMainWindow::slotLayoutFinished()
   connect(this->mpStopLayoutAction, SIGNAL(triggered()), this, SLOT(slotRunSpringLayout()));
   this->mpStopLayoutAction->setIcon(QPixmap(layout_start_xpm));
   this->mpStopLayoutAction->setToolTip("Run Spring Layout Algorithm");
-  redrawNow();
-}
 
-void CQNewMainWindow::slotLayoutUpdated()
-{
-  if (!mpLayoutThread->pause())
-    return;
+  if (mpCopy != NULL)
+    {
+      delete mpCopy;
+      mpCopy = NULL;
+    }
 
-  mpLayoutThread->finalize();
   redrawNow();
-  mpLayoutThread->resume();
 }
 
 /**

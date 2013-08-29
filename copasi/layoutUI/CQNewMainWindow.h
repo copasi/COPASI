@@ -34,6 +34,7 @@ class CMetab;
 
 #ifdef COPASI_AUTOLAYOUT
 #include "copasi/copasi.h"
+#include "copasi/layout/CLayoutState.h"
 #include "copasi/layout/CLReactionGlyph.h"
 #include "copasi/layout/CCopasiSpringLayout.h"
 
@@ -359,7 +360,7 @@ private:
 
 public slots:
   void slotLayoutFinished();
-  void slotLayoutUpdated();
+  void slotLayoutStateChanged(QSharedPointer<CLayoutState> state);
 
 public:
   void redrawNow();
@@ -377,7 +378,11 @@ public:
   void createSpringLayout(int numIterations, int updateInterval);
 
 protected:
+  /** the layout thread */
   CQLayoutThread* mpLayoutThread;
+
+  /** the copy on which the layout operates */
+  CLayout* mpCopy;
 
 #endif // COPASI_AUTOLAYOUT
 };

@@ -37,7 +37,7 @@ void CQLayoutThread::terminateLayout()
   mStopLayout = true;
   mPauseCond.wakeAll();
   mSync.unlock();
-  terminate();
+
   wait();
 }
 
@@ -58,8 +58,6 @@ bool CQLayoutThread::pause()
       return true;
     }
 
-  // we didn't get a lock in time, skip but notify to render later
-  emit layoutUpdated();
   return false;
 }
 
@@ -70,6 +68,10 @@ QDockWidget* CQLayoutThread::getParameterWindow()
 
 CQLayoutThread::~CQLayoutThread()
 {
+  if (mpCurrent == NULL) return;
+
+  delete mpCurrent;
+  mpCurrent = NULL;
 }
 
 void CQLayoutThread::randomizeLayout(CLayout* layout)
@@ -79,8 +81,8 @@ void CQLayoutThread::randomizeLayout(CLayout* layout)
 
   CCopasiSpringLayout l(layout, &mpParameterWindow->getLayoutParameters());
   l.randomize();
-  emit layoutCreated(QSharedPointer<CLayoutState>(new CLayoutState(layout)));
 
+  emit layoutStateChanged(QSharedPointer<CLayoutState>(new CLayoutState(layout)));
   emit layoutUpdated();
 }
 
@@ -112,6 +114,12 @@ void CQLayoutThread::run()
 
   bool doUpdate = true;
   mStopLayout = false;
+
+  if (mpCurrent != NULL)
+    {
+      delete mpCurrent;
+      mpCurrent = NULL;
+    }
 
   // create the spring layout
   mpCurrent = new CCopasiSpringLayout(mpCurrentLayout, &mpParameterWindow->getLayoutParameters());
@@ -155,22 +163,20 @@ void CQLayoutThread::run()
       if (mUpdateWait != 0 && (tick - last > mUpdateWait))
         {
           last = tick;
-          // redraw
+
+          // calculate new curves and emit state
           finalize();
-          CLayoutState *state = new CLayoutState(mpCurrentLayout);
-          emit layoutCreated(QSharedPointer<CLayoutState>(state));
+
+          emit layoutStateChanged(QSharedPointer<CLayoutState>(new CLayoutState(mpCurrentLayout)));
           emit layoutUpdated();
         }
     }
 
+  // calculate new curves and emit state
   finalize();
-  emit layoutCreated(QSharedPointer<CLayoutState>(new CLayoutState(mpCurrentLayout)));
-  // redraw the layout
-  emit layoutUpdated();
-  emit layoutFinished();
-}
 
-CLayout* CQLayoutThread::getFinalLayout()
-{
-  return mpCurrentLayout;
+  emit layoutStateChanged(QSharedPointer<CLayoutState>(new CLayoutState(mpCurrentLayout)));
+  emit layoutUpdated();
+
+  emit layoutFinished();
 }

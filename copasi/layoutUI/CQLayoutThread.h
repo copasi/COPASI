@@ -40,8 +40,6 @@ public:
 
   void stopLayout();
 
-  CLayout* getFinalLayout();
-
   void resume();
 
   void finalize();
@@ -51,7 +49,7 @@ public:
 signals:
   void layoutUpdated();
   void layoutFinished();
-  void layoutCreated(QSharedPointer<CLayoutState> newLayout);
+  void layoutStateChanged(QSharedPointer<CLayoutState> newState);
 
 public slots:
   void terminateLayout();
