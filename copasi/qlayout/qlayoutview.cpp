@@ -23,7 +23,7 @@
 #include <CopasiDataModel/CCopasiDataModel.h>
 #include <resourcesUI/CQIconResource.h>
 
-QLayoutView::~QLayoutView()
+CQLayoutView::~CQLayoutView()
 {
 }
 
@@ -146,13 +146,13 @@ CLRenderInformationBase* updateRenderInformationList(QComboBox* list, CCopasiDat
   return result;
 }
 
-void QLayoutView::slotRenderInformationChanged(int index)
+void CQLayoutView::slotRenderInformationChanged(int index)
 {
   if (mIgnoreEvents || index < 0) return;
 
   if (mpDataModel == NULL) return;
 
-  QLayoutScene* current = dynamic_cast<QLayoutScene*>(scene());
+  CQLayoutScene* current = dynamic_cast<CQLayoutScene*>(scene());
 
   if (current == NULL || current->getCurrentLayout() == NULL) return;
 
@@ -185,13 +185,13 @@ void QLayoutView::slotRenderInformationChanged(int index)
   current->recreate();
 }
 
-void QLayoutView::slotLayoutChanged(int index)
+void CQLayoutView::slotLayoutChanged(int index)
 {
   if (mIgnoreEvents || index < 0) return;
 
   if (mpDataModel == NULL) return;
 
-  QLayoutScene* current = dynamic_cast<QLayoutScene*>(scene());
+  CQLayoutScene* current = dynamic_cast<CQLayoutScene*>(scene());
 
   if (current == NULL) return;
 
@@ -216,7 +216,7 @@ void QLayoutView::slotLayoutChanged(int index)
   current->recreate();
 }
 
-QLayoutView::QLayoutView(QWidget*parent)
+CQLayoutView::CQLayoutView(QWidget*parent)
   : QGraphicsView(parent)
   , mScaleFactor(1.15)
   , mIgnoreEvents(false)
@@ -225,9 +225,9 @@ QLayoutView::QLayoutView(QWidget*parent)
   createActions();
 }
 
-void QLayoutView::slotSaveToFile(const QString& fileName)
+void CQLayoutView::slotSaveToFile(const QString& fileName)
 {
-  QLayoutScene* layoutScene =  dynamic_cast<QLayoutScene*>(scene());
+  CQLayoutScene* layoutScene =  dynamic_cast<CQLayoutScene*>(scene());
 
   if (layoutScene == NULL) return;
 
@@ -237,7 +237,7 @@ void QLayoutView::slotSaveToFile(const QString& fileName)
   );
 }
 
-QLayoutView::QLayoutView(QLayoutScene *scene)
+CQLayoutView::CQLayoutView(CQLayoutScene *scene)
   : QGraphicsView(scene)
   , mScaleFactor(1.15)
   , mIgnoreEvents(false)
@@ -247,7 +247,7 @@ QLayoutView::QLayoutView(QLayoutScene *scene)
   createActions();
 }
 
-void QLayoutView::fillZoomMenu(QMenu* menu)
+void CQLayoutView::fillZoomMenu(QMenu* menu)
 {
   if (menu == NULL) return;
 
@@ -257,7 +257,7 @@ void QLayoutView::fillZoomMenu(QMenu* menu)
   menu->addAction(mpActResetZoom);
 }
 
-void QLayoutView::fillZoomTooBar(QToolBar* toolBar)
+void CQLayoutView::fillZoomTooBar(QToolBar* toolBar)
 {
   if (toolBar == NULL) return;
 
@@ -267,7 +267,7 @@ void QLayoutView::fillZoomTooBar(QToolBar* toolBar)
   toolBar->addAction(mpActResetZoom);
 }
 
-void QLayoutView::createActions()
+void CQLayoutView::createActions()
 {
   mpActFitOnScreen = new QAction(tr("Fit On Screen"), this);
   mpActFitOnScreen->setShortcut(QKeySequence::fromString("F5"));
@@ -305,7 +305,7 @@ void QLayoutView::createActions()
   setRenderHints(QPainter::Antialiasing);
 }
 
-void QLayoutView::fillSelectionToolBar(QToolBar* toolBar)
+void CQLayoutView::fillSelectionToolBar(QToolBar* toolBar)
 {
   QFrame* pFrame1 = new QFrame;
   QHBoxLayout* pLayout = new QHBoxLayout;
@@ -327,36 +327,36 @@ void QLayoutView::fillSelectionToolBar(QToolBar* toolBar)
   toolBar->addWidget(pFrame2);
 }
 
-void QLayoutView::slotFitOnScreen()
+void CQLayoutView::slotFitOnScreen()
 {
   setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
   fitInView(scene()->itemsBoundingRect(), Qt::KeepAspectRatio);
   update();
 }
-void QLayoutView::slotResetZoom()
+void CQLayoutView::slotResetZoom()
 {
   setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
   resetMatrix();
   ensureVisible(scene()->itemsBoundingRect());
   update();
 }
-void QLayoutView::slotZoomIn()
+void CQLayoutView::slotZoomIn()
 {
   setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
   scale(mScaleFactor, mScaleFactor);
 }
-void QLayoutView::slotZoomOut()
+void CQLayoutView::slotZoomOut()
 {
   setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
   scale(1.0 / mScaleFactor, 1.0 / mScaleFactor);
 }
 
-CCopasiDataModel* QLayoutView::getDataModel()
+CCopasiDataModel* CQLayoutView::getDataModel()
 {
   return mpDataModel;
 }
 
-void QLayoutView::setDataModel(CCopasiDataModel* dataModel, CLayout* layout)
+void CQLayoutView::setDataModel(CCopasiDataModel* dataModel, CLayout* layout)
 {
   mpDataModel = dataModel;
 
@@ -368,7 +368,7 @@ void QLayoutView::setDataModel(CCopasiDataModel* dataModel, CLayout* layout)
   updateRenderInformationList(mpRenderDropdown, dataModel, layout);
 }
 
-void QLayoutView::wheelEvent(QWheelEvent* event)
+void CQLayoutView::wheelEvent(QWheelEvent* event)
 {
   if (QApplication::keyboardModifiers() == Qt::ControlModifier ||
       QApplication::keyboardModifiers() == Qt::MetaModifier ||

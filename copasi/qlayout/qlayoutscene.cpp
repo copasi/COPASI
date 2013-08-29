@@ -29,7 +29,7 @@
 #include <layout/CLDefaultStyles.h>
 #include <CopasiDataModel/CCopasiDataModel.h>
 
-QLayoutScene::QLayoutScene(CLayout* layout, CCopasiDataModel* model, CLRenderInformationBase* renderInformation)
+CQLayoutScene::CQLayoutScene(CLayout* layout, CCopasiDataModel* model, CLRenderInformationBase* renderInformation)
   : QGraphicsScene()
   , mpLayout(layout)
   , mpRender(renderInformation)
@@ -39,33 +39,33 @@ QLayoutScene::QLayoutScene(CLayout* layout, CCopasiDataModel* model, CLRenderInf
   connect(this, SIGNAL(recreateNeeded()), this, SLOT(recreate()), Qt::QueuedConnection);
 }
 
-void QLayoutScene::setLayout(CLayout *layout, CCopasiDataModel* model, CLRenderInformationBase* renderInformation)
+void CQLayoutScene::setLayout(CLayout *layout, CCopasiDataModel* model, CLRenderInformationBase* renderInformation)
 {
   mpLayout = layout;
   setRenderInformation(model, renderInformation);
 }
 
-void QLayoutScene::setRenderInformation(CCopasiDataModel* model, CLRenderInformationBase* renderInformation)
+void CQLayoutScene::setRenderInformation(CCopasiDataModel* model, CLRenderInformationBase* renderInformation)
 {
   initializeResolver(model, renderInformation);
 }
 
-const CLayout* QLayoutScene::getCurrentLayout() const
+const CLayout* CQLayoutScene::getCurrentLayout() const
 {
   return mpLayout;
 }
 
-CLayout* QLayoutScene::getCurrentLayout()
+CLayout* CQLayoutScene::getCurrentLayout()
 {
   return mpLayout;
 }
 
-const CLRenderInformationBase* QLayoutScene::getCurrentRenderInfo() const
+const CLRenderInformationBase* CQLayoutScene::getCurrentRenderInfo() const
 {
   return mpRender;
 }
 
-void QLayoutScene::saveToFile(const std::string& fileName, const std::string& fileType /*= "pdf"*/)
+void CQLayoutScene::saveToFile(const std::string& fileName, const std::string& fileType /*= "pdf"*/)
 {
   if (fileType == "pdf")
     {
@@ -91,7 +91,7 @@ void QLayoutScene::saveToFile(const std::string& fileName, const std::string& fi
     }
 }
 
-void QLayoutScene::initializeResolver(CCopasiDataModel* model, CLRenderInformationBase* renderInformation)
+void CQLayoutScene::initializeResolver(CCopasiDataModel* model, CLRenderInformationBase* renderInformation)
 {
   if (model == NULL)
     return;
@@ -119,27 +119,27 @@ void QLayoutScene::initializeResolver(CCopasiDataModel* model, CLRenderInformati
     mpResolver = QSharedPointer<CLRenderResolver>(new CLRenderResolver(*dynamic_cast<CLGlobalRenderInformation*>(mpRender), model->getListOfLayouts()->getListOfGlobalRenderInformationObjects()));
 }
 
-void QLayoutScene::setResolver(CLRenderResolver* resolver)
+void CQLayoutScene::setResolver(CLRenderResolver* resolver)
 {
   mpResolver = QSharedPointer<CLRenderResolver>(resolver);
 }
 
-const CLRenderResolver* QLayoutScene::getResolver() const
+const CLRenderResolver* CQLayoutScene::getResolver() const
 {
   return mpResolver.data();
 }
 
-QLayoutScene::~QLayoutScene()
+CQLayoutScene::~CQLayoutScene()
 {
 }
 
-void QLayoutScene::recreate()
+void CQLayoutScene::recreate()
 {
   fillFromLayout(mpLayout);
   invalidate();
 }
 
-void QLayoutScene::addGlyph(const CLGraphicalObject* go)
+void CQLayoutScene::addGlyph(const CLGraphicalObject* go)
 {
   if (go == NULL) return;
 
@@ -152,16 +152,16 @@ void QLayoutScene::addGlyph(const CLGraphicalObject* go)
   if (curveGlyph != NULL)
     {
       if (curveGlyph->getCurve().getNumCurveSegments() > 0 || reaction != NULL || general != NULL)
-        item = new QConnectionGraphicsItem(curveGlyph,
-                                           mpResolver == NULL ? NULL : mpResolver.data());
+        item = new CQConnectionGraphicsItem(curveGlyph,
+                                            mpResolver == NULL ? NULL : mpResolver.data());
     }
   else if (text != NULL)
     {
-      item = new QLabelGraphicsItem(text, mpResolver == NULL ? NULL : mpResolver.data());
+      item = new CQLabelGraphicsItem(text, mpResolver == NULL ? NULL : mpResolver.data());
     }
   else
     {
-      item = new QStyledGraphicsItem(go, mpResolver == NULL ? NULL : mpResolver.data());
+      item = new CQStyledGraphicsItem(go, mpResolver == NULL ? NULL : mpResolver.data());
     }
 
   if (item != NULL)
@@ -190,12 +190,12 @@ void QLayoutScene::addGlyph(const CLGraphicalObject* go)
     }
 }
 
-QGraphicsItem* QLayoutScene::getItemFor(const std::string& cn)
+QGraphicsItem* CQLayoutScene::getItemFor(const std::string& cn)
 {
   return mItems[cn];
 }
 
-void QLayoutScene::fillFromLayout(const CLayout* layout)
+void CQLayoutScene::fillFromLayout(const CLayout* layout)
 {
   if (layout == NULL) return;
 
@@ -204,7 +204,7 @@ void QLayoutScene::fillFromLayout(const CLayout* layout)
 
   if (mpRender != NULL && mpResolver != NULL)
     {
-      QRenderConverter::setBackground(this, mpRender->getBackgroundColor(), mpResolver.data());
+      CQRenderConverter::setBackground(this, mpRender->getBackgroundColor(), mpResolver.data());
     }
 
   const CCopasiVector<CLCompartmentGlyph> & comps = layout->getListOfCompartmentGlyphs();
@@ -330,7 +330,7 @@ void moveObject(CLGraphicalObject* obj, const CLPoint& delta, CLayout* layout)
 #include <layout/CCopasiSpringLayout.h>
 #endif
 
-void QLayoutScene::updatePosition(const QString& key, const QPointF& newPos)
+void CQLayoutScene::updatePosition(const QString& key, const QPointF& newPos)
 {
   CKeyFactory* kf = CCopasiRootContainer::getKeyFactory();
 

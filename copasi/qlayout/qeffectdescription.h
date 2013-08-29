@@ -1,3 +1,8 @@
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 #ifndef QEFFECT_DESCRIPTION_H
 #define QEFFECT_DESCRIPTION_H
 
@@ -6,7 +11,7 @@
 
 #include <qlayout/qlayoutscene.h>
 
-class QEffectDescription
+class CQEffectDescription
 {
 public:
   enum Mode
@@ -16,9 +21,9 @@ public:
     Scale
   };
 
-  QEffectDescription(const std::string& cn, qreal startScale, qreal endScale);
-  QEffectDescription(const std::string& cn, Mode mode = Colorize, const QColor &startColor=Qt::white, const QColor& endColor=Qt::red);
-  virtual ~QEffectDescription();
+  CQEffectDescription(const std::string& cn, qreal startScale, qreal endScale);
+  CQEffectDescription(const std::string& cn, Mode mode = Colorize, const QColor &startColor = Qt::white, const QColor& endColor = Qt::red);
+  virtual ~CQEffectDescription();
 
   const std::string& getCN()const;
   void setCN(const std::string& cn);
@@ -38,9 +43,9 @@ public:
   Mode getMode() const;
   void setMode(Mode mode);
 
-  virtual void removeFromScene(QLayoutScene& scene);
+  virtual void removeFromScene(CQLayoutScene& scene);
 
-  void applyToScene(QLayoutScene& scene, qreal t);
+  void applyToScene(CQLayoutScene& scene, qreal t);
 
 protected:
   std::string mCN;

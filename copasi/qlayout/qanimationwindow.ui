@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QAnimationWindow</class>
- <widget class="QMainWindow" name="QAnimationWindow">
+<comment> Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+ <class>CQAnimationWindow</class>
+ <widget class="QMainWindow" name="CQAnimationWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -22,7 +27,7 @@
      <number>5</number>
     </property>
     <item row="0" column="0">
-     <widget class="QLayoutView" name="graphicsView">
+     <widget class="CQLayoutView" name="graphicsView">
       <property name="minimumSize">
        <size>
         <width>320</width>
@@ -38,7 +43,7 @@
      </widget>
     </item>
     <item row="1" column="0">
-     <widget class="QAnimationControls" name="mpControls" native="true"/>
+     <widget class="CQAnimationControls" name="mpControls" native="true"/>
     </item>
    </layout>
   </widget>
@@ -133,7 +138,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QLayoutView</class>
+   <class>CQLayoutView</class>
    <extends>QGraphicsView</extends>
    <header location="global">qlayout/qlayoutview.h</header>
    <slots>
@@ -141,7 +146,7 @@
    </slots>
   </customwidget>
   <customwidget>
-   <class>QAnimationControls</class>
+   <class>CQAnimationControls</class>
    <extends>QWidget</extends>
    <header location="global">qlayout/qanimationcontrols.h</header>
    <container>1</container>
@@ -155,7 +160,7 @@
   <connection>
    <sender>mpControls</sender>
    <signal>showStep(int)</signal>
-   <receiver>QAnimationWindow</receiver>
+   <receiver>CQAnimationWindow</receiver>
    <slot>slotShowStep(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -171,7 +176,7 @@
   <connection>
    <sender>actionClose</sender>
    <signal>triggered()</signal>
-   <receiver>QAnimationWindow</receiver>
+   <receiver>CQAnimationWindow</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -187,7 +192,7 @@
   <connection>
    <sender>actionExport</sender>
    <signal>triggered()</signal>
-   <receiver>QAnimationWindow</receiver>
+   <receiver>CQAnimationWindow</receiver>
    <slot>slotExportImage()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -203,7 +208,7 @@
   <connection>
    <sender>action_Settings</sender>
    <signal>triggered()</signal>
-   <receiver>QAnimationWindow</receiver>
+   <receiver>CQAnimationWindow</receiver>
    <slot>slotEditSettings()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -219,7 +224,7 @@
   <connection>
    <sender>actionView_Conserved_Species</sender>
    <signal>triggered()</signal>
-   <receiver>QAnimationWindow</receiver>
+   <receiver>CQAnimationWindow</receiver>
    <slot>slotSwitchAnimation()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -235,7 +240,7 @@
   <connection>
    <sender>actionView_Elementary_Modes</sender>
    <signal>triggered()</signal>
-   <receiver>QAnimationWindow</receiver>
+   <receiver>CQAnimationWindow</receiver>
    <slot>slotSwitchAnimation()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -251,7 +256,7 @@
   <connection>
    <sender>actionView_Time_Course</sender>
    <signal>triggered()</signal>
-   <receiver>QAnimationWindow</receiver>
+   <receiver>CQAnimationWindow</receiver>
    <slot>slotSwitchAnimation()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -267,7 +272,7 @@
   <connection>
    <sender>actionAuto_Layout</sender>
    <signal>triggered()</signal>
-   <receiver>QAnimationWindow</receiver>
+   <receiver>CQAnimationWindow</receiver>
    <slot>slotAutoLayout()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -283,7 +288,7 @@
   <connection>
    <sender>actionRandomize_Layout</sender>
    <signal>triggered()</signal>
-   <receiver>QAnimationWindow</receiver>
+   <receiver>CQAnimationWindow</receiver>
    <slot>slotRandomizeLayout()</slot>
    <hints>
     <hint type="sourcelabel">

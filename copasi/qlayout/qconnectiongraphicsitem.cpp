@@ -13,7 +13,7 @@
 #include <layout/CLReactionGlyph.h>
 #include <layout/CLRenderResolver.h>
 
-QSharedPointer<QPainterPath> QConnectionGraphicsItem::getPath(const CLCurve& curve)
+QSharedPointer<QPainterPath> CQConnectionGraphicsItem::getPath(const CLCurve& curve)
 {
   QSharedPointer<QPainterPath> result = QSharedPointer<QPainterPath>(new QPainterPath());
 
@@ -44,16 +44,16 @@ QSharedPointer<QPainterPath> QConnectionGraphicsItem::getPath(const CLCurve& cur
   return result;
 }
 
-void QConnectionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void CQConnectionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
   painter->save();
   QGraphicsItemGroup::paint(painter, option, widget);
   painter->restore();
 }
 
-void QConnectionGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void CQConnectionGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-  QLayoutScene * currentScene = dynamic_cast<QLayoutScene *>(scene());
+  CQLayoutScene * currentScene = dynamic_cast<CQLayoutScene *>(scene());
 
   if (mWasMoved && currentScene)
     {
@@ -67,9 +67,9 @@ void QConnectionGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-QVariant QConnectionGraphicsItem::itemChange(GraphicsItemChange change, const QVariant &value)
+QVariant CQConnectionGraphicsItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
-  QLayoutScene * currentScene = dynamic_cast<QLayoutScene *>(scene());
+  CQLayoutScene * currentScene = dynamic_cast<CQLayoutScene *>(scene());
 
   if (change == ItemPositionHasChanged && currentScene)
     {
@@ -79,8 +79,8 @@ QVariant QConnectionGraphicsItem::itemChange(GraphicsItemChange change, const QV
   return QGraphicsItem::itemChange(change, value);
 }
 
-QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGlyph, const CLRenderResolver* resolver)
-  : QCopasiGraphicsItem(resolver, resolver != NULL ? resolver->resolveStyle(curveGlyph) : NULL)
+CQConnectionGraphicsItem::CQConnectionGraphicsItem(const CLGlyphWithCurve* curveGlyph, const CLRenderResolver* resolver)
+  : CQCopasiGraphicsItem(resolver, resolver != NULL ? resolver->resolveStyle(curveGlyph) : NULL)
   , mWasMoved(false)
 {
   setFlag(QGraphicsItem::ItemIsMovable);
@@ -98,7 +98,7 @@ QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGl
       itemGroup->addToGroup(item);
 
       if (mpStyle != NULL)
-        QRenderConverter::applyStyle(item, &curveGlyph->getBoundingBox(), mpStyle->getGroup(), resolver, itemGroup);
+        CQRenderConverter::applyStyle(item, &curveGlyph->getBoundingBox(), mpStyle->getGroup(), resolver, itemGroup);
 
       addToGroup(itemGroup);
     }
@@ -120,9 +120,9 @@ QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGl
               item = new QGraphicsPathItem(*path);
               itemGroup = new QGraphicsItemGroup();
               itemGroup->addToGroup(item);
-              QRenderConverter::applyStyle(item, &metab->getBoundingBox(), style == NULL ?
-                                           mpStyle == NULL ? NULL :  mpStyle->getGroup()
-                                             : style->getGroup(), resolver, itemGroup);
+              CQRenderConverter::applyStyle(item, &metab->getBoundingBox(), style == NULL ?
+                                            mpStyle == NULL ? NULL :  mpStyle->getGroup()
+                                              : style->getGroup(), resolver, itemGroup);
               addToGroup(itemGroup);
             }
         }
@@ -145,9 +145,9 @@ QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGl
               item = new QGraphicsPathItem(*path);
               itemGroup = new QGraphicsItemGroup();
               itemGroup->addToGroup(item);
-              QRenderConverter::applyStyle(item, &glyph ->getBoundingBox(), style == NULL ?
-                                           mpStyle == NULL ? NULL :  mpStyle->getGroup()
-                                             : style->getGroup(), resolver, itemGroup);
+              CQRenderConverter::applyStyle(item, &glyph ->getBoundingBox(), style == NULL ?
+                                            mpStyle == NULL ? NULL :  mpStyle->getGroup()
+                                              : style->getGroup(), resolver, itemGroup);
               addToGroup(itemGroup);
             }
         }
@@ -155,7 +155,7 @@ QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGl
 
   // add decorations on reactions
   itemGroup = new QGraphicsItemGroup();
-  QRenderConverter::fillGroupFromStyle(itemGroup, &curveGlyph->getBoundingBox(), mpStyle, resolver);
+  CQRenderConverter::fillGroupFromStyle(itemGroup, &curveGlyph->getBoundingBox(), mpStyle, resolver);
 
   if (itemGroup->childItems().size() > 0)
     addToGroup(itemGroup);
@@ -163,6 +163,6 @@ QConnectionGraphicsItem::QConnectionGraphicsItem(const CLGlyphWithCurve* curveGl
     delete itemGroup;
 }
 
-QConnectionGraphicsItem::~QConnectionGraphicsItem()
+CQConnectionGraphicsItem::~CQConnectionGraphicsItem()
 {
 }

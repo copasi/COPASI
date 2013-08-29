@@ -12,12 +12,12 @@
 
 class QTimer;
 
-class QAnimationControls : public QWidget, public Ui::QAnimationControls
+class CQAnimationControls : public QWidget, public Ui::CQAnimationControls
 {
   Q_OBJECT
 public:
-  QAnimationControls(QWidget* parent = NULL);
-  virtual ~QAnimationControls();
+  CQAnimationControls(QWidget* parent = NULL);
+  virtual ~CQAnimationControls();
 
   void setNumSteps(size_t numSteps);
   void setCurrentStep(size_t currentStep);

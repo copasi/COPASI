@@ -11,11 +11,11 @@
 
 class CLStyle;
 class CLRenderResolver;
-class QCopasiGraphicsItem
+class CQCopasiGraphicsItem
 {
 public:
-  QCopasiGraphicsItem(const CLRenderResolver* resolver, const CLStyle* style);
-  virtual ~QCopasiGraphicsItem();
+  CQCopasiGraphicsItem(const CLRenderResolver* resolver, const CLStyle* style);
+  virtual ~CQCopasiGraphicsItem();
   void setResolver(const CLRenderResolver* resolver);
   const CLRenderResolver* getResolver() const;
   void setStyle(const CLStyle* style);

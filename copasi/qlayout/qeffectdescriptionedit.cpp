@@ -12,13 +12,13 @@
 #include <QPainter>
 #endif
 
-QEffectDescriptionEdit::QEffectDescriptionEdit(QWidget* parent, Qt::WindowFlags f)
+CQEffectDescriptionEdit::CQEffectDescriptionEdit(QWidget* parent, Qt::WindowFlags f)
   : QWidget(parent, f)
 {
   setupUi(this);
 }
 
-QEffectDescriptionEdit::~QEffectDescriptionEdit()
+CQEffectDescriptionEdit::~CQEffectDescriptionEdit()
 {
 }
 
@@ -43,7 +43,7 @@ void setColor(QLabel *widget, const QColor& color)
   widget->setPixmap(pix);
 }
 
-void QEffectDescriptionEdit::initFrom(const QEffectDescription* other, bool multiple)
+void CQEffectDescriptionEdit::initFrom(const CQEffectDescription* other, bool multiple)
 {
   setColor(txtColorEnd, other->getEndColor());
   setColor(txtColorStart, other->getStartColor());
@@ -58,22 +58,22 @@ void QEffectDescriptionEdit::initFrom(const QEffectDescription* other, bool mult
 
   switch (other->getMode())
     {
-      case QEffectDescription::Colorize:
+      case CQEffectDescription::Colorize:
         radColorize->setChecked(true);
         break;
 
-      case QEffectDescription::DropShadow:
+      case CQEffectDescription::DropShadow:
         radShadow->setChecked(true);
         break;
 
       default:
-      case QEffectDescription::Scale:
+      case CQEffectDescription::Scale:
         radScale->setChecked(true);
         break;
     }
 }
 
-void QEffectDescriptionEdit::saveTo(QEffectDescription* other, bool /* multiple*/)
+void CQEffectDescriptionEdit::saveTo(CQEffectDescription* other, bool /* multiple*/)
 {
   other->setStartColor(txtColorStart->palette().color(QPalette::Background));
   other->setEndColor(txtColorEnd->palette().color(QPalette::Background));
@@ -81,16 +81,16 @@ void QEffectDescriptionEdit::saveTo(QEffectDescription* other, bool /* multiple*
   other->setScaleEnd(txtScaleEnd->text().toDouble());
 
   if (radColorize->isChecked())
-    other->setMode(QEffectDescription::Colorize);
+    other->setMode(CQEffectDescription::Colorize);
   else if (radShadow->isChecked())
-    other->setMode(QEffectDescription::DropShadow);
+    other->setMode(CQEffectDescription::DropShadow);
   else
-    other->setMode(QEffectDescription::Scale);
+    other->setMode(CQEffectDescription::Scale);
 }
 
-QEffectDescription* QEffectDescriptionEdit::toDescription() const
+CQEffectDescription* CQEffectDescriptionEdit::toDescription() const
 {
-  QEffectDescription *result = new QEffectDescription(txtObjectName->text().toStdString());
+  CQEffectDescription *result = new CQEffectDescription(txtObjectName->text().toStdString());
 
   result->setStartColor(txtColorStart->palette().color(QPalette::Background));
   result->setEndColor(txtColorEnd->palette().color(QPalette::Background));
@@ -98,37 +98,37 @@ QEffectDescription* QEffectDescriptionEdit::toDescription() const
   result->setScaleEnd(txtScaleEnd->text().toDouble());
 
   if (radColorize->isChecked())
-    result->setMode(QEffectDescription::Colorize);
+    result->setMode(CQEffectDescription::Colorize);
   else if (radShadow->isChecked())
-    result->setMode(QEffectDescription::DropShadow);
+    result->setMode(CQEffectDescription::DropShadow);
   else
-    result->setMode(QEffectDescription::Scale);
+    result->setMode(CQEffectDescription::Scale);
 
   return result;
 }
 
-void QEffectDescriptionEdit::slotModeChanged()
+void CQEffectDescriptionEdit::slotModeChanged()
 {
 }
 
-void QEffectDescriptionEdit::slotScaleEndChanged(QString)
+void CQEffectDescriptionEdit::slotScaleEndChanged(QString)
 {
 }
 
-void QEffectDescriptionEdit::slotScaleStartChanged(QString)
+void CQEffectDescriptionEdit::slotScaleStartChanged(QString)
 {
 }
 
-void QEffectDescriptionEdit::slotSelectObject()
+void CQEffectDescriptionEdit::slotSelectObject()
 {
 }
 
-void QEffectDescriptionEdit::slotSelectColorEnd()
+void CQEffectDescriptionEdit::slotSelectColorEnd()
 {
   setColor(txtColorEnd, QColorDialog::getColor(txtColorEnd->palette().color(QPalette::Background), this));
 }
 
-void QEffectDescriptionEdit::slotSelectColorStart()
+void CQEffectDescriptionEdit::slotSelectColorStart()
 {
   setColor(txtColorStart, QColorDialog::getColor(txtColorStart->palette().color(QPalette::Background), this));
 }

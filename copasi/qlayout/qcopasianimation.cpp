@@ -1,70 +1,81 @@
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 #include <qlayout/qcopasianimation.h>
 #include <qlayout/qeffectdescription.h>
 
-QCopasiAnimation::QCopasiAnimation()
-  : mMode(QCopasiAnimation::Global)
+CQCopasiAnimation::CQCopasiAnimation()
+  : mMode(CQCopasiAnimation::Global)
   , mNumSteps(0)
 {
 }
 
-QCopasiAnimation::~QCopasiAnimation()
+CQCopasiAnimation::~CQCopasiAnimation()
 {
-  std::vector<QEffectDescription*>::iterator it = mEntries.begin();
-  while(it != mEntries.end())
-  {
-    delete *it;
-    ++it;
-  }
+  std::vector<CQEffectDescription*>::iterator it = mEntries.begin();
+
+  while (it != mEntries.end())
+    {
+      delete *it;
+      ++it;
+    }
+
   mEntries.clear();
 }
 
-std::vector<QEffectDescription*>& QCopasiAnimation::getEntries()
+std::vector<CQEffectDescription*>& CQCopasiAnimation::getEntries()
 {
   return mEntries;
 }
 
-int QCopasiAnimation::getNumSteps()
+int CQCopasiAnimation::getNumSteps()
 {
   return mNumSteps;
 }
 
-void QCopasiAnimation::removeFromScene(QLayoutScene& scene)
+void CQCopasiAnimation::removeFromScene(CQLayoutScene& scene)
 {
-  std::vector<QEffectDescription*>::iterator it = mEntries.begin();
-  while(it != mEntries.end())
-  {
-    (*it)->removeFromScene(scene);
-    ++it;
-  }
+  std::vector<CQEffectDescription*>::iterator it = mEntries.begin();
+
+  while (it != mEntries.end())
+    {
+      (*it)->removeFromScene(scene);
+      ++it;
+    }
 }
 
-void QCopasiAnimation::getScales(std::vector<qreal>& scales, int step) //= 0;
+void CQCopasiAnimation::getScales(std::vector<qreal>& scales, int step) //= 0;
 {
   scales.clear();
-  std::vector<QEffectDescription*>::iterator it = mEntries.begin();
-  while(it != mEntries.end())
-  {
-    scales.push_back(step/100.0);
-    ++it;
-  }
+  std::vector<CQEffectDescription*>::iterator it = mEntries.begin();
+
+  while (it != mEntries.end())
+    {
+      scales.push_back(step / 100.0);
+      ++it;
+    }
 }
-void QCopasiAnimation::applyToScene(QLayoutScene& scene, int step) 
+void CQCopasiAnimation::applyToScene(CQLayoutScene& scene, int step)
 {
   std::vector<qreal> scales; getScales(scales, step);
+
   if (scales.size() != mEntries.size())
     return;
+
   for (size_t i = 0; i < scales.size(); ++i)
-  {
-    mEntries[i]->applyToScene(scene, scales[i]);
-  }
+    {
+      mEntries[i]->applyToScene(scene, scales[i]);
+    }
 }
 
-QCopasiAnimation::ScaleMode QCopasiAnimation::getScaleMode() const
+CQCopasiAnimation::ScaleMode CQCopasiAnimation::getScaleMode() const
 {
   return mMode;
 }
 
-void QCopasiAnimation::setScaleMode(QCopasiAnimation::ScaleMode mode)
+void CQCopasiAnimation::setScaleMode(CQCopasiAnimation::ScaleMode mode)
 {
   mMode = mode;
 }

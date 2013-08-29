@@ -14,23 +14,23 @@
 #include <layout/CLayoutState.h>
 #include <qlayout/ui_qanimationwindow.h>
 
-class QLayoutScene;
-class QCopasiAnimation;
+class CQLayoutScene;
+class CQCopasiAnimation;
 class CCopasiDataModel;
 class QCloseEvent;
 class QMenu;
 class CLayout;
 class CQLayoutThread;
 
-class QAnimationWindow : public CWindowInterface, public Ui::QAnimationWindow
+class CQAnimationWindow : public CWindowInterface, public Ui::CQAnimationWindow
 {
   Q_OBJECT
 public:
-  QAnimationWindow(CLayout* layout, CCopasiDataModel* dataModel = NULL);
-  QAnimationWindow();
-  virtual ~QAnimationWindow();
-  void setScene(QLayoutScene* scene, CCopasiDataModel* dataModel);
-  void setAnimation(QCopasiAnimation* animation, CCopasiDataModel* dataModel);
+  CQAnimationWindow(CLayout* layout, CCopasiDataModel* dataModel = NULL);
+  CQAnimationWindow();
+  virtual ~CQAnimationWindow();
+  void setScene(CQLayoutScene* scene, CCopasiDataModel* dataModel);
+  void setAnimation(CQCopasiAnimation* animation, CCopasiDataModel* dataModel);
   virtual QMenu *getWindowMenu() const;
 public slots:
   void slotShowStep(int);
@@ -47,10 +47,10 @@ private:
 protected:
   virtual void closeEvent(QCloseEvent *closeEvent);
 
-  QLayoutScene* mpScene;
+  CQLayoutScene* mpScene;
   CCopasiDataModel* mpModel;
   QMenu* mpWindowMenu;
-  QCopasiAnimation* mAnimation;
+  CQCopasiAnimation* mAnimation;
 #ifdef COPASI_AUTOLAYOUT
   CQLayoutThread* mpLayoutThread;
   CLayout* mpCopy;

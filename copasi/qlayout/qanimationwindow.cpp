@@ -31,7 +31,7 @@
 #include <elementaryFluxModes/CEFMProblem.h>
 #include <elementaryFluxModes/CFluxMode.h>
 
-class QConservedSpeciesAnimation : public QCopasiAnimation
+class QConservedSpeciesAnimation : public CQCopasiAnimation
 {
   virtual void initialize(const CCopasiDataModel &dataModel)
   {
@@ -42,7 +42,7 @@ class QConservedSpeciesAnimation : public QCopasiAnimation
 
     while (it != metabs.end())
       {
-        mEntries.push_back(new QEffectDescription((*it)->getCN()));
+        mEntries.push_back(new CQEffectDescription((*it)->getCN()));
         ++it;
       }
 
@@ -80,7 +80,7 @@ class QConservedSpeciesAnimation : public QCopasiAnimation
 /**
  * Animation, that displays one fluxmode per frame
  */
-class QFluxModeAnimation : public QCopasiAnimation
+class QFluxModeAnimation : public CQCopasiAnimation
 {
 public:
   virtual void initialize(const CCopasiDataModel &dataModel)
@@ -93,7 +93,7 @@ public:
 
     while (it != reactions.end())
       {
-        mEntries.push_back(new QEffectDescription((*it)->getCN(), QEffectDescription::Colorize, Qt::black, Qt::red));
+        mEntries.push_back(new CQEffectDescription((*it)->getCN(), CQEffectDescription::Colorize, Qt::black, Qt::red));
         indexMap[count] = (*it)->getCN();
         ++it;
         ++count;
@@ -156,7 +156,7 @@ protected:
 /**
  * Animation that displays the concentrations per time
  */
-class QTimeCourseAnimation : public QCopasiAnimation
+class QTimeCourseAnimation : public CQCopasiAnimation
 {
 public:
   double getMax(const CTimeSeries* series, size_t index = C_INVALID_INDEX)
@@ -218,11 +218,11 @@ public:
     if (series->getRecordedSteps() < (size_t)step)
       return;
 
-    double max = mMode == QCopasiAnimation::Global ? getMax(series) : 0;
+    double max = mMode == CQCopasiAnimation::Global ? getMax(series) : 0;
 
     for (size_t i = 0; i < mEntries.size(); ++i)
       {
-        if (mMode == QCopasiAnimation::Individual)
+        if (mMode == CQCopasiAnimation::Individual)
           max  = getMax(series, getIndex(series, mEntries[i]->getCN()));
 
         double value = getValue(series, mEntries[i]->getCN(), step);
@@ -239,7 +239,7 @@ public:
 
     while (it != metabs.end())
       {
-        mEntries.push_back(new QEffectDescription((*it)->getCN(), QEffectDescription::Scale));
+        mEntries.push_back(new CQEffectDescription((*it)->getCN(), CQEffectDescription::Scale));
         keyMap[(*it)->getCN()] = (*it)->getKey();
         ++it;
       }
@@ -259,7 +259,7 @@ protected:
   std::map<std::string, std::string> keyMap;
 };
 
-QAnimationWindow::QAnimationWindow(CLayout* layout, CCopasiDataModel* dataModel)
+CQAnimationWindow::CQAnimationWindow(CLayout* layout, CCopasiDataModel* dataModel)
   : mpScene(NULL)
   , mpModel(NULL)
   , mpWindowMenu(NULL)
@@ -270,10 +270,10 @@ QAnimationWindow::QAnimationWindow(CLayout* layout, CCopasiDataModel* dataModel)
 #endif
 {
   init();
-  setScene(new QLayoutScene(layout, dataModel), dataModel);
+  setScene(new CQLayoutScene(layout, dataModel), dataModel);
 }
 
-QAnimationWindow::QAnimationWindow()
+CQAnimationWindow::CQAnimationWindow()
   : mpScene(NULL)
   , mpModel(NULL)
   , mpWindowMenu(NULL)
@@ -287,7 +287,7 @@ QAnimationWindow::QAnimationWindow()
 }
 
 #include <QToolBar>
-void QAnimationWindow::init()
+void CQAnimationWindow::init()
 {
   setupUi(this);
   setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
@@ -331,7 +331,7 @@ void QAnimationWindow::init()
 #endif
 }
 
-void QAnimationWindow::slotExportImage()
+void CQAnimationWindow::slotExportImage()
 {
   QString fileName = QFileDialog::getSaveFileName(this, tr("Export Image"),
                      "",
@@ -339,7 +339,7 @@ void QAnimationWindow::slotExportImage()
   graphicsView->slotSaveToFile(fileName);
 }
 
-QAnimationWindow::~QAnimationWindow()
+CQAnimationWindow::~CQAnimationWindow()
 {
 
 #ifdef COPASI_AUTOLAYOUT
@@ -362,7 +362,7 @@ QAnimationWindow::~QAnimationWindow()
   removeFromMainWindow();
 }
 
-void QAnimationWindow::setScene(QLayoutScene* scene, CCopasiDataModel* dataModel)
+void CQAnimationWindow::setScene(CQLayoutScene* scene, CCopasiDataModel* dataModel)
 {
   mpModel = dataModel;
   mpScene = scene;
@@ -375,7 +375,7 @@ void QAnimationWindow::setScene(QLayoutScene* scene, CCopasiDataModel* dataModel
   setAnimation(new QTimeCourseAnimation(), dataModel);
 }
 
-void QAnimationWindow::slotSwitchAnimation()
+void CQAnimationWindow::slotSwitchAnimation()
 {
   QAction *action = dynamic_cast<QAction *>(sender());
 
@@ -395,12 +395,12 @@ void QAnimationWindow::slotSwitchAnimation()
     }
 }
 
-QMenu *QAnimationWindow::getWindowMenu() const
+QMenu *CQAnimationWindow::getWindowMenu() const
 {
   return mpWindowMenu;
 }
 
-void QAnimationWindow::setAnimation(QCopasiAnimation* animation, CCopasiDataModel* dataModel)
+void CQAnimationWindow::setAnimation(CQCopasiAnimation* animation, CCopasiDataModel* dataModel)
 {
   if (mAnimation != NULL)
     {
@@ -425,7 +425,7 @@ void QAnimationWindow::setAnimation(QCopasiAnimation* animation, CCopasiDataMode
     }
 }
 
-void QAnimationWindow::slotShowStep(int step)
+void CQAnimationWindow::slotShowStep(int step)
 {
   statusBar()->showMessage(QString("Displaying step %1").arg(step + 1), 1000);
 
@@ -436,7 +436,7 @@ void QAnimationWindow::slotShowStep(int step)
   mpScene->update();
 }
 
-void QAnimationWindow::closeEvent(QCloseEvent * /*closeEvent*/)
+void CQAnimationWindow::closeEvent(QCloseEvent * /*closeEvent*/)
 {
 #ifdef COPASI_AUTOLAYOUT
   // stop the autolayout
@@ -444,9 +444,9 @@ void QAnimationWindow::closeEvent(QCloseEvent * /*closeEvent*/)
 #endif // COPASI_AUTOLAYOUT
 }
 
-void QAnimationWindow::slotEditSettings()
+void CQAnimationWindow::slotEditSettings()
 {
-  QAnimationSettingsEditor editor;
+  CQAnimationSettingsEditor editor;
   editor.initFrom(mAnimation);
 
   if (editor.exec() == QDialog::Accepted)
@@ -455,7 +455,7 @@ void QAnimationWindow::slotEditSettings()
     }
 }
 
-void QAnimationWindow::slotRandomizeLayout()
+void CQAnimationWindow::slotRandomizeLayout()
 {
 
 #ifdef COPASI_AUTOLAYOUT
@@ -473,7 +473,7 @@ void QAnimationWindow::slotRandomizeLayout()
 
 #include <qtimer.h>
 
-void QAnimationWindow::slotStopLayout()
+void CQAnimationWindow::slotStopLayout()
 {
 #ifdef COPASI_AUTOLAYOUT
 
@@ -490,13 +490,13 @@ void QAnimationWindow::slotStopLayout()
   actionAuto_Layout->setIcon(CQIconResource::icon(CQIconResource::play));
 }
 
-void QAnimationWindow::slotLayoutStateChanged(QSharedPointer<CLayoutState> state)
+void CQAnimationWindow::slotLayoutStateChanged(QSharedPointer<CLayoutState> state)
 {
   state->applyTo(mpScene->getCurrentLayout());
   mpScene->recreate();
 }
 
-void QAnimationWindow::toggleUI(bool isPlaying)
+void CQAnimationWindow::toggleUI(bool isPlaying)
 {
   if (isPlaying)
     {
@@ -515,7 +515,7 @@ void QAnimationWindow::toggleUI(bool isPlaying)
 /// <summary>
 /// Slots the auto layout.
 /// </summary>
-void QAnimationWindow::slotAutoLayout()
+void CQAnimationWindow::slotAutoLayout()
 {
 #ifdef COPASI_AUTOLAYOUT
 

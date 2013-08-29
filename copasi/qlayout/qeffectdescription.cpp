@@ -1,3 +1,8 @@
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 #include <qgraphicsitem.h>
 #include <qgraphicseffect.h>
 
@@ -9,11 +14,11 @@ qreal linear(qreal a, qreal b, qreal t)
   return a * (1 - t) + b * t;
 }
 
-/** 
-* Interpolate between a, and b
-* 
-* 0.0 <= t <= 1.0
-*/
+/**
+ * Interpolate between a, and b
+ *
+ * 0.0 <= t <= 1.0
+ */
 QColor interpolate(const QColor &a, const QColor &b, float t)
 {
   int ah, as, av, aa;
@@ -31,7 +36,7 @@ QColor interpolate(const QColor &a, const QColor &b, float t)
   return QColor::fromHsv(rh, rs, rv, ra);
 }
 
-QEffectDescription::QEffectDescription(const std::string& cn, Mode mode, const QColor &startColor, const QColor& endColor)
+CQEffectDescription::CQEffectDescription(const std::string& cn, Mode mode, const QColor &startColor, const QColor& endColor)
   : mCN(cn)
   , mStartColor(startColor)
   , mEndColor(endColor)
@@ -41,7 +46,7 @@ QEffectDescription::QEffectDescription(const std::string& cn, Mode mode, const Q
 {
 }
 
-QEffectDescription::QEffectDescription(const std::string& cn, qreal startScale, qreal endScale)
+CQEffectDescription::CQEffectDescription(const std::string& cn, qreal startScale, qreal endScale)
   : mCN(cn)
   , mStartColor(Qt::white)
   , mEndColor(Qt::red)
@@ -51,116 +56,122 @@ QEffectDescription::QEffectDescription(const std::string& cn, qreal startScale, 
 {
 }
 
-QEffectDescription::~QEffectDescription()
+CQEffectDescription::~CQEffectDescription()
 {
 }
 
-const std::string& QEffectDescription::getCN()const
+const std::string& CQEffectDescription::getCN()const
 {
   return mCN;
 }
 
-const QColor& QEffectDescription::getStartColor() const
+const QColor& CQEffectDescription::getStartColor() const
 {
   return mStartColor;
 }
 
-const QColor& QEffectDescription::getEndColor() const
+const QColor& CQEffectDescription::getEndColor() const
 {
   return mEndColor;
 }
 
-qreal QEffectDescription::getScaleStart() const
+qreal CQEffectDescription::getScaleStart() const
 {
   return mScaleStart;
 }
 
-qreal QEffectDescription::getScaleEnd() const
+qreal CQEffectDescription::getScaleEnd() const
 {
   return mScaleEnd;
 }
 
-QEffectDescription::Mode QEffectDescription::getMode() const
+CQEffectDescription::Mode CQEffectDescription::getMode() const
 {
   return mMode;
 }
-void QEffectDescription::setMode(QEffectDescription::Mode mode)
+void CQEffectDescription::setMode(CQEffectDescription::Mode mode)
 {
   mMode = mode;
 }
 
-void QEffectDescription::removeFromScene(QLayoutScene& scene)
+void CQEffectDescription::removeFromScene(CQLayoutScene& scene)
 {
   QGraphicsItem *item = scene.getItemFor(mCN);
+
   if (item == NULL)
     return;
+
   QGraphicsEffect* effect = item->graphicsEffect();
+
   if (effect == NULL)
     return;
-  effect->setEnabled(false);    
+
+  effect->setEnabled(false);
 }
 
-void QEffectDescription::applyToScene(QLayoutScene& scene, qreal t)
+void CQEffectDescription::applyToScene(CQLayoutScene& scene, qreal t)
 {
   QGraphicsItem *item = scene.getItemFor(mCN);
+
   if (item == NULL)
     return;
-  switch(mMode)
-  {
-  default:
-  case DropShadow:
+
+  switch (mMode)
     {
-      QGraphicsDropShadowEffect* effect = new QGraphicsDropShadowEffect(&scene);
-      effect->setColor(interpolate(mStartColor, mEndColor, t));
-      effect->setBlurRadius(25);
-      effect->setEnabled(true);
-      effect->setOffset(0);
-      item->setGraphicsEffect(effect);
+      default:
+      case DropShadow:
+      {
+        QGraphicsDropShadowEffect* effect = new QGraphicsDropShadowEffect(&scene);
+        effect->setColor(interpolate(mStartColor, mEndColor, t));
+        effect->setBlurRadius(25);
+        effect->setEnabled(true);
+        effect->setOffset(0);
+        item->setGraphicsEffect(effect);
+      }
+      break;
+
+      case Colorize:
+      {
+        QGraphicsColorizeEffect* effect = new QGraphicsColorizeEffect(&scene);
+        effect->setColor(interpolate(mStartColor, mEndColor, t));
+        effect->setStrength(1);
+        effect->setEnabled(true);
+        item->setGraphicsEffect(effect);
+      }
+      break;
+
+      case Scale:
+      {
+        CQCopasiEffect* effect = new CQCopasiEffect();
+        effect->setScale(linear(mScaleStart, mScaleEnd, t));
+        effect->setEnabled(true);
+        item->setGraphicsEffect(effect);
+      }
+      break;
     }
-    break;
-  case Colorize:
-    {
-      QGraphicsColorizeEffect* effect = new QGraphicsColorizeEffect(&scene);
-      effect->setColor(interpolate(mStartColor, mEndColor, t));
-      effect->setStrength(1);
-      effect->setEnabled(true);
-      item->setGraphicsEffect(effect);
-    }
-    break;
-  case Scale:
-    {
-      QCopasiEffect* effect = new QCopasiEffect();
-      effect->setScale(linear(mScaleStart, mScaleEnd, t));
-      effect->setEnabled(true);
-      item->setGraphicsEffect(effect);
-    }
-    break;
-  }
 }
 
-
-void QEffectDescription::setCN(const std::string& cn)
+void CQEffectDescription::setCN(const std::string& cn)
 {
   mCN = cn;
 }
 
-void QEffectDescription::setStartColor(const QColor& color)
+void CQEffectDescription::setStartColor(const QColor& color)
 {
   mStartColor = color;
 }
 
-void QEffectDescription::setEndColor(const QColor& color)
+void CQEffectDescription::setEndColor(const QColor& color)
 {
   mEndColor = color;
 }
 
-void QEffectDescription::setScaleStart(qreal scale)
+void CQEffectDescription::setScaleStart(qreal scale)
 {
   mScaleStart = scale;
 }
 
-void QEffectDescription::setScaleEnd(qreal scale)
+void CQEffectDescription::setScaleEnd(qreal scale)
 {
   mScaleEnd = scale;
 }
-

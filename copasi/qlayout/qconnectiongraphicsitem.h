@@ -15,12 +15,12 @@
 
 class CLGlyphWithCurve;
 class CLStyle;
-class QConnectionGraphicsItem : public QObject, public QCopasiGraphicsItem, public QGraphicsItemGroup
+class CQConnectionGraphicsItem : public QObject, public CQCopasiGraphicsItem, public QGraphicsItemGroup
 {
   Q_OBJECT
 public:
-  QConnectionGraphicsItem(const CLGlyphWithCurve* glyph, const CLRenderResolver* resolver = NULL);
-  virtual ~QConnectionGraphicsItem();
+  CQConnectionGraphicsItem(const CLGlyphWithCurve* glyph, const CLRenderResolver* resolver = NULL);
+  virtual ~CQConnectionGraphicsItem();
   static QSharedPointer<QPainterPath> getPath(const CLCurve& curve);
 
 protected:

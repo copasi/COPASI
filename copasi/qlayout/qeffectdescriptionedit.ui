@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QEffectDescriptionEdit</class>
- <widget class="QWidget" name="QEffectDescriptionEdit">
+<comment> Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+ <class>CQEffectDescriptionEdit</class>
+ <widget class="QWidget" name="CQEffectDescriptionEdit">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -226,7 +231,7 @@
   <connection>
    <sender>cmdSelectColorStart</sender>
    <signal>clicked()</signal>
-   <receiver>QEffectDescriptionEdit</receiver>
+   <receiver>CQEffectDescriptionEdit</receiver>
    <slot>slotSelectColorStart()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -242,7 +247,7 @@
   <connection>
    <sender>cmdSelectColorEnd</sender>
    <signal>clicked()</signal>
-   <receiver>QEffectDescriptionEdit</receiver>
+   <receiver>CQEffectDescriptionEdit</receiver>
    <slot>slotSelectColorEnd()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -258,7 +263,7 @@
   <connection>
    <sender>cmdSelectObject</sender>
    <signal>clicked()</signal>
-   <receiver>QEffectDescriptionEdit</receiver>
+   <receiver>CQEffectDescriptionEdit</receiver>
    <slot>slotSelectObject()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -274,7 +279,7 @@
   <connection>
    <sender>txtScaleStart</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>QEffectDescriptionEdit</receiver>
+   <receiver>CQEffectDescriptionEdit</receiver>
    <slot>slotScaleStartChanged(QString)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -290,7 +295,7 @@
   <connection>
    <sender>txtScaleEnd</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>QEffectDescriptionEdit</receiver>
+   <receiver>CQEffectDescriptionEdit</receiver>
    <slot>slotScaleEndChanged(QString)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -306,7 +311,7 @@
   <connection>
    <sender>radColorize</sender>
    <signal>clicked()</signal>
-   <receiver>QEffectDescriptionEdit</receiver>
+   <receiver>CQEffectDescriptionEdit</receiver>
    <slot>slotModeChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -322,7 +327,7 @@
   <connection>
    <sender>radShadow</sender>
    <signal>clicked()</signal>
-   <receiver>QEffectDescriptionEdit</receiver>
+   <receiver>CQEffectDescriptionEdit</receiver>
    <slot>slotModeChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -338,7 +343,7 @@
   <connection>
    <sender>radScale</sender>
    <signal>clicked()</signal>
-   <receiver>QEffectDescriptionEdit</receiver>
+   <receiver>CQEffectDescriptionEdit</receiver>
    <slot>slotModeChanged()</slot>
    <hints>
     <hint type="sourcelabel">

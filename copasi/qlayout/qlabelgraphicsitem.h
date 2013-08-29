@@ -1,3 +1,8 @@
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 #ifndef QLABEL_GRAPHICS_ITEM
 #define QLABEL_GRAPHICS_ITEM
 
@@ -6,12 +11,12 @@
 
 class CLTextGlyph;
 class CLStyle;
-class QLabelGraphicsItem : public QGraphicsTextItem, public QCopasiGraphicsItem
+class CQLabelGraphicsItem : public QGraphicsTextItem, public CQCopasiGraphicsItem
 {
-	Q_OBJECT
+  Q_OBJECT
 public:
-  QLabelGraphicsItem(const CLTextGlyph* textGlyph, const CLRenderResolver* resolver=NULL);
-	virtual ~QLabelGraphicsItem();
+  CQLabelGraphicsItem(const CLTextGlyph* textGlyph, const CLRenderResolver* resolver = NULL);
+  virtual ~CQLabelGraphicsItem();
 };
 
 #endif

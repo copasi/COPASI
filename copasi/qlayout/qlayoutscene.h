@@ -17,14 +17,14 @@ class CLGraphicalObject;
 class CLRenderResolver;
 class CCopasiDataModel;
 class CLRenderInformationBase;
-class QCopasiEffect;
+class CQCopasiEffect;
 
-class QLayoutScene: public QGraphicsScene
+class CQLayoutScene: public QGraphicsScene
 {
   Q_OBJECT
 public:
-  QLayoutScene(CLayout *layout, CCopasiDataModel* model = NULL, CLRenderInformationBase* renderInformation = NULL);
-  virtual ~QLayoutScene();
+  CQLayoutScene(CLayout *layout, CCopasiDataModel* model = NULL, CLRenderInformationBase* renderInformation = NULL);
+  virtual ~CQLayoutScene();
   void setResolver(CLRenderResolver* resolver);
   const CLRenderResolver* getResolver() const;
   void saveToFile(const std::string& fileName, const std::string& fileType = "pdf");

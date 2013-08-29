@@ -1,9 +1,14 @@
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 #ifndef QLAYOUT_VIEW_H
 #define QLAYOUT_VIEW_H
 
 #include <QGraphicsView>
 
-class QLayoutScene;
+class CQLayoutScene;
 class QAction;
 class QMenu;
 class QToolBar;
@@ -11,17 +16,17 @@ class QComboBox;
 class CCopasiDataModel;
 class CLayout;
 
-class QLayoutView: public QGraphicsView
+class CQLayoutView: public QGraphicsView
 {
   Q_OBJECT
 public:
-  QLayoutView(QWidget*parent=NULL);
-  QLayoutView(QLayoutScene *scene);
-  virtual ~QLayoutView();  
+  CQLayoutView(QWidget*parent = NULL);
+  CQLayoutView(CQLayoutScene *scene);
+  virtual ~CQLayoutView();
   void fillZoomMenu(QMenu* menu);
   void fillZoomTooBar(QToolBar* toolBar);
   void fillSelectionToolBar(QToolBar* toolBar);
-  void setDataModel(CCopasiDataModel* dataModel, CLayout *layout=NULL);
+  void setDataModel(CCopasiDataModel* dataModel, CLayout *layout = NULL);
   CCopasiDataModel* getDataModel();
 
 public slots:
@@ -34,7 +39,7 @@ public slots:
   void slotRenderInformationChanged(int);
 
 protected:
-  void wheelEvent ( QWheelEvent* event );
+  void wheelEvent(QWheelEvent* event);
 
   QAction* mpActZoomIn;
   QAction* mpActZoomOut;
@@ -46,7 +51,7 @@ protected:
   bool mIgnoreEvents;
   CCopasiDataModel* mpDataModel;
 
-private: 
+private:
   void createActions();
 };
 

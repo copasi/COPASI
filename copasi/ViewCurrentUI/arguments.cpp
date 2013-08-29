@@ -135,7 +135,7 @@ bool Arguments::handleCommandLine() const
   for (size_t i = 0; i < model.getListOfLayouts()->size(); ++i)
     {
       CLayout* layout = (*model.getListOfLayouts())[i];
-      QLayoutScene scene(layout, &model);
+      CQLayoutScene scene(layout, &model);
       scene.recreate();
       scene.saveToFile(mOutputDir + "/" + QFileInfo(mFilename.c_str()).baseName().ascii() + "_" + layout->getObjectName() + "." + mFileType, mFileType);
     }

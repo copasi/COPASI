@@ -284,7 +284,7 @@ void CQLayoutsWidget::slotBtnNewClicked()
   CQNewMainWindow* pWin = dynamic_cast<CQNewMainWindow*>(window);
 
 #ifndef DISABLE_QT_LAYOUT_RENDERING
-  QAnimationWindow* pAnim = dynamic_cast<QAnimationWindow*>(window);
+  CQAnimationWindow* pAnim = dynamic_cast<CQAnimationWindow*>(window);
 
   if (pAnim != NULL)
     {
@@ -389,7 +389,7 @@ CQLayoutsWidget::LayoutWindow * CQLayoutsWidget::createLayoutWindow(int row, CLa
     }
   else
     {
-      pWin = new QAnimationWindow(pLayout, (*CCopasiRootContainer::getDatamodelList())[0]);
+      pWin = new CQAnimationWindow(pLayout, (*CCopasiRootContainer::getDatamodelList())[0]);
     }
 
 #else

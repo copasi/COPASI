@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QAnimationControls</class>
- <widget class="QWidget" name="QAnimationControls">
+<comment> Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+ <class>CQAnimationControls</class>
+ <widget class="QWidget" name="CQAnimationControls">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -201,7 +206,7 @@
   <connection>
    <sender>sldPosition</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>QAnimationControls</receiver>
+   <receiver>CQAnimationControls</receiver>
    <slot>slotShowStep(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -217,7 +222,7 @@
   <connection>
    <sender>cmdBack</sender>
    <signal>pressed()</signal>
-   <receiver>QAnimationControls</receiver>
+   <receiver>CQAnimationControls</receiver>
    <slot>slotBack()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -233,7 +238,7 @@
   <connection>
    <sender>cmdForward</sender>
    <signal>pressed()</signal>
-   <receiver>QAnimationControls</receiver>
+   <receiver>CQAnimationControls</receiver>
    <slot>slotForward()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -249,7 +254,7 @@
   <connection>
    <sender>cmdPlayPause</sender>
    <signal>pressed()</signal>
-   <receiver>QAnimationControls</receiver>
+   <receiver>CQAnimationControls</receiver>
    <slot>slotTogglePlayPause()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -265,7 +270,7 @@
   <connection>
    <sender>cmdStepBack</sender>
    <signal>pressed()</signal>
-   <receiver>QAnimationControls</receiver>
+   <receiver>CQAnimationControls</receiver>
    <slot>slotStepBack()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -281,7 +286,7 @@
   <connection>
    <sender>cmdStepForward</sender>
    <signal>pressed()</signal>
-   <receiver>QAnimationControls</receiver>
+   <receiver>CQAnimationControls</receiver>
    <slot>slotStepForward()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -297,7 +302,7 @@
   <connection>
    <sender>cmdStop</sender>
    <signal>pressed()</signal>
-   <receiver>QAnimationControls</receiver>
+   <receiver>CQAnimationControls</receiver>
    <slot>slotStop()</slot>
    <hints>
     <hint type="sourcelabel">

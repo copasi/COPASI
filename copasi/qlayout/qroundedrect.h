@@ -1,3 +1,8 @@
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 #ifndef QROUNDED_RECT
 #define QROUNDED_RECT
 
@@ -6,13 +11,13 @@
 
 class QPainter;
 
-class QRoundedRect : public QGraphicsRectItem
+class CQRoundedRect : public QGraphicsRectItem
 {
 public:
-  QRoundedRect(qreal x, qreal y, qreal w, qreal h, qreal rx=0, qreal ry=0);
-	virtual ~QRoundedRect();
+  CQRoundedRect(qreal x, qreal y, qreal w, qreal h, qreal rx = 0, qreal ry = 0);
+  virtual ~CQRoundedRect();
 protected:
-  virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option=new QStyleOptionGraphicsItem() ,QWidget *widget=0);
+  virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option = new QStyleOptionGraphicsItem() , QWidget *widget = 0);
 
   qreal mRx;
   qreal mRy;

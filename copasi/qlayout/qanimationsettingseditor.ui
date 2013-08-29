@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QAnimationSettingsEditor</class>
- <widget class="QDialog" name="QAnimationSettingsEditor">
+<comment> Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+ <class>CQAnimationSettingsEditor</class>
+ <widget class="QDialog" name="CQAnimationSettingsEditor">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -109,7 +114,7 @@
       </layout>
      </item>
      <item>
-      <widget class="QEffectDescriptionEdit" name="widget" native="true">
+      <widget class="CQEffectDescriptionEdit" name="widget" native="true">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
@@ -140,7 +145,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QEffectDescriptionEdit</class>
+   <class>CQEffectDescriptionEdit</class>
    <extends>QWidget</extends>
    <header location="global">qlayout/qeffectdescriptionedit.h</header>
    <container>1</container>
@@ -159,7 +164,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>QAnimationSettingsEditor</receiver>
+   <receiver>CQAnimationSettingsEditor</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -175,7 +180,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>QAnimationSettingsEditor</receiver>
+   <receiver>CQAnimationSettingsEditor</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -191,7 +196,7 @@
   <connection>
    <sender>radGlobal</sender>
    <signal>clicked()</signal>
-   <receiver>QAnimationSettingsEditor</receiver>
+   <receiver>CQAnimationSettingsEditor</receiver>
    <slot>slotScaleModeChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -207,7 +212,7 @@
   <connection>
    <sender>radIndividual</sender>
    <signal>clicked()</signal>
-   <receiver>QAnimationSettingsEditor</receiver>
+   <receiver>CQAnimationSettingsEditor</receiver>
    <slot>slotScaleModeChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -223,7 +228,7 @@
   <connection>
    <sender>toolButton</sender>
    <signal>clicked()</signal>
-   <receiver>QAnimationSettingsEditor</receiver>
+   <receiver>CQAnimationSettingsEditor</receiver>
    <slot>slotEffectAdded()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -239,7 +244,7 @@
   <connection>
    <sender>toolButton_2</sender>
    <signal>clicked()</signal>
-   <receiver>QAnimationSettingsEditor</receiver>
+   <receiver>CQAnimationSettingsEditor</receiver>
    <slot>slotEffectRemoved()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -255,7 +260,7 @@
   <connection>
    <sender>listWidget</sender>
    <signal>itemSelectionChanged()</signal>
-   <receiver>QAnimationSettingsEditor</receiver>
+   <receiver>CQAnimationSettingsEditor</receiver>
    <slot>slotSelectionChanged()</slot>
    <hints>
     <hint type="sourcelabel">

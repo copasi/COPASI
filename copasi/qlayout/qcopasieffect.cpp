@@ -1,26 +1,32 @@
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 #include <qlayout/qcopasieffect.h>
 
 #include <QPainter>
 #include <qgraphicseffect.h>
 
-QCopasiEffect::QCopasiEffect()
-  :mScale(1.0)
+CQCopasiEffect::CQCopasiEffect()
+  : mScale(1.0)
 {
 }
 
-QCopasiEffect::~QCopasiEffect()
+CQCopasiEffect::~CQCopasiEffect()
 {
 }
 
-void QCopasiEffect::setScale(qreal scale)
+void CQCopasiEffect::setScale(qreal scale)
 {
   mScale = scale;
 }
 
-void QCopasiEffect::draw(QPainter* painter)
+void CQCopasiEffect::draw(QPainter* painter)
 {
   QPoint offset;
   const QPixmap pixmap = sourcePixmap(Qt::DeviceCoordinates, &offset);
+
   if (pixmap.isNull())
     return;
 

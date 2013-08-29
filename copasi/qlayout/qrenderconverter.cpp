@@ -968,7 +968,7 @@ void fillItemFromRectangle(QGraphicsItemGroup *item, const CLBoundingBox *pBB, c
   double rx = pRect->getRadiusX().getAbsoluteValue() + pRect->getRadiusX().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
   double ry = pRect->getRadiusY().getAbsoluteValue() + pRect->getRadiusY().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
 
-  QGraphicsRectItem* result = new QRoundedRect(
+  QGraphicsRectItem* result = new CQRoundedRect(
     x, y, w, h, rx, ry);
   QSharedPointer<QPen> pen = getPen(pRect, group, resolver, pBB);
   result->setPen(*pen);
@@ -1041,7 +1041,7 @@ void fillItemFromGroup(QGraphicsItemGroup *item, const CLBoundingBox *bounds, co
   transform(item, group, NULL);
 }
 
-void QRenderConverter::applyStyle(QGraphicsPathItem* item, const CLBoundingBox* bounds, const CLGroup *group, const CLRenderResolver* resolver, QGraphicsItemGroup* itemGroup)
+void CQRenderConverter::applyStyle(QGraphicsPathItem* item, const CLBoundingBox* bounds, const CLGroup *group, const CLRenderResolver* resolver, QGraphicsItemGroup* itemGroup)
 {
   if (resolver == NULL || group == NULL || bounds == NULL || item == NULL)
     return;
@@ -1070,7 +1070,7 @@ void QRenderConverter::applyStyle(QGraphicsPathItem* item, const CLBoundingBox* 
     }
 }
 
-void QRenderConverter::applyStyle(QGraphicsItemGroup *group, const CLBoundingBox* bounds, const CLGroup *style, const CLRenderResolver* resolver)
+void CQRenderConverter::applyStyle(QGraphicsItemGroup *group, const CLBoundingBox* bounds, const CLGroup *style, const CLRenderResolver* resolver)
 {
   if (resolver == NULL || style == NULL || bounds == NULL || group == NULL)
     return;
@@ -1080,7 +1080,7 @@ void QRenderConverter::applyStyle(QGraphicsItemGroup *group, const CLBoundingBox
     }
 }
 
-void QRenderConverter::applyStyle(QGraphicsTextItem *item, const CLBoundingBox* bounds, const CLGroup *style, const CLRenderResolver* resolver)
+void CQRenderConverter::applyStyle(QGraphicsTextItem *item, const CLBoundingBox* bounds, const CLGroup *style, const CLRenderResolver* resolver)
 {
   if (resolver == NULL || style == NULL || bounds == NULL || item == NULL)
     return;
@@ -1098,7 +1098,7 @@ void QRenderConverter::applyStyle(QGraphicsTextItem *item, const CLBoundingBox* 
     }
 }
 
-void QRenderConverter::fillGroupFromStyle(QGraphicsItemGroup *group, const CLBoundingBox *bounds, const CLStyle *style, const CLRenderResolver* resolver)
+void CQRenderConverter::fillGroupFromStyle(QGraphicsItemGroup *group, const CLBoundingBox *bounds, const CLStyle *style, const CLRenderResolver* resolver)
 {
   if (resolver == NULL || style == NULL || bounds == NULL || group == NULL)
     return;
@@ -1106,7 +1106,7 @@ void QRenderConverter::fillGroupFromStyle(QGraphicsItemGroup *group, const CLBou
   fillItemFromGroup(group, bounds, style->getGroup(), resolver);
 }
 
-void QRenderConverter::setBackground(QGraphicsScene *scene, const std::string& fill, const CLRenderResolver* resolver)
+void CQRenderConverter::setBackground(QGraphicsScene *scene, const std::string& fill, const CLRenderResolver* resolver)
 {
   if (resolver == NULL || scene == NULL) return;
 

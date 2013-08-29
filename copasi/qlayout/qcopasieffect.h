@@ -1,16 +1,21 @@
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 #ifndef QCOPASI_EFFECT_H
 #define QCOPASI_EFFECT_H
 
 #include <qgraphicseffect.h>
 
-class QPainter; 
+class QPainter;
 
-class QCopasiEffect : public QGraphicsEffect
+class CQCopasiEffect : public QGraphicsEffect
 {
   Q_OBJECT
-public: 
-  QCopasiEffect();
-  virtual ~QCopasiEffect();
+public:
+  CQCopasiEffect();
+  virtual ~CQCopasiEffect();
   void setScale(qreal scale);
 
 protected:

@@ -12,24 +12,24 @@
 #include <QPen>
 #include <QBrush>
 
-QStyledGraphicsItem::QStyledGraphicsItem(const CLGraphicalObject* go, const CLRenderResolver* resolver)
-  : QCopasiGraphicsItem(resolver, resolver != NULL ? resolver->resolveStyle(go) : NULL)
+CQStyledGraphicsItem::CQStyledGraphicsItem(const CLGraphicalObject* go, const CLRenderResolver* resolver)
+  : CQCopasiGraphicsItem(resolver, resolver != NULL ? resolver->resolveStyle(go) : NULL)
   , mWasMoved(false)
 {
   setFlag(QGraphicsItem::ItemIsMovable);
   setFlag(QGraphicsItem::ItemIsSelectable);
   setFlag(QGraphicsItem::ItemSendsGeometryChanges);
   setData(COPASI_LAYOUT_KEY, QString(go->getKey().c_str()));
-  QRenderConverter::fillGroupFromStyle(this, &go->getBoundingBox(), mpStyle, mpResolver);
+  CQRenderConverter::fillGroupFromStyle(this, &go->getBoundingBox(), mpStyle, mpResolver);
 }
 
-QStyledGraphicsItem::~QStyledGraphicsItem()
+CQStyledGraphicsItem::~CQStyledGraphicsItem()
 {
 }
 
-void QStyledGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void CQStyledGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-  QLayoutScene * currentScene = dynamic_cast<QLayoutScene *>(scene());
+  CQLayoutScene * currentScene = dynamic_cast<CQLayoutScene *>(scene());
 
   if (mWasMoved && currentScene)
     {
@@ -43,9 +43,9 @@ void QStyledGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-QVariant QStyledGraphicsItem::itemChange(GraphicsItemChange change, const QVariant &value)
+QVariant CQStyledGraphicsItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
-  QLayoutScene * currentScene = dynamic_cast<QLayoutScene *>(scene());
+  CQLayoutScene * currentScene = dynamic_cast<CQLayoutScene *>(scene());
 
   if (change == ItemPositionHasChanged && currentScene)
     {

@@ -8,7 +8,7 @@
 #include <qlayout/qanimationcontrols.h>
 #include <resourcesUI/CQIconResource.h>
 
-QAnimationControls::QAnimationControls(QWidget* parent)
+CQAnimationControls::CQAnimationControls(QWidget* parent)
   : QWidget(parent)
   , mNumSteps(100)
   , mCurrentStep(0)
@@ -30,12 +30,12 @@ QAnimationControls::QAnimationControls(QWidget* parent)
   connect(mpTimer, SIGNAL(timeout()), this, SLOT(slotStepForward()));
 }
 
-void QAnimationControls::slotChangeInterval(int interval)
+void CQAnimationControls::slotChangeInterval(int interval)
 {
   mpTimer->setInterval(interval);
 }
 
-void QAnimationControls::setNumSteps(size_t numSteps)
+void CQAnimationControls::setNumSteps(size_t numSteps)
 {
   if (mNumSteps == numSteps) return;
 
@@ -45,7 +45,7 @@ void QAnimationControls::setNumSteps(size_t numSteps)
   lblDuration->setText(QString::number(numSteps));
 }
 
-void QAnimationControls::setCurrentStep(size_t currentStep)
+void CQAnimationControls::setCurrentStep(size_t currentStep)
 {
   if (currentStep < mNumSteps)
     {
@@ -64,28 +64,28 @@ void QAnimationControls::setCurrentStep(size_t currentStep)
   updateActions();
 }
 
-bool QAnimationControls::isPlaying() const
+bool CQAnimationControls::isPlaying() const
 {
   return mpTimer->isActive();
 }
 
-QAnimationControls::~QAnimationControls()
+CQAnimationControls::~CQAnimationControls()
 {
 }
 
-void QAnimationControls::slotBack()
+void CQAnimationControls::slotBack()
 {
   emit backward();
   sldPosition->setValue(0);
 }
 
-void QAnimationControls::slotForward()
+void CQAnimationControls::slotForward()
 {
   emit forward();
   sldPosition->setValue(mNumSteps - 1);
 }
 
-void QAnimationControls::slotTogglePlayPause()
+void CQAnimationControls::slotTogglePlayPause()
 {
   bool playing = isPlaying();
 
@@ -103,13 +103,13 @@ void QAnimationControls::slotTogglePlayPause()
     }
 }
 
-void QAnimationControls::slotStepBack()
+void CQAnimationControls::slotStepBack()
 {
   emit step_backward();
   sldPosition->setValue(mCurrentStep < 2 ? 0 : --mCurrentStep);
 }
 
-void QAnimationControls::slotStepForward()
+void CQAnimationControls::slotStepForward()
 {
   emit step_forward();
 
@@ -135,7 +135,7 @@ void QAnimationControls::slotStepForward()
   sldPosition->setValue(next);
 }
 
-void QAnimationControls::slotStop()
+void CQAnimationControls::slotStop()
 {
   mpTimer->stop();
   cmdPlayPause->setIcon(CQIconResource::icon(CQIconResource::play));
@@ -143,7 +143,7 @@ void QAnimationControls::slotStop()
   sldPosition->setValue(0);
 }
 
-void QAnimationControls::slotShowStep(int step)
+void CQAnimationControls::slotShowStep(int step)
 {
   mCurrentStep = step;
   lblCurrent->setText(QString::number(step + 1));
@@ -152,9 +152,9 @@ void QAnimationControls::slotShowStep(int step)
   emit showStep(step);
 }
 
-void QAnimationControls::updateButtons()
+void CQAnimationControls::updateButtons()
 {
 }
-void QAnimationControls::updateActions()
+void CQAnimationControls::updateActions()
 {
 }

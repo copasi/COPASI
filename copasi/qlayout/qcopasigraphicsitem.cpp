@@ -1,37 +1,38 @@
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 #include <qlayout/qcopasigraphicsitem.h>
 #include <layout/CLStyle.h>
 #include <layout/CLRenderResolver.h>
 
-QCopasiGraphicsItem::~QCopasiGraphicsItem()
+CQCopasiGraphicsItem::~CQCopasiGraphicsItem()
 {
-
 }
 
-
-QCopasiGraphicsItem::QCopasiGraphicsItem(const CLRenderResolver* resolver, const CLStyle* style)
+CQCopasiGraphicsItem::CQCopasiGraphicsItem(const CLRenderResolver* resolver, const CLStyle* style)
   : mpStyle(style)
   , mpResolver(resolver)
 {
-  
 }
 
-void QCopasiGraphicsItem::setResolver(const CLRenderResolver* resolver)
+void CQCopasiGraphicsItem::setResolver(const CLRenderResolver* resolver)
 {
   mpResolver = resolver;
 }
 
-const CLRenderResolver* QCopasiGraphicsItem::getResolver() const
+const CLRenderResolver* CQCopasiGraphicsItem::getResolver() const
 {
   return mpResolver;
 }
 
-
-void QCopasiGraphicsItem::setStyle(const CLStyle* style)
+void CQCopasiGraphicsItem::setStyle(const CLStyle* style)
 {
   mpStyle = style;
 }
 
-const CLStyle* QCopasiGraphicsItem::getStyle() const
+const CLStyle* CQCopasiGraphicsItem::getStyle() const
 {
   return mpStyle;
 }
