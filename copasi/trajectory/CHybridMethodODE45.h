@@ -479,7 +479,7 @@ protected:
    * Fast reactions are set FAST and
    * slow ones are SLOW
    */
-  std::vector <size_t> mReactionFlags;
+  CVector <size_t> mReactionFlags;
 
   /**
    *   A pointer to the reactions of the model.
@@ -522,8 +522,7 @@ protected:
   /**
    *   Vectors to hold the system state and intermediate results
    */
-  std::vector <C_FLOAT64> temp;
-  std::vector <C_FLOAT64> currentState;
+  CVector <C_FLOAT64> temp;
 
   //=================Attributes for ODE45 Solver================
 
@@ -601,8 +600,8 @@ protected:
   /**
    * The propensities of the stochastic reactions.
    */
-  std::vector <C_FLOAT64> mAmu;
-  std::vector <C_FLOAT64> mAmuOld;
+  CVector <C_FLOAT64> mAmu;
+  CVector <C_FLOAT64> mAmuOld;
 
   /**
    * Set of the reactions, which must be updated.

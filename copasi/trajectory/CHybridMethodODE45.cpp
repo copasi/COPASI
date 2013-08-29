@@ -298,9 +298,7 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   mpReactions   = &mpModel->getReactions();
   mNumReactions = mpReactions->size();
 
-  mAmu.clear();
   mAmu.resize(mNumReactions);
-  mAmuOld.clear();
   mAmuOld.resize(mNumReactions);
 
   setupReactionFlags();
@@ -316,7 +314,6 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   setupMetabFlags();
 
   //(3)----set attributes related with STATE
-  temp.clear();
   temp.resize(mNumVariableMetabs + 1);
 
   //(4)----set attributes related with SYSTEM
@@ -446,21 +443,16 @@ void CHybridMethodODE45::setupReactionFlags()
   mHasDetermReaction = false;
   mReactionFlags.resize(mNumReactions);
 
-  std::vector<size_t>::iterator flagIt =
-    mReactionFlags.begin();
-  const std::vector<size_t>::iterator flagEndIt =
-    mReactionFlags.end();
-
-  for (; flagIt != flagEndIt; ++flagIt)
+  for (size_t rct=0; rct<mNumReaction; rct++)
     {
-      if ((*mpReactions)[i]->isFast())
+      if ((*mpReactions)[rct]->isFast())
         {
-          *flagIt = FAST;
+          mReactionFlags[rct] = FAST;
           mHasDetermReaction = true;
         }
       else
         {
-          *flagIt = SLOW;
+          mReactionFlags[rct] = SLOW;
           mHasStoiReaction = true;
         }
     }
@@ -967,6 +959,7 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C
   //(2)go through all the reactions and
   //update derivatives
   std::set <CHybridODE45Balance>::iterator metabIt;
+  std::set <CHybridODE45Balance>::iterator metabEndIt;
   size_t metabIndex;
 
   for (i = 0; i < mNumReactions; i++)
@@ -975,9 +968,10 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C
         ydot[mData.dim - 1] += mAmu[i];
       else //fast reaction
         {
-          metabIt = mLocalBalances[i].begin();
+          metabIt    = mLocalBalances[i].begin();
+	  metabEndIt = mLocalBalances[i].end(); 
 
-          for (; metabIt != NULL; metabIt++)
+          for (; metabIt != metabEndIt; metabIt++)
             {
               metabIndex = metabIt->mIndex;
               ydot[metabIndex] += metabIt->mMultiplicity * mAmu[i];
