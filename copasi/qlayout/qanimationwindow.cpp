@@ -264,8 +264,10 @@ QAnimationWindow::QAnimationWindow(CLayout* layout, CCopasiDataModel* dataModel)
   , mpModel(NULL)
   , mpWindowMenu(NULL)
   , mAnimation(NULL)
+#ifdef COPASI_AUTOLAYOUT
   , mpLayoutThread(NULL)
   , mpCopy(NULL)
+#endif
 {
   init();
   setScene(new QLayoutScene(layout, dataModel), dataModel);
@@ -276,8 +278,10 @@ QAnimationWindow::QAnimationWindow()
   , mpModel(NULL)
   , mpWindowMenu(NULL)
   , mAnimation(NULL)
+#ifdef COPASI_AUTOLAYOUT
   , mpLayoutThread(NULL)
   , mpCopy(NULL)
+#endif
 {
   init();
 }
@@ -309,6 +313,7 @@ void QAnimationWindow::init()
 
   mpWindowMenu = menuBar()->addMenu(tr("&Window"));
 
+#ifdef COPASI_AUTOLAYOUT
   mpLayoutThread = new CQLayoutThread(this);
   connect(mpLayoutThread, SIGNAL(layoutFinished()), this, SLOT(slotStopLayout()));
   connect(mpLayoutThread, SIGNAL(layoutStateChanged(QSharedPointer<CLayoutState>)), this, SLOT(slotLayoutStateChanged(QSharedPointer<CLayoutState>)));
@@ -317,7 +322,7 @@ void QAnimationWindow::init()
   addDockWidget(Qt::LeftDockWidgetArea, pParameterWindow);
   viewMenu->addSeparator();
   viewMenu->addAction(pParameterWindow->toggleViewAction());
-
+#endif
   toggleUI(false);
 
 #ifndef COPASI_AUTOLAYOUT
@@ -336,18 +341,22 @@ void QAnimationWindow::slotExportImage()
 
 QAnimationWindow::~QAnimationWindow()
 {
-  mpLayoutThread->terminateLayout();
 
-  if (mAnimation != NULL)
-    {
-      delete mAnimation;
-      mAnimation = NULL;
-    }
+#ifdef COPASI_AUTOLAYOUT
+  mpLayoutThread->terminateLayout();
 
   if (mpCopy != NULL)
     {
       delete mpCopy;
       mpCopy = NULL;
+    }
+
+#endif // COPASI_AUTOLAYOUT
+
+  if (mAnimation != NULL)
+    {
+      delete mAnimation;
+      mAnimation = NULL;
     }
 
   removeFromMainWindow();
@@ -429,8 +438,10 @@ void QAnimationWindow::slotShowStep(int step)
 
 void QAnimationWindow::closeEvent(QCloseEvent * /*closeEvent*/)
 {
+#ifdef COPASI_AUTOLAYOUT
   // stop the autolayout
   mpLayoutThread->stopLayout();
+#endif // COPASI_AUTOLAYOUT
 }
 
 void QAnimationWindow::slotEditSettings()
@@ -464,11 +475,15 @@ void QAnimationWindow::slotRandomizeLayout()
 
 void QAnimationWindow::slotStopLayout()
 {
+#ifdef COPASI_AUTOLAYOUT
+
   if (mpCopy != NULL)
     {
       delete mpCopy;
       mpCopy = NULL;
     }
+
+#endif
 
   actionAuto_Layout->setChecked(false);
   actionAuto_Layout->setText("Run Auto Layout");
@@ -491,7 +506,9 @@ void QAnimationWindow::toggleUI(bool isPlaying)
     }
   else
     {
+#ifdef COPASI_AUTOLAYOUT
       mpLayoutThread->stopLayout();
+#endif //COPASI_AUTOLAYOUT
     }
 }
 
@@ -500,13 +517,14 @@ void QAnimationWindow::toggleUI(bool isPlaying)
 /// </summary>
 void QAnimationWindow::slotAutoLayout()
 {
+#ifdef COPASI_AUTOLAYOUT
+
   if (sender() != NULL && !actionAuto_Layout->isChecked())
     {
       mpLayoutThread->stopLayout();
       return;
     }
 
-#ifdef COPASI_AUTOLAYOUT
   toggleUI(true);
 
   // work on a copy!
