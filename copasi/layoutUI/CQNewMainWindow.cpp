@@ -91,6 +91,8 @@ const double CQNewMainWindow::ZOOM_FACTORS[] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.
 
 CQNewMainWindow::~CQNewMainWindow()
 {
+
+#ifdef COPASI_AUTOLAYOUT
   // ensure layout is terminated
   mpLayoutThread->terminateLayout();
 
@@ -100,6 +102,8 @@ CQNewMainWindow::~CQNewMainWindow()
       delete mpCopy;
       mpCopy = NULL;
     }
+
+#endif //COPASI_AUTOLAYOUT
 
   // remove from window menu
   removeFromMainWindow();
@@ -187,12 +191,6 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   mpViewMenu->addAction(pParameterWindow->toggleViewAction());
 
 #endif
-}
-
-void CQNewMainWindow::slotLayoutStateChanged(QSharedPointer<CLayoutState> state)
-{
-  state->applyTo(mpCurrentLayout);
-  redrawNow();
 }
 
 QMenu* CQNewMainWindow::getWindowMenu() const
@@ -1887,6 +1885,12 @@ void CQNewMainWindow::slotRunRandomizeLayout()
   randomizeLayout();
 
   slotCalculateDimensions();
+}
+
+void CQNewMainWindow::slotLayoutStateChanged(QSharedPointer<CLayoutState> state)
+{
+  state->applyTo(mpCurrentLayout);
+  redrawNow();
 }
 
 #endif // COPASI_AUTOLAYOUT
