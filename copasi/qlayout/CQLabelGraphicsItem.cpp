@@ -3,8 +3,8 @@
 // of Manchester.
 // All rights reserved.
 
-#include <qlayout/qlabelgraphicsitem.h>
-#include <qlayout/qrenderconverter.h>
+#include <qlayout/CQLabelGraphicsItem.h>
+#include <qlayout/CQRenderConverter.h>
 #include <layout/CLGlyphs.h>
 #include <layout/CLRenderResolver.h>
 

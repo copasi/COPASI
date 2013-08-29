@@ -3,9 +3,9 @@
 // of Manchester.
 // All rights reserved.
 
-#include <qlayout/qanimationsettingseditor.h>
-#include <qlayout/qcopasianimation.h>
-#include <qlayout/qeffectdescription.h>
+#include <qlayout/CQAnimationSettingsEditor.h>
+#include <qlayout/CQCopasiAnimation.h>
+#include <qlayout/CQEffectDescription.h>
 
 CQAnimationSettingsEditor::CQAnimationSettingsEditor(QWidget *parent, Qt::WindowFlags f)
   : QDialog(parent, f)

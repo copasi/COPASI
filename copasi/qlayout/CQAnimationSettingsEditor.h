@@ -9,7 +9,7 @@
 #include <vector>
 
 #include <qdialog.h>
-#include <qlayout/ui_qanimationsettingseditor.h>
+#include <qlayout/ui_CQAnimationSettingsEditor.h>
 
 class CQCopasiAnimation;
 class CQEffectDescription;

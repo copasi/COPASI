@@ -6,7 +6,7 @@
 #ifndef QEFFECT_DESCRIPTION_EDIT_H
 #define QEFFECT_DESCRIPTION_EDIT_H
 
-#include <qlayout/ui_qeffectdescriptionedit.h>
+#include <qlayout/ui_CQEffectDescriptionEdit.h>
 
 class CQEffectDescription;
 class CQEffectDescriptionEdit : public QWidget, public Ui::CQEffectDescriptionEdit

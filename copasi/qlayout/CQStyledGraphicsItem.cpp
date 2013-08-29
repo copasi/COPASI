@@ -3,9 +3,9 @@
 // of Manchester.
 // All rights reserved.
 
-#include <qlayout/qstyledgraphicsitem.h>
-#include <qlayout/qrenderconverter.h>
-#include <qlayout/qlayoutscene.h>
+#include <qlayout/CQStyledGraphicsItem.h>
+#include <qlayout/CQRenderConverter.h>
+#include <qlayout/CQLayoutScene.h>
 #include <layout/CLGlyphs.h>
 #include <layout/CLRenderResolver.h>
 

@@ -1,16 +1,10 @@
-# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
 
-# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc. and EML Research, gGmbH. 
-# All rights reserved. 
+
 
 LIB = qlayout
 DISTFILES = qlayout.pro
@@ -22,44 +16,44 @@ QT +=  opengl
 CONFIG += qt
 
 HEADERS += \
-           qanimationcontrols.h       \
-           qanimationsettingseditor.h \
-           qanimationwindow.h         \
-           qconnectiongraphicsitem.h  \
-           qcopasianimation.h         \
-           qcopasieffect.h            \
-           qcopasigraphicsitem.h      \
-           qeffectdescription.h       \
-           qeffectdescriptionedit.h   \
-           qlabelgraphicsitem.h       \
-           qlayoutscene.h             \
-           qlayoutview.h              \
-           qrenderconverter.h         \
-           qroundedrect.h             \
-           qstyledgraphicsitem.h
+           CQAnimationControls.h       \
+           CQAnimationSettingsEditor.h \
+           CQAnimationWindow.h         \
+           CQConnectionGraphicsItem.h  \
+           CQCopasiAnimation.h         \
+           CQCopasiEffect.h            \
+           CQCopasiGraphicsItem.h      \
+           CQEffectDescription.h       \
+           CQEffectDescriptionEdit.h   \
+           CQLabelGraphicsItem.h       \
+           CQLayoutScene.h             \
+           CQLayoutView.h              \
+           CQRenderConverter.h         \
+           CQRoundedRect.h             \
+           CQStyledGraphicsItem.h
 
 SOURCES += \
-           qanimationcontrols.cpp       \
-           qanimationsettingseditor.cpp \
-           qanimationwindow.cpp         \
-           qconnectiongraphicsitem.cpp  \
-           qcopasianimation.cpp         \
-           qcopasieffect.cpp            \
-           qcopasigraphicsitem.cpp      \
-           qeffectdescription.cpp       \
-           qeffectdescriptionedit.cpp   \
-           qlabelgraphicsitem.cpp       \
-           qlayoutscene.cpp             \
-           qlayoutview.cpp              \
-           qrenderconverter.cpp         \
-           qroundedrect.cpp             \
-           qstyledgraphicsitem.cpp
+           CQAnimationControls.cpp       \
+           CQAnimationSettingsEditor.cpp \
+           CQAnimationWindow.cpp         \
+           CQConnectionGraphicsItem.cpp  \
+           CQCopasiAnimation.cpp         \
+           CQCopasiEffect.cpp            \
+           CQCopasiGraphicsItem.cpp      \
+           CQEffectDescription.cpp       \
+           CQEffectDescriptionEdit.cpp   \
+           CQLabelGraphicsItem.cpp       \
+           CQLayoutScene.cpp             \
+           CQLayoutView.cpp              \
+           CQRenderConverter.cpp         \
+           CQRoundedRect.cpp             \
+           CQStyledGraphicsItem.cpp
 
 FORMS += \
-           qanimationcontrols.ui       \
-           qanimationsettingseditor.ui \
-           qanimationwindow.ui         \
-           qeffectdescriptionedit.ui
+           CQAnimationControls.ui       \
+           CQAnimationSettingsEditor.ui \
+           CQAnimationWindow.ui         \
+           CQEffectDescriptionEdit.ui
 
 
 DISTFILES += CMakeLists.txt

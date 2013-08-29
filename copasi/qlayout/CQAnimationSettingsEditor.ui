@@ -5,6 +5,7 @@
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+
  <class>CQAnimationSettingsEditor</class>
  <widget class="QDialog" name="CQAnimationSettingsEditor">
   <property name="geometry">
@@ -147,7 +148,7 @@
   <customwidget>
    <class>CQEffectDescriptionEdit</class>
    <extends>QWidget</extends>
-   <header location="global">qlayout/qeffectdescriptionedit.h</header>
+   <header location="global">qlayout/CQEffectDescriptionEdit.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -12,7 +12,7 @@
 #include <UI/CWindowInterface.h>
 
 #include <layout/CLayoutState.h>
-#include <qlayout/ui_qanimationwindow.h>
+#include <qlayout/ui_CQAnimationWindow.h>
 
 class CQLayoutScene;
 class CQCopasiAnimation;

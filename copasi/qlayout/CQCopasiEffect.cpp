@@ -3,7 +3,7 @@
 // of Manchester.
 // All rights reserved.
 
-#include <qlayout/qcopasieffect.h>
+#include <qlayout/CQCopasiEffect.h>
 
 #include <QPainter>
 #include <qgraphicseffect.h>

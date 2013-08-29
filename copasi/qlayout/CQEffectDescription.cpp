@@ -6,8 +6,8 @@
 #include <qgraphicsitem.h>
 #include <qgraphicseffect.h>
 
-#include <qlayout/qeffectdescription.h>
-#include <qlayout/qcopasieffect.h>
+#include <qlayout/CQEffectDescription.h>
+#include <qlayout/CQCopasiEffect.h>
 
 qreal linear(qreal a, qreal b, qreal t)
 {

@@ -7,7 +7,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QPainter>
 
-#include <qlayout/qroundedrect.h>
+#include <qlayout/CQRoundedRect.h>
 
 CQRoundedRect::CQRoundedRect(qreal x, qreal y, qreal w, qreal h, qreal rx, qreal ry)
   : QGraphicsRectItem(x, y, w, h)

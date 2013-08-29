@@ -3,7 +3,7 @@
 // of Manchester.
 // All rights reserved.
 
-#include <qlayout/qcopasigraphicsitem.h>
+#include <qlayout/CQCopasiGraphicsItem.h>
 #include <layout/CLStyle.h>
 #include <layout/CLRenderResolver.h>
 

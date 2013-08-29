@@ -9,7 +9,7 @@
 #include <vector>
 #include <string>
 
-#include <qlayout/qlayoutscene.h>
+#include <qlayout/CQLayoutScene.h>
 #include <CopasiDataModel/CCopasiDataModel.h>
 
 class CQEffectDescription;

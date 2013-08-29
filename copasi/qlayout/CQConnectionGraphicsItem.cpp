@@ -5,10 +5,10 @@
 
 #include <qpainter.h>
 
-#include <qlayout/qconnectiongraphicsitem.h>
-#include <qlayout/qstyledgraphicsitem.h>
-#include <qlayout/qrenderconverter.h>
-#include <qlayout/qlayoutscene.h>
+#include <qlayout/CQConnectionGraphicsItem.h>
+#include <qlayout/CQStyledGraphicsItem.h>
+#include <qlayout/CQRenderConverter.h>
+#include <qlayout/CQLayoutScene.h>
 #include <layout/CLGlyphs.h>
 #include <layout/CLReactionGlyph.h>
 #include <layout/CLRenderResolver.h>

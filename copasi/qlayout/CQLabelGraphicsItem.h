@@ -7,7 +7,7 @@
 #define QLABEL_GRAPHICS_ITEM
 
 #include <QGraphicsTextItem>
-#include <qlayout/qcopasigraphicsitem.h>
+#include <qlayout/CQCopasiGraphicsItem.h>
 
 class CLTextGlyph;
 class CLStyle;

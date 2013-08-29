@@ -5,6 +5,7 @@
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+
  <class>CQAnimationWindow</class>
  <widget class="QMainWindow" name="CQAnimationWindow">
   <property name="geometry">
@@ -140,7 +141,7 @@
   <customwidget>
    <class>CQLayoutView</class>
    <extends>QGraphicsView</extends>
-   <header location="global">qlayout/qlayoutview.h</header>
+   <header location="global">qlayout/CQLayoutView.h</header>
    <slots>
     <slot>slotSaveToFile(QString)</slot>
    </slots>
@@ -148,7 +149,7 @@
   <customwidget>
    <class>CQAnimationControls</class>
    <extends>QWidget</extends>
-   <header location="global">qlayout/qanimationcontrols.h</header>
+   <header location="global">qlayout/CQAnimationControls.h</header>
    <container>1</container>
    <slots>
     <signal>showStep(int)</signal>

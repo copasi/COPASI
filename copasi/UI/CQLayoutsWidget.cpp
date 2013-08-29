@@ -32,7 +32,7 @@
 #ifdef USE_CRENDER_EXTENSION
 # include "copasi/layoutUI/CQNewMainWindow.h"
 #ifndef DISABLE_QT_LAYOUT_RENDERING
-# include <qlayout/qanimationwindow.h>
+# include <qlayout/CQAnimationWindow.h>
 #endif //DISABLE_QT_LAYOUT_RENDERING
 #else
 # include "copasi/layoutUI/CQLayoutMainWindow.h"

@@ -12,8 +12,8 @@
 #include <QFile>
 #include <QGraphicsScene>
 
-#include <qlayout/qrenderconverter.h>
-#include <qlayout/qroundedrect.h>
+#include <qlayout/CQRenderConverter.h>
+#include <qlayout/CQRoundedRect.h>
 #include <layout/CLStyle.h>
 #include <layout/CLEllipse.h>
 #include <layout/CLRectangle.h>

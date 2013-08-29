@@ -8,7 +8,7 @@
 
 #include <QWidget>
 
-#include <qlayout/ui_qanimationcontrols.h>
+#include <qlayout/ui_CQAnimationControls.h>
 
 class QTimer;
 

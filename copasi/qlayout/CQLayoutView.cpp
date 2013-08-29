@@ -13,8 +13,8 @@
 #include <QLabel>
 #include <QComboBox>
 
-#include <qlayout/qlayoutscene.h>
-#include <qlayout/qlayoutview.h>
+#include <qlayout/CQLayoutScene.h>
+#include <qlayout/CQLayoutView.h>
 
 #include <copasi.h>
 #include <layout/CLayout.h>

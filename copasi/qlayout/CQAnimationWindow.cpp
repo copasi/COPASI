@@ -9,12 +9,12 @@
 #include <QFileDialog>
 #include <QDateTime>
 
-#include <qlayout/qcopasianimation.h>
-#include <qlayout/qanimationsettingseditor.h>
-#include <qlayout/qanimationwindow.h>
-#include <qlayout/qlayoutscene.h>
-#include <qlayout/qcopasieffect.h>
-#include <qlayout/qeffectdescription.h>
+#include <qlayout/CQAnimationWindow.h>
+#include <qlayout/CQAnimationSettingsEditor.h>
+#include <qlayout/CQCopasiAnimation.h>
+#include <qlayout/CQLayoutScene.h>
+#include <qlayout/CQCopasiEffect.h>
+#include <qlayout/CQEffectDescription.h>
 
 #include <layoutUI/CQSpringLayoutParameterWindow.h>
 #include <layoutUI/CQLayoutThread.h>

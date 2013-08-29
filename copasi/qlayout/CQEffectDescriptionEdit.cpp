@@ -5,8 +5,8 @@
 
 #include <QColorDialog>
 
-#include <qlayout/qeffectdescription.h>
-#include <qlayout/qeffectdescriptionedit.h>
+#include <qlayout/CQEffectDescription.h>
+#include <qlayout/CQEffectDescriptionEdit.h>
 
 #if QT_VERSION < 0x040800
 #include <QPainter>

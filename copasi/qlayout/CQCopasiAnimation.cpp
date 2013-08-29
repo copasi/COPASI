@@ -3,8 +3,8 @@
 // of Manchester.
 // All rights reserved.
 
-#include <qlayout/qcopasianimation.h>
-#include <qlayout/qeffectdescription.h>
+#include <qlayout/CQCopasiAnimation.h>
+#include <qlayout/CQEffectDescription.h>
 
 CQCopasiAnimation::CQCopasiAnimation()
   : mMode(CQCopasiAnimation::Global)

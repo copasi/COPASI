@@ -20,7 +20,7 @@
 #include "plot/CPlotSpecification.h"
 #include "plot/COutputDefinitionVector.h"
 
-#include "qlayout/qlayoutscene.h"
+#include "qlayout/CQLayoutScene.h"
 #include "layout/CListOfLayouts.h"
 
 #include "utilities/CCopasiMethod.h"

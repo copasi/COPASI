@@ -7,7 +7,7 @@
 #define QSTYLED_GRAPHICS_ITEM
 
 #include <QGraphicsItemGroup>
-#include <qlayout/qcopasigraphicsitem.h>
+#include <qlayout/CQCopasiGraphicsItem.h>
 
 class CLGraphicalObject;
 class CLStyle;

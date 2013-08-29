@@ -12,12 +12,12 @@
 
 #include <copasi.h>
 
-#include <qlayout/qlayoutscene.h>
-#include <qlayout/qcopasieffect.h>
-#include <qlayout/qlabelgraphicsitem.h>
-#include <qlayout/qstyledgraphicsitem.h>
-#include <qlayout/qconnectiongraphicsitem.h>
-#include <qlayout/qrenderconverter.h>
+#include <qlayout/CQLayoutScene.h>
+#include <qlayout/CQCopasiEffect.h>
+#include <qlayout/CQLabelGraphicsItem.h>
+#include <qlayout/CQStyledGraphicsItem.h>
+#include <qlayout/CQConnectionGraphicsItem.h>
+#include <qlayout/CQRenderConverter.h>
 #include <layout/CLayout.h>
 #include <layout/CLGlyphs.h>
 #include <layout/CLText.h>

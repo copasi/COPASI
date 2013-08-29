@@ -5,6 +5,7 @@
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+
  <class>CQEffectDescriptionEdit</class>
  <widget class="QWidget" name="CQEffectDescriptionEdit">
   <property name="geometry">

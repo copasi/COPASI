@@ -11,7 +11,7 @@
 #include <qsharedpointer.h>
 #include <QStyleOptionGraphicsItem>
 #include <layout/CLCurve.h>
-#include <qlayout/qcopasigraphicsitem.h>
+#include <qlayout/CQCopasiGraphicsItem.h>
 
 class CLGlyphWithCurve;
 class CLStyle;

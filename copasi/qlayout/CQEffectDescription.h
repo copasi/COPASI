@@ -9,7 +9,7 @@
 #include <qcolor.h>
 #include <string>
 
-#include <qlayout/qlayoutscene.h>
+#include <qlayout/CQLayoutScene.h>
 
 class CQEffectDescription
 {

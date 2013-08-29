@@ -5,7 +5,7 @@
 
 #include <QTimer>
 
-#include <qlayout/qanimationcontrols.h>
+#include <qlayout/CQAnimationControls.h>
 #include <resourcesUI/CQIconResource.h>
 
 CQAnimationControls::CQAnimationControls(QWidget* parent)
