@@ -183,7 +183,7 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   connect(mpLayoutThread, SIGNAL(layoutFinished()), this, SLOT(slotLayoutFinished()));
   connect(mpLayoutThread, SIGNAL(layoutStateChanged(QSharedPointer<CLayoutState>)),
           this, SLOT(slotLayoutStateChanged(QSharedPointer<CLayoutState>)));
-  void slotLayoutStateChanged(QSharedPointer<CLayoutState> state);
+
   QDockWidget* pParameterWindow = mpLayoutThread->getParameterWindow();
 
   addDockWidget(Qt::LeftDockWidgetArea, pParameterWindow);

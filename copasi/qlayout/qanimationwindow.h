@@ -51,8 +51,10 @@ protected:
   CCopasiDataModel* mpModel;
   QMenu* mpWindowMenu;
   QCopasiAnimation* mAnimation;
+#ifdef COPASI_AUTOLAYOUT
   CQLayoutThread* mpLayoutThread;
   CLayout* mpCopy;
+#endif //COPASI_AUTOLAYOUT
 };
 
 #endif // QANIMATION_WINDOW_H
