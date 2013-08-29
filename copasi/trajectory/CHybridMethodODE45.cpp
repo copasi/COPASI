@@ -1,16 +1,9 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+#ifdef INCLUDE_CHybridMethodODE45
 
 /**
  *   CHybridMethodODE45
@@ -59,8 +52,6 @@
 
 #include "CInterpolation.h"
 
-
-
 //================Function for Class================
 /**
  * Default constructor.
@@ -80,7 +71,7 @@ CHybridMethodODE45::CHybridMethodODE45(const CCopasiContainer * pParent):
  */
 CHybridMethodODE45::CHybridMethodODE45(const CHybridMethodODE45 & src,
                                        const CCopasiContainer * pParent):
-CTrajectoryMethod(src, pParent)
+  CTrajectoryMethod(src, pParent)
 {
   assert((void *) &mData == (void *) &mData.dim);
   mData.pMethod = this;
@@ -170,8 +161,8 @@ bool CHybridMethodODE45::isValidProblem(const CCopasiProblem * pProblem)
   //mUpperStochLimit = * getValue("Upper Limit").pDOUBLE;
 
   //if (mLowerStochLimit > mUpperStochLimit)
-  //  CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 4, 
-  //		   mLowerStochLimit, mUpperStochLimit);
+  //  CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 4,
+  //       mLowerStochLimit, mUpperStochLimit);
 
   //events are not supported at the moment
   if (pTP->getModel()->getEvents().size() > 0)
@@ -188,8 +179,8 @@ void CHybridMethodODE45::initializeParameter()
   CCopasiParameter *pParm;
 
   //-----------------------------------------------------------------------
-  // This part will be dealt with later, when considering the partition strategy. 
-  //Now, under the condition of using statistic partition given by users, 
+  // This part will be dealt with later, when considering the partition strategy.
+  //Now, under the condition of using statistic partition given by users,
   //we won't adopt such parameters listed here.
   assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) MAX_STEPS);
   //assertParameter("Lower Limit", CCopasiParameter::DOUBLE, (C_FAT64) LOWER_STOCH_LIMIT);
@@ -207,7 +198,7 @@ void CHybridMethodODE45::initializeParameter()
       //-------------------------------------------------------------------
       setValue("Max Internal Steps", *pParm->getValue().pUINT);
       removeParameter("HYBRID.MaxSteps");
-      
+
       /*
       if ((pParm = getParameter("HYBRID.LowerStochLimit")) != NULL)
         {
@@ -261,12 +252,11 @@ void CHybridMethodODE45::initializeParameter()
                CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e009);
 
   //????????????????????????????????????????????????????????
-  // These parameters are no longer supported. 
+  // These parameters are no longer supported.
   //removeParameter("Adams Max Order");
   //removeParameter("BDF Max Order");
   //????????????????????????????????????????????????????????
 }
-
 
 void CHybridMethodODE45::start(const CState * initialState)
 {
@@ -285,7 +275,7 @@ void CHybridMethodODE45::start(const CState * initialState)
     mDoCorrection = true;
   else
     mDoCorrection = false;
-  
+
   //set mHasAssignments
   mHasAssignments = modelHasAssignments(mpModel);
 
@@ -317,17 +307,17 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
 
   //(2)----set attributes related with METABS
   mpMetabolites = &(const_cast < CCopasiVector < CMetab > & >(mpModel->getMetabolitesX()));
-  
-  mNumVariableMetabs = mpModel->getNumIndependentReactionMetabs() 
-                     + mpModel->getNumDependentReactionMetabs();
+
+  mNumVariableMetabs = mpModel->getNumIndependentReactionMetabs()
+                       + mpModel->getNumDependentReactionMetabs();
 
   setupBalances();    //initialize mLocalBalances and mLocalSubstrates
   setupMetab2React(); //initialize mMetab2React
-  setupMetabFlags(); 
+  setupMetabFlags();
 
   //(3)----set attributes related with STATE
   temp.clear();
-  temp.resize(mNumVariableMetabs+1);
+  temp.resize(mNumVariableMetabs + 1);
 
   //(4)----set attributes related with SYSTEM
   mMaxSteps = * getValue("Max Internal Steps").pUINT;
@@ -336,6 +326,7 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   //(5)----set attributes related with STOCHASTIC
   mUseRandomSeed = * getValue("Use Random Seed").pBOOL;
   mRandomSeed = * getValue("Random Seed").pUINT;
+
   if (mUseRandomSeed)
     mpRandomGenerator->initialize(mRandomSeed);
 
@@ -348,15 +339,16 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
 
   //(6)----set attributes for INTERPOLATION
   mpInterpolation = new CInterpolation(INTERPRO_RECORD_NUM, mNumReactions);
-  mStateRecord.resize((INTERP_RECORD_NUM-2)*(2+mNumVariableMetabs));
+  mStateRecord.resize((INTERP_RECORD_NUM - 2) * (2 + mNumVariableMetabs));
 
   //(7)----set attributes for ODE45
   mODE45Status = NEW_STEP;
-  mData.dim = (C_INT) (mNumVariableMetabs + 1); //one more for sum of propensity
+  mData.dim = (C_INT)(mNumVariableMetabs + 1);  //one more for sum of propensity
   mYdot.resize(mData.dim);
 
   mRtol = * getValue("Relative Tolerance").pUDOUBLE;
   mDefaultAtol = * getValue("Use Default Absolute Tolerance").pBOOL;
+
   if (mDefaultAtol)
     {
       mAtol = getDefaultAtol(mpProblem->getModel());
@@ -365,19 +357,19 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   else
     mAtol = * getValue("Absolute Tolerance").pUDOUBLE;
 
-  mDWork.resize(3 + 6*mData.dim);
+  mDWork.resize(3 + 6 * mData.dim);
   mIWork.resize(5);
 
   //setupUpdateSet();
 
-  // we don't want to directly record new results into mpState, since 
+  // we don't want to directly record new results into mpState, since
   // the sum of slow reaction propensities is also recorded in mY
   mY    = new C_FLOAT64[mData.dim];
   mOldY = new C_FLOAT64[mData.dim];
 
   //first calculate propensities, in the next integration process
   //system will just update the propensities record in mCalculateSet
-  for(size_t i=0; i<mNumReactions; i++)
+  for (size_t i = 0; i < mNumReactions; i++)
     calculateAmu(i);
 
   return;
@@ -393,7 +385,7 @@ void CHybridMethodODE45::cleanup()
   mpModel = NULL;
 
   delete mpInterpolation;
-  mpInterpolation = NULL;  
+  mpInterpolation = NULL;
 
   delete [] mY;
   mY = NULL;
@@ -410,10 +402,10 @@ void CHybridMethodODE45::setupMetabFlags()
   size_t rctIndex;
   mMetabFlags.resize(mNumVariableMetabs);
 
-  std::vector<CHybridODE45MetabFlag>::iterator metabIt 
+  std::vector<CHybridODE45MetabFlag>::iterator metabIt
     = mMetabFlags.begin();
   const std::vector<CHybridODE45MetabFlag>::iterator metabEndIt
-    =mMetabFlags.end();
+    = mMetabFlags.end();
 
   // initialization
   for (; metabIt != metabEndIt; ++metabIt)
@@ -423,25 +415,26 @@ void CHybridMethodODE45::setupMetabFlags()
     }
 
   CHybridODE45Balance * const pBalance;
+
   // go over all mLocalBalances, if balance != 0,
   // and reaction is FAST, insert into set
-  for (size_t rct=0; rct<mNumReactions; ++rct)
+  for (size_t rct = 0; rct < mNumReactions; ++rct)
     {
       if (mReactionFlags[rct] == FAST)
-	{
-	  pBalance = &mLocalBalances[rct];
+        {
+          pBalance = &mLocalBalances[rct];
 
-	  for (size_t i=0; i<pBalance->size(); i++)
-	    {
-	      // not a modifier
-	      if (((*pBalance)[i].mMultiplicity) != 0)
-		{
-		  size_t metab = (*pBalance)[i].mIndex;
-		  mMetabFlags[metab].mFastReactions.insert(rct);
-		  mMetabFlags[metab].mFlag = FAST;
-		}
-	    }
-	}
+          for (size_t i = 0; i < pBalance->size(); i++)
+            {
+              // not a modifier
+              if (((*pBalance)[i].mMultiplicity) != 0)
+                {
+                  size_t metab = (*pBalance)[i].mIndex;
+                  mMetabFlags[metab].mFastReactions.insert(rct);
+                  mMetabFlags[metab].mFlag = FAST;
+                }
+            }
+        }
     }
 
   return;
@@ -452,25 +445,26 @@ void CHybridMethodODE45::setupReactionFlags()
   mHasStoiReaction = false;
   mHasDetermReaction = false;
   mReactionFlags.resize(mNumReactions);
-  
-  std::vector<size_t>::iterator flagIt = 
+
+  std::vector<size_t>::iterator flagIt =
     mReactionFlags.begin();
   const std::vector<size_t>::iterator flagEndIt =
     mReactionFlags.end();
 
   for (; flagIt != flagEndIt; ++flagIt)
     {
-      if((*mpReactions)[i]->isFast())
-	{
-	  *flagIt = FAST;
-	  mHasDetermReaction = true;
-	}
+      if ((*mpReactions)[i]->isFast())
+        {
+          *flagIt = FAST;
+          mHasDetermReaction = true;
+        }
       else
-	{
-	  *flagIt = SLOW;
-	  mHasStoiReaction = true;
-	}
+        {
+          *flagIt = SLOW;
+          mHasStoiReaction = true;
+        }
     }
+
   return;
 }
 
@@ -485,7 +479,7 @@ void CHybridMethodODE45::setupBalances()
   size_t i, j;
   CHybridODE45Balance newElement;
   size_t maxBalance = 0;
-  
+
   mLocalBalances.clear();
   mLocalBalances.resize(mNumReactions);
   mLocalSubstrates.clear();
@@ -501,8 +495,8 @@ void CHybridMethodODE45::setupBalances()
           newElement.mpMetabolite = const_cast < CMetab* >((*balances)[j]->getMetabolite());
           newElement.mIndex = mpModel->getMetabolitesX().getIndex(newElement.mpMetabolite);
           // + 0.5 to get a rounding out of the static_cast to C_INT32!
-          newElement.mMultiplicity = static_cast<C_INT32>(floor((*balances)[j]->getMultiplicity() 
-								+ 0.5));
+          newElement.mMultiplicity = static_cast<C_INT32>(floor((*balances)[j]->getMultiplicity()
+                                     + 0.5));
 
           if ((newElement.mpMetabolite->getStatus()) != CModelEntity::FIXED)
             {
@@ -519,8 +513,8 @@ void CHybridMethodODE45::setupBalances()
           newElement.mpMetabolite = const_cast < CMetab* >((*balances)[j]->getMetabolite());
           newElement.mIndex = mpModel->getMetabolitesX().getIndex(newElement.mpMetabolite);
           // + 0.5 to get a rounding out of the static_cast to C_INT32!
-          newElement.mMultiplicity = static_cast<C_INT32>(floor((*balances)[j]->getMultiplicity() 
-								+ 0.5));
+          newElement.mMultiplicity = static_cast<C_INT32>(floor((*balances)[j]->getMultiplicity()
+                                     + 0.5));
 
           mLocalSubstrates[i].push_back(newElement); // element is copied for the push_back
         }
@@ -530,7 +524,6 @@ void CHybridMethodODE45::setupBalances()
 
   return;
 }
-
 
 /**
  * Sets up the priority queue, for pure SSA.
@@ -559,8 +552,8 @@ void CHybridMethodODE45::setupPriorityQueue(C_FLOAT64 startTime)
 }
 
 /**
- * Creates for each metabolite a set of reaction indices. 
- * If the metabolite participates in a reaction as substrate 
+ * Creates for each metabolite a set of reaction indices.
+ * If the metabolite participates in a reaction as substrate
  * or modifiers, this reaction is added to the corresponding set.
  */
 void CHybridMethodODE45::setupMetab2React()
@@ -568,43 +561,42 @@ void CHybridMethodODE45::setupMetab2React()
   mMetab2React.clear();
   mMetab2React.resize(mNumVariableMetabs);
 
-  for (size_t rct=0; rct<mNumReactions; ++rct)
-    { 
+  for (size_t rct = 0; rct < mNumReactions; ++rct)
+    {
       CMetab *mpMetab;
       size_t index;
-      
+
       //deal with substrates
       const CCopasiVector <CChemEqElement> & metab =
-	(*mpReactions)[rct]->getChemEq().getSubstrates();
+        (*mpReactions)[rct]->getChemEq().getSubstrates();
 
-      for (size_t i=0; i<metab.size(); i++)
-	{
-	  mpMetab = const_cast < CMetab* > 
-	    (metab[i]->getMetablite());
-	  index = mpModel->getMetabolitesX().getIndex(mpMetab);
+      for (size_t i = 0; i < metab.size(); i++)
+        {
+          mpMetab = const_cast < CMetab* >
+                    (metab[i]->getMetablite());
+          index = mpModel->getMetabolitesX().getIndex(mpMetab);
 
-	  if ((mpMetab->getStatus()) != CModelEntity::FIXED)
-	    mMetab2React[index].insert(rct);
-	}
-      
+          if ((mpMetab->getStatus()) != CModelEntity::FIXED)
+            mMetab2React[index].insert(rct);
+        }
+
       //deal with modifiers
       const CCopasiVector <CChemEqElement> metab =
-	(*mpReactions)[rct]->getChemEq().getModifiers();
+        (*mpReactions)[rct]->getChemEq().getModifiers();
 
-      for (size_t i=0; i<metab.size(); i++)
-	{
-	  mpMetab = const_cast < CMetab* > 
-	    (metab[i]->getMetablite());
-	  index = mpModel->getMetabolitesX().getIndex(mpMetab);
+      for (size_t i = 0; i < metab.size(); i++)
+        {
+          mpMetab = const_cast < CMetab* >
+                    (metab[i]->getMetablite());
+          index = mpModel->getMetabolitesX().getIndex(mpMetab);
 
-	  if ((mpMetab->getStatus()) != CModelEntity::FIXED)
-	    mMetab2React[index].insert(rct);
-	}
-      
+          if ((mpMetab->getStatus()) != CModelEntity::FIXED)
+            mMetab2React[index].insert(rct);
+        }
     }
+
   return;
 }
-
 
 // A fast metab appearring in a reaction as a substrate or
 // a modifier makes a change of propensity.
@@ -625,18 +617,17 @@ void CHybridMethodODE45::setupCalculateSet()
   for (; metabIt != metabEndIt; ++metabIt, ++m2rIt)
     {
       //for fast metabs, insert reaction into mCalculateSet
-      if(metabIt->mFlag == FAST) //fast metab
-	{
-	  for (reactIt  = m2rIt->begin(); 
-	       reactIt != m2rIt->end();
-	       reactIt++) // check all reactions that involves metab
-	    mCalculateSet.insert(*reactIt);
-	}
+      if (metabIt->mFlag == FAST) //fast metab
+        {
+          for (reactIt  = m2rIt->begin();
+               reactIt != m2rIt->end();
+               reactIt++) // check all reactions that involves metab
+            mCalculateSet.insert(*reactIt);
+        }
     }
 
   return;
 }
-
 
 //========Function for Simulation========
 CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
@@ -653,8 +644,8 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
   //for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++)
   //  if (mpProblem->getModel()->getMetabolitesX()[i]->getValue() >= mMaxIntBeforeStep)
   //    {
-        // throw exception or something like that
-  //    }
+  // throw exception or something like that
+  //}
 
   // do several steps
   C_FLOAT64 time = mpProblem->getModel()->getTime();
@@ -695,7 +686,7 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
  */
 C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endTime)
 {
-  C_FLOAT64 ds=0.0;
+  C_FLOAT64 ds = 0.0;
   size_t rIndex = 0;
 
   //1----pure SSA method
@@ -704,7 +695,7 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
       getStochTimeAndIndex(ds, rIndex);
 
       if (ds > endTime)
-	ds = endTime;
+        ds = endTime;
 
       fireReaction(rIndex);
 
@@ -712,56 +703,54 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
       updatePriorityQueue(rIndex, ds);
     }
   //2----Hybrid Method
-  else if(mHasStoiReaction && mHasDetermReaction) 
+  else if (mHasStoiReaction && mHasDetermReaction)
     {
-      integrateDeterministicPart(endTime-currentTime);
+      integrateDeterministicPart(endTime - currentTime);
       ds = mpState->getTime();
-      
+
       if (mODE45Status == HAS_EVENT) //fire slow reaction
-	{
-	  rIndex = getReactionIndex4Hybrid();
-	  fireReaction(rIndex);
-	  
-	  //update corresponding propensities
-	  size_t reactId;
-	  std::set <size_t>::iterator updateIt 
-	    = mUpdateSet.begin();
-	  const std::set <size_t>::iterator updateEndIt
-	    = mUpdateSet.end();
+        {
+          rIndex = getReactionIndex4Hybrid();
+          fireReaction(rIndex);
 
-	  for (; updateIt != updateEndIt; updateIt++)
-	    {
-	      reactId = *updateIt;
-	      calculateAmu(reactId);
-	    }
-	  
-	  mUpdateSet.clear();
-	  mODE45Status = NEW_STEP;
-	  //slow reaction propensities may change during integration,
-	  //so, PriorityQueue may not be suitable at this condition
+          //update corresponding propensities
+          size_t reactId;
+          std::set <size_t>::iterator updateIt
+            = mUpdateSet.begin();
+          const std::set <size_t>::iterator updateEndIt
+            = mUpdateSet.end();
 
-	  //updatePriorityQueue(C_INVALID_INDEX, endTime); 
-	}
-      
+          for (; updateIt != updateEndIt; updateIt++)
+            {
+              reactId = *updateIt;
+              calculateAmu(reactId);
+            }
+
+          mUpdateSet.clear();
+          mODE45Status = NEW_STEP;
+          //slow reaction propensities may change during integration,
+          //so, PriorityQueue may not be suitable at this condition
+
+          //updatePriorityQueue(C_INVALID_INDEX, endTime);
+        }
     }
   //3----Pure ODE Model
-  else 
+  else
     {
-      integrateDeterministicPart(endTime-currentTime);
+      integrateDeterministicPart(endTime - currentTime);
       ds = mpState->getTime();
     }
 
   return ds;
 }
 
-
 //========Function for ODE45========
 C_FLOAT64 CHybridMethodODE45::getDefaultAtol(const CModel * pModel) const
 {
-  if (!pModel) 
+  if (!pModel)
     return 1.0e009;
 
-  const CCopasiVectorNS< CCompartment > & Compartment = 
+  const CCopasiVectorNS< CCompartment > & Compartment =
     pModel->getCompartments();
 
   size_t i, imax;
@@ -770,18 +759,18 @@ C_FLOAT64 CHybridMethodODE45::getDefaultAtol(const CModel * pModel) const
 
   for (i = 0, imax = Compartment.size(); i < imax; i++)
     {
-      if (Compartment[i]->getValue() < Volume) 
-	Volume = Compartment[i]->getValue();
+      if (Compartment[i]->getValue() < Volume)
+        Volume = Compartment[i]->getValue();
     }
 
-  if (Volume == std::numeric_limits< C_FLOAT64 >::max()) 
+  if (Volume == std::numeric_limits< C_FLOAT64 >::max())
     return 1.0e009;
 
   return Volume * pModel->getQuantity2NumberFactor() * 1.e-12;
 }
 
 /**
- * Integrates the deterministic reactions of the system over 
+ * Integrates the deterministic reactions of the system over
  * the specified time interval.
  *
  * @param ds A C_FLOAT64 specifying the stepsize.
@@ -790,7 +779,7 @@ C_FLOAT64 CHybridMethodODE45::getDefaultAtol(const CModel * pModel) const
 void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
 {
   CHybridODE45StochFlag * react = NULL;
-  
+
   //1----Set Parameters for ODE45 solver
   //=(1)= solver error message
   mErrorMsg.str("");
@@ -806,24 +795,25 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
 
   //=(4)= set y and old_y
   C_FLOAT64 * tmpY = mpState->beginIndependent();
-  for (size_t i=0; i<mData.dim-1; i++, tmpY++ )
+
+  for (size_t i = 0; i < mData.dim - 1; i++, tmpY++)
     {
       mOldY[i] = *tmpY;
       mY[i]    = *tmpY;
     }
 
-  if(mODE45Status == NEW_STEP)
+  if (mODE45Status == NEW_STEP)
     {
       C_FLOAT64 rand2 = mpRandomGenerator->getRandomOO();
-      mY[mData.dim-1] = log(rand2);
+      mY[mData.dim - 1] = log(rand2);
     }
 
-  mOldY[mData.dim-1] = mY[mData.dim-1];
+  mOldY[mData.dim - 1] = mY[mData.dim - 1];
 
   //2----Reset ODE45 Solver
   mIFlag = -1; //integration by one step
   //if (mRestartODE45) //is this necessary??
-      //mRestartODE45 = false;
+  //mRestartODE45 = false;
 
   //3----If time increment is too small, do nothing
   C_FLOAT64 tdist , d__1, d__2, w0;
@@ -838,7 +828,7 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
     }
 
   //4----just do nothing if there are no variables
-  if (!mData.dim) 
+  if (!mData.dim)
     {
       mpProblem->getModel()->setTime(EndTime);
       return;
@@ -857,14 +847,14 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
          mStateRecord.array());   //11. the array to record temp state
 
   //5----set mODE45Status
-  if (mIFlag == 2) 
+  if (mIFlag == 2)
     mODE45Status = REACH_END_TIME; //reach EndTime
   else if (mIFlag == -2) //finish one step integration
     {
-      if (mY[mData.dim-1] >= 0.0) //has an event
-	mODE45Status = HAS_EVENT;
+      if (mY[mData.dim - 1] >= 0.0) //has an event
+        mODE45Status = HAS_EVENT;
       else
-	mODE45Status = CONTINUE;
+        mODE45Status = CONTINUE;
     }
   else //error happens
     {
@@ -877,19 +867,21 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
   if (mODE45Status == HAS_EVENT)
     {
       //==(1)==for one-step method, reset record each time when do interpolation
-      mpInterpolation->recordReset(); 
+      mpInterpolation->recordReset();
 
       //==(2)==set record in class interpolation
       mpInterpolation->recordState(mOldTime, mOldY);
       size_t offset;
-      for (size_t i=0; i<4; i++) //record the middle 4 states
-	{
-	  offset = i * (mData.dim+1);
-	  mpInterpolation->recordState(mStateRecord[offset],
-				       mStateRecord.array()+offset+1);
-	}
+
+      for (size_t i = 0; i < 4; i++) //record the middle 4 states
+        {
+          offset = i * (mData.dim + 1);
+          mpInterpolation->recordState(mStateRecord[offset],
+                                       mStateRecord.array() + offset + 1);
+        }
+
       mpInterpolation->recordState(mTime, mY);
-  
+
       //==(3)==do interpolation
       mpEventState = mpInterpolation->getInterpolationState();
 
@@ -897,19 +889,21 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
       mTime = mpEventState->getTime();
       C_FLOAT64 * tmpY   = mpEventState->getArray() + 1;
       C_FLOAT64 * stateY = mpState->beginIndependent();
-      for (size_t i=0; i<mData.dim-1; i++)
-	stateY[i] = tmpY[i]; //write result into mpState
+
+      for (size_t i = 0; i < mData.dim - 1; i++)
+        stateY[i] = tmpY[i]; //write result into mpState
 
       mRestartODE45 = true;
 
       //==(5)==update propensities after slow reaction firing
       std::set <size_t>::iterator reactIt = mCalculateSet.begin();
       size_t reactID;
+
       for (; reactIt != mCalculateSet.end(); reactIt++)
-	{
-	  reactID = *reactIt;
-	  calculateAmu(reactID);
-	}
+        {
+          reactID = *reactIt;
+          calculateAmu(reactID);
+        }
     }
 
   //7----Record State
@@ -941,22 +935,24 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C
   //1====calculate propensities
   //just care about reactions involving fast metab
 
-  // put values in y into mpState for amu calculation 
-  // (except the last element, the sum of amu of slow 
+  // put values in y into mpState for amu calculation
+  // (except the last element, the sum of amu of slow
   // reaction)
-  // It seems for one step method an available 
-  // way (even necessary way). When thinking about 
-  // multistep method, we can deirectly calculate 
-  // propensities. 
+  // It seems for one step method an available
+  // way (even necessary way). When thinking about
+  // multistep method, we can deirectly calculate
+  // propensities.
   // I wonder, is there other choice, without changing
   // the values in mpState.
 
   C_FLOAT64 * tmpY = mpState->beginIndependent();//mpState is a local copy
-  for (i=0; i<mData.dim-1; ++i)
+
+  for (i = 0; i < mData.dim - 1; ++i)
     tmpY[i] = y[i];
 
   std::set <size_t>::iterator reactIt = mCalculateSet.begin();
   size_t reactID;
+
   for (; reactIt != mCalculateSet.end(); reactIt++)
     {
       reactID = *reactIt;
@@ -965,7 +961,7 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C
 
   //2====calculate derivative
   //(1)initialize
-  for (i=0; i<mData.dim; i++) 
+  for (i = 0; i < mData.dim; i++)
     ydot[i] = 0.0;
 
   //(2)go through all the reactions and
@@ -973,25 +969,24 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C
   std::set <CHybridODE45Balance>::iterator metabIt;
   size_t metabIndex;
 
-  for(i=0; i<mNumReactions; i++)
+  for (i = 0; i < mNumReactions; i++)
     {
-      if(mReactionFlags[i] == SLOW) //slow reaction
-	ydot[mData.dim-1] += mAmu[i];
+      if (mReactionFlags[i] == SLOW) //slow reaction
+        ydot[mData.dim - 1] += mAmu[i];
       else //fast reaction
-	{
-	  metabIt = mLocalBalances[i].begin();
-	  
-	  for(; metabIt != NULL; metabIt++)
-	    {
-	      metabIndex = metabIt->mIndex;
-	      ydot[metabIndex] += metabIt->mMultiplicity * mAmu[i];
-	    }
-	}
+        {
+          metabIt = mLocalBalances[i].begin();
+
+          for (; metabIt != NULL; metabIt++)
+            {
+              metabIndex = metabIt->mIndex;
+              ydot[metabIndex] += metabIt->mMultiplicity * mAmu[i];
+            }
+        }
     }
 
   return;
 }
-
 
 //========Function for Stoichastic========
 /**
@@ -1029,9 +1024,9 @@ void CHybridMethodODE45::updateTauMu(size_t rIndex, C_FLOAT64 time)
 {
   C_FLOAT64 newTime;
 
-  // One must make sure that the calculation yields reasonable results even in the cases where mAmu=0 or 
-  // mAmuOld=0 or both=0. Therefore mAmuOld=0 is checked. If mAmuOld equals 0, 
-  // then a new random number has to be drawn, because tau equals inf and the stoch. information is lost. 
+  // One must make sure that the calculation yields reasonable results even in the cases where mAmu=0 or
+  // mAmuOld=0 or both=0. Therefore mAmuOld=0 is checked. If mAmuOld equals 0,
+  // then a new random number has to be drawn, because tau equals inf and the stoch. information is lost.
   // If both values equal 0, then tau should remain inf and the update of the queue can be skipped!
   if (mAmuOld[rIndex] == 0.0)
     {
@@ -1049,7 +1044,6 @@ void CHybridMethodODE45::updateTauMu(size_t rIndex, C_FLOAT64 time)
 
   return;
 }
-
 
 /**
  * Calculates an amu value for a given reaction.
@@ -1092,8 +1086,8 @@ void CHybridMethodODE45::calculateAmu(size_t rIndex)
           flag = 1;
           number = static_cast<C_INT32>((*mpMetabolites)[substrates[i].mIndex]->getValue());
           lower_bound = number - num_ident;
-          substrate_factor = substrate_factor 
-                           * pow((double) number, (int) num_ident - 1); //optimization
+          substrate_factor = substrate_factor
+                             * pow((double) number, (int) num_ident - 1); //optimization
 
           number--; // optimization
 
@@ -1131,7 +1125,6 @@ void CHybridMethodODE45::calculateAmu(size_t rIndex)
   // a more efficient way to calculate mass action kinetics could be included
 }
 
-
 /**
  *   Gets the set of metabolites on which a given reaction depends.
  *
@@ -1147,8 +1140,8 @@ std::set<std::string> *CHybridMethodODE45::getDependsOn(size_t rIndex)
 
   for (i = 0; i < imax; ++i)
     {
-      if ((*mpReactions)[rIndex]->getFunctionParameters()[i]->getUsage() 
-	  == CFunctionParameter::PARAMETER)
+      if ((*mpReactions)[rIndex]->getFunctionParameters()[i]->getUsage()
+          == CFunctionParameter::PARAMETER)
         continue;
 
       const std::vector <std::string> & metabKeylist =
@@ -1156,7 +1149,7 @@ std::set<std::string> *CHybridMethodODE45::getDependsOn(size_t rIndex)
       jmax = metabKeylist.size();
 
       for (j = 0; j < jmax; ++j)
-	retset->insert(metabKeylist[j]);
+        retset->insert(metabKeylist[j]);
     }
 
   return retset;
@@ -1180,7 +1173,7 @@ std::set<std::string> *CHybridMethodODE45::getAffects(size_t rIndex)
   for (i = 0; i < mLocalBalances[rIndex].size(); i++)
     {
       if (mLocalBalances[rIndex][i].mMultiplicity != 0)
-	retset->insert(mLocalBalances[rIndex][i].mpMetabolite->getKey());
+        retset->insert(mLocalBalances[rIndex][i].mpMetabolite->getKey());
     }
 
   return retset;
@@ -1262,9 +1255,9 @@ void CHybridMethodODE45::updatePriorityQueue(size_t rIndex, C_FLOAT64 time)
   size_t index;
   std::set <size_t>::iterator iter, iterEnd;
 
-  //if the model contains assignments we use a less efficient loop over all (stochastic) reactions to 
+  //if the model contains assignments we use a less efficient loop over all (stochastic) reactions to
   //capture all changes
-  //we do not know the exact dependencies. 
+  //we do not know the exact dependencies.
   //TODO: this should be changed later in order to get a more efficient update scheme
   if (mHasAssignments)
     {
@@ -1351,7 +1344,6 @@ void CHybridMethodODE45::fireReaction(size_t rIndex)
   return;
 }
 
-
 /**
  *
  *
@@ -1361,10 +1353,11 @@ size_t CHybridMethodODE45::getReactionIndex4Hybrid()
 {
   //calculate sum of amu
   C_FLOAT64 mAmuSum = 0.0;
-  for (int i=0; i<mNumReactions; i++)
+
+  for (int i = 0; i < mNumReactions; i++)
     {
-      if(mReactionFlags[i] == SLOW)
-	mAmuSum += mAmu[i];
+      if (mReactionFlags[i] == SLOW)
+        mAmuSum += mAmu[i];
     }
 
   //get the threshold
@@ -1373,879 +1366,973 @@ size_t CHybridMethodODE45::getReactionIndex4Hybrid()
 
   //get the reaction index
   size_t rIndex;
-  C_FLOAT64 tmp=0.0;
+  C_FLOAT64 tmp = 0.0;
 
   //is there some algorithm that can get a log() complex?
-  for(rIndex=0; rIndex<mNumReactions; rIndex++)
+  for (rIndex = 0; rIndex < mNumReactions; rIndex++)
     {
-      if(mReactionFlags[rIndex] == SLOW)
-	{
-	  tmp += mAmu[rIndex];
-	  if (tmp >= threshold)
-	    return rIndex; 
-	}
+      if (mReactionFlags[rIndex] == SLOW)
+        {
+          tmp += mAmu[rIndex];
+
+          if (tmp >= threshold)
+            return rIndex;
+        }
     }
 }
 
-
-
-
 /*========Functions for C Code from f2c========*/
 C_INT CHybridMethodODE45::rkf45_(pEvalF f, const C_INT *neqn, double *y,
-				 double *t, double *tout, 
-				 double *relerr, double *abserr, 
-				 C_INT *iflag, double *work, 
-				 C_INT *iwork, double *yrcd)
+                                 double *t, double *tout,
+                                 double *relerr, double *abserr,
+                                 C_INT *iflag, double *work,
+                                 C_INT *iwork, double *yrcd)
 {
-    static C_INT k1, k2, k3, k4, k5, k6, k1m;
+  static C_INT k1, k2, k3, k4, k5, k6, k1m;
 
+  /*     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*     This is a modefied fehlberg fourth-fifth order runge-kutta method */
+  /*     based on h.a.watts and l.f.shapine's fortran ODE solver rkf45.f */
+  /*     with one more input double precision vector recording time */
+  /*     points between t and t+h in each steap and */
+  /*     approximations of y in such corresponding times. */
+  /*     yrcd is a vector of length 4*(neqn+1), where "4" is related with */
+  /*     four middle time points: */
+  /*     c1=t+h/4, c2=t+3h/8, c3=t+h/2, c4=t+12h/13. */
+  /*     yrcd can be seperated into four parts, each of which is a double */
+  /*     precision vector of length neqn+1. The first member is assigned */
+  /*     to time record, and the last neqn members are for y at the */
+  /*     corresponding time. */
+  /*     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-/*     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-/*     This is a modefied fehlberg fourth-fifth order runge-kutta method */
-/*     based on h.a.watts and l.f.shapine's fortran ODE solver rkf45.f */
-/*     with one more input double precision vector recording time */
-/*     points between t and t+h in each steap and */
-/*     approximations of y in such corresponding times. */
-/*     yrcd is a vector of length 4*(neqn+1), where "4" is related with */
-/*     four middle time points: */
-/*     c1=t+h/4, c2=t+3h/8, c3=t+h/2, c4=t+12h/13. */
-/*     yrcd can be seperated into four parts, each of which is a double */
-/*     precision vector of length neqn+1. The first member is assigned */
-/*     to time record, and the last neqn members are for y at the */
-/*     corresponding time. */
-/*     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /*     fehlberg fourth-fifth order runge-kutta method */
 
-/*     fehlberg fourth-fifth order runge-kutta method */
+  /*     written by h.a.watts and l.f.shampine */
+  /*                   sandia laboratories */
+  /*                  albuquerque,new mexico */
 
-/*     written by h.a.watts and l.f.shampine */
-/*                   sandia laboratories */
-/*                  albuquerque,new mexico */
+  /*    rkf45 is primarily designed to solve non-stiff and mildly stiff */
+  /*    differential equations when derivative evaluations are inexpensive. */
+  /*    rkf45 should generally not be used when the user is demanding */
+  /*    high accuracy. */
 
-/*    rkf45 is primarily designed to solve non-stiff and mildly stiff */
-/*    differential equations when derivative evaluations are inexpensive. */
-/*    rkf45 should generally not be used when the user is demanding */
-/*    high accuracy. */
+  /* abstract */
 
-/* abstract */
+  /*    subroutine  rkf45  integrates a system of neqn first order */
+  /*    ordinary differential equations of the form */
+  /*             dy(i)/dt = f(t,y(1),y(2),...,y(neqn)) */
+  /*              where the y(i) are given at t . */
+  /*    typically the subroutine is used to integrate from t to tout but it */
+  /*    can be used as a one-step integrator to advance the solution a */
+  /*    single step in the direction of tout.  on return the parameters in */
+  /*    the call list are set for continuing the integration. the user has */
+  /*    only to call rkf45 again (and perhaps define a new value for tout). */
+  /*    actually, rkf45 is an interfacing routine which calls subroutine */
+  /*    rkfs for the solution.  rkfs in turn calls subroutine  fehl which */
+  /*    computes an approximate solution over one step. */
 
-/*    subroutine  rkf45  integrates a system of neqn first order */
-/*    ordinary differential equations of the form */
-/*             dy(i)/dt = f(t,y(1),y(2),...,y(neqn)) */
-/*              where the y(i) are given at t . */
-/*    typically the subroutine is used to integrate from t to tout but it */
-/*    can be used as a one-step integrator to advance the solution a */
-/*    single step in the direction of tout.  on return the parameters in */
-/*    the call list are set for continuing the integration. the user has */
-/*    only to call rkf45 again (and perhaps define a new value for tout). */
-/*    actually, rkf45 is an interfacing routine which calls subroutine */
-/*    rkfs for the solution.  rkfs in turn calls subroutine  fehl which */
-/*    computes an approximate solution over one step. */
+  /*    rkf45  uses the runge-kutta-fehlberg (4,5)  method described */
+  /*    in the reference */
+  /*    e.fehlberg , low-order classical runge-kutta formulas with stepsize */
+  /*                 control , nasa tr r-315 */
 
-/*    rkf45  uses the runge-kutta-fehlberg (4,5)  method described */
-/*    in the reference */
-/*    e.fehlberg , low-order classical runge-kutta formulas with stepsize */
-/*                 control , nasa tr r-315 */
+  /*    the performance of rkf45 is illustrated in the reference */
+  /*    l.f.shampine,h.a.watts,s.davenport, solving non-stiff ordinary */
+  /*                 differential equations-the state of the art , */
+  /*                 sandia laboratories report sand75-0182 , */
+  /*                 to appear in siam review. */
 
-/*    the performance of rkf45 is illustrated in the reference */
-/*    l.f.shampine,h.a.watts,s.davenport, solving non-stiff ordinary */
-/*                 differential equations-the state of the art , */
-/*                 sandia laboratories report sand75-0182 , */
-/*                 to appear in siam review. */
+  /*    the parameters represent- */
+  /*      f -- subroutine f(t,y,yp) to evaluate derivatives yp(i)=dy(i)/dt */
+  /*      neqn -- number of equations to be integrated */
+  /*      y(*) -- solution vector at t */
+  /*      t -- independent variable */
+  /*      tout -- output point at which solution is desired */
+  /*      relerr,abserr -- relative and absolute error tolerances for local */
+  /*            error test. at each step the code requires that */
+  /*                 abs(local error) .le. relerr*abs(y) + abserr */
+  /*            for each component of the local error and solution vectors */
+  /*      iflag -- indicator for status of integration */
+  /*      work(*) -- array to hold information internal to rkf45 which is */
+  /*            necessary for subsequent calls. must be dimensioned */
+  /*            at least  3+6*neqn */
+  /*      iwork(*) -- C_INT array used to hold information internal to */
+  /*            rkf45 which is necessary for subsequent calls. must be */
+  /*            dimensioned at least  5 */
 
+  /*  first call to rkf45 */
 
-/*    the parameters represent- */
-/*      f -- subroutine f(t,y,yp) to evaluate derivatives yp(i)=dy(i)/dt */
-/*      neqn -- number of equations to be integrated */
-/*      y(*) -- solution vector at t */
-/*      t -- independent variable */
-/*      tout -- output point at which solution is desired */
-/*      relerr,abserr -- relative and absolute error tolerances for local */
-/*            error test. at each step the code requires that */
-/*                 abs(local error) .le. relerr*abs(y) + abserr */
-/*            for each component of the local error and solution vectors */
-/*      iflag -- indicator for status of integration */
-/*      work(*) -- array to hold information internal to rkf45 which is */
-/*            necessary for subsequent calls. must be dimensioned */
-/*            at least  3+6*neqn */
-/*      iwork(*) -- C_INT array used to hold information internal to */
-/*            rkf45 which is necessary for subsequent calls. must be */
-/*            dimensioned at least  5 */
+  /*    the user must provide storage in his calling program for the arrays */
+  /*    in the call list  -      y(neqn) , work(3+6*neqn) , iwork(5)  , */
+  /*    declare f in an external statement, supply subroutine f(t,y,yp) and */
+  /*    initialize the following parameters- */
 
+  /*      neqn -- number of equations to be integrated.  (neqn .ge. 1) */
+  /*      y(*) -- vector of initial conditions */
+  /*      t -- starting point of integration , must be a variable */
+  /*      tout -- output point at which solution is desired. */
+  /*            t=tout is allowed on the first call only, in which case */
+  /*            rkf45 returns with iflag=2 if continuation is possible. */
+  /*      relerr,abserr -- relative and absolute local error tolerances */
+  /*            which must be non-negative. relerr must be a variable while */
+  /*            abserr may be a constant. the code should normally not be */
+  /*            used with relative error control smaller than about 1.e-8 . */
+  /*            to avoid limiting precision difficulties the code requires */
+  /*            relerr to be larger than an internally computed relative */
+  /*            error parameter which is machine dependent. in particular, */
+  /*            pure absolute error is not permitted. if a smaller than */
+  /*            allowable value of relerr is attempted, rkf45 increases */
+  /*            relerr appropriately and returns control to the user before */
+  /*            continuing the integration. */
+  /*      iflag -- +1,-1  indicator to initialize the code for each new */
+  /*            problem. normal input is +1. the user should set iflag=-1 */
+  /*            only when one-step integrator control is essential. in this */
+  /*            case, rkf45 attempts to advance the solution a single step */
+  /*            in the direction of tout each time it is called. since this */
+  /*            mode of operation results in extra computing overhead, it */
+  /*            should be avoided unless needed. */
 
-/*  first call to rkf45 */
+  /*  output from rkf45 */
 
-/*    the user must provide storage in his calling program for the arrays */
-/*    in the call list  -      y(neqn) , work(3+6*neqn) , iwork(5)  , */
-/*    declare f in an external statement, supply subroutine f(t,y,yp) and */
-/*    initialize the following parameters- */
+  /*      y(*) -- solution at t */
+  /*      t -- last point reached in integration. */
+  /*      iflag = 2 -- integration reached tout. indicates successful retur */
+  /*                   and is the normal mode for continuing integration. */
+  /*            =-2 -- a single successful step in the direction of tout */
+  /*                   has been taken. normal mode for continuing */
+  /*                   integration one step at a time. */
+  /*            = 3 -- integration was not completed because relative error */
+  /*                   tolerance was too small. relerr has been increased */
+  /*                   appropriately for continuing. */
+  /*            = 4 -- integration was not completed because more than */
+  /*                   3000 derivative evaluations were needed. this */
+  /*                   is approximately 500 steps. */
+  /*            = 5 -- integration was not completed because solution */
+  /*                   vanished making a pure relative error test */
+  /*                   impossible. must use non-zero abserr to continue. */
+  /*                   using the one-step integration mode for one step */
+  /*                   is a good way to proceed. */
+  /*            = 6 -- integration was not completed because requested */
+  /*                   accuracy could not be achieved using smallest */
+  /*                   allowable stepsize. user must increase the error */
+  /*                   tolerance before continued integration can be */
+  /*                   attempted. */
+  /*            = 7 -- it is likely that rkf45 is inefficient for solving */
+  /*                   this problem. too much output is restricting the */
+  /*                   natural stepsize choice. use the one-step integrator */
+  /*                   mode. */
+  /*            = 8 -- invalid input parameters */
+  /*                   this indicator occurs if any of the following is */
+  /*                   satisfied -   neqn .le. 0 */
+  /*                                 t=tout  and  iflag .ne. +1 or -1 */
+  /*                                 relerr or abserr .lt. 0. */
+  /*                                 iflag .eq. 0  or  .lt. -2  or  .gt. 8 */
+  /*      work(*),iwork(*) -- information which is usually of no interest */
+  /*                   to the user but necessary for subsequent calls. */
+  /*                   work(1),...,work(neqn) contain the first derivatives */
+  /*                   of the solution vector y at t. work(neqn+1) contains */
+  /*                   the stepsize h to be attempted on the next step. */
+  /*                   iwork(1) contains the derivative evaluation counter. */
 
-/*      neqn -- number of equations to be integrated.  (neqn .ge. 1) */
-/*      y(*) -- vector of initial conditions */
-/*      t -- starting point of integration , must be a variable */
-/*      tout -- output point at which solution is desired. */
-/*            t=tout is allowed on the first call only, in which case */
-/*            rkf45 returns with iflag=2 if continuation is possible. */
-/*      relerr,abserr -- relative and absolute local error tolerances */
-/*            which must be non-negative. relerr must be a variable while */
-/*            abserr may be a constant. the code should normally not be */
-/*            used with relative error control smaller than about 1.e-8 . */
-/*            to avoid limiting precision difficulties the code requires */
-/*            relerr to be larger than an internally computed relative */
-/*            error parameter which is machine dependent. in particular, */
-/*            pure absolute error is not permitted. if a smaller than */
-/*            allowable value of relerr is attempted, rkf45 increases */
-/*            relerr appropriately and returns control to the user before */
-/*            continuing the integration. */
-/*      iflag -- +1,-1  indicator to initialize the code for each new */
-/*            problem. normal input is +1. the user should set iflag=-1 */
-/*            only when one-step integrator control is essential. in this */
-/*            case, rkf45 attempts to advance the solution a single step */
-/*            in the direction of tout each time it is called. since this */
-/*            mode of operation results in extra computing overhead, it */
-/*            should be avoided unless needed. */
+  /*  subsequent calls to rkf45 */
 
+  /*    subroutine rkf45 returns with all information needed to continue */
+  /*    the integration. if the integration reached tout, the user need onl */
+  /*    define a new tout and call rkf45 again. in the one-step integrator */
+  /*    mode (iflag=-2) the user must keep in mind that each step taken is */
+  /*    in the direction of the current tout. upon reaching tout (indicated */
+  /*    by changing iflag to 2),the user must then define a new tout and */
+  /*    reset iflag to -2 to continue in the one-step integrator mode. */
 
-/*  output from rkf45 */
+  /*    if the integration was not completed but the user still wants to */
+  /*    continue (iflag=3,4 cases), he just calls rkf45 again. with iflag=3 */
+  /*    the relerr parameter has been adjusted appropriately for continuing */
+  /*    the integration. in the case of iflag=4 the function counter will */
+  /*    be reset to 0 and another 3000 function evaluations are allowed. */
 
-/*      y(*) -- solution at t */
-/*      t -- last point reached in integration. */
-/*      iflag = 2 -- integration reached tout. indicates successful retur */
-/*                   and is the normal mode for continuing integration. */
-/*            =-2 -- a single successful step in the direction of tout */
-/*                   has been taken. normal mode for continuing */
-/*                   integration one step at a time. */
-/*            = 3 -- integration was not completed because relative error */
-/*                   tolerance was too small. relerr has been increased */
-/*                   appropriately for continuing. */
-/*            = 4 -- integration was not completed because more than */
-/*                   3000 derivative evaluations were needed. this */
-/*                   is approximately 500 steps. */
-/*            = 5 -- integration was not completed because solution */
-/*                   vanished making a pure relative error test */
-/*                   impossible. must use non-zero abserr to continue. */
-/*                   using the one-step integration mode for one step */
-/*                   is a good way to proceed. */
-/*            = 6 -- integration was not completed because requested */
-/*                   accuracy could not be achieved using smallest */
-/*                   allowable stepsize. user must increase the error */
-/*                   tolerance before continued integration can be */
-/*                   attempted. */
-/*            = 7 -- it is likely that rkf45 is inefficient for solving */
-/*                   this problem. too much output is restricting the */
-/*                   natural stepsize choice. use the one-step integrator */
-/*                   mode. */
-/*            = 8 -- invalid input parameters */
-/*                   this indicator occurs if any of the following is */
-/*                   satisfied -   neqn .le. 0 */
-/*                                 t=tout  and  iflag .ne. +1 or -1 */
-/*                                 relerr or abserr .lt. 0. */
-/*                                 iflag .eq. 0  or  .lt. -2  or  .gt. 8 */
-/*      work(*),iwork(*) -- information which is usually of no interest */
-/*                   to the user but necessary for subsequent calls. */
-/*                   work(1),...,work(neqn) contain the first derivatives */
-/*                   of the solution vector y at t. work(neqn+1) contains */
-/*                   the stepsize h to be attempted on the next step. */
-/*                   iwork(1) contains the derivative evaluation counter. */
+  /*    however,in the case iflag=5, the user must first alter the error */
+  /*    criterion to use a positive value of abserr before integration can */
+  /*    proceed. if he does not,execution is terminated. */
 
+  /*    also,in the case iflag=6, it is necessary for the user to reset */
+  /*    iflag to 2 (or -2 when the one-step integration mode is being used) */
+  /*    as well as increasing either abserr,relerr or both before the */
+  /*    integration can be continued. if this is not done, execution will */
+  /*    be terminated. the occurrence of iflag=6 indicates a trouble spot */
+  /*    (solution is changing rapidly,singularity may be present) and it */
+  /*    often is inadvisable to continue. */
 
-/*  subsequent calls to rkf45 */
+  /*    if iflag=7 is encountered, the user should use the one-step */
+  /*    integration mode with the stepsize determined by the code or */
+  /*    consider switching to the adams codes de/step,intrp. if the user */
+  /*    insists upon continuing the integration with rkf45, he must reset */
+  /*    iflag to 2 before calling rkf45 again. otherwise,execution will be */
+  /*    terminated. */
 
-/*    subroutine rkf45 returns with all information needed to continue */
-/*    the integration. if the integration reached tout, the user need onl */
-/*    define a new tout and call rkf45 again. in the one-step integrator */
-/*    mode (iflag=-2) the user must keep in mind that each step taken is */
-/*    in the direction of the current tout. upon reaching tout (indicated */
-/*    by changing iflag to 2),the user must then define a new tout and */
-/*    reset iflag to -2 to continue in the one-step integrator mode. */
+  /*    if iflag=8 is obtained, integration can not be continued unless */
+  /*    the invalid input parameters are corrected. */
 
-/*    if the integration was not completed but the user still wants to */
-/*    continue (iflag=3,4 cases), he just calls rkf45 again. with iflag=3 */
-/*    the relerr parameter has been adjusted appropriately for continuing */
-/*    the integration. in the case of iflag=4 the function counter will */
-/*    be reset to 0 and another 3000 function evaluations are allowed. */
+  /*    it should be noted that the arrays work,iwork contain information */
+  /*    required for subsequent integration. accordingly, work and iwork */
+  /*    should not be altered. */
 
-/*    however,in the case iflag=5, the user must first alter the error */
-/*    criterion to use a positive value of abserr before integration can */
-/*    proceed. if he does not,execution is terminated. */
+  /*     compute indices for the splitting of the work array */
 
-/*    also,in the case iflag=6, it is necessary for the user to reset */
-/*    iflag to 2 (or -2 when the one-step integration mode is being used) */
-/*    as well as increasing either abserr,relerr or both before the */
-/*    integration can be continued. if this is not done, execution will */
-/*    be terminated. the occurrence of iflag=6 indicates a trouble spot */
-/*    (solution is changing rapidly,singularity may be present) and it */
-/*    often is inadvisable to continue. */
+  /* Parameter adjustments */
+  --yrcd;
+  --y;
+  --work;
+  --iwork;
 
-/*    if iflag=7 is encountered, the user should use the one-step */
-/*    integration mode with the stepsize determined by the code or */
-/*    consider switching to the adams codes de/step,intrp. if the user */
-/*    insists upon continuing the integration with rkf45, he must reset */
-/*    iflag to 2 before calling rkf45 again. otherwise,execution will be */
-/*    terminated. */
+  /* Function Body */
+  k1m = *neqn + 1;
+  //k1m = *neqn;
+  k1 = k1m + 1;
+  k2 = k1 + *neqn;
+  k3 = k2 + *neqn;
+  k4 = k3 + *neqn;
+  k5 = k4 + *neqn;
+  k6 = k5 + *neqn;
 
-/*    if iflag=8 is obtained, integration can not be continued unless */
-/*    the invalid input parameters are corrected. */
+  /*     this interfacing routine merely relieves the user of a long */
+  /*     calling list via the splitting apart of two working storage */
+  /*     arrays. if this is not compatible with the users compiler, */
+  /*     he must use rkfs directly. */
 
-/*    it should be noted that the arrays work,iwork contain information */
-/*    required for subsequent integration. accordingly, work and iwork */
-/*    should not be altered. */
+  rkfs_((pEvalF)f, neqn, &y[1], t, tout, relerr, abserr, iflag,
+        &work[1], &work[k1m], &work[k1], &work[k2], &work[k3],
+        &work[k4], &work[k5], &work[k6], &work[k6 + 1], &iwork[1],
+        &iwork[2], &iwork[3], &iwork[4], &iwork[5], &yrcd[1]);
 
-/*     compute indices for the splitting of the work array */
-
-    /* Parameter adjustments */
-    --yrcd;
-    --y;
-    --work;
-    --iwork;
-
-    /* Function Body */
-    k1m = *neqn + 1;
-    //k1m = *neqn;
-    k1 = k1m + 1;
-    k2 = k1 + *neqn;
-    k3 = k2 + *neqn;
-    k4 = k3 + *neqn;
-    k5 = k4 + *neqn;
-    k6 = k5 + *neqn;
-
-/*     this interfacing routine merely relieves the user of a long */
-/*     calling list via the splitting apart of two working storage */
-/*     arrays. if this is not compatible with the users compiler, */
-/*     he must use rkfs directly. */
-
-    rkfs_((pEvalF)f, neqn, &y[1], t, tout, relerr, abserr, iflag, 
-	  &work[1], &work[k1m], &work[k1], &work[k2], &work[k3], 
-	  &work[k4], &work[k5], &work[k6], &work[k6 + 1], &iwork[1], 
-	  &iwork[2], &iwork[3], &iwork[4], &iwork[5], &yrcd[1]);
-
-    return 0;
+  return 0;
 } /* rkf45_ */
 
 C_INT CHybridMethodODE45::rkfs_(pEvalF f, const C_INT *neqn, double *y, double *
-	t, double *tout, double *relerr, double *abserr, C_INT *
-	iflag, double *yp, double *h__, double *f1, double *
-	f2, double *f3, double *f4, double *f5, double *savre,
-	 double *savae, C_INT *nfe, C_INT *kop, C_INT *init, 
-	C_INT *jflag, C_INT *kflag, double *yrcd)
+                                t, double *tout, double *relerr, double *abserr, C_INT *
+                                iflag, double *yp, double *h__, double *f1, double *
+                                f2, double *f3, double *f4, double *f5, double *savre,
+                                double *savae, C_INT *nfe, C_INT *kop, C_INT *init,
+                                C_INT *jflag, C_INT *kflag, double *yrcd)
 {
-    /* Initialized data */
+  /* Initialized data */
 
-    static double remin = 1e-12;
-    static C_INT maxnfe = 3000;
+  static double remin = 1e-12;
+  static C_INT maxnfe = 3000;
 
-    /* System generated locals */
-    C_INT i__1;
-    double d__1, d__2, d__3, d__4;
+  /* System generated locals */
+  C_INT i__1;
+  double d__1, d__2, d__3, d__4;
 
-    /* Builtin functions */
-    /* Subroutine */ 
-    //int s_stop(char *, ftnlen);
-    //double pow_dd(double *, double *);
-    //C_INT i_sign(C_INT *, C_INT *);
-    //double d_sign(double *, double *);
+  /* Builtin functions */
+  /* Subroutine */
+  //int s_stop(char *, ftnlen);
+  //double pow_dd(double *, double *);
+  //C_INT i_sign(C_INT *, C_INT *);
+  //double d_sign(double *, double *);
 
-    /* Local variables */
-    static double a;
-    static C_INT k;
-    static double s, ae, ee, dt, et, u26, rer, tol, ypk;
-    static double hmin, toln;
-    static C_INT mflag;
-    static double scale, eeoet;
-    static int hfaild;
-    static double esttol, twoeps;
-    static int output;
+  /* Local variables */
+  static double a;
+  static C_INT k;
+  static double s, ae, ee, dt, et, u26, rer, tol, ypk;
+  static double hmin, toln;
+  static C_INT mflag;
+  static double scale, eeoet;
+  static int hfaild;
+  static double esttol, twoeps;
+  static int output;
 
-/* fehlberg fourth-fifth order runge-kutta method */
+  /* fehlberg fourth-fifth order runge-kutta method */
 
-/* rkfs integrates a system of first order ordinary differential */
-/* equations as described in the comments for rkf45 . */
-/* the arrays yp,f1,f2,f3,f4,and f5 (of dimension at least neqn) and */
-/* the variables h,savre,savae,nfe,kop,init,jflag,and kflag are used */
-/* internally by the code and appear in the call list to eliminate */
-/* local retention of variables between calls. accordingly, they */
-/* should not be altered. items of possible interest are */
-/*     yp - derivative of solution vector at t */
-/*     h  - an appropriate stepsize to be used for the next step */
-/*     nfe- counter on the number of derivative function evaluations */
+  /* rkfs integrates a system of first order ordinary differential */
+  /* equations as described in the comments for rkf45 . */
+  /* the arrays yp,f1,f2,f3,f4,and f5 (of dimension at least neqn) and */
+  /* the variables h,savre,savae,nfe,kop,init,jflag,and kflag are used */
+  /* internally by the code and appear in the call list to eliminate */
+  /* local retention of variables between calls. accordingly, they */
+  /* should not be altered. items of possible interest are */
+  /*     yp - derivative of solution vector at t */
+  /*     h  - an appropriate stepsize to be used for the next step */
+  /*     nfe- counter on the number of derivative function evaluations */
 
-/*  remin is the minimum acceptable value of relerr.  attempts */
-/*  to obtain higher accuracy with this subroutine are usually */
-/*  very expensive and often unsuccessful. */
+  /*  remin is the minimum acceptable value of relerr.  attempts */
+  /*  to obtain higher accuracy with this subroutine are usually */
+  /*  very expensive and often unsuccessful. */
 
-    /* Parameter adjustments */
-    --yrcd;
-    --f5;
-    --f4;
-    --f3;
-    --f2;
-    --f1;
-    --yp;
-    --y;
+  /* Parameter adjustments */
+  --yrcd;
+  --f5;
+  --f4;
+  --f3;
+  --f2;
+  --f1;
+  --yp;
+  --y;
 
-    /* Function Body */
+  /* Function Body */
 
-/* the expense is controlled by restricting the number */
-/* of function evaluations to be approximately maxnfe. */
-/* as set, this corresponds to about 500 steps. */
+  /* the expense is controlled by restricting the number */
+  /* of function evaluations to be approximately maxnfe. */
+  /* as set, this corresponds to about 500 steps. */
 
-/* here two constants emboding the machine epsilon is present */
-/* twoesp is set to twice the machine epsilon while u26 is set */
-/* to 26 times the machine epsilon */
+  /* here two constants emboding the machine epsilon is present */
+  /* twoesp is set to twice the machine epsilon while u26 is set */
+  /* to 26 times the machine epsilon */
 
-/* data twoeps, u26/4.4d-16, 5.72d-15/  *** */
-    twoeps = 2.f * std::numeric_limits< C_FLOAT64 >::epsilon();
-    //twoeps = 4.4e-16;
-    u26    = twoeps * 13.f;
+  /* data twoeps, u26/4.4d-16, 5.72d-15/  *** */
+  twoeps = 2.f * std::numeric_limits< C_FLOAT64 >::epsilon();
+  //twoeps = 4.4e-16;
+  u26    = twoeps * 13.f;
 
-/* check input parameters */
-    if (*neqn < 1) {
-	goto L10;
-    }
-    if (*relerr < 0. || *abserr < 0.) {
-	goto L10;
-    }
-    mflag = abs(*iflag);
-    if (mflag >= 1 && mflag <= 8) {
-	goto L20;
+  /* check input parameters */
+  if (*neqn < 1)
+    {
+      goto L10;
     }
 
-/* invalid input */
+  if (*relerr < 0. || *abserr < 0.)
+    {
+      goto L10;
+    }
+
+  mflag = abs(*iflag);
+
+  if (mflag >= 1 && mflag <= 8)
+    {
+      goto L20;
+    }
+
+  /* invalid input */
 L10:
-    *iflag = 8;
-    return 0;
+  *iflag = 8;
+  return 0;
 
-/* is this the first call */
+  /* is this the first call */
 L20:
-    if (mflag == 1) {
-	goto L50;
+
+  if (mflag == 1)
+    {
+      goto L50;
     }
 
-/* check continuation possibilities */
+  /* check continuation possibilities */
 
-    if (*t == *tout && *kflag != 3) {
-	goto L10;
-    }
-    if (mflag != 2) {
-	goto L25;
+  if (*t == *tout && *kflag != 3)
+    {
+      goto L10;
     }
 
-/* iflag = +2 or -2 */
-    if (*kflag == 3) {
-	goto L45;
+  if (mflag != 2)
+    {
+      goto L25;
     }
-    if (*init == 0) {
-	goto L45;
-    }
-    if (*kflag == 4) {
-	goto L40;
-    }
-    if (*kflag == 5 && *abserr == 0.) {
-	goto L30;
-    }
-    if (*kflag == 6 && *relerr <= *savre && *abserr <= *savae) {
-	goto L30;
-    }
-    goto L50;
 
-/* iflag = 3,4,5,6,7 or 8 */
+  /* iflag = +2 or -2 */
+  if (*kflag == 3)
+    {
+      goto L45;
+    }
+
+  if (*init == 0)
+    {
+      goto L45;
+    }
+
+  if (*kflag == 4)
+    {
+      goto L40;
+    }
+
+  if (*kflag == 5 && *abserr == 0.)
+    {
+      goto L30;
+    }
+
+  if (*kflag == 6 && *relerr <= *savre && *abserr <= *savae)
+    {
+      goto L30;
+    }
+
+  goto L50;
+
+  /* iflag = 3,4,5,6,7 or 8 */
 L25:
-    if (*iflag == 3) {
-	goto L45;
-    }
-    if (*iflag == 4) {
-	goto L40;
-    }
-    if (*iflag == 5 && *abserr > 0.) {
-	goto L45;
+
+  if (*iflag == 3)
+    {
+      goto L45;
     }
 
-/* integration cannot be continued since user did not respond to */
-/* the instructions pertaining to iflag=5,6,7 or 8 */
+  if (*iflag == 4)
+    {
+      goto L40;
+    }
+
+  if (*iflag == 5 && *abserr > 0.)
+    {
+      goto L45;
+    }
+
+  /* integration cannot be continued since user did not respond to */
+  /* the instructions pertaining to iflag=5,6,7 or 8 */
 L30:
-    //s_stop("", (ftnlen)0);
-    cout << "STOP 0 statement executed" << endl;
-    return -1;
+  //s_stop("", (ftnlen)0);
+  cout << "STOP 0 statement executed" << endl;
+  return -1;
 
-/* reset function evaluation counter */
+  /* reset function evaluation counter */
 L40:
-    *nfe = 0;
-    if (mflag == 2) {
-	goto L50;
+  *nfe = 0;
+
+  if (mflag == 2)
+    {
+      goto L50;
     }
 
-/* reset flag value from previous call */
+  /* reset flag value from previous call */
 L45:
-    *iflag = *jflag;
-    if (*kflag == 3) {
-	mflag = abs(*iflag);
+  *iflag = *jflag;
+
+  if (*kflag == 3)
+    {
+      mflag = abs(*iflag);
     }
 
-/* save input iflag and set continuation flag value for subsequent */
-/* input checking */
+  /* save input iflag and set continuation flag value for subsequent */
+  /* input checking */
 L50:
-    *jflag = *iflag;
-    *kflag = 0;
+  *jflag = *iflag;
+  *kflag = 0;
 
-/* save relerr and abserr for checking input on subsequent calls */
-    *savre = *relerr;
-    *savae = *abserr;
+  /* save relerr and abserr for checking input on subsequent calls */
+  *savre = *relerr;
+  *savae = *abserr;
 
-/* restrict relative error tolerance to be at least as large as */
-/* 2*eps+remin to avoid limiting precision difficulties arising */
-/* from impossible accuracy requests */
+  /* restrict relative error tolerance to be at least as large as */
+  /* 2*eps+remin to avoid limiting precision difficulties arising */
+  /* from impossible accuracy requests */
 
-    rer = twoeps + remin;
-    if (*relerr >= rer) {
-	goto L55;
+  rer = twoeps + remin;
+
+  if (*relerr >= rer)
+    {
+      goto L55;
     }
 
-/* relative error tolerance too small */
-    *relerr = rer;
-    *iflag = 3;
-    *kflag = 3;
-    return 0;
+  /* relative error tolerance too small */
+  *relerr = rer;
+  *iflag = 3;
+  *kflag = 3;
+  return 0;
 
 L55:
-    dt = *tout - *t;
+  dt = *tout - *t;
 
-    if (mflag == 1) {
-	goto L60;
+  if (mflag == 1)
+    {
+      goto L60;
     }
-    if (*init == 0) {
-	goto L65;
-    }
-    goto L80;
 
-/* initialization -- */
-/* set initialization completion indicator,init */
-/* set indicator for too many output points,kop */
-/* evaluate initial derivatives */
-/* set counter for function evaluations,nfe */
-/* evaluate initial derivatives */
-/* set counter for function evaluations,nfe */
-/* estimate starting stepsize */
+  if (*init == 0)
+    {
+      goto L65;
+    }
+
+  goto L80;
+
+  /* initialization -- */
+  /* set initialization completion indicator,init */
+  /* set indicator for too many output points,kop */
+  /* evaluate initial derivatives */
+  /* set counter for function evaluations,nfe */
+  /* evaluate initial derivatives */
+  /* set counter for function evaluations,nfe */
+  /* estimate starting stepsize */
 
 L60:
-    *init = 0;
-    *kop = 0;
+  *init = 0;
+  *kop = 0;
 
-    a = *t;
-    (*f)(neqn, &a, &y[1], &yp[1]);
-    *nfe = 1;
-    if (*t != *tout) {
-	goto L65;
+  a = *t;
+  (*f)(neqn, &a, &y[1], &yp[1]);
+  *nfe = 1;
+
+  if (*t != *tout)
+    {
+      goto L65;
     }
-    *iflag = 2;
-    return 0;
+
+  *iflag = 2;
+  return 0;
 
 L65:
-    *init = 1;
-    *h__ = abs(dt);
-    toln = 0.f;
-    i__1 = *neqn;
-    for (k = 1; k <= i__1; ++k) {
-	tol = *relerr * (d__1 = y[k], abs(d__1)) + *abserr;
-	if (tol <= 0.f) {
-	    goto L70;
-	}
-	toln = tol;
-	ypk = (d__1 = yp[k], abs(d__1));
-/* Computing 5th power */
-	d__1 = *h__, d__2 = d__1, d__1 *= d__1;
-	if (ypk * (d__2 * (d__1 * d__1)) > tol) {
-	    d__3 = tol / ypk;
-	    *h__ = pow(d__3, .2);
-	}
-L70:
-	;
-    }
-    if (toln <= 0.) {
-	*h__ = 0.;
-    }
-/* Computing MAX */
-/* Computing MAX */
-    d__3 = abs(*t), d__4 = abs(dt);
-    d__1 = *h__, d__2 = u26 * max(d__3,d__4);
-    *h__ = max(d__1,d__2);
-    //*jflag = i_sign(2, iflag);
-    *jflag = *iflag >= 0 ? 2:-2;
+  *init = 1;
+  *h__ = abs(dt);
+  toln = 0.f;
+  i__1 = *neqn;
 
-/* set stepsize for integration in the direction from t to tout */
+  for (k = 1; k <= i__1; ++k)
+    {
+      tol = *relerr * (d__1 = y[k], abs(d__1)) + *abserr;
+
+      if (tol <= 0.f)
+        {
+          goto L70;
+        }
+
+      toln = tol;
+      ypk = (d__1 = yp[k], abs(d__1));
+      /* Computing 5th power */
+      d__1 = *h__, d__2 = d__1, d__1 *= d__1;
+
+      if (ypk * (d__2 * (d__1 * d__1)) > tol)
+        {
+          d__3 = tol / ypk;
+          *h__ = pow(d__3, .2);
+        }
+
+L70:
+      ;
+    }
+
+  if (toln <= 0.)
+    {
+      *h__ = 0.;
+    }
+
+  /* Computing MAX */
+  /* Computing MAX */
+  d__3 = abs(*t), d__4 = abs(dt);
+  d__1 = *h__, d__2 = u26 * max(d__3, d__4);
+  *h__ = max(d__1, d__2);
+  //*jflag = i_sign(2, iflag);
+  *jflag = *iflag >= 0 ? 2 : -2;
+
+  /* set stepsize for integration in the direction from t to tout */
 
 L80:
-    //*h__ = d_sign(h__, &dt);
-    *h__ = dt >=0 ? abs(*h__) : -abs(*h__);
+  //*h__ = d_sign(h__, &dt);
+  *h__ = dt >= 0 ? abs(*h__) : -abs(*h__);
 
-/* test to see if rkf45 is being severely impacted by too many */
-/* output points */
+  /* test to see if rkf45 is being severely impacted by too many */
+  /* output points */
 
-    if (abs(*h__) >= abs(dt) * 2.) {
-	++(*kop);
-    }
-    if (*kop != 100) {
-	goto L85;
+  if (abs(*h__) >= abs(dt) * 2.)
+    {
+      ++(*kop);
     }
 
-/* unnecessary frequency of output */
-    *kop = 0;
-    *iflag = 7;
-    return 0;
+  if (*kop != 100)
+    {
+      goto L85;
+    }
+
+  /* unnecessary frequency of output */
+  *kop = 0;
+  *iflag = 7;
+  return 0;
 
 L85:
-    if (abs(dt) > u26 * abs(*t)) {
-	goto L95;
+
+  if (abs(dt) > u26 * abs(*t))
+    {
+      goto L95;
     }
 
-/* if too close to output point,extrapolate and return */
-    i__1 = *neqn;
-    for (k = 1; k <= i__1; ++k) {
-/* L90: */
-	y[k] += dt * yp[k];
-    }
-    a = *tout;
-    (*f)(neqn, &a, &y[1], &yp[1]);
-    ++(*nfe);
-    goto L300;
+  /* if too close to output point,extrapolate and return */
+  i__1 = *neqn;
 
-/* initialize output point indicator */
+  for (k = 1; k <= i__1; ++k)
+    {
+      /* L90: */
+      y[k] += dt * yp[k];
+    }
+
+  a = *tout;
+  (*f)(neqn, &a, &y[1], &yp[1]);
+  ++(*nfe);
+  goto L300;
+
+  /* initialize output point indicator */
 
 L95:
-    output = 0;
+  output = 0;
 
-/* to avoid premature underflow in the error tolerance function, */
-/* scale the error tolerances */
+  /* to avoid premature underflow in the error tolerance function, */
+  /* scale the error tolerances */
 
-    scale = 2. / *relerr;
-    ae = scale * *abserr;
+  scale = 2. / *relerr;
+  ae = scale * *abserr;
 
-
-/* step by step integration */
+  /* step by step integration */
 
 L100:
-    hfaild = 0;
+  hfaild = 0;
 
-/* set smallest allowable stepsize */
-    hmin = u26 * abs(*t);
+  /* set smallest allowable stepsize */
+  hmin = u26 * abs(*t);
 
-/* adjust stepsize if necessary to hit the output point. */
-/* look ahead two steps to avoid drastic changes in the stepsize and */
-/* thus lessen the impact of output points on the code. */
+  /* adjust stepsize if necessary to hit the output point. */
+  /* look ahead two steps to avoid drastic changes in the stepsize and */
+  /* thus lessen the impact of output points on the code. */
 
-    dt = *tout - *t;
-    if (abs(dt) >= abs(*h__) * 2.) {
-	goto L200;
+  dt = *tout - *t;
+
+  if (abs(dt) >= abs(*h__) * 2.)
+    {
+      goto L200;
     }
-    if (abs(dt) > abs(*h__)) {
-	goto L150;
+
+  if (abs(dt) > abs(*h__))
+    {
+      goto L150;
     }
 
-/* the next successful step will complete the integration to the */
-/* output point */
+  /* the next successful step will complete the integration to the */
+  /* output point */
 
-    output = 1;
-    *h__ = dt;
-    goto L200;
+  output = 1;
+  *h__ = dt;
+  goto L200;
 
 L150:
-    *h__ = dt * .5;
+  *h__ = dt * .5;
 
+  /* core integrator for taking a single step */
 
-/* core integrator for taking a single step */
+  /* the tolerances have been scaled to avoid premature underflow in */
+  /* computing the error tolerance function et. */
+  /* to avoid problems with zero crossings,relative error is measured */
+  /* using the average of the magnitudes of the solution at the */
+  /* beginning and end of a step. */
+  /* the error estimate formula has been grouped to control loss of */
+  /* significance. */
+  /* to distinguish the various arguments, h is not permitted */
+  /* to become smaller than 26 units of roundoff in t. */
+  /* practical limits on the change in the stepsize are enforced to */
+  /* smooth the stepsize selection process and to avoid excessive */
+  /* chattering on problems having discontinuities. */
+  /* to prevent unnecessary failures, the code uses 9/10 the stepsize */
+  /* it estimates will succeed. */
+  /* after a step failure, the stepsize is not allowed to increase for */
+  /* the next attempted step. this makes the code more efficient on */
+  /* problems having discontinuities and more effective in general */
+  /* since local extrapolation is being used and extra caution seems */
+  /* warranted. */
 
-/* the tolerances have been scaled to avoid premature underflow in */
-/* computing the error tolerance function et. */
-/* to avoid problems with zero crossings,relative error is measured */
-/* using the average of the magnitudes of the solution at the */
-/* beginning and end of a step. */
-/* the error estimate formula has been grouped to control loss of */
-/* significance. */
-/* to distinguish the various arguments, h is not permitted */
-/* to become smaller than 26 units of roundoff in t. */
-/* practical limits on the change in the stepsize are enforced to */
-/* smooth the stepsize selection process and to avoid excessive */
-/* chattering on problems having discontinuities. */
-/* to prevent unnecessary failures, the code uses 9/10 the stepsize */
-/* it estimates will succeed. */
-/* after a step failure, the stepsize is not allowed to increase for */
-/* the next attempted step. this makes the code more efficient on */
-/* problems having discontinuities and more effective in general */
-/* since local extrapolation is being used and extra caution seems */
-/* warranted. */
-
-
-/* test number of derivative function evaluations. */
-/* if okay,try to advance the integration from t to t+h */
+  /* test number of derivative function evaluations. */
+  /* if okay,try to advance the integration from t to t+h */
 
 L200:
-    if (*nfe <= maxnfe) {
-	goto L220;
+
+  if (*nfe <= maxnfe)
+    {
+      goto L220;
     }
 
-/* too much work */
-    *iflag = 4;
-    *kflag = 4;
-    return 0;
+  /* too much work */
+  *iflag = 4;
+  *kflag = 4;
+  return 0;
 
-/* advance an approximate solution over one step of length h */
-
-
+  /* advance an approximate solution over one step of length h */
 
 L220:
-    fehl_((pEvalF)f, neqn, &y[1], t, h__, &yp[1], &f1[1], &f2[1], 
-	  &f3[1], &f4[1], &f5[1], &f1[1], &yrcd[1]);
-    *nfe += 5;
+  fehl_((pEvalF)f, neqn, &y[1], t, h__, &yp[1], &f1[1], &f2[1],
+        &f3[1], &f4[1], &f5[1], &f1[1], &yrcd[1]);
+  *nfe += 5;
 
-/* compute and test allowable tolerances versus local error estimates*/
-/* and remove scaling of tolerances. note that relative error is */
-/* measured with respect to the average of the magnitudes of the */
-/* solution at the beginning and end of the step. */
+  /* compute and test allowable tolerances versus local error estimates*/
+  /* and remove scaling of tolerances. note that relative error is */
+  /* measured with respect to the average of the magnitudes of the */
+  /* solution at the beginning and end of the step. */
 
-    eeoet = 0.;
-    i__1 = *neqn;
-    for (k = 1; k <= i__1; ++k) {
-	et = (d__1 = y[k], abs(d__1)) + (d__2 = f1[k], abs(d__2)) + ae;
-	if (et > 0.) {
-	    goto L240;
-	}
+  eeoet = 0.;
+  i__1 = *neqn;
 
-/* inappropriate error tolerance */
-	*iflag = 5;
-	return 0;
+  for (k = 1; k <= i__1; ++k)
+    {
+      et = (d__1 = y[k], abs(d__1)) + (d__2 = f1[k], abs(d__2)) + ae;
+
+      if (et > 0.)
+        {
+          goto L240;
+        }
+
+      /* inappropriate error tolerance */
+      *iflag = 5;
+      return 0;
 
 L240:
-	ee = (d__1 = yp[k] * -2090. + (f3[k] * 21970. - f4[k] * 15048.) + (f2[k] * 22528. - f5[k] * 27360.), abs(d__1));
-/* L250: */
-/* Computing MAX */
-	d__1 = eeoet, d__2 = ee / et;
-	eeoet = max(d__1,d__2);
+      ee = (d__1 = yp[k] * -2090. + (f3[k] * 21970. - f4[k] * 15048.) + (f2[k] * 22528. - f5[k] * 27360.), abs(d__1));
+      /* L250: */
+      /* Computing MAX */
+      d__1 = eeoet, d__2 = ee / et;
+      eeoet = max(d__1, d__2);
     }
 
-    esttol = abs(*h__) * eeoet * scale / 752400.;
+  esttol = abs(*h__) * eeoet * scale / 752400.;
 
-    if (esttol <= 1.) {
-	goto L260;
+  if (esttol <= 1.)
+    {
+      goto L260;
     }
 
-/* unsuccessful step */
-/* reduce the stepsize , try again */
-/* the decrease is limited to a factor of 1/10 */
+  /* unsuccessful step */
+  /* reduce the stepsize , try again */
+  /* the decrease is limited to a factor of 1/10 */
 
-    hfaild = 1;
-    output = 0;
-    s = .1;
-    if (esttol < 59049.) {
-	s = .9 / pow(esttol, .2);
-    }
-    *h__ = s * *h__;
-    if (abs(*h__) > hmin) {
-	goto L200;
+  hfaild = 1;
+  output = 0;
+  s = .1;
+
+  if (esttol < 59049.)
+    {
+      s = .9 / pow(esttol, .2);
     }
 
-/* requested error unattainable at smallest allowable stepsize */
-    *iflag = 6;
-    *kflag = 6;
-    return 0;
+  *h__ = s * *h__;
 
-/* successful step */
-/* store solution at t+h */
-/* and evaluate derivatives there */
+  if (abs(*h__) > hmin)
+    {
+      goto L200;
+    }
+
+  /* requested error unattainable at smallest allowable stepsize */
+  *iflag = 6;
+  *kflag = 6;
+  return 0;
+
+  /* successful step */
+  /* store solution at t+h */
+  /* and evaluate derivatives there */
 
 L260:
-    *t += *h__;
-    i__1 = *neqn;
-    for (k = 1; k <= i__1; ++k) {
-/* L270: */
-	y[k] = f1[k];
-    }
-    a = *t;
-    (*f)(neqn, &a, &y[1], &yp[1]);
-    ++(*nfe);
+  *t += *h__;
+  i__1 = *neqn;
 
-
-/* choose next stepsize */
-/* the increase is limited to a factor of 5 */
-/* if step failure has just occurred, next */
-/* stepsize is not allowed to increase */
-
-    s = 5.;
-    if (esttol > 1.889568e-4) {
-	s = .9 / pow(esttol, .2);
-    }
-    if (hfaild) {
-	s = min(s,1.);
-    }
-/* Computing MAX */
-    d__2 = s * abs(*h__);
-    d__1 = max(d__2,hmin);
-    //*h__ = d_sign(&d__1, h__);
-    *h__ = *h__ >= 0 ? abs(d__1) : -abs(d__1);
-
-/* end of core integrator */
-
-
-/* should we take another step */
-    if (output) {
-	goto L300;
-    }
-    if (*iflag > 0) {
-	goto L100;
+  for (k = 1; k <= i__1; ++k)
+    {
+      /* L270: */
+      y[k] = f1[k];
     }
 
+  a = *t;
+  (*f)(neqn, &a, &y[1], &yp[1]);
+  ++(*nfe);
 
-/* integration successfully completed */
+  /* choose next stepsize */
+  /* the increase is limited to a factor of 5 */
+  /* if step failure has just occurred, next */
+  /* stepsize is not allowed to increase */
 
-/* one-step mode */
-    *iflag = -2;
-    return 0;
+  s = 5.;
 
-/* interval mode */
+  if (esttol > 1.889568e-4)
+    {
+      s = .9 / pow(esttol, .2);
+    }
+
+  if (hfaild)
+    {
+      s = min(s, 1.);
+    }
+
+  /* Computing MAX */
+  d__2 = s * abs(*h__);
+  d__1 = max(d__2, hmin);
+  //*h__ = d_sign(&d__1, h__);
+  *h__ = *h__ >= 0 ? abs(d__1) : -abs(d__1);
+
+  /* end of core integrator */
+
+  /* should we take another step */
+  if (output)
+    {
+      goto L300;
+    }
+
+  if (*iflag > 0)
+    {
+      goto L100;
+    }
+
+  /* integration successfully completed */
+
+  /* one-step mode */
+  *iflag = -2;
+  return 0;
+
+  /* interval mode */
 L300:
-    *t = *tout;
-    *iflag = 2;
-    return 0;
-
+  *t = *tout;
+  *iflag = 2;
+  return 0;
 } /* rkfs_ */
 
-
-C_INT CHybridMethodODE45::fehl_(pEvalF f, const C_INT *neqn, double *y, 
-				double *t, double *h__, 
-				double *yp, double *f1, 
-				double *f2, double *f3, 
-				double *f4, double *f5, 
-				double *s, double *yrcd)
+C_INT CHybridMethodODE45::fehl_(pEvalF f, const C_INT *neqn, double *y,
+                                double *t, double *h__,
+                                double *yp, double *f1,
+                                double *f2, double *f3,
+                                double *f4, double *f5,
+                                double *s, double *yrcd)
 {
-    /* System generated locals */
-    C_INT i__1;
-    double d__1;
+  /* System generated locals */
+  C_INT i__1;
+  double d__1;
 
-    /* Local variables */
-    static C_INT k;
-    static double ch;
-    static C_INT base;
+  /* Local variables */
+  static C_INT k;
+  static double ch;
+  static C_INT base;
 
-/* fehlberg fourth-fifth order runge-kutta method */
+  /* fehlberg fourth-fifth order runge-kutta method */
 
-/* fehl integrates a system of neqn first order */
-/* ordinary differential equations of the form */
-/*             dy(i)/dt=f(t,y(1),---,y(neqn)) */
-/* where the initial values y(i) and the initial derivatives */
-/* yp(i) are specified at the starting point t. fehl advances */
-/* the solution over the fixed step h and returns */
-/* the fifth order (sixth order accurate locally) solution */
-/* approximation at t+h in array s(i). */
-/* f1,---,f5 are arrays of dimension neqn which are needed */
-/* for internal storage. */
-/* the formulas have been grouped to control loss of significance. */
-/* fehl should be called with an h not smaller than 13 units of */
-/* roundoff in t so that the various independent arguments can be */
-/* distinguished. */
+  /* fehl integrates a system of neqn first order */
+  /* ordinary differential equations of the form */
+  /*             dy(i)/dt=f(t,y(1),---,y(neqn)) */
+  /* where the initial values y(i) and the initial derivatives */
+  /* yp(i) are specified at the starting point t. fehl advances */
+  /* the solution over the fixed step h and returns */
+  /* the fifth order (sixth order accurate locally) solution */
+  /* approximation at t+h in array s(i). */
+  /* f1,---,f5 are arrays of dimension neqn which are needed */
+  /* for internal storage. */
+  /* the formulas have been grouped to control loss of significance. */
+  /* fehl should be called with an h not smaller than 13 units of */
+  /* roundoff in t so that the various independent arguments can be */
+  /* distinguished. */
 
-    /* Parameter adjustments */
-    --yrcd;
-    --s;
-    --f5;
-    --f4;
-    --f3;
-    --f2;
-    --f1;
-    --yp;
-    --y;
+  /* Parameter adjustments */
+  --yrcd;
+  --s;
+  --f5;
+  --f4;
+  --f3;
+  --f2;
+  --f1;
+  --yp;
+  --y;
 
-    /* Function Body */
+  /* Function Body */
 
-    //~~~~~~~~(1)~~~~~~~~
-    ch = *h__ / 4.;
-    i__1 = *neqn;
-    for (k = 1; k <= i__1; ++k) {
-	f5[k] = y[k] + ch * yp[k];
-    }
-    d__1 = *t + ch;
-    (*f)(neqn, &d__1, &f5[1], &f1[1]);
+  //~~~~~~~~(1)~~~~~~~~
+  ch = *h__ / 4.;
+  i__1 = *neqn;
 
-    /* Record trcd and yrcd at t+h/4 */
-    base = 1;
-    yrcd[base] = *t + ch;
-    i__1 = *neqn;
-    for (k = 1; k <= i__1; ++k) {
-	yrcd[base + k] = f5[k];
-    }
-    
-    //~~~~~~~~(2)~~~~~~~~
-    ch = *h__ * 3. / 32.;
-    i__1 = *neqn;
-    for (k = 1; k <= i__1; ++k) {
-	f5[k] = y[k] + ch * (yp[k] + f1[k] * 3.);
-    }
-    d__1 = *t + *h__ * 3. / 8.;
-    (*f)(neqn, &d__1, &f5[1], &f2[1]);
-
-    /* Record trcd and yrcd at t+3h/8 */
-    base = *neqn + 2;
-    yrcd[base] = *t + *h__ * 3. / 8.;
-    i__1 = *neqn;
-    for (k = 1; k <= i__1; ++k) {
-	yrcd[base + k] = f5[k];
+  for (k = 1; k <= i__1; ++k)
+    {
+      f5[k] = y[k] + ch * yp[k];
     }
 
-    //~~~~~~~~(3)~~~~~~~~
-    ch = *h__ / 2197.;
-    i__1 = *neqn;
-    for (k = 1; k <= i__1; ++k) {
-	f5[k] = y[k] + ch * (yp[k] * 1932. + (f2[k] * 7296. 
-					      - f1[k] * 7200.));
-    }
-    d__1 = *t + *h__ * 12. / 13.;
-    (*f)(neqn, &d__1, &f5[1], &f3[1]);
+  d__1 = *t + ch;
+  (*f)(neqn, &d__1, &f5[1], &f1[1]);
 
-    /* Record trcd and yrcd at t+12h/13 */
-    base = (*neqn + 1) * 3 + 1;
-    yrcd[base] = *t + *h__ * 12. / 13.;
-    i__1 = *neqn;
-    for (k = 1; k <= i__1; ++k) {
-	yrcd[base + k] = f5[k];
+  /* Record trcd and yrcd at t+h/4 */
+  base = 1;
+  yrcd[base] = *t + ch;
+  i__1 = *neqn;
+
+  for (k = 1; k <= i__1; ++k)
+    {
+      yrcd[base + k] = f5[k];
     }
 
-    //~~~~~~~~(4)~~~~~~~~
-    ch = *h__ / 4104.;
-    i__1 = *neqn;
-    for (k = 1; k <= i__1; ++k) {
-	f5[k] = y[k] + ch * (yp[k] * 8341. - f3[k] * 845. 
-			     + (f2[k] * 29440. - f1[k] * 32832.));
-    }
-    d__1 = *t + *h__;
-    (*f)(neqn, &d__1, &f5[1], &f4[1]);
+  //~~~~~~~~(2)~~~~~~~~
+  ch = *h__ * 3. / 32.;
+  i__1 = *neqn;
 
-    //~~~~~~~~(5)~~~~~~~~
-    ch = *h__ / 20520.;
-    i__1 = *neqn;
-    for (k = 1; k <= i__1; ++k) {
-	f1[k] = y[k] + ch * (yp[k] * -6080. 
-			     + (f3[k] * 9295. - f4[k] * 5643.) 
-			     + (f1[k] * 41040. - f2[k] * 28352.));
-    }
-    d__1 = *t + *h__ / 2.;
-    (*f)(neqn, &d__1, &f1[1], &f5[1]);
-
-    /* Record trcd and yrcd at t+h/2 */
-    //base = (*neqn + 1 << 1) + 1;
-    base = (*neqn + 1)*2 + 1;
-    yrcd[base] = *t + *h__ / 2.;
-    i__1 = *neqn;
-    for (k = 1; k <= i__1; ++k) {
-	yrcd[base + k] = f1[k];
-    }
-    
-    //~~~~~~~~(6)~~~~~~~~
-    /* compute approximate solution at t+h */
-    ch = *h__ / 7618050.;
-    i__1 = *neqn;
-    for (k = 1; k <= i__1; ++k) {
-	s[k] = y[k] + ch * (yp[k] * 902880. 
-			    + (f3[k] * 3855735. - f4[k] * 1371249.) 
-			    + (f2[k] * 3953664. + f5[k] * 277020.));
+  for (k = 1; k <= i__1; ++k)
+    {
+      f5[k] = y[k] + ch * (yp[k] + f1[k] * 3.);
     }
 
-    return 0;
+  d__1 = *t + *h__ * 3. / 8.;
+  (*f)(neqn, &d__1, &f5[1], &f2[1]);
+
+  /* Record trcd and yrcd at t+3h/8 */
+  base = *neqn + 2;
+  yrcd[base] = *t + *h__ * 3. / 8.;
+  i__1 = *neqn;
+
+  for (k = 1; k <= i__1; ++k)
+    {
+      yrcd[base + k] = f5[k];
+    }
+
+  //~~~~~~~~(3)~~~~~~~~
+  ch = *h__ / 2197.;
+  i__1 = *neqn;
+
+  for (k = 1; k <= i__1; ++k)
+    {
+      f5[k] = y[k] + ch * (yp[k] * 1932. + (f2[k] * 7296.
+                                            - f1[k] * 7200.));
+    }
+
+  d__1 = *t + *h__ * 12. / 13.;
+  (*f)(neqn, &d__1, &f5[1], &f3[1]);
+
+  /* Record trcd and yrcd at t+12h/13 */
+  base = (*neqn + 1) * 3 + 1;
+  yrcd[base] = *t + *h__ * 12. / 13.;
+  i__1 = *neqn;
+
+  for (k = 1; k <= i__1; ++k)
+    {
+      yrcd[base + k] = f5[k];
+    }
+
+  //~~~~~~~~(4)~~~~~~~~
+  ch = *h__ / 4104.;
+  i__1 = *neqn;
+
+  for (k = 1; k <= i__1; ++k)
+    {
+      f5[k] = y[k] + ch * (yp[k] * 8341. - f3[k] * 845.
+                           + (f2[k] * 29440. - f1[k] * 32832.));
+    }
+
+  d__1 = *t + *h__;
+  (*f)(neqn, &d__1, &f5[1], &f4[1]);
+
+  //~~~~~~~~(5)~~~~~~~~
+  ch = *h__ / 20520.;
+  i__1 = *neqn;
+
+  for (k = 1; k <= i__1; ++k)
+    {
+      f1[k] = y[k] + ch * (yp[k] * -6080.
+                           + (f3[k] * 9295. - f4[k] * 5643.)
+                           + (f1[k] * 41040. - f2[k] * 28352.));
+    }
+
+  d__1 = *t + *h__ / 2.;
+  (*f)(neqn, &d__1, &f1[1], &f5[1]);
+
+  /* Record trcd and yrcd at t+h/2 */
+  //base = (*neqn + 1 << 1) + 1;
+  base = (*neqn + 1) * 2 + 1;
+  yrcd[base] = *t + *h__ / 2.;
+  i__1 = *neqn;
+
+  for (k = 1; k <= i__1; ++k)
+    {
+      yrcd[base + k] = f1[k];
+    }
+
+  //~~~~~~~~(6)~~~~~~~~
+  /* compute approximate solution at t+h */
+  ch = *h__ / 7618050.;
+  i__1 = *neqn;
+
+  for (k = 1; k <= i__1; ++k)
+    {
+      s[k] = y[k] + ch * (yp[k] * 902880.
+                          + (f3[k] * 3855735. - f4[k] * 1371249.)
+                          + (f2[k] * 3953664. + f5[k] * 277020.));
+    }
+
+  return 0;
 } /* fehl_ */
 
 //========Help Function========
@@ -2288,8 +2375,6 @@ C_INT32 CHybridMethodODE45::checkModel(CModel * model)
 
   return 1; // Model is appropriate for hybrid simulation
 }
-
-
 
 /**
  *   Prints out various data on standard output for debugging purposes.
@@ -2512,7 +2597,6 @@ void CHybridMethodODE45::outputDebug(std::ostream & os, size_t level)
   return;
 }
 
-
 /**
  *   Prints out data on standard output. Deprecated.
  */
@@ -2558,7 +2642,6 @@ void CHybridMethodODE45::outputData(std::ostream & os, C_INT32 mode)
   return;
 }
 
-
 bool CHybridMethodODE45::modelHasAssignments(const CModel* pModel)
 {
   size_t i, imax = pModel->getNumModelValues();
@@ -2600,7 +2683,6 @@ bool CHybridMethodODE45::modelHasAssignments(const CModel* pModel)
   return false;
 }
 
-
 /*-------- Debug Code for StochFlag and Balance--------
 
 std::ostream & operator<<(std::ostream & os, const CHybridODE45StochFlag & d)
@@ -2628,5 +2710,6 @@ std::ostream & operator<<(std::ostream & os, const CHybridODE45Balance & d)
      << " mpMetabolite: " << d.mpMetabolite << std::endl;
   return os;
 }
-*/
+ */
 
+#endif //CHybridMethodODE45

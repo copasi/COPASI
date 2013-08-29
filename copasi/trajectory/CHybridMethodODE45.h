@@ -1,15 +1,6 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /**
@@ -38,6 +29,7 @@
  *   reaction method (Gibson)), because their firing changes the reaction
  *   probabilities in the system significantly.
  */
+#ifdef INCLUDE_CHybridMethodODE45
 #ifndef COPASI_CHybridMethodODE45
 #define COPASI_CHybridMethodODE45
 
@@ -58,7 +50,6 @@
 #include "copasi/utilities/CCopasiVector.h"
 #include "CInterpolation.h"
 
-
 /* DEFINE ********************************************************************/
 #define MAX_STEPS                    1000000
 //#define INT_EPSILON                  0.1
@@ -74,7 +65,6 @@
 #define SUBTYPE                      1
 #define USE_RANDOM_SEED              false
 #define RANDOM_SEED                  1
-
 
 //Simulation Part
 #define SLOW                         0
@@ -107,12 +97,12 @@ class CStateRecord;
 class CInterpolation;
 
 /**
- * Internal representation of the balances of each reaction. 
+ * Internal representation of the balances of each reaction.
  * The index of each metabolite in the reaction is provided.
  */
 class CHybridODE45Balance
 {
- public:
+public:
   size_t mIndex;
   C_INT32 mMultiplicity;
   CMetab * mpMetabolite;
@@ -121,20 +111,18 @@ class CHybridODE45Balance
   //friend std::ostream & operator<<(std::ostream & os, const CHybridODE45Balance & d);
 };
 
-
 /**
  * A class to record whether a metab is slow or fast
  * @param fastReactions is applied to store which reactions this
- *        metab participates 
+ *        metab participates
  * @param flag, if set is empty -> false, else, -> true
  */
 class CHybridODE45MetabFlag
 {
- public:
+public:
   std::set<size_t> mFastReactions;
   size_t mFlag;
 };
-
 
 class CHybridMethodODE45 : public CTrajectoryMethod
 {
@@ -142,22 +130,21 @@ class CHybridMethodODE45 : public CTrajectoryMethod
   friend CTrajectoryMethod *
   CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType);
 
- public:
+public:
   struct Data
   {
     C_INT dim;
     CHybridMethodODE45 * pMethod;
-  }; 
+  };
 
-
- protected:
+protected:
   //================Function for Class================
   /**
    * Default Constructor
    */
   CHybridMethodODE45(const CCopasiContainer * pParent = NULL);
 
- public:
+public:
   /**
    * Copy constructor
    * @param const CHybridMethodODE45 & src
@@ -171,8 +158,7 @@ class CHybridMethodODE45 : public CTrajectoryMethod
   ~CHybridMethodODE45();
 
   //================Function for System================
- public:
-  
+public:
 
   /**
   * Check if the method is suitable for this problem
@@ -194,7 +180,7 @@ class CHybridMethodODE45 : public CTrajectoryMethod
    */
   virtual void start(const CState * initialState);
 
- protected:
+protected:
   /**
    * Initializes the solver.
    * @param time the current time
@@ -206,17 +192,16 @@ class CHybridMethodODE45 : public CTrajectoryMethod
    */
   void cleanup();
 
- private:
+private:
   /**
    * Intialize the method parameter
    */
   void initializeParameter();
 
-
   //================Function for Model================
- public:
+public:
 
- protected:
+protected:
   /**
    * setup mMetabFlags
    */
@@ -248,11 +233,10 @@ class CHybridMethodODE45 : public CTrajectoryMethod
    */
   void setupMetab2React();
 
-
   //================Function for ODE45================
- public:
- 
- protected:
+public:
+
+protected:
   /**
    *  Calculate the default absolute tolerance
    *  @param const CModel * pModel
@@ -278,9 +262,8 @@ class CHybridMethodODE45 : public CTrajectoryMethod
    */
   void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
 
-
   //================Function for Simulation================
- public:
+public:
   /**
    *  This instructs the method to calculate a time step of deltaT
    *  starting with the current state, i.e., the result of the previous
@@ -292,7 +275,7 @@ class CHybridMethodODE45 : public CTrajectoryMethod
    */
   virtual Status step(const double & deltaT);
 
- protected:
+protected:
   /**
    *  Simulates the system over the next interval of time. The current time
    *  and the end time of the current step() are given as arguments.
@@ -303,9 +286,8 @@ class CHybridMethodODE45 : public CTrajectoryMethod
    */
   C_FLOAT64 doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endTime);
 
-
   //================Function for Stoichastic Part================
- protected:
+protected:
   /**
    * Calculates an amu value for a given reaction.
    *
@@ -376,7 +358,7 @@ class CHybridMethodODE45 : public CTrajectoryMethod
    */
   void updateTauMu(size_t rIndex, C_FLOAT64 time);
 
- private:
+private:
   /**
    * Gets the set of metabolites on which a given reaction depends.
    *
@@ -395,27 +377,27 @@ class CHybridMethodODE45 : public CTrajectoryMethod
   std::set <std::string> *getAffects(size_t rIndex);
 
   //================Function for C Code from f2c================
-  C_INT rkf45_(pEvalF f, C_INT *neqn, double *y, double *t, 
-	       double *tout, double *relerr, double *abserr,
-	       C_INT *iflag, double *work, C_INT *iwork, 
-	       double *yrcd);
+  C_INT rkf45_(pEvalF f, C_INT *neqn, double *y, double *t,
+               double *tout, double *relerr, double *abserr,
+               C_INT *iflag, double *work, C_INT *iwork,
+               double *yrcd);
 
   C_INT rkfs_(pEvalF f, C_INT *neqn, double *y, double *
-	      t, double *tout, double *relerr, 
-	      double *abserr, C_INT *iflag, double *yp, 
-	      double *h__, double *f1, double *f2, 
-	      double *f3, double *f4, double *f5, 
-	      double *savre, double *savae, C_INT *nfe, 
-	      C_INT *kop, C_INT *init, C_INT *jflag, 
-	      C_INT *kflag, double *yrcd);
+              t, double *tout, double *relerr,
+              double *abserr, C_INT *iflag, double *yp,
+              double *h__, double *f1, double *f2,
+              double *f3, double *f4, double *f5,
+              double *savre, double *savae, C_INT *nfe,
+              C_INT *kop, C_INT *init, C_INT *jflag,
+              C_INT *kflag, double *yrcd);
 
-  C_INT fehl_(pEvalF f, C_INT *neqn, double *y, double *t, 
-	      double *h__, double *yp, double *f1, 
-	      double *f2, double *f3, double *f4, 
-	      double *f5, double *s, double *yrcd);
+  C_INT fehl_(pEvalF f, C_INT *neqn, double *y, double *t,
+              double *h__, double *yp, double *f1,
+              double *f2, double *f3, double *f4,
+              double *f5, double *s, double *yrcd);
 
   //================Help Functions================
- protected:
+protected:
   /**
    * Test the model if it is proper to perform stochastic simulations on.
    * Several properties are tested (e.g. integer stoichometry, all reactions
@@ -441,10 +423,9 @@ class CHybridMethodODE45 : public CTrajectoryMethod
    */
   static bool modelHasAssignments(const CModel* pModel);
 
-
 //Attributes:
   //================Model Related================
-  
+
   //~~~~~~~~Model Describtion~~~~~~~~
   /**
    * Pointer to the model
@@ -465,7 +446,6 @@ class CHybridMethodODE45 : public CTrajectoryMethod
    *
    */
   bool mReducedModel;
-
 
   //~~~~~~~~Metabs Related~~~~~~~~
   /**
@@ -488,15 +468,15 @@ class CHybridMethodODE45 : public CTrajectoryMethod
    * be FAST or SLOW.
    */
   std::vector<CHybridODE45MetabFlag> mMetabFlags;
-  
+
   //~~~~~~~~Reaction Related~~~~~~~~
   /**
-   * Number of Reactions    
+   * Number of Reactions
    */
   size_t mNumReactions;
 
   /**
-   * Fast reactions are set FAST and 
+   * Fast reactions are set FAST and
    * slow ones are SLOW
    */
   std::vector <size_t> mReactionFlags;
@@ -524,7 +504,7 @@ class CHybridMethodODE45 : public CTrajectoryMethod
   std::vector <std::set <size_t> > mMetab2React;
 
   /**
-   * Bool value 
+   * Bool value
    */
   bool mHasStoiReaction;
 
@@ -542,9 +522,8 @@ class CHybridMethodODE45 : public CTrajectoryMethod
   /**
    *   Vectors to hold the system state and intermediate results
    */
-  std::vector <C_FLOAT64> temp; 
+  std::vector <C_FLOAT64> temp;
   std::vector <C_FLOAT64> currentState;
-
 
   //=================Attributes for ODE45 Solver================
 
@@ -559,10 +538,9 @@ class CHybridMethodODE45 : public CTrajectoryMethod
    */
   size_t mMaxBalance;
 
-
   /**
    * mData.dim is the dimension of the ODE system.
-   * mData.pMethod contains CLsodaMethod * this to be used 
+   * mData.pMethod contains CLsodaMethod * this to be used
    * in the static method EvalF
    */
   Data mData;
@@ -625,22 +603,19 @@ class CHybridMethodODE45 : public CTrajectoryMethod
    */
   std::vector <C_FLOAT64> mAmu;
   std::vector <C_FLOAT64> mAmuOld;
- 
 
   /**
-   * Set of the reactions, which must be updated. 
-   * Reactions have at lease one fast metab as subtract with 
+   * Set of the reactions, which must be updated.
+   * Reactions have at lease one fast metab as subtract with
    * non-zero balance
    */
   std::set <size_t> mCalculateSet;
 
-
   /**
-   * Set of the reactions, which must update after one 
+   * Set of the reactions, which must update after one
    * slow reaction fires
    */
   std::set <size_t> mUpdateSet;
-
 
   //================Attributes for Interpolation================
   /**
@@ -682,8 +657,8 @@ class CHybridMethodODE45 : public CTrajectoryMethod
   unsigned C_INT32 mRandomSeed;
 
   /**
-   * The graph of reactions and their dependent reactions. 
-   * When a reaction is executed, the propensities for each of 
+   * The graph of reactions and their dependent reactions.
+   * When a reaction is executed, the propensities for each of
    * its dependents must be updated.
    */
   CDependencyGraph mDG;
@@ -696,7 +671,6 @@ class CHybridMethodODE45 : public CTrajectoryMethod
    * the queue) or vice versa (insert a new reaction into the queue).
    */
   CIndexedPriorityQueue mPQ;
-
 
   //========System Related========
   /**
@@ -715,7 +689,7 @@ class CHybridMethodODE45 : public CTrajectoryMethod
   size_t mOutputCounter;
 
   /**
-   * Indicates whether the model has global quantities 
+   * Indicates whether the model has global quantities
    * with assignment rules.
    * If it has, we will use a less efficient way to update the model
    * state to handle this.
@@ -726,10 +700,9 @@ class CHybridMethodODE45 : public CTrajectoryMethod
    *
    */
   std::ostringstream mErrorMsg;
-
-
 };
 
 //#include "CHybridNextReactionLSODAMethod.h"
 
 #endif // COPASI_CHybridMethodODE45
+#endif //INCLUDE_CHybridMethodODE45
