@@ -15,7 +15,7 @@
 #ifndef FUNCTION_WIDGET1_H
 #define FUNCTION_WIDGET1_H
 
-#include "ui_FunctionWidget1.h"
+#include "copasi/UI/ui_FunctionWidget1.h"
 
 class CFunction;
 
