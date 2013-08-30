@@ -640,7 +640,7 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
   //}
 
   // do several steps
-  C_FLOAT64 time = mpProblem->getModel()->getTime();
+  C_FLOAT64 time = mpModel->getTime();
   C_FLOAT64 endTime = time + deltaT;
 
   for (i = 0; ((i < mMaxSteps) && (time < endTime)); i++)
@@ -656,13 +656,14 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
   // get back the particle numbers
 
   /* Set the variable metabolites ????*/
-  C_FLOAT64 * Dbl = mpCurrentState->beginIndependent() + mFirstMetabIndex - 1;
+  //C_FLOAT64 * Dbl = mpCurrentState->beginIndependent() + mFirstMetabIndex - 1;
 
-  for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
-    *Dbl = mpProblem->getModel()->getMetabolitesX()[i]->getValue();
+  //for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
+  //  *Dbl = mpProblem->getModel()->getMetabolitesX()[i]->getValue();
 
   //the task expects the result in mpCurrentState
-  *mpCurrentState = mpProblem->getModel()->getState();
+  //*mpCurrentState = mpProblem->getModel()->getState();
+  *mpCurrentState = *mpState;
   mpCurrentState->setTime(time);
 
   return NORMAL;
@@ -702,6 +703,16 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
 
       if (mODE45Status == HAS_EVENT) //fire slow reaction
         {
+	  //First Update Propensity
+	  std::set <size_t>::iterator reactIt = mCalculateSet.begin();
+	  size_t reactID;
+
+	  for (; reactIt != mCalculateSet.end(); reactIt++)
+	    {
+	      reactID = *reactIt;
+	      calculateAmu(reactID);
+	    }
+
           rIndex = getReactionIndex4Hybrid();
           fireReaction(rIndex);
 
@@ -886,21 +897,11 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
         stateY[i] = tmpY[i]; //write result into mpState
 
       mRestartODE45 = true;
-
-      //==(5)==update propensities after slow reaction firing
-      std::set <size_t>::iterator reactIt = mCalculateSet.begin();
-      size_t reactID;
-
-      for (; reactIt != mCalculateSet.end(); reactIt++)
-        {
-          reactID = *reactIt;
-          calculateAmu(reactID);
-        }
     }
 
   //7----Record State
   mpState->setTime(mTime);
-  mpProblem->getModel()->setState(*mpState);
+  mpModel->setState(*mpState);
 
   mpModel->updateSimulatedValues(false); //for assignments?????????
 
@@ -927,21 +928,19 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C
   //1====calculate propensities
   //just care about reactions involving fast metab
 
-  // put values in y into mpState for amu calculation
-  // (except the last element, the sum of amu of slow
-  // reaction)
-  // It seems for one step method an available
-  // way (even necessary way). When thinking about
-  // multistep method, we can deirectly calculate
-  // propensities.
-  // I wonder, is there other choice, without changing
-  // the values in mpState.
-
+  //(1)Put current time *t and independent values *y into model.
+  // This step seemes necessary, since propensity calculation process 
+  // requires functions called from the model class.
+  mpState->setTime(*t);
   C_FLOAT64 * tmpY = mpState->beginIndependent();//mpState is a local copy
 
   for (i = 0; i < mData.dim - 1; ++i)
     tmpY[i] = y[i];
 
+  mpModel->setState(*mpState);
+  mpModel->updateSimulateValues(false); //really?
+
+  //(2)Calculate propensities.
   std::set <size_t>::iterator reactIt = mCalculateSet.begin();
   size_t reactID;
 
@@ -1329,9 +1328,33 @@ void CHybridMethodODE45::fireReaction(size_t rIndex)
 
   // insert all dependent reactions into the mUpdateSet
   mUpdateSet.clear();
-  const std::set <size_t> & dependents = mDG.getDependents(rIndex);
-  std::copy(dependents.begin(), dependents.end(),
-            std::inserter(mUpdateSet, mUpdateSet.begin()));
+  // just update slow reactions propensities, so only slow
+  // reaction index will be inserted into mUpdateSet
+  std::vector<CHybridODE45Balance>::iterator metabIt = 
+    mLocalBalances[rIndex].begin();
+  const std::vector<CHybridODE45Balance>::iterator metabItEnd =
+    mLocalBalances[rIndex].end();
+  std::set<size_t>::iterator rctIt, rctEndIt;
+
+  size_t metabId, rctId;
+  
+  for (; metabIt != metabItEnd; ++it)
+    {
+      metabId = metabIt->mIndex;
+      rctIt = mMetab2React[metabId].begin();
+      rctEndIt = mMetab2React[metabId].end();
+
+      for(; rctIt != rctEndIt; ++rctEndIt)
+	{
+	  rctId = *rctIt;
+	  if (mReactionFlags[rctId] == SLOW)
+	    mUpdateSet.insert(rctId);
+	}
+    }
+
+  //  const std::set <size_t> & dependents = mDG.getDependents(rIndex);
+  //  std::copy(dependents.begin(), dependents.end(),
+  //            std::inserter(mUpdateSet, mUpdateSet.begin()));
 
   mRestartODE45 = true;
 
