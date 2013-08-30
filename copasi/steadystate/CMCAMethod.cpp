@@ -636,7 +636,7 @@ bool CMCAMethod::createLinkMatrix()
 
   mReducedStoichiometry = mpModel->getStoiReordered();
   mLinkZero.applyRowPivot(mReducedStoichiometry);
-  mReducedStoichiometry.resize(mLinkZero.getNumIndependent(), mReducedStoichiometry.numCols());
+  mReducedStoichiometry.resize(mLinkZero.getNumIndependent(), mReducedStoichiometry.numCols(), true);
 
   return true;
 }

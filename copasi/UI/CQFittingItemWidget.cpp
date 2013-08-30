@@ -1,19 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-//   $Revision: 1.42 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/16 14:50:28 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "CQFittingItemWidget.h"
@@ -46,7 +42,7 @@
  *  name 'name' and widget flags set to 'f'.
  */
 CQFittingItemWidget::CQFittingItemWidget(QWidget* parent, Qt::WindowFlags fl)
-    : QWidget(parent, fl)
+  : QWidget(parent, fl)
 {
   setupUi(this);
 
@@ -926,9 +922,11 @@ void CQFittingItemWidget::slotCopy()
       case OPT_CONSTRAINT:
         pItem = new COptItem(*pSrc);
         break;
+
       case FIT_ITEM:
         pItem = new CFitItem(*pSrc);
         break;
+
       case FIT_CONSTRAINT:
         pItem = new CFitConstraint(*pSrc);
         break;
@@ -1046,9 +1044,11 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
           case FIT_ITEM:
             pTemplate = new CFitItem(*(*mpItemsCopy)[*mSelection.begin()]);
             break;
+
           case FIT_CONSTRAINT:
             pTemplate = new CFitConstraint(*(*mpItemsCopy)[*mSelection.begin()]);
             break;
+
           default:
             break;
         }
@@ -1065,9 +1065,11 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
               case FIT_ITEM:
                 pItem = new CFitItem(*pTemplate);
                 break;
+
               case FIT_CONSTRAINT:
                 pItem = new CFitConstraint(*pTemplate);
                 break;
+
               default:
                 break;
             }
@@ -1260,12 +1262,12 @@ void CQFittingItemWidget::loadSelection()
     {
       mpEditObject->setText("");
 
-      mpEditLower->setText("");
-      mpCheckLowerInf->setChecked(true);
+      mpEditLower->setText(QString::number(1e-06));
+      mpCheckLowerInf->setChecked(false);
       mpLowerObject = NULL;
 
-      mpEditUpper->setText("");
-      mpCheckUpperInf->setChecked(true);
+      mpEditUpper->setText(QString::number(1e+06));
+      mpCheckUpperInf->setChecked(false);
       mpUpperObject = NULL;
 
       mpEditStart->setText("");

@@ -302,7 +302,7 @@ const size_t & CLinkMatrix::getNumIndependent() const
   return mIndependent;
 }
 
-const size_t & CLinkMatrix::getNumDependent() const
+size_t CLinkMatrix::getNumDependent() const
 {
   return numRows();
 }
