@@ -46,9 +46,9 @@ public:
 
   /**
    * Retrieve the number of linear dependent rows of the input matrix
-   * @return const size_t & numDependent
+   * @return size_t numDependent
    */
-  const size_t & getNumDependent() const;
+  size_t getNumDependent() const;
 
   /**
    * Apply the row pivot
