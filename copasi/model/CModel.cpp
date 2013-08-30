@@ -782,9 +782,8 @@ bool CModel::handleUnusedMetabolites()
 
 void CModel::buildRedStoi()
 {
-  mRedStoi = mStoi;
-  mL.applyRowPivot(mRedStoi);
-  mRedStoi.resize(mNumMetabolitesReactionIndependent, mRedStoi.numCols());
+  mRedStoi = mStoiReordered;
+  mRedStoi.resize(mNumMetabolitesReactionIndependent, mRedStoi.numCols(), true);
 
   // The first metabolites are determined by ODEs we therefore cannot simply
   // apply the pivot.

@@ -149,13 +149,14 @@ public:
    */
   virtual void resize(size_t rows, size_t cols, const bool & copy = false)
   {
-    if (rows * cols != mRows * mCols)
+    if (rows != mRows ||  cols != mCols)
       {
-        size_t OldSize = mRows * mCols;
+        size_t OldRows = mRows;
+        size_t OldCols = mCols;
         CType * OldArray = mArray;
         mArray = NULL;
 
-        if (rows && cols)
+        if (rows != 0 && cols != 0)
           {
             try
               {
@@ -187,7 +188,18 @@ public:
                 mArray != NULL &&
                 OldArray != NULL)
               {
-                memcpy(mArray, OldArray, std::min(rows * cols, OldSize) * sizeof(CType));
+                // We copy the top left matrix (min(rows, OldRows), min(cols, OldCols);
+                size_t CopiedRows = std::min(rows, OldRows);
+                size_t CopiedColumns = std::min(cols, OldCols);
+
+                CType * pOldRow = OldArray;
+                CType * pOldRowEnd = pOldRow +  CopiedRows * OldCols;
+                CType * pRow = mArray;
+
+                for (; pOldRow != pOldRowEnd; pOldRow += OldCols, pRow += cols)
+                  {
+                    memcpy(pRow, pOldRow, CopiedColumns * sizeof(CType));
+                  }
               }
           }
 
