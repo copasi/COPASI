@@ -621,6 +621,45 @@ void CHybridMethodODE45::setupCalculateSet()
   return;
 }
 
+
+void CHybridMethodODE45:: setupReactAffect()
+{
+  mReactAffect.clear();
+  mReactAffect.resize(mNumReactions);
+
+  std::vector<std::set<size_t> >::iterator rctIt = 
+    mReactAffect.begin();
+  const std:vector<std::set<size_t> >::iterator rctEndIt = 
+    mReactAffect.end();
+
+  for(size_t rct=0; rctIt != rctEndIt; ++rct, ++rctIt)
+    {
+      rctIt->clear();
+
+      std::vector<CHybridODE45Balance>::iterator balIt = 
+	mLocalBalances[rct].begin();
+      const std::vector<CHybridODE45Balance>::iterator balEndIt =
+	mLocalBalances[rct].end();
+
+      for (; balIt != balEndIt; ++balIt)
+	{
+	  size_t metabId = balIt->mIndex;
+
+	  std::set<size_t>::iterator it = 
+	    mMetab2React[metabId].begin();
+	  const std::set<size_t>::iterator endIt =
+	    mMetab2React[metabId].end();
+
+	  for(; it != endIt; ++it)
+	    rctIt->insert(*it);
+
+	}
+    }
+  return;
+}
+
+
+
 //========Function for Simulation========
 CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
 {
@@ -692,59 +731,59 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
 
       fireReaction(rIndex);
 
+      //population has been changed and record to the mCurrentState
+      //in fireReaction(). So here just store time
       mpCurrentState->setTime(ds);
       updatePriorityQueue(rIndex, ds);
     }
-  //2----Hybrid Method
-  else if (mHasStoiReaction && mHasDetermReaction)
+  //2----Method with Deterministic Part
+  else 
     {
       integrateDeterministicPart(endTime - currentTime);
       ds = mpState->getTime();
-
-      if (mODE45Status == HAS_EVENT) //fire slow reaction
-        {
-	  //First Update Propensity
-	  std::set <size_t>::iterator reactIt = mCalculateSet.begin();
-	  size_t reactID;
-
-	  for (; reactIt != mCalculateSet.end(); reactIt++)
+      // Till now, state has been recorded
+      
+      if (mHasStoiReaction && mHasDetermReaction)//Hybrid Method
+	{
+	  if (mODE45Status == HAS_EVENT) //fire slow reaction
 	    {
-	      reactID = *reactIt;
-	      calculateAmu(reactID);
+	      fireSlowReaction();
+	      mODE45Status = NEW_STEP;
 	    }
-
-          rIndex = getReactionIndex4Hybrid();
-          fireReaction(rIndex);
-
-          //update corresponding propensities
-          size_t reactId;
-          std::set <size_t>::iterator updateIt
-            = mUpdateSet.begin();
-          const std::set <size_t>::iterator updateEndIt
-            = mUpdateSet.end();
-
-          for (; updateIt != updateEndIt; updateIt++)
-            {
-              reactId = *updateIt;
-              calculateAmu(reactId);
-            }
-
-          mUpdateSet.clear();
-          mODE45Status = NEW_STEP;
-          //slow reaction propensities may change during integration,
-          //so, PriorityQueue may not be suitable at this condition
-
-          //updatePriorityQueue(C_INVALID_INDEX, endTime);
-        }
-    }
-  //3----Pure ODE Model
-  else
-    {
-      integrateDeterministicPart(endTime - currentTime);
-      ds = mpState->getTime();
+	}//end of Hybrid Method
     }
 
   return ds;
+}
+
+void CHybridMethodODE45::fireSlowReaction()
+{
+  //First Update Propensity
+  std::set <size_t>::iterator reactIt = mCalculateSet.begin();
+  size_t reactID;
+  
+  for (; reactIt != mCalculateSet.end(); reactIt++)
+    {
+      reactID = *reactIt;
+      calculateAmu(reactID);
+    }
+
+  rIndex = getReactionIndex4Hybrid();
+  fireReaction(rIndex);
+
+  //update corresponding propensities
+  std::set <size_t>::iterator updateIt
+    = mReactAffect[rIndex].begin();
+  const std::set <size_t>::iterator updateEndIt
+    = mReactAffect[rIndex].end();
+
+  for (; updateIt != updateEndIt; updateIt++)
+    {
+      reactId = *updateIt;
+      calculateAmu(reactId);
+    }
+
+  return;
 }
 
 //========Function for ODE45========
@@ -869,33 +908,7 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
   // Put interpolation part into independent function, next
   if (mODE45Status == HAS_EVENT)
     {
-      //==(1)==for one-step method, reset record each time when do interpolation
-      mpInterpolation->recordReset();
-
-      //==(2)==set record in class interpolation
-      mpInterpolation->recordState(mOldTime, mOldY);
-      size_t offset;
-
-      for (size_t i = 0; i < 4; i++) //record the middle 4 states
-        {
-          offset = i * (mData.dim + 1);
-          mpInterpolation->recordState(mStateRecord[offset],
-                                       mStateRecord.array() + offset + 1);
-        }
-
-      mpInterpolation->recordState(mTime, mY);
-
-      //==(3)==do interpolation
-      mpEventState = mpInterpolation->getInterpolationState();
-
-      //==(4)==record the state
-      mTime = mpEventState->getTime();
-      C_FLOAT64 * tmpY   = mpEventState->getArray() + 1;
-      C_FLOAT64 * stateY = mpState->beginIndependent();
-
-      for (size_t i = 0; i < mData.dim - 1; i++)
-        stateY[i] = tmpY[i]; //write result into mpState
-
+      doInverseInterpolation();
       mRestartODE45 = true;
     }
 
@@ -907,6 +920,40 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
 
   return;
 }
+
+
+void CHybridMethodODE45::doInverseInterpolation()
+{
+  //==(1)==for one-step method, reset record each time when do interpolation
+  mpInterpolation->recordReset();
+
+  //==(2)==set record in class interpolation
+  mpInterpolation->recordState(mOldTime, mOldY);
+  size_t offset;
+
+  for (size_t i = 0; i < 4; i++) //record the middle 4 states
+    {
+      offset = i * (mData.dim + 1);
+      mpInterpolation->recordState(mStateRecord[offset],
+				   mStateRecord.array() + offset + 1);
+    }
+
+  mpInterpolation->recordState(mTime, mY);
+
+  //==(3)==do interpolation
+  mpEventState = mpInterpolation->getInterpolationState();
+
+  //==(4)==record the state
+  mTime = mpEventState->getTime();
+  C_FLOAT64 * tmpY   = mpEventState->getArray() + 1;
+  C_FLOAT64 * stateY = mpState->beginIndependent();
+
+  for (size_t i = 0; i < mData.dim - 1; i++)
+    stateY[i] = tmpY[i]; //write result into mpState
+
+  return;
+}
+
 
 /**
  * Dummy f function for calculating derivative of y
@@ -1326,6 +1373,7 @@ void CHybridMethodODE45::fireReaction(size_t rIndex)
       pMetab->refreshConcentration();
     }
 
+  /*
   // insert all dependent reactions into the mUpdateSet
   mUpdateSet.clear();
   // just update slow reactions propensities, so only slow
@@ -1355,7 +1403,7 @@ void CHybridMethodODE45::fireReaction(size_t rIndex)
   //  const std::set <size_t> & dependents = mDG.getDependents(rIndex);
   //  std::copy(dependents.begin(), dependents.end(),
   //            std::inserter(mUpdateSet, mUpdateSet.begin()));
-
+  */
   mRestartODE45 = true;
 
   return;

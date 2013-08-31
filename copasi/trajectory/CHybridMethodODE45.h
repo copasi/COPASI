@@ -233,6 +233,8 @@ protected:
    */
   void setupMetab2React();
 
+  void setupReactAffect();
+
   //================Function for ODE45================
 public:
 
@@ -286,14 +288,26 @@ protected:
    */
   C_FLOAT64 doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endTime);
 
-  //================Function for Stoichastic Part================
-protected:
   /**
    * Calculates an amu value for a given reaction.
    *
    * @param rIndex A size_t specifying the reaction to be updated
    */
   void calculateAmu(size_t rIndex);
+  
+  /**
+   * Do inverse interpolation to find the state when a slow reaction
+   * is fired.
+   */   
+  void doInverseInterpolation();
+
+  /**
+   * Fire slow reaction and update populations and propensities
+   */
+  void fireSlowReaction();
+
+  //================Function for Stoichastic Part================
+protected:
 
   /**
    * Sets up the dependency graph
@@ -502,6 +516,12 @@ protected:
    *   Vector of relations between metabolites with reactions.
    */
   std::vector <std::set <size_t> > mMetab2React;
+
+  /**
+   * Vector of sets that the indeces of propencities which should be
+   * updated after one reaction has been fired
+   */
+  std::vector <std::set<size_t> > mReactAffect;
 
   /**
    * Bool value
