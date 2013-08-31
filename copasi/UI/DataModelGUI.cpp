@@ -171,7 +171,7 @@ void DataModelGUI::addModelFinished()
 {
   if (mSuccess)
     {
-    notify(ListViews::MODEL, ListViews::CHANGE, "");
+    //notify(ListViews::MODEL, ListViews::CHANGE, "");
     
     CCopasiRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
     //linkDataModelToGUI();
