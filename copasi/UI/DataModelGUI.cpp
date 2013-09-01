@@ -154,15 +154,15 @@ void DataModelGUI::addModelRun()
   }
   
   CModel *pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
-  CModel *mModel = (*CCopasiRootContainer::getDatamodelList())[1]->getModel();
+  CModel *pMergeModel = (*CCopasiRootContainer::getDatamodelList())[1]->getModel();
 
   //CModelAdd add(pModel, mModel);
   //add.simpleCall();
 
-  if (mSuccess && pModel && mModel)
+  if (mSuccess && pModel && pMergeModel)
     {
     CModelExpansion expand(pModel);
-    (*CCopasiRootContainer::getDatamodelList())[0]->mLastAddedObjects = expand.copyCompleteModel(mModel);
+    (*CCopasiRootContainer::getDatamodelList())[0]->mLastAddedObjects = expand.copyCompleteModel(pMergeModel);
   
     }
 }

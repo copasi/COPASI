@@ -260,7 +260,8 @@ const std::map<const CCopasiObject*, CCopasiObject*> & CModelExpansion::Elements
 //***************************************************************************************
 
 CModelExpansion::CModelExpansion(CModel* pModel)
-  : mpModel(pModel)
+  : mpModel(pModel),
+    mpSourceModel(NULL)
 {
 }
 
@@ -476,6 +477,8 @@ void CModelExpansion::createRectangularArray(const SetOfModelElements & source, 
 
 std::set<CCopasiObject*> CModelExpansion::copyCompleteModel(const CModel* pSourceModel)
 {
+  mpSourceModel = pSourceModel;
+  
   SetOfModelElements sourceElements;
   sourceElements.fillComplete(pSourceModel);
   ElementsMap map;
@@ -961,6 +964,19 @@ void CModelExpansion::updateExpression(CExpression* exp, const std::string & ind
       const CCopasiObject * pObj = dynamic_cast<const CCopasiObject*>(node->getObjectInterfacePtr());
       std::string refname = "";
       std::string reftype = "";
+
+      //when copying between models, pObj=NULL. This is because the expression could not be compiled
+      //if it points to an object in a different model.
+      //We try to fix this now:
+      if (!pObj && mpSourceModel)
+      {
+        CCopasiObjectName cn = node->getObjectCN();
+        while (cn.getPrimary().getObjectType() != "Model" && !cn.empty())
+          {
+            cn = cn.getRemainder();
+          }
+        pObj = dynamic_cast<const CCopasiObject*>(mpSourceModel->getObject(cn) );
+      }
 
       if (pObj)
         {
