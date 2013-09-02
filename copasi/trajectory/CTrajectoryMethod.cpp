@@ -37,6 +37,7 @@
 #include "model/CState.h"
 #include "model/CCompartment.h"
 
+
 CTrajectoryMethod *
 CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType)
 {
@@ -73,12 +74,13 @@ CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType)
         pMethod = CHybridMethodLSODA::createHybridMethodLSODA();
         break;
 
-#ifdef INCLUDE_CHybridMethodODE45
+	//  #ifdef INCLUDE_CHybridMethodODE45
+	#ifdef COPASI_DEBUG
 
       case hybridODE45:
         pMethod = new CHybridMethodODE45();
         break;
-#endif
+  #endif
 
       case DsaLsodar:
         pMethod = new CTrajectoryMethodDsaLsodar();

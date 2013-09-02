@@ -29,7 +29,9 @@
  *   reaction method (Gibson)), because their firing changes the reaction
  *   probabilities in the system significantly.
  */
-#ifdef INCLUDE_CHybridMethodODE45
+
+//#ifdef INCLUDE_CHybridMethodODE45
+#ifdef COPASI_DEBUG
 #ifndef COPASI_CHybridMethodODE45
 #define COPASI_CHybridMethodODE45
 
@@ -52,7 +54,7 @@
 
 /* DEFINE ********************************************************************/
 #define MAX_STEPS                    1000000
-//#define INT_EPSILON                  0.1
+#define INT_EPSILON                  0.1
 //#define LOWER_STOCH_LIMIT            800 //800
 //#define UPPER_STOCH_LIMIT            1000 //1000
 //#define RUNGE_KUTTA_STEPSIZE         0.001
@@ -74,7 +76,7 @@
 #define INTERP_RECORD_NUM            6
 #define HAS_ERR                      -1
 #define REACH_END_TIME               0
-#define CONTINURE                    1
+#define CONTINUE                     1
 #define HAS_EVENT                    2
 #define NEW_STEP                     3
 
@@ -137,8 +139,8 @@ public:
     CHybridMethodODE45 * pMethod;
   };
 
-protected:
   //================Function for Class================
+ protected:
   /**
    * Default Constructor
    */
@@ -180,7 +182,7 @@ public:
    */
   virtual void start(const CState * initialState);
 
-protected:
+ protected:
   /**
    * Initializes the solver.
    * @param time the current time
@@ -391,12 +393,13 @@ private:
   std::set <std::string> *getAffects(size_t rIndex);
 
   //================Function for C Code from f2c================
-  C_INT rkf45_(pEvalF f, C_INT *neqn, double *y, double *t,
+ private:
+  C_INT rkf45_(pEvalF f, const C_INT *neqn, double *y, double *t,
                double *tout, double *relerr, double *abserr,
                C_INT *iflag, double *work, C_INT *iwork,
                double *yrcd);
 
-  C_INT rkfs_(pEvalF f, C_INT *neqn, double *y, double *
+  C_INT rkfs_(pEvalF f,const  C_INT *neqn, double *y, double *
               t, double *tout, double *relerr,
               double *abserr, C_INT *iflag, double *yp,
               double *h__, double *f1, double *f2,
@@ -405,7 +408,7 @@ private:
               C_INT *kop, C_INT *init, C_INT *jflag,
               C_INT *kflag, double *yrcd);
 
-  C_INT fehl_(pEvalF f, C_INT *neqn, double *y, double *t,
+  C_INT fehl_(pEvalF f, const C_INT *neqn, double *y, double *t,
               double *h__, double *yp, double *f1,
               double *f2, double *f3, double *f4,
               double *f5, double *s, double *yrcd);
@@ -424,7 +427,8 @@ protected:
   /**
    * Prints out data on standard output.
    */
-  void outputData(std::ostream & os, C_INT32 mode);
+  //void outputData(std::ostream & os, C_INT32 mode);
+  void outputData();
 
   /**
    * Prints out various data on standard output for debugging purposes.
@@ -436,6 +440,10 @@ protected:
    * used in calculations
    */
   static bool modelHasAssignments(const CModel* pModel);
+
+ friend
+  std::ostream & operator<<(std::ostream & os, const CHybridODE45Balance & d);
+
 
 //Attributes:
   //================Model Related================
@@ -721,7 +729,6 @@ protected:
   std::ostringstream mErrorMsg;
 };
 
-//#include "CHybridNextReactionLSODAMethod.h"
-
 #endif // COPASI_CHybridMethodODE45
 #endif //INCLUDE_CHybridMethodODE45
+
