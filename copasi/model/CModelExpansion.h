@@ -192,6 +192,7 @@ protected:
 
 
   CModel * mpModel;
+  const CModel * mpSourceModel;
 };
 
 #endif // CMODELEXPANSION_H

@@ -909,8 +909,7 @@ void CopasiUI3Window::slotAddFileOpenFinished(bool success)
                             QMessageBox::Ok, QMessageBox::Ok);
     }
 
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE,
-                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
 
   mpaSave->setEnabled(true);
   mpaSaveAs->setEnabled(true);
@@ -919,6 +918,9 @@ void CopasiUI3Window::slotAddFileOpenFinished(bool success)
 
   refreshRecentFileMenu();
   mNewFile = "";
+  
+    mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
+
 }
 
 #endif
