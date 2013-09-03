@@ -97,8 +97,8 @@ CInterpolation::CInterpolation():
   mpY(NULL),
   mStateNum(0),
   mBeginRecordIndex(0),
-  mHaveRecordNum(0),
   mpState(NULL),
+  mHaveRecordNum(0),
   mpInterpolationState(NULL),
   mShiftBeginIndex(false)
 {}

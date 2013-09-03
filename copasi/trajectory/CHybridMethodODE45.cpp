@@ -3,9 +3,6 @@
 // of Manchester.
 // All rights reserved.
 
-//#ifdef INCLUDE_CHybridMethodODE45
-#ifdef COPASI_DEBUG
-
 /**
  *   CHybridMethodODE45
  *
@@ -427,13 +424,13 @@ void CHybridMethodODE45::setupMetabFlags()
       if (mReactionFlags[rct] == FAST)
         {
           itBalance = mLocalBalances[rct].begin();
-	  itEndBalance = mLocalBalances[rct].end();
+          itEndBalance = mLocalBalances[rct].end();
 
           for (; itBalance != itEndBalance; ++itBalance)
             {
-	      size_t metab = itBalance->mIndex;
-	      mMetabFlags[metab].mFastReactions.insert(rct);
-	      mMetabFlags[metab].mFlag = FAST;
+              size_t metab = itBalance->mIndex;
+              mMetabFlags[metab].mFastReactions.insert(rct);
+              mMetabFlags[metab].mFlag = FAST;
             }
         }
     }
@@ -447,7 +444,7 @@ void CHybridMethodODE45::setupReactionFlags()
   mHasDetermReaction = false;
   mReactionFlags.resize(mNumReactions);
 
-  for (size_t rct=0; rct<mNumReactions; rct++)
+  for (size_t rct = 0; rct < mNumReactions; rct++)
     {
       if ((*mpReactions)[rct]->isFast())
         {
@@ -569,7 +566,7 @@ void CHybridMethodODE45::setupMetab2React()
       for (size_t i = 0; i < metab.size(); i++)
         {
           mpMetab = const_cast < CMetab* >
-	    (metab[i]->getMetabolite());
+                    (metab[i]->getMetabolite());
           index = mpModel->getMetabolitesX().getIndex(mpMetab);
 
           if ((mpMetab->getStatus()) != CModelEntity::FIXED)
@@ -582,7 +579,7 @@ void CHybridMethodODE45::setupMetab2React()
       for (size_t i = 0; i < metab.size(); i++)
         {
           mpMetab = const_cast < CMetab* >
-	    (metab[i]->getMetabolite());
+                    (metab[i]->getMetabolite());
           index = mpModel->getMetabolitesX().getIndex(mpMetab);
 
           if ((mpMetab->getStatus()) != CModelEntity::FIXED)
@@ -624,44 +621,41 @@ void CHybridMethodODE45::setupCalculateSet()
   return;
 }
 
-
 void CHybridMethodODE45:: setupReactAffect()
 {
   mReactAffect.clear();
   mReactAffect.resize(mNumReactions);
 
-  std::vector<std::set<size_t> >::iterator rctIt = 
+  std::vector<std::set<size_t> >::iterator rctIt =
     mReactAffect.begin();
-  const std::vector<std::set<size_t> >::iterator rctEndIt = 
+  const std::vector<std::set<size_t> >::iterator rctEndIt =
     mReactAffect.end();
 
-  for(size_t rct=0; rctIt != rctEndIt; ++rct, ++rctIt)
+  for (size_t rct = 0; rctIt != rctEndIt; ++rct, ++rctIt)
     {
       rctIt->clear();
 
-      std::vector<CHybridODE45Balance>::iterator balIt = 
-	mLocalBalances[rct].begin();
+      std::vector<CHybridODE45Balance>::iterator balIt =
+        mLocalBalances[rct].begin();
       const std::vector<CHybridODE45Balance>::iterator balEndIt =
-	mLocalBalances[rct].end();
+        mLocalBalances[rct].end();
 
       for (; balIt != balEndIt; ++balIt)
-	{
-	  size_t metabId = balIt->mIndex;
+        {
+          size_t metabId = balIt->mIndex;
 
-	  std::set<size_t>::iterator it = 
-	    mMetab2React[metabId].begin();
-	  const std::set<size_t>::iterator endIt =
-	    mMetab2React[metabId].end();
+          std::set<size_t>::iterator it =
+            mMetab2React[metabId].begin();
+          const std::set<size_t>::iterator endIt =
+            mMetab2React[metabId].end();
 
-	  for(; it != endIt; ++it)
-	    rctIt->insert(*it);
-
-	}
+          for (; it != endIt; ++it)
+            rctIt->insert(*it);
+        }
     }
+
   return;
 }
-
-
 
 //========Function for Simulation========
 CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
@@ -740,20 +734,20 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
       updatePriorityQueue(rIndex, ds);
     }
   //2----Method with Deterministic Part
-  else 
+  else
     {
       integrateDeterministicPart(endTime - currentTime);
       ds = mpState->getTime();
       // Till now, state has been recorded
-      
+
       if (mHasStoiReaction && mHasDetermReaction)//Hybrid Method
-	{
-	  if (mODE45Status == HAS_EVENT) //fire slow reaction
-	    {
-	      fireSlowReaction();
-	      mODE45Status = NEW_STEP;
-	    }
-	}//end of Hybrid Method
+        {
+          if (mODE45Status == HAS_EVENT) //fire slow reaction
+            {
+              fireSlowReaction();
+              mODE45Status = NEW_STEP;
+            }
+        }//end of Hybrid Method
     }
 
   return ds;
@@ -764,7 +758,7 @@ void CHybridMethodODE45::fireSlowReaction()
   //First Update Propensity
   std::set <size_t>::iterator reactIt = mCalculateSet.begin();
   size_t reactID;
-  
+
   for (; reactIt != mCalculateSet.end(); reactIt++)
     {
       reactID = *reactIt;
@@ -920,7 +914,6 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
   return;
 }
 
-
 void CHybridMethodODE45::doInverseInterpolation()
 {
   //==(1)==for one-step method, reset record each time when do interpolation
@@ -934,7 +927,7 @@ void CHybridMethodODE45::doInverseInterpolation()
     {
       offset = i * (mData.dim + 1);
       mpInterpolation->recordState(mStateRecord[offset],
-				   mStateRecord.array() + offset + 1);
+                                   mStateRecord.array() + offset + 1);
     }
 
   mpInterpolation->recordState(mTime, mY);
@@ -952,7 +945,6 @@ void CHybridMethodODE45::doInverseInterpolation()
 
   return;
 }
-
 
 /**
  * Dummy f function for calculating derivative of y
@@ -975,7 +967,7 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
   //just care about reactions involving fast metab
 
   //(1)Put current time *t and independent values *y into model.
-  // This step seemes necessary, since propensity calculation process 
+  // This step seemes necessary, since propensity calculation process
   // requires functions called from the model class.
   mpState->setTime(*t);
   C_FLOAT64 * tmpY = mpState->beginIndependent();//mpState is a local copy
@@ -1014,7 +1006,7 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
       else //fast reaction
         {
           metabIt    = mLocalBalances[i].begin();
-	  metabEndIt = mLocalBalances[i].end(); 
+          metabEndIt = mLocalBalances[i].end();
 
           for (; metabIt != metabEndIt; metabIt++)
             {
@@ -1377,14 +1369,14 @@ void CHybridMethodODE45::fireReaction(size_t rIndex)
   mUpdateSet.clear();
   // just update slow reactions propensities, so only slow
   // reaction index will be inserted into mUpdateSet
-  std::vector<CHybridODE45Balance>::iterator metabIt = 
+  std::vector<CHybridODE45Balance>::iterator metabIt =
     mLocalBalances[rIndex].begin();
   const std::vector<CHybridODE45Balance>::iterator metabItEnd =
     mLocalBalances[rIndex].end();
   std::set<size_t>::iterator rctIt, rctEndIt;
 
   size_t metabId, rctId;
-  
+
   for (; metabIt != metabItEnd; ++it)
     {
       metabId = metabIt->mIndex;
@@ -1392,11 +1384,11 @@ void CHybridMethodODE45::fireReaction(size_t rIndex)
       rctEndIt = mMetab2React[metabId].end();
 
       for(; rctIt != rctEndIt; ++rctEndIt)
-	{
-	  rctId = *rctIt;
-	  if (mReactionFlags[rctId] == SLOW)
-	    mUpdateSet.insert(rctId);
-	}
+  {
+    rctId = *rctIt;
+    if (mReactionFlags[rctId] == SLOW)
+      mUpdateSet.insert(rctId);
+  }
     }
 
   //  const std::set <size_t> & dependents = mDG.getDependents(rIndex);
@@ -2492,7 +2484,7 @@ void CHybridMethodODE45::outputDebug(std::ostream & os, size_t level)
           os << mReactionFlags[i];
 
         //os << "mFirstReactionFlag: " << std::endl;
-	// if (mFirstReactionFlag == NULL) os << "NULL" << std::endl; else os << *mFirstReactionFlag;
+        // if (mFirstReactionFlag == NULL) os << "NULL" << std::endl; else os << *mFirstReactionFlag;
 
         os << "mMetabFlags: " << std::endl;
 
@@ -2506,27 +2498,26 @@ void CHybridMethodODE45::outputDebug(std::ostream & os, size_t level)
 
         os << std::endl;
         os << "mLocalBalances: " << std::endl;
-	
-	/*
-        for (i = 0; i < mLocalBalances.size(); i++)
-          {
-            for (j = 0; j < mLocalBalances[i].size(); j++)
-              os << mLocalBalances[i][j];
 
-            os << std::endl;
-          }
-	
+        /*
+              for (i = 0; i < mLocalBalances.size(); i++)
+                {
+                  for (j = 0; j < mLocalBalances[i].size(); j++)
+                    os << mLocalBalances[i][j];
 
-        os << "mLocalSubstrates: " << std::endl;
+                  os << std::endl;
+                }
 
-        for (i = 0; i < mLocalSubstrates.size(); i++)
-          {
-            for (j = 0; j < mLocalSubstrates[i].size(); j++)
-              os << mLocalSubstrates[i][j];
+              os << "mLocalSubstrates: " << std::endl;
 
-            os << std::endl;
-          }
-	*/
+              for (i = 0; i < mLocalSubstrates.size(); i++)
+                {
+                  for (j = 0; j < mLocalSubstrates[i].size(); j++)
+                    os << mLocalSubstrates[i][j];
+
+                  os << std::endl;
+                }
+        */
         //os << "mLowerStochLimit: " << mLowerStochLimit << std::endl;
         //os << "mUpperStochLimit: " << mUpperStochLimit << std::endl;
         //deprecated:      os << "mOutputCounter: " << mOutputCounter << endl;
@@ -2609,7 +2600,7 @@ void CHybridMethodODE45::outputDebug(std::ostream & os, size_t level)
         for (i = 0; i < mLocalBalances.size(); i++)
           os << mReactionFlags[i];
 
-	// os << "mFirstReactionFlag: " << std::endl;
+        // os << "mFirstReactionFlag: " << std::endl;
         //if (mFirstReactionFlag == NULL) os << "NULL" << std::endl; else os << *mFirstReactionFlag;
 
         os << "mMetabFlags: " << std::endl;
@@ -2669,100 +2660,121 @@ void CHybridMethodODE45::outputDebug(std::ostream & os, size_t level)
 void CHybridMethodODE45::outputData()
 {
   std::cout << "============Boolean============" << std::endl;
+
   if (mDoCorrection)
     std::cout << "mDoCorrection: Yes" << std::endl;
-  else 
+  else
     std::cout << "mDoCorrection: No" << std::endl;
 
   if (mReducedModel)
     std::cout << "mReducedModel: Yes" << std::endl;
-  else 
+  else
     std::cout << "mReducedModel: No" << std::endl;
 
   std::cout << "============Metab============" << std::endl;
   std::cout << "mNumVariableMetabs: " << mNumVariableMetabs << std::endl;
   std::cout << "mFirstMetabIndex: " << mFirstMetabIndex << std::endl;
   std::cout << "mpMetabolites:" << std::endl;
-  for (size_t i=0; i<mpMetabolites->size(); i++)
+
+  for (size_t i = 0; i < mpMetabolites->size(); i++)
     {
-      std::cout << "metab #" << i+1 << " name: " << (*mpMetabolites)[i]->getObjectDisplayName() << std::endl;
+      std::cout << "metab #" << i + 1 << " name: " << (*mpMetabolites)[i]->getObjectDisplayName() << std::endl;
       std::cout << "value pointer: " << (*mpMetabolites)[i]->getValuePointer() << std::endl;
       std::cout << "value: " << *((double *)(*mpMetabolites)[i]->getValuePointer()) << std::endl;
     }
+
   std::cout << "mMetabFlags: " << std::endl;
-  for (size_t i=0; i<mMetabFlags.size(); ++i)
+
+  for (size_t i = 0; i < mMetabFlags.size(); ++i)
     {
-      std::cout << "metab #" << i+1 << std::endl;
+      std::cout << "metab #" << i + 1 << std::endl;
       std::cout << "mFlag: " << mMetabFlags[i].mFlag << std::endl;
       std::cout << "mFastReactions: ";
       std::set<size_t>::iterator it = mMetabFlags[i].mFastReactions.begin();
       std::set<size_t>::iterator endIt = mMetabFlags[i].mFastReactions.end();
+
       for (; it != endIt; it++)
-	std::cout << *it << " " << std::endl;
+        std::cout << *it << " " << std::endl;
+
       std::cout << std::endl;
     }
 
   std::cout << "============Reaction============" << std::endl;
   std::cout << "mNumReactions: " << mNumReactions << std::endl;
-  for (size_t i=0; i<mNumReactions; ++i)
+
+  for (size_t i = 0; i < mNumReactions; ++i)
     {
-      std::cout << "Reaction #: " << i+1 << " Flag: " << mReactionFlags[i];
+      std::cout << "Reaction #: " << i + 1 << " Flag: " << mReactionFlags[i];
     }
+
   std::cout << "mLocalBalances: " << std::endl;
-  for (size_t i=0; i<mLocalBalances.size(); ++i)
+
+  for (size_t i = 0; i < mLocalBalances.size(); ++i)
     {
-      std::cout << "Reaction: " << i+1 << std::endl;
-      for (size_t j=0; j<mLocalBalances[i].size(); ++j)
-	{
-	  std::cout << "Index: " << mLocalBalances[i][j].mIndex << std::endl;
-	  std::cout << "mMultiplicity: " << mLocalBalances[i][j].mMultiplicity << std::endl;
-	  std::cout << "mpMetablite: " << mLocalBalances[i][j].mpMetabolite << std::endl;
-	}
+      std::cout << "Reaction: " << i + 1 << std::endl;
+
+      for (size_t j = 0; j < mLocalBalances[i].size(); ++j)
+        {
+          std::cout << "Index: " << mLocalBalances[i][j].mIndex << std::endl;
+          std::cout << "mMultiplicity: " << mLocalBalances[i][j].mMultiplicity << std::endl;
+          std::cout << "mpMetablite: " << mLocalBalances[i][j].mpMetabolite << std::endl;
+        }
     }
+
   std::cout << "mLocalSubstrates: " << std::endl;
-  for (size_t i=0; i<mLocalSubstrates.size(); ++i)
+
+  for (size_t i = 0; i < mLocalSubstrates.size(); ++i)
     {
-      std::cout << "Reaction: " << i+1 << std::endl;
-      for (size_t j=0; j<mLocalSubstrates[i].size(); ++j)
-	{
-	  std::cout << "Index: " << mLocalSubstrates[i][j].mIndex << std::endl;
-	  std::cout << "mMultiplicity: " << mLocalSubstrates[i][j].mMultiplicity << std::endl;
-	  std::cout << "mpMetablite: " << mLocalSubstrates[i][j].mpMetabolite << std::endl;
-	}
+      std::cout << "Reaction: " << i + 1 << std::endl;
+
+      for (size_t j = 0; j < mLocalSubstrates[i].size(); ++j)
+        {
+          std::cout << "Index: " << mLocalSubstrates[i][j].mIndex << std::endl;
+          std::cout << "mMultiplicity: " << mLocalSubstrates[i][j].mMultiplicity << std::endl;
+          std::cout << "mpMetablite: " << mLocalSubstrates[i][j].mpMetabolite << std::endl;
+        }
     }
+
   std::cout << "mMetab2React: " << std::endl;
-  for(size_t i=0; i<mMetab2React.size(); i++)
+
+  for (size_t i = 0; i < mMetab2React.size(); i++)
     {
-      std::cout << "metab #: " << i+1 << std::endl;
+      std::cout << "metab #: " << i + 1 << std::endl;
       std::set<size_t>::iterator it = mMetab2React[i].begin();
       std::set<size_t>::iterator endIt = mMetab2React[i].end();
       std::cout << "React: ";
+
       for (; it != endIt; it++)
-	std::cout << *it << " ";
+        std::cout << *it << " ";
+
       std::cout << std::endl;
     }
+
   std::cout << "mReactAffect: " << std::endl;
-  for(size_t i=0; i<mReactAffect.size(); i++)
+
+  for (size_t i = 0; i < mReactAffect.size(); i++)
     {
-      std::cout << "react #: " << i+1 << std::endl;
+      std::cout << "react #: " << i + 1 << std::endl;
       std::set<size_t>::iterator it = mReactAffect[i].begin();
       std::set<size_t>::iterator endIt = mReactAffect[i].end();
       std::cout << "affect: ";
+
       for (; it != endIt; it++)
-	std::cout << *it << " ";
+        std::cout << *it << " ";
+
       std::cout << std::endl;
     }
+
   if (mHasStoiReaction)
     std::cout << "mHasStoiReaction: Yes" << std::endl;
-  else 
+  else
     std::cout << "mHasStoiReaction: No" << std::endl;
 
   if (mHasDetermReaction)
     std::cout << "mHasDetermReaction: Yes" << std::endl;
-  else 
+  else
     std::cout << "mHasDetermReaction: No" << std::endl;
 }
-
 
 bool CHybridMethodODE45::modelHasAssignments(const CModel* pModel)
 {
@@ -2802,7 +2814,6 @@ bool CHybridMethodODE45::modelHasAssignments(const CModel* pModel)
           }
     }
 
- 
   getchar();
   return false;
 }
@@ -2815,5 +2826,3 @@ std::ostream & operator<<(std::ostream & os, const CHybridODE45Balance & d)
      << " mpMetabolite: " << d.mpMetabolite << std::endl;
   return os;
 }
-
-#endif //CHybridMethodODE45

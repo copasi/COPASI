@@ -62,8 +62,8 @@ const unsigned int CTrajectoryTask::ValidMethods[] =
   CCopasiMethod::hybrid,
   CCopasiMethod::hybridLSODA,
 #ifdef COPASI_DEBUG
-  CCopasiMethod::DsaLsodar,
   CCopasiMethod::hybridODE45,
+  CCopasiMethod::DsaLsodar,
 #endif // COPASI_DEBUG
   CCopasiMethod::unset
 };
