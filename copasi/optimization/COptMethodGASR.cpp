@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-//   $Revision: 1.38 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/20 21:16:37 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,26 +22,27 @@
 #include "COptTask.h"
 
 #include "randomGenerator/CRandom.h"
+#include "randomGenerator/CPermutation.h"
 #include "utilities/CProcessReport.h"
 #include "report/CCopasiObjectReference.h"
 
 COptMethodGASR::COptMethodGASR(const CCopasiContainer * pParent):
-    COptMethod(CCopasiTask::optimization, CCopasiMethod::GeneticAlgorithmSR, pParent),
-    mGenerations(0),
-    mPopulationSize(0),
-    mpRandom(NULL),
-    mVariableSize(0),
-    mIndividual(0),
-    mCrossOverFalse(0),
-    mCrossOver(0),
-    mValue(0),
-    mShuffle(0),
-    mWins(0),
-    mMutationVarians(0.1),
-    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-    mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
-    mBestIndex(C_INVALID_INDEX),
-    mGeneration(0)
+  COptMethod(CCopasiTask::optimization, CCopasiMethod::GeneticAlgorithmSR, pParent),
+  mGenerations(0),
+  mPopulationSize(0),
+  mpRandom(NULL),
+  mVariableSize(0),
+  mIndividual(0),
+  mCrossOverFalse(0),
+  mCrossOver(0),
+  mValue(0),
+  mpPermutation(NULL),
+  mWins(0),
+  mMutationVarians(0.1),
+  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
+  mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
+  mBestIndex(C_INVALID_INDEX),
+  mGeneration(0)
 
 {
   addParameter("Number of Generations", CCopasiParameter::UINT, (unsigned C_INT32) 200);
@@ -63,22 +56,22 @@ COptMethodGASR::COptMethodGASR(const CCopasiContainer * pParent):
 
 COptMethodGASR::COptMethodGASR(const COptMethodGASR & src,
                                const CCopasiContainer * pParent):
-    COptMethod(src, pParent),
-    mGenerations(0),
-    mPopulationSize(0),
-    mpRandom(NULL),
-    mVariableSize(0),
-    mIndividual(0),
-    mCrossOverFalse(0),
-    mCrossOver(0),
-    mValue(0),
-    mShuffle(0),
-    mWins(0),
-    mMutationVarians(0.1),
-    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-    mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
-    mBestIndex(C_INVALID_INDEX),
-    mGeneration(0)
+  COptMethod(src, pParent),
+  mGenerations(0),
+  mPopulationSize(0),
+  mpRandom(NULL),
+  mVariableSize(0),
+  mIndividual(0),
+  mCrossOverFalse(0),
+  mCrossOver(0),
+  mValue(0),
+  mpPermutation(NULL),
+  mWins(0),
+  mMutationVarians(0.1),
+  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
+  mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
+  mBestIndex(C_INVALID_INDEX),
+  mGeneration(0)
 {initObjects();}
 
 COptMethodGASR::~COptMethodGASR()
@@ -200,38 +193,18 @@ bool COptMethodGASR::crossover(const CVector< C_FLOAT64 > & parent1,
   return true;
 }
 
-bool COptMethodGASR::shuffle()
-{
-  size_t i, from, to, tmp;
-
-  //  Why sort first? We can just keep shuffling.
-  //  for(i=0; i<mPopulationSize; i++) mShuffle[i] = i;
-
-  for (i = 0; i < mPopulationSize / 2; i++)
-    {
-      from = mpRandom->getRandomU(mPopulationSize - 1);
-      to = mpRandom->getRandomU(mPopulationSize - 1);
-
-      tmp = mShuffle[to];
-      mShuffle[to] = mShuffle[from];
-      mShuffle[from] = tmp;
-    }
-
-  return true;
-}
-
 bool COptMethodGASR::replicate()
 {
   size_t i;
   bool Continue = true;
 
   // generate a random order for the parents
-  shuffle();
+  mpPermutation->shuffle();
 
   // reproduce in consecutive pairs
   for (i = 0; i < mPopulationSize / 2; i++)
-    crossover(*mIndividual[mShuffle[i * 2]],
-              *mIndividual[mShuffle[i * 2 + 1]],
+    crossover(*mIndividual[mpPermutation->next()],
+              *mIndividual[mpPermutation->next()],
               *mIndividual[mPopulationSize + i * 2],
               *mIndividual[mPopulationSize + i * 2 + 1]);
 
@@ -457,24 +430,21 @@ bool COptMethodGASR::initialize()
 
   mVariableSize = mpOptItem->size();
 
-  mIndividual.resize(2*mPopulationSize);
-  mPhi.resize(2*mPopulationSize);
+  mIndividual.resize(2 * mPopulationSize);
+  mPhi.resize(2 * mPopulationSize);
 
-  for (i = 0; i < 2*mPopulationSize; i++)
+  for (i = 0; i < 2 * mPopulationSize; i++)
     mIndividual[i] = new CVector< C_FLOAT64 >(mVariableSize);
 
   mCrossOverFalse.resize(mVariableSize);
   mCrossOverFalse = false;
   mCrossOver.resize(mVariableSize);
 
-  mValue.resize(2*mPopulationSize);
+  mValue.resize(2 * mPopulationSize);
 
-  mShuffle.resize(mPopulationSize);
+  mpPermutation = new CPermutation(mpRandom, mPopulationSize);
 
-  for (i = 0; i < mPopulationSize; i++)
-    mShuffle[i] = i;
-
-  mWins.resize(2*mPopulationSize);
+  mWins.resize(2 * mPopulationSize);
 
   // initialise the variance for mutations
   mMutationVarians = 0.1;
@@ -487,6 +457,7 @@ bool COptMethodGASR::cleanup()
   size_t i;
 
   pdelete(mpRandom);
+  pdelete(mpPermutation);
 
   for (i = 0; i < mIndividual.size(); i++)
     pdelete(mIndividual[i]);

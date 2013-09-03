@@ -1,22 +1,14 @@
-/* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.h,v $
- $Revision: 1.11 $
- $Name:  $
- $Author: shoops $
- $Date: 2011/03/07 19:31:25 $
- End CVS Header */
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -33,6 +25,7 @@
 #include "utilities/CVector.h"
 
 class CRandom;
+class CPermutation;
 
 class COptMethodGASR : public COptMethod
 {
@@ -117,12 +110,6 @@ private:
                  const CVector< C_FLOAT64 > & parent2,
                  CVector< C_FLOAT64 > & child1,
                  CVector< C_FLOAT64 > & child2);
-
-  /**
-   * Shuffle the parents for breading
-   * @return bool success
-   */
-  bool shuffle();
 
   /**
    * Replicate the individuals with crossover
@@ -214,9 +201,9 @@ private:
   CVector< C_FLOAT64 > mValue;
 
   /**
-   * indexes for shuffling the population
+   * A permutation of integers used to create the informants;
    */
-  CVector< size_t > mShuffle;
+  CPermutation * mpPermutation;
 
   /**
    * number of wins of each individual in the tournament
