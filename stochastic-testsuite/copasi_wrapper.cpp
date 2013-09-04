@@ -124,6 +124,10 @@ int main(int argc, char *argv[])
     {
       MethodType = CCopasiMethod::deterministic;
     }
+  else if (!strcmp(pMethodType, "HybridODE54"))
+    {
+      MethodType = CCopasiMethod::hybridODE45;
+    }
   else
     {
       std::cerr << "Invalid method type. Valid options are:" << std::endl;
