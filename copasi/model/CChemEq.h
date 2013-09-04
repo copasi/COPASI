@@ -1,17 +1,9 @@
-/* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.h,v $
- $Revision: 1.43 $
- $Name:  $
- $Author: shoops $
- $Date: 2011/09/16 18:07:44 $
- End CVS Header */
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -132,9 +124,11 @@ public:
 
   /**
    * Retrieve the largest compartment that the reaction touches.
-   * @return const CCompartment & compartment
+   * This is time dependent it can only be called after update initial values
+   * has been called. Note for an empty reaction a NULL pointer is returned.
+   * @return const CCompartment * pCompartment
    */
-  const CCompartment & getLargestCompartment() const;
+  const CCompartment * getLargestCompartment() const;
 
   /**
    *  Checks if it is possible to figure out a compartment from the

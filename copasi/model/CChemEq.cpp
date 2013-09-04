@@ -1,17 +1,9 @@
-/* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.cpp,v $
- $Revision: 1.53 $
- $Name:  $
- $Author: shoops $
- $Date: 2012/04/23 21:11:04 $
- End CVS Header */
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -37,22 +29,22 @@
 
 CChemEq::CChemEq(const std::string & name,
                  const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Chemical Equation"),
-    mReversible(false),
-    mSubstrates("Substrates", this),
-    mProducts("Products", this),
-    mModifiers("Modifiers", this),
-    mBalances("Balances", this)
+  CCopasiContainer(name, pParent, "Chemical Equation"),
+  mReversible(false),
+  mSubstrates("Substrates", this),
+  mProducts("Products", this),
+  mModifiers("Modifiers", this),
+  mBalances("Balances", this)
 {CONSTRUCTOR_TRACE;}
 
 CChemEq::CChemEq(const CChemEq & src,
                  const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    mReversible(src.mReversible),
-    mSubstrates(src.mSubstrates, this),
-    mProducts(src.mProducts, this),
-    mModifiers(src.mModifiers, this),
-    mBalances(src.mBalances, this)
+  CCopasiContainer(src, pParent),
+  mReversible(src.mReversible),
+  mSubstrates(src.mSubstrates, this),
+  mProducts(src.mProducts, this),
+  mModifiers(src.mModifiers, this),
+  mBalances(src.mBalances, this)
 {CONSTRUCTOR_TRACE;}
 
 CChemEq::~CChemEq() {cleanup(); DESTRUCTOR_TRACE;}
@@ -97,13 +89,16 @@ bool CChemEq::addMetabolite(const std::string & key, const C_FLOAT64 multiplicit
         addElement(mSubstrates, element);
         addElement(mBalances, element, CChemEq::SUBSTRATE);
         break;
+
       case CChemEq::PRODUCT:
         addElement(mProducts, element);
         addElement(mBalances, element);
         break;
+
       case CChemEq::MODIFIER:
         addElement(mModifiers, element);
         break;
+
       default:
         fatalError();
         break;
@@ -138,7 +133,7 @@ size_t CChemEq::getCompartmentNumber() const
   return Number;
 }
 
-const CCompartment & CChemEq::getLargestCompartment() const
+const CCompartment * CChemEq::getLargestCompartment() const
 {
   size_t indexSubstrates = C_INVALID_INDEX;
   size_t indexProducts = C_INVALID_INDEX;
@@ -173,14 +168,12 @@ const CCompartment & CChemEq::getLargestCompartment() const
     }
 
   if (indexProducts != C_INVALID_INDEX)
-    return *mProducts[indexProducts]->getMetabolite()->getCompartment();
+    return mProducts[indexProducts]->getMetabolite()->getCompartment();
 
   if (indexSubstrates != C_INVALID_INDEX)
-    return *mSubstrates[indexSubstrates]->getMetabolite()->getCompartment();
+    return mSubstrates[indexSubstrates]->getMetabolite()->getCompartment();
 
-  fatalError();
-
-  return *mSubstrates[indexSubstrates]->getMetabolite()->getCompartment();
+  return NULL;
 }
 
 void CChemEq::addElement(CCopasiVector < CChemEqElement > & structure,
@@ -222,12 +215,15 @@ size_t CChemEq::getMolecularity(const MetaboliteRole role) const
       case CChemEq::SUBSTRATE:
         tmpVector = &mSubstrates;
         break;
+
       case CChemEq::PRODUCT:
         tmpVector = &mProducts;
         break;
+
       case CChemEq::MODIFIER:
         tmpVector = &mModifiers;
         break;
+
       default:
         fatalError();
         break;
@@ -332,5 +328,3 @@ bool CChemEq::setMultiplicity(const CMetab* pMetab, C_FLOAT64 newMult, Metabolit
 
   return result;
 }
-
-
