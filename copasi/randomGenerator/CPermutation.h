@@ -46,8 +46,9 @@ public:
 
   /**
    * Shuffle the permutation
+   * const size_t & swaps (Default: size of permutation)
    */
-  void shuffle();
+  void shuffle(const size_t & swaps = C_INVALID_INDEX);
 
   /**
    * Pick a random element

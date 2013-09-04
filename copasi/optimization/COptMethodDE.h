@@ -1,23 +1,6 @@
-/* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodDE.h,v $
- $Revision: 1.1 $
- $Name:  $
- $Author: mendes $
- $Date: 2012/06/04 19:46:41 $
- End CVS Header */
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /**
@@ -32,6 +15,7 @@
 #include "utilities/CVector.h"
 
 class CRandom;
+class CPermutation;
 
 class COptMethodDE : public COptMethod
 {
@@ -103,7 +87,6 @@ private:
    */
   size_t fittest();
 
-
   void boost();
   /**
    * Initialise the population
@@ -145,6 +128,10 @@ private:
    */
   std::vector< CVector < C_FLOAT64 > * > mIndividual;
 
+  /**
+   * A permutation of integers used to for replication;
+   */
+  CPermutation * mpPermutation;
 
   /**
     * The value of the last evaluation.

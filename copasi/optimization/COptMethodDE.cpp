@@ -14,6 +14,7 @@
 #include "COptTask.h"
 
 #include "randomGenerator/CRandom.h"
+#include "randomGenerator/CPermutation.h"
 #include "utilities/CProcessReport.h"
 #include "utilities/CSort.h"
 #include "report/CCopasiObjectReference.h"
@@ -25,6 +26,7 @@ COptMethodDE::COptMethodDE(const CCopasiContainer * pParent):
   mpRandom(NULL),
   mVariableSize(0),
   mIndividual(0),
+  mpPermutation(NULL),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
   mValue(0),
   mMutationVarians(0.1),
@@ -49,6 +51,7 @@ COptMethodDE::COptMethodDE(const COptMethodDE & src,
   mpRandom(NULL),
   mVariableSize(0),
   mIndividual(0),
+  mpPermutation(NULL),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
   mValue(0),
   mMutationVarians(0.1),
@@ -83,29 +86,20 @@ bool COptMethodDE::evaluate(const CVector< C_FLOAT64 > & /* individual */)
 bool COptMethodDE::replicate()
 {
   size_t i, j;
-  unsigned C_INT32 a, b, c;
+  size_t a, b, c;
+
   bool Continue = true;
 
   for (i = mPopulationSize; i < 2 * mPopulationSize && Continue; i++)
     {
-      //MUTATION
-      do
-        {
-          a = mpRandom->getRandomU(mPopulationSize - 1);
-        }
-      while (i == a);
+      mpPermutation->shuffle(3);
 
-      do
-        {
-          b = mpRandom->getRandomU(mPopulationSize - 1);
-        }
-      while (b == i || b == a);
-
-      do
-        {
-          c = mpRandom->getRandomU(mPopulationSize - 1);
-        }
-      while (c == i || c == a || c == b);
+      // MUTATION a, b, c in [0, mPopulationSize - 1]
+      a = mpPermutation->pick();
+      // b is guaranteed to be different from a
+      b = mpPermutation->next();
+      // c is guaranteed to be different from a and b
+      c = mpPermutation->next();
 
       // MUTATE CURRENT GENERATION
       for (j = 0; j < mVariableSize; j++)
@@ -365,6 +359,8 @@ bool COptMethodDE::initialize()
     CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
                              * getValue("Seed").pUINT);
 
+  mpPermutation = new CPermutation(mpRandom, mPopulationSize);
+
   mVariableSize = mpOptItem->size();
 
   mIndividual.resize(3 * mPopulationSize);
@@ -386,6 +382,7 @@ bool COptMethodDE::cleanup()
   size_t i;
 
   pdelete(mpRandom);
+  pdelete(mpPermutation);
 
   for (i = 0; i < mIndividual.size(); i++)
     pdelete(mIndividual[i]);

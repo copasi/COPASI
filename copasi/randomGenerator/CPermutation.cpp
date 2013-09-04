@@ -61,19 +61,20 @@ void CPermutation::init()
     }
 }
 
-void CPermutation::shuffle()
+void CPermutation::shuffle(const size_t & swaps)
 {
   if (mpRandom == NULL || mpNext == NULL) return;
 
   if (mVector.size() > 1)
     {
       unsigned C_INT32 max = mVector.size() - 1;
+      size_t Swaps = std::min(swaps, mVector.size());
 
       // We swap each element once.
       size_t tmp;
       size_t * pBegin = mVector.array();
       size_t * pIt = pBegin;
-      size_t * pEnd = pIt + mVector.size();
+      size_t * pEnd = pIt + Swaps;
       size_t * pTo;
 
       for (; pIt != pEnd; ++pIt)
