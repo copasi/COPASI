@@ -736,17 +736,12 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
       updatePriorityQueue(rIndex, ds);
     }
   //2----Method with Deterministic Part
-<<<<<<< HEAD
   else if (!mHasStoiReaction && mHasDetermReaction) //has only deterministic reactions
-=======
-  else
->>>>>>> b38d2036cafca8bb1aa4e00f02713778901db2f1
     {
       integrateDeterministicPart(endTime - currentTime);
       ds = mpState->getTime();
       mODE45Status = CONTINUE;
       // Till now, state has been recorded
-<<<<<<< HEAD
     }
   else if (mHasStoiReaction && mHasDetermReaction)//Hybrid Method
     {
@@ -762,7 +757,6 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
 	}
       else 
 	mODE45Status = CONTINUE;
-=======
 
       if (mHasStoiReaction && mHasDetermReaction)//Hybrid Method
         {
@@ -772,7 +766,6 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
               mODE45Status = NEW_STEP;
             }
         }//end of Hybrid Method
->>>>>>> b38d2036cafca8bb1aa4e00f02713778901db2f1
     }
 
   return ds;
@@ -949,6 +942,7 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
 
 void CHybridMethodODE45::doInverseInterpolation()
 {
+/*
   //==(1)==for one-step method, reset record each time when do interpolation
   mpInterpolation->recordReset();
 
@@ -990,7 +984,7 @@ void CHybridMethodODE45::doInverseInterpolation()
   mpModel->updateSimulatedValues(false); //for assignments?????????
 
   return;
-}
+*/}
 
 /**
  * Dummy f function for calculating derivative of y
@@ -2709,7 +2703,7 @@ void CHybridMethodODE45::outputDebug(std::ostream & os, size_t level)
  */
 void CHybridMethodODE45::outputData()
 {
-  std::cout << "============Boolean============" << std::endl;
+/*  std::cout << "============Boolean============" << std::endl;
 
   if (mDoCorrection)
     std::cout << "mDoCorrection: Yes" << std::endl;
@@ -2871,7 +2865,7 @@ void CHybridMethodODE45::outputData()
   else
     std::cout << "mHasDetermReaction: No" << std::endl;
 
-  getchar();
+  getchar();*/
   return;
 }
 
@@ -2947,12 +2941,6 @@ bool CHybridMethodODE45::modelHasAssignments(const CModel* pModel)
           }
     }
 
-<<<<<<< HEAD
-  return false;
-}
-
-#endif //CHybridMethodODE45
-=======
   getchar();
   return false;
 }
@@ -2965,4 +2953,3 @@ std::ostream & operator<<(std::ostream & os, const CHybridODE45Balance & d)
      << " mpMetabolite: " << d.mpMetabolite << std::endl;
   return os;
 }
->>>>>>> b38d2036cafca8bb1aa4e00f02713778901db2f1

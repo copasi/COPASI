@@ -440,11 +440,8 @@ protected:
    */
   static bool modelHasAssignments(const CModel* pModel);
 
-<<<<<<< HEAD
-=======
   friend
   std::ostream & operator<<(std::ostream & os, const CHybridODE45Balance & d);
->>>>>>> b38d2036cafca8bb1aa4e00f02713778901db2f1
 
 //Attributes:
   //================Model Related================
