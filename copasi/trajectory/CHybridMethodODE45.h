@@ -429,6 +429,7 @@ protected:
    */
   //void outputData(std::ostream & os, C_INT32 mode);
   void outputData();
+  void outputState(const CState * pS);
 
   /**
    * Prints out various data on standard output for debugging purposes.
@@ -440,9 +441,6 @@ protected:
    * used in calculations
    */
   static bool modelHasAssignments(const CModel* pModel);
-
- friend
-  std::ostream & operator<<(std::ostream & os, const CHybridODE45Balance & d);
 
 
 //Attributes:
@@ -624,6 +622,13 @@ protected:
 
   CVector< C_FLOAT64 > mDWork;
   CVector< C_INT > mIWork;
+
+  /**
+   * A boolean variable to show whether mStateRecord is
+   * used or not. If t is too close to tout, rkfs45() won't
+   * go through into fehl() and uses Forward Euler method
+   */
+  bool mUseStateRecord;
 
   /**
    * The propensities of the stochastic reactions.

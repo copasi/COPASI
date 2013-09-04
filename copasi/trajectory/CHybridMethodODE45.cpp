@@ -35,6 +35,7 @@
 #include <iostream>
 #include <algorithm>
 #include <new>
+#include <cmath>
 
 #include "copasi.h"
 
@@ -290,7 +291,7 @@ void CHybridMethodODE45::start(const CState * initialState)
   initMethod(mpProblem->getModel()->getTime());
 
   //output data to check init status
-  outputData();
+  //outputData();
   return;
 }
 
@@ -336,17 +337,18 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   mStoi = mpModel->getStoiReordered();
   mUpdateSet.clear();// how to set this parameter
   setupCalculateSet(); //should be done after setupBalances()
+  setupReactAffect();
 
   setupDependencyGraph(); // initialize mDG
   setupPriorityQueue(start_time); // initialize mPQ
 
   //(6)----set attributes for INTERPOLATION
-  mpInterpolation = new CInterpolation(INTERP_RECORD_NUM, mNumReactions);
+  mpInterpolation = new CInterpolation(INTERP_RECORD_NUM, mNumVariableMetabs);
   mStateRecord.resize((INTERP_RECORD_NUM - 2) * (2 + mNumVariableMetabs));
 
   //(7)----set attributes for ODE45
   mODE45Status = NEW_STEP;
-  mData.dim = (C_INT)(mNumVariableMetabs + 1);  //one more for sum of propensity
+  mData.dim = (C_INT)(mNumVariableMetabs + 1);  //one more for sum of propensities
   mYdot.resize(mData.dim);
 
   mRtol = * getValue("Relative Tolerance").pUDOUBLE;
@@ -740,20 +742,27 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
       updatePriorityQueue(rIndex, ds);
     }
   //2----Method with Deterministic Part
-  else 
+  else if (!mHasStoiReaction && mHasDetermReaction) //has only deterministic reactions
     {
       integrateDeterministicPart(endTime - currentTime);
       ds = mpState->getTime();
+      mODE45Status = CONTINUE;
       // Till now, state has been recorded
-      
-      if (mHasStoiReaction && mHasDetermReaction)//Hybrid Method
+    }
+  else if (mHasStoiReaction && mHasDetermReaction)//Hybrid Method
+    {
+      integrateDeterministicPart(endTime - currentTime);
+      ds = mpState->getTime();
+
+      if (mODE45Status == HAS_EVENT) //fire slow reaction
 	{
-	  if (mODE45Status == HAS_EVENT) //fire slow reaction
-	    {
-	      fireSlowReaction();
-	      mODE45Status = NEW_STEP;
-	    }
-	}//end of Hybrid Method
+	  doInverseInterpolation();
+
+	  fireSlowReaction();
+	  mODE45Status = NEW_STEP;	      
+	}
+      else 
+	mODE45Status = CONTINUE;
     }
 
   return ds;
@@ -772,7 +781,8 @@ void CHybridMethodODE45::fireSlowReaction()
     }
 
   reactID = getReactionIndex4Hybrid();
-  fireReaction(reactID);
+  fireReaction(reactID); //Directly update current state in global view
+  *mpState = mpModel->getState();
 
   //update corresponding propensities
   std::set <size_t>::iterator updateIt
@@ -829,7 +839,7 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
   mErrorMsg.str("");
 
   //=(2)= set state
-  *mpState = mpProblem->getModel()->getState();
+  *mpState = mpModel->getState();
 
   //=(3)= set time and old time
   mTime = mpState->getTime();
@@ -838,12 +848,12 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
   mOldTime = mTime;
 
   //=(4)= set y and old_y
-  C_FLOAT64 * tmpY = mpState->beginIndependent();
+  C_FLOAT64 * stateY = mpState->beginIndependent();
 
-  for (size_t i = 0; i < mData.dim - 1; i++, tmpY++)
+  for (size_t i = 0; i < mData.dim - 1; i++, stateY++)
     {
-      mOldY[i] = *tmpY;
-      mY[i]    = *tmpY;
+      mOldY[i] = *stateY;
+      mY[i]    = *stateY;
     }
 
   if (mODE45Status == NEW_STEP)
@@ -856,8 +866,6 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
 
   //2----Reset ODE45 Solver
   mIFlag = -1; //integration by one step
-  //if (mRestartODE45) //is this necessary??
-  //mRestartODE45 = false;
 
   //3----If time increment is too small, do nothing
   C_FLOAT64 tdist , d__1, d__2, w0;
@@ -867,54 +875,63 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
 
   if (tdist < std::numeric_limits< C_FLOAT64 >::epsilon() * 2. * w0) //just do nothing
     {
-      mpProblem->getModel()->setTime(EndTime);
+      mpModel->setTime(EndTime);
       return;
     }
 
   //4----just do nothing if there are no variables
   if (!mData.dim)
     {
-      mpProblem->getModel()->setTime(EndTime);
+      mpModel->setTime(EndTime);
       return;
     }
 
-  rkf45_(&EvalF ,                 //1. evaluate F
-         &mData.dim,              //2. number of variables
-         mY ,                     //3. the array of current concentrations
-         &mTime ,                 //4. the current time
-         &EndTime ,               //5. the final time
-         &mRtol ,                 //6. relative tolerance array
-         &mAtol ,                 //7. absolute tolerance array
-         &mIFlag ,                //8. the state for input and output
-         mDWork.array() ,         //9. the double work array
-         mIWork.array() ,         //10. the int work array
-         mStateRecord.array());   //11. the array to record temp state
-
-  //5----set mODE45Status
-  if (mIFlag == 2)
-    mODE45Status = REACH_END_TIME; //reach EndTime
-  else if (mIFlag == -2) //finish one step integration
+  while((mODE45Status == CONTINUE) 
+	|| (mODE45Status == NEW_STEP) )
     {
-      if (mY[mData.dim - 1] >= 0.0) //has an event
-        mODE45Status = HAS_EVENT;
-      else
-        mODE45Status = CONTINUE;
-    }
-  else //error happens
-    {
-      mODE45Status = HAS_ERR;
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
-    }
+      //(1)----ODE Solver
+      rkf45_(&EvalF ,                 //1. evaluate F
+	     &mData.dim,              //2. number of variables
+	     mY ,                     //3. the array of current concentrations
+	     &mTime ,                 //4. the current time
+	     &EndTime ,               //5. the final time
+	     &mRtol ,                 //6. relative tolerance array
+	     &mAtol ,                 //7. absolute tolerance array
+	     &mIFlag ,                //8. the state for input and output
+	     mDWork.array() ,         //9. the double work array
+	     mIWork.array() ,         //10. the int work array
+	     mStateRecord.array());   //11. the array to record temp state
 
-  //6----Has Event, Do Interpolation
-  // Put interpolation part into independent function, next
-  if (mODE45Status == HAS_EVENT)
-    doInverseInterpolation();
+      //(2)----set mODE45Status
+      if (mIFlag == 2)
+	{
+ 	  if (mY[mData.dim - 1] >= 0.0)
+	    mODE45Status = HAS_EVENT;
+	  else
+	    mODE45Status = REACH_END_TIME; //reach EndTime
+	}
+      else if (mIFlag == -2) //finish one step integration
+	{
+	  if (mY[mData.dim - 1] >= 0.0) //has an event
+	    mODE45Status = HAS_EVENT;
+	  else
+	    mODE45Status = CONTINUE;
+	}
+      else //error happens
+	{
+	  mODE45Status = HAS_ERR;
+	  std::cout << "Error Type: " << mIFlag << std::endl;
+	  CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
+	}//end if
+    }//end while
 
-  //7----Record State
+  //5----Record State
+  stateY = mpState->beginIndependent();
+  for (size_t i = 0; i < mData.dim-1; i++)
+    stateY[i] = mY[i]; //write result into mpState
+
   mpState->setTime(mTime);
   mpModel->setState(*mpState);
-
   mpModel->updateSimulatedValues(false); //for assignments?????????
 
   return;
@@ -930,11 +947,14 @@ void CHybridMethodODE45::doInverseInterpolation()
   mpInterpolation->recordState(mOldTime, mOldY);
   size_t offset;
 
-  for (size_t i = 0; i < 4; i++) //record the middle 4 states
+  if (mUseStateRecord)
     {
-      offset = i * (mData.dim + 1);
-      mpInterpolation->recordState(mStateRecord[offset],
-				   mStateRecord.array() + offset + 1);
+      for (size_t i = 0; i < INTERP_RECORD_NUM-2; i++) //record the middle 4 states
+	{
+	  offset = i * (mData.dim + 1);
+	  mpInterpolation->recordState(mStateRecord[offset],
+				       mStateRecord.array() + offset + 1);
+	}
     }
 
   mpInterpolation->recordState(mTime, mY);
@@ -947,8 +967,12 @@ void CHybridMethodODE45::doInverseInterpolation()
   C_FLOAT64 * tmpY   = mpEventState->getArray() + 1;
   C_FLOAT64 * stateY = mpState->beginIndependent();
 
-  for (size_t i = 0; i < mData.dim - 1; i++)
+  for (size_t i = 0; i < mData.dim-1; i++)
     stateY[i] = tmpY[i]; //write result into mpState
+
+  mpState->setTime(mTime);
+  mpModel->setState(*mpState);
+  mpModel->updateSimulatedValues(false); //for assignments?????????
 
   return;
 }
@@ -1930,13 +1954,13 @@ L60:
 
 L65:
   *init = 1;
-  *h__ = abs(dt);
+  *h__ = fabs(dt);
   toln = 0.f;
   i__1 = *neqn;
 
   for (k = 1; k <= i__1; ++k)
     {
-      tol = *relerr * (d__1 = y[k], abs(d__1)) + *abserr;
+      tol = *relerr * (d__1 = y[k], fabs(d__1)) + *abserr;
 
       if (tol <= 0.f)
         {
@@ -1944,7 +1968,7 @@ L65:
         }
 
       toln = tol;
-      ypk = (d__1 = yp[k], abs(d__1));
+      ypk = (d__1 = yp[k], fabs(d__1));
       /* Computing 5th power */
       d__1 = *h__, d__2 = d__1, d__1 *= d__1;
 
@@ -1965,7 +1989,7 @@ L70:
 
   /* Computing MAX */
   /* Computing MAX */
-  d__3 = abs(*t), d__4 = abs(dt);
+  d__3 = fabs(*t), d__4 = fabs(dt);
   d__1 = *h__, d__2 = u26 * std::max(d__3, d__4);
   *h__ = std::max(d__1, d__2);
   //*jflag = i_sign(2, iflag);
@@ -1975,12 +1999,12 @@ L70:
 
 L80:
   //*h__ = d_sign(h__, &dt);
-  *h__ = dt >= 0 ? abs(*h__) : -abs(*h__);
+  *h__ = dt >= 0 ? fabs(*h__) : -fabs(*h__);
 
   /* test to see if rkf45 is being severely impacted by too many */
   /* output points */
 
-  if (abs(*h__) >= abs(dt) * 2.)
+  if (fabs(*h__) >= fabs(dt) * 2.)
     {
       ++(*kop);
     }
@@ -1997,7 +2021,7 @@ L80:
 
 L85:
 
-  if (abs(dt) > u26 * abs(*t))
+  if (fabs(dt) > u26 * fabs(*t))
     {
       goto L95;
     }
@@ -2014,6 +2038,9 @@ L85:
   a = *tout;
   (*f)(neqn, &a, &y[1], &yp[1]);
   ++(*nfe);
+  
+  std::cout << "Step too Small" << std::endl;
+  mUseStateRecord = false;
   goto L300;
 
   /* initialize output point indicator */
@@ -2033,7 +2060,7 @@ L100:
   hfaild = 0;
 
   /* set smallest allowable stepsize */
-  hmin = u26 * abs(*t);
+  hmin = u26 * fabs(*t);
 
   /* adjust stepsize if necessary to hit the output point. */
   /* look ahead two steps to avoid drastic changes in the stepsize and */
@@ -2041,12 +2068,12 @@ L100:
 
   dt = *tout - *t;
 
-  if (abs(dt) >= abs(*h__) * 2.)
+  if (fabs(dt) >= fabs(*h__) * 2.)
     {
       goto L200;
     }
 
-  if (abs(dt) > abs(*h__))
+  if (fabs(dt) > fabs(*h__))
     {
       goto L150;
     }
@@ -2104,6 +2131,7 @@ L220:
   fehl_((pEvalF)f, neqn, &y[1], t, h__, &yp[1], &f1[1], &f2[1],
         &f3[1], &f4[1], &f5[1], &f1[1], &yrcd[1]);
   *nfe += 5;
+  mUseStateRecord = true;
 
   /* compute and test allowable tolerances versus local error estimates*/
   /* and remove scaling of tolerances. note that relative error is */
@@ -2115,7 +2143,7 @@ L220:
 
   for (k = 1; k <= i__1; ++k)
     {
-      et = (d__1 = y[k], abs(d__1)) + (d__2 = f1[k], abs(d__2)) + ae;
+      et = (d__1 = y[k], fabs(d__1)) + (d__2 = f1[k], fabs(d__2)) + ae;
 
       if (et > 0.)
         {
@@ -2127,14 +2155,14 @@ L220:
       return 0;
 
 L240:
-      ee = (d__1 = yp[k] * -2090. + (f3[k] * 21970. - f4[k] * 15048.) + (f2[k] * 22528. - f5[k] * 27360.), abs(d__1));
+      ee = (d__1 = yp[k] * -2090. + (f3[k] * 21970. - f4[k] * 15048.) + (f2[k] * 22528. - f5[k] * 27360.), fabs(d__1));
       /* L250: */
       /* Computing MAX */
       d__1 = eeoet, d__2 = ee / et;
       eeoet = std::max(d__1, d__2);
     }
 
-  esttol = abs(*h__) * eeoet * scale / 752400.;
+  esttol = fabs(*h__) * eeoet * scale / 752400.;
 
   if (esttol <= 1.)
     {
@@ -2156,7 +2184,7 @@ L240:
 
   *h__ = s * *h__;
 
-  if (abs(*h__) > hmin)
+  if (fabs(*h__) > hmin)
     {
       goto L200;
     }
@@ -2202,10 +2230,10 @@ L260:
     }
 
   /* Computing MAX */
-  d__2 = s * abs(*h__);
+  d__2 = s * fabs(*h__);
   d__1 = std::max(d__2, hmin);
   //*h__ = d_sign(&d__1, h__);
-  *h__ = *h__ >= 0 ? abs(d__1) : -abs(d__1);
+  *h__ = *h__ >= 0 ? fabs(d__1) : -fabs(d__1);
 
   /* end of core integrator */
 
@@ -2679,17 +2707,21 @@ void CHybridMethodODE45::outputData()
   else 
     std::cout << "mReducedModel: No" << std::endl;
 
+  std::cout << std::endl;
+
   std::cout << "============Metab============" << std::endl;
-  std::cout << "mNumVariableMetabs: " << mNumVariableMetabs << std::endl;
-  std::cout << "mFirstMetabIndex: " << mFirstMetabIndex << std::endl;
-  std::cout << "mpMetabolites:" << std::endl;
+  std::cout << "~~~~mNumVariableMetabs:~~~~ " << mNumVariableMetabs << std::endl;
+  std::cout << "~~~~mFirstMetabIndex:~~~~ " << mFirstMetabIndex << std::endl;
+  std::cout << "~~~~mpMetabolites:~~~~" << std::endl;
   for (size_t i=0; i<mpMetabolites->size(); i++)
     {
       std::cout << "metab #" << i+1 << " name: " << (*mpMetabolites)[i]->getObjectDisplayName() << std::endl;
       std::cout << "value pointer: " << (*mpMetabolites)[i]->getValuePointer() << std::endl;
       std::cout << "value: " << *((double *)(*mpMetabolites)[i]->getValuePointer()) << std::endl;
     }
-  std::cout << "mMetabFlags: " << std::endl;
+  std::cout << std::endl;
+
+  std::cout << "~~~~mMetabFlags:~~~~ " << std::endl;
   for (size_t i=0; i<mMetabFlags.size(); ++i)
     {
       std::cout << "metab #" << i+1 << std::endl;
@@ -2698,17 +2730,18 @@ void CHybridMethodODE45::outputData()
       std::set<size_t>::iterator it = mMetabFlags[i].mFastReactions.begin();
       std::set<size_t>::iterator endIt = mMetabFlags[i].mFastReactions.end();
       for (; it != endIt; it++)
-	std::cout << *it << " " << std::endl;
+	std::cout << *it << " ";
       std::cout << std::endl;
     }
+  std::cout << std::endl;
 
   std::cout << "============Reaction============" << std::endl;
-  std::cout << "mNumReactions: " << mNumReactions << std::endl;
+  std::cout << "~~~~mNumReactions:~~~~ " << mNumReactions << std::endl;
   for (size_t i=0; i<mNumReactions; ++i)
     {
-      std::cout << "Reaction #: " << i+1 << " Flag: " << mReactionFlags[i];
+      std::cout << "Reaction #: " << i+1 << " Flag: " << mReactionFlags[i] << std::endl;
     }
-  std::cout << "mLocalBalances: " << std::endl;
+  std::cout << "~~~~mLocalBalances:~~~~ " << std::endl;
   for (size_t i=0; i<mLocalBalances.size(); ++i)
     {
       std::cout << "Reaction: " << i+1 << std::endl;
@@ -2719,7 +2752,7 @@ void CHybridMethodODE45::outputData()
 	  std::cout << "mpMetablite: " << mLocalBalances[i][j].mpMetabolite << std::endl;
 	}
     }
-  std::cout << "mLocalSubstrates: " << std::endl;
+  std::cout << "~~~~mLocalSubstrates:~~~~ " << std::endl;
   for (size_t i=0; i<mLocalSubstrates.size(); ++i)
     {
       std::cout << "Reaction: " << i+1 << std::endl;
@@ -2730,7 +2763,7 @@ void CHybridMethodODE45::outputData()
 	  std::cout << "mpMetablite: " << mLocalSubstrates[i][j].mpMetabolite << std::endl;
 	}
     }
-  std::cout << "mMetab2React: " << std::endl;
+  std::cout << "~~~~mMetab2React:~~~~ " << std::endl;
   for(size_t i=0; i<mMetab2React.size(); i++)
     {
       std::cout << "metab #: " << i+1 << std::endl;
@@ -2741,7 +2774,7 @@ void CHybridMethodODE45::outputData()
 	std::cout << *it << " ";
       std::cout << std::endl;
     }
-  std::cout << "mReactAffect: " << std::endl;
+  std::cout << "~~~~mReactAffect:~~~~ " << std::endl;
   for(size_t i=0; i<mReactAffect.size(); i++)
     {
       std::cout << "react #: " << i+1 << std::endl;
@@ -2761,6 +2794,43 @@ void CHybridMethodODE45::outputData()
     std::cout << "mHasDetermReaction: Yes" << std::endl;
   else 
     std::cout << "mHasDetermReaction: No" << std::endl;
+
+  getchar();
+  return;
+}
+
+/**
+ * Print State Data for Debug
+ */
+void CHybridMethodODE45::outputState(const CState* mpState)
+{
+  const C_FLOAT64 time = mpState->getTime();
+  std::cout << "**State Output**" << std::endl;
+  std::cout << "Time: " << time << std::endl;
+
+  std::cout << "Indep #: " << mpState->getNumIndependent() << " Id: ";
+  const C_FLOAT64 *pIt = mpState->beginIndependent();
+  const C_FLOAT64 *pEnd = mpState->endIndependent();
+  for (; pIt != pEnd; pIt++)
+    std::cout << *pIt << " ";
+  std::cout << std::endl;
+
+  std::cout << "Dep #: " << mpState->getNumDependent() << " Id: ";
+  pIt = mpState->beginDependent();
+  pEnd = mpState->endDependent();
+  for (; pIt != pEnd; pIt++)
+    std::cout << *pIt << " ";
+  std::cout << std::endl;
+
+  std::cout << "Fix #: " << mpState->getNumIndependent() << " Id: ";
+  pIt = mpState->beginFixed();
+  pEnd = mpState->endFixed();
+  for (; pIt != pEnd; pIt++)
+    std::cout << *pIt << " ";
+  std::cout << std::endl;
+
+  getchar();
+  return;
 }
 
 
@@ -2802,18 +2872,7 @@ bool CHybridMethodODE45::modelHasAssignments(const CModel* pModel)
           }
     }
 
- 
-  getchar();
   return false;
-}
-
-/*-------- Debug Code for StochFlag and Balance--------*/
-std::ostream & operator<<(std::ostream & os, const CHybridODE45Balance & d)
-{
-  os << "CHybridODE45Balance" << std::endl;
-  os << "  mIndex: " << d.mIndex << " mMultiplicity: " << d.mMultiplicity
-     << " mpMetabolite: " << d.mpMetabolite << std::endl;
-  return os;
 }
 
 #endif //CHybridMethodODE45
