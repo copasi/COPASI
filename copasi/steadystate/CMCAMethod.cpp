@@ -542,7 +542,10 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
 
   for (; itReaction != endReaction; ++itReaction)
     {
-      C_FLOAT64 Scale = (*itReaction)->getFlux() / (*itReaction)->getLargestCompartment().getValue();
+      const CCompartment * pCompartment = (*itReaction)->getLargestCompartment();
+      C_FLOAT64 Scale = (pCompartment == NULL) ?
+                        fabs((*itReaction)->getFlux()) :
+                        fabs((*itReaction)->getFlux() / pCompartment->getValue());
 
       if (fabs(Scale) < res)
         {
@@ -574,13 +577,23 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
             {
               *pScaled = *pUnscaled * (*itReactionCol)->getFlux() / Scale;
             }
-          else if (fabs((*itReactionCol)->getFlux() / (*itReactionCol)->getLargestCompartment().getValue()) <= res)
-            {
-              *pScaled = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
-            }
           else
             {
-              *pScaled = (((*itReaction)->getFlux() < 0.0) ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
+              const CCompartment * pCompartmentCol = (*itReactionCol)->getLargestCompartment();
+              C_FLOAT64 ScaleCol = (pCompartmentCol == NULL) ?
+                                   fabs((*itReactionCol)->getFlux()) :
+                                   fabs((*itReactionCol)->getFlux() / pCompartmentCol->getValue());
+
+              if (fabs(ScaleCol) <= res)
+                {
+                  *pScaled = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+                }
+              else
+                {
+                  *pScaled = (((*itReaction)->getFlux() < 0.0) ?
+                              - std::numeric_limits<C_FLOAT64>::infinity() :
+                              std::numeric_limits<C_FLOAT64>::infinity());
+                }
             }
         }
     }
