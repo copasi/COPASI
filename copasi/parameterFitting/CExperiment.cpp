@@ -80,6 +80,7 @@ CExperiment::CExperiment(const CCopasiContainer * pParent,
   mpFirstRow(NULL),
   mpLastRow(NULL),
   mpTaskType(NULL),
+  mpStartInSteadyState(NULL),
   mpSeparator(NULL),
   mpWeightMethod(NULL),
   mpRowOriented(NULL),
@@ -129,6 +130,7 @@ CExperiment::CExperiment(const CExperiment & src,
   mpFirstRow(NULL),
   mpLastRow(NULL),
   mpTaskType(NULL),
+  mpStartInSteadyState(NULL),
   mpSeparator(NULL),
   mpWeightMethod(NULL),
   mpRowOriented(NULL),
@@ -179,6 +181,7 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
   mpFirstRow(NULL),
   mpLastRow(NULL),
   mpTaskType(NULL),
+  mpStartInSteadyState(NULL),
   mpSeparator(NULL),
   mpWeightMethod(NULL),
   mpRowOriented(NULL),
@@ -238,6 +241,7 @@ CExperiment & CExperiment::operator = (const CExperiment & rhs)
   mpFirstRow = getValue("First Row").pUINT;
   mpLastRow = getValue("Last Row").pUINT;
   mpTaskType = (CCopasiTask::Type *) getValue("Experiment Type").pUINT;
+  mpStartInSteadyState = getValue("Start in Steady State").pBOOL;
   mpSeparator = getValue("Separator").pSTRING;
   mpWeightMethod = (WeightMethod *) getValue("Weight Method").pUINT;
   mpRowOriented = getValue("Data is Row Oriented").pBOOL;
@@ -264,6 +268,9 @@ void CExperiment::initializeParameter()
     assertParameter("Last Row", CCopasiParameter::UINT, (unsigned C_INT32) InvalidIndex)->getValue().pUINT;
   mpTaskType = (CCopasiTask::Type *)
                assertParameter("Experiment Type", CCopasiParameter::UINT, (unsigned C_INT32) CCopasiTask::unset)->getValue().pUINT;
+  mpStartInSteadyState =
+        assertParameter("Start in Steady State", CCopasiParameter::BOOL, false)->getValue().pBOOL;
+
   mpSeparator =
     assertParameter("Separator", CCopasiParameter::STRING, std::string("\t"))->getValue().pSTRING;
   mpWeightMethod = (WeightMethod *)
@@ -1235,6 +1242,20 @@ bool CExperiment::setExperimentType(const CCopasiTask::Type & type)
 
   return false;
 }
+
+void CExperiment::setStartInSteadyState(bool flag)
+{
+  *mpStartInSteadyState = flag;
+}
+
+bool CExperiment::getStartInSteadyState() const
+{
+  if (mpStartInSteadyState)
+    return *mpStartInSteadyState;
+  else
+    return false;
+}
+
 
 const CVector< C_FLOAT64 > & CExperiment::getTimeData() const
 {return mDataTime;}

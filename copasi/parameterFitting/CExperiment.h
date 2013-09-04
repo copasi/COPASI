@@ -266,6 +266,9 @@ public:
    * @return const CCopasiTask::Type & experimentType
    */
   const CCopasiTask::Type & getExperimentType() const;
+  
+  void setStartInSteadyState(bool flag);
+  bool getStartInSteadyState() const;
 
   /**
    * Retrieve the time data of the experiment.
@@ -571,6 +574,12 @@ private:
    * This is realized as a CCopasiParameter type UINT
    */
   CCopasiTask::Type * mpTaskType;
+
+  /**
+   * Indicates whether a time course is supposed to start in a steady state
+   * realized as a CCopasiParameter 
+   */
+  bool* mpStartInSteadyState;
 
   /**
    * This is realized as a CCopasiParameter type STRING
