@@ -1,0 +1,117 @@
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+#include "copasi.h"
+
+#include "CPermutation.h"
+#include "CRandom.h"
+
+// static
+size_t CPermutation::InvalidIndex(C_INVALID_INDEX);
+
+CPermutation::CPermutation() :
+  mpRandom(NULL),
+  mVector(),
+  mpNext(NULL),
+  mpBeyond(NULL)
+{};
+
+CPermutation::CPermutation(CRandom * pRandom, const size_t & size) :
+  mpRandom(pRandom),
+  mVector(size),
+  mpNext(NULL),
+  mpBeyond(NULL)
+{
+  init();
+};
+
+CPermutation::CPermutation(const CPermutation & src) :
+  mpRandom(src.mpRandom),
+  mVector(src.mVector),
+  mpNext(NULL),
+  mpBeyond(NULL)
+{
+  if (src.mpNext != NULL)
+    {
+      mpNext = mVector.array() + (src.mpNext - src.mVector.array());
+      mpBeyond = mVector.array() + mVector.size();
+    }
+};
+
+CPermutation::~CPermutation()
+{}
+
+void CPermutation::init()
+{
+  size_t Index = 0;
+  size_t * pIt = mVector.array();
+  size_t * pEnd = pIt + mVector.size();
+
+  for (; pIt != pEnd; ++pIt, ++Index)
+    {
+      *pIt = Index;
+    }
+
+  if (Index != 0)
+    {
+      mpNext = mVector.array();
+      mpBeyond = pEnd;
+    }
+}
+
+void CPermutation::shuffle()
+{
+  if (mpRandom == NULL || mpNext == NULL) return;
+
+  if (mVector.size() > 1)
+    {
+      unsigned C_INT32 max = mVector.size() - 1;
+
+      // We swap each element once.
+      size_t tmp;
+      size_t * pBegin = mVector.array();
+      size_t * pIt = pBegin;
+      size_t * pEnd = pIt + mVector.size();
+      size_t * pTo;
+
+      for (; pIt != pEnd; ++pIt)
+        {
+          pTo = pBegin + mpRandom->getRandomU(max);
+
+          if (pTo != pIt)
+            {
+              tmp = *pTo;
+              *pTo = *pIt;
+              *pIt = tmp;
+            }
+        }
+    }
+}
+
+const size_t & CPermutation::pick()
+{
+  if (mpRandom == NULL || mpNext == NULL) return InvalidIndex;
+
+  if (mVector.size() > 1)
+    {
+      mpNext = mVector.array() + mpRandom->getRandomU(mVector.size() - 1);
+    }
+
+  return *mpNext;
+}
+
+const size_t & CPermutation::next()
+{
+  if (mpRandom == NULL || mpNext == NULL) return InvalidIndex;
+
+  mpNext++;
+
+  if (mpNext >= mpBeyond)
+    {
+      mpNext -= mVector.size();
+    }
+
+  return *mpNext;
+}

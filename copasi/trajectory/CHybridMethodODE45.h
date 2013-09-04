@@ -30,8 +30,6 @@
  *   probabilities in the system significantly.
  */
 
-//#ifdef INCLUDE_CHybridMethodODE45
-#ifdef COPASI_DEBUG
 #ifndef COPASI_CHybridMethodODE45
 #define COPASI_CHybridMethodODE45
 
@@ -140,7 +138,7 @@ public:
   };
 
   //================Function for Class================
- protected:
+protected:
   /**
    * Default Constructor
    */
@@ -182,7 +180,7 @@ public:
    */
   virtual void start(const CState * initialState);
 
- protected:
+protected:
   /**
    * Initializes the solver.
    * @param time the current time
@@ -296,11 +294,11 @@ protected:
    * @param rIndex A size_t specifying the reaction to be updated
    */
   void calculateAmu(size_t rIndex);
-  
+
   /**
    * Do inverse interpolation to find the state when a slow reaction
    * is fired.
-   */   
+   */
   void doInverseInterpolation();
 
   /**
@@ -393,13 +391,13 @@ private:
   std::set <std::string> *getAffects(size_t rIndex);
 
   //================Function for C Code from f2c================
- private:
+private:
   C_INT rkf45_(pEvalF f, const C_INT *neqn, double *y, double *t,
                double *tout, double *relerr, double *abserr,
                C_INT *iflag, double *work, C_INT *iwork,
                double *yrcd);
 
-  C_INT rkfs_(pEvalF f,const  C_INT *neqn, double *y, double *
+  C_INT rkfs_(pEvalF f, const  C_INT *neqn, double *y, double *
               t, double *tout, double *relerr,
               double *abserr, C_INT *iflag, double *yp,
               double *h__, double *f1, double *f2,
@@ -442,6 +440,11 @@ protected:
    */
   static bool modelHasAssignments(const CModel* pModel);
 
+<<<<<<< HEAD
+=======
+  friend
+  std::ostream & operator<<(std::ostream & os, const CHybridODE45Balance & d);
+>>>>>>> b38d2036cafca8bb1aa4e00f02713778901db2f1
 
 //Attributes:
   //================Model Related================
@@ -735,5 +738,3 @@ protected:
 };
 
 #endif // COPASI_CHybridMethodODE45
-#endif //INCLUDE_CHybridMethodODE45
-

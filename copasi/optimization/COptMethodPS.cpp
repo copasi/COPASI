@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPS.cpp,v $
-//   $Revision: 1.18 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/20 21:16:37 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,31 +22,32 @@
 #include "COptTask.h"
 
 #include "randomGenerator/CRandom.h"
+#include "randomGenerator/CPermutation.h"
 #include "utilities/CProcessReport.h"
 #include "utilities/CSort.h"
 #include "report/CCopasiObjectReference.h"
 
 COptMethodPS::COptMethodPS(const CCopasiContainer * pParent):
-    COptMethod(CCopasiTask::optimization, CCopasiMethod::ParticleSwarm, pParent),
-    mIterationLimit(0),
-    mSwarmSize(0),
-    mVariance(0.0),
-    mpRandom(NULL),
-    mIteration(0),
-    mhIteration(C_INVALID_INDEX),
-    mVariableSize(0),
-    mIndividuals(),
-    mValues(),
-    mVelocities(),
-    mBestValues(),
-    mBestPositions(),
-    mShuffle(),
-    mInformants(),
-    mNumInformedMin(0),
-    mNumInformed(0),
-    mBestIndex(0),
-    mEvaluationValue(0),
-    mContinue(true)
+  COptMethod(CCopasiTask::optimization, CCopasiMethod::ParticleSwarm, pParent),
+  mIterationLimit(0),
+  mSwarmSize(0),
+  mVariance(0.0),
+  mpRandom(NULL),
+  mIteration(0),
+  mhIteration(C_INVALID_INDEX),
+  mVariableSize(0),
+  mIndividuals(),
+  mValues(),
+  mVelocities(),
+  mBestValues(),
+  mBestPositions(),
+  mpPermutation(NULL),
+  mInformants(),
+  mNumInformedMin(0),
+  mNumInformed(0),
+  mBestIndex(0),
+  mEvaluationValue(0),
+  mContinue(true)
 {
   addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 2000);
   addParameter("Swarm Size", CCopasiParameter::UINT, (unsigned C_INT32) 50);
@@ -67,26 +60,26 @@ COptMethodPS::COptMethodPS(const CCopasiContainer * pParent):
 
 COptMethodPS::COptMethodPS(const COptMethodPS & src,
                            const CCopasiContainer * pParent):
-    COptMethod(src, pParent),
-    mIterationLimit(0),
-    mSwarmSize(0),
-    mVariance(0.0),
-    mpRandom(NULL),
-    mIteration(0),
-    mhIteration(C_INVALID_INDEX),
-    mVariableSize(0),
-    mIndividuals(),
-    mValues(),
-    mVelocities(),
-    mBestValues(),
-    mBestPositions(),
-    mShuffle(),
-    mInformants(),
-    mNumInformedMin(0),
-    mNumInformed(0),
-    mBestIndex(0),
-    mEvaluationValue(0),
-    mContinue(true)
+  COptMethod(src, pParent),
+  mIterationLimit(0),
+  mSwarmSize(0),
+  mVariance(0.0),
+  mpRandom(NULL),
+  mIteration(0),
+  mhIteration(C_INVALID_INDEX),
+  mVariableSize(0),
+  mIndividuals(),
+  mValues(),
+  mVelocities(),
+  mBestValues(),
+  mBestPositions(),
+  mpPermutation(NULL),
+  mInformants(),
+  mNumInformedMin(0),
+  mNumInformed(0),
+  mBestIndex(0),
+  mEvaluationValue(0),
+  mContinue(true)
 {initObjects();}
 
 COptMethodPS::~COptMethodPS()
@@ -378,10 +371,7 @@ bool COptMethodPS::initialize()
   mNumInformedMin = std::max<size_t>(mSwarmSize / 10, 5) - 1;
   mNumInformed = mNumInformedMin;
 
-  mShuffle.resize(mSwarmSize);
-
-  for (i = 0; i < mSwarmSize; i++)
-    mShuffle[i] = i;
+  mpPermutation = new CPermutation(mpRandom, mSwarmSize);
 
   mContinue = true;
 
@@ -391,6 +381,7 @@ bool COptMethodPS::initialize()
 bool COptMethodPS::cleanup()
 {
   pdelete(mpRandom);
+  pdelete(mpPermutation);
 
   return true;
 }
@@ -404,36 +395,25 @@ void COptMethodPS::buildInformants()
 
   mInformants.clear();
   mInformants.resize(mSwarmSize);
+  mpPermutation->shuffle();
 
   size_t i, j;
-  size_t * pShuffle;
-  size_t * pEnd = mShuffle.array() + mSwarmSize;
-
-  for (pShuffle = mShuffle.array(); pShuffle != pEnd; pShuffle++)
-    {
-      j = mpRandom->getRandomU(mSwarmSize - 1);
-
-      // swap j and i
-      size_t tmp = mShuffle[j];
-      mShuffle[j] = *pShuffle;
-      *pShuffle = tmp;
-    }
+  size_t Informant;
 
   for (i = 0; i < mSwarmSize; i++)
     {
       mInformants[i].insert(i);
 
-      pShuffle = mShuffle.array() + mpRandom->getRandomU(mSwarmSize - 2);
+      Informant = mpPermutation->pick();
 
-      for (j = 1; j < mNumInformed; j++, pShuffle++)
+      for (j = 1; j < mNumInformed; j++, Informant = mpPermutation->next())
         {
-          if (pShuffle == pEnd)
-            pShuffle = mShuffle.array();
+          if (Informant == i)
+            {
+              Informant = mpPermutation->next();
+            }
 
-          if (*pShuffle != i)
-            mInformants[*pShuffle].insert(i);
-          else
-            j--;
+          mInformants[Informant].insert(i);
         }
     }
 

@@ -1,17 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPS.h,v $
-   $Revision: 1.4 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2011/03/07 19:31:26 $
-   End CVS Header */
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -27,6 +24,7 @@
 #include "utilities/CMatrix.h"
 
 class CRandom;
+class CPermutation;
 
 class COptMethodPS : public COptMethod
 {
@@ -169,9 +167,9 @@ private:
   CMatrix< C_FLOAT64 > mBestPositions;
 
   /**
-   * Vector of shuffled integers used to create the informants;
+   * A permutation of integers used to create the informants;
    */
-  CVector< size_t > mShuffle;
+  CPermutation * mpPermutation;
 
   /**
    * Vector containing the set of informants for each individual.

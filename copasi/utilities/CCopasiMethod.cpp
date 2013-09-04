@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-//   $Revision: 1.71 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/20 21:17:10 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -116,6 +108,7 @@ const char * CCopasiMethod::XMLSubType[] =
   "AdaptiveSA",
   "Hybrid",
   "Hybrid (LSODA)",
+  "Hybrid (DSA-ODE45"
   "Hybrid (DSA-LSODAR)",
   "TimeScaleSeparation(ILDM,Deuflhard)",
   "TimeScaleSeparation(ILDM,Modified)",
@@ -137,30 +130,30 @@ const char * CCopasiMethod::XMLSubType[] =
 };
 
 CCopasiMethod::CCopasiMethod():
-    CCopasiParameterGroup("NoName", NULL, "Method"),
-    mType(CCopasiTask::unset),
-    mSubType(unset),
-    mpCallBack(NULL)
-    //mpReport(NULL)
+  CCopasiParameterGroup("NoName", NULL, "Method"),
+  mType(CCopasiTask::unset),
+  mSubType(unset),
+  mpCallBack(NULL)
+  //mpReport(NULL)
 {setObjectName(SubTypeName[mType]);}
 
 CCopasiMethod::CCopasiMethod(const CCopasiTask::Type & type,
                              const CCopasiMethod::SubType & subType,
                              const CCopasiContainer * pParent):
-    CCopasiParameterGroup(CCopasiTask::TypeName[type], pParent, "Method"),
-    mType(type),
-    mSubType(subType),
-    mpCallBack(NULL)
-    //mpReport(NULL)
+  CCopasiParameterGroup(CCopasiTask::TypeName[type], pParent, "Method"),
+  mType(type),
+  mSubType(subType),
+  mpCallBack(NULL)
+  //mpReport(NULL)
 {setObjectName(SubTypeName[mSubType]);}
 
 CCopasiMethod::CCopasiMethod(const CCopasiMethod & src,
                              const CCopasiContainer * pParent):
-    CCopasiParameterGroup(src, pParent),
-    mType(src.mType),
-    mSubType(src.mSubType),
-    mpCallBack(src.mpCallBack)
-    //mpReport(src.mpReport)
+  CCopasiParameterGroup(src, pParent),
+  mType(src.mType),
+  mSubType(src.mSubType),
+  mpCallBack(src.mpCallBack)
+  //mpReport(src.mpReport)
 {}
 
 CCopasiMethod::~CCopasiMethod() {}

@@ -24,6 +24,7 @@
 #include "COptTask.h"
 
 #include "randomGenerator/CRandom.h"
+#include "randomGenerator/CPermutation.h"
 #include "utilities/CProcessReport.h"
 #include "utilities/CSort.h"
 #include "report/CCopasiObjectReference.h"
@@ -39,7 +40,7 @@ COptMethodGA::COptMethodGA(const CCopasiContainer * pParent):
   mCrossOver(0),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
   mValue(0),
-  mShuffle(0),
+  mpPermutation(NULL),
   mLosses(0),
   mPivot(0),
   mMutationVarians(0.1),
@@ -68,7 +69,7 @@ COptMethodGA::COptMethodGA(const COptMethodGA & src,
   mCrossOver(0),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
   mValue(0),
-  mShuffle(0),
+  mpPermutation(NULL),
   mLosses(0),
   mPivot(0),
   mMutationVarians(0.1),
@@ -203,38 +204,18 @@ bool COptMethodGA::crossover(const CVector< C_FLOAT64 > & parent1,
   return true;
 }
 
-bool COptMethodGA::shuffle()
-{
-  size_t i, from, to, tmp;
-
-  //  Why sort first? We can just keep shuffling.
-  //  for(i=0; i<mPopulationSize; i++) mShuffle[i] = i;
-
-  for (i = 0; i < mPopulationSize / 2; i++)
-    {
-      from = mpRandom->getRandomU(mPopulationSize - 1);
-      to = mpRandom->getRandomU(mPopulationSize - 1);
-
-      tmp = mShuffle[to];
-      mShuffle[to] = mShuffle[from];
-      mShuffle[from] = tmp;
-    }
-
-  return true;
-}
-
 bool COptMethodGA::replicate()
 {
   size_t i;
   bool Continue = true;
 
   // generate a random order for the parents
-  shuffle();
+  mpPermutation->shuffle();
 
   // reproduce in consecutive pairs
   for (i = 0; i < mPopulationSize / 2; i++)
-    crossover(*mIndividual[mShuffle[i * 2]],
-              *mIndividual[mShuffle[i * 2 + 1]],
+    crossover(*mIndividual[mpPermutation->next()],
+              *mIndividual[mpPermutation->next()],
               *mIndividual[mPopulationSize + i * 2],
               *mIndividual[mPopulationSize + i * 2 + 1]);
 
@@ -432,10 +413,7 @@ bool COptMethodGA::initialize()
   mValue = std::numeric_limits<C_FLOAT64>::infinity();
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 
-  mShuffle.resize(mPopulationSize);
-
-  for (i = 0; i < mPopulationSize; i++)
-    mShuffle[i] = i;
+  mpPermutation = new CPermutation(mpRandom, mPopulationSize);
 
   mLosses.resize(2 * mPopulationSize);
 
@@ -450,6 +428,7 @@ bool COptMethodGA::cleanup()
   size_t i;
 
   pdelete(mpRandom);
+  pdelete(mpPermutation);
 
   for (i = 0; i < mIndividual.size(); i++)
     pdelete(mIndividual[i]);
