@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-//   $Revision: 1.34 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:33:41 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -65,8 +57,8 @@ CSteadyStateMethod::createMethod(CCopasiMethod::SubType subType)
  */
 CSteadyStateMethod::CSteadyStateMethod(CCopasiMethod::SubType subType,
                                        const CCopasiContainer * pParent):
-    CCopasiMethod(CCopasiTask::steadyState, subType, pParent),
-    mpProblem(NULL)
+  CCopasiMethod(CCopasiTask::steadyState, subType, pParent),
+  mpProblem(NULL)
 {
   initializeParameter();
   CONSTRUCTOR_TRACE;
@@ -78,8 +70,8 @@ CSteadyStateMethod::CSteadyStateMethod(CCopasiMethod::SubType subType,
  */
 CSteadyStateMethod::CSteadyStateMethod(const CSteadyStateMethod & src,
                                        const CCopasiContainer * pParent):
-    CCopasiMethod(src, pParent),
-    mpProblem(src.mpProblem)
+  CCopasiMethod(src, pParent),
+  mpProblem(src.mpProblem)
 {
   initializeParameter();
   CONSTRUCTOR_TRACE;
@@ -180,13 +172,17 @@ CSteadyStateMethod::processInternal()
 
 bool CSteadyStateMethod::isEquilibrium(const C_FLOAT64 & resolution) const
 {
-  const CCopasiVectorNS < CReaction > & Reaction =
-    mpProblem->getModel()->getReactions();
-  size_t i, imax = Reaction.size();
+  CCopasiVectorNS < CReaction >::const_iterator it =  mpProblem->getModel()->getReactions().begin();
+  CCopasiVectorNS < CReaction >::const_iterator end =  mpProblem->getModel()->getReactions().end();
 
-  for (i = 0; i < imax; i++)
-    if (Reaction[i]->getFlux() / Reaction[i]->getLargestCompartment().getValue() > resolution)
-      return false; //TODO: smallest or largest ?
+  for (; it != end; ++it)
+    {
+      const CCompartment * pCompartment = (*it)->getLargestCompartment();
+
+      if (pCompartment != NULL &&
+          (*it)->getFlux() / pCompartment->getValue() > resolution)
+        return false; //TODO: smallest or largest ?
+    }
 
   return true;
 }

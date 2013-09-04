@@ -420,9 +420,12 @@ public:
   size_t getCompartmentNumber() const;
 
   /**
-   *  get the largest (smallest) compartment that the reaction touches.
+   * Retrieve the largest compartment that the reaction touches.
+   * This is time dependent it can only be called after update initial values
+   * has been called. Note for an empty reaction a NULL pointer is returned.
+   * @return const CCompartment * pCompartment
    */
-  const CCompartment & getLargestCompartment() const;
+  const CCompartment * getLargestCompartment() const;
 
   /**
    * Converts an expression tree into a CFunction object

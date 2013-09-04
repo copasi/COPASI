@@ -870,7 +870,7 @@ C_FLOAT64 CReaction::calculatePartialDerivative(C_FLOAT64 * pXi,
 size_t CReaction::getCompartmentNumber() const
 {return mChemEq.getCompartmentNumber();}
 
-const CCompartment & CReaction::getLargestCompartment() const
+const CCompartment * CReaction::getLargestCompartment() const
 {return mChemEq.getLargestCompartment();}
 
 void CReaction::setScalingFactor()

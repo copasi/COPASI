@@ -134,7 +134,7 @@ std::set< const CCompartment * > CChemEq::getCompartments() const
   return Compartments;
 }
 
-const CCompartment & CChemEq::getLargestCompartment() const
+const CCompartment * CChemEq::getLargestCompartment() const
 {
   size_t indexSubstrates = C_INVALID_INDEX;
   size_t indexProducts = C_INVALID_INDEX;
@@ -169,14 +169,12 @@ const CCompartment & CChemEq::getLargestCompartment() const
     }
 
   if (indexProducts != C_INVALID_INDEX)
-    return *mProducts[indexProducts]->getMetabolite()->getCompartment();
+    return mProducts[indexProducts]->getMetabolite()->getCompartment();
 
   if (indexSubstrates != C_INVALID_INDEX)
-    return *mSubstrates[indexSubstrates]->getMetabolite()->getCompartment();
+    return mSubstrates[indexSubstrates]->getMetabolite()->getCompartment();
 
-  fatalError();
-
-  return *mSubstrates[indexSubstrates]->getMetabolite()->getCompartment();
+  return NULL;
 }
 
 void CChemEq::addElement(CCopasiVector < CChemEqElement > & structure,
