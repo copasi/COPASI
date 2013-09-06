@@ -70,6 +70,12 @@
 #define SLOW                         0
 #define FAST                         1
 
+//Method Used
+#define STOCHASTIC                   0
+#define DETERMINISTIC                1
+#define HYBRID                       2
+
+
 //Interpolation Part
 #define INTERP_RECORD_NUM            6
 #define HAS_ERR                      -1
@@ -213,6 +219,11 @@ protected:
   void setupReactionFlags();
 
   /**
+   * setup mMethod
+   */
+  void setupMethod();
+
+  /**
    *
    */
   void setupCalculateSet();
@@ -303,8 +314,9 @@ protected:
 
   /**
    * Fire slow reaction and update populations and propensities
+   * when Hybrid Method is used
    */
-  void fireSlowReaction();
+  void fireSlowReaction4Hybrid();
 
   //================Function for Stoichastic Part================
 protected:
@@ -440,9 +452,6 @@ protected:
    */
   static bool modelHasAssignments(const CModel* pModel);
 
-  friend
-  std::ostream & operator<<(std::ostream & os, const CHybridODE45Balance & d);
-
 //Attributes:
   //================Model Related================
 
@@ -538,6 +547,14 @@ protected:
    *
    */
   bool mHasDetermReaction;
+
+  /**
+   * An Integer showes the method now CHybridMethod used
+   * 0 == Stochastic
+   * 1 == Deterministic
+   * 2 == Hybrid
+   */
+  size_t mMethod;
 
   //================Attributes for State================
   /**
