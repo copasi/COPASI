@@ -387,6 +387,9 @@ void CHybridMethodODE45::cleanup()
   mpRandomGenerator = NULL;
   mpModel = NULL;
 
+  delete mpState;
+  mpState = NULL;
+
   delete mpInterpolation;
   mpInterpolation = NULL;
 
@@ -542,16 +545,13 @@ void CHybridMethodODE45::setupPriorityQueue(C_FLOAT64 startTime)
   C_FLOAT64 time;
 
   mPQ.clear();
-  mPQ.initializeIndexPointer(mpReactions->size());
+  mPQ.initializeIndexPointer(mNumReactions);
 
-  for (i = 0; i < mpReactions->size(); i++)
+  for (i = 0; i < mNumReactions; i++)
     {
-      if (mReactionFlags[i] == SLOW) // Reaction is stochastic!
-        {
-          calculateAmu(i);
-          time = startTime + generateReactionTime(i);
-          mPQ.insertStochReaction(i, time);
-        }
+      calculateAmu(i);
+      time = startTime + generateReactionTime(i);
+      mPQ.insertStochReaction(i, time);
     }
 
   return;
@@ -737,22 +737,20 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
       getStochTimeAndIndex(ds, rIndex);
 
       if (ds > endTime)
-        ds = endTime;
-
-      fireReaction(rIndex);
+	ds = endTime;
+      else
+	{
+	  fireReaction(rIndex);
+	  updatePriorityQueue(rIndex, ds);
+	}
 
       //population has been changed and record to the mCurrentState
       //in fireReaction(). So here just store time
-      
-      //*mpCurrentState = mpModel->getState();
-      // mpCurrentState->setTime(ds);
       *mpState = mpModel->getState();
       mpState->setTime(ds);
       mpModel->setState(*mpState);
 
       //outputState(mpCurrentState);
-
-      updatePriorityQueue(rIndex, ds);
       //getchar();
     }
   //2----Method with Deterministic Part
