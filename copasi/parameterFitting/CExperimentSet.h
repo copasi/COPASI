@@ -132,6 +132,12 @@ public:
   bool hasDataForTaskType(const CCopasiTask::Type & type) const;
 
   /**
+   * Check whether the set contains data for a time course that starts in a steady state
+   */
+  bool hasStartInSteadyState() const;
+
+
+  /**
    * Retrieve the indexed experiment type
    * @param const size_t & index,
    * @return const CCopasiTasK::Type & experimentType

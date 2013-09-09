@@ -377,6 +377,22 @@ bool CExperimentSet::hasDataForTaskType(const CCopasiTask::Type & type) const
   return false;
 }
 
+bool CExperimentSet::hasStartInSteadyState() const
+{
+  std::vector< CExperiment * >::const_iterator it = mpExperiments->begin() + mNonExperiments;
+  std::vector< CExperiment * >::const_iterator end = mpExperiments->end();
+
+  for (; it != end; ++it)
+    {
+      if ((*it)->getStartInSteadyState())
+        {
+          return true;
+        }
+    }
+
+  return false;
+}
+
 const CCopasiTask::Type & CExperimentSet::getExperimentType(const size_t & index) const
 {return getExperiment(index)->getExperimentType();}
 
