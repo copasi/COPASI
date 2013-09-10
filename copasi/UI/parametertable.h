@@ -1,24 +1,16 @@
-/* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.h,v $
- $Revision: 1.15 $
- $Name:  $
- $Author: shoops $
- $Date: 2011/03/07 19:37:47 $
- End CVS Header */
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #ifndef PARAMETERTABLE_H
 #define PARAMETERTABLE_H
@@ -62,7 +54,6 @@ class ComboItem : public ColorTableItem
 public:
   ComboItem(Q3Table *t, EditType et, QColor c, const QStringList & sl);
   QWidget *createEditor() const;
-  void setContentFromEditor(QWidget *w);
   void setText(const QString &s);
 
 private:
@@ -93,8 +84,6 @@ signals:
   void parameterStatusChanged(int, bool);
 
 private:
-  //void initTable();
-
   //convenience function. It gets a List of all metab names in the CMetabNameInterface format
   static const std::vector<std::string> getListOfAllMetabNames(const CModel & model,
       const CReactionInterface & ri);

@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <QStringList>
 #include <QComboBox>
@@ -53,11 +53,7 @@ void ParameterTable::initTable()
   setNumRows(0);
   verticalHeader()->hide();
   setLeftMargin(0);
-  //setSelectionMode(QTable::Single);
   setSelectionMode(Q3Table::NoSelection);
-  //setFocusStyle(QTable::FollowStyle);
-
-  //setNumRows(3);
   setNumCols(5);
   horizontalHeader()->setLabel(0, "Description");
   horizontalHeader()->setLabel(1, "Name");
@@ -192,9 +188,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
   size_t j, jmax;
   size_t rowCounter = 0;
 
-  //ColorTableItem *item;
   Q3TableItem *item;
-  //ComboItem *combo;
   Q3ComboTableItem *combo;
   QStringList qsl;
 
@@ -352,9 +346,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
                 }
               else
                 {
-                  //combo = new ComboItem(this, QTableItem::WhenCurrent, color, qsl);
                   combo = new Q3ComboTableItem(this, qsl);
-                  //combo->setText(FROM_UTF8((*metabNames)[0]));
                   combo->setCurrentItem(FROM_UTF8(CMetabNameInterface::unQuote((*metabNames)[0])));
                   setItem((int) rowCounter, 3, combo);
                 }
@@ -368,9 +360,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
                 }
               else // this should not happen
                 {
-                  //combo = new ComboItem(this, QTableItem::WhenCurrent, color, qsl);
                   combo = new Q3ComboTableItem(this, qsl);
-                  //combo->setText("add species");
                   combo->setCurrentItem("add species");
                   setItem((int) rowCounter, 3, combo);
                 }
@@ -475,12 +465,6 @@ void ParameterTable::slotCellChanged(int row, int col)
 
       if (!tmp) return;
 
-      /*if (tmp->isChecked())
-        {
-        }
-      else
-        {
-        }*/
       emit parameterStatusChanged((int) i, !tmp->isChecked());
     }
   else
@@ -507,16 +491,6 @@ QWidget *ComboItem::createEditor() const
   cb->insertStringList(mSL);
   cb->setCurrentText(text());
   return cb;
-}
-
-void ComboItem::setContentFromEditor(QWidget *w)
-{
-  // the user changed the value of the combobox, so synchronize the
-  // value of the item (its text), with the value of the combobox
-  if (w->inherits("QComboBox"))
-    setText(((QComboBox*)w)->currentText());
-  else
-    Q3TableItem::setContentFromEditor(w);
 }
 
 void ComboItem::setText(const QString &s)
