@@ -54,7 +54,6 @@ class ComboItem : public ColorTableItem
 public:
   ComboItem(Q3Table *t, EditType et, QColor c, const QStringList & sl);
   QWidget *createEditor() const;
-  void setText(const QString &s);
 
 private:
   QComboBox *cb;

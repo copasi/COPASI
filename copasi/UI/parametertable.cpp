@@ -493,11 +493,6 @@ QWidget *ComboItem::createEditor() const
   return cb;
 }
 
-void ComboItem::setText(const QString &s)
-{
-  Q3TableItem::setText(s);
-}
-
 //**********************************************************************
 
 ColorTableItem::ColorTableItem(Q3Table *t, EditType et, QColor c, const QString txt)
