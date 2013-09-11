@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 // copasi.h
 //
@@ -146,11 +146,11 @@ QMutex * pCopasiGuiMutex = NULL;
 /* Define Constructor/Destructor Trace */
 #ifdef COPASI_DEBUG_TRACE
 # include <time.h>
-# include <sys/timeb.h>
+# include <sys/time.h>
 
 # ifdef COPASI_MAIN
 #  ifndef Darwin
-struct timeb C_init_time;
+timeval C_init_time;
 unsigned C_INT32 C_last_time = 0;
 unsigned C_INT32 C_this_time;
 #  endif // !Darwin
@@ -158,7 +158,7 @@ std::ofstream DebugFile("trace");
 # else // not COPASI_MAIN
 #  include <fstream>
 #  ifndef Darwin
-extern struct timeb C_init_time;
+extern timeval C_init_time;
 extern unsigned C_INT32 C_last_time;
 extern unsigned C_INT32 C_this_time;
 #  endif // !Darwin
@@ -168,8 +168,8 @@ extern std::ofstream DebugFile;
 # ifndef Darwin
 #  include <iostream>
 #  define TIME_TRACE(f, l) {\
-    ftime(&C_init_time); \
-    C_this_time = C_init_time.time * 1000 + C_init_time.millitm; \
+    gettimeofday(&C_init_time, NULL); \
+    C_this_time = C_init_time.tv_sec * 1000 + C_init_time.tv_usec; \
     DebugFile << f <<"(" << l << "):\t" << C_this_time - C_last_time  << std::endl; \
     C_last_time = C_this_time;\
   }
