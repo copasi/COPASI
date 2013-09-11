@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Begin CVS Header </comment>
-<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CLNAResultSubwidget.ui,v $ </comment>
-<comment>   $Revision: 1.1 $ </comment>
-<comment>   $Name:  $ </comment>
-<comment>   $Author: jpahle $ </comment>
-<comment>   $Date: 2011/05/24 17:33:45 $ </comment>
-<comment> End CVS Header </comment>
-
-<comment> Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+ <comment> All rights reserved. </comment>
  <class>CLNAResultSubwidget</class>
  <widget class="CopasiWidget" name="CLNAResultSubwidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>580</width>
-    <height>422</height>
+    <width>578</width>
+    <height>420</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -113,7 +106,7 @@ p, li { white-space: pre-wrap; }
    </item>
    <item>
     <widget class="QTabWidget" name="mTabWidget">
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="tab0">
       <attribute name="title">
        <string>Covariance Matrix</string>
       </attribute>
@@ -126,7 +119,7 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="tab1">
       <attribute name="title">
        <string>Covariance Matrix (reduced)</string>
       </attribute>
@@ -139,7 +132,7 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="tab2">
       <attribute name="title">
        <string>B Matrix (reduced)</string>
       </attribute>
@@ -166,7 +159,7 @@ p, li { white-space: pre-wrap; }
   <customwidget>
    <class>CopasiWidget</class>
    <extends>QWidget</extends>
-   <header>copasiWidget.h</header>
+   <header>copasi/UI/copasiWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
