@@ -293,6 +293,8 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj, const CCopas
   if (obj == NULL || pDataModel == NULL)
     return false;
 
+  std::set<std::string> isExported;
+
   if (obj->isReference())
     {
       CCopasiObject* parent = obj->getObjectParent();
