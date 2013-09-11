@@ -567,22 +567,25 @@ void CHybridMethodODE45::setupMetab2React()
   mMetab2React.clear();
   mMetab2React.resize(mNumVariableMetabs);
 
+  CMetab * pMetab;
+  CReaction * pReaction;
+
+  //Check wether metabs play as substrates and modifiers
   for (size_t rct = 0; rct < mNumReactions; ++rct)
     {
-      CMetab *mpMetab;
       size_t index;
-
+      
       //deal with substrates
       CCopasiVector <CChemEqElement> metab =
         (*mpReactions)[rct]->getChemEq().getSubstrates();
 
       for (size_t i = 0; i < metab.size(); i++)
         {
-          mpMetab = const_cast < CMetab* >
+          pMetab = const_cast < CMetab* >
                     (metab[i]->getMetabolite());
-          index = mpModel->getMetabolitesX().getIndex(mpMetab);
+          index = mpModel->getMetabolitesX().getIndex(pMetab);
 
-          if ((mpMetab->getStatus()) != CModelEntity::FIXED)
+          if ((pMetab->getStatus()) != CModelEntity::FIXED)
             mMetab2React[index].insert(rct);
         }
 
@@ -591,14 +594,36 @@ void CHybridMethodODE45::setupMetab2React()
 
       for (size_t i = 0; i < metab.size(); i++)
         {
-          mpMetab = const_cast < CMetab* >
+          pMetab = const_cast < CMetab* >
                     (metab[i]->getMetabolite());
-          index = mpModel->getMetabolitesX().getIndex(mpMetab);
+          index = mpModel->getMetabolitesX().getIndex(pMetab);
 
-          if ((mpMetab->getStatus()) != CModelEntity::FIXED)
+          if ((pMetab->getStatus()) != CModelEntity::FIXED)
             mMetab2React[index].insert(rct);
-        }
+	}
     }
+   
+  //Check wether metabs appear in reaction laws
+  std::set< const CCopasiObject * > changed;
+  for (size_t metab=0; metab<mNumVariableMetabs; metab++)
+    {
+      pMetab = (*mpMetabolites)[metab];
+     
+      if (pMetab->getStatus() != CModelEntity::FIXED)
+	{
+	  changed.clear();
+	  changed.insert(mpModel->getValueReference());
+	  changed.insert(pMetab->getValueReference());
+
+	  for (size_t react=0; react<mNumReactions; react++)
+	    {
+	      pReaction = (*mpReactions)[react];
+	      if(pReaction->getParticleFluxReference()->dependsOn(changed))
+		mMetab2React[metab].insert(react);
+	    }
+	}
+    }
+
 
   return;
 }
@@ -2691,7 +2716,7 @@ void CHybridMethodODE45::outputData()
   std::cout << "~~~~mpMetabolites:~~~~" << std::endl;
   for (size_t i=0; i<mpMetabolites->size(); i++)
     {
-      std::cout << "metab #" << i + 1 << " name: " << (*mpMetabolites)[i]->getObjectDisplayName() << std::endl;
+      std::cout << "metab #" << i << " name: " << (*mpMetabolites)[i]->getObjectDisplayName() << std::endl;
       std::cout << "value pointer: " << (*mpMetabolites)[i]->getValuePointer() << std::endl;
       std::cout << "value: " << *((double *)(*mpMetabolites)[i]->getValuePointer()) << std::endl;
     }
@@ -2700,7 +2725,7 @@ void CHybridMethodODE45::outputData()
   std::cout << "~~~~mMetabFlags:~~~~ " << std::endl;
   for (size_t i=0; i<mMetabFlags.size(); ++i)
     {
-      std::cout << "metab #" << i + 1 << std::endl;
+      std::cout << "metab #" << i << std::endl;
       std::cout << "mFlag: " << mMetabFlags[i].mFlag << std::endl;
       std::cout << "mFastReactions: ";
       std::set<size_t>::iterator it = mMetabFlags[i].mFastReactions.begin();
@@ -2717,12 +2742,12 @@ void CHybridMethodODE45::outputData()
   std::cout << "~~~~mNumReactions:~~~~ " << mNumReactions << std::endl;
   for (size_t i=0; i<mNumReactions; ++i)
     {
-      std::cout << "Reaction #: " << i+1 << " Flag: " << mReactionFlags[i] << std::endl;
+      std::cout << "Reaction #: " << i << " Flag: " << mReactionFlags[i] << std::endl;
     }
   std::cout << "~~~~mLocalBalances:~~~~ " << std::endl;
   for (size_t i=0; i<mLocalBalances.size(); ++i)
     {
-      std::cout << "Reaction: " << i + 1 << std::endl;
+      std::cout << "Reaction: " << i << std::endl;
 
       for (size_t j = 0; j < mLocalBalances[i].size(); ++j)
         {
@@ -2735,7 +2760,7 @@ void CHybridMethodODE45::outputData()
   std::cout << "~~~~mLocalSubstrates:~~~~ " << std::endl;
   for (size_t i=0; i<mLocalSubstrates.size(); ++i)
     {
-      std::cout << "Reaction: " << i + 1 << std::endl;
+      std::cout << "Reaction: " << i << std::endl;
 
       for (size_t j = 0; j < mLocalSubstrates[i].size(); ++j)
         {
@@ -2748,7 +2773,7 @@ void CHybridMethodODE45::outputData()
   std::cout << "~~~~mMetab2React:~~~~ " << std::endl;
   for(size_t i=0; i<mMetab2React.size(); i++)
     {
-      std::cout << "metab #: " << i + 1 << std::endl;
+      std::cout << "metab #: " << i << std::endl;
       std::set<size_t>::iterator it = mMetab2React[i].begin();
       std::set<size_t>::iterator endIt = mMetab2React[i].end();
       std::cout << "React: ";
@@ -2759,11 +2784,12 @@ void CHybridMethodODE45::outputData()
       std::cout << std::endl;
     }
 
-  std::cout << "mReactAffect: " << std::endl;
+  std::cout << std::endl;
+  std::cout << "~~~~mReactAffect:~~~~ " << std::endl;
 
   for (size_t i = 0; i < mReactAffect.size(); i++)
     {
-      std::cout << "react #: " << i + 1 << std::endl;
+      std::cout << "react #: " << i << std::endl;
       std::set<size_t>::iterator it = mReactAffect[i].begin();
       std::set<size_t>::iterator endIt = mReactAffect[i].end();
       std::cout << "affect: ";

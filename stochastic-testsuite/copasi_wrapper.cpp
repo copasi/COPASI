@@ -84,6 +84,7 @@ int main(int argc, char *argv[])
   std::cout << "Repeats : " << pRepeats << std::endl;
   std::cout << "Output file: " << pOutputFilename << std::endl;
   */
+
   char** pSBMLSpeciesIds = new char * [argc - NUMARGS];
 
   unsigned int i, iMax = argc;
@@ -124,7 +125,7 @@ int main(int argc, char *argv[])
     {
       MethodType = CCopasiMethod::deterministic;
     }
-  else if (!strcmp(pMethodType, "HybridODE54"))
+  else if (!strcmp(pMethodType, "HybridODE45"))
     {
       MethodType = CCopasiMethod::hybridODE45;
     }
@@ -248,10 +249,11 @@ int main(int argc, char *argv[])
       pScanTask->getReport().setAppend(false);
 
       pScanProblem->setSubtask(CCopasiTask::timeCourse);
-      pScanProblem->createScanItem(CScanProblem::SCAN_REPEAT, repeats);
+      //pScanProblem->createScanItem(CScanProblem::SCAN_REPEAT, repeats);
+      pScanProblem->addScanItem(CScanProblem::SCAN_REPEAT, repeats);
       pScanProblem->setOutputInSubtask(true);
       pScanProblem->setContinueFromCurrentState(false);
-
+     
       TaskList.remove("Scan");
       TaskList.add(pScanTask, true);
 
