@@ -1,3 +1,8 @@
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
+
 #ifndef CQ_SPRING_LAYOUT_PARAMETER_WINDOW_H
 #define CQ_SPRING_LAYOUT_PARAMETER_WINDOW_H
 
@@ -24,3 +29,4 @@ protected:
 };
 
 #endif
+
