@@ -288,6 +288,8 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj, const CCopas
   if (obj == NULL || pDataModel == NULL)
     return false;
 
+  std::set<std::string> isExported;
+
   if (obj->isReference())
     {
       CCopasiObject* parent = obj->getObjectParent();
@@ -313,6 +315,8 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj, const CCopas
           const CExpression* pExpression = tmp->getExpressionPtr();
           assert(pExpression);
 
+          findFunctionsCalls(pExpression->getRoot(), isExported);
+
           std::string result;
           result = isModelEntityExpressionODEExporterCompatible(tmp, pExpression, pDataModel);
 
@@ -334,6 +338,8 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj, const CCopas
 
             const CExpression* pExpression = tmp->getExpressionPtr();
             assert(pExpression);
+
+            findFunctionsCalls(pExpression->getRoot(), isExported);
 
             std::string result;
             result = isModelEntityExpressionODEExporterCompatible(tmp, pExpression, pDataModel);
@@ -369,6 +375,8 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj, const CCopas
 
             const CExpression* pExpression = tmp->getExpressionPtr();
             assert(pExpression);
+
+            findFunctionsCalls(pExpression->getRoot(), isExported);
 
             std::string result;
             result = isModelEntityExpressionODEExporterCompatible(tmp, pExpression, pDataModel);
