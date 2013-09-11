@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 //
 
@@ -97,6 +97,7 @@ CModel::CModel(CCopasiContainer* pParent):
   mInitialDependencies(),
   mTransientDependencies(),
   mPhysicalDependencies(),
+  mpMathContainer(NULL),
 #endif // TST_DEPENDENCYGRAPH
   mVolumeUnit(ml),
   mAreaUnit(m2),
@@ -140,9 +141,6 @@ CModel::CModel(CCopasiContainer* pParent):
   mIsAutonomous(true),
   mBuildInitialSequence(true),
   mpMathModel(NULL)
-#ifdef TST_DEPENDENCYGRAPH
-  , mpMathContainer(NULL)
-#endif TST_DEPENDENCYGRAPH
 {
   initObjects();
 
@@ -237,7 +235,7 @@ CModel::~CModel()
 
 #ifdef TST_DEPENDENCYGRAPH
   pdelete(mpMathContainer);
-#endif TST_DEPENDENCYGRAPH
+#endif // TST_DEPENDENCYGRAPH
 
   CCopasiRootContainer::getKeyFactory()->remove(mKey);
 
