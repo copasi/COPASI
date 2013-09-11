@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-//   $Revision: 1.37 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/16 23:11:31 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -31,12 +23,12 @@
 #include "sbml/math/ASTNode.h"
 
 CEvaluationNodeNumber::CEvaluationNodeNumber():
-    CEvaluationNode(CEvaluationNode::INVALID, "")
+  CEvaluationNode(CEvaluationNode::INVALID, "")
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeNumber::CEvaluationNodeNumber(const SubType & subType,
     const Data & data):
-    CEvaluationNode((Type)(CEvaluationNode::NUMBER | subType), data)
+  CEvaluationNode((Type)(CEvaluationNode::NUMBER | subType), data)
 {
   const char * end;
   const char * str = mData.c_str();
@@ -71,7 +63,7 @@ CEvaluationNodeNumber::CEvaluationNodeNumber(const SubType & subType,
 }
 
 CEvaluationNodeNumber::CEvaluationNodeNumber(const C_FLOAT64 & number):
-    CEvaluationNode((Type)(CEvaluationNode::NUMBER | CEvaluationNodeNumber::DOUBLE), "")
+  CEvaluationNode((Type)(CEvaluationNode::NUMBER | CEvaluationNodeNumber::DOUBLE), "")
 {
   std::ostringstream Data;
 
@@ -84,7 +76,7 @@ CEvaluationNodeNumber::CEvaluationNodeNumber(const C_FLOAT64 & number):
 }
 
 CEvaluationNodeNumber::CEvaluationNodeNumber(const CEvaluationNodeNumber & src):
-    CEvaluationNode(src)
+  CEvaluationNode(src)
 {}
 
 CEvaluationNodeNumber::~CEvaluationNodeNumber() {}
@@ -230,16 +222,19 @@ ASTNode* CEvaluationNodeNumber::toAST(const CCopasiDataModel* /* pDataModel */) 
         node->setType(AST_REAL);
         node->setValue(this->getValue());
         break;
+
       case INTEGER:
         node->setType(AST_INTEGER);
         node->setValue((long)this->getValue());
         break;
+
       case ENOTATION:
         node->setType(AST_REAL_E);
         num2 = floor(log10(this->getValue()));
         num1 = pow(10.0, log10(this->getValue()) - num2);
         node->setValue(num1, (long)num2);
         break;
+
       case RATIONALE:
         node->setType(AST_RATIONAL);
         str++; // Skip the '('
@@ -248,6 +243,7 @@ ASTNode* CEvaluationNodeNumber::toAST(const CCopasiDataModel* /* pDataModel */) 
         num2 = strToDouble(end, NULL);
         node->setValue((long)num1, (long)num2);
         break;
+
       case INVALID:
         break;
     }
@@ -267,5 +263,12 @@ std::string CEvaluationNodeNumber::getMMLString(const std::vector< std::string >
   //or use mValue instead?
   out << "<mn>" << mData << "</mn>" << std::endl;
 
+  return out.str();
+}
+
+std::string CEvaluationNodeNumber::getCCodeString(const std::vector< std::string > & /*children*/) const
+{
+  std::ostringstream out;
+  out <<  std::setprecision(std::numeric_limits<double>::digits10 + 2) <<  std::fixed  << getValue();
   return out.str();
 }
