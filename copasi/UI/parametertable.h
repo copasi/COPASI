@@ -16,7 +16,6 @@
 #define PARAMETERTABLE_H
 
 #include <q3table.h>
-#include <qcombobox.h>
 
 #include "copasi.h"
 #include "model/CReaction.h"
