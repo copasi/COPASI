@@ -194,6 +194,20 @@ bool CScanTask::process(const bool & useInitialValues)
   return success;
 }
 
+bool CScanTask::restore()
+{
+  bool success = true;
+
+  if (mpSubtask != NULL)
+    {
+      success &= mpSubtask->restore();
+    }
+
+  success = CCopasiTask::restore();
+
+  return success;
+}
+
 bool CScanTask::processCallback()
 {
   bool success = mpSubtask->process(mUseInitialValues);
