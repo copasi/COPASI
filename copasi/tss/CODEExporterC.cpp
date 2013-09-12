@@ -873,8 +873,6 @@ bool CODEExporterC::exportKineticFunctionGroup(const CModel* copasiModel)
   size_t size = reacs.size();
   CReaction* reac;
 
-  std::set<std::string> isExported;
-
   size_t i;
 
   for (i = 0; i < size; ++i)
@@ -883,11 +881,11 @@ bool CODEExporterC::exportKineticFunctionGroup(const CModel* copasiModel)
       const CFunction* func = reac->getFunction();
 
       if (func->getRoot())
-        findFunctionsCalls(func->getRoot(), isExported);
+        findFunctionsCalls(func->getRoot());
 
       if (func->getType() != CEvaluationTree::MassAction)
         {
-          if (!exportSingleFunction(func, isExported)) return false;
+          if (!CODEExporter::exportSingleFunction(func)) return false;
         }
     }
 
