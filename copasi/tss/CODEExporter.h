@@ -27,7 +27,7 @@ class CCopasiDataModel;
 class CODEExporter
 {
 protected:
-
+  std::set<std::string> mExportedFunctions;
 public:
 
   /**
@@ -66,7 +66,9 @@ public:
 
   bool exportModelValuesExpressions(const CModel* copasiModel);
 
-  void findFunctionsCalls(const CEvaluationNode* pNode, std::set<std::string>& isExported);
+  void findFunctionsCalls(const CEvaluationNode* pNode);
+
+  bool exportSingleFunction(const CFunction *func);
 
   virtual bool exportSingleFunction(const CFunction *func, std::set<std::string>& isExported);
 

@@ -53,6 +53,7 @@
  ** Constructor for the exporter.
  */
 CODEExporter::CODEExporter()
+  : mExportedFunctions()
 {}
 
 /**
@@ -61,36 +62,39 @@ CODEExporter::CODEExporter()
 CODEExporter::~CODEExporter()
 {}
 
-void CODEExporter::findFunctionsCalls(const CEvaluationNode* pNode, std::set<std::string>& isExported)
+bool  CODEExporter::exportSingleFunction(const CFunction *func)
 {
-  if (pNode)
+  return exportSingleFunction(func, mExportedFunctions);
+}
+
+void CODEExporter::findFunctionsCalls(const CEvaluationNode* pNode)
+{
+  if (pNode == NULL) return;
+
+  CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
+  CCopasiTree<CEvaluationNode>::const_iterator treeIt = pNode;
+
+  while (treeIt != NULL)
     {
-      CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
-      CCopasiTree<CEvaluationNode>::const_iterator treeIt = pNode;
-
-      while (treeIt != NULL)
+      if (CEvaluationNode::type(treeIt->getType()) == CEvaluationNode::CALL)
         {
-          if (CEvaluationNode::type(treeIt->getType()) == CEvaluationNode::CALL)
+          const CFunction* ifunc;
+          ifunc = static_cast<CFunction*>(pFunctionDB->findFunction((*treeIt).getData()));
+
+          findFunctionsCalls(ifunc->getRoot());
+
+          if (ifunc->getType() != CEvaluationTree::MassAction)
             {
-              const CFunction* ifunc;
-              ifunc = static_cast<CFunction*>(pFunctionDB->findFunction((*treeIt).getData()));
-
-              findFunctionsCalls(ifunc->getRoot(), isExported);
-
-              if (ifunc->getType() != CEvaluationTree::MassAction)
-                {
-                  if (!exportSingleFunction(ifunc, isExported)) return;
-                }
+              if (!exportSingleFunction(ifunc)) return;
             }
-
-          ++treeIt;
         }
+
+      ++treeIt;
     }
 }
 
 bool CODEExporter::exportModelValuesExpressions(const CModel *copasiModel)
 {
-  std::set<std::string> isExported;
   size_t i, size = copasiModel->getNumModelValues();
 
   for (i = 0; i < size; ++i)
@@ -102,7 +106,7 @@ bool CODEExporter::exportModelValuesExpressions(const CModel *copasiModel)
           if (entity->getExpressionPtr() == NULL || entity->getExpressionPtr()->getRoot() == NULL)
             continue;
 
-          findFunctionsCalls(entity->getExpressionPtr()->getRoot(), isExported);
+          findFunctionsCalls(entity->getExpressionPtr()->getRoot());
           exportModelEntityExpression(entity, entity->getObjectDataModel());
         }
     }
@@ -118,7 +122,7 @@ bool CODEExporter::exportModelValuesExpressions(const CModel *copasiModel)
           if (entity->getExpressionPtr() == NULL || entity->getExpressionPtr()->getRoot() == NULL)
             continue;
 
-          findFunctionsCalls(entity->getExpressionPtr()->getRoot(), isExported);
+          findFunctionsCalls(entity->getExpressionPtr()->getRoot());
           exportModelEntityExpression(entity, entity->getObjectDataModel());
         }
     }
@@ -134,7 +138,7 @@ bool CODEExporter::exportModelValuesExpressions(const CModel *copasiModel)
           if (entity->getExpressionPtr() == NULL || entity->getExpressionPtr()->getRoot() == NULL)
             continue;
 
-          findFunctionsCalls(entity->getExpressionPtr()->getRoot(), isExported);
+          findFunctionsCalls(entity->getExpressionPtr()->getRoot());
           exportModelEntityExpression(entity, entity->getObjectDataModel());
         }
     }
@@ -149,8 +153,9 @@ bool CODEExporter::exportSingleFunction(const CFunction *func, std::set<std::str
 
 bool CODEExporter::exportToStream(const CCopasiDataModel* pDataModel, std::ostream & os)
 {
-  /* translate COPASI data names in exporter syntax */
+  mExportedFunctions.clear();
 
+  /* translate COPASI data names in exporter syntax */
   if (!preprocess(pDataModel->getModel())) return false;
 
   /* export COPASI data */
@@ -288,8 +293,6 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj, const CCopas
   if (obj == NULL || pDataModel == NULL)
     return false;
 
-  std::set<std::string> isExported;
-
   if (obj->isReference())
     {
       CCopasiObject* parent = obj->getObjectParent();
@@ -315,7 +318,7 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj, const CCopas
           const CExpression* pExpression = tmp->getExpressionPtr();
           assert(pExpression);
 
-          findFunctionsCalls(pExpression->getRoot(), isExported);
+          findFunctionsCalls(pExpression->getRoot());
 
           std::string result;
           result = isModelEntityExpressionODEExporterCompatible(tmp, pExpression, pDataModel);
@@ -339,7 +342,7 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj, const CCopas
             const CExpression* pExpression = tmp->getExpressionPtr();
             assert(pExpression);
 
-            findFunctionsCalls(pExpression->getRoot(), isExported);
+            findFunctionsCalls(pExpression->getRoot());
 
             std::string result;
             result = isModelEntityExpressionODEExporterCompatible(tmp, pExpression, pDataModel);
@@ -376,7 +379,7 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj, const CCopas
             const CExpression* pExpression = tmp->getExpressionPtr();
             assert(pExpression);
 
-            findFunctionsCalls(pExpression->getRoot(), isExported);
+            findFunctionsCalls(pExpression->getRoot());
 
             std::string result;
             result = isModelEntityExpressionODEExporterCompatible(tmp, pExpression, pDataModel);
