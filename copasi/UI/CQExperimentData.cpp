@@ -1105,6 +1105,8 @@ void CQExperimentData::slotModelObject(int row)
       mpTable->item(row, COL_OBJECT)->setText(FROM_UTF8(pObject->getObjectDisplayName()));
       mpTable->item(row, COL_OBJECT_HIDDEN)->setText(FROM_UTF8(pObject->getCN()));
     }
+
+  updateScales();
 }
 
 void CQExperimentData::slotModelObjectDelayed()
@@ -1280,6 +1282,7 @@ void CQExperimentData::slotTypeChanged(int row, int index)
   bool BtnEnabled = true;
   C_INT32 i, imax = mpTable->rowCount();
 
+  mpTable->item(row, COL_TYPE)->setText(QString(FROM_UTF8(CExperiment::TypeName[NewType])));
   mpTable->item(row, COL_TYPE_HIDDEN)->setText(QString::number(NewType));
 
   CCopasiObjectName CN = CCopasiObjectName(TO_UTF8(mpTable->item(row, COL_OBJECT_HIDDEN)->text()));
@@ -1358,50 +1361,57 @@ void CQExperimentData::slotTypeChanged(int row, int index)
   if (OldType == CExperiment::dependent ||
       NewType == CExperiment::dependent)
     {
-      saveExperiment(mpExperiment, true);
-
-      // Since the interpretation of the data has changed we need read the file again
-      std::ifstream File;
-      File.open(CLocaleString::fromUtf8(mpExperiment->getFileName()).c_str());
-
-      size_t CurrentLine = 1;
-      mpExperiment->read(File, CurrentLine);
-      mpExperiment->compile();
-
-      // We can not simply use loadTable as this would destroy the two signal maps
-      // for the buttons and comboboxes leading to crashes in Qt.
-      CExperimentObjectMap & ObjectMap = mpExperiment->getObjectMap();
-
-      for (i = 0; i < imax; i++)
-        {
-          QTableWidgetItem * pItem = mpTable->item(i, COL_SCALE);
-
-          // COL_SCALE
-          if (ObjectMap.getRole(i) != CExperiment::dependent)
-            {
-              pItem->setText("");
-              pItem->setFlags(pItem->flags() & ~Qt::ItemIsEditable);
-            }
-          else
-            {
-              QString ScaleText = pItem->text();
-
-              // Keep non default values
-              if (ScaleText == "" || ScaleText[0] == '(')
-                {
-
-                  C_FLOAT64 DefaultWeight = ObjectMap.getDefaultScale(i);
-
-                  ScaleText = "(" + QString::number(DefaultWeight) + ")";
-                  pItem->setText(ScaleText);
-                }
-
-              pItem->setFlags(pItem->flags() | Qt::ItemIsEditable);
-            }
-        }
+      updateScales();
     }
 
   return;
+}
+
+void CQExperimentData::updateScales()
+{
+  saveExperiment(mpExperiment, true);
+
+  // Since the interpretation of the data has changed we need read the file again
+  std::ifstream File;
+  File.open(CLocaleString::fromUtf8(mpExperiment->getFileName()).c_str());
+
+  size_t CurrentLine = 1;
+  mpExperiment->read(File, CurrentLine);
+  mpExperiment->compile();
+
+  // We can not simply use loadTable as this would destroy the two signal maps
+  // for the buttons and comboboxes leading to crashes in Qt.
+  CExperimentObjectMap & ObjectMap = mpExperiment->getObjectMap();
+
+  C_INT32 i, imax = mpTable->rowCount();
+
+  for (i = 0; i < imax; i++)
+    {
+      QTableWidgetItem * pItem = mpTable->item(i, COL_SCALE);
+
+      // COL_SCALE
+      if (ObjectMap.getRole(i) != CExperiment::dependent)
+        {
+          pItem->setText("");
+          pItem->setFlags(pItem->flags() & ~Qt::ItemIsEditable);
+        }
+      else
+        {
+          QString ScaleText = pItem->text();
+
+          // Keep non default values
+          if (ScaleText == "" || ScaleText[0] == '(')
+            {
+
+              C_FLOAT64 DefaultWeight = ObjectMap.getDefaultScale(i);
+
+              ScaleText = "(" + QString::number(DefaultWeight) + ")";
+              pItem->setText(ScaleText);
+            }
+
+          pItem->setFlags(pItem->flags() | Qt::ItemIsEditable);
+        }
+    }
 }
 
 void CQExperimentData::slotSeparator()
