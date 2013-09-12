@@ -1,12 +1,12 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 #include <QComboBox>
 #include <QtGui/QSortFilterProxyModel>
@@ -67,7 +67,10 @@ void CQComboDelegate::setEditorData(QWidget *editor,
 {
   QString value = index.model()->data(index, Qt::DisplayRole).toString();
   QComboBox *comboBox = static_cast<QComboBox*>(editor);
+
+  comboBox->blockSignals(true);
   comboBox->setCurrentIndex(comboBox->findText(value));
+  comboBox->blockSignals(false);
 }
 
 void CQComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
