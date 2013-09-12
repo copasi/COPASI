@@ -76,6 +76,8 @@ public:
 
   std::string exportExpression(const CExpression* pExpression, const CCopasiDataModel* pDataModel);
 
+  virtual std::string getSingleLineComment();
+
   virtual bool exportSingleModelEntity(const CModelEntity* tmp, std::string & expression, std::string & comments);
 #endif
 

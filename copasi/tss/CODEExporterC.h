@@ -67,6 +67,8 @@ public:
 
   virtual bool exportSingleFunction(const CFunction *func, std::set<std::string>& isExported);
 
+  virtual std::string getSingleLineComment();
+
   virtual bool exportKineticFunctionGroup(const CModel* copasiModel);
 
   virtual std::string KineticFunction2ODEmember(const CReaction *reac);

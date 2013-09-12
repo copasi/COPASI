@@ -54,6 +54,11 @@
 CODEExporterC::CODEExporterC()
 {}
 
+std::string CODEExporterC::getSingleLineComment()
+{
+  return "// ";
+}
+
 bool startsWith(const std::string& str, const std::string& sub)
 {
   if (str.length() < sub.length()) return false;

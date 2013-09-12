@@ -415,6 +415,11 @@ bool CODEExporter::exportModelEntityExpression(CCopasiObject * obj, const CCopas
   return true;
 }
 
+std::string CODEExporter::getSingleLineComment()
+{
+  return "";
+}
+
 std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEntity * tmp, const CExpression* pExpression, const CCopasiDataModel* pDataModel)
 {
 
@@ -446,7 +451,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
                       && pObject->getObjectName() != "InitialVolume"
                       && pObject->getObjectName() != "Rate")
                     {
-                      result << std::endl << "WARNING : reference to property other than transient volume for compartment \"" << pObjectParent->getObjectName() << "\" in expression  for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << std::endl << getSingleLineComment() << "WARNING : reference to property other than transient volume for compartment \"" << pObjectParent->getObjectName() << "\" in expression  for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
                 }
               else if (typeString == "Metabolite")
@@ -454,10 +459,11 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
 
                   if (pObject->getObjectName() != "Concentration"
                       && pObject->getObjectName() != "InitialConcentration"
+                      && pObject->getObjectName() != "ParticleNumber"
                       && pObject->getObjectName() != "Rate")
                     {
 
-                      result << std::endl << "WARNING : reference to property other than transient concentration, initial concentration or concentrations rate for metabolite \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << std::endl << getSingleLineComment() << "WARNING : reference to property other than transient concentration, initial concentration or concentrations rate for metabolite \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
 
                   CMetab* metab;
@@ -466,7 +472,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
                   if ((metab->getStatus() == CModelEntity::REACTIONS &&  metab->isDependent()) && pObject->getObjectName() == "Rate")
                     {
 
-                      result << std::endl << "WARNING : reference to rate of dependent (defined from moiety)  metabolite \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << std::endl << getSingleLineComment() <<  "WARNING : reference to rate of dependent (defined from moiety)  metabolite \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
                 }
               else if (typeString == "ModelValue")
@@ -476,7 +482,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
                       && pObject->getObjectName() != "Rate")
                     {
 
-                      result << std::endl << "WARNING : reference to property other than transient value, initial value or rate for \"" << typeString << "\" \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << std::endl << getSingleLineComment() << "WARNING : reference to property other than transient value, initial value or rate for \"" << typeString << "\" \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
                 }
               else if (typeString == "Model")
@@ -485,7 +491,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
                   if (pObject->getObjectName() != "Time" && pObject->getObjectName() != "Initial Time")
                     {
 
-                      result << std::endl << "WARNING : reference to property other than initial time or transient time for model \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << std::endl << getSingleLineComment() << "WARNING : reference to property other than initial time or transient time for model \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
                 }
               else if (typeString == "Parameter")
@@ -494,23 +500,42 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
                   if (pObject->getObjectName() != "Value")
                     {
 
-                      result << std::endl << "WARNING : reference to property other than initial time or transient time for model \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << std::endl << getSingleLineComment() << "WARNING : reference to property other than initial time or transient time for model \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
                 }
 
               else
                 {
-                  result << std::endl << "WARNING : expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\" contains reference to a value in object \"" << pObjectParent->getObjectName() << "\" of type \"" << typeString << "\" which is not supported in this ODE exporter Version.";
+                  result << std::endl << getSingleLineComment() << "WARNING : expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\" contains reference to a value in object \"" << pObjectParent->getObjectName() << "\" of type \"" << typeString << "\" which is not supported in this ODE exporter Version.";
                 }
             }
           else
             {
-              result << std::endl << "WARNING : expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\" contains reference to a object named \"" << pObject->getObjectName() << "\" of type \"" << pObject->getObjectType() << "\" which is not supported in this ODE exporter Version.";
+              result << std::endl << getSingleLineComment() << "WARNING : expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\" contains reference to a object named \"" << pObject->getObjectName() << "\" of type \"" << pObject->getObjectType() << "\" which is not supported in this ODE exporter Version.";
             }
         }
     }
 
   return result.str();
+}
+
+std::string getQuantityParameterOrValue(const std::map< std::string, std::string >& map, const CCopasiDataModel* pDataModel)
+{
+  double val = pDataModel->getModel()->getQuantity2NumberFactor();
+  const CCopasiVectorN< CModelValue >& vals = pDataModel->getModel()->getModelValues();
+  CCopasiVectorN< CModelValue >::const_iterator it = vals.begin();
+
+  for (; it != vals.end(); ++it)
+    {
+      std::map< std::string, std::string >::const_iterator key = map.find((*it)->getKey());
+
+      if ((*it)->getInitialValue() == val && key != map.end())
+        return key->second;
+    }
+
+  std::ostringstream str;
+  str << val;
+  return str.str();
 }
 
 std::string CODEExporter::exportExpression(const CExpression* pExpression, const CCopasiDataModel* pDataModel)
@@ -605,6 +630,15 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
             {
               if (objectName == "Concentration")
                 objectNodes[j]->setData(NameMap[pObject->getKey()]);
+
+              if (objectName == "ParticleNumber")
+                {
+                  std::ostringstream str;
+                  str << NameMap["sm_" + pObject->getKey()] << " * "
+                      << getQuantityParameterOrValue(NameMap, pDataModel)
+                      << " ";
+                  objectNodes[j]->setData(str.str());
+                }
 
               if (objectName == "InitialConcentration")
                 {
