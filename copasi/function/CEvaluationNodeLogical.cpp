@@ -148,6 +148,7 @@ std::string CEvaluationNodeLogical::getCCodeString(const std::vector< std::strin
     {
       Data DisplayString;
       Data data;
+      bool isXor = false;
 
       switch ((SubType)CEvaluationNode::subType(this->getType()))
         {
@@ -187,16 +188,25 @@ std::string CEvaluationNodeLogical::getCCodeString(const std::vector< std::strin
             /*
              * case XOR:
              */
-            data = "@";
+            data = "!=";
+            isXor = true;
             break;
         }
 
-      if (*mpLeft < * (CEvaluationNode *)this)
-        DisplayString = "(" + children[0] + ")";
+      if (isXor)
+        DisplayString = " !";
       else
-        DisplayString = children[0] + " ";
+        DisplayString = "";
+
+      if (*mpLeft < * (CEvaluationNode *)this)
+        DisplayString += "(" + children[0] + ")";
+      else
+        DisplayString += children[0] + " ";
 
       DisplayString += data;
+
+      if (isXor)
+        DisplayString += " !";
 
       if (!(*(CEvaluationNode *)this < *mpRight))
         DisplayString += "(" + children[1] + ")";
