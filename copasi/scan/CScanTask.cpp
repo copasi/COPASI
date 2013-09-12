@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -136,10 +136,10 @@ bool CScanTask::process(const bool & useInitialValues)
 
 #if COPASI_NONLIN_DYN
   CCrossSectionTask* task = dynamic_cast<CCrossSectionTask*>(mpSubtask);
-  
+
   if (task != NULL)
     task->createEvent();
-  
+
 #endif
 
   if (useInitialValues)
@@ -151,7 +151,6 @@ bool CScanTask::process(const bool & useInitialValues)
 
   // initialize the method (parsing the ScanItems)
   pMethod->setProblem(pProblem);
-
 
   if (!pMethod->init()) return false;
 
@@ -191,6 +190,20 @@ bool CScanTask::process(const bool & useInitialValues)
 
   if (mpSubtask)
     mpSubtask->setCallBack(NULL);
+
+  return success;
+}
+
+bool CScanTask::restore()
+{
+  bool success = true;
+
+  if (mpSubtask != NULL)
+    {
+      success &= mpSubtask->restore();
+    }
+
+  success = CCopasiTask::restore();
 
   return success;
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -111,6 +111,11 @@ public:
    * @return bool success
    */
   virtual bool process(const bool & useInitialValues);
+
+  /**
+   * Perform necessary cleanup procedures
+   */
+  virtual bool restore();
 
   /**
    * Loads parameters for this solver with data coming from a
