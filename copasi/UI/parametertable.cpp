@@ -473,26 +473,6 @@ void ParameterTable::slotCellChanged(int row, int col)
     }
 }
 
-//**************************************************************************
-
-ComboItem::ComboItem(Q3Table *t, EditType et, QColor c, const QStringList & sl)
-  : ColorTableItem(t, et, c, "Yes"), cb(0)
-{
-  // we do not want this item to be replaced
-  setReplaceable(false);
-  mSL = sl;
-}
-
-QWidget *ComboItem::createEditor() const
-{
-  // create an editor - a combobox in our case
-  ((ComboItem*)this)->cb = new QComboBox(false, table()->viewport());
-  QObject::connect(cb, SIGNAL(activated(int)), table(), SLOT(doValueChanged()));
-  cb->insertStringList(mSL);
-  cb->setCurrentText(text());
-  return cb;
-}
-
 //**********************************************************************
 
 ColorTableItem::ColorTableItem(Q3Table *t, EditType et, QColor c, const QString txt)

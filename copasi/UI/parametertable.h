@@ -49,17 +49,6 @@ private:
   QColor color;
 };
 
-class ComboItem : public ColorTableItem
-{
-public:
-  ComboItem(Q3Table *t, EditType et, QColor c, const QStringList & sl);
-  QWidget *createEditor() const;
-
-private:
-  QComboBox *cb;
-  QStringList mSL;
-};
-
 //table used in the reactions widget
 
 class ParameterTable : public Q3Table
