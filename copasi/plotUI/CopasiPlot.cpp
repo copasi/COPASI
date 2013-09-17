@@ -1286,16 +1286,23 @@ void CopasiPlot::updateCurves(const size_t & activity)
 
 void CopasiPlot::resizeCurveData(const size_t & activity)
 {
-  QMutexLocker Locker(&mMutex);
-
   std::vector< CVector< double > * > & data = mData[activity];
   std::vector< CVector< double > * >::iterator it = data.begin();
-  std::vector< CVector< double > * >::iterator end = data.end();
 
+  std::vector< CVector< double > * > OldData = data;
+  std::vector< CVector< double > * >::iterator itOld = OldData.begin();
+  std::vector< CVector< double > * >::iterator endOld = OldData.end();
+
+  size_t oldSize = (*it)->size();
   size_t newSize = 2 * (*it)->size();
 
-  for (; it != end; ++it)
-    (*it)->resize(newSize, true);
+  // We must not deallocate the old data since this will create a window of time
+  // were the GUI thread may access the old location before it is notified.
+  for (; itOld != endOld; ++itOld, ++it)
+    {
+      *it = new CVector< double >(newSize);
+      memcpy((*it)->array(), (*itOld)->array(), oldSize * sizeof(double));
+    }
 
   // Tell the curves that the location of the data has changed
   // otherwise repaint events could crash
@@ -1332,6 +1339,12 @@ void CopasiPlot::resizeCurveData(const size_t & activity)
                 break;
             }
         }
+    }
+
+  // It is now save to delete the old data since the GUI thread has been notified.
+  for (itOld = OldData.begin(); itOld != endOld; ++itOld)
+    {
+      pdelete(*itOld);
     }
 }
 
