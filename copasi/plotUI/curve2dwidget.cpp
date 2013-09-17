@@ -42,7 +42,27 @@ Curve2DWidget::~Curve2DWidget()
 
 bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
 {
-  if (!curve) return false;
+  if (!curve)
+    {
+      // We need to reset the widget to defaults
+      mpEditTitle->setText("");
+
+      mpObjectX = NULL;
+      mpEditX->setText("");
+
+      mpObjectY = NULL;
+      mpEditY->setText("");
+
+      mpBoxType->setCurrentIndex(0);
+      mpBoxLineSubType->setCurrentIndex(0);
+      mpBoxColor->clear();
+
+      mpCheckBefore->setChecked(false);
+      mpCheckDuring->setChecked(true);
+      mpCheckAfter->setChecked(false);
+
+      return true;
+    }
 
   if (curve->getType() != CPlotItem::curve2d) return false;
 

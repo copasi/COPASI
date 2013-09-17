@@ -315,23 +315,25 @@ CQPlotEditWidget* CQPlotSubwidget::selectControl(CPlotItem::Type type)
 
 void CQPlotSubwidget::selectPlotItem(CPlotItem* item)
 {
-  if (item == NULL) return;
+  CQPlotEditWidget* current = static_cast< CQPlotEditWidget * >(mpStack->currentWidget());
 
-  CQPlotEditWidget* current = selectControl(item->getType());
+  if (item != NULL)
+    {
+      current = selectControl(item->getType());
+    }
 
-  if (current == NULL)
+  if (item == NULL)
     {
       mpStack->setEnabled(false);
-      return;
     }
 
   current->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
   current->LoadFromCurveSpec(item);
 
-  if (mLastItem != NULL)
-    delete mLastItem;
+  pdelete(mLastItem);
 
-  mLastItem = new CPlotItem(*item);
+  if (item != NULL)
+    mLastItem = new CPlotItem(*item);
 }
 
 void CQPlotSubwidget::addCurveTab(const std::string & title,
@@ -833,6 +835,11 @@ bool CQPlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
   if (pspec->getItems().size() > 0)
     {
       mpListPlotItems->setCurrentRow(0, QItemSelectionModel::Select);
+    }
+  else
+    {
+      // We need to clear the current items display
+      selectPlotItem(NULL);
     }
 
   return true; //TODO really check
