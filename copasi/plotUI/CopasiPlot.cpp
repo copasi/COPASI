@@ -761,6 +761,7 @@ C_FLOAT64 CopasiPlot::MissingValue = std::numeric_limits<C_FLOAT64>::quiet_NaN()
 
 CopasiPlot::CopasiPlot(QWidget* parent):
   QwtPlot(parent),
+  mCurves(0),
   mCurveMap(),
   mDataBefore(0),
   mDataDuring(0),
@@ -777,6 +778,7 @@ CopasiPlot::CopasiPlot(QWidget* parent):
 
 CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
   QwtPlot(parent),
+  mCurves(0),
   mCurveMap(),
   mDataBefore(0),
   mDataDuring(0),
@@ -838,46 +840,56 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
   if (mpZoomer) mpZoomer->setEnabled(false);
 
-  size_t k, kmax = mpPlotSpecification->getItems().size();
+  // size_t k, kmax = mpPlotSpecification->getItems().size();
 
   setTitle(FROM_UTF8(mpPlotSpecification->getTitle()));
 
-  CPlotItem* pItem;
-
-  mCurves.resize(kmax);
-  //mHistoIndices.resize(kmax);
+  mCurves.resize(mpPlotSpecification->getItems().size());
+  mCurves = NULL;
 
   std::map< std::string, C2DPlotCurve * >::iterator found;
 
-  std::map< std::string, C2DPlotCurve * > CurveMap = mCurveMap;
-  mCurveMap.clear();
+  CCopasiVector< CPlotItem >::const_iterator itPlotItem = mpPlotSpecification->getItems().begin();
+  CCopasiVector< CPlotItem >::const_iterator endPlotItem = mpPlotSpecification->getItems().end();
 
-  //size_t HistogramIndex = 0;
+  CVector< bool > Visible(mpPlotSpecification->getItems().size());
+  Visible = true;
+  bool * pVisible = Visible.array();
 
-  for (k = 0; k < kmax; k++)
+  for (; itPlotItem != endPlotItem; ++itPlotItem, ++pVisible)
     {
-      pItem = mpPlotSpecification->getItems()[k];
-
-      C2DPlotCurve * pCurve;
-      bool Visible = true;
-
       // Qwt does not like it to reuse the curve as this may lead to access
       // violation. We therefore delete the curves but remember their visibility.
-      if ((found = CurveMap.find(pItem->CCopasiParameter::getKey())) != CurveMap.end())
+      if ((found = mCurveMap.find((*itPlotItem)->CCopasiParameter::getKey())) != mCurveMap.end())
         {
-          pCurve = found->second;
-          Visible = pCurve->isVisible();
-          pdelete(pCurve);
-          CurveMap.erase(found);
+          *pVisible = found->second->isVisible();
         }
+    }
 
+  // Remove unused curves if definition has changed
+  std::map< std::string, C2DPlotCurve * >::iterator it = mCurveMap.begin();
+  std::map< std::string, C2DPlotCurve * >::iterator end = mCurveMap.end();
+
+  for (; it != end; ++it)
+    pdelete(it->second);
+
+  mCurveMap.clear();
+
+  itPlotItem = mpPlotSpecification->getItems().begin();
+  pVisible = Visible.array();
+  C2DPlotCurve ** ppCurve = mCurves.array();
+  unsigned long int k = 0;
+
+  for (; itPlotItem != endPlotItem; ++itPlotItem, ++pVisible, ++ppCurve, ++k)
+    {
       // set up the curve
-      pCurve = new C2DPlotCurve(&mMutex,
-                                pItem->getType(),
-                                pItem->getActivity(),
-                                FROM_UTF8(pItem->getTitle()));
-      mCurves[k] = pCurve;
-      mCurveMap[pItem->CCopasiParameter::getKey()] = pCurve;
+      C2DPlotCurve * pCurve = new C2DPlotCurve(&mMutex,
+          (*itPlotItem)->getType(),
+          (*itPlotItem)->getActivity(),
+          FROM_UTF8((*itPlotItem)->getTitle()));
+      *ppCurve = pCurve;
+
+      mCurveMap[(*itPlotItem)->CCopasiParameter::getKey()] = pCurve;
 
       //color handling should be similar for different curve types
       QColor color;
@@ -886,28 +898,28 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
           || pCurve->getType() == CPlotItem::histoItem1d
           || pCurve->getType() == CPlotItem::bandedGraph)
         {
-          std::string colorstr = *pItem->getValue("Color").pSTRING;
+          std::string colorstr = *(*itPlotItem)->getValue("Color").pSTRING;
           color = CQPlotColors::getColor(colorstr, k);
         }
 
       pCurve->setPen(color);
       pCurve->attach(this);
 
-      showCurve(pCurve, Visible);
+      showCurve(pCurve, *pVisible);
 
       if (pCurve->getType() == CPlotItem::curve2d
           || pCurve->getType() == CPlotItem::bandedGraph)
         {
           pCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
 
-          unsigned C_INT32 linetype = *pItem->getValue("Line type").pUINT;
+          unsigned C_INT32 linetype = *(*itPlotItem)->getValue("Line type").pUINT;
 
           if (linetype == 0      //line
               || linetype == 3)  //line+symbols
             {
               pCurve->setStyle(QwtPlotCurve::Lines);
-              unsigned C_INT32 linesubtype = *pItem->getValue("Line subtype").pUINT;
-              C_FLOAT64 width = *pItem->getValue("Line width").pUDOUBLE;
+              unsigned C_INT32 linesubtype = *(*itPlotItem)->getValue("Line subtype").pUINT;
+              C_FLOAT64 width = *(*itPlotItem)->getValue("Line width").pUDOUBLE;
 
               switch (linesubtype) //symbol type
                 {
@@ -936,7 +948,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
           if (linetype == 1) //points
             {
-              C_FLOAT64 width = *pItem->getValue("Line width").pUDOUBLE;
+              C_FLOAT64 width = *(*itPlotItem)->getValue("Line width").pUDOUBLE;
               pCurve->setPen(QPen(color, width, Qt::SolidLine, Qt::RoundCap));
               pCurve->setStyle(QwtPlotCurve::Dots);
             }
@@ -949,7 +961,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
           if (linetype == 2      //symbols
               || linetype == 3)  //line+symbols
             {
-              unsigned C_INT32 symbolsubtype = *pItem->getValue("Symbol subtype").pUINT;
+              unsigned C_INT32 symbolsubtype = *(*itPlotItem)->getValue("Symbol subtype").pUINT;
 
               switch (symbolsubtype) //symbol type
                 {
@@ -979,20 +991,13 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
       if (pCurve->getType() == CPlotItem::histoItem1d)
         {
-          pCurve->setIncrement(*pItem->getValue("increment").pDOUBLE);
+          pCurve->setIncrement(*(*itPlotItem)->getValue("increment").pDOUBLE);
 
           pCurve->setStyle(QwtPlotCurve::Steps);
           pCurve->setYAxis(QwtPlot::yRight);
           pCurve->setCurveAttribute(QwtPlotCurve::Inverted);
         }
     }
-
-  // Remove unused curves if definition has changed
-  std::map< std::string, C2DPlotCurve * >::iterator it = CurveMap.begin();
-  std::map< std::string, C2DPlotCurve * >::iterator end = CurveMap.end();
-
-  for (; it != end; ++it)
-    pdelete(it->second);
 
   if (plotspec->isLogX())
     setAxisScaleEngine(xBottom, new QwtLog10ScaleEngine());
@@ -1134,8 +1139,8 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
 
   // We need to set the curve data here!
   size_t k = 0;
-  std::vector< C2DPlotCurve * >::iterator itCurves = mCurves.begin();
-  std::vector< C2DPlotCurve * >::iterator endCurves = mCurves.end();
+  C2DPlotCurve ** itCurves = mCurves.array();
+  C2DPlotCurve ** endCurves = itCurves + mCurves.size();
 
   for (; itCurves != endCurves; ++itCurves, ++k)
     {
@@ -1274,8 +1279,8 @@ void CopasiPlot::updateCurves(const size_t & activity)
     }
 
   size_t k = 0;
-  std::vector< C2DPlotCurve * >::iterator itCurves = mCurves.begin();
-  std::vector< C2DPlotCurve * >::iterator endCurves = mCurves.end();
+  C2DPlotCurve ** itCurves = mCurves.array();
+  C2DPlotCurve ** endCurves = itCurves + mCurves.size();
 
   for (; itCurves != endCurves; ++itCurves, ++k)
     if ((size_t)(*itCurves)->getActivity() == activity)
@@ -1307,8 +1312,8 @@ void CopasiPlot::resizeCurveData(const size_t & activity)
   // Tell the curves that the location of the data has changed
   // otherwise repaint events could crash
   size_t k = 0;
-  std::vector< C2DPlotCurve * >::iterator itCurves = mCurves.begin();
-  std::vector< C2DPlotCurve * >::iterator endCurves = mCurves.end();
+  C2DPlotCurve ** itCurves = mCurves.array();
+  C2DPlotCurve ** endCurves = itCurves + mCurves.size();
 
   for (; itCurves != endCurves; ++itCurves, ++k)
     {
@@ -1584,8 +1589,8 @@ bool CopasiPlot::saveData(const std::string & filename)
   bool FirstHistogram = true;
   size_t HistogramIndex = 0;
 
-  std::vector< C2DPlotCurve * >::iterator itCurves = mCurves.begin();
-  std::vector< C2DPlotCurve * >::iterator endCurves = mCurves.end();
+  C2DPlotCurve ** itCurves = mCurves.array();
+  C2DPlotCurve ** endCurves = itCurves + mCurves.size();
 
   for (; itCurves != endCurves; ++itCurves)
     {
