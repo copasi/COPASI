@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-//   $Revision: 1.48 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/05/02 23:45:03 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -82,7 +74,6 @@ private:
   mutable double mMaxY;
 };
 
-
 class CBandedGraphData : public QwtData
 {
 public:
@@ -125,7 +116,6 @@ private:
   mutable double mMinY;
   mutable double mMaxY;
 };
-
 
 class CHistoCurveData : public QwtData
 {
@@ -175,11 +165,11 @@ class C2DPlotCurve : public QwtPlotCurve
 public:
   C2DPlotCurve(QMutex * pMutex, const CPlotItem::Type & type,
                const COutputInterface::Activity & activity, const QString & title):
-      QwtPlotCurve(title),
-      mpMutex(pMutex),
-      mCurveType(type),
-      mIncrement(1.0),
-      mActivity(activity)
+    QwtPlotCurve(title),
+    mpMutex(pMutex),
+    mCurveType(type),
+    mIncrement(1.0),
+    mActivity(activity)
   {
     assert(mpMutex != NULL);
   }
@@ -210,7 +200,6 @@ protected:
   virtual void drawSymbols(QPainter *painter, const QwtSymbol &symbol,
                            const QwtScaleMap &xMap, const QwtScaleMap &yMap,
                            int from, int to) const;
-
 
 private:
   QMutex * mpMutex;
@@ -393,7 +382,7 @@ private:
   /**
    * The list of curves
    */
-  std::vector< C2DPlotCurve * > mCurves;
+  CVector< C2DPlotCurve * > mCurves;
 
   /**
    * A map between a specification identified by its key and a curve
