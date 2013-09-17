@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -812,19 +812,28 @@ bool CQPlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
   //clear tabWidget
   deleteCurves();
 
-  //reconstruct tabWidget from curve specs
-  const CCopasiVector<CPlotItem> & curves = pspec->getItems();
-  size_t i, imax = curves.size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      addPlotItem(curves[i]);
-    }
-
   mpListPlotItems->clearSelection();
 
-  if (imax > 0)
-    mpListPlotItems->setCurrentRow(0, QItemSelectionModel::Select);
+  //reconstruct tabWidget from curve specs
+  CCopasiVector<CPlotItem>::const_iterator it = pspec->getItems().begin();
+  CCopasiVector<CPlotItem>::const_iterator end = pspec->getItems().end();
+
+  QStringList PlotItems;
+
+  for (; it != end; ++it)
+    {
+      QString title = FROM_UTF8((*it)->getTitle());
+      PlotItems.append(title);
+
+      mList.insert(title, new CPlotItem(**it), true);
+    }
+
+  mpListPlotItems->addItems(PlotItems);
+
+  if (pspec->getItems().size() > 0)
+    {
+      mpListPlotItems->setCurrentRow(0, QItemSelectionModel::Select);
+    }
 
   return true; //TODO really check
 }
