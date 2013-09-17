@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -82,7 +82,22 @@ void HistoWidget::buttonPressedX()
 
 bool HistoWidget::LoadFromCurveSpec(const CPlotItem * curve)
 {
-  if (!curve) return false;
+  if (!curve)
+    {
+      // We need to reset the widget to defaults
+      mpEditTitle->setText("");
+
+      mpObjectX = NULL;
+      mpEditVariable->setText("");
+
+      mpEditIncrement->setText("");
+
+      mpCheckBefore->setChecked(false);
+      mpCheckDuring->setChecked(true);
+      mpCheckAfter->setChecked(false);
+
+      return true;
+    }
 
   if (curve->getType() != CPlotItem::histoItem1d) return false;
 
