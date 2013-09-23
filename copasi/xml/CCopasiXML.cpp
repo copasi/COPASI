@@ -1537,6 +1537,10 @@ bool CCopasiXML::saveLayoutList()
                       CCopasiMessage(CCopasiMessage::WARNING, MCXML + 21);
                       this->mMCXML21Issued = true;
                     }
+
+                  // Bug 1973: we still write out the attribute, so that older
+                  //           versions of COPASI do not refuse to read the model
+                  Attributes.add("metabolite", "");
                 }
 
 #ifdef USE_CRENDER_EXTENSION
