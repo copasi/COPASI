@@ -139,7 +139,7 @@ public:
       {
         const size_t reactionIndex = (*modeIt).first;
         const double coefficient = (*modeIt).second;
-        cnValueMap[reordered[reactionIndex]->getCN()] = coefficient;
+        cnValueMap[reordered[reactionIndex]->getCN()] = qAbs(coefficient);
         ++modeIt;
       }
 
