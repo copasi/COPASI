@@ -1058,7 +1058,7 @@ CLayout* CCopasiSpringLayout::createLayout(
       pReactionGlyph->setModelObjectKey((*reactIt)->getKey());
       //pReactionGlyph->getCurve().addCurveSegment(CLLineSegment(CLPoint(x, y),
       //                                             CLPoint(x + length, y)));
-
+      bool isReversible = (*reactIt)->isReversible();
       pResult->addReactionGlyph(pReactionGlyph);
 
       //now add the species reference glyphs.
@@ -1113,7 +1113,9 @@ CLayout* CCopasiSpringLayout::createLayout(
 
               compInfo[pComp].add((width + 4) * (height + 4));
 
-              role = CLMetabReferenceGlyph::SIDESUBSTRATE;
+              role = isReversible
+                     ? CLMetabReferenceGlyph::SIDEPRODUCT
+                     : CLMetabReferenceGlyph::SIDESUBSTRATE;
             }
           else
             {
@@ -1124,7 +1126,9 @@ CLayout* CCopasiSpringLayout::createLayout(
               if (mmIt != metabMap.end())
                 pMetabGlyph = mmIt->second;
 
-              role = CLMetabReferenceGlyph::SUBSTRATE;
+              role = isReversible
+                     ? CLMetabReferenceGlyph::PRODUCT
+                     : CLMetabReferenceGlyph::SUBSTRATE;
             }
 
           if (!pMetabGlyph)
