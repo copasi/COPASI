@@ -6739,7 +6739,7 @@ void CCopasiXMLParser::MetaboliteGlyphElement::start(const XML_Char *pszName, co
           const char * metabolite;
           key = mParser.getAttributeValue("key", papszAttrs);
           name = mParser.getAttributeValue("name", papszAttrs);
-          metabolite = mParser.getAttributeValue("metabolite", papszAttrs);
+          metabolite = mParser.getAttributeValue("metabolite", papszAttrs, false);
 
           mCommon.pMetaboliteGlyph = new CLMetabGlyph(name);
 #ifdef USE_CRENDER_EXTENSION
