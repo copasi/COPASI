@@ -108,7 +108,7 @@ const char * CCopasiMethod::XMLSubType[] =
   "AdaptiveSA",
   "Hybrid",
   "Hybrid (LSODA)",
-  "Hybrid (DSA-ODE45"
+  "Hybrid (DSA-ODE45)",
   "Hybrid (DSA-LSODAR)",
   "TimeScaleSeparation(ILDM,Deuflhard)",
   "TimeScaleSeparation(ILDM,Modified)",
@@ -126,7 +126,7 @@ const char * CCopasiMethod::XMLSubType[] =
   "Householder",
   "crossSectionMethod",
   "LinearNoiseApproximation",
-  NULL
+  ""
 };
 
 CCopasiMethod::CCopasiMethod():
