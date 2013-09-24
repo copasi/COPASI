@@ -1,12 +1,12 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
 #include <QComboBox>
 #include <QtGui/QSortFilterProxyModel>
@@ -90,6 +90,11 @@ void CQComboDelegate::updateEditorGeometry(QWidget *editor,
 void CQComboDelegate::setItems(int row, const QStringList* pComboItems)
 {
   mRowToItems[row] = pComboItems;
+}
+
+const QStringList& CQComboDelegate::getItems(int row)
+{
+  return mRowToItems[row]
 }
 
 void CQComboDelegate::slotCurrentIndexChanged(int index)
