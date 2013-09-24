@@ -40,8 +40,6 @@ public:
 
   void setItems(int row, const QStringList* pComboItems);
 
-  const QStringList& getItems(int row);
-
 protected slots:
   void slotCurrentIndexChanged(int index);
   void slotEditorDeleted(QObject * pObject);

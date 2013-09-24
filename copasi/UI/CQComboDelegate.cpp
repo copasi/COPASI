@@ -92,11 +92,6 @@ void CQComboDelegate::setItems(int row, const QStringList* pComboItems)
   mRowToItems[row] = pComboItems;
 }
 
-const QStringList& CQComboDelegate::getItems(int row)
-{
-  return mRowToItems[row]
-}
-
 void CQComboDelegate::slotCurrentIndexChanged(int index)
 {
   QComboBox * pEditor = dynamic_cast< QComboBox * >(sender());
