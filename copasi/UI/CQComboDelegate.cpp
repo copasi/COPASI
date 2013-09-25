@@ -40,19 +40,10 @@ QWidget *CQComboDelegate::createEditor(QWidget *parent,
 
   QComboBox *pEditor = new QComboBox(parent);
 
-  if (mpComboItems != NULL)
-    {
-      pEditor->addItems(*mpComboItems);
-    }
-  else
-    {
-      QMap< int, const QStringList * >::const_iterator found = mRowToItems.find(SourceIndex.row());
-
-      if (found != mRowToItems.end() && found.value() != NULL)
-        {
-          pEditor->addItems(*found.value());
-        }
-    }
+  if(getItems(SourceIndex.row()) != NULL)
+  {
+    pEditor->addItems(*getItems(SourceIndex.row()));
+  }
 
   mEditorToIndex[pEditor] = SourceIndex;
 
@@ -90,6 +81,23 @@ void CQComboDelegate::updateEditorGeometry(QWidget *editor,
 void CQComboDelegate::setItems(int row, const QStringList* pComboItems)
 {
   mRowToItems[row] = pComboItems;
+}
+
+const QStringList * CQComboDelegate::getItems(int row) const
+{
+  if (mpComboItems != NULL)
+  {
+    return mpComboItems;
+  }
+
+  QMap< int, const QStringList * >::const_iterator found = mRowToItems.find(row);
+
+  if (found != mRowToItems.end()) // OK to return found.value() = NULL
+  {
+    return found.value();
+  }
+
+  return NULL;
 }
 
 void CQComboDelegate::slotCurrentIndexChanged(int index)
