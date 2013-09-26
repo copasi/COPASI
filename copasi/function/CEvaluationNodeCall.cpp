@@ -346,7 +346,12 @@ std::string CEvaluationNodeCall::getCCodeString(const std::vector< std::string >
 {
   std::string DisplayString;
 
-  const std::string & Data = getData();
+  std::string Data;
+
+  if (mData.empty())
+    Data = getData();
+  else
+    Data = mData;
 
   if (mQuotesRequired)
     {
