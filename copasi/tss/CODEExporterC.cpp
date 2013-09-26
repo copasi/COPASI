@@ -1225,22 +1225,22 @@ std::string CODEExporterC::exportClosingString(const size_t tmp)
   switch (tmp)
     {
       case INITIAL:
-        return "#endif INITIAL\n";
+        return "#endif /* INITIAL */\n";
 
       case FIXED:
-        return "#endif FIXED\n";
+        return "#endif /* FIXED */\n";
 
       case ASSIGNMENT:
-        return "#endif ASSIGNMENT\n";
+        return "#endif /* ASSIGNMENT */\n";
 
       case HEADERS:
-        return "#endif FUNCTIONS_HEADERS\n";
+        return "#endif /* FUNCTIONS_HEADERS */\n";
 
       case FUNCTIONS:
-        return "#endif FUNCTIONS\n";
+        return "#endif /* FUNCTIONS */\n";
 
       case ODEs:
-        return "#endif ODEs\n";
+        return "#endif /* ODEs */\n";
 
       default:
         return " ";
