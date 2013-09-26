@@ -28,3 +28,4 @@ trace
 /autom4te.cache
 InitialDependencies.dot
 SimulationDependencies.dot
+*~
