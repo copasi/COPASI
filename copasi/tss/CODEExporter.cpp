@@ -599,7 +599,7 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
                   const CModelValue* modval;
                   modval = dynamic_cast<const CModelValue * >(pObject);
                   std::ostringstream value;
-                  value << modval->getInitialValue();
+                  value << exportNumber(modval->getInitialValue());
                   objectNodes[j]->setData(value.str());
                 }
 
@@ -681,7 +681,7 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
                   const CCompartment* comp;
                   comp = dynamic_cast<const CCompartment * >(pObject);
                   std::ostringstream value;
-                  value << comp-> getInitialValue();
+                  value << exportNumber(comp-> getInitialValue());
                   objectNodes[j]->setData(value.str());
                 }
 
@@ -821,6 +821,12 @@ bool CODEExporter::exportTitleData(const CModel* /* copasiModel */,
                                    std::ostream & /* os */)
 {return true;}
 
+std::string CODEExporter::exportNumber(double number)
+{
+  std::stringstream str; str << number;
+  return str.str();
+}
+
 /* export metabolites */
 bool CODEExporter::exportMetabolites(const CModel* copasiModel)
 {
@@ -861,7 +867,7 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
 
             value = metab->getInitialConcentration() * volume;
 
-            expression << value;
+            expression << exportNumber(value);
 
             break;
           }
@@ -879,7 +885,7 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
 
             value = metab->getInitialConcentration() * volume;
 
-            expression << value;
+            expression << exportNumber(value);
 
             break;
           }
@@ -940,7 +946,7 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
               }
             else
               {
-                more << value;
+                more << exportNumber(value);
                 expression << more.str() << tmp.str();
               }
 
@@ -1031,7 +1037,7 @@ bool CODEExporter::exportCompartments(const CModel* copasiModel)
         {
           case CModelEntity::FIXED:
           {
-            expression << comp->getInitialValue();
+            expression << exportNumber(comp->getInitialValue());
 
             break;
           }
@@ -1043,7 +1049,7 @@ bool CODEExporter::exportCompartments(const CModel* copasiModel)
           case CModelEntity::ODE:
           {
 
-            expression << comp->getInitialValue();
+            expression << exportNumber(comp->getInitialValue());
 
             break;
           }
@@ -1089,7 +1095,7 @@ bool CODEExporter::exportModelValues(const CModel* copasiModel)
         {
           case CModelEntity::FIXED:
           {
-            expression << modval->getInitialValue();
+            expression << exportNumber(modval->getInitialValue());
 
             break;
           }
@@ -1108,7 +1114,7 @@ bool CODEExporter::exportModelValues(const CModel* copasiModel)
 
           case CModelEntity::ODE:
           {
-            expression << modval->getInitialValue();
+            expression << exportNumber(modval->getInitialValue());
 
             break;
           }

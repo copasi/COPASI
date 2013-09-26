@@ -44,6 +44,8 @@
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
 
+#include <sbml/util/util.h>
+
 #include <iostream>
 #include <fstream>
 #include <ctype.h>
@@ -768,6 +770,18 @@ bool CODEExporterC::exportSingleCompartment(const CCompartment* comp, std::strin
     }
 
   return true;
+}
+
+std::string CODEExporterC::exportNumber(double number)
+{
+  if (util_isNaN(number))
+    return "NaN";
+
+  if (util_isInf(number))
+    return "INFINITY";
+
+  std::stringstream str; str << number;
+  return str.str();
 }
 
 bool CODEExporterC::exportSingleModVal(const CModelValue* modval, std::string & expression, std::string & comments)

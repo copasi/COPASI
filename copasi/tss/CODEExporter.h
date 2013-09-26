@@ -91,6 +91,8 @@ public:
 
   virtual void setReservedNames();
 
+  virtual std::string exportNumber(double number);
+
   virtual std::string translateTimeVariableName();
 
   virtual std::string translateObjectName(const std::string & realName);

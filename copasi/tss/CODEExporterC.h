@@ -34,6 +34,8 @@ public:
 
   virtual void setReservedNames();
 
+  virtual std::string exportNumber(double number);
+
   virtual std::string translateTimeVariableName();
 
   std::string setExportName(const CModelEntity::Status & status, size_t n[], size_t dependent);
