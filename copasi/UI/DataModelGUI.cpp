@@ -742,7 +742,7 @@ void DataModelGUI::importCellDesigner()
 
                           if (cd_importer.getLayout() == NULL)
                             {
-                              CCopasiMessage(CCopasiMessage::WARNING, "Sorry, CellDesigner annotations could not be importet.");
+                              CCopasiMessage(CCopasiMessage::WARNING, "Sorry, CellDesigner annotations could not be imported.");
                             }
                           else
                             {
