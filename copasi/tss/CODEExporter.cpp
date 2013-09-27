@@ -488,7 +488,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
               else if (typeString == "Model")
                 {
 
-                  if (pObject->getObjectName() != "Time" && pObject->getObjectName() != "Initial Time")
+                  if (pObject->getObjectName() != "Time" && pObject->getObjectName() != "Initial Time" && pObject->getObjectName() != "Avogadro Constant")
                     {
 
                       result << std::endl << getSingleLineComment() << "WARNING : reference to property other than initial time or transient time for model \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
@@ -576,6 +576,13 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
             {
               if (objectName == "Time")
                 objectNodes[j]->setData(NameMap[timeKey]);
+
+              if (objectName == "Avogadro Constant")
+                {
+                  std::ostringstream value;
+                  value << pDataModel->getModel()->getQuantity2NumberFactor();
+                  objectNodes[j]->setData(value.str());
+                }
 
               if (objectName == "Initial Time")
                 {
