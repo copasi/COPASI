@@ -120,9 +120,9 @@ CTrajectoryTask* SEDMLImporter::createCTrajectoryTaskFromSimulation(SedSimulatio
 }
 
 void SEDMLImporter::readListOfPlotsFromSedMLOutput(
-		COutputDefinitionVector *pLotList, CModel* pModel,
-		SedDocument *pSEDMLDocument,
-		std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap) {
+	COutputDefinitionVector *pLotList, CModel* pModel,
+	SedDocument *pSEDMLDocument,
+	std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap) {
 	size_t i, numOutput = pSEDMLDocument->getNumOutputs();
 	for (i = 0; i < numOutput; ++i) {
 		SedOutput* current = pSEDMLDocument->getOutput(i);
@@ -146,6 +146,8 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
 				CPlotItem * plItem;
 				const CCopasiObject * tmp;
 
+
+				if(SBMLType=="species"){
 				size_t iMet, imax = pModel->getMetabolites().size();
 				for (iMet = 0; iMet < imax; ++iMet) {
 					if (pModel->getMetabolites()[iMet]->getSBMLId() == yAxis) {
@@ -158,6 +160,34 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
 						break;
 					}
 				}
+			}else if(SBMLType=="reaction"){
+				size_t iMet, imax = pModel->getReactions().size();
+				for (iMet = 0; iMet < imax; ++iMet) {
+					if (pModel->getReactions()[iMet]->getSBMLId() == yAxis) {
+						tmp = pModel->getReactions()[iMet]->getFluxReference();
+						name2 = tmp->getCN();
+						itemTitle = tmp->getObjectDisplayName();
+						plItem = pPl->createItem(itemTitle, CPlotItem::curve2d);
+						plItem->addChannel(name1);
+						plItem->addChannel(name2);
+						break;
+					}
+				}
+			}else if(SBMLType=="parameter"){
+				size_t iMet, imax = pModel->getModelValues().size();
+				for (iMet = 0; iMet < imax; ++iMet) {
+					if (pModel->getModelValues()[iMet]->getSBMLId() == yAxis) {
+						tmp = pModel->getModelValues()[iMet]->getValueReference();
+						name2 = tmp->getCN();
+						itemTitle = tmp->getObjectDisplayName();
+						plItem = pPl->createItem(itemTitle, CPlotItem::curve2d);
+						plItem->addChannel(name1);
+						plItem->addChannel(name2);
+						break;
+					}
+				}
+
+			}
 
 			}
 			pPl->setLogX(false);
@@ -217,7 +247,7 @@ std::string SEDMLImporter::splitXpath(const std::string &xpath, std::string & SB
 
 }
 
-std::string SEDMLImporter::getDataGeneratorModelItemRefrenceId(SedDocument *pSEDMLDocument, std::string dataReference, std::string SBMLType){
+std::string SEDMLImporter::getDataGeneratorModelItemRefrenceId(SedDocument *pSEDMLDocument, std::string dataReference, std::string & SBMLType){
 	std::string modelReferenceId;
 
 	size_t i, iMax = pSEDMLDocument->getNumDataGenerators();

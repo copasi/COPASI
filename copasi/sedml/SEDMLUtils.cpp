@@ -5,7 +5,7 @@
  *      Author: dada
  */
 
-#include <zip.h>
+//#include <zip.h>
 #include <sstream>
 #include <iostream>
 #include <vector>
@@ -14,7 +14,9 @@
 int SEDMLUtils::processArchive(const std::string & archiveFile,
 		std::string &fileName, std::string &fileContent)
 {
+
 	int err = 0;
+	/*
 	const char * cArchive = archiveFile.c_str();
 
     //Open the ZIP archive
@@ -43,6 +45,7 @@ int SEDMLUtils::processArchive(const std::string & archiveFile,
 	//close the file and archive
 	zip_fclose(file);
 	zip_close(zip);
+	*/
 
     return err;
 }

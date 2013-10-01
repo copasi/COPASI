@@ -82,7 +82,7 @@ public:
 			SedDocument *pSedDocument,
 			std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap);
 
-	std::string getDataGeneratorModelItemRefrenceId(SedDocument *pSEDMLDocument, std::string dataReference, std::string SBMLType);
+	std::string getDataGeneratorModelItemRefrenceId(SedDocument *pSEDMLDocument, std::string dataReference, std::string &SBMLType);
 	std::string translateTargetXpathInSBMLId(const std::string &xpath, std::string &SBMLType);
 
 	/**
