@@ -1334,7 +1334,7 @@ bool CCopasiDataModel::exportSEDML(const std::string & fileName, bool overwriteF
 
    std::string sbmlDocument = "";
    sbmlDocument = this->exportSBMLToString(pExportHandler, 2, 3);
-   std::cout<<sbmlDocument<<std::endl;
+  // std::cout<<sbmlDocument<<std::endl; //for debuging
    if(sbmlDocument==""){
 	   CCopasiMessage(CCopasiMessage::EXCEPTION, "No support for exporting SEDML without SBML model");
    }

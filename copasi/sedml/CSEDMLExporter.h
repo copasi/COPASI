@@ -20,6 +20,19 @@ class SedBase;
 class CProcessReport;
 class CPlotSpecification;
 
+class CModelValue;
+class CReaction;
+class Event;
+class CModelEntity;
+class KineticLaw;
+class Model;
+class Parameter;
+class Rule;
+class SBase;
+class SBMLDocument;
+class SBMLIncompatibility;
+class XMLNode;
+
 class CSEDMLExporter {
 
 protected:
@@ -93,6 +106,12 @@ public:
 	 * Creates the Tasks for SEDML.
 	 */
 	//void createReports(CCopasiDataModel &dataModel);
+
+	/**
+	 *  This is a hack for spliting strings into two
+	 */
+	void splitStrings(const std::string &strings, char delim, std::vector<std::string> &stringsContainer);
+
 
 
 };

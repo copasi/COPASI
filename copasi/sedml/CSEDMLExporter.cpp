@@ -40,9 +40,14 @@
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotSpecification.h"
 #include "model/CModel.h"
+#include "model/CModelValue.h"
 #include "commandline/CLocaleString.h"
 
 
+#include "sbml/Model.h"
+#include "sbml/Species.h"
+#include "sbml/Parameter.h"
+#include "sbml/Reaction.h"
 
 const std::string CSEDMLExporter::exportModelAndTasksToString(CCopasiDataModel& dataModel,
 		std::string &sbmlModelSource,
@@ -99,12 +104,12 @@ bool CSEDMLExporter::exportModelAndTasks(CCopasiDataModel& dataModel,
 
 	/* write the sbml model document to a file */
 	std::ofstream sbmlOutFile(CLocaleString::fromUtf8(sbmlFileName).c_str(), std::ios::out | std::ios::trunc);
-	sbmlOutFile << sbmlDocument;
+    sbmlOutFile << sbmlDocument;
 	sbmlOutFile.close();
 
 	std::string str = this->exportModelAndTasksToString(dataModel, sedmlModelSource, sedmlLevel, sedmlVersion);
 
-	std::cout<<str<<std::endl;
+	//std::cout<<str<<std::endl; //only for debuging
 
 	if (!str.empty()) {
 		/* check if the file already exists.
@@ -138,6 +143,9 @@ void CSEDMLExporter::createSEDMLDocument(CCopasiDataModel& dataModel, std::strin
   assert(plotDef != NULL); //need to emit a message
   assert(pModel != NULL);
 
+ // CModelValue modelV;
+ // CCopasiVector <CModelValue> value = dataModel.getModel()->getModelValues();
+ // value.setObjectName("TestMe");
 
   if (pOldSEDMLDocument == NULL) {
 		this->mpSEDMLDocument = new SedDocument();
@@ -185,10 +193,10 @@ void CSEDMLExporter::createSimulations(CCopasiDataModel& dataModel, std::string 
  * Creates the models for SEDML.
  */
 void CSEDMLExporter::createModels(CCopasiDataModel& dataModel, std::string & modelRef) {
-	std::string modelId = "model1"; // onlu one model
+	modelRef = "model1";
 	SedModel *model = this->mpSEDMLDocument->createModel();
-	model->setId(modelId);
-	model->setSource(modelRef);
+	model->setId(modelRef);
+	model->setSource(modelRef+".xml");
 	model->setLanguage("urn:sedml:language:sbml");
 }
 
@@ -198,7 +206,7 @@ void CSEDMLExporter::createModels(CCopasiDataModel& dataModel, std::string & mod
 void CSEDMLExporter::createTasks(CCopasiDataModel& dataModel, std::string & simRef, std::string & modelRef)
 {
 	SedTask *task = this->mpSEDMLDocument->createTask();
-	SedSimulation * sim = this->mpSEDMLDocument->createUniformTimeCourse();
+	//SedSimulation * sim = this->mpSEDMLDocument->createUniformTimeCourse();
 	std::string taskId = "task1";
 	task->setId(taskId);
 	task->setSimulationReference(simRef),
@@ -211,6 +219,10 @@ void CSEDMLExporter::createTasks(CCopasiDataModel& dataModel, std::string & simR
  */
 void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::string & taskId)
 {
+	const CModel* pModel = dataModel.getModel();
+	std::vector<std::string> stringsContainer; //split string container
+	if (pModel == NULL) CCopasiMessage(CCopasiMessage::ERROR, "No model for this SEDML document. An SBML model must exist for every SEDML document.");
+
 	SedPlot2D* pPSedPlot;
 	SedCurve* pCurve; // = pPSedPlot->createCurve();
 
@@ -229,20 +241,20 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
 	SedPlot2D* pPSedlot;
 	SedDataGenerator *pPDGen;
 	if (!imax)
-		CCopasiMessage(CCopasiMessage::EXCEPTION, "No plot definition for this SEDML document.");
+		CCopasiMessage(CCopasiMessage::ERROR, "No plot definition for this SEDML document.");
 
 	for (i = 0; i < imax; i++) {
 		pPSedPlot = this->mpSEDMLDocument->createPlot2D();
 		const CPlotSpecification* pPlot = (*dataModel.getPlotDefinitionList())[i];
 		std::string plotName = pPlot->getObjectName();
+
 		char chars[] = "[]";
 		for (unsigned int ii = 0; ii < strlen(chars); ++ii) {
-			plotName.erase(std::remove(plotName.begin(), plotName.end(), chars[i]), plotName.end());
+			plotName.erase(std::remove(plotName.begin(), plotName.end(), chars[ii]), plotName.end());
 		}
 
 		std::ostringstream plotIdStream;
 		plotIdStream << "plot";
-	//	plotIdStream << "_";
 		plotIdStream << i+1;
 		pPSedPlot->setId(plotIdStream.str());
 		pPSedPlot->setName(plotName);
@@ -253,28 +265,103 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
 
 			pPDGen = this->mpSEDMLDocument->createDataGenerator();
 
-		/*	std::string strName = pPlotItem->getObjectName();
-
-			//remove unwanted characters from the plot item object name
-			char chars [] = "[]";
-			for (unsigned int i = 0; i < strlen(chars); ++i) {
-				strName.erase(std::remove(strName.begin(), strName.end(), chars[i]), strName.end());
-			} */
-
 			CCopasiObject *objectX, *objectY;
-
 			if (pPlotItem->getChannels().size() >= 1)
 				objectX = dataModel.getDataObject(pPlotItem->getChannels()[0]);
 
 			if (pPlotItem->getChannels().size() >= 2)
 				objectY = dataModel.getDataObject(pPlotItem->getChannels()[1]);
 
-			std::string yAxis = objectY->getObjectDisplayName();
+		std::string yAxis = objectY->getObjectDisplayName();
+		std::string targetXPathString ="";
 
-			//remove unwanted characters from the plot item object name
-			char chars[] = "[]";
-			for (unsigned int i = 0; i < strlen(chars); ++i) {
-				yAxis.erase(std::remove(yAxis.begin(), yAxis.end(), chars[i]), yAxis.end());
+		 std::string type = objectY->getObjectName();
+			if (type == "Concentration") {
+				targetXPathString = "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=\'";
+				//remove unwanted characters from the plot item object name
+				char concChars[] = "[]";
+				for (unsigned int ii = 0; ii < strlen(concChars); ++ii) {
+					yAxis.erase(std::remove(yAxis.begin(), yAxis.end(), concChars[ii]), yAxis.end());
+				}
+				CCopasiVector<CMetab>::const_iterator it = pModel->getMetabolites().begin(), endit = pModel->getMetabolites().end();
+				const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap();
+				std::map<CCopasiObject*, SBase*>::const_iterator pos;
+				const Species* pSBMLSpecies = NULL;
+				while (it != endit)
+				{
+					pos = copasi2sbmlmap.find(*it);
+
+					if (pos != copasi2sbmlmap.end())
+					{
+						pSBMLSpecies = dynamic_cast<const Species*>(pos->second);
+						std::string name = pSBMLSpecies->getName();
+						if(name.compare(yAxis) == 0){
+							//	  std::cout<<"Name: "<<pSBMLSpecies->getName()<<std::endl;
+							yAxis = pSBMLSpecies->getId();
+						}
+					}
+					++it;
+				}
+			} else if (type == "Flux") {
+				targetXPathString = "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id=\'";
+				splitStrings(yAxis, ')', stringsContainer);
+				yAxis = stringsContainer[0];
+
+				char fluxChars[] = "(";
+					for (unsigned int ii = 0; ii < strlen(fluxChars); ++ii) {
+						yAxis.erase(std::remove(yAxis.begin(), yAxis.end(), fluxChars[ii]), yAxis.end());
+					}
+
+				CCopasiVector<CReaction>::const_iterator it = pModel->getReactions().begin(), endit = pModel->getReactions().end();
+				const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap();
+				std::map<CCopasiObject*, SBase*>::const_iterator pos;
+				const Reaction* pSBMLReaction = NULL;
+
+				while (it != endit) {
+					pos = copasi2sbmlmap.find(*it);
+
+					if (pos != copasi2sbmlmap.end()) {
+						pSBMLReaction = dynamic_cast<const Reaction*>(pos->second);
+						std::string name = pSBMLReaction->getName();
+						if (name.compare(yAxis) == 0) {
+							yAxis = pSBMLReaction->getId();
+						}
+					}
+					++it;
+				}
+
+
+
+			} else if (type == "Value") {
+				targetXPathString = "/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=\'";
+				splitStrings(yAxis, '[', stringsContainer);
+				yAxis = stringsContainer[1];
+
+				char valueChars[] = "]";
+				for (unsigned int ii = 0; ii < strlen(valueChars); ++ii) {
+					yAxis.erase(std::remove(yAxis.begin(), yAxis.end(), valueChars[ii]), yAxis.end());
+				}
+
+				CCopasiVector<CModelValue>::const_iterator it = pModel->getModelValues().begin(), endit = pModel->getModelValues().end();
+				const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap();
+				std::map<CCopasiObject*, SBase*>::const_iterator pos;
+				const Parameter* pSBMLParameter = NULL;
+
+				while (it != endit) {
+					pos = copasi2sbmlmap.find(*it);
+
+					if (pos != copasi2sbmlmap.end()) {
+						pSBMLParameter =
+								dynamic_cast<const Parameter*>(pos->second);
+						std::string name = pSBMLParameter->getName();
+						if (name.compare(yAxis) == 0) {
+							yAxis = pSBMLParameter->getId();
+						}
+					}
+					++it;
+				}
+			} else {
+				return;
 			}
 
 			std::ostringstream idStrStream;
@@ -287,20 +374,27 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
 			pPDGen->setMath(SBML_parseFormula(pPDGen->getName().c_str()));
 
 			SedVariable * pPVar = pPDGen->createVariable();
-			pPVar->setId(pPDGen->getName());
+			std::ostringstream idVarStrStream;
+			idVarStrStream << "p";
+			idVarStrStream << i+1;
+			idVarStrStream<<"_";
+			idVarStrStream << pPDGen->getName() ;
+			pPVar->setId(idVarStrStream.str());
 			pPVar->setTaskReference(taskId);
 			pPVar->setName(pPDGen->getName());
 
 			//temporary method to set XPath target
 			std::ostringstream targetStrStream;
-			targetStrStream<<"/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=\'";
+			targetStrStream<<targetXPathString;
 			targetStrStream<<pPVar->getName();
 			targetStrStream<<"\']";
 			pPVar->setTarget(targetStrStream.str());
 
 			pCurve = pPSedPlot->createCurve();
 			std::ostringstream idCurveStrStream;
-			idCurveStrStream<<"curve_";
+			idCurveStrStream<<"p";
+			idCurveStrStream<<i+1;
+			idCurveStrStream<<"_curve_";
 			idCurveStrStream<<j+1;
 			pCurve->setId(idCurveStrStream.str());
 			pCurve->setLogX(pPlot->isLogX());
@@ -310,6 +404,24 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
 		}
 
 	}
+}
+
+//split: receives a char delimiter and string and a vector of strings that will contain the splited strings
+void CSEDMLExporter::splitStrings(const std::string &myString, char delim, std::vector<std::string> &stringsContainer){
+	    if (!stringsContainer.empty()) stringsContainer.clear();  // empty vector if necessary
+	    std::string buf = "";
+	    size_t i, iMax = myString.length();
+	    while (i < iMax) {
+	        if (myString[i] != delim){
+	            buf += myString[i];
+	        } else if (buf.length() > 0) {
+	            stringsContainer.push_back(buf);
+	            buf = "";
+	        }
+	        i++;
+	    }
+	    if (!buf.empty())
+	        stringsContainer.push_back(buf);
 }
 
 CSEDMLExporter::CSEDMLExporter() {
