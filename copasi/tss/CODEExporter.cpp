@@ -503,7 +503,13 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
                       result << std::endl << getSingleLineComment() << "WARNING : reference to property other than initial time or transient time for model \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
                 }
-
+              else if (typeString == "Reaction")
+                {
+                  if (pObject->getObjectName() != "Flux")
+                    {
+                      result << std::endl << getSingleLineComment() << "WARNING : reference to property other than Flux for Reaction \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                    }
+                }
               else
                 {
                   result << std::endl << getSingleLineComment() << "WARNING : expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\" contains reference to a value in object \"" << pObjectParent->getObjectName() << "\" of type \"" << typeString << "\" which is not supported in this ODE exporter Version.";
@@ -517,6 +523,17 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
     }
 
   return result.str();
+}
+
+size_t getReactionIndex(const CCopasiVector< CReaction > & reacs, const CReaction *react)
+{
+  for (size_t i = 0; i < reacs.size(); ++i)
+    {
+      if (reacs[i] == react)
+        return i;
+    }
+
+  return C_INVALID_INDEX;
 }
 
 std::string getQuantityParameterOrValue(const std::map< std::string, std::string >& map, const CCopasiDataModel* pDataModel)
@@ -720,6 +737,40 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
             {
               if (objectName == "Value")
                 objectNodes[j]->setData(NameMap[pObject->getKey()]);
+            }
+          else if (objectType == "Reaction")
+            {
+              if (objectName == "Flux")
+                {
+                  const CModel* copasiModel = pDataModel->getModel();
+                  const CReaction *react = static_cast<const CReaction*>(pObject);
+                  const CCopasiVector< CReaction > & reacs = copasiModel->getReactions();
+
+                  size_t index = getReactionIndex(reacs, react);
+
+                  if (index == C_INVALID_INDEX)
+                    {
+                      objectNodes[j]->setData("0");
+                      continue;
+                    }
+
+                  const CCopasiVector< CMetab > & metabs = copasiModel->getMetabolitesX();
+                  size_t indep_size = copasiModel->getNumIndependentReactionMetabs();
+                  size_t ode_size = copasiModel->getNumODEMetabs();
+                  const CMatrix< C_FLOAT64 > & redStoi = copasiModel->getRedStoi();
+
+                  std::ostringstream jequation;
+
+                  for (size_t j1 = 0; j1 < indep_size; ++j1)
+                    {
+                      if (fabs(redStoi[j1][index]) > 0.0)
+                        {
+                          jequation << equations[metabs[ode_size + j1]->getKey()];
+                        }
+                    }
+
+                  objectNodes[j]->setData(jequation.str());
+                }
             }
         }
     }
