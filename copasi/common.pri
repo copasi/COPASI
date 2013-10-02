@@ -130,6 +130,7 @@ debug {
   DEFINES += COPASI_EXTUNIT
   # DEFINES += WITH_MERGEMODEL
   DEFINES += COPASI_NONLIN_DYN
+  DEFINES += DEBUG_OPT
   }
 
 win32: STATIC_LINKAGE = yes
@@ -782,7 +783,9 @@ contains(BUILD_OS, Linux) {
       DEFINES += HAVE_MML
     }
 
-	LIBS *= -lGLU
+
+    LIBS *= -lGLU
+
 # only needed for the class CLSimpleImageTexturizer which is only
 # needed if we want to create bitmaps from layouts in the backend
 #contains(DEFINES,USE_CRENDER_EXTENSION) {           

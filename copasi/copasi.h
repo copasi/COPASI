@@ -108,10 +108,10 @@
 #endif
 
 #if (defined USE_MKL || defined USE_SUNPERF || ((defined Darwin || defined USE_LAPACK ) && defined __LP64__))
-# define C_INT int
+# define C_INT long int
 #else
 # if (defined USE_CLAPACK || defined USE_LAPACK || defined Darwin || defined __x86_64)
-#  define C_INT long
+#  define C_INT long int
 # else
 #  error Neither USE_CLAPACK, USE_LAPACK, USE_SUNPERF, or USE_MKL is defined!
 # endif

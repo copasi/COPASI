@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /**
  *  File name: COptProblem.cpp
@@ -603,7 +603,7 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
   mStoreResults = false;
 
   // Make sure the timer is accurate.
-  (*mCPUTime.getRefresh())();
+  mCPUTime.getRefresh();
 
   if (mSolutionValue == mWorstValue)
     return false;
@@ -642,7 +642,7 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
       calculate();
 
       // Make sure the timer is accurate.
-      (*mCPUTime.getRefresh())();
+      mCPUTime.getRefresh();
     }
 
   return true;
