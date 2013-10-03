@@ -33,8 +33,8 @@
 #include "utilities/utility.h"
 #include "utilities/CProcessReport.h"
 
-#include "clapackwrap.h"
-#include "blaswrap.h"
+#include "lapack/lapackwrap.h"
+#include "lapack/blaswrap.h"
 
 CNewtonMethod::CNewtonMethod(const CCopasiContainer * pParent):
   CSteadyStateMethod(CCopasiMethod::Newton, pParent),

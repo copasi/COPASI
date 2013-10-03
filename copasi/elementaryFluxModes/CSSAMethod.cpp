@@ -1,18 +1,10 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CSSAMethod.cpp,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/02 14:30:57 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH, University of Heidelberg,
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
@@ -23,8 +15,8 @@
 
 #include "copasi.h"
 
-#include "blaswrap.h"
-#include "clapackwrap.h"
+#include "lapack/blaswrap.h"
+#include "lapack/lapackwrap.h"
 
 #include "elementaryFluxModes/CSSAMethod.h"
 #include "elementaryFluxModes/CEFMTask.h"
@@ -42,11 +34,11 @@
  */
 CSSAMethod::CSSAMethod(const CSSAMethod & src,
                        const CCopasiContainer * pParent):
-    CEFMAlgorithm(src, pParent)
+  CEFMAlgorithm(src, pParent)
 {}
 
 CSSAMethod::CSSAMethod(const CCopasiContainer * pParent) :
-    CEFMAlgorithm(CCopasiMethod::stoichiometricStabilityAnalysis, pParent)
+  CEFMAlgorithm(CCopasiMethod::stoichiometricStabilityAnalysis, pParent)
 {}
 
 // taken from CEFMAlgorithm, modified to make reactions reversible, implicitely,
@@ -218,8 +210,8 @@ CSSAMethod::testForMixingStability()
 
   mIsMixingStable.clear();
 
-  C_FLOAT64 outarray[ijmax*ijmax];
-  memset(outarray, 0, ijmax*ijmax*sizeof(C_FLOAT64));
+  C_FLOAT64 outarray[ijmax * ijmax];
+  memset(outarray, 0, ijmax * ijmax * sizeof(C_FLOAT64));
 
   for (int ecIndex = 0; ecIndex < numECs; ++ecIndex)
     {
@@ -228,7 +220,7 @@ CSSAMethod::testForMixingStability()
       // add matrix and its extremeCurrent - upper triangle only
       for (int i = 0; i < ijmax; ++i)
         for (int j = i; j < ijmax; ++j)
-          outarray[i + j*ijmax] = inarray[i + j * ijmax] + inarray[j + i * ijmax];
+          outarray[i + j * ijmax] = inarray[i + j * ijmax] + inarray[j + i * ijmax];
 
       // get the eigenvalues AND eigenvectors:
       // input to dsyev_()
@@ -254,7 +246,7 @@ CSSAMethod::testForMixingStability()
       TriLogic state = TriTrue;
 
       int partMetabs[ijmax];
-      memset(&partMetabs, 0, ijmax*sizeof(int));
+      memset(&partMetabs, 0, ijmax * sizeof(int));
 
       for (int j = 0; j < EC.size(); ++j)
         {
@@ -300,7 +292,7 @@ CSSAMethod::testForMixingStability()
                   if (eigenvalues[i] == 0)
                     {
                       for (int j = 0; j < ijmax; ++ j)
-                        if (partMetabs[j] && outarray[i*ijmax + j])
+                        if (partMetabs[j] && outarray[i * ijmax + j])
                           if (++zeroes)
                             break;
 
@@ -344,7 +336,7 @@ CSSAMethod::decomposeJacobian()
       // transposed (mathematical) order, we compute kappa*Ei*N^T,
       // which corresponds to
       // (mTransposedKineticMatrix*diagE)*mStoichiometry
-      C_FLOAT64 dummy[m*n];
+      C_FLOAT64 dummy[m * n];
       dgemm_(&cN, &cN,
              &m, &n, &n, &alpha,
              mTransposedKineticMatrix.array(), &m ,
@@ -374,7 +366,7 @@ CSSAMethod::buildStoichiometry()
   int numCols = mStoi.size();
 
   mStoichiometry.resize(numRows, numCols);
-  memset(mStoichiometry.array(), 0, numRows*numCols*sizeof(C_FLOAT64));
+  memset(mStoichiometry.array(), 0, numRows * numCols * sizeof(C_FLOAT64));
 
   for (int i = 0; i < numRows; ++i)
     for (int j = 0; j < numCols; ++j)
@@ -393,7 +385,7 @@ CSSAMethod::buildKineticMatrix()
   C_FLOAT64 num_reactions = mNumReactions;
 
   mTransposedKineticMatrix.resize((C_INT64)num_reactions, (C_INT64)num_metabolites);
-  memset(mTransposedKineticMatrix.array(), 0, (int)(num_metabolites*num_reactions*sizeof(C_FLOAT64)));
+  memset(mTransposedKineticMatrix.array(), 0, (int)(num_metabolites * num_reactions * sizeof(C_FLOAT64)));
 
   CCopasiVector< CMetab > & metabOrder = mpModel->getMetabolitesX();
 

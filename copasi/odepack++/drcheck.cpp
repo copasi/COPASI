@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/drcheck.cpp,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:47:52 $
-// End CVS Header
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -26,9 +23,8 @@
 
 #include "CInternalSolver.h"
 
-#include "blaswrap.h"
-#include "clapackwrap.h"
-
+#include "lapack/blaswrap.h"
+#include "lapack/lapackwrap.h"
 
 #define dls001_1 (mpdls001_->_1)
 #define dls001_2 (mpdls001_->_2)

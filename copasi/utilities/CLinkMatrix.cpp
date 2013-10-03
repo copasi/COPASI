@@ -11,8 +11,8 @@
 
 #include "CCopasiVector.h"
 
-#include "blaswrap.h"
-#include "clapackwrap.h"
+#include "lapack/blaswrap.h"
+#include "lapack/lapackwrap.h"
 
 // Define to output debugging information
 // #define DEBUG_MATRIX

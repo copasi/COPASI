@@ -1,22 +1,10 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/blaswrap.h,v $
-//   $Revision: 1.17 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:20 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
-#ifndef __BLAS_H
-#define __BLAS_H
+#ifndef COPASI_blaswrap
+#define COPASI_blaswrap
 
 #ifdef min
 # undef min
@@ -28,6 +16,9 @@
 
 extern "C"
 {
+#ifdef HAVE_BLASWRAP_H
+# include <blaswrap.h>
+#else
 #ifdef USE_MKL
 # include "mkl_blas.h"
 #  define daxpy_ daxpy
@@ -39,9 +30,9 @@ extern "C"
 #  define idamax_ idamax
 #endif // USE_MKL
 
-#if (defined USE_CLAPACK || defined USE_LAPACK)
+#if (defined HAVE_CLAPACK_H || defined HAVE_LAPACK_H)
 
-# if (defined WIN32 && defined USE_LAPACK)
+# if (defined WIN32 && defined HAVE_LAPACK_H)
 #  define daxpy_ DAXPY
 #  define dcopy_ DCOPY
 #  define ddot_ DDOT
@@ -49,9 +40,9 @@ extern "C"
 #  define dnrm2_ DNRM2
 #  define dscal_ DSCAL
 #  define idamax_ IDAMAX
-# endif // WIN32 && USE_LAPACK
+# endif // WIN32 && HAVE_LAPACK_H
 
-# if (defined USE_CLAPACK && !defined NO_BLAS_WRAP)
+# if (defined HAVE_CLAPACK_H && !defined NO_BLAS_WRAP)
 #  define daxpy_ f2c_daxpy
 #  define dcopy_ f2c_dcopy
 #  define ddot_ f2c_ddot
@@ -59,11 +50,22 @@ extern "C"
 #  define dnrm2_ f2c_dnrm2
 #  define dscal_ f2c_dscal
 #  define idamax_ f2c_idamax
-# endif // USE_CLAPACK
+# endif // HAVE_CLAPACK_H
 
-# include "f2c.h"
-# include "blas.h"
-#endif // USE_CLAPACK || USE_LAPACK
+#endif // HAVE_CLAPACK_H || HAVE_LAPACK_H
+#endif // HAVE_BLAS_H
+
+# ifdef HAVE_F2C_H
+#  include <f2c.h>
+# else
+#  include "lapack/f2c.h"
+# endif
+
+# ifdef HAVE_BLAS_H
+#  include <blas.h>
+# else
+#  include "lapack/blas.h"
+# endif
 
 #ifdef USE_SUNPERF
 # include "sunperf.h"
@@ -100,10 +102,10 @@ using std::isnan;
 #endif // max
 
 #ifdef WIN32
-#if _MSC_VER < 1600
-# define min _cpp_min
-# define max _cpp_max
+# if _MSC_VER < 1600
+#  define min _cpp_min
+#  define max _cpp_max
+# endif
 #endif
-#endif // WIN32
 
-#endif // __BLAS_H
+#endif // COPASI_blaswrap

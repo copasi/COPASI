@@ -82,7 +82,7 @@ include_directories(
   "${CMAKE_CURRENT_SOURCE_DIR}/.."
   ${RAPTOR_INCLUDE_DIR}
   ${LIBEXPAT_INCLUDE_DIR}
-  ${LAPACK_CLAPACK_INCLUDE_DIR}
+  ${LAPACK_INCLUDE_DIR}
   ${LIBSBML_INCLUDE_DIR}
 
 )
@@ -96,7 +96,7 @@ endif()
 
 
 add_library(libCOPASI STATIC ${COPASI_SOURCES} ${COPASI_HEADERS})
-target_link_libraries(libCOPASI ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES})
+target_link_libraries(libCOPASI ${CLAPACK_LIBRARIES} ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES})
 set_target_properties (libCOPASI PROPERTIES OUTPUT_NAME "COPASISE")
 
 #need to link against iconv

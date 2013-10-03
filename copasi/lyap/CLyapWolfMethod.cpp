@@ -1,24 +1,17 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-//   $Revision: 1.21 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:54:54 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
 #include <string.h>
 #include <cmath>
 
@@ -31,11 +24,11 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "model/CState.h"
-#include "blaswrap.h"
+#include "lapack/blaswrap.h"
 
 CLyapWolfMethod::CLyapWolfMethod(const CCopasiContainer * pParent):
-    CLyapMethod(CCopasiMethod::lyapWolf, pParent),
-    mpState(NULL)
+  CLyapMethod(CCopasiMethod::lyapWolf, pParent),
+  mpState(NULL)
 {
   assert((void *) &mData == (void *) &mData.dim);
 
@@ -45,8 +38,8 @@ CLyapWolfMethod::CLyapWolfMethod(const CCopasiContainer * pParent):
 
 CLyapWolfMethod::CLyapWolfMethod(const CLyapWolfMethod & src,
                                  const CCopasiContainer * pParent):
-    CLyapMethod(src, pParent),
-    mpState(NULL)
+  CLyapMethod(src, pParent),
+  mpState(NULL)
 {
   assert((void *) &mData == (void *) &mData.dim);
 

@@ -36,8 +36,8 @@ endif()
 #todo: write test program that compiles against CopasiVersion.h and
 #      determines the version
 set(COPASI_VERSION_MAJOR 4)
-set(COPASI_VERSION_MINOR 9)
-set(COPASI_VERSION_BUILD 45)
+set(COPASI_VERSION_MINOR 11)
+set(COPASI_VERSION_BUILD 64)
 
 include (CMakeTestCCompiler)
 include (CheckCSourceCompiles)
@@ -54,7 +54,6 @@ CHECK_TYPE_SIZE("void*"  CMAKE_SIZEOF_VOID_P)
 
 set(CMAKE_INSTALL_LIBDIR lib CACHE PATH "Full path to the library output directory")
 mark_as_advanced(CMAKE_INSTALL_LIBDIR)
-
 
 set(COPASI_BUILD_TYPE "native")
 if (CMAKE_SIZEOF_VOID_P EQUAL 4)
@@ -118,12 +117,12 @@ endif(ENABLE_COPASI_DEBUG_TRACE)
 # Sven developed an option of scaling the residuals in the parameter estimation
 # by the current simulation value (instead of 0) this removes the bias when
 # using value scaled experimental data.
-option(ENABLE_COASI_PARAMETERFITTING_RESIDUAL_SCALING "Scale parameter estimation residuals with the simulation value" OFF)
-if (ENABLE_COASI_PARAMETERFITTING_RESIDUAL_SCALING)
+option(ENABLE_COPASI_PARAMETERFITTING_RESIDUAL_SCALING "Scale parameter estimation residuals with the simulation value" OFF)
+if (ENABLE_COPASI_PARAMETERFITTING_RESIDUAL_SCALING)
 
 add_definitions(-DCOASI_PARAMETERFITTING_RESIDUAL_SCALING)
 
-endif(ENABLE_COASI_PARAMETERFITTING_RESIDUAL_SCALING)
+endif(ENABLE_COPASI_PARAMETERFITTING_RESIDUAL_SCALING)
 
 option(ENABLE_NEW_PLOTSUBWIDGET "Enable new listview based plot subwidget" ON)
 if (ENABLE_NEW_PLOTSUBWIDGET)
@@ -168,6 +167,12 @@ option (BUILD_GUI "Disable this if you do not want to build the COPASI GUI (Copa
 
 find_package(OpenGL)
 
+if ( NOT CLAPACK_FOUND )
+  find_package(CLAPACK REQUIRED)
+endif ()
+
+include_directories(BEFORE ${CLAPACK_INCLUDE_DIR})
+
 find_package(EXPAT REQUIRED)
 include_directories(BEFORE ${EXPAT_INCLUDE_DIR})
 
@@ -194,30 +199,30 @@ find_package(ICONV)
 #platform specific defines
 
 if(UNIX)
-if(APPLE)
-add_definitions(-DDarwin)
-# COPASI dos not compile with apple llvm
-if(CMAKE_GENERATOR AND XCODE_VERSION)
-if(CMAKE_GENERATOR MATCHES "Xcode" AND (${XCODE_VERSION} VERSION_EQUAL 4 OR ${XCODE_VERSION} VERSION_GREATER 4))
-# Xcode 4 defaults to the Apple LLVM Compiler.
-# Override the default compiler selection because Blender only compiles with gcc
-set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "com.apple.compilers.llvmgcc42")
-endif()
-endif()
+  if(APPLE)
+    add_definitions(-DDarwin)
+    # COPASI dos not compile with apple llvm
+    if(CMAKE_GENERATOR AND XCODE_VERSION)
+      if(CMAKE_GENERATOR MATCHES "Xcode" AND (${XCODE_VERSION} VERSION_EQUAL 4 OR ${XCODE_VERSION} VERSION_GREATER 4))
+        # Xcode 4 defaults to the Apple LLVM Compiler.
+        # Override the default compiler selection because Blender only compiles with gcc
+        set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "com.apple.compilers.llvmgcc42")
+      endif()
+    endif()
+  else()
+    add_definitions(-DLinux)
+    if(NOT CYGWIN)
+      # on cygwin all code is position independent so -fPIC is not needed
+      set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing -fPIC")
+      set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing -fPIC")
+    endif()
+  endif()
 else()
-add_definitions(-DLinux)
-if(NOT CYGWIN)
-    # on cygwin all code is position independent so -fPIC is not needed
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing -fPIC")
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing -fPIC")
-endif()
-endif()
-else()
-if (CYGWIN)
-add_definitions(-DCygwin)
-else()
-add_definitions(-DWin32)
-endif()
+  if (CYGWIN)
+    add_definitions(-DCygwin)
+  else()
+    add_definitions(-DWin32)
+  endif()
 endif()
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
@@ -226,125 +231,10 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
   link_directories(/usr/local/lib)
 endif()
 
-#TODO if we are not on APPLE, we need MKL, CLAPACK or LAPACK
-if(NOT APPLE)
-
-# I go for the easier route simply let the user define what they want
-
-option(LAPACK_USE_MKL "Use MKL Lapack" OFF)
-option(LAPACK_USE_ACML "Use ACML Lapack" OFF)
-option(LAPACK_USE_LAPACK "Use Lapack" OFF)
-option(LAPACK_USE_CLAPACK "Use CLAPACK" ON)
-option(LAPACK_USE_NO_BLAS_WRAP "Use no blas wrap" ON)
-
-
-
 if (WIN32 AND NOT CYGWIN)
-add_definitions(-DLIBSBML_EXPORTS -DLIBLAX_EXPORTS)
-
-add_definitions(-DRAPTOR_STATIC)
-
-
+  add_definitions(-DLIBSBML_EXPORTS -DLIBLAX_EXPORTS)
+  add_definitions(-DRAPTOR_STATIC)
 endif()
-
-if (LAPACK_USE_MKL)
- add_definitions(-DUSE_MKL)
-endif()
-
-if (LAPACK_USE_ACML)
-  set(USE_ACML "yes")
-endif()
-
-if (LAPACK_USE_LAPACK)
- add_definitions(-DUSE_LAPACK)
-endif()
-if (LAPACK_USE_NO_BLAS_WRAP)
- add_definitions(-DNO_BLAS_WRAP)
-endif()
-if (LAPACK_USE_CLAPACK)
- add_definitions(-DUSE_CLAPACK)
- set(LAPACK_CLAPACK_LIBRARY "" CACHE FILEPATH "Path to the CLAPACK library"  )
- set(LAPACK_BLAS_LIBRARY "" CACHE FILEPATH "Path to the BLAS library"  )
- set(LAPACK_F2C_LIBRARY "" CACHE FILEPATH "Path to the F2C library"  )
- set(CLAPACK_LIBRARIES "${CLAPACK_LIBRARY};${BLAS_LIBRARY};${F2C_LIBRARY}")
- set(LAPACK_CLAPACK_INCLUDE_DIR "" CACHE PATH "Path to the CLAPACK includes"  )
- if (EXISTS ${LAPACK_CLAPACK_LIBRARY})
-	set (CLAPACK_FOUND "yes")
- endif()
-
- # this should no longer be necessary
- #if (EXISTS "${LAPACK_CLAPACK_INCLUDE_DIR}/f2c.h")
- #  configure_file("${LAPACK_CLAPACK_INCLUDE_DIR}/f2c.h" "${CMAKE_SOURCE_DIR}/copasi/f2c.h")
- # endif()
- # if (EXISTS "${LAPACK_CLAPACK_INCLUDE_DIR}/clapack.h")
- #  configure_file("${LAPACK_CLAPACK_INCLUDE_DIR}/clapack.h" "${CMAKE_SOURCE_DIR}/copasi/lapack.h")
- # endif()
-
-endif()
-
-## # if we use the intel compiler, we should look for the MKL first, otherwise
-## # we check for CLAPACK and if we can't find that, we look for lapack
-## # if we use CLAPACK, we should find a way to check whether it was compiled with BLASWRAP or not
-##
-## # TODO this actuall checks for several different flavors and it can probably
-## # TODO be used to find out whether we can use MKL, CLAPACK or LAPACK
-##
-## # right now, we only support static linkage
-## set(BLA_STATIC on)
-##
-## # first we check for the MKL
-## set(BLA_VENDOR "Intel(mkl)")
-## find_package(LAPACK)
-##
-##   if (LAPACK_FOUND)
-##     set(USE_MKL "yes")
-##     add_definitions(-DUSE_MKL)
-##   else (LAPACK_FOUND)
-##    # now we search for a generic lapack implementation
-##    set(BLA_VENDOR "Generic")
-##    find_package(LAPACK)
-##
-##    if (LAPACK_FOUND)
-##      # TODO find out if it is LAPACK or CLAPACK
-##      set(USE_LAPACK "yes")
-##      add_definitions(-DUSE_LAPACK)
-##
-##    else (LAPACK_FOUND)
-##       # check for AMD (ACML)
-##       # ACML needs -lgfortran and acml.h needs to be included somewhere
-##       # Should be rather easy to setup copasi.h accordingly
-##       set(BLA_VENDOR ACML)
-##       find_package(LAPACK)
-##       if (LAPACK_FOUND)
-##         set(USE_ACML "yes")
-##         add_definitions(-DUSE_ACML)
-##         message("ACML found, but COPASI can't use it yet, sorry. Please install a different lapack implementation.")
-##       else (LAPACK_FOUND)
-## 	    if (WIN32)
-## 		  # simply allow the LAPACK LIBRARIES to be specified
-##
-## 		else()
-##         message("Could not find a static lapack implementation, COPASI can't be build without one.")
-## 		endif()
-##       endif (LAPACK_FOUND)
-##       return()
-##     endif (LAPACK_FOUND)
-## endif (LAPACK_FOUND)
-##
-##   if(USE_LAPACK OR USE_CLAPACK)
-##     # TODO find out how many bytes a blas integer has
-##     # TODO and set a macro for C_INT that references a C integer type
-##     # TODO with the same size
-##     # For LAPACK, there are no headers and we need to find the size from
-##     # f2c.h, we should probably search for a f2c.h file close to where
-##     # the lapack library was found
-##   endif(USE_LAPACK OR USE_CLAPACK)
-
-else (NOT APPLE)
-  # TODO set the framework
-  include_directories(BEFORE /System/Library/Frameworks/Accelerate.framework/Headers)
-  add_definitions(-DDarwin)
-endif (NOT APPLE)
 
 if(BUILD_GUI)
   # find Qt4
@@ -370,7 +260,6 @@ if(BUILD_GUI)
   endif()
 
   endif(ENABLE_SBW_INTEGRATION)
-
 
   if (APPLE)
     # TODO Carbon is only needed for the GUI
@@ -631,8 +520,11 @@ message(STATUS "-----------------------------------------------------------
    Install Prefix    = ${CMAKE_INSTALL_PREFIX}
 
  Dependencies:
-
-   Raptor Lib        = ${RAPTOR_LIBRARY}
+   Vendor            = ${BLA_VENDOR}
+   LAPACK Libs       = ${CLAPACK_LIBRARIES}
+   LAPACK LDFLAGS    = ${CLAPACK_LINKER_FLAGS}
+  
+   Raptor Libs       = ${RAPTOR_LIBRARY}
    Raptor include    = ${RAPTOR_INCLUDE_DIR}
 
    libSBML lib       = ${LIBSBML_LIBRARY}

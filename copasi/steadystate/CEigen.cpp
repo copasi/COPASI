@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-//   $Revision: 1.52 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:11:53 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -52,52 +44,52 @@
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CSort.h"
 
-#include "clapackwrap.h"        //use CLAPACK
+#include "lapack/lapackwrap.h"        //use CLAPACK
 
 /**
  * Default constructor
  */
 CEigen::CEigen(const std::string & name,
                const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Eigen Values",
-                     CCopasiObject::Container),
-    mMaxrealpart(0),
-    mMaximagpart(0),
-    mNposreal(0),
-    mNnegreal(0),
-    mNreal(0),
-    mNimag(0),
-    mNcplxconj(0),
-    mNzero(0),
-    mStiffness(0),
-    mHierarchy(0),
+  CCopasiContainer(name, pParent, "Eigen Values",
+                   CCopasiObject::Container),
+  mMaxrealpart(0),
+  mMaximagpart(0),
+  mNposreal(0),
+  mNnegreal(0),
+  mNreal(0),
+  mNimag(0),
+  mNcplxconj(0),
+  mNzero(0),
+  mStiffness(0),
+  mHierarchy(0),
 
-    mMaxRealOfComplex(0.0),
-    mImagOfMaxComplex(0.0),
-    mFreqOfMaxComplex(0.0),
-    mOscillationIndicator(0.0),
-    mOscillationIndicator_EV(0.0),
-    mBifurcationIndicator_Hopf(0.0),
-    mBifurcationIndicator_Fold(0.0),
-    mBifurcationIndicator_Hopf_BDT(0.0),
-    mBifurcationIndicator_Fold_BDT(0.0),
+  mMaxRealOfComplex(0.0),
+  mImagOfMaxComplex(0.0),
+  mFreqOfMaxComplex(0.0),
+  mOscillationIndicator(0.0),
+  mOscillationIndicator_EV(0.0),
+  mBifurcationIndicator_Hopf(0.0),
+  mBifurcationIndicator_Fold(0.0),
+  mBifurcationIndicator_Hopf_BDT(0.0),
+  mBifurcationIndicator_Fold_BDT(0.0),
 
-    mResolution(0),
-    mJobvs('N'),
-    mSort('N'),
-    mpSelect(NULL),
-    mN(0),
-    mA(),
-    mLDA(0),
-    mSdim(0),
-    mR(),
-    mI(),
-    mpVS(NULL),
-    mLdvs(1),
-    mWork(1),
-    mLWork(4096),
-    mpBWork(NULL),
-    mInfo(0)
+  mResolution(0),
+  mJobvs('N'),
+  mSort('N'),
+  mpSelect(NULL),
+  mN(0),
+  mA(),
+  mLDA(0),
+  mSdim(0),
+  mR(),
+  mI(),
+  mpVS(NULL),
+  mLdvs(1),
+  mWork(1),
+  mLWork(4096),
+  mpBWork(NULL),
+  mInfo(0)
 {
   CONSTRUCTOR_TRACE;
   initObjects();
@@ -105,44 +97,44 @@ CEigen::CEigen(const std::string & name,
 
 CEigen::CEigen(const CEigen & src,
                const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    mMaxrealpart(src.mMaxrealpart),
-    mMaximagpart(src.mMaximagpart),
-    mNposreal(src.mNposreal),
-    mNnegreal(src.mNnegreal),
-    mNreal(src.mNreal),
-    mNimag(src.mNimag),
-    mNcplxconj(src.mNcplxconj),
-    mNzero(src.mNzero),
-    mStiffness(src.mStiffness),
-    mHierarchy(src.mHierarchy),
+  CCopasiContainer(src, pParent),
+  mMaxrealpart(src.mMaxrealpart),
+  mMaximagpart(src.mMaximagpart),
+  mNposreal(src.mNposreal),
+  mNnegreal(src.mNnegreal),
+  mNreal(src.mNreal),
+  mNimag(src.mNimag),
+  mNcplxconj(src.mNcplxconj),
+  mNzero(src.mNzero),
+  mStiffness(src.mStiffness),
+  mHierarchy(src.mHierarchy),
 
-    mMaxRealOfComplex(src.mMaxRealOfComplex),
-    mImagOfMaxComplex(src.mImagOfMaxComplex),
-    mFreqOfMaxComplex(src.mFreqOfMaxComplex),
-    mOscillationIndicator(src.mOscillationIndicator),
-    mOscillationIndicator_EV(src.mOscillationIndicator_EV),
-    mBifurcationIndicator_Hopf(src.mBifurcationIndicator_Hopf),
-    mBifurcationIndicator_Fold(src.mBifurcationIndicator_Fold),
-    mBifurcationIndicator_Hopf_BDT(src.mBifurcationIndicator_Hopf_BDT),
-    mBifurcationIndicator_Fold_BDT(src.mBifurcationIndicator_Fold_BDT),
+  mMaxRealOfComplex(src.mMaxRealOfComplex),
+  mImagOfMaxComplex(src.mImagOfMaxComplex),
+  mFreqOfMaxComplex(src.mFreqOfMaxComplex),
+  mOscillationIndicator(src.mOscillationIndicator),
+  mOscillationIndicator_EV(src.mOscillationIndicator_EV),
+  mBifurcationIndicator_Hopf(src.mBifurcationIndicator_Hopf),
+  mBifurcationIndicator_Fold(src.mBifurcationIndicator_Fold),
+  mBifurcationIndicator_Hopf_BDT(src.mBifurcationIndicator_Hopf_BDT),
+  mBifurcationIndicator_Fold_BDT(src.mBifurcationIndicator_Fold_BDT),
 
-    mResolution(src.mResolution),
-    mJobvs(src.mJobvs),
-    mSort(src.mSort),
-    mpSelect(NULL),
-    mN(src.mN),
-    mA(src.mA),
-    mLDA(src.mLDA),
-    mSdim(src.mSdim),
-    mR(src.mR),
-    mI(src.mI),
-    mpVS(NULL),
-    mLdvs(src.mLdvs),
-    mWork(src.mWork),
-    mLWork(src.mLWork),
-    mpBWork(NULL),
-    mInfo(src.mInfo)
+  mResolution(src.mResolution),
+  mJobvs(src.mJobvs),
+  mSort(src.mSort),
+  mpSelect(NULL),
+  mN(src.mN),
+  mA(src.mA),
+  mLDA(src.mLDA),
+  mSdim(src.mSdim),
+  mR(src.mR),
+  mI(src.mI),
+  mpVS(NULL),
+  mLdvs(src.mLdvs),
+  mWork(src.mWork),
+  mLWork(src.mLWork),
+  mpBWork(NULL),
+  mInfo(src.mInfo)
 {
   CONSTRUCTOR_TRACE;
   initObjects();
@@ -184,7 +176,6 @@ void CEigen::initObjects()
   addObjectReference("Fold bifurcation test function", mBifurcationIndicator_Fold, CCopasiObject::ValueDbl);
   addObjectReference("Hopf bifurcation test function (BDT)", mBifurcationIndicator_Hopf_BDT, CCopasiObject::ValueDbl);
   addObjectReference("Fold bifurcation test function (BDT)", mBifurcationIndicator_Fold_BDT, CCopasiObject::ValueDbl);
-
 }
 
 /**
@@ -592,7 +583,6 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
 
   mHierarchy = distt / tott / (mN - 1);
 
-
   //we calculate an oscillation indicator based on the eigenvalues. It is using a rather heuristical approach
   if (mN < 2) // at least 2 Eigenvalues are required for oscillations
     mOscillationIndicator_EV = 0;
@@ -603,7 +593,6 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
       else
         mOscillationIndicator_EV = 2 * mR[1] - (mR[0] > 0 ? 2 * mR[0] : 0);
     }
-
 
   //bifurcation test functions, according to Kuznetsov "Elements of applied bifurcation theory"
   // this function can also be calculated without using the eigenvalues, but since we already
@@ -630,7 +619,7 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
 
   for (i = 0; (C_INT) i < mN - 1; i++)
     {
-      tmpcpl *= (std::complex<C_FLOAT64>(mR[i], mI[i]) + std::complex<C_FLOAT64>(mR[i+1], mI[i+1]));
+      tmpcpl *= (std::complex<C_FLOAT64>(mR[i], mI[i]) + std::complex<C_FLOAT64>(mR[i + 1], mI[i + 1]));
     }
 
   mBifurcationIndicator_Hopf = (tmpcpl.real());
@@ -656,7 +645,6 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
     }
 
   mBifurcationIndicator_Hopf_BDT = tmp_product;
-
 
   mOscillationIndicator = 0.0; //not used at the moment.
 }
@@ -743,7 +731,7 @@ std::ostream &operator<<(std::ostream &os, const CEigen &A)
 
   if (A.mImagOfMaxComplex > A.mResolution)
     os << " The complex eigenvalues with the largest real part are:  "
-    << A.mMaxRealOfComplex << " +|- " << A.mImagOfMaxComplex << "i" << std::endl;
+       << A.mMaxRealOfComplex << " +|- " << A.mImagOfMaxComplex << "i" << std::endl;
 
   // Output Eigen-nreal
   os.unsetf(std::ios_base::scientific);

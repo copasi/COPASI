@@ -19,8 +19,8 @@
 #include "utilities/CProcessReport.h"
 #include "report/CCopasiObjectReference.h"
 
-#include "blaswrap.h"
-#include "clapackwrap.h"
+#include "lapack/blaswrap.h"
+#include "lapack/lapackwrap.h"
 
 #define DEBUG_MATRIX
 

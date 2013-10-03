@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSparseMatrix.cpp,v $
-//   $Revision: 1.13 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:13:05 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -35,8 +27,8 @@
 #include "CSparseMatrix.h"
 #include "CMatrix.h"
 
-#include "blaswrap.h"
-#include "clapackwrap.h"
+#include "lapack/blaswrap.h"
+#include "lapack/lapackwrap.h"
 
 // ---------- CSparseMatrixElement
 
@@ -52,10 +44,10 @@ CSparseMatrixElement::CSparseMatrixElement(CSparseMatrix & matrix,
     const size_t & row,
     const size_t & col,
     const C_FLOAT64 & value):
-    mMatrix(matrix),
-    mRow(row),
-    mCol(col),
-    mValue(value)
+  mMatrix(matrix),
+  mRow(row),
+  mCol(col),
+  mValue(value)
 {}
 
 CSparseMatrixElement::~CSparseMatrixElement()
@@ -85,29 +77,29 @@ const size_t & CSparseMatrixElement::col() const {return mCol;}
 
 CSparseMatrix::CSparseMatrix(const size_t & rows,
                              const size_t & cols):
-    mThreshold(std::numeric_limits< C_FLOAT64 >::epsilon()),
-    mNumRows(0),
-    mNumCols(0),
-    mRowIndex(),
-    mColIndex(),
-    mRows(),
-    mCols(),
-    mSearchRow(0),
-    mSearchCol(0),
-    mElement(*this, this->mSearchRow, this->mSearchCol, 0.0)
+  mThreshold(std::numeric_limits< C_FLOAT64 >::epsilon()),
+  mNumRows(0),
+  mNumCols(0),
+  mRowIndex(),
+  mColIndex(),
+  mRows(),
+  mCols(),
+  mSearchRow(0),
+  mSearchCol(0),
+  mElement(*this, this->mSearchRow, this->mSearchCol, 0.0)
 {resize(rows, cols);}
 
 CSparseMatrix::CSparseMatrix(const CCompressedColumnFormat & ccf):
-    mThreshold(std::numeric_limits< C_FLOAT64 >::epsilon()),
-    mNumRows(0),
-    mNumCols(0),
-    mRowIndex(),
-    mColIndex(),
-    mRows(),
-    mCols(),
-    mSearchRow(0),
-    mSearchCol(0),
-    mElement(*this, this->mSearchRow, this->mSearchCol, 0.0)
+  mThreshold(std::numeric_limits< C_FLOAT64 >::epsilon()),
+  mNumRows(0),
+  mNumCols(0),
+  mRowIndex(),
+  mColIndex(),
+  mRows(),
+  mCols(),
+  mSearchRow(0),
+  mSearchCol(0),
+  mElement(*this, this->mSearchRow, this->mSearchCol, 0.0)
 {*this = ccf;}
 
 CSparseMatrix::~CSparseMatrix()
@@ -192,7 +184,7 @@ CSparseMatrix & CSparseMatrix::operator = (const CCompressedColumnFormat & ccf)
 
   for (j = 0, i = 0; j < mNumCols; j++, pColumnStart++)
     {
-      mCols[j].resize(*pColumnStart - *(pColumnStart - 1));
+      mCols[j].resize(*pColumnStart - * (pColumnStart - 1));
 
       for (k = 0; i < *pColumnStart; i++, k++, pRowIndex++, pValue++)
         {
@@ -396,12 +388,12 @@ std::ostream &operator<<(std::ostream &os, const CSparseMatrix & A)
 
 CCompressedColumnFormat::const_row_iterator::const_row_iterator(const CCompressedColumnFormat * pMatrix,
     const size_t & rowIndex):
-    mpMatrix(pMatrix),
-    mRowIndex(rowIndex),
-    mpRowIndex(NULL),
-    mColumnIndex(0),
-    mpColumnIndex(NULL),
-    mpCurrent(NULL)
+  mpMatrix(pMatrix),
+  mRowIndex(rowIndex),
+  mpRowIndex(NULL),
+  mColumnIndex(0),
+  mpColumnIndex(NULL),
+  mpCurrent(NULL)
 {
   if (mpMatrix &&
       mRowIndex != C_INVALID_INDEX &&
@@ -415,12 +407,12 @@ CCompressedColumnFormat::const_row_iterator::const_row_iterator(const CCompresse
 }
 
 CCompressedColumnFormat::const_row_iterator::const_row_iterator(const CCompressedColumnFormat::const_row_iterator & src):
-    mpMatrix(src.mpMatrix),
-    mRowIndex(src.mRowIndex),
-    mpRowIndex(src.mpRowIndex),
-    mColumnIndex(src.mColumnIndex),
-    mpColumnIndex(src.mpColumnIndex),
-    mpCurrent(src.mpCurrent)
+  mpMatrix(src.mpMatrix),
+  mRowIndex(src.mRowIndex),
+  mpRowIndex(src.mpRowIndex),
+  mColumnIndex(src.mColumnIndex),
+  mpColumnIndex(src.mpColumnIndex),
+  mpCurrent(src.mpCurrent)
 {}
 
 CCompressedColumnFormat::const_row_iterator::~const_row_iterator()
@@ -474,29 +466,29 @@ const size_t & CCompressedColumnFormat::const_row_iterator::getColumnIndex() con
 {return mColumnIndex;}
 
 CCompressedColumnFormat::CCompressedColumnFormat():
-    mNumRows(0),
-    mNumCols(0),
-    mpColumnStart(new size_t[1]),
-    mpRowIndex(NULL),
-    mpValue(NULL)
+  mNumRows(0),
+  mNumCols(0),
+  mpColumnStart(new size_t[1]),
+  mpRowIndex(NULL),
+  mpValue(NULL)
 {mpColumnStart[mNumCols] = 0;}
 
 CCompressedColumnFormat::CCompressedColumnFormat(const size_t & rows,
     const size_t & columns,
     const size_t & nonZeros):
-    mNumRows(rows),
-    mNumCols(columns),
-    mpColumnStart(new size_t[columns + 1]),
-    mpRowIndex(nonZeros ? new size_t[nonZeros] : NULL),
-    mpValue(nonZeros ? new C_FLOAT64[nonZeros] : NULL)
+  mNumRows(rows),
+  mNumCols(columns),
+  mpColumnStart(new size_t[columns + 1]),
+  mpRowIndex(nonZeros ? new size_t[nonZeros] : NULL),
+  mpValue(nonZeros ? new C_FLOAT64[nonZeros] : NULL)
 {mpColumnStart[mNumCols] = nonZeros;}
 
 CCompressedColumnFormat::CCompressedColumnFormat(const CSparseMatrix & matrix):
-    mNumRows(0),
-    mNumCols(0),
-    mpColumnStart(NULL),
-    mpRowIndex(NULL),
-    mpValue(NULL)
+  mNumRows(0),
+  mNumCols(0),
+  mpColumnStart(NULL),
+  mpRowIndex(NULL),
+  mpValue(NULL)
 {*this = matrix;}
 
 CCompressedColumnFormat::~CCompressedColumnFormat()

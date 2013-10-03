@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -9,19 +9,13 @@
 
   - From The Shogakukan DICTIONARY OF NEW ENGLISH (Second edition) */
 
-#ifndef F2C_INCLUDE
-#define F2C_INCLUDE
+#ifndef COPASI_f2c
+#define COPASI_f2c
 
 // for compatibility with default CLAPACK f2c
-#if ((defined __LP64__) && !(defined USE_CLAPACK))
-typedef int integer;
-typedef unsigned int uinteger;
-typedef int logical;
-#else
-typedef long integer;
-typedef unsigned long uinteger;
-typedef long logical;
-#endif
+typedef C_INT integer;
+typedef unsigned C_INT uinteger;
+typedef C_INT logical;
 
 typedef char *address;
 typedef short int shortint;
@@ -242,4 +236,4 @@ typedef doublereal E_f; /* real function with -R not specified */
 #undef unix
 #undef vax
 #endif
-#endif
+#endif // COPASI_f2c

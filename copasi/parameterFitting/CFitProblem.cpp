@@ -35,8 +35,8 @@
 #include "utilities/CCopasiException.h"
 #include "utilities/CAnnotatedMatrix.h"
 
-#include "blaswrap.h"           //use blas
-#include "clapackwrap.h"        //use CLAPACK
+#include "lapack/blaswrap.h"           //use blas
+#include "lapack/lapackwrap.h"        //use CLAPACK
 
 //  Default constructor
 CFitProblem::CFitProblem(const CCopasiTask::Type & type,

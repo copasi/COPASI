@@ -1,69 +1,99 @@
-# Locate libraptor
-# This module defines:
-# RAPTOR_INCLUDE_DIR, where to find the headers
+# - Try to find the Raptor RDF parsing library (http://librdf.org/raptor/)
+# Once done this will define
 #
-# RAPTOR_LIBRARY, RAPTOR_LIBRARY_DEBUG
-# RAPTOR_FOUND
+#  RAPTOR_FOUND       - system has Raptor
+#  RAPTOR_LIBRARIES   - Link these to use Raptor
+#  RAPTOR_INCLUDE_DIR - Include directory for using Raptor
+#  RAPTOR_DEFINITIONS - Compiler switches required for using Raptor
 #
-# $RAPTOR_DIR is an environment variable that would
-# correspond to the ./configure --prefix=$RAPTOR_DIR
+#  Capabilities
+#       RAPTOR_HAVE_TRIG   - Set if raptor has TRIG
+
+# (c) 2007-2011 Sebastian Trueg <trueg@kde.org>
+# (c) 2011 Artem Serebriyskiy <v.for.vandal@gmail.com>
+# (c) 2011 Michael Jansen <kde@michael-jansen.biz>
 #
-# Created by Robert Osfield.
-# Modified by Ralph Gauges
-
-find_path(RAPTOR_INCLUDE_DIR raptor.h
-    PATHS $ENV{RAPTOR_DIR}/include
-          $ENV{RAPTOR_DIR}
-          ~/Library/Frameworks
-          /Library/Frameworks
-          /usr/local/include
-          /usr/include/
-          /sw/include        # Fink
-          /opt/local/include # MacPorts
-          /opt/csw/include   # Blastwave
-          /opt/include
-          /usr/freeware/include
-)
+# Based on FindFontconfig Copyright (c) 2006,2007 Laurent Montel, <montel@kde.org>
+#
+# Redistribution and use is allowed according to the terms of the BSD license.
+# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
 
-find_library(RAPTOR_LIBRARY 
-    NAMES raptor 
-    PATHS $ENV{RAPTOR_DIR}/lib
-          $ENV{RAPTOR_DIR}/lib-dbg
-          $ENV{RAPTOR_DIR}
-          ~/Library/Frameworks
-          /Library/Frameworks
-          /usr/local/lib
-          /usr/local/lib64
-          /usr/lib
-          /usr/lib64
-          /sw/lib        # Fink
-          /opt/local/lib # MacPorts
-          /opt/csw/lib   # Blastwave
-          /opt/lib
-          /usr/freeware/lib64
-)
+MACRO ( FIND_RAPTOR )
 
-if (NOT RAPTOR_INCLUDE_DIR)
-message(FATAL_ERROR "raptor.h not found!")
-endif (NOT RAPTOR_INCLUDE_DIR)
+ENDMACRO ()
 
 
-if (NOT RAPTOR_LIBRARY)
-message(FATAL_ERROR "RAPTOR library not found!")
-endif (NOT RAPTOR_LIBRARY)
+
+# Check if we have cached results in case the last round was successful.
+if ( NOT( RAPTOR_INCLUDE_DIR AND RAPTOR_LIBRARIES ) OR NOT RAPTOR_FOUND )
+
+	set( RAPTOR_LDFLAGS )
+	
+    find_package(PkgConfig)
+
+    if ( NOT WIN32 )
+        pkg_check_modules(PC_RAPTOR QUIET raptor)
+        if ( PC_RAPTOR_FOUND )
+            set(RAPTOR_DEFINITIONS ${PC_RAPTOR_CFLAGS_OTHER})
+            set(RAPTOR_VERSION ${PC_RAPTOR_VERSION} CACHE STRING "Raptor Version found" )
+            string( REGEX REPLACE "^.*-lraptor;" "" RAPTOR_LDFLAGS "${PC_RAPTOR_STATIC_LDFLAGS}")
+        endif ()
+    endif ()
+    
+    find_path(RAPTOR_INCLUDE_DIR raptor.h
+	    PATHS $ENV{RAPTOR_DIR}/include
+	          $ENV{RAPTOR_DIR}
+	          ~/Library/Frameworks
+	          /Library/Frameworks
+	          /usr/local/include
+	          /usr/include/
+	          /sw/include        # Fink
+	          /opt/local/include # MacPorts
+	          /opt/csw/include   # Blastwave
+	          /opt/include
+	          /usr/freeware/include
+    )
 
 
-set(RAPTOR_FOUND "NO")
-if(RAPTOR_LIBRARY)
-    if (RAPTOR_INCLUDE_DIR)
-        set(RAPTOR_FOUND "YES")
-    endif(RAPTOR_INCLUDE_DIR)
-endif(RAPTOR_LIBRARY)
+    find_library(RAPTOR_LIBRARY 
+	    NAMES raptor 
+	    PATHS $ENV{RAPTOR_DIR}/lib
+	          $ENV{RAPTOR_DIR}/lib-dbg
+	          $ENV{RAPTOR_DIR}
+	          ~/Library/Frameworks
+	          /Library/Frameworks
+	          /usr/local/lib
+	          /usr/local/lib64
+	          /usr/lib
+	          /usr/lib64
+	          /sw/lib        # Fink
+	          /opt/local/lib # MacPorts
+	          /opt/csw/lib   # Blastwave
+	          /opt/lib
+	          /usr/freeware/lib64
+    )
 
-# handle the QUIETLY and REQUIRED arguments and set RAPTOR_FOUND to TRUE if 
-# all listed variables are TRUE
+  	if ( RAPTOR_LDFLAGS )
+  	  set( RAPTOR_LIBRARY ${RAPTOR_LIBRARY} ${RAPTOR_LDFLAGS} )
+	endif ()
+	
+    mark_as_advanced(RAPTOR_INCLUDE_DIR RAPTOR_LIBRARY)
+
+endif () # Check for cached values
+
 include(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(RAPTOR DEFAULT_MSG RAPTOR_LIBRARY RAPTOR_INCLUDE_DIR)
 
-mark_as_advanced(RAPTOR_INCLUDE_DIR RAPTOR_LIBRARY)
+find_package_handle_standard_args(
+    Raptor
+    VERSION_VAR   RAPTOR_VERSION
+    REQUIRED_VARS RAPTOR_LIBRARY RAPTOR_INCLUDE_DIR)
+
+mark_as_advanced(RAPTOR_VERSION)
+
+if (NOT RAPTOR_FOUND AND Raptor_FIND_VERSION_MAJOR EQUAL "2" AND NOT Raptor_FIND_QUIET )
+    pkg_check_modules(PC_RAPTOR QUIET raptor)
+    if (PC_RAPTOR_FOUND)
+        message( STATUS "You have raptor1 version ${PC_RAPTOR_VERSION} installed. Please update." )
+    endif ()
+endif ()

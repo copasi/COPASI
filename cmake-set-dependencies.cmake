@@ -56,19 +56,20 @@ if (NOT EXISTS ${RAPTOR_LIBRARY})
 set (RAPTOR_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/raptor.lib CACHE FILEPATH "raptor library" FORCE)
 endif()
 
-# clapack
-if (NOT EXISTS ${LAPACK_CLAPACK_INCLUDE_DIR})
-set (LAPACK_CLAPACK_INCLUDE_DIR ${COPASI_DEPENDENCY_DIR}/include CACHE PATH "clapack include directory" FORCE)
-endif()
-if (NOT EXISTS ${LAPACK_CLAPACK_LIBRARY})
-set (LAPACK_CLAPACK_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/lapack.lib CACHE FILEPATH "lapack library" FORCE)
-endif()
-if (NOT EXISTS ${LAPACK_BLAS_LIBRARY})
-set (LAPACK_BLAS_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/blas.lib CACHE FILEPATH "lapack library" FORCE)
-endif()
-if (NOT EXISTS ${LAPACK_F2C_LIBRARY})
-set (LAPACK_F2C_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/libf2c.lib CACHE FILEPATH "lapack library" FORCE)
-endif()
+  # clapack
+  set (CLAPACK_INCLUDE_DIR ${COPASI_DEPENDENCY_DIR}/include CACHE PATH "clapack include directory" FORCE)
+  set (CLAPACK_LIBRARIES
+       ${COPASI_DEPENDENCY_DIR}/lib/liblapack.lib;${COPASI_DEPENDENCY_DIR}/lib/libblas.lib;${COPASI_DEPENDENCY_DIR}/lib/libf2c.lib
+       CACHE FILEPATH "lapack library" FORCE)
+
+  add_definitions(-DHAVE_BLASWRAP_H)
+  add_definitions(-DHAVE_F2C_H)
+  add_definitions(-DHAVE_CLAPACK_H)
+  add_definitions(-DNO_BLAS_WRAP)
+  
+  set (BLA_VENDOR "COPASI Dependecies")
+  set (CLAPACK_FOUND TRUE)
+  mark_as_advanced(CLAPACK_INCLUDE_DIR CLAPACK_LIBRARIES)
 
 # cpp unit
 if (NOT EXISTS ${CPPUNIT_INCLUDE_DIR})
@@ -148,19 +149,20 @@ set (RAPTOR_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/libraptor.a CACHE FILEPATH "rap
 endif()
 
 if (NOT APPLE)
-# clapack
-if (NOT EXISTS ${LAPACK_CLAPACK_INCLUDE_DIR})
-set (LAPACK_CLAPACK_INCLUDE_DIR ${COPASI_DEPENDENCY_DIR}/include CACHE PATH "clapack include directory" FORCE)
-endif()
-if (NOT EXISTS ${LAPACK_CLAPACK_LIBRARY})
-set (LAPACK_CLAPACK_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/liblapack.a CACHE FILEPATH "lapack library" FORCE)
-endif()
-if (NOT EXISTS ${LAPACK_BLAS_LIBRARY})
-set (LAPACK_BLAS_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/libblas.a CACHE FILEPATH "lapack library" FORCE)
-endif()
-if (NOT EXISTS ${LAPACK_F2C_LIBRARY})
-set (LAPACK_F2C_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/libf2c.a CACHE FILEPATH "lapack library" FORCE)
-endif()
+  # clapack
+  set (CLAPACK_INCLUDE_DIR ${COPASI_DEPENDENCY_DIR}/include CACHE PATH "clapack include directory" FORCE)
+  set (CLAPACK_LIBRARIES
+       ${COPASI_DEPENDENCY_DIR}/lib/liblapack.a;${COPASI_DEPENDENCY_DIR}/lib/libblas.a;${COPASI_DEPENDENCY_DIR}/lib/libf2c.a
+       CACHE FILEPATH "lapack library" FORCE)
+
+  add_definitions(-DHAVE_BLASWRAP_H)
+  add_definitions(-DHAVE_F2C_H)
+  add_definitions(-DHAVE_CLAPACK_H)
+  add_definitions(-DNO_BLAS_WRAP)
+  
+  set (BLA_VENDOR "COPASI Dependecies")
+  set (CLAPACK_FOUND TRUE)
+  mark_as_advanced(CLAPACK_INCLUDE_DIR CLAPACK_LIBRARIES)
 endif()
 
 # cpp unit

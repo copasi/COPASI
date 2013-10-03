@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 // copasi.h
 //
@@ -107,14 +107,11 @@
 # define ios_base ios
 #endif
 
-#if (defined USE_MKL || defined USE_SUNPERF || ((defined Darwin || defined USE_LAPACK ) && defined __LP64__))
-# define C_INT long int
+// for compatibility with default CLAPACK f2c
+#if ((defined __LP64__) && !(defined HAVE_CLAPACK_H))
+# define C_INT int
 #else
-# if (defined USE_CLAPACK || defined USE_LAPACK || defined Darwin || defined __x86_64)
-#  define C_INT long int
-# else
-#  error Neither USE_CLAPACK, USE_LAPACK, USE_SUNPERF, or USE_MKL is defined!
-# endif
+# define C_INT long
 #endif
 
 enum TriLogic

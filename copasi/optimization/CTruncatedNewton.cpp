@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CTruncatedNewton.cpp,v $
-//   $Revision: 1.11 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/15 17:36:57 $
-// End CVS Header
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,8 +22,8 @@
 #include "copasi.h"
 #include "CTruncatedNewton.h"
 
-#include "blaswrap.h"
-#include "clapackwrap.h"
+#include "lapack/blaswrap.h"
+#include "lapack/lapackwrap.h"
 
 C_FLOAT64 step1_(C_FLOAT64 *fnew, C_FLOAT64 *fm, C_FLOAT64 *gtp,
                  C_FLOAT64 *smax);
@@ -708,7 +700,7 @@ L50:
 
   /* TEST FOR CONVERGENCE */
 
-  if ((alpha * pnorm < toleps *(one + xnorm) &&
+  if ((alpha * pnorm < toleps * (one + xnorm) &&
        fabs(difnew) < rtleps * ftest &&
        gtg < peps * ftest * ftest) ||
       gtg < *accrcy * 1e-4 * ftest * ftest)
@@ -741,7 +733,7 @@ L50:
   yksk = ddot_(n, &w[subscr_1.lyk], &c__1, &w[subscr_1.lsk], &c__1);
   lreset = FALSE_;
 
-  if (icycle == nm1 || difnew < epsred *(fkeep - fnew))
+  if (icycle == nm1 || difnew < epsred * (fkeep - fnew))
     {
       lreset = TRUE_;
     }
@@ -1217,7 +1209,7 @@ L60:
   yksk = ddot_(n, &w[subscr_1.lyk], &c__1, &w[subscr_1.lsk], &c__1);
   lreset = FALSE_;
 
-  if (icycle == nm1 || difnew < epsred *(fkeep - fnew))
+  if (icycle == nm1 || difnew < epsred * (fkeep - fnew))
     {
       lreset = TRUE_;
     }
@@ -1588,7 +1580,7 @@ L15:
   *conv = FALSE_;
   one = 1.;
 
-  if ((*alpha * *pnorm >= *toleps *(one + *xnorm) || fabs(*difnew) >= *
+  if ((*alpha * *pnorm >= *toleps * (one + *xnorm) || fabs(*difnew) >= *
        rtleps * *ftest || *gtg >= *peps * *ftest * *ftest) && *gtg >= *
       accrcy * 1e-4 * *ftest * *ftest)
     {
@@ -2861,8 +2853,8 @@ int CTruncatedNewton::getptc_(C_FLOAT64 *big, C_FLOAT64 * /* small */, C_FLOAT64
 
   /* Local variables */
   C_FLOAT64 half, abgw, fabsr, five, zero, p, q, r__, s, scale,
-  denom, three, a1, d1, d2, sumsq, point1, abgmin, chordm, eleven,
-  chordu;
+            denom, three, a1, d1, d2, sumsq, point1, abgmin, chordm, eleven,
+            chordu;
   C_INT convrg;
   C_FLOAT64 xmidpt, twotol, one;
 

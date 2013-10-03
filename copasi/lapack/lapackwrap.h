@@ -1,16 +1,14 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+#ifndef COPASI_lapackwrap
+#define COPASI_lapackwrap
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+#ifdef HAVE_LAPACKWRAP_H
+# include <lapackwrap.h>
+#else
 
 #ifdef min
 # undef min
@@ -22,7 +20,7 @@
 
 extern "C"
 {
-#if (defined USE_MKL || (defined WIN32 && defined USE_LAPACK))
+#if (defined HAVE_MKL || (defined WIN32 && defined HAVE_LAPACK_H))
 # define cbdsqr_ CBDSQR
 # define cgbbrd_ CGBBRD
 # define cgbcon_ CGBCON
@@ -1050,7 +1048,7 @@ extern "C"
 # define zhetri_ ZHETRI
 # define zhetrs_ ZHETRS
 # define zhgeqz_ ZHGEQZ
-# define zhpcon_ ZHPCON
+# define zhpcon_ ZHPCONLAPACK_INCLUDE_DIR
 # define zhpev_ ZHPEV
 # define zhpevd_ ZHPEVD
 # define zhpevx_ ZHPEVX
@@ -1241,27 +1239,33 @@ extern "C"
 # define zupgtr_ ZUPGTR
 # define zupmtr_ ZUPMTR
 # ifdef  USE_MKL
-#  include "mkl_lapack.h"
+#  include <mkl_lapack.h>
 # endif // USE_MKL
 #endif // USE_MKL || (WIN32 && USE_LAPACK)
 
-#if (defined USE_LAPACK)
-# include "f2c.h"
-# include "lapack.h"
-#endif // USE_LAPACK
+# ifdef HAVE_F2C_H
+#  include <f2c.h>
+# else
+#  include "copasi/lapack/f2c.h"
+# endif
 
-#if (defined USE_CLAPACK)
-# include "f2c.h"
-# include "clapack.h"
-#endif // USE_CLAPACK
+# if (defined HAVE_LAPACK_H)
+#  include <lapack.h>
+# else
+#  if (defined HAVE_CLAPACK_H)
+#   include <clapack.h>
+#  else
+#   include "copasi/lapack/lapack.h"
+#  endif
+# endif
 
 #ifdef USE_SUNPERF
 # include "sunperf.h"
 #endif // USE_SUNPERF
 }
 
-#ifdef Darwin
-# include "Accelerate.h"
+#ifdef HAVE_APPLE
+# include <Accelerate.h>
 # include <cmath>
 using std::isnan;
 #endif
@@ -1280,3 +1284,6 @@ using std::isnan;
 # define max _cpp_max
 #endif // _MSC_VER
 #endif // WIN32
+
+#endif // HAVE_LAPACKWRAP_H
+#endif // COPASI_lapackwrap

@@ -30,8 +30,8 @@
 #include "utilities/CAnnotatedMatrix.h"
 #include "report/CCopasiObjectReference.h"
 
-#include "clapackwrap.h"        // CLAPACK
-#include "blaswrap.h"           // BLAS
+#include "lapack/lapackwrap.h"        // CLAPACK
+#include "lapack/blaswrap.h"           // BLAS
 
 CCSPMethod::CCSPMethod(const CCopasiContainer * pParent):
   CTSSAMethod(CCopasiMethod::tssCSP, pParent) //,
