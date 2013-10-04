@@ -62,14 +62,21 @@ endif()
   # the default clapack uses the names 'lapack.lib' / 'blas.lib'
   set(CLAPACK_LIBRARY_LAPACK ${COPASI_DEPENDENCY_DIR}/lib/liblapack.lib)
   if (NOT EXISTS ${CLAPACK_LIBRARY_LAPACK})
-  set(CLAPACK_LIBRARY_LAPACK ${COPASI_DEPENDENCY_DIR}/lib/lapack.lib)
+    set(CLAPACK_LIBRARY_LAPACK ${COPASI_DEPENDENCY_DIR}/lib/lapack.lib)
   endif()
+  
   set(CLAPACK_LIBRARY_BLAS ${COPASI_DEPENDENCY_DIR}/lib/libblas.lib)
   if (NOT EXISTS ${CLAPACK_LIBRARY_BLAS})
-  set(CLAPACK_LIBRARY_BLAS ${COPASI_DEPENDENCY_DIR}/lib/blas.lib)
+    set(CLAPACK_LIBRARY_BLAS ${COPASI_DEPENDENCY_DIR}/lib/blas.lib)
   endif()
+  
+  set(CLAPACK_LIBRARY_F2C ${COPASI_DEPENDENCY_DIR}/lib/libf2c.lib)
+  if (NOT EXISTS ${CLAPACK_LIBRARY_F2C})
+    set(CLAPACK_LIBRARY_F2C ${COPASI_DEPENDENCY_DIR}/lib/f2c.lib)
+  endif()
+  
   set (CLAPACK_LIBRARIES
-       ${CLAPACK_LIBRARY_LAPACK};${CLAPACK_LIBRARY_BLAS};${COPASI_DEPENDENCY_DIR}/lib/libf2c.lib
+       ${CLAPACK_LIBRARY_LAPACK};${CLAPACK_LIBRARY_BLAS};${CLAPACK_LIBRARY_F2C}s
        CACHE FILEPATH "lapack library" FORCE)
 
   add_definitions(-DHAVE_BLASWRAP_H)
@@ -170,7 +177,7 @@ if (NOT APPLE)
   add_definitions(-DHAVE_CLAPACK_H)
   add_definitions(-DNO_BLAS_WRAP)
   
-  set (BLA_VENDOR "COPASI Dependecies")
+  set (BLA_VENDOR "COPASI Dependencies")
   set (CLAPACK_FOUND TRUE)
   mark_as_advanced(CLAPACK_INCLUDE_DIR CLAPACK_LIBRARIES)
 endif()
