@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <time.h>
 #ifdef WIN32
@@ -138,7 +138,7 @@ unsigned C_INT32 CRandom::getSystemSeed()
 #ifdef WIN32
   ThreadId = (unsigned C_INT32)(GetCurrentThreadId() & 0xffffffffUL);
 #elif defined(SYS_thread_selfid)
-  ThreadId = (unsigned C_INT32)(syscall(SYS_thread_selfid) & 0xffffffffUL);
+  ThreadId = (unsigned C_INT32)(::syscall(SYS_thread_selfid) & 0xffffffffUL);
 #elif defined(SYS_gettid)
   ThreadId = (unsigned C_INT32)(::syscall(SYS_gettid) & 0xffffffffUL);
 #elif defined(SYS_getthrid)

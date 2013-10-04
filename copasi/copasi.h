@@ -108,7 +108,7 @@
 #endif
 
 // for compatibility with default CLAPACK f2c
-#if ((defined __LP64__) && !(defined HAVE_CLAPACK_H))
+#if ((defined __LP64__) && (!(defined HAVE_CLAPACK_H) || (defined Darwin)))
 # define C_INT int
 #else
 # define C_INT long

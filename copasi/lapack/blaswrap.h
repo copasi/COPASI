@@ -42,7 +42,7 @@ extern "C"
 #  define idamax_ IDAMAX
 # endif // WIN32 && HAVE_LAPACK_H
 
-# if (defined HAVE_CLAPACK_H && !defined NO_BLAS_WRAP)
+# if (defined HAVE_CLAPACK_H && !defined NO_BLAS_WRAP && !defined HAVE_APPLE)
 #  define daxpy_ f2c_daxpy
 #  define dcopy_ f2c_dcopy
 #  define ddot_ f2c_ddot
@@ -72,8 +72,8 @@ extern "C"
 #endif // USE_SUNPERF
 }
 
-#ifdef Darwin
-# include "Accelerate.h"
+#ifdef HAVE_APPLE
+# include <Accelerate/Accelerate.h>
 # define daxpy_(N, ALPHA, X, INCX, Y, INCY) \
   cblas_daxpy(*N, *ALPHA, X, *INCX, Y, *INCY)
 # define dcopy_(N, X, INCX, Y, INCY) \
@@ -91,7 +91,7 @@ extern "C"
   cblas_idamax(*N, X, *INCX)
 # include <cmath>
 using std::isnan;
-#endif // Darwin
+#endif // HAVE_APPLE
 
 #ifdef min
 # undef min
