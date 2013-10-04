@@ -334,8 +334,11 @@ bool CLinkMatrix::rightMultiply(const C_FLOAT64 & alpha,
   // DGEMM (TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC)
   // C := alpha A B + beta C
 
-  dgemm_(&T, &T, &M, &N, &K, &alpha, const_cast< C_FLOAT64 * >(array()), &M,
-         m.array() + M, &LD, &alpha, p.array(), &M);
+  dgemm_(&T, &T, &M, &N, &K,
+         const_cast< C_FLOAT64 * >(&alpha),
+         const_cast< C_FLOAT64 * >(array()), &M,
+         const_cast< C_FLOAT64 * >(m.array()) + M, &LD,
+         const_cast< C_FLOAT64 * >(&alpha), p.array(), &M);
 
   return success;
 }
@@ -367,7 +370,8 @@ bool CLinkMatrix::leftMultiply(const C_FLOAT64 & alpha,
 
   // DGEMM (TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC)
   // C := alpha A B + beta C
-  dgemm_(&T, &T, &M, &N, &K, &Zero, &Zero, &M, &Zero, &N, &alpha, p.array(), &N);
+  dgemm_(&T, &T, &M, &N, &K, &Zero, &Zero, &M, &Zero, &N,
+         const_cast< C_FLOAT64 * >(&alpha), p.array(), &N);
   std::cout << p << std::endl;
 
   return success;
