@@ -289,10 +289,86 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix)
         if (fabs(*pTmp1) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()) *pTmp1 = 0.0;
       }
 
-#ifdef DEBUG_MATRIX
-  std::cout << "Link Zero Matrix:" << std::endl;
+// #ifdef DEBUG_MATRIX
+  std::cout << "Link Zero Matrix: " << std::endl;
   std::cout << *this << std::endl;
-#endif // DEBUG_MATRIX
+
+  std::cout << "Row Pivots: " << std::endl;
+  std::cout << mRowPivots << std::endl;
+// #endif // DEBUG_MATRIX
+
+  return success;
+}
+
+bool CLinkMatrix::rightMultiply(const C_FLOAT64 & alpha,
+                                const CMatrix< C_FLOAT64> & m,
+                                CMatrix< C_FLOAT64> & p) const
+{
+  bool success = true;
+
+  if (m.numCols() != mRowPivots.size())
+    {
+      return false;
+    }
+
+  // p := alpha * (m1, m2) * (I, L0')' = alpha * m1 + alpha * m2 * L0
+
+  char T = 'N';
+  C_INT M = (C_INT) getNumIndependent(); /* LDA, LDC */
+  C_INT N = (C_INT) m.numRows();
+  C_INT K = (C_INT) getNumDependent();
+  C_INT LD = (C_INT) m.numCols();
+
+  // p := m1
+  p.resize(N, M);
+
+  C_FLOAT64 *pRowP = p.array();
+  const C_FLOAT64 *pRowM = m.array();
+  C_FLOAT64 *pEnd = p.array() + p.size();
+
+  for (; pRowP < pEnd; pRowP += M, pRowM += LD)
+    {
+      memcpy(pRowP, pRowM, sizeof(C_FLOAT64) * M);
+    }
+
+  // DGEMM (TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC)
+  // C := alpha A B + beta C
+
+  dgemm_(&T, &T, &M, &N, &K, &alpha, const_cast< C_FLOAT64 * >(array()), &M,
+         m.array() + M, &LD, &alpha, p.array(), &M);
+
+  return success;
+}
+
+bool CLinkMatrix::leftMultiply(const C_FLOAT64 & alpha,
+                               const CMatrix< C_FLOAT64> & m,
+                               CMatrix< C_FLOAT64> & p) const
+{
+  bool success = true;
+
+  if (m.numRows() != numCols())
+    {
+      return false;
+    }
+
+  // p := alpha * L * m = (I, L0) * m = (alpha * m, alpha * L0 * m) = (p1, p2)
+  p.resize(mRowPivots.size(), m.numCols());
+  p = 0.0;
+
+  memcpy(p.array(), m.array(), sizeof(C_FLOAT64) * m.size());
+
+  char T = 'N';
+  C_INT M = (C_INT) m.numRows(); /* LDA, LDC */
+  C_INT N = (C_INT) m.numCols();
+  C_INT K = 1;
+
+  // p1 := alpha * m
+  C_FLOAT64 Zero = 0.0;
+
+  // DGEMM (TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC)
+  // C := alpha A B + beta C
+  dgemm_(&T, &T, &M, &N, &K, &Zero, &Zero, &M, &Zero, &N, &alpha, p.array(), &N);
+  std::cout << p << std::endl;
 
   return success;
 }
@@ -352,6 +428,52 @@ bool CLinkMatrix::applyRowPivot(CMatrix< C_FLOAT64 > & matrix) const
   return true;
 }
 
+bool CLinkMatrix::applyColumnPivot(CMatrix< C_FLOAT64 > & matrix) const
+{
+  if (matrix.numCols() < mRowPivots.size())
+    {
+      return false;
+    }
+
+  // We need to convert the pivot vector into a swap vector.
+
+  CVector< size_t > CurrentIndex(mRowPivots.size());
+
+  size_t * pCurrentIndex = CurrentIndex.array();
+  size_t * pEnd  = pCurrentIndex + mRowPivots.size();
+
+  for (size_t i = 0; pCurrentIndex != pEnd; ++pCurrentIndex, ++i)
+    {
+      *pCurrentIndex = i;
+    }
+
+  CVector< C_INT > JPVT(mRowPivots.size());
+  C_INT * pJPVT = JPVT.array();
+  pCurrentIndex = CurrentIndex.array();
+  const size_t * pPivot = mRowPivots.array();
+
+  for (; pCurrentIndex != pEnd; ++pPivot, ++pJPVT, ++pCurrentIndex)
+    {
+      size_t * pTo = & CurrentIndex[*pPivot];
+
+      *pJPVT =  *pTo + 1;
+
+      size_t tmp = *pCurrentIndex;
+      *pCurrentIndex = *pTo;
+      *pTo = tmp;
+    }
+
+  C_INT N = matrix.numRows();
+  C_INT LDA = matrix.numCols();
+  C_INT K1 = 1;
+  C_INT K2 = mRowPivots.size();
+  C_INT INCX = 1;
+
+  dlaswp_(&N, matrix.array(), &LDA, &K1, &K2, JPVT.array(), &INCX);
+
+  return true;
+}
+
 //**********************************************************************
 //                   CLinkMatrixView
 //**********************************************************************
@@ -359,10 +481,9 @@ bool CLinkMatrix::applyRowPivot(CMatrix< C_FLOAT64 > & matrix) const
 const C_FLOAT64 CLinkMatrixView::mZero = 0.0;
 const C_FLOAT64 CLinkMatrixView::mUnit = 1.0;
 
-CLinkMatrixView::CLinkMatrixView(const CLinkMatrix & A,
-                                 const size_t & numIndependent):
+CLinkMatrixView::CLinkMatrixView(const CLinkMatrix & A):
   mpA(&A),
-  mpNumIndependent(&numIndependent)
+  mpNumIndependent(&A.getNumIndependent())
 {CONSTRUCTOR_TRACE;}
 
 CLinkMatrixView::~CLinkMatrixView()

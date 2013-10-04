@@ -33,6 +33,25 @@ public:
   bool build(const CMatrix< C_FLOAT64 > & matrix);
 
   /**
+   * Right multiply the given matrix M with L, i.e., P = alpha M * L.
+   * Note the columns of M must be in the same order as L.
+   * @param const C_FLOAT64 & alpha
+   * @param const CMatrix< C_FLOAT64> & M
+   * @param CMatrix< C_FLOAT64> & P
+   * @result bool success;
+   */
+  bool rightMultiply(const C_FLOAT64 & alpha, const CMatrix< C_FLOAT64> & M, CMatrix< C_FLOAT64> & P) const;
+
+  /**
+   * Left multiply the given matrix M with L, i.e., P = L^T * M
+   * @param const C_FLOAT64 & alpha
+   * @param const CMatrix< C_FLOAT64> & M
+   * @param CMatrix< C_FLOAT64> & P
+   * @result bool success;
+   */
+  bool leftMultiply(const C_FLOAT64 & alpha, const CMatrix< C_FLOAT64> & M, CMatrix< C_FLOAT64> & P) const;
+
+  /**
    * Retrieve the pivot vector used to create the link matrix
    * @return const CVector< size_t > & rowPivots
    */
@@ -56,6 +75,13 @@ public:
    * @return bool success
    */
   bool applyRowPivot(CMatrix< C_FLOAT64 > & matrix) const;
+
+  /**
+   * Apply the column pivot
+   * @param CMatrix< C_FLOAT64 > & matrix
+   * @return bool success
+   */
+  bool applyColumnPivot(CMatrix< C_FLOAT64 > & matrix) const;
 
   /**
    * Apply the row pivot
@@ -129,8 +155,7 @@ public:
    * @param const const CLinkMatrix & A
    * @param const size_t & mNumIndependent
    */
-  CLinkMatrixView(const CLinkMatrix & A,
-                  const size_t & numIndependent);
+  CLinkMatrixView(const CLinkMatrix & A);
 
   /**
    * Destructor.

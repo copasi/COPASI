@@ -1,17 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMMethod.h,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2010/02/03 17:18:42 $
-   End CVS Header */
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -51,7 +48,7 @@ public:
    * Note: the returned object has to be released after use with delete
    */
   static CEFMMethod * createMethod(CCopasiMethod::SubType subType
-                                   = CCopasiMethod::RandomSearch);
+                                   = CCopasiMethod::EFMAlgorithm);
 
   /**
    * Copy constructor

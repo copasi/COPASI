@@ -415,19 +415,14 @@ public:
   //***************************************************
 
   /**
-   *  Get the Stoichiometry Matrix of this Model
-   */
-  const CMatrix < C_FLOAT64 > & getStoi() const;
-
-  /**
    *  Get the Reduced Stoichiometry Matrix of this Model
    */
-  const CMatrix < C_FLOAT64 >& getRedStoi() const;
+  const CMatrix < C_FLOAT64 > & getRedStoi() const;
 
   /**
-   *  Get the reordered stoichiometry matrix of this model
+   *  Get the stoichiometry matrix of this model
    */
-  const CMatrix < C_FLOAT64 >& getStoiReordered() const;
+  const CMatrix < C_FLOAT64 > & getStoi() const;
 
   /**
    * Return the mMoieties of this model
@@ -558,8 +553,7 @@ public:
    */
   void calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                          const C_FLOAT64 & derivationFactor,
-                         const C_FLOAT64 & resolution,
-                         const bool &userDefinedOrder = true);
+                         const C_FLOAT64 & resolution);
 
   /**
    * Calculates the Jacobian of the reduced model for the current
@@ -1311,7 +1305,7 @@ private:
   /**
    *   Stoichiometry Matrix
    */
-  CMatrix< C_FLOAT64 > mStoi;
+  CMatrix< C_FLOAT64 > mStoiInternal;
 
   /**
    * Column and Row Annotation for the reduced Stoichiometry Matrix
@@ -1321,7 +1315,7 @@ private:
   /**
    *   Stoichiometry Matrix
    */
-  CMatrix< C_FLOAT64 > mStoiReordered;
+  CMatrix< C_FLOAT64 > mStoi;
 
   /**
    *   Reduced Stoichiometry Matrix

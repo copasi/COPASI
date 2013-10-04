@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -6,9 +6,7 @@
 #ifndef CQPlotSubwidget_H
 #define CQPlotSubwidget_H
 
-#include <QMap>
-#include <QList>
-#include <QString>
+#include <QtCore/QVariant>
 
 #include "copasi/plotUI/ui_CQPlotSubwidget.h"
 

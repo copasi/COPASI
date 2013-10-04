@@ -6,6 +6,8 @@
 #ifndef HISTOWIDGET_H
 #define HISTOWIDGET_H
 
+#include <QtCore/QVariant>
+
 #include "copasi/plotUI/ui_HistoWidget.h"
 #include "copasi/plotUI/CQPlotEditWidget.h"
 
