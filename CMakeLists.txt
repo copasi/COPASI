@@ -78,11 +78,15 @@ endif(COPASI_DEPENDENCY_DIR AND EXISTS ${COPASI_DEPENDENCY_DIR})
 
 set(CMAKE_MODULE_PATH "${COPASI_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release CACHE STRING
-      "Choose the type of build, options are: Debug or Release."
-      FORCE)
-endif(NOT CMAKE_BUILD_TYPE)
+IF(DEFINED CMAKE_BUILD_TYPE)
+   SET(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING 
+   "Choose the type of build, options are: Debug or Release."
+   FORCE)
+ELSE()
+   SET(CMAKE_BUILD_TYPE Release CACHE STRING 
+   "Choose the type of build, options are: Debug or Release."
+   FORCE)
+ENDIF()
 
 if (BUILD_TESTS)
 find_path(CPPUNIT_INCLUDE_DIR cppunit/Test.h )
@@ -514,7 +518,7 @@ get_directory_property(DirDefs COMPILE_DEFINITIONS)
 
 message(STATUS "-----------------------------------------------------------
  Building COPASI
-
+   Build Type        = ${CMAKE_BUILD_TYPE}
    Source Dir        = ${CMAKE_SOURCE_DIR}
    Binary Dir        = ${CMAKE_BINARY_DIR}
    Install Prefix    = ${CMAKE_INSTALL_PREFIX}
