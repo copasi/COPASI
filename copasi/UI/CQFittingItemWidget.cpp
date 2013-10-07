@@ -558,7 +558,7 @@ bool CQFittingItemWidget::load(CCopasiDataModel * pDataModel,
 
               if (Key.empty())
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, "Could not find experiment for fit item '%s'.", fitItem->getObjectCN().c_str());
+                  CCopasiMessage(CCopasiMessage::ERROR, "Could not find experiment for fit item '%s'.", fitItem->getObjectCN().c_str());
                   continue;
                 }
 
@@ -579,7 +579,7 @@ bool CQFittingItemWidget::load(CCopasiDataModel * pDataModel,
 
               if (Key.empty())
                 {
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, "Could not find cross validation set for fit item '%s'.", fitItem->getObjectCN().c_str());
+                  CCopasiMessage(CCopasiMessage::ERROR, "Could not find cross validation set for fit item '%s'.", fitItem->getObjectCN().c_str());
                   continue;
                 }
 
