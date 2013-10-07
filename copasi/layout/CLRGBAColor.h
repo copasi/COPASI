@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRGBAColor.h,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/09/16 18:28:06 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,30 +6,16 @@
 #ifndef CLRGBACOLOR_H__
 #define CLRGBACOLOR_H__
 
-// opengl includes
-#ifdef WIN32
-# define WIN32_LEAN_AND_MEAN 1
-# include <windows.h>
-#endif // WIN32
-
-#ifdef __APPLE__
-#include "OpenGL/gl.h"
-#include "OpenGL/glu.h"
-#else
-#include "GL/gl.h"
-#include "GL/glu.h"
-#endif // __APPLE__
-
 struct CLRGBAColor
 {
   // red
-  GLubyte mR;
+  unsigned char mR;
   // green
-  GLubyte mG;
+  unsigned char mG;
   // blue
-  GLubyte mB;
+  unsigned char mB;
   // alpha
-  GLubyte mA;
+  unsigned char mA;
 };
 
 #endif /* CLRGBACOLOR_H__ */

@@ -86,23 +86,24 @@ if (NOT ENABLE_CRENDER_EXTENSION)
     ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLTransformation2D.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLUnresolvedReferenceException.cpp
   )
-  
-  if(NOT OPENGL_FOUND)
-  
-    list(REMOVE_ITEM SOURCES_LAYOUT
-      ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLLayoutRenderer.cpp
-  	  ${CMAKE_CURRENT_SOURCE_DIR}/layout/utility_classes.cpp
-    )
-	
-    list(REMOVE_ITEM HEADERS_LAYOUT
-      ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLFontRendererBase.h
-  	  ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLLayoutRenderer.h
-  	  ${CMAKE_CURRENT_SOURCE_DIR}/layout/utility_classes.h
-    )
-	
-  endif(NOT OPENGL_FOUND)
+
   
 endif (NOT ENABLE_CRENDER_EXTENSION)
+
+  
+if(NOT OPENGL_FOUND)
+
+  list(REMOVE_ITEM SOURCES_LAYOUT
+    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLLayoutRenderer.cpp
+	  ${CMAKE_CURRENT_SOURCE_DIR}/layout/utility_classes.cpp
+  )
+	
+  list(REMOVE_ITEM HEADERS_LAYOUT
+    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLFontRendererBase.h
+	  ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLLayoutRenderer.h
+	  ${CMAKE_CURRENT_SOURCE_DIR}/layout/utility_classes.h
+  )  
+endif(NOT OPENGL_FOUND)
 
 # remove other elements that 
 list(REMOVE_ITEM SOURCES_LAYOUT 
