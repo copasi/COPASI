@@ -546,13 +546,22 @@ bool CQFittingItemWidget::load(CCopasiDataModel * pDataModel,
         {
           if (!pExperimentMap) return false;
 
+          CFitItem *fitItem = static_cast<CFitItem *>(*it);
+
           // Change the key to reflect the local copy *mppExperimentSet
-          size_t j, jmax = static_cast<CFitItem *>(*it)->getExperimentCount();
+          size_t j, jmax = fitItem->getExperimentCount();
 
           for (j = 0; j < jmax; j++)
             {
               std::string & Key =
-                *const_cast<std::string *>(&static_cast<CFitItem *>(*it)->getExperiment(j));
+                *const_cast<std::string *>(&fitItem->getExperiment(j));
+
+              if (Key.empty())
+                {
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, "Could not find experiment for fit item '%s'.", fitItem->getObjectCN().c_str());
+                  continue;
+                }
+
               Key = pExperimentMap->find(Key)->second;
             }
 
@@ -561,12 +570,19 @@ bool CQFittingItemWidget::load(CCopasiDataModel * pDataModel,
           if (!pCrossValidationMap) return false;
 
           // Change the key to reflect the local copy *mppCrossValidationSet
-          jmax = static_cast<CFitItem *>(*it)->getCrossValidationCount();
+          jmax = fitItem->getCrossValidationCount();
 
           for (j = 0; j < jmax; j++)
             {
               std::string & Key =
-                *const_cast<std::string *>(&static_cast<CFitItem *>(*it)->getCrossValidation(j));
+                *const_cast<std::string *>(&fitItem->getCrossValidation(j));
+
+              if (Key.empty())
+                {
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, "Could not find cross validation set for fit item '%s'.", fitItem->getObjectCN().c_str());
+                  continue;
+                }
+
               Key = pCrossValidationMap->find(Key)->second;
             }
 
@@ -646,8 +662,13 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
             {
               std::string & Target =
                 *const_cast<std::string *>(&static_cast<CFitItem *>(*target)->getExperiment(j));
+              const std::string &Key = static_cast<CFitItem *>(*it)->getExperiment(j);
+
+              if (Key.empty())
+                continue;
+
               const std::string & Source =
-                pExperimentMap->find(static_cast<CFitItem *>(*it)->getExperiment(j))->second;
+                pExperimentMap->find(Key)->second;
 
               if (Target != Source)
                 {

@@ -234,7 +234,8 @@ std::string CFitItem::getExperiments() const
       if (i && pObject)
         Experiments += ", ";
 
-      Experiments += pObject->getObjectName();
+      if (pObject)
+        Experiments += pObject->getObjectName();
     }
 
   return Experiments;

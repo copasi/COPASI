@@ -24,6 +24,9 @@
 #include "UI/CProgressBar.h"
 #include "UI/CQExperimentData.h"
 
+#include <copasi/utilities/CCopasiMessage.h>
+#include <copasi/UI/CQMessageBox.h>
+
 #include "report/CKeyFactory.h"
 #include "parameterFitting/CFitTask.h"
 #include "parameterFitting/CFitItem.h"
@@ -258,6 +261,15 @@ bool CQFittingWidget::loadTask()
   mpCheckStatistics->setChecked(pProblem->getCalculateStatistics());
 
   mpParameters->load(mpDataModel, pProblem->getGroup("OptimizationItemList"), &mExperimentKeyMap, &mCrossValidationKeyMap);
+
+  if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::ERROR)
+    {
+      CQMessageBox::critical(this, "Error loading Parameter estimation task",
+                             CCopasiMessage::getAllMessageText().c_str(),
+                             QMessageBox::Ok | QMessageBox::Default,
+                             QMessageBox::NoButton);
+    }
+
   mpParameters->setExperimentSet(const_cast<const CExperimentSet *&>(mpExperimentSet));
 #ifdef COPASI_CROSSVALIDATION
   mpParameters->setCrossValidationSet(const_cast<const CCrossValidationSet *&>(mpCrossValidationSet));
