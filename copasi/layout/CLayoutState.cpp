@@ -147,7 +147,7 @@ CLayoutState::CLayoutState(const CLayout* layout)
 
 CLayoutState::~CLayoutState()
 {
-  std::map<std::string, CLBoundingBox*>::reverse_iterator it;
+  std::map<const std::string, CLBoundingBox*>::reverse_iterator it;
 
   for (it = mAdditionalState.rbegin(); it != mAdditionalState.rend(); ++it)
     {
@@ -174,7 +174,7 @@ CLayoutState::~CLayoutState()
       delete it->second;
     }
 
-  std::map<std::string, CLCurve*>::reverse_iterator curveIt;
+  std::map<const std::string, CLCurve*>::reverse_iterator curveIt;
 
   for (curveIt = mCurves.rbegin(); curveIt != mCurves.rend(); ++curveIt)
     {
