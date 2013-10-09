@@ -24,10 +24,10 @@
 #include "report/CCopasiRootContainer.h"
 
 #include "UI/CCopasiSelectionDialog.h"
-#include <QListWidgetItem>
-#include <QList>
-#include <QMap>
-#include <QMessageBox>
+#include <QtGui/QListWidgetItem>
+#include <QtCore/QList>
+#include <QtCore/QMap>
+#include <QtGui/QMessageBox>
 //-----------------------------------------------------------------------------
 
 /*
@@ -154,13 +154,13 @@ void CQPlotSubwidget::storeChanges()
           newItem->setTitle(current->getTitle());
           newItem->getChannels() = channels;
           newItem->setActivity(common->getActivity());
-          (CCopasiParameterGroup)(*newItem) = (CCopasiParameterGroup)(*newItem);
 
           mList[(*it)->text()] = newItem;
 
           delete current;
         }
 
+      pdelete(common);
       // assign multiple
     }
 }
@@ -231,7 +231,7 @@ void CQPlotSubwidget::deleteCurve(QListWidgetItem* item)
 
   delete mList[item->text()];
   mList.remove(item->text());
-  mLastSelection.remove(item);
+  mLastSelection.removeOne(item);
 
   delete mpListPlotItems->takeItem(getRow(item));
 }
@@ -273,11 +273,11 @@ void CQPlotSubwidget::addPlotItem(CPlotItem* item)
       title = (FROM_UTF8(item->getTitle()) + " %1").arg(++count);
     }
 
-  item->setTitle(title.ascii());
+  item->setTitle(TO_UTF8(title));
 
   QListWidgetItem *listItem = new QListWidgetItem(FROM_UTF8(item->getTitle()));
   mpListPlotItems->addItem(listItem);
-  mList.insert(FROM_UTF8(item->getTitle()), new CPlotItem(*item), true);
+  mList.insert(FROM_UTF8(item->getTitle()), new CPlotItem(*item));
   mpListPlotItems->setCurrentRow(mpListPlotItems->count() - 1);
 }
 
@@ -827,7 +827,7 @@ bool CQPlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
       QString title = FROM_UTF8((*it)->getTitle());
       PlotItems.append(title);
 
-      mList.insert(title, new CPlotItem(**it), true);
+      mList.insert(title, new CPlotItem(**it));
     }
 
   mpListPlotItems->addItems(PlotItems);

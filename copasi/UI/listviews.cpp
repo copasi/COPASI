@@ -98,11 +98,7 @@
 #include "report/CCopasiRootContainer.h"
 #include "report/CReportDefinitionVector.h"
 #include "plot/COutputDefinitionVector.h"
-#ifdef USE_NEW_PLOTSUBWIDGET
 #include "plotUI/CQPlotSubwidget.h"
-#else
-#include "plotUI/PlotSubwidget.h"
-#endif
 #include "model/CModel.h"
 
 #ifdef COPASI_NONLIN_DYN
@@ -428,15 +424,7 @@ void ListViews::ConstructNodeWidgets()
 
   mpPlotsWidget->hide();
 
-#ifdef USE_NEW_PLOTSUBWIDGET
-
   if (!mpPlotSubwidget) mpPlotSubwidget = new CQPlotSubwidget(this);
-
-#else
-
-  if (!mpPlotSubwidget) mpPlotSubwidget = new PlotSubwidget(this);
-
-#endif
 
   mpPlotSubwidget->hide();
 

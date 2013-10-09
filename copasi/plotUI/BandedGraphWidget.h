@@ -26,12 +26,10 @@ public:
   virtual bool LoadFromCurveSpec(const CPlotItem * curve);
   virtual bool SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original = NULL) const;
 
-#if USE_NEW_PLOTSUBWIDGET
   /**
    * In multiple edit mode, we don't want to edit name & channels
    */
   virtual void setMultipleEditMode(bool mode);
-#endif
 
 protected:
   const CCopasiObject* mpObjectYone;

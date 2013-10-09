@@ -344,7 +344,6 @@ void Curve2DWidget::typeChanged(int linetype)
     }
 }
 
-#if USE_NEW_PLOTSUBWIDGET
 /**
  * In multiple edit mode, we don't want to edit name & channels
  */
@@ -356,4 +355,3 @@ void Curve2DWidget::setMultipleEditMode(bool mode)
   mpBtnX->setEnabled(!mode);
   mpBtnY->setEnabled(!mode);
 }
-#endif

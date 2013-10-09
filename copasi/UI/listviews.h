@@ -95,13 +95,7 @@ class CQModelValue;
 class CQMathMatrixWidget;
 class CQLayoutsWidget;
 
-#ifdef USE_NEW_PLOTSUBWIDGET
 class CQPlotSubwidget;
-typedef CQPlotSubwidget PlotWindowType;
-#else
-class PlotSubwidget;
-typedef PlotSubwidget PlotWindowType;
-#endif
 
 //********************************************************************************
 
@@ -230,7 +224,7 @@ private:
   CQParameterSetsWidget * mpParameterSetsWidget;
   CQTabWidget * mpParameterSetWidget;
   CQPlotsWidget *mpPlotsWidget;
-  PlotWindowType *mpPlotSubwidget;
+  CQPlotSubwidget *mpPlotSubwidget;
   CQReactionsWidget *mpReactionsWidget;
   CQTabWidget *reactionsWidget1;
   ScanWidget *scanWidget;

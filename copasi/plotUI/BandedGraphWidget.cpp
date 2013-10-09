@@ -15,7 +15,6 @@
 #include "plot/CPlotItem.h"
 #include "resourcesUI/CQIconResource.h"
 
-#if USE_NEW_PLOTSUBWIDGET
 /**
  * In multiple edit mode, we don't want to edit name & channels
  */
@@ -29,7 +28,6 @@ void BandedGraphWidget::setMultipleEditMode(bool mode)
   mpBtnYone->setEnabled(!mode);
   mpBtnYtwo->setEnabled(!mode);
 }
-#endif
 
 /*
  *  Constructs a BandedGraphWidget as a child of 'parent', with the

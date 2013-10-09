@@ -114,9 +114,6 @@ DEFINES += CELLDESIGNER_IMPORT
 # flag to use Svens SBML unit identification framework
 #define USE_SBMLUNIT
 
-# enable this to use the new listwidget based plot specification window
-DEFINES += USE_NEW_PLOTSUBWIDGET
-
 # enable cross validation 
 DEFINES += COPASI_CROSSVALIDATION
 
