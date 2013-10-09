@@ -17,6 +17,7 @@
 #include "COptMethodSS.h"
 #include "COptMethodPraxis.h" //used for local minimisation
 #include "COptProblem.h"
+#include "parameterFitting/CFitProblem.h"
 #include "COptItem.h"
 #include "COptTask.h"
 
@@ -126,22 +127,52 @@ bool COptMethodSS::initialize()
   // get number of variables in the problem
   mVariableSize = mpOptItem->size();
 
-  // local minimisation method (currently praxis...)
-  mpLocalMinimizer = COptMethod::createMethod(CCopasiMethod::Praxis);
-  // set object parent (this is needed or else initialize() will fail in Praxis)
-  mpLocalMinimizer->setObjectParent(getObjectParent());
+  CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(mpOptProblem);
+
+  if (pFitProblem != NULL)
+    {
+      // this is a least squares problem (param estimation)
+      mpLocalMinimizer = COptMethod::createMethod(CCopasiMethod::LevenbergMarquardt);
+      mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-004);
+      mpLocalMinimizer->setValue("Iteration Limit", (C_INT32) 2000);
+    }
+  else
+    {
+      // this is a generic optimisation problem
+      //  mpLocalMinimizer = COptMethod::createMethod(CCopasiMethod::Praxis);
+      mpLocalMinimizer = COptMethod::createMethod(CCopasiMethod::NelderMead);
+      // mpLocalMinimizer = COptMethod::createMethod(CCopasiMethod::HookeJeeves);
+      // with a rather relaxed tolerance (1e-3)
+      mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-004);
+      mpLocalMinimizer->setValue("Iteration Limit", (C_INT32) 50);
+      // mpLocalMinimizer->setValue("Rho", (C_FLOAT64) 0.2);
+      mpLocalMinimizer->setValue("Scale", (C_FLOAT64) 10.0);
+    }
+
   // local minimization problem (starts as a copy of the current problem)
-  mpOptProblemLocal = new COptProblem(*mpOptProblem, getObjectParent());
+  if (pFitProblem != NULL)
+    {
+      // this is a least squares problem (param estimation)
+      mpOptProblemLocal = new CFitProblem(*pFitProblem, getObjectParent());
+    }
+  else
+    {
+      // this is a generic optimisation problem
+      mpOptProblemLocal = new COptProblem(*mpOptProblem, getObjectParent());
+    }
+
+  // the local method should not have a callback
+  mpOptProblemLocal->setCallBack(NULL);
+
+  // set object parent (this is needed or else initialize() will fail)
+  mpLocalMinimizer->setObjectParent(getObjectParent());
   // initialize it
   mpOptProblemLocal->initialize();
   // no statistics to be calculated
   mpOptProblemLocal->setCalculateStatistics(false);
   // do not randomize the initial values
   mpOptProblemLocal->setRandomizeStartValues(false);
-  // we're going to minimise this using Praxis
   mpLocalMinimizer->setProblem(mpOptProblemLocal);
-  // with a rather relaxed tolerance (1e-3)
-  mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-003);
 
   // create matrix for the RefSet (population)
   mRefSet.resize(mPopulationSize);
@@ -168,13 +199,13 @@ bool COptMethodSS::initialize()
   // create matrix for the pool of diverse solutions
   // this will also be used to store the initial and
   // final positions of local optimizations
-  if (10 * mVariableSize > mIterations / mLocalFreq / 2)
+  if (10 * mVariableSize > 2 * mIterations / mLocalFreq)
     {
       mPoolSize = 10 * mVariableSize;
     }
   else
     {
-      mPoolSize = mIterations / mLocalFreq / 2;
+      mPoolSize = 2 * mIterations / mLocalFreq / 2;
     }
 
   mPool.resize(mPoolSize);
@@ -801,6 +832,32 @@ bool COptMethodSS::closerRefSet(C_INT32 i, C_INT32 j, C_FLOAT64 dist)
   return true;
 }
 
+// measure the distance between two members of the refset
+C_FLOAT64 COptMethodSS::distRefSet(C_INT32 i, C_INT32 j)
+{
+  C_FLOAT64 dist;
+  dist = 0.0;
+
+  for (C_INT32 k = 0; k < mVariableSize; k++)
+    dist += 2.0 * fabs((*mRefSet[i])[k] - (*mRefSet[j])[k]) / (fabs((*mRefSet[i])[k]) + fabs((*mRefSet[j])[k]));
+
+  dist /= mVariableSize;
+  return dist;
+}
+
+// measure the distance between two members of the Child set
+C_FLOAT64 COptMethodSS::distChild(C_INT32 i, C_INT32 j)
+{
+  C_FLOAT64 dist;
+  dist = 0.0;
+
+  for (C_INT32 k = 0; k < mVariableSize; k++)
+    dist += 2.0 * fabs((*mChild[i])[k] - (*mChild[j])[k]) / (fabs((*mChild[i])[k]) + fabs((*mChild[j])[k]));
+
+  dist /= mVariableSize;
+  return dist;
+}
+
 // combine individuals in the RefSet two by two
 // this is a sort of (1+1)-ES strategy
 bool COptMethodSS::combination(void)
@@ -829,205 +886,230 @@ bool COptMethodSS::combination(void)
   // generate children for each member of the population
   for (i = 0; (i < mPopulationSize) && Running; i++)
     {
-      // set the "best child value" to be the parent's value
-      // this way we only keep child if better than parent or
-      // better than previous good child
-      // (stops comparing against parent all the time)
-      mChildVal[i] = mRefSetVal[i];
-
-      // generate one child for each pair with this member
-      for (j = 0; j < mPopulationSize; j++)
+      // no self-reproduction...
+      if (i != j)
         {
-          // no self-reproduction...
-          if (i != j)
+          if (i < j) alpha = 1.0; else alpha = -1.0;
+
+          beta = fabs(C_FLOAT64(j) - C_FLOAT64(i)) - 1.0 / bm2;
+          omatb = (1.0 + alpha * beta) * 0.5;
+
+          // generate a child
+          for (k = 0; k < mVariableSize; k++)
             {
-              if (i < j) alpha = 1.0; else alpha = -1.0;
+              // get the bounds of this parameter
+              COptItem & OptItem = *(*mpOptItem)[k];
+              mn = *OptItem.getLowerBoundValue();
+              mx = *OptItem.getUpperBoundValue();
 
-              beta = fabs(C_FLOAT64(j) - C_FLOAT64(i)) - 1.0 / bm2;
-              omatb = (1.0 + alpha * beta) * 0.5;
-
-              // generate a child
-              for (k = 0; k < mVariableSize; k++)
+              try
                 {
-                  // get the bounds of this parameter
-                  COptItem & OptItem = *(*mpOptItem)[k];
-                  mn = *OptItem.getLowerBoundValue();
-                  mx = *OptItem.getUpperBoundValue();
-
-                  try
+                  // calculate orders of magnitude of the interval
+                  if (((*mRefSet[i])[k] > 0.0) && ((*mRefSet[j])[k] > 0.0))
                     {
-                      // calculate orders of magnitude of the interval
-                      if (((*mRefSet[i])[k] > 0.0) && ((*mRefSet[j])[k] > 0.0))
-                        {
-                          la = log10((*mRefSet[i])[k]) - log10(std::max((*mRefSet[j])[k], std::numeric_limits< C_FLOAT64 >::min()));
-                        }
-                      else
-                        la = 1.0;
-
-//      if((la > -1.8) && (la < 1.8))
-                      if (true)
-                        {
-                          dd = ((*mRefSet[i])[k] - (*mRefSet[j])[k]) * omatb;
-                          // one of the box limits
-                          c1 = (*mRefSet[i])[k] - dd;
-
-                          // force it to be within the bounds
-                          switch (OptItem.checkConstraint(c1))
-                            {
-                              case -1:
-                                c1 = mn;
-                                break;
-
-                              case 1:
-                                c1 = mx;
-                                break;
-                            }
-
-                          // the other box limit
-                          c2 = (*mRefSet[i])[k] + dd;
-
-                          // force it to be within the bounds
-                          switch (OptItem.checkConstraint(c2))
-                            {
-                              case -1:
-                                c2 = mn;
-                                break;
-
-                              case 1:
-                                c2 = mx;
-                                break;
-                            }
-
-                          xnew[k] = c1 + (c2 - c1) * mpRandom->getRandomCC();
-                        }
-                      else
-                        {
-                          dd = la * omatb;
-                          // one of the box limits
-                          c1 = pow(10.0, log10(std::max((*mRefSet[i])[k], std::numeric_limits< C_FLOAT64 >::min()) - dd));
-
-                          // force it to be within the bounds
-                          switch (OptItem.checkConstraint(c1))
-                            {
-                              case -1:
-                                c1 = mn;
-                                break;
-
-                              case 1:
-                                c1 = mx;
-                                break;
-                            }
-
-                          // the other box limit
-                          c2 = pow(10.0, log10(std::max((*mRefSet[i])[k], std::numeric_limits< C_FLOAT64 >::min()) + dd));
-
-                          // force it to be within the bounds
-                          switch (OptItem.checkConstraint(c2))
-                            {
-                              case -1:
-                                c2 = mn;
-                                break;
-
-                              case 1:
-                                c2 = mx;
-                                break;
-                            }
-
-                          la = log10(c1) - log10(std::max(c2, std::numeric_limits< C_FLOAT64 >::min()));
-                          xnew[k] = pow(10.0, log10(std::max(c1, std::numeric_limits< C_FLOAT64 >::min()) + la * mpRandom->getRandomCC()));
-                        }
+                      la = log10((*mRefSet[i])[k]) - log10(std::max((*mRefSet[j])[k], std::numeric_limits< C_FLOAT64 >::min()));
                     }
-                  catch (...)
+                  else
+                    la = 1.0;
+
+                  if ((la > -1.8) && (la < 1.8))
+//      if(true)
                     {
-                      // if something failed leave the value intact
-                      xnew[k] = (*mRefSet[i])[k];
+                      dd = ((*mRefSet[i])[k] - (*mRefSet[j])[k]) * omatb;
+                      // one of the box limits
+                      c1 = (*mRefSet[i])[k] - dd;
+
+                      // force it to be within the bounds
+                      switch (OptItem.checkConstraint(c1))
+                        {
+                          case -1:
+                            c1 = mn;
+                            break;
+
+                          case 1:
+                            c1 = mx;
+                            break;
+                        }
+
+                      // the other box limit
+                      c2 = (*mRefSet[i])[k] + dd;
+
+                      // force it to be within the bounds
+                      switch (OptItem.checkConstraint(c2))
+                        {
+                          case -1:
+                            c2 = mn;
+                            break;
+
+                          case 1:
+                            c2 = mx;
+                            break;
+                        }
+
+                      xnew[k] = c1 + (c2 - c1) * mpRandom->getRandomCC();
                     }
-
-                  // We need to set the value here so that further checks take
-                  // account of the value.
-                  (*(*mpSetCalculateVariable)[k])(xnew[k]);
-                }
-
-              // calculate the child's fitness
-              Running &= evaluate(xnew);
-
-              // keep it if it is better than the previous one
-              if (mEvaluationValue < mChildVal[i])
-                {
-                  // keep a copy of this vector in mChild
-                  (*mChild[i]) = xnew;
-                  // and the fitness value
-                  mChildVal[i] = mEvaluationValue;
-                  // signal that child is better than parent
-                  mStuck[i] = 0;
+                  else
+                    {
+                      dd = la * omatb;
+                      // one of the box limits
+                      c1 = pow(10.0, log10(std::max((*mRefSet[i])[k], std::numeric_limits< C_FLOAT64 >::min())) - dd);
 #ifdef DEBUG_OPT
-                  inforefset(1, i);
+
+                      if (isnan(c1))
+                        {
+                          inforefset(7, j);
+                        }
+
 #endif
+
+                      // force it to be within the bounds
+                      switch (OptItem.checkConstraint(c1))
+                        {
+                          case -1:
+                            c1 = mn;
+                            break;
+
+                          case 1:
+                            c1 = mx;
+                            break;
+                        }
+
+                      // the other box limit
+                      c2 = pow(10.0, log10(std::max((*mRefSet[i])[k], std::numeric_limits< C_FLOAT64 >::min())) + dd);
+#ifdef DEBUG_OPT
+
+                      if (isnan(c2))
+                        {
+                          inforefset(8, j);
+                        }
+
+#endif
+
+                      // force it to be within the bounds
+                      switch (OptItem.checkConstraint(c2))
+                        {
+                          case -1:
+                            c2 = mn;
+                            break;
+
+                          case 1:
+                            c2 = mx;
+                            break;
+                        }
+
+                      if (dd > 0.0)
+                        {
+                          la = log10(c2) - log10(c1);
+                          la *= mpRandom->getRandomCC();
+                          xnew[k] = pow(10.0, log10(c1 + la));
+                        }
+                      else
+                        {
+                          la = log10(c1) - log10(c2);
+                          la *= mpRandom->getRandomCC();
+                          xnew[k] = pow(10.0, log10(c2 + la));
+                        }
+
+#ifdef DEBUG_OPT
+
+                      if (isnan(xnew[k]))
+                        {
+                          inforefset(9, j);
+                        }
+
+#endif
+                    }
                 }
+              catch (...)
+                {
+                  // if something failed leave the value intact
+                  xnew[k] = (*mRefSet[i])[k];
+                }
+
+              // We need to set the value here so that further checks take
+              // account of the value.
+              (*(*mpSetCalculateVariable)[k])(xnew[k]);
+            }
+
+          // calculate the child's fitness
+          Running &= evaluate(xnew);
+
+          // keep it if it is better than the previous one
+          if (mEvaluationValue < mChildVal[i])
+            {
+              // keep a copy of this vector in mChild
+              (*mChild[i]) = xnew;
+              // and the fitness value
+              mChildVal[i] = mEvaluationValue;
+              // signal that child is better than parent
+              mStuck[i] = 0;
+#ifdef DEBUG_OPT
+              inforefset(1, i);
+#endif
             }
         }
+    }
 
-      // now we apply the go-beyond strategy for
-      // cases where the child was an improvement
-      if (mStuck[i] == 0)
+  // now we apply the go-beyond strategy for
+  // cases where the child was an improvement
+  if (mStuck[i] == 0)
+    {
+      // copy the parent
+      xpr = (*mRefSet[i]);
+      xprval = mRefSetVal[i];
+      lambda = 1.0; // this is really 1/lambda so we can use mult rather than div
+      improvement = 1;
+
+      // while newval < childval
+      for (; ;)
         {
-          // copy the parent
-          xpr = (*mRefSet[i]);
-          xprval = mRefSetVal[i];
-          lambda = 1.0; // this is really 1/lambda so we can use mult rather than div
-          improvement = 1;
-
-          // while newval < childval
-          for (; ;)
+          for (k = 0; k < mVariableSize; k++)
             {
-              for (k = 0; k < mVariableSize; k++)
+              dd = (xpr[i] - (*mChild[i])[k]) * lambda;
+              xnew[k] = (*mChild[i])[k] + dd * mpRandom->getRandomCC();
+              // get the bounds of this parameter
+              COptItem & OptItem = *(*mpOptItem)[k];
+
+              // put it on the bounds if it had exceeded them
+              switch (OptItem.checkConstraint(xnew[k]))
                 {
-                  dd = (xpr[i] - (*mChild[i])[k]) * lambda;
-                  xnew[k] = (*mChild[i])[k] + dd * mpRandom->getRandomCC();
-                  // get the bounds of this parameter
-                  COptItem & OptItem = *(*mpOptItem)[k];
+                  case -1:
+                    xnew[k] = *OptItem.getLowerBoundValue();
+                    break;
 
-                  // put it on the bounds if it had exceeded them
-                  switch (OptItem.checkConstraint(xnew[k]))
-                    {
-                      case -1:
-                        xnew[k] = *OptItem.getLowerBoundValue();
-                        break;
-
-                      case 1:
-                        xnew[k] = *OptItem.getUpperBoundValue();
-                        break;
-                    }
-
-                  // We need to set the value here so that further checks take
-                  // account of the value.
-                  (*(*mpSetCalculateVariable)[k])(xnew[k]);
+                  case 1:
+                    xnew[k] = *OptItem.getUpperBoundValue();
+                    break;
                 }
 
-              // calculate the child's fitness
-              Running &= evaluate(xnew);
-              xnewval = mEvaluationValue;
+              // We need to set the value here so that further checks take
+              // account of the value.
+              (*(*mpSetCalculateVariable)[k])(xnew[k]);
+            }
 
-              // if there was no improvement we finish here (exit while)
-              if (mChildVal[i] <= xnewval) break;
+          // calculate the child's fitness
+          Running &= evaluate(xnew);
+          xnewval = mEvaluationValue;
+
+          // if there was no improvement we finish here (exit while)
+          if (mChildVal[i] <= xnewval) break;
 
 #ifdef DEBUG_OPT
-              inforefset(2, i);
+          inforefset(2, i);
 #endif
-              // old child becomes parent
-              xpr = (*mChild[i]);
-              xprval = mChildVal[i];
-              // new child becomes child
-              (*mChild[i]) = xnew;
-              mChildVal[i] = xnewval;
-              // mark improvement
-              improvement++;
+          // old child becomes parent
+          xpr = (*mChild[i]);
+          xprval = mChildVal[i];
+          // new child becomes child
+          (*mChild[i]) = xnew;
+          mChildVal[i] = xnewval;
+          // mark improvement
+          improvement++;
 
-              if (improvement == 2)
-                {
-                  lambda *= 0.5;
-                  improvement = 0;
-                }
+          if (improvement == 2)
+            {
+              lambda *= 0.5;
+              improvement = 0;
             }
         }
     }
@@ -1062,8 +1144,12 @@ bool COptMethodSS::childLocalMin(void)
   for (i = 0; i < mLocalStored; i++)
     {
       // is the other one like me?
-      if (closerChild(best, i, 1e-3))
+//    if(closerChild(best,i,1e-3))
+      if (distChild(best, i) < 1e-3)
         {
+#ifdef DEBUG_OPT
+          inforefset(6, best);
+#endif
           // it is too close, exit now
           return true;
         }
@@ -1081,6 +1167,10 @@ bool COptMethodSS::childLocalMin(void)
   *(mPool[mLocalStored]) = *(mChild[best]);
   mPoolVal[mLocalStored] = mChildVal[best];
   mLocalStored++;
+
+#ifdef DEBUG_OPT
+  serializepool(0, mLocalStored);
+#endif
 
   return Running;
 }
@@ -1126,7 +1216,7 @@ bool COptMethodSS::optimise()
 
   // mPool is now going to be used to keep track of initial and final
   // points of local minimizations (to avoid running them more than once)
-  mPoolSize = mIterations / mLocalFreq / 2;
+  mPoolSize = 2 * mIterations / mLocalFreq;
   // reset the number of stored minimizations
   mLocalStored = 0;
   // reset the counter for local minimisation
@@ -1157,7 +1247,8 @@ bool COptMethodSS::optimise()
               for (j = i + 1; j < mPopulationSize; j++)
                 {
                   // is the other one like me?
-                  if (closerRefSet(i, j, 1e-3))
+//    if(closerRefSet(i,j,1e-3))
+                  if (distRefSet(i, j) < 0.8)
                     {
                       // randomize the other one (I am more important)
                       Running &= randomize(j);
@@ -1171,11 +1262,24 @@ bool COptMethodSS::optimise()
             }
         }
 
-      // sort the RefSet if needed
-      if (needsort) sortRefSet(0, mPopulationSize);
-
       // create children by combination
       Running &= combination();
+
+//#ifdef NOOP
+      // check if we have to run a local search
+      if (nlocal == mLocalFreq)
+        {
+          // reset the local counter
+          nlocal = 1;
+          // carry out a local search
+          Running &= childLocalMin();
+        }
+      else
+//#endif
+        {
+          // count this
+          nlocal++;
+        }
 
       // check if we have to run a local search
       if (nlocal == mLocalFreq)
@@ -1236,6 +1340,21 @@ bool COptMethodSS::optimise()
 
       if (mpCallBack)
         Running &= mpCallBack->progressItem(mhIterations);
+    }
+
+  // end of loop for iterations
+
+  // now let's do a local minimisation starting from the best value
+  Running &= localmin(*(mRefSet[0]), mRefSetVal[0]);
+
+  // has it improved?
+  if (mRefSetVal[0] < mBestValue)
+    {
+      // and store that value
+      mBestValue = mRefSetVal[0];
+      Running &= mpOptProblem->setSolution(mBestValue, *mRefSet[0]);
+      // We found a new best value lets report it.
+      mpParentTask->output(COutputInterface::DURING);
     }
 
   if (mpCallBack)
@@ -1314,15 +1433,23 @@ bool COptMethodSS::inforefset(C_INT32 type, C_INT32 element)
 
   switch (type)
     {
-      case 1: ofile << "element " << element << " improved in combination" << std::endl << std::endl; break;
+      case 1: ofile << "element " << element << " improved in combination" << std::endl; break;
 
-      case 2: ofile << "element " << element << " improved in go-beyond" << std::endl << std::endl; break;
+      case 2: ofile << "element " << element << " improved in go-beyond" << std::endl; break;
 
-      case 3: ofile << "No element improved in iteration " << element << std::endl << std::endl; break;
+      case 3: ofile << "No element improved in iteration " << element << std::endl ; break;
 
-      case 4: ofile << "element " << element << " randomized, too close to another" << std::endl << std::endl; break;
+      case 4: ofile << "element " << element << " randomized, too close to another" << std::endl; break;
 
-      case 5: ofile << "element " << element << " randomized, was stuck" << std::endl << std::endl; break;
+      case 5: ofile << "element " << element << " randomized, was stuck" << std::endl; break;
+
+      case 6: ofile << "child" << element << " too close to previous solution, no local min" << std::endl; break;
+
+      case 7: ofile << "c1 is NaN (element" << element << ")" << std::endl; break;
+
+      case 8: ofile << "c2 is NaN (element" << element << ")" << std::endl; break;
+
+      case 9: ofile << "xnew[k] is NaN (element" << element << ")" << std::endl; break;
     }
 
   ofile.close();

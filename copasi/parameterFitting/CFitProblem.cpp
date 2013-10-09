@@ -927,6 +927,15 @@ bool CFitProblem::calculate()
       CCopasiMessage::getLastMessage();
 
       mFailedCounter++;
+#ifdef XXX
+      std::vector<COptItem * >::iterator it = mpOptItems->begin();
+      std::vector<COptItem * >::iterator end = mpOptItems->end();
+
+      for (; it != end; it++)
+        std::cout << *(*it)->getObjectValue() << " ";
+
+      std::cout << std::endl;
+#endif
       mCalculateValue = mWorstValue;
 
       if (pExp)
