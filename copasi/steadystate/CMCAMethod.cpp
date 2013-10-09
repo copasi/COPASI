@@ -485,11 +485,6 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
         }
     }
 
-  //update annotated matrix
-  //   mScaledElasticitiesAnn->resize();
-  //   mScaledElasticitiesAnn->setCopasiVector(0, &reacs);
-  //   mScaledElasticitiesAnn->setCopasiVector(1, &metabs);
-
   //if we are not in a steady state we cannot calculate CCs
   if (mSSStatus != CSteadyStateMethod::found ||
       condition != MCA_OK)
@@ -510,6 +505,8 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
 
   for (; itSpecies != endSpecies; ++itSpecies)
     {
+      // In rare occasions the concentration might not be updated
+      (*(*itSpecies)->getConcentrationReference()->getRefresh())();
       C_FLOAT64 alt = fabs((*itSpecies)->getConcentration());
 
       for (itReaction = reacs.begin(); itReaction != endReaction; ++itReaction, ++pUnscaled, ++pScaled)
