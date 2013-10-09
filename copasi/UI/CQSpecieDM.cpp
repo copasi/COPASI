@@ -8,7 +8,7 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include <QString>
+#include <QtCore/QString>
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"

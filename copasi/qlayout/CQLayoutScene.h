@@ -6,8 +6,8 @@
 #ifndef QLAYOUT_SCENE_H
 #define QLAYOUT_SCENE_H
 
-#include <QGraphicsScene>
-#include <qsharedpointer.h>
+#include <QtGui/QGraphicsScene>
+#include <QtCore/QSharedPointer>
 
 #include <string>
 #include <map>

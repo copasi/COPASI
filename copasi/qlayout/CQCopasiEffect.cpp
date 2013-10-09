@@ -5,8 +5,8 @@
 
 #include <qlayout/CQCopasiEffect.h>
 
-#include <QPainter>
-#include <qgraphicseffect.h>
+#include <QtGui/QPainter>
+#include <QtGui/QGraphicsEffect>
 
 CQCopasiEffect::CQCopasiEffect()
   : mScale(1.0)

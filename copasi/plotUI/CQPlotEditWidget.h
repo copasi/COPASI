@@ -6,7 +6,7 @@
 #ifndef CQ_PLOT_EDIT_WIDGET_H
 #define CQ_PLOT_EDIT_WIDGET_H
 
-#include <QWidget>
+#include <QtGui/QWidget>
 
 class CPlotItem;
 class CModel;

@@ -1,17 +1,17 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 #include "CQExpressionMmlStackedWidget.h"
 
-#include <QString>
-#include <QPainter>
+#include <QtCore/QString>
+#include <QtGui/QPainter>
 
 #include "utilities/CCopasiException.h"
 
@@ -32,7 +32,7 @@
 #endif // HAVE_MML
 
 #ifdef DEBUG_UI
-#include <QtDebug>
+#include <QtCoe/QtDebug>
 #endif
 
 /*

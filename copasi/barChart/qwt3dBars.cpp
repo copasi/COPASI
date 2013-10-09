@@ -1,24 +1,21 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/qwt3dBars.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/16 18:04:44 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qbitmap.h>
+#include <QtGui/QBitmap>
 
-#include "qwt3d_color.h"
-#include "qwt3d_plot.h"
+#include <qwt3d_color.h>
+#include <qwt3d_plot.h>
 #include "qwt3dBars.h"
 //#include <iostream>
 
@@ -76,7 +73,7 @@ void Bar::draw(Qwt3D::Triple const& pos)
 
   glBegin(GL_QUADS);
 
-  if (((int)(100*pos.x) == (int)(100*mShowColumn)) || ((int)(100*pos.y) == (int)(100*mShowRow)))
+  if (((int)(100 * pos.x) == (int)(100 * mShowColumn)) || ((int)(100 * pos.y) == (int)(100 * mShowRow)))
     glColor3d(0.71, 0.835, 1); //(1, 0, 0);
   else
     glColor4d(mTo.r, mTo.g, mTo.b, mTo.a);
@@ -87,7 +84,7 @@ void Bar::draw(Qwt3D::Triple const& pos)
   glVertex3d(pos.x + diag_, pos.y + diag_, minz);
   glVertex3d(pos.x - diag_, pos.y + diag_, minz);
 
-  if (((int)(100*pos.x) == (int)(100*mShowColumn)) || ((int)(100*pos.y) == (int)(100*mShowRow)))
+  if (((int)(100 * pos.x) == (int)(100 * mShowColumn)) || ((int)(100 * pos.y) == (int)(100 * mShowRow)))
     glColor3d(0.71, 0.835, 1); //(1, 0, 0);
   else
     glColor4d(mTo.r, mTo.g, mTo.b, mTo.a);

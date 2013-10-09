@@ -1,14 +1,14 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-#include <QComboBox>
+#include <QtGui/QComboBox>
 #include <QtGui/QSortFilterProxyModel>
 
 #include "CQComboDelegate.h"
@@ -40,10 +40,10 @@ QWidget *CQComboDelegate::createEditor(QWidget *parent,
 
   QComboBox *pEditor = new QComboBox(parent);
 
-  if(getItems(SourceIndex.row()) != NULL)
-  {
-    pEditor->addItems(*getItems(SourceIndex.row()));
-  }
+  if (getItems(SourceIndex.row()) != NULL)
+    {
+      pEditor->addItems(*getItems(SourceIndex.row()));
+    }
 
   mEditorToIndex[pEditor] = SourceIndex;
 
@@ -86,16 +86,16 @@ void CQComboDelegate::setItems(int row, const QStringList* pComboItems)
 const QStringList * CQComboDelegate::getItems(int row) const
 {
   if (mpComboItems != NULL)
-  {
-    return mpComboItems;
-  }
+    {
+      return mpComboItems;
+    }
 
   QMap< int, const QStringList * >::const_iterator found = mRowToItems.find(row);
 
   if (found != mRowToItems.end()) // OK to return found.value() = NULL
-  {
-    return found.value();
-  }
+    {
+      return found.value();
+    }
 
   return NULL;
 }

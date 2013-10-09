@@ -1,33 +1,25 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQValidator.h,v $
-   $Revision: 1.14 $
-   $Name:  $
-   $Author: aekamal $
-   $Date: 2011/06/20 16:07:09 $
-   End CVS Header */
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #ifndef COPASI_CQValidator
 #define COPASI_CQValidator
 
-#include <qvalidator.h>
-#include <qcolor.h>
-#include <qlineedit.h>
+#include <QtGui/QValidator>
+#include <QtGui/QColor>
+#include <QtGui/QLineEdit>
 
-#include <QtDebug>
+#include <QtCore/QtDebug>
 
 #include "copasi.h"
 
@@ -36,10 +28,10 @@ template <typename Type> class CQValidator : public QValidator
   // Operations
 public:
   CQValidator(Type * parent, QString(Type::*retrieve)(void) const, const char * name = 0):
-      QValidator(parent),
-      mpContainer(parent),
-      mRetrieve(retrieve),
-      mLastAccepted("")
+    QValidator(parent),
+    mpContainer(parent),
+    mRetrieve(retrieve),
+    mLastAccepted("")
   {
     setObjectName(QString::fromUtf8(name));
     int h, s, v;

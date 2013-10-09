@@ -6,8 +6,8 @@
 #ifndef QANIMATION_WINDOW_H
 #define QANIMATION_WINDOW_H
 
-#include <QMainWindow>
-#include <qsharedpointer.h>
+#include <QtGui/QMainWindow>
+#include <QtCore/QSharedPointer>
 
 #include <UI/CWindowInterface.h>
 

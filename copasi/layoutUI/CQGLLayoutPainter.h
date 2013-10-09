@@ -6,8 +6,8 @@
 #ifndef CQGLLAYOUTPAINTER_H__
 #define CQGLLAYOUTPAINTER_H__
 
-#include <QGLWidget>
-#include <QRectF>
+#include <QtOpenGL/QGLWidget>
+#include <QtCore/QRectF>
 #include <set>
 
 class CCopasiDataModel;

@@ -12,7 +12,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <QGridLayout>
+#include <QtGui/QGridLayout>
 #include "copasi.h"
 
 #include "CQTSSAResultWidget.h"

@@ -6,7 +6,7 @@
 #ifndef QEFFECT_DESCRIPTION_H
 #define QEFFECT_DESCRIPTION_H
 
-#include <qcolor.h>
+#include <QtGui/QColor>
 #include <string>
 
 #include <qlayout/CQLayoutScene.h>

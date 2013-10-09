@@ -14,8 +14,8 @@
 
 #include "CQFittingWidget.h"
 
-#include <qlabel.h>
-#include <qtoolbutton.h>
+#include <QtGui/QLabel>
+#include <QtGui/QToolButton>
 
 #include "UI/CQTaskBtnWidget.h"
 #include "UI/CQTaskHeaderWidget.h"

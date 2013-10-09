@@ -10,8 +10,8 @@ class QMenu;
 class QWidget;
 class CopasiUI3Window;
 
-#include <QMainWindow>
-#include <QString>
+#include <QtGui/QMainWindow>
+#include <QtCore/QString>
 
 class CWindowInterface : public QMainWindow
 {

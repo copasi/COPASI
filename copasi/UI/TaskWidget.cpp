@@ -14,7 +14,7 @@
 
 #include <QtDebug>
 #include <QFrame>
-#include <QVBoxLayout>
+#include <QtGui/QVBoxLayout>
 #include <QHeaderView>
 #include <QComboBox>
 #include <qapplication.h>
@@ -523,6 +523,7 @@ bool TaskWidget::update(ListViews::ObjectType objectType, ListViews::Action acti
   switch (objectType)
     {
       case ListViews::MODEL:
+
         if (action == ListViews::ADD &&
             mpMethodWidget != NULL)
           {

@@ -3,9 +3,9 @@
 // of Manchester.
 // All rights reserved.
 
-#include <QGraphicsRectItem>
-#include <QStyleOptionGraphicsItem>
-#include <QPainter>
+#include <QtGui/QGraphicsRectItem>
+#include <QtGui/QStyleOptionGraphicsItem>
+#include <QtGui/QPainter>
 
 #include <qlayout/CQRoundedRect.h>
 

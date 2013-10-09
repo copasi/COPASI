@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQScreenshotOptionsDialog.h,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:29:15 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,10 +10,9 @@
 
 #include <set>
 
-#include <QDialog>
-#include <QRegExp>
-#include <QValidator>
-
+#include <QtGui/QDialog>
+#include <QtCore/QRegExp>
+#include <QtGui/QValidator>
 
 class CQScreenshotOptionsDialog : public QDialog, private Ui::screenshot_option_dialog
 {
@@ -35,7 +26,6 @@ public:
     ALL_FRAMES,
     USER_DEFINED_FRAMES
   };
-
 
 protected:
   // values needed by the dialog
@@ -83,7 +73,6 @@ protected:
   QColor mDefaultColor;
   QColor mHighlightColor;
   bool mFramesEditHighlighted;
-
 
 public:
   CQScreenshotOptionsDialog(double layoutX, double layoutY, double layoutWidth, double layoutHeight,
@@ -175,7 +164,6 @@ protected slots:
   // called when the frames text is edited
   void slotFramesTextEdited(const QString& text);
 
-
   // called when the draw selection item checkbox is toggled
   void slotDrawSelectionToggled(bool v);
 };
@@ -187,7 +175,6 @@ protected:
   static const QString IntermediateRegExpString;
   static const QString ClosedRangeGroupRegExpString;
 
-
   QRegExp mValidationRegExp;
   QRegExp mIntermediateRegExp;
   QRegExp mClosedRangeGroupRegExp;
@@ -197,7 +184,5 @@ public:
 
   virtual QValidator::State validate(QString& input, int & pos) const;
 };
-
-
 
 #endif // CQScreenshotOptionsDialog_H__

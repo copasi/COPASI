@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMmlScrollView.cpp,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/02/23 16:09:10 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -23,7 +15,7 @@
 
 #include "CQMmlScrollView.h"
 
-#include <QApplication>
+#include <QtGui/QApplication>
 
 #ifdef HAVE_MML
 # include <qtmmlwidget.h>
@@ -33,7 +25,7 @@
 
 ///  Constructor
 CQMmlScrollView::CQMmlScrollView(QWidget* parent, const char* /* name */, Qt::WFlags /* fl */)
-    : QScrollArea(parent)
+  : QScrollArea(parent)
 {
   setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
@@ -42,7 +34,6 @@ CQMmlScrollView::CQMmlScrollView(QWidget* parent, const char* /* name */, Qt::WF
   mpMmlWidget->setMinimumSize(QSize(0, 0));
   setWidget(mpMmlWidget);
 #endif // HAVE_MML
-
 }
 
 /// Destructor

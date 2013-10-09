@@ -23,7 +23,7 @@
 #include <QtGui/QToolBar>
 #include <QtGui/QVBoxLayout>
 
-#include <QTimer>
+#include <QtCore/QTimer>
 
 // local includes
 #include "CQGLLayoutPainter.h"
@@ -79,7 +79,7 @@
 #include "graph.xpm"
 #include "load_data.xpm"
 #ifdef COPASI_AUTOLAYOUT
-#include <QDockWidget>
+#include <QtGui/QDockWidget>
 #include "layout_start.xpm"
 #include "layout_stop.xpm"
 #endif // COPASI_AUTOLAYOUT

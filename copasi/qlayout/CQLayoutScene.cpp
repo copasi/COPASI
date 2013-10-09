@@ -3,12 +3,13 @@
 // of Manchester.
 // All rights reserved.
 
-#include <QGraphicsScene>
-#include <QGraphicsItem>
-#include <QPainter>
-#include <QPrinter>
-#include <QImage>
-#include <qgraphicseffect.h>
+#include <QtCore/QCoreApplication>
+#include <QtGui/QGraphicsScene>
+#include <QtGui/QGraphicsItem>
+#include <QtGui/QPainter>
+#include <QtGui/QPrinter>
+#include <QtGui/QImage>
+#include <QtGui/QGraphicsEffect>
 
 #include <copasi.h>
 
@@ -28,6 +29,8 @@
 #include <layout/CLLocalRenderInformation.h>
 #include <layout/CLDefaultStyles.h>
 #include <CopasiDataModel/CCopasiDataModel.h>
+#include <copasi/report/CCopasiRootContainer.h>
+#include <copasi/report/CKeyFactory.h>
 
 CQLayoutScene::CQLayoutScene(CLayout* layout, CCopasiDataModel* model, CLRenderInformationBase* renderInformation)
   : QGraphicsScene()
@@ -208,6 +211,7 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
     }
 
   const CCopasiVector<CLCompartmentGlyph> & comps = layout->getListOfCompartmentGlyphs();
+
   CCopasiVector<CLCompartmentGlyph>::const_iterator itComp = comps.begin();
 
   while (itComp != comps.end())
@@ -217,6 +221,7 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
     }
 
   const CCopasiVector<CLReactionGlyph> & reactions = layout->getListOfReactionGlyphs();
+
   CCopasiVector<CLReactionGlyph>::const_iterator itReactions = reactions.begin();
 
   while (itReactions != reactions.end())
@@ -226,6 +231,7 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
     }
 
   const CCopasiVector<CLMetabGlyph> & species = layout->getListOfMetaboliteGlyphs();
+
   CCopasiVector<CLMetabGlyph>::const_iterator itSpecies = species.begin();
 
   while (itSpecies != species.end())
@@ -235,6 +241,7 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
     }
 
   const CCopasiVector<CLTextGlyph> & texts = layout->getListOfTextGlyphs();
+
   CCopasiVector<CLTextGlyph>::const_iterator itTexts = texts.begin();
 
   while (itTexts != texts.end())
@@ -244,6 +251,7 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
     }
 
   const CCopasiVector<CLGeneralGlyph> & list = layout->getListOfGeneralGlyphs();
+
   CCopasiVector<CLGeneralGlyph>::const_iterator itList = list.begin();
 
   while (itList != list.end())
@@ -252,10 +260,6 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
       ++itList;
     }
 }
-
-#include <copasi/report/CCopasiRootContainer.h>
-#include <copasi/report/CKeyFactory.h>
-#include <QCoreApplication>
 
 CLGraphicalObject* getTextForItem(const CLayout* layout, const CLGraphicalObject* obj)
 {

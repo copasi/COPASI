@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CLNAResultSubwidget.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/08/01 17:11:34 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,11 +13,11 @@
 
 #include "CLNAResultSubwidget.h"
 
-#include <QFileInfo>
-#include <QLineEdit>
-#include <QCheckBox>
-#include <QPainter>
-#include <QMessageBox>
+#include <QtCore/QFileInfo>
+#include <QtGui/QLineEdit>
+#include <QtGui/QCheckBox>
+#include <QtGui/QPainter>
+#include <QtGui/QMessageBox>
 
 #include "copasi.h"
 
@@ -44,7 +36,7 @@
  *  name 'name' and widget flags set to 'f'.
  */
 CLNAResultSubwidget::CLNAResultSubwidget(QWidget* parent, const char* name, Qt::WindowFlags fl)
-    : CopasiWidget(parent, name, fl)
+  : CopasiWidget(parent, name, fl)
 {
   setupUi(this);
 

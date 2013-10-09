@@ -6,7 +6,7 @@
 #ifndef QCOPASI_EFFECT_H
 #define QCOPASI_EFFECT_H
 
-#include <qgraphicseffect.h>
+#include <QtGui/QGraphicsEffect>
 
 class QPainter;
 

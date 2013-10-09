@@ -22,13 +22,14 @@
 #include <fstream>
 #include <iostream>
 
-#include <qpainter.h>
+#include <QtGui/QPainter>
+#include <QtCore/QMutex>
+#include <QtCore/QWaitCondition>
+
 #include <qwt_plot.h>
 #include <qwt_painter.h>
 #include <qwt_data.h>
 #include <qwt_plot_curve.h>
-#include <QMutex>
-#include <QWaitCondition>
 
 #include "plot/CPlotItem.h"
 

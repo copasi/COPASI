@@ -7,9 +7,9 @@
 #define CQNEWMAINWINDOW_H__
 
 #include <UI/CWindowInterface.h>
-#include <QString>
-#include <QIcon>
-#include <QRectF>
+#include <QtCore/QString>
+#include <QtGui/QIcon>
+#include <QtCore/QRectF>
 #include <string>
 #include <vector>
 #include <set>
@@ -66,15 +66,15 @@ public:
   enum REACTION_SELECTION_BITS
   {
     ROLE_UNSPECIFIED          =   1 // metab reference glyphs without role
-                                  , ROLE_SUBSTRATE            =   2
-                                      , ROLE_SIDESUBSTRATE        =   4
-                                          , ROLE_PRODUCT              =   8
-                                              , ROLE_SIDEPRODUCT          =  16
-                                                  , ROLE_MODIFIER             =  32
-                                                      , ROLE_ACTIVATOR            =  64
-                                                          , ROLE_INHIBITOR            = 128
-                                                              , REACTION_GLYPH            = 256 // the reaction glyph itself
-                                                                  , ASSOCIATED_SPECIES_GLYPHS = 512
+    , ROLE_SUBSTRATE            =   2
+    , ROLE_SIDESUBSTRATE        =   4
+    , ROLE_PRODUCT              =   8
+    , ROLE_SIDEPRODUCT          =  16
+    , ROLE_MODIFIER             =  32
+    , ROLE_ACTIVATOR            =  64
+    , ROLE_INHIBITOR            = 128
+    , REACTION_GLYPH            = 256 // the reaction glyph itself
+    , ASSOCIATED_SPECIES_GLYPHS = 512
   };
 
 #endif // ELEMENTARY_MODE_DISPLAY

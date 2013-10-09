@@ -12,10 +12,10 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qstring.h>
-#include <qcolor.h>   //might need to go to the header file
-#include <qcursor.h>
-#include <QMutexLocker>
+#include <QtCore/QString>
+#include <QtGui/QColor>   //might need to go to the header file
+#include <QtGui/QCursor>
+#include <QtCore/QMutexLocker>
 
 #include <qwt_symbol.h>
 #include <qwt_legend.h>

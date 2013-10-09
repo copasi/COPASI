@@ -11,16 +11,16 @@
 #include "UI/listviews.h"
 #include "parameterFitting/CFitTask.h"
 #include "parameterFitting/CFitProblem.h"
-#include <QThread>
+#include <QtCore/QThread>
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "UI/CWindowInterface.h"
 
 #include <arguments.h>
-#include <QString>
-#include <QList>
-#include <QMutex>
-#include <QWaitCondition>
+#include <QtCore/QString>
+#include <QtCore/QList>
+#include <QtCore/QMutex>
+#include <QtCore/QWaitCondition>
 
 Worker::Worker(CopasiUI3Window *window, Arguments *args) : mTaskStarted(false)
 {
@@ -49,19 +49,21 @@ bool Worker::slotNotify(ListViews::ObjectType objectType, ListViews::Action acti
           const QList< QPointer<QMainWindow> >& windows = mpWindow->getWindows();
 
           for (int index = 0; index < windows.count(); ++index)
-          {
+            {
               const QMainWindow* mainWindow = windows[index];
+
               if (mainWindow == NULL) continue;
+
               const CWindowInterface* window = dynamic_cast<const CWindowInterface*>(mainWindow);
 
               if (window == NULL) continue;
 
               QString fileName = QString("%1/plot%2.%3")
-              .arg(mpArgs->getOutputDir().c_str())
-              .arg(index + 1)
-              .arg(mpArgs->getFileType().c_str());
+                                 .arg(mpArgs->getOutputDir().c_str())
+                                 .arg(index + 1)
+                                 .arg(mpArgs->getFileType().c_str());
               window->saveToFile(fileName);
-          }
+            }
         }
 
       if (mpArgs->isQuitAfterTaskExecution())

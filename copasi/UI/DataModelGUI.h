@@ -15,10 +15,10 @@
 #ifndef DATAMODELGUI_H
 #define DATAMODELGUI_H
 
-#include <QVariant>
+#include <QtCore/QVariant>
 
 #include <QtCore/QObject>
-#include <qapplication.h>
+#include <QtGui/QApplication>
 
 #include "copasi/plotUI/COutputHandlerPlot.h"
 #include "copasi/UI/listviews.h"

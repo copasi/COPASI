@@ -14,14 +14,14 @@
 
 #include <sbml/SBMLDocument.h>
 
-#include <QEvent>
-#include <QMenuBar>
-#include <QTimer>
-#include <QComboBox>
-#include <QToolBar>
-#include <QTextEdit>
-#include <QThread>
-#include <QFontDialog>
+#include <QtCore/QEvent>
+#include <QtGui/QMenuBar>
+#include <QtCore/QTimer>
+#include <QtGui/QComboBox>
+#include <QtGui/QToolBar>
+#include <QtGui/QTextEdit>
+#include <QtCore/QThread>
+#include <QtGui/QFontDialog>
 
 #include <vector>
 #include <sstream>
@@ -70,7 +70,7 @@
 #define AutoSaveInterval 10*60*1000
 
 #ifdef DEBUG_UI
-#include <QtDebug>
+#include <QtCore/QtDebug>
 #endif
 
 // static
@@ -918,9 +918,8 @@ void CopasiUI3Window::slotAddFileOpenFinished(bool success)
 
   refreshRecentFileMenu();
   mNewFile = "";
-  
-    mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
 
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
 }
 
 #endif
@@ -1360,10 +1359,10 @@ void CopasiUI3Window::slotExportSBML()
 
       if ((*CCopasiRootContainer::getDatamodelList())[0]->getFileName() != "")
         Default
-          = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                      + CDirEntry::Separator
-                      + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                      + ".xml");
+        = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                    + CDirEntry::Separator
+                    + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                    + ".xml");
       else
         {
           Default = "untitled.xml";
@@ -1430,9 +1429,9 @@ void CopasiUI3Window::slotExportMathModel()
 
       if (pDataModel->getFileName() != "")
         Default
-          = FROM_UTF8(CDirEntry::dirName(pDataModel->getFileName())
-                      + CDirEntry::Separator
-                      + CDirEntry::baseName(pDataModel->getFileName()));
+        = FROM_UTF8(CDirEntry::dirName(pDataModel->getFileName())
+                    + CDirEntry::Separator
+                    + CDirEntry::baseName(pDataModel->getFileName()));
       else
         Default = "untitled.c";
 
@@ -2367,8 +2366,8 @@ void CopasiUI3Window::sbwSlotMenuTriggeredFinished(bool success)
     {
       try
         {
-          int nModule = SBWLowLevel::getModuleInstance(mSBWAnalyzerModules[mSBWActionId].ascii());
-          int nService = SBWLowLevel::moduleFindServiceByName(nModule, mSBWAnalyzerServices[mSBWActionId].ascii());
+          int nModule = SBWLowLevel::getModuleInstance(TO_UTF8(mSBWAnalyzerModules[mSBWActionId]));
+          int nService = SBWLowLevel::moduleFindServiceByName(nModule, TO_UTF8(mSBWAnalyzerServices[mSBWActionId]));
           int nMethod = SBWLowLevel::serviceGetMethod(nModule, nService, "void doAnalysis(string)");
 
           DataBlockWriter args;
@@ -2486,7 +2485,7 @@ void CopasiUI3Window::sbwSlotGetSBMLFinished(bool success)
 void CopasiUI3Window::customEvent(QEvent * /* event */) {}
 
 #endif // COPASI_SBW_INTEGRATION
-#include <QUrl>
+#include <QtCore/QUrl>
 void CopasiUI3Window::dragEnterEvent(QDragEnterEvent *event)
 {
   if (event->mimeData()->hasFormat("text/uri-list"))
@@ -2495,7 +2494,7 @@ void CopasiUI3Window::dragEnterEvent(QDragEnterEvent *event)
 
 /**
  * Utility function for guessing whether the file might
- * be an SBML file. If soit should contain an SBML tag in the
+ * be an SBML file. If so it should contain an SBML tag in the
  * first couple of lines.
  */
 bool isProabablySBML(QString &fileName)

@@ -10,12 +10,12 @@
 
 #include "CQPlayerControlWidget.h"
 
-#include <QAction>
-#include <QGridLayout>
-#include <QIcon>
-#include <QLayout>
-#include <QPixmap>
-#include <QPushButton>
+#include <QtGui/QAction>
+#include <QtGui/QGridLayout>
+#include <QtGui/QIcon>
+#include <QtGui/QLayout>
+#include <QtGui/QPixmap>
+#include <QtGui/QPushButton>
 
 #include <resourcesUI/CQIconResource.h>
 

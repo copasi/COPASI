@@ -19,12 +19,12 @@
 
 #include "copasi/UI/ui_CQFittingItemWidget.h"
 
-#include <QHBoxLayout>
-#include <QGridLayout>
-#include <QVBoxLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QGridLayout>
+#include <QtGui/QVBoxLayout>
 
-#include <QLabel>
-#include <QPixmap>
+#include <QtGui/QLabel>
+#include <QtGui/QPixmap>
 
 class CCopasiDataModel;
 class CCopasiSelectionDialog;

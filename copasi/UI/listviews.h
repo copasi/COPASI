@@ -20,7 +20,7 @@
 #define LISTVIEWS_H
 
 #include <set>
-#include <qsplitter.h>
+#include <QtGui/QSplitter>
 #include <QTreeView>
 
 #include "copasi.h"

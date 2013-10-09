@@ -14,13 +14,13 @@
 
 // the window containing the plot and buttons for supported operations
 
-#include <QtSvg>
+#include <QtSvg/QtSvg>
 
-#include <QToolBar>
-#include <QPrinter>
-#include <QPixmap>
-#include <QPicture>
-#include <QSvgGenerator>
+#include <QtGui/QToolBar>
+#include <QtGui/QPrinter>
+#include <QtGui/QPixmap>
+#include <QtGui/QPicture>
+#include <QtSvg/QSvgGenerator>
 
 #include "plotwindow.h"
 #include "CopasiPlot.h"
@@ -33,7 +33,7 @@
 #include "resourcesUI/CQIconResource.h"
 
 #ifdef DEBUG_UI
-#include <QtDebug>
+#include <QtCore/QtDebug>
 #endif
 
 #include <qwt_plot.h>

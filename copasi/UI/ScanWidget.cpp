@@ -23,7 +23,7 @@
 #include <QComboBox>
 #include <QLineEdit>
 #include <QGridLayout>
-#include <QHBoxLayout>
+#include <QtGui/QHBoxLayout>
 
 #include <QInputDialog>
 

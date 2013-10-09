@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelWidget.h,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/08/16 18:43:07 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,8 +13,8 @@
 #ifndef COPASI_CQModelWidget
 #define COPASI_CQModelWidget
 
-#include <QWidget>
-#include <QVariant>
+#include <QtGui/QWidget>
+#include <QtCore/QVariant>
 
 #include "copasi/UI/ui_CQModelWidget.h"
 

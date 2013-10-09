@@ -15,7 +15,7 @@
 #include "CQDifferentialEquations.h"
 
 #include <QtCore/QVariant>
-#include <QPainter>
+#include <QtGui/QPainter>
 
 #include "CQDifferentialEquations.h"
 
@@ -23,8 +23,8 @@
 #include <set>
 #include <vector>
 
-#include <qmessagebox.h>
-#include <qregexp.h>
+#include <QtGui/QMessageBox>
+#include <QtCore/QRegExp>
 
 #ifdef HAVE_MML
 # include <qtmmlwidget.h>
@@ -41,7 +41,7 @@
 #include "CopasiFileDialog.h"
 
 #ifdef DEBUG_UI
-#include <QtDebug>
+#include <QtCore/QtDebug>
 #endif
 
 /*

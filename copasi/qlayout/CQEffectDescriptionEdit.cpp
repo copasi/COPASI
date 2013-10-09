@@ -3,13 +3,13 @@
 // of Manchester.
 // All rights reserved.
 
-#include <QColorDialog>
+#include <QtGui/QColorDialog>
 
 #include <qlayout/CQEffectDescription.h>
 #include <qlayout/CQEffectDescriptionEdit.h>
 
 #if QT_VERSION < 0x040800
-#include <QPainter>
+#include <QtGui/QPainter>
 #endif
 
 CQEffectDescriptionEdit::CQEffectDescriptionEdit(QWidget* parent, Qt::WindowFlags f)

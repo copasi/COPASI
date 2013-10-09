@@ -1,15 +1,15 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-#include <QTableWidget>
-#include <QTableWidgetItem>
+#include <QtGui/QTableWidget>
+#include <QtGui/QTableWidgetItem>
 
 #include "copasi.h"
 
@@ -21,14 +21,14 @@
 
 #include "model/CModel.h"
 
-#include <qtabwidget.h>
+#include <QtGui/QTabWidget>
 
 /**
  *  Constructs a CQUpdatesWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 CQUpdatesWidget::CQUpdatesWidget(QWidget* parent, const char* name, Qt::WFlags fl)
-    : CopasiWidget(parent, name, fl)
+  : CopasiWidget(parent, name, fl)
 {
   if (!name)
     setObjectName("CQUpdatesWidget");
@@ -39,7 +39,6 @@ CQUpdatesWidget::CQUpdatesWidget(QWidget* parent, const char* name, Qt::WFlags f
   mWidgetLayout->setMargin(11);
   mWidgetLayout->setSpacing(6);
   mWidgetLayout->setObjectName("CQUpdatesWidgetLayout");
-
 
   // **********  Label **************
   mLabelTitle = new QLabel(this);

@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMergingData.h,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/15 17:07:53 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -22,7 +14,7 @@
 #include <string>
 #include <vector>
 
-#include <QPixmap>
+#include <QtGui/QPixmap>
 #include <QtGui/QDialog>
 
 #include "model/CModel.h"
@@ -39,18 +31,18 @@ public:
 
   std::map<QTreeWidgetItem*, CCopasiObject*> mItemMap1;
   std::map<QTreeWidgetItem*, CCopasiObject*> mItemMap2;
-  
+
 protected:
   CModel* mpModel;
 
 protected slots:
 
-    void treeSelectionChanged();
-    
+  void treeSelectionChanged();
+
 private:
- 
+
   /**
-   * fills a tree widget with the items of the model. All tree items are mapped to the model items 
+   * fills a tree widget with the items of the model. All tree items are mapped to the model items
    * in itemMap.
    * const std::set<CCopasiObject*> & added : contains the model elements that were added by the latest
    * model adding operation. They will be highlighted.

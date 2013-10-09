@@ -3,7 +3,7 @@
 // of Manchester.
 // All rights reserved.
 
-#include <QTimer>
+#include <QtCore/QTimer>
 
 #include <qlayout/CQAnimationControls.h>
 #include <resourcesUI/CQIconResource.h>

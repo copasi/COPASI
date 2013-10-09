@@ -14,10 +14,10 @@
 
 #include <iostream>
 
-#include <qlabel.h>
-#include <qcombobox.h>
+#include <QtGui/QLabel>
+#include <QtGui/QComboBox>
 //Added by qt3to4:
-#include <QKeyEvent>
+#include <QtGui/QKeyEvent>
 
 #include "CQExpressionWidget.h"
 #include "CQMessageBox.h"

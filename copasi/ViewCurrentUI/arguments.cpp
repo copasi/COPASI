@@ -6,7 +6,7 @@
 #include "arguments.h"
 #include "string.h"
 
-#include <QString>
+#include <QtCore/QString>
 #include <QFile>
 #include <QFileInfo>
 

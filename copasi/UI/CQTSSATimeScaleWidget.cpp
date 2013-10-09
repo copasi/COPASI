@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSATimeScaleWidget.cpp,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/31 14:25:56 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -19,18 +11,18 @@
 #include "CQTSSATimeScaleWidget.h"
 
 #include <cmath>
-#include <qbitmap.h>
-#include <qcolor.h>
-#include <qtooltip.h>
-#include <QVBoxLayout>
-#include <QPaintEvent>
+#include <QtGui/QBitmap>
+#include <QtGui/QColor>
+#include <QtGui/QToolTip>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QPaintEvent>
 
 /*
  *  Constructs a CScanWidgetRepeat as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 CQTSSATimeScaleWidget::CQTSSATimeScaleWidget(QWidget* parent, const char* name, Qt::WFlags fl)
-    : QWidget(parent, fl)
+  : QWidget(parent, fl)
 {
   setObjectName(QString::fromUtf8(name));
 
@@ -82,7 +74,6 @@ void CQTSSATimeScaleWidget::paintTimeScale(CVector< C_FLOAT64> vector)
       mpPaintWidget->paintTimeScale(mpSlider->value());
       mpPaintWidget->repaint();
     }
-
 }
 
 void CQTSSATimeScaleWidget::changedInterval()
@@ -107,7 +98,7 @@ void CQTSSATimeScaleWidget::clearWidget()
  *  name 'name' and widget flags set to 'f'.
  */
 PaintWidget::PaintWidget(QWidget* parent, const char* name, Qt::WFlags fl)
-    : QWidget(parent, fl),
+  : QWidget(parent, fl),
     mSelection(0)
 {
   setObjectName(QString::fromUtf8(name));

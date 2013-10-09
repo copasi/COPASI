@@ -15,7 +15,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <QToolButton>
+#include <QtGui/QToolButton>
 
 #include "copasi.h"
 #include "UI/CopasiFileDialog.h"

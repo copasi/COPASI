@@ -6,7 +6,7 @@
 #ifndef COPASI_CQCopasiApplication
 #define COPASI_CQCopasiApplication
 
-#include <QApplication>
+#include <QtGui/QApplication>
 
 class QString;
 class CopasiUI3Window;

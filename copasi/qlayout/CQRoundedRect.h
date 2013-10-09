@@ -6,8 +6,8 @@
 #ifndef QROUNDED_RECT
 #define QROUNDED_RECT
 
-#include <QGraphicsRectItem>
-#include <QStyleOptionGraphicsItem>
+#include <QtGui/QGraphicsRectItem>
+#include <QtGui/QStyleOptionGraphicsItem>
 
 class QPainter;
 

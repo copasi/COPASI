@@ -1,40 +1,37 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSBMLSaveOptionsDialog.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/04/17 06:27:40 $
-// End CVS Header
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
 #include "CQSBMLSaveOptionsDialog.h"
 
-#include <qlayout.h>
-#include <qbuttongroup.h>
-#include <qradiobutton.h>
-#include <qcheckbox.h>
-#include <qpushbutton.h>
-#include <qsizepolicy.h>
-#include <qlabel.h>
-#include <qcombobox.h>
-#include <qtooltip.h>
+#include <QtGui/QLayout>
+#include <QtGui/QButtonGroup>
+#include <QtGui/QRadioButton>
+#include <QtGui/QCheckBox>
+#include <QtGui/QPushButton>
+#include <QtGui/QSizePolicy>
+#include <QtGui/QLabel>
+#include <QtGui/QComboBox>
+#include <QtGui/QToolTip>
 
 /**
  * Constructor.
  */
 CQSBMLSaveOptionsDialog::CQSBMLSaveOptionsDialog(QWidget * pParent , const char * name): QDialog(pParent, name, true)
-    , mCompressionType(CQSBMLSaveOptionsDialog::NONE)
-    , mSaveCOPASIMIRIAM(true)
-    , mpLayout(new QVBoxLayout(this))
-    , mpVersionBox(new QComboBox(false, this))
-    , mpMIRIAMCheckbox(new QCheckBox("Save COPASI MIRIAM annotation", this))
-    , mpCompressionGroup(new QButtonGroup(2, Qt::Horizontal, "Compression", this))
-    , mpOKButton(new QPushButton("Export", this))
-    , mpCancelButton(new QPushButton("Cancel", this))
+  , mCompressionType(CQSBMLSaveOptionsDialog::NONE)
+  , mSaveCOPASIMIRIAM(true)
+  , mpLayout(new QVBoxLayout(this))
+  , mpVersionBox(new QComboBox(false, this))
+  , mpMIRIAMCheckbox(new QCheckBox("Save COPASI MIRIAM annotation", this))
+  , mpCompressionGroup(new QButtonGroup(2, Qt::Horizontal, "Compression", this))
+  , mpOKButton(new QPushButton("Export", this))
+  , mpCancelButton(new QPushButton("Cancel", this))
 {
   // add the widgets to the layout
   std::vector<std::pair<unsigned C_INT32, unsigned C_INT32> > levelsAndVersions;

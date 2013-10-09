@@ -12,7 +12,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qfiledialog.h>
+#include <QtGui/QFileDialog>
 
 #include "copasi.h"
 
@@ -26,7 +26,7 @@
 #include "commandline/CConfigurationFile.h"
 
 #ifdef DEBUG_UI
-#include <QtDebug>
+#include <QtCore/QtDebug>
 #endif
 
 // static

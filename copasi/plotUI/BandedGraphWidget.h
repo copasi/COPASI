@@ -6,7 +6,7 @@
 #ifndef BANDEDGRAPHWIDGET_H
 #define BANDEDGRAPHWIDGET_H
 
-#include <QVariant>
+#include <QtCore/QVariant>
 
 #include "copasi/plotUI/ui_BandedGraphWidget.h"
 #include "copasi/plotUI/CQPlotEditWidget.h"

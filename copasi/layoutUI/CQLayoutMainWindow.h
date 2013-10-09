@@ -16,11 +16,11 @@
 #define SIMGUI_H_
 
 #ifndef USE_CRENDER_EXTENSION
-#include <QMainWindow>
+#include <QtGui/QMainWindow>
 #else
-#include <QFrame>
+#include <QtGui/QFrame>
 #endif // USE_CRENDER_EXTENSION
-#include <QString>
+#include <QtCore/QString>
 #include <QIcon>
 
 #include <string>

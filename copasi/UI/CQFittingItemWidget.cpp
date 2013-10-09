@@ -14,9 +14,9 @@
 
 #include "CQFittingItemWidget.h"
 
-#include <qapplication.h>
-#include <QPalette>
-#include <QHeaderView>
+#include <QtGui/QApplication>
+#include <QtGui/QPalette>
+#include <QtGui/QHeaderView>
 
 #include "CCopasiSelectionDialog.h"
 #include "CQValidator.h"
@@ -35,7 +35,7 @@
 #include "utilities/utility.h"
 #include "copasi/report/CCopasiRootContainer.h"
 
-#include <QtDebug>
+#include <QtCore/QtDebug>
 
 /*
  *  Constructs a CQFittingItemWidget as a child of 'parent', with the

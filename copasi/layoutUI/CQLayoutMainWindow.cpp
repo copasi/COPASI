@@ -14,22 +14,22 @@
 
 #include "CQLayoutMainWindow.h"
 
-#include <QAction>
-#include <QComboBox>
-#include <QFrame>
-#include <QLabel>
-#include <QLayout>
-#include <QMenuBar>
-#include <QMessageBox>
-#include <QMenu>
-#include <QPushButton>
-#include <QSplitter>
-#include <QVBoxLayout>
-#include <QToolBar>
-#include <QSlider>
-#include <QGridLayout>
-#include <QPixmap>
-#include <QCloseEvent>
+#include <QtGui/QAction>
+#include <QtGui/QComboBox>
+#include <QtGui/QFrame>
+#include <QtGui/QLabel>
+#include <QtGui/QLayout>
+#include <QtGui/QMenuBar>
+#include <QtGui/QMessageBox>
+#include <QtGui/QMenu>
+#include <QtGui/QPushButton>
+#include <QtGui/QSplitter>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QToolBar>
+#include <QtGui/QSlider>
+#include <QtGui/QGridLayout>
+#include <QtGui/QPixmap>
+#include <QtGui/QCloseEvent>
 
 #include <iostream>
 #include <cmath>
@@ -58,7 +58,7 @@
 #include "resourcesUI/CQIconResource.h"
 
 #ifdef DEBUG_UI
-#include <QtDebug>
+#include <QtCore/QtDebug>
 #endif
 
 using namespace std;

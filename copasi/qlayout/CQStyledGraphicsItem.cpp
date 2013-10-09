@@ -9,8 +9,8 @@
 #include <layout/CLGlyphs.h>
 #include <layout/CLRenderResolver.h>
 
-#include <QPen>
-#include <QBrush>
+#include <QtGui/QPen>
+#include <QtGui/QBrush>
 
 CQStyledGraphicsItem::CQStyledGraphicsItem(const CLGraphicalObject* go, const CLRenderResolver* resolver)
   : CQCopasiGraphicsItem(resolver, resolver != NULL ? resolver->resolveStyle(go) : NULL)

@@ -20,8 +20,8 @@
 #include <algorithm>
 #include <limits>
 #include <cmath>
-#include <qsignalmapper.h>
-#include <qcombobox.h>
+#include <QtCore/QSignalMapper>
+#include <QtGui/QComboBox>
 
 #include "copasi.h"
 

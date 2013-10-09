@@ -13,7 +13,7 @@ class CLBoundingBox;
 class QGraphicsScene;
 class QGraphicsItemGroup;
 
-#include <QGraphicsItemGroup>
+#include <QtGui/QGraphicsItemGroup>
 
 #include <string>
 

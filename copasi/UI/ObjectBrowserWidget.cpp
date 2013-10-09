@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.cpp,v $
-//   $Revision: 1.28 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/18 12:21:36 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -35,8 +27,8 @@ Contact: Please contact lixu1@vt.edu.
 #include <QPushButton>
 #include <QPixmap>
 #include <QGridLayout>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QVBoxLayout>
 #include <QFrame>
 
 #include "copasi.h"
@@ -65,7 +57,7 @@ QPixmap *pObjectNone = 0;
  *  name 'name' and widget flags set to 'f'.
  */
 ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, Qt::WFlags fl, int state)
-    : QWidget(parent, fl),
+  : QWidget(parent, fl),
     objectItemList(NULL),
     refreshList(NULL),
     ObjectBrowserLayout(NULL),
@@ -400,9 +392,9 @@ int ObjectBrowserWidget::partition(int split_pos, int start_pos, int end_pos, Ob
 
   while (start_pos < end_pos)
     {
-      while ((++start_pos < end_pos) && (quick_sort_array[start_pos]->getObject()->pCopasiObject <= tmp)) ;
+      while ((++start_pos < end_pos) && (quick_sort_array[start_pos]->getObject()->pCopasiObject <= tmp));
 
-      while ((--end_pos > start_pos) && (quick_sort_array[end_pos]->getObject()->pCopasiObject > tmp)) ;
+      while ((--end_pos > start_pos) && (quick_sort_array[end_pos]->getObject()->pCopasiObject > tmp));
 
       if (start_pos < end_pos)
         swap(start_pos, end_pos, quick_sort_array);
@@ -468,7 +460,7 @@ void ObjectBrowserWidget::removeDuplicate(ObjectList* objectItemList)
   CBrowserObject* pBrowserObject = NULL;
   ObjectBrowserItem* pBrowserItem = NULL;
 
-  for (index = 0; (index < length) && (!bufferVector[index]->getObject()->pCopasiObject); index++) ;
+  for (index = 0; (index < length) && (!bufferVector[index]->getObject()->pCopasiObject); index++);
 
   pBrowserObject = bufferVector[index++]->getObject();
 
@@ -503,7 +495,8 @@ void ObjectBrowserWidget::loadChild(ObjectBrowserItem* parent,
     {
       if ((static_cast< const CCopasiVector < CCopasiObject > * >(copaParent)->size() >= 1) &&
           ((*static_cast< const CCopasiVector < CCopasiObject > * >(copaParent))[0]->isContainer()))
-        {//add attribute list
+        {
+          //add attribute list
           ObjectBrowserItem* fieldChild = new ObjectBrowserItem(parent, NULL, NULL, objectItemList);
           fieldChild->setObjectType(FIELDATTR);
           fieldChild->setText(0, "Select by attribute");
@@ -766,7 +759,8 @@ void ObjectBrowserWidget::selectObjects(ObjectBrowserItem* browserItem,
           selectObjects(pChild, selectObject);
     }
   else
-    {//it has no child
+    {
+      //it has no child
       if (pCurrent->getType() != FIELDATTR)
         {
           if (pCurrent->getObject() && (pCurrent->getObject()->pCopasiObject == selectObject))

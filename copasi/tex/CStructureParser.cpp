@@ -17,8 +17,8 @@
 
 #include "CStructureParser.h"
 
-#include <QString>
-#include <QRegExp>
+#include <QtCore/QString>
+#include <QtCore/QRegExp>
 
 #include <iostream>
 #include "UI/qtUtilities.h"
@@ -56,7 +56,7 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
 {
   tagName = qName;
 
-  QLinkedList<QString>::iterator itL;
+  QLinkedList< QString >::iterator itL;
 
   if (qName == "mtable")
     texHead = "\\begin{array}";
@@ -334,7 +334,7 @@ bool CStructureParser::characters(const QString& str)
 
 bool CStructureParser::endElement(const QString&, const QString&, const QString& qName)
 {
-  QLinkedList<QString>::iterator itL;
+  QLinkedList< QString >::iterator itL;
 
   indent.remove((uint)0, 4);
 

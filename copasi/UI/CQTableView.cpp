@@ -1,29 +1,21 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTableView.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:54 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #include "CQTableView.h"
 
-#include <QKeyEvent>
-#include <QTimer>
+#include <QtGui/QKeyEvent>
+#include <QtCore/QTimer>
 
 #include <iostream>
 
 CQTableView::CQTableView(QWidget * pParent):
-    QTableView(pParent),
-    mpTimer(NULL),
-    mpMouseEvent(NULL),
-    mMoveDown(false),
-    mpModel(NULL)
+  QTableView(pParent),
+  mpTimer(NULL),
+  mpMouseEvent(NULL),
+  mMoveDown(false),
+  mpModel(NULL)
 {
   mpTimer = new QTimer(this);
   mpTimer->setSingleShot(true);
@@ -69,7 +61,6 @@ void CQTableView::keyPressEvent(QKeyEvent * pEvent)
         break;
     }
 }
-
 
 // virtual
 void CQTableView::mousePressEvent(QMouseEvent * pEvent)

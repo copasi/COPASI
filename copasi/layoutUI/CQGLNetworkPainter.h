@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.91 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/22 00:00:18 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -31,10 +23,10 @@
 #include "GL/glu.h"
 #endif // __APPLE__
 
-#include <QColor>
-#include <QDialog> // for CQSimpleProgressDialog
-#include <QFont>
-#include <QImage>
+#include <QtGui/QColor>
+#include <QtGui/QDialog> // for CQSimpleProgressDialog
+#include <QtGui/QFont>
+#include <QtGui/QImage>
 
 #include <vector>
 #include <string>
@@ -143,7 +135,6 @@ public:
    * The new zoom factor is returned.
    */
   double fitToScreen();
-
 
   void pauseAnimation();
 

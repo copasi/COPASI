@@ -3,7 +3,7 @@
 // of Manchester.
 // All rights reserved.
 
-#include <qpainter.h>
+#include <QtGui/QPainter>
 
 #include <qlayout/CQConnectionGraphicsItem.h>
 #include <qlayout/CQStyledGraphicsItem.h>

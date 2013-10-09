@@ -3,11 +3,12 @@
 // of Manchester.
 // All rights reserved.
 
-#include <qgraphicsitem.h>
-#include <qgraphicseffect.h>
-#include <qdockwidget.h>
-#include <QFileDialog>
-#include <QDateTime>
+#include <QtGui/QGraphicsItem>
+#include <QtGui/QGraphicsEffect>
+#include <QtGui/QDockWidget>
+#include <QtGui/QFileDialog>
+#include <QtCore/QDateTime>
+#include <QtGui/QToolBar>
 
 #include <qlayout/CQAnimationWindow.h>
 #include <qlayout/CQAnimationSettingsEditor.h>
@@ -286,7 +287,6 @@ CQAnimationWindow::CQAnimationWindow()
   init();
 }
 
-#include <QToolBar>
 void CQAnimationWindow::init()
 {
   setupUi(this);
@@ -471,7 +471,7 @@ void CQAnimationWindow::slotRandomizeLayout()
 #include <QtCore/QAbstractEventDispatcher>
 #include <QtCore/QAbstractEventDispatcher>
 
-#include <qtimer.h>
+#include <QtCore/QTimer>
 
 void CQAnimationWindow::slotStopLayout()
 {

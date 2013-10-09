@@ -3,8 +3,8 @@
 // of Manchester.
 // All rights reserved.
 
-#include <qgraphicsitem.h>
-#include <qgraphicseffect.h>
+#include <QtGui/QGraphicsItem>
+#include <QtGui/QGraphicsEffect>
 
 #include <qlayout/CQEffectDescription.h>
 #include <qlayout/CQCopasiEffect.h>

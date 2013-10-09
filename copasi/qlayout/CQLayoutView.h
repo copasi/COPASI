@@ -6,7 +6,7 @@
 #ifndef QLAYOUT_VIEW_H
 #define QLAYOUT_VIEW_H
 
-#include <QGraphicsView>
+#include <QtGui/QGraphicsView>
 
 class CQLayoutScene;
 class QAction;

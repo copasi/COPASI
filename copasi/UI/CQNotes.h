@@ -1,14 +1,14 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #ifndef COPASI_CQNotes
 #define COPASI_CQNotes
 
-#include <QWidget>
-#include <QVariant>
-#include <QXmlDefaultHandler>
+#include <QtGui/QWidget>
+#include <QtCore/QVariant>
+#include <QtXml/QXmlDefaultHandler>
 
 #include "copasi/UI/ui_CQNotes.h"
 #include "copasi/UI/CQValidator.h"
@@ -95,7 +95,5 @@ private:
 
   std::string mKeyToCopy;
 };
-
-
 
 #endif // COPASI_CQNotes

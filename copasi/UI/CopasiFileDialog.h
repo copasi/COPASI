@@ -15,9 +15,9 @@
 #ifndef COPASI_FILE_DIALOG
 #define COPASI_FILE_DIALOG
 
-#include <QFileDialog>
-#include <QString>
-#include <QDir>
+#include <QtGui/QFileDialog>
+#include <QtCore/QString>
+#include <QtCore/QDir>
 
 class CopasiFileDialog
 {

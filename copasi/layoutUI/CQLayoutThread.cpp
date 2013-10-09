@@ -3,9 +3,9 @@
 // of Manchester.
 // All rights reserved.
 
-#include <qdockwidget.h>
-#include <qdatetime.h>
-#include <QSharedPointer>
+#include <QtGui/QDockWidget>
+#include <QtCore/QDateTime>
+#include <QtCore/QSharedPointer>
 
 #include <layoutUI/CQLayoutThread.h>
 #include <layoutUI/CQSpringLayoutParameterWindow.h>

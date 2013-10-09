@@ -1,24 +1,21 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQDateTimeEditDelegate.cpp,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/05/04 15:24:00 $
-// End CVS Header
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-#include <QDateTimeEdit>
-#include <QAbstractItemModel>
+#include <QtGui/QDateTimeEdit>
+#include <QtCore/QAbstractItemModel>
 
 #include "../copasi.h"
 #include "CQDateTimeEditDelegate.h"
 
 CQDateTimeEditDelegate::CQDateTimeEditDelegate(QObject *parent)
-    : QItemDelegate(parent)
+  : QItemDelegate(parent)
 {}
 
 QWidget *CQDateTimeEditDelegate::createEditor(QWidget *parent,

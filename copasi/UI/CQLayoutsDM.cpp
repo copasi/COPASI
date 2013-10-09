@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLayoutsDM.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/04/10 15:19:37 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-#include <QString>
+#include <QtCore/QString>
 
 #include "CQMessageBox.h"
 #include "CQLayoutsDM.h"
@@ -21,10 +13,9 @@
 #include "report/CCopasiRootContainer.h"
 #include "layout/CListOfLayouts.h"
 
-
 CQLayoutsDM::CQLayoutsDM(QObject *parent) :
-    CQBaseDataModel(parent),
-    mpListOfLayouts(NULL)
+  CQBaseDataModel(parent),
+  mpListOfLayouts(NULL)
 {}
 
 CQLayoutsDM::~CQLayoutsDM()
@@ -37,12 +28,10 @@ int CQLayoutsDM::rowCount(const QModelIndex & /* parent */) const
   return (int) mpListOfLayouts->size();
 }
 
-
 bool CQLayoutsDM::clear()
 {
   return removeRows(0, rowCount());
 }
-
 
 int CQLayoutsDM::columnCount(const QModelIndex & /* parent */) const
 {
@@ -160,7 +149,6 @@ bool CQLayoutsDM::setData(const QModelIndex &index, const QVariant & /* value */
             return false;
             break;
         }
-
     }
 
   return true;
@@ -171,7 +159,6 @@ bool CQLayoutsDM::isDefaultRow(const QModelIndex & /* index */) const
 {
   return false;
 }
-
 
 bool CQLayoutsDM::insertRows(int position, int rows, const QModelIndex&)
 {
@@ -231,7 +218,6 @@ bool CQLayoutsDM::removeRows(QModelIndexList rows, const QModelIndex & /* index 
   if (rows.isEmpty()) return false;
 
   if (mpListOfLayouts == NULL) return false;
-
 
   //  Build the list of pointers to items to be deleted
   //  before actually deleting any item.

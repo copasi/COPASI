@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpinBoxDelegate.h,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2009/07/06 12:12:14 $
-// End CVS Header
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -14,7 +11,7 @@
 #ifndef CQSpinBoxDelegate_H
 #define CQSpinBoxDelegate_H
 
-#include <QItemDelegate>
+#include <QtGui/QItemDelegate>
 
 class CQSpinBoxDelegate : public QItemDelegate
 {

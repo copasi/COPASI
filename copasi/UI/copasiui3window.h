@@ -14,23 +14,23 @@
 
 #include <string>
 
-#include <QMainWindow>
-#include <QModelIndex>
-#include <QMap>
-#include <qpointer.h>
+#include <QtGui/QMainWindow>
+#include <QtCore/QModelIndex>
+#include <QtCore/QMap>
+#include <QtCore/QPointer>
 
 #ifdef COPASI_SBW_INTEGRATION
-#include <QApplication>
-#include <QEvent>
-#include <QMutex>
-#include <QWaitCondition>
+# include <QtGui/QApplication>
+# include <QtCore/QEvent>
+# include <QtCore/QMutex>
+# include <QtCore/QWaitCondition>
 
-#define WIN32_LEAN_AND_MEAN
-#include <SBW/SBW.h>
-#undef DELETE
-#undef ERROR
-#undef TRUE
-#undef FALSE
+# define WIN32_LEAN_AND_MEAN
+# include <SBW/SBW.h>
+# undef DELETE
+# undef ERROR
+# undef TRUE
+# undef FALSE
 using namespace SystemsBiologyWorkbench;
 #else
 class SBWListener;
