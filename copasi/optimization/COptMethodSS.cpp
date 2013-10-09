@@ -331,6 +331,7 @@ bool COptMethodSS::randomize(C_INT32 i)
           case - 1:
             Sol = *OptItem.getLowerBoundValue();
             break;
+
           case 1:
             Sol = *OptItem.getUpperBoundValue();
             break;
@@ -400,6 +401,7 @@ bool COptMethodSS::creation(void)
               case - 1:
                 Sol = *OptItem.getLowerBoundValue();
                 break;
+
               case 1:
                 Sol = *OptItem.getUpperBoundValue();
                 break;
@@ -430,6 +432,7 @@ bool COptMethodSS::creation(void)
           case - 1:
             Sol = *OptItem.getLowerBoundValue();
             break;
+
           case 1:
             Sol = *OptItem.getUpperBoundValue();
             break;
@@ -503,6 +506,7 @@ bool COptMethodSS::creation(void)
                       case - 1:
                         Sol = *OptItem.getLowerBoundValue();
                         break;
+
                       case 1:
                         Sol = *OptItem.getUpperBoundValue();
                         break;
@@ -541,7 +545,7 @@ bool COptMethodSS::creation(void)
         {
           if (child == 0) break;
 
-          parent = floor((child - 1) / 2);
+          parent = floor((double)(child - 1) / 2);
 
           if (mPoolVal[child] < mPoolVal[parent])
             {
@@ -591,7 +595,7 @@ bool COptMethodSS::creation(void)
             {
               if (child == 0) break;
 
-              parent = floor((child - 1) / 2);
+              parent = floor((double)(child - 1) / 2);
 
               if (mPoolVal[child] < mPoolVal[parent])
                 {
@@ -676,7 +680,7 @@ void COptMethodSS::sortRefSet(C_INT32 lower, C_INT32 upper)
         {
           if (child == 0) break;
 
-          parent = floor((child - 1) / 2);
+          parent = floor((double)(child - 1) / 2);
 
           if (mRefSetVal[child] < mRefSetVal[parent])
             {
@@ -873,6 +877,7 @@ bool COptMethodSS::combination(void)
                               case -1:
                                 c1 = mn;
                                 break;
+
                               case 1:
                                 c1 = mx;
                                 break;
@@ -887,6 +892,7 @@ bool COptMethodSS::combination(void)
                               case -1:
                                 c2 = mn;
                                 break;
+
                               case 1:
                                 c2 = mx;
                                 break;
@@ -906,6 +912,7 @@ bool COptMethodSS::combination(void)
                               case -1:
                                 c1 = mn;
                                 break;
+
                               case 1:
                                 c1 = mx;
                                 break;
@@ -920,6 +927,7 @@ bool COptMethodSS::combination(void)
                               case -1:
                                 c2 = mn;
                                 break;
+
                               case 1:
                                 c2 = mx;
                                 break;
@@ -985,6 +993,7 @@ bool COptMethodSS::combination(void)
                       case -1:
                         xnew[k] = *OptItem.getLowerBoundValue();
                         break;
+
                       case 1:
                         xnew[k] = *OptItem.getUpperBoundValue();
                         break;
@@ -1306,9 +1315,13 @@ bool COptMethodSS::inforefset(C_INT32 type, C_INT32 element)
   switch (type)
     {
       case 1: ofile << "element " << element << " improved in combination" << std::endl << std::endl; break;
+
       case 2: ofile << "element " << element << " improved in go-beyond" << std::endl << std::endl; break;
+
       case 3: ofile << "No element improved in iteration " << element << std::endl << std::endl; break;
+
       case 4: ofile << "element " << element << " randomized, too close to another" << std::endl << std::endl; break;
+
       case 5: ofile << "element " << element << " randomized, was stuck" << std::endl << std::endl; break;
     }
 
