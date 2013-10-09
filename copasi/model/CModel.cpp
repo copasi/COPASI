@@ -3415,7 +3415,7 @@ void CModel::buildLinkZero()
   mL.build(mStoiInternal);
   mNumMetabolitesReactionIndependent = mL.getNumIndependent();
   mStoi = mStoiInternal;
-  mL.applyRowPivot(mStoi);
+  mL.doRowPivot(mStoi);
 
   return;
 }

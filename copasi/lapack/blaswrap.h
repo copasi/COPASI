@@ -19,8 +19,8 @@ extern "C"
 #ifdef HAVE_BLASWRAP_H
 # include <blaswrap.h>
 #else
-#ifdef USE_MKL
-# include "mkl_blas.h"
+# ifdef USE_MKL
+#  include "mkl_blas.h"
 #  define daxpy_ daxpy
 #  define dcopy_ dcopy
 #  define ddot_ ddot
@@ -28,19 +28,18 @@ extern "C"
 #  define dnrm2_ dnrm2
 #  define dscal_ dscal
 #  define idamax_ idamax
-#endif // USE_MKL
+# endif // USE_MKL
 
-#if (defined HAVE_CLAPACK_H || defined HAVE_LAPACK_H)
-
-# if (defined WIN32 && defined HAVE_LAPACK_H)
-#  define daxpy_ DAXPY
-#  define dcopy_ DCOPY
-#  define ddot_ DDOT
-#  define dgemm_ DGEMM
-#  define dnrm2_ DNRM2
-#  define dscal_ DSCAL
-#  define idamax_ IDAMAX
-# endif // WIN32 && HAVE_LAPACK_H
+# if (defined HAVE_CLAPACK_H || defined HAVE_LAPACK_H)
+#  if (defined WIN32 && defined HAVE_LAPACK_H)
+#   define daxpy_ DAXPY
+#   define dcopy_ DCOPY
+#   define ddot_ DDOT
+#   define dgemm_ DGEMM
+#   define dnrm2_ DNRM2
+#   define dscal_ DSCAL
+#   define idamax_ IDAMAX
+#  endif // (defined WIN32 && defined HAVE_LAPACK_H)
 
 # if (defined HAVE_CLAPACK_H && !defined NO_BLAS_WRAP && !defined HAVE_APPLE)
 #  define daxpy_ f2c_daxpy
@@ -50,10 +49,10 @@ extern "C"
 #  define dnrm2_ f2c_dnrm2
 #  define dscal_ f2c_dscal
 #  define idamax_ f2c_idamax
-# endif // HAVE_CLAPACK_H
+# endif // (defined HAVE_CLAPACK_H && !defined NO_BLAS_WRAP && !defined HAVE_APPLE)
 
-#endif // HAVE_CLAPACK_H || HAVE_LAPACK_H
-#endif // HAVE_BLAS_H
+# endif // (defined HAVE_CLAPACK_H || defined HAVE_LAPACK_H)
+#endif // HAVE_BLASWRAP_H
 
 # ifdef HAVE_F2C_H
 #  include <f2c.h>

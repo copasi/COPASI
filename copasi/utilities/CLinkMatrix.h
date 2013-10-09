@@ -43,13 +43,12 @@ public:
   bool rightMultiply(const C_FLOAT64 & alpha, const CMatrix< C_FLOAT64> & M, CMatrix< C_FLOAT64> & P) const;
 
   /**
-   * Left multiply the given matrix M with L, i.e., P = L^T * M
-   * @param const C_FLOAT64 & alpha
+   * Left multiply the given matrix M with L, i.e., P = L * M
    * @param const CMatrix< C_FLOAT64> & M
    * @param CMatrix< C_FLOAT64> & P
    * @result bool success;
    */
-  bool leftMultiply(const C_FLOAT64 & alpha, const CMatrix< C_FLOAT64> & M, CMatrix< C_FLOAT64> & P) const;
+  bool leftMultiply(const CMatrix< C_FLOAT64> & M, CMatrix< C_FLOAT64> & P) const;
 
   /**
    * Retrieve the pivot vector used to create the link matrix
@@ -70,18 +69,32 @@ public:
   size_t getNumDependent() const;
 
   /**
-   * Apply the row pivot
+   * Do the row pivot
    * @param CMatrix< C_FLOAT64 > & matrix
    * @return bool success
    */
-  bool applyRowPivot(CMatrix< C_FLOAT64 > & matrix) const;
+  bool doRowPivot(CMatrix< C_FLOAT64 > & matrix) const;
 
   /**
-   * Apply the column pivot
+   * Undo the row pivot
    * @param CMatrix< C_FLOAT64 > & matrix
    * @return bool success
    */
-  bool applyColumnPivot(CMatrix< C_FLOAT64 > & matrix) const;
+  bool undoRowPivot(CMatrix< C_FLOAT64 > & matrix) const;
+
+  /**
+   * Do the column pivot
+   * @param CMatrix< C_FLOAT64 > & matrix
+   * @return bool success
+   */
+  bool doColumnPivot(CMatrix< C_FLOAT64 > & matrix) const;
+
+  /**
+   * Undo the column pivot
+   * @param CMatrix< C_FLOAT64 > & matrix
+   * @return bool success
+   */
+  bool undoColumnPivot(CMatrix< C_FLOAT64 > & matrix) const;
 
   /**
    * Apply the row pivot
@@ -133,8 +146,39 @@ public:
   }
 
 private:
+  /**
+   * Internal method performing apply and undo of column pivoting.
+   * @param CMatrix< C_FLOAT64 > & matrix
+   * @param const C_INT & incr
+   * @return bool success
+   */
+  bool applyColumnPivot(CMatrix< C_FLOAT64 > & matrix, const C_INT & incr) const;
+
+  /**
+   * Internal method performing apply and undo of row pivoting.
+   * @param CMatrix< C_FLOAT64 > & matrix
+   * @param const CVector< size_t > & pivots
+   * @return bool success
+   */
+  bool applyRowPivot(CMatrix< C_FLOAT64 > & matrix,
+                     const CVector< size_t > & pivots) const;
+  /**
+   * The row pivoting performed to create the link matrix
+   */
   CVector< size_t > mRowPivots;
 
+  /**
+   * The pivot vector used for undoing row swapping
+   */
+  CVector< size_t > mPivotInverse;
+
+  /**
+   *  The swap vector used for column swapping
+   */
+  CVector< C_INT > mSwapVector;
+  /**
+   * The number of linear independent rows.
+   */
   size_t mIndependent;
 };
 
