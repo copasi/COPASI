@@ -12,8 +12,9 @@
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
+#include <QHeaderView> // To be able to hide vertical header
+#include <QTableWidgetItem>
 #include <QStringList>
-#include <QComboBox>
 #include <qlineedit.h>
 //Added by qt3to4:
 #include <QPixmap>
@@ -28,17 +29,15 @@
 #include "qtUtilities.h"
 #include "utilities/CDimension.h"
 #include "copasi/report/CCopasiRootContainer.h"
+#include "CQComboDelegate.h"
 
-ParameterTable::ParameterTable(QWidget * parent, const char * name)
-  : Q3Table(parent, name),
+ParameterTable::ParameterTable(QWidget * parent)
+  : QTableWidget(parent),
     mOldRow(0)
 {
   initTable();
 
-  connect(this, SIGNAL(currentChanged(int, int)),
-          this, SLOT(handleCurrentCell(int, int)));
-
-  connect(this, SIGNAL(valueChanged(int, int)),
+  connect(this, SIGNAL(cellChanged(int, int)),
           this, SLOT(slotCellChanged(int, int)));
 
   connect(this, SIGNAL(signalChanged(int, int, QString)),
@@ -50,21 +49,16 @@ ParameterTable::ParameterTable(QWidget * parent, const char * name)
 
 void ParameterTable::initTable()
 {
-  setNumRows(0);
-  verticalHeader()->hide();
-  setLeftMargin(0);
-  setSelectionMode(Q3Table::NoSelection);
-  setNumCols(5);
-  horizontalHeader()->setLabel(0, "Description");
-  horizontalHeader()->setLabel(1, "Name");
-  horizontalHeader()->setLabel(2, "");
-  horizontalHeader()->setLabel(3, "Value");
-  horizontalHeader()->setLabel(4, "Unit");
-  setColumnStretchable(0, false);
-  setColumnStretchable(1, true);
-  setColumnStretchable(2, false);
-  setColumnStretchable(3, true);
-  setColumnStretchable(4, false);
+  setRowCount(0);
+  setSelectionMode(QTableWidget::NoSelection);
+  setColumnCount(5);
+  QStringList hLabels;
+  hLabels << "Role" << "Name" << "Mapping" << "Value" << "Unit";
+  setHorizontalHeaderLabels(hLabels);
+  verticalHeader()->setVisible(false);
+
+  mpComboDelegate = new CQComboDelegate(NULL, this);
+  setItemDelegateForColumn(2,mpComboDelegate);
 
   setShowGrid(false);
 }
@@ -170,27 +164,60 @@ QStringList ParameterTable::getListOfAllCompartmentNames(const CModel & model)
   return ret;
 }
 
-void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & model)
+void ParameterTable::updateTable(const CReactionInterface & ri,const CReaction * pReaction)
 {
+  blockSignals(true); // So cellChanged doesn't fire when items are set.
+
+  setRowCount(0);
+
+  if (pReaction == NULL) return;
+
+  CModel * pModel = dynamic_cast< CModel * >(pReaction->getObjectAncestor("Model"));
+
   //first get the units strings
-  CFindDimensions units(ri.getFunction(), model.getQuantityUnitEnum() == CModel::dimensionlessQuantity,
-                        model.getVolumeUnitEnum() == CModel::dimensionlessVolume,
-                        model.getTimeUnitEnum() == CModel::dimensionlessTime,
-                        model.getAreaUnitEnum() == CModel::dimensionlessArea,
-                        model.getLengthUnitEnum() == CModel::dimensionlessLength
+  CFindDimensions units(ri.getFunction(), pModel->getQuantityUnitEnum() == CModel::dimensionlessQuantity,
+                        pModel->getVolumeUnitEnum() == CModel::dimensionlessVolume,
+                        pModel->getTimeUnitEnum() == CModel::dimensionlessTime,
+                        pModel->getAreaUnitEnum() == CModel::dimensionlessArea,
+                        pModel->getLengthUnitEnum() == CModel::dimensionlessLength
                        );
   units.setUseHeuristics(true);
   units.setMolecularitiesForMassAction(ri.getChemEqInterface().getMolecularity(CFunctionParameter::SUBSTRATE),
                                        ri.getChemEqInterface().getMolecularity(CFunctionParameter::PRODUCT));
   units.findDimensions(ri.isMulticompartment());
 
+  CFunctionParameter::Role usage;
+
+  // Load the comboDelegate lists
+  mGlobalParameters.clear();
+  mGlobalParameters = getListOfAllGlobalParameterNames(*pModel);
+  if (mGlobalParameters.indexOf("--local--") != -1) // in case someone names a parameter "--local--"
+    mGlobalParameters.replace(mGlobalParameters.indexOf("--local--"), "\"--local--\"");
+  mGlobalParameters.push_front("--local--");
+
+  std::vector<std::string>::const_iterator it;
+
+  mSubstrates.clear();
+  usage = CFunctionParameter::SUBSTRATE;
+  for (it = ri.getListOfMetabs(usage).begin(); it != ri.getListOfMetabs(usage).end(); ++it)
+    mSubstrates += FROM_UTF8(CMetabNameInterface::unQuote(*it));
+
+  mProducts.clear();
+  usage = CFunctionParameter::PRODUCT;
+  for (it = ri.getListOfMetabs(usage).begin(); it != ri.getListOfMetabs(usage).end(); ++it)
+    mProducts += FROM_UTF8(CMetabNameInterface::unQuote(*it));
+
+  mModifiers.clear();  // Get all metabs; modifiers are never locked
+  vectorOfStrings2QStringList(getListOfAllMetabNames(*pModel, ri), mModifiers);
+
+  mVolumes.clear();
+  mVolumes = getListOfAllCompartmentNames(*pModel);
+
   size_t i, imax = ri.size();
   size_t j, jmax;
   size_t rowCounter = 0;
 
-  Q3TableItem *item;
-  Q3ComboTableItem *combo;
-  QStringList qsl;
+  QTableWidgetItem *pItem = NULL;
 
   QColor subsColor(255, 210, 210);
   QColor prodColor(210, 255, 210);
@@ -199,7 +226,6 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
   QColor volColor(210, 210, 255);
   QColor timeColor(210, 210, 210);
 
-  CFunctionParameter::Role usage;
   QString qUsage;
   bool locked = false;
   QColor color;
@@ -208,18 +234,10 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
   mIndex2Line.resize(imax);
   mLine2Index.clear();
 
-  setNumRows(0); // this is a hack to clear the table.
-  setNumRows((int)(imax * 2));
+  setRowCount((int) imax);
 
   for (i = 0; i < imax; ++i)
     {
-      // add additional space
-      clearCell((int) rowCounter, 0); clearCell((int) rowCounter, 1); clearCell((int) rowCounter, 2);
-      setRowReadOnly((int) rowCounter, true);
-      setRowHeight((int) rowCounter++, 8);
-
-      //
-      setRowReadOnly((int) rowCounter, false);
       mIndex2Line[i] = rowCounter;
 
       // set the stuff that is different for the specific usages
@@ -264,167 +282,178 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
         }
 
       // add first column
-      item = new ColorTableItem(this, Q3TableItem::Never, color, qUsage);
+      pItem = new QTableWidgetItem(qUsage);
+      pItem->setBackground(color);
 
       if (usage == CFunctionParameter::SUBSTRATE)
-        item->setPixmap(CQIconResource::icon(CQIconResource::reactionSubstrate).pixmap(QSize(40, 20), QIcon::Normal, QIcon::On));
+        pItem->setIcon(CQIconResource::icon(CQIconResource::reactionSubstrate));
       else if (usage == CFunctionParameter::PRODUCT)
-        item->setPixmap(CQIconResource::icon(CQIconResource::reactionProduct).pixmap(QSize(40, 20), QIcon::Normal, QIcon::On));
+        pItem->setIcon(CQIconResource::icon(CQIconResource::reactionProduct));
       else if (usage == CFunctionParameter::MODIFIER)
-        item->setPixmap(CQIconResource::icon(CQIconResource::reactionModifier).pixmap(QSize(40, 20), QIcon::Normal, QIcon::On));
+        pItem->setIcon(CQIconResource::icon(CQIconResource::reactionModifier));
 
-      setItem((int) rowCounter, 0, item);
+      pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
+      setItem((int) rowCounter, 0, pItem);
 
       // add second column
-      item = new ColorTableItem(this, Q3TableItem::Never, color, FROM_UTF8(ri.getParameterName(i)));
+      pItem = new QTableWidgetItem(FROM_UTF8(ri.getParameterName(i)));
+      pItem->setBackground(color);
 
       if ((usage != CFunctionParameter::PARAMETER)
           && (usage != CFunctionParameter::VOLUME)
           && (usage != CFunctionParameter::TIME))
         {
           if (locked)
-            item->setPixmap(CQIconResource::icon(CQIconResource::locked).pixmap(QSize(40, 20), QIcon::Normal, QIcon::On));
+            pItem->setIcon(CQIconResource::icon(CQIconResource::locked));
           else
-            item->setPixmap(CQIconResource::icon(CQIconResource::unlocked).pixmap(QSize(40, 20), QIcon::Normal, QIcon::On));
+            pItem->setIcon(CQIconResource::icon(CQIconResource::unlocked));
         }
-
-      setItem((int) rowCounter, 1, item);
-
-      // add third column
-      if (usage == CFunctionParameter::PARAMETER)
-        {
-          item = new ColorCheckTableItem(this, color, "global");
-          dynamic_cast<ColorCheckTableItem*>(item)->setChecked(!ri.isLocalValue(i));
-        }
-      else
-        {
-          item = new ColorTableItem(this, Q3TableItem::Never, color, "");
-        }
-
-      setItem((int) rowCounter, 2, item);
+      pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
+      setItem((int) rowCounter, 1, pItem);
 
       // add units column
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-      assert(pDataModel != NULL);
-      item = new ColorTableItem(this, Q3TableItem::Never, color,
-                                FROM_UTF8(" " + units.getDimensions()[i].getDisplayString(&model)));
-      setItem((int) rowCounter, 4, item);
+      const CCopasiDataModel* pDataModel = pModel->getObjectDataModel();
+      if (pDataModel == NULL) return;
 
-      // add a line for a metabolite Parameter
+      QString theseUnits = FROM_UTF8(" " + units.getDimensions()[i].getDisplayString(pModel));
+      pItem = new QTableWidgetItem(theseUnits);
+      pItem->setBackgroundColor(color);
+      pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
+      setItem((int) rowCounter, 4, pItem);
+
+      // Create and color Value column
+      pItem = new QTableWidgetItem("");
+      pItem->setBackground(QColor(color));
+      pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
+      setItem((int) rowCounter, 3, pItem);
+
+      // add fourth (Mapping) column (col index = 3)
+      pItem = new QTableWidgetItem("");
+      pItem->setBackground(color);
+      setItem((int) rowCounter, 2, pItem);
+
+      // if line is for a metabolite Parameter . . .
       if ((usage == CFunctionParameter::SUBSTRATE)
           || (usage == CFunctionParameter::PRODUCT)
           || (usage == CFunctionParameter::MODIFIER))
         {
-          // get the list of possible metabs (for the combo box)
-          if (usage == CFunctionParameter::MODIFIER) //get all metabs; modifiers are never locked
-            vectorOfStrings2QStringList(getListOfAllMetabNames(model, ri), qsl);
-          else //only get the modifiers from the ChemEq
-            {
-              if (!locked)
-                {
-                  qsl.clear();
-
-                  std::vector<std::string>::const_iterator it = ri.getListOfMetabs(usage).begin();
-                  std::vector<std::string>::const_iterator end = ri.getListOfMetabs(usage).end();
-
-                  for (; it != end; ++it)
-                    {
-                      qsl += FROM_UTF8(CMetabNameInterface::unQuote(*it));
-                    }
-                }
-            }
 
           metabNames = &(ri.getMappings(i));
 
-          if (!ri.isVector(i))
+          if (locked){
+            pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
+            closePersistentEditor(pItem);}
+          else
             {
-              if (locked)
-                {
-                  item = new ColorTableItem(this, Q3TableItem::Never, color, FROM_UTF8(CMetabNameInterface::unQuote((*metabNames)[0])));
-                  setItem((int) rowCounter, 3, item);
-                }
-              else
-                {
-                  combo = new Q3ComboTableItem(this, qsl);
-                  combo->setCurrentItem(FROM_UTF8(CMetabNameInterface::unQuote((*metabNames)[0])));
-                  setItem((int) rowCounter, 3, combo);
-                }
+              if (usage == CFunctionParameter::SUBSTRATE)
+                mpComboDelegate->setItems(rowCounter, &mSubstrates);
+              else if (usage == CFunctionParameter::PRODUCT)
+                mpComboDelegate->setItems(rowCounter, &mProducts);
+              else { // must be MODIFIER
+                mpComboDelegate->setItems(rowCounter, &mModifiers);}
+
+              openPersistentEditor(pItem);
             }
+
+          if (!ri.isVector(i))
+               pItem->setText(FROM_UTF8(CMetabNameInterface::unQuote((*metabNames)[0])));
           else
             {
               if (locked)
-                {
-                  item = new ColorTableItem(this, Q3TableItem::Never, color, "");
-                  setItem((int) rowCounter, 3, item);
-                }
-              else // this should not happen
-                {
-                  combo = new Q3ComboTableItem(this, qsl);
-                  combo->setCurrentItem("add species");
-                  setItem((int) rowCounter, 3, combo);
-                }
+                pItem->setText("");
+              else  // this should not happen
+                pItem->setText("add species");
 
               // add lines for vector parameters
               jmax = metabNames->size();
-              setNumRows(numRows() + (int) jmax);
+              setRowCount(rowCount() + (int) (jmax-1));
 
-              for (j = 0; j < jmax; ++j)
+              item((int) rowCounter,2)->setText(FROM_UTF8((*metabNames)[0]));
+
+              for (j = 1; j < jmax; ++j)
                 {
                   ++rowCounter;
-                  item = new ColorTableItem(this, Q3TableItem::Never, color, FROM_UTF8((*metabNames)[j]));
-                  setItem((int) rowCounter, 3, item);
+
+                  for (int k = 0; k < 5; k++)
+                  {
+                      pItem = new QTableWidgetItem("");
+                      pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
+                      pItem->setBackgroundColor(color);
+                      setItem((int) rowCounter, k, pItem);
+                  }
+                  item((int) rowCounter,2)->setText(FROM_UTF8((*metabNames)[j]));
+                  item((int) rowCounter,4)->setText(theseUnits);
                 }
             }
         }
-      // add a line for a kinetic parameter
+      // if line is for a kinetic parameter . . .
       else if (usage == CFunctionParameter::PARAMETER)
         {
+          mpComboDelegate->setItems(rowCounter, &mGlobalParameters);
           if (ri.isLocalValue(i))
-            {
-              item = new ColorTableItem(this, Q3TableItem::OnTyping, color, QString::number(ri.getLocalValue(i)));
-              setItem((int) rowCounter, 3, item);
-            }
+          {
+              pItem->setText("--local--");
+          }
           else //global parameter
+          {
+            QString paramText = FROM_UTF8(ri.getMapping(i));
+            if (paramText == "--local--")
+              paramText = "\"--local--\"";
+            pItem->setText(paramText);
+          }
+          openPersistentEditor(pItem);
+
+          // add item to Value column
+          pItem = item((int) rowCounter, 3);
+          if (ri.isLocalValue(i))
+          {
+            pItem->setText(QString::number(ri.getLocalValue(i)));
+            pItem->setFlags(pItem->flags() | (Qt::ItemIsEditable));
+          }
+          else
+          {
+            std::string Key = pReaction->getParameterMapping(i)[0];
+
+            const CModelValue * pParamObject = dynamic_cast<const CModelValue *>(CCopasiRootContainer::getKeyFactory()->get(Key));
+
+            if(pParamObject != NULL &&
+               pParamObject->getStatus() == CModelEntity::FIXED)
             {
-              combo = new Q3ComboTableItem(this, getListOfAllGlobalParameterNames(model));
-              combo->setCurrentItem(FROM_UTF8(ri.getMapping(i)));
-              setItem((int) rowCounter, 3, combo);
+              pItem->setText(QString::number(pParamObject->getInitialValue()));
+              pItem->setTextColor(QColor(Qt::darkGray));
             }
+          }
         }
-      // add a line for a kinetic parameter
+
+      // if line is for a volume . . .
       else if (usage == CFunctionParameter::VOLUME)
         {
-          combo = new Q3ComboTableItem(this, getListOfAllCompartmentNames(model));
-          combo->setCurrentItem(FROM_UTF8(ri.getMapping(i)));
-          setItem((int) rowCounter, 3, combo);
+          mpComboDelegate->setItems(rowCounter, &mVolumes);
+          pItem->setText(FROM_UTF8(ri.getMapping(i)));
+          openPersistentEditor(pItem);
         }
-      // add a line for time
+      // if line is for time . . .
       else if (usage == CFunctionParameter::TIME)
         {
-          item = new ColorTableItem(this, Q3TableItem::OnTyping, color, "");
-          setItem((int) rowCounter, 3, item);
+          pItem->setText("");
         }
-      // add a line for an unknown role
+      // if line is for an unknown role . . .
       else
         {
-          item = new ColorTableItem(this, Q3TableItem::OnTyping, color, QString::number(ri.getLocalValue(i)));
-          setItem((int) rowCounter, 3, item);
+          pItem->setText(QString::number(ri.getLocalValue(i)));
         }
 
-      adjustRow((int) rowCounter);
-
-      //mLine2Index
+      resizeRowToContents((int) rowCounter);
 
       ++rowCounter;
     }
 
-  adjustColumn(0);
-  adjustColumn(2);
-  adjustColumn(4);
+  resizeColumnsToContents();
+
+  blockSignals(false);
 }
 
-void ParameterTable::handleCurrentCell(int row, int col)
+void ParameterTable::handleCurrentCell(int row, int col, int, int)
 {
   bool changed = false;
 
@@ -452,61 +481,22 @@ void ParameterTable::handleCurrentCell(int row, int col)
 
 void ParameterTable::slotCellChanged(int row, int col)
 {
-  // find the index of the parameter
+  if (col != 2 && col != 3) return; //Other cols shouldn't change, anyway.
+
   size_t i, imax = mIndex2Line.size();
 
   for (i = imax - 1; i != C_INVALID_INDEX; --i)
     if ((int) mIndex2Line[i] <= row) break;
 
-  //handle the check boxes
-  if (col == 2) //only checkboxes is this column
-    {
-      Q3CheckTableItem *tmp = dynamic_cast<Q3CheckTableItem*>(this->item(row, col));
+  QString newVal = item(row, col)->text();
 
-      if (!tmp) return;
+  QStringList comboList = *mpComboDelegate->getItems(row);
 
-      emit parameterStatusChanged((int) i, !tmp->isChecked());
-    }
-  else
-    {
-      emit signalChanged((int) i, row - (int) mIndex2Line[i], text(row, col));
-    }
-}
-
-//**********************************************************************
-
-ColorTableItem::ColorTableItem(Q3Table *t, EditType et, QColor c, const QString txt)
-  : Q3TableItem(t, et, txt)
-{
-  color = c;
-}
-
-ColorTableItem::~ColorTableItem()
-{}
-
-void ColorTableItem::paint(QPainter *p, const QColorGroup &cg,
-                           const QRect &cr, bool selected)
-{
-  QColorGroup g(cg);
-  g.setColor(QColorGroup::Base, color);
-  Q3TableItem::paint(p, g, cr, selected);
-}
-
-//**********************************************************************
-
-ColorCheckTableItem::ColorCheckTableItem(Q3Table *t, QColor c, const QString txt)
-  : Q3CheckTableItem(t, txt)
-{
-  color = c;
-}
-
-ColorCheckTableItem::~ColorCheckTableItem()
-{}
-
-void ColorCheckTableItem::paint(QPainter *p, const QColorGroup &cg,
-                                const QRect &cr, bool selected)
-{
-  QColorGroup g(cg);
-  g.setColor(QColorGroup::Base, color);
-  Q3CheckTableItem::paint(p, g, cr, selected);
+  if (col == 2 && comboList[0] == "--local--") //is Parameter
+  {
+    emit parameterStatusChanged((int) i, (newVal == "--local--"));
+    if (newVal == "--local--")
+      newVal = "0"; // item(row, 3)->text();
+  }
+  emit signalChanged((int) i, row - (int) mIndex2Line[i], newVal);
 }

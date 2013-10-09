@@ -15,62 +15,73 @@
 #ifndef PARAMETERTABLE_H
 #define PARAMETERTABLE_H
 
-#include <q3table.h>
+//#include <q3table.h>
+#include <QTableWidget>
 
 #include "copasi.h"
 #include "model/CReaction.h"
 
 class CReactionInterface;
+class CQComboDelegate;
 
-class ColorTableItem : public Q3TableItem
-{
-public:
-  ColorTableItem(Q3Table *t, EditType et, QColor c, const QString txt);
-  ~ColorTableItem();
-  void setColor(QColor col) {color = col; table()->repaint();}
+//class ColorTableItem : public Q3TableItem
+//{
+//public:
+//  ColorTableItem(Q3Table *t, EditType et, QColor c, const QString txt);
+//  ~ColorTableItem();
+//  void setColor(QColor col) {color = col; table()->repaint();}
 
-private:
-  void paint(QPainter *p, const QColorGroup &cg, const QRect &cr, bool selected);
+//private:
+//  void paint(QPainter *p, const QColorGroup &cg, const QRect &cr, bool selected);
 
-  QColor color;
-};
+//  QColor color;
+//};
 
-class ColorCheckTableItem : public Q3CheckTableItem
-{
-public:
-  ColorCheckTableItem(Q3Table *t, QColor c, const QString txt);
-  ~ColorCheckTableItem();
-  void setColor(QColor col) {color = col; table()->repaint();}
+//class ColorCheckTableItem : public Q3CheckTableItem
+//{
+//public:
+//  ColorCheckTableItem(Q3Table *t, QColor c, const QString txt);
+//  ~ColorCheckTableItem();
+//  void setColor(QColor col) {color = col; table()->repaint();}
 
-private:
-  void paint(QPainter *p, const QColorGroup &cg, const QRect &cr, bool selected);
+//private:
+//  void paint(QPainter *p, const QColorGroup &cg, const QRect &cr, bool selected);
 
-  QColor color;
-};
+//  QColor color;
+//};
 
 //table used in the reactions widget
 
-class ParameterTable : public Q3Table
+class ParameterTable : public QTableWidget
 {
   Q_OBJECT
 
 public:
-  ParameterTable(QWidget * parent = 0, const char * name = 0);
+  ParameterTable(QWidget * parent = 0);
 
   void initTable();
 
 public slots:
-  void updateTable(const CReactionInterface & ri, const CModel & model);
+  void updateTable(const CReactionInterface & ri, const CReaction * mpReaction);
 
 private slots:
-  void handleCurrentCell(int row, int col);
+  void handleCurrentCell(int row, int col, int, int);
   void slotCellChanged(int row, int col);
 
 signals:
   void signalChanged(int, int, QString);
   void parameterStatusChanged(int, bool);
 
+protected:
+  CQComboDelegate * mpComboDelegate;
+
 private:
+  QStringList mGlobalParameters;
+  QStringList mSubstrates;
+  QStringList mProducts;
+  QStringList mModifiers;
+  QStringList mVolumes;
+
   //convenience function. It gets a List of all metab names in the CMetabNameInterface format
   static const std::vector<std::string> getListOfAllMetabNames(const CModel & model,
       const CReactionInterface & ri);

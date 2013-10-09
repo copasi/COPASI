@@ -62,12 +62,12 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
   ReactionsWidget1Layout = new QGridLayout(this);
   ReactionsWidget1Layout->setMargin(11);
   ReactionsWidget1Layout->setSpacing(6);
+  ReactionsWidget1Layout->setColumnStretch(1,1);
   ReactionsWidget1Layout->setObjectName("ReactionsWidget1Layout");
 
   TextLabel7 = new QLabel(this, "TextLabel7");
-  TextLabel7->setText(trUtf8("Symbol Definition"));
-  TextLabel7->setAlignment(int(Qt::AlignVCenter
-                               | Qt::AlignRight));
+  TextLabel7->setText(trUtf8("Symbol\nDefinition"));
+  TextLabel7->setAlignment(int(Qt::AlignVCenter | Qt::AlignRight));
   ReactionsWidget1Layout->addWidget(TextLabel7, 8, 0);
 
   Line2 = new QFrame(this, "Line2");
@@ -141,7 +141,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
   Line4->setFrameShape(QFrame::HLine);
   ReactionsWidget1Layout->addMultiCellWidget(Line4, 4, 4, 0, 3);
 
-  table = new ParameterTable(this, "table");
+  table = new ParameterTable(this);
   table->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
   ReactionsWidget1Layout->addMultiCellWidget(table, 8, 9, 1, 3);
   ReactionsWidget1Layout->setRowStretch(9, 10);
@@ -565,7 +565,7 @@ void ReactionsWidget1::FillWidgetFromRI()
       ComboBox1->setToolTip(FROM_UTF8(mpRi->getFunctionDescription()));
 
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      table->updateTable(*mpRi, *(*CCopasiRootContainer::getDatamodelList())[0]->getModel());
+      table->updateTable(*mpRi, dynamic_cast< CReaction * >(mpObject));
     }
   else
     {
@@ -603,33 +603,32 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
     {
       if (sub == 0) //here we assume that vector parameters cannot be edited
         {
-          mpRi->setMapping((int) Index, TO_UTF8(table->text((int) table->mIndex2Line[index], 3)));
-        }
+//          mpRi->setMapping((int) Index, TO_UTF8(table->item((int) table->mIndex2Line[index], 3)->text()));
+          mpRi->setMapping((int) Index, TO_UTF8(newValue));
+      }
     }
 
   // update the widget
   int rrr = table->currentRow();
   int ccc = table->currentColumn();
-
-  // We must avoid this call when only a local parameter value is changed.
-  if (!SkipFillWidget)
-    FillWidgetFromRI();
-
   table->setCurrentCell(rrr, ccc);
+
+  // Save changes when leaving cell
+  leave();
+
+  // Will ultimately update mpRi for updateTable and FillWidgetFromRI
+  enterProtected();
 }
 
 void ReactionsWidget1::slotParameterStatusChanged(int index, bool local)
 {
+  // slot is a reminant of when a checkbox handled this.
+  // This could be added in to slotTableChanged
+
   if (local)
     mpRi->setLocal(index);
   else
     mpRi->setMapping(index, "unknown"); //TODO keep global parameter
-
-  // update the widget
-  int rrr = table->currentRow();
-  int ccc = table->currentColumn();
-  FillWidgetFromRI();
-  table->setCurrentCell(rrr, ccc);
 }
 
 void ReactionsWidget1::slotGotoFunction()
