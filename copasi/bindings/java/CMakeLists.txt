@@ -69,11 +69,6 @@ elseif(LAPACK_FOUND)
   set(SWIG_EXTRA_ARGS ${SWIG_EXTRA_ARGS} -DUSE_LAPACK)
 endif()
 
-if (ENABLE_COPASI_CROSSVALIDATION)
-set(SWIG_EXTRA_ARGS ${SWIG_EXTRA_ARGS} -DCOPASI_CROSSVALIDATION)
-endif(ENABLE_COPASI_CROSSVALIDATION)
-
-
 ####################################################################
 #
 # Swig bindings

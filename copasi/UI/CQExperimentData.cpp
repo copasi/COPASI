@@ -659,8 +659,6 @@ void CQExperimentData::slotOK()
   for (i = 0; i < mpExperimentSetCopy->getExperimentCount(); i++)
     mpExperimentSet->addExperiment(*mpExperimentSetCopy->getExperiment(i));
 
-#ifdef COPASI_CROSSVALIDATION
-
   if (mCrossValidation)
     {
       CCrossValidationSet * pSet = static_cast< CCrossValidationSet * >(mpExperimentSet);
@@ -676,8 +674,6 @@ void CQExperimentData::slotOK()
         }
     }
 
-#endif // COPASI_CROSSVALIDATION
-
   pdelete(mpExperimentSetCopy);
   accept();
 }
@@ -686,9 +682,7 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet, CCopasiDataModel * 
 {
   mpDataModel = pDataModel;
 
-#ifdef COPASI_CROSSVALIDATION
   mCrossValidation = (dynamic_cast< CCrossValidationSet * >(pExperimentSet) != NULL);
-#endif // COPASI_CROSSVALIDATION
 
   if (mCrossValidation)
     {
@@ -699,10 +693,8 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet, CCopasiDataModel * 
       mpEditThreshold->show();
       mpLineCrossValidation->show();
 
-#ifdef COPASI_CROSSVALIDATION
       mpEditWeight->setText(QString::number(static_cast< CCrossValidationSet * >(pExperimentSet)->getWeight()));
       mpEditThreshold->setText(QString::number(static_cast< CCrossValidationSet * >(pExperimentSet)->getThreshold()));
-#endif // COPASI_CROSSVALIDATION
     }
   else
     {
@@ -724,12 +716,8 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet, CCopasiDataModel * 
 
   mpExperimentSetCopy = new CExperimentSet(*pExperimentSet);
 
-#ifdef COPASI_CROSSVALIDATION
-
   if (mCrossValidation)
     mpExperimentSetCopy = elevate< CCrossValidationSet, CExperimentSet >(mpExperimentSetCopy);
-
-#endif // COPASI_CROSSVALIDATION
 
   pdelete(mpFileInfo);
   mpFileInfo = new CExperimentFileInfo(*mpExperimentSetCopy);

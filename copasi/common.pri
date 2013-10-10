@@ -114,9 +114,6 @@ DEFINES += CELLDESIGNER_IMPORT
 # flag to use Svens SBML unit identification framework
 #define USE_SBMLUNIT
 
-# enable cross validation 
-DEFINES += COPASI_CROSSVALIDATION
-
 # when using the standard clapack, as given with the copasi-dependency package
 # the wrapping will not be used, so you need to define the following
 # DEFINES += NO_BLAS_WRAP

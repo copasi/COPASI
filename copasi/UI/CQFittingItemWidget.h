@@ -38,10 +38,6 @@ class CExperimentSet;
 class CCopasiParameterGroup;
 class CCrossValidationSet;
 
-#ifndef COPASI_CROSSVALIDATION
-# define pCrossValidationMap
-#endif // not COPASI_CROSSVALIDATION
-
 class CQFittingItemWidget : public QWidget, public Ui::CQFittingItemWidget
 {
   Q_OBJECT

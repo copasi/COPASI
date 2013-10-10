@@ -116,12 +116,10 @@ void CQFittingItemWidget::init()
   mpEditUpper->setValidator(mpUpperValidator);
   mpUpperValidator->revalidate();
 
-#ifndef COPASI_CROSSVALIDATION
   mpBtnCrossValidations->hide();
   mpCheckCrossValidationsAll->hide();
   mpBoxCrossValidations->hide();
   mpLblCrossValidations->hide();
-#endif // not COPASI_CROSSVALIDATION
 }
 
 void CQFittingItemWidget::destroy()
@@ -565,8 +563,6 @@ bool CQFittingItemWidget::load(CCopasiDataModel * pDataModel,
               Key = pExperimentMap->find(Key)->second;
             }
 
-#ifdef COPASI_CROSSVALIDATION
-
           if (!pCrossValidationMap) return false;
 
           // Change the key to reflect the local copy *mppCrossValidationSet
@@ -585,8 +581,6 @@ bool CQFittingItemWidget::load(CCopasiDataModel * pDataModel,
 
               Key = pCrossValidationMap->find(Key)->second;
             }
-
-#endif // COPASI_CROSSVALIDATION
         }
 
       setTableText((int) i, *it);
@@ -696,8 +690,6 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
               static_cast<CFitItem *>(*target)->addExperiment(Source);
             }
 
-#ifdef COPASI_CROSSVALIDATION
-
           if (pCrossValidationMap == NULL) return false;
 
           jmax =
@@ -737,8 +729,6 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
 
               static_cast<CFitItem *>(*target)->addCrossValidation(Source);
             }
-
-#endif // COPASI_CROSSVALIDATION
         }
     }
 
@@ -809,12 +799,10 @@ void CQFittingItemWidget::setItemType(const ItemType & type)
       mpBtnExperiments->show();
       mpBtnPerExperiment->show();
 
-#ifdef COPASI_CROSSVALIDATION
       mpLblCrossValidations->show();
       mpCheckCrossValidationsAll->show();
       mpBoxCrossValidations->show();
       mpBtnCrossValidations->show();
-#endif // COPASI_CROSSVALIDATION
     }
   else
     {
@@ -824,12 +812,10 @@ void CQFittingItemWidget::setItemType(const ItemType & type)
       mpBtnExperiments->hide();
       mpBtnPerExperiment->hide();
 
-#ifdef COPASI_CROSSVALIDATION
       mpLblCrossValidations->hide();
       mpCheckCrossValidationsAll->hide();
       mpBoxCrossValidations->hide();
       mpBtnCrossValidations->hide();
-#endif // COPASI_CROSSVALIDATION
     }
 
   if (mItemType == OPT_CONSTRAINT || mItemType == FIT_CONSTRAINT)
@@ -1383,7 +1369,6 @@ void CQFittingItemWidget::loadSelection()
           mpCheckAll->setChecked(imax == 0);
           mpBoxExperiments->setEnabled(imax != 0);
 
-#ifdef COPASI_CROSSVALIDATION
           CrossValidations = static_cast<CFitItem *>(pItem)->getCrossValidations();
 
           mpBoxCrossValidations->clear();
@@ -1401,7 +1386,6 @@ void CQFittingItemWidget::loadSelection()
 
           mpCheckCrossValidationsAll->setChecked(imax == 0);
           mpBoxCrossValidations->setEnabled(imax != 0);
-#endif // COPASI_CROSSVALIDATION
         }
 
       for (++it; it != end; ++it)
@@ -1464,16 +1448,12 @@ void CQFittingItemWidget::loadSelection()
               mpBoxExperiments->setEnabled(false);
             }
 
-#ifdef COPASI_CROSSVALIDATION
-
           if ((mItemType == FIT_ITEM || mItemType == FIT_CONSTRAINT) &&
               CrossValidations != static_cast<CFitItem *>(pItem)->getCrossValidations())
             {
               mpCheckCrossValidationsAll->setChecked(false);
               mpBoxCrossValidations->setEnabled(false);
             }
-
-#endif // COPASI_CROSSVALIDATION
         }
 
       connect(mpCheckAll, SIGNAL(toggled(bool)), this, SLOT(slotCheckAllExperiments(bool)));
@@ -1719,8 +1699,6 @@ void CQFittingItemWidget::slotStartLostFocus()
 
 void CQFittingItemWidget::slotCrossValidations()
 {
-#ifdef COPASI_CROSSVALIDATION
-
   if (mItemType == FIT_ITEM || mItemType == FIT_CONSTRAINT)
     {
       CQExperimentSelection * pDialog = new CQExperimentSelection(this);
@@ -1750,13 +1728,10 @@ void CQFittingItemWidget::slotCrossValidations()
 
       delete pDialog;
     }
-
-#endif // COPASI_CROSSVALIDATION
 }
 
 void CQFittingItemWidget::slotCrossValidationChanged()
 {
-#ifdef COPASI_CROSSVALIDATION
   // This slot is triggered when an experiment is deleted or changed,
   // but before new experiments are created.
 
@@ -1784,11 +1759,9 @@ void CQFittingItemWidget::slotCrossValidationChanged()
   // Enable/disable the interface to affected cross validations.
   setCrossValidationSet(*mppCrossValidationSet);
 
-#endif // COPASI_CROSSVALIDATION
   return;
 }
 
-#ifdef COPASI_CROSSVALIDATION
 void CQFittingItemWidget::setCrossValidationSet(const CCrossValidationSet * & pCrossValidationSet)
 {
   mppCrossValidationSet = &pCrossValidationSet;
@@ -1800,7 +1773,6 @@ void CQFittingItemWidget::setCrossValidationSet(const CCrossValidationSet * & pC
   mpBoxCrossValidations->setEnabled(Enabled && !mpCheckCrossValidationsAll->isChecked());
   mpLblCrossValidations->setEnabled(Enabled);
 }
-#endif // COPASI_CROSSVALIDATION
 
 void CQFittingItemWidget::slotCheckAllCrossValidations(bool checked)
 {

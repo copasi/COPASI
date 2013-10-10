@@ -1,14 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingResultTab1.cpp,v $
-//   $Revision: 1.8 $
-//   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/06/20 16:07:08 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "CQFittingResultTab1.h"
@@ -26,7 +27,7 @@
  *  name 'name'.'
  */
 CQFittingResultTab1::CQFittingResultTab1(QWidget* parent, const char* name, Qt::WindowFlags fl)
-    : QWidget(parent, fl)
+  : QWidget(parent, fl)
 {
   setObjectName(QString::fromUtf8(name));
   setupUi(this);
@@ -48,7 +49,6 @@ void CQFittingResultTab1::load(const CFitProblem * pProblem)
   mpEditRMS->setText(QString::number(pProblem->getRMS()));
   mpEditStdDeviation->setText(QString::number(pProblem->getStdDeviation()));
 
-#ifdef COPASI_CROSSVALIDATION
   bool Enable = (pProblem->getCrossValidationSet().getExperimentCount() > 0);
 
   mpLblCVObjectiveValue->setEnabled(Enable);
@@ -71,21 +71,14 @@ void CQFittingResultTab1::load(const CFitProblem * pProblem)
       mpEditCVStdDeviation->setText("");
     }
 
-#endif // COPASI_CROSSVALIDATION
-
-#ifndef COPASI_CROSSVALIDATION
-  mpLblCVObjectiveValue->hide();
-  mpEditCVObjectiveValue->hide();
-  mpLblCVRMS->hide();
-  mpEditCVRMS->hide();
-  mpLblCVStdDeviation->hide();
-  mpEditCVStdDeviation->hide();
-#endif // not COPASI_CROSSVALIDATION
-
   const unsigned C_INT32 & FunctionEvaluations = pProblem->getFunctionEvaluations();
+
   mpEditEvaluations->setText(QString::number(FunctionEvaluations));
+
   const C_FLOAT64 & ExecutionTime = pProblem->getExecutionTime();
+
   mpEditCPUTime->setText(QString::number(ExecutionTime));
+
   mpEditSpeed->setText(QString::number(FunctionEvaluations / ExecutionTime));
 }
 

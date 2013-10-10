@@ -60,11 +60,6 @@ void CQFittingResult::init()
 {
   mpCorrelations->setLegendEnabled(false);
   mpFisherInformation->setLegendEnabled(false);
-
-#ifndef COPASI_CROSSVALIDATION
-  pdelete(mpCrossValidations);
-  pdelete(mpCrossValidationValues);
-#endif // not COPASI_CROSSVALIDATION
 }
 
 bool CQFittingResult::update(ListViews::ObjectType /* objectType */,
@@ -105,10 +100,8 @@ bool CQFittingResult::enterProtected()
       mpTabWidget->setTabEnabled(mpCorrelations, true);
       mpTabWidget->setTabEnabled(mpFisherInformation, true);
 
-#ifdef COPASI_CROSSVALIDATION
       mpTabWidget->setTabEnabled(mpCrossValidations, true);
       mpTabWidget->setTabEnabled(mpCrossValidationValues, true);
-#endif // COPASI_CROSSVALIDATION
     }
   else
     {
@@ -117,10 +110,8 @@ bool CQFittingResult::enterProtected()
       mpTabWidget->setTabEnabled(mpCorrelations, false);
       mpTabWidget->setTabEnabled(mpFisherInformation, false);
 
-#ifdef COPASI_CROSSVALIDATION
       mpTabWidget->setTabEnabled(mpCrossValidations, false);
       mpTabWidget->setTabEnabled(mpCrossValidationValues, false);
-#endif // COPASI_CROSSVALIDATION
     }
 
   size_t i, imax;
@@ -296,7 +287,6 @@ bool CQFittingResult::enterProtected()
   mpFisherInformation->setColorScalingAutomatic(true);
   mpFisherInformation->setArrayAnnotation(&mpProblem->getFisherInformation());
 
-#ifdef COPASI_CROSSVALIDATION
   bool Enable = (mpProblem->getCrossValidationSet().getExperimentCount() > 0);
 
   mpTabWidget->setTabEnabled(mpCrossValidations, Enable);
@@ -360,8 +350,6 @@ bool CQFittingResult::enterProtected()
 
   mpCrossValidationValues->resizeColumnsToContents();
   mpCrossValidationValues->resizeRowsToContents();
-
-#endif // COPASI_CROSSVALIDATION
 
   return true;
 }
@@ -511,7 +499,6 @@ void CQFittingResult::slotSave(void)
   // Save the Fisher information
   file << mpProblem->getFisherInformation() << std::endl;
 
-#ifdef COPASI_CROSSVALIDATION
   const CCrossValidationSet & CrossValidations = mpProblem->getCrossValidationSet();
   imax = CrossValidations.getExperimentCount();
 
@@ -565,7 +552,6 @@ void CQFittingResult::slotSave(void)
     }
 
   file << std::endl;
-#endif // COPASI_CROSSVALIDATION
 }
 
 void CQFittingResult::slotUpdateModel()
