@@ -1,27 +1,19 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/qtUtilities.cpp,v $
-//   $Revision: 1.18 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:37:54 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qstring.h>
-#include <qfileinfo.h>
+#include <QtCore/QString>
+#include <QtCore/QFileInfo>
 
 #include "copasi.h"
 #include "qtUtilities.h"
@@ -30,7 +22,7 @@
 #include "utilities/CDirEntry.h"
 
 #ifdef DEBUG_UI
-#include <QtDebug>
+#include <QtCore/QtDebug>
 #endif
 
 QString getParameterValue(const CCopasiParameterGroup * group,

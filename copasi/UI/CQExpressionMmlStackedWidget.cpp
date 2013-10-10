@@ -49,7 +49,9 @@ CQExpressionMmlStackedWidget::CQExpressionMmlStackedWidget(QWidget* parent)
   mpBtnEditExpression->setIcon(CQIconResource::icon(CQIconResource::edit));
   mpBtnSaveExpression->setIcon(CQIconResource::icon(CQIconResource::fileExport));
 
-  mpMmlScrollView->setBackgroundColor(QColor(Qt::white));
+  QPalette Palette;
+  Palette.setColor(mpMmlScrollView->backgroundRole(), QColor(Qt::white));
+  mpMmlScrollView->setPalette(Palette);
 
 #ifdef WIN32
   // on windows there ought to be a border around the MML widget

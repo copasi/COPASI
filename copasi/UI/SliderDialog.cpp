@@ -16,12 +16,12 @@
 #include <sstream>
 
 //Added by qt3to4:
-#include <QContextMenuEvent>
-#include <QCloseEvent>
-#include <QMouseEvent>
-#include <QEvent>
-#include <QMenu>
-#include <QScrollArea>
+#include <QtGui/QContextMenuEvent>
+#include <QtGui/QCloseEvent>
+#include <QtGui/QMouseEvent>
+#include <QtCore/QEvent>
+#include <QtGui/QMenu>
+#include <QtGui/QScrollArea>
 
 #include "SliderDialog.h"
 #include "DataModelGUI.h"

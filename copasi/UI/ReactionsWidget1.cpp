@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /*********************************************************************
  **  $ CopasiUI/ReactionsWidget1.cpp
@@ -21,7 +21,7 @@
  ** the Second level of Reactions.
  **********************************************************************/
 
-#include <QWidget>
+#include <QtGui/QWidget>
 
 #include "copasi.h"
 #include "ReactionsWidget1.h"
@@ -62,7 +62,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
   ReactionsWidget1Layout = new QGridLayout(this);
   ReactionsWidget1Layout->setMargin(11);
   ReactionsWidget1Layout->setSpacing(6);
-  ReactionsWidget1Layout->setColumnStretch(1,1);
+  ReactionsWidget1Layout->setColumnStretch(1, 1);
   ReactionsWidget1Layout->setObjectName("ReactionsWidget1Layout");
 
   TextLabel7 = new QLabel(this, "TextLabel7");
@@ -372,6 +372,7 @@ void ReactionsWidget1::copy()
   if (reac == NULL) return;
 
   CModel * pModel = NULL;
+
   if (reac) pModel = mpDataModel->getModel();
 
   if (pModel == NULL) return; // for getting compartments and initializing cModelExpObj
@@ -412,8 +413,9 @@ void ReactionsWidget1::copy()
   CCopasiVector< CChemEqElement >::const_iterator MetabIt;
 
   const CCopasiVector< CChemEqElement > & substratesToCopy = reac->getChemEq().getSubstrates();
-  for (MetabIt = substratesToCopy.begin();MetabIt != substratesToCopy.end(); MetabIt++)
-  {
+
+  for (MetabIt = substratesToCopy.begin(); MetabIt != substratesToCopy.end(); MetabIt++)
+    {
       pDialog->setWindowTitle("Create copy of " + FROM_UTF8((*MetabIt)->getMetabolite()->getObjectName()) + "?");
       origCompartment = (*MetabIt)->getMetabolite()->getCompartment();
       origCompartmentIndex = pDialog->mpSelectionBox->findText(FROM_UTF8(origCompartment->getObjectName()));
@@ -422,23 +424,24 @@ void ReactionsWidget1::copy()
       Compartment_it = Compartments.begin(); // Reuse Compartments iterator to set compartment choice
 
       if (pDialog->exec() != QDialog::Rejected)
-      {
-        // Put species in different compartment (without name modification) by making
-        // duplicateMetab think the other compartment was duplicated from the original
-        if(origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
         {
-          sourceObjects.addCompartment(origCompartment);
-          origToCopyMapping.add(origCompartment,*(Compartment_it + pDialog->mpSelectionBox->currentIndex()));
-        }
+          // Put species in different compartment (without name modification) by making
+          // duplicateMetab think the other compartment was duplicated from the original
+          if (origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
+            {
+              sourceObjects.addCompartment(origCompartment);
+              origToCopyMapping.add(origCompartment, *(Compartment_it + pDialog->mpSelectionBox->currentIndex()));
+            }
 
-        sourceObjects.addMetab((*MetabIt)->getMetabolite());
-        cModelExpObj.duplicateMetab((*MetabIt)->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
-      }
-  }
+          sourceObjects.addMetab((*MetabIt)->getMetabolite());
+          cModelExpObj.duplicateMetab((*MetabIt)->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
+        }
+    }
 
   const CCopasiVector< CChemEqElement > & productsToCopy = reac->getChemEq().getProducts();
-  for (MetabIt = productsToCopy.begin();MetabIt != productsToCopy.end(); MetabIt++)
-  {
+
+  for (MetabIt = productsToCopy.begin(); MetabIt != productsToCopy.end(); MetabIt++)
+    {
       pDialog->setWindowTitle("Create copy of " + FROM_UTF8((*MetabIt)->getMetabolite()->getObjectName()) + "?");
       origCompartment = (*MetabIt)->getMetabolite()->getCompartment();
       origCompartmentIndex = pDialog->mpSelectionBox->findText(FROM_UTF8(origCompartment->getObjectName()));
@@ -447,21 +450,22 @@ void ReactionsWidget1::copy()
       Compartment_it = Compartments.begin();
 
       if (pDialog->exec() != QDialog::Rejected)
-      {
-        if(origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
         {
-          sourceObjects.addCompartment(origCompartment);
-          origToCopyMapping.add(origCompartment,*(Compartment_it + pDialog->mpSelectionBox->currentIndex()));
-        }
+          if (origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
+            {
+              sourceObjects.addCompartment(origCompartment);
+              origToCopyMapping.add(origCompartment, *(Compartment_it + pDialog->mpSelectionBox->currentIndex()));
+            }
 
-        sourceObjects.addMetab((*MetabIt)->getMetabolite());
-        cModelExpObj.duplicateMetab((*MetabIt)->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
-      }
-  }
+          sourceObjects.addMetab((*MetabIt)->getMetabolite());
+          cModelExpObj.duplicateMetab((*MetabIt)->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
+        }
+    }
 
   const CCopasiVector< CChemEqElement > & modifiersToCopy = reac->getChemEq().getModifiers();
-  for (MetabIt = modifiersToCopy.begin();MetabIt != modifiersToCopy.end(); MetabIt++)
-  {
+
+  for (MetabIt = modifiersToCopy.begin(); MetabIt != modifiersToCopy.end(); MetabIt++)
+    {
       pDialog->setWindowTitle("Create copy of " + FROM_UTF8((*MetabIt)->getMetabolite()->getObjectName()) + "?");
       origCompartment = (*MetabIt)->getMetabolite()->getCompartment();
       origCompartmentIndex = pDialog->mpSelectionBox->findText(FROM_UTF8(origCompartment->getObjectName()));
@@ -470,17 +474,17 @@ void ReactionsWidget1::copy()
       Compartment_it = Compartments.begin();
 
       if (pDialog->exec() != QDialog::Rejected)
-      {
-        if(origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
         {
-          sourceObjects.addCompartment(origCompartment);
-          origToCopyMapping.add(origCompartment,*(Compartment_it + pDialog->mpSelectionBox->currentIndex()));
-        }
+          if (origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
+            {
+              sourceObjects.addCompartment(origCompartment);
+              origToCopyMapping.add(origCompartment, *(Compartment_it + pDialog->mpSelectionBox->currentIndex()));
+            }
 
-        sourceObjects.addMetab((*MetabIt)->getMetabolite());
-        cModelExpObj.duplicateMetab((*MetabIt)->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
-      }
-  }
+          sourceObjects.addMetab((*MetabIt)->getMetabolite());
+          cModelExpObj.duplicateMetab((*MetabIt)->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
+        }
+    }
 
   sourceObjects.addReaction(reac);
   cModelExpObj.duplicateReaction(reac, "_copy", sourceObjects, origToCopyMapping);
@@ -605,7 +609,7 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
         {
 //          mpRi->setMapping((int) Index, TO_UTF8(table->item((int) table->mIndex2Line[index], 3)->text()));
           mpRi->setMapping((int) Index, TO_UTF8(newValue));
-      }
+        }
     }
 
   // update the widget
@@ -655,7 +659,7 @@ void ReactionsWidget1::slotNewFunction()
   std::string nname = name;
   size_t i = 0;
   CCopasiVectorN<CFunction>& FunctionList
-    = CCopasiRootContainer::getFunctionList()->loadedFunctions();
+  = CCopasiRootContainer::getFunctionList()->loadedFunctions();
   CFunction* pFunc;
 
   while (FunctionList.getIndex(nname) != C_INVALID_INDEX)

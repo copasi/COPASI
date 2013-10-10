@@ -27,16 +27,16 @@
 #include "UI/copasiWidget.h"
 #include "model/CReactionInterface.h"
 
-#include <QGridLayout>
+#include <QQtGui/GridLayout>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QVBoxLayout>
-#include <QLabel>
-#include <QFrame>
-#include <QCheckBox>
-#include <QComboBox>
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
+#include <QtGui/QLabel>
+#include <QtGui/QFrame>
+#include <QtGui/QCheckBox>
+#include <QtGui/QComboBox>
+#include <QtGui/QLabel>
+#include <QtGui/QLineEdit>
+#include <QtGui/QPushButton>
 
 class ParameterTable;
 class MyLineEdit;

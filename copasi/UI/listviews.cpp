@@ -24,9 +24,9 @@
  ** This file is used to create the visual tree based on the information obtained from the data
  ** model about the tree
  **********************************************************************/
-#include <qobject.h>
-#include <qimage.h>
-#include <QMap>
+#include <QtCore/QObject>
+#include <QtGui/QImage>
+#include <QtCore/QMap>
 #include <QtGui/QSortFilterProxyModel>
 
 #include "DataModelGUI.h"
@@ -145,7 +145,7 @@ const std::string ListViews::ObjectTypeName[] =
  ************************************************************/
 ListViews::ListViews(QWidget *parent, const char *name):
 
-  QSplitter(Qt::Horizontal, parent, name),
+  QSplitter(Qt::Horizontal, parent),
   mpDataModelGUI(NULL),
   mpTreeDM(NULL),
   mpTreeSortDM(NULL),

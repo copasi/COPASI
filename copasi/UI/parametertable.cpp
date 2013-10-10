@@ -1,23 +1,23 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
-#include <QHeaderView> // To be able to hide vertical header
-#include <QTableWidgetItem>
-#include <QStringList>
-#include <qlineedit.h>
+#include <QtGui/QHeaderView> // To be able to hide vertical header
+#include <QtGui/QTableWidgetItem>
+#include <QtCore/QStringList>
+#include <QtGui/QLineEdit>
 //Added by qt3to4:
-#include <QPixmap>
+#include <QtGui/QPixmap>
 #include <stdlib.h>
 
 #include "parametertable.h"
@@ -58,7 +58,7 @@ void ParameterTable::initTable()
   verticalHeader()->setVisible(false);
 
   mpComboDelegate = new CQComboDelegate(NULL, this);
-  setItemDelegateForColumn(2,mpComboDelegate);
+  setItemDelegateForColumn(2, mpComboDelegate);
 
   setShowGrid(false);
 }
@@ -164,7 +164,7 @@ QStringList ParameterTable::getListOfAllCompartmentNames(const CModel & model)
   return ret;
 }
 
-void ParameterTable::updateTable(const CReactionInterface & ri,const CReaction * pReaction)
+void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction * pReaction)
 {
   blockSignals(true); // So cellChanged doesn't fire when items are set.
 
@@ -191,19 +191,23 @@ void ParameterTable::updateTable(const CReactionInterface & ri,const CReaction *
   // Load the comboDelegate lists
   mGlobalParameters.clear();
   mGlobalParameters = getListOfAllGlobalParameterNames(*pModel);
+
   if (mGlobalParameters.indexOf("--local--") != -1) // in case someone names a parameter "--local--"
     mGlobalParameters.replace(mGlobalParameters.indexOf("--local--"), "\"--local--\"");
+
   mGlobalParameters.push_front("--local--");
 
   std::vector<std::string>::const_iterator it;
 
   mSubstrates.clear();
   usage = CFunctionParameter::SUBSTRATE;
+
   for (it = ri.getListOfMetabs(usage).begin(); it != ri.getListOfMetabs(usage).end(); ++it)
     mSubstrates += FROM_UTF8(CMetabNameInterface::unQuote(*it));
 
   mProducts.clear();
   usage = CFunctionParameter::PRODUCT;
+
   for (it = ri.getListOfMetabs(usage).begin(); it != ri.getListOfMetabs(usage).end(); ++it)
     mProducts += FROM_UTF8(CMetabNameInterface::unQuote(*it));
 
@@ -308,11 +312,13 @@ void ParameterTable::updateTable(const CReactionInterface & ri,const CReaction *
           else
             pItem->setIcon(CQIconResource::icon(CQIconResource::unlocked));
         }
+
       pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
       setItem((int) rowCounter, 1, pItem);
 
       // add units column
       const CCopasiDataModel* pDataModel = pModel->getObjectDataModel();
+
       if (pDataModel == NULL) return;
 
       QString theseUnits = FROM_UTF8(" " + units.getDimensions()[i].getDisplayString(pModel));
@@ -340,23 +346,27 @@ void ParameterTable::updateTable(const CReactionInterface & ri,const CReaction *
 
           metabNames = &(ri.getMappings(i));
 
-          if (locked){
-            pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
-            closePersistentEditor(pItem);}
+          if (locked)
+            {
+              pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
+              closePersistentEditor(pItem);
+            }
           else
             {
               if (usage == CFunctionParameter::SUBSTRATE)
                 mpComboDelegate->setItems(rowCounter, &mSubstrates);
               else if (usage == CFunctionParameter::PRODUCT)
                 mpComboDelegate->setItems(rowCounter, &mProducts);
-              else { // must be MODIFIER
-                mpComboDelegate->setItems(rowCounter, &mModifiers);}
+              else   // must be MODIFIER
+                {
+                  mpComboDelegate->setItems(rowCounter, &mModifiers);
+                }
 
               openPersistentEditor(pItem);
             }
 
           if (!ri.isVector(i))
-               pItem->setText(FROM_UTF8(CMetabNameInterface::unQuote((*metabNames)[0])));
+            pItem->setText(FROM_UTF8(CMetabNameInterface::unQuote((*metabNames)[0])));
           else
             {
               if (locked)
@@ -366,23 +376,24 @@ void ParameterTable::updateTable(const CReactionInterface & ri,const CReaction *
 
               // add lines for vector parameters
               jmax = metabNames->size();
-              setRowCount(rowCount() + (int) (jmax-1));
+              setRowCount(rowCount() + (int)(jmax - 1));
 
-              item((int) rowCounter,2)->setText(FROM_UTF8((*metabNames)[0]));
+              item((int) rowCounter, 2)->setText(FROM_UTF8((*metabNames)[0]));
 
               for (j = 1; j < jmax; ++j)
                 {
                   ++rowCounter;
 
                   for (int k = 0; k < 5; k++)
-                  {
+                    {
                       pItem = new QTableWidgetItem("");
                       pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
                       pItem->setBackgroundColor(color);
                       setItem((int) rowCounter, k, pItem);
-                  }
-                  item((int) rowCounter,2)->setText(FROM_UTF8((*metabNames)[j]));
-                  item((int) rowCounter,4)->setText(theseUnits);
+                    }
+
+                  item((int) rowCounter, 2)->setText(FROM_UTF8((*metabNames)[j]));
+                  item((int) rowCounter, 4)->setText(theseUnits);
                 }
             }
         }
@@ -390,39 +401,44 @@ void ParameterTable::updateTable(const CReactionInterface & ri,const CReaction *
       else if (usage == CFunctionParameter::PARAMETER)
         {
           mpComboDelegate->setItems(rowCounter, &mGlobalParameters);
+
           if (ri.isLocalValue(i))
-          {
+            {
               pItem->setText("--local--");
-          }
+            }
           else //global parameter
-          {
-            QString paramText = FROM_UTF8(ri.getMapping(i));
-            if (paramText == "--local--")
-              paramText = "\"--local--\"";
-            pItem->setText(paramText);
-          }
+            {
+              QString paramText = FROM_UTF8(ri.getMapping(i));
+
+              if (paramText == "--local--")
+                paramText = "\"--local--\"";
+
+              pItem->setText(paramText);
+            }
+
           openPersistentEditor(pItem);
 
           // add item to Value column
           pItem = item((int) rowCounter, 3);
+
           if (ri.isLocalValue(i))
-          {
-            pItem->setText(QString::number(ri.getLocalValue(i)));
-            pItem->setFlags(pItem->flags() | (Qt::ItemIsEditable));
-          }
-          else
-          {
-            std::string Key = pReaction->getParameterMapping(i)[0];
-
-            const CModelValue * pParamObject = dynamic_cast<const CModelValue *>(CCopasiRootContainer::getKeyFactory()->get(Key));
-
-            if(pParamObject != NULL &&
-               pParamObject->getStatus() == CModelEntity::FIXED)
             {
-              pItem->setText(QString::number(pParamObject->getInitialValue()));
-              pItem->setTextColor(QColor(Qt::darkGray));
+              pItem->setText(QString::number(ri.getLocalValue(i)));
+              pItem->setFlags(pItem->flags() | (Qt::ItemIsEditable));
             }
-          }
+          else
+            {
+              std::string Key = pReaction->getParameterMapping(i)[0];
+
+              const CModelValue * pParamObject = dynamic_cast<const CModelValue *>(CCopasiRootContainer::getKeyFactory()->get(Key));
+
+              if (pParamObject != NULL &&
+                  pParamObject->getStatus() == CModelEntity::FIXED)
+                {
+                  pItem->setText(QString::number(pParamObject->getInitialValue()));
+                  pItem->setTextColor(QColor(Qt::darkGray));
+                }
+            }
         }
 
       // if line is for a volume . . .
@@ -493,10 +509,12 @@ void ParameterTable::slotCellChanged(int row, int col)
   QStringList comboList = *mpComboDelegate->getItems(row);
 
   if (col == 2 && comboList[0] == "--local--") //is Parameter
-  {
-    emit parameterStatusChanged((int) i, (newVal == "--local--"));
-    if (newVal == "--local--")
-      newVal = "0"; // item(row, 3)->text();
-  }
+    {
+      emit parameterStatusChanged((int) i, (newVal == "--local--"));
+
+      if (newVal == "--local--")
+        newVal = "0"; // item(row, 3)->text();
+    }
+
   emit signalChanged((int) i, row - (int) mIndex2Line[i], newVal);
 }

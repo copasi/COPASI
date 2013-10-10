@@ -18,7 +18,7 @@
 #include "copasi.h"
 #include "TaskWidget.h"
 
-#include <QGridLayout>
+#include <QtGui/QGridLayout>
 #include <QtGui/QHBoxLayout>
 
 class QPushButton;

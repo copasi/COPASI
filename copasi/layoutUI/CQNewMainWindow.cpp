@@ -909,7 +909,7 @@ void CQNewMainWindow::slotScreenshot()
   double height = pPainter->getCurrentHeight();
 #ifndef USE_SCREENSHOT_OPTIONS
 
-  QString fileName = CopasiFileDialog::getSaveFileName(this, QString("Export to"), "", QString("PNG (*.png);;All files (*)"));
+  QString fileName = CopasiFileDialog::getSaveFileName(this, "Export to", "", QString("PNG (*.png);;All files (*)"));
 
   if (!fileName.isEmpty())
     export_bitmap(fileName, 2.0);

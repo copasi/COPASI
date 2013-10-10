@@ -15,11 +15,11 @@
 #ifndef SLIDER_DIALOG_H__
 #define SLIDER_DIALOG_H__
 
-#include "qdialog.h"
+#include <QtGui/QDialog>
 //Added by qt3to4:
-#include <QEvent>
-#include <QContextMenuEvent>
-#include <QCloseEvent>
+#include <QtCore/QEvent>
+#include <QtGui/QContextMenuEvent>
+#include <QtGui/QCloseEvent>
 #include "copasi.h"
 #include <vector>
 #include <map>

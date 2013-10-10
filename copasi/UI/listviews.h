@@ -21,7 +21,7 @@
 
 #include <set>
 #include <QtGui/QSplitter>
-#include <QTreeView>
+#include <QtGui/QTreeView>
 
 #include "copasi.h"
 

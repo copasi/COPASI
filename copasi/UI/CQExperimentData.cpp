@@ -1090,7 +1090,7 @@ void CQExperimentData::slotModelObject(const QModelIndex & index)
 void CQExperimentData::selectModelObject(const int & row)
 {
   CQSimpleSelectionTree::ObjectClasses Classes;
-  CExperiment::Type Type = static_cast< CExperiment::Type >(mpTable->item(row, COL_TYPE_HIDDEN)->data(Qt::DisplayRole).asInt());
+  CExperiment::Type Type = static_cast< CExperiment::Type >(mpTable->item(row, COL_TYPE_HIDDEN)->data(Qt::DisplayRole).toInt());
 
   if (Type == CExperiment::independent)
     Classes =
@@ -1280,7 +1280,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 void CQExperimentData::slotTypeChanged(int row, int index)
 {
   CExperiment::Type NewType = static_cast<CExperiment::Type>(index);
-  CExperiment::Type OldType = static_cast<CExperiment::Type>(mpTable->item(row, COL_TYPE_HIDDEN)->data(Qt::DisplayRole).asInt());
+  CExperiment::Type OldType = static_cast<CExperiment::Type>(mpTable->item(row, COL_TYPE_HIDDEN)->data(Qt::DisplayRole).toInt());
 
   if (OldType == NewType) return;
 

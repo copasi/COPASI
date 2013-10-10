@@ -34,9 +34,8 @@
 #include <QtCore/QtDebug>
 #endif
 
-CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, const char* name,
-    bool /* barChart */ , bool slider) :
-  QWidget(parent, name),
+CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, bool slider) :
+  QWidget(parent),
   mWithBarChart(false),
   mUseSliders(slider),
   data(NULL),

@@ -12,12 +12,12 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <QtDebug>
-#include <QFrame>
+#include <QtCore/QtDebug>
+#include <QtGui/QFrame>
 #include <QtGui/QVBoxLayout>
-#include <QHeaderView>
-#include <QComboBox>
-#include <qapplication.h>
+#include <QtGui/QHeaderView>
+#include <QtGui/QComboBox>
+#include <QtGui/QApplication>
 
 #include "TaskWidget.h"
 #include "qtUtilities.h"

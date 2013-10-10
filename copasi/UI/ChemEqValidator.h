@@ -21,8 +21,8 @@
 class ChemEqValidator : public QValidator
 {
 public:
-  ChemEqValidator(QObject * parent, const char * name = 0)
-    : QValidator(parent, name)
+  ChemEqValidator(QObject * parent)
+    : QValidator(parent)
   {}
 
   virtual State validate(QString & input, int & C_UNUSED(pos)) const

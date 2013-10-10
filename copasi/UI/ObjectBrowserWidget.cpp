@@ -21,15 +21,15 @@ Comment : COPASI Object Browser:
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
-#include <QHeaderView>
-#include <QTreeWidget>
-#include <QTextEdit>
-#include <QPushButton>
-#include <QPixmap>
-#include <QGridLayout>
+#include <QtGui/QHeaderView>
+#include <QtGui/QTreeWidget>
+#include <QtGui/QTextEdit>
+#include <QtGui/QPushButton>
+#include <QtGui/QPixmap>
+#include <QtGui/QGridLayout>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QVBoxLayout>
-#include <QFrame>
+#include <QtGui/QFrame>
 
 #include "copasi.h"
 

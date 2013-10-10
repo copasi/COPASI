@@ -7,8 +7,8 @@
 #include "string.h"
 
 #include <QtCore/QString>
-#include <QFile>
-#include <QFileInfo>
+#include <QtCore/QFile>
+#include <QtCore/QFileInfo>
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 

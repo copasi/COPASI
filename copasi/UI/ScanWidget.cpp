@@ -15,17 +15,17 @@
 //***  In this file I have put "//+++" in all places where something has to be added
 //***  if a new scan item is introduced.
 
-#include <QLabel>
-#include <QPushButton>
-#include <QLayout>
-#include <QToolTip>
-#include <QWhatsThis>
-#include <QComboBox>
-#include <QLineEdit>
-#include <QGridLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
+#include <QtGui/QLayout>
+#include <QtGui/QToolTip>
+#include <QtGui/QWhatsThis>
+#include <QtGui/QComboBox>
+#include <QtGui/QLineEdit>
+#include <QtGui/QGridLayout>
 #include <QtGui/QHBoxLayout>
 
-#include <QInputDialog>
+#include <QtGui/QInputDialog>
 
 #include "copasi.h"
 

@@ -9,21 +9,21 @@
 // All rights reserved.
 
 #include <QtCore/QVariant>
-#include <QCheckBox>
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QRadioButton>
-#include <QLayout>
-#include <QToolTip>
-#include <QWhatsThis>
-#include <QMessageBox>
-#include <QToolButton>
-#include <QImage>
+#include <QtGui/QCheckBox>
+#include <QtGui/QLabel>
+#include <QtGui/QLineEdit>
+#include <QtGui/QPushButton>
+#include <QtGui/QRadioButton>
+#include <QtGui/QLayout>
+#include <QtGui/QToolTip>
+#include <QtGui/QWhatsThis>
+#include <QtGui/QMessageBox>
+#include <QtGui/QToolButton>
+#include <QtGui/QImage>
 
-#include <QFrame>
-#include <QFileDialog>
-#include <QTableWidget>
+#include <QtGui/QFrame>
+#include <QtGui/QFileDialog>
+#include <QtGui/QTableWidget>
 
 #include <algorithm>
 

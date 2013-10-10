@@ -26,7 +26,7 @@
 
 #include "UI/SensWidgetComboBox.h"
 
-#include <QComboBox>
+#include <QtGui/QComboBox>
 
 class SensitivitiesWidget : public TaskWidget, public Ui::SensitivitiesWidget
 {

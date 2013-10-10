@@ -1,17 +1,14 @@
-/* Begin CVS Header
-$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserItem.cpp,v $
-$Revision: 1.53 $
-$Name:  $
-$Author: shoops $
-$Date: 2011/09/16 18:13:46 $
-End CVS Header */
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -33,7 +30,7 @@ object browser item update
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
-#include <QTreeWidget>
+#include <QtGui/QTreeWidget>
 #include "ObjectBrowserItem.h"
 
 #include "report/CCopasiObject.h"
@@ -62,7 +59,7 @@ CBrowserObject::~CBrowserObject()
  *   Constructs a new ObjectBrowserItem
  */
 ObjectBrowserItem::ObjectBrowserItem(QTreeWidget * parent, ObjectBrowserItem * after, const CCopasiObject* mObject, ObjectList* pList)
-    : QTreeWidgetItem(parent, after)
+  : QTreeWidgetItem(parent, after)
 {
   if (mObject != NULL)
     {
@@ -105,7 +102,7 @@ ObjectBrowserItem::ObjectBrowserItem(QTreeWidget * parent, ObjectBrowserItem * a
 }
 
 ObjectBrowserItem::ObjectBrowserItem(ObjectBrowserItem * parent, ObjectBrowserItem * after , const CCopasiObject* mObject, ObjectList* pList)
-    : QTreeWidgetItem(parent, after)
+  : QTreeWidgetItem(parent, after)
 {
   if (mObject != NULL)
     {
@@ -221,7 +218,6 @@ QTreeWidgetItem* ObjectBrowserItem::nextSibling()
 
   return NULL;
 }
-
 
 ObjectList::ObjectList()
 {
@@ -422,7 +418,7 @@ void ObjectList::destroyBucket()
   delete[] quickIndex;
   delete[] pointerList;
 
-  for (ObjectBrowserItem* pHead = pop(); pHead != NULL; pHead = pop()) ;
+  for (ObjectBrowserItem* pHead = pop(); pHead != NULL; pHead = pop());
 
   index_length = 0;
 }
