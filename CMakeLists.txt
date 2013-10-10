@@ -33,11 +33,10 @@ if (NOT WIN32)
  SET(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
 endif()
 
-#todo: write test program that compiles against CopasiVersion.h and
-#      determines the version
-set(COPASI_VERSION_MAJOR 4)
-set(COPASI_VERSION_MINOR 11)
-set(COPASI_VERSION_BUILD 64)
+file(READ "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h" COPASI_VERSION)
+string(REGEX REPLACE ".*COPASI_VERSION_MAJOR ([0-9]+).*" "\\1" COPASI_VERSION_MAJOR "${COPASI_VERSION}")
+string(REGEX REPLACE ".*COPASI_VERSION_MINOR ([0-9]+).*" "\\1" COPASI_VERSION_MINOR "${COPASI_VERSION}")
+string(REGEX REPLACE ".*COPASI_VERSION_BUILD ([0-9]+).*" "\\1" COPASI_VERSION_BUILD "${COPASI_VERSION}")
 
 include (CMakeTestCCompiler)
 include (CheckCSourceCompiles)
@@ -512,8 +511,7 @@ include(InstallRequiredSystemLibraries)
 get_directory_property(DirDefs COMPILE_DEFINITIONS)
 
 message(STATUS "-----------------------------------------------------------
- Building COPASI
-   Build Type        = ${CMAKE_BUILD_TYPE}
+ Building COPASI ${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD} (${CMAKE_BUILD_TYPE})
    Source Dir        = ${CMAKE_SOURCE_DIR}
    Binary Dir        = ${CMAKE_BINARY_DIR}
    Install Prefix    = ${CMAKE_INSTALL_PREFIX}
