@@ -54,9 +54,7 @@ public:
   void importSBMLFromString(const std::string & sbmlDocumentText);
   void exportSBMLToString(std::string & sbmlDocumentText);
   void exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile = false);
-#ifdef CELLDESIGNER_IMPORT
   void importCellDesigner();
-#endif /* CELLDESIGNER_IMPORT */
 
   void loadModelRun();
   void saveModelRun();

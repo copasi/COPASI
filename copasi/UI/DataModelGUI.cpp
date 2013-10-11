@@ -49,8 +49,6 @@
 //#include "model/CModelMerging.h"
 #include "model/CModelExpansion.h"
 
-#ifdef CELLDESIGNER_IMPORT
-
 #define USE_LAYOUT 1
 #define USE_RENDER 1
 
@@ -68,8 +66,6 @@
 #if LIBSBML_VERSION >= 50400
 #include <sbml/packages/layout/extension/LayoutModelPlugin.h>
 #endif
-
-#endif // CELLDESIGNER_IMPORT
 
 //*****************************************************************************
 
@@ -131,10 +127,10 @@ void DataModelGUI::linkDataModelToGUI()
 void DataModelGUI::addModel(const std::string & fileName)
 {
   mpProgressBar = CProgressBar::create();
-  
+
   mSuccess = true;
   mFileName = fileName;
-  
+
   mpThread = new CQThread(this, &DataModelGUI::addModelRun);
   connect(mpThread, SIGNAL(finished()), this, SLOT(addModelFinished()));
   mpThread->start();
@@ -143,16 +139,16 @@ void DataModelGUI::addModel(const std::string & fileName)
 void DataModelGUI::addModelRun()
 {
   try
-  {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  mSuccess = CCopasiRootContainer::addDatamodel()->loadModel(mFileName, mpProgressBar, false);
-  }
-  
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      mSuccess = CCopasiRootContainer::addDatamodel()->loadModel(mFileName, mpProgressBar, false);
+    }
+
   catch (...)
-  {
-  mSuccess = false;
-  }
-  
+    {
+      mSuccess = false;
+    }
+
   CModel *pModel = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
   CModel *pMergeModel = (*CCopasiRootContainer::getDatamodelList())[1]->getModel();
 
@@ -161,9 +157,8 @@ void DataModelGUI::addModelRun()
 
   if (mSuccess && pModel && pMergeModel)
     {
-    CModelExpansion expand(pModel);
-    (*CCopasiRootContainer::getDatamodelList())[0]->mLastAddedObjects = expand.copyCompleteModel(pMergeModel);
-  
+      CModelExpansion expand(pModel);
+      (*CCopasiRootContainer::getDatamodelList())[0]->mLastAddedObjects = expand.copyCompleteModel(pMergeModel);
     }
 }
 
@@ -171,18 +166,16 @@ void DataModelGUI::addModelFinished()
 {
   if (mSuccess)
     {
-    //notify(ListViews::MODEL, ListViews::CHANGE, "");
-    
-    CCopasiRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
-    //linkDataModelToGUI();
+      //notify(ListViews::MODEL, ListViews::CHANGE, "");
+
+      CCopasiRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
+      //linkDataModelToGUI();
     }
-  
+
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(addModelFinished()));
-  
+
   threadFinished();
 }
-
-
 
 #endif
 
@@ -311,9 +304,7 @@ void DataModelGUI::importSBMLFromStringFinished()
       // can't run this in a separate thread because it uses GUI routines
       // TODO maybe put the main part of this routine in a separate thread after
       // TODO asking the user
-#ifdef CELLDESIGNER_IMPORT
       this->importCellDesigner();
-#endif // CELLDESIGNER_IMPORT
       mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
       linkDataModelToGUI();
     }
@@ -352,9 +343,7 @@ void DataModelGUI::importSBMLFinished()
 {
   if (mSuccess)
     {
-#ifdef CELLDESIGNER_IMPORT
       this->importCellDesigner();
-#endif // CELLDESIGNER_IMPORT
       CCopasiRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(mFileName);
 
       mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
@@ -686,7 +675,6 @@ void DataModelGUI::commit()
     }
 }
 
-#ifdef CELLDESIGNER_IMPORT
 /**
  * This method tries to import CellDesigner annotations.
  */
@@ -807,4 +795,3 @@ void DataModelGUI::importCellDesigner()
         }
     }
 }
-#endif // CELLDESIGNER_IMPORT

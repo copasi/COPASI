@@ -39,10 +39,8 @@ SOURCES += StdException.cpp \
            SBMLUtils.cpp \
            UnitConversionFactory.cpp
 
-contains(DEFINES,CELLDESIGNER_IMPORT) {           
   HEADERS += CCellDesignerImporter.h
   SOURCES += CCellDesignerImporter.cpp
-}
 
 contains(BUILD_OS, WIN32) {
   DEFINES += LIBSBML_STATIC

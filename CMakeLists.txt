@@ -281,12 +281,6 @@ if(ENABLE_CRENDER_EXTENSION)
 add_definitions(-DUSE_CRENDER_EXTENSION)
 endif(ENABLE_CRENDER_EXTENSION)
 
-option (ENABLE_CELLDESIGNER_IMPORT "Enable support for importing CellDesigner diagrams." ON)
-mark_as_advanced(ENABLE_CELLDESIGNER_IMPORT)
-if(ENABLE_CELLDESIGNER_IMPORT)
-add_definitions(-DCELLDESIGNER_IMPORT)
-endif(ENABLE_CELLDESIGNER_IMPORT)
-
 option (ENABLE_USE_SBMLUNIT "Enables extended unit support." OFF)
 mark_as_advanced(ENABLE_USE_SBMLUNIT)
 if(ENABLE_USE_SBMLUNIT)
@@ -471,6 +465,7 @@ get_directory_property(DirDefs COMPILE_DEFINITIONS)
 
 message(STATUS "-----------------------------------------------------------
  Building COPASI ${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD} (${CMAKE_BUILD_TYPE})
+
    Source Dir        = ${CMAKE_SOURCE_DIR}
    Binary Dir        = ${CMAKE_BINARY_DIR}
    Install Prefix    = ${CMAKE_INSTALL_PREFIX}
@@ -500,7 +495,6 @@ message(STATUS "-----------------------------------------------------------
 
  Options:
 
-   CellDesigner import      = ${ENABLE_CELLDESIGNER_IMPORT}
    COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
    Render Extension         = ${ENABLE_CRENDER_EXTENSION}
    SBW integration          = ${ENABLE_SBW_INTEGRATION}

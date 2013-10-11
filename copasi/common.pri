@@ -79,11 +79,6 @@ QMAKE_LFLAGS  += $$(LDFLAGS)
 # enable this to build support for the render extension
 DEFINES += USE_CRENDER_EXTENSION
 
-# this flag enables new code to import layout information from 
-# CellDesigner annotations
-# Right now this is pretty much limited to the bare layout stuff.
-DEFINES += CELLDESIGNER_IMPORT
-
 # flag to use Svens SBML unit identification framework
 #define USE_SBMLUNIT
 
