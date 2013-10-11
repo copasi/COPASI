@@ -56,12 +56,9 @@ CTSSAMethod::createMethod(CCopasiMethod::SubType subType)
         pMethod = new CILDMModifiedMethod();
         break;
 
-#ifdef  WITH_CSPMETHOD
-
       case tssCSP:
         pMethod = new CCSPMethod();
         break;
-#endif
 
       default:
         fatalError();

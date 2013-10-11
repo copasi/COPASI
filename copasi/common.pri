@@ -71,8 +71,6 @@ QMAKE_CFLAGS   += $$(CFLAGS)
 QMAKE_CXXFLAGS += $$(CXXFLAGS)
 QMAKE_LFLAGS  += $$(LDFLAGS)
 
-DEFINES += WITH_CSPMETHOD
-
 # the following flag enables Svens unit indentification code
 # right now this still has some bugs and has to be disabled
 # for releases

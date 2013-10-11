@@ -275,13 +275,6 @@ cmake_dependent_option (ENABLE_OCTAVE "Enable language bindings for the Octave l
 cmake_dependent_option (ENABLE_R "Enable language bindings for the R language." OFF "SWIG_FOUND" OFF)
 
 
-option (ENABLE_CSPMETHOD "Include the CSP method in the COPASI backend library." ON)
-mark_as_advanced(ENABLE_CSPMETHOD)
-if(ENABLE_CSPMETHOD)
-add_definitions(-DWITH_CSPMETHOD)
-endif(ENABLE_CSPMETHOD)
-
-
 option (ENABLE_CRENDER_EXTENSION "Build COPASI with support for the SBML render extension."  ON)
 mark_as_advanced(ENABLE_CRENDER_EXTENSION)
 if(ENABLE_CRENDER_EXTENSION)
