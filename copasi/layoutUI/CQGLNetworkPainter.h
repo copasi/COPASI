@@ -143,7 +143,6 @@ public:
    */
   void setScaleMode(CVisParameters::SCALING_MODE scaleMode);
 
-#ifdef FRAMEBUFFER_SCREENSHOTS
   /**
    * New method for creating a bitmap from the animation window.
    * This method uses QPainter, QImage and QGLFrameBufferObject to draw
@@ -159,7 +158,6 @@ public:
    * If the rendering was successfull, true is returned, otherwise false is returned.
    */
   bool export_bitmap(double x, double y, double width, double height, unsigned int imageWidth, unsigned int imageHeight, const QString& filename, const std::vector<size_t> frames);
-#endif // FRAMEBUFFER_SCREENSHOTS
 
 private slots:
   void zoomIn();

@@ -287,12 +287,6 @@ if(ENABLE_CELLDESIGNER_IMPORT)
 add_definitions(-DCELLDESIGNER_IMPORT)
 endif(ENABLE_CELLDESIGNER_IMPORT)
 
-option (ENABLE_FRAMEBUFFER_SCREENSHOTS "Enable screenshots using the OpenGL framebuffer extensions." ON)
-mark_as_advanced(ENABLE_FRAMEBUFFER_SCREENSHOTS)
-if(ENABLE_FRAMEBUFFER_SCREENSHOTS)
-add_definitions(-DFRAMEBUFFER_SCREENSHOTS)
-endif(ENABLE_FRAMEBUFFER_SCREENSHOTS)
-
 option (ENABLE_USE_SBMLUNIT "Enables extended unit support." OFF)
 mark_as_advanced(ENABLE_USE_SBMLUNIT)
 if(ENABLE_USE_SBMLUNIT)
@@ -509,7 +503,6 @@ message(STATUS "-----------------------------------------------------------
    CellDesigner import      = ${ENABLE_CELLDESIGNER_IMPORT}
    COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
    Render Extension         = ${ENABLE_CRENDER_EXTENSION}
-   Screenshots              = ${ENABLE_FRAMEBUFFER_SCREENSHOTS}
    SBW integration          = ${ENABLE_SBW_INTEGRATION}
    SBML Unit                = ${ENABLE_USE_SBMLUNIT}
    Model Merging            = ${ENABLE_WITH_MERGEMODEL}

@@ -48,9 +48,7 @@
 #include "NodeSizePanel.h"
 #include "ParaPanel.h"
 #include "CQPlayerControlWidget.h"
-#ifdef FRAMEBUFFER_SCREENSHOTS
 #include "CQScreenshotOptionsDialog.h"
-#endif // FRAMEBUFFER_SCREENSHOTS
 #ifndef USE_CRENDER_EXTENSION
 #include "load_data.xpm"
 #endif // USE_CRENDER_EXTENSION
@@ -660,7 +658,6 @@ void CQLayoutMainWindow::saveImage()
 //  qDebug() << "mCurrentPlace = " << mCurrentPlace;
 #endif
 
-#ifdef FRAMEBUFFER_SCREENSHOTS
   // get the parameters
   CQGLNetworkPainter* pPainter = this->mpGLViewport->getPainter();
   assert(pPainter != NULL);
@@ -746,20 +743,6 @@ void CQLayoutMainWindow::saveImage()
 
       delete pDialog;
     }
-
-#else
-  QImage img = mpGLViewport->getPainter()->getImage();
-  QString filename = CopasiFileDialog::getSaveFileName(this, "Save Image Dialog", "untitled.png",
-                     "PNG Files (*.png)", "Choose a filename to save the image under");
-
-  if (!filename.isNull())
-    {
-      img.save(filename, "PNG");
-
-      mCurrentPlace = filename;
-    }
-
-#endif // FRAMEBUFFER_SCREENSHOTS
 }
 
 void CQLayoutMainWindow::pauseAnimation()

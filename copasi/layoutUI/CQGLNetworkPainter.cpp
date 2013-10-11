@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.cpp,v $
-//   $Revision: 1.169 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/25 12:29:24 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -118,7 +110,7 @@ const GLfloat CQGLNetworkPainter::MIRROR_Y[] =
 const C_INT32 CQGLNetworkPainter::MIN_HEIGHT = 10;
 
 CQGLNetworkPainter::CQGLNetworkPainter(const QGLFormat& format, QWidget *parent)
-    : QGLWidget(format, parent),
+  : QGLWidget(format, parent),
     mIsInitialized(false)
 {
   initializeGraphPainter(parent);
@@ -156,9 +148,9 @@ void CQGLNetworkPainter::initializeDisplayLists()
   glVertex3f(0.0f, 0.4f, COMPARTMENT_DEPTH);
   glColor3f(1.0f, 1.0f, 1.0f);
   glVertex3f(0.0f, 0.5f, COMPARTMENT_DEPTH);
-  glColor3f(mCompartmentColor[0] + (1.0f - mCompartmentColor[0])*0.9f, mCompartmentColor[1] + (1.0f - mCompartmentColor[1])*0.9f, mCompartmentColor[2] + (1.0f - mCompartmentColor[2])*0.9f); // 90% value
+  glColor3f(mCompartmentColor[0] + (1.0f - mCompartmentColor[0]) * 0.9f, mCompartmentColor[1] + (1.0f - mCompartmentColor[1]) * 0.9f, mCompartmentColor[2] + (1.0f - mCompartmentColor[2]) * 0.9f); // 90% value
   glVertex3f(0.05f, 0.4866f, COMPARTMENT_DEPTH);
-  glColor3f(mCompartmentColor[0] + (1.0f - mCompartmentColor[0])*0.973f, mCompartmentColor[1] + (1.0f - mCompartmentColor[1])*0.973f, mCompartmentColor[2] + (1.0f - mCompartmentColor[2])*0.973f);  // 97.32% value
+  glColor3f(mCompartmentColor[0] + (1.0f - mCompartmentColor[0]) * 0.973f, mCompartmentColor[1] + (1.0f - mCompartmentColor[1]) * 0.973f, mCompartmentColor[2] + (1.0f - mCompartmentColor[2]) * 0.973f); // 97.32% value
   glVertex3f(0.0866f, 0.45f, COMPARTMENT_DEPTH);
   glColor3fv(compartmentColor_080);
   glVertex3f(0.1f, 0.4f, COMPARTMENT_DEPTH);
@@ -235,9 +227,9 @@ void CQGLNetworkPainter::initializeDisplayLists()
   glVertex3f(0.0f, 0.4f, SPECIES_DEPTH);
   glColor3f(1.0f, 1.0f, 1.0f);
   glVertex3f(0.0f, 0.5f, SPECIES_DEPTH);
-  glColor3f(mSpeciesColor[0] + (1.0f - mSpeciesColor[0])*0.9f, mSpeciesColor[1] + (1.0f - mSpeciesColor[1])*0.9f, mSpeciesColor[2] + (1.0f - mSpeciesColor[2])*0.9f); // 90% value
+  glColor3f(mSpeciesColor[0] + (1.0f - mSpeciesColor[0]) * 0.9f, mSpeciesColor[1] + (1.0f - mSpeciesColor[1]) * 0.9f, mSpeciesColor[2] + (1.0f - mSpeciesColor[2]) * 0.9f); // 90% value
   glVertex3f(0.05f, 0.4866f, SPECIES_DEPTH);
-  glColor3f(mSpeciesColor[0] + (1.0f - mSpeciesColor[0])*0.973f, mSpeciesColor[1] + (1.0f - mSpeciesColor[1])*0.973f, mSpeciesColor[2] + (1.0f - mSpeciesColor[2])*0.973f);  // 97.32% value
+  glColor3f(mSpeciesColor[0] + (1.0f - mSpeciesColor[0]) * 0.973f, mSpeciesColor[1] + (1.0f - mSpeciesColor[1]) * 0.973f, mSpeciesColor[2] + (1.0f - mSpeciesColor[2]) * 0.973f); // 97.32% value
   glVertex3f(0.0866f, 0.45f, SPECIES_DEPTH);
   glColor3fv(speciesColor_080);
   glVertex3f(0.1f, 0.4f, SPECIES_DEPTH);
@@ -677,7 +669,8 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
             {
               // if role is product or sideproduct, create arrow for line
               if ((r == CLMetabReferenceGlyph::PRODUCT) || (r == CLMetabReferenceGlyph::SIDEPRODUCT) || (r == CLMetabReferenceGlyph::ACTIVATOR) || (r == CLMetabReferenceGlyph::INHIBITOR) || (r == CLMetabReferenceGlyph::MODIFIER))
-                {// create arrows just for edges to products or sideproducts
+                {
+                  // create arrows just for edges to products or sideproducts
                   std::vector<CLLineSegment> segments = curve.getCurveSegments();
 
                   if (! segments.empty())
@@ -758,7 +751,8 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
                 }
             }
           else
-            {// if no species node is associated with the curve: just store curve
+            {
+              // if no species node is associated with the curve: just store curve
               viewerCurves.push_back(curve); // just collect curve in order to be shown within the graph
             }
         } // end j
@@ -803,7 +797,8 @@ bool CQGLNetworkPainter::checkCurve(CGraphCurve * curve, CGraphCurve /* curveR *
   std::vector <CLPoint> points = curve->getListOfPoints();
 
   if (points.size() > 1)
-    {// if there are at least 2 points
+    {
+      // if there are at least 2 points
       CLPoint s = points[0];
       CLPoint e = points[points.size() - 1];
       // now compute the distances from these points to the center
@@ -814,7 +809,8 @@ bool CQGLNetworkPainter::checkCurve(CGraphCurve * curve, CGraphCurve /* curveR *
                              ((center.getY() - e.getY()) * (center.getY() - e.getY())));
 
       if (dist1 < dist2)
-        {// if the start point of the curve is closer to the node than the end point
+        {
+          // if the start point of the curve is closer to the node than the end point
           // the curve direction should be TOWARDS the node, not away from it
           curve->invertOrderOfPoints(); // invert the order of the points in the curve
           inverted = true;
@@ -904,7 +900,8 @@ void CQGLNetworkPainter::drawGraph()
         }
     }
   else
-    {// draw string next to circle (to the right) or in the center if there is enough space
+    {
+      // draw string next to circle (to the right) or in the center if there is enough space
       for (i = 0; i < viewerLabels.size(); i++)
         {
           if (!viewerLabels[i].getText().empty())
@@ -932,18 +929,21 @@ void CQGLNetworkPainter::drawGraph()
                       y = yNdCenter + (CVisParameters::DEFAULT_NODE_SIZE / 2.0 * this->mCurrentZoom) + 2.0 - ((viewerLabels[i].getHeight()) / 2.0);
                     }
                   else if ((tWid + 4) > nDiam)
-                    {// label wider (+ k=4 to avoid crossing circle borders) than size of circle-> place next to circle
+                    {
+                      // label wider (+ k=4 to avoid crossing circle borders) than size of circle-> place next to circle
                       x = xNdCenter + (nDiam / 2.0) + 2.0 - ((viewerLabels[i].getWidth() - tWid) / 2.0); // + nDiam / 2.0 - ((labelWWid - (*itNodeObj).second.getWidth()) / 2.0); // node center + circle radius - texture window overhead
                       y = yNdCenter + (nDiam / 2.0) + 2.0 - ((viewerLabels[i].getHeight()) / 2.0);
                     }
                   else
-                    {// place in center of circle
+                    {
+                      // place in center of circle
                       x = xNdCenter - (viewerLabels[i].getWidth() / 2.0); // - ((labelWWid - (*itNodeObj).second.getWidth()) / 2.0);
                       y = yNdCenter;
                     }
                 }
               else
-                {// if there is no node associated, just take label position
+                {
+                  // if there is no node associated, just take label position
                   x = viewerLabels[i].getX();
                   y = viewerLabels[i].getY();
                 }
@@ -1021,7 +1021,7 @@ void CQGLNetworkPainter::drawNode(CCompartmentGraphNode &n)
       glPushMatrix();
       // additional translation 0.1*width needed because we mirror the
       // element
-      glTranslatef(translateX + height*0.1, y, 0.0f);
+      glTranslatef(translateX + height * 0.1, y, 0.0f);
       glScalef(height, height, 1.0f);
       // mirror it at the y axis
       glMultMatrixf(MIRROR_Y);
@@ -1053,7 +1053,7 @@ void CQGLNetworkPainter::drawNode(CCompartmentGraphNode &n)
   glPushMatrix();
   // additional translation 0.1*width needed because we mirror the
   // element
-  glTranslatef(translateX + height*0.1, y, 0.0f);
+  glTranslatef(translateX + height * 0.1, y, 0.0f);
   glScalef(height, height, 1.0f);
   // mirror it at the y axis
   glMultMatrixf(MIRROR_Y);
@@ -1167,7 +1167,8 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
         }
       // are not scaled and marked in grey
       else
-        {// color mapping
+        {
+          // color mapping
           GLfloat color[3] = {1.0f, 1.0f, 1.0f};
 
           if (setOfConstantMetabolites.find(n.getOrigNodeKey()) == setOfConstantMetabolites.end())
@@ -1279,7 +1280,7 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
           glPushMatrix();
           // additional translation 0.1*width needed because we mirror the
           // element
-          glTranslatef(translateX + height*0.1, y, 0.0f);
+          glTranslatef(translateX + height * 0.1, y, 0.0f);
           glScalef(height, height, 1.0f);
           // mirror it at the y axis
           glMultMatrixf(MIRROR_Y);
@@ -1311,7 +1312,7 @@ void CQGLNetworkPainter::drawNode(CGraphNode &n) // draw node as filled circle
       glPushMatrix();
       // additional translation 0.1*width needed because we mirror the
       // element
-      glTranslatef(translateX + height*0.1, y, 0.0f);
+      glTranslatef(translateX + height * 0.1, y, 0.0f);
       glScalef(height, height, 1.0f);
       // mirror it at the y axis
       glMultMatrixf(MIRROR_Y);
@@ -1385,7 +1386,8 @@ void CQGLNetworkPainter::drawEdge(CGraphCurve &c)
           glDisable(GL_MAP1_VERTEX_3);
         }
       else
-        {// just draw a straight line
+        {
+          // just draw a straight line
           glBegin(GL_LINE_STRIP);
           glVertex3d(startPoint.getX(), startPoint.getY(), SPECIESREFERENCE_DEPTH);
           glVertex3d(endPoint.getX(), endPoint.getY(), SPECIESREFERENCE_DEPTH);
@@ -1722,7 +1724,7 @@ RGTextureSpec* CQGLNetworkPainter::RG_createTextureForText(const std::string& te
         {
           pixel = image.pixel(j, i);
           pixelValue = static_cast<unsigned char>(255 - (qRed(pixel) + qGreen(pixel) + qBlue(pixel)) / 3);
-          texture->textureData[i*width + j] = pixelValue;
+          texture->textureData[i * width + j] = pixelValue;
 
           if (pixelValue != 0)
             {
@@ -1753,7 +1755,8 @@ void CQGLNetworkPainter::drawStringAt(std::string s, C_FLOAT64 x, C_FLOAT64 y, C
   int h2 = round2powN(bbox.height() + 2); // look for smallest h2 = 2^^k with n > h2
 
   while (h2 > h)
-    {// reduce font size in order to avoid problems with size of texture image
+    {
+      // reduce font size in order to avoid problems with size of texture image
       this->mFontsize--;
       this->mFontsizeDouble = (double) this->mFontsize;
       mf.setPointSize(this->mFontsize);
@@ -1859,7 +1862,8 @@ void CQGLNetworkPainter::rescaleDataSetsWithNewMinMax(C_FLOAT64 /* oldMin */, C_
               val_new = newMin + ((val_orig - a) / (b - a) * (newMax - newMin));
             }
           else
-            {// no scaling if differences are too small, just set mid value
+            {
+              // no scaling if differences are too small, just set mid value
               val_new = (newMax + newMin) / 2.0;
 
               if (s == 0) // only insert once into set
@@ -1922,7 +1926,8 @@ void CQGLNetworkPainter::rescaleNode(std::string key, C_FLOAT64 newMin, C_FLOAT6
           val_new = newMin + ((val_orig - a) / (b - a) * (newMax - newMin));
         }
       else
-        {// no scaling if differences are too small, just set mid value
+        {
+          // no scaling if differences are too small, just set mid value
           val_new = (newMax + newMin) / 2.0;
 
           if (s == 0) // only insert once into set
@@ -1995,7 +2000,8 @@ void CQGLNetworkPainter::rescaleDataSets(CVisParameters::SCALING_MODE scaleMode)
 
           if ((scaleMode == CVisParameters::INDIVIDUAL_SCALING) &&
               (pParentLayoutWindow != NULL))
-            {// global mode -> individual mode
+            {
+              // global mode -> individual mode
               // first get to original value
               C_FLOAT64 orig_value = dataSet.getOrigValueForSpecies(viewerNodes[i]);
 
@@ -2017,7 +2023,8 @@ void CQGLNetworkPainter::rescaleDataSets(CVisParameters::SCALING_MODE scaleMode)
                 }
             }
           else
-            {// individual mode -> global mode
+            {
+              // individual mode -> global mode
               C_FLOAT64 orig_value = dataSet.getOrigValueForSpecies(viewerNodes[i]);
 
               // first calculate original value
@@ -2091,7 +2098,8 @@ bool CQGLNetworkPainter::createDataSets()
               std::map<std::string, std::string>::iterator iter = keyMap.find(objKey);
 
               if (iter != keyMap.end())
-                {// if there is a node (key)
+                {
+                  // if there is a node (key)
                   ndKey = (keyMap.find(objKey))->second;
 
                   for (t = 0; t < pTimeSer->getRecordedSteps(); t++) // iterate on time steps t=0..n
@@ -2135,7 +2143,8 @@ bool CQGLNetworkPainter::createDataSets()
                   std::map<std::string, std::string>::iterator iter = keyMap.find(objKey);
 
                   if (iter != keyMap.end())
-                    {// if there is a node (key)
+                    {
+                      // if there is a node (key)
                       ndKey = (keyMap.find(objKey))->second; // key of graphical node
                       val = pTimeSer->getConcentrationData(t, i); // get concentration of species i at time point t
                       C_FLOAT64 scaledVal;
@@ -2147,7 +2156,8 @@ bool CQGLNetworkPainter::createDataSets()
                           maxR = pSummaryInfo->getMaxForSpecies(ndKey);
                         }
                       else
-                        {// == CVisParameters.GLOBAL_SCALING
+                        {
+                          // == CVisParameters.GLOBAL_SCALING
                           minR = pSummaryInfo->getMinOverallConcentration();
                           maxR = pSummaryInfo->getMaxOverallConcentration();
                         }
@@ -2180,7 +2190,8 @@ bool CQGLNetworkPainter::createDataSets()
   this->mDataPresentP = loadDataSuccessful;
 
   if (loadDataSuccessful)
-    {// if loading was successful, parent should create data table to show it in its window
+    {
+      // if loading was successful, parent should create data table to show it in its window
       if (!mDataSets.empty())
         {
           pParentLayoutWindow->insertValueTable(mDataSets[0]);
@@ -2298,13 +2309,15 @@ void CQGLNetworkPainter::showStep(size_t stepNumber)
                   val = (val - a) / (b - a);
                 }
               else
-                {// no scaling if differences are too small, just set mid value
+                {
+                  // no scaling if differences are too small, just set mid value
                   val = 0.5;
                   setOfConstantMetabolites.insert(viewerNodes[i]);
                 }
 
               if (pParentLayoutWindow->getMappingMode() != CVisParameters::COLOR_MODE)
-                {// no color mode
+                {
+                  // no color mode
 
                   if (val != -std::numeric_limits< C_FLOAT64 >::max())
                     {
@@ -2324,7 +2337,7 @@ void CQGLNetworkPainter::showStep(size_t stepNumber)
                             {
                               double min = pParentLayoutWindow->getMinNodeSize();
                               double max = pParentLayoutWindow->getMaxNodeSize();
-                              setNodeSize(viewerNodes[i], min + val*(max - min));
+                              setNodeSize(viewerNodes[i], min + val * (max - min));
                             }
                           else
                             {
@@ -2487,14 +2500,16 @@ CLPoint CQGLNetworkPainter::getPointOnRectangle(CLBoundingBox r, CLPoint p)
   C_FLOAT64 pAngle = atan((p.getY() - center.getY()) / (p.getX() - center.getX()));
 
   if (fabs(pAngle) < fabs(qAngle))
-    {// intersection point is left or right side
+    {
+      // intersection point is left or right side
       if (p.getX() > center.getX()) // right side
         onpoint = CLPoint(q.getX(), center.getY());
       else // left side
         onpoint = CLPoint(r.getPosition().getX(), center.getY());
     }
   else
-    {//intersection point is top or bottom side
+    {
+      //intersection point is top or bottom side
       if (p.getY() > center.getY()) // top side
         onpoint = CLPoint(center.getX(), r.getPosition().getY() + r.getDimensions().getHeight());
       else // bottom side
@@ -3191,7 +3206,7 @@ std::vector<std::pair<float, float> > CQGLNetworkPainter::calculateCirclePoints(
   for (i = 0; i <= n; ++i)
     {
       angle = 2 * M_PI * i / n;
-      result.push_back(std::pair<float, float>(cos(angle)*0.5, sin(angle)*0.5));
+      result.push_back(std::pair<float, float>(cos(angle) * 0.5, sin(angle) * 0.5));
     }
 
   return result;
@@ -3205,7 +3220,6 @@ void CQGLNetworkPainter::setScaleMode(CVisParameters::SCALING_MODE scaleMode)
   this->mScaleMode = scaleMode;
 }
 
-#ifdef FRAMEBUFFER_SCREENSHOTS
 /**
  * New method for creating a bitmap from the animation window.
  * This method uses QPainter, QImage and QGLFrameBufferObject to draw
@@ -3348,6 +3362,7 @@ bool CQGLNetworkPainter::export_bitmap(double x, double y, double width, double 
                                      (GLdouble)(yPos + h),
                                      (GLdouble)yPos); // y: 0.0 is bottom left instead of top left as in SBML
                           glMatrixMode(GL_MODELVIEW);  // Select The Modelview Matrix
+
                           // create the tile
                           // If the correct frame has already been set, we only need to redraw, otherwise we
                           // need to update the frames
@@ -3362,7 +3377,7 @@ bool CQGLNetworkPainter::export_bitmap(double x, double y, double width, double 
                             }
 
                           // render it into the image
-                          p.drawImage(QPoint(j*tileSize, i*tileSize), fbo.toImage());
+                          p.drawImage(QPoint(j * tileSize, i * tileSize), fbo.toImage());
                           xPos += w;
                         }
 
@@ -3377,6 +3392,7 @@ bool CQGLNetworkPainter::export_bitmap(double x, double y, double width, double 
                                      (GLdouble)(yPos + h),
                                      (GLdouble)yPos); // y: 0.0 is bottom left instead of top left as in SBML
                           glMatrixMode(GL_MODELVIEW);  // Select The Modelview Matrix
+
                           // create the tile
                           if (!frameSet)
                             {
@@ -3389,7 +3405,7 @@ bool CQGLNetworkPainter::export_bitmap(double x, double y, double width, double 
                             }
 
                           // render part of tile into the image
-                          p.drawImage(QPoint(j*tileSize, i*tileSize), fbo.toImage(), QRect(QPoint(0, 0), QSize(imageWidth % tileSize, tileSize)));
+                          p.drawImage(QPoint(j * tileSize, i * tileSize), fbo.toImage(), QRect(QPoint(0, 0), QSize(imageWidth % tileSize, tileSize)));
                         }
                     }
 
@@ -3406,6 +3422,7 @@ bool CQGLNetworkPainter::export_bitmap(double x, double y, double width, double 
                                      (GLdouble)(yPos + h),
                                      (GLdouble)yPos); // y: 0.0 is bottom left instead of top left as in SBML
                           glMatrixMode(GL_MODELVIEW);  // Select The Modelview Matrix
+
                           // create the tile
                           if (!frameSet)
                             {
@@ -3418,7 +3435,7 @@ bool CQGLNetworkPainter::export_bitmap(double x, double y, double width, double 
                             }
 
                           // render part of tile into the image
-                          p.drawImage(QPoint(j*tileSize, i*tileSize), fbo.toImage(), QRect(QPoint(0, 0), QSize(tileSize, imageHeight % tileSize)));
+                          p.drawImage(QPoint(j * tileSize, i * tileSize), fbo.toImage(), QRect(QPoint(0, 0), QSize(tileSize, imageHeight % tileSize)));
                         }
 
                       if (imageWidth % tileSize != 0)
@@ -3432,6 +3449,7 @@ bool CQGLNetworkPainter::export_bitmap(double x, double y, double width, double 
                                      (GLdouble)(yPos + h),
                                      (GLdouble)yPos); // y: 0.0 is bottom left instead of top left as in SBML
                           glMatrixMode(GL_MODELVIEW);  // Select The Modelview Matrix
+
                           // create the tile
                           if (!frameSet)
                             {
@@ -3444,7 +3462,7 @@ bool CQGLNetworkPainter::export_bitmap(double x, double y, double width, double 
                             }
 
                           // render part of tile into the image
-                          p.drawImage(QPoint(j*tileSize, i*tileSize), fbo.toImage(), QRect(QPoint(0, 0), QSize(imageWidth % tileSize, imageHeight % tileSize)));
+                          p.drawImage(QPoint(j * tileSize, i * tileSize), fbo.toImage(), QRect(QPoint(0, 0), QSize(imageWidth % tileSize, imageHeight % tileSize)));
                         }
                     }
 
@@ -3533,5 +3551,3 @@ bool CQGLNetworkPainter::export_bitmap(double x, double y, double width, double 
   // return the result;
   return result;
 }
-
-#endif // FRAMEBUFFER_SCREENSHOTS

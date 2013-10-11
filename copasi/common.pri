@@ -84,11 +84,6 @@ DEFINES += USE_CRENDER_EXTENSION
 # Right now this is pretty much limited to the bare layout stuff.
 DEFINES += CELLDESIGNER_IMPORT
 
-# enable this to get screenshots from the OpenGL 
-# framebuffer. These should provide higher quality 
-# anitaliasing and they should work on more systems
-#DEFINES += FRAMEBUFFER_SCREENSHOTS
-
 # flag to use Svens SBML unit identification framework
 #define USE_SBMLUNIT
 
