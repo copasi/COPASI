@@ -34,12 +34,9 @@ HEADERS += CLayout.h \
            CLReactionGlyph.h \
            SBMLDocumentLoader.h 
 
-contains(DEFINES,COPASI_AUTOLAYOUT) {
 HEADERS += CAbstractLayoutInterface.h
 HEADERS += CCopasiSpringLayout.h
 HEADERS += CLayoutEngine.h
-}
-
 
 contains(DEFINES,USE_CRENDER_EXTENSION) {           
 HEADERS += CLColorDefinition.h \
@@ -92,11 +89,9 @@ SOURCES += CLayout.cpp \
            CLReactionGlyph.cpp \
            SBMLDocumentLoader.cpp
 
-contains(DEFINES,COPASI_AUTOLAYOUT) {
 SOURCES += CAbstractLayoutInterface.cpp
 SOURCES += CCopasiSpringLayout.cpp
 SOURCES += CLayoutEngine.cpp
-}
 
 contains(DEFINES,USE_CRENDER_EXTENSION) {
 SOURCES += CLColorDefinition.cpp \

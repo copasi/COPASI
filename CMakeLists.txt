@@ -281,12 +281,6 @@ if(ENABLE_CRENDER_EXTENSION)
 add_definitions(-DUSE_CRENDER_EXTENSION)
 endif(ENABLE_CRENDER_EXTENSION)
 
-option (ENABLE_COPASI_AUTOLAYOUT "Build COPASI with support for generating automatic diagram layout." ON)
-mark_as_advanced(ENABLE_COPASI_AUTOLAYOUT)
-if(ENABLE_COPASI_AUTOLAYOUT)
-add_definitions(-DCOPASI_AUTOLAYOUT)
-endif(ENABLE_COPASI_AUTOLAYOUT)
-
 option (ENABLE_FLUX_ANIMATION "Enable support for animating fluxes in diagrams." ON)
 mark_as_advanced(ENABLE_FLUX_ANIMATION)
 if(ENABLE_FLUX_ANIMATION)
@@ -519,7 +513,6 @@ message(STATUS "-----------------------------------------------------------
  Options:
 
    CellDesigner import      = ${ENABLE_CELLDESIGNER_IMPORT}
-   Auto layout              = ${ENABLE_COPASI_AUTOLAYOUT}
    COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
    Render Extension         = ${ENABLE_CRENDER_EXTENSION}
    CSP Method               = ${ENABLE_CSPMETHOD}

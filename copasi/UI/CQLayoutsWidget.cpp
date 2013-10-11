@@ -38,9 +38,7 @@
 # include "copasi/layoutUI/CQLayoutMainWindow.h"
 #endif // USE_CRENDER_EXTENSION
 
-#ifdef COPASI_AUTOLAYOUT
-# include "copasi/layoutUI/CQAutolayoutWizard.h"
-#endif // COPASI_AUTOLAYOUT
+#include "copasi/layoutUI/CQAutolayoutWizard.h"
 
 #include <sstream>
 
@@ -49,9 +47,7 @@ CQLayoutsWidget::CQLayoutsWidget(QWidget* parent)
 {
   setupUi(this);
 
-#ifndef COPASI_AUTOLAYOUT
   mpBtnNew->hide();
-#endif
 
   // Create Source Data Model.
   mpLayoutsDM = new CQLayoutsDM(this);
@@ -238,8 +234,6 @@ bool hasLayout(const CListOfLayouts& layouts, const std::string &name)
 // virtual
 void CQLayoutsWidget::slotBtnNewClicked()
 {
-#ifdef COPASI_AUTOLAYOUT
-
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   const CModel* pModel = pDataModel->getModel();
   assert(pModel != NULL);
@@ -310,8 +304,6 @@ void CQLayoutsWidget::slotBtnNewClicked()
       {
         delete pLayout;
       }
-
-#endif // COPASI_AUTOLAYOUT
 }
 
 // virtual

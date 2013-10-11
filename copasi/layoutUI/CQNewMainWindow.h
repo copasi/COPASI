@@ -32,7 +32,6 @@ class CFluxMode;
 class CReaction;
 class CMetab;
 
-#ifdef COPASI_AUTOLAYOUT
 #include "copasi/copasi.h"
 #include "copasi/layout/CLayoutState.h"
 #include "copasi/layout/CLReactionGlyph.h"
@@ -46,7 +45,6 @@ class CLCompartmentGlyph;
 class CLMetabGlyph;
 class CLTextGlyph;
 class CQLayoutThread;
-#endif // COPASI_AUTOLAYOUT
 
 class CQNewMainWindow : public CWindowInterface
 {
@@ -203,8 +201,6 @@ public slots:
 
   virtual void closeEvent(QCloseEvent * event);
 
-#ifdef COPASI_AUTOLAYOUT
-
 #ifdef INCLUDE_UNUSED_CODE
 
   /**
@@ -250,8 +246,6 @@ protected slots:
   void slotRunRandomizeLayout();
 
   void slotCalculateDimensions();
-
-#endif // COPASI_AUTOLAYOUT
 
 private:
 
@@ -342,8 +336,6 @@ private:
   QAction* mpFogDensityAction;
   QAction* mpChangeColorAction;
 
-#ifdef COPASI_AUTOLAYOUT
-
   QAction* mpStopLayoutAction;
   QAction* mpRandomizeLayout;
   QAction* mpCalculateDimensions;
@@ -373,8 +365,6 @@ protected:
 
   /** the copy on which the layout operates */
   CLayout* mpCopy;
-
-#endif // COPASI_AUTOLAYOUT
 };
 
 #endif /* CQNEWMAINWINDOW_H__ */

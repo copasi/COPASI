@@ -79,12 +79,6 @@ QMAKE_LFLAGS  += $$(LDFLAGS)
 # enable this to build support for the render extension
 DEFINES += USE_CRENDER_EXTENSION
 
-# enable this to build with Svens layout generation code.
-# This allows users to create new layouts for their models.
-# This is not finished yet and should not be enabled per default 
-DEFINES += COPASI_AUTOLAYOUT
-#
-
 # This enables the code for the animation of flux data
 # When this is enabled, the time course task will collect data
 # on species concentrations or amounts as well as concentration

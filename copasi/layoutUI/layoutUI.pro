@@ -89,15 +89,12 @@ HEADERS += CQFontRenderer.h \
            CQScreenshotOptionsDialog.h
 }
 
-contains(DEFINES,COPASI_AUTOLAYOUT) {
 HEADERS += CQAutolayoutWizard.h \
            CQSpringLayoutParameterWindow.h
 
 
 DISTFILES += layout_start.xpm
 DISTFILES += layout_stop.xpm
-}
-
 
 contains(DEFINES,USE_CRENDER_EXTENSION) {           
 SOURCES += CQFontRenderer.cpp \
@@ -108,12 +105,8 @@ SOURCES += CQFontRenderer.cpp \
            CQScreenshotOptionsDialog.cpp
 }
 
-contains(DEFINES,COPASI_AUTOLAYOUT) {
 SOURCES += CQAutolayoutWizard.cpp \
            CQSpringLayoutParameterWindow.cpp
-
-}
-
 
 
 contains(DEFINES,USE_CRENDER_EXTENSION) {           
