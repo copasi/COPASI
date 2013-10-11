@@ -171,8 +171,7 @@ find_package(RAPTOR REQUIRED)
 include_directories(BEFORE ${RAPTOR_INCLUDE_DIR})
 
 #TODO find libsbml, version should be 4.1 or 4.2
-# if USE_CRENDER_EXTENSION is enabled, we need to make sure libsbml has
-# the render extension
+# we need to make sure libsbml has the render extension
 find_package(LIBSBML REQUIRED)
 include_directories(BEFORE ${LIBSBML_INCLUDE_DIR})
 
@@ -274,12 +273,6 @@ cmake_dependent_option (ENABLE_PERL "Enable language bindings for the Perl langu
 cmake_dependent_option (ENABLE_OCTAVE "Enable language bindings for the Octave language." OFF "SWIG_FOUND" OFF)
 cmake_dependent_option (ENABLE_R "Enable language bindings for the R language." OFF "SWIG_FOUND" OFF)
 
-
-option (ENABLE_CRENDER_EXTENSION "Build COPASI with support for the SBML render extension."  ON)
-mark_as_advanced(ENABLE_CRENDER_EXTENSION)
-if(ENABLE_CRENDER_EXTENSION)
-add_definitions(-DUSE_CRENDER_EXTENSION)
-endif(ENABLE_CRENDER_EXTENSION)
 
 option (ENABLE_USE_SBMLUNIT "Enables extended unit support." OFF)
 mark_as_advanced(ENABLE_USE_SBMLUNIT)

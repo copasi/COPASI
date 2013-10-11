@@ -4,10 +4,7 @@
 // All rights reserved.
 
 #define USE_LAYOUT 1
-
-#ifdef USE_CRENDER_EXTENSION
 #define USE_RENDER 1
-#endif // USE_CRENDER_EXTENSION
 
 #include <sbml/packages/render/sbml/RenderInformationBase.h>
 #include <sbml/packages/render/sbml/ColorDefinition.h>

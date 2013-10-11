@@ -59,8 +59,6 @@
 #include "layout/CListOfLayouts.h"
 #include "report/CCopasiRootContainer.h"
 
-#ifdef USE_CRENDER_EXTENSION
-
 #include "copasi/layout/CLGradientStop.h"
 #include "copasi/layout/CLGradientBase.h"
 #include "copasi/layout/CLLinearGradient.h"
@@ -81,8 +79,6 @@
 #include "copasi/layout/CLRenderInformationBase.h"
 #include "copasi/layout/CLLocalRenderInformation.h"
 #include "copasi/layout/CLGlobalRenderInformation.h"
-
-#endif // USE_CRENDER_EXTENSION
 
 #define START_ELEMENT   -1
 #define UNKNOWN_ELEMENT -2
@@ -240,8 +236,6 @@ CCopasiXMLParser::CCopasiXMLParser(CVersion & version) :
   mCommon.pCurve = NULL;
   mCommon.pLineSegment = NULL;
   mCommon.pMetaboliteReferenceGlyph = NULL;
-#ifdef USE_CRENDER_EXTENSION
-
   mCommon.pRenderInformation = NULL;
   mCommon.pGradient = NULL;
   mCommon.pLineEnding = NULL;
@@ -249,8 +243,6 @@ CCopasiXMLParser::CCopasiXMLParser(CVersion & version) :
   mCommon.pGroup = NULL;
   mCommon.pText = NULL;
   mCommon.pListOfCurveElements = NULL;
-
-#endif /* USE_CRENDER_EXTENSION */
 
   enableElementHandler(true);
 }
@@ -6489,15 +6481,12 @@ void CCopasiXMLParser::CompartmentGlyphElement::start(const XML_Char *pszName, c
           compartment = mParser.getAttributeValue("compartment", papszAttrs);
 
           mCommon.pCompartmentGlyph = new CLCompartmentGlyph(name);
-#ifdef USE_CRENDER_EXTENSION
           const char * objectRole = mParser.getAttributeValue("objectRole", papszAttrs, false);
 
           if (objectRole != NULL && objectRole[0] != 0)
             {
               mCommon.pCompartmentGlyph->setObjectRole(objectRole);
             }
-
-#endif // USE_CRENDER_EXTENSION
 
           if (compartment && compartment[0])
             {
@@ -6742,15 +6731,12 @@ void CCopasiXMLParser::MetaboliteGlyphElement::start(const XML_Char *pszName, co
           metabolite = mParser.getAttributeValue("metabolite", papszAttrs, false);
 
           mCommon.pMetaboliteGlyph = new CLMetabGlyph(name);
-#ifdef USE_CRENDER_EXTENSION
           const char * objectRole = mParser.getAttributeValue("objectRole", papszAttrs, false);
 
           if (objectRole != NULL && objectRole[0] != 0)
             {
               mCommon.pMetaboliteGlyph->setObjectRole(objectRole);
             }
-
-#endif // USE_CRENDER_EXTENSION
 
           if (metabolite && metabolite[0])
             {
@@ -6989,15 +6975,12 @@ void CCopasiXMLParser::MetaboliteReferenceGlyphElement::start(const XML_Char *ps
           role = mParser.getAttributeValue("role", papszAttrs);
 
           mCommon.pMetaboliteReferenceGlyph = new CLMetabReferenceGlyph(name);
-#ifdef USE_CRENDER_EXTENSION
           const char * objectRole = mParser.getAttributeValue("objectRole", papszAttrs, false);
 
           if (objectRole != NULL && objectRole[0] != 0)
             {
               mCommon.pMetaboliteReferenceGlyph->setObjectRole(objectRole);
             }
-
-#endif // USE_CRENDER_EXTENSION
 
           CLMetabGlyph * pMetabGlyph = dynamic_cast< CLMetabGlyph * >(mCommon.KeyMap.get(metaboliteGlyph));
 
@@ -7252,15 +7235,12 @@ void CCopasiXMLParser::ReactionGlyphElement::start(const XML_Char *pszName, cons
           reaction = mParser.getAttributeValue("reaction", papszAttrs);
 
           mCommon.pReactionGlyph = new CLReactionGlyph(name);
-#ifdef USE_CRENDER_EXTENSION
           const char * objectRole = mParser.getAttributeValue("objectRole", papszAttrs, false);
 
           if (objectRole != NULL && objectRole[0] != 0)
             {
               mCommon.pReactionGlyph->setObjectRole(objectRole);
             }
-
-#endif // USE_CRENDER_EXTENSION
 
           if (reaction && reaction[0])
             {
@@ -7524,15 +7504,12 @@ void CCopasiXMLParser::TextGlyphElement::start(const XML_Char *pszName, const XM
           text = mParser.getAttributeValue("text", papszAttrs, false);
 
           mCommon.pTextGlyph = new CLTextGlyph(name);
-#ifdef USE_CRENDER_EXTENSION
           const char * objectRole = mParser.getAttributeValue("objectRole", papszAttrs, false);
 
           if (objectRole != NULL && objectRole[0] != 0)
             {
               mCommon.pTextGlyph->setObjectRole(objectRole);
             }
-
-#endif // USE_CRENDER_EXTENSION
 
           CLGraphicalObject * pGO = dynamic_cast<CLGraphicalObject *>(mCommon.KeyMap.get(graphicalObject));
 
@@ -7785,7 +7762,6 @@ void CCopasiXMLParser::AdditionalGOElement::start(const XML_Char *pszName, const
           name = mParser.getAttributeValue("name", papszAttrs);
 
           mCommon.pGeneralGlyph = new CLGeneralGlyph(name);
-#ifdef USE_CRENDER_EXTENSION
           const char * objectRole = mParser.getAttributeValue("objectRole", papszAttrs, false);
 
           if (objectRole != NULL && objectRole[0] != 0)
@@ -7793,7 +7769,6 @@ void CCopasiXMLParser::AdditionalGOElement::start(const XML_Char *pszName, const
               mCommon.pGeneralGlyph->setObjectRole(objectRole);
             }
 
-#endif // USE_CRENDER_EXTENSION
           mCommon.pCurrentLayout->addGeneralGlyph(mCommon.pGeneralGlyph);
           addFix(key, mCommon.pGeneralGlyph);
         }
@@ -8090,8 +8065,6 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
 
         break;
 
-#ifdef USE_CRENDER_EXTENSION
-
       case ListOfLocalRenderInformation:
 
         if (!strcmp(pszName, "ListOfRenderInformation"))
@@ -8101,7 +8074,6 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
           }
 
         break;
-#endif /* USE_CRENDER_EXTENSION */
 
       default:
         mCurrentElement = UNKNOWN_ELEMENT;
@@ -8196,8 +8168,6 @@ void CCopasiXMLParser::LayoutElement::end(const XML_Char *pszName)
             deleteCurrentHandler();
             break;
 
-#ifdef USE_CRENDER_EXTENSION
-
           case ListOfLocalRenderInformation:
 
             if (strcmp(pszName, "ListOfRenderInformation"))
@@ -8206,7 +8176,6 @@ void CCopasiXMLParser::LayoutElement::end(const XML_Char *pszName)
 
             deleteCurrentHandler();
             break;
-#endif /* USE_CRENDER_EXTENSION */
 
           case UNKNOWN_ELEMENT:
             mCurrentElement = mLastKnownElement;
@@ -8268,7 +8237,6 @@ void CCopasiXMLParser::ListOfLayoutsElement::start(const XML_Char * pszName,
           }
 
         break;
-#ifdef USE_CRENDER_EXTENSION
 
       case ListOfGlobalRenderInformation:
 
@@ -8279,7 +8247,6 @@ void CCopasiXMLParser::ListOfLayoutsElement::start(const XML_Char * pszName,
           }
 
         break;
-#endif /* USE_CRENDER_EXTENSION */
 
       default:
         mLastKnownElement = mCurrentElement - 1;
@@ -8337,7 +8304,6 @@ void CCopasiXMLParser::ListOfLayoutsElement::end(const XML_Char * pszName)
         deleteCurrentHandler();
 
         break;
-#ifdef USE_CRENDER_EXTENSION
 
       case ListOfGlobalRenderInformation:
 
@@ -8350,7 +8316,6 @@ void CCopasiXMLParser::ListOfLayoutsElement::end(const XML_Char * pszName)
 
         deleteCurrentHandler();
         break;
-#endif /* USE_CRENDER_EXTENSION */
 
       case UNKNOWN_ELEMENT:
         mCurrentElement = mLastKnownElement;
@@ -10970,8 +10935,6 @@ void CCopasiXMLParser::setDatamodel(CCopasiDataModel* pDataModel)
 {
   this->mCommon.pDataModel = pDataModel;
 }
-
-#ifdef USE_CRENDER_EXTENSION
 
 // ListOfGlobalRenderInformation
 
@@ -14577,8 +14540,6 @@ void CCopasiXMLParser::BoundingBoxElement::end(const XML_Char * pszName)
   return;
 }
 
-#endif /* USE_CRENDER_EXTENSION */
-
 SCopasiXMLParserCommon::SCopasiXMLParserCommon():
   pVersion(NULL),
   pModel(NULL),
@@ -14622,7 +14583,6 @@ SCopasiXMLParserCommon::SCopasiXMLParserCommon():
   pCurve(NULL),
   pLineSegment(NULL),
   pMetaboliteReferenceGlyph(NULL),
-#ifdef USE_CRENDER_EXTENSION
   pRenderInformation(NULL),
   pGradient(NULL),
   pLineEnding(NULL),
@@ -14630,7 +14590,6 @@ SCopasiXMLParserCommon::SCopasiXMLParserCommon():
   pGroup(NULL),
   pText(NULL),
   pListOfCurveElements(NULL),
-#endif /* USE_CRENDER_EXTENSION */
   mParameterGroupLevel(0),
   taskReferenceMap(),
   reportReferenceMap(),

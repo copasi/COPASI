@@ -318,9 +318,6 @@ void CQAnimationWindow::init()
   viewMenu->addSeparator();
   viewMenu->addAction(pParameterWindow->toggleViewAction());
   toggleUI(false);
-
-  actionAuto_Layout->setEnabled(false);
-  actionRandomize_Layout->setEnabled(false);
 }
 
 void CQAnimationWindow::slotExportImage()

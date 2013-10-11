@@ -391,9 +391,7 @@ void CQGLLayoutPainter::calculateAndAssignBounds(CLayout* pLayout)
   CLPoint differenceToOrigin(
     -mMinX,
     -mMinY
-#ifdef USE_CRENDER_EXTENSION
     , -bb.getPosition().getZ()
-#endif
   );
   pLayout->moveBy(differenceToOrigin);
 

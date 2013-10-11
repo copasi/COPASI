@@ -54,8 +54,6 @@
 #include "layout/CListOfLayouts.h"
 #include "parameterFitting/CFitTask.h"
 
-#ifdef USE_CRENDER_EXTENSION
-
 #include "copasi/layout/CLLocalRenderInformation.h"
 #include "copasi/layout/CLGlobalRenderInformation.h"
 #include "copasi/layout/CLRenderInformationBase.h"
@@ -80,8 +78,6 @@
 #include "copasi/layout/CLPolygon.h"
 #include "copasi/layout/CLGradientStop.h"
 #include "copasi/layout/CLLineEnding.h"
-
-#endif /* USE_CRENDER_EXTENSION */
 
 // class CCopasiTask;
 // class CCopasiReport;
@@ -1494,14 +1490,11 @@ bool CCopasiXML::saveLayoutList()
                   Attributes.add("metabolite", "");
                 }
 
-#ifdef USE_CRENDER_EXTENSION
-
               if (cg->getObjectRole().find_first_not_of(" \t\r\n") != std::string::npos)
                 {
                   Attributes.add("objectRole", cg->getObjectRole());
                 }
 
-#endif // USE_CRENDER_EXTENSION
               startSaveElement("CompartmentGlyph", Attributes);
 
               saveBoundingBox(cg->getBoundingBox());
@@ -1547,14 +1540,11 @@ bool CCopasiXML::saveLayoutList()
                   Attributes.add("metabolite", "");
                 }
 
-#ifdef USE_CRENDER_EXTENSION
-
               if (cg->getObjectRole().find_first_not_of(" \t\r\n") != std::string::npos)
                 {
                   Attributes.add("objectRole", cg->getObjectRole());
                 }
 
-#endif // USE_CRENDER_EXTENSION
               startSaveElement("MetaboliteGlyph", Attributes);
 
               saveBoundingBox(cg->getBoundingBox());
@@ -1596,14 +1586,11 @@ bool CCopasiXML::saveLayoutList()
                     }
                 }
 
-#ifdef USE_CRENDER_EXTENSION
-
               if (cg->getObjectRole().find_first_not_of(" \t\r\n") != std::string::npos)
                 {
                   Attributes.add("objectRole", cg->getObjectRole());
                 }
 
-#endif // USE_CRENDER_EXTENSION
               startSaveElement("ReactionGlyph", Attributes);
 
               if (cg->getCurve().getNumCurveSegments() == 0)
@@ -1624,14 +1611,12 @@ bool CCopasiXML::saveLayoutList()
                   Attributes.add("metaboliteGlyph", mrg->getMetabGlyphKey());
                   //Attributes.add("metaboliteReference", mrg->getXXX());
                   Attributes.add("role", CLMetabReferenceGlyph::XMLRole[mrg->getRole()]);
-#ifdef USE_CRENDER_EXTENSION
 
                   if (mrg->getObjectRole().find_first_not_of(" \t\r\n") != std::string::npos)
                     {
                       Attributes.add("objectRole", mrg->getObjectRole());
                     }
 
-#endif // USE_CRENDER_EXTENSION
                   startSaveElement("MetaboliteReferenceGlyph", Attributes);
 
                   if (mrg->getCurve().getNumCurveSegments() == 0)
@@ -1698,14 +1683,10 @@ bool CCopasiXML::saveLayoutList()
                         }
                     }
 
-#ifdef USE_CRENDER_EXTENSION
-
                   if (cg->getObjectRole().find_first_not_of(" \t\r\n") != std::string::npos)
                     {
                       Attributes.add("objectRole", cg->getObjectRole());
                     }
-
-#endif // USE_CRENDER_EXTENSION
 
                   startSaveElement("TextGlyph", Attributes);
 
@@ -1751,14 +1732,11 @@ bool CCopasiXML::saveLayoutList()
                     }*/
                 }
 
-#ifdef USE_CRENDER_EXTENSION
-
               if (cg->getObjectRole().find_first_not_of(" \t\r\n") != std::string::npos)
                 {
                   Attributes.add("objectRole", cg->getObjectRole());
                 }
 
-#endif // USE_CRENDER_EXTENSION
               startSaveElement("AdditionalGraphicalObject", Attributes);
 
               //if (cg->getCurve().getNumCurveSegments() == 0)
@@ -1767,37 +1745,6 @@ bool CCopasiXML::saveLayoutList()
               //  saveCurve(cg->getCurve());
 
               // reference glyphs
-//              startSaveElement("ListOfReferenceGlyphs");
-//              size_t k, kmax = cg->getListOfReferenceGlyphs().size();
-//
-//              for (k = 0; k < kmax; ++k)
-//                {
-//                  CLReferenceGlyph * mrg = cg->getListOfReferenceGlyphs()[k];
-//                  Attributes.erase();
-//                  Attributes.add("key", mrg->getKey());
-//                  Attributes.add("name", mrg->getObjectName());
-//                  Attributes.add("glyph", mrg->getTargetGlyphKey());
-//                  Attributes.add("role", mrg->getRole());
-//                  //Attributes.add("role", mrg->getRoleStr()); TODO!
-//#ifdef USE_CRENDER_EXTENSION
-//
-//                  if (mrg->getObjectRole().find_first_not_of(" \t\r\n") != std::string::npos)
-//                    {
-//                      Attributes.add("objectRole", mrg->getObjectRole());
-//}
-//
-//#endif // USE_CRENDER_EXTENSION
-//                  startSaveElement("ReferenceGlyph", Attributes);
-//
-//                  if (mrg->getCurve().getNumCurveSegments() == 0)
-//                    saveBoundingBox(mrg->getBoundingBox());
-//                  else
-//                    saveCurve(mrg->getCurve());
-//
-//                  endSaveElement("ReferenceGlyph");
-//}
-//
-//              endSaveElement("ListOfReferenceGlyphs");
 
               endSaveElement("AdditionalGraphicalObject");
             }
@@ -1805,19 +1752,14 @@ bool CCopasiXML::saveLayoutList()
           endSaveElement("ListOfAdditionalGraphicalObjects");
         }
 
-#ifdef USE_CRENDER_EXTENSION
-
       // save the local render information
       if (pLayout->getListOfLocalRenderInformationObjects().size() > 0)
         {
           saveListOfLocalRenderInformation(pLayout->getListOfLocalRenderInformationObjects());
         }
 
-#endif /* USE_CRENDER_EXTENSION */
       endSaveElement("Layout");
     }
-
-#ifdef USE_CRENDER_EXTENSION
 
   // save the global render information list
   if (mpLayoutList->getListOfGlobalRenderInformationObjects().size() > 0)
@@ -1825,7 +1767,6 @@ bool CCopasiXML::saveLayoutList()
       saveListOfGlobalRenderInformation(mpLayoutList->getListOfGlobalRenderInformationObjects());
     }
 
-#endif /* USE_CRENDER_EXTENSION */
   endSaveElement("ListOfLayouts");
 
   return success;
@@ -1929,7 +1870,7 @@ bool CCopasiXML::buildFunctionList()
   bool success = true;
 
   CCopasiVectorN< CFunction > * pFunctionList
-    = new CCopasiVectorN< CFunction >;
+  = new CCopasiVectorN< CFunction >;
 
   *pFunctionList = CCopasiRootContainer::getFunctionList()->getUsedFunctions(this->mpDataModel->getModel());
 
@@ -1954,8 +1895,6 @@ void CCopasiXML::fixBuild55()
 
   return;
 }
-
-#ifdef USE_CRENDER_EXTENSION
 
 /**
  * Saves the list of global render information objects.
@@ -2805,5 +2744,3 @@ void CCopasiXML::saveRenderPoint(const CLRenderPoint& point)
 
   saveElement("Element", attributes);
 }
-
-#endif /* USE_CRENDER_EXTENSION */

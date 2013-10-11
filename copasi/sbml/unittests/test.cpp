@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test.cpp,v $
-//   $Revision: 1.38 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/12/24 11:14:47 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -114,9 +106,7 @@
 #include "test000094.h"
 #include "test000095.h"
 #include "test000096.h"
-#ifdef USE_CRENDER_EXTENSION
 #include "test000097.h"
-#endif // USE_CRENDER_EXTENSION
 #include "test000098.h"
 #include "test000099.h"
 #include "test000100.h"
@@ -226,9 +216,7 @@ int main(int /*argc*/, char ** /*argv*/)
   runner.addTest(test000094::suite());
   runner.addTest(test000095::suite());
   runner.addTest(test000096::suite());
-#ifdef USE_CRENDER_EXTENSION
   runner.addTest(test000097::suite());
-#endif // USE_CRENDER_EXTENSION
   runner.addTest(test000098::suite());
   runner.addTest(test000099::suite());
   runner.addTest(test000100::suite());

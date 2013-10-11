@@ -46,8 +46,6 @@ class CCopasiParameterGroup;
 class CRegisteredObjectName;
 class CCopasiDataModel;
 
-#ifdef USE_CRENDER_EXTENSION
-
 class CLLocalRenderInformation;
 class CLGlobalRenderInformation;
 class CLRenderInformationBase;
@@ -73,8 +71,6 @@ class CLPolygon;
 class CLGradientStop;
 class CLLineEnding;
 class CLStyle;
-
-#endif /* USE_CRENDER_EXTENSION */
 
 class CCopasiXML : public CCopasiXMLInterface
 {
@@ -377,8 +373,6 @@ private:
    */
   void fixBuild55();
 
-#ifdef USE_CRENDER_EXTENSION
-
   /**
    * Saves the list of global render information objects.
    */
@@ -543,8 +537,6 @@ private:
    * saves a single render point element.
    */
   void saveRenderPoint(const CLRenderPoint& point);
-
-#endif /* USE_CRENDER_EXTENSION */
 
   // Attributes
 

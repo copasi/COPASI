@@ -13,10 +13,7 @@
 // All rights reserved.
 
 #define USE_LAYOUT 1
-
-#ifdef USE_CRENDER_EXTENSION
 #define USE_RENDER 1
-#endif // USE_CRENDER_EXTENSION
 
 #include "iostream"
 #include "sbml/packages/layout/sbml/Layout.h"
@@ -49,9 +46,7 @@ CLayout::CLayout(const std::string & name,
     mvReactions("ListOfReactionGlyphs", this),
     mvLabels("ListOfTextGlyphs", this),
     mvGraphicalObjects("ListOfGraphicalObjects", this)
-#ifdef USE_CRENDER_EXTENSION
     , mvLocalRenderInformationObjects("ListOfLocalRenderInformationObjects", this)
-#endif /* USE_CRENDER_EXTENSION */
 {}
 
 CLayout::CLayout(const CLayout & src,
@@ -65,18 +60,7 @@ CLayout::CLayout(const CLayout & src,
     mvReactions("ListOfReactionGlyphs", this),
     mvLabels("ListOfTextGlyphs", this),
     mvGraphicalObjects("ListOfGraphicalObjects", this)
-#ifdef USE_CRENDER_EXTENSION
     , mvLocalRenderInformationObjects(src.mvLocalRenderInformationObjects, this)
-#endif /* USE_CRENDER_EXTENSION */
-
-//    mvCompartments(src.mvCompartments, this),
-//    mvMetabs(src.mvMetabs, this),
-//    mvReactions(src.mvReactions, this),
-//    mvLabels(src.mvLabels, this),
-//    mvGraphicalObjects(src.mvGraphicalObjects, this)
-//#ifdef USE_CRENDER_EXTENSION
-//    , mvLocalRenderInformationObjects(src.mvLocalRenderInformationObjects, this)
-//#endif /* USE_CRENDER_EXTENSION */
 {
   //TODO references from one glyph to another have to be reconstructed after
   //     copying. This applies to Labels and species reference glyphs
@@ -116,9 +100,9 @@ CLayout::CLayout(const CLayout & src,
       for (size_t i = 0; i < r->getListOfMetabReferenceGlyphs().size(); ++i)
         {
           forward[(*reactIt)->getListOfMetabReferenceGlyphs()[i]->getKey()]
-            = r->getListOfMetabReferenceGlyphs()[i]->getKey();
+          = r->getListOfMetabReferenceGlyphs()[i]->getKey();
           reverse[r->getListOfMetabReferenceGlyphs()[i]->getKey()]
-            = (*reactIt)->getListOfMetabReferenceGlyphs()[i]->getKey();
+          = (*reactIt)->getListOfMetabReferenceGlyphs()[i]->getKey();
         }
     }
 
@@ -144,17 +128,17 @@ CLayout::CLayout(const CLayout & src,
       for (size_t i = 0; i < general->getListOfReferenceGlyphs().size(); ++i)
         {
           forward[(*generalIt)->getListOfReferenceGlyphs()[i]->getKey()]
-            = general->getListOfReferenceGlyphs()[i]->getKey();
+          = general->getListOfReferenceGlyphs()[i]->getKey();
           reverse[general->getListOfReferenceGlyphs()[i]->getKey()]
-            = (*generalIt)->getListOfReferenceGlyphs()[i]->getKey();
+          = (*generalIt)->getListOfReferenceGlyphs()[i]->getKey();
         }
 
       for (size_t i = 0; i < general->getListOfSubglyphs().size(); ++i)
         {
           forward[(*generalIt)->getListOfSubglyphs()[i]->getKey()]
-            = general->getListOfSubglyphs()[i]->getKey();
+          = general->getListOfSubglyphs()[i]->getKey();
           reverse[general->getListOfSubglyphs()[i]->getKey()]
-            = (*generalIt)->getListOfSubglyphs()[i]->getKey();
+          = (*generalIt)->getListOfSubglyphs()[i]->getKey();
         }
     }
 
@@ -241,9 +225,7 @@ CLayout::CLayout(const Layout & sbml,
     mvReactions("ListOfReactionGlyphs", this),
     mvLabels("ListOfTextGlyphs", this),
     mvGraphicalObjects("ListOfGraphicalObjects", this)
-#ifdef USE_CRENDER_EXTENSION
     , mvLocalRenderInformationObjects("ListOfLocalRenderInformationObjects", this)
-#endif /* USE_CRENDER_EXTENSION */
 {
   //add the copasi key to the map
   layoutmap[sbml.getId()] = mKey;
@@ -409,12 +391,10 @@ void CLayout::writeDotEdge(std::ostream & os, const std::string & id1,
 
 void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
                            std::map<std::string, const SBase*>& sbmlIDs
-#ifdef USE_CRENDER_EXTENSION
                            , const std::map<std::string, std::string>& globalKeyToIdMap
                            //,const std::map<std::string,std::map<std::string,std::string> >& globalColorKeyToIdMapMap
                            //,const std::map<std::string,std::map<std::string,std::string> >& globalGradientKeyToIdMapMap
                            //,const std::map<std::string,std::map<std::string,std::string> >& globalLineEndingKeyToIdMapMap
-#endif /* USE_CRENDER_EXTENSION */
                           ) const
 {
   if (!layout) return;
@@ -597,7 +577,6 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
         }
     }
 
-#ifdef USE_CRENDER_EXTENSION
   // export the local render information
   imax = this->mvLocalRenderInformationObjects.size();
   LocalRenderInformation* pLRI = NULL;
@@ -662,47 +641,8 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
       if (rlolPlugin != NULL)
         rlolPlugin->getListOfLocalRenderInformation()->appendAndOwn(pLRI);
     }
-
-  // we need to add the ids from the global render information object to the keyToIdMap
-  SBMLDocumentLoader::combineMaps(globalKeyToIdMap, keyToIdMap);
-  // fix the references
-  /*
-  SBMLDocumentLoader::convertRenderInformationReferencesKeys<LocalRenderInformation>(*layout->getListOfLocalRenderInformation(),keyToIdMap);
-  // fix the color ids, gradient ids and line ending ids.
-  std::map<std::string,std::map<std::string,std::string> >::const_iterator mapPos;
-  std::map<std::string,std::map<std::string,std::string> > expandedColorKeyToIdMapMap, expandedGradientKeyToIdMapMap, expandedLineEndingKeyToIdMapMap;
-  for(i=0;i < imax; ++i)
-  {
-      // a set to check for endless loops
-      std::set<std::string> ids;
-      colorKeyToIdMap.clear();
-      gradientKeyToIdMap.clear();
-      lineEndingKeyToIdMap.clear();
-      pLRI=dynamic_cast<LocalRenderInformation*>(layout->getRenderInformation(i));
-      assert(pLRI != NULL);
-      std::string s=pLRI->getId();
-      // replace this with the expansion code from SBMLDocumentLoader
-      std::set<std::string> chain;
-      SBMLDocumentLoader::expandKeyToIdMaps(pLRI,
-              *(layout->getListOfLocalRenderInformation()),
-              expandedColorKeyToIdMapMap,
-              expandedGradientKeyToIdMapMap,
-              expandedLineEndingKeyToIdMapMap,
-              colorKeyToIdMapMap,
-              gradientKeyToIdMapMap,
-              lineEndingKeyToIdMapMap,
-              chain,
-              globalColorKeyToIdMapMap,
-              globalGradientKeyToIdMapMap,
-              globalLineEndingKeyToIdMapMap
-         );
-      SBMLDocumentLoader::convertPropertyKeys<LocalRenderInformation>(pLRI,colorKeyToIdMap,gradientKeyToIdMap,lineEndingKeyToIdMap);
-  }
-  */
-#endif /* USE_CRENDER_EXTENSION */
 }
 
-#ifdef USE_CRENDER_EXTENSION
 void CLayout::addLocalRenderInformation(CLLocalRenderInformation * pRenderInfo)
 {
   if (pRenderInfo)
@@ -966,8 +906,6 @@ CLBoundingBox CLayout::calculateBoundingBox() const
   return CLBoundingBox(CLPoint(minX, minY), CLDimensions(maxX - minX, maxY - minY));
 }
 
-#endif /* USE_CRENDER_EXTENSION */
-
 void CLayout::moveBy(const CLPoint &p)
 {
   if (p.isEmpty()) return;
@@ -1021,9 +959,7 @@ void CLayout::calculateAndAssignBounds()
   CLPoint differenceToOrigin(
     -bb.getPosition().getX(),
     -bb.getPosition().getY()
-#ifdef USE_CRENDER_EXTENSION
     , -bb.getPosition().getZ()
-#endif
   );
   moveBy(differenceToOrigin);
   setDimensions(bb.getDimensions());

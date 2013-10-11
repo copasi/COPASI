@@ -17,11 +17,7 @@
 
 #include <QtCore/QObject>
 
-#ifndef USE_CRENDER_EXTENSION
-#include <QtGui/QMainWindow>
-#else
 #include <QtGui/QFrame>
-#endif // USE_CRENDER_EXTENSION
 #include <QtCore/QString>
 #include <QtGui/QIcon>
 
@@ -52,27 +48,15 @@ class CLayout;
 class CQPlayerControlWidget;
 class QCloseEvent;
 
-#ifdef USE_CRENDER_EXTENSION
 class CQLayoutMainWindow : public QFrame
-#else
-class CQLayoutMainWindow : public QMainWindow
-#endif // USE_CRENDER_EXTENSION
 {
 
   Q_OBJECT      // must include this if you use Qt signals/slots
 
-#ifndef USE_CRENDER_EXTENSION
-signals:
-  void signal_close(const CQLayoutMainWindow* pWindow);
-#endif // USE_CRENDER_EXTENSION
 public:
-#ifdef USE_CRENDER_EXTENSION
   CQLayoutMainWindow(QWidget* pParent);
   void setLayout(CLayout* pLayout);
   CQPlayerControlWidget* getControlWidget();
-#else
-  CQLayoutMainWindow(CLayout* pLayout = NULL);
-#endif // USE_CRENDER_EXTENSION
   void setIndividualScaling();
   void setGlobalScaling();
   void setSizeMode();
@@ -103,9 +87,7 @@ public:
   static const double ZOOM_FACTORS[];
 
 protected:
-#ifndef USE_CRENDER_EXTENSION
-  void closeEvent(QCloseEvent *event);
-#endif // USE_CRENDER_EXTENSION
+
 public:
   void setZoomFactor(QString s);
   void setZoomFactor(double zoom);
@@ -122,17 +104,10 @@ private slots:
   void stepForwardAnimation();
   void stepBackwardAnimation();
   void parameterTableValueChanged(int row);
-#ifndef USE_CRENDER_EXTENSION
-  void slotActivated(int);
-  void slotZoomItemActivated(QAction* pAction);
-  void slotZoomIn();
-  void slotZoomOut();
-  void closeApplication();
-#else
+
 // for the new code we need the following slots to be public
 // so that we can use them from the new main window class
 public slots:
-#endif // USE_CRENDER_EXTENSION
   void slotResetView();
 
   /**
@@ -156,10 +131,6 @@ public slots:
   void endOfAnimationReached();
 
 private:
-#ifndef USE_CRENDER_EXTENSION
-  void createActions();
-  void createMenus();
-#endif // USE_CRENDER_EXTENSION
   bool maybeSave();
   QIcon createStartIcon();
   QIcon createStopIcon();

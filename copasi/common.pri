@@ -76,9 +76,6 @@ QMAKE_LFLAGS  += $$(LDFLAGS)
 # for releases
 # DEFINES += USE_SBMLUNIT
 
-# enable this to build support for the render extension
-DEFINES += USE_CRENDER_EXTENSION
-
 # flag to use Svens SBML unit identification framework
 #define USE_SBMLUNIT
 
@@ -240,13 +237,6 @@ contains(BUILD_OS, Darwin) {
   LIBS += -framework QuickTime
   LIBS += -lz
 
-# only needed for the class CLSimpleImageTexturizer which is only
-# needed if we want to create bitmaps from layouts in the backend
-#  contains(DEFINES, USE_CRENDER_EXTENSION){
-#    INCLUDEPATH += /opt/local/include
-#    LIBS += -L/opt/local/lib -lpng
-#    LIBS += -ljpeg
-#  }  
 }
 
 contains(BUILD_OS, WIN32) {
@@ -747,12 +737,6 @@ contains(BUILD_OS, Linux) {
 
     LIBS *= -lGLU
 
-# only needed for the class CLSimpleImageTexturizer which is only
-# needed if we want to create bitmaps from layouts in the backend
-#contains(DEFINES,USE_CRENDER_EXTENSION) {           
-#	LIBS += -lpng
-#       LIBS += -ljpeg
-#}
   }
 }
 

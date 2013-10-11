@@ -763,11 +763,7 @@ void DataModelGUI::importCellDesigner()
                               // the layout map and the id to key map can be empty
                               std::map<std::string, std::string> layoutmap;
                               std::map<std::string, std::string> idToKeyMap;
-#ifdef USE_CRENDER_EXTENSION
                               CLayout* pLayout = SBMLDocumentLoader::createLayout(*cd_importer.getLayout(), modelmap, layoutmap, idToKeyMap);
-#else
-                              CLayout* pLayout = SBMLDocumentLoader::createLayout(*cd_importer.getLayout(), modelmap, layoutmap);
-#endif /* USE_CRENDER_EXTENSION */
 
                               // add the layout to the DataModel
                               if (pLayout != NULL && pDataModel->getListOfLayouts() != NULL)

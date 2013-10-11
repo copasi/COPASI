@@ -23,9 +23,7 @@
 #include "CLGlyphs.h"
 #include "CLReactionGlyph.h"
 
-#ifdef USE_CRENDER_EXTENSION
 #include "copasi/layout/CLLocalRenderInformation.h"
-#endif /* USE_CRENDER_EXTENSION */
 
 class Layout;
 
@@ -46,9 +44,7 @@ protected:
   CCopasiVector<CLReactionGlyph> mvReactions;
   CCopasiVector<CLTextGlyph> mvLabels;
   CCopasiVector<CLGeneralGlyph> mvGraphicalObjects;
-#ifdef USE_CRENDER_EXTENSION
   CCopasiVector<CLLocalRenderInformation> mvLocalRenderInformationObjects;
-#endif /* USE_CRENDER_EXTENSION */
 
 public:
 
@@ -145,7 +141,6 @@ public:
    */
   void addGeneralGlyph(CLGeneralGlyph * glyph);
 
-#ifdef USE_CRENDER_EXTENSION
   //*******************
 
   /**
@@ -177,7 +172,6 @@ public:
    */
   void addLocalRenderInformation(CLLocalRenderInformation* pRenderInfo);
 
-#endif /* USE_CRENDER_EXTENSION */
   /**
    * This methods calculates the bounding box of the layout.
    * It traverses all layout objects and looks for the minimal and maximal x
@@ -208,12 +202,7 @@ public:
    */
   void exportToSBML(Layout * layout, const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
                     std::map<std::string, const SBase*>& sbmlIDs
-#ifdef USE_CRENDER_EXTENSION
                     , const std::map<std::string, std::string>& globalKeyToIdMap
-                    //    ,const std::map<std::string,std::map<std::string,std::string> >& globalColorKeyToIdMapMap
-                    //    ,const std::map<std::string,std::map<std::string,std::string> >& globalGradientKeyToIdMapMap
-                    //    ,const std::map<std::string,std::map<std::string,std::string> >& globalLineEndingKeyToIdMapMap
-#endif /* USE_CRENDER_EXTENSION */
                    ) const;
 
 protected:

@@ -38,7 +38,6 @@ HEADERS += CAbstractLayoutInterface.h
 HEADERS += CCopasiSpringLayout.h
 HEADERS += CLayoutEngine.h
 
-contains(DEFINES,USE_CRENDER_EXTENSION) {           
 HEADERS += CLColorDefinition.h \
            CLDefaultStyles.h \
            CLEllipse.h \
@@ -76,7 +75,6 @@ HEADERS += CLColorDefinition.h \
            CLTransformation2D.h \
            CLUnresolvedReferenceException.h \
            utility_classes.h
-}
 
 SOURCES += CLayout.cpp \
            CLayoutState.cpp \
@@ -93,7 +91,6 @@ SOURCES += CAbstractLayoutInterface.cpp
 SOURCES += CCopasiSpringLayout.cpp
 SOURCES += CLayoutEngine.cpp
 
-contains(DEFINES,USE_CRENDER_EXTENSION) {
 SOURCES += CLColorDefinition.cpp \
            CLDefaultStyles.cpp \
            CLEllipse.cpp \
@@ -131,6 +128,5 @@ SOURCES += CLColorDefinition.cpp \
            CLTransformation2D.cpp \
            CLUnresolvedReferenceException.cpp \
            utility_classes.cpp
-}
 
 include(../srcDistribution.pri)

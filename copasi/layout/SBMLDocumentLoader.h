@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/SBMLDocumentLoader.h,v $
-//   $Revision: 1.11 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/11/09 15:04:58 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -27,10 +19,8 @@
 #include <map>
 
 #include "copasi/utilities/CCopasiVector.h"
-#ifdef USE_CRENDER_EXTENSION
 #include "CLLocalStyle.h"
 #include "CLGradientBase.h"
-#endif // USE_CRENDER_EXTENSION
 
 #include <sbml/ListOf.h>
 
@@ -39,20 +29,16 @@ class CCopasiContainer;
 class CListOfLayouts;
 class CLayout;
 
-#ifdef USE_CRENDER_EXTENSION
 class CLTransformation2D;
 class CLRenderInformationBase;
 class CLTransformation2D;
-#endif // USE_CRENDER_EXTENSION
 
 class Layout;
 class SBase;
 class TextGlyph;
 
-#ifdef USE_CRENDER_EXTENSION
 class Transformation2D;
 class RenderInformationBase;
-#endif // USE_CRENDER_EXTENSION
 
 class SBMLDocumentLoader
 {
@@ -67,15 +53,9 @@ public:
   static CLayout * createLayout(const Layout & sbmlLayout,
                                 const std::map<std::string, std::string> & modelmap,
                                 std::map<std::string, std::string> & layoutmap
-#ifdef USE_CRENDER_EXTENSION
                                 , const std::map<std::string, std::string>& globalIdToKeyMap
-                                //,const std::map<std::string,std::map<std::string,std::string> >& globalColorIdToKeyMapMap
-                                //,const std::map<std::string,std::map<std::string,std::string> >& globalGradientIdToKeyMapMap
-                                //,const std::map<std::string,std::map<std::string,std::string> >& globalLineEndingIdToKeyMapMap
-#endif /* USE_CRENDER_EXTENSION */
                                 , const CCopasiContainer * pParent = NULL
                                );
-
 
 protected:
 
@@ -85,7 +65,6 @@ protected:
   static void postprocessTextGlyph(const TextGlyph & sbml,
                                    const std::map<std::string, std::string> & layoutmap);
 
-#ifdef USE_CRENDER_EXTENSION
 public:
   /**
    * converts the sbml id for render render information objects into the corresponding copasi key
@@ -240,8 +219,6 @@ public:
           const std::map<std::string,std::map<std::string,std::string> >& expandedGlobalLineEndingKeyToIdMapMap
           );
    */
-
-#endif /* USE_CRENDER_EXTENSION */
 };
 
 #endif /*SBMLDOCUMENTLOADER_H_*/

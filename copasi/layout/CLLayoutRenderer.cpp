@@ -5986,9 +5986,7 @@ bool CLLayoutRenderer::is_curve_segment_visible(const CLLineSegment& segment, do
               CLLineSegment temp_ls;
               temp_ls.setIsBezier(false);
               CLPoint p(pData[0], pData[1]
-#ifdef USE_CRENDER_EXTENSION
                         , pData[2]
-#endif // USE_CRENDER_EXTENSION
                        );
               temp_ls.setStart(p);
 
@@ -5996,9 +5994,7 @@ bool CLLayoutRenderer::is_curve_segment_visible(const CLLineSegment& segment, do
                 {
                   p.setX(pData[3 * i]);
                   p.setY(pData[3 * i + 1]);
-#ifdef USE_CRENDER_EXTENSION
                   p.setZ(pData[3 * i + 2]);
-#endif // USE_CRENDER_EXTENSION
                   temp_ls.setEnd(p);
 
                   if (CLLayoutRenderer::is_curve_segment_visible(temp_ls, lx, ly, rx, ry, partial))

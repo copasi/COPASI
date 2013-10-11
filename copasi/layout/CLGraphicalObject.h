@@ -46,10 +46,8 @@ protected:
    */
   std::string mModelObjectKey;
 
-#ifdef USE_CRENDER_EXTENSION
   // attribute to store the object role
   std::string mObjectRole;
-#endif // USE_CRENDER_EXTENSION
 
   CLBoundingBox mBBox;
 
@@ -133,7 +131,6 @@ public:
                             const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
                             std::map<std::string, const SBase*>& sbmlIDs) const;
 
-#ifdef USE_CRENDER_EXTENSION
   /**
    * Method to set the role of a graphical object.
    */
@@ -143,8 +140,6 @@ public:
    * Method to read the object role of an object.
    */
   const std::string& getObjectRole() const;
-
-#endif // USE_CRENDER_EXTENSION
 
   /**
     * insert operator

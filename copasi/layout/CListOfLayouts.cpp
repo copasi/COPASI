@@ -15,12 +15,10 @@
 #include "copasi.h"
 
 #define USE_LAYOUT 1
-
-#ifdef USE_CRENDER_EXTENSION
 #define USE_RENDER 1
+
 #include <sbml/packages/render/extension/RenderListOfLayoutsPlugin.h>
 #include <sbml/packages/render/sbml/GlobalRenderInformation.h>
-#endif // USE_CRENDER_EXTENSION
 
 #include <sbml/ListOf.h>
 #include <sbml/packages/layout/extension/LayoutExtension.h>
@@ -60,9 +58,7 @@ CListOfLayouts::CListOfLayouts(const std::string & name,
                                const CCopasiContainer * pParent):
   CCopasiVector<CLayout>(name, pParent),
   mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this))
-#ifdef USE_CRENDER_EXTENSION
   , mvGlobalRenderInformationObjects("ListOfGlobalRenderInformationObjects", this)
-#endif /* USE_CRENDER_EXTENSION */
 {}
 
 CListOfLayouts::~CListOfLayouts()
@@ -89,7 +85,6 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<const CCopasiObject*, S
   if (!lol) return;
 
   size_t i, imax;
-#ifdef USE_CRENDER_EXTENSION
   // the global render information has to be handled first, because we might need
   // some of the maps for the export of the local render information in the layout
   ListOfLayouts* pLoL = dynamic_cast<ListOfLayouts*>(lol);
@@ -142,32 +137,7 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<const CCopasiObject*, S
   // we need to pass the ListOfGlobalRenderInformation objects as the first argument
   SBMLDocumentLoader::convertRenderInformationReferencesKeys<GlobalRenderInformation>(*(rlolPlugin->getListOfGlobalRenderInformation()), keyToIdMap);
   // fix the color ids, gradient ids and line ending ids.
-  /*
-  std::map<std::string,std::map<std::string,std::string> >::const_iterator mapPos;
-  std::map<std::string,std::map<std::string,std::string> > expandedColorKeyToIdMapMap, expandedGradientKeyToIdMapMap, expandedLineEndingKeyToIdMapMap;
-  std::map<std::string,std::map<std::string,std::string> > tmpMap1,tmpMap2,tmpMap3;
-  for(i=0;i < imax; ++i)
-  {
-      pGRI=dynamic_cast<GlobalRenderInformation*>(pLoL->get(i));
-      assert(pGRI != NULL);
-      std::set<std::string> chain;
-      SBMLDocumentLoader::expandKeyToIdMaps(pGRI,
-              *pLoL,
-              expandedColorKeyToIdMapMap,
-              expandedGradientKeyToIdMapMap,
-              expandedLineEndingKeyToIdMapMap,
-              colorKeyToIdMapMap,
-              gradientKeyToIdMapMap,
-              lineEndingKeyToIdMapMap,
-              chain,
-              tmpMap1,
-              tmpMap2,
-              tmpMap3
-              );
-      SBMLDocumentLoader::convertPropertyKeys<GlobalRenderInformation>(pGRI,expandedColorKeyToIdMapMap[pGRI->getId()],expandedGradientKeyToIdMapMap[pGRI->getId()],expandedLineEndingKeyToIdMapMap[pGRI->getId()]);
-  }
-  */
-#endif /* USE_CRENDER_EXTENSION */
+
   // we will generate sbml ids that are unique within the sbml file (although
   // this may not be strictly necessary for the layouts). Therefore we will keep only
   // one set of IDs:
@@ -216,12 +186,8 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<const CCopasiObject*, S
           pLayout = dynamic_cast<Layout*>(it->second);
         }
 
-#ifdef USE_CRENDER_EXTENSION
       //tmp->exportToSBML(pLayout, copasimodelmap, sbmlIDs,keyToIdMap,colorKeyToIdMapMap,gradientKeyToIdMapMap,lineEndingKeyToIdMapMap);
       tmp->exportToSBML(pLayout, copasimodelmap, sbmlIDs, keyToIdMap);
-#else
-      tmp->exportToSBML(pLayout, copasimodelmap, sbmlIDs);
-#endif /* USE_CRENDER_EXTENSION */
       writtenToSBML.insert(pLayout);
     }
 
@@ -244,7 +210,6 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<const CCopasiObject*, S
     }
 }
 
-#ifdef USE_CRENDER_EXTENSION
 void CListOfLayouts::addGlobalRenderInformation(CLGlobalRenderInformation * pRenderInfo)
 {
   if (pRenderInfo)
@@ -280,5 +245,3 @@ const CLGlobalRenderInformation* CListOfLayouts::getRenderInformation(size_t ind
 
   return NULL;
 }
-
-#endif /* USE_CRENDER_EXTENSION */

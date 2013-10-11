@@ -80,14 +80,12 @@ CONFIG += qt
 
 include(../common.pri)
 
-contains(DEFINES,USE_CRENDER_EXTENSION) {           
 HEADERS += CQFontRenderer.h \
            CQGLLayoutPainter.h \
 	   CQGLLayoutViewer.h \
 	   CQNewMainWindow.h \
            CQQtImageTexturizer.h \
            CQScreenshotOptionsDialog.h
-}
 
 HEADERS += CQAutolayoutWizard.h \
            CQSpringLayoutParameterWindow.h
@@ -96,21 +94,17 @@ HEADERS += CQAutolayoutWizard.h \
 DISTFILES += layout_start.xpm
 DISTFILES += layout_stop.xpm
 
-contains(DEFINES,USE_CRENDER_EXTENSION) {           
 SOURCES += CQFontRenderer.cpp \
            CQGLLayoutPainter.cpp \
 	   CQGLLayoutViewer.cpp \
 	   CQNewMainWindow.cpp \
            CQQtImageTexturizer.cpp \
            CQScreenshotOptionsDialog.cpp
-}
 
 SOURCES += CQAutolayoutWizard.cpp \
            CQSpringLayoutParameterWindow.cpp
 
 
-contains(DEFINES,USE_CRENDER_EXTENSION) {           
 FORMS += CQScreenshotDialog.ui 
-}
 
 include(../srcDistribution.pri)

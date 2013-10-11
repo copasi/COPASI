@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLocalRenderInformation.cpp,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:52 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,10 +6,7 @@
 #include <assert.h>
 
 #define USE_LAYOUT 1
-
-#ifdef USE_CRENDER_EXTENSION
 #define USE_RENDER 1
-#endif // USE_CRENDER_EXTENSION
 
 #include <sbml/packages/render/sbml/LocalRenderInformation.h>
 
@@ -30,7 +19,7 @@
  *  Constructor.
  */
 CLLocalRenderInformation::CLLocalRenderInformation(CCopasiContainer* pParent):
-    CLRenderInformationBase("LocalRenderInformation", pParent)
+  CLRenderInformationBase("LocalRenderInformation", pParent)
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("LocalRenderInformation", this);
 }
@@ -39,8 +28,8 @@ CLLocalRenderInformation::CLLocalRenderInformation(CCopasiContainer* pParent):
  * Copy constructor
  */
 CLLocalRenderInformation::CLLocalRenderInformation(const CLLocalRenderInformation& source, CCopasiContainer* pParent):
-    CLRenderInformationBase(source, pParent),
-    mListOfStyles(source.mListOfStyles, this)
+  CLRenderInformationBase(source, pParent),
+  mListOfStyles(source.mListOfStyles, this)
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("LocalRenderInformation", this);
 }
@@ -55,8 +44,8 @@ CLLocalRenderInformation::CLLocalRenderInformation(const LocalRenderInformation&
             std::map<std::string,std::string>& lineEndingIdToKeyMap,
         */
     CCopasiContainer* pParent):
-    //CLRenderInformationBase(source,"LocalRenderInformation",colorIdToKeyMap,gradientIdToKeyMap,lineEndingIdToKeyMap,pParent)
-    CLRenderInformationBase(source, "LocalRenderInformation", pParent)
+  //CLRenderInformationBase(source,"LocalRenderInformation",colorIdToKeyMap,gradientIdToKeyMap,lineEndingIdToKeyMap,pParent)
+  CLRenderInformationBase(source, "LocalRenderInformation", pParent)
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("LocalRenderInformation", this);
   size_t i, iMax = source.getNumStyles();

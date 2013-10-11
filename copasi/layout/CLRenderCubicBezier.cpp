@@ -1,21 +1,10 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderCubicBezier.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:51 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
+
 #define USE_LAYOUT 1
-
-#ifdef USE_CRENDER_EXTENSION
 #define USE_RENDER 1
-#endif // USE_CRENDER_EXTENSION
-
 
 #include <sbml/packages/render/sbml/RenderCubicBezier.h>
 
@@ -38,12 +27,12 @@ CLRenderCubicBezier::CLRenderCubicBezier(): CLRenderPoint()
  * Creates a CubicBezier with the given points and returns the pointer.
  */
 CLRenderCubicBezier::CLRenderCubicBezier(const CLRelAbsVector& bp1_x, const CLRelAbsVector& bp1_y, const CLRelAbsVector& bp1_z, const CLRelAbsVector& bp2_x, const CLRelAbsVector& bp2_y, const CLRelAbsVector& bp2_z, const CLRelAbsVector& end_x, const CLRelAbsVector& end_y, const CLRelAbsVector& end_z): CLRenderPoint(end_x, end_y, end_z),
-    mBasePoint1_X(bp1_x),
-    mBasePoint1_Y(bp1_y),
-    mBasePoint1_Z(bp1_z),
-    mBasePoint2_X(bp2_x),
-    mBasePoint2_Y(bp2_y),
-    mBasePoint2_Z(bp2_z)
+  mBasePoint1_X(bp1_x),
+  mBasePoint1_Y(bp1_y),
+  mBasePoint1_Z(bp1_z),
+  mBasePoint2_X(bp2_x),
+  mBasePoint2_Y(bp2_y),
+  mBasePoint2_Z(bp2_z)
 {
 }
 
@@ -51,13 +40,13 @@ CLRenderCubicBezier::CLRenderCubicBezier(const CLRelAbsVector& bp1_x, const CLRe
  * Copy constructor.
  */
 CLRenderCubicBezier::CLRenderCubicBezier(const CLRenderCubicBezier& orig):
-    CLRenderPoint(orig),
-    mBasePoint1_X(orig.mBasePoint1_X),
-    mBasePoint1_Y(orig.mBasePoint1_Y),
-    mBasePoint1_Z(orig.mBasePoint1_Z),
-    mBasePoint2_X(orig.mBasePoint2_X),
-    mBasePoint2_Y(orig.mBasePoint2_Y),
-    mBasePoint2_Z(orig.mBasePoint2_Z)
+  CLRenderPoint(orig),
+  mBasePoint1_X(orig.mBasePoint1_X),
+  mBasePoint1_Y(orig.mBasePoint1_Y),
+  mBasePoint1_Z(orig.mBasePoint1_Z),
+  mBasePoint2_X(orig.mBasePoint2_X),
+  mBasePoint2_Y(orig.mBasePoint2_Y),
+  mBasePoint2_Z(orig.mBasePoint2_Z)
 {
 }
 
@@ -65,13 +54,13 @@ CLRenderCubicBezier::CLRenderCubicBezier(const CLRenderCubicBezier& orig):
  * Constructor to generate object from the corresponding SBML object.
  */
 CLRenderCubicBezier::CLRenderCubicBezier(const RenderCubicBezier& source):
-    CLRenderPoint(source),
-    mBasePoint1_X(source.basePoint1_X()),
-    mBasePoint1_Y(source.basePoint1_Y()),
-    mBasePoint1_Z(source.basePoint1_Z()),
-    mBasePoint2_X(source.basePoint2_X()),
-    mBasePoint2_Y(source.basePoint2_Y()),
-    mBasePoint2_Z(source.basePoint2_Z())
+  CLRenderPoint(source),
+  mBasePoint1_X(source.basePoint1_X()),
+  mBasePoint1_Y(source.basePoint1_Y()),
+  mBasePoint1_Z(source.basePoint1_Z()),
+  mBasePoint2_X(source.basePoint2_X()),
+  mBasePoint2_Y(source.basePoint2_Y()),
+  mBasePoint2_Z(source.basePoint2_Z())
 {
 }
 

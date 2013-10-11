@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLineEnding.cpp,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:52 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,10 +7,7 @@
 #include <assert.h>
 
 #define USE_LAYOUT 1
-
-#ifdef USE_CRENDER_EXTENSION
 #define USE_RENDER 1
-#endif // USE_CRENDER_EXTENSION
 
 #include <sbml/packages/render/sbml/LineEnding.h>
 
@@ -31,12 +20,12 @@
  * Constructor.
  */
 CLLineEnding::CLLineEnding(CCopasiContainer* pParent):
-    CLGraphicalPrimitive2D(),
-    CCopasiContainer("LineEnding", pParent),
-    mEnableRotationalMapping(false),
-    mpGroup(NULL),
-    mKey(""),
-    mId("")
+  CLGraphicalPrimitive2D(),
+  CCopasiContainer("LineEnding", pParent),
+  mEnableRotationalMapping(false),
+  mpGroup(NULL),
+  mKey(""),
+  mId("")
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("LineEnding", this);
 }
@@ -45,13 +34,13 @@ CLLineEnding::CLLineEnding(CCopasiContainer* pParent):
  * Copy Constructor.
  */
 CLLineEnding::CLLineEnding(const CLLineEnding& source, CCopasiContainer* pParent):
-    CLGraphicalPrimitive2D(source),
-    CCopasiContainer(source, pParent),
-    mEnableRotationalMapping(source.mEnableRotationalMapping),
-    mBoundingBox(source.mBoundingBox),
-    mpGroup(NULL),
-    mKey(""),
-    mId(source.mId)
+  CLGraphicalPrimitive2D(source),
+  CCopasiContainer(source, pParent),
+  mEnableRotationalMapping(source.mEnableRotationalMapping),
+  mBoundingBox(source.mBoundingBox),
+  mpGroup(NULL),
+  mKey(""),
+  mId(source.mId)
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("LineEnding", this);
 
@@ -65,13 +54,13 @@ CLLineEnding::CLLineEnding(const CLLineEnding& source, CCopasiContainer* pParent
  * Constructor to generate object from the corresponding SBML object.
  */
 CLLineEnding::CLLineEnding(const LineEnding& source, CCopasiContainer* pParent):
-    CLGraphicalPrimitive2D(source),
-    CCopasiContainer("LineEnding", pParent),
-    mEnableRotationalMapping(source.getIsEnabledRotationalMapping()),
-    mBoundingBox(*source.getBoundingBox()),
-    mpGroup(new CLGroup(*source.getGroup(), this)),
-    mKey(""),
-    mId(source.getId())
+  CLGraphicalPrimitive2D(source),
+  CCopasiContainer("LineEnding", pParent),
+  mEnableRotationalMapping(source.getIsEnabledRotationalMapping()),
+  mBoundingBox(*source.getBoundingBox()),
+  mpGroup(new CLGroup(*source.getGroup(), this)),
+  mKey(""),
+  mId(source.getId())
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("LineEnding", this);
 }

@@ -15,10 +15,7 @@
 #include <assert.h>
 
 #define USE_LAYOUT 1
-
-#ifdef USE_CRENDER_EXTENSION
 #define USE_RENDER 1
-#endif // USE_CRENDER_EXTENSION
 
 #include <sbml/ListOf.h>
 #include <sbml/packages/layout/sbml/Layout.h>
@@ -27,10 +24,8 @@
 
 #include <sbml/packages/layout/sbml/SpeciesReferenceGlyph.h>
 #include <sbml/packages/layout/sbml/TextGlyph.h>
-#ifdef USE_CRENDER_EXTENSION
 #include <sbml/packages/render/sbml/Text.h>
 #include <sbml/packages/render/sbml/LocalStyle.h>
-#endif // USE_CRENDER_EXTENSION
 
 #include "copasi.h"
 
@@ -40,11 +35,9 @@
 #include "CLReactionGlyph.h"
 #include "CLGlyphs.h"
 
-#ifdef USE_CRENDER_EXTENSION
 #include "CLRenderCurve.h"
 #include <sbml/packages/render/extension/RenderListOfLayoutsPlugin.h>
 #include <sbml/packages/render/extension/RenderLayoutPlugin.h>
-#endif // USE_CRENDER_EXTENSION
 
 #include "report/CKeyFactory.h"
 #include "copasi/report/CCopasiRootContainer.h"
@@ -56,7 +49,7 @@ void SBMLDocumentLoader::readListOfLayouts(CListOfLayouts & lol,
     const std::map<CCopasiObject*, SBase*> & copasimodelmap)
 {
   unsigned C_INT32 i, iMax;
-#ifdef USE_CRENDER_EXTENSION
+
   // read the global render information
   const ListOfLayouts* pLoL = dynamic_cast<const ListOfLayouts*>(&sbmlList);
   assert(pLoL != NULL);
@@ -102,33 +95,7 @@ void SBMLDocumentLoader::readListOfLayouts(CListOfLayouts & lol,
   // fix the references
   SBMLDocumentLoader::convertRenderInformationReferencesIds<CLGlobalRenderInformation>(lol.getListOfGlobalRenderInformationObjects(), idToKeyMap);
   // fix the color ids, gradient ids and line ending ids.
-  /*
-  std::map<std::string,std::map<std::string,std::string> >::const_iterator mapPos;
-  std::map<std::string,std::map<std::string,std::string> > expandedColorIdToKeyMapMap, expandedGradientIdToKeyMapMap, expandedLineEndingIdToKeyMapMap;
-  std::map<std::string,std::map<std::string,std::string> > tmpMap1,tmpMap2,tmpMap3;
-  for(i=0;i < iMax; ++i)
-  {
-      pGRI=dynamic_cast<CLGlobalRenderInformation*>(lol.getRenderInformation(i));
-      assert(pGRI != NULL);
 
-      std::set<std::string> chain;
-      SBMLDocumentLoader::expandIdToKeyMaps<CLGlobalRenderInformation>(pGRI,
-                         lol.getListOfGlobalRenderInformationObjects(),
-                         expandedColorIdToKeyMapMap,
-                         expandedGradientIdToKeyMapMap,
-                         expandedLineEndingIdToKeyMapMap,
-                         colorIdToKeyMapMap,
-                         gradientIdToKeyMapMap,
-                         lineEndingIdToKeyMapMap,
-                         chain,
-                         tmpMap1,
-                         tmpMap2,
-                         tmpMap3
-                  );
-      SBMLDocumentLoader::convertPropertyKeys<CLGlobalRenderInformation>(pGRI,expandedColorIdToKeyMapMap[pGRI->getKey()],expandedGradientIdToKeyMapMap[pGRI->getKey()],expandedLineEndingIdToKeyMapMap[pGRI->getKey()]);
-  }
-      */
-#endif /* USE_CRENDER_EXTENSION */
   //convert the map as used by the CLxxx constructors
   std::map<std::string, std::string> modelmap;
 
@@ -156,16 +123,12 @@ void SBMLDocumentLoader::readListOfLayouts(CListOfLayouts & lol,
     {
       std::map<std::string, std::string> layoutmap;
       const Layout* tmp
-        = dynamic_cast<const Layout*>(sbmlList.get(i));
+      = dynamic_cast<const Layout*>(sbmlList.get(i));
 
       if (tmp)
         {
-#ifdef USE_CRENDER_EXTENSION
           //CLayout * pLayout = createLayout(*tmp, modelmap, layoutmap,idToKeyMap,expandedColorIdToKeyMapMap,expandedGradientIdToKeyMapMap,expandedLineEndingIdToKeyMapMap);
           CLayout * pLayout = createLayout(*tmp, modelmap, layoutmap, idToKeyMap);
-#else
-          CLayout * pLayout = createLayout(*tmp, modelmap, layoutmap);
-#endif /* USE_CRENDER_EXTENSION */
           lol.addLayout(pLayout, layoutmap);
         }
     }
@@ -179,12 +142,7 @@ void SBMLDocumentLoader::readListOfLayouts(CListOfLayouts & lol,
 CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
     const std::map<std::string, std::string> & modelmap,
     std::map<std::string, std::string> & layoutmap
-#ifdef USE_CRENDER_EXTENSION
     , const std::map<std::string, std::string>& globalIdToKeyMap
-    //,const std::map<std::string,std::map<std::string,std::string> >& globalColorIdToKeyMapMap
-    //,const std::map<std::string,std::map<std::string,std::string> >& globalGradientIdToKeyMapMap
-    //,const std::map<std::string,std::map<std::string,std::string> >& globalLineEndingIdToKeyMapMap
-#endif /* USE_CRENDER_EXTENSION */
     , const CCopasiContainer * pParent
                                           )
 {
@@ -196,7 +154,7 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
   for (i = 0; i < iMax; ++i)
     {
       const CompartmentGlyph* tmp
-        = dynamic_cast<const CompartmentGlyph*>(sbmlLayout.getListOfCompartmentGlyphs()->get(i));
+      = dynamic_cast<const CompartmentGlyph*>(sbmlLayout.getListOfCompartmentGlyphs()->get(i));
 
       if (tmp)
         layout->addCompartmentGlyph(new CLCompartmentGlyph(*tmp, modelmap, layoutmap));
@@ -208,7 +166,7 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
   for (i = 0; i < iMax; ++i)
     {
       const SpeciesGlyph* tmp
-        = dynamic_cast<const SpeciesGlyph*>(sbmlLayout.getListOfSpeciesGlyphs()->get(i));
+      = dynamic_cast<const SpeciesGlyph*>(sbmlLayout.getListOfSpeciesGlyphs()->get(i));
 
       if (tmp)
         layout->addMetaboliteGlyph(new CLMetabGlyph(*tmp, modelmap, layoutmap));
@@ -220,7 +178,7 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
   for (i = 0; i < iMax; ++i)
     {
       const ReactionGlyph* tmp
-        = dynamic_cast<const ReactionGlyph*>(sbmlLayout.getListOfReactionGlyphs()->get(i));
+      = dynamic_cast<const ReactionGlyph*>(sbmlLayout.getListOfReactionGlyphs()->get(i));
 
       if (tmp)
         layout->addReactionGlyph(new CLReactionGlyph(*tmp, modelmap, layoutmap));
@@ -232,7 +190,7 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
   for (i = 0; i < iMax; ++i)
     {
       const TextGlyph* tmp
-        = dynamic_cast<const TextGlyph*>(sbmlLayout.getListOfTextGlyphs()->get(i));
+      = dynamic_cast<const TextGlyph*>(sbmlLayout.getListOfTextGlyphs()->get(i));
 
       if (tmp)
         layout->addTextGlyph(new CLTextGlyph(*tmp, modelmap, layoutmap));
@@ -244,7 +202,7 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
   for (i = 0; i < iMax; ++i)
     {
       const GraphicalObject* graphical
-        = dynamic_cast<const GraphicalObject*>(sbmlLayout.getListOfAdditionalGraphicalObjects()->get(i));
+      = dynamic_cast<const GraphicalObject*>(sbmlLayout.getListOfAdditionalGraphicalObjects()->get(i));
 
       if (graphical)
         layout->addGeneralGlyph(new CLGeneralGlyph(*graphical, modelmap, layoutmap));
@@ -257,13 +215,12 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
   for (i = 0; i < iMax; ++i)
     {
       const TextGlyph* tmp
-        = dynamic_cast<const TextGlyph*>(sbmlLayout.getListOfTextGlyphs()->get(i));
+      = dynamic_cast<const TextGlyph*>(sbmlLayout.getListOfTextGlyphs()->get(i));
 
       if (tmp)
         postprocessTextGlyph(*tmp, layoutmap);
     }
 
-#ifdef USE_CRENDER_EXTENSION
   RenderLayoutPlugin* rlPlugin = (RenderLayoutPlugin*) sbmlLayout.getPlugin("render");
   assert(rlPlugin != NULL);
 
@@ -272,12 +229,6 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
   std::map<std::string, std::string> idToKeyMap;
   CLLocalRenderInformation* pLRI = NULL;
 
-  //std::map<std::string,std::string> colorIdToKeyMap;
-  //std::map<std::string,std::string> gradientIdToKeyMap;
-  //std::map<std::string,std::string> lineEndingIdToKeyMap;
-  //std::map<std::string,std::map<std::string,std::string> > colorIdToKeyMapMap;
-  //std::map<std::string,std::map<std::string,std::string> > gradientIdToKeyMapMap;
-  //std::map<std::string,std::map<std::string,std::string> > lineEndingIdToKeyMapMap;
   for (i = 0; i < iMax; ++i)
     {
       //colorIdToKeyMap.clear();
@@ -314,32 +265,6 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
   assert(idToKeyMap.size() == count);
   SBMLDocumentLoader::convertRenderInformationReferencesIds<CLLocalRenderInformation>(layout->getListOfLocalRenderInformationObjects(), idToKeyMap);
   // fix the color ids, gradient ids and line ending ids.
-  /*
-  std::map<std::string,std::map<std::string,std::string> >::const_iterator mapPos;
-  std::map<std::string,std::map<std::string,std::string> > expandedColorIdToKeyMapMap, expandedGradientIdToKeyMapMap, expandedLineEndingIdToKeyMapMap;
-  for(i=0;i < iMax; ++i)
-  {
-      pLRI=dynamic_cast<CLLocalRenderInformation*>(layout->getRenderInformation(i));
-      assert(pLRI != NULL);
-
-      std::set<std::string> chain;
-      SBMLDocumentLoader::expandIdToKeyMaps<CLLocalRenderInformation>(pLRI,
-                         layout->getListOfLocalRenderInformationObjects(),
-                         expandedColorIdToKeyMapMap,
-                         expandedGradientIdToKeyMapMap,
-                         expandedLineEndingIdToKeyMapMap,
-                         colorIdToKeyMapMap,
-                         gradientIdToKeyMapMap,
-                         lineEndingIdToKeyMapMap,
-                         chain,
-                         globalColorIdToKeyMapMap,
-                         globalGradientIdToKeyMapMap,
-                         globalLineEndingIdToKeyMapMap
-                         );
-      SBMLDocumentLoader::convertPropertyKeys<CLLocalRenderInformation>(pLRI,expandedColorIdToKeyMapMap[pLRI->getKey()],expandedGradientIdToKeyMapMap[pLRI->getKey()],expandedLineEndingIdToKeyMapMap[pLRI->getKey()]);
-  }
-  */
-#endif /* USE_CRENDER_EXTENSION */
 
   return layout;
 }
@@ -382,7 +307,6 @@ void SBMLDocumentLoader::postprocessTextGlyph(const TextGlyph & sbml,
     }
 }
 
-#ifdef USE_CRENDER_EXTENSION
 /**
  * Converts references to ids of layout objects to the corresponding key.
  */
@@ -892,5 +816,3 @@ void SBMLDocumentLoader::expandKeyToIdMaps(const RenderInformationBase* pRenderI
     }
 }
  */
-
-#endif /* USE_CRENDER_EXTENSION */
