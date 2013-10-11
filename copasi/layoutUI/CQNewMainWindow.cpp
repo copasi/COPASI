@@ -47,7 +47,6 @@
 #include "copasi/layout/CListOfLayouts.h"
 #include "copasi/layout/CLDefaultStyles.h"
 
-#ifdef ELEMENTARY_MODE_DISPLAY
 #include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/elementaryFluxModes/CEFMTask.h"
 #include "copasi/elementaryFluxModes/CEFMProblem.h"
@@ -56,7 +55,6 @@
 #include "copasi/model/CChemEq.h"
 #include "copasi/model/CChemEqElement.h"
 #include "copasi/model/CMetab.h"
-#endif // ELEMENTARY_MODE_DISPLAY
 
 #ifdef COPASI_AUTOLAYOUT
 //#include "copasi/layout/CCopasiSpringLayout.h"
@@ -122,12 +120,10 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   mCurDir(""),
   mGraphIcon(QPixmap(graph_xpm)),
   mAnimationIcon(QPixmap(film_strip_xpm))
-#ifdef ELEMENTARY_MODE_DISPLAY
   , mpFogColorPixmap(new QPixmap(32, 32))
   , mpHighlightColorPixmap(new QPixmap(32, 32))
   , mpHighlightModeAction(NULL)
   , mpChangeColorAction(NULL)
-#endif // ELEMENTARY_MODE_DISPLAY
 #ifdef COPASI_AUTOLAYOUT
   , mpStopLayoutAction(NULL)
   , mpRandomizeLayout(NULL)
@@ -166,7 +162,6 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   this->addGlobalRenderInfoItemsToList();
   this->addDefaultRenderInfoItemsToList();
   this->updateLayoutList();
-#ifdef ELEMENTARY_MODE_DISPLAY
   // fill the two pixmaps with the current fog and highlight color
   // We have to do that after the call to updateLayoutList because before that call
   // the rnederer does not exist yet.
@@ -175,7 +170,6 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   c = this->mpLayoutViewer->getPainter()->getHighlightColor();
   this->mpHighlightColorPixmap->fill(QColor((int)(c[0] * 255.0), (int)(c[1] * 255.0), (int)(c[2] * 255.0), (int)(c[3] * 255.0)));
   this->mpChangeColorAction->setIcon(QIcon(*this->mpHighlightColorPixmap));
-#endif // ELEMENTARY_MODE_DISPLAY
 
 #ifdef COPASI_AUTOLAYOUT
 
@@ -343,7 +337,6 @@ void CQNewMainWindow::createMenus()
   pAction->setCheckable(true);
   connect(this->mpZoomActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(slotZoomMenuItemActivated(QAction*)));
   this->mpZoomMenu->addActions(this->mpZoomActionGroup->actions());
-#ifdef ELEMENTARY_MODE_DISPLAY
   this->mpViewMenu->addSeparator();
   this->mpHighlightModeAction = this->mpViewMenu->addAction(tr("Highlight"));
   this->mpHighlightModeAction->setCheckable(true);
@@ -359,7 +352,6 @@ void CQNewMainWindow::createMenus()
   this->mpElementaryModesMenu->setToolTip(tr("Displays a list of elementary modes when they have been calculated and lets you select one or more that are emphasized in the layout displayed."));
   this->mpElementaryModesMenu->addAction(tr("None"));
   connect(this->mpElementaryModesMenu, SIGNAL(aboutToShow()), this, SLOT(checkForElementaryModesSlot()));
-#endif // ELEMENTARY_MODE_DISPLAY
 
   // options menu
   mpOptionsMenu = menuBar()->addMenu(tr("Options"));
@@ -1077,11 +1069,9 @@ void CQNewMainWindow::switchMode()
         this->setAnimationToolbar();
         this->setAnimationMenu();
         this->mpWidgetStack->setCurrentIndex(1);
-#ifdef ELEMENTARY_MODE_DISPLAY
         this->mpElementaryModesMenu->setEnabled(false);
         this->mpHighlightModeAction->setEnabled(false);
         this->mpChangeColorAction->setEnabled(false);
-#endif // ELEMENTARY_MODE_DISPLAY
 
 #ifdef COPASI_AUTOLAYOUT
         updateLayoutList();
@@ -1104,11 +1094,9 @@ void CQNewMainWindow::switchMode()
         this->setGraphToolbar();
         this->setGraphMenu();
         this->mpWidgetStack->setCurrentIndex(0);
-#ifdef ELEMENTARY_MODE_DISPLAY
         this->mpElementaryModesMenu->setEnabled(true);
         this->mpHighlightModeAction->setEnabled(true);
         this->mpChangeColorAction->setEnabled(true);
-#endif // ELEMENTARY_MODE_DISPLAY
         break;
     }
 }
@@ -1160,7 +1148,6 @@ void CQNewMainWindow::setStatusMessage(const QString& message, int timeout)
   this->statusBar()->showMessage(message, timeout);
 }
 
-#ifdef ELEMENTARY_MODE_DISPLAY
 /**
  * Checks for calculated elementary modes.
  */
@@ -1672,7 +1659,6 @@ void CQNewMainWindow::changeColorSlot(bool)
         }
     }
 }
-#endif // ELEMENTARY_MODE_DISPLAY
 
 #ifdef COPASI_AUTOLAYOUT
 void CQNewMainWindow::redrawNow()

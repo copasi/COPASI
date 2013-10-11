@@ -2035,7 +2035,6 @@ void * CQGLLayoutPainter::MyNSGLGetProcAddress(const char *name)
 
 #endif // __APPLE__
 
-#ifdef ELEMENTARY_MODE_DISPLAY
 // the following methods are used to highlight elements in the diagram
 // based on their association to model elements
 
@@ -2138,5 +2137,3 @@ bool CQGLLayoutPainter::getHighlightFlag() const
 {
   return this->mpRenderer->getHighlightFlag();
 }
-
-#endif // ELEMENTARY_MODE_DISPLAY

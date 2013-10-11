@@ -62,7 +62,6 @@ public:
 
   void setMode(DISPLAY_MODE mode = GRAPH_MODE);
 
-#ifdef ELEMENTARY_MODE_DISPLAY
   enum REACTION_SELECTION_BITS
   {
     ROLE_UNSPECIFIED          =   1 // metab reference glyphs without role
@@ -76,8 +75,6 @@ public:
     , REACTION_GLYPH            = 256 // the reaction glyph itself
     , ASSOCIATED_SPECIES_GLYPHS = 512
   };
-
-#endif // ELEMENTARY_MODE_DISPLAY
 
   CQNewMainWindow(CCopasiDataModel* pDatamodel);
   virtual ~CQNewMainWindow();
@@ -154,7 +151,6 @@ public slots:
    */
   void setStatusMessage(const QString& message, int timeout);
 
-#ifdef ELEMENTARY_MODE_DISPLAY
   /**
    * Selects the given reaction object by selecting all
    * corresponding CLReactionGlyph objects in the current layout.
@@ -204,8 +200,6 @@ public slots:
    * that is added to the color.
    */
   void fogDensitySlot(bool);
-
-#endif // ELEMENTARY_MODE_DISPLAY
 
   virtual void closeEvent(QCloseEvent * event);
 
@@ -279,9 +273,7 @@ private:
   QMenu *mpOptionsMenu;
   QMenu *mpWindowMenu;
   QMenu *mpZoomMenu;
-#ifdef ELEMENTARY_MODE_DISPLAY
   QMenu *mpElementaryModesMenu;
-#endif // ELEMENTARY_MODE_DISPLAY
   QToolBar *mpFileToolBar;
   QToolBar *mpSelectionToolBar;
   QAction *mpSwitchModeAct;
@@ -314,7 +306,6 @@ private:
   QIcon mGraphIcon;
   QIcon mAnimationIcon;
 
-#ifdef ELEMENTARY_MODE_DISPLAY
   struct REACTION_SELECTION_ITEM
   {
     std::string mReactionKey;
@@ -350,7 +341,6 @@ private:
   QAction* mpHighlightModeAction;
   QAction* mpFogDensityAction;
   QAction* mpChangeColorAction;
-#endif // ELEMENTARY_MODE_DISPLAY
 
 #ifdef COPASI_AUTOLAYOUT
 

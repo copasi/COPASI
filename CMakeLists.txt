@@ -287,12 +287,6 @@ if(ENABLE_COPASI_AUTOLAYOUT)
 add_definitions(-DCOPASI_AUTOLAYOUT)
 endif(ENABLE_COPASI_AUTOLAYOUT)
 
-option (ENABLE_ELEMENTARY_MODE_DISPLAY "Build COPASI with support for highlighting elementary modes in diagrams." ON)
-mark_as_advanced(ENABLE_ELEMENTARY_MODE_DISPLAY)
-if(ENABLE_ELEMENTARY_MODE_DISPLAY)
-add_definitions(-DELEMENTARY_MODE_DISPLAY)
-endif(ENABLE_ELEMENTARY_MODE_DISPLAY)
-
 option (ENABLE_FLUX_ANIMATION "Enable support for animating fluxes in diagrams." ON)
 mark_as_advanced(ENABLE_FLUX_ANIMATION)
 if(ENABLE_FLUX_ANIMATION)
@@ -529,7 +523,6 @@ message(STATUS "-----------------------------------------------------------
    COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
    Render Extension         = ${ENABLE_CRENDER_EXTENSION}
    CSP Method               = ${ENABLE_CSPMETHOD}
-   Elementary mode display  = ${ENABLE_ELEMENTARY_MODE_DISPLAY}
    Flux animation           = ${ENABLE_FLUX_ANIMATION}
    Screenshots              = ${ENABLE_FRAMEBUFFER_SCREENSHOTS}
    SBW integration          = ${ENABLE_SBW_INTEGRATION}

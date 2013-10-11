@@ -84,12 +84,6 @@ DEFINES += USE_CRENDER_EXTENSION
 # This is not finished yet and should not be enabled per default 
 DEFINES += COPASI_AUTOLAYOUT
 #
-# This enables the code for displaying elementary mode analysis results 
-# in the graph.
-# This needs some more testing, but it should be quite stable.
-# Since this depends heavily on the existence of layouts, I would only enable it
-# once the autolayout has been finished.
-#DEFINES += ELEMENTARY_MODE_DISPLAY
 
 # This enables the code for the animation of flux data
 # When this is enabled, the time course task will collect data
