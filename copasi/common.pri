@@ -79,14 +79,6 @@ QMAKE_LFLAGS  += $$(LDFLAGS)
 # enable this to build support for the render extension
 DEFINES += USE_CRENDER_EXTENSION
 
-# This enables the code for the animation of flux data
-# When this is enabled, the time course task will collect data
-# on species concentrations or amounts as well as concentration
-# or particle fluxes when a time course simulation is run.
-# This data can be used by the layout windows to display animations
-# of changing species concentrations and/or changing fluxes.
-#DEFINES += FLUX_ANIMATION
-
 # this flag enables new code to import layout information from 
 # CellDesigner annotations
 # Right now this is pretty much limited to the bare layout stuff.

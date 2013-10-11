@@ -281,12 +281,6 @@ if(ENABLE_CRENDER_EXTENSION)
 add_definitions(-DUSE_CRENDER_EXTENSION)
 endif(ENABLE_CRENDER_EXTENSION)
 
-option (ENABLE_FLUX_ANIMATION "Enable support for animating fluxes in diagrams." ON)
-mark_as_advanced(ENABLE_FLUX_ANIMATION)
-if(ENABLE_FLUX_ANIMATION)
-add_definitions(-DFLUX_ANIMATION)
-endif(ENABLE_FLUX_ANIMATION)
-
 option (ENABLE_CELLDESIGNER_IMPORT "Enable support for importing CellDesigner diagrams." ON)
 mark_as_advanced(ENABLE_CELLDESIGNER_IMPORT)
 if(ENABLE_CELLDESIGNER_IMPORT)
@@ -515,8 +509,6 @@ message(STATUS "-----------------------------------------------------------
    CellDesigner import      = ${ENABLE_CELLDESIGNER_IMPORT}
    COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
    Render Extension         = ${ENABLE_CRENDER_EXTENSION}
-   CSP Method               = ${ENABLE_CSPMETHOD}
-   Flux animation           = ${ENABLE_FLUX_ANIMATION}
    Screenshots              = ${ENABLE_FRAMEBUFFER_SCREENSHOTS}
    SBW integration          = ${ENABLE_SBW_INTEGRATION}
    SBML Unit                = ${ENABLE_USE_SBMLUNIT}
