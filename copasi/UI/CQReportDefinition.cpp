@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include "CQReportDefinition.h"
 
@@ -45,7 +45,7 @@ CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
   unsigned C_INT32 i;
 
   for (i = 0; CCopasiTask::TypeName[i] != ""; i++)
-    mpTaskBox->insertItem(FROM_UTF8(CCopasiTask::TypeName[i]));
+    mpTaskBox->insertItem(0, FROM_UTF8(CCopasiTask::TypeName[i]));
 }
 
 /*
@@ -153,7 +153,7 @@ void CQReportDefinition::btnItemClicked()
 
   if (SelectedVector.size() != 0)
     {
-      QListWidget * pList = static_cast< QListWidget * >(mpReportSectionTab->currentPage());
+      QListWidget * pList = static_cast< QListWidget * >(mpReportSectionTab->currentWidget());
       std::vector< const CCopasiObject * >::const_iterator it = SelectedVector.begin();
       std::vector< const CCopasiObject * >::const_iterator end = SelectedVector.end();
 
@@ -178,7 +178,7 @@ void CQReportDefinition::btnSeparatorClicked()
   else
     Separator = TO_UTF8(mpSeparator->text());
 
-  static_cast<QListWidget *>(mpReportSectionTab->currentPage())->addItem(new CQReportListItem(Separator.getCN()));
+  static_cast<QListWidget *>(mpReportSectionTab->currentWidget())->addItem(new CQReportListItem(Separator.getCN()));
 
   mChanged = true;
 
@@ -194,7 +194,7 @@ void CQReportDefinition::btnTextClicked()
     {
       CCopasiStaticString Text(TO_UTF8(pDialog->getText()));
 
-      static_cast<QListWidget *>(mpReportSectionTab->currentPage())->addItem(new CQReportListItem(Text.getCN()));
+      static_cast<QListWidget *>(mpReportSectionTab->currentWidget())->addItem(new CQReportListItem(Text.getCN()));
     }
 
   delete pDialog;
@@ -206,7 +206,7 @@ void CQReportDefinition::btnTextClicked()
 
 void CQReportDefinition::btnDeleteClicked()
 {
-  QListWidget * pList = static_cast< QListWidget * >(mpReportSectionTab->currentPage());
+  QListWidget * pList = static_cast< QListWidget * >(mpReportSectionTab->currentWidget());
 
   QListWidgetItem * pNewSelection = NULL;
 
@@ -247,7 +247,7 @@ void CQReportDefinition::btnDeleteClicked()
 
 void CQReportDefinition::btnUpClicked()
 {
-  QListWidget * pList = static_cast< QListWidget * >(mpReportSectionTab->currentPage());
+  QListWidget * pList = static_cast< QListWidget * >(mpReportSectionTab->currentWidget());
   int i, to, multipleSelection;
 
   QListWidgetItem * pMove;
@@ -284,7 +284,7 @@ void CQReportDefinition::btnUpClicked()
 
 void CQReportDefinition::btnDownClicked()
 {
-  QListWidget * pList = static_cast< QListWidget * >(mpReportSectionTab->currentPage());
+  QListWidget * pList = static_cast< QListWidget * >(mpReportSectionTab->currentWidget());
   int i, imax, to, multipleSelection;
 
   QListWidgetItem * pMove;
@@ -467,7 +467,7 @@ bool CQReportDefinition::load()
   mpTableList->clear();
 
   mpName->setText(FROM_UTF8(mpReportDefinition->getObjectName()));
-  mpTaskBox->setCurrentItem(mpReportDefinition->getTaskType());
+  mpTaskBox->setCurrentIndex(mpReportDefinition->getTaskType());
 
   //separator
   if (mpReportDefinition->getSeparator().getStaticString() == "\t")
@@ -627,11 +627,11 @@ bool CQReportDefinition::setAdvancedMode(const bool & advanced)
       mAdvanced = true;
 
       mpBtnAdvanced->setText("Advanced <<");
-      mpReportSectionTab->setTabEnabled(mpTableList, false);
-      mpReportSectionTab->setTabEnabled(mpHeaderList, true);
-      mpReportSectionTab->setTabEnabled(mpBodyList, true);
-      mpReportSectionTab->setTabEnabled(mpFooterList, true);
-      mpReportSectionTab->setCurrentPage(2);
+      mpReportSectionTab->setTabEnabled(mpReportSectionTab->indexOf(mpTableList), false);
+      mpReportSectionTab->setTabEnabled(mpReportSectionTab->indexOf(mpHeaderList), true);
+      mpReportSectionTab->setTabEnabled(mpReportSectionTab->indexOf(mpBodyList), true);
+      mpReportSectionTab->setTabEnabled(mpReportSectionTab->indexOf(mpFooterList), true);
+      mpReportSectionTab->setCurrentIndex(2);
       mpBtnSeparator->show();
       mpBtnText->show();
       mpTitleCheck->hide();
@@ -641,11 +641,11 @@ bool CQReportDefinition::setAdvancedMode(const bool & advanced)
       mAdvanced = false;
 
       mpBtnAdvanced->setText("Advanced >>");
-      mpReportSectionTab->setTabEnabled(mpTableList, true);
-      mpReportSectionTab->setTabEnabled(mpHeaderList, false);
-      mpReportSectionTab->setTabEnabled(mpBodyList, false);
-      mpReportSectionTab->setTabEnabled(mpFooterList, false);
-      mpReportSectionTab->setCurrentPage(0);
+      mpReportSectionTab->setTabEnabled(mpReportSectionTab->indexOf(mpTableList), true);
+      mpReportSectionTab->setTabEnabled(mpReportSectionTab->indexOf(mpHeaderList), false);
+      mpReportSectionTab->setTabEnabled(mpReportSectionTab->indexOf(mpBodyList), false);
+      mpReportSectionTab->setTabEnabled(mpReportSectionTab->indexOf(mpFooterList), false);
+      mpReportSectionTab->setCurrentIndex(0);
       mpBtnSeparator->hide();
       mpBtnText->hide();
       mpTitleCheck->show();

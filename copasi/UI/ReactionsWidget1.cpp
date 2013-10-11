@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /*********************************************************************
  **  $ CopasiUI/ReactionsWidget1.cpp
@@ -55,9 +55,9 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
     mpRi(NULL)
 {
   if (!name)
-    setName("ReactionsWidget1");
+    setObjectName("ReactionsWidget1");
 
-  setCaption(trUtf8("ReactionsWidget1"));
+  setWindowTitle(trUtf8("ReactionsWidget1"));
 
   ReactionsWidget1Layout = new QGridLayout(this);
   ReactionsWidget1Layout->setMargin(11);
@@ -65,68 +65,79 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
   ReactionsWidget1Layout->setColumnStretch(1, 1);
   ReactionsWidget1Layout->setObjectName("ReactionsWidget1Layout");
 
-  TextLabel7 = new QLabel(this, "TextLabel7");
+  TextLabel7 = new QLabel(this);
+  TextLabel7->setObjectName("TextLabel7");
   TextLabel7->setText(trUtf8("Symbol\nDefinition"));
-  TextLabel7->setAlignment(int(Qt::AlignVCenter | Qt::AlignRight));
+  TextLabel7->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
   ReactionsWidget1Layout->addWidget(TextLabel7, 8, 0);
 
-  Line2 = new QFrame(this, "Line2");
+  Line2 = new QFrame(this);
+  Line2->setObjectName("Line2");
   Line2->setFrameShape(QFrame::HLine);
   Line2->setFrameShadow(QFrame::Sunken);
   Line2->setFrameShape(QFrame::HLine);
-  ReactionsWidget1Layout->addMultiCellWidget(Line2, 7, 7, 0, 3);
+  ReactionsWidget1Layout->addWidget(Line2, 7, 0, 1, 4);
 
   // kinetics line
-  TextLabel6 = new QLabel(this, "TextLabel6");
+  TextLabel6 = new QLabel(this);
+  TextLabel6->setObjectName("TextLabel6");
   TextLabel6->setText(trUtf8("Rate Law"));
-  TextLabel6->setAlignment(int(Qt::AlignVCenter
-                               | Qt::AlignRight));
+  TextLabel6->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
   ReactionsWidget1Layout->addWidget(TextLabel6, 5, 0);
 
-  ComboBox1 = new QComboBox(false, this, "ComboBox1");
-  ReactionsWidget1Layout->addMultiCellWidget(ComboBox1, 5, 5, 1, 2);
+  ComboBox1 = new QComboBox(this);
+  ComboBox1->setObjectName("ComboBox1");
+  ComboBox1->setEditable(false);
+  ReactionsWidget1Layout->addWidget(ComboBox1, 5, 1, 1, 2);
 
-  newKinetics = new QPushButton(this, "newKinetics");
+  newKinetics = new QPushButton(this);
+  newKinetics->setObjectName("newKinetics");
   newKinetics->setText(trUtf8("&New Rate Law"));
   ReactionsWidget1Layout->addWidget(newKinetics, 5, 3);
 
-  TextLabel8 = new QLabel(this, "TextLabel8");
+  TextLabel8 = new QLabel(this);
+  TextLabel8->setObjectName("TextLabel8");
   TextLabel8->setText(trUtf8("Flux"));
-  TextLabel8->setAlignment(int(Qt::AlignVCenter
-                               | Qt::AlignRight));
+  TextLabel8->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
   ReactionsWidget1Layout->addWidget(TextLabel8, 6, 0);
 
-  QPushButton* editKinetics = new QPushButton(this, "editKinetics");
+  QPushButton* editKinetics = new QPushButton(this);
+  editKinetics->setObjectName("editKinetics");
   editKinetics->setText(trUtf8("&Edit Rate Law"));
   ReactionsWidget1Layout->addWidget(editKinetics, 6, 3);
 
   connect(editKinetics, SIGNAL(clicked()), this, SLOT(slotGotoFunction()));
 
-  LineEdit3 = new QLineEdit(this, "LineEdit3");
+  LineEdit3 = new QLineEdit(this);
+  LineEdit3->setObjectName("LineEdit3");
   LineEdit3->setEnabled(false);
-  ReactionsWidget1Layout->addMultiCellWidget(LineEdit3, 6, 6, 1, 2);
+  ReactionsWidget1Layout->addWidget(LineEdit3, 6, 1, 1, 2);
 
   // equation line
-  TextLabel5 = new QLabel(this, "TextLabel5");
+  TextLabel5 = new QLabel(this);
+  TextLabel5->setObjectName("TextLabel5");
   TextLabel5->setText(trUtf8("Reaction"));
-  TextLabel5->setAlignment(int(Qt::AlignVCenter
-                               | Qt::AlignRight));
+  TextLabel5->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
   ReactionsWidget1Layout->addWidget(TextLabel5, 2, 0);
 
-  LineEdit2 = new MyLineEdit(this, "LineEdit2");
+  LineEdit2 = new MyLineEdit(this);
+  LineEdit2->setObjectName("LineEdit2");
   LineEdit2->setValidator(new ChemEqValidator(LineEdit2));
-  ReactionsWidget1Layout->addMultiCellWidget(LineEdit2, 2, 2, 1, 3);
+  ReactionsWidget1Layout->addWidget(LineEdit2, 2, 1, 1, 3);
 
-  CheckBox = new QCheckBox(this, "CheckBox");
+  CheckBox = new QCheckBox(this);
+  CheckBox->setObjectName("CheckBox");
   CheckBox->setText(trUtf8("Reversible"));
   ReactionsWidget1Layout->addWidget(CheckBox, 3, 1);
 
-  mpFast = new QCheckBox(this, "mpFast");
+  mpFast = new QCheckBox(this);
+  mpFast->setObjectName("mpFast");
   mpFast->setText(trUtf8("Fast"));
   mpFast->setEnabled(true);
   ReactionsWidget1Layout->addWidget(mpFast, 3, 2);
 
-  mpMultiCompartment = new QCheckBox(this, "mpMultiCompartment");
+  mpMultiCompartment = new QCheckBox(this);
+  mpMultiCompartment->setObjectName("mpMultiCompartment");
   mpMultiCompartment->setText(trUtf8("Multi Compartment"));
   mpMultiCompartment->setEnabled(false);
   ReactionsWidget1Layout->addWidget(mpMultiCompartment, 3, 3);
@@ -135,15 +146,16 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
   mpFast->hide();
 #endif
 
-  Line4 = new QFrame(this, "Line4");
+  Line4 = new QFrame(this);
+  Line4->setObjectName("Line4");
   Line4->setFrameShape(QFrame::HLine);
   Line4->setFrameShadow(QFrame::Sunken);
   Line4->setFrameShape(QFrame::HLine);
-  ReactionsWidget1Layout->addMultiCellWidget(Line4, 4, 4, 0, 3);
+  ReactionsWidget1Layout->addWidget(Line4, 4, 0, 1, 4);
 
   table = new ParameterTable(this);
   table->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-  ReactionsWidget1Layout->addMultiCellWidget(table, 8, 9, 1, 3);
+  ReactionsWidget1Layout->addWidget(table, 8, 1, 2, 3);
   ReactionsWidget1Layout->setRowStretch(9, 10);
 
   QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -287,14 +299,14 @@ bool ReactionsWidget1::saveToReaction()
       if (createdMetabs) protectedNotify(ListViews::METABOLITE, ListViews::ADD, "");
 
       // :TODO Bug 322: This should only be called when actual changes have been saved.
-      if (this->isShown())
+      if (!this->isHidden())
         protectedNotify(ListViews::REACTION, ListViews::CHANGE, mKey);
     }
 
   //TODO: detect rename events (mpRi->writeBackToReaction has to do this)
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
-  if (this->isShown())
+  if (!this->isHidden())
     (*CCopasiRootContainer::getDatamodelList())[0]->changed();
 
   return true;
@@ -557,15 +569,15 @@ void ReactionsWidget1::FillWidgetFromRI()
   vectorOfStrings2QStringList(mpRi->getListOfPossibleFunctions(), comboEntries);
 
   ComboBox1->clear();
-  ComboBox1->insertStringList(comboEntries, -1);
+  ComboBox1->insertItems(0, comboEntries);
 
   // if there is a current function the parameter table is initialized
   if (mpRi->getFunctionName() != "")
     {
-      if (comboEntries.grep(FROM_UTF8(mpRi->getFunctionName())).size() == 0)
-        ComboBox1->insertItem(FROM_UTF8(mpRi->getFunctionName()));
+      if (comboEntries.filter(FROM_UTF8(mpRi->getFunctionName())).size() == 0)
+        ComboBox1->insertItem(0, FROM_UTF8(mpRi->getFunctionName()));
 
-      ComboBox1->setCurrentText(FROM_UTF8(mpRi->getFunctionName()));
+      ComboBox1->setCurrentIndex(ComboBox1->findText(FROM_UTF8(mpRi->getFunctionName())));
       ComboBox1->setToolTip(FROM_UTF8(mpRi->getFunctionDescription()));
 
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -573,8 +585,8 @@ void ReactionsWidget1::FillWidgetFromRI()
     }
   else
     {
-      ComboBox1->insertItem("undefined");
-      ComboBox1->setCurrentText("undefined");
+      ComboBox1->insertItem(0, "undefined");
+      ComboBox1->setCurrentIndex(0);
       table->initTable();
     }
 }

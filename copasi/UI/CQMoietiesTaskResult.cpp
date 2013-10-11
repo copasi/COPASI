@@ -1,12 +1,12 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
 #include "CQMoietiesTaskResult.h"
 
@@ -187,7 +187,7 @@ void CQMoietiesTaskResult::load()
       mpMoieties->setItem(i, COL_EQUATION, pItem);
     }
 
-  mpTabWidget->setTabLabel(mpMoieties, "Moieties (" + QString::number(i) + ")");
+  mpTabWidget->setTabText(mpTabWidget->indexOf(mpMoieties), "Moieties (" + QString::number(i) + ")");
 
   mpMoieties->resizeColumnsToContents();
   mpMoieties->resizeRowsToContents();

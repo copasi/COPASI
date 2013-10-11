@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /****************************************************************************
  **  $ CopasiUI/listviews.cpp
@@ -205,8 +205,11 @@ ListViews::ListViews(QWidget *parent, const char *name):
   mpLayoutsWidget(NULL),
   mpMathMatrixWidget(NULL)
 {
+  // Qt3 support to Qt4 reference states . . .
+  // "Use the QSizePolicy() constructor and call the setHorizontalStretch(), setVerticalStretch(), and setHeightForWidth() functions instead."
+  // The stretch was set at "1 ,1", before, but maybe it doesn't need to be explicitly set now.
+  this->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
 
-  this->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred, 1, 1));
   setChildrenCollapsible(false);
 
   // create a new QListview to be displayed on the screen..and set its property
@@ -226,7 +229,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
 
   addWidget(mpTreeView);
   addWidget(defaultWidget);
-  setResizeMode(mpTreeView, QSplitter::KeepSize);
+  setStretchFactor(indexOf(mpTreeView),0);
 
   if (!opaqueResize())
     setOpaqueResize();
