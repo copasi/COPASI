@@ -122,14 +122,12 @@ endif(ENABLE_COPASI_DEBUG_TRACE)
 # using value scaled experimental data.
 option(ENABLE_COPASI_PARAMETERFITTING_RESIDUAL_SCALING "Scale parameter estimation residuals with the simulation value" OFF)
 if (ENABLE_COPASI_PARAMETERFITTING_RESIDUAL_SCALING)
-
-add_definitions(-DCOPASI_PARAMETERFITTING_RESIDUAL_SCALING)
-
+  add_definitions(-DCOPASI_PARAMETERFITTING_RESIDUAL_SCALING)
 endif(ENABLE_COPASI_PARAMETERFITTING_RESIDUAL_SCALING)
 
 option(ENABLE_COPASI_BANDED_GRAPH "Enable the banded graph widget" OFF)
 if (ENABLE_COPASI_BANDED_GRAPH)
-add_definitions(-DCOPASI_BANDED_GRAPH)
+  add_definitions(-DCOPASI_BANDED_GRAPH)
 endif(ENABLE_COPASI_BANDED_GRAPH)
 
 option(ENABLE_COPASI_NONLIN_DYN_OSCILLATION "Oscillation Widget" ON)
@@ -139,17 +137,18 @@ endif()
 
 option(ENABLE_COPASI_EXTUNIT "Extended Unit Support" ${DEFAULT_EXTUNIT})
 if (ENABLE_COPASI_EXTUNIT)
-# COPASI_EXTUNIT
-add_definitions(-DCOPASI_EXTUNIT)
-
+  add_definitions(-DCOPASI_EXTUNIT)
 endif(ENABLE_COPASI_EXTUNIT)
 
 option(ENABLE_WITH_MERGEMODEL "Enable Model Merging" OFF)
 if (ENABLE_WITH_MERGEMODEL)
-# WITH_MERGEMODEL
-add_definitions(-DWITH_MERGEMODEL)
-
+  add_definitions(-DWITH_MERGEMODEL)
 endif(ENABLE_WITH_MERGEMODEL)
+
+option(ENABLE_USE_MATH_CONTAINER "Enable the use of the Math container" OFF)
+if (ENABLE_USE_MATH_CONTAINER)
+  add_definitions(-DUSE_MATH_CONTAINER)
+endif(ENABLE_USE_MATH_CONTAINER)
 
 option (BUILD_GUI "Disable this if you do not want to build the COPASI GUI (CopasiUI)." ON)
 
@@ -489,7 +488,7 @@ message(STATUS "-----------------------------------------------------------
  Options:
 
    COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
-   Render Extension         = ${ENABLE_CRENDER_EXTENSION}
+   Math Contaier            = ${ENABLE_USE_MATH_CONTAINER}
    SBW integration          = ${ENABLE_SBW_INTEGRATION}
    SBML Unit                = ${ENABLE_USE_SBMLUNIT}
    Model Merging            = ${ENABLE_WITH_MERGEMODEL}

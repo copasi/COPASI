@@ -36,41 +36,6 @@ file(GLOB FORMS_LAYOUTUI   layoutUI/*.ui )
 file(GLOB HEADERS_LAYOUTUI layoutUI/*.h  )
 file(GLOB SOURCES_LAYOUTUI layoutUI/*.cpp)
 
-# remove files not used when specific options are disabled
-if (NOT ENABLE_CRENDER_EXTENSION)
-
-  list(REMOVE_ITEM HEADERS_LAYOUTUI 
-  
-    ${CMAKE_CURRENT_SOURCE_DIR}/layoutUI/CQFontRenderer.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/layoutUI/CQGLLayoutPainter.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/layoutUI/CQGLLayoutViewer.h
-  	${CMAKE_CURRENT_SOURCE_DIR}/layoutUI/CQNewMainWindow.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/layoutUI/CQQtImageTexturizer.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/layoutUI/CQScreenshotOptionsDialog.h
-    
-  )
-  
-  
-  list(REMOVE_ITEM SOURCES_LAYOUTUI
-  
-    ${CMAKE_CURRENT_SOURCE_DIR}/layoutUI/CQFontRenderer.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layoutUI/CQGLLayoutPainter.cpp
-  	${CMAKE_CURRENT_SOURCE_DIR}/layoutUI/CQGLLayoutViewer.cpp
-  	${CMAKE_CURRENT_SOURCE_DIR}/layoutUI/CQNewMainWindow.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layoutUI/CQQtImageTexturizer.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layoutUI/CQScreenshotOptionsDialog.cpp
-  
-  )
-  
-  list(REMOVE_ITEM FORMS_LAYOUTUI 
-  
-    ${CMAKE_CURRENT_SOURCE_DIR}/layoutUI/CQScreenshotDialog.ui
-	
-  )
-    
-endif(NOT ENABLE_CRENDER_EXTENSION)
-
-
 # create source group for IDEs
 source_group(layoutUI FILES ${FORMS_LAYOUTUI} ${HEADERS_LAYOUTUI} ${SOURCES_LAYOUTUI})
 

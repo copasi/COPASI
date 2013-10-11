@@ -35,49 +35,6 @@
 file(GLOB HEADERS_LAYOUT layout/*.h)
 file(GLOB SOURCES_LAYOUT layout/*.cpp)
 
-
-if (NOT ENABLE_CRENDER_EXTENSION)
-
-  list(REMOVE_ITEM SOURCES_LAYOUT
-  
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLColorDefinition.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLDefaultStyles.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLEllipse.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLGlobalRenderInformation.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLGlobalStyle.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLGradientBase.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLGradientStop.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLGradientStops.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLGraphicalPrimitive1D.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLGraphicalPrimitive2D.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLGroup.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLImage.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLImageTexturizer.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLLineEnding.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLLinearGradient.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLLocalRenderInformation.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLLocalStyle.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLPolygon.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLRadialGradient.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLRectangle.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLRelAbsVector.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLRenderCubicBezier.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLRenderCurve.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLRenderFlattener.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLRenderInformationBase.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLRenderPoint.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLRenderResolver.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLStyle.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLText.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLTransformation.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLTransformation2D.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLUnresolvedReferenceException.cpp
-  )
-
-  
-endif (NOT ENABLE_CRENDER_EXTENSION)
-
-  
 if(NOT OPENGL_FOUND)
 
   list(REMOVE_ITEM SOURCES_LAYOUT
