@@ -10,10 +10,7 @@
 #include "qtUtilities.h"
 
 #include "trajectory/CTrajectoryTask.h"
-
-#if COPASI_NONLIN_DYN
-#include <crosssection/CCrossSectionTask.h>
-#endif
+#include "crosssection/CCrossSectionTask.h"
 
 CQTimeSeriesWidget::CQTimeSeriesWidget(QWidget* parent):
   CopasiWidget(parent),
@@ -79,13 +76,10 @@ const CTimeSeries* getTimeSeriesFromTask(const CCopasiTask * pTask)
   if (traj != NULL)
     return &traj->getTimeSeries();
 
-#if COPASI_NONLIN_DYN
   const CCrossSectionTask* cross = dynamic_cast<const CCrossSectionTask *>(pTask);
 
   if (cross != NULL)
     return &cross->getTimeSeries();
-
-#endif
 
   return NULL;
 }

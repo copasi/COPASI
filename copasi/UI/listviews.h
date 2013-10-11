@@ -60,14 +60,11 @@ class CQSensResultWidget;
 class CQSteadyStateResult;
 class CQTrajectoryWidget;
 class CQReportsWidget;
-
 class CQTSSAWidget;
 class CQTSSAResultWidget;
 class CQTSSAResultSubWidget;
-
-#ifdef COPASI_NONLIN_DYN
 class CQCrossSectionTaskWidget;
-#endif
+
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
 class CQOscillationTaskWidget;
 #endif
@@ -157,9 +154,7 @@ public:
   CQFittingWidget* getFittingWidget();
   CQOptimizationWidget* getOptimizationWidget();
 
-#if COPASI_NONLIN_DYN
   CQCrossSectionTaskWidget* getCrossSectionWidget();
-#endif
 
 signals:
   void signalFolderChanged(const QModelIndex & index);
@@ -234,16 +229,13 @@ private:
   SteadyStateWidget *steadystateWidget;
   CQReportsWidget *mpReportsWidget;
   CQReportDefinition *tableDefinition1;
-
   CQTimeSeriesWidget *timeSeriesWidget;
   CQTrajectoryWidget *trajectoryWidget;
   CQTSSAWidget *tssaWidget;
   CQTSSAResultWidget *tssaResultWidget;
-
-#ifdef COPASI_NONLIN_DYN
   CQCrossSectionTaskWidget *crossSectionTaskWidget;
   CQTimeSeriesWidget *crossSectionTimeSeriesWidget;
-#endif
+
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
   CQOscillationTaskWidget *oscillationTaskWidget;
 #endif

@@ -4750,9 +4750,9 @@ void CCopasiXMLParser::KineticLawElement::end(const XML_Char *pszName)
 
         {
           std::map< std::string, std::vector< std::string > >::const_iterator it
-            = mCommon.SourceParameterKeys.begin();
+          = mCommon.SourceParameterKeys.begin();
           std::map< std::string, std::vector< std::string > >::const_iterator end
-            = mCommon.SourceParameterKeys.end();
+          = mCommon.SourceParameterKeys.end();
 
           for (; it != end; ++it)
             if (it->second.size() > 0)
@@ -8021,6 +8021,7 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
         break;
 
       case Dimensions:
+
         if (!strcmp(pszName, "Dimensions"))
           {
             mLastKnownElement = Dimensions;
@@ -8040,6 +8041,7 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
         break;
 
       case ListOfCompartmentGlyphs:
+
         if (!strcmp(pszName, "ListOfCompartmentGlyphs"))
           {
             mLastKnownElement = ListOfCompartmentGlyphs;
@@ -8059,6 +8061,7 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
         break;
 
       case ListOfReactionGlyphs:
+
         if (!strcmp(pszName, "ListOfReactionGlyphs"))
           {
             mLastKnownElement = ListOfReactionGlyphs;
@@ -8068,6 +8071,7 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
         break;
 
       case ListOfTextGlyphs:
+
         if (!strcmp(pszName, "ListOfTextGlyphs"))
           {
             mLastKnownElement = ListOfTextGlyphs;
@@ -8077,6 +8081,7 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
         break;
 
       case ListOfAdditionalGOs:
+
         if (!strcmp(pszName, "ListOfAdditionalGraphicalObjects"))
           {
             mLastKnownElement = ListOfAdditionalGOs;
@@ -8088,6 +8093,7 @@ void CCopasiXMLParser::LayoutElement::start(const XML_Char *pszName, const XML_C
 #ifdef USE_CRENDER_EXTENSION
 
       case ListOfLocalRenderInformation:
+
         if (!strcmp(pszName, "ListOfRenderInformation"))
           {
             mLastKnownElement = ListOfLocalRenderInformation;
@@ -8554,12 +8560,9 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
               mCommon.pCurrentTask = new CMoietiesTask(Type, mCommon.pTaskList);
               break;
 
-#ifdef COPASI_NONLIN_DYN
-
             case CCopasiTask::crosssection:
               mCommon.pCurrentTask = new CCrossSectionTask(mCommon.pTaskList);
               break;
-#endif
 
             default:
               mParser.pushElementHandler(&mParser.mUnknownElement);

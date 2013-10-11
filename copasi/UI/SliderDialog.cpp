@@ -47,11 +47,8 @@
 #include "trajectory/CTrajectoryTask.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CMCATask.h"
-
-#if COPASI_NONLIN_DYN
-#include <crosssection/CCrossSectionTask.h>
-#include <UI/CQCrossSectionTaskWidget.h>
-#endif
+#include "crosssection/CCrossSectionTask.h"
+#include "UI/CQCrossSectionTaskWidget.h"
 
 #include "lna/CLNATask.h"
 #include "scan/CScanTask.h"
@@ -62,18 +59,13 @@
 #include "CCopasiSelectionDialog.h"
 #include "resourcesUI/CQIconResource.h"
 
-#if COPASI_NONLIN_DYN
 size_t SliderDialog::numMappings = 14;
-#else
-size_t SliderDialog::numMappings = 12;
-#endif
+
 size_t SliderDialog::folderMappings[][2] =
 {
-  {21, 21}, {211, 21}, {23, 23}, {231, 23}, {24, 24} , {241, 24} , {31, 31}, {32, 32}, {321, 32}, {33, 33}, {331, 33}, {35, 35}
-
-#if COPASI_NONLIN_DYN
-  , {28, 28}, {281, 28}
-#endif
+  {21, 21}, {211, 21}, {23, 23}, {231, 23}, {24, 24},
+  {241, 24} , {31, 31}, {32, 32}, {321, 32}, {33, 33},
+  {331, 33}, {35, 35}, {28, 28}, {281, 28}
 };
 
 //size_t SliderDialog::numKnownTasks = 4;
@@ -171,9 +163,7 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
   this->mTaskMap[35] = &SliderDialog::runLNATask;
   this->mTaskMap[33] = &SliderDialog::runParameterEstimationTask;
   this->mTaskMap[32] = &SliderDialog::runOptimizationTask;
-#if COPASI_NONLIN_DYN
   this->mTaskMap[28] = &SliderDialog::runCrossSectionTask;
-#endif
 
   connect(this->mpRunTaskButton, SIGNAL(clicked()), this, SLOT(runTask()));
   connect(this->mpNewSliderButton, SIGNAL(clicked()), this, SLOT(createNewSlider()));
@@ -842,7 +832,6 @@ void SliderDialog::runParameterEstimationTask()
     }
 }
 
-#ifdef COPASI_NONLIN_DYN
 void SliderDialog::runCrossSectionTask()
 {
   if (mpParentWindow)
@@ -852,7 +841,6 @@ void SliderDialog::runCrossSectionTask()
       mpParentWindow->getMainWidget()->getCrossSectionWidget()->runTask();
     }
 }
-#endif
 
 void SliderDialog::runOptimizationTask()
 {
@@ -909,12 +897,10 @@ CCopasiTask* SliderDialog::getTaskForFolderId(size_t folderId)
       case 32:
         task = dynamic_cast<COptTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Optimization"]);
         break;
-#if COPASI_NONLIN_DYN
 
       case 28:
         task = dynamic_cast<CCrossSectionTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Cross Section"]);
         break;
-#endif
 
       default:
         task = NULL;

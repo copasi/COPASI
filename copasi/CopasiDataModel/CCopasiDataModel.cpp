@@ -62,9 +62,7 @@
 #include "layout/CLayoutInitializer.h"
 #include "report/CCopasiRootContainer.h"
 
-#ifdef COPASI_NONLIN_DYN
 #include "crosssection/CCrossSectionTask.h"
-#endif
 
 CDataModelRenameHandler::CDataModelRenameHandler()
 {}
@@ -1079,12 +1077,9 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
         pTask = new CMoietiesTask(taskType, mData.pTaskList);
         break;
 
-#ifdef COPASI_NONLIN_DYN
-
       case CCopasiTask::crosssection:
         pTask = new CCrossSectionTask(mData.pTaskList);
         break;
-#endif
 
       default:
         return pTask;

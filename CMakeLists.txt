@@ -96,15 +96,15 @@ endif(BUILD_TESTS)
 set (DEFAULT_EXTUNIT OFF)
 # set (DEFAULT_NONLIN OFF)
 set (DEFAULT_DEBUG_TRACING OFF)
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-# for the debug version we need to enable
-# COPASI_DEBUG
-
-add_definitions(-DCOPASI_DEBUG)
-set (DEFAULT_EXTUNIT ON)
-set (DEFAULT_NONLIN ON)
-set (DEFAULT_DEBUG_TRACING ON)
-
+  # for the debug version we need to enable
+  # COPASI_DEBUG
+  add_definitions(-DCOPASI_DEBUG)
+  
+  set (DEFAULT_EXTUNIT ON)
+  set (DEFAULT_NONLIN ON)
+  set (DEFAULT_DEBUG_TRACING ON)
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 # there should be an option to disable the debug flag, as it litters the
@@ -136,11 +136,6 @@ option(ENABLE_COPASI_NONLIN_DYN_OSCILLATION "Oscillation Widget" ON)
 if (ENABLE_COPASI_NONLIN_DYN_OSCILLATION)
   add_definitions(-DCOPASI_NONLIN_DYN_OSCILLATION)
 endif()
-
-option(ENABLE_COPASI_NONLIN_DYN "Non linear Dynamics" ON)
-if (ENABLE_COPASI_NONLIN_DYN)
-  add_definitions(-DCOPASI_NONLIN_DYN)
-endif(ENABLE_COPASI_NONLIN_DYN)
 
 option(ENABLE_COPASI_EXTUNIT "Extended Unit Support" ${DEFAULT_EXTUNIT})
 if (ENABLE_COPASI_EXTUNIT)
@@ -539,7 +534,6 @@ message(STATUS "-----------------------------------------------------------
    CellDesigner import      = ${ENABLE_CELLDESIGNER_IMPORT}
    Auto layout              = ${ENABLE_COPASI_AUTOLAYOUT}
    COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
-   Non linear dynamics      = ${ENABLE_COPASI_NONLIN_DYN}
    Render Extension         = ${ENABLE_CRENDER_EXTENSION}
    CSP Method               = ${ENABLE_CSPMETHOD}
    Elementary mode display  = ${ENABLE_ELEMENTARY_MODE_DISPLAY}

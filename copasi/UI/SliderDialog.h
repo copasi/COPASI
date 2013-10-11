@@ -108,9 +108,7 @@ protected:
   virtual void runLNATask();
   virtual void runParameterEstimationTask();
   virtual void runOptimizationTask();
-#ifdef COPASI_NONLIN_DYN
   virtual void runCrossSectionTask();
-#endif
   virtual void closeEvent(QCloseEvent* e);
 
   virtual CCopasiTask* getTaskForFolderId(size_t folderId);
