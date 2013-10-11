@@ -29,4 +29,8 @@ trace
 /autom4te.cache
 InitialDependencies.dot
 SimulationDependencies.dot
+.kdev4/
+CMakeLists.txt.user
+COPASI.kdev4
+copasi/copasi.pro.user
 *~
