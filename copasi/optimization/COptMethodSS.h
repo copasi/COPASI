@@ -16,7 +16,7 @@
 #include "utilities/CVector.h"
 
 class CRandom;
-class COptMethodPraxis;
+//class COptMethodPraxis;
 
 class COptMethodSS : public COptMethod
 {
@@ -202,6 +202,11 @@ private:
    * Number of local minimizations stored
    */
   unsigned C_INT32 mLocalStored;
+
+  /**
+   * True if there were children produced
+   */
+  bool mChildrenGenerated;
 
   /**
   * Array of candidate solutions in the RefSet.

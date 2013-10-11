@@ -166,6 +166,8 @@ bool COptMethodSS::initialize()
 
   // set object parent (this is needed or else initialize() will fail)
   mpLocalMinimizer->setObjectParent(getObjectParent());
+  // we also have to initialize the subtask
+  mpOptProblemLocal->initializeSubtaskBeforeOutput();
   // initialize it
   mpOptProblemLocal->initialize();
   // no statistics to be calculated
@@ -195,6 +197,8 @@ bool COptMethodSS::initialize()
   // create vector for function values (of child members)
   mChildVal.resize(mPopulationSize);
   mChildVal = std::numeric_limits<C_FLOAT64>::infinity();
+  // we have not generated any children yet
+  mChildrenGenerated = false;
 
   // create matrix for the pool of diverse solutions
   // this will also be used to store the initial and
@@ -205,7 +209,7 @@ bool COptMethodSS::initialize()
     }
   else
     {
-      mPoolSize = 2 * mIterations / mLocalFreq / 2;
+      mPoolSize = 2 * mIterations / mLocalFreq;
     }
 
   mPool.resize(mPoolSize);
@@ -268,6 +272,9 @@ bool COptMethodSS::localmin(CVector< C_FLOAT64 > & solution, C_FLOAT64 & fval)
 {
   bool Running = true;
   unsigned C_INT32 i;
+
+  mpOptProblemLocal->reset();
+
   // first we set up the problem
   // (optmethod and optproblem already setup in initialization)
   // let's get the list of parameters
@@ -882,6 +889,8 @@ bool COptMethodSS::combination(void)
   xpr.resize(mVariableSize);
   // calculate a constant
   bm2 = C_FLOAT64(mPopulationSize) - 2.0;
+  // signal no children yet
+  mChildrenGenerated = false;
 
   // generate children for each member of the population
   for (i = 0; (i < mPopulationSize) && Running; i++)
@@ -1045,6 +1054,8 @@ bool COptMethodSS::combination(void)
                   mChildVal[i] = mEvaluationValue;
                   // signal that child is better than parent
                   mStuck[i] = 0;
+                  // signal we have generated a child (improvement)
+                  mChildrenGenerated = true;
 #ifdef DEBUG_OPT
                   inforefset(1, i);
 #endif
@@ -1093,7 +1104,7 @@ bool COptMethodSS::combination(void)
               Running &= evaluate(xnew);
               xnewval = mEvaluationValue;
 
-              // if there was no improvement we finish here (exit while)
+              // if there was no improvement we finish here => exit for(;;)
               if (mChildVal[i] <= xnewval) break;
 
 #ifdef DEBUG_OPT
@@ -1160,7 +1171,7 @@ bool COptMethodSS::childLocalMin(void)
 
   // store the initial position
   *(mPool[mLocalStored]) = *(mChild[best]);
-  mPoolVal[mLocalStored] = bestVal;
+  mPoolVal[mLocalStored] = mChildVal[best]; //bestVal;
   mLocalStored++;
 
   // do local minimization on it
@@ -1272,7 +1283,7 @@ bool COptMethodSS::optimise()
       Running &= combination();
 
       // check if we have to run a local search
-      if (nlocal == mLocalFreq)
+      if (nlocal >= mLocalFreq && mChildrenGenerated)
         {
           // reset the local counter
           nlocal = 1;
@@ -1295,7 +1306,7 @@ bool COptMethodSS::optimise()
             {
               // copy the child into the population
               (*mRefSet[i]) = (*mChild[i]);
-              // keep its value
+              // keep its obj funct value
               mRefSetVal[i] = mChildVal[i];
               // and reset the stuck counter
               mStuck[i] = 1;
@@ -1312,9 +1323,12 @@ bool COptMethodSS::optimise()
       if (needsort) sortRefSet(0, mPopulationSize);
 
 #ifdef DEBUG_OPT
-      else
-        // let's see how this RefSet looks like
-        inforefset(3, mIteration);
+
+      if (!mChildrenGenerated)
+        {
+          // signal that nothing happened in this iteration
+          inforefset(3, mIteration);
+        }
 
 #endif
 

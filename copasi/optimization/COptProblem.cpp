@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  File name: COptProblem.cpp
@@ -250,19 +250,25 @@ bool COptProblem::setModel(CModel * pModel)
   return true;
 }
 
+void COptProblem::reset()
+{
+  mSolutionValue = (*mpParmMaximize ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
+  mCounter = 0;
+}
+
 bool COptProblem::setCallBack(CProcessReport * pCallBack)
 {
   CCopasiProblem::setCallBack(pCallBack);
 
   if (pCallBack)
     {
+      reset();
+
       // We need to reset mSolutionValue to correctly initialize the progress item.
-      mSolutionValue = (*mpParmMaximize ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
       mhSolutionValue =
         mpCallBack->addItem("Best Value",
                             mSolutionValue);
       // We need to reset mCounter to correctly initialize the progress item.
-      mCounter = 0;
       mhCounter =
         mpCallBack->addItem("Function Evaluations",
                             mCounter);
