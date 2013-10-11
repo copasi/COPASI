@@ -140,13 +140,13 @@ bool COptMethodSS::initialize()
     {
       // this is a generic optimisation problem
       //  mpLocalMinimizer = COptMethod::createMethod(CCopasiMethod::Praxis);
-      mpLocalMinimizer = COptMethod::createMethod(CCopasiMethod::NelderMead);
-      // mpLocalMinimizer = COptMethod::createMethod(CCopasiMethod::HookeJeeves);
+      //mpLocalMinimizer = COptMethod::createMethod(CCopasiMethod::NelderMead);
+      mpLocalMinimizer = COptMethod::createMethod(CCopasiMethod::HookeJeeves);
       // with a rather relaxed tolerance (1e-3)
-      mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-004);
+      mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-005);
       mpLocalMinimizer->setValue("Iteration Limit", (C_INT32) 50);
-      // mpLocalMinimizer->setValue("Rho", (C_FLOAT64) 0.2);
-      mpLocalMinimizer->setValue("Scale", (C_FLOAT64) 10.0);
+      mpLocalMinimizer->setValue("Rho", (C_FLOAT64) 0.2);
+      // mpLocalMinimizer->setValue("Scale", (C_FLOAT64) 10.0);
     }
 
   // local minimization problem (starts as a copy of the current problem)
@@ -893,7 +893,7 @@ bool COptMethodSS::combination(void)
             {
               if (i < j) alpha = 1.0; else alpha = -1.0;
 
-              beta = fabs(C_FLOAT64(j) - C_FLOAT64(i)) - 1.0 / bm2;
+              beta = (fabs(C_FLOAT64(j) - C_FLOAT64(i)) - 1.0) / bm2;
               omatb = (1.0 + alpha * beta) * 0.5;
 
               // generate a child
@@ -1051,68 +1051,68 @@ bool COptMethodSS::combination(void)
                 }
             }
         }
-    }
 
-  // now we apply the go-beyond strategy for
-  // cases where the child was an improvement
-  if (mStuck[i] == 0)
-    {
-      // copy the parent
-      xpr = (*mRefSet[i]);
-      xprval = mRefSetVal[i];
-      lambda = 1.0; // this is really 1/lambda so we can use mult rather than div
-      improvement = 1;
-
-      // while newval < childval
-      for (; ;)
+      // now we apply the go-beyond strategy for
+      // cases where the child was an improvement
+      if (mStuck[i] == 0)
         {
-          for (k = 0; k < mVariableSize; k++)
+          // copy the parent
+          xpr = (*mRefSet[i]);
+          xprval = mRefSetVal[i];
+          lambda = 1.0; // this is really 1/lambda so we can use mult rather than div
+          improvement = 1;
+
+          // while newval < childval
+          for (; ;)
             {
-              dd = (xpr[i] - (*mChild[i])[k]) * lambda;
-              xnew[k] = (*mChild[i])[k] + dd * mpRandom->getRandomCC();
-              // get the bounds of this parameter
-              COptItem & OptItem = *(*mpOptItem)[k];
-
-              // put it on the bounds if it had exceeded them
-              switch (OptItem.checkConstraint(xnew[k]))
+              for (k = 0; k < mVariableSize; k++)
                 {
-                  case -1:
-                    xnew[k] = *OptItem.getLowerBoundValue();
-                    break;
+                  dd = (xpr[i] - (*mChild[i])[k]) * lambda;
+                  xnew[k] = (*mChild[i])[k] + dd * mpRandom->getRandomCC();
+                  // get the bounds of this parameter
+                  COptItem & OptItem = *(*mpOptItem)[k];
 
-                  case 1:
-                    xnew[k] = *OptItem.getUpperBoundValue();
-                    break;
+                  // put it on the bounds if it had exceeded them
+                  switch (OptItem.checkConstraint(xnew[k]))
+                    {
+                      case -1:
+                        xnew[k] = *OptItem.getLowerBoundValue();
+                        break;
+
+                      case 1:
+                        xnew[k] = *OptItem.getUpperBoundValue();
+                        break;
+                    }
+
+                  // We need to set the value here so that further checks take
+                  // account of the value.
+                  (*(*mpSetCalculateVariable)[k])(xnew[k]);
                 }
 
-              // We need to set the value here so that further checks take
-              // account of the value.
-              (*(*mpSetCalculateVariable)[k])(xnew[k]);
-            }
+              // calculate the child's fitness
+              Running &= evaluate(xnew);
+              xnewval = mEvaluationValue;
 
-          // calculate the child's fitness
-          Running &= evaluate(xnew);
-          xnewval = mEvaluationValue;
-
-          // if there was no improvement we finish here (exit while)
-          if (mChildVal[i] <= xnewval) break;
+              // if there was no improvement we finish here (exit while)
+              if (mChildVal[i] <= xnewval) break;
 
 #ifdef DEBUG_OPT
-          inforefset(2, i);
+              inforefset(2, i);
 #endif
-          // old child becomes parent
-          xpr = (*mChild[i]);
-          xprval = mChildVal[i];
-          // new child becomes child
-          (*mChild[i]) = xnew;
-          mChildVal[i] = xnewval;
-          // mark improvement
-          improvement++;
+              // old child becomes parent
+              xpr = (*mChild[i]);
+              xprval = mChildVal[i];
+              // new child becomes child
+              (*mChild[i]) = xnew;
+              mChildVal[i] = xnewval;
+              // mark improvement
+              improvement++;
 
-          if (improvement == 2)
-            {
-              lambda *= 0.5;
-              improvement = 0;
+              if (improvement == 2)
+                {
+                  lambda *= 0.5;
+                  improvement = 0;
+                }
             }
         }
     }
@@ -1147,8 +1147,8 @@ bool COptMethodSS::childLocalMin(void)
   for (i = 0; i < mLocalStored; i++)
     {
       // is the other one like me?
-//    if(closerChild(best,i,1e-3))
-      if (distChild(best, i) < 1e-3)
+      if (closerChild(best, i, 1e-3))
+        //if (distChild(best, i) < 1e-3)
         {
 #ifdef DEBUG_OPT
           inforefset(6, best);
@@ -1250,8 +1250,8 @@ bool COptMethodSS::optimise()
               for (j = i + 1; j < mPopulationSize; j++)
                 {
                   // is the other one like me?
-//    if(closerRefSet(i,j,1e-3))
-                  if (distRefSet(i, j) < 0.8)
+                  if (closerRefSet(i, j, 1e-3))
+                    //if (distRefSet(i, j) < 0.01)
                     {
                       // randomize the other one (I am more important)
                       Running &= randomize(j);
@@ -1265,24 +1265,11 @@ bool COptMethodSS::optimise()
             }
         }
 
+      // sort the RefSet if needed
+      if (needsort) sortRefSet(0, mPopulationSize);
+
       // create children by combination
       Running &= combination();
-
-//#ifdef NOOP
-      // check if we have to run a local search
-      if (nlocal == mLocalFreq)
-        {
-          // reset the local counter
-          nlocal = 1;
-          // carry out a local search
-          Running &= childLocalMin();
-        }
-      else
-//#endif
-        {
-          // count this
-          nlocal++;
-        }
 
       // check if we have to run a local search
       if (nlocal == mLocalFreq)
@@ -1347,7 +1334,9 @@ bool COptMethodSS::optimise()
 
   // end of loop for iterations
 
-  // now let's do a local minimisation starting from the best value
+  // the best ever might not be what is on position 0, so bring it back
+  *mRefSet[0] = mpOptProblem->getSolutionVariables();
+  // now let's do a final local minimisation
   Running &= localmin(*(mRefSet[0]), mRefSetVal[0]);
 
   // has it improved?
