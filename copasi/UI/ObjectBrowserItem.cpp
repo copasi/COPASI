@@ -40,7 +40,10 @@ Contact: Please contact lixu1@vt.edu.
 
 long ObjectBrowserItem::KeySpace = KEYBASE;
 
-CBrowserObject::CBrowserObject()
+CBrowserObject::CBrowserObject():
+  pCopasiObject(NULL),
+  mChecked(false),
+  referenceList(NULL)  //keep pointer to all its referenced items for later update
 {
   referenceList = new ObjectList();
 }
@@ -219,12 +222,13 @@ QTreeWidgetItem* ObjectBrowserItem::nextSibling()
   return NULL;
 }
 
-ObjectList::ObjectList()
-{
-  root = NULL;
-  index_length = 0;
-  length = 0;
-}
+ObjectList::ObjectList():
+  quickIndex(NULL),
+  pointerList(NULL),
+  index_length(0),
+  root(NULL),
+  length(0)
+{}
 
 void ObjectList::insert(ObjectBrowserItem* pItem)
 {

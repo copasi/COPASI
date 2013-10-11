@@ -32,11 +32,24 @@ QPushButton* createControl(const CQIconResource::IconID& iconId, int size = 32)
   return button;
 }
 
-CQPlayerControlWidget::CQPlayerControlWidget(QWidget* pParent)
-  : QWidget(pParent)
-  , mNumSteps(0)
-  , mCurrentStep(0)
-  , mPlaying(false)
+CQPlayerControlWidget::CQPlayerControlWidget(QWidget* pParent):
+  QWidget(pParent),
+  mNumSteps(0),
+  mCurrentStep(0),
+  mPlaying(false),
+  mpPlayButton(NULL),
+  mpStopButton(NULL),
+  mpForwardButton(NULL),
+  mpBackwardButton(NULL),
+  mpStepForwardButton(NULL),
+  mpStepBackwardButton(NULL),
+  mpPlayAction(NULL),
+  mpPauseAction(NULL),
+  mpStopAction(NULL),
+  mpForwardAction(NULL),
+  mpBackwardAction(NULL),
+  mpStepForwardAction(NULL),
+  mpStepBackwardAction(NULL)
 {
   QGridLayout* pLayout = new QGridLayout;
 

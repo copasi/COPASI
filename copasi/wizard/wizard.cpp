@@ -33,7 +33,9 @@
  *  true to construct a modal dialog.
  */
 WizardDialog::WizardDialog(QWidget* parent, const char* /* name */, bool /* modal */, Qt::WindowFlags fl):
-  QDialog(parent, fl)
+  QDialog(parent, fl),
+  copasiMainWindow(NULL),
+  buttonGroup(NULL)
 {
   setupUi(this);
 
@@ -80,8 +82,6 @@ const char* WizardDialog::texts[6] = {"TutWiz-Step1.html", "TutWiz-Step2.html", 
 const char* WizardDialog::Error = "<html><head><title>Error</title></head><body><h1>Could not find help files.<br><br>Please set the COPASI_HELP_PATH environment variable to the absolute path that contains the html help files!</h1></body></html>";
 
 QString WizardDialog::helpPath = "";
-
-QWidget* copasiMainWindow = NULL;
 
 void WizardDialog::buttonGroup2_clicked(int)
 {

@@ -20,7 +20,7 @@ class HistoWidget : public CQPlotEditWidget, public Ui::HistoWidget
   Q_OBJECT
 
 public:
-  HistoWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
+  HistoWidget(QWidget* parent = 0, Qt::WindowFlags fl = 0);
   ~HistoWidget();
 
   virtual bool LoadFromCurveSpec(const CPlotItem * curve);

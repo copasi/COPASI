@@ -12,8 +12,9 @@
 #include <QtGui/QPainter>
 #endif
 
-CQEffectDescriptionEdit::CQEffectDescriptionEdit(QWidget* parent, Qt::WindowFlags f)
-  : QWidget(parent, f)
+CQEffectDescriptionEdit::CQEffectDescriptionEdit(QWidget* parent, Qt::WindowFlags f):
+  QWidget(parent, f),
+  mpCurrent(NULL)
 {
   setupUi(this);
 }

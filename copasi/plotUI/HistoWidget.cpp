@@ -17,8 +17,9 @@
 #include "report/CCopasiRootContainer.h"
 #include "resourcesUI/CQIconResource.h"
 
-HistoWidget::HistoWidget(QWidget* parent, const char* /* name */, Qt::WindowFlags fl)
-  : CQPlotEditWidget(parent, fl)
+HistoWidget::HistoWidget(QWidget* parent, Qt::WindowFlags fl):
+  CQPlotEditWidget(parent, fl),
+  mpObjectX(NULL)
 {
   setupUi(this);
 

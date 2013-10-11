@@ -28,7 +28,21 @@
 #include "utilities/CSlider.h"
 #include "report/CCopasiRootContainer.h"
 
-SliderSettingsDialog::SliderSettingsDialog(QWidget* pParent): QDialog(pParent)
+SliderSettingsDialog::SliderSettingsDialog(QWidget* pParent) :
+  QDialog(pParent),
+  mChanged(),
+  mMinorTickSize(),
+  mMaxValue(),
+  mMinValue(),
+  mValue(),
+  mOriginalValue(),
+  mMinorMajorFactor(),
+  mNumMinorTicks(),
+  mDefinedSliders(),
+  mpSlider(NULL),
+  mCurrentTaskId(),
+  mpModel(NULL),
+  mScaling()
 {
   setupUi(this);
   this->init();
