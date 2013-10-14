@@ -544,6 +544,10 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
       case (CSensProblem::ParameterEstimation):
       case (CSensProblem::Optimization):
         list.push_back(CObjectLists::SINGLE_OBJECT);
+        list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
+        list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
+        list.push_back(CObjectLists::METAB_INITIAL_CONCENTRATIONS);
+        list.push_back(CObjectLists::ALL_PARAMETER_AND_INITIAL_VALUES);
         break;
 
       case (CSensProblem::CrossSection):
