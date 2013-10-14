@@ -340,10 +340,12 @@ void CopasiUI3Window::createActions()
   //     QAction* mpaObjectBrowser;
 
 #ifdef WITH_MERGEMODEL
-  mpaAddModel = new QAction(CQIconResource::icon(CQIconResource::fileAdd), "&Add ...", Qt::SHIFT + Qt::CTRL + Qt::Key_A, this, "addmodel");
+  mpaAddModel = new QAction(CQIconResource::icon(CQIconResource::fileAdd), "&Add ...", this);
+  mpaAddModel->setShortcut(Qt::SHIFT + Qt::CTRL + Qt::Key_A);
   connect(mpaAddModel, SIGNAL(activated()), this, SLOT(slotAddFileOpen()));
 
-  mpaMergeModels = new QAction("&Merge ...", Qt::SHIFT + Qt::CTRL + Qt::Key_M, this, "mergemodel");
+  mpaMergeModels = new QAction("&Merge ...", this);
+  mpaMergeModels->setShortcut(Qt::SHIFT + Qt::CTRL + Qt::Key_M);
   connect(mpaMergeModels, SIGNAL(activated()), this, SLOT(slotMergeModels()));
 #endif
 
