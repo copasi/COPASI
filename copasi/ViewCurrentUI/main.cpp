@@ -5,7 +5,8 @@
 
 #include <stdexcept>
 
-#include <QtCore/QApplication>
+#include <QtGui/QApplication>
+#include <QtCore/QString>
 
 #define COPASI_MAIN
 

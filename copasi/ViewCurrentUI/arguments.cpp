@@ -137,7 +137,7 @@ bool Arguments::handleCommandLine() const
       CLayout* layout = (*model.getListOfLayouts())[i];
       CQLayoutScene scene(layout, &model);
       scene.recreate();
-      scene.saveToFile(mOutputDir + "/" + QFileInfo(mFilename.c_str()).baseName().ascii() + "_" + layout->getObjectName() + "." + mFileType, mFileType);
+      scene.saveToFile(mOutputDir + "/" + QFileInfo(mFilename.c_str()).baseName().toStdString() + "_" + layout->getObjectName() + "." + mFileType, mFileType);
     }
 
   return true;
@@ -229,7 +229,7 @@ void Arguments::parseArgs(int argc, char* argv[])
       else if (QFile(current).exists() && mFilename.empty())
         {
           // only if we don't have a file yet, we assume this to be the copasi file
-          mFilename = current.ascii();
+          mFilename = current.toStdString();
         }
     }
 }
