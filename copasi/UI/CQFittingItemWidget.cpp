@@ -587,7 +587,8 @@ bool CQFittingItemWidget::load(CCopasiDataModel * pDataModel,
   return true;
 }
 
-bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExperimentMap, const std::map<std::string, std::string> * pCrossValidationMap)
+bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExperimentMap,
+                               const std::map<std::string, std::string> * pCrossValidationMap)
 {
   // Make sure that the current items is saved.
   saveSelection();
@@ -646,13 +647,24 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
             {
               std::string & Target =
                 *const_cast<std::string *>(&static_cast<CFitItem *>(*target)->getExperiment(j));
-              const std::string & Source =
-                pExperimentMap->find(static_cast<CFitItem *>(*it)->getExperiment(j))->second;
+              const std::string &Key = static_cast<CFitItem *>(*it)->getExperiment(j);
 
-              if (Target != Source)
+              if (Key.empty())
+                {
+                  continue;
+                }
+
+              std::map<std::string, std::string>::const_iterator found = pExperimentMap->find(Key);
+
+              if (found == pExperimentMap->end())
+                {
+                  continue;
+                }
+
+              if (Target != found->second)
                 {
                   changed = true;
-                  Target = Source;
+                  Target = found->second;
                 }
             }
 
@@ -688,13 +700,24 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
             {
               std::string & Target =
                 *const_cast<std::string *>(&static_cast<CFitItem *>(*target)->getCrossValidation(j));
-              const std::string & Source =
-                pCrossValidationMap->find(static_cast<CFitItem *>(*it)->getCrossValidation(j))->second;
+              const std::string &Key = static_cast<CFitItem *>(*it)->getCrossValidation(j);
 
-              if (Target != Source)
+              if (Key.empty())
+                {
+                  continue;
+                }
+
+              std::map<std::string, std::string>::const_iterator found = pCrossValidationMap->find(Key);
+
+              if (found == pCrossValidationMap->end())
+                {
+                  continue;
+                }
+
+              if (Target != found->second)
                 {
                   changed = true;
-                  Target = Source;
+                  Target = found->second;
                 }
             }
 

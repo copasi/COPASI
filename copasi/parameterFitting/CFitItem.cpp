@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -231,10 +231,15 @@ std::string CFitItem::getExperiments() const
     {
       pObject = CCopasiRootContainer::getKeyFactory()->get(*mpGrpAffectedExperiments->getValue(i).pKEY);
 
-      if (i && pObject)
-        Experiments += ", ";
+      if (pObject != NULL)
+        {
+          if (i != 0)
+            {
+              Experiments += ", ";
+            }
 
-      Experiments += pObject->getObjectName();
+          Experiments += pObject->getObjectName();
+        }
     }
 
   return Experiments;
