@@ -217,11 +217,15 @@ std::string CFitItem::getExperiments() const
     {
       pObject = CCopasiRootContainer::getKeyFactory()->get(*mpGrpAffectedExperiments->getValue(i).pKEY);
 
-      if (i && pObject)
-        Experiments += ", ";
+      if (pObject != NULL)
+        {
+          if (i != 0)
+            {
+              Experiments += ", ";
+            }
 
-      if (pObject)
-        Experiments += pObject->getObjectName();
+          Experiments += pObject->getObjectName();
+        }
     }
 
   return Experiments;

@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "CQFittingItemWidget.h"
 
@@ -597,7 +597,8 @@ bool CQFittingItemWidget::load(CCopasiDataModel * pDataModel,
   return true;
 }
 
-bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExperimentMap, const std::map<std::string, std::string> * pCrossValidationMap)
+bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExperimentMap,
+                               const std::map<std::string, std::string> * pCrossValidationMap)
 {
   // Make sure that the current items is saved.
   saveSelection();
@@ -659,15 +660,21 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
               const std::string &Key = static_cast<CFitItem *>(*it)->getExperiment(j);
 
               if (Key.empty())
-                continue;
+                {
+                  continue;
+                }
 
-              const std::string & Source =
-                pExperimentMap->find(Key)->second;
+              std::map<std::string, std::string>::const_iterator found = pExperimentMap->find(Key);
 
-              if (Target != Source)
+              if (found == pExperimentMap->end())
+                {
+                  continue;
+                }
+
+              if (Target != found->second)
                 {
                   changed = true;
-                  Target = Source;
+                  Target = found->second;
                 }
             }
 
@@ -701,13 +708,24 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
             {
               std::string & Target =
                 *const_cast<std::string *>(&static_cast<CFitItem *>(*target)->getCrossValidation(j));
-              const std::string & Source =
-                pCrossValidationMap->find(static_cast<CFitItem *>(*it)->getCrossValidation(j))->second;
+              const std::string &Key = static_cast<CFitItem *>(*it)->getCrossValidation(j);
 
-              if (Target != Source)
+              if (Key.empty())
+                {
+                  continue;
+                }
+
+              std::map<std::string, std::string>::const_iterator found = pCrossValidationMap->find(Key);
+
+              if (found == pCrossValidationMap->end())
+                {
+                  continue;
+                }
+
+              if (Target != found->second)
                 {
                   changed = true;
-                  Target = Source;
+                  Target = found->second;
                 }
             }
 
