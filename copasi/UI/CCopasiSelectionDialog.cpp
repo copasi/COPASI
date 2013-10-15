@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <QtGui/QPushButton>
 #include <QtGui/QCheckBox>
@@ -156,6 +156,7 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
 
   CCopasiSelectionDialog * pDialog = new CCopasiSelectionDialog(parent);
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  pDialog->setWindowTitle("Select Item");
   pDialog->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), classes);
   pDialog->setSingleSelection(true);
   pDialog->setOutputVector(&Selection);
@@ -194,6 +195,8 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
     Selection = *pCurrentSelection;
 
   CCopasiSelectionDialog * pDialog = new CCopasiSelectionDialog(parent);
+  pDialog->setWindowTitle("Select Items");
+  pDialog->setToolTip("Select multiple items by holding down the Ctrl or Shift (or equivalent) key.");
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   pDialog->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), classes);
   pDialog->setSingleSelection(false);

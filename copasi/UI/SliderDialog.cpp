@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <iostream>
 #include <sstream>
@@ -96,6 +96,7 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
 #endif // not Darwin
 
   setObjectName(QString::fromUtf8(name));
+  setWindowTitle("Slider Window");
   setModal(modal);
   QVBoxLayout* pMainLayout = new QVBoxLayout(this);
   this->setLayout(pMainLayout);
@@ -556,6 +557,46 @@ void SliderDialog::setCurrentFolderId(size_t id)
 
   clearSliderBox();
   mCurrentFolderId = id;
+
+  // Set appropriate window title
+  QString thisWindowTitle = "Sliders";
+
+  switch(id)
+  {
+    case 23:
+      thisWindowTitle = "Time Course " + thisWindowTitle;
+      break;
+
+    case 21:
+      thisWindowTitle = "Steady-State " + thisWindowTitle;
+      break;
+
+    case 31:
+      thisWindowTitle = "Parameter Scan " + thisWindowTitle;
+      break;
+
+    case 24:
+      thisWindowTitle = "Metabolic Control Analysis " + thisWindowTitle;
+      break;
+
+    case 35:
+      thisWindowTitle = "Linear Noise Approximation " + thisWindowTitle;
+      break;
+
+    case 33:
+      thisWindowTitle = "Parameter Estimation " + thisWindowTitle;
+      break;
+
+    case 32:
+      thisWindowTitle = "Optimization " + thisWindowTitle;
+      break;
+
+    case 28:
+      thisWindowTitle = "Cross Section " + thisWindowTitle;
+      break;
+  }
+
+  setWindowTitle(thisWindowTitle);
 
   fillSliderBox();
 }
@@ -1278,7 +1319,7 @@ void SliderDialog::reset()
 {
   this->clear();
   assert(this->mSliderMap[C_INVALID_INDEX].size() == 0);
-  this->mSliderMap[C_INVALID_INDEX].push_back(new QLabel("<p>There are no sliders available for this task. If you select one of the tasks that supports sliders in the copasi object tree, this dialog will become active.</p>", NULL));
+  this->mSliderMap[C_INVALID_INDEX].push_back(new QLabel("<p>There are no sliders available for this task.<br>If you select one of the tasks that supports<br>sliders in the copasi object tree, this dialog<br>will become active.</p>", NULL));
 }
 
 /**
