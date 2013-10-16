@@ -82,13 +82,9 @@ public:
 			SedDocument *pSedDocument,
 			std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap);
 
-	std::string getDataGeneratorModelItemRefrenceId(SedDocument *pSEDMLDocument, std::string dataReference, std::string &SBMLType);
+	std::string getDataGeneratorModelItemRefrenceId(SedDocument *pSEDMLDocument, std::string &dataReference, std::string &SBMLType);
 	std::string translateTargetXpathInSBMLId(const std::string &xpath, std::string &SBMLType);
 
-	/**
-	 *  This is a hack at the moment better solution for processing XPath string may be developed in the future
-	 */
-	std::string splitXpath(const std::string &xpath, std::string & SBMLType, char delim, bool isTypeRequred = false);
 
 	/**
 	 * Creates and returns a COPASI CTrajectoryTask from the SEDML simulation

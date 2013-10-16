@@ -107,13 +107,6 @@ public:
 	 */
 	//void createReports(CCopasiDataModel &dataModel);
 
-	/**
-	 *  This is a hack for spliting strings into two
-	 */
-	void splitStrings(const std::string &strings, char delim, std::vector<std::string> &stringsContainer);
-
-
-
 };
 
 #endif /* CSEDMLEXPORTER_H_ */

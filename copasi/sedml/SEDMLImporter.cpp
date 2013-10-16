@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
 #include <sstream>
 #include <map>
 #include <limits>
@@ -136,8 +137,10 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
 			const CCopasiObject* pTime = static_cast<const CCopasiObject *>(pModel->getObject(CCopasiObjectName("Reference=Time")));
 			for (unsigned int ic = 0; ic < p->getNumCurves(); ++ic) {
 				SedCurve *curve = p->getCurve(ic);
-				std::string SBMLType;
-				std::string yAxis = getDataGeneratorModelItemRefrenceId(pSEDMLDocument, curve->getYDataReference(), SBMLType);
+				std::string SBMLType, yAxis, yDataReference;
+				yDataReference = curve->getYDataReference();
+
+				yAxis = getDataGeneratorModelItemRefrenceId(pSEDMLDocument, yDataReference, SBMLType);
 
 				//create the curves
 				CPlotDataChannelSpec name1 = pTime->getCN();
@@ -150,6 +153,7 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
 				if(SBMLType=="species"){
 				size_t iMet, imax = pModel->getMetabolites().size();
 				for (iMet = 0; iMet < imax; ++iMet) {
+					pModel->getMetabolites()[iMet]->setInitialConcentration(0.896901);
 					if (pModel->getMetabolites()[iMet]->getSBMLId() == yAxis) {
 						tmp = pModel->getMetabolites()[iMet]->getConcentrationReference();
 						name2 = tmp->getCN();
@@ -205,49 +209,36 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
 }
 
 std::string SEDMLImporter::translateTargetXpathInSBMLId(const std::string &xpath, std::string & SBMLType){
-	std::string id;
-	char delim=':';
-	  id = splitXpath(xpath, SBMLType, delim, false);
-	  id = splitXpath(id, SBMLType, '[', true);
-	  id = splitXpath(id, SBMLType, '=', false);
 
-	   //remove the remaining unwanted characters
-	   char chars[] = "]'";
-
-	      for (unsigned int i = 0; i < strlen(chars); ++i)
-	      {
-
-	         id.erase (std::remove(id.begin(), id.end(), chars[i]), id.end());
-	      }
-
-	    return id;
-}
-
-std::string SEDMLImporter::splitXpath(const std::string &xpath, std::string & SBMLType, char delim, bool isTypeRequired){
-	std::string id;
 	std::vector<std::string> xpathStrings;
-	    if (!xpathStrings.empty()) xpathStrings.clear();  // empty vector if necessary
-	    std::string buf = "";
-	    size_t i, iMax = xpath.length();
-	    while (i < iMax) {
-	        if (xpath[i] != delim){
-	            buf += xpath[i];
-	        } else if (buf.length() > 0) {
-	            xpathStrings.push_back(buf);
-	            buf = "";
-	        }
-	        i++;
-	    }
-	    if (!buf.empty())
-	        xpathStrings.push_back(buf);
+	std::string id, nextString;
+	SEDMLUtils utils;
 
-	    if(isTypeRequired)
-	   SBMLType = xpathStrings[0];
-	    return xpathStrings[xpathStrings.size()-1];
+	char delim=':';
+	utils.splitStrings(xpath, delim, xpathStrings);
+	nextString = xpathStrings[xpathStrings.size()-1];
 
+	delim = '[';
+	utils.splitStrings(nextString, delim, xpathStrings);
+	SBMLType = xpathStrings[0];
+	nextString = xpathStrings[xpathStrings.size()-1];
+
+	delim = '=';
+	utils.splitStrings(nextString, delim, xpathStrings);
+	id = xpathStrings[xpathStrings.size()-1];
+
+	//remove the remaining unwanted characters
+	char chars[] = "']'";
+
+	for (unsigned int i = 0; i < strlen(chars); ++i)
+	{
+
+		id.erase (std::remove(id.begin(), id.end(), chars[i]), id.end());
+	}
+	return id;
 }
 
-std::string SEDMLImporter::getDataGeneratorModelItemRefrenceId(SedDocument *pSEDMLDocument, std::string dataReference, std::string & SBMLType){
+std::string SEDMLImporter::getDataGeneratorModelItemRefrenceId(SedDocument *pSEDMLDocument, std::string &dataReference, std::string & SBMLType){
 	std::string modelReferenceId;
 
 	size_t i, iMax = pSEDMLDocument->getNumDataGenerators();
@@ -479,10 +470,17 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 			CCopasiMessage(CCopasiMessage::EXCEPTION, MCSEDML + 2);
 		}
 
-		std::string modelSource = ""; //must be taken from SEDML document, presently assume only one model is present
+		std::string modelSource = ""; //must be taken from SEDML document.
+		std::string modelId = ""; // to ensure only one model is imported since only one model in SEDML file is supported
 		for (ii = 0; ii < iiMax; ++ii) {
-			SedModel* sedmlmodel = sedmlDoc->getModel(ii);
-			modelSource = sedmlmodel->getSource();
+			SedModel* sedmlModel = sedmlDoc->getModel(ii);
+			if(sedmlModel->getLanguage()!="urn:sedml:language:sbml") CCopasiMessage(CCopasiMessage::EXCEPTION, "Sorry only SBML model is presently supported.");
+			if(sedmlModel->getSource()!=modelId){
+				modelId = sedmlModel->getId();
+				if((sedmlModel->getListOfChanges()->size())>0)CCopasiMessage(CCopasiMessage::WARNING, "Currently no support for"
+						" changing model entities. Changes will not be made to the imported model.");
+				modelSource = sedmlModel->getSource();
+			}
 		}
 
 		assert(modelSource != NULL);
@@ -552,10 +550,8 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 			return false;
 		}
 
-		pPlotList = new COutputDefinitionVector("OutputDefinitions",
-				mpDataModel);
-		readListOfPlotsFromSedMLOutput(pPlotList, pModel, pSEDMLDocument,
-				copasi2sedmlmap);
+		pPlotList = new COutputDefinitionVector("OutputDefinitions", mpDataModel);
+		readListOfPlotsFromSedMLOutput(pPlotList, pModel, pSEDMLDocument, copasi2sedmlmap);
 
 		this->mpCopasiModel = pModel;
 
@@ -569,8 +565,7 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 		//	CTrajectoryTask *task1= (CTrajectoryTask)mpDataModel->addTask(CCopasiTask::timeCourse);
 
 		//CTrajectoryTask *trajTask ;
-		trajTask = this->createCTrajectoryTaskFromSimulation(sedmlsim,
-				copasi2sedmlmap);
+		trajTask = this->createCTrajectoryTaskFromSimulation(sedmlsim, copasi2sedmlmap);
 
 		//static_cast<CTrajectoryProblem*>(tTask->getProblem());
 		//	CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(trajTask->getProblem());

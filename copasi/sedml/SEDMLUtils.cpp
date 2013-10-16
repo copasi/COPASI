@@ -50,6 +50,31 @@ int SEDMLUtils::processArchive(const std::string & archiveFile,
     return err;
 }
 
+//split: receives a char delimiter and string and a vector of strings that will contain the splited strings
+//this is presently a hack to parse the XPath based target attribute in SEDML. A better solution may be
+//necessary in the future.
+
+void SEDMLUtils::splitStrings(const std::string &xpath, char & delim, std::vector<std::string> &xpathStrings){
+	std::string myPath = xpath;
+	if (!xpathStrings.empty()) xpathStrings.clear();  // empty vector if necessary
+	std::string next;
+	// For each character in the string
+	for (std::string::const_iterator it = xpath.begin(); it != xpath.end(); it++) {
+		// check delimeter character
+		if (*it == delim) {
+			if (!next.empty()) {
+				// Add them to the xpathStrings vector
+				xpathStrings.push_back(next);
+				next.clear();
+			}
+		} else {
+			next += *it;
+		}
+	}
+	if (!next.empty())
+		xpathStrings.push_back(next);
+}
+
 /*void SEDMLUtils::resmoveUnwantedChars(std::string & str, char chars[]) {
 	for (unsigned int i = 0; i < strlen(chars); ++i) {
 

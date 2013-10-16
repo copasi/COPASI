@@ -24,6 +24,7 @@
 #include <sedml/SedAlgorithm.h>
 #include <sedml/SedTask.h>
 #include <sedml/SedWriter.h>
+#include "SEDMLUtils.h"
 
 
 #include "sbml/CSBMLExporter.h"
@@ -221,6 +222,8 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
 {
 	const CModel* pModel = dataModel.getModel();
 	std::vector<std::string> stringsContainer; //split string container
+	SEDMLUtils utils;
+	char delim;
 	if (pModel == NULL) CCopasiMessage(CCopasiMessage::ERROR, "No model for this SEDML document. An SBML model must exist for every SEDML document.");
 
 	SedPlot2D* pPSedPlot;
@@ -304,7 +307,8 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
 				}
 			} else if (type == "Flux") {
 				targetXPathString = "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id=\'";
-				splitStrings(yAxis, ')', stringsContainer);
+				delim = ')';
+				utils.splitStrings(yAxis, delim, stringsContainer);
 				yAxis = stringsContainer[0];
 
 				char fluxChars[] = "(";
@@ -334,7 +338,8 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
 
 			} else if (type == "Value") {
 				targetXPathString = "/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=\'";
-				splitStrings(yAxis, '[', stringsContainer);
+				delim = '[';
+				utils.splitStrings(yAxis, delim, stringsContainer);
 				yAxis = stringsContainer[1];
 
 				char valueChars[] = "]";
@@ -404,24 +409,6 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
 		}
 
 	}
-}
-
-//split: receives a char delimiter and string and a vector of strings that will contain the splited strings
-void CSEDMLExporter::splitStrings(const std::string &myString, char delim, std::vector<std::string> &stringsContainer){
-	    if (!stringsContainer.empty()) stringsContainer.clear();  // empty vector if necessary
-	    std::string buf = "";
-	    size_t i, iMax = myString.length();
-	    while (i < iMax) {
-	        if (myString[i] != delim){
-	            buf += myString[i];
-	        } else if (buf.length() > 0) {
-	            stringsContainer.push_back(buf);
-	            buf = "";
-	        }
-	        i++;
-	    }
-	    if (!buf.empty())
-	        stringsContainer.push_back(buf);
 }
 
 CSEDMLExporter::CSEDMLExporter() {
