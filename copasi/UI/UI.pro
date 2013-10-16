@@ -403,6 +403,7 @@ FORMS += SliderSettingsDialog.ui
 FORMS += StateSubwidget.ui
 FORMS += SteadyStateWidget.ui
 FORMS += CQExpandModelData.ui
+FORMS += ReactionsWidget1.ui
 
 DISTFILES += icons/Copasi.ico \
              icons/Copasi??-Alpha.xpm \

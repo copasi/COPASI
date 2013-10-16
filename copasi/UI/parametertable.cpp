@@ -1,24 +1,20 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
-#include <QtGui/QHeaderView> // To be able to hide vertical header
 #include <QtGui/QTableWidgetItem>
 #include <QtCore/QStringList>
 #include <QtGui/QLineEdit>
-//Added by qt3to4:
-#include <QtGui/QPixmap>
-#include <stdlib.h>
 
 #include "parametertable.h"
 #include "resourcesUI/CQIconResource.h"
@@ -51,11 +47,6 @@ void ParameterTable::initTable()
 {
   setRowCount(0);
   setSelectionMode(QTableWidget::NoSelection);
-  setColumnCount(5);
-  QStringList hLabels;
-  hLabels << "Role" << "Name" << "Mapping" << "Value" << "Unit";
-  setHorizontalHeaderLabels(hLabels);
-  verticalHeader()->setVisible(false);
 
   mpComboDelegate = new CQComboDelegate(NULL, this);
   setItemDelegateForColumn(2, mpComboDelegate);

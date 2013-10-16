@@ -27,21 +27,12 @@
 #include "UI/copasiWidget.h"
 #include "model/CReactionInterface.h"
 
-#include <QtGui/QGridLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QFrame>
-#include <QtGui/QCheckBox>
-#include <QtGui/QComboBox>
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QPushButton>
+#include "ui_ReactionsWidget1.h"
 
 class ParameterTable;
 class MyLineEdit;
 
-class ReactionsWidget1 : public CopasiWidget
+class ReactionsWidget1 : public CopasiWidget, public Ui::ReactionsWidget1
 {
   Q_OBJECT
 
@@ -56,7 +47,7 @@ public:
 
 protected slots:
   virtual void slotBtnNew();
-  virtual void slotBtnCopy() {}; //dummy, to bypass warnings from TabWidget connections
+  virtual void slotBtnCopy(){}; //dummy, to bypass warnings from TabWidget connections
   virtual void slotBtnDelete();
   virtual void slotCheckBoxClicked();
   virtual void slotComboBoxSelectionChanged(const QString &);
@@ -75,25 +66,6 @@ protected:
   void FillWidgetFromRI();
 
   CReactionInterface * mpRi;
-
-  QGridLayout* ReactionsWidget1Layout;
-  QHBoxLayout* Layout1;
-  QLabel* TextLabel7;
-  QLabel* TextLabel8;
-  QFrame* Line2;
-  QFrame* Line1;
-  QFrame* Line3;
-  QLabel* TextLabel6;
-  MyLineEdit* LineEdit2;
-  QComboBox* ComboBox1;
-  QFrame* Line4;
-  ParameterTable* table;
-  QLineEdit* LineEdit3;
-  QLabel* TextLabel5;
-  QPushButton* newKinetics;
-  QCheckBox* CheckBox;
-  QCheckBox * mpMultiCompartment;
-  QCheckBox * mpFast;
 };
 
 #endif // REACTIONSWIDGET1_H
