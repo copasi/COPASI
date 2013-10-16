@@ -2128,9 +2128,7 @@ void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,
       mOldData.pCurrentSEDMLDocument = NULL;
 #endif
 
-#ifdef COPASI_PARAMETER_SETS
   mData.pModel->getModelParameterSet().updateModel();
-#endif // COPASI_PARAMETER_SETS
 
   // We need to initialize all the task so that results are available
 

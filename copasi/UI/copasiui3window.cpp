@@ -18,14 +18,14 @@
 #include <sedml/SedDocument.h>
 #endif
 
-#include <QEvent>
-#include <QMenuBar>
-#include <QTimer>
-#include <QComboBox>
-#include <QToolBar>
-#include <QTextEdit>
-#include <QThread>
-#include <QFontDialog>
+#include <QtCore/QEvent>
+#include <QtGui/QMenuBar>
+#include <QtCore/QTimer>
+#include <QtGui/QComboBox>
+#include <QtGui/QToolBar>
+#include <QtGui/QTextEdit>
+#include <QtCore/QThread>
+#include <QtGui/QFontDialog>
 
 #include <vector>
 #include <sstream>
