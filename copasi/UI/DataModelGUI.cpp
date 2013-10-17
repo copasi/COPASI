@@ -49,8 +49,6 @@
 //#include "model/CModelMerging.h"
 #include "model/CModelExpansion.h"
 
-#ifdef CELLDESIGNER_IMPORT
-
 #define USE_LAYOUT 1
 #define USE_RENDER 1
 
@@ -68,8 +66,6 @@
 #if LIBSBML_VERSION >= 50400
 #include <sbml/packages/layout/extension/LayoutModelPlugin.h>
 #endif
-
-#endif // CELLDESIGNER_IMPORT
 
 //*****************************************************************************
 
@@ -321,9 +317,7 @@ void DataModelGUI::importSBMLFromStringFinished()
       // can't run this in a separate thread because it uses GUI routines
       // TODO maybe put the main part of this routine in a separate thread after
       // TODO asking the user
-#ifdef CELLDESIGNER_IMPORT
       this->importCellDesigner();
-#endif // CELLDESIGNER_IMPORT
       mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
       linkDataModelToGUI();
     }
@@ -362,9 +356,7 @@ void DataModelGUI::importSBMLFinished()
 {
   if (mSuccess)
     {
-#ifdef CELLDESIGNER_IMPORT
       this->importCellDesigner();
-#endif // CELLDESIGNER_IMPORT
       CCopasiRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(mFileName);
 
       mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
@@ -696,7 +688,6 @@ void DataModelGUI::commit()
     }
 }
 
-#ifdef CELLDESIGNER_IMPORT
 /**
  * This method tries to import CellDesigner annotations.
  */
@@ -817,7 +808,6 @@ void DataModelGUI::importCellDesigner()
         }
     }
 }
-#endif // CELLDESIGNER_IMPORT
 
 //TODO SEDML
 #ifdef COPASI_SEDML
@@ -974,5 +964,4 @@ void DataModelGUI::exportSEDMLRun()
       mSuccess = false;
     }
 }
-#endif
-
+#endif //COPASI_SEDML
