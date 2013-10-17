@@ -48,6 +48,14 @@ if (NOT EXISTS ${LIBSBML_LIBRARY})
 set (LIBSBML_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/libsbml-static.lib CACHE FILEPATH "libSBML library" FORCE)
 endif()
 
+# libsedml
+if (NOT EXISTS ${LIBSEDML_INCLUDE_DIR})
+set (LIBSEDML_INCLUDE_DIR ${COPASI_DEPENDENCY_DIR}/include CACHE PATH "SEDML include directory" FORCE)
+endif()
+if (NOT EXISTS ${LIBSEDML_LIBRARY})
+set (LIBSEDML_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/libsedml-static.a CACHE FILEPATH "libSEDML library" FORCE)
+endif()
+
 # raptor
 if (NOT EXISTS ${RAPTOR_INCLUDE_DIR})
 set (RAPTOR_INCLUDE_DIR ${COPASI_DEPENDENCY_DIR}/include CACHE PATH "raptor include directory" FORCE)

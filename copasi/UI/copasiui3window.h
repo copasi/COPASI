@@ -94,6 +94,18 @@ public:
 
   void exportSBMLToString(std::string & SBML);
 
+  //TODO SEDML
+#ifdef COPASI_SEDML
+    /**
+	 * This is used to import an SEDML file from a std::string in the GUI
+	 * it does all the necessary GUI stuff like asking to save the old
+	 * document, displaying messages, etc.
+	 */
+	void importSEDMLFromString(const std::string & sedmlDocumentText);
+
+	void exportSEDMLToString(std::string & SEDML);
+#endif
+
   void addWindow(QMainWindow * pWindow);
   void removeWindow(QMainWindow * pWindow);
 
@@ -189,6 +201,18 @@ protected slots:
    */
   void slotShowObjectBrowserDialog(bool flag);
 
+  //TODO SEDML
+#ifdef COPASI_SEDML
+    void slotFileExamplesSEDMLFiles(QString file = QString::null);
+    void slotImportSEDML(QString file = QString::null);
+    void slotImportSEDMLFinished(bool success);
+    void slotImportSEDMLFromStringFinished(bool success);
+    void slotExportSEDML();
+    void slotExportSEDMLFinished(bool success);
+    void slotExportSEDMLToStringFinished(bool success);
+    void slotOpenRecentSEDMLFile(QAction * pAction);
+#endif
+
 private:
   CopasiUI3Window();
 
@@ -270,6 +294,18 @@ private:
   QList< QPointer<QMainWindow> > mWindows;
 
   static CopasiUI3Window * pMainWindow;
+
+  //TODO SEDML
+#ifdef COPASI_SEDML
+   QMenu * mpMenuSEDMLSupport;
+   QAction* mpaImportSEDML;
+   QAction* mpaExportSEDML;
+   QAction* mpaOpenSEDMLFiles;
+   QMenu * mpMenuRecentSEDMLFiles;
+   QMap< QAction *, int > mRecentSEDMLFilesActionMap;
+   QActionGroup * mpRecentSEDMLFilesActionGroup;
+   void refreshRecentSEDMLFileMenu();
+#endif
 
 #ifdef COPASI_SBW_INTEGRATION
 public:

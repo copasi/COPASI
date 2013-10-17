@@ -89,6 +89,16 @@ DataModelGUI::DataModelGUI(QObject * parent):
   mSBMLExportIncomplete(true),
   mSBMLExportCOPASIMIRIAM(true),
   mExportFormat()
+
+#ifdef COPASI_SEDML
+ , mSEDMLImportString()
+ , mpSEDMLExportString(NULL)
+ , mSEDMLLevel(1)
+ , mSEDMLVersion(1)
+ , mSEDMLExportIncomplete(true)
+ , mSEDMLExportCOPASIMIRIAM(true)
+#endif
+
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   (*CCopasiRootContainer::getDatamodelList())[0]->addInterface(&mOutputHandlerPlot);
@@ -791,3 +801,160 @@ void DataModelGUI::importCellDesigner()
         }
     }
 }
+
+//TODO SEDML
+#ifdef COPASI_SEDML
+void DataModelGUI::importSEDMLFromString(const std::string & sedmlDocumentText)
+{
+  mpProgressBar = CProgressBar::create();
+
+  mSuccess = true;
+  mSEDMLImportString = sedmlDocumentText;
+
+  mpThread = new CQThread(this, &DataModelGUI::importSEDMLFromStringRun);
+  connect(mpThread, SIGNAL(finished()), this, SLOT(importSEDMLFromStringFinished()));
+  mpThread->start();
+}
+
+void DataModelGUI::importSEDMLFromStringRun()
+{
+  try
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->importSEDMLFromString(mSEDMLImportString, mpProgressBar, false);
+    }
+
+  catch (...)
+    {
+      mSuccess = false;
+    }
+}
+
+void DataModelGUI::importSEDMLFromStringFinished()
+{
+  mSEDMLImportString = "";
+
+  if (mSuccess)
+    {
+      mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
+      linkDataModelToGUI();
+    }
+
+  disconnect(mpThread, SIGNAL(finished()), this, SLOT(importSEDMLFromStringFinished()));
+
+  threadFinished();
+}
+void DataModelGUI::importSEDML(const std::string & fileName)
+{
+  mpProgressBar = CProgressBar::create();
+
+  mSuccess = true;
+  mFileName = fileName;
+  mpThread = new CQThread(this, &DataModelGUI::importSEDMLRun);
+  connect(mpThread, SIGNAL(finished()), this, SLOT(importSEDMLFinished()));
+  mpThread->start();
+}
+
+void DataModelGUI::importSEDMLRun()
+{
+  try
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->importSEDML(mFileName, mpProgressBar, false);
+    }
+
+  catch (...)
+    {
+      mSuccess = false;
+    }
+}
+
+void DataModelGUI::importSEDMLFinished()
+{
+  if (mSuccess)
+    {
+      CCopasiRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(mFileName);
+
+      mOutputHandlerPlot.setOutputDefinitionVector((*CCopasiRootContainer::getDatamodelList())[0]->getPlotDefinitionList());
+      linkDataModelToGUI();
+    }
+
+  disconnect(mpThread, SIGNAL(finished()), this, SLOT(importSEDMLFinished()));
+
+  threadFinished();
+}
+
+void DataModelGUI::exportSEDML(const std::string & fileName, bool overwriteFile, int sedmlLevel, int sedmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM)
+{
+  mpProgressBar = CProgressBar::create();
+
+  mSuccess = true;
+  mFileName = fileName;
+  mOverWrite = overwriteFile;
+  mSEDMLLevel = sedmlLevel;
+  mSEDMLVersion = sedmlVersion;
+  mSEDMLExportIncomplete = exportIncomplete;
+  mSEDMLExportCOPASIMIRIAM = exportCOPASIMIRIAM;
+
+  mpThread = new CQThread(this, &DataModelGUI::exportSEDMLRun);
+  connect(mpThread, SIGNAL(finished()), this, SLOT(exportSEDMLFinished()));
+  mpThread->start();
+}
+
+void DataModelGUI::exportSEDMLFinished()
+{
+  if (mSuccess)
+    CCopasiRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(mFileName);
+
+  disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSEDMLFinished()));
+
+  threadFinished();
+}
+
+void DataModelGUI::exportSEDMLToString(std::string & sedmlDocumentText)
+{
+  mpProgressBar = CProgressBar::create();
+
+  mSuccess = true;
+  mpSEDMLExportString = & sedmlDocumentText;
+
+  mpThread = new CQThread(this, &DataModelGUI::exportSEDMLToStringRun);
+  connect(mpThread, SIGNAL(finished()), this, SLOT(exportSEDMLToStringFinished()));
+  mpThread->start();
+}
+
+void DataModelGUI::exportSEDMLToStringRun()
+{
+  try
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      *mpSEDMLExportString = (*CCopasiRootContainer::getDatamodelList())[0]->exportSEDMLToString(mpProgressBar, 1, 1);
+    }
+
+  catch (...)
+    {
+      mSuccess = false;
+    }
+}
+
+void DataModelGUI::exportSEDMLToStringFinished()
+{
+  disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSEDMLToStringFinished()));
+
+  threadFinished();
+}
+
+void DataModelGUI::exportSEDMLRun()
+{
+  try
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      mSuccess = (*CCopasiRootContainer::getDatamodelList())[0]->exportSEDML(mFileName, mOverWrite, mSEDMLLevel, mSEDMLVersion, mSEDMLExportIncomplete, mSEDMLExportCOPASIMIRIAM, mpProgressBar);
+    }
+
+  catch (...)
+    {
+      mSuccess = false;
+    }
+}
+#endif //COPASI_SEDML

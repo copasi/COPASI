@@ -66,6 +66,7 @@ Message;
 #define MCEFMAnalysis            MCopasiBase + 4700
 #define MCLayout                 MCopasiBase + 4800
 #define MCScan                   MCopasiBase + 4900
+#define MCSEDML                  MCopasiBase + 5000
 /**
  *  This throws an exception with information where the error occurred.
  */
