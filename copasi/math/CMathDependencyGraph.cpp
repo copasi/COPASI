@@ -160,6 +160,7 @@ finish:
       CCopasiMessage(CCopasiMessage::ERROR, MCMathModel + 3, (*it)->getCN().c_str());
     }
 
+#ifdef XXXX
   CObjectInterface::UpdateSequence::const_iterator itSeq = updateSequence.begin();
   CObjectInterface::UpdateSequence::const_iterator endSeq = updateSequence.end();
 
@@ -167,10 +168,18 @@ finish:
 
   for (; itSeq != endSeq; ++itSeq)
     {
-      std::cout << *static_cast< const CMathObject * >(*itSeq);
+      if (dynamic_cast< const CMathObject * >(*itSeq))
+        {
+          std::cout << *static_cast< const CMathObject * >(*itSeq);
+        }
+      else
+        {
+          std::cout << *static_cast< const CCopasiObject * >(*itSeq);
+        }
     }
 
   std::cout << "End" << std::endl;
+#endif // XXXX
 
   return success;
 }

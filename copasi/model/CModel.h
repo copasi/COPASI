@@ -35,11 +35,11 @@
 #include "copasi/report/CCopasiContainer.h"
 
 #include "copasi/math/CMathTrigger.h"
+#include "copasi/math/CMathDependencyGraph.h"
 
-#ifdef TST_DEPENDENCYGRAPH
-# include "copasi/math/CMathDependencyGraph.h"
+#ifdef USE_MATH_CONTAINER
 class CMathContainer;
-#endif // TST_DEPENDENCYGRAPH
+#endif // USE_MATH_CONTAINER
 
 //class CCompartment;
 class CProcessReport;
@@ -115,6 +115,8 @@ public:
    */
   static const char * ModelTypeNames[];
 
+  enum DependencyType {initial = 0, transient, physical};
+
 private:
   /**
    *  Copy constructor
@@ -180,9 +182,7 @@ public:
    */
   bool forceCompile(CProcessReport* pProcessReport);
 
-#ifdef TST_DEPENDENCYGRAPH
   bool buildDependencyGraphs();
-#endif // TST_DEPENDENCYGRAPH
 
   /**
    *  Build the Stoichiometry Matrix from the chemical equations of the steps
@@ -500,6 +500,32 @@ public:
    * @param const CState & state
    */
   void setState(const CState & state);
+
+  /**
+   * Construct an intitial update sequence for the given context
+   * @param const CMath::SimulationContextFlag & context
+   * @param const CCopasiObject::DataObjectSet & changedObjects
+   * @param const CCopasiObject::DataObjectSet & requestedObjects
+   * @param CCopasiObject::DataUpdateSequence & updateSequence)
+   * @return bool success
+   */
+  bool getInitialUpdateSequence(const CMath::SimulationContextFlag & context,
+                                const CCopasiObject::DataObjectSet & changedObjects,
+                                const CCopasiObject::DataObjectSet & requestedObjects,
+                                CCopasiObject::DataUpdateSequence & updateSequence) const;
+
+  /**
+   * Construct a transient update sequence for the given context
+   * @param const CMath::SimulationContextFlag & context
+   * @param const CCopasiObject::DataObjectSet & changedObjects
+   * @param const CCopasiObject::DataObjectSet & requestedObjects
+   * @param CCopasiObject::DataUpdateSequence & updateSequence)
+   * @return bool success
+   */
+  bool getTransientUpdateSequence(const CMath::SimulationContextFlag & context,
+                                  const CCopasiObject::DataObjectSet & changedObjects,
+                                  const CCopasiObject::DataObjectSet & requestedObjects,
+                                  CCopasiObject::DataUpdateSequence & updateSequence) const;
 
   /**
    * This method calculates all values needed for simulation based on the current
@@ -844,6 +870,21 @@ private:
    */
   bool appendDependentEvents(std::set< const CCopasiObject * > candidates,
                              std::set< const CCopasiObject * > & dependents) const;
+
+  /**
+   * Construct a update sequence for the given context
+   * @param CMathDependencyGraph & dependencyGraph
+   * @param const CMath::SimulationContextFlag & context
+   * @param const CCopasiObject::DataObjectSet & changedObjects
+   * @param const CCopasiObject::DataObjectSet & requestedObjects
+   * @param CCopasiObject::DataUpdateSequence & updateSequence)
+   * @return bool success
+   */
+  bool getUpdateSequence(CMathDependencyGraph & dependencyGraph,
+                         const CMath::SimulationContextFlag & context,
+                         const CCopasiObject::DataObjectSet & changedObjects,
+                         const CCopasiObject::DataObjectSet & requestedObjects,
+                         CCopasiObject::DataUpdateSequence & updateSequence) const;
 
 public:
   /**
@@ -1211,11 +1252,9 @@ private:
    */
   std::set< const CCopasiObject * > mSimulatedUpToDateObjects;
 
-#ifdef TST_DEPENDENCYGRAPH
-  CMathDependencyGraph mInitialDependencies;
-  CMathDependencyGraph mTransientDependencies;
+  mutable CMathDependencyGraph mInitialDependencies;
+  mutable CMathDependencyGraph mTransientDependencies;
   CMathDependencyGraph mPhysicalDependencies;
-#endif // TST_DEPENDENCYGRAPH
 
   /**
    * The volume unit used in the Model
@@ -1460,9 +1499,9 @@ private:
    */
   CMathModel * mpMathModel;
 
-#ifdef TST_DEPENDENCYGRAPH
+#ifdef USE_MATH_CONTAINER
   CMathContainer * mpMathContainer;
-#endif // TST_DEPENDENCYGRAPH
+#endif // USE_MATH_CONTAINER
 
   // Operations
 public:
@@ -1528,7 +1567,7 @@ public:
   const CMathModel* getMathModel() const;
   CMathModel* getMathModel();
 
-#ifdef TST_DEPENDENCYGRAPH
+#ifdef USE_MATH_CONTAINER
   /**
    * Retrieve the container of all mathematical objects
    * @return const CMathContainer * pMathContainer
@@ -1540,7 +1579,7 @@ public:
    * @return CMathContainer * pMathContainer
    */
   CMathContainer * getMathContainer();
-#endif // TST_DEPENDENCYGRAPH
+#endif // USE_MATH_CONTAINER
 };
 
 #endif // CModel

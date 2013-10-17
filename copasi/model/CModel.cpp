@@ -48,9 +48,9 @@
 #include "CMetabNameInterface.h"
 #include "CMathModel.h"
 
-#ifdef TST_DEPENDENCYGRAPH
+#ifdef USE_MATH_CONTAINER
 # include "math/CMathContainer.h"
-#endif //TST_DEPENDENCYGRAPH
+#endif //USE_MATH_CONTAINER
 
 #include "lapack/blaswrap.h"
 #include "lapack/lapackwrap.h"
@@ -93,12 +93,12 @@ CModel::CModel(CCopasiContainer* pParent):
   mCurrentState(),
   mStateTemplate(*this, this->mInitialState, this->mCurrentState),
   mSimulatedUpToDateObjects(),
-#ifdef TST_DEPENDENCYGRAPH
   mInitialDependencies(),
   mTransientDependencies(),
   mPhysicalDependencies(),
+#ifdef USE_MATH_CONTAINER
   mpMathContainer(NULL),
-#endif // TST_DEPENDENCYGRAPH
+#endif // USE_MATH_CONTAINER
   mVolumeUnit(ml),
   mAreaUnit(m2),
   mLengthUnit(m),
@@ -233,9 +233,9 @@ CModel::~CModel()
   pdelete(mpRedStoiAnnotation);
   pdelete(mpLinkMatrixAnnotation);
 
-#ifdef TST_DEPENDENCYGRAPH
+#ifdef USE_MATH_CONTAINER
   pdelete(mpMathContainer);
-#endif // TST_DEPENDENCYGRAPH
+#endif // USE_MATH_CONTAINER
 
   CCopasiRootContainer::getKeyFactory()->remove(mKey);
 
@@ -480,14 +480,14 @@ bool CModel::compile()
 
   //writeDependenciesToDotFile();
 
-#ifdef TST_DEPENDENCYGRAPH
   buildDependencyGraphs();
 
+#ifdef USE_MATH_CONTAINER
   pdelete(mpMathContainer);
   mpMathContainer = new CMathContainer(*this);
 
   // CMathContainer CopyModel(MathModel);
-#endif // TST_DEPENDENCYGRAPH
+#endif // USE_MATH_CONTAINER
 
   // Update the parameter set
   mParameterSet.createFromModel();
@@ -495,7 +495,6 @@ bool CModel::compile()
   return success;
 }
 
-#ifdef TST_DEPENDENCYGRAPH
 bool CModel::buildDependencyGraphs()
 {
   mInitialDependencies.clear();
@@ -503,7 +502,8 @@ bool CModel::buildDependencyGraphs()
   mPhysicalDependencies.clear();
 
   // The initial values of the model entities
-  CModelEntity **ppEntity = mStateTemplate.beginIndependent() - 1; // Offset for time
+  // We need to add the time for non-autonomous models.
+  CModelEntity **ppEntity = mStateTemplate.beginIndependent() - 1;
   CModelEntity **ppEntityEnd = mStateTemplate.endFixed();
 
   for (; ppEntity != ppEntityEnd; ++ppEntity)
@@ -537,8 +537,7 @@ bool CModel::buildDependencyGraphs()
   for (; itMoiety != endMoiety; ++itMoiety)
     {
       mInitialDependencies.addObject((*itMoiety)->getInitialValueReference());
-      // TODO This needs to be added in the mathematical model for the context event.
-      // mTransientDependencies.addObject((*itMoiety)->getValueReference());
+      mTransientDependencies.addObject((*itMoiety)->getTotalNumberReference());
       mTransientDependencies.addObject((*itMoiety)->getDependentNumberReference());
     }
 
@@ -554,7 +553,6 @@ bool CModel::buildDependencyGraphs()
 
   return true;
 }
-#endif // TST_DEPENDENCYGRAPH
 
 void CModel::setCompileFlag(bool flag)
 {
@@ -1743,6 +1741,65 @@ void CModel::setState(const CState & state)
   mCurrentState = state;
 
   return;
+}
+
+bool CModel::getInitialUpdateSequence(const CMath::SimulationContextFlag & context,
+                                      const CCopasiObject::DataObjectSet & changedObjects,
+                                      const CCopasiObject::DataObjectSet & requestedObjects,
+                                      CCopasiObject::DataUpdateSequence & updateSequence) const
+{
+  return getUpdateSequence(mInitialDependencies,
+                           context,
+                           changedObjects,
+                           requestedObjects,
+                           updateSequence);
+}
+
+bool CModel::getTransientUpdateSequence(const CMath::SimulationContextFlag & context,
+                                        const CCopasiObject::DataObjectSet & changedObjects,
+                                        const CCopasiObject::DataObjectSet & requestedObjects,
+                                        CCopasiObject::DataUpdateSequence & updateSequence) const
+{
+  return getUpdateSequence(mTransientDependencies,
+                           context,
+                           changedObjects,
+                           requestedObjects,
+                           updateSequence);
+}
+
+bool CModel::getUpdateSequence(CMathDependencyGraph & dependencyGraph,
+                               const CMath::SimulationContextFlag & context,
+                               const CCopasiObject::DataObjectSet & changedObjects,
+                               const CCopasiObject::DataObjectSet & requestedObjects,
+                               CCopasiObject::DataUpdateSequence & updateSequence) const
+{
+  updateSequence.clear();
+
+  CObjectInterface::UpdateSequence UpdateSequence;
+
+  if (!dependencyGraph.getUpdateSequence(context,
+                                         *reinterpret_cast< const CObjectInterface::ObjectSet *>(&changedObjects),
+                                         *reinterpret_cast< const CObjectInterface::ObjectSet *>(&requestedObjects),
+                                         UpdateSequence))
+    {
+      return false;
+    }
+
+  CObjectInterface::UpdateSequence::iterator it = UpdateSequence.begin();
+  CObjectInterface::UpdateSequence::iterator end = UpdateSequence.end();
+  Refresh * pRefresh = NULL;
+
+  for (; it != end; ++it)
+    {
+      pRefresh = static_cast< CCopasiObject * >(*it)->getRefresh();
+
+      if (pRefresh != NULL)
+        {
+          updateSequence.push_back(pRefresh);
+        }
+    }
+
+  return true;
 }
 
 void CModel::updateSimulatedValues(const bool & updateMoieties)
@@ -4181,10 +4238,10 @@ const CMathModel* CModel::getMathModel() const
 CMathModel* CModel::getMathModel()
 {return mpMathModel;}
 
-#ifdef TST_DEPENDENCYGRAPH
+#ifdef USE_MATH_CONTAINER
 const CMathContainer* CModel::getMathContainer() const
 {return mpMathContainer;}
 
 CMathContainer* CModel::getMathContainer()
 {return mpMathContainer;}
-#endif // TST_DEPENDENCYGRAPH
+#endif // USE_MATH_CONTAINER

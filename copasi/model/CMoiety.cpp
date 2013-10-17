@@ -77,16 +77,13 @@ void CMoiety::initObjects()
 {
   setRefresh(this, &CMoiety::refreshDependentNumber);
 
-  mpINumberReference =
-    static_cast<CCopasiObjectReference< C_FLOAT64 > *>(addObjectReference("InitialValue", mINumber, CCopasiObject::ValueDbl));
+  mpINumberReference = new CTotalNumberReference("InitialValue", this, mINumber);
   mpINumberReference->setRefresh(this, &CMoiety::refreshInitialValue);
 
-  mpNumberReference =
-    static_cast<CCopasiObjectReference< C_FLOAT64 > *>(addObjectReference("Value", mNumber, CCopasiObject::ValueDbl));
+  mpNumberReference = new CTotalNumberReference("Value", this, mNumber);
   mpNumberReference->setRefresh(this, &CMoiety::refreshValue);
 
-  mpDNumberReference =
-    static_cast<CCopasiObjectReference< C_FLOAT64 > *>(addObjectReference("DependentValue", mNumber, CCopasiObject::ValueDbl));
+  mpDNumberReference = new CDependentNumberReference("DependentValue", this, mNumber);
   mpDNumberReference->addDirectDependency(this);
 
   CCopasiObject * pObject = addObjectReference("Amount", mIAmount, CCopasiObject::ValueDbl);
@@ -131,6 +128,10 @@ void CMoiety::refreshDependentNumber()
 
   for (; it != end; ++it)
     mNumber -= it->first * it->second->getValue();
+
+  // It is save to update the particle number of the dependent species here.
+  // We are mimicking the behavior of the new math container by doing it.
+  mEquation.begin()->second->setValue(mNumber);
 
   return;
 }
@@ -280,4 +281,48 @@ void CMoiety::initConversionFactor()
     {
       mpConversionFactor = &DefaultFactor;
     }
+}
+
+CTotalNumberReference::CTotalNumberReference(const std::string & name,
+    const CCopasiContainer * pParent,
+    C_FLOAT64 & reference):
+  CCopasiObjectReference< C_FLOAT64 >(name, pParent, reference)
+{}
+
+CTotalNumberReference::CTotalNumberReference(const CTotalNumberReference & src,
+    const CCopasiContainer * pParent):
+  CCopasiObjectReference< C_FLOAT64 >(src, pParent)
+{}
+
+CTotalNumberReference::~CTotalNumberReference()
+{}
+
+// virtual
+bool CTotalNumberReference::isPrerequisiteForContext(const CObjectInterface * /* pObject */,
+    const CMath::SimulationContextFlag & context,
+    const CObjectInterface::ObjectSet & /* changedObjects */) const
+{
+  return (context & CMath::UpdateMoieties);
+}
+
+CDependentNumberReference::CDependentNumberReference(const std::string & name,
+    const CCopasiContainer * pParent,
+    C_FLOAT64 & reference):
+  CCopasiObjectReference< C_FLOAT64 >(name, pParent, reference)
+{}
+
+CDependentNumberReference::CDependentNumberReference(const CDependentNumberReference & src,
+    const CCopasiContainer * pParent):
+  CCopasiObjectReference< C_FLOAT64 >(src, pParent)
+{}
+
+CDependentNumberReference::~CDependentNumberReference()
+{}
+
+// virtual
+bool CDependentNumberReference::isPrerequisiteForContext(const CObjectInterface * /* pObject */,
+    const CMath::SimulationContextFlag & context,
+    const CObjectInterface::ObjectSet & /* changedObjects */) const
+{
+  return (context & CMath::UseMoieties);
 }

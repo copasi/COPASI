@@ -191,7 +191,7 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
         else
           {
             // Amount which are determine by assignment need to be recalculated.
-            if (mSimulationType == CMath::Assignment && !mIsInitialValue)
+            if (mSimulationType == CMath::Assignment)
               return true;
 
             // If the concentration was changed in the context we need to recalculate.
@@ -210,7 +210,7 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
           {
             switch ((int) mpExpression->getRoot()->getType())
               {
-                case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+                case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
                 {
                   const CMathObject * pMathObject = dynamic_cast< const CMathObject * >(pObject);
 
@@ -224,11 +224,11 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
                 }
                 break;
 
-                case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
+                case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
                   return false;
                   break;
 
-                case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+                case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
                   return false;
                   break;
 
@@ -489,7 +489,6 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
     }
   else
     {
-
       switch (mSimulationType)
         {
           case CMath::Fixed:
