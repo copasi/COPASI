@@ -867,14 +867,23 @@ void CModel::buildMoieties()
 
   mMoieties.cleanup();
 
+  if (it == mMetabolitesX.end() || pFactor == NULL)
+    {
+      // the user changed the type of species from under us
+      mNumMetabolitesReaction = 0;
+      mNumMetabolitesReactionIndependent = 0;
+      imax = 0;
+    }
+
   for (i = 0; i < imax; i++, ++it)
     {
       pMoiety = new CMoiety((*it)->getObjectName());
       pMoiety->add(1.0, *it);
 
-      for (j = 0; j < mNumMetabolitesReactionIndependent; j++, pFactor++)
-        if (fabs(*pFactor) > std::numeric_limits< C_FLOAT64 >::epsilon())
-          pMoiety->add(- *pFactor, mMetabolitesX[j + mNumMetabolitesODE]);
+      if (pFactor != NULL)
+        for (j = 0; j < mNumMetabolitesReactionIndependent; j++, pFactor++)
+          if (fabs(*pFactor) > std::numeric_limits< C_FLOAT64 >::epsilon())
+            pMoiety->add(- *pFactor, mMetabolitesX[j + mNumMetabolitesODE]);
 
       mMoieties.add(pMoiety, true);
     }
