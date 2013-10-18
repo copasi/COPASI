@@ -45,7 +45,7 @@ COptMethodSS::COptMethodSS(const CCopasiContainer * pParent):
   mpLocalMinimizer(NULL)
 {
   addParameter("Number of Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 200);
-  addParameter("Population Size", CCopasiParameter::UINT, (unsigned C_INT32) 10);
+  addParameter("Freq. Local Optimiser", CCopasiParameter::UINT, (unsigned C_INT32) 20);
 // we no longer give the user choice of rng, we use the mersenne twister!
 // but in DEBUG versions we should still have access to it
 #ifdef COPASI_DEBUG
@@ -110,10 +110,6 @@ bool COptMethodSS::initialize()
 
   mIteration++;
 
-  // this is hardcoded as per Jose Egea,
-  // but we could change it or even make it a parameter
-  mLocalFreq = 20;
-
 #ifdef COPASI_DEBUG
   mpRandom =
     CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
@@ -122,10 +118,17 @@ bool COptMethodSS::initialize()
   CRandom::createGenerator(* (CRandom::Type *) CRandom::mt19937, 0);
 #endif
 
-  // get number of individuals in population
-  mPopulationSize = * getValue("Population Size").pUINT;
+  // frequency of local optimiser; this is hardcoded as 20 per Jose Egea,
+  // but we allow the user to change it
+  mLocalFreq = * getValue("Freq. Local Optimiser").pUINT;
+
   // get number of variables in the problem
   mVariableSize = mpOptItem->size();
+
+  // calculate the number of individuals in population
+  mPopulationSize = (C_INT32) ceil(1.0 + sqrt(1.0 + 40.0 * mVariableSize) / 2.0);
+
+  if (mPopulationSize % 2 != 0) mPopulationSize++;
 
   CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(mpOptProblem);
 
@@ -143,10 +146,10 @@ bool COptMethodSS::initialize()
       //mpLocalMinimizer = COptMethod::createMethod(CCopasiMethod::NelderMead);
       mpLocalMinimizer = COptMethod::createMethod(CCopasiMethod::HookeJeeves);
       // with a rather relaxed tolerance (1e-3)
-      mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-005);
+      mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-004);
       mpLocalMinimizer->setValue("Iteration Limit", (C_INT32) 50);
       mpLocalMinimizer->setValue("Rho", (C_FLOAT64) 0.2);
-      // mpLocalMinimizer->setValue("Scale", (C_FLOAT64) 10.0);
+      //mpLocalMinimizer->setValue("Scale", (C_FLOAT64) 10.0);
     }
 
   // local minimization problem (starts as a copy of the current problem)
@@ -895,6 +898,12 @@ bool COptMethodSS::combination(void)
   // generate children for each member of the population
   for (i = 0; (i < mPopulationSize) && Running; i++)
     {
+      // keep the parent value in childval[i] so that we only accept better than that
+      mChildVal[i] = mRefSetVal[i];
+
+//#ifdef DEBUG_OPT
+//      inforefset(10, i);
+//#endif
       for (j = 0; j < mPopulationSize; j++)
         {
           // no self-reproduction...
@@ -923,8 +932,8 @@ bool COptMethodSS::combination(void)
                       else
                         la = 1.0;
 
-                      if ((la > -1.8) && (la < 1.8))
-//                if(true)
+//                      if ((la > -1.8) && (la < 1.8))
+                      if (true)
                         {
                           dd = ((*mRefSet[i])[k] - (*mRefSet[j])[k]) * omatb;
                           // one of the box limits
@@ -1060,6 +1069,10 @@ bool COptMethodSS::combination(void)
                   inforefset(1, i);
 #endif
                 }
+
+//#ifdef DEBUG_OPT
+//                serializevector(xnew, mEvaluationValue);
+//#endif
             }
         }
 
@@ -1245,10 +1258,14 @@ bool COptMethodSS::optimise()
       for (i = 0; i < mPopulationSize; i++)
         {
           // are we stuck? (20 iterations)
+//          if ((i>0) && (mStuck[i] == 19))
           if (mStuck[i] == 19)
             {
               // substitute this one by a random guess
               Running &= randomize(i);
+              // if we are overdue a local min, let's do one now
+              // but don't count this one...
+              // Running &= localmin(*(mRefSet[i]), mRefSetVal[i]);
               needsort = true;
               mStuck[i] = 1;
 #ifdef DEBUG_OPT
@@ -1350,7 +1367,8 @@ bool COptMethodSS::optimise()
 
   // the best ever might not be what is on position 0, so bring it back
   *mRefSet[0] = mpOptProblem->getSolutionVariables();
-  // now let's do a final local minimisation
+  // now let's do a final local minimisation with a tighter tolerance
+  mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-006);
   Running &= localmin(*(mRefSet[0]), mRefSetVal[0]);
 
   // has it improved?
@@ -1456,6 +1474,8 @@ bool COptMethodSS::inforefset(C_INT32 type, C_INT32 element)
       case 8: ofile << "c2 is NaN (element" << element << ")" << std::endl; break;
 
       case 9: ofile << "xnew[k] is NaN (element" << element << ")" << std::endl; break;
+
+      case 10: ofile << "Children of " << element << std::endl; break;
     }
 
   ofile.close();
@@ -1478,6 +1498,8 @@ bool COptMethodSS::serializerefset(C_INT32 first, C_INT32 last)
       return false;
     }
 
+  ofile << std::endl << "Refset" << std::endl;
+
   for (i = first; i < Last; i++)
     {
       for (j = 0; j < mVariableSize; j++)
@@ -1492,6 +1514,33 @@ bool COptMethodSS::serializerefset(C_INT32 first, C_INT32 last)
     }
 
   ofile << std::endl;
+  ofile.close();
+  return true;
+}
+// serialize the population to a file for debugging purposes
+bool COptMethodSS::serializevector(CVector< C_FLOAT64 > x, C_FLOAT64 xval)
+{
+  C_INT32 i;
+  std::ofstream ofile;
+
+  // open the file for output, in append mode
+  ofile.open("ssrefset.txt", std::ios::out | std::ios::app);
+
+  if (! ofile.is_open())
+    {
+      std::cerr << "error opening file \'ssrefset.txt\'" << std::endl;
+      return false;
+    }
+
+  for (i = 0; i < mVariableSize; i++)
+    {
+      // print this parameter
+      ofile << x[i] << "\t";
+    }
+
+  // print the fitness of the individual
+  ofile << xval << std::endl;
+
   ofile.close();
   return true;
 }

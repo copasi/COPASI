@@ -69,6 +69,14 @@ private:
   bool serializerefset(C_INT32 first, C_INT32 last);
 
   /**
+   * Serialize a vector to the refset file ,for debug
+   * @param x the vector
+   * @param xval function value for that vector
+   * @return bool success
+   */
+  bool serializevector(CVector< C_FLOAT64 > x, C_FLOAT64 xval);
+
+  /**
    * write informative messages about the refset
    * @param size_t type
    * @return bool success
@@ -270,7 +278,14 @@ private:
     */
   unsigned C_INT32 mIteration;
 
+  /**
+   * The best value so far
+   */
   C_FLOAT64 mBestValue;
+
+  /**
+   * index of the best value so far
+   */
   size_t mBestIndex;
 
   /**
