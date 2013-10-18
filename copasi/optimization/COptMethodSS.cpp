@@ -136,7 +136,7 @@ bool COptMethodSS::initialize()
     {
       // this is a least squares problem (param estimation)
       mpLocalMinimizer = COptMethod::createMethod(CCopasiMethod::LevenbergMarquardt);
-      mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-004);
+      mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-003);
       mpLocalMinimizer->setValue("Iteration Limit", (C_INT32) 2000);
     }
   else
@@ -146,7 +146,7 @@ bool COptMethodSS::initialize()
       //mpLocalMinimizer = COptMethod::createMethod(CCopasiMethod::NelderMead);
       mpLocalMinimizer = COptMethod::createMethod(CCopasiMethod::HookeJeeves);
       // with a rather relaxed tolerance (1e-3)
-      mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-004);
+      mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-003);
       mpLocalMinimizer->setValue("Iteration Limit", (C_INT32) 50);
       mpLocalMinimizer->setValue("Rho", (C_FLOAT64) 0.2);
       //mpLocalMinimizer->setValue("Scale", (C_FLOAT64) 10.0);
@@ -289,8 +289,12 @@ bool COptMethodSS::localmin(CVector< C_FLOAT64 > & solution, C_FLOAT64 & fval)
       optitem[i]->setStartValue(solution[i]);
     }
 
+  // reset the function counter of the local minimizer
+  mpOptProblemLocal->resetEvaluations();
   // run it
   Running &= mpLocalMinimizer->optimise();
+  // add the function evaluations taken in local to the global problem
+  mpOptProblem->incrementEvaluations(mpOptProblemLocal->getFunctionEvaluations());
   // pass the results on to the calling parameters
   fval = mpOptProblemLocal->getSolutionValue();
 

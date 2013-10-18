@@ -313,10 +313,21 @@ public:
   const bool & getCalculateStatistics() const;
 
   /**
-   * Retrieve the objective function.
+   * Retrieve the evaluation counter.
    * @return const unsigned C_INT32 & functionEvaluations
    */
   const unsigned C_INT32 & getFunctionEvaluations() const;
+
+  /**
+   * Adds increment to the function evaluation counter
+   * @param unsigned C_INT32 increment
+   */
+  void incrementEvaluations(unsigned C_INT32 increment);
+
+  /**
+   * Resets the function evaluation counter
+   */
+  void resetEvaluations();
 
   /**
    * Retrieve the objective function.

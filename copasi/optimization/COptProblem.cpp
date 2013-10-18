@@ -812,6 +812,12 @@ const bool & COptProblem::getCalculateStatistics() const
 const unsigned C_INT32 & COptProblem::getFunctionEvaluations() const
 {return mCounter;}
 
+void COptProblem::incrementEvaluations(unsigned C_INT32 increment)
+{mCounter += increment;}
+
+void COptProblem::resetEvaluations()
+{mCounter = 0;}
+
 const C_FLOAT64 & COptProblem::getExecutionTime() const
 {
   return mCPUTime.getElapsedTimeSeconds();
