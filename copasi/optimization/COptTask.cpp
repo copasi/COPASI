@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * COptTask class.
@@ -128,7 +128,7 @@ bool COptTask::initialize(const OutputFlag & of,
   return success;
 }
 
-bool COptTask::process(const bool & /* useInitialValues */)
+bool COptTask::process(const bool & useInitialValues)
 {
   COptProblem * pProblem = dynamic_cast<COptProblem *>(mpProblem);
   COptMethod * pMethod = dynamic_cast<COptMethod *>(mpMethod);
@@ -138,6 +138,8 @@ bool COptTask::process(const bool & /* useInitialValues */)
   mpMethod->isValidProblem(mpProblem);
 
   pProblem->randomizeStartValues();
+
+  if (useInitialValues) pProblem->resetEvaluations();
 
   output(COutputInterface::BEFORE);
 
