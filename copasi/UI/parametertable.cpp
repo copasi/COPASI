@@ -51,8 +51,6 @@ void ParameterTable::initTable()
   mpComboDelegate = new CQComboDelegate(NULL, this);
   setItemDelegateForColumn(2, mpComboDelegate);
 
-  connect(mpComboDelegate, SIGNAL(currentIndexChanged(int, int)), this, SLOT(slotMappingChanged(int, int)));
-
   setShowGrid(false);
 }
 
@@ -486,13 +484,6 @@ void ParameterTable::handleCurrentCell(int row, int col, int, int)
   if (changed) setCurrentCell(row, col);
 
   //TODO: allow keyboard editing of col 2
-}
-
-void ParameterTable::slotMappingChanged(int row, int index)
-{
-  // Fill cell with appropriate text from comboDeletate
-  item(row, 2)->setText((*mpComboDelegate->getItems(row))[index]);
-  // That will then fire cellChanged, for that cell
 }
 
 void ParameterTable::slotCellChanged(int row, int col)

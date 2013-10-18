@@ -66,7 +66,6 @@ public slots:
 private slots:
   void handleCurrentCell(int row, int col, int, int);
   void slotCellChanged(int row, int col);
-  void slotMappingChanged(int row, int index);
 
 signals:
   void signalChanged(int, int, QString);
