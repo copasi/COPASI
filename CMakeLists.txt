@@ -174,11 +174,14 @@ include_directories(BEFORE ${RAPTOR_INCLUDE_DIR})
 find_package(LIBSBML REQUIRED)
 include_directories(BEFORE ${LIBSBML_INCLUDE_DIR})
 
-#TODO find libsedml, version
-#if ENABLE_COPASI_SEDML is enabled, LIBSEDML must be available 
+# TODO find libsedml, version
+# Option for the COPASI support for SEDML 
+option (ENABLE_COPASI_SEDML "Enables SEDML support." OFF)
+mark_as_advanced(ENABLE_COPASI_SEDML)
 if(ENABLE_COPASI_SEDML)
-find_package(LIBSEDML REQUIRED)
-include_directories(BEFORE ${LIBSEDML_INCLUDE_DIR})
+  add_definitions(-DCOPASI_SEDML)
+  find_package(LIBSEDML REQUIRED)
+  include_directories(BEFORE ${LIBSEDML_INCLUDE_DIR})
 endif(ENABLE_COPASI_SEDML)
 
 # we need swig for the language bindings. Only if SWIG was found, the options to
@@ -290,7 +293,7 @@ endif(ENABLE_USE_SBMLUNIT)
 option (ENABLE_COPASI_SEDML "Enables SEDML support." OFF)
 mark_as_advanced(ENABLE_COPASI_SEDML)
 if(ENABLE_COPASI_SEDML)
-add_definitions(-DCOPASI_SEDML)
+  add_definitions(-DCOPASI_SEDML)
 endif(ENABLE_COPASI_SEDML)
 
 # if the MML widget is available, we need to enable "HAVE_MML"
@@ -510,8 +513,7 @@ message(STATUS "-----------------------------------------------------------
    SBW integration          = ${ENABLE_SBW_INTEGRATION}
    SBML Unit                = ${ENABLE_USE_SBMLUNIT}
    Model Merging            = ${ENABLE_WITH_MERGEMODEL}
-   
-   SEDML support          	= ${ENABLE_COPASI_SEDML}
+   SEDML support            = ${ENABLE_COPASI_SEDML}
 
    Additional Defines       = ${DirDefs}
 
