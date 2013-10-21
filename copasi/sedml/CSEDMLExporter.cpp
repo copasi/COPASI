@@ -250,7 +250,7 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
   SedVariable *pTimeVar = pTimeDGenp->createVariable();
   pTimeVar->setId("var_time");
   pTimeVar->setTaskReference(taskId);
-  pTimeVar->setSymbol("usn:sedml:symbol:time");
+  pTimeVar->setSymbol("urn:sedml:symbol:time");
   pTimeDGenp->setMath(SBML_parseFormula(pTimeVar->getId().c_str()));
 
   size_t i, imax = dataModel.getPlotDefinitionList()->size();
