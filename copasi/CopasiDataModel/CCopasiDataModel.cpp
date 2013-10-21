@@ -24,7 +24,6 @@
 #include "trajectory/CTrajectoryTask.h"
 #endif
 
-
 #include "copasi.h"
 #include "CCopasiDataModel.h"
 
@@ -1005,7 +1004,7 @@ bool CCopasiDataModel::importSEDMLFromString(const std::string& sedmlDocumentTex
   SEDMLImporter importer;
   // Right now we always import the COPASI MIRIAM annotation if it is there.
   // Later this will be settable by the user in the preferences dialog
- // importer.setImportCOPASIMIRIAM(true);
+// importer.setImportCOPASIMIRIAM(true);
   importer.setImportHandler(pImportHandler);
   //mCopasi2SBMLMap.clear();
   CModel* pModel = NULL;
@@ -1018,6 +1017,7 @@ bool CCopasiDataModel::importSEDMLFromString(const std::string& sedmlDocumentTex
   CTrajectoryTask *trajTask = NULL;
   CListOfLayouts * pLol = NULL;
   COutputDefinitionVector *pLotList = NULL; // = new COutputDefinitionVector("OutputDefinitions", this);
+
   try
     {
       pModel = importer.parseSEDML(sedmlDocumentText, pImportHandler, CCopasiRootContainer::getFunctionList(), pSBMLDocument, pSEDMLDocument,
@@ -1049,10 +1049,10 @@ bool CCopasiDataModel::importSEDMLFromString(const std::string& sedmlDocumentTex
     }
 
   if (pLol != NULL)
-     {
-       mData.pListOfLayouts = pLol;
-       add(mData.pListOfLayouts, true);
-     }
+    {
+      mData.pListOfLayouts = pLol;
+      add(mData.pListOfLayouts, true);
+    }
 
   mData.pCurrentSEDMLDocument = pSEDMLDocument;
   mData.mCopasi2SEDMLMap = Copasi2SEDMLMap;
@@ -1064,8 +1064,8 @@ bool CCopasiDataModel::importSEDMLFromString(const std::string& sedmlDocumentTex
 }
 
 bool CCopasiDataModel::importSEDML(const std::string & fileName,
-                                  CProcessReport* pImportHandler,
-                                  const bool & deleteOldData)
+                                   CProcessReport* pImportHandler,
+                                   const bool & deleteOldData)
 {
   CCopasiMessage::clearDeque();
 
@@ -1083,7 +1083,7 @@ bool CCopasiDataModel::importSEDML(const std::string & fileName,
   SEDMLImporter importer;
   // Later this will be settable by the user in the preferences dialog
   // Later this will be settable by the user in the preferences dialog
- //   importer.setImportCOPASIMIRIAM(true);
+//   importer.setImportCOPASIMIRIAM(true);
   importer.setImportHandler(pImportHandler);
 
   CModel* pModel = NULL;
@@ -1106,7 +1106,7 @@ bool CCopasiDataModel::importSEDML(const std::string & fileName,
       mData.mReferenceDir = CDirEntry::dirName(mData.mSEDMLFileName);
 
       pModel = importer.readSEDML(FileName, pImportHandler, CCopasiRootContainer::getFunctionList(), pSBMLDocument, pSEDMLDocument,
-                                 Copasi2SEDMLMap, Copasi2SBMLMap, pLol, trajTask, pLotList, this);
+                                  Copasi2SEDMLMap, Copasi2SBMLMap, pLol, trajTask, pLotList, this);
     }
 
   catch (CCopasiException & except)
@@ -1140,21 +1140,19 @@ bool CCopasiDataModel::importSEDML(const std::string & fileName,
     }
 
   if (pLol != NULL)
-      {
-        mData.pPlotDefinitionList = pLotList;
-        add(mData.pPlotDefinitionList, true);
-      }
+    {
+      mData.pPlotDefinitionList = pLotList;
+      add(mData.pPlotDefinitionList, true);
+    }
 
   commonAfterLoad(pImportHandler, deleteOldData);
 
   //update the Task List with new time course task
   updateTaskList(CCopasiTask::timeCourse, trajTask);
 
-
   mData.pCurrentSEDMLDocument = pSEDMLDocument;
   mData.mCopasi2SEDMLMap = Copasi2SEDMLMap;
   mData.mFileType = SEDML;
-
 
   mData.mSaveFileName = CDirEntry::dirName(FileName)
                         + CDirEntry::Separator
@@ -1198,7 +1196,6 @@ std::map<CCopasiObject*, SedBase*>& CCopasiDataModel::getCopasi2SEDMLMap()
   return mData.mCopasi2SEDMLMap;
 }
 
-
 std::string CCopasiDataModel::exportSEDMLToString(CProcessReport* pExportHandler, int sedmlLevel, int sedmlVersion)
 {
   CCopasiMessage::clearDeque();
@@ -1227,43 +1224,42 @@ std::string CCopasiDataModel::exportSEDMLToString(CProcessReport* pExportHandler
     }
 
   CSEDMLExporter exporter;
- //  exporter.setExportCOPASIMIRIAM(exportCOPASIMIRIAM);
+//  exporter.setExportCOPASIMIRIAM(exportCOPASIMIRIAM);
   std::string sbmlDocument = this->exportSBMLToString(pExportHandler, 2, 4);
   std::string str = exporter.exportModelAndTasksToString(*this, sbmlDocument, sedmlLevel, sedmlVersion);
-  std::cout<<"sedml: "<<str<<std::endl;
-  std::cout<<sbmlDocument<<std::endl;
+  std::cout << "sedml: " << str << std::endl;
+  std::cout << sbmlDocument << std::endl;
 
   // if we have saved the original SEDML model somewhere
-	// we have to reset it
-	if (pOrigSEDMLDocument != NULL)
-	{
-		mData.pCurrentSEDMLDocument = pOrigSEDMLDocument;
-	}
+  // we have to reset it
+  if (pOrigSEDMLDocument != NULL)
+    {
+      mData.pCurrentSEDMLDocument = pOrigSEDMLDocument;
+    }
 
-		return str;
+  return str;
 }
 
 void CCopasiDataModel::updateTaskList(const CCopasiTask::Type & taskType, CCopasiTask *upTask)
 {
-	switch (taskType)
-	{
-		case CCopasiTask::steadyState:
-		break;
+  switch (taskType)
+    {
+      case CCopasiTask::steadyState:
+        break;
 
-		case CCopasiTask::timeCourse:
-		//CTrajectoryTask *pTask = new CTrajectoryTask(mData.pTaskList);
-		CCopasiTask* pTask = (*mData.pTaskList)[CCopasiTask::timeCourse];
-		CTrajectoryTask * ppTask = static_cast<CTrajectoryTask *>(upTask);
-		CTrajectoryProblem* newProblem = static_cast<CTrajectoryProblem*>(pTask->getProblem());
-		CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(ppTask->getProblem());
-		newProblem->setDuration(tProblem->getDuration());
-		newProblem->setOutputStartTime(tProblem->getOutputStartTime());
-		newProblem->setStepNumber(tProblem->getStepNumber());
-		newProblem->setStepSize(tProblem->getStepSize());
-		//	pTask->getProblem()->setModel(mData.pModel);
-		break;
-	}
-
+      case CCopasiTask::timeCourse:
+        //CTrajectoryTask *pTask = new CTrajectoryTask(mData.pTaskList);
+        CCopasiTask* pTask = (*mData.pTaskList)[CCopasiTask::timeCourse];
+        CTrajectoryTask * ppTask = static_cast<CTrajectoryTask *>(upTask);
+        CTrajectoryProblem* newProblem = static_cast<CTrajectoryProblem*>(pTask->getProblem());
+        CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(ppTask->getProblem());
+        newProblem->setDuration(tProblem->getDuration());
+        newProblem->setOutputStartTime(tProblem->getOutputStartTime());
+        newProblem->setStepNumber(tProblem->getStepNumber());
+        newProblem->setStepSize(tProblem->getStepSize());
+        //  pTask->getProblem()->setModel(mData.pModel);
+        break;
+    }
 }
 
 bool CCopasiDataModel::exportSEDML(const std::string & fileName, bool overwriteFile, int sedmlLevel, int sedmlVersion, bool /*exportIncomplete*/, bool exportCOPASIMIRIAM, CProcessReport* pExportHandler)
@@ -1322,28 +1318,27 @@ bool CCopasiDataModel::exportSEDML(const std::string & fileName, bool overwriteF
       return false;
     }
 
-
   CSEDMLExporter exporter;
   // exporter.setExportCOPASIMIRIAM(exportCOPASIMIRIAM);
-   SedDocument* pOrigSEDMLDocument = NULL;
+  SedDocument* pOrigSEDMLDocument = NULL;
 
-   //exporter.setExportHandler(pExportHandler);
- //  const std::string& SBMLFileName = "";
+  //exporter.setExportHandler(pExportHandler);
+//  const std::string& SBMLFileName = "";
 
-   std::string sbmlDocument = "";
-   sbmlDocument = this->exportSBMLToString(pExportHandler, 2, 3);
+  std::string sbmlDocument = "";
+  sbmlDocument = this->exportSBMLToString(pExportHandler, 2, 3);
+
   // std::cout<<sbmlDocument<<std::endl; //for debuging
-   if(sbmlDocument==""){
-	   CCopasiMessage(CCopasiMessage::EXCEPTION, "No support for exporting SEDML without SBML model");
-   }
+  if (sbmlDocument == "")
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "No support for exporting SEDML without SBML model");
+    }
 
-   if (!exporter.exportModelAndTasks(*this, FileName, sbmlDocument, sedmlLevel, sedmlVersion, overwriteFile)) return false;
-
+  if (!exporter.exportModelAndTasks(*this, FileName, sbmlDocument, sedmlLevel, sedmlVersion, overwriteFile)) return false;
 
   return true;
 }
 #endif
-
 
 void CCopasiDataModel::deleteOldData()
 {
@@ -1929,7 +1924,7 @@ CCopasiDataModel::CData::CData(const bool & withGUI):
   mSBMLFileName(""),
   mReferenceDir("")
 #ifdef COPASI_SEDML
-, pCurrentSEDMLDocument(NULL)
+  , pCurrentSEDMLDocument(NULL)
 #endif
 {}
 
@@ -1949,7 +1944,7 @@ CCopasiDataModel::CData::CData(const CData & src):
   mSBMLFileName(src.mSBMLFileName),
   mReferenceDir(src.mReferenceDir)
 #ifdef COPASI_SEDML
-, pCurrentSEDMLDocument(src.pCurrentSEDMLDocument)
+  , pCurrentSEDMLDocument(src.pCurrentSEDMLDocument)
 #endif
 {}
 
@@ -1991,6 +1986,10 @@ bool CCopasiDataModel::CData::isValid() const
 
 void CCopasiDataModel::pushData()
 {
+  bool condition = true;
+#ifdef COPASI_SEDML
+  condition = mOldData.pCurrentSEDMLDocument == NULL;
+#endif
   // make sure the old data has been deleted.
   assert(mOldData.pModel == NULL &&
          mOldData.pTaskList == NULL &&
@@ -1998,11 +1997,8 @@ void CCopasiDataModel::pushData()
          mOldData.pPlotDefinitionList == NULL &&
          mOldData.pListOfLayouts == NULL &&
          mOldData.pGUI == NULL &&
-         mOldData.pCurrentSBMLDocument == NULL
-#ifdef COPASI_SEDML
-  	  	&& mOldData.pCurrentSEDMLDocument == NULL
-#endif
-  );
+         condition
+        );
 
   mOldData = mData;
   mData = CData(mData.mWithGUI);
@@ -2118,10 +2114,11 @@ void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,
   if (mOldData.pCurrentSBMLDocument == mData.pCurrentSBMLDocument)
     mOldData.pCurrentSBMLDocument = NULL;
 
-
 #ifdef COPASI_SEDML
+
   if (mOldData.pCurrentSEDMLDocument == mData.pCurrentSEDMLDocument)
-      mOldData.pCurrentSEDMLDocument = NULL;
+    mOldData.pCurrentSEDMLDocument = NULL;
+
 #endif
 
   mData.pModel->getModelParameterSet().updateModel();
