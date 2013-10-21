@@ -141,7 +141,10 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
           case SEDML_OUTPUT_PLOT2D: //get the curves data
           {
             SedPlot2D* p = static_cast<SedPlot2D*>(current);
-            CPlotSpecification* pPl = pLotList->createPlotSpec(current->getId(), CPlotItem::plot2d);
+            CPlotSpecification* pPl = pLotList->createPlotSpec(
+                                        current->isSetName() ? current->getName() :
+                                        current->getId()
+                                        , CPlotItem::plot2d);
 
             //need Time for all Time Courses
             const CCopasiObject* pTime = static_cast<const CCopasiObject *>(pModel->getObject(CCopasiObjectName("Reference=Time")));
