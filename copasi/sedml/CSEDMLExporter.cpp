@@ -422,7 +422,6 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
           pPDGen->setId(idStrStream.str());
 
           pPDGen->setName(yAxis);
-          pPDGen->setMath(SBML_parseFormula(pPDGen->getId().c_str()));
 
           SedVariable * pPVar = pPDGen->createVariable();
           std::ostringstream idVarStrStream;
@@ -433,6 +432,8 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
           pPVar->setId(idVarStrStream.str());
           pPVar->setTaskReference(taskId);
           pPVar->setName(pPDGen->getName());
+
+          pPDGen->setMath(SBML_parseFormula(pPVar->getId().c_str()));
 
           //temporary method to set XPath target
           std::ostringstream targetStrStream;
