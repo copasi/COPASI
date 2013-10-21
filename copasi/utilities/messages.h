@@ -305,7 +305,7 @@ const MESSAGES Messages[] =
   {MCSEDML + 3, "SEDML (3): Presently only SBML model encoding is supported"},
   {MCSEDML + 4, "SEDML (4): Could not open file \"%s\". Note: The reference SBML model in SEDML document must be saved in the same directory as the SEDML document using the source attribute value as the file name ."},
   {MCSEDML + 5, "SEDML (5): Could not open file \"%s\"."},
-  {MCSEDML + 4, "SEDML (40): LIBSEDML %s %d at line %d column %d: %s."},
+  {MCSEDML + 6, "SEDML (40): LIBSEDML %s %d at line %d column %d: %s."},
 
   {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
   {

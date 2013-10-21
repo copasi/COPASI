@@ -116,6 +116,7 @@ CTrajectoryTask* SEDMLImporter::createCTrajectoryTaskFromSimulation(SedSimulatio
 
         break;
       }
+
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, "SEDMLImporter Error: encountered unknown simulation.");
         break;
@@ -222,6 +223,7 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
             pPl->setLogY(false);
             break;
           }
+
           default:
             CCopasiMessage(CCopasiMessage::EXCEPTION, "SEDMLImporter Error: No support for this plot: " + current->getTypeCode());
             break;
@@ -432,7 +434,7 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
                     messageType = CCopasiMessage::WARNING;
                   }
 
-                CCopasiMessage(messageType, MCSEDML + 40, "WARNING",
+                CCopasiMessage(messageType, MCSEDML + 6, "WARNING",
                                pSEDMLError->getErrorId(), pSEDMLError->getLine(),
                                pSEDMLError->getColumn(),
                                pSEDMLError->getMessage().c_str());
@@ -446,7 +448,7 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
                     messageType = CCopasiMessage::ERROR_FILTERED;
                   }
 
-                CCopasiMessage(messageType, MCSEDML + 40, "ERROR",
+                CCopasiMessage(messageType, MCSEDML + 6, "ERROR",
                                pSEDMLError->getErrorId(), pSEDMLError->getLine(),
                                pSEDMLError->getColumn(),
                                pSEDMLError->getMessage().c_str());
@@ -462,7 +464,7 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
                     // this error indicates a problem with a notes element
                     // although libsedml flags this as fatal, we would still
                     // like to read the model
-                    CCopasiMessage(messageType, MCSEDML + 40, "ERROR",
+                    CCopasiMessage(messageType, MCSEDML + 6, "ERROR",
                                    pSEDMLError->getErrorId(), pSEDMLError->getLine(),
                                    pSEDMLError->getColumn(),
                                    pSEDMLError->getMessage().c_str());
