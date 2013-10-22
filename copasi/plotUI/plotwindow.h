@@ -1,28 +1,26 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <fstream>
 #include <string>
 #include <vector>
 #include <QtGui/QToolButton>
 
-#include "copasi.h"
-#include "UI/CopasiFileDialog.h"
-#include "UI/CWindowInterface.h"
-#include "utilities/COutputHandler.h"
-
-class QAction;
+#include "copasi/copasi.h"
+#include "copasi/UI/CopasiFileDialog.h"
+#include "copasi/UI/CWindowInterface.h"
+#include "copasi/utilities/COutputHandler.h"
 
 class CopasiPlot;
 class CPlotSpecification;
