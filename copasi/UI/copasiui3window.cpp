@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <sbml/SBMLDocument.h>
 
@@ -66,6 +66,8 @@
 #include "MIRIAM/CConstants.h"
 #include "copasi/utilities/CVersion.h"
 #include "model/CModelExpansion.h"
+#include "copasi/UI/CQCheckModelWindow.h"
+
 #ifdef WITH_MERGEMODEL
 #include "model/CModelExpansion.h"
 #endif
@@ -1960,10 +1962,12 @@ void CopasiUI3Window::slotCheckModel()
   // MA.writeReport(ss, true, false);
   MA.writeReport(ss, true, true);
 
-  QTextEdit* pTE = new QTextEdit(FROM_UTF8(ss.str()));
-  pTE->setReadOnly(true);
-  pTE->resize(512, 640);
-  pTE->show();
+  CQCheckModelWindow * checkModelWindow = new CQCheckModelWindow(this);
+
+  checkModelWindow->setWindowTitle("Check Model");
+  checkModelWindow->textEdit->setText(FROM_UTF8(ss.str()));
+
+  checkModelWindow->show();
 }
 
 void CopasiUI3Window::slotUpdateMIRIAM()
