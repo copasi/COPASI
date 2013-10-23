@@ -57,12 +57,18 @@ CLGlyphWithCurve::CLGlyphWithCurve(const GraphicalObject & sbml,
   const GeneralGlyph* general = dynamic_cast<const GeneralGlyph *>(&sbml);
 
   if (general && general->isSetCurve())
-    mCurve = CLCurve(*general->getCurve());
+    {
+      CLCurve copy(*general->getCurve());
+      mCurve = copy;
+    }
 
   const ReferenceGlyph* rG = dynamic_cast<const ReferenceGlyph *>(&sbml);
 
   if (rG && rG->isSetCurve())
-    mCurve = CLCurve(*rG->getCurve());
+    {
+      CLCurve copy(*rG->getCurve());
+      mCurve = copy;
+    }
 
 #endif // LIBSBML_VERSION >= 50800
 }
@@ -289,10 +295,10 @@ CLMetabReferenceGlyph::CLMetabReferenceGlyph(const SpeciesReferenceGlyph & sbml,
 
   //curve
   if (sbml.getCurve())
-  {
-    CLCurve copy(*sbml.getCurve());
-    mCurve = copy;
-  }
+    {
+      CLCurve copy(*sbml.getCurve());
+      mCurve = copy;
+    }
 }
 
 CLMetabReferenceGlyph & CLMetabReferenceGlyph::operator= (const CLMetabReferenceGlyph & rhs)
@@ -709,10 +715,10 @@ CLReactionGlyph::CLReactionGlyph(const ReactionGlyph & sbml,
 
   //curve
   if (sbml.getCurve())
-  {
-    CLCurve copy(*sbml.getCurve());
-    mCurve = copy;
-  }
+    {
+      CLCurve copy(*sbml.getCurve());
+      mCurve = copy;
+    }
 }
 
 CLReactionGlyph & CLReactionGlyph::operator= (const CLReactionGlyph & rhs)
