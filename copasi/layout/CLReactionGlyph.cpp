@@ -96,7 +96,10 @@ CLMetabReferenceGlyph::CLMetabReferenceGlyph(const SpeciesReferenceGlyph & sbml,
 
   //curve
   if (sbml.getCurve())
-    mCurve = CLCurve(*sbml.getCurve());
+  {
+    CLCurve copy(*sbml.getCurve());
+    mCurve = copy;
+  }
 }
 
 CLMetabReferenceGlyph & CLMetabReferenceGlyph::operator= (const CLMetabReferenceGlyph & rhs)
@@ -233,7 +236,10 @@ CLReactionGlyph::CLReactionGlyph(const ReactionGlyph & sbml,
 
   //curve
   if (sbml.getCurve())
-    mCurve = CLCurve(*sbml.getCurve());
+  {
+    CLCurve copy(*sbml.getCurve());
+    mCurve = copy;
+  }
 }
 
 CLReactionGlyph & CLReactionGlyph::operator= (const CLReactionGlyph & rhs)

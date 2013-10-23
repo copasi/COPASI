@@ -87,6 +87,7 @@ CCellDesignerImporter::CCellDesignerImporter(SBMLDocument* pDocument):
     mpLayout(NULL),
     mpLocalRenderInfo(NULL)
 {
+  setlocale(LC_ALL, "C");
   if (this->mpDocument != NULL &&
       this->mpDocument->getModel() != NULL &&
       this->mpDocument->getModel()->getAnnotation() != NULL)
