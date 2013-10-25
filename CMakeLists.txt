@@ -520,7 +520,7 @@ message(STATUS "-----------------------------------------------------------
  Options:
 
    COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
-   Math Contaier            = ${ENABLE_USE_MATH_CONTAINER}
+   Math Container           = ${ENABLE_USE_MATH_CONTAINER}
    SBW integration          = ${ENABLE_SBW_INTEGRATION}
    SBML Unit                = ${ENABLE_USE_SBMLUNIT}
    Model Merging            = ${ENABLE_WITH_MERGEMODEL}
