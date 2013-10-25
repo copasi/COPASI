@@ -33,7 +33,15 @@ if (NOT WIN32)
  SET(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
 endif()
 
-file(READ "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h" COPASI_VERSION)
+set(COPASI_VERSION)
+# the CopasiVersion file only exists when the git tools have been configured
+# and used. if that is not the case, we default to the canned version. 
+if (EXISTS "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h")
+  file(READ "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h" COPASI_VERSION)
+else()
+  file(READ "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h.in" COPASI_VERSION)
+endif()
+
 string(REGEX REPLACE ".*COPASI_VERSION_MAJOR ([0-9]+).*" "\\1" COPASI_VERSION_MAJOR "${COPASI_VERSION}")
 string(REGEX REPLACE ".*COPASI_VERSION_MINOR ([0-9]+).*" "\\1" COPASI_VERSION_MINOR "${COPASI_VERSION}")
 string(REGEX REPLACE ".*COPASI_VERSION_BUILD ([0-9]+).*" "\\1" COPASI_VERSION_BUILD "${COPASI_VERSION}")
