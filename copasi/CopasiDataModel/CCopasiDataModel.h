@@ -58,7 +58,19 @@ public:
 
   virtual ~CDataModelRenameHandler() {};
 
-  virtual bool handle(const std::string & oldCN, const std::string & newCN) const;
+  virtual void handle(const std::string & oldCN, const std::string & newCN) const;
+
+  /**
+   * Enable and disable the rename handler
+   * @param const bool & enabled
+   */
+  void setEnabled(const bool & enabled);
+
+private:
+  /**
+   * Flag whether the rename handler is enable or not
+   */
+  bool mEnabled;
 };
 
 //******************************************************************************
@@ -126,22 +138,21 @@ private:
 
     //TODO SEDML
 #ifdef COPASI_SEDML
-   	SedDocument* pCurrentSEDMLDocument;
+    SedDocument* pCurrentSEDMLDocument;
 
-   	/**
-   	 * This will map each COPASI object to the
-   	 * corresponding SEDML object if the current model
-   	 * was created by an SEDML import.
-   	 */
-   	std::map<CCopasiObject*, SedBase*> mCopasi2SEDMLMap;
+    /**
+     * This will map each COPASI object to the
+     * corresponding SEDML object if the current model
+     * was created by an SEDML import.
+     */
+    std::map<CCopasiObject*, SedBase*> mCopasi2SEDMLMap;
 
-   	/**
-   	 * The name of the referenced SEDML file
-   	 */
-   	std::string mSEDMLFileName;
+    /**
+     * The name of the referenced SEDML file
+     */
+    std::string mSEDMLFileName;
 
 #endif
-
   };
 
   // Operations
@@ -260,27 +271,24 @@ public:
 
   //TODO SEDML by JO Dada
 #ifdef COPASI_SEDML
-    bool importSEDMLFromString(const std::string & sedmlDocumentText,
-                                CProcessReport* pImportHandler = NULL,
-                                const bool & deleteOldData = true);
+  bool importSEDMLFromString(const std::string & sedmlDocumentText,
+                             CProcessReport* pImportHandler = NULL,
+                             const bool & deleteOldData = true);
 
   bool importSEDML(const std::string & fileName,
-                      CProcessReport* pImportHandler = NULL,
-                      const bool & deleteOldData = true);
+                   CProcessReport* pImportHandler = NULL,
+                   const bool & deleteOldData = true);
 
+  std::string exportSEDMLToString(CProcessReport* pExportHandler, int sedmlLevel, int sedmlVersion);
+  bool exportSEDML(const std::string & fileName, bool overwriteFile = false, int sedmlLevel = 1, int sedmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM = true, CProcessReport* pExportHandler = NULL);
 
-    std::string exportSEDMLToString(CProcessReport* pExportHandler, int sedmlLevel, int sedmlVersion);
-    bool exportSEDML(const std::string & fileName, bool overwriteFile = false, int sedmlLevel = 1, int sedmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM = true, CProcessReport* pExportHandler = NULL);
+  SedDocument* getCurrentSEDMLDocument();
+  bool setSEDMLFileName(const std::string & fileName);
+  const std::string & getSEDMLFileName() const;
 
+  void updateTaskList(const CCopasiTask::Type & taskType, CCopasiTask *upTask);
 
-    SedDocument* getCurrentSEDMLDocument();
-    bool setSEDMLFileName(const std::string & fileName);
-    const std::string & getSEDMLFileName() const;
-
-    void updateTaskList(const CCopasiTask::Type & taskType, CCopasiTask *upTask);
-
-
-    std::map<CCopasiObject*, SedBase*>& getCopasi2SEDMLMap();
+  std::map<CCopasiObject*, SedBase*>& getCopasi2SEDMLMap();
 
 #endif
 
@@ -295,7 +303,6 @@ protected:
   CData mData;
   CData mOldData;
   CDataModelRenameHandler mRenameHandler;
-  
 
 public:
   /**

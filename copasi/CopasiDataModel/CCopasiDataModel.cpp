@@ -72,26 +72,41 @@
 
 #include "crosssection/CCrossSectionTask.h"
 
-CDataModelRenameHandler::CDataModelRenameHandler()
+CDataModelRenameHandler::CDataModelRenameHandler():
+  CRenameHandler(),
+  mEnabled(true)
 {}
 
-bool CDataModelRenameHandler::handle(const std::string & oldCN, const std::string & newCN) const
+void CDataModelRenameHandler::handle(const std::string & oldCN, const std::string & newCN) const
 {
-  std::set<CRegisteredObjectName*>::const_iterator it = CRegisteredObjectName::getSet().begin();
-  std::set<CRegisteredObjectName*>::const_iterator itEnd = CRegisteredObjectName::getSet().end();
-
-  for (; it != itEnd; ++it)
+  if (mEnabled)
     {
-      // We need to make sure that we not change partial names
-      if (((*it)->size() == oldCN.size() ||
-           ((*it)->size() > oldCN.size() && (**it)[oldCN.size()] == ',')) &&
-          oldCN.compare(0, oldCN.size(), **it, 0, oldCN.size()) == 0)
+      std::set<CRegisteredObjectName*>::const_iterator it = CRegisteredObjectName::getSet().begin();
+      std::set<CRegisteredObjectName*>::const_iterator itEnd = CRegisteredObjectName::getSet().end();
+
+      size_t oldSize = oldCN.size();
+      size_t currentSize;
+
+      for (; it != itEnd; ++it)
         {
-          (**it).replace(0, oldCN.size(), newCN);
+          currentSize = (*it)->size();
+
+          // We need to make sure that we not change partial names
+          if ((currentSize == oldSize ||
+               (currentSize > oldSize && (**it)[oldSize] == ',')) &&
+              oldCN.compare(0, oldSize, **it, 0, oldSize) == 0)
+            {
+              (**it).replace(0, oldSize, newCN);
+            }
         }
     }
 
-  return true;
+  return;
+}
+
+void CDataModelRenameHandler::setEnabled(const bool & enabled)
+{
+  mEnabled = enabled;
 }
 
 //********************************************************************
@@ -138,6 +153,9 @@ bool CCopasiDataModel::loadModel(std::istream & in,
                                  CProcessReport* pProcessReport,
                                  const bool & deleteOldData)
 {
+  // During load no objects will be renamed;
+  mRenameHandler.setEnabled(false);
+
   CCopasiMessage::clearDeque();
 
   std::string Line;
@@ -153,6 +171,8 @@ bool CCopasiDataModel::loadModel(std::istream & in,
         {
           CCopasiMessage(CCopasiMessage::ERROR,
                          "Can't handle Gepasi Files with Version>=4.");
+
+          mRenameHandler.setEnabled(true);
           return false;
         }
 
@@ -162,6 +182,7 @@ bool CCopasiDataModel::loadModel(std::istream & in,
       if (mData.pModel->load(inbuf))
         {
           popData();
+          mRenameHandler.setEnabled(true);
           return false;
         }
 
@@ -201,6 +222,7 @@ bool CCopasiDataModel::loadModel(std::istream & in,
               // restore the OldData
               popData();
 
+              mRenameHandler.setEnabled(true);
               return false;
             }
         }
@@ -218,6 +240,7 @@ bool CCopasiDataModel::loadModel(std::istream & in,
 
           // rethrow the exception so the program flow should still be
           // the same as before
+          mRenameHandler.setEnabled(true);
           throw;
         }
 
@@ -259,11 +282,14 @@ bool CCopasiDataModel::loadModel(std::istream & in,
   else
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCXML + 13);
+
+      mRenameHandler.setEnabled(true);
       return false;
     }
 
   commonAfterLoad(pProcessReport, deleteOldData);
 
+  mRenameHandler.setEnabled(true);
   return true;
 }
 
@@ -487,13 +513,16 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
     CProcessReport* pImportHandler,
     const bool & deleteOldData)
 {
+  // During load no objects will be renamed;
+  mRenameHandler.setEnabled(false);
+
   pushData();
 
   CCopasiMessage::clearDeque();
 
   SBMLImporter importer;
   // Right now we always import the COPASI MIRIAM annotation if it is there.
-  // Later this will be settable by the user in the preferences dialog
+  // Later this will be configurable by the user in the preferences dialog
   importer.setImportCOPASIMIRIAM(true);
   importer.setImportHandler(pImportHandler);
   //mCopasi2SBMLMap.clear();
@@ -516,6 +545,7 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
       importer.deleteCopasiModel();
       popData();
 
+      mRenameHandler.setEnabled(true);
       throw except;
     }
 
@@ -525,6 +555,7 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
       importer.deleteCopasiModel();
       popData();
 
+      mRenameHandler.setEnabled(true);
       return false;
     }
 
@@ -546,6 +577,7 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
 
   commonAfterLoad(pImportHandler, deleteOldData);
 
+  mRenameHandler.setEnabled(true);
   return true;
 }
 
@@ -553,6 +585,8 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
                                   CProcessReport* pImportHandler,
                                   const bool & deleteOldData)
 {
+  // During load no objects will be renamed;
+  mRenameHandler.setEnabled(false);
   CCopasiMessage::clearDeque();
 
   std::string PWD;
@@ -597,6 +631,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
       importer.deleteCopasiModel();
       popData();
 
+      mRenameHandler.setEnabled(true);
       throw except;
     }
 
@@ -606,6 +641,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
       importer.deleteCopasiModel();
       popData();
 
+      mRenameHandler.setEnabled(true);
       return false;
     }
 
@@ -642,6 +678,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
   mData.mReferenceDir = CDirEntry::dirName(mData.mSaveFileName);
   mData.mSBMLFileName = CDirEntry::normalize(FileName);
 
+  mRenameHandler.setEnabled(true);
   return true;
 }
 
@@ -997,6 +1034,9 @@ bool CCopasiDataModel::importSEDMLFromString(const std::string& sedmlDocumentTex
     CProcessReport* pImportHandler,
     const bool & deleteOldData)
 {
+  // During load no objects will be renamed;
+  mRenameHandler.setEnabled(false);
+
   pushData();
 
   CCopasiMessage::clearDeque();
@@ -1030,6 +1070,7 @@ bool CCopasiDataModel::importSEDMLFromString(const std::string& sedmlDocumentTex
       importer.deleteCopasiModel();
       popData();
 
+      mRenameHandler.setEnabled(true);
       throw except;
     }
 
@@ -1039,6 +1080,7 @@ bool CCopasiDataModel::importSEDMLFromString(const std::string& sedmlDocumentTex
       importer.deleteCopasiModel();
       popData();
 
+      mRenameHandler.setEnabled(true);
       return false;
     }
 
@@ -1060,6 +1102,7 @@ bool CCopasiDataModel::importSEDMLFromString(const std::string& sedmlDocumentTex
 
   commonAfterLoad(pImportHandler, deleteOldData);
 
+  mRenameHandler.setEnabled(true);
   return true;
 }
 
@@ -1067,6 +1110,9 @@ bool CCopasiDataModel::importSEDML(const std::string & fileName,
                                    CProcessReport* pImportHandler,
                                    const bool & deleteOldData)
 {
+  // During load no objects will be renamed;
+  mRenameHandler.setEnabled(false);
+
   CCopasiMessage::clearDeque();
 
   std::string PWD;
@@ -1115,6 +1161,7 @@ bool CCopasiDataModel::importSEDML(const std::string & fileName,
       importer.deleteCopasiModel();
       popData();
 
+      mRenameHandler.setEnabled(true);
       throw except;
     }
 
@@ -1124,6 +1171,7 @@ bool CCopasiDataModel::importSEDML(const std::string & fileName,
       importer.deleteCopasiModel();
       popData();
 
+      mRenameHandler.setEnabled(true);
       return false;
     }
 
@@ -1169,6 +1217,7 @@ bool CCopasiDataModel::importSEDML(const std::string & fileName,
   mData.mReferenceDir = CDirEntry::dirName(mData.mSaveFileName);
   mData.mSEDMLFileName = CDirEntry::normalize(FileName);
 
+  mRenameHandler.setEnabled(true);
   return true;
 }
 
