@@ -87,7 +87,7 @@ bool CLNATask::updateMatrices()
     dynamic_cast<CLNAProblem *>(mpProblem);
   assert(pProblem);
 
-  if (!mpMethod->isValidProblem(mpProblem)) return false;
+  if (!mpMethod->isValidProblem(pProblem)) return false;
 
   CLNAMethod * pMethod = dynamic_cast<CLNAMethod*>(mpMethod);
 

@@ -1273,7 +1273,7 @@ void CQExperimentData::slotTypeChanged(int row, int index)
   if (OldType == NewType) return;
 
   bool BtnEnabled = true;
-  C_INT32 i, imax = mpTable->rowCount();
+  //C_INT32 i, imax = mpTable->rowCount();
 
   mpTable->item(row, COL_TYPE)->setText(QString(FROM_UTF8(CExperiment::TypeName[NewType])));
   mpTable->item(row, COL_TYPE_HIDDEN)->setText(QString::number(NewType));

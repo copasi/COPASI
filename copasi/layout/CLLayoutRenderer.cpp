@@ -3383,7 +3383,7 @@ void CLLayoutRenderer::update_style_information()
         }
     }
 
-  std::map<const CLGraphicalObject*, const CLStyle*>::const_iterator it2 = this->mStyleMap.begin(), endit2 = this->mStyleMap.end();
+  //std::map<const CLGraphicalObject*, const CLStyle*>::const_iterator it2 = this->mStyleMap.begin(), endit2 = this->mStyleMap.end();
 }
 
 /**
@@ -3467,7 +3467,7 @@ void CLLayoutRenderer::update_textures_and_colors()
           else
             {
               // check if the texture has the correct scale and if not, rescale it
-              std::pair<double, double> size = this->mpFontRenderer->getTextureSize(fontSpec, text);
+              //std::pair<double, double> size = this->mpFontRenderer->getTextureSize(fontSpec, text);
               CLTextTextureSpec* pTexture = pos2->second;
 
               //std::cout << "Existing texture found: " << pTexture->mTextureName;
@@ -3932,7 +3932,7 @@ void CLLayoutRenderer::update_textures_and_colors(const CLGroup* pGroup, double 
               else
                 {
                   // check if the texture is large enough
-                  std::pair<double, double> size = this->mpFontRenderer->getTextureSize(fontSpec, text);
+                  //std::pair<double, double> size = this->mpFontRenderer->getTextureSize(fontSpec, text);
                   CLTextTextureSpec* pTexture = pos2->second;
 
                   if (pTexture != NULL && pTexture->mScale != this->mZoomFactor)
@@ -7294,8 +7294,14 @@ void CLLayoutRenderer::initialize_gl_extension_functions()
 }
 
 #ifdef __APPLE__
+#ifndef COPASI_MAC_USE_DEPRECATED_LOOKUP
+#include <dlfcn.h>
+#endif
 void * CLLayoutRenderer::MyNSGLGetProcAddress(const char *name)
 {
+#ifndef COPASI_MAC_USE_DEPRECATED_LOOKUP
+  return dlsym(RTLD_DEFAULT, name);
+#else
   NSSymbol symbol;
   char *symbolName;
   symbolName = (char*)malloc(strlen(name) + 2);
@@ -7305,7 +7311,7 @@ void * CLLayoutRenderer::MyNSGLGetProcAddress(const char *name)
   symbolName[0] = '_';
   symbol = NULL;
 
-//  if (NSIsSymbolNameDefined(symbolName))
+  //  if (NSIsSymbolNameDefined(symbolName))
   {
     const struct mach_header* header = NSAddImage("/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL", NSADDIMAGE_OPTION_RETURN_ON_ERROR);
     // we should always find the OpenGL library
@@ -7317,5 +7323,6 @@ void * CLLayoutRenderer::MyNSGLGetProcAddress(const char *name)
   free(symbolName);
 
   return symbol ? NSAddressOfSymbol(symbol) : NULL;
+#endif
 }
 #endif // __APPLE__

@@ -71,7 +71,7 @@ void CCSPMethod::initializeParameter()
 {
   initializeIntegrationsParameter();
 
-  assertParameter("Integrate Reduced Model", CCopasiParameter::BOOL, (bool) false)->getValue().pBOOL;
+  assertParameter("Integrate Reduced Model", CCopasiParameter::BOOL, (bool) false);//->getValue().pBOOL;
   assertParameter("Ratio of Modes Separation", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-2);
   assertParameter("Maximum Relative Error", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-5);
   assertParameter("Maximum Absolute Error", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-10);

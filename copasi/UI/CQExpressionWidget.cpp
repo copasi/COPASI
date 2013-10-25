@@ -764,7 +764,7 @@ void CQExpressionWidget::slotSelectObject()
       f1.setForeground(QColor(0, 0, 0));
 
       QTextCharFormat f = mpExpressionHighlighter->mObjectDisplayFormat;
-      QColor color2 = f.foreground().color();
+      //QColor color2 = f.foreground().color();
 
       setCurrentCharFormat(f);
       insertPlainText(FROM_UTF8("{" + Insert + "}"));

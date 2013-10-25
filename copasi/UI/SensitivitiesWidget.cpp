@@ -216,9 +216,9 @@ bool SensitivitiesWidget::loadTask()
     dynamic_cast<CSensProblem *>(sensTask->getProblem());
   assert(problem);
 
-  CSensMethod* method =
-    dynamic_cast<CSensMethod *>(sensTask->getMethod());
-  assert(method);
+  //CSensMethod* method =
+  //  dynamic_cast<CSensMethod *>(sensTask->getMethod());
+  //assert(method);
 
   //mSubTaskType = problem->getSubTaskType();
   SubTaskChooser->setCurrentIndex((int)problem->getSubTaskType());

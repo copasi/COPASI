@@ -1765,10 +1765,16 @@ SOAP_FMAC1 std::string * SOAP_FMAC2 soap_in_std__string(struct soap *soap, const
       s = (std::string*)soap_class_id_enter(soap, soap->id, s, SOAP_TYPE_std__string, sizeof(std::string), soap->type, soap->arrayType);
 
       if (s)
+      {
         if ((t = soap_string_in(soap, 1, -1, -1)))
+        {
           s->assign(t);
+        }
         else
+        {
           return NULL;
+        }
+      }
     }
   else
     s = (std::string*)soap_id_forward(soap, soap->href, soap_class_id_enter(soap, soap->id, s, SOAP_TYPE_std__string, sizeof(std::string), soap->type, soap->arrayType), 0, SOAP_TYPE_std__string, 0, sizeof(std::string), 0, soap_copy_std__string);

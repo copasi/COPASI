@@ -1808,7 +1808,7 @@ C_FLOAT64 * CMathContainer::getInitialValuePointer(const C_FLOAT64 * pValue) con
 void CMathContainer::createDiscontinuityEvents()
 {
   CEvaluationNodeConstant VariableNode(CEvaluationNodeConstant::_NaN, "NAN");
-  size_t i, imax;
+  //size_t i, imax;
 
   // We need to create events for nodes which are capable of introducing
   // discontinuous changes.

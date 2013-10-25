@@ -184,7 +184,7 @@ bool CNormalSum::add(const CNormalProduct& product)
     }
 
   CNormalProduct* tmp = new CNormalProduct(product);
-  /*bool result=*/mProducts.insert(tmp).second;
+  /*bool result=*/mProducts.insert(tmp);//.second;
   //assert(result == true);
   return true;
 }
@@ -442,7 +442,7 @@ bool CNormalSum::operator==(const CNormalSum & rhs) const
   std::set<CNormalProduct*, compareProducts >::const_iterator it;
   std::set<CNormalProduct*, compareProducts >::const_iterator itEnd = this->mProducts.end();
   std::set<CNormalProduct*, compareProducts >::const_iterator it2;
-  std::set<CNormalProduct*, compareProducts >::const_iterator it2End = rhs.mProducts.end();
+  //std::set<CNormalProduct*, compareProducts >::const_iterator it2End = rhs.mProducts.end();
 
   for (it = mProducts.begin(), it2 = rhs.mProducts.begin(); it != itEnd; ++it, ++it2)
     {
@@ -453,7 +453,7 @@ bool CNormalSum::operator==(const CNormalSum & rhs) const
   std::set<CNormalFraction*>::const_iterator it3;
   std::set<CNormalFraction*>::const_iterator it3End = this->mFractions.end();
   std::set<CNormalFraction*>::const_iterator it4;
-  std::set<CNormalFraction*>::const_iterator it4End = rhs.mFractions.end();
+  //std::set<CNormalFraction*>::const_iterator it4End = rhs.mFractions.end();
 
   for (it3 = mFractions.begin(), it4 = rhs.mFractions.begin(); it3 != it3End; ++it3, ++it4)
     {
@@ -523,7 +523,7 @@ bool CNormalSum::operator<(const CNormalSum& rhs) const
   else if (this->mFractions.size() == rhs.mFractions.size())
     {
       std::set<CNormalFraction*>::const_iterator it = this->mFractions.begin(), endit = this->mFractions.end();
-      std::set<CNormalFraction*>::const_iterator it2 = rhs.mFractions.begin(), endit2 = rhs.mFractions.end();
+      std::set<CNormalFraction*>::const_iterator it2 = rhs.mFractions.begin();//, endit2 = rhs.mFractions.end();
 
       while (result == false && it != endit)
         {
@@ -552,7 +552,7 @@ bool CNormalSum::operator<(const CNormalSum& rhs) const
           else if (this->mProducts.size() == rhs.mProducts.size())
             {
               std::set<CNormalProduct*, compareProducts>::const_iterator it3 = this->mProducts.begin(), endit3 = this->mProducts.end();
-              std::set<CNormalProduct*, compareProducts>::const_iterator it4 = rhs.mProducts.begin(), endit4 = rhs.mProducts.end();
+              std::set<CNormalProduct*, compareProducts>::const_iterator it4 = rhs.mProducts.begin();//, endit4 = rhs.mProducts.end();
 
               // I can not use the sorter to compare because the sorter does
               // not take the factor of a product into account.

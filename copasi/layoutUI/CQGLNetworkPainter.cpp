@@ -3031,7 +3031,7 @@ void CQGLNetworkPainter::printNodeMap()
 
 void CQGLNetworkPainter::printNodeInfoForKey(std::string key)
 {
-  std::map<std::string, CGraphNode>::iterator itNodeObj = nodeMap.find(key);
+  //std::map<std::string, CGraphNode>::iterator itNodeObj = nodeMap.find(key);
 }
 
 std::string CQGLNetworkPainter::getNameForNodeKey(std::string key)

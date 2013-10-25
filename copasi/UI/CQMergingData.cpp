@@ -100,7 +100,7 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTr
         pW->setFirstItemColumnSpanned(pItem, true);
         
         //add species
-        QTreeWidgetItem * pChild;
+        //QTreeWidgetItem * pChild;
         size_t j, jmax = pModel->getCompartments()[i]->getMetabolites().size();
         for(j=0; j<jmax; ++j)
           {
@@ -137,7 +137,7 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTr
         pW->setFirstItemColumnSpanned(pItem, true);
 
         
-        QTreeWidgetItem * pChild;
+        //QTreeWidgetItem * pChild;
         size_t j, jmax = pModel->getModelValues().size();
         for(j=0; j<jmax; ++j)
           {
@@ -175,7 +175,7 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTr
         QFont tmpFontSmall = pItem->font(0);
         tmpFontSmall.setPointSize(tmpFontSmall.pointSize()-2);
         
-        QTreeWidgetItem * pChild;
+        //QTreeWidgetItem * pChild;
         size_t j, jmax = pModel->getReactions().size();
         for(j=0; j<jmax; ++j)
           {

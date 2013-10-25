@@ -443,7 +443,7 @@ bool CNormalProduct::checkSamePowerList(const CNormalProduct & rhs) const
   std::set< CNormalItemPower*, compareItemPowers >::const_iterator it;
   std::set< CNormalItemPower*, compareItemPowers >::const_iterator itEnd = mItemPowers.end();
   std::set< CNormalItemPower*, compareItemPowers >::const_iterator it2;
-  std::set< CNormalItemPower*, compareItemPowers >::const_iterator it2End = rhs.mItemPowers.end();
+  //std::set< CNormalItemPower*, compareItemPowers >::const_iterator it2End = rhs.mItemPowers.end();
 
   for (it = mItemPowers.begin(), it2 = rhs.mItemPowers.begin(); it != itEnd; ++it, ++it2)
     {

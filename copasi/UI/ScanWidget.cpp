@@ -152,8 +152,8 @@ bool ScanWidget::loadTask()
 
   // the scan items
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
+  //CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
+  //assert(pDataModel != NULL);
   size_t i, imax = scanProblem->getNumberOfScanItems();
 
   for (i = 0; i < imax; ++i)

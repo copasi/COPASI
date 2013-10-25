@@ -124,7 +124,7 @@ void CQExpandModelData::slotOK()
               if (it->first->child(i)->checkState(1) == Qt::Checked)
                 {
                   std::map<QTreeWidgetItem*, const CMetab*>::const_iterator itMetab = mItemMetabMap.find(it->first->child(i));
-                  const CMetab* pMetab = NULL;
+                  //const CMetab* pMetab = NULL;
 
                   if (itMetab != mItemMetabMap.end())
                     metabkeys.insert(itMetab->second->getKey());

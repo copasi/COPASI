@@ -258,9 +258,9 @@ bool CQCrossSectionTaskWidget::loadTask()
   //assert(pMethod);
 
   //for now, we use a trajectory method
-  CTrajectoryMethod* pMethod =
-    dynamic_cast<CTrajectoryMethod *>(pTask->getMethod());
-  assert(pMethod);
+  //CTrajectoryMethod* pMethod =
+  //  dynamic_cast<CTrajectoryMethod *>(pTask->getMethod());
+  //assert(pMethod);
 
   // load the saved values
   const std::string &name = pProblem->getSingleObjectCN();

@@ -437,7 +437,7 @@ void CCopasiSpringLayout::finalizeState()
           //For now, only a primitive implementation: TODO: improve
           CLMetabReferenceGlyph* pMRG = pRG->getListOfMetabReferenceGlyphs()[j];
           double direction;
-          double modifierLength = -0.2;
+          //double modifierLength = -0.2;
 
           switch (pMRG->getRole())
             {

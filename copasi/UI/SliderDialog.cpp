@@ -655,7 +655,7 @@ void SliderDialog::createSlidersForFolder(std::vector<QWidget*>& v)
 
   for (it = pVector->begin(); it != pVector->end(); ++it)
     {
-      bool found = false;
+      //bool found = false;
 
       // check whether we have a slider
       CopasiSlider* pTmpSlider = getCopasiSliderForCSlider(v, *it);

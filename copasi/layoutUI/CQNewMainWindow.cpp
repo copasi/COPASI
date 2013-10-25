@@ -868,14 +868,7 @@ void CQNewMainWindow::slotScreenshot()
   if (pPainter == NULL)
     return;
 
-  double layoutX = pPainter->minX();
-  double layoutY = pPainter->minY();
-  double layoutWidth = pPainter->maxX() - layoutX;
-  double layoutHeight = pPainter->maxY() - layoutY;
-  double x = pPainter->getCurrentPositionX();
-  double y = pPainter->getCurrentPositionY();
-  double width = pPainter->getCurrentWidth();
-  double height = pPainter->getCurrentHeight();
+  
 #ifndef USE_SCREENSHOT_OPTIONS
 
   QString fileName = CopasiFileDialog::getSaveFileName(this, "Export to", "", QString("PNG (*.png);;All files (*)"));
@@ -884,6 +877,16 @@ void CQNewMainWindow::slotScreenshot()
     export_bitmap(fileName, 2.0);
 
 #else
+
+  double layoutX = pPainter->minX();
+  double layoutY = pPainter->minY();
+  double layoutWidth = pPainter->maxX() - layoutX;
+  double layoutHeight = pPainter->maxY() - layoutY;
+  double x = pPainter->getCurrentPositionX();
+  double y = pPainter->getCurrentPositionY();
+  double width = pPainter->getCurrentWidth();
+  double height = pPainter->getCurrentHeight();
+  
   CQScreenshotOptionsDialog* pDialog = new CQScreenshotOptionsDialog(layoutX, layoutY, layoutWidth, layoutHeight,
       x, y, width, height, pPainter->width() , pPainter->height(), -1, this);
 
@@ -1220,7 +1223,7 @@ void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
       CFluxMode::const_iterator it = pFlux->begin(), endit = pFlux->end();
       const CReaction* pReaction = NULL;
       assert(this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL);
-      const CModel* pModel = this->mpDataModel->getModel();
+      //const CModel* pModel = this->mpDataModel->getModel();
       const CEFMProblem* pProblem = NULL;
       const CCopasiVectorN< CCopasiTask >* pTaskList = this->mpDataModel->getTaskList();
       assert(pTaskList != NULL);
@@ -1278,7 +1281,7 @@ void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
               CFluxMode::const_iterator it = pFlux->begin(), endit = pFlux->end();
               const CReaction* pReaction = NULL;
               assert(this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL);
-              const CModel* pModel = this->mpDataModel->getModel();
+              //const CModel* pModel = this->mpDataModel->getModel();
 
               while (it != endit)
                 {

@@ -112,7 +112,6 @@ void CQLayoutThread::run()
   if (mpCurrentLayout == NULL)
     return;
 
-  bool doUpdate = true;
   mStopLayout = false;
 
   if (mpCurrent != NULL)

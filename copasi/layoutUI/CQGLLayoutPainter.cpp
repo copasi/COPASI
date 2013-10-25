@@ -2010,8 +2010,14 @@ void CQGLLayoutPainter::clear_extension_functions()
 }
 
 #ifdef __APPLE__
+#ifndef COPASI_MAC_USE_DEPRECATED_LOOKUP
+#include <dlfcn.h>
+#endif
 void * CQGLLayoutPainter::MyNSGLGetProcAddress(const char *name)
 {
+#ifndef COPASI_MAC_USE_DEPRECATED_LOOKUP
+  return dlsym(RTLD_DEFAULT, name);
+#else
   NSSymbol symbol;
   char *symbolName;
   symbolName = (char*)malloc(strlen(name) + 2);
@@ -2029,6 +2035,7 @@ void * CQGLLayoutPainter::MyNSGLGetProcAddress(const char *name)
   free(symbolName);
 
   return symbol ? NSAddressOfSymbol(symbol) : NULL;
+#endif
 }
 
 #endif // __APPLE__

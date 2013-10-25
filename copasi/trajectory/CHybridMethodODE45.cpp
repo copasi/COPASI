@@ -405,7 +405,7 @@ void CHybridMethodODE45::cleanup()
 //================Function for Model================
 void CHybridMethodODE45::setupMetabFlags()
 {
-  size_t rctIndex;
+  //size_t rctIndex;
   mMetabFlags.resize(mNumVariableMetabs);
 
   std::vector<CHybridODE45MetabFlag>::iterator metabIt
@@ -705,7 +705,7 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
 
   // check for possible overflows
   size_t i;
-  size_t imax;
+  //size_t imax;
 
   // :TODO: Bug 774: This assumes that the number of variable metabs is the number
   // of metabs determined by reaction. In addition they are expected at the beginning of the
@@ -1472,6 +1472,7 @@ size_t CHybridMethodODE45::getReactionIndex4Hybrid()
             return rIndex;
         }
     }
+  return rIndex;
 }
 
 /*========Functions for C Code from f2c========*/

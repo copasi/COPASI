@@ -395,7 +395,7 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
 void CMCAMethod::calculateUnscaledFluxCC(int condition)
 {
   assert(mpModel);
-  size_t i, j, k;
+  //size_t i, j, k;
 
   // mUnscaledFluxCC := I + mUnscaledElasticities * mUnscaledConcCC
 

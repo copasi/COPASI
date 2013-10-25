@@ -228,7 +228,7 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
           }
 
           default:
-            CCopasiMessage(CCopasiMessage::EXCEPTION, "SEDMLImporter Error: No support for this plot: " + current->getTypeCode());
+            CCopasiMessage(CCopasiMessage::EXCEPTION, "SEDMLImporter Error: No support for this plot: typecode = %d", current->getTypeCode());
             break;
         }
     }
@@ -608,8 +608,7 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
           importer.restoreFunctionDB();
           importer.deleteCopasiModel();
           //   popData();
-
-          return false;
+          return NULL;
         }
 
       pPlotList = new COutputDefinitionVector("OutputDefinitions", mpDataModel);
@@ -639,6 +638,7 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
       return this->mpCopasiModel;
       delete reader;
     }
+  return NULL;
 }
 
 /**
