@@ -1611,6 +1611,11 @@ void CopasiUI3Window::slotShowSliders(bool flag)
 {
   mpaSliders->setChecked(flag);
   this->mpSliders->setHidden(!flag);
+
+  if(flag)
+    addWindow(this->mpSliders);
+  else
+    removeWindow(this->mpSliders);
 }
 
 DataModelGUI* CopasiUI3Window::getDataModel()
@@ -1620,6 +1625,7 @@ void CopasiUI3Window::listViewsFolderChanged(const QModelIndex &)
 {
   size_t id = mpListView->getCurrentItemId();
   this->mpSliders->setCurrentFolderId(id);
+  refreshWindowsMenu();
 }
 
 ListViews* CopasiUI3Window::getMainWidget()

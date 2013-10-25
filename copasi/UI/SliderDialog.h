@@ -24,6 +24,8 @@
 #include <vector>
 #include <map>
 #include "copasi/report/CCopasiObjectName.h"
+#include "copasi/UI/CWindowInterface.h"
+#include "copasi/UI/ui_SliderDialog.h"
 
 class QScrollArea;
 class QCheckBox;
@@ -39,7 +41,7 @@ class CCopasiTask;
 class CSlider;
 class CopasiUI3Window;
 
-class SliderDialog: public QDialog
+class SliderDialog: public CWindowInterface, public Ui::SliderDialog
 {
   Q_OBJECT
 
@@ -80,6 +82,10 @@ public:
    * Sets the changed state of the SliderDialog.
    */
   void setChanged(bool changed);
+
+  //return a pointer to this plot windows 'window' menu.
+  virtual QMenu *getWindowMenu() const;
+
 protected:
   virtual void showEvent(QShowEvent * pEvent);
 
@@ -95,9 +101,6 @@ protected:
 
   static size_t numMappings;
   static size_t folderMappings[][2];
-  //    static size_t knownTaskIDs[];
-  //    static const char* knownTaskNames[];
-  //    static size_t numKnownTasks;
 
   virtual void contextMenuEvent(QContextMenuEvent* e);
 
@@ -155,12 +158,6 @@ protected slots:
 
 protected:
   CopasiUI3Window* mpParentWindow;
-  QPushButton* mpRunTaskButton;
-  QPushButton* mpNewSliderButton;
-  QCheckBox* mpAutoRunCheckBox;
-  QCheckBox* mpAutoModifyRangesCheckBox;
-  QScrollArea* mpScrollView;
-  QFrame* mpSliderBox;
   QMenu* mpContextMenu;
   QAction* mpaCreateNewSlider;
   QAction* mpaRemoveSlider;

@@ -20,8 +20,6 @@
 #include <QtGui/QCloseEvent>
 #include <QtGui/QMouseEvent>
 #include <QtCore/QEvent>
-#include <QtGui/QMenu>
-#include <QtGui/QScrollArea>
 
 #include "copasi/UI/SliderDialog.h"
 #include "copasi/UI/DataModelGUI.h"
@@ -73,14 +71,8 @@ size_t SliderDialog::folderMappings[][2] =
 //const char* SliderDialog::knownTaskNames[] = {"Steady State", "Time Course", "MCA" , "Scan"};
 
 SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl):
-  QDialog(parent, fl),
+  CWindowInterface(parent, fl),
   mpParentWindow(NULL),
-  mpRunTaskButton(NULL),
-  mpNewSliderButton(NULL),
-  mpAutoRunCheckBox(NULL),
-  mpAutoModifyRangesCheckBox(NULL),
-  mpScrollView(NULL),
-  mpSliderBox(NULL),
   mpContextMenu(NULL),
   mpCurrSlider(NULL),
   mSliderMap(),
@@ -95,58 +87,12 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
   setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
 #endif // not Darwin
 
+  setupUi(this);
+
+  addToMainWindow(mpParentWindow);
+
   setObjectName(QString::fromUtf8(name));
   setWindowTitle("Slider Window");
-  setModal(modal);
-  QVBoxLayout* pMainLayout = new QVBoxLayout(this);
-  this->setLayout(pMainLayout);
-  pMainLayout->setContentsMargins(5, 5, 5, 5);
-  QHBoxLayout* pLayout2 = new QHBoxLayout(0);
-  pLayout2->setContentsMargins(3, 3, 3, 3);
-  pLayout2->addStretch();
-  this->mpNewSliderButton = new QPushButton(0);
-  this->mpNewSliderButton->setText("&new sliders");
-  this->mpNewSliderButton->setEnabled(true);
-  pLayout2->addWidget(this->mpNewSliderButton);
-  pLayout2->addStretch();
-  pMainLayout->addLayout(pLayout2);
-
-  this->mpScrollView = new QScrollArea(0);
-  this->mpSliderBox = new QFrame(0);
-  QVBoxLayout* pLayout3 = new QVBoxLayout(0);
-  this->mpSliderBox->setLayout(pLayout3);
-  this->mpScrollView->setWidget(this->mpSliderBox);
-  this->mpScrollView->setWidgetResizable(true);
-  pMainLayout->addWidget(this->mpScrollView);
-
-  QHBoxLayout* pLayout1 = new QHBoxLayout(0);
-  pLayout1->addStretch();
-  this->mpAutoModifyRangesCheckBox = new QCheckBox(0);
-  this->mpAutoModifyRangesCheckBox->setChecked(true);
-  this->mpAutoModifyRangesCheckBox->setText("&update ranges");
-  pLayout1->addWidget(this->mpAutoModifyRangesCheckBox);
-  pLayout1->addStretch();
-  pMainLayout->addSpacing(10);
-  pMainLayout->addLayout(pLayout1);
-
-  pLayout1 = new QHBoxLayout(0);
-  pLayout1->addStretch();
-  this->mpAutoRunCheckBox = new QCheckBox(0);
-  this->mpAutoRunCheckBox->setChecked(true);
-  this->mpAutoRunCheckBox->setText("update &automatically");
-  pLayout1->addWidget(this->mpAutoRunCheckBox);
-  pLayout1->addStretch();
-  pMainLayout->addSpacing(10);
-  pMainLayout->addLayout(pLayout1);
-
-  pLayout2 = new QHBoxLayout(0);
-  pLayout2->addStretch();
-  this->mpRunTaskButton = new QPushButton(0);
-  this->mpRunTaskButton->setText("&run task");
-  this->mpRunTaskButton->setEnabled(true);
-  pLayout2->addWidget(this->mpRunTaskButton);
-  pLayout2->addStretch();
-  pMainLayout->addLayout(pLayout2);
 
   this->mpContextMenu = new QMenu(this);
   mpaCreateNewSlider = this->mpContextMenu->addAction("Add New Slider", this, SLOT(createNewSlider()));
@@ -425,6 +371,7 @@ SliderDialog::~SliderDialog()
   delete mpSliderBox;
   delete mpScrollView;
   this->clear();
+  removeFromMainWindow(mpParentWindow);
 }
 
 void SliderDialog::clear()
@@ -895,7 +842,7 @@ void SliderDialog::runOptimizationTask()
 
 void SliderDialog::closeEvent(QCloseEvent* e)
 {
-  QDialog::closeEvent(e);
+  CWindowInterface::closeEvent(e);
 
   if (mpParentWindow)
     {
@@ -1275,7 +1222,7 @@ void SliderDialog::showEvent(QShowEvent* pEvent)
 {
   // make sure only valid sliders are shown
   this->deleteInvalidSliders();
-  this->QDialog::showEvent(pEvent);
+  this->CWindowInterface::showEvent(pEvent);
 }
 
 void SliderDialog::deleteInvalidSliders()
@@ -1333,4 +1280,9 @@ bool SliderDialog::isChanged() const
 void SliderDialog::setChanged(bool changed)
 {
   this->mChanged = changed;
+}
+
+QMenu *SliderDialog::getWindowMenu() const
+{
+  return mpWindowMenu;
 }
