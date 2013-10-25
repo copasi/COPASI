@@ -868,7 +868,6 @@ void CQNewMainWindow::slotScreenshot()
   if (pPainter == NULL)
     return;
 
-  
 #ifndef USE_SCREENSHOT_OPTIONS
 
   QString fileName = CopasiFileDialog::getSaveFileName(this, "Export to", "", QString("PNG (*.png);;All files (*)"));
@@ -886,7 +885,7 @@ void CQNewMainWindow::slotScreenshot()
   double y = pPainter->getCurrentPositionY();
   double width = pPainter->getCurrentWidth();
   double height = pPainter->getCurrentHeight();
-  
+
   CQScreenshotOptionsDialog* pDialog = new CQScreenshotOptionsDialog(layoutX, layoutY, layoutWidth, layoutHeight,
       x, y, width, height, pPainter->width() , pPainter->height(), -1, this);
 
@@ -1223,7 +1222,6 @@ void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
       CFluxMode::const_iterator it = pFlux->begin(), endit = pFlux->end();
       const CReaction* pReaction = NULL;
       assert(this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL);
-      //const CModel* pModel = this->mpDataModel->getModel();
       const CEFMProblem* pProblem = NULL;
       const CCopasiVectorN< CCopasiTask >* pTaskList = this->mpDataModel->getTaskList();
       assert(pTaskList != NULL);
@@ -1241,7 +1239,7 @@ void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
 
       while (it != endit && pProblem != NULL)
         {
-          assert(pModel->getReactions().size() > it->first);
+          assert(this->mpDataModel->getModel()->getReactions().size() > it->first);
 
           // the index is the index of the reordered fluxes from the problem, so in order
           // to find the correct reaction, we need to get the reaction from the problem
@@ -1285,7 +1283,7 @@ void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
 
               while (it != endit)
                 {
-                  assert(pModel->getReactions().size() > it->first);
+                  assert(this->mpDataModel->getModel()->getReactions().size() > it->first);
                   pReaction = this->mpDataModel->getModel()->getReactions()[it->first];
                   assert(pReaction != NULL);
                   this->selectReaction(pReaction, mask, s);
