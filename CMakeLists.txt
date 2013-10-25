@@ -201,11 +201,10 @@ find_package(ICONV)
 if(UNIX)
   if(APPLE)
     add_definitions(-DDarwin)
-    # COPASI dos not compile with apple llvm
     if(CMAKE_GENERATOR AND XCODE_VERSION)
-      if(CMAKE_GENERATOR MATCHES "Xcode" AND (${XCODE_VERSION} VERSION_EQUAL 4 OR ${XCODE_VERSION} VERSION_GREATER 4))
+      option (COPASI_OVERWRITE_XCODE_GENERATOR "If true, will default to llvmgcc42 rather than clang." OFF)
+      if(COPASI_OVERWRITE_XCODE_GENERATOR AND CMAKE_GENERATOR MATCHES "Xcode" AND (${XCODE_VERSION} VERSION_EQUAL 4 OR ${XCODE_VERSION} VERSION_GREATER 4))
         # Xcode 4 defaults to the Apple LLVM Compiler.
-        # Override the default compiler selection because Blender only compiles with gcc
         set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "com.apple.compilers.llvmgcc42")
       endif()
     endif()
