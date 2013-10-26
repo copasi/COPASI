@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSort.h,v $
-//   $Revision: 1.16 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:13:05 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -29,15 +26,14 @@ class CompareDefault
 {
 public:
   /**
-   * Contructor
+   * Constructor
    */
   CompareDefault() {};
 
   /**
-   * Virtual desctructor
+   * Virtual destructor
    */
   virtual ~CompareDefault() {};
-
 
   bool operator()(const std::pair< RandomAccessIterator, size_t > & lhs,
                   const std::pair< RandomAccessIterator, size_t > & rhs)
@@ -50,12 +46,12 @@ class CompareDoubleWithNaN
 {
 public:
   /**
-   * Contructor
+   * Constructor
    */
   CompareDoubleWithNaN() {};
 
   /**
-   * Virtual desctructor
+   * Virtual destructor
    */
   virtual ~CompareDoubleWithNaN() {};
 
@@ -65,7 +61,7 @@ public:
     return
       isnan(*lhs.first) ?
       (isnan(*rhs.first) ? lhs.first < rhs.first : false) :
-          (isnan(*rhs.first) ? true : *lhs.first < *rhs.first);
+        (isnan(*rhs.first) ? true : *lhs.first < *rhs.first);
   }
 };
 
@@ -227,7 +223,7 @@ protected:
    * Default constructor
    */
   FSwapBase():
-      mpSwap(NULL)
+    mpSwap(NULL)
   {}
 
 public:
@@ -236,7 +232,7 @@ public:
    * @param ReturnType (*swap) (IndexType, IndexType)
    */
   FSwapBase(ReturnType(*swap)(IndexType, IndexType)):
-      mpSwap(swap)
+    mpSwap(swap)
   {}
 
   /**
@@ -274,7 +270,11 @@ protected:
   /**
    * Default constructor
    */
-  FSwapClass() {}
+  FSwapClass():
+    FSwapBase<IndexType, ReturnType>(),
+    mpType(NULL),
+    mpSwap(NULL)
+  {}
 
 public:
   /**
@@ -283,9 +283,9 @@ public:
    * @param ReturnType (ClassType::*swap) (IndexType, IndexType)
    */
   FSwapClass(ClassType * pType, ReturnType(ClassType::*swap)(IndexType, IndexType)):
-      FSwapBase<IndexType, ReturnType>(),
-      mpType(pType),
-      mpSwap(swap)
+    FSwapBase<IndexType, ReturnType>(),
+    mpType(pType),
+    mpSwap(swap)
   {}
 
   /**
