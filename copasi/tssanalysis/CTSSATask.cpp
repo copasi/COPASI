@@ -292,7 +292,7 @@ bool CTSSATask::process(const bool & useInitialValues)
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTSSAMethod + 4);
     }
 
-  catch (CCopasiException Exception)
+  catch (CCopasiException & Exception)
     {
       mpTSSAProblem->getModel()->setState(*mpCurrentState);
       mpTSSAProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
