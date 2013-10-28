@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <sbml/SBMLDocument.h>
 
@@ -195,6 +195,9 @@ CopasiUI3Window::CopasiUI3Window():
 {
   // set destructive close
   this->setAttribute(Qt::WA_DeleteOnClose);
+
+  // Add this window to the list of windows
+  mWindows.append(this);
 
 #ifndef Darwin
   setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
@@ -386,7 +389,7 @@ void CopasiUI3Window::createActions()
   connect(mpaMergeModels, SIGNAL(activated()), this, SLOT(slotMergeModels()));
 #endif
 
-  mpaCloseAllWindows = new QAction("Close all windows", this);
+  mpaCloseAllWindows = new QAction("Close all windows below:", this);
   connect(mpaCloseAllWindows, SIGNAL(activated()), this, SLOT(slotCloseAllWindows()));
 
   mpaFunctionDBLoad =  new QAction(CQIconResource::icon(CQIconResource::fileOpen), "Load Function DB...", this);
@@ -1928,12 +1931,32 @@ void CopasiUI3Window::removeWindow(QMainWindow * pWindow)
 
 void CopasiUI3Window::refreshWindowsMenu()
 {
+  // (I assume a QActionGroup was used, so only one window will be activated at a time)
+  if (mpWindowsActionGroup != NULL)
+    {
+      disconnect(mpWindowsActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slotActivateWindowTriggered(QAction *)));
+      mpWindowsActionGroup->deleteLater();
+      mpWindowsActionGroup = NULL;
+    }
+
+  mpWindowsActionGroup = new QActionGroup(this);
+  connect(mpWindowsActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slotActivateWindowTriggered(QAction *)));
+
+  // Re-initialize items the menus will always have
   mpWindowsMenu->clear();
+                               // COPASI main window
+  QAction * pAction = new QAction(mWindows[0]->windowTitle(), mpWindowsActionGroup);
+  mpWindowsMenu->addAction(pAction);
 
-  mpWindowsMenu->addAction(mpaCloseAllWindows);
-  mpWindowsMenu->addSeparator();
+  if(mWindows.count() > 1)
+  {
+    mpWindowsMenu->addSeparator();
+    mpWindowsMenu->addAction(mpaCloseAllWindows);
+    mpWindowsMenu->addSeparator();
+  }
 
-  for (int index = 0; index < mWindows.count(); ++index)
+  // . . . for the secondary windows, also . . .
+  for (int index = 1; index < mWindows.count(); ++index)
     {
       QMainWindow* mainWindow = mWindows[index];
 
@@ -1942,23 +1965,14 @@ void CopasiUI3Window::refreshWindowsMenu()
       CWindowInterface* window = dynamic_cast<CWindowInterface*>(mainWindow);
       QMenu* menu = window->getWindowMenu();
       menu->clear();
+      menu->addAction(pAction);
+      menu->addSeparator();
       menu->addAction(mpaCloseAllWindows);
       menu->addSeparator();
     }
 
-  if (mpWindowsActionGroup != NULL)
-    {
-      disconnect(mpWindowsActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slowFindWindowTriggered(QAction *)));
-      mpWindowsActionGroup->deleteLater();
-      mpWindowsActionGroup = NULL;
-    }
-
-  mpWindowsActionGroup = new QActionGroup(this);
-  connect(mpWindowsActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slowFindWindowTriggered(QAction *)));
-
-  QAction * pAction;
-
-  for (int index = 0; index < mWindows.count(); ++index)
+  // Add secondary windows to the Window menus
+  for (int index = 1; index < mWindows.count(); ++index)
     {
       QMainWindow* mActionWindow = mWindows[index];
 
@@ -1967,7 +1981,7 @@ void CopasiUI3Window::refreshWindowsMenu()
       pAction = new QAction(mWindows[index]->windowTitle(), mpWindowsActionGroup);
       mpWindowsMenu->addAction(pAction);
 
-      for (int index1 = 0; index1 < mWindows.count(); ++index1)
+      for (int index1 = 1; index1 < mWindows.count(); ++index1)
         {
           QMainWindow* mainWindow = mWindows[index1];
 
@@ -1982,7 +1996,8 @@ void CopasiUI3Window::refreshWindowsMenu()
 
 void CopasiUI3Window::slotCloseAllWindows()
 {
-  for (int index = mWindows.count() - 1; index >= 0 ; --index)
+                        // all except main window (index == 0)
+  for (int index = mWindows.count() - 1; index >= 1 ; --index)
     {
       QMainWindow* window = mWindows[index];
 
@@ -1993,7 +2008,7 @@ void CopasiUI3Window::slotCloseAllWindows()
   refreshWindowsMenu();
 }
 
-void CopasiUI3Window::slowFindWindowTriggered(QAction* action)
+void CopasiUI3Window::slotActivateWindowTriggered(QAction* action)
 {
   QMainWindow *window  = getWindowByTitle(mWindows, action->text());
 
