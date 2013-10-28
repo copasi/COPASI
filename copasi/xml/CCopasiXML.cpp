@@ -1826,9 +1826,9 @@ bool CCopasiXML::saveGUI()
 
 bool CCopasiXML::saveSBMLReference()
 {
-  assert(this->mpDataModel != NULL);
-
-  if (!this->mpDataModel) return false;
+  // if there is no model, there are no SBML references to save,
+  // so no reason to fail saving at this point
+  if (!this->mpDataModel) return true;
 
   if (this->mpDataModel->getSBMLFileName() == "" ||
       mSBMLReference.size() == 0)
@@ -1870,7 +1870,7 @@ bool CCopasiXML::buildFunctionList()
   bool success = true;
 
   CCopasiVectorN< CFunction > * pFunctionList
-  = new CCopasiVectorN< CFunction >;
+    = new CCopasiVectorN< CFunction >;
 
   *pFunctionList = CCopasiRootContainer::getFunctionList()->getUsedFunctions(this->mpDataModel->getModel());
 

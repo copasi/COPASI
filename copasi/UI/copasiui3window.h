@@ -96,14 +96,14 @@ public:
 
   //TODO SEDML
 #ifdef COPASI_SEDML
-    /**
-	 * This is used to import an SEDML file from a std::string in the GUI
-	 * it does all the necessary GUI stuff like asking to save the old
-	 * document, displaying messages, etc.
-	 */
-	void importSEDMLFromString(const std::string & sedmlDocumentText);
+  /**
+  * This is used to import an SEDML file from a std::string in the GUI
+  * it does all the necessary GUI stuff like asking to save the old
+  * document, displaying messages, etc.
+  */
+  void importSEDMLFromString(const std::string & sedmlDocumentText);
 
-	void exportSEDMLToString(std::string & SEDML);
+  void exportSEDMLToString(std::string & SEDML);
 #endif
 
   void addWindow(QMainWindow * pWindow);
@@ -153,6 +153,8 @@ protected slots:
   void slotFileSave();
   void slotFileSaveAs(QString str = QString::null);
   void slotFileSaveFinished(bool success);
+  void slotFunctionDBSave(QString str = QString::null);
+  void slotFunctionDBLoad(QString str = QString::null);
   void newDoc();
   void slotFilePrint();
   void slotImportSBML(QString file = QString::null);
@@ -203,14 +205,14 @@ protected slots:
 
   //TODO SEDML
 #ifdef COPASI_SEDML
-    void slotFileExamplesSEDMLFiles(QString file = QString::null);
-    void slotImportSEDML(QString file = QString::null);
-    void slotImportSEDMLFinished(bool success);
-    void slotImportSEDMLFromStringFinished(bool success);
-    void slotExportSEDML();
-    void slotExportSEDMLFinished(bool success);
-    void slotExportSEDMLToStringFinished(bool success);
-    void slotOpenRecentSEDMLFile(QAction * pAction);
+  void slotFileExamplesSEDMLFiles(QString file = QString::null);
+  void slotImportSEDML(QString file = QString::null);
+  void slotImportSEDMLFinished(bool success);
+  void slotImportSEDMLFromStringFinished(bool success);
+  void slotExportSEDML();
+  void slotExportSEDMLFinished(bool success);
+  void slotExportSEDMLToStringFinished(bool success);
+  void slotOpenRecentSEDMLFile(QAction * pAction);
 #endif
 
 private:
@@ -238,6 +240,8 @@ private:
   QAction* mpaOpenSBMLFiles;
   QAction* mpaSave;
   QAction* mpaSaveAs;
+  QAction* mpaFunctionDBSave;
+  QAction* mpaFunctionDBLoad;
   QAction* mpaImportSBML;
   QAction* mpaExportSBML;
   QAction* mpaExportODE;
@@ -297,14 +301,14 @@ private:
 
   //TODO SEDML
 #ifdef COPASI_SEDML
-   QMenu * mpMenuSEDMLSupport;
-   QAction* mpaImportSEDML;
-   QAction* mpaExportSEDML;
-   QAction* mpaOpenSEDMLFiles;
-   QMenu * mpMenuRecentSEDMLFiles;
-   QMap< QAction *, int > mRecentSEDMLFilesActionMap;
-   QActionGroup * mpRecentSEDMLFilesActionGroup;
-   void refreshRecentSEDMLFileMenu();
+  QMenu * mpMenuSEDMLSupport;
+  QAction* mpaImportSEDML;
+  QAction* mpaExportSEDML;
+  QAction* mpaOpenSEDMLFiles;
+  QMenu * mpMenuRecentSEDMLFiles;
+  QMap< QAction *, int > mRecentSEDMLFilesActionMap;
+  QActionGroup * mpRecentSEDMLFilesActionGroup;
+  void refreshRecentSEDMLFileMenu();
 #endif
 
 #ifdef COPASI_SBW_INTEGRATION

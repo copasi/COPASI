@@ -73,6 +73,28 @@ bool CFunctionDB::load()
   return true;
 }
 
+bool CFunctionDB::load(const std::string& fileName)
+{
+  CCopasiXML XML;
+  XML.setFunctionList(&mLoadedFunctions);
+  std::fstream str(fileName.c_str());
+
+  if (str.fail())
+    return false;
+
+  if (!XML.load(str, ""))
+    return false;
+
+  return true;
+}
+
+bool CFunctionDB::save(const std::string& fileName)
+{
+  CCopasiXML XML;
+  XML.setFunctionList(&mLoadedFunctions);
+  return XML.CCopasiXMLInterface::save(fileName, fileName);
+}
+
 C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
 {
   CFunction Function;

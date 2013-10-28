@@ -91,12 +91,12 @@ DataModelGUI::DataModelGUI(QObject * parent):
   mExportFormat()
 
 #ifdef COPASI_SEDML
- , mSEDMLImportString()
- , mpSEDMLExportString(NULL)
- , mSEDMLLevel(1)
- , mSEDMLVersion(1)
- , mSEDMLExportIncomplete(true)
- , mSEDMLExportCOPASIMIRIAM(true)
+  , mSEDMLImportString()
+  , mpSEDMLExportString(NULL)
+  , mSEDMLLevel(1)
+  , mSEDMLVersion(1)
+  , mSEDMLExportIncomplete(true)
+  , mSEDMLExportCOPASIMIRIAM(true)
 #endif
 
 {
@@ -322,6 +322,25 @@ void DataModelGUI::importSBMLFromStringFinished()
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(importSBMLFromStringFinished()));
 
   threadFinished();
+}
+
+void  DataModelGUI::saveFunctionDB(const std::string & fileName)
+{
+  CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
+
+  if (pFunctionDB == NULL) return;
+
+  pFunctionDB->save(fileName);
+}
+
+void  DataModelGUI::loadFunctionDB(const std::string & fileName)
+{
+  CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
+
+  if (pFunctionDB == NULL) return;
+
+  if (pFunctionDB->load(fileName))
+    emit notify(ListViews::FUNCTION, ListViews::DELETE, "");
 }
 
 void DataModelGUI::importSBML(const std::string & fileName)

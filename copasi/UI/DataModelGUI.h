@@ -49,6 +49,9 @@ public:
   void addModelRun();
 #endif
 
+  void saveFunctionDB(const std::string & fileName);
+  void loadFunctionDB(const std::string & fileName);
+
   void importSBML(const std::string & fileName);
   void exportSBML(const std::string & fileName, bool overwriteFile , int sbmlLevel, int sbmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
   void importSBMLFromString(const std::string & sbmlDocumentText);
@@ -58,17 +61,16 @@ public:
 
   //TODO SEDML
 #ifdef COPASI_SEDML
-   void exportSEDML(const std::string & fileName, bool overwriteFile , int sedmlLevel, int sedmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
-   void exportSEDMLToString(std::string & sedmlDocumentText);
-   void importSEDML(const std::string & fileName);
-   void importSEDMLFromString(const std::string & sedmlDocumentText);
+  void exportSEDML(const std::string & fileName, bool overwriteFile , int sedmlLevel, int sedmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
+  void exportSEDMLToString(std::string & sedmlDocumentText);
+  void importSEDML(const std::string & fileName);
+  void importSEDMLFromString(const std::string & sedmlDocumentText);
 
-   void importSEDMLRun();
-   void exportSEDMLRun();
-   void importSEDMLFromStringRun();
-   void exportSEDMLToStringRun();
+  void importSEDMLRun();
+  void exportSEDMLRun();
+  void importSEDMLFromStringRun();
+  void exportSEDMLToStringRun();
 #endif
-
 
   void loadModelRun();
   void saveModelRun();
@@ -147,7 +149,6 @@ private:
   bool mSBMLExportIncomplete;
   bool mSBMLExportCOPASIMIRIAM;
   std::string mExportFormat;
-
 
   //TODO SEDML
 #ifdef COPASI_SEDML
