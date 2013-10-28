@@ -174,12 +174,12 @@ finish:
         }
       else
         {
-          std::cout << *static_cast< const CCopasiObject * >(*itSeq);
+          std::cout << (*itSeq)->getCN() << std::endl;
         }
     }
 
   std::cout << "End" << std::endl;
-#endif // XXXX
+#endif //
 
   return success;
 }

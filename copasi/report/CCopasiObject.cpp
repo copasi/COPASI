@@ -642,7 +642,7 @@ std::string CCopasiObject::getUnits() const
 
 std::ostream &operator<<(std::ostream &os, const CCopasiObject & o)
 {
-  os << "Name:      " << o.getObjectName() << std::endl;
+  os << "Name:      " << o.getObjectDisplayName() << std::endl;
   os << "Type:      " << o.getObjectType() << std::endl;
   os << "Container: " << o.isContainer() << std::endl;
   os << "Vector:    " << o.isVector() << std::endl;

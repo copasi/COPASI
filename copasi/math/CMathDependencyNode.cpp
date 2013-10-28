@@ -9,6 +9,8 @@
 #include "CMathObject.h"
 #include "CMathDependencyNodeIterator.h"
 
+#include "model/CMetab.h"
+
 CMathDependencyNode::CMathDependencyNode():
   mpObject(NULL),
   mPrerequisites(),
@@ -165,7 +167,9 @@ bool CMathDependencyNode::buildUpdateSequence(const CMath::SimulationContextFlag
             // are skipped in Before processing.
             if (itNode->isChanged() && itNode->isRequested())
               {
-                const CMathObject * pObject = NULL;
+                const CObjectInterface * pObject = itNode->getObject();
+                const CMathObject * pMathObject = NULL;
+                const CParticleReference * pParticleNumber = NULL;
 
                 // For an extensive transient value of a dependent species we have 2
                 // possible assignments depending on the context.
@@ -177,9 +181,13 @@ bool CMathDependencyNode::buildUpdateSequence(const CMath::SimulationContextFlag
                 // is CMath::UseMoieties.
 
                 if (!(context & CMath::UseMoieties) ||
-                    (pObject = dynamic_cast< const CMathObject *>(itNode->getObject())) == NULL ||
-                    pObject->getSimulationType() != CMath::Dependent ||
-                    pObject->getValueType() != CMath::Value)
+                    ((pMathObject = dynamic_cast< const CMathObject *>(pObject)) == NULL &&
+                     (pParticleNumber = dynamic_cast< const CParticleReference *>(pObject)) == NULL) ||
+                    (pMathObject != NULL &&
+                     (pMathObject->getSimulationType() != CMath::Dependent ||
+                      pMathObject->getValueType() != CMath::Value)) ||
+                    (pParticleNumber != NULL &&
+                     !static_cast< const CMetab * >(pParticleNumber->getObjectParent())->isDependent()))
                   {
                     updateSequence.push_back(const_cast< CObjectInterface * >(itNode->getObject()));
                     itNode->setChanged(false);
