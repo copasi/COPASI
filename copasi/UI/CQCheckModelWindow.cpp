@@ -12,9 +12,6 @@ CQCheckModelWindow::CQCheckModelWindow(CopasiUI3Window * pMainWindow) :
 {
   setupUi(this);
 
-  // add a place holder menu, to be filled by the main window
-  mpWindowMenu = menuBar()->addMenu("Window");
-
   textEdit->setReadOnly(true);
 
   addToMainWindow(mpMainWindow);

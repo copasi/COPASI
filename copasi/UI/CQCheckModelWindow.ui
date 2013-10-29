@@ -5,14 +5,15 @@
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+ <comment> All rights reserved. </comment>
  <class>CQCheckModelWindow</class>
  <widget class="QMainWindow" name="CQCheckModelWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>510</width>
-    <height>640</height>
+    <width>508</width>
+    <height>638</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,10 +38,16 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>510</width>
+     <width>508</width>
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="mpWindowMenu">
+    <property name="title">
+     <string>&amp;Window</string>
+    </property>
+   </widget>
+   <addaction name="mpWindowMenu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

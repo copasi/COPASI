@@ -25,8 +25,6 @@ public:
 
 private:
   CopasiUI3Window * mpMainWindow;
-  QMenu * mpWindowMenu;
-
 };
 
 #endif // CQCHECKMODELWINDOW_H
