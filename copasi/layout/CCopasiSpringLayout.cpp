@@ -1082,7 +1082,7 @@ CLayout* CCopasiSpringLayout::createLayout(
           if (sideMetabs.find(pMetab) != sideMetabs.end())
             {
               //estimate the size of the glyph
-              double width = (double)((*metabIt)->getObjectName().length() * fontSize);
+              double width = (double)((pMetab)->getObjectName().length() * fontSize);
               double height = (double)fontHeight;
 
               if (width < height)
@@ -1175,7 +1175,7 @@ CLayout* CCopasiSpringLayout::createLayout(
           if (sideMetabs.find(pMetab) != sideMetabs.end())
             {
               //estimate the size of the glyph
-              double width = (double)((*metabIt)->getObjectName().length() * fontSize);
+              double width = (double)((pMetab)->getObjectName().length() * fontSize);
               double height = (double)fontHeight;
 
               if (width < height)
@@ -1263,7 +1263,7 @@ CLayout* CCopasiSpringLayout::createLayout(
           if (sideMetabs.find(pMetab) != sideMetabs.end())
             {
               //estimate the size of the glyph
-              double width = (double)((*metabIt)->getObjectName().length() * fontSize);
+              double width = (double)((pMetab)->getObjectName().length() * fontSize);
               double height = (double)fontHeight;
 
               if (width < height)
