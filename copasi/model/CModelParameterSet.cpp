@@ -167,9 +167,12 @@ void CModelParameterSet::createFromModel()
               pParameter->setSimulationType(CModelEntity::ASSIGNMENT);
               const std::vector<std::string> ModelValue = (*itReaction)->getParameterMapping((*itParameter)->getObjectName());
 
-              assert(ModelValue.size() == 1);
+              if (ModelValue.size() != 1) fatalError();
 
               const CModelValue * pModelValue = static_cast< CModelValue * >(CCopasiRootContainer::getKeyFactory()->get(ModelValue[0]));
+
+              if (pModelValue == NULL) fatalError();
+
               pParameter->setValue(pModelValue->getInitialValue(), ParticleNumbers);
               pParameter->setInitialExpression("<" + pModelValue->getInitialValueReference()->getCN() + ">");
             }

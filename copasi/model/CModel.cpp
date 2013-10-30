@@ -857,8 +857,9 @@ void CModel::buildMoieties()
   size_t i, imax = MNumMetabolitesReactionDependent;
   size_t j;
 
-  CCopasiVector< CMetab >::iterator it =
-    mMetabolitesX.begin() + mNumMetabolitesODE + mNumMetabolitesReactionIndependent; //begin of dependent metabs
+  CCopasiVector< CMetab >::iterator it = (mNumMetabolitesODE + mNumMetabolitesReactionIndependent > mMetabolitesX.size()) ?
+                                         mMetabolitesX.end() :
+                                         mMetabolitesX.begin() + mNumMetabolitesODE + mNumMetabolitesReactionIndependent; //begin of dependent metabs
   C_FLOAT64 * pFactor = mL.array();
 
   CMoiety *pMoiety;
