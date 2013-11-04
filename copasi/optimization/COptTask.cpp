@@ -39,24 +39,24 @@
 const unsigned int COptTask::ValidMethods[] =
 {
   CCopasiMethod::Statistics,
-  CCopasiMethod::GeneticAlgorithm,
-  CCopasiMethod::GeneticAlgorithmSR,
-  CCopasiMethod::HookeJeeves,
-  CCopasiMethod::LevenbergMarquardt,
-  CCopasiMethod::EvolutionaryProgram,
-  CCopasiMethod::RandomSearch,
-  CCopasiMethod::NelderMead,
-  CCopasiMethod::ParticleSwarm,
-  CCopasiMethod::Praxis,
-  CCopasiMethod::TruncatedNewton,
-  CCopasiMethod::SimulatedAnnealing,
 #ifdef COPASI_DEBUG
   CCopasiMethod::CoranaWalk,
 #endif // COPASI_DEBUG
   CCopasiMethod::DifferentialEvolution,
-  CCopasiMethod::ScatterSearch,
   CCopasiMethod::SRES,
+  CCopasiMethod::EvolutionaryProgram,
+  CCopasiMethod::GeneticAlgorithm,
+  CCopasiMethod::GeneticAlgorithmSR,
+  CCopasiMethod::HookeJeeves,
+  CCopasiMethod::LevenbergMarquardt,
+  CCopasiMethod::NelderMead,
+  CCopasiMethod::ParticleSwarm,
+  CCopasiMethod::Praxis,
+  CCopasiMethod::RandomSearch,
+  CCopasiMethod::ScatterSearch,
+  CCopasiMethod::SimulatedAnnealing,
   CCopasiMethod::SteepestDescent,
+  CCopasiMethod::TruncatedNewton,
   CCopasiMethod::unset
 };
 
