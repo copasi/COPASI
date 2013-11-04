@@ -1226,13 +1226,13 @@ void CMathContainer::createDependencyGraphs()
       mTransientDependencies.addObject(pObject);
     }
 
-#ifdef DEFAULT_DEBUG_TRACING
+#ifdef COPASI_DEBUG_TRACE
   std::ofstream InitialDependencies("InitialDependencies.dot");
   mInitialDependencies.exportDOTFormat(InitialDependencies, "InitialDependencies");
 
   std::ofstream TransientDependencies("TransientDependencies.dot");
   mTransientDependencies.exportDOTFormat(TransientDependencies, "TransientDependencies");
-#endif // DEFAULT_DEBUG_TRACING
+#endif // COPASI_DEBUG_TRACE
 
   createSynchronizeInitialValuesSequence();
   createApplyInitialValuesSequence();

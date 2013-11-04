@@ -120,11 +120,11 @@ bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag 
       success = false;
     }
 
-#ifdef DEFAULT_DEBUG_TRACING
+#ifdef COPASI_DEBUG_TRACE
   std::ofstream GetUpdateSequence("GetUpdateSequence.dot");
   exportDOTFormat(GetUpdateSequence, "GetUpdateSequence");
   GetUpdateSequence.close();
-#endif //DEFAULT_DEBUG_TRACING
+#endif //COPASI_DEBUG_TRACE
 
   if (!success) goto finish;
 
