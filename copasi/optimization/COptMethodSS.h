@@ -16,7 +16,6 @@
 #include "utilities/CVector.h"
 
 class CRandom;
-//class COptMethodPraxis;
 
 class COptMethodSS : public COptMethod
 {

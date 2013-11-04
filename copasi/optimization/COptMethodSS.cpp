@@ -17,7 +17,6 @@
 
 #include "copasi.h"
 #include "COptMethodSS.h"
-#include "COptMethodPraxis.h" //used for local minimisation
 #include "COptProblem.h"
 #include "parameterFitting/CFitProblem.h"
 #include "COptItem.h"
