@@ -41,6 +41,7 @@ echo Updating ${GitTools}/../copasi/CopasiVersion.h
 current_major=4
 current_minor=9
 current_build=45
+current_comment=Source
 current_commit=daa20f3198bf8bb44e098ceb862943b36448d596
 
 commitList=`git log --pretty=%H $current_commit..HEAD`
@@ -132,6 +133,7 @@ sed -e 's/COPASI_VERSION_MAJOR.*/COPASI_VERSION_MAJOR '$current_major'/' \
     -e 's/COPASI_VERSION_BUILD.*/COPASI_VERSION_BUILD '$current_build'/' \
     -e 's/COPASI_VERSION_MODIFIED.*/COPASI_VERSION_MODIFIED '$modified'/' \
     -e 's/COPASI_VERSION_COMPATIBILITY.*/COPASI_VERSION_COMPATIBILITY '$compatibility'/' \
+    -e 's/COPASI_VERSION_COMMENT.*/COPASI_VERSION_COMMENT "'$current_comment'"/' \
     -e 's/COPASI_VERSION_CREATOR.*/COPASI_VERSION_CREATOR "'$creator'"/' \
     ${GitTools}/../copasi/CopasiVersion.h.in > ${GitTools}/../copasi/CopasiVersion.h
     
