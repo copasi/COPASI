@@ -3,7 +3,9 @@
 // of Manchester.
 // All rights reserved.
 
-#define DEBUG_OPT 1
+// DEBUG_OPT allows doing debug output only on this class and is preferable
+// to using COPASI_DEBUG, which would make this output on for any debug version
+#undef DEBUG_OPT
 
 #include <limits>
 #include <string>
@@ -45,7 +47,6 @@ COptMethodSS::COptMethodSS(const CCopasiContainer * pParent):
   mpLocalMinimizer(NULL)
 {
   addParameter("Number of Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 200);
-  addParameter("Freq. Local Optimiser", CCopasiParameter::UINT, (unsigned C_INT32) 20);
 // we no longer give the user choice of rng, we use the mersenne twister!
 // but in DEBUG versions we should still have access to it
 #ifdef COPASI_DEBUG
@@ -118,9 +119,10 @@ bool COptMethodSS::initialize()
   CRandom::createGenerator(* (CRandom::Type *) CRandom::mt19937, 0);
 #endif
 
+  mCloseValue = 0.001;
+
   // frequency of local optimiser; this is hardcoded as 20 per Jose Egea,
-  // but we allow the user to change it
-  mLocalFreq = * getValue("Freq. Local Optimiser").pUINT;
+  mLocalFreq = 20;
 
   // get number of variables in the problem
   mVariableSize = mpOptItem->size();
@@ -135,21 +137,22 @@ bool COptMethodSS::initialize()
   if (pFitProblem != NULL)
     {
       // this is a least squares problem (param estimation)
+      // let's use our favorite lsq method
       mpLocalMinimizer = COptMethod::createMethod(CCopasiMethod::LevenbergMarquardt);
+      // the intermediate local minimizations use a rather relaxed tolerance
       mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-003);
+      // TODO: not sure if we should let this one go that long...
       mpLocalMinimizer->setValue("Iteration Limit", (C_INT32) 2000);
     }
   else
     {
       // this is a generic optimisation problem
-      //  mpLocalMinimizer = COptMethod::createMethod(CCopasiMethod::Praxis);
-      //mpLocalMinimizer = COptMethod::createMethod(CCopasiMethod::NelderMead);
+      // let's use Hooke and Jeeves
       mpLocalMinimizer = COptMethod::createMethod(CCopasiMethod::HookeJeeves);
-      // with a rather relaxed tolerance (1e-3)
+      // with a rather relaxed tolerance (1e-3) for intermediate minimizations
       mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-003);
       mpLocalMinimizer->setValue("Iteration Limit", (C_INT32) 50);
       mpLocalMinimizer->setValue("Rho", (C_FLOAT64) 0.2);
-      //mpLocalMinimizer->setValue("Scale", (C_FLOAT64) 10.0);
     }
 
   // local minimization problem (starts as a copy of the current problem)
@@ -164,7 +167,7 @@ bool COptMethodSS::initialize()
       mpOptProblemLocal = new COptProblem(*mpOptProblem, getObjectParent());
     }
 
-  // the local method should not have a callback
+  // the local optimization method should not have a callback
   mpOptProblemLocal->setCallBack(NULL);
 
   // set object parent (this is needed or else initialize() will fail)
@@ -173,7 +176,7 @@ bool COptMethodSS::initialize()
   mpOptProblemLocal->initializeSubtaskBeforeOutput();
   // initialize it
   mpOptProblemLocal->initialize();
-  // no statistics to be calculated
+  // no statistics to be calculated in the local problems
   mpOptProblemLocal->setCalculateStatistics(false);
   // do not randomize the initial values
   mpOptProblemLocal->setRandomizeStartValues(false);
@@ -188,9 +191,11 @@ bool COptMethodSS::initialize()
   // create vector for function values (of RefSet members)
   mRefSetVal.resize(mPopulationSize);
   mRefSetVal = std::numeric_limits<C_FLOAT64>::infinity();
+
   // create vector for counting stuck iterations
   mStuck.resize(mPopulationSize);
   mStuck = 0;
+
   // create matrix for the RefSet children
   mChild.resize(mPopulationSize);
 
@@ -200,6 +205,7 @@ bool COptMethodSS::initialize()
   // create vector for function values (of child members)
   mChildVal.resize(mPopulationSize);
   mChildVal = std::numeric_limits<C_FLOAT64>::infinity();
+
   // we have not generated any children yet
   mChildrenGenerated = false;
 
@@ -223,6 +229,7 @@ bool COptMethodSS::initialize()
   mPoolVal.resize(mPoolSize);
   mPoolVal = std::numeric_limits<C_FLOAT64>::infinity();
 
+  // best is infinity, so anything will improve it
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 
   // array for frequencies
@@ -326,13 +333,6 @@ bool COptMethodSS::evaluate(const CVector< C_FLOAT64 > & /* individual */)
   return Running;
 }
 
-// check the best individual in the RefSet
-C_INT32 COptMethodSS::fittest()
-{
-// the best is always at the top of the RefSet
-  return 0;
-}
-
 // randomize the values of RefSet[i]
 bool COptMethodSS::randomize(C_INT32 i)
 {
@@ -367,6 +367,7 @@ bool COptMethodSS::randomize(C_INT32 i)
         }
       catch (...)
         {
+          // if there were errors, let's just stay with the midpoint
           Sol = (mx + mn) * 0.5;
         }
 
@@ -437,6 +438,7 @@ bool COptMethodSS::creation(void)
             }
           catch (...)
             {
+              // TODO: this sounds a bit daft in this context, what else could be done, though?
               Sol = (mx + mn) * 0.5;
             }
 
@@ -520,7 +522,7 @@ bool COptMethodSS::creation(void)
 
           for (k = 0; k < 4; k++)
             {
-              // note that the original is <= but numerically < is essentially the same
+              // note that the original is <= but numerically < is essentially the same and faster
               if (a < mProb[k])
                 {
                   try
@@ -542,6 +544,7 @@ bool COptMethodSS::creation(void)
                     }
                   catch (...)
                     {
+                      // TODO: this sounds a bit daft in this context, what else could be done, though?
                       Sol = (mx + mn) * 0.5;
                     }
 
@@ -774,38 +777,6 @@ void COptMethodSS::sortRefSet(C_INT32 lower, C_INT32 upper)
       j = k;
     }
   while (j > lower);
-
-#ifdef EXCLUDE
-  j = upper - 1; // becasue we look ahead...
-
-  do
-    {
-      k = lower;
-
-      for (i = lower; i < j; i++)
-        {
-          if (mRefSetVal[i] > mRefSetVal[i + 1])
-            {
-              // swap the value
-              tempval = mRefSetVal[i];
-              mRefSetVal[i] = mRefSetVal[i + 1];
-              mRefSetVal[i + 1] = tempval;
-              // swap the vector (only the pointers!)
-              tempvec = mRefSet[i];
-              mRefSet[i] = mRefSet[i + 1];
-              mRefSet[i + 1] = tempvec;
-              k = i;
-            }
-        }
-
-      j = k;
-    }
-  while (j > lower);
-
-#endif
-#ifdef DEBUG_OPT
-  serializerefset(0, mPopulationSize);
-#endif
 }
 
 // check if all the indexes of a Child member are closer to
@@ -816,10 +787,7 @@ bool COptMethodSS::closerChild(C_INT32 i, C_INT32 j, C_FLOAT64 dist)
 
   for (C_INT32 k = 0; k < mVariableSize; k++)
     {
-      if (fabs((*mChild[i])[k]) > fabs((*mPool[j])[k]))
-        mx = fabs((*mChild[i])[k]);
-      else
-        mx = fabs((*mPool[j])[k]);
+      mx = (fabs((*mChild[i])[k]) + fabs((*mPool[j])[k])) / 2.0;
 
       if (fabs((*mChild[i])[k] - (*mPool[j])[k]) / mx > dist) return false;
     }
@@ -835,10 +803,7 @@ bool COptMethodSS::closerRefSet(C_INT32 i, C_INT32 j, C_FLOAT64 dist)
 
   for (C_INT32 k = 0; k < mVariableSize; k++)
     {
-      if (fabs((*mRefSet[i])[k]) > fabs((*mRefSet[j])[k]))
-        mx = fabs((*mRefSet[i])[k]);
-      else
-        mx = fabs((*mRefSet[j])[k]);
+      mx = (fabs((*mRefSet[i])[k]) + fabs((*mRefSet[j])[k])) / 2.0;
 
       if (fabs((*mRefSet[i])[k] - (*mRefSet[j])[k]) / mx > dist) return false;
     }
@@ -846,37 +811,11 @@ bool COptMethodSS::closerRefSet(C_INT32 i, C_INT32 j, C_FLOAT64 dist)
   return true;
 }
 
-// measure the distance between two members of the refset
-C_FLOAT64 COptMethodSS::distRefSet(C_INT32 i, C_INT32 j)
-{
-  C_FLOAT64 dist;
-  dist = 0.0;
-
-  for (C_INT32 k = 0; k < mVariableSize; k++)
-    dist += 2.0 * fabs((*mRefSet[i])[k] - (*mRefSet[j])[k]) / (fabs((*mRefSet[i])[k]) + fabs((*mRefSet[j])[k]));
-
-  dist /= mVariableSize;
-  return dist;
-}
-
-// measure the distance between two members of the Child set
-C_FLOAT64 COptMethodSS::distChild(C_INT32 i, C_INT32 j)
-{
-  C_FLOAT64 dist;
-  dist = 0.0;
-
-  for (C_INT32 k = 0; k < mVariableSize; k++)
-    dist += 2.0 * fabs((*mChild[i])[k] - (*mChild[j])[k]) / (fabs((*mChild[i])[k]) + fabs((*mChild[j])[k]));
-
-  dist /= mVariableSize;
-  return dist;
-}
-
 // combine individuals in the RefSet two by two
 // this is a sort of (1+1)-ES strategy
 bool COptMethodSS::combination(void)
 {
-  C_INT32 i, j, k, l;    // counters
+  C_INT32 i, j, k, l;   // counters
   C_FLOAT64 mn, mx;     // for bounds on parameters
   C_FLOAT64 beta;       // bias
   C_FLOAT64 la;         // for orders of magnitude
@@ -905,9 +844,6 @@ bool COptMethodSS::combination(void)
       // keep the parent value in childval[i] so that we only accept better than that
       mChildVal[i] = mRefSetVal[i];
 
-//#ifdef DEBUG_OPT
-//      inforefset(10, i);
-//#endif
       for (j = 0; j < mPopulationSize; j++)
         {
           // no self-reproduction...
@@ -936,113 +872,38 @@ bool COptMethodSS::combination(void)
                       else
                         la = 1.0;
 
-//                      if ((la > -1.8) && (la < 1.8))
-                      if (true)
+                      dd = ((*mRefSet[i])[k] - (*mRefSet[j])[k]) * omatb;
+                      // one of the box limits
+                      c1 = (*mRefSet[i])[k] - dd;
+
+                      // force it to be within the bounds
+                      switch (OptItem.checkConstraint(c1))
                         {
-                          dd = ((*mRefSet[i])[k] - (*mRefSet[j])[k]) * omatb;
-                          // one of the box limits
-                          c1 = (*mRefSet[i])[k] - dd;
+                          case -1:
+                            c1 = mn;
+                            break;
 
-                          // force it to be within the bounds
-                          switch (OptItem.checkConstraint(c1))
-                            {
-                              case -1:
-                                c1 = mn;
-                                break;
-
-                              case 1:
-                                c1 = mx;
-                                break;
-                            }
-
-                          // the other box limit
-                          c2 = (*mRefSet[i])[k] + dd;
-
-                          // force it to be within the bounds
-                          switch (OptItem.checkConstraint(c2))
-                            {
-                              case -1:
-                                c2 = mn;
-                                break;
-
-                              case 1:
-                                c2 = mx;
-                                break;
-                            }
-
-                          xnew[k] = c1 + (c2 - c1) * mpRandom->getRandomCC();
+                          case 1:
+                            c1 = mx;
+                            break;
                         }
-                      else
+
+                      // the other box limit
+                      c2 = (*mRefSet[i])[k] + dd;
+
+                      // force it to be within the bounds
+                      switch (OptItem.checkConstraint(c2))
                         {
-                          dd = la * omatb;
-                          // one of the box limits
-                          c1 = pow(10.0, log10(std::max((*mRefSet[i])[k], std::numeric_limits< C_FLOAT64 >::min())) - dd);
-#ifdef DEBUG_OPT
+                          case -1:
+                            c2 = mn;
+                            break;
 
-                          if (isnan(c1))
-                            {
-                              inforefset(7, j);
-                            }
-
-#endif
-
-                          // force it to be within the bounds
-                          switch (OptItem.checkConstraint(c1))
-                            {
-                              case -1:
-                                c1 = mn;
-                                break;
-
-                              case 1:
-                                c1 = mx;
-                                break;
-                            }
-
-                          // the other box limit
-                          c2 = pow(10.0, log10(std::max((*mRefSet[i])[k], std::numeric_limits< C_FLOAT64 >::min())) + dd);
-#ifdef DEBUG_OPT
-
-                          if (isnan(c2))
-                            {
-                              inforefset(8, j);
-                            }
-
-#endif
-
-                          // force it to be within the bounds
-                          switch (OptItem.checkConstraint(c2))
-                            {
-                              case -1:
-                                c2 = mn;
-                                break;
-
-                              case 1:
-                                c2 = mx;
-                                break;
-                            }
-
-                          if (dd > 0.0)
-                            {
-                              la = log10(c2) - log10(c1);
-                              la *= mpRandom->getRandomCC();
-                              xnew[k] = pow(10.0, log10(c1 + la));
-                            }
-                          else
-                            {
-                              la = log10(c1) - log10(c2);
-                              la *= mpRandom->getRandomCC();
-                              xnew[k] = pow(10.0, log10(c2 + la));
-                            }
-
-#ifdef DEBUG_OPT
-
-                          if (isnan(xnew[k]))
-                            {
-                              inforefset(9, j);
-                            }
-
-#endif
+                          case 1:
+                            c2 = mx;
+                            break;
                         }
+
+                      xnew[k] = c1 + (c2 - c1) * mpRandom->getRandomCC();
                     }
                   catch (...)
                     {
@@ -1069,14 +930,7 @@ bool COptMethodSS::combination(void)
                   mStuck[i] = 0;
                   // signal we have generated a child (improvement)
                   mChildrenGenerated = true;
-#ifdef DEBUG_OPT
-                  inforefset(1, i);
-#endif
                 }
-
-//#ifdef DEBUG_OPT
-//                serializevector(xnew, mEvaluationValue);
-//#endif
             }
         }
 
@@ -1124,9 +978,6 @@ bool COptMethodSS::combination(void)
               // if there was no improvement we finish here => exit for(;;)
               if (mChildVal[i] <= xnewval) break;
 
-#ifdef DEBUG_OPT
-              inforefset(2, i);
-#endif
               // old child becomes parent
               xpr = (*mChild[i]);
               xprval = mChildVal[i];
@@ -1168,19 +1019,15 @@ bool COptMethodSS::childLocalMin(void)
         }
     }
 
-  // no child in this interation? exit now
+  // no child in this iteration? exit now
   if (best == -1) return true;
 
   // check if this child is not close to previous ones
   for (i = 0; i < mLocalStored; i++)
     {
       // is the other one like me?
-      if (closerChild(best, i, 1e-3))
-        //if (distChild(best, i) < 1e-3)
+      if (closerChild(best, i, mCloseValue))
         {
-#ifdef DEBUG_OPT
-          inforefset(6, best);
-#endif
           // it is too close, exit now
           return true;
         }
@@ -1199,9 +1046,8 @@ bool COptMethodSS::childLocalMin(void)
   mPoolVal[mLocalStored] = mChildVal[best];
   mLocalStored++;
 
-#ifdef DEBUG_OPT
-  serializepool(0, mLocalStored);
-#endif
+  // clear the local optimisation counter
+  mLocalIter = 1;
 
   return Running;
 }
@@ -1210,10 +1056,8 @@ bool COptMethodSS::optimise()
 {
   bool Running = true;
   bool needsort;
-  size_t i, j, nlocal;
+  size_t i, j;
   C_FLOAT64 mx, mn, la;
-
-  mIteration = 0;
 
   if (!initialize())
     {
@@ -1223,6 +1067,8 @@ bool COptMethodSS::optimise()
 
       return false;
     }
+
+  mIteration = 0;
 
   // create the Pool of diverse candidate solutions
   Running &= creation();
@@ -1251,7 +1097,7 @@ bool COptMethodSS::optimise()
   // reset the number of stored minimizations
   mLocalStored = 0;
   // reset the counter for local minimisation
-  nlocal = 1;
+  mLocalIter = 1;
 
   // run the mIterations (and count the creation as being the first)
   for (mIteration = 1; mIteration < mIterations && Running; mIteration++)
@@ -1262,19 +1108,12 @@ bool COptMethodSS::optimise()
       for (i = 0; i < mPopulationSize; i++)
         {
           // are we stuck? (20 iterations)
-//          if ((i>0) && (mStuck[i] == 19))
           if (mStuck[i] == 19)
             {
               // substitute this one by a random guess
               Running &= randomize(i);
-              // if we are overdue a local min, let's do one now
-              // but don't count this one...
-              // Running &= localmin(*(mRefSet[i]), mRefSetVal[i]);
               needsort = true;
               mStuck[i] = 1;
-#ifdef DEBUG_OPT
-              inforefset(5, i);
-#endif
             }
           else
             {
@@ -1282,16 +1121,13 @@ bool COptMethodSS::optimise()
               for (j = i + 1; j < mPopulationSize; j++)
                 {
                   // is the other one like me?
-                  if (closerRefSet(i, j, 1e-3))
+                  if (closerRefSet(i, j, mCloseValue))
                     //if (distRefSet(i, j) < 0.01)
                     {
-                      // randomize the other one (I am more important)
+                      // randomize the other one because it has worse value
                       Running &= randomize(j);
                       needsort = true;
                       mStuck[j] = 1;
-#ifdef DEBUG_OPT
-                      inforefset(4, j);
-#endif
                     }
                 }
             }
@@ -1304,17 +1140,15 @@ bool COptMethodSS::optimise()
       Running &= combination();
 
       // check if we have to run a local search
-      if (nlocal >= mLocalFreq && mChildrenGenerated)
+      if (mLocalIter >= mLocalFreq && mChildrenGenerated)
         {
-          // reset the local counter
-          nlocal = 1;
           // carry out a local search
           Running &= childLocalMin();
         }
       else
         {
           // count this
-          nlocal++;
+          mLocalIter++;
         }
 
       // substitute the parents for children or increment stuck counter
@@ -1342,16 +1176,6 @@ bool COptMethodSS::optimise()
 
       // sort the RefSet if needed
       if (needsort) sortRefSet(0, mPopulationSize);
-
-#ifdef DEBUG_OPT
-
-      if (!mChildrenGenerated)
-        {
-          // signal that nothing happened in this iteration
-          inforefset(3, mIteration);
-        }
-
-#endif
 
       // have we made any progress?
       if (mRefSetVal[0] < mBestValue)
@@ -1480,6 +1304,8 @@ bool COptMethodSS::inforefset(C_INT32 type, C_INT32 element)
       case 9: ofile << "xnew[k] is NaN (element" << element << ")" << std::endl; break;
 
       case 10: ofile << "Children of " << element << std::endl; break;
+
+      case 11: ofile << "Local minimization at value " << element << std::endl; break;
     }
 
   ofile.close();

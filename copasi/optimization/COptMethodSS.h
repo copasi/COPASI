@@ -136,12 +136,6 @@ private:
   bool childLocalMin(void);
 
   /**
-   * Find the best individual at this generation
-   * @return size_t fittest
-   */
-  C_INT32 fittest();
-
-  /**
    * Initialise the population
    * @return bool continue
    */
@@ -167,16 +161,6 @@ private:
    * check if two vectors in RefSet are close
    */
   bool closerRefSet(C_INT32 i, C_INT32 j, C_FLOAT64 dist);
-
-  /**
-   * measure the distance between two members of the refset
-   */
-  C_FLOAT64 distRefSet(C_INT32 i, C_INT32 j);
-
-  /**
-   * measure the distance between two members of the child set
-   */
-  C_FLOAT64 distChild(C_INT32 i, C_INT32 j);
 
   /**
    * check if two child vectors are close
@@ -205,6 +189,11 @@ private:
    * Number of iterations between local searches.
    */
   unsigned C_INT32 mLocalFreq;
+
+  /**
+   * Counts iterations between local searches.
+   */
+  unsigned C_INT32 mLocalIter;
 
   /**
    * Number of local minimizations stored
@@ -287,6 +276,11 @@ private:
    * index of the best value so far
    */
   size_t mBestIndex;
+
+  /**
+   * Threshold to decide a solution is too close to another
+   */
+  C_FLOAT64 mCloseValue;
 
   /**
    * Handle to the process report item "Current Iteration".
