@@ -541,6 +541,7 @@ bool CModel::buildDependencyGraphs()
       mTransientDependencies.addObject((*itMoiety)->getDependentNumberReference());
     }
 
+#ifdef DEFAULT_DEBUG_TRACING
   std::ofstream File;
 
   File.open("InitialDependencies.dot");
@@ -550,7 +551,7 @@ bool CModel::buildDependencyGraphs()
   File.open("SimulationDependencies.dot");
   mTransientDependencies.exportDOTFormat(File, "SimulationDependencies");
   File.close();
-
+#endif //DEFAULT_DEBUG_TRACING
   return true;
 }
 

@@ -72,7 +72,6 @@ bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag 
     const CObjectInterface::ObjectSet & requestedObjects,
     CObjectInterface::UpdateSequence & updateSequence)
 {
-  std::ofstream GetUpdateSequence("GetUpdateSequence.dot");
 
   bool success = true;
 
@@ -121,8 +120,11 @@ bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag 
       success = false;
     }
 
+#ifdef DEFAULT_DEBUG_TRACING
+  std::ofstream GetUpdateSequence("GetUpdateSequence.dot");
   exportDOTFormat(GetUpdateSequence, "GetUpdateSequence");
   GetUpdateSequence.close();
+#endif //DEFAULT_DEBUG_TRACING
 
   if (!success) goto finish;
 
