@@ -33,18 +33,54 @@ if (NOT WIN32)
  SET(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
 endif()
 
+# add an option to override the version
+set(COPASI_OVERRIDE_VERSION "" CACHE STRING "Version String to override the version parsed from the header" )
+mark_as_advanced(COPASI_OVERRIDE_VERSION)
+
+# if the header file is not present, then set the override version to this one
+if (NOT EXISTS "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h" AND NOT COPASI_OVERRIDE_VERSION)
+  set(COPASI_OVERRIDE_VERSION "4.11.65")
+endif()
+
+
+set(COPASI_VERSION_MAJOR)
+set(COPASI_VERSION_MINOR)
+set(COPASI_VERSION_BUILD)
+set(COPASI_VERSION_COMMENT)
+# if override version is set, parse it and configure the header file with it
+if (COPASI_OVERRIDE_VERSION)
+  # parse the override string   
+  string(STRIP "${COPASI_OVERRIDE_VERSION}" VersionString)
+  string(REPLACE "." ";" VersionString "${VersionString}" )
+  string(REPLACE "-" ";" VersionString "${VersionString}" )
+  list(LENGTH VersionString versionLength)
+  list(GET VersionString 0 COPASI_VERSION_MAJOR )
+  list(GET VersionString 1 COPASI_VERSION_MINOR )
+  list(GET VersionString 2 COPASI_VERSION_BUILD )
+
+  if(${versionLength} GREATER 3)
+      list(GET VersionString 3 COPASI_VERSION_COMMENT )
+  endif()
+  
+  # configure file
+  configure_file (
+    "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h.in"
+    "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h"
+  )
+    
+endif()
+
 set(COPASI_VERSION)
 # the CopasiVersion file only exists when the git tools have been configured
 # and used. if that is not the case, we default to the canned version. 
 if (EXISTS "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h")
   file(READ "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h" COPASI_VERSION)
-else()
-  file(READ "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h.in" COPASI_VERSION)
 endif()
-
-string(REGEX REPLACE ".*COPASI_VERSION_MAJOR ([0-9]+).*" "\\1" COPASI_VERSION_MAJOR "${COPASI_VERSION}")
-string(REGEX REPLACE ".*COPASI_VERSION_MINOR ([0-9]+).*" "\\1" COPASI_VERSION_MINOR "${COPASI_VERSION}")
-string(REGEX REPLACE ".*COPASI_VERSION_BUILD ([0-9]+).*" "\\1" COPASI_VERSION_BUILD "${COPASI_VERSION}")
+if (COPASI_VERSION)
+  string(REGEX REPLACE ".*COPASI_VERSION_MAJOR ([0-9]+).*" "\\1" COPASI_VERSION_MAJOR "${COPASI_VERSION}")
+  string(REGEX REPLACE ".*COPASI_VERSION_MINOR ([0-9]+).*" "\\1" COPASI_VERSION_MINOR "${COPASI_VERSION}")
+  string(REGEX REPLACE ".*COPASI_VERSION_BUILD ([0-9]+).*" "\\1" COPASI_VERSION_BUILD "${COPASI_VERSION}")
+endif()
 
 include (CMakeTestCCompiler)
 include (CheckCSourceCompiles)
