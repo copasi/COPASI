@@ -1,7 +1,7 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #include <sstream>
 
@@ -121,9 +121,11 @@ bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag 
     }
 
 #ifdef COPASI_DEBUG_TRACE
+{
   std::ofstream GetUpdateSequence("GetUpdateSequence.dot");
   exportDOTFormat(GetUpdateSequence, "GetUpdateSequence");
   GetUpdateSequence.close();
+}
 #endif //COPASI_DEBUG_TRACE
 
   if (!success) goto finish;
