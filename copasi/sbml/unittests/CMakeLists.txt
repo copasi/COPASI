@@ -131,6 +131,7 @@ set(SOURCES
   test000094.cpp
   test000095.cpp
   test000096.cpp
+  test000097.cpp
   test000098.cpp
   test000099.cpp
   test000100.cpp
@@ -140,11 +141,6 @@ set(SOURCES
   test000104.cpp
   test.cpp
 )
-
-if (ENABLE_CRENDER_EXTENSION)
-set(SOURCES ${SOURCES} test000097.cpp)
-endif (ENABLE_CRENDER_EXTENSION)
-
 
 include(../../common.cmake)
 include(../../CMakeConsoleApp.cmake)

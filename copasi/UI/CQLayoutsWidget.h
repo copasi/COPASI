@@ -24,19 +24,14 @@ class CQLayoutsDM;
 class CQSortFilterProxyModel;
 class CQPushButtonDelegate;
 class CQPushButtonDelegate;
-#ifdef USE_CRENDER_EXTENSION
-# include "copasi/UI/CWindowInterface.h"
-#endif // USE_CRENDER_EXTENSION
+
+#include "copasi/UI/CWindowInterface.h"
 
 class CQLayoutsWidget : public CopasiWidget, public Ui::CQLayoutsWidget
 {
   Q_OBJECT
 
-#ifdef USE_CRENDER_EXTENSION
   typedef CWindowInterface LayoutWindow;
-#else
-  typedef CQLayoutMainWindow LayoutWindow;
-#endif // USE_CRENDER_EXTENSION
 
   typedef std::map< std::string, LayoutWindow * > LayoutWindowMap;
 

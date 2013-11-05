@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-//   $Revision: 1.35 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/16 23:11:31 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -34,12 +26,12 @@
 #include "sbml/math/ASTNode.h"
 
 CEvaluationNodeConstant::CEvaluationNodeConstant():
-    CEvaluationNode(CEvaluationNode::INVALID, "")
+  CEvaluationNode(CEvaluationNode::INVALID, "")
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeConstant::CEvaluationNodeConstant(const SubType & subType,
     const Data & data):
-    CEvaluationNode((Type)(CEvaluationNode::CONSTANT | subType), data)
+  CEvaluationNode((Type)(CEvaluationNode::CONSTANT | subType), data)
 {
   switch ((SubType) subType)
     {
@@ -76,7 +68,7 @@ CEvaluationNodeConstant::CEvaluationNodeConstant(const SubType & subType,
 }
 
 CEvaluationNodeConstant::CEvaluationNodeConstant(const CEvaluationNodeConstant & src):
-    CEvaluationNode(src)
+  CEvaluationNode(src)
 {}
 
 CEvaluationNodeConstant::~CEvaluationNodeConstant() {}
@@ -93,21 +85,27 @@ std::string CEvaluationNodeConstant::getCCodeString(const std::vector< std::stri
       case PI:
         data = "PI";
         break;
+
       case EXPONENTIALE:
         data = "EXPONENTIALE";
         break;
+
       case TRUE:
         data = "TRUE";
         break;
+
       case FALSE:
         data = "FALSE";
         break;
+
       case _INFINITY:
         data = "INFINITY";
         break;
+
       case _NaN:
-        data = "@";
+        data = "NaN";
         break;
+
       default:
         data = "@";
         break;
@@ -129,6 +127,7 @@ std::string CEvaluationNodeConstant::getBerkeleyMadonnaString(const std::vector<
       case PI:
         data = "PI";
         break;
+
       case EXPONENTIALE:
       case TRUE:
       case FALSE:
@@ -137,6 +136,7 @@ std::string CEvaluationNodeConstant::getBerkeleyMadonnaString(const std::vector<
         DisplayString << mValue;
         data = DisplayString.str();
         break;
+
       default:
         data = "@";
         break;
@@ -158,6 +158,7 @@ std::string CEvaluationNodeConstant::getXPPString(const std::vector< std::string
       case PI:
         data = "pi";
         break;
+
       case EXPONENTIALE:
       case TRUE:
       case FALSE:
@@ -166,6 +167,7 @@ std::string CEvaluationNodeConstant::getXPPString(const std::vector< std::string
         DisplayString << mValue;
         data = DisplayString.str();
         break;
+
       default:
         data = "@"; //TODO
         break;
@@ -189,18 +191,22 @@ CEvaluationNode * CEvaluationNodeConstant::fromAST(const ASTNode * pASTNode, con
         subType = EXPONENTIALE;
         data = "EXPONENTIALE";
         break;
+
       case AST_CONSTANT_PI:
         subType = PI;
         data = "PI";
         break;
+
       case AST_CONSTANT_TRUE:
         subType = TRUE;
         data = "TRUE";
         break;
+
       case AST_CONSTANT_FALSE:
         subType = FALSE;
         data = "FALSE";
         break;
+
       default:
         subType = INVALID;
         break;
@@ -233,19 +239,24 @@ ASTNode* CEvaluationNodeConstant::toAST(const CCopasiDataModel* /*pDataModel*/) 
       case PI:
         node->setType(AST_CONSTANT_PI);
         break;
+
       case EXPONENTIALE:
         node->setType(AST_CONSTANT_E);
         break;
+
       case TRUE:
         node->setType(AST_CONSTANT_TRUE);
         break;
+
       case FALSE:
         node->setType(AST_CONSTANT_FALSE);
         break;
+
       case _INFINITY:
         node->setType(AST_REAL);
         node->setValue(std::numeric_limits<C_FLOAT64>::infinity());
         break;
+
       case _NaN:
       case INVALID:
         node->setType(AST_REAL);
@@ -272,21 +283,27 @@ std::string CEvaluationNodeConstant::getMMLString(const std::vector< std::string
       case PI:
         data = "&pi;";
         break;
+
       case EXPONENTIALE:
         data = "e";
         break;
+
       case TRUE:
         data = "true";
         break;
+
       case FALSE:
         data = "false";
         break;
+
       case _INFINITY:
         data = "&infin;";
         break;
+
       case _NaN:
         data = "NaN";
         break;
+
       default:
         data = "@";
         break;

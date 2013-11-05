@@ -168,7 +168,6 @@ public:
    */
   std::string getExperiments() const;
 
-#ifdef COPASI_CROSSVALIDATION
   /**
    * Add an experiment to the list of affected cross validations.
    * @param const std::string & key
@@ -201,7 +200,6 @@ public:
    * @return std::string crossValidations
    */
   std::string getCrossValidations() const;
-#endif // COPASI_CROSSVALIDATION
 
   /**
    * Update bounds
@@ -225,13 +223,11 @@ protected:
    */
   CCopasiParameterGroup * mpGrpAffectedExperiments;
 
-#ifdef COPASI_CROSSVALIDATION
   /**
    * A pointer to the value of the CCopasiParameterGroup holding the
    * list of Affected Validation Experiments
    */
   CCopasiParameterGroup * mpGrpAffectedCrossValidations;
-#endif // COPASI_CROSSVALIDATION
 
   /**
    * The value for local items, which affect the experiments in the list.

@@ -1,33 +1,25 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiPlotSelectionDialog.cpp,v $
-//   $Revision: 1.14 $
-//   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/08/01 17:11:33 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qlayout.h>
-#include <qwidget.h>
-#include <qpushbutton.h>
-#include <qcheckbox.h>
-#include <qlabel.h>
-#include <qsplitter.h>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QtGui/QLayout>
+#include <QtGui/QWidget>
+#include <QtGui/QPushButton>
+#include <QtGui/QCheckBox>
+#include <QtGui/QLabel>
+#include <QtGui/QSplitter>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QVBoxLayout>
 
 #include "copasi.h"
 
@@ -39,21 +31,21 @@
 #include "report/CCopasiObject.h"
 
 CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags f):
-    QDialog(parent, f)
-    , mpOKButton(NULL)
-    , mpCancelButton(NULL)
-    , mpExpertCheckBox(NULL)
-    , mpXAxisSelectionWidget(NULL)
-    , mpYAxisSelectionWidget(NULL)
-    , mpSplitter(NULL)
-    , mpButtonBox(NULL)
-    , mpMainLayout(NULL)
-    , mpXAxisLabel(NULL)
-    , mpYAxisLabel(NULL)
-    , mpXAxisSelectionBox(NULL)
-    , mpYAxisSelectionBox(NULL)
-    , mpXAxisOutputVector(NULL)
-    , mpYAxisOutputVector(NULL)
+  QDialog(parent, f)
+  , mpOKButton(NULL)
+  , mpCancelButton(NULL)
+  , mpExpertCheckBox(NULL)
+  , mpXAxisSelectionWidget(NULL)
+  , mpYAxisSelectionWidget(NULL)
+  , mpSplitter(NULL)
+  , mpButtonBox(NULL)
+  , mpMainLayout(NULL)
+  , mpXAxisLabel(NULL)
+  , mpYAxisLabel(NULL)
+  , mpXAxisSelectionBox(NULL)
+  , mpYAxisSelectionBox(NULL)
+  , mpXAxisOutputVector(NULL)
+  , mpYAxisOutputVector(NULL)
 {
   setObjectName(QString::fromUtf8(name));
   setModal(modal);

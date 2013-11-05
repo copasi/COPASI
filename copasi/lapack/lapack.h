@@ -1,17 +1,10 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lapack.h,v $
-   $Revision: 1.3 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:34:21 $
-   End CVS Header */
-
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
 // All rights reserved.
 
-#ifndef __CLAPACK_H
-#define __CLAPACK_H
+#ifndef COPASI_lapack
+#define COPASI_lapack
 
 /* Subroutine */
 int cbdsqr_(char *uplo, integer *n, integer *ncvt, integer *
@@ -6301,4 +6294,4 @@ int zupmtr_(char *side, char *uplo, char *trans, integer *m,
             integer *n, doublecomplex *ap, doublecomplex *tau, doublecomplex *c__,
             integer *ldc, doublecomplex *work, integer *info);
 
-#endif /* __CLAPACK_H */
+#endif // COPASI_lapack

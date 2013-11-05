@@ -22,6 +22,10 @@
 
 
 
+
+
+
+
 %{
 
 #include "model/CModel.h"
@@ -90,6 +94,12 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 #endif // SWIGR
 
 %include "model/CModel.h"
+
+%catches(CCopasiException) CModel::compile();
+%catches(CCopasiException) CModel::compileEvents();
+%catches(CCopasiException) CModel::compileIfNecessary;
+%catches(CCopasiException) CModel::convert2NonReversible;
+%catches(CCopasiException) CModel::initializeMetabolites;
 
 %extend CModel
 {

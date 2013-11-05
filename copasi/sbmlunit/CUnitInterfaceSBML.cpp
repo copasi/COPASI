@@ -743,7 +743,7 @@ std::vector<std::pair<std::string, std::string> > CUnitInterfaceSBML::getListOfL
 {
   std::vector<std::pair<std::string, std::string> > ret;
 
-  std::map<std::string, CUnitInformation>::const_iterator it, itEnd = mSBMLObjectsMap.end();
+  std::map<std::string, CUnitInformation>::const_iterator it;//, itEnd = mSBMLObjectsMap.end();
   std::map<std::string, std::map<std::string, CUnitInformation> >::const_iterator rit;
 
   for (rit = mSBMLLocalParametersMap.begin(); rit != mSBMLLocalParametersMap.end(); ++rit)

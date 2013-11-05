@@ -223,6 +223,7 @@ class CCopasiObject: public CObjectInterface
 
 public:
   typedef std::set< const CCopasiObject * > DataObjectSet;
+  typedef std::vector< Refresh * > DataUpdateSequence;
 
   //Attributes
 protected:

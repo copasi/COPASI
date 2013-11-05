@@ -13,14 +13,9 @@
 // All rights reserved.
 
 #define USE_LAYOUT 1
-
-#ifdef USE_CRENDER_EXTENSION
 #define USE_RENDER 1
 
 #include <sbml/packages/render/extension/RenderGraphicalObjectPlugin.h>
-
-#endif // USE_CRENDER_EXTENSION
-
 #include <sbml/packages/layout/sbml/GraphicalObject.h>
 
 #include "CLGraphicalObject.h"
@@ -35,9 +30,7 @@ CLGraphicalObject::CLGraphicalObject(const std::string & name,
     CCopasiContainer(name, pParent, "LayoutElement"),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
     mModelObjectKey(""),
-#ifdef USE_CRENDER_EXTENSION
     mObjectRole(""),
-#endif // USE_CRENDER_EXTENSION
     mBBox()
 {};
 
@@ -47,9 +40,7 @@ CLGraphicalObject::CLGraphicalObject(const CLGraphicalObject & src,
     CCopasiContainer(src, pParent),
     mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
     mModelObjectKey(src.mModelObjectKey),
-#ifdef USE_CRENDER_EXTENSION
     mObjectRole(src.mObjectRole),
-#endif // USE_CRENDER_EXTENSION
     mBBox(src.mBBox)
 {};
 
@@ -62,14 +53,10 @@ CLGraphicalObject::CLGraphicalObject(const GraphicalObject & sbml,
     mModelObjectKey(""),
     mBBox(*sbml.getBoundingBox())
 {
-
-#ifdef USE_CRENDER_EXTENSION
   RenderGraphicalObjectPlugin* rgoPlugin = (RenderGraphicalObjectPlugin*) sbml.getPlugin("render");
 
   if (rgoPlugin != NULL)
     mObjectRole = rgoPlugin->getObjectRole();
-
-#endif // USE_CRENDER_EXTENSION
 
   //add the copasi key to the map
   layoutmap[sbml.getId()] = mKey;
@@ -93,9 +80,7 @@ CLGraphicalObject & CLGraphicalObject::operator= (const CLGraphicalObject & rhs)
   //object flag cannot be accessed, it is private.
 
   mModelObjectKey = rhs.mModelObjectKey;
-#ifdef USE_CRENDER_EXTENSION
   this->mObjectRole = rhs.mObjectRole;
-#endif // USE_CRENDER_EXTENSION
   mBBox = rhs.mBBox;
 
   return *this;
@@ -159,7 +144,6 @@ void CLGraphicalObject::exportToSBML(GraphicalObject * sbmlobject,
   //Bounding box
   BoundingBox tmpbox = mBBox.getSBMLBoundingBox();
   sbmlobject->setBoundingBox(&tmpbox);
-#ifdef USE_CRENDER_EXTENSION
 
   if (this->mObjectRole.find_first_not_of(" \t\r\n") != std::string::npos)
     {
@@ -168,8 +152,6 @@ void CLGraphicalObject::exportToSBML(GraphicalObject * sbmlobject,
       if (rgoPlugin != NULL)
         rgoPlugin->setObjectRole(this->mObjectRole);
     }
-
-#endif // USE_CRENDER_EXTENSION
 }
 
 std::ostream & operator<<(std::ostream &os, const CLGraphicalObject & g)
@@ -186,8 +168,7 @@ std::ostream & operator<<(std::ostream &os, const CLGraphicalObject & g)
 void CLGraphicalObject::print(std::ostream * ostream) const
 {*ostream << *this;}
 
-#ifdef USE_CRENDER_EXTENSION
-/**
+#/**
  * Method to set the role of a graphical object.
  */
 void CLGraphicalObject::setObjectRole(const std::string& role)
@@ -202,8 +183,6 @@ const std::string& CLGraphicalObject::getObjectRole() const
 {
   return this->mObjectRole;
 }
-
-#endif // USE_CRENDER_EXTENSION
 
 /**
  * This method is used for the export of several layout elements.
@@ -261,12 +240,11 @@ bool CLGraphicalObject::hasValidModelReference() const
 
       //assert(pDM2 != NULL);
       if (pDM1 != NULL && pDM2 == NULL)
-      {
-        // if we have been able to resolve the model reference, but
-        // don't have a datamodel parent, that is good enough
-        return true;
-      }
-
+        {
+          // if we have been able to resolve the model reference, but
+          // don't have a datamodel parent, that is good enough
+          return true;
+        }
 
       if (pDM1 != NULL && pDM1 == pDM2)
         {

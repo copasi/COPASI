@@ -33,12 +33,10 @@
 #include <sbml/packages/layout/extension/LayoutExtension.h>
 #include <sbml/conversion/ConversionProperties.h>
 
-#ifdef USE_CRENDER_EXTENSION
 #include "layout/CLDefaultStyles.h"
 #include <sbml/packages/render/extension/RenderExtension.h>
 #include <sbml/packages/render/extension/RenderListOfLayoutsPlugin.h>
 #include <sbml/packages/render/sbml/GlobalRenderInformation.h>
-#endif
 
 #define INIT_DEFAULTS(element) \
   {\
@@ -3207,8 +3205,6 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
 
 #if LIBSBML_VERSION >= 50400
 
-#ifdef USE_CRENDER_EXTENSION
-
           // also ensure ther is one global render information object
           if (lmPlugin->getNumLayouts() > 0 && getNumDefaultStyles() > 0)
             {
@@ -3224,7 +3220,6 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
                 }
             }
 
-#endif // USE_RENDER_EXTENSION
 #endif // LIBSBML_VERSION >= 50400
         }
     }
@@ -3366,14 +3361,11 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
   if (this->mSBMLLevel > 2)
     this->mpSBMLDocument->setPackageRequired("layout", false);
 
-#if USE_CRENDER_EXTENSION
   const std::string renderuri = (this->mSBMLLevel < 3 ? RenderExtension::getXmlnsL2() : RenderExtension::getXmlnsL3V1V1());
   this->mpSBMLDocument->enablePackage(renderuri, "render", true);
 
   if (this->mSBMLLevel > 2)
     this->mpSBMLDocument->setPackageRequired("render", false);
-
-#endif
 
 #endif
 
@@ -3883,8 +3875,11 @@ void CSBMLExporter::createEvents(CCopasiDataModel& dataModel)
     }
 
   const CCopasiVectorN<CEvent>& events = dataModel.getModel()->getEvents();
+
   CCopasiVectorN<CEvent>::const_iterator it = events.begin(), endit = events.end();
+
   Event* pSBMLEvent = NULL;
+
   std::map<const CCopasiObject*, SBase*>::const_iterator pos;
 
   while (it != endit)

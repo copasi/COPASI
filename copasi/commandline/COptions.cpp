@@ -225,6 +225,10 @@ void COptions::init(C_INT argc, char *argv[])
   setValue("ExportBerkeleyMadonna", Options.ExportBerkeleyMadonna);
   setValue("MaxTime", Options.MaxTime);
 
+#ifdef COPASI_SEDML
+  setValue("ImportSEDML", Options.ImportSEDML);
+#endif
+
   delete pPreParser;
 
   for (i = 0; i < ArgC; i++)

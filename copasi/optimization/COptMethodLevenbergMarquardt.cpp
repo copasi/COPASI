@@ -26,8 +26,8 @@
 #include "parameterFitting/CFitProblem.h"
 #include "report/CCopasiObjectReference.h"
 
-#include "clapackwrap.h"
-#include "blaswrap.h"
+#include "lapack/lapackwrap.h"
+#include "lapack/blaswrap.h"
 
 #define LAMBDA_MAX 1e80
 

@@ -3,11 +3,12 @@
 // of Manchester.
 // All rights reserved.
 
-#include <qgraphicsitem.h>
-#include <qgraphicseffect.h>
-#include <qdockwidget.h>
-#include <QFileDialog>
-#include <QDateTime>
+#include <QtGui/QGraphicsItem>
+#include <QtGui/QGraphicsEffect>
+#include <QtGui/QDockWidget>
+#include <QtGui/QFileDialog>
+#include <QtCore/QDateTime>
+#include <QtGui/QToolBar>
 
 #include <qlayout/CQAnimationWindow.h>
 #include <qlayout/CQAnimationSettingsEditor.h>
@@ -139,7 +140,7 @@ public:
       {
         const size_t reactionIndex = (*modeIt).first;
         const double coefficient = (*modeIt).second;
-        cnValueMap[reordered[reactionIndex]->getCN()] = coefficient;
+        cnValueMap[reordered[reactionIndex]->getCN()] = qAbs(coefficient);
         ++modeIt;
       }
 
@@ -264,10 +265,8 @@ CQAnimationWindow::CQAnimationWindow(CLayout* layout, CCopasiDataModel* dataMode
   , mpModel(NULL)
   , mpWindowMenu(NULL)
   , mAnimation(NULL)
-#ifdef COPASI_AUTOLAYOUT
   , mpLayoutThread(NULL)
   , mpCopy(NULL)
-#endif
 {
   init();
   setScene(new CQLayoutScene(layout, dataModel), dataModel);
@@ -278,15 +277,12 @@ CQAnimationWindow::CQAnimationWindow()
   , mpModel(NULL)
   , mpWindowMenu(NULL)
   , mAnimation(NULL)
-#ifdef COPASI_AUTOLAYOUT
   , mpLayoutThread(NULL)
   , mpCopy(NULL)
-#endif
 {
   init();
 }
 
-#include <QToolBar>
 void CQAnimationWindow::init()
 {
   setupUi(this);
@@ -313,7 +309,6 @@ void CQAnimationWindow::init()
 
   mpWindowMenu = menuBar()->addMenu(tr("&Window"));
 
-#ifdef COPASI_AUTOLAYOUT
   mpLayoutThread = new CQLayoutThread(this);
   connect(mpLayoutThread, SIGNAL(layoutFinished()), this, SLOT(slotStopLayout()));
   connect(mpLayoutThread, SIGNAL(layoutStateChanged(QSharedPointer<CLayoutState>)), this, SLOT(slotLayoutStateChanged(QSharedPointer<CLayoutState>)));
@@ -322,13 +317,7 @@ void CQAnimationWindow::init()
   addDockWidget(Qt::LeftDockWidgetArea, pParameterWindow);
   viewMenu->addSeparator();
   viewMenu->addAction(pParameterWindow->toggleViewAction());
-#endif
   toggleUI(false);
-
-#ifndef COPASI_AUTOLAYOUT
-  actionAuto_Layout->setEnabled(false);
-  actionRandomize_Layout->setEnabled(false);
-#endif
 }
 
 void CQAnimationWindow::slotExportImage()
@@ -341,8 +330,6 @@ void CQAnimationWindow::slotExportImage()
 
 CQAnimationWindow::~CQAnimationWindow()
 {
-
-#ifdef COPASI_AUTOLAYOUT
   mpLayoutThread->terminateLayout();
 
   if (mpCopy != NULL)
@@ -350,8 +337,6 @@ CQAnimationWindow::~CQAnimationWindow()
       delete mpCopy;
       mpCopy = NULL;
     }
-
-#endif // COPASI_AUTOLAYOUT
 
   if (mAnimation != NULL)
     {
@@ -438,10 +423,8 @@ void CQAnimationWindow::slotShowStep(int step)
 
 void CQAnimationWindow::closeEvent(QCloseEvent * /*closeEvent*/)
 {
-#ifdef COPASI_AUTOLAYOUT
   // stop the autolayout
   mpLayoutThread->stopLayout();
-#endif // COPASI_AUTOLAYOUT
 }
 
 void CQAnimationWindow::slotEditSettings()
@@ -457,12 +440,9 @@ void CQAnimationWindow::slotEditSettings()
 
 void CQAnimationWindow::slotRandomizeLayout()
 {
-
-#ifdef COPASI_AUTOLAYOUT
   mpLayoutThread->stopLayout();
   mpLayoutThread->wait();
   mpLayoutThread->randomizeLayout(mpScene->getCurrentLayout());
-#endif //COPASI_AUTOLAYOUT
 }
 
 #include <layout/CCopasiSpringLayout.h>
@@ -471,19 +451,15 @@ void CQAnimationWindow::slotRandomizeLayout()
 #include <QtCore/QAbstractEventDispatcher>
 #include <QtCore/QAbstractEventDispatcher>
 
-#include <qtimer.h>
+#include <QtCore/QTimer>
 
 void CQAnimationWindow::slotStopLayout()
 {
-#ifdef COPASI_AUTOLAYOUT
-
   if (mpCopy != NULL)
     {
       delete mpCopy;
       mpCopy = NULL;
     }
-
-#endif
 
   actionAuto_Layout->setChecked(false);
   actionAuto_Layout->setText("Run Auto Layout");
@@ -506,9 +482,7 @@ void CQAnimationWindow::toggleUI(bool isPlaying)
     }
   else
     {
-#ifdef COPASI_AUTOLAYOUT
       mpLayoutThread->stopLayout();
-#endif //COPASI_AUTOLAYOUT
     }
 }
 
@@ -517,8 +491,6 @@ void CQAnimationWindow::toggleUI(bool isPlaying)
 /// </summary>
 void CQAnimationWindow::slotAutoLayout()
 {
-#ifdef COPASI_AUTOLAYOUT
-
   if (sender() != NULL && !actionAuto_Layout->isChecked())
     {
       mpLayoutThread->stopLayout();
@@ -538,6 +510,4 @@ void CQAnimationWindow::slotAutoLayout()
 
   mpCopy = new CLayout(*mpScene->getCurrentLayout());
   mpLayoutThread->createSpringLayout(mpCopy, 100000);
-
-#endif //COPASI_AUTOLAYOUT
 }

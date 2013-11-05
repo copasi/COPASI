@@ -1,21 +1,18 @@
-/* Begin CVS Header
-$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/COutputHandlerPlot.cpp,v $
-$Revision: 1.27 $
-$Name:  $
-$Author: shoops $
-$Date: 2012/05/02 20:34:52 $
-End CVS Header */
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <QThread>
+#include <QtCore/QThread>
 
 #include "UI/copasiui3window.h"
 
@@ -28,13 +25,13 @@ End CVS Header */
 #include "copasi/report/CCopasiRootContainer.h"
 
 COutputHandlerPlot::COutputHandlerPlot():
-    COutputHandler(),
-    mpDefinitionVector(NULL)
+  COutputHandler(),
+  mpDefinitionVector(NULL)
 {}
 
 COutputHandlerPlot::COutputHandlerPlot(const COutputHandlerPlot & src):
-    COutputHandler(src),
-    mpDefinitionVector(src.mpDefinitionVector)
+  COutputHandler(src),
+  mpDefinitionVector(src.mpDefinitionVector)
 {}
 
 COutputHandlerPlot::~COutputHandlerPlot()

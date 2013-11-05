@@ -15,8 +15,8 @@
 #include "CMathModel.h"
 #include "CModel.h"
 
-#include "blaswrap.h"
-#include "clapackwrap.h"
+#include "lapack/blaswrap.h"
+#include "lapack/lapackwrap.h"
 
 CMathModel::CMathModel(const CCopasiContainer * pParent) :
   CCopasiContainer("MathModel", pParent, "CMathModel"),

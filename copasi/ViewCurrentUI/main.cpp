@@ -1,11 +1,12 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include <stdexcept>
 
-#include <qapplication.h>
+#include <QtGui/QApplication>
+#include <QtCore/QString>
 
 #define COPASI_MAIN
 
@@ -30,7 +31,7 @@
 #endif // COPASI_SBW_INTEGRATION
 
 #ifdef Darwin
-# include <QDir>
+# include <QtCore/QDir>
 # include "UI/qtUtilities.h"
 #endif // Darwin
 
@@ -45,9 +46,9 @@ int main(int argc, char *argv[])
   Arguments args(argc, argv);
 
   if (args.handleCommandLine())
-  {
-    return 0;
-  }
+    {
+      return 0;
+    }
 
   a.setAttribute(Qt::AA_DontShowIconsInMenus, false);
 

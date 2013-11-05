@@ -1,17 +1,9 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/unittests.pro,v $ 
-#   $Revision: 1.42 $ 
-#   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2011/12/24 11:14:47 $ 
-# End CVS Header 
-
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
 # All rights reserved. 
@@ -295,9 +287,8 @@ SOURCES += test000103.cpp
 SOURCES += test000104.cpp
 SOURCES += test.cpp
 
-contains(DEFINES,"USE_CRENDER_EXTENSION"){
     HEADERS += test000097.h
     SOURCES += test000097.cpp
-}
+
 
 

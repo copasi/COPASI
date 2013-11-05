@@ -21,7 +21,7 @@
  ** the Second level of Reactions.
  **********************************************************************/
 
-#include <QWidget>
+#include <QtGui/QWidget>
 
 #include "copasi.h"
 #include "ReactionsWidget1.h"
@@ -54,115 +54,18 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
   : CopasiWidget(parent, name, f),
     mpRi(NULL)
 {
+  setupUi(this);
+
   if (!name)
-    setName("ReactionsWidget1");
+    setObjectName("ReactionsWidget1");
 
-  setCaption(trUtf8("ReactionsWidget1"));
+  setWindowTitle(trUtf8("ReactionsWidget1"));
 
-  ReactionsWidget1Layout = new QGridLayout(this);
-  ReactionsWidget1Layout->setMargin(11);
-  ReactionsWidget1Layout->setSpacing(6);
-  ReactionsWidget1Layout->setObjectName("ReactionsWidget1Layout");
-
-  TextLabel7 = new QLabel(this, "TextLabel7");
-  TextLabel7->setText(trUtf8("Symbol Definition"));
-  TextLabel7->setAlignment(int(Qt::AlignVCenter
-                               | Qt::AlignRight));
-  ReactionsWidget1Layout->addWidget(TextLabel7, 8, 0);
-
-  Line2 = new QFrame(this, "Line2");
-  Line2->setFrameShape(QFrame::HLine);
-  Line2->setFrameShadow(QFrame::Sunken);
-  Line2->setFrameShape(QFrame::HLine);
-  ReactionsWidget1Layout->addMultiCellWidget(Line2, 7, 7, 0, 3);
-
-  // kinetics line
-  TextLabel6 = new QLabel(this, "TextLabel6");
-  TextLabel6->setText(trUtf8("Rate Law"));
-  TextLabel6->setAlignment(int(Qt::AlignVCenter
-                               | Qt::AlignRight));
-  ReactionsWidget1Layout->addWidget(TextLabel6, 5, 0);
-
-  ComboBox1 = new QComboBox(false, this, "ComboBox1");
-  ReactionsWidget1Layout->addMultiCellWidget(ComboBox1, 5, 5, 1, 2);
-
-  newKinetics = new QPushButton(this, "newKinetics");
-  newKinetics->setText(trUtf8("&New Rate Law"));
-  ReactionsWidget1Layout->addWidget(newKinetics, 5, 3);
-
-  TextLabel8 = new QLabel(this, "TextLabel8");
-  TextLabel8->setText(trUtf8("Flux"));
-  TextLabel8->setAlignment(int(Qt::AlignVCenter
-                               | Qt::AlignRight));
-  ReactionsWidget1Layout->addWidget(TextLabel8, 6, 0);
-
-  QPushButton* editKinetics = new QPushButton(this, "editKinetics");
-  editKinetics->setText(trUtf8("&Edit Rate Law"));
-  ReactionsWidget1Layout->addWidget(editKinetics, 6, 3);
-
-  connect(editKinetics, SIGNAL(clicked()), this, SLOT(slotGotoFunction()));
-
-  LineEdit3 = new QLineEdit(this, "LineEdit3");
-  LineEdit3->setEnabled(false);
-  ReactionsWidget1Layout->addMultiCellWidget(LineEdit3, 6, 6, 1, 2);
-
-  // equation line
-  TextLabel5 = new QLabel(this, "TextLabel5");
-  TextLabel5->setText(trUtf8("Reaction"));
-  TextLabel5->setAlignment(int(Qt::AlignVCenter
-                               | Qt::AlignRight));
-  ReactionsWidget1Layout->addWidget(TextLabel5, 2, 0);
-
-  LineEdit2 = new MyLineEdit(this, "LineEdit2");
   LineEdit2->setValidator(new ChemEqValidator(LineEdit2));
-  ReactionsWidget1Layout->addMultiCellWidget(LineEdit2, 2, 2, 1, 3);
-
-  CheckBox = new QCheckBox(this, "CheckBox");
-  CheckBox->setText(trUtf8("Reversible"));
-  ReactionsWidget1Layout->addWidget(CheckBox, 3, 1);
-
-  mpFast = new QCheckBox(this, "mpFast");
-  mpFast->setText(trUtf8("Fast"));
-  mpFast->setEnabled(true);
-  ReactionsWidget1Layout->addWidget(mpFast, 3, 2);
-
-  mpMultiCompartment = new QCheckBox(this, "mpMultiCompartment");
-  mpMultiCompartment->setText(trUtf8("Multi Compartment"));
-  mpMultiCompartment->setEnabled(false);
-  ReactionsWidget1Layout->addWidget(mpMultiCompartment, 3, 3);
 
 #ifndef COPASI_DEBUG
   mpFast->hide();
 #endif
-
-  Line4 = new QFrame(this, "Line4");
-  Line4->setFrameShape(QFrame::HLine);
-  Line4->setFrameShadow(QFrame::Sunken);
-  Line4->setFrameShape(QFrame::HLine);
-  ReactionsWidget1Layout->addMultiCellWidget(Line4, 4, 4, 0, 3);
-
-  table = new ParameterTable(this, "table");
-  table->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-  ReactionsWidget1Layout->addMultiCellWidget(table, 8, 9, 1, 3);
-  ReactionsWidget1Layout->setRowStretch(9, 10);
-
-  QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  ReactionsWidget1Layout->addItem(spacer, 10, 0);
-  //ReactionsWidget1Layout->setRowStretch(10,1);
-
-  setTabOrder(LineEdit2, CheckBox);
-  setTabOrder(CheckBox, mpMultiCompartment);
-  setTabOrder(mpMultiCompartment, ComboBox1);
-  setTabOrder(ComboBox1, newKinetics);
-  setTabOrder(newKinetics, table);
-
-  connect(newKinetics, SIGNAL(clicked()), this, SLOT(slotNewFunction()));
-
-  connect(CheckBox, SIGNAL(clicked()), this, SLOT(slotCheckBoxClicked()));
-  connect(ComboBox1, SIGNAL(activated(const QString &)), this, SLOT(slotComboBoxSelectionChanged(const QString &)));
-  connect(LineEdit2, SIGNAL(edited()), this, SLOT(slotLineEditChanged()));
-
-  //connect(table, SIGNAL(signalChanged(int, int, Qstring)), this, SLOT(slotTableChanged(int, int, QString)));
 }
 
 ReactionsWidget1::~ReactionsWidget1()
@@ -287,14 +190,14 @@ bool ReactionsWidget1::saveToReaction()
       if (createdMetabs) protectedNotify(ListViews::METABOLITE, ListViews::ADD, "");
 
       // :TODO Bug 322: This should only be called when actual changes have been saved.
-      if (this->isShown())
+      if (!this->isHidden())
         protectedNotify(ListViews::REACTION, ListViews::CHANGE, mKey);
     }
 
   //TODO: detect rename events (mpRi->writeBackToReaction has to do this)
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
-  if (this->isShown())
+  if (!this->isHidden())
     (*CCopasiRootContainer::getDatamodelList())[0]->changed();
 
   return true;
@@ -372,6 +275,7 @@ void ReactionsWidget1::copy()
   if (reac == NULL) return;
 
   CModel * pModel = NULL;
+
   if (reac) pModel = mpDataModel->getModel();
 
   if (pModel == NULL) return; // for getting compartments and initializing cModelExpObj
@@ -412,8 +316,9 @@ void ReactionsWidget1::copy()
   CCopasiVector< CChemEqElement >::const_iterator MetabIt;
 
   const CCopasiVector< CChemEqElement > & substratesToCopy = reac->getChemEq().getSubstrates();
-  for (MetabIt = substratesToCopy.begin();MetabIt != substratesToCopy.end(); MetabIt++)
-  {
+
+  for (MetabIt = substratesToCopy.begin(); MetabIt != substratesToCopy.end(); MetabIt++)
+    {
       pDialog->setWindowTitle("Create copy of " + FROM_UTF8((*MetabIt)->getMetabolite()->getObjectName()) + "?");
       origCompartment = (*MetabIt)->getMetabolite()->getCompartment();
       origCompartmentIndex = pDialog->mpSelectionBox->findText(FROM_UTF8(origCompartment->getObjectName()));
@@ -422,23 +327,24 @@ void ReactionsWidget1::copy()
       Compartment_it = Compartments.begin(); // Reuse Compartments iterator to set compartment choice
 
       if (pDialog->exec() != QDialog::Rejected)
-      {
-        // Put species in different compartment (without name modification) by making
-        // duplicateMetab think the other compartment was duplicated from the original
-        if(origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
         {
-          sourceObjects.addCompartment(origCompartment);
-          origToCopyMapping.add(origCompartment,*(Compartment_it + pDialog->mpSelectionBox->currentIndex()));
-        }
+          // Put species in different compartment (without name modification) by making
+          // duplicateMetab think the other compartment was duplicated from the original
+          if (origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
+            {
+              sourceObjects.addCompartment(origCompartment);
+              origToCopyMapping.add(origCompartment, *(Compartment_it + pDialog->mpSelectionBox->currentIndex()));
+            }
 
-        sourceObjects.addMetab((*MetabIt)->getMetabolite());
-        cModelExpObj.duplicateMetab((*MetabIt)->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
-      }
-  }
+          sourceObjects.addMetab((*MetabIt)->getMetabolite());
+          cModelExpObj.duplicateMetab((*MetabIt)->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
+        }
+    }
 
   const CCopasiVector< CChemEqElement > & productsToCopy = reac->getChemEq().getProducts();
-  for (MetabIt = productsToCopy.begin();MetabIt != productsToCopy.end(); MetabIt++)
-  {
+
+  for (MetabIt = productsToCopy.begin(); MetabIt != productsToCopy.end(); MetabIt++)
+    {
       pDialog->setWindowTitle("Create copy of " + FROM_UTF8((*MetabIt)->getMetabolite()->getObjectName()) + "?");
       origCompartment = (*MetabIt)->getMetabolite()->getCompartment();
       origCompartmentIndex = pDialog->mpSelectionBox->findText(FROM_UTF8(origCompartment->getObjectName()));
@@ -447,21 +353,22 @@ void ReactionsWidget1::copy()
       Compartment_it = Compartments.begin();
 
       if (pDialog->exec() != QDialog::Rejected)
-      {
-        if(origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
         {
-          sourceObjects.addCompartment(origCompartment);
-          origToCopyMapping.add(origCompartment,*(Compartment_it + pDialog->mpSelectionBox->currentIndex()));
-        }
+          if (origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
+            {
+              sourceObjects.addCompartment(origCompartment);
+              origToCopyMapping.add(origCompartment, *(Compartment_it + pDialog->mpSelectionBox->currentIndex()));
+            }
 
-        sourceObjects.addMetab((*MetabIt)->getMetabolite());
-        cModelExpObj.duplicateMetab((*MetabIt)->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
-      }
-  }
+          sourceObjects.addMetab((*MetabIt)->getMetabolite());
+          cModelExpObj.duplicateMetab((*MetabIt)->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
+        }
+    }
 
   const CCopasiVector< CChemEqElement > & modifiersToCopy = reac->getChemEq().getModifiers();
-  for (MetabIt = modifiersToCopy.begin();MetabIt != modifiersToCopy.end(); MetabIt++)
-  {
+
+  for (MetabIt = modifiersToCopy.begin(); MetabIt != modifiersToCopy.end(); MetabIt++)
+    {
       pDialog->setWindowTitle("Create copy of " + FROM_UTF8((*MetabIt)->getMetabolite()->getObjectName()) + "?");
       origCompartment = (*MetabIt)->getMetabolite()->getCompartment();
       origCompartmentIndex = pDialog->mpSelectionBox->findText(FROM_UTF8(origCompartment->getObjectName()));
@@ -470,17 +377,17 @@ void ReactionsWidget1::copy()
       Compartment_it = Compartments.begin();
 
       if (pDialog->exec() != QDialog::Rejected)
-      {
-        if(origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
         {
-          sourceObjects.addCompartment(origCompartment);
-          origToCopyMapping.add(origCompartment,*(Compartment_it + pDialog->mpSelectionBox->currentIndex()));
-        }
+          if (origCompartmentIndex != pDialog->mpSelectionBox->currentIndex())
+            {
+              sourceObjects.addCompartment(origCompartment);
+              origToCopyMapping.add(origCompartment, *(Compartment_it + pDialog->mpSelectionBox->currentIndex()));
+            }
 
-        sourceObjects.addMetab((*MetabIt)->getMetabolite());
-        cModelExpObj.duplicateMetab((*MetabIt)->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
-      }
-  }
+          sourceObjects.addMetab((*MetabIt)->getMetabolite());
+          cModelExpObj.duplicateMetab((*MetabIt)->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
+        }
+    }
 
   sourceObjects.addReaction(reac);
   cModelExpObj.duplicateReaction(reac, "_copy", sourceObjects, origToCopyMapping);
@@ -553,24 +460,24 @@ void ReactionsWidget1::FillWidgetFromRI()
   vectorOfStrings2QStringList(mpRi->getListOfPossibleFunctions(), comboEntries);
 
   ComboBox1->clear();
-  ComboBox1->insertStringList(comboEntries, -1);
+  ComboBox1->insertItems(0, comboEntries);
 
   // if there is a current function the parameter table is initialized
   if (mpRi->getFunctionName() != "")
     {
-      if (comboEntries.grep(FROM_UTF8(mpRi->getFunctionName())).size() == 0)
-        ComboBox1->insertItem(FROM_UTF8(mpRi->getFunctionName()));
+      if (comboEntries.filter(FROM_UTF8(mpRi->getFunctionName())).size() == 0)
+        ComboBox1->insertItem(0, FROM_UTF8(mpRi->getFunctionName()));
 
-      ComboBox1->setCurrentText(FROM_UTF8(mpRi->getFunctionName()));
+      ComboBox1->setCurrentIndex(ComboBox1->findText(FROM_UTF8(mpRi->getFunctionName())));
       ComboBox1->setToolTip(FROM_UTF8(mpRi->getFunctionDescription()));
 
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      table->updateTable(*mpRi, *(*CCopasiRootContainer::getDatamodelList())[0]->getModel());
+      table->updateTable(*mpRi, dynamic_cast< CReaction * >(mpObject));
     }
   else
     {
-      ComboBox1->insertItem("undefined");
-      ComboBox1->setCurrentText("undefined");
+      ComboBox1->insertItem(0, "undefined");
+      ComboBox1->setCurrentIndex(0);
       table->initTable();
     }
 }
@@ -603,33 +510,32 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
     {
       if (sub == 0) //here we assume that vector parameters cannot be edited
         {
-          mpRi->setMapping((int) Index, TO_UTF8(table->text((int) table->mIndex2Line[index], 3)));
+//          mpRi->setMapping((int) Index, TO_UTF8(table->item((int) table->mIndex2Line[index], 3)->text()));
+          mpRi->setMapping((int) Index, TO_UTF8(newValue));
         }
     }
 
   // update the widget
   int rrr = table->currentRow();
   int ccc = table->currentColumn();
-
-  // We must avoid this call when only a local parameter value is changed.
-  if (!SkipFillWidget)
-    FillWidgetFromRI();
-
   table->setCurrentCell(rrr, ccc);
+
+  // Save changes when leaving cell
+  leave();
+
+  // Will ultimately update mpRi for updateTable and FillWidgetFromRI
+  enterProtected();
 }
 
 void ReactionsWidget1::slotParameterStatusChanged(int index, bool local)
 {
+  // slot is a reminant of when a checkbox handled this.
+  // This could be added in to slotTableChanged
+
   if (local)
     mpRi->setLocal(index);
   else
     mpRi->setMapping(index, "unknown"); //TODO keep global parameter
-
-  // update the widget
-  int rrr = table->currentRow();
-  int ccc = table->currentColumn();
-  FillWidgetFromRI();
-  table->setCurrentCell(rrr, ccc);
 }
 
 void ReactionsWidget1::slotGotoFunction()
@@ -656,7 +562,7 @@ void ReactionsWidget1::slotNewFunction()
   std::string nname = name;
   size_t i = 0;
   CCopasiVectorN<CFunction>& FunctionList
-    = CCopasiRootContainer::getFunctionList()->loadedFunctions();
+  = CCopasiRootContainer::getFunctionList()->loadedFunctions();
   CFunction* pFunc;
 
   while (FunctionList.getIndex(nname) != C_INVALID_INDEX)

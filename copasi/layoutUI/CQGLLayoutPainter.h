@@ -6,8 +6,8 @@
 #ifndef CQGLLAYOUTPAINTER_H__
 #define CQGLLAYOUTPAINTER_H__
 
-#include <QGLWidget>
-#include <QRectF>
+#include <QtOpenGL/QGLWidget>
+#include <QtCore/QRectF>
 #include <set>
 
 class CCopasiDataModel;
@@ -150,7 +150,6 @@ public:
    */
   void setSelection(const std::set<CLGraphicalObject*>& selection);
 
-#ifdef ELEMENTARY_MODE_DISPLAY
   // the following methods are used to highlight elements in the diagram
   // based on their association to model elements
 
@@ -217,8 +216,6 @@ public:
    * Returns the highlight flag.
    */
   bool getHighlightFlag() const;
-
-#endif // ELEMENTARY_MODE_DISPLAY
 
   /**
    * Sets the aspect for the renderer.

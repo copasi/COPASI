@@ -1,28 +1,20 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-//   $Revision: 1.46 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/22 17:08:47 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qapplication.h>
-#include <qlayout.h>
-#include <qwaitcondition.h>
+#include <QtGui/QApplication>
+#include <QtGui/QLayout>
+#include <QtCore/QWaitCondition>
 
 #include <QtGui/QCloseEvent>
 #include <QtCore/QMutex>
@@ -62,11 +54,11 @@ CProgressBar * CProgressBar::create(QWidget* parent, const char* name, Qt::Windo
 }
 
 CProgressBar::CProgressBar(QWidget* parent, const char* name, Qt::WindowModality windowModality):
-    CQProgressDialog(parent, name, windowModality, Qt::WindowMinimizeButtonHint),
-    CProcessReport(),
-    mProgressItemList(1),
-    mNextEventProcessing(QDateTime::currentDateTime()),
-    mpMainWidget(NULL)
+  CQProgressDialog(parent, name, windowModality, Qt::WindowMinimizeButtonHint),
+  CProcessReport(),
+  mProgressItemList(1),
+  mNextEventProcessing(QDateTime::currentDateTime()),
+  mpMainWidget(NULL)
 {
   CopasiUI3Window::getMainWindow()->disableSliders(true);
 
@@ -94,7 +86,6 @@ CProgressBar::~CProgressBar()
   for (i = 0; i < imax; i++)
     pdelete(mProgressItemList[i]);
 }
-
 
 size_t CProgressBar::addItem(const std::string & name,
                              const CCopasiParameter::Type & type,
@@ -124,7 +115,6 @@ size_t CProgressBar::addItem(const std::string & name,
 
   return hItem;
 }
-
 
 void CProgressBar::slotAddItem(const int handle)
 {

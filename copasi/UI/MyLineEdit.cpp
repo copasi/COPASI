@@ -1,32 +1,29 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/MyLineEdit.cpp,v $
-//   $Revision: 1.14 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/19 13:56:14 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "MyLineEdit.h"
-#include <qvalidator.h>
+#include <QtGui/QValidator>
 
 MyLineEdit::MyLineEdit(QWidget * parent, const char * name)
-    : QLineEdit(parent)
+  : QLineEdit(parent)
 {
   setObjectName(name);
   setupWidget();
 }
 
 MyLineEdit::MyLineEdit(const QString & contents, QWidget * parent, const char * name)
-    : QLineEdit(contents, parent)
+  : QLineEdit(contents, parent)
 {
   setObjectName(name);
   setupWidget();

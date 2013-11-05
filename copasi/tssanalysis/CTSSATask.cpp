@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CTSSATask.cpp,v $
-//   $Revision: 1.17 $
-//   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2012/06/04 11:05:37 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -62,20 +54,18 @@ const unsigned int CTSSATask::ValidMethods[] =
 {
   CCopasiMethod::tssILDM,
   CCopasiMethod::tssILDMModified,
-#ifdef WITH_CSPMETHOD
   CCopasiMethod::tssCSP,
-#endif // WITH_CSPMETHOD
   CCopasiMethod::unset
 };
 
 CTSSATask::CTSSATask(const CCopasiContainer * pParent):
-    CCopasiTask(CCopasiTask::tssAnalysis, pParent),
-    mTimeSeriesRequested(true),
-    mTimeSeries(),
-    mpTSSAProblem(NULL),
-    mpTSSAMethod(NULL),
-    mpCurrentState(NULL),
-    mpCurrentTime(NULL)
+  CCopasiTask(CCopasiTask::tssAnalysis, pParent),
+  mTimeSeriesRequested(true),
+  mTimeSeries(),
+  mpTSSAProblem(NULL),
+  mpTSSAMethod(NULL),
+  mpCurrentState(NULL),
+  mpCurrentTime(NULL)
 {
   mpProblem = new CTSSAProblem(this);
   mpMethod = createMethod(CCopasiMethod::tssILDM);
@@ -91,13 +81,13 @@ CTSSATask::CTSSATask(const CCopasiContainer * pParent):
 
 CTSSATask::CTSSATask(const CTSSATask & src,
                      const CCopasiContainer * pParent):
-    CCopasiTask(src, pParent),
-    mTimeSeriesRequested(src.mTimeSeriesRequested),
-    mTimeSeries(),
-    mpTSSAProblem(NULL),
-    mpTSSAMethod(NULL),
-    mpCurrentState(NULL),
-    mpCurrentTime(NULL)
+  CCopasiTask(src, pParent),
+  mTimeSeriesRequested(src.mTimeSeriesRequested),
+  mTimeSeries(),
+  mpTSSAProblem(NULL),
+  mpTSSAMethod(NULL),
+  mpCurrentState(NULL),
+  mpCurrentTime(NULL)
 {
   mpProblem =
     new CTSSAProblem(*static_cast< CTSSAProblem * >(src.mpProblem), this);
@@ -108,14 +98,12 @@ CTSSATask::CTSSATask(const CTSSATask & src,
 
   this->add(mpMethod, true);
 
-
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
 
   if (pParameter != NULL)
     mUpdateMoieties = *pParameter->getValue().pBOOL;
   else
     mUpdateMoieties = false;
-
 }
 
 CTSSATask::~CTSSATask()
@@ -144,7 +132,6 @@ bool CTSSATask::updateMatrices() //NEW
 
   pMethod->predifineAnnotation();
 
-
   return true;
 }
 
@@ -170,7 +157,6 @@ bool CTSSATask::initialize(const OutputFlag & of,
     mUpdateMoieties = *pParameter->getValue().pBOOL;
   else
     mUpdateMoieties = false;
-
 
   pdelete(mpCurrentState);
   mpCurrentState = new CState(mpTSSAProblem->getModel()->getState());
@@ -201,7 +187,6 @@ bool CTSSATask::initialize(const OutputFlag & of,
 //
 
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
-
 
   return success;
 }
@@ -307,7 +292,7 @@ bool CTSSATask::process(const bool & useInitialValues)
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTSSAMethod + 4);
     }
 
-  catch (CCopasiException Exception)
+  catch (CCopasiException & Exception)
     {
       mpTSSAProblem->getModel()->setState(*mpCurrentState);
       mpTSSAProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
@@ -340,8 +325,6 @@ void CTSSATask::processStart(const bool & useInitialValues)
 
   mpTSSAMethod->setCurrentState(mpCurrentState);
   mpTSSAMethod->start(mpCurrentState);
-
-
 
   return;
 }

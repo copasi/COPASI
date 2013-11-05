@@ -35,8 +35,8 @@
 #include "utilities/CCopasiException.h"
 #include "utilities/CAnnotatedMatrix.h"
 
-#include "blaswrap.h"           //use blas
-#include "clapackwrap.h"        //use CLAPACK
+#include "lapack/blaswrap.h"           //use blas
+#include "lapack/lapackwrap.h"        //use CLAPACK
 
 //  Default constructor
 CFitProblem::CFitProblem(const CCopasiTask::Type & type,
@@ -51,7 +51,6 @@ CFitProblem::CFitProblem(const CCopasiTask::Type & type,
   mExperimentUndoMethods(0, 0),
   mExperimentConstraints(0, 0),
   mExperimentDependentValues(0),
-#ifdef COPASI_CROSSVALIDATION
   mpCrossValidationSet(NULL),
   mCrossValidationUpdateMethods(0, 0),
   mCrossValidationConstraints(0, 0),
@@ -61,7 +60,6 @@ CFitProblem::CFitProblem(const CCopasiTask::Type & type,
   mCrossValidationSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mCrossValidationObjective(mWorstValue),
   mThresholdCounter(0),
-#endif // COPASI_CROSSVALIDATION
   mpTrajectoryProblem(NULL),
   mpInitialState(NULL),
   mResiduals(0),
@@ -92,7 +90,6 @@ CFitProblem::CFitProblem(const CFitProblem& src,
   mExperimentUndoMethods(0, 0),
   mExperimentConstraints(0, 0),
   mExperimentDependentValues(src.mExperimentDependentValues),
-#ifdef COPASI_CROSSVALIDATION
   mpCrossValidationSet(NULL),
   mCrossValidationUpdateMethods(0, 0),
   mCrossValidationConstraints(0, 0),
@@ -102,7 +99,6 @@ CFitProblem::CFitProblem(const CFitProblem& src,
   mCrossValidationSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mCrossValidationObjective(mWorstValue),
   mThresholdCounter(0),
-#endif // COPASI_CROSSVALIDATION
   mpTrajectoryProblem(NULL),
   mpInitialState(NULL),
   mResiduals(src.mResiduals),
@@ -133,10 +129,8 @@ CFitProblem::~CFitProblem()
 
 void CFitProblem::initObjects()
 {
-#ifdef COPASI_CROSSVALIDATION
   addObjectReference("Validation Solution", mCrossValidationSolutionValue, CCopasiObject::ValueDbl);
   addObjectReference("Validation Objective", mCrossValidationObjective, CCopasiObject::ValueDbl);
-#endif // COPASI_CROSSVALIDATION
 
   mpFisherMatrixInterface = new CCopasiMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisher);
   mpFisherMatrix = new CArrayAnnotation("Fisher Information Matrix", this, mpFisherMatrixInterface, false);
@@ -168,9 +162,7 @@ void CFitProblem::initializeParameter()
 
   assertGroup("Experiment Set");
 
-#ifdef COPASI_CROSSVALIDATION
   assertGroup("Validation Set");
-#endif // COPASI_CROSSVALIDATION
 
   elevateChildren();
 }
@@ -248,7 +240,6 @@ bool CFitProblem::elevateChildren()
       pExperiment->setValue("Key", itMap->second);
     }
 
-#ifdef COPASI_CROSSVALIDATION
   std::map<std::string, std::string> CrossValidationMap;
 
   // We have old CopasiML files (only snapshots and test releases), which use
@@ -284,8 +275,6 @@ bool CFitProblem::elevateChildren()
       pExperiment->setValue("Key", itMap->second);
     }
 
-#endif // COPASI_CROSSVALIDATION
-
   std::vector<COptItem * >::iterator it = mpOptItems->begin();
   std::vector<COptItem * >::iterator end = mpOptItems->end();
 
@@ -300,14 +289,11 @@ bool CFitProblem::elevateChildren()
       for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
         (*itExp)->setValue(ExperimentMap[*(*itExp)->getValue().pKEY]);
 
-#ifdef COPASI_CROSSVALIDATION
       pExperiments =
         (*it)->getParameter("Affected Cross Validation Experiments")->getValue().pGROUP;
 
       for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
         (*itExp)->setValue(CrossValidationMap[*(*itExp)->getValue().pKEY]);
-
-#endif // COPASI_CROSSVALIDATION
     }
 
   it = mpConstraintItems->begin();
@@ -324,14 +310,11 @@ bool CFitProblem::elevateChildren()
       for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
         (*itExp)->setValue(ExperimentMap[*(*itExp)->getValue().pKEY]);
 
-#ifdef COPASI_CROSSVALIDATION
       pExperiments =
         (*it)->getParameter("Affected Cross Validation Experiments")->getValue().pGROUP;
 
       for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
         (*itExp)->setValue(CrossValidationMap[*(*itExp)->getValue().pKEY]);
-
-#endif // COPASI_CROSSVALIDATION
     }
 
   return true;
@@ -569,8 +552,6 @@ bool CFitProblem::initialize()
 
   mExperimentDependentValues.resize(mpExperimentSet->getDataPointCount());
 
-#ifdef COPASI_CROSSVALIDATION
-
   if (!mpCrossValidationSet->compile(ContainerList)) return false;
 
   // Initialize the object set which the experiment independent objects.
@@ -680,7 +661,6 @@ bool CFitProblem::initialize()
 
   mCrossValidationObjective = mWorstValue;
   mThresholdCounter = 0;
-#endif // COPASI_CROSSVALIDATION
 
   setResidualsRequired(false);
 
@@ -927,6 +907,15 @@ bool CFitProblem::calculate()
       CCopasiMessage::getLastMessage();
 
       mFailedCounter++;
+#ifdef XXX
+      std::vector<COptItem * >::iterator it = mpOptItems->begin();
+      std::vector<COptItem * >::iterator end = mpOptItems->end();
+
+      for (; it != end; it++)
+        std::cout << *(*it)->getObjectValue() << " ";
+
+      std::cout << std::endl;
+#endif
       mCalculateValue = mWorstValue;
 
       if (pExp)
@@ -1161,10 +1150,8 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   mRMS = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-#ifdef COPASI_CROSSVALIDATION
   mCrossValidationRMS = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mCrossValidationSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-#endif // COPASI_CROSSVALIDATION
 
   mParameterSD.resize(imax);
   mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -1192,7 +1179,6 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   if (ValidDataCount > imax)
     mSD = sqrt(mSolutionValue / (ValidDataCount - imax));
 
-#ifdef COPASI_CROSSVALIDATION
   calculateCrossValidation();
 
   mpCrossValidationSet->calculateStatistics();
@@ -1204,8 +1190,6 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   if (lmax > imax)
     mCrossValidationSD = sqrt(mCrossValidationSolutionValue / (lmax - imax));
-
-#endif // COPASI_CROSSVALIDATION
 
   mHaveStatistics = true;
 
@@ -1499,7 +1483,6 @@ CArrayAnnotation & CFitProblem::getCorrelations() const
 const CExperimentSet & CFitProblem::getExperiementSet() const
 {return *mpExperimentSet;}
 
-#ifdef COPASI_CROSSVALIDATION
 const CCrossValidationSet & CFitProblem::getCrossValidationSet() const
 {return *mpCrossValidationSet;}
 
@@ -1802,7 +1785,6 @@ bool CFitProblem::calculateCrossValidation()
 
   return Continue;
 }
-#endif // COPASI_CROSSVALIDATION
 
 void CFitProblem::fixBuild55()
 {

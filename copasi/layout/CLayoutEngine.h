@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayoutEngine.h,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/11/29 13:06:40 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,10 +9,7 @@
 #include <vector>
 #include <sstream>
 
-//#define USE_CLAPACK
-//#include "copasi.h"
 #include "odepack++/CLSODA.h"
-//#include "../utilities/CVector.h"
 
 class CAbstractLayoutInterface;
 
@@ -106,8 +95,6 @@ protected:
    *  This evaluates the derivatives
    */
   void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
-
-
 };
 
 #endif // CLAYOUTENGINE_H

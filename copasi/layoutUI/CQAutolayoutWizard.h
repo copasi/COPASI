@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQAutolayoutWizard.h,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/04/15 14:39:58 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,10 +7,10 @@
 #define CQAutolayoutWizard_h__
 
 // Qt includes
-#include <QListWidgetItem>
-#include <QTreeWidgetItem>
-#include <QWizard>
-#include <QWizardPage>
+#include <QtGui/QListWidgetItem>
+#include <QtGui/QTreeWidgetItem>
+#include <QtGui/QWizard>
+#include <QtGui/QWizardPage>
 
 #include <set>
 #include <string>
@@ -65,7 +57,6 @@ public:
    * represented by this item.
    */
   CCopasiObject* getObject() const;
-
 };
 
 /**
@@ -108,7 +99,6 @@ protected:
   // fills the selection tree with elements from the model
   void fillTree(const CModel& model);
 
-
 protected:
   // flag that determines if compartment layout elements
   // are created for the layout.
@@ -124,13 +114,11 @@ protected:
   // Top level tree widget item that holds the reactions
   QTreeWidgetItem* mpReactionsItem;
 
-
 protected slots:
   // is called when the state of the compartment layout creation checkbox changes
   void slotCreateCompartments(int state);
 
   void slotItemChanged(QTreeWidgetItem* pItem, int column);
-
 };
 
 /**
@@ -181,7 +169,6 @@ protected:
     std::string mKey;
   };
 
-
 protected:
   // the left list that contains the species
   QListWidget* mpSpeciesList;
@@ -212,7 +199,6 @@ protected slots:
 
   // called when the side compounds selection changes
   void slotSideCompoundSelectionChanged();
-
 };
 
 /**
@@ -223,9 +209,6 @@ class CQLayoutParametersWizardPage : public QWizardPage
 {
   Q_OBJECT
 };
-
-
-
 
 class CQAutolayoutWizard : public QWizard
 {
@@ -294,7 +277,6 @@ public:
     return this->mSideSpecies;
   }
 
-
 protected:
   // this is called when the wizard is cloned
   // I use this method to update the containers
@@ -318,11 +300,9 @@ protected:
   // where the user is asked to please select element for the layout
   QWizardPage* createErrorPage();
 
-
 protected slots:
   // this is called whenever the page changes
   void slotCurrentIdChanged(int id);
-
 };
 
 #endif // CQAutolayoutWizard_h__

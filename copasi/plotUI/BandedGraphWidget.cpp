@@ -15,7 +15,6 @@
 #include "plot/CPlotItem.h"
 #include "resourcesUI/CQIconResource.h"
 
-#if USE_NEW_PLOTSUBWIDGET
 /**
  * In multiple edit mode, we don't want to edit name & channels
  */
@@ -29,7 +28,6 @@ void BandedGraphWidget::setMultipleEditMode(bool mode)
   mpBtnYone->setEnabled(!mode);
   mpBtnYtwo->setEnabled(!mode);
 }
-#endif
 
 /*
  *  Constructs a BandedGraphWidget as a child of 'parent', with the
@@ -59,7 +57,23 @@ BandedGraphWidget::~BandedGraphWidget()
 bool
 BandedGraphWidget::LoadFromCurveSpec(const CPlotItem * curve)
 {
-  if (!curve) return false;
+  if (!curve)
+    {
+      // We need to reset the widget to defaults
+      mpEditTitle->setText("");
+
+      mpObjectX = mpObjectYone = mpObjectYtwo = NULL;
+
+      mpEditX->setText("");
+      mpEditYone->setText("");
+      mpEditYtwo->setText("");
+
+      mpCheckBefore->setChecked(false);
+      mpCheckDuring->setChecked(true);
+      mpCheckAfter->setChecked(false);
+
+      return true;
+    }
 
   if (curve->getType() != CPlotItem::bandedGraph) return false;
 

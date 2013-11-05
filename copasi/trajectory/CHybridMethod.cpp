@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -298,7 +298,7 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
 
   if (mUseRandomSeed) mpRandomGenerator->initialize(mRandomSeed);
 
-  mStoi = mpModel->getStoiReordered();
+  mStoi = mpModel->getStoi();
   mStepsAfterPartitionSystem = 0;
   mUpdateSet.clear();
 
@@ -804,7 +804,7 @@ void CHybridMethod::updateTauMu(size_t rIndex, C_FLOAT64 time)
 C_INT32 CHybridMethod::checkModel(CModel * model)
 {
   CCopasiVectorNS <CReaction> * mpReactions = &model->getReactions();
-  CMatrix <C_FLOAT64> mStoi = model->getStoiReordered();
+  CMatrix <C_FLOAT64> mStoi = model->getStoi();
   size_t i, numReactions = mpReactions->size();
   size_t j;
   C_INT32 multInt;

@@ -6,7 +6,7 @@
 #ifndef QLABEL_GRAPHICS_ITEM
 #define QLABEL_GRAPHICS_ITEM
 
-#include <QGraphicsTextItem>
+#include <QtGui/QGraphicsTextItem>
 #include <qlayout/CQCopasiGraphicsItem.h>
 
 class CLTextGlyph;

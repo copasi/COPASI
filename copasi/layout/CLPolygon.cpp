@@ -1,21 +1,10 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLPolygon.cpp,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:52 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #define USE_LAYOUT 1
-
-#ifdef USE_CRENDER_EXTENSION
 #define USE_RENDER 1
-#endif // USE_CRENDER_EXTENSION
 
 #include <sbml/packages/render/sbml/Polygon.h>
 
@@ -32,9 +21,9 @@
  * Constructor.
  */
 CLPolygon::CLPolygon(CCopasiContainer* pParent):
-    CLGraphicalPrimitive2D(),
-    CCopasiObject("Polygon", pParent),
-    mKey("")
+  CLGraphicalPrimitive2D(),
+  CCopasiObject("Polygon", pParent),
+  mKey("")
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("Polygon", this);
 }
@@ -43,9 +32,9 @@ CLPolygon::CLPolygon(CCopasiContainer* pParent):
  * Copy constructor
  */
 CLPolygon::CLPolygon(const CLPolygon& source, CCopasiContainer* pParent):
-    CLGraphicalPrimitive2D(source),
-    CCopasiObject(source, pParent),
-    mKey("")
+  CLGraphicalPrimitive2D(source),
+  CCopasiObject(source, pParent),
+  mKey("")
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("Polygon", this);
   size_t i, iMax = source.mListOfElements.size();
@@ -67,9 +56,9 @@ CLPolygon::CLPolygon(const CLPolygon& source, CCopasiContainer* pParent):
  * Constructor to generate object from the corresponding SBML object.
  */
 CLPolygon::CLPolygon(const Polygon& source, CCopasiContainer* pParent):
-    CLGraphicalPrimitive2D(source),
-    CCopasiObject("Polygon", pParent),
-    mKey("")
+  CLGraphicalPrimitive2D(source),
+  CCopasiObject("Polygon", pParent),
+  mKey("")
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("Polygon", this);
   size_t i, iMax = source.getNumElements();

@@ -1,23 +1,11 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMModifiedMethod.cpp,v $
-//   $Revision: 1.21 $
-//   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2012/06/04 11:08:33 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "copasi.h"
@@ -35,13 +23,13 @@
 //#include "utilities/CAnnotatedMatrix.h"
 //#include "report/CCopasiObjectReference.h"
 
-#include "clapackwrap.h"        // CLAPACK
-#include "blaswrap.h"           // BLAS
+#include "lapack/lapackwrap.h"        // CLAPACK
+#include "lapack/blaswrap.h"           // BLAS
 
 CILDMModifiedMethod::CILDMModifiedMethod(const CCopasiContainer * pParent):
-    CTSSAMethod(CCopasiMethod::tssILDMModified, pParent) //,
-    // mpState(NULL),
-    // mY(NULL)
+  CTSSAMethod(CCopasiMethod::tssILDMModified, pParent) //,
+  // mpState(NULL),
+  // mY(NULL)
 {
   //  assert((void *) &mData == (void *) &mData.dim);
 
@@ -54,9 +42,9 @@ CILDMModifiedMethod::CILDMModifiedMethod(const CCopasiContainer * pParent):
 
 CILDMModifiedMethod::CILDMModifiedMethod(const CILDMModifiedMethod & src,
     const CCopasiContainer * pParent):
-    CTSSAMethod(src, pParent) //,
-    //mpState(NULL),
-    //mY(NULL)
+  CTSSAMethod(src, pParent) //,
+  //mpState(NULL),
+  //mY(NULL)
 {
   //  assert((void *) &mData == (void *) &mData.dim);
 
@@ -640,7 +628,7 @@ void CILDMModifiedMethod::newton_new(C_INT *index_metab, C_INT & slow, C_INT & i
   ipiv.resize(fast);
 
   CVector<C_FLOAT64> s_22_array;
-  s_22_array.resize(fast*fast);
+  s_22_array.resize(fast * fast);
 
   CVector<C_FLOAT64> gf_newton;
   gf_newton.resize(fast);
@@ -702,7 +690,7 @@ void CILDMModifiedMethod::newton_new(C_INT *index_metab, C_INT & slow, C_INT & i
 
   for (i = 0; i < fast; i++)
     for (j = 0; j < fast; j++)
-      s_22_array[j + fast*i] = Jac_fast(j, i);
+      s_22_array[j + fast * i] = Jac_fast(j, i);
 
   for (i = 0; i < dim; i++)
     d_yf[i] = 0.;
@@ -934,7 +922,6 @@ void CILDMModifiedMethod::emptyVectors()
   mVec_mVslowMetab.erase(mVec_mVslowMetab.begin(), mVec_mVslowMetab.end());
   mVec_mVslowSpace.erase(mVec_mVslowSpace.begin(), mVec_mVslowSpace.end());
   mVec_SlowModes.erase(mVec_SlowModes.begin(), mVec_SlowModes.end());
-
 }
 
 /**
@@ -986,7 +973,6 @@ void CILDMModifiedMethod::createAnnotationsM()
   name = "Contribution of species to modes";
   tableNames.push_back(name);
 
-
   CArrayAnnotation *
   pTmp1 = new CArrayAnnotation("Contribution of species to modes", this,
                                new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowPrint), true);
@@ -1002,7 +988,6 @@ void CILDMModifiedMethod::createAnnotationsM()
   name = "Modes distribution for species";
   tableNames.push_back(name);
 
-
   CArrayAnnotation *
   pTmp2 = new CArrayAnnotation("Modes distribution for species", this,
                                new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowMetabPrint), true);
@@ -1013,12 +998,10 @@ void CILDMModifiedMethod::createAnnotationsM()
   pTmp2->setDimensionDescription(1, "modes (TS - corresponding  timescale)");
   pVslowMetabPrintAnn = pTmp2;
 
-
   mapTableToName[name] = pVslowMetabPrintAnn;
 
   name = "Slow space";
   tableNames.push_back(name);
-
 
   CArrayAnnotation *
   pTmp3 = new CArrayAnnotation("Slow space", this,
@@ -1146,7 +1129,6 @@ bool CILDMModifiedMethod::setAnnotationM(size_t step)
   pVfastSpacePrintAnn->setAnnotationString(1, 0, str);
 
   return true;
-
 }
 
 void CILDMModifiedMethod::printResult(std::ostream * ostream) const
@@ -1163,7 +1145,6 @@ void CILDMModifiedMethod::printResult(std::ostream * ostream) const
 
   //stepNumber = pProblem->getStepNumber();
   stepNumber = mVec_SlowModes.size();
-
 
   for (istep = 0; istep < stepNumber; istep++)
     {

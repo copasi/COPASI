@@ -11,7 +11,7 @@
 #ifndef CQComboDelegate_H
 #define CQComboDelegate_H
 
-#include <QItemDelegate>
+#include <QtGui/QItemDelegate>
 
 class CQComboDelegate : public QItemDelegate
 {
@@ -39,6 +39,8 @@ public:
                                     const QModelIndex & index) const;
 
   void setItems(int row, const QStringList* pComboItems);
+
+  const QStringList *getItems(int row) const;
 
 protected slots:
   void slotCurrentIndexChanged(int index);

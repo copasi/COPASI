@@ -23,7 +23,7 @@
 #include <QtGui/QToolBar>
 #include <QtGui/QVBoxLayout>
 
-#include <QTimer>
+#include <QtCore/QTimer>
 
 // local includes
 #include "CQGLLayoutPainter.h"
@@ -47,7 +47,6 @@
 #include "copasi/layout/CListOfLayouts.h"
 #include "copasi/layout/CLDefaultStyles.h"
 
-#ifdef ELEMENTARY_MODE_DISPLAY
 #include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/elementaryFluxModes/CEFMTask.h"
 #include "copasi/elementaryFluxModes/CEFMProblem.h"
@@ -56,9 +55,7 @@
 #include "copasi/model/CChemEq.h"
 #include "copasi/model/CChemEqElement.h"
 #include "copasi/model/CMetab.h"
-#endif // ELEMENTARY_MODE_DISPLAY
 
-#ifdef COPASI_AUTOLAYOUT
 //#include "copasi/layout/CCopasiSpringLayout.h"
 #include "copasi/layout/CLayoutEngine.h"
 #include "copasi/layout/CLayout.h"
@@ -67,10 +64,7 @@
 #include "copasi/layout/CLCurve.h"
 #include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
-
-#include <layoutUI/CQLayoutThread.h>
-
-#endif // COPASI_AUTOLAYOUT
+#include "layoutUI/CQLayoutThread.h"
 
 #include "../UI/icons/photo.xpm"
 #include "resourcesUI/CQIconResource.h"
@@ -78,11 +72,9 @@
 #include "film_strip.xpm"
 #include "graph.xpm"
 #include "load_data.xpm"
-#ifdef COPASI_AUTOLAYOUT
-#include <QDockWidget>
+#include <QtGui/QDockWidget>
 #include "layout_start.xpm"
 #include "layout_stop.xpm"
-#endif // COPASI_AUTOLAYOUT
 
 const char* const CQNewMainWindow::ZOOM_FACTOR_STRINGS[] = {"1%", "2%", "3%", "4%", "5%", "10%", "20%", "25%", "30%", "40%", "50%", "75%", "100%", "150%", "200%", "300%", "400%", "500%", "1000%"};
 const double CQNewMainWindow::ZOOM_FACTORS[] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
@@ -91,8 +83,6 @@ const double CQNewMainWindow::ZOOM_FACTORS[] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.
 
 CQNewMainWindow::~CQNewMainWindow()
 {
-
-#ifdef COPASI_AUTOLAYOUT
   // ensure layout is terminated
   mpLayoutThread->terminateLayout();
 
@@ -102,8 +92,6 @@ CQNewMainWindow::~CQNewMainWindow()
       delete mpCopy;
       mpCopy = NULL;
     }
-
-#endif //COPASI_AUTOLAYOUT
 
   // remove from window menu
   removeFromMainWindow();
@@ -122,19 +110,15 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   mCurDir(""),
   mGraphIcon(QPixmap(graph_xpm)),
   mAnimationIcon(QPixmap(film_strip_xpm))
-#ifdef ELEMENTARY_MODE_DISPLAY
   , mpFogColorPixmap(new QPixmap(32, 32))
   , mpHighlightColorPixmap(new QPixmap(32, 32))
   , mpHighlightModeAction(NULL)
   , mpChangeColorAction(NULL)
-#endif // ELEMENTARY_MODE_DISPLAY
-#ifdef COPASI_AUTOLAYOUT
   , mpStopLayoutAction(NULL)
   , mpRandomizeLayout(NULL)
   , mpCalculateDimensions(NULL)
   , mpLayoutThread(NULL)
   , mpCopy(NULL)
-#endif //  COPASI_AUTOLAYOUT
 {
 
 #ifndef Darwin
@@ -166,7 +150,6 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   this->addGlobalRenderInfoItemsToList();
   this->addDefaultRenderInfoItemsToList();
   this->updateLayoutList();
-#ifdef ELEMENTARY_MODE_DISPLAY
   // fill the two pixmaps with the current fog and highlight color
   // We have to do that after the call to updateLayoutList because before that call
   // the rnederer does not exist yet.
@@ -175,9 +158,6 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   c = this->mpLayoutViewer->getPainter()->getHighlightColor();
   this->mpHighlightColorPixmap->fill(QColor((int)(c[0] * 255.0), (int)(c[1] * 255.0), (int)(c[2] * 255.0), (int)(c[3] * 255.0)));
   this->mpChangeColorAction->setIcon(QIcon(*this->mpHighlightColorPixmap));
-#endif // ELEMENTARY_MODE_DISPLAY
-
-#ifdef COPASI_AUTOLAYOUT
 
   mpLayoutThread = new CQLayoutThread(this);
   connect(mpLayoutThread, SIGNAL(layoutFinished()), this, SLOT(slotLayoutFinished()));
@@ -189,8 +169,6 @@ CQNewMainWindow::CQNewMainWindow(CCopasiDataModel* pDatamodel):
   addDockWidget(Qt::LeftDockWidgetArea, pParameterWindow);
   mpViewMenu->addSeparator();
   mpViewMenu->addAction(pParameterWindow->toggleViewAction());
-
-#endif
 }
 
 QMenu* CQNewMainWindow::getWindowMenu() const
@@ -246,7 +224,7 @@ void CQNewMainWindow::createActions()
   //mpSFontSize->setShortcut(Qt::CTRL + Qt::Key_F);
   mpSFontSize->setToolTip("Change the font size of the node labels in the graph view");
   connect(mpSFontSize, SIGNAL(activated()), this->mpAnimationWindow, SLOT(changeFontSize()));
-#ifdef COPASI_AUTOLAYOUT
+
   this->mpStopLayoutAction = new QAction(QPixmap(layout_start_xpm), tr("Stop"), this);
   this->mpStopLayoutAction->setEnabled(true);
   this->mpStopLayoutAction->setToolTip("Run Spring Layout Algorithm");
@@ -260,8 +238,6 @@ void CQNewMainWindow::createActions()
   mpCalculateDimensions = new QAction(tr("&Calculate Dimensions"), this);
   mpCalculateDimensions->setToolTip("Calculates Dimensions of this Layout.");
   connect(this->mpCalculateDimensions, SIGNAL(triggered()), this, SLOT(slotCalculateDimensions()));
-
-#endif // COPASI_AUTOLAYOUT
 }
 
 void CQNewMainWindow::createMenus()
@@ -273,14 +249,11 @@ void CQNewMainWindow::createMenus()
   mpFileMenu->addSeparator();
   mpFileMenu->addAction(mpCloseAct);
 
-#ifdef COPASI_AUTOLAYOUT
-
   mpLayoutMenu = menuBar()->addMenu(tr("&Layout"));
   mpLayoutMenu->addAction(mpStopLayoutAction);
   mpLayoutMenu->addAction(mpRandomizeLayout);
   mpLayoutMenu->addSeparator();
   mpLayoutMenu->addAction(mpCalculateDimensions);
-#endif
 
   // play menu
   mpPlayMenu = menuBar()->addMenu(tr("&Play"));
@@ -343,7 +316,6 @@ void CQNewMainWindow::createMenus()
   pAction->setCheckable(true);
   connect(this->mpZoomActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(slotZoomMenuItemActivated(QAction*)));
   this->mpZoomMenu->addActions(this->mpZoomActionGroup->actions());
-#ifdef ELEMENTARY_MODE_DISPLAY
   this->mpViewMenu->addSeparator();
   this->mpHighlightModeAction = this->mpViewMenu->addAction(tr("Highlight"));
   this->mpHighlightModeAction->setCheckable(true);
@@ -359,7 +331,6 @@ void CQNewMainWindow::createMenus()
   this->mpElementaryModesMenu->setToolTip(tr("Displays a list of elementary modes when they have been calculated and lets you select one or more that are emphasized in the layout displayed."));
   this->mpElementaryModesMenu->addAction(tr("None"));
   connect(this->mpElementaryModesMenu, SIGNAL(aboutToShow()), this, SLOT(checkForElementaryModesSlot()));
-#endif // ELEMENTARY_MODE_DISPLAY
 
   // options menu
   mpOptionsMenu = menuBar()->addMenu(tr("Options"));
@@ -383,11 +354,9 @@ void CQNewMainWindow::createToolBars()
   this->mpFileToolBar->addAction(this->mpLoadDataAct);
   this->mpLoadDataAct->setVisible(false);
   this->mpFileToolBar->addAction(this->mpScreenshotAct);
-#ifdef COPASI_AUTOLAYOUT
   this->mpFileToolBar->addSeparator();
   this->mpFileToolBar->addAction(this->mpStopLayoutAction);
   this->mpFileToolBar->addAction(this->mpRandomizeLayout);
-#endif // COPASI_AUTOLAYOUT
 
   // add a toolbar for the selection widgets
   mpSelectionToolBar = addToolBar(tr("Select"));
@@ -899,6 +868,15 @@ void CQNewMainWindow::slotScreenshot()
   if (pPainter == NULL)
     return;
 
+#ifndef USE_SCREENSHOT_OPTIONS
+
+  QString fileName = CopasiFileDialog::getSaveFileName(this, "Export to", "", QString("PNG (*.png);;All files (*)"));
+
+  if (!fileName.isEmpty())
+    export_bitmap(fileName, 2.0);
+
+#else
+
   double layoutX = pPainter->minX();
   double layoutY = pPainter->minY();
   double layoutWidth = pPainter->maxX() - layoutX;
@@ -907,14 +885,7 @@ void CQNewMainWindow::slotScreenshot()
   double y = pPainter->getCurrentPositionY();
   double width = pPainter->getCurrentWidth();
   double height = pPainter->getCurrentHeight();
-#ifndef USE_SCREENSHOT_OPTIONS
 
-  QString fileName = CopasiFileDialog::getSaveFileName(this, QString("Export to"), "", QString("PNG (*.png);;All files (*)"));
-
-  if (!fileName.isEmpty())
-    export_bitmap(fileName, 2.0);
-
-#else
   CQScreenshotOptionsDialog* pDialog = new CQScreenshotOptionsDialog(layoutX, layoutY, layoutWidth, layoutHeight,
       x, y, width, height, pPainter->width() , pPainter->height(), -1, this);
 
@@ -1077,13 +1048,10 @@ void CQNewMainWindow::switchMode()
         this->setAnimationToolbar();
         this->setAnimationMenu();
         this->mpWidgetStack->setCurrentIndex(1);
-#ifdef ELEMENTARY_MODE_DISPLAY
         this->mpElementaryModesMenu->setEnabled(false);
         this->mpHighlightModeAction->setEnabled(false);
         this->mpChangeColorAction->setEnabled(false);
-#endif // ELEMENTARY_MODE_DISPLAY
 
-#ifdef COPASI_AUTOLAYOUT
         updateLayoutList();
         // reset current displayed layout, so we can get the updates displayed
         this->mpAnimationWindow->setLayout(NULL);
@@ -1091,7 +1059,6 @@ void CQNewMainWindow::switchMode()
         this->mpAnimationWindow->setLayout(mpCurrentLayout);
         // and fit it too screen
         slotFitToScreen();
-#endif
         break;
 
       case CQNewMainWindow::ANIMATION_MODE:
@@ -1104,11 +1071,9 @@ void CQNewMainWindow::switchMode()
         this->setGraphToolbar();
         this->setGraphMenu();
         this->mpWidgetStack->setCurrentIndex(0);
-#ifdef ELEMENTARY_MODE_DISPLAY
         this->mpElementaryModesMenu->setEnabled(true);
         this->mpHighlightModeAction->setEnabled(true);
         this->mpChangeColorAction->setEnabled(true);
-#endif // ELEMENTARY_MODE_DISPLAY
         break;
     }
 }
@@ -1140,18 +1105,14 @@ void CQNewMainWindow::setGraphToolbar()
 void CQNewMainWindow::setAnimationMenu()
 {
   this->mpPlayMenu->menuAction()->setVisible(true);
-#if COPASI_AUTOLAYOUT
   this->mpLayoutMenu->menuAction()->setVisible(false);
-#endif
   this->mpOptionsMenu->menuAction()->setVisible(true);
 }
 
 void CQNewMainWindow::setGraphMenu()
 {
   this->mpPlayMenu->menuAction()->setVisible(false);
-#if COPASI_AUTOLAYOUT
   this->mpLayoutMenu->menuAction()->setVisible(true);
-#endif
   this->mpOptionsMenu->menuAction()->setVisible(false);
 }
 
@@ -1160,7 +1121,6 @@ void CQNewMainWindow::setStatusMessage(const QString& message, int timeout)
   this->statusBar()->showMessage(message, timeout);
 }
 
-#ifdef ELEMENTARY_MODE_DISPLAY
 /**
  * Checks for calculated elementary modes.
  */
@@ -1262,7 +1222,6 @@ void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
       CFluxMode::const_iterator it = pFlux->begin(), endit = pFlux->end();
       const CReaction* pReaction = NULL;
       assert(this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL);
-      const CModel* pModel = this->mpDataModel->getModel();
       const CEFMProblem* pProblem = NULL;
       const CCopasiVectorN< CCopasiTask >* pTaskList = this->mpDataModel->getTaskList();
       assert(pTaskList != NULL);
@@ -1280,7 +1239,7 @@ void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
 
       while (it != endit && pProblem != NULL)
         {
-          assert(pModel->getReactions().size() > it->first);
+          assert(this->mpDataModel->getModel()->getReactions().size() > it->first);
 
           // the index is the index of the reordered fluxes from the problem, so in order
           // to find the correct reaction, we need to get the reaction from the problem
@@ -1320,11 +1279,11 @@ void CQNewMainWindow::elementaryModeTriggeredSlot(QAction* pAction)
               CFluxMode::const_iterator it = pFlux->begin(), endit = pFlux->end();
               const CReaction* pReaction = NULL;
               assert(this->mpDataModel != NULL && this->mpDataModel->getModel() != NULL);
-              const CModel* pModel = this->mpDataModel->getModel();
+              //const CModel* pModel = this->mpDataModel->getModel();
 
               while (it != endit)
                 {
-                  assert(pModel->getReactions().size() > it->first);
+                  assert(this->mpDataModel->getModel()->getReactions().size() > it->first);
                   pReaction = this->mpDataModel->getModel()->getReactions()[it->first];
                   assert(pReaction != NULL);
                   this->selectReaction(pReaction, mask, s);
@@ -1672,9 +1631,7 @@ void CQNewMainWindow::changeColorSlot(bool)
         }
     }
 }
-#endif // ELEMENTARY_MODE_DISPLAY
 
-#ifdef COPASI_AUTOLAYOUT
 void CQNewMainWindow::redrawNow()
 {
   this->mpLayoutViewer->getPainter()->update();
@@ -1893,13 +1850,9 @@ void CQNewMainWindow::slotLayoutStateChanged(QSharedPointer<CLayoutState> state)
   redrawNow();
 }
 
-#endif // COPASI_AUTOLAYOUT
-
 void CQNewMainWindow::closeEvent(QCloseEvent * event)
 {
-#ifdef COPASI_AUTOLAYOUT
   this->slotStopClicked();
-#endif // COPASI_AUTOLAYOUT
   removeFromMainWindow();
   this->QMainWindow::closeEvent(event);
 }

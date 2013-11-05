@@ -6,8 +6,8 @@
 #ifndef QANIMATION_WINDOW_H
 #define QANIMATION_WINDOW_H
 
-#include <QMainWindow>
-#include <qsharedpointer.h>
+#include <QtGui/QMainWindow>
+#include <QtCore/QSharedPointer>
 
 #include <UI/CWindowInterface.h>
 
@@ -51,10 +51,8 @@ protected:
   CCopasiDataModel* mpModel;
   QMenu* mpWindowMenu;
   CQCopasiAnimation* mAnimation;
-#ifdef COPASI_AUTOLAYOUT
   CQLayoutThread* mpLayoutThread;
   CLayout* mpCopy;
-#endif //COPASI_AUTOLAYOUT
 };
 
 #endif // QANIMATION_WINDOW_H

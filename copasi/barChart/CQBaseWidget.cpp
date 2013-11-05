@@ -1,39 +1,22 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/barChart/CQBaseWidget.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:33:34 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
 #include <QtCore/QVariant>
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qslider.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qaction.h>
-#include <qmenubar.h>
+#include <QtGui/QPushButton>
+#include <QtGui/QLabel>
+#include <QtGui/QSlider>
+#include <QtGui/QLayout>
+#include <QtGui/QToolTip>
+#include <QtGui/QAction>
+#include <QtGui/QMenuBar>
 
 //Added by qt3to4:
 #include <iostream>
 
 #ifdef DEBUG_UI
-#include <QtDebug>
+#include <QtCore/QtDebug>
 #endif
 
 #include "CQBaseWidget.h"
@@ -44,7 +27,7 @@
  *
  */
 CQBaseWidget::CQBaseWidget(QWidget* parent, const char* /* name */, Qt::WFlags fl)
-    : QWidget(parent, fl),
+  : QWidget(parent, fl),
     mSliderActive(false),
     mScaleFactor(1000)
 {
@@ -79,7 +62,6 @@ void CQBaseWidget::setSliderActive(const bool & active)
       mpSliderRow->hide();
       mpLabelColumn->hide();
       mpSliderColumn->hide();
-
     }
 }
 

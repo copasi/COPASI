@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQFontRenderer.h,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:35:56 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,8 +6,8 @@
 #ifndef CQFontRenderer_H__
 #define CQFontRenderer_H__
 
-#include <QFont>
-#include <QFontDatabase>
+#include <QtGui/QFont>
+#include <QtGui/QFontDatabase>
 
 #include <string>
 #include <map>

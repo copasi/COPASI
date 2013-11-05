@@ -346,19 +346,27 @@ std::string CEvaluationNodeCall::getCCodeString(const std::vector< std::string >
 {
   std::string DisplayString;
 
+  std::string Data;
+
+  if (mData.empty())
+    Data = getData();
+  else
+    Data = mData;
+
   if (mQuotesRequired)
     {
-      DisplayString = "\"" + quote(mData, "-+^*/%(){},\t\r\n\"") + "\"(";
+      DisplayString = "\"" + quote(Data, "-+^*/%(){},\t\r\n\"") + "\"(";
     }
   else
     {
-      DisplayString = quote(mData, "-+^*/%(){},\t\r\n") + "(";
+      DisplayString = quote(Data, "-+^*/%(){},\t\r\n") + "(";
     }
 
   switch (mType & 0x00FFFFFF)
     {
       case FUNCTION:
       {
+
         std::vector< std::string >::const_iterator it = children.begin();
         std::vector< std::string >::const_iterator end = children.end();
 

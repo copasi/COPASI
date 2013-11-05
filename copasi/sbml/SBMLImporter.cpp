@@ -190,7 +190,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   mImportStep = 1;
 
-  if (mpImportHandler && !mpImportHandler->progressItem(mhImportStep)) return false;
+  if (mpImportHandler && !mpImportHandler->progressItem(mhImportStep)) return NULL;
 
   SBMLImporter::importMIRIAM(sbmlModel, this->mpCopasiModel);
   UnitDefinition *pSubstanceUnits = NULL;
@@ -859,7 +859,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     {
       mImportStep = 2;
 
-      if (!mpImportHandler->progressItem(mhImportStep)) return false;
+      if (!mpImportHandler->progressItem(mhImportStep)) return NULL;
 
       totalSteps = (unsigned C_INT32) num;
       hStep = mpImportHandler->addItem("Importing function definitions",
@@ -894,7 +894,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       mpImportHandler->finishItem(hStep);
       mImportStep = 3;
 
-      if (!mpImportHandler->progressItem(mhImportStep)) return false;
+      if (!mpImportHandler->progressItem(mhImportStep)) return NULL;
 
       step = 0;
       totalSteps = (unsigned C_INT32) num;
@@ -946,7 +946,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       compartmentMap[key] = pCopasiCompartment;
       ++step;
 
-      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return false;
+      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return NULL;
     }
 
   /* Create all species */
@@ -957,7 +957,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       mpImportHandler->finishItem(hStep);
       mImportStep = 4;
 
-      if (!mpImportHandler->progressItem(mhImportStep)) return false;
+      if (!mpImportHandler->progressItem(mhImportStep)) return NULL;
 
       step = 0;
       totalSteps = (unsigned C_INT32) num;
@@ -1023,7 +1023,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
       ++step;
 
-      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return false;
+      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return NULL;
     }
 
   /* Create the global Parameters */
@@ -1034,7 +1034,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       mpImportHandler->finishItem(hStep);
       mImportStep = 5;
 
-      if (!mpImportHandler->progressItem(mhImportStep)) return false;
+      if (!mpImportHandler->progressItem(mhImportStep)) return NULL;
 
       step = 0;
       totalSteps = (unsigned C_INT32) num;
@@ -1106,7 +1106,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
       ++step;
 
-      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return false;
+      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return NULL;
     }
 
   // the information that is collected here is used in the creation of the reactions to
@@ -1180,7 +1180,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       mpImportHandler->finishItem(hStep);
       mImportStep = 6;
 
-      if (!mpImportHandler->progressItem(mhImportStep)) return false;
+      if (!mpImportHandler->progressItem(mhImportStep)) return NULL;
 
       step = 0;
       totalSteps = (unsigned C_INT32) num;
@@ -1219,7 +1219,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
       ++step;
 
-      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return false;
+      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return NULL;
     }
 
   if (!this->mDivisionByCompartmentReactions.empty())
@@ -1283,7 +1283,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       mpImportHandler->finishItem(hStep);
       mImportStep = 7;
 
-      if (!mpImportHandler->progressItem(mhImportStep)) return false;
+      if (!mpImportHandler->progressItem(mhImportStep)) return NULL;
     }
 
   importInitialAssignments(sbmlModel, copasi2sbmlmap, this->mpCopasiModel);
@@ -1304,7 +1304,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       mpImportHandler->finishItem(hStep);
       mImportStep = 8;
 
-      if (!mpImportHandler->progressItem(mhImportStep)) return false;
+      if (!mpImportHandler->progressItem(mhImportStep)) return NULL;
 
       step = 0;
       totalSteps = (unsigned C_INT32) num;
@@ -1347,7 +1347,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
       ++step;
 
-      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return false;
+      if (mpImportHandler && !mpImportHandler->progressItem(hStep)) return NULL;
     }
 
   if (sbmlModel->getNumConstraints() > 0)
@@ -1369,7 +1369,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       mpImportHandler->finishItem(hStep);
       mImportStep = 9;
 
-      if (!mpImportHandler->progressItem(mhImportStep)) return false;
+      if (!mpImportHandler->progressItem(mhImportStep)) return NULL;
     }
 
   this->importEvents(sbmlModel, this->mpCopasiModel, copasi2sbmlmap);
@@ -1416,7 +1416,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       mpImportHandler->finishItem(hStep);
       mImportStep = 10;
 
-      if (!mpImportHandler->progressItem(mhImportStep)) return false;
+      if (!mpImportHandler->progressItem(mhImportStep)) return NULL;
     }
 
   // unset the hasOnlySubstanceUnits flag on all such species

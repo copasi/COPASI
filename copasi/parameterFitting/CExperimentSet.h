@@ -273,7 +273,6 @@ private:
   size_t mValidValueCount;
 };
 
-#ifdef COPASI_CROSSVALIDATION
 class CCrossValidationSet : public CExperimentSet
 {
 public:
@@ -352,6 +351,5 @@ private:
    */
   unsigned C_INT32 * mpThreshold;
 };
-#endif // COPASI_CROSSVALIDATION
 
 #endif // COPASI_CExperimentSet

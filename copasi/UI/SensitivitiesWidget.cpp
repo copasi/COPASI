@@ -1,28 +1,20 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-//   $Revision: 1.52 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/15 17:07:54 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <QImage>
-#include <QFrame>
-#include <QtDebug>
+#include <QtGui/QImage>
+#include <QtGui/QFrame>
+#include <QtCore/QtDebug>
 
 #include <algorithm>
 
@@ -50,7 +42,7 @@
  *  name 'name' and widget flags set to 'f'.
  */
 SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, Qt::WFlags fl)
-    : TaskWidget(parent, name, fl),
+  : TaskWidget(parent, name, fl),
     mpSingleFunction(NULL),
     mpSingleVariable(NULL),
     mpSingleVariable2(NULL)
@@ -224,9 +216,9 @@ bool SensitivitiesWidget::loadTask()
     dynamic_cast<CSensProblem *>(sensTask->getProblem());
   assert(problem);
 
-  CSensMethod* method =
-    dynamic_cast<CSensMethod *>(sensTask->getMethod());
-  assert(method);
+  //CSensMethod* method =
+  //  dynamic_cast<CSensMethod *>(sensTask->getMethod());
+  //assert(method);
 
   //mSubTaskType = problem->getSubTaskType();
   SubTaskChooser->setCurrentIndex((int)problem->getSubTaskType());
@@ -399,9 +391,9 @@ SensitivitiesWidget::slotChooseSingleFunction()
 {
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
-                                            CQSimpleSelectionTree::Variables |
-                                            CQSimpleSelectionTree::ObservedValues |
-                                            CQSimpleSelectionTree::ObservedConstants);
+        CQSimpleSelectionTree::Variables |
+        CQSimpleSelectionTree::ObservedValues |
+        CQSimpleSelectionTree::ObservedConstants);
 
   if (pObject)
     {
@@ -417,8 +409,8 @@ SensitivitiesWidget::slotChooseSingleVariable()
 {
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
-                                            CQSimpleSelectionTree::InitialTime |
-                                            CQSimpleSelectionTree::Parameters);
+        CQSimpleSelectionTree::InitialTime |
+        CQSimpleSelectionTree::Parameters);
 
   if (pObject)
     {
@@ -434,8 +426,8 @@ SensitivitiesWidget::slotChooseSingleVariable2()
 {
   const CCopasiObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
-                                            CQSimpleSelectionTree::InitialTime |
-                                            CQSimpleSelectionTree::Parameters);
+        CQSimpleSelectionTree::InitialTime |
+        CQSimpleSelectionTree::Parameters);
 
   if (pObject)
     {

@@ -8,13 +8,7 @@
 #include "HistoWidget.h"
 #include "CQPlotEditWidget.h"
 
-#ifdef USE_NEW_PLOTSUBWIDGET
 #include "CQPlotSubwidget.h"
-typedef CQPlotSubwidget PlotWindowType;
-#else
-#include "PlotSubwidget.h"
-typedef PlotSubwidget PlotWindowType;
-#endif
 
 #include "UI/CCopasiSelectionDialog.h"
 #include "UI/qtUtilities.h"
@@ -23,8 +17,9 @@ typedef PlotSubwidget PlotWindowType;
 #include "report/CCopasiRootContainer.h"
 #include "resourcesUI/CQIconResource.h"
 
-HistoWidget::HistoWidget(QWidget* parent, const char* /* name */, Qt::WindowFlags fl)
-  : CQPlotEditWidget(parent, fl)
+HistoWidget::HistoWidget(QWidget* parent, Qt::WindowFlags fl):
+  CQPlotEditWidget(parent, fl),
+  mpObjectX(NULL)
 {
   setupUi(this);
 
@@ -69,10 +64,10 @@ void HistoWidget::buttonPressedX()
   //check if more than one object was selected...
   if (objects.size() > 1)
     {
-      PlotWindowType* pParent;
+      CQPlotSubwidget * pParent;
       QObject* tmp = this;
 
-      while (!(pParent = dynamic_cast<PlotWindowType *>(tmp)) && this)
+      while (!(pParent = dynamic_cast< CQPlotSubwidget * >(tmp)) && this)
         tmp = tmp->parent();
 
       if (pParent) //tell the parent to create the remaining histogram descriptions.
@@ -82,7 +77,22 @@ void HistoWidget::buttonPressedX()
 
 bool HistoWidget::LoadFromCurveSpec(const CPlotItem * curve)
 {
-  if (!curve) return false;
+  if (!curve)
+    {
+      // We need to reset the widget to defaults
+      mpEditTitle->setText("");
+
+      mpObjectX = NULL;
+      mpEditVariable->setText("");
+
+      mpEditIncrement->setText("");
+
+      mpCheckBefore->setChecked(false);
+      mpCheckDuring->setChecked(true);
+      mpCheckAfter->setChecked(false);
+
+      return true;
+    }
 
   if (curve->getType() != CPlotItem::histoItem1d) return false;
 
@@ -181,7 +191,6 @@ bool HistoWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original /
   return true;
 }
 
-#if USE_NEW_PLOTSUBWIDGET
 /**
  * In multiple edit mode, we don't want to edit name & channels
  */
@@ -191,4 +200,3 @@ void HistoWidget::setMultipleEditMode(bool mode)
   mpEditVariable->setEnabled(!mode);
   mpBtnVariable->setEnabled(!mode);
 }
-#endif

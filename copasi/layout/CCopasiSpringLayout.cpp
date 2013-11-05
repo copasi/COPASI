@@ -437,7 +437,7 @@ void CCopasiSpringLayout::finalizeState()
           //For now, only a primitive implementation: TODO: improve
           CLMetabReferenceGlyph* pMRG = pRG->getListOfMetabReferenceGlyphs()[j];
           double direction;
-          double modifierLength = -0.2;
+          //double modifierLength = -0.2;
 
           switch (pMRG->getRole())
             {
@@ -1058,7 +1058,7 @@ CLayout* CCopasiSpringLayout::createLayout(
       pReactionGlyph->setModelObjectKey((*reactIt)->getKey());
       //pReactionGlyph->getCurve().addCurveSegment(CLLineSegment(CLPoint(x, y),
       //                                             CLPoint(x + length, y)));
-
+      bool isReversible = (*reactIt)->isReversible();
       pResult->addReactionGlyph(pReactionGlyph);
 
       //now add the species reference glyphs.
@@ -1082,7 +1082,7 @@ CLayout* CCopasiSpringLayout::createLayout(
           if (sideMetabs.find(pMetab) != sideMetabs.end())
             {
               //estimate the size of the glyph
-              double width = (double)((*metabIt)->getObjectName().length() * fontSize);
+              double width = (double)((pMetab)->getObjectName().length() * fontSize);
               double height = (double)fontHeight;
 
               if (width < height)
@@ -1113,7 +1113,9 @@ CLayout* CCopasiSpringLayout::createLayout(
 
               compInfo[pComp].add((width + 4) * (height + 4));
 
-              role = CLMetabReferenceGlyph::SIDESUBSTRATE;
+              role = isReversible
+                     ? CLMetabReferenceGlyph::SIDEPRODUCT
+                     : CLMetabReferenceGlyph::SIDESUBSTRATE;
             }
           else
             {
@@ -1124,7 +1126,9 @@ CLayout* CCopasiSpringLayout::createLayout(
               if (mmIt != metabMap.end())
                 pMetabGlyph = mmIt->second;
 
-              role = CLMetabReferenceGlyph::SUBSTRATE;
+              role = isReversible
+                     ? CLMetabReferenceGlyph::PRODUCT
+                     : CLMetabReferenceGlyph::SUBSTRATE;
             }
 
           if (!pMetabGlyph)
@@ -1171,7 +1175,7 @@ CLayout* CCopasiSpringLayout::createLayout(
           if (sideMetabs.find(pMetab) != sideMetabs.end())
             {
               //estimate the size of the glyph
-              double width = (double)((*metabIt)->getObjectName().length() * fontSize);
+              double width = (double)((pMetab)->getObjectName().length() * fontSize);
               double height = (double)fontHeight;
 
               if (width < height)
@@ -1259,7 +1263,7 @@ CLayout* CCopasiSpringLayout::createLayout(
           if (sideMetabs.find(pMetab) != sideMetabs.end())
             {
               //estimate the size of the glyph
-              double width = (double)((*metabIt)->getObjectName().length() * fontSize);
+              double width = (double)((pMetab)->getObjectName().length() * fontSize);
               double height = (double)fontHeight;
 
               if (width < height)

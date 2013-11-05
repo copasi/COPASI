@@ -1,24 +1,17 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CLSODAR.cpp,v $
-   $Revision: 1.9 $
-   $Name:  $
-   $Author: bergmann $
-   $Date: 2012/05/08 08:19:53 $
-   End CVS Header */
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
 //
 // This C++ code is based on an f2c conversion of the Fortran
 // library ODEPACK available at: http://www.netlib.org/odepack/
@@ -29,8 +22,8 @@
 #include <string>
 
 #include "copasi.h"
-#include "blaswrap.h"
-#include "clapackwrap.h"
+#include "lapack/blaswrap.h"
+#include "lapack/lapackwrap.h"
 
 #include "CLSODAR.h"
 #include "Cxerrwd.h"
@@ -105,9 +98,9 @@ const C_INT CLSODAR::mxhnl0 = 10;
 const C_INT CLSODAR::mord[] = {12, 5};
 
 CLSODAR::CLSODAR() :
-    CInternalSolver(),
-    mpPJAC(NULL),
-    mpSLVS(NULL)
+  CInternalSolver(),
+  mpPJAC(NULL),
+  mpSLVS(NULL)
 {
   mpdls001_ = new dls001;
   mpdlsa01_ = new dlsa01;
@@ -1782,7 +1775,7 @@ L100:
 
   tcrit = rwork[1];
 
-  if ((tcrit - *tout) *(*tout - *t) < 0.)
+  if ((tcrit - *tout) * (*tout - *t) < 0.)
     {
       goto L625;
     }

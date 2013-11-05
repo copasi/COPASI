@@ -74,6 +74,17 @@ public:
   virtual const DataObjectSet & getDirectDependencies(const DataObjectSet & context = DataObjectSet()) const;
 
   /**
+   * Check whether a given object is a prerequisite for a context.
+   * @param const CObjectInterface * pObject
+   * @param const CMath::SimulationContextFlag & context
+   * @param const CObjectInterface::ObjectSet & changedObjects
+   * @return bool isPrerequisiteForContext
+   */
+  virtual bool isPrerequisiteForContext(const CObjectInterface * pObject,
+                                        const CMath::SimulationContextFlag & context,
+                                        const CObjectInterface::ObjectSet & changedObjects) const;
+
+  /**
    * Retrieve the refresh call which calculates the concentration based on state values needed
    * when applying the initial state.
    * @return Refresh * applyInitialValueRefresh
@@ -132,6 +143,24 @@ public:
    */
   virtual const DataObjectSet & getDirectDependencies(const DataObjectSet & context = DataObjectSet()) const;
 
+  /**
+   * Retrieve the prerequisites, i.e., the objects which need to be evaluated
+   * before this.
+   * @return const CObjectInterface::ObjectSet & prerequisites
+   */
+  virtual const CObjectInterface::ObjectSet & getPrerequisites() const;
+
+  /**
+   * Check whether a given object is a prerequisite for a context.
+   * @param const CObjectInterface * pObject
+   * @param const CMath::SimulationContextFlag & context
+   * @param const CObjectInterface::ObjectSet & changedObjects
+   * @return bool isPrerequisiteForContext
+   */
+  virtual bool isPrerequisiteForContext(const CObjectInterface * pObject,
+                                        const CMath::SimulationContextFlag & context,
+                                        const CObjectInterface::ObjectSet & changedObjects) const;
+
   // Attributes
 private:
   /**
@@ -139,6 +168,11 @@ private:
    * i.e., it is always empty
    */
   static DataObjectSet EmptyDependencies;
+
+  /**
+   * The prerequisites for building the math dependency graph.
+   */
+  mutable ObjectSet mPrerequisites;
 };
 
 class CMetab : public CModelEntity
@@ -207,7 +241,7 @@ private:
   bool mIsInitialConcentrationChangeAllowed;
 
 protected:
-  CCopasiObjectReference<C_FLOAT64> *mpIConcReference;
+  CConcentrationReference *mpIConcReference;
   CConcentrationReference *mpConcReference;
   CCopasiObjectReference<C_FLOAT64> *mpConcRateReference;
   CCopasiObjectReference<C_FLOAT64> *mpTTReference;
@@ -348,9 +382,9 @@ public:
 
   /**
    * Retrieve object referencing the initial concentration
-   * @return CCopasiObject * initialConcentrationReference
+   * @return CConcentrationReference * initialConcentrationReference
    */
-  CCopasiObject * getInitialConcentrationReference() const;
+  CConcentrationReference * getInitialConcentrationReference() const;
 
   /**
    * Retrieve object referencing the concentration

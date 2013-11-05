@@ -8,7 +8,7 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include <QString>
+#include <QtCore/QString>
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
@@ -119,6 +119,7 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[pGQ->getStatus()])));
 
               case COL_INITIAL_GQ:
+
                 if (role == Qt::EditRole)
                   return QVariant(QString::number(pGQ->getInitialValue(), 'g', 10));
                 else
@@ -131,6 +132,7 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
                 return QVariant(pGQ->getRate());
 
               case COL_IEXPRESSION_GQ:
+
                 if (pGQ->getInitialExpression() != "")
                   {
                     pExpression = pGQ->getInitialExpressionPtr();

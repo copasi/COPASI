@@ -3,6 +3,7 @@
 *.app
 moc_*.cpp
 ui_*.h
+/build
 /doc/html
 /.cproject
 /.project
@@ -28,3 +29,8 @@ trace
 /autom4te.cache
 InitialDependencies.dot
 SimulationDependencies.dot
+.kdev4/
+CMakeLists.txt.user*
+COPASI.kdev4
+copasi/copasi.pro.user
+*~

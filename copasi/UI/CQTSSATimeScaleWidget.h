@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTSSATimeScaleWidget.h,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/17 16:21:13 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -19,13 +11,13 @@
 #ifndef CQTSSATIMESCALEWIDGET_H
 #define CQTSSATIMESCALEWIDGET_H
 
-#include <qwidget.h>
-#include <qlayout.h>
-#include <QPaintEvent>
-#include <QVBoxLayout>
+#include <QtGui/QWidget>
+#include <QtGui/QLayout>
+#include <QtGui/QPaintEvent>
+#include <QtGui/QVBoxLayout>
 #include "utilities/CVector.h"
-#include <qslider.h>
-#include <qpainter.h>
+#include <QtGui/QSlider>
+#include <QtGui/QPainter>
 
 class PaintWidget : public QWidget
 {

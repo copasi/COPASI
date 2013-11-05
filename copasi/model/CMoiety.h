@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.h,v $
-//   $Revision: 1.36 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/29 16:16:58 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -33,12 +25,97 @@
 #include <string>
 #include <vector>
 
-#include "model/CChemEqElement.h"
-#include "utilities/CCopasiVector.h"
-
+#include "copasi/model/CChemEqElement.h"
+#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/report/CCopasiObjectReference.h"
 class CMetab;
 
-/** @dia:pos 52.0066,117.162 */
+class CTotalNumberReference : public CCopasiObjectReference< C_FLOAT64 >
+{
+  /**
+   * Hidden default constructor
+   */
+  CTotalNumberReference();
+
+public:
+  /**
+   * Specific constructor
+   * @param const std::string & name
+   * @param const CCopasiContainer * pParent,
+   * @param C_FLOAT64 & reference,
+   */
+  CTotalNumberReference(const std::string & name,
+                        const CCopasiContainer * pParent,
+                        C_FLOAT64 & reference);
+
+  /**
+   * Copy constructor
+   * @param const CTotalNumberReference & src
+   * @param const CCopasiContainer * pParent,
+   */
+  CTotalNumberReference(const CTotalNumberReference & src,
+                        const CCopasiContainer * pParent);
+
+  /**
+   * Destructor
+   */
+  ~CTotalNumberReference();
+
+  /**
+   * Check whether a given object is a prerequisite for a context.
+   * @param const CObjectInterface * pObject
+   * @param const CMath::SimulationContextFlag & context
+   * @param const CObjectInterface::ObjectSet & changedObjects
+   * @return bool isPrerequisiteForContext
+   */
+  virtual bool isPrerequisiteForContext(const CObjectInterface * pObject,
+                                        const CMath::SimulationContextFlag & context,
+                                        const CObjectInterface::ObjectSet & changedObjects) const;
+};
+
+class CDependentNumberReference : public CCopasiObjectReference< C_FLOAT64 >
+{
+  /**
+   * Hidden default constructor
+   */
+  CDependentNumberReference();
+
+public:
+  /**
+   * Specific constructor
+   * @param const std::string & name
+   * @param const CCopasiContainer * pParent,
+   * @param C_FLOAT64 & reference,
+   */
+  CDependentNumberReference(const std::string & name,
+                            const CCopasiContainer * pParent,
+                            C_FLOAT64 & reference);
+
+  /**
+   * Copy constructor
+   * @param const CDependentNumberReference & src
+   * @param const CCopasiContainer * pParent,
+   */
+  CDependentNumberReference(const CDependentNumberReference & src,
+                            const CCopasiContainer * pParent);
+
+  /**
+   * Destructor
+   */
+  ~CDependentNumberReference();
+
+  /**
+   * Check whether a given object is a prerequisite for a context.
+   * @param const CObjectInterface * pObject
+   * @param const CMath::SimulationContextFlag & context
+   * @param const CObjectInterface::ObjectSet & changedObjects
+   * @return bool isPrerequisiteForContext
+   */
+  virtual bool isPrerequisiteForContext(const CObjectInterface * pObject,
+                                        const CMath::SimulationContextFlag & context,
+                                        const CObjectInterface::ObjectSet & changedObjects) const;
+};
+
 class CMoiety : public CCopasiContainer
 {
   // Attributes
@@ -79,18 +156,18 @@ private:
   /**
    * A pointer to the object for the initial total particle number
    */
-  CCopasiObjectReference<C_FLOAT64> *mpINumberReference;
+  CTotalNumberReference *mpINumberReference;
 
   /**
    * A pointer to the object for the total particle number
    * This is used during events
    */
-  CCopasiObjectReference<C_FLOAT64> *mpNumberReference;
+  CTotalNumberReference *mpNumberReference;
 
   /**
    * A pointer to the object for the dependent particle number
    */
-  CCopasiObjectReference<C_FLOAT64> *mpDNumberReference;
+  CDependentNumberReference *mpDNumberReference;
 
   /**
    * A pointer to the conversion factor between the particle number and the amount.

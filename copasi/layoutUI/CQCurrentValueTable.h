@@ -1,19 +1,16 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQCurrentValueTable.h,v $
-//   $Revision: 1.9 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/03 13:53:00 $
-// End CVS Header
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
 #ifndef CQCURRENTVALUETABLE_H_
 #define  CQCURRENTVALUETABLE_H_
-#include <qwidget.h>
+#include <QtGui/QWidget>
 
 #include <string>
 #include <map>

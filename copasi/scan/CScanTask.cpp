@@ -42,10 +42,7 @@
 #include "utilities/CProcessReport.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
-
-#if COPASI_NONLIN_DYN
-#include <crosssection/CCrossSectionTask.h>
-#endif
+#include "crosssection/CCrossSectionTask.h"
 
 CScanTask::CScanTask(const CCopasiContainer * pParent):
   CCopasiTask(CCopasiTask::scan, pParent),
@@ -134,13 +131,10 @@ bool CScanTask::process(const bool & useInitialValues)
 
   bool success = true;
 
-#if COPASI_NONLIN_DYN
   CCrossSectionTask* task = dynamic_cast<CCrossSectionTask*>(mpSubtask);
 
   if (task != NULL)
     task->createEvent();
-
-#endif
 
   if (useInitialValues)
     {
@@ -176,12 +170,8 @@ bool CScanTask::process(const bool & useInitialValues)
   //calling the scanner, output is done in the callback
   if (!pMethod->scan()) success = false;
 
-#if COPASI_NONLIN_DYN
-
   if (task != NULL)
     task->removeEvent();
-
-#endif
 
   //finishing progress bar and output
   //if (mpCallBack) mpCallBack->finish();
@@ -190,6 +180,20 @@ bool CScanTask::process(const bool & useInitialValues)
 
   if (mpSubtask)
     mpSubtask->setCallBack(NULL);
+
+  return success;
+}
+
+bool CScanTask::restore()
+{
+  bool success = true;
+
+  if (mpSubtask != NULL)
+    {
+      success &= mpSubtask->restore();
+    }
+
+  success = CCopasiTask::restore();
 
   return success;
 }
@@ -285,18 +289,15 @@ bool CScanTask::initSubtask(const OutputFlag & /* of */,
                     ((*pDataModel->getTaskList())["Linear Noise Approximation"]);
         break;
 
-        case CCopasiTask::tssAnalysis :
-          mpSubtask = dynamic_cast<CCopasiTask*>
-          ((*pDataModel->getTaskList())[CCopasiTask::TypeName[tssAnalysis]]);
-          break;
-
-#ifdef COPASI_NONLIN_DYN
+      case CCopasiTask::tssAnalysis :
+        mpSubtask = dynamic_cast<CCopasiTask*>
+                    ((*pDataModel->getTaskList())[CCopasiTask::TypeName[tssAnalysis]]);
+        break;
 
       case CCopasiTask::crosssection:
         mpSubtask = dynamic_cast<CCopasiTask*>
                     ((*pDataModel->getTaskList())["Cross Section"]);
         break;
-#endif
 
       default:
         mpSubtask = NULL;

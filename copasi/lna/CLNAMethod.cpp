@@ -14,8 +14,8 @@
 #include "CLNAMethod.h"
 #include "CLNAProblem.h"
 
-#include "blaswrap.h"
-#include "clapackwrap.h"
+#include "lapack/blaswrap.h"
+#include "lapack/lapackwrap.h"
 
 // static
 CLNAMethod * CLNAMethod::createMethod(CCopasiMethod::SubType /* subType */)

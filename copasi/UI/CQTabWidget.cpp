@@ -1,9 +1,9 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-#include <QString>
+#include <QtCore/QString>
 
 #include "CQTabWidget.h"
 
@@ -240,28 +240,26 @@ void CQTabWidget::slotBtnCopy()
   mIgnoreLeave = true;
 
   // CQCompartments and CQSpecies have copy options, use CModelExpansion, and do their own switching.
-  if(QString(mPages[0]->metaObject()->className()) == "CQCompartment")
-  {
-    CQCompartment * pQCompartment = dynamic_cast< CQCompartment * >(mPages[0]);
-    pQCompartment->copy();
-  }
-  else if(QString(mPages[0]->metaObject()->className()) == "CQSpeciesDetail")
-  {
-    CQSpeciesDetail * pQSpeciesDetail = dynamic_cast< CQSpeciesDetail * >(mPages[0]);
-    pQSpeciesDetail->copy();
-  }
-  else if(QString(mPages[0]->metaObject()->className()) == "ReactionsWidget1")
-  {
-    ReactionsWidget1 * pReactionsWidget1 = dynamic_cast< ReactionsWidget1 * >(mPages[0]);
-    pReactionsWidget1->copy();
-  }
+  if (QString(mPages[0]->metaObject()->className()) == "CQCompartment")
+    {
+      CQCompartment * pQCompartment = dynamic_cast< CQCompartment * >(mPages[0]);
+      pQCompartment->copy();
+    }
+  else if (QString(mPages[0]->metaObject()->className()) == "CQSpeciesDetail")
+    {
+      CQSpeciesDetail * pQSpeciesDetail = dynamic_cast< CQSpeciesDetail * >(mPages[0]);
+      pQSpeciesDetail->copy();
+    }
+  else if (QString(mPages[0]->metaObject()->className()) == "ReactionsWidget1")
+    {
+      ReactionsWidget1 * pReactionsWidget1 = dynamic_cast< ReactionsWidget1 * >(mPages[0]);
+      pReactionsWidget1->copy();
+    }
   else
-  {
-    emit copyClicked();
-    emit newClicked();
-  }
+    {
+      emit copyClicked();
+      emit newClicked();
+    }
 
   mIgnoreLeave = false;
-
-
 }

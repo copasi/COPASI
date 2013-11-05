@@ -10,14 +10,14 @@
 
 #include "CQCurrentValueTable.h"
 
-#include <QHeaderView>
-#include <QTableWidget>
-#include <QTableWidgetItem>
-#include <QPushButton>
-#include <QLayout>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QButtonGroup>
+#include <QtGui/QHeaderView>
+#include <QtGui/QTableWidget>
+#include <QtGui/QTableWidgetItem>
+#include <QtGui/QPushButton>
+#include <QtGui/QLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QButtonGroup>
 
 #include <iostream>
 

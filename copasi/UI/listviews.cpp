@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /****************************************************************************
  **  $ CopasiUI/listviews.cpp
@@ -24,9 +24,9 @@
  ** This file is used to create the visual tree based on the information obtained from the data
  ** model about the tree
  **********************************************************************/
-#include <qobject.h>
-#include <qimage.h>
-#include <QMap>
+#include <QtCore/QObject>
+#include <QtGui/QImage>
+#include <QtCore/QMap>
 #include <QtGui/QSortFilterProxyModel>
 
 #include "DataModelGUI.h"
@@ -98,16 +98,9 @@
 #include "report/CCopasiRootContainer.h"
 #include "report/CReportDefinitionVector.h"
 #include "plot/COutputDefinitionVector.h"
-#ifdef USE_NEW_PLOTSUBWIDGET
 #include "plotUI/CQPlotSubwidget.h"
-#else
-#include "plotUI/PlotSubwidget.h"
-#endif
 #include "model/CModel.h"
-
-#ifdef COPASI_NONLIN_DYN
 #include "CQCrossSectionTaskWidget.h"
-#endif
 
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
 #include "CQOscillationTaskWidget.h"
@@ -149,7 +142,7 @@ const std::string ListViews::ObjectTypeName[] =
  ************************************************************/
 ListViews::ListViews(QWidget *parent, const char *name):
 
-  QSplitter(Qt::Horizontal, parent, name),
+  QSplitter(Qt::Horizontal, parent),
   mpDataModelGUI(NULL),
   mpTreeDM(NULL),
   mpTreeSortDM(NULL),
@@ -201,10 +194,8 @@ ListViews::ListViews(QWidget *parent, const char *name):
   trajectoryWidget(NULL),
   tssaWidget(NULL),
   tssaResultWidget(NULL),
-#ifdef COPASI_NONLIN_DYN
   crossSectionTaskWidget(NULL),
   crossSectionTimeSeriesWidget(NULL),
-#endif
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
   oscillationTaskWidget(NULL),
 #endif
@@ -214,8 +205,11 @@ ListViews::ListViews(QWidget *parent, const char *name):
   mpLayoutsWidget(NULL),
   mpMathMatrixWidget(NULL)
 {
+  // Qt3 support to Qt4 reference states . . .
+  // "Use the QSizePolicy() constructor and call the setHorizontalStretch(), setVerticalStretch(), and setHeightForWidth() functions instead."
+  // The stretch was set at "1 ,1", before, but maybe it doesn't need to be explicitly set now.
+  this->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
 
-  this->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred, 1, 1));
   setChildrenCollapsible(false);
 
   // create a new QListview to be displayed on the screen..and set its property
@@ -235,7 +229,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
 
   addWidget(mpTreeView);
   addWidget(defaultWidget);
-  setResizeMode(mpTreeView, QSplitter::KeepSize);
+  setStretchFactor(indexOf(mpTreeView),0);
 
   if (!opaqueResize())
     setOpaqueResize();
@@ -428,15 +422,7 @@ void ListViews::ConstructNodeWidgets()
 
   mpPlotsWidget->hide();
 
-#ifdef USE_NEW_PLOTSUBWIDGET
-
   if (!mpPlotSubwidget) mpPlotSubwidget = new CQPlotSubwidget(this);
-
-#else
-
-  if (!mpPlotSubwidget) mpPlotSubwidget = new PlotSubwidget(this);
-
-#endif
 
   mpPlotSubwidget->hide();
 
@@ -493,8 +479,6 @@ void ListViews::ConstructNodeWidgets()
 
   tssaResultWidget->hide();
 
-#ifdef COPASI_NONLIN_DYN
-
   if (!crossSectionTimeSeriesWidget) crossSectionTimeSeriesWidget = new CQTimeSeriesWidget(this);
 
   crossSectionTimeSeriesWidget->hide();
@@ -503,7 +487,6 @@ void ListViews::ConstructNodeWidgets()
 
   crossSectionTaskWidget->hide();
 
-#endif
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
 
   if (!oscillationTaskWidget) oscillationTaskWidget = new CQOscillationTaskWidget(this);
@@ -712,7 +695,6 @@ CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
       case 271:
         return tssaResultWidget;
         break;
-#ifdef COPASI_NONLIN_DYN
 
       case 28:
         return crossSectionTaskWidget;
@@ -720,7 +702,7 @@ CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
 
       case 281:
         return crossSectionTimeSeriesWidget;
-#endif
+
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
 
       case 29:
@@ -1015,9 +997,7 @@ CQOptimizationWidget* ListViews::getOptimizationWidget()
   return optimizationWidget;
 }
 
-#ifdef COPASI_NONLIN_DYN
 CQCrossSectionTaskWidget* ListViews::getCrossSectionWidget()
 {
   return crossSectionTaskWidget;
 }
-#endif

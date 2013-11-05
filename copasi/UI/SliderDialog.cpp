@@ -1,79 +1,69 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <iostream>
 #include <sstream>
 
 //Added by qt3to4:
-#include <QContextMenuEvent>
-#include <QCloseEvent>
-#include <QMouseEvent>
-#include <QEvent>
-#include <QMenu>
-#include <QScrollArea>
+#include <QtGui/QContextMenuEvent>
+#include <QtGui/QCloseEvent>
+#include <QtGui/QMouseEvent>
+#include <QtCore/QEvent>
 
-#include "SliderDialog.h"
-#include "DataModelGUI.h"
-#include "copasiui3window.h"
-#include "CQTrajectoryWidget.h"
-#include "SteadyStateWidget.h"
-#include "ScanWidget.h"
-#include "CQMCAWidget.h"
-#include "CQLNAWidget.h"
-#include "CQFittingWidget.h"
-#include "CQOptimizationWidget.h"
-#include "SliderSettingsDialog.h"
-#include "CQMessageBox.h"
-#include "CopasiSlider.h"
-#include "listviews.h"
-#include "qtUtilities.h"
-#include "xml/CCopasiXMLInterface.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
-#include "utilities/CCopasiTask.h"
-#include "utilities/CCopasiProblem.h"
-#include "report/CCopasiObjectName.h"
-#include "trajectory/CTrajectoryTask.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "steadystate/CMCATask.h"
+#include "copasi/UI/SliderDialog.h"
+#include "copasi/UI/DataModelGUI.h"
+#include "copasi/UI/copasiui3window.h"
+#include "copasi/UI/CQTrajectoryWidget.h"
+#include "copasi/UI/SteadyStateWidget.h"
+#include "copasi/UI/ScanWidget.h"
+#include "copasi/UI/CQMCAWidget.h"
+#include "copasi/UI/CQLNAWidget.h"
+#include "copasi/UI/CQFittingWidget.h"
+#include "copasi/UI/CQOptimizationWidget.h"
+#include "copasi/UI/SliderSettingsDialog.h"
+#include "copasi/UI/CQMessageBox.h"
+#include "copasi/UI/CopasiSlider.h"
+#include "copasi/UI/listviews.h"
+#include "copasi/UI/qtUtilities.h"
+#include "copasi/xml/CCopasiXMLInterface.h"
+#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/utilities/CCopasiTask.h"
+#include "copasi/utilities/CCopasiProblem.h"
+#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
+#include "copasi/steadystate/CMCATask.h"
+#include "copasi/crosssection/CCrossSectionTask.h"
+#include "copasi/UI/CQCrossSectionTaskWidget.h"
 
-#if COPASI_NONLIN_DYN
-#include <crosssection/CCrossSectionTask.h>
-#include <UI/CQCrossSectionTaskWidget.h>
-#endif
+#include "copasi/lna/CLNATask.h"
+#include "copasi/scan/CScanTask.h"
+#include "copasi/parameterFitting/CFitTask.h"
+#include "copasi/optimization/COptTask.h"
+#include "copasi/utilities/CSlider.h"
+#include "copasi/model/CModel.h"
+#include "copasi/UI/CCopasiSelectionDialog.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
-#include "lna/CLNATask.h"
-#include "scan/CScanTask.h"
-#include "parameterFitting/CFitTask.h"
-#include "optimization/COptTask.h"
-#include "utilities/CSlider.h"
-#include "model/CModel.h"
-#include "CCopasiSelectionDialog.h"
-#include "resourcesUI/CQIconResource.h"
-
-#if COPASI_NONLIN_DYN
 size_t SliderDialog::numMappings = 14;
-#else
-size_t SliderDialog::numMappings = 12;
-#endif
+
 size_t SliderDialog::folderMappings[][2] =
 {
-  {21, 21}, {211, 21}, {23, 23}, {231, 23}, {24, 24} , {241, 24} , {31, 31}, {32, 32}, {321, 32}, {33, 33}, {331, 33}, {35, 35}
-
-#if COPASI_NONLIN_DYN
-  , {28, 28}, {281, 28}
-#endif
+  {21, 21}, {211, 21}, {23, 23}, {231, 23}, {24, 24},
+  {241, 24} , {31, 31}, {32, 32}, {321, 32}, {33, 33},
+  {331, 33}, {35, 35}, {28, 28}, {281, 28}
 };
 
 //size_t SliderDialog::numKnownTasks = 4;
@@ -81,14 +71,8 @@ size_t SliderDialog::folderMappings[][2] =
 //const char* SliderDialog::knownTaskNames[] = {"Steady State", "Time Course", "MCA" , "Scan"};
 
 SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl):
-  QDialog(parent, fl),
+  CWindowInterface(parent, fl),
   mpParentWindow(NULL),
-  mpRunTaskButton(NULL),
-  mpNewSliderButton(NULL),
-  mpAutoRunCheckBox(NULL),
-  mpAutoModifyRangesCheckBox(NULL),
-  mpScrollView(NULL),
-  mpSliderBox(NULL),
   mpContextMenu(NULL),
   mpCurrSlider(NULL),
   mSliderMap(),
@@ -103,57 +87,12 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
   setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
 #endif // not Darwin
 
+  setupUi(this);
+
+  addToMainWindow(mpParentWindow);
+
   setObjectName(QString::fromUtf8(name));
-  setModal(modal);
-  QVBoxLayout* pMainLayout = new QVBoxLayout(this);
-  this->setLayout(pMainLayout);
-  pMainLayout->setContentsMargins(5, 5, 5, 5);
-  QHBoxLayout* pLayout2 = new QHBoxLayout(0);
-  pLayout2->setContentsMargins(3, 3, 3, 3);
-  pLayout2->addStretch();
-  this->mpNewSliderButton = new QPushButton(0);
-  this->mpNewSliderButton->setText("&new sliders");
-  this->mpNewSliderButton->setEnabled(true);
-  pLayout2->addWidget(this->mpNewSliderButton);
-  pLayout2->addStretch();
-  pMainLayout->addLayout(pLayout2);
-
-  this->mpScrollView = new QScrollArea(0);
-  this->mpSliderBox = new QFrame(0);
-  QVBoxLayout* pLayout3 = new QVBoxLayout(0);
-  this->mpSliderBox->setLayout(pLayout3);
-  this->mpScrollView->setWidget(this->mpSliderBox);
-  this->mpScrollView->setWidgetResizable(true);
-  pMainLayout->addWidget(this->mpScrollView);
-
-  QHBoxLayout* pLayout1 = new QHBoxLayout(0);
-  pLayout1->addStretch();
-  this->mpAutoModifyRangesCheckBox = new QCheckBox(0);
-  this->mpAutoModifyRangesCheckBox->setChecked(true);
-  this->mpAutoModifyRangesCheckBox->setText("&update ranges");
-  pLayout1->addWidget(this->mpAutoModifyRangesCheckBox);
-  pLayout1->addStretch();
-  pMainLayout->addSpacing(10);
-  pMainLayout->addLayout(pLayout1);
-
-  pLayout1 = new QHBoxLayout(0);
-  pLayout1->addStretch();
-  this->mpAutoRunCheckBox = new QCheckBox(0);
-  this->mpAutoRunCheckBox->setChecked(true);
-  this->mpAutoRunCheckBox->setText("update &automatically");
-  pLayout1->addWidget(this->mpAutoRunCheckBox);
-  pLayout1->addStretch();
-  pMainLayout->addSpacing(10);
-  pMainLayout->addLayout(pLayout1);
-
-  pLayout2 = new QHBoxLayout(0);
-  pLayout2->addStretch();
-  this->mpRunTaskButton = new QPushButton(0);
-  this->mpRunTaskButton->setText("&run task");
-  this->mpRunTaskButton->setEnabled(true);
-  pLayout2->addWidget(this->mpRunTaskButton);
-  pLayout2->addStretch();
-  pMainLayout->addLayout(pLayout2);
+  setWindowTitle("Slider Window");
 
   this->mpContextMenu = new QMenu(this);
   mpaCreateNewSlider = this->mpContextMenu->addAction("Add New Slider", this, SLOT(createNewSlider()));
@@ -171,9 +110,7 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
   this->mTaskMap[35] = &SliderDialog::runLNATask;
   this->mTaskMap[33] = &SliderDialog::runParameterEstimationTask;
   this->mTaskMap[32] = &SliderDialog::runOptimizationTask;
-#if COPASI_NONLIN_DYN
   this->mTaskMap[28] = &SliderDialog::runCrossSectionTask;
-#endif
 
   connect(this->mpRunTaskButton, SIGNAL(clicked()), this, SLOT(runTask()));
   connect(this->mpNewSliderButton, SIGNAL(clicked()), this, SLOT(createNewSlider()));
@@ -434,6 +371,7 @@ SliderDialog::~SliderDialog()
   delete mpSliderBox;
   delete mpScrollView;
   this->clear();
+  removeFromMainWindow(mpParentWindow);
 }
 
 void SliderDialog::clear()
@@ -567,6 +505,46 @@ void SliderDialog::setCurrentFolderId(size_t id)
   clearSliderBox();
   mCurrentFolderId = id;
 
+  // Set appropriate window title
+  QString thisWindowTitle = "Sliders";
+
+  switch(id)
+  {
+    case 23:
+      thisWindowTitle = "Time Course " + thisWindowTitle;
+      break;
+
+    case 21:
+      thisWindowTitle = "Steady-State " + thisWindowTitle;
+      break;
+
+    case 31:
+      thisWindowTitle = "Parameter Scan " + thisWindowTitle;
+      break;
+
+    case 24:
+      thisWindowTitle = "Metabolic Control Analysis " + thisWindowTitle;
+      break;
+
+    case 35:
+      thisWindowTitle = "Linear Noise Approximation " + thisWindowTitle;
+      break;
+
+    case 33:
+      thisWindowTitle = "Parameter Estimation " + thisWindowTitle;
+      break;
+
+    case 32:
+      thisWindowTitle = "Optimization " + thisWindowTitle;
+      break;
+
+    case 28:
+      thisWindowTitle = "Cross Section " + thisWindowTitle;
+      break;
+  }
+
+  setWindowTitle(thisWindowTitle);
+
   fillSliderBox();
 }
 
@@ -624,7 +602,7 @@ void SliderDialog::createSlidersForFolder(std::vector<QWidget*>& v)
 
   for (it = pVector->begin(); it != pVector->end(); ++it)
     {
-      bool found = false;
+      //bool found = false;
 
       // check whether we have a slider
       CopasiSlider* pTmpSlider = getCopasiSliderForCSlider(v, *it);
@@ -842,7 +820,6 @@ void SliderDialog::runParameterEstimationTask()
     }
 }
 
-#ifdef COPASI_NONLIN_DYN
 void SliderDialog::runCrossSectionTask()
 {
   if (mpParentWindow)
@@ -852,7 +829,6 @@ void SliderDialog::runCrossSectionTask()
       mpParentWindow->getMainWidget()->getCrossSectionWidget()->runTask();
     }
 }
-#endif
 
 void SliderDialog::runOptimizationTask()
 {
@@ -866,7 +842,7 @@ void SliderDialog::runOptimizationTask()
 
 void SliderDialog::closeEvent(QCloseEvent* e)
 {
-  QDialog::closeEvent(e);
+  CWindowInterface::closeEvent(e);
 
   if (mpParentWindow)
     {
@@ -909,12 +885,10 @@ CCopasiTask* SliderDialog::getTaskForFolderId(size_t folderId)
       case 32:
         task = dynamic_cast<COptTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Optimization"]);
         break;
-#if COPASI_NONLIN_DYN
 
       case 28:
         task = dynamic_cast<CCrossSectionTask *>((*(*CCopasiRootContainer::getDatamodelList())[0]->getTaskList())["Cross Section"]);
         break;
-#endif
 
       default:
         task = NULL;
@@ -1248,7 +1222,7 @@ void SliderDialog::showEvent(QShowEvent* pEvent)
 {
   // make sure only valid sliders are shown
   this->deleteInvalidSliders();
-  this->QDialog::showEvent(pEvent);
+  this->CWindowInterface::showEvent(pEvent);
 }
 
 void SliderDialog::deleteInvalidSliders()
@@ -1292,7 +1266,7 @@ void SliderDialog::reset()
 {
   this->clear();
   assert(this->mSliderMap[C_INVALID_INDEX].size() == 0);
-  this->mSliderMap[C_INVALID_INDEX].push_back(new QLabel("<p>There are no sliders available for this task. If you select one of the tasks that supports sliders in the copasi object tree, this dialog will become active.</p>", NULL));
+  this->mSliderMap[C_INVALID_INDEX].push_back(new QLabel("<p>There are no sliders available for this task.<br>If you select one of the tasks that supports<br>sliders in the copasi object tree, this dialog<br>will become active.</p>", NULL));
 }
 
 /**
@@ -1306,4 +1280,9 @@ bool SliderDialog::isChanged() const
 void SliderDialog::setChanged(bool changed)
 {
   this->mChanged = changed;
+}
+
+QMenu *SliderDialog::getWindowMenu() const
+{
+  return mpWindowMenu;
 }

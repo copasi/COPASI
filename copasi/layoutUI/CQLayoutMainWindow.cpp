@@ -14,22 +14,22 @@
 
 #include "CQLayoutMainWindow.h"
 
-#include <QAction>
-#include <QComboBox>
-#include <QFrame>
-#include <QLabel>
-#include <QLayout>
-#include <QMenuBar>
-#include <QMessageBox>
-#include <QMenu>
-#include <QPushButton>
-#include <QSplitter>
-#include <QVBoxLayout>
-#include <QToolBar>
-#include <QSlider>
-#include <QGridLayout>
-#include <QPixmap>
-#include <QCloseEvent>
+#include <QtGui/QAction>
+#include <QtGui/QComboBox>
+#include <QtGui/QFrame>
+#include <QtGui/QLabel>
+#include <QtGui/QLayout>
+#include <QtGui/QMenuBar>
+#include <QtGui/QMessageBox>
+#include <QtGui/QMenu>
+#include <QtGui/QPushButton>
+#include <QtGui/QSplitter>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QToolBar>
+#include <QtGui/QSlider>
+#include <QtGui/QGridLayout>
+#include <QtGui/QPixmap>
+#include <QtGui/QCloseEvent>
 
 #include <iostream>
 #include <cmath>
@@ -48,17 +48,12 @@
 #include "NodeSizePanel.h"
 #include "ParaPanel.h"
 #include "CQPlayerControlWidget.h"
-#ifdef FRAMEBUFFER_SCREENSHOTS
 #include "CQScreenshotOptionsDialog.h"
-#endif // FRAMEBUFFER_SCREENSHOTS
-#ifndef USE_CRENDER_EXTENSION
-#include "load_data.xpm"
-#endif // USE_CRENDER_EXTENSION
 
 #include "resourcesUI/CQIconResource.h"
 
 #ifdef DEBUG_UI
-#include <QtDebug>
+#include <QtCore/QtDebug>
 #endif
 
 using namespace std;
@@ -66,13 +61,8 @@ using namespace std;
 const char* const CQLayoutMainWindow::ZOOM_FACTOR_STRINGS[] = {"1%", "2%", "3%", "4%", "5%", "10%", "20%", "25%", "30%", "40%", "50%", "75%", "100%", "150%", "200%", "300%", "400%", "500%", "1000%"};
 const double CQLayoutMainWindow::ZOOM_FACTORS[] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
 
-#ifndef USE_CRENDER_EXTENSION
-CQLayoutMainWindow::CQLayoutMainWindow(CLayout* pLayout):
-  QMainWindow(NULL)
-#else
 CQLayoutMainWindow::CQLayoutMainWindow(QWidget* pParent):
   QFrame(pParent)
-#endif // USE_CRENDER_EXTENSION
   , mpVisParameters(new CVisParameters)
   , mpParaPanel(new CQParaPanel)
   , mpValTable(new CQCurrentValueTable)
@@ -86,11 +76,7 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget* pParent):
   , mDataPresent(false)
   , mCurrentPlace(QString::null)
   , mpZoomActionGroup(new QActionGroup(this))
-#ifdef USE_CRENDER_EXTENSION
   , mpLayout(NULL)
-#else
-  , mpLayout(pLayout)
-#endif // USE_CRENDER_EXTENSION
 {
 
 #ifndef Darwin
@@ -146,62 +132,13 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget* pParent):
 
   this->mpMainBox->setLayout(mainLayout);
 
-#ifndef USE_CRENDER_EXTENSION
-  this->setWindowTitle(tr("Reaction network graph"));
-  this->setCentralWidget(mpMainBox);
-#else
   this->QFrame::setLayout(new QVBoxLayout);
   this->layout()->addWidget(this->mpMainBox);
-#endif // USE_CRENDER_EXTENSION
 
-#ifndef USE_CRENDER_EXTENSION
-
-  loadData(); // try to load data (if already present)
-  // the action have to be created before mpLoadDataAction is used below
-  // the menus have to be created after the player control widget is created
-  // since actions from the player control are added to the menu
-  // the actions have to be created before the menus since some action go into
-  // menus
-  createActions();
-  createMenus();
-
-  this->mpToolbar = this->addToolBar(tr("layout toolbar"));
-  this->mpToolbar->addAction(this->mpLoadDataAction);
-  this->mpToolbar->addSeparator();
-  QLabel* pLabel = new QLabel("zoom factor:");
-  this->mpToolbar->addWidget(pLabel);
-  this->mpZoomComboBox = new QComboBox(NULL);
-  this->mpZoomComboBox->setWindowTitle("zoom box");
-  this->mpToolbar->addWidget(this->mpZoomComboBox);
-
-  int defaultIndex = -1;
-  unsigned int i, iMax = sizeof(CQLayoutMainWindow::ZOOM_FACTOR_STRINGS) / sizeof(char*);
-
-  for (i = 0; i < iMax; ++i)
-    {
-      this->mpZoomComboBox->addItem(QString(CQLayoutMainWindow::ZOOM_FACTOR_STRINGS[i]));
-
-      if (std::string(CQLayoutMainWindow::ZOOM_FACTOR_STRINGS[i]) == std::string("100%"))
-        {
-          defaultIndex = i;
-        }
-    }
-
-  // set 100% as the default zoom factor
-  assert(defaultIndex != -1);
-  this->mpZoomComboBox->setCurrentIndex(defaultIndex);
-  this->mpZoomComboBox->setEditable(FALSE);
-  connect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
-  connect(this->mpGLViewport->getPainter() , SIGNAL(signalZoomIn()), this, SLOT(slotZoomIn()));
-  connect(this->mpGLViewport->getPainter() , SIGNAL(signalZoomOut()), this, SLOT(slotZoomOut()));
-#endif // USE_CRENDER_EXTENSION
   connect(this->mpValTable , SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
   this->mLooping = false;
 
   this->setTabOrder(this->mpGLViewport, this->mpToolbar);
-#ifndef USE_CRENDER_EXTENSION
-  this->setTabOrder(this->mpToolbar, this->mpParaPanel);
-#endif // USE_CRENDER_EXTENSION
   this->setTabOrder(this->mpParaPanel, this->mpValTable);
   this->setTabOrder(this->mpValTable, this->mpControlWidget);
 }
@@ -329,150 +266,6 @@ CVisParameters::MAPPING_MODE CQLayoutMainWindow::getMappingMode()
   else
     return CVisParameters::SIZE_DIAMETER_MODE; // default mode
 }
-
-#ifndef USE_CRENDER_EXTENSION
-void CQLayoutMainWindow::createActions()
-{
-  //   mpOpenSBMLFile = new QAction("SBML",
-  //                              "Load SBML file",
-  //                              CTRL + Key_F,
-  //                              this);
-  //   mpOpenSBMLFile->setStatusTip("Load SBML file with/without layout");
-  //   connect(mpOpenSBMLFile, SIGNAL(activated()) , this, SLOT(loadSBMLFile()));
-
-  //   openDataFile = new QAction("data",
-  //                              "Load Simulation Data",
-  //                              CTRL + Key_D,
-  //                              this);
-  //   openDataFile->setStatusTip("Load simulation data");
-  //   connect(openDataFile, SIGNAL(activated()), this, SLOT(loadData()));
-
-  mpCloseAction = new QAction("Close Window", this);
-  mpCloseAction->setShortcut(Qt::CTRL + Qt::Key_W);
-  mpCloseAction->setStatusTip("Close Layout Window");
-  connect(mpCloseAction, SIGNAL(triggered()), this, SLOT(closeApplication()));
-
-  mDataPresent = false;
-
-  mpCreatePicture = new QAction("Create image", this);
-  mpCreatePicture->setShortcut(Qt::CTRL + Qt::Key_I);
-  mpCreatePicture->setStatusTip("create a picture from the current view and save it to file");
-  connect(mpCreatePicture, SIGNAL(triggered()), this, SLOT(saveImage()));
-
-  mpRectangularShape = new QAction("Rectangle", this);
-  mpRectangularShape->setShortcut(Qt::CTRL + Qt::Key_R);
-  mpRectangularShape->setStatusTip("Show labels as rectangles");
-  connect(mpRectangularShape, SIGNAL(triggered()), this, SLOT(mapLabelsToRectangles()));
-
-  mpCircularShape = new QAction("Circle", this);
-  mpCircularShape->setShortcut(Qt::CTRL + Qt::Key_C);
-  mpCircularShape->setStatusTip("Show labels as circles");
-  connect(mpCircularShape, SIGNAL(triggered()), this, SLOT(mapLabelsToCircles()));
-
-  mpMimaNodeSizes = new QAction("Set Min/Max Node Sizes", this);
-  mpMimaNodeSizes->setShortcut(Qt::CTRL + Qt::Key_M);
-  mpMimaNodeSizes->setToolTip("Change Min/Max for node sizes within animation");
-  connect(mpMimaNodeSizes, SIGNAL(triggered()), this, SLOT(changeMinMaxNodeSizes()));
-
-  mpSFontSize = new QAction("Set Font Size", this);
-  mpSFontSize->setShortcut(Qt::CTRL + Qt::Key_F);
-  mpSFontSize->setToolTip("Change the font size of the node labels in the graph view");
-  connect(mpSFontSize, SIGNAL(triggered()), this, SLOT(changeFontSize()));
-
-  mpLoadDataAction = new QAction(QPixmap(load_data_xpm), "Load data", this);
-  connect(this->mpLoadDataAction, SIGNAL(triggered()), this, SLOT(loadData()));
-}
-
-void CQLayoutMainWindow::createMenus()
-{
-  this->mpFileMenu = this->menuBar()->addMenu(tr("File"));
-  this->mpFileMenu->addSeparator();
-  this->mpFileMenu->addAction(this->mpCloseAction);
-
-  // play menu
-  this->mpPlayMenu = this->menuBar()->addMenu("Play");
-  this->mpPlayMenu->addAction(this->mpControlWidget->getPlayAction());
-  this->mpPlayMenu->addAction(this->mpControlWidget->getPauseAction());
-  this->mpPlayMenu->addAction(this->mpControlWidget->getStopAction());
-  this->mpPlayMenu->addAction(this->mpControlWidget->getForwardAction());
-  this->mpPlayMenu->addAction(this->mpControlWidget->getBackwardAction());
-  this->mpPlayMenu->addAction(this->mpControlWidget->getStepForwardAction());
-  this->mpPlayMenu->addAction(this->mpControlWidget->getStepBackwardAction());
-  this->mpPlayMenu->addSeparator();
-  this->mpLoopItemAction = this->mpPlayMenu->addAction("loop animation");
-  this->mpLoopItemAction->setCheckable(true);
-  this->mpLoopItemAction->setChecked(false);
-  connect(this->mpLoopItemAction, SIGNAL(toggled(bool)) , this, SLOT(slotLoopActivated(bool)));
-  this->mpPlayMenu->addSeparator();
-  this->mpPlayMenu->addAction(this->mpLoadDataAction);
-
-  // view menu
-  this->mpViewMenu = this->menuBar()->addMenu("View");
-  this->mpParameterTableAction = this->mpViewMenu->addAction("parameters");
-  this->mpParameterTableAction->setCheckable(true);
-  this->mpParameterTableAction->setChecked(true);
-  connect(this->mpParameterTableAction, SIGNAL(toggled(bool)), this, SLOT(slotParameterTableToggled(bool)));
-  this->mpValueTableAction = this->mpViewMenu->addAction("value table");
-  this->mpValueTableAction->setCheckable(true);
-  this->mpValueTableAction->setChecked(true);
-  connect(this->mpValueTableAction, SIGNAL(toggled(bool)), this, SLOT(slotValueTableToggled(bool)));
-  QAction* pAction = this->mpViewMenu->addAction("player control");
-  pAction->setCheckable(true);
-  pAction->setChecked(true);
-  connect(pAction, SIGNAL(toggled(bool)), this, SLOT(slotPlayerControlToggled(bool)));
-  pAction = this->mpViewMenu->addAction("toolbar");
-  pAction->setCheckable(true);
-  pAction->setChecked(true);
-  mpViewMenu->addSeparator();
-  connect(pAction, SIGNAL(toggled(bool)), this, SLOT(slotToolbarToggled(bool)));
-  mpViewMenu->addAction("Reset View", this, SLOT(slotResetView()));
-  this->mpZoomMenu = this->mpViewMenu->addMenu("Zoom");
-  pAction = this->mpZoomActionGroup->addAction("1%");
-  pAction->setCheckable(true);
-  pAction = this->mpZoomActionGroup->addAction("2%");
-  pAction->setCheckable(true);
-  pAction = this->mpZoomActionGroup->addAction("3%");
-  pAction->setCheckable(true);
-  pAction = this->mpZoomActionGroup->addAction("4%");
-  pAction->setCheckable(true);
-  pAction = this->mpZoomActionGroup->addAction("5%");
-  pAction->setCheckable(true);
-  pAction = this->mpZoomActionGroup->addAction("10%");
-  pAction->setCheckable(true);
-  pAction = this->mpZoomActionGroup->addAction("20%");
-  pAction->setCheckable(true);
-  pAction = this->mpZoomActionGroup->addAction("30%");
-  pAction->setCheckable(true);
-  pAction = this->mpZoomActionGroup->addAction("40%");
-  pAction->setCheckable(true);
-  pAction = this->mpZoomActionGroup->addAction("50%");
-  pAction->setCheckable(true);
-  pAction = this->mpZoomActionGroup->addAction("100%");
-  pAction->setCheckable(true);
-  pAction->setChecked(true);
-  pAction = this->mpZoomActionGroup->addAction("150%");
-  pAction->setCheckable(true);
-  pAction = this->mpZoomActionGroup->addAction("200%");
-  pAction->setCheckable(true);
-  pAction = this->mpZoomActionGroup->addAction("300%");
-  pAction->setCheckable(true);
-  pAction = this->mpZoomActionGroup->addAction("400%");
-  pAction->setCheckable(true);
-  pAction = this->mpZoomActionGroup->addAction("500%");
-  pAction->setCheckable(true);
-  connect(this->mpZoomActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(slotZoomItemActivated(QAction*)));
-  this->mpZoomMenu->addActions(this->mpZoomActionGroup->actions());
-  this->mpViewMenu->addSeparator();
-  this->mpViewMenu->addAction(this->mpCreatePicture);
-
-  this->mpOptionsMenu = this->menuBar()->addMenu("Options");
-  this->mpLabelShapeMenu = this->mpOptionsMenu->addMenu("Shape of Label");
-  this->mpLabelShapeMenu->addAction(this->mpRectangularShape);
-  this->mpLabelShapeMenu->addAction(this->mpCircularShape);
-  this->mpOptionsMenu->addAction(this->mpMimaNodeSizes);
-  this->mpOptionsMenu->addAction(this->mpSFontSize);
-}
-#endif // USE_CRENDER_EXTENSION
 
 void CQLayoutMainWindow::loadSBMLFile()
 {
@@ -660,7 +453,6 @@ void CQLayoutMainWindow::saveImage()
 //  qDebug() << "mCurrentPlace = " << mCurrentPlace;
 #endif
 
-#ifdef FRAMEBUFFER_SCREENSHOTS
   // get the parameters
   CQGLNetworkPainter* pPainter = this->mpGLViewport->getPainter();
   assert(pPainter != NULL);
@@ -746,20 +538,6 @@ void CQLayoutMainWindow::saveImage()
 
       delete pDialog;
     }
-
-#else
-  QImage img = mpGLViewport->getPainter()->getImage();
-  QString filename = CopasiFileDialog::getSaveFileName(this, "Save Image Dialog", "untitled.png",
-                     "PNG Files (*.png)", "Choose a filename to save the image under");
-
-  if (!filename.isNull())
-    {
-      img.save(filename, "PNG");
-
-      mCurrentPlace = filename;
-    }
-
-#endif // FRAMEBUFFER_SCREENSHOTS
 }
 
 void CQLayoutMainWindow::pauseAnimation()
@@ -867,26 +645,6 @@ void CQLayoutMainWindow::setFontSizeForLabels(C_INT32 size)
   mpGLViewport->getPainter()->setFontSizeForLabels((unsigned int) size);
 }
 
-#ifndef USE_CRENDER_EXTENSION
-void CQLayoutMainWindow::closeApplication()
-{
-  this->close();
-}
-
-void CQLayoutMainWindow::closeEvent(QCloseEvent *event)
-{
-  if (maybeSave())
-    {
-      this->mpControlWidget->getPauseAction()->activate(QAction::Trigger);
-      event->accept();
-    }
-  else
-    {
-      event->ignore();
-    }
-}
-#endif // USE_CRENDER_EXTENSION
-
 QIcon CQLayoutMainWindow::createStartIcon()
 {
   C_INT32 w = 19;
@@ -985,56 +743,11 @@ bool CQLayoutMainWindow::maybeSave()
 double CQLayoutMainWindow::slotFitToScreen()
 {
   double zoom = this->mpGLViewport->fitToScreen();
-#ifndef USE_CRENDER_EXTENSION
-  disconnect(mpZoomMenu, SIGNAL(triggered(QAction*)), this, SLOT(slotZoomItemActivated(QAction*)));
-  QList<QAction*> actions = this->mpZoomActionGroup->actions();
-  QList<QAction*>::iterator it = actions.begin(), endit = actions.end();
-
-  while (it != endit)
-    {
-      if ((*it)->isChecked())
-        {
-          (*it)->setChecked(false);
-          // only one item can be checked
-          break;
-        }
-
-      ++it;
-    }
-
-  connect(mpZoomMenu, SIGNAL(triggered(QAction*)), this, SLOT(slotZoomItemActivated(QAction*)));
-
-  disconnect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
-  // add a new entry for the zoom factor only if there isn't one already
-  unsigned int n = sizeof(CQLayoutMainWindow::ZOOM_FACTOR_STRINGS) / sizeof(char*);
-
-  if (this->mpZoomComboBox->count() > n)
-    {
-      this->mpZoomComboBox->setItemText(0, QString("%1").arg(zoom * 100).append("%"));
-    }
-  else
-    {
-      this->mpZoomComboBox->insertItem(0, QString("%1").arg(zoom * 100).append("%"));
-    }
-
-  this->mpZoomComboBox->setCurrentIndex(0);
-  connect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
-#endif // USE_CRENDER_EXTENSION
   return zoom;
 }
 
 void CQLayoutMainWindow::slotResetView()
 {
-#ifndef USE_CRENDER_EXTENSION
-  // check the 100% zoom entry
-  disconnect(mpZoomMenu, SIGNAL(triggered(QAction*)), this, SLOT(slotZoomItemActivated(QAction*)));
-  this->mpZoomActionGroup->actions().at(10)->setChecked(true);
-  connect(mpZoomMenu, SIGNAL(triggered(QAction*)), this, SLOT(slotZoomItemActivated(QAction*)));
-  // update toolbar
-  disconnect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
-  this->mpZoomComboBox->setCurrentIndex(10);
-  connect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
-#endif // USE_CRENDER_EXTENSION
   this->mpGLViewport->resetView();
 }
 
@@ -1052,88 +765,6 @@ void CQLayoutMainWindow::setZoomFactor(QString s)
   this->setZoomFactor(n);
 }
 
-#ifndef USE_CRENDER_EXTENSION
-void CQLayoutMainWindow::slotActivated(int index)
-{
-  // check if the number of entries in the combobox are greater than the number of
-  // zoom items
-  // If that is the case, remove the first one and reduce the index by 1
-  unsigned int n = sizeof(CQLayoutMainWindow::ZOOM_FACTOR_STRINGS) / sizeof(char*);
-
-  if (this->mpZoomComboBox->count() > n && index != 0)
-    {
-      --index;
-      disconnect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
-      this->mpZoomComboBox->removeItem(0);
-      this->mpZoomComboBox->setCurrentIndex(index);
-      connect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
-    }
-
-  // update menu items
-  if (this->mpZoomComboBox->count() == n)
-    {
-      if (index >= 0 && index < n)
-        {
-          QAction* pAction = this->mpZoomActionGroup->actions().at(index);
-          pAction->setChecked(true);
-          this->setZoomFactor(pAction->text());
-        }
-    }
-}
-
-void CQLayoutMainWindow::slotZoomItemActivated(QAction* pAction)
-{
-  // if the item is not checked, uncheck all other and check this one
-  // set the zoom factor
-
-  // check if the number of zoom factors in the combobox is greater than
-  // the number of items in the zoom combo box
-  //
-  // if so, delete the first entry from the list
-  // the item that has been added by fitToScreen.
-  const size_t n = sizeof(CQLayoutMainWindow::ZOOM_FACTOR_STRINGS) / sizeof(char*);
-
-  if ((size_t)this->mpZoomComboBox->count() > n)
-    {
-      disconnect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
-      this->mpZoomComboBox->removeItem(0);
-      connect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
-    }
-
-  QString text = pAction->text();
-  this->setZoomFactor(text);
-  // update toolbar
-  disconnect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
-  this->mpZoomComboBox->setCurrentIndex(this->mpZoomComboBox->findText(text));
-  connect(this->mpZoomComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActivated(int)));
-}
-
-void CQLayoutMainWindow::slotZoomIn()
-{
-  QAction* pAction = this->mpZoomActionGroup->checkedAction();
-  QList<QAction*> actions = this->mpZoomActionGroup->actions();
-  int index = actions.indexOf(pAction);
-
-  if (index < actions.size() - 1)
-    {
-      ++index;
-      actions.at(index)->setChecked(true);
-    }
-}
-
-void CQLayoutMainWindow::slotZoomOut()
-{
-  QAction* pAction = this->mpZoomActionGroup->checkedAction();
-  QList<QAction*> actions = this->mpZoomActionGroup->actions();
-  int index = actions.indexOf(pAction);
-
-  if (index > 0)
-    {
-      --index;
-      actions.at(index)->setChecked(true);
-    }
-}
-#else
 void CQLayoutMainWindow::setLayout(CLayout* pLayout)
 {
   if (this->mpLayout == pLayout) return;
@@ -1153,8 +784,6 @@ CQPlayerControlWidget* CQLayoutMainWindow::getControlWidget()
 {
   return this->mpControlWidget;
 }
-
-#endif // USE_CRENDER_EXTENSION
 
 void CQLayoutMainWindow::stopAnimation()
 {

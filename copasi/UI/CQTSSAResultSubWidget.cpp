@@ -1,15 +1,16 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.15 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/04/27 16:00:44 $
-// End CVS Header
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include "CQTSSAResultSubWidget.h"
 #include "CQMessageBox.h"
@@ -226,7 +227,7 @@ void CQTSSAResultSubWidget::displayResult()
 
   mpSlider->setRange(1, pProblem->getStepNumber());
 
-  mpSlider->setValue(mpSlider->minValue());
+  mpSlider->setValue(mpSlider->minimum());
 
 
   mpBox1->clear();
@@ -235,7 +236,7 @@ void CQTSSAResultSubWidget::displayResult()
 
   for (i = 0; i <  pMethod->getTableName().size(); i++)
     {
-      mpBox1->insertItem(FROM_UTF8(pMethod->getTableName()[i]));
+      mpBox1->insertItem(0, FROM_UTF8(pMethod->getTableName()[i]));
     }
 
   mpArrayWidget->switchToTable();

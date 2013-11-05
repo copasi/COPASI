@@ -71,54 +71,13 @@ QMAKE_CFLAGS   += $$(CFLAGS)
 QMAKE_CXXFLAGS += $$(CXXFLAGS)
 QMAKE_LFLAGS  += $$(LDFLAGS)
 
-DEFINES += WITH_CSPMETHOD
-
 # the following flag enables Svens unit indentification code
 # right now this still has some bugs and has to be disabled
 # for releases
 # DEFINES += USE_SBMLUNIT
 
-# enable this to build support for the render extension
-DEFINES += USE_CRENDER_EXTENSION
-
-# enable this to build with Svens layout generation code.
-# This allows users to create new layouts for their models.
-# This is not finished yet and should not be enabled per default 
-DEFINES += COPASI_AUTOLAYOUT
-#
-# This enables the code for displaying elementary mode analysis results 
-# in the graph.
-# This needs some more testing, but it should be quite stable.
-# Since this depends heavily on the existence of layouts, I would only enable it
-# once the autolayout has been finished.
-#DEFINES += ELEMENTARY_MODE_DISPLAY
-
-# This enables the code for the animation of flux data
-# When this is enabled, the time course task will collect data
-# on species concentrations or amounts as well as concentration
-# or particle fluxes when a time course simulation is run.
-# This data can be used by the layout windows to display animations
-# of changing species concentrations and/or changing fluxes.
-#DEFINES += FLUX_ANIMATION
-
-# this flag enables new code to import layout information from 
-# CellDesigner annotations
-# Right now this is pretty much limited to the bare layout stuff.
-DEFINES += CELLDESIGNER_IMPORT
-
-# enable this to get screenshots from the OpenGL 
-# framebuffer. These should provide higher quality 
-# anitaliasing and they should work on more systems
-#DEFINES += FRAMEBUFFER_SCREENSHOTS
-
 # flag to use Svens SBML unit identification framework
 #define USE_SBMLUNIT
-
-# enable this to use the new listwidget based plot specification window
-DEFINES += USE_NEW_PLOTSUBWIDGET
-
-# enable cross validation 
-DEFINES += COPASI_CROSSVALIDATION
 
 # when using the standard clapack, as given with the copasi-dependency package
 # the wrapping will not be used, so you need to define the following
@@ -129,7 +88,7 @@ debug {
   DEFINES += COPASI_DEBUG_TRACE
   DEFINES += COPASI_EXTUNIT
   # DEFINES += WITH_MERGEMODEL
-  DEFINES += COPASI_NONLIN_DYN
+  DEFINES += DEBUG_OPT
   }
 
 win32: STATIC_LINKAGE = yes
@@ -278,13 +237,6 @@ contains(BUILD_OS, Darwin) {
   LIBS += -framework QuickTime
   LIBS += -lz
 
-# only needed for the class CLSimpleImageTexturizer which is only
-# needed if we want to create bitmaps from layouts in the backend
-#  contains(DEFINES, USE_CRENDER_EXTENSION){
-#    INCLUDEPATH += /opt/local/include
-#    LIBS += -L/opt/local/lib -lpng
-#    LIBS += -ljpeg
-#  }  
 }
 
 contains(BUILD_OS, WIN32) {
@@ -782,13 +734,9 @@ contains(BUILD_OS, Linux) {
       DEFINES += HAVE_MML
     }
 
-	LIBS *= -lGLU
-# only needed for the class CLSimpleImageTexturizer which is only
-# needed if we want to create bitmaps from layouts in the backend
-#contains(DEFINES,USE_CRENDER_EXTENSION) {           
-#	LIBS += -lpng
-#       LIBS += -ljpeg
-#}
+
+    LIBS *= -lGLU
+
   }
 }
 

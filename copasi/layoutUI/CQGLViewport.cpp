@@ -1,31 +1,23 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLViewport.cpp,v $
-//   $Revision: 1.9 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/20 14:06:22 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
 #include "CQGLViewport.h"
 
-#include <qgl.h>
-#include <QScrollBar>
-#include <QRect>
-#include <QHBoxLayout>
-#include <QLayout>
-#include <QResizeEvent>
-#include <QVBoxLayout>
-#include <QFrame>
+#include <QtOpenGL/QtOpenGL>
+#include <QtGui/QScrollBar>
+#include <QtCore/QRect>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QLayout>
+#include <QtGui/QResizeEvent>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QFrame>
 
 #include <iostream>
 
@@ -37,10 +29,10 @@
  * Constructor.
  */
 CQGLViewport::CQGLViewport(QWidget* pParent, Qt::WFlags f):
-    QFrame(pParent, f)
-    , mpVerticalScrollbar(new QScrollBar(Qt::Vertical, NULL))
-    , mpHorizontalScrollbar(new QScrollBar(Qt::Horizontal, NULL))
-    , mpNetworkPainter(NULL)
+  QFrame(pParent, f)
+  , mpVerticalScrollbar(new QScrollBar(Qt::Vertical, NULL))
+  , mpHorizontalScrollbar(new QScrollBar(Qt::Horizontal, NULL))
+  , mpNetworkPainter(NULL)
 {
   QVBoxLayout* pVBoxLayout = new QVBoxLayout();
   this->setLayout(pVBoxLayout);
@@ -169,7 +161,6 @@ double CQGLViewport::fitToScreen()
   this->updateScrollbars();
   return zoom;
 }
-
 
 void CQGLViewport::updateWidget()
 {

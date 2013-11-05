@@ -30,8 +30,8 @@
 #include "utilities/CAnnotatedMatrix.h"
 #include "report/CCopasiObjectReference.h"
 
-#include "clapackwrap.h"        // CLAPACK
-#include "blaswrap.h"           // BLAS
+#include "lapack/lapackwrap.h"        // CLAPACK
+#include "lapack/blaswrap.h"           // BLAS
 
 CCSPMethod::CCSPMethod(const CCopasiContainer * pParent):
   CTSSAMethod(CCopasiMethod::tssCSP, pParent) //,
@@ -71,7 +71,7 @@ void CCSPMethod::initializeParameter()
 {
   initializeIntegrationsParameter();
 
-  assertParameter("Integrate Reduced Model", CCopasiParameter::BOOL, (bool) false)->getValue().pBOOL;
+  assertParameter("Integrate Reduced Model", CCopasiParameter::BOOL, (bool) false);//->getValue().pBOOL;
   assertParameter("Ratio of Modes Separation", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-2);
   assertParameter("Maximum Relative Error", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-5);
   assertParameter("Maximum Absolute Error", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-10);
@@ -1116,7 +1116,7 @@ void CCSPMethod::step(const double & deltaT)
   if (mReducedModel)
     mpModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
   else
-    mpModel->calculateJacobian(mJacobian, 1e-6, 1e-12, false);
+    mpModel->calculateJacobian(mJacobian, 1e-6, 1e-12);
 
   cspstep(deltaT, N, M, A, B);
 
@@ -1323,7 +1323,7 @@ void CCSPMethod::CSPradicalPointer(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & 
   if (mReducedModel)
     redStoi = mpModel->getRedStoi();
   else
-    redStoi = mpModel->getStoiReordered();
+    redStoi = mpModel->getStoi();
 
   CMatrix<C_FLOAT64> A0;
   CMatrix<C_FLOAT64> B0;
@@ -1445,7 +1445,7 @@ void CCSPMethod::CSPParticipationIndex(C_INT & N, C_INT & M, C_FLOAT64 & tauM1, 
   if (mReducedModel)
     redStoi = mpModel->getRedStoi();
   else
-    redStoi = mpModel->getStoiReordered();
+    redStoi = mpModel->getStoi();
 
   CVector<C_FLOAT64> flux;
   flux.resize(reacs_size);
@@ -1566,7 +1566,7 @@ void CCSPMethod::CSPImportanceIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_FLO
   if (mReducedModel)
     redStoi = mpModel->getRedStoi();
   else
-    redStoi = mpModel->getStoiReordered();
+    redStoi = mpModel->getStoi();
 
   CVector<C_FLOAT64> flux;
   flux.resize(reacs_size);

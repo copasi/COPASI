@@ -113,6 +113,11 @@ public:
   virtual bool process(const bool & useInitialValues);
 
   /**
+   * Perform necessary cleanup procedures
+   */
+  virtual bool restore();
+
+  /**
    * Loads parameters for this solver with data coming from a
    * CReadConfig object. (CReadConfig object reads an input stream)
    * @param configbuffer reference to a CReadConfig object.

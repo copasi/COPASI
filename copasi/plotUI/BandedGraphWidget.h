@@ -6,7 +6,7 @@
 #ifndef BANDEDGRAPHWIDGET_H
 #define BANDEDGRAPHWIDGET_H
 
-#include <QVariant>
+#include <QtCore/QVariant>
 
 #include "copasi/plotUI/ui_BandedGraphWidget.h"
 #include "copasi/plotUI/CQPlotEditWidget.h"
@@ -26,12 +26,10 @@ public:
   virtual bool LoadFromCurveSpec(const CPlotItem * curve);
   virtual bool SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original = NULL) const;
 
-#if USE_NEW_PLOTSUBWIDGET
   /**
    * In multiple edit mode, we don't want to edit name & channels
    */
   virtual void setMultipleEditMode(bool mode);
-#endif
 
 protected:
   const CCopasiObject* mpObjectYone;

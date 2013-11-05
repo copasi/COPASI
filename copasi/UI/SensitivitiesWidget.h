@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.h,v $
-//   $Revision: 1.21 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:39:43 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -28,13 +20,13 @@
 #include "ui_SensitivitiesWidget.h"
 
 //#include <QtCore/QVariant>
-//#include <qwidget.h>
+//#include <QtGui/QWidget>
 #include "UI/TaskWidget.h"
 #include "sensitivities/CSensProblem.h"
 
 #include "UI/SensWidgetComboBox.h"
 
-#include <QComboBox>
+#include <QtGui/QComboBox>
 
 class SensitivitiesWidget : public TaskWidget, public Ui::SensitivitiesWidget
 {

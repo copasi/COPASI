@@ -48,12 +48,12 @@
 #include "CMetabNameInterface.h"
 #include "CMathModel.h"
 
-#ifdef TST_DEPENDENCYGRAPH
+#ifdef USE_MATH_CONTAINER
 # include "math/CMathContainer.h"
-#endif //TST_DEPENDENCYGRAPH
+#endif //USE_MATH_CONTAINER
 
-#include "blaswrap.h"
-#include "clapackwrap.h"
+#include "lapack/blaswrap.h"
+#include "lapack/lapackwrap.h"
 
 #ifdef COPASI_DEBUG
 #define CCHECK {check();}
@@ -93,11 +93,12 @@ CModel::CModel(CCopasiContainer* pParent):
   mCurrentState(),
   mStateTemplate(*this, this->mInitialState, this->mCurrentState),
   mSimulatedUpToDateObjects(),
-#ifdef TST_DEPENDENCYGRAPH
   mInitialDependencies(),
   mTransientDependencies(),
   mPhysicalDependencies(),
-#endif // TST_DEPENDENCYGRAPH
+#ifdef USE_MATH_CONTAINER
+  mpMathContainer(NULL),
+#endif // USE_MATH_CONTAINER
   mVolumeUnit(ml),
   mAreaUnit(m2),
   mLengthUnit(m),
@@ -115,9 +116,9 @@ CModel::CModel(CCopasiContainer* pParent):
   mParameterSets("ParameterSets", this),
   mActiveParameterSetKey(""),
   mMoieties("Moieties", this),
-  mStoi(),
+  mStoiInternal(),
   mpStoiAnnotation(NULL),
-  mStoiReordered(),
+  mStoi(),
   mRedStoi(),
   mpRedStoiAnnotation(NULL),
   mNumMetabolitesUnused(0),
@@ -127,7 +128,7 @@ CModel::CModel(CCopasiContainer* pParent):
   mNumMetabolitesReactionIndependent(0),
   mL(),
   mpLinkMatrixAnnotation(NULL),
-  mLView(mL, mNumMetabolitesReactionIndependent),
+  mLView(mL),
   mAvogadro(6.02214179e23),
   mQuantity2NumberFactor(1.0),
   mNumber2QuantityFactor(1.0),
@@ -140,9 +141,6 @@ CModel::CModel(CCopasiContainer* pParent):
   mIsAutonomous(true),
   mBuildInitialSequence(true),
   mpMathModel(NULL)
-#ifdef TST_DEPENDENCYGRAPH
-  , mpMathContainer(NULL)
-#endif TST_DEPENDENCYGRAPH
 {
   initObjects();
 
@@ -190,9 +188,9 @@ CModel::CModel(CCopasiContainer* pParent):
 //     mParameterSets(src.mParameterSets, this),
 //     mActiveParameterSetKey(src.mActiveParameterSetKey),
 //     mMoieties(src.mMoieties, this),
-//     mStoi(src.mStoi),
+//     mStoiInternal(src.mStoiInternal),
 //     mpStoiAnnotation(NULL),
-//     mStoiReordered(src.mStoiReordered),
+//     mStoi(src.mStoi),
 //     mRedStoi(src.mRedStoi),
 //     mpRedStoiAnnotation(NULL),
 //     mNumMetabolitesUnused(src.mNumMetabolitesUnused),
@@ -235,9 +233,9 @@ CModel::~CModel()
   pdelete(mpRedStoiAnnotation);
   pdelete(mpLinkMatrixAnnotation);
 
-#ifdef TST_DEPENDENCYGRAPH
+#ifdef USE_MATH_CONTAINER
   pdelete(mpMathContainer);
-#endif TST_DEPENDENCYGRAPH
+#endif // USE_MATH_CONTAINER
 
   CCopasiRootContainer::getKeyFactory()->remove(mKey);
 
@@ -482,14 +480,14 @@ bool CModel::compile()
 
   //writeDependenciesToDotFile();
 
-#ifdef TST_DEPENDENCYGRAPH
   buildDependencyGraphs();
 
+#ifdef USE_MATH_CONTAINER
   pdelete(mpMathContainer);
   mpMathContainer = new CMathContainer(*this);
 
   // CMathContainer CopyModel(MathModel);
-#endif // TST_DEPENDENCYGRAPH
+#endif // USE_MATH_CONTAINER
 
   // Update the parameter set
   mParameterSet.createFromModel();
@@ -497,7 +495,6 @@ bool CModel::compile()
   return success;
 }
 
-#ifdef TST_DEPENDENCYGRAPH
 bool CModel::buildDependencyGraphs()
 {
   mInitialDependencies.clear();
@@ -505,7 +502,8 @@ bool CModel::buildDependencyGraphs()
   mPhysicalDependencies.clear();
 
   // The initial values of the model entities
-  CModelEntity **ppEntity = mStateTemplate.beginIndependent() - 1; // Offset for time
+  // We need to add the time for non-autonomous models.
+  CModelEntity **ppEntity = mStateTemplate.beginIndependent() - 1;
   CModelEntity **ppEntityEnd = mStateTemplate.endFixed();
 
   for (; ppEntity != ppEntityEnd; ++ppEntity)
@@ -539,11 +537,11 @@ bool CModel::buildDependencyGraphs()
   for (; itMoiety != endMoiety; ++itMoiety)
     {
       mInitialDependencies.addObject((*itMoiety)->getInitialValueReference());
-      // TODO This needs to be added in the mathematical model for the context event.
-      // mTransientDependencies.addObject((*itMoiety)->getValueReference());
+      mTransientDependencies.addObject((*itMoiety)->getTotalNumberReference());
       mTransientDependencies.addObject((*itMoiety)->getDependentNumberReference());
     }
 
+#ifdef COPASI_DEBUG_TRACE
   std::ofstream File;
 
   File.open("InitialDependencies.dot");
@@ -553,10 +551,9 @@ bool CModel::buildDependencyGraphs()
   File.open("SimulationDependencies.dot");
   mTransientDependencies.exportDOTFormat(File, "SimulationDependencies");
   File.close();
-
+#endif //COPASI_DEBUG_TRACE
   return true;
 }
-#endif // TST_DEPENDENCYGRAPH
 
 void CModel::setCompileFlag(bool flag)
 {
@@ -604,8 +601,8 @@ void CModel::buildStoi()
   numCols = (unsigned C_INT32) mSteps.size();
 
   mParticleFluxes.resize(numCols);
-  mStoi.resize(numRows, numCols);
-  mStoi = 0.0;
+  mStoiInternal.resize(numRows, numCols);
+  mStoiInternal = 0.0;
 
   size_t hProcess;
 
@@ -618,11 +615,11 @@ void CModel::buildStoi()
     }
 
   C_FLOAT64 * pCol, *pColEnd;
-  pCol = mStoi.array();
-  pColEnd = mStoi.array() + numCols;
+  pCol = mStoiInternal.array();
+  pColEnd = mStoiInternal.array() + numCols;
 
   C_FLOAT64 * pRow, *pRowEnd;
-  pRowEnd = mStoi.array() + numRows * numCols;
+  pRowEnd = mStoiInternal.array() + numRows * numCols;
 
   CCopasiVector< CReaction >::iterator itStep = mSteps.begin();
   CCopasiVector< CMetab >::const_iterator itMetab;
@@ -665,7 +662,7 @@ void CModel::buildStoi()
 
 #ifdef DEBUG_MATRIX
   DebugFile << "Stoichiometry Matrix" << std::endl;
-  DebugFile << mStoi << std::endl;
+  DebugFile << mStoiInternal << std::endl;
 #endif
 
   if (mpCompileHandler)
@@ -677,12 +674,12 @@ void CModel::buildStoi()
 bool CModel::handleUnusedMetabolites()
 {
   size_t numRows, numCols;
-  numRows = mStoi.numRows();
-  numCols = mStoi.numCols();
+  numRows = mStoiInternal.numRows();
+  numCols = mStoiInternal.numCols();
 
   C_FLOAT64 * pStoi, *pStoiEnd, *pRowEnd;
-  pStoi = mStoi.array();
-  pStoiEnd = mStoi.array() + numRows * numCols;
+  pStoi = mStoiInternal.array();
+  pStoiEnd = mStoiInternal.array() + numRows * numCols;
 
   size_t i, NumUnused;
   C_FLOAT64 tmp;
@@ -720,7 +717,7 @@ bool CModel::handleUnusedMetabolites()
   CCopasiVector< CMetab >::iterator endMetab = itMetab + mNumMetabolitesReaction;
 
   // Build new stoichiometry Matrix
-  pStoi = mStoi.array();
+  pStoi = mStoiInternal.array();
 
   for (i = 0; itMetab != endMetab; ++itMetab, i++, pStoi += numCols)
     {
@@ -775,14 +772,14 @@ bool CModel::handleUnusedMetabolites()
   mNumMetabolitesUnused += NumUnused;
 
   // Update stoichiometry matrix
-  mStoi = NewStoi;
+  mStoiInternal = NewStoi;
 
   return true;
 }
 
 void CModel::buildRedStoi()
 {
-  mRedStoi = mStoiReordered;
+  mRedStoi = mStoi;
   mRedStoi.resize(mNumMetabolitesReactionIndependent, mRedStoi.numCols(), true);
 
   // The first metabolites are determined by ODEs we therefore cannot simply
@@ -861,22 +858,32 @@ void CModel::buildMoieties()
   size_t i, imax = MNumMetabolitesReactionDependent;
   size_t j;
 
-  CCopasiVector< CMetab >::iterator it =
-    mMetabolitesX.begin() + mNumMetabolitesODE + mNumMetabolitesReactionIndependent; //begin of dependent metabs
+  CCopasiVector< CMetab >::iterator it = (mNumMetabolitesODE + mNumMetabolitesReactionIndependent > mMetabolitesX.size()) ?
+                                         mMetabolitesX.end() :
+                                         mMetabolitesX.begin() + mNumMetabolitesODE + mNumMetabolitesReactionIndependent; //begin of dependent metabs
   C_FLOAT64 * pFactor = mL.array();
 
   CMoiety *pMoiety;
 
   mMoieties.cleanup();
 
+  if (it == mMetabolitesX.end() || pFactor == NULL)
+    {
+      // the user changed the type of species from under us
+      mNumMetabolitesReaction = 0;
+      mNumMetabolitesReactionIndependent = 0;
+      imax = 0;
+    }
+
   for (i = 0; i < imax; i++, ++it)
     {
       pMoiety = new CMoiety((*it)->getObjectName());
       pMoiety->add(1.0, *it);
 
-      for (j = 0; j < mNumMetabolitesReactionIndependent; j++, pFactor++)
-        if (fabs(*pFactor) > std::numeric_limits< C_FLOAT64 >::epsilon())
-          pMoiety->add(- *pFactor, mMetabolitesX[j + mNumMetabolitesODE]);
+      if (pFactor != NULL)
+        for (j = 0; j < mNumMetabolitesReactionIndependent; j++, pFactor++)
+          if (fabs(*pFactor) > std::numeric_limits< C_FLOAT64 >::epsilon())
+            pMoiety->add(- *pFactor, mMetabolitesX[j + mNumMetabolitesODE]);
 
       mMoieties.add(pMoiety, true);
     }
@@ -1104,16 +1111,10 @@ const CMatrix < C_FLOAT64 >& CModel::getRedStoi() const
 {CCHECK return mRedStoi;}
 
 /**
- *  Get the Stoichiometry Matrix of this Model
+ *  Get the reordered stoichiometry matrix of this model
  */
 const CMatrix < C_FLOAT64 >& CModel::getStoi() const
 {CCHECK return mStoi;}
-
-/**
- *  Get the reordered stoichiometry matrix of this model
- */
-const CMatrix < C_FLOAT64 >& CModel::getStoiReordered() const
-{CCHECK return mStoiReordered;}
 
 const CCopasiVector < CMoiety > & CModel::getMoieties() const
 {return mMoieties;}
@@ -1744,6 +1745,65 @@ void CModel::setState(const CState & state)
   return;
 }
 
+bool CModel::getInitialUpdateSequence(const CMath::SimulationContextFlag & context,
+                                      const CCopasiObject::DataObjectSet & changedObjects,
+                                      const CCopasiObject::DataObjectSet & requestedObjects,
+                                      CCopasiObject::DataUpdateSequence & updateSequence) const
+{
+  return getUpdateSequence(mInitialDependencies,
+                           context,
+                           changedObjects,
+                           requestedObjects,
+                           updateSequence);
+}
+
+bool CModel::getTransientUpdateSequence(const CMath::SimulationContextFlag & context,
+                                        const CCopasiObject::DataObjectSet & changedObjects,
+                                        const CCopasiObject::DataObjectSet & requestedObjects,
+                                        CCopasiObject::DataUpdateSequence & updateSequence) const
+{
+  return getUpdateSequence(mTransientDependencies,
+                           context,
+                           changedObjects,
+                           requestedObjects,
+                           updateSequence);
+}
+
+bool CModel::getUpdateSequence(CMathDependencyGraph & dependencyGraph,
+                               const CMath::SimulationContextFlag & context,
+                               const CCopasiObject::DataObjectSet & changedObjects,
+                               const CCopasiObject::DataObjectSet & requestedObjects,
+                               CCopasiObject::DataUpdateSequence & updateSequence) const
+{
+  updateSequence.clear();
+
+  CObjectInterface::UpdateSequence UpdateSequence;
+
+  if (!dependencyGraph.getUpdateSequence(context,
+                                         *reinterpret_cast< const CObjectInterface::ObjectSet *>(&changedObjects),
+                                         *reinterpret_cast< const CObjectInterface::ObjectSet *>(&requestedObjects),
+                                         UpdateSequence))
+    {
+      return false;
+    }
+
+  CObjectInterface::UpdateSequence::iterator it = UpdateSequence.begin();
+  CObjectInterface::UpdateSequence::iterator end = UpdateSequence.end();
+  Refresh * pRefresh = NULL;
+
+  for (; it != end; ++it)
+    {
+      pRefresh = static_cast< CCopasiObject * >(*it)->getRefresh();
+
+      if (pRefresh != NULL)
+        {
+          updateSequence.push_back(pRefresh);
+        }
+    }
+
+  return true;
+}
+
 void CModel::updateSimulatedValues(const bool & updateMoieties)
 {
   // Depending on which model we are using we need to update
@@ -1831,7 +1891,7 @@ void CModel::calculateDerivatives(C_FLOAT64 * derivatives)
 
   if (K != 0)
     dgemm_(&T, &T, &M, &N, &K, &Alpha, mParticleFluxes.array(), &M,
-           mStoiReordered.array(), &K, &Beta, pTmp, &M);
+           mStoi.array(), &K, &Beta, pTmp, &M);
 }
 
 void CModel::calculateDerivativesX(C_FLOAT64 * derivativesX)
@@ -1901,8 +1961,7 @@ void CModel::calculateElasticityMatrix(const C_FLOAT64 & factor,
 
 void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                const C_FLOAT64 & derivationFactor,
-                               const C_FLOAT64 & /* resolution */,
-                               const bool &userDefinedOrder)
+                               const C_FLOAT64 & /* resolution */)
 {
   C_FLOAT64 DerivationFactor = std::max(derivationFactor, 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon());
 
@@ -1913,7 +1972,6 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
   size_t Col;
 
   jacobian.resize(Dim, Dim);
-  CMatrix< C_FLOAT64 > Jacobian(Dim, Dim);
 
   C_FLOAT64 Store;
   C_FLOAT64 X1;
@@ -1930,7 +1988,7 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
   C_FLOAT64 * pXEnd = pX + Dim;
 
   C_FLOAT64 * pJacobian;
-  C_FLOAT64 * pJacobianEnd = Jacobian.array() + Dim * Dim;
+  C_FLOAT64 * pJacobianEnd = jacobian.array() + Dim * Dim;
 
   for (Col = 0; pX != pXEnd; ++pX, ++Col)
     {
@@ -1964,7 +2022,7 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
 
       *pX = Store;
 
-      pJacobian = Jacobian.array() + Col;
+      pJacobian = jacobian.array() + Col;
       pY1 = Y1.array();
       pY2 = Y2.array();
 
@@ -1974,35 +2032,7 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
 
   updateSimulatedValues(false);
 
-  //  jacobian = Jacobian;
-  //  return;
-
-  if (userDefinedOrder)
-    {
-
-      // :TODO: this can be incorporated into the above avoiding a temporary matrix.
-
-      // We need to bring the jacobian into the expected order, i.e.,
-      // convert it to the user defined order
-      size_t * pPermRow = mJacobianPivot.array();
-      size_t * pPermEnd = pPermRow + mJacobianPivot.size();
-      size_t * pPermCol;
-
-      C_FLOAT64 * pTo;
-      pTo = jacobian.array();
-
-      for (; pPermRow < pPermEnd; ++pPermRow)
-        {
-          pJacobian = Jacobian.array() + *pPermRow * Dim;
-
-          for (pPermCol = mJacobianPivot.array(); pPermCol < pPermEnd; ++pPermCol, ++pTo)
-            *pTo = *(pJacobian + *pPermCol);
-        }
-    }
-  else
-    jacobian = Jacobian;
-
-  // DebugFile << jacobian << std::endl;
+  return;
 }
 
 void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
@@ -3078,6 +3108,7 @@ bool CModel::convert2NonReversible()
                       break;
 
                     case CFunctionParameter::MODIFIER:
+
                       if (reac1->setParameterMapping(fp->getObjectName(),
                                                      reac0->getParameterMapping(fp->getObjectName())[0]))
                         {
@@ -3367,7 +3398,7 @@ void CModel::initObjects()
   addObjectReference("Quantity Conversion Factor", mQuantity2NumberFactor, CCopasiObject::ValueDbl);
   addObjectReference("Avogadro Constant", mAvogadro, CCopasiObject::ValueDbl);
 
-  mpStoiAnnotation = new CArrayAnnotation("Stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStoiReordered), true);
+  mpStoiAnnotation = new CArrayAnnotation("Stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStoi), true);
   mpStoiAnnotation->setDescription("Stoichiometry Matrix");
   mpStoiAnnotation->setMode(0, CArrayAnnotation::OBJECTS);
   mpStoiAnnotation->setDimensionDescription(0, "Species that are controlled by reactions");
@@ -3421,11 +3452,11 @@ std::string CModel::suitableForStochasticSimulation() const
 
       // TEST integer stoichiometry
       // Iterate through each the metabolites
-      // Juergen: the number of rows of mStoi equals the number of non-fixed metabs!
+      // Juergen: the number of rows of mStoiInternal equals the number of non-fixed metabs!
       //  for (j=0; i<metabSize; j++)
-      for (j = 0; j < mStoi.numRows(); j++)
+      for (j = 0; j < mStoiInternal.numRows(); j++)
         {
-          multFloat = mStoi(j, i);
+          multFloat = mStoiInternal(j, i);
           multInt = static_cast<C_INT32>(floor(multFloat + 0.5)); // +0.5 to get a rounding out of the static_cast to int!
 
           if ((multFloat - multInt) > 0.01)
@@ -3449,10 +3480,10 @@ void CModel::check() const
 
 void CModel::buildLinkZero()
 {
-  mL.build(mStoi);
+  mL.build(mStoiInternal);
   mNumMetabolitesReactionIndependent = mL.getNumIndependent();
-  mStoiReordered = mStoi;
-  mL.applyRowPivot(mStoiReordered);
+  mStoi = mStoiInternal;
+  mL.doRowPivot(mStoi);
 
   return;
 }
@@ -4209,10 +4240,10 @@ const CMathModel* CModel::getMathModel() const
 CMathModel* CModel::getMathModel()
 {return mpMathModel;}
 
-#ifdef TST_DEPENDENCYGRAPH
+#ifdef USE_MATH_CONTAINER
 const CMathContainer* CModel::getMathContainer() const
 {return mpMathContainer;}
 
 CMathContainer* CModel::getMathContainer()
 {return mpMathContainer;}
-#endif // TST_DEPENDENCYGRAPH
+#endif // USE_MATH_CONTAINER

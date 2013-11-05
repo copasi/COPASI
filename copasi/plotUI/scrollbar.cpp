@@ -1,14 +1,15 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/scrollbar.cpp,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: ssahle $
-   $Date: 2012/04/22 15:41:47 $
-   End CVS Header */
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 // Copyright  1997   Josef Wilgen
@@ -19,37 +20,33 @@
 // QwtLicense.
 //
 // Modifications made to the original are
-// Copyright  2006 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
-#include <qstyle.h>
+#include <QtGui/QStyle>
 #if QT_VERSION >= 0x040000
-#include <qstyleoption.h>
+#include <QtGui/QStyleOption>
 #endif
 #include "scrollbar.h"
 
 #include <cmath>
 
 ScrollBar::ScrollBar(QWidget * parent):
-    QScrollBar(parent),
-    mLogScale(false)
+  QScrollBar(parent),
+  mLogScale(false)
 {
   init();
 }
 
 ScrollBar::ScrollBar(Qt::Orientation o,
                      QWidget *parent):
-    QScrollBar(o, parent),
-    mLogScale(false)
+  QScrollBar(o, parent),
+  mLogScale(false)
 {
   init();
 }
 
 ScrollBar::ScrollBar(double minBase, double maxBase, bool logscale,
                      Qt::Orientation o, QWidget *parent):
-    QScrollBar(o, parent),
-    mLogScale(logscale)
+  QScrollBar(o, parent),
+  mLogScale(logscale)
 {
   init();
   setBase(minBase, maxBase);

@@ -32,6 +32,7 @@ HEADERS	+= \
   CQArrayAnnotationsWidget.h \
   CQBrowserPane.h \
   CQBrowserPaneDM.h \
+  CQCheckModelWindow.h \
   CQCompartment.h \
   CQCompartmentCopyOptions.h \
   CQCompartmentsWidget.h \
@@ -183,6 +184,7 @@ SOURCES	+= \
   CQArrayAnnotationsWidget.cpp \
   CQBrowserPane.cpp \
   CQBrowserPaneDM.cpp \
+  CQCheckModelWindow.cpp \
   CQCompartment.cpp \
   CQCompartmentCopyOptions.cpp \
   CQCompartmentsWidget.cpp \
@@ -328,6 +330,7 @@ SOURCES	+= \
 FORMS += CMCAResultSubwidget.ui
 FORMS += CLNAResultSubwidget.ui
 FORMS += CQArrayAnnotationsWidget.ui
+FORMS += CQCheckModelWindow.ui
 FORMS += CQCompartment.ui
 FORMS += CQCompartmentCopyOptions.ui
 FORMS += CQCompartmentsWidget.ui
@@ -403,6 +406,8 @@ FORMS += SliderSettingsDialog.ui
 FORMS += StateSubwidget.ui
 FORMS += SteadyStateWidget.ui
 FORMS += CQExpandModelData.ui
+FORMS += ReactionsWidget1.ui
+FORMS += SliderDialog.ui
 
 DISTFILES += icons/Copasi.ico \
              icons/Copasi??-Alpha.xpm \

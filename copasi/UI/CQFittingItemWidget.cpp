@@ -14,9 +14,9 @@
 
 #include "CQFittingItemWidget.h"
 
-#include <qapplication.h>
-#include <QPalette>
-#include <QHeaderView>
+#include <QtGui/QApplication>
+#include <QtGui/QPalette>
+#include <QtGui/QHeaderView>
 
 #include "CCopasiSelectionDialog.h"
 #include "CQValidator.h"
@@ -35,7 +35,7 @@
 #include "utilities/utility.h"
 #include "copasi/report/CCopasiRootContainer.h"
 
-#include <QtDebug>
+#include <QtCore/QtDebug>
 
 /*
  *  Constructs a CQFittingItemWidget as a child of 'parent', with the
@@ -116,12 +116,10 @@ void CQFittingItemWidget::init()
   mpEditUpper->setValidator(mpUpperValidator);
   mpUpperValidator->revalidate();
 
-#ifndef COPASI_CROSSVALIDATION
   mpBtnCrossValidations->hide();
   mpCheckCrossValidationsAll->hide();
   mpBoxCrossValidations->hide();
   mpLblCrossValidations->hide();
-#endif // not COPASI_CROSSVALIDATION
 }
 
 void CQFittingItemWidget::destroy()
@@ -546,31 +544,43 @@ bool CQFittingItemWidget::load(CCopasiDataModel * pDataModel,
         {
           if (!pExperimentMap) return false;
 
+          CFitItem *fitItem = static_cast<CFitItem *>(*it);
+
           // Change the key to reflect the local copy *mppExperimentSet
-          size_t j, jmax = static_cast<CFitItem *>(*it)->getExperimentCount();
+          size_t j, jmax = fitItem->getExperimentCount();
 
           for (j = 0; j < jmax; j++)
             {
               std::string & Key =
-                *const_cast<std::string *>(&static_cast<CFitItem *>(*it)->getExperiment(j));
+                *const_cast<std::string *>(&fitItem->getExperiment(j));
+
+              if (Key.empty())
+                {
+                  CCopasiMessage(CCopasiMessage::ERROR, "Could not find experiment for fit item '%s'.", fitItem->getObjectCN().c_str());
+                  continue;
+                }
+
               Key = pExperimentMap->find(Key)->second;
             }
-
-#ifdef COPASI_CROSSVALIDATION
 
           if (!pCrossValidationMap) return false;
 
           // Change the key to reflect the local copy *mppCrossValidationSet
-          jmax = static_cast<CFitItem *>(*it)->getCrossValidationCount();
+          jmax = fitItem->getCrossValidationCount();
 
           for (j = 0; j < jmax; j++)
             {
               std::string & Key =
-                *const_cast<std::string *>(&static_cast<CFitItem *>(*it)->getCrossValidation(j));
+                *const_cast<std::string *>(&fitItem->getCrossValidation(j));
+
+              if (Key.empty())
+                {
+                  CCopasiMessage(CCopasiMessage::ERROR, "Could not find cross validation set for fit item '%s'.", fitItem->getObjectCN().c_str());
+                  continue;
+                }
+
               Key = pCrossValidationMap->find(Key)->second;
             }
-
-#endif // COPASI_CROSSVALIDATION
         }
 
       setTableText((int) i, *it);
@@ -587,7 +597,8 @@ bool CQFittingItemWidget::load(CCopasiDataModel * pDataModel,
   return true;
 }
 
-bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExperimentMap, const std::map<std::string, std::string> * pCrossValidationMap)
+bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExperimentMap,
+                               const std::map<std::string, std::string> * pCrossValidationMap)
 {
   // Make sure that the current items is saved.
   saveSelection();
@@ -646,13 +657,24 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
             {
               std::string & Target =
                 *const_cast<std::string *>(&static_cast<CFitItem *>(*target)->getExperiment(j));
-              const std::string & Source =
-                pExperimentMap->find(static_cast<CFitItem *>(*it)->getExperiment(j))->second;
+              const std::string &Key = static_cast<CFitItem *>(*it)->getExperiment(j);
 
-              if (Target != Source)
+              if (Key.empty())
+                {
+                  continue;
+                }
+
+              std::map<std::string, std::string>::const_iterator found = pExperimentMap->find(Key);
+
+              if (found == pExperimentMap->end())
+                {
+                  continue;
+                }
+
+              if (Target != found->second)
                 {
                   changed = true;
-                  Target = Source;
+                  Target = found->second;
                 }
             }
 
@@ -675,8 +697,6 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
               static_cast<CFitItem *>(*target)->addExperiment(Source);
             }
 
-#ifdef COPASI_CROSSVALIDATION
-
           if (pCrossValidationMap == NULL) return false;
 
           jmax =
@@ -688,13 +708,24 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
             {
               std::string & Target =
                 *const_cast<std::string *>(&static_cast<CFitItem *>(*target)->getCrossValidation(j));
-              const std::string & Source =
-                pCrossValidationMap->find(static_cast<CFitItem *>(*it)->getCrossValidation(j))->second;
+              const std::string &Key = static_cast<CFitItem *>(*it)->getCrossValidation(j);
 
-              if (Target != Source)
+              if (Key.empty())
+                {
+                  continue;
+                }
+
+              std::map<std::string, std::string>::const_iterator found = pCrossValidationMap->find(Key);
+
+              if (found == pCrossValidationMap->end())
+                {
+                  continue;
+                }
+
+              if (Target != found->second)
                 {
                   changed = true;
-                  Target = Source;
+                  Target = found->second;
                 }
             }
 
@@ -716,8 +747,6 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExper
 
               static_cast<CFitItem *>(*target)->addCrossValidation(Source);
             }
-
-#endif // COPASI_CROSSVALIDATION
         }
     }
 
@@ -788,12 +817,10 @@ void CQFittingItemWidget::setItemType(const ItemType & type)
       mpBtnExperiments->show();
       mpBtnPerExperiment->show();
 
-#ifdef COPASI_CROSSVALIDATION
       mpLblCrossValidations->show();
       mpCheckCrossValidationsAll->show();
       mpBoxCrossValidations->show();
       mpBtnCrossValidations->show();
-#endif // COPASI_CROSSVALIDATION
     }
   else
     {
@@ -803,12 +830,10 @@ void CQFittingItemWidget::setItemType(const ItemType & type)
       mpBtnExperiments->hide();
       mpBtnPerExperiment->hide();
 
-#ifdef COPASI_CROSSVALIDATION
       mpLblCrossValidations->hide();
       mpCheckCrossValidationsAll->hide();
       mpBoxCrossValidations->hide();
       mpBtnCrossValidations->hide();
-#endif // COPASI_CROSSVALIDATION
     }
 
   if (mItemType == OPT_CONSTRAINT || mItemType == FIT_CONSTRAINT)
@@ -1362,7 +1387,6 @@ void CQFittingItemWidget::loadSelection()
           mpCheckAll->setChecked(imax == 0);
           mpBoxExperiments->setEnabled(imax != 0);
 
-#ifdef COPASI_CROSSVALIDATION
           CrossValidations = static_cast<CFitItem *>(pItem)->getCrossValidations();
 
           mpBoxCrossValidations->clear();
@@ -1375,12 +1399,11 @@ void CQFittingItemWidget::loadSelection()
                 CCopasiRootContainer::getKeyFactory()->get(static_cast<CFitItem *>(pItem)->getCrossValidation(i));
 
               if (pObject)
-                mpBoxCrossValidations->insertItem(FROM_UTF8(pObject->getObjectName()));
+                mpBoxCrossValidations->insertItem(0, FROM_UTF8(pObject->getObjectName()));
             }
 
           mpCheckCrossValidationsAll->setChecked(imax == 0);
           mpBoxCrossValidations->setEnabled(imax != 0);
-#endif // COPASI_CROSSVALIDATION
         }
 
       for (++it; it != end; ++it)
@@ -1443,16 +1466,12 @@ void CQFittingItemWidget::loadSelection()
               mpBoxExperiments->setEnabled(false);
             }
 
-#ifdef COPASI_CROSSVALIDATION
-
           if ((mItemType == FIT_ITEM || mItemType == FIT_CONSTRAINT) &&
               CrossValidations != static_cast<CFitItem *>(pItem)->getCrossValidations())
             {
               mpCheckCrossValidationsAll->setChecked(false);
               mpBoxCrossValidations->setEnabled(false);
             }
-
-#endif // COPASI_CROSSVALIDATION
         }
 
       connect(mpCheckAll, SIGNAL(toggled(bool)), this, SLOT(slotCheckAllExperiments(bool)));
@@ -1698,8 +1717,6 @@ void CQFittingItemWidget::slotStartLostFocus()
 
 void CQFittingItemWidget::slotCrossValidations()
 {
-#ifdef COPASI_CROSSVALIDATION
-
   if (mItemType == FIT_ITEM || mItemType == FIT_CONSTRAINT)
     {
       CQExperimentSelection * pDialog = new CQExperimentSelection(this);
@@ -1719,7 +1736,7 @@ void CQFittingItemWidget::slotCrossValidations()
               size_t i, imax = mpBoxCrossValidations->count();
 
               for (i = 0; i < imax && imax < (*mppCrossValidationSet)->getExperimentCount(); i++)
-                static_cast<CFitItem *>((*mpItemsCopy)[*it])->addCrossValidation((*mppCrossValidationSet)->getExperiment(TO_UTF8(mpBoxCrossValidations->text(i)))->CCopasiParameter::getKey());
+                static_cast<CFitItem *>((*mpItemsCopy)[*it])->addCrossValidation((*mppCrossValidationSet)->getExperiment(TO_UTF8(mpBoxCrossValidations->itemText(i)))->CCopasiParameter::getKey());
 
               setTableText(*it, (*mpItemsCopy)[*it]);
             }
@@ -1729,13 +1746,10 @@ void CQFittingItemWidget::slotCrossValidations()
 
       delete pDialog;
     }
-
-#endif // COPASI_CROSSVALIDATION
 }
 
 void CQFittingItemWidget::slotCrossValidationChanged()
 {
-#ifdef COPASI_CROSSVALIDATION
   // This slot is triggered when an experiment is deleted or changed,
   // but before new experiments are created.
 
@@ -1763,11 +1777,9 @@ void CQFittingItemWidget::slotCrossValidationChanged()
   // Enable/disable the interface to affected cross validations.
   setCrossValidationSet(*mppCrossValidationSet);
 
-#endif // COPASI_CROSSVALIDATION
   return;
 }
 
-#ifdef COPASI_CROSSVALIDATION
 void CQFittingItemWidget::setCrossValidationSet(const CCrossValidationSet * & pCrossValidationSet)
 {
   mppCrossValidationSet = &pCrossValidationSet;
@@ -1779,7 +1791,6 @@ void CQFittingItemWidget::setCrossValidationSet(const CCrossValidationSet * & pC
   mpBoxCrossValidations->setEnabled(Enabled && !mpCheckCrossValidationsAll->isChecked());
   mpLblCrossValidations->setEnabled(Enabled);
 }
-#endif // COPASI_CROSSVALIDATION
 
 void CQFittingItemWidget::slotCheckAllCrossValidations(bool checked)
 {

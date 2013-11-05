@@ -7,9 +7,9 @@
 #define CQNEWMAINWINDOW_H__
 
 #include <UI/CWindowInterface.h>
-#include <QString>
-#include <QIcon>
-#include <QRectF>
+#include <QtCore/QString>
+#include <QtGui/QIcon>
+#include <QtCore/QRectF>
 #include <string>
 #include <vector>
 #include <set>
@@ -32,7 +32,6 @@ class CFluxMode;
 class CReaction;
 class CMetab;
 
-#ifdef COPASI_AUTOLAYOUT
 #include "copasi/copasi.h"
 #include "copasi/layout/CLayoutState.h"
 #include "copasi/layout/CLReactionGlyph.h"
@@ -46,7 +45,6 @@ class CLCompartmentGlyph;
 class CLMetabGlyph;
 class CLTextGlyph;
 class CQLayoutThread;
-#endif // COPASI_AUTOLAYOUT
 
 class CQNewMainWindow : public CWindowInterface
 {
@@ -62,22 +60,19 @@ public:
 
   void setMode(DISPLAY_MODE mode = GRAPH_MODE);
 
-#ifdef ELEMENTARY_MODE_DISPLAY
   enum REACTION_SELECTION_BITS
   {
     ROLE_UNSPECIFIED          =   1 // metab reference glyphs without role
-                                  , ROLE_SUBSTRATE            =   2
-                                      , ROLE_SIDESUBSTRATE        =   4
-                                          , ROLE_PRODUCT              =   8
-                                              , ROLE_SIDEPRODUCT          =  16
-                                                  , ROLE_MODIFIER             =  32
-                                                      , ROLE_ACTIVATOR            =  64
-                                                          , ROLE_INHIBITOR            = 128
-                                                              , REACTION_GLYPH            = 256 // the reaction glyph itself
-                                                                  , ASSOCIATED_SPECIES_GLYPHS = 512
+    , ROLE_SUBSTRATE            =   2
+    , ROLE_SIDESUBSTRATE        =   4
+    , ROLE_PRODUCT              =   8
+    , ROLE_SIDEPRODUCT          =  16
+    , ROLE_MODIFIER             =  32
+    , ROLE_ACTIVATOR            =  64
+    , ROLE_INHIBITOR            = 128
+    , REACTION_GLYPH            = 256 // the reaction glyph itself
+    , ASSOCIATED_SPECIES_GLYPHS = 512
   };
-
-#endif // ELEMENTARY_MODE_DISPLAY
 
   CQNewMainWindow(CCopasiDataModel* pDatamodel);
   virtual ~CQNewMainWindow();
@@ -154,7 +149,6 @@ public slots:
    */
   void setStatusMessage(const QString& message, int timeout);
 
-#ifdef ELEMENTARY_MODE_DISPLAY
   /**
    * Selects the given reaction object by selecting all
    * corresponding CLReactionGlyph objects in the current layout.
@@ -205,11 +199,7 @@ public slots:
    */
   void fogDensitySlot(bool);
 
-#endif // ELEMENTARY_MODE_DISPLAY
-
   virtual void closeEvent(QCloseEvent * event);
-
-#ifdef COPASI_AUTOLAYOUT
 
 #ifdef INCLUDE_UNUSED_CODE
 
@@ -257,8 +247,6 @@ protected slots:
 
   void slotCalculateDimensions();
 
-#endif // COPASI_AUTOLAYOUT
-
 private:
 
   void createActions();
@@ -279,9 +267,7 @@ private:
   QMenu *mpOptionsMenu;
   QMenu *mpWindowMenu;
   QMenu *mpZoomMenu;
-#ifdef ELEMENTARY_MODE_DISPLAY
   QMenu *mpElementaryModesMenu;
-#endif // ELEMENTARY_MODE_DISPLAY
   QToolBar *mpFileToolBar;
   QToolBar *mpSelectionToolBar;
   QAction *mpSwitchModeAct;
@@ -314,7 +300,6 @@ private:
   QIcon mGraphIcon;
   QIcon mAnimationIcon;
 
-#ifdef ELEMENTARY_MODE_DISPLAY
   struct REACTION_SELECTION_ITEM
   {
     std::string mReactionKey;
@@ -350,9 +335,6 @@ private:
   QAction* mpHighlightModeAction;
   QAction* mpFogDensityAction;
   QAction* mpChangeColorAction;
-#endif // ELEMENTARY_MODE_DISPLAY
-
-#ifdef COPASI_AUTOLAYOUT
 
   QAction* mpStopLayoutAction;
   QAction* mpRandomizeLayout;
@@ -383,8 +365,6 @@ protected:
 
   /** the copy on which the layout operates */
   CLayout* mpCopy;
-
-#endif // COPASI_AUTOLAYOUT
 };
 
 #endif /* CQNEWMAINWINDOW_H__ */

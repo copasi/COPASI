@@ -1,25 +1,22 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSpinBoxDelegate.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/07/06 14:43:30 $
-// End CVS Header
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-#include <QSpinBox>
-#include <QSortFilterProxyModel>
+#include <QtGui/QSpinBox>
+#include <QtGui/QSortFilterProxyModel>
 
 #include "../copasi.h"
 #include "CQSpinBoxDelegate.h"
 #include "CQBaseDataModel.h"
 
 CQSpinBoxDelegate::CQSpinBoxDelegate(QObject *parent)
-    : QItemDelegate(parent)
+  : QItemDelegate(parent)
 {}
 
 QWidget *CQSpinBoxDelegate::createEditor(QWidget *parent,

@@ -1,27 +1,31 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <sbml/SBMLDocument.h>
 
-#include <QEvent>
-#include <QMenuBar>
-#include <QTimer>
-#include <QComboBox>
-#include <QToolBar>
-#include <QTextEdit>
-#include <QThread>
-#include <QFontDialog>
+#ifdef COPASI_SEDML
+#include <sedml/SedDocument.h>
+#endif
+
+#include <QtCore/QEvent>
+#include <QtGui/QMenuBar>
+#include <QtCore/QTimer>
+#include <QtGui/QComboBox>
+#include <QtGui/QToolBar>
+#include <QtGui/QTextEdit>
+#include <QtCore/QThread>
+#include <QtGui/QFontDialog>
 
 #include <vector>
 #include <sstream>
@@ -62,15 +66,21 @@
 #include "MIRIAM/CConstants.h"
 #include "copasi/utilities/CVersion.h"
 #include "model/CModelExpansion.h"
+#include "copasi/UI/CQCheckModelWindow.h"
+
 #ifdef WITH_MERGEMODEL
 #include "model/CModelExpansion.h"
 #endif
 #include <UI/CWindowInterface.h>
 
+#ifdef COPASI_SEDML
+#include "CQSEDMLFileDialog.h"
+#endif
+
 #define AutoSaveInterval 10*60*1000
 
 #ifdef DEBUG_UI
-#include <QtDebug>
+#include <QtCore/QtDebug>
 #endif
 
 // static
@@ -174,9 +184,20 @@ CopasiUI3Window::CopasiUI3Window():
   , mpSBWAction(NULL)
   , mSBWIgnoreShutdownEvent(true)
 #endif // COPASI_SBW_INTEGRATION
+
+#ifdef COPASI_SEDML
+  , mpMenuSEDMLSupport(NULL)
+  , mpMenuRecentSEDMLFiles(NULL)
+  , mRecentSEDMLFilesActionMap()
+  , mpRecentSEDMLFilesActionGroup(NULL)
+#endif //COPASI_SEDML support
+
 {
   // set destructive close
   this->setAttribute(Qt::WA_DeleteOnClose);
+
+  // Add this window to the list of windows
+  mWindows.append(this);
 
 #ifndef Darwin
   setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
@@ -197,6 +218,11 @@ CopasiUI3Window::CopasiUI3Window():
   mpaSaveAs->setEnabled(false);
   mpaExportSBML->setEnabled(false);
   mpaExportODE->setEnabled(false);
+
+  //TODO SEDML
+#ifdef COPASI_SEDML
+  mpaExportSEDML->setEnabled(false);
+#endif
 
   if (!mpDataModelGUI)
     {
@@ -337,18 +363,79 @@ void CopasiUI3Window::createActions()
   mpaFontSelectionDialog = new QAction("Select the Application Font", this);
   connect(mpaFontSelectionDialog, SIGNAL(activated()), this, SLOT(slotFontSelection()));
 
+  //TODO SEDML
+#ifdef COPASI_SEDML
+  mpaOpenSEDMLFiles = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "S&EDML Files...", this);
+  connect(mpaOpenSEDMLFiles, SIGNAL(activated()), this, SLOT(slotFileExamplesSEDMLFiles()));
+  mpaOpenSEDMLFiles->setShortcut(Qt::CTRL + Qt::Key_3);
+
+  mpaImportSEDML = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "&Import SEDML...", this);
+  connect(mpaImportSEDML, SIGNAL(activated()), this, SLOT(slotImportSEDML()));
+  mpaImportSEDML->setShortcut(Qt::CTRL + Qt::Key_X);
+
+  mpaExportSEDML = new QAction(CQIconResource::icon(CQIconResource::fileExport), "&Export SEDML...", this);
+  connect(mpaExportSEDML, SIGNAL(activated()), this, SLOT(slotExportSEDML()));
+  mpaExportSEDML->setShortcut(Qt::CTRL + Qt::Key_Z);
+#endif
   //     QAction* mpaObjectBrowser;
 
 #ifdef WITH_MERGEMODEL
-  mpaAddModel = new QAction(CQIconResource::icon(CQIconResource::fileAdd), "&Add ...", Qt::SHIFT + Qt::CTRL + Qt::Key_A, this, "addmodel");
+  mpaAddModel = new QAction(CQIconResource::icon(CQIconResource::fileAdd), "&Add ...", this);
+  mpaAddModel->setShortcut(Qt::SHIFT + Qt::CTRL + Qt::Key_A);
   connect(mpaAddModel, SIGNAL(activated()), this, SLOT(slotAddFileOpen()));
 
-  mpaMergeModels = new QAction("&Merge ...", Qt::SHIFT + Qt::CTRL + Qt::Key_M, this, "mergemodel");
+  mpaMergeModels = new QAction("&Merge ...", this);
+  mpaMergeModels->setShortcut(Qt::SHIFT + Qt::CTRL + Qt::Key_M);
   connect(mpaMergeModels, SIGNAL(activated()), this, SLOT(slotMergeModels()));
 #endif
 
-  mpaCloseAllWindows = new QAction("Close all windows", this);
+  mpaCloseAllWindows = new QAction("Close all windows below:", this);
   connect(mpaCloseAllWindows, SIGNAL(activated()), this, SLOT(slotCloseAllWindows()));
+
+  mpaFunctionDBLoad =  new QAction(CQIconResource::icon(CQIconResource::fileOpen), "Load Function DB...", this);
+  connect(mpaFunctionDBLoad, SIGNAL(activated()), this, SLOT(slotFunctionDBLoad()));
+  mpaFunctionDBSave =  new QAction(CQIconResource::icon(CQIconResource::fileSaveas), "Save Function DB...", this);
+  connect(mpaFunctionDBSave, SIGNAL(activated()), this, SLOT(slotFunctionDBSave()));
+}
+
+void CopasiUI3Window::slotFunctionDBSave(QString file)
+{
+  if (mCommitRequired)
+    {
+      mpDataModelGUI->commit();
+    }
+
+  QString dbFile;
+
+  if (file == "")
+    dbFile =
+      CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
+                                        QString::null, "XML Files (*.xml);;All Files (*)",
+                                        "Choose a file");
+  else
+    dbFile = file;
+
+  mpDataModelGUI->saveFunctionDB(TO_UTF8(dbFile));
+}
+
+void CopasiUI3Window::slotFunctionDBLoad(QString file)
+{
+  if (mCommitRequired)
+    {
+      mpDataModelGUI->commit();
+    }
+
+  QString dbFile;
+
+  if (file == "")
+    dbFile =
+      CopasiFileDialog::getOpenFileName(this, "Open File Dialog",
+                                        QString::null, "XML Files (*.xml);;All Files (*)",
+                                        "Choose a file");
+  else
+    dbFile = file;
+
+  mpDataModelGUI->loadFunctionDB(TO_UTF8(dbFile));
 }
 
 void CopasiUI3Window::createToolBar()
@@ -395,6 +482,10 @@ void CopasiUI3Window::createMenuBar()
   mpMenuExamples->addAction(mpaOpenCopasiFiles);
   mpMenuExamples->addAction(mpaOpenSBMLFiles);
 
+#ifdef COPASI_SEDML
+  mpMenuExamples->addAction(mpaOpenSEDMLFiles);
+#endif
+
   pFileMenu->addAction(mpaSave);
   pFileMenu->addAction(mpaSaveAs);
 
@@ -404,10 +495,21 @@ void CopasiUI3Window::createMenuBar()
   pFileMenu->addAction(mpaExportSBML);
   pFileMenu->addAction(mpaExportODE);
 
+  //TODO SEDML
+  /*#ifdef COPASI_SEDML
+     pFileMenu->addSeparator();
+     pFileMenu->addAction(mpaImportSEDML);
+     pFileMenu->addAction(mpaExportSEDML);
+#endif
+  */
 #ifdef WITH_MERGEMODEL
   pFileMenu->addAction(mpaAddModel);
   //pFileMenu->addAction(mpaMergeModels);
 #endif
+
+  pFileMenu->addSeparator();
+  pFileMenu->addAction(mpaFunctionDBLoad);
+  pFileMenu->addAction(mpaFunctionDBSave);
 
   pFileMenu->addSeparator();
 
@@ -418,6 +520,18 @@ void CopasiUI3Window::createMenuBar()
   refreshRecentSBMLFileMenu();
 
   pFileMenu->addSeparator();
+
+  //TODO SEDML
+#ifdef COPASI_SEDML
+  mpMenuSEDMLSupport = pFileMenu->addMenu("SEDML Support");
+  mpMenuSEDMLSupport->addAction(mpaImportSEDML);
+  mpMenuSEDMLSupport->addAction(mpaExportSEDML);
+  mpMenuRecentSEDMLFiles = mpMenuSEDMLSupport->addMenu("Recent SEDML Files");
+  //  mpMenuRecentSEDMLFiles = pFileMenu->addMenu("Recent SEDML Files");
+  refreshRecentSEDMLFileMenu();
+
+  pFileMenu->addSeparator();
+#endif
 
   pFileMenu->addAction(mpaQuit);
 
@@ -629,6 +743,10 @@ void CopasiUI3Window::newDoc()
   mpaExportSBML->setEnabled(true);
   mpaExportODE->setEnabled(true);
 
+#ifdef COPASI_SEDML
+  mpaExportSEDML->setEnabled(true);
+#endif
+
   updateTitle();
   mpListView->switchToOtherWidget(1, "");
   CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
@@ -653,6 +771,17 @@ void CopasiUI3Window::openInitialDocument(const QString & file)
       COptions::getValue("ImportSBML", ImportSBML);
       slotImportSBML(FROM_UTF8(ImportSBML));
     }
+
+#ifdef COPASI_SEDML
+  else if (!COptions::compareValue("ImportSEDML", std::string("")))
+    {
+      // Import the SEDML File
+      std::string ImportSEDML;
+      COptions::getValue("ImportSEDML", ImportSEDML);
+      slotImportSEDML(FROM_UTF8(ImportSEDML));
+    }
+
+#endif
   else if (COptions::getNonOptions().size())
     {
       // Look at commandline
@@ -774,6 +903,28 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
       return;
     }
 
+#ifdef COPASI_SEDML
+
+  if (msg.getNumber() == 6303 &&
+      (msg.getText().find("'sedML'") != std::string::npos || msg.getText().find(":sedML'") != std::string::npos))
+    {
+
+      // someone attempted to open an SEDML file but failed, instead of displaying the message
+      //   XML (3): Unknown element 'sedml' encountered at line '3'.
+      // we just open the SEDML file!
+      if (CQMessageBox::question(this, QString("Import SEDML?"), QString("You tried to open an SEDML file. COPASI is not able to open SEDML files but is able to import it. Would you like to import it?"),
+                                 QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes)
+        {
+          emit slotImportSEDML(mNewFile);
+          return;
+        }
+
+      newDoc();
+      return;
+    }
+
+#endif
+
   if (msg.getNumber() != MCCopasiMessage + 1)
     {
       QString Message = "Problem while loading file " + mNewFile + QString("!\n\n");
@@ -811,6 +962,10 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
   mpaSaveAs->setEnabled(true);
   mpaExportSBML->setEnabled(true);
   mpaExportODE->setEnabled(true);
+
+#ifdef COPASI_SEDML
+  mpaExportSEDML->setEnabled(true);
+#endif
 
   updateTitle();
   mpListView->switchToOtherWidget(1, "");
@@ -916,11 +1071,14 @@ void CopasiUI3Window::slotAddFileOpenFinished(bool success)
   mpaExportSBML->setEnabled(true);
   mpaExportODE->setEnabled(true);
 
+#ifdef COPASI_SEDML
+  mpaExportSEDML->setEnabled(true);
+#endif
+
   refreshRecentFileMenu();
   mNewFile = "";
-  
-    mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
 
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
 }
 
 #endif
@@ -1509,6 +1667,11 @@ void CopasiUI3Window::slotShowSliders(bool flag)
 {
   mpaSliders->setChecked(flag);
   this->mpSliders->setHidden(!flag);
+
+  if (flag)
+    addWindow(this->mpSliders);
+  else
+    removeWindow(this->mpSliders);
 }
 
 DataModelGUI* CopasiUI3Window::getDataModel()
@@ -1518,6 +1681,7 @@ void CopasiUI3Window::listViewsFolderChanged(const QModelIndex &)
 {
   size_t id = mpListView->getCurrentItemId();
   this->mpSliders->setCurrentFolderId(id);
+  refreshWindowsMenu();
 }
 
 ListViews* CopasiUI3Window::getMainWidget()
@@ -1767,12 +1931,32 @@ void CopasiUI3Window::removeWindow(QMainWindow * pWindow)
 
 void CopasiUI3Window::refreshWindowsMenu()
 {
+  // (I assume a QActionGroup was used, so only one window will be activated at a time)
+  if (mpWindowsActionGroup != NULL)
+    {
+      disconnect(mpWindowsActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slotActivateWindowTriggered(QAction *)));
+      mpWindowsActionGroup->deleteLater();
+      mpWindowsActionGroup = NULL;
+    }
+
+  mpWindowsActionGroup = new QActionGroup(this);
+  connect(mpWindowsActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slotActivateWindowTriggered(QAction *)));
+
+  // Re-initialize items the menus will always have
   mpWindowsMenu->clear();
+                               // COPASI main window
+  QAction * pAction = new QAction(mWindows[0]->windowTitle(), mpWindowsActionGroup);
+  mpWindowsMenu->addAction(pAction);
 
-  mpWindowsMenu->addAction(mpaCloseAllWindows);
-  mpWindowsMenu->addSeparator();
+  if(mWindows.count() > 1)
+  {
+    mpWindowsMenu->addSeparator();
+    mpWindowsMenu->addAction(mpaCloseAllWindows);
+    mpWindowsMenu->addSeparator();
+  }
 
-  for (int index = 0; index < mWindows.count(); ++index)
+  // . . . for the secondary windows, also . . .
+  for (int index = 1; index < mWindows.count(); ++index)
     {
       QMainWindow* mainWindow = mWindows[index];
 
@@ -1781,23 +1965,14 @@ void CopasiUI3Window::refreshWindowsMenu()
       CWindowInterface* window = dynamic_cast<CWindowInterface*>(mainWindow);
       QMenu* menu = window->getWindowMenu();
       menu->clear();
+      menu->addAction(pAction);
+      menu->addSeparator();
       menu->addAction(mpaCloseAllWindows);
       menu->addSeparator();
     }
 
-  if (mpWindowsActionGroup != NULL)
-    {
-      disconnect(mpWindowsActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slowFindWindowTriggered(QAction *)));
-      mpWindowsActionGroup->deleteLater();
-      mpWindowsActionGroup = NULL;
-    }
-
-  mpWindowsActionGroup = new QActionGroup(this);
-  connect(mpWindowsActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slowFindWindowTriggered(QAction *)));
-
-  QAction * pAction;
-
-  for (int index = 0; index < mWindows.count(); ++index)
+  // Add secondary windows to the Window menus
+  for (int index = 1; index < mWindows.count(); ++index)
     {
       QMainWindow* mActionWindow = mWindows[index];
 
@@ -1806,7 +1981,7 @@ void CopasiUI3Window::refreshWindowsMenu()
       pAction = new QAction(mWindows[index]->windowTitle(), mpWindowsActionGroup);
       mpWindowsMenu->addAction(pAction);
 
-      for (int index1 = 0; index1 < mWindows.count(); ++index1)
+      for (int index1 = 1; index1 < mWindows.count(); ++index1)
         {
           QMainWindow* mainWindow = mWindows[index1];
 
@@ -1821,7 +1996,8 @@ void CopasiUI3Window::refreshWindowsMenu()
 
 void CopasiUI3Window::slotCloseAllWindows()
 {
-  for (int index = mWindows.count() - 1; index >= 0 ; --index)
+                        // all except main window (index == 0)
+  for (int index = mWindows.count() - 1; index >= 1 ; --index)
     {
       QMainWindow* window = mWindows[index];
 
@@ -1832,7 +2008,7 @@ void CopasiUI3Window::slotCloseAllWindows()
   refreshWindowsMenu();
 }
 
-void CopasiUI3Window::slowFindWindowTriggered(QAction* action)
+void CopasiUI3Window::slotActivateWindowTriggered(QAction* action)
 {
   QMainWindow *window  = getWindowByTitle(mWindows, action->text());
 
@@ -1860,10 +2036,12 @@ void CopasiUI3Window::slotCheckModel()
   // MA.writeReport(ss, true, false);
   MA.writeReport(ss, true, true);
 
-  QTextEdit* pTE = new QTextEdit(FROM_UTF8(ss.str()));
-  pTE->setReadOnly(true);
-  pTE->resize(512, 640);
-  pTE->show();
+  CQCheckModelWindow * checkModelWindow = new CQCheckModelWindow(this);
+
+  checkModelWindow->setWindowTitle("Check Model");
+  checkModelWindow->textEdit->setText(FROM_UTF8(ss.str()));
+
+  checkModelWindow->show();
 }
 
 void CopasiUI3Window::slotUpdateMIRIAM()
@@ -2367,8 +2545,8 @@ void CopasiUI3Window::sbwSlotMenuTriggeredFinished(bool success)
     {
       try
         {
-          int nModule = SBWLowLevel::getModuleInstance(mSBWAnalyzerModules[mSBWActionId].ascii());
-          int nService = SBWLowLevel::moduleFindServiceByName(nModule, mSBWAnalyzerServices[mSBWActionId].ascii());
+          int nModule = SBWLowLevel::getModuleInstance(TO_UTF8(mSBWAnalyzerModules[mSBWActionId]));
+          int nService = SBWLowLevel::moduleFindServiceByName(nModule, TO_UTF8(mSBWAnalyzerServices[mSBWActionId]));
           int nMethod = SBWLowLevel::serviceGetMethod(nModule, nService, "void doAnalysis(string)");
 
           DataBlockWriter args;
@@ -2486,7 +2664,7 @@ void CopasiUI3Window::sbwSlotGetSBMLFinished(bool success)
 void CopasiUI3Window::customEvent(QEvent * /* event */) {}
 
 #endif // COPASI_SBW_INTEGRATION
-#include <QUrl>
+#include <QtCore/QUrl>
 void CopasiUI3Window::dragEnterEvent(QDragEnterEvent *event)
 {
   if (event->mimeData()->hasFormat("text/uri-list"))
@@ -2495,7 +2673,7 @@ void CopasiUI3Window::dragEnterEvent(QDragEnterEvent *event)
 
 /**
  * Utility function for guessing whether the file might
- * be an SBML file. If soit should contain an SBML tag in the
+ * be an SBML file. If so it should contain an SBML tag in the
  * first couple of lines.
  */
 bool isProabablySBML(QString &fileName)
@@ -2532,6 +2710,12 @@ void CopasiUI3Window::dropEvent(QDropEvent *event)
 
   if (isProabablySBML(fileName))
     slotImportSBML(fileName);
+
+#ifdef COPASI_SEDML
+  else if (isProabablySBML(fileName))
+    slotImportSEDML(fileName);
+
+#endif
   else
     slotFileOpen(fileName);
 }
@@ -2555,3 +2739,338 @@ void CopasiUI3Window::disableSliders(bool disable)
       this->mpSliders->updateAllSliders();
     }
 }
+
+//TODO SEDML
+#ifdef COPASI_SEDML
+
+/**
+ * Utility function for guessing whether the file might
+ * be an SEDML file. If soit should contain an SEDML tag in the
+ * first couple of lines.
+ */
+bool isProabablySEDML(QString &fileName)
+{
+  QFile file(fileName);
+
+  if (!file.open(QIODevice::ReadOnly))
+    return false;
+
+  for (int i = 0; i < 5; ++i)
+    {
+      QByteArray array = file.readLine();
+
+      if (QString(array).contains("<sedML"))
+        return true;
+    }
+
+  file.close();
+
+  return false;
+}
+
+void CopasiUI3Window::slotFileExamplesSEDMLFiles(QString file)
+{
+  CopasiFileDialog::openExampleDir(); //Sets CopasiFileDialog::LastDir
+  slotImportSEDML(file);
+}
+void CopasiUI3Window::slotImportSEDMLFromStringFinished(bool success)
+{
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSEDMLFromStringFinished(bool)));
+  unsetCursor();
+  mCommitRequired = true;
+
+  if (!success)
+    {
+      QString Message = "Error while importing SEDML model!\n\n";
+      Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
+
+      CQMessageBox::critical(this, QString("Import Error"), Message,
+                             QMessageBox::Ok, QMessageBox::Ok);
+      CCopasiMessage::clearDeque();
+
+      mpDataModelGUI->createModel();
+    }
+
+  /* still check for warnings.
+   * Maybe events or rules were ignored while reading
+   * the file.
+   */
+  if (success)
+    {
+      this->checkPendingMessages();
+    }
+
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
+                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+
+  //if (!bobject_browser_open)
+  //       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
+  //       msave_button->setEnabled(true);
+  //       mpFileMenu->setItemEnabled(nsave_menu_id, true);
+
+  mpListView->switchToOtherWidget(1, "");
+  CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
+
+  if (widget != NULL)
+    widget->selectTab(0);
+
+  updateTitle();
+
+  mSaveAsRequired = true;
+}
+
+void CopasiUI3Window::slotImportSEDMLFinished(bool success)
+{
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSEDMLFinished(bool)));
+  unsetCursor();
+  mCommitRequired = true;
+
+  if (!success)
+    {
+      QString Message = "Error while loading file " + mNewFile + QString("!\n\n");
+      Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
+
+      CQMessageBox::critical(this, QString("File Error"), Message,
+                             QMessageBox::Ok, QMessageBox::Ok);
+
+      mpDataModelGUI->createModel();
+    }
+  else
+    // We check in all case for warnings. This will help also for unsuccessful imports
+    this->checkPendingMessages();
+
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
+                         (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+
+  mpaSave->setEnabled(true);
+  mpaSaveAs->setEnabled(true);
+  mpaExportSEDML->setEnabled(true);
+//  mpaExportODE->setEnabled(true);
+
+  mpListView->switchToOtherWidget(1, "");
+  CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
+
+  if (widget != NULL)
+    widget->selectTab(0);
+
+  refreshRecentSEDMLFileMenu();
+
+  updateTitle();
+
+  mSaveAsRequired = true;
+
+  mNewFile = "";
+}
+void CopasiUI3Window::slotImportSEDML(QString file)
+{
+  disconnect(this, SIGNAL(signalLoadFile(QString)), this, SLOT(slotImportSEDML(QString)));
+
+  if (mCommitRequired)
+    {
+      mpDataModelGUI->commit();
+    }
+
+  QString SEDMLFile;
+
+  if (file == "")
+    SEDMLFile =
+      CopasiFileDialog::getOpenFileName(this, "Open File Dialog",
+                                        QString::null, "SEDML XML Files (*.xml);;All Files (*)",
+                                        "Choose a file");
+  else
+    SEDMLFile = file;
+
+  if (!SEDMLFile.isNull())
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
+      if (mpDataModelGUI && ((*CCopasiRootContainer::getDatamodelList())[0]->isChanged() || this->mpSliders->isChanged()))
+        {
+          switch (CQMessageBox::question(this, "COPASI",
+                                         "The document contains unsaved changes\n"
+                                         "Do you want to save the changes before exiting?",
+                                         QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
+                                         QMessageBox::Save))
+            {
+              case QMessageBox::Save:
+                connect(this, SIGNAL(signalLoadFile(QString)), this, SLOT(slotImportSEDML(QString)));
+
+                mNewFile = SEDMLFile;
+                mCommitRequired = false;
+
+                slotFileSave();
+                return;
+                break;
+
+              case QMessageBox::Discard:
+                break;
+
+              case QMessageBox::Cancel:
+              default:
+                return;
+                break;
+            }
+        }
+
+      mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
+                             (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getKey());
+
+      mpListView->switchToOtherWidget(0, "");
+
+      if (this->mpSliders) this->mpSliders->reset();
+
+      if (!mpDataModelGUI)
+        {
+          mpDataModelGUI = new DataModelGUI(this); // create a new data model
+        }
+
+      setCursor(Qt::WaitCursor);
+      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSEDMLFinished(bool)));
+
+      mNewFile = SEDMLFile;
+      mpDataModelGUI->importSEDML(TO_UTF8(SEDMLFile));
+    }
+}
+
+void CopasiUI3Window::refreshRecentSEDMLFileMenu()
+{
+  mpMenuRecentSEDMLFiles->clear();
+
+  mRecentSEDMLFilesActionMap.clear();
+
+  if (mpRecentSEDMLFilesActionGroup != NULL)
+    {
+      disconnect(mpRecentSEDMLFilesActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenRecentSEDMLFile(QAction *)));
+      mpRecentSEDMLFilesActionGroup->deleteLater();
+      mpRecentSEDMLFilesActionGroup = NULL;
+    }
+
+  mpRecentSEDMLFilesActionGroup = new QActionGroup(this);
+  connect(mpRecentSEDMLFilesActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenRecentSEDMLFile(QAction *)));
+
+  QAction * pAction;
+
+  CCopasiParameterGroup::index_iterator it =
+    CCopasiRootContainer::getConfiguration()->getRecentSEDMLFiles().getGroup("Recent Files")->beginIndex();
+  CCopasiParameterGroup::index_iterator end =
+    CCopasiRootContainer::getConfiguration()->getRecentSEDMLFiles().getGroup("Recent Files")->endIndex();
+
+  C_INT Index = 0;
+
+  for (; it != end; ++it, ++Index)
+    {
+      pAction = new QAction(FROM_UTF8(*(*it)->getValue().pSTRING), mpRecentSEDMLFilesActionGroup);
+      mpMenuRecentSEDMLFiles->addAction(pAction);
+      mRecentSEDMLFilesActionMap[pAction] = Index;
+    }
+}
+
+//TODO
+void CopasiUI3Window::exportSEDMLToString(std::string & SEDML)
+{
+  mpDataModelGUI->commit();
+
+  if (mpDataModelGUI)
+    {
+      setCursor(Qt::WaitCursor);
+      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportSEDMLToStringFinished(bool)));
+
+      mpDataModelGUI->exportSEDMLToString(SEDML);
+    }
+}
+
+void CopasiUI3Window::slotExportSEDMLToStringFinished(bool success)
+{
+  unsetCursor();
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportSEDMLToStringFinished(bool)));
+
+  if (!success)
+    {
+      QString Message = "Error while exporting SEDML model!\n\n";
+      Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
+
+      CQMessageBox::critical(this, QString("File Error"), Message,
+                             QMessageBox::Ok, QMessageBox::Ok);
+      CCopasiMessage::clearDeque();
+    }
+}
+
+void CopasiUI3Window::slotExportSEDMLFinished(bool /* success */)
+{
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportSEDMLFinished(bool)));
+  unsetCursor();
+
+  checkPendingMessages();
+  refreshRecentSEDMLFileMenu();
+}
+
+void CopasiUI3Window::slotExportSEDML()
+{
+  mpDataModelGUI->commit();
+
+  C_INT32 Answer = QMessageBox::No;
+  QString tmp;
+  bool exportIncomplete = false;
+  int sedmlLevel = 1;
+  int sedmlVersion = 1;
+
+  while (Answer == QMessageBox::No)
+    {
+      QString Default = QString::null;
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+
+      if ((*CCopasiRootContainer::getDatamodelList())[0]->getFileName() != "")
+        Default
+          = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                      + CDirEntry::Separator
+                      + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                      + ".xml");
+      else
+        {
+          Default = "untitled.xml";
+        }
+
+      // if there already is an SBML model, we present the user with the Level
+      // and Version of that document as the selected Level and Version to
+      // export to.
+      if ((*CCopasiRootContainer::getDatamodelList())[0]->getCurrentSEDMLDocument() != NULL)
+        {
+          sedmlLevel = (*CCopasiRootContainer::getDatamodelList())[0]->getCurrentSEDMLDocument()->getLevel();
+          sedmlVersion = (*CCopasiRootContainer::getDatamodelList())[0]->getCurrentSEDMLDocument()->getVersion();
+        }
+
+      std::pair<QString, std::pair<unsigned C_INT32, unsigned C_INT32> > nameAndVersion =
+        CQSEDMLFileDialog::getSaveFileName(this, "Export SEDML Dialog", Default,
+                                           "Choose a filename and SEDML version for SEDML export.",
+                                           sedmlLevel,
+                                           sedmlVersion);
+      tmp = nameAndVersion.first;
+      sedmlLevel = nameAndVersion.second.first;
+      sedmlVersion = nameAndVersion.second.second;
+
+      if (tmp.isEmpty()) return;
+
+      // Checks whether the file exists
+      Answer = checkSelection(tmp);
+
+      if (Answer == QMessageBox::Cancel) return;
+    }
+
+  if (mpDataModelGUI && !tmp.isNull())
+    {
+      setCursor(Qt::WaitCursor);
+      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportSEDMLFinished(bool)));
+      mpDataModelGUI->exportSEDML(TO_UTF8(tmp), true, sedmlLevel, sedmlVersion, exportIncomplete);
+    }
+}
+
+void CopasiUI3Window::slotOpenRecentSEDMLFile(QAction * pAction)
+{
+  int index = mRecentSEDMLFilesActionMap[pAction];
+
+  std::string FileName =
+    *CCopasiRootContainer::getConfiguration()->getRecentSEDMLFiles().getGroup("Recent Files")->getValue(index).pSTRING;
+
+  slotImportSEDML(FROM_UTF8(FileName));
+}
+#endif

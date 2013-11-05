@@ -221,5 +221,7 @@ private:
   CLinkMatrix mLinkZero;
 
   CMatrix< C_FLOAT64 > mReducedStoichiometry;
+
+  CMatrix< bool > mElasticityDependencies;
 };
 #endif // COPASI_CMca

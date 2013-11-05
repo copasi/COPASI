@@ -857,7 +857,7 @@ bool CMetab::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObjects) 
   return MustBeDeleted;
 }
 
-CCopasiObject * CMetab::getInitialConcentrationReference() const
+CConcentrationReference * CMetab::getInitialConcentrationReference() const
 {return mpIConcReference;}
 
 CConcentrationReference * CMetab::getConcentrationReference() const
@@ -1119,6 +1119,19 @@ CConcentrationReference::getDirectDependencies(const CCopasiObject::DataObjectSe
   return CCopasiObjectReference< C_FLOAT64 >::getDirectDependencies();
 }
 
+// virtual
+bool CConcentrationReference::isPrerequisiteForContext(const CObjectInterface * pObject,
+    const CMath::SimulationContextFlag & /* context */,
+    const CObjectInterface::ObjectSet & changedObjects) const
+{
+  // If the value is in the context, it does not depend on the object.
+  if (changedObjects.find(this) != changedObjects.end())
+    return false;
+
+  // Densities which are not in the context have to be recalculated.
+  return true;
+}
+
 Refresh * CConcentrationReference::getApplyInitialValueRefresh() const
 {
   return mpApplyInitialValuesRefresh;
@@ -1130,7 +1143,8 @@ CCopasiObject::DataObjectSet CParticleReference::EmptyDependencies;
 CParticleReference::CParticleReference(const std::string & name,
                                        const CCopasiContainer * pParent,
                                        C_FLOAT64 & reference) :
-  CCopasiObjectReference< C_FLOAT64 >(name, pParent, reference)
+  CCopasiObjectReference< C_FLOAT64 >(name, pParent, reference),
+  mPrerequisites()
 {}
 
 CParticleReference::CParticleReference(const CParticleReference & src,
@@ -1186,4 +1200,57 @@ CParticleReference::getDirectDependencies(const CCopasiObject::DataObjectSet & c
     }
 
   return EmptyDependencies;
+}
+
+// virtual
+const CObjectInterface::ObjectSet & CParticleReference::getPrerequisites() const
+{
+  mPrerequisites = * reinterpret_cast< const CObjectInterface::ObjectSet * >(&CCopasiObjectReference< C_FLOAT64 >::getDirectDependencies());
+  const CMoiety * pMoiety = static_cast< const CMetab * >(getObjectParent())->getMoiety();
+
+  if (pMoiety != NULL)
+    {
+      mPrerequisites.insert(pMoiety->getDependentNumberReference());
+    }
+
+  return mPrerequisites;
+}
+
+// virtual
+bool CParticleReference::isPrerequisiteForContext(const CObjectInterface * pObject,
+    const CMath::SimulationContextFlag & context ,
+    const CObjectInterface::ObjectSet & changedObjects) const
+{
+  const CMetab * pSpecies = static_cast< const CMetab * >(getObjectParent());
+
+  if ((context & CMath::UseMoieties) &&
+      pSpecies->isDependent())
+    {
+      return true;
+    }
+
+  // If the value is changed it must not be recalculated, i.e., it does not depend on the object.
+  if (changedObjects.find(this) != changedObjects.end())
+    return false;
+
+  // Amounts which are determine by assignment need to be recalculated.
+  if (pSpecies->getStatus() == CModelEntity::ASSIGNMENT)
+    return true;
+
+  const CConcentrationReference * pConcentrationReference = NULL;
+
+  if (getObjectName() != "ParticleNumber")
+    {
+      pConcentrationReference = pSpecies->getInitialConcentrationReference();
+    }
+  else
+    {
+      pConcentrationReference = pSpecies->getConcentrationReference();
+    }
+
+  // If the concentration was changed in the context we need to recalculate.
+  if (changedObjects.find(pConcentrationReference) != changedObjects.end())
+    return true;
+
+  return false;
 }

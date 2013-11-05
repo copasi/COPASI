@@ -1,32 +1,24 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-//   $Revision: 1.27 $
-//   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2011/08/01 17:11:33 $
-// End CVS Header
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
-#include "qpushbutton.h"
-#include "qcheckbox.h"
-#include "qlayout.h"
-#include <qcombobox.h>
+#include <QtGui/QPushButton>
+#include <QtGui/QCheckBox>
+#include <QtGui/QLayout>
+#include <QtGui/QComboBox>
 //Added by qt3to4:
-#include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QVBoxLayout>
 
 #include "CCopasiSelectionDialog.h"
 #include "CCopasiSelectionWidget.h"
@@ -43,17 +35,17 @@
 #include "CQMessageBox.h"
 
 CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * name , bool modal):
-    QDialog(parent),
-    mpOKButton(NULL),
-    mpCancelButton(NULL),
-    mpModeCheckBox(NULL),
-    mpButtonBox(NULL),
-    mpMainWidget(NULL),
-    mpMainLayout(NULL),
-    mpTmpVector(new std::vector< const CCopasiObject * >()),
-    mpOutputVector(NULL),
-    mExpertMode(false),
-    mExpertModeEnabled(true)
+  QDialog(parent),
+  mpOKButton(NULL),
+  mpCancelButton(NULL),
+  mpModeCheckBox(NULL),
+  mpButtonBox(NULL),
+  mpMainWidget(NULL),
+  mpMainLayout(NULL),
+  mpTmpVector(new std::vector< const CCopasiObject * >()),
+  mpOutputVector(NULL),
+  mExpertMode(false),
+  mExpertModeEnabled(true)
 {
   setObjectName(QString::fromUtf8(name));
   setModal(modal);
@@ -164,6 +156,7 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
 
   CCopasiSelectionDialog * pDialog = new CCopasiSelectionDialog(parent);
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  pDialog->setWindowTitle("Select Item");
   pDialog->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), classes);
   pDialog->setSingleSelection(true);
   pDialog->setOutputVector(&Selection);
@@ -202,6 +195,8 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
     Selection = *pCurrentSelection;
 
   CCopasiSelectionDialog * pDialog = new CCopasiSelectionDialog(parent);
+  pDialog->setWindowTitle("Select Items");
+  pDialog->setToolTip("Select multiple items by holding down the Ctrl or Shift (or equivalent) key.");
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   pDialog->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel(), classes);
   pDialog->setSingleSelection(false);

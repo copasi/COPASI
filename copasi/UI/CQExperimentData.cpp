@@ -20,8 +20,8 @@
 #include <algorithm>
 #include <limits>
 #include <cmath>
-#include <qsignalmapper.h>
-#include <qcombobox.h>
+#include <QtCore/QSignalMapper>
+#include <QtGui/QComboBox>
 
 #include "copasi.h"
 
@@ -659,8 +659,6 @@ void CQExperimentData::slotOK()
   for (i = 0; i < mpExperimentSetCopy->getExperimentCount(); i++)
     mpExperimentSet->addExperiment(*mpExperimentSetCopy->getExperiment(i));
 
-#ifdef COPASI_CROSSVALIDATION
-
   if (mCrossValidation)
     {
       CCrossValidationSet * pSet = static_cast< CCrossValidationSet * >(mpExperimentSet);
@@ -676,8 +674,6 @@ void CQExperimentData::slotOK()
         }
     }
 
-#endif // COPASI_CROSSVALIDATION
-
   pdelete(mpExperimentSetCopy);
   accept();
 }
@@ -686,9 +682,7 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet, CCopasiDataModel * 
 {
   mpDataModel = pDataModel;
 
-#ifdef COPASI_CROSSVALIDATION
   mCrossValidation = (dynamic_cast< CCrossValidationSet * >(pExperimentSet) != NULL);
-#endif // COPASI_CROSSVALIDATION
 
   if (mCrossValidation)
     {
@@ -699,10 +693,8 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet, CCopasiDataModel * 
       mpEditThreshold->show();
       mpLineCrossValidation->show();
 
-#ifdef COPASI_CROSSVALIDATION
       mpEditWeight->setText(QString::number(static_cast< CCrossValidationSet * >(pExperimentSet)->getWeight()));
       mpEditThreshold->setText(QString::number(static_cast< CCrossValidationSet * >(pExperimentSet)->getThreshold()));
-#endif // COPASI_CROSSVALIDATION
     }
   else
     {
@@ -724,12 +716,8 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet, CCopasiDataModel * 
 
   mpExperimentSetCopy = new CExperimentSet(*pExperimentSet);
 
-#ifdef COPASI_CROSSVALIDATION
-
   if (mCrossValidation)
     mpExperimentSetCopy = elevate< CCrossValidationSet, CExperimentSet >(mpExperimentSetCopy);
-
-#endif // COPASI_CROSSVALIDATION
 
   pdelete(mpFileInfo);
   mpFileInfo = new CExperimentFileInfo(*mpExperimentSetCopy);
@@ -1090,7 +1078,7 @@ void CQExperimentData::slotModelObject(const QModelIndex & index)
 void CQExperimentData::selectModelObject(const int & row)
 {
   CQSimpleSelectionTree::ObjectClasses Classes;
-  CExperiment::Type Type = static_cast< CExperiment::Type >(mpTable->item(row, COL_TYPE_HIDDEN)->data(Qt::DisplayRole).asInt());
+  CExperiment::Type Type = static_cast< CExperiment::Type >(mpTable->item(row, COL_TYPE_HIDDEN)->data(Qt::DisplayRole).toInt());
 
   if (Type == CExperiment::independent)
     Classes =
@@ -1110,6 +1098,8 @@ void CQExperimentData::selectModelObject(const int & row)
       mpTable->item(row, COL_OBJECT)->setText(FROM_UTF8(pObject->getObjectDisplayName()));
       mpTable->item(row, COL_OBJECT_HIDDEN)->setText(FROM_UTF8(pObject->getCN()));
     }
+
+  updateScales();
 }
 
 void CQExperimentData::slotModelObjectDelayed()
@@ -1137,22 +1127,58 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
   pExperiment->readColumnNames();
   const std::vector<std::string> & ColumnNames = pExperiment->getColumnNames();
 
+  size_t OldRowCount = mpTable->rowCount();
   size_t i, imax = ColumnNames.size();
   mpTable->setRowCount((int)(imax));
+
   CExperimentObjectMap & ObjectMap = pExperiment->getObjectMap();
   const CCopasiObject *pObject;
   CExperiment::Type Type;
-  QTableWidgetItem *pItem;
+  QTableWidgetItem *pItem = NULL;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiDataModel *pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   assert(pDataModel != NULL);
 
   for (i = 0; i < imax; i++)
     {
+      // Check whether we need to allocate table items.
+      if (OldRowCount <= i)
+        {
+          // COL_NAME
+          pItem = new QTableWidgetItem();
+          pItem->setFlags(pItem->flags() & ~Qt::ItemIsEditable);
+          mpTable->setItem((int) i, COL_NAME, pItem);
+
+          // COL_TYPE
+          pItem = new QTableWidgetItem();
+          mpTable->setItem((int) i, COL_TYPE, pItem);
+
+          // COL_TYPE_HIDDEN
+          pItem = new QTableWidgetItem();
+          pItem->setFlags(pItem->flags() & ~Qt::ItemIsEditable);
+          mpTable->setItem((int) i, COL_TYPE_HIDDEN, pItem);
+
+          // COL_BTN
+          pItem = new QTableWidgetItem();
+          mpTable->setItem(i, COL_BTN, pItem);
+
+          // COL_OBJECT
+          pItem = new QTableWidgetItem();
+          pItem->setFlags(pItem->flags() & ~Qt::ItemIsEditable);
+          mpTable->setItem((int) i, COL_OBJECT, pItem);
+
+          // COL_OBJECT_HIDDEN
+          pItem = new QTableWidgetItem();
+          pItem->setFlags(pItem->flags() & ~Qt::ItemIsEditable);
+          mpTable->setItem((int) i, COL_OBJECT_HIDDEN, pItem);
+
+          // COL_SCALE
+          pItem = new QTableWidgetItem("");
+          mpTable->setItem((int) i, COL_SCALE, pItem);
+        }
+
       // COL_NAME
-      pItem = new QTableWidgetItem(FROM_UTF8(ColumnNames[i]));
-      pItem->setFlags(pItem->flags() & ~Qt::ItemIsEditable);
-      mpTable->setItem((int) i, COL_NAME, pItem);
+      mpTable->item((int) i, COL_NAME)->setText(FROM_UTF8(ColumnNames[i]));
 
       // COL_TYPE
       if (guess && TimeRow == C_INVALID_INDEX &&
@@ -1166,21 +1192,15 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 
       if (Type == CExperiment::time) TimeRow = i;
 
-      pItem = new QTableWidgetItem(FROM_UTF8(CExperiment::TypeName[Type]));
-      mpTable->setItem((int) i, COL_TYPE, pItem);
+      mpTable->item((int) i, COL_TYPE)->setText(FROM_UTF8(CExperiment::TypeName[Type]));
 
       // COL_TYPE_HIDDEN
-      pItem = new QTableWidgetItem(QString::number(Type));
-      pItem->setFlags(pItem->flags() & ~Qt::ItemIsEditable);
-      mpTable->setItem((int) i, COL_TYPE_HIDDEN, pItem);
+      mpTable->item((int) i, COL_TYPE_HIDDEN)->setText(QString::number(Type));
 
       // COL_BTN
-      pItem = new QTableWidgetItem("");
-      mpTable->setItem(i, COL_BTN, pItem);
-
-      // Show the Button
       pItem = mpTable->item(i, COL_BTN);
 
+      // Show the Button
       if (Type == CExperiment::ignore || Type == CExperiment::time)
         {
           pItem->setFlags(pItem->flags() & ~Qt::ItemIsEditable & ~Qt::ItemIsEnabled);
@@ -1200,32 +1220,24 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
           pObject = pDataModel->getDataObject(ObjectMap.getObjectCN(i));
 
           if (pObject)
-            pItem = new QTableWidgetItem(FROM_UTF8(pObject->getObjectDisplayName()));
+            mpTable->item((int) i, COL_OBJECT)->setText(FROM_UTF8(pObject->getObjectDisplayName()));
           else
-            pItem = new QTableWidgetItem("not found");
+            mpTable->item((int) i, COL_OBJECT)->setText("not found");
 
-          pItem->setFlags(pItem->flags() & ~Qt::ItemIsEditable);
-          mpTable->setItem((int) i, COL_OBJECT, pItem);
-
-          pItem = new QTableWidgetItem(FROM_UTF8(ObjectMap.getObjectCN(i)));
-          pItem->setFlags(pItem->flags() & ~Qt::ItemIsEditable);
-          mpTable->setItem((int) i, COL_OBJECT_HIDDEN, pItem);
+          mpTable->item((int) i, COL_OBJECT_HIDDEN)->setText(FROM_UTF8(ObjectMap.getObjectCN(i)));
         }
       else
         {
-          pItem = new QTableWidgetItem("");
-          pItem->setFlags(pItem->flags() & ~Qt::ItemIsEditable);
-          mpTable->setItem((int) i, COL_OBJECT, pItem);
-
-          pItem = new QTableWidgetItem("");
-          pItem->setFlags(pItem->flags() & ~Qt::ItemIsEditable);
-          mpTable->setItem((int) i, COL_OBJECT_HIDDEN, pItem);
+          mpTable->item((int) i, COL_OBJECT)->setText("");
+          mpTable->item((int) i, COL_OBJECT_HIDDEN)->setText("");
         }
+
+      // COL_SCALE
+      pItem = mpTable->item((int) i, COL_SCALE);
 
       if (Type != CExperiment::dependent)
         {
-          pItem = new QTableWidgetItem("");
-          mpTable->setItem((int) i, COL_SCALE, pItem);
+          pItem->setText("");
           pItem->setFlags(pItem->flags() & ~Qt::ItemIsEditable);
         }
       else
@@ -1242,8 +1254,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
           else
             ScaleText = QString::number(Scale);
 
-          pItem = new QTableWidgetItem(ScaleText);
-          mpTable->setItem((int) i, COL_SCALE, pItem);
+          pItem->setText(ScaleText);
           pItem->setFlags(pItem->flags() & ~FlagMask);
         }
     }
@@ -1257,12 +1268,15 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 void CQExperimentData::slotTypeChanged(int row, int index)
 {
   CExperiment::Type NewType = static_cast<CExperiment::Type>(index);
-  CExperiment::Type OldType = static_cast<CExperiment::Type>(mpTable->item(row, COL_TYPE_HIDDEN)->data(Qt::DisplayRole).asInt());
+  CExperiment::Type OldType = static_cast<CExperiment::Type>(mpTable->item(row, COL_TYPE_HIDDEN)->data(Qt::DisplayRole).toInt());
 
   if (OldType == NewType) return;
 
   bool BtnEnabled = true;
-  C_INT32 i, imax = mpTable->rowCount();
+  //C_INT32 i, imax = mpTable->rowCount();
+
+  mpTable->item(row, COL_TYPE)->setText(QString(FROM_UTF8(CExperiment::TypeName[NewType])));
+  mpTable->item(row, COL_TYPE_HIDDEN)->setText(QString::number(NewType));
 
   CCopasiObjectName CN = CCopasiObjectName(TO_UTF8(mpTable->item(row, COL_OBJECT_HIDDEN)->text()));
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
@@ -1282,6 +1296,7 @@ void CQExperimentData::slotTypeChanged(int row, int index)
                                            pDataModel->getDataObject(CN)))
           {
             mModelObjectRow = row;
+            // slotModelObject(row);
             QTimer::singleShot(10, this, SLOT(slotModelObjectDelayed()));
           }
 
@@ -1295,6 +1310,7 @@ void CQExperimentData::slotTypeChanged(int row, int index)
                                            pDataModel->getDataObject(CN)))
           {
             mModelObjectRow = row;
+            // slotModelObject(row);
             QTimer::singleShot(10, this, SLOT(slotModelObjectDelayed()));
           }
 
@@ -1333,58 +1349,62 @@ void CQExperimentData::slotTypeChanged(int row, int index)
         break;
     }
 
-  mpTable->item(row, COL_TYPE)->setText(FROM_UTF8(CExperiment::TypeName[NewType]));
-  mpTable->item(row, COL_TYPE_HIDDEN)->setText(QString::number(NewType));
-
   // The default weights need to be recalculated and the table updated if the type change
   // involves dependent values.
   if (OldType == CExperiment::dependent ||
       NewType == CExperiment::dependent)
     {
-      saveExperiment(mpExperiment, true);
-
-      // Since the interpretation of the data has changed we need read the file again
-      std::ifstream File;
-      File.open(CLocaleString::fromUtf8(mpExperiment->getFileName()).c_str());
-
-      size_t CurrentLine = 1;
-      mpExperiment->read(File, CurrentLine);
-      mpExperiment->compile();
-
-      // We can not simply use loadTable as this would destroy the two signal maps
-      // for the buttons and comboboxes leading to crashes in Qt.
-      CExperimentObjectMap & ObjectMap = mpExperiment->getObjectMap();
-
-      for (i = 0; i < imax; i++)
-        {
-          QTableWidgetItem * pItem = mpTable->item(i, COL_SCALE);
-
-          // COL_SCALE
-          if (ObjectMap.getRole(i) != CExperiment::dependent)
-            {
-              pItem->setText("");
-              pItem->setFlags(pItem->flags() & ~Qt::ItemIsEditable);
-            }
-          else
-            {
-              QString ScaleText = pItem->text();
-
-              // Keep non default values
-              if (ScaleText == "" || ScaleText[0] == '(')
-                {
-
-                  C_FLOAT64 DefaultWeight = ObjectMap.getDefaultScale(i);
-
-                  ScaleText = "(" + QString::number(DefaultWeight) + ")";
-                  pItem->setText(ScaleText);
-                }
-
-              pItem->setFlags(pItem->flags() | Qt::ItemIsEditable);
-            }
-        }
+      updateScales();
     }
 
   return;
+}
+
+void CQExperimentData::updateScales()
+{
+  saveExperiment(mpExperiment, true);
+
+  // Since the interpretation of the data has changed we need read the file again
+  std::ifstream File;
+  File.open(CLocaleString::fromUtf8(mpExperiment->getFileName()).c_str());
+
+  size_t CurrentLine = 1;
+  mpExperiment->read(File, CurrentLine);
+  mpExperiment->compile();
+
+  // We can not simply use loadTable as this would destroy the two signal maps
+  // for the buttons and comboboxes leading to crashes in Qt.
+  CExperimentObjectMap & ObjectMap = mpExperiment->getObjectMap();
+
+  C_INT32 i, imax = mpTable->rowCount();
+
+  for (i = 0; i < imax; i++)
+    {
+      QTableWidgetItem * pItem = mpTable->item(i, COL_SCALE);
+
+      // COL_SCALE
+      if (ObjectMap.getRole(i) != CExperiment::dependent)
+        {
+          pItem->setText("");
+          pItem->setFlags(pItem->flags() & ~Qt::ItemIsEditable);
+        }
+      else
+        {
+          QString ScaleText = pItem->text();
+
+          // Keep non default values
+          if (ScaleText == "" || ScaleText[0] == '(')
+            {
+
+              C_FLOAT64 DefaultWeight = ObjectMap.getDefaultScale(i);
+
+              ScaleText = "(" + QString::number(DefaultWeight) + ")";
+              pItem->setText(ScaleText);
+            }
+
+          pItem->setFlags(pItem->flags() | Qt::ItemIsEditable);
+        }
+    }
 }
 
 void CQExperimentData::slotSeparator()
@@ -1449,17 +1469,6 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
     }
 
   pExperiment->updateFittedPoints();
-
-  if (!FoundTime &&
-      pExperiment->getExperimentType() == CCopasiTask::timeCourse &&
-      pExperiment == mpExperiment)
-    {
-      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 3, mpExperiment->getObjectName().c_str());
-
-      CQMessageBox::information(this, "Specification Error", FROM_UTF8(CCopasiMessage::getAllMessageText()),
-                                QMessageBox::Ok, QMessageBox::Ok);
-      CCopasiMessage::clearDeque();
-    }
 
   return Changed;
 }

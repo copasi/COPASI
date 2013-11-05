@@ -70,7 +70,7 @@ QVariant CQEFMSpeciesDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      std::vector< CFluxMode >::const_iterator itMode = mBeginModes + index.row();
+      //std::vector< CFluxMode >::const_iterator itMode = mBeginModes + index.row();
 
       switch (index.column())
         {

@@ -5,17 +5,17 @@
 
 #include "CQAutolayoutWizard.h"
 
-#include <QCheckBox>
-#include <QFrame>
-#include <QLabel>
-#include <QList>
-#include <QListWidget>
-#include <QMessageBox>
-#include <QPushButton>
-#include <QString>
-#include <QStringList>
-#include <QTreeWidget>
-#include <QVBoxLayout>
+#include <QtGui/QCheckBox>
+#include <QtGui/QFrame>
+#include <QtGui/QLabel>
+#include <QtCore/QList>
+#include <QtGui/QListWidget>
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
+#include <QtGui/QTreeWidget>
+#include <QtGui/QVBoxLayout>
 
 #include <assert.h>
 #include <map>

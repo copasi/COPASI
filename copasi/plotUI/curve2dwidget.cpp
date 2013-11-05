@@ -3,7 +3,7 @@
 // of Manchester.
 // All rights reserved.
 
-#include <qpainter.h>
+#include <QtGui/QPainter>
 #include "curve2dwidget.h"
 #include "CQPlotEditWidget.h"
 
@@ -42,7 +42,27 @@ Curve2DWidget::~Curve2DWidget()
 
 bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
 {
-  if (!curve) return false;
+  if (!curve)
+    {
+      // We need to reset the widget to defaults
+      mpEditTitle->setText("");
+
+      mpObjectX = NULL;
+      mpEditX->setText("");
+
+      mpObjectY = NULL;
+      mpEditY->setText("");
+
+      mpBoxType->setCurrentIndex(0);
+      mpBoxLineSubType->setCurrentIndex(0);
+      mpBoxColor->clear();
+
+      mpCheckBefore->setChecked(false);
+      mpCheckDuring->setChecked(true);
+      mpCheckAfter->setChecked(false);
+
+      return true;
+    }
 
   if (curve->getType() != CPlotItem::curve2d) return false;
 
@@ -324,7 +344,6 @@ void Curve2DWidget::typeChanged(int linetype)
     }
 }
 
-#if USE_NEW_PLOTSUBWIDGET
 /**
  * In multiple edit mode, we don't want to edit name & channels
  */
@@ -336,4 +355,3 @@ void Curve2DWidget::setMultipleEditMode(bool mode)
   mpBtnX->setEnabled(!mode);
   mpBtnY->setEnabled(!mode);
 }
-#endif

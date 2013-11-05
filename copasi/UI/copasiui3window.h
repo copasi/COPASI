@@ -1,36 +1,36 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <string>
 
-#include <QMainWindow>
-#include <QModelIndex>
-#include <QMap>
-#include <qpointer.h>
+#include <QtGui/QMainWindow>
+#include <QtCore/QModelIndex>
+#include <QtCore/QMap>
+#include <QtCore/QPointer>
 
 #ifdef COPASI_SBW_INTEGRATION
-#include <QApplication>
-#include <QEvent>
-#include <QMutex>
-#include <QWaitCondition>
+# include <QtGui/QApplication>
+# include <QtCore/QEvent>
+# include <QtCore/QMutex>
+# include <QtCore/QWaitCondition>
 
-#define WIN32_LEAN_AND_MEAN
-#include <SBW/SBW.h>
-#undef DELETE
-#undef ERROR
-#undef TRUE
-#undef FALSE
+# define WIN32_LEAN_AND_MEAN
+# include <SBW/SBW.h>
+# undef DELETE
+# undef ERROR
+# undef TRUE
+# undef FALSE
 using namespace SystemsBiologyWorkbench;
 #else
 class SBWListener;
@@ -94,6 +94,18 @@ public:
 
   void exportSBMLToString(std::string & SBML);
 
+  //TODO SEDML
+#ifdef COPASI_SEDML
+  /**
+  * This is used to import an SEDML file from a std::string in the GUI
+  * it does all the necessary GUI stuff like asking to save the old
+  * document, displaying messages, etc.
+  */
+  void importSEDMLFromString(const std::string & sedmlDocumentText);
+
+  void exportSEDMLToString(std::string & SEDML);
+#endif
+
   void addWindow(QMainWindow * pWindow);
   void removeWindow(QMainWindow * pWindow);
 
@@ -141,6 +153,8 @@ protected slots:
   void slotFileSave();
   void slotFileSaveAs(QString str = QString::null);
   void slotFileSaveFinished(bool success);
+  void slotFunctionDBSave(QString str = QString::null);
+  void slotFunctionDBLoad(QString str = QString::null);
   void newDoc();
   void slotFilePrint();
   void slotImportSBML(QString file = QString::null);
@@ -172,7 +186,7 @@ protected slots:
   void slotFontSelection();
 
   void slotCloseAllWindows();
-  void slowFindWindowTriggered(QAction* action);
+  void slotActivateWindowTriggered(QAction* action);
 
 #ifdef WITH_MERGEMODEL
   void slotAddFileOpen(QString file = QString::null);
@@ -188,6 +202,18 @@ protected slots:
    * Otherwise the QAction will not be up to date.
    */
   void slotShowObjectBrowserDialog(bool flag);
+
+  //TODO SEDML
+#ifdef COPASI_SEDML
+  void slotFileExamplesSEDMLFiles(QString file = QString::null);
+  void slotImportSEDML(QString file = QString::null);
+  void slotImportSEDMLFinished(bool success);
+  void slotImportSEDMLFromStringFinished(bool success);
+  void slotExportSEDML();
+  void slotExportSEDMLFinished(bool success);
+  void slotExportSEDMLToStringFinished(bool success);
+  void slotOpenRecentSEDMLFile(QAction * pAction);
+#endif
 
 private:
   CopasiUI3Window();
@@ -214,6 +240,8 @@ private:
   QAction* mpaOpenSBMLFiles;
   QAction* mpaSave;
   QAction* mpaSaveAs;
+  QAction* mpaFunctionDBSave;
+  QAction* mpaFunctionDBLoad;
   QAction* mpaImportSBML;
   QAction* mpaExportSBML;
   QAction* mpaExportODE;
@@ -270,6 +298,18 @@ private:
   QList< QPointer<QMainWindow> > mWindows;
 
   static CopasiUI3Window * pMainWindow;
+
+  //TODO SEDML
+#ifdef COPASI_SEDML
+  QMenu * mpMenuSEDMLSupport;
+  QAction* mpaImportSEDML;
+  QAction* mpaExportSEDML;
+  QAction* mpaOpenSEDMLFiles;
+  QMenu * mpMenuRecentSEDMLFiles;
+  QMap< QAction *, int > mRecentSEDMLFilesActionMap;
+  QActionGroup * mpRecentSEDMLFilesActionGroup;
+  void refreshRecentSEDMLFileMenu();
+#endif
 
 #ifdef COPASI_SBW_INTEGRATION
 public:

@@ -1,24 +1,16 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQFontRenderer.cpp,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:51:17 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #include "CQFontRenderer.h"
 
-#include <QStringList>
-#include <QFontMetrics>
-#include <QImage>
-#include <QPaintEngine>
-#include <QGLWidget>
-#include <QPainterPath>
+#include <QtCore/QStringList>
+#include <QtGui/QFontMetrics>
+#include <QtGui/QImage>
+#include <QtGui/QPaintEngine>
+#include <QtOpenGL/QGLWidget>
+#include <QtGui/QPainterPath>
 
 #include <string.h>
 #include <cmath>
@@ -386,13 +378,13 @@ std::pair<CLTextTextureSpec*, GLubyte*> CQFontRenderer::getTexture(QFont& font, 
           pSpec->mTextureHeight = height;
         }
 
-      textureData = new GLubyte[width*height];
+      textureData = new GLubyte[width * height];
       pSpec->mAscent = (double)fontMetrics.ascent();
       unsigned int i, iMax = width * height;
 
       for (i = 0; i < iMax; ++i)
         {
-          textureData[i] = image.bits()[4*i];
+          textureData[i] = image.bits()[4 * i];
         }
     }
 

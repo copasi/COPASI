@@ -107,14 +107,11 @@
 # define ios_base ios
 #endif
 
-#if (defined USE_MKL || defined USE_SUNPERF || ((defined Darwin || defined USE_LAPACK ) && defined __LP64__))
+// for compatibility with default CLAPACK f2c
+#if ((defined __LP64__) && (!(defined HAVE_CLAPACK_H) || (defined Darwin)))
 # define C_INT int
 #else
-# if (defined USE_CLAPACK || defined USE_LAPACK || defined Darwin || defined __x86_64)
-#  define C_INT long
-# else
-#  error Neither USE_CLAPACK, USE_LAPACK, USE_SUNPERF, or USE_MKL is defined!
-# endif
+# define C_INT long
 #endif
 
 enum TriLogic
@@ -146,11 +143,11 @@ QMutex * pCopasiGuiMutex = NULL;
 /* Define Constructor/Destructor Trace */
 #ifdef COPASI_DEBUG_TRACE
 # include <time.h>
-# include <sys/timeb.h>
+# include <sys/time.h>
 
 # ifdef COPASI_MAIN
 #  ifndef Darwin
-struct timeb C_init_time;
+timeval C_init_time;
 unsigned C_INT32 C_last_time = 0;
 unsigned C_INT32 C_this_time;
 #  endif // !Darwin
@@ -158,7 +155,7 @@ std::ofstream DebugFile("trace");
 # else // not COPASI_MAIN
 #  include <fstream>
 #  ifndef Darwin
-extern struct timeb C_init_time;
+extern timeval C_init_time;
 extern unsigned C_INT32 C_last_time;
 extern unsigned C_INT32 C_this_time;
 #  endif // !Darwin
@@ -168,8 +165,8 @@ extern std::ofstream DebugFile;
 # ifndef Darwin
 #  include <iostream>
 #  define TIME_TRACE(f, l) {\
-    ftime(&C_init_time); \
-    C_this_time = C_init_time.time * 1000 + C_init_time.millitm; \
+    gettimeofday(&C_init_time, NULL); \
+    C_this_time = C_init_time.tv_sec * 1000 + C_init_time.tv_usec; \
     DebugFile << f <<"(" << l << "):\t" << C_this_time - C_last_time  << std::endl; \
     C_last_time = C_this_time;\
   }

@@ -90,15 +90,13 @@ void CScanWidgetTask::load(const CScanProblem * pg)
         n = 7;
         break;
 
-#ifdef COPASI_NONLIN_DYN
-
       case CCopasiTask::crosssection:
         n = 8;
         break;
-#endif
-        case CCopasiTask::tssAnalysis:
-          n = 9;
-          break;
+
+      case CCopasiTask::tssAnalysis:
+        n = 9;
+        break;
 
       default:
         n = 0;
@@ -156,15 +154,13 @@ bool CScanWidgetTask::save(CScanProblem * pg) const
         Type = CCopasiTask::lna;
         break;
 
-#ifdef COPASI_NONLIN_DYN
-
       case 8:
         Type = CCopasiTask::crosssection;
         break;
-#endif
-        case 9:
-          Type = CCopasiTask::tssAnalysis;
-          break;
+
+      case 9:
+        Type = CCopasiTask::tssAnalysis;
+        break;
 
       default :
         Type = CCopasiTask::steadyState;
@@ -197,9 +193,7 @@ void CScanWidgetTask::typeChanged(int n)
   switch (n)
     {
       case 1:
-#if COPASI_NONLIN_DYN
       case 8:
-#endif
         checkOutput->setChecked(true);
         break;
 

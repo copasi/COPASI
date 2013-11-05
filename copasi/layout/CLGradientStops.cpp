@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGradientStops.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:51:16 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,13 +12,13 @@
 #include "copasi/layout/CLRelAbsVector.h"
 
 CLGradientStops::CLGradientStops(const CLGradientBase* pGradient, const std::map<std::string, CLRGBAColor>& colormap)
-    : mSpreadMethod(pGradient->getSpreadMethod()), mColorData(NULL), mIndex(0), mHelp(0.0)
+  : mSpreadMethod(pGradient->getSpreadMethod()), mColorData(NULL), mIndex(0), mHelp(0.0)
 {
   size_t i, iMax = pGradient->getNumGradientStops();
 
   if (iMax > 0)
     {
-      this->mColorData = new unsigned char[4*iMax];
+      this->mColorData = new unsigned char[4 * iMax];
       this->mIndex = 0;
       const CLGradientStop* pStop = NULL;
       std::string stopColor;
@@ -142,10 +134,10 @@ void CLGradientStops::update_color(double val)
           // we need to calculate the exact color value from mTmp and mCurrentPosition
           //v=this->mTmp->first;
           mHelp = (val - this->mCurrentPosition->first) / (this->mTmp->first - this->mCurrentPosition->first);
-          this->mColor.mR += (GLubyte)(mHelp * (double)(this->mColorData[++this->mIndex] - this->mColor.mR));
-          this->mColor.mG += (GLubyte)(mHelp * (double)(this->mColorData[++this->mIndex] - this->mColor.mG));
-          this->mColor.mB += (GLubyte)(mHelp * (double)(this->mColorData[++this->mIndex] - this->mColor.mB));
-          this->mColor.mA += (GLubyte)(mHelp * (double)(this->mColorData[++this->mIndex] - this->mColor.mA));
+          this->mColor.mR += (unsigned char)(mHelp * (double)(this->mColorData[++this->mIndex] - this->mColor.mR));
+          this->mColor.mG += (unsigned char)(mHelp * (double)(this->mColorData[++this->mIndex] - this->mColor.mG));
+          this->mColor.mB += (unsigned char)(mHelp * (double)(this->mColorData[++this->mIndex] - this->mColor.mB));
+          this->mColor.mA += (unsigned char)(mHelp * (double)(this->mColorData[++this->mIndex] - this->mColor.mA));
         }
     }
   else
@@ -171,10 +163,10 @@ void CLGradientStops::update_color(double val)
           ++this->mTmp;
           //v=this->mTmp->first;
           mHelp = (val - this->mCurrentPosition->first) / (this->mTmp->first - this->mCurrentPosition->first);
-          this->mColor.mR += (GLubyte)(mHelp * (double)(this->mColorData[++this->mIndex] - this->mColor.mR));
-          this->mColor.mG += (GLubyte)(mHelp * (double)(this->mColorData[++this->mIndex] - this->mColor.mG));
-          this->mColor.mB += (GLubyte)(mHelp * (double)(this->mColorData[++this->mIndex] - this->mColor.mB));
-          this->mColor.mA += (GLubyte)(mHelp * (double)(this->mColorData[++this->mIndex] - this->mColor.mA));
+          this->mColor.mR += (unsigned char)(mHelp * (double)(this->mColorData[++this->mIndex] - this->mColor.mR));
+          this->mColor.mG += (unsigned char)(mHelp * (double)(this->mColorData[++this->mIndex] - this->mColor.mG));
+          this->mColor.mB += (unsigned char)(mHelp * (double)(this->mColorData[++this->mIndex] - this->mColor.mB));
+          this->mColor.mA += (unsigned char)(mHelp * (double)(this->mColorData[++this->mIndex] - this->mColor.mA));
         }
     }
 }
@@ -193,6 +185,7 @@ void CLGradientStops::adjust_value(double& value) const
           case CLGradientBase::PAD:
             value = 0.0;
             break;
+
           case CLGradientBase::REFLECT:
             // if the part of the distance before the decimal point
             // is devisible by 2, we just remove it
@@ -210,6 +203,7 @@ void CLGradientStops::adjust_value(double& value) const
               }
 
             break;
+
           case CLGradientBase::REPEAT:
             // we only need everything after the decimal point
             // and we need to subtract from 1.0
@@ -224,6 +218,7 @@ void CLGradientStops::adjust_value(double& value) const
           case CLGradientBase::PAD:
             value = 1.0;
             break;
+
           case CLGradientBase::REFLECT:
 
             // if the part of the distance before the decimal point
@@ -240,6 +235,7 @@ void CLGradientStops::adjust_value(double& value) const
               }
 
             break;
+
           case CLGradientBase::REPEAT:
             // we only need everything after the decimal point
             value = value - floor(value);

@@ -1226,13 +1226,13 @@ void CMathContainer::createDependencyGraphs()
       mTransientDependencies.addObject(pObject);
     }
 
-#ifdef COPASI_DEBUG
+#ifdef COPASI_DEBUG_TRACE
   std::ofstream InitialDependencies("InitialDependencies.dot");
   mInitialDependencies.exportDOTFormat(InitialDependencies, "InitialDependencies");
 
   std::ofstream TransientDependencies("TransientDependencies.dot");
   mTransientDependencies.exportDOTFormat(TransientDependencies, "TransientDependencies");
-#endif // COPASI_DEBUG
+#endif // COPASI_DEBUG_TRACE
 
   createSynchronizeInitialValuesSequence();
   createApplyInitialValuesSequence();
@@ -1808,7 +1808,7 @@ C_FLOAT64 * CMathContainer::getInitialValuePointer(const C_FLOAT64 * pValue) con
 void CMathContainer::createDiscontinuityEvents()
 {
   CEvaluationNodeConstant VariableNode(CEvaluationNodeConstant::_NaN, "NAN");
-  size_t i, imax;
+  //size_t i, imax;
 
   // We need to create events for nodes which are capable of introducing
   // discontinuous changes.

@@ -11,8 +11,8 @@
 
 #include "CCopasiVector.h"
 
-#include "blaswrap.h"
-#include "clapackwrap.h"
+#include "lapack/blaswrap.h"
+#include "lapack/lapackwrap.h"
 
 // Define to output debugging information
 // #define DEBUG_MATRIX
@@ -146,10 +146,6 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix)
    *
    */
 
-#ifdef DEBUG_MATRIX
-  std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(M) << std::endl;
-#endif
-
   dgeqp3_(&NumCols, &NumRows, M.array(), &LDA,
           JPVT.array(), TAU.array(), WORK.array(), &LWORK, &INFO);
 
@@ -168,12 +164,6 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix)
 
   for (i = 0; i < NumRows; i++)
     mRowPivots[i] = JPVT[i] - 1;
-
-#ifdef DEBUG_MATRIX
-  std::cout << "QR Factorization:" << std::endl;
-  std::cout << "Row permutation:\t" << mRowPivots << std::endl;
-  std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(M) << std::endl;
-#endif
 
   C_INT independent = 0;
 
@@ -256,11 +246,6 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix)
 
   if (INFO < 0) fatalError();
 
-#ifdef DEBUG_MATRIX
-  std::cout << "Invert R_1,1:" << std::endl;
-  std::cout << CTransposeView< CMatrix< C_FLOAT64 > >(M) << std::endl;
-#endif
-
   C_INT32 j, k;
 
   // Compute Link_0 = inverse(R_1,1) * R_1,2
@@ -289,10 +274,135 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix)
         if (fabs(*pTmp1) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()) *pTmp1 = 0.0;
       }
 
-#ifdef DEBUG_MATRIX
-  std::cout << "Link Zero Matrix:" << std::endl;
-  std::cout << *this << std::endl;
-#endif // DEBUG_MATRIX
+  // We need to convert the pivot vector into a swap vector.
+
+  mPivotInverse.resize(mRowPivots.size());
+
+  size_t * pCurrentIndex = mPivotInverse.array();
+  size_t * pEnd  = pCurrentIndex + mRowPivots.size();
+
+  for (size_t i = 0; pCurrentIndex != pEnd; ++pCurrentIndex, ++i)
+    {
+      *pCurrentIndex = i;
+    }
+
+  CVector< size_t > CurrentColumn(mPivotInverse);
+  size_t * pCurrentColumn = CurrentColumn.array();
+
+  mSwapVector.resize(mRowPivots.size());
+  C_INT * pJPVT = mSwapVector.array();
+  pCurrentIndex = mPivotInverse.array();
+  const size_t * pPivot = mRowPivots.array();
+
+  for (; pCurrentIndex != pEnd; ++pPivot, ++pJPVT, ++pCurrentIndex, ++pCurrentColumn)
+    {
+      // Swap Index
+      size_t * pToIndex = & mPivotInverse[*pPivot];
+      size_t * pFromIndex = & mPivotInverse[*pCurrentColumn];
+
+      // Swap Column
+      size_t * pToColumn = & CurrentColumn[*pToIndex];
+      size_t * pFromColumn = pCurrentColumn;
+
+      // Swap
+      *pJPVT =  *pToIndex + 1;
+
+      size_t tmp = *pFromIndex;
+      *pFromIndex = *pToIndex;
+      *pToIndex = tmp;
+
+      tmp = *pFromColumn;
+      *pFromColumn = *pToColumn;
+      *pToColumn = tmp;
+    }
+
+  return success;
+}
+
+bool CLinkMatrix::rightMultiply(const C_FLOAT64 & alpha,
+                                const CMatrix< C_FLOAT64> & m,
+                                CMatrix< C_FLOAT64> & p) const
+{
+  bool success = true;
+
+  if (m.numCols() != mRowPivots.size())
+    {
+      return false;
+    }
+
+  // p := alpha * (m1, m2) * (I, L0')' = alpha * m1 + alpha * m2 * L0
+
+  p.resize(m.numRows(), getNumIndependent());
+
+  char T = 'N';
+  C_INT M = (C_INT) p.numCols();
+  C_INT N = (C_INT) p.numRows();
+  C_INT K = (C_INT) numRows();
+
+  C_INT LDA = (C_INT) numCols();
+  C_INT LDB = (C_INT) m.numCols();
+  C_INT LDC = (C_INT) p.numCols();
+
+  // p := m1
+
+  C_FLOAT64 *pRowP = p.array();
+  const C_FLOAT64 *pRowM = m.array();
+  C_FLOAT64 *pEnd = p.array() + p.size();
+
+  for (; pRowP < pEnd; pRowP += LDC, pRowM += LDB)
+    {
+      memcpy(pRowP, pRowM, sizeof(C_FLOAT64) * LDC);
+    }
+
+  // DGEMM (TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC)
+  // C := alpha A B + beta C
+
+  dgemm_(&T, &T, &M, &N, &K,
+         const_cast< C_FLOAT64 * >(&alpha),
+         const_cast< C_FLOAT64 * >(array()), &LDA,
+         const_cast< C_FLOAT64 * >(m.array()) + LDA, &LDB,
+         const_cast< C_FLOAT64 * >(&alpha), p.array(), &LDC);
+
+  return success;
+}
+
+bool CLinkMatrix::leftMultiply(const CMatrix< C_FLOAT64> & m,
+                               CMatrix< C_FLOAT64> & p) const
+{
+  bool success = true;
+
+  if (m.numRows() != numCols())
+    {
+      return false;
+    }
+
+  // p := L * m = (I, L0) * m = (m, L0 * m) = (p1, p2)
+  p.resize(mRowPivots.size(), m.numCols());
+  p = 0.0;
+
+  // p1 := m
+  memcpy(p.array(), m.array(), sizeof(C_FLOAT64) * m.size());
+
+  // p2 := L0 * m
+  // p2 (numDependent x m.numCols())
+  char T = 'N';
+  C_INT M = (C_INT) m.numCols(); /* LDA, LDC */
+  C_INT N = (C_INT) getNumDependent();
+  C_INT K = (C_INT) numCols();
+
+  C_INT LDA = (C_INT) m.numCols();
+  C_INT LDB = (C_INT) numCols();
+  C_INT LDC = (C_INT) p.numCols();
+
+  C_FLOAT64 Alpha = 1.0;
+  C_FLOAT64 Zero = 0.0;
+
+  // DGEMM (TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC)
+  // C := alpha A B + beta C
+  dgemm_(&T, &T, &M, &N, &K, &Alpha,
+         const_cast< C_FLOAT64 * >(m.array()), &LDA,
+         const_cast< C_FLOAT64 * >(array()), &LDB,
+         &Zero, p.array() + m.size(), &LDC);
 
   return success;
 }
@@ -307,19 +417,30 @@ size_t CLinkMatrix::getNumDependent() const
   return numRows();
 }
 
-bool CLinkMatrix::applyRowPivot(CMatrix< C_FLOAT64 > & matrix) const
+bool CLinkMatrix::doRowPivot(CMatrix< C_FLOAT64 > & matrix) const
 {
-  if (matrix.numRows() < mRowPivots.size())
+  return applyRowPivot(matrix, mRowPivots);
+}
+
+bool CLinkMatrix::undoRowPivot(CMatrix< C_FLOAT64 > & matrix) const
+{
+  return applyRowPivot(matrix, mPivotInverse);
+}
+
+bool CLinkMatrix::applyRowPivot(CMatrix< C_FLOAT64 > & matrix,
+                                const CVector< size_t > & pivots) const
+{
+  if (matrix.numRows() < pivots.size())
     {
       return false;
     }
 
-  CVector< bool > Applied(mRowPivots.size());
+  CVector< bool > Applied(pivots.size());
   Applied = false;
 
   CVector< C_FLOAT64 > Tmp(matrix.numCols());
 
-  size_t i, imax = mRowPivots.size();
+  size_t i, imax = pivots.size();
   size_t to;
   size_t from;
   size_t numCols = matrix.numCols();
@@ -328,7 +449,7 @@ bool CLinkMatrix::applyRowPivot(CMatrix< C_FLOAT64 > & matrix) const
     if (!Applied[i])
       {
         to = i;
-        from = mRowPivots[to];
+        from = pivots[to];
 
         if (from != i)
           {
@@ -340,7 +461,7 @@ bool CLinkMatrix::applyRowPivot(CMatrix< C_FLOAT64 > & matrix) const
                 Applied[to] = true;
 
                 to = from;
-                from = mRowPivots[to];
+                from = pivots[to];
               }
 
             memcpy(matrix[to], Tmp.array(), sizeof(C_FLOAT64) * numCols);
@@ -352,6 +473,36 @@ bool CLinkMatrix::applyRowPivot(CMatrix< C_FLOAT64 > & matrix) const
   return true;
 }
 
+bool CLinkMatrix::doColumnPivot(CMatrix< C_FLOAT64 > & matrix) const
+{
+  return applyColumnPivot(matrix, 1);
+}
+
+bool CLinkMatrix::undoColumnPivot(CMatrix< C_FLOAT64 > & matrix) const
+{
+  return applyColumnPivot(matrix, -1);
+}
+
+bool CLinkMatrix::applyColumnPivot(CMatrix< C_FLOAT64 > & matrix,
+                                   const C_INT & incr) const
+{
+  if (matrix.numCols() < mRowPivots.size())
+    {
+      return false;
+    }
+
+  C_INT N = matrix.numRows();
+  C_INT LDA = matrix.numCols();
+  C_INT K1 = 1;
+  C_INT K2 = mRowPivots.size();
+
+  dlaswp_(&N, matrix.array(), &LDA, &K1, &K2,
+          const_cast< C_INT * >(mSwapVector.array()),
+          const_cast< C_INT * >(&incr));
+
+  return true;
+}
+
 //**********************************************************************
 //                   CLinkMatrixView
 //**********************************************************************
@@ -359,10 +510,9 @@ bool CLinkMatrix::applyRowPivot(CMatrix< C_FLOAT64 > & matrix) const
 const C_FLOAT64 CLinkMatrixView::mZero = 0.0;
 const C_FLOAT64 CLinkMatrixView::mUnit = 1.0;
 
-CLinkMatrixView::CLinkMatrixView(const CLinkMatrix & A,
-                                 const size_t & numIndependent):
+CLinkMatrixView::CLinkMatrixView(const CLinkMatrix & A):
   mpA(&A),
-  mpNumIndependent(&numIndependent)
+  mpNumIndependent(&A.getNumIndependent())
 {CONSTRUCTOR_TRACE;}
 
 CLinkMatrixView::~CLinkMatrixView()

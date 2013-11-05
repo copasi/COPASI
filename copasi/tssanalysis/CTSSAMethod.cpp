@@ -37,8 +37,8 @@
 #include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
 
-#include "clapackwrap.h"        // CLAPACK
-#include "blaswrap.h"           // BLAS
+#include "lapack/lapackwrap.h"        // CLAPACK
+#include "lapack/blaswrap.h"           // BLAS
 
 CTSSAMethod *
 CTSSAMethod::createMethod(CCopasiMethod::SubType subType)
@@ -56,12 +56,9 @@ CTSSAMethod::createMethod(CCopasiMethod::SubType subType)
         pMethod = new CILDMModifiedMethod();
         break;
 
-#ifdef  WITH_CSPMETHOD
-
       case tssCSP:
         pMethod = new CCSPMethod();
         break;
-#endif
 
       default:
         fatalError();
@@ -590,7 +587,7 @@ void CTSSAMethod::mat_anal_mod_space(C_INT & slow)
         Matrix_anal(i, j) = mTdInverse(i, j) / length;
     }
 
-  if ((slow < dim)&(slow > 0))
+  if ((slow < dim) & (slow > 0))
     {
       denom = 0.0;
 

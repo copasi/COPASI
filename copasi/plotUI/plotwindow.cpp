@@ -1,26 +1,26 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 // the window containing the plot and buttons for supported operations
 
-#include <QtSvg>
+#include <QtSvg/QtSvg>
 
-#include <QToolBar>
-#include <QPrinter>
-#include <QPixmap>
-#include <QPicture>
-#include <QSvgGenerator>
+#include <QtGui/QToolBar>
+#include <QtGui/QPrinter>
+#include <QtGui/QPixmap>
+#include <QtGui/QPicture>
+#include <QtSvg/QSvgGenerator>
 
 #include "plotwindow.h"
 #include "CopasiPlot.h"
@@ -33,7 +33,7 @@
 #include "resourcesUI/CQIconResource.h"
 
 #ifdef DEBUG_UI
-#include <QtDebug>
+#include <QtCore/QtDebug>
 #endif
 
 #include <qwt_plot.h>
@@ -108,7 +108,7 @@ void PlotWindow::createMenus()
   viewMenu->addAction(mpaZoomOut);
 
   // add a place holder menu, to be filled by the main window
-  mpWindowMenu = menuBar()->addMenu("Window");
+  mpWindowMenu = menuBar()->addMenu("&Window");
 }
 QMenu *PlotWindow::getWindowMenu() const
 {

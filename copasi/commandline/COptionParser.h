@@ -89,6 +89,9 @@ struct options
   std::string     Tmp;
   bool     Validate;
   bool     Verbose;
+#ifdef COPASI_SEDML
+  std::string     ImportSEDML;
+#endif
 }; // end options struct
 
 /**
@@ -115,6 +118,9 @@ struct option_locations
   size_type Tmp;
   size_type Validate;
   size_type Verbose;
+#ifdef COPASI_SEDML
+  size_type ImportSEDML;
+#endif
 }; // end option location struct
 
 /**
@@ -206,6 +212,10 @@ private:
     option_ExportC,
     option_ExportXPPAUT,
     option_MaxTime
+
+#ifdef COPASI_SEDML
+   , option_ImportSEDML
+#endif
   } openum_;
 
   enum parser_state {state_option, state_value, state_consume } state_;

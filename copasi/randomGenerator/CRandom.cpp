@@ -13,7 +13,6 @@
 // All rights reserved.
 
 #include <time.h>
-#include <sys/timeb.h>
 #ifdef WIN32
 # include <Windows.h>
 #else
@@ -139,9 +138,9 @@ unsigned C_INT32 CRandom::getSystemSeed()
 #ifdef WIN32
   ThreadId = (unsigned C_INT32)(GetCurrentThreadId() & 0xffffffffUL);
 #elif defined(SYS_thread_selfid)
-  ThreadId = (unsigned C_INT32)(syscall(SYS_thread_selfid) & 0xffffffffUL);
+  ThreadId = (unsigned C_INT32)(::syscall(SYS_thread_selfid) & 0xffffffffUL);
 #elif defined(SYS_gettid)
-  ThreadId = (unsigned C_INT32)(syscall(SYS_gettid) & 0xffffffffUL);
+  ThreadId = (unsigned C_INT32)(::syscall(SYS_gettid) & 0xffffffffUL);
 #elif defined(SYS_getthrid)
   ThreadId = (unsigned C_INT32)(syscall(SYS_getthrid) & 0xffffffffUL);
 #endif

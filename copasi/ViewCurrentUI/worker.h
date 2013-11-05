@@ -6,7 +6,7 @@
 #ifndef VIEW_CURRENT_WORKER
 #define VIEW_CURRENT_WORKER
 
-#include <QObject>
+#include <QtCore/QObject>
 #include "copasi/UI/DataModelGUI.h"
 #include "copasi/UI/listviews.h"
 

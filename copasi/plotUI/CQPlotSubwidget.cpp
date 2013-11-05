@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,10 +24,10 @@
 #include "report/CCopasiRootContainer.h"
 
 #include "UI/CCopasiSelectionDialog.h"
-#include <QListWidgetItem>
-#include <QList>
-#include <QMap>
-#include <QMessageBox>
+#include <QtGui/QListWidgetItem>
+#include <QtCore/QList>
+#include <QtCore/QMap>
+#include <QtGui/QMessageBox>
 //-----------------------------------------------------------------------------
 
 /*
@@ -154,13 +154,13 @@ void CQPlotSubwidget::storeChanges()
           newItem->setTitle(current->getTitle());
           newItem->getChannels() = channels;
           newItem->setActivity(common->getActivity());
-          (CCopasiParameterGroup)(*newItem) = (CCopasiParameterGroup)(*newItem);
 
           mList[(*it)->text()] = newItem;
 
           delete current;
         }
 
+      pdelete(common);
       // assign multiple
     }
 }
@@ -231,7 +231,7 @@ void CQPlotSubwidget::deleteCurve(QListWidgetItem* item)
 
   delete mList[item->text()];
   mList.remove(item->text());
-  mLastSelection.remove(item);
+  mLastSelection.removeOne(item);
 
   delete mpListPlotItems->takeItem(getRow(item));
 }
@@ -273,11 +273,11 @@ void CQPlotSubwidget::addPlotItem(CPlotItem* item)
       title = (FROM_UTF8(item->getTitle()) + " %1").arg(++count);
     }
 
-  item->setTitle(title.ascii());
+  item->setTitle(TO_UTF8(title));
 
   QListWidgetItem *listItem = new QListWidgetItem(FROM_UTF8(item->getTitle()));
   mpListPlotItems->addItem(listItem);
-  mList.insert(FROM_UTF8(item->getTitle()), new CPlotItem(*item), true);
+  mList.insert(FROM_UTF8(item->getTitle()), new CPlotItem(*item));
   mpListPlotItems->setCurrentRow(mpListPlotItems->count() - 1);
 }
 
@@ -315,23 +315,25 @@ CQPlotEditWidget* CQPlotSubwidget::selectControl(CPlotItem::Type type)
 
 void CQPlotSubwidget::selectPlotItem(CPlotItem* item)
 {
-  if (item == NULL) return;
+  CQPlotEditWidget* current = static_cast< CQPlotEditWidget * >(mpStack->currentWidget());
 
-  CQPlotEditWidget* current = selectControl(item->getType());
+  if (item != NULL)
+    {
+      current = selectControl(item->getType());
+    }
 
-  if (current == NULL)
+  if (item == NULL)
     {
       mpStack->setEnabled(false);
-      return;
     }
 
   current->setModel((*CCopasiRootContainer::getDatamodelList())[0]->getModel());
   current->LoadFromCurveSpec(item);
 
-  if (mLastItem != NULL)
-    delete mLastItem;
+  pdelete(mLastItem);
 
-  mLastItem = new CPlotItem(*item);
+  if (item != NULL)
+    mLastItem = new CPlotItem(*item);
 }
 
 void CQPlotSubwidget::addCurveTab(const std::string & title,
@@ -812,19 +814,33 @@ bool CQPlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
   //clear tabWidget
   deleteCurves();
 
-  //reconstruct tabWidget from curve specs
-  const CCopasiVector<CPlotItem> & curves = pspec->getItems();
-  size_t i, imax = curves.size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      addPlotItem(curves[i]);
-    }
-
   mpListPlotItems->clearSelection();
 
-  if (imax > 0)
-    mpListPlotItems->setCurrentRow(0, QItemSelectionModel::Select);
+  //reconstruct tabWidget from curve specs
+  CCopasiVector<CPlotItem>::const_iterator it = pspec->getItems().begin();
+  CCopasiVector<CPlotItem>::const_iterator end = pspec->getItems().end();
+
+  QStringList PlotItems;
+
+  for (; it != end; ++it)
+    {
+      QString title = FROM_UTF8((*it)->getTitle());
+      PlotItems.append(title);
+
+      mList.insert(title, new CPlotItem(**it));
+    }
+
+  mpListPlotItems->addItems(PlotItems);
+
+  if (pspec->getItems().size() > 0)
+    {
+      mpListPlotItems->setCurrentRow(0, QItemSelectionModel::Select);
+    }
+  else
+    {
+      // We need to clear the current items display
+      selectPlotItem(NULL);
+    }
 
   return true; //TODO really check
 }

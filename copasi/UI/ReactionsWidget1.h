@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  **  $ CopasiUI/ReactionsWidget1.h
@@ -24,24 +24,15 @@
 #ifndef REACTIONS_WIDGET1_H
 #define REACTIONS_WIDGET1_H
 
-#include "UI/copasiWidget.h"
-#include "model/CReactionInterface.h"
+#include "copasi/UI/ui_ReactionsWidget1.h"
 
-#include <QGridLayout>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QFrame>
-#include <QCheckBox>
-#include <QComboBox>
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
+#include "copasi/UI/copasiWidget.h"
+#include "copasi/model/CReactionInterface.h"
 
 class ParameterTable;
 class MyLineEdit;
 
-class ReactionsWidget1 : public CopasiWidget
+class ReactionsWidget1 : public CopasiWidget, public Ui::ReactionsWidget1
 {
   Q_OBJECT
 
@@ -56,7 +47,7 @@ public:
 
 protected slots:
   virtual void slotBtnNew();
-  virtual void slotBtnCopy(){}; //dummy, to bypass warnings from TabWidget connections
+  virtual void slotBtnCopy() {}; //dummy, to bypass warnings from TabWidget connections
   virtual void slotBtnDelete();
   virtual void slotCheckBoxClicked();
   virtual void slotComboBoxSelectionChanged(const QString &);
@@ -75,25 +66,6 @@ protected:
   void FillWidgetFromRI();
 
   CReactionInterface * mpRi;
-
-  QGridLayout* ReactionsWidget1Layout;
-  QHBoxLayout* Layout1;
-  QLabel* TextLabel7;
-  QLabel* TextLabel8;
-  QFrame* Line2;
-  QFrame* Line1;
-  QFrame* Line3;
-  QLabel* TextLabel6;
-  MyLineEdit* LineEdit2;
-  QComboBox* ComboBox1;
-  QFrame* Line4;
-  ParameterTable* table;
-  QLineEdit* LineEdit3;
-  QLabel* TextLabel5;
-  QPushButton* newKinetics;
-  QCheckBox* CheckBox;
-  QCheckBox * mpMultiCompartment;
-  QCheckBox * mpFast;
 };
 
 #endif // REACTIONSWIDGET1_H

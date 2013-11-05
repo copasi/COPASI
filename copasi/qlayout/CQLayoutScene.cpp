@@ -3,31 +3,36 @@
 // of Manchester.
 // All rights reserved.
 
-#include <QGraphicsScene>
-#include <QGraphicsItem>
-#include <QPainter>
-#include <QPrinter>
-#include <QImage>
-#include <qgraphicseffect.h>
+#include <QtCore/QCoreApplication>
+#include <QtGui/QGraphicsScene>
+#include <QtGui/QGraphicsItem>
+#include <QtGui/QPainter>
+#include <QtGui/QPrinter>
+#include <QtGui/QImage>
+#include <QtGui/QGraphicsEffect>
 
-#include <copasi.h>
+#include "copasi.h"
 
-#include <qlayout/CQLayoutScene.h>
-#include <qlayout/CQCopasiEffect.h>
-#include <qlayout/CQLabelGraphicsItem.h>
-#include <qlayout/CQStyledGraphicsItem.h>
-#include <qlayout/CQConnectionGraphicsItem.h>
-#include <qlayout/CQRenderConverter.h>
-#include <layout/CLayout.h>
-#include <layout/CLGlyphs.h>
-#include <layout/CLText.h>
-#include <layout/CLReactionGlyph.h>
-#include <layout/CLRenderResolver.h>
-#include <layout/CLGlobalRenderInformation.h>
-#include <layout/CListOfLayouts.h>
-#include <layout/CLLocalRenderInformation.h>
-#include <layout/CLDefaultStyles.h>
-#include <CopasiDataModel/CCopasiDataModel.h>
+#include "qlayout/CQLayoutScene.h"
+#include "qlayout/CQCopasiEffect.h"
+#include "qlayout/CQLabelGraphicsItem.h"
+#include "qlayout/CQStyledGraphicsItem.h"
+#include "qlayout/CQConnectionGraphicsItem.h"
+#include "qlayout/CQRenderConverter.h"
+#include "layout/CLayout.h"
+#include "layout/CLGlyphs.h"
+#include "layout/CLText.h"
+#include "layout/CLReactionGlyph.h"
+#include "layout/CLRenderResolver.h"
+#include "layout/CLGlobalRenderInformation.h"
+#include "layout/CListOfLayouts.h"
+#include "layout/CLLocalRenderInformation.h"
+#include "layout/CLDefaultStyles.h"
+#include "layout/CCopasiSpringLayout.h"
+
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/report/CKeyFactory.h"
 
 CQLayoutScene::CQLayoutScene(CLayout* layout, CCopasiDataModel* model, CLRenderInformationBase* renderInformation)
   : QGraphicsScene()
@@ -208,6 +213,7 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
     }
 
   const CCopasiVector<CLCompartmentGlyph> & comps = layout->getListOfCompartmentGlyphs();
+
   CCopasiVector<CLCompartmentGlyph>::const_iterator itComp = comps.begin();
 
   while (itComp != comps.end())
@@ -217,6 +223,7 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
     }
 
   const CCopasiVector<CLReactionGlyph> & reactions = layout->getListOfReactionGlyphs();
+
   CCopasiVector<CLReactionGlyph>::const_iterator itReactions = reactions.begin();
 
   while (itReactions != reactions.end())
@@ -226,6 +233,7 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
     }
 
   const CCopasiVector<CLMetabGlyph> & species = layout->getListOfMetaboliteGlyphs();
+
   CCopasiVector<CLMetabGlyph>::const_iterator itSpecies = species.begin();
 
   while (itSpecies != species.end())
@@ -235,6 +243,7 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
     }
 
   const CCopasiVector<CLTextGlyph> & texts = layout->getListOfTextGlyphs();
+
   CCopasiVector<CLTextGlyph>::const_iterator itTexts = texts.begin();
 
   while (itTexts != texts.end())
@@ -244,6 +253,7 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
     }
 
   const CCopasiVector<CLGeneralGlyph> & list = layout->getListOfGeneralGlyphs();
+
   CCopasiVector<CLGeneralGlyph>::const_iterator itList = list.begin();
 
   while (itList != list.end())
@@ -252,10 +262,6 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
       ++itList;
     }
 }
-
-#include <copasi/report/CCopasiRootContainer.h>
-#include <copasi/report/CKeyFactory.h>
-#include <QCoreApplication>
 
 CLGraphicalObject* getTextForItem(const CLayout* layout, const CLGraphicalObject* obj)
 {
@@ -326,10 +332,6 @@ void moveObject(CLGraphicalObject* obj, const CLPoint& delta, CLayout* layout)
     }
 }
 
-#ifdef COPASI_AUTOLAYOUT
-#include <layout/CCopasiSpringLayout.h>
-#endif
-
 void CQLayoutScene::updatePosition(const QString& key, const QPointF& newPos)
 {
   CKeyFactory* kf = CCopasiRootContainer::getKeyFactory();
@@ -343,11 +345,10 @@ void CQLayoutScene::updatePosition(const QString& key, const QPointF& newPos)
   CLPoint delta(newPos.x(), newPos.y());
   moveObject(obj, delta, mpLayout);
 
-#ifdef COPASI_AUTOLAYOUT
   // restore lines
   CCopasiSpringLayout::Parameters p;
   CCopasiSpringLayout l(mpLayout, &p);
   l.finalizeState();
-#endif //COPASI_AUTOLAYOUT
+
   emit recreateNeeded();
 }

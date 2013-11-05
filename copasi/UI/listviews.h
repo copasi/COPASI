@@ -20,8 +20,8 @@
 #define LISTVIEWS_H
 
 #include <set>
-#include <qsplitter.h>
-#include <QTreeView>
+#include <QtGui/QSplitter>
+#include <QtGui/QTreeView>
 
 #include "copasi.h"
 
@@ -60,14 +60,11 @@ class CQSensResultWidget;
 class CQSteadyStateResult;
 class CQTrajectoryWidget;
 class CQReportsWidget;
-
 class CQTSSAWidget;
 class CQTSSAResultWidget;
 class CQTSSAResultSubWidget;
-
-#ifdef COPASI_NONLIN_DYN
 class CQCrossSectionTaskWidget;
-#endif
+
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
 class CQOscillationTaskWidget;
 #endif
@@ -95,13 +92,7 @@ class CQModelValue;
 class CQMathMatrixWidget;
 class CQLayoutsWidget;
 
-#ifdef USE_NEW_PLOTSUBWIDGET
 class CQPlotSubwidget;
-typedef CQPlotSubwidget PlotWindowType;
-#else
-class PlotSubwidget;
-typedef PlotSubwidget PlotWindowType;
-#endif
 
 //********************************************************************************
 
@@ -163,9 +154,7 @@ public:
   CQFittingWidget* getFittingWidget();
   CQOptimizationWidget* getOptimizationWidget();
 
-#if COPASI_NONLIN_DYN
   CQCrossSectionTaskWidget* getCrossSectionWidget();
-#endif
 
 signals:
   void signalFolderChanged(const QModelIndex & index);
@@ -230,7 +219,7 @@ private:
   CQParameterSetsWidget * mpParameterSetsWidget;
   CQTabWidget * mpParameterSetWidget;
   CQPlotsWidget *mpPlotsWidget;
-  PlotWindowType *mpPlotSubwidget;
+  CQPlotSubwidget *mpPlotSubwidget;
   CQReactionsWidget *mpReactionsWidget;
   CQTabWidget *reactionsWidget1;
   ScanWidget *scanWidget;
@@ -240,16 +229,13 @@ private:
   SteadyStateWidget *steadystateWidget;
   CQReportsWidget *mpReportsWidget;
   CQReportDefinition *tableDefinition1;
-
   CQTimeSeriesWidget *timeSeriesWidget;
   CQTrajectoryWidget *trajectoryWidget;
   CQTSSAWidget *tssaWidget;
   CQTSSAResultWidget *tssaResultWidget;
-
-#ifdef COPASI_NONLIN_DYN
   CQCrossSectionTaskWidget *crossSectionTaskWidget;
   CQTimeSeriesWidget *crossSectionTimeSeriesWidget;
-#endif
+
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
   CQOscillationTaskWidget *oscillationTaskWidget;
 #endif

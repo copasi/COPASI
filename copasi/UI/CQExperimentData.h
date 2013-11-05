@@ -104,6 +104,7 @@ private:
   void destroy();
   void setTypeItems(const int & timeRow);
   void selectModelObject(const int & row);
+  void updateScales();
 
 private slots:
   void slotWeightMethod(int weightMethod);

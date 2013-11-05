@@ -8,7 +8,7 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include <QString>
+#include <QtCore/QString>
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
@@ -78,11 +78,12 @@ Qt::ItemFlags CQSpecieDM::flags(const QModelIndex &index) const
 
   if (index.column() == COL_NAME_SPECIES || index.column() == COL_COMPARTMENT ||
       index.column() == COL_TYPE_SPECIES)
-    return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+    {
+      return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+    }
   else if (index.column() == COL_ICONCENTRATION)
     {
       mpSpecies = (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getMetabolites()[index.row()];
-      this->index(index.row(), COL_TYPE_SPECIES).data().toString().toAscii().data();
 
       if (this->index(index.row(), COL_TYPE_SPECIES).data().toString() == QString(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]))
           || !(this->index(index.row(), COL_IEXPRESSION_SPECIES).data().toString().isEmpty()))

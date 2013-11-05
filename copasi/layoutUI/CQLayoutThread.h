@@ -6,11 +6,11 @@
 #ifndef CQ_LAYOUT_THREAD_H
 #define CQ_LAYOUT_THREAD_H
 
-#include <qthread.h>
-#include <qmutex.h>
-#include <qwaitcondition.h>
-#include <qsharedpointer.h>
-#include <qmetatype.h>
+#include <QtCore/QThread>
+#include <QtCore/QMutex>
+#include <QtCore/QWaitCondition>
+#include <QtCore/QSharedPointer>
+#include <QtCore/QMetaType>
 
 #include <copasi.h>
 #include <layout/CLayoutState.h>

@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLBase.cpp,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:51 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -29,31 +21,23 @@
 //sbml constructors
 
 CLPoint::CLPoint(const Point& p) :
-    mX(p.getXOffset())
-    , mY(p.getYOffset())
-#ifdef USE_CRENDER_EXTENSION
-    , mZ(p.getZOffset())
-#endif // USE_CRENDER_EXTENSION
+  mX(p.getXOffset())
+  , mY(p.getYOffset())
+  , mZ(p.getZOffset())
 {}
 
 Point CLPoint::getSBMLPoint() const
 {
-#ifdef USE_CRENDER_EXTENSION
   Point p(new LayoutPkgNamespaces(), mX, mY, mZ);
-#else
-  Point p(new LayoutPkgNamespaces(), mX, mY);
-#endif // USE_CRENDER_EXTENSION
   return p;
 }
 
 //***********************************************************
 
 CLDimensions::CLDimensions(const Dimensions& d) :
-    mWidth(d.getWidth())
-    , mHeight(d.getHeight())
-#ifdef USE_CRENDER_EXTENSION
-    , mDepth(d.getDepth())
-#endif // USE_CRENDER_EXTENSION
+  mWidth(d.getWidth())
+  , mHeight(d.getHeight())
+  , mDepth(d.getDepth())
 {}
 
 Dimensions CLDimensions::getSBMLDimensions() const
@@ -61,9 +45,7 @@ Dimensions CLDimensions::getSBMLDimensions() const
   Dimensions d(new LayoutPkgNamespaces()
                , mWidth
                , mHeight
-#ifdef USE_CRENDER_EXTENSION
                , mDepth
-#endif // USE_CRENDER_EXTENSION
               );
   return d;
 }
@@ -71,7 +53,7 @@ Dimensions CLDimensions::getSBMLDimensions() const
 //***********************************************************
 
 CLBoundingBox::CLBoundingBox(const BoundingBox & bb)
-    : mPosition(*bb.getPosition()),
+  : mPosition(*bb.getPosition()),
     mDimensions(*bb.getDimensions())
 {}
 

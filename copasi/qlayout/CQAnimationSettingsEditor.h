@@ -8,7 +8,7 @@
 
 #include <vector>
 
-#include <qdialog.h>
+#include <QtGui/QDialog>
 #include <qlayout/ui_CQAnimationSettingsEditor.h>
 
 class CQCopasiAnimation;

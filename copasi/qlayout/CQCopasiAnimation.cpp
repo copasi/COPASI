@@ -6,11 +6,12 @@
 #include <qlayout/CQCopasiAnimation.h>
 #include <qlayout/CQEffectDescription.h>
 
-CQCopasiAnimation::CQCopasiAnimation()
-  : mMode(CQCopasiAnimation::Global)
-  , mNumSteps(0)
-{
-}
+CQCopasiAnimation::CQCopasiAnimation():
+  mEntries(),
+  mpDataModel(NULL),
+  mMode(CQCopasiAnimation::Global),
+  mNumSteps(0)
+{}
 
 CQCopasiAnimation::~CQCopasiAnimation()
 {

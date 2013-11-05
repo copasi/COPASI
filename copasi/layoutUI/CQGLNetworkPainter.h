@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQGLNetworkPainter.h,v $
-//   $Revision: 1.91 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/22 00:00:18 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -31,10 +23,10 @@
 #include "GL/glu.h"
 #endif // __APPLE__
 
-#include <QColor>
-#include <QDialog> // for CQSimpleProgressDialog
-#include <QFont>
-#include <QImage>
+#include <QtGui/QColor>
+#include <QtGui/QDialog> // for CQSimpleProgressDialog
+#include <QtGui/QFont>
+#include <QtGui/QImage>
 
 #include <vector>
 #include <string>
@@ -144,7 +136,6 @@ public:
    */
   double fitToScreen();
 
-
   void pauseAnimation();
 
   /**
@@ -152,7 +143,6 @@ public:
    */
   void setScaleMode(CVisParameters::SCALING_MODE scaleMode);
 
-#ifdef FRAMEBUFFER_SCREENSHOTS
   /**
    * New method for creating a bitmap from the animation window.
    * This method uses QPainter, QImage and QGLFrameBufferObject to draw
@@ -168,7 +158,6 @@ public:
    * If the rendering was successfull, true is returned, otherwise false is returned.
    */
   bool export_bitmap(double x, double y, double width, double height, unsigned int imageWidth, unsigned int imageHeight, const QString& filename, const std::vector<size_t> frames);
-#endif // FRAMEBUFFER_SCREENSHOTS
 
 private slots:
   void zoomIn();

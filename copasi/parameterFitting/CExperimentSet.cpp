@@ -137,11 +137,11 @@ bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfConta
       if (!(*it)->compile(listOfContainer)) return false;
 
       const std::map< CCopasiObject *, size_t > & ExpDependentObjects
-        = (*it)->getDependentObjects();
+      = (*it)->getDependentObjects();
       std::map< CCopasiObject *, size_t >::const_iterator itObject
-        = ExpDependentObjects.begin();
+      = ExpDependentObjects.begin();
       std::map< CCopasiObject *, size_t >::const_iterator endObject
-        = ExpDependentObjects.end();
+      = ExpDependentObjects.end();
 
       for (; itObject != endObject; ++itObject)
         DependentObjects.insert(itObject->first);
@@ -476,7 +476,6 @@ void CExperimentSet::fixBuild55()
   return;
 }
 
-#ifdef COPASI_CROSSVALIDATION
 CCrossValidationSet::CCrossValidationSet(const CCopasiContainer * pParent,
     const std::string & name):
   CExperimentSet(name, pParent),
@@ -529,5 +528,3 @@ void CCrossValidationSet::initializeParameter()
 
   elevateChildren();
 }
-
-#endif // COPASI_CROSSVALIDATION

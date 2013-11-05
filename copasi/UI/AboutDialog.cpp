@@ -19,13 +19,13 @@
 
 #include "AboutDialog.h"
 
-#include <QPushButton>
-#include <QPixmap>
-#include <QTextEdit>
-#include <QLayout>
-#include <QSizePolicy>
-#include <QVBoxLayout>
-#include <QBrush>
+#include <QtGui/QPushButton>
+#include <QtGui/QPixmap>
+#include <QtGui/QTextEdit>
+#include <QtGui/QLayout>
+#include <QtGui/QSizePolicy>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QBrush>
 
 #include "icons/copasi_beta_background.xpm"
 

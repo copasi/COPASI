@@ -1,12 +1,12 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
 #include "CQLayoutsWidget.h"
 
@@ -29,18 +29,13 @@
 #include <copasi/commandline/CConfigurationFile.h>
 #include "report/CCopasiRootContainer.h"
 
-#ifdef USE_CRENDER_EXTENSION
-# include "copasi/layoutUI/CQNewMainWindow.h"
+#include "copasi/layoutUI/CQNewMainWindow.h"
+
 #ifndef DISABLE_QT_LAYOUT_RENDERING
 # include <qlayout/CQAnimationWindow.h>
 #endif //DISABLE_QT_LAYOUT_RENDERING
-#else
-# include "copasi/layoutUI/CQLayoutMainWindow.h"
-#endif // USE_CRENDER_EXTENSION
 
-#ifdef COPASI_AUTOLAYOUT
-# include "copasi/layoutUI/CQAutolayoutWizard.h"
-#endif // COPASI_AUTOLAYOUT
+#include "copasi/layoutUI/CQAutolayoutWizard.h"
 
 #include <sstream>
 
@@ -48,10 +43,6 @@ CQLayoutsWidget::CQLayoutsWidget(QWidget* parent)
   : CopasiWidget(parent)
 {
   setupUi(this);
-
-#ifndef COPASI_AUTOLAYOUT
-  mpBtnNew->hide();
-#endif
 
   // Create Source Data Model.
   mpLayoutsDM = new CQLayoutsDM(this);
@@ -238,8 +229,6 @@ bool hasLayout(const CListOfLayouts& layouts, const std::string &name)
 // virtual
 void CQLayoutsWidget::slotBtnNewClicked()
 {
-#ifdef COPASI_AUTOLAYOUT
-
   CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
   const CModel* pModel = pDataModel->getModel();
   assert(pModel != NULL);
@@ -310,8 +299,6 @@ void CQLayoutsWidget::slotBtnNewClicked()
       {
         delete pLayout;
       }
-
-#endif // COPASI_AUTOLAYOUT
 }
 
 // virtual
@@ -377,7 +364,6 @@ CQLayoutsWidget::LayoutWindow * CQLayoutsWidget::createLayoutWindow(int row, CLa
 {
   if (pLayout == NULL || row < 0) return NULL;
 
-#ifdef USE_CRENDER_EXTENSION
   LayoutWindow * pWin = NULL;
 
 #ifndef DISABLE_QT_LAYOUT_RENDERING
@@ -396,15 +382,10 @@ CQLayoutsWidget::LayoutWindow * CQLayoutsWidget::createLayoutWindow(int row, CLa
   pWin = new CQNewMainWindow((*CCopasiRootContainer::getDatamodelList())[0]);
   (static_cast<CQNewMainWindow*>(pWin))->slotLayoutChanged(row);
 #endif //DISABLE_QT_LAYOUT_RENDERING
-#else
-  LayoutWindow * pWin = new CQLayoutMainWindow(pLayout);
-#endif // USE_CRENDER_EXTENSION
 
   std::string title = "COPASI Diagram: "  + pLayout->getObjectName();
   pWin->setWindowTitle(title.c_str());
-#ifdef USE_CRENDER_EXTENSION
   pWin->addToMainWindow();
-#endif
   pWin->resize(900, 600);
   mLayoutWindowMap[pLayout->getKey()] = pWin;
 
@@ -441,7 +422,6 @@ void CQLayoutsWidget::slotShowLayout(const QModelIndex & index)
 
       if (pLayoutWindow != NULL)
         {
-#ifdef USE_CRENDER_EXTENSION
           CQNewMainWindow* cqWin = dynamic_cast<CQNewMainWindow*>(pLayoutWindow);
 
           if (cqWin != NULL)
@@ -450,10 +430,9 @@ void CQLayoutsWidget::slotShowLayout(const QModelIndex & index)
               cqWin ->setMode();
             }
 
-#endif // USE_CRENDER_EXTENSION
           pLayoutWindow->show();
           pLayoutWindow->showNormal();
-          pLayoutWindow->setActiveWindow();
+          pLayoutWindow->activateWindow();
         }
     }
   else

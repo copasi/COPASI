@@ -10,8 +10,8 @@
 
 #include "CQExpressionMmlStackedWidget.h"
 
-#include <QString>
-#include <QPainter>
+#include <QtCore/QString>
+#include <QtGui/QPainter>
 
 #include "utilities/CCopasiException.h"
 
@@ -25,14 +25,14 @@
 #include <utilities/CCopasiMessage.h>
 // turns out that the fatalError definition in copasi message is incompatible
 // with the mml widget
-#undef fatalError()
+#undef fatalError
 
 #ifdef HAVE_MML
 # include <qtmmlwidget.h>
 #endif // HAVE_MML
 
 #ifdef DEBUG_UI
-#include <QtDebug>
+#include <QtCoe/QtDebug>
 #endif
 
 /*
@@ -49,7 +49,9 @@ CQExpressionMmlStackedWidget::CQExpressionMmlStackedWidget(QWidget* parent)
   mpBtnEditExpression->setIcon(CQIconResource::icon(CQIconResource::edit));
   mpBtnSaveExpression->setIcon(CQIconResource::icon(CQIconResource::fileExport));
 
-  mpMmlScrollView->setBackgroundColor(QColor(Qt::white));
+  QPalette Palette;
+  Palette.setColor(mpMmlScrollView->backgroundRole(), QColor(Qt::white));
+  mpMmlScrollView->setPalette(Palette);
 
 #ifdef WIN32
   // on windows there ought to be a border around the MML widget

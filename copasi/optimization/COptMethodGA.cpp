@@ -1,20 +1,24 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <cmath>
 #include <limits>
 #include <string>
+#ifdef DEBUG_OPT
+# include <iostream>
+# include <fstream>
+#endif
 
 #include "copasi.h"
 
@@ -291,6 +295,44 @@ size_t COptMethodGA::fittest()
   return BestIndex;
 }
 
+#ifdef DEBUG_OPT
+// serialize the population to a file for debugging purposes
+bool COptMethodGA::serializepop(size_t first, size_t last)
+{
+  size_t Last = std::min(last, (size_t) mPopulationSize);
+
+  size_t i;
+  size_t j;
+
+  std::ofstream ofile;
+//std::ifstream test("gapop.txt");
+//if( !test.good() ) return false;
+  
+  // open the file for output, in append mode
+  ofile.open( "gapop.txt", std::ios::out | std::ios::app );
+  if ( ! ofile.is_open() )
+  {
+      std::cerr << "error opening file \'gapop.txt\'" << std::endl;
+      return false;
+  }
+  
+  for (i = first; i < Last; i++)
+    {
+      for (j = 0; j < mVariableSize; j++)
+        {
+          C_FLOAT64 & mut = (*mIndividual[i])[j];
+	  // print this parameter
+	  ofile << mut << "\t";
+        }
+        // print the fitness of the individual
+	ofile << mValue[i] << std::endl;
+    }
+  ofile << std::endl;
+  ofile.close();
+  return true;
+}
+#endif
+
 // initialise the population
 bool COptMethodGA::creation(size_t first,
                             size_t last)
@@ -442,9 +484,9 @@ bool COptMethodGA::optimise()
 
   if (!initialize())
     {
+      // initialisation failed, we exit
       if (mpCallBack)
         mpCallBack->finishItem(mhGenerations);
-
       return false;
     }
 
@@ -497,6 +539,10 @@ bool COptMethodGA::optimise()
   // the others are random
   Continue &= creation(1, mPopulationSize);
 
+#ifdef DEBUG_OPT
+  serializepop(0, mPopulationSize);
+#endif
+  
   Continue &= select();
   mBestIndex = fittest();
 
@@ -511,11 +557,11 @@ bool COptMethodGA::optimise()
       mpParentTask->output(COutputInterface::DURING);
     }
 
+  // test if the user wants to stop, and do so if needed
   if (!Continue)
     {
       if (mpCallBack)
         mpCallBack->finishItem(mhGenerations);
-
       cleanup();
       return true;
     }
@@ -557,24 +603,26 @@ bool COptMethodGA::optimise()
       if (mBestIndex != C_INVALID_INDEX &&
           mValue[mBestIndex] < mBestValue)
         {
+	  // reset the stalled counters, since we made progress this time
           Stalled = Stalled10 = Stalled30 = Stalled50 = 0;
+	  // keep best value
           mBestValue = mValue[mBestIndex];
-
-          Continue &= mpOptProblem->setSolution(mBestValue, *mIndividual[mBestIndex]);
-
+          // pass the current best value upstream
+	  Continue &= mpOptProblem->setSolution(mBestValue, *mIndividual[mBestIndex]);
           // We found a new best value lets report it.
-          //if (mpReport) mpReport->printBody();
           mpParentTask->output(COutputInterface::DURING);
         }
 
       if (mpCallBack)
         Continue &= mpCallBack->progressItem(mhGenerations);
+#ifdef DEBUG_OPT
+      serializepop(0, mPopulationSize);
+#endif
     }
 
   if (mpCallBack)
     mpCallBack->finishItem(mhGenerations);
 
   cleanup();
-
   return true;
 }

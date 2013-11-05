@@ -6,7 +6,7 @@
 #ifndef QANIMATION_CONTROLS_H
 #define QANIMATION_CONTROLS_H
 
-#include <QWidget>
+#include <QtGui/QWidget>
 
 #include <qlayout/ui_CQAnimationControls.h>
 

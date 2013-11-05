@@ -1,21 +1,13 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CQScreenshotOptionsDialog.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 23:41:05 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #include "CQScreenshotOptionsDialog.h"
 
-#include <QColor>
-#include <QDoubleValidator>
-#include <QPalette>
+#include <QtGui/QColor>
+#include <QtGui/QDoubleValidator>
+#include <QtGui/QPalette>
 
 #include <iostream>
 #include <assert.h>
@@ -26,25 +18,25 @@
 CQScreenshotOptionsDialog::CQScreenshotOptionsDialog(double layoutX, double layoutY, double layoutWidth, double layoutHeight,
     double currentX, double currentY, double currentWidth, double currentHeight, unsigned int imageWidth, unsigned int imageHeight,
     int lastFrame, QWidget* pParent):
-    QDialog(pParent),
-    mLayoutX(layoutX),
-    mLayoutY(layoutY),
-    mLayoutWidth(layoutWidth),
-    mLayoutHeight(layoutHeight),
-    mCurrentX(currentX),
-    mCurrentY(currentY),
-    mCurrentWidth(currentWidth),
-    mCurrentHeight(currentHeight),
-    mFrameOption(UNSET),
-    mX(mCurrentX),
-    mY(mCurrentY),
-    mWidth(mCurrentWidth),
-    mHeight(mCurrentHeight),
-    mImageWidth(imageWidth),
-    mImageHeight(imageHeight),
-    mDrawSelectionDecorations(false),
-    mLastFrame(lastFrame),
-    mFramesEditHighlighted(false)
+  QDialog(pParent),
+  mLayoutX(layoutX),
+  mLayoutY(layoutY),
+  mLayoutWidth(layoutWidth),
+  mLayoutHeight(layoutHeight),
+  mCurrentX(currentX),
+  mCurrentY(currentY),
+  mCurrentWidth(currentWidth),
+  mCurrentHeight(currentHeight),
+  mFrameOption(UNSET),
+  mX(mCurrentX),
+  mY(mCurrentY),
+  mWidth(mCurrentWidth),
+  mHeight(mCurrentHeight),
+  mImageWidth(imageWidth),
+  mImageHeight(imageHeight),
+  mDrawSelectionDecorations(false),
+  mLastFrame(lastFrame),
+  mFramesEditHighlighted(false)
 {
   setupUi(this);
   QPalette palette = this->mpFramesEdit->palette();
@@ -53,7 +45,6 @@ CQScreenshotOptionsDialog::CQScreenshotOptionsDialog(double layoutX, double layo
   // we disable the edit window after we get the background color
   // otherwise we save the background for the disabled state
   this->mpFramesEdit->setEnabled(false);
-
 
   // check if we need to display the frame options, if yes make them visible and enable them
   this->mpFramesWidget->setEnabled(this->mLastFrame > 0);
@@ -82,7 +73,6 @@ CQScreenshotOptionsDialog::CQScreenshotOptionsDialog(double layoutX, double layo
   pDisplayButtonGroup->addButton(this->mpCustomButton);
   pDisplayButtonGroup->setExclusive(true);
   connect(pDisplayButtonGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(slotDisplayButtonClicked(QAbstractButton*)));
-
 
   //
   // set validators on the input fields
@@ -302,7 +292,6 @@ void CQScreenshotOptionsDialog::slotImageWidthChanged(int w)
       this->mpImageHeightSpinbox->setValue(h);
       this->mImageHeight = h;
       connect(this->mpImageHeightSpinbox, SIGNAL(valueChanged(int)), this, SLOT(slotImageHeightChanged(int)));
-
     }
 
   // set the new width
@@ -332,7 +321,6 @@ void CQScreenshotOptionsDialog::slotImageHeightChanged(int h)
       this->mpImageWidthSpinbox->setValue(w);
       this->mImageWidth = w;
       connect(this->mpImageWidthSpinbox, SIGNAL(valueChanged(int)), this, SLOT(slotImageWidthChanged(int)));
-
     }
 
   // set the new width
@@ -381,7 +369,6 @@ void CQScreenshotOptionsDialog::slotWidthChanged(const QString& wt)
     }
 }
 
-
 // called when the width is changed
 void CQScreenshotOptionsDialog::slotHeightChanged(const QString& ht)
 {
@@ -412,7 +399,6 @@ void CQScreenshotOptionsDialog::slotHeightChanged(const QString& ht)
       this->mpKeepAreaAspectCheckbox->setEnabled(true);
     }
 }
-
 
 // called when the x value is changed
 void CQScreenshotOptionsDialog::slotXChanged(const QString& xt)
@@ -579,8 +565,6 @@ void CQScreenshotOptionsDialog::slotFramesTextEditingFinished()
     }
 }
 
-
-
 // --------- Validator ------
 
 // the [0-9] are used instead of \\d because I only want these digits and not any symbol of any alphabet that counts as a digit
@@ -588,12 +572,11 @@ const QString CQFrameInputValidator::ValidRegExpString("^(\\s*[0-9]+\\s*(-\\s*(?
 const QString CQFrameInputValidator::IntermediateRegExpString("^(?:,|-|[0-9]|\\s)*$");
 const QString CQFrameInputValidator::ClosedRangeGroupRegExpString("^\\s*([0-9]+)\\s*-\\s*([0-9]+)\\s*$");
 
-
 CQFrameInputValidator::CQFrameInputValidator(QObject* pParent):
-    QValidator(pParent)
-    , mValidationRegExp(ValidRegExpString)
-    , mIntermediateRegExp(IntermediateRegExpString)
-    , mClosedRangeGroupRegExp(ClosedRangeGroupRegExpString)
+  QValidator(pParent)
+  , mValidationRegExp(ValidRegExpString)
+  , mIntermediateRegExp(IntermediateRegExpString)
+  , mClosedRangeGroupRegExp(ClosedRangeGroupRegExpString)
 {
   this->mValidationRegExp.setPatternSyntax(QRegExp::RegExp2);
   this->mIntermediateRegExp.setPatternSyntax(QRegExp::RegExp2);
@@ -637,5 +620,3 @@ QValidator::State CQFrameInputValidator::validate(QString& input, int & /*pos*/)
   // if not, we check with mIntermediateRegExp if the state is intermediate
   return state;
 }
-
-

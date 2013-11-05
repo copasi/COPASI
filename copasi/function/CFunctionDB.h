@@ -74,6 +74,9 @@ public:
 
   bool load();
 
+  bool load(const std::string& fileName);
+  bool save(const std::string& fileName);
+
   /**
    *  Loads an object with data coming from a CReadConfig object.
    *  (CReadConfig object reads an input stream)

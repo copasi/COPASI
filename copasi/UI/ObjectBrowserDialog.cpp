@@ -1,30 +1,22 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserDialog.cpp,v $
-//   $Revision: 1.15 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/18 12:21:36 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "ObjectBrowserDialog.h"
-#include <QPushButton>
-#include <QLayout>
-#include <QGridLayout>
-#include <QCloseEvent>
+#include <QtGui/QPushButton>
+#include <QtGui/QLayout>
+#include <QtGui/QGridLayout>
+#include <QtGui/QCloseEvent>
 
 #include "copasi.h"
 
@@ -38,7 +30,7 @@
  *  name 'name' and widget flags set to 'f'.
  */
 ObjectBrowserDialog::ObjectBrowserDialog(QWidget* parent, const char* name, bool modal, int state)
-    : QDialog(parent),
+  : QDialog(parent),
     clearButton(NULL),
     toggleViewButton(NULL),
     cancelButton(NULL),

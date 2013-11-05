@@ -1,12 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CRenameHandler.h,v $
-   $Revision: 1.3 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:10 $
-   End CVS Header */
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -16,11 +18,11 @@
 //just the abstract class to handle things that need to be done after every rename
 
 class CRenameHandler
-  {
-  public:
-    virtual ~CRenameHandler(){};
+{
+public:
+  virtual ~CRenameHandler() {};
 
-    virtual bool handle(const std::string & oldCN, const std::string & newCN) const = 0;
-  };
+  virtual void handle(const std::string & oldCN, const std::string & newCN) const = 0;
+};
 
 #endif

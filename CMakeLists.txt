@@ -33,11 +33,54 @@ if (NOT WIN32)
  SET(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
 endif()
 
-#todo: write test program that compiles against CopasiVersion.h and
-#      determines the version
-set(COPASI_VERSION_MAJOR 4)
-set(COPASI_VERSION_MINOR 9)
-set(COPASI_VERSION_BUILD 45)
+# add an option to override the version
+set(COPASI_OVERRIDE_VERSION "" CACHE STRING "Version String to override the version parsed from the header" )
+mark_as_advanced(COPASI_OVERRIDE_VERSION)
+
+# if the header file is not present, then set the override version to this one
+if (NOT EXISTS "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h" AND NOT COPASI_OVERRIDE_VERSION)
+  set(COPASI_OVERRIDE_VERSION "4.11.65")
+endif()
+
+
+set(COPASI_VERSION_MAJOR)
+set(COPASI_VERSION_MINOR)
+set(COPASI_VERSION_BUILD)
+set(COPASI_VERSION_COMMENT)
+# if override version is set, parse it and configure the header file with it
+if (COPASI_OVERRIDE_VERSION)
+  # parse the override string   
+  string(STRIP "${COPASI_OVERRIDE_VERSION}" VersionString)
+  string(REPLACE "." ";" VersionString "${VersionString}" )
+  string(REPLACE "-" ";" VersionString "${VersionString}" )
+  list(LENGTH VersionString versionLength)
+  list(GET VersionString 0 COPASI_VERSION_MAJOR )
+  list(GET VersionString 1 COPASI_VERSION_MINOR )
+  list(GET VersionString 2 COPASI_VERSION_BUILD )
+
+  if(${versionLength} GREATER 3)
+      list(GET VersionString 3 COPASI_VERSION_COMMENT )
+  endif()
+  
+  # configure file
+  configure_file (
+    "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h.in"
+    "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h"
+  )
+    
+endif()
+
+set(COPASI_VERSION)
+# the CopasiVersion file only exists when the git tools have been configured
+# and used. if that is not the case, we default to the canned version. 
+if (EXISTS "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h")
+  file(READ "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h" COPASI_VERSION)
+endif()
+if (COPASI_VERSION)
+  string(REGEX REPLACE ".*COPASI_VERSION_MAJOR ([0-9]+).*" "\\1" COPASI_VERSION_MAJOR "${COPASI_VERSION}")
+  string(REGEX REPLACE ".*COPASI_VERSION_MINOR ([0-9]+).*" "\\1" COPASI_VERSION_MINOR "${COPASI_VERSION}")
+  string(REGEX REPLACE ".*COPASI_VERSION_BUILD ([0-9]+).*" "\\1" COPASI_VERSION_BUILD "${COPASI_VERSION}")
+endif()
 
 include (CMakeTestCCompiler)
 include (CheckCSourceCompiles)
@@ -54,7 +97,6 @@ CHECK_TYPE_SIZE("void*"  CMAKE_SIZEOF_VOID_P)
 
 set(CMAKE_INSTALL_LIBDIR lib CACHE PATH "Full path to the library output directory")
 mark_as_advanced(CMAKE_INSTALL_LIBDIR)
-
 
 set(COPASI_BUILD_TYPE "native")
 if (CMAKE_SIZEOF_VOID_P EQUAL 4)
@@ -79,11 +121,15 @@ endif(COPASI_DEPENDENCY_DIR AND EXISTS ${COPASI_DEPENDENCY_DIR})
 
 set(CMAKE_MODULE_PATH "${COPASI_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release CACHE STRING
-      "Choose the type of build, options are: Debug or Release."
-      FORCE)
-endif(NOT CMAKE_BUILD_TYPE)
+IF(DEFINED CMAKE_BUILD_TYPE)
+   SET(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING 
+   "Choose the type of build, options are: Debug or Release."
+   FORCE)
+ELSE()
+   SET(CMAKE_BUILD_TYPE Release CACHE STRING 
+   "Choose the type of build, options are: Debug or Release."
+   FORCE)
+ENDIF()
 
 if (BUILD_TESTS)
 find_path(CPPUNIT_INCLUDE_DIR cppunit/Test.h )
@@ -94,15 +140,15 @@ endif(BUILD_TESTS)
 set (DEFAULT_EXTUNIT OFF)
 # set (DEFAULT_NONLIN OFF)
 set (DEFAULT_DEBUG_TRACING OFF)
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-# for the debug version we need to enable
-# COPASI_DEBUG
-
-add_definitions(-DCOPASI_DEBUG)
-set (DEFAULT_EXTUNIT ON)
-set (DEFAULT_NONLIN ON)
-set (DEFAULT_DEBUG_TRACING ON)
-
+  # for the debug version we need to enable
+  # COPASI_DEBUG
+  add_definitions(-DCOPASI_DEBUG)
+  
+  set (DEFAULT_EXTUNIT ON)
+  set (DEFAULT_NONLIN ON)
+  set (DEFAULT_DEBUG_TRACING ON)
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 # there should be an option to disable the debug flag, as it litters the
@@ -118,55 +164,45 @@ endif(ENABLE_COPASI_DEBUG_TRACE)
 # Sven developed an option of scaling the residuals in the parameter estimation
 # by the current simulation value (instead of 0) this removes the bias when
 # using value scaled experimental data.
-option(ENABLE_COASI_PARAMETERFITTING_RESIDUAL_SCALING "Scale parameter estimation residuals with the simulation value" OFF)
-if (ENABLE_COASI_PARAMETERFITTING_RESIDUAL_SCALING)
-
-add_definitions(-DCOASI_PARAMETERFITTING_RESIDUAL_SCALING)
-
-endif(ENABLE_COASI_PARAMETERFITTING_RESIDUAL_SCALING)
-
-option(ENABLE_NEW_PLOTSUBWIDGET "Enable new listview based plot subwidget" ON)
-if (ENABLE_NEW_PLOTSUBWIDGET)
-add_definitions(-DUSE_NEW_PLOTSUBWIDGET)
-endif(ENABLE_NEW_PLOTSUBWIDGET)
+option(ENABLE_COPASI_PARAMETERFITTING_RESIDUAL_SCALING "Scale parameter estimation residuals with the simulation value" OFF)
+if (ENABLE_COPASI_PARAMETERFITTING_RESIDUAL_SCALING)
+  add_definitions(-DCOPASI_PARAMETERFITTING_RESIDUAL_SCALING)
+endif(ENABLE_COPASI_PARAMETERFITTING_RESIDUAL_SCALING)
 
 option(ENABLE_COPASI_BANDED_GRAPH "Enable the banded graph widget" OFF)
 if (ENABLE_COPASI_BANDED_GRAPH)
-add_definitions(-DCOPASI_BANDED_GRAPH)
+  add_definitions(-DCOPASI_BANDED_GRAPH)
 endif(ENABLE_COPASI_BANDED_GRAPH)
-
-option(ENABLE_COPASI_CROSSVALIDATION "Enable the Parameter estimation Cross Validation" ON)
-if (ENABLE_COPASI_CROSSVALIDATION)
-add_definitions(-DCOPASI_CROSSVALIDATION)
-endif(ENABLE_COPASI_CROSSVALIDATION)
 
 option(ENABLE_COPASI_NONLIN_DYN_OSCILLATION "Oscillation Widget" ON)
 if (ENABLE_COPASI_NONLIN_DYN_OSCILLATION)
   add_definitions(-DCOPASI_NONLIN_DYN_OSCILLATION)
 endif()
 
-option(ENABLE_COPASI_NONLIN_DYN "Non linear Dynamics" ON)
-if (ENABLE_COPASI_NONLIN_DYN)
-  add_definitions(-DCOPASI_NONLIN_DYN)
-endif(ENABLE_COPASI_NONLIN_DYN)
-
 option(ENABLE_COPASI_EXTUNIT "Extended Unit Support" ${DEFAULT_EXTUNIT})
 if (ENABLE_COPASI_EXTUNIT)
-# COPASI_EXTUNIT
-add_definitions(-DCOPASI_EXTUNIT)
-
+  add_definitions(-DCOPASI_EXTUNIT)
 endif(ENABLE_COPASI_EXTUNIT)
 
 option(ENABLE_WITH_MERGEMODEL "Enable Model Merging" OFF)
 if (ENABLE_WITH_MERGEMODEL)
-# WITH_MERGEMODEL
-add_definitions(-DWITH_MERGEMODEL)
-
+  add_definitions(-DWITH_MERGEMODEL)
 endif(ENABLE_WITH_MERGEMODEL)
+
+option(ENABLE_USE_MATH_CONTAINER "Enable the use of the Math container" OFF)
+if (ENABLE_USE_MATH_CONTAINER)
+  add_definitions(-DUSE_MATH_CONTAINER)
+endif(ENABLE_USE_MATH_CONTAINER)
 
 option (BUILD_GUI "Disable this if you do not want to build the COPASI GUI (CopasiUI)." ON)
 
 find_package(OpenGL)
+
+if ( NOT CLAPACK_FOUND )
+  find_package(CLAPACK REQUIRED)
+endif ()
+
+include_directories(BEFORE ${CLAPACK_INCLUDE_DIR})
 
 find_package(EXPAT REQUIRED)
 include_directories(BEFORE ${EXPAT_INCLUDE_DIR})
@@ -178,10 +214,23 @@ find_package(RAPTOR REQUIRED)
 include_directories(BEFORE ${RAPTOR_INCLUDE_DIR})
 
 #TODO find libsbml, version should be 4.1 or 4.2
-# if USE_CRENDER_EXTENSION is enabled, we need to make sure libsbml has
-# the render extension
+# we need to make sure libsbml has the render extension
 find_package(LIBSBML REQUIRED)
 include_directories(BEFORE ${LIBSBML_INCLUDE_DIR})
+
+# TODO find libsedml, version
+# Option for the COPASI support for SEDML 
+option (ENABLE_COPASI_SEDML "Enables SEDML support." OFF)
+mark_as_advanced(ENABLE_COPASI_SEDML)
+if(ENABLE_COPASI_SEDML)
+  add_definitions(-DCOPASI_SEDML)
+  if (WIN32)
+	add_definitions(-DLIBSEDML_STATIC)
+  endif()
+  
+  find_package(LIBSEDML REQUIRED)
+  include_directories(BEFORE ${LIBSEDML_INCLUDE_DIR})
+endif(ENABLE_COPASI_SEDML)
 
 # we need swig for the language bindings. Only if SWIG was found, the options to
 # build the different language bindings are enabled
@@ -194,30 +243,29 @@ find_package(ICONV)
 #platform specific defines
 
 if(UNIX)
-if(APPLE)
-add_definitions(-DDarwin)
-# COPASI dos not compile with apple llvm
-if(CMAKE_GENERATOR AND XCODE_VERSION)
-if(CMAKE_GENERATOR MATCHES "Xcode" AND (${XCODE_VERSION} VERSION_EQUAL 4 OR ${XCODE_VERSION} VERSION_GREATER 4))
-# Xcode 4 defaults to the Apple LLVM Compiler.
-# Override the default compiler selection because Blender only compiles with gcc
-set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "com.apple.compilers.llvmgcc42")
-endif()
-endif()
+  if(APPLE)
+    add_definitions(-DDarwin)
+    if(CMAKE_GENERATOR AND XCODE_VERSION)
+      option (COPASI_OVERWRITE_XCODE_GENERATOR "If true, will default to llvmgcc42 rather than clang." OFF)
+      if(COPASI_OVERWRITE_XCODE_GENERATOR AND CMAKE_GENERATOR MATCHES "Xcode" AND (${XCODE_VERSION} VERSION_EQUAL 4 OR ${XCODE_VERSION} VERSION_GREATER 4))
+        # Xcode 4 defaults to the Apple LLVM Compiler.
+        set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "com.apple.compilers.llvmgcc42")
+      endif()
+    endif()
+  else()
+    add_definitions(-DLinux)
+    if(NOT CYGWIN)
+      # on cygwin all code is position independent so -fPIC is not needed
+      set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing -fPIC")
+      set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing -fPIC")
+    endif()
+  endif()
 else()
-add_definitions(-DLinux)
-if(NOT CYGWIN)
-    # on cygwin all code is position independent so -fPIC is not needed
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing -fPIC")
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing -fPIC")
-endif()
-endif()
-else()
-if (CYGWIN)
-add_definitions(-DCygwin)
-else()
-add_definitions(-DWin32)
-endif()
+  if (CYGWIN)
+    add_definitions(-DCygwin)
+  else()
+    add_definitions(-DWin32)
+  endif()
 endif()
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
@@ -226,129 +274,14 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
   link_directories(/usr/local/lib)
 endif()
 
-#TODO if we are not on APPLE, we need MKL, CLAPACK or LAPACK
-if(NOT APPLE)
-
-# I go for the easier route simply let the user define what they want
-
-option(LAPACK_USE_MKL "Use MKL Lapack" OFF)
-option(LAPACK_USE_ACML "Use ACML Lapack" OFF)
-option(LAPACK_USE_LAPACK "Use Lapack" OFF)
-option(LAPACK_USE_CLAPACK "Use CLAPACK" ON)
-option(LAPACK_USE_NO_BLAS_WRAP "Use no blas wrap" ON)
-
-
-
 if (WIN32 AND NOT CYGWIN)
-add_definitions(-DLIBSBML_EXPORTS -DLIBLAX_EXPORTS)
-
-add_definitions(-DRAPTOR_STATIC)
-
-
+  add_definitions(-DLIBSBML_EXPORTS -DLIBLAX_EXPORTS)
+  add_definitions(-DRAPTOR_STATIC)
 endif()
-
-if (LAPACK_USE_MKL)
- add_definitions(-DUSE_MKL)
-endif()
-
-if (LAPACK_USE_ACML)
-  set(USE_ACML "yes")
-endif()
-
-if (LAPACK_USE_LAPACK)
- add_definitions(-DUSE_LAPACK)
-endif()
-if (LAPACK_USE_NO_BLAS_WRAP)
- add_definitions(-DNO_BLAS_WRAP)
-endif()
-if (LAPACK_USE_CLAPACK)
- add_definitions(-DUSE_CLAPACK)
- set(LAPACK_CLAPACK_LIBRARY "" CACHE FILEPATH "Path to the CLAPACK library"  )
- set(LAPACK_BLAS_LIBRARY "" CACHE FILEPATH "Path to the BLAS library"  )
- set(LAPACK_F2C_LIBRARY "" CACHE FILEPATH "Path to the F2C library"  )
- set(CLAPACK_LIBRARIES "${CLAPACK_LIBRARY};${BLAS_LIBRARY};${F2C_LIBRARY}")
- set(LAPACK_CLAPACK_INCLUDE_DIR "" CACHE PATH "Path to the CLAPACK includes"  )
- if (EXISTS ${LAPACK_CLAPACK_LIBRARY})
-	set (CLAPACK_FOUND "yes")
- endif()
-
- # this should no longer be necessary
- #if (EXISTS "${LAPACK_CLAPACK_INCLUDE_DIR}/f2c.h")
- #  configure_file("${LAPACK_CLAPACK_INCLUDE_DIR}/f2c.h" "${CMAKE_SOURCE_DIR}/copasi/f2c.h")
- # endif()
- # if (EXISTS "${LAPACK_CLAPACK_INCLUDE_DIR}/clapack.h")
- #  configure_file("${LAPACK_CLAPACK_INCLUDE_DIR}/clapack.h" "${CMAKE_SOURCE_DIR}/copasi/lapack.h")
- # endif()
-
-endif()
-
-## # if we use the intel compiler, we should look for the MKL first, otherwise
-## # we check for CLAPACK and if we can't find that, we look for lapack
-## # if we use CLAPACK, we should find a way to check whether it was compiled with BLASWRAP or not
-##
-## # TODO this actuall checks for several different flavors and it can probably
-## # TODO be used to find out whether we can use MKL, CLAPACK or LAPACK
-##
-## # right now, we only support static linkage
-## set(BLA_STATIC on)
-##
-## # first we check for the MKL
-## set(BLA_VENDOR "Intel(mkl)")
-## find_package(LAPACK)
-##
-##   if (LAPACK_FOUND)
-##     set(USE_MKL "yes")
-##     add_definitions(-DUSE_MKL)
-##   else (LAPACK_FOUND)
-##    # now we search for a generic lapack implementation
-##    set(BLA_VENDOR "Generic")
-##    find_package(LAPACK)
-##
-##    if (LAPACK_FOUND)
-##      # TODO find out if it is LAPACK or CLAPACK
-##      set(USE_LAPACK "yes")
-##      add_definitions(-DUSE_LAPACK)
-##
-##    else (LAPACK_FOUND)
-##       # check for AMD (ACML)
-##       # ACML needs -lgfortran and acml.h needs to be included somewhere
-##       # Should be rather easy to setup copasi.h accordingly
-##       set(BLA_VENDOR ACML)
-##       find_package(LAPACK)
-##       if (LAPACK_FOUND)
-##         set(USE_ACML "yes")
-##         add_definitions(-DUSE_ACML)
-##         message("ACML found, but COPASI can't use it yet, sorry. Please install a different lapack implementation.")
-##       else (LAPACK_FOUND)
-## 	    if (WIN32)
-## 		  # simply allow the LAPACK LIBRARIES to be specified
-##
-## 		else()
-##         message("Could not find a static lapack implementation, COPASI can't be build without one.")
-## 		endif()
-##       endif (LAPACK_FOUND)
-##       return()
-##     endif (LAPACK_FOUND)
-## endif (LAPACK_FOUND)
-##
-##   if(USE_LAPACK OR USE_CLAPACK)
-##     # TODO find out how many bytes a blas integer has
-##     # TODO and set a macro for C_INT that references a C integer type
-##     # TODO with the same size
-##     # For LAPACK, there are no headers and we need to find the size from
-##     # f2c.h, we should probably search for a f2c.h file close to where
-##     # the lapack library was found
-##   endif(USE_LAPACK OR USE_CLAPACK)
-
-else (NOT APPLE)
-  # TODO set the framework
-  include_directories(BEFORE /System/Library/Frameworks/Accelerate.framework/Headers)
-  add_definitions(-DDarwin)
-endif (NOT APPLE)
 
 if(BUILD_GUI)
   # find Qt4
-  find_package(Qt4 4.7.0 REQUIRED QtCore QtOpenGL QtGui Qt3Support)
+  find_package(Qt4 4.7.0 REQUIRED QtCore QtOpenGL QtGui QtXml QtWebKit)
   # check for qwt, TODO check if the version is OK
   find_package(QwtQt4 REQUIRED)
   # check for qwtplot3d
@@ -370,7 +303,6 @@ if(BUILD_GUI)
   endif()
 
   endif(ENABLE_SBW_INTEGRATION)
-
 
   if (APPLE)
     # TODO Carbon is only needed for the GUI
@@ -398,54 +330,18 @@ cmake_dependent_option (ENABLE_OCTAVE "Enable language bindings for the Octave l
 cmake_dependent_option (ENABLE_R "Enable language bindings for the R language." OFF "SWIG_FOUND" OFF)
 
 
-option (ENABLE_CSPMETHOD "Include the CSP method in the COPASI backend library." ON)
-mark_as_advanced(ENABLE_CSPMETHOD)
-if(ENABLE_CSPMETHOD)
-add_definitions(-DWITH_CSPMETHOD)
-endif(ENABLE_CSPMETHOD)
-
-
-option (ENABLE_CRENDER_EXTENSION "Build COPASI with support for the SBML render extension."  ON)
-mark_as_advanced(ENABLE_CRENDER_EXTENSION)
-if(ENABLE_CRENDER_EXTENSION)
-add_definitions(-DUSE_CRENDER_EXTENSION)
-endif(ENABLE_CRENDER_EXTENSION)
-
-option (ENABLE_COPASI_AUTOLAYOUT "Build COPASI with support for generating automatic diagram layout." ON)
-mark_as_advanced(ENABLE_COPASI_AUTOLAYOUT)
-if(ENABLE_COPASI_AUTOLAYOUT)
-add_definitions(-DCOPASI_AUTOLAYOUT)
-endif(ENABLE_COPASI_AUTOLAYOUT)
-
-option (ENABLE_ELEMENTARY_MODE_DISPLAY "Build COPASI with support for highlighting elementary modes in diagrams." ON)
-mark_as_advanced(ENABLE_ELEMENTARY_MODE_DISPLAY)
-if(ENABLE_ELEMENTARY_MODE_DISPLAY)
-add_definitions(-DELEMENTARY_MODE_DISPLAY)
-endif(ENABLE_ELEMENTARY_MODE_DISPLAY)
-
-option (ENABLE_FLUX_ANIMATION "Enable support for animating fluxes in diagrams." ON)
-mark_as_advanced(ENABLE_FLUX_ANIMATION)
-if(ENABLE_FLUX_ANIMATION)
-add_definitions(-DFLUX_ANIMATION)
-endif(ENABLE_FLUX_ANIMATION)
-
-option (ENABLE_CELLDESIGNER_IMPORT "Enable support for importing CellDesigner diagrams." ON)
-mark_as_advanced(ENABLE_CELLDESIGNER_IMPORT)
-if(ENABLE_CELLDESIGNER_IMPORT)
-add_definitions(-DCELLDESIGNER_IMPORT)
-endif(ENABLE_CELLDESIGNER_IMPORT)
-
-option (ENABLE_FRAMEBUFFER_SCREENSHOTS "Enable screenshots using the OpenGL framebuffer extensions." ON)
-mark_as_advanced(ENABLE_FRAMEBUFFER_SCREENSHOTS)
-if(ENABLE_FRAMEBUFFER_SCREENSHOTS)
-add_definitions(-DFRAMEBUFFER_SCREENSHOTS)
-endif(ENABLE_FRAMEBUFFER_SCREENSHOTS)
-
 option (ENABLE_USE_SBMLUNIT "Enables extended unit support." OFF)
 mark_as_advanced(ENABLE_USE_SBMLUNIT)
 if(ENABLE_USE_SBMLUNIT)
 add_definitions(-DUSE_SBMLUNIT)
 endif(ENABLE_USE_SBMLUNIT)
+
+#Option for the COPASI support for SEDML currently being developed by Joseph 
+option (ENABLE_COPASI_SEDML "Enables SEDML support." OFF)
+mark_as_advanced(ENABLE_COPASI_SEDML)
+if(ENABLE_COPASI_SEDML)
+  add_definitions(-DCOPASI_SEDML)
+endif(ENABLE_COPASI_SEDML)
 
 # if the MML widget is available, we need to enable "HAVE_MML"
 
@@ -624,15 +520,18 @@ include(InstallRequiredSystemLibraries)
 get_directory_property(DirDefs COMPILE_DEFINITIONS)
 
 message(STATUS "-----------------------------------------------------------
- Building COPASI
+ Building COPASI ${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD} (${CMAKE_BUILD_TYPE})
 
    Source Dir        = ${CMAKE_SOURCE_DIR}
    Binary Dir        = ${CMAKE_BINARY_DIR}
    Install Prefix    = ${CMAKE_INSTALL_PREFIX}
 
  Dependencies:
-
-   Raptor Lib        = ${RAPTOR_LIBRARY}
+   Vendor            = ${BLA_VENDOR}
+   LAPACK Libs       = ${CLAPACK_LIBRARIES}
+   LAPACK LDFLAGS    = ${CLAPACK_LINKER_FLAGS}
+  
+   Raptor Libs       = ${RAPTOR_LIBRARY}
    Raptor include    = ${RAPTOR_INCLUDE_DIR}
 
    libSBML lib       = ${LIBSBML_LIBRARY}
@@ -649,21 +548,19 @@ message(STATUS "-----------------------------------------------------------
    
    SBW lib           = ${SBW_LIBRARIES}
    SBW include       = ${SBW_INCLUDE_DIR}
+   
+   libSBML lib       = ${LIBSBML_LIBRARY}
+   libSBML include   = ${LIBSBML_INCLUDE_DIR}
+   
 
  Options:
 
-   CellDesigner import      = ${ENABLE_CELLDESIGNER_IMPORT}
-   Auto layout              = ${ENABLE_COPASI_AUTOLAYOUT}
    COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
-   Non linear dynamics      = ${ENABLE_COPASI_NONLIN_DYN}
-   Render Extension         = ${ENABLE_CRENDER_EXTENSION}
-   CSP Method               = ${ENABLE_CSPMETHOD}
-   Elementary mode display  = ${ENABLE_ELEMENTARY_MODE_DISPLAY}
-   Flux animation           = ${ENABLE_FLUX_ANIMATION}
-   Screenshots              = ${ENABLE_FRAMEBUFFER_SCREENSHOTS}
+   Math Container           = ${ENABLE_USE_MATH_CONTAINER}
    SBW integration          = ${ENABLE_SBW_INTEGRATION}
    SBML Unit                = ${ENABLE_USE_SBMLUNIT}
    Model Merging            = ${ENABLE_WITH_MERGEMODEL}
+   SEDML support            = ${ENABLE_COPASI_SEDML}
 
    Additional Defines       = ${DirDefs}
 

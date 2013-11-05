@@ -1,7 +1,7 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #include <sstream>
 
@@ -72,7 +72,6 @@ bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag 
     const CObjectInterface::ObjectSet & requestedObjects,
     CObjectInterface::UpdateSequence & updateSequence)
 {
-  std::ofstream GetUpdateSequence("GetUpdateSequence.dot");
 
   bool success = true;
 
@@ -121,8 +120,13 @@ bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag 
       success = false;
     }
 
+#ifdef COPASI_DEBUG_TRACE
+{
+  std::ofstream GetUpdateSequence("GetUpdateSequence.dot");
   exportDOTFormat(GetUpdateSequence, "GetUpdateSequence");
   GetUpdateSequence.close();
+}
+#endif //COPASI_DEBUG_TRACE
 
   if (!success) goto finish;
 
@@ -160,6 +164,7 @@ finish:
       CCopasiMessage(CCopasiMessage::ERROR, MCMathModel + 3, (*it)->getCN().c_str());
     }
 
+#ifdef XXXX
   CObjectInterface::UpdateSequence::const_iterator itSeq = updateSequence.begin();
   CObjectInterface::UpdateSequence::const_iterator endSeq = updateSequence.end();
 
@@ -167,10 +172,18 @@ finish:
 
   for (; itSeq != endSeq; ++itSeq)
     {
-      std::cout << *static_cast< const CMathObject * >(*itSeq);
+      if (dynamic_cast< const CMathObject * >(*itSeq))
+        {
+          std::cout << *static_cast< const CMathObject * >(*itSeq);
+        }
+      else
+        {
+          std::cout << (*itSeq)->getCN() << std::endl;
+        }
     }
 
   std::cout << "End" << std::endl;
+#endif //
 
   return success;
 }

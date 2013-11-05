@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-//   $Revision: 1.64 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/11/23 18:53:38 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -122,6 +114,11 @@ public:
    * @result bool continue
    */
   virtual bool calculate();
+
+  /**
+   * Reset counters and objective value.
+   */
+  void reset();
 
   /**
    * Do all necessary restore procedures for the model
@@ -316,10 +313,21 @@ public:
   const bool & getCalculateStatistics() const;
 
   /**
-   * Retrieve the objective function.
+   * Retrieve the evaluation counter.
    * @return const unsigned C_INT32 & functionEvaluations
    */
   const unsigned C_INT32 & getFunctionEvaluations() const;
+
+  /**
+   * Adds increment to the function evaluation counter
+   * @param unsigned C_INT32 increment
+   */
+  void incrementEvaluations(unsigned C_INT32 increment);
+
+  /**
+   * Resets the function evaluation counter
+   */
+  void resetEvaluations();
 
   /**
    * Retrieve the objective function.

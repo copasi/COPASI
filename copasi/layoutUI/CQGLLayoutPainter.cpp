@@ -391,9 +391,7 @@ void CQGLLayoutPainter::calculateAndAssignBounds(CLayout* pLayout)
   CLPoint differenceToOrigin(
     -mMinX,
     -mMinY
-#ifdef USE_CRENDER_EXTENSION
     , -bb.getPosition().getZ()
-#endif
   );
   pLayout->moveBy(differenceToOrigin);
 
@@ -2012,8 +2010,14 @@ void CQGLLayoutPainter::clear_extension_functions()
 }
 
 #ifdef __APPLE__
+#ifndef COPASI_MAC_USE_DEPRECATED_LOOKUP
+#include <dlfcn.h>
+#endif
 void * CQGLLayoutPainter::MyNSGLGetProcAddress(const char *name)
 {
+#ifndef COPASI_MAC_USE_DEPRECATED_LOOKUP
+  return dlsym(RTLD_DEFAULT, name);
+#else
   NSSymbol symbol;
   char *symbolName;
   symbolName = (char*)malloc(strlen(name) + 2);
@@ -2031,11 +2035,11 @@ void * CQGLLayoutPainter::MyNSGLGetProcAddress(const char *name)
   free(symbolName);
 
   return symbol ? NSAddressOfSymbol(symbol) : NULL;
+#endif
 }
 
 #endif // __APPLE__
 
-#ifdef ELEMENTARY_MODE_DISPLAY
 // the following methods are used to highlight elements in the diagram
 // based on their association to model elements
 
@@ -2138,5 +2142,3 @@ bool CQGLLayoutPainter::getHighlightFlag() const
 {
   return this->mpRenderer->getHighlightFlag();
 }
-
-#endif // ELEMENTARY_MODE_DISPLAY

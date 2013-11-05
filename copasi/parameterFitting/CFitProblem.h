@@ -187,7 +187,6 @@ public:
    */
   const CExperimentSet & getExperiementSet() const;
 
-#ifdef COPASI_CROSSVALIDATION
   /**
    * Retrieve the cross validation set.
    * @return const CCrossValidationSet & crossValidationSet
@@ -219,7 +218,6 @@ public:
    * @return const C_FLOAT64 & RMS
    */
   const C_FLOAT64 & getCrossValidationSD() const;
-#endif // COPASI_CROSSVALIDATION
 
   /**
    * Fix files written with Version 4.10.55, which wrote the square root of user defined weights for the
@@ -241,14 +239,12 @@ private:
    */
   void initObjects();
 
-#ifdef COPASI_CROSSVALIDATION
   /**
    * Do the calculation for the cross validation based on the solution variables
    * and determine whether to continue parameter fitting
    * @result bool continue
    */
   bool calculateCrossValidation();
-#endif // COPASI_CROSSVALIDATION
 
 private:
   // Attributes
@@ -311,7 +307,6 @@ private:
    */
   CVector< C_FLOAT64 > mExperimentDependentValues;
 
-#ifdef COPASI_CROSSVALIDATION
   /**
    * The experiment set to which the model is fitted.
    */
@@ -374,7 +369,6 @@ private:
    * A counter to determine whether the threshold is reached.
    */
   unsigned C_INT32 mThresholdCounter;
-#endif // COPASI_CROSSVALIDATION
 
   /**
    * Copy of the trajectory problem so that we can restore the defaults

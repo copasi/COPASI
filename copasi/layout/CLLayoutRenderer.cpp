@@ -63,11 +63,9 @@
 #endif // _WIN32
 
 #ifdef __APPLE__
-#ifdef ELEMENTARY_MODE_DISPLAY
 #include <string>
 #include <stdlib.h>
 #include <mach-o/dyld.h>
-#endif // ELEMENTARY_MODE_DISPLAY
 # include "OpenGL/gl.h"
 # include "OpenGL/glu.h"
 #else
@@ -120,14 +118,11 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLGlobalRenderInforma
   mDeduceSpeciesReferenceRoles(false),
   mpSelectionBox(NULL),
   mpImageTexturizer(NULL)
-#ifdef ELEMENTARY_MODE_DISPLAY
   , mHighlight(true)
   , mFogDensity(0.8f)
   , mGLFunctionsInitialized(false)
   , mpGlFogCoordfEXT(NULL)
-#endif // ELEMENTARY_MODE_DISPLAY
 {
-#ifdef ELEMENTARY_MODE_DISPLAY
   this->mHighlightColor[0] = 0.5;
   this->mHighlightColor[1] = 0.0;
   this->mHighlightColor[2] = 0.0;
@@ -136,7 +131,6 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLGlobalRenderInforma
   this->mFogColor[1] = 0.5;
   this->mFogColor[2] = 0.5;
   this->mFogColor[3] = 1.0;
-#endif // ELEMENTARY_MODE_DISPLAY
   this->change_style(pRenderInformation);
 }
 
@@ -160,14 +154,11 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLLocalRenderInformat
   mpFontRenderer(NULL),
   mDeduceSpeciesReferenceRoles(false),
   mpSelectionBox(NULL)
-#ifdef ELEMENTARY_MODE_DISPLAY
   , mHighlight(true)
   , mFogDensity(0.8f)
   , mGLFunctionsInitialized(false)
   , mpGlFogCoordfEXT(NULL)
-#endif // ELEMENTARY_MODE_DISPLAY
 {
-#ifdef ELEMENTARY_MODE_DISPLAY
   this->mHighlightColor[0] = 0.5;
   this->mHighlightColor[1] = 0.0;
   this->mHighlightColor[2] = 0.0;
@@ -177,7 +168,6 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLLocalRenderInformat
   this->mFogColor[2] = 0.5;
   this->mFogColor[3] = 1.0;
   this->initialize_gl_extension_functions();
-#endif // ELEMENTARY_MODE_DISPLAY
   this->change_style(pRenderInformation);
 }
 
@@ -951,7 +941,6 @@ void CLLayoutRenderer::draw_layout()
   // first we need to clear the screen
   // with the background color
   glDisable(GL_POLYGON_SMOOTH);
-#ifdef ELEMENTARY_MODE_DISPLAY
 
   if (this->mGLFunctionsInitialized == false)
     {
@@ -975,7 +964,6 @@ void CLLayoutRenderer::draw_layout()
   glEnable(GL_FOG);
   GLfloat highlight = (GLfloat)this->mHighlight;
   GLfloat notHighlight = (GLfloat)(!this->mHighlight);
-#endif // ELEMENTARY_MODE_DISPLAY
 
   if (this->mpResolver)
     {
@@ -985,7 +973,6 @@ void CLLayoutRenderer::draw_layout()
       GLfloat green = (GLfloat)(pBackgroundColor->getGreen() / 255.0);
       GLfloat blue = (GLfloat)(pBackgroundColor->getBlue() / 255.0);
       GLfloat alpha = (GLfloat)(pBackgroundColor->getAlpha() / 255.0);
-#ifdef ELEMENTARY_MODE_DISPLAY
 
       if (this->mHighlight == false)
         {
@@ -996,7 +983,6 @@ void CLLayoutRenderer::draw_layout()
           alpha = (GLfloat)((alpha + this->mFogColor[3]) * this->mFogDensity);
         }
 
-#endif // ELEMENTARY_MODE_DISPLAY
       glClearColor((GLclampf)red,
                    (GLclampf)green,
                    (GLclampf)blue,
@@ -1015,11 +1001,9 @@ void CLLayoutRenderer::draw_layout()
       const CLTextGlyph* pTG = NULL;
       std::vector<const CLGraphicalObject*>::iterator it = this->mDrawables.begin(), endit = this->mDrawables.end();
       const CLGraphicalObject* pGO = NULL;
-#ifdef ELEMENTARY_MODE_DISPLAY
 // this is needed to highlight or fog certain elements in the diagram
       const CCopasiObject* pModelObject = NULL;
       std::set<const CLGraphicalObject*>::const_iterator end = this->mHighlightedObjects.end();
-#endif // ELEMENTARY_MODE_DISPLAY
 
       while (it != endit)
         {
@@ -1036,8 +1020,6 @@ void CLLayoutRenderer::draw_layout()
               ++it;
               continue;
             }
-
-#ifdef ELEMENTARY_MODE_DISPLAY
 
 // this is needed to highlight or fog certain elements in the diagram
           const CLGraphicalObject* pGO2 = NULL;
@@ -1083,8 +1065,6 @@ void CLLayoutRenderer::draw_layout()
                   (*(this->mpGlFogCoordfEXT))(notHighlight);
                 }
             }
-
-#endif //ELEMENTARY_MODE_DISPLAY
 
           if ((pSRG != NULL && pSRG->getCurve().getNumCurveSegments() != 0))
             {
@@ -2997,7 +2977,7 @@ void CLLayoutRenderer::map_arrow_head(const CLPoint& mapTo, const CLPoint& direc
 void CLLayoutRenderer::TESS_ERROR(GLenum error)
 {
   const char *szError = (const char*)gluErrorString(error);
-  CCopasiMessage(CCopasiMessage::EXCEPTION, "tesselation error: %s", szError);  
+  CCopasiMessage(CCopasiMessage::EXCEPTION, "tesselation error: %s", szError);
 }
 
 void CLLayoutRenderer::COMBINE_CALLBACK(GLdouble coords[3], GLdouble** /*vertex_data[4]*/, GLfloat* /*weight[4]*/, GLdouble** dataOut)
@@ -3403,7 +3383,7 @@ void CLLayoutRenderer::update_style_information()
         }
     }
 
-  std::map<const CLGraphicalObject*, const CLStyle*>::const_iterator it2 = this->mStyleMap.begin(), endit2 = this->mStyleMap.end();
+  //std::map<const CLGraphicalObject*, const CLStyle*>::const_iterator it2 = this->mStyleMap.begin(), endit2 = this->mStyleMap.end();
 }
 
 /**
@@ -3487,7 +3467,7 @@ void CLLayoutRenderer::update_textures_and_colors()
           else
             {
               // check if the texture has the correct scale and if not, rescale it
-              std::pair<double, double> size = this->mpFontRenderer->getTextureSize(fontSpec, text);
+              //std::pair<double, double> size = this->mpFontRenderer->getTextureSize(fontSpec, text);
               CLTextTextureSpec* pTexture = pos2->second;
 
               //std::cout << "Existing texture found: " << pTexture->mTextureName;
@@ -3952,7 +3932,7 @@ void CLLayoutRenderer::update_textures_and_colors(const CLGroup* pGroup, double 
               else
                 {
                   // check if the texture is large enough
-                  std::pair<double, double> size = this->mpFontRenderer->getTextureSize(fontSpec, text);
+                  //std::pair<double, double> size = this->mpFontRenderer->getTextureSize(fontSpec, text);
                   CLTextTextureSpec* pTexture = pos2->second;
 
                   if (pTexture != NULL && pTexture->mScale != this->mZoomFactor)
@@ -6006,9 +5986,7 @@ bool CLLayoutRenderer::is_curve_segment_visible(const CLLineSegment& segment, do
               CLLineSegment temp_ls;
               temp_ls.setIsBezier(false);
               CLPoint p(pData[0], pData[1]
-#ifdef USE_CRENDER_EXTENSION
                         , pData[2]
-#endif // USE_CRENDER_EXTENSION
                        );
               temp_ls.setStart(p);
 
@@ -6016,9 +5994,7 @@ bool CLLayoutRenderer::is_curve_segment_visible(const CLLineSegment& segment, do
                 {
                   p.setX(pData[3 * i]);
                   p.setY(pData[3 * i + 1]);
-#ifdef USE_CRENDER_EXTENSION
                   p.setZ(pData[3 * i + 2]);
-#endif // USE_CRENDER_EXTENSION
                   temp_ls.setEnd(p);
 
                   if (CLLayoutRenderer::is_curve_segment_visible(temp_ls, lx, ly, rx, ry, partial))
@@ -7186,8 +7162,6 @@ void CLLayoutRenderer::setImageTexturizer(CLImageTexturizer* pTexturizer)
   this->mpImageTexturizer = pTexturizer;
 }
 
-#ifdef ELEMENTARY_MODE_DISPLAY
-
 /**
  * Sets the list of model objects that are to be highlighted in the diagram.
  */
@@ -7320,8 +7294,14 @@ void CLLayoutRenderer::initialize_gl_extension_functions()
 }
 
 #ifdef __APPLE__
+#ifndef COPASI_MAC_USE_DEPRECATED_LOOKUP
+#include <dlfcn.h>
+#endif
 void * CLLayoutRenderer::MyNSGLGetProcAddress(const char *name)
 {
+#ifndef COPASI_MAC_USE_DEPRECATED_LOOKUP
+  return dlsym(RTLD_DEFAULT, name);
+#else
   NSSymbol symbol;
   char *symbolName;
   symbolName = (char*)malloc(strlen(name) + 2);
@@ -7331,7 +7311,7 @@ void * CLLayoutRenderer::MyNSGLGetProcAddress(const char *name)
   symbolName[0] = '_';
   symbol = NULL;
 
-//  if (NSIsSymbolNameDefined(symbolName))
+  //  if (NSIsSymbolNameDefined(symbolName))
   {
     const struct mach_header* header = NSAddImage("/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL", NSADDIMAGE_OPTION_RETURN_ON_ERROR);
     // we should always find the OpenGL library
@@ -7343,7 +7323,6 @@ void * CLLayoutRenderer::MyNSGLGetProcAddress(const char *name)
   free(symbolName);
 
   return symbol ? NSAddressOfSymbol(symbol) : NULL;
+#endif
 }
 #endif // __APPLE__
-
-#endif // ELEMENTARY_MODE_DISPLAY

@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tssanalysis/CILDMMethod.cpp,v $
-//   $Revision: 1.36 $
-//   $Name:  $
-//   $Author: nsimus $
-//   $Date: 2012/06/04 11:07:33 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -36,15 +28,15 @@
 //#include "utilities/CAnnotatedMatrix.h"
 //#include "report/CCopasiObjectReference.h"
 
-#include "clapackwrap.h"        // CLAPACK
-#include "blaswrap.h"           // BLAS
+#include "lapack/lapackwrap.h"        // CLAPACK
+#include "lapack/blaswrap.h"           // BLAS
 
 //#define ILDMDEBUG
 
 CILDMMethod::CILDMMethod(const CCopasiContainer * pParent):
-    CTSSAMethod(CCopasiMethod::tssILDM, pParent) //,
-    // mpState(NULL),
-    // mY(NULL)
+  CTSSAMethod(CCopasiMethod::tssILDM, pParent) //,
+  // mpState(NULL),
+  // mY(NULL)
 {
   //assert((void *) &mData == (void *) &mData.dim);
 
@@ -57,9 +49,9 @@ CILDMMethod::CILDMMethod(const CCopasiContainer * pParent):
 
 CILDMMethod::CILDMMethod(const CILDMMethod & src,
                          const CCopasiContainer * pParent):
-    CTSSAMethod(src, pParent) //,
-    //mpState(NULL),
-    //mY(NULL)
+  CTSSAMethod(src, pParent) //,
+  //mpState(NULL),
+  //mY(NULL)
 {
   //assert((void *) &mData == (void *) &mData.dim);
 
@@ -639,7 +631,7 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
   ipiv.resize(fast);
 
   CVector<C_FLOAT64> s_22_array;
-  s_22_array.resize(fast*fast);
+  s_22_array.resize(fast * fast);
 
   CVector<C_FLOAT64> gf_newton;
   gf_newton.resize(fast);
@@ -671,7 +663,6 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
   //tol = 1e-9;
   tol = 1e-9 / mpModel->getNumber2QuantityFactor();
 
-
   err = 10.0 / mpModel->getNumber2QuantityFactor();
   iter = 0;
 
@@ -689,7 +680,7 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
 
   for (i = 0; i < fast; i++)
     for (j = 0; j < fast; j++)
-      s_22_array[j + fast*i] = S_22(j, i);
+      s_22_array[j + fast * i] = S_22(j, i);
 
   for (i = 0; i < fast; i++)
     d_yf[i] = 0.;
@@ -740,7 +731,6 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
       for (i = 0; i < fast; i++)
         {
           gf_newton[i] = -1. * g_newton[i + slow];
-
         }
 
       /*       int dgesv_(integer *n, integer *nrhs, doublereal *a, integer
@@ -829,7 +819,6 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
 
       */
 
-
       for (i = 0; i < fast; i++)
         {
           gf_newton[i] = fabs(gf_newton[i]);
@@ -837,9 +826,6 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
           if (err < gf_newton[i])
             err = gf_newton[i];
         }
-
-
-
 
       iterations = iterations + 1;
 
@@ -855,7 +841,6 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
         g1 = g2;
 
       g2 = err;
-
 
       if (g2 / g1 > 1.0)
         {
@@ -874,7 +859,6 @@ void CILDMMethod::newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info)
 void CILDMMethod::start(const CState * initialState)
 {
   mReducedModel = true;
-
 
   integrationMethodStart(initialState);
 
@@ -907,7 +891,6 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
   C_INT fast = dim - slow;
   C_INT flag_deufl;
 
-
   flag_deufl = 1;  // set flag_deufl = 0 to print the results of calculations
 
   /* calculations before relaxing yf to slow manifold */
@@ -922,7 +905,6 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
 
   C_FLOAT64 number2conc = mpModel->getNumber2QuantityFactor() / mpModel->getCompartments()[0]->getInitialValue();
   //C_FLOAT62 number2conc = 1.;
-
 
   //this is an ugly hack that only makes sense if all metabs are in the same compartment
   //at the moment is is the only case the algorithm deals with
@@ -991,14 +973,12 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
   Output:  mCfast, info */
   newton(c_slow.array(), slow, info);
 
-
   if (info)
     {
       /* TODO */
 
       return;
     }
-
 
   /* calculation of g_relax at point x_relax (after relaxing yf to slow manifold)*/
 
@@ -1047,9 +1027,6 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
     {
       re[i] = fabs(g_relax[i] - g_slow[i]);
       re[i] = re[i] * mEPS;
-
-
-
     }
 
   C_FLOAT64 max = 0.;
@@ -1092,8 +1069,6 @@ void CILDMMethod::emptyVectors()
   mVec_mTMP1.erase(mVec_mTMP1.begin(), mVec_mTMP1.end());
   mVec_mTMP2.erase(mVec_mTMP2.begin(), mVec_mTMP2.end());
   mVec_mTMP3.erase(mVec_mTMP3.begin(), mVec_mTMP3.end());
-
-
 }
 
 /**

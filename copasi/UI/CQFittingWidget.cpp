@@ -14,8 +14,8 @@
 
 #include "CQFittingWidget.h"
 
-#include <qlabel.h>
-#include <qtoolbutton.h>
+#include <QtGui/QLabel>
+#include <QtGui/QToolButton>
 
 #include "UI/CQTaskBtnWidget.h"
 #include "UI/CQTaskHeaderWidget.h"
@@ -23,6 +23,9 @@
 #include "UI/CQFittingItemWidget.h"
 #include "UI/CProgressBar.h"
 #include "UI/CQExperimentData.h"
+
+#include <copasi/utilities/CCopasiMessage.h>
+#include <copasi/UI/CQMessageBox.h>
 
 #include "report/CKeyFactory.h"
 #include "parameterFitting/CFitTask.h"
@@ -126,7 +129,6 @@ bool CQFittingWidget::saveTask()
   for (; it != end; ++it)
     ExperimentMap[it->second] = it->first;
 
-#ifdef COPASI_CROSSVALIDATION
   // Save cross validation experiment set
   CCrossValidationSet * pCrossValidationSet =
     dynamic_cast<CCrossValidationSet *>(pProblem->getGroup("Validation Set"));
@@ -187,8 +189,6 @@ bool CQFittingWidget::saveTask()
   for (; it != end; ++it)
     CrossValidationMap[it->second] = it->first;
 
-#endif // COPASI_CROSSVALIDATION
-
   if (mpCheckRandomize->isChecked() != pProblem->getRandomizeStartValues())
     {
       mChanged = true;
@@ -239,7 +239,6 @@ bool CQFittingWidget::loadTask()
     mExperimentKeyMap[pExperimentSet->getExperiment(i)->CCopasiParameter::getKey()] =
       mpExperimentSet->getExperiment(i)->CCopasiParameter::getKey();
 
-#ifdef COPASI_CROSSVALIDATION
   pdelete(mpCrossValidationSet)
   CCrossValidationSet * pCrossValidationSet =
     dynamic_cast<CCrossValidationSet *>(pProblem->getGroup("Validation Set"));
@@ -252,22 +251,25 @@ bool CQFittingWidget::loadTask()
     mCrossValidationKeyMap[pCrossValidationSet->getExperiment(i)->CCopasiParameter::getKey()] =
       mpCrossValidationSet->getExperiment(i)->CCopasiParameter::getKey();
 
-#endif // COPASI_CROSSVALIDATION
-
   mpCheckRandomize->setChecked(pProblem->getRandomizeStartValues());
   mpCheckStatistics->setChecked(pProblem->getCalculateStatistics());
 
   mpParameters->load(mpDataModel, pProblem->getGroup("OptimizationItemList"), &mExperimentKeyMap, &mCrossValidationKeyMap);
+
+  if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::ERROR)
+    {
+      CQMessageBox::critical(this, "Error loading Parameter estimation task",
+                             CCopasiMessage::getAllMessageText().c_str(),
+                             QMessageBox::Ok | QMessageBox::Default,
+                             QMessageBox::NoButton);
+    }
+
   mpParameters->setExperimentSet(const_cast<const CExperimentSet *&>(mpExperimentSet));
-#ifdef COPASI_CROSSVALIDATION
   mpParameters->setCrossValidationSet(const_cast<const CCrossValidationSet *&>(mpCrossValidationSet));
-#endif // COPASI_CROSSVALIDATION
 
   mpConstraints->load(mpDataModel, pProblem->getGroup("OptimizationConstraintList"), &mExperimentKeyMap, &mCrossValidationKeyMap);
   mpConstraints->setExperimentSet(const_cast<const CExperimentSet *&>(mpExperimentSet));
-#ifdef COPASI_CROSSVALIDATION
   mpConstraints->setCrossValidationSet(const_cast<const CCrossValidationSet *&>(mpCrossValidationSet));
-#endif // COPASI_CROSSVALIDATION
 
   mChanged = false;
 
@@ -334,10 +336,6 @@ void CQFittingWidget::init()
   mpCurrentList = mpParameters;
   mpExperimentSet = NULL;
   mpCrossValidationSet = NULL;
-
-#ifndef COPASI_CROSSVALIDATION
-  mpBtnCrossValidation->hide();
-#endif
 }
 
 void CQFittingWidget::slotParameterNumberChanged(int number)
@@ -355,15 +353,11 @@ void CQFittingWidget::slotConstraintNumberChanged(int number)
 void CQFittingWidget::destroy()
 {
   pdelete(mpExperimentSet);
-
-#ifdef COPASI_CROSSVALIDATION
   pdelete(mpCrossValidationSet);
-#endif // COPASI_CROSSVALIDATION
 }
 
 void CQFittingWidget::slotCrossValidationData()
 {
-#ifdef COPASI_CROSSVALIDATION
   CQExperimentData * pDialog = new CQExperimentData(this);
   pDialog->load(mpCrossValidationSet, mpDataModel);
 
@@ -373,5 +367,4 @@ void CQFittingWidget::slotCrossValidationData()
   pDialog->exec();
 
   pdelete(pDialog);
-#endif // COPASI_CROSSVALIDATION
 }

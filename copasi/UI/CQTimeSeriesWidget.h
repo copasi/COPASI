@@ -7,7 +7,7 @@
 #define COPASI_CQTimeSeriesWidget
 
 #include <QtCore/QVariant>
-#include <QString>
+#include <QtCore/QString>
 
 #include "copasi/UI/ui_CQTimeSeriesWidget.h"
 

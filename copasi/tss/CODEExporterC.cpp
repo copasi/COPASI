@@ -44,6 +44,8 @@
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
 
+#include <sbml/util/util.h>
+
 #include <iostream>
 #include <fstream>
 #include <ctype.h>
@@ -53,6 +55,11 @@
  */
 CODEExporterC::CODEExporterC()
 {}
+
+std::string CODEExporterC::getSingleLineComment()
+{
+  return "// ";
+}
 
 bool startsWith(const std::string& str, const std::string& sub)
 {
@@ -765,6 +772,18 @@ bool CODEExporterC::exportSingleCompartment(const CCompartment* comp, std::strin
   return true;
 }
 
+std::string CODEExporterC::exportNumber(double number)
+{
+  if (util_isNaN(number))
+    return "NaN";
+
+  if (util_isInf(number))
+    return "INFINITY";
+
+  std::stringstream str; str << number;
+  return str.str();
+}
+
 bool CODEExporterC::exportSingleModVal(const CModelValue* modval, std::string & expression, std::string & comments)
 {
   switch (modval->getStatus())
@@ -873,8 +892,6 @@ bool CODEExporterC::exportKineticFunctionGroup(const CModel* copasiModel)
   size_t size = reacs.size();
   CReaction* reac;
 
-  std::set<std::string> isExported;
-
   size_t i;
 
   for (i = 0; i < size; ++i)
@@ -883,11 +900,11 @@ bool CODEExporterC::exportKineticFunctionGroup(const CModel* copasiModel)
       const CFunction* func = reac->getFunction();
 
       if (func->getRoot())
-        findFunctionsCalls(func->getRoot(), isExported);
+        findFunctionsCalls(func->getRoot());
 
       if (func->getType() != CEvaluationTree::MassAction)
         {
-          if (!exportSingleFunction(func, isExported)) return false;
+          if (!CODEExporter::exportSingleFunction(func)) return false;
         }
     }
 
@@ -1208,22 +1225,22 @@ std::string CODEExporterC::exportClosingString(const size_t tmp)
   switch (tmp)
     {
       case INITIAL:
-        return "#endif INITIAL\n";
+        return "#endif /* INITIAL */\n";
 
       case FIXED:
-        return "#endif FIXED\n";
+        return "#endif /* FIXED */\n";
 
       case ASSIGNMENT:
-        return "#endif ASSIGNMENT\n";
+        return "#endif /* ASSIGNMENT */\n";
 
       case HEADERS:
-        return "#endif FUNCTIONS_HEADERS\n";
+        return "#endif /* FUNCTIONS_HEADERS */\n";
 
       case FUNCTIONS:
-        return "#endif FUNCTIONS\n";
+        return "#endif /* FUNCTIONS */\n";
 
       case ODEs:
-        return "#endif ODEs\n";
+        return "#endif /* ODEs */\n";
 
       default:
         return " ";

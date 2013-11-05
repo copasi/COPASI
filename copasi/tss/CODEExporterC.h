@@ -34,6 +34,8 @@ public:
 
   virtual void setReservedNames();
 
+  virtual std::string exportNumber(double number);
+
   virtual std::string translateTimeVariableName();
 
   std::string setExportName(const CModelEntity::Status & status, size_t n[], size_t dependent);
@@ -66,6 +68,8 @@ public:
   virtual bool exportSingleODE(const CModelEntity* mentity, std::string & equation, std::string & comments);
 
   virtual bool exportSingleFunction(const CFunction *func, std::set<std::string>& isExported);
+
+  virtual std::string getSingleLineComment();
 
   virtual bool exportKineticFunctionGroup(const CModel* copasiModel);
 

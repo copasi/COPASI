@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CListOfLayouts.h,v $
-//   $Revision: 1.12 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/02 14:12:19 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -26,9 +18,7 @@
 #include "utilities/CCopasiVector.h"
 #include "CLayout.h"
 
-#ifdef USE_CRENDER_EXTENSION
 #include "copasi/layout/CLGlobalRenderInformation.h"
-#endif /* USE_CRENDER_EXTENSION */
 
 class ListOf;
 
@@ -41,9 +31,7 @@ class CListOfLayouts : public CCopasiVector<CLayout>
 private:
   std::string mKey;
 
-#ifdef USE_CRENDER_EXTENSION
   CCopasiVector<CLGlobalRenderInformation> mvGlobalRenderInformationObjects;
-#endif /* USE_CRENDER_EXTENSION */
 
 public:
   CListOfLayouts(const std::string & name = "ListOfLayouts",
@@ -70,7 +58,6 @@ public:
   void exportToSBML(ListOf * lol, std::map<const CCopasiObject*, SBase*> & copasimodelmap,
                     const std::map<std::string, const SBase*>& idMap, unsigned int level, unsigned int version) const;
 
-#ifdef USE_CRENDER_EXTENSION
   //*******************
 
   const CCopasiVector< CLGlobalRenderInformation > & getListOfGlobalRenderInformationObjects() const
@@ -95,8 +82,6 @@ public:
    *  If the index is invalid, NULL is returned.
    */
   const CLGlobalRenderInformation* getRenderInformation(size_t index) const;
-
-#endif /* USE_CRENDER_EXTENSION */
 };
 
 #endif

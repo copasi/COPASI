@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-//   $Revision: 1.77 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/25 12:13:29 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -83,9 +75,6 @@ class CCopasiDataModel;
 class CModelParameterSet;
 class CModelParameterGroup;
 class CModelParameter;
-
-#ifdef USE_CRENDER_EXTENSION
-
 class CLRenderInformationBase;
 class CLGradientBase;
 class CLLineEnding;
@@ -93,8 +82,6 @@ class CLStyle;
 class CLGroup;
 class CLText;
 class CLRenderPoint;
-
-#endif /* USE_CRENDER_EXTENSION */
 
 struct SCopasiXMLParserCommon
 {
@@ -286,14 +273,11 @@ public:
   CLMetabGlyph * pMetaboliteGlyph;
   CLReactionGlyph * pReactionGlyph;
   CLTextGlyph * pTextGlyph;
-    //CLGraphicalObject * pAdditionalGO;
+  //CLGraphicalObject * pAdditionalGO;
   CLGeneralGlyph * pGeneralGlyph;
   CLCurve *pCurve;
   CLLineSegment *pLineSegment;
   CLMetabReferenceGlyph* pMetaboliteReferenceGlyph;
-
-#ifdef USE_CRENDER_EXTENSION
-
   CLRenderInformationBase* pRenderInformation;
   CLGradientBase* pGradient;
   CLLineEnding* pLineEnding;
@@ -301,8 +285,6 @@ public:
   CLGroup* pGroup;
   CLText* pText;
   std::vector<CLRenderPoint*>* pListOfCurveElements;
-
-#endif /* USE_CRENDER_EXTENSION */
 
   /**
    * Nesting level of the currently processed parameter group
@@ -350,7 +332,7 @@ private:
 
 #ifdef  COPASI_TEMPLATE
   class TEMPLATEElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -400,7 +382,7 @@ private:
 #endif // COPASI_TEMPLATE
 
   class UnknownElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -509,7 +491,7 @@ public:
 private:
 
   class InitialStateElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -551,7 +533,7 @@ private:
   };
 
   class StateTemplateVariableElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -592,7 +574,7 @@ private:
   };
 
   class StateTemplateElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -634,7 +616,7 @@ private:
   };
 
   class SourceParameterElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -675,7 +657,7 @@ private:
   };
 
   class CallParameterElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -717,7 +699,7 @@ private:
   };
 
   class ListOfCallParametersElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -759,7 +741,7 @@ private:
   };
 
   class KineticLawElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -801,7 +783,7 @@ private:
   };
 
   class ConstantElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -842,7 +824,7 @@ private:
   };
 
   class ListOfConstantsElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -884,7 +866,7 @@ private:
   };
 
   class ModifierElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -925,7 +907,7 @@ private:
   };
 
   class ListOfModifiersElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -967,7 +949,7 @@ private:
   };
 
   class ProductElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -1008,7 +990,7 @@ private:
   };
 
   class ListOfProductsElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -1050,7 +1032,7 @@ private:
   };
 
   class SubstrateElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -1091,7 +1073,7 @@ private:
   };
 
   class ListOfSubstratesElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -1133,7 +1115,7 @@ private:
   };
 
   class ReactionElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -1212,7 +1194,7 @@ private:
   };
 
   class ListOfReactionsElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -1254,7 +1236,7 @@ private:
   };
 
   class MetaboliteElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -1311,7 +1293,7 @@ private:
   };
 
   class ListOfMetabolitesElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -1353,7 +1335,7 @@ private:
   };
 
   class CompartmentElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -1410,7 +1392,7 @@ private:
   };
 
   class ListOfCompartmentsElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -1454,7 +1436,7 @@ private:
   class MathMLElement;
 
   class ModelValueElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -1509,7 +1491,7 @@ private:
   };
 
   class ListOfModelValuesElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -1551,7 +1533,7 @@ private:
   };
 
   class ListOfAssignmentsElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -1595,7 +1577,7 @@ private:
   };
 
   class EventElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -1649,7 +1631,7 @@ private:
   };
 
   class ListOfEventsElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -1696,7 +1678,7 @@ private:
   };
 
   class AssignmentElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -1744,7 +1726,7 @@ private:
   };
 
   class CommentElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -1811,7 +1793,7 @@ private:
 
 private:
   class ModelElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -2185,7 +2167,7 @@ private:
   };
 
   class ReportInstanceElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -2226,7 +2208,7 @@ private:
   };
 
   class ParameterElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -2267,7 +2249,7 @@ private:
   };
 
   class ParameterTextElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -2308,7 +2290,7 @@ private:
   };
 
   class ParameterGroupElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -2362,7 +2344,7 @@ private:
   };
 
   class MethodElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -2411,7 +2393,7 @@ private:
   };
 
   class TaskElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -2724,7 +2706,7 @@ private:
   };
 
   class TableElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -3173,7 +3155,7 @@ public:
 private:
 
   class GUIElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -3215,7 +3197,7 @@ private:
   };
 
   class ListOfSlidersElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -3257,7 +3239,7 @@ private:
   };
 
   class SliderElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -3616,9 +3598,7 @@ private:
       ListOfReactionGlyphs,
       ListOfTextGlyphs,
       ListOfAdditionalGOs
-#ifdef USE_CRENDER_EXTENSION
       , ListOfLocalRenderInformation
-#endif // USE_CRENDER_EXTENSION
     };
 
     size_t mLineNumber;
@@ -3646,9 +3626,7 @@ private:
     {
       ListOfLayouts = 0,
       Layout
-#ifdef USE_CRENDER_EXTENSION
       , ListOfGlobalRenderInformation
-#endif // USE_CRENDER_EXTENSION
     };
 
     // Operations
@@ -3680,7 +3658,7 @@ private:
   };
 
   class SBMLReferenceElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -3722,7 +3700,7 @@ private:
   };
 
   class SBMLMapElement:
-      public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
   private:
@@ -3762,7 +3740,6 @@ private:
     virtual void end(const XML_Char *pszName);
   };
 
-#ifdef USE_CRENDER_EXTENSION
   class GradientStopElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
   {
     // Attributes
@@ -4829,8 +4806,6 @@ private:
      */
     virtual void end(const XML_Char *pszName);
   };
-
-#endif /* USE_CRENDER_EXTENSION */
 
   // Operations
 private:

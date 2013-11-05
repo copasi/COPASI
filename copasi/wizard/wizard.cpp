@@ -1,35 +1,29 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/wizard.cpp,v $
-//   $Revision: 1.16 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:51:09 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-#include <QDir>
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
+#include <QtCore/QDir>
 
 #include "wizard.h"
 #include "UI/CQMessageBox.h"
 #include "UI/listviews.h"
 #include "UI/copasiui3window.h"
 
-
 #include "copasi.h"
 
 #include "commandline/COptions.h"
 
 #include <iostream>
-
-// #include <QtCore/QVariant>
-// #include <iostream>
-// #include <qmessagebox.h>
-// #include <qdir.h>
-// #include "UI/listviews.h"
 
 /*
  *  Constructs a WizardDialog as a child of 'parent', with the
@@ -39,7 +33,9 @@
  *  true to construct a modal dialog.
  */
 WizardDialog::WizardDialog(QWidget* parent, const char* /* name */, bool /* modal */, Qt::WindowFlags fl):
-    QDialog(parent, fl)
+  QDialog(parent, fl),
+  copasiMainWindow(NULL),
+  buttonGroup(NULL)
 {
   setupUi(this);
 
@@ -86,8 +82,6 @@ const char* WizardDialog::texts[6] = {"TutWiz-Step1.html", "TutWiz-Step2.html", 
 const char* WizardDialog::Error = "<html><head><title>Error</title></head><body><h1>Could not find help files.<br><br>Please set the COPASI_HELP_PATH environment variable to the absolute path that contains the html help files!</h1></body></html>";
 
 QString WizardDialog::helpPath = "";
-
-QWidget* copasiMainWindow = NULL;
 
 void WizardDialog::buttonGroup2_clicked(int)
 {

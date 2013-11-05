@@ -3,15 +3,15 @@
 // of Manchester.
 // All rights reserved.
 
-#include <QApplication>
-#include <QWheelEvent>
-#include <QAction>
-#include <QMenu>
-#include <QToolBar>
-#include <QFileInfo>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QComboBox>
+#include <QtGui/QApplication>
+#include <QtGui/QWheelEvent>
+#include <QtGui/QAction>
+#include <QtGui/QMenu>
+#include <QtGui/QToolBar>
+#include <QtCore/QFileInfo>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QComboBox>
 
 #include <qlayout/CQLayoutScene.h>
 #include <qlayout/CQLayoutView.h>

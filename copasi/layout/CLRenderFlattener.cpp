@@ -59,19 +59,11 @@ CLLocalRenderInformation* CLRenderFlattener::flatten_render_information(const CL
  */
 CLRenderInformationBase* CLRenderFlattener::flatten(const CLRenderInformationBase& renderInformation, const CCopasiVector<CLGlobalRenderInformation>& globalList, const CCopasiVector<CLLocalRenderInformation>& localList) throw(CLUnresolvedReferenceException)
 {
-  bool local = false;
   CLRenderInformationBase* pResult = NULL;
 
   // the result should be of the same type as the type that is passed in
-  try
-    {
-      dynamic_cast<const CLLocalRenderInformation&>(renderInformation);
-      local = true;
-    }
-  catch (const std::bad_cast& /*ex*/)
-    {
-      // do nothing
-    }
+  bool local = dynamic_cast<const CLLocalRenderInformation*>(&renderInformation) != NULL;
+
 
   // create a list of referenced render information objects
   std::vector< const CLRenderInformationBase * > referenceChain;

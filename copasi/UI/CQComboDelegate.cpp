@@ -8,7 +8,7 @@
 // and The University of Manchester. 
 // All rights reserved. 
 
-#include <QComboBox>
+#include <QtGui/QComboBox>
 #include <QtGui/QSortFilterProxyModel>
 
 #include "CQComboDelegate.h"
@@ -40,18 +40,9 @@ QWidget *CQComboDelegate::createEditor(QWidget *parent,
 
   QComboBox *pEditor = new QComboBox(parent);
 
-  if (mpComboItems != NULL)
+  if (getItems(SourceIndex.row()) != NULL)
     {
-      pEditor->addItems(*mpComboItems);
-    }
-  else
-    {
-      QMap< int, const QStringList * >::const_iterator found = mRowToItems.find(SourceIndex.row());
-
-      if (found != mRowToItems.end() && found.value() != NULL)
-        {
-          pEditor->addItems(*found.value());
-        }
+      pEditor->addItems(*getItems(SourceIndex.row()));
     }
 
   mEditorToIndex[pEditor] = SourceIndex;
@@ -67,7 +58,10 @@ void CQComboDelegate::setEditorData(QWidget *editor,
 {
   QString value = index.model()->data(index, Qt::DisplayRole).toString();
   QComboBox *comboBox = static_cast<QComboBox*>(editor);
+
+  comboBox->blockSignals(true);
   comboBox->setCurrentIndex(comboBox->findText(value));
+  comboBox->blockSignals(false);
 }
 
 void CQComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
@@ -89,6 +83,23 @@ void CQComboDelegate::setItems(int row, const QStringList* pComboItems)
   mRowToItems[row] = pComboItems;
 }
 
+const QStringList * CQComboDelegate::getItems(int row) const
+{
+  if (mpComboItems != NULL)
+    {
+      return mpComboItems;
+    }
+
+  QMap< int, const QStringList * >::const_iterator found = mRowToItems.find(row);
+
+  if (found != mRowToItems.end()) // OK to return found.value() = NULL
+    {
+      return found.value();
+    }
+
+  return NULL;
+}
+
 void CQComboDelegate::slotCurrentIndexChanged(int index)
 {
   QComboBox * pEditor = dynamic_cast< QComboBox * >(sender());
@@ -100,6 +111,7 @@ void CQComboDelegate::slotCurrentIndexChanged(int index)
       if (found != mEditorToIndex.end())
         {
           emit currentIndexChanged(found.value().row(), index);
+          commitData(pEditor);
         }
     }
 }

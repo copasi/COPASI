@@ -3,7 +3,7 @@
 // of Manchester.
 // All rights reserved.
 
-#include <QString>
+#include <QtCore/QString>
 
 #include "CQMessageBox.h"
 #include "CQParameterSetsDM.h"

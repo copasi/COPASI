@@ -27,7 +27,7 @@ class CCopasiDataModel;
 class CODEExporter
 {
 protected:
-
+  std::set<std::string> mExportedFunctions;
 public:
 
   /**
@@ -66,13 +66,17 @@ public:
 
   bool exportModelValuesExpressions(const CModel* copasiModel);
 
-  void findFunctionsCalls(const CEvaluationNode* pNode, std::set<std::string>& isExported);
+  void findFunctionsCalls(const CEvaluationNode* pNode);
+
+  bool exportSingleFunction(const CFunction *func);
 
   virtual bool exportSingleFunction(const CFunction *func, std::set<std::string>& isExported);
 
   std::string isModelEntityExpressionODEExporterCompatible(CModelEntity * tmp, const CExpression* pExpression, const CCopasiDataModel* pDataModel);
 
   std::string exportExpression(const CExpression* pExpression, const CCopasiDataModel* pDataModel);
+
+  virtual std::string getSingleLineComment();
 
   virtual bool exportSingleModelEntity(const CModelEntity* tmp, std::string & expression, std::string & comments);
 #endif
@@ -86,6 +90,8 @@ public:
   virtual bool exportClosingData(const CModel* copasiModel, std::ostream & os);
 
   virtual void setReservedNames();
+
+  virtual std::string exportNumber(double number);
 
   virtual std::string translateTimeVariableName();
 

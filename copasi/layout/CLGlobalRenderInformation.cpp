@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlobalRenderInformation.cpp,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:50 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,10 +7,7 @@
 #include <assert.h>
 
 #define USE_LAYOUT 1
-
-#ifdef USE_CRENDER_EXTENSION
 #define USE_RENDER 1
-#endif // USE_CRENDER_EXTENSION
 
 #include <sbml/packages/render/sbml/GlobalRenderInformation.h>
 
@@ -31,7 +20,7 @@
  *  Constructor.
  */
 CLGlobalRenderInformation::CLGlobalRenderInformation(CCopasiContainer* pParent):
-    CLRenderInformationBase("GlobalRenderInformation", pParent)
+  CLRenderInformationBase("GlobalRenderInformation", pParent)
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("GlobalRenderInformation", this);
 }
@@ -40,8 +29,8 @@ CLGlobalRenderInformation::CLGlobalRenderInformation(CCopasiContainer* pParent):
  * Copy constructor
  */
 CLGlobalRenderInformation::CLGlobalRenderInformation(const CLGlobalRenderInformation& source, CCopasiContainer* pParent):
-    CLRenderInformationBase(source, pParent),
-    mListOfStyles(source.mListOfStyles, this)
+  CLRenderInformationBase(source, pParent),
+  mListOfStyles(source.mListOfStyles, this)
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("GlobalRenderInformation", this);
 }
@@ -56,8 +45,8 @@ CLGlobalRenderInformation::CLGlobalRenderInformation(const GlobalRenderInformati
             std::map<std::string,std::string>& lineEndingIdToKeyMap,
       */
     CCopasiContainer* pParent):
-    //CLRenderInformationBase(source,"GlobalRenderInformation",colorIdToKeyMap,gradientIdToKeyMap,lineEndingIdToKeyMap,pParent)
-    CLRenderInformationBase(source, "GlobalRenderInformation", pParent)
+  //CLRenderInformationBase(source,"GlobalRenderInformation",colorIdToKeyMap,gradientIdToKeyMap,lineEndingIdToKeyMap,pParent)
+  CLRenderInformationBase(source, "GlobalRenderInformation", pParent)
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("GlobalRenderInformation", this);
   unsigned int i, iMax = source.getNumStyles();

@@ -250,19 +250,25 @@ bool COptProblem::setModel(CModel * pModel)
   return true;
 }
 
+void COptProblem::reset()
+{
+  mSolutionValue = (*mpParmMaximize ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
+  mCounter = 0;
+}
+
 bool COptProblem::setCallBack(CProcessReport * pCallBack)
 {
   CCopasiProblem::setCallBack(pCallBack);
 
   if (pCallBack)
     {
+      reset();
+
       // We need to reset mSolutionValue to correctly initialize the progress item.
-      mSolutionValue = (*mpParmMaximize ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
       mhSolutionValue =
         mpCallBack->addItem("Best Value",
                             mSolutionValue);
       // We need to reset mCounter to correctly initialize the progress item.
-      mCounter = 0;
       mhCounter =
         mpCallBack->addItem("Function Evaluations",
                             mCounter);
@@ -603,7 +609,7 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
   mStoreResults = false;
 
   // Make sure the timer is accurate.
-  (*mCPUTime.getRefresh())();
+  mCPUTime.getRefresh();
 
   if (mSolutionValue == mWorstValue)
     return false;
@@ -642,7 +648,7 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
       calculate();
 
       // Make sure the timer is accurate.
-      (*mCPUTime.getRefresh())();
+      mCPUTime.getRefresh();
     }
 
   return true;
@@ -805,6 +811,12 @@ const bool & COptProblem::getCalculateStatistics() const
 
 const unsigned C_INT32 & COptProblem::getFunctionEvaluations() const
 {return mCounter;}
+
+void COptProblem::incrementEvaluations(unsigned C_INT32 increment)
+{mCounter += increment;}
+
+void COptProblem::resetEvaluations()
+{mCounter = 0;}
 
 const C_FLOAT64 & COptProblem::getExecutionTime() const
 {

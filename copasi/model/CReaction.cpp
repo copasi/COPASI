@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 // CReaction
 //
@@ -429,18 +429,21 @@ void CReaction::clearParameterMapping(const size_t & index)
   mMetabKeyMap[index].clear();
 }
 
-const std::vector<std::string> & CReaction::getParameterMapping(const std::string & parameterName) const
+const std::vector<std::string> & CReaction::getParameterMapping(const size_t & index) const
 {
   if (!mpFunction) fatalError();
-
-  size_t index = getParameterIndex(parameterName);
 
   if (C_INVALID_INDEX == index)
     return mMetabKeyMap[0]; //TODO this is kind of ugly!
 
-  //if (type != CFunctionParameter::FLOAT64) fatalError();
-
   return mMetabKeyMap[index];
+}
+
+const std::vector<std::string> & CReaction::getParameterMapping(const std::string & parameterName) const
+{
+  size_t index = getParameterIndex(parameterName);
+
+  return getParameterMapping(index);
 }
 
 bool CReaction::isLocalParameter(const size_t & index) const

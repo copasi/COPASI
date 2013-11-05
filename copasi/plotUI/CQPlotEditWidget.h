@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -6,7 +6,7 @@
 #ifndef CQ_PLOT_EDIT_WIDGET_H
 #define CQ_PLOT_EDIT_WIDGET_H
 
-#include <QWidget>
+#include <QtGui/QWidget>
 
 class CPlotItem;
 class CModel;
@@ -21,12 +21,10 @@ public:
   virtual bool SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original = NULL) const = 0;
   virtual void setModel(const CModel * model);
 
-#if USE_NEW_PLOTSUBWIDGET
   /**
    * In multiple edit mode, we don't want to edit name & channels
    */
   virtual void setMultipleEditMode(bool mode) = 0;
-#endif
 
 protected:
   const CModel* mpModel;

@@ -1,29 +1,31 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #ifndef SLIDER_DIALOG_H__
 #define SLIDER_DIALOG_H__
 
-#include "qdialog.h"
+#include <QtGui/QDialog>
 //Added by qt3to4:
-#include <QEvent>
-#include <QContextMenuEvent>
-#include <QCloseEvent>
-#include "copasi.h"
+#include <QtCore/QEvent>
+#include <QtGui/QContextMenuEvent>
+#include <QtGui/QCloseEvent>
+#include "copasi/copasi.h"
 #include <vector>
 #include <map>
-#include "report/CCopasiObjectName.h"
+#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/UI/CWindowInterface.h"
+#include "copasi/UI/ui_SliderDialog.h"
 
 class QScrollArea;
 class QCheckBox;
@@ -39,7 +41,7 @@ class CCopasiTask;
 class CSlider;
 class CopasiUI3Window;
 
-class SliderDialog: public QDialog
+class SliderDialog: public CWindowInterface, public Ui::SliderDialog
 {
   Q_OBJECT
 
@@ -80,6 +82,10 @@ public:
    * Sets the changed state of the SliderDialog.
    */
   void setChanged(bool changed);
+
+  //return a pointer to this plot windows 'window' menu.
+  virtual QMenu *getWindowMenu() const;
+
 protected:
   virtual void showEvent(QShowEvent * pEvent);
 
@@ -95,9 +101,6 @@ protected:
 
   static size_t numMappings;
   static size_t folderMappings[][2];
-  //    static size_t knownTaskIDs[];
-  //    static const char* knownTaskNames[];
-  //    static size_t numKnownTasks;
 
   virtual void contextMenuEvent(QContextMenuEvent* e);
 
@@ -108,9 +111,7 @@ protected:
   virtual void runLNATask();
   virtual void runParameterEstimationTask();
   virtual void runOptimizationTask();
-#ifdef COPASI_NONLIN_DYN
   virtual void runCrossSectionTask();
-#endif
   virtual void closeEvent(QCloseEvent* e);
 
   virtual CCopasiTask* getTaskForFolderId(size_t folderId);
@@ -157,12 +158,6 @@ protected slots:
 
 protected:
   CopasiUI3Window* mpParentWindow;
-  QPushButton* mpRunTaskButton;
-  QPushButton* mpNewSliderButton;
-  QCheckBox* mpAutoRunCheckBox;
-  QCheckBox* mpAutoModifyRangesCheckBox;
-  QScrollArea* mpScrollView;
-  QFrame* mpSliderBox;
   QMenu* mpContextMenu;
   QAction* mpaCreateNewSlider;
   QAction* mpaRemoveSlider;

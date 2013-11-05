@@ -39,23 +39,24 @@
 const unsigned int COptTask::ValidMethods[] =
 {
   CCopasiMethod::Statistics,
-  CCopasiMethod::GeneticAlgorithm,
-  CCopasiMethod::GeneticAlgorithmSR,
-  CCopasiMethod::HookeJeeves,
-  CCopasiMethod::LevenbergMarquardt,
-  CCopasiMethod::EvolutionaryProgram,
-  CCopasiMethod::RandomSearch,
-  CCopasiMethod::NelderMead,
-  CCopasiMethod::ParticleSwarm,
-  CCopasiMethod::Praxis,
-  CCopasiMethod::TruncatedNewton,
-  CCopasiMethod::SimulatedAnnealing,
 #ifdef COPASI_DEBUG
   CCopasiMethod::CoranaWalk,
 #endif // COPASI_DEBUG
   CCopasiMethod::DifferentialEvolution,
   CCopasiMethod::SRES,
+  CCopasiMethod::EvolutionaryProgram,
+  CCopasiMethod::GeneticAlgorithm,
+  CCopasiMethod::GeneticAlgorithmSR,
+  CCopasiMethod::HookeJeeves,
+  CCopasiMethod::LevenbergMarquardt,
+  CCopasiMethod::NelderMead,
+  CCopasiMethod::ParticleSwarm,
+  CCopasiMethod::Praxis,
+  CCopasiMethod::RandomSearch,
+  CCopasiMethod::ScatterSearch,
+  CCopasiMethod::SimulatedAnnealing,
   CCopasiMethod::SteepestDescent,
+  CCopasiMethod::TruncatedNewton,
   CCopasiMethod::unset
 };
 
@@ -127,7 +128,7 @@ bool COptTask::initialize(const OutputFlag & of,
   return success;
 }
 
-bool COptTask::process(const bool & /* useInitialValues */)
+bool COptTask::process(const bool & useInitialValues)
 {
   COptProblem * pProblem = dynamic_cast<COptProblem *>(mpProblem);
   COptMethod * pMethod = dynamic_cast<COptMethod *>(mpMethod);
@@ -137,6 +138,8 @@ bool COptTask::process(const bool & /* useInitialValues */)
   mpMethod->isValidProblem(mpProblem);
 
   pProblem->randomizeStartValues();
+
+  if (useInitialValues) pProblem->resetEvaluations();
 
   output(COutputInterface::BEFORE);
 

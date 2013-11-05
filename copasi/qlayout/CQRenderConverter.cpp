@@ -3,14 +3,14 @@
 // of Manchester.
 // All rights reserved.
 
-#include <qgraphicsitem.h>
-#include <qsharedpointer.h>
-#include <qpen.h>
-#include <qfont.h>
-#include <QFontMetrics>
-#include <QPixmap>
-#include <QFile>
-#include <QGraphicsScene>
+#include <QtGui/QGraphicsItem>
+#include <QtCore/QSharedPointer>
+#include <QtGui/QPen>
+#include <QtGui/QFont>
+#include <QtGui/QFontMetrics>
+#include <QtGui/QPixmap>
+#include <QtCore/QFile>
+#include <QtGui/QGraphicsScene>
 
 #include <qlayout/CQRenderConverter.h>
 #include <qlayout/CQRoundedRect.h>

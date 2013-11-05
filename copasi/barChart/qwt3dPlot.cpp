@@ -12,14 +12,14 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <QContextMenuEvent>
-#include <QGridLayout>
-#include <QSlider>
-#include <QMenu>
-#include <QFrame>
+#include <QtGui/QContextMenuEvent>
+#include <QtGui/QGridLayout>
+#include <QtGui/QSlider>
+#include <QtGui/QMenu>
+#include <QtGui/QFrame>
 
 #ifdef DEBUG_UI
-#include <QtDebug>
+#include <QtCore/QtDebug>
 #endif
 
 #include "qwt3dPlot.h"

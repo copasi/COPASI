@@ -6,10 +6,10 @@
 #ifndef QCONNECTION_GRAPHICS_ITEM
 #define QCONNECTION_GRAPHICS_ITEM
 
-#include <QGraphicsItemGroup>
-#include <QPainterPath>
-#include <qsharedpointer.h>
-#include <QStyleOptionGraphicsItem>
+#include <QtGui/QGraphicsItemGroup>
+#include <QtGui/QPainterPath>
+#include <QtCore/QSharedPointer>
+#include <QtGui/QStyleOptionGraphicsItem>
 #include <layout/CLCurve.h>
 #include <qlayout/CQCopasiGraphicsItem.h>
 

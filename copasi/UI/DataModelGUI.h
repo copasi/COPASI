@@ -15,10 +15,10 @@
 #ifndef DATAMODELGUI_H
 #define DATAMODELGUI_H
 
-#include <QVariant>
+#include <QtCore/QVariant>
 
 #include <QtCore/QObject>
-#include <qapplication.h>
+#include <QtGui/QApplication>
 
 #include "copasi/plotUI/COutputHandlerPlot.h"
 #include "copasi/UI/listviews.h"
@@ -49,14 +49,28 @@ public:
   void addModelRun();
 #endif
 
+  void saveFunctionDB(const std::string & fileName);
+  void loadFunctionDB(const std::string & fileName);
+
   void importSBML(const std::string & fileName);
   void exportSBML(const std::string & fileName, bool overwriteFile , int sbmlLevel, int sbmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
   void importSBMLFromString(const std::string & sbmlDocumentText);
   void exportSBMLToString(std::string & sbmlDocumentText);
   void exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile = false);
-#ifdef CELLDESIGNER_IMPORT
   void importCellDesigner();
-#endif /* CELLDESIGNER_IMPORT */
+
+  //TODO SEDML
+#ifdef COPASI_SEDML
+  void exportSEDML(const std::string & fileName, bool overwriteFile , int sedmlLevel, int sedmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
+  void exportSEDMLToString(std::string & sedmlDocumentText);
+  void importSEDML(const std::string & fileName);
+  void importSEDMLFromString(const std::string & sedmlDocumentText);
+
+  void importSEDMLRun();
+  void exportSEDMLRun();
+  void importSEDMLFromStringRun();
+  void exportSEDMLToStringRun();
+#endif
 
   void loadModelRun();
   void saveModelRun();
@@ -76,6 +90,14 @@ public slots:
   void exportMathModelFinished();
 #ifdef WITH_MERGEMODEL
   void addModelFinished();
+#endif
+
+  //TODO SEDML
+#ifdef COPASI_SEDML
+  void importSEDMLFinished();
+  void exportSEDMLFinished();
+  void importSEDMLFromStringFinished();
+  void exportSEDMLToStringFinished();
 #endif
 
 public:
@@ -127,6 +149,16 @@ private:
   bool mSBMLExportIncomplete;
   bool mSBMLExportCOPASIMIRIAM;
   std::string mExportFormat;
+
+  //TODO SEDML
+#ifdef COPASI_SEDML
+  std::string mSEDMLImportString;
+  std::string * mpSEDMLExportString;
+  int mSEDMLLevel;
+  int mSEDMLVersion;
+  bool mSEDMLExportIncomplete;
+  bool mSEDMLExportCOPASIMIRIAM;
+#endif
 };
 
 #endif
