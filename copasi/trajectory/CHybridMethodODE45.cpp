@@ -149,7 +149,8 @@ bool CHybridMethodODE45::isValidProblem(const CCopasiProblem * pProblem)
           return false;
         }
     }
-
+  
+/*
   std::string message = pTP->getModel()->suitableForStochasticSimulation();
 
   if (message != "")
@@ -158,20 +159,15 @@ bool CHybridMethodODE45::isValidProblem(const CCopasiProblem * pProblem)
       CCopasiMessage(CCopasiMessage::ERROR, message.c_str());
       return false;
     }
-
-  //mLowerStochLimit = * getValue("Lower Limit").pDOUBLE;
-  //mUpperStochLimit = * getValue("Upper Limit").pDOUBLE;
-
-  //if (mLowerStochLimit > mUpperStochLimit)
-  //  CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 4,
-  //       mLowerStochLimit, mUpperStochLimit);
-
+*/
+  
   //events are not supported at the moment
   if (pTP->getModel()->getEvents().size() > 0)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 23);
       return false;
     }
+  
 
   return true;
 }
