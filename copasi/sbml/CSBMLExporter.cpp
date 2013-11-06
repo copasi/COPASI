@@ -6442,7 +6442,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           // TODO can have several resources.
           // TODO If this isn't handled automatically by libsbml, I will have to add
           // TODO code that does this.
-          cvTerm.addResource(pDescription->getURI());
+          cvTerm.addResource(pDescription->getMIRIAMResourceObject().getIdentifiersOrgURL());
 
           // before we set the CVTerm, we should make sure that the object has
           // a meta id
@@ -6527,7 +6527,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
           // TODO can have several resources.
           // TODO If this isn't handled automatically by libsbml, I will have to add
           // TODO code that does this.
-          cvTerm.addResource(pReference->getURI());
+          cvTerm.addResource(pReference->getMIRIAMResourceObject().getIdentifiersOrgURL());
 
           // before we set the CVTerm, we should make sure that the object has
           // a meta id
