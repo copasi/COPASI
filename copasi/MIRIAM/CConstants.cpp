@@ -214,11 +214,15 @@ void CMIRIAMResourceObject::extractId(const std::string & URI)
       return;
     }
 
+  int offset;
   const std::string * pTmp = & mpResources->getMIRIAMResource(mResource).getMIRIAMURI();
 
   if (URI.substr(0, pTmp->length()) == *pTmp &&
       URI.length() > pTmp->length())
-    mId = URI.substr(pTmp->length() + 1);
+    {
+      offset = (pTmp->at(pTmp->length() - 1) == '/') ? 0 : 1;
+      mId = URI.substr(pTmp->length() + offset);
+    }
 
   if (mId == "")
     {
@@ -226,7 +230,10 @@ void CMIRIAMResourceObject::extractId(const std::string & URI)
 
       if (URI.substr(0, Tmp.length()) == Tmp &&
           URI.length() > Tmp.length())
-        mId = URI.substr(Tmp.length() + 1);
+        {
+          offset = (Tmp[Tmp.length() - 1] == '/') ? 0 : 1;
+          mId = URI.substr(Tmp.length() + offset);
+        }
     }
 
   if (mId == "")
@@ -240,7 +247,9 @@ void CMIRIAMResourceObject::extractId(const std::string & URI)
         if (URI.substr(0, (*itDeprecated)->getValue().pSTRING->length()) == *(*itDeprecated)->getValue().pSTRING &&
             URI.length() > (*itDeprecated)->getValue().pSTRING->length())
           {
-            mId = URI.substr((*itDeprecated)->getValue().pSTRING->length() + 1);
+            const std::string& uri = *(*itDeprecated)->getValue().pSTRING;
+            offset = (uri[uri.length() - 1] == '/') ? 0 : 1;
+            mId = URI.substr(uri.length() + offset);
             break;
           }
     }
