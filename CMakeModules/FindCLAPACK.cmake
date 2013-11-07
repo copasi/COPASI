@@ -27,26 +27,26 @@
 
 set(LAPACK_FIND_QUIETLY TRUE)
 
-if (COPASI_BUILD_TYPE EQUAL "32bit")
-  set(BLA_VENDOR "Intel10_32")
-elseif (COPASI_BUILD_TYPE EQUAL "64bit")
-  set(BLA_VENDOR "Intel10_64lp")
-endif()
-
+set(BLA_VENDOR "Apple")
 find_package(LAPACK)
-
-if (LAPACK_FOUND)
-  add_definitions(-DHAVE_MKL)
-endif ()
- 
-if (APPLE AND NOT LAPACK_FOUND)
-  set(BLA_VENDOR "Apple")
-  find_package(LAPACK)
   
+if (LAPACK_FOUND)
+  add_definitions(-DHAVE_APPLE)
+endif ()
+
+if (NOT LAPACK_FOUND)
+  if (COPASI_BUILD_TYPE EQUAL "32bit")
+    set(BLA_VENDOR "Intel10_32")
+  elseif (COPASI_BUILD_TYPE EQUAL "64bit")
+    set(BLA_VENDOR "Intel10_64lp")
+  endif()
+
+  find_package(LAPACK)
+
   if (LAPACK_FOUND)
-    add_definitions(-DHAVE_APPLE)
+    add_definitions(-DHAVE_MKL)
   endif ()
-endif()
+endif ()
 
 if (NOT LAPACK_FOUND)
   set(BLA_VENDOR "ATLAS")

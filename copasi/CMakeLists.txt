@@ -186,7 +186,12 @@ set(HEADERS_UI_MOC)
 set(HEADERS_UI_FORMS)
 
 MACRO (COPASI_QT4_WRAP_UI outfiles subdir )
-  QT4_EXTRACT_OPTIONS(ui_files ui_options ${ARGN})
+
+  if (${CMAKE_VERSION} VERSION_GREATER "2.8.10")
+    QT4_EXTRACT_OPTIONS(ui_files ui_options ui_targets ${ARGN})
+  else (${CMAKE_VERSION} VERSION_GREATER "2.8.10")
+    QT4_EXTRACT_OPTIONS(ui_files ui_options ${ARGN})
+  endif (${CMAKE_VERSION} VERSION_GREATER "2.8.10")
 
   FOREACH (it ${ui_files})
     GET_FILENAME_COMPONENT(outfile ${it} NAME_WE)
@@ -218,10 +223,9 @@ foreach (dir
 
   set(HEADERS_UI_MOC ${HEADERS_UI_MOC} ${TEMP_UI_MOC})
 
-
   if(FORMS_${suffix})
     #message(STATUS "uic'ing files for subdir: ${dir}")
-	COPASI_QT4_WRAP_UI(TEMP_UI_FORMS ${dir} ${FORMS_${suffix}})
+	COPASI_QT4_WRAP_UI(TEMP_UI_FORMS "${dir}" ${FORMS_${suffix}})
   endif()
 
   set(HEADERS_UI_FORMS ${HEADERS_UI_FORMS} ${TEMP_UI_FORMS})
