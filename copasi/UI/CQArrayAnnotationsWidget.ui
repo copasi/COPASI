@@ -12,51 +12,37 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>427</width>
-    <height>224</height>
+    <width>421</width>
+    <height>218</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+   <item row="0" column="0" colspan="2">
     <widget class="QLabel" name="mpLblRows">
      <property name="text">
-      <string>Rows</string>
+      <string>Rows (parameters)</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QComboBox" name="mpComboRows">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="sizeAdjustPolicy">
-      <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="mpLblOther">
+   <item row="0" column="3">
+    <widget class="QPushButton" name="mpButton">
      <property name="text">
-      <string>Other</string>
+      <string/>
      </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+     <property name="icon">
+      <iconset resource="../resourcesUI/copasi.qrc">
+       <normaloff>:/images/bars.png</normaloff>
+       <normalon>:/images/table.png</normalon>:/images/bars.png</iconset>
      </property>
     </widget>
    </item>
-   <item row="4" column="1" colspan="4">
-    <widget class="QTableWidget" name="mpSelectionTable"/>
-   </item>
-   <item row="5" column="0" colspan="5">
+   <item row="4" column="0" colspan="4">
     <widget class="QStackedWidget" name="mpStack">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -103,17 +89,7 @@
      </widget>
     </widget>
    </item>
-   <item row="0" column="2">
-    <widget class="QLabel" name="mpLblColumns">
-     <property name="text">
-      <string>Columns</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="3">
+   <item row="1" column="2">
     <widget class="QComboBox" name="mpComboColumns">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
@@ -126,17 +102,47 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="4">
-    <widget class="QPushButton" name="mpButton">
-     <property name="text">
-      <string/>
+   <item row="0" column="2">
+    <widget class="QComboBox" name="mpComboRows">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-     <property name="icon">
-      <iconset resource="../resourcesUI/copasi.qrc">
-       <normaloff>:/images/bars.png</normaloff>
-       <normalon>:/images/table.png</normalon>:/images/bars.png</iconset>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
      </property>
     </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QLabel" name="mpLblColumns">
+     <property name="text">
+      <string>Columns (observables)</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="mpLblOther">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Other</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="4">
+    <widget class="QTableWidget" name="mpSelectionTable"/>
    </item>
   </layout>
  </widget>
