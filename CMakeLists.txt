@@ -549,8 +549,8 @@ message(STATUS "-----------------------------------------------------------
    SBW lib           = ${SBW_LIBRARIES}
    SBW include       = ${SBW_INCLUDE_DIR}
    
-   libSBML lib       = ${LIBSBML_LIBRARY}
-   libSBML include   = ${LIBSBML_INCLUDE_DIR}
+   libSEDML lib       = ${LIBSEDML_LIBRARY}
+   libSEDML include   = ${LIBSEDML_INCLUDE_DIR}
    
 
  Options:

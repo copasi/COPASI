@@ -1265,6 +1265,9 @@ extern "C"
 }
 
 #ifdef HAVE_APPLE
+# undef abs
+# undef max
+# undef min
 # include <Accelerate/Accelerate.h>
 # include <cmath>
 using std::isnan;

@@ -72,6 +72,9 @@ extern "C"
 }
 
 #ifdef HAVE_APPLE
+# undef abs
+# undef max
+# undef min
 # include <Accelerate/Accelerate.h>
 # define daxpy_(N, ALPHA, X, INCX, Y, INCY) \
   cblas_daxpy(*N, *ALPHA, X, *INCX, Y, *INCY)
