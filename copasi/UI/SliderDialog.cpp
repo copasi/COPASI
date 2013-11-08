@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <iostream>
 #include <sstream>
@@ -145,7 +145,7 @@ void SliderDialog::setCurrentSlider(CopasiSlider* pSlider)
 
   if (mpCurrSlider && isVisible())
     {
-      mpCurrSlider->setFocus();
+      mpCurrSlider->focusSlider();
     }
 }
 
@@ -508,40 +508,40 @@ void SliderDialog::setCurrentFolderId(size_t id)
   // Set appropriate window title
   QString thisWindowTitle = "Sliders";
 
-  switch(id)
-  {
-    case 23:
-      thisWindowTitle = "Time Course " + thisWindowTitle;
-      break;
+  switch (id)
+    {
+      case 23:
+        thisWindowTitle = "Time Course " + thisWindowTitle;
+        break;
 
-    case 21:
-      thisWindowTitle = "Steady-State " + thisWindowTitle;
-      break;
+      case 21:
+        thisWindowTitle = "Steady-State " + thisWindowTitle;
+        break;
 
-    case 31:
-      thisWindowTitle = "Parameter Scan " + thisWindowTitle;
-      break;
+      case 31:
+        thisWindowTitle = "Parameter Scan " + thisWindowTitle;
+        break;
 
-    case 24:
-      thisWindowTitle = "Metabolic Control Analysis " + thisWindowTitle;
-      break;
+      case 24:
+        thisWindowTitle = "Metabolic Control Analysis " + thisWindowTitle;
+        break;
 
-    case 35:
-      thisWindowTitle = "Linear Noise Approximation " + thisWindowTitle;
-      break;
+      case 35:
+        thisWindowTitle = "Linear Noise Approximation " + thisWindowTitle;
+        break;
 
-    case 33:
-      thisWindowTitle = "Parameter Estimation " + thisWindowTitle;
-      break;
+      case 33:
+        thisWindowTitle = "Parameter Estimation " + thisWindowTitle;
+        break;
 
-    case 32:
-      thisWindowTitle = "Optimization " + thisWindowTitle;
-      break;
+      case 32:
+        thisWindowTitle = "Optimization " + thisWindowTitle;
+        break;
 
-    case 28:
-      thisWindowTitle = "Cross Section " + thisWindowTitle;
-      break;
-  }
+      case 28:
+        thisWindowTitle = "Cross Section " + thisWindowTitle;
+        break;
+    }
 
   setWindowTitle(thisWindowTitle);
 
@@ -722,17 +722,22 @@ size_t SliderDialog::mapFolderId2EntryId(size_t folderId) const
 
 void SliderDialog::runTask()
 {
-  if (mpParentWindow != NULL &&
-      mpParentWindow->isEnabled() &&
-      mTaskMap.find(mCurrentFolderId) != mTaskMap.end())
-    {
-      updateAllSliders();
-      // commit possible changes to the task widget before running the task
-      CopasiWidget* pWidget = mpParentWindow->getMainWidget()->findWidgetFromId(mCurrentFolderId);
-      assert(pWidget != NULL);
-      pWidget->leave();
-      ((this)->*(mTaskMap[mCurrentFolderId]))();
-    }
+  if (mpParentWindow == NULL || !mpParentWindow->isEnabled() ||
+      mTaskMap.find(mCurrentFolderId) == mTaskMap.end())
+    return;
+
+  updateAllSliders();
+
+  TaskWidget* pWidget = dynamic_cast<TaskWidget*>(mpParentWindow->getMainWidget()->findWidgetFromId(mCurrentFolderId));
+  assert(pWidget != NULL);
+
+  if (pWidget == NULL) return;
+
+  // commit possible changes to the task widget before running the task
+  pWidget->leave();
+
+  // execute task
+  ((this)->*(mTaskMap[mCurrentFolderId]))();
 }
 
 void SliderDialog::sliderValueChanged()
@@ -741,7 +746,7 @@ void SliderDialog::sliderValueChanged()
 
   if ((!mSliderPressed) && mpAutoRunCheckBox->isChecked())
     {
-      //runTask();
+      runTask();
       mSliderValueChanged = false;
     }
 }
@@ -1040,6 +1045,12 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForCurrentFolderId()
   catch (...) {}
 
   return pVector;
+}
+
+void SliderDialog::changeEvent(QEvent *event)
+{
+  if (event->type() == QEvent::EnabledChange && isEnabled() && mpCurrSlider != NULL)
+    mpCurrSlider->focusSlider();
 }
 
 bool SliderDialog::eventFilter(QObject*, QEvent* event)

@@ -93,6 +93,13 @@ CopasiSlider::CopasiSlider(CSlider* pSlider, DataModelGUI * pDM, QWidget* parent
 CopasiSlider::~CopasiSlider()
 {}
 
+void CopasiSlider::focusSlider()
+{
+  if (mpQSlider == NULL) return;
+
+  mpQSlider->setFocus(Qt::OtherFocusReason);
+}
+
 void CopasiSlider::updateSliderData()
 {
   if (this->mpCSlider)
@@ -351,10 +358,12 @@ C_FLOAT64 CopasiSlider::calculateValueFromPosition(int position)
       case CSlider::linear:
         value = this->mpCSlider->getMinValue() + position * this->minorTickInterval();
         break;
+
       case CSlider::logarithmic:
         exponent = (((double)position) * log10(this->mpCSlider->getMaxValue() / this->mpCSlider->getMinValue())) / this->mpCSlider->getTickNumber();
         value = this->mpCSlider->getMinValue() * pow(10.0, exponent);
         break;
+
       default:
         value = 0.0;
         break;
@@ -372,9 +381,11 @@ int CopasiSlider::calculatePositionFromValue(C_FLOAT64 value)
       case CSlider::linear:
         position = (int)floor(((value - this->mpCSlider->getMinValue()) / this->minorTickInterval()) + 0.5);
         break;
+
       case CSlider::logarithmic:
         position = (int)floor((this->mpCSlider->getTickNumber() * (log10(value / this->mpCSlider->getMinValue()) / log10(this->mpCSlider->getMaxValue() / this->mpCSlider->getMinValue()))) + 0.5);
         break;
+
       default:
         position = 0;
     }

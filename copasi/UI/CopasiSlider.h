@@ -61,6 +61,7 @@ public:
   void updateLabel();
   void updateSliderData();
   void resetValue();
+  void focusSlider();
 
   /**
    * Checks whether the slider is actually valid.
