@@ -187,11 +187,11 @@ set(HEADERS_UI_FORMS)
 
 MACRO (COPASI_QT4_WRAP_UI outfiles subdir )
 
-  if (${CMAKE_VERSION} VERSION_GREATER "2.8.11")
-    QT4_EXTRACT_OPTIONS(ui_files ui_options ui_targets ${ARGN})
-  else (${CMAKE_VERSION} VERSION_GREATER "2.8.11")
+  if (${CMAKE_VERSION} VERSION_LESS  "2.8.12")
     QT4_EXTRACT_OPTIONS(ui_files ui_options ${ARGN})
-  endif (${CMAKE_VERSION} VERSION_GREATER "2.8.11")
+  else (${CMAKE_VERSION} VERSION_LESS  "2.8.12")
+    QT4_EXTRACT_OPTIONS(ui_files ui_options ui_targets ${ARGN})
+  endif (${CMAKE_VERSION} VERSION_LESS  "2.8.12")
 
   FOREACH (it ${ui_files})
     GET_FILENAME_COMPONENT(outfile ${it} NAME_WE)
