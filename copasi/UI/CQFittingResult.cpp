@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /*
  *  CQFittingResult.cpp
@@ -164,19 +164,20 @@ bool CQFittingResult::enterProtected()
 
       mpParameters->setItem((int) i, 0, pItem);
 
-      const C_FLOAT64 & Solution = Solutions[i];
+      const C_FLOAT64 & Solution = i < Solutions.size() ? Solutions[i] : std::numeric_limits<double>::quiet_NaN();
 
       //2nd column: lower bound
-      pItem = new QTableWidgetItem(FROM_UTF8(Items[i]->getLowerBound()));
+      const COptItem *current = Items[i];
+      pItem = new QTableWidgetItem(FROM_UTF8(current->getLowerBound()));
       mpParameters->setItem((int) i, 1, pItem);
 
-      if (1.01 * *Items[i]->getLowerBoundValue() > Solution)
+      if (current->getLowerBoundValue() != NULL && 1.01 * *current->getLowerBoundValue() > Solution)
         {
           pItem->setBackgroundColor(BackgroundColor);
         }
 
       //3rd column: start value
-      pItem = new QTableWidgetItem(QString::number(Items[i]->getStartValue()));
+      pItem = new QTableWidgetItem(QString::number(current->getStartValue()));
       pItem->setForeground(QColor(120, 120, 140));
       mpParameters->setItem((int) i, 2, pItem);
 
@@ -185,15 +186,15 @@ bool CQFittingResult::enterProtected()
       mpParameters->setItem((int) i, 3, pItem);
 
       //5th column: upper bound
-      pItem = new QTableWidgetItem(FROM_UTF8(Items[i]->getUpperBound()));
+      pItem = new QTableWidgetItem(FROM_UTF8(current->getUpperBound()));
       mpParameters->setItem((int) i, 4, pItem);
 
-      if (0.99 * *Items[i]->getUpperBoundValue() < Solution)
+      if (current->getUpperBoundValue() != NULL && 0.99 * *current->getUpperBoundValue() < Solution)
         {
           pItem->setBackgroundColor(BackgroundColor);
         }
 
-      const C_FLOAT64 & StdDeviation = StdDeviations[i];
+      const C_FLOAT64 & StdDeviation = i < StdDeviations.size() ?  StdDeviations[i] : std::numeric_limits<double>::quiet_NaN();
 
       pItem = new QTableWidgetItem(QString::number(StdDeviation));
 
@@ -203,7 +204,7 @@ bool CQFittingResult::enterProtected()
 
       mpParameters->setItem((int) i, 6, pItem);
 
-      pItem = new QTableWidgetItem(QString::number(Gradients[i]));
+      pItem = new QTableWidgetItem(QString::number(i < Gradients.size() ? Gradients[i] : std::numeric_limits<double>::quiet_NaN()));
 
       mpParameters->setItem((int) i, 7, pItem);
     }
