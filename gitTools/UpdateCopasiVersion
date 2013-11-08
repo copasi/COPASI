@@ -1,6 +1,10 @@
 #!/bin/bash
 
 GitTools="`git config copasi.gittools`"
+if [ ! -e ${GitTools}/functions ]; then
+  GitTools=$(cd `dirname $0` && pwd)
+fi
+
 . ${GitTools}/functions
 
 GAWK=`gitTool gawk`
