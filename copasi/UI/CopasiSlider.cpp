@@ -53,7 +53,11 @@ CopasiSlider::CopasiSlider(CSlider* pSlider, DataModelGUI * pDM, QWidget* parent
   this->mpLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
   pFrame->layout()->addWidget(this->mpLabel);
   this->mpQSlider = new QSlider(Qt::Horizontal);
+  mpQSlider->setFocusPolicy(Qt::WheelFocus);
   this->mpQSlider->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+#ifdef WIN32
+  this->mpQSlider->setMinimumHeight(10);
+#endif
   pFrame->layout()->addWidget(this->mpQSlider);
   this->layout()->addWidget(pFrame);
 
