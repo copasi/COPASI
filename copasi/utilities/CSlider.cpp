@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-//   $Revision: 1.31 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:13:05 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,45 +22,45 @@
 #include "model/CModel.h"
 
 const char * CSlider::TypeName[] =
-  {"float", "unsignedFloat", "integer", "unsignedInteger", "Undefined", NULL};
+{"float", "unsignedFloat", "integer", "unsignedInteger", "Undefined", NULL};
 
 const char * CSlider::ScaleName[] =
-  {"linear", "logarithmic", "undefined", NULL};
+{"linear", "logarithmic", "undefined", NULL};
 
 CSlider::CSlider(const std::string & name,
                  const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Slider"),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Slider", this)),
-    mAssociatedEntityKey(),
-    mpSliderObject(NULL),
-    mSliderType(Float),
-    mValue(0.0),
-    mMinValue(0),
-    mMaxValue(0),
-    mTickNumber(1000),
-    mTickFactor(100),
-    mSync(true),
-    mScaling(CSlider::linear),
-    mCN(),
-    mInitialRefreshes()
+  CCopasiContainer(name, pParent, "Slider"),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("Slider", this)),
+  mAssociatedEntityKey(),
+  mpSliderObject(NULL),
+  mSliderType(Float),
+  mValue(0.0),
+  mMinValue(0),
+  mMaxValue(0),
+  mTickNumber(1000),
+  mTickFactor(100),
+  mSync(true),
+  mScaling(CSlider::linear),
+  mCN(),
+  mInitialRefreshes()
 {}
 
 CSlider::CSlider(const CSlider & src,
                  const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Slider", this)),
-    mAssociatedEntityKey(src.mAssociatedEntityKey),
-    mpSliderObject(src.mpSliderObject),
-    mSliderType(src.mSliderType),
-    mValue(src.mValue),
-    mMinValue(src.mMinValue),
-    mMaxValue(src.mMaxValue),
-    mTickNumber(src.mTickNumber),
-    mTickFactor(src.mTickFactor),
-    mSync(src.mSync),
-    mScaling(src.mScaling),
-    mCN(src.mCN),
-    mInitialRefreshes(src.mInitialRefreshes)
+  CCopasiContainer(src, pParent),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("Slider", this)),
+  mAssociatedEntityKey(src.mAssociatedEntityKey),
+  mpSliderObject(src.mpSliderObject),
+  mSliderType(src.mSliderType),
+  mValue(src.mValue),
+  mMinValue(src.mMinValue),
+  mMaxValue(src.mMaxValue),
+  mTickNumber(src.mTickNumber),
+  mTickFactor(src.mTickFactor),
+  mSync(src.mSync),
+  mScaling(src.mScaling),
+  mCN(src.mCN),
+  mInitialRefreshes(src.mInitialRefreshes)
 {}
 
 CSlider::~CSlider()
@@ -168,7 +160,7 @@ void CSlider::resetRange()
     {
       C_FLOAT64 value = this->getSliderValue();
       this->mMinValue = value / 2.0;
-      this->mMaxValue = value * 2.0;
+      this->mMaxValue = value == 0 ? 1.0 :  value * 2.0;
     }
 }
 
@@ -425,4 +417,3 @@ bool CSlider::isValid() const
   result = (pObject != NULL && pObject == this->mpSliderObject);
   return result;
 }
-
