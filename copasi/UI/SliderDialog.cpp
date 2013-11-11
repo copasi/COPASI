@@ -746,6 +746,11 @@ void SliderDialog::sliderValueChanged()
 
   if ((!mSliderPressed) && mpAutoRunCheckBox->isChecked())
     {
+      CopasiSlider* slider = dynamic_cast<CopasiSlider*>(sender());
+
+      if (slider != NULL && slider != mpCurrSlider)
+        setCurrentSlider(slider);
+
       runTask();
       mSliderValueChanged = false;
     }

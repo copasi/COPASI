@@ -5,6 +5,7 @@
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+ <comment> All rights reserved. </comment>
  <class>SliderDialog</class>
  <widget class="QMainWindow" name="SliderDialog">
   <property name="geometry">
@@ -25,6 +26,9 @@
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0" colspan="2">
      <widget class="QScrollArea" name="mpScrollView">
+      <property name="focusPolicy">
+       <enum>Qt::ClickFocus</enum>
+      </property>
       <property name="contextMenuPolicy">
        <enum>Qt::ActionsContextMenu</enum>
       </property>
@@ -39,8 +43,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>271</width>
-         <height>261</height>
+         <width>267</width>
+         <height>257</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout"/>
@@ -49,6 +53,9 @@
     </item>
     <item row="1" column="0">
      <widget class="QCheckBox" name="mpAutoModifyRangesCheckBox">
+      <property name="focusPolicy">
+       <enum>Qt::TabFocus</enum>
+      </property>
       <property name="text">
        <string>&amp;update ranges</string>
       </property>
@@ -59,6 +66,9 @@
     </item>
     <item row="1" column="1">
      <widget class="QCheckBox" name="mpAutoRunCheckBox">
+      <property name="focusPolicy">
+       <enum>Qt::TabFocus</enum>
+      </property>
       <property name="text">
        <string>update &amp;automatically</string>
       </property>
@@ -69,6 +79,9 @@
     </item>
     <item row="2" column="0">
      <widget class="QPushButton" name="mpNewSliderButton">
+      <property name="focusPolicy">
+       <enum>Qt::TabFocus</enum>
+      </property>
       <property name="text">
        <string>&amp;new sliders</string>
       </property>
@@ -79,6 +92,9 @@
     </item>
     <item row="2" column="1">
      <widget class="QPushButton" name="mpRunTaskButton">
+      <property name="focusPolicy">
+       <enum>Qt::TabFocus</enum>
+      </property>
       <property name="text">
        <string>&amp;run task</string>
       </property>
