@@ -146,10 +146,10 @@ public:
 
   //TODO SEDML
   /**
-	 * Retrieve the list of recent SEDML files
-	 * @return CRecentFiles & recentSEDMLFiles
-	 */
-	CRecentFiles & getRecentSEDMLFiles();
+   * Retrieve the list of recent SEDML files
+   * @return CRecentFiles & recentSEDMLFiles
+   */
+  CRecentFiles & getRecentSEDMLFiles();
 
   /**
    * Retrieve the list of recent MIRIAM Resources
@@ -183,15 +183,25 @@ public:
    */
   void setValidateUnits(bool validateUnits);
 
-  /** 
+  /**
    * @return a flag on whether to use the open GL based rendering, or the Qt based one
    */
   bool useOpenGL() const;
 
-  /** 
+  /**
    *  Set whether the openGL based rendering is to be used (true), or the Qt based one.
    */
   void setUseOpenGL(bool useOpenGL);
+
+  /**
+   * @return a flag on whether to use the advanced expression editing (i.e manually entering copasiobjects)
+   */
+  bool useAdvancedEditing() const;
+
+  /**
+   *  Set whether the  advanced expression editing (i.e manually entering copasiobjects) is to be used (true), or not
+   */
+  void setUseAdvancedEditing(bool useAdvancedEditing);
 
   /**
    * Retrieve the web working directory
@@ -281,11 +291,10 @@ private:
   CRecentFiles * mpRecentSBMLFiles;
 
   //TODO SEDML
-	/**
-	 * A pointer to the list of recent files
-	 */
-	CRecentFiles * mpRecentSEDMLFiles;
-
+  /**
+   * A pointer to the list of recent files
+   */
+  CRecentFiles * mpRecentSEDMLFiles;
 
   /**
    * A pointer to the list of MIRIAM Resources
@@ -306,6 +315,11 @@ private:
   * A pointer indicating whether to use the OpenGL rendering, or the Qt based one
    */
   bool *mpUseOpenGL;
+
+  /**
+  * A pointer indicating whether to use the advanced editing
+   */
+  bool *mpUseAdvancedEditing;
 
   /**
    * A pointer to the last used working directory of the GUI.

@@ -109,6 +109,7 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
   mpApplicationFont(NULL),
   mpValidateUnits(NULL),
   mpUseOpenGL(NULL),
+  mpUseAdvancedEditing(NULL),
   mpWorkingDirectory(NULL)
 {initializeParameter();}
 
@@ -122,6 +123,7 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
   mpApplicationFont(NULL),
   mpValidateUnits(NULL),
   mpUseOpenGL(NULL),
+  mpUseAdvancedEditing(NULL),
   mpWorkingDirectory(NULL)
 {initializeParameter();}
 
@@ -135,6 +137,7 @@ CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
   mpApplicationFont(NULL),
   mpValidateUnits(NULL),
   mpUseOpenGL(NULL),
+  mpUseAdvancedEditing(NULL),
   mpWorkingDirectory(NULL)
 {initializeParameter();}
 
@@ -156,9 +159,9 @@ bool CConfigurationFile::elevateChildren()
   if (!mpRecentSBMLFiles) success = false;
 
   mpRecentSEDMLFiles =
-      elevate<CRecentFiles, CCopasiParameterGroup>(getGroup("Recent SEDML Files"));
+    elevate<CRecentFiles, CCopasiParameterGroup>(getGroup("Recent SEDML Files"));
 
-    if (!mpRecentSEDMLFiles) success = false;
+  if (!mpRecentSEDMLFiles) success = false;
 
   mpRecentMIRIAMResources =
     elevate<CMIRIAMResources, CCopasiParameterGroup>(getGroup("MIRIAM Resources"));
@@ -182,6 +185,7 @@ void CConfigurationFile::initializeParameter()
 
   mpValidateUnits = assertParameter("Validate Units", CCopasiParameter::BOOL, false)->getValue().pBOOL;
   mpUseOpenGL = assertParameter("Use OpenGL", CCopasiParameter::BOOL, false)->getValue().pBOOL;
+  mpUseAdvancedEditing = assertParameter("Use Advanced Editing", CCopasiParameter::BOOL, false)->getValue().pBOOL;
   mpWorkingDirectory = assertParameter("Working Directory", CCopasiParameter::STRING, std::string(""))->getValue().pSTRING;
 
   elevateChildren();
@@ -252,8 +256,6 @@ CRecentFiles & CConfigurationFile::getRecentSBMLFiles()
 CRecentFiles & CConfigurationFile::getRecentSEDMLFiles()
 {return *mpRecentSEDMLFiles;}
 
-
-
 CMIRIAMResources & CConfigurationFile::getRecentMIRIAMResources()
 {return *mpRecentMIRIAMResources;}
 
@@ -278,6 +280,16 @@ bool CConfigurationFile::useOpenGL() const
 void CConfigurationFile::setUseOpenGL(bool useOpenGL)
 {
   *mpUseOpenGL = useOpenGL;
+}
+
+bool CConfigurationFile::useAdvancedEditing() const
+{
+  return *mpUseAdvancedEditing;
+}
+
+void CConfigurationFile::setUseAdvancedEditing(bool useAdvancedEditing)
+{
+  *mpUseAdvancedEditing = useAdvancedEditing;
 }
 
 bool CConfigurationFile::validateUnits() const

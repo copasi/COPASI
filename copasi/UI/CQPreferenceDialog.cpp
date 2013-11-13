@@ -1,19 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPreferenceDialog.cpp,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/05/11 12:51:39 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "CQPreferenceDialog.h"
@@ -34,7 +30,7 @@
  *  true to construct a modal dialog.
  */
 CQPreferenceDialog::CQPreferenceDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
-    : QDialog(parent, fl)
+  : QDialog(parent, fl)
 {
   setObjectName(QString::fromUtf8(name));
   setModal(modal);
@@ -101,7 +97,7 @@ void CQPreferenceDialog::init()
       new QTreeWidgetItem(mpTreeWidget, Values);
     }
 
-   pParameter = configFile->getParameter("Use OpenGL");
+  pParameter = configFile->getParameter("Use OpenGL");
 
   if (pParameter != NULL)
     {
@@ -111,6 +107,15 @@ void CQPreferenceDialog::init()
       new QTreeWidgetItem(mpTreeWidget, Values);
     }
 
+  pParameter = configFile->getParameter("Use Advanced Editing");
+
+  if (pParameter != NULL)
+    {
+      QStringList Values;
+      Values.append("Use Advanced Editing");
+      Values.append((*pParameter->getValue().pBOOL ? "YES" : "NO"));
+      new QTreeWidgetItem(mpTreeWidget, Values);
+    }
 }
 
 void CQPreferenceDialog::slotBtnOk()
@@ -187,6 +192,15 @@ void CQPreferenceDialog::slotBtnOk()
 
   Items = mpTreeWidget->findItems("Use OpenGL", 0, 0);
   pParameter = configFile->getParameter("Use OpenGL");
+
+  if (Items.size() > 0 &&
+      pParameter != NULL)
+    {
+      pParameter->setValue(Items[0]->text(COL_VALUE).toUpper() == "YES");
+    }
+
+  Items = mpTreeWidget->findItems("Use Advanced Editing", 0, 0);
+  pParameter = configFile->getParameter("Use Advanced Editing");
 
   if (Items.size() > 0 &&
       pParameter != NULL)

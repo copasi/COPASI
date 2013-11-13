@@ -90,7 +90,7 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
             // reference. For the math model to work this needs to be corrected.
             const CObjectInterface * pObject = pDataObject->getValueObject();
 
-            if (mpObject != pObject)
+            if (mpObject != pObject && pObject != NULL)
               {
                 mpObject = pObject;
                 mRegisteredObjectCN = mpObject->getCN();

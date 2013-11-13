@@ -35,6 +35,7 @@
 #include "CQMatrixDialog.h"
 #include "qtUtilities.h"
 #include "report/CCopasiRootContainer.h"
+#include "commandline/CConfigurationFile.h"
 
 #define DEBUG_UI
 
@@ -331,8 +332,9 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
 {
   int Left;
   int Right;
+  bool isAdvancedEditing = CCopasiRootContainer::getConfiguration()->useAdvancedEditing();
 
-  if (e == QKeySequence::SelectNextChar)
+  if (e == QKeySequence::SelectNextChar && !isAdvancedEditing)
     {
       mCursor = textCursor();
       mCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
@@ -348,7 +350,7 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
       return;
     }
 
-  if (e == QKeySequence::SelectPreviousChar)
+  if (e == QKeySequence::SelectPreviousChar  && !isAdvancedEditing)
     {
       mCursor = textCursor();
       mCursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
@@ -367,6 +369,8 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
   switch (e->key())
     {
       case Qt::Key_Backspace:
+        if (isAdvancedEditing) break;
+
         mCursor = textCursor();
 
         if (mCursor.selectedText().isEmpty())
@@ -388,6 +392,8 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
         break;
 
       case Qt::Key_Delete:
+        if (isAdvancedEditing) break;
+
         mCursor = textCursor();
 
         if (mCursor.selectedText().isEmpty())
@@ -409,6 +415,8 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
         break;
 
       case Qt::Key_Left:
+        if (isAdvancedEditing) break;
+
         mCursor = textCursor();
 
         // We check whether the new position is in an object.
@@ -426,6 +434,8 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
         break;
 
       case Qt::Key_Right:
+        if (isAdvancedEditing) break;
+
         mCursor = textCursor();
 
         // We check whether the new position is in an object.
@@ -444,6 +454,8 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
 
       case Qt::Key_BraceLeft:
       case Qt::Key_BraceRight:
+        if (isAdvancedEditing) break;
+
         e->ignore();
         return;
         break;
@@ -638,6 +650,130 @@ void CQExpressionWidget::setExpression(const std::string & expression)
   return;
 }
 
+const CCopasiObject* findObjectByDisplayName(const CCopasiDataModel* dataModel, const std::string displayString)
+{
+  if (dataModel == NULL || displayString.empty()) return NULL;
+
+  const CModel* model = dataModel->getModel();
+
+  if (displayString == "Time") return model;
+
+  if (displayString == "Avogadro Constant") return dynamic_cast<const CCopasiObject* >(model->getObject("Reference=" + displayString));
+
+  if (displayString == "Quantity Conversion Factor") return dynamic_cast<const CCopasiObject* >(model->getObject("Reference=" + displayString));
+
+  size_t pos = displayString.find("Compartments[");
+
+  if (pos != std::string::npos)
+    {
+      const CCopasiVectorN< CCompartment > & compartments = model->getCompartments();
+
+      for (CCopasiVectorN< CCompartment >::const_iterator it = compartments.begin(); it != compartments.end(); ++it)
+        {
+          const CCompartment *current = *it;
+
+          if (current->getObjectDisplayName() == displayString)
+            {
+              return current;
+            }
+          else if (current->getInitialValueReference() != NULL &&
+                   current->getInitialValueReference()->getObjectDisplayName() == displayString)
+            {
+              return current->getInitialValueReference();
+            }
+          else if (current->getValueReference() != NULL &&
+                   current->getValueReference()->getObjectDisplayName() == displayString)
+            {
+              return current->getValueReference();
+            }
+          else if (current->getRateReference() != NULL &&
+                   current->getRateReference()->getObjectDisplayName() == displayString)
+            {
+              return current->getRateReference();
+            }
+        }
+    }
+
+  pos = displayString.find("Values[");
+
+  if (pos != std::string::npos)
+    {
+      const CCopasiVectorN< CModelValue > & values = model->getModelValues();
+
+      for (CCopasiVectorN< CModelValue >::const_iterator it = values.begin(); it != values.end(); ++it)
+        {
+          const CModelValue *current = *it;
+
+          if (current->getObjectDisplayName() == displayString)
+            {
+              return current;
+            }
+          else if (current->getInitialValueReference() != NULL &&
+                   current->getInitialValueReference()->getObjectDisplayName() == displayString)
+            {
+              return current->getInitialValueReference();
+            }
+          else if (current->getValueReference() != NULL &&
+                   current->getValueReference()->getObjectDisplayName() == displayString)
+            {
+              return current->getValueReference();
+            }
+          else if (current->getRateReference() != NULL &&
+                   current->getRateReference()->getObjectDisplayName() == displayString)
+            {
+              return current->getRateReference();
+            }
+        }
+    }
+
+  // no reasonable check for metabolites, so lets just go through them
+  {
+    const CCopasiVector< CMetab > & metabs = model->getMetabolites();
+
+    for (CCopasiVector< CMetab >::const_iterator it = metabs.begin(); it != metabs.end(); ++it)
+      {
+        const CMetab *current = *it;
+
+        if (current->getObjectDisplayName() == displayString)
+          {
+            return current;
+          }
+        else if (current->getInitialValueReference() != NULL &&
+                 current->getInitialValueReference()->getObjectDisplayName() == displayString)
+          {
+            return current->getInitialValueReference();
+          }
+        else if (current->getInitialConcentrationReference() != NULL &&
+                 current->getInitialConcentrationReference()->getObjectDisplayName() == displayString)
+          {
+            return current->getInitialConcentrationReference();
+          }
+        else if (current->getValueReference() != NULL &&
+                 current->getValueReference()->getObjectDisplayName() == displayString)
+          {
+            return current->getValueReference();
+          }
+        else if (current->getConcentrationReference() != NULL &&
+                 current->getConcentrationReference()->getObjectDisplayName() == displayString)
+          {
+            return current->getConcentrationReference();
+          }
+        else if (current->getRateReference() != NULL &&
+                 current->getRateReference()->getObjectDisplayName() == displayString)
+          {
+            return current->getRateReference();
+          }
+        else if (current->getConcentrationRateReference() != NULL &&
+                 current->getConcentrationRateReference()->getObjectDisplayName() == displayString)
+          {
+            return current->getConcentrationRateReference();
+          }
+      }
+  }
+
+  return NULL;
+}
+
 std::string CQExpressionWidget::getExpression() const
 {
   QString Infix;
@@ -676,6 +812,20 @@ std::string CQExpressionWidget::getExpression() const
 
       std::string DisplayName(TO_UTF8(DisplayObjectPattern.cap(1)));
       std::map< std::string, const CCopasiObject *>::const_iterator itObject = mParseList.find(DisplayName);
+
+      if (itObject == mParseList.end() && CCopasiRootContainer::getConfiguration()->useAdvancedEditing())
+        {
+          // here we don't have an object recognized, what we ought to do is to find it in the model
+          const CCopasiObject* object = findObjectByDisplayName(
+                                          mpCurrentObject != NULL ? mpCurrentObject->getObjectDataModel() : (*CCopasiRootContainer::getDatamodelList())[0],
+                                          DisplayName);
+
+          if (object != NULL)
+            {
+              const_cast<CQExpressionWidget*>(this)->mParseList[DisplayName] = object;
+              itObject = mParseList.find(DisplayName);
+            }
+        }
 
       if (itObject != mParseList.end())
         Infix += "<" + FROM_UTF8(itObject->second->getCN()) + ">";
