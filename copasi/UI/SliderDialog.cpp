@@ -1059,7 +1059,12 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForCurrentFolderId()
 void SliderDialog::changeEvent(QEvent *event)
 {
   if (event->type() == QEvent::EnabledChange && isEnabled() && mpCurrSlider != NULL)
-    mpCurrSlider->focusSlider();
+    {
+      setFocus(Qt::OtherFocusReason);
+      mpScrollView->setFocus(Qt::OtherFocusReason);
+      mpSliderBox->setFocus(Qt::OtherFocusReason);
+      mpCurrSlider->focusSlider();
+    }
 }
 
 bool SliderDialog::eventFilter(QObject*, QEvent* event)
