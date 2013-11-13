@@ -35,6 +35,9 @@
       <property name="widgetResizable">
        <bool>true</bool>
       </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
       <widget class="QWidget" name="mpSliderBox">
        <property name="enabled">
         <bool>true</bool>
@@ -83,10 +86,10 @@
        <enum>Qt::TabFocus</enum>
       </property>
       <property name="text">
-       <string>&amp;new sliders</string>
+       <string>&amp;New Sliders</string>
       </property>
       <property name="default">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
      </widget>
     </item>
@@ -96,7 +99,7 @@
        <enum>Qt::TabFocus</enum>
       </property>
       <property name="text">
-       <string>&amp;run task</string>
+       <string>&amp;Run Task</string>
       </property>
      </widget>
     </item>

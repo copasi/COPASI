@@ -94,6 +94,8 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WF
   setObjectName(QString::fromUtf8(name));
   setWindowTitle("Slider Window");
 
+  mpSliderBox->layout()->addItem(new QSpacerItem(0, 5, QSizePolicy::Minimum, QSizePolicy::Expanding));
+
   this->mpContextMenu = new QMenu(this);
   mpaCreateNewSlider = this->mpContextMenu->addAction("Add New Slider", this, SLOT(createNewSlider()));
   mpaRemoveSlider = this->mpContextMenu->addAction("Remove Slider", this, SLOT(removeSlider()));
@@ -427,7 +429,9 @@ void SliderDialog::addSlider(CSlider* pSlider)
       // for the currently set framework
       this->setCorrectSliderObject(this->mpCurrSlider);
       mSliderMap[mCurrentFolderId].push_back(mpCurrSlider);
-      mpSliderBox->layout()->addWidget(mpCurrSlider);
+      QBoxLayout* layout = static_cast<QBoxLayout*>(mpSliderBox->layout());
+      int childCount = layout->count() - 1;
+      layout->insertWidget(childCount, mpCurrSlider);
       connect(mpCurrSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
       connect(mpCurrSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
       connect(mpCurrSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));

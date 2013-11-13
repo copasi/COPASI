@@ -81,14 +81,16 @@ CopasiSlider::CopasiSlider(CSlider* pSlider, DataModelGUI * pDM, QWidget* parent
     }
 
   this->updateSliderData();
-  this->mpCloseButton->setToolTip(tr("remove slider"));
-  this->mpEditButton->setToolTip(tr("edit slider"));
+  this->mpCloseButton->setToolTip(tr("Remove Slider"));
+  this->mpEditButton->setToolTip(tr("Edit Slider"));
 
   connect(this->mpQSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
   connect(this->mpQSlider, SIGNAL(sliderReleased()), this, SLOT(qSliderReleased()));
   connect(this->mpQSlider, SIGNAL(sliderPressed()), this, SLOT(qSliderPressed()));
   connect(this->mpCloseButton, SIGNAL(clicked()), this, SLOT(closeButtonClicked()));
   connect(this->mpEditButton, SIGNAL(clicked()), this, SLOT(editButtonClicked()));
+
+  setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
   // We need to assure that the slider is compiled
   if (mpCSlider) mpCSlider->compile();
