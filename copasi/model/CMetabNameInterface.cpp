@@ -172,7 +172,7 @@ bool CMetabNameInterface::doesExist(const CModel* model,
 std::pair< std::string, std::string > CMetabNameInterface::splitDisplayName(const std::string & name)
 {
   // parse the description into a linked node tree
-  std::stringstream buffer(quote(name) + " ->");
+  std::stringstream buffer((name.find('"') != std::string::npos ? name :  quote(name)) + " ->");
 
   CChemEqParser Parser(&buffer);
 
