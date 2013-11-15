@@ -13,6 +13,7 @@
 // All rights reserved.
 
 #include <stdexcept>
+#include <locale.h>
 
 #include <QtGui/QApplication>
 
@@ -45,6 +46,10 @@
 
 int main(int argc, char *argv[])
 {
+  // Fix for Issue 1377, if locale is not set to the default one, some
+  // numbers will be displayed in the systems default locale:
+  setlocale(LC_ALL, "C");
+
   CQCopasiApplication a(argc, argv);
 
   a.setAttribute(Qt::AA_DontShowIconsInMenus, false);
