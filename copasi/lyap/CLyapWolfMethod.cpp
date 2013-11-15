@@ -356,9 +356,9 @@ bool CLyapWolfMethod::calculate()
           /* Currently this is correct since no events are processed. */
           //CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
 
-          mpTask->methodCallback((mTime - startTime) * handlerFactor, true);
+          flagProceed &= mpTask->methodCallback((mTime - startTime) * handlerFactor, true);
         }
-      while (true);
+      while (flagProceed);
 
       //mpLyapProblem->getModel()->setState(*mpCurrentState);
       //mpLyapProblem->getModel()->updateSimulatedValues();
@@ -423,7 +423,7 @@ bool CLyapWolfMethod::calculate()
     }
   while ((mTime < endTime) && flagProceed);
 
-  return true;
+  return flagProceed;
 }
 
 void CLyapWolfMethod::orthonormalize()
