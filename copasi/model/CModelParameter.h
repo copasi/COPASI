@@ -158,6 +158,12 @@ public:
   std::string getInitialExpression() const;
 
   /**
+   * Retrieve the actual initial expression.
+   * @return const CExpression* initialExpression
+   */
+  const CExpression* getInitialExpressionPtr() const;
+
+  /**
    * The the compare result.
    * @param const CompareResult & compareResult
    */

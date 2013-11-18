@@ -46,6 +46,8 @@ Qt::ItemFlags CQEventDM::flags(const QModelIndex &index) const
 
 QVariant CQEventDM::data(const QModelIndex &index, int role) const
 {
+  CExpression * pExpression = NULL;
+
   if (!index.isValid())
     return QVariant();
 
@@ -63,8 +65,10 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
             {
               case COL_ROW_NUMBER:
                 return QVariant(QString(""));
+
               case COL_NAME_EVENTS:
                 return QVariant(QString("New Event"));
+
               default:
                 return QVariant(QString(""));
             }
@@ -95,7 +99,12 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
                         }
 
                       assignmentTarget += FROM_UTF8(pEntity->getObjectDisplayName());
-                      assignmentExpression += FROM_UTF8((*it)->getExpression());
+                      pExpression = (*it)->getExpressionPtr();
+
+                      if (pExpression != NULL)
+                        assignmentExpression += pExpression->getDisplayString().c_str();
+                      else
+                        assignmentExpression += FROM_UTF8((*it)->getExpression());
                     }
                 }
             }
@@ -109,7 +118,12 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
                 return QVariant(FROM_UTF8(pEvent->getObjectName()));
 
               case COL_TRIGGER_EVENTS:
-                return QVariant(FROM_UTF8(pEvent->getTriggerExpression()));
+                pExpression = pEvent->getTriggerExpressionPtr();
+
+                if (pExpression != NULL)
+                  return QVariant(FROM_UTF8(pExpression->getDisplayString()));
+                else
+                  return QVariant(FROM_UTF8(pEvent->getTriggerExpression()));
 
               case COL_DELAYED_EVENTS:
               {
@@ -122,7 +136,12 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
               }
 
               case COL_DELAY_EXPRESSION_EVENTS:
-                return QVariant(FROM_UTF8(pEvent->getDelayExpression()));
+                pExpression = pEvent->getDelayExpressionPtr();
+
+                if (pExpression != NULL)
+                  return QVariant(FROM_UTF8(pExpression->getDisplayString()));
+                else
+                  return QVariant(FROM_UTF8(pEvent->getDelayExpression()));
 
               case COL_ASSIGNTARGET_EVENTS:
                 return QVariant(assignmentTarget);
@@ -148,18 +167,25 @@ QVariant CQEventDM::headerData(int section, Qt::Orientation orientation,
         {
           case COL_ROW_NUMBER:
             return QVariant(QString("#"));
+
           case COL_NAME_EVENTS:
             return QVariant(QString("Name"));
+
           case COL_TRIGGER_EVENTS:
             return QVariant(QString("Trigger Expression"));
+
           case COL_DELAYED_EVENTS:
             return QVariant("Delayed");
+
           case COL_DELAY_EXPRESSION_EVENTS:
             return QVariant("Delay Expression");
+
           case COL_ASSIGNTARGET_EVENTS:
             return QVariant("Assignment Target");
+
           case COL_ASSIGNEXPRESSION_EVENTS:
             return QVariant("Assignment Expression");
+
           default:
             return QVariant();
         }

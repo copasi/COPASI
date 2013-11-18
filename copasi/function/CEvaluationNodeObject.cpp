@@ -196,6 +196,11 @@ std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * pTre
 // virtual
 std::string CEvaluationNodeObject::getDisplayString(const std::vector< std::string > & /* children */) const
 {
+  const CCopasiObject* object = dynamic_cast<const CCopasiObject*>(mpObject);
+
+  if (object != NULL)
+    return object->getObjectDisplayName();
+
   return "<" + mRegisteredObjectCN + ">";
 }
 

@@ -276,6 +276,11 @@ void CModelParameter::setInitialExpression(const std::string & initialExpression
   mpInitialExpression->setInfix(initialExpression);
 }
 
+const CExpression* CModelParameter::getInitialExpressionPtr() const
+{
+  return mpInitialExpression;
+}
+
 std::string CModelParameter::getInitialExpression() const
 {
   if (mpInitialExpression == NULL)

@@ -14,6 +14,7 @@
 #include "qtUtilities.h"
 
 #include "model/CModelParameterSet.h"
+#include "function/CExpression.h"
 #include "resourcesUI/CQIconResource.h"
 
 #define COL_NAME       0
@@ -506,7 +507,12 @@ QVariant CQParameterOverviewDM::assignmentData(const CModelParameter * pNode, in
           return QVariant(QString(FROM_UTF8(GlobalQuantityCN)));
         }
 
-      return QVariant(QString(FROM_UTF8(pNode->getInitialExpression())));
+      const CExpression* pExpression = pNode->getInitialExpressionPtr();
+
+      if (pExpression != NULL)
+        return QVariant(QString(FROM_UTF8(pExpression->getDisplayString())));
+      else
+        return QVariant(QString(FROM_UTF8(pNode->getInitialExpression())));
     }
 
   return QVariant();
