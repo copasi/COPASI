@@ -20,6 +20,7 @@
 #include <QtGui/QSplitter>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QVBoxLayout>
+#include <QtGui/QDialogButtonBox>
 
 #include "copasi.h"
 
@@ -32,8 +33,6 @@
 
 CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags f):
   QDialog(parent, f)
-  , mpOKButton(NULL)
-  , mpCancelButton(NULL)
   , mpExpertCheckBox(NULL)
   , mpXAxisSelectionWidget(NULL)
   , mpYAxisSelectionWidget(NULL)
@@ -58,14 +57,8 @@ CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const ch
   mpButtonBox = new QHBoxLayout(this);
   mpMainLayout->addLayout(mpButtonBox);
 
-  mpOKButton = new QPushButton(this);
-  mpOKButton->setText("OK");
-  mpOKButton->setDefault(true);
-  mpButtonBox->addWidget(mpOKButton);
-
-  mpCancelButton = new QPushButton(this);
-  mpCancelButton->setText("Cancel");
-  mpButtonBox->addWidget(mpCancelButton);
+  QDialogButtonBox* box = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
+  mpButtonBox->addWidget(box);
 
   mpExpertCheckBox = new QCheckBox(this);
   mpExpertCheckBox->setText("Expert Mode");
@@ -100,8 +93,8 @@ CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const ch
   mpYAxisSelectionWidget->setOutputVector(mpYAxisOutputVector);
   mpYAxisSelectionBox->layout()->addWidget(mpYAxisSelectionWidget);
 
-  connect(mpOKButton, SIGNAL(clicked()), this, SLOT(slotOKButtonClicked()));
-  connect(mpCancelButton, SIGNAL(clicked()), this, SLOT(slotCancelButtonClicked()));
+  connect(box, SIGNAL(accepted()), this, SLOT(slotOKButtonClicked()));
+  connect(box, SIGNAL(rejected()), this, SLOT(slotCancelButtonClicked()));
   connect(mpExpertCheckBox, SIGNAL(toggled(bool)), this, SLOT(slotExpertCheckBoxToggled(bool)));
 
   setTabOrder();
@@ -112,8 +105,6 @@ CCopasiPlotSelectionDialog::~CCopasiPlotSelectionDialog()
 
 void CCopasiPlotSelectionDialog::setTabOrder()
 {
-  QWidget::setTabOrder(this->mpOKButton, this->mpCancelButton);
-  QWidget::setTabOrder(this->mpCancelButton, this->mpExpertCheckBox);
   QWidget::setTabOrder(this->mpExpertCheckBox, this->mpXAxisSelectionWidget);
   QWidget::setTabOrder(this->mpXAxisSelectionWidget, this->mpYAxisSelectionWidget);
   this->mpXAxisSelectionWidget->setFocus();

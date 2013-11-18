@@ -54,8 +54,6 @@ protected:
   void setTabOrder();
 
 protected:
-  QPushButton* mpOKButton;
-  QPushButton* mpCancelButton;
   QCheckBox* mpExpertCheckBox;
   CCopasiSelectionWidget* mpXAxisSelectionWidget;
   CCopasiSelectionWidget* mpYAxisSelectionWidget;

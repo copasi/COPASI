@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <QtGui/QPushButton>
 #include <QtGui/QCheckBox>
@@ -19,6 +19,7 @@
 //Added by qt3to4:
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QVBoxLayout>
+#include <QtGui/QDialogButtonBox>
 
 #include "CCopasiSelectionDialog.h"
 #include "CCopasiSelectionWidget.h"
@@ -36,8 +37,6 @@
 
 CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * name , bool modal):
   QDialog(parent),
-  mpOKButton(NULL),
-  mpCancelButton(NULL),
   mpModeCheckBox(NULL),
   mpButtonBox(NULL),
   mpMainWidget(NULL),
@@ -58,17 +57,8 @@ CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * n
   mpButtonBox = new QHBoxLayout();
   mpMainLayout->addLayout(mpButtonBox);
 
-  mpOKButton = new QPushButton(this);
-  mpOKButton->setObjectName("OK");
-  mpOKButton->setText("OK");
-  mpOKButton->setDefault(true);
-  mpOKButton->setAutoDefault(true);
-  mpButtonBox->addWidget(mpOKButton);
-
-  mpCancelButton = new QPushButton(this);
-  mpCancelButton->setObjectName("Cancel");
-  mpCancelButton->setText("Cancel");
-  mpButtonBox->addWidget(mpCancelButton);
+  QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal,  this);
+  mpButtonBox->addWidget(box);
 
   mpModeCheckBox = new QCheckBox("expert mode", this);
   mpModeCheckBox->setObjectName("expertMode");
@@ -78,14 +68,12 @@ CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * n
   // this->mpButtonBox->addSpacing(20);
   // this->mpButtonBox->addStretch();
 
-  connect(this->mpOKButton, SIGNAL(clicked()), this, SLOT(okButton_clicked()));
-  connect(this->mpCancelButton, SIGNAL(clicked()), this, SLOT(cancelButton_clicked()));
+  connect(box, SIGNAL(accepted()), this, SLOT(okButton_clicked()));
+  connect(box, SIGNAL(rejected()), this, SLOT(cancelButton_clicked()));
   connect(this->mpModeCheckBox, SIGNAL(toggled(bool)), this, SLOT(modeButton_toggled(bool)));
 
   this->mpSelectionWidget->setOutputVector(NULL);
 
-  this->setTabOrder(this->mpOKButton, this->mpCancelButton);
-  this->setTabOrder(this->mpCancelButton, this->mpModeCheckBox);
   this->setTabOrder(this->mpModeCheckBox, this->mpMainWidget);
 }
 

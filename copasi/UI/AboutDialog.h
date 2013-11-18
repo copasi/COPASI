@@ -44,7 +44,6 @@ protected slots:
   void closeButton_clicked();
 
 protected:
-  QPushButton* closeButton;
   QTextEdit* textEdit;
   QVBoxLayout* mainLayout;
 };

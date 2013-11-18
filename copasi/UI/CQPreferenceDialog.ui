@@ -1,21 +1,20 @@
 <ui version="4.0" >
-<comment> Begin CVS Header </comment>
-<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQPreferenceDialog.ui,v $ </comment>
-<comment>   $Revision: 1.4 $ </comment>
-<comment>   $Name:  $ </comment>
-<comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/09/16 12:57:41 $ </comment>
-<comment> End CVS Header </comment>
-
-<comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
-<comment> Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
 <comment> and The University of Manchester. </comment>
 <comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc. and EML Research, gGmbH. </comment>
+<comment> All rights reserved. </comment>
+
+
+
 
  <comment> All rights reserved. </comment>
  <class>CQPreferenceDialog</class>
@@ -50,50 +49,31 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="mpBtnLayout" >
-     <item>
-      <widget class="QPushButton" name="mpBtnOk" >
-       <property name="text" >
-        <string>&amp;OK</string>
-       </property>
-       <property name="shortcut" >
-        <string/>
-       </property>
-       <property name="autoDefault" >
-        <bool>true</bool>
-       </property>
-       <property name="default" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mpBtnCancel" >
-       <property name="text" >
-        <string>&amp;Cancel</string>
-       </property>
-       <property name="shortcut" >
-        <string/>
-       </property>
-       <property name="autoDefault" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QDialogButtonBox" name="buttonBox">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>240</y>
+     <width>341</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <tabstops>
-  <tabstop>mpBtnOk</tabstop>
-  <tabstop>mpBtnCancel</tabstop>
- </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>mpBtnOk</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
    <receiver>CQPreferenceDialog</receiver>
    <slot>slotBtnOk()</slot>
    <hints>
@@ -108,8 +88,8 @@
    </hints>
   </connection>
   <connection>
-   <sender>mpBtnCancel</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
    <receiver>CQPreferenceDialog</receiver>
    <slot>slotBtnCancel()</slot>
    <hints>

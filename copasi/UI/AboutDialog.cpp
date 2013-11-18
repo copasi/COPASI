@@ -26,6 +26,7 @@
 #include <QtGui/QSizePolicy>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QBrush>
+#include <QtGui/QDialogButtonBox>
 
 #include "icons/copasi_beta_background.xpm"
 
@@ -76,7 +77,6 @@ AboutDialog::AboutDialog(QWidget* parent,
                          const int & width,
                          const int & heigth):
   QDialog(parent),
-  closeButton(NULL),
   textEdit(NULL),
   mainLayout(NULL)
 {
@@ -97,18 +97,16 @@ AboutDialog::AboutDialog(QWidget* parent,
   this->textEdit->setReadOnly(true);
   this->textEdit->setText(text);
   //  this->textEdit->setText(QString(text).arg();
-  this->closeButton = new QPushButton(this);
-  this->closeButton->setText("close");
   this->mainLayout->addWidget(this->textEdit);
-  this->mainLayout->addWidget(this->closeButton);
+  QDialogButtonBox* box = new QDialogButtonBox(QDialogButtonBox::Close, Qt::Horizontal, this);
+  this->mainLayout->addWidget(box);
 
-  connect(this->closeButton, SIGNAL(clicked()), this, SLOT(closeButton_clicked()));
+  connect(box, SIGNAL(rejected()), this, SLOT(closeButton_clicked()));
 }
 
 AboutDialog::~AboutDialog()
 {
   pdelete(this->textEdit);
-  pdelete(this->closeButton);
   pdelete(this->mainLayout);
 }
 

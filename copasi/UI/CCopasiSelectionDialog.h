@@ -35,8 +35,6 @@ class CCopasiSelectionDialog: public QDialog
   Q_OBJECT
 
 protected:
-  QPushButton* mpOKButton;
-  QPushButton* mpCancelButton;
   QCheckBox* mpModeCheckBox;
   QHBoxLayout* mpButtonBox;
   QWidget* mpMainWidget;

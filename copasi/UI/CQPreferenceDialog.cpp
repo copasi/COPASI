@@ -121,8 +121,6 @@ void CQPreferenceDialog::init()
 void CQPreferenceDialog::slotBtnOk()
 {
   // We need to commit the changes
-  mpBtnOk->setFocus();
-
   unsigned C_INT32 newMaxFiles = 0;
   CConfigurationFile * configFile = CCopasiRootContainer::getConfiguration();
 
