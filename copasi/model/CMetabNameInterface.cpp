@@ -78,7 +78,8 @@ std::string CMetabNameInterface::getDisplayName(const CModel* model,
 
   std::string Compartment = quoted ? quote(compartment, "{}") : compartment;
 
-  if (quoted && isNumber(Compartment))
+  if ((quoted && isNumber(Compartment)) ||
+      (Compartment.find(' ') != std::string::npos && Compartment.find('"') == std::string::npos))
     Compartment = "\"" + Compartment + "\"";
 
   return Metabolite + '{' + Compartment + '}';
@@ -217,7 +218,12 @@ std::string CMetabNameInterface::unQuote(const std::string & displayName)
 
   if (Names.second != "")
     {
-      Name += "{" + Names.second + "}";
+      std::string compartment = Names.second;
+
+      if (compartment.find(' '))
+        compartment = "\"" + compartment + "\"";
+
+      Name += "{" + compartment + "}";
     }
 
   return Name;
