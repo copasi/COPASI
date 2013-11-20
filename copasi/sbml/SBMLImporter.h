@@ -417,9 +417,9 @@ protected:
    * Checks if the given node is an object node that represents a parameter
    * or a model value or a function which has a single parameter and a single node which also represents a parameter.
    */
-  static CCopasiObject* isConstantFlux(const CEvaluationNode* pRoot,
-                                       CModel* pModel,
-                                       CFunctionDB* pFunctionDB);
+  CCopasiObject* isConstantFlux(const CEvaluationNode* pRoot,
+                                CModel* pModel,
+                                CFunctionDB* pFunctionDB);
 
   std::vector<CEvaluationNodeObject*>* isMassActionExpression(const CEvaluationNode* pRootNode,
       const CChemEq& chemicalEquation);

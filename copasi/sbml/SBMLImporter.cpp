@@ -1621,72 +1621,71 @@ CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDef
 
   CFunction* pTmpFunction = this->createCFunctionFromFunctionTree(sbmlFunction, pSBMLModel, copasi2sbmlmap);
 
-  if (pTmpFunction)
-    {
-      std::string sbmlId = sbmlFunction->getId();
-      pTmpFunction->setSBMLId(sbmlId);
-      // check if the id is already taken by another function definition, maybe
-      // from an earlier import, if this is the case, delete the id on the old
-      // function definition
-      // if we don't do this, two functions might have the same SBML id during
-      // export which makes the exporter code so much more difficult
-      size_t i, iMax = this->functionDB->loadedFunctions().size();
-
-      for (i = 0; i < iMax; ++i)
-        {
-          CFunction* pFun = this->functionDB->loadedFunctions()[i];
-
-          if (pFun->getSBMLId() == sbmlId)
-            {
-              pFun->setSBMLId("");
-            }
-        }
-
-      std::string functionName = sbmlFunction->getName();
-
-      if (functionName == "")
-        {
-          functionName = sbmlFunction->getId();
-        }
-
-      unsigned int counter = 1;
-      std::ostringstream numberStream;
-      std::string appendix = "";
-      CFunction * pExistingFunction = NULL;
-
-      while ((pExistingFunction = functionDB->findFunction(functionName + appendix)))
-        {
-          if (areEqualFunctions(pExistingFunction, pTmpFunction))
-            {
-              pdelete(pTmpFunction);
-              pTmpFunction = pExistingFunction;
-
-              break;
-            }
-
-          // We need to check whether the functions are identical.
-          numberStream.str("");
-          numberStream << "_" << counter;
-          counter++;
-          appendix = numberStream.str();
-        }
-
-      if (pTmpFunction != pExistingFunction)
-        {
-          pTmpFunction->setObjectName(functionName + appendix);
-          functionDB->add(pTmpFunction, true);
-          pTmpFunctionDB->add(pTmpFunction, false);
-        }
-
-      if (pTmpFunction->getType() == CEvaluationTree::UserDefined)
-        {
-          SBMLImporter::importMIRIAM(sbmlFunction, pTmpFunction);
-          SBMLImporter::importNotes(pTmpFunction, sbmlFunction);
-        }
-    }
-  else
+  if (pTmpFunction == NULL)
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 14, sbmlFunction->getId().c_str());
+      return NULL;
+    }
+
+  std::string sbmlId = sbmlFunction->getId();
+  pTmpFunction->setSBMLId(sbmlId);
+  // check if the id is already taken by another function definition, maybe
+  // from an earlier import, if this is the case, delete the id on the old
+  // function definition
+  // if we don't do this, two functions might have the same SBML id during
+  // export which makes the exporter code so much more difficult
+  size_t i, iMax = this->functionDB->loadedFunctions().size();
+
+  for (i = 0; i < iMax; ++i)
+    {
+      CFunction* pFun = this->functionDB->loadedFunctions()[i];
+
+      if (pFun->getSBMLId() == sbmlId)
+        {
+          pFun->setSBMLId("");
+        }
+    }
+
+  std::string functionName = sbmlFunction->getName();
+
+  if (functionName == "")
+    {
+      functionName = sbmlFunction->getId();
+    }
+
+  unsigned int counter = 1;
+  std::ostringstream numberStream;
+  std::string appendix = "";
+  CFunction * pExistingFunction = NULL;
+
+  while ((pExistingFunction = functionDB->findFunction(functionName + appendix)))
+    {
+      if (areEqualFunctions(pExistingFunction, pTmpFunction))
+        {
+          pdelete(pTmpFunction);
+          pTmpFunction = pExistingFunction;
+
+          break;
+        }
+
+      // We need to check whether the functions are identical.
+      numberStream.str("");
+      numberStream << "_" << counter;
+      counter++;
+      appendix = numberStream.str();
+    }
+
+  if (pTmpFunction != pExistingFunction)
+    {
+      pTmpFunction->setObjectName(functionName + appendix);
+      functionDB->add(pTmpFunction, true);
+      pTmpFunctionDB->add(pTmpFunction, false);
+    }
+
+  if (pTmpFunction->getType() == CEvaluationTree::UserDefined)
+    {
+      SBMLImporter::importMIRIAM(sbmlFunction, pTmpFunction);
+      SBMLImporter::importNotes(pTmpFunction, sbmlFunction);
     }
 
   return pTmpFunction;
@@ -1696,118 +1695,117 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
 {
   CFunction* pFun = NULL;
 
-  if (pSBMLFunction->isSetMath())
-    {
-      ConverterASTNode root(*pSBMLFunction->getMath());
+  if (!pSBMLFunction->isSetMath())
+    return NULL;
 
-      if (SBMLImporter::isDelayFunctionUsed(&root))
+  ConverterASTNode root(*pSBMLFunction->getMath());
+
+  if (SBMLImporter::isDelayFunctionUsed(&root))
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 85, pSBMLFunction->getId().c_str());
+    }
+
+  this->preprocessNode(&root, pSBMLModel, copasi2sbmlmap);
+
+  if (root.getType() != AST_LAMBDA)
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 11, pSBMLFunction->getId().c_str());
+      return NULL;
+    }
+
+  // get the number of children.
+  // the first n-1 children are the parameters for the function
+  // the last child is the actual function
+  pFun = new CKinFunction();
+  unsigned int i, iMax = root.getNumChildren() - 1;
+  std::set<std::string> variableNames;
+
+  for (i = 0; i < iMax; ++i)
+    {
+      ASTNode* pVarNode = root.getChild(i);
+
+      if (pVarNode->getType() != AST_NAME)
         {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 85, pSBMLFunction->getId().c_str());
+          delete pFun;
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 12, pSBMLFunction->getId().c_str());
         }
 
-      this->preprocessNode(&root, pSBMLModel, copasi2sbmlmap);
+      pFun->addVariable(pVarNode->getName());
+      variableNames.insert(pVarNode->getName());
+    }
 
-      if (root.getType() == AST_LAMBDA)
+  // now we check if the AST tree has a node that represents the time
+  // object
+  // find a unique name for the time variable
+  std::ostringstream sstream;
+  std::string timeVariableName = "time";
+  unsigned int postfix = 1;
+
+  while (variableNames.find(timeVariableName) != variableNames.end())
+    {
+      sstream.str("");
+      sstream << "time_" << postfix;
+      timeVariableName = sstream.str();
+      ++postfix;
+    }
+
+  if (this->replaceTimeNodesInFunctionDefinition(root.getChild(iMax), timeVariableName))
+    {
+      // add another variable to the function
+      ASTNode* pVarNode = new ASTNode(AST_NAME);
+      pVarNode->setName(timeVariableName.c_str());
+      ASTNode* pTmpNode = root.removeChild(iMax);
+      root.addChild(pVarNode);
+      root.addChild(pTmpNode);
+      // increase iMax since we now have one more child
+      ++iMax;
+      pFun->addVariable(timeVariableName);
+      this->mExplicitelyTimeDependentFunctionDefinitions.insert(pSBMLFunction->getId());
+    }
+
+  pFun->setTree(*root.getChild(iMax));
+  CCopasiTree<CEvaluationNode>::iterator treeIt = pFun->getRoot();
+
+  // if the root node already is an object node, this has to be dealt with separately
+  if (dynamic_cast<CEvaluationNodeObject*>(&(*treeIt)))
+    {
+      CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
+      pFun->setRoot(pVariableNode);
+    }
+  else
+    {
+      while (treeIt != NULL)
         {
-          // get the number of children.
-          // the first n-1 children are the parameters for the function
-          // the last child is the actual function
-          pFun = new CKinFunction();
-          unsigned int i, iMax = root.getNumChildren() - 1;
-          std::set<std::string> variableNames;
-
-          for (i = 0; i < iMax; ++i)
-            {
-              ASTNode* pVarNode = root.getChild(i);
-
-              if (pVarNode->getType() != AST_NAME)
-                {
-                  delete pFun;
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 12, pSBMLFunction->getId().c_str());
-                }
-
-              pFun->addVariable(pVarNode->getName());
-              variableNames.insert(pVarNode->getName());
-            }
-
-          // now we check if the AST tree has a node that represents the time
-          // object
-          // find a unique name for the time variable
-          std::ostringstream sstream;
-          std::string timeVariableName = "time";
-          unsigned int postfix = 1;
-
-          while (variableNames.find(timeVariableName) != variableNames.end())
-            {
-              sstream.str("");
-              sstream << "time_" << postfix;
-              timeVariableName = sstream.str();
-              ++postfix;
-            }
-
-          if (this->replaceTimeNodesInFunctionDefinition(root.getChild(iMax), timeVariableName))
-            {
-              // add another variable to the function
-              ASTNode* pVarNode = new ASTNode(AST_NAME);
-              pVarNode->setName(timeVariableName.c_str());
-              ASTNode* pTmpNode = root.removeChild(iMax);
-              root.addChild(pVarNode);
-              root.addChild(pTmpNode);
-              // increase iMax since we now have one more child
-              ++iMax;
-              pFun->addVariable(timeVariableName);
-              this->mExplicitelyTimeDependentFunctionDefinitions.insert(pSBMLFunction->getId());
-            }
-
-          pFun->setTree(*root.getChild(iMax));
-          CCopasiTree<CEvaluationNode>::iterator treeIt = pFun->getRoot();
-
-          // if the root node already is an object node, this has to be dealt with separately
           if (dynamic_cast<CEvaluationNodeObject*>(&(*treeIt)))
             {
               CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
-              pFun->setRoot(pVariableNode);
-            }
-          else
-            {
-              while (treeIt != NULL)
+
+              if ((*treeIt).getParent())
                 {
-                  if (dynamic_cast<CEvaluationNodeObject*>(&(*treeIt)))
-                    {
-                      CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
-
-                      if ((*treeIt).getParent())
-                        {
-                          (*treeIt).getParent()->addChild(pVariableNode, &(*treeIt));
-                          (*treeIt).getParent()->removeChild(&(*treeIt));
-                        }
-
-                      delete &(*treeIt);
-                      treeIt = pVariableNode;
-                    }
-
-                  ++treeIt;
+                  (*treeIt).getParent()->addChild(pVariableNode, &(*treeIt));
+                  (*treeIt).getParent()->removeChild(&(*treeIt));
                 }
+
+              delete &(*treeIt);
+              treeIt = pVariableNode;
             }
 
-          pFun->updateTree();
-
-          if (!pFun->compile())
-            {
-              delete pFun;
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 28, pSBMLFunction->getId().c_str());
-            }
-
-          if (pFun->getRoot() == NULL)
-            {
-              delete pFun;
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 13, pSBMLFunction->getId().c_str());
-            }
+          ++treeIt;
         }
-      else
-        {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 11, pSBMLFunction->getId().c_str());
-        }
+    }
+
+  pFun->updateTree();
+
+  if (!pFun->compile())
+    {
+      delete pFun;
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 28, pSBMLFunction->getId().c_str());
+    }
+
+  if (pFun->getRoot() == NULL)
+    {
+      delete pFun;
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 13, pSBMLFunction->getId().c_str());
     }
 
   return pFun;
@@ -9308,11 +9306,18 @@ CCopasiObject* SBMLImporter::isConstantFlux(const CEvaluationNode* pRoot, CModel
             CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(pRoot->getChild())->getType()) == CEvaluationNode::OBJECT)
           {
             const CEvaluationTree* pTree = pFunctionDB->findFunction(pRoot->getData());
-            assert(pTree != NULL);
+
+            // some functions will not be in the local list of function definitions
+            // but rather in the global list due to the way the import works.
+            if (pTree == NULL)
+              pTree = functionDB->findFunction(pRoot->getData());
 
             // the function may only have one node which must be the
             // variable
-            if (pTree != NULL && pTree->getRoot() != NULL && pTree->getRoot()->getChild() == NULL && CEvaluationNode::type(pTree->getRoot()->getType()) == CEvaluationNode::VARIABLE)
+            if (pTree != NULL &&
+                pTree->getRoot() != NULL &&
+                pTree->getRoot()->getChild() == NULL &&
+                CEvaluationNode::type(pTree->getRoot()->getType()) == CEvaluationNode::VARIABLE)
               {
                 name = dynamic_cast<const CEvaluationNodeObject*>(pRoot->getChild())->getObjectCN();
                 assert(!name.empty());
@@ -9332,23 +9337,23 @@ CCopasiObject* SBMLImporter::isConstantFlux(const CEvaluationNode* pRoot, CModel
         break;
     }
 
-  if (!name.empty())
+  if (name.empty())
+    return NULL;
+
+  // check if the object is a local or global parameter
+  std::vector<CCopasiContainer*> listOfContainers;
+  listOfContainers.push_back(pModel);
+  pObject = pModel->getObjectDataModel()->ObjectFromName(listOfContainers, name);
+  assert(pObject != NULL);
+
+  if (pObject->isReference())
     {
-      // check if the object is a local or global parameter
-      std::vector<CCopasiContainer*> listOfContainers;
-      listOfContainers.push_back(pModel);
-      pObject = pModel->getObjectDataModel()->ObjectFromName(listOfContainers, name);
-      assert(pObject != NULL);
+      pObject = pObject->getObjectParent();
+    }
 
-      if (pObject->isReference())
-        {
-          pObject = pObject->getObjectParent();
-        }
-
-      if (!(dynamic_cast<CModelValue*>(pObject) || dynamic_cast<CCopasiParameter*>(pObject)))
-        {
-          pObject = NULL;
-        }
+  if (!(dynamic_cast<CModelValue*>(pObject) || dynamic_cast<CCopasiParameter*>(pObject)))
+    {
+      pObject = NULL;
     }
 
   return pObject;
