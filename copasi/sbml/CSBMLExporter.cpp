@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <cmath>
 
@@ -282,7 +282,7 @@ std::string getUserDefinedFuctionForName(SBMLDocument* pSBMLDocument,
 }
 
 #ifdef USE_SBMLUNIT
-# include "sbmlunit/CUnitInterfaceSBML.h"
+# include "sbmlunit/CSBMLunitInterface.h"
 #endif // USE_SBMLUNIT
 
 CSBMLExporter::CSBMLExporter(): mpSBMLDocument(NULL), mSBMLLevel(2), mSBMLVersion(1), mIncompleteExport(false), mVariableVolumes(false), mpAvogadro(NULL), mAvogadroCreated(false), mMIRIAMWarning(false), mDocumentDisowned(false), mExportCOPASIMIRIAM(false), mExportedFunctions(2, 1)
@@ -3228,7 +3228,7 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
 
   if (this->mpSBMLDocument != NULL)
     {
-      CUnitInterfaceSBML uif(this->mpSBMLDocument->getModel(), true);
+      CSBMLunitInterface uif(this->mpSBMLDocument->getModel(), true);
       uif.determineUnits();
 
       // check if there were conflicts
@@ -3238,7 +3238,7 @@ const std::string CSBMLExporter::exportModelToString(CCopasiDataModel& dataModel
           if ((uif.getStatistics().local[0] != 0 || uif.getStatistics().global[0] != 0) && uif.getStatistics().numbers[0] != 0)
             {
               // try with heuristics
-              CUnitInterfaceSBML uif2(this->mpSBMLDocument->getModel(), true);
+              CSBMLunitInterface uif2(this->mpSBMLDocument->getModel(), true);
               uif2.setAssumeDimensionlessOne(true);
               uif2.determineUnits();
 

@@ -1,20 +1,12 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/04/11 15:21:36 $
-// End CVS Header
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 - 2009 by Sven Sahle and University of Heidelberg
 // All rights reserved.
@@ -24,8 +16,8 @@
 
 #include "Expression2PresentationMML.h"
 
-class CUnitInterfaceSBML;
-class CUnitInformation;
+class CSBMLunitInterface;
+class CSBMLunitInformation;
 class UnitDefinition;
 class Unit;
 
@@ -38,9 +30,9 @@ public:
    * sets the unit interface to the SBML model so that the units can be displayed.
    * this implicitly also handles setting the model
    */
-  void setUnitInterface(CUnitInterfaceSBML * unitInterface, CUnitInterfaceSBML * unitInterface2);
+  void setUnitInterface(CSBMLunitInterface * unitInterface, CSBMLunitInterface * unitInterface2);
 
-  std::string getMathML(const CUnitInformation & ui) const;
+  std::string getMathML(const CSBMLunitInformation & ui) const;
 
 protected:
 //    virtual void writeMathMLFunction(std::ostream & out, const ASTNode* node, size_t l) const;
@@ -60,8 +52,8 @@ protected:
   std::string getMathML(const UnitDefinition & ud) const;
   std::string getMathML(const Unit * u, bool absExp) const;
 
-  CUnitInterfaceSBML * mpUnitInterface;
-  CUnitInterfaceSBML * mpUnitInterface2;
+  CSBMLunitInterface * mpUnitInterface;
+  CSBMLunitInterface * mpUnitInterface2;
 };
 
 #endif // EXPRESSION2PRESENTATIONMMLUNITS_H

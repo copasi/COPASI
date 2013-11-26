@@ -1,28 +1,15 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/04/11 15:21:36 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 - 2009 by Sven Sahle and University of Heidelberg
 // All rights reserved.
 
-#include "CUnit.h"
+#include "CSBMLunit.h"
 #include <assert.h>
 
-CUnit::CUnit(unsigned int sbmlLevel, unsigned int sbmlVersion)
+CSBMLunit::CSBMLunit(unsigned int sbmlLevel, unsigned int sbmlVersion)
     : mUD(UnitDefinition(sbmlLevel, sbmlVersion)),
     mSymExp(),
     mSymExpExp(0)
@@ -35,7 +22,7 @@ CUnit::CUnit(unsigned int sbmlLevel, unsigned int sbmlVersion)
 #endif
 }
 
-CUnit::CUnit(const CUnit & src)
+CSBMLunit::CSBMLunit(const CSBMLunit & src)
     : mUD(src.mUD),
     mSymExp(src.mSymExp),
     mSymExpExp(src.mSymExpExp)
@@ -43,18 +30,18 @@ CUnit::CUnit(const CUnit & src)
   //TODO verify that this does indeed do a deep copy
 }
 
-CUnit::CUnit(const UnitDefinition* ud)
+CSBMLunit::CSBMLunit(const UnitDefinition* ud)
     : mUD(*ud),
     mSymExp(),
     mSymExpExp(0)
 {
 }
 
-CUnit::~CUnit()
+CSBMLunit::~CSBMLunit()
 {
 }
 
-std::string CUnit::getDisplayString() const
+std::string CSBMLunit::getDisplayString() const
 {
   if (mSymExpExp == 0)
     {
@@ -70,7 +57,7 @@ std::string CUnit::getDisplayString() const
     }
 }
 
-bool CUnit::multiply(const CUnit & unit)
+bool CSBMLunit::multiply(const CSBMLunit & unit)
 {
   if (unit.isDimensionless())
     return true;
@@ -98,7 +85,7 @@ bool CUnit::multiply(const CUnit & unit)
   return false;
 }
 
-void CUnit::invert()
+void CSBMLunit::invert()
 {
   if (isDimensionless())
     return;
@@ -114,7 +101,7 @@ void CUnit::invert()
     mUD.getUnit(i)->setExponent(-mUD.getUnit(i)->getExponent());
 }
 
-void CUnit::applyExponent(double exp)
+void CSBMLunit::applyExponent(double exp)
 {
   if (isDimensionless())
     return;
@@ -132,7 +119,7 @@ void CUnit::applyExponent(double exp)
     }
 }
 
-void CUnit::applyExponent(const std::string& id, size_t frame)
+void CSBMLunit::applyExponent(const std::string& id, size_t frame)
 {
   if (isDimensionless())
     return;
@@ -150,7 +137,7 @@ void CUnit::applyExponent(const std::string& id, size_t frame)
     }
 }
 
-void CUnit::applyInverseExponent(const std::string& id, size_t frame)
+void CSBMLunit::applyInverseExponent(const std::string& id, size_t frame)
 {
   if (isDimensionless())
     return;
@@ -169,7 +156,7 @@ void CUnit::applyInverseExponent(const std::string& id, size_t frame)
 }
 
 //static
-bool CUnit::isEqual(const CUnit & unit1, const CUnit & unit2)
+bool CSBMLunit::isEqual(const CSBMLunit & unit1, const CSBMLunit & unit2)
 {
   if (unit1.isDimensionless() && unit2.isDimensionless())
     return true;
@@ -185,42 +172,42 @@ bool CUnit::isEqual(const CUnit & unit1, const CUnit & unit2)
     }
 }
 
-bool CUnit::isDimensionless() const
+bool CSBMLunit::isDimensionless() const
 {
   return mUD.isVariantOfDimensionless();
 }
 
 //************************************************
 
-CUnitInformation::CUnitInformation(unsigned int sbmlLevel, unsigned int sbmlVersion)
-    : CUnit(sbmlLevel, sbmlVersion),
+CSBMLunitInformation::CSBMLunitInformation(unsigned int sbmlLevel, unsigned int sbmlVersion)
+    : CSBMLunit(sbmlLevel, sbmlVersion),
     mInfo(UNKNOWN),
     mConflict(false)
 {
 }
 
-CUnitInformation::CUnitInformation(unsigned int sbmlLevel, unsigned int sbmlVersion, INFO info, bool conflict)
-    : CUnit(sbmlLevel, sbmlVersion),
+CSBMLunitInformation::CSBMLunitInformation(unsigned int sbmlLevel, unsigned int sbmlVersion, INFO info, bool conflict)
+    : CSBMLunit(sbmlLevel, sbmlVersion),
     mInfo(info),
     mConflict(conflict)
 {
 }
 
-CUnitInformation::CUnitInformation(const CUnit& u, INFO info, bool conflict)
-    : CUnit(u),
+CSBMLunitInformation::CSBMLunitInformation(const CSBMLunit& u, INFO info, bool conflict)
+    : CSBMLunit(u),
     mInfo(info),
     mConflict(conflict)
 {
 }
 
-CUnitInformation::CUnitInformation(const UnitDefinition* ud, INFO info, bool conflict)
-    : CUnit(ud),
+CSBMLunitInformation::CSBMLunitInformation(const UnitDefinition* ud, INFO info, bool conflict)
+    : CSBMLunit(ud),
     mInfo(info),
     mConflict(conflict)
 {
 }
 
-std::string CUnitInformation::getDisplayString() const
+std::string CSBMLunitInformation::getDisplayString() const
 {
   std::string sss;
 
@@ -230,16 +217,16 @@ std::string CUnitInformation::getDisplayString() const
         sss += "unknown";
         break;
       case DEFAULT:
-        sss += "default:  " + CUnit::getDisplayString();
+        sss += "default:  " + CSBMLunit::getDisplayString();
         break;
       case GLOBAL:
-        sss += "global:  " + CUnit::getDisplayString();
+        sss += "global:  " + CSBMLunit::getDisplayString();
         break;
       case PROVIDED:
-        sss += "provided:  " + CUnit::getDisplayString();
+        sss += "provided:  " + CSBMLunit::getDisplayString();
         break;
       case DERIVED:
-        sss += "derived:  " + CUnit::getDisplayString();
+        sss += "derived:  " + CSBMLunit::getDisplayString();
         break;
     };
 
@@ -250,10 +237,10 @@ std::string CUnitInformation::getDisplayString() const
 }
 
 //static
-bool CUnitInformation::isEqual(const CUnitInformation & unit1, const CUnitInformation & unit2)
+bool CSBMLunitInformation::isEqual(const CSBMLunitInformation & unit1, const CSBMLunitInformation & unit2)
 {
   if (unit1.mInfo == unit2.mInfo && unit1.mConflict == unit2.mConflict)
-    return CUnit::isEqual(unit1, unit2);
+    return CSBMLunit::isEqual(unit1, unit2);
   else
     return false;
 }

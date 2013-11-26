@@ -1,20 +1,7 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/04/11 15:21:36 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 - 2009 by Sven Sahle and University of Heidelberg
 // All rights reserved.
@@ -31,21 +18,21 @@ class UnitDefinition;
  * The current implementation of the units is just a wrapper for the
  * libsbml UnitDefinition class.
  */
-class CUnit
+class CSBMLunit
 {
 public:
   ///Default constructor
-  CUnit(unsigned int sbmlLevel, unsigned int sbmlVersion);
+  CSBMLunit(unsigned int sbmlLevel, unsigned int sbmlVersion);
 
   ///Copy constructor
-  CUnit(const CUnit & src);
+  CSBMLunit(const CSBMLunit & src);
 
   ///Constructor from libsbml units
-  CUnit(const UnitDefinition* ud);
+  CSBMLunit(const UnitDefinition* ud);
 
-  virtual ~CUnit();
+  virtual ~CSBMLunit();
 
-  bool multiply(const CUnit & unit);
+  bool multiply(const CSBMLunit & unit);
   void invert();
 
   ///apply numeric exponent to the unit.
@@ -73,7 +60,7 @@ public:
   ///apply inverse of symbolic exponent to the unit
   void applyInverseExponent(const std::string& id, size_t frame);
 
-  static bool isEqual(const CUnit & unit1, const CUnit & unit2);
+  static bool isEqual(const CSBMLunit & unit1, const CSBMLunit & unit2);
 
   virtual std::string getDisplayString() const;
 
@@ -109,7 +96,7 @@ private:
  * e.g. whether the unit was provided or calculated, if it is unknown or
  * if there is a conflict.
  */
-class CUnitInformation: public CUnit
+class CSBMLunitInformation: public CSBMLunit
 {
 public:
   ///this enum encodes the status of a units information
@@ -128,13 +115,13 @@ public:
   };
 
   ///Default constructor
-  CUnitInformation(unsigned int sbmlLevel, unsigned int sbmlVersion);
+  CSBMLunitInformation(unsigned int sbmlLevel, unsigned int sbmlVersion);
 
-  CUnitInformation(unsigned int sbmlLevel, unsigned int sbmlVersion, INFO info, bool conflict = false);
+  CSBMLunitInformation(unsigned int sbmlLevel, unsigned int sbmlVersion, INFO info, bool conflict = false);
 
-  CUnitInformation(const CUnit& u, INFO info, bool conflict = false);
+  CSBMLunitInformation(const CSBMLunit& u, INFO info, bool conflict = false);
 
-  CUnitInformation(const UnitDefinition* ud, INFO info, bool conflict = false);
+  CSBMLunitInformation(const UnitDefinition* ud, INFO info, bool conflict = false);
 
   ///set the status information
   void setInfo(INFO info) {mInfo = info;};
@@ -150,7 +137,7 @@ public:
 
   virtual std::string getDisplayString() const;
 
-  static bool isEqual(const CUnitInformation & unit1, const CUnitInformation & unit2);
+  static bool isEqual(const CSBMLunitInformation & unit1, const CSBMLunitInformation & unit2);
 
 private:
   INFO mInfo;

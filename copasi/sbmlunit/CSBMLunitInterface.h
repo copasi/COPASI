@@ -1,31 +1,18 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/04/11 15:21:36 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 - 2009 by Sven Sahle and University of Heidelberg
 // All rights reserved.
 
-#ifndef CUNITINTERFACESBML
-#define CUNITINTERFACESBML
+#ifndef CSBMLUNITINTERFACE
+#define CSBMLUNITINTERFACE
 
 #include <vector>
 #include <map>
 #include <set>
-#include "CUnit.h"
+#include "CSBMLunit.h"
 
 class Model;
 class ASTNode;
@@ -37,14 +24,14 @@ class ASTNode;
  * a list of all mathematical expressions in the sbml model that impose constraints
  * on the units.
  */
-class CUnitInterfaceSBML
+class CSBMLunitInterface
 {
 private:
   // disable the assignment operator and the copy constructor
   // because right now I am too lazy to implement it. R.G.
-  CUnitInterfaceSBML(const CUnitInterfaceSBML& src);
+  CSBMLunitInterface(const CSBMLunitInterface& src);
 
-  CUnitInterfaceSBML& operator=(const CUnitInterfaceSBML& src);
+  CSBMLunitInterface& operator=(const CSBMLunitInterface& src);
 
 public:
 
@@ -52,20 +39,20 @@ public:
    * initialize the unit interface from an sbml model, extracting all
    * the unit information from the model
    */
-  CUnitInterfaceSBML(Model * model, bool unitsFromModel);
+  CSBMLunitInterface(Model * model, bool unitsFromModel);
 
   /**
    * Destructor.
    */
-  ~CUnitInterfaceSBML();
+  ~CSBMLunitInterface();
 
   /**
    * initialize the unit interface from an sbml model, without using
    * any unit information from the model
    */
-  //CUnitInterfaceSBML(Model * model, std::vector<CUnit> setOfUnits);
+  //CSBMLunitInterface(Model * model, std::vector<CSBMLunit> setOfUnits);
 
-  //void initializeSetOfUnits(std::vector<CUnit> setOfUnits);
+  //void initializeSetOfUnits(std::vector<CSBMLunit> setOfUnits);
 
   void debugOutput() const;
   void calculateStatistics();
@@ -154,7 +141,7 @@ public:
     std::string mRootObject;
 
     /// if mRootObject is "" then this member specifies the units of the root of the expression
-    CUnitInformation mRootUnit;
+    CSBMLunitInformation mRootUnit;
 
     /// id of a reaction. If this is set the local parameters of the reaction are in scope for the expression
     std::string mReactionId;
@@ -170,7 +157,7 @@ public:
 
     /// Default constructor
     CExpressionInformation(unsigned int sbmlLevel, unsigned int sbmlVersion)
-        : mpExpression(NULL), mPerTime(false), mRootObject(), mRootUnit(CUnitInformation(sbmlLevel, sbmlVersion)), mReactionId(), mErrorCode(0)
+        : mpExpression(NULL), mPerTime(false), mRootObject(), mRootUnit(CSBMLunitInformation(sbmlLevel, sbmlVersion)), mReactionId(), mErrorCode(0)
     {};
   };
 
@@ -214,12 +201,12 @@ public:
    * mapped unit information. According to the provided environment, this could be
    * a local parameter or a global object.
    */
-  CUnitInformation* getMappedUnitFromIdentifier(const std::string & node,
+  CSBMLunitInformation* getMappedUnitFromIdentifier(const std::string & node,
       const CEnvironmentInformation & ei);
   /**
    * find the unit information corresponding to a number node
    */
-  CUnitInformation* getMappedUnitFromNumberNode(const ASTNode* node);
+  CSBMLunitInformation* getMappedUnitFromNumberNode(const ASTNode* node);
 
 private:
 
@@ -244,19 +231,19 @@ private:
     * This maps the id of any sbml object that can be referenced by one id to a copy
     * of its units information.
     */
-  std::map<std::string, CUnitInformation> mSBMLObjectsMap;
+  std::map<std::string, CSBMLunitInformation> mSBMLObjectsMap;
 
   /**
     * This maps the id of a reaction and the id of a local parameter to a copy
     * of its units information. (Local parameters are the only objects in sbml that
     * need two ids for their identification)
     */
-  std::map<std::string, std::map<std::string, CUnitInformation> > mSBMLLocalParametersMap;
+  std::map<std::string, std::map<std::string, CSBMLunitInformation> > mSBMLLocalParametersMap;
 
   /**
     * This maps number nodes to units information
     */
-  std::map<const ASTNode*, CUnitInformation> mSBMLNumbersMap;
+  std::map<const ASTNode*, CSBMLunitInformation> mSBMLNumbersMap;
 
   /**
     * a list of all mathematical expressions in the sbml model along with the
@@ -272,7 +259,7 @@ private:
   /// try to find out as much as possible about the units from one expression
   void handleOneExpression(CExpressionInformation & ei);
 
-  CUnitInformation recursion(const ASTNode* node, const CUnitInformation & ui,
+  CSBMLunitInformation recursion(const ASTNode* node, const CSBMLunitInformation & ui,
                              const CEnvironmentInformation & ei);
 
   /**
@@ -283,13 +270,13 @@ private:
    * The node is optional (it can be NULL), it is only used for reporting conflicts.
    * If a new conflict appears the node pointer is added to the mConflictingNodes set.
    */
-  CUnitInformation handleTerminalNode(const CUnitInformation & ui, CUnitInformation *pNodeUnit, const ASTNode* node);
+  CSBMLunitInformation handleTerminalNode(const CSBMLunitInformation & ui, CSBMLunitInformation *pNodeUnit, const ASTNode* node);
 
   /**
    * handle the case of a node where the units are supposed to be equal.
    * This includes plus, minus, choice, comparison operators
    */
-  CUnitInformation recursionEqual(const ASTNode* node, const CUnitInformation & ui,
+  CSBMLunitInformation recursionEqual(const ASTNode* node, const CSBMLunitInformation & ui,
                                   const CEnvironmentInformation & ei);
 
   /**
@@ -297,7 +284,7 @@ private:
    * If no unit is unknown a consistency check can be made. If more than one unit
    * is unknown, nothing can be done.
    */
-  CUnitInformation recursionTimes(const ASTNode* node, const CUnitInformation & ui,
+  CSBMLunitInformation recursionTimes(const ASTNode* node, const CSBMLunitInformation & ui,
                                   const CEnvironmentInformation & ei);
 
   /**
@@ -305,16 +292,16 @@ private:
    * If no unit is unknown a consistency check can be made. If more than one unit
    * is unknown, nothing can be done.
    */
-  CUnitInformation recursionDivide(const ASTNode* node, const CUnitInformation & ui,
+  CSBMLunitInformation recursionDivide(const ASTNode* node, const CSBMLunitInformation & ui,
                                    const CEnvironmentInformation & ei);
 
-  CUnitInformation recursionPower(const ASTNode* node, const CUnitInformation & ui,
+  CSBMLunitInformation recursionPower(const ASTNode* node, const CSBMLunitInformation & ui,
                                   const CEnvironmentInformation & ei);
 
   /**
    * handle the case of a pieewise node
    */
-  CUnitInformation recursionPiecewise(const ASTNode* node, const CUnitInformation & ui,
+  CSBMLunitInformation recursionPiecewise(const ASTNode* node, const CSBMLunitInformation & ui,
                                       const CEnvironmentInformation & ei);
 
   class EvaluationResult
@@ -363,13 +350,13 @@ private:
 
   //***********************************************
 
-  CUnitInformation* mpSBMLTimeUnit;
-  CUnitInformation* mpSBMLAmountUnit;
-  CUnitInformation* mpSBMLVolumeUnit;
-  CUnitInformation* mpSBMLAreaUnit;
-  CUnitInformation* mpSBMLLengthUnit;
+  CSBMLunitInformation* mpSBMLTimeUnit;
+  CSBMLunitInformation* mpSBMLAmountUnit;
+  CSBMLunitInformation* mpSBMLVolumeUnit;
+  CSBMLunitInformation* mpSBMLAreaUnit;
+  CSBMLunitInformation* mpSBMLLengthUnit;
 
-  CUnitInformation* mpSBMLConflictUnit;
+  CSBMLunitInformation* mpSBMLConflictUnit;
 
   int mError;
 

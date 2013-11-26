@@ -1,27 +1,19 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/04/11 15:21:36 $
-// End CVS Header
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
 // Copyright (C) 2008 - 2009 by Sven Sahle and University of Heidelberg
 // All rights reserved.
 
 #include "Expression2PresentationMMLUnits.h"
 #include <sbml/Model.h>
-#include "CUnitInterfaceSBML.h"
+#include "CSBMLunitInterface.h"
 
 Expression2PresentationMMLUnits::Expression2PresentationMMLUnits(const ASTNode* rootnode)
     : Expression2PresentationMML(rootnode),
@@ -29,7 +21,7 @@ Expression2PresentationMMLUnits::Expression2PresentationMMLUnits(const ASTNode* 
 {
 }
 
-void Expression2PresentationMMLUnits::setUnitInterface(CUnitInterfaceSBML * unitInterface, CUnitInterfaceSBML * unitInterface2)
+void Expression2PresentationMMLUnits::setUnitInterface(CSBMLunitInterface * unitInterface, CSBMLunitInterface * unitInterface2)
 {
   mpUnitInterface = unitInterface;
   mpUnitInterface2 = unitInterface2;
@@ -41,8 +33,8 @@ void Expression2PresentationMMLUnits::setUnitInterface(CUnitInterfaceSBML * unit
 void Expression2PresentationMMLUnits::writeMathMLName(std::ostream & out, const ASTNode* node, size_t l) const
 {
   std::string reactionID = mpReaction ? mpReaction->getId() : "";
-  CUnitInformation* unitInformation = mpUnitInterface->getMappedUnitFromIdentifier(node->getName(),
-                                      CUnitInterfaceSBML::CEnvironmentInformation(reactionID));
+  CSBMLunitInformation* unitInformation = mpUnitInterface->getMappedUnitFromIdentifier(node->getName(),
+                                      CSBMLunitInterface::CEnvironmentInformation(reactionID));
 
   if (!unitInformation)
     {
@@ -59,18 +51,18 @@ void Expression2PresentationMMLUnits::writeMathMLName(std::ostream & out, const 
   else
     color = "#d0d0e0";
 
-  CUnitInformation * unitInformation2 = NULL;
+  CSBMLunitInformation * unitInformation2 = NULL;
 
   if (mpUnitInterface2)
     unitInformation2 = mpUnitInterface2->getMappedUnitFromIdentifier(node->getName(),
-                       CUnitInterfaceSBML::CEnvironmentInformation(reactionID));
+                       CSBMLunitInterface::CEnvironmentInformation(reactionID));
 
   std::ostringstream oss;
   Expression2PresentationMML::writeMathMLName(oss, node, l + 2);
 
   if (unitInformation2 != NULL)
     {
-      if (CUnitInformation::isEqual(*unitInformation, *unitInformation2))
+      if (CSBMLunitInformation::isEqual(*unitInformation, *unitInformation2))
         writeMathMLBox(out, oss.str(), getMathML(*unitInformation), "", color, l);
       else
         writeMathMLBox(out, oss.str(), getMathML(*unitInformation), getMathML(*unitInformation2), color, l);
@@ -81,8 +73,8 @@ void Expression2PresentationMMLUnits::writeMathMLName(std::ostream & out, const 
 
 void Expression2PresentationMMLUnits::writeMathMLNumber(std::ostream & out, const ASTNode* node, size_t l) const
 {
-  CUnitInformation* unitInformation = mpUnitInterface->getMappedUnitFromNumberNode(node);
-  CUnitInformation* unitInformation2 = NULL;
+  CSBMLunitInformation* unitInformation = mpUnitInterface->getMappedUnitFromNumberNode(node);
+  CSBMLunitInformation* unitInformation2 = NULL;
 
   if (mpUnitInterface2)
     unitInformation2 = mpUnitInterface2->getMappedUnitFromNumberNode(node);
@@ -120,7 +112,7 @@ void Expression2PresentationMMLUnits::writeMathMLNumber(std::ostream & out, cons
     }
 }
 
-std::string Expression2PresentationMMLUnits::getMathML(const CUnitInformation & ui) const
+std::string Expression2PresentationMMLUnits::getMathML(const CSBMLunitInformation & ui) const
 {
   std::string tmp;
   tmp += "<mrow>";
@@ -133,23 +125,23 @@ std::string Expression2PresentationMMLUnits::getMathML(const CUnitInformation & 
 
   switch (ui.getInfo())
     {
-      case CUnitInformation::UNKNOWN:
+      case CSBMLunitInformation::UNKNOWN:
         tmp += "<mi mathcolor = \"orange\">unknown</mi>";
         break;
 
-      case CUnitInformation::DEFAULT:
+      case CSBMLunitInformation::DEFAULT:
         tmp += "<mstyle mathcolor=\"#000060\">" + getMathML(ui.getSBMLUnitDefinition()) + "</mstyle>";
         break;
 
-      case CUnitInformation::GLOBAL:
+      case CSBMLunitInformation::GLOBAL:
         tmp += "<mstyle mathcolor=\"#0000a0\">" + getMathML(ui.getSBMLUnitDefinition()) + "</mstyle>";
         break;
 
-      case CUnitInformation::PROVIDED:
+      case CSBMLunitInformation::PROVIDED:
         tmp += "<mstyle mathcolor=\"#2020ff\">" + getMathML(ui.getSBMLUnitDefinition()) + "</mstyle>";
         break;
 
-      case CUnitInformation::DERIVED:
+      case CSBMLunitInformation::DERIVED:
         tmp += "<mstyle mathcolor=\"green\">" + getMathML(ui.getSBMLUnitDefinition()) + "</mstyle>";
         break;
     }

@@ -45,13 +45,13 @@ set(COPASI_HEADERS ${COPASI_HEADERS} ${HEADERS_SBMLUNIT})
 
 
 # 
-# set(HEADERS ${HEADERS} CUnitInterfaceSBML.h)
-# set(HEADERS ${HEADERS} CUnit.h)
+# set(HEADERS ${HEADERS} CSBMLunitInterface.h)
+# set(HEADERS ${HEADERS} CSBMLunit.h)
 # set(HEADERS ${HEADERS} Expression2PresentationMML.h)
 # set(HEADERS ${HEADERS} Expression2PresentationMMLUnits.h)
 # 
-# set(SOURCES ${SOURCES} CUnitInterfaceSBML.cpp)
-# set(SOURCES ${SOURCES} CUnit.cpp)
+# set(SOURCES ${SOURCES} CSBMLunitInterface.cpp)
+# set(SOURCES ${SOURCES} CSBMLunit.cpp)
 # set(SOURCES ${SOURCES} Expression2PresentationMML.cpp)
 # set(SOURCES ${SOURCES} Expression2PresentationMMLUnits.cpp)
 # 
