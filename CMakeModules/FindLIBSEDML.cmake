@@ -1,3 +1,8 @@
+# Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Locate libsedml
 # This module defines:
 # LIBSEDML_INCLUDE_DIR, where to find the headers
@@ -16,14 +21,16 @@ find_path(LIBSEDML_INCLUDE_DIR sedml/SedBase.h
           $ENV{LIBSEDML_DIR}
           ~/Library/Frameworks
           /Library/Frameworks
-          /usr/local/include
-          /usr/include/
           /sw/include        # Fink
           /opt/local/include # MacPorts
           /opt/csw/include   # Blastwave
           /opt/include
           /usr/freeware/include
-)
+    NO_DEFAULT_PATH)
+
+if (NOT LIBSEDML_INCLUDE_DIR)
+    find_path(LIBSEDML_INCLUDE_DIR sedml/SedBase.h)
+endif (NOT LIBSEDML_INCLUDE_DIR)
 
 find_library(LIBSEDML_LIBRARY 
     NAMES sedml-static 
@@ -32,27 +39,26 @@ find_library(LIBSEDML_LIBRARY
           $ENV{LIBSEDML_DIR}
           ~/Library/Frameworks
           /Library/Frameworks
-          /usr/local/lib
-          /usr/local/lib64
-          /usr/lib
-          /usr/lib64
           /sw/lib        # Fink
           /opt/local/lib # MacPorts
           /opt/csw/lib   # Blastwave
           /opt/lib
           /usr/freeware/lib64
-    NO_DEFAULT_PATH
-)
-
-if (NOT LIBSEDML_INCLUDE_DIR)
-message(FATAL_ERROR "libsedml include dir not found not found!")
-endif (NOT LIBSEDML_INCLUDE_DIR)
-
+    NO_DEFAULT_PATH)
 
 if (NOT LIBSEDML_LIBRARY)
-message(FATAL_ERROR "LIBSEDML library not found!")
+    find_library(LIBSEDML_LIBRARY 
+        NAMES sedml-static 
+              sedml)
 endif (NOT LIBSEDML_LIBRARY)
 
+if (NOT LIBSEDML_INCLUDE_DIR)
+    message(FATAL_ERROR "libsedml include dir not found not found!")
+endif (NOT LIBSEDML_INCLUDE_DIR)
+
+if (NOT LIBSEDML_LIBRARY)
+    message(FATAL_ERROR "LIBSEDML library not found!")
+endif (NOT LIBSEDML_LIBRARY)
 
 set(LIBSEDML_FOUND "NO")
 if(LIBSEDML_LIBRARY)

@@ -1,3 +1,8 @@
+# Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Locate libsbml
 # This module defines:
 # LIBSBML_INCLUDE_DIR, where to find the headers
@@ -16,14 +21,16 @@ find_path(LIBSBML_INCLUDE_DIR sbml/SBase.h
           $ENV{LIBSBML_DIR}
           ~/Library/Frameworks
           /Library/Frameworks
-          /usr/local/include
-          /usr/include/
           /sw/include        # Fink
           /opt/local/include # MacPorts
           /opt/csw/include   # Blastwave
           /opt/include
           /usr/freeware/include
-)
+    NO_DEFAULT_PATH)
+
+if (NOT LIBSBML_INCLUDE_DIR)
+    find_path(LIBSBML_INCLUDE_DIR sbml/SBase.h)
+endif (NOT LIBSBML_INCLUDE_DIR)
 
 find_library(LIBSBML_LIBRARY 
     NAMES sbml-static 
@@ -32,27 +39,26 @@ find_library(LIBSBML_LIBRARY
           $ENV{LIBSBML_DIR}
           ~/Library/Frameworks
           /Library/Frameworks
-          /usr/local/lib
-          /usr/local/lib64
-          /usr/lib
-          /usr/lib64
           /sw/lib        # Fink
           /opt/local/lib # MacPorts
           /opt/csw/lib   # Blastwave
           /opt/lib
           /usr/freeware/lib64
-    NO_DEFAULT_PATH
-)
+    NO_DEFAULT_PATH)
+
+if (NOT LIBSBML_LIBRARY)
+    find_library(LIBSBML_LIBRARY 
+        NAMES sbml-static 
+              sbml)
+endif (NOT LIBSBML_LIBRARY)
 
 if (NOT LIBSBML_INCLUDE_DIR)
 message(FATAL_ERROR "libsbml include dir not found not found!")
 endif (NOT LIBSBML_INCLUDE_DIR)
 
-
 if (NOT LIBSBML_LIBRARY)
 message(FATAL_ERROR "LIBSBML library not found!")
 endif (NOT LIBSBML_LIBRARY)
-
 
 set(LIBSBML_FOUND "NO")
 if(LIBSBML_LIBRARY)

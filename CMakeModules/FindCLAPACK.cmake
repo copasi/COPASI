@@ -1,3 +1,8 @@
+# Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Try to find the CLAPACK library
 # Once done this will define
 #
@@ -27,6 +32,7 @@
 
 set(LAPACK_FIND_QUIETLY TRUE)
 
+
 set(BLA_VENDOR "Apple")
 find_package(LAPACK)
   
@@ -35,16 +41,18 @@ if (LAPACK_FOUND)
 endif ()
 
 if (NOT LAPACK_FOUND)
-  if (COPASI_BUILD_TYPE EQUAL "32bit")
-    set(BLA_VENDOR "Intel10_32")
-  elseif (COPASI_BUILD_TYPE EQUAL "64bit")
-    set(BLA_VENDOR "Intel10_64lp")
-  endif()
+  # cmake MKL Detection does only support MKL version 10 and older
+  if (DEFINED ENV{MKLROOT})
+    set(BLA_VENDOR "Intel (MKL)")
+    
+    if (COPASI_BUILD_TYPE EQUAL "32bit")
+      set(LAPACK_LIBRARIES "-Wl,--start-group $ENV{MKLROOT}/lib/ia32/libmkl_intel.a $ENV{MKLROOT}/lib/ia32/libmkl_core.a $ENV{MKLROOT}/lib/ia32/libmkl_sequential.a -Wl,--end-group -lpthread -lm")
+    elseif (COPASI_BUILD_TYPE EQUAL "64bit")
+      set(LAPACK_LIBRARIES "-Wl,--start-group $ENV{MKLROOT}/lib/intel64/libmkl_intel_lp64.a $ENV{MKLROOT}/lib/intel64/libmkl_core.a $ENV{MKLROOT}/lib/intel64/libmkl_sequential.a -Wl,--end-group -lpthread -lm")
+    endif ()
 
-  find_package(LAPACK)
-
-  if (LAPACK_FOUND)
     add_definitions(-DHAVE_MKL)
+    set(LAPACK_FOUND "Yes")
   endif ()
 endif ()
 

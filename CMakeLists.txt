@@ -108,8 +108,6 @@ if (APPLE AND ENABLE_UNIVERSAL)
   set(COPASI_BUILD_TYPE "universal")
 endif()
 
-
-
 set(COPASI_DEPENDENCY_DIR "" CACHE PATH "Dependency Directory containing, when set dependencies will be overwritten" )
 mark_as_advanced(COPASI_DEPENDENCY_DIR)
 
@@ -203,11 +201,12 @@ if ( NOT CLAPACK_FOUND )
 endif ()
 
 include_directories(BEFORE ${CLAPACK_INCLUDE_DIR})
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LAPACK_CFLAGS}")
 
 find_package(EXPAT REQUIRED)
 include_directories(BEFORE ${EXPAT_INCLUDE_DIR})
 
-#TODO find raptor
+# TODO find raptor
 # TODO raptor should be restricted to a version which is at least
 # 1.4.18, but lower then 2.0
 find_package(RAPTOR REQUIRED)
@@ -531,6 +530,9 @@ message(STATUS "-----------------------------------------------------------
    LAPACK Libs       = ${CLAPACK_LIBRARIES}
    LAPACK LDFLAGS    = ${CLAPACK_LINKER_FLAGS}
   
+   Expat Libs        = ${EXPAT_LIBRARY}
+   Expat include     = ${EXPAT_INCLUDE_DIR}
+
    Raptor Libs       = ${RAPTOR_LIBRARY}
    Raptor include    = ${RAPTOR_INCLUDE_DIR}
 

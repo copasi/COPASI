@@ -1,9 +1,14 @@
+# Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # TODO set libraries and library paths
 # for expat, raptor, libsbml
 # and MKL,CLAPACK LAPACK on non-apple
 # for apple we set the Accelerate framework
 
-set(SE_LIBS ${EXPAT_LIBRARIES} ${SE_LIBS})
+set(SE_LIBS ${EXPAT_LIBRARY} ${SE_LIBS})
 set(SE_LIBS ${RAPTOR_LIBRARY} ${SE_LIBS})
 set(SE_LIBS ${LIBSBML_LIBRARY} ${SE_LIBS})
 

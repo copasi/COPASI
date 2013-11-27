@@ -1,3 +1,8 @@
+# Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Try to find the Qwt library
 # Once done this will define
 #
@@ -10,15 +15,17 @@ find_path(QWT_INCLUDE_DIR qwt.h
           $ENV{QWT_DIR}
           ~/Library/Frameworks
           /Library/Frameworks
-          /usr/local/include
-          /usr/include/
           /sw/include        # Fink
           /opt/local/include # MacPorts
           /opt/csw/include   # Blastwave
           /opt/include
           /usr/freeware/include
     PATH_SUFFIXES qwt qwt-qt4
-)
+    NO_DEFAULT_PATH)
+
+if (NOT QWT_INCLUDE_DIR)
+    find_path(QWT_INCLUDE_DIR qwt.h)
+endif ()
 
 find_library(QWT_LIBRARY
     NAMES qwt-static
@@ -28,16 +35,19 @@ find_library(QWT_LIBRARY
           $ENV{QWT_DIR}
           ~/Library/Frameworks
           /Library/Frameworks
-          /usr/local/lib
-          /usr/local/lib64
-          /usr/lib
-          /usr/lib64
           /sw/lib        # Fink
           /opt/local/lib # MacPorts
           /opt/csw/lib   # Blastwave
           /opt/lib
           /usr/freeware/lib64
-)
+    NO_DEFAULT_PATH)
+
+if (NOT QWT_LIBRARY)
+    find_library(QWT_LIBRARY
+        NAMES qwt-static
+              qwt-qt4
+              qwt)
+endif (NOT QWT_LIBRARY)
 
 if (NOT QWT_INCLUDE_DIR)
   message(FATAL_ERROR "qwt.h not found!")

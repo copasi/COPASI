@@ -1,3 +1,8 @@
+# Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Try to find the Systems Biology Workbench (SBW) library
 # Once done this will define
 #
@@ -10,14 +15,16 @@ find_path(SBW_INCLUDE_DIR SBW/SBW.h
           $ENV{SBW_DIR}
           ~/Library/Frameworks
           /Library/Frameworks
-          /usr/local/include
-          /usr/include/
           /sw/include        # Fink
           /opt/local/include # MacPorts
           /opt/csw/include   # Blastwave
           /opt/include
           /usr/freeware/include
-)
+    NO_DEFAULT_PATH)
+
+if (NOT SBW_INCLUDE_DIR)
+    find_path(SBW_INCLUDE_DIR SBW/SBW.h)
+endif ()
 
 find_library(SBW_LIBRARIES
     NAMES SBW-static
@@ -29,17 +36,21 @@ find_library(SBW_LIBRARIES
           $ENV{SBW_DIR}
           ~/Library/Frameworks
           /Library/Frameworks
-          /usr/local/lib
-          /usr/local/lib64
-          /usr/lib
-          /usr/lib64
           /sw/lib        # Fink
           /opt/local/lib # MacPorts
           /opt/csw/lib   # Blastwave
           /opt/lib
           /usr/freeware/lib64
-    NO_DEFAULT_PATH
-)
+    NO_DEFAULT_PATH)
+
+if (NOT SBW_LIBRARIES)
+    find_library(SBW_LIBRARIES
+        NAMES SBW-static
+              SBW
+              sbw 
+              libSBW 
+              libsbw)
+endif ()
 
 # handle the QUIETLY and REQUIRED arguments and set SBW_FOUND to TRUE if
 # all listed variables are TRUE

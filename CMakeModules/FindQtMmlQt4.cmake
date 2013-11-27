@@ -1,3 +1,8 @@
+# Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Try to find the QtMmlWidget library
 # Once done this will define
 #
@@ -10,14 +15,16 @@ find_path(MML_INCLUDE_DIR qtmmlwidget.h
           $ENV{MML_DIR}
           ~/Library/Frameworks
           /Library/Frameworks
-          /usr/local/include
-          /usr/include/
-          /sw/include # Fink
+          /sw/include        # Fink
           /opt/local/include # DarwinPorts
-          /opt/csw/include # Blastwave
+          /opt/csw/include   # Blastwave
           /opt/include
           /usr/freeware/include
-)
+    NO_DEFAULT_PATH)
+
+if (NOT MML_INCLUDE_DIR)
+    find_path(MML_INCLUDE_DIR qtmmlwidget.h)
+endif ()
 
 find_library(MML_LIBRARY
     NAMES mml-static 
@@ -27,16 +34,19 @@ find_library(MML_LIBRARY
           $ENV{MML_DIR}
           ~/Library/Frameworks
           /Library/Frameworks
-          /usr/local/lib
-          /usr/local/lib64
-          /usr/lib
-          /usr/lib64
           /sw/lib        # Fink
           /opt/local/lib # MacPorts
           /opt/csw/lib   # Blastwave
           /opt/lib
           /usr/freeware/lib64
-)
+     NO_DEFAULT_PATH)
+
+if (NOT MML_LIBRARY)
+find_library(MML_LIBRARY
+    NAMES mml-static 
+          mml 
+          QtSolutions_MMLWidget-2.4)
+endif()
 
 if (NOT MML_INCLUDE_DIR)
   message(FATAL_ERROR "qtmmlwidget.h not found!")

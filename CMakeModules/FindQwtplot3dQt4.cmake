@@ -1,3 +1,8 @@
+# Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Try to find the qwtplot3d library
 # Once done this will define
 #
@@ -10,15 +15,17 @@ find_path(QWTPLOT3D_INCLUDE_DIR qwt3d_plot.h
           $ENV{QWTPLOT3D_DIR}
           ~/Library/Frameworks
           /Library/Frameworks
-          /usr/local/include
-          /usr/include/
           /sw/include # Fink
           /opt/local/include # DarwinPorts
           /opt/csw/include # Blastwave
           /opt/include
           /usr/freeware/include
     PATH_SUFFIXES qwtplot3d qwtplot3d-qt4 
-)
+    NO_DEFAULT_PATH)
+
+if (NOT QWTPLOT3D_INCLUDE_DIR)
+    find_path(QWTPLOT3D_INCLUDE_DIR qwt3d_plot.h)
+endif (NOT QWTPLOT3D_INCLUDE_DIR)
 
 find_library(QWTPLOT3D_LIBRARY
     NAMES qwtplot3d-static
@@ -30,14 +37,19 @@ find_library(QWTPLOT3D_LIBRARY
           /Library/Frameworks
           /usr/local/lib
           /usr/local/lib64
-          /usr/lib
-          /usr/lib64
           /sw/lib        # Fink
           /opt/local/lib # MacPorts
           /opt/csw/lib   # Blastwave
           /opt/lib
           /usr/freeware/lib64
-)
+    NO_DEFAULT_PATH)
+
+if (NOT QWTPLOT3D_LIBRARY)
+    find_library(QWTPLOT3D_LIBRARY
+        NAMES qwtplot3d-static
+              qwtplot3d-qt4
+              qwtplot3d)
+endif (NOT QWTPLOT3D_LIBRARY)
 
 if (NOT QWTPLOT3D_INCLUDE_DIR)
   message(FATAL_ERROR "qwt3d_plot.h not found!")

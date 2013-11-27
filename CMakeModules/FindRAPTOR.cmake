@@ -1,3 +1,8 @@
+# Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # - Try to find the Raptor RDF parsing library (http://librdf.org/raptor/)
 # Once done this will define
 #
@@ -19,64 +24,66 @@
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
 
-MACRO ( FIND_RAPTOR )
+MACRO (FIND_RAPTOR)
 
 ENDMACRO ()
 
 
 
 # Check if we have cached results in case the last round was successful.
-if ( NOT( RAPTOR_INCLUDE_DIR AND RAPTOR_LIBRARIES ) OR NOT RAPTOR_FOUND )
+if (NOT (RAPTOR_INCLUDE_DIR AND RAPTOR_LIBRARIES) OR NOT RAPTOR_FOUND)
 
-	set( RAPTOR_LDFLAGS )
+    set(RAPTOR_LDFLAGS)
 	
-    find_package(PkgConfig)
-
-    if ( NOT WIN32 )
-        pkg_check_modules(PC_RAPTOR QUIET raptor)
-        if ( PC_RAPTOR_FOUND )
-            set(RAPTOR_DEFINITIONS ${PC_RAPTOR_CFLAGS_OTHER})
-            set(RAPTOR_VERSION ${PC_RAPTOR_VERSION} CACHE STRING "Raptor Version found" )
-            string( REGEX REPLACE "^.*-lraptor;" "" RAPTOR_LDFLAGS "${PC_RAPTOR_STATIC_LDFLAGS}")
-        endif ()
-    endif ()
-    
     find_path(RAPTOR_INCLUDE_DIR raptor.h
 	    PATHS $ENV{RAPTOR_DIR}/include
 	          $ENV{RAPTOR_DIR}
 	          ~/Library/Frameworks
 	          /Library/Frameworks
-	          /usr/local/include
-	          /usr/include/
 	          /sw/include        # Fink
 	          /opt/local/include # MacPorts
 	          /opt/csw/include   # Blastwave
 	          /opt/include
 	          /usr/freeware/include
-    )
+             NO_DEFAULT_PATH)
 
+    if (NOT RAPTOR_INCLUDE_DIR)
+        find_path(RAPTOR_INCLUDE_DIR raptor.h)
+    endif ()
 
     find_library(RAPTOR_LIBRARY 
-	    NAMES raptor 
+	    NAMES raptor
 	    PATHS $ENV{RAPTOR_DIR}/lib
 	          $ENV{RAPTOR_DIR}/lib-dbg
 	          $ENV{RAPTOR_DIR}
 	          ~/Library/Frameworks
 	          /Library/Frameworks
-	          /usr/local/lib
-	          /usr/local/lib64
-	          /usr/lib
-	          /usr/lib64
 	          /sw/lib        # Fink
 	          /opt/local/lib # MacPorts
 	          /opt/csw/lib   # Blastwave
 	          /opt/lib
 	          /usr/freeware/lib64
-    )
+             NO_DEFAULT_PATH)
 
-  	if ( RAPTOR_LDFLAGS )
-  	  set( RAPTOR_LIBRARY ${RAPTOR_LIBRARY} ${RAPTOR_LDFLAGS} )
-	endif ()
+    if (NOT RAPTOR_LIBRARY)
+    find_library(RAPTOR_LIBRARY NAMES raptor)
+    endif ()
+
+    if (NOT WIN32)
+        find_package(PkgConfig)
+        pkg_check_modules(PC_RAPTOR QUIET raptor)
+
+        if (PC_RAPTOR_FOUND)
+            set(RAPTOR_DEFINITIONS ${PC_RAPTOR_CFLAGS_OTHER})
+            set(RAPTOR_VERSION ${PC_RAPTOR_VERSION} CACHE STRING "Raptor Version found" )
+            string( REGEX REPLACE "^.*-lraptor;" "" RAPTOR_LDFLAGS "${PC_RAPTOR_STATIC_LDFLAGS}")
+            string( REGEX REPLACE "-lexpat[;]*" "" RAPTOR_LDFLAGS "${RAPTOR_LDFLAGS}")
+        endif (PC_RAPTOR_FOUND)
+    endif (NOT WIN32)
+    
+    if (RAPTOR_LDFLAGS)
+        set(RAPTOR_LIBRARY ${RAPTOR_LIBRARY} ${RAPTOR_LDFLAGS})
+    endif (RAPTOR_LDFLAGS)
 	
     mark_as_advanced(RAPTOR_INCLUDE_DIR RAPTOR_LIBRARY)
 
