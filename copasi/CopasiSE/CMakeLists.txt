@@ -39,7 +39,7 @@ if (BUILD_STATIC_COPASISE)
     set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS) 
     # Maybe this works as well, haven't tried yet. 
     # set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS FALSE) 
-endif (BUILD_STATIC_EXECUTABLES) 
+endif (BUILD_STATIC_COPASISE) 
 
 add_executable(CopasiSE ${COPSISE_SOURCES})
 target_link_libraries(CopasiSE libCOPASI ${SE_EXTERNAL_LIBS} ${SE_LIBS})
