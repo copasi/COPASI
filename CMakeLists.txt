@@ -409,7 +409,9 @@ endif()
 
 # are we using the intel compiler
 set(USING_INTEL)
-if (WIN32 AND CMAKE_C_COMPILER AND ${CMAKE_C_COMPILER} MATCHES ".*icl.*$")
+if ((WIN32 OR (UNIX AND NOT APPLE))
+    AND CMAKE_C_COMPILER 
+    AND ${CMAKE_C_COMPILER} MATCHES ".*ic[cl].*$")
   message(STATUS "Detected Intel Compiler")
   set(USING_INTEL TRUE)
 endif ()
@@ -591,4 +593,3 @@ message(STATUS "-----------------------------------------------------------
 
 -----------------------------------------------------------
 ")
-
