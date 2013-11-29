@@ -461,6 +461,14 @@ set(CPACK_RPM_PACKAGE_LICENSE "Artistic License")
 set(CPACK_RPM_PACKAGE_GROUP "Applications/Engineering")
 set(CPACK_DEBIAN_PACKAGE_SECTION "Applications")
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    if (${COPASI_BUILD_TYPE} MATCHES "64bit")
+        set(CPACK_SYSTEM_NAME "Linux-64bit")
+    else ()
+        set(CPACK_SYSTEM_NAME "Linux-32bit")
+    endif ()     
+endif ()
+
 set(CPACK_SOURCE_IGNORE_FILES "${CMAKE_CURRENT_BINARY_DIR};/.git/;/.svn/;/.libs/;/.deps/;/.bzr/;.*.o$;.*.lo$;.*.la$;${CPACK_SOURCE_IGNORE_FILES};/.DS_Store;/.svnignore;blib;libsbml-dist")
 
 if(UNIX)
