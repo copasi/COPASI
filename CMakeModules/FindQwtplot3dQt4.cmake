@@ -24,7 +24,8 @@ find_path(QWTPLOT3D_INCLUDE_DIR qwt3d_plot.h
     NO_DEFAULT_PATH)
 
 if (NOT QWTPLOT3D_INCLUDE_DIR)
-    find_path(QWTPLOT3D_INCLUDE_DIR qwt3d_plot.h)
+    find_path(QWTPLOT3D_INCLUDE_DIR qwt3d_plot.h
+        PATH_SUFFIXES qwtplot3d qwtplot3d-qt4)
 endif (NOT QWTPLOT3D_INCLUDE_DIR)
 
 find_library(QWTPLOT3D_LIBRARY

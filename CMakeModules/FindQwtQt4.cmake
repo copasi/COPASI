@@ -24,7 +24,8 @@ find_path(QWT_INCLUDE_DIR qwt.h
     NO_DEFAULT_PATH)
 
 if (NOT QWT_INCLUDE_DIR)
-    find_path(QWT_INCLUDE_DIR qwt.h)
+    find_path(QWT_INCLUDE_DIR qwt.h
+        PATH_SUFFIXES qwt qwt-qt4)
 endif ()
 
 find_library(QWT_LIBRARY
