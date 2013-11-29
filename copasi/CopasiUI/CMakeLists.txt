@@ -91,14 +91,15 @@ target_link_libraries(CopasiUI ${SBW_LIBRARIES})
 endif(ENABLE_SBW_INTEGRATION)
 
 if(NOT APPLE)
-SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/CopasiUI${CMAKE_EXECUTABLE_SUFFIX}" CACHE INTERNAL "")
-install(TARGETS CopasiUI DESTINATION bin)
+    SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/CopasiUI${CMAKE_EXECUTABLE_SUFFIX}" CACHE INTERNAL "")
+    install(TARGETS CopasiUI DESTINATION bin)
 # ensure that next to the binaries also dependencies are copied
-install(CODE "
-    include(BundleUtilities)
-    fixup_bundle(\"${APPS}\" \"\" \"${DIRS}\")
-    " COMPONENT Runtime)
-
+    if (WIN32)
+        install(CODE "
+            include(BundleUtilities)
+            fixup_bundle(\"${APPS}\" \"\" \"${DIRS}\")
+            " COMPONENT Runtime)
+    endif (WIN32)
 else()
 # on OS X everything is different, here we need to first fix the app bundle,
 # and only then install it
