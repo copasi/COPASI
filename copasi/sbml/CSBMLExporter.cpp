@@ -3529,7 +3529,8 @@ void CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
               ++i;
             }
 
-          assert(pSBMLModel->getNumFunctionDefinitions() == this->mExportedFunctions.size());
+          //the assert below no longer holds, as we export uniform / normal as functiondefinitions
+          //assert(pSBMLModel->getNumFunctionDefinitions() == this->mExportedFunctions.size());
         }
     }
 

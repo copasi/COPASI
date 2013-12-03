@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalLcm.cpp,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:51:17 $
-// End CVS Header
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -142,6 +134,7 @@ bool CNormalLcm::add(const CNormalSum& sum)
       {
         return false;
       }
+
       case 1:
       {
         CNormalProduct* product = *sum.getProducts().begin();
@@ -155,6 +148,7 @@ bool CNormalLcm::add(const CNormalSum& sum)
 
         return true;
       }
+
       default:
       {
         std::vector<CNormalSum*>::iterator it;
@@ -224,6 +218,7 @@ bool CNormalLcm::remove(const CNormalSum& sum)   //sum must not contain fraction
       case 0:
         result = false;
         break;
+
       case 1:
         pProduct = *sum.getProducts().begin();
         itEnd = pProduct->getItemPowers().end();
@@ -237,8 +232,10 @@ bool CNormalLcm::remove(const CNormalSum& sum)   //sum must not contain fraction
           }
 
         break;
+
       default:
         itEnd2 = mSums.end();
+        result = false;
 
         for (it2 = mSums.begin(); it2 != itEnd2; ++it2)
           {
@@ -246,14 +243,17 @@ bool CNormalLcm::remove(const CNormalSum& sum)   //sum must not contain fraction
               {
                 delete *it2;
                 mSums.erase(it2);
+                result = true;
                 break;
               }
           }
 
-        if (it2 == itEnd2)
-          {
-            result = false;
-          }
+        // the below causes issues on VS, as in a way the iterator is no longer
+        // valid after removal, instead the result is set in the loop
+        //if (it2 == itEnd2)
+        //{
+        //  result = false;
+        //}
     }
 
   return result;
