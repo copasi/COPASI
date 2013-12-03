@@ -50,6 +50,17 @@ int main(int argc, char *argv[])
   // numbers will be displayed in the systems default locale:
   setlocale(LC_ALL, "C");
 
+  // Fix of Issue with Text centering on OSX Mavericks
+#ifdef Q_OS_MACX
+  if ( QSysInfo::MacintoshVersion > QSysInfo::MV_10_8 )
+  {
+    // fix Mac OS X 10.9 (mavericks) font issue
+    // https://bugreports.qt-project.org/browse/QTBUG-32789
+    QFont::insertSubstitution(".Lucida Grande UI", "Lucida Grande");
+  }
+#endif
+
+
   CQCopasiApplication a(argc, argv);
 
   a.setAttribute(Qt::AA_DontShowIconsInMenus, false);

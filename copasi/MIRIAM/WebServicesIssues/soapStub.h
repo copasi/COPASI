@@ -26,7 +26,7 @@
 # pragma warning (disable: 4100)
 #endif
 
-#ifndef _GLIBCXX_VECTOR
+#if !defined( _GLIBCXX_VECTOR) and !defined(__clang__)
 #define _GLIBCXX_VECTOR 1
 #pragma GCC system_header
 #include <bits/functexcept.h>
