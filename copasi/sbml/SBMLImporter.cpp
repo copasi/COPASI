@@ -3166,9 +3166,18 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
       else
         sbmlDoc->setApplicableValidators(AllChecksON & UnitsCheckOFF);
 
+#if LIBSBML_VERSION > 50800
+      // libSBML is validating comp models after 5.8.0 this would throw an
+      // error in case external references can't be resolved.
+      sbmlDoc->setLocationURI(pDataModel->getReferenceDirectory());
+#endif
+
       bool checkResult = sbmlDoc->checkConsistency();
 
 #if LIBSBML_VERSION > 50800
+
+      sbmlDoc->setLocationURI(pDataModel->getReferenceDirectory());
+
       // the new libsbml includes complete layout validation, and flags many
       // things as errors, that would cause COPASI to reject the model (even
       // though the layout code has been written to anticipate all these possible
