@@ -577,7 +577,7 @@ CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
 {
   switch (id)
     {
-      case - 1:
+      case static_cast<size_t>(-1):
         break; //continue with parent id
 
       case 0:

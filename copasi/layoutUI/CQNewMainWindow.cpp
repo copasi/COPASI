@@ -1608,7 +1608,7 @@ void CQNewMainWindow::changeColorSlot(bool)
       // the dialog has been closed with the OK button
       // so we need to get the new color
       QColor color = pDialog->selectedColor();
-      GLfloat newColor[4] = {((GLfloat)color.red()) / 255.0, ((GLfloat)color.green()) / 255.0, ((GLfloat)color.blue()) / 255.0, ((GLfloat)color.alpha()) / 255.0};
+      GLfloat newColor[4] = {static_cast<GLfloat>(color.red()) / 255.0f, static_cast<GLfloat>(color.green()) / 255.0f, static_cast<GLfloat>(color.blue()) / 255.0f, static_cast<GLfloat>(color.alpha()) / 255.0f};
 
       // update the pixmap and the icon for the mpHighlightModeAction
       if (this->mpHighlightModeAction->isChecked())

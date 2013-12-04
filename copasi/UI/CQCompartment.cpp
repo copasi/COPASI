@@ -29,6 +29,7 @@
 #include "function/CExpression.h"
 #include "report/CKeyFactory.h"
 #include "report/CCopasiRootContainer.h"
+#include "report/CCopasiContainer.h"
 
 /*
  *  Constructs a CQCompartment which is a child of 'parent', with the
@@ -528,9 +529,9 @@ void CQCompartment::slotMetaboliteTableCurrentChanged(int row, int col)
   std::string s1, s2;
   s1 = TO_UTF8(pItem->text());
 
-  std::multimap< const std::string, CCopasiObject * >::const_iterator it =
+  CCopasiContainer::objectMap::const_iterator it =
     mpCompartment->getMetabolites().getObjects().begin();
-  std::multimap< const std::string, CCopasiObject * >::const_iterator end =
+  CCopasiContainer::objectMap::const_iterator end =
     mpCompartment->getMetabolites().getObjects().end();
 
   for (; it != end; ++it)
@@ -549,9 +550,9 @@ void CQCompartment::loadMetaboliteTable()
 
   mpMetaboliteTable->setRowCount(mpCompartment->getMetabolites().size());
 
-  std::multimap< const std::string, CCopasiObject * >::const_iterator it =
+  CCopasiContainer::objectMap::const_iterator it =
     mpCompartment->getMetabolites().getObjects().begin();
-  std::multimap< const std::string, CCopasiObject * >::const_iterator end =
+  CCopasiContainer::objectMap::const_iterator end =
     mpCompartment->getMetabolites().getObjects().end();
 
   for (int i = 0; it != end; ++it)

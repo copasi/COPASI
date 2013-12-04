@@ -175,15 +175,15 @@ signals:
 
 private:
   static const C_FLOAT64 DEFAULT_NODE_SIZE;
-  static const double COMPARTMENT_DEPTH;
-  static const double COMPARTMENT_SHADOW_DEPTH;
-  static const double COMPARTMENT_FRAME_DEPTH;
+  static const float COMPARTMENT_DEPTH;
+  static const float COMPARTMENT_SHADOW_DEPTH;
+  static const float COMPARTMENT_FRAME_DEPTH;
 
-  static const double SPECIES_DEPTH;
-  static const double SPECIES_SHADOW_DEPTH;
-  static const double SPECIES_FRAME_DEPTH;
+  static const float SPECIES_DEPTH;
+  static const float SPECIES_SHADOW_DEPTH;
+  static const float SPECIES_FRAME_DEPTH;
 
-  static const double SPECIESREFERENCE_DEPTH;
+  static const float SPECIESREFERENCE_DEPTH;
 
   static const GLfloat MIRROR_X[16];
   static const GLfloat MIRROR_Y[16];

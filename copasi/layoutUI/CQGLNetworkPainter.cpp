@@ -80,16 +80,16 @@ C_FLOAT64 log2(const C_FLOAT64 & __x)
 // sometimes longer or higher than reported by Qt.
 
 // below species and speciesreference
-const double CQGLNetworkPainter::COMPARTMENT_DEPTH = 0.001;
-const double CQGLNetworkPainter::COMPARTMENT_SHADOW_DEPTH = 0.0009;
-const double CQGLNetworkPainter::COMPARTMENT_FRAME_DEPTH = 0.0011;
+const float CQGLNetworkPainter::COMPARTMENT_DEPTH = 0.001f;
+const float CQGLNetworkPainter::COMPARTMENT_SHADOW_DEPTH = 0.0009f;
+const float CQGLNetworkPainter::COMPARTMENT_FRAME_DEPTH = 0.0011f;
 
-const double CQGLNetworkPainter::SPECIES_DEPTH = 0.005;
-const double CQGLNetworkPainter::SPECIES_SHADOW_DEPTH = 0.0049;
-const double CQGLNetworkPainter::SPECIES_FRAME_DEPTH = 0.0051;
+const float CQGLNetworkPainter::SPECIES_DEPTH = 0.005f;
+const float CQGLNetworkPainter::SPECIES_SHADOW_DEPTH = 0.0049f;
+const float CQGLNetworkPainter::SPECIES_FRAME_DEPTH = 0.0051f;
 
 //below species
-const double CQGLNetworkPainter::SPECIESREFERENCE_DEPTH = 0.003;
+const float CQGLNetworkPainter::SPECIESREFERENCE_DEPTH = 0.003f;
 
 const GLfloat CQGLNetworkPainter::MIRROR_X[] =
 {
@@ -1366,10 +1366,10 @@ void CQGLNetworkPainter::drawEdge(CGraphCurve &c)
           // use an evaluator since this is probably a lot more efficient
           GLfloat controlPts[4][3] =
           {
-            {startPoint.getX(), startPoint.getY(), SPECIESREFERENCE_DEPTH},
-            {base1.getX(), base1.getY(), SPECIESREFERENCE_DEPTH},
-            {base2.getX(), base2.getY(), SPECIESREFERENCE_DEPTH},
-            {endPoint.getX(), endPoint.getY(), SPECIESREFERENCE_DEPTH}
+            {static_cast<GLfloat>(startPoint.getX()), static_cast<GLfloat>(startPoint.getY()), SPECIESREFERENCE_DEPTH},
+            {static_cast<GLfloat>(base1.getX()), static_cast<GLfloat>(base1.getY()), SPECIESREFERENCE_DEPTH},
+            {static_cast<GLfloat>(base2.getX()), static_cast<GLfloat>(base2.getY()), SPECIESREFERENCE_DEPTH},
+            {static_cast<GLfloat>(endPoint.getX()), static_cast<GLfloat>(endPoint.getY()), SPECIESREFERENCE_DEPTH}
           };
           // enable the evaluator to draw the cubic Bezier
           glMap1f(GL_MAP1_VERTEX_3, 0.0f, 20.0f, 3, 4, &controlPts[0][0]);

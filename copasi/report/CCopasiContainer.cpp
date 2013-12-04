@@ -206,8 +206,8 @@ const CCopasiObject * CCopasiContainer::getValueObject() const
 
   if (ptr == NULL) return NULL;
 
-  std::multimap< const std::string, CCopasiObject * >::const_iterator it = mObjects.begin();
-  std::multimap< const std::string, CCopasiObject * >::const_iterator end = mObjects.end();
+  objectMap::const_iterator it = mObjects.begin();
+  objectMap::const_iterator end = mObjects.end();
 
   for (; it != end; ++it)
     if (ptr == it->second->getValuePointer()) return it->second;

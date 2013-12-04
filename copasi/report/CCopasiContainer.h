@@ -44,7 +44,7 @@ public:
 
   static const std::vector< CCopasiContainer * > EmptyList;
 
-  typedef std::multimap< const std::string, CCopasiObject * > objectMap;
+  typedef std::multimap<std::string, CCopasiObject * > objectMap;
 
 protected:
   objectMap mObjects;
