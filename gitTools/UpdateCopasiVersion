@@ -94,13 +94,16 @@ next=45
 compatibility={
 
 for b in `sort $$`; do
+  # Remove Windows line ending
+  b=$((${b//$'\r'}))
+
   if [ $next != $b ]; then
     compatibility="${compatibility}${previous}, "
     compatible=list
   fi
   
-  let previous=b
-  let next=b+1
+  previous=$((b))
+  next=$((b+1))
   
   if [ $compatible == list -a $b != $current_build ]; then
     compatibility="${compatibility}${b}, "
