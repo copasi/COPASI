@@ -59,7 +59,12 @@ CQFittingResult::~CQFittingResult()
 void CQFittingResult::init()
 {
   mpCorrelations->setLegendEnabled(false);
-  mpFisherInformation->setLegendEnabled(false);
+  mpFisherInformationMatrix->setLegendEnabled(false);
+  mpFisherInformationEigenvalues->setLegendEnabled(false);
+  mpFisherInformationEigenvectors->setLegendEnabled(false);
+  mpFisherInformationScaledMatrix->setLegendEnabled(false);
+  mpFisherInformationScaledEigenvalues->setLegendEnabled(false);
+  mpFisherInformationScaledEigenvectors->setLegendEnabled(false);
 }
 
 bool CQFittingResult::update(ListViews::ObjectType /* objectType */,
@@ -98,7 +103,7 @@ bool CQFittingResult::enterProtected()
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpExperiments), true);
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpValues), true);
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpCorrelations), true);
-      mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpFisherInformation), true);
+      mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpFisherInformationPage), true);
 
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpCrossValidations), true);
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpCrossValidationValues), true);
@@ -108,7 +113,7 @@ bool CQFittingResult::enterProtected()
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpExperiments), false);
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpValues), false);
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpCorrelations), false);
-      mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpFisherInformation), false);
+      mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpFisherInformationPage), false);
 
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpCrossValidations), false);
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpCrossValidationValues), false);
@@ -284,9 +289,38 @@ bool CQFittingResult::enterProtected()
   mpCorrelations->setArrayAnnotation(&mpProblem->getCorrelations());
 
   tcs = new CColorScaleBiLog();
-  mpFisherInformation->setColorCoding(tcs);
-  mpFisherInformation->setColorScalingAutomatic(true);
-  mpFisherInformation->setArrayAnnotation(&mpProblem->getFisherInformation());
+  mpFisherInformationMatrix->setColorCoding(tcs);
+  mpFisherInformationMatrix->setColorScalingAutomatic(true);
+  mpFisherInformationMatrix->setArrayAnnotation(&mpProblem->getFisherInformation());
+
+  tcs = new CColorScaleBiLog();
+  mpFisherInformationEigenvalues->setColorCoding(tcs);
+  mpFisherInformationEigenvalues->setColorScalingAutomatic(true);
+  mpFisherInformationEigenvalues->setArrayAnnotation(&mpProblem->getFisherInformationEigenvalues());
+  mpFisherInformationEigenvalues->mpComboRows->setCurrentIndex(1);
+
+  tcs = new CColorScaleBiLog();
+  mpFisherInformationEigenvectors->setColorCoding(tcs);
+  mpFisherInformationEigenvectors->setColorScalingAutomatic(true);
+  mpFisherInformationEigenvectors->setArrayAnnotation(&mpProblem->getFisherInformationEigenvectors());
+  mpFisherInformationEigenvectors->mpComboRows->setCurrentIndex(1);
+
+  tcs = new CColorScaleBiLog();
+  mpFisherInformationScaledMatrix->setColorCoding(tcs);
+  mpFisherInformationScaledMatrix->setColorScalingAutomatic(true);
+  mpFisherInformationScaledMatrix->setArrayAnnotation(&mpProblem->getScaledFisherInformation());
+
+  tcs = new CColorScaleBiLog();
+  mpFisherInformationScaledEigenvalues->setColorCoding(tcs);
+  mpFisherInformationScaledEigenvalues->setColorScalingAutomatic(true);
+  mpFisherInformationScaledEigenvalues->setArrayAnnotation(&mpProblem->getScaledFisherInformationEigenvalues());
+  mpFisherInformationScaledEigenvalues->mpComboRows->setCurrentIndex(1);
+
+  tcs = new CColorScaleBiLog();
+  mpFisherInformationScaledEigenvectors->setColorCoding(tcs);
+  mpFisherInformationScaledEigenvectors->setColorScalingAutomatic(true);
+  mpFisherInformationScaledEigenvectors->setArrayAnnotation(&mpProblem->getScaledFisherInformationEigenvectors());
+  mpFisherInformationScaledEigenvectors->mpComboRows->setCurrentIndex(1);
 
   bool Enable = (mpProblem->getCrossValidationSet().getExperimentCount() > 0);
 
@@ -499,6 +533,21 @@ void CQFittingResult::slotSave(void)
 
   // Save the Fisher information
   file << mpProblem->getFisherInformation() << std::endl;
+
+  // Save the Fisher information Eigenvalues
+  file << mpProblem->getFisherInformationEigenvalues() << std::endl;
+
+  // Save the Fisher information Eigenvectors
+  file << mpProblem->getFisherInformationEigenvectors() << std::endl;
+
+  // Save the scaled Fisher information
+  file << mpProblem->getScaledFisherInformation() << std::endl;
+
+  // Save the scaled Fisher information Eigenvalues
+  file << mpProblem->getScaledFisherInformationEigenvalues() << std::endl;
+
+  // Save the scaled Fisher information Eigenvectors
+  file << mpProblem->getScaledFisherInformationEigenvectors() << std::endl;
 
   const CCrossValidationSet & CrossValidations = mpProblem->getCrossValidationSet();
   imax = CrossValidations.getExperimentCount();
