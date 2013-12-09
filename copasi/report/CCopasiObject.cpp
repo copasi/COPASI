@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /**
  * Class CCopasiObject
@@ -23,18 +23,18 @@
 #include <sstream>
 #include <algorithm>
 
-#include "copasi.h"
-#include "CCopasiObjectName.h"
-#include "CCopasiObject.h"
-#include "CCopasiContainer.h"
-#include "CCopasiStaticString.h"
-#include "CRenameHandler.h"
-#include "utilities/CCopasiVector.h"
-#include "model/CModelValue.h"
-#include "model/CModel.h"
+#include "copasi/copasi.h"
+#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/report/CCopasiObject.h"
+#include "copasi/report/CCopasiContainer.h"
+#include "copasi/report/CCopasiStaticString.h"
+#include "copasi/report/CRenameHandler.h"
+#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/model/CModel.h"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
-#include "function/CFunctionDB.h"
+#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/function/CFunctionDB.h"
 
 //static
 const C_FLOAT64 CCopasiObject::DummyValue = 0.0;
