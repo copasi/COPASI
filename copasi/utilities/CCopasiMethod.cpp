@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /**
  *  CCopasiMethod class.
@@ -20,12 +20,12 @@
  *  Created for Copasi by Stefan Hoops 2003
  */
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "CCopasiMethod.h"
-#include "CCopasiMessage.h"
-#include "CCopasiProblem.h"
-#include "model/CModel.h"
+#include "copasi/utilities//CCopasiMethod.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/CCopasiProblem.h"
+#include "copasi/model/CModel.h"
 
 const std::string CCopasiMethod::SubTypeName[] =
 {

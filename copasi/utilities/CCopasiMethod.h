@@ -25,9 +25,9 @@
 
 #include <string>
 
-#include "utilities/CCopasiParameterGroup.h"
-#include "utilities/CCopasiTask.h"
-#include "utilities/CReadConfig.h"
+#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/utilities/CCopasiTask.h"
+#include "copasi/utilities/CReadConfig.h"
 
 class CProcessReport;
 

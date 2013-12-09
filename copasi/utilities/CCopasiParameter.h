@@ -1,24 +1,16 @@
-/* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
- $Revision: 1.33 $
- $Name:  $
- $Author: shoops $
- $Date: 2011/11/29 14:45:29 $
- End CVS Header */
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #ifndef COPASI_CCopasiParameter
 #define COPASI_CCopasiParameter
@@ -26,8 +18,8 @@
 #include <string>
 #include <vector>
 
-#include "report/CCopasiContainer.h"
-#include "report/CCopasiObjectName.h"
+#include "copasi/report/CCopasiContainer.h"
+#include "copasi/report/CCopasiObjectName.h"
 
 class CCopasiParameterGroup;
 

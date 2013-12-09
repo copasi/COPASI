@@ -1,19 +1,16 @@
-/* Begin CVS Header
-$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CKeyFactory.cpp,v $
-$Revision: 1.21 $
-$Name:  $
-$Author: shoops $
-$Date: 2011/03/07 19:32:38 $
-End CVS Header */
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /**
  * CKeyFactory class.
@@ -26,9 +23,9 @@ End CVS Header */
 #include <sstream>
 #include <stdlib.h>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "CKeyFactory.h"
+#include "copasi/report/CKeyFactory.h"
 
 bool CKeyFactory::isValidKey(const std::string & key,
                              const std::string & prefix)

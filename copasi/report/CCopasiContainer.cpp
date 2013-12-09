@@ -1,24 +1,16 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-//   $Revision: 1.57 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/20 12:08:24 $
-// End CVS Header
+// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /*!
     \file CCopasiContainer.cpp
@@ -34,15 +26,15 @@
  * Copyright Stefan Hoops 2002
  */
 
-#include "copasi.h"
-#include "CCopasiObjectName.h"
-#include "CCopasiContainer.h"
-#include "CCopasiObjectReference.h"
-#include "CCopasiStaticString.h"
-#include "CCopasiTimer.h"
+#include "copasi/copasi.h"
+#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/report/CCopasiContainer.h"
+#include "copasi/report/CCopasiObjectReference.h"
+#include "copasi/report/CCopasiStaticString.h"
+#include "copasi/report/CCopasiTimer.h"
 
-#include "utilities/CCopasiVector.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 const std::vector< CCopasiContainer * > CCopasiContainer::EmptyList;
 
