@@ -35,6 +35,8 @@ endif (NOT LIBSEDML_INCLUDE_DIR)
 find_library(LIBSEDML_LIBRARY 
     NAMES sedml-static 
           sedml
+          libsedml-static 
+          libsedml
     PATHS $ENV{LIBSEDML_DIR}/lib
           $ENV{LIBSEDML_DIR}
           ~/Library/Frameworks

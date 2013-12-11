@@ -16,6 +16,8 @@
 # Created by Robert Osfield.
 # Modified by Ralph Gauges
 
+message (STATUS "$ENV{LIBSBML_DIR}")
+
 find_path(LIBSBML_INCLUDE_DIR sbml/SBase.h
     PATHS $ENV{LIBSBML_DIR}/include
           $ENV{LIBSBML_DIR}
@@ -29,12 +31,18 @@ find_path(LIBSBML_INCLUDE_DIR sbml/SBase.h
     NO_DEFAULT_PATH)
 
 if (NOT LIBSBML_INCLUDE_DIR)
+    message(FATAL_ERROR "libsbml include dir not found not found!")
+endif (NOT LIBSBML_INCLUDE_DIR)
+
+if (NOT LIBSBML_INCLUDE_DIR)
     find_path(LIBSBML_INCLUDE_DIR sbml/SBase.h)
 endif (NOT LIBSBML_INCLUDE_DIR)
 
 find_library(LIBSBML_LIBRARY 
     NAMES sbml-static 
           sbml
+          libsbml-static 
+          libsbml
     PATHS $ENV{LIBSBML_DIR}/lib
           $ENV{LIBSBML_DIR}
           ~/Library/Frameworks
@@ -52,12 +60,8 @@ if (NOT LIBSBML_LIBRARY)
               sbml)
 endif (NOT LIBSBML_LIBRARY)
 
-if (NOT LIBSBML_INCLUDE_DIR)
-message(FATAL_ERROR "libsbml include dir not found not found!")
-endif (NOT LIBSBML_INCLUDE_DIR)
-
 if (NOT LIBSBML_LIBRARY)
-message(FATAL_ERROR "LIBSBML library not found!")
+    message(FATAL_ERROR "LIBSBML library not found!")
 endif (NOT LIBSBML_LIBRARY)
 
 set(LIBSBML_FOUND "NO")

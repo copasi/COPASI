@@ -52,6 +52,10 @@ if (NOT SBW_LIBRARIES)
               libsbw)
 endif ()
 
+if (SBW_LIBRARIES AND WIN32)
+   set(SBW_LIBRARIES ${SBW_LIBRARIES} Ws2_32.lib)
+endif (SBW_LIBRARIES AND WIN32)
+
 # handle the QUIETLY and REQUIRED arguments and set SBW_FOUND to TRUE if
 # all listed variables are TRUE
 include(FindPackageHandleStandardArgs)
