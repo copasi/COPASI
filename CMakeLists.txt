@@ -460,6 +460,7 @@ set(CPACK_PACKAGE_VERSION_PATCH "${COPASI_VERSION_BUILD}")
 set(CPACK_RPM_PACKAGE_LICENSE "Artistic License")
 set(CPACK_RPM_PACKAGE_GROUP "Applications/Engineering")
 set(CPACK_DEBIAN_PACKAGE_SECTION "Applications")
+set(CPACK_SOURCE_GENERATOR "TGZ")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     if (${COPASI_BUILD_TYPE} MATCHES "64bit")
@@ -475,7 +476,7 @@ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     endif ()     
 endif ()
 
-set(CPACK_SOURCE_IGNORE_FILES "${CMAKE_CURRENT_BINARY_DIR};/.git/;/.svn/;/.libs/;/.deps/;/.bzr/;.*.o$;.*.lo$;.*.la$;${CPACK_SOURCE_IGNORE_FILES};/.DS_Store;/.svnignore;blib;libsbml-dist")
+set(CPACK_SOURCE_IGNORE_FILES "${CMAKE_CURRENT_BINARY_DIR};/.git/;/.svn/;/.libs/;/.deps/;/.bzr/;.*.o$;.*.lo$;.*.la$;${CPACK_SOURCE_IGNORE_FILES};/.DS_Store;/.svnignore;blib;libsbml-dist;/gps/")
 
 if(UNIX)
     set(CPACK_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
