@@ -8,9 +8,9 @@
 # and MKL,CLAPACK LAPACK on non-apple
 # for apple we set the Accelerate framework
 
-set(SE_LIBS ${EXPAT_LIBRARY} ${SE_LIBS})
-set(SE_LIBS ${RAPTOR_LIBRARY} ${SE_LIBS})
-set(SE_LIBS ${LIBSBML_LIBRARY} ${SE_LIBS})
+set(SE_LIBS ${SE_LIBS} ${RAPTOR_LIBRARY})
+set(SE_LIBS ${SE_LIBS} ${LIBSBML_LIBRARY})
+set(SE_LIBS ${SE_LIBS} ${EXPAT_LIBRARY})
 
 if (APPLE)
    FIND_LIBRARY(ACCELERATE_LIBRARY Accelerate REQUIRED)
