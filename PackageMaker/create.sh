@@ -52,9 +52,15 @@ mkdir -p Applications/COPASI/
 echo cp -r "${BUILD}/copasi/CopasiUI/CopasiUI.app" Applications/COPASI/
 cp -r "${BUILD}/copasi/CopasiUI/CopasiUI.app" Applications/COPASI/
 
+# copy the Qt Framework into the image
+pushd Applications/COPASI
+echo macdeployqt CopasiUI.app/ -no-plugins
+macdeployqt CopasiUI.app/ -no-plugins
+popd
+
 # Create the Info.plist file for CopasiUI
 echo sed -e 's/%COPASI_VERSION%/'$major.$minor.$build'/g' \
-  ${SOURCE}/copasi/CopasiUI/CopasiUI.plist > Applications/COPASI/CopasiUI.app/Contents/Info.plist
+  ${SOURCE}/copasi/CopasiUI/CopasiUI.plist '>' Applications/COPASI/CopasiUI.app/Contents/Info.plist
 sed -e 's/%COPASI_VERSION%/'$major.$minor.$build'/g' \
   ${SOURCE}/copasi/CopasiUI/CopasiUI.plist > Applications/COPASI/CopasiUI.app/Contents/Info.plist
 
@@ -109,15 +115,15 @@ chmod 755 Applications/COPASI/CopasiSE
 
 popd
 
+pushd ${SETUP_DIR}
+
 # Create the Info.plist file for CopasiUI
 echo sed -e 's/%COPASI_VERSION%/'$major.$minor.$build'/g' \
-  ${SOURCE}/PackageMaker/Description.plist > Description.plist
+  ${SOURCE}/PackageMaker/Info.plist '>' Info.plist
 sed -e 's/%COPASI_VERSION%/'$major.$minor.$build'/g' \
   ${SOURCE}/PackageMaker/Info.plist > Info.plist
 
 # Run PackageMaker to create package
-pushd ${SETUP_DIR}
-
 echo "${PACKAGE_MAKER}" \
   --root "${PACKAGE_NAME}" \
   --info "Info.plist" \
@@ -130,8 +136,15 @@ echo "${PACKAGE_MAKER}" \
 echo cp -r ${SOURCE}/PackageMaker/Resources "${PACKAGE_NAME}.pkg/Contents"
 cp -r ${SOURCE}/PackageMaker/Resources "${PACKAGE_NAME}.pkg/Contents"
 
+echo sed -e 's/%COPASI_VERSION%/'$major.$minor.$build'/g' \
+  ${SOURCE}/PackageMaker/Description.plist '>' "${PACKAGE_NAME}.pkg/Contents/Resources/en.lproj/Description.plist"
+sed -e 's/%COPASI_VERSION%/'$major.$minor.$build'/g' \
+  ${SOURCE}/PackageMaker/Description.plist > "${PACKAGE_NAME}.pkg/Contents/Resources/en.lproj/Description.plist"
+
+# Hide the pkg extension
 SetFile -a E "${PACKAGE_NAME}.pkg"
 
+# Create a disk image
 echo hdiutil create -volname "${PACKAGE_NAME}" -srcfolder "${PACKAGE_NAME}.pkg" -ov -format UDZO "${PACKAGE_NAME}"
 hdiutil create -volname "${PACKAGE_NAME}" -srcfolder "${PACKAGE_NAME}.pkg" -ov -format UDZO "${PACKAGE_NAME}"
 popd
