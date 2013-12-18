@@ -1,0 +1,18 @@
+#!/bin/sh
+DIRNAME="`dirname $0`"
+
+if [ _"$DIRNAME" = _. ]; then
+  DIRNAME="$PWD"
+fi
+ 
+FIRST_CHAR="${dirname#?}"
+
+if [ "${DIRNAME%$FIRST_CHAR}" != "/" ]; then
+  dirname="$PWD/$DIRNAME"
+fi
+
+INSTALLDIR="${DIRNAME%/*}"
+
+LD_LIBRARY_PATH="$INSTALLDIR/share/copasi/lib:${LD_LIBRARY_PATH}"
+export LD_LIBRARY_PATH
+"$INSTALLDIR/share/copasi/lib/CopasiUI" "$@"
