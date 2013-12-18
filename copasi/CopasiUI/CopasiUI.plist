@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleName</key>
+	<string>CopasiUI</string>
 	<key>CFBundleIconFile</key>
 	<string>copasi.icns</string>
 	<key>CFBundlePackageType</key>
@@ -10,12 +16,16 @@
 	<string>%COPASI_VERSION%</string>
 	<key>CFBundleShortVersionString</key>
 	<string>%COPASI_VERSION%</string>
+	<key>CFBundleLongVersionString</key>
+	<string>%COPASI_VERSION%</string>
 	<key>CFBundleGetInfoString</key>
+	<string>COPASI %COPASI_VERSION% is distributed under the Artistic License 2.0.</string>
+	<key>NSHumanReadableCopyright</key>
 	<string>COPASI %COPASI_VERSION% is distributed under the Artistic License 2.0.</string>
 	<key>CFBundleExecutable</key>
 	<string>CopasiUI</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.copasi.CopasiUI</string>
+	<string>org.copasi.COPASI.CopasiUI</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -33,5 +43,11 @@
 			<string>Default</string>
 		</dict>
 	</array>
+	<key>CSResourcesFileMapped</key>
+	<true/>
+	<key>LSRequiresCarbon</key>
+	<true/>
+	<key>CFBundleSignature</key>
+	<string>????</string>
 </dict>
 </plist>
