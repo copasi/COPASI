@@ -3302,7 +3302,16 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
 
                   if (pSBMLError->getErrorId() == 99107)
                     {
-                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96);
+                      if (pSBMLError->getMessage().find("'spatial'") != std::string::npos)
+                        {
+                          CCopasiMessage(CCopasiMessage::ERROR,
+                                         "The model you tried to open requires the SBML spatial package. "
+                                         "This version of COPASI does not support spatial models.");
+                        }
+                      else
+                        {
+                          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96);
+                        }
                     }
                 }
             }
