@@ -39,7 +39,7 @@ mark_as_advanced(COPASI_OVERRIDE_VERSION)
 
 # if the header file is not present, then set the override version to this one
 if (NOT EXISTS "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h" AND NOT COPASI_OVERRIDE_VERSION)
-  set(COPASI_OVERRIDE_VERSION "4.11.65")
+  set(COPASI_OVERRIDE_VERSION "4.12.65")
 endif()
 
 

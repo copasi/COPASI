@@ -14,8 +14,8 @@ remoteCommit=`git rev-parse origin/${branch} 2>/dev/null`
 
 # We only register a build.
 if [ "_$1" == "_--registerBuild" ]; then
-  major=`${GAWK} -- '$2 ~ "VERSION_MAJOR" {print $3}' ${GitTools}/../copasi/CopasiVersion.h.in`
-  minor=`${GAWK} -- '$2 ~ "VERSION_MINOR" {print $3}' ${GitTools}/../copasi/CopasiVersion.h.in`
+  major=`${GAWK} -- '$2 ~ "VERSION_MAJOR" {print $3}' ${GitTools}/../copasi/CopasiVersion.h`
+  minor=`${GAWK} -- '$2 ~ "VERSION_MINOR" {print $3}' ${GitTools}/../copasi/CopasiVersion.h`
   echo Version: `${WGET} -qO- "git.copasi.org/buildnumber/${major}.${minor}.${remoteCommit}"`
 
   exit
