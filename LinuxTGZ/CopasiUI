@@ -1,18 +1,14 @@
 #!/bin/sh
-DIRNAME="`dirname $0`"
 
-if [ _"$DIRNAME" = _. ]; then
-  DIRNAME="$PWD"
+LIBDIR="$(dirname "$(dirname "$(readlink -f "$0")")")/share/copasi/lib"
+
+CopasiUI="${LIBDIR}/CopasiUI"
+
+QT_MISSING=$(ldd "${CopasiUI}" | grep -q 'libQt.*\.so\.4 => not found' && echo true)
+
+if [ _${QT_MISSING} = _true ]; then
+  LD_LIBRARY_PATH="${LIBDIR}:${LD_LIBRARY_PATH}"
+  export LD_LIBRARY_PATH
 fi
- 
-FIRST_CHAR="${dirname#?}"
 
-if [ "${DIRNAME%$FIRST_CHAR}" != "/" ]; then
-  dirname="$PWD/$DIRNAME"
-fi
-
-INSTALLDIR="${DIRNAME%/*}"
-
-LD_LIBRARY_PATH="$INSTALLDIR/share/copasi/lib:${LD_LIBRARY_PATH}"
-export LD_LIBRARY_PATH
-"$INSTALLDIR/share/copasi/lib/CopasiUI" "$@"
+"${CopasiUI}" "$@"
