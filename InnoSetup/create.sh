@@ -125,7 +125,7 @@ sed -e '/#define MyAppVersion/s/".*"/"'${MyAppVersion}'"/' \
 "${INNO_SETUP}" tmp.iss && rm tmp.iss
 
 # Move the package to its final location
-cp COPASI-${buildname}-${PACKAGE}.exe "${SETUP_DIR}/package"
-chmod 755 "${SETUP_DIR}"/package/COPASI-${buildname}-${PACKAGE}.exe
+cp COPASI-*-${PACKAGE}.exe "${SETUP_DIR}/package"
+chmod 755 "${SETUP_DIR}"/package/COPASI-*-${PACKAGE}.exe
 
 popd
