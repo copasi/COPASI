@@ -61,7 +61,7 @@ SAVEIFS=$IFS
 IFS=','
 
 echo $current_build > $$
-                
+
 compatibility="{"
 
 for b in $buildList; do
@@ -114,19 +114,7 @@ compatibility="${compatibility}${current_build}}"
 
 rm $$
 
-if [ "`echo $buildList | grep ${localCommit}`" -a $localChanges == 0 ]; then
-  creator=copasi.org
-  modified=false
-else
-  creator=`git config user.email`
-  modified=true
-fi
-
-IFS=$(echo -en "\n\b")
-
-echo $buildList | grep ${localCommit}
-
-if [ "`echo $buildList | grep ${localCommit}`" -a $localChanges == 0 ]; then
+if [ "`echo $buildList | grep -q ${localCommit}x` && echo true" -a $localChanges == 0 ]; then
   creator=copasi.org
   modified=false
 else
