@@ -115,9 +115,8 @@ compatibility="${compatibility}${current_build}}"
 rm $$
 
 RELEASE=`echo $buildList | grep -q ${localCommit} && echo true`
-echo $RELEASE
 
-if [ _${RELEASE} = _true -a $localChanges == 0 ]; then
+if [ _${RELEASE} == _true -a $localChanges == 0 ]; then
   creator=copasi.org
   modified=false
 else
