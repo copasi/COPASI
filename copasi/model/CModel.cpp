@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -855,35 +855,30 @@ void CModel::updateMoietyValues()
 
 void CModel::buildMoieties()
 {
-  size_t i, imax = MNumMetabolitesReactionDependent;
-  size_t j;
+  // Independent metabs
+  CCopasiVector< CMetab >::iterator itIndependent = mMetabolitesX.begin() + mNumMetabolitesODE;
+  CCopasiVector< CMetab >::iterator endIndependent = itIndependent + mNumMetabolitesReactionIndependent;
 
-  CCopasiVector< CMetab >::iterator it = (mNumMetabolitesODE + mNumMetabolitesReactionIndependent > mMetabolitesX.size()) ?
-                                         mMetabolitesX.end() :
-                                         mMetabolitesX.begin() + mNumMetabolitesODE + mNumMetabolitesReactionIndependent; //begin of dependent metabs
+  // Dependent metabs
+  CCopasiVector< CMetab >::iterator itDependent = endIndependent;
+  CCopasiVector< CMetab >::iterator endDependent = itDependent + MNumMetabolitesReactionDependent;
+
   C_FLOAT64 * pFactor = mL.array();
 
   CMoiety *pMoiety;
-
   mMoieties.cleanup();
 
-  if (it == mMetabolitesX.end() || pFactor == NULL)
+  for (; itDependent != endDependent; ++itDependent)
     {
-      // the user changed the type of species from under us
-      mNumMetabolitesReaction = 0;
-      mNumMetabolitesReactionIndependent = 0;
-      imax = 0;
-    }
-
-  for (i = 0; i < imax; i++, ++it)
-    {
-      pMoiety = new CMoiety((*it)->getObjectName());
-      pMoiety->add(1.0, *it);
+      pMoiety = new CMoiety((*itDependent)->getObjectName());
+      pMoiety->add(1.0, *itDependent);
 
       if (pFactor != NULL)
-        for (j = 0; j < mNumMetabolitesReactionIndependent; j++, pFactor++)
-          if (fabs(*pFactor) > std::numeric_limits< C_FLOAT64 >::epsilon())
-            pMoiety->add(- *pFactor, mMetabolitesX[j + mNumMetabolitesODE]);
+        {
+          for (itIndependent = mMetabolitesX.begin() + mNumMetabolitesODE; itIndependent != endIndependent; ++itIndependent, ++pFactor)
+            if (fabs(*pFactor) > std::numeric_limits< C_FLOAT64 >::epsilon())
+              pMoiety->add(- *pFactor, *itIndependent);
+        }
 
       mMoieties.add(pMoiety, true);
     }

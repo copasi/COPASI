@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -175,104 +175,102 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix)
   // Resize mL
   resize(NumRows - independent, independent);
 
-  if (NumRows == independent || independent == 0)
+  if (NumRows != independent && independent != 0)
     {
-      return success;
-    }
+      /* to take care of differences between fortran's and c's memory  access,
+           we need to take the transpose, i.e.,the upper triangular */
+      char cL = 'U';
+      char cU = 'N'; /* values in the diagonal of R */
 
-  /* to take care of differences between fortran's and c's memory  access,
-       we need to take the transpose, i.e.,the upper triangular */
-  char cL = 'U';
-  char cU = 'N'; /* values in the diagonal of R */
+      // Calculate Row Echelon form of R.
+      // First invert R_1,1
+      /* int dtrtri_(char *uplo,
+       *             char *diag,
+       *             integer *n,
+       *             doublereal * A,
+       *             integer *lda,
+       *             integer *info);
+       *  -- LAPACK routine (version 3.0) --
+       *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+       *     Courant Institute, Argonne National Lab, and Rice University
+       *     March 31, 1993
+       *
+       *  Purpose
+       *  =======
+       *
+       *  DTRTRI computes the inverse of a real upper or lower triangular
+       *  matrix A.
+       *
+       *  This is the Level 3 BLAS version of the algorithm.
+       *
+       *  Arguments
+       *  =========
+       *
+       *  uplo    (input) CHARACTER*1
+       *          = 'U':  A is upper triangular;
+       *          = 'L':  A is lower triangular.
+       *
+       *  diag    (input) CHARACTER*1
+       *          = 'N':  A is non-unit triangular;
+       *          = 'U':  A is unit triangular.
+       *
+       *  n       (input) INTEGER
+       *          The order of the matrix A.  n >= 0.
+       *
+       *  A       (input/output) DOUBLE PRECISION array, dimension (lda,n)
+       *          On entry, the triangular matrix A.  If uplo = 'U', the
+       *          leading n-by-n upper triangular part of the array A contains
+       *          the upper triangular matrix, and the strictly lower
+       *          triangular part of A is not referenced.  If uplo = 'L', the
+       *          leading n-by-n lower triangular part of the array A contains
+       *          the lower triangular matrix, and the strictly upper
+       *          triangular part of A is not referenced.  If diag = 'U', the
+       *          diagonal elements of A are also not referenced and are
+       *          assumed to be 1.
+       *          On exit, the (triangular) inverse of the original matrix, in
+       *          the same storage format.
+       *
+       *  lda     (input) INTEGER
+       *          The leading dimension of the array A.  lda >= max(1,n).
+       *
+       *  info    (output) INTEGER
+       *          = 0: successful exit
+       *          < 0: if info = -i, the i-th argument had an illegal value
+       *          > 0: if info = i, A(i,i) is exactly zero.  The triangular
+       *               matrix is singular and its inverse can not be computed.
+       */
+      dtrtri_(&cL, &cU, &independent, M.array(), &LDA, &INFO);
 
-  // Calculate Row Echelon form of R.
-  // First invert R_1,1
-  /* int dtrtri_(char *uplo,
-   *             char *diag,
-   *             integer *n,
-   *             doublereal * A,
-   *             integer *lda,
-   *             integer *info);
-   *  -- LAPACK routine (version 3.0) --
-   *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-   *     Courant Institute, Argonne National Lab, and Rice University
-   *     March 31, 1993
-   *
-   *  Purpose
-   *  =======
-   *
-   *  DTRTRI computes the inverse of a real upper or lower triangular
-   *  matrix A.
-   *
-   *  This is the Level 3 BLAS version of the algorithm.
-   *
-   *  Arguments
-   *  =========
-   *
-   *  uplo    (input) CHARACTER*1
-   *          = 'U':  A is upper triangular;
-   *          = 'L':  A is lower triangular.
-   *
-   *  diag    (input) CHARACTER*1
-   *          = 'N':  A is non-unit triangular;
-   *          = 'U':  A is unit triangular.
-   *
-   *  n       (input) INTEGER
-   *          The order of the matrix A.  n >= 0.
-   *
-   *  A       (input/output) DOUBLE PRECISION array, dimension (lda,n)
-   *          On entry, the triangular matrix A.  If uplo = 'U', the
-   *          leading n-by-n upper triangular part of the array A contains
-   *          the upper triangular matrix, and the strictly lower
-   *          triangular part of A is not referenced.  If uplo = 'L', the
-   *          leading n-by-n lower triangular part of the array A contains
-   *          the lower triangular matrix, and the strictly upper
-   *          triangular part of A is not referenced.  If diag = 'U', the
-   *          diagonal elements of A are also not referenced and are
-   *          assumed to be 1.
-   *          On exit, the (triangular) inverse of the original matrix, in
-   *          the same storage format.
-   *
-   *  lda     (input) INTEGER
-   *          The leading dimension of the array A.  lda >= max(1,n).
-   *
-   *  info    (output) INTEGER
-   *          = 0: successful exit
-   *          < 0: if info = -i, the i-th argument had an illegal value
-   *          > 0: if info = i, A(i,i) is exactly zero.  The triangular
-   *               matrix is singular and its inverse can not be computed.
-   */
-  dtrtri_(&cL, &cU, &independent, M.array(), &LDA, &INFO);
+      if (INFO < 0) fatalError();
 
-  if (INFO < 0) fatalError();
+      C_INT32 j, k;
 
-  C_INT32 j, k;
+      // Compute Link_0 = inverse(R_1,1) * R_1,2
+      // :TODO: Use dgemm
+      C_FLOAT64 * pTmp1 = array();
+      C_FLOAT64 * pTmp2;
+      C_FLOAT64 * pTmp3;
 
-  // Compute Link_0 = inverse(R_1,1) * R_1,2
-  // :TODO: Use dgemm
-  C_FLOAT64 * pTmp1 = array();
-  C_FLOAT64 * pTmp2;
-  C_FLOAT64 * pTmp3;
-
-  for (j = 0; j < NumRows - independent; j++)
-    for (i = 0; i < independent; i++, pTmp1++)
-      {
-        pTmp2 = &M(j + independent, i);
-        pTmp3 = &M(i, i);
-
-        // assert(&mL(j, i) == pTmp3);
-        *pTmp1 = 0.0;
-
-        for (k = i; k < independent; k++, pTmp2++, pTmp3 += NumCols)
+      for (j = 0; j < NumRows - independent; j++)
+        for (i = 0; i < independent; i++, pTmp1++)
           {
-            // assert(&M(j + independent, k) == pTmp2);
-            // assert(&M(k, i) == pTmp3);
+            pTmp2 = &M(j + independent, i);
+            pTmp3 = &M(i, i);
 
-            *pTmp1 += *pTmp3 * *pTmp2;
+            // assert(&mL(j, i) == pTmp3);
+            *pTmp1 = 0.0;
+
+            for (k = i; k < independent; k++, pTmp2++, pTmp3 += NumCols)
+              {
+                // assert(&M(j + independent, k) == pTmp2);
+                // assert(&M(k, i) == pTmp3);
+
+                *pTmp1 += *pTmp3 * *pTmp2;
+              }
+
+            if (fabs(*pTmp1) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()) *pTmp1 = 0.0;
           }
-
-        if (fabs(*pTmp1) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()) *pTmp1 = 0.0;
-      }
+    }
 
   // We need to convert the pivot vector into a swap vector.
 
