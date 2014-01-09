@@ -91,15 +91,15 @@ cp ${SOURCE}/copasi/wizard/help_html/figures/*.png \
 chmod 644 share/copasi/doc/html/figures/*.png
 
 # 32 bit files
-cp "${BUILD_32}/copasi/CopasiUI/CopasiUI.exe"  bin/32
+cp "${BUILD_32}-MD/copasi/CopasiUI/CopasiUI.exe"  bin/32
 chmod 755 bin/32/CopasiUI.exe
-cp "${BUILD_32}/copasi/CopasiSE/CopasiSE.exe"  bin/32
+cp "${BUILD_32}-MT/copasi/CopasiSE/CopasiSE.exe"  bin/32
 chmod 755 bin/32/CopasiSE.exe
 
 # 32 bit files
-cp "${BUILD_64}/copasi/CopasiUI/CopasiUI.exe"  bin/64
+cp "${BUILD_64}-MD/copasi/CopasiUI/CopasiUI.exe"  bin/64
 chmod 755 bin/64/CopasiUI.exe
-cp "${BUILD_64}/copasi/CopasiSE/CopasiSE.exe"  bin/64
+cp "${BUILD_64}-MT/copasi/CopasiSE/CopasiSE.exe"  bin/64
 chmod 755 bin/64/CopasiSE.exe
 
 
