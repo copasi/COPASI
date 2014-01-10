@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -166,11 +166,11 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
   CModel * pModel = dynamic_cast< CModel * >(pReaction->getObjectAncestor("Model"));
 
   //first get the units strings
-  CFindDimensions units(ri.getFunction(), pModel->getQuantityUnitEnum() == CModel::dimensionlessQuantity,
-                        pModel->getVolumeUnitEnum() == CModel::dimensionlessVolume,
-                        pModel->getTimeUnitEnum() == CModel::dimensionlessTime,
-                        pModel->getAreaUnitEnum() == CModel::dimensionlessArea,
-                        pModel->getLengthUnitEnum() == CModel::dimensionlessLength
+  CFindDimensions units(ri.getFunction(), pModel->getQuantityUnit().isDimensionless(),
+                        pModel->getVolumeUnit().isDimensionless(),
+                        pModel->getTimeUnit().isDimensionless(),
+                        pModel->getAreaUnit().isDimensionless(),
+                        pModel->getLengthUnit().isDimensionless()
                        );
   units.setUseHeuristics(true);
   units.setMolecularitiesForMassAction(ri.getChemEqInterface().getMolecularity(CFunctionParameter::SUBSTRATE),

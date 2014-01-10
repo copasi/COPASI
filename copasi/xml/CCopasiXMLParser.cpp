@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /**
  * CCopasiXMLParser class.
@@ -1586,15 +1586,15 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
 {
   const char * Name;
   const char * timeUnit;
-  CModel::TimeUnit TimeUnit;
+  CUnit::TimeUnit TimeUnit;
   const char * volumeUnit;
-  CModel::VolumeUnit VolumeUnit;
+  CUnit::VolumeUnit VolumeUnit;
   const char * areaUnit;
-  CModel::AreaUnit AreaUnit;
+  CUnit::AreaUnit AreaUnit;
   const char * lengthUnit;
-  CModel::LengthUnit LengthUnit;
+  CUnit::LengthUnit LengthUnit;
   const char * quantityUnit;
-  CModel::QuantityUnit QuantityUnit;
+  CUnit::QuantityUnit QuantityUnit;
   CModel::ModelType ModelType;
   C_FLOAT64 Avogadro;
 
@@ -1613,32 +1613,32 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         Name = mParser.getAttributeValue("name", papszAttrs);
 
         timeUnit = mParser.getAttributeValue("timeUnit", papszAttrs);
-        TimeUnit = toEnum(timeUnit, CModel::TimeUnitNames, CModel::OldMinute);
+        TimeUnit = toEnum(timeUnit, CUnit::TimeUnitNames, CUnit::OldMinute);
 
-        if (TimeUnit == CModel::OldMinute)
+        if (TimeUnit == CUnit::OldMinute)
           {
             if (strcmp(timeUnit, "m"))
-              TimeUnit = CModel::s;
+              TimeUnit = CUnit::s;
             else
-              TimeUnit = CModel::min;
+              TimeUnit = CUnit::min;
           }
 
         volumeUnit = mParser.getAttributeValue("volumeUnit", papszAttrs);
-        VolumeUnit = toEnum(volumeUnit, CModel::VolumeUnitNames, CModel::ml);
+        VolumeUnit = toEnum(volumeUnit, CUnit::VolumeUnitNames, CUnit::ml);
 
         //the next 2 attributes are introduced in Build 31, they have a default for
         //reading older cps files
         areaUnit = mParser.getAttributeValue("areaUnit", papszAttrs, "m\xc2\xb2");
-        AreaUnit = toEnum(areaUnit, CModel::AreaUnitNames, CModel::m2);
+        AreaUnit = toEnum(areaUnit, CUnit::AreaUnitNames, CUnit::m2);
 
         lengthUnit = mParser.getAttributeValue("lengthUnit", papszAttrs, "m");
-        LengthUnit = toEnum(lengthUnit, CModel::LengthUnitNames, CModel::m);
+        LengthUnit = toEnum(lengthUnit, CUnit::LengthUnitNames, CUnit::m);
 
         quantityUnit = mParser.getAttributeValue("quantityUnit", papszAttrs);
-        QuantityUnit = toEnum(quantityUnit, CModel::QuantityUnitNames, CModel::OldXML);
+        QuantityUnit = toEnum(quantityUnit, CUnit::QuantityUnitNames, CUnit::OldXML);
 
-        if (QuantityUnit == CModel::OldXML)
-          QuantityUnit = toEnum(quantityUnit, CModel::QuantityUnitOldXMLNames, CModel::mMol);
+        if (QuantityUnit == CUnit::OldXML)
+          QuantityUnit = toEnum(quantityUnit, CUnit::QuantityUnitOldXMLNames, CUnit::mMol);
 
         ModelType = toEnum(mParser.getAttributeValue("type", papszAttrs, "deterministic"),
                            CModel::ModelTypeNames, CModel::deterministic);

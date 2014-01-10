@@ -1,7 +1,7 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #include <limits>
 
@@ -19,6 +19,7 @@
 #include "report/CKeyFactory.h"
 #include "report/CCopasiObject.h"
 #include "utilities/CDimension.h"
+#include "copasi/utilities/CUnit.h"
 
 // static
 const char * CModelParameter::TypeNames[] =
@@ -167,11 +168,11 @@ const std::string CModelParameter::getUnit(const Framework & framework) const
         const CModel * pModel = getModel();
 
         CFindDimensions Units(pReaction->getFunction(),
-                              pModel->getQuantityUnitEnum() == CModel::dimensionlessQuantity,
-                              pModel->getVolumeUnitEnum() == CModel::dimensionlessVolume,
-                              pModel->getTimeUnitEnum() == CModel::dimensionlessTime,
-                              pModel->getAreaUnitEnum() == CModel::dimensionlessArea,
-                              pModel->getLengthUnitEnum() == CModel::dimensionlessLength);
+                              pModel->getQuantityUnit().isDimensionless(),
+                              pModel->getVolumeUnit().isDimensionless(),
+                              pModel->getTimeUnit().isDimensionless(),
+                              pModel->getAreaUnit().isDimensionless(),
+                              pModel->getLengthUnit().isDimensionless());
         Units.setUseHeuristics(true);
         Units.setChemicalEquation(&pReaction->getChemEq());
         Units.findDimensions(pReaction->getCompartmentNumber() > 1);

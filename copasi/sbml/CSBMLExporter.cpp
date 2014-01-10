@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -21,6 +21,7 @@
 
 #include "SBMLImporter.h"
 #include "utilities/CCopasiException.h"
+#include "copasi/utilities/CUnit.h"
 #include "sbml/SBMLDocument.h"
 #include "sbml/Compartment.h"
 #if LIBSBML_VERSION >= 40100
@@ -323,70 +324,70 @@ void CSBMLExporter::createTimeUnit(const CCopasiDataModel& dataModel)
 
   switch (dataModel.getModel()->getTimeUnitEnum())
     {
-      case CModel::d:
+      case CUnit::d:
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(0);
         unit.setMultiplier(86400);
         break;
 
-      case CModel::h:
+      case CUnit::h:
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(0);
         unit.setMultiplier(3600);
         break;
 
-      case CModel::min:
+      case CUnit::min:
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(0);
         unit.setMultiplier(60);
         break;
 
-      case CModel::s:
+      case CUnit::s:
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(0);
         unit.setMultiplier(1);
         break;
 
-      case CModel::ms:
+      case CUnit::ms:
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(-3);
         unit.setMultiplier(1);
         break;
 
-      case CModel::micros:
+      case CUnit::micros:
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(-6);
         unit.setMultiplier(1);
         break;
 
-      case CModel::ns:
+      case CUnit::ns:
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(-9);
         unit.setMultiplier(1);
         break;
 
-      case CModel::ps:
+      case CUnit::ps:
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(-12);
         unit.setMultiplier(1);
         break;
 
-      case CModel::fs:
+      case CUnit::fs:
         unit.setKind(UNIT_KIND_SECOND);
         unit.setExponent(1);
         unit.setScale(-15);
         unit.setMultiplier(1);
         break;
 
-      case CModel::dimensionlessTime:
+      case CUnit::dimensionlessTime:
         unit.setKind(UNIT_KIND_DIMENSIONLESS);
         unit.setExponent(1);
         unit.setScale(0);
@@ -449,49 +450,49 @@ void CSBMLExporter::createVolumeUnit(const CCopasiDataModel& dataModel)
 
   switch (dataModel.getModel()->getVolumeUnitEnum())
     {
-      case CModel::l:
+      case CUnit::l:
         unit.setKind(UNIT_KIND_LITRE);
         unit.setExponent(1);
         unit.setScale(0);
         break;
 
-      case CModel::ml:
+      case CUnit::ml:
         unit.setKind(UNIT_KIND_LITRE);
         unit.setExponent(1);
         unit.setScale(-3);
         break;
 
-      case CModel::microl:
+      case CUnit::microl:
         unit.setKind(UNIT_KIND_LITRE);
         unit.setExponent(1);
         unit.setScale(-6);
         break;
 
-      case CModel::nl:
+      case CUnit::nl:
         unit.setKind(UNIT_KIND_LITRE);
         unit.setExponent(1);
         unit.setScale(-9);
         break;
 
-      case CModel::pl:
+      case CUnit::pl:
         unit.setKind(UNIT_KIND_LITRE);
         unit.setExponent(1);
         unit.setScale(-12);
         break;
 
-      case CModel::fl:
+      case CUnit::fl:
         unit.setKind(UNIT_KIND_LITRE);
         unit.setExponent(1);
         unit.setScale(-15);
         break;
 
-      case CModel::m3:
+      case CUnit::m3:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(3);
         unit.setScale(0);
         break;
 
-      case CModel::dimensionlessVolume:
+      case CUnit::dimensionlessVolume:
         unit.setKind(UNIT_KIND_DIMENSIONLESS);
         unit.setExponent(1);
         unit.setScale(0);
@@ -552,49 +553,49 @@ void CSBMLExporter::createSubstanceUnit(const CCopasiDataModel& dataModel)
 
   switch (dataModel.getModel()->getQuantityUnitEnum())
     {
-      case CModel::Mol:
+      case CUnit::Mol:
         unit.setKind(UNIT_KIND_MOLE);
         unit.setExponent(1);
         unit.setScale(0);
         break;
 
-      case CModel::mMol:
+      case CUnit::mMol:
         unit.setKind(UNIT_KIND_MOLE);
         unit.setExponent(1);
         unit.setScale(-3);
         break;
 
-      case CModel::microMol:
+      case CUnit::microMol:
         unit.setKind(UNIT_KIND_MOLE);
         unit.setExponent(1);
         unit.setScale(-6);
         break;
 
-      case CModel::nMol:
+      case CUnit::nMol:
         unit.setKind(UNIT_KIND_MOLE);
         unit.setExponent(1);
         unit.setScale(-9);
         break;
 
-      case CModel::pMol:
+      case CUnit::pMol:
         unit.setKind(UNIT_KIND_MOLE);
         unit.setExponent(1);
         unit.setScale(-12);
         break;
 
-      case CModel::fMol:
+      case CUnit::fMol:
         unit.setKind(UNIT_KIND_MOLE);
         unit.setExponent(1);
         unit.setScale(-15);
         break;
 
-      case CModel::number:
+      case CUnit::number:
         unit.setKind(UNIT_KIND_ITEM);
         unit.setExponent(1);
         unit.setScale(0);
         break;
 
-      case CModel::dimensionlessQuantity:
+      case CUnit::dimensionlessQuantity:
         unit.setKind(UNIT_KIND_DIMENSIONLESS);
         unit.setExponent(1);
         unit.setScale(0);
@@ -658,55 +659,55 @@ void CSBMLExporter::createLengthUnit(const CCopasiDataModel& dataModel)
 
   switch (dataModel.getModel()->getLengthUnitEnum())
     {
-      case CModel::m:
+      case CUnit::m:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(1);
         unit.setScale(0);
         break;
 
-      case CModel::dm:
+      case CUnit::dm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(1);
         unit.setScale(-1);
         break;
 
-      case CModel::cm:
+      case CUnit::cm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(1);
         unit.setScale(-2);
         break;
 
-      case CModel::mm:
+      case CUnit::mm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(1);
         unit.setScale(-3);
         break;
 
-      case CModel::microm:
+      case CUnit::microm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(1);
         unit.setScale(-6);
         break;
 
-      case CModel::nm:
+      case CUnit::nm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(1);
         unit.setScale(-9);
         break;
 
-      case CModel::pm:
+      case CUnit::pm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(1);
         unit.setScale(-12);
         break;
 
-      case CModel::fm:
+      case CUnit::fm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(1);
         unit.setScale(-15);
         break;
 
-      case CModel::dimensionlessLength:
+      case CUnit::dimensionlessLength:
         unit.setKind(UNIT_KIND_DIMENSIONLESS);
         unit.setExponent(1);
         unit.setScale(0);
@@ -767,55 +768,55 @@ void CSBMLExporter::createAreaUnit(const CCopasiDataModel& dataModel)
 
   switch (dataModel.getModel()->getAreaUnitEnum())
     {
-      case CModel::m:
+      case CUnit::m:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(2);
         unit.setScale(0);
         break;
 
-      case CModel::dm:
+      case CUnit::dm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(2);
         unit.setScale(-1);
         break;
 
-      case CModel::cm:
+      case CUnit::cm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(2);
         unit.setScale(-2);
         break;
 
-      case CModel::mm:
+      case CUnit::mm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(2);
         unit.setScale(-3);
         break;
 
-      case CModel::microm:
+      case CUnit::microm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(2);
         unit.setScale(-6);
         break;
 
-      case CModel::nm:
+      case CUnit::nm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(2);
         unit.setScale(-9);
         break;
 
-      case CModel::pm:
+      case CUnit::pm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(2);
         unit.setScale(-12);
         break;
 
-      case CModel::fm:
+      case CUnit::fm:
         unit.setKind(UNIT_KIND_METRE);
         unit.setExponent(2);
         unit.setScale(-15);
         break;
 
-      case CModel::dimensionlessLength:
+      case CUnit::dimensionlessLength:
         unit.setKind(UNIT_KIND_DIMENSIONLESS);
         unit.setExponent(1);
         unit.setScale(0);
@@ -1672,7 +1673,7 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CCo
       // the next few lines replace references to species depending on whether
       // it is a reference to an amount or a reference to a concentration.
       // Other factors that influence this replacement are if the model
-      // contains variable volumes or if the quantity units are set to CModel::number
+      // contains variable volumes or if the quantity units are set to CUnit::number
       pOrigNode = this->replaceSpeciesReferences(pOrigNode, dataModel);
       assert(pOrigNode != NULL);
 
@@ -1962,7 +1963,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CCopasiDataModel
       // the next few lines replace references to species depending on whether
       // it is a reference to an amount or a reference to a concentration.
       // Other factors that influence this replacement are if the model
-      // contains variable volumes or if the quantity units are set to CModel::number
+      // contains variable volumes or if the quantity units are set to CUnit::number
       pOrigNode = this->replaceSpeciesReferences(pOrigNode, dataModel);
       assert(pOrigNode != NULL);
 
@@ -4036,7 +4037,7 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
   // the next few lines replace references to species depending on whether
   // it is a reference to an amount or a reference to a concentration.
   // Other factors that influence this replacement are if the model
-  // contains variable volumes or if the quantity units are set to CModel::number
+  // contains variable volumes or if the quantity units are set to CUnit::number
   pOrigNode = this->replaceSpeciesReferences(pOrigNode, dataModel);
   assert(pOrigNode != NULL);
   ASTNode* pNode = this->convertToASTNode(pOrigNode, dataModel);
@@ -4131,7 +4132,7 @@ void CSBMLExporter::createEvent(CEvent& event, Event* pSBMLEvent, CCopasiDataMod
       // the next few lines replace references to species depending on whether
       // it is a reference to an amount or a reference to a concentration.
       // Other factors that influence this replacement are if the model
-      // contains variable volumes or if the quantity units are set to CModel::number
+      // contains variable volumes or if the quantity units are set to CUnit::number
       pOrigNode = this->replaceSpeciesReferences(pOrigNode, dataModel);
       assert(pOrigNode != NULL);
       pNode = this->convertToASTNode(pOrigNode, dataModel);
@@ -4392,7 +4393,7 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
           // the next few lines replace references to species depending on whether
           // it is a reference to an amount or a reference to a concentration.
           // Other factors that influence this replacement are if the model
-          // contains variable volumes or if the quantity units are set to CModel::number
+          // contains variable volumes or if the quantity units are set to CUnit::number
           pOrigNode = this->replaceSpeciesReferences(pOrigNode, dataModel);
           assert(pOrigNode != NULL);
           // check if the assignment belongs to an amount species
@@ -4575,7 +4576,7 @@ KineticLaw* CSBMLExporter::createKineticLaw(CReaction& reaction, CCopasiDataMode
   // the next few lines replace references to species depending on whether
   // it is a reference to an amount or a reference to a concentration.
   // Other factors that influence this replacement are if the model
-  // contains variable volumes or if the quantity units are set to CModel::number
+  // contains variable volumes or if the quantity units are set to CUnit::number
   CEvaluationNode* pExpression = CSBMLExporter::createKineticExpression(const_cast<CFunction*>(reaction.getFunction()), reaction.getParameterMappings());
 
   if (pExpression == NULL)
@@ -6049,7 +6050,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                 {
                   // if the units are not set to particle numbers anyway,
                   // replace the node by the node times avogadros number
-                  if (dataModel.getModel()->getQuantityUnitEnum() != CModel::number)
+                  if (dataModel.getModel()->getQuantityUnitEnum() != CUnit::number)
                     {
                       if (this->mpAvogadro == NULL)
                         {

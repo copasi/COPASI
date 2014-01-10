@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #ifdef WIN32
 # pragma warning (disable: 4786)
@@ -79,6 +79,7 @@
 #include "report/CCopasiObjectReference.h"
 #include "utilities/CCopasiTree.h"
 #include "utilities/CNodeIterator.h"
+#include "copasi/utilities/CUnit.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "MIRIAM/CRDFGraphConverter.h"
@@ -178,11 +179,11 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   /* Create an empty model and set the title. */
   this->mpCopasiModel = new CModel(mpDataModel);
   copasi2sbmlmap[this->mpCopasiModel] = sbmlModel;
-  this->mpCopasiModel->setLengthUnit(CModel::m);
-  this->mpCopasiModel->setAreaUnit(CModel::m2);
-  this->mpCopasiModel->setVolumeUnit(CModel::l);
-  this->mpCopasiModel->setTimeUnit(CModel::s);
-  this->mpCopasiModel->setQuantityUnit(CModel::Mol);
+  this->mpCopasiModel->setLengthUnit(CUnit::m);
+  this->mpCopasiModel->setAreaUnit(CUnit::m2);
+  this->mpCopasiModel->setVolumeUnit(CUnit::l);
+  this->mpCopasiModel->setTimeUnit(CUnit::s);
+  this->mpCopasiModel->setQuantityUnit(CUnit::Mol);
   this->mpCopasiModel->setSBMLId(sbmlModel->getId());
 
   unsigned C_INT32 step = 0, totalSteps = 0;
@@ -579,7 +580,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   if (pSubstanceUnits != NULL)
     {
-      std::pair<CModel::QuantityUnit, bool> qUnit;
+      std::pair<CUnit::QuantityUnit, bool> qUnit;
 
       try
         {
@@ -607,7 +608,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           // the unit could not be handled, give an error message and
           // set the units to mole
           CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "substance", "Mole");
-          this->mpCopasiModel->setQuantityUnit(CModel::Mol);
+          this->mpCopasiModel->setQuantityUnit(CUnit::Mol);
         }
       else
         {
@@ -649,7 +650,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   if (pTimeUnits != NULL)
     {
-      std::pair<CModel::TimeUnit, bool> tUnit;
+      std::pair<CUnit::TimeUnit, bool> tUnit;
 
       try
         {
@@ -677,7 +678,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           // the unit could not be handled, give an error message and
           // set the units to second
           CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "time", "second");
-          this->mpCopasiModel->setTimeUnit(CModel::s);
+          this->mpCopasiModel->setTimeUnit(CUnit::s);
         }
       else
         {
@@ -693,7 +694,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   if (pVolumeUnits != NULL)
     {
-      std::pair<CModel::VolumeUnit, bool> vUnit;
+      std::pair<CUnit::VolumeUnit, bool> vUnit;
 
       try
         {
@@ -721,7 +722,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           // the unit could not be handled, give an error message and
           // set the units to litre
           CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "volume", "litre");
-          this->mpCopasiModel->setVolumeUnit(CModel::l);
+          this->mpCopasiModel->setVolumeUnit(CUnit::l);
         }
       else
         {
@@ -737,7 +738,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   if (pAreaUnits != NULL)
     {
-      std::pair<CModel::AreaUnit, bool> vUnit;
+      std::pair<CUnit::AreaUnit, bool> vUnit;
 
       try
         {
@@ -765,7 +766,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           // the unit could not be handled, give an error message and
           // set the units to litre
           CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "area", "square meter");
-          this->mpCopasiModel->setAreaUnit(CModel::m2);
+          this->mpCopasiModel->setAreaUnit(CUnit::m2);
         }
       else
         {
@@ -781,7 +782,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   if (pLengthUnits != NULL)
     {
-      std::pair<CModel::LengthUnit, bool> vUnit;
+      std::pair<CUnit::LengthUnit, bool> vUnit;
 
       try
         {
@@ -809,7 +810,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           // the unit could not be handled, give an error message and
           // set the units to litre
           CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "length", "meter");
-          this->mpCopasiModel->setLengthUnit(CModel::m);
+          this->mpCopasiModel->setLengthUnit(CUnit::m);
         }
       else
         {
@@ -3412,11 +3413,11 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
  * Returns the copasi QuantityUnit corresponding to the given SBML
  *  Substance UnitDefinition.
  */
-std::pair<CModel::QuantityUnit, bool>
+std::pair<CUnit::QuantityUnit, bool>
 SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
 {
   bool result = false;
-  CModel::QuantityUnit qUnit = CModel::Mol;
+  CUnit::QuantityUnit qUnit = CUnit::Mol;
 
   if (uDef == NULL)
     {
@@ -3464,32 +3465,32 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
               switch (scale)
                 {
                   case 0:
-                    qUnit = CModel::Mol;
+                    qUnit = CUnit::Mol;
                     result = true;
                     break;
 
                   case - 3:
-                    qUnit = CModel::mMol;
+                    qUnit = CUnit::mMol;
                     result = true;
                     break;
 
                   case - 6:
-                    qUnit = CModel::microMol;
+                    qUnit = CUnit::microMol;
                     result = true;
                     break;
 
                   case - 9:
-                    qUnit = CModel::nMol;
+                    qUnit = CUnit::nMol;
                     result = true;
                     break;
 
                   case - 12:
-                    qUnit = CModel::pMol;
+                    qUnit = CUnit::pMol;
                     result = true;
                     break;
 
                   case - 15:
-                    qUnit = CModel::fMol;
+                    qUnit = CUnit::fMol;
                     result = true;
                     break;
 
@@ -3534,7 +3535,7 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
               else
                 {
                   result = true;
-                  qUnit = CModel::number;
+                  qUnit = CUnit::number;
                 }
             }
           else
@@ -3566,7 +3567,7 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
               scale == 0)
             {
               result = true;
-              qUnit = CModel::dimensionlessQuantity;
+              qUnit = CUnit::dimensionlessQuantity;
             }
           else
             {
@@ -3590,11 +3591,11 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
  * Returns the copasi TimeUnit corresponding to the given SBML Time
  *  UnitDefinition.
  */
-std::pair<CModel::TimeUnit, bool>
+std::pair<CUnit::TimeUnit, bool>
 SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
 {
   bool result = false;
-  CModel::TimeUnit tUnit = CModel::s;
+  CUnit::TimeUnit tUnit = CUnit::s;
 
   if (uDef == NULL)
     {
@@ -3675,32 +3676,32 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
                   switch (scale)
                     {
                       case 0:
-                        tUnit = CModel::s;
+                        tUnit = CUnit::s;
                         result = true;
                         break;
 
                       case - 3:
-                        tUnit = CModel::ms;
+                        tUnit = CUnit::ms;
                         result = true;
                         break;
 
                       case - 6:
-                        tUnit = CModel::micros;
+                        tUnit = CUnit::micros;
                         result = true;
                         break;
 
                       case - 9:
-                        tUnit = CModel::ns;
+                        tUnit = CUnit::ns;
                         result = true;
                         break;
 
                       case - 12:
-                        tUnit = CModel::ps;
+                        tUnit = CUnit::ps;
                         result = true;
                         break;
 
                       case - 15:
-                        tUnit = CModel::fs;
+                        tUnit = CUnit::fs;
                         result = true;
                         break;
 
@@ -3713,19 +3714,19 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
               else if ((scale == 0) &&
                        areApproximatelyEqual(multiplier, 60.0))
                 {
-                  tUnit = CModel::min;
+                  tUnit = CUnit::min;
                   result = true;
                 }
               else if ((scale == 0) &&
                        areApproximatelyEqual(multiplier, 3600.0))
                 {
-                  tUnit = CModel::h;
+                  tUnit = CUnit::h;
                   result = true;
                 }
               else if ((scale == 0) &&
                        areApproximatelyEqual(multiplier, 86400.0))
                 {
-                  tUnit = CModel::d;
+                  tUnit = CUnit::d;
                   result = true;
                 }
               else
@@ -3762,7 +3763,7 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
               scale == 0)
             {
               result = true;
-              tUnit = CModel::dimensionlessTime;
+              tUnit = CUnit::dimensionlessTime;
             }
           else
             {
@@ -3786,11 +3787,11 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
  * Returns the copasi LengthUnit corresponding to the given SBML length
  *  UnitDefinition.
  */
-std::pair<CModel::LengthUnit, bool>
+std::pair<CUnit::LengthUnit, bool>
 SBMLImporter::handleLengthUnit(const UnitDefinition* uDef)
 {
   bool result = false;
-  CModel::LengthUnit lUnit = CModel::m;
+  CUnit::LengthUnit lUnit = CUnit::m;
 
   if (uDef == NULL)
     {
@@ -3835,42 +3836,42 @@ SBMLImporter::handleLengthUnit(const UnitDefinition* uDef)
               switch (scale)
                 {
                   case 0:
-                    lUnit = CModel::m;
+                    lUnit = CUnit::m;
                     result = true;
                     break;
 
                   case - 1:
-                    lUnit = CModel::dm;
+                    lUnit = CUnit::dm;
                     result = true;
                     break;
 
                   case - 2:
-                    lUnit = CModel::cm;
+                    lUnit = CUnit::cm;
                     result = true;
                     break;
 
                   case - 3:
-                    lUnit = CModel::mm;
+                    lUnit = CUnit::mm;
                     result = true;
                     break;
 
                   case - 6:
-                    lUnit = CModel::microm;
+                    lUnit = CUnit::microm;
                     result = true;
                     break;
 
                   case - 9:
-                    lUnit = CModel::nm;
+                    lUnit = CUnit::nm;
                     result = true;
                     break;
 
                   case - 12:
-                    lUnit = CModel::pm;
+                    lUnit = CUnit::pm;
                     result = true;
                     break;
 
                   case - 15:
-                    lUnit = CModel::fm;
+                    lUnit = CUnit::fm;
                     result = true;
                     break;
 
@@ -3909,7 +3910,7 @@ SBMLImporter::handleLengthUnit(const UnitDefinition* uDef)
               scale == 0)
             {
               result = true;
-              lUnit = CModel::dimensionlessLength;
+              lUnit = CUnit::dimensionlessLength;
             }
           else
             {
@@ -3933,11 +3934,11 @@ SBMLImporter::handleLengthUnit(const UnitDefinition* uDef)
  * Returns the copasi AreaUnit corresponding to the given SBML area
  *  UnitDefinition.
  */
-std::pair<CModel::AreaUnit, bool>
+std::pair<CUnit::AreaUnit, bool>
 SBMLImporter::handleAreaUnit(const UnitDefinition* uDef)
 {
   bool result = false;
-  CModel::AreaUnit aUnit = CModel::m2;
+  CUnit::AreaUnit aUnit = CUnit::m2;
 
   if (uDef == NULL)
     {
@@ -3982,42 +3983,42 @@ SBMLImporter::handleAreaUnit(const UnitDefinition* uDef)
               switch (scale)
                 {
                   case 0:
-                    aUnit = CModel::m2;
+                    aUnit = CUnit::m2;
                     result = true;
                     break;
 
                   case - 1:
-                    aUnit = CModel::dm2;
+                    aUnit = CUnit::dm2;
                     result = true;
                     break;
 
                   case - 2:
-                    aUnit = CModel::cm2;
+                    aUnit = CUnit::cm2;
                     result = true;
                     break;
 
                   case - 3:
-                    aUnit = CModel::mm2;
+                    aUnit = CUnit::mm2;
                     result = true;
                     break;
 
                   case - 6:
-                    aUnit = CModel::microm2;
+                    aUnit = CUnit::microm2;
                     result = true;
                     break;
 
                   case - 9:
-                    aUnit = CModel::nm2;
+                    aUnit = CUnit::nm2;
                     result = true;
                     break;
 
                   case - 12:
-                    aUnit = CModel::pm2;
+                    aUnit = CUnit::pm2;
                     result = true;
                     break;
 
                   case - 15:
-                    aUnit = CModel::fm2;
+                    aUnit = CUnit::fm2;
                     result = true;
                     break;
 
@@ -4056,7 +4057,7 @@ SBMLImporter::handleAreaUnit(const UnitDefinition* uDef)
               scale == 0)
             {
               result = true;
-              aUnit = CModel::dimensionlessArea;
+              aUnit = CUnit::dimensionlessArea;
             }
           else
             {
@@ -4080,13 +4081,13 @@ SBMLImporter::handleAreaUnit(const UnitDefinition* uDef)
  * Returns the copasi VolumeUnit corresponding to the given SBML Volume
  *  UnitDefinition.
  */
-std::pair<CModel::VolumeUnit, bool>
+std::pair<CUnit::VolumeUnit, bool>
 SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
 {
   // simplify the Unitdefiniton first if this normalizes
   // the scale and the multiplier
   bool result = false;
-  CModel::VolumeUnit vUnit = CModel::l;
+  CUnit::VolumeUnit vUnit = CUnit::l;
 
   if (uDef == NULL)
     {
@@ -4131,32 +4132,32 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
               switch (scale)
                 {
                   case 0:
-                    vUnit = CModel::l;
+                    vUnit = CUnit::l;
                     result = true;
                     break;
 
                   case - 3:
-                    vUnit = CModel::ml;
+                    vUnit = CUnit::ml;
                     result = true;
                     break;
 
                   case - 6:
-                    vUnit = CModel::microl;
+                    vUnit = CUnit::microl;
                     result = true;
                     break;
 
                   case - 9:
-                    vUnit = CModel::nl;
+                    vUnit = CUnit::nl;
                     result = true;
                     break;
 
                   case - 12:
-                    vUnit = CModel::pl;
+                    vUnit = CUnit::pl;
                     result = true;
                     break;
 
                   case - 15:
-                    vUnit = CModel::fl;
+                    vUnit = CUnit::fl;
                     result = true;
                     break;
 
@@ -4193,7 +4194,7 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
           if (areApproximatelyEqual(multiplier, 1.0) &&
               (scale == 0))
             {
-              vUnit = CModel::m3;
+              vUnit = CUnit::m3;
               result = true;
             }
           else
@@ -4211,32 +4212,32 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
                   switch (pLitreUnit->getScale())
                     {
                       case 0:
-                        vUnit = CModel::l;
+                        vUnit = CUnit::l;
                         result = true;
                         break;
 
                       case - 3:
-                        vUnit = CModel::ml;
+                        vUnit = CUnit::ml;
                         result = true;
                         break;
 
                       case - 6:
-                        vUnit = CModel::microl;
+                        vUnit = CUnit::microl;
                         result = true;
                         break;
 
                       case - 9:
-                        vUnit = CModel::nl;
+                        vUnit = CUnit::nl;
                         result = true;
                         break;
 
                       case - 12:
-                        vUnit = CModel::pl;
+                        vUnit = CUnit::pl;
                         result = true;
                         break;
 
                       case - 15:
-                        vUnit = CModel::fl;
+                        vUnit = CUnit::fl;
                         result = true;
                         break;
 
@@ -4277,7 +4278,7 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
               scale == 0)
             {
               result = true;
-              vUnit = CModel::dimensionlessVolume;
+              vUnit = CUnit::dimensionlessVolume;
             }
           else
             {
@@ -4640,7 +4641,7 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
       this->multiplySubstanceOnlySpeciesByVolume(pNode);
     }
 
-  if (!this->mSubstanceOnlySpecies.empty() && this->mpCopasiModel->getQuantityUnitEnum() != CModel::number && pSBMLReaction == NULL)
+  if (!this->mSubstanceOnlySpecies.empty() && this->mpCopasiModel->getQuantityUnitEnum() != CUnit::number && pSBMLReaction == NULL)
     {
       this->replaceAmountReferences(pNode, pSBMLModel, this->mpCopasiModel->getQuantity2NumberFactor(), copasi2sbmlmap);
     }
@@ -7279,7 +7280,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                 }
               else
                 {
-                  std::pair<CModel::VolumeUnit, bool> result = this->handleVolumeUnit(pUdef1);
+                  std::pair<CUnit::VolumeUnit, bool> result = this->handleVolumeUnit(pUdef1);
 
                   if (result.second == false)
                     {
@@ -7354,7 +7355,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                 }
               else
                 {
-                  std::pair<CModel::AreaUnit, bool> result = this->handleAreaUnit(pUdef1);
+                  std::pair<CUnit::AreaUnit, bool> result = this->handleAreaUnit(pUdef1);
 
                   if (result.second == false)
                     {
@@ -7428,7 +7429,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                 }
               else
                 {
-                  std::pair<CModel::LengthUnit, bool> result = this->handleLengthUnit(pUdef1);
+                  std::pair<CUnit::LengthUnit, bool> result = this->handleLengthUnit(pUdef1);
 
                   if (result.second == false)
                     {
@@ -7539,7 +7540,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       // try to set the default volume unit to the unit defined by lastUnit
       const UnitDefinition* pUdef = SBMLImporter::getSBMLUnitDefinitionForId(lastVolumeUnit, pSBMLModel);
       assert(pUdef != NULL);
-      std::pair<CModel::VolumeUnit, bool> volume = this->handleVolumeUnit(pUdef);
+      std::pair<CUnit::VolumeUnit, bool> volume = this->handleVolumeUnit(pUdef);
 
       if (volume.second == true)
         {
@@ -7561,7 +7562,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       // try to set the default area unit to the unit defined by lastAreaUnit
       const UnitDefinition* pUdef = SBMLImporter::getSBMLUnitDefinitionForId(lastAreaUnit, pSBMLModel);
       assert(pUdef != NULL);
-      std::pair<CModel::AreaUnit, bool> area = this->handleAreaUnit(pUdef);
+      std::pair<CUnit::AreaUnit, bool> area = this->handleAreaUnit(pUdef);
 
       if (area.second == true)
         {
@@ -7583,7 +7584,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       // try to set the default length unit to the unit defined by lastLengthUnit
       const UnitDefinition* pUdef = SBMLImporter::getSBMLUnitDefinitionForId(lastLengthUnit, pSBMLModel);
       assert(pUdef != NULL);
-      std::pair<CModel::LengthUnit, bool> length = this->handleLengthUnit(pUdef);
+      std::pair<CUnit::LengthUnit, bool> length = this->handleLengthUnit(pUdef);
 
       if (length.second == true)
         {
@@ -7619,7 +7620,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       // check if the default units have been used for any of the compartments
       // if so, the models has to use the defaults, otherwise we can just
       // choose one
-      std::pair<CModel::LengthUnit, bool> length = std::pair<CModel::LengthUnit, bool>(CModel::dimensionlessLength, false);
+      std::pair<CUnit::LengthUnit, bool> length = std::pair<CUnit::LengthUnit, bool>(CUnit::dimensionlessLength, false);
       const UnitDefinition* pUdef = NULL;
 
       if (defaultLengthUsed)
@@ -7652,7 +7653,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
           pUdef = NULL;
         }
 
-      std::pair<CModel::AreaUnit, bool> area = std::pair<CModel::AreaUnit, bool>(CModel::dimensionlessArea, false);
+      std::pair<CUnit::AreaUnit, bool> area = std::pair<CUnit::AreaUnit, bool>(CUnit::dimensionlessArea, false);
 
       if (defaultAreaUsed)
         {
@@ -7684,7 +7685,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
           pUdef = NULL;
         }
 
-      std::pair<CModel::VolumeUnit, bool> volume = std::pair<CModel::VolumeUnit, bool>(CModel::dimensionlessVolume, false);
+      std::pair<CUnit::VolumeUnit, bool> volume = std::pair<CUnit::VolumeUnit, bool>(CUnit::dimensionlessVolume, false);
 
       if (defaultVolumeUsed)
         {
@@ -7805,7 +7806,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
           else
             {
-              std::pair<CModel::QuantityUnit, bool> result = this->handleSubstanceUnit(pUdef1);
+              std::pair<CUnit::QuantityUnit, bool> result = this->handleSubstanceUnit(pUdef1);
 
               if (result.second == false)
                 {
@@ -7872,7 +7873,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
               else
                 {
-                  std::pair<CModel::QuantityUnit, bool> result = this->handleSubstanceUnit(pUdef1);
+                  std::pair<CUnit::QuantityUnit, bool> result = this->handleSubstanceUnit(pUdef1);
 
                   if (result.second == false)
                     {
@@ -7925,7 +7926,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                 }
               else
                 {
-                  std::pair<CModel::TimeUnit, bool> result = this->handleTimeUnit(pUdef1);
+                  std::pair<CUnit::TimeUnit, bool> result = this->handleTimeUnit(pUdef1);
 
                   if (result.second == false)
                     {
@@ -8082,7 +8083,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
           else
             {
-              std::pair<CModel::TimeUnit, bool> result = this->handleTimeUnit(pUdef1);
+              std::pair<CUnit::TimeUnit, bool> result = this->handleTimeUnit(pUdef1);
 
               if (result.second == false)
                 {
@@ -8132,7 +8133,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       // try to set the default time units
       UnitDefinition* pUdef = getSBMLUnitDefinitionForId(lastTimeUnits, pSBMLModel);
       assert(pUdef != NULL);
-      std::pair<CModel::TimeUnit, bool> time = this->handleTimeUnit(pUdef);
+      std::pair<CUnit::TimeUnit, bool> time = this->handleTimeUnit(pUdef);
       delete pUdef;
 
       if (time.second == true)

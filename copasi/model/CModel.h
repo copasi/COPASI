@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #ifndef COPASI_CModel
 #define COPASI_CModel
@@ -33,6 +33,7 @@
 #include "copasi/utilities/CMatrix.h"
 #include "copasi/utilities/CLinkMatrix.h"
 #include "copasi/report/CCopasiContainer.h"
+#include "copasi/utilities/CUnit.h"
 
 #include "copasi/math/CMathTrigger.h"
 #include "copasi/math/CMathDependencyGraph.h"
@@ -49,61 +50,6 @@ class CMathModel;
 class CModel : public CModelEntity
 {
 public:
-  /**
-   * Enum of valid volume units
-   */
-  enum VolumeUnit {dimensionlessVolume = 0, m3, l, ml, microl, nl, pl, fl};
-
-  /**
-   * String representation of valid volume units
-   */
-  static const char * VolumeUnitNames[];
-
-  /**
-   * Enum of valid area units
-   */
-  enum AreaUnit {dimensionlessArea = 0, m2, dm2, cm2, mm2, microm2, nm2, pm2, fm2};
-
-  /**
-   * String representation of valid area units
-   */
-  static const char * AreaUnitNames[];
-
-  /**
-   * Enum of valid length units
-   */
-  enum LengthUnit {dimensionlessLength = 0, m, dm, cm, mm, microm, nm, pm, fm};
-
-  /**
-   * String representation of valid length units
-   */
-  static const char * LengthUnitNames[];
-
-  /**
-   *  Enum of valid time units
-   */
-  enum TimeUnit {dimensionlessTime = 0, d, h, min, s, ms, micros, ns, ps, fs, OldMinute};
-
-  /**
-   * String representation of valid time units
-   */
-  static const char * TimeUnitNames[];
-
-  /**
-   *  Enum of valid quantity units
-   */
-  enum QuantityUnit {dimensionlessQuantity = 0, Mol, mMol, microMol, nMol, pMol, fMol, number, OldXML};
-
-  /**
-   * String representation of valid quantity units as used in old (up to Build 18)
-   * COPASI files
-   */
-  static const char * QuantityUnitOldXMLNames[];
-
-  /**
-   * String representation of valid quantity units
-   */
-  static const char * QuantityUnitNames[];
 
   /**
    * Enum of valid model types.
@@ -618,7 +564,13 @@ public:
    * @param const CModel::VolumeUnit & unit
    * @return bool success
    */
-  bool setVolumeUnit(const CModel::VolumeUnit & unit);
+  bool setVolumeUnit(const CUnit::VolumeUnit & unitEnum);
+
+  /**
+   * Get the current volume unit of the model
+   * @return const CUnit & volumeunit
+   */
+  const CUnit & getVolumeUnit() const;
 
   /**
    * Get the unit for volumes
@@ -630,7 +582,7 @@ public:
    * Get the unit for volumes
    * @return CModel::VolumeUnit volumeUnit
    */
-  CModel::VolumeUnit getVolumeUnitEnum() const;
+  CUnit::VolumeUnit getVolumeUnitEnum() const;
 
   /**
    * Set the unit for areas.
@@ -644,7 +596,13 @@ public:
    * @param const CModel::AreaUnit & unit
    * @return bool success
    */
-  bool setAreaUnit(const CModel::AreaUnit & unit);
+  bool setAreaUnit(const CUnit::AreaUnit & unitEnum);
+
+  /**
+   * Get the current area unit of the model
+   * @return const CUnit & areaunit
+   */
+  const CUnit & getAreaUnit() const;
 
   /**
    * Get the unit for areas
@@ -656,7 +614,7 @@ public:
    * Get the unit for areas
    * @return CModel::AreaUnit areaUnit
    */
-  CModel::AreaUnit getAreaUnitEnum() const;
+  CUnit::AreaUnit getAreaUnitEnum() const;
 
   /**
    * Set the unit for lengths.
@@ -670,7 +628,13 @@ public:
    * @param const CModel::LengthUnit & unit
    * @return bool success
    */
-  bool setLengthUnit(const CModel::LengthUnit & unit);
+  bool setLengthUnit(const CUnit::LengthUnit & unitEnum);
+
+  /**
+   * Get the current length unit of the model
+   * @return const CUnit & lengthunit
+   */
+  const CUnit & getLengthUnit() const;
 
   /**
    * Get the unit for lengths
@@ -682,7 +646,7 @@ public:
    * Get the unit for lengths
    * @return CModel::LengthUnit lengthUnit
    */
-  CModel::LengthUnit getLengthUnitEnum() const;
+  CUnit::LengthUnit getLengthUnitEnum() const;
 
   /**
    * Set the unit for time. If COPASI recognizes
@@ -700,7 +664,13 @@ public:
    * @param const const CModel::TimeUnit & unit
    * @return bool success
    */
-  bool setTimeUnit(const CModel::TimeUnit & unit);
+  bool setTimeUnit(const CUnit::TimeUnit & unitEnum);
+
+  /**
+   * Get the current time unit of the model
+   * @return const CUnit & timeunit
+   */
+  const CUnit & getTimeUnit() const;
 
   /**
    * Get the unit for time
@@ -712,7 +682,7 @@ public:
    * Get the unit for time
    * @return CModel::TimeUnit timeUnit
    */
-  CModel::TimeUnit getTimeUnitEnum() const;
+  CUnit::TimeUnit getTimeUnitEnum() const;
 
   /**
    * Set the unit for quantities. If COPASI recognizes
@@ -730,7 +700,13 @@ public:
    * @param const CModel::QuantityUnit & unit
    * @return bool success
    */
-  bool setQuantityUnit(const CModel::QuantityUnit & unit);
+  bool setQuantityUnit(const CUnit::QuantityUnit & unitEnum);
+
+  /**
+   * Get the current quantity unit of the model
+   * @return const CUnit & quantityunit
+   */
+  const CUnit & getQuantityUnit() const;
 
   /**
    * Get the unit for quantities
@@ -743,7 +719,7 @@ public:
    * Get the unit for quantities
    * @return CModel::QuantityUnit quantityUnit
    */
-  CModel::QuantityUnit getQuantityUnitEnum() const;
+  CUnit::QuantityUnit getQuantityUnitEnum() const;
 
   /**
    * Set the type of the model
@@ -1259,27 +1235,27 @@ private:
   /**
    * The volume unit used in the Model
    */
-  VolumeUnit mVolumeUnit;
+  CUnit mVolumeUnit;
 
   /**
    * The volume unit used in the Model
    */
-  AreaUnit mAreaUnit;
+  CUnit mAreaUnit;
 
   /**
    * The volume unit used in the Model
    */
-  LengthUnit mLengthUnit;
+  CUnit mLengthUnit;
 
   /**
    * The time unit used in the Model
    */
-  TimeUnit mTimeUnit;
+  CUnit mTimeUnit;
 
   /**
    * The quantity unit used in the Model
    */
-  QuantityUnit mQuantityUnit;
+  CUnit mQuantityUnit;
 
   /**
    * The type of the model

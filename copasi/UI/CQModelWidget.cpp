@@ -1,7 +1,7 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 /*
  * CQModelWidget.cpp
@@ -13,7 +13,8 @@
 #include "CQModelWidget.h"
 #include "qtUtilities.h"
 
-#include "model/CModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/utilities/CUnit.h"
 #include "copasi/report/CCopasiRootContainer.h"
 
 CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
@@ -25,7 +26,7 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
   QStringList ComboEntries;
   const char ** pComboEntries;
 
-  for (pComboEntries = CModel::TimeUnitNames; *pComboEntries != NULL; ++pComboEntries)
+  for (pComboEntries = CUnit::TimeUnitNames; *pComboEntries != NULL; ++pComboEntries)
     {
       ComboEntries.push_front(QString::fromUtf8(*pComboEntries));
     }
@@ -35,7 +36,7 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
 
   ComboEntries.clear();
 
-  for (pComboEntries = CModel::VolumeUnitNames; *pComboEntries != NULL; ++pComboEntries)
+  for (pComboEntries = CUnit::VolumeUnitNames; *pComboEntries != NULL; ++pComboEntries)
     {
       ComboEntries.push_front(QString::fromUtf8(*pComboEntries));
     }
@@ -45,7 +46,7 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
 
   ComboEntries.clear();
 
-  for (pComboEntries = CModel::AreaUnitNames; *pComboEntries != NULL; ++pComboEntries)
+  for (pComboEntries = CUnit::AreaUnitNames; *pComboEntries != NULL; ++pComboEntries)
     {
       ComboEntries.push_front(QString::fromUtf8(*pComboEntries));
     }
@@ -55,7 +56,7 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
 
   ComboEntries.clear();
 
-  for (pComboEntries = CModel::LengthUnitNames; *pComboEntries != NULL; ++pComboEntries)
+  for (pComboEntries = CUnit::LengthUnitNames; *pComboEntries != NULL; ++pComboEntries)
     {
       ComboEntries.push_front(QString::fromUtf8(*pComboEntries));
     }
@@ -65,7 +66,7 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
 
   ComboEntries.clear();
 
-  for (pComboEntries = CModel::QuantityUnitNames; *pComboEntries != NULL; ++pComboEntries)
+  for (pComboEntries = CUnit::QuantityUnitNames; *pComboEntries != NULL; ++pComboEntries)
     {
       ComboEntries.push_front(QString::fromUtf8(*pComboEntries));
     }

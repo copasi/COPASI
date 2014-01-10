@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include "FunctionWidget1.h"
 
@@ -125,11 +125,11 @@ bool FunctionWidget1::loadParameterTable()
   CModel * pModel = pDataModel->getModel();
   assert(pModel != NULL);
 
-  CFindDimensions ddd(mpFunction, pModel->getQuantityUnitEnum() == CModel::dimensionlessQuantity,
-                      pModel->getVolumeUnitEnum() == CModel::dimensionlessVolume,
-                      pModel->getTimeUnitEnum() == CModel::dimensionlessTime,
-                      pModel->getAreaUnitEnum() == CModel::dimensionlessArea,
-                      pModel->getLengthUnitEnum() == CModel::dimensionlessLength
+  CFindDimensions ddd(mpFunction, pModel->getQuantityUnit().isDimensionless(),
+                      pModel->getVolumeUnit().isDimensionless(),
+                      pModel->getTimeUnit().isDimensionless(),
+                      pModel->getAreaUnit().isDimensionless(),
+                      pModel->getLengthUnit().isDimensionless()
                      );
 
   ddd.setUseHeuristics(true);
