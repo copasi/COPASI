@@ -52,6 +52,7 @@ Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription
 
 [Files]
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+; 32 bit Executables and DLLs 
 Source: {#MyStageDir}\bin\32\CopasiSE.exe; DestDir: {app}\bin; Check: IsWin32();
 Source: {#MyStageDir}\bin\32\CopasiUI.exe; DestDir: {app}\bin; Check: IsWin32();
 Source: {#MyStageDir}\bin\32\QtCore4.dll; DestDir: {app}\bin; Check: IsWin32();
@@ -61,8 +62,12 @@ Source: {#MyStageDir}\bin\32\QtOpenGL4.dll; DestDir: {app}\bin; Check: IsWin32()
 Source: {#MyStageDir}\bin\32\QtSvg4.dll; DestDir: {app}\bin; Check: IsWin32();
 Source: {#MyStageDir}\bin\32\QtWebKit4.dll; DestDir: {app}\bin; Check: IsWin32();
 Source: {#MyStageDir}\bin\32\QtXml4.dll; DestDir: {app}\bin; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\libmmd.dll; DestDir: {app}\bin; Check: IsWin32(); 
+Source: {#MyStageDir}\bin\32\svml_dispmd.dll; DestDir: {app}\bin; Check: IsWin32(); 
 Source: {#MyStageDir}\bin\32\msvcr100.dll; DestDir: {app}\bin; Check: InstallUserRuntime32(); 
 Source: {#MyStageDir}\bin\32\msvcp100.dll; DestDir: {app}\bin; Check: InstallUserRuntime32(); 
+
+; 64 bit Executables and DLLs 
 Source: {#MyStageDir}\bin\64\CopasiSE.exe; DestDir: {app}\bin; Check: IsWin64();
 Source: {#MyStageDir}\bin\64\CopasiUI.exe; DestDir: {app}\bin; Check: IsWin64();
 Source: {#MyStageDir}\bin\64\QtCore4.dll; DestDir: {app}\bin; Check: IsWin64();
@@ -72,8 +77,12 @@ Source: {#MyStageDir}\bin\64\QtOpenGL4.dll; DestDir: {app}\bin; Check: IsWin64()
 Source: {#MyStageDir}\bin\64\QtSvg4.dll; DestDir: {app}\bin; Check: IsWin64();
 Source: {#MyStageDir}\bin\64\QtWebKit4.dll; DestDir: {app}\bin; Check: IsWin64();
 Source: {#MyStageDir}\bin\64\QtXml4.dll; DestDir: {app}\bin; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\libmmd.dll; DestDir: {app}\bin; Check: IsWin64(); 
+Source: {#MyStageDir}\bin\64\svml_dispmd.dll; DestDir: {app}\bin; Check: IsWin64(); 
 Source: {#MyStageDir}\bin\64\msvcr100.dll; DestDir: {app}\bin; Check: InstallUserRuntime64(); 
 Source: {#MyStageDir}\bin\64\msvcp100.dll; DestDir: {app}\bin; Check: InstallUserRuntime64(); 
+
+; Common Resources
 Source: {#MyStageDir}\README.txt; DestDir: {app}
 Source: {#MyStageDir}\LICENSE.txt; DestDir: {app}
 Source: {#MyStageDir}\share\copasi\config\MIRIAMResources.xml; DestDir: {app}\share\copasi\config
