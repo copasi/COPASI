@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -68,10 +68,15 @@ QString CopasiFileDialog::getOpenFileName(QWidget * parent,
     QString * pSelectedFilter,
     QFileDialog::Options options)
 {
+  QString newFilter = filter;
+
+  if (filter.indexOf("(*)") < 0)
+    newFilter += ";;Any File (*)";
+
   QString newFile = QFileDialog::getOpenFileName(parent,
                     caption,
                     StartWith(startWith),
-                    filter,
+                    newFilter,
                     pSelectedFilter,
                     options);
 

@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <sbml/SBMLDocument.h>
 
@@ -398,44 +398,55 @@ void CopasiUI3Window::createActions()
   connect(mpaFunctionDBSave, SIGNAL(activated()), this, SLOT(slotFunctionDBSave()));
 }
 
-void CopasiUI3Window::slotFunctionDBSave(QString file)
+void CopasiUI3Window::slotFunctionDBSave(QString dbFile)
 {
   if (mCommitRequired)
     {
       mpDataModelGUI->commit();
     }
 
-  QString dbFile;
+  if (dbFile.isEmpty())
+    {
+      C_INT32 Answer = QMessageBox::No;
 
-  if (file == "")
-    dbFile =
-      CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                        QString::null, "XML Files (*.xml);;All Files (*)",
-                                        "Choose a file");
-  else
-    dbFile = file;
+      while (Answer == QMessageBox::No)
+        {
+          dbFile =
+            CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
+                                              "untitled.cpk", "COPASI Function DB (*.cpk)",
+                                              "Choose a file");
+
+          if (dbFile.isEmpty()) return;
+
+          // Checks whether the file exists
+          Answer = checkSelection(dbFile);
+
+          if (Answer == QMessageBox::Cancel) return;
+        }
+    }
 
   mpDataModelGUI->saveFunctionDB(TO_UTF8(dbFile));
 }
 
-void CopasiUI3Window::slotFunctionDBLoad(QString file)
+void CopasiUI3Window::slotFunctionDBLoad(QString dbFile)
 {
   if (mCommitRequired)
     {
       mpDataModelGUI->commit();
     }
 
-  QString dbFile;
+  if (dbFile.isEmpty())
+    {
+      dbFile =
+        CopasiFileDialog::getOpenFileName(this, "Open File Dialog",
+                                          QString::null, "COPASI Function DB (*.cpk)",
+                                          "Choose a file");
+    }
 
-  if (file == "")
-    dbFile =
-      CopasiFileDialog::getOpenFileName(this, "Open File Dialog",
-                                        QString::null, "XML Files (*.xml);;All Files (*)",
-                                        "Choose a file");
-  else
-    dbFile = file;
-
-  mpDataModelGUI->loadFunctionDB(TO_UTF8(dbFile));
+  if (!dbFile.isEmpty())
+    {
+      mpDataModelGUI->loadFunctionDB(TO_UTF8(dbFile));
+    }
 }
 
 void CopasiUI3Window::createToolBar()
@@ -1518,10 +1529,10 @@ void CopasiUI3Window::slotExportSBML()
 
       if ((*CCopasiRootContainer::getDatamodelList())[0]->getFileName() != "")
         Default
-          = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                      + CDirEntry::Separator
-                      + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                      + ".xml");
+        = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                    + CDirEntry::Separator
+                    + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                    + ".xml");
       else
         {
           Default = "untitled.xml";
@@ -1588,9 +1599,9 @@ void CopasiUI3Window::slotExportMathModel()
 
       if (pDataModel->getFileName() != "")
         Default
-          = FROM_UTF8(CDirEntry::dirName(pDataModel->getFileName())
-                      + CDirEntry::Separator
-                      + CDirEntry::baseName(pDataModel->getFileName()));
+        = FROM_UTF8(CDirEntry::dirName(pDataModel->getFileName())
+                    + CDirEntry::Separator
+                    + CDirEntry::baseName(pDataModel->getFileName()));
       else
         Default = "untitled.c";
 
@@ -1944,16 +1955,16 @@ void CopasiUI3Window::refreshWindowsMenu()
 
   // Re-initialize items the menus will always have
   mpWindowsMenu->clear();
-                               // COPASI main window
+  // COPASI main window
   QAction * pAction = new QAction(mWindows[0]->windowTitle(), mpWindowsActionGroup);
   mpWindowsMenu->addAction(pAction);
 
-  if(mWindows.count() > 1)
-  {
-    mpWindowsMenu->addSeparator();
-    mpWindowsMenu->addAction(mpaCloseAllWindows);
-    mpWindowsMenu->addSeparator();
-  }
+  if (mWindows.count() > 1)
+    {
+      mpWindowsMenu->addSeparator();
+      mpWindowsMenu->addAction(mpaCloseAllWindows);
+      mpWindowsMenu->addSeparator();
+    }
 
   // . . . for the secondary windows, also . . .
   for (int index = 1; index < mWindows.count(); ++index)
@@ -1996,7 +2007,7 @@ void CopasiUI3Window::refreshWindowsMenu()
 
 void CopasiUI3Window::slotCloseAllWindows()
 {
-                        // all except main window (index == 0)
+  // all except main window (index == 0)
   for (int index = mWindows.count() - 1; index >= 1 ; --index)
     {
       QMainWindow* window = mWindows[index];
@@ -3021,10 +3032,10 @@ void CopasiUI3Window::slotExportSEDML()
 
       if ((*CCopasiRootContainer::getDatamodelList())[0]->getFileName() != "")
         Default
-          = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                      + CDirEntry::Separator
-                      + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
-                      + ".xml");
+        = FROM_UTF8(CDirEntry::dirName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                    + CDirEntry::Separator
+                    + CDirEntry::baseName((*CCopasiRootContainer::getDatamodelList())[0]->getFileName())
+                    + ".xml");
       else
         {
           Default = "untitled.xml";
