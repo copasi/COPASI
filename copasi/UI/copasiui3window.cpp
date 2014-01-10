@@ -304,11 +304,11 @@ void CopasiUI3Window::createActions()
 
   mpaOpenCopasiFiles = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "COP&ASI Files...", this);
   connect(mpaOpenCopasiFiles, SIGNAL(activated()), this, SLOT(slotFileExamplesCopasiFiles()));
-  mpaOpenCopasiFiles->setShortcut(Qt::CTRL + Qt::Key_1);
+  // mpaOpenCopasiFiles->setShortcut(Qt::CTRL + Qt::Key_1);
 
   mpaOpenSBMLFiles = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "S&BML Files...", this);
   connect(mpaOpenSBMLFiles, SIGNAL(activated()), this, SLOT(slotFileExamplesSBMLFiles()));
-  mpaOpenSBMLFiles->setShortcut(Qt::CTRL + Qt::Key_2);
+  // mpaOpenSBMLFiles->setShortcut(Qt::CTRL + Qt::Key_2);
 
   mpaSave = new QAction(CQIconResource::icon(CQIconResource::fileSave), "&Save", this);
   connect(mpaSave, SIGNAL(activated()), this, SLOT(slotFileSave()));
@@ -367,15 +367,15 @@ void CopasiUI3Window::createActions()
 #ifdef COPASI_SEDML
   mpaOpenSEDMLFiles = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "S&EDML Files...", this);
   connect(mpaOpenSEDMLFiles, SIGNAL(activated()), this, SLOT(slotFileExamplesSEDMLFiles()));
-  mpaOpenSEDMLFiles->setShortcut(Qt::CTRL + Qt::Key_3);
+  // mpaOpenSEDMLFiles->setShortcut(Qt::CTRL + Qt::Key_3);
 
   mpaImportSEDML = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "&Import SEDML...", this);
   connect(mpaImportSEDML, SIGNAL(activated()), this, SLOT(slotImportSEDML()));
-  mpaImportSEDML->setShortcut(Qt::CTRL + Qt::Key_X);
+  // mpaImportSEDML->setShortcut(Qt::CTRL + Qt::Key_X);
 
   mpaExportSEDML = new QAction(CQIconResource::icon(CQIconResource::fileExport), "&Export SEDML...", this);
   connect(mpaExportSEDML, SIGNAL(activated()), this, SLOT(slotExportSEDML()));
-  mpaExportSEDML->setShortcut(Qt::CTRL + Qt::Key_Z);
+  // mpaExportSEDML->setShortcut(Qt::CTRL + Qt::Key_Z);
 #endif
   //     QAction* mpaObjectBrowser;
 
@@ -507,12 +507,16 @@ void CopasiUI3Window::createMenuBar()
   pFileMenu->addAction(mpaExportODE);
 
   //TODO SEDML
-  /*#ifdef COPASI_SEDML
-     pFileMenu->addSeparator();
-     pFileMenu->addAction(mpaImportSEDML);
-     pFileMenu->addAction(mpaExportSEDML);
+#ifdef COPASI_SEDML
+  pFileMenu->addSeparator();
+  mpMenuSEDMLSupport = pFileMenu->addMenu("SEDML Support");
+  mpMenuSEDMLSupport->addAction(mpaImportSEDML);
+  mpMenuSEDMLSupport->addAction(mpaExportSEDML);
+
+  mpMenuRecentSEDMLFiles = mpMenuSEDMLSupport->addMenu("Recent SEDML Files");
+  refreshRecentSEDMLFileMenu();
 #endif
-  */
+
 #ifdef WITH_MERGEMODEL
   pFileMenu->addAction(mpaAddModel);
   //pFileMenu->addAction(mpaMergeModels);
@@ -531,18 +535,6 @@ void CopasiUI3Window::createMenuBar()
   refreshRecentSBMLFileMenu();
 
   pFileMenu->addSeparator();
-
-  //TODO SEDML
-#ifdef COPASI_SEDML
-  mpMenuSEDMLSupport = pFileMenu->addMenu("SEDML Support");
-  mpMenuSEDMLSupport->addAction(mpaImportSEDML);
-  mpMenuSEDMLSupport->addAction(mpaExportSEDML);
-  mpMenuRecentSEDMLFiles = mpMenuSEDMLSupport->addMenu("Recent SEDML Files");
-  //  mpMenuRecentSEDMLFiles = pFileMenu->addMenu("Recent SEDML Files");
-  refreshRecentSEDMLFileMenu();
-
-  pFileMenu->addSeparator();
-#endif
 
   pFileMenu->addAction(mpaQuit);
 
