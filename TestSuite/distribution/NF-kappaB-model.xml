@@ -1,0 +1,1502 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., University of Heidelberg, and The University -->
+<!-- of Manchester. -->
+<!-- All rights reserved. -->
+
+<!-- Created by COPASI version 4.11.65+ (Source) on 2014-01-13 09:16 with libSBML version 5.9.0. -->
+<sbml xmlns="http://www.sbml.org/sbml/level2/version3" level="2" version="3">
+  <model metaid="COPASI0" id="NF_kB_signaling" name="NF-kB signaling">
+    <notes>
+      <html xmlns="http://www.w3.org/1999/xhtml">
+        <head>
+          <title xmlns="http://www.w3.org/1999/xhtml"/>
+          <meta name="qrichtext" content="1"/>
+        </head>
+        <body style="font-size:8pt;font-family:MS Shell Dlg">
+          <p style="margin-top:18px">
+            <span style="font-size:16pt;font-weight:600">Model of oscillating NF-kappaB signaling </span>
+          </p>
+          <p>This is a model of the NF-kappaB signaling pathway oscillations, as published by Nelson <span style="font-style:italic">et al.</span> (2004), following the one of Hoffman <span style="font-style:italic">et al.</span> (2002).</p>
+        <p style="margin-top:16px">
+          <span style="font-size:12pt;font-weight:600">References</span>
+        </p>
+        <ul type="disc">
+          <li>NELSON, D.E., IHEKWABA, A.E., et al.(2004). Oscillations in NF-kappaB signaling control the dynamics of gene expression. <span style="font-style:italic">Science</span> 306, 704-708.</li>
+        <li>HOFFMANN, A., LEVCHENKO, A., SCOTT, M. L. &amp; BALTIMORE, D. (2002). The IkappaB-NF-kappaB signaling module: temporal control and selective gene activation. <span style="font-style:italic">Science</span> 298, 1241-1245. </li>
+      <li>CHEN, L. F., FISCHLE, W., VERDIN, E. &amp; GREENE, W. C. (2001). Duration of nuclear NF-kappa B action regulated by reversible acetylation. <span style="font-style:italic">Science</span> 293, 1653-1657.</li>
+    <li>JENSEN, L. E. &amp; WHITEHEAD, A. S. (1998). Regulation of serum amyloid A protein expression during the acute-phase response. <span style="font-style:italic">Biochem J</span> 334, 489-503. </li>
+  <div/>
+</ul>
+</body>
+</html>
+</notes><annotation>
+  <COPASI xmlns="http://www.copasi.org/static/sbml">
+    <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <rdf:Description rdf:about="#COPASI0">
+        <dcterms:created>
+          <rdf:Description>
+            <dcterms:W3CDTF>2014-01-13T09:16:00Z</dcterms:W3CDTF>
+          </rdf:Description>
+        </dcterms:created>
+      </rdf:Description>
+    </rdf:RDF>
+  </COPASI>
+</annotation><listOfUnitDefinitions>
+  <unitDefinition id="volume" name="volume">
+    <listOfUnits>
+      <unit kind="litre" exponent="1" scale="-3" multiplier="1"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition id="substance" name="substance">
+    <listOfUnits>
+      <unit kind="mole" exponent="1" scale="-6" multiplier="1"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition id="unit_0">
+    <listOfUnits>
+      <unit kind="litre" exponent="1" scale="0" multiplier="0.001"/>
+      <unit kind="mole" exponent="-1" scale="0" multiplier="1e-006"/>
+      <unit kind="second" exponent="-1"/>
+    </listOfUnits>
+  </unitDefinition>
+  <unitDefinition id="unit_1">
+    <listOfUnits>
+      <unit kind="second" exponent="-1"/>
+    </listOfUnits>
+  </unitDefinition>
+</listOfUnitDefinitions><listOfCompartments>
+  <compartment id="compartment" name="compartment" spatialDimensions="3" size="1" constant="true"/>
+  <compartment id="cytoplasm" name="cytoplasm" spatialDimensions="3" size="1" constant="true"/>
+  <compartment id="nucleus" name="nucleus" spatialDimensions="3" size="1" constant="true"/>
+</listOfCompartments><listOfSpecies>
+  <species id="IkBa" name="IkBa" compartment="compartment" initialConcentration="0.189663657266628" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="NF_kB" name="NF-kB" compartment="compartment" initialConcentration="0.000250747062151931" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="IkBa_NF_kB" name="IkBa-NF-kB" compartment="compartment" initialConcentration="0.08333273236706" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="IkBb" name="IkBb" compartment="compartment" initialConcentration="0.0216350996043976" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="IkBb_NF_kB" name="IkBb-NF-kB" compartment="compartment" initialConcentration="0.0083048220137624" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="IkBe" name="IkBe" compartment="compartment" initialConcentration="0.0154362789312274" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="IkBe_NF_kB" name="IkBe-NF-kB" compartment="compartment" initialConcentration="0.00592535053790929" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="IKKIkBa" name="IKKIkBa" compartment="compartment" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="IKKIkBa_NF_kB" name="IKKIkBa-NF-kB" compartment="compartment" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="IKK" name="IKK" compartment="compartment" initialConcentration="0.0999999951844375" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="IKKIkBb" name="IKKIkBb" compartment="compartment" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="IKKIkBb_NF_kB" name="IKKIkBb-NF-kB" compartment="compartment" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="IKKIkBe" name="IKKIkBe" compartment="compartment" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="IKKIkBe_NF_kB" name="IKKIkBe-NF-kB" compartment="compartment" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="NF_kBn" name="NF-kBn" compartment="compartment" initialConcentration="0.000217021922577887" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="IkBan" name="IkBan" compartment="compartment" initialConcentration="0.188598260417932" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="IkBan_NF_kBn" name="IkBan-NF-kBn" compartment="compartment" initialConcentration="0.00143105862783168" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="IkBbn" name="IkBbn" compartment="compartment" initialConcentration="0.0165048345957078" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="IkBbn_NF_kBn" name="IkBbn-NF-kBn" compartment="compartment" initialConcentration="0.000314133612092734" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="IkBen" name="IkBen" compartment="compartment" initialConcentration="0.0117759213126679" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="IkBen_NF_kBn" name="IkBen-NF-kBn" compartment="compartment" initialConcentration="0.000224129037841269" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="IkBa_t" name="IkBa-t" compartment="compartment" initialConcentration="0.00550269692530644" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="IkBb_t" name="IkBb-t" compartment="compartment" initialConcentration="0.000635714255101065" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="IkBe_t" name="IkBe-t" compartment="compartment" initialConcentration="0.000453571406729412" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+  <species id="sink" name="sink" compartment="compartment" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="true"/>
+  <species id="source" name="source" compartment="compartment" initialConcentration="0.999999951844375" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="true"/>
+</listOfSpecies><listOfReactions>
+  <reaction id="IkBaNF_kB_association" name="IkBaNF-kB association" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBa" stoichiometry="1"/>
+      <speciesReference species="NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBa_NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBa </ci>
+          <ci> NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.5" units="unit_0"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBa_NF_kB_dissociation" name="IkBa-NF-kB dissociation" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBa_NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="NF_kB" stoichiometry="1"/>
+      <speciesReference species="IkBa" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBa_NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0005" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBb_NF_kB_association" name="IkBb-NF-kB association" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBb" stoichiometry="1"/>
+      <speciesReference species="NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBb_NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBb </ci>
+          <ci> NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.5" units="unit_0"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBb_NF_kB_dissociation" name="IkBb-NF-kB dissociation" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBb_NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="NF_kB" stoichiometry="1"/>
+      <speciesReference species="IkBb" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBb_NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0005" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBe_NF_kB_association" name="IkBe-NF-kB association" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBe" stoichiometry="1"/>
+      <speciesReference species="NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBe_NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBe </ci>
+          <ci> NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.5" units="unit_0"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBe_NF_kB_dissociation" name="IkBe-NF-kB dissociation" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBe_NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="NF_kB" stoichiometry="1"/>
+      <speciesReference species="IkBe" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBe_NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0005" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKKIkBa_NF_kB_association" name="IKKIkBa-NF-kB association" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKKIkBa" stoichiometry="1"/>
+      <speciesReference species="NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IKKIkBa_NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKKIkBa </ci>
+          <ci> NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.5" units="unit_0"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKKIkBa_NF_kB_dissociation" name="IKKIkBa-NF-kB dissociation" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKKIkBa_NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="NF_kB" stoichiometry="1"/>
+      <speciesReference species="IKKIkBa" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKKIkBa_NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0005" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKKIkBa_NF_kB_catalysis" name="IKKIkBa-NF-kB catalysis" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKKIkBa_NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IKK" stoichiometry="1"/>
+      <speciesReference species="NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKKIkBa_NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0204" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKKIkBb_NF_kB_association" name="IKKIkBb-NF-kB association" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKKIkBb" stoichiometry="1"/>
+      <speciesReference species="NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IKKIkBb_NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKKIkBb </ci>
+          <ci> NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.5" units="unit_0"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKKIkBb_NF_kB_dissociation" name="IKKIkBb-NF-kB dissociation" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKKIkBb_NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="NF_kB" stoichiometry="1"/>
+      <speciesReference species="IKKIkBb" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKKIkBb_NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0005" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKKIkBb_NF_kB_catalysis" name="IKKIkBb-NF-kB catalysis" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKKIkBb_NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IKK" stoichiometry="1"/>
+      <speciesReference species="NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKKIkBb_NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0075" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKKIkBe_NF_kB_association" name="IKKIkBe-NF-kB association" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKKIkBe" stoichiometry="1"/>
+      <speciesReference species="NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IKKIkBe_NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKKIkBe </ci>
+          <ci> NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.5" units="unit_0"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKKIkBe_NF_kB_dissociation" name="IKKIkBe-NF-kB dissociation" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKKIkBe_NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="NF_kB" stoichiometry="1"/>
+      <speciesReference species="IKKIkBe" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKKIkBe_NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0005" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKKIkBe_NF_kB_catalysis" name="IKKIkBe-NF-kB catalysis" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKKIkBe_NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IKK" stoichiometry="1"/>
+      <speciesReference species="NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKKIkBe_NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.011" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBa_constituitive_degradation__complexed_to_NF_kB" name="IkBa constituitive degradation (complexed to NF-kB)" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBa_NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBa_NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="2.25e-005" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBb_constituitive_degradation__complexed_to_NF_kB" name="IkBb constituitive degradation (complexed to NF-kB)" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBb_NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBb_NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="2.25e-005" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBe_constituitive_degradation__complexed_to_NF_kB" name="IkBe constituitive degradation (complexed to NF-kB)" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBe_NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBe_NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="2.25e-005" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="NF_kB_nuclear_import" name="NF-kB nuclear import" reversible="false">
+    <listOfReactants>
+      <speciesReference species="NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="NF_kBn" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.09" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="NF_kB_nuclear_export" name="NF-kB nuclear export" reversible="false">
+    <listOfReactants>
+      <speciesReference species="NF_kBn" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> NF_kBn </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="8e-005" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBa_NF_kB_nuclear_association" name="IkBa-NF-kB nuclear association" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBan" stoichiometry="1"/>
+      <speciesReference species="NF_kBn" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBan_NF_kBn" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBan </ci>
+          <ci> NF_kBn </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.5" units="unit_0"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBa_NF_kB_nuclear_dissociation" name="IkBa-NF-kB nuclear dissociation" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBan_NF_kBn" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="NF_kBn" stoichiometry="1"/>
+      <speciesReference species="IkBan" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBan_NF_kBn </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0005" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBb_NF_kB_nuclear_association" name="IkBb-NF-kB nuclear association" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBbn" stoichiometry="1"/>
+      <speciesReference species="NF_kBn" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBbn_NF_kBn" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBbn </ci>
+          <ci> NF_kBn </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.5" units="unit_0"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBb_NF_kB_nuclear_dissociation" name="IkBb-NF-kB nuclear dissociation" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBbn_NF_kBn" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="NF_kBn" stoichiometry="1"/>
+      <speciesReference species="IkBbn" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBbn_NF_kBn </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0005" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBe_NF_kB_nuclear_association" name="IkBe-NF-kB nuclear association" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBen" stoichiometry="1"/>
+      <speciesReference species="NF_kBn" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBen_NF_kBn" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBen </ci>
+          <ci> NF_kBn </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.5" units="unit_0"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBe_NF_kB_nuclear_dissociation" name="IkBe-NF-kB nuclear dissociation" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBen_NF_kBn" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="NF_kBn" stoichiometry="1"/>
+      <speciesReference species="IkBen" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBen_NF_kBn </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0005" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="constituitive_IkBa_mRNA_synthesis" name="constituitive IkBa mRNA synthesis" reversible="false">
+    <listOfReactants>
+      <speciesReference species="source" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBa_t" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> source </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="1.54e-006" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBa_Inducible_mRNA_synthesis" name="IkBa Inducible mRNA synthesis" reversible="false">
+    <listOfReactants>
+      <speciesReference species="NF_kBn" stoichiometry="2"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBa_t" stoichiometry="1"/>
+      <speciesReference species="NF_kBn" stoichiometry="2"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <apply>
+            <power/>
+            <ci> NF_kBn </ci>
+            <cn> 2 </cn>
+          </apply>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0165" units="unit_0"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBa_mRNA_degradation" name="IkBa mRNA degradation" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBa_t" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="sink" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBa_t </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.00028" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="constituitive_IkBb_mRNA_synthesis" name="constituitive IkBb mRNA synthesis" reversible="false">
+    <listOfReactants>
+      <speciesReference species="source" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBb_t" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> source </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="1.78e-007" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBb_mRNA_degradation" name="IkBb mRNA degradation" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBb_t" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="sink" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBb_t </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.00028" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="constituitive_IkBe_mRNA_synthesis" name="constituitive IkBe mRNA synthesis" reversible="false">
+    <listOfReactants>
+      <speciesReference species="source" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBe_t" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> source </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="1.27e-007" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBe_mRNA_degradation" name="IkBe mRNA degradation" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBe_t" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="sink" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBe_t </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.00028" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKKIkBa_association" name="IKKIkBa association" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKK" stoichiometry="1"/>
+      <speciesReference species="IkBa" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IKKIkBa" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKK </ci>
+          <ci> IkBa </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0225" units="unit_0"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKKIkBa_dissociation" name="IKKIkBa dissociation" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKKIkBa" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IKK" stoichiometry="1"/>
+      <speciesReference species="IkBa" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKKIkBa </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.00125" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBa_translation_rate" name="IkBa translation rate" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBa_t" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBa" stoichiometry="1"/>
+      <speciesReference species="IkBa_t" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBa_t </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.00408" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="constitutive_IkBa_degradation__free" name="constitutive IkBa degradation (free)" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBa" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="sink" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBa </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.000113" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBa_nuclear_import" name="IkBa nuclear import" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBa" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBan" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBa </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0003" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBa_nuclear_export" name="IkBa nuclear export" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBan" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBa" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBan </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0002" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKKIkBb_association" name="IKKIkBb association" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKK" stoichiometry="1"/>
+      <speciesReference species="IkBb" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IKKIkBb" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKK </ci>
+          <ci> IkBb </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.006" units="unit_0"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKKIkBb_dissociation" name="IKKIkBb dissociation" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKKIkBb" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IKK" stoichiometry="1"/>
+      <speciesReference species="IkBb" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKKIkBb </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.00175" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBb_translation_rate" name="IkBb translation rate" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBb_t" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBb" stoichiometry="1"/>
+      <speciesReference species="IkBb_t" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBb_t </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.00408" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="constitutive_IkBb_degradation__free" name="constitutive IkBb degradation (free)" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBb" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="sink" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBb </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.000113" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBb_nuclear_import" name="IkBb nuclear import" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBb" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBbn" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBb </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.00015" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBb_nuclear_export" name="IkBb nuclear export" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBbn" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBb" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBbn </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0001" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKKIkBe_association" name="IKKIkBe association" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKK" stoichiometry="1"/>
+      <speciesReference species="IkBe" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IKKIkBe" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKK </ci>
+          <ci> IkBe </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.009" units="unit_0"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKKIkBe_dissociation" name="IKKIkBe dissociation" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKKIkBe" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IKK" stoichiometry="1"/>
+      <speciesReference species="IkBe" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKKIkBe </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.00175" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBe_translation_rate" name="IkBe translation rate" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBe_t" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBe" stoichiometry="1"/>
+      <speciesReference species="IkBe_t" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBe_t </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.00408" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="constitutive_IkBe_degradation__free" name="constitutive IkBe degradation (free)" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBe" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="sink" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBe </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.000113" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBe_nuclear_import" name="IkBe nuclear import" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBe" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBen" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBe </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.00015" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBe_nuclear_export" name="IkBe nuclear export" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBen" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBe" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBen </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0001" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKK_IkBaNF_kB_association" name="IKK-IkBaNF-kB association" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKK" stoichiometry="1"/>
+      <speciesReference species="IkBa_NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IKKIkBa_NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKK </ci>
+          <ci> IkBa_NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.185" units="unit_0"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKK_IkBaNF_kB_dissociation" name="IKK-IkBaNF-kB dissociation" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKKIkBa_NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IKK" stoichiometry="1"/>
+      <speciesReference species="IkBa_NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKKIkBa_NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.00125" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBa_NF_kB_nuclear_export" name="IkBa-NF-kB nuclear export" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBan_NF_kBn" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBa_NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBan_NF_kBn </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0138" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKK_IkBbNF_kB_association" name="IKK-IkBbNF-kB association" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKK" stoichiometry="1"/>
+      <speciesReference species="IkBb_NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IKKIkBb_NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKK </ci>
+          <ci> IkBb_NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.048" units="unit_0"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKK_IkBbNF_kB_dissociation" name="IKK-IkBbNF-kB dissociation" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKKIkBb_NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IKK" stoichiometry="1"/>
+      <speciesReference species="IkBb_NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKKIkBb_NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.00175" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBb_NF_kB_nuclear_export" name="IkBb-NF-kB nuclear export" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBbn_NF_kBn" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBb_NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBbn_NF_kBn </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0052" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKK_IkBeNF_kB_association" name="IKK-IkBeNF-kB association" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKK" stoichiometry="1"/>
+      <speciesReference species="IkBe_NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IKKIkBe_NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKK </ci>
+          <ci> IkBe_NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.07" units="unit_0"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKK_IkBeNF_kB_dissociation" name="IKK-IkBeNF-kB dissociation" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKKIkBe_NF_kB" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IKK" stoichiometry="1"/>
+      <speciesReference species="IkBe_NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKKIkBe_NF_kB </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.00175" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IkBe_NF_kB_nuclear_export" name="IkBe-NF-kB nuclear export" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IkBen_NF_kBn" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IkBe_NF_kB" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IkBen_NF_kBn </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0052" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="slow_adaptation" name="slow adaptation " reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKK" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="sink" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKK </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.00012" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKKIkBa_catalysis" name="IKKIkBa catalysis" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKKIkBa" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IKK" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKKIkBa </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.00407" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKKIkBb_catalysis" name="IKKIkBb catalysis" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKKIkBb" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IKK" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKKIkBb </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0015" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+  <reaction id="IKKIkBe_catalysis" name="IKKIkBe catalysis" reversible="false">
+    <listOfReactants>
+      <speciesReference species="IKKIkBe" stoichiometry="1"/>
+    </listOfReactants>
+    <listOfProducts>
+      <speciesReference species="IKK" stoichiometry="1"/>
+    </listOfProducts>
+    <kineticLaw>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci> compartment </ci>
+          <ci> k1 </ci>
+          <ci> IKKIkBe </ci>
+        </apply>
+      </math>
+      <listOfParameters>
+        <parameter id="k1" name="k1" value="0.0022" units="unit_1"/>
+      </listOfParameters>
+    </kineticLaw>
+  </reaction>
+</listOfReactions>
+</model>
+</sbml>

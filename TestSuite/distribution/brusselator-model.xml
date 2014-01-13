@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., University of Heidelberg, and The University -->
+<!-- of Manchester. -->
+<!-- All rights reserved. -->
+
+<!-- Created by COPASI version 4.11.65+ (Source) on 2014-01-13 09:11 with libSBML version 5.9.0. -->
+<sbml xmlns="http://www.sbml.org/sbml/level2/version3" level="2" version="3">
+  <model metaid="COPASI0" id="The_Brusselator" name="The Brusselator">
+    <notes>
+      <html xmlns="http://www.w3.org/1999/xhtml">
+        <head>
+          <title xmlns="http://www.w3.org/1999/xhtml"/>
+          <meta name="qrichtext" content="1"/>
+        </head>
+        <body style="font-size:8pt;font-family:MS Shell Dlg">
+          <p>The famous Brusselator model in which a chemical species X catalyses its own formation. In a certain region of parameter space the Brusselator can function in a limit cycle regime around an unstable steady state. Run this simulation and then check the report file to see how Gepasi can find an unstable steady state, and calculate the eigenvalues of the Jacobian matrix. </p>
+        </body>
+      </html>
+    </notes>
+    <annotation>
+      <COPASI xmlns="http://www.copasi.org/static/sbml">
+        <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+          <rdf:Description rdf:about="#COPASI0">
+            <dcterms:created>
+              <rdf:Description>
+                <dcterms:W3CDTF>2014-01-13T09:11:16Z</dcterms:W3CDTF>
+              </rdf:Description>
+            </dcterms:created>
+          </rdf:Description>
+        </rdf:RDF>
+      </COPASI>
+    </annotation>
+    <listOfUnitDefinitions>
+      <unitDefinition id="volume" name="volume">
+        <listOfUnits>
+          <unit kind="litre" exponent="1" scale="-3" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="substance" name="substance">
+        <listOfUnits>
+          <unit kind="mole" exponent="1" scale="-3" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="unit_0">
+        <listOfUnits>
+          <unit kind="second" exponent="-1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="unit_1">
+        <listOfUnits>
+          <unit kind="litre" exponent="2" scale="0" multiplier="0.001"/>
+          <unit kind="mole" exponent="-2" scale="0" multiplier="0.001"/>
+          <unit kind="second" exponent="-1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="unit_2">
+        <listOfUnits>
+          <unit kind="litre" exponent="1" scale="0" multiplier="0.001"/>
+          <unit kind="mole" exponent="-1" scale="0" multiplier="0.001"/>
+          <unit kind="second" exponent="-1"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="compartment" name="compartment" spatialDimensions="3" size="1" constant="true"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="X" name="X" compartment="compartment" initialConcentration="2.99999578721311" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="Y" name="Y" compartment="compartment" initialConcentration="2.99999578721311" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="A" name="A" compartment="compartment" initialConcentration="0.499999851381779" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="true"/>
+      <species id="B" name="B" compartment="compartment" initialConcentration="2.99999578721311" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="true"/>
+      <species id="D" name="D" compartment="compartment" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="true"/>
+      <species id="E" name="E" compartment="compartment" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="true"/>
+    </listOfSpecies>
+    <listOfReactions>
+      <reaction id="R1" name="R1" reversible="false">
+        <listOfReactants>
+          <speciesReference species="A" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="X" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> k1 </ci>
+              <ci> A </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" name="k1" value="1" units="unit_0"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R2" name="R2" reversible="false">
+        <listOfReactants>
+          <speciesReference species="X" stoichiometry="2"/>
+          <speciesReference species="Y" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="X" stoichiometry="3"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> k1 </ci>
+              <apply>
+                <power/>
+                <ci> X </ci>
+                <cn> 2 </cn>
+              </apply>
+              <ci> Y </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" name="k1" value="1" units="unit_1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R3" name="R3" reversible="false">
+        <listOfReactants>
+          <speciesReference species="X" stoichiometry="1"/>
+          <speciesReference species="B" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Y" stoichiometry="1"/>
+          <speciesReference species="D" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> k1 </ci>
+              <ci> X </ci>
+              <ci> B </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" name="k1" value="1" units="unit_2"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R4" name="R4" reversible="false">
+        <listOfReactants>
+          <speciesReference species="X" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="E" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> k1 </ci>
+              <ci> X </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" name="k1" value="1" units="unit_0"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

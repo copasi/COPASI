@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by libSedML v1.1.5100.14017 see http://libsedml.sf.net -->
+<sedML level="1" version="1" xmlns="http://sed-ml.org/">
+  <listOfSimulations>
+    <uniformTimeCourse id="sim1" initialTime="0" outputStartTime="0" outputEndTime="21600" numberOfPoints="200">
+      <algorithm kisaoID="KISAO:0000019" />
+    </uniformTimeCourse>
+  </listOfSimulations>
+  <listOfModels>
+    <model id="model1" language="urn:sedml:language:sbml" source="NF-kappaB-model.xml" />
+  </listOfModels>
+  <listOfTasks>
+    <task id="task1" modelReference="model1" simulationReference="sim1" />
+  </listOfTasks>
+  <listOfDataGenerators>
+    <dataGenerator id="time" name="time">
+      <listOfVariables>
+        <variable id="var_time" name="time" taskReference="task1" symbol="urn:sedml:symbol:time" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> var_time </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IkBa_1" name="IkBa_1">
+      <listOfVariables>
+        <variable id="p1_IkBa" name="IkBa" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IkBa']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IkBa </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="NF_kB_2" name="NF_kB_2">
+      <listOfVariables>
+        <variable id="p1_NF_kB" name="NF_kB" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='NF_kB']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_NF_kB </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IkBa_NF_kB_3" name="IkBa_NF_kB_3">
+      <listOfVariables>
+        <variable id="p1_IkBa_NF_kB" name="IkBa_NF_kB" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IkBa_NF_kB']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IkBa_NF_kB </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IkBb_4" name="IkBb_4">
+      <listOfVariables>
+        <variable id="p1_IkBb" name="IkBb" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IkBb']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IkBb </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IkBb_NF_kB_5" name="IkBb_NF_kB_5">
+      <listOfVariables>
+        <variable id="p1_IkBb_NF_kB" name="IkBb_NF_kB" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IkBb_NF_kB']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IkBb_NF_kB </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IkBe_6" name="IkBe_6">
+      <listOfVariables>
+        <variable id="p1_IkBe" name="IkBe" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IkBe']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IkBe </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IkBe_NF_kB_7" name="IkBe_NF_kB_7">
+      <listOfVariables>
+        <variable id="p1_IkBe_NF_kB" name="IkBe_NF_kB" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IkBe_NF_kB']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IkBe_NF_kB </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IKKIkBa_8" name="IKKIkBa_8">
+      <listOfVariables>
+        <variable id="p1_IKKIkBa" name="IKKIkBa" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IKKIkBa']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IKKIkBa </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IKKIkBa_NF_kB_9" name="IKKIkBa_NF_kB_9">
+      <listOfVariables>
+        <variable id="p1_IKKIkBa_NF_kB" name="IKKIkBa_NF_kB" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IKKIkBa_NF_kB']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IKKIkBa_NF_kB </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IKK_10" name="IKK_10">
+      <listOfVariables>
+        <variable id="p1_IKK" name="IKK" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IKK']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IKK </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IKKIkBb_11" name="IKKIkBb_11">
+      <listOfVariables>
+        <variable id="p1_IKKIkBb" name="IKKIkBb" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IKKIkBb']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IKKIkBb </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IKKIkBb_NF_kB_12" name="IKKIkBb_NF_kB_12">
+      <listOfVariables>
+        <variable id="p1_IKKIkBb_NF_kB" name="IKKIkBb_NF_kB" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IKKIkBb_NF_kB']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IKKIkBb_NF_kB </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IKKIkBe_13" name="IKKIkBe_13">
+      <listOfVariables>
+        <variable id="p1_IKKIkBe" name="IKKIkBe" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IKKIkBe']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IKKIkBe </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IKKIkBe_NF_kB_14" name="IKKIkBe_NF_kB_14">
+      <listOfVariables>
+        <variable id="p1_IKKIkBe_NF_kB" name="IKKIkBe_NF_kB" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IKKIkBe_NF_kB']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IKKIkBe_NF_kB </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="NF_kBn_15" name="NF_kBn_15">
+      <listOfVariables>
+        <variable id="p1_NF_kBn" name="NF_kBn" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='NF_kBn']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_NF_kBn </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IkBan_16" name="IkBan_16">
+      <listOfVariables>
+        <variable id="p1_IkBan" name="IkBan" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IkBan']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IkBan </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IkBan_NF_kBn_17" name="IkBan_NF_kBn_17">
+      <listOfVariables>
+        <variable id="p1_IkBan_NF_kBn" name="IkBan_NF_kBn" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IkBan_NF_kBn']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IkBan_NF_kBn </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IkBbn_18" name="IkBbn_18">
+      <listOfVariables>
+        <variable id="p1_IkBbn" name="IkBbn" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IkBbn']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IkBbn </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IkBbn_NF_kBn_19" name="IkBbn_NF_kBn_19">
+      <listOfVariables>
+        <variable id="p1_IkBbn_NF_kBn" name="IkBbn_NF_kBn" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IkBbn_NF_kBn']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IkBbn_NF_kBn </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IkBen_20" name="IkBen_20">
+      <listOfVariables>
+        <variable id="p1_IkBen" name="IkBen" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IkBen']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IkBen </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IkBen_NF_kBn_21" name="IkBen_NF_kBn_21">
+      <listOfVariables>
+        <variable id="p1_IkBen_NF_kBn" name="IkBen_NF_kBn" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IkBen_NF_kBn']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IkBen_NF_kBn </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IkBa_t_22" name="IkBa_t_22">
+      <listOfVariables>
+        <variable id="p1_IkBa_t" name="IkBa_t" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IkBa_t']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IkBa_t </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IkBb_t_23" name="IkBb_t_23">
+      <listOfVariables>
+        <variable id="p1_IkBb_t" name="IkBb_t" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IkBb_t']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IkBb_t </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IkBe_t_24" name="IkBe_t_24">
+      <listOfVariables>
+        <variable id="p1_IkBe_t" name="IkBe_t" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IkBe_t']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_IkBe_t </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="IkBa_t_1" name="IkBa_t_1">
+      <listOfVariables>
+        <variable id="p2_IkBa_t" name="IkBa_t" taskReference="task1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='IkBa_t']" />
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p2_IkBa_t </ci>
+      </math>
+    </dataGenerator>
+  </listOfDataGenerators>
+  <listOfOutputs>
+    <plot2D id="plot1" name="Trajectory">
+      <listOfCurves>
+        <curve id="curve_0" logX="false" logY="false" xDataReference="time" yDataReference="IkBa_1" />
+        <curve id="curve_1" logX="false" logY="false" xDataReference="time" yDataReference="NF_kB_2" />
+        <curve id="curve_2" logX="false" logY="false" xDataReference="time" yDataReference="IkBa_NF_kB_3" />
+        <curve id="curve_3" logX="false" logY="false" xDataReference="time" yDataReference="IkBb_4" />
+        <curve id="curve_4" logX="false" logY="false" xDataReference="time" yDataReference="IkBb_NF_kB_5" />
+        <curve id="curve_5" logX="false" logY="false" xDataReference="time" yDataReference="IkBe_6" />
+        <curve id="curve_6" logX="false" logY="false" xDataReference="time" yDataReference="IkBe_NF_kB_7" />
+        <curve id="curve_7" logX="false" logY="false" xDataReference="time" yDataReference="IKKIkBa_8" />
+        <curve id="curve_8" logX="false" logY="false" xDataReference="time" yDataReference="IKKIkBa_NF_kB_9" />
+        <curve id="curve_9" logX="false" logY="false" xDataReference="time" yDataReference="IKK_10" />
+        <curve id="curve_10" logX="false" logY="false" xDataReference="time" yDataReference="IKKIkBb_11" />
+        <curve id="curve_11" logX="false" logY="false" xDataReference="time" yDataReference="IKKIkBb_NF_kB_12" />
+        <curve id="curve_12" logX="false" logY="false" xDataReference="time" yDataReference="IKKIkBe_13" />
+        <curve id="curve_13" logX="false" logY="false" xDataReference="time" yDataReference="IKKIkBe_NF_kB_14" />
+        <curve id="curve_14" logX="false" logY="false" xDataReference="time" yDataReference="NF_kBn_15" />
+        <curve id="curve_15" logX="false" logY="false" xDataReference="time" yDataReference="IkBan_16" />
+        <curve id="curve_16" logX="false" logY="false" xDataReference="time" yDataReference="IkBan_NF_kBn_17" />
+        <curve id="curve_17" logX="false" logY="false" xDataReference="time" yDataReference="IkBbn_18" />
+        <curve id="curve_18" logX="false" logY="false" xDataReference="time" yDataReference="IkBbn_NF_kBn_19" />
+        <curve id="curve_19" logX="false" logY="false" xDataReference="time" yDataReference="IkBen_20" />
+        <curve id="curve_20" logX="false" logY="false" xDataReference="time" yDataReference="IkBen_NF_kBn_21" />
+        <curve id="curve_21" logX="false" logY="false" xDataReference="time" yDataReference="IkBa_t_22" />
+        <curve id="curve_22" logX="false" logY="false" xDataReference="time" yDataReference="IkBb_t_23" />
+        <curve id="curve_23" logX="false" logY="false" xDataReference="time" yDataReference="IkBe_t_24" />
+      </listOfCurves>
+    </plot2D>
+    <plot2D id="plot2" name="phase-space diagram">
+      <listOfCurves>
+        <curve id="curve_24" logX="false" logY="false" xDataReference="IkBa_1" yDataReference="IkBa_t_1" />
+      </listOfCurves>
+    </plot2D>
+  </listOfOutputs>
+</sedML>
