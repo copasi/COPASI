@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -182,7 +182,7 @@ bool CQFittingResult::enterProtected()
         }
 
       //3rd column: start value
-      pItem = new QTableWidgetItem(QString::number(current->getStartValue()));
+      pItem = new QTableWidgetItem(QString::number(current->getLastStartValue()));
       pItem->setForeground(QColor(120, 120, 140));
       mpParameters->setItem((int) i, 2, pItem);
 
@@ -419,7 +419,7 @@ void CQFittingResult::slotSave(void)
 
   if (file.fail()) return;
 
-  size_t i, imax;
+  int i, imax;
 
   // The global result and statistics
   file << "Objective Value\tRoot Mean Square\tStandard Deviation" << std::endl;
@@ -432,101 +432,73 @@ void CQFittingResult::slotSave(void)
   const C_FLOAT64 & ExecutionTime = mpProblem->getExecutionTime();
   file << FunctionEvaluations << "\t";
   file << ExecutionTime << "\t";
-  file << FunctionEvaluations / ExecutionTime << std::endl;
+  file << FunctionEvaluations / ExecutionTime << std::endl << std::endl;
 
-  // Set up the parameters table
-  file << std::endl << "Parameters:" << std::endl;
-  file << "Parameter\tValue\tStd. Deviation\tCoeff. of Variation [%]\tGradient" << std::endl;
-
-  // Loop over the optimization items
-  const std::vector< COptItem * > & Items = mpProblem->getOptItemList();
-  const CVector< C_FLOAT64 > & Solutions = mpProblem->getSolutionVariables();
-  const CVector< C_FLOAT64 > & StdDeviations = mpProblem->getVariableStdDeviations();
-  const CVector< C_FLOAT64 > & Gradients = mpProblem->getVariableGradients();
-
-  imax = Items.size();
-
-  if (mpProblem->getFunctionEvaluations() == 0)
-    imax = 0;
-
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
-
-  for (i = 0; i != imax; i++)
+  if (mpParameters->isEnabled())
     {
-      const CCopasiObject *pObject =
-        pDataModel->getDataObject(Items[i]->getObjectCN());
+      // Set up the parameters table
+      file << "Parameters:" << std::endl;
+      file << "Parameter\tLower Bound\tStart Value\tValue\tUpper Bound\tStd. Deviation\tCoeff. of Variation [%]\tGradient" << std::endl;
 
-      if (pObject)
+      // Loop over the optimization items
+      imax = mpParameters->rowCount();
+
+      for (i = 0; i != imax; i++)
         {
-          std::string Experiments =
-            static_cast<CFitItem *>(Items[i])->getExperiments();
-
-          if (Experiments != "")
-            Experiments = "; {" + Experiments + "}";
-
-          file << pObject->getObjectDisplayName() << Experiments << "\t";
+          file << TO_UTF8(mpParameters->item((int) i, 0)->text()) << "\t";
+          file << TO_UTF8(mpParameters->item((int) i, 1)->text()) << "\t";
+          file << TO_UTF8(mpParameters->item((int) i, 2)->text()) << "\t";
+          file << TO_UTF8(mpParameters->item((int) i, 3)->text()) << "\t";
+          file << TO_UTF8(mpParameters->item((int) i, 4)->text()) << "\t";
+          file << TO_UTF8(mpParameters->item((int) i, 5)->text()) << "\t";
+          file << TO_UTF8(mpParameters->item((int) i, 6)->text()) << "\t";
+          file << TO_UTF8(mpParameters->item((int) i, 7)->text()) << std::endl;
         }
-      else
-        file << "Not Found\t";
 
-      const C_FLOAT64 & Solution = Solutions[i];
-      file << Solution << "\t";
-      const C_FLOAT64 & StdDeviation = StdDeviations[i];
-      file << StdDeviation << "\t";
-      file << fabs(100.0 * StdDeviation / Solution) << "\t";
-      file << Gradients[i] << std::endl;
+      file << std::endl;
     }
 
-  // Set up the experiments table
-  file << std::endl << "Experiments:" << std::endl;
-  file << "Experiment\tObjective Value\tRoot Mean Square\tError Mean\tError Mean Std. Deviation" << std::endl;
-
-  // Loop over the experiments
-  const CExperimentSet & Experiments = mpProblem->getExperiementSet();
-
-  imax = Experiments.getExperimentCount();
-
-  if (mpProblem->getFunctionEvaluations() == 0)
-    imax = 0;
-
-  for (i = 0; i != imax; i++)
+  if (mpExperiments->isEnabled())
     {
-      const CExperiment & Experiment = * Experiments.getExperiment(i);
-      file << Experiment.getObjectName() << "\t";
-      file << Experiment.getObjectiveValue() << "\t";
-      file << Experiment.getRMS() << "\t";
-      file << Experiment.getErrorMean() << "\t";
-      file << Experiment.getErrorMeanSD() << std::endl;
+      // Set up the experiments table
+      file << "Experiments:" << std::endl;
+      file << "Experiment\tObjective Value\tRoot Mean Square\tError Mean\tError Mean Std. Deviation" << std::endl;
+
+      // Loop over the experiments
+      imax = mpExperiments->rowCount();
+
+      for (i = 0; i != imax; i++)
+        {
+          file << TO_UTF8(mpExperiments->item((int) i, 0)->text()) << "\t";
+          file << TO_UTF8(mpExperiments->item((int) i, 1)->text()) << "\t";
+          file << TO_UTF8(mpExperiments->item((int) i, 2)->text()) << "\t";
+          file << TO_UTF8(mpExperiments->item((int) i, 3)->text()) << "\t";
+          file << TO_UTF8(mpExperiments->item((int) i, 4)->text()) << std::endl;
+        }
+
+      file << std::endl;
     }
 
-  // Set up the fitted values table
-  file << std::endl << "Fitted Values:" << std::endl;
-  file << "Fitted Value\tObjective Value\tRoot Mean Square\tError Mean\tError Mean Std. Deviation" << std::endl;
-
-  // Loop over the fitted values objects
-  imax = Experiments.getDependentObjects().size();
-
-  if (mpProblem->getFunctionEvaluations() == 0)
-    imax = 0;
-
-  for (i = 0; i != imax; i++)
+  if (mpValues->isEnabled())
     {
-      const CCopasiObject * pObject = Experiments.getDependentObjects()[i];
+      // Set up the fitted values table
+      file << "Fitted Values:" << std::endl;
+      file << "Fitted Value\tObjective Value\tRoot Mean Square\tError Mean\tError Mean Std. Deviation" << std::endl;
 
-      if (pObject)
-        file << pObject->getObjectDisplayName() << "\t";
-      else
-        file << "Not Found\t";
+      // Loop over the fitted values objects
+      imax = mpValues->rowCount();
 
-      file << Experiments.getDependentObjectiveValues()[i] << "\t";
-      file << Experiments.getDependentRMS()[i] << "\t";
-      file << Experiments.getDependentErrorMean()[i] << "\t";
-      file << Experiments.getDependentErrorMeanSD()[i] << std::endl;
+      for (i = 0; i != imax; i++)
+        {
+          file << TO_UTF8(mpValues->item((int) i, 0)->text()) << "\t";
+          file << TO_UTF8(mpValues->item((int) i, 1)->text()) << "\t";
+          file << TO_UTF8(mpValues->item((int) i, 2)->text()) << "\t";
+          file << TO_UTF8(mpValues->item((int) i, 3)->text()) << "\t";
+          file << TO_UTF8(mpValues->item((int) i, 4)->text()) << std::endl;
+        }
+
+      file << std::endl;
     }
-
-  file << std::endl;
 
   // Save the parameter correlations
   file << mpProblem->getCorrelations() << std::endl;
@@ -547,61 +519,49 @@ void CQFittingResult::slotSave(void)
   file << mpProblem->getScaledFisherInformationEigenvalues() << std::endl;
 
   // Save the scaled Fisher information Eigenvectors
-  file << mpProblem->getScaledFisherInformationEigenvectors() << std::endl;
+  file << mpProblem->getScaledFisherInformationEigenvectors() << std::endl << std::endl;
 
-  const CCrossValidationSet & CrossValidations = mpProblem->getCrossValidationSet();
-  imax = CrossValidations.getExperimentCount();
-
-  if (mpProblem->getFunctionEvaluations() == 0)
-    imax = 0;
-
-  if (imax)
+  if (mpValues->isEnabled())
     {
       // Set up the cross validations table
-      file << std::endl << "Validations:" << std::endl;
+      file << "Validations:" << std::endl;
       file << "Validation Experiment\t Objective Value\tRoot Mean Square\tError Mean\tError Mean Std. Deviation" << std::endl;
 
-      // Loop over the cross validations
+      // Loop over the experiments
+      imax = mpCrossValidations->rowCount();
+
       for (i = 0; i != imax; i++)
         {
-          const CExperiment & Experiment = * CrossValidations.getExperiment(i);
-          file << Experiment.getObjectName() << "\t";
-          file << Experiment.getObjectiveValue() << "\t";
-          file << Experiment.getRMS() << "\t";
-          file << Experiment.getErrorMean() << "\t";
-          file << Experiment.getErrorMeanSD() << std::endl;
+          file << TO_UTF8(mpCrossValidations->item((int) i, 0)->text()) << "\t";
+          file << TO_UTF8(mpCrossValidations->item((int) i, 1)->text()) << "\t";
+          file << TO_UTF8(mpCrossValidations->item((int) i, 2)->text()) << "\t";
+          file << TO_UTF8(mpCrossValidations->item((int) i, 3)->text()) << "\t";
+          file << TO_UTF8(mpCrossValidations->item((int) i, 4)->text()) << std::endl;
         }
+
+      file << std::endl;
     }
 
-  imax = CrossValidations.getDependentObjects().size();
-
-  if (mpProblem->getFunctionEvaluations() == 0)
-    imax = 0;
-
-  if (imax)
+  if (mpValues->isEnabled())
     {
       // Set up the fitted values table
-      file << std::endl << "Validation Fitted Values:" << std::endl;
+      file << "Validation Fitted Values:" << std::endl;
       file << "Validation Fitted Value\tObjective Value\tRoot Mean Square\tError Mean\tError Mean Std. Deviation" << std::endl;
 
       // Loop over the fitted values objects
+      imax = mpCrossValidationValues->rowCount();
+
       for (i = 0; i != imax; i++)
         {
-          const CCopasiObject * pObject = CrossValidations.getDependentObjects()[i];
-
-          if (pObject)
-            file << pObject->getObjectDisplayName() << "\t";
-          else
-            file << "Not Found\t";
-
-          file << CrossValidations.getDependentObjectiveValues()[i] << "\t";
-          file << CrossValidations.getDependentRMS()[i] << "\t";
-          file << CrossValidations.getDependentErrorMean()[i] << "\t";
-          file << CrossValidations.getDependentErrorMeanSD()[i] << std::endl;
+          file << TO_UTF8(mpCrossValidationValues->item((int) i, 0)->text()) << "\t";
+          file << TO_UTF8(mpCrossValidationValues->item((int) i, 1)->text()) << "\t";
+          file << TO_UTF8(mpCrossValidationValues->item((int) i, 2)->text()) << "\t";
+          file << TO_UTF8(mpCrossValidationValues->item((int) i, 3)->text()) << "\t";
+          file << TO_UTF8(mpCrossValidationValues->item((int) i, 4)->text()) << std::endl;
         }
-    }
 
-  file << std::endl;
+      file << std::endl;
+    }
 }
 
 void CQFittingResult::slotUpdateModel()

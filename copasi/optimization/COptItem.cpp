@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,7 +29,7 @@
 #include "utilities/CCopasiMessage.h"
 #include "utilities/utility.h"
 
-C_FLOAT64 NaN = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+C_FLOAT64 NaN = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
 UpdateMethod DoNothing;
 
@@ -50,7 +50,8 @@ COptItem::COptItem(const CCopasiContainer * pParent,
   mLowerBound(0.0),
   mpUpperObject(NULL),
   mpUpperBound(NULL),
-  mUpperBound(0.0)
+  mUpperBound(0.0),
+  mLastStartValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
 {initializeParameter();}
 
 COptItem::COptItem(const COptItem & src,
@@ -68,7 +69,8 @@ COptItem::COptItem(const COptItem & src,
   mLowerBound(0.0),
   mpUpperObject(NULL),
   mpUpperBound(NULL),
-  mUpperBound(0.0)
+  mUpperBound(0.0),
+  mLastStartValue(src.mLastStartValue)
 {initializeParameter();}
 
 COptItem::COptItem(const CCopasiParameterGroup & group,
@@ -86,7 +88,8 @@ COptItem::COptItem(const CCopasiParameterGroup & group,
   mLowerBound(0.0),
   mpUpperObject(NULL),
   mpUpperBound(NULL),
-  mUpperBound(0.0)
+  mUpperBound(0.0),
+  mLastStartValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
 {initializeParameter();}
 
 COptItem::~COptItem()
@@ -211,6 +214,16 @@ const C_FLOAT64 & COptItem::getStartValue() const
     }
 
   return *mpObjectValue;
+}
+
+const C_FLOAT64 & COptItem::getLastStartValue() const
+{
+  return mLastStartValue;
+}
+
+void COptItem::rememberStartValue()
+{
+  mLastStartValue = getStartValue();
 }
 
 C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom)

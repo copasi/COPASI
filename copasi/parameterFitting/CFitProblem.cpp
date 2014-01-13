@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1500,7 +1500,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
              &lwork,
              &info);
 
-      assert(info != 0);
+      assert(info == 0);
 
       for (i = 0; i < imax; i++)
         {
@@ -1539,7 +1539,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
              &lwork,
              &info);
 
-      assert(info != 0);
+      assert(info == 0);
 
       mCorrelation = mFisher;
 

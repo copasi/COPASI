@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -137,7 +137,7 @@ bool CQOptimizationResult::enterProtected()
         }
 
       //3rd column: start value
-      pItem = new QTableWidgetItem(QString::number(Items[i]->getStartValue()));
+      pItem = new QTableWidgetItem(QString::number(Items[i]->getLastStartValue()));
       pItem->setForeground(QColor(120, 120, 140));
       mpParameters->setItem((int) i, 2, pItem);
 
@@ -198,40 +198,26 @@ void CQOptimizationResult::slotSave(void)
   const C_FLOAT64 & ExecutionTime = mpProblem->getExecutionTime();
   file << FunctionEvaluations << "\t";
   file << ExecutionTime << "\t";
-  file << FunctionEvaluations / ExecutionTime << std::endl;
+  file << FunctionEvaluations / ExecutionTime << std::endl << std::endl;
 
   // Set up the parameters table
-  file << std::endl << "Parameters:" << std::endl;
-  file << "Parameter\tValue\tGradient" << std::endl;
+  file << "Parameters:" << std::endl;
+  file << "Parameter\tLower Bound\tStart Value\tValue\tUpper Bound\tGradient" << std::endl;
 
-  // Loop over the optimization items
-  const std::vector< COptItem * > & Items = mpProblem->getOptItemList();
-  const CVector< C_FLOAT64 > & Solutions = mpProblem->getSolutionVariables();
-  const CVector< C_FLOAT64 > & Gradients = mpProblem->getVariableGradients();
-
-  imax = Items.size();
-
-  if (mpProblem->getFunctionEvaluations() == 0)
-    imax = 0;
-
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
+  // Loop over the fitted values objects
+  imax = mpParameters->rowCount();
 
   for (i = 0; i != imax; i++)
     {
-      const CCopasiObject *pObject =
-        pDataModel->getDataObject(Items[i]->getObjectCN());
-
-      if (pObject)
-        file << pObject->getObjectDisplayName() << "\t";
-      else
-        file << "Not Found\t";
-
-      const C_FLOAT64 & Solution = Solutions[i];
-      file << Solution << "\t";
-      file << Gradients[i] << std::endl;
+      file << TO_UTF8(mpParameters->item((int) i, 0)->text()) << "\t";
+      file << TO_UTF8(mpParameters->item((int) i, 1)->text()) << "\t";
+      file << TO_UTF8(mpParameters->item((int) i, 2)->text()) << "\t";
+      file << TO_UTF8(mpParameters->item((int) i, 3)->text()) << "\t";
+      file << TO_UTF8(mpParameters->item((int) i, 4)->text()) << "\t";
+      file << TO_UTF8(mpParameters->item((int) i, 5)->text()) << std::endl;
     }
+
+  file << std::endl;
 }
 
 void CQOptimizationResult::slotUpdateModel()
