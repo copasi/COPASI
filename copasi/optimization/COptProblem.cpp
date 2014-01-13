@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -798,6 +798,19 @@ void COptProblem::randomizeStartValues()
         {
           (*it)->setStartValue((*it)->getRandomValue());
         }
+    }
+
+  return;
+}
+
+void COptProblem::rememberStartValues()
+{
+  std::vector< COptItem * >::iterator it = mpOptItems->begin();
+  std::vector< COptItem * >::iterator end = mpOptItems->end();
+
+  for (; it != end; ++it)
+    {
+      (*it)->rememberStartValue();
     }
 
   return;

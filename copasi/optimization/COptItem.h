@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-//   $Revision: 1.24 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/01/05 22:49:26 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -209,15 +201,26 @@ public:
   /**
    * Set the value start value.
    * @param const C_FLOAT64 & startValue
-   * @return bool succes
+   * @return bool success
    */
   bool setStartValue(const C_FLOAT64 & value);
 
   /**
-   * Retrieve the sart value of the optimization object.
+   * Retrieve the start value of the optimization object.
    * @return const C_FLOAT64 & startValue
    */
   const C_FLOAT64 & getStartValue() const;
+
+  /**
+   * Retrieve the start value use in the last optimization.
+   * @return const C_FLOAT64 & startValue
+   */
+  const C_FLOAT64 & getLastStartValue() const;
+
+  /**
+   * Remember the current start value
+   */
+  void rememberStartValue();
 
   /**
    * Retrieve a random value in the interval (lower bound, upper bound).
@@ -323,6 +326,11 @@ protected:
    * The value of the upper bound (only if not on object)
    */
   C_FLOAT64 mUpperBound;
+
+  /**
+   * The start value use for last calculation
+   */
+  C_FLOAT64 mLastStartValue;
 
   /**
    * A pointer to the random number generator used in randomizeStartValue
