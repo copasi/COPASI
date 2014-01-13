@@ -540,14 +540,19 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
         {
           SedModel* sedmlModel = sedmlDoc->getModel(ii);
 
-          if (sedmlModel->getLanguage() != "urn:sedml:language:sbml") CCopasiMessage(CCopasiMessage::EXCEPTION, "Sorry only SBML model is presently supported.");
+          // need to also allow for the specific urns like
+          // urn:sedml:language:sbml.level-3.version-1
+          if (sedmlModel->getLanguage().find("urn:sedml:language:sbml") == std::string::npos)
+            CCopasiMessage(CCopasiMessage::EXCEPTION,
+                           "Sorry currently, only SBML models are supported.");
 
           if (sedmlModel->getSource() != modelId)
             {
               modelId = sedmlModel->getId();
 
-              if ((sedmlModel->getListOfChanges()->size()) > 0)CCopasiMessage(CCopasiMessage::WARNING, "Currently no support for"
-                    " changing model entities. Changes will not be made to the imported model.");
+              if ((sedmlModel->getListOfChanges()->size()) > 0)
+                CCopasiMessage(CCopasiMessage::WARNING, "Currently no support for"
+                               " changing model entities. Changes will not be made to the imported model.");
 
               modelSource = sedmlModel->getSource();
             }
