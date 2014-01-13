@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CModel
 #define COPASI_CModel
@@ -50,6 +50,30 @@ class CMathModel;
 class CModel : public CModelEntity
 {
 public:
+  /**
+   * Enum of valid volume units
+   */
+  typedef CUnit::VolumeUnit VolumeUnit;
+
+  /**
+   * Enum of valid area units
+   */
+  typedef CUnit::AreaUnit AreaUnit;
+
+  /**
+   * Enum of valid length units
+   */
+  typedef CUnit::LengthUnit LengthUnit;
+
+  /**
+   *  Enum of valid time units
+   */
+  typedef CUnit::TimeUnit TimeUnit;
+
+  /**
+   *  Enum of valid quantity units
+   */
+  typedef CUnit::QuantityUnit QuantityUnit;
 
   /**
    * Enum of valid model types.
