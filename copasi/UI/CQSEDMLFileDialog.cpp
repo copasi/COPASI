@@ -1,3 +1,8 @@
+// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * CQSEDMLFileDialog.cpp
  *
@@ -22,15 +27,15 @@ std::pair< QString, std::pair< unsigned C_INT32, unsigned C_INT32 > > CQSEDMLFil
 {
   std::pair< QString, std::pair< unsigned C_INT32, unsigned C_INT32 > > NameAndVersion;
 
-  QString Filter = "Level 1 Version 1 (*.xml)";
+  QString Filter = "Level 1 Version 1 (*.sedml)";
 
   QString SelectedFilter =
-    QString("Level %1 Version %1 (*.xml)").arg(QString::number(sedmlLevel)).arg(QString::number(sedmlVersion));;
+    QString("Level %1 Version %1 (*.sedml)").arg(QString::number(sedmlLevel)).arg(QString::number(sedmlVersion));;
 
   // The default export is L1V1
   if (Filter.indexOf(SelectedFilter) == -1)
     {
-      SelectedFilter = "Level 1 Version 1 (*.xml)";
+      SelectedFilter = "Level 1 Version 1 (*.sedml)";
     }
 
   // We need to avoid the KDE dialog at least under Qt 4.7 and KDE 4.5
@@ -44,7 +49,7 @@ std::pair< QString, std::pair< unsigned C_INT32, unsigned C_INT32 > > CQSEDMLFil
   NameAndVersion.first =
     CopasiFileDialog::getSaveFileName(parent, name, startWith, Filter, caption, &SelectedFilter, DontUseNativeDialog);
 
-  QRegExp Pattern("Level (\\d) Version (\\d) \\(\\*\\.xml\\)");
+  QRegExp Pattern("Level (\\d) Version (\\d) \\(\\*\\.sedml\\)");
 
   if (Pattern.exactMatch(SelectedFilter))
     {
