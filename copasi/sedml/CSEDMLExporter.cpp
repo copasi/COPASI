@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -79,6 +79,22 @@ const std::string CSEDMLExporter::exportModelAndTasksToString(CCopasiDataModel& 
   return returnValue;
 }
 
+std::string createUniqueModelFileName(const std::string& dir, const std::string& baseName, const std::string& extension = ".xml")
+{
+  int count = 1;
+  std::string current = baseName + extension;
+
+  while (CDirEntry::exist(dir + CDirEntry::Separator + current))
+    {
+      std::stringstream temp;
+      temp << baseName << count << extension;
+      current = temp.str();
+      ++count;
+    }
+
+  return current;
+}
+
 /**
  * Export the model and Task to SEDML.
  * The SEDML document is written to the file given by SEDMLFilename and reference SBML model is written to SBMLFilename .
@@ -93,7 +109,10 @@ bool CSEDMLExporter::exportModelAndTasks(CCopasiDataModel& dataModel,
 {
   bool success = true;
   /* create a string that represents the SBMLDocument */
-  std::string sedmlModelSource = "model1.xml"; //always name of the SBML model to reference in SEDML document
+
+  // std::string sedmlModelSource = "model1.xml"; //always name of the SBML model to reference in SEDML document
+  // create a unique name for all exported models, rather than to overwrite existing ones!
+  std::string sedmlModelSource = createUniqueModelFileName(CDirEntry::dirName(filename), "model", ".xml");
 
   std::string sbmlFileName;
   sbmlFileName = CDirEntry::dirName(filename) + CDirEntry::Separator + sedmlModelSource;
@@ -219,7 +238,6 @@ void CSEDMLExporter::createModels(CCopasiDataModel& dataModel, std::string & mod
 void CSEDMLExporter::createTasks(CCopasiDataModel& dataModel, std::string & simRef, std::string & modelRef)
 {
   SedTask *task = this->mpSEDMLDocument->createTask();
-  //SedSimulation * sim = this->mpSEDMLDocument->createUniformTimeCourse();
   std::string taskId = "task1";
   task->setId(taskId);
   task->setSimulationReference(simRef),
@@ -237,7 +255,8 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
   SEDMLUtils utils;
   char delim;
 
-  if (pModel == NULL) CCopasiMessage(CCopasiMessage::ERROR, "No model for this SEDML document. An SBML model must exist for every SEDML document.");
+  if (pModel == NULL)
+    CCopasiMessage(CCopasiMessage::ERROR, "No model for this SEDML document. An SBML model must exist for every SEDML document.");
 
   SedPlot2D* pPSedPlot;
   SedCurve* pCurve; // = pPSedPlot->createCurve();
@@ -254,7 +273,6 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
   pTimeDGenp->setMath(SBML_parseFormula(pTimeVar->getId().c_str()));
 
   size_t i, imax = dataModel.getPlotDefinitionList()->size();
-  SedPlot2D* pPSedlot;
   SedDataGenerator *pPDGen;
 
   if (!imax)
@@ -291,6 +309,8 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
 
           if (pPlotItem->getChannels().size() >= 1)
             objectX = dataModel.getDataObject(pPlotItem->getChannels()[0]);
+
+          bool xIsTime = objectX->getCN() == pTime->getCN();
 
           if (pPlotItem->getChannels().size() >= 2)
             objectY = dataModel.getDataObject(pPlotItem->getChannels()[1]);
