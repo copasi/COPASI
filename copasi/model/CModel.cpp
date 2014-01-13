@@ -3753,11 +3753,13 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
       endSet = changedObjects.end();
 
       for (; itSet != endSet; ++itSet)
-        if ((pEntity = dynamic_cast< const CModelEntity * >((*itSet)->getObjectParent())) != NULL &&
-            (pEntity->getInitialExpression() != "" ||
-             pEntity->getStatus() == ASSIGNMENT) &&
-            pEntity->getInitialValueReference()->getDirectDependencies().size() > 0)
-          Objects.insert(*itSet);
+        {
+          if ((pEntity = dynamic_cast< const CModelEntity * >((*itSet)->getObjectParent())) != NULL &&
+              (pEntity->getInitialExpression() != "" ||
+               pEntity->getStatus() == ASSIGNMENT) &&
+              pEntity->getInitialValueReference()->getDirectDependencies().size() > 0)
+            Objects.insert(*itSet);
+        }
 
       for (itSet = Objects.begin(), endSet = Objects.end(); itSet != endSet; ++itSet)
         changedObjects.erase(*itSet);

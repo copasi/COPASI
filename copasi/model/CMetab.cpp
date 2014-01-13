@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -594,9 +594,10 @@ bool CMetab::compileInitialValueDependencies()
   std::vector< CCopasiContainer * > listOfContainer;
   listOfContainer.push_back(getObjectAncestor("Model"));
 
-  // If we have an initial expression we must update both
-  if (mpInitialExpression != NULL &&
-      mpInitialExpression->getInfix() != "")
+  // If we have an assignment or a valid initial expression we must update both
+  if (getStatus() == ASSIGNMENT ||
+      (mpInitialExpression != NULL &&
+       mpInitialExpression->getInfix() != ""))
     {
       // Initial concentration
       success &= mpInitialExpression->compile(listOfContainer);
