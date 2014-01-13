@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 //
 
@@ -3757,11 +3757,13 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
       endSet = changedObjects.end();
 
       for (; itSet != endSet; ++itSet)
-        if ((pEntity = dynamic_cast< const CModelEntity * >((*itSet)->getObjectParent())) != NULL &&
-            (pEntity->getInitialExpression() != "" ||
-             pEntity->getStatus() == ASSIGNMENT) &&
-            pEntity->getInitialValueReference()->getDirectDependencies().size() > 0)
-          Objects.insert(*itSet);
+        {
+          if ((pEntity = dynamic_cast< const CModelEntity * >((*itSet)->getObjectParent())) != NULL &&
+              (pEntity->getInitialExpression() != "" ||
+               pEntity->getStatus() == ASSIGNMENT) &&
+              pEntity->getInitialValueReference()->getDirectDependencies().size() > 0)
+            Objects.insert(*itSet);
+        }
 
       for (itSet = Objects.begin(), endSet = Objects.end(); itSet != endSet; ++itSet)
         changedObjects.erase(*itSet);
