@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -49,9 +49,9 @@ int main()
   // we want seconds as the time unit
   // microliter as the volume units
   // and nanomole as the substance units
-  pModel->setTimeUnit(CModel::s);
-  pModel->setVolumeUnit(CModel::microl);
-  pModel->setQuantityUnit(CModel::nMol);
+  pModel->setTimeUnit(CUnit::s);
+  pModel->setVolumeUnit(CUnit::microl);
+  pModel->setQuantityUnit(CUnit::nMol);
 
   // we have to keep a set of all the initial values that are changed during
   // the model building process

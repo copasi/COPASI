@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/cpp_examples/example5/example5.cpp,v $
-//   $Revision: 1.9 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 15:42:45 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -58,9 +50,9 @@ int main()
   assert(CCopasiRootContainer::getDatamodelList()->size() == 1);
   CModel* pModel = pDataModel->getModel();
   assert(pModel != NULL);
-  pModel->setVolumeUnit(CModel::fl);
-  pModel->setTimeUnit(CModel::s);
-  pModel->setQuantityUnit(CModel::fMol);
+  pModel->setVolumeUnit(CUnit::fl);
+  pModel->setTimeUnit(CUnit::s);
+  pModel->setQuantityUnit(CUnit::fMol);
   CModelValue* pFixedModelValue = pModel->createModelValue("F");
   assert(pFixedModelValue != NULL);
   pFixedModelValue->setStatus(CModelEntity::FIXED);
