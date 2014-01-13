@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000064.cpp,v $
-//   $Revision: 1.17 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/05/16 06:24:49 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -72,9 +64,9 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_1()
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING1));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::mMol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -173,9 +165,9 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_2()
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING2));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::mMol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -258,9 +250,9 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_3()
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING3));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::number);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::number);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -343,9 +335,9 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_4()
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING4));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::number);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::number);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -444,9 +436,9 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING5));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::mMol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -593,9 +585,9 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING6));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::mMol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -726,9 +718,9 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING7));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::number);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::number);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -859,9 +851,9 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING8));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::number);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::number);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -1008,9 +1000,9 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_5()
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING9));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::mMol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -1097,9 +1089,9 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_6()
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING10));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::mMol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -1202,9 +1194,9 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_7()
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING11));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::number);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::number);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -1307,9 +1299,9 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_8()
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING12));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::number);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::number);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -1396,9 +1388,9 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING13));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::mMol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -1533,9 +1525,9 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING14));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::mMol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -1686,9 +1678,9 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING15));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::number);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::number);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -1839,9 +1831,9 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING16));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::number);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::number);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);

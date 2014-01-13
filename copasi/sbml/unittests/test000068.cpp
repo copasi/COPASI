@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -49,9 +49,9 @@ void test000068::test_bug1068()
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING1));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::Mol);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::l);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::Mol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::l);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);

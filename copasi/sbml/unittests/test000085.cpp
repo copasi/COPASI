@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000085.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/11 11:55:16 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -53,7 +45,7 @@ void test000085::test_import_compartment_units_1()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CModel::nm);
+  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CUnit::nm);
   // make sure there is no warning about inconsistent units
   unsigned int i = 0, iMax = CCopasiMessage::size();
 
@@ -77,7 +69,7 @@ void test000085::test_import_compartment_units_2()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CModel::m);
+  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CUnit::m);
   unsigned int i = 0, iMax = CCopasiMessage::size();
 
   while (i < iMax)
@@ -104,7 +96,7 @@ void test000085::test_import_compartment_units_3()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CModel::m);
+  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CUnit::m);
   // make sure there is no warning about inconsistent units
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
@@ -156,7 +148,7 @@ void test000085::test_import_compartment_units_4()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CModel::mm);
+  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CUnit::mm);
   // make sure there is no warning about inconsistent units
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
@@ -208,7 +200,7 @@ void test000085::test_import_compartment_units_5()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CModel::nm);
+  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CUnit::nm);
   // make sure there is no warning about inconsistent units
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
@@ -260,7 +252,7 @@ void test000085::test_import_compartment_units_6()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CModel::nm);
+  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CUnit::nm);
   // make sure there is no warning about inconsistent units
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
@@ -312,7 +304,7 @@ void test000085::test_import_compartment_units_7()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CModel::nm);
+  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CUnit::nm);
   // make sure there is no warning about inconsistent units
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
@@ -364,7 +356,7 @@ void test000085::test_import_compartment_units_8()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CModel::m);
+  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CUnit::m);
   // make sure there is no warning about inconsistent units
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
@@ -416,7 +408,7 @@ void test000085::test_import_compartment_units_9()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CModel::m);
+  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CUnit::m);
   // make sure there is no warning about inconsistent units
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
@@ -468,7 +460,7 @@ void test000085::test_import_compartment_units_10()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CModel::m);
+  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CUnit::m);
   // make sure there is no warning about inconsistent units
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
@@ -520,7 +512,7 @@ void test000085::test_import_compartment_units_11()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CModel::m);
+  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CUnit::m);
   // make sure there is no warning about inconsistent units
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
@@ -572,7 +564,7 @@ void test000085::test_import_compartment_units_12()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CModel::m);
+  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CUnit::m);
   // make sure there is no warning about inconsistent units
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
@@ -624,7 +616,7 @@ void test000085::test_import_compartment_units_13()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CModel::dimensionlessLength);
+  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CUnit::dimensionlessLength);
   // make sure there is no warning about inconsistent units
   unsigned int i = 0, iMax = CCopasiMessage::size();
 
@@ -648,7 +640,7 @@ void test000085::test_import_compartment_units_14()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CModel::m);
+  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CUnit::m);
   // make sure there is no warning about inconsistent units
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
@@ -700,7 +692,7 @@ void test000085::test_import_compartment_units_15()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CModel::m);
+  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CUnit::m);
   // make sure there is no warning about inconsistent units
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
@@ -752,7 +744,7 @@ void test000085::test_import_compartment_units_16()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CModel::m);
+  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CUnit::m);
   // make sure there is no warning about inconsistent units
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
@@ -804,7 +796,7 @@ void test000085::test_import_compartment_units_17()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CModel::m);
+  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CUnit::m);
   // make sure there is no warning about inconsistent units
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
@@ -856,7 +848,7 @@ void test000085::test_import_compartment_units_18()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 2);
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CModel::m);
+  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CUnit::m);
   // make sure there is no warning about inconsistent units
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
@@ -908,7 +900,7 @@ void test000085::test_import_compartment_units_19()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 2);
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CModel::m);
+  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CUnit::m);
   // make sure there is no warning about inconsistent units
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
@@ -960,7 +952,7 @@ void test000085::test_import_compartment_units_20()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 2);
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CModel::m);
+  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CUnit::m);
   // make sure there is no warning about inconsistent units
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;
@@ -1012,7 +1004,7 @@ void test000085::test_import_compartment_units_21()
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 2);
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CModel::m);
+  CPPUNIT_ASSERT(pModel->getLengthUnitEnum() == CUnit::m);
   // make sure there is no warning about inconsistent units
   unsigned int i = 0, iMax = CCopasiMessage::size();
   unsigned int found24 = 0;

@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000091.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/05/16 06:24:49 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -55,9 +47,9 @@ void test000091::test_delay_in_kinetic_law()
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING1));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::mMol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -365,9 +357,9 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING2));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::mMol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -408,9 +400,9 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pReaction != NULL);
 
   std::string reactionId = pReaction->getSBMLId();
-  pGlobalized1 = pModel->getModelValues()[reactionId+"_local_0"];
+  pGlobalized1 = pModel->getModelValues()[reactionId + "_local_0"];
   CPPUNIT_ASSERT(pGlobalized1 != NULL);
-  pGlobalized2 = pModel->getModelValues()[reactionId+"_local_1"];
+  pGlobalized2 = pModel->getModelValues()[reactionId + "_local_1"];
   CPPUNIT_ASSERT(pGlobalized2 != NULL);
 
   // check if K1 has the correct value

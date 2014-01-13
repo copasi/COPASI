@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000066.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/11 11:52:00 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -60,9 +52,9 @@ void test000066::test_import_reaction_with_constant_flux()
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING1));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::mMol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -96,9 +88,9 @@ void test000066::test_import_reaction_with_constant_flux_function()
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING2));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::mMol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -247,9 +239,9 @@ void test000066::test_import_reaction_with_constant_flux_global_parameter()
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING3));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::mMol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -278,9 +270,9 @@ void test000066::test_import_reaction_with_constant_flux_function_global_paramet
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING4));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::mMol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -424,9 +416,9 @@ void test000066::test_import_reaction_with_constant_flux_reversible()
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING5));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::mMol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -460,9 +452,9 @@ void test000066::test_import_reaction_with_constant_flux_reversible_function()
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING6));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::mMol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -619,9 +611,9 @@ void test000066::test_import_reaction_with_constant_flux_reversible_global_param
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING7));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::mMol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
@@ -650,9 +642,9 @@ void test000066::test_import_reaction_with_constant_flux_reversible_function_glo
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING8));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::mMol);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::mMol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);

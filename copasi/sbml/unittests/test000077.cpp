@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000077.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/11 11:52:00 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -62,9 +54,9 @@ void test000077::test_import_dimensionless_1()
     }
 
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
-  CPPUNIT_ASSERT(pDataModel->getModel()->getVolumeUnitEnum() == CModel::dimensionlessVolume);
-  CPPUNIT_ASSERT(pDataModel->getModel()->getTimeUnitEnum() == CModel::dimensionlessTime);
-  CPPUNIT_ASSERT(pDataModel->getModel()->getQuantityUnitEnum() == CModel::dimensionlessQuantity);
+  CPPUNIT_ASSERT(pDataModel->getModel()->getVolumeUnitEnum() == CUnit::dimensionlessVolume);
+  CPPUNIT_ASSERT(pDataModel->getModel()->getTimeUnitEnum() == CUnit::dimensionlessTime);
+  CPPUNIT_ASSERT(pDataModel->getModel()->getQuantityUnitEnum() == CUnit::dimensionlessQuantity);
 }
 
 void test000077::test_import_dimensionless_2()
@@ -82,9 +74,9 @@ void test000077::test_import_dimensionless_2()
     }
 
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
-  CPPUNIT_ASSERT(pDataModel->getModel()->getVolumeUnitEnum() == CModel::dimensionlessVolume);
-  CPPUNIT_ASSERT(pDataModel->getModel()->getTimeUnitEnum() == CModel::dimensionlessTime);
-  CPPUNIT_ASSERT(pDataModel->getModel()->getQuantityUnitEnum() == CModel::dimensionlessQuantity);
+  CPPUNIT_ASSERT(pDataModel->getModel()->getVolumeUnitEnum() == CUnit::dimensionlessVolume);
+  CPPUNIT_ASSERT(pDataModel->getModel()->getTimeUnitEnum() == CUnit::dimensionlessTime);
+  CPPUNIT_ASSERT(pDataModel->getModel()->getQuantityUnitEnum() == CUnit::dimensionlessQuantity);
 }
 
 void test000077::test_import_dimensionless_3()

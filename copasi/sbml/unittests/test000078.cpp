@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -64,9 +64,9 @@ void test000078::test_l2v4_import_unordered_functions()
 
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::Mol);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::l);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::Mol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::l);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   // check if the function definitions were imported correctly
   CFunctionDB* pFunDB = CCopasiRootContainer::getFunctionList();
   const CEvaluationTree* pFun = pFunDB->findFunction("function_1");

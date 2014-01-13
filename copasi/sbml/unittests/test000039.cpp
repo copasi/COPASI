@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000039.cpp,v $
-//   $Revision: 1.9 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/04/20 09:23:41 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -52,9 +44,9 @@ void test000039::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CModel::microMol);
-  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CModel::ml);
-  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CModel::s);
+  CPPUNIT_ASSERT(pModel->getQuantityUnitEnum() == CUnit::microMol);
+  CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::ml);
+  CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);

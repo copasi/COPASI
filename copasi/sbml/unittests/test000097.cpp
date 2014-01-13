@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000097.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/04/19 15:00:10 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -53,7 +45,6 @@ void test000097::tearDown()
 {
   CCopasiRootContainer::destroy();
 }
-
 
 // tests whether we are importing local render information
 void test000097::test_import_local_render_information()
@@ -357,7 +348,6 @@ void test000097::test_export_global_render_information()
           pLoGRINode = &pAnnotationNode->getChild(i);
           break;
         }
-
     }
 
   CPPUNIT_ASSERT(pLoGRINode != NULL);
@@ -666,9 +656,9 @@ void test000097::createModel()
   // get the model from the datamodel
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  pModel->setTimeUnit(CModel::s);
-  pModel->setVolumeUnit(CModel::microl);
-  pModel->setQuantityUnit(CModel::nMol);
+  pModel->setTimeUnit(CUnit::s);
+  pModel->setVolumeUnit(CUnit::microl);
+  pModel->setQuantityUnit(CUnit::nMol);
 
   // add a compartment
   std::set<const CCopasiObject*> changedObjects;
@@ -751,7 +741,6 @@ void test000097::addGlobalRenderInformation()
   CPPUNIT_ASSERT(pDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects().size() == 1);
   CPPUNIT_ASSERT(pDataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects()[0]->getListOfColorDefinitions()->size() == 2);
 }
-
 
 // SBML model with local render information
 const char* test000097::SBML_MODEL_1 =
@@ -1077,7 +1066,6 @@ void test000097::test_readexport_local_render_information()
   CPPUNIT_ASSERT(pCDNode2 != NULL);
 }
 
-
 // tests whether we are exporting global render information
 // that has been read
 void test000097::test_readexport_global_render_information()
@@ -1187,7 +1175,6 @@ void test000097::test_readexport_global_render_information()
           pLoGRINode = &pAnnotationNode->getChild(i);
           break;
         }
-
     }
 
   CPPUNIT_ASSERT(pLoGRINode != NULL);
@@ -1405,7 +1392,6 @@ void test000097::test_importexport_local_render_information()
   CPPUNIT_ASSERT(pCDNode2 != NULL);
 }
 
-
 // tests whether we are exporting global render information
 // that has been import
 void test000097::test_importexport_global_render_information()
@@ -1514,7 +1500,6 @@ void test000097::test_importexport_global_render_information()
           pLoGRINode = &pAnnotationNode->getChild(i);
           break;
         }
-
     }
 
   CPPUNIT_ASSERT(pLoGRINode != NULL);
@@ -1568,7 +1553,6 @@ void test000097::test_importexport_global_render_information()
   CPPUNIT_ASSERT(pCDNode1 != NULL);
   CPPUNIT_ASSERT(pCDNode2 != NULL);
 }
-
 
 // test whether we are writing local render information
 // that has been read
@@ -2005,4 +1989,3 @@ void test000097::test_importwrite_global_render_information()
   CPPUNIT_ASSERT(pCDNode1 != NULL);
   CPPUNIT_ASSERT(pCDNode2 != NULL);
 }
-
