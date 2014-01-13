@@ -157,6 +157,54 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
     }
 }
 
+const CCopasiObject *getObjectForSbmlId(CModel* pModel, const std::string& id, const std::string& SBMLType)
+{
+  if (SBMLType == "Time")
+    return static_cast<const CCopasiObject *>(pModel->getObject(CCopasiObjectName("Reference=Time")));
+
+  if (SBMLType == "species")
+    {
+      size_t iMet, imax = pModel->getMetabolites().size();
+
+      for (iMet = 0; iMet < imax; ++iMet)
+        {
+          // the importer should not need to change the initial concentration
+          // pModel->getMetabolites()[iMet]->setInitialConcentration(0.896901);
+
+          if (pModel->getMetabolites()[iMet]->getSBMLId() == id)
+            {
+              return pModel->getMetabolites()[iMet]->getConcentrationReference();
+            }
+        }
+    }
+  else if (SBMLType == "reaction")
+    {
+      size_t iMet, imax = pModel->getReactions().size();
+
+      for (iMet = 0; iMet < imax; ++iMet)
+        {
+          if (pModel->getReactions()[iMet]->getSBMLId() == id)
+            {
+              return pModel->getReactions()[iMet]->getFluxReference();
+            }
+        }
+    }
+  else if (SBMLType == "parameter")
+    {
+      size_t iMet, imax = pModel->getModelValues().size();
+
+      for (iMet = 0; iMet < imax; ++iMet)
+        {
+          if (pModel->getModelValues()[iMet]->getSBMLId() == id)
+            {
+              return pModel->getModelValues()[iMet]->getValueReference();
+            }
+        }
+    }
+
+  return NULL;
+}
+
 void SEDMLImporter::readListOfPlotsFromSedMLOutput(
   COutputDefinitionVector *pLotList, CModel* pModel,
   SedDocument *pSEDMLDocument,
@@ -208,7 +256,6 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
 
                 if (tmpX != NULL && tmpY != NULL)
                   {
-
                     std::string  itemTitle;
 
                     if (curve->isSetName())
