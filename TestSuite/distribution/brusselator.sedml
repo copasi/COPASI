@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by COPASI version 4.11.65+ (Source) on 2014-01-13 09:11 with libSBML version 5.9.0. -->
+<sedML xmlns="http://sed-ml.org/" level="1" version="1">
+  <listOfSimulations>
+    <uniformTimeCourse id="sim1" initialTime="0" outputStartTime="0" outputEndTime="100" numberOfPoints="200">
+      <algorithm kisaoID="KISAO:0000019"/>
+    </uniformTimeCourse>
+  </listOfSimulations>
+  <listOfModels>
+    <model id="model1" language="urn:sedml:language:sbml" source="brusselator-model.xml"/>
+  </listOfModels>
+  <listOfTasks>
+    <task id="task1" modelReference="model1" simulationReference="sim1"/>
+  </listOfTasks>
+  <listOfDataGenerators>
+    <dataGenerator id="time" name="Time">
+      <listOfVariables>
+        <variable id="var_time" symbol="urn:sedml:symbol:time" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> var_time </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="X_1" name="X">
+      <listOfVariables>
+        <variable id="p1_X" name="X" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;X&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_X </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="Y_2" name="Y">
+      <listOfVariables>
+        <variable id="p1_Y" name="Y" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Y&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_Y </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="E_3" name="E">
+      <listOfVariables>
+        <variable id="p1_E" name="E" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;E&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_E </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="D_4" name="D">
+      <listOfVariables>
+        <variable id="p1_D" name="D" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;D&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_D </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="B_5" name="B">
+      <listOfVariables>
+        <variable id="p1_B" name="B" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;B&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_B </ci>
+      </math>
+    </dataGenerator>
+    <dataGenerator id="A_6" name="A">
+      <listOfVariables>
+        <variable id="p1_A" name="A" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;A&apos;]" taskReference="task1"/>
+      </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> p1_A </ci>
+      </math>
+    </dataGenerator>
+  </listOfDataGenerators>
+  <listOfOutputs>
+    <plot2D id="plot1" name="ConcentrationPlot">
+      <listOfCurves>
+        <curve id="p1_curve_1" logX="false" logY="false" xDataReference="time" yDataReference="X_1"/>
+        <curve id="p1_curve_2" logX="false" logY="false" xDataReference="time" yDataReference="Y_2"/>
+        <curve id="p1_curve_3" logX="false" logY="false" xDataReference="time" yDataReference="E_3"/>
+        <curve id="p1_curve_4" logX="false" logY="false" xDataReference="time" yDataReference="D_4"/>
+        <curve id="p1_curve_5" logX="false" logY="false" xDataReference="time" yDataReference="B_5"/>
+        <curve id="p1_curve_6" logX="false" logY="false" xDataReference="time" yDataReference="A_6"/>
+      </listOfCurves>
+    </plot2D>
+  </listOfOutputs>
+</sedML>
