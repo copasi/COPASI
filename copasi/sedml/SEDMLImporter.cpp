@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -125,12 +125,62 @@ CTrajectoryTask* SEDMLImporter::createCTrajectoryTaskFromSimulation(SedSimulatio
   return tTask;
 }
 
+const CCopasiObject *getObjectForSbmlId(CModel* pModel, const std::string& id, const std::string& SBMLType)
+{
+  if (SBMLType == "Time")
+    return static_cast<const CCopasiObject *>(pModel->getObject(CCopasiObjectName("Reference=Time")));
+
+  if (SBMLType == "species")
+    {
+      size_t iMet, imax = pModel->getMetabolites().size();
+
+      for (iMet = 0; iMet < imax; ++iMet)
+        {
+          // the importer should not need to change the initial concentration
+          // pModel->getMetabolites()[iMet]->setInitialConcentration(0.896901);
+
+          if (pModel->getMetabolites()[iMet]->getSBMLId() == id)
+            {
+              return pModel->getMetabolites()[iMet]->getConcentrationReference();
+            }
+        }
+    }
+  else if (SBMLType == "reaction")
+    {
+      size_t iMet, imax = pModel->getReactions().size();
+
+      for (iMet = 0; iMet < imax; ++iMet)
+        {
+          if (pModel->getReactions()[iMet]->getSBMLId() == id)
+            {
+              return pModel->getReactions()[iMet]->getFluxReference();
+            }
+        }
+    }
+  else if (SBMLType == "parameter")
+    {
+      size_t iMet, imax = pModel->getModelValues().size();
+
+      for (iMet = 0; iMet < imax; ++iMet)
+        {
+          if (pModel->getModelValues()[iMet]->getSBMLId() == id)
+            {
+              return pModel->getModelValues()[iMet]->getValueReference();
+            }
+        }
+    }
+
+  return NULL;
+}
+
 void SEDMLImporter::readListOfPlotsFromSedMLOutput(
   COutputDefinitionVector *pLotList, CModel* pModel,
   SedDocument *pSEDMLDocument,
   std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap)
 {
   size_t i, numOutput = pSEDMLDocument->getNumOutputs();
+
+  std::map<CCopasiObject*, SBase*>& copasiMap = pModel->getObjectDataModel()->getCopasi2SBMLMap();
 
   for (i = 0; i < numOutput; ++i)
     {
@@ -146,84 +196,39 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
                                         current->getId()
                                         , CPlotItem::plot2d);
 
-            //need Time for all Time Courses
-            const CCopasiObject* pTime = static_cast<const CCopasiObject *>(pModel->getObject(CCopasiObjectName("Reference=Time")));
+            bool logX = false;
+            bool logY = false;
 
             for (unsigned int ic = 0; ic < p->getNumCurves(); ++ic)
               {
                 SedCurve *curve = p->getCurve(ic);
-                std::string SBMLType, yAxis, yDataReference;
+                std::string SBMLTypeX, SBMLTypeY, xAxis, yAxis, xDataReference, yDataReference;
+                xDataReference = curve->getXDataReference();
                 yDataReference = curve->getYDataReference();
 
-                yAxis = getDataGeneratorModelItemRefrenceId(pSEDMLDocument, yDataReference, SBMLType);
+                xAxis = getDataGeneratorModelItemRefrenceId(pSEDMLDocument, xDataReference, SBMLTypeX);
+                yAxis = getDataGeneratorModelItemRefrenceId(pSEDMLDocument, yDataReference, SBMLTypeY);
 
                 //create the curves
-                CPlotDataChannelSpec name1 = pTime->getCN();
-                CPlotDataChannelSpec name2;
-                std::string itemTitle;
-                CPlotItem * plItem;
-                const CCopasiObject * tmp;
+                const CCopasiObject * tmpX = getObjectForSbmlId(pModel, xAxis, SBMLTypeX);
+                const CCopasiObject * tmpY = getObjectForSbmlId(pModel, yAxis, SBMLTypeY);
 
-                if (SBMLType == "species")
+                if (tmpX != NULL && tmpY != NULL)
                   {
-                    size_t iMet, imax = pModel->getMetabolites().size();
 
-                    for (iMet = 0; iMet < imax; ++iMet)
-                      {
-                        pModel->getMetabolites()[iMet]->setInitialConcentration(0.896901);
-
-                        if (pModel->getMetabolites()[iMet]->getSBMLId() == yAxis)
-                          {
-                            tmp = pModel->getMetabolites()[iMet]->getConcentrationReference();
-                            name2 = tmp->getCN();
-                            itemTitle = tmp->getObjectDisplayName();
-                            plItem = pPl->createItem(itemTitle, CPlotItem::curve2d);
-                            plItem->addChannel(name1);
-                            plItem->addChannel(name2);
-                            break;
-                          }
-                      }
+                    CPlotDataChannelSpec  name2 = tmpY->getCN();
+                    const std::string&  itemTitle = tmpX->getObjectDisplayName();
+                    CPlotItem * plItem = pPl->createItem(itemTitle, CPlotItem::curve2d);
+                    plItem->addChannel(tmpX->getCN());
+                    plItem->addChannel(name2);
                   }
-                else if (SBMLType == "reaction")
-                  {
-                    size_t iMet, imax = pModel->getReactions().size();
 
-                    for (iMet = 0; iMet < imax; ++iMet)
-                      {
-                        if (pModel->getReactions()[iMet]->getSBMLId() == yAxis)
-                          {
-                            tmp = pModel->getReactions()[iMet]->getFluxReference();
-                            name2 = tmp->getCN();
-                            itemTitle = tmp->getObjectDisplayName();
-                            plItem = pPl->createItem(itemTitle, CPlotItem::curve2d);
-                            plItem->addChannel(name1);
-                            plItem->addChannel(name2);
-                            break;
-                          }
-                      }
-                  }
-                else if (SBMLType == "parameter")
-                  {
-                    size_t iMet, imax = pModel->getModelValues().size();
-
-                    for (iMet = 0; iMet < imax; ++iMet)
-                      {
-                        if (pModel->getModelValues()[iMet]->getSBMLId() == yAxis)
-                          {
-                            tmp = pModel->getModelValues()[iMet]->getValueReference();
-                            name2 = tmp->getCN();
-                            itemTitle = tmp->getObjectDisplayName();
-                            plItem = pPl->createItem(itemTitle, CPlotItem::curve2d);
-                            plItem->addChannel(name1);
-                            plItem->addChannel(name2);
-                            break;
-                          }
-                      }
-                  }
+                logX = logX || (curve->isSetLogX() && curve->getLogX());
+                logY = logY || (curve->isSetLogY() && curve->getLogY());
               }
 
-            pPl->setLogX(false);
-            pPl->setLogY(false);
+            pPl->setLogX(logX);
+            pPl->setLogY(logY);
             break;
           }
 
@@ -286,7 +291,15 @@ std::string SEDMLImporter::getDataGeneratorModelItemRefrenceId(SedDocument *pSED
           for (ii = 0; ii < iiMax; ++ii)
             {
               SedVariable *var =  current->getVariable(ii);
-              modelReferenceId = translateTargetXpathInSBMLId(var->getTarget(), SBMLType);
+
+              if (var->isSetSymbol() && var->getSymbol() == "urn:sedml:symbol:time")
+                {
+                  modelReferenceId = "time";
+                  SBMLType = "Time";
+                  return modelReferenceId;
+                }
+              else
+                modelReferenceId = translateTargetXpathInSBMLId(var->getTarget(), SBMLType);
             }
         }
     }
@@ -375,7 +388,7 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 
       if (mpImportHandler)
         {
-          mpImportHandler->setName("Importing SEDML file...");
+          mpImportHandler->setName("Importing SED-ML file...");
           mTotalSteps = 11;
           mhImportStep = mpImportHandler->addItem("Step", mImportStep,
                                                   &mTotalSteps);
@@ -388,7 +401,7 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
         {
           step = 0;
           totalSteps = 1;
-          hStep = mpImportHandler->addItem("Reading SEDML file...", step,
+          hStep = mpImportHandler->addItem("Reading SED-ML file...", step,
                                            &totalSteps);
         }
 
@@ -638,6 +651,7 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
       return this->mpCopasiModel;
       delete reader;
     }
+
   return NULL;
 }
 
