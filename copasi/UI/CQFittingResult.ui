@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -14,10 +14,6 @@
 <comment> Properties, Inc. and EML Research, gGmbH. </comment>
 <comment> All rights reserved. </comment>
 
-
-
-
-
  <comment> All rights reserved. </comment>
  <class>CQFittingResult</class>
  <widget class="CopasiWidget" name="CQFittingResult">
@@ -25,8 +21,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>703</width>
-    <height>265</height>
+    <width>460</width>
+    <height>218</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -85,7 +81,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="CQFittingResultTab1" name="mpMain">
       <attribute name="title">
@@ -212,13 +208,21 @@
       </attribute>
      </widget>
      <widget class="QScrollArea" name="mpFisherInformationPage">
-      <attribute name="title">
-       <string>Fisher Information</string>
-      </attribute>
       <property name="widgetResizable">
        <bool>true</bool>
       </property>
+      <attribute name="title">
+       <string>Fisher Information</string>
+      </attribute>
       <widget class="QWidget" name="mpFisherInformationPageLayout">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>-116</y>
+         <width>423</width>
+         <height>2400</height>
+        </rect>
+       </property>
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -226,137 +230,119 @@
         </size>
        </property>
        <layout class="QVBoxLayout">
-         <property name="margin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QLabel" name="mpLblFIM">
-           <property name="text">
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="mpLblFIM">
+          <property name="text">
            <string>Fisher Information Matrix</string>
-           </property>
-           <property name="wordWrap">
-            <bool>false</bool>
-           </property>
-           <property name="margin">
-            <number>4</number>
-           </property>
-     </widget>
-         </item>
-         <item>
-          <widget class="CQArrayAnnotationsWidget" name="mpFisherInformationMatrix">
-           <attribute name="title">
-            <string>Fisher Information Matrix</string>
-           </attribute>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="mpLblFIMEigenval">
-           <property name="text">
-            <string>FIM Eigenvalues</string>
-           </property>
-           <property name="wordWrap">
-            <bool>false</bool>
-           </property>
-           <property name="margin">
-            <number>4</number>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="CQArrayAnnotationsWidget" name="mpFisherInformationEigenvalues">
-           <attribute name="title">
-            <string>FIM Eigenvalues</string>
-           </attribute>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            </sizepolicy>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="mpLblFIMEigenvec">
-           <property name="text">
-            <string>FIM Eigenvectors</string>
-           </property>
-           <property name="wordWrap">
-            <bool>false</bool>
-           </property>
-           <property name="margin">
-            <number>4</number>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="CQArrayAnnotationsWidget" name="mpFisherInformationEigenvectors">
-           <attribute name="title">
-            <string>FIM Eigenvectors</string>
-           </attribute>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="mpLblFIMScaled">
-           <property name="text">
+          </property>
+          <property name="wordWrap">
+           <bool>false</bool>
+          </property>
+          <property name="margin">
+           <number>4</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="CQArrayAnnotationsWidget" name="mpFisherInformationMatrix" native="true"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="mpLblFIMEigenval">
+          <property name="text">
+           <string>FIM Eigenvalues</string>
+          </property>
+          <property name="wordWrap">
+           <bool>false</bool>
+          </property>
+          <property name="margin">
+           <number>4</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="CQArrayAnnotationsWidget" name="mpFisherInformationEigenvalues" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="mpLblFIMEigenvec">
+          <property name="text">
+           <string>FIM Eigenvectors</string>
+          </property>
+          <property name="wordWrap">
+           <bool>false</bool>
+          </property>
+          <property name="margin">
+           <number>4</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="CQArrayAnnotationsWidget" name="mpFisherInformationEigenvectors" native="true"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="mpLblFIMScaled">
+          <property name="text">
            <string>Fisher Information Matrix (scaled)</string>
-           </property>
-           <property name="wordWrap">
-            <bool>false</bool>
-           </property>
-           <property name="margin">
-            <number>4</number>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="CQArrayAnnotationsWidget" name="mpFisherInformationScaledMatrix">
-           <attribute name="title">
-            <string>Fisher Information Matrix (scaled)</string>
-           </attribute>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="mpLblFIMScaledEigenval">
-           <property name="text">
-            <string>FIM Eigenvalues (scaled)</string>
-           </property>
-           <property name="wordWrap">
-            <bool>false</bool>
-           </property>
-           <property name="margin">
-            <number>4</number>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="CQArrayAnnotationsWidget" name="mpFisherInformationScaledEigenvalues">
-           <attribute name="title">
-            <string>FIM Eigenvalues (scaled)</string>
-           </attribute>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            </sizepolicy>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="mpLblFIMScaledEigenvec">
-           <property name="text">
-            <string>FIM Eigenvectors (scaled)</string>
-           </property>
-           <property name="wordWrap">
-            <bool>false</bool>
-           </property>
-           <property name="margin">
-            <number>4</number>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="CQArrayAnnotationsWidget" name="mpFisherInformationScaledEigenvectors">
-           <attribute name="title">
-            <string>FIM Eigenvectors (scaled)</string>
-           </attribute>
-          </widget>
-         </item>
+          </property>
+          <property name="wordWrap">
+           <bool>false</bool>
+          </property>
+          <property name="margin">
+           <number>4</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="CQArrayAnnotationsWidget" name="mpFisherInformationScaledMatrix" native="true"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="mpLblFIMScaledEigenval">
+          <property name="text">
+           <string>FIM Eigenvalues (scaled)</string>
+          </property>
+          <property name="wordWrap">
+           <bool>false</bool>
+          </property>
+          <property name="margin">
+           <number>4</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="CQArrayAnnotationsWidget" name="mpFisherInformationScaledEigenvalues" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="mpLblFIMScaledEigenvec">
+          <property name="text">
+           <string>FIM Eigenvectors (scaled)</string>
+          </property>
+          <property name="wordWrap">
+           <bool>false</bool>
+          </property>
+          <property name="margin">
+           <number>4</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="CQArrayAnnotationsWidget" name="mpFisherInformationScaledEigenvectors" native="true"/>
+        </item>
        </layout>
       </widget>
      </widget>
