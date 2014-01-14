@@ -1,7 +1,9 @@
 #!/bin/sh
 
-LIBDIR="$(dirname "$(dirname "$(readlink -f "$0")")")/share/copasi/lib"
+COPASIDIR="$(dirname "$(dirname "$(readlink -f "$0")")")"
+export COPASIDIR
 
+LIBDIR="${COPASIDIR}/share/copasi/lib"
 CopasiUI="${LIBDIR}/CopasiUI"
 
 QT_MISSING=$(ldd -r "${CopasiUI}" 2>&1 | grep -q '\(undefined symbol:\|libQt.*\.so\.4 => not found\)' && echo true)
