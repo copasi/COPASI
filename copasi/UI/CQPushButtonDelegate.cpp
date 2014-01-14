@@ -1,7 +1,7 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include <QtGui/QPushButton>
 #include <QtGui/QToolButton>
@@ -50,7 +50,7 @@ QWidget * CQPushButtonDelegate::createEditor(QWidget * parent,
   QAbstractButton * pEditor;
   QVariant Data;
 
-  Data = SourceIndex.model()->data(SourceIndex, Qt::DecorationRole);
+  Data = SourceIndex.model()->data(SourceIndex, Qt::UserRole);
 
   if (Data.type() == QVariant::Icon)
     {

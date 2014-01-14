@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -369,7 +369,8 @@ QVariant CQParameterOverviewDM::diffData(const CModelParameter * pNode, int role
 
   switch (role)
     {
-      case Qt::DecorationRole:
+      case Qt::UserRole:
+
         switch (pNode->getCompareResult())
           {
             case CModelParameter::Obsolete:
@@ -396,6 +397,7 @@ QVariant CQParameterOverviewDM::diffData(const CModelParameter * pNode, int role
         break;
 
       case Qt::ToolTipRole:
+
         switch (pNode->getCompareResult())
           {
             case CModelParameter::Obsolete:
