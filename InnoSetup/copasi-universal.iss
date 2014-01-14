@@ -85,6 +85,8 @@ Source: {#MyStageDir}\bin\64\msvcp100.dll; DestDir: {app}\bin; Check: InstallUse
 ; Common Resources
 Source: {#MyStageDir}\README.txt; DestDir: {app}
 Source: {#MyStageDir}\LICENSE.txt; DestDir: {app}
+
+; Tutorial Wizzard
 Source: {#MyStageDir}\share\copasi\config\MIRIAMResources.xml; DestDir: {app}\share\copasi\config
 Source: {#MyStageDir}\share\copasi\doc\html\TutWiz-Step6.html; DestDir: {app}\share\copasi\doc\html
 Source: {#MyStageDir}\share\copasi\doc\html\TutWiz-Step1.html; DestDir: {app}\share\copasi\doc\html
@@ -105,8 +107,12 @@ Source: {#MyStageDir}\share\copasi\doc\html\figures\ReactionDialog.png; DestDir:
 Source: {#MyStageDir}\share\copasi\doc\html\figures\ReactionOverview.png; DestDir: {app}\share\copasi\doc\html\figures
 Source: {#MyStageDir}\share\copasi\doc\html\figures\ReactionOverviewEmpty.png; DestDir: {app}\share\copasi\doc\html\figures
 Source: {#MyStageDir}\share\copasi\doc\html\figures\ReportDefinitionDialog.png; DestDir: {app}\share\copasi\doc\html\figures
-Source: {#MyStageDir}\bin\32\vcredist_x86.exe; DestDir: {app}; Flags: deleteafterinstall; Check: IsWin32();
-Source: {#MyStageDir}\bin\64\vcredist_x64.exe; DestDir: {app}; Flags: deleteafterinstall; Check: IsWin64(); 
+
+; Icons
+Source: {#MyStageDir}\share\copasi\icons\CopasiDoc.ico; DestDir: {app}\share\copasi\icons
+Source: {#MyStageDir}\share\copasi\icons\Copasi.ico; DestDir: {app}\share\copasi\icons
+
+; Examples
 Source: {#MyStageDir}\share\copasi\examples\YeastGlycolysis.gps; DestDir: {app}\share\copasi\examples
 Source: {#MyStageDir}\share\copasi\examples\brusselator.cps; DestDir: {app}\share\copasi\examples
 Source: {#MyStageDir}\share\copasi\examples\CircadianClock.cps; DestDir: {app}\share\copasi\examples
@@ -116,8 +122,12 @@ Source: {#MyStageDir}\share\copasi\examples\MAPK-HF96-layout.cps; DestDir: {app}
 Source: {#MyStageDir}\share\copasi\examples\Metabolism-2000Poo.xml; DestDir: {app}\share\copasi\examples
 Source: {#MyStageDir}\share\copasi\examples\NF-kappaB.cps; DestDir: {app}\share\copasi\examples
 Source: {#MyStageDir}\share\copasi\examples\Olsen2003_peroxidase.cps; DestDir: {app}\share\copasi\examples
-Source: {#MyStageDir}\share\copasi\icons\CopasiDoc.ico; DestDir: {app}\share\copasi\icons
-Source: {#MyStageDir}\share\copasi\icons\Copasi.ico; DestDir: {app}\share\copasi\icons
+Source: {#MyStageDir}\share\copasi\examples\brusselator.sedml; DestDir: {app}\share\copasi\examples
+Source: {#MyStageDir}\share\copasi\examples\NF-kappaB.sedml; DestDir: {app}\share\copasi\examples
+
+; VC Redistributable
+Source: {#MyStageDir}\bin\32\vcredist_x86.exe; DestDir: {app}; Flags: deleteafterinstall; Check: IsWin32();
+Source: {#MyStageDir}\bin\64\vcredist_x64.exe; DestDir: {app}; Flags: deleteafterinstall; Check: IsWin64(); 
 
 [Icons]
 Name: {group}\CopasiUI; Filename: {app}\{#MyAppExeName}; WorkingDir: {userdocs}
