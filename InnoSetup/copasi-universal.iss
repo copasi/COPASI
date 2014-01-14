@@ -123,9 +123,9 @@ Source: {#MyStageDir}\share\copasi\examples\Metabolism-2000Poo.xml; DestDir: {ap
 Source: {#MyStageDir}\share\copasi\examples\NF-kappaB.cps; DestDir: {app}\share\copasi\examples
 Source: {#MyStageDir}\share\copasi\examples\Olsen2003_peroxidase.cps; DestDir: {app}\share\copasi\examples
 Source: {#MyStageDir}\share\copasi\examples\brusselator.sedml; DestDir: {app}\share\copasi\examples
-Source: {#MyStageDir}\share\copasi\examples\brusselator-model.xml.sedml; DestDir: {app}\share\copasi\examples
+Source: {#MyStageDir}\share\copasi\examples\brusselator-model.xml; DestDir: {app}\share\copasi\examples
 Source: {#MyStageDir}\share\copasi\examples\NF-kappaB.sedml; DestDir: {app}\share\copasi\examples
-Source: {#MyStageDir}\share\copasi\examples\NF-kappaB-model.xml.sedml; DestDir: {app}\share\copasi\examples
+Source: {#MyStageDir}\share\copasi\examples\NF-kappaB-model.xml; DestDir: {app}\share\copasi\examples
 
 ; VC Redistributable
 Source: {#MyStageDir}\bin\32\vcredist_x86.exe; DestDir: {app}; Flags: deleteafterinstall; Check: IsWin32();
