@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -816,8 +816,6 @@ bool CCopasiXML::saveModel()
       endSaveElement("ListOfEvents");
     }
 
-#ifdef COPASI_PARAMETER_SETS
-
   // Save the model parameter sets
   Attributes.erase();
   const CModelParameterSet * pSet = & mpModel->getModelParameterSet();
@@ -874,7 +872,7 @@ bool CCopasiXML::saveModel()
 
   endSaveElement("ListOfModelParameterSets");
 
-#endif // COPASI_PARAMETER_SETS
+  // The State an state Template is only save for backwards compatibility
   startSaveElement("StateTemplate");
 
   Attributes.erase();
@@ -1870,7 +1868,7 @@ bool CCopasiXML::buildFunctionList()
   bool success = true;
 
   CCopasiVectorN< CFunction > * pFunctionList
-    = new CCopasiVectorN< CFunction >;
+  = new CCopasiVectorN< CFunction >;
 
   *pFunctionList = CCopasiRootContainer::getFunctionList()->getUsedFunctions(this->mpDataModel->getModel());
 
