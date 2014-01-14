@@ -202,12 +202,13 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
             for (unsigned int ic = 0; ic < p->getNumCurves(); ++ic)
               {
                 SedCurve *curve = p->getCurve(ic);
-                std::string SBMLTypeX, SBMLTypeY, xAxis, yAxis, xDataReference, yDataReference;
-                xDataReference = curve->getXDataReference();
-                yDataReference = curve->getYDataReference();
 
-                xAxis = getDataGeneratorModelItemRefrenceId(pSEDMLDocument, xDataReference, SBMLTypeX);
-                yAxis = getDataGeneratorModelItemRefrenceId(pSEDMLDocument, yDataReference, SBMLTypeY);
+                std::string xDataReference = curve->getXDataReference();
+                std::string yDataReference = curve->getYDataReference();
+
+                std::string SBMLTypeX, SBMLTypeY;
+                std::string xAxis = getDataGeneratorModelItemRefrenceId(pSEDMLDocument, xDataReference, SBMLTypeX);
+                std::string yAxis = getDataGeneratorModelItemRefrenceId(pSEDMLDocument, yDataReference, SBMLTypeY);
 
                 //create the curves
                 const CCopasiObject * tmpX = getObjectForSbmlId(pModel, xAxis, SBMLTypeX);
@@ -216,11 +217,10 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
                 if (tmpX != NULL && tmpY != NULL)
                   {
 
-                    CPlotDataChannelSpec  name2 = tmpY->getCN();
-                    const std::string&  itemTitle = tmpX->getObjectDisplayName();
+                    std::string  itemTitle = tmpY->getObjectDisplayName();
                     CPlotItem * plItem = pPl->createItem(itemTitle, CPlotItem::curve2d);
                     plItem->addChannel(tmpX->getCN());
-                    plItem->addChannel(name2);
+                    plItem->addChannel(tmpY->getCN());
                   }
 
                 logX = logX || (curve->isSetLogX() && curve->getLogX());
