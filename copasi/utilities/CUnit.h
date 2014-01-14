@@ -67,19 +67,18 @@ public:
   void setSymbol(std::string symbol);
   std::string getSymbol() const;
   bool isDimensionless() const;
+  void addComponent(const CUnitComponent & component);
 
 private:
 
   std::string mSymbol;
   std::string mKey;
   std::vector < CUnitComponent > mComponents;
-  bool mDimensionless;
 
   void setup(); // initilizations common to all constructors
 
 //  std::string getSimplifiedComponents const(); TODO
 //  bool setSimplifiedComponents();  TODO
-//  bool componentsAreDimensionless() const;  TODO
 
 };
 

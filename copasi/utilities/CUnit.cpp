@@ -3,6 +3,8 @@
 // of Manchester. 
 // All rights reserved. 
 
+#include <math.h>
+
 #include "copasi/utilities/CUnit.h"
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/report/CCopasiRootContainer.h"
@@ -74,11 +76,6 @@ CUnit::CUnit(QuantityUnit quantityEnum):
 void CUnit::setup()
 {
   mKey = CCopasiRootContainer::getKeyFactory()->add("Unit", this);
-
-  mDimensionless = false; // reasonable default
-
-  if (mSymbol == "dimensionless")  //TODO: base this on components analysis
-    mDimensionless = true;
 }
 
 void CUnit::setSymbol(std::string symbol)
@@ -91,12 +88,27 @@ std::string CUnit::getSymbol() const
   return mSymbol;
 }
 
+// See if the component units cancel (divide to 1).
+// The CUnitComponent::Kind enumerator uses only prime numbers.
+// Multiplying all the components should give 1, if numerators and
+// denominators have the same combination of units.
 bool CUnit::isDimensionless() const
 {
-  return mDimensionless;
+  std::vector< CUnitComponent >::const_iterator it = mComponents.begin();
+
+  double reduction = 1;
+
+  for(; it != mComponents.end(); it++)
+  {
+    reduction *= pow((double)(*it).getKind(), (*it).getExponent());
+  }
+  // If the vector is empy, it will loop 0 times, and the reduction
+  // will remain ==1 (i.e. dimensionless if no components)
+  return reduction == 1;
 }
 
-//bool CUnit::componentsAreDimensionless() const
-//{
-//  will process the mKind enums of the components
-//}
+void CUnit::addComponent(const CUnitComponent & component)
+{
+  mComponents.push_back(component);
+}
+

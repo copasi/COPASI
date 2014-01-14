@@ -5,22 +5,33 @@
 
 #include "copasi/utilities/CUnitComponent.h"
 
-CBaseUnit::Kind CUnitComponent::getKind()
+CUnitComponent::CUnitComponent(CBaseUnit::Kind kind,
+                               double multiplier,
+                               int scale,
+                               double exponent):
+  mKind(kind),
+  mMultiplier(multiplier),
+  mScale(scale),
+  mExponent(exponent)
+{
+}
+
+CBaseUnit::Kind CUnitComponent::getKind() const
 {
   return mKind;
 }
 
-double CUnitComponent::getMultiplier()
+double CUnitComponent::getMultiplier() const
 {
   return mMultiplier;
 }
 
-int CUnitComponent::getScale()
+int CUnitComponent::getScale() const
 {
   return mScale;
 }
 
-double CUnitComponent::getExponent()
+double CUnitComponent::getExponent() const
 {
   return mExponent;
 }

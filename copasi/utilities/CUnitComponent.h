@@ -17,10 +17,15 @@ class CUnitComponent
   
 public:
 
-  CBaseUnit::Kind getKind();
-  double getMultiplier();
-  int getScale();
-  double getExponent();
+  CUnitComponent(CBaseUnit::Kind kind = CBaseUnit::item,
+                 double multiplier = 1,
+                 int scale = 0,
+                 double exponent = 1);
+
+  CBaseUnit::Kind getKind() const;
+  double getMultiplier() const;
+  int getScale() const;
+  double getExponent() const;
 
   void setKind(CBaseUnit::Kind kind);
   void setMultiplier(double multiplier);
