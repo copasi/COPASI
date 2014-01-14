@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -372,6 +372,8 @@ const MESSAGES Messages[] =
     "correlation matrix can not be calculated."
   },
   {MCFitting + 13, "CFitting (13): Not enough memory available to calculate the Fisher Information Matrix."},
+  {MCFitting + 14, "CFitting (14): Failed to calculate the Eigen values and Eigen vectors of the Fisher Information Matrix."},
+  {MCFitting + 15, "CFitting (15): Failed to calculate the Eigen values and Eigen vectors of the scaled Fisher Information Matrix."},
 
   // CCopasiObject
   {MCObject + 1, "CObject (1): Circular dependencies detected for object '%s'."},

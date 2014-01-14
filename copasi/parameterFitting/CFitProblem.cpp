@@ -1465,42 +1465,46 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
       mFisherEigenvectors = mFisher;
 
-      char vv = 'v'; //also compute eigenvectors
-      char uu = 'u'; //upper triangle
-      //CMatrix<C_FLOAT64> A = mHessian;
-      C_INT lda = imax > 1 ? imax : 1;
-      //CVector<C_FLOAT64> ev; //the resulting eigenvalues
-      //ev.resize(imax);
-      CVector<C_FLOAT64> work; //work space
-      work.resize(1);
-      C_INT lwork = -1; //first query the memory need
-      C_INT info;
+      char JOBZ = 'V'; //also compute eigenvectors
+      char UPLO = 'U'; //upper triangle
+      C_INT N = (C_INT) imax;
+      C_INT LDA = std::max< C_INT >(1, N);
+      CVector<C_FLOAT64> WORK; //WORK space
+      WORK.resize(1);
+      C_INT LWORK = -1; //first query the memory need
+      C_INT INFO = 0;
 
-      dsyev_(&vv,
-             &uu,
-             (C_INT*)&imax,
+      dsyev_(&JOBZ,
+             &UPLO,
+             &N,
              mFisherEigenvectors.array(),
-             &lda,
+             &LDA,
              mFisherEigenvalues.array(),
-             work.array(),
-             &lwork,
-             &info);
+             WORK.array(),
+             &LWORK,
+             &INFO);
 
-      lwork = (C_INT) work[0];
-      work.resize(lwork);
+      LWORK = (C_INT) WORK[0];
+      WORK.resize(LWORK);
 
       //now do the real calculation
-      dsyev_(&vv,
-             &uu,
-             (C_INT*)&imax,
+      dsyev_(&JOBZ,
+             &UPLO,
+             &N,
              mFisherEigenvectors.array(),
-             &lda,
+             &LDA,
              mFisherEigenvalues.array(),
-             work.array(),
-             &lwork,
-             &info);
+             WORK.array(),
+             &LWORK,
+             &INFO);
 
-      assert(info == 0);
+      if (INFO != 0)
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 14);
+
+          mFisherEigenvectors = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+          mFisherEigenvalues = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+        }
 
       for (i = 0; i < imax; i++)
         {
@@ -1512,34 +1516,24 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
       mFisherScaledEigenvectors = mFisherScaled;
 
-      work.resize(1);
-      lwork = -1; //first query the memory need
-
-      dsyev_(&vv,
-             &uu,
-             (C_INT*)&imax,
-             mFisherScaledEigenvectors.array(),
-             &lda,
-             mFisherScaledEigenvalues.array(),
-             work.array(),
-             &lwork,
-             &info);
-
-      lwork = (C_INT) work[0];
-      work.resize(lwork);
-
       //now do the real calculation
-      dsyev_(&vv,
-             &uu,
-             (C_INT*)&imax,
+      dsyev_(&JOBZ,
+             &UPLO,
+             &N,
              mFisherScaledEigenvectors.array(),
-             &lda,
+             &LDA,
              mFisherScaledEigenvalues.array(),
-             work.array(),
-             &lwork,
-             &info);
+             WORK.array(),
+             &LWORK,
+             &INFO);
 
-      assert(info == 0);
+      if (INFO != 0)
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 15);
+
+          mFisherScaledEigenvectors = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+          mFisherScaledEigenvalues = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+        }
 
       mCorrelation = mFisher;
 
@@ -1597,11 +1591,10 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
        */
 
       char U = 'U';
-      C_INT N = (C_INT) imax;
 
-      dpotrf_(&U, &N, mCorrelation.array(), &N, &info);
+      dpotrf_(&U, &N, mCorrelation.array(), &N, &INFO);
 
-      if (info)
+      if (INFO)
         {
           mCorrelation = std::numeric_limits<C_FLOAT64>::quiet_NaN();
           mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -1653,14 +1646,14 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
        *
        */
 
-      dpotri_(&U, &N, mCorrelation.array(), &N, &info);
+      dpotri_(&U, &N, mCorrelation.array(), &N, &INFO);
 
-      if (info)
+      if (INFO)
         {
           mCorrelation = std::numeric_limits<C_FLOAT64>::quiet_NaN();
           mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-          CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, info);
+          CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, INFO);
 
           // Make sure the timer is accurate.
           (*mCPUTime.getRefresh())();
