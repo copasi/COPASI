@@ -451,6 +451,11 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 
               case LIBSEDML_SEV_WARNING:
 
+                // if issued as warning, this message is to be disregarded,
+                // it was a bug in earlier versions of libSEDML
+                if (pSEDMLError->getErrorId() == SedInvalidNamespaceOnSed)
+                  continue;
+
                 if (mIgnoredSEDMLMessages.find(pSEDMLError->getErrorId())
                     != mIgnoredSEDMLMessages.end())
                   {
