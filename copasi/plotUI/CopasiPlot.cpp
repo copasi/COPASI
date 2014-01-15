@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -545,7 +545,7 @@ QwtDoubleRect CHistoCurveData::boundingRect() const
     {
       //TODO use pointer increments instead of [...]
       *pX = it->first * mIncrement;
-      *pY = (double)it->second * tmpFactor;
+      *pY = (double)it->second * 100.0 / (double)mSize;
 
       if (*pX < mMinX)
         mMinX = *pX;
@@ -879,6 +879,8 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   pVisible = Visible.array();
   C2DPlotCurve ** ppCurve = mCurves.array();
   unsigned long int k = 0;
+  bool needLeft = false;
+  bool needRight = false;
 
   for (; itPlotItem != endPlotItem; ++itPlotItem, ++pVisible, ++ppCurve, ++k)
     {
@@ -910,6 +912,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
       if (pCurve->getType() == CPlotItem::curve2d
           || pCurve->getType() == CPlotItem::bandedGraph)
         {
+          needLeft = true;
           pCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
 
           unsigned C_INT32 linetype = *(*itPlotItem)->getValue("Line type").pUINT;
@@ -996,6 +999,8 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
           pCurve->setStyle(QwtPlotCurve::Steps);
           pCurve->setYAxis(QwtPlot::yRight);
           pCurve->setCurveAttribute(QwtPlotCurve::Inverted);
+
+          needRight = true;
         }
     }
 
@@ -1012,6 +1017,15 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
     setAxisScaleEngine(yLeft, new QwtLinearScaleEngine());
 
   setAxisAutoScale(yLeft);
+
+  enableAxis(yLeft, needLeft);
+
+  if (needRight)
+    {
+      setAxisScaleEngine(yRight, new QwtLinearScaleEngine());
+      setAxisTitle(yRight, "Percent %");
+      enableAxis(yRight);
+    }
 
   mIgnoreUpdate = false;
 
