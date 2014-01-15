@@ -204,7 +204,9 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
                 SedCurve *curve = p->getCurve(ic);
 
                 std::string xDataReference = curve->getXDataReference();
+
                 std::string yDataReference = curve->getYDataReference();
+                const SedDataGenerator* yGenerator = pSEDMLDocument->getDataGenerator(yDataReference);
 
                 std::string SBMLTypeX, SBMLTypeY;
                 std::string xAxis = getDataGeneratorModelItemRefrenceId(pSEDMLDocument, xDataReference, SBMLTypeX);
@@ -217,8 +219,17 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
                 if (tmpX != NULL && tmpY != NULL)
                   {
 
-                    std::string  itemTitle = tmpY->getObjectDisplayName();
+                    std::string  itemTitle;
+
+                    if (curve->isSetName())
+                      itemTitle = curve->getName();
+                    else if (yGenerator != NULL && yGenerator->isSetName())
+                      itemTitle = yGenerator->getName();
+                    else
+                      itemTitle = tmpY->getObjectDisplayName();
+
                     CPlotItem * plItem = pPl->createItem(itemTitle, CPlotItem::curve2d);
+                    plItem->setValue("Line width", 2.0);
                     plItem->addChannel(tmpX->getCN());
                     plItem->addChannel(tmpY->getCN());
                   }
