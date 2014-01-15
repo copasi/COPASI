@@ -245,7 +245,9 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
                 SedCurve *curve = p->getCurve(ic);
 
                 std::string xDataReference = curve->getXDataReference();
+
                 std::string yDataReference = curve->getYDataReference();
+                const SedDataGenerator* yGenerator = pSEDMLDocument->getDataGenerator(yDataReference);
 
                 const SedDataGenerator* xGenerator = pSEDMLDocument->getDataGenerator(xDataReference);
                 const SedDataGenerator* yGenerator = pSEDMLDocument->getDataGenerator(yDataReference);
