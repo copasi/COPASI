@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1054,14 +1054,13 @@ bool CCopasiDataModel::importSEDMLFromString(const std::string& sedmlDocumentTex
   std::map<CCopasiObject*, SBase*> Copasi2SBMLMap;
 
   SBMLDocument * pSBMLDocument = NULL;
-  CTrajectoryTask *trajTask = NULL;
   CListOfLayouts * pLol = NULL;
   COutputDefinitionVector *pLotList = NULL; // = new COutputDefinitionVector("OutputDefinitions", this);
 
   try
     {
-      pModel = importer.parseSEDML(sedmlDocumentText, pImportHandler, CCopasiRootContainer::getFunctionList(), pSBMLDocument, pSEDMLDocument,
-                                   Copasi2SEDMLMap, Copasi2SBMLMap, pLol, trajTask, pLotList, this);
+      pModel = importer.parseSEDML(sedmlDocumentText, pImportHandler, pSBMLDocument, pSEDMLDocument,
+                                   Copasi2SEDMLMap, Copasi2SBMLMap, pLol, pLotList, this);
     }
 
   catch (CCopasiException & except)
@@ -1151,8 +1150,8 @@ bool CCopasiDataModel::importSEDML(const std::string & fileName,
       mData.mSEDMLFileName = CDirEntry::normalize(FileName);
       mData.mReferenceDir = CDirEntry::dirName(mData.mSEDMLFileName);
 
-      pModel = importer.readSEDML(FileName, pImportHandler, CCopasiRootContainer::getFunctionList(), pSBMLDocument, pSEDMLDocument,
-                                  Copasi2SEDMLMap, Copasi2SBMLMap, pLol, trajTask, pLotList, this);
+      pModel = importer.readSEDML(FileName, pImportHandler, pSBMLDocument, pSEDMLDocument,
+                                  Copasi2SEDMLMap, Copasi2SBMLMap, pLol, pLotList, this);
     }
 
   catch (CCopasiException & except)
@@ -1194,9 +1193,8 @@ bool CCopasiDataModel::importSEDML(const std::string & fileName,
     }
 
   commonAfterLoad(pImportHandler, deleteOldData);
-
-  //update the Task List with new time course task
-  updateTaskList(CCopasiTask::timeCourse, trajTask);
+  // common after load resets all tasks, so we need to reset them.
+  importer.importTasks(Copasi2SEDMLMap);
 
   mData.pCurrentSEDMLDocument = pSEDMLDocument;
   mData.mCopasi2SEDMLMap = Copasi2SEDMLMap;
@@ -1273,11 +1271,8 @@ std::string CCopasiDataModel::exportSEDMLToString(CProcessReport* pExportHandler
     }
 
   CSEDMLExporter exporter;
-//  exporter.setExportCOPASIMIRIAM(exportCOPASIMIRIAM);
   std::string sbmlDocument = this->exportSBMLToString(pExportHandler, 2, 4);
   std::string str = exporter.exportModelAndTasksToString(*this, sbmlDocument, sedmlLevel, sedmlVersion);
-  std::cout << "sedml: " << str << std::endl;
-  std::cout << sbmlDocument << std::endl;
 
   // if we have saved the original SEDML model somewhere
   // we have to reset it
@@ -1287,28 +1282,6 @@ std::string CCopasiDataModel::exportSEDMLToString(CProcessReport* pExportHandler
     }
 
   return str;
-}
-
-void CCopasiDataModel::updateTaskList(const CCopasiTask::Type & taskType, CCopasiTask *upTask)
-{
-  switch (taskType)
-    {
-      case CCopasiTask::steadyState:
-        break;
-
-      case CCopasiTask::timeCourse:
-        //CTrajectoryTask *pTask = new CTrajectoryTask(mData.pTaskList);
-        CCopasiTask* pTask = (*mData.pTaskList)[CCopasiTask::timeCourse];
-        CTrajectoryTask * ppTask = static_cast<CTrajectoryTask *>(upTask);
-        CTrajectoryProblem* newProblem = static_cast<CTrajectoryProblem*>(pTask->getProblem());
-        CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(ppTask->getProblem());
-        newProblem->setDuration(tProblem->getDuration());
-        newProblem->setOutputStartTime(tProblem->getOutputStartTime());
-        newProblem->setStepNumber(tProblem->getStepNumber());
-        newProblem->setStepSize(tProblem->getStepSize());
-        //  pTask->getProblem()->setModel(mData.pModel);
-        break;
-    }
 }
 
 bool CCopasiDataModel::exportSEDML(const std::string & fileName, bool overwriteFile, int sedmlLevel, int sedmlVersion, bool /*exportIncomplete*/, bool exportCOPASIMIRIAM, CProcessReport* pExportHandler)
