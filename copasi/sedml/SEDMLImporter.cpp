@@ -202,6 +202,32 @@ const CCopasiObject *getObjectForSbmlId(CModel* pModel, const std::string& id, c
         }
     }
 
+  else if (SBMLType == "compartment")
+    {
+      size_t iComp, imax = pModel->getCompartments().size();
+
+      for (iComp = 0; iComp < imax; ++iComp)
+        {
+          if (pModel->getCompartments()[iComp]->getSBMLId() == id)
+            {
+              return pModel->getCompartments()[iComp]->getValueReference();
+            }
+        }
+    }
+
+  else if (SBMLType == "reaction")
+    {
+      size_t iReaction, imax = pModel->getReactions().size();
+
+      for (iReaction = 0; iReaction < imax; ++iReaction)
+        {
+          if (pModel->getReactions()[iReaction]->getSBMLId() == id)
+            {
+              return pModel->getReactions()[iReaction]->getFluxReference();
+            }
+        }
+    }
+
   return NULL;
 }
 
