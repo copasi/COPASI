@@ -107,8 +107,7 @@ CTrajectoryTask* SEDMLImporter::createCTrajectoryTaskFromSimulation(SedSimulatio
     {
       case SEDML_SIMULATION_UNIFORMTIMECOURSE:
       {
-
-        ;             SedUniformTimeCourse* tc = static_cast<SedUniformTimeCourse*>(sedmlsim);
+        SedUniformTimeCourse* tc = static_cast<SedUniformTimeCourse*>(sedmlsim);
         tProblem->setOutputStartTime(tc->getOutputStartTime());
         tProblem->setDuration(tc->getOutputEndTime() - tc->getOutputStartTime());
         tProblem->setStepNumber(tc->getNumberOfPoints());
@@ -549,6 +548,11 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCSEDML + 2);
         }
 
+      if (iiMax > 1)
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, "COAPSI currently only supports the import of SED-ML models, that involve one model only. Only the simulations for the first model will be imported");
+        }
+
       std::string modelSource = ""; //must be taken from SEDML document.
       std::string modelId = ""; // to ensure only one model is imported since only one model in SEDML file is supported
 
@@ -583,9 +587,14 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
       //std::cout<<fileContent<<std::endl;
       //experiment SEDML
       //  pDataModel->getSEDMLFileName();
+
       std::string FileName;
-      FileName = CDirEntry::dirName(pDataModel->getSEDMLFileName())
-                 + CDirEntry::Separator + modelSource;
+
+      if (CDirEntry::exist(modelSource))
+        FileName = modelSource;
+      else
+        FileName = CDirEntry::dirName(pDataModel->getSEDMLFileName())
+                   + CDirEntry::Separator + modelSource;
 
       std::ifstream file(CLocaleString::fromUtf8(FileName).c_str());
 
