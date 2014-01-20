@@ -157,7 +157,7 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
     }
 }
 
-const CCopasiObject *getObjectForSbmlId(CModel* pModel, const std::string& id, const std::string& SBMLType)
+const CCopasiObject *getObjectForSbmlId(CModel* pModel, const std::string& id, const std::string& SBMLType, bool initial = false)
 {
   if (SBMLType == "Time")
     return static_cast<const CCopasiObject *>(pModel->getObject(CCopasiObjectName("Reference=Time")));
@@ -173,6 +173,9 @@ const CCopasiObject *getObjectForSbmlId(CModel* pModel, const std::string& id, c
 
           if (pModel->getMetabolites()[iMet]->getSBMLId() == id)
             {
+              if (initial)
+                return pModel->getMetabolites()[iMet]->getInitialConcentrationReference();
+
               return pModel->getMetabolites()[iMet]->getConcentrationReference();
             }
         }
@@ -185,6 +188,9 @@ const CCopasiObject *getObjectForSbmlId(CModel* pModel, const std::string& id, c
         {
           if (pModel->getReactions()[iMet]->getSBMLId() == id)
             {
+              if (initial)
+                return NULL;
+
               return pModel->getReactions()[iMet]->getFluxReference();
             }
         }
@@ -197,6 +203,9 @@ const CCopasiObject *getObjectForSbmlId(CModel* pModel, const std::string& id, c
         {
           if (pModel->getModelValues()[iMet]->getSBMLId() == id)
             {
+              if (initial)
+                return pModel->getModelValues()[iMet]->getInitialValueReference();
+
               return pModel->getModelValues()[iMet]->getValueReference();
             }
         }
@@ -210,20 +219,10 @@ const CCopasiObject *getObjectForSbmlId(CModel* pModel, const std::string& id, c
         {
           if (pModel->getCompartments()[iComp]->getSBMLId() == id)
             {
+              if (initial)
+                return pModel->getCompartments()[iComp]->getInitialValueReference();
+
               return pModel->getCompartments()[iComp]->getValueReference();
-            }
-        }
-    }
-
-  else if (SBMLType == "reaction")
-    {
-      size_t iReaction, imax = pModel->getReactions().size();
-
-      for (iReaction = 0; iReaction < imax; ++iReaction)
-        {
-          if (pModel->getReactions()[iReaction]->getSBMLId() == id)
-            {
-              return pModel->getReactions()[iReaction]->getFluxReference();
             }
         }
     }
