@@ -21,16 +21,8 @@
 #include <cmath>
 #include <algorithm>
 
-#include <sedml/SedReader.h>
-#include <sedml/SedDocument.h>
-#include <sedml/SedModel.h>
-#include <sedml/SedSimulation.h>
-#include <sedml/SedUniformTimeCourse.h>
-#include <sedml/SedDataGenerator.h>
-#include <sedml/SedPlot2D.h>
-//#include <sedml/SedOutput.h>
-
 #include <sedml/SedTypes.h>
+#include <sbml/math/FormulaFormatter.h>
 
 #include "copasi.h"
 
@@ -71,6 +63,9 @@
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotSpecification.h"
 
+#include <steadystate/CSteadyStateTask.h>
+#include <scan/CScanTask.h>
+
 #include "SEDMLImporter.h"
 #include "SEDMLUtils.h"
 
@@ -94,24 +89,52 @@ const std::string SEDMLImporter::getArchiveFileName()
  * Creates and returns a COPASI CTrajectoryTask from the SEDML simulation
  * given as argument.
  */
-CTrajectoryTask* SEDMLImporter::createCTrajectoryTaskFromSimulation(SedSimulation* sedmlsim,
+void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
     std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap)
 {
 
-  CTrajectoryTask *tTask = new CTrajectoryTask();
-
-  CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(tTask->getProblem());
-
-  //SedSimulation* current = doc->getSimulation(0);
   switch (sedmlsim->getTypeCode())
     {
       case SEDML_SIMULATION_UNIFORMTIMECOURSE:
       {
+
+        CTrajectoryTask *tTask = static_cast<CTrajectoryTask*>((*mpDataModel->getTaskList())[CCopasiTask::timeCourse]);
+
+        CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(tTask->getProblem());
         SedUniformTimeCourse* tc = static_cast<SedUniformTimeCourse*>(sedmlsim);
         tProblem->setOutputStartTime(tc->getOutputStartTime());
         tProblem->setDuration(tc->getOutputEndTime() - tc->getOutputStartTime());
         tProblem->setStepNumber(tc->getNumberOfPoints());
-        //  tMethod->setProblem(tProblem);
+
+        // TODO read kisao terms
+
+        break;
+      }
+
+      case SEDML_SIMULATION_ONESTEP:
+      {
+
+        CTrajectoryTask *tTask = static_cast<CTrajectoryTask*>((*mpDataModel->getTaskList())[CCopasiTask::timeCourse]);
+
+        CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(tTask->getProblem());
+        SedOneStep* step = static_cast<SedOneStep*>(sedmlsim);
+        tProblem->setOutputStartTime(0);
+        tProblem->setDuration(step->getStep());
+        tProblem->setStepNumber(1);
+
+        // TODO read kisao terms
+
+        break;
+      }
+
+      case SEDML_SIMULATION_STEADYSTATE:
+      {
+        // nothing to be done for this one
+        CSteadyStateTask *tTask = static_cast<CSteadyStateTask*>((*mpDataModel->getTaskList())[CCopasiTask::steadyState]);
+
+        // TODO read kisao terms
+        //CCopasiProblem* tProblem = static_cast<CCopasiProblem*>(tTask->getProblem());
+        //SedSteadyState* tc = static_cast<SedSteadyState*>(sedmlsim);
 
         break;
       }
@@ -120,11 +143,9 @@ CTrajectoryTask* SEDMLImporter::createCTrajectoryTaskFromSimulation(SedSimulatio
         CCopasiMessage(CCopasiMessage::EXCEPTION, "SEDMLImporter Error: encountered unknown simulation.");
         break;
     }
-
-  return tTask;
 }
 
-const CCopasiObject *getObjectForSbmlId(CModel* pModel, const std::string& id, const std::string& SBMLType)
+const CCopasiObject *getObjectForSbmlId(CModel* pModel, const std::string& id, const std::string& SBMLType, bool initial = false)
 {
   if (SBMLType == "Time")
     return static_cast<const CCopasiObject *>(pModel->getObject(CCopasiObjectName("Reference=Time")));
@@ -140,6 +161,9 @@ const CCopasiObject *getObjectForSbmlId(CModel* pModel, const std::string& id, c
 
           if (pModel->getMetabolites()[iMet]->getSBMLId() == id)
             {
+              if (initial)
+                return pModel->getMetabolites()[iMet]->getInitialConcentrationReference();
+
               return pModel->getMetabolites()[iMet]->getConcentrationReference();
             }
         }
@@ -152,6 +176,9 @@ const CCopasiObject *getObjectForSbmlId(CModel* pModel, const std::string& id, c
         {
           if (pModel->getReactions()[iMet]->getSBMLId() == id)
             {
+              if (initial)
+                return NULL;
+
               return pModel->getReactions()[iMet]->getFluxReference();
             }
         }
@@ -164,6 +191,9 @@ const CCopasiObject *getObjectForSbmlId(CModel* pModel, const std::string& id, c
         {
           if (pModel->getModelValues()[iMet]->getSBMLId() == id)
             {
+              if (initial)
+                return pModel->getModelValues()[iMet]->getInitialValueReference();
+
               return pModel->getModelValues()[iMet]->getValueReference();
             }
         }
@@ -177,20 +207,10 @@ const CCopasiObject *getObjectForSbmlId(CModel* pModel, const std::string& id, c
         {
           if (pModel->getCompartments()[iComp]->getSBMLId() == id)
             {
+              if (initial)
+                return pModel->getCompartments()[iComp]->getInitialValueReference();
+
               return pModel->getCompartments()[iComp]->getValueReference();
-            }
-        }
-    }
-
-  else if (SBMLType == "reaction")
-    {
-      size_t iReaction, imax = pModel->getReactions().size();
-
-      for (iReaction = 0; iReaction < imax; ++iReaction)
-        {
-          if (pModel->getReactions()[iReaction]->getSBMLId() == id)
-            {
-              return pModel->getReactions()[iReaction]->getFluxReference();
             }
         }
     }
@@ -348,13 +368,11 @@ std::string SEDMLImporter::getDataGeneratorModelItemRefrenceId(SedDocument *pSED
  */
 CModel* SEDMLImporter::readSEDML(std::string filename,
                                  CProcessReport* pImportHandler,
-                                 CFunctionDB* funDB,
                                  SBMLDocument *& pSBMLDocument,
                                  SedDocument*& pSedDocument,
                                  std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap,
                                  std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
                                  CListOfLayouts *& prLol,
-                                 CTrajectoryTask *& trajTask,
                                  COutputDefinitionVector * &plotList,
                                  CCopasiDataModel* pDataModel)
 {
@@ -379,15 +397,15 @@ CModel* SEDMLImporter::readSEDML(std::string filename,
 
   //using libzip to read SEDML file
   /*  SEDMLUtils utils;
-    std::string SEDMLFileName, fileContent("");
-    SEDMLFileName = "sedml.xml";
+  std::string SEDMLFileName, fileContent("");
+  SEDMLFileName = "sedml.xml";
 
-    int success = utils.processArchive(filename, SEDMLFileName, fileContent);*/
+  int success = utils.processArchive(filename, SEDMLFileName, fileContent);*/
 
   pDataModel->setSEDMLFileName(filename);
 
-  return this->parseSEDML(stringStream.str(), pImportHandler, funDB,
-                          pSBMLDocument, pSedDocument, copasi2sedmlmap, copasi2sbmlmap, prLol, trajTask, plotList, pDataModel);
+  return this->parseSEDML(stringStream.str(), pImportHandler,
+                          pSBMLDocument, pSedDocument, copasi2sedmlmap, copasi2sbmlmap, prLol,  plotList, pDataModel);
 }
 /**
  * Function parses an SEDML document with libsedml and converts it to a COPASI CModel
@@ -397,13 +415,11 @@ CModel* SEDMLImporter::readSEDML(std::string filename,
 CModel*
 SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
                           CProcessReport* pImportHandler,
-                          CFunctionDB* funDB,
                           SBMLDocument *& pSBMLDocument,
                           SedDocument *& pSEDMLDocument,
                           std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap,
                           std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
                           CListOfLayouts *& prLol,
-                          CTrajectoryTask *& trajTask,
                           COutputDefinitionVector * & pPlotList,
                           CCopasiDataModel* pDataModel)
 {
@@ -415,285 +431,397 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 
   this->mpCopasiModel = NULL;
 
-  if (funDB != NULL)
+  SedReader reader;
+
+  mImportStep = 0;
+
+  if (mpImportHandler)
     {
-      this->functionDB = funDB;
-      SedReader* reader = new SedReader();
+      mpImportHandler->setName("Importing SED-ML file...");
+      mTotalSteps = 11;
+      mhImportStep = mpImportHandler->addItem("Step", mImportStep,
+                                              &mTotalSteps);
+    }
 
-      mImportStep = 0;
+  unsigned C_INT32 step = 0, totalSteps = 0;
+  size_t hStep = C_INVALID_INDEX;
 
-      if (mpImportHandler)
+  if (this->mpImportHandler != 0)
+    {
+      step = 0;
+      totalSteps = 1;
+      hStep = mpImportHandler->addItem("Reading SED-ML file...", step,
+                                       &totalSteps);
+    }
+
+  mpSEDMLDocument = reader.readSedMLFromString(sedmlDocumentText);
+
+  assert(mpSEDMLDocument != NULL);
+
+  if (mpImportHandler)
+    mpImportHandler->finishItem(hStep);
+
+  if (this->mpImportHandler != 0)
+    {
+      step = 0;
+      totalSteps = 1;
+      hStep = mpImportHandler->addItem("Checking consistency...", step,
+                                       &totalSteps);
+    }
+
+  if (mpImportHandler)
+    mpImportHandler->finishItem(hStep);
+
+  int fatal = -1;
+  unsigned int i, iMax = mpSEDMLDocument->getNumErrors();
+
+  for (i = 0; (i < iMax) && (fatal == -1); ++i)
+    {
+      const SedError* pSEDMLError = mpSEDMLDocument->getError(i);
+
+      CCopasiMessage::Type messageType = CCopasiMessage::RAW;
+
+      switch (pSEDMLError->getSeverity())
         {
-          mpImportHandler->setName("Importing SED-ML file...");
-          mTotalSteps = 11;
-          mhImportStep = mpImportHandler->addItem("Step", mImportStep,
-                                                  &mTotalSteps);
-        }
 
-      unsigned C_INT32 step = 0, totalSteps = 0;
-      size_t hStep = C_INVALID_INDEX;
+          case LIBSEDML_SEV_WARNING:
 
-      if (this->mpImportHandler != 0)
-        {
-          step = 0;
-          totalSteps = 1;
-          hStep = mpImportHandler->addItem("Reading SED-ML file...", step,
-                                           &totalSteps);
-        }
+            // if issued as warning, this message is to be disregarded,
+            // it was a bug in earlier versions of libSEDML
+            if (pSEDMLError->getErrorId() == SedInvalidNamespaceOnSed)
+              continue;
 
-      SedDocument* sedmlDoc = reader->readSedMLFromString(sedmlDocumentText);
+            if (mIgnoredSEDMLMessages.find(pSEDMLError->getErrorId())
+                != mIgnoredSEDMLMessages.end())
+              {
+                messageType = CCopasiMessage::WARNING_FILTERED;
+              }
+            else
+              {
+                messageType = CCopasiMessage::WARNING;
+              }
 
-      assert(sedmlDoc != NULL);
+            CCopasiMessage(messageType, MCSEDML + 6, "WARNING",
+                           pSEDMLError->getErrorId(), pSEDMLError->getLine(),
+                           pSEDMLError->getColumn(),
+                           pSEDMLError->getMessage().c_str());
+            break;
 
-      if (mpImportHandler)
-        mpImportHandler->finishItem(hStep);
+          case LIBSEDML_SEV_ERROR:
 
-      if (this->mpImportHandler != 0)
-        {
-          step = 0;
-          totalSteps = 1;
-          hStep = mpImportHandler->addItem("Checking consistency...", step,
-                                           &totalSteps);
-        }
+            if (mIgnoredSEDMLMessages.find(pSEDMLError->getErrorId())
+                != mIgnoredSEDMLMessages.end())
+              {
+                messageType = CCopasiMessage::ERROR_FILTERED;
+              }
 
-      //    if (CCopasiRootContainer::getConfiguration()->validateUnits())
+            CCopasiMessage(messageType, MCSEDML + 6, "ERROR",
+                           pSEDMLError->getErrorId(), pSEDMLError->getLine(),
+                           pSEDMLError->getColumn(),
+                           pSEDMLError->getMessage().c_str());
+            break;
 
-      if (mpImportHandler)
-        mpImportHandler->finishItem(hStep);
+          case LIBSEDML_SEV_FATAL:
 
-      int fatal = -1;
-      unsigned int i, iMax = sedmlDoc->getNumErrors();
-      //  std::cout<<"Errors: "<<iMax<<std::endl;
+            // treat unknown as fatal
+          default:
 
-      for (i = 0; (i < iMax) && (fatal == -1); ++i)
-        {
-          const SedError* pSEDMLError = sedmlDoc->getError(i);
-
-          CCopasiMessage::Type messageType = CCopasiMessage::RAW;
-
-          switch (pSEDMLError->getSeverity())
-            {
-
-              case LIBSEDML_SEV_WARNING:
-
-                // if issued as warning, this message is to be disregarded,
-                // it was a bug in earlier versions of libSEDML
-                if (pSEDMLError->getErrorId() == SedInvalidNamespaceOnSed)
-                  continue;
-
-                if (mIgnoredSEDMLMessages.find(pSEDMLError->getErrorId())
-                    != mIgnoredSEDMLMessages.end())
-                  {
-                    messageType = CCopasiMessage::WARNING_FILTERED;
-                  }
-                else
-                  {
-                    messageType = CCopasiMessage::WARNING;
-                  }
-
-                CCopasiMessage(messageType, MCSEDML + 6, "WARNING",
-                               pSEDMLError->getErrorId(), pSEDMLError->getLine(),
-                               pSEDMLError->getColumn(),
-                               pSEDMLError->getMessage().c_str());
-                break;
-
-              case LIBSEDML_SEV_ERROR:
-
-                if (mIgnoredSEDMLMessages.find(pSEDMLError->getErrorId())
-                    != mIgnoredSEDMLMessages.end())
-                  {
-                    messageType = CCopasiMessage::ERROR_FILTERED;
-                  }
-
+            if (pSEDMLError->getErrorId() == 10804)
+              {
+                // this error indicates a problem with a notes element
+                // although libsedml flags this as fatal, we would still
+                // like to read the model
                 CCopasiMessage(messageType, MCSEDML + 6, "ERROR",
                                pSEDMLError->getErrorId(), pSEDMLError->getLine(),
                                pSEDMLError->getColumn(),
                                pSEDMLError->getMessage().c_str());
-                break;
+              }
+            else
+              {
+                fatal = i;
+              }
 
-              case LIBSEDML_SEV_FATAL:
-
-                // treat unknown as fatal
-              default:
-
-                if (pSEDMLError->getErrorId() == 10804)
-                  {
-                    // this error indicates a problem with a notes element
-                    // although libsedml flags this as fatal, we would still
-                    // like to read the model
-                    CCopasiMessage(messageType, MCSEDML + 6, "ERROR",
-                                   pSEDMLError->getErrorId(), pSEDMLError->getLine(),
-                                   pSEDMLError->getColumn(),
-                                   pSEDMLError->getMessage().c_str());
-                  }
-                else
-                  {
-                    fatal = i;
-                  }
-
-                break;
-            }
+            break;
         }
+    }
 
-      if (fatal != -1)
-        {
-          const XMLError* pSEDMLError = sedmlDoc->getError(fatal);
-          CCopasiMessage Message(CCopasiMessage::EXCEPTION, MCXML + 2,
-                                 pSEDMLError->getLine(), pSEDMLError->getColumn(),
-                                 pSEDMLError->getMessage().c_str());
-
-          if (mpImportHandler)
-            mpImportHandler->finishItem(mhImportStep);
-
-          return NULL;
-        }
-
-      if (sedmlDoc->getListOfModels() == NULL)
-        {
-          CCopasiMessage Message(CCopasiMessage::ERROR, MCSEDML + 2);
-
-          if (mpImportHandler)
-            mpImportHandler->finishItem(mhImportStep);
-
-          return NULL;
-        }
-
-      //delete reader;
-      pSEDMLDocument = sedmlDoc;
-      this->mLevel = pSEDMLDocument->getLevel();
-
-      this->mOriginalLevel = this->mLevel;
-      this->mVersion = pSEDMLDocument->getVersion();
-
-      std::string SBMLFileName, fileContent;
-
-      unsigned int ii, iiMax = pSEDMLDocument->getListOfModels()->size();
-
-      if (iiMax < 1)
-        {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSEDML + 2);
-        }
-
-      if (iiMax > 1)
-        {
-          CCopasiMessage(CCopasiMessage::WARNING, "COAPSI currently only supports the import of SED-ML models, that involve one model only. Only the simulations for the first model will be imported");
-        }
-
-      std::string modelSource = ""; //must be taken from SEDML document.
-      std::string modelId = ""; // to ensure only one model is imported since only one model in SEDML file is supported
-
-      for (ii = 0; ii < iiMax; ++ii)
-        {
-          SedModel* sedmlModel = sedmlDoc->getModel(ii);
-
-          // need to also allow for the specific urns like
-          // urn:sedml:language:sbml.level-3.version-1
-          if (sedmlModel->getLanguage().find("urn:sedml:language:sbml") == std::string::npos)
-            CCopasiMessage(CCopasiMessage::EXCEPTION,
-                           "Sorry currently, only SBML models are supported.");
-
-          if (sedmlModel->getSource() != modelId)
-            {
-              modelId = sedmlModel->getId();
-
-              if ((sedmlModel->getListOfChanges()->size()) > 0)
-                CCopasiMessage(CCopasiMessage::WARNING, "Currently no support for"
-                               " changing model entities. Changes will not be made to the imported model.");
-
-              modelSource = sedmlModel->getSource();
-            }
-        }
-
-      assert(modelSource != "");
-
-      //process the archive file and get the SBML model file
-      //SEDMLUtils utils;
-      //int success = utils.processArchive(pDataModel->getSEDMLFileName(), SBMLFileName, fileContent);
-
-      std::string FileName;
-
-      if (CDirEntry::exist(modelSource))
-        FileName = modelSource;
-      else
-        FileName = CDirEntry::dirName(pDataModel->getSEDMLFileName())
-                   + CDirEntry::Separator + modelSource;
-
-      std::ifstream file(CLocaleString::fromUtf8(FileName).c_str());
-
-      if (!file)
-        {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSEDML + 4,
-                         FileName.c_str());
-        }
-
-      //set the SBML file name for later use
-      pDataModel->setSBMLFileName(FileName);
-      std::ostringstream sbmlStringStream;
-      char c;
-
-      while (file.get(c))
-        {
-          sbmlStringStream << c;
-        }
-
-      file.clear();
-      file.close();
-
-      std::ifstream File(CLocaleString::fromUtf8(FileName).c_str());
-
-      SBMLImporter importer;
-      // Right now we always import the COPASI MIRIAM annotation if it is there.
-      // Later this will be settable by the user in the preferences dialog
-      importer.setImportCOPASIMIRIAM(true);
-      importer.setImportHandler(pImportHandler);
-
-      CModel* pModel = NULL;
-
-      SBMLDocument * pSBMLDocument = NULL;
-      std::map<CCopasiObject*, SBase*> Copasi2SBMLMap;
-
-      try
-        {
-          pModel = importer.parseSBML(sbmlStringStream.str(),
-                                      CCopasiRootContainer::getFunctionList(), pSBMLDocument,
-                                      Copasi2SBMLMap, prLol, mpDataModel);
-        }
-
-      catch (CCopasiException & except)
-        {
-          importer.restoreFunctionDB();
-          importer.deleteCopasiModel();
-          //    popData();
-
-          throw except;
-        }
-
-      if (pModel == NULL)
-        {
-          importer.restoreFunctionDB();
-          importer.deleteCopasiModel();
-          //   popData();
-          return NULL;
-        }
-
-      pPlotList = new COutputDefinitionVector("OutputDefinitions", mpDataModel);
-      readListOfPlotsFromSedMLOutput(pPlotList, pModel, pSEDMLDocument, copasi2sedmlmap);
-
-      this->mpCopasiModel = pModel;
-
-      SedSimulation* sedmlsim = sedmlDoc->getSimulation(0);
-
-      SedSimulation* current = sedmlDoc->getSimulation(0);
-      trajTask = this->createCTrajectoryTaskFromSimulation(sedmlsim, copasi2sedmlmap);
+  if (fatal != -1)
+    {
+      const XMLError* pSEDMLError = mpSEDMLDocument->getError(fatal);
+      CCopasiMessage Message(CCopasiMessage::EXCEPTION, MCXML + 2,
+                             pSEDMLError->getLine(), pSEDMLError->getColumn(),
+                             pSEDMLError->getMessage().c_str());
 
       if (mpImportHandler)
         mpImportHandler->finishItem(mhImportStep);
 
-      return this->mpCopasiModel;
-      delete reader;
+      return NULL;
     }
 
+  if (mpSEDMLDocument->getListOfModels() == NULL)
+    {
+      CCopasiMessage Message(CCopasiMessage::ERROR, MCSEDML + 2);
+
+      if (mpImportHandler)
+        mpImportHandler->finishItem(mhImportStep);
+
+      return NULL;
+    }
+
+  //delete reader;
+  pSEDMLDocument = mpSEDMLDocument;
+  this->mLevel = pSEDMLDocument->getLevel();
+
+  this->mOriginalLevel = this->mLevel;
+  this->mVersion = pSEDMLDocument->getVersion();
+
+  importFirstSBMLModel(pImportHandler, pSBMLDocument, copasi2sbmlmap, prLol, pDataModel);
+
+  pPlotList = new COutputDefinitionVector("OutputDefinitions", mpDataModel);
+  readListOfPlotsFromSedMLOutput(pPlotList, mpCopasiModel, pSEDMLDocument, copasi2sedmlmap);
+
+  importTasks(copasi2sedmlmap);
+
+  if (mpImportHandler)
+    mpImportHandler->finishItem(mhImportStep);
+
+  return mpCopasiModel;
+
   return NULL;
+}
+
+void
+SEDMLImporter::importTasks(std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap)
+{
+
+  for (unsigned int i = 0; i < mpSEDMLDocument->getNumTasks(); ++i)
+    {
+      SedTask * current = mpSEDMLDocument->getTask(i);
+
+      // skip taks for models we did not import
+      if (current->isSetModelReference() && current->getModelReference() != this->mImportedModel)
+        continue;
+
+      switch (current->getTypeCode())
+        {
+          case SEDML_TASK:
+          {
+            SedSimulation* sedmlsim =
+              mpSEDMLDocument->getSimulation(current->getSimulationReference());
+            updateCopasiTaskForSimulation(sedmlsim, copasi2sedmlmap);
+            break;
+          }
+
+          case SEDML_TASK_REPEATEDTASK:
+          {
+            SedRepeatedTask *repeat = static_cast<SedRepeatedTask*>(current);
+            SedRange* range = repeat->getRange(repeat->getRangeId());
+
+            if (range == NULL || range->getTypeCode() != SEDML_RANGE_UNIFORMRANGE)
+              {
+                CCopasiMessage(CCopasiMessage::WARNING, "This version of COPASI only supports uniform ranges.");
+                continue;
+              }
+
+            SedUniformRange* urange = static_cast<SedUniformRange*>(range);
+            CScanTask *tTask = static_cast<CScanTask*>((*mpDataModel->getTaskList())[CCopasiTask::scan]);
+            CScanProblem *pProblem = static_cast<CScanProblem*>(tTask->getProblem());
+
+            if (urange != NULL && repeat->getNumTaskChanges() == 0)
+              {
+                pProblem->addScanItem(CScanProblem::SCAN_REPEAT, urange->getNumberOfPoints());
+              }
+            else
+              {
+                for (unsigned int j = 0; j < repeat->getNumTaskChanges(); ++j)
+                  {
+                    SedSetValue* sv = repeat->getTaskChange(j);
+
+                    if (SBML_formulaToString(sv->getMath()) != sv->getRange())
+                      {
+                        CCopasiMessage(CCopasiMessage::WARNING,
+                                       "This version of COPASI only supports setValue elements that apply range values.");
+                      }
+
+                    std::string target = sv->getTarget();
+                    std::string SBMLType;
+                    std::string id = translateTargetXpathInSBMLId(target, SBMLType);
+                    const CCopasiObject * obj = getObjectForSbmlId(mpCopasiModel, id, SBMLType, true);
+
+                    if (obj == NULL)
+                      {
+                        CCopasiMessage(CCopasiMessage::WARNING, "This version of COPASI only supports modifications of initial values.");
+                        continue;
+                      }
+
+                    CCopasiParameterGroup*group = pProblem->addScanItem(CScanProblem::SCAN_LINEAR, urange->getNumberOfPoints(), obj);
+                    *group->getParameter("Minimum")->getValue().pDOUBLE = urange->getStart();
+                    *group->getParameter("Maximum")->getValue().pDOUBLE = urange->getEnd();
+                    *group->getParameter("log")->getValue().pBOOL =
+                      (!urange->isSetType() || urange->getType().empty() ||  urange->getType() == "linear") ? false
+                      : true;
+                  }
+              }
+
+            if (repeat->getNumSubTasks() != 1)
+              {
+                CCopasiMessage(CCopasiMessage::WARNING, "This version of COPASI only supports repeatedTasks with one subtask.");
+                continue;
+              }
+
+            pProblem->setContinueFromCurrentState(!repeat->getResetModel());
+
+            if (!mpSEDMLDocument->getTask(repeat->getSubTask(0)->getTask())->isSetSimulationReference())
+              {
+                CCopasiMessage(CCopasiMessage::WARNING, "This version of COPASI only supports repeatedTasks with one subtask that itself is a task with simulation reference.");
+                continue;
+              }
+
+            int code = mpSEDMLDocument->getSimulation(mpSEDMLDocument->getTask(repeat->getSubTask(0)->getTask())->getSimulationReference())->getTypeCode();
+
+            if (code == SEDML_SIMULATION_STEADYSTATE)
+              {
+                pProblem->setSubtask(CCopasiTask::steadyState);
+                pProblem->setOutputInSubtask(false);
+              }
+            else if (code == SEDML_SIMULATION_ONESTEP || code == SEDML_SIMULATION_UNIFORMTIMECOURSE)
+              {
+                pProblem->setSubtask(CCopasiTask::timeCourse);
+              }
+
+            break;
+          }
+
+          default:
+          {
+            const char* name = SedTypeCode_toString(current->getTypeCode());
+            CCopasiMessage(CCopasiMessage::WARNING,
+                           "Encountered unsupported Task type '%s'. This task cannot be imported in COPASI",
+                           name != NULL ? name : "unknown");
+          }
+        }
+    }
+}
+
+CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
+    SBMLDocument *& pSBMLDocument,
+    std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+    CListOfLayouts *& prLol,
+    CCopasiDataModel* pDataModel)
+{
+  std::string SBMLFileName, fileContent;
+
+  unsigned int ii, iiMax = mpSEDMLDocument->getListOfModels()->size();
+
+  if (iiMax < 1)
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSEDML + 2);
+    }
+
+  if (iiMax > 1)
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, "COAPSI currently only supports the import of SED-ML models, that involve one model only. Only the simulations for the first model will be imported");
+    }
+
+  std::string modelSource = ""; //must be taken from SEDML document.
+  std::string modelId = ""; // to ensure only one model is imported since only one model in SEDML file is supported
+
+  for (ii = 0; ii < iiMax; ++ii)
+    {
+      SedModel* sedmlModel = mpSEDMLDocument->getModel(ii);
+
+      // need to also allow for the specific urns like
+      // urn:sedml:language:sbml.level-3.version-1
+      if (sedmlModel->getLanguage().find("urn:sedml:language:sbml") == std::string::npos)
+        CCopasiMessage(CCopasiMessage::EXCEPTION,
+                       "Sorry currently, only SBML models are supported.");
+
+      if (sedmlModel->getSource() != modelId)
+        {
+          modelId = sedmlModel->getId();
+
+          if ((sedmlModel->getListOfChanges()->size()) > 0)
+            CCopasiMessage(CCopasiMessage::WARNING, "Currently no support for"
+                           " changing model entities. Changes will not be made to the imported model.");
+
+          modelSource = sedmlModel->getSource();
+        }
+    }
+
+  assert(modelSource != "");
+
+  //process the archive file and get the SBML model file
+  //SEDMLUtils utils;
+  //int success = utils.processArchive(pDataModel->getSEDMLFileName(), SBMLFileName, fileContent);
+
+  std::string FileName;
+
+  if (CDirEntry::exist(modelSource))
+    FileName = modelSource;
+  else
+    FileName = CDirEntry::dirName(pDataModel->getSEDMLFileName())
+               + CDirEntry::Separator + modelSource;
+
+  std::ifstream file(CLocaleString::fromUtf8(FileName).c_str());
+
+  if (!file)
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSEDML + 4,
+                     FileName.c_str());
+    }
+
+  //set the SBML file name for later use
+  pDataModel->setSBMLFileName(FileName);
+  std::ostringstream sbmlStringStream;
+  char c;
+
+  while (file.get(c))
+    {
+      sbmlStringStream << c;
+    }
+
+  file.clear();
+  file.close();
+
+  std::ifstream File(CLocaleString::fromUtf8(FileName).c_str());
+
+  SBMLImporter importer;
+  // Right now we always import the COPASI MIRIAM annotation if it is there.
+  // Later this will be settable by the user in the preferences dialog
+  importer.setImportCOPASIMIRIAM(true);
+  importer.setImportHandler(pImportHandler);
+
+  mpCopasiModel = NULL;
+
+  std::map<CCopasiObject*, SBase*> Copasi2SBMLMap;
+
+  try
+    {
+      mpCopasiModel = importer.parseSBML(sbmlStringStream.str(),
+                                         CCopasiRootContainer::getFunctionList(), pSBMLDocument,
+                                         Copasi2SBMLMap, prLol, mpDataModel);
+    }
+
+  catch (CCopasiException & except)
+    {
+      importer.restoreFunctionDB();
+      importer.deleteCopasiModel();
+      //    popData();
+
+      throw except;
+    }
+
+  if (mpCopasiModel == NULL)
+    {
+      importer.restoreFunctionDB();
+      importer.deleteCopasiModel();
+      //   popData();
+      return NULL;
+    }
+
+  mImportedModel = modelId;
+
+  return mpCopasiModel;
 }
 
 /**
@@ -701,67 +829,35 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
  */
 SEDMLImporter::SEDMLImporter():
   mIgnoredSEDMLMessages(),
-  functionDB(NULL),
   mIncompleteModel(false),
   mLevel(0),
   mOriginalLevel(0),
   mVersion(0),
-  sedmlIdMap(),
-  mUsedFunctions(),
   mpDataModel(NULL),
   mpCopasiModel(NULL),
-  mFunctionNameMapping(),
+  mpSEDMLDocument(NULL),
   mpImportHandler(NULL),
   mImportStep(0),
   mhImportStep(C_INVALID_INDEX),
   mTotalSteps(0),
   mUsedSEDMLIds(),
   mUsedSEDMLIdsPopulated(false),
-  mKnownCustomUserDefinedFunctions()
+  mImportedModel()
 {
-  this->functionDB = NULL;
-  this->mIncompleteModel = false;
-  this->mpImportHandler = NULL;
 
   this->mIgnoredSEDMLMessages.insert(10501);
 }
 
 void SEDMLImporter::restoreFunctionDB()
 {
-  // set all the old sbml ids
-  std::map<CFunction*, std::string>::iterator it = this->sedmlIdMap.begin();
-  std::map<CFunction*, std::string>::iterator endIt = this->sedmlIdMap.end();
-
-  //TODO
-  /*   while (it != endIt)
-       {
-         it->first->setSEDMLId(it->second);
-         ++it;
-       }
-  */
-  // remove all the functions that were added during import
-  std::set<std::string>::iterator it2 = this->mUsedFunctions.begin();
-  std::set<std::string>::iterator endIt2 = this->mUsedFunctions.end();
-
-  while (it2 != endIt2)
-    {
-      CEvaluationTree* pTree = this->functionDB->findFunction(*it2);
-      assert(pTree);
-
-      if (pTree->getType() == CEvaluationTree::UserDefined)
-        {
-          this->functionDB->removeFunction(pTree->getKey());
-        }
-
-      ++it2;
-    }
 }
 
 /**
  * Destructor that does nothing.
  */
 SEDMLImporter::~SEDMLImporter()
-{}
+{
+}
 
 void SEDMLImporter::deleteCopasiModel()
 {

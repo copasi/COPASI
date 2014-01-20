@@ -1,10 +1,15 @@
+// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /**
  * SEDMLImporter.h
  * $Rev:               $:  Revision of last commit
  * $Author:            $:  Author of last commit
  * $Date:              $:  Date of last commit
- * $HeadURL:			 $
- * $Id::				 $
+ * $HeadURL:       $
+ * $Id::         $
  */
 
 #ifndef SEDMLIMPORTER_H_
@@ -31,8 +36,8 @@ class SedBase;
 class CProcessReport;
 class CPlotSpecification;
 
-
-class SEDMLImporter {
+class SEDMLImporter
+{
 
 protected:
   static
@@ -44,88 +49,84 @@ protected:
 protected:
   std::string mArchiveFileName;
   std::set<unsigned int> mIgnoredSEDMLMessages;
-  std::map<std::string, CMetab*> speciesMap;
-  CFunctionDB* functionDB;
   bool mIncompleteModel;
   unsigned int mLevel;
   unsigned int mOriginalLevel;
   unsigned int mVersion;
-  std::map<CFunction*, std::string> sedmlIdMap;
-  std::set<std::string> mUsedFunctions;
   CCopasiDataModel * mpDataModel;
   CModel* mpCopasiModel;
-  std::map<std::string, std::string> mFunctionNameMapping;
-  std::set<std::string> mDivisionByCompartmentReactions;
+  SedDocument* mpSEDMLDocument;
   CProcessReport* mpImportHandler;
   unsigned C_INT32 mImportStep;
   size_t mhImportStep;
   unsigned C_INT32 mTotalSteps;
-  std::set<std::string> mExplicitelyTimeDependentFunctionDefinitions;
-  std::map<const ASTNode*, CChemEqElement* > mStoichiometricExpressionMap;
-  bool mDelayFound;
-  std::set<const Parameter*> mPotentialAvogadroNumbers;
-  bool mAvogadroCreated;
 
   std::set<std::string> mUsedSEDMLIds;
   bool mUsedSEDMLIdsPopulated;
-  std::map<std::string, std::string> mKnownCustomUserDefinedFunctions;
-  std::map<std::string, std::string> mKnownInitalValues;
+
+  std::string mImportedModel;
+
 public:
-	SEDMLImporter();
-	~SEDMLImporter();
+  SEDMLImporter();
+  ~SEDMLImporter();
 
+  const std::string getArchiveFileName();
 
-	const std::string getArchiveFileName();
+  void readListOfPlotsFromSedMLOutput(
+    COutputDefinitionVector *pPlotList, CModel* pModel,
+    SedDocument *pSedDocument,
+    std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap);
 
-	void readListOfPlotsFromSedMLOutput(
-			COutputDefinitionVector *pPlotList, CModel* pModel,
-			SedDocument *pSedDocument,
-			std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap);
+  std::string getDataGeneratorModelItemRefrenceId(SedDocument *pSEDMLDocument, std::string &dataReference, std::string &SBMLType);
+  std::string translateTargetXpathInSBMLId(const std::string &xpath, std::string &SBMLType);
 
-	std::string getDataGeneratorModelItemRefrenceId(SedDocument *pSEDMLDocument, std::string &dataReference, std::string &SBMLType);
-	std::string translateTargetXpathInSBMLId(const std::string &xpath, std::string &SBMLType);
+  /**
+   * Updates COPASI tasks for a given SedML Simulation
+   */
+  void updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
+                                     std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap);
 
+  /**
+   * Imports the first viable SBML model
+   */
+  CModel* importFirstSBMLModel(CProcessReport* pImportHandler,
+                               SBMLDocument *& pSBMLDocument,
+                               std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                               CListOfLayouts *& prLol,
+                               CCopasiDataModel* pDataModel);
 
-	/**
-	 * Creates and returns a COPASI CTrajectoryTask from the SEDML simulation
-	 * given as argument.
-	 */
-	CTrajectoryTask* createCTrajectoryTaskFromSimulation(SedSimulation* sedmlsim,
-			std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap);
+  /**
+   * Import all tasks for the imported SBML model
+   */
+  void importTasks(std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap);
 
-	CModel* readSEDML(std::string filename, CProcessReport* pImportHandler, CFunctionDB* funDB,
-			SBMLDocument *& pSBMLDocument, SedDocument*& pSedDocument,
-			std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap,
-			std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
-			CListOfLayouts *& prLol,
-			CTrajectoryTask *& trajTask,
-			COutputDefinitionVector * & plotList,
-			CCopasiDataModel* pDataModel);
+  CModel* readSEDML(std::string filename, CProcessReport* pImportHandler,
+                    SBMLDocument *& pSBMLDocument, SedDocument*& pSedDocument,
+                    std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap,
+                    std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                    CListOfLayouts *& prLol,
+                    COutputDefinitionVector * & plotList,
+                    CCopasiDataModel* pDataModel);
 
-	CModel* parseSEDML(const std::string& sedmlDocumentText, CProcessReport* pImportHandler, CFunctionDB* funDB,
-			SBMLDocument *& pSBMLDocument, SedDocument *& pSEDMLDocument,
-			std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap,
-			std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
-			CListOfLayouts *& prLol,
-			CTrajectoryTask *& trajTask,
-			COutputDefinitionVector *& plotList,
-			CCopasiDataModel* pDataModel);
+  CModel* parseSEDML(const std::string& sedmlDocumentText, CProcessReport* pImportHandler,
+                     SBMLDocument *& pSBMLDocument, SedDocument *& pSEDMLDocument,
+                     std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap,
+                     std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                     CListOfLayouts *& prLol,
+                     COutputDefinitionVector *& plotList,
+                     CCopasiDataModel* pDataModel);
 
-	/**
-	 * This call deletes an existing COPASI model.
-	 * The method can e.g. be called to clean up if an import fails.
-	 */
-	void deleteCopasiModel();
+  /**
+   * This call deletes an existing COPASI model.
+   * The method can e.g. be called to clean up if an import fails.
+   */
+  void deleteCopasiModel();
 
-	void setImportHandler(CProcessReport* pHandler);
+  void setImportHandler(CProcessReport* pHandler);
 
-	CProcessReport* getImportHandlerAddr();
+  CProcessReport* getImportHandlerAddr();
 
-	void restoreFunctionDB();
-
-
+  void restoreFunctionDB();
 };
-
-
 
 #endif /* SEDMLIMPORTER_H_ */
