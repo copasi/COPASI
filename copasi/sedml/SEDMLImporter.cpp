@@ -169,6 +169,32 @@ const CCopasiObject *getObjectForSbmlId(CModel* pModel, const std::string& id, c
         }
     }
 
+  else if (SBMLType == "compartment")
+    {
+      size_t iComp, imax = pModel->getCompartments().size();
+
+      for (iComp = 0; iComp < imax; ++iComp)
+        {
+          if (pModel->getCompartments()[iComp]->getSBMLId() == id)
+            {
+              return pModel->getCompartments()[iComp]->getValueReference();
+            }
+        }
+    }
+
+  else if (SBMLType == "reaction")
+    {
+      size_t iReaction, imax = pModel->getReactions().size();
+
+      for (iReaction = 0; iReaction < imax; ++iReaction)
+        {
+          if (pModel->getReactions()[iReaction]->getSBMLId() == id)
+            {
+              return pModel->getReactions()[iReaction]->getFluxReference();
+            }
+        }
+    }
+
   return NULL;
 }
 
@@ -584,10 +610,6 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
       //SEDMLUtils utils;
       //int success = utils.processArchive(pDataModel->getSEDMLFileName(), SBMLFileName, fileContent);
 
-      //std::cout<<fileContent<<std::endl;
-      //experiment SEDML
-      //  pDataModel->getSEDMLFileName();
-
       std::string FileName;
 
       if (CDirEntry::exist(modelSource))
@@ -659,21 +681,10 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 
       this->mpCopasiModel = pModel;
 
-      //  this->mpCopasiModel = this->createCModelFromSEDMLDocument(sedmlDoc, copasi2sedmlmap);
-
-      //  CCopasiTask *task = mpDataModel->addTask(CCopasiTask::timeCourse);
-
       SedSimulation* sedmlsim = sedmlDoc->getSimulation(0);
 
       SedSimulation* current = sedmlDoc->getSimulation(0);
-      //  CTrajectoryTask *task1= (CTrajectoryTask)mpDataModel->addTask(CCopasiTask::timeCourse);
-
-      //CTrajectoryTask *trajTask;
       trajTask = this->createCTrajectoryTaskFromSimulation(sedmlsim, copasi2sedmlmap);
-
-      //static_cast<CTrajectoryProblem*>(tTask->getProblem());
-      //  CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(trajTask->getProblem());
-      //  std::cout<<"problem-Duration: "<<tProblem->getDuration()<< "OutputStartTime: "<< tProblem->getOutputStartTime() <<std::endl;
 
       if (mpImportHandler)
         mpImportHandler->finishItem(mhImportStep);
