@@ -488,7 +488,7 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
 
           if (targetXPathString.empty())
             {
-              return;
+              continue;
             }
 
           pPDGen = createDataGenerator(
