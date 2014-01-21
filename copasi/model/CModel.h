@@ -51,31 +51,6 @@ class CModel : public CModelEntity
 {
 public:
   /**
-   * Enum of valid volume units
-   */
-  typedef CUnit::VolumeUnit VolumeUnit;
-
-  /**
-   * Enum of valid area units
-   */
-  typedef CUnit::AreaUnit AreaUnit;
-
-  /**
-   * Enum of valid length units
-   */
-  typedef CUnit::LengthUnit LengthUnit;
-
-  /**
-   *  Enum of valid time units
-   */
-  typedef CUnit::TimeUnit TimeUnit;
-
-  /**
-   *  Enum of valid quantity units
-   */
-  typedef CUnit::QuantityUnit QuantityUnit;
-
-  /**
    * Enum of valid model types.
    */
   enum ModelType {deterministic = 0, stochastic};
