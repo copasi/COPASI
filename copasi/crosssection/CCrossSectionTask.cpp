@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -265,6 +265,7 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
     }
 
   const C_FLOAT64 EndTime = *mpCurrentTime + MaxDuration;
+
   mStartTime = *mpCurrentTime;
 
   // It suffices to reach the end time within machine precision
@@ -381,8 +382,19 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
             //execute events for equalities
             StateChanged |= pModel->processQueue(*mpCurrentTime, true, NULL);
 
+            // If the state change happens to coincide with end of the step we have to return and
+            // inform the integrator of eventual state changes.
             if (fabs(*mpCurrentTime - endTime) < Tolerance)
-              return true;
+              {
+                if (StateChanged)
+                  {
+                    *mpCurrentState = pModel->getState();
+                    mpTrajectoryMethod->stateChanged();
+                    StateChanged = false;
+                  }
+
+                return true;
+              }
 
             break;
 
