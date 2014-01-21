@@ -48,7 +48,7 @@
 #include "copasi/utilities/CDependencyGraph.h"
 #include "copasi/utilities/CIndexedPriorityQueue.h"
 #include "copasi/utilities/CCopasiVector.h"
-#include "CInterpolation.h"
+#include "CExpRKMethod.h"
 
 /* DEFINE ********************************************************************/
 #define MAX_STEPS                    1000000
@@ -77,12 +77,25 @@
 
 
 //Interpolation Part
-#define INTERP_RECORD_NUM            6
-#define HAS_ERR                      -1
-#define REACH_END_TIME               0
-#define CONTINUE                     1
-#define HAS_EVENT                    2
-#define NEW_STEP                     3
+//#define INTERP_RECORD_NUM            6
+#define ODE_ERR                     -2
+#define ODE_INIT                     0
+#define ODE_NEW                      1
+#define ODE_CONT                     2
+#define ODE_EVENT                    3
+#define ODE_FINISH                   4
+
+
+//mSysStatus Part
+#define SYS_ERR                     -2
+#define SYS_NEW                      1
+#define SYS_CONT                     2
+#define SYS_EVENT                    3
+#define SYS_CHANGE                   4
+#define SYS_END                      5
+
+//Event Flag
+#define SLOW_REACT                  -1
 
 /* Function Pointer **********************************************************/
 typedef void (*pEvalF)(const C_INT*, const double*, const double*, double*);
@@ -99,8 +112,6 @@ class CRandom;
 class CIndexedPriorityQueue;
 class CDependencyGraph;
 
-class CStateRecord;
-class CInterpolation;
 
 /**
  * Internal representation of the balances of each reaction.
@@ -109,9 +120,9 @@ class CInterpolation;
 class CHybridODE45Balance
 {
 public:
-  size_t mIndex;
+  size_t  mIndex;
   C_INT32 mMultiplicity;
-  CMetab * mpMetabolite;
+  CMetab *mpMetabolite;
 
   // insert operator
   //friend std::ostream & operator<<(std::ostream & os, const CHybridODE45Balance & d);
@@ -268,7 +279,7 @@ protected:
   /**
    * Dummy Function for calculating derivative of ODE systems
    */
-  static void EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
+  //static void EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
 
   /**
    *  This evaluates the derivatives for the complete model
@@ -306,17 +317,23 @@ protected:
    */
   void calculateAmu(size_t rIndex);
 
+
   /**
    * Do inverse interpolation to find the state when a slow reaction
    * is fired.
    */
-  void doInverseInterpolation();
+  void doInverseInterpolation(const C_FLOAT64 time);
 
   /**
    * Fire slow reaction and update populations and propensities
    * when Hybrid Method is used
    */
   void fireSlowReaction4Hybrid();
+
+  /**
+   * Clear mRoots and set the id-th equal to 1
+   */
+  void setRoot(const size_t id);
 
   //================Function for Stoichastic Part================
 protected:
@@ -384,7 +401,7 @@ protected:
    */
   void updateTauMu(size_t rIndex, C_FLOAT64 time);
 
-private:
+ private:
   /**
    * Gets the set of metabolites on which a given reaction depends.
    *
@@ -402,27 +419,15 @@ private:
    */
   std::set <std::string> *getAffects(size_t rIndex);
 
-  //================Function for C Code from f2c================
-private:
-  C_INT rkf45_(pEvalF f, const C_INT *neqn, double *y, double *t,
-               double *tout, double *relerr, double *abserr,
-               C_INT *iflag, double *work, C_INT *iwork,
-               double *yrcd);
-
-  C_INT rkfs_(pEvalF f, const  C_INT *neqn, double *y, double *
-              t, double *tout, double *relerr,
-              double *abserr, C_INT *iflag, double *yp,
-              double *h__, double *f1, double *f2,
-              double *f3, double *f4, double *f5,
-              double *savre, double *savae, C_INT *nfe,
-              C_INT *kop, C_INT *init, C_INT *jflag,
-              C_INT *kflag, double *yrcd);
-
-  C_INT fehl_(pEvalF f, const C_INT *neqn, double *y, double *t,
-              double *h__, double *yp, double *f1,
-              double *f2, double *f3, double *f4,
-              double *f5, double *s, double *yrcd);
-
+  //================Function for Root Interpolation==============
+ private:
+  /**
+   *
+   *
+   *
+   */
+  virtual void stateChanged();
+  
   //================Help Functions================
 protected:
   /**
@@ -563,17 +568,26 @@ protected:
   CState * mpState;
 
   /**
-   *   Vectors to hold the system state and intermediate results
+   * Vectors to hold the system state and intermediate results
    */
   CVector <C_FLOAT64> temp;
 
+  /**
+   * Time Record
+   */
+  C_FLOAT64 mTimeRecord;
+
   //=================Attributes for ODE45 Solver================
+  /**
+   * mODE45
+   */
+  CExpRKMethod mODE45;
 
   /**
    *   Max number of doSingleStep() per step()
    */
   size_t mMaxSteps;
-  bool mMaxStepsReached;
+  bool   mMaxStepsReached;
 
   /** Is this useful in my method?
    * maximal increase of a particle number in one step.
@@ -595,23 +609,13 @@ protected:
   /**
    *  Vector containig the derivatives after calling eval
    */
-  CVector< C_FLOAT64 > mYdot;
+  //CVector< C_FLOAT64 > mYdot;
 
-  /**
-   * Current time.
-   */
-  C_FLOAT64 mTime;
-
-  /**
-   * Requested end time.
-   */
-  C_FLOAT64 mEndTime;
-
-  /**
-   * ODE45 state, corresponding to iflag in rkf45, an ODE45
-   * solver argument
-   */
-  C_INT mIFlag;
+  //  /**
+  //   * ODE45 state, corresponding to iflag in rkf45, an ODE45
+  //   * solver argument
+  //   */
+  C_INT mODEState;
 
   /**
    * state of ODE45, indicating what to do next in the step part
@@ -620,32 +624,12 @@ protected:
    *  1, finish one step integration
    *  2, has event
    */
-  C_INT mODE45Status;
-
-  /**
-   *  Relative tolerance.
-   */
-  C_FLOAT64 mRtol;
+   C_INT mSysStatus;
 
   /**
    *
    */
   bool mDefaultAtol;
-
-  /**
-   *  Absolute tolerance.
-   */
-  C_FLOAT64 mAtol;
-
-  CVector< C_FLOAT64 > mDWork;
-  CVector< C_INT > mIWork;
-
-  /**
-   * A boolean variable to show whether mStateRecord is
-   * used or not. If t is too close to tout, rkfs45() won't
-   * go through into fehl() and uses Forward Euler method
-   */
-  bool mUseStateRecord;
 
   /**
    * The propensities of the stochastic reactions.
@@ -666,28 +650,31 @@ protected:
    */
   std::set <size_t> mUpdateSet;
 
-  //================Attributes for Interpolation================
-  /**
-   * Record of y and time of the previous step
-   */
-  C_FLOAT64 * mOldY;
-  C_FLOAT64 mOldTime;
+  //================Attributes for Root Interpolation================
+  //  /**
+  //   * Status of Root and Slow Event
+  //   */
+  bool mHasRoot;
+  bool mHasSlow;
 
   /**
-   * A Pointer to Object of CInterpolation
+   * Number of Roots
    */
-  CInterpolation * mpInterpolation;
+  size_t mRootNum;
 
   /**
-   * Pointer to the State at Event Happens
+   * Value of Roots
    */
-  CStateRecord * mpEventState;
+  CVectorCore< C_FLOAT64 > *mpRootValue;
+  
+  C_FLOAT64 * mpRT;
+  
+  //=================Root Dealing Part for Stochastic Part================
+  C_FLOAT64 * mOldRoot;
 
-  /**
-   * A vector to record middle state for interpolation
-   */
-  CVector <C_FLOAT64> mStateRecord;
+  std::queue<SRoot> mRootQueue;
 
+ 
   //================Stochastic Related================
   /**
    * The random number generator.

@@ -52,7 +52,7 @@
 #include "utilities/CVersion.h"
 #include "randomGenerator/CRandom.h"
 
-#include "CInterpolation.h"
+#include "CExpRKMethod.h"
 
 //================Function for Class================
 /**
@@ -149,8 +149,8 @@ bool CHybridMethodODE45::isValidProblem(const CCopasiProblem * pProblem)
           return false;
         }
     }
-  
-/*
+
+  /*
   std::string message = pTP->getModel()->suitableForStochasticSimulation();
 
   if (message != "")
@@ -159,15 +159,22 @@ bool CHybridMethodODE45::isValidProblem(const CCopasiProblem * pProblem)
       CCopasiMessage(CCopasiMessage::ERROR, message.c_str());
       return false;
     }
-*/
-  
+  */
+
+  //mLowerStochLimit = * getValue("Lower Limit").pDOUBLE;
+  //mUpperStochLimit = * getValue("Upper Limit").pDOUBLE;
+
+  //if (mLowerStochLimit > mUpperStochLimit)
+  //  CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 4,
+  //       mLowerStochLimit, mUpperStochLimit);
+
   //events are not supported at the moment
+  /*
   if (pTP->getModel()->getEvents().size() > 0)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 23);
       return false;
-    }
-  
+      }*/
 
   return true;
 }
@@ -317,18 +324,19 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   temp.resize(mNumVariableMetabs + 1);
 
   //(4)----set attributes related with SYSTEM
+  mTimeRecord = start_time;
   mMaxSteps = * getValue("Max Internal Steps").pUINT;
   mMaxStepsReached = false;
   setupMethod();
 
   //(5)----set attributes related with STOCHASTIC
   mUseRandomSeed = * getValue("Use Random Seed").pBOOL;
-  mRandomSeed = * getValue("Random Seed").pUINT;
+  mRandomSeed    = * getValue("Random Seed").pUINT;
 
   if (mUseRandomSeed)
     mpRandomGenerator->initialize(mRandomSeed);
 
-  mStoi = mpModel->getStoi();
+  mStoi = mpModel->getStoiReordered();
   mUpdateSet.clear();// how to set this parameter
   setupCalculateSet(); //should be done after setupBalances()
   setupReactAffect();
@@ -336,40 +344,67 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   setupDependencyGraph(); // initialize mDG
   setupPriorityQueue(start_time); // initialize mPQ
 
-  //(6)----set attributes for INTERPOLATION
-  mpInterpolation = new CInterpolation(INTERP_RECORD_NUM, mNumVariableMetabs);
-  mStateRecord.resize((INTERP_RECORD_NUM - 2) * (2 + mNumVariableMetabs));
+  //(6)----set attributes for ODE45
+  mODE45.mODEState = INIT;
 
-  //(7)----set attributes for ODE45
-  mODE45Status = NEW_STEP;
   mData.dim = (C_INT)(mNumVariableMetabs + 1);  //one more for sum of propensities
-  mYdot.resize(mData.dim);
+  mODE45.mDim = mData.dim;
 
-  mRtol = * getValue("Relative Tolerance").pUDOUBLE;
+  //mYdot.resize(mData.dim);
+
+  mODE45.mRelTol = * getValue("Relative Tolerance").pUDOUBLE;
   mDefaultAtol = * getValue("Use Default Absolute Tolerance").pBOOL;
 
   if (mDefaultAtol)
     {
-      mAtol = getDefaultAtol(mpProblem->getModel());
+      mODE45.mAbsTol = getDefaultAtol(mpProblem->getModel());
       setValue("Absolute Tolerance", mAtol);
     }
   else
-    mAtol = * getValue("Absolute Tolerance").pUDOUBLE;
+    mODEAbsTol = * getValue("Absolute Tolerance").pUDOUBLE;
 
-  mDWork.resize(3 + 6 * mData.dim);
-  mIWork.resize(5);
+  mODE45.mHybrid = true;
+  mODE45.mStatis = false;
 
   //setupUpdateSet();
 
   // we don't want to directly record new results into mpState, since
   // the sum of slow reaction propensities is also recorded in mY
   mY    = new C_FLOAT64[mData.dim];
-  mOldY = new C_FLOAT64[mData.dim];
+  mODE45.mY = mY;
+
+  mODE45.mDerivFunc = &evalF;
 
   //first calculate propensities, in the next integration process
   //system will just update the propensities record in mCalculateSet
   for (size_t i = 0; i < mNumReactions; i++)
     calculateAmu(i);
+
+  //(7)----set attributes for Event Roots
+  mRootNum = mpModel->getNumRoots();
+  mRoots.resize(mRootNum);
+
+  mODE45.mRootNum = mRootNum;
+  mRootQueue.clear();
+
+  if(mRootNum > 0)
+    {
+      mODE45.mEventFunc = &evalR;
+      mpRT        = new C_FLOAT64[mRootNum];
+      mOldRoot    = new C_FLOAT64[mRootNum];
+      mpRootValue = new CVectorCore< C_FLOAT64 >(mRootNum, mpRT);
+      
+      mpModel->evaluateRoots(*mpRootValue, true);
+      for (int i = 0; i<mRootNum; i++)
+	mOldRoot[i] = (mpRootValue->array())[i];
+    }
+  else
+    {
+      mODE45.mEventFunc = NULL;
+      mpRT        = NULL;
+      mOldRoot    = NULL;
+      mpRootValue = NULL;
+    }
 
   return;
 }
@@ -383,17 +418,18 @@ void CHybridMethodODE45::cleanup()
   mpRandomGenerator = NULL;
   mpModel = NULL;
 
-  delete mpState;
-  mpState = NULL;
-
-  delete mpInterpolation;
-  mpInterpolation = NULL;
+  //  delete mpState;
+  //  mpState = NULL;
 
   delete [] mY;
   mY = NULL;
 
-  delete [] mOldY;
-  mOldY = NULL;
+  //  delete [] mRootTime;
+
+  delete [] mpRT;
+  delete [] mOldRoot;
+  delete mpRootValue;
+  mpRootValue = NULL;
 
   return;
 }
@@ -401,7 +437,7 @@ void CHybridMethodODE45::cleanup()
 //================Function for Model================
 void CHybridMethodODE45::setupMetabFlags()
 {
-  //size_t rctIndex;
+  size_t rctIndex;
   mMetabFlags.resize(mNumVariableMetabs);
 
   std::vector<CHybridODE45MetabFlag>::iterator metabIt
@@ -459,7 +495,6 @@ void CHybridMethodODE45::setupReactionFlags()
           mHasStoiReaction = true;
         }
     }
-
   return;
 }
 
@@ -467,11 +502,10 @@ void CHybridMethodODE45::setupMethod()
 {
   if (mHasStoiReaction && !mHasDetermReaction)
     mMethod = STOCHASTIC;
-  else if (!mHasStoiReaction && mHasDetermReaction)
+  else if(!mHasStoiReaction && mHasDetermReaction)
     mMethod = DETERMINISTIC;
   else
     mMethod = HYBRID;
-
   return;
 }
 
@@ -572,7 +606,7 @@ void CHybridMethodODE45::setupMetab2React()
   for (size_t rct = 0; rct < mNumReactions; ++rct)
     {
       size_t index;
-
+      
       //deal with substrates
       CCopasiVector <CChemEqElement> metab =
         (*mpReactions)[rct]->getChemEq().getSubstrates();
@@ -580,7 +614,7 @@ void CHybridMethodODE45::setupMetab2React()
       for (size_t i = 0; i < metab.size(); i++)
         {
           pMetab = const_cast < CMetab* >
-                   (metab[i]->getMetabolite());
+                    (metab[i]->getMetabolite());
           index = mpModel->getMetabolitesX().getIndex(pMetab);
 
           if ((pMetab->getStatus()) != CModelEntity::FIXED)
@@ -593,37 +627,34 @@ void CHybridMethodODE45::setupMetab2React()
       for (size_t i = 0; i < metab.size(); i++)
         {
           pMetab = const_cast < CMetab* >
-                   (metab[i]->getMetabolite());
+                    (metab[i]->getMetabolite());
           index = mpModel->getMetabolitesX().getIndex(pMetab);
 
           if ((pMetab->getStatus()) != CModelEntity::FIXED)
             mMetab2React[index].insert(rct);
-        }
+	}
     }
-
+   
   //Check wether metabs appear in reaction laws
   std::set< const CCopasiObject * > changed;
-
-  for (size_t metab = 0; metab < mNumVariableMetabs; metab++)
+  for (size_t metab=0; metab<mNumVariableMetabs; metab++)
     {
       pMetab = (*mpMetabolites)[metab];
-
+     
       if (pMetab->getStatus() != CModelEntity::FIXED)
-        {
-          changed.clear();
-          changed.insert(mpModel->getValueReference());
-          changed.insert(pMetab->getValueReference());
+	{
+	  changed.clear();
+	  changed.insert(mpModel->getValueReference());
+	  changed.insert(pMetab->getValueReference());
 
-          for (size_t react = 0; react < mNumReactions; react++)
-            {
-              pReaction = (*mpReactions)[react];
-
-              if (pReaction->getParticleFluxReference()->dependsOn(changed))
-                mMetab2React[metab].insert(react);
-            }
-        }
+	  for (size_t react=0; react<mNumReactions; react++)
+	    {
+	      pReaction = (*mpReactions)[react];
+	      if(pReaction->getParticleFluxReference()->dependsOn(changed))
+		mMetab2React[metab].insert(react);
+	    }
+	}
     }
-
   return;
 }
 
@@ -701,7 +732,7 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
 
   // check for possible overflows
   size_t i;
-  //size_t imax;
+  size_t imax;
 
   // :TODO: Bug 774: This assumes that the number of variable metabs is the number
   // of metabs determined by reaction. In addition they are expected at the beginning of the
@@ -716,8 +747,21 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
   C_FLOAT64 time = mpModel->getTime();
   C_FLOAT64 endTime = time + deltaT;
 
+  if (time == mTimeRecord) //new time step
+    mTimeRecord = endTime;
+  else // continue current step
+    endTime = mTimeRecord;
+
   for (i = 0; ((i < mMaxSteps) && (time < endTime)); i++)
-    time = doSingleStep(time, endTime);
+    {
+      time = doSingleStep(time, endTime);
+      if (mODE45Status == HAS_ROOT)
+	{
+	  mpState->setTime(time);
+	  *mpCurrentState = *mpState;
+	  return ROOT;
+	}
+    }
 
   // Warning Message
   if ((i >= mMaxSteps) && (!mMaxStepsReached))
@@ -736,6 +780,7 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
 
   //the task expects the result in mpCurrentState
   //*mpCurrentState = mpProblem->getModel()->getState();
+  mpState->setTime(time);
   *mpCurrentState = *mpState;
   //mpCurrentState->setTime(time);
 
@@ -752,57 +797,258 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
  */
 C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endTime)
 {
-  C_FLOAT64 ds = 0.0;
-  size_t rIndex = 0;
-
-  //1----pure SSA method
-  if (mMethod == STOCHASTIC) //has only stochastic reactions
+  C_FLOAT64 ds     = 0.0;
+  size_t    rIndex = 0;
+  if(mMethod == STOCHASTIC) //(1)----Pure SSA Method
     {
+      SRoot root;
+      if(mSysStatus == SYS_NEW)
+	{ 
+	  //First Call SSA or Switch to SSA, 
+	  //Calculate Roots
+	  mSysStatus = SYS_CONT;
+
+	  //Check Events at Current Time
+	  mpModel->evaluateRoots(*mpRootValue, true);
+	  for(size_t id=0; id<mRootNum; id++)
+	    {
+	      if((mpRootValue->array())[id] == 0.0)
+		{
+		  root.id = id;
+		  root.t  = currentTime;
+		  mRootQueue.push(root);
+		}
+	    }
+	}
+
+      //first check mRootQueue
+      if(!mRootQueue.empty())
+	{
+	  mSysStatus == SYS_EVENT;
+
+	  root = mRootQueue.front();
+	  mRootQueue.pop();
+
+	  setRoot(root.id);
+	  return root.t;
+	}
+      else //copy root to mOldRoot
+	{
+	  for(size_t i=0; i<mRootNum; i++)
+	    mOldRoot[i] = (mpRootValue->array())[i];
+	}
+
+      //Go one step
+      bool fire = false;
       getStochTimeAndIndex(ds, rIndex);
-
-      if (ds > endTime)
-        ds = endTime;
+      if(ds > endTime)
+	  ds = endTime;
       else
-        {
-          fireReaction(rIndex);
-          updatePriorityQueue(rIndex, ds);
-        }
+	{
+	  fire = true;
+	  fireReaction(rIndex);
+	  updatePriorityQueue(rIndex, ds);
+	}
 
-      //population has been changed and record to the mCurrentState
-      //in fireReaction(). So here just store time
+      //Record state
       *mpState = mpModel->getState();
       mpState->setTime(ds);
       mpModel->setState(*mpState);
 
-      //outputState(mpCurrentState);
-      //getchar();
+      //Check roots
+      mSysStatus = SYS_CONT;
+      if(fire)
+	{
+	  mpModel->evaluateRoots(*mpRootValue, true);
+	  for(size_t id=0; id<mRootNum; id++)
+	    {
+	      if((mOldRoot[id]*(mpRootValue->array())[id]<0.0) || 
+		 ((mpRootValue->array())[id]==0.0))
+		{
+		  root.t  = ds;
+		  root.id = id;
+		  mRootQueue.push(root);
+		}
+	    }
+
+	  if(!mRootQueue.empty())
+	    {
+	      root = mRootQueue.front();
+	      mRootQueue.pop();
+
+	      setRoot(root.id);
+	      mSysStatus = SYS_EVENT;
+	      return ds;
+	    }
+	}
+
     }
-  //2----Method with Deterministic Part
-  else if (mMethod == DETERMINISTIC) //has only deterministic reactions
+  else //(2)----Involve Deterministic Part
     {
       integrateDeterministicPart(endTime - currentTime);
-      ds = mpState->getTime();
-      mODE45Status = CONTINUE;
-      // Till now, state has been recorded
+      ds = mODE45.mT;
+      if(mSysState == SYS_EVENT) //only deal with system roots
+	{
+	  if(mHasSlow)// slow reaction fires
+	    {
+	      //what about the states of model
+	      fireSlowReaction4Hybrid();
+	      stateChanged(); //SYS_EVENT->SYS_CHANGE
+	    }
+	  
+	  if(mHasRoot) // system roots
+	      setRoot(mODE45.mRootId);
+	}
+      else //finish this step
+	  mSysState = SYS_NEW;
     }
-  else if (mMethod == HYBRID)//Hybrid Method
-    {
-      integrateDeterministicPart(endTime - currentTime);
-      ds = mpState->getTime();
-
-      if (mODE45Status == HAS_EVENT) //fire slow reaction
-        {
-          doInverseInterpolation();
-
-          fireSlowReaction4Hybrid();
-          mODE45Status = NEW_STEP;
-        }
-      else
-        mODE45Status = CONTINUE;
-    }
-
   return ds;
 }
+/*C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endTime)
+{
+  C_FLOAT64 ds = 0.0;
+  size_t rIndex = 0;
+  
+  std::cout << std::endl << std::endl;
+  std::cout << "currrentTime " << currentTime << " endTime " << endTime << std::endl;
+  std::cout << "state " << mODE45Status << std::endl;
+
+  //1----If stack is Empty, start new step
+  if (mpRootStack->isEmpty())
+    {
+      std::cout << "Begin RootStack is Empty" << std::endl;
+      //(0)----Record old root value and time
+      if (mODE45Status != STATE_CHANGED)
+	{
+	  mOldRootTime = mNewRootTime;
+	  for (size_t i=0; i<mRootNum; i++)
+	    mOldRoot[i] = mNewRoot[i];
+	}
+      else //recalculate roots at current time
+	{
+	  std::cout << "init State_Changed " << std::endl;
+	  mOldRootTime = currentTime;
+	  mpModel->evaluateRoots(*mpRootValue, true);
+	  for (size_t i=0; i<mRootNum; i++)
+	    mOldRoot[i] = (mpRootValue->array())[i];
+
+	  //reset slow reaction sum initial value
+	  C_FLOAT64 rand2 = mpRandomGenerator->getRandomOO();
+	  mY[mData.dim - 1] = log(rand2);
+	}
+
+      mSysStatus = SYS_NEW;
+
+      //(1)----pure SSA method
+      if (mMethod == STOCHASTIC) //has only stochastic reactions
+	{ //has events just after one reaction fired
+	  getStochTimeAndIndex(ds, rIndex);
+	  
+	  if (ds > endTime)
+	    ds = endTime;
+	  else
+	    {
+	      fireReaction(rIndex);
+	      updatePriorityQueue(rIndex, ds);
+	    }
+
+	  //population has been changed and record to the mCurrentState
+	  //in fireReaction(). So here just store time
+	  *mpState = mpModel->getState();
+	  mpState->setTime(ds);
+	  mpModel->setState(*mpState);
+
+	  //check roots
+	  mSysStatus = CONTINUE;
+	  mpModel->evaluateRoots(*mpRootValue, true);
+	  for (size_t id=0; id<mRootNum; id++)
+	    {
+	      if ((mpRootValue->array())[id] == 0.0) //has root
+		{
+		  mpRootStack->push(ds, id);
+		  mSysStatus = HAS_EVENT;
+		}
+	    }
+	}
+      else//(2)----Method with Deterministic Part
+	{
+	  integrateDeterministicPart(endTime - currentTime);
+	  // Push All Roots and Slow Reaction into Stack
+	  if (mSysStatus == HAS_EVENT) 
+	    {
+	      std::cout << "Has Event" << std::endl;
+	      recordStates();
+	      if(mHasRoot)// push roots into stack
+		{
+		  std::cout << "Has Root" << std::endl;
+		  for (size_t id=0; id<mRootNum; id++)
+		    {
+		      if (mRootTime[id]>=0.0)
+			mpRootStack->push(mRootTime[id], id);
+		    }
+		}
+
+	      if(mHasSlow) // push slow events into stack
+		{
+		  std::cout << "Has Slow Reactions" <<  " mY[end] " << mY[mData.dim-1] << std::endl;
+		  C_FLOAT64 time = mpInterpolation->calculateFiringTime();
+		  mpRootStack->push(time, mRootNum);
+		}
+
+	      mpRootStack->buildStack();
+	    }
+	  else // Not Roots
+	    {
+	      std::cout << "Continue " << "ds " << ds << std::endl;
+	      ds = mpState->getTime();
+	      mSysStatus = CONTINUE;
+	    }
+	  // Till now, state has been recorded
+	}
+    }
+  
+  //2----Check Status
+  if (!(mpRootStack->isEmpty())) //has Root to be dealt with
+    {
+      size_t id;
+      mpRootStack->pop(ds, id);
+      std::cout << "Root Stack not Empty " << std::endl;
+      std::cout << "ds " << ds << " id " << id << std::endl;
+      doInverseInterpolation(ds);
+      
+      if (id < mRootNum) //root, not slow reaction fire
+	{	 
+	  std::cout << "Fire Roots" << std::endl;
+
+	  for (size_t i=0; i<mRootNum; i++)
+	    (mRoots.array())[i] = 0;
+
+	  (mRoots.array())[id] = 1;
+	  mSysStatus = HAS_ROOT;
+
+	}
+      else //slow reaction fires
+	{
+	  std::cout << "Fire Slow Reaction!" << std::endl;
+	  fireSlowReaction4Hybrid();
+	  stateChanged();
+	}
+    }
+  //getchar();
+  //3----Return
+  return ds;
+}*/
+
+void CHybridMethodODE45::stateChanged()
+{
+  *mpState = *mpCurrentState;
+
+  std::cout << "Here, state changed, ai" << std::endl;
+  mSysStatus = SYS_CHANGE;
+
+  return;
+}
+
 
 void CHybridMethodODE45::fireSlowReaction4Hybrid()
 {
@@ -835,6 +1081,7 @@ void CHybridMethodODE45::fireSlowReaction4Hybrid()
   return;
 }
 
+
 //========Function for ODE45========
 C_FLOAT64 CHybridMethodODE45::getDefaultAtol(const CModel * pModel) const
 {
@@ -866,8 +1113,94 @@ C_FLOAT64 CHybridMethodODE45::getDefaultAtol(const CModel * pModel) const
  *
  * @param ds A C_FLOAT64 specifying the stepsize.
  */
-
 void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
+{
+  //1----Set Parameters for ODE45 solver
+  //=(1)= solver error message
+  mErrorMsg.str("");
+
+  //=(2)= set state
+  *mpState = mpModel->getState();
+
+  //=(3)= set time and old time
+  mODE45.mT    = mpState->getTime();
+  mODE45.mTEnd = mODE45.mT + deltaT;
+
+  //=(4)= set y and old_y
+  C_FLOAT64 * stateY = mpState->beginIndependent();
+
+  for (size_t i = 0; i < mData.dim - 1; i++, stateY++)
+      mY[i]    = *stateY;
+
+  //2----Reset ODE45 Solver
+  if(mSysState = SYS_NEW)
+    {
+      if(!mODE45.initialized())
+	mODE45.mODEState = ODE_INIT;
+      else
+	mODE45.mODEState = ODE_NEW;
+    }
+  else if(mSysState = SYS_CONT)
+    mODE45.mODEState = ODE_CONT;
+  else if(mSysState = SYS_CHANGE)
+    mODE45.mODEState = ODE_NEW;
+
+
+  //3----If time increment is too small, do nothing
+  C_FLOAT64 tdist , d__1, d__2, w0;
+  tdist = fabs(deltaT); //absolute time increment
+  d__1 = fabs(mODE45.mT), d__2 = fabs(mODE45.mTEnd);
+  w0 = std::max(d__1, d__2);
+
+  if (tdist < std::numeric_limits< C_FLOAT64 >::epsilon() * 2. * w0) //just do nothing
+    {
+      mpModel->setTime(mODE45.mTEnd);
+      return;
+    }
+
+  //4----just do nothing if there are no variables
+  if (!mData.dim)
+    {
+      mpModel->setTime(EndTime);
+      return;
+    }
+
+  //5----do interpolation
+  mODE45.integration();
+
+  //6----check status
+  if(mODE45.mODEState == ODE_ERR)
+    {
+      mSysStatus = SYS_ERR;
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
+    }
+  else if(mODE45.mODEState == ODE_EVENT)
+    {
+      mHasSlow = false;
+      mHasRoot = false;
+      if(mODE45.mRootID == SLOW_REACT)
+	mHasSlow = true;
+      else
+	mHasRoot = true;
+
+      mSysState = SYS_EVENT;
+    }
+  else
+    mSysState = SYS_NEW;
+
+  //7----Record State
+  stateY = mpState->beginIndependent();
+  for (size_t i = 0; i < mData.dim-1; i++)
+    stateY[i] = mY[i]; //write result into mpState
+
+  mpState->setTime(mODE45.mT);
+  mpModel->setState(*mpState);
+  mpModel->updateSimulatedValues(false); //for assignments?????????
+
+  return;
+}
+
+/*void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
 {
 
   //1----Set Parameters for ODE45 solver
@@ -890,12 +1223,6 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
     {
       mOldY[i] = *stateY;
       mY[i]    = *stateY;
-    }
-
-  if (mODE45Status == NEW_STEP)
-    {
-      C_FLOAT64 rand2 = mpRandomGenerator->getRandomOO();
-      mY[mData.dim - 1] = log(rand2);
     }
 
   mOldY[mData.dim - 1] = mY[mData.dim - 1];
@@ -922,49 +1249,48 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
       return;
     }
 
-  while ((mODE45Status == CONTINUE)
-         || (mODE45Status == NEW_STEP))
+  while((mSysStatus == CONTINUE) 
+	|| (mSysStatus == SYS_NEW))
     {
       //(1)----ODE Solver
       rkf45_(&EvalF ,                 //1. evaluate F
-             &mData.dim,              //2. number of variables
-             mY ,                     //3. the array of current concentrations
-             &mTime ,                 //4. the current time
-             &EndTime ,               //5. the final time
-             &mRtol ,                 //6. relative tolerance array
-             &mAtol ,                 //7. absolute tolerance array
-             &mIFlag ,                //8. the state for input and output
-             mDWork.array() ,         //9. the double work array
-             mIWork.array() ,         //10. the int work array
-             mStateRecord.array());   //11. the array to record temp state
+	     &mData.dim,              //2. number of variables
+	     mY ,                     //3. the array of current concentrations
+	     &mTime ,                 //4. the current time
+	     &EndTime ,               //5. the final time
+	     &mRtol ,                 //6. relative tolerance array
+	     &mAtol ,                 //7. absolute tolerance array
+	     &mIFlag ,                //8. the state for input and output
+	     mDWork.array() ,         //9. the double work array
+	     mIWork.array() ,         //10. the int work array
+	     mStateRecord.array());   //11. the array to record temp state
 
-      //(2)----set mODE45Status
-      if (mIFlag == 2)
-        {
-          if (mY[mData.dim - 1] >= 0.0)
-            mODE45Status = HAS_EVENT;
-          else
-            mODE45Status = REACH_END_TIME; //reach EndTime
-        }
-      else if (mIFlag == -2) //finish one step integration
-        {
-          if (mY[mData.dim - 1] >= 0.0) //has an event
-            mODE45Status = HAS_EVENT;
-          else
-            mODE45Status = CONTINUE;
-        }
-      else //error happens
-        {
-          mODE45Status = HAS_ERR;
-          std::cout << "Error Type: " << mIFlag << std::endl;
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
-        }//end if
+      //(2)----Change mSysStatus state
+      if ((mIFlag != 2) && (mIFlag != -2)) // First, check error
+	{
+	  mSysStatus = HAS_ERR;
+	  std::cout << "Error Type: " << mIFlag << std::endl;
+	  CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
+	}
+      else
+	{
+	  // Check whether system has events or not
+	  if ((mHasRoot=rootInterpolation()) || 
+	      (mHasSlow=(mY[mData.dim-1]>=0.0)))
+	    mSysStatus = HAS_EVENT;
+	  else
+	    {
+	      if (mIFlag == -2) // Finish One Step
+		mSysStatus = SYS_CONT;
+	      else // Reach End Time
+		mSysStatus = SYS_END;
+	    }
+	}
     }//end while
 
   //5----Record State
   stateY = mpState->beginIndependent();
-
-  for (size_t i = 0; i < mData.dim - 1; i++)
+  for (size_t i = 0; i < mData.dim-1; i++)
     stateY[i] = mY[i]; //write result into mpState
 
   mpState->setTime(mTime);
@@ -972,47 +1298,20 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
   mpModel->updateSimulatedValues(false); //for assignments?????????
 
   return;
-}
+}*/
 
-void CHybridMethodODE45::doInverseInterpolation()
+
+/**
+ * Function that sets (mRoot.array())[id]=1
+ */
+void CHybridMethodODE45::setRoot(const size_t id)
 {
-
-  //==(1)==for one-step method, reset record each time when do interpolation
-  mpInterpolation->recordReset();
-
-  //==(2)==set record in class interpolation
-  mpInterpolation->recordState(mOldTime, mOldY);
-  size_t offset;
-
-  if (mUseStateRecord)
-    {
-      for (size_t i = 0; i < INTERP_RECORD_NUM - 2; i++) //record the middle 4 states
-        {
-          offset = i * (mData.dim + 1);
-          mpInterpolation->recordState(mStateRecord[offset],
-                                       mStateRecord.array() + offset + 1);
-        }
-    }
-
-  mpInterpolation->recordState(mTime, mY);
-
-  //==(3)==do interpolation
-  mpEventState = mpInterpolation->getInterpolationState();
-
-  //==(4)==record the state
-  mTime = mpEventState->getTime();
-  C_FLOAT64 * tmpY   = mpEventState->getArray() + 1;
-  C_FLOAT64 * stateY = mpState->beginIndependent();
-
-  for (size_t i = 0; i < mData.dim - 1; i++)
-    stateY[i] = tmpY[i]; //write result into mpState
-
-  mpState->setTime(mTime);
-  mpModel->setState(*mpState);
-  mpModel->updateSimulatedValues(false); //for assignments?????????
-
+  for(size_t i=0; i<mRootNum; i++)
+    (mRoots.array())[i] = 0;
+  (mRoots.array())[id]= 1;
   return;
 }
+
 
 /**
  * Dummy f function for calculating derivative of y
@@ -1125,9 +1424,9 @@ void CHybridMethodODE45::updateTauMu(size_t rIndex, C_FLOAT64 time)
 
   // One must make sure that the calculation yields reasonable results even in the cases
   // where mAmu=0 or mAmuOld=0 or both=0. Therefore mAmuOld=0 is checked. If mAmuOld equals 0,
-  // then a new random number has to be drawn, because tau equals inf and the stoch.
+  // then a new random number has to be drawn, because tau equals inf and the stoch. 
   // information is lost.
-  // If both values equal 0, then tau should remain inf and the update of the queue can
+  // If both values equal 0, then tau should remain inf and the update of the queue can 
   // be skipped!
   if (mAmuOld[rIndex] == 0.0)
     {
@@ -1356,7 +1655,7 @@ void CHybridMethodODE45::updatePriorityQueue(size_t rIndex, C_FLOAT64 time)
   size_t index;
   std::set <size_t>::iterator iter, iterEnd;
 
-  //if the model contains assignments we use a less efficient loop over all (stochastic)
+  //if the model contains assignments we use a less efficient loop over all (stochastic) 
   //reactions to capture all changes
   //we do not know the exact dependencies.
   //TODO: this should be changed later in order to get a more efficient update scheme
@@ -1366,11 +1665,11 @@ void CHybridMethodODE45::updatePriorityQueue(size_t rIndex, C_FLOAT64 time)
 
       for (index = 0; index < mNumReactions; index++)
         {
-          mAmuOld[index] = mAmu[index];
-          calculateAmu(index);
+	  mAmuOld[index] = mAmu[index];
+	  calculateAmu(index);
 
-          if (mAmuOld[index] != mAmu[index])
-            if (index != rIndex) updateTauMu(index, time);
+	  if (mAmuOld[index] != mAmu[index])
+	    if (index != rIndex) updateTauMu(index, time);
         }
     }
   else
@@ -1379,14 +1678,13 @@ void CHybridMethodODE45::updatePriorityQueue(size_t rIndex, C_FLOAT64 time)
       // ones in the priority queue
       iter = mReactAffect[rIndex].begin();
       iterEnd = mReactAffect[rIndex].end();
-
       for (; iter != iterEnd; iter++)
         {
-          index = *iter;
-          mAmuOld[index] = mAmu[index];
-          calculateAmu(index);
+	  index = *iter;
+	  mAmuOld[index] = mAmu[index];
+	  calculateAmu(index);
 
-          if (*iter != rIndex) updateTauMu(index, time);
+	  if (*iter != rIndex) updateTauMu(index, time);
         }
     }
 
@@ -1468,966 +1766,8 @@ size_t CHybridMethodODE45::getReactionIndex4Hybrid()
             return rIndex;
         }
     }
-  return rIndex;
 }
 
-/*========Functions for C Code from f2c========*/
-C_INT CHybridMethodODE45::rkf45_(pEvalF f, const C_INT *neqn, double *y,
-                                 double *t, double *tout,
-                                 double *relerr, double *abserr,
-                                 C_INT *iflag, double *work,
-                                 C_INT *iwork, double *yrcd)
-{
-  static C_INT k1, k2, k3, k4, k5, k6, k1m;
-
-  /*     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-  /*     This is a modefied fehlberg fourth-fifth order runge-kutta method */
-  /*     based on h.a.watts and l.f.shapine's fortran ODE solver rkf45.f */
-  /*     with one more input double precision vector recording time */
-  /*     points between t and t+h in each steap and */
-  /*     approximations of y in such corresponding times. */
-  /*     yrcd is a vector of length 4*(neqn+1), where "4" is related with */
-  /*     four middle time points: */
-  /*     c1=t+h/4, c2=t+3h/8, c3=t+h/2, c4=t+12h/13. */
-  /*     yrcd can be seperated into four parts, each of which is a double */
-  /*     precision vector of length neqn+1. The first member is assigned */
-  /*     to time record, and the last neqn members are for y at the */
-  /*     corresponding time. */
-  /*     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-
-  /*     fehlberg fourth-fifth order runge-kutta method */
-
-  /*     written by h.a.watts and l.f.shampine */
-  /*                   sandia laboratories */
-  /*                  albuquerque,new mexico */
-
-  /*    rkf45 is primarily designed to solve non-stiff and mildly stiff */
-  /*    differential equations when derivative evaluations are inexpensive. */
-  /*    rkf45 should generally not be used when the user is demanding */
-  /*    high accuracy. */
-
-  /* abstract */
-
-  /*    subroutine  rkf45  integrates a system of neqn first order */
-  /*    ordinary differential equations of the form */
-  /*             dy(i)/dt = f(t,y(1),y(2),...,y(neqn)) */
-  /*              where the y(i) are given at t . */
-  /*    typically the subroutine is used to integrate from t to tout but it */
-  /*    can be used as a one-step integrator to advance the solution a */
-  /*    single step in the direction of tout.  on return the parameters in */
-  /*    the call list are set for continuing the integration. the user has */
-  /*    only to call rkf45 again (and perhaps define a new value for tout). */
-  /*    actually, rkf45 is an interfacing routine which calls subroutine */
-  /*    rkfs for the solution.  rkfs in turn calls subroutine  fehl which */
-  /*    computes an approximate solution over one step. */
-
-  /*    rkf45  uses the runge-kutta-fehlberg (4,5)  method described */
-  /*    in the reference */
-  /*    e.fehlberg , low-order classical runge-kutta formulas with stepsize */
-  /*                 control , nasa tr r-315 */
-
-  /*    the performance of rkf45 is illustrated in the reference */
-  /*    l.f.shampine,h.a.watts,s.davenport, solving non-stiff ordinary */
-  /*                 differential equations-the state of the art , */
-  /*                 sandia laboratories report sand75-0182 , */
-  /*                 to appear in siam review. */
-
-  /*    the parameters represent- */
-  /*      f -- subroutine f(t,y,yp) to evaluate derivatives yp(i)=dy(i)/dt */
-  /*      neqn -- number of equations to be integrated */
-  /*      y(*) -- solution vector at t */
-  /*      t -- independent variable */
-  /*      tout -- output point at which solution is desired */
-  /*      relerr,abserr -- relative and absolute error tolerances for local */
-  /*            error test. at each step the code requires that */
-  /*                 abs(local error) .le. relerr*abs(y) + abserr */
-  /*            for each component of the local error and solution vectors */
-  /*      iflag -- indicator for status of integration */
-  /*      work(*) -- array to hold information internal to rkf45 which is */
-  /*            necessary for subsequent calls. must be dimensioned */
-  /*            at least  3+6*neqn */
-  /*      iwork(*) -- C_INT array used to hold information internal to */
-  /*            rkf45 which is necessary for subsequent calls. must be */
-  /*            dimensioned at least  5 */
-
-  /*  first call to rkf45 */
-
-  /*    the user must provide storage in his calling program for the arrays */
-  /*    in the call list  -      y(neqn) , work(3+6*neqn) , iwork(5)  , */
-  /*    declare f in an external statement, supply subroutine f(t,y,yp) and */
-  /*    initialize the following parameters- */
-
-  /*      neqn -- number of equations to be integrated.  (neqn .ge. 1) */
-  /*      y(*) -- vector of initial conditions */
-  /*      t -- starting point of integration , must be a variable */
-  /*      tout -- output point at which solution is desired. */
-  /*            t=tout is allowed on the first call only, in which case */
-  /*            rkf45 returns with iflag=2 if continuation is possible. */
-  /*      relerr,abserr -- relative and absolute local error tolerances */
-  /*            which must be non-negative. relerr must be a variable while */
-  /*            abserr may be a constant. the code should normally not be */
-  /*            used with relative error control smaller than about 1.e-8 . */
-  /*            to avoid limiting precision difficulties the code requires */
-  /*            relerr to be larger than an internally computed relative */
-  /*            error parameter which is machine dependent. in particular, */
-  /*            pure absolute error is not permitted. if a smaller than */
-  /*            allowable value of relerr is attempted, rkf45 increases */
-  /*            relerr appropriately and returns control to the user before */
-  /*            continuing the integration. */
-  /*      iflag -- +1,-1  indicator to initialize the code for each new */
-  /*            problem. normal input is +1. the user should set iflag=-1 */
-  /*            only when one-step integrator control is essential. in this */
-  /*            case, rkf45 attempts to advance the solution a single step */
-  /*            in the direction of tout each time it is called. since this */
-  /*            mode of operation results in extra computing overhead, it */
-  /*            should be avoided unless needed. */
-
-  /*  output from rkf45 */
-
-  /*      y(*) -- solution at t */
-  /*      t -- last point reached in integration. */
-  /*      iflag = 2 -- integration reached tout. indicates successful retur */
-  /*                   and is the normal mode for continuing integration. */
-  /*            =-2 -- a single successful step in the direction of tout */
-  /*                   has been taken. normal mode for continuing */
-  /*                   integration one step at a time. */
-  /*            = 3 -- integration was not completed because relative error */
-  /*                   tolerance was too small. relerr has been increased */
-  /*                   appropriately for continuing. */
-  /*            = 4 -- integration was not completed because more than */
-  /*                   3000 derivative evaluations were needed. this */
-  /*                   is approximately 500 steps. */
-  /*            = 5 -- integration was not completed because solution */
-  /*                   vanished making a pure relative error test */
-  /*                   impossible. must use non-zero abserr to continue. */
-  /*                   using the one-step integration mode for one step */
-  /*                   is a good way to proceed. */
-  /*            = 6 -- integration was not completed because requested */
-  /*                   accuracy could not be achieved using smallest */
-  /*                   allowable stepsize. user must increase the error */
-  /*                   tolerance before continued integration can be */
-  /*                   attempted. */
-  /*            = 7 -- it is likely that rkf45 is inefficient for solving */
-  /*                   this problem. too much output is restricting the */
-  /*                   natural stepsize choice. use the one-step integrator */
-  /*                   mode. */
-  /*            = 8 -- invalid input parameters */
-  /*                   this indicator occurs if any of the following is */
-  /*                   satisfied -   neqn .le. 0 */
-  /*                                 t=tout  and  iflag .ne. +1 or -1 */
-  /*                                 relerr or abserr .lt. 0. */
-  /*                                 iflag .eq. 0  or  .lt. -2  or  .gt. 8 */
-  /*      work(*),iwork(*) -- information which is usually of no interest */
-  /*                   to the user but necessary for subsequent calls. */
-  /*                   work(1),...,work(neqn) contain the first derivatives */
-  /*                   of the solution vector y at t. work(neqn+1) contains */
-  /*                   the stepsize h to be attempted on the next step. */
-  /*                   iwork(1) contains the derivative evaluation counter. */
-
-  /*  subsequent calls to rkf45 */
-
-  /*    subroutine rkf45 returns with all information needed to continue */
-  /*    the integration. if the integration reached tout, the user need onl */
-  /*    define a new tout and call rkf45 again. in the one-step integrator */
-  /*    mode (iflag=-2) the user must keep in mind that each step taken is */
-  /*    in the direction of the current tout. upon reaching tout (indicated */
-  /*    by changing iflag to 2),the user must then define a new tout and */
-  /*    reset iflag to -2 to continue in the one-step integrator mode. */
-
-  /*    if the integration was not completed but the user still wants to */
-  /*    continue (iflag=3,4 cases), he just calls rkf45 again. with iflag=3 */
-  /*    the relerr parameter has been adjusted appropriately for continuing */
-  /*    the integration. in the case of iflag=4 the function counter will */
-  /*    be reset to 0 and another 3000 function evaluations are allowed. */
-
-  /*    however,in the case iflag=5, the user must first alter the error */
-  /*    criterion to use a positive value of abserr before integration can */
-  /*    proceed. if he does not,execution is terminated. */
-
-  /*    also,in the case iflag=6, it is necessary for the user to reset */
-  /*    iflag to 2 (or -2 when the one-step integration mode is being used) */
-  /*    as well as increasing either abserr,relerr or both before the */
-  /*    integration can be continued. if this is not done, execution will */
-  /*    be terminated. the occurrence of iflag=6 indicates a trouble spot */
-  /*    (solution is changing rapidly,singularity may be present) and it */
-  /*    often is inadvisable to continue. */
-
-  /*    if iflag=7 is encountered, the user should use the one-step */
-  /*    integration mode with the stepsize determined by the code or */
-  /*    consider switching to the adams codes de/step,intrp. if the user */
-  /*    insists upon continuing the integration with rkf45, he must reset */
-  /*    iflag to 2 before calling rkf45 again. otherwise,execution will be */
-  /*    terminated. */
-
-  /*    if iflag=8 is obtained, integration can not be continued unless */
-  /*    the invalid input parameters are corrected. */
-
-  /*    it should be noted that the arrays work,iwork contain information */
-  /*    required for subsequent integration. accordingly, work and iwork */
-  /*    should not be altered. */
-
-  /*     compute indices for the splitting of the work array */
-
-  /* Parameter adjustments */
-  --yrcd;
-  --y;
-  --work;
-  --iwork;
-
-  /* Function Body */
-  k1m = *neqn + 1;
-  //k1m = *neqn;
-  k1 = k1m + 1;
-  k2 = k1 + *neqn;
-  k3 = k2 + *neqn;
-  k4 = k3 + *neqn;
-  k5 = k4 + *neqn;
-  k6 = k5 + *neqn;
-
-  /*     this interfacing routine merely relieves the user of a long */
-  /*     calling list via the splitting apart of two working storage */
-  /*     arrays. if this is not compatible with the users compiler, */
-  /*     he must use rkfs directly. */
-
-  rkfs_((pEvalF)f, neqn, &y[1], t, tout, relerr, abserr, iflag,
-        &work[1], &work[k1m], &work[k1], &work[k2], &work[k3],
-        &work[k4], &work[k5], &work[k6], &work[k6 + 1], &iwork[1],
-        &iwork[2], &iwork[3], &iwork[4], &iwork[5], &yrcd[1]);
-
-  return 0;
-} /* rkf45_ */
-
-C_INT CHybridMethodODE45::rkfs_(pEvalF f, const C_INT *neqn, double *y, double *
-                                t, double *tout, double *relerr, double *abserr, C_INT *
-                                iflag, double *yp, double *h__, double *f1, double *
-                                f2, double *f3, double *f4, double *f5, double *savre,
-                                double *savae, C_INT *nfe, C_INT *kop, C_INT *init,
-                                C_INT *jflag, C_INT *kflag, double *yrcd)
-{
-  /* Initialized data */
-
-  static double remin = 1e-12;
-  static C_INT maxnfe = 3000;
-
-  /* System generated locals */
-  C_INT i__1;
-  double d__1, d__2, d__3, d__4;
-
-  /* Builtin functions */
-  /* Subroutine */
-  //int s_stop(char *, ftnlen);
-  //double pow_dd(double *, double *);
-  //C_INT i_sign(C_INT *, C_INT *);
-  //double d_sign(double *, double *);
-
-  /* Local variables */
-  static double a;
-  static C_INT k;
-  static double s, ae, ee, dt, et, u26, rer, tol, ypk;
-  static double hmin, toln;
-  static C_INT mflag;
-  static double scale, eeoet;
-  static int hfaild;
-  static double esttol, twoeps;
-  static int output;
-
-  /* fehlberg fourth-fifth order runge-kutta method */
-
-  /* rkfs integrates a system of first order ordinary differential */
-  /* equations as described in the comments for rkf45 . */
-  /* the arrays yp,f1,f2,f3,f4,and f5 (of dimension at least neqn) and */
-  /* the variables h,savre,savae,nfe,kop,init,jflag,and kflag are used */
-  /* internally by the code and appear in the call list to eliminate */
-  /* local retention of variables between calls. accordingly, they */
-  /* should not be altered. items of possible interest are */
-  /*     yp - derivative of solution vector at t */
-  /*     h  - an appropriate stepsize to be used for the next step */
-  /*     nfe- counter on the number of derivative function evaluations */
-
-  /*  remin is the minimum acceptable value of relerr.  attempts */
-  /*  to obtain higher accuracy with this subroutine are usually */
-  /*  very expensive and often unsuccessful. */
-
-  /* Parameter adjustments */
-  --yrcd;
-  --f5;
-  --f4;
-  --f3;
-  --f2;
-  --f1;
-  --yp;
-  --y;
-
-  /* Function Body */
-
-  /* the expense is controlled by restricting the number */
-  /* of function evaluations to be approximately maxnfe. */
-  /* as set, this corresponds to about 500 steps. */
-
-  /* here two constants emboding the machine epsilon is present */
-  /* twoesp is set to twice the machine epsilon while u26 is set */
-  /* to 26 times the machine epsilon */
-
-  /* data twoeps, u26/4.4d-16, 5.72d-15/  *** */
-  twoeps = 2.f * std::numeric_limits< C_FLOAT64 >::epsilon();
-  //twoeps = 4.4e-16;
-  u26    = twoeps * 13.f;
-
-  /* check input parameters */
-  if (*neqn < 1)
-    {
-      goto L10;
-    }
-
-  if (*relerr < 0. || *abserr < 0.)
-    {
-      goto L10;
-    }
-
-  mflag = abs(*iflag);
-
-  if (mflag >= 1 && mflag <= 8)
-    {
-      goto L20;
-    }
-
-  /* invalid input */
-L10:
-  *iflag = 8;
-  return 0;
-
-  /* is this the first call */
-L20:
-
-  if (mflag == 1)
-    {
-      goto L50;
-    }
-
-  /* check continuation possibilities */
-
-  if (*t == *tout && *kflag != 3)
-    {
-      goto L10;
-    }
-
-  if (mflag != 2)
-    {
-      goto L25;
-    }
-
-  /* iflag = +2 or -2 */
-  if (*kflag == 3)
-    {
-      goto L45;
-    }
-
-  if (*init == 0)
-    {
-      goto L45;
-    }
-
-  if (*kflag == 4)
-    {
-      goto L40;
-    }
-
-  if (*kflag == 5 && *abserr == 0.)
-    {
-      goto L30;
-    }
-
-  if (*kflag == 6 && *relerr <= *savre && *abserr <= *savae)
-    {
-      goto L30;
-    }
-
-  goto L50;
-
-  /* iflag = 3,4,5,6,7 or 8 */
-L25:
-
-  if (*iflag == 3)
-    {
-      goto L45;
-    }
-
-  if (*iflag == 4)
-    {
-      goto L40;
-    }
-
-  if (*iflag == 5 && *abserr > 0.)
-    {
-      goto L45;
-    }
-
-  /* integration cannot be continued since user did not respond to */
-  /* the instructions pertaining to iflag=5,6,7 or 8 */
-L30:
-  //s_stop("", (ftnlen)0);
-  std::cout << "STOP 0 statement executed" << std::endl;
-  return -1;
-
-  /* reset function evaluation counter */
-L40:
-  *nfe = 0;
-
-  if (mflag == 2)
-    {
-      goto L50;
-    }
-
-  /* reset flag value from previous call */
-L45:
-  *iflag = *jflag;
-
-  if (*kflag == 3)
-    {
-      mflag = abs(*iflag);
-    }
-
-  /* save input iflag and set continuation flag value for subsequent */
-  /* input checking */
-L50:
-  *jflag = *iflag;
-  *kflag = 0;
-
-  /* save relerr and abserr for checking input on subsequent calls */
-  *savre = *relerr;
-  *savae = *abserr;
-
-  /* restrict relative error tolerance to be at least as large as */
-  /* 2*eps+remin to avoid limiting precision difficulties arising */
-  /* from impossible accuracy requests */
-
-  rer = twoeps + remin;
-
-  if (*relerr >= rer)
-    {
-      goto L55;
-    }
-
-  /* relative error tolerance too small */
-  *relerr = rer;
-  *iflag = 3;
-  *kflag = 3;
-  return 0;
-
-L55:
-  dt = *tout - *t;
-
-  if (mflag == 1)
-    {
-      goto L60;
-    }
-
-  if (*init == 0)
-    {
-      goto L65;
-    }
-
-  goto L80;
-
-  /* initialization -- */
-  /* set initialization completion indicator,init */
-  /* set indicator for too many output points,kop */
-  /* evaluate initial derivatives */
-  /* set counter for function evaluations,nfe */
-  /* evaluate initial derivatives */
-  /* set counter for function evaluations,nfe */
-  /* estimate starting stepsize */
-
-L60:
-  *init = 0;
-  *kop = 0;
-
-  a = *t;
-  (*f)(neqn, &a, &y[1], &yp[1]);
-  *nfe = 1;
-
-  if (*t != *tout)
-    {
-      goto L65;
-    }
-
-  *iflag = 2;
-  return 0;
-
-L65:
-  *init = 1;
-  *h__ = fabs(dt);
-  toln = 0.f;
-  i__1 = *neqn;
-
-  for (k = 1; k <= i__1; ++k)
-    {
-      tol = *relerr * (d__1 = y[k], fabs(d__1)) + *abserr;
-
-      if (tol <= 0.f)
-        {
-          goto L70;
-        }
-
-      toln = tol;
-      ypk = (d__1 = yp[k], fabs(d__1));
-      /* Computing 5th power */
-      d__1 = *h__, d__2 = d__1, d__1 *= d__1;
-
-      if (ypk * (d__2 * (d__1 * d__1)) > tol)
-        {
-          d__3 = tol / ypk;
-          *h__ = pow(d__3, .2);
-        }
-
-L70:
-      ;
-    }
-
-  if (toln <= 0.)
-    {
-      *h__ = 0.;
-    }
-
-  /* Computing MAX */
-  /* Computing MAX */
-  d__3 = fabs(*t), d__4 = fabs(dt);
-  d__1 = *h__, d__2 = u26 * std::max(d__3, d__4);
-  *h__ = std::max(d__1, d__2);
-  //*jflag = i_sign(2, iflag);
-  *jflag = *iflag >= 0 ? 2 : -2;
-
-  /* set stepsize for integration in the direction from t to tout */
-
-L80:
-  //*h__ = d_sign(h__, &dt);
-  *h__ = dt >= 0 ? fabs(*h__) : -fabs(*h__);
-
-  /* test to see if rkf45 is being severely impacted by too many */
-  /* output points */
-
-  if (fabs(*h__) >= fabs(dt) * 2.)
-    {
-      ++(*kop);
-    }
-
-  if (*kop != 100)
-    {
-      goto L85;
-    }
-
-  /* unnecessary frequency of output */
-  *kop = 0;
-  *iflag = 7;
-  return 0;
-
-L85:
-
-  if (fabs(dt) > u26 * fabs(*t))
-    {
-      goto L95;
-    }
-
-  /* if too close to output point,extrapolate and return */
-  i__1 = *neqn;
-
-  for (k = 1; k <= i__1; ++k)
-    {
-      /* L90: */
-      y[k] += dt * yp[k];
-    }
-
-  a = *tout;
-  (*f)(neqn, &a, &y[1], &yp[1]);
-  ++(*nfe);
-
-  std::cout << "Step too Small" << std::endl;
-  mUseStateRecord = false;
-  goto L300;
-
-  /* initialize output point indicator */
-
-L95:
-  output = 0;
-
-  /* to avoid premature underflow in the error tolerance function, */
-  /* scale the error tolerances */
-
-  scale = 2. / *relerr;
-  ae = scale * *abserr;
-
-  /* step by step integration */
-
-L100:
-  hfaild = 0;
-
-  /* set smallest allowable stepsize */
-  hmin = u26 * fabs(*t);
-
-  /* adjust stepsize if necessary to hit the output point. */
-  /* look ahead two steps to avoid drastic changes in the stepsize and */
-  /* thus lessen the impact of output points on the code. */
-
-  dt = *tout - *t;
-
-  if (fabs(dt) >= fabs(*h__) * 2.)
-    {
-      goto L200;
-    }
-
-  if (fabs(dt) > fabs(*h__))
-    {
-      goto L150;
-    }
-
-  /* the next successful step will complete the integration to the */
-  /* output point */
-
-  output = 1;
-  *h__ = dt;
-  goto L200;
-
-L150:
-  *h__ = dt * .5;
-
-  /* core integrator for taking a single step */
-
-  /* the tolerances have been scaled to avoid premature underflow in */
-  /* computing the error tolerance function et. */
-  /* to avoid problems with zero crossings,relative error is measured */
-  /* using the average of the magnitudes of the solution at the */
-  /* beginning and end of a step. */
-  /* the error estimate formula has been grouped to control loss of */
-  /* significance. */
-  /* to distinguish the various arguments, h is not permitted */
-  /* to become smaller than 26 units of roundoff in t. */
-  /* practical limits on the change in the stepsize are enforced to */
-  /* smooth the stepsize selection process and to avoid excessive */
-  /* chattering on problems having discontinuities. */
-  /* to prevent unnecessary failures, the code uses 9/10 the stepsize */
-  /* it estimates will succeed. */
-  /* after a step failure, the stepsize is not allowed to increase for */
-  /* the next attempted step. this makes the code more efficient on */
-  /* problems having discontinuities and more effective in general */
-  /* since local extrapolation is being used and extra caution seems */
-  /* warranted. */
-
-  /* test number of derivative function evaluations. */
-  /* if okay,try to advance the integration from t to t+h */
-
-L200:
-
-  if (*nfe <= maxnfe)
-    {
-      goto L220;
-    }
-
-  /* too much work */
-  *iflag = 4;
-  *kflag = 4;
-  return 0;
-
-  /* advance an approximate solution over one step of length h */
-
-L220:
-  fehl_((pEvalF)f, neqn, &y[1], t, h__, &yp[1], &f1[1], &f2[1],
-        &f3[1], &f4[1], &f5[1], &f1[1], &yrcd[1]);
-  *nfe += 5;
-  mUseStateRecord = true;
-
-  /* compute and test allowable tolerances versus local error estimates*/
-  /* and remove scaling of tolerances. note that relative error is */
-  /* measured with respect to the average of the magnitudes of the */
-  /* solution at the beginning and end of the step. */
-
-  eeoet = 0.;
-  i__1 = *neqn;
-
-  for (k = 1; k <= i__1; ++k)
-    {
-      et = (d__1 = y[k], fabs(d__1)) + (d__2 = f1[k], fabs(d__2)) + ae;
-
-      if (et > 0.)
-        {
-          goto L240;
-        }
-
-      /* inappropriate error tolerance */
-      *iflag = 5;
-      return 0;
-
-L240:
-      ee = (d__1 = yp[k] * -2090. + (f3[k] * 21970. - f4[k] * 15048.) + (f2[k] * 22528. - f5[k] * 27360.), fabs(d__1));
-      /* L250: */
-      /* Computing MAX */
-      d__1 = eeoet, d__2 = ee / et;
-      eeoet = std::max(d__1, d__2);
-    }
-
-  esttol = fabs(*h__) * eeoet * scale / 752400.;
-
-  if (esttol <= 1.)
-    {
-      goto L260;
-    }
-
-  /* unsuccessful step */
-  /* reduce the stepsize , try again */
-  /* the decrease is limited to a factor of 1/10 */
-
-  hfaild = 1;
-  output = 0;
-  s = .1;
-
-  if (esttol < 59049.)
-    {
-      s = .9 / pow(esttol, .2);
-    }
-
-  *h__ = s * *h__;
-
-  if (fabs(*h__) > hmin)
-    {
-      goto L200;
-    }
-
-  /* requested error unattainable at smallest allowable stepsize */
-  *iflag = 6;
-  *kflag = 6;
-  return 0;
-
-  /* successful step */
-  /* store solution at t+h */
-  /* and evaluate derivatives there */
-
-L260:
-  *t += *h__;
-  i__1 = *neqn;
-
-  for (k = 1; k <= i__1; ++k)
-    {
-      /* L270: */
-      y[k] = f1[k];
-    }
-
-  a = *t;
-  (*f)(neqn, &a, &y[1], &yp[1]);
-  ++(*nfe);
-
-  /* choose next stepsize */
-  /* the increase is limited to a factor of 5 */
-  /* if step failure has just occurred, next */
-  /* stepsize is not allowed to increase */
-
-  s = 5.;
-
-  if (esttol > 1.889568e-4)
-    {
-      s = .9 / pow(esttol, .2);
-    }
-
-  if (hfaild)
-    {
-      s = std::min(s, 1.);
-    }
-
-  /* Computing MAX */
-  d__2 = s * fabs(*h__);
-  d__1 = std::max(d__2, hmin);
-  //*h__ = d_sign(&d__1, h__);
-  *h__ = *h__ >= 0 ? fabs(d__1) : -fabs(d__1);
-
-  /* end of core integrator */
-
-  /* should we take another step */
-  if (output)
-    {
-      goto L300;
-    }
-
-  if (*iflag > 0)
-    {
-      goto L100;
-    }
-
-  /* integration successfully completed */
-
-  /* one-step mode */
-  *iflag = -2;
-  return 0;
-
-  /* interval mode */
-L300:
-  *t = *tout;
-  *iflag = 2;
-  return 0;
-} /* rkfs_ */
-
-C_INT CHybridMethodODE45::fehl_(pEvalF f, const C_INT *neqn, double *y,
-                                double *t, double *h__,
-                                double *yp, double *f1,
-                                double *f2, double *f3,
-                                double *f4, double *f5,
-                                double *s, double *yrcd)
-{
-  /* System generated locals */
-  C_INT i__1;
-  double d__1;
-
-  /* Local variables */
-  static C_INT k;
-  static double ch;
-  static C_INT base;
-
-  /* fehlberg fourth-fifth order runge-kutta method */
-
-  /* fehl integrates a system of neqn first order */
-  /* ordinary differential equations of the form */
-  /*             dy(i)/dt=f(t,y(1),---,y(neqn)) */
-  /* where the initial values y(i) and the initial derivatives */
-  /* yp(i) are specified at the starting point t. fehl advances */
-  /* the solution over the fixed step h and returns */
-  /* the fifth order (sixth order accurate locally) solution */
-  /* approximation at t+h in array s(i). */
-  /* f1,---,f5 are arrays of dimension neqn which are needed */
-  /* for internal storage. */
-  /* the formulas have been grouped to control loss of significance. */
-  /* fehl should be called with an h not smaller than 13 units of */
-  /* roundoff in t so that the various independent arguments can be */
-  /* distinguished. */
-
-  /* Parameter adjustments */
-  --yrcd;
-  --s;
-  --f5;
-  --f4;
-  --f3;
-  --f2;
-  --f1;
-  --yp;
-  --y;
-
-  /* Function Body */
-
-  //~~~~~~~~(1)~~~~~~~~
-  ch = *h__ / 4.;
-  i__1 = *neqn;
-
-  for (k = 1; k <= i__1; ++k)
-    {
-      f5[k] = y[k] + ch * yp[k];
-    }
-
-  d__1 = *t + ch;
-  (*f)(neqn, &d__1, &f5[1], &f1[1]);
-
-  /* Record trcd and yrcd at t+h/4 */
-  base = 1;
-  yrcd[base] = *t + ch;
-  i__1 = *neqn;
-
-  for (k = 1; k <= i__1; ++k)
-    {
-      yrcd[base + k] = f5[k];
-    }
-
-  //~~~~~~~~(2)~~~~~~~~
-  ch = *h__ * 3. / 32.;
-  i__1 = *neqn;
-
-  for (k = 1; k <= i__1; ++k)
-    {
-      f5[k] = y[k] + ch * (yp[k] + f1[k] * 3.);
-    }
-
-  d__1 = *t + *h__ * 3. / 8.;
-  (*f)(neqn, &d__1, &f5[1], &f2[1]);
-
-  /* Record trcd and yrcd at t+3h/8 */
-  base = *neqn + 2;
-  yrcd[base] = *t + *h__ * 3. / 8.;
-  i__1 = *neqn;
-
-  for (k = 1; k <= i__1; ++k)
-    {
-      yrcd[base + k] = f5[k];
-    }
-
-  //~~~~~~~~(3)~~~~~~~~
-  ch = *h__ / 2197.;
-  i__1 = *neqn;
-
-  for (k = 1; k <= i__1; ++k)
-    {
-      f5[k] = y[k] + ch * (yp[k] * 1932. + (f2[k] * 7296.
-                                            - f1[k] * 7200.));
-    }
-
-  d__1 = *t + *h__ * 12. / 13.;
-  (*f)(neqn, &d__1, &f5[1], &f3[1]);
-
-  /* Record trcd and yrcd at t+12h/13 */
-  base = (*neqn + 1) * 3 + 1;
-  yrcd[base] = *t + *h__ * 12. / 13.;
-  i__1 = *neqn;
-
-  for (k = 1; k <= i__1; ++k)
-    {
-      yrcd[base + k] = f5[k];
-    }
-
-  //~~~~~~~~(4)~~~~~~~~
-  ch = *h__ / 4104.;
-  i__1 = *neqn;
-
-  for (k = 1; k <= i__1; ++k)
-    {
-      f5[k] = y[k] + ch * (yp[k] * 8341. - f3[k] * 845.
-                           + (f2[k] * 29440. - f1[k] * 32832.));
-    }
-
-  d__1 = *t + *h__;
-  (*f)(neqn, &d__1, &f5[1], &f4[1]);
-
-  //~~~~~~~~(5)~~~~~~~~
-  ch = *h__ / 20520.;
-  i__1 = *neqn;
-
-  for (k = 1; k <= i__1; ++k)
-    {
-      f1[k] = y[k] + ch * (yp[k] * -6080.
-                           + (f3[k] * 9295. - f4[k] * 5643.)
-                           + (f1[k] * 41040. - f2[k] * 28352.));
-    }
-
-  d__1 = *t + *h__ / 2.;
-  (*f)(neqn, &d__1, &f1[1], &f5[1]);
-
-  /* Record trcd and yrcd at t+h/2 */
-  //base = (*neqn + 1 << 1) + 1;
-  base = (*neqn + 1) * 2 + 1;
-  yrcd[base] = *t + *h__ / 2.;
-  i__1 = *neqn;
-
-  for (k = 1; k <= i__1; ++k)
-    {
-      yrcd[base + k] = f1[k];
-    }
-
-  //~~~~~~~~(6)~~~~~~~~
-  /* compute approximate solution at t+h */
-  ch = *h__ / 7618050.;
-  i__1 = *neqn;
-
-  for (k = 1; k <= i__1; ++k)
-    {
-      s[k] = y[k] + ch * (yp[k] * 902880.
-                          + (f3[k] * 3855735. - f4[k] * 1371249.)
-                          + (f2[k] * 3953664. + f5[k] * 277020.));
-    }
-
-  return 0;
-} /* fehl_ */
 
 //========Help Function========
 /**
@@ -2440,7 +1780,7 @@ C_INT CHybridMethodODE45::fehl_(pEvalF f, const C_INT *neqn, double *y,
 C_INT32 CHybridMethodODE45::checkModel(CModel * model)
 {
   CCopasiVectorNS <CReaction> * mpReactions = &model->getReactions();
-  CMatrix <C_FLOAT64> mStoi = model->getStoi();
+  CMatrix <C_FLOAT64> mStoi = model->getStoiReordered();
   C_INT32 multInt;
   size_t i, j, numReactions = mpReactions->size();
   C_FLOAT64 multFloat;
@@ -2716,19 +2056,16 @@ void CHybridMethodODE45::outputData()
   std::cout << "~~~~mNumVariableMetabs:~~~~ " << mNumVariableMetabs << std::endl;
   std::cout << "~~~~mFirstMetabIndex:~~~~ " << mFirstMetabIndex << std::endl;
   std::cout << "~~~~mpMetabolites:~~~~" << std::endl;
-
-  for (size_t i = 0; i < mpMetabolites->size(); i++)
+  for (size_t i=0; i<mpMetabolites->size(); i++)
     {
       std::cout << "metab #" << i << " name: " << (*mpMetabolites)[i]->getObjectDisplayName() << std::endl;
       std::cout << "value pointer: " << (*mpMetabolites)[i]->getValuePointer() << std::endl;
       std::cout << "value: " << *((double *)(*mpMetabolites)[i]->getValuePointer()) << std::endl;
     }
-
   std::cout << std::endl;
 
   std::cout << "~~~~mMetabFlags:~~~~ " << std::endl;
-
-  for (size_t i = 0; i < mMetabFlags.size(); ++i)
+  for (size_t i=0; i<mMetabFlags.size(); ++i)
     {
       std::cout << "metab #" << i << std::endl;
       std::cout << "mFlag: " << mMetabFlags[i].mFlag << std::endl;
@@ -2737,25 +2074,20 @@ void CHybridMethodODE45::outputData()
       std::set<size_t>::iterator endIt = mMetabFlags[i].mFastReactions.end();
 
       for (; it != endIt; it++)
-        std::cout << *it << " ";
-
+	std::cout << *it << " ";
       std::cout << std::endl;
     }
-
   std::cout << std::endl;
 
   std::cout << "============Reaction============" << std::endl;
 
   std::cout << "~~~~mNumReactions:~~~~ " << mNumReactions << std::endl;
-
-  for (size_t i = 0; i < mNumReactions; ++i)
+  for (size_t i=0; i<mNumReactions; ++i)
     {
       std::cout << "Reaction #: " << i << " Flag: " << mReactionFlags[i] << std::endl;
     }
-
   std::cout << "~~~~mLocalBalances:~~~~ " << std::endl;
-
-  for (size_t i = 0; i < mLocalBalances.size(); ++i)
+  for (size_t i=0; i<mLocalBalances.size(); ++i)
     {
       std::cout << "Reaction: " << i << std::endl;
 
@@ -2768,8 +2100,7 @@ void CHybridMethodODE45::outputData()
     }
 
   std::cout << "~~~~mLocalSubstrates:~~~~ " << std::endl;
-
-  for (size_t i = 0; i < mLocalSubstrates.size(); ++i)
+  for (size_t i=0; i<mLocalSubstrates.size(); ++i)
     {
       std::cout << "Reaction: " << i << std::endl;
 
@@ -2782,8 +2113,7 @@ void CHybridMethodODE45::outputData()
     }
 
   std::cout << "~~~~mMetab2React:~~~~ " << std::endl;
-
-  for (size_t i = 0; i < mMetab2React.size(); i++)
+  for(size_t i=0; i<mMetab2React.size(); i++)
     {
       std::cout << "metab #: " << i << std::endl;
       std::set<size_t>::iterator it = mMetab2React[i].begin();
@@ -2838,28 +2168,22 @@ void CHybridMethodODE45::outputState(const CState* mpState)
   std::cout << "Indep #: " << mpState->getNumIndependent() << " Id: ";
   const C_FLOAT64 *pIt = mpState->beginIndependent();
   const C_FLOAT64 *pEnd = mpState->endIndependent();
-
   for (; pIt != pEnd; pIt++)
     std::cout << *pIt << " ";
-
   std::cout << std::endl;
 
   std::cout << "Dep #: " << mpState->getNumDependent() << " Id: ";
   pIt = mpState->beginDependent();
   pEnd = mpState->endDependent();
-
   for (; pIt != pEnd; pIt++)
     std::cout << *pIt << " ";
-
   std::cout << std::endl;
 
   std::cout << "Fix #: " << mpState->getNumIndependent() << " Id: ";
   pIt = mpState->beginFixed();
   pEnd = mpState->endFixed();
-
   for (; pIt != pEnd; pIt++)
     std::cout << *pIt << " ";
-
   std::cout << std::endl;
 
   getchar();
@@ -2903,6 +2227,5 @@ bool CHybridMethodODE45::modelHasAssignments(const CModel* pModel)
             return true;
           }
     }
-
   return false;
 }
