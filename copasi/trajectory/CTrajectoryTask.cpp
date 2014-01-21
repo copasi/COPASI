@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -403,8 +403,19 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
             // TODO Provide a call back method for resolving simultaneous assignments.
             StateChanged |= pModel->processQueue(*mpCurrentTime, true, NULL);
 
+            // If the state change happens to coincide with end of the step we have to return and
+            // inform the integrator of eventual state changes.
             if (fabs(*mpCurrentTime - endTime) < Tolerance)
-              return true;
+              {
+                if (StateChanged)
+                  {
+                    *mpCurrentState = pModel->getState();
+                    mpTrajectoryMethod->stateChanged();
+                    StateChanged = false;
+                  }
+
+                return true;
+              }
 
             if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime) &&
                 StateChanged &&
