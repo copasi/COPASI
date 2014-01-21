@@ -126,6 +126,8 @@ Source: {#MyStageDir}\share\copasi\examples\brusselator.sedml; DestDir: {app}\sh
 Source: {#MyStageDir}\share\copasi\examples\brusselator-model.xml; DestDir: {app}\share\copasi\examples
 Source: {#MyStageDir}\share\copasi\examples\NF-kappaB.sedml; DestDir: {app}\share\copasi\examples
 Source: {#MyStageDir}\share\copasi\examples\NF-kappaB-model.xml; DestDir: {app}\share\copasi\examples
+Source: {#MyStageDir}\share\copasi\examples\scan.sedml; DestDir: {app}\share\copasi\examples
+Source: {#MyStageDir}\share\copasi\examples\oscli.xml; DestDir: {app}\share\copasi\examples
 
 ; VC Redistributable
 Source: {#MyStageDir}\bin\32\vcredist_x86.exe; DestDir: {app}; Flags: deleteafterinstall; Check: IsWin32();
@@ -141,8 +143,8 @@ Name: {commondesktop}\{#MyAppName}; Filename: {app}\{#MyAppExeName}; Tasks: desk
 Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}; Filename: {app}\{#MyAppExeName}; Tasks: quicklaunchicon; WorkingDir: {userdocs}
 
 [Run]
-Filename: {app}\vcredist_x86.exe; StatusMsg: Installing Microsoft Visual C++ 2010 32 bit Runtime Libraries; Parameters: /q:a; Check: InstallSystemRuntime32()
-Filename: {app}\vcredist_x64.exe; StatusMsg: Installing Microsoft Visual C++ 2010 64 bit Runtime Libraries; Parameters: /q:a; Check: InstallSystemRuntime64()
+Filename: {app}\vcredist_x86.exe /q /norestart; StatusMsg: Installing Microsoft Visual C++ 2010 32 bit Runtime Libraries; Parameters: /q:a; Check: InstallSystemRuntime32()
+Filename: {app}\vcredist_x64.exe /q /norestart; StatusMsg: Installing Microsoft Visual C++ 2010 64 bit Runtime Libraries; Parameters: /q:a; Check: InstallSystemRuntime64()
 
 [Dirs]
 Name: {app}\bin
