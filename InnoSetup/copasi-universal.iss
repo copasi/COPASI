@@ -143,8 +143,8 @@ Name: {commondesktop}\{#MyAppName}; Filename: {app}\{#MyAppExeName}; Tasks: desk
 Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}; Filename: {app}\{#MyAppExeName}; Tasks: quicklaunchicon; WorkingDir: {userdocs}
 
 [Run]
-Filename: {app}\vcredist_x86.exe /q /norestart; StatusMsg: Installing Microsoft Visual C++ 2010 32 bit Runtime Libraries; Parameters: /q:a; Check: InstallSystemRuntime32()
-Filename: {app}\vcredist_x64.exe /q /norestart; StatusMsg: Installing Microsoft Visual C++ 2010 64 bit Runtime Libraries; Parameters: /q:a; Check: InstallSystemRuntime64()
+Filename: {app}\vcredist_x86.exe; Parameters: /q /norestart; StatusMsg: Installing Microsoft Visual C++ 2010 32 bit Runtime Libraries; Check: InstallSystemRuntime32()
+Filename: {app}\vcredist_x64.exe; Parameters: /q /norestart; StatusMsg: Installing Microsoft Visual C++ 2010 64 bit Runtime Libraries; Check: InstallSystemRuntime64()
 
 [Dirs]
 Name: {app}\bin
