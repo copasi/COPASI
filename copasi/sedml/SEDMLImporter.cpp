@@ -197,8 +197,8 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
                 SedCurve *curve = p->getCurve(ic);
 
                 std::string xDataReference = curve->getXDataReference();
-
                 std::string yDataReference = curve->getYDataReference();
+
                 const SedDataGenerator* xGenerator = pSEDMLDocument->getDataGenerator(xDataReference);
                 const SedDataGenerator* yGenerator = pSEDMLDocument->getDataGenerator(yDataReference);
 
@@ -240,36 +240,6 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
             break;
         }
     }
-}
-
-std::string SEDMLImporter::getDataGeneratorModelItemRefrenceId(const SedDataGenerator* current, std::string &SBMLType) const
-{
-  if (current == NULL)
-    return "";
-
-  //assumed only one variable
-  size_t ii, iiMax = current->getNumVariables();
-
-  for (ii = 0; ii < iiMax; ++ii)
-    {
-      const SedVariable *var = current->getVariable(ii);
-
-      if (var->isSetSymbol() && var->getSymbol() == SEDML_TIME_URN)
-        {
-          SBMLType = "Time";
-          return "time";
-        }
-      else
-        return SEDMLUtils::translateTargetXpathInSBMLId(var->getTarget(), SBMLType);
-    }
-
-  return "";
-}
-
-std::string SEDMLImporter::getDataGeneratorModelItemRefrenceId(const std::string &dataReference, std::string & SBMLType)  const
-{
-  SedDataGenerator* current = mpSEDMLDocument->getDataGenerator(dataReference);
-  return getDataGeneratorModelItemRefrenceId(current, SBMLType);
 }
 
 /**
