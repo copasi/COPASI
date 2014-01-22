@@ -19,6 +19,7 @@
 #include <copasi/report/CCopasiObject.h>
 
 #define SEDML_TIME_URN "urn:sedml:symbol:time"
+#define SEDML_KISAO_STOCHASTIC "KISAO:0000241"
 
 class CModel;
 class SedDataGenerator;

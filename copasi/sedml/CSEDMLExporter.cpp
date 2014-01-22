@@ -179,6 +179,9 @@ void CSEDMLExporter::createSEDMLDocument(CCopasiDataModel& dataModel, std::strin
  */
 std::string CSEDMLExporter::createScanTask(CCopasiDataModel& dataModel, const std::string & modelId)
 {
+  // need L1V2 to export repeated tasks
+  if (mpSEDMLDocument->getVersion() != 2) return "";
+
   CScanTask* pTask =  dynamic_cast<CScanTask*>((*dataModel.getTaskList())["Scan"]);
 
   if (pTask == NULL) return "";
@@ -211,8 +214,8 @@ std::string CSEDMLExporter::createScanTask(CCopasiDataModel& dataModel, const st
   std::string taskId = SEDMLUtils::getNextId("task", mpSEDMLDocument->getNumTasks());
   task->setId(taskId);
   task->setResetModel(!pProblem->getContinueFromCurrentState());
-  // craete ranges / changes
 
+  // craete ranges / changes
   for (size_t i = 0; i < numItems; ++i)
     {
       CCopasiParameterGroup* current = pProblem->getScanItem(i);
@@ -428,7 +431,6 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel, std::str
 {
   const CModel* pModel = dataModel.getModel();
   std::vector<std::string> stringsContainer; //split string container
-  SEDMLUtils utils;
 
   if (pModel == NULL)
     CCopasiMessage(CCopasiMessage::ERROR, "No model for this SEDML document. An SBML model must exist for every SEDML document.");
