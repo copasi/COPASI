@@ -174,7 +174,7 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
               {
                 // creation fails on duplicated name!
                 pPl = pLotList->createPlotSpec(
-                        SEDMLUtils::getNextId(name, ++count), CPlotItem::plot2d);
+                        SEDMLUtils::getNextId(name + " ", ++count), CPlotItem::plot2d);
               }
 
             bool logX = false;
@@ -185,21 +185,14 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
                 SedCurve *curve = p->getCurve(ic);
 
                 std::string xDataReference = curve->getXDataReference();
-
                 std::string yDataReference = curve->getYDataReference();
+
                 const SedDataGenerator* xGenerator = pSEDMLDocument->getDataGenerator(xDataReference);
                 const SedDataGenerator* yGenerator = pSEDMLDocument->getDataGenerator(yDataReference);
 
-                const CCopasiObject * tmpX1 = SEDMLUtils::resolveDatagenerator(pModel, xGenerator);
-                const CCopasiObject * tmpY1 = SEDMLUtils::resolveDatagenerator(pModel, yGenerator);
-
-                std::string SBMLTypeX, SBMLTypeY;
-                std::string xAxis = getDataGeneratorModelItemRefrenceId(xDataReference, SBMLTypeX);
-                std::string yAxis = getDataGeneratorModelItemRefrenceId(yDataReference, SBMLTypeY);
-
                 //create the curves
-                const CCopasiObject * tmpX = SEDMLUtils::getObjectForSbmlId(pModel, xAxis, SBMLTypeX);
-                const CCopasiObject * tmpY = SEDMLUtils::getObjectForSbmlId(pModel, yAxis, SBMLTypeY);
+                const CCopasiObject * tmpX = SEDMLUtils::resolveDatagenerator(pModel, xGenerator);
+                const CCopasiObject * tmpY = SEDMLUtils::resolveDatagenerator(pModel, yGenerator);
 
                 if (tmpX != NULL && tmpY != NULL)
                   {
@@ -233,36 +226,6 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
             break;
         }
     }
-}
-
-std::string SEDMLImporter::getDataGeneratorModelItemRefrenceId(const SedDataGenerator* current, std::string &SBMLType) const
-{
-  if (current == NULL)
-    return "";
-
-  //assumed only one variable
-  size_t ii, iiMax = current->getNumVariables();
-
-  for (ii = 0; ii < iiMax; ++ii)
-    {
-      const SedVariable *var = current->getVariable(ii);
-
-      if (var->isSetSymbol() && var->getSymbol() == SEDML_TIME_URN)
-        {
-          SBMLType = "Time";
-          return "time";
-        }
-      else
-        return SEDMLUtils::translateTargetXpathInSBMLId(var->getTarget(), SBMLType);
-    }
-
-  return "";
-}
-
-std::string SEDMLImporter::getDataGeneratorModelItemRefrenceId(const std::string &dataReference, std::string & SBMLType)  const
-{
-  SedDataGenerator* current = mpSEDMLDocument->getDataGenerator(dataReference);
-  return getDataGeneratorModelItemRefrenceId(current, SBMLType);
 }
 
 /**
