@@ -52,8 +52,7 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
 {
   std::vector<std::string> stringsContainer;
   std::string targetXPathString;
-  char delim;
-  SEDMLUtils utils;
+
   const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap =
     const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap();
   std::string displayName = sbmlId;
@@ -88,8 +87,7 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
   else if (type == "Flux")
     {
       targetXPathString = "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id=\'";
-      delim = ')';
-      utils.splitStrings(displayName, delim, stringsContainer);
+      splitStrings(displayName, ')', stringsContainer);
       displayName = stringsContainer[0];
 
       removeCharactersFromString(displayName, "(");
@@ -109,15 +107,13 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
         }
 
       targetXPathString = "/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=\'";
-      delim = '[';
-      utils.splitStrings(displayName, delim, stringsContainer);
+      splitStrings(displayName, '[', stringsContainer);
 
       if (stringsContainer.size() == 1)
         {
           // not found ... might be a local parameter
           removeCharactersFromString(displayName, "()");
-          delim = '.';
-          utils.splitStrings(displayName, delim, stringsContainer);
+          splitStrings(displayName, '.', stringsContainer);
 
           if (stringsContainer.size() == 2)
             {
@@ -149,8 +145,7 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
   else if (type == "Volume" || type == "InitialVolume")
     {
       targetXPathString = "/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id=\'";
-      delim = '[';
-      utils.splitStrings(displayName, delim, stringsContainer);
+      splitStrings(displayName, '[', stringsContainer);
       displayName = stringsContainer[1];
 
       if (type == "InitialVolume")

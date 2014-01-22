@@ -74,9 +74,6 @@ public:
     SedDocument *pSedDocument,
     std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap);
 
-  std::string getDataGeneratorModelItemRefrenceId(const std::string &dataReference, std::string &SBMLType) const;
-  std::string getDataGeneratorModelItemRefrenceId(const SedDataGenerator* dataReference, std::string &SBMLType) const;
-
   /**
    * Updates COPASI tasks for a given SedML Simulation
    */
