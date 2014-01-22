@@ -98,7 +98,7 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
       case SEDML_SIMULATION_UNIFORMTIMECOURSE:
       {
 
-        CTrajectoryTask *tTask = static_cast<CTrajectoryTask*>((*mpDataModel->getTaskList())[CCopasiTask::timeCourse]);
+        CTrajectoryTask *tTask = static_cast<CTrajectoryTask*>((*mpDataModel->getTaskList())["Time-Course"]);
 
         CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(tTask->getProblem());
         SedUniformTimeCourse* tc = static_cast<SedUniformTimeCourse*>(sedmlsim);
@@ -114,7 +114,7 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
       case SEDML_SIMULATION_ONESTEP:
       {
 
-        CTrajectoryTask *tTask = static_cast<CTrajectoryTask*>((*mpDataModel->getTaskList())[CCopasiTask::timeCourse]);
+        CTrajectoryTask *tTask = static_cast<CTrajectoryTask*>((*mpDataModel->getTaskList())["Time-Course"]);
 
         CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(tTask->getProblem());
         SedOneStep* step = static_cast<SedOneStep*>(sedmlsim);
@@ -130,7 +130,7 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
       case SEDML_SIMULATION_STEADYSTATE:
       {
         // nothing to be done for this one
-        CSteadyStateTask *tTask = static_cast<CSteadyStateTask*>((*mpDataModel->getTaskList())[CCopasiTask::steadyState]);
+        CSteadyStateTask *tTask = static_cast<CSteadyStateTask*>((*mpDataModel->getTaskList())["Steady-State"]);
 
         // TODO read kisao terms
         //CCopasiProblem* tProblem = static_cast<CCopasiProblem*>(tTask->getProblem());
@@ -143,79 +143,6 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
         CCopasiMessage(CCopasiMessage::EXCEPTION, "SEDMLImporter Error: encountered unknown simulation.");
         break;
     }
-}
-
-const CCopasiObject *getObjectForSbmlId(CModel* pModel, const std::string& id, const std::string& SBMLType, bool initial = false)
-{
-  if (SBMLType == "Time")
-    return static_cast<const CCopasiObject *>(pModel->getObject(CCopasiObjectName("Reference=Time")));
-
-  if (SBMLType == "species")
-    {
-      size_t iMet, imax = pModel->getMetabolites().size();
-
-      for (iMet = 0; iMet < imax; ++iMet)
-        {
-          // the importer should not need to change the initial concentration
-          // pModel->getMetabolites()[iMet]->setInitialConcentration(0.896901);
-
-          if (pModel->getMetabolites()[iMet]->getSBMLId() == id)
-            {
-              if (initial)
-                return pModel->getMetabolites()[iMet]->getInitialConcentrationReference();
-
-              return pModel->getMetabolites()[iMet]->getConcentrationReference();
-            }
-        }
-    }
-  else if (SBMLType == "reaction")
-    {
-      size_t iMet, imax = pModel->getReactions().size();
-
-      for (iMet = 0; iMet < imax; ++iMet)
-        {
-          if (pModel->getReactions()[iMet]->getSBMLId() == id)
-            {
-              if (initial)
-                return NULL;
-
-              return pModel->getReactions()[iMet]->getFluxReference();
-            }
-        }
-    }
-  else if (SBMLType == "parameter")
-    {
-      size_t iMet, imax = pModel->getModelValues().size();
-
-      for (iMet = 0; iMet < imax; ++iMet)
-        {
-          if (pModel->getModelValues()[iMet]->getSBMLId() == id)
-            {
-              if (initial)
-                return pModel->getModelValues()[iMet]->getInitialValueReference();
-
-              return pModel->getModelValues()[iMet]->getValueReference();
-            }
-        }
-    }
-
-  else if (SBMLType == "compartment")
-    {
-      size_t iComp, imax = pModel->getCompartments().size();
-
-      for (iComp = 0; iComp < imax; ++iComp)
-        {
-          if (pModel->getCompartments()[iComp]->getSBMLId() == id)
-            {
-              if (initial)
-                return pModel->getCompartments()[iComp]->getInitialValueReference();
-
-              return pModel->getCompartments()[iComp]->getValueReference();
-            }
-        }
-    }
-
-  return NULL;
 }
 
 void SEDMLImporter::readListOfPlotsFromSedMLOutput(
@@ -236,10 +163,19 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
           case SEDML_OUTPUT_PLOT2D: //get the curves data
           {
             SedPlot2D* p = static_cast<SedPlot2D*>(current);
+            std::string name = current->isSetName() ? current->getName() :
+                               current->getId();
             CPlotSpecification* pPl = pLotList->createPlotSpec(
-                                        current->isSetName() ? current->getName() :
-                                        current->getId()
-                                        , CPlotItem::plot2d);
+                                        name, CPlotItem::plot2d);
+
+            int count = 0;
+
+            while (pPl == NULL)
+              {
+                // creation fails on duplicated name!
+                pPl = pLotList->createPlotSpec(
+                        SEDMLUtils::getNextId(name, ++count), CPlotItem::plot2d);
+              }
 
             bool logX = false;
             bool logY = false;
@@ -251,15 +187,19 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
                 std::string xDataReference = curve->getXDataReference();
 
                 std::string yDataReference = curve->getYDataReference();
+                const SedDataGenerator* xGenerator = pSEDMLDocument->getDataGenerator(xDataReference);
                 const SedDataGenerator* yGenerator = pSEDMLDocument->getDataGenerator(yDataReference);
 
+                const CCopasiObject * tmpX1 = SEDMLUtils::resolveDatagenerator(pModel, xGenerator);
+                const CCopasiObject * tmpY1 = SEDMLUtils::resolveDatagenerator(pModel, yGenerator);
+
                 std::string SBMLTypeX, SBMLTypeY;
-                std::string xAxis = getDataGeneratorModelItemRefrenceId(pSEDMLDocument, xDataReference, SBMLTypeX);
-                std::string yAxis = getDataGeneratorModelItemRefrenceId(pSEDMLDocument, yDataReference, SBMLTypeY);
+                std::string xAxis = getDataGeneratorModelItemRefrenceId(xDataReference, SBMLTypeX);
+                std::string yAxis = getDataGeneratorModelItemRefrenceId(yDataReference, SBMLTypeY);
 
                 //create the curves
-                const CCopasiObject * tmpX = getObjectForSbmlId(pModel, xAxis, SBMLTypeX);
-                const CCopasiObject * tmpY = getObjectForSbmlId(pModel, yAxis, SBMLTypeY);
+                const CCopasiObject * tmpX = SEDMLUtils::getObjectForSbmlId(pModel, xAxis, SBMLTypeX);
+                const CCopasiObject * tmpY = SEDMLUtils::getObjectForSbmlId(pModel, yAxis, SBMLTypeY);
 
                 if (tmpX != NULL && tmpY != NULL)
                   {
@@ -295,72 +235,34 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
     }
 }
 
-std::string SEDMLImporter::translateTargetXpathInSBMLId(const std::string &xpath, std::string & SBMLType)
+std::string SEDMLImporter::getDataGeneratorModelItemRefrenceId(const SedDataGenerator* current, std::string &SBMLType) const
 {
+  if (current == NULL)
+    return "";
 
-  std::vector<std::string> xpathStrings;
-  std::string id, nextString;
-  SEDMLUtils utils;
+  //assumed only one variable
+  size_t ii, iiMax = current->getNumVariables();
 
-  char delim = ':';
-  utils.splitStrings(xpath, delim, xpathStrings);
-  nextString = xpathStrings[xpathStrings.size() - 1];
-
-  delim = '[';
-  utils.splitStrings(nextString, delim, xpathStrings);
-  SBMLType = xpathStrings[0];
-  nextString = xpathStrings[xpathStrings.size() - 1];
-
-  delim = '=';
-  utils.splitStrings(nextString, delim, xpathStrings);
-  id = xpathStrings[xpathStrings.size() - 1];
-
-  //remove the remaining unwanted characters
-  char chars[] = "']'";
-
-  for (unsigned int i = 0; i < strlen(chars); ++i)
+  for (ii = 0; ii < iiMax; ++ii)
     {
+      const SedVariable *var = current->getVariable(ii);
 
-      id.erase(std::remove(id.begin(), id.end(), chars[i]), id.end());
+      if (var->isSetSymbol() && var->getSymbol() == SEDML_TIME_URN)
+        {
+          SBMLType = "Time";
+          return "time";
+        }
+      else
+        return SEDMLUtils::translateTargetXpathInSBMLId(var->getTarget(), SBMLType);
     }
 
-  return id;
+  return "";
 }
 
-std::string SEDMLImporter::getDataGeneratorModelItemRefrenceId(SedDocument *pSEDMLDocument, std::string &dataReference, std::string & SBMLType)
+std::string SEDMLImporter::getDataGeneratorModelItemRefrenceId(const std::string &dataReference, std::string & SBMLType)  const
 {
-  std::string modelReferenceId;
-
-  size_t i, iMax = pSEDMLDocument->getNumDataGenerators();
-
-  for (i = 0; i < iMax; ++i)
-    {
-      SedDataGenerator* current = pSEDMLDocument->getDataGenerator(i);
-
-      if (dataReference == current->getId()) //check if the data generator of interest
-        {
-          //modelReferenceId = SBML_formulaToString(current->getMath());
-
-          //assumed only one variable
-          size_t ii, iiMax = current->getNumVariables();
-
-          for (ii = 0; ii < iiMax; ++ii)
-            {
-              SedVariable *var =  current->getVariable(ii);
-
-              if (var->isSetSymbol() && var->getSymbol() == "urn:sedml:symbol:time")
-                {
-                  modelReferenceId = "time";
-                  SBMLType = "Time";
-                  return modelReferenceId;
-                }
-              else
-                modelReferenceId = translateTargetXpathInSBMLId(var->getTarget(), SBMLType);
-            }
-        }
-    }
-
-  return modelReferenceId;
+  SedDataGenerator* current = mpSEDMLDocument->getDataGenerator(dataReference);
+  return getDataGeneratorModelItemRefrenceId(current, SBMLType);
 }
 
 /**
@@ -624,7 +526,7 @@ SEDMLImporter::importTasks(std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap)
               }
 
             SedUniformRange* urange = static_cast<SedUniformRange*>(range);
-            CScanTask *tTask = static_cast<CScanTask*>((*mpDataModel->getTaskList())[CCopasiTask::scan]);
+            CScanTask *tTask = static_cast<CScanTask*>((*mpDataModel->getTaskList())["Scan"]);
             CScanProblem *pProblem = static_cast<CScanProblem*>(tTask->getProblem());
 
             if (urange != NULL && repeat->getNumTaskChanges() == 0)
@@ -644,9 +546,7 @@ SEDMLImporter::importTasks(std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap)
                       }
 
                     std::string target = sv->getTarget();
-                    std::string SBMLType;
-                    std::string id = translateTargetXpathInSBMLId(target, SBMLType);
-                    const CCopasiObject * obj = getObjectForSbmlId(mpCopasiModel, id, SBMLType, true);
+                    const CCopasiObject * obj = SEDMLUtils::resolveXPath(mpCopasiModel, target, true);
 
                     if (obj == NULL)
                       {
@@ -671,13 +571,23 @@ SEDMLImporter::importTasks(std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap)
 
             pProblem->setContinueFromCurrentState(!repeat->getResetModel());
 
-            if (!mpSEDMLDocument->getTask(repeat->getSubTask(0)->getTask())->isSetSimulationReference())
+            SedSubTask* subTask = repeat->getSubTask(0);
+
+            if (!subTask->isSetTask())
+              {
+                CCopasiMessage(CCopasiMessage::WARNING, "This version of COPASI only supports repeatedTasks with one subtask that has a valid task reference.");
+                continue;
+              }
+
+            SedTask* actualSubTask = mpSEDMLDocument->getTask(subTask->getTask());
+
+            if (actualSubTask == NULL || !actualSubTask->isSetSimulationReference())
               {
                 CCopasiMessage(CCopasiMessage::WARNING, "This version of COPASI only supports repeatedTasks with one subtask that itself is a task with simulation reference.");
                 continue;
               }
 
-            int code = mpSEDMLDocument->getSimulation(mpSEDMLDocument->getTask(repeat->getSubTask(0)->getTask())->getSimulationReference())->getTypeCode();
+            int code = mpSEDMLDocument->getSimulation(actualSubTask->getSimulationReference())->getTypeCode();
 
             if (code == SEDML_SIMULATION_STEADYSTATE)
               {

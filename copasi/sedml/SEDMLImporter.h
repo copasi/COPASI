@@ -24,15 +24,12 @@
 //#include "copasi/sbml/StdException.h"
 #include "copasi/model/CModel.h"
 
-class SedDocument;
-class SedUniformTimeCourse;
-class SedSimulation;
+#include <sedml/common/sedmlfwd.h>
+
 class CTrajectoryTask;
 class CCompartment;
 class CMetab;
 class Model;
-class SedParameter;
-class SedBase;
 class CProcessReport;
 class CPlotSpecification;
 
@@ -77,8 +74,8 @@ public:
     SedDocument *pSedDocument,
     std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap);
 
-  std::string getDataGeneratorModelItemRefrenceId(SedDocument *pSEDMLDocument, std::string &dataReference, std::string &SBMLType);
-  std::string translateTargetXpathInSBMLId(const std::string &xpath, std::string &SBMLType);
+  std::string getDataGeneratorModelItemRefrenceId(const std::string &dataReference, std::string &SBMLType) const;
+  std::string getDataGeneratorModelItemRefrenceId(const SedDataGenerator* dataReference, std::string &SBMLType) const;
 
   /**
    * Updates COPASI tasks for a given SedML Simulation
