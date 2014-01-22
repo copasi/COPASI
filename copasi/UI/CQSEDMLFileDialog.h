@@ -1,3 +1,8 @@
+// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 /*
  * CQSEDMLFileDialog.h
  *
@@ -26,8 +31,8 @@ public:
       const char * name,
       const QString & startWith,
       const QString & caption,
-      unsigned int sbmlLevel = 2,
-      unsigned int sbmlVersion = 4);
+      unsigned int sedmlLevel = 1,
+      unsigned int sedmlVersion = 2);
 };
 
 #endif /* CQSEDMLFILEDIALOG_H_ */
