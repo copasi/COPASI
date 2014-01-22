@@ -107,6 +107,18 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
         tProblem->setStepNumber(tc->getNumberOfPoints());
 
         // TODO read kisao terms
+        if (tc->isSetAlgorithm())
+          {
+            const SedAlgorithm* alg = tc->getAlgorithm();
+
+            if (alg->isSetKisaoID())
+              {
+                if (alg->getKisaoID() == SEDML_KISAO_STOCHASTIC)
+                  {
+                    tTask->setMethodType(CCopasiMethod::stochastic);
+                  }
+              }
+          }
 
         break;
       }
