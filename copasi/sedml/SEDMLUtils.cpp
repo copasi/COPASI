@@ -52,7 +52,6 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
 {
   std::vector<std::string> stringsContainer;
   std::string targetXPathString;
-
   const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap =
     const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap();
   std::string displayName = sbmlId;

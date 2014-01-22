@@ -157,79 +157,6 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
     }
 }
 
-const CCopasiObject *getObjectForSbmlId(CModel* pModel, const std::string& id, const std::string& SBMLType, bool initial = false)
-{
-  if (SBMLType == "Time")
-    return static_cast<const CCopasiObject *>(pModel->getObject(CCopasiObjectName("Reference=Time")));
-
-  if (SBMLType == "species")
-    {
-      size_t iMet, imax = pModel->getMetabolites().size();
-
-      for (iMet = 0; iMet < imax; ++iMet)
-        {
-          // the importer should not need to change the initial concentration
-          // pModel->getMetabolites()[iMet]->setInitialConcentration(0.896901);
-
-          if (pModel->getMetabolites()[iMet]->getSBMLId() == id)
-            {
-              if (initial)
-                return pModel->getMetabolites()[iMet]->getInitialConcentrationReference();
-
-              return pModel->getMetabolites()[iMet]->getConcentrationReference();
-            }
-        }
-    }
-  else if (SBMLType == "reaction")
-    {
-      size_t iMet, imax = pModel->getReactions().size();
-
-      for (iMet = 0; iMet < imax; ++iMet)
-        {
-          if (pModel->getReactions()[iMet]->getSBMLId() == id)
-            {
-              if (initial)
-                return NULL;
-
-              return pModel->getReactions()[iMet]->getFluxReference();
-            }
-        }
-    }
-  else if (SBMLType == "parameter")
-    {
-      size_t iMet, imax = pModel->getModelValues().size();
-
-      for (iMet = 0; iMet < imax; ++iMet)
-        {
-          if (pModel->getModelValues()[iMet]->getSBMLId() == id)
-            {
-              if (initial)
-                return pModel->getModelValues()[iMet]->getInitialValueReference();
-
-              return pModel->getModelValues()[iMet]->getValueReference();
-            }
-        }
-    }
-
-  else if (SBMLType == "compartment")
-    {
-      size_t iComp, imax = pModel->getCompartments().size();
-
-      for (iComp = 0; iComp < imax; ++iComp)
-        {
-          if (pModel->getCompartments()[iComp]->getSBMLId() == id)
-            {
-              if (initial)
-                return pModel->getCompartments()[iComp]->getInitialValueReference();
-
-              return pModel->getCompartments()[iComp]->getValueReference();
-            }
-        }
-    }
-
-  return NULL;
-}
-
 void SEDMLImporter::readListOfPlotsFromSedMLOutput(
   COutputDefinitionVector *pLotList, CModel* pModel,
   SedDocument *pSEDMLDocument,
@@ -272,6 +199,7 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
                 std::string xDataReference = curve->getXDataReference();
 
                 std::string yDataReference = curve->getYDataReference();
+                const SedDataGenerator* xGenerator = pSEDMLDocument->getDataGenerator(xDataReference);
                 const SedDataGenerator* yGenerator = pSEDMLDocument->getDataGenerator(yDataReference);
 
                 const SedDataGenerator* xGenerator = pSEDMLDocument->getDataGenerator(xDataReference);
@@ -312,6 +240,36 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
             break;
         }
     }
+}
+
+std::string SEDMLImporter::getDataGeneratorModelItemRefrenceId(const SedDataGenerator* current, std::string &SBMLType) const
+{
+  if (current == NULL)
+    return "";
+
+  //assumed only one variable
+  size_t ii, iiMax = current->getNumVariables();
+
+  for (ii = 0; ii < iiMax; ++ii)
+    {
+      const SedVariable *var = current->getVariable(ii);
+
+      if (var->isSetSymbol() && var->getSymbol() == SEDML_TIME_URN)
+        {
+          SBMLType = "Time";
+          return "time";
+        }
+      else
+        return SEDMLUtils::translateTargetXpathInSBMLId(var->getTarget(), SBMLType);
+    }
+
+  return "";
+}
+
+std::string SEDMLImporter::getDataGeneratorModelItemRefrenceId(const std::string &dataReference, std::string & SBMLType)  const
+{
+  SedDataGenerator* current = mpSEDMLDocument->getDataGenerator(dataReference);
+  return getDataGeneratorModelItemRefrenceId(current, SBMLType);
 }
 
 /**
