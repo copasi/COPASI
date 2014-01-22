@@ -228,8 +228,7 @@ SEDMLUtils::resolveXPath(const CModel *model,  const std::string& xpath,
           if (flux != NULL)
             {
               const CCopasiObject* reactionObj = flux->getObjectParent();
-              std::string cn = "ParameterGroup=Parameters,Parameter=" + id + ",Reference=" +
-                               (initial ? "InitialValue" : "Value");
+              std::string cn = "ParameterGroup=Parameters,Parameter=" + id + ",Reference=Value";
               return dynamic_cast<const CCopasiObject*>(reactionObj->getObject(cn));
             }
         }
