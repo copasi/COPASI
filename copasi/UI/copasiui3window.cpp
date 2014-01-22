@@ -3015,7 +3015,7 @@ void CopasiUI3Window::slotExportSEDML()
   QString tmp;
   bool exportIncomplete = false;
   int sedmlLevel = 1;
-  int sedmlVersion = 1;
+  int sedmlVersion = 2;
 
   while (Answer == QMessageBox::No)
     {

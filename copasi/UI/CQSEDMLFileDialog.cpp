@@ -27,15 +27,16 @@ std::pair< QString, std::pair< unsigned C_INT32, unsigned C_INT32 > > CQSEDMLFil
 {
   std::pair< QString, std::pair< unsigned C_INT32, unsigned C_INT32 > > NameAndVersion;
 
-  QString Filter = "Level 1 Version 1 (*.sedml)";
+  QString Filter = "Level 1 Version 2 (*.sedml);;"
+                   "Level 1 Version 1 (*.sedml)";
 
   QString SelectedFilter =
-    QString("Level %1 Version %1 (*.sedml)").arg(QString::number(sedmlLevel)).arg(QString::number(sedmlVersion));;
+    QString("Level %1 Version %2 (*.sedml)").arg(QString::number(sedmlLevel)).arg(QString::number(sedmlVersion));;
 
-  // The default export is L1V1
+  // The default export is L1V2
   if (Filter.indexOf(SelectedFilter) == -1)
     {
-      SelectedFilter = "Level 1 Version 1 (*.sedml)";
+      SelectedFilter = "Level 1 Version 2 (*.sedml)";
     }
 
   // We need to avoid the KDE dialog at least under Qt 4.7 and KDE 4.5
@@ -54,12 +55,12 @@ std::pair< QString, std::pair< unsigned C_INT32, unsigned C_INT32 > > CQSEDMLFil
   if (Pattern.exactMatch(SelectedFilter))
     {
       NameAndVersion.second.first = Pattern.cap(1).toInt();
-      NameAndVersion.second.second = Pattern.cap(1).toInt();
+      NameAndVersion.second.second = Pattern.cap(2).toInt();
     }
   else
     {
       NameAndVersion.second.first = 1;
-      NameAndVersion.second.second = 1;
+      NameAndVersion.second.second = 2;
     }
 
   return NameAndVersion;

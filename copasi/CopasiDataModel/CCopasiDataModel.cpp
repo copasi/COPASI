@@ -1206,7 +1206,7 @@ bool CCopasiDataModel::importSEDML(const std::string & fileName,
 
   std::string Suffix = CDirEntry::suffix(FileName);
 
-  if (strcasecmp(Suffix.c_str(), ".xml") != 0)
+  if (strcasecmp(Suffix.c_str(), ".sedml") != 0)
     mData.mSaveFileName += Suffix;
 
   mData.mSaveFileName += ".cps";
