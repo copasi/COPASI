@@ -68,6 +68,7 @@ public:
   std::string getSymbol() const;
   bool isDimensionless() const;
   void addComponent(const CUnitComponent & component);
+  bool simplifyComponents();
 
 private:
 
@@ -78,7 +79,6 @@ private:
   void setup(); // initilizations common to all constructors
 
 //  std::string getSimplifiedComponents const(); TODO
-//  bool setSimplifiedComponents();  TODO
 
 };
 

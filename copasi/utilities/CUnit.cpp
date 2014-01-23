@@ -112,3 +112,38 @@ void CUnit::addComponent(const CUnitComponent & component)
   mComponents.push_back(component);
 }
 
+bool CUnit::simplifyComponents()
+{
+  if (mComponents.size() < 2)
+    return false;
+
+  std::vector< CUnitComponent > replacementVector;
+  std::vector< CUnitComponent >::const_iterator it = mComponents.begin();
+  CUnitComponent tempComponent;
+  bool didSimplify = false;
+
+  std::sort(mComponents.begin(), mComponents.end()); // make same Kinds adjacent
+
+  for(; it != mComponents.end(); it++)
+  {
+    tempComponent = (*it);
+    while (it != mComponents.end() && tempComponent.getKind() == (*(it + 1)).getKind())
+    {
+        tempComponent.setExponent((tempComponent.getExponent()) + (*(it + 1)).getExponent());
+        tempComponent.setScale(tempComponent.getScale() + (*(it + 1)).getScale());
+        tempComponent.setMultiplier(tempComponent.getMultiplier() * (*(it + 1)).getMultiplier());
+        didSimplify = true;
+        it++;
+    }
+
+    replacementVector.push_back(tempComponent);
+  }
+
+  if (didSimplify)
+  {
+    mComponents = replacementVector;
+  }
+
+  return didSimplify;
+}
+

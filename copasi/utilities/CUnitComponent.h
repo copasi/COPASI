@@ -31,6 +31,7 @@ public:
   void setMultiplier(double multiplier);
   void setScale(int scale);
   void setExponent(double exponent);
+  bool operator<(const CUnitComponent& rightSide) const;
 
 private:
 

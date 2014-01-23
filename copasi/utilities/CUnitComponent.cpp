@@ -55,3 +55,8 @@ void CUnitComponent::setExponent(double exponent)
 {
   mExponent = exponent;
 }
+
+bool CUnitComponent::operator<(const CUnitComponent& rightSide) const
+{
+  return mKind < rightSide.getKind();
+}
