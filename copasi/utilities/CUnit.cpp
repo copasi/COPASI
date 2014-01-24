@@ -1,13 +1,15 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include <math.h>
 
 #include "copasi/utilities/CUnit.h"
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/report/CCopasiRootContainer.h"
+
+#include <algorithm>
 
 const char * CUnit::VolumeUnitNames[] =
 {"dimensionless", "m\xc2\xb3", "l", "ml", "\xc2\xb5l", "nl", "pl", "fl", NULL};
@@ -98,10 +100,11 @@ bool CUnit::isDimensionless() const
 
   double reduction = 1;
 
-  for(; it != mComponents.end(); it++)
-  {
-    reduction *= pow((double)(*it).getKind(), (*it).getExponent());
-  }
+  for (; it != mComponents.end(); it++)
+    {
+      reduction *= pow((double)(*it).getKind(), (*it).getExponent());
+    }
+
   // If the vector is empy, it will loop 0 times, and the reduction
   // will remain ==1 (i.e. dimensionless if no components)
   return reduction == 1;
@@ -124,26 +127,26 @@ bool CUnit::simplifyComponents()
 
   std::sort(mComponents.begin(), mComponents.end()); // make same Kinds adjacent
 
-  for(; it != mComponents.end(); it++)
-  {
-    tempComponent = (*it);
-    while (it != mComponents.end() && tempComponent.getKind() == (*(it + 1)).getKind())
+  for (; it != mComponents.end(); it++)
     {
-        tempComponent.setExponent((tempComponent.getExponent()) + (*(it + 1)).getExponent());
-        tempComponent.setScale(tempComponent.getScale() + (*(it + 1)).getScale());
-        tempComponent.setMultiplier(tempComponent.getMultiplier() * (*(it + 1)).getMultiplier());
-        didSimplify = true;
-        it++;
+      tempComponent = (*it);
+
+      while (it != mComponents.end() && tempComponent.getKind() == (*(it + 1)).getKind())
+        {
+          tempComponent.setExponent((tempComponent.getExponent()) + (*(it + 1)).getExponent());
+          tempComponent.setScale(tempComponent.getScale() + (*(it + 1)).getScale());
+          tempComponent.setMultiplier(tempComponent.getMultiplier() * (*(it + 1)).getMultiplier());
+          didSimplify = true;
+          it++;
+        }
+
+      replacementVector.push_back(tempComponent);
     }
 
-    replacementVector.push_back(tempComponent);
-  }
-
   if (didSimplify)
-  {
-    mComponents = replacementVector;
-  }
+    {
+      mComponents = replacementVector;
+    }
 
   return didSimplify;
 }
-
