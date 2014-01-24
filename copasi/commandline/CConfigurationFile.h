@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -194,6 +194,18 @@ public:
   void setUseOpenGL(bool useOpenGL);
 
   /**
+   * @return a flag on whether the sliders should react to keyboard input / mouse
+   * interaction.
+   */
+  bool useAdvancedSliders() const;
+
+  /**
+   *  Set whether the sliders should react to keyboard input / mouse
+   * interaction.
+   */
+  void setUseAdvancedSliders(bool useAdvancedSliders);
+
+  /**
    * @return a flag on whether to use the advanced expression editing (i.e manually entering copasiobjects)
    */
   bool useAdvancedEditing() const;
@@ -315,6 +327,12 @@ private:
   * A pointer indicating whether to use the OpenGL rendering, or the Qt based one
    */
   bool *mpUseOpenGL;
+
+  /**
+  * A pointer indicating whether the sliders should react to keyboard input / mouse
+   * interaction.
+   */
+  bool *mpUseAdvancedSliders;
 
   /**
   * A pointer indicating whether to use the advanced editing

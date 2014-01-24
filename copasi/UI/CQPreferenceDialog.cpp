@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -107,6 +107,16 @@ void CQPreferenceDialog::init()
       new QTreeWidgetItem(mpTreeWidget, Values);
     }
 
+  pParameter = configFile->getParameter("Use Advanced Sliders");
+
+  if (pParameter != NULL)
+    {
+      QStringList Values;
+      Values.append("Use Advanced Sliders");
+      Values.append((*pParameter->getValue().pBOOL ? "YES" : "NO"));
+      new QTreeWidgetItem(mpTreeWidget, Values);
+    }
+
   pParameter = configFile->getParameter("Use Advanced Editing");
 
   if (pParameter != NULL)
@@ -190,6 +200,15 @@ void CQPreferenceDialog::slotBtnOk()
 
   Items = mpTreeWidget->findItems("Use OpenGL", 0, 0);
   pParameter = configFile->getParameter("Use OpenGL");
+
+  if (Items.size() > 0 &&
+      pParameter != NULL)
+    {
+      pParameter->setValue(Items[0]->text(COL_VALUE).toUpper() == "YES");
+    }
+
+  Items = mpTreeWidget->findItems("Use Advanced Sliders", 0, 0);
+  pParameter = configFile->getParameter("Use Advanced Sliders");
 
   if (Items.size() > 0 &&
       pParameter != NULL)
