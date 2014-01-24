@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -68,6 +68,8 @@ CSlider::~CSlider()
 
 bool CSlider::compile(const std::vector< CCopasiContainer * > & listOfContainer)
 {
+  if (getObjectDataModel() == NULL) return false;
+
   //setSliderObject(CCopasiContainer::ObjectFromName(listOfContainer, getObjectName()));
   setSliderObject(getObjectDataModel()->ObjectFromName(listOfContainer, mCN));
 
