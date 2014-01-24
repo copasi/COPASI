@@ -187,6 +187,13 @@ if (ENABLE_WITH_MERGEMODEL)
   add_definitions(-DWITH_MERGEMODEL)
 endif(ENABLE_WITH_MERGEMODEL)
 
+
+option(ENABLE_PE_EVENT_CREATION "Enable Event Creation out of time series data" OFF)
+if (ENABLE_PE_EVENT_CREATION)
+  add_definitions(-DWITH_PE_EVENT_CREATION)
+endif(ENABLE_PE_EVENT_CREATION)
+
+
 option(ENABLE_USE_MATH_CONTAINER "Enable the use of the Math container" OFF)
 if (ENABLE_USE_MATH_CONTAINER)
   add_definitions(-DUSE_MATH_CONTAINER)

@@ -2933,6 +2933,167 @@ bool CModel::removeEvent(const CEvent * pEvent,
   return true;
 }
 
+#if WITH_PE_EVENT_CREATION
+
+#include <copasi/parameterFitting/CExperiment.h>
+#include <copasi/parameterFitting/CExperimentSet.h>
+#include <copasi/parameterFitting/CExperimentObjectMap.h>
+#include <copasi/parameterFitting/CFitTask.h>
+#include <copasi/parameterFitting/CFitProblem.h>
+
+#include <copasi/commandline/CLocaleString.h>
+
+std::string getNextId(const std::string& base, int count)
+{
+  std::stringstream str;
+  str << base << count;
+  return str.str();
+}
+
+bool
+CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
+{
+
+#pragma region   //find_experiment
+
+  if (experiment == NULL)
+    {
+      // find experiment and invoke with it
+      const CExperiment* theExperiment = NULL;
+
+      const CCopasiDataModel* dataModel = getObjectDataModel();
+      const CFitTask* task = dynamic_cast<const CFitTask*>((*dataModel->getTaskList())["Parameter Estimation"]);
+
+      if (task == NULL)
+        {
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         "The parameter estimation was not correctly setup.");
+          return false;
+        }
+
+      const CFitProblem *problem = static_cast<const CFitProblem*>(task->getProblem());
+      const CExperimentSet& experiments = problem->getExperiementSet();
+
+      // find first time course experiment
+      for (size_t i = 0; i < experiments.size(); ++i)
+        {
+          const CExperiment* exp = experiments.getExperiment(i);
+
+          if (exp->getExperimentType() == CCopasiTask::timeCourse)
+            {
+              theExperiment = exp;
+              break;
+            }
+        }
+
+      // if still not found, bail
+      if (theExperiment == NULL)
+        {
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         "No suitable experiment could be found, please first define a time course experiment and map the data.");
+          return false;
+        }
+
+      if (experiments.size() > 1)
+        {
+          CCopasiMessage(CCopasiMessage::WARNING,
+                         "You have defined multiple experiments, this function will only create events for the first time course experiment, unless another is specified.");
+        }
+
+      return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
+    }
+
+#pragma endregion //find_experiment
+
+  if (experiment->getExperimentType() != CCopasiTask::timeCourse)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR,
+                     "The selected experiment, is not a time series experiment.");
+      return false;
+    }
+
+  // need to get at the time course data
+
+  std::ifstream File;
+  File.open(CLocaleString::fromUtf8(experiment->getFileName()).c_str());
+
+  size_t CurrentLine = 1;
+
+  if (!experiment->read(File, CurrentLine))
+    {
+      CCopasiMessage(CCopasiMessage::ERROR,
+                     "The data file could not be read.");
+      return false;
+    }
+
+  if (!experiment->compile())
+    {
+      CCopasiMessage(CCopasiMessage::ERROR,
+                     "The experiment could not be compiled.");
+      return false;
+    }
+
+  // grab time column
+  const CVector<double>& time = experiment->getTimeData();
+  size_t numRows = experiment->getNumDataRows();
+
+  if (numRows <= 1)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR,
+                     "Need at least 2 data rows in the experiment.");
+      return false;
+    }
+
+  size_t numCols = experiment->getNumColumns();
+  const CVector< CCopasiObject * > &objects = experiment->getObjectMap().getMappedObjects();
+
+  // then go through each time point
+  for (size_t i = 0; i < numRows - 1; ++i)
+    {
+      double current = time[i];
+
+      // skip initial time
+      if (current == 0) continue;
+
+      CEvent* pEvent = createEvent(getNextId("pe_event_", i));
+
+      if (pEvent == NULL)
+        {
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         "Could not create event, please verify that the events have not been created before.");
+          return false;
+        }
+
+      std::stringstream trigger; trigger
+          << "<"  << getObject(CRegisteredObjectName("Reference=Time"))->getCN()
+          << ">" << " > " << current;
+      pEvent->setTriggerExpression(trigger.str());
+      pEvent->getTriggerExpressionPtr()->compile();
+
+      const CMatrix<double>& data = experiment->getDependentData();
+
+      // create event and assignment for each mapping with its value
+      for (size_t j = 0; j < data.numCols(); ++j)
+        {
+          const CCopasiObject* currentObject = objects[j + 1];
+
+          if (currentObject == NULL || currentObject->getObjectParent() == NULL) continue;
+
+          double value = data(i, j);
+
+          CEventAssignment * pNewAssignment =
+            new CEventAssignment(currentObject->getObjectParent()->getKey());
+          std::stringstream assignmentStr; assignmentStr << value;
+          pNewAssignment->setExpression(assignmentStr.str());
+          pNewAssignment->getExpressionPtr()->compile();
+          pEvent->getAssignments().add(pNewAssignment, true);
+        }
+    }
+
+  return true;
+}
+#endif
+
 //*****************************************************************
 
 bool CModel::convert2NonReversible()

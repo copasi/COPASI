@@ -560,6 +560,10 @@ void CopasiUI3Window::createMenuBar()
   mpTools->addAction(mpaCheckModel);
   mpTools->addAction("&Convert to irreversible", this, SLOT(slotConvertToIrreversible()));
 
+#ifdef WITH_PE_EVENT_CREATION
+  mpTools->addAction("&Create Events For Timeseries Experiment", this, SLOT(slotCreateEventsForTimeseries()));
+#endif
+
 #ifdef COPASI_SBW_INTEGRATION
   // create and populate SBW menu
   mpSBWMenu = new QMenu("&SBW", this);
@@ -1638,6 +1642,35 @@ void CopasiUI3Window::slotExportMathModelFinished(bool success)
       CCopasiMessage::clearDeque();
     }
 }
+#ifdef WITH_PE_EVENT_CREATION
+void CopasiUI3Window::slotCreateEventsForTimeseries()
+{
+  if (CCopasiRootContainer::getDatamodelList()->size() == 0) return;
+
+  CModel* model = (*CCopasiRootContainer::getDatamodelList())[0]->getModel();
+
+  if (model == NULL) return;
+
+  mpDataModelGUI->commit();
+  mpListView->switchToOtherWidget(116, "");
+
+  CCopasiMessage::clearDeque();
+
+  if (!model->createEventsForTimeseries())
+    {
+      // Display error messages.
+      CQMessageBox::information(this, "Event Creation Failed",
+                                CCopasiMessage::getAllMessageText().c_str(),
+                                QMessageBox::Ok | QMessageBox::Default,
+                                QMessageBox::NoButton);
+      CCopasiMessage::clearDeque();
+    }
+
+  (*CCopasiRootContainer::getDatamodelList())[0]->changed();
+
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
+}
+#endif
 
 void CopasiUI3Window::slotConvertToIrreversible()
 {
