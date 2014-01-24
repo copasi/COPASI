@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -109,6 +109,7 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
   mpApplicationFont(NULL),
   mpValidateUnits(NULL),
   mpUseOpenGL(NULL),
+  mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
   mpWorkingDirectory(NULL)
 {initializeParameter();}
@@ -123,6 +124,7 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
   mpApplicationFont(NULL),
   mpValidateUnits(NULL),
   mpUseOpenGL(NULL),
+  mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
   mpWorkingDirectory(NULL)
 {initializeParameter();}
@@ -137,6 +139,7 @@ CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
   mpApplicationFont(NULL),
   mpValidateUnits(NULL),
   mpUseOpenGL(NULL),
+  mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
   mpWorkingDirectory(NULL)
 {initializeParameter();}
@@ -185,6 +188,7 @@ void CConfigurationFile::initializeParameter()
 
   mpValidateUnits = assertParameter("Validate Units", CCopasiParameter::BOOL, false)->getValue().pBOOL;
   mpUseOpenGL = assertParameter("Use OpenGL", CCopasiParameter::BOOL, false)->getValue().pBOOL;
+  mpUseAdvancedSliders = assertParameter("Use Advanced Sliders", CCopasiParameter::BOOL, true)->getValue().pBOOL;
   mpUseAdvancedEditing = assertParameter("Use Advanced Editing", CCopasiParameter::BOOL, false)->getValue().pBOOL;
   mpWorkingDirectory = assertParameter("Working Directory", CCopasiParameter::STRING, std::string(""))->getValue().pSTRING;
 
@@ -280,6 +284,16 @@ bool CConfigurationFile::useOpenGL() const
 void CConfigurationFile::setUseOpenGL(bool useOpenGL)
 {
   *mpUseOpenGL = useOpenGL;
+}
+
+bool CConfigurationFile::useAdvancedSliders() const
+{
+  return *mpUseAdvancedSliders;
+}
+
+void CConfigurationFile::setUseAdvancedSliders(bool useAdvancedSliders)
+{
+  *mpUseAdvancedSliders = useAdvancedSliders;
 }
 
 bool CConfigurationFile::useAdvancedEditing() const

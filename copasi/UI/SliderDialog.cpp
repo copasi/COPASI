@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -56,6 +56,9 @@
 #include "copasi/model/CModel.h"
 #include "copasi/UI/CCopasiSelectionDialog.h"
 #include "copasi/resourcesUI/CQIconResource.h"
+
+#include <copasi/report/CCopasiRootContainer.h>
+#include <copasi/commandline/CConfigurationFile.h>
 
 size_t SliderDialog::numMappings = 14;
 
@@ -748,15 +751,16 @@ void SliderDialog::sliderValueChanged()
 {
   mSliderValueChanged = true;
 
-  if ((!mSliderPressed) && mpAutoRunCheckBox->isChecked())
+  if ((!mSliderPressed) && mpAutoRunCheckBox->isChecked()
+      && CCopasiRootContainer::getConfiguration()->useAdvancedSliders())
     {
       CopasiSlider* slider = dynamic_cast<CopasiSlider*>(sender());
 
       if (slider != NULL && slider != mpCurrSlider)
         setCurrentSlider(slider);
 
-      runTask();
       mSliderValueChanged = false;
+      runTask();
     }
 }
 
