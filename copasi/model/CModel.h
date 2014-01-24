@@ -45,6 +45,7 @@ class CMathContainer;
 class CProcessReport;
 class CArrayAnnotation;
 class CMathModel;
+class CExperiment;
 
 class CModel : public CModelEntity
 {
@@ -147,6 +148,13 @@ public:
    * Converts the set of reactions to a set of reactions where all reactions are irreversible.
   */
   bool convert2NonReversible();
+
+#if WITH_PE_EVENT_CREATION
+  /**
+   * Creates events for all elements of an parameter estimation  time course experiment
+   */
+  bool createEventsForTimeseries(CExperiment* experiment = NULL);
+#endif
 
   /**
    *  Loads an object with data coming from a CReadConfig object.
