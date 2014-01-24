@@ -98,7 +98,7 @@
 #define SLOW_REACT                  -1
 
 /* Function Pointer **********************************************************/
-typedef void (*pEvalF)(const C_INT*, const double*, const double*, double*);
+//typedef void (*pEvalF)(const C_INT*, const double*, const double*, double*);
 
 /* CLASSES *******************************************************************/
 
@@ -150,7 +150,7 @@ class CHybridMethodODE45 : public CTrajectoryMethod
 public:
   struct Data
   {
-    C_INT dim;
+    size_t dim;
     CHybridMethodODE45 * pMethod;
   };
 
@@ -279,12 +279,24 @@ protected:
   /**
    * Dummy Function for calculating derivative of ODE systems
    */
-  //static void EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
+  static void EvalF(const size_t * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
+
+/**
+   * Dummy Function for calculating roots value
+   */
+  static void EvalR(const size_t * n, const C_FLOAT64 * t, const C_FLOAT64 * y, 
+		    const size_t * nr, C_FLOAT64 * r);
 
   /**
    *  This evaluates the derivatives for the complete model
    */
   void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
+
+
+  /**
+   * This evaluates the roots value of the system
+   */
+  void evalR(const C_FLOAT64 * t, const C_FLOAT64 * y, const size_t *nr, C_FLOAT64 *r);
 
   //================Function for Simulation================
 public:
@@ -479,7 +491,7 @@ protected:
   /**
    *
    */
-  bool mReducedModel;
+  //bool mReducedModel;
 
   //~~~~~~~~Metabs Related~~~~~~~~
   /**

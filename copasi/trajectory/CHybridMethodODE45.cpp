@@ -336,7 +336,8 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   if (mUseRandomSeed)
     mpRandomGenerator->initialize(mRandomSeed);
 
-  mStoi = mpModel->getStoiReordered();
+  //mStoi = mpModel->getStoiReordered();
+  mStoi = mpModel->getStoi();
   mUpdateSet.clear();// how to set this parameter
   setupCalculateSet(); //should be done after setupBalances()
   setupReactAffect();
@@ -345,10 +346,10 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   setupPriorityQueue(start_time); // initialize mPQ
 
   //(6)----set attributes for ODE45
-  mODE45.mODEState = INIT;
+  mODE45.mODEState = ODE_INIT;
 
   mData.dim = (C_INT)(mNumVariableMetabs + 1);  //one more for sum of propensities
-  mODE45.mDim = mData.dim;
+  mODE45.mDim = &mData.dim;
 
   //mYdot.resize(mData.dim);
 
@@ -358,10 +359,10 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   if (mDefaultAtol)
     {
       mODE45.mAbsTol = getDefaultAtol(mpProblem->getModel());
-      setValue("Absolute Tolerance", mAtol);
+      setValue("Absolute Tolerance", mODE45.mAbsTol);
     }
   else
-    mODEAbsTol = * getValue("Absolute Tolerance").pUDOUBLE;
+    mODE45.mAbsTol = * getValue("Absolute Tolerance").pUDOUBLE;
 
   mODE45.mHybrid = true;
   mODE45.mStatis = false;
@@ -373,7 +374,7 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   mY    = new C_FLOAT64[mData.dim];
   mODE45.mY = mY;
 
-  mODE45.mDerivFunc = &evalF;
+  mODE45.mDerivFunc = &CHybridMethodODE45::EvalF;
 
   //first calculate propensities, in the next integration process
   //system will just update the propensities record in mCalculateSet
@@ -383,13 +384,15 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   //(7)----set attributes for Event Roots
   mRootNum = mpModel->getNumRoots();
   mRoots.resize(mRootNum);
-
   mODE45.mRootNum = mRootNum;
-  mRootQueue.clear();
+
+  //clear mRootQueue
+  std::queue<SRoot> empty;
+  std::swap(mRootQueue, empty);
 
   if(mRootNum > 0)
     {
-      mODE45.mEventFunc = &evalR;
+      mODE45.mEventFunc = &CHybridMethodODE45::EvalR;
       mpRT        = new C_FLOAT64[mRootNum];
       mOldRoot    = new C_FLOAT64[mRootNum];
       mpRootValue = new CVectorCore< C_FLOAT64 >(mRootNum, mpRT);
@@ -755,7 +758,7 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
   for (i = 0; ((i < mMaxSteps) && (time < endTime)); i++)
     {
       time = doSingleStep(time, endTime);
-      if (mODE45Status == HAS_ROOT)
+      if (mSysStatus == SYS_EVENT)
 	{
 	  mpState->setTime(time);
 	  *mpCurrentState = *mpState;
@@ -887,7 +890,7 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
     {
       integrateDeterministicPart(endTime - currentTime);
       ds = mODE45.mT;
-      if(mSysState == SYS_EVENT) //only deal with system roots
+      if(mSysStatus == SYS_EVENT) //only deal with system roots
 	{
 	  if(mHasSlow)// slow reaction fires
 	    {
@@ -900,7 +903,7 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
 	      setRoot(mODE45.mRootId);
 	}
       else //finish this step
-	  mSysState = SYS_NEW;
+	  mSysStatus = SYS_NEW;
     }
   return ds;
 }
@@ -1133,16 +1136,16 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
       mY[i]    = *stateY;
 
   //2----Reset ODE45 Solver
-  if(mSysState = SYS_NEW)
+  if(mSysStatus = SYS_NEW)
     {
       if(!mODE45.initialized())
 	mODE45.mODEState = ODE_INIT;
       else
 	mODE45.mODEState = ODE_NEW;
     }
-  else if(mSysState = SYS_CONT)
+  else if(mSysStatus = SYS_CONT)
     mODE45.mODEState = ODE_CONT;
-  else if(mSysState = SYS_CHANGE)
+  else if(mSysStatus = SYS_CHANGE)
     mODE45.mODEState = ODE_NEW;
 
 
@@ -1161,12 +1164,12 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
   //4----just do nothing if there are no variables
   if (!mData.dim)
     {
-      mpModel->setTime(EndTime);
+      mpModel->setTime(mODE45.mTEnd);
       return;
     }
 
   //5----do interpolation
-  mODE45.integration();
+  mODE45.integrate();
 
   //6----check status
   if(mODE45.mODEState == ODE_ERR)
@@ -1178,15 +1181,15 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
     {
       mHasSlow = false;
       mHasRoot = false;
-      if(mODE45.mRootID == SLOW_REACT)
+      if(mODE45.mRootId == SLOW_REACT)
 	mHasSlow = true;
       else
 	mHasRoot = true;
 
-      mSysState = SYS_EVENT;
+      mSysStatus = SYS_EVENT;
     }
   else
-    mSysState = SYS_NEW;
+    mSysStatus = SYS_NEW;
 
   //7----Record State
   stateY = mpState->beginIndependent();
@@ -1316,8 +1319,18 @@ void CHybridMethodODE45::setRoot(const size_t id)
 /**
  * Dummy f function for calculating derivative of y
  */
-void CHybridMethodODE45::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
+void CHybridMethodODE45::EvalF(const size_t * n, const C_FLOAT64 * t, const C_FLOAT64 * y, 
+			       C_FLOAT64 * ydot)
 {static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);}
+
+
+/**
+ * Dummy f function for calculating roots value
+ */
+void CHybridMethodODE45::EvalR(const size_t * n, const C_FLOAT64 * t, const C_FLOAT64 * y, 
+			       const size_t * nr, C_FLOAT64 * r)
+{static_cast<Data *>((void *) n)->pMethod->evalR(t, y, nr, r);}
+
 
 /**
  * Derivative Calculation Function
@@ -1385,6 +1398,29 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
 
   return;
 }
+
+
+void CHybridMethodODE45::evalR(const C_FLOAT64 *t, const C_FLOAT64 *y,
+			       const size_t *nr, C_FLOAT64 *r)
+{
+  assert(*nr == (C_INT)mRoots.size());
+  assert(r == (C_FLOAT64*)mpRT);
+
+  mpState->setTime(*t);
+  mpModel->setState(*mpState);
+  
+  //if(*mpReduceModel)
+  //    mpModel->updateSimulatedValues(*mpReducedModel);
+
+  mpModel->evaluateRoots(*mpRootValue, true);
+
+  /*
+    if(mRootMasking != NONE)
+      maskRoots(*mpRootValue);
+   */
+  return;
+}
+
 
 //========Function for Stoichastic========
 /**
@@ -1780,7 +1816,8 @@ size_t CHybridMethodODE45::getReactionIndex4Hybrid()
 C_INT32 CHybridMethodODE45::checkModel(CModel * model)
 {
   CCopasiVectorNS <CReaction> * mpReactions = &model->getReactions();
-  CMatrix <C_FLOAT64> mStoi = model->getStoiReordered();
+  //CMatrix <C_FLOAT64> mStoi = model->getStoiReordered();
+  CMatrix <C_FLOAT64> mStoi = model->getStoi();
   C_INT32 multInt;
   size_t i, j, numReactions = mpReactions->size();
   C_FLOAT64 multFloat;
@@ -2043,11 +2080,12 @@ void CHybridMethodODE45::outputData()
     std::cout << "mDoCorrection: Yes" << std::endl;
   else
     std::cout << "mDoCorrection: No" << std::endl;
-
+  /*
   if (mReducedModel)
     std::cout << "mReducedModel: Yes" << std::endl;
   else
     std::cout << "mReducedModel: No" << std::endl;
+  */
 
   std::cout << std::endl;
 
