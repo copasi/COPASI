@@ -1,19 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressDialog.cpp,v $
-//   $Revision: 1.16 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/21 21:36:26 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "CQProgressDialog.h"
@@ -33,7 +29,7 @@
  *  The dialog will by default be Qt::WindowModal.
  */
 CQProgressDialog::CQProgressDialog(QWidget* parent, const char* name, Qt::WindowModality windowModality, Qt::WindowFlags fl)
-    : QDialog(parent, fl)
+  : QDialog(parent, fl)
 {
   setObjectName(QString::fromUtf8(name));
 
@@ -97,6 +93,19 @@ void CQProgressDialog::init()
   QTimer::singleShot(1500, this, SLOT(timerShow()));
 
   return;
+}
+
+void CQProgressDialog::done(int)
+{
+  // ignore
+}
+void CQProgressDialog::accept()
+{
+  // ignore
+}
+void CQProgressDialog::reject()
+{
+  // ignore
 }
 
 void CQProgressDialog::btnContinuePressed()

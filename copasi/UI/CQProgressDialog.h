@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -40,6 +40,10 @@ protected slots:
   virtual void btnPausePressed();
   virtual void btnContinuePressed();
   void timerShow();
+
+  virtual void done(int);
+  virtual void accept();
+  virtual void reject();
 
 private:
   unsigned C_INT32 mItemCount;
