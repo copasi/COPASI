@@ -109,13 +109,18 @@ if(NOT APPLE)
 else()
 # on OS X everything is different, here we need to first fix the app bundle,
 # and only then install it
+SET(APPS)
+if (CMAKE_GENERATOR STREQUAL Xcode)
+SET(APPS "${CMAKE_CURRENT_BINARY_DIR}/Release/CopasiUI.app" CACHE INTERNAL "")
+else()
 SET(APPS "${CMAKE_CURRENT_BINARY_DIR}/CopasiUI.app" CACHE INTERNAL "")
+endif()
 # ensure that next to the binaries also dependencies are copied
 install(CODE "
     include(BundleUtilities)
     fixup_bundle(\"${APPS}\" \"\" \"${DIRS}\")
     " COMPONENT Runtime)
-install(TARGETS CopasiUI DESTINATION COPASI)
+install(TARGETS CopasiUI DESTINATION .)
 endif()
 
 include(InstallRequiredSystemLibraries)
