@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -225,7 +225,11 @@ void CCopasiXMLParser::ModelParameterSetElement::start(const XML_Char *pszName,
 
             break;
 
-          case ListOfUnkownAnnotations:
+          case ListOfUnsupportedAnnotations:
+
+            if (!strcmp(pszName, "ListOfUnsupportedAnnotations"))
+              mpCurrentHandler = &mParser.mListOfUnsupportedAnnotationsElement;
+
             break;
 
           case Content:
@@ -311,7 +315,15 @@ void CCopasiXMLParser::ModelParameterSetElement::end(const XML_Char *pszName)
         mCommon.CharacterData = "";
         break;
 
-      case ListOfUnkownAnnotations:
+      case ListOfUnsupportedAnnotations:
+
+        if (strcmp(pszName, "ListOfUnsupportedAnnotations"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfUnsupportedAnnotations", mParser.getCurrentLineNumber());
+
+        static_cast< CModelParameterSet * >(mCommon.ModelParameterGroupStack.top())->getUnsupportedAnnotations() =
+          mParser.mListOfUnsupportedAnnotationsElement.getUnsupportedAnnotations();
+
         break;
 
       case Content:
