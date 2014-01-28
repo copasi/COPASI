@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/ListOfModelParameterSets.h,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/25 12:13:30 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,7 +7,7 @@
 #define COPASI_ListOfModelParameterSets
 
 class ModelParameterElement:
-    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
 {
   // Attributes
 private:
@@ -59,7 +51,7 @@ private:
 };
 
 class ModelParameterGroupElement:
-    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
 {
   // Attributes
 private:
@@ -112,7 +104,7 @@ private:
 };
 
 class ModelParameterSetElement:
-    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
 {
   // Attributes
 private:
@@ -124,7 +116,7 @@ private:
     ModelParameterSet = 0,
     MiriamAnnotation,
     Comment,
-    ListOfUnkownAnnotations,
+    ListOfUnsupportedAnnotations,
     Content
   };
 
@@ -173,7 +165,7 @@ private:
 };
 
 class ListOfModelParameterSetsElement:
-    public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+  public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
 {
   // Attributes
 private:
