@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.h,v $
-//   $Revision: 1.21 $
-//   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/04/08 15:45:13 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -53,7 +45,7 @@ public:
    * Default constructor
    */
   COutputInterface():
-      mObjects()
+    mObjects()
   {};
 
   /**
@@ -61,7 +53,7 @@ public:
    * @param const COutputInterface & src
    */
   COutputInterface(const COutputInterface & src):
-      mObjects(src.mObjects)
+    mObjects(src.mObjects)
   {};
 
   /**
@@ -93,6 +85,11 @@ public:
    * Finish the output
    */
   virtual void finish() {};
+
+  /**
+   * Close the stream if applicable
+   */
+  virtual void close() {};
 
   /**
    * Retrieve the list of objects handled by the interface
