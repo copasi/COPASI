@@ -96,7 +96,7 @@ mkdir -p Applications/COPASI/examples
 echo cp ${SOURCE}/TestSuite/distribution/* Applications/COPASI/examples/
 cp ${SOURCE}/TestSuite/distribution/* Applications/COPASI/examples/
 
-chmod 444 Applications/COPASI/examples/*
+chmod 664 Applications/COPASI/examples/*
 chmod 777 Applications/COPASI/examples
 
 # copy default configuration
@@ -104,7 +104,7 @@ echo mkdir -p Applications/COPASI/config
 mkdir -p Applications/COPASI/config
 echo cp ${SOURCE}/copasi/MIRIAM/MIRIAMResources.xml Applications/COPASI/config
 cp ${SOURCE}/copasi/MIRIAM/MIRIAMResources.xml Applications/COPASI/config
-chmod 444 Applications/COPASI/config/*
+chmod 664 Applications/COPASI/config/*
 chmod 777 Applications/COPASI/config
 
 # copy the commandline version if it exists
@@ -117,29 +117,54 @@ popd
 
 pushd ${SETUP_DIR}
 
-# Create the Info.plist file for CopasiUI
-echo sed -e 's/%COPASI_VERSION%/'$major.$minor.$build'/g' \
-  ${SOURCE}/PackageMaker/Info.plist '>' Info.plist
-sed -e 's/%COPASI_VERSION%/'$major.$minor.$build'/g' \
-  ${SOURCE}/PackageMaker/Info.plist > Info.plist
+mkdir copasi.pmdoc
+
+# Create the index.html file
+echo sed -e 's?%SOURCE%?'${SOURCE}'?g' \
+    -e 's?%SETUP_DIR%?'${SETUP_DIR}'?g' \
+    -e 's?%COPASI_VERSION%?'$major.$minor.$build'?g' \
+    -e 's?%PACKAGE_NAME%?'${PACKAGE_NAME}'?g' \
+  ${SOURCE}/PackageMaker/copasi.pmdoc/index.xml '>' copasi.pmdoc/index.xml
+
+sed -e 's?%SOURCE%?'${SOURCE}'?g' \
+    -e 's?%SETUP_DIR%?'${SETUP_DIR}'?g' \
+    -e 's?%COPASI_VERSION%?'$major.$minor.$build'?g' \
+    -e 's?%PACKAGE_NAME%?'${PACKAGE_NAME}'?g' \
+  ${SOURCE}/PackageMaker/copasi.pmdoc/index.xml > copasi.pmdoc/index.xml
+
+# Create the copasi.xml file
+echo sed -e 's?%SOURCE%?'${SOURCE}'?g' \
+    -e 's?%SETUP_DIR%?'${SETUP_DIR}'?g' \
+    -e 's?%COPASI_VERSION%?'$major.$minor.$build'?g' \
+    -e 's?%PACKAGE_NAME%?'${PACKAGE_NAME}'?g' \
+  ${SOURCE}/PackageMaker/copasi.pmdoc/copasi.xml '>' copasi.pmdoc/copasi.xml
+
+sed -e 's?%SOURCE%?'${SOURCE}'?g' \
+    -e 's?%SETUP_DIR%?'${SETUP_DIR}'?g' \
+    -e 's?%COPASI_VERSION%?'$major.$minor.$build'?g' \
+    -e 's?%PACKAGE_NAME%?'${PACKAGE_NAME}'?g' \
+  ${SOURCE}/PackageMaker/copasi.pmdoc/copasi.xml > copasi.pmdoc/copasi.xml
+
+# Create the copasi-contents.xml file
+echo sed -e 's?%SOURCE%?'${SOURCE}'?g' \
+    -e 's?%SETUP_DIR%?'${SETUP_DIR}'?g' \
+    -e 's?%COPASI_VERSION%?'$major.$minor.$build'?g' \
+    -e 's?%PACKAGE_NAME%?'${PACKAGE_NAME}'?g' \
+  ${SOURCE}/PackageMaker/copasi.pmdoc/copasi-contents.xml '>' copasi.pmdoc/copasi-contents.xml
+
+sed -e 's?%SOURCE%?'${SOURCE}'?g' \
+    -e 's?%SETUP_DIR%?'${SETUP_DIR}'?g' \
+    -e 's?%COPASI_VERSION%?'$major.$minor.$build'?g' \
+    -e 's?%PACKAGE_NAME%?'${PACKAGE_NAME}'?g' \
+  ${SOURCE}/PackageMaker/copasi.pmdoc/copasi-contents.xml > copasi.pmdoc/copasi-contents.xml
 
 # Run PackageMaker to create package
 echo "${PACKAGE_MAKER}" \
-  --root "${PACKAGE_NAME}" \
-  --info "Info.plist" \
+  --doc "copasi.pmdoc" \
   --out "${PACKAGE_NAME}.pkg" 
 "${PACKAGE_MAKER}" \
-  --root "${PACKAGE_NAME}" \
-  --info "${SOURCE}/PackageMaker/Info.plist" \
+  --doc "copasi.pmdoc" \
   --out "${PACKAGE_NAME}.pkg"
-
-echo cp -r ${SOURCE}/PackageMaker/Resources "${PACKAGE_NAME}.pkg/Contents"
-cp -r ${SOURCE}/PackageMaker/Resources "${PACKAGE_NAME}.pkg/Contents"
-
-echo sed -e 's/%COPASI_VERSION%/'$major.$minor.$build'/g' \
-  ${SOURCE}/PackageMaker/Description.plist '>' "${PACKAGE_NAME}.pkg/Contents/Resources/en.lproj/Description.plist"
-sed -e 's/%COPASI_VERSION%/'$major.$minor.$build'/g' \
-  ${SOURCE}/PackageMaker/Description.plist > "${PACKAGE_NAME}.pkg/Contents/Resources/en.lproj/Description.plist"
 
 # Hide the pkg extension
 SetFile -a E "${PACKAGE_NAME}.pkg"

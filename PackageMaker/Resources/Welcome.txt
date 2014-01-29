@@ -1,1 +1,3 @@
-Welcome to the COPASI installation. This program will guide you through the installation of this software.
+Welcome to the COPASI installation. 
+
+This program will guide you through the installation of this software.
