@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -466,7 +466,7 @@ void PlotWindow::slotDeselectAll()
 
 void PlotWindow::slotCloseWindow()
 {
-  close();
+  QWidget::close();
 }
 
 void PlotWindow::closeEvent(QCloseEvent *closeEvent)

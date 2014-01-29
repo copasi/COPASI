@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.cpp,v $
-//   $Revision: 1.27 $
-//   $Name:  $
-//   $Author: aekamal $
-//   $Date: 2010/04/08 15:45:13 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -32,17 +24,17 @@
 #include "trajectory/CTimeSeries.h"
 
 COutputHandler::COutputHandler():
-    COutputInterface(),
-    mInterfaces(),
-    mpMaster(NULL),
-    mObjectRefreshes()
+  COutputInterface(),
+  mInterfaces(),
+  mpMaster(NULL),
+  mObjectRefreshes()
 {}
 
 COutputHandler::COutputHandler(const COutputHandler & src):
-    COutputInterface(src),
-    mInterfaces(src.mInterfaces),
-    mpMaster(src.mpMaster),
-    mObjectRefreshes(src.mObjectRefreshes)
+  COutputInterface(src),
+  mInterfaces(src.mInterfaces),
+  mpMaster(src.mpMaster),
+  mObjectRefreshes(src.mObjectRefreshes)
 {}
 
 COutputHandler::~COutputHandler() {};
@@ -51,7 +43,6 @@ std::set<COutputInterface *> COutputHandler::getInterfaces() const
 {
   return mInterfaces;
 }
-
 
 bool COutputHandler::compile(std::vector< CCopasiContainer * > listOfContainer, const CCopasiDataModel* pDataModel)
 {
@@ -120,9 +111,16 @@ void COutputHandler::finish()
   // under Visual C++ 6.0, i.e., removing an object advances the iterator.
   std::vector< COutputInterface * > ToBeRemoved;
 
+  // Closing a stream is separated from finishing the output
+  // since subtask may still need to finish their output.
   for (; it != end; ++it)
     {
       (*it)->finish();
+    }
+
+  for (it = mInterfaces.begin(); it != end; ++it)
+    {
+      (*it)->close();
 
       // CTimesSeries and CReport are only used once.
       if (dynamic_cast< CReport * >(*it) != NULL ||
