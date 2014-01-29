@@ -726,8 +726,10 @@ size_t SliderDialog::mapFolderId2EntryId(size_t folderId) const
 
 void SliderDialog::runTask()
 {
-  if (mpParentWindow == NULL || !mpParentWindow->isEnabled() ||
-      mTaskMap.find(mCurrentFolderId) == mTaskMap.end())
+  if (mpParentWindow == NULL
+      || !isEnabled()
+      || !mpParentWindow->isEnabled()
+      || mTaskMap.find(mCurrentFolderId) == mTaskMap.end())
     return;
 
   updateAllSliders();
@@ -764,8 +766,8 @@ void SliderDialog::sliderReleased()
 {
   if (mSliderValueChanged && mpAutoRunCheckBox->isChecked())
     {
-      runTask();
       mSliderValueChanged = false;
+      runTask();
     }
 
   mSliderPressed = false;
