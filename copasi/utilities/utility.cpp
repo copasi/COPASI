@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,6 +25,7 @@
 #include "copasi.h"
 
 #include "utility.h"
+#include "CCopasiMessage.h"
 
 std::string ISODateTime(tm * pTime)
 {
@@ -411,39 +412,25 @@ unsigned C_INT32 strToUnsignedInt(const char * str,
 
 void * stringToPointer(const std::string str)
 {
-  std::istringstream Pointer;
   void * pPointer;
 
-  Pointer.setf(std::ios::hex);
-
-#ifdef WIN32
-  Pointer.unsetf(std::ios::showbase);
-  Pointer.str(str.substr(2));
-  Pointer >> pPointer;
-#else
-  Pointer.setf(std::ios::showbase);
-  Pointer.str(str);
-  Pointer >> pPointer;
-#endif
+  sscanf(str.c_str(), "%p", &pPointer);
 
   return pPointer;
 }
 
 std::string pointerToString(const void * pVoid)
 {
-  std::ostringstream Pointer;
+  char String[19];
 
-  Pointer.setf(std::ios::hex);
+  int Printed = sprintf(String, "%p", pVoid);
 
-#ifdef WIN32
-  Pointer.unsetf(std::ios::showbase);
-  Pointer << "0x" << pVoid;
-#else
-  Pointer.setf(std::ios::showbase);
-  Pointer << pVoid;
-#endif
+  if (Printed < 0 || 18 < Printed)
+    {
+      fatalError();
+    }
 
-  return Pointer.str();
+  return String;
 }
 
 std::string nameToSbmlId(const std::string & name)
