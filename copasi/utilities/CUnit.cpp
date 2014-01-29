@@ -1,7 +1,7 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #include <math.h>
 
@@ -96,6 +96,11 @@ std::string CUnit::getSymbol() const
 // denominators have the same combination of units.
 bool CUnit::isDimensionless() const
 {
+  // If the symbol string has been set to other than "dimensionless",
+  // assume it has dimension, regardless of the components
+  if(mSymbol != "dimensionless" || mSymbol != "")
+    return false;
+
   std::vector< CUnitComponent >::const_iterator it = mComponents.begin();
 
   double reduction = 1;
