@@ -1,0 +1,38 @@
+<pkgref spec="1.12" uuid="C20F4579-2443-4136-A686-0AB42FDBB7D1">
+<!-- Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., University of Heidelberg, and The University -->
+<!-- of Manchester. -->
+<!-- All rights reserved. -->
+
+  <config>
+    <identifier>copasi.org.COPASI.pkg</identifier>
+    <version>%COPASI_VERSION%</version>
+    <description/>
+    <post-install type="none"/>
+    <requireAuthorization/>
+    <installFrom mod="true">%SETUP_DIR%/%PACKAGE_NAME%/Applications/COPASI</installFrom>
+    <installTo mod="true">/Applications/COPASI</installTo>
+    <flags>
+      <followSymbolicLinks/>
+    </flags>
+    <packageStore type="internal"/>
+    <mod>installTo.path</mod>
+    <mod>parent</mod>
+    <mod>installTo</mod>
+    <mod>identifier</mod>
+  </config>
+  <contents>
+    <file-list>copasi-contents.xml</file-list>
+    <component id="org.copasi.COPASI.CopasiUI"
+      path="%SETUP_DIR%/%PACKAGE_NAME%/Applications/COPASI/CopasiUI.app"
+      version="%COPASI_VERSION%">
+      <mod>isRelocatable</mod>
+      <mod>pathMapping</mod>
+    </component>
+    <filter>/CVS$</filter>
+    <filter>/\.svn$</filter>
+    <filter>/\.cvsignore$</filter>
+    <filter>/\.cvspass$</filter>
+    <filter>/\.DS_Store$</filter>
+  </contents>
+</pkgref>

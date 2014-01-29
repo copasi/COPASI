@@ -1,0 +1,42 @@
+<pkmkdoc spec="1.12">
+<!-- Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., University of Heidelberg, and The University -->
+<!-- of Manchester. -->
+<!-- All rights reserved. -->
+
+  <properties>
+    <title>COPASI-%COPASI_VERSION%</title>
+    <build>%SETUP_DIR%/%PACKAGE_NAME%.pkg</build>
+    <organization>copasi.org</organization>
+    <userSees ui="easy"/>
+    <min-target os="3"/>
+    <domain anywhere="true"/>
+  </properties>
+  <distribution>
+    <versions min-spec="1.000000"/>
+    <scripts/>
+  </distribution>
+  <contents>
+    <choice title="Applications" id="choice0" starts_selected="true" starts_enabled="true"
+      starts_hidden="false">
+      <customLoc>/Applications/COPASI</customLoc>
+      <pkgref id="copasi.org.COPASI.pkg"/>
+    </choice>
+  </contents>
+  <resources bg-scale="none" bg-align="topleft">
+    <locale lang="en">
+      <resource mod="true" type="license">%SOURCE%/PackageMaker/Resources/License.txt</resource>
+      <resource mod="true" type="readme">%SOURCE%/PackageMaker/Resources/ReadMe.txt</resource>
+      <resource mod="true" type="welcome">%SOURCE%/PackageMaker/Resources/Welcome.txt</resource>
+    </locale>
+  </resources>
+  <requirements>
+    <requirement id="sosv" operator="ge" value="'10.6.0'">
+      <message-title>Unsupported MacOS X Version</message-title>
+      <message>COPASI requires MacOS X 10.6 or higher.</message>
+    </requirement>
+  </requirements>
+  <flags/>
+  <item type="file">copasi.xml</item>
+  <mod>properties.title</mod>
+</pkmkdoc>
