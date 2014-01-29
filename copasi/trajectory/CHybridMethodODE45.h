@@ -91,7 +91,7 @@
 #define SYS_NEW                      1
 #define SYS_CONT                     2
 #define SYS_EVENT                    3
-#define SYS_CHANGE                   4
+//#define SYS_CHANGE                   4
 #define SYS_END                      5
 
 //Event Flag
@@ -595,6 +595,9 @@ protected:
    */
   CExpRKMethod mODE45;
 
+
+  bool mODEInitalized;
+
   /**
    *   Max number of doSingleStep() per step()
    */
@@ -642,6 +645,8 @@ protected:
    *
    */
   bool mDefaultAtol;
+
+  C_FLOAT64 mDefaultAtolValue;
 
   /**
    * The propensities of the stochastic reactions.
@@ -748,6 +753,9 @@ protected:
    *
    */
   std::ostringstream mErrorMsg;
+
+  static int mCount;
+
 };
 
 #endif // COPASI_CHybridMethodODE45

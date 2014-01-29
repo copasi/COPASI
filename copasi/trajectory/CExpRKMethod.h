@@ -163,8 +163,6 @@ class CExpRKMethod
 
   void queuePush(const SRoot&);
 
-  
-  bool initialized() const;
 
   /*============Attributes============*/
 
@@ -232,7 +230,7 @@ class CExpRKMethod
    * mRootId, a size_t variable indicating which root is found
    *          0 <= mRootId <= mRootNum-1
    */
-  size_t mRootId;
+  int mRootId;
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -413,8 +411,6 @@ class CExpRKMethod
    */
   bool mHasEvent;
 
-
-  bool mInit;
   
   //********************************************//
   //* Integration process statistic variables  *//

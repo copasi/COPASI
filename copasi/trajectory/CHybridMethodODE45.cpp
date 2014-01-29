@@ -54,6 +54,7 @@
 
 #include "CExpRKMethod.h"
 
+
 //================Function for Class================
 /**
  * Default constructor.
@@ -254,7 +255,7 @@ void CHybridMethodODE45::initializeParameter()
                CCopasiParameter::BOOL, (bool) true);
 
   addParameter("Absolute Tolerance",
-               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e009);
+               CCopasiParameter::UDOUBLE, (C_FLOAT64) mDefaultAtolValue);
 
   //????????????????????????????????????????????????????????
   // These parameters are no longer supported.
@@ -265,6 +266,7 @@ void CHybridMethodODE45::initializeParameter()
 
 void CHybridMethodODE45::start(const CState * initialState)
 {
+
   //set inital state
   mpProblem->getModel()->setState(*initialState);
 
@@ -352,17 +354,21 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   mODE45.mDim = &mData.dim;
 
   //mYdot.resize(mData.dim);
-
+  mDefaultAtolValue = 1e-9;
   mODE45.mRelTol = * getValue("Relative Tolerance").pUDOUBLE;
-  mDefaultAtol = * getValue("Use Default Absolute Tolerance").pBOOL;
+  mDefaultAtol   = * getValue("Use Default Absolute Tolerance").pBOOL;
 
   if (mDefaultAtol)
     {
+      std::cout << "mDefaultAtol" << std::endl;
       mODE45.mAbsTol = getDefaultAtol(mpProblem->getModel());
       setValue("Absolute Tolerance", mODE45.mAbsTol);
     }
   else
     mODE45.mAbsTol = * getValue("Absolute Tolerance").pUDOUBLE;
+
+  std::cout << "atol " << mODE45.mAbsTol << std::endl;
+  std::cout << "rtol " << mODE45.mRelTol << std::endl;
 
   mODE45.mHybrid = true;
   mODE45.mStatis = false;
@@ -827,7 +833,7 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
       //first check mRootQueue
       if(!mRootQueue.empty())
 	{
-	  mSysStatus == SYS_EVENT;
+	  mSysStatus = SYS_EVENT;
 
 	  root = mRootQueue.front();
 	  mRootQueue.pop();
@@ -865,8 +871,8 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
 	  mpModel->evaluateRoots(*mpRootValue, true);
 	  for(size_t id=0; id<mRootNum; id++)
 	    {
-	      if((mOldRoot[id]*(mpRootValue->array())[id]<0.0) || 
-		 ((mpRootValue->array())[id]==0.0))
+	      if( (mOldRoot[id]*(mpRootValue->array())[id]<0.0) || 
+		  ((mpRootValue->array())[id]==0.0) )
 		{
 		  root.t  = ds;
 		  root.id = id;
@@ -881,7 +887,7 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
 
 	      setRoot(root.id);
 	      mSysStatus = SYS_EVENT;
-	      return ds;
+	      return root.t;
 	    }
 	}
 
@@ -889,6 +895,7 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
   else //(2)----Involve Deterministic Part
     {
       integrateDeterministicPart(endTime - currentTime);
+      
       ds = mODE45.mT;
       if(mSysStatus == SYS_EVENT) //only deal with system roots
 	{
@@ -896,158 +903,28 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
 	    {
 	      //what about the states of model
 	      fireSlowReaction4Hybrid();
-	      stateChanged(); //SYS_EVENT->SYS_CHANGE
+	      stateChanged(); //SYS_EVENT->SYS_NEW
 	    }
 	  
 	  if(mHasRoot) // system roots
 	      setRoot(mODE45.mRootId);
 	}
-      else //finish this step
+      else if(mSysStatus == SYS_END)//finish this step
 	  mSysStatus = SYS_NEW;
+      else //error
+	{
+	  std::cout << "mSysStatus Error happens, check the code..." << std::endl;
+	  mSysStatus = SYS_ERR;
+	}
     }
+
   return ds;
 }
-/*C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endTime)
-{
-  C_FLOAT64 ds = 0.0;
-  size_t rIndex = 0;
-  
-  std::cout << std::endl << std::endl;
-  std::cout << "currrentTime " << currentTime << " endTime " << endTime << std::endl;
-  std::cout << "state " << mODE45Status << std::endl;
-
-  //1----If stack is Empty, start new step
-  if (mpRootStack->isEmpty())
-    {
-      std::cout << "Begin RootStack is Empty" << std::endl;
-      //(0)----Record old root value and time
-      if (mODE45Status != STATE_CHANGED)
-	{
-	  mOldRootTime = mNewRootTime;
-	  for (size_t i=0; i<mRootNum; i++)
-	    mOldRoot[i] = mNewRoot[i];
-	}
-      else //recalculate roots at current time
-	{
-	  std::cout << "init State_Changed " << std::endl;
-	  mOldRootTime = currentTime;
-	  mpModel->evaluateRoots(*mpRootValue, true);
-	  for (size_t i=0; i<mRootNum; i++)
-	    mOldRoot[i] = (mpRootValue->array())[i];
-
-	  //reset slow reaction sum initial value
-	  C_FLOAT64 rand2 = mpRandomGenerator->getRandomOO();
-	  mY[mData.dim - 1] = log(rand2);
-	}
-
-      mSysStatus = SYS_NEW;
-
-      //(1)----pure SSA method
-      if (mMethod == STOCHASTIC) //has only stochastic reactions
-	{ //has events just after one reaction fired
-	  getStochTimeAndIndex(ds, rIndex);
-	  
-	  if (ds > endTime)
-	    ds = endTime;
-	  else
-	    {
-	      fireReaction(rIndex);
-	      updatePriorityQueue(rIndex, ds);
-	    }
-
-	  //population has been changed and record to the mCurrentState
-	  //in fireReaction(). So here just store time
-	  *mpState = mpModel->getState();
-	  mpState->setTime(ds);
-	  mpModel->setState(*mpState);
-
-	  //check roots
-	  mSysStatus = CONTINUE;
-	  mpModel->evaluateRoots(*mpRootValue, true);
-	  for (size_t id=0; id<mRootNum; id++)
-	    {
-	      if ((mpRootValue->array())[id] == 0.0) //has root
-		{
-		  mpRootStack->push(ds, id);
-		  mSysStatus = HAS_EVENT;
-		}
-	    }
-	}
-      else//(2)----Method with Deterministic Part
-	{
-	  integrateDeterministicPart(endTime - currentTime);
-	  // Push All Roots and Slow Reaction into Stack
-	  if (mSysStatus == HAS_EVENT) 
-	    {
-	      std::cout << "Has Event" << std::endl;
-	      recordStates();
-	      if(mHasRoot)// push roots into stack
-		{
-		  std::cout << "Has Root" << std::endl;
-		  for (size_t id=0; id<mRootNum; id++)
-		    {
-		      if (mRootTime[id]>=0.0)
-			mpRootStack->push(mRootTime[id], id);
-		    }
-		}
-
-	      if(mHasSlow) // push slow events into stack
-		{
-		  std::cout << "Has Slow Reactions" <<  " mY[end] " << mY[mData.dim-1] << std::endl;
-		  C_FLOAT64 time = mpInterpolation->calculateFiringTime();
-		  mpRootStack->push(time, mRootNum);
-		}
-
-	      mpRootStack->buildStack();
-	    }
-	  else // Not Roots
-	    {
-	      std::cout << "Continue " << "ds " << ds << std::endl;
-	      ds = mpState->getTime();
-	      mSysStatus = CONTINUE;
-	    }
-	  // Till now, state has been recorded
-	}
-    }
-  
-  //2----Check Status
-  if (!(mpRootStack->isEmpty())) //has Root to be dealt with
-    {
-      size_t id;
-      mpRootStack->pop(ds, id);
-      std::cout << "Root Stack not Empty " << std::endl;
-      std::cout << "ds " << ds << " id " << id << std::endl;
-      doInverseInterpolation(ds);
-      
-      if (id < mRootNum) //root, not slow reaction fire
-	{	 
-	  std::cout << "Fire Roots" << std::endl;
-
-	  for (size_t i=0; i<mRootNum; i++)
-	    (mRoots.array())[i] = 0;
-
-	  (mRoots.array())[id] = 1;
-	  mSysStatus = HAS_ROOT;
-
-	}
-      else //slow reaction fires
-	{
-	  std::cout << "Fire Slow Reaction!" << std::endl;
-	  fireSlowReaction4Hybrid();
-	  stateChanged();
-	}
-    }
-  //getchar();
-  //3----Return
-  return ds;
-}*/
 
 void CHybridMethodODE45::stateChanged()
 {
   *mpState = *mpCurrentState;
-
-  std::cout << "Here, state changed, ai" << std::endl;
-  mSysStatus = SYS_CHANGE;
+  mSysStatus = SYS_NEW;
 
   return;
 }
@@ -1089,7 +966,7 @@ void CHybridMethodODE45::fireSlowReaction4Hybrid()
 C_FLOAT64 CHybridMethodODE45::getDefaultAtol(const CModel * pModel) const
 {
   if (!pModel)
-    return 1.0e009;
+    return mDefaultAtolValue;
 
   const CCopasiVectorNS< CCompartment > & Compartment =
     pModel->getCompartments();
@@ -1105,9 +982,9 @@ C_FLOAT64 CHybridMethodODE45::getDefaultAtol(const CModel * pModel) const
     }
 
   if (Volume == std::numeric_limits< C_FLOAT64 >::max())
-    return 1.0e009;
+    return mDefaultAtolValue;
 
-  return Volume * pModel->getQuantity2NumberFactor() * 1.e-12;
+  return std::min(1.e-3, std::max(mDefaultAtolValue, 1.0/(pModel->getQuantity2NumberFactor())));
 }
 
 /**
@@ -1129,34 +1006,39 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
   mODE45.mT    = mpState->getTime();
   mODE45.mTEnd = mODE45.mT + deltaT;
 
-  //=(4)= set y and old_y
-  C_FLOAT64 * stateY = mpState->beginIndependent();
-
-  for (size_t i = 0; i < mData.dim - 1; i++, stateY++)
-      mY[i]    = *stateY;
-
-  //2----Reset ODE45 Solver
+  //=(4)= set y and ode status
   if(mSysStatus = SYS_NEW)
     {
+      //only when starts a new step, we should copy state into ode solver
+      C_FLOAT64 * stateY = mpState->beginIndependent();
+      for (size_t i = 0; i < mData.dim - 1; i++, stateY++)
+	mY[i] = *stateY;
+      
+      mY[mData.dim-1] = log(mpRandomGenerator->getRandomOO());
+
+      /*
       if(!mODE45.initialized())
 	mODE45.mODEState = ODE_INIT;
       else
 	mODE45.mODEState = ODE_NEW;
-    }
-  else if(mSysStatus = SYS_CONT)
-    mODE45.mODEState = ODE_CONT;
-  else if(mSysStatus = SYS_CHANGE)
-    mODE45.mODEState = ODE_NEW;
+      */
+      if(mODE45.mODEState != ODE_INIT)
+	mODE45.mODEState = ODE_NEW;
 
+    }
+  else if(mSysStatus = SYS_EVENT)
+    mODE45.mODEState = ODE_CONT;
 
   //3----If time increment is too small, do nothing
   C_FLOAT64 tdist , d__1, d__2, w0;
   tdist = fabs(deltaT); //absolute time increment
-  d__1 = fabs(mODE45.mT), d__2 = fabs(mODE45.mTEnd);
+  d__1  = fabs(mODE45.mT), d__2 = fabs(mODE45.mTEnd);
   w0 = std::max(d__1, d__2);
 
   if (tdist < std::numeric_limits< C_FLOAT64 >::epsilon() * 2. * w0) //just do nothing
     {
+      mODE45.mT  = mODE45.mTEnd;
+      mSysStatus = SYS_END;
       mpModel->setTime(mODE45.mTEnd);
       return;
     }
@@ -1164,6 +1046,8 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
   //4----just do nothing if there are no variables
   if (!mData.dim)
     {
+      mODE45.mT = mODE45.mTEnd;
+      mSysStatus = SYS_END;
       mpModel->setTime(mODE45.mTEnd);
       return;
     }
@@ -1189,10 +1073,10 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
       mSysStatus = SYS_EVENT;
     }
   else
-    mSysStatus = SYS_NEW;
+    mSysStatus = SYS_END;
 
   //7----Record State
-  stateY = mpState->beginIndependent();
+  C_FLOAT64 *stateY = mpState->beginIndependent();
   for (size_t i = 0; i < mData.dim-1; i++)
     stateY[i] = mY[i]; //write result into mpState
 
@@ -1202,107 +1086,6 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
 
   return;
 }
-
-/*void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
-{
-
-  //1----Set Parameters for ODE45 solver
-  //=(1)= solver error message
-  mErrorMsg.str("");
-
-  //=(2)= set state
-  *mpState = mpModel->getState();
-
-  //=(3)= set time and old time
-  mTime = mpState->getTime();
-  C_FLOAT64 EndTime = mTime + deltaT;
-
-  mOldTime = mTime;
-
-  //=(4)= set y and old_y
-  C_FLOAT64 * stateY = mpState->beginIndependent();
-
-  for (size_t i = 0; i < mData.dim - 1; i++, stateY++)
-    {
-      mOldY[i] = *stateY;
-      mY[i]    = *stateY;
-    }
-
-  mOldY[mData.dim - 1] = mY[mData.dim - 1];
-
-  //2----Reset ODE45 Solver
-  mIFlag = -1; //integration by one step
-
-  //3----If time increment is too small, do nothing
-  C_FLOAT64 tdist , d__1, d__2, w0;
-  tdist = fabs(deltaT); //absolute time increment
-  d__1 = fabs(mTime), d__2 = fabs(EndTime);
-  w0 = std::max(d__1, d__2);
-
-  if (tdist < std::numeric_limits< C_FLOAT64 >::epsilon() * 2. * w0) //just do nothing
-    {
-      mpModel->setTime(EndTime);
-      return;
-    }
-
-  //4----just do nothing if there are no variables
-  if (!mData.dim)
-    {
-      mpModel->setTime(EndTime);
-      return;
-    }
-
-  while((mSysStatus == CONTINUE) 
-	|| (mSysStatus == SYS_NEW))
-    {
-      //(1)----ODE Solver
-      rkf45_(&EvalF ,                 //1. evaluate F
-	     &mData.dim,              //2. number of variables
-	     mY ,                     //3. the array of current concentrations
-	     &mTime ,                 //4. the current time
-	     &EndTime ,               //5. the final time
-	     &mRtol ,                 //6. relative tolerance array
-	     &mAtol ,                 //7. absolute tolerance array
-	     &mIFlag ,                //8. the state for input and output
-	     mDWork.array() ,         //9. the double work array
-	     mIWork.array() ,         //10. the int work array
-	     mStateRecord.array());   //11. the array to record temp state
-
-      //(2)----Change mSysStatus state
-      if ((mIFlag != 2) && (mIFlag != -2)) // First, check error
-	{
-	  mSysStatus = HAS_ERR;
-	  std::cout << "Error Type: " << mIFlag << std::endl;
-	  CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
-	}
-      else
-	{
-	  // Check whether system has events or not
-	  if ((mHasRoot=rootInterpolation()) || 
-	      (mHasSlow=(mY[mData.dim-1]>=0.0)))
-	    mSysStatus = HAS_EVENT;
-	  else
-	    {
-	      if (mIFlag == -2) // Finish One Step
-		mSysStatus = SYS_CONT;
-	      else // Reach End Time
-		mSysStatus = SYS_END;
-	    }
-	}
-    }//end while
-
-  //5----Record State
-  stateY = mpState->beginIndependent();
-  for (size_t i = 0; i < mData.dim-1; i++)
-    stateY[i] = mY[i]; //write result into mpState
-
-  mpState->setTime(mTime);
-  mpModel->setState(*mpState);
-  mpModel->updateSimulatedValues(false); //for assignments?????????
-
-  return;
-}*/
-
 
 /**
  * Function that sets (mRoot.array())[id]=1
@@ -1352,7 +1135,7 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
   mpState->setTime(*t);
   C_FLOAT64 * tmpY = mpState->beginIndependent();//mpState is a local copy
 
-  for (i = 0; i < mData.dim - 1; ++i)
+  for (i = 0; i < mData.dim-1; ++i)
     tmpY[i] = y[i];
 
   mpModel->setState(*mpState);
@@ -1382,7 +1165,7 @@ void CHybridMethodODE45::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT
   for (i = 0; i < mNumReactions; i++)
     {
       if (mReactionFlags[i] == SLOW) //slow reaction
-        ydot[mData.dim - 1] += mAmu[i];
+        ydot[mData.dim-1] += mAmu[i];
       else //fast reaction
         {
           metabIt    = mLocalBalances[i].begin();
@@ -1404,20 +1187,21 @@ void CHybridMethodODE45::evalR(const C_FLOAT64 *t, const C_FLOAT64 *y,
 			       const size_t *nr, C_FLOAT64 *r)
 {
   assert(*nr == (C_INT)mRoots.size());
-  assert(r == (C_FLOAT64*)mpRT);
+  //assert(r == (C_FLOAT64*)mpRT);
 
   mpState->setTime(*t);
   mpModel->setState(*mpState);
   
   //if(*mpReduceModel)
   //    mpModel->updateSimulatedValues(*mpReducedModel);
-
-  mpModel->evaluateRoots(*mpRootValue, true);
+  CVectorCore< C_FLOAT64 > rootValues(*nr, r);
+  mpModel->evaluateRoots(rootValues, true);
 
   /*
     if(mRootMasking != NONE)
-      maskRoots(*mpRootValue);
+      maskRoots(rootValues);
    */
+
   return;
 }
 

@@ -65,12 +65,11 @@ CExpRKMethod::CExpRKMethod()
   mStatis         = false;
   mhNoFailed      = false;
   mHasEvent       = false;
-  mInit           = false;
   mODEState       = 0;
   mODEStateRecord = 0;
 
   // Default root finder related
-  mRootId       = -1;
+  mRootId       = -10;
   mRootNum      = 0;
   mRootValue    = NULL;
   mRootValueOld = NULL;
@@ -294,7 +293,6 @@ void CExpRKMethod::integrate()
 
       if (!queueIsEmpty()) //has events
 	{
-	  std::cout << "mQueueLen " << mQueueLen << "  mQueueSite " << mQueueSite << std::endl;
 	  //do sorting
 	  if(mQueueLen >= 2)
 	    qsort(mRootQueue, mQueueLen, sizeof(SRoot), compare);
@@ -517,7 +515,6 @@ void CExpRKMethod::advanceStep()
  */
 void CExpRKMethod::initialize()
 {
-  mInit = true;
   checkParameter();
   if (mODEState == -2)
     return;
@@ -535,7 +532,13 @@ void CExpRKMethod::initialize()
   else
     {
       mHasEvent     = true;
+
+      if (mRootValueOld)
+	delete [] mRootValueOld;
       mRootValueOld = new C_FLOAT64[mRootNum];
+
+      if (mRootValue)
+	delete [] mRootValue;
       mRootValue    = new C_FLOAT64[mRootNum];
 
       clearQueue();
@@ -591,10 +594,7 @@ void CExpRKMethod::allocateSpace()
   
   mZ3 = new C_FLOAT64[size];
 
-  // ----(3)----
-  if (mRootQueue)
-    delete [] mRootQueue;
-  
+  // ----(3)---- 
   size = 0;
   if(mEventFunc)
     size += mRootNum;
@@ -602,6 +602,9 @@ void CExpRKMethod::allocateSpace()
   if(mHybrid)
     ++size;
 
+  if (mRootQueue)
+    delete [] mRootQueue;
+ 
   mRootQueue = new SRoot[size+2];
   clearQueue();
   return;
@@ -1177,8 +1180,3 @@ void CExpRKMethod::queuePush(const SRoot &root)
   return;
 }
 
-
-bool CExpRKMethod::initialized() const
-{
-  return mInit;
-}
