@@ -126,6 +126,16 @@ void CQPreferenceDialog::init()
       Values.append((*pParameter->getValue().pBOOL ? "YES" : "NO"));
       new QTreeWidgetItem(mpTreeWidget, Values);
     }
+
+  pParameter = configFile->getParameter("Allow Simultaneous Event Assignments");
+
+  if (pParameter != NULL)
+    {
+      QStringList Values;
+      Values.append("Allow Simultaneous Event Assignments");
+      Values.append((*pParameter->getValue().pBOOL ? "YES" : "NO"));
+      new QTreeWidgetItem(mpTreeWidget, Values);
+    }
 }
 
 void CQPreferenceDialog::slotBtnOk()
@@ -218,6 +228,15 @@ void CQPreferenceDialog::slotBtnOk()
 
   Items = mpTreeWidget->findItems("Use Advanced Editing", 0, 0);
   pParameter = configFile->getParameter("Use Advanced Editing");
+
+  if (Items.size() > 0 &&
+      pParameter != NULL)
+    {
+      pParameter->setValue(Items[0]->text(COL_VALUE).toUpper() == "YES");
+    }
+
+  Items = mpTreeWidget->findItems("Allow Simultaneous Event Assignments", 0, 0);
+  pParameter = configFile->getParameter("Allow Simultaneous Event Assignments");
 
   if (Items.size() > 0 &&
       pParameter != NULL)

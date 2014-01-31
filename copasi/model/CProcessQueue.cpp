@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,6 +16,9 @@
 #include "CMathModel.h"
 
 #include "function/CExpression.h"
+
+#include <copasi/report/CCopasiRootContainer.h>
+#include <copasi/commandline/CConfigurationFile.h>
 
 CProcessQueue::CKey::CKey() :
   mExecutionTime(0.0),
@@ -370,7 +373,8 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
         }
     }
 
-  if (mSimultaneousAssignments)
+  if (mSimultaneousAssignments &&
+      !CCopasiRootContainer::getConfiguration()->allowSimultaneousEventAssignments())
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathModel + 1);
       success = false;
@@ -397,7 +401,8 @@ CProcessQueue::range CProcessQueue::getCalculations()
 
       // Check whether we have a second set of assignments with a different ID.
       if (Calculations.second != mCalculations.end() &&
-          Calculations.second->first < UpperBound)
+          Calculations.second->first < UpperBound  &&
+          !CCopasiRootContainer::getConfiguration()->allowSimultaneousEventAssignments())
         {
           mSimultaneousAssignments = true;
 
@@ -436,7 +441,8 @@ CProcessQueue::range CProcessQueue::getAssignments()
 
       // Check whether we have a second set of assignments with a different ID.
       if (Assignments.second != mAssignments.end() &&
-          Assignments.second->first < UpperBound)
+          Assignments.second->first < UpperBound  &&
+          !CCopasiRootContainer::getConfiguration()->allowSimultaneousEventAssignments())
         {
           mSimultaneousAssignments = true;
 
