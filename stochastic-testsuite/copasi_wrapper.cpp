@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -245,7 +245,7 @@ int main(int argc, char *argv[])
       pScanTask->setScheduled(true);
 
       pScanTask->getReport().setReportDefinition(pReport);
-      pScanTask->getReport().setTarget(CWD + "/" + pOutputFilename);
+      pScanTask->getReport().setTarget(pOutputFilename);
       pScanTask->getReport().setAppend(false);
 
       pScanProblem->setSubtask(CCopasiTask::timeCourse);
@@ -253,7 +253,7 @@ int main(int argc, char *argv[])
       pScanProblem->addScanItem(CScanProblem::SCAN_REPEAT, repeats);
       pScanProblem->setOutputInSubtask(true);
       pScanProblem->setContinueFromCurrentState(false);
-     
+
       TaskList.remove("Scan");
       TaskList.add(pScanTask, true);
 
