@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -318,20 +318,6 @@ void CMathModel::processRoots(const C_FLOAT64 & time,
   CMathEvent * pProcessEvent = NULL;
 
   CMathTrigger::CRootFinder **ppRootFinder = mRootIndex2RootFinder.array();
-
-  while (pFoundRoot != pFoundRootEnd)
-    {
-      // We reevaluate the state of the non found roots, which should be save.
-      if (*pFoundRoot < 1)
-        {
-          (*ppRootFinder)->calculateTrueValue();
-        }
-
-      ++pFoundRoot; ++ppRootFinder;
-    }
-
-  pFoundRoot = foundRoots.array();
-  ppRootFinder = mRootIndex2RootFinder.array();
 
   // We go through the list of roots and process the events
   // which need to be checked whether they fire.
