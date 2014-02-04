@@ -1,11 +1,17 @@
 #!/bin/bash
+# Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 
 CopasiSE=${1:-CopasiSE}
 
 function runTest () {
   echo Test: ${1}
+  rm ${1}.1.txt
   ${CopasiSE} --nologo ${1}.cps > /dev/null
-  ndiff ${1}.1.txt ${1}.1.txt.tgt || echo ${1} failed
+  ndiff -sbml ${1}.1.txt ${1}.1.txt.tgt > ${1}.1.csv || echo ${1} failed
 }
 
 runTest EventTest1
