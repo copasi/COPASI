@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -142,7 +142,7 @@ public:
     C_FLOAT64 mTrue;
 
     /**
-     * The time at which the last toggle of the trueth value occured
+     * The time at which the last toggle of the truth value occurred
      */
     C_FLOAT64 mLastToggleTime;
   };
