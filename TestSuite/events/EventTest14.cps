@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.9.37+ (Debug) (http://www.copasi.org) at 2012-10-09 17:53:47 UTC -->
+<!-- generated with COPASI 4.12.70+ (Debug) (http://www.copasi.org) at 2014-02-04 22:13:02 UTC -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
-<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="9" versionDevel="37" copasiSourcesModified="1">
+<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="12" versionDevel="70" copasiSourcesModified="1">
   <ListOfFunctions>
     <Function key="Function_13" name="Mass action (irreversible)" type="MassAction" reversible="false">
       <MiriamAnnotation>
@@ -204,14 +204,14 @@ Reaction scheme where the products are created from the reactants and the change
       </ListOfParameterDescriptions>
     </Function>
   </ListOfFunctions>
-  <Model key="Model_1" name="Novak2001_FissionYeast_CellCycle" simulationType="time" timeUnit="min" volumeUnit="l" areaUnit="m²" lengthUnit="m" quantityUnit="dimensionless" type="deterministic" avogadroConstant="6.02214179e+23">
+  <Model key="Model_4" name="Novak2001_FissionYeast_CellCycle" simulationType="time" timeUnit="min" volumeUnit="l" areaUnit="m²" lengthUnit="m" quantityUnit="dimensionless" type="deterministic" avogadroConstant="6.02214179e+23">
     <MiriamAnnotation>
 <rdf:RDF
    xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#"
    xmlns:dcterms="http://purl.org/dc/terms/"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
-  <rdf:Description rdf:about="#Model_1">
+  <rdf:Description rdf:about="#Model_4">
     <dcterms:bibliographicCitation>
       <rdf:Bag>
         <rdf:li>
@@ -283,14 +283,14 @@ Reaction scheme where the products are created from the reactants and the change
     </MiriamAnnotation>
     <Comment>
       <p xmlns="http://www.w3.org/1999/xhtml">The model reproduces the time evolution of several species as depicted in Fig 4 of the paper. Events have been used to reset  cell mass when the value of M-phase promoting factor (MPF) decreases through 0.1. The model was successfully tested on Cell Designer. </p>
-  <p xmlns="http://www.w3.org/1999/xhtml">This model originates from BioModels Database: A Database of Annotated Published Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2010 The BioModels.net Team.<br/>For more information see the <a href="http://www.ebi.ac.uk/biomodels/legal.html" target="_blank">terms of use</a>.<br/>To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pubmed/20587024" target="_blank">Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.</a>
+  <p xmlns="http://www.w3.org/1999/xhtml">This model originates from BioModels Database: A Database of Annotated Published Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2010 The BioModels.net Team.<br />For more information see the <a href="http://www.ebi.ac.uk/biomodels/legal.html" target="_blank">terms of use</a>.<br />To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pubmed/20587024" target="_blank">Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.</a>
 </p>
     </Comment>
     <ListOfCompartments>
-      <Compartment key="Compartment_0" name="cell" simulationType="fixed" dimensionality="3">
+      <Compartment key="Compartment_1" name="cell" simulationType="fixed" dimensionality="3">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Compartment_0">
+  <rdf:Description rdf:about="#Compartment_1">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0005623" />
@@ -302,10 +302,10 @@ Reaction scheme where the products are created from the reactants and the change
       </Compartment>
     </ListOfCompartments>
     <ListOfMetabolites>
-      <Metabolite key="Metabolite_0" name="Total cdc13" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_1" name="Total cdc13" simulationType="reactions" compartment="Compartment_1">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_0">
+  <rdf:Description rdf:about="#Metabolite_1">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:interpro:IPR015454" />
@@ -315,10 +315,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_1" name="preMPF" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_3" name="preMPF" simulationType="reactions" compartment="Compartment_1">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_1">
+  <rdf:Description rdf:about="#Metabolite_3">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:interpro:IPR015454" />
@@ -329,10 +329,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_2" name="ste9" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_5" name="ste9" simulationType="reactions" compartment="Compartment_1">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_2">
+  <rdf:Description rdf:about="#Metabolite_5">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:O13286" />
@@ -342,10 +342,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_3" name="slp1T" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_7" name="slp1T" simulationType="reactions" compartment="Compartment_1">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_3">
+  <rdf:Description rdf:about="#Metabolite_7">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P78972" />
@@ -355,10 +355,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_4" name="slp1" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_9" name="slp1" simulationType="reactions" compartment="Compartment_1">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_4">
+  <rdf:Description rdf:about="#Metabolite_9">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P78972" />
@@ -368,12 +368,12 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_5" name="IEP" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_11" name="IEP" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_6" name="rum1T" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_13" name="rum1T" simulationType="reactions" compartment="Compartment_1">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_6">
+  <rdf:Description rdf:about="#Metabolite_13">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P40380" />
@@ -383,10 +383,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_7" name="SK" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_15" name="SK" simulationType="reactions" compartment="Compartment_1">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_7">
+  <rdf:Description rdf:about="#Metabolite_15">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:uniprot:P24865" />
@@ -396,12 +396,12 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_8" name="Cell Mass" simulationType="reactions" compartment="Compartment_0">
+      <Metabolite key="Metabolite_17" name="Cell Mass" simulationType="reactions" compartment="Compartment_1">
       </Metabolite>
-      <Metabolite key="Metabolite_9" name="M-phase promoting factor" simulationType="assignment" compartment="Compartment_0">
+      <Metabolite key="Metabolite_19" name="M-phase promoting factor" simulationType="assignment" compartment="Compartment_1">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_9">
+  <rdf:Description rdf:about="#Metabolite_19">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:interpro:IPR015454" />
@@ -417,130 +417,130 @@ Reaction scheme where the products are created from the reactants and the change
       </Metabolite>
     </ListOfMetabolites>
     <ListOfModelValues>
-      <ModelValue key="ModelValue_1" name="flag_MPF" simulationType="fixed">
+      <ModelValue key="ModelValue_0" name="flag_MPF" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_2" name="sigma" simulationType="assignment">
+      <ModelValue key="ModelValue_1" name="sigma" simulationType="assignment">
         <Expression>
           &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[Total cdc13],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt;+&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[rum1T],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt;+&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Kdiss],Reference=Value&gt;
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_3" name="Kdiss" simulationType="fixed">
+      <ModelValue key="ModelValue_2" name="Kdiss" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_4" name="Trimer" simulationType="assignment">
+      <ModelValue key="ModelValue_3" name="Trimer" simulationType="assignment">
         <Expression>
           2*(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[Total cdc13],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt;)*(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[rum1T],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt;)/(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[sigma],Reference=Value&gt;+(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[sigma],Reference=Value&gt;^2-4*(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[Total cdc13],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt;)*(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[rum1T],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt;))^0.5)
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_5" name="TF" simulationType="assignment">
+      <ModelValue key="ModelValue_4" name="TF" simulationType="assignment">
         <Expression>
           2*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k15],Reference=Value&gt;*(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[Cell Mass],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt;)*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J16],Reference=Value&gt;/(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k16_prime],Reference=Value&gt;+&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k16_double_prime],Reference=Value&gt;*(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[M-phase promoting factor],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt;)-&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k15],Reference=Value&gt;*(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[Cell Mass],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt;)+(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k16_prime],Reference=Value&gt;+&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k16_double_prime],Reference=Value&gt;*(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[M-phase promoting factor],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt;))*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J15],Reference=Value&gt;+&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k15],Reference=Value&gt;*(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[Cell Mass],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt;)*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J16],Reference=Value&gt;+((&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k16_prime],Reference=Value&gt;+&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k16_double_prime],Reference=Value&gt;*(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[M-phase promoting factor],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt;)-&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k15],Reference=Value&gt;*(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[Cell Mass],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt;)+(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k16_prime],Reference=Value&gt;+&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k16_double_prime],Reference=Value&gt;*(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[M-phase promoting factor],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt;))*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J15],Reference=Value&gt;+&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k15],Reference=Value&gt;*(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[Cell Mass],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt;)*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J16],Reference=Value&gt;)^2-4*(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k16_prime],Reference=Value&gt;+&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k16_double_prime],Reference=Value&gt;*(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[M-phase promoting factor],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt;)-&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k15],Reference=Value&gt;*(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[Cell Mass],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt;))*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k15],Reference=Value&gt;*(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[Cell Mass],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt;)*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J16],Reference=Value&gt;)^(1/2))
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_6" name="k15" simulationType="fixed">
+      <ModelValue key="ModelValue_5" name="k15" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_7" name="J16" simulationType="fixed">
+      <ModelValue key="ModelValue_6" name="J16" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_8" name="k16_prime" simulationType="fixed">
+      <ModelValue key="ModelValue_7" name="k16_prime" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_9" name="k16_double_prime" simulationType="fixed">
+      <ModelValue key="ModelValue_8" name="k16_double_prime" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_10" name="J15" simulationType="fixed">
+      <ModelValue key="ModelValue_9" name="J15" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_11" name="kwee" simulationType="assignment">
+      <ModelValue key="ModelValue_10" name="kwee" simulationType="assignment">
         <Expression>
           &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[kwee_prime],Reference=Value&gt;+(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[kwee_double_prime],Reference=Value&gt;-&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[kwee_prime],Reference=Value&gt;)*(2*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Vawee],Reference=Value&gt;*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Jiwee],Reference=Value&gt;/(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[M-phase promoting factor],Reference=ParticleNumber&gt;-&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Vawee],Reference=Value&gt;+&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[M-phase promoting factor],Reference=ParticleNumber&gt;*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Jawee],Reference=Value&gt;+&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Vawee],Reference=Value&gt;*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Jiwee],Reference=Value&gt;+((&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[M-phase promoting factor],Reference=ParticleNumber&gt;-&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Vawee],Reference=Value&gt;+&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[M-phase promoting factor],Reference=ParticleNumber&gt;*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Jawee],Reference=Value&gt;+&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Vawee],Reference=Value&gt;*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Jiwee],Reference=Value&gt;)^2-4*(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[M-phase promoting factor],Reference=ParticleNumber&gt;-&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Vawee],Reference=Value&gt;)*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Vawee],Reference=Value&gt;*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Jiwee],Reference=Value&gt;)^(1/2)))
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_12" name="kwee_prime" simulationType="fixed">
+      <ModelValue key="ModelValue_11" name="kwee_prime" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_13" name="kwee_double_prime" simulationType="fixed">
+      <ModelValue key="ModelValue_12" name="kwee_double_prime" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_14" name="Vawee" simulationType="fixed">
+      <ModelValue key="ModelValue_13" name="Vawee" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_15" name="Jiwee" simulationType="fixed">
+      <ModelValue key="ModelValue_14" name="Jiwee" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_16" name="Viwee" simulationType="fixed">
+      <ModelValue key="ModelValue_15" name="Viwee" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_17" name="Jawee" simulationType="fixed">
+      <ModelValue key="ModelValue_16" name="Jawee" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_18" name="k25" simulationType="assignment">
+      <ModelValue key="ModelValue_17" name="k25" simulationType="assignment">
         <Expression>
           &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k25_prime],Reference=Value&gt;+(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k25_double_prime],Reference=Value&gt;-&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k25_prime],Reference=Value&gt;)*(2*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Va25],Reference=Value&gt;*(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[M-phase promoting factor],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt;)*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Ji25],Reference=Value&gt;/(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Vi25],Reference=Value&gt;-&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[M-phase promoting factor],Reference=ParticleNumber&gt;+&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Vi25],Reference=Value&gt;*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Ja25],Reference=Value&gt;+&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[M-phase promoting factor],Reference=ParticleNumber&gt;*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Ji25],Reference=Value&gt;+((&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Vi25],Reference=Value&gt;-&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[M-phase promoting factor],Reference=ParticleNumber&gt;+&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Vi25],Reference=Value&gt;*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Ja25],Reference=Value&gt;+&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[M-phase promoting factor],Reference=ParticleNumber&gt;*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Ji25],Reference=Value&gt;)^2-4*(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Vi25],Reference=Value&gt;-&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[M-phase promoting factor],Reference=ParticleNumber&gt;)*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Va25],Reference=Value&gt;*(&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[M-phase promoting factor],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt;)*&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Ji25],Reference=Value&gt;)^(1/2)))
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_19" name="k25_prime" simulationType="fixed">
+      <ModelValue key="ModelValue_18" name="k25_prime" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_20" name="k25_double_prime" simulationType="fixed">
+      <ModelValue key="ModelValue_19" name="k25_double_prime" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_21" name="Va25" simulationType="fixed">
+      <ModelValue key="ModelValue_20" name="Va25" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_22" name="Ji25" simulationType="fixed">
+      <ModelValue key="ModelValue_21" name="Ji25" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_23" name="Vi25" simulationType="fixed">
+      <ModelValue key="ModelValue_22" name="Vi25" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_24" name="Ja25" simulationType="fixed">
+      <ModelValue key="ModelValue_23" name="Ja25" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_25" name="k1" simulationType="fixed">
+      <ModelValue key="ModelValue_24" name="k1" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_26" name="k2_prime" simulationType="fixed">
+      <ModelValue key="ModelValue_25" name="k2_prime" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_27" name="k2_double_prime" simulationType="fixed">
+      <ModelValue key="ModelValue_26" name="k2_double_prime" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_28" name="k2_triple_prime" simulationType="fixed">
+      <ModelValue key="ModelValue_27" name="k2_triple_prime" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_29" name="k3_prime" simulationType="fixed">
+      <ModelValue key="ModelValue_28" name="k3_prime" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_30" name="k3_double_prime" simulationType="fixed">
+      <ModelValue key="ModelValue_29" name="k3_double_prime" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_31" name="J3" simulationType="fixed">
+      <ModelValue key="ModelValue_30" name="J3" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_32" name="k4_prime" simulationType="fixed">
+      <ModelValue key="ModelValue_31" name="k4_prime" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_33" name="k4" simulationType="fixed">
+      <ModelValue key="ModelValue_32" name="k4" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_34" name="J4" simulationType="fixed">
+      <ModelValue key="ModelValue_33" name="J4" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_35" name="k5_prime" simulationType="fixed">
+      <ModelValue key="ModelValue_34" name="k5_prime" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_36" name="k5_double_prime" simulationType="fixed">
+      <ModelValue key="ModelValue_35" name="k5_double_prime" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_37" name="J5" simulationType="fixed">
+      <ModelValue key="ModelValue_36" name="J5" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_38" name="k6" simulationType="fixed">
+      <ModelValue key="ModelValue_37" name="k6" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_39" name="k7" simulationType="fixed">
+      <ModelValue key="ModelValue_38" name="k7" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_40" name="J7" simulationType="fixed">
+      <ModelValue key="ModelValue_39" name="J7" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_41" name="k8" simulationType="fixed">
+      <ModelValue key="ModelValue_40" name="k8" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_42" name="J8" simulationType="fixed">
+      <ModelValue key="ModelValue_41" name="J8" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_43" name="k9" simulationType="fixed">
+      <ModelValue key="ModelValue_42" name="k9" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_44" name="J9" simulationType="fixed">
+      <ModelValue key="ModelValue_43" name="J9" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_45" name="k10" simulationType="fixed">
+      <ModelValue key="ModelValue_44" name="k10" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_46" name="J10" simulationType="fixed">
+      <ModelValue key="ModelValue_45" name="J10" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_47" name="k11" simulationType="fixed">
+      <ModelValue key="ModelValue_46" name="k11" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_48" name="k12" simulationType="fixed">
+      <ModelValue key="ModelValue_47" name="k12" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_49" name="k12_prime" simulationType="fixed">
+      <ModelValue key="ModelValue_48" name="k12_prime" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_50" name="k12_double_prime" simulationType="fixed">
+      <ModelValue key="ModelValue_49" name="k12_double_prime" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_51" name="k13" simulationType="fixed">
+      <ModelValue key="ModelValue_50" name="k13" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_52" name="k14" simulationType="fixed">
+      <ModelValue key="ModelValue_51" name="k14" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_53" name="mu" simulationType="fixed">
+      <ModelValue key="ModelValue_52" name="mu" simulationType="fixed">
       </ModelValue>
     </ListOfModelValues>
     <ListOfReactions>
-      <Reaction key="Reaction_0" name="cdc13T synthesis" reversible="false">
+      <Reaction key="Reaction_0" name="cdc13T synthesis" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_0">
@@ -554,26 +554,26 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_0" stoichiometry="1"/>
+          <Product metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_8" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_17" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_1558" name="k1" value="1"/>
+          <Constant key="Parameter_4065" name="k1" value="0.03"/>
         </ListOfConstants>
         <KineticLaw function="Function_40">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_254">
-              <SourceParameter reference="Metabolite_8"/>
+              <SourceParameter reference="Metabolite_17"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_264">
-              <SourceParameter reference="ModelValue_25"/>
+              <SourceParameter reference="ModelValue_24"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_1" name="Targeting cdc13T to APC core" reversible="false">
+      <Reaction key="Reaction_1" name="Targeting cdc13T to APC core" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_1">
@@ -587,44 +587,44 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_0" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_2" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_4" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_5" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_1559" name="k2_double_prime" value="1"/>
-          <Constant key="Parameter_1560" name="k2_prime" value="1"/>
-          <Constant key="Parameter_1561" name="k2_triple_prime" value="1"/>
+          <Constant key="Parameter_4066" name="k2_double_prime" value="1"/>
+          <Constant key="Parameter_4067" name="k2_prime" value="0.03"/>
+          <Constant key="Parameter_4068" name="k2_triple_prime" value="0.1"/>
         </ListOfConstants>
         <KineticLaw function="Function_41">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_274">
-              <SourceParameter reference="Metabolite_0"/>
+              <SourceParameter reference="Metabolite_1"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_268">
-              <SourceParameter reference="Compartment_0"/>
+              <SourceParameter reference="Compartment_1"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_258">
-              <SourceParameter reference="ModelValue_27"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_246">
               <SourceParameter reference="ModelValue_26"/>
             </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_246">
+              <SourceParameter reference="ModelValue_25"/>
+            </CallParameter>
             <CallParameter functionParameter="FunctionParameter_270">
-              <SourceParameter reference="ModelValue_28"/>
+              <SourceParameter reference="ModelValue_27"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_272">
-              <SourceParameter reference="Metabolite_4"/>
+              <SourceParameter reference="Metabolite_9"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_266">
-              <SourceParameter reference="Metabolite_2"/>
+              <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_2" name="wee1 dependent MPF inactivation" reversible="false">
+      <Reaction key="Reaction_2" name="wee1 dependent MPF inactivation" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_2">
@@ -648,32 +648,32 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_1" stoichiometry="1"/>
+          <Product metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_0" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_1562" name="kwee" value="1"/>
+          <Constant key="Parameter_4069" name="kwee" value="1.25627"/>
         </ListOfConstants>
         <KineticLaw function="Function_42">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_271">
-              <SourceParameter reference="Metabolite_0"/>
+              <SourceParameter reference="Metabolite_1"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_267">
-              <SourceParameter reference="Compartment_0"/>
+              <SourceParameter reference="Compartment_1"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_275">
-              <SourceParameter reference="ModelValue_11"/>
+              <SourceParameter reference="ModelValue_10"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_262">
-              <SourceParameter reference="Metabolite_1"/>
+              <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_3" name="cdc25 dependent preMPF phosphorylation" reversible="false">
+      <Reaction key="Reaction_3" name="cdc25 dependent preMPF phosphorylation" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_3">
@@ -693,23 +693,23 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_1563" name="k1" value="1"/>
+          <Constant key="Parameter_4070" name="k1" value="0.238217"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="ModelValue_18"/>
+              <SourceParameter reference="ModelValue_17"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_1"/>
+              <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_4" name="preMPF inactivation" reversible="false">
+      <Reaction key="Reaction_4" name="preMPF inactivation" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_4">
@@ -724,44 +724,44 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_2" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_4" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_5" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_1564" name="k2_double_prime" value="1"/>
-          <Constant key="Parameter_1565" name="k2_prime" value="1"/>
-          <Constant key="Parameter_1566" name="k2_triple_prime" value="1"/>
+          <Constant key="Parameter_4071" name="k2_double_prime" value="1"/>
+          <Constant key="Parameter_4072" name="k2_prime" value="0.03"/>
+          <Constant key="Parameter_4073" name="k2_triple_prime" value="0.1"/>
         </ListOfConstants>
         <KineticLaw function="Function_43">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_279">
-              <SourceParameter reference="Compartment_0"/>
+              <SourceParameter reference="Compartment_1"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_269">
-              <SourceParameter reference="ModelValue_27"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_276">
               <SourceParameter reference="ModelValue_26"/>
             </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_276">
+              <SourceParameter reference="ModelValue_25"/>
+            </CallParameter>
             <CallParameter functionParameter="FunctionParameter_281">
-              <SourceParameter reference="ModelValue_28"/>
+              <SourceParameter reference="ModelValue_27"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_285">
-              <SourceParameter reference="Metabolite_1"/>
+              <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_283">
-              <SourceParameter reference="Metabolite_4"/>
+              <SourceParameter reference="Metabolite_9"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_277">
-              <SourceParameter reference="Metabolite_2"/>
+              <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_5" name="slp1 dependent ste9 activation" reversible="false">
+      <Reaction key="Reaction_5" name="slp1 dependent ste9 activation" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_5">
@@ -774,40 +774,40 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_2" stoichiometry="1"/>
+          <Product metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_4" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_1567" name="J3" value="1"/>
-          <Constant key="Parameter_1568" name="k3_double_prime" value="1"/>
-          <Constant key="Parameter_1569" name="k3_prime" value="1"/>
+          <Constant key="Parameter_4074" name="J3" value="0.01"/>
+          <Constant key="Parameter_4075" name="k3_double_prime" value="10"/>
+          <Constant key="Parameter_4076" name="k3_prime" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_44">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_290">
-              <SourceParameter reference="ModelValue_31"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_265">
-              <SourceParameter reference="Compartment_0"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_282">
               <SourceParameter reference="ModelValue_30"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_286">
+            <CallParameter functionParameter="FunctionParameter_265">
+              <SourceParameter reference="Compartment_1"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_282">
               <SourceParameter reference="ModelValue_29"/>
             </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_286">
+              <SourceParameter reference="ModelValue_28"/>
+            </CallParameter>
             <CallParameter functionParameter="FunctionParameter_278">
-              <SourceParameter reference="Metabolite_4"/>
+              <SourceParameter reference="Metabolite_9"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_288">
-              <SourceParameter reference="Metabolite_2"/>
+              <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_6" name="ste9 phosphorylation (inactivation) by starter kinase" reversible="false">
+      <Reaction key="Reaction_6" name="ste9 phosphorylation (inactivation) by starter kinase" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_6">
@@ -820,44 +820,44 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_2" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_7" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_9" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_15" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_19" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_1572" name="J4" value="1"/>
-          <Constant key="Parameter_1571" name="k4" value="1"/>
-          <Constant key="Parameter_1573" name="k4_prime" value="1"/>
+          <Constant key="Parameter_4077" name="J4" value="0.01"/>
+          <Constant key="Parameter_4078" name="k4" value="35"/>
+          <Constant key="Parameter_4079" name="k4_prime" value="2"/>
         </ListOfConstants>
         <KineticLaw function="Function_45">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_298">
-              <SourceParameter reference="ModelValue_34"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_294">
-              <SourceParameter reference="Metabolite_9"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_287">
-              <SourceParameter reference="Metabolite_7"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_280">
-              <SourceParameter reference="Compartment_0"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_292">
               <SourceParameter reference="ModelValue_33"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_291">
+            <CallParameter functionParameter="FunctionParameter_294">
+              <SourceParameter reference="Metabolite_19"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_287">
+              <SourceParameter reference="Metabolite_15"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_280">
+              <SourceParameter reference="Compartment_1"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_292">
               <SourceParameter reference="ModelValue_32"/>
             </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_291">
+              <SourceParameter reference="ModelValue_31"/>
+            </CallParameter>
             <CallParameter functionParameter="FunctionParameter_296">
-              <SourceParameter reference="Metabolite_2"/>
+              <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_7" name="slp1T activation by MPF" reversible="false">
+      <Reaction key="Reaction_7" name="slp1T activation by MPF" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_7">
@@ -870,37 +870,37 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_3" stoichiometry="1"/>
+          <Product metabolite="Metabolite_7" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_9" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_19" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_1570" name="J5" value="1"/>
-          <Constant key="Parameter_1574" name="k5_double_prime" value="1"/>
-          <Constant key="Parameter_1575" name="k5_prime" value="1"/>
+          <Constant key="Parameter_4080" name="J5" value="0.3"/>
+          <Constant key="Parameter_4081" name="k5_double_prime" value="0.3"/>
+          <Constant key="Parameter_4082" name="k5_prime" value="0.005"/>
         </ListOfConstants>
         <KineticLaw function="Function_46">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_301">
-              <SourceParameter reference="ModelValue_37"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_284">
-              <SourceParameter reference="Metabolite_9"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_289">
-              <SourceParameter reference="Compartment_0"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_295">
               <SourceParameter reference="ModelValue_36"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_299">
+            <CallParameter functionParameter="FunctionParameter_284">
+              <SourceParameter reference="Metabolite_19"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_289">
+              <SourceParameter reference="Compartment_1"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_295">
               <SourceParameter reference="ModelValue_35"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_299">
+              <SourceParameter reference="ModelValue_34"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_8" name="slp1T inactivation" reversible="false">
+      <Reaction key="Reaction_8" name="slp1T inactivation" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_8">
@@ -913,23 +913,23 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_7" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_1576" name="k1" value="1"/>
+          <Constant key="Parameter_4083" name="k1" value="0.1"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="ModelValue_38"/>
+              <SourceParameter reference="ModelValue_37"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_3"/>
+              <SourceParameter reference="Metabolite_7"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_9" name="slp1 activation by intermediary enzyme" reversible="false">
+      <Reaction key="Reaction_9" name="slp1 activation by intermediary enzyme" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_9">
@@ -942,40 +942,40 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_4" stoichiometry="1"/>
+          <Product metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_5" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_3" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_11" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_7" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_1577" name="J7" value="1"/>
-          <Constant key="Parameter_1578" name="k7" value="1"/>
+          <Constant key="Parameter_4084" name="J7" value="0.001"/>
+          <Constant key="Parameter_4085" name="k7" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_47">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_273">
-              <SourceParameter reference="Metabolite_5"/>
+              <SourceParameter reference="Metabolite_11"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_308">
-              <SourceParameter reference="ModelValue_40"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_304">
-              <SourceParameter reference="Compartment_0"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_302">
               <SourceParameter reference="ModelValue_39"/>
             </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_304">
+              <SourceParameter reference="Compartment_1"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_302">
+              <SourceParameter reference="ModelValue_38"/>
+            </CallParameter>
             <CallParameter functionParameter="FunctionParameter_306">
-              <SourceParameter reference="Metabolite_4"/>
+              <SourceParameter reference="Metabolite_9"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_297">
-              <SourceParameter reference="Metabolite_3"/>
+              <SourceParameter reference="Metabolite_7"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_10" name="slp1 inactivation" reversible="false">
+      <Reaction key="Reaction_10" name="slp1 inactivation" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_10">
@@ -988,30 +988,30 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_4" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_1579" name="J8" value="1"/>
-          <Constant key="Parameter_1580" name="k8" value="1"/>
+          <Constant key="Parameter_4086" name="J8" value="0.001"/>
+          <Constant key="Parameter_4087" name="k8" value="0.25"/>
         </ListOfConstants>
         <KineticLaw function="Function_48">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_293">
-              <SourceParameter reference="ModelValue_42"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_310">
-              <SourceParameter reference="Compartment_0"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_309">
               <SourceParameter reference="ModelValue_41"/>
             </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_310">
+              <SourceParameter reference="Compartment_1"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_309">
+              <SourceParameter reference="ModelValue_40"/>
+            </CallParameter>
             <CallParameter functionParameter="FunctionParameter_305">
-              <SourceParameter reference="Metabolite_4"/>
+              <SourceParameter reference="Metabolite_9"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_11" name="slp1 inactivation_2" reversible="false">
+      <Reaction key="Reaction_11" name="slp1 inactivation_2" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_11">
@@ -1024,23 +1024,23 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_4" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_1581" name="k1" value="1"/>
+          <Constant key="Parameter_4088" name="k1" value="0.1"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="ModelValue_38"/>
+              <SourceParameter reference="ModelValue_37"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_4"/>
+              <SourceParameter reference="Metabolite_9"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_12" name="Intermediary enzyme activation" reversible="false">
+      <Reaction key="Reaction_12" name="Intermediary enzyme activation" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_12">
@@ -1053,36 +1053,36 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_5" stoichiometry="1"/>
+          <Product metabolite="Metabolite_11" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_9" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_19" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_1582" name="J9" value="1"/>
-          <Constant key="Parameter_1583" name="k9" value="1"/>
+          <Constant key="Parameter_4089" name="J9" value="0.01"/>
+          <Constant key="Parameter_4090" name="k9" value="0.1"/>
         </ListOfConstants>
         <KineticLaw function="Function_49">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_312">
-              <SourceParameter reference="Metabolite_5"/>
+              <SourceParameter reference="Metabolite_11"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_316">
-              <SourceParameter reference="ModelValue_44"/>
+              <SourceParameter reference="ModelValue_43"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_303">
-              <SourceParameter reference="Metabolite_9"/>
+              <SourceParameter reference="Metabolite_19"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_314">
-              <SourceParameter reference="Compartment_0"/>
+              <SourceParameter reference="Compartment_1"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_311">
-              <SourceParameter reference="ModelValue_43"/>
+              <SourceParameter reference="ModelValue_42"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_13" name="IEP inactivation" reversible="false">
+      <Reaction key="Reaction_13" name="IEP inactivation" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_13">
@@ -1095,30 +1095,30 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_11" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_1584" name="J10" value="1"/>
-          <Constant key="Parameter_1585" name="k10" value="1"/>
+          <Constant key="Parameter_4091" name="J10" value="0.01"/>
+          <Constant key="Parameter_4094" name="k10" value="0.04"/>
         </ListOfConstants>
         <KineticLaw function="Function_50">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_313">
-              <SourceParameter reference="Metabolite_5"/>
+              <SourceParameter reference="Metabolite_11"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_300">
-              <SourceParameter reference="ModelValue_46"/>
+              <SourceParameter reference="ModelValue_45"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_319">
-              <SourceParameter reference="Compartment_0"/>
+              <SourceParameter reference="Compartment_1"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_317">
-              <SourceParameter reference="ModelValue_45"/>
+              <SourceParameter reference="ModelValue_44"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_14" name="rum1T activation" reversible="false">
+      <Reaction key="Reaction_14" name="rum1T activation" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_14">
@@ -1131,23 +1131,23 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_6" stoichiometry="1"/>
+          <Product metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1586" name="k11" value="1"/>
+          <Constant key="Parameter_4093" name="k11" value="0.1"/>
         </ListOfConstants>
         <KineticLaw function="Function_51">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_307">
-              <SourceParameter reference="Compartment_0"/>
+              <SourceParameter reference="Compartment_1"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_320">
-              <SourceParameter reference="ModelValue_47"/>
+              <SourceParameter reference="ModelValue_46"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_15" name="SK dependent rum1T inactivation" reversible="false">
+      <Reaction key="Reaction_15" name="SK dependent rum1T inactivation" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_15">
@@ -1160,44 +1160,44 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_6" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_7" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_9" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_15" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_19" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_1587" name="k12" value="1"/>
-          <Constant key="Parameter_1588" name="k12_double_prime" value="1"/>
-          <Constant key="Parameter_1589" name="k12_prime" value="1"/>
+          <Constant key="Parameter_4095" name="k12" value="0.01"/>
+          <Constant key="Parameter_4092" name="k12_double_prime" value="3"/>
+          <Constant key="Parameter_4096" name="k12_prime" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_52">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_329">
-              <SourceParameter reference="Metabolite_9"/>
+              <SourceParameter reference="Metabolite_19"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_323">
-              <SourceParameter reference="Metabolite_7"/>
+              <SourceParameter reference="Metabolite_15"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_325">
-              <SourceParameter reference="Compartment_0"/>
+              <SourceParameter reference="Compartment_1"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_315">
-              <SourceParameter reference="ModelValue_48"/>
+              <SourceParameter reference="ModelValue_47"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_327">
-              <SourceParameter reference="ModelValue_50"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_321">
               <SourceParameter reference="ModelValue_49"/>
             </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_321">
+              <SourceParameter reference="ModelValue_48"/>
+            </CallParameter>
             <CallParameter functionParameter="FunctionParameter_331">
-              <SourceParameter reference="Metabolite_6"/>
+              <SourceParameter reference="Metabolite_13"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_16" name="SK synthesis" reversible="false">
+      <Reaction key="Reaction_16" name="SK synthesis" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_16">
@@ -1210,27 +1210,27 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_7" stoichiometry="1"/>
+          <Product metabolite="Metabolite_15" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1592" name="TF" value="1"/>
-          <Constant key="Parameter_1591" name="k13" value="1"/>
+          <Constant key="Parameter_4097" name="TF" value="0.880381"/>
+          <Constant key="Parameter_4098" name="k13" value="0.1"/>
         </ListOfConstants>
         <KineticLaw function="Function_53">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_328">
-              <SourceParameter reference="ModelValue_5"/>
+              <SourceParameter reference="ModelValue_4"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_324">
-              <SourceParameter reference="Compartment_0"/>
+              <SourceParameter reference="Compartment_1"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_332">
-              <SourceParameter reference="ModelValue_51"/>
+              <SourceParameter reference="ModelValue_50"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_17" name="SK degradation" reversible="false">
+      <Reaction key="Reaction_17" name="SK degradation" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_17">
@@ -1243,23 +1243,23 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_7" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_15" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_1590" name="k1" value="1"/>
+          <Constant key="Parameter_4099" name="k1" value="0.1"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="ModelValue_52"/>
+              <SourceParameter reference="ModelValue_51"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_7"/>
+              <SourceParameter reference="Metabolite_15"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_18" name="Cell growth" reversible="false">
+      <Reaction key="Reaction_18" name="Cell growth" reversible="false" fast="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_18">
@@ -1272,28 +1272,28 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_8" stoichiometry="1"/>
+          <Product metabolite="Metabolite_17" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_1593" name="mu" value="1"/>
+          <Constant key="Parameter_4100" name="mu" value="0.005"/>
         </ListOfConstants>
         <KineticLaw function="Function_54">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_330">
-              <SourceParameter reference="Metabolite_8"/>
+              <SourceParameter reference="Metabolite_17"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_322">
-              <SourceParameter reference="ModelValue_53"/>
+              <SourceParameter reference="ModelValue_52"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
     </ListOfReactions>
     <ListOfEvents>
-      <Event key="Event_1" name="event_0000001" fireAtInitialTime="0" persistentTrigger="0">
+      <Event key="Event_0" name="event_0000001" fireAtInitialTime="0" persistentTrigger="0">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Event_1">
+  <rdf:Description rdf:about="#Event_0">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2012-01-24T09:21:05Z</dcterms:W3CDTF>
@@ -1309,22 +1309,22 @@ Reaction scheme where the products are created from the reactants and the change
           &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[flag_MPF],Reference=Value&gt; eq 1 and &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[M-phase promoting factor],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt; le 0.1
         </TriggerExpression>
         <ListOfAssignments>
-          <Assignment targetKey="Metabolite_8">
+          <Assignment targetKey="Metabolite_17">
             <Expression>
               &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[Cell Mass],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt;/2/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Reference=Volume&gt;
             </Expression>
           </Assignment>
-          <Assignment targetKey="ModelValue_1">
+          <Assignment targetKey="ModelValue_0">
             <Expression>
               0
             </Expression>
           </Assignment>
         </ListOfAssignments>
       </Event>
-      <Event key="Event_2" name="event_0000002" fireAtInitialTime="0" persistentTrigger="0">
+      <Event key="Event_1" name="event_0000002" fireAtInitialTime="0" persistentTrigger="0">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Event_2">
+  <rdf:Description rdf:about="#Event_1">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2012-01-24T09:21:06Z</dcterms:W3CDTF>
@@ -1337,7 +1337,7 @@ Reaction scheme where the products are created from the reactants and the change
           &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[M-phase promoting factor],Reference=ParticleNumber&gt;/&lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee],Reference=Value&gt; gt 0.1
         </TriggerExpression>
         <ListOfAssignments>
-          <Assignment targetKey="ModelValue_1">
+          <Assignment targetKey="ModelValue_0">
             <Expression>
               1
             </Expression>
@@ -1345,37 +1345,335 @@ Reaction scheme where the products are created from the reactants and the change
         </ListOfAssignments>
       </Event>
     </ListOfEvents>
+    <ListOfModelParameterSets activeSet="ModelParameterSet_0">
+      <ModelParameterSet key="ModelParameterSet_0" name="Initial State">
+        <ModelParameterGroup cn="String=Initial Time" type="Group">
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle" value="0" type="Model" simulationType="time"/>
+        </ModelParameterGroup>
+        <ModelParameterGroup cn="String=Initial Compartment Sizes" type="Group">
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell]" value="1" type="Compartment" simulationType="fixed"/>
+        </ModelParameterGroup>
+        <ModelParameterGroup cn="String=Initial Species Values" type="Group">
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[Total cdc13]" value="0.2" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[preMPF]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[ste9]" value="1" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[slp1T]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[slp1]" value="2.2" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[IEP]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[rum1T]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[SK]" value="0" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[Cell Mass]" value="1" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Compartments[cell],Vector=Metabolites[M-phase promoting factor]" value="0.2" type="Species" simulationType="assignment"/>
+        </ModelParameterGroup>
+        <ModelParameterGroup cn="String=Initial Global Quantities" type="Group">
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[flag_MPF]" value="0" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[sigma]" value="0.201" type="ModelValue" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Kdiss]" value="0.001" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Trimer]" value="0" type="ModelValue" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[TF]" value="0.8803808142671367" type="ModelValue" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k15]" value="1.5" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J16]" value="0.01" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k16_prime]" value="1" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k16_double_prime]" value="2" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J15]" value="0.01" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[kwee]" value="1.256272780429718" type="ModelValue" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[kwee_prime]" value="0.15" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[kwee_double_prime]" value="1.3" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Vawee]" value="0.25" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Jiwee]" value="0.01" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Viwee]" value="1" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Jawee]" value="0.01" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k25]" value="0.2382171624981674" type="ModelValue" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k25_prime]" value="0.05" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k25_double_prime]" value="5" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Va25]" value="1" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Ji25]" value="0.01" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Vi25]" value="0.25" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[Ja25]" value="0.01" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k1]" value="0.03" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k2_prime]" value="0.03" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k2_double_prime]" value="1" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k2_triple_prime]" value="0.1" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k3_prime]" value="1" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k3_double_prime]" value="10" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J3]" value="0.01" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k4_prime]" value="2" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k4]" value="35" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J4]" value="0.01" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k5_prime]" value="0.005" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k5_double_prime]" value="0.3" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J5]" value="0.3" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k6]" value="0.1" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k7]" value="1" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J7]" value="0.001" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k8]" value="0.25" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J8]" value="0.001" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k9]" value="0.1" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J9]" value="0.01" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k10]" value="0.04" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J10]" value="0.01" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k11]" value="0.1" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k12]" value="0.01" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k12_prime]" value="1" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k12_double_prime]" value="3" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k13]" value="0.1" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k14]" value="0.1" type="ModelValue" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[mu]" value="0.005" type="ModelValue" simulationType="fixed"/>
+        </ModelParameterGroup>
+        <ModelParameterGroup cn="String=Kinetic Parameters" type="Group">
+          <ModelParameterGroup cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[cdc13T synthesis]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[cdc13T synthesis],ParameterGroup=Parameters,Parameter=k1" value="0.03" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k1],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[Targeting cdc13T to APC core]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[Targeting cdc13T to APC core],ParameterGroup=Parameters,Parameter=k2_double_prime" value="1" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k2_double_prime],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[Targeting cdc13T to APC core],ParameterGroup=Parameters,Parameter=k2_prime" value="0.03" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k2_prime],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[Targeting cdc13T to APC core],ParameterGroup=Parameters,Parameter=k2_triple_prime" value="0.1" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k2_triple_prime],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[wee1 dependent MPF inactivation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[wee1 dependent MPF inactivation],ParameterGroup=Parameters,Parameter=kwee" value="1.256272780429718" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[kwee],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[cdc25 dependent preMPF phosphorylation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[cdc25 dependent preMPF phosphorylation],ParameterGroup=Parameters,Parameter=k1" value="0.2382171624981674" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k25],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[preMPF inactivation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[preMPF inactivation],ParameterGroup=Parameters,Parameter=k2_double_prime" value="1" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k2_double_prime],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[preMPF inactivation],ParameterGroup=Parameters,Parameter=k2_prime" value="0.03" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k2_prime],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[preMPF inactivation],ParameterGroup=Parameters,Parameter=k2_triple_prime" value="0.1" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k2_triple_prime],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[slp1 dependent ste9 activation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[slp1 dependent ste9 activation],ParameterGroup=Parameters,Parameter=J3" value="0.01" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J3],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[slp1 dependent ste9 activation],ParameterGroup=Parameters,Parameter=k3_double_prime" value="10" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k3_double_prime],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[slp1 dependent ste9 activation],ParameterGroup=Parameters,Parameter=k3_prime" value="1" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k3_prime],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[ste9 phosphorylation (inactivation) by starter kinase]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[ste9 phosphorylation (inactivation) by starter kinase],ParameterGroup=Parameters,Parameter=J4" value="0.01" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J4],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[ste9 phosphorylation (inactivation) by starter kinase],ParameterGroup=Parameters,Parameter=k4" value="35" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k4],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[ste9 phosphorylation (inactivation) by starter kinase],ParameterGroup=Parameters,Parameter=k4_prime" value="2" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k4_prime],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[slp1T activation by MPF]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[slp1T activation by MPF],ParameterGroup=Parameters,Parameter=J5" value="0.3" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J5],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[slp1T activation by MPF],ParameterGroup=Parameters,Parameter=k5_double_prime" value="0.3" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k5_double_prime],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[slp1T activation by MPF],ParameterGroup=Parameters,Parameter=k5_prime" value="0.005" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k5_prime],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[slp1T inactivation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[slp1T inactivation],ParameterGroup=Parameters,Parameter=k1" value="0.1" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k6],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[slp1 activation by intermediary enzyme]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[slp1 activation by intermediary enzyme],ParameterGroup=Parameters,Parameter=J7" value="0.001" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J7],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[slp1 activation by intermediary enzyme],ParameterGroup=Parameters,Parameter=k7" value="1" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k7],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[slp1 inactivation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[slp1 inactivation],ParameterGroup=Parameters,Parameter=J8" value="0.001" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J8],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[slp1 inactivation],ParameterGroup=Parameters,Parameter=k8" value="0.25" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k8],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[slp1 inactivation_2]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[slp1 inactivation_2],ParameterGroup=Parameters,Parameter=k1" value="0.1" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k6],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[Intermediary enzyme activation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[Intermediary enzyme activation],ParameterGroup=Parameters,Parameter=J9" value="0.01" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J9],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[Intermediary enzyme activation],ParameterGroup=Parameters,Parameter=k9" value="0.1" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k9],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[IEP inactivation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[IEP inactivation],ParameterGroup=Parameters,Parameter=J10" value="0.01" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[J10],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[IEP inactivation],ParameterGroup=Parameters,Parameter=k10" value="0.04" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k10],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[rum1T activation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[rum1T activation],ParameterGroup=Parameters,Parameter=k11" value="0.1" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k11],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[SK dependent rum1T inactivation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[SK dependent rum1T inactivation],ParameterGroup=Parameters,Parameter=k12" value="0.01" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k12],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[SK dependent rum1T inactivation],ParameterGroup=Parameters,Parameter=k12_double_prime" value="3" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k12_double_prime],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[SK dependent rum1T inactivation],ParameterGroup=Parameters,Parameter=k12_prime" value="1" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k12_prime],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[SK synthesis]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[SK synthesis],ParameterGroup=Parameters,Parameter=TF" value="0.8803808142671367" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[TF],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[SK synthesis],ParameterGroup=Parameters,Parameter=k13" value="0.1" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k13],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[SK degradation]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[SK degradation],ParameterGroup=Parameters,Parameter=k1" value="0.1" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k14],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+          </ModelParameterGroup>
+          <ModelParameterGroup cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[Cell growth]" type="Reaction">
+            <ModelParameter cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Reactions[Cell growth],ParameterGroup=Parameters,Parameter=mu" value="0.005" type="ReactionParameter" simulationType="assignment">
+              <InitialExpression>
+                &lt;CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[mu],Reference=InitialValue&gt;
+              </InitialExpression>
+            </ModelParameter>
+          </ModelParameterGroup>
+        </ModelParameterGroup>
+      </ModelParameterSet>
+    </ListOfModelParameterSets>
     <StateTemplate>
-      <StateTemplateVariable objectReference="Model_1"/>
-      <StateTemplateVariable objectReference="Metabolite_1"/>
-      <StateTemplateVariable objectReference="Metabolite_4"/>
-      <StateTemplateVariable objectReference="Metabolite_2"/>
+      <StateTemplateVariable objectReference="Model_4"/>
       <StateTemplateVariable objectReference="Metabolite_3"/>
-      <StateTemplateVariable objectReference="Metabolite_0"/>
-      <StateTemplateVariable objectReference="Metabolite_5"/>
-      <StateTemplateVariable objectReference="Metabolite_6"/>
-      <StateTemplateVariable objectReference="Metabolite_7"/>
-      <StateTemplateVariable objectReference="Metabolite_8"/>
       <StateTemplateVariable objectReference="Metabolite_9"/>
-      <StateTemplateVariable objectReference="ModelValue_2"/>
-      <StateTemplateVariable objectReference="ModelValue_4"/>
-      <StateTemplateVariable objectReference="ModelValue_5"/>
-      <StateTemplateVariable objectReference="ModelValue_11"/>
-      <StateTemplateVariable objectReference="ModelValue_18"/>
-      <StateTemplateVariable objectReference="Compartment_0"/>
+      <StateTemplateVariable objectReference="Metabolite_5"/>
+      <StateTemplateVariable objectReference="Metabolite_7"/>
+      <StateTemplateVariable objectReference="Metabolite_1"/>
+      <StateTemplateVariable objectReference="Metabolite_11"/>
+      <StateTemplateVariable objectReference="Metabolite_13"/>
+      <StateTemplateVariable objectReference="Metabolite_15"/>
+      <StateTemplateVariable objectReference="Metabolite_17"/>
+      <StateTemplateVariable objectReference="Metabolite_19"/>
       <StateTemplateVariable objectReference="ModelValue_1"/>
       <StateTemplateVariable objectReference="ModelValue_3"/>
+      <StateTemplateVariable objectReference="ModelValue_4"/>
+      <StateTemplateVariable objectReference="ModelValue_10"/>
+      <StateTemplateVariable objectReference="ModelValue_17"/>
+      <StateTemplateVariable objectReference="Compartment_1"/>
+      <StateTemplateVariable objectReference="ModelValue_0"/>
+      <StateTemplateVariable objectReference="ModelValue_2"/>
+      <StateTemplateVariable objectReference="ModelValue_5"/>
       <StateTemplateVariable objectReference="ModelValue_6"/>
       <StateTemplateVariable objectReference="ModelValue_7"/>
       <StateTemplateVariable objectReference="ModelValue_8"/>
       <StateTemplateVariable objectReference="ModelValue_9"/>
-      <StateTemplateVariable objectReference="ModelValue_10"/>
+      <StateTemplateVariable objectReference="ModelValue_11"/>
       <StateTemplateVariable objectReference="ModelValue_12"/>
       <StateTemplateVariable objectReference="ModelValue_13"/>
       <StateTemplateVariable objectReference="ModelValue_14"/>
       <StateTemplateVariable objectReference="ModelValue_15"/>
       <StateTemplateVariable objectReference="ModelValue_16"/>
-      <StateTemplateVariable objectReference="ModelValue_17"/>
+      <StateTemplateVariable objectReference="ModelValue_18"/>
       <StateTemplateVariable objectReference="ModelValue_19"/>
       <StateTemplateVariable objectReference="ModelValue_20"/>
       <StateTemplateVariable objectReference="ModelValue_21"/>
@@ -1410,15 +1708,14 @@ Reaction scheme where the products are created from the reactants and the change
       <StateTemplateVariable objectReference="ModelValue_50"/>
       <StateTemplateVariable objectReference="ModelValue_51"/>
       <StateTemplateVariable objectReference="ModelValue_52"/>
-      <StateTemplateVariable objectReference="ModelValue_53"/>
     </StateTemplate>
     <InitialState type="initialState">
       0 0 2.2 1 0 0.2 0 0 0 1 0.2 0.201 0 0.8803808142671367 1.256272780429718 0.2382171624981674 1 0 0.001 1.5 0.01 1 2 0.01 0.15 1.3 0.25 0.01 1 0.01 0.05 5 1 0.01 0.25 0.01 0.03 0.03 1 0.1 1 10 0.01 2 35 0.01 0.005 0.3 0.3 0.1 1 0.001 0.25 0.001 0.1 0.01 0.04 0.01 0.1 0.01 1 3 0.1 0.1 0.005 
     </InitialState>
   </Model>
   <ListOfTasks>
-    <Task key="Task_26" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
-      <Report reference="Report_17" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_12" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
+      <Report reference="Report_8" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="1"/>
         <Parameter name="StabilityAnalysisRequested" type="bool" value="1"/>
@@ -1435,8 +1732,8 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Maximum duration for backward integration" type="unsignedFloat" value="1000000"/>
       </Method>
     </Task>
-    <Task key="Task_25" name="Time-Course" type="timeCourse" scheduled="true" updateModel="false">
-      <Report reference="Report_9" target="EventTest14.1.txt" append="0" confirmOverwrite="0"/>
+    <Task key="Task_11" name="Time-Course" type="timeCourse" scheduled="true" updateModel="false">
+      <Report reference="Report_0" target="EventTest14.1.txt" append="0" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="1000"/>
         <Parameter name="StepSize" type="float" value="0.5"/>
@@ -1452,7 +1749,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_24" name="Scan" type="scan" scheduled="false" updateModel="false">
+    <Task key="Task_10" name="Scan" type="scan" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="1"/>
         <ParameterGroup name="ScanItems">
@@ -1463,15 +1760,15 @@ Reaction scheme where the products are created from the reactants and the change
       <Method name="Scan Framework" type="ScanFramework">
       </Method>
     </Task>
-    <Task key="Task_23" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
-      <Report reference="Report_16" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_9" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
+      <Report reference="Report_7" target="" append="1" confirmOverwrite="0"/>
       <Problem>
       </Problem>
       <Method name="EFM Algorithm" type="EFMAlgorithm">
       </Method>
     </Task>
-    <Task key="Task_22" name="Optimization" type="optimization" scheduled="false" updateModel="false">
-      <Report reference="Report_15" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_8" name="Optimization" type="optimization" scheduled="false" updateModel="false">
+      <Report reference="Report_6" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Subtask" type="cn" value="CN=Root,Vector=TaskList[Steady-State]"/>
         <ParameterText name="ObjectiveExpression" type="expression">
@@ -1491,8 +1788,8 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_21" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
-      <Report reference="Report_14" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_7" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
+      <Report reference="Report_5" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Maximize" type="bool" value="0"/>
         <Parameter name="Randomize Start Values" type="bool" value="0"/>
@@ -1505,6 +1802,10 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Time-Course" type="cn" value="CN=Root,Vector=TaskList[Time-Course]"/>
         <ParameterGroup name="Experiment Set">
         </ParameterGroup>
+        <ParameterGroup name="Validation Set">
+          <Parameter name="Threshold" type="unsignedInteger" value="5"/>
+          <Parameter name="Weight" type="unsignedFloat" value="1"/>
+        </ParameterGroup>
       </Problem>
       <Method name="Evolutionary Programming" type="EvolutionaryProgram">
         <Parameter name="Number of Generations" type="unsignedInteger" value="200"/>
@@ -1513,17 +1814,17 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_20" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_13" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_6" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_4" target="" append="1" confirmOverwrite="0"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_26"/>
+        <Parameter name="Steady-State" type="key" value="Task_12"/>
       </Problem>
       <Method name="MCA Method (Reder)" type="MCAMethod(Reder)">
         <Parameter name="Modulation Factor" type="unsignedFloat" value="1e-09"/>
       </Method>
     </Task>
-    <Task key="Task_19" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
-      <Report reference="Report_12" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_5" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
+      <Report reference="Report_3" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="ExponentNumber" type="unsignedInteger" value="3"/>
         <Parameter name="DivergenceRequested" type="bool" value="1"/>
@@ -1537,8 +1838,8 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_18" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_11" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_4" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_2" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
@@ -1550,8 +1851,8 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Deuflhard Tolerance" type="unsignedFloat" value="1e-06"/>
       </Method>
     </Task>
-    <Task key="Task_17" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
-      <Report reference="Report_10" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_3" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
+      <Report reference="Report_1" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="SubtaskType" type="unsignedInteger" value="1"/>
         <ParameterGroup name="TargetFunctions">
@@ -1570,13 +1871,13 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Delta minimum" type="unsignedFloat" value="1e-12"/>
       </Method>
     </Task>
-    <Task key="Task_16" name="Moieties" type="moieties" scheduled="false" updateModel="false">
+    <Task key="Task_2" name="Moieties" type="moieties" scheduled="false" updateModel="false">
       <Problem>
       </Problem>
       <Method name="Householder Reduction" type="Householder">
       </Method>
     </Task>
-    <Task key="Task_15" name="Cross Section" type="crosssection" scheduled="false" updateModel="false">
+    <Task key="Task_1" name="Cross Section" type="crosssection" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
@@ -1586,10 +1887,20 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Output Event" type="bool" value="0"/>
         <Parameter name="LimitCrossings" type="bool" value="0"/>
         <Parameter name="NumCrossingsLimit" type="unsignedInteger" value="0"/>
-        <Parameter name="LimitTime" type="bool" value="1"/>
+        <Parameter name="LimitOutTime" type="bool" value="0"/>
+        <Parameter name="LimitOutCrossings" type="bool" value="0"/>
+        <Parameter name="PositiveDirection" type="bool" value="1"/>
+        <Parameter name="NumOutCrossingsLimit" type="unsignedInteger" value="0"/>
+        <Parameter name="LimitUntilConvergence" type="bool" value="0"/>
+        <Parameter name="ConvergenceTolerance" type="float" value="1e-06"/>
+        <Parameter name="Threshold" type="float" value="0"/>
+        <Parameter name="DelayOutputUntilConvergence" type="bool" value="0"/>
+        <Parameter name="OutputConvergenceTolerance" type="float" value="1e-06"/>
         <ParameterText name="TriggerExpression" type="expression">
           
         </ParameterText>
+        <Parameter name="SingleVariable" type="cn" value=""/>
+        <Parameter name="LimitTime" type="bool" value="1"/>
       </Problem>
       <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
         <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
@@ -1598,17 +1909,17 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_27" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
-      <Report reference="Report_19" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_13" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
+      <Report reference="Report_18" target="" append="1" confirmOverwrite="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_26"/>
+        <Parameter name="Steady-State" type="key" value="Task_12"/>
       </Problem>
       <Method name="Linear Noise Approximation" type="LinearNoiseApproximation">
       </Method>
     </Task>
   </ListOfTasks>
   <ListOfReports>
-    <Report key="Report_17" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
+    <Report key="Report_8" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1616,7 +1927,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Steady-State]"/>
       </Footer>
     </Report>
-    <Report key="Report_16" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
+    <Report key="Report_7" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1624,7 +1935,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_15" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
+    <Report key="Report_6" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1648,7 +1959,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Optimization],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_14" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
+    <Report key="Report_5" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1672,7 +1983,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_13" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_4" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1684,7 +1995,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_12" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
+    <Report key="Report_3" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1696,7 +2007,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_11" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_2" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1708,7 +2019,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_10" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
+    <Report key="Report_1" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1720,7 +2031,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Sensitivities],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_9" name="Time, Concentrations, Volumes, and Global Quantity Values" taskType="timeCourse" separator="&#x09;" precision="7">
+    <Report key="Report_0" name="Time, Concentrations, Volumes, and Global Quantity Values" taskType="timeCourse" separator="&#x09;" precision="7">
       <Comment>
         A table of time, variable species concentrations, variable compartment volumes, and variable global quantity values.
       </Comment>
@@ -1744,7 +2055,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Model=Novak2001_FissionYeast_CellCycle,Vector=Values[k25],Reference=Value"/>
       </Table>
     </Report>
-    <Report key="Report_19" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
+    <Report key="Report_18" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1960,23 +2271,23 @@ Reaction scheme where the products are created from the reactants and the change
   <GUI>
   </GUI>
   <SBMLReference file="BIOMD0000000111.xml">
-    <SBMLMap SBMLid="IEP" COPASIkey="Metabolite_5"/>
-    <SBMLMap SBMLid="J10" COPASIkey="ModelValue_46"/>
-    <SBMLMap SBMLid="J15" COPASIkey="ModelValue_10"/>
-    <SBMLMap SBMLid="J16" COPASIkey="ModelValue_7"/>
-    <SBMLMap SBMLid="J3" COPASIkey="ModelValue_31"/>
-    <SBMLMap SBMLid="J4" COPASIkey="ModelValue_34"/>
-    <SBMLMap SBMLid="J5" COPASIkey="ModelValue_37"/>
-    <SBMLMap SBMLid="J7" COPASIkey="ModelValue_40"/>
-    <SBMLMap SBMLid="J8" COPASIkey="ModelValue_42"/>
-    <SBMLMap SBMLid="J9" COPASIkey="ModelValue_44"/>
-    <SBMLMap SBMLid="Ja25" COPASIkey="ModelValue_24"/>
-    <SBMLMap SBMLid="Jawee" COPASIkey="ModelValue_17"/>
-    <SBMLMap SBMLid="Ji25" COPASIkey="ModelValue_22"/>
-    <SBMLMap SBMLid="Jiwee" COPASIkey="ModelValue_15"/>
-    <SBMLMap SBMLid="Kdiss" COPASIkey="ModelValue_3"/>
-    <SBMLMap SBMLid="M" COPASIkey="Metabolite_8"/>
-    <SBMLMap SBMLid="MPF" COPASIkey="Metabolite_9"/>
+    <SBMLMap SBMLid="IEP" COPASIkey="Metabolite_11"/>
+    <SBMLMap SBMLid="J10" COPASIkey="ModelValue_45"/>
+    <SBMLMap SBMLid="J15" COPASIkey="ModelValue_9"/>
+    <SBMLMap SBMLid="J16" COPASIkey="ModelValue_6"/>
+    <SBMLMap SBMLid="J3" COPASIkey="ModelValue_30"/>
+    <SBMLMap SBMLid="J4" COPASIkey="ModelValue_33"/>
+    <SBMLMap SBMLid="J5" COPASIkey="ModelValue_36"/>
+    <SBMLMap SBMLid="J7" COPASIkey="ModelValue_39"/>
+    <SBMLMap SBMLid="J8" COPASIkey="ModelValue_41"/>
+    <SBMLMap SBMLid="J9" COPASIkey="ModelValue_43"/>
+    <SBMLMap SBMLid="Ja25" COPASIkey="ModelValue_23"/>
+    <SBMLMap SBMLid="Jawee" COPASIkey="ModelValue_16"/>
+    <SBMLMap SBMLid="Ji25" COPASIkey="ModelValue_21"/>
+    <SBMLMap SBMLid="Jiwee" COPASIkey="ModelValue_14"/>
+    <SBMLMap SBMLid="Kdiss" COPASIkey="ModelValue_2"/>
+    <SBMLMap SBMLid="M" COPASIkey="Metabolite_17"/>
+    <SBMLMap SBMLid="MPF" COPASIkey="Metabolite_19"/>
     <SBMLMap SBMLid="R1" COPASIkey="Reaction_0"/>
     <SBMLMap SBMLid="R10" COPASIkey="Reaction_9"/>
     <SBMLMap SBMLid="R11" COPASIkey="Reaction_10"/>
@@ -1996,52 +2307,52 @@ Reaction scheme where the products are created from the reactants and the change
     <SBMLMap SBMLid="R7" COPASIkey="Reaction_6"/>
     <SBMLMap SBMLid="R8" COPASIkey="Reaction_7"/>
     <SBMLMap SBMLid="R9" COPASIkey="Reaction_8"/>
-    <SBMLMap SBMLid="SK" COPASIkey="Metabolite_7"/>
-    <SBMLMap SBMLid="TF" COPASIkey="ModelValue_5"/>
-    <SBMLMap SBMLid="Trimer" COPASIkey="ModelValue_4"/>
-    <SBMLMap SBMLid="Va25" COPASIkey="ModelValue_21"/>
-    <SBMLMap SBMLid="Vawee" COPASIkey="ModelValue_14"/>
-    <SBMLMap SBMLid="Vi25" COPASIkey="ModelValue_23"/>
-    <SBMLMap SBMLid="Viwee" COPASIkey="ModelValue_16"/>
-    <SBMLMap SBMLid="cdc13T" COPASIkey="Metabolite_0"/>
-    <SBMLMap SBMLid="cell" COPASIkey="Compartment_0"/>
-    <SBMLMap SBMLid="flag_MPF" COPASIkey="ModelValue_1"/>
-    <SBMLMap SBMLid="k1" COPASIkey="ModelValue_25"/>
-    <SBMLMap SBMLid="k10" COPASIkey="ModelValue_45"/>
-    <SBMLMap SBMLid="k11" COPASIkey="ModelValue_47"/>
-    <SBMLMap SBMLid="k12" COPASIkey="ModelValue_48"/>
-    <SBMLMap SBMLid="k12_double_prime" COPASIkey="ModelValue_50"/>
-    <SBMLMap SBMLid="k12_prime" COPASIkey="ModelValue_49"/>
-    <SBMLMap SBMLid="k13" COPASIkey="ModelValue_51"/>
-    <SBMLMap SBMLid="k14" COPASIkey="ModelValue_52"/>
-    <SBMLMap SBMLid="k15" COPASIkey="ModelValue_6"/>
-    <SBMLMap SBMLid="k16_double_prime" COPASIkey="ModelValue_9"/>
-    <SBMLMap SBMLid="k16_prime" COPASIkey="ModelValue_8"/>
-    <SBMLMap SBMLid="k25" COPASIkey="ModelValue_18"/>
-    <SBMLMap SBMLid="k25_double_prime" COPASIkey="ModelValue_20"/>
-    <SBMLMap SBMLid="k25_prime" COPASIkey="ModelValue_19"/>
-    <SBMLMap SBMLid="k2_double_prime" COPASIkey="ModelValue_27"/>
-    <SBMLMap SBMLid="k2_prime" COPASIkey="ModelValue_26"/>
-    <SBMLMap SBMLid="k2_triple_prime" COPASIkey="ModelValue_28"/>
-    <SBMLMap SBMLid="k3_double_prime" COPASIkey="ModelValue_30"/>
-    <SBMLMap SBMLid="k3_prime" COPASIkey="ModelValue_29"/>
-    <SBMLMap SBMLid="k4" COPASIkey="ModelValue_33"/>
-    <SBMLMap SBMLid="k4_prime" COPASIkey="ModelValue_32"/>
-    <SBMLMap SBMLid="k5_double_prime" COPASIkey="ModelValue_36"/>
-    <SBMLMap SBMLid="k5_prime" COPASIkey="ModelValue_35"/>
-    <SBMLMap SBMLid="k6" COPASIkey="ModelValue_38"/>
-    <SBMLMap SBMLid="k7" COPASIkey="ModelValue_39"/>
-    <SBMLMap SBMLid="k8" COPASIkey="ModelValue_41"/>
-    <SBMLMap SBMLid="k9" COPASIkey="ModelValue_43"/>
-    <SBMLMap SBMLid="kwee" COPASIkey="ModelValue_11"/>
-    <SBMLMap SBMLid="kwee_double_prime" COPASIkey="ModelValue_13"/>
-    <SBMLMap SBMLid="kwee_prime" COPASIkey="ModelValue_12"/>
-    <SBMLMap SBMLid="mu" COPASIkey="ModelValue_53"/>
-    <SBMLMap SBMLid="preMPF" COPASIkey="Metabolite_1"/>
-    <SBMLMap SBMLid="rum1T" COPASIkey="Metabolite_6"/>
-    <SBMLMap SBMLid="sigma" COPASIkey="ModelValue_2"/>
-    <SBMLMap SBMLid="slp1" COPASIkey="Metabolite_4"/>
-    <SBMLMap SBMLid="slp1T" COPASIkey="Metabolite_3"/>
-    <SBMLMap SBMLid="ste9" COPASIkey="Metabolite_2"/>
+    <SBMLMap SBMLid="SK" COPASIkey="Metabolite_15"/>
+    <SBMLMap SBMLid="TF" COPASIkey="ModelValue_4"/>
+    <SBMLMap SBMLid="Trimer" COPASIkey="ModelValue_3"/>
+    <SBMLMap SBMLid="Va25" COPASIkey="ModelValue_20"/>
+    <SBMLMap SBMLid="Vawee" COPASIkey="ModelValue_13"/>
+    <SBMLMap SBMLid="Vi25" COPASIkey="ModelValue_22"/>
+    <SBMLMap SBMLid="Viwee" COPASIkey="ModelValue_15"/>
+    <SBMLMap SBMLid="cdc13T" COPASIkey="Metabolite_1"/>
+    <SBMLMap SBMLid="cell" COPASIkey="Compartment_1"/>
+    <SBMLMap SBMLid="flag_MPF" COPASIkey="ModelValue_0"/>
+    <SBMLMap SBMLid="k1" COPASIkey="ModelValue_24"/>
+    <SBMLMap SBMLid="k10" COPASIkey="ModelValue_44"/>
+    <SBMLMap SBMLid="k11" COPASIkey="ModelValue_46"/>
+    <SBMLMap SBMLid="k12" COPASIkey="ModelValue_47"/>
+    <SBMLMap SBMLid="k12_double_prime" COPASIkey="ModelValue_49"/>
+    <SBMLMap SBMLid="k12_prime" COPASIkey="ModelValue_48"/>
+    <SBMLMap SBMLid="k13" COPASIkey="ModelValue_50"/>
+    <SBMLMap SBMLid="k14" COPASIkey="ModelValue_51"/>
+    <SBMLMap SBMLid="k15" COPASIkey="ModelValue_5"/>
+    <SBMLMap SBMLid="k16_double_prime" COPASIkey="ModelValue_8"/>
+    <SBMLMap SBMLid="k16_prime" COPASIkey="ModelValue_7"/>
+    <SBMLMap SBMLid="k25" COPASIkey="ModelValue_17"/>
+    <SBMLMap SBMLid="k25_double_prime" COPASIkey="ModelValue_19"/>
+    <SBMLMap SBMLid="k25_prime" COPASIkey="ModelValue_18"/>
+    <SBMLMap SBMLid="k2_double_prime" COPASIkey="ModelValue_26"/>
+    <SBMLMap SBMLid="k2_prime" COPASIkey="ModelValue_25"/>
+    <SBMLMap SBMLid="k2_triple_prime" COPASIkey="ModelValue_27"/>
+    <SBMLMap SBMLid="k3_double_prime" COPASIkey="ModelValue_29"/>
+    <SBMLMap SBMLid="k3_prime" COPASIkey="ModelValue_28"/>
+    <SBMLMap SBMLid="k4" COPASIkey="ModelValue_32"/>
+    <SBMLMap SBMLid="k4_prime" COPASIkey="ModelValue_31"/>
+    <SBMLMap SBMLid="k5_double_prime" COPASIkey="ModelValue_35"/>
+    <SBMLMap SBMLid="k5_prime" COPASIkey="ModelValue_34"/>
+    <SBMLMap SBMLid="k6" COPASIkey="ModelValue_37"/>
+    <SBMLMap SBMLid="k7" COPASIkey="ModelValue_38"/>
+    <SBMLMap SBMLid="k8" COPASIkey="ModelValue_40"/>
+    <SBMLMap SBMLid="k9" COPASIkey="ModelValue_42"/>
+    <SBMLMap SBMLid="kwee" COPASIkey="ModelValue_10"/>
+    <SBMLMap SBMLid="kwee_double_prime" COPASIkey="ModelValue_12"/>
+    <SBMLMap SBMLid="kwee_prime" COPASIkey="ModelValue_11"/>
+    <SBMLMap SBMLid="mu" COPASIkey="ModelValue_52"/>
+    <SBMLMap SBMLid="preMPF" COPASIkey="Metabolite_3"/>
+    <SBMLMap SBMLid="rum1T" COPASIkey="Metabolite_13"/>
+    <SBMLMap SBMLid="sigma" COPASIkey="ModelValue_1"/>
+    <SBMLMap SBMLid="slp1" COPASIkey="Metabolite_9"/>
+    <SBMLMap SBMLid="slp1T" COPASIkey="Metabolite_7"/>
+    <SBMLMap SBMLid="ste9" COPASIkey="Metabolite_5"/>
   </SBMLReference>
 </COPASI>
