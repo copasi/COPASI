@@ -69,6 +69,16 @@ function getAttribute () {
   echo $attribute
 }
 
+if [ _$(uname) = _Darwin ]; then
+  function getPermissions () {
+    stat -f %Mp%Lp $@
+  }
+else
+  function getPermissions () {
+    stat -c %a $f $@
+  }
+fi  
+
 if [ x"${WINDIR}" != x ]; then
   isWindows=true
 else
