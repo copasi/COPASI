@@ -4,7 +4,7 @@
 moc_*.cpp
 ui_*.h
 /build
-/doc/html
+/doc/*
 /.cproject
 /.project
 /.settings/
