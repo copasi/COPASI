@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -515,7 +515,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
             *pScaled =
               *pUnscaled * (*itReaction)->getParticleFlux() / (*itSpecies)->getValue();
           else
-            *pScaled = std::numeric_limits<C_FLOAT64>::infinity();
+            *pScaled = *pUnscaled * std::numeric_limits<C_FLOAT64>::infinity();
         }
     }
 
@@ -527,13 +527,13 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
   for (; itReaction != endReaction; ++itReaction)
     {
       const CCompartment * pCompartment = (*itReaction)->getLargestCompartment();
-      C_FLOAT64 Scale = (pCompartment == NULL) ?
-                        fabs((*itReaction)->getFlux()) :
-                        fabs((*itReaction)->getFlux() / pCompartment->getValue());
 
-      if (fabs(Scale) < res)
+      C_FLOAT64 Scale = (*itReaction)->getFlux();
+      C_FLOAT64 tmp = fabs((pCompartment == NULL) ? Scale : Scale / pCompartment->getValue());
+
+      if (tmp < res)
         {
-          Scale = 0.0;
+          tmp = 0.0;
 
           // We use the summation theorem to scale
           C_FLOAT64 *pSum = pUnscaled;
@@ -541,13 +541,18 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
 
           for (itReactionCol = reacs.begin(); pSum != pSumEnd; ++itReactionCol, ++pSum)
             {
-              Scale += *pSum * (*itReactionCol)->getFlux();
+              tmp += *pSum * (*itReactionCol)->getFlux();
             }
-        }
 
-      if (fabs(Scale) < res)
-        {
-          Scale = std::numeric_limits< C_FLOAT64 >::infinity();
+          if (fabs(tmp) < res)
+            {
+              tmp = 2 * res;
+              Scale = std::numeric_limits< C_FLOAT64 >::infinity();
+            }
+          else
+            {
+              Scale = tmp;
+            }
         }
 
       for (itReactionCol = reacs.begin(); itReactionCol != endReaction; ++itReactionCol, ++pUnscaled, ++pScaled)
@@ -557,7 +562,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
             {
               *pScaled = *pUnscaled;
             }
-          else if (fabs(Scale) >= res)
+          else if (tmp >= res)
             {
               *pScaled = *pUnscaled * (*itReactionCol)->getFlux() / Scale;
             }
@@ -568,7 +573,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
                                    fabs((*itReactionCol)->getFlux()) :
                                    fabs((*itReactionCol)->getFlux() / pCompartmentCol->getValue());
 
-              if (fabs(ScaleCol) <= res)
+              if (ScaleCol <= res)
                 {
                   *pScaled = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
                 }
