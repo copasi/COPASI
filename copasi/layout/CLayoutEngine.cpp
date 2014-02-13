@@ -1,34 +1,24 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLayoutEngine.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:51:16 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
+#include <algorithm>
 #include <cmath>
 #include <iostream>
 #include "copasi.h"
 #include "CLayoutEngine.h"
 #include "CAbstractLayoutInterface.h"
 
-
-
 CLayoutEngine::CLayoutEngine(CAbstractLayoutInterface * l, bool /* so */)
-    : mpLayout(l),
+  : mpLayout(l),
     mSecondOrder(false)
 {
   if (!mpLayout) return;
 
-
   mVariables = mpLayout->getInitialValues();
 
-  if (mSecondOrder) mVariables.resize(mVariables.size()*2, 0);
+  if (mSecondOrder) mVariables.resize(mVariables.size() * 2, 0);
 
   mRhs.resize(mVariables.size(), 0);
 
@@ -63,7 +53,6 @@ CLayoutEngine::CLayoutEngine(CAbstractLayoutInterface * l, bool /* so */)
   mIWork[7] = 12;
   mIWork[8] = 5;
   mLSODA.setOstream(mErrorMsg);
-
 }
 
 void CLayoutEngine::calcRHS(std::vector<double> & state, double* rhs)
@@ -77,8 +66,8 @@ void CLayoutEngine::calcRHS(std::vector<double> & state, double* rhs)
     {
       if (mSecondOrder)
         {
-          rhs[i+imax] = (forces[i] * 0.04 - state[i+imax] * 0.05) / mpLayout->getMassVector()[i];
-          rhs[i] = state[i+imax];
+          rhs[i + imax] = (forces[i] * 0.04 - state[i + imax] * 0.05) / mpLayout->getMassVector()[i];
+          rhs[i] = state[i + imax];
         }
       else
         {
@@ -130,10 +119,7 @@ void CLayoutEngine::calcForces(std::vector<double> & state, std::vector<double> 
       forces[i] = pot0 - newpot;
       //std::cout << "force " << i << " = " << forces[i] << std::endl;
     }
-
 }
-
-
 
 double CLayoutEngine::step()
 {
@@ -155,7 +141,6 @@ double CLayoutEngine::step()
       mVariables[i] += mRhs[i] * dt;
     }
 
-
   double newpot;
 
   for (;;)
@@ -174,12 +159,10 @@ double CLayoutEngine::step()
         {
           mVariables[i] -= mRhs[i] * dt;
         }
-
     }
 
   //std::cout << dt << "   " << newpot << std::endl;
   return newpot;
-
 }
 
 void CLayoutEngine::stepIntegration()
@@ -187,7 +170,6 @@ void CLayoutEngine::stepIntegration()
   if (!mpLayout) return;
 
   const double dt = 0.2;
-
 
   unsigned int i, imax = mVariables.size();
 

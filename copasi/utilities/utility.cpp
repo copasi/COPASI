@@ -12,6 +12,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include <algorithm>
 #include <cmath>
 #include <limits>
 #include <string>
