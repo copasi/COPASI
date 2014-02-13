@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -50,7 +50,7 @@
 #include "FontChooser.h"
 
 #if (defined WIN32 && !defined log2)
-C_FLOAT64 log2(const C_FLOAT64 & __x)
+C_FLOAT64 log2(const C_FLOAT64 __x)
 {return log(__x) / M_LN2;}
 #endif // WIN32
 
