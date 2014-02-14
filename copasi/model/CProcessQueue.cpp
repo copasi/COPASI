@@ -372,8 +372,15 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
 
   if (mSimultaneousAssignments)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathModel + 1);
-      success = false;
+      if (!CCopasiRootContainer::getConfiguration()->allowSimultaneousEventAssignments())
+        {
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathModel + 1);
+          success = false;
+        }
+      else
+        {
+          CCopasiMessage(CCopasiMessage::WARNING_FILTERED, "CMathModel (1): Simultaneous event assignments encountered.");
+        }
     }
 
   return stateChanged;
@@ -399,16 +406,23 @@ CProcessQueue::range CProcessQueue::getCalculations()
       if (Calculations.second != mCalculations.end() &&
           Calculations.second->first < UpperBound)
         {
-          mSimultaneousAssignments = true;
-
-          // The resolution of simultaneous events is algorithm dependent.
-          // The simulation routine should provide a call back function.
-          if (mpResolveSimultaneousAssignments == NULL)
+          if (!CCopasiRootContainer::getConfiguration()->allowSimultaneousEventAssignments())
             {
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathModel + 1);
-            }
+              mSimultaneousAssignments = true;
 
-          return (*mpResolveSimultaneousAssignments)(mCalculations, mTime, mEquality, mCascadingLevel);
+              // The resolution of simultaneous events is algorithm dependent.
+              // The simulation routine should provide a call back function.
+              if (mpResolveSimultaneousAssignments == NULL)
+                {
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathModel + 1);
+                }
+
+              return (*mpResolveSimultaneousAssignments)(mCalculations, mTime, mEquality, mCascadingLevel);
+            }
+          else
+            {
+              CCopasiMessage(CCopasiMessage::WARNING_FILTERED, "CMathModel (1): Simultaneous event assignments encountered.");
+            }
         }
     }
   else
@@ -438,16 +452,23 @@ CProcessQueue::range CProcessQueue::getAssignments()
       if (Assignments.second != mAssignments.end() &&
           Assignments.second->first < UpperBound)
         {
-          mSimultaneousAssignments = true;
-
-          // The resolution of simultaneous events is algorithm dependent.
-          // The simulation routine should provide a call back function.
-          if (mpResolveSimultaneousAssignments == NULL)
+          if (!CCopasiRootContainer::getConfiguration()->allowSimultaneousEventAssignments())
             {
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathModel + 1);
-            }
+              mSimultaneousAssignments = true;
 
-          return (*mpResolveSimultaneousAssignments)(mAssignments, mTime, mEquality, mCascadingLevel);
+              // The resolution of simultaneous events is algorithm dependent.
+              // The simulation routine should provide a call back function.
+              if (mpResolveSimultaneousAssignments == NULL)
+                {
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathModel + 1);
+                }
+
+              return (*mpResolveSimultaneousAssignments)(mAssignments, mTime, mEquality, mCascadingLevel);
+            }
+          else
+            {
+              CCopasiMessage(CCopasiMessage::WARNING_FILTERED, "CMathModel (1): Simultaneous event assignments encountered.");
+            }
         }
     }
   else
