@@ -559,45 +559,66 @@ bool CProcessQueue::rootsFound()
 
   for (; pRootFound != pRootEnd; ++pRootFound, ++pValueBefore, ++pValueAfter, ++ppRootFinder)
     {
+      // Root values which did not change are not found
+      if (*pValueBefore == *pValueAfter)
+        {
+          *pRootFound = 0;
+          continue;
+        }
+
+      // Handle equality
       if ((*ppRootFinder)->isEquality())
         {
-          if (*pValueBefore < 0.0 && *pValueAfter >= 0.0 && !(*ppRootFinder)->isTrue())
+          if ((*ppRootFinder)->isTrue())
             {
-              *pRootFound = 1;
-              rootsFound = true;
-            }
-          else if (*pValueAfter < 0.0 && *pValueBefore >= 0.0 && (*ppRootFinder)->isTrue())
-            {
-              *pRootFound = 1;
-              rootsFound = true;
+              if (*pValueAfter >= 0.0 || *pValueAfter > *pValueBefore)
+                {
+                  *pRootFound = 0;
+                }
+              else
+                {
+                  *pRootFound = 1;
+                  rootsFound = true;
+                }
             }
           else
             {
-              *pRootFound = 0;
+              if (*pValueAfter < 0.0 || *pValueAfter < *pValueBefore)
+                {
+                  *pRootFound = 0;
+                }
+              else
+                {
+                  *pRootFound = 1;
+                  rootsFound = true;
+                }
             }
         }
       else
         {
-          if (*pValueBefore > 0.0 && *pValueAfter <= 0.0 && (*ppRootFinder)->isTrue())
+          if ((*ppRootFinder)->isTrue())
             {
-              *pRootFound = 1;
-              rootsFound = true;
-            }
-          else if (*pValueBefore < 0.0 && *pValueAfter > 0.0 && !(*ppRootFinder)->isTrue())
-            {
-              *pRootFound = 1;
-              rootsFound = true;
-            }
-          else if (*pValueBefore == 0.0 &&
-                   ((*pValueAfter < 0.0 && (*ppRootFinder)->isTrue()) ||
-                    (*pValueAfter > 0.0 && !(*ppRootFinder)->isTrue())))
-            {
-              *pRootFound = 1;
-              rootsFound = true;
+              if (*pValueAfter > 0.0 || *pValueAfter > *pValueBefore)
+                {
+                  *pRootFound = 0;
+                }
+              else
+                {
+                  *pRootFound = 1;
+                  rootsFound = true;
+                }
             }
           else
             {
-              *pRootFound = 0;
+              if (*pValueAfter <= 0.0 || *pValueAfter < *pValueBefore)
+                {
+                  *pRootFound = 0;
+                }
+              else
+                {
+                  *pRootFound = 1;
+                  rootsFound = true;
+                }
             }
         }
     }
