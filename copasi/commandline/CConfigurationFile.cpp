@@ -109,7 +109,6 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
   mpApplicationFont(NULL),
   mpValidateUnits(NULL),
   mpUseOpenGL(NULL),
-  mpAllowSimultaneousEventAssignments(NULL),
   mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
   mpWorkingDirectory(NULL)
@@ -125,7 +124,6 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
   mpApplicationFont(NULL),
   mpValidateUnits(NULL),
   mpUseOpenGL(NULL),
-  mpAllowSimultaneousEventAssignments(NULL),
   mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
   mpWorkingDirectory(NULL)
@@ -141,7 +139,6 @@ CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
   mpApplicationFont(NULL),
   mpValidateUnits(NULL),
   mpUseOpenGL(NULL),
-  mpAllowSimultaneousEventAssignments(NULL),
   mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
   mpWorkingDirectory(NULL)
@@ -191,7 +188,6 @@ void CConfigurationFile::initializeParameter()
 
   mpValidateUnits = assertParameter("Validate Units", CCopasiParameter::BOOL, false)->getValue().pBOOL;
   mpUseOpenGL = assertParameter("Use OpenGL", CCopasiParameter::BOOL, false)->getValue().pBOOL;
-  mpAllowSimultaneousEventAssignments = assertParameter("Allow Simultaneous Event Assignments", CCopasiParameter::BOOL, false)->getValue().pBOOL;
   mpUseAdvancedSliders = assertParameter("Use Advanced Sliders", CCopasiParameter::BOOL, true)->getValue().pBOOL;
   mpUseAdvancedEditing = assertParameter("Use Advanced Editing", CCopasiParameter::BOOL, false)->getValue().pBOOL;
   mpWorkingDirectory = assertParameter("Working Directory", CCopasiParameter::STRING, std::string(""))->getValue().pSTRING;
@@ -288,16 +284,6 @@ bool CConfigurationFile::useOpenGL() const
 void CConfigurationFile::setUseOpenGL(bool useOpenGL)
 {
   *mpUseOpenGL = useOpenGL;
-}
-
-bool CConfigurationFile::allowSimultaneousEventAssignments() const
-{
-  return *mpAllowSimultaneousEventAssignments;
-}
-
-void CConfigurationFile::setAllowSimultaneousEventAssignments(bool allowSimultaneousEventAssignments)
-{
-  *mpAllowSimultaneousEventAssignments = allowSimultaneousEventAssignments;
 }
 
 bool CConfigurationFile::useAdvancedSliders() const

@@ -194,16 +194,6 @@ public:
   void setUseOpenGL(bool useOpenGL);
 
   /**
-   * @return a flag on whether simultaneous event assignments are allowed or not
-   */
-  bool allowSimultaneousEventAssignments() const;
-
-  /**
-   *  Set  whether simultaneous event assignments are allowed or not.
-   */
-  void setAllowSimultaneousEventAssignments(bool allowSimultaneousEventAssignments);
-
-  /**
    * @return a flag on whether the sliders should react to keyboard input / mouse
    * interaction.
    */
@@ -337,11 +327,6 @@ private:
   * A pointer indicating whether to use the OpenGL rendering, or the Qt based one
    */
   bool *mpUseOpenGL;
-
-  /**
-  * A pointer indicating whether simultaneous event assignments are allowed or not
-   */
-  bool *mpAllowSimultaneousEventAssignments;
 
   /**
   * A pointer indicating whether the sliders should react to keyboard input / mouse

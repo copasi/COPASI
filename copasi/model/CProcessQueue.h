@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -309,6 +309,18 @@ public:
   bool isEmpty() const;
 
   /**
+   * Set whether to continue on simultaneous events
+   * @param const bool & continueSimultaneousEvents
+   */
+  void setContinueSimultaneousEvents(const bool & continueSimultaneousEvents);
+
+  /**
+   * Retrieve whether to continue on simultaneous events.
+   * @return const bool & continueSimultaneousEvents
+   */
+  const bool & getContinueSimultaneousEvents() const;
+
+  /**
    * Sets an event call back. The call back function must be a static function
    * that receives a "this" pointer as first argument.
    * The function is called when the actual assignment takes place,
@@ -454,6 +466,11 @@ private:
    * A pointer to a call back method for resolving simultaneous event assignments
    */
   resolveSimultaneousAssignments mpResolveSimultaneousAssignments;
+
+  /**
+   * A flag indicating to continue when simultaneous events are encountered.
+   */
+  bool mContinueSimultaneousEvents;
 
   /**
    * the object to which the call back function belongs

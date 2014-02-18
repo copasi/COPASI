@@ -163,6 +163,7 @@ CProcessQueue::CProcessQueue() :
   mpRootValuesBefore(&mRootValues1),
   mpRootValuesAfter(&mRootValues2),
   mpResolveSimultaneousAssignments(NULL),
+  mContinueSimultaneousEvents(false),
   mpCallbackTask(NULL),
   mpEventCallBack(NULL)
 {}
@@ -184,6 +185,7 @@ CProcessQueue::CProcessQueue(const CProcessQueue & src):
   mpRootValuesBefore(&src.mRootValues1 == src.mpRootValuesBefore ? &mRootValues1 : &mRootValues2),
   mpRootValuesAfter(&src.mRootValues1 == src.mpRootValuesAfter ? &mRootValues1 : &mRootValues2),
   mpResolveSimultaneousAssignments(src.mpResolveSimultaneousAssignments),
+  mContinueSimultaneousEvents(src.mContinueSimultaneousEvents),
   mpCallbackTask(src.mpCallbackTask),
   mpEventCallBack(src.mpEventCallBack)
 {}
@@ -375,7 +377,7 @@ bool CProcessQueue::process(const C_FLOAT64 & time,
 
   if (mSimultaneousAssignments)
     {
-      if (!CCopasiRootContainer::getConfiguration()->allowSimultaneousEventAssignments())
+      if (!mContinueSimultaneousEvents)
         {
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathModel + 1);
           success = false;
@@ -409,7 +411,7 @@ CProcessQueue::range CProcessQueue::getCalculations()
       if (Calculations.second != mCalculations.end() &&
           Calculations.second->first < UpperBound)
         {
-          if (!CCopasiRootContainer::getConfiguration()->allowSimultaneousEventAssignments())
+          if (!mContinueSimultaneousEvents)
             {
               mSimultaneousAssignments = true;
 
@@ -455,7 +457,7 @@ CProcessQueue::range CProcessQueue::getAssignments()
       if (Assignments.second != mAssignments.end() &&
           Assignments.second->first < UpperBound)
         {
-          if (!CCopasiRootContainer::getConfiguration()->allowSimultaneousEventAssignments())
+          if (!mContinueSimultaneousEvents)
             {
               mSimultaneousAssignments = true;
 
@@ -671,6 +673,16 @@ const C_FLOAT64 & CProcessQueue::getProcessQueueExecutionTime() const
 bool CProcessQueue::isEmpty() const
 {
   return (mAssignments.size() == 0) && (mCalculations.size() == 0);
+}
+
+void CProcessQueue::setContinueSimultaneousEvents(const bool & continueSimultaneousEvents)
+{
+  mContinueSimultaneousEvents = continueSimultaneousEvents;
+}
+
+const bool & CProcessQueue::getContinueSimultaneousEvents() const
+{
+  return mContinueSimultaneousEvents;
 }
 
 void CProcessQueue::setEventCallBack(void* pTask, EventCallBack ecb)
