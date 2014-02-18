@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-//   $Revision: 1.52 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:12:08 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -43,14 +35,15 @@
  *  Default constructor.
  */
 CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
-    CCopasiProblem(CCopasiTask::timeCourse, pParent),
-    mpDuration(NULL),
-    mpStepSize(NULL),
-    mpStepNumber(NULL),
-    mpTimeSeriesRequested(NULL),
-    mpOutputStartTime(NULL),
-    mpOutputEvent(NULL),
-    mStepNumberSetLast(true)
+  CCopasiProblem(CCopasiTask::timeCourse, pParent),
+  mpDuration(NULL),
+  mpStepSize(NULL),
+  mpStepNumber(NULL),
+  mpTimeSeriesRequested(NULL),
+  mpOutputStartTime(NULL),
+  mpOutputEvent(NULL),
+  mpContinueSimultaneousEvents(NULL),
+  mStepNumberSetLast(true)
 {
   initializeParameter();
   initObjects();
@@ -63,14 +56,15 @@ CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
  */
 CTrajectoryProblem::CTrajectoryProblem(const CTrajectoryProblem & src,
                                        const CCopasiContainer * pParent):
-    CCopasiProblem(src, pParent),
-    mpDuration(NULL),
-    mpStepSize(NULL),
-    mpStepNumber(NULL),
-    mpTimeSeriesRequested(NULL),
-    mpOutputStartTime(NULL),
-    mpOutputEvent(NULL),
-    mStepNumberSetLast(src.mStepNumberSetLast)
+  CCopasiProblem(src, pParent),
+  mpDuration(NULL),
+  mpStepSize(NULL),
+  mpStepNumber(NULL),
+  mpTimeSeriesRequested(NULL),
+  mpOutputStartTime(NULL),
+  mpOutputEvent(NULL),
+  mpContinueSimultaneousEvents(NULL),
+  mStepNumberSetLast(src.mStepNumberSetLast)
 {
   initializeParameter();
   initObjects();
@@ -97,6 +91,8 @@ void CTrajectoryProblem::initializeParameter()
     assertParameter("OutputStartTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0)->getValue().pDOUBLE;
   mpOutputEvent =
     assertParameter("Output Event", CCopasiParameter::BOOL, (bool) false)->getValue().pBOOL;
+  mpContinueSimultaneousEvents =
+    assertParameter("Continue on Simultaneous Events", CCopasiParameter::BOOL, (bool) false)->getValue().pBOOL;
 }
 
 bool CTrajectoryProblem::elevateChildren()
@@ -104,7 +100,7 @@ bool CTrajectoryProblem::elevateChildren()
   // If we have an old COPASI file "Duration" is not set
   // but we can fix that.
   if (*mpDuration == 1.0) // the default
-    setDuration(*mpStepSize *(C_FLOAT64) *mpStepNumber);
+    setDuration(*mpStepSize * (C_FLOAT64) *mpStepNumber);
 
   return true;
 }
@@ -205,6 +201,16 @@ void CTrajectoryProblem::setOutputEvent(const bool & outputEvent)
 
 const bool & CTrajectoryProblem::getOutputEvent() const
 {return *mpOutputEvent;}
+
+void CTrajectoryProblem::setContinueSimultaneousEvents(const bool & continueSimultaneousEvents)
+{
+  *mpContinueSimultaneousEvents = continueSimultaneousEvents;
+}
+
+const bool & CTrajectoryProblem::getContinueSimultaneousEvents() const
+{
+  return *mpContinueSimultaneousEvents;
+}
 
 /**
  * Load a trajectory problem

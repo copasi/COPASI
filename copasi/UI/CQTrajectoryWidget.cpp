@@ -1,19 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTrajectoryWidget.cpp,v $
-//   $Revision: 1.15 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:12:28 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "copasi.h"
@@ -41,7 +37,7 @@
  *  name 'name'.'
  */
 CQTrajectoryWidget::CQTrajectoryWidget(QWidget* parent, const char* name)
-    : TaskWidget(parent, name)
+  : TaskWidget(parent, name)
 {
   setupUi(this);
 
@@ -256,6 +252,12 @@ bool CQTrajectoryWidget::saveTask()
       mChanged = true;
     }
 
+  if (trajectoryproblem->getContinueSimultaneousEvents() != mpCheckContinueEvents->isChecked())
+    {
+      trajectoryproblem->setContinueSimultaneousEvents(mpCheckContinueEvents->isChecked());
+      mChanged = true;
+    }
+
   mpValidatorDuration->saved();
   mpValidatorIntervalSize->saved();
   mpValidatorIntervals->saved();
@@ -303,6 +305,7 @@ bool CQTrajectoryWidget::loadTask()
   mpEditDelay->setText(QString::number(trajectoryproblem->getOutputStartTime()));
 
   mpCheckOutputEvent->setChecked(trajectoryproblem->getOutputEvent());
+  mpCheckContinueEvents->setChecked(trajectoryproblem->getContinueSimultaneousEvents());
 
   //store time series checkbox
   mpCheckSave->setChecked(trajectoryproblem->timeSeriesRequested());
@@ -356,7 +359,7 @@ void CQTrajectoryWidget::checkTimeSeries()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  if (mpEditIntervals->text().toLong() *(*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getStateTemplate().getNumVariable() > TSMAX)
+  if (mpEditIntervals->text().toLong() * (*CCopasiRootContainer::getDatamodelList())[0]->getModel()->getStateTemplate().getNumVariable() > TSMAX)
     {
       mpCheckSave->setChecked(false);
       mpCheckSave->setEnabled(false);

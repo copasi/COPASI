@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -30,55 +30,6 @@
 
 class CTrajectoryProblem : public CCopasiProblem
 {
-  // Attributes
-protected:
-  /**
-   * Pointer to parameter value for duration.
-   */
-  C_FLOAT64 * mpDuration;
-
-  /**
-   * Pointer to parameter value for step size.
-   */
-  C_FLOAT64 * mpStepSize;
-
-  /**
-   * Pointer to parameter value for step number
-   */
-  unsigned C_INT32 * mpStepNumber;
-
-  /**
-   * Pointer to parameter value indicating whether a time series needs to be
-   * stored in memory
-   */
-  bool * mpTimeSeriesRequested;
-
-  /**
-   * Pointer to parameter value for  output start time
-   */
-  C_FLOAT64 * mpOutputStartTime;
-
-  /**
-   * Pointer to parameter value indicating whether events should be added to the
-   * output
-   */
-  bool * mpOutputEvent;
-
-  /**
-   *  Indicate whether the step number or step size was set last.
-   */
-  bool mStepNumberSetLast;
-
-  /**
-   *  The initial state, i.e., the starting conditions of the trajectroy.
-   */
-  //CState mInitialState;
-
-  /**
-   *  The final state of the trajectory at time EndTime
-   */
-  //CState mEndState;
-
 public:
   // Operations
 
@@ -181,6 +132,18 @@ public:
   const bool & getOutputEvent() const;
 
   /**
+   * Set whether to continue on simultaneous events
+   * @param const bool & continueSimultaneousEvents
+   */
+  void setContinueSimultaneousEvents(const bool & continueSimultaneousEvents);
+
+  /**
+   * Retrieve whether to continue on simultaneous events.
+   * @return const bool & continueSimultaneousEvents
+   */
+  const bool & getContinueSimultaneousEvents() const;
+
+  /**
    * Load a trajectory problem
    * @param "CReadConfig &" configBuffer
    * @param "CReadConfig::Mode mode (Default: CReadConfig::NEXT)
@@ -201,6 +164,51 @@ private:
   bool sync();
 
   void initObjects();
+
+  // Attributes
+protected:
+  /**
+   * Pointer to parameter value for duration.
+   */
+  C_FLOAT64 * mpDuration;
+
+  /**
+   * Pointer to parameter value for step size.
+   */
+  C_FLOAT64 * mpStepSize;
+
+  /**
+   * Pointer to parameter value for step number
+   */
+  unsigned C_INT32 * mpStepNumber;
+
+  /**
+   * Pointer to parameter value indicating whether a time series needs to be
+   * stored in memory
+   */
+  bool * mpTimeSeriesRequested;
+
+  /**
+   * Pointer to parameter value for  output start time
+   */
+  C_FLOAT64 * mpOutputStartTime;
+
+  /**
+   * Pointer to parameter value indicating whether events should be added to the
+   * output
+   */
+  bool * mpOutputEvent;
+
+  /**
+   * Pointer to parameter value indicating whether to continue when simultaneous events
+   * are encountered
+   */
+  bool * mpContinueSimultaneousEvents;
+
+  /**
+   *  Indicate whether the step number or step size was set last.
+   */
+  bool mStepNumberSetLast;
 };
 
 #endif // COPASI_CTrajectoryProblem
