@@ -356,9 +356,6 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   else
     mODE45.mAbsTol = * getValue("Absolute Tolerance").pUDOUBLE;
 
-  std::cout << "atol " << mODE45.mAbsTol << std::endl;
-  std::cout << "rtol " << mODE45.mRelTol << std::endl;
-
   mODE45.mHybrid = true;
   mODE45.mStatis = false;
 
@@ -766,17 +763,6 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
   C_FLOAT64 time    = mpState->getTime();
   C_FLOAT64 endTime = time + deltaT;
 
-  /*
-  std::cout << std::endl;
-  std::cout << "~~~In Step~~~~  " << std::endl;
-  std::cout << time << std::endl;
-  C_FLOAT64 *stateY = mpState->beginIndependent();
-  std::cout.precision(20);
-  for (size_t k=0; k<mData.dim-1; k++)
-    std::cout << stateY[k]/6.02214129e20 << " ";
-  std::cout << std::endl;
-  */
-
   if (time == mTimeRecord) //new time step
     mTimeRecord = endTime;
   else // continue current step
@@ -788,23 +774,8 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
       
       if (mSysStatus == SYS_EVENT)
 	{
-	  //mpState->setTime(time);
 	  *mpCurrentState = *mpState;
 	  
-	  /*
-	  std::cout << std::endl;
-	  std::cout << "~~~Step Before Return~~~~  " << std::endl; 
-	  std::cout << mpCurrentState->getTime() << std::endl;
-	  stateY = mpCurrentState->beginIndependent();
-	  std::cout.precision(20);
-	  for (size_t k=0; k<mData.dim-1; k++)
-	    std::cout << stateY[k]/6.02214129e20 << " ";
-	  std::cout << std::endl;
-	  for (size_t k=0; k<mRootNum; k++)
-	    std::cout << (mRoots.array())[k] << " ";
-	  std::cout << std::endl;
-	  getchar();*/
-
 	  return ROOT;
 	}
       else if(mSysStatus == SYS_ERR)
@@ -830,21 +801,6 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
   //*mpCurrentState = mpProblem->getModel()->getState();
   //mpState->setTime(time);
   *mpCurrentState = *mpState;
-  //mpCurrentState->setTime(time);
-
-  /*
-  std::cout << std::endl;
-  std::cout << "~~~Step LaLaLa~~~~  " << std::endl; 
-  std::cout << mpCurrentState->getTime() << std::endl;
-  stateY = mpCurrentState->beginIndependent();
-  std::cout.precision(20);
-  for (size_t k=0; k<mData.dim-1; k++)
-    std::cout << stateY[k]/6.02214129e20 << " ";
-  std::cout << std::endl;
-  for (size_t k=0; k<mRootNum; k++)
-    std::cout << (mRoots.array())[k] << " ";
-  std::cout << std::endl;
-  */
 
   return NORMAL;
 }
@@ -952,15 +908,8 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
       ds = mODE45.mT;
       if(mSysStatus == SYS_EVENT) //only deal with system roots
 	{
-	  
-	  std::cout << "Has event at t " << ds << std::endl;
-	   C_FLOAT64 *stateY = mpState->beginIndependent();
-	  for (size_t k=0; k<mData.dim-1; k++)
-	    std::cout << stateY[k]/6.02214129e20 << " ";
-	  std::cout << std::endl;
-	  std::cout << "mRootId " << mODE45.mRootId << std::endl;
-	  getchar();
-
+	  C_FLOAT64 *stateY = mpState->beginIndependent();
+	 
 	  if(mHasSlow)// slow reaction fires
 	    {
 	      //what about the states of model
@@ -971,8 +920,6 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
 	      mpModel->setState(*mpState);
 
 	      mSysStatus = SYS_NEW;
-	      std::cout << "Has Slow Reaction?" << std::endl;
-		//stateChanged(); //SYS_EVENT->SYS_NEW
 	    }
 	  
 	  if(mHasRoot) // system roots
@@ -996,10 +943,6 @@ void CHybridMethodODE45::stateChanged()
   mpModel->setState(*mpState);
   (mRoots.array())[mODE45.mRootId] = 0;
   mSysStatus = SYS_NEW;
-
-  std::cout << "In stateChanged() " << std::endl;
-  std::cout << "time " << mpState->getTime() << std::endl;
-  std::cout << std::endl;
 
   return;
 }
@@ -1090,7 +1033,6 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
 	mY[i] = stateY[i];
       
       mY[mData.dim-1] = log(mpRandomGenerator->getRandomOO());
-      std::cout << "new mY[mData.dim-1] " << mY[mData.dim-1] << std::endl;
 
       if(mODE45.mODEState != ODE_INIT)
 	mODE45.mODEState = ODE_NEW;
