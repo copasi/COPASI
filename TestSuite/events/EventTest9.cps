@@ -1493,7 +1493,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Maximum duration for backward integration" type="unsignedFloat" value="1000000"/>
       </Method>
     </Task>
-    <Task key="Task_11" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
+    <Task key="Task_11" name="Time-Course" type="timeCourse" scheduled="true" updateModel="false">
       <Report reference="Report_18" target="EventTest9.1.txt" append="0" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
@@ -1507,7 +1507,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
         <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-08"/>
         <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
-        <Parameter name="Max Internal Steps" type="unsignedInteger" value="1000"/>
+        <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
     <Task key="Task_10" name="Scan" type="scan" scheduled="false" updateModel="false">
