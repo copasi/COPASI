@@ -278,6 +278,18 @@ public:
   const bool & getContinueSimultaneousEvents() const;
 
   /**
+   * Set whether to continue on simultaneous events
+   * @param const bool & continueSimultaneousEvents
+   */
+  void setContinueSimultaneousEvents(const bool & continueSimultaneousEvents);
+
+  /**
+   * Retrieve whether to continue on simultaneous events.
+   * @return const bool & continueSimultaneousEvents
+   */
+  const bool & getContinueSimultaneousEvents() const;
+
+  /**
    * Sets an event call back. The call back function must be a static function
    * that receives a "this" pointer as first argument.
    * The function is called when the actual assignment takes place,
