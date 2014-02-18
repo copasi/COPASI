@@ -88,8 +88,7 @@ CExpRKMethod::CExpRKMethod()
   mZ1 = NULL;
   mZ2 = NULL;
   mZ3 = NULL;
-
-  std::cout << "Finish Constructur" << std::endl;
+  return;
 }
 
 /*
@@ -758,7 +757,7 @@ void CExpRKMethod::interpolation(const C_FLOAT64 tInterp, C_FLOAT64 *yInterp)
   for(int i=1; i<mOrderY; i++)
     S[i] = S[i-1]*tmp;
 
-  for(int d=0; d<*mDim; d++)
+  for(int d=0; d< (*mDim); d++)
     {
       yInterp[d] = mYCp[d];
       
@@ -811,7 +810,7 @@ void CExpRKMethod::copyData()
 void CExpRKMethod::findRoots()
 {
   SRoot root;
-  C_FLOAT64 tol = dmax(mAbsTol, dabs(mTNew)*mRelTol);
+  C_FLOAT64 tol = deps(dabs(mTCp)) * 128;
 
   for (int r=0; r<mRootNum; ++r)
     {
@@ -833,8 +832,8 @@ void CExpRKMethod::findRoots()
 	}
       else
 	{
-	  C_FLOAT64 threshold = 0.1, slope = dabs((mRootValue[r]-mRootValueOld[r]) / mh);
-	  std::cout.precision(15);
+	  C_FLOAT64 threshold = 1e-6, slope = dabs((mRootValue[r]-mRootValueOld[r]) / (mTNew - mTCp));
+
 	  if (slope > threshold)
 	    root.t = rootFindBySecant(r);
 	  else
@@ -849,7 +848,8 @@ void CExpRKMethod::findRoots()
 C_FLOAT64 CExpRKMethod::rootFindBySecant(const size_t id)
 {
   int maxIter = 20;
-  C_FLOAT64 tol = dmin(deps(dabs(mTNew)), mTNew-mTCp);
+  //C_FLOAT64 tol = dmin(deps(dabs(mTNew)), mTNew-mTCp);
+  C_FLOAT64 tol = deps(dabs(mTCp)) * 128;
   C_FLOAT64 *yTry = mZ1, *rArray = mZ2;
   C_FLOAT64 x1 = mTCp, y1 = mRootValueOld[id], tTry;
   C_FLOAT64 delta, yp;
@@ -887,7 +887,8 @@ C_FLOAT64 CExpRKMethod::rootFindBySecant(const size_t id)
 C_FLOAT64 CExpRKMethod::rootFindByBisection(const size_t id)
 {
   int maxIter = 50;
-  C_FLOAT64 tol = dmin(deps(dabs(mTNew)), mTNew-mTCp);
+  //C_FLOAT64 tol = dmin(deps(dabs(mTNew)), mTNew-mTCp);
+  C_FLOAT64 tol = deps(dabs(mTCp)) * 128;
   C_FLOAT64 *yTry = mZ1, *rArray = mZ2;
   C_FLOAT64 x1 = mTCp, y1 = mRootValueOld[id], x2 = mTNew, y2 = mRootValue[id], tTry;
 
@@ -929,7 +930,8 @@ C_FLOAT64 CExpRKMethod::rootFindByBisection(const size_t id)
 C_FLOAT64 CExpRKMethod::rootFindByFalsi(const size_t id)
 {
   int maxIter = 50;
-  C_FLOAT64 tol = dmin(deps(dabs(mTNew)), mTNew-mTCp);
+  //C_FLOAT64 tol = dmin(deps(dabs(mTNew)), mTNew-mTCp);
+  C_FLOAT64 tol = deps(dabs(mTCp)) * 128;
   C_FLOAT64 *yTry = mZ1, *rArray = mZ2;
   C_FLOAT64 x1 = mTCp, y1 = mRootValueOld[id], x2 = mTNew, y2 = mRootValue[id], tTry, tTry0;
 

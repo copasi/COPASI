@@ -31,7 +31,7 @@ typedef void (*pEvalDeriv)(const size_t *, const C_FLOAT64 *,
 
 struct SRoot
 {
-  size_t id;
+  int id;
   C_FLOAT64 t;
 };
 

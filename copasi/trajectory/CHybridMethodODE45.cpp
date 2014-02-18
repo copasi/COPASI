@@ -35,8 +35,6 @@
 #include <cmath>
 
 #include "copasi.h"
-
-#include "CHybridMethodODE45.h"
 #include "CTrajectoryProblem.h"
 #include "model/CModel.h"
 #include "model/CMetab.h"
@@ -53,7 +51,7 @@
 #include "randomGenerator/CRandom.h"
 
 #include "CExpRKMethod.h"
-
+#include "CHybridMethodODE45.h"
 
 //================Function for Class================
 /**
@@ -186,15 +184,14 @@ void CHybridMethodODE45::initializeParameter()
 
   //-----------------------------------------------------------------------
   // This part will be dealt with later, when considering the partition strategy.
-  //Now, under the condition of using statistic partition given by users,
-  //we won't adopt such parameters listed here.
-  assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) MAX_STEPS);
+  // Now, under the condition of using statistic partition given by users,
+  // we won't adopt such parameters listed here.
+
   //assertParameter("Lower Limit", CCopasiParameter::DOUBLE, (C_FAT64) LOWER_STOCH_LIMIT);
   //assertParameter("Upper Limit", CCopasiParameter::DOUBLE, (C_FLOAT64) UPPER_STOCH_LIMIT);
-
   //assertParameter("Partitioning Interval", CCopasiParameter::UINT, (unsigned C_INT32) PARTITIONING_INTERVAL);
   //-----------------------------------------------------------------------
-
+  assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) MAX_STEPS);
   assertParameter("Use Random Seed", CCopasiParameter::BOOL, (bool) USE_RANDOM_SEED);
   assertParameter("Random Seed", CCopasiParameter::UINT, (unsigned C_INT32) RANDOM_SEED);
 
@@ -256,26 +253,19 @@ void CHybridMethodODE45::initializeParameter()
 
   addParameter("Absolute Tolerance",
                CCopasiParameter::UDOUBLE, (C_FLOAT64) mDefaultAtolValue);
-
-  //????????????????????????????????????????????????????????
-  // These parameters are no longer supported.
-  //removeParameter("Adams Max Order");
-  //removeParameter("BDF Max Order");
-  //????????????????????????????????????????????????????????
 }
 
 void CHybridMethodODE45::start(const CState * initialState)
 {
-
-  //set inital state
-  mpProblem->getModel()->setState(*initialState);
-
-  //set mpState
-  mpState = new CState(mpProblem->getModel()->getState());
-
   //set the mpModel
   mpModel = mpProblem->getModel();
   assert(mpModel);
+
+  //set inital state
+  mpModel->setState(*initialState);
+
+  //set mpState
+  mpState = new CState(*initialState);
 
   //set mDoCorrection
   if (mpModel->getModelType() == CModel::deterministic)
@@ -290,7 +280,7 @@ void CHybridMethodODE45::start(const CState * initialState)
   mFirstMetabIndex = mpModel->getStateTemplate().getIndex(mpModel->getMetabolitesX()[0]);
 
   // Call initMethod function
-  initMethod(mpProblem->getModel()->getTime());
+  initMethod(mpModel->getTime());
 
   //output data to check init status
   //outputData();
@@ -306,7 +296,7 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   //(1)----set attributes related with REACTIONS
   mpReactions   = &mpModel->getReactions();
   mNumReactions = mpReactions->size();
-
+ 
   mAmu.resize(mNumReactions);
   mAmuOld.resize(mNumReactions);
 
@@ -350,17 +340,16 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
   //(6)----set attributes for ODE45
   mODE45.mODEState = ODE_INIT;
 
-  mData.dim = (C_INT)(mNumVariableMetabs + 1);  //one more for sum of propensities
+  mData.dim = (size_t)(mNumVariableMetabs + 1);  //one more for sum of propensities
   mODE45.mDim = &mData.dim;
 
   //mYdot.resize(mData.dim);
   mDefaultAtolValue = 1e-9;
   mODE45.mRelTol = * getValue("Relative Tolerance").pUDOUBLE;
-  mDefaultAtol   = * getValue("Use Default Absolute Tolerance").pBOOL;
+  bool defaultAtol = * getValue("Use Default Absolute Tolerance").pBOOL;
 
-  if (mDefaultAtol)
+  if (defaultAtol)
     {
-      std::cout << "mDefaultAtol" << std::endl;
       mODE45.mAbsTol = getDefaultAtol(mpProblem->getModel());
       setValue("Absolute Tolerance", mODE45.mAbsTol);
     }
@@ -377,7 +366,7 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
 
   // we don't want to directly record new results into mpState, since
   // the sum of slow reaction propensities is also recorded in mY
-  mY    = new C_FLOAT64[mData.dim];
+  mY = new C_FLOAT64[mData.dim];
   mODE45.mY = mY;
 
   mODE45.mDerivFunc = &CHybridMethodODE45::EvalF;
@@ -389,8 +378,11 @@ void CHybridMethodODE45::initMethod(C_FLOAT64 start_time)
 
   //(7)----set attributes for Event Roots
   mRootNum = mpModel->getNumRoots();
-  mRoots.resize(mRootNum);
   mODE45.mRootNum = mRootNum;
+
+  mRoots.resize(mRootNum);
+  for(size_t i=0; i<mRootNum; ++i)
+    (mRoots.array())[i] = 0;
 
   //clear mRootQueue
   std::queue<SRoot> empty;
@@ -427,18 +419,35 @@ void CHybridMethodODE45::cleanup()
   mpRandomGenerator = NULL;
   mpModel = NULL;
 
-  //  delete mpState;
-  //  mpState = NULL;
+  if(mY)
+    {
+      delete [] mY;
+      mY = NULL;
+    }
 
-  delete [] mY;
-  mY = NULL;
+  if (mpState)
+    {
+      delete mpState;
+      mpState = NULL;
+    }
 
-  //  delete [] mRootTime;
+  if(mpRT)
+    {
+      delete [] mpRT;
+      mpRT = NULL;
+    }
 
-  delete [] mpRT;
-  delete [] mOldRoot;
-  delete mpRootValue;
-  mpRootValue = NULL;
+  if(mOldRoot)
+    {
+      delete [] mOldRoot;
+      mOldRoot = NULL;
+    }
+
+  if(mpRootValue)
+    {
+      delete mpRootValue;
+      mpRootValue = NULL;
+    }
 
   return;
 }
@@ -753,8 +762,20 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
   //}
 
   // do several steps
-  C_FLOAT64 time = mpModel->getTime();
+  //C_FLOAT64 time = mpModel->getTime();
+  C_FLOAT64 time    = mpState->getTime();
   C_FLOAT64 endTime = time + deltaT;
+
+  /*
+  std::cout << std::endl;
+  std::cout << "~~~In Step~~~~  " << std::endl;
+  std::cout << time << std::endl;
+  C_FLOAT64 *stateY = mpState->beginIndependent();
+  std::cout.precision(20);
+  for (size_t k=0; k<mData.dim-1; k++)
+    std::cout << stateY[k]/6.02214129e20 << " ";
+  std::cout << std::endl;
+  */
 
   if (time == mTimeRecord) //new time step
     mTimeRecord = endTime;
@@ -764,12 +785,30 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
   for (i = 0; ((i < mMaxSteps) && (time < endTime)); i++)
     {
       time = doSingleStep(time, endTime);
+      
       if (mSysStatus == SYS_EVENT)
 	{
-	  mpState->setTime(time);
+	  //mpState->setTime(time);
 	  *mpCurrentState = *mpState;
+	  
+	  /*
+	  std::cout << std::endl;
+	  std::cout << "~~~Step Before Return~~~~  " << std::endl; 
+	  std::cout << mpCurrentState->getTime() << std::endl;
+	  stateY = mpCurrentState->beginIndependent();
+	  std::cout.precision(20);
+	  for (size_t k=0; k<mData.dim-1; k++)
+	    std::cout << stateY[k]/6.02214129e20 << " ";
+	  std::cout << std::endl;
+	  for (size_t k=0; k<mRootNum; k++)
+	    std::cout << (mRoots.array())[k] << " ";
+	  std::cout << std::endl;
+	  getchar();*/
+
 	  return ROOT;
 	}
+      else if(mSysStatus == SYS_ERR)
+	return FAILURE;
     }
 
   // Warning Message
@@ -789,9 +828,23 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
 
   //the task expects the result in mpCurrentState
   //*mpCurrentState = mpProblem->getModel()->getState();
-  mpState->setTime(time);
+  //mpState->setTime(time);
   *mpCurrentState = *mpState;
   //mpCurrentState->setTime(time);
+
+  /*
+  std::cout << std::endl;
+  std::cout << "~~~Step LaLaLa~~~~  " << std::endl; 
+  std::cout << mpCurrentState->getTime() << std::endl;
+  stateY = mpCurrentState->beginIndependent();
+  std::cout.precision(20);
+  for (size_t k=0; k<mData.dim-1; k++)
+    std::cout << stateY[k]/6.02214129e20 << " ";
+  std::cout << std::endl;
+  for (size_t k=0; k<mRootNum; k++)
+    std::cout << (mRoots.array())[k] << " ";
+  std::cout << std::endl;
+  */
 
   return NORMAL;
 }
@@ -899,11 +952,27 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
       ds = mODE45.mT;
       if(mSysStatus == SYS_EVENT) //only deal with system roots
 	{
+	  
+	  std::cout << "Has event at t " << ds << std::endl;
+	   C_FLOAT64 *stateY = mpState->beginIndependent();
+	  for (size_t k=0; k<mData.dim-1; k++)
+	    std::cout << stateY[k]/6.02214129e20 << " ";
+	  std::cout << std::endl;
+	  std::cout << "mRootId " << mODE45.mRootId << std::endl;
+	  getchar();
+
 	  if(mHasSlow)// slow reaction fires
 	    {
 	      //what about the states of model
 	      fireSlowReaction4Hybrid();
-	      stateChanged(); //SYS_EVENT->SYS_NEW
+
+	      *mpState = mpModel->getState();
+	      mpState->setTime(ds);
+	      mpModel->setState(*mpState);
+
+	      mSysStatus = SYS_NEW;
+	      std::cout << "Has Slow Reaction?" << std::endl;
+		//stateChanged(); //SYS_EVENT->SYS_NEW
 	    }
 	  
 	  if(mHasRoot) // system roots
@@ -924,7 +993,13 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endT
 void CHybridMethodODE45::stateChanged()
 {
   *mpState = *mpCurrentState;
+  mpModel->setState(*mpState);
+  (mRoots.array())[mODE45.mRootId] = 0;
   mSysStatus = SYS_NEW;
+
+  std::cout << "In stateChanged() " << std::endl;
+  std::cout << "time " << mpState->getTime() << std::endl;
+  std::cout << std::endl;
 
   return;
 }
@@ -1011,23 +1086,18 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
     {
       //only when starts a new step, we should copy state into ode solver
       C_FLOAT64 * stateY = mpState->beginIndependent();
-      for (size_t i = 0; i < mData.dim - 1; i++, stateY++)
-	mY[i] = *stateY;
+      for (size_t i = 0; i < mData.dim - 1; i++)
+	mY[i] = stateY[i];
       
       mY[mData.dim-1] = log(mpRandomGenerator->getRandomOO());
+      std::cout << "new mY[mData.dim-1] " << mY[mData.dim-1] << std::endl;
 
-      /*
-      if(!mODE45.initialized())
-	mODE45.mODEState = ODE_INIT;
-      else
-	mODE45.mODEState = ODE_NEW;
-      */
       if(mODE45.mODEState != ODE_INIT)
 	mODE45.mODEState = ODE_NEW;
-
     }
   else if(mSysStatus = SYS_EVENT)
     mODE45.mODEState = ODE_CONT;
+
 
   //3----If time increment is too small, do nothing
   C_FLOAT64 tdist , d__1, d__2, w0;
@@ -1039,7 +1109,9 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
     {
       mODE45.mT  = mODE45.mTEnd;
       mSysStatus = SYS_END;
-      mpModel->setTime(mODE45.mTEnd);
+      mpState->setTime(mODE45.mTEnd);
+      mpModel->setState(*mpState);
+      std::cout << "delta is too small" << std::endl;
       return;
     }
 
@@ -1092,9 +1164,11 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 deltaT)
  */
 void CHybridMethodODE45::setRoot(const size_t id)
 {
+  assert(id<mRootNum && id>=0);
   for(size_t i=0; i<mRootNum; i++)
     (mRoots.array())[i] = 0;
-  (mRoots.array())[id]= 1;
+
+  (mRoots.array())[id] = 1;
   return;
 }
 
@@ -1187,11 +1261,15 @@ void CHybridMethodODE45::evalR(const C_FLOAT64 *t, const C_FLOAT64 *y,
 			       const size_t *nr, C_FLOAT64 *r)
 {
   assert(*nr == (C_INT)mRoots.size());
-  //assert(r == (C_FLOAT64*)mpRT);
 
   mpState->setTime(*t);
-  mpModel->setState(*mpState);
-  
+  C_FLOAT64 *stateY = mpState->beginIndependent();
+  for (size_t i = 0; i < mData.dim-1; i++)
+    stateY[i] = y[i]; //write result into mpState
+   mpModel->setState(*mpState);
+
+   mpModel->updateSimulatedValues(false); //really?  
+
   //if(*mpReduceModel)
   //    mpModel->updateSimulatedValues(*mpReducedModel);
   CVectorCore< C_FLOAT64 > rootValues(*nr, r);
@@ -1772,7 +1850,7 @@ void CHybridMethodODE45::outputDebug(std::ostream & os, size_t level)
         case 1:
         os << "mTime: " << mpCurrentState->getTime() << std::endl;
         os << "oldState: ";
-        for (i = 0; i < mDim; i++)
+        for (i = 0; i < mDim i++)
           os << oldState[i] << " ";
         os << std::endl;
         os << "x: ";

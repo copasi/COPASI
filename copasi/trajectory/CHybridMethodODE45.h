@@ -77,7 +77,6 @@
 
 
 //Interpolation Part
-//#define INTERP_RECORD_NUM            6
 #define ODE_ERR                     -2
 #define ODE_INIT                     0
 #define ODE_NEW                      1
@@ -91,7 +90,6 @@
 #define SYS_NEW                      1
 #define SYS_CONT                     2
 #define SYS_EVENT                    3
-//#define SYS_CHANGE                   4
 #define SYS_END                      5
 
 //Event Flag
@@ -621,10 +619,6 @@ protected:
    */
   C_FLOAT64 * mY;
 
-  /**
-   *  Vector containig the derivatives after calling eval
-   */
-  //CVector< C_FLOAT64 > mYdot;
 
   //  /**
   //   * ODE45 state, corresponding to iflag in rkf45, an ODE45
@@ -639,12 +633,7 @@ protected:
    *  1, finish one step integration
    *  2, has event
    */
-   C_INT mSysStatus;
-
-  /**
-   *
-   */
-  bool mDefaultAtol;
+  C_INT mSysStatus;
 
   C_FLOAT64 mDefaultAtolValue;
 
@@ -668,9 +657,9 @@ protected:
   std::set <size_t> mUpdateSet;
 
   //================Attributes for Root Interpolation================
-  //  /**
-  //   * Status of Root and Slow Event
-  //   */
+  /**
+   * Status of Root and Slow Event
+   */
   bool mHasRoot;
   bool mHasSlow;
 
@@ -679,17 +668,18 @@ protected:
    */
   size_t mRootNum;
 
+  
+  //=================Root Dealing Part for Stochastic Part================
+  C_FLOAT64 * mOldRoot;
+
+  std::queue<SRoot> mRootQueue;
+
   /**
    * Value of Roots
    */
   CVectorCore< C_FLOAT64 > *mpRootValue;
   
   C_FLOAT64 * mpRT;
-  
-  //=================Root Dealing Part for Stochastic Part================
-  C_FLOAT64 * mOldRoot;
-
-  std::queue<SRoot> mRootQueue;
 
  
   //================Stochastic Related================
@@ -753,8 +743,6 @@ protected:
    *
    */
   std::ostringstream mErrorMsg;
-
-  static int mCount;
 
 };
 
