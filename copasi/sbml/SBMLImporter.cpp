@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -5725,6 +5725,7 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
           pCopasiReaction->setParameterMapping(i, objectKey);
 
           const CChemEq& eqn = pCopasiReaction->getChemEq();
+
           bool reversible = eqn.getReversibility();
 
           // We guess what the role of a variable of newly imported function is:
@@ -10329,8 +10330,7 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::map<s
   const Reaction* pReaction = NULL;
   const SpeciesReference* pSpeciesReference = NULL;
 
-  SBMLTransforms transforms;
-  transforms.mapComponentValues(pModel);
+  SBMLTransforms::mapComponentValues(pModel);
 
   for (i = 0; i < iMax; ++i)
     {
@@ -10355,7 +10355,7 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::map<s
                   // make sure all ids are unique
                   assert(ids.find(pSpeciesReference->getId()) == ids.end());
                   ids.insert(std::pair<std::string, double>(pSpeciesReference->getId(),
-                             transforms.evaluateASTNode(SBML_parseFormula(pSpeciesReference->getId().c_str()), pModel)));
+                             SBMLTransforms::evaluateASTNode(SBML_parseFormula(pSpeciesReference->getId().c_str()), pModel)));
                 }
             }
 
@@ -10372,7 +10372,7 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::map<s
                   // make sure all ids are unique
                   assert(ids.find(pSpeciesReference->getId()) == ids.end());
                   ids.insert(std::pair<std::string, double>(pSpeciesReference->getId(),
-                             transforms.evaluateASTNode(SBML_parseFormula(pSpeciesReference->getId().c_str()), pModel)));
+                             SBMLTransforms::evaluateASTNode(SBML_parseFormula(pSpeciesReference->getId().c_str()), pModel)));
                 }
             }
         }
