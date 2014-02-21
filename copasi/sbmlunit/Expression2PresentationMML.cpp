@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/cvs_admin/addHeader,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2008/04/11 15:21:36 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -25,7 +17,7 @@
 #include "utilities/copasimathml.h"
 
 Expression2PresentationMML::Expression2PresentationMML(const ASTNode* rootnode)
-    : mRootNode(rootnode), mpModel(NULL), mpReaction(NULL),
+  : mRootNode(rootnode), mpModel(NULL), mpReaction(NULL),
     mUseReactionNameInLocalParameters(true)
 {
 }
@@ -39,7 +31,7 @@ void Expression2PresentationMML::writeMathML(std::ostream & out) const
 
 void Expression2PresentationMML::writeMathML(std::ostream & out, const ASTNode* node, size_t l) const
 {
-  ASTNodeType_t type = node->getType();
+  int type = (int)node->getType();
 
   //piecewise
   if (type == AST_FUNCTION_PIECEWISE)
@@ -53,16 +45,16 @@ void Expression2PresentationMML::writeMathML(std::ostream & out, const ASTNode* 
         {
           out << SPC(l + 2) << "<mtr>" << std::endl;
           out << SPC(l + 3) << "<mtd>" << std::endl;
-          writeMathML(out, node->getChild((unsigned int)(0 + i*2)), l + 3);
+          writeMathML(out, node->getChild((unsigned int)(0 + i * 2)), l + 3);
           out << SPC(l + 3) << "<mo> , </mo>" << std::endl;
           out << SPC(l + 3) << "</mtd>" << std::endl;
 
           out << SPC(l + 3) << "<mtd>" << std::endl;
 
-          if (1 + i*2 >= node->getNumChildren())
+          if (1 + i * 2 >= node->getNumChildren())
             out << SPC(l + 3) << "<mo> else </mo>" << std::endl;
           else
-            writeMathML(out, node->getChild((unsigned int)(1 + i*2)), l + 3);
+            writeMathML(out, node->getChild((unsigned int)(1 + i * 2)), l + 3);
 
           out << SPC(l + 3) << "</mtd>" << std::endl;
           out << SPC(l + 2) << "</mtr>" << std::endl;
@@ -235,16 +227,25 @@ void Expression2PresentationMML::writeMathML(std::ostream & out, const ASTNode* 
 
         switch (type)
           {
-            case AST_LOGICAL_AND: op="&And;"; flag=true; break;
-            case AST_LOGICAL_OR: op="&Or;"; flag=true; break;
-            case AST_LOGICAL_XOR: op="xor"; flag=true; break;
-            case AST_RELATIONAL_EQ: op="="; flag=false; break;
-            case AST_RELATIONAL_GEQ: op="&geq;"; flag=false; break;
-            case AST_RELATIONAL_GT: op="&gt;"; flag=false; break;
-            case AST_RELATIONAL_LEQ: op="&leq;"; flag=false; break;
-            case AST_RELATIONAL_LT: op="&lt;"; flag=false; break;
-            case AST_RELATIONAL_NEQ: op="&NotEqual;"; flag=false; break;
-            default: op="???"; flag=true; break;
+            case AST_LOGICAL_AND: op = "&And;"; flag = true; break;
+
+            case AST_LOGICAL_OR: op = "&Or;"; flag = true; break;
+
+            case AST_LOGICAL_XOR: op = "xor"; flag = true; break;
+
+            case AST_RELATIONAL_EQ: op = "="; flag = false; break;
+
+            case AST_RELATIONAL_GEQ: op = "&geq;"; flag = false; break;
+
+            case AST_RELATIONAL_GT: op = "&gt;"; flag = false; break;
+
+            case AST_RELATIONAL_LEQ: op = "&leq;"; flag = false; break;
+
+            case AST_RELATIONAL_LT: op = "&lt;"; flag = false; break;
+
+            case AST_RELATIONAL_NEQ: op = "&NotEqual;"; flag = false; break;
+
+            default: op = "???"; flag = true; break;
           }
 
         out << SPC(l) << "<mrow>" << std::endl;
@@ -340,10 +341,13 @@ void Expression2PresentationMML::writeMathMLName(std::ostream & out, const ASTNo
 
       switch (c->getSpatialDimensions())
         {
-          case 1: ccc="l"; break;
-          case 2: ccc="A"; break;
-          case 3: ccc="V"; break;
-          default: ccc="ERROR";
+          case 1: ccc = "l"; break;
+
+          case 2: ccc = "A"; break;
+
+          case 3: ccc = "V"; break;
+
+          default: ccc = "ERROR";
         }
 
       out << SPC(l) << "<msub><mi>" << ccc << "</mi><mi>" << ident << "</mi></msub>" << std::endl;

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -260,7 +260,8 @@ CEvaluationNode * CEvaluationNodeOperator::fromAST(const ASTNode * pASTNode, con
 
   size_t i = 0, iMax = children.size();
 
-  ASTNodeType_t type = pASTNode->getType();
+  int type = (int)pASTNode->getType();
+
   SubType subType;
   std::string data = "";
 
