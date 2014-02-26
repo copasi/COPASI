@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -11,6 +11,10 @@
 // Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
+
+
+
+
 
 
 
@@ -109,6 +113,7 @@ size_t INVALID_INDEX();
 %include "CChemEqElement.i"
 %include "CChemEq.i"
 %include "CReaction.i"
+%include "CReaction.i"
 %include "CModel.i"
 %include "CCopasiParameter.i"
 %include "CCopasiParameterGroup.i"
@@ -167,6 +172,7 @@ size_t INVALID_INDEX();
 %include "CLGlyphs.i"
 %include "CLCurve.i"
 %include "CLReactionGlyph.i"
+%include "CLGeneralGlyph.i"
 %include "CLayout.i"
 %include "CListOfLayouts.i"
 %include "CSensMethod.i"
@@ -177,6 +183,8 @@ size_t INVALID_INDEX();
 %include "CCreator.i"
 %include "CModified.i"
 %include "CModelMIRIAMInfo.i"
+
+%include "CRenderInformation.i"
 
 %include <copasi/elementaryFluxModes/CFluxMode.h>
 %include <copasi/elementaryFluxModes/CEFMTask.h>
@@ -198,7 +206,6 @@ size_t INVALID_INDEX();
 %include <copasi/tssanalysis/CTSSATask.h>
 %include <copasi/tssanalysis/CTSSAProblem.h>
 %include <copasi/tssanalysis/CTSSAMethod.h>
-
 
 %{
 
@@ -225,3 +232,6 @@ size_t INVALID_INDEX();
 #include <copasi/tssanalysis/CTSSAMethod.h>
 
 %}
+
+%template(CFluxModeStdVector) std::vector<CFluxMode>;
+typedef std::vector<CFluxMode> CFluxModeStdVector;
