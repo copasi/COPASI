@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -16,18 +16,9 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
 %{
 
+#include <copasi/utilities/CUnit.h>
 #include "model/CModel.h"
 
 %}
@@ -93,7 +84,10 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %rename (setQuantityUnitFromString) CModel::setQuantityUnit(const std::string & name);
 #endif // SWIGR
 
+%include <copasi/utilities/CUnit.h>
 %include "model/CModel.h"
+
+
 
 %catches(CCopasiException) CModel::compile();
 %catches(CCopasiException) CModel::compileEvents();
