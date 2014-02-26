@@ -4,7 +4,6 @@
 // All rights reserved. 
 
 
-
 %ignore GlobalRenderInformation;
 %ignore GlobalStyle;
 %ignore GradientBase;
@@ -27,7 +26,6 @@
 %ignore sbmlEllipse;
 %ignore sbmlPolygon;
 %ignore sbmlRectangle;
-
 
 #if SWIGCSHARP
 

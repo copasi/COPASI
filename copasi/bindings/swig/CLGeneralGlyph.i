@@ -7,7 +7,6 @@
 
 
 
-
 %{
 
 #include "layout/CLReactionGlyph.h"
