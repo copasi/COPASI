@@ -98,6 +98,75 @@
 
 #include "utilities/CCopasiMessage.h"
 
+#if LIBSBML_VERSION >= 50903
+
+#include <sbml/util/PrefixTransformer.h>
+#include <sbml/packages/comp/extension/CompModelPlugin.h>
+
+class CPrefixNameTransformer : public PrefixTransformer
+{
+public:
+  CPrefixNameTransformer() {}
+
+  static void replaceStringInPlace(std::string& subject, const std::string& search,
+                                   const std::string& replace)
+  {
+    size_t pos = 0;
+
+    while ((pos = subject.find(search, pos)) != std::string::npos)
+      {
+        subject.replace(pos, search.length(), replace);
+        pos += replace.length();
+      }
+  }
+
+  static inline std::string &rtrim(std::string &str)
+  {
+    size_t endpos = str.find_last_not_of(" \t");
+
+    if (string::npos != endpos)
+      {
+        str = str.substr(0, endpos + 1);
+      }
+
+    return str;
+  }
+
+  const std::string& cleanName(std::string& prefix)
+  {
+    std::replace(prefix.begin(), prefix.end(), '_', ' ');
+    replaceStringInPlace(prefix, "  ", " ");
+    rtrim(prefix);
+    return prefix;
+  }
+
+  virtual int transform(SBase* element)
+  {
+    if (element == NULL || getPrefix().empty())
+      return LIBSBML_OPERATION_SUCCESS;
+
+    // set up ids
+    PrefixTransformer::transform(element);
+
+    // skip local parameters, as they are not renamed
+    if (element->getTypeCode() == SBML_LOCAL_PARAMETER)
+      return LIBSBML_OPERATION_SUCCESS;
+
+    // setup names
+    if (element->isSetName())
+      {
+        std::stringstream newName;
+        std::string prefix = getPrefix();
+        newName << element->getName() << " (" << cleanName(prefix) << ")";
+        element->setName(newName.str());
+      }
+
+    return LIBSBML_OPERATION_SUCCESS;
+  }
+};
+
+#endif
+
 // static
 C_FLOAT64 SBMLImporter::round(const C_FLOAT64 & x)
 {
@@ -3332,6 +3401,18 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
               CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
             }
 
+#if LIBSBML_VERSION >= 50903
+          // apply the name transformer
+          CompModelPlugin* mPlug = dynamic_cast<CompModelPlugin*>(sbmlDoc->getModel()->getPlugin("comp"));
+          CPrefixNameTransformer trans;
+
+          if (mPlug != NULL)
+            {
+              mPlug->setTransformer(&trans);
+            }
+
+#endif //LIBSBML_VERSION >= 50903
+
           // the sbml comp package is used, and the required flag is set, so it stands to reason
           // that we need to flatten the document
           sbmlDoc->getErrorLog()->clearLog();
@@ -3354,6 +3435,15 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
 
               CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
             }
+
+#if LIBSBML_VERSION >= 50903
+
+          if (mPlug != NULL)
+            {
+              mPlug->unsetTransformer();
+            }
+
+#endif //LIBSBML_VERSION >= 50903
         }
 
 #endif
