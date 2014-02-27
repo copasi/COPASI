@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifdef WIN32
 # pragma warning (disable: 4786)
@@ -10339,8 +10339,7 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::map<s
   const Reaction* pReaction = NULL;
   const SpeciesReference* pSpeciesReference = NULL;
 
-  SBMLTransforms transforms;
-  transforms.mapComponentValues(pModel);
+  SBMLTransforms::mapComponentValues(pModel);
 
   for (i = 0; i < iMax; ++i)
     {
@@ -10365,7 +10364,7 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::map<s
                   // make sure all ids are unique
                   assert(ids.find(pSpeciesReference->getId()) == ids.end());
                   ids.insert(std::pair<std::string, double>(pSpeciesReference->getId(),
-                             transforms.evaluateASTNode(SBML_parseFormula(pSpeciesReference->getId().c_str()), pModel)));
+                             SBMLTransforms::evaluateASTNode(SBML_parseFormula(pSpeciesReference->getId().c_str()), pModel)));
                 }
             }
 
@@ -10382,7 +10381,7 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::map<s
                   // make sure all ids are unique
                   assert(ids.find(pSpeciesReference->getId()) == ids.end());
                   ids.insert(std::pair<std::string, double>(pSpeciesReference->getId(),
-                             transforms.evaluateASTNode(SBML_parseFormula(pSpeciesReference->getId().c_str()), pModel)));
+                             SBMLTransforms::evaluateASTNode(SBML_parseFormula(pSpeciesReference->getId().c_str()), pModel)));
                 }
             }
         }
