@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -53,6 +53,8 @@ CMathContainer::CMathContainer():
   mInitialState(),
   mState(),
   mStateReduced(),
+  mRate(),
+  mRateReduced(),
   mInitialDependencies(),
   mTransientDependencies(),
   mSynchronizeInitialValuesSequenceExtensive(),
@@ -115,6 +117,8 @@ CMathContainer::CMathContainer(CModel & model):
   mInitialState(),
   mState(),
   mStateReduced(),
+  mRate(),
+  mRateReduced(),
   mInitialDependencies(),
   mTransientDependencies(),
   mSynchronizeInitialValuesSequenceExtensive(),
@@ -185,6 +189,8 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mInitialState(),
   mState(),
   mStateReduced(),
+  mRate(),
+  mRateReduced(),
   mInitialDependencies(),
   mTransientDependencies(),
   mSynchronizeInitialValuesSequenceExtensive(),
@@ -215,63 +221,67 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   size_t ValueOffset = ((size_t) mValues.array()) - ((size_t) src.mValues.array());
   size_t ObjectOffset = ((size_t) mObjects.array()) - ((size_t) src.mObjects.array());
 
-  mInitialExtensiveValues = CVectorCore< C_FLOAT64 >(src.mInitialExtensiveValues.size(),
-                            (C_FLOAT64 *)((size_t) src.mInitialExtensiveValues.array() + ValueOffset));
-  mInitialIntensiveValues = CVectorCore< C_FLOAT64 >(src.mInitialIntensiveValues.size(),
-                            (C_FLOAT64 *)((size_t) src.mInitialIntensiveValues.array() + ValueOffset));
-  mInitialExtensiveRates = CVectorCore< C_FLOAT64 >(src.mInitialExtensiveRates.size(),
-                           (C_FLOAT64 *)((size_t) src.mInitialExtensiveRates.array() + ValueOffset));
-  mInitialIntensiveRates = CVectorCore< C_FLOAT64 >(src.mInitialIntensiveRates.size(),
-                           (C_FLOAT64 *)((size_t) src.mInitialIntensiveRates.array() + ValueOffset));
-  mInitialParticleFluxes = CVectorCore< C_FLOAT64 >(src.mInitialParticleFluxes.size(),
-                           (C_FLOAT64 *)((size_t) src.mInitialParticleFluxes.array() + ValueOffset));
-  mInitialFluxes = CVectorCore< C_FLOAT64 >(src.mInitialFluxes.size(),
-                   (C_FLOAT64 *)((size_t) src.mInitialFluxes.array() + ValueOffset));
-  mInitialTotalMasses = CVectorCore< C_FLOAT64 >(src.mInitialTotalMasses.size(),
-                        (C_FLOAT64 *)((size_t) src.mInitialTotalMasses.array() + ValueOffset));
-  mInitialEventTriggers = CVectorCore< C_FLOAT64 >(src.mInitialEventTriggers.size(),
-                          (C_FLOAT64 *)((size_t) src.mInitialEventTriggers.array() + ValueOffset));
+  mInitialExtensiveValues.initialize(src.mInitialExtensiveValues.size(),
+                                     (C_FLOAT64 *)((size_t) src.mInitialExtensiveValues.array() + ValueOffset));
+  mInitialIntensiveValues.initialize(src.mInitialIntensiveValues.size(),
+                                     (C_FLOAT64 *)((size_t) src.mInitialIntensiveValues.array() + ValueOffset));
+  mInitialExtensiveRates.initialize(src.mInitialExtensiveRates.size(),
+                                    (C_FLOAT64 *)((size_t) src.mInitialExtensiveRates.array() + ValueOffset));
+  mInitialIntensiveRates.initialize(src.mInitialIntensiveRates.size(),
+                                    (C_FLOAT64 *)((size_t) src.mInitialIntensiveRates.array() + ValueOffset));
+  mInitialParticleFluxes.initialize(src.mInitialParticleFluxes.size(),
+                                    (C_FLOAT64 *)((size_t) src.mInitialParticleFluxes.array() + ValueOffset));
+  mInitialFluxes.initialize(src.mInitialFluxes.size(),
+                            (C_FLOAT64 *)((size_t) src.mInitialFluxes.array() + ValueOffset));
+  mInitialTotalMasses.initialize(src.mInitialTotalMasses.size(),
+                                 (C_FLOAT64 *)((size_t) src.mInitialTotalMasses.array() + ValueOffset));
+  mInitialEventTriggers.initialize(src.mInitialEventTriggers.size(),
+                                   (C_FLOAT64 *)((size_t) src.mInitialEventTriggers.array() + ValueOffset));
 
-  mExtensiveValues = CVectorCore< C_FLOAT64 >(src.mExtensiveValues.size(),
-                     (C_FLOAT64 *)((size_t) src.mExtensiveValues.array() + ValueOffset));
-  mIntensiveValues = CVectorCore< C_FLOAT64 >(src.mIntensiveValues.size(),
-                     (C_FLOAT64 *)((size_t) src.mIntensiveValues.array() + ValueOffset));
-  mExtensiveRates = CVectorCore< C_FLOAT64 >(src.mExtensiveRates.size(),
-                    (C_FLOAT64 *)((size_t) src.mExtensiveRates.array() + ValueOffset));
-  mIntensiveRates = CVectorCore< C_FLOAT64 >(src.mIntensiveRates.size(),
-                    (C_FLOAT64 *)((size_t) src.mIntensiveRates.array() + ValueOffset));
-  mParticleFluxes = CVectorCore< C_FLOAT64 >(src.mParticleFluxes.size(),
-                    (C_FLOAT64 *)((size_t) src.mParticleFluxes.array() + ValueOffset));
-  mFluxes = CVectorCore< C_FLOAT64 >(src.mFluxes.size(),
-                                     (C_FLOAT64 *)((size_t) src.mFluxes.array() + ValueOffset));
-  mTotalMasses = CVectorCore< C_FLOAT64 >(src.mTotalMasses.size(),
-                                          (C_FLOAT64 *)((size_t) src.mTotalMasses.array() + ValueOffset));
-  mEventTriggers = CVectorCore< C_FLOAT64 >(src.mEventTriggers.size(),
-                   (C_FLOAT64 *)((size_t) src.mEventTriggers.array() + ValueOffset));
+  mExtensiveValues.initialize(src.mExtensiveValues.size(),
+                              (C_FLOAT64 *)((size_t) src.mExtensiveValues.array() + ValueOffset));
+  mIntensiveValues.initialize(src.mIntensiveValues.size(),
+                              (C_FLOAT64 *)((size_t) src.mIntensiveValues.array() + ValueOffset));
+  mExtensiveRates.initialize(src.mExtensiveRates.size(),
+                             (C_FLOAT64 *)((size_t) src.mExtensiveRates.array() + ValueOffset));
+  mIntensiveRates.initialize(src.mIntensiveRates.size(),
+                             (C_FLOAT64 *)((size_t) src.mIntensiveRates.array() + ValueOffset));
+  mParticleFluxes.initialize(src.mParticleFluxes.size(),
+                             (C_FLOAT64 *)((size_t) src.mParticleFluxes.array() + ValueOffset));
+  mFluxes.initialize(src.mFluxes.size(),
+                     (C_FLOAT64 *)((size_t) src.mFluxes.array() + ValueOffset));
+  mTotalMasses.initialize(src.mTotalMasses.size(),
+                          (C_FLOAT64 *)((size_t) src.mTotalMasses.array() + ValueOffset));
+  mEventTriggers.initialize(src.mEventTriggers.size(),
+                            (C_FLOAT64 *)((size_t) src.mEventTriggers.array() + ValueOffset));
 
-  mEventDelays = CVectorCore< C_FLOAT64 >(src.mEventDelays.size(),
-                                          (C_FLOAT64 *)((size_t) src.mEventDelays.array() + ValueOffset));
-  mEventPriorities = CVectorCore< C_FLOAT64 >(src.mEventPriorities.size(),
-                     (C_FLOAT64 *)((size_t) src.mEventPriorities.array() + ValueOffset));
-  mEventAssignments = CVectorCore< C_FLOAT64 >(src.mEventAssignments.size(),
-                      (C_FLOAT64 *)((size_t) src.mEventAssignments.array() + ValueOffset));
-  mEventRoots = CVectorCore< C_FLOAT64 >(src.mEventRoots.size(),
-                                         (C_FLOAT64 *)((size_t) src.mEventRoots.array() + ValueOffset));
-  mEventRootStates = CVectorCore< C_FLOAT64 >(src.mEventRootStates.size(),
-                     (C_FLOAT64 *)((size_t) src.mEventRootStates.array() + ValueOffset));
-  mPropensities = CVectorCore< C_FLOAT64 >(src.mPropensities.size(),
-                  (C_FLOAT64 *)((size_t) src.mPropensities.array() + ValueOffset));
-  mDependentMasses = CVectorCore< C_FLOAT64 >(src.mDependentMasses.size(),
-                     (C_FLOAT64 *)((size_t) src.mDependentMasses.array() + ValueOffset));
-  mDiscontinuous = CVectorCore< C_FLOAT64 >(src.mDiscontinuous.size(),
-                   (C_FLOAT64 *)((size_t) src.mDiscontinuous.array() + ValueOffset));
+  mEventDelays.initialize(src.mEventDelays.size(),
+                          (C_FLOAT64 *)((size_t) src.mEventDelays.array() + ValueOffset));
+  mEventPriorities.initialize(src.mEventPriorities.size(),
+                              (C_FLOAT64 *)((size_t) src.mEventPriorities.array() + ValueOffset));
+  mEventAssignments.initialize(src.mEventAssignments.size(),
+                               (C_FLOAT64 *)((size_t) src.mEventAssignments.array() + ValueOffset));
+  mEventRoots.initialize(src.mEventRoots.size(),
+                         (C_FLOAT64 *)((size_t) src.mEventRoots.array() + ValueOffset));
+  mEventRootStates.initialize(src.mEventRootStates.size(),
+                              (C_FLOAT64 *)((size_t) src.mEventRootStates.array() + ValueOffset));
+  mPropensities.initialize(src.mPropensities.size(),
+                           (C_FLOAT64 *)((size_t) src.mPropensities.array() + ValueOffset));
+  mDependentMasses.initialize(src.mDependentMasses.size(),
+                              (C_FLOAT64 *)((size_t) src.mDependentMasses.array() + ValueOffset));
+  mDiscontinuous.initialize(src.mDiscontinuous.size(),
+                            (C_FLOAT64 *)((size_t) src.mDiscontinuous.array() + ValueOffset));
 
-  mInitialState = CVectorCore< C_FLOAT64 >(src.mInitialState.size(),
-                  (C_FLOAT64 *)((size_t) src.mInitialState.array() + ValueOffset));
-  mState = CVectorCore< C_FLOAT64 >(src.mState.size(),
-                                    (C_FLOAT64 *)((size_t) src.mState.array() + ValueOffset));
-  mStateReduced = CVectorCore< C_FLOAT64 >(src.mStateReduced.size(),
-                  (C_FLOAT64 *)((size_t) src.mStateReduced.array() + ValueOffset));
+  mInitialState.initialize(src.mInitialState.size(),
+                           (C_FLOAT64 *)((size_t) src.mInitialState.array() + ValueOffset));
+  mState.initialize(src.mState.size(),
+                    (C_FLOAT64 *)((size_t) src.mState.array() + ValueOffset));
+  mStateReduced.initialize(src.mStateReduced.size(),
+                           (C_FLOAT64 *)((size_t) src.mStateReduced.array() + ValueOffset));
+  mRate.initialize(src.mRate.size(),
+                   (C_FLOAT64 *)((size_t) src.mRate.array() + ValueOffset));
+  mRateReduced.initialize(src.mRateReduced.size(),
+                          (C_FLOAT64 *)((size_t) src.mRateReduced.array() + ValueOffset));
 
   // Update the mappings
   std::map< CCopasiObject *, CMathObject * >::const_iterator itData = src.mDataObject2MathObject.begin();
@@ -358,38 +368,113 @@ void CMathContainer::setInitialState(const CVectorCore< C_FLOAT64 > & initialSta
   memcpy(mInitialState.array(), initialState.array(), mInitialState.size() * sizeof(C_FLOAT64));
 }
 
-const CVectorCore< C_FLOAT64 > & CMathContainer::getState() const
+const CVectorCore< C_FLOAT64 > & CMathContainer::getState(const bool & reduced) const
 {
-  return mState;
-}
+  if (reduced)
+    return mStateReduced;
 
-CVectorCore< C_FLOAT64 > & CMathContainer::getState()
-{
   return mState;
 }
 
 void CMathContainer::setState(const CVectorCore< C_FLOAT64 > & state)
 {
-  assert(mState.size() == state.size());
+  assert(mState.size() >= state.size());
 
-  memcpy(mState.array(), state.array(), mState.size() * sizeof(C_FLOAT64));
+  // We must only copy if the states are different.
+  if (mState.array() != state.array())
+    {
+      memcpy(mState.array(), state.array(), state.size() * sizeof(C_FLOAT64));
+    }
 }
 
-const CVectorCore< C_FLOAT64 > & CMathContainer::getStateReduced() const
+bool CMathContainer::isStateValid() const
 {
-  return mStateReduced;
+  const C_FLOAT64 * pIt = mState.array();
+  const C_FLOAT64 * pEnd = pIt + mState.size();
+
+  for (; pIt != pEnd; ++pIt)
+    {
+      if (isnan(*pIt))
+        {
+          return false;
+        }
+    }
+
+  return true;
 }
 
-CVectorCore< C_FLOAT64 > & CMathContainer::getStateReduced()
+CVector< C_FLOAT64 > CMathContainer::initializeAtolVector(const C_FLOAT64 & atol, const bool & reduced) const
 {
-  return mStateReduced;
+  CVector< C_FLOAT64 > Atol;
+
+  Atol.resize(getState(reduced).size());
+
+  C_FLOAT64 * pAtol = Atol.array();
+  C_FLOAT64 * pAtolEnd = pAtol + Atol.size();
+  const CMathObject * pObject = getMathObject(mInitialState.array() + mFixedCount);
+
+  for (; pAtol != pAtolEnd; ++pAtol, ++pObject)
+    {
+      *pAtol = atol;
+
+      C_FLOAT64 InitialValue = fabs(* (C_FLOAT64 *) pObject->getValuePointer());
+
+      switch (pObject->getEntityType())
+        {
+          case CMath::Species:
+          {
+            const CMetab * pMetab = static_cast< const CMetab * >(pObject->getDataObject()->getObjectParent());
+            std::map< CCopasiObject *, CMathObject * >::const_iterator itFound
+            = mDataObject2MathObject.find(pMetab->getCompartment()->getInitialValueReference());
+
+            C_FLOAT64 Limit = fabs(* (C_FLOAT64 *) itFound->second->getValuePointer())
+                              * * (C_FLOAT64 *) mpQuantity2NumberFactor->getValuePointer();
+
+            if (InitialValue != 0.0)
+              *pAtol *= std::min(Limit, InitialValue);
+            else
+              *pAtol *= std::max(1.0, Limit);
+          }
+          break;
+
+          case CMath::GlobalQuantity:
+          case CMath::Compartment:
+
+            if (InitialValue != 0.0)
+              *pAtol *= std::min(1.0, InitialValue);
+
+            break;
+
+            // These are fixed event targets the absolute tolerance can be large since they do not change
+          default:
+            *pAtol = std::max(1.0, *pAtol);
+        }
+    }
+
+  return Atol;
 }
 
-void CMathContainer::setStateReduced(const CVectorCore< C_FLOAT64 > & stateReduced)
+const CVectorCore< C_FLOAT64 > & CMathContainer::getRate(const bool & reduced) const
 {
-  assert(mStateReduced.size() == stateReduced.size());
+  if (reduced)
+    return mRateReduced;
 
-  memcpy(mStateReduced.array(), stateReduced.array(), mStateReduced.size() * sizeof(C_FLOAT64));
+  return mRate;
+}
+
+const CVectorCore< C_FLOAT64 > & CMathContainer::getParticleFluxes() const
+{
+  return mParticleFluxes;
+}
+
+const CVectorCore< C_FLOAT64 > & CMathContainer::getPropensities() const
+{
+  return mPropensities;
+}
+
+const CVectorCore< C_FLOAT64 > & CMathContainer::getRoots() const
+{
+  return mEventRoots;
 }
 
 void CMathContainer::updateInitialValues(const CModelParameter::Framework & framework)
@@ -620,21 +705,28 @@ void CMathContainer::init()
   mDiscontinuityInfix2Object.clear();
   mTriggerInfix2Event.clear();
 
-  // TODO We may have unused event triggers and roots due to optimization
-  // in the discontinuities.
   createDependencyGraphs();
 
-  mReactions.resize(mpModel->getReactions().size());
+  mReactions.resize(mFluxes.size());
   CMathReaction * pReaction = mReactions.array();
-  CMathReaction * pReactionEnd = pReaction + mReactions.size();
   CCopasiVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
+  CCopasiVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
 
-  for (; pReaction != pReactionEnd; ++itReaction, ++pReaction)
+  for (; itReaction != endReaction; ++itReaction)
     {
-      pReaction->initialize(*itReaction, *this);
+      // We ignore reactions which do not have any effect.
+      if ((*itReaction)->getChemEq().getBalances().size() > 0)
+        {
+          pReaction->initialize(*itReaction, *this);
+          ++pReaction;
+        }
     }
 
   updateInitialValues(CModelParameter::ParticleNumbers);
+
+  // TODO We may have unused event triggers and roots due to optimization
+  // in the discontinuities.
+  determineDiscreteRoots();
 
 #ifdef COPASI_DEBUG
   CMathObject *pObject = mObjects.array();
@@ -652,6 +744,51 @@ void CMathContainer::init()
 const CModel & CMathContainer::getModel() const
 {
   return *mpModel;
+}
+
+const size_t & CMathContainer::getCountFixedEventTargets() const
+{
+  return mEventTargetCount;
+}
+
+const size_t & CMathContainer::getCountODEs() const
+{
+  return mODECount;
+}
+
+const size_t & CMathContainer::getCountIndependentSpecies() const
+{
+  return mIndependentCount;
+}
+
+const size_t & CMathContainer::getCountDependentSpecies() const
+{
+  return mDependentCount;
+}
+
+const size_t & CMathContainer::getTimeIndex() const
+{
+  return mEventTargetCount;
+}
+
+CVector< CMathReaction > & CMathContainer::getReactions()
+{
+  return mReactions;
+}
+
+const CVector< CMathReaction > & CMathContainer::getReactions() const
+{
+  return mReactions;
+}
+
+CMathDependencyGraph & CMathContainer::getInitialDependencies()
+{
+  return mInitialDependencies;
+}
+
+CMathDependencyGraph & CMathContainer::getTransientDependencies()
+{
+  return mTransientDependencies;
 }
 
 CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pSrc,
@@ -680,7 +817,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
       switch ((int) itNode->getType())
         {
             // Handle object nodes which are of type CN
-          case (CEvaluationNode::OBJECT | CEvaluationNodeObject::CN):
+          case(CEvaluationNode::OBJECT | CEvaluationNodeObject::CN):
           {
             // We need to map the object to a math object if possible.
             const CObjectInterface * pObject =
@@ -692,7 +829,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           break;
 
           // Handle object nodes which are of type POINTER
-          case (CEvaluationNode::OBJECT | CEvaluationNodeObject::POINTER):
+          case(CEvaluationNode::OBJECT | CEvaluationNodeObject::POINTER):
           {
             const CObjectInterface * pObject =
               getMathObject(static_cast< const CEvaluationNodeObject *>(*itNode)->getObjectValuePtr());
@@ -703,7 +840,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           break;
 
           // Handle variables
-          case (CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
+          case(CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
           {
             size_t Index =
               static_cast< const CEvaluationNodeVariable * >(*itNode)->getIndex();
@@ -721,8 +858,8 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           break;
 
           // Handle call nodes
-          case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
-          case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+          case(CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
+          case(CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
           {
             const CEvaluationNode * pCalledNode =
               static_cast< const CEvaluationNodeCall * >(*itNode)->getCalledTree()->getRoot();
@@ -741,10 +878,10 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           break;
 
           // Handle discrete nodes
-          case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
-          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
-          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
-          case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
+          case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
+          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+          case(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
 
             if (replaceDiscontinuousNodes)
               {
@@ -854,7 +991,19 @@ void CMathContainer::allocate()
   size_t nExtensiveValues =  mpModel->getStateTemplate().size() + nLocalReactionParameters;
   size_t nIntensiveValues = mpModel->getNumMetabs();
 
-  size_t nReactions = mpModel->getReactions().size();
+  size_t nReactions = 0;
+  CCopasiVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
+  CCopasiVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
+
+  for (; itReaction != endReaction; ++itReaction)
+    {
+      // We ignore reactions which do not have any effect.
+      if ((*itReaction)->getChemEq().getBalances().size() > 0)
+        {
+          nReactions++;
+        }
+    }
+
   size_t nMoieties = mpModel->getMoieties().size();
 
   size_t nDiscontinuities = 0;
@@ -908,67 +1057,71 @@ void CMathContainer::allocate()
 
   C_FLOAT64 * pArray = mValues.array();
 
-  mInitialExtensiveValues = CVectorCore< C_FLOAT64 >(nExtensiveValues, pArray);
+  mInitialExtensiveValues.initialize(nExtensiveValues, pArray);
   pArray += nExtensiveValues;
-  mInitialIntensiveValues = CVectorCore< C_FLOAT64 >(nIntensiveValues, pArray);
+  mInitialIntensiveValues.initialize(nIntensiveValues, pArray);
   pArray += nIntensiveValues;
-  mInitialExtensiveRates = CVectorCore< C_FLOAT64 >(nExtensiveValues, pArray);
+  mInitialExtensiveRates.initialize(nExtensiveValues, pArray);
   pArray += nExtensiveValues;
-  mInitialIntensiveRates = CVectorCore< C_FLOAT64 >(nIntensiveValues, pArray);
+  mInitialIntensiveRates.initialize(nIntensiveValues, pArray);
   pArray += nIntensiveValues;
-  mInitialParticleFluxes = CVectorCore< C_FLOAT64 >(nReactions, pArray);
+  mInitialParticleFluxes.initialize(nReactions, pArray);
   pArray += nReactions;
-  mInitialFluxes = CVectorCore< C_FLOAT64 >(nReactions, pArray);
+  mInitialFluxes.initialize(nReactions, pArray);
   pArray += nReactions;
-  mInitialTotalMasses = CVectorCore< C_FLOAT64 >(nMoieties, pArray);
+  mInitialTotalMasses.initialize(nMoieties, pArray);
   pArray += nMoieties;
-  mInitialEventTriggers = CVectorCore< C_FLOAT64 >(nEvents, pArray);
+  mInitialEventTriggers.initialize(nEvents, pArray);
   pArray += nEvents;
 
-  mExtensiveValues = CVectorCore< C_FLOAT64 >(nExtensiveValues, pArray);
+  mExtensiveValues.initialize(nExtensiveValues, pArray);
   pArray += nExtensiveValues;
-  mIntensiveValues = CVectorCore< C_FLOAT64 >(nIntensiveValues, pArray);
+  mIntensiveValues.initialize(nIntensiveValues, pArray);
   pArray += nIntensiveValues;
-  mExtensiveRates = CVectorCore< C_FLOAT64 >(nExtensiveValues, pArray);
+  mExtensiveRates.initialize(nExtensiveValues, pArray);
   pArray += nExtensiveValues;
-  mIntensiveRates = CVectorCore< C_FLOAT64 >(nIntensiveValues, pArray);
+  mIntensiveRates.initialize(nIntensiveValues, pArray);
   pArray += nIntensiveValues;
-  mParticleFluxes = CVectorCore< C_FLOAT64 >(nReactions, pArray);
+  mParticleFluxes.initialize(nReactions, pArray);
   pArray += nReactions;
-  mFluxes = CVectorCore< C_FLOAT64 >(nReactions, pArray);
+  mFluxes.initialize(nReactions, pArray);
   pArray += nReactions;
-  mTotalMasses = CVectorCore< C_FLOAT64 >(nMoieties, pArray);
+  mTotalMasses.initialize(nMoieties, pArray);
   pArray += nMoieties;
-  mEventTriggers = CVectorCore< C_FLOAT64 >(nEvents, pArray);
+  mEventTriggers.initialize(nEvents, pArray);
   pArray += nEvents;
 
-  mEventDelays = CVectorCore< C_FLOAT64 >(nEvents, pArray);
+  mEventDelays.initialize(nEvents, pArray);
   pArray += nEvents;
-  mEventPriorities = CVectorCore< C_FLOAT64 >(nEvents, pArray);
+  mEventPriorities.initialize(nEvents, pArray);
   pArray += nEvents;
-  mEventAssignments = CVectorCore< C_FLOAT64 >(nEventAssignments, pArray);
+  mEventAssignments.initialize(nEventAssignments, pArray);
   pArray += nEventAssignments;
-  mEventRoots = CVectorCore< C_FLOAT64 >(nEventRoots, pArray);
+  mEventRoots.initialize(nEventRoots, pArray);
   pArray += nEventRoots;
-  mEventRootStates = CVectorCore< C_FLOAT64 >(nEventRoots, pArray);
+  mEventRootStates.initialize(nEventRoots, pArray);
   pArray += nEventRoots;
-  mPropensities = CVectorCore< C_FLOAT64 >(nReactions, pArray);
+  mPropensities.initialize(nReactions, pArray);
   pArray += nReactions;
-  mDependentMasses = CVectorCore< C_FLOAT64 >(nMoieties, pArray);
+  mDependentMasses.initialize(nMoieties, pArray);
   pArray += nMoieties;
-  mDiscontinuous = CVectorCore< C_FLOAT64 >(nDiscontinuities, pArray);
+  mDiscontinuous.initialize(nDiscontinuities, pArray);
   pArray += nDiscontinuities;
 
   assert(pArray == mValues.array() + mValues.size());
 
   mObjects.resize(mValues.size());
 
-  mInitialState = CVectorCore< C_FLOAT64 >(mInitialExtensiveRates.array() - mValues.array(),
-                  mValues.array());
-  mState = CVectorCore< C_FLOAT64 >(mODECount + mIndependentCount + mDependentCount,
-                                    mExtensiveValues.array() + mFixedCount + mEventTargetCount);
-  mStateReduced = CVectorCore< C_FLOAT64 >(mODECount + mIndependentCount,
-                  mExtensiveValues.array() + mFixedCount + mEventTargetCount);
+  mInitialState.initialize(mInitialExtensiveRates.array() - mValues.array(),
+                           mValues.array());
+  mState.initialize(mEventTargetCount + 1 + mODECount + mIndependentCount + mDependentCount,
+                    mExtensiveValues.array() + mFixedCount);
+  mStateReduced.initialize(mEventTargetCount + 1 + mODECount + mIndependentCount,
+                           mExtensiveValues.array() + mFixedCount);
+  mRate.initialize(mState.size(),
+                   mExtensiveRates.array() + mFixedCount);
+  mRateReduced.initialize(mStateReduced.size(),
+                          mExtensiveRates.array() + mFixedCount);
 }
 
 void CMathContainer::initializeObjects(CMath::sPointers & p)
@@ -1711,6 +1864,12 @@ void CMathContainer::initializeMathObjects(const CCopasiVector< CReaction > & re
 
   for (; it != end; ++it)
     {
+      // We ignore reactions which do not have any effect.
+      if ((*it)->getChemEq().getBalances().size() == 0)
+        {
+          continue;
+        }
+
       // Initial Particle Flux
       CMathObject::initialize(p.pInitialParticleFluxesObject, p.pInitialParticleFluxes,
                               CMath::ParticleFlux, CMath::Reaction, CMath::SimulationTypeUndefined, false, true,
@@ -1838,17 +1997,17 @@ void CMathContainer::createDiscontinuityEvents(const CEvaluationTree * pTree)
 
       switch ((int) itNode->getType())
         {
-          case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
-          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
-          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
-          case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
+          case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
+          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+          case(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
             createDiscontinuityDataEvent(*itNode);
             break;
 
             // Call nodes may include discontinuities but each called tree is handled
             // separately.
-          case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
-          case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+          case(CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
+          case(CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
             createDiscontinuityEvents(static_cast< const CEvaluationNodeCall * >(*itNode)->getCalledTree());
             break;
 
@@ -1878,16 +2037,16 @@ std::string CMathContainer::createDiscontinuityTriggerInfix(const CEvaluationNod
   // We need to define a data event for each discontinuity.
   switch ((int) pNode->getType())
     {
-      case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+      case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
         TriggerInfix = static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix();
         break;
 
-      case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
-      case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+      case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
+      case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
         TriggerInfix = "sin(PI*(" + static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix() + ")) > 0";
         break;
 
-      case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
+      case(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
         TriggerInfix = "sin(PI*(" + static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix();
         TriggerInfix += ")) > 0 || sin(PI*(" + static_cast< const CEvaluationNode * >(pNode->getChild()->getSibling())->buildInfix() + ")) > 0";
         break;

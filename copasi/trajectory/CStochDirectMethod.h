@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochDirectMethod.h,v $
-//   $Revision: 1.18 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:34:13 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -35,6 +27,7 @@ class CModel;
 class CMetab;
 class CTrajectoryProblem;
 class CRandom;
+class CMathReaction;
 
 class CStochDirectMethod : public CTrajectoryMethod
 {
@@ -42,93 +35,12 @@ class CStochDirectMethod : public CTrajectoryMethod
   CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType);
 
 private:
-  class CReactionDependencies
-  {
-  public:
-    // Operations
-    /**
-     * Default constructor
-     */
-    CReactionDependencies();
-
-    /**
-     * Copy constructor
-     * @param const CReactionDependencies & src
-     */
-    CReactionDependencies(const CReactionDependencies & src);
-
-    /**
-     * Destructor
-     */
-    ~CReactionDependencies();
-
-    /**
-     * Assignment operator
-     * @param const CReactionDependencies & rhs
-     * @return CReactionDependencies &
-     */
-    CReactionDependencies & operator = (const CReactionDependencies & rhs);
-
-    // Attributes
-
-    /**
-     * Vector of multiplier to calculate the new state
-     */
-    CVector< C_FLOAT64 > mSpeciesMultiplier;
-
-    /**
-     * Vector of pointers to method internal species values to calculate the new state.
-     */
-    CVector< C_FLOAT64 * > mMethodSpecies;
-
-    /**
-     * Vector of pointers to model species values to calculate the new state.
-     */
-    CVector< C_FLOAT64 * > mModelSpecies;
-
-    /**
-     * Vector of refresh methods which need to be executed to update all values required for simulation
-     */
-    std::vector< Refresh * > mCalculations;
-
-    /**
-     * A vector of indexes of reaction which propensities have to be recalculated.
-     */
-    CVector< size_t > mDependentReactions;
-
-    /**
-     * Vector of multiplier to calculate the new propensity.
-     */
-    CVector< C_FLOAT64 > mSubstrateMultiplier;
-
-    /**
-     * Vector of pointers to method internal species values to calculate the new propensity.
-     */
-    CVector< C_FLOAT64 * > mMethodSubstrates;
-
-    /**
-     * Vector of pointers to model species values to calculate the new propensity.
-     */
-    CVector< C_FLOAT64 * > mModelSubstrates;
-
-    /**
-     * A pointer to the particle flux of the reaction.
-     */
-    C_FLOAT64 * mpParticleFlux;
-  };
-
 protected:
   /**
    * Default constructor.
    * @param const CCopasiContainer * pParent (default: NULL)
    */
   CStochDirectMethod(const CCopasiContainer * pParent = NULL);
-
-  /**
-   * Calculate the propensity of the indexed reaction
-   * @param const size_t & index
-   */
-  void calculateAmu(const size_t & index);
 
   /**
    * Fire the next reaction if it fire before the endTime
@@ -175,7 +87,7 @@ public:
    *  starting with the initialState given.
    *  @param "const CState *" initialState
    */
-  virtual void start(const CState * initialState);
+  virtual void start(CVectorCore< C_FLOAT64 > & initialState);
 
   /**
   * Check if the method is suitable for this problem
@@ -195,11 +107,6 @@ protected:
    * The random number generator
    */
   CRandom *mpRandomGenerator;
-
-  /**
-   * A pointer to the instance of CModel being used.
-   */
-  CModel *mpModel;
 
   /**
    * The particle and reaction numbers
@@ -222,29 +129,29 @@ protected:
   size_t mNextReactionIndex;
 
   /**
-   * A boolean flag indicating whether correction for higher order reactions need to be applied
-   */
-  bool mDoCorrection;
-
-  /**
-   * A vector of reaction propensities
-   */
-  CVector< C_FLOAT64 > mAmu;
-
-  /**
    * Total propensity (sum over mAmu[i])
    */
   C_FLOAT64 mA0;
 
   /**
-   * The method internal state which contains particle rounded particle numbers.
+   * A vector referencing the math container's reactions
    */
-  CState mMethodState;
+  CVectorCore< CMathReaction > mReactions;
 
   /**
-   * A vector containing dependency information to minimize the required updates.
+   * A vector referencing the math container's propensity objects
    */
-  std::vector< CReactionDependencies > mReactionDependencies;
+  CVectorCore< CMathObject > mPropensityObjects;
+
+  /**
+   * A vector referencing the math container's propensity values
+   */
+  CVectorCore< C_FLOAT64 > mAmu;
+
+  /**
+   * A vector containing the update sequence required to update all propensity values.
+   */
+  CVector< CObjectInterface::UpdateSequence > mUpdateSequences;
 
   /**
    * A boolean flag indicating whether the maximum steps have been reached. This

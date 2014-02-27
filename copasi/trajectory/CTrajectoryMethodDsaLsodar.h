@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethodDsaLsodar.h,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:34:14 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -48,98 +40,19 @@
 class CReaction;
 class CMetab;
 class CRandom;
+class CMathReaction;
 
 class CTrajectoryMethodDsaLsodar : public CLsodaMethod
 {
   friend CTrajectoryMethod *
   CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType);
 
-  /* PUBLIC METHODS **********************************************************/
-  class CReactionDependencies
-  {
-  public:
-    // Operations
-    /**
-     * Default constructor
-     */
-    CReactionDependencies();
-
-    /**
-     * Copy constructor
-     * @param const CReactionDependencies & src
-     */
-    CReactionDependencies(const CReactionDependencies & src);
-
-    /**
-     * Destructor
-     */
-    ~CReactionDependencies();
-
-    /**
-     * Assignment operator
-     * @param const CReactionDependencies & rhs
-     * @return CReactionDependencies &
-     */
-    CReactionDependencies & operator = (const CReactionDependencies & rhs);
-
-    // Attributes
-
-    /**
-     * Vector of multiplier to calculate the new state
-     */
-    CVector< C_FLOAT64 > mSpeciesMultiplier;
-
-    /**
-     * Vector of pointers to method internal species values to calculate the new state.
-     */
-    CVector< C_FLOAT64 * > mMethodSpecies;
-
-    /**
-     * Vector of pointers to model species values to calculate the new state.
-     */
-    CVector< C_FLOAT64 * > mModelSpecies;
-
-    /**
-     * Vector of refresh methods which need to be executed to update all values required for simulation
-     */
-    std::vector< Refresh * > mCalculations;
-
-    /**
-     * A vector of indexes of reaction which propensities have to be recalculated.
-     */
-    CVector< size_t > mDependentReactions;
-
-    /**
-     * Vector of multiplier to calculate the new propensity.
-     */
-    CVector< C_FLOAT64 > mSubstrateMultiplier;
-
-    /**
-     * Vector of pointers to method internal species values to calculate the new propensity.
-     */
-    CVector< C_FLOAT64 * > mMethodSubstrates;
-
-    /**
-     * Vector of pointers to model species values to calculate the new propensity.
-     */
-    CVector< C_FLOAT64 * > mModelSubstrates;
-
-    /**
-     * A pointer to the particle flux of the reaction.
-     */
-    C_FLOAT64 * mpParticleFlux;
-
-    /**
-     * A vector containing the index of each species participating in the reaction as
-     * a substrate and/or product.
-     */
-    CVector< size_t > mSpeciesIndex;
-  };
+private:
 
   class CPartition
   {
   public:
-    typedef std::multimap< size_t, size_t > speciesToReactionsMap;
+    typedef std::multimap< size_t, size_t * > speciesToReactionsMap;
 
     // Operations
     /**
@@ -158,17 +71,13 @@ class CTrajectoryMethodDsaLsodar : public CLsodaMethod
      */
     ~CPartition();
 
-    void intialize(std::vector< CReactionDependencies > & reactions,
-                   const speciesToReactionsMap & speciesToReactions,
+    void intialize(const CMathContainer * pContainer,
                    const C_FLOAT64 & lowerThreshold,
-                   const C_FLOAT64 & upperThreshold,
-                   const CState & state);
+                   const C_FLOAT64 & upperThreshold);
 
-    bool rePartition(const CState & state);
+    bool rePartition(const CVectorCore< C_FLOAT64 > & state);
 
-    void determineStochasticSpecies();
-
-  private:
+  public:
     // Attributes
     /**
      * A map from a species index to the indexes of the reactions it participates in
@@ -195,16 +104,15 @@ class CTrajectoryMethodDsaLsodar : public CLsodaMethod
      */
     size_t mNumReactionSpecies;
 
-  public:
     /**
      * A vector containing pointers to stochastic reaction dependencies
      */
-    CVector< CReactionDependencies * > mStochasticReactions;
+    CVector< const CMathReaction * > mStochasticReactions;
 
     /**
      * A vector containing pointers to stochastic reaction dependencies
      */
-    CVector< CReactionDependencies * > mDeterministicReactions;
+    CVector< const CMathReaction * > mDeterministicReactions;
 
     /**
      * A vector indicating whether a species is treated stochastically or not.
@@ -221,16 +129,20 @@ class CTrajectoryMethodDsaLsodar : public CLsodaMethod
      */
     bool mHasDeterministic;
 
-  private:
     /**
      * A vector containing the number of low species for each reaction
      */
     CVector< size_t > mNumLowSpecies;
 
     /**
-     * A vector containing the current treatment of the species
+     * A pointer to the math container;
      */
-    CVector< bool > mLowSpecies;
+    const CMathContainer * mpContainer;
+
+    /**
+     * A pointer to the first species determined by reactions
+     */
+    const CObjectInterface * mpFirstReactionSpecies;
   };
 
 protected:
@@ -285,7 +197,7 @@ public:
    *  starting with the initialState given.
    *  @param "const CState *" initialState
    */
-  virtual void start(const CState * initialState);
+  virtual void start(CVectorCore< C_FLOAT64 > & initialState);
 
   /**
    *  This evaluates the derivatives
@@ -340,15 +252,14 @@ public:
   void fireReaction(const size_t & index);
 
   /**
-   * Calculates an amu value for a given reaction.
-   * @param const size_t & index
-   */
-  void calculateAmu(const size_t & index);
-
-  /**
    * Calculate the propensities of all stochastic reactions
    */
   void calculatePropensities();
+
+  /**
+   * Calculate the total propensity
+   */
+  void calculateTotalPropensity();
 
   /* PRIVATE METHODS *********************************************************/
 
@@ -395,7 +306,6 @@ protected:
    */
   size_t mFirstReactionSpeciesIndex;
 
-
   bool mMaxStepsReached;
 
   /**
@@ -419,24 +329,29 @@ protected:
   size_t mNextReactionIndex;
 
   /**
-   * A boolean flag indicating whether correction for higher order reactions need to be applied
+   * A vector referencing the math container's reactions
    */
-  bool mDoCorrection;
+  CVectorCore< CMathReaction > mReactions;
 
   /**
-   * A vector of reaction propensities
+   * A vector referencing the math container's propensity objects
    */
-  CVector< C_FLOAT64 > mAmu;
+  CVectorCore< CMathObject > mPropensityObjects;
+
+  /**
+   * A vector referencing the math container's propensity values
+   */
+  CVectorCore< C_FLOAT64 > mAmu;
+
+  /**
+   * A vector containing the update sequence required to update all propensity values.
+   */
+  CVector< CObjectInterface::UpdateSequence > mUpdateSequences;
 
   /**
    * Total propensity (sum over mAmu[i])
    */
   C_FLOAT64 mA0;
-
-  /**
-   * A vector containing dependency information to minimize the required updates.
-   */
-  std::vector< CReactionDependencies > mReactionDependencies;
 
   /**
    * The partition of the system

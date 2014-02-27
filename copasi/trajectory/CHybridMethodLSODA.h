@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -83,6 +83,7 @@ class CReaction;
 class CRandom;
 class CIndexedPriorityQueue;
 class CDependencyGraph;
+class CMathReaction;
 
 /**
  *   Element of the array mReactionFlags. The deterministic reactions are
@@ -174,7 +175,7 @@ public:
    *  starting with the initialState given.
    *  @param "const CState *" initialState
    */
-  virtual void start(const CState * initialState);
+  virtual void start(CVectorCore< C_FLOAT64 > & initialState);
 
   /**
   * Check if the method is suitable for this problem
@@ -225,18 +226,6 @@ protected:
   void integrateDeterministicPart(C_FLOAT64 ds);
 
   /**
-   *   Calculates the derivative of the system and writes it into the vector
-   *   deriv. Length of deriv must be mNumVariableMetabs.
-   *   CAUTION: Only deterministic reactions are taken into account. That is,
-   *   this is only the derivative of the deterministic part of the system.
-   *
-   *   @param deriv A vector reference of length mNumVariableMetabs, into
-   *                which the derivative is written
-   */
-
-  void calculateDerivative(std::vector <C_FLOAT64> & deriv);
-
-  /**
    *   Gathers the state of the system into the array target. Later on CState
    *   should be used for this. Length of the array target must be
    *   mNumVariableMetabs.
@@ -257,13 +246,6 @@ protected:
   void setState(std::vector <C_FLOAT64> & source);
 
   /* specific LSODA STAFF */
-
-  /**
-   *  Calculate the default absolute tolerance
-   *  @param const CModel * pModel
-   *  @return C_FLOAT64 defaultAtol
-   */
-  C_FLOAT64 getDefaultAtol(const CModel * pModel) const;
 
   static void EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
 
@@ -366,19 +348,6 @@ protected:
   void setupMetab2React();
 
   /**
-   *   Creates for each metabolite a set of reaction indices. If the
-   *   metabolite participates in a reaction as substrate, product or
-   *   modifier this reaction is added to the corresponding set.
-   */
-  void setupMetab2ReactPlusModifier();
-
-  /**
-   *   Creates for each metabolite a set of reaction indices. Each reaction
-   *   is dependent on each metabolite resulting in a complete switch.
-   */
-  void setupMetab2ReactComplete();
-
-  /**
    *   Creates an initial partitioning of the system. Deterministic and
    *   stochastic reactions are determined. The array mStochReactions is
    *   initialized.
@@ -419,32 +388,6 @@ protected:
   void removeDeterministicReaction(size_t rIndex);
 
   /**
-   *   Gets the set of metabolites on which a given reaction depends.
-   *
-   *   @param rIndex The index of the reaction being executed.
-   *   @return The set of metabolites depended on.
-   */
-  std::set <std::string> *getDependsOn(size_t rIndex);
-
-  /**
-   *   Gets the set of metabolites which change number when a given
-   *   reaction is executed.
-   *
-   *   @param rIndex The index of the reaction being executed.
-   *   @return The set of affected metabolites.
-   */
-  std::set <std::string> *getAffects(size_t rIndex);
-
-  /**
-   *   Gets the set of metabolites, which participate in the given
-   *   reaction either as substrate, product or modifier.
-   *
-   *   @param rIndex The index of the reaction being executed.
-   *   @return The set of participating metabolites.
-   */
-  std::set <size_t> *getParticipatesIn(size_t rIndex);
-
-  /**
    *   Prints out data on standard output.
    */
   void outputData(std::ostream & os, C_INT32 mode);
@@ -478,17 +421,12 @@ protected:
   /**
    *   Pointer to the model
    */
-  CModel * mpModel;
+  // CModel * mpModel;
 
   /**
    *   Dimension of the system. Total number of metabolites.
    */
-  size_t mNumVariableMetabs;
-
-  /**
-   *   index of the first metab in CState
-   */
-  size_t mFirstMetabIndex;
+  size_t mNumReactionSpecies;
 
   /**
    *   Max number of doSingleStep() per step()
@@ -519,30 +457,9 @@ protected:
   C_INT32 mMaxIntBeforeStep;
 
   /**
-   * indicates if the correction N^2 -> N*(N-1) should be performed
-   */
-  bool mDoCorrection;
-
-  /**
    *   A pointer to the reactions of the model.
    */
-  const CCopasiVectorNS <CReaction> * mpReactions;
-
-  /**
-   *   A pointer to the metabolites of the model.
-   */
-  CCopasiVector <CMetab> * mpMetabolites;
-
-  /**
-   *   The stoichometry matrix of the model.
-   */
-  CMatrix <C_FLOAT64> mStoi;
-
-  /**
-   *   Vectors to hold the system state and intermediate results
-   */
-  std::vector <C_FLOAT64> temp;
-  std::vector <C_FLOAT64> currentState;
+  CVectorCore< CMathReaction > mReactions;
 
   /**
    *   Vector to hold information about how many metabolites of a reaction
@@ -563,12 +480,6 @@ protected:
    *   each metabolite in the reaction is provided.
    */
   std::vector <std::vector <CHybridLSODABalance> > mLocalBalances;
-
-  /**
-   *   Internal representation of the substrates of each reaction. The index
-   *   of each substrate-metabolite is provided.
-   */
-  std::vector <std::vector <CHybridLSODABalance> > mLocalSubstrates;
 
   /**
    *   Limit for particle numbers. If a particle number is < StochLimit the
@@ -600,13 +511,8 @@ protected:
   /**
    *   The propensities of the stochastic reactions.
    */
-  std::vector <C_FLOAT64> mAmu;
-  std::vector <C_FLOAT64> mAmuOld;
-
-  /**
-   *   Set of the reactions, which must be updated.
-   */
-  std::set <size_t> mUpdateSet;
+  CVector< C_FLOAT64 > mAmu;
+  CVector< C_FLOAT64 > mAmuOld;
 
   /**
    *   The random number generator.
@@ -618,6 +524,11 @@ protected:
    *   executed, the propensities for each of its dependents must be updated.
    */
   CDependencyGraph mDG;
+
+  /**
+   * The calculations required for individual reactions to update all simulation values.
+   */
+  std::vector< std::vector< CObjectInterface * > > mUpdateSequences;
 
   /**
    *   The set of putative stochastic (!) reactions and associated times at
@@ -632,14 +543,19 @@ protected:
 
   /**
    * this flag indicates whether the next LSODA call needs to reinitialize the
-   * integrater (if the partitioning has changed or a stochastic reaction was fired)
+   * integrator (if the partitioning has changed or a stochastic reaction was fired)
    */
   bool mRestartLSODA;
 
   /**
-   *  A pointer to the current state in complete model view.
+   * A pointer to the first species controlled by reactions
    */
-  CState * mpState;
+  const CObjectInterface * mpFirstSpecies;
+
+  /**
+   * A pointer to the value of the first species controlled by reactions.
+   */
+  C_FLOAT64 * mpFirstSpeciesValue;
 
   /**
    * mData.dim is the dimension of the ODE system.
@@ -653,7 +569,7 @@ protected:
   C_FLOAT64 * mY;
 
   /**
-   *  Vector containig the derivatives after calling eval
+   *  Vector containing the derivatives after calling eval
    */
   CVector< C_FLOAT64 > mYdot;
 
@@ -690,7 +606,7 @@ protected:
   /**
    *  Absolute tolerance.
    */
-  C_FLOAT64 mAtol;
+  CVector< C_FLOAT64 > mAtol;
 
   /**
    *
@@ -718,13 +634,6 @@ protected:
    *   Output counter.
    */
   size_t mOutputCounter;
-
-  /**
-   *  Indicates whether the model has global quantities with assignment rules.
-   *  If it has, we will use a less efficient way to update the model
-   *  state to handle this.
-   */
-  bool mHasAssignments;
 };
 
 #include "CHybridNextReactionLSODAMethod.h"

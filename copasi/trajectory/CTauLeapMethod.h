@@ -1,22 +1,14 @@
-/* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.h,v $
- $Revision: 1.16 $
- $Name:  $
- $Author: shoops $
- $Date: 2011/03/07 19:34:14 $
- End CVS Header */
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -37,87 +29,13 @@
 
 /* CLASSES *******************************************************************/
 class CTrajectoryProblem;
-class CState;
-class CReaction;
-class CHybridBalance;
-class CModel;
-class CMetab;
 class CRandom;
+class CMathReaction;
 
 class CTauLeapMethod : public CTrajectoryMethod
 {
   friend CTrajectoryMethod *
   CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType);
-
-  class CReactionDependencies
-  {
-  public:
-    // Operations
-    /**
-     * Default constructor
-     */
-    CReactionDependencies();
-
-    /**
-     * Copy constructor
-     * @param const CReactionDependencies & src
-     */
-    CReactionDependencies(const CReactionDependencies & src);
-
-    /**
-     * Destructor
-     */
-    ~CReactionDependencies();
-
-    /**
-     * Assignment operator
-     * @param const CReactionDependencies & rhs
-     * @return CReactionDependencies &
-     */
-    CReactionDependencies & operator = (const CReactionDependencies & rhs);
-
-    // Attributes
-
-    /**
-     * Vector of multiplier to calculate the new state
-     */
-    CVector< C_FLOAT64 > mSpeciesMultiplier;
-
-    /**
-     * Vector of indexes of the species for method internal calculations
-     */
-    CVector< size_t > mMethodSpeciesIndex;
-
-    /**
-     * Vector of pointers to method internal species values to calculate the new state.
-     */
-    CVector< C_FLOAT64 * > mMethodSpecies;
-
-    /**
-     * Vector of pointers to model species values to calculate the new state.
-     */
-    CVector< C_FLOAT64 * > mModelSpecies;
-
-    /**
-     * Vector of multiplier to calculate the new propensity.
-     */
-    CVector< C_FLOAT64 > mSubstrateMultiplier;
-
-    /**
-     * Vector of pointers to method internal species values to calculate the new propensity.
-     */
-    CVector< C_FLOAT64 * > mMethodSubstrates;
-
-    /**
-     * Vector of pointers to model species values to calculate the new propensity.
-     */
-    CVector< C_FLOAT64 * > mModelSubstrates;
-
-    /**
-     * A pointer to the particle flux of the reaction.
-     */
-    C_FLOAT64 * mpParticleFlux;
-  };
 
   /* PUBLIC METHODS ************************************************************/
 
@@ -158,7 +76,7 @@ public:
    *  starting with the initialState given.
    *  @param "const CState *" initialState
    */
-  virtual void start(const CState * initialState);
+  virtual void start(CVectorCore< C_FLOAT64 > & initialState);
 
   /**
    * Check if the method is suitable for this problem
@@ -194,13 +112,6 @@ protected:
   void updatePropensities();
 
   /**
-   * Calculate one of the propensities
-   * @param const size_t & index
-   * @return const C_FLOAT64 & amu
-   */
-  const C_FLOAT64 & calculateAmu(const size_t & index);
-
-  /**
    *   Updates the system according to the probabilistic
    *   number of firings mK[i] of each reaction i
    */
@@ -217,24 +128,9 @@ private:
 protected:
 
   /**
-   *   Pointer to the model.
-   */
-  CModel * mpModel;
-
-  /**
-   * The method internal state which contains particle rounded particle numbers.
-   */
-  CState mMethodState;
-
-  /**
    *   Number of reactions.
    */
   size_t mNumReactions;
-
-  /**
-   * A vector containing dependency information to minimize the required updates.
-   */
-  std::vector< CReactionDependencies > mReactionDependencies;
 
   /**
    *   Number of variable metabolites.
@@ -242,9 +138,19 @@ protected:
   size_t mNumReactionSpecies;
 
   /**
-   * A vector of reaction propensities
+   * A reference to the math container's reactions
    */
-  CVector< C_FLOAT64 > mAmu;
+  CVectorCore< CMathReaction > mReactions;
+
+  /**
+   * A reference to the math container's propensity objects
+   */
+  CVectorCore< CMathObject > mPropensityObjects;
+
+  /**
+   * A reference to the math container's propensity values
+   */
+  CVectorCore< C_FLOAT64 > mAmu;
 
   /**
    * Total propensity (sum over mAmu[i])
@@ -292,11 +198,6 @@ protected:
    *   The random number generator.
    */
   CRandom * mpRandomGenerator;
-
-  /**
-   * indicates if the correction N^2 -> N*(N-1) should be performed
-   */
-  bool mDoCorrection;
 
   /**
    * index of first species in a CState

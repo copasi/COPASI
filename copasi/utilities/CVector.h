@@ -48,8 +48,8 @@ protected:
    */
   CType * mVector;
 
-  // Operations
 public:
+  // Operations
   /**
    * Specific constructor
    * @param const size_t & size (default: 0)
@@ -61,6 +61,7 @@ public:
     mVector(vector)
   {}
 
+private:
   /**
    * Copy constructor
    * @param const CVectorCore< CType > & src
@@ -70,12 +71,68 @@ public:
     mVector(src.mVector)
   {}
 
+public:
   /**
    * Destructor.
    */
   ~CVectorCore()
   {}
 
+  /**
+   * Initialize the core vector to reference an externally allocated array
+   * @param const size_t & size
+   * @param CType * vector
+   */
+  void initialize(const size_t & size,
+                  CType * vector)
+  {
+    mSize = size;
+    mVector = vector;
+  }
+
+  /**
+   * Initialize the core vector to reference an other core vector.
+   * @param const size_t & size
+   * @param CType * vector
+   */
+  void initialize(const CVectorCore< CType > & src)
+  {
+    mSize = src.mSize;
+    mVector = src.mVector;
+  }
+
+  /**
+   * Assignment operator
+   * @param const CVectorCore <CType> & rhs
+   * @return CVector <CType> & lhs
+   */
+  CVectorCore< CType > & operator = (const CVectorCore <CType> & rhs)
+  {
+    // Nothing to do
+    if (this == &rhs ||
+        (mVector == rhs.mVector && mSize == rhs.mSize))
+      {
+        return *this;
+      }
+
+    // Behave like the assignment operator of CVector if the sizes match
+    if (mVector != rhs.mVector &&
+        mSize == rhs.mSize &&
+        mSize > 0)
+      {
+        memcpy((void *) mVector, (void *) rhs.array(), mSize * sizeof(CType));
+        return *this;
+      }
+
+    // We should never use the assignment operator unless the vectors are identical
+    // or the vector of values can be copied. If we reach this code we probably should
+    // have used initialize(rhs).
+    assert(false);
+
+    return *this;
+  }
+
+public:
   /**
    * Assignment operator
    * @param const CType & value
@@ -236,6 +293,16 @@ public:
 
   /**
    * Copy constructor
+   * @param const CVectorCore <CType> & src
+   */
+  CVector(const CVectorCore <CType> & src):
+    CVectorCore< CType >(0, NULL)
+  {
+    copy(src);
+  }
+
+  /**
+   * Copy constructor
    * @param const CVector <CType> & src
    */
   CVector(const CVector <CType> & src):
@@ -259,18 +326,6 @@ public:
    * @return CVector <CType> & lhs
    */
   CVector< CType > & operator = (const CVectorCore <CType> & rhs)
-  {
-    copy(rhs);
-
-    return * this;
-  }
-
-  /**
-   * Assignment operator
-   * @param const CVector <CType> & rhs
-   * @return CVector <CType> & lhs
-   */
-  CVector< CType > & operator = (const CVector <CType> & rhs)
   {
     copy(rhs);
 

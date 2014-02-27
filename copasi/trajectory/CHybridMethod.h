@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -160,7 +160,7 @@ public:
    *  starting with the initialState given.
    *  @param "const CState *" initialState
    */
-  virtual void start(const CState * initialState);
+  virtual void start(CVectorCore< C_FLOAT64 > & initialState);
 
   /**
   * Check if the method is suitable for this problem
@@ -352,19 +352,6 @@ protected:
   void setupMetab2React();
 
   /**
-   *   Creates for each metabolite a set of reaction indices. If the
-   *   metabolite participates in a reaction as substrate, product or
-   *   modifier this reaction is added to the corresponding set.
-   */
-  void setupMetab2ReactPlusModifier();
-
-  /**
-   *   Creates for each metabolite a set of reaction indices. Each reaction
-   *   is dependent on each metabolite resulting in a complete switch.
-   */
-  void setupMetab2ReactComplete();
-
-  /**
    *   Creates an initial partitioning of the system. Deterministic and
    *   stochastic reactions are determined. The array mStochReactions is
    *   initialized.
@@ -420,15 +407,6 @@ protected:
    *   @return The set of affected metabolites.
    */
   std::set <std::string> *getAffects(size_t rIndex);
-
-  /**
-   *   Gets the set of metabolites, which participate in the given
-   *   reaction either as substrate, product or modifier.
-   *
-   *   @param rIndex The index of the reaction being executed.
-   *   @return The set of participating metabolites.
-   */
-  std::set <size_t> *getParticipatesIn(size_t rIndex);
 
   /**
    *   Prints out data on standard output.

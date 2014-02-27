@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,6 +25,7 @@
 #include "function/CFunction.h"
 #include "randomGenerator/CRandom.h"
 #include "CTrajectoryProblem.h"
+#include "math/CMathContainer.h"
 #include "model/CState.h"
 #include "model/CCompartment.h"
 #include "model/CModel.h"
@@ -162,7 +163,7 @@ bool CTrajAdaptiveSA::elevateChildren()
 CTrajectoryMethod::Status CTrajAdaptiveSA::step(const double & deltaT)
 {
   // do several steps
-  C_FLOAT64 Time = mpCurrentState->getTime();
+  C_FLOAT64 Time = *mpContainerStateTime;
   C_FLOAT64 EndTime = Time + deltaT;
 
   size_t Steps = 0;
@@ -185,13 +186,13 @@ CTrajectoryMethod::Status CTrajAdaptiveSA::step(const double & deltaT)
         }
     }
 
-  *mpCurrentState = mpProblem->getModel()->getState();
-  mpCurrentState->setTime(Time);
+  mContainerState = mpContainer->getState();
+  *mpContainerStateTime = Time;
 
   return NORMAL;
 }
 
-void CTrajAdaptiveSA::start(const CState * initialState)
+void CTrajAdaptiveSA::start(CVectorCore< C_FLOAT64 > & initialState)
 {
   /* get configuration data */
   mMaxSteps = * getValue("Max Internal Steps").pINT;
@@ -204,7 +205,7 @@ void CTrajAdaptiveSA::start(const CState * initialState)
 
   //mpCurrentState is initialized. This state is not used internally in the
   //stochastic solver, but it is used for returning the result after each step.
-  *mpCurrentState = *initialState;
+  mContainerState = initialState;
 
   mpModel = mpProblem->getModel();
   assert(mpModel);
@@ -399,7 +400,7 @@ void CTrajAdaptiveSA::start(const CState * initialState)
     }
 
   mMaxStepsReached = false;
-  mNextReactionTime = mpCurrentState->getTime();
+  mNextReactionTime = *mpContainerStateTime;
   mNextReactionIndex = C_INVALID_INDEX;
 
   mSSAStepCounter = 0;

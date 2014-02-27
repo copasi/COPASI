@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -36,111 +36,6 @@ public:
    * The methods which can be selected for performing this task.
    */
   static const unsigned int ValidMethods[];
-
-private:
-
-  /**
-   * whether the time series should be stored in mTimeSeries
-   */
-  bool mTimeSeriesRequested;
-
-  /**
-   * the time series (if requested)
-   */
-  CTimeSeries mTimeSeries;
-
-  /**
-   * A pointer to the trajectory Problem
-   */
-  CCrossSectionProblem * mpCrossSectionProblem;
-
-  /**
-   * A pointer to the trajectory method
-   */
-  CTrajectoryMethod * mpTrajectoryMethod;
-
-  /**
-   * Indicates whether we need to update moieties.
-   */
-  bool mUpdateMoieties;
-
-  /**
-   * A pointer to the current state of the integration.
-   */
-  CState * mpCurrentState;
-
-  /**
-   * A pointer to the current time of the integration.
-   */
-  const C_FLOAT64 * mpCurrentTime;
-
-  /**
-   * time at which the output starts.
-   */
-  C_FLOAT64 mOutputStartTime;
-
-  /**
-   * time at which the simulation starts.
-   */
-  C_FLOAT64 mStartTime;
-
-  size_t mNumCrossings;
-
-  size_t mOutputStartNumCrossings;
-
-  size_t mMaxNumCrossings;
-
-  /**
-   * handle for progress reporting
-   */
-  size_t mhProgress;
-
-  /**
-   * this holds the max value for the progress reporting
-   */
-  C_FLOAT64 mProgressMax;
-
-  /**
-   * this holds the current value for the progress reporting
-   */
-  C_FLOAT64 mProgressValue;
-
-  /**
-   * this holds the current value for the progress reporting
-   */
-  C_FLOAT64 mProgressFactor;
-
-  /**
-   * temporary event
-   */
-  CEvent* mpEvent;
-
-  /**
-   * describes the internal state of the calculation
-   */
-  enum STATE
-  {
-    TRANSIENT = 0, //before the condition for starting output is met
-    MAIN,          //the main part of the run, while output is generated
-    FINISH         //when the conditions for finishing are met
-  };
-
-  STATE mState;
-
-  std::vector< CState > mStatesRing;
-  //std::vector<C_FLOAT64> mvTimesRing;
-
-  //the number of states already pushed to the ring buffer
-  size_t mStatesRingCounter;
-
-  C_FLOAT64 mPreviousCrossingTime;
-  C_FLOAT64 mPeriod;
-  C_FLOAT64 mAveragePeriod;
-  C_FLOAT64 mLastPeriod;
-  C_INT mPeriodicity;
-  C_FLOAT64 mLastFreq;
-  C_FLOAT64 mFreq;
-  C_FLOAT64 mAverageFreq;
 
 public:
   /**
@@ -222,7 +117,7 @@ public:
    * Retrieves a pointer to current state of the integration.
    * @return CState * pState
    */
-  CState * getState();
+  const CState * getState();
 
   /**
    * gets a reference to the time series
@@ -262,6 +157,119 @@ private:
    */
   void finish();
 
-  static C_FLOAT64 relativeDifferenceOfStates(CState* s1, CState* s2);
+  C_FLOAT64 relativeDifferenceOfStates(const CVectorCore< C_FLOAT64 > & s1,
+                                       const CVectorCore< C_FLOAT64 > & s2);
+
+private:
+
+  // Attributes
+
+  /**
+   * whether the time series should be stored in mTimeSeries
+   */
+  bool mTimeSeriesRequested;
+
+  /**
+   * the time series (if requested)
+   */
+  CTimeSeries mTimeSeries;
+
+  /**
+   * A pointer to the trajectory Problem
+   */
+  CCrossSectionProblem * mpCrossSectionProblem;
+
+  /**
+   * A pointer to the trajectory method
+   */
+  CTrajectoryMethod * mpTrajectoryMethod;
+
+  /**
+   * Indicates whether we need to update moieties.
+   */
+  bool mUpdateMoieties;
+
+  /**
+   * A pointer to the math container used for calculation
+   */
+  CMathContainer * mpContainer;
+
+  /**
+   * The current state of the integration.
+   */
+  CVector< C_FLOAT64 > mCurrentState;
+
+  /**
+   * A pointer to the current time of the integration.
+   */
+  C_FLOAT64 * mpCurrentStateTime;
+
+  /**
+   * time at which the output starts.
+   */
+  C_FLOAT64 mOutputStartTime;
+
+  /**
+   * time at which the simulation starts.
+   */
+  C_FLOAT64 mStartTime;
+
+  size_t mNumCrossings;
+
+  size_t mOutputStartNumCrossings;
+
+  size_t mMaxNumCrossings;
+
+  /**
+   * handle for progress reporting
+   */
+  size_t mhProgress;
+
+  /**
+   * this holds the max value for the progress reporting
+   */
+  C_FLOAT64 mProgressMax;
+
+  /**
+   * this holds the current value for the progress reporting
+   */
+  C_FLOAT64 mProgressValue;
+
+  /**
+   * this holds the current value for the progress reporting
+   */
+  C_FLOAT64 mProgressFactor;
+
+  /**
+   * temporary event
+   */
+  CEvent* mpEvent;
+
+  /**
+   * describes the internal state of the calculation
+   */
+  enum STATE
+  {
+    TRANSIENT = 0, //before the condition for starting output is met
+    MAIN,          //the main part of the run, while output is generated
+    FINISH         //when the conditions for finishing are met
+  };
+
+  STATE mState;
+
+  std::vector< CVector< C_FLOAT64 > > mStatesRing;
+  //std::vector<C_FLOAT64> mvTimesRing;
+
+  //the number of states already pushed to the ring buffer
+  size_t mStatesRingCounter;
+
+  C_FLOAT64 mPreviousCrossingTime;
+  C_FLOAT64 mPeriod;
+  C_FLOAT64 mAveragePeriod;
+  C_FLOAT64 mLastPeriod;
+  C_INT mPeriodicity;
+  C_FLOAT64 mLastFreq;
+  C_FLOAT64 mFreq;
+  C_FLOAT64 mAverageFreq;
 };
 #endif // COPASI_CCrossSectionTask

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -36,6 +36,7 @@
 #include "CTrajectoryProblem.h"
 #include "model/CState.h"
 #include "model/CCompartment.h"
+#include "math/CMathContainer.h"
 
 CTrajectoryMethod *
 CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType)
@@ -98,8 +99,10 @@ CTrajectoryMethod::createMethod(CCopasiMethod::SubType subType)
 CTrajectoryMethod::CTrajectoryMethod(const CCopasiMethod::SubType & subType,
                                      const CCopasiContainer * pParent) :
   CCopasiMethod(CCopasiTask::timeCourse, subType, pParent),
-  mpCurrentState(NULL),
+  mpContainer(NULL),
+  mContainerState(),
   mpProblem(NULL),
+  mpContainerStateTime(NULL),
   mRoots(0)
 {CONSTRUCTOR_TRACE;}
 
@@ -110,10 +113,12 @@ CTrajectoryMethod::CTrajectoryMethod(const CCopasiMethod::SubType & subType,
 CTrajectoryMethod::CTrajectoryMethod(const CTrajectoryMethod & src,
                                      const CCopasiContainer * pParent):
   CCopasiMethod(src, pParent),
-  mpCurrentState(src.mpCurrentState),
-  mpProblem(src.mpProblem),
-  mRoots(src.mRoots)
-{CONSTRUCTOR_TRACE;}
+  mpContainer(NULL),
+  mContainerState(),
+  mpContainerStateTime(NULL),
+  mpProblem(NULL),
+  mRoots(0)
+{}
 
 /**
  *  Destructor.
@@ -121,9 +126,21 @@ CTrajectoryMethod::CTrajectoryMethod(const CTrajectoryMethod & src,
 CTrajectoryMethod::~CTrajectoryMethod()
 {DESTRUCTOR_TRACE;}
 
-void CTrajectoryMethod::setCurrentState(CState * currentState)
+void CTrajectoryMethod::setContainer(CMathContainer * pContainer,
+                                     const bool & reduced)
 {
-  mpCurrentState = currentState;
+  mpContainer = pContainer;
+
+  if (mpContainer != NULL)
+    {
+      mContainerState.initialize(mpContainer->getState(reduced));
+      mpContainerStateTime = mContainerState.array() + mpContainer->getTimeIndex();
+    }
+  else
+    {
+      mContainerState.initialize(0, NULL);
+      mpContainerStateTime = NULL;
+    }
 }
 
 /**
@@ -158,7 +175,7 @@ CTrajectoryMethod::Status CTrajectoryMethod::step(const double & C_UNUSED(deltaT
  *  @param "const CState *" initialState
  *  @return "const double &" actualDeltaT
  */
-void CTrajectoryMethod::start(const CState * C_UNUSED(initialState))
+void CTrajectoryMethod::start(CVectorCore< C_FLOAT64 > & /* initialState */)
 {return;}
 
 //virtual

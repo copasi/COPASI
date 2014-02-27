@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -43,6 +43,7 @@
 
 #include "CHybridMethod.h"
 #include "CTrajectoryProblem.h"
+#include "math/CMathContainer.h"
 #include "model/CModel.h"
 #include "model/CMetab.h"
 #include "model/CReaction.h"
@@ -200,7 +201,7 @@ CTrajectoryMethod::Status CHybridMethod::step(const double & deltaT)
       }
 
   // do several steps
-  C_FLOAT64 time = mpCurrentState->getTime();
+  C_FLOAT64 time = *mpContainerStateTime;
   C_FLOAT64 endTime = time + deltaT;
 
   for (i = 0; ((i < mMaxSteps) && (time < endTime)); i++)
@@ -208,7 +209,7 @@ CTrajectoryMethod::Status CHybridMethod::step(const double & deltaT)
       time = doSingleStep(time, endTime);
     }
 
-  mpCurrentState->setTime(time);
+  *mpContainerStateTime = time;
 
   if ((i >= mMaxSteps) && (!mMaxStepsReached))
     {
@@ -219,17 +220,18 @@ CTrajectoryMethod::Status CHybridMethod::step(const double & deltaT)
   // get back the particle numbers
 
   /* Set the variable metabolites */
-  C_FLOAT64 * Dbl = mpCurrentState->beginIndependent() + mFirstMetabIndex - 1;
+  C_FLOAT64 * Dbl = mContainerState.array() + mFirstMetabIndex;
 
+  // TODO CRITICAL CMathContainer Why are we retrieving the particle values from the model?
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
     *Dbl = mpProblem->getModel()->getMetabolitesX()[i]->getValue();
 
   return NORMAL;
 }
 
-void CHybridMethod::start(const CState * initialState)
+void CHybridMethod::start(CVectorCore< C_FLOAT64 > & initialState)
 {
-  *mpCurrentState = *initialState;
+  mContainerState = initialState;
 
   mpModel = mpProblem->getModel();
   assert(mpModel);
@@ -241,15 +243,13 @@ void CHybridMethod::start(const CState * initialState)
 
   mHasAssignments = modelHasAssignments(mpModel);
 
-  mFirstMetabIndex = mpModel->getStateTemplate().getIndex(mpModel->getMetabolitesX()[0]);
+  mFirstMetabIndex = mpContainer->getCountFixedEventTargets() + 1 /* time */ + mpContainer->getCountODEs();
 
-  mpProblem->getModel()->setState(*mpCurrentState);
-
-  mpModel->updateSimulatedValues(false); //for assignments
-  //mpModel->updateNonSimulatedValues(); //for assignments
+  mpContainer->setState(mContainerState);
+  mpContainer->updateSimulatedValues(false);
 
   // call init of the simulation method, can be overloaded in derived classes
-  initMethod(mpCurrentState->getTime());
+  initMethod(*mpContainerStateTime);
 
   return;
 }
@@ -986,68 +986,6 @@ void CHybridMethod::setupMetab2React()
 }
 
 /**
- *   Creates for each metabolite a set of reaction indices. If the metabolite
- *   participates in a reaction as substrate, product or modifier this
- *   reaction is added to the corresponding set.
- */
-void CHybridMethod::setupMetab2ReactPlusModifier()
-{
-  std::vector< std::set<size_t>* > participatesIn;
-  size_t numReactions = mpReactions->size();
-  size_t i;
-
-  // Resize mMetab2React and create an initial set for each metabolite
-  mMetab2React.resize(mpMetabolites->size());
-
-  // Do for each reaction:
-  for (i = 0; i < numReactions; i++)
-    {
-      participatesIn.push_back(getParticipatesIn(i));
-    }
-
-  // Iterate over all reactions
-  for (i = 0; i < numReactions; i++)
-    {
-      // Get the set of metabolites which take part in this reaction
-      std::set<size_t>::iterator iter = participatesIn[i]->begin();
-
-      for (; iter != participatesIn[i]->end(); iter++)
-        mMetab2React[*iter].insert(i);
-    }
-
-  for (i = 0; i < numReactions; i++)
-    {
-      delete participatesIn[i];
-    }
-
-  return;
-}
-
-/**
- *   Creates for each metabolite a set of reaction indices. Each reaction is
- *   dependent on each metabolite resulting in a complete switch.
- */
-void CHybridMethod::setupMetab2ReactComplete()
-{
-  size_t i, j;
-
-  // Resize mMetab2React and create an initial set for each metabolite
-  mMetab2React.resize(mpMetabolites->size());
-
-  // Iterate over all metabolites
-  for (i = 0; i < mpMetabolites->size(); i++)
-    {
-      // Iterate over all reactions
-      for (j = 0; j < mpReactions->size(); j++)
-        {
-          mMetab2React[i].insert(j);
-        }
-    }
-
-  return;
-}
-
-/**
  *   Creates an initial partitioning of the system. Deterministic and
  *   stochastic reactions are determined. The vector mReactionFlags and
  *   the vector mMetabFlags are initialized.
@@ -1202,7 +1140,7 @@ void CHybridMethod::partitionSystem()
                   */
                   calculateAmu(*iter);
                   mAmuOld[*iter] = mAmu[*iter];
-                  key = mpCurrentState->getTime() + generateReactionTime(*iter);
+                  key = *mpContainerStateTime + generateReactionTime(*iter);
                   mPQ.insertStochReaction(*iter, key);
                 }
 
@@ -1348,19 +1286,6 @@ std::set<std::string> *CHybridMethod::getAffects(size_t rIndex)
 }
 
 /**
- *   Gets the set of metabolites, which participate in the given
- *   reaction either as substrate, product or modifier.
- *
- *   @param rIndex The index of the reaction being executed.
- *   @return The set of participating metabolites.
- */
-std::set<size_t> *CHybridMethod::getParticipatesIn(size_t /* rIndex */)
-{
-  std::set<size_t> *retset = new std::set<size_t>;
-  return retset;
-}
-
-/**
  *   Prints out data on standard output. Deprecated.
  */
 void CHybridMethod::outputData(std::ostream & os, C_INT32 mode)
@@ -1375,7 +1300,7 @@ void CHybridMethod::outputData(std::ostream & os, C_INT32 mode)
         if (mOutputCounter == (counter++))
           {
             counter = 0;
-            os << mpCurrentState->getTime() << " : ";
+            os << *mpContainerStateTime << " : ";
 
             for (i = 0; i < mpMetabolites->size(); i++)
               {
@@ -1388,7 +1313,7 @@ void CHybridMethod::outputData(std::ostream & os, C_INT32 mode)
         break;
 
       case 1:
-        os << mpCurrentState->getTime() << " : ";
+        os << *mpContainerStateTime << " : ";
 
         for (i = 0; i < mpMetabolites->size(); i++)
           {
@@ -1419,7 +1344,7 @@ void CHybridMethod::outputDebug(std::ostream & os, size_t level)
     {
       case 0:                              // Everything !!!
         os << " Name: " << CCopasiParameter::getObjectName() << std::endl;
-        os << "current time: " << mpCurrentState->getTime() << std::endl;
+        os << "current time: " << *mpContainerStateTime << std::endl;
         os << "mNumVariableMetabs: " << mNumVariableMetabs << std::endl;
         os << "mMaxSteps: " << mMaxSteps << std::endl;
         os << "mMaxBalance: " << mMaxBalance << std::endl;
@@ -1569,7 +1494,7 @@ void CHybridMethod::outputDebug(std::ostream & os, size_t level)
         break;
 
       case 1:                               // Variable values only
-        os << "current time: " << mpCurrentState->getTime() << std::endl;
+        os << "current time: " << *mpContainerStateTime << std::endl;
         /*
         case 1:
         os << "mTime: " << mpCurrentState->getTime() << std::endl;

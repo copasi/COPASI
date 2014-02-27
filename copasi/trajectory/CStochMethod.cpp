@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -35,6 +35,7 @@
 #include "randomGenerator/CRandom.h"
 #include "CTrajectoryMethod.h"
 #include "CTrajectoryProblem.h"
+#include "math/CMathContainer.h"
 #include "model/CState.h"
 #include "model/CCompartment.h"
 #include "model/CModel.h"
@@ -127,7 +128,7 @@ CTrajectoryMethod::Status CStochMethod::step(const double & deltaT)
       }
 
   // do several steps:
-  C_FLOAT64 time = mpCurrentState->getTime();
+  C_FLOAT64 time = *mpContainerStateTime;
   C_FLOAT64 endtime = time + deltaT;
 
   size_t Steps = 0;
@@ -135,7 +136,7 @@ CTrajectoryMethod::Status CStochMethod::step(const double & deltaT)
   while (time < endtime)
     {
       time = doSingleStep(time, endtime);
-      mpCurrentState->setTime(time);
+      *mpContainerStateTime = time;
 
       if (++Steps > mMaxSteps)
         {
@@ -143,21 +144,13 @@ CTrajectoryMethod::Status CStochMethod::step(const double & deltaT)
         }
     }
 
-  *mpCurrentState = mpProblem->getModel()->getState();
-  mpCurrentState->setTime(time);
-
-  // get back the particle numbers:
-
-  /* Set the variable Metabolites */
-  C_FLOAT64 * Dbl = mpCurrentState->beginIndependent() + mFirstMetabIndex - 1;
-
-  for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
-    *Dbl = mpProblem->getModel()->getMetabolitesX()[i]->getValue();
+  mContainerState = mpContainer->getState();
+  *mpContainerStateTime = time;
 
   return NORMAL;
 }
 
-void CStochMethod::start(const CState * initialState)
+void CStochMethod::start(CVectorCore< C_FLOAT64 > & initialState)
 {
   /* get configuration data */
   mMaxSteps = * getValue("Max Internal Steps").pINT;
@@ -169,7 +162,7 @@ void CStochMethod::start(const CState * initialState)
 
   //mpCurrentState is initialized. This state is not used internally in the
   //stochastic solver, but it is used for returning the result after each step.
-  *mpCurrentState = *initialState;
+  mContainerState = initialState;
 
   mpModel = mpProblem->getModel();
   assert(mpModel);
@@ -213,7 +206,7 @@ void CStochMethod::start(const CState * initialState)
   updatePropensities();
 
   // call init of the specific simulation method
-  initMethod(mpCurrentState->getTime());
+  initMethod(*mpContainerStateTime);
 
   mMaxStepsReached = false;
   return;

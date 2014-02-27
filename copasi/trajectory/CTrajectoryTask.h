@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -33,6 +33,7 @@
 class CTrajectoryProblem;
 class CTrajectoryMethod;
 class CState;
+class CMathContainer;
 
 class CTrajectoryTask : public CCopasiTask
 {
@@ -42,58 +43,6 @@ public:
    * The methods which can be selected for performing this task.
    */
   static const unsigned int ValidMethods[];
-
-private:
-
-  /**
-   * whether the time series should be stored in mTimeSeries
-   */
-  bool mTimeSeriesRequested;
-
-  /**
-   * the time series (if requested)
-   */
-  CTimeSeries mTimeSeries;
-
-  /**
-   * A pointer to the trajectory Problem
-   */
-  CTrajectoryProblem * mpTrajectoryProblem;
-
-  /**
-   * A pointer to the trajectory method
-   */
-  CTrajectoryMethod * mpTrajectoryMethod;
-
-  /**
-   * Indicates whether we need to update moieties.
-   */
-  bool mUpdateMoieties;
-
-  /**
-   * A pointer to the current state of the integration.
-   */
-  CState * mpCurrentState;
-
-  /**
-   * A pointer to the current time of the integration.
-   */
-  const C_FLOAT64 * mpCurrentTime;
-
-  /**
-   * A pointer to the time at which the output starts.
-   */
-  C_FLOAT64 mOutputStartTime;
-
-  /**
-   * A pointer to lessOrEqual comparison
-   */
-  bool (*mpLessOrEqual)(const C_FLOAT64 &, const C_FLOAT64 &);
-
-  /**
-   * A pointer to less comparison
-   */
-  bool (*mpLess)(const C_FLOAT64 &, const C_FLOAT64 &);
 
 public:
   /**
@@ -177,9 +126,9 @@ public:
 
   /**
    * Retrieves a pointer to current state of the integration.
-   * @return CState * pState
+   * @return const CState * pState
    */
-  CState * getState();
+  const CState * getState();
 
   /**
    * gets a reference to the time series
@@ -192,5 +141,62 @@ private:
    * cleanup()
    */
   void cleanup();
+
+// Attributes
+
+  /**
+   * whether the time series should be stored in mTimeSeries
+   */
+  bool mTimeSeriesRequested;
+
+  /**
+   * the time series (if requested)
+   */
+  CTimeSeries mTimeSeries;
+
+  /**
+   * A pointer to the trajectory Problem
+   */
+  CTrajectoryProblem * mpTrajectoryProblem;
+
+  /**
+   * A pointer to the trajectory method
+   */
+  CTrajectoryMethod * mpTrajectoryMethod;
+
+  /**
+   * Indicates whether we need to update moieties.
+   */
+  bool mUpdateMoieties;
+
+  /**
+   * The current state of the integration.
+   */
+  CVector< C_FLOAT64 > mCurrentState;
+
+  /**
+   * A pointer to the current time of the integration.
+   */
+  C_FLOAT64 * mpCurrentStateTime;
+
+  /**
+   * A pointer to the time at which the output starts.
+   */
+  C_FLOAT64 mOutputStartTime;
+
+  /**
+   * A pointer to lessOrEqual comparison
+   */
+  bool (*mpLessOrEqual)(const C_FLOAT64 &, const C_FLOAT64 &);
+
+  /**
+   * A pointer to less comparison
+   */
+  bool (*mpLess)(const C_FLOAT64 &, const C_FLOAT64 &);
+
+  /**
+   * A pointer to the math container used for calculation
+   */
+  CMathContainer * mpContainer;
 };
 #endif // COPASI_CTrajectoryTask

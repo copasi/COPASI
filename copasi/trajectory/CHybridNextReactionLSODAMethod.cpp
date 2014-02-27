@@ -1,17 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridNextReactionLSODAMethod.cpp,v $
-   $Revision: 1.2 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2011/03/07 19:34:13 $
-   End CVS Header */
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -65,7 +62,7 @@ C_FLOAT64 CHybridNextReactionLSODAMethod::doSingleStep(C_FLOAT64 currentTime, C_
             }
 
           fireReaction(rIndex);
-          mpCurrentState->setTime(ds);
+          *mpContainerStateTime = ds;
 
           if (++mStepsAfterPartitionSystem >= mPartitioningInterval)
             {
@@ -85,7 +82,7 @@ C_FLOAT64 CHybridNextReactionLSODAMethod::doSingleStep(C_FLOAT64 currentTime, C_
               integrateDeterministicPart(endTime - currentTime);
             }
 
-          mpCurrentState->setTime(ds);
+          *mpContainerStateTime = ds;
 
           if (++mStepsAfterPartitionSystem >= mPartitioningInterval)
             {
@@ -108,7 +105,7 @@ C_FLOAT64 CHybridNextReactionLSODAMethod::doSingleStep(C_FLOAT64 currentTime, C_
               integrateDeterministicPart(mStepsize);
             }
 
-          mpCurrentState->setTime(ds);
+          *mpContainerStateTime = ds;
 
           if (++mStepsAfterPartitionSystem >= mPartitioningInterval)
             {
@@ -128,7 +125,7 @@ C_FLOAT64 CHybridNextReactionLSODAMethod::doSingleStep(C_FLOAT64 currentTime, C_
               integrateDeterministicPart(endTime - currentTime);
             }
 
-          mpCurrentState->setTime(ds);
+          *mpContainerStateTime = ds;
 
           if (++mStepsAfterPartitionSystem >= mPartitioningInterval)
             {

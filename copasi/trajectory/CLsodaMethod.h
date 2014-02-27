@@ -1,22 +1,14 @@
-/* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.h,v $
- $Revision: 1.29 $
- $Name:  $
- $Author: shoops $
- $Date: 2012/01/19 18:40:50 $
- End CVS Header */
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -77,17 +69,12 @@ private:
 
 protected:
   /**
-   *  A pointer to the current state in complete model view.
-   */
-  CState mMethodState;
-
-private:
-  /**
    * mData.dim is the dimension of the ODE system.
    * mData.pMethod contains CLsodaMethod * this to be used in the static method EvalF
    */
   Data mData;
 
+private:
   /**
    *  Pointer to the array with left hand side values.
    */
@@ -113,6 +100,11 @@ protected:
    *  LSODA state.
    */
   C_INT mLsodaStatus;
+
+  /**
+   * The state after the last successful integration step
+   */
+  CVector< C_FLOAT64 > mLastSuccessState;
 
 private:
   /**
@@ -160,17 +152,6 @@ private:
    */
   C_INT mJType;
 
-protected:
-  /**
-   * A pointer to the model
-   */
-  CModel * mpModel;
-
-  /**
-   * A Boolean value indication whether we have no ODEs
-   */
-  bool mNoODE;
-
 private:
   /**
    * A dummy variable if we do not have any ODEs
@@ -185,7 +166,7 @@ private:
   /**
    * A which indicates whether roots change only discretely.
    */
-  CVector< bool > mDiscreteRoots;
+  CVectorCore< bool > mDiscreteRoots;
 
 protected:
   /**
@@ -259,8 +240,7 @@ public:
    *  starting with the initialState given.
    *  @param "const CState *" initialState
    */
-  virtual void start(const CState * initialState);
-
+  virtual void start(CVectorCore< C_FLOAT64 > & initialState);
 
   /**
    *  This evaluates the derivatives

@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapMethod.cpp,v $
-//   $Revision: 1.8 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:30:19 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -32,7 +24,7 @@
 #include "model/CModel.h"
 
 CLyapValidSubTypes::CLyapValidSubTypes():
-    std::vector< CCopasiMethod::SubType >()
+  std::vector< CCopasiMethod::SubType >()
 {
   push_back(CCopasiMethod::lyapWolf);
 }
@@ -78,9 +70,9 @@ CLyapMethod * CLyapMethod::createMethod(CCopasiMethod::SubType subType)
  */
 CLyapMethod::CLyapMethod(const CCopasiMethod::SubType & subType,
                          const CCopasiContainer * pParent) :
-    CCopasiMethod(CCopasiTask::lyap, subType, pParent),
-    //mpCurrentState(NULL),
-    mpProblem(NULL)
+  CCopasiMethod(CCopasiTask::lyap, subType, pParent),
+  //mpCurrentState(NULL),
+  mpProblem(NULL)
 {CONSTRUCTOR_TRACE;}
 
 /**
@@ -89,9 +81,9 @@ CLyapMethod::CLyapMethod(const CCopasiMethod::SubType & subType,
  */
 CLyapMethod::CLyapMethod(const CLyapMethod & src,
                          const CCopasiContainer * pParent):
-    CCopasiMethod(src, pParent),
-    //mpCurrentState(src.mpCurrentState),
-    mpProblem(src.mpProblem)
+  CCopasiMethod(src, pParent),
+  //mpCurrentState(src.mpCurrentState),
+  mpProblem(src.mpProblem)
 {CONSTRUCTOR_TRACE;}
 
 /**
@@ -133,7 +125,7 @@ double CLyapMethod::step(const double & C_UNUSED(deltaT))
  *  @param "const CState *" initialState
  *  @return "const double &" actualDeltaT
  */
-void CLyapMethod::start(const CState * C_UNUSED(initialState))
+void CLyapMethod::start(CVectorCore< C_FLOAT64 > & /* initialState */)
 {return;}
 
 //virtual

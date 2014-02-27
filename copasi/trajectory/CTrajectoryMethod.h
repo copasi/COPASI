@@ -1,22 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.h,v $
-   $Revision: 1.27 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2011/03/07 19:34:13 $
-   End CVS Header */
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -39,6 +31,7 @@
 
 class CTrajectoryProblem;
 class CState;
+class CMathContainer;
 
 class CTrajectoryMethod : public CCopasiMethod
 {
@@ -52,25 +45,6 @@ public:
     NORMAL = 0,
     ROOT = 1
   };
-
-protected:
-  /**
-   *  A pointer to the current state. This is set from outside
-   *  with the setState() method and never changed anywhere else.
-   *  It's used to report the results
-   *  to the calling TrajectoryTask
-   */
-  CState * mpCurrentState;
-
-  /**
-   *  A pointer to the trajectory problem.
-   */
-  CTrajectoryProblem * mpProblem;
-
-  /**
-   * Vector containing information on the current roots
-   */
-  CVector< C_INT > mRoots;
 
   // Operations
 private:
@@ -112,12 +86,20 @@ public:
   ~CTrajectoryMethod();
 
   /**
-   *  Set a pointer to the current state.
-   *  This method is used by CTrajectoryTask::process()
-   *  The results of the simulation are passed via this CState variable
-   *  @param "CState *" currentState
+   * Set the math container used for calculations
+   * @param CMathContainer * pContainer
+   * @param const bool & reduced = false
    */
-  void setCurrentState(CState * currentState);
+  void setContainer(CMathContainer * pContainer,
+                    const bool & reduced = false);
+
+  /**
+   *  Set a reference to the current state.
+   *  This method is used by CTrajectoryTask::process()
+   *  The results of the simulation are passed via this CVectorCore< C_FLOAT64 > currentState
+   *  @param CVectorCore< C_FLOAT64 > & currentState
+   */
+  void initializeCurrentState(CVectorCore< C_FLOAT64 > & currentState);
 
   /**
    *  Set a pointer to the problem.
@@ -148,7 +130,7 @@ public:
    *  starting with the initialState given.
    *  @param "const CState *" initialState
    */
-  virtual void start(const CState * initialState);
+  virtual void start(CVectorCore< C_FLOAT64 > & initialState);
 
   /**
    * Retrieve the roots.
@@ -161,6 +143,35 @@ public:
    * @return bool suitability of the method
    */
   virtual bool isValidProblem(const CCopasiProblem * pProblem);
+
+  // Attributes
+protected:
+  /**
+   * A pointer to the math container
+   */
+  CMathContainer * mpContainer;
+
+  /**
+   *  A reference to the current state. This is set from outside
+   *  with the setState() method and never changed anywhere else.
+   *  It's used to report the results to the calling TrajectoryTask
+   */
+  CVectorCore< C_FLOAT64 > mContainerState;
+
+  /**
+   * A pointer to the time value of the current state.
+   */
+  C_FLOAT64 * mpContainerStateTime;
+
+  /**
+   *  A pointer to the trajectory problem.
+   */
+  CTrajectoryProblem * mpProblem;
+
+  /**
+   * Vector containing information on the current roots
+   */
+  CVector< C_INT > mRoots;
 };
 
 #endif // COPASI_CTrajectoryMethod

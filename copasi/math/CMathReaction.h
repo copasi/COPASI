@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,10 +18,17 @@ class CMathContainer;
 class CMathReaction
 {
 public:
+  typedef std::set< std::pair < const CObjectInterface *, C_FLOAT64 > > Balance;
+
   /**
    * Constructor
    */
   CMathReaction();
+
+  /**
+   * Copy constructor
+   */
+  CMathReaction(const CMathReaction & src);
 
   /**
    * Destructor
@@ -46,9 +53,14 @@ public:
 
   /**
    * Fire the reaction count times. Note count must not necessarily be an integer
+   */
+  void fire();
+
+  /**
+   * Fire the reaction count times. Note count must not necessarily be an integer
    * @param const C_FLOAT64 & count
    */
-  void fire(const C_FLOAT64 & count);
+  void fireMultiple(const C_FLOAT64 & count);
 
   /**
    * Retrieve a pointer to the mathematical object for the particle flux.
@@ -70,9 +82,9 @@ public:
 
   /**
    * Retrieve the set of modified species
-   * @return const CObjectInterface::ObjectSet & modifiedSpecies
+   * @return const std::set< std::pair < const CObjectInterface *, C_FLOAT64 > > & balance
    */
-  const CObjectInterface::ObjectSet & getModifiedSpecies() const;
+  const Balance & getBalance() const;
 
   /**
    * Retrieve a pointer to the model reaction
@@ -102,9 +114,9 @@ private:
   CMathObject * mpPropensity;
 
   /**
-   * The set of modified species
+   * The set of modified species and their change per reaction event
    */
-  CObjectInterface::ObjectSet mModifiedSpecies;
+  Balance mBalance;
 
   /**
    * Information for updating the species particle numbers when the

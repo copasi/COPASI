@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,8 +15,17 @@ CMathReaction::CMathReaction():
   mpParticleFlux(NULL),
   mpFlux(NULL),
   mpPropensity(NULL),
-  mModifiedSpecies(),
+  mBalance(),
   mStepUpdates()
+{}
+
+CMathReaction::CMathReaction(const CMathReaction & src):
+  mpReaction(src.mpReaction),
+  mpParticleFlux(src.mpParticleFlux),
+  mpFlux(src.mpFlux),
+  mpPropensity(src.mpPropensity),
+  mBalance(src.mBalance),
+  mStepUpdates(src.mStepUpdates)
 {}
 
 CMathReaction::~CMathReaction()
@@ -41,7 +50,7 @@ void CMathReaction::initialize(const CReaction * pReaction, CMathContainer & con
   for (; pStepUpdate != pStepUpdateEnd; ++pStepUpdate, ++it)
     {
       CMathObject * pParticleNumber = container.getMathObject((*it)->getMetabolite()->getValueReference());
-      mModifiedSpecies.insert(pParticleNumber);
+      mBalance.insert(std::pair < const CObjectInterface *, C_FLOAT64 >(pParticleNumber, (*it)->getMultiplicity()));
       pStepUpdate->first = (*it)->getMultiplicity();
       pStepUpdate->second = (C_FLOAT64 *) pParticleNumber->getValuePointer();
     }
@@ -69,16 +78,27 @@ void CMathReaction::copy(const CMathReaction & src,
       pStepUpdate->second = pStepUpdateSrc->second + valueOffset;
     }
 
-  CObjectInterface::ObjectSet::const_iterator it = src.mModifiedSpecies.begin();
-  CObjectInterface::ObjectSet::const_iterator end = src.mModifiedSpecies.end();
+  Balance::const_iterator it = src.mBalance.begin();
+  Balance::const_iterator end = src.mBalance.end();
 
   for (; it != end; ++it)
     {
-      mModifiedSpecies.insert(*it + objectOffset);
+      mBalance.insert(std::pair < const CObjectInterface *, C_FLOAT64 >(it->first + objectOffset, it->second));
     }
 }
 
-void CMathReaction::fire(const C_FLOAT64 & count)
+void CMathReaction::fire()
+{
+  std::pair< C_FLOAT64, C_FLOAT64 * > * pStepUpdate = mStepUpdates.array();
+  std::pair< C_FLOAT64, C_FLOAT64 * > * pStepUpdateEnd = pStepUpdate + mStepUpdates.size();
+
+  for (; pStepUpdate != pStepUpdateEnd; ++pStepUpdate)
+    {
+      *pStepUpdate->second += pStepUpdate->first;
+    }
+}
+
+void CMathReaction::fireMultiple(const C_FLOAT64 & count)
 {
   std::pair< C_FLOAT64, C_FLOAT64 * > * pStepUpdate = mStepUpdates.array();
   std::pair< C_FLOAT64, C_FLOAT64 * > * pStepUpdateEnd = pStepUpdate + mStepUpdates.size();
@@ -104,9 +124,9 @@ const CMathObject * CMathReaction::getPropensityObject() const
   return mpPropensity;
 }
 
-const CObjectInterface::ObjectSet & CMathReaction::getModifiedSpecies() const
+const std::set< std::pair < const CObjectInterface *, C_FLOAT64 > > & CMathReaction::getBalance() const
 {
-  return mModifiedSpecies;
+  return mBalance;
 }
 
 const CReaction * CMathReaction::getModelReaction() const

@@ -19,6 +19,7 @@
 #include "CCrossSectionTask.h"
 #include "CCrossSectionProblem.h"
 //#include "CCrossSectionMethod.h"
+#include "math/CMathContainer.h"
 #include "model/CModel.h"
 #include "model/CMathModel.h"
 #include "model/CState.h"
@@ -41,8 +42,9 @@ CCrossSectionTask::CCrossSectionTask(const CCopasiContainer * pParent):
   mpCrossSectionProblem(NULL),
   mpTrajectoryMethod(NULL),
   mUpdateMoieties(false),
-  mpCurrentState(NULL),
-  mpCurrentTime(NULL),
+  mpContainer(NULL),
+  mCurrentState(),
+  mpCurrentStateTime(NULL),
   mOutputStartTime(0.0),
   mStartTime(0.0),
   mNumCrossings(0),
@@ -79,8 +81,9 @@ CCrossSectionTask::CCrossSectionTask(const CCrossSectionTask & src,
   mpCrossSectionProblem(NULL),
   mpTrajectoryMethod(NULL),
   mUpdateMoieties(false),
-  mpCurrentState(NULL),
-  mpCurrentTime(NULL),
+  mpContainer(new CMathContainer(*src.mpContainer)),
+  mCurrentState(src.mCurrentState),
+  mpCurrentStateTime(NULL),
   mOutputStartTime(0.0),
   mStartTime(0.0),
   mNumCrossings(0),
@@ -122,7 +125,7 @@ CCrossSectionTask::~CCrossSectionTask()
 
 void CCrossSectionTask::cleanup()
 {
-  pdelete(mpCurrentState);
+  pdelete(mpContainer);
 }
 
 void CCrossSectionTask::initObjects()
@@ -161,9 +164,12 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
   else
     mUpdateMoieties = false;
 
-  pdelete(mpCurrentState);
-  mpCurrentState = new CState(mpCrossSectionProblem->getModel()->getState());
-  mpCurrentTime = &mpCurrentState->getTime();
+  pdelete(mpContainer);
+  mpContainer = new CMathContainer(*mpCrossSectionProblem->getModel());
+
+  mCurrentState = mpContainer->getState(mUpdateMoieties);
+  mpCurrentStateTime = mCurrentState.array() + mpContainer->getTimeIndex();
+  mpTrajectoryMethod->setContainer(mpContainer);
 
   //init the ring buffer for the states
   mStatesRing.resize(RING_SIZE);
@@ -256,17 +262,17 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
   //the output starts only after "outputStartTime" has passed
   if (mpCrossSectionProblem->getFlagLimitOutTime())
     {
-      mOutputStartTime = *mpCurrentTime + mpCrossSectionProblem->getOutputStartTime();
+      mOutputStartTime = *mpCurrentStateTime + mpCrossSectionProblem->getOutputStartTime();
       MaxDuration += mpCrossSectionProblem->getOutputStartTime();
     }
   else
     {
-      mOutputStartTime = *mpCurrentTime;
+      mOutputStartTime = *mpCurrentStateTime;
     }
 
-  const C_FLOAT64 EndTime = *mpCurrentTime + MaxDuration;
+  const C_FLOAT64 EndTime = *mpCurrentStateTime + MaxDuration;
 
-  mStartTime = *mpCurrentTime;
+  mStartTime = *mpCurrentStateTime;
 
   // It suffices to reach the end time within machine precision
   C_FLOAT64 CompareEndTime = mOutputStartTime - 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
@@ -307,21 +313,25 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
         {
           flagProceed &= processStep(EndTime);
         }
-      while ((*mpCurrentTime < CompareEndTime) && flagProceed);
+      while ((*mpCurrentStateTime < CompareEndTime) && flagProceed);
     }
 
   catch (int)
     {
-      mpCrossSectionProblem->getModel()->setState(*mpCurrentState);
-      mpCrossSectionProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
+      mpContainer->setState(mCurrentState);
+      mpContainer->updateSimulatedValues(mUpdateMoieties);
+      mpContainer->pushState();
+
       finish();
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 16);
     }
 
   catch (CCopasiException & Exception)
     {
-      mpCrossSectionProblem->getModel()->setState(*mpCurrentState);
-      mpCrossSectionProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
+      mpContainer->setState(mCurrentState);
+      mpContainer->updateSimulatedValues(mUpdateMoieties);
+      mpContainer->pushState();
+
       finish();
       throw CCopasiException(Exception.getMessage());
     }
@@ -334,12 +344,14 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
 void CCrossSectionTask::processStart(const bool & useInitialValues)
 {
   if (useInitialValues)
-    mpCrossSectionProblem->getModel()->applyInitialValues();
+    {
+      mpContainer->applyInitialValues();
+    }
 
-  *mpCurrentState = mpCrossSectionProblem->getModel()->getState();
+  mCurrentState = mpContainer->getState(mUpdateMoieties);
 
-  mpTrajectoryMethod->setCurrentState(mpCurrentState);
-  mpTrajectoryMethod->start(mpCurrentState);
+  mpTrajectoryMethod->initializeCurrentState(mCurrentState);
+  mpTrajectoryMethod->start(mCurrentState);
 
   return;
 }
@@ -359,11 +371,11 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
       //pModel->getMathModel()->getProcessQueue().printDebug();
 
       //execute events for inequalities
-      StateChanged |= pModel->processQueue(*mpCurrentTime, false, NULL);
+      StateChanged |= pModel->processQueue(*mpCurrentStateTime, false, NULL);
 
       if (StateChanged)
         {
-          *mpCurrentState = pModel->getState();
+          mCurrentState = mpContainer->getState(mUpdateMoieties);
           mpTrajectoryMethod->stateChanged();
           StateChanged = false;
         }
@@ -371,24 +383,24 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
       // std::min suffices since events are only supported in forward integration.
       NextTime = std::min(endTime, pModel->getProcessQueueExecutionTime());
 
-      switch (mpTrajectoryMethod->step(NextTime - *mpCurrentTime))
+      switch (mpTrajectoryMethod->step(NextTime - *mpCurrentStateTime))
         {
           case CTrajectoryMethod::NORMAL:
-            pModel->setState(*mpCurrentState);
-            pModel->updateSimulatedValues(mUpdateMoieties);
+            mpContainer->setState(mCurrentState);
+            mpContainer->updateSimulatedValues(mUpdateMoieties);
 
             // TODO Provide a call back method for resolving simultaneous assignments.
 
             //execute events for equalities
-            StateChanged |= pModel->processQueue(*mpCurrentTime, true, NULL);
+            StateChanged |= pModel->processQueue(*mpCurrentStateTime, true, NULL);
 
             // If the state change happens to coincide with end of the step we have to return and
             // inform the integrator of eventual state changes.
-            if (fabs(*mpCurrentTime - endTime) < Tolerance)
+            if (fabs(*mpCurrentStateTime - endTime) < Tolerance)
               {
                 if (StateChanged)
                   {
-                    *mpCurrentState = pModel->getState();
+                    mCurrentState = mpContainer->getState(mUpdateMoieties);
                     mpTrajectoryMethod->stateChanged();
                     StateChanged = false;
                   }
@@ -401,27 +413,27 @@ bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
           case CTrajectoryMethod::ROOT:
             //we arrive here whenever the integrator finds a root
             //this does not necessarily mean an event fires
-            pModel->setState(*mpCurrentState);
-            pModel->updateSimulatedValues(mUpdateMoieties);
+            mpContainer->setState(mCurrentState);
+            mpContainer->updateSimulatedValues(mUpdateMoieties);
 
             //this checks whether equality events are triggered
-            pModel->processRoots(*mpCurrentTime, true, true, mpTrajectoryMethod->getRoots());
+            pModel->processRoots(*mpCurrentStateTime, true, true, mpTrajectoryMethod->getRoots());
 
             // TODO Provide a call back method for resolving simultaneous assignments.
 
             //execute scheduled events for equalities
-            StateChanged |= pModel->processQueue(*mpCurrentTime, true, NULL);
+            StateChanged |= pModel->processQueue(*mpCurrentStateTime, true, NULL);
 
             //this checks whether inequality events are triggered
-            pModel->processRoots(*mpCurrentTime, false, true, mpTrajectoryMethod->getRoots());
+            pModel->processRoots(*mpCurrentStateTime, false, true, mpTrajectoryMethod->getRoots());
 
             // If the root happens to coincide with end of the step we have to return and
             // inform the integrator of eventual state changes.
-            if (fabs(*mpCurrentTime - endTime) < Tolerance)
+            if (fabs(*mpCurrentStateTime - endTime) < Tolerance)
               {
                 if (StateChanged)
                   {
-                    *mpCurrentState = pModel->getState();
+                    mCurrentState = mpContainer->getState(mUpdateMoieties);
                     mpTrajectoryMethod->stateChanged();
                     StateChanged = false;
                   }
@@ -460,15 +472,17 @@ void CCrossSectionTask::finish()
 bool CCrossSectionTask::restore()
 {
   bool success = CCopasiTask::restore();
-  CModel * pModel = mpProblem->getModel();
 
   removeEvent();
 
   if (mUpdateModel)
     {
+      mpContainer->setState(mCurrentState);
+      mpContainer->updateSimulatedValues(mUpdateMoieties);
+      mpContainer->pushState();
 
-      pModel->setState(*mpCurrentState);
-      pModel->updateSimulatedValues(mUpdateMoieties);
+      CModel * pModel = mpProblem->getModel();
+
       pModel->setInitialState(pModel->getState());
       pModel->updateInitialValues();
     }
@@ -509,8 +523,14 @@ CCopasiMethod * CCrossSectionTask::createMethod(const int & type) const
   return CTrajectoryMethod::createMethod(Type);
 }
 
-CState * CCrossSectionTask::getState()
-{return mpCurrentState;}
+const CState * CCrossSectionTask::getState()
+{
+  mpContainer->setState(mCurrentState);
+  mpContainer->updateSimulatedValues(mUpdateMoieties);
+  mpContainer->pushState();
+
+  return & mpContainer->getModel().getState();
+}
 
 const CTimeSeries & CCrossSectionTask::getTimeSeries() const
 {return mTimeSeries;}
@@ -526,7 +546,7 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
   //do progress reporting
   if (mpCallBack != NULL)
     {
-      mProgressValue = (*mpCurrentTime - mStartTime) * mProgressFactor;
+      mProgressValue = (*mpCurrentStateTime - mStartTime) * mProgressFactor;
 
       if (!mpCallBack->progressItem(mhProgress))
         {
@@ -538,8 +558,8 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
   if (type != CEvent::CutPlane)
     return;
 
-  mpProblem->getModel()->setState(*mpCurrentState);
-  mpProblem->getModel()->updateSimulatedValues(mUpdateMoieties);
+  mpContainer->setState(mCurrentState);
+  mpContainer->updateSimulatedValues(mUpdateMoieties);
 
   // count the crossings
   ++mNumCrossings;
@@ -556,7 +576,7 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
         {
           mState = MAIN;
         }
-      else if (mpCrossSectionProblem->getFlagLimitOutTime() && *mpCurrentTime >= mOutputStartTime)
+      else if (mpCrossSectionProblem->getFlagLimitOutTime() && *mpCurrentStateTime >= mOutputStartTime)
         {
           mState = MAIN;
         }
@@ -571,13 +591,13 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
 
           for (i = mStatesRingCounter - 1; i >= 0 && i >= ((int) mStatesRingCounter) - RING_SIZE; --i)
             {
-              C_FLOAT64 tmp = relativeDifferenceOfStates(&mStatesRing[i % RING_SIZE],
-                              mpCurrentState);
+              C_FLOAT64 tmp = relativeDifferenceOfStates(mStatesRing[i % RING_SIZE],
+                              mCurrentState);
 
               if (tmp < mpCrossSectionProblem->getConvergenceOutTolerance())
                 {
                   mPeriodicity = mStatesRingCounter - i;
-                  mPeriod = *mpCurrentTime - mStatesRing[i % RING_SIZE].getTime();
+                  mPeriod = *mpCurrentStateTime - mStatesRing[i % RING_SIZE][mpContainer->getTimeIndex()];
                   mFreq = 1 / mPeriod;
                   mAveragePeriod = mPeriod / ((C_FLOAT64)mPeriodicity);
                   mAverageFreq = 1 / mAveragePeriod;
@@ -606,13 +626,13 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
 
           for (i = mStatesRingCounter - 1; i >= 0 && i >= ((int) mStatesRingCounter) - RING_SIZE; --i)
             {
-              C_FLOAT64 tmp = relativeDifferenceOfStates(&mStatesRing[i % RING_SIZE],
-                              mpCurrentState);
+              C_FLOAT64 tmp = relativeDifferenceOfStates(mStatesRing[i % RING_SIZE],
+                              mCurrentState);
 
               if (tmp < mpCrossSectionProblem->getConvergenceTolerance())
                 {
                   mPeriodicity = mStatesRingCounter - i;
-                  mPeriod = *mpCurrentTime - mStatesRing[i % RING_SIZE].getTime();
+                  mPeriod = *mpCurrentStateTime - mStatesRing[i % RING_SIZE][mpContainer->getTimeIndex()];
                   mFreq = 1 / mPeriod;
                   mAveragePeriod = mPeriod / ((C_FLOAT64)mPeriodicity);
                   mAverageFreq = 1 / mAveragePeriod;
@@ -629,7 +649,7 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
 
       if (!isnan(mPreviousCrossingTime))
         {
-          mLastPeriod = *mpCurrentTime - mPreviousCrossingTime;
+          mLastPeriod = *mpCurrentStateTime - mPreviousCrossingTime;
         }
 
       mLastFreq = 1 / mLastPeriod;
@@ -643,33 +663,34 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
     }
 
   //store state in ring buffer
-  mStatesRing[mStatesRingCounter % RING_SIZE] = *mpCurrentState;
-  mPreviousCrossingTime = *mpCurrentTime;
+  mStatesRing[mStatesRingCounter % RING_SIZE] = mCurrentState;
+  mPreviousCrossingTime = *mpCurrentStateTime;
   ++mStatesRingCounter;
 }
 
-//static
-C_FLOAT64 CCrossSectionTask::relativeDifferenceOfStates(CState* s1, CState* s2)
+C_FLOAT64 CCrossSectionTask::relativeDifferenceOfStates(const CVectorCore< C_FLOAT64 > & s1,
+    const CVectorCore< C_FLOAT64 > & s2)
 {
-  if (!s1 || !s2)
-    {
-      return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
-    }
-
-  if (s1->endIndependent() - s1->beginIndependent()
-      != s2->endIndependent() - s2->beginIndependent())
+  if (s1.size() != s2.size())
     {
       return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
     }
 
   C_FLOAT64 ret = 0;
 
-  const C_FLOAT64 * p1 = s1->beginIndependent();
-  const C_FLOAT64 * p1End = s1->endIndependent();
-  const C_FLOAT64 * p2 = s2->beginIndependent();
+  const C_FLOAT64 * p1 = s1.array();
+  const C_FLOAT64 * p1End = p1 + s1.size();
+  const C_FLOAT64 * pTime = p1 + mpContainer->getTimeIndex();
+  const C_FLOAT64 * p2 = s2.array();
 
   for (; p1 != p1End; ++p1, ++p2)
     {
+      // We skip the time variable
+      if (p1 == pTime)
+        {
+          continue;
+        }
+
       ret += (*p1 != *p2) ? pow((*p1 - *p2) / (fabs(*p1) + fabs(*p2)), 2) : 0.0;
     }
 

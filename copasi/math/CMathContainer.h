@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,6 +16,7 @@
 #include "copasi/math/CMathReaction.h"
 
 #include "copasi/utilities/CVector.h"
+#include "copasi/utilities/CMatrix.h"
 
 #include "copasi/model/CModelParameter.h"
 
@@ -103,20 +104,13 @@ public:
   void setInitialState(const CVectorCore< C_FLOAT64 > & initialState);
 
   /**
-   * Retrieves the state values, i.e., all initial values of objects of
-   * simulation type Time, ODE, Dependent, and Independent. It includes only
+   * Retrieves the state values, i.e., all values of objects of
+   * simulation type EventTarget, Time, ODE, Dependent, and Independent. It includes only
    * extensive values for species.
+   * @param const bool & reduced = false
    * @return const CVectorCore< C_FLOAT64 > & state
    */
-  const CVectorCore< C_FLOAT64 > & getState() const;
-
-  /**
-   * Retrieves the state values, i.e., all initial values of objects of
-   * simulation type Time, ODE, Dependent, and Independent. It includes only
-   * extensive values for species.
-   * @return const CVectorCore< C_FLOAT64 > & state
-   */
-  CVectorCore< C_FLOAT64 > & getState();
+  const CVectorCore< C_FLOAT64 > & getState(const bool & reduced = false) const;
 
   /**
    * Set the state values, i.e., all initial values of objects of
@@ -127,28 +121,50 @@ public:
   void setState(const CVectorCore< C_FLOAT64 > & state);
 
   /**
-   * Retrieves the state values, i.e., all initial values of objects of
-   * simulation type Time, ODE, and Dependent. It includes only
-   * extensive values for species.
-   * @return const CVectorCore< C_FLOAT64 > & stateReduced
+   * Check whether the current state is valid.
    */
-  const CVectorCore< C_FLOAT64 > & getStateReduced() const;
+  bool isStateValid() const;
 
   /**
-   * Retrieves the reduced state values, i.e., all initial values of objects of
-   * simulation type Time, ODE, and Dependent. It includes only
-   * extensive values for species.
-   * @return const CVectorCore< C_FLOAT64 > & stateReduced
+   * Initialize a vector of individual absolute tolerances
+   * @param const C_FLOAT64 & baseTolerance
+   * @param const bool & reduced = false
+   * @return CVector< C_FLOAT64 > absoluteTolerances
    */
-  CVectorCore< C_FLOAT64 > & getStateReduced();
+  CVector< C_FLOAT64 > initializeAtolVector(const C_FLOAT64 & baseTolerance, const bool & reduced = false) const;
 
   /**
-   * Set the reduced state values, i.e., all initial values of objects of
-   * simulation type Time, ODE, Dependent, and Independent. It includes only
+   * Retrieve the rate of state values, i.e., all initial values of objects of
+   * simulation type EventTarget, Time, ODE, Dependent, and Independent. It includes only
    * extensive values for species.
-   * @param const CVectorCore< C_FLOAT64 > & stateReduced
+   * @param const bool & reduced = false
+   * @return const CVectorCore< C_FLOAT64 > & rate
    */
-  void setStateReduced(const CVectorCore< C_FLOAT64 > & stateReduced);
+  const CVectorCore< C_FLOAT64 > & getRate(const bool & reduced = false) const;
+
+  /**
+   * Retrieve reaction particle fluxes.
+   * @return const CVectorCore< C_FLOAT64 > & particleFluxes
+   */
+  const CVectorCore< C_FLOAT64 > & getParticleFluxes() const;
+
+  /**
+   * Retrieve reaction propensities.
+   * @return const CVectorCore< C_FLOAT64 > & propensities
+   */
+  const CVectorCore< C_FLOAT64 > & getPropensities() const;
+
+  /**
+   * Retrieve root values.
+   * @return const CVectorCore< C_FLOAT64 > & roots
+   */
+  const CVectorCore< C_FLOAT64 > & getRoots() const;
+
+  /**
+   * Retrieve a vector of Boolean values determining whether a root is changing
+   * continuously or only during discrete event processing
+   */
+  const CVectorCore< bool > & getRootIsDiscrete() const;
 
   /**
    * Calculate all dependent initial values based on initial extensive
@@ -175,6 +191,12 @@ public:
    * @param const CObjectInterface::UpdateSequence & updateSequence
    */
   void applyUpdateSequence(const CObjectInterface::UpdateSequence & updateSequence);
+
+  /**
+   * Calculate the time derivative of all roots
+   * @param CVector< C_FLOAT64 > & rootDerivatives
+   */
+  void calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives);
 
   /**
    * Fetch the initial state from the associated model
@@ -236,6 +258,60 @@ public:
    * @return const CModel & model
    */
   const CModel & getModel() const;
+
+  /**
+   * Retrieve the count of fixed values which are changed through events
+   * @return const size_t & countFixedEventTargets
+   */
+  const size_t & getCountFixedEventTargets() const;
+
+  /**
+   * Retrieve the count of values determined by ODEs
+   * @return const size_t & countODEs
+   */
+  const size_t & getCountODEs() const;
+
+  /**
+   * Retrieve the count of independent species
+   * @return const size_t & countIndependentSpecies
+   */
+  const size_t & getCountIndependentSpecies() const;
+
+  /**
+   * Retrieve the count of dependent species
+   * @return const size_t & countDependentSpecies
+   */
+  const size_t & getCountDependentSpecies() const;
+
+  /**
+   * Retrieve the index in the state of the time variable
+   * @return const size_t & timeIndex
+   */
+  const size_t & getTimeIndex() const;
+
+  /**
+   * Retrieve the reactions
+   * @return CVector< CMathReaction > & reactions
+   */
+  CVector< CMathReaction > & getReactions();
+
+  /**
+   * Retrieve the reactions
+   * @return const CVector< CMathReaction > & reactions
+   */
+  const CVector< CMathReaction > & getReactions() const;
+
+  /**
+   * Retrieve the initial dependencies
+   * @return CMathDependencyGraph & getTransientDependencies
+   */
+  CMathDependencyGraph & getInitialDependencies();
+
+  /**
+   * Retrieve the transient dependencies
+   * @return CMathDependencyGraph & getTransientDependencies
+   */
+  CMathDependencyGraph & getTransientDependencies();
 
   /**
    * Copy a node and all its children. Nodes are converted to suite the math container,
@@ -359,6 +435,11 @@ private:
   void createDependencyGraphs();
 
   /**
+   * Determine which roots are only changed during discrete event processing.
+   */
+  void determineDiscreteRoots();
+
+  /**
    * Create the update sequences needed to synchronize the initial values
    */
   void createSynchronizeInitialValuesSequence();
@@ -454,6 +535,14 @@ private:
    */
   std::string createDiscontinuityTriggerInfix(const CEvaluationNode * pNode);
 
+  /**
+   * Calculate the Jacobian for the roots.
+   * @param CMatrix< C_FLOAT64 > & jacobian
+   * @param const CVector< C_FLOAT64 > & rates
+   */
+  void calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian,
+                             const CVector< C_FLOAT64 > & rates);
+
   // Attributes
 
   /**
@@ -505,14 +594,24 @@ private:
   CVectorCore< C_FLOAT64 > mInitialState;
 
   /**
-   * The state contains values of type Time, ODE, Independent, and Dependent
+   * The state contains values of type EventTarget, Time, ODE, Independent, and Dependent
    */
   CVectorCore< C_FLOAT64 > mState;
 
   /**
-   * The state contains values of type Time, ODE, Independent
+   * The reduced state contains values of type EventTarget, Time, ODE, Independent
    */
   CVectorCore< C_FLOAT64 > mStateReduced;
+
+  /**
+   * The rate contains derivatives for values of type EventTarget, Time, ODE, Independent, and Dependent
+   */
+  CVectorCore< C_FLOAT64 > mRate;
+
+  /**
+   * The reduced rate derivatives for contains values of type EventTarget, Time, ODE, Independent
+   */
+  CVectorCore< C_FLOAT64 > mRateReduced;
 
   /**
    * Dependency graph for initial value calculations
