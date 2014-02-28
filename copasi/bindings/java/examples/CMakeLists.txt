@@ -19,6 +19,7 @@ foreach(file
 		example10
 		exampleMathExport
 		printUnsupportedAnnotation
+		exampleParameterSets
 		)
 	
 	file(TO_NATIVE_PATH ${CMAKE_CURRENT_BINARY_DIR} CURRENT_BIN)
