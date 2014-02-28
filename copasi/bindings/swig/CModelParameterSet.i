@@ -5,7 +5,6 @@
 
 
 
-
 %ignore CModelParameterSet::setModel;
 %warnfilter(813) CModelParameterSet;
 
