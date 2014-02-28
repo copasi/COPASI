@@ -7,6 +7,7 @@
 
 
 
+
 %{
 
 #include "layout/CLReactionGlyph.h"
@@ -33,7 +34,7 @@
 %ignore CLGeneralGlyph::getCurve() const;
 %ignore CLGeneralGlyph::print;
 %ignore CLGeneralGlyph::exportToSBML;
-%ignore CLGeneralGlyph::CLGeneralGlyph((const GraphicalObject & sbml, //TODO
+%ignore CLGeneralGlyph::CLGeneralGlyph(const GraphicalObject & sbml, //TODO
                  const std::map<std::string, std::string> & modelmap,
                  std::map<std::string, std::string> & layoutmap,
                  const CCopasiContainer * pParent = NULL);
