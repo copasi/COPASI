@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
-# Properties, Inc., University of Heidelberg, and The University </comment>
-# of Manchester. </comment>
-# All rights reserved. </comment>
+# Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
 
-# Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
-# and The University of Manchester. </comment>
-# All rights reserved. </comment>
+# Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+# and The University of Manchester. 
+# All rights reserved. 
+
+
+
 
 
 
@@ -30,9 +33,9 @@ def main():
   # we want seconds as the time unit
   # microliter as the volume units
   # and nanomole as the substance units
-  model.setTimeUnit(CModel.s)
-  model.setVolumeUnit(CModel.microl)
-  model.setQuantityUnit(CModel.nMol)
+  model.setTimeUnit(CUnit.s)
+  model.setVolumeUnit(CUnit.microl)
+  model.setQuantityUnit(CUnit.nMol)
 
   # we have to keep a set of all the initial values that are changed during
   # the model building process

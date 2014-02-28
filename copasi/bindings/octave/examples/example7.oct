@@ -14,9 +14,9 @@ model = dataModel.getModel();
 % we want seconds as the time unit
 % microliter as the volume units
 % and nanomole as the substance units
-model.setTimeUnit(CModel_s);
-model.setVolumeUnit(CModel_microl);
-model.setQuantityUnit(CModel_nMol);
+model.setTimeUnit(CUnit_s);
+model.setVolumeUnit(CUnit_microl);
+model.setQuantityUnit(CUnit_nMol);
 
 % we have to keep a set of all the initial values that are changed during
 % the model building process

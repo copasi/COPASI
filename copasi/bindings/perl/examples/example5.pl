@@ -14,9 +14,9 @@ unless(COPASI::CCopasiRootContainer::getDatamodelList()->size() == 1){warn "Asse
 # get the model from the datamodel
 my $model = $dataModel->getModel();
 unless(defined($model )){warn "Assertion failed";die;}
-$model->setVolumeUnit($COPASI::CModel::fl);
-$model->setTimeUnit($COPASI::CModel::s);
-$model->setQuantityUnit($COPASI::CModel::fMol);
+$model->setVolumeUnit($COPASI::CUnit::fl);
+$model->setTimeUnit($COPASI::CUnit::s);
+$model->setQuantityUnit($COPASI::CUnit::fMol);
 my $fixedModelValue = $model->createModelValue("F");
 unless(defined($fixedModelValue )){warn "Assertion failed";die;}
 $fixedModelValue->setStatus($COPASI::CModelEntity::FIXED);
