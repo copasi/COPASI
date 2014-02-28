@@ -5,14 +5,15 @@
 
 
 
+
 %ignore CModelParameterSet::setModel;
 %warnfilter(813) CModelParameterSet;
 
 #if SWIGCSHARP
 
+%csmethodmodifiers  CModelParameterSet::compile  "public new"
 %csmethodmodifiers  CModelParameterSet::getName  "public new"
 %csmethodmodifiers  CModelParameterSet::updateModel  "public new"
-
 
 #endif
 

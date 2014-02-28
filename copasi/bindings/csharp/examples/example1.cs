@@ -20,9 +20,9 @@ class example1
      // we want seconds as the time unit
      // microliter as the volume units
      // and nanomole as the substance units
-     model.setTimeUnit(CModel.s);
-     model.setVolumeUnit(CModel.microl);
-     model.setQuantityUnit(CModel.nMol);
+     model.setTimeUnit(CUnit.s);
+     model.setVolumeUnit(CUnit.microl);
+     model.setQuantityUnit(CUnit.nMol);
 
      // we have to keep a set of all the initial values that are changed during
      // the model building process

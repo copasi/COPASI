@@ -14,6 +14,9 @@ foreach( example
 	example7
 	example8
 	example9
+	exampleMathExport
+	exampleParameterSets
+	printUnsupportedAnnotation
 	
 )
 

@@ -19,9 +19,9 @@ class example5
      // get the model from the datamodel
      CModel model = dataModel.getModel();
      Debug.Assert(model != null);
-     model.setVolumeUnit(CModel.fl);
-     model.setTimeUnit(CModel.s);
-     model.setQuantityUnit(CModel.fMol);
+     model.setVolumeUnit(CUnit.fl);
+     model.setTimeUnit(CUnit.s);
+     model.setQuantityUnit(CUnit.fMol);
      CModelValue fixedModelValue=model.createModelValue("F");
      Debug.Assert(fixedModelValue != null);
      fixedModelValue.setStatus(CModelEntity.FIXED);
