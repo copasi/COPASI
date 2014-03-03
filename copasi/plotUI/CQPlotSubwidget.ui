@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc., University of Heidelberg, and The University </comment>
-<comment> of Manchester. </comment>
-<comment> All rights reserved. </comment>
-
  <comment> All rights reserved. </comment>
  <class>CQPlotSubwidget</class>
  <widget class="CopasiWidget" name="CQPlotSubwidget">
@@ -12,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>498</width>
-    <height>361</height>
+    <width>496</width>
+    <height>359</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -230,6 +225,13 @@
       </spacer>
      </item>
      <item>
+      <widget class="QPushButton" name="copyPlotButton">
+       <property name="text">
+        <string>Copy</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="addPlotButton">
        <property name="text">
         <string>New</string>
@@ -289,8 +291,8 @@
    <slot>addCurveSlot()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>338</x>
-     <y>159</y>
+     <x>283</x>
+     <y>121</y>
     </hint>
     <hint type="destinationlabel">
      <x>283</x>
@@ -305,8 +307,8 @@
    <slot>addHistoSlot()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>416</x>
-     <y>158</y>
+     <x>402</x>
+     <y>121</y>
     </hint>
     <hint type="destinationlabel">
      <x>400</x>
@@ -321,11 +323,11 @@
    <slot>removeCurve()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>515</x>
-     <y>154</y>
+     <x>488</x>
+     <y>121</y>
     </hint>
     <hint type="destinationlabel">
-     <x>521</x>
+     <x>495</x>
      <y>140</y>
     </hint>
    </hints>
@@ -337,12 +339,12 @@
    <slot>commitPlot()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>107</x>
-     <y>415</y>
+     <x>86</x>
+     <y>351</y>
     </hint>
     <hint type="destinationlabel">
      <x>41</x>
-     <y>401</y>
+     <y>358</y>
     </hint>
    </hints>
   </connection>
@@ -354,11 +356,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>172</x>
-     <y>414</y>
+     <y>351</y>
     </hint>
     <hint type="destinationlabel">
      <x>174</x>
-     <y>398</y>
+     <y>358</y>
     </hint>
    </hints>
   </connection>
@@ -369,12 +371,12 @@
    <slot>addPlot()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>357</x>
-     <y>416</y>
+     <x>402</x>
+     <y>351</y>
     </hint>
     <hint type="destinationlabel">
      <x>356</x>
-     <y>398</y>
+     <y>358</y>
     </hint>
    </hints>
   </connection>
@@ -385,12 +387,12 @@
    <slot>deletePlot()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>477</x>
-     <y>414</y>
+     <x>488</x>
+     <y>351</y>
     </hint>
     <hint type="destinationlabel">
-     <x>514</x>
-     <y>399</y>
+     <x>495</x>
+     <y>358</y>
     </hint>
    </hints>
   </connection>
@@ -410,6 +412,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>copyPlotButton</sender>
+   <signal>clicked()</signal>
+   <receiver>CQPlotSubwidget</receiver>
+   <slot>copyPlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>276</x>
+     <y>340</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>247</x>
+     <y>179</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>addCurveSlot()</slot>
@@ -421,5 +439,6 @@
   <slot>resetPlot()</slot>
   <slot>typeChanged()</slot>
   <slot>itemSelectionChanged()</slot>
+  <slot>copyPlot()</slot>
  </slots>
 </ui>
