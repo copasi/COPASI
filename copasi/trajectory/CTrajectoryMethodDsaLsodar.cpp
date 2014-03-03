@@ -375,13 +375,18 @@ CTrajectoryMethod::Status CTrajectoryMethodDsaLsodar::step(const double & deltaT
       Time += doSingleStep(Time, EndTime);
       *mpContainerStateTime = Time;
 
+      if (mStatus != CTrajectoryMethod::NORMAL)
+        {
+          break;
+        }
+
       if (++Steps > *mpMaxSteps)
         {
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
         }
     }
 
-  return NORMAL;
+  return mStatus;
 }
 
 // virtual
@@ -448,20 +453,25 @@ C_FLOAT64 CTrajectoryMethodDsaLsodar::doSingleStep(C_FLOAT64 curTime, C_FLOAT64 
   // deterministic system to find time dependent events.
   integrateDeterministicPart(DeltaT);
 
-  if (FireReaction)
+  if (mStatus == CTrajectoryMethod::NORMAL)
     {
-      fireReaction(mNextReactionIndex);
-    }
-
-  if (++mStepsAfterPartitionSystem >= *mpPartitioningInterval)
-    {
-      if (mPartition.rePartition(mContainerState))
+      if (FireReaction)
         {
-          stateChanged();
+          fireReaction(mNextReactionIndex);
         }
 
-      mStepsAfterPartitionSystem = 0;
+      if (mStepsAfterPartitionSystem >= *mpPartitioningInterval)
+        {
+          if (mPartition.rePartition(mContainerState))
+            {
+              stateChanged();
+            }
+
+          mStepsAfterPartitionSystem = 0;
+        }
     }
+
+  ++mStepsAfterPartitionSystem;
 
   return DeltaT;
 }
@@ -603,9 +613,9 @@ void CTrajectoryMethodDsaLsodar::cleanup()
 
 /* DETERMINISTIC STUFF *******************************************************/
 
-void CTrajectoryMethodDsaLsodar::integrateDeterministicPart(const C_FLOAT64 & deltaT)
+void  CTrajectoryMethodDsaLsodar::integrateDeterministicPart(const C_FLOAT64 & deltaT)
 {
-  CLsodaMethod::step(deltaT);
+  mStatus = CLsodaMethod::step(deltaT);
   mpContainer->updateSimulatedValues(*mpReducedModel);
   calculatePropensities();
 

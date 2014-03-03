@@ -357,6 +357,11 @@ protected:
    * The partition of the system
    */
   CPartition mPartition;
+
+  /**
+   * The return status of LSODA integration
+   */
+  CTrajectoryMethod::Status mStatus;
 };
 
 #include "CHybridNextReactionRKMethod.h"
