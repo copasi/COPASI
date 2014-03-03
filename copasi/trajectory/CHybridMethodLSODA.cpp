@@ -582,6 +582,7 @@ void CHybridMethodLSODA::updatePriorityQueue(size_t rIndex, C_FLOAT64 time)
 
   return;
 }
+
 C_FLOAT64 CHybridMethodLSODA::generateReactionTime(size_t rIndex)
 {
   if (mAmu[rIndex] == 0) return std::numeric_limits<C_FLOAT64>::infinity();
@@ -1207,6 +1208,7 @@ void CHybridMethodLSODA::outputDebug(std::ostream & os, size_t level)
               os << *pSpeciesValue << " ";
             }
         }
+
         os << std::endl;
         break;
 

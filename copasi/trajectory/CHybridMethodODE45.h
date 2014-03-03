@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -75,7 +75,6 @@
 #define DETERMINISTIC                1
 #define HYBRID                       2
 
-
 //Interpolation Part
 #define ODE_ERR                     -2
 #define ODE_INIT                     0
@@ -83,7 +82,6 @@
 #define ODE_CONT                     2
 #define ODE_EVENT                    3
 #define ODE_FINISH                   4
-
 
 //mSysStatus Part
 #define SYS_ERR                     -2
@@ -109,7 +107,6 @@ class CReaction;
 class CRandom;
 class CIndexedPriorityQueue;
 class CDependencyGraph;
-
 
 /**
  * Internal representation of the balances of each reaction.
@@ -193,7 +190,7 @@ public:
    * starting with the initialState given.
    * @param "const CState *" initialState
    */
-  virtual void start(const CState * initialState);
+  virtual void start(CVectorCore< C_FLOAT64 > & initialState);
 
 protected:
   /**
@@ -260,13 +257,6 @@ public:
 
 protected:
   /**
-   *  Calculate the default absolute tolerance
-   *  @param const CModel * pModel
-   *  @return C_FLOAT64 defaultAtol
-   */
-  C_FLOAT64 getDefaultAtol(const CModel * pModel) const;
-
-  /**
    * Integrates the deterministic reactions of the system over the
    * specified time interval.
    *
@@ -279,17 +269,16 @@ protected:
    */
   static void EvalF(const size_t * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
 
-/**
-   * Dummy Function for calculating roots value
-   */
-  static void EvalR(const size_t * n, const C_FLOAT64 * t, const C_FLOAT64 * y, 
-		    const size_t * nr, C_FLOAT64 * r);
+  /**
+     * Dummy Function for calculating roots value
+     */
+  static void EvalR(const size_t * n, const C_FLOAT64 * t, const C_FLOAT64 * y,
+                    const size_t * nr, C_FLOAT64 * r);
 
   /**
    *  This evaluates the derivatives for the complete model
    */
   void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
-
 
   /**
    * This evaluates the roots value of the system
@@ -326,7 +315,6 @@ protected:
    * @param rIndex A size_t specifying the reaction to be updated
    */
   void calculateAmu(size_t rIndex);
-
 
   /**
    * Do inverse interpolation to find the state when a slow reaction
@@ -411,15 +399,7 @@ protected:
    */
   void updateTauMu(size_t rIndex, C_FLOAT64 time);
 
- private:
-  /**
-   * Gets the set of metabolites on which a given reaction depends.
-   *
-   * @param rIndex The index of the reaction being executed.
-   * @return The set of metabolites depended on.
-   */
-  std::set <std::string> *getDependsOn(size_t rIndex);
-
+private:
   /**
    * Gets the set of metabolites which change number when a given
    * reaction is executed.
@@ -430,14 +410,14 @@ protected:
   std::set <std::string> *getAffects(size_t rIndex);
 
   //================Function for Root Interpolation==============
- private:
+private:
   /**
    *
    *
    *
    */
   virtual void stateChanged();
-  
+
   //================Help Functions================
 protected:
   /**
@@ -454,37 +434,19 @@ protected:
    */
   //void outputData(std::ostream & os, C_INT32 mode);
   void outputData();
-  void outputState(const CState * pS);
 
   /**
    * Prints out various data on standard output for debugging purposes.
    */
   void outputDebug(std::ostream & os, size_t level);
 
-  /**
-   * tests if the model contains a global value with an assignment rule that is
-   * used in calculations
-   */
-  static bool modelHasAssignments(const CModel* pModel);
-
 //Attributes:
   //================Model Related================
 
-  //~~~~~~~~Model Describtion~~~~~~~~
   /**
-   * Pointer to the model
+   *   A pointer to the reactions of the model.
    */
-  CModel * mpModel;
-
-  /**
-   *   The stoichometry matrix of the model.
-   */
-  CMatrix <C_FLOAT64> mStoi;
-
-  /**
-   * indicates if the correction N^2 -> N*(N-1) should be performed
-   */
-  bool mDoCorrection;
+  CVectorCore< CMathReaction > mReactions;
 
   /**
    *
@@ -495,17 +457,7 @@ protected:
   /**
    * Dimension of the system. Total number of metabolites.
    */
-  size_t mNumVariableMetabs;
-
-  /**
-   * A pointer to the metabolites of the model.
-   */
-  CCopasiVector <CMetab> * mpMetabolites;
-
-  /**
-   * index of the first metab in CState
-   */
-  size_t mFirstMetabIndex;
+  size_t mNumReactionSpecies;
 
   /**
    * Vector holding information on the status of metabolites. They can
@@ -524,11 +476,6 @@ protected:
    * slow ones are SLOW
    */
   CVector <size_t> mReactionFlags;
-
-  /**
-   *   A pointer to the reactions of the model.
-   */
-  const CCopasiVectorNS <CReaction> * mpReactions;
 
   /**
    * Internal representation of the balances of each reaction. The index of
@@ -573,16 +520,6 @@ protected:
 
   //================Attributes for State================
   /**
-   *  A pointer to the current state in complete model view.
-   */
-  CState * mpState;
-
-  /**
-   * Vectors to hold the system state and intermediate results
-   */
-  CVector <C_FLOAT64> temp;
-
-  /**
    * Time Record
    */
   C_FLOAT64 mTimeRecord;
@@ -592,7 +529,6 @@ protected:
    * mODE45
    */
   CExpRKMethod mODE45;
-
 
   bool mODEInitalized;
 
@@ -618,7 +554,6 @@ protected:
    *  Pointer to the array with left hand side values.
    */
   C_FLOAT64 * mY;
-
 
   //  /**
   //   * ODE45 state, corresponding to iflag in rkf45, an ODE45
@@ -650,12 +585,6 @@ protected:
    */
   std::set <size_t> mCalculateSet;
 
-  /**
-   * Set of the reactions, which must update after one
-   * slow reaction fires
-   */
-  std::set <size_t> mUpdateSet;
-
   //================Attributes for Root Interpolation================
   /**
    * Status of Root and Slow Event
@@ -668,20 +597,16 @@ protected:
    */
   size_t mRootNum;
 
-  
   //=================Root Dealing Part for Stochastic Part================
-  C_FLOAT64 * mOldRoot;
+  CVector< C_FLOAT64 > mOldRoot;
 
   std::queue<SRoot> mRootQueue;
 
   /**
    * Value of Roots
    */
-  CVectorCore< C_FLOAT64 > *mpRootValue;
-  
-  C_FLOAT64 * mpRT;
+  CVectorCore< C_FLOAT64 > mRootValues;
 
- 
   //================Stochastic Related================
   /**
    * The random number generator.
@@ -707,6 +632,11 @@ protected:
   CDependencyGraph mDG;
 
   /**
+   * The calculations required for individual reactions to update all simulation values.
+   */
+  std::vector< std::vector< CObjectInterface * > > mUpdateSequences;
+
+  /**
    * The set of putative stochastic (!) reactions and associated times at
    * which each reaction occurs. This is represented as a priority queue,
    * sorted by the reaction time. This heap changes dynamically as
@@ -714,6 +644,16 @@ protected:
    * the queue) or vice versa (insert a new reaction into the queue).
    */
   CIndexedPriorityQueue mPQ;
+
+  /**
+   * A pointer to the first species controlled by reactions
+   */
+  const CObjectInterface * mpFirstSpecies;
+
+  /**
+   * A pointer to the value of the first species controlled by reactions.
+   */
+  C_FLOAT64 * mpFirstSpeciesValue;
 
   //========System Related========
   /**
@@ -732,18 +672,9 @@ protected:
   size_t mOutputCounter;
 
   /**
-   * Indicates whether the model has global quantities
-   * with assignment rules.
-   * If it has, we will use a less efficient way to update the model
-   * state to handle this.
-   */
-  bool mHasAssignments;
-
-  /**
    *
    */
   std::ostringstream mErrorMsg;
-
 };
 
 #endif // COPASI_CHybridMethodODE45
