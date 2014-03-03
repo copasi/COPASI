@@ -30,7 +30,6 @@
 #include "copasi/utilities/CVector.h"
 
 class CTrajectoryProblem;
-class CState;
 class CMathContainer;
 
 class CTrajectoryMethod : public CCopasiMethod
@@ -92,14 +91,6 @@ public:
    */
   void setContainer(CMathContainer * pContainer,
                     const bool & reduced = false);
-
-  /**
-   *  Set a reference to the current state.
-   *  This method is used by CTrajectoryTask::process()
-   *  The results of the simulation are passed via this CVectorCore< C_FLOAT64 > currentState
-   *  @param CVectorCore< C_FLOAT64 > & currentState
-   */
-  void initializeCurrentState(CVectorCore< C_FLOAT64 > & currentState);
 
   /**
    *  Set a pointer to the problem.

@@ -97,6 +97,33 @@ CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
     mUpdateMoieties = false;
 }
 
+CTrajectoryTask::CTrajectoryTask(const Type & taskType,
+                                 const CCopasiContainer * pParent):
+  CCopasiTask(taskType, pParent),
+  mTimeSeriesRequested(true),
+  mTimeSeries(),
+  mpTrajectoryProblem(NULL),
+  mpTrajectoryMethod(NULL),
+  mUpdateMoieties(false),
+  mCurrentState(),
+  mpCurrentStateTime(NULL),
+  mOutputStartTime(0.0),
+  mpLessOrEqual(&fle),
+  mpLess(&fl),
+  mpContainer(NULL)
+{
+  mpProblem = new CTrajectoryProblem(this);
+  mpMethod = createMethod(CCopasiMethod::deterministic);
+  this->add(mpMethod, true);
+
+  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
+
+  if (pParameter != NULL)
+    mUpdateMoieties = *pParameter->getValue().pBOOL;
+  else
+    mUpdateMoieties = false;
+}
+
 CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
                                  const CCopasiContainer * pParent):
   CCopasiTask(src, pParent),
@@ -363,7 +390,7 @@ void CTrajectoryTask::processStart(const bool & useInitialValues)
 
   mCurrentState = mpContainer->getState(mUpdateMoieties);
 
-  mpTrajectoryMethod->initializeCurrentState(mCurrentState);
+  mpTrajectoryMethod->setContainer(mpContainer);
   mpTrajectoryMethod->start(mCurrentState);
 
   return;
@@ -373,12 +400,11 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
 {
   CModel * pModel = mpTrajectoryProblem->getModel();
   bool StateChanged = false;
-  bool proceed = true;
 
   C_FLOAT64 Tolerance = 100.0 * (fabs(endTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
   C_FLOAT64 NextTime = endTime;
 
-  while (proceed)
+  while (mProceed)
     {
       // TODO Provide a call back method for resolving simultaneous assignments.
       StateChanged |= pModel->processQueue(*mpCurrentStateTime, false, NULL);
@@ -487,10 +513,10 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
             break;
         }
 
-      proceed = mpCallBack == NULL || mpCallBack->proceed();
+      mProceed = mpCallBack == NULL || mpCallBack->proceed();
     }
 
-  return proceed;
+  return mProceed;
 }
 
 bool CTrajectoryTask::restore()

@@ -161,7 +161,7 @@ public:
   const CVectorCore< C_FLOAT64 > & getRoots() const;
 
   /**
-   * Retrieve a vector of Boolean values determining whether a root is changing
+   * Retrieve a vector of Boolean values indicating whether a root is changing
    * continuously or only during discrete event processing
    */
   const CVectorCore< bool > & getRootIsDiscrete() const;
@@ -435,9 +435,16 @@ private:
   void createDependencyGraphs();
 
   /**
-   * Determine which roots are only changed during discrete event processing.
+   * Analyze the number and type of roots, i.e., which roots are only changed during discrete event processing.
    */
-  void determineDiscreteRoots();
+  void analyzeRoots();
+
+  /**
+   * Calculate the partial derivative of the root values with respect to the
+   * continuous state variables
+   * @param CMatrix< C_FLOAT64 > & jacobian
+   */
+  void calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian);
 
   /**
    * Create the update sequences needed to synchronize the initial values
@@ -702,6 +709,12 @@ private:
    * A vector containing all math reactions.
    */
   CVector< CMathReaction > mReactions;
+
+  /**
+   * A vector of Boolean values indicating whether a root is changing
+   * continuously or only during discrete event processing.
+   */
+  CVector< bool > mRootIsDiscrete;
 
   /**
    * Structure of pointers used for creating discontinuities.

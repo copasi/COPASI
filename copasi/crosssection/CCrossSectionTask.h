@@ -18,7 +18,7 @@
 
 //#include "crosssection/CCrosssectionMethod.h"
 #include "copasi/model/CEvent.h"
-#include "copasi/trajectory/CTrajectoryMethod.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
 #include "copasi/utilities/CCopasiTask.h"
 #include "copasi/utilities/CReadConfig.h"
 #include "copasi/trajectory/CTimeSeries.h"
@@ -28,7 +28,7 @@ class CCrossSectionProblem;
 class CState;
 class CEvent;
 
-class CCrossSectionTask : public CCopasiTask
+class CCrossSectionTask : public CTrajectoryTask
 {
   //Attributes
 public:
@@ -81,37 +81,9 @@ public:
   void removeEvent();
 
   /**
-   * Starts the process of integration by calling CTrajectoryMethod::start
-   * @param const bool & useInitialValues
-   */
-  void processStart(const bool & useInitialValues);
-
-  /**
-   * Integrates one step
-   * @param const C_FLOAT64 & nextTime
-   * @return bool success;
-   */
-  bool processStep(const C_FLOAT64 & nextTime);
-
-  /**
    * Perform necessary cleanup procedures
    */
   virtual bool restore();
-
-  /**
-   * Set the method type applied to solve the task
-   * @param const CCopasiMethod::SubType & type
-   * @return bool success
-   */
-  virtual bool setMethodType(const int & type);
-
-  /**
-   * Create a method of the specified type to solve the task.
-   * It is the duty of the caller to release the CCopasiMethod.
-   * @param const CCopasiMethod::SubType & type
-   * @return CCopasiMethod *
-   */
-  virtual CCopasiMethod * createMethod(const int & type) const;
 
   /**
    * Retrieves a pointer to current state of the integration.
@@ -119,18 +91,7 @@ public:
    */
   const CState * getState();
 
-  /**
-   * gets a reference to the time series
-   * @return time series
-   */
-  const CTimeSeries & getTimeSeries() const;
-
 private:
-  /**
-   * cleanup()
-   */
-  void cleanup();
-
   /**
    * initialize the object references
    */
@@ -165,49 +126,9 @@ private:
   // Attributes
 
   /**
-   * whether the time series should be stored in mTimeSeries
-   */
-  bool mTimeSeriesRequested;
-
-  /**
-   * the time series (if requested)
-   */
-  CTimeSeries mTimeSeries;
-
-  /**
    * A pointer to the trajectory Problem
    */
   CCrossSectionProblem * mpCrossSectionProblem;
-
-  /**
-   * A pointer to the trajectory method
-   */
-  CTrajectoryMethod * mpTrajectoryMethod;
-
-  /**
-   * Indicates whether we need to update moieties.
-   */
-  bool mUpdateMoieties;
-
-  /**
-   * A pointer to the math container used for calculation
-   */
-  CMathContainer * mpContainer;
-
-  /**
-   * The current state of the integration.
-   */
-  CVector< C_FLOAT64 > mCurrentState;
-
-  /**
-   * A pointer to the current time of the integration.
-   */
-  C_FLOAT64 * mpCurrentStateTime;
-
-  /**
-   * time at which the output starts.
-   */
-  C_FLOAT64 mOutputStartTime;
 
   /**
    * time at which the simulation starts.

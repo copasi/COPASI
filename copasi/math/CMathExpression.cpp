@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,7 +15,7 @@
 
 #include "utilities/CCopasiTree.h"
 
-#define mpContainer static_cast< const CMathContainer * >(getObjectParent())
+#define pMathContainer static_cast< const CMathContainer * >(getObjectParent())
 
 CMathExpression::CMathExpression():
   CEvaluationTree(),
@@ -188,7 +188,7 @@ bool CMathExpression::compile()
           // problem or method values within the expression. These cannot be mapped to a
           // math objects and therefore dependencies will be broken.
 
-          CMathObject * pMathObject = mpContainer->getMathObject((C_FLOAT64 *) pValue);
+          CMathObject * pMathObject = pMathContainer->getMathObject((C_FLOAT64 *) pValue);
 
           if (pMathObject != NULL)
             {
@@ -234,15 +234,15 @@ bool CMathExpression::convertToInitialExpression()
         {
           CEvaluationNodeObject * pNode = static_cast< CEvaluationNodeObject *>(*it);
           const C_FLOAT64 * pValue = pNode->getObjectValuePtr();
-          C_FLOAT64 * pInitialValue = mpContainer->getInitialValuePointer(pValue);
+          C_FLOAT64 * pInitialValue = pMathContainer->getInitialValuePointer(pValue);
 
           if (pValue != pInitialValue)
             {
               changed = true;
               pNode->setObjectValuePtr(pInitialValue);
 
-              mPrerequisites.erase(mpContainer->getMathObject(pValue));
-              mPrerequisites.insert(mpContainer->getMathObject(pInitialValue));
+              mPrerequisites.erase(pMathContainer->getMathObject(pValue));
+              mPrerequisites.insert(pMathContainer->getMathObject(pInitialValue));
             }
         }
     }
@@ -267,7 +267,7 @@ CEvaluationNode * CMathExpression::createNodeFromValue(const C_FLOAT64 * pDataVa
 
   if (pDataValue != NULL)
     {
-      pMathObject = mpContainer->getMathObject(pDataValue);
+      pMathObject = pMathContainer->getMathObject(pDataValue);
 
       if (pMathObject != NULL)
         {

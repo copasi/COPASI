@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -63,6 +63,7 @@ void CCrossSectionProblem::initializeParameter()
   mpTriggerExpression =
     assertParameter("TriggerExpression", CCopasiParameter::EXPRESSION, std::string(""))->getValue().pEXPRESSION;
   mSingleObjectCN = assertParameter("SingleVariable", CCopasiParameter::CN, CCopasiObjectName(""))->getValue().pCN;
+  setOutputEvent(false);
 }
 
 void CCrossSectionProblem::initObjects()

@@ -36,16 +36,8 @@ const unsigned int CCrossSectionTask::ValidMethods[] =
 };
 
 CCrossSectionTask::CCrossSectionTask(const CCopasiContainer * pParent):
-  CCopasiTask(CCopasiTask::crosssection, pParent),
-  mTimeSeriesRequested(true),
-  mTimeSeries(),
+  CTrajectoryTask(CCopasiTask::crosssection, pParent),
   mpCrossSectionProblem(NULL),
-  mpTrajectoryMethod(NULL),
-  mUpdateMoieties(false),
-  mpContainer(NULL),
-  mCurrentState(),
-  mpCurrentStateTime(NULL),
-  mOutputStartTime(0.0),
   mStartTime(0.0),
   mNumCrossings(0),
   mOutputStartNumCrossings(0),
@@ -75,16 +67,8 @@ CCrossSectionTask::CCrossSectionTask(const CCopasiContainer * pParent):
 
 CCrossSectionTask::CCrossSectionTask(const CCrossSectionTask & src,
                                      const CCopasiContainer * pParent):
-  CCopasiTask(src, pParent),
-  mTimeSeriesRequested(src.mTimeSeriesRequested),
-  mTimeSeries(),
+  CTrajectoryTask(src, pParent),
   mpCrossSectionProblem(NULL),
-  mpTrajectoryMethod(NULL),
-  mUpdateMoieties(false),
-  mpContainer(new CMathContainer(*src.mpContainer)),
-  mCurrentState(src.mCurrentState),
-  mpCurrentStateTime(NULL),
-  mOutputStartTime(0.0),
   mStartTime(0.0),
   mNumCrossings(0),
   mOutputStartNumCrossings(0),
@@ -119,14 +103,7 @@ CCrossSectionTask::CCrossSectionTask(const CCrossSectionTask & src,
 }
 
 CCrossSectionTask::~CCrossSectionTask()
-{
-  cleanup();
-}
-
-void CCrossSectionTask::cleanup()
-{
-  pdelete(mpContainer);
-}
+{}
 
 void CCrossSectionTask::initObjects()
 {
@@ -150,47 +127,15 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
   mpCrossSectionProblem = dynamic_cast<CCrossSectionProblem *>(mpProblem);
   assert(mpCrossSectionProblem);
 
-  mpTrajectoryMethod = dynamic_cast<CTrajectoryMethod *>(mpMethod);
-  assert(mpTrajectoryMethod);
-
   mpTrajectoryMethod->setProblem(mpCrossSectionProblem);
 
   bool success = mpMethod->isValidProblem(mpProblem);
-
-  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
-
-  if (pParameter != NULL)
-    mUpdateMoieties = *pParameter->getValue().pBOOL;
-  else
-    mUpdateMoieties = false;
-
-  pdelete(mpContainer);
-  mpContainer = new CMathContainer(*mpCrossSectionProblem->getModel());
-
-  mCurrentState = mpContainer->getState(mUpdateMoieties);
-  mpCurrentStateTime = mCurrentState.array() + mpContainer->getTimeIndex();
-  mpTrajectoryMethod->setContainer(mpContainer);
 
   //init the ring buffer for the states
   mStatesRing.resize(RING_SIZE);
   mStatesRingCounter = 0;
 
-  // Handle the time series as a regular output.
-  mTimeSeriesRequested = true;//mpCrossSectionProblem->timeSeriesRequested();
-
-  if ((pOutputHandler != NULL) &&
-      mTimeSeriesRequested &&
-      (of & CCopasiTask::TIME_SERIES))
-    {
-      mTimeSeries.allocate(20);
-      pOutputHandler->addInterface(&mTimeSeries);
-    }
-  else
-    {
-      mTimeSeries.clear();
-    }
-
-  if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
+  if (!CTrajectoryTask::initialize(of, pOutputHandler, pOstream)) success = false;
 
   return success;
 }
@@ -341,124 +286,6 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
   return true;
 }
 
-void CCrossSectionTask::processStart(const bool & useInitialValues)
-{
-  if (useInitialValues)
-    {
-      mpContainer->applyInitialValues();
-    }
-
-  mCurrentState = mpContainer->getState(mUpdateMoieties);
-
-  mpTrajectoryMethod->initializeCurrentState(mCurrentState);
-  mpTrajectoryMethod->start(mCurrentState);
-
-  return;
-}
-
-bool CCrossSectionTask::processStep(const C_FLOAT64 & endTime)
-{
-  CModel * pModel = mpCrossSectionProblem->getModel();
-  bool StateChanged = false;
-  bool proceed = true;
-
-  C_FLOAT64 Tolerance = 100.0 * (fabs(endTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
-  C_FLOAT64 NextTime = endTime;
-
-  while (proceed)
-    {
-      // TODO Provide a call back method for resolving simultaneous assignments.
-      //pModel->getMathModel()->getProcessQueue().printDebug();
-
-      //execute events for inequalities
-      StateChanged |= pModel->processQueue(*mpCurrentStateTime, false, NULL);
-
-      if (StateChanged)
-        {
-          mCurrentState = mpContainer->getState(mUpdateMoieties);
-          mpTrajectoryMethod->stateChanged();
-          StateChanged = false;
-        }
-
-      // std::min suffices since events are only supported in forward integration.
-      NextTime = std::min(endTime, pModel->getProcessQueueExecutionTime());
-
-      switch (mpTrajectoryMethod->step(NextTime - *mpCurrentStateTime))
-        {
-          case CTrajectoryMethod::NORMAL:
-            mpContainer->setState(mCurrentState);
-            mpContainer->updateSimulatedValues(mUpdateMoieties);
-
-            // TODO Provide a call back method for resolving simultaneous assignments.
-
-            //execute events for equalities
-            StateChanged |= pModel->processQueue(*mpCurrentStateTime, true, NULL);
-
-            // If the state change happens to coincide with end of the step we have to return and
-            // inform the integrator of eventual state changes.
-            if (fabs(*mpCurrentStateTime - endTime) < Tolerance)
-              {
-                if (StateChanged)
-                  {
-                    mCurrentState = mpContainer->getState(mUpdateMoieties);
-                    mpTrajectoryMethod->stateChanged();
-                    StateChanged = false;
-                  }
-
-                return true;
-              }
-
-            break;
-
-          case CTrajectoryMethod::ROOT:
-            //we arrive here whenever the integrator finds a root
-            //this does not necessarily mean an event fires
-            mpContainer->setState(mCurrentState);
-            mpContainer->updateSimulatedValues(mUpdateMoieties);
-
-            //this checks whether equality events are triggered
-            pModel->processRoots(*mpCurrentStateTime, true, true, mpTrajectoryMethod->getRoots());
-
-            // TODO Provide a call back method for resolving simultaneous assignments.
-
-            //execute scheduled events for equalities
-            StateChanged |= pModel->processQueue(*mpCurrentStateTime, true, NULL);
-
-            //this checks whether inequality events are triggered
-            pModel->processRoots(*mpCurrentStateTime, false, true, mpTrajectoryMethod->getRoots());
-
-            // If the root happens to coincide with end of the step we have to return and
-            // inform the integrator of eventual state changes.
-            if (fabs(*mpCurrentStateTime - endTime) < Tolerance)
-              {
-                if (StateChanged)
-                  {
-                    mCurrentState = mpContainer->getState(mUpdateMoieties);
-                    mpTrajectoryMethod->stateChanged();
-                    StateChanged = false;
-                  }
-
-                return true;
-              }
-
-            break;
-
-          case CTrajectoryMethod::FAILURE:
-            finish();
-            CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
-            return false;
-            break;
-        }
-
-      proceed = mpCallBack == NULL || mpCallBack->proceed();
-
-      if (mState == FINISH)
-        proceed = false;
-    }
-
-  return proceed;
-}
-
 void CCrossSectionTask::finish()
 {
   //reset call back
@@ -471,56 +298,13 @@ void CCrossSectionTask::finish()
 
 bool CCrossSectionTask::restore()
 {
-  bool success = CCopasiTask::restore();
+  bool success = CTrajectoryTask::restore();
 
   removeEvent();
-
-  if (mUpdateModel)
-    {
-      mpContainer->setState(mCurrentState);
-      mpContainer->updateSimulatedValues(mUpdateMoieties);
-      mpContainer->pushState();
-
-      CModel * pModel = mpProblem->getModel();
-
-      pModel->setInitialState(pModel->getState());
-      pModel->updateInitialValues();
-    }
-
   //reset call back
   mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
 
   return success;
-}
-
-bool CCrossSectionTask::setMethodType(const int & type)
-{
-  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
-
-  if (!isValidMethod(Type, ValidMethods)) return false;
-
-  if (mpMethod->getSubType() == Type) return true;
-
-  pdelete(mpMethod);
-  mpMethod = createMethod(Type);
-  this->add(mpMethod, true);
-
-  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
-
-  if (pParameter != NULL)
-    mUpdateMoieties = *pParameter->getValue().pBOOL;
-  else
-    mUpdateMoieties = false;
-
-  return true;
-}
-
-// virtual
-CCopasiMethod * CCrossSectionTask::createMethod(const int & type) const
-{
-  CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
-
-  return CTrajectoryMethod::createMethod(Type);
 }
 
 const CState * CCrossSectionTask::getState()
@@ -531,9 +315,6 @@ const CState * CCrossSectionTask::getState()
 
   return & mpContainer->getModel().getState();
 }
-
-const CTimeSeries & CCrossSectionTask::getTimeSeries() const
-{return mTimeSeries;}
 
 //static
 void CCrossSectionTask::EventCallBack(void* pCSTask, CEvent::Type type)
@@ -551,6 +332,7 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
       if (!mpCallBack->progressItem(mhProgress))
         {
           mState = FINISH;
+          mProceed = false;
         }
     }
 

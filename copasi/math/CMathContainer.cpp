@@ -14,6 +14,8 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CNodeIterator.h"
 
+#include "lapack/blaswrap.h"
+
 CMathContainer::CMathContainer():
   CCopasiContainer("Math Container", NULL, "CMathContainer"),
   mpModel(NULL),
@@ -134,6 +136,7 @@ CMathContainer::CMathContainer(CModel & model):
   mObjects(),
   mEvents(),
   mReactions(),
+  mRootIsDiscrete(),
   mDataObject2MathObject(),
   mDataValue2MathObject(),
   mDiscontinuityEvents("Discontinuities", this),
@@ -206,6 +209,7 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mObjects(src.mObjects.size()),
   mEvents(src.mEvents.size()),
   mReactions(src.mReactions.size()),
+  mRootIsDiscrete(src.mRootIsDiscrete),
   mDataObject2MathObject(),
   mDataValue2MathObject(),
   mDiscontinuityEvents("Discontinuities", this),
@@ -477,6 +481,11 @@ const CVectorCore< C_FLOAT64 > & CMathContainer::getRoots() const
   return mEventRoots;
 }
 
+const CVectorCore< bool > & CMathContainer::getRootIsDiscrete() const
+{
+  return mRootIsDiscrete;
+}
+
 void CMathContainer::updateInitialValues(const CModelParameter::Framework & framework)
 {
   switch (framework)
@@ -726,7 +735,7 @@ void CMathContainer::init()
 
   // TODO We may have unused event triggers and roots due to optimization
   // in the discontinuities.
-  determineDiscreteRoots();
+  analyzeRoots();
 
 #ifdef COPASI_DEBUG
   CMathObject *pObject = mObjects.array();
@@ -1111,6 +1120,7 @@ void CMathContainer::allocate()
   assert(pArray == mValues.array() + mValues.size());
 
   mObjects.resize(mValues.size());
+  mRootIsDiscrete.resize(nEventRoots);
 
   mInitialState.initialize(mInitialExtensiveRates.array() - mValues.array(),
                            mValues.array());
@@ -1541,6 +1551,149 @@ void CMathContainer::createUpdateSimulationValuesSequence()
   // Build the update sequence
   mTransientDependencies.getUpdateSequence(CMath::Default, mStateValues, mSimulationRequiredValues, mSimulationValuesSequence);
   mTransientDependencies.getUpdateSequence(CMath::UseMoieties, mReducedStateValues, mSimulationRequiredValues, mSimulationValuesSequenceReduced);
+}
+
+void CMathContainer::analyzeRoots()
+{
+  CObjectInterface::ObjectSet ContinousStateValues;
+  const CMathObject * pStateObject = getMathObject(mState.array() + mEventTargetCount);
+  const CMathObject * pStateObjectEnd = getMathObject(mState.array() + mState.size());
+
+  for (; pStateObject != pStateObjectEnd; ++pStateObject)
+    {
+      ContinousStateValues.insert(pStateObject);
+    }
+
+  size_t RootCount = 0;
+  CMathObject * pRoot = getMathObject(mEventRoots.array());
+  CMathObject * pRootEnd = pRoot + mEventRoots.size();
+  bool * pIsDiscrete = mRootIsDiscrete.array();
+
+  for (; pRoot != pRootEnd; ++pRoot, ++RootCount, ++pIsDiscrete)
+    {
+      if (pRoot->getExpressionPtr() == NULL)
+        {
+          break;
+        }
+
+      CObjectInterface::ObjectSet Requested;
+      Requested.insert(pRoot);
+      CObjectInterface::UpdateSequence UpdateSequence;
+
+      mTransientDependencies.getUpdateSequence(CMath::Default, ContinousStateValues, Requested, UpdateSequence);
+      *pIsDiscrete = (UpdateSequence.size() == 0);
+    }
+
+  mEventRoots.initialize(RootCount, mEventRoots.array());
+  mEventRootStates.initialize(RootCount, mEventRootStates.array());
+  mRootIsDiscrete.resize(RootCount, true);
+}
+
+void CMathContainer::calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives)
+{
+  updateSimulatedValues(false);
+
+  CMatrix< C_FLOAT64 > Jacobian;
+  calculateRootJacobian(Jacobian);
+
+  rootDerivatives.resize(Jacobian.numRows());
+  C_FLOAT64 * pDerivative = rootDerivatives.array();
+
+  //We only consider the continuous state variables
+  C_FLOAT64 * pRate = mRate.array() + mEventTargetCount;
+
+  // Now multiply the the Jacobian with the rates
+  char T = 'N';
+  C_INT M = 1;
+  C_INT N = (C_INT) Jacobian.numRows();
+  C_INT K = (C_INT) Jacobian.numCols();
+  C_FLOAT64 Alpha = 1.0;
+  C_FLOAT64 Beta = 0.0;
+
+  dgemm_(&T, &T, &M, &N, &K, &Alpha, pRate, &M,
+         Jacobian.array(), &K, &Beta, pDerivative, &M);
+}
+
+void CMathContainer::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian)
+{
+  size_t NumRows = mEventRoots.size();
+  // Partial derivatives with respect to time and all variables determined by ODEs and reactions.
+  size_t NumCols = 1 + mODECount + mIndependentCount + mDependentCount;
+
+  // The rates of all state variables in the current state.
+  CVector< C_FLOAT64 > Rate = mRate;
+
+  jacobian.resize(NumRows, NumCols);
+
+  size_t Col = 0;
+
+  C_FLOAT64 X1 = 0.0;
+  C_FLOAT64 X2 = 0.0;
+  C_FLOAT64 InvDelta = 0.0;
+
+  CVector< C_FLOAT64 > Y1(NumRows);
+  CVector< C_FLOAT64 > Y2(NumRows);
+
+  C_FLOAT64 * pX = mState.array() + mEventTargetCount;
+  C_FLOAT64 * pXEnd = mState.array() + mState.size();
+
+  C_FLOAT64 * pJacobian = jacobian.array();
+  C_FLOAT64 * pJacobianEnd = pJacobian + jacobian.size();
+
+  const C_FLOAT64 * pRate = Rate.array() + mEventTargetCount;
+
+  for (; pX != pXEnd; ++pX, ++Col, ++pRate)
+    {
+      C_FLOAT64 Store = *pX;
+
+      if (fabs(*pRate) < 1e4 * std::numeric_limits< C_FLOAT64 >::epsilon() * fabs(Store) ||
+          fabs(*pRate) < 1e4 * std::numeric_limits< C_FLOAT64 >::min())
+        {
+          if (fabs(Store) < 100.0 * std::numeric_limits< C_FLOAT64 >::min())
+            {
+              X1 = 0.0;
+
+              if (Store < 0.0)
+                X2 = -200.0 * std::numeric_limits< C_FLOAT64 >::min();
+              else
+                X2 = 200.0 * std::numeric_limits< C_FLOAT64 >::min();
+
+              InvDelta = X2;
+            }
+          else
+            {
+              X1 = 0.999 * Store;
+              X2 = 1.001 * Store;
+              InvDelta = 500.0 / Store;
+            }
+        }
+      else
+        {
+          X1 = Store - 0.001 * *pRate;
+          X2 = Store + 0.001 * *pRate;
+          InvDelta = 500.0 / *pRate;
+        }
+
+      *pX = X1;
+      updateSimulatedValues(false);
+      Y1 = mEventRoots;
+
+      *pX = X2;
+      updateSimulatedValues(false);
+      Y2 = mEventRoots;
+
+      *pX = Store;
+
+      pJacobian = jacobian.array() + Col;
+      C_FLOAT64 * pY1 = Y1.array();
+      C_FLOAT64 * pY2 = Y2.array();
+
+      for (; pJacobian < pJacobianEnd; pJacobian += NumCols, ++pY1, ++pY2)
+        * pJacobian = (*pY2 - *pY1) * InvDelta;
+    }
+
+  // Undo the changes.
+  updateSimulatedValues(false);
 }
 
 void CMathContainer::initializePointers(CMath::sPointers & p)

@@ -51,11 +51,22 @@ public:
    */
   CTrajectoryTask(const CCopasiContainer * pParent = NULL);
 
+protected:
   /**
-   * Copy constructor
-   * @param const CTrajectoryTask & src
+   * Specific constructor
+   * @param const Type & taskType
    * @param const CCopasiContainer * pParent (default: NULL)
    */
+  CTrajectoryTask(const Type & taskType,
+                  const CCopasiContainer * pParent = NULL);
+
+public:
+
+  /**
+    * Copy constructor
+    * @param const CTrajectoryTask & src
+    * @param const CCopasiContainer * pParent (default: NULL)
+    */
   CTrajectoryTask(const CTrajectoryTask & src,
                   const CCopasiContainer * pParent = NULL);
 
@@ -143,7 +154,7 @@ private:
   void cleanup();
 
 // Attributes
-
+protected:
   /**
    * whether the time series should be stored in mTimeSeries
    */
@@ -198,5 +209,10 @@ private:
    * A pointer to the math container used for calculation
    */
   CMathContainer * mpContainer;
+
+  /**
+   * A Boolean flag indication whether to proceed with the integration
+   */
+  bool mProceed;
 };
 #endif // COPASI_CTrajectoryTask

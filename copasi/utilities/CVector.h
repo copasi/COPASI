@@ -132,7 +132,20 @@ public:
     return *this;
   }
 
-public:
+  /**
+   * Retrieve the array of the vector elements. This is suitable
+   * for interfacing with clapack routines.
+   * @return CType * array
+   */
+  CType * array() {return mVector;}
+
+  /**
+   * Retrieve the array of the vector elements. This is suitable
+   * for interfacing with clapack routines.
+   * @return const CType * array
+   */
+  const CType * array() const {return mVector;}
+
   /**
    * Assignment operator
    * @param const CType & value
@@ -187,20 +200,6 @@ public:
    */
   inline const CType & operator()(const size_t & row) const
   {return *(mVector + (row - 1));}
-
-  /**
-   * Retrieve the array of the vector elements. This is suitable
-   * for interfacing with clapack routines.
-   * @return CType * array
-   */
-  CType * array() {return mVector;}
-
-  /**
-   * Retrieve the array of the vector elements. This is suitable
-   * for interfacing with clapack routines.
-   * @return const CType * array
-   */
-  const CType * array() const {return mVector;}
 
   /**
    * Output stream operator
