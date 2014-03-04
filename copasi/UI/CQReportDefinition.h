@@ -68,6 +68,7 @@ private slots:
   void chkTitleClicked();
   void btnDeleteReportClicked();
   void btnNewReportClicked();
+  void btnCopyReportClicked();
   void btnRevertClicked();
   void btnCommitClicked();
 };
