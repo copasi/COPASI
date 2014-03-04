@@ -62,7 +62,11 @@ CReportDefinition::CReportDefinition(const CReportDefinition & src,
     mSeparator(src.mSeparator),
     mTable(src.mTable),
     mbTitle(src.mbTitle),
-    mPrecision(src.mPrecision)
+    mPrecision(src.mPrecision),
+    mHeaderVector(src.mHeaderVector),
+    mBodyVector(src.mBodyVector),
+    mFooterVector(src.mFooterVector),
+    mTableVector(src.mTableVector)
 {}
 
 CReportDefinition::~CReportDefinition()
