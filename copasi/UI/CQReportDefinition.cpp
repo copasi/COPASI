@@ -428,32 +428,6 @@ void CQReportDefinition::btnCopyReportClicked()
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
-//CCopasiDataModel* pDataModel = mpObject->getObjectDataModel();
-//if (pDataModel == NULL) return;
-
-//CPlotSpecification * pPl = new CPlotSpecification(*dynamic_cast<CPlotSpecification*>(CCopasiRootContainer::getKeyFactory()->get(mKey)));
-
-//std::string baseName = pPl->getObjectName() + "_copy";
-//std::string name = baseName;
-
-//int i = 1;
-
-//while (pDataModel->getPlotDefinitionList()->getIndex(name) != C_INVALID_INDEX)
-//  {
-//    i++;
-//    name = baseName + TO_UTF8(QString::number(i));
-//  }
-
-//pPl->setObjectName(name);
-
-//pDataModel->getPlotDefinitionList()->add(pPl, true);
-
-//std::string key = pPl->CCopasiParameter::getKey();
-//protectedNotify(ListViews::PLOT, ListViews::ADD, key);
-//enter(key);
-//mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
-
-
 
 void CQReportDefinition::btnRevertClicked()
 {load();}
