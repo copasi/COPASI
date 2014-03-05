@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -352,18 +352,7 @@ bool CEvaluationTree::compileNodes()
               if (mType == Expression &&
                   (pObject = static_cast< CEvaluationNodeObject *>(*it)->getObjectInterfacePtr()) != NULL)
                 {
-                  const CCopasiObject * pDataObject = dynamic_cast< const CCopasiObject * >(pObject);
-
-                  if (pDataObject == NULL)
-                    {
-                      const CMathObject * pMathObject = dynamic_cast< const CMathObject * >(pObject);
-
-                      if (pMathObject != NULL)
-                        {
-                          pDataObject = pMathObject->getDataObject();
-                        }
-                    }
-
+                  const CCopasiObject * pDataObject = CObjectInterface::DataObject(pObject);
                   addDirectDependency(pDataObject);
                 }
             }
@@ -689,16 +678,16 @@ bool CEvaluationTree::hasDiscontinuity() const
     {
       switch ((int)(*it)->getType())
         {
-          case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
-          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
-          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
-          case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
+          case(CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
+          case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+          case(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
             // We found a discontinuity.
             return true;
             break;
 
-          case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
-          case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+          case(CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
+          case(CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
 
             // If the called tree has a discontinuity so do we.
             if (static_cast< CEvaluationNodeCall * >(*it)->getCalledTree()->hasDiscontinuity())

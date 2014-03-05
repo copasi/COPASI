@@ -81,16 +81,15 @@ bool CReportDefinition::preCompileTable(const std::vector< CCopasiContainer * > 
   std::vector<CRegisteredObjectName>::const_iterator end = mTableVector.end();
 
   CCopasiDataModel* pDataModel = getObjectDataModel();
-  CObjectInterface * pObject;
+  const CCopasiObject *  pObject;
 
   for (; it != end; ++it)
     {
-      pObject = pDataModel->ObjectFromCN(listOfContainer, *it);
+      pObject = CObjectInterface::DataObject(pDataModel->ObjectFromCN(listOfContainer, *it));
 
-      if (pObject != NULL &&
-          pObject->getDataObject() != NULL)
+      if (pObject != NULL)
         {
-          addTableElement(pObject->getDataObject());
+          addTableElement(pObject);
         }
       else
         {

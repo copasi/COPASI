@@ -1,7 +1,7 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include <sstream>
 
@@ -121,11 +121,11 @@ bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag 
     }
 
 #ifdef COPASI_DEBUG_TRACE
-{
-  std::ofstream GetUpdateSequence("GetUpdateSequence.dot");
-  exportDOTFormat(GetUpdateSequence, "GetUpdateSequence");
-  GetUpdateSequence.close();
-}
+  {
+    std::ofstream GetUpdateSequence("GetUpdateSequence.dot");
+    exportDOTFormat(GetUpdateSequence, "GetUpdateSequence");
+    GetUpdateSequence.close();
+  }
 #endif //COPASI_DEBUG_TRACE
 
   if (!success) goto finish;
@@ -229,17 +229,12 @@ void CMathDependencyGraph::exportDOTFormat(std::ostream & os, const std::string 
 // static
 std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject) const
 {
-  const CCopasiObject * pDataObject = dynamic_cast< const CCopasiObject * >(pObject);
+  const CCopasiObject * pDataObject = CObjectInterface::DataObject(pObject);
   const CMathObject * pMathObject = dynamic_cast< const CMathObject * >(pObject);
 
   if (pDataObject == NULL && pMathObject == NULL)
     {
       return "Invalid Node";
-    }
-
-  if (pDataObject == NULL)
-    {
-      pDataObject = pMathObject->getDataObject();
     }
 
   if (pDataObject == NULL)

@@ -393,17 +393,7 @@ std::string CEvaluationNodeObject::getMMLString(const std::vector< std::string >
 {
   std::ostringstream out;
 
-  const CCopasiObject * pDataObject = dynamic_cast< const CCopasiObject * >(mpObject);
-
-  if (pDataObject == NULL)
-    {
-      const CMathObject * pMathObject = dynamic_cast< const CMathObject * >(mpObject);
-
-      if (pMathObject != NULL)
-        {
-          pDataObject = pMathObject->getDataObject();
-        }
-    }
+  const CCopasiObject * pDataObject = CObjectInterface::DataObject(mpObject);
 
   out << CMathMl::getMMLName(pDataObject) << std::endl;
 

@@ -196,21 +196,23 @@ bool CTimeSeries::compile(std::vector< CCopasiContainer * > listOfContainer,
             break;
         }
 
-      if ((pMetab = dynamic_cast< const CMetab *>(pObject->getDataObject()->getObjectParent())) != NULL)
+      const CCopasiObject * pDataObject = CObjectInterface::DataObject(pObject);
+
+      if ((pMetab = dynamic_cast< const CMetab *>(pDataObject->getObjectParent())) != NULL)
         {
           mTitles[i] = CMetabNameInterface::getDisplayName(&pContainer->getModel(), *pMetab, false);
           mCompartment[i] = pContainer->getMathObject(pMetab->getCompartment()->getValueReference()) - pFirstObject;
         }
-      else if (dynamic_cast< const CModel *>(pObject->getDataObject()->getObjectParent()) != NULL)
+      else if (dynamic_cast< const CModel *>(pDataObject->getObjectParent()) != NULL)
         {
           mTitles[i] = "Time";
         }
       else
         {
-          mTitles[i] = pObject->getDataObject()->getObjectParent()->getObjectDisplayName();
+          mTitles[i] = pDataObject->getObjectParent()->getObjectDisplayName();
         }
 
-      mKeys[i] = pObject->getDataObject()->getObjectParent()->getKey();
+      mKeys[i] = pDataObject->getObjectParent()->getKey();
       mObjects.insert(pObject);
     }
 

@@ -406,8 +406,7 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
     {
       pSelected = mpDataModel->ObjectFromCN(*pListOfContainer, (*nameVector)[i]);
 
-      if (pSelected == NULL ||
-          pSelected->getDataObject() == NULL)
+      if (CObjectInterface::DataObject(pSelected) == NULL)
         {
           CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6, (*nameVector)[i].c_str());
           continue;

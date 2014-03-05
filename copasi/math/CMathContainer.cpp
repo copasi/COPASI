@@ -551,6 +551,10 @@ void CMathContainer::fetchInitialState()
         {
           *pValue = *(C_FLOAT64 *)pDataObject->getValuePointer();
         }
+      else
+        {
+          *pValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+        }
     }
 
   return;
@@ -588,6 +592,10 @@ void CMathContainer::fetchState()
       if (pDataObject != NULL)
         {
           *pValue = *(C_FLOAT64 *)pDataObject->getValuePointer();
+        }
+      else
+        {
+          *pValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
         }
     }
 

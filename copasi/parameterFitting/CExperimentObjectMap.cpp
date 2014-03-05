@@ -243,19 +243,18 @@ bool CExperimentObjectMap::compile(const std::vector< CCopasiContainer * > listO
   mObjects.resize(mLastColumn + 1);
   mObjects = NULL;
 
-  CObjectInterface * pObject = NULL;
+  const CCopasiObject * pObject = NULL;
   std::string CN;
 
   for (i = 0; i < imax; i++)
     {
       if ((CN = getObjectCN(i)) == "") continue;
 
-      if ((pObject = getObjectDataModel()->ObjectFromCN(listOfContainer, CN)) != NULL &&
-          pObject->getDataObject() != NULL &&
-          pObject->getDataObject()->isValueDbl())
+      if ((pObject = CObjectInterface::DataObject(getObjectDataModel()->ObjectFromCN(listOfContainer, CN))) != NULL &&
+          pObject->isValueDbl())
         {
           Column = strtoul(getName(i).c_str(), NULL, 0);
-          mObjects[Column] = pObject->getDataObject();
+          mObjects[Column] = pObject;
         }
       else
         return false;
