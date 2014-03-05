@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -243,19 +243,19 @@ bool CExperimentObjectMap::compile(const std::vector< CCopasiContainer * > listO
   mObjects.resize(mLastColumn + 1);
   mObjects = NULL;
 
-  CCopasiObject * pObject = NULL;
+  CObjectInterface * pObject = NULL;
   std::string CN;
 
   for (i = 0; i < imax; i++)
     {
       if ((CN = getObjectCN(i)) == "") continue;
 
-      if ((pObject =
-             getObjectDataModel()->ObjectFromName(listOfContainer, CN)) != NULL &&
-          pObject->isValueDbl())
+      if ((pObject = getObjectDataModel()->ObjectFromCN(listOfContainer, CN)) != NULL &&
+          pObject->getDataObject() != NULL &&
+          pObject->getDataObject()->isValueDbl())
         {
           Column = strtoul(getName(i).c_str(), NULL, 0);
-          mObjects[Column] = pObject;
+          mObjects[Column] = pObject->getDataObject();
         }
       else
         return false;
@@ -264,7 +264,7 @@ bool CExperimentObjectMap::compile(const std::vector< CCopasiContainer * > listO
   return true;
 }
 
-const CVector< CCopasiObject * > & CExperimentObjectMap::getMappedObjects() const
+const CVector< const CCopasiObject * > & CExperimentObjectMap::getMappedObjects() const
 {return mObjects;}
 
 const size_t & CExperimentObjectMap::getLastColumn() const

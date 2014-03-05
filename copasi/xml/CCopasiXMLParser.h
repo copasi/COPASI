@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -4952,7 +4952,7 @@ public:
    * @param const std::string & cn
    * @return const CCopasiObject * pObject
    */
-  const CCopasiObject * getObjectFromName(const std::string & cn) const;
+  const CCopasiObject * getObjectFromCN(const std::string & cn) const;
 };
 
 #endif // COPASI_CCopasiXMLParser

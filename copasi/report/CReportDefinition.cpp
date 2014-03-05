@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
-//   $Revision: 1.47 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/20 12:08:24 $
-// End CVS Header
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -43,26 +35,26 @@
 //////////////////////////////////////////////////
 CReportDefinition::CReportDefinition(const std::string & name,
                                      const CCopasiContainer * pParent):
-    CCopasiObject(name, pParent, "ReportDefinition"),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Report", this)),
-    mComment(""),
-    mTaskType(CCopasiTask::timeCourse),
-    mSeparator("\t"),
-    mTable(true),
-    mbTitle(true),
-    mPrecision(6)
+  CCopasiObject(name, pParent, "ReportDefinition"),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("Report", this)),
+  mComment(""),
+  mTaskType(CCopasiTask::timeCourse),
+  mSeparator("\t"),
+  mTable(true),
+  mbTitle(true),
+  mPrecision(6)
 {}
 
 CReportDefinition::CReportDefinition(const CReportDefinition & src,
                                      const CCopasiContainer * pParent):
-    CCopasiObject(src, pParent),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Report", this)),
-    mComment(src.mComment),
-    mTaskType(src.mTaskType),
-    mSeparator(src.mSeparator),
-    mTable(src.mTable),
-    mbTitle(src.mbTitle),
-    mPrecision(src.mPrecision)
+  CCopasiObject(src, pParent),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("Report", this)),
+  mComment(src.mComment),
+  mTaskType(src.mTaskType),
+  mSeparator(src.mSeparator),
+  mTable(src.mTable),
+  mbTitle(src.mbTitle),
+  mPrecision(src.mPrecision)
 {}
 
 CReportDefinition::~CReportDefinition()
@@ -89,15 +81,16 @@ bool CReportDefinition::preCompileTable(const std::vector< CCopasiContainer * > 
   std::vector<CRegisteredObjectName>::const_iterator end = mTableVector.end();
 
   CCopasiDataModel* pDataModel = getObjectDataModel();
-  CCopasiObject * pObject;
+  CObjectInterface * pObject;
 
   for (; it != end; ++it)
     {
-      pObject = pDataModel->ObjectFromName(listOfContainer, *it);
+      pObject = pDataModel->ObjectFromCN(listOfContainer, *it);
 
-      if (pObject != NULL)
+      if (pObject != NULL &&
+          pObject->getDataObject() != NULL)
         {
-          addTableElement(pObject);
+          addTableElement(pObject->getDataObject());
         }
       else
         {

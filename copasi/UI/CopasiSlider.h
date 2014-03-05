@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -55,8 +55,8 @@ public:
   C_FLOAT64 maxValue() const;
   C_FLOAT64 originalValue() const;
   void updateValue(bool modifyRange, bool updateDependencies);
-  CCopasiObject* object() const;
-  void setObject(CCopasiObject* object);
+  const CCopasiObject* object() const;
+  void setObject(const CCopasiObject * object);
   CSlider* getCSlider() const;
   void updateLabel();
   void updateSliderData();

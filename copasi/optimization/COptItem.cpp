@@ -342,9 +342,7 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
   mpMethod = &DoNothing;
   mpObjectValue = &NaN;
 
-  if ((mpObject =
-         getObjectDataModel()->ObjectFromName(listOfContainer,
-             getObjectCN())) != NULL &&
+  if ((mpObject = dynamic_cast< CCopasiObject * >(getObjectDataModel()->ObjectFromCN(listOfContainer, getObjectCN()))) != NULL &&
       mpObject->isValueDbl())
     mpObjectValue = (C_FLOAT64 *) mpObject->getValuePointer();
 
@@ -457,9 +455,7 @@ bool COptItem::compileLowerBound(const std::vector< CCopasiContainer * > & listO
       mLowerBound = strToDouble(mpParmLowerBound->c_str(), NULL);
       mpLowerBound = &mLowerBound;
     }
-  else if ((mpLowerObject =
-              getObjectDataModel()->ObjectFromName(listOfContainer,
-                  *mpParmLowerBound)) != NULL &&
+  else if ((mpLowerObject = dynamic_cast< CCopasiObject * >(getObjectDataModel()->ObjectFromCN(listOfContainer, *mpParmLowerBound))) != NULL &&
            mpLowerObject->isValueDbl())
     {
       mpLowerBound = (C_FLOAT64 *) mpLowerObject->getValuePointer();
@@ -487,9 +483,7 @@ bool COptItem::compileUpperBound(const std::vector< CCopasiContainer * > & listO
       mUpperBound = strToDouble(mpParmUpperBound->c_str(), NULL);
       mpUpperBound = &mUpperBound;
     }
-  else if ((mpUpperObject =
-              getObjectDataModel()->ObjectFromName(listOfContainer,
-                  *mpParmUpperBound)) != NULL &&
+  else if ((mpUpperObject = dynamic_cast< CCopasiObject * >(getObjectDataModel()->ObjectFromCN(listOfContainer, *mpParmUpperBound))) != NULL &&
            mpUpperObject->isValueDbl())
     {
       mpUpperBound = (C_FLOAT64 *) mpUpperObject->getValuePointer();

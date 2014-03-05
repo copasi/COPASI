@@ -392,21 +392,22 @@ std::ostream * CReport::getStream() const {return mpOstream;}
 
 // make to support parallel tasks
 void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * pListOfContainer,
-                                      std::vector<CCopasiObject*> & objectList,
+                                      std::vector< CCopasiObject * > & objectList,
                                       CReport *& pReport,
                                       const std::vector<CRegisteredObjectName>* nameVector)
 {
   objectList.clear();
 
   unsigned C_INT32 i;
-  CCopasiObject * pSelected;
+  CObjectInterface * pSelected;
   CReportDefinition * pReportDefinition;
 
   for (i = 0; i < nameVector->size(); i++)
     {
-      pSelected = mpDataModel->ObjectFromName(*pListOfContainer, (*nameVector)[i]);
+      pSelected = mpDataModel->ObjectFromCN(*pListOfContainer, (*nameVector)[i]);
 
-      if (!pSelected)
+      if (pSelected == NULL ||
+          pSelected->getDataObject() == NULL)
         {
           CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6, (*nameVector)[i].c_str());
           continue;
@@ -420,8 +421,8 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
           return;
         }
 
-      COutputInterface::mObjects.insert(pSelected);
-      objectList.push_back(pSelected);
+      mObjects.insert(pSelected);
+      objectList.push_back(const_cast< CCopasiObject * >(pSelected->getDataObject()));
     }
 }
 
@@ -430,9 +431,9 @@ bool CReport::compileChildReport(CReport * pReport, std::vector< CCopasiContaine
   pReport->open(mpDataModel, mpOstream);
   bool success = pReport->compile(listOfContainer, mpDataModel);
 
-  const std::set< const CCopasiObject * > & Objects = pReport->COutputInterface::getObjects();
-  std::set< const CCopasiObject * >::const_iterator it = Objects.begin();
-  std::set< const CCopasiObject * >::const_iterator end = Objects.end();
+  const CObjectInterface::ObjectSet & Objects = pReport->COutputInterface::getObjects();
+  CObjectInterface::ObjectSet::const_iterator it = Objects.begin();
+  CObjectInterface::ObjectSet::const_iterator end = Objects.end();
 
   for (; it != end; ++it)
     COutputInterface::mObjects.insert(*it);

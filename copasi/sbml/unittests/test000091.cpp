@@ -109,7 +109,7 @@ void test000091::test_delay_in_kinetic_law()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -136,7 +136,7 @@ void test000091::test_delay_in_kinetic_law()
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -436,7 +436,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -463,7 +463,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -490,7 +490,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -517,7 +517,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));

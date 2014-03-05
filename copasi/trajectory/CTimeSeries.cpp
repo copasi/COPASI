@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,6 +20,7 @@
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
+#include "math/CMathContainer.h"
 #include "model/CMetabNameInterface.h"
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
@@ -44,7 +45,7 @@ CTimeSeries::CTimeSeries():
   mRecordedSteps(0),
   mpIt(mArray),
   mpEnd(mArray + size()),
-  mpState(NULL),
+  mContainerState(),
   mTitles(),
   mCompartment(),
   mPivot(),
@@ -59,13 +60,15 @@ CTimeSeries::CTimeSeries(const CTimeSeries & src):
   mRecordedSteps(src.mRecordedSteps),
   mpIt(mArray + mRecordedSteps * mCols),
   mpEnd(mArray + size()),
-  mpState(src.mpState),
+  mContainerState(),
   mTitles(src.mTitles),
   mCompartment(src.mCompartment),
   mPivot(src.mPivot),
   mKeys(src.mKeys),
   mNumberToQuantityFactor(src.mNumberToQuantityFactor)
-{}
+{
+  mContainerState.initialize(src.mContainerState);
+}
 
 CTimeSeries::~CTimeSeries()
 {}
@@ -101,7 +104,6 @@ void CTimeSeries::clear()
   mRecordedSteps = 0;
   mpIt = mArray;
   mpEnd = mArray + size();
-  mpState = NULL;
   mTitles.clear();
   mCompartment.resize(0);
   mPivot.resize(0);
@@ -113,22 +115,25 @@ void CTimeSeries::clear()
 bool CTimeSeries::compile(std::vector< CCopasiContainer * > listOfContainer,
                           const CCopasiDataModel* pDataModel)
 {
-  const CModel * pModel =
-    dynamic_cast< const CModel * >(pDataModel->ObjectFromName(listOfContainer, pDataModel->getModel()->getCN()));
+  std::vector< CCopasiContainer * >::const_iterator itContainer = listOfContainer.begin();
+  std::vector< CCopasiContainer * >::const_iterator endContainer = listOfContainer.end();
+  const CMathContainer * pContainer = NULL;
 
-  if (pModel == NULL)
-    return false;
+  for (; itContainer != endContainer && pContainer == NULL; ++itContainer)
+    {
+      pContainer = dynamic_cast< CMathContainer * >(*itContainer);
+    }
 
-  mpState = & pModel->getState();
+  assert(pContainer != NULL);
 
-  const CStateTemplate & Template = pModel->getStateTemplate();
+  mContainerState.initialize(pContainer->getState());
 
   // We store all variables of the system.
-  // The reason for this is that events will be able to change even fixed values.
-  CModelEntity *const* it = Template.getEntities();
-  CModelEntity *const* end = Template.endFixed();
+  const CMathObject * pFirstObject = pContainer->getMathObject(mContainerState.array());
+  const CMathObject * pObject = pFirstObject;
+  const CMathObject * pObjectEnd = pObject + mContainerState.size();
 
-  size_t i, imax = end - it;
+  size_t i, imax = mContainerState.size();
 
   CMatrix< C_FLOAT64 >::resize(mAllocatedSteps + 1, imax);
 
@@ -144,36 +149,50 @@ bool CTimeSeries::compile(std::vector< CCopasiContainer * > listOfContainer,
   mpEnd = mArray + size();
   mCompartment = C_INVALID_INDEX;
 
-  mNumberToQuantityFactor = pModel->getNumber2QuantityFactor();
+  mNumberToQuantityFactor = pContainer->getModel().getNumber2QuantityFactor();
 
   const CMetab * pMetab;
 
-  for (i = 0; it != end; ++i, ++it)
+  size_t Reaction = 1;
+  size_t ODE = Reaction + pContainer->getCountIndependentSpecies() + pContainer->getCountDependentSpecies();
+  size_t EventTarget = ODE + pContainer->getCountODEs();
+
+  for (i = 0; pObject != pObjectEnd; ++i, ++pObject)
     {
-      if ((pMetab = dynamic_cast< const CMetab *>(*it)) != NULL)
+      switch (pObject->getSimulationType())
         {
-          mTitles[i] = CMetabNameInterface::getDisplayName(pModel, *pMetab, false);
-          mCompartment[i] = Template.getIndex(pMetab->getCompartment());
+          case CMath::EventTarget:
+            mPivot[EventTarget++] = i;
+            break;
+
+          case CMath::Time:
+            mPivot[0] = i;
+            break;
+
+          case CMath::ODE:
+            mPivot[ODE++] = i;
+            break;
+
+          case CMath::Independent:
+          case CMath::Dependent:
+            mPivot[Reaction++] = i;
+            break;
+        }
+
+      if ((pMetab = dynamic_cast< const CMetab *>(pObject->getDataObject()->getObjectParent())) != NULL)
+        {
+          mTitles[i] = CMetabNameInterface::getDisplayName(&pContainer->getModel(), *pMetab, false);
+          mCompartment[i] = pContainer->getMathObject(pMetab->getCompartment()->getValueReference()) - pFirstObject;
         }
       else
         {
-          mTitles[i] = (*it)->getObjectDisplayName();
+          mTitles[i] = pObject->getDataObject()->getObjectParent()->getObjectDisplayName();
         }
 
-      mKeys[i] = (*it)->getKey();
+      mKeys[i] = pObject->getDataObject()->getObjectParent()->getKey();
 
-      mObjects.insert((*it)->getValueReference());
+      mObjects.insert(pObject);
     }
-
-  mTitles[0] = "Time";
-  mKeys[0] = pModel->getKey();
-
-  const size_t * pUserOrder = Template.getUserOrder().array();
-  const size_t * pUserOrderEnd = pUserOrder + Template.getUserOrder().size();
-  it = Template.getEntities();
-
-  for (i = 0; pUserOrder != pUserOrderEnd; ++pUserOrder)
-    mPivot[i++] = *pUserOrder;
 
   return true;
 }
@@ -192,7 +211,7 @@ void CTimeSeries::output(const COutputInterface::Activity & activity)
 
   if (mpIt != mpEnd)
     {
-      memcpy(mpIt, &mpState->getTime(), mCols * sizeof(C_FLOAT64));
+      memcpy(mpIt, mContainerState.array(), mCols * sizeof(C_FLOAT64));
       mpIt += mCols;
       mRecordedSteps++;
     }

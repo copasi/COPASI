@@ -253,15 +253,6 @@ public:
 
   /**
    * Retrieve the data object with the given CN
-   * @param const std::vector< CCopasiContainer * > &listOfContainer
-   * @param const CCopasiObjectName& CN
-   * @return CCopasiObject * pObject
-   */
-  CCopasiObject * ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
-                                 const CCopasiObjectName & CN) const;
-
-  /**
-   * Retrieve the data object with the given CN
    * @param const CCopasiObjectName & CN
    * @return CCopasiObject * pObject
    */

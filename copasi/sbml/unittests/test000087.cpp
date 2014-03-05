@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000087.cpp,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/04/01 15:06:43 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -123,7 +115,7 @@ void test000087::test_import_reaction_flux_reference_2()
   const CRegisteredObjectName cn = pObjectNode->getObjectCN();
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pCOPASIDATAMODEL->getModel());
-  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, cn);
+  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, cn));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == "Flux");
@@ -340,7 +332,7 @@ void test000087::test_simulate_reaction_flux_reference_1()
   const CRegisteredObjectName cn = pObjectNode->getObjectCN();
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pCOPASIDATAMODEL->getModel());
-  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, cn);
+  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, cn));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == "Flux");

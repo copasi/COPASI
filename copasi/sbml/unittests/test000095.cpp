@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000095.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/05/16 06:24:49 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -78,7 +70,7 @@ void test000095::test_import_l3_event_1()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -142,7 +134,7 @@ void test000095::test_import_l3_event_2()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -167,7 +159,6 @@ void test000095::test_import_l3_event_2()
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 8.0) / 8.0) < 1e-9);
-
 
   // check that the message stack contains a warning about initial values for triggers
   // MCSBML + 97
@@ -207,7 +198,7 @@ void test000095::test_import_l3_event_3()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -273,7 +264,7 @@ void test000095::test_import_l3_event_4()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -337,7 +328,7 @@ void test000095::test_import_l3_event_5()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -445,7 +436,6 @@ const char* test000095::MODEL_STRING2 =
   "  </model>"
   "</sbml>"
   ;
-
 
 const char* test000095::MODEL_STRING3 =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
@@ -559,5 +549,3 @@ const char* test000095::MODEL_STRING5 =
   "  </model>"
   "</sbml>"
   ;
-
-

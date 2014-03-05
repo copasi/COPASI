@@ -1040,9 +1040,9 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
   size_t i, imax;
   size_t j, jmax;
 
-  std::pair< std::set< const CCopasiObject * >::iterator, bool > Inserted;
+  std::pair< std::set< const CObjectInterface * >::iterator, bool > Inserted;
   std::pair< Activity, size_t > DataIndex;
-  std::vector< std::set < const CCopasiObject * > > ActivityObjects;
+  std::vector< std::set < const CObjectInterface * > > ActivityObjects;
 
   ActivityObjects.resize(ActivitySize);
 
@@ -1050,7 +1050,7 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
   imax = mpPlotSpecification->getItems().size();
   mDataIndex.resize(imax);
 
-  std::vector< std::vector < const CCopasiObject * > >::iterator itX;
+  std::vector< std::vector < const CObjectInterface * > >::iterator itX;
   assert(pDataModel != NULL);
 
   for (i = 0; i < imax; ++i)
@@ -1065,8 +1065,8 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
 
       for (j = 0; j < jmax; ++j)
         {
-          const CCopasiObject* pObj =
-            pDataModel->ObjectFromName(listOfContainer, pItem->getChannels()[j]);
+          const CObjectInterface * pObj =
+            pDataModel->ObjectFromCN(listOfContainer, pItem->getChannels()[j]);
 
           if (pObj)
             mObjects.insert(pObj);
@@ -1086,7 +1086,7 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
 
               if (itX == mSaveCurveObjects.end())
                 {
-                  std::vector < const CCopasiObject * > NewX;
+                  std::vector < const CObjectInterface * > NewX;
                   NewX.push_back(pObj);
 
                   mSaveCurveObjects.push_back(NewX);
@@ -1124,10 +1124,14 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer,
               // and the value pointer actually exists. If not, use a dummy value.)
               void * tmp;
 
-              if ((pObj && (pObj->isValueInt() || pObj->isValueDbl())) && (tmp = pObj->getValuePointer()))
+              const CCopasiObject * pDataObject = CObjectInterface::DataObject(pObj);
+
+              if (pDataObject != NULL &&
+                  (tmp = pObj->getValuePointer()) != NULL &&
+                  (pDataObject->isValueInt() || pDataObject->isValueDbl()))
                 {
                   mObjectValues[ItemActivity].push_back((C_FLOAT64 *) tmp); //pObj->getValuePointer());
-                  mObjectInteger[ItemActivity].push_back(pObj->isValueInt());
+                  mObjectInteger[ItemActivity].push_back(pDataObject->isValueInt());
                 }
               else
                 {
@@ -1411,17 +1415,17 @@ bool CopasiPlot::saveData(const std::string & filename)
   // Write the table header
   fs << "# ";
 
-  std::vector< std::vector < const CCopasiObject * > >::const_iterator itX;
-  std::vector< std::vector < const CCopasiObject * > >::const_iterator endX =
+  std::vector< std::vector < const CObjectInterface  * > >::const_iterator itX;
+  std::vector< std::vector < const CObjectInterface * > >::const_iterator endX =
     mSaveCurveObjects.end();
 
-  std::vector < const CCopasiObject * >::const_iterator it;
-  std::vector < const CCopasiObject * >::const_iterator end;
+  std::vector < const CObjectInterface * >::const_iterator it;
+  std::vector < const CObjectInterface * >::const_iterator end;
 
   for (itX = mSaveCurveObjects.begin(); itX != endX; ++itX)
     for (it = itX->begin(), end = itX->end(); it != end; ++it)
-      if (*it != NULL)
-        fs << (*it)->getObjectDisplayName() << "\t";
+      if (CObjectInterface::DataObject(*it) != NULL)
+        fs << CObjectInterface::DataObject(*it)->getObjectDisplayName() << "\t";
       else
         fs << "Not found\t";
 
@@ -1439,8 +1443,8 @@ bool CopasiPlot::saveData(const std::string & filename)
 
   Offset.resize(imax);
 
-  std::map< Activity, std::map< const CCopasiObject *, size_t > >::iterator itActivity;
-  std::map< const CCopasiObject *, size_t >::iterator itObject;
+  std::map< Activity, std::map< const CObjectInterface *, size_t > >::iterator itActivity;
+  std::map< const CObjectInterface *, size_t >::iterator itObject;
 
   if (mDataBefore)
     {
@@ -1616,8 +1620,8 @@ bool CopasiPlot::saveData(const std::string & filename)
               FirstHistogram = false;
             }
 
-          if (mSaveHistogramObjects[HistogramIndex] != NULL)
-            fs << mSaveHistogramObjects[HistogramIndex]->getObjectDisplayName();
+          if (CObjectInterface::DataObject(mSaveHistogramObjects[HistogramIndex]) != NULL)
+            fs << CObjectInterface::DataObject(mSaveHistogramObjects[HistogramIndex])->getObjectDisplayName();
           else
             fs << "Not found";
 
@@ -1710,8 +1714,10 @@ void CopasiPlot::clearBuffers()
 }
 
 void CopasiPlot::setAxisUnits(const C_INT32 & index,
-                              const CCopasiObject * pObject)
+                              const CObjectInterface * pObjectInterface)
 {
+  const CCopasiObject * pObject = CObjectInterface::DataObject(pObjectInterface);
+
   if (pObject == NULL) return;
 
   std::string Units = pObject->getUnits();

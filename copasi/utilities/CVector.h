@@ -333,6 +333,18 @@ public:
 
   /**
    * Assignment operator
+   * @param const CVector <CType> & rhs
+   * @return CVector <CType> & lhs
+   */
+  CVector< CType > & operator = (const CVector <CType> & rhs)
+  {
+    copy(rhs);
+
+    return * this;
+  }
+
+  /**
+   * Assignment operator
    * @param const CType & value
    */
   CVector< CType> & operator = (const CType & value)

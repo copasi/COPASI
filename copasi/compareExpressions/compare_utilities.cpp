@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/compare_utilities.cpp,v $
-//   $Revision: 1.15 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/15 15:56:21 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -1130,7 +1122,6 @@ CEvaluationNode* replace_variable_names(const CEvaluationNode* pNode, const std:
   return pResult;
 }
 
-
 bool is_mass_action(const CNormalFraction* pFrac, const CModel* pModel, const CChemEq* pChemEq)
 {
   bool result = true;
@@ -1211,7 +1202,6 @@ bool is_mass_action(const CNormalFraction* pFrac, const CModel* pModel, const CC
   return result;
 }
 
-
 bool contains_necessary_mass_action_elements(const CCopasiVector<CChemEqElement>& elements, const CNormalProduct* pProduct, const CModel* pModel)
 {
   // check if pProducts contains a product
@@ -1249,7 +1239,7 @@ bool contains_necessary_mass_action_elements(const CCopasiVector<CChemEqElement>
               if (pItem != NULL && pItem->getType() == CNormalItem::VARIABLE)
                 {
                   std::string cn = pItem->getName();
-                  pObject = pDatamodel->ObjectFromName(listOfContainers, cn);
+                  pObject = dynamic_cast< const CCopasiObject * >(pDatamodel->ObjectFromCN(listOfContainers, cn));
 
                   if (pObject != NULL)
                     {

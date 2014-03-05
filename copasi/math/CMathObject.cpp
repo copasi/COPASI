@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -255,6 +255,12 @@ void CMathObject::print(std::ostream * ostream) const
 }
 
 // virtual
+const CCopasiObject * CMathObject::getDataObject() const
+{
+  return mpDataObject;
+}
+
+// virtual
 void * CMathObject::getValuePointer() const
 {
   return mpValue;
@@ -286,11 +292,6 @@ void CMathObject::calculate()
   // The solution is that the moiety automatically updates the value in conjunction
   // with the dependency graph omitting the value in the update sequence if the context
   // is CMath::UseMoieties.
-}
-
-const CCopasiObject * CMathObject::getDataObject() const
-{
-  return mpDataObject;
 }
 
 const CMath::ValueType & CMathObject::getValueType() const

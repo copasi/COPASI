@@ -291,7 +291,7 @@ bool COptProblem::initializeSubtaskBeforeOutput()
       std::vector< CCopasiContainer * > ListOfContainer;
       ListOfContainer.push_back(getObjectAncestor("Vector"));
       mpSubtask =
-        dynamic_cast< CCopasiTask * >(getObjectDataModel()->ObjectFromName(ListOfContainer, *mpParmSubtaskCN));
+        dynamic_cast< CCopasiTask * >(getObjectDataModel()->ObjectFromCN(ListOfContainer, *mpParmSubtaskCN));
 
       try
         {
@@ -767,7 +767,7 @@ CCopasiTask::Type COptProblem::getSubtaskType() const
   std::vector< CCopasiContainer * > ListOfContainer;
   ListOfContainer.push_back(getObjectAncestor("Vector"));
   mpSubtask =
-    dynamic_cast< CCopasiTask * >(const_cast< CCopasiObject *>(getObjectDataModel()->ObjectFromName(ListOfContainer, *mpParmSubtaskCN)));
+    dynamic_cast< CCopasiTask * >(const_cast< CObjectInterface *>(getObjectDataModel()->ObjectFromCN(ListOfContainer, *mpParmSubtaskCN)));
 
   if (mpSubtask == NULL)
     return CCopasiTask::unset;

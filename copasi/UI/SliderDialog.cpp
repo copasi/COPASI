@@ -1223,7 +1223,7 @@ bool SliderDialog::setCorrectSliderObject(CopasiSlider* pSlider)
   if (pSlider == NULL)
     return false;
 
-  CCopasiObject *pObject = NULL, *pTmpObject = NULL;
+  const CCopasiObject *pObject = NULL, *pTmpObject = NULL;
   pObject = pSlider->object();
 
   if (pObject == NULL)

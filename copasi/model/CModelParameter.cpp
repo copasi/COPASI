@@ -1,7 +1,7 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include <limits>
 
@@ -173,8 +173,11 @@ const std::string CModelParameter::getUnit(const Framework & framework) const
                               pModel->getTimeUnit().isDimensionless(),
                               pModel->getAreaUnit().isDimensionless(),
                               pModel->getLengthUnit().isDimensionless());
+
         Units.setUseHeuristics(true);
+
         Units.setChemicalEquation(&pReaction->getChemEq());
+
         Units.findDimensions(pReaction->getCompartmentNumber() > 1);
 
         return Units.getDimensions()[pReaction->getParameterIndex(getName())].getDisplayString(pModel);
@@ -398,7 +401,7 @@ void CModelParameter::compile()
   std::vector< CCopasiContainer * > ListOfContainer;
   ListOfContainer.push_back(pModel);
 
-  mpObject = pModel->getObjectDataModel()->ObjectFromName(ListOfContainer, mCN);
+  mpObject = dynamic_cast< CCopasiObject * >(pModel->getObjectDataModel()->ObjectFromCN(ListOfContainer, mCN));
 
   if (mpObject != NULL)
     {
@@ -438,6 +441,7 @@ const CModelParameter::CompareResult & CModelParameter::diff(const CModelParamet
       case Compartment:
       case Species:
       case ModelValue:
+
         if (other.getObject() != NULL &&
             mpObject != NULL &&
             static_cast< CModelEntity *>(mpObject)->getStatus() == CModelEntity::ASSIGNMENT &&
@@ -525,7 +529,7 @@ bool CModelParameter::updateModel()
                 ListOfContainer.push_back(pModel);
 
                 CCopasiObjectName CN = static_cast< CEvaluationNodeObject * >(mpInitialExpression->getRoot())->getObjectCN();
-                CCopasiObject * pObject = pModel->getObjectDataModel()->ObjectFromName(ListOfContainer, CN);
+                CCopasiObject * pObject = dynamic_cast< CCopasiObject * >(pModel->getObjectDataModel()->ObjectFromCN(ListOfContainer, CN));
 
                 assert(pObject != NULL);
 
@@ -933,7 +937,7 @@ void CModelParameterReactionParameter::compile()
   CModel * pModel = getModel();
   ListOfContainer.push_back(pModel);
 
-  mpReaction = static_cast< CReaction * >(pModel->getObjectDataModel()->ObjectFromName(ListOfContainer, mpParent->getCN()));
+  mpReaction = static_cast< CReaction * >(pModel->getObjectDataModel()->ObjectFromCN(ListOfContainer, mpParent->getCN()));
 }
 
 const CReaction * CModelParameterReactionParameter::getReaction() const

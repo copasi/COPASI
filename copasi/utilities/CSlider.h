@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.h,v $
-//   $Revision: 1.16 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/31 14:25:58 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,7 +22,7 @@ class CSlider : public CCopasiContainer
 {
 public:
   /**
-   *  Enum of valid quantitye units
+   *  Enum of valid quantity units
    */
   enum Type {Float = 0, UnsignedFloat, Integer, UnsignedInteger, Undefined};
 
@@ -89,7 +81,7 @@ public:
   /**
    * Set the key of the associated entity
    * @param const std::string & associatedEntityKey
-   * @return bool succes
+   * @return bool success
    */
   bool setAssociatedEntityKey(const std::string & associatedEntityKey);
 
@@ -101,23 +93,23 @@ public:
 
   /**
    * Set the slider object.
-   * @param CCopasiObject * pObject
-   * @return bool succes
+   * @param const CCopasiObject * pObject
+   * @return bool success
    */
-  bool setSliderObject(CCopasiObject * pObject);
+  bool setSliderObject(const CCopasiObject * pObject);
 
   /**
    * Set the slider object.
    * @param const CCopasiObjectName & objectCN
-   * @return bool succes
+   * @return bool success
    */
   bool setSliderObject(const CCopasiObjectName & objectCN);
 
   /**
    * Retrieve the slider object.
-   * @return CCopasiObject * pObject
+   * @return const CCopasiObject * pObject
    */
-  CCopasiObject * getSliderObject();
+  const CCopasiObject * getSliderObject() const;
 
   /**
    * Retrieve the slider object CN.
@@ -128,7 +120,7 @@ public:
   /**
    * Set the slider type.
    * @param const CSlider::Type  type
-   * @return bool succes
+   * @return bool success
    */
   bool setSliderType(const CSlider::Type type);
 
@@ -142,7 +134,7 @@ public:
    * Set the sliders original value.
    * @param const C_FLOAT64 Value
    * @param const bool & writeToObject (Default: true)
-   * @return bool succes
+   * @return bool success
    */
   bool setOriginalValue(const C_FLOAT64 value);
 
@@ -156,7 +148,7 @@ public:
    * Set the slider value.
    * @param const C_FLOAT64 Value
    * @param const bool & writeToObject (Default: true)
-   * @return bool succes
+   * @return bool success
    */
   bool setSliderValue(const C_FLOAT64 value,
                       const bool & writeToObject = true);
@@ -176,7 +168,7 @@ public:
   /**
    * Set the slider minimum value.
    * @param const C_FLOAT64 minValue
-   * @return bool succes
+   * @return bool success
    */
   bool setMinValue(const C_FLOAT64 minValue);
 
@@ -189,7 +181,7 @@ public:
   /**
    * Set the slider maximum value.
    * @param const C_FLOAT64 maxValue
-   * @return bool succes
+   * @return bool success
    */
   bool setMaxValue(const C_FLOAT64 maxValue);
 
@@ -202,7 +194,7 @@ public:
   /**
    * Set the tick number.
    * @param const unsigned C_INT32 & tickNumber
-   * @return bool succes
+   * @return bool success
    */
   bool setTickNumber(const unsigned C_INT32 tickNumber);
 
@@ -215,7 +207,7 @@ public:
   /**
    * Set the tick factor.
    * @param const unsigned C_INT32 & tickFactor
-   * @return bool succes
+   * @return bool success
    */
   bool setTickFactor(const unsigned C_INT32 tickFactor);
 
@@ -243,12 +235,12 @@ public:
   void resetRange();
 
   /**
-   * Sets wether the value is to be kept in sync the the objects value.
+   * Sets whether the value is to be kept in sync the the objects value.
    */
   void setSynced(bool synced);
 
   /**
-   * Returns wether the value is to be kept in sync the the objects value.
+   * Returns whether the value is to be kept in sync the the objects value.
    * @return bool isSynced.
    */
   bool getSynced() const;
@@ -275,7 +267,6 @@ public:
    */
   const char* convertScaleToScaleName(Scale scale);
 
-
   /**
    * Checks whether the object the slider points to actually
    * exists.
@@ -296,7 +287,7 @@ private:
   std::string mAssociatedEntityKey;
 
   /**
-   * The slider object pointing to the slider's object afteer compile.
+   * The slider object pointing to the slider's object after compile.
    */
   CCopasiObject * mpSliderObject;
 

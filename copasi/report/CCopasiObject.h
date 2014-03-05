@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * Class CCopasiObject
@@ -154,6 +154,16 @@ class CRenameHandler;
 class CObjectInterface
 {
 public:
+  static const CCopasiObject * DataObject(const CObjectInterface * pInterface)
+  {
+    if (pInterface != NULL)
+      {
+        return pInterface->getDataObject();
+      }
+
+    return NULL;
+  }
+
   typedef std::set< const CObjectInterface * > ObjectSet;
   typedef std::vector< CObjectInterface * > UpdateSequence;
 
@@ -211,6 +221,12 @@ public:
    * Retrieve a pointer to the value of the object
    */
   virtual void * getValuePointer() const = 0;
+
+  /**
+   * Retrieve a pointer to the data object
+   * @return const CCopasiObject * dataObject
+   */
+  virtual const CCopasiObject * getDataObject() const = 0;
 };
 
 class CCopasiObject: public CObjectInterface
@@ -486,6 +502,12 @@ public:
   bool isRoot() const;
 
   virtual void * getValuePointer() const;
+
+  /**
+   * Retrieve a pointer to the data object
+   * @return const CCopasiObject * dataObject
+   */
+  virtual const CCopasiObject * getDataObject() const;
 
   virtual const CCopasiObject * getValueObject() const;
 

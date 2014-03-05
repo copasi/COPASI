@@ -163,7 +163,7 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
     return Fail;
 
   CModel * pModel
-    = dynamic_cast< CModel * >(getObjectAncestor("Model"));
+  = dynamic_cast< CModel * >(getObjectAncestor("Model"));
   CChemEqInterface::setChemEqFromString(pModel, *this, ChemEq);
 
   if ((Fail = configbuffer.getVariable("KineticType", "string", &tmp)))
@@ -670,7 +670,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
                             const std::string & prefix)
 {
   const CModel * pModel
-    = dynamic_cast< const CModel * >(getObjectAncestor("Model"));
+  = dynamic_cast< const CModel * >(getObjectAncestor("Model"));
   const CCopasiVector< CMetab > & Metabolites = pModel->getMetabolites();
 
   size_t pos;
@@ -1073,10 +1073,10 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
   CEvaluationNodeVariable* pVariableNode = NULL;
   std::string objectCN = objectNode->getData();
   CModel * pModel
-    = dynamic_cast< CModel * >(getObjectAncestor("Model"));
+  = dynamic_cast< CModel * >(getObjectAncestor("Model"));
   std::vector<CCopasiContainer*> containers = std::vector<CCopasiContainer*>();
   containers.push_back(pModel);
-  CCopasiObject* object = getObjectDataModel()->ObjectFromName(containers, CCopasiObjectName(objectCN.substr(1, objectCN.size() - 2)));
+  CCopasiObject* object = dynamic_cast< CCopasiObject * >(getObjectDataModel()->ObjectFromCN(containers, CCopasiObjectName(objectCN.substr(1, objectCN.size() - 2))));
   std::string id;
 
   // if the object if of type reference

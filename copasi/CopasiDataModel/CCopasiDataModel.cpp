@@ -1913,13 +1913,6 @@ CObjectInterface * CCopasiDataModel::ObjectFromCN(const std::vector< CCopasiCont
   return const_cast< CObjectInterface * >(pObject);
 }
 
-CCopasiObject * CCopasiDataModel::ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
-    const CCopasiObjectName & objName) const
-{
-  // TODO CRITICAL This does not work for math as object ObjectFromCN only returns a CObjectInterface.
-  return static_cast< CCopasiObject * >(ObjectFromCN(listOfContainer, objName));
-}
-
 CCopasiObject * CCopasiDataModel::getDataObject(const CCopasiObjectName & CN) const
 {
   return dynamic_cast< CCopasiObject *>(const_cast< CObjectInterface * >(getObject(CN)));

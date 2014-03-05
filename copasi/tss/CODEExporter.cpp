@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -436,7 +436,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(CModelEnt
           assert(pObjectNode);
           std::vector<CCopasiContainer*> containers;
           containers.push_back(const_cast<CCopasiDataModel*>(pDataModel)->getModel());
-          const CCopasiObject* pObject = pDataModel->ObjectFromName(containers, pObjectNode->getObjectCN());
+          const CCopasiObject* pObject = CObjectInterface::DataObject(pDataModel->ObjectFromCN(containers, pObjectNode->getObjectCN()));
           assert(pObject);
 
           if (pObject->isReference())
@@ -755,8 +755,11 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
                     }
 
                   const CCopasiVector< CMetab > & metabs = copasiModel->getMetabolitesX();
+
                   size_t indep_size = copasiModel->getNumIndependentReactionMetabs();
+
                   size_t ode_size = copasiModel->getNumODEMetabs();
+
                   const CMatrix< C_FLOAT64 > & redStoi = copasiModel->getRedStoi();
 
                   std::ostringstream jequation;

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -185,7 +185,7 @@ std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * pTre
   if (!pExpression) return false;
 
   const CCopasiObject * pObject =
-    CCopasiContainer::ObjectFromName(mRegisteredObjectCN);
+    CCopasiContainer::ObjectFromCN(mRegisteredObjectCN);
 
   if (pObject == NULL) return "<" + mRegisteredObjectCN + ">";
 

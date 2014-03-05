@@ -1,12 +1,4 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000099.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/08/02 20:44:07 $
-// End CVS Header
-
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -34,7 +26,6 @@ void test000099::tearDown()
   CCopasiRootContainer::destroy();
 }
 
-
 // tests whether we are importing notes on all elemnts
 void test000099::test_bug1675()
 {
@@ -54,7 +45,7 @@ void test000099::test_bug1675()
     {
       CPPUNIT_ASSERT(pModel == NULL);
       const CModel * pModel2 =
-        dynamic_cast< const CModel * >(pDataModel->ObjectFromName(listOfContainer, CCopasiObjectName("CN=Root,Model=my test model")));
+        dynamic_cast< const CModel * >(pDataModel->ObjectFromCN(listOfContainer, CCopasiObjectName("CN=Root,Model=my test model")));
       CPPUNIT_ASSERT(pModel2 == NULL);
     }
 
@@ -73,7 +64,7 @@ void test000099::test_bug1675()
   pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
   const CModel * pModel2 =
-    dynamic_cast< const CModel * >(pDataModel->ObjectFromName(listOfContainer, pDataModel->getModel()->getCN()));
+    dynamic_cast< const CModel * >(pDataModel->ObjectFromCN(listOfContainer, pDataModel->getModel()->getCN()));
   CPPUNIT_ASSERT(pModel == pModel2);
 }
 
@@ -108,7 +99,6 @@ const char* test000099::SBML_MODEL_BAD =
   "</sbml>\n"
   ;
 
-
 const char* test000099::SBML_MODEL_GOOD =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
   "<sbml xmlns=\"http://www.sbml.org/sbml/level2\" level=\"2\" version=\"1\">\n"
@@ -142,6 +132,3 @@ const char* test000099::SBML_MODEL_GOOD =
   "  </model>\n"
   "</sbml>\n"
   ;
-
-
-

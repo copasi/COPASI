@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -41,54 +41,54 @@ CopasiSlider::CopasiSlider(CSlider* pSlider, DataModelGUI * pDM, QWidget* parent
   mValueOutOfRange(false),
   mpDM(pDM)
 {
-  this->setLayout(new QHBoxLayout);
-  this->setFrameShape(QFrame::Box);
-  this->layout()->setContentsMargins(2, 2, 2, 2);
-  //this->layout()->setSpacing(0);
-  //this->layout()->setMargin(0);
+  setLayout(new QHBoxLayout);
+  setFrameShape(QFrame::Box);
+  layout()->setContentsMargins(2, 2, 2, 2);
+  //layout()->setSpacing(0);
+  //layout()->setMargin(0);
   QFrame* pFrame = new QFrame(NULL);
   pFrame->setLayout(new QVBoxLayout);
   pFrame->layout()->setContentsMargins(2, 2, 2, 2);
-  this->mpLabel = new QLabel(NULL);
-  this->mpLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-  pFrame->layout()->addWidget(this->mpLabel);
-  this->mpQSlider = new QSlider(Qt::Horizontal);
+  mpLabel = new QLabel(NULL);
+  mpLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+  pFrame->layout()->addWidget(mpLabel);
+  mpQSlider = new QSlider(Qt::Horizontal);
   mpQSlider->setFocusPolicy(Qt::WheelFocus);
-  this->mpQSlider->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+  mpQSlider->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 #ifdef WIN32
-  this->mpQSlider->setMinimumHeight(10);
+  mpQSlider->setMinimumHeight(10);
 #endif
-  pFrame->layout()->addWidget(this->mpQSlider);
-  this->layout()->addWidget(pFrame);
+  pFrame->layout()->addWidget(mpQSlider);
+  layout()->addWidget(pFrame);
 
   pFrame = new QFrame(NULL);
   pFrame->setLayout(new QVBoxLayout);
   pFrame->layout()->setContentsMargins(2, 2, 2, 2);
 
-  this->mpCloseButton = new QToolButton(NULL);
-  this->mpCloseButton->setIcon(CQIconResource::icon(CQIconResource::editDelete));
-  pFrame->layout()->addWidget(this->mpCloseButton);
+  mpCloseButton = new QToolButton(NULL);
+  mpCloseButton->setIcon(CQIconResource::icon(CQIconResource::editDelete));
+  pFrame->layout()->addWidget(mpCloseButton);
 
-  this->mpEditButton = new QToolButton(NULL);
-  this->mpEditButton->setIcon(CQIconResource::icon(CQIconResource::edit));
-  pFrame->layout()->addWidget(this->mpEditButton);
+  mpEditButton = new QToolButton(NULL);
+  mpEditButton->setIcon(CQIconResource::icon(CQIconResource::edit));
+  pFrame->layout()->addWidget(mpEditButton);
 
-  this->layout()->addWidget(pFrame);
+  layout()->addWidget(pFrame);
 
-  if (!this->mpCSlider->compile())
+  if (!mpCSlider->compile())
     {
-      this->mpQSlider->setEnabled(false);
+      mpQSlider->setEnabled(false);
     }
 
-  this->updateSliderData();
-  this->mpCloseButton->setToolTip(tr("Remove Slider"));
-  this->mpEditButton->setToolTip(tr("Edit Slider"));
+  updateSliderData();
+  mpCloseButton->setToolTip(tr("Remove Slider"));
+  mpEditButton->setToolTip(tr("Edit Slider"));
 
-  connect(this->mpQSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
-  connect(this->mpQSlider, SIGNAL(sliderReleased()), this, SLOT(qSliderReleased()));
-  connect(this->mpQSlider, SIGNAL(sliderPressed()), this, SLOT(qSliderPressed()));
-  connect(this->mpCloseButton, SIGNAL(clicked()), this, SLOT(closeButtonClicked()));
-  connect(this->mpEditButton, SIGNAL(clicked()), this, SLOT(editButtonClicked()));
+  connect(mpQSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
+  connect(mpQSlider, SIGNAL(sliderReleased()), this, SLOT(qSliderReleased()));
+  connect(mpQSlider, SIGNAL(sliderPressed()), this, SLOT(qSliderPressed()));
+  connect(mpCloseButton, SIGNAL(clicked()), this, SLOT(closeButtonClicked()));
+  connect(mpEditButton, SIGNAL(clicked()), this, SLOT(editButtonClicked()));
 
   setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
@@ -108,34 +108,34 @@ void CopasiSlider::focusSlider()
 
 void CopasiSlider::updateSliderData()
 {
-  if (this->mpCSlider)
+  if (mpCSlider)
     {
       //mpCSlider->compile();
-      this->mpQSlider->setMinimum(0);
-      this->mpQSlider->setMaximum(this->mpCSlider->getTickNumber());
-      this->mpQSlider->setTickInterval(1);
-      this->mpQSlider->setSingleStep(1);
-      this->mpQSlider->setPageStep(this->mpCSlider->getTickFactor());
-      disconnect(this->mpQSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
-      this->mpQSlider->setValue(this->calculatePositionFromValue(this->mpCSlider->getSliderValue()));
-      connect(this->mpQSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
-      this->updateLabel();
+      mpQSlider->setMinimum(0);
+      mpQSlider->setMaximum(mpCSlider->getTickNumber());
+      mpQSlider->setTickInterval(1);
+      mpQSlider->setSingleStep(1);
+      mpQSlider->setPageStep(mpCSlider->getTickFactor());
+      disconnect(mpQSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
+      mpQSlider->setValue(calculatePositionFromValue(mpCSlider->getSliderValue()));
+      connect(mpQSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
+      updateLabel();
 
-      if (this->mpQSlider->isEnabled() == false)
+      if (mpQSlider->isEnabled() == false)
         {
-          if (this->mpCSlider->getSliderObject() != NULL)
+          if (mpCSlider->getSliderObject() != NULL)
             {
-              this->mpQSlider->setEnabled(true);
+              mpQSlider->setEnabled(true);
             }
         }
 
-      this->update();
+      update();
     }
 }
 
 C_FLOAT64 CopasiSlider::value() const
 {
-  return this->mpCSlider->getSliderValue();
+  return mpCSlider->getSliderValue();
 }
 
 void CopasiSlider::setValue(C_FLOAT64 value)
@@ -146,13 +146,13 @@ void CopasiSlider::setValue(C_FLOAT64 value)
   // consideration
 
   // first we set the slider value without actually writing to the underlying object
-  this->mpCSlider->setSliderValue(value, false);
+  mpCSlider->setSliderValue(value, false);
   /* reget value in case it was outside range and got set to minValue or
    * maxValue */
-  value = this->mpCSlider->getSliderValue();
+  value = mpCSlider->getSliderValue();
 
   // now we handle writing to the object ourselves
-  CCopasiObject* pObject = this->object();
+  CCopasiObject * pObject = const_cast< CCopasiObject * >(object());
 
   if (pObject == NULL) return;
 
@@ -166,86 +166,86 @@ void CopasiSlider::setValue(C_FLOAT64 value)
   // recalculate all other dependent values
   mpDM->refreshInitialValues();
 
-  this->mpQSlider->setValue(this->calculatePositionFromValue(value));
+  mpQSlider->setValue(calculatePositionFromValue(value));
 
-  this->updateLabel();
+  updateLabel();
 }
 
 unsigned C_INT32 CopasiSlider::minorMajorFactor() const
 {
-  return this->mpCSlider->getTickFactor();
+  return mpCSlider->getTickFactor();
 }
 
 void CopasiSlider::setMinorMajorFactor(unsigned C_INT32 factor)
 {
-  this->mpCSlider->setTickFactor(factor);
-  this->mpQSlider->setPageStep(this->mpQSlider->singleStep()*factor);
+  mpCSlider->setTickFactor(factor);
+  mpQSlider->setPageStep(mpQSlider->singleStep()*factor);
 }
 
 C_FLOAT64 CopasiSlider::minorTickInterval() const
 {
-  return (C_FLOAT64)(this->mpCSlider->getMaxValue() - this->mpCSlider->getMinValue()) / ((C_FLOAT64)this->mpCSlider->getTickNumber());
+  return (C_FLOAT64)(mpCSlider->getMaxValue() - mpCSlider->getMinValue()) / ((C_FLOAT64)mpCSlider->getTickNumber());
 }
 
 void CopasiSlider::setNumMinorTicks(unsigned C_INT32 numMinorTicks)
 {
-  this->mpCSlider->setTickNumber(numMinorTicks);
+  mpCSlider->setTickNumber(numMinorTicks);
   // set maxValue and value of slider
-  this->mpQSlider->setMaximum(numMinorTicks);
-  this->mpQSlider->setValue(this->calculatePositionFromValue(this->mpCSlider->getSliderValue()));
+  mpQSlider->setMaximum(numMinorTicks);
+  mpQSlider->setValue(calculatePositionFromValue(mpCSlider->getSliderValue()));
 }
 
 unsigned C_INT32 CopasiSlider::numMinorTicks() const
 {
-  return this->mpCSlider->getTickNumber();
+  return mpCSlider->getTickNumber();
 }
 
 C_FLOAT64 CopasiSlider::minValue() const
 {
-  return this->mpCSlider->getMinValue();
+  return mpCSlider->getMinValue();
 }
 
 C_FLOAT64 CopasiSlider::maxValue() const
 {
-  return this->mpCSlider->getMaxValue();
+  return mpCSlider->getMaxValue();
 }
 
-CCopasiObject* CopasiSlider::object() const
+const CCopasiObject* CopasiSlider::object() const
 {
-  return this->mpCSlider->getSliderObject();
+  return mpCSlider->getSliderObject();
 }
 
-void CopasiSlider::setObject(CCopasiObject* object)
+void CopasiSlider::setObject(const CCopasiObject * object)
 {
-  this->mpCSlider->setSliderObject(object);
-  this->updateSliderData();
+  mpCSlider->setSliderObject(object);
+  updateSliderData();
 }
 
 void CopasiSlider::setMaxValue(C_FLOAT64 value)
 {
-  this->mpCSlider->setMaxValue(value);
+  mpCSlider->setMaxValue(value);
 
-  this->mpQSlider->setValue(this->calculatePositionFromValue(this->mpCSlider->getSliderValue()));
+  mpQSlider->setValue(calculatePositionFromValue(mpCSlider->getSliderValue()));
 
-  this->updateLabel();
+  updateLabel();
 }
 
 void CopasiSlider::setMinValue(C_FLOAT64 value)
 {
-  this->mpCSlider->setMinValue(value);
+  mpCSlider->setMinValue(value);
 
-  this->mpQSlider->setValue(this->calculatePositionFromValue(this->mpCSlider->getSliderValue()));
+  mpQSlider->setValue(calculatePositionFromValue(mpCSlider->getSliderValue()));
 
-  this->updateLabel();
+  updateLabel();
 }
 
 void CopasiSlider::updateLabel()
 {
   double minValue, maxValue, currValue;
-  minValue = this->mpCSlider->getMinValue();
-  maxValue = this->mpCSlider->getMaxValue();
-  currValue = this->mpCSlider->getSliderValue();
-  CCopasiObject* object = this->mpCSlider->getSliderObject();
+  minValue = mpCSlider->getMinValue();
+  maxValue = mpCSlider->getMaxValue();
+  currValue = mpCSlider->getSliderValue();
+  const CCopasiObject* object = mpCSlider->getSliderObject();
   QString labelString = "";
 
   if (object)
@@ -259,7 +259,7 @@ void CopasiSlider::updateLabel()
       labelString += QString::number(currValue);
       labelString += "}";
 
-      if (this->mValueOutOfRange)
+      if (mValueOutOfRange)
         {
           labelString += " (Value out of range!)";
         }
@@ -269,16 +269,16 @@ void CopasiSlider::updateLabel()
       labelString += "Object not available!";
     }
 
-  this->mpLabel->setText(labelString);
+  mpLabel->setText(labelString);
 }
 
 void CopasiSlider::sliderValueChanged(int value)
 {
-  this->mpCSlider->setSliderValue(this->calculateValueFromPosition(value), false);
+  mpCSlider->setSliderValue(calculateValueFromPosition(value), false);
 
-  this->updateLabel();
+  updateLabel();
 
-  emit valueChanged(this->mpCSlider->getSliderValue());
+  emit valueChanged(mpCSlider->getSliderValue());
 }
 
 void CopasiSlider::qSliderReleased()
@@ -293,35 +293,35 @@ void CopasiSlider::qSliderPressed()
 
 CSlider::Type CopasiSlider::type() const
 {
-  return this->mpCSlider->getSliderType();
+  return mpCSlider->getSliderType();
 }
 
 void CopasiSlider::setType(CSlider::Type type)
 {
-  this->mpCSlider->setSliderType(type);
+  mpCSlider->setSliderType(type);
 }
 
 void CopasiSlider::updateValue(bool modifyRange, bool updateDependencies)
 {
-  double value = this->mpCSlider->getSliderValue();
-  double maxValue = this->mpCSlider->getMaxValue();
-  double minValue = this->mpCSlider->getMinValue();
+  double value = mpCSlider->getSliderValue();
+  double maxValue = mpCSlider->getMaxValue();
+  double minValue = mpCSlider->getMinValue();
 
   if ((value > maxValue) || (value < minValue))
     {
       if (!modifyRange)
         {
-          this->mValueOutOfRange = true;
+          mValueOutOfRange = true;
         }
       else
         {
-          this->mValueOutOfRange = false;
-          this->mpCSlider->resetRange();
+          mValueOutOfRange = false;
+          mpCSlider->resetRange();
         }
     }
 
   // now we handle writing to the object ourselves
-  CCopasiObject* pObject = this->object();
+  CCopasiObject* pObject = const_cast< CCopasiObject * >(object());
 
   if (pObject == NULL) return;
 
@@ -351,7 +351,7 @@ void CopasiSlider::editButtonClicked()
 
 CSlider* CopasiSlider::getCSlider() const
 {
-  return this->mpCSlider;
+  return mpCSlider;
 }
 
 C_FLOAT64 CopasiSlider::calculateValueFromPosition(int position)
@@ -359,15 +359,15 @@ C_FLOAT64 CopasiSlider::calculateValueFromPosition(int position)
   double value;
   double exponent;
 
-  switch (this->mpCSlider->getScaling())
+  switch (mpCSlider->getScaling())
     {
       case CSlider::linear:
-        value = this->mpCSlider->getMinValue() + position * this->minorTickInterval();
+        value = mpCSlider->getMinValue() + position * minorTickInterval();
         break;
 
       case CSlider::logarithmic:
-        exponent = (((double)position) * log10(this->mpCSlider->getMaxValue() / this->mpCSlider->getMinValue())) / this->mpCSlider->getTickNumber();
-        value = this->mpCSlider->getMinValue() * pow(10.0, exponent);
+        exponent = (((double)position) * log10(mpCSlider->getMaxValue() / mpCSlider->getMinValue())) / mpCSlider->getTickNumber();
+        value = mpCSlider->getMinValue() * pow(10.0, exponent);
         break;
 
       default:
@@ -382,14 +382,14 @@ int CopasiSlider::calculatePositionFromValue(C_FLOAT64 value)
 {
   int position;
 
-  switch (this->mpCSlider->getScaling())
+  switch (mpCSlider->getScaling())
     {
       case CSlider::linear:
-        position = (int)floor(((value - this->mpCSlider->getMinValue()) / this->minorTickInterval()) + 0.5);
+        position = (int)floor(((value - mpCSlider->getMinValue()) / minorTickInterval()) + 0.5);
         break;
 
       case CSlider::logarithmic:
-        position = (int)floor((this->mpCSlider->getTickNumber() * (log10(value / this->mpCSlider->getMinValue()) / log10(this->mpCSlider->getMaxValue() / this->mpCSlider->getMinValue()))) + 0.5);
+        position = (int)floor((mpCSlider->getTickNumber() * (log10(value / mpCSlider->getMinValue()) / log10(mpCSlider->getMaxValue() / mpCSlider->getMinValue()))) + 0.5);
         break;
 
       default:
@@ -401,17 +401,17 @@ int CopasiSlider::calculatePositionFromValue(C_FLOAT64 value)
 
 void CopasiSlider::resetValue()
 {
-  this->setValue(this->originalValue());
+  setValue(originalValue());
 }
 
 C_FLOAT64 CopasiSlider::originalValue() const
 {
-  return this->mpCSlider->getOriginalValue();
+  return mpCSlider->getOriginalValue();
 }
 
 void CopasiSlider::setOriginalValue(C_FLOAT64 value)
 {
-  this->mpCSlider->setOriginalValue(value);
+  mpCSlider->setOriginalValue(value);
 }
 /**
  * Checks whether the slider is actually valid.
@@ -419,5 +419,5 @@ void CopasiSlider::setOriginalValue(C_FLOAT64 value)
  */
 bool CopasiSlider::isValid() const
 {
-  return (this->mpCSlider != NULL && this->mpCSlider->isValid());
+  return (mpCSlider != NULL && mpCSlider->isValid());
 }

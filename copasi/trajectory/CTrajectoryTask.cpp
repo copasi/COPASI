@@ -83,7 +83,8 @@ CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
   mOutputStartTime(0.0),
   mpLessOrEqual(&fle),
   mpLess(&fl),
-  mpContainer(NULL)
+  mpContainer(NULL),
+  mProceed(true)
 {
   mpProblem = new CTrajectoryProblem(this);
   mpMethod = createMethod(CCopasiMethod::deterministic);
@@ -110,7 +111,8 @@ CTrajectoryTask::CTrajectoryTask(const Type & taskType,
   mOutputStartTime(0.0),
   mpLessOrEqual(&fle),
   mpLess(&fl),
-  mpContainer(NULL)
+  mpContainer(NULL),
+  mProceed(true)
 {
   mpProblem = new CTrajectoryProblem(this);
   mpMethod = createMethod(CCopasiMethod::deterministic);
@@ -132,12 +134,13 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
   mpTrajectoryProblem(NULL),
   mpTrajectoryMethod(NULL),
   mUpdateMoieties(false),
-  mCurrentState(src.mCurrentState),
+  mCurrentState(),
   mpCurrentStateTime(NULL),
   mOutputStartTime(0.0),
   mpLessOrEqual(src.mpLessOrEqual),
   mpLess(src.mpLess),
-  mpContainer(new CMathContainer(*src.mpContainer))
+  mpContainer(src.mpContainer),
+  mProceed(src.mProceed)
 {
   mpProblem =
     new CTrajectoryProblem(*static_cast< CTrajectoryProblem * >(src.mpProblem), this);
@@ -155,6 +158,12 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
     mUpdateMoieties = *pParameter->getValue().pBOOL;
   else
     mUpdateMoieties = false;
+
+  if (mpContainer != NULL)
+    {
+      mCurrentState.initialize(mpContainer->getState(mUpdateMoieties));
+      mpCurrentStateTime = mCurrentState.array() + mpContainer->getTimeIndex();
+    }
 }
 
 CTrajectoryTask::~CTrajectoryTask()
@@ -164,7 +173,7 @@ CTrajectoryTask::~CTrajectoryTask()
 
 void CTrajectoryTask::cleanup()
 {
-  pdelete(mpContainer);
+  // pdelete(mpContainer);
 }
 
 void CTrajectoryTask::load(CReadConfig & configBuffer)
@@ -211,10 +220,10 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
   else
     mUpdateMoieties = false;
 
-  pdelete(mpContainer);
-  mpContainer = new CMathContainer(*mpTrajectoryProblem->getModel());
+  // pdelete(mpContainer);
+  mpContainer = mpTrajectoryProblem->getModel()->getMathContainer();
 
-  mCurrentState = mpContainer->getState(mUpdateMoieties);
+  mCurrentState.initialize(mpContainer->getState(mUpdateMoieties));
   mpCurrentStateTime = mCurrentState.array() + mpContainer->getTimeIndex();
   mpTrajectoryMethod->setContainer(mpContainer);
 
@@ -388,7 +397,7 @@ void CTrajectoryTask::processStart(const bool & useInitialValues)
       mpContainer->applyInitialValues();
     }
 
-  mCurrentState = mpContainer->getState(mUpdateMoieties);
+  mCurrentState.initialize(mpContainer->getState(mUpdateMoieties));
 
   mpTrajectoryMethod->setContainer(mpContainer);
   mpTrajectoryMethod->start(mCurrentState);

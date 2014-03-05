@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -739,7 +739,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
     success = false;
 
   size_t LastMappedColumn = mpObjectMap->getLastColumn();
-  const CVector< CCopasiObject * > & Objects = mpObjectMap->getMappedObjects();
+  const CVector< const CCopasiObject * > & Objects = mpObjectMap->getMappedObjects();
 
   size_t i, imax = mpObjectMap->getLastNotIgnoredColumn();
 
@@ -817,7 +817,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
           mDependentValues[DependentCount] =
             (C_FLOAT64 *) Objects[i]->getValuePointer();
           // :TODO: do we have to check if getValuePointer() return a valid pointer?
-          mDependentObjects[Objects[i]] = DependentCount;
+          mDependentObjects[const_cast< CCopasiObject * >(Objects[i])] = DependentCount;
           mColumnScale[DependentCount] = mpObjectMap->getScale(i);
           Dependencies.insert(Objects[i]->getValueObject());
 
@@ -858,7 +858,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   mColumnValidValueCount = std::numeric_limits<size_t>::quiet_NaN();
 
   CModel * pModel =
-    dynamic_cast< CModel * >(getObjectDataModel()->ObjectFromName(listOfContainer, CCopasiObjectName("Model=" + CCopasiObjectName::escape(getObjectDataModel()->getModel()->getObjectName()))));
+    dynamic_cast< CModel * >(getObjectDataModel()->ObjectFromCN(listOfContainer, CCopasiObjectName("Model=" + CCopasiObjectName::escape(getObjectDataModel()->getModel()->getObjectName()))));
 
   mRefreshMethods = CCopasiObject::buildUpdateSequence(Dependencies, pModel->getUptoDateObjects());
 
@@ -1410,8 +1410,7 @@ void CExperiment::printResult(std::ostream * ostream) const
   size_t j, jmax = mDataDependent.numCols();
   size_t k, kmax = mpObjectMap->getLastNotIgnoredColumn() + 1;
 
-  const CVector<CCopasiObject *> & Objects =
-    mpObjectMap->getMappedObjects();
+  const CVector< const CCopasiObject * > & Objects =  mpObjectMap->getMappedObjects();
 
   os << "Row\t";
 

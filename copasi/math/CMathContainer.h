@@ -314,6 +314,12 @@ public:
   CMathDependencyGraph & getTransientDependencies();
 
   /**
+   * Retrieve the objects which are ip to date after a call to updateSimulatedValues.
+   * @return CObjectInterface::ObjectSet & imulationUpToDateObjects
+   */
+  const CObjectInterface::ObjectSet & getSimulationUpToDateObjects() const;
+
+  /**
    * Copy a node and all its children. Nodes are converted to suite the math container,
    * i.e., objects nodes point to math object or numbers, function calls are expanded
    * and discrete nodes are replaced by object node pointing to newly created math objects,

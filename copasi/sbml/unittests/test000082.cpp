@@ -88,7 +88,7 @@ void test000082::test_import_delayAssignment_1()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -124,7 +124,7 @@ void test000082::test_import_delayAssignment_1()
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -225,7 +225,7 @@ void test000082::test_import_delayAssignment_2()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -255,7 +255,7 @@ void test000082::test_import_delayAssignment_2()
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -351,7 +351,7 @@ void test000082::test_import_delayAssignment_3()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -387,7 +387,7 @@ void test000082::test_import_delayAssignment_3()
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -488,7 +488,7 @@ void test000082::test_import_delayAssignment_4()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -524,7 +524,7 @@ void test000082::test_import_delayAssignment_4()
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -625,7 +625,7 @@ void test000082::test_import_delayAssignment_5()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -661,7 +661,7 @@ void test000082::test_import_delayAssignment_5()
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -762,7 +762,7 @@ void test000082::test_import_delayAssignment_6()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -792,7 +792,7 @@ void test000082::test_import_delayAssignment_6()
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -888,7 +888,7 @@ void test000082::test_import_delayAssignment_7()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -918,7 +918,7 @@ void test000082::test_import_delayAssignment_7()
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -1014,7 +1014,7 @@ void test000082::test_import_delayAssignment_8()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
@@ -1044,7 +1044,7 @@ void test000082::test_import_delayAssignment_8()
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pCOPASIDATAMODEL->ObjectFromName(listOfContainers, objectCN);
+  pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->ObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));

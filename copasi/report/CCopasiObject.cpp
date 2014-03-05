@@ -552,6 +552,12 @@ void * CCopasiObject::getValuePointer() const
   return NULL;
 }
 
+// virtual
+const CCopasiObject * CCopasiObject::getDataObject() const
+{
+  return this;
+}
+
 const CCopasiObject * CCopasiObject::getValueObject() const
 {
   return NULL;

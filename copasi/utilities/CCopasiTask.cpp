@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-//   $Revision: 1.81 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/16 13:16:47 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -36,6 +28,7 @@
 #include "report/CReport.h"
 #include "report/CKeyFactory.h"
 #include "utilities/COutputHandler.h"
+#include "math/CMathContainer.h"
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "report/CCopasiObjectReference.h"
@@ -100,62 +93,62 @@ bool CCopasiTask::isValidMethod(const unsigned int & method,
 CCopasiTask::CCopasiTask(const std::string & name,
                          const CCopasiContainer * pParent,
                          const std::string & type):
-    CCopasiContainer(name, pParent, type),
-    mType(CCopasiTask::unset),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Task", this)),
-    mDescription(this),
-    mResult(this),
-    mScheduled(false),
-    mUpdateModel(false),
-    mpInitialState(NULL),
-    mpProblem(NULL),
-    mpMethod(NULL),
-    mReport(),
-    mpCallBack(NULL),
-    mpSliders(NULL),
-    mDoOutput(OUTPUT_SE),
-    mOutputCounter(0)
+  CCopasiContainer(name, pParent, type),
+  mType(CCopasiTask::unset),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("Task", this)),
+  mDescription(this),
+  mResult(this),
+  mScheduled(false),
+  mUpdateModel(false),
+  mpInitialState(NULL),
+  mpProblem(NULL),
+  mpMethod(NULL),
+  mReport(),
+  mpCallBack(NULL),
+  mpSliders(NULL),
+  mDoOutput(OUTPUT_SE),
+  mOutputCounter(0)
 {initObjects();}
 
 CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
                          const CCopasiContainer * pParent,
                          const std::string & type):
-    CCopasiContainer(CCopasiTask::TypeName[taskType], pParent, type),
-    mType(taskType),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Task", this)),
-    mDescription(this),
-    mResult(this),
-    mScheduled(false),
-    mUpdateModel(false),
-    mpInitialState(NULL),
-    mpProblem(NULL),
-    mpMethod(NULL),
-    mReport(),
-    mpCallBack(NULL),
-    mpSliders(NULL),
-    mDoOutput(OUTPUT_SE),
-    mpOutputHandler(NULL),
-    mOutputCounter(0)
+  CCopasiContainer(CCopasiTask::TypeName[taskType], pParent, type),
+  mType(taskType),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("Task", this)),
+  mDescription(this),
+  mResult(this),
+  mScheduled(false),
+  mUpdateModel(false),
+  mpInitialState(NULL),
+  mpProblem(NULL),
+  mpMethod(NULL),
+  mReport(),
+  mpCallBack(NULL),
+  mpSliders(NULL),
+  mDoOutput(OUTPUT_SE),
+  mpOutputHandler(NULL),
+  mOutputCounter(0)
 {initObjects();}
 
 CCopasiTask::CCopasiTask(const CCopasiTask & src,
                          const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    mType(src.mType),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Task", this)),
-    mDescription(src.mDescription, this),
-    mResult(src.mResult, this),
-    mScheduled(src.mScheduled),
-    mUpdateModel(src.mUpdateModel),
-    mpInitialState(src.mpInitialState ? new CState(*src.mpInitialState) : NULL),
-    mpProblem(NULL),
-    mpMethod(NULL),
-    mReport(src.mReport),
-    mpCallBack(NULL),
-    mpSliders(NULL),
-    mDoOutput(OUTPUT_SE),
-    mpOutputHandler(NULL),
-    mOutputCounter(0)
+  CCopasiContainer(src, pParent),
+  mType(src.mType),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("Task", this)),
+  mDescription(src.mDescription, this),
+  mResult(src.mResult, this),
+  mScheduled(src.mScheduled),
+  mUpdateModel(src.mUpdateModel),
+  mpInitialState(src.mpInitialState ? new CState(*src.mpInitialState) : NULL),
+  mpProblem(NULL),
+  mpMethod(NULL),
+  mReport(src.mReport),
+  mpCallBack(NULL),
+  mpSliders(NULL),
+  mDoOutput(OUTPUT_SE),
+  mpOutputHandler(NULL),
+  mOutputCounter(0)
 {initObjects();}
 
 CCopasiTask::~CCopasiTask()
@@ -202,7 +195,6 @@ COutputHandler* CCopasiTask::getOutputHandler() const
 {
   return mpOutputHandler;
 }
-
 
 bool CCopasiTask::initialize(const OutputFlag & of,
                              COutputHandler * pOutputHandler,
@@ -257,6 +249,10 @@ bool CCopasiTask::initialize(const OutputFlag & of,
 
   std::vector< CCopasiContainer * > ListOfContainer;
   ListOfContainer.push_back(this);
+
+#ifdef USE_MATH_CONTAINER
+  ListOfContainer.push_back(mpProblem->getModel()->getMathContainer());
+#endif // USE_MATH_CONTAINER
 
   CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
@@ -395,12 +391,12 @@ void CCopasiTask::initObjects()
 }
 
 CCopasiTask::CDescription::CDescription(const CCopasiContainer * pParent):
-    CCopasiObject("Description", pParent, "Object")
+  CCopasiObject("Description", pParent, "Object")
 {}
 
 CCopasiTask::CDescription::CDescription(const CCopasiTask::CDescription & src,
                                         const CCopasiContainer * pParent):
-    CCopasiObject(src, pParent)
+  CCopasiObject(src, pParent)
 {}
 
 CCopasiTask::CDescription::~CDescription() {}
@@ -435,12 +431,12 @@ std::ostream &operator<<(std::ostream &os,
 }
 
 CCopasiTask::CResult::CResult(const CCopasiContainer * pParent):
-    CCopasiObject("Result", pParent, "Object")
+  CCopasiObject("Result", pParent, "Object")
 {}
 
 CCopasiTask::CResult::CResult(const CCopasiTask::CResult & src,
                               const CCopasiContainer * pParent):
-    CCopasiObject(src, pParent)
+  CCopasiObject(src, pParent)
 {}
 
 CCopasiTask::CResult::~CResult() {}

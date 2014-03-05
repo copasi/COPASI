@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -406,7 +406,7 @@ void test000093::test_bug1503_1()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(const_cast<CModel*>(pCModel));
-  const CCopasiObject* pObject = pDataModel->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = pDataModel->ObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("InitialVolume"));
@@ -426,7 +426,7 @@ void test000093::test_bug1503_1()
   // check the data of the object node
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pDataModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pDataModel->ObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("InitialParticleNumber"));
@@ -440,7 +440,7 @@ void test000093::test_bug1503_1()
   // check the data of the object node
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pDataModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pDataModel->ObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("InitialValue"));
@@ -520,7 +520,7 @@ void test000093::test_bug1503_1()
   // check the data of the object node
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pDataModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pDataModel->ObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
@@ -543,7 +543,7 @@ void test000093::test_bug1503_1()
   // check the data of the object node
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pDataModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pDataModel->ObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("ParticleNumber"));
@@ -557,7 +557,7 @@ void test000093::test_bug1503_1()
   // check the data of the object node
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pDataModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pDataModel->ObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
@@ -856,7 +856,7 @@ void test000093::test_bug1503_2()
   CPPUNIT_ASSERT(!objectCN.empty());
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(const_cast<CModel*>(pCModel));
-  const CCopasiObject* pObject = pDataModel->ObjectFromName(listOfContainers, objectCN);
+  const CCopasiObject* pObject = pDataModel->ObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("InitialVolume"));
@@ -876,7 +876,7 @@ void test000093::test_bug1503_2()
   // check the data of the object node
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pDataModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pDataModel->ObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("InitialParticleNumber"));
@@ -890,7 +890,7 @@ void test000093::test_bug1503_2()
   // check the data of the object node
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pDataModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pDataModel->ObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("InitialValue"));
@@ -970,7 +970,7 @@ void test000093::test_bug1503_2()
   // check the data of the object node
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pDataModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pDataModel->ObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
@@ -993,7 +993,7 @@ void test000093::test_bug1503_2()
   // check the data of the object node
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pDataModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pDataModel->ObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("ParticleNumber"));
@@ -1007,7 +1007,7 @@ void test000093::test_bug1503_2()
   // check the data of the object node
   objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
-  pObject = pDataModel->ObjectFromName(listOfContainers, objectCN);
+  pObject = pDataModel->ObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
   CPPUNIT_ASSERT(pObject->isReference() == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));

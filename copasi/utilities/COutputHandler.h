@@ -18,7 +18,9 @@
 #include <vector>
 #include <set>
 
-class CCopasiObject;
+#include "report/CCopasiObject.h"
+
+class CMathContainer;
 class CCopasiContainer;
 class CCopasiTask;
 class Refresh;
@@ -93,9 +95,9 @@ public:
 
   /**
    * Retrieve the list of objects handled by the interface
-   * @return const std::set< const CCopasiObject * > & objects
+   * @return const CObjectInterface::ObjectSet & objects
    */
-  virtual const std::set< const CCopasiObject * > & getObjects() const
+  virtual const CObjectInterface::ObjectSet & getObjects() const
   {return mObjects;}
 
   // Attributes
@@ -103,7 +105,7 @@ protected:
   /**
    * All the objects which are output.
    */
-  std::set< const CCopasiObject * > mObjects;
+  CObjectInterface::ObjectSet mObjects;
 };
 
 /**
@@ -185,21 +187,21 @@ protected:
   /**
    * Refresh all objects
    */
-  void refresh();
+  void applyUpdateSequence();
 
   /**
    * Compile the object refresh list
    * @param const std::vector< CCopasiContainer * > & listOfContainer
    * @return bool success
    */
-  bool compileRefresh(const std::vector< CCopasiContainer * > & listOfContainer, const CCopasiDataModel* pDataModel);
+  bool compileUpdateSequence(const std::vector< CCopasiContainer * > & listOfContainer, const CCopasiDataModel* pDataModel);
 
   // Attributes
 protected:
   /**
    * A list of all active output interfaces.
    */
-  std::set<COutputInterface *> mInterfaces;
+  std::set< COutputInterface * > mInterfaces;
 
   /**
    * Points to the master handler. The master handler is responsible for the
@@ -210,6 +212,11 @@ protected:
   /**
    * An ordered list of refresh methods needed by the master
    */
-  std::vector< Refresh * > mObjectRefreshes;
+  CObjectInterface::UpdateSequence mUpdateSequence;
+
+  /**
+   * A pointer to the math container
+   */
+  CMathContainer * mpContainer;
 };
 #endif

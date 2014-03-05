@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -182,9 +182,9 @@ private:
   C_FLOAT64 * mpEnd;
 
   /**
-   * Pointer to the state which has to be recorded.
+   * A reference to the state of the math container
    */
-  const CState * mpState;
+  CVectorCore< C_FLOAT64 > mContainerState;
 
   /**
    * Vector of column titles.

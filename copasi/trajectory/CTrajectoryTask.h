@@ -183,7 +183,7 @@ protected:
   /**
    * The current state of the integration.
    */
-  CVector< C_FLOAT64 > mCurrentState;
+  CVectorCore< C_FLOAT64 > mCurrentState;
 
   /**
    * A pointer to the current time of the integration.

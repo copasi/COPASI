@@ -428,7 +428,7 @@ bool CFitProblem::initialize()
   if (mpExperimentSet->hasDataForTaskType(CCopasiTask::steadyState))
     {
       mpSteadyState =
-        dynamic_cast< CSteadyStateTask * >(pDataModel->ObjectFromName(ContainerList, *mpParmSteadyStateCN));
+        dynamic_cast< CSteadyStateTask * >(pDataModel->ObjectFromCN(ContainerList, *mpParmSteadyStateCN));
 
       if (mpSteadyState == NULL)
         {
@@ -452,7 +452,7 @@ bool CFitProblem::initialize()
   if (mpExperimentSet->hasDataForTaskType(CCopasiTask::timeCourse))
     {
       mpTrajectory =
-        dynamic_cast< CTrajectoryTask * >(pDataModel->ObjectFromName(ContainerList, *mpParmTimeCourseCN));
+        dynamic_cast< CTrajectoryTask * >(pDataModel->ObjectFromCN(ContainerList, *mpParmTimeCourseCN));
 
       if (mpTrajectory == NULL)
         {

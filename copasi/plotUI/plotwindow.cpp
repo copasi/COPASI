@@ -444,7 +444,7 @@ void PlotWindow::separate(const Activity & activity)
 void PlotWindow::finish()
 {if (mpPlot) mpPlot->finish();};
 
-const std::set< const CCopasiObject * > & PlotWindow::getObjects() const
+const CObjectInterface::ObjectSet & PlotWindow::getObjects() const
 {
   if (mpPlot)
     return mpPlot->getObjects();

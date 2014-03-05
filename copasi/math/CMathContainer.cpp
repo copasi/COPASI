@@ -512,6 +512,8 @@ void CMathContainer::applyInitialValues()
 
 void CMathContainer::updateSimulatedValues(const bool & useMoieties)
 {
+  // std::cout << "State: " << mState << std::endl;
+
   if (useMoieties)
     {
       applyUpdateSequence(mSimulationValuesSequenceReduced);
@@ -530,6 +532,8 @@ void CMathContainer::applyUpdateSequence(const CObjectInterface::UpdateSequence 
   for (; it != end; ++it)
     {
       static_cast< CMathObject * >(*it)->calculate();
+
+      // std::cout <<  static_cast< CMathObject * >(*it)->getDataObject()->getObjectDisplayName() << ": " << * (C_FLOAT64 *) static_cast< CMathObject * >(*it)->getValuePointer() << std::endl;
     }
 }
 
@@ -708,6 +712,17 @@ void CMathContainer::init()
   compileObjects();
   compileEvents();
 
+  mInitialState.initialize(mInitialExtensiveRates.array() - mValues.array(),
+                           mValues.array());
+  mState.initialize(mEventTargetCount + 1 + mODECount + mIndependentCount + mDependentCount,
+                    mExtensiveValues.array() + mFixedCount);
+  mStateReduced.initialize(mEventTargetCount + 1 + mODECount + mIndependentCount,
+                           mExtensiveValues.array() + mFixedCount);
+  mRate.initialize(mState.size(),
+                   mExtensiveRates.array() + mFixedCount);
+  mRateReduced.initialize(mStateReduced.size(),
+                          mExtensiveRates.array() + mFixedCount);
+
   // These are only used during initialization for setting up the tracking of
   // discontinuities and are cleared afterwards.
   mDiscontinuityEvents.clear();
@@ -798,6 +813,11 @@ CMathDependencyGraph & CMathContainer::getInitialDependencies()
 CMathDependencyGraph & CMathContainer::getTransientDependencies()
 {
   return mTransientDependencies;
+}
+
+const CObjectInterface::ObjectSet & CMathContainer::getSimulationUpToDateObjects() const
+{
+  return mSimulationRequiredValues;
 }
 
 CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pSrc,
@@ -1121,17 +1141,6 @@ void CMathContainer::allocate()
 
   mObjects.resize(mValues.size());
   mRootIsDiscrete.resize(nEventRoots);
-
-  mInitialState.initialize(mInitialExtensiveRates.array() - mValues.array(),
-                           mValues.array());
-  mState.initialize(mEventTargetCount + 1 + mODECount + mIndependentCount + mDependentCount,
-                    mExtensiveValues.array() + mFixedCount);
-  mStateReduced.initialize(mEventTargetCount + 1 + mODECount + mIndependentCount,
-                           mExtensiveValues.array() + mFixedCount);
-  mRate.initialize(mState.size(),
-                   mExtensiveRates.array() + mFixedCount);
-  mRateReduced.initialize(mStateReduced.size(),
-                          mExtensiveRates.array() + mFixedCount);
 }
 
 void CMathContainer::initializeObjects(CMath::sPointers & p)

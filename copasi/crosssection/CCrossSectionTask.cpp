@@ -127,15 +127,14 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
   mpCrossSectionProblem = dynamic_cast<CCrossSectionProblem *>(mpProblem);
   assert(mpCrossSectionProblem);
 
-  mpTrajectoryMethod->setProblem(mpCrossSectionProblem);
-
-  bool success = mpMethod->isValidProblem(mpProblem);
-
   //init the ring buffer for the states
   mStatesRing.resize(RING_SIZE);
   mStatesRingCounter = 0;
 
-  if (!CTrajectoryTask::initialize(of, pOutputHandler, pOstream)) success = false;
+  bool success = CTrajectoryTask::initialize(of, pOutputHandler, pOstream);
+
+  mpTrajectoryMethod->setProblem(mpCrossSectionProblem);
+  success &= mpMethod->isValidProblem(mpProblem);
 
   return success;
 }

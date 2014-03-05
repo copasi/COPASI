@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -314,10 +314,10 @@ private:
    * Set the units of the indexed axis based on the
    * type of the object.
    * @param const C_INT32 & index
-   * @param const CCopasiObject * pObject
+   * @param const CObjectInterface * pObject
    */
   void setAxisUnits(const C_INT32 & index,
-                    const CCopasiObject * pObject);
+                    const CObjectInterface * pObject);
 
 private slots:
   /**
@@ -357,12 +357,12 @@ private:
    * The order of 2d curve objects used when the data is saved.
    * The first object in each vector is the object for the X axis.
    */
-  std::vector< std::vector < const CCopasiObject * > > mSaveCurveObjects;
+  std::vector< std::vector < const CObjectInterface * > > mSaveCurveObjects;
 
   /**
    * The order of histogram objects used when the data is saved.
    */
-  std::vector< const CCopasiObject * > mSaveHistogramObjects;
+  std::vector< const CObjectInterface * > mSaveHistogramObjects;
 
   /**
    * Vector of actual data lines in the local buffers
@@ -378,7 +378,7 @@ private:
    * Map activity and object to index indicating where data is stored within
    * the current activity.
    */
-  std::map< Activity, std::map< const CCopasiObject *, size_t > > mObjectIndex;
+  std::map< Activity, std::map< const CObjectInterface *, size_t > > mObjectIndex;
 
   /**
    * The list of curves

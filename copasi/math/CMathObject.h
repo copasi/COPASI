@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -89,6 +89,12 @@ public:
   virtual void * getValuePointer() const;
 
   /**
+   * Retrieve a pointer to the data object
+   * @return const CCopasiObject * dataObject
+   */
+  virtual const CCopasiObject * getDataObject() const;
+
+  /**
    * Calculate the objects value
    */
   void calculate();
@@ -119,12 +125,6 @@ public:
    * @return bool §success
    */
   bool compile(CMathContainer & container);
-
-  /**
-   * Retrieve the pointer to the data object
-   * @return const CCopasiObject * pDataObject
-   */
-  const CCopasiObject * getDataObject() const;
 
   /**
    * Retrieve the value type

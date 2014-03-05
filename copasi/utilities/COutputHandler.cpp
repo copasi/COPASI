@@ -20,21 +20,23 @@
 #include "report/CCopasiTimer.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
-#include "model/CModel.h"
+#include "math/CMathContainer.h"
 #include "trajectory/CTimeSeries.h"
 
 COutputHandler::COutputHandler():
   COutputInterface(),
   mInterfaces(),
   mpMaster(NULL),
-  mObjectRefreshes()
+  mUpdateSequence(),
+  mpContainer(NULL)
 {}
 
 COutputHandler::COutputHandler(const COutputHandler & src):
   COutputInterface(src),
   mInterfaces(src.mInterfaces),
   mpMaster(src.mpMaster),
-  mObjectRefreshes(src.mObjectRefreshes)
+  mUpdateSequence(src.mUpdateSequence),
+  mpContainer(NULL)
 {}
 
 COutputHandler::~COutputHandler() {};
@@ -46,14 +48,24 @@ std::set<COutputInterface *> COutputHandler::getInterfaces() const
 
 bool COutputHandler::compile(std::vector< CCopasiContainer * > listOfContainer, const CCopasiDataModel* pDataModel)
 {
+  std::vector< CCopasiContainer * >::const_iterator itContainer = listOfContainer.begin();
+  std::vector< CCopasiContainer * >::const_iterator endContainer = listOfContainer.end();
+
+  for (mpContainer = NULL; itContainer != endContainer && mpContainer == NULL; ++itContainer)
+    {
+      mpContainer = dynamic_cast< CMathContainer * >(*itContainer);
+    }
+
+  assert(mpContainer != NULL);
+
   bool success = true;
   mObjects.clear();
 
   std::set< COutputInterface *>::iterator it = mInterfaces.begin();
   std::set< COutputInterface *>::iterator end = mInterfaces.end();
 
-  std::set< const CCopasiObject * >::const_iterator itObj;
-  std::set< const CCopasiObject * >::const_iterator endObj;
+  CObjectInterface::ObjectSet::const_iterator itObj;
+  CObjectInterface::ObjectSet::const_iterator endObj;
 
   for (; it != end; ++it)
     {
@@ -65,14 +77,14 @@ bool COutputHandler::compile(std::vector< CCopasiContainer * > listOfContainer, 
       if (pHandler != NULL) pHandler->setMaster(this);
 
       // Collect the list of objects
-      const std::set< const CCopasiObject * > & Objects = (*it)->getObjects();
+      const CObjectInterface::ObjectSet & Objects = (*it)->getObjects();
 
       for (itObj = Objects.begin(), endObj = Objects.end(); itObj != endObj; ++itObj)
         mObjects.insert(*itObj);
     }
 
   if (mpMaster == NULL)
-    success &= compileRefresh(listOfContainer, pDataModel);
+    success &= compileUpdateSequence(listOfContainer, pDataModel);
 
   return success;
 }
@@ -80,7 +92,7 @@ bool COutputHandler::compile(std::vector< CCopasiContainer * > listOfContainer, 
 void COutputHandler::output(const Activity & activity)
 {
   if (mpMaster == NULL)
-    refresh();
+    applyUpdateSequence();
 
   std::set< COutputInterface *>::iterator it = mInterfaces.begin();
   std::set< COutputInterface *>::iterator end = mInterfaces.end();
@@ -163,23 +175,17 @@ void COutputHandler::setMaster(COutputHandler * pMaster)
 bool COutputHandler::isMaster() const
 {return (mpMaster == NULL);}
 
-void COutputHandler::refresh()
+void COutputHandler::applyUpdateSequence()
 {
-  std::vector< Refresh * >::iterator it = mObjectRefreshes.begin();
-  std::vector< Refresh * >::iterator end = mObjectRefreshes.end();
-
-  for (; it != end; ++it)(**it)();
+  mpContainer->applyUpdateSequence(mUpdateSequence);
 }
 
-bool COutputHandler::compileRefresh(const std::vector< CCopasiContainer * > & listOfContainer, const CCopasiDataModel* pDataModel)
+bool COutputHandler::compileUpdateSequence(const std::vector< CCopasiContainer * > & listOfContainer, const CCopasiDataModel* pDataModel)
 {
-  const CModel * pModel =
-    dynamic_cast<const CModel * >(pDataModel->ObjectFromName(listOfContainer, pDataModel->getModel()->getCN()));
+  mpContainer->getTransientDependencies().getUpdateSequence(CMath::Default, mpContainer->getSimulationUpToDateObjects(), mObjects, mUpdateSequence);
 
-  mObjectRefreshes = CCopasiObject::buildUpdateSequence(mObjects, pModel->getUptoDateObjects());
-
-  std::set< const CCopasiObject * >::const_iterator it = mObjects.begin();
-  std::set< const CCopasiObject * >::const_iterator end = mObjects.end();
+  CObjectInterface::ObjectSet::const_iterator it = mObjects.begin();
+  CObjectInterface::ObjectSet::const_iterator end = mObjects.end();
 
   // Timers are treated differently they are started during compilation.
   for (; it != end; ++it)

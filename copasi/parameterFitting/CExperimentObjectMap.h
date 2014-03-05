@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -270,9 +270,9 @@ public:
 
   /**
    * Retrieve the vector of mapped objects
-   * @return const CVector< CCopasiObject * > & mappedObjects
+   * @return const CVector< const CCopasiObject * > & mappedObjects
    */
-  const CVector< CCopasiObject * > & getMappedObjects() const;
+  const CVector< const CCopasiObject * > & getMappedObjects() const;
 
   /**
    * Retrieve the last mapped column number
@@ -291,7 +291,7 @@ private:
    * A vector of pointer to the  objects corresponding
    * to the data column.
    */
-  CVector<CCopasiObject *> mObjects;
+  CVector< const CCopasiObject * > mObjects;
 
   /**
    * The last mapped column

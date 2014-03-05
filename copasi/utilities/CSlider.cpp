@@ -70,8 +70,8 @@ bool CSlider::compile(const std::vector< CCopasiContainer * > & listOfContainer)
 {
   if (getObjectDataModel() == NULL) return false;
 
-  //setSliderObject(CCopasiContainer::ObjectFromName(listOfContainer, getObjectName()));
-  setSliderObject(getObjectDataModel()->ObjectFromName(listOfContainer, mCN));
+  //setSliderObject(CCopasiContainer::ObjectFromCN(listOfContainer, getObjectName()));
+  setSliderObject(CObjectInterface::DataObject(getObjectDataModel()->ObjectFromCN(listOfContainer, mCN)));
 
   if (this->mSync) this->sync();
 
@@ -101,9 +101,9 @@ bool CSlider::setAssociatedEntityKey(const std::string & associatedEntityKey)
 const std::string & CSlider::getAssociatedEntityKey() const
 {return mAssociatedEntityKey;}
 
-bool CSlider::setSliderObject(CCopasiObject * pObject)
+bool CSlider::setSliderObject(const CCopasiObject * pObject)
 {
-  mpSliderObject = pObject;
+  mpSliderObject = const_cast< CCopasiObject * >(pObject);
 
   if (!pObject)
     {
@@ -173,7 +173,7 @@ bool CSlider::setSliderObject(const CCopasiObjectName & objectCN)
   return true;
 }
 
-CCopasiObject * CSlider::getSliderObject()
+const CCopasiObject * CSlider::getSliderObject() const
 {return mpSliderObject;}
 
 const std::string & CSlider::getSliderObjectCN() const
@@ -415,7 +415,7 @@ bool CSlider::isValid() const
   assert(pModel != NULL);
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(const_cast<CModel*>(pModel));
-  const CCopasiObject* pObject = getObjectDataModel()->ObjectFromName(listOfContainers, this->mCN);
+  const CCopasiObject* pObject = CObjectInterface::DataObject(getObjectDataModel()->ObjectFromCN(listOfContainers, this->mCN));
   result = (pObject != NULL && pObject == this->mpSliderObject);
   return result;
 }
