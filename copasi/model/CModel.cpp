@@ -48,9 +48,7 @@
 #include "CMetabNameInterface.h"
 #include "CMathModel.h"
 
-#ifdef USE_MATH_CONTAINER
-# include "math/CMathContainer.h"
-#endif //USE_MATH_CONTAINER
+#include "math/CMathContainer.h"
 
 #include "lapack/blaswrap.h"
 #include "lapack/lapackwrap.h"
@@ -75,9 +73,7 @@ CModel::CModel(CCopasiContainer* pParent):
   mInitialDependencies(),
   mTransientDependencies(),
   mPhysicalDependencies(),
-#ifdef USE_MATH_CONTAINER
   mpMathContainer(NULL),
-#endif // USE_MATH_CONTAINER
   mVolumeUnit(CUnit::ml),
   mAreaUnit(CUnit::m2),
   mLengthUnit(CUnit::m),
@@ -118,8 +114,7 @@ CModel::CModel(CCopasiContainer* pParent):
   mNonSimulatedRefreshes(),
   mReorderNeeded(false),
   mIsAutonomous(true),
-  mBuildInitialSequence(true),
-  mpMathModel(NULL)
+  mBuildInitialSequence(true)
 {
   initObjects();
 
@@ -212,9 +207,7 @@ CModel::~CModel()
   pdelete(mpRedStoiAnnotation);
   pdelete(mpLinkMatrixAnnotation);
 
-#ifdef USE_MATH_CONTAINER
   pdelete(mpMathContainer);
-#endif // USE_MATH_CONTAINER
 
   CCopasiRootContainer::getKeyFactory()->remove(mKey);
 
@@ -445,7 +438,7 @@ bool CModel::compile()
   updateMatrixAnnotations();
 
   success &= compileEvents();
-  success &= mpMathModel->compile(this);
+  // success &= mpMathModel->compile(this);
 
   if (!success)
     {
@@ -461,12 +454,10 @@ bool CModel::compile()
 
   buildDependencyGraphs();
 
-#ifdef USE_MATH_CONTAINER
   pdelete(mpMathContainer);
   mpMathContainer = new CMathContainer(*this);
 
   // CMathContainer CopyModel(MathModel);
-#endif // USE_MATH_CONTAINER
 
   // Update the parameter set
   mParameterSet.createFromModel();
@@ -1181,7 +1172,7 @@ void CModel::applyInitialValues()
   // Update all dependent objects needed for simulation.
   updateSimulatedValues(false);
 
-  mpMathModel->applyInitialValues();
+  // mpMathModel->applyInitialValues();
 }
 
 void CModel::clearMoieties()
@@ -2972,6 +2963,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
         }
 
       const CFitProblem *problem = static_cast<const CFitProblem*>(task->getProblem());
+
       const CExperimentSet& experiments = problem->getExperiementSet();
 
       // find first time course experiment
@@ -3581,7 +3573,7 @@ void CModel::initObjects()
   mpLinkMatrixAnnotation->setMode(1, CArrayAnnotation::OBJECTS);
   mpLinkMatrixAnnotation->setDimensionDescription(1, "Species (reduced system)");
 
-  mpMathModel = new CMathModel(this);
+  // mpMathModel = new CMathModel(this);
 }
 
 bool CModel::hasReversibleReaction() const
@@ -4353,6 +4345,7 @@ std::string CModel::getQuantityRateUnitsDisplayString() const
 
 /****** Below will be removed when the math model completed ******/
 
+#ifdef XXXX
 void CModel::evaluateRoots(CVectorCore< C_FLOAT64 > & rootValues,
                            const bool & ignoreDiscrete)
 {
@@ -4401,11 +4394,10 @@ const CMathModel* CModel::getMathModel() const
 
 CMathModel* CModel::getMathModel()
 {return mpMathModel;}
+#endif // XXXX
 
-#ifdef USE_MATH_CONTAINER
 const CMathContainer* CModel::getMathContainer() const
 {return mpMathContainer;}
 
 CMathContainer* CModel::getMathContainer()
 {return mpMathContainer;}
-#endif // USE_MATH_CONTAINER

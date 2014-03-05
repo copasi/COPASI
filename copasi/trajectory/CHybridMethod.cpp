@@ -217,15 +217,6 @@ CTrajectoryMethod::Status CHybridMethod::step(const double & deltaT)
       CCopasiMessage(CCopasiMessage::WARNING, "maximum number of reaction events was reached in at least one simulation step.\nThat means time intervals in the output may not be what you requested.");
     }
 
-  // get back the particle numbers
-
-  /* Set the variable metabolites */
-  C_FLOAT64 * Dbl = mContainerState.array() + mFirstMetabIndex;
-
-  // TODO CRITICAL CMathContainer Why are we retrieving the particle values from the model?
-  for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
-    *Dbl = mpProblem->getModel()->getMetabolitesX()[i]->getValue();
-
   return NORMAL;
 }
 

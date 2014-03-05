@@ -194,11 +194,6 @@ if (ENABLE_PE_EVENT_CREATION)
 endif(ENABLE_PE_EVENT_CREATION)
 
 
-option(ENABLE_USE_MATH_CONTAINER "Enable the use of the Math container" OFF)
-if (ENABLE_USE_MATH_CONTAINER)
-  add_definitions(-DUSE_MATH_CONTAINER)
-endif(ENABLE_USE_MATH_CONTAINER)
-
 option (BUILD_GUI "Disable this if you do not want to build the COPASI GUI (CopasiUI)." ON)
 
 find_package(OpenGL)
@@ -582,7 +577,6 @@ message(STATUS "-----------------------------------------------------------
  Options:
 
    COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
-   Math Container           = ${ENABLE_USE_MATH_CONTAINER}
    SBW integration          = ${ENABLE_SBW_INTEGRATION}
    SBML Unit                = ${ENABLE_USE_SBMLUNIT}
    Model Merging            = ${ENABLE_WITH_MERGEMODEL}

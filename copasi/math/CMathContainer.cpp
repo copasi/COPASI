@@ -508,6 +508,18 @@ void CMathContainer::applyInitialValues()
   memcpy(pTransient, pInitial, (pTransient - pInitial) * sizeof(C_FLOAT64));
 
   applyUpdateSequence(mApplyInitialValuesSequence);
+
+  // The root states are not automatically evaluated by the above sequence. We
+  // do it manually.
+  CMathEventN::CTrigger::CRootProcessor ** pRoot = mRootProcessor.array();
+  CMathEventN::CTrigger::CRootProcessor ** pRootEnd = pRoot + mRootProcessor.size();
+
+  for (; pRoot != pRootEnd; ++pRoot)
+    {
+      (*pRoot)->calculateTrueValue();
+    }
+
+  return;
 }
 
 void CMathContainer::updateSimulatedValues(const bool & useMoieties)
@@ -1504,16 +1516,15 @@ void CMathContainer::createApplyInitialValuesSequence()
   // Collect all the changed objects, which are all transient values
   CObjectInterface::ObjectSet Changed;
   const CMathObject * pObject = mObjects.array() + (mExtensiveValues.array() - mValues.array());
-  const CMathObject * pObjectEnd = mObjects.array() + (mEventDelays.array() - mValues.array());
+  const CMathObject * pObjectEnd = mObjects.array() + mObjects.size();
 
-  for (; pObject != pObjectEnd; ++pObject)
+  for (; pObject != pObjectEnd && pObject->getSimulationType() != CMath::Assignment; ++pObject)
     {
       Changed.insert(pObject);
     }
 
   // Collect all the requested objects
   CObjectInterface::ObjectSet Requested;
-  pObjectEnd = mObjects.array() + mObjects.size();
 
   for (; pObject != pObjectEnd; ++pObject)
     {
@@ -1614,6 +1625,25 @@ void CMathContainer::analyzeRoots()
   mEventRoots.initialize(RootCount, mEventRoots.array());
   mEventRootStates.initialize(RootCount, mEventRootStates.array());
   mRootIsDiscrete.resize(RootCount, true);
+
+  mRootProcessor.resize(RootCount);
+
+  CMathEventN * pEvent = mEvents.array();
+  CMathEventN * pEventEnd = pEvent + mEvents.size();
+  pRoot = getMathObject(mEventRoots.array());
+  CMathEventN::CTrigger::CRootProcessor ** pRootProcessorPtr = mRootProcessor.array();
+
+  for (; pEvent != pEventEnd; ++pEvent)
+    {
+      CMathEventN::CTrigger::CRootProcessor * pRootProcessor = const_cast< CMathEventN::CTrigger::CRootProcessor * >(pEvent->getTrigger().getRoots().array());
+      CMathEventN::CTrigger::CRootProcessor * pRootProcessorEnd = pRootProcessor + pEvent->getTrigger().getRoots().size();
+
+      for (; pRootProcessor != pRootProcessorEnd; ++pRootProcessor, ++pRoot, ++pRootProcessorPtr)
+        {
+          assert(pRootProcessor->mpRoot == pRoot);
+          *pRootProcessorPtr = pRootProcessor;
+        }
+    }
 }
 
 void CMathContainer::calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives)
@@ -1644,6 +1674,7 @@ void CMathContainer::calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivat
 void CMathContainer::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian)
 {
   size_t NumRows = mEventRoots.size();
+
   // Partial derivatives with respect to time and all variables determined by ODEs and reactions.
   size_t NumCols = 1 + mODECount + mIndependentCount + mDependentCount;
 
@@ -1721,6 +1752,49 @@ void CMathContainer::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian)
 
   // Undo the changes.
   updateSimulatedValues(false);
+}
+
+bool CMathContainer::processQueue(const bool & equality)
+{
+  bool StateChange = false;
+
+  // TODO CRITICAL Implement me
+
+  return false;
+}
+
+void CMathContainer::processRoots(const bool & equality,
+                                  const CVector< C_INT > & roots)
+{
+  // Toggle or reevaluate all roots.
+  CMathEventN::CTrigger::CRootProcessor ** pRoot = mRootProcessor.array();
+  CMathEventN::CTrigger::CRootProcessor ** pRootEnd = pRoot + mRootProcessor.size();
+  const C_INT * pRootFound = roots.array();
+  C_FLOAT64 & Time = mState[mEventTargetCount];
+
+  for (; pRoot != pRootEnd; ++pRoot, ++pRootFound)
+    {
+      if (pRootFound)
+        {
+          (*pRoot)->toggle(Time, equality);
+        }
+      // We reevaluate the state of the non found roots, which should be save.
+      else
+        {
+          (*pRoot)->calculateTrueValue();
+        }
+    }
+
+  // Find out which events fire and add them to the process queue
+  // TODO CRITICAL Implement me!
+  return;
+}
+
+C_FLOAT64 CMathContainer::getProcessQueueExecutionTime() const
+{
+  // TODO CRITICAL Implement me
+
+  return std::numeric_limits< C_FLOAT64 >::infinity();
 }
 
 void CMathContainer::initializePointers(CMath::sPointers & p)

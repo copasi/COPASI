@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -59,29 +59,56 @@ public:
   class CTrigger
   {
   public:
-    class CRoot
+    class CRootProcessor
     {
     public:
       /**
        * Default constructor
        */
-      CRoot();
+      CRootProcessor();
 
       /**
        * Destructor
        */
-      ~CRoot();
+      ~CRootProcessor();
+
+      /**
+       * Toggle the root status dependent on the
+       * processed equality status
+       * @param const C_FLOAT64 & time
+       * @param const bool & equality
+       * @param const bool & continuous
+       */
+      void toggle(const C_FLOAT64 & time,
+                  const bool & equality);
+
+      /**
+       * Toggle the root status dependent on the
+       * processed equality status
+       * @param const C_FLOAT64 & time
+       */
+      void toggle(const C_FLOAT64 & time);
+
+      /**
+       * Initialize all values of the root processor.
+       */
+      void applyInitialValues();
+
+      /**
+       * Determine the truth value for the current root.
+       */
+      void calculateTrueValue();
 
       void initialize(CMath::sPointers & pointers);
 
       /**
        * Copy an existing object
-       * @param const CRoot & src
+       * @param const CRootProcessor & src
        * @param CMathContainer & container
        * @param const size_t & valueOffset
        * @param const size_t & objectOffset
        */
-      void copy(const CRoot & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset);
+      void copy(const CRootProcessor & src, CMathContainer & container, const size_t & valueOffset, const size_t & objectOffset);
 
       bool compile(CEvaluationNode * pRootNode,
                    const bool & equality,
@@ -94,6 +121,9 @@ public:
       CMathObject * mpRootState;
       bool mEquality;
       bool mDiscrete;
+      C_FLOAT64 mLastToggleTime;
+      C_FLOAT64 * mpRootValue;
+      C_FLOAT64 * mpRootStateValue;
     };
 
     /**
@@ -126,7 +156,7 @@ public:
     bool compile(CEvent * pDataEvent,
                  CMathContainer & container);
 
-    const CVector< CRoot > & getRoots() const;
+    const CVector< CRootProcessor > & getRoots() const;
 
     /**
      * Set the trigger expression
@@ -152,54 +182,54 @@ public:
 
     static CEvaluationNode * compile(const CEvaluationNode * pNode,
                                      const CMath::Variables< CEvaluationNode * > & variables,
-                                     CMathEventN::CTrigger::CRoot *& pRoot,
+                                     CMathEventN::CTrigger::CRootProcessor *& pRoot,
                                      CMathContainer & container);
 
     static CEvaluationNode * compileAND(const CEvaluationNode * pNode,
                                         const std::vector< CEvaluationNode * > & children,
                                         const CMath::Variables< CEvaluationNode * > & variables,
-                                        CMathEventN::CTrigger::CRoot *& pRoot,
+                                        CMathEventN::CTrigger::CRootProcessor *& pRoot,
                                         CMathContainer & container);
 
     static CEvaluationNode * compileEQ(const CEvaluationNode * pNode,
                                        const std::vector< CEvaluationNode * > & children,
                                        const CMath::Variables< CEvaluationNode * > & variables,
-                                       CMathEventN::CTrigger::CRoot *& pRoot,
+                                       CMathEventN::CTrigger::CRootProcessor *& pRoot,
                                        CMathContainer & container);
 
     static CEvaluationNode * compileNE(const CEvaluationNode * pNode,
                                        const std::vector< CEvaluationNode * > & children,
                                        const CMath::Variables< CEvaluationNode * > & variables,
-                                       CMathEventN::CTrigger::CRoot *& pRoot,
+                                       CMathEventN::CTrigger::CRootProcessor *& pRoot,
                                        CMathContainer & container);
 
     static CEvaluationNode * compileLE(const CEvaluationNode * pNode,
                                        const std::vector< CEvaluationNode * > & children,
                                        const CMath::Variables< CEvaluationNode * > & variables,
-                                       CMathEventN::CTrigger::CRoot *& pRoot,
+                                       CMathEventN::CTrigger::CRootProcessor *& pRoot,
                                        CMathContainer & container);
 
     static CEvaluationNode * compileNOT(const CEvaluationNode * pNode,
                                         const std::vector< CEvaluationNode * > & children,
                                         const CMath::Variables< CEvaluationNode * > & variables,
-                                        CMathEventN::CTrigger::CRoot *& pRoot,
+                                        CMathEventN::CTrigger::CRootProcessor *& pRoot,
                                         CMathContainer & container);
 
     static CEvaluationNode * compileFUNCTION(const CEvaluationNode * pNode,
         const std::vector< CEvaluationNode * > & children,
         const CMath::Variables< CEvaluationNode * > & variables,
-        CMathEventN::CTrigger::CRoot *& pRoot,
+        CMathEventN::CTrigger::CRootProcessor *& pRoot,
         CMathContainer & container);
 
     static CEvaluationNode * compileVARIABLE(const CEvaluationNode * pNode,
         const std::vector< CEvaluationNode * > & children,
         const CMath::Variables< CEvaluationNode * > & variables,
-        CMathEventN::CTrigger::CRoot *& pRoot,
+        CMathEventN::CTrigger::CRootProcessor *& pRoot,
         CMathContainer & container);
 
     CMathObject * mpTrigger;
     CMathObject * mpInitialTrigger;
-    CVector< CRoot > mRoots;
+    CVector< CRootProcessor > mRoots;
     bool mDualAction;
   };
 

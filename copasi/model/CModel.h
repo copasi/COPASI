@@ -38,11 +38,7 @@
 #include "copasi/math/CMathTrigger.h"
 #include "copasi/math/CMathDependencyGraph.h"
 
-#ifdef USE_MATH_CONTAINER
 class CMathContainer;
-#endif // USE_MATH_CONTAINER
-
-//class CCompartment;
 class CProcessReport;
 class CArrayAnnotation;
 class CMathModel;
@@ -1476,27 +1472,13 @@ private:
   /****** Below will be removed when the math model completed ******/
 
   /**
-   * The mathematical model. This is currently part of the model. It is
-   * envisioned that this will be the class all tasks will operate on, since it
-   * eventually will have the all the mathematical relevant information.
+   * The container of the mathematical model.
    */
-  CMathModel * mpMathModel;
-
-#ifdef USE_MATH_CONTAINER
   CMathContainer * mpMathContainer;
-#endif // USE_MATH_CONTAINER
 
   // Operations
 public:
-  /**
-   * Evaluate all root values for the current state of the model. If
-   * ignoreDiscrete is true discrete roots evaluate to 1.0.
-   * @param CVectorCore< C_FLOAT64 > & rootValues
-   * @param const bool & ignoreDiscrete
-   */
-  void evaluateRoots(CVectorCore< C_FLOAT64 > & rootValues,
-                     const bool & ignoreDiscrete);
-
+#ifdef XXXX
   /**
    * Process events scheduled at the given which a are checked for
    * equality or not
@@ -1536,12 +1518,6 @@ public:
   size_t getNumRoots() const;
 
   /**
-   * Calculate the time derivative of all roots
-   * @param CVector< C_FLOAT64 > & rootDerivatives
-   */
-  void calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives);
-
-  /**
    * Retrieve a vector of root finders
    * @return const CVector< CMathTrigger::CRootFinder * > & rootFinders
    */
@@ -1549,20 +1525,19 @@ public:
 
   const CMathModel* getMathModel() const;
   CMathModel* getMathModel();
+#endif // XXXX
 
-#ifdef USE_MATH_CONTAINER
   /**
    * Retrieve the container of all mathematical objects
    * @return const CMathContainer * pMathContainer
    */
-  const CMathContainer* getMathContainer() const;
+  const CMathContainer * getMathContainer() const;
 
   /**
    * Retrieve the container of all mathematical objects
    * @return CMathContainer * pMathContainer
    */
   CMathContainer * getMathContainer();
-#endif // USE_MATH_CONTAINER
 };
 
 #endif // CModel

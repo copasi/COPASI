@@ -190,7 +190,8 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
 
   //this instructs the process queue to call back whenever an event is
   //executed
-  mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(this, &EventCallBack);
+  // TODO CRITICAL Implement me!
+  // mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(this, &EventCallBack);
 
   mPreviousCrossingTime = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
   mPeriod = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
@@ -288,7 +289,8 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
 void CCrossSectionTask::finish()
 {
   //reset call back
-  mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
+  // TODO CRITICAL Implement me!
+  // mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
 
   if (mpCallBack != NULL) mpCallBack->finishItem(mhProgress);
 
@@ -301,7 +303,8 @@ bool CCrossSectionTask::restore()
 
   removeEvent();
   //reset call back
-  mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
+  // TODO CRITICAL Implement me!
+  // mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
 
   return success;
 }

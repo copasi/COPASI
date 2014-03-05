@@ -242,8 +242,6 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
       mTimeSeries.clear();
     }
 
-  mpTrajectoryProblem->getModel()->getMathModel()->getProcessQueue().setContinueSimultaneousEvents(mpTrajectoryProblem->getContinueSimultaneousEvents());
-
   if (!CCopasiTask::initialize(of, pOutputHandler, pOstream)) success = false;
 
   return success;
@@ -407,7 +405,6 @@ void CTrajectoryTask::processStart(const bool & useInitialValues)
 
 bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
 {
-  CModel * pModel = mpTrajectoryProblem->getModel();
   bool StateChanged = false;
 
   C_FLOAT64 Tolerance = 100.0 * (fabs(endTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
@@ -416,7 +413,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
   while (mProceed)
     {
       // TODO Provide a call back method for resolving simultaneous assignments.
-      StateChanged |= pModel->processQueue(*mpCurrentStateTime, false, NULL);
+      StateChanged |= mpContainer->processQueue(false);
 
       if (StateChanged)
         {
@@ -432,7 +429,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
         }
 
       // std::min suffices since events are only supported in forward integration.
-      NextTime = std::min(endTime, pModel->getProcessQueueExecutionTime());
+      NextTime = std::min(endTime, mpContainer->getProcessQueueExecutionTime());
 
       switch (mpTrajectoryMethod->step(NextTime - *mpCurrentStateTime))
         {
@@ -441,14 +438,14 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
             mpContainer->updateSimulatedValues(mUpdateMoieties);
 
             if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentStateTime) &&
-                *mpCurrentStateTime == pModel->getProcessQueueExecutionTime() &&
+                *mpCurrentStateTime == mpContainer->getProcessQueueExecutionTime() &&
                 mpTrajectoryProblem->getOutputEvent())
               {
                 output(COutputInterface::DURING);
               }
 
             // TODO Provide a call back method for resolving simultaneous assignments.
-            StateChanged |= pModel->processQueue(*mpCurrentStateTime, true, NULL);
+            StateChanged |= mpContainer->processQueue(true);
 
             // If the state change happens to coincide with end of the step we have to return and
             // inform the integrator of eventual state changes.
@@ -477,19 +474,19 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
             mpContainer->setState(mCurrentState);
             mpContainer->updateSimulatedValues(mUpdateMoieties);
 
-            pModel->processRoots(*mpCurrentStateTime, true, true, mpTrajectoryMethod->getRoots());
+            mpContainer->processRoots(true, mpTrajectoryMethod->getRoots());
 
             if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentStateTime) &&
-                *mpCurrentStateTime == pModel->getProcessQueueExecutionTime() &&
+                *mpCurrentStateTime == mpContainer->getProcessQueueExecutionTime() &&
                 mpTrajectoryProblem->getOutputEvent())
               {
                 output(COutputInterface::DURING);
               }
 
             // TODO Provide a call back method for resolving simultaneous assignments.
-            StateChanged |= pModel->processQueue(*mpCurrentStateTime, true, NULL);
+            StateChanged |= mpContainer->processQueue(true);
 
-            pModel->processRoots(*mpCurrentStateTime, false, true, mpTrajectoryMethod->getRoots());
+            mpContainer->processRoots(false, mpTrajectoryMethod->getRoots());
 
             // If the root happens to coincide with end of the step we have to return and
             // inform the integrator of eventual state changes.
@@ -508,7 +505,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
             if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentStateTime) &&
                 mpTrajectoryProblem->getOutputEvent() &&
                 (StateChanged ||
-                 *mpCurrentStateTime == pModel->getProcessQueueExecutionTime()))
+                 *mpCurrentStateTime == mpContainer->getProcessQueueExecutionTime()))
               {
                 output(COutputInterface::DURING);
               }

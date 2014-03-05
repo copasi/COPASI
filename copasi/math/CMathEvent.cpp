@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -80,45 +80,121 @@ void CMathEventN::CAssignment::setExpression(CMathObject * pExpression)
   mpAssignment = pExpression;
 }
 
-CMathEventN::CTrigger::CRoot::CRoot():
+CMathEventN::CTrigger::CRootProcessor::CRootProcessor():
   mpRoot(NULL),
   mpRootState(NULL),
   mEquality(false),
-  mDiscrete(false)
+  mDiscrete(false),
+  mLastToggleTime(),
+  mpRootValue(NULL),
+  mpRootStateValue(NULL)
 {}
 
-CMathEventN::CTrigger::CRoot::~CRoot()
+CMathEventN::CTrigger::CRootProcessor::~CRootProcessor()
 {}
 
-void CMathEventN::CTrigger::CRoot::initialize(CMath::sPointers & pointers)
+void CMathEventN::CTrigger::CRootProcessor::toggle(const C_FLOAT64 & time,
+    const bool & equality)
+{
+  // This function must only be called if we found a root, i.e., the
+  // value of the root expression changes sign. In that case it is save
+  // to toggle the state.
+
+  if (!isnan(mLastToggleTime) &&
+      mLastToggleTime == time)
+    {
+      return;
+    }
+
+  if (mDiscrete &&
+      equality == true)
+    {
+      *mpRootStateValue = (*mpRootStateValue > 0.5) ? 0.0 : 1.0;
+      mLastToggleTime = time;
+    }
+  else if (!mDiscrete)
+    {
+      if (equality == mEquality && *mpRootStateValue < 0.5)
+        {
+          *mpRootStateValue = 1.0;
+          mLastToggleTime = time;
+        }
+      else if (equality != mEquality && *mpRootStateValue > 0.5)
+        {
+          *mpRootStateValue = 0.0;
+          mLastToggleTime = time;
+        }
+    }
+
+  return;
+}
+
+void CMathEventN::CTrigger::CRootProcessor::toggle(const C_FLOAT64 & time)
+{
+  // This function must only be called if we found a root, i.e., the
+  // value of the root expression changes sign. In that case it is save
+  // to toggle the activity.
+
+  *mpRootStateValue = (*mpRootStateValue > 0.5) ? 0.0 : 1.0;
+
+  mLastToggleTime = time;
+
+  return;
+}
+
+void CMathEventN::CTrigger::CRootProcessor::applyInitialValues()
+{
+  calculateTrueValue();
+  mLastToggleTime = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+}
+
+void CMathEventN::CTrigger::CRootProcessor::calculateTrueValue()
+{
+  if ((*mpRootValue < 0.0) ||
+      ((*mpRootValue <= 0.0) && !mEquality))
+    {
+      *mpRootStateValue = 0.0;
+    }
+  else
+    {
+      *mpRootStateValue = 1.0;
+    }
+}
+
+void CMathEventN::CTrigger::CRootProcessor::initialize(CMath::sPointers & pointers)
 {
   // Initialize the root object!
   mpRoot = pointers.pEventRootsObject;
-  *pointers.pEventRoots = 1.0;
+  mpRootValue = pointers.pEventRoots;
+  *mpRootValue = 1.0;
   CMathObject::initialize(pointers.pEventRootsObject, pointers.pEventRoots,
                           CMath::EventRoot, CMath::Event, CMath::SimulationTypeUndefined,
                           false, false, NULL);
 
   // Initialize the root state object!
   mpRootState = pointers.pEventRootStatesObject;
-  *pointers.pEventRootStates = 1.0;
+  mpRootStateValue = pointers.pEventRootStates;
+  *mpRootStateValue = 1.0;
   CMathObject::initialize(pointers.pEventRootStatesObject, pointers.pEventRootStates,
                           CMath::EventRootState, CMath::Event, CMath::SimulationTypeUndefined,
                           false, false, NULL);
 }
 
-void CMathEventN::CTrigger::CRoot::copy(const CMathEventN::CTrigger::CRoot & src,
-                                        CMathContainer & /* container */,
-                                        const size_t & /* valueOffset */,
-                                        const size_t & objectOffset)
+void CMathEventN::CTrigger::CRootProcessor::copy(const CMathEventN::CTrigger::CRootProcessor & src,
+    CMathContainer & /* container */,
+    const size_t & valueOffset,
+    const size_t & objectOffset)
 {
   mpRoot = src.mpRoot + objectOffset;
   mpRootState = src.mpRootState + objectOffset;
   mEquality = src.mEquality;
   mDiscrete = src.mDiscrete;
+  mLastToggleTime = src.mLastToggleTime;
+  mpRootValue = src.mpRootStateValue + valueOffset;
+  mpRootStateValue = src.mpRootStateValue + valueOffset;
 }
 
-bool CMathEventN::CTrigger::CRoot::compile(CEvaluationNode * pRootNode,
+bool CMathEventN::CTrigger::CRootProcessor::compile(CEvaluationNode * pRootNode,
     const bool & equality,
     CMathContainer & container)
 {
@@ -132,20 +208,23 @@ bool CMathEventN::CTrigger::CRoot::compile(CEvaluationNode * pRootNode,
   success &= mpRoot->setExpressionPtr(pExpression);
 
   // Compile the root state object
+  // The root state can not be automatically determined
+#ifdef XXXX
   CMathExpression * pStateExpression = new CMathExpression("RootStateExpression", container);
 
   CEvaluationNode * pStateExpressionNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::GT, "GT");
   pStateExpressionNode->addChild(new CEvaluationNodeObject((C_FLOAT64 *) mpRoot->getValuePointer()));
-  pStateExpressionNode->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.5"));
+  pStateExpressionNode->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "0.0"));
 
   success &= static_cast< CEvaluationTree * >(pStateExpression)->setRoot(pStateExpressionNode);
   success &= mpRootState->setExpressionPtr(pStateExpression);
+#endif // XXXX
 
   return success;
 }
 
 // static
-CEvaluationNode * CMathEventN::CTrigger::CRoot::createTriggerExpressionNode() const
+CEvaluationNode * CMathEventN::CTrigger::CRootProcessor::createTriggerExpressionNode() const
 {
   return  new CEvaluationNodeObject((C_FLOAT64 *) mpRootState->getValuePointer());
 }
@@ -214,8 +293,8 @@ void CMathEventN::CTrigger::initialize(CMath::sPointers & pointers)
                           false, true, NULL);
 
   // Initialize root object.
-  CRoot * pRoot = mRoots.array();
-  CRoot * pRootEnd = pRoot + mRoots.size();
+  CRootProcessor * pRoot = mRoots.array();
+  CRootProcessor * pRootEnd = pRoot + mRoots.size();
 
   for (; pRoot != pRootEnd; ++pRoot)
     {
@@ -232,9 +311,9 @@ void CMathEventN::CTrigger::copy(const CMathEventN::CTrigger & src,
   mpInitialTrigger = src.mpInitialTrigger + objectOffset;
 
   mRoots.resize(src.mRoots.size());
-  CRoot * pRoot = mRoots.array();
-  CRoot * pRootEnd = pRoot + mRoots.size();
-  const CRoot * pRootSrc = src.mRoots.array();
+  CRootProcessor * pRoot = mRoots.array();
+  CRootProcessor * pRootEnd = pRoot + mRoots.size();
+  const CRootProcessor * pRootSrc = src.mRoots.array();
 
   for (; pRoot != pRootEnd; ++pRoot, ++pRootSrc)
     {
@@ -270,7 +349,7 @@ bool CMathEventN::CTrigger::compile(CEvent * pDataEvent,
   success &= DataTrigger.compile();
 
   CEvaluationNode * pTriggerRoot = NULL;
-  CRoot * pRoot = mRoots.array();
+  CRootProcessor * pRoot = mRoots.array();
 
   pTriggerRoot = compile(DataTrigger.getRoot(), Variables, pRoot, container);
 
@@ -284,7 +363,7 @@ bool CMathEventN::CTrigger::compile(CEvent * pDataEvent,
   return success;
 }
 
-const CVector< CMathEventN::CTrigger::CRoot > & CMathEventN::CTrigger::getRoots() const
+const CVector< CMathEventN::CTrigger::CRootProcessor > & CMathEventN::CTrigger::getRoots() const
 {
   return mRoots;
 }
@@ -301,8 +380,8 @@ void CMathEventN::CTrigger::setExpression(const std::string & infix,
   std::cout << *mpTrigger;
   std::cout << *mpInitialTrigger;
 
-  CRoot * pRoot = mRoots.array();
-  CRoot * pRootEnd = pRoot + mRoots.size();
+  CRootProcessor * pRoot = mRoots.array();
+  CRootProcessor * pRootEnd = pRoot + mRoots.size();
 
   for (; pRoot != pRootEnd; ++pRoot)
     {
@@ -492,7 +571,7 @@ size_t CMathEventN::CTrigger::countRootsVARIABLE(const CEvaluationNode * pNode,
 // static
 CEvaluationNode * CMathEventN::CTrigger::compile(const CEvaluationNode * pTriggerNode,
     const CMath::Variables< CEvaluationNode * > & variables,
-    CMathEventN::CTrigger::CRoot *& pRoot,
+    CMathEventN::CTrigger::CRootProcessor *& pRoot,
     CMathContainer & container)
 {
   CEvaluationNode * pNode = NULL;
@@ -558,42 +637,42 @@ CEvaluationNode * CMathEventN::CTrigger::compile(const CEvaluationNode * pTrigge
             // already processed
             switch ((int) itNode->getType())
               {
-                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::AND):
-                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::OR):
-                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::XOR):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::AND):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::OR):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::XOR):
                   pNode = compileAND(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::EQ):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::EQ):
                   pNode = compileEQ(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::NE):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::NE):
                   pNode = compileNE(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::LE):
-                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::LT):
-                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::GE):
-                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::GT):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::LE):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::LT):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::GE):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::GT):
                   pNode = compileLE(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::NOT):
+                case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::NOT):
                   pNode = compileNOT(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
-                case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+                case(CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
+                case(CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
                   pNode = compileFUNCTION(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case (CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
+                case(CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
                   pNode = compileVARIABLE(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case (CEvaluationNode::CONSTANT | CEvaluationNodeConstant::TRUE):
-                case (CEvaluationNode::CONSTANT | CEvaluationNodeConstant::FALSE):
+                case(CEvaluationNode::CONSTANT | CEvaluationNodeConstant::TRUE):
+                case(CEvaluationNode::CONSTANT | CEvaluationNodeConstant::FALSE):
                 default:
                   pNode = itNode->copyNode(itNode.context());
                   break;
@@ -619,7 +698,7 @@ CEvaluationNode * CMathEventN::CTrigger::compile(const CEvaluationNode * pTrigge
 CEvaluationNode * CMathEventN::CTrigger::compileAND(const CEvaluationNode * pTriggerNode,
     const std::vector< CEvaluationNode * > & children,
     const CMath::Variables< CEvaluationNode * > & /* variables */,
-    CMathEventN::CTrigger::CRoot *& /* pRoot */,
+    CMathEventN::CTrigger::CRootProcessor *& /* pRoot */,
     CMathContainer & /* container */)
 {
   CEvaluationNode * pNode = NULL;
@@ -655,7 +734,7 @@ CEvaluationNode * CMathEventN::CTrigger::compileAND(const CEvaluationNode * pTri
 CEvaluationNode * CMathEventN::CTrigger::compileEQ(const CEvaluationNode * pTriggerNode,
     const std::vector< CEvaluationNode * > & children,
     const CMath::Variables< CEvaluationNode * > & variables,
-    CMathEventN::CTrigger::CRoot *& pRoot,
+    CMathEventN::CTrigger::CRootProcessor *& pRoot,
     CMathContainer & container)
 {
   CEvaluationNode * pNode = NULL;
@@ -693,7 +772,7 @@ CEvaluationNode * CMathEventN::CTrigger::compileEQ(const CEvaluationNode * pTrig
 CEvaluationNode * CMathEventN::CTrigger::compileNE(const CEvaluationNode * /* pTriggerNode */,
     const std::vector< CEvaluationNode * > & children,
     const CMath::Variables< CEvaluationNode * > & variables,
-    CMathEventN::CTrigger::CRoot *& pRoot,
+    CMathEventN::CTrigger::CRootProcessor *& pRoot,
     CMathContainer & container)
 {
   CEvaluationNode * pNode = NULL;
@@ -722,7 +801,7 @@ CEvaluationNode * CMathEventN::CTrigger::compileNE(const CEvaluationNode * /* pT
 CEvaluationNode * CMathEventN::CTrigger::compileLE(const CEvaluationNode * pTriggerNode,
     const std::vector< CEvaluationNode * > & children,
     const CMath::Variables< CEvaluationNode * > & /* variables */,
-    CMathEventN::CTrigger::CRoot *& pRoot,
+    CMathEventN::CTrigger::CRootProcessor *& pRoot,
     CMathContainer & container)
 {
   CEvaluationNode * pNode = NULL;
@@ -774,7 +853,7 @@ CEvaluationNode * CMathEventN::CTrigger::compileLE(const CEvaluationNode * pTrig
 CEvaluationNode * CMathEventN::CTrigger::compileNOT(const CEvaluationNode * /* pTriggerNode */,
     const std::vector< CEvaluationNode * > & children,
     const CMath::Variables< CEvaluationNode * > & /* variables */,
-    CMathEventN::CTrigger::CRoot *& /* pRoot */,
+    CMathEventN::CTrigger::CRootProcessor *& /* pRoot */,
     CMathContainer & /* container */)
 {
   CEvaluationNode * pNode = NULL;
@@ -789,7 +868,7 @@ CEvaluationNode * CMathEventN::CTrigger::compileNOT(const CEvaluationNode * /* p
 CEvaluationNode * CMathEventN::CTrigger::compileFUNCTION(const CEvaluationNode * pTriggerNode,
     const std::vector< CEvaluationNode * > & children,
     const CMath::Variables< CEvaluationNode * > & /* variables */,
-    CMathEventN::CTrigger::CRoot *& pRoot,
+    CMathEventN::CTrigger::CRootProcessor *& pRoot,
     CMathContainer & container)
 {
   const CEvaluationNode * pCalledNode =
@@ -813,7 +892,7 @@ CEvaluationNode * CMathEventN::CTrigger::compileFUNCTION(const CEvaluationNode *
 CEvaluationNode * CMathEventN::CTrigger::compileVARIABLE(const CEvaluationNode * pTriggerNode,
     const std::vector< CEvaluationNode * > & /* children */,
     const CMath::Variables< CEvaluationNode * > & variables,
-    CMathEventN::CTrigger::CRoot *& /* pRoot */,
+    CMathEventN::CTrigger::CRootProcessor *& /* pRoot */,
     CMathContainer & /* container */)
 {
   // We need to mimic the process in CMathContainer::copyBranch;
@@ -1150,6 +1229,7 @@ void CMathEvent::fire(const C_FLOAT64 & time,
   switch (mType)
     {
       case CEvent::Assignment:
+
         for (; itAssignment != endAssignment; ++itAssignment)
           {
             // We must delay the calculation of the new target value

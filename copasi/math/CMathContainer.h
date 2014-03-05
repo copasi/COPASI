@@ -199,6 +199,29 @@ public:
   void calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives);
 
   /**
+   * Process events scheduled at the given which a are checked for
+   * equality or not
+   * @param const bool & equality
+   * @return bool stateChanged
+   */
+  bool processQueue(const bool & equality);
+
+  /**
+   * Check whether the roots which have value 1 lead to firing of
+   * events and schedule them if needed.
+   * @param const bool & equality
+   * @param const CVector< C_INT > & roots
+   */
+  void processRoots(const bool & equality,
+                    const CVector< C_INT > & roots);
+
+  /**
+   * Retrieve the next execution time scheduled in the process queue
+   * @return C_FLOAT64 processQueueExecutionTime
+   */
+  C_FLOAT64 getProcessQueueExecutionTime() const;
+
+  /**
    * Fetch the initial state from the associated model
    */
   void fetchInitialState();
@@ -707,13 +730,6 @@ private:
   CObjectInterface::ObjectSet mSimulationRequiredValues;
 
   /**
-   * The objects which are required to be up to date for simulation of the reduced model,
-   * i.e., the right hand side of ODEs, rates of independent species determined by reaction,
-   * and event roots.
-   */
-  // CObjectInterface::ObjectSet mSimulationRequiredValuesReduced;
-
-  /**
    * A vector containing all math objects.
    */
   CVector< CMathObject > mObjects;
@@ -733,6 +749,11 @@ private:
    * continuously or only during discrete event processing.
    */
   CVector< bool > mRootIsDiscrete;
+
+  /**
+   * A vector of pointers to all objects values CMathEventN::CTrigger::CRootProcessor
+   */
+  CVector< CMathEventN::CTrigger::CRootProcessor * > mRootProcessor;
 
   /**
    * Structure of pointers used for creating discontinuities.
