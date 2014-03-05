@@ -172,6 +172,11 @@ private:
   size_t mRecordedSteps;
 
   /**
+   * The number of variables exposed
+   */
+  size_t mNumVariables;
+
+  /**
    * Iterator pointing the next step (row) to be recorded
    */
   C_FLOAT64 * mpIt;
@@ -182,9 +187,9 @@ private:
   C_FLOAT64 * mpEnd;
 
   /**
-   * A reference to the state of the math container
+   * A reference to the values of the math container
    */
-  CVectorCore< C_FLOAT64 > mContainerState;
+  CVectorCore< C_FLOAT64 > mContainerValues;
 
   /**
    * Vector of column titles.

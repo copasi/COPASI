@@ -790,6 +790,16 @@ const size_t & CMathContainer::getCountDependentSpecies() const
   return mDependentCount;
 }
 
+const size_t & CMathContainer::getCountAssignments() const
+{
+  return mAssignmentCount;
+}
+
+const size_t & CMathContainer::getCountFixed() const
+{
+  return mFixedCount;
+}
+
 const size_t & CMathContainer::getTimeIndex() const
 {
   return mEventTargetCount;

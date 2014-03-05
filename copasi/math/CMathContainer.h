@@ -284,6 +284,18 @@ public:
   const size_t & getCountDependentSpecies() const;
 
   /**
+   * Retrieve the count of assignments
+   * @return const size_t & countDependentSpecies
+   */
+  const size_t & getCountAssignments() const;
+
+  /**
+   * Retrieve the count of fixed values, i.e., parameters
+   * @return const size_t & countDependentSpecies
+   */
+  const size_t & getCountFixed() const;
+
+  /**
    * Retrieve the index in the state of the time variable
    * @return const size_t & timeIndex
    */

@@ -43,9 +43,10 @@ CTimeSeries::CTimeSeries():
   CMatrix< C_FLOAT64 >(),
   mAllocatedSteps(0),
   mRecordedSteps(0),
+  mNumVariables(0),
   mpIt(mArray),
   mpEnd(mArray + size()),
-  mContainerState(),
+  mContainerValues(),
   mTitles(),
   mCompartment(),
   mPivot(),
@@ -58,16 +59,17 @@ CTimeSeries::CTimeSeries(const CTimeSeries & src):
   CMatrix< C_FLOAT64 >(src),
   mAllocatedSteps(src.mAllocatedSteps),
   mRecordedSteps(src.mRecordedSteps),
+  mNumVariables(src.mNumVariables),
   mpIt(mArray + mRecordedSteps * mCols),
   mpEnd(mArray + size()),
-  mContainerState(),
+  mContainerValues(),
   mTitles(src.mTitles),
   mCompartment(src.mCompartment),
   mPivot(src.mPivot),
   mKeys(src.mKeys),
   mNumberToQuantityFactor(src.mNumberToQuantityFactor)
 {
-  mContainerState.initialize(src.mContainerState);
+  mContainerValues.initialize(src.mContainerValues);
 }
 
 CTimeSeries::~CTimeSeries()
@@ -102,6 +104,7 @@ void CTimeSeries::clear()
   CMatrix< C_FLOAT64 >::resize(0, 0);
   mAllocatedSteps = mRows;
   mRecordedSteps = 0;
+  mNumVariables = 0;
   mpIt = mArray;
   mpEnd = mArray + size();
   mTitles.clear();
@@ -126,47 +129,57 @@ bool CTimeSeries::compile(std::vector< CCopasiContainer * > listOfContainer,
 
   assert(pContainer != NULL);
 
-  mContainerState.initialize(pContainer->getState());
+  // We store all extensive values of the system.
+  size_t Time = 0;
+  size_t Reaction = Time + 1;
+  size_t ODE = Reaction + pContainer->getCountIndependentSpecies() + pContainer->getCountDependentSpecies();
+  size_t EventTarget = ODE + pContainer->getCountODEs();
+  size_t Assignment = EventTarget + pContainer->getCountFixedEventTargets();
+  size_t Fixed = Assignment + pContainer->getCountAssignments();
+  size_t i, imax = Fixed + pContainer->getCountFixed();
 
-  // We store all variables of the system.
-  const CMathObject * pFirstObject = pContainer->getMathObject(mContainerState.array());
+  mContainerValues.initialize(imax, const_cast< C_FLOAT64 * >(pContainer->getState().array()) - pContainer->getCountFixed());
+
+  const CMathObject * pFirstObject = pContainer->getMathObject(mContainerValues.array());
   const CMathObject * pObject = pFirstObject;
-  const CMathObject * pObjectEnd = pObject + mContainerState.size();
-
-  size_t i, imax = mContainerState.size();
-
-  CMatrix< C_FLOAT64 >::resize(mAllocatedSteps + 1, imax);
+  const CMathObject * pObjectEnd = pObject + imax;
 
   mObjects.clear();
+
+  CMatrix< C_FLOAT64 >::resize(mAllocatedSteps + 1, imax);
 
   mPivot.resize(imax);
   mTitles.resize(imax);
   mCompartment.resize(imax);
   mKeys.resize(imax);
+  mCompartment = C_INVALID_INDEX;
 
   mRecordedSteps = 0;
+  mNumVariables = Fixed;
   mpIt = mArray;
   mpEnd = mArray + size();
-  mCompartment = C_INVALID_INDEX;
 
   mNumberToQuantityFactor = pContainer->getModel().getNumber2QuantityFactor();
 
   const CMetab * pMetab;
 
-  size_t Reaction = 1;
-  size_t ODE = Reaction + pContainer->getCountIndependentSpecies() + pContainer->getCountDependentSpecies();
-  size_t EventTarget = ODE + pContainer->getCountODEs();
-
   for (i = 0; pObject != pObjectEnd; ++i, ++pObject)
     {
       switch (pObject->getSimulationType())
         {
+          case CMath::Fixed:
+            mPivot[Fixed++] = i;
+
+            // We do not expose Fixed values we keep them for internal calculations.
+            continue;
+            break;
+
           case CMath::EventTarget:
             mPivot[EventTarget++] = i;
             break;
 
           case CMath::Time:
-            mPivot[0] = i;
+            mPivot[Time++] = i;
             break;
 
           case CMath::ODE:
@@ -177,6 +190,10 @@ bool CTimeSeries::compile(std::vector< CCopasiContainer * > listOfContainer,
           case CMath::Dependent:
             mPivot[Reaction++] = i;
             break;
+
+          case CMath::Assignment:
+            mPivot[Assignment++] = i;
+            break;
         }
 
       if ((pMetab = dynamic_cast< const CMetab *>(pObject->getDataObject()->getObjectParent())) != NULL)
@@ -184,13 +201,16 @@ bool CTimeSeries::compile(std::vector< CCopasiContainer * > listOfContainer,
           mTitles[i] = CMetabNameInterface::getDisplayName(&pContainer->getModel(), *pMetab, false);
           mCompartment[i] = pContainer->getMathObject(pMetab->getCompartment()->getValueReference()) - pFirstObject;
         }
+      else if (dynamic_cast< const CModel *>(pObject->getDataObject()->getObjectParent()) != NULL)
+        {
+          mTitles[i] = "Time";
+        }
       else
         {
           mTitles[i] = pObject->getDataObject()->getObjectParent()->getObjectDisplayName();
         }
 
       mKeys[i] = pObject->getDataObject()->getObjectParent()->getKey();
-
       mObjects.insert(pObject);
     }
 
@@ -211,7 +231,7 @@ void CTimeSeries::output(const COutputInterface::Activity & activity)
 
   if (mpIt != mpEnd)
     {
-      memcpy(mpIt, mContainerState.array(), mCols * sizeof(C_FLOAT64));
+      memcpy(mpIt, mContainerValues.array(), mCols * sizeof(C_FLOAT64));
       mpIt += mCols;
       mRecordedSteps++;
     }
@@ -248,12 +268,12 @@ const size_t & CTimeSeries::getRecordedSteps() const
 {return mRecordedSteps;}
 
 const size_t & CTimeSeries::getNumVariables() const
-{return mCols;}
+{return mNumVariables;}
 
 const C_FLOAT64 & CTimeSeries::getData(const size_t & step,
                                        const size_t & var) const
 {
-  if (step < mRecordedSteps && var < mCols)
+  if (step < mRecordedSteps && var < mNumVariables)
     return *(mArray + step * mCols + mPivot[var]);
 
   return mDummyFloat;
@@ -262,7 +282,7 @@ const C_FLOAT64 & CTimeSeries::getData(const size_t & step,
 C_FLOAT64 CTimeSeries::getConcentrationData(const size_t & step,
     const size_t & var) const
 {
-  if (step < mRecordedSteps && var < mCols)
+  if (step < mRecordedSteps && var < mNumVariables)
     {
       const size_t & Col = mPivot[var];
 
@@ -277,7 +297,7 @@ C_FLOAT64 CTimeSeries::getConcentrationData(const size_t & step,
 
 const std::string & CTimeSeries::getTitle(const size_t & var) const
 {
-  if (var < mCols)
+  if (var < mNumVariables)
     return mTitles[mPivot[var]];
 
   return mDummyString;
@@ -285,7 +305,7 @@ const std::string & CTimeSeries::getTitle(const size_t & var) const
 
 const std::string & CTimeSeries::getKey(const size_t & var) const
 {
-  if (var < mCols)
+  if (var < mNumVariables)
     return mKeys[mPivot[var]];
 
   return mDummyString;
