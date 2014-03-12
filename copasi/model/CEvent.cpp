@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -450,12 +450,6 @@ bool CEvent::setObjectParent(const CCopasiContainer * pParent)
     }
 
   bool success = CCopasiContainer::setObjectParent(pParent);
-
-  //CCopasiContainer * pMathContainer = getObjectAncestor("CMathContainer");
-  {
-    mpModel = NULL;
-    return success;
-  }
 
   mpModel = static_cast<CModel *>(getObjectAncestor("Model"));
 
