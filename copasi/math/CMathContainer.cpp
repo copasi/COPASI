@@ -1764,12 +1764,24 @@ bool CMathContainer::processQueue(const bool & equality)
 }
 
 void CMathContainer::processRoots(const bool & equality,
-                                  const CVector< C_INT > & roots)
+                                  const CVector< C_INT > & rootsFound)
 {
+  // Calculate the trigger values and store them before the root processors
+  // are changing the state
+  CMathObject * pTrigger = getMathObject(mEventTriggers.array());
+  CMathObject * pTriggerEnd = pTrigger + mEventTriggers.size();
+
+  for (; pTrigger != pTriggerEnd; ++pTrigger)
+    {
+      pTrigger->calculate();
+    }
+
+  CVector< C_FLOAT64 > Before = mEventTriggers;
+
   // Toggle or reevaluate all roots.
   CMathEventN::CTrigger::CRootProcessor ** pRoot = mRootProcessor.array();
   CMathEventN::CTrigger::CRootProcessor ** pRootEnd = pRoot + mRootProcessor.size();
-  const C_INT * pRootFound = roots.array();
+  const C_INT * pRootFound = rootsFound.array();
   C_FLOAT64 & Time = mState[mEventTargetCount];
 
   for (; pRoot != pRootEnd; ++pRoot, ++pRootFound)
@@ -1785,11 +1797,95 @@ void CMathContainer::processRoots(const bool & equality,
         }
     }
 
+  // Calculate the new trigger values
+  pTrigger = getMathObject(mEventTriggers.array());
+
+  for (; pTrigger != pTriggerEnd; ++pTrigger)
+    {
+      pTrigger->calculate();
+    }
+
   // Find out which events fire and add them to the process queue
-  // TODO CRITICAL Implement me!
+  C_FLOAT64 * pBefore = Before.array();
+  C_FLOAT64 * pAfter = mEventTriggers.array();
+  CMathEventN * pEvent = mEvents.array();
+  CMathEventN * pEventEnd = pEvent + mEvents.size();
+
+  // Compare Before and the current mEventTriggers
+  for (; pEvent != pEventEnd; ++pEvent, ++pBefore, ++pAfter)
+    {
+      if (*pBefore != *pAfter)
+        {
+          // We fire on any change. It is the responsibility of the event to add or remove
+          // actions to the process queue.
+
+          // TODO CRITICAL Implement me!
+          // pEvent->fire();
+        }
+    }
+
   return;
 }
 
+void CMathContainer::processRoots(const CVector< C_INT > & rootsFound)
+{
+  // Calculate the trigger values and store them before the root processors
+  // are changing the state
+  CMathObject * pTrigger = getMathObject(mEventTriggers.array());
+  CMathObject * pTriggerEnd = pTrigger + mEventTriggers.size();
+
+  for (; pTrigger != pTriggerEnd; ++pTrigger)
+    {
+      pTrigger->calculate();
+    }
+
+  CVector< C_FLOAT64 > Before = mEventTriggers;
+
+  // Toggle all found roots.
+  CMathEventN::CTrigger::CRootProcessor ** pRoot = mRootProcessor.array();
+  CMathEventN::CTrigger::CRootProcessor ** pRootEnd = pRoot + mRootProcessor.size();
+  const C_INT * pRootFound = rootsFound.array();
+  C_FLOAT64 & Time = mState[mEventTargetCount];
+
+  for (; pRoot != pRootEnd; ++pRoot, ++pRootFound)
+    {
+      if (pRootFound)
+        {
+          (*pRoot)->toggle(Time);
+        }
+
+      // We must not reevaluate.
+    }
+
+  // Calculate the new trigger values
+  pTrigger = getMathObject(mEventTriggers.array());
+
+  for (; pTrigger != pTriggerEnd; ++pTrigger)
+    {
+      pTrigger->calculate();
+    }
+
+  // Find out which events fire and add them to the process queue
+  C_FLOAT64 * pBefore = Before.array();
+  C_FLOAT64 * pAfter = mEventTriggers.array();
+  CMathEventN * pEvent = mEvents.array();
+  CMathEventN * pEventEnd = pEvent + mEvents.size();
+
+  // Compare Before and the current mEventTriggers
+  for (; pEvent != pEventEnd; ++pEvent, ++pBefore, ++pAfter)
+    {
+      if (*pBefore != *pAfter)
+        {
+          // We fire on any change. It is the responsibility of the event to add or remove
+          // actions to the process queue.
+
+          // TODO CRITICAL Implement me!
+          // pEvent->fire();
+        }
+    }
+
+  return;
+}
 C_FLOAT64 CMathContainer::getProcessQueueExecutionTime() const
 {
   // TODO CRITICAL Implement me

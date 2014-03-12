@@ -210,10 +210,17 @@ public:
    * Check whether the roots which have value 1 lead to firing of
    * events and schedule them if needed.
    * @param const bool & equality
-   * @param const CVector< C_INT > & roots
+   * @param const CVector< C_INT > & rootsFound
    */
   void processRoots(const bool & equality,
-                    const CVector< C_INT > & roots);
+                    const CVector< C_INT > & rootsFound);
+
+  /**
+   * Check whether the roots which have value 1 lead to firing of
+   * events and schedule them if needed.
+   * @param const CVector< C_INT > & rootsFound
+   */
+  void processRoots(const CVector< C_INT > & rootsFound);
 
   /**
    * Retrieve the next execution time scheduled in the process queue

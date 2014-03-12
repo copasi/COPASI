@@ -3309,7 +3309,7 @@ bool CModel::convert2NonReversible()
         reac1->compile();
         reac2->compile();
 
-        // TODO CRITICAL BUG 1848. We need to replace all references to the flux and particle flux
+        // BUG 1848. We need to replace all references to the flux and particle flux
         // with the difference of the forward and backward reaction fluxes and particle fluxes, i.e,
         // flux = forward.flux - backward.flux
 
