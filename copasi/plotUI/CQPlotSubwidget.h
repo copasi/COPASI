@@ -1,7 +1,7 @@
-﻿// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #ifndef CQPlotSubwidget_H
 #define CQPlotSubwidget_H
