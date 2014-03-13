@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -88,6 +88,7 @@ CCellDesignerImporter::CCellDesignerImporter(SBMLDocument* pDocument):
   mpLocalRenderInfo(NULL)
 {
   setlocale(LC_ALL, "C");
+
   if (this->mpDocument != NULL &&
       this->mpDocument->getModel() != NULL &&
       this->mpDocument->getModel()->getAnnotation() != NULL)
@@ -3798,7 +3799,7 @@ bool CCellDesignerImporter::parseProteins(const XMLNode* pNode)
                 {
                   std::string type = pChild->getAttributes().getValue("type");
                   assert(!type.empty());
-                  std::transform(type.begin(), type.end(), type.begin(), toupper);
+                  std::transform(type.begin(), type.end(), type.begin(), ::toupper);
 
                   if (type != "GENERIC")
                     {
@@ -4405,7 +4406,7 @@ bool CCellDesignerImporter::parseReactionAnnotation(const XMLNode* pNode, Reacti
  */
 REACTION_TYPE CCellDesignerImporter::reactionTypeToEnum(std::string s)
 {
-  std::transform(s.begin(), s.end(), s.begin(), toupper);
+  std::transform(s.begin(), s.end(), s.begin(), ::toupper);
   REACTION_TYPE result = UNDEFINED_RTYPE;
 
   if (s == "STATE_TRANSITION")
@@ -4486,7 +4487,7 @@ REACTION_TYPE CCellDesignerImporter::reactionTypeToEnum(std::string s)
  */
 MODIFICATION_LINK_TYPE CCellDesignerImporter::modificationLinkTypeToEnum(std::string s)
 {
-  std::transform(s.begin(), s.end(), s.begin(), toupper);
+  std::transform(s.begin(), s.end(), s.begin(), ::toupper);
   MODIFICATION_LINK_TYPE result = UNDEFINED_ML_TYPE;
 
   if (s == "CATALYSIS")
@@ -4567,7 +4568,7 @@ MODIFICATION_LINK_TYPE CCellDesignerImporter::modificationLinkTypeToEnum(std::st
  */
 MODIFICATION_TYPE CCellDesignerImporter::modificationTypeToEnum(std::string s)
 {
-  std::transform(s.begin(), s.end(), s.begin(), toupper);
+  std::transform(s.begin(), s.end(), s.begin(), ::toupper);
   MODIFICATION_TYPE result = UNDEFINED_MTYPE;
 
   if (s == "CATALYSIS")
@@ -4628,7 +4629,7 @@ MODIFICATION_TYPE CCellDesignerImporter::modificationTypeToEnum(std::string s)
  */
 POSITION_TO_COMPARTMENT CCellDesignerImporter::positionToCompartmentToEnum(std::string s)
 {
-  std::transform(s.begin(), s.end(), s.begin(), toupper);
+  std::transform(s.begin(), s.end(), s.begin(), ::toupper);
   POSITION_TO_COMPARTMENT result = UNDEFINED_POSITION;
 
   if (s == "OUTER_SURFACE")
@@ -4661,7 +4662,7 @@ POSITION_TO_COMPARTMENT CCellDesignerImporter::positionToCompartmentToEnum(std::
  */
 CONNECTION_POLICY CCellDesignerImporter::connectionPolicyToEnum(std::string s)
 {
-  std::transform(s.begin(), s.end(), s.begin(), toupper);
+  std::transform(s.begin(), s.end(), s.begin(), ::toupper);
   CONNECTION_POLICY result = POLICY_UNDEFINED;
 
   if (s == "DIRECT")
@@ -4682,7 +4683,7 @@ CONNECTION_POLICY CCellDesignerImporter::connectionPolicyToEnum(std::string s)
  */
 DIRECTION_VALUE CCellDesignerImporter::directionToEnum(std::string s)
 {
-  std::transform(s.begin(), s.end(), s.begin(), toupper);
+  std::transform(s.begin(), s.end(), s.begin(), ::toupper);
   DIRECTION_VALUE result = DIRECTION_UNDEFINED;
 
   if (s == "UNKNOWN")
@@ -4706,7 +4707,7 @@ DIRECTION_VALUE CCellDesignerImporter::directionToEnum(std::string s)
  */
 POSITION CCellDesignerImporter::positionToEnum(std::string pos)
 {
-  std::transform(pos.begin(), pos.end(), pos.begin(), toupper);
+  std::transform(pos.begin(), pos.end(), pos.begin(), ::toupper);
   POSITION position = POSITION_UNDEFINED;
 
   if (pos == "N")
@@ -4784,7 +4785,7 @@ POSITION CCellDesignerImporter::positionToEnum(std::string pos)
 PAINT_SCHEME CCellDesignerImporter::paintSchemeToEnum(std::string s)
 {
   PAINT_SCHEME result = PAINT_UNDEFINED;
-  std::transform(s.begin(), s.end(), s.begin(), toupper);
+  std::transform(s.begin(), s.end(), s.begin(), ::toupper);
 
   if (s == "COLOR")
     {
@@ -4804,7 +4805,7 @@ PAINT_SCHEME CCellDesignerImporter::paintSchemeToEnum(std::string s)
  */
 SPECIES_CLASS CCellDesignerImporter::classToEnum(std::string cl)
 {
-  std::transform(cl.begin(), cl.end(), cl.begin(), toupper);
+  std::transform(cl.begin(), cl.end(), cl.begin(), ::toupper);
   SPECIES_CLASS result = UNDEFINED_CLASS;
 
   if (cl == "ION")
@@ -5074,7 +5075,7 @@ bool CCellDesignerImporter::parseLine(const XMLNode* pNode, Line& line)
           if (attr.hasAttribute("type"))
             {
               s = attr.getValue("type");
-              std::transform(s.begin(), s.end(), s.begin(), toupper);
+              std::transform(s.begin(), s.end(), s.begin(), ::toupper);
 
               if (s == "CURVE")
                 {
@@ -6550,7 +6551,7 @@ bool CCellDesignerImporter::parsePaint(const XMLNode* pNode, Paint& p)
           // we convert the string to upper
           // and add the # in front and we
           // convert the aRGB to RGBa
-          std::transform(p.mColor.begin(), p.mColor.end(), p.mColor.begin(), toupper);
+          std::transform(p.mColor.begin(), p.mColor.end(), p.mColor.begin(), ::toupper);
           p.mColor = "#" + p.mColor.substr(2) + p.mColor.substr(0, 2);
           p.mScheme = CCellDesignerImporter::paintSchemeToEnum(attr.getValue("scheme"));
 
@@ -10396,7 +10397,7 @@ double CCellDesignerImporter::determineVersion(const XMLNode* pNode)
  */
 SPECIES_MODIFICATION_TYPE CCellDesignerImporter::speciesModificationTypeToEnum(std::string cl)
 {
-  std::transform(cl.begin(), cl.end(), cl.begin(), toupper);
+  std::transform(cl.begin(), cl.end(), cl.begin(), ::toupper);
   SPECIES_MODIFICATION_TYPE result = UNDEFINED_MOD_TYPE;
 
   if (cl == "PHOSPHORYLATED")

@@ -16,7 +16,7 @@
  *  CReportDefinition class.
  *  This class describes the Report Definition
  *
- *  Created for Copasi by Mudita Singhal
+ *  Created for COPASI by Mudita Singhal
  */
 
 #include "copasi.h"
@@ -54,7 +54,11 @@ CReportDefinition::CReportDefinition(const CReportDefinition & src,
   mSeparator(src.mSeparator),
   mTable(src.mTable),
   mbTitle(src.mbTitle),
-  mPrecision(src.mPrecision)
+  mPrecision(src.mPrecision),
+  mHeaderVector(src.mHeaderVector),
+  mBodyVector(src.mBodyVector),
+  mFooterVector(src.mFooterVector),
+  mTableVector(src.mTableVector)
 {}
 
 CReportDefinition::~CReportDefinition()

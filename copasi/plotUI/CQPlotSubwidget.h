@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -131,6 +131,11 @@ protected slots:
    * deletes the current plot spec.
    */
   void deletePlot();
+
+  /**
+   * copy a plot definition
+   */
+  void copyPlot();
 
   /**
    * create a new plot definition

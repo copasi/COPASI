@@ -7,6 +7,8 @@
 
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using org.COPASI;
 using System.Diagnostics;
 
@@ -122,8 +124,8 @@ class example6
         // open the file
         // we need to remember in which order the variables are written to file
         // since we need to specify this later in the parameter fitting task
-        System.Collections.Generic.HashSet<uint> indexSet=new System.Collections.Generic.HashSet<uint>(); 
-        System.Collections.Generic.List<CMetab> metabVector=new System.Collections.Generic.List<CMetab>(); 
+        List<uint> indexSet=new List<uint>(); 
+        List<CMetab> metabVector=new List<CMetab>(); 
 
         // write the header
         // the first variable in a time series is a always time, for the rest

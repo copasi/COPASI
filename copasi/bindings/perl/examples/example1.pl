@@ -15,9 +15,9 @@ unless(defined($model)){warn "Assertion failed";die;}
 # we want seconds as the time unit
 # microliter as the volume units
 # and nanomole as the substance units
-$model->setTimeUnit($COPASI::CModel::s);
-$model->setVolumeUnit($COPASI::CModel::microl);
-$model->setQuantityUnit($COPASI::CModel::nMol);
+$model->setTimeUnit($COPASI::CUnit::s);
+$model->setVolumeUnit($COPASI::CUnit::microl);
+$model->setQuantityUnit($COPASI::CUnit::nMol);
 
 # we have to keep a set of all the initial values that are changed during
 # the model building process

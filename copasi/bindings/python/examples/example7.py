@@ -1,21 +1,16 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example7.py,v $ 
-#   $Revision: 1.3 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2012/03/05 18:09:32 $ 
-# End CVS Header 
-
-# Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
 # All rights reserved. 
+
+
+
 
 #
 # This is an example on how to create user defined kinetic functions with the COPASI API
@@ -36,9 +31,9 @@ def main():
      # we want seconds as the time unit
      # microliter as the volume units
      # and nanomole as the substance units
-     model.setTimeUnit(CModel.s)
-     model.setVolumeUnit(CModel.microl)
-     model.setQuantityUnit(CModel.nMol)
+     model.setTimeUnit(CUnit.s)
+     model.setVolumeUnit(CUnit.microl)
+     model.setQuantityUnit(CUnit.nMol)
 
      # we have to keep a set of all the initial values that are changed during
      # the model building process

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -21,8 +21,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>457</width>
-    <height>471</height>
+    <width>455</width>
+    <height>469</height>
    </rect>
   </property>
   <property name="caption" stdset="0">
@@ -475,6 +475,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="mpBtnCopyReport">
+       <property name="text">
+        <string>Copy</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="mpBtnNewReport">
        <property name="text">
         <string>&amp;New</string>
@@ -531,8 +538,8 @@
    <slot>nameChanged(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>95</x>
+     <y>38</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -547,8 +554,8 @@
    <slot>taskChanged(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>302</x>
+     <y>38</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -563,8 +570,8 @@
    <slot>separatorChanged(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>96</x>
+     <y>155</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -579,8 +586,8 @@
    <slot>precisionChanged(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>362</x>
+     <y>155</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -595,8 +602,8 @@
    <slot>chkTabClicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>234</x>
+     <y>154</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -611,8 +618,8 @@
    <slot>chkTitleClicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>28</x>
+     <y>398</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -627,8 +634,8 @@
    <slot>btnAdvancedClicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>28</x>
+     <y>198</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -643,8 +650,8 @@
    <slot>btnItemClicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>28</x>
+     <y>227</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -659,8 +666,8 @@
    <slot>btnSeparatorClicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>28</x>
+     <y>256</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -675,8 +682,8 @@
    <slot>btnTextClicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>28</x>
+     <y>285</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -691,8 +698,8 @@
    <slot>btnDeleteClicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>28</x>
+     <y>314</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -707,8 +714,8 @@
    <slot>btnUpClicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>28</x>
+     <y>343</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -723,8 +730,8 @@
    <slot>btnDownClicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>28</x>
+     <y>372</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -739,8 +746,8 @@
    <slot>btnCommitClicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>27</x>
+     <y>459</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -755,8 +762,8 @@
    <slot>btnRevertClicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>116</x>
+     <y>459</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -771,8 +778,8 @@
    <slot>btnNewReportClicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>295</x>
+     <y>459</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -787,8 +794,8 @@
    <slot>btnDeleteReportClicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>385</x>
+     <y>459</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -796,5 +803,24 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>mpBtnCopyReport</sender>
+   <signal>clicked()</signal>
+   <receiver>CQReportDefinition</receiver>
+   <slot>btnCopyReportClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>227</x>
+     <y>450</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>227</x>
+     <y>234</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>btnCopyReportClicked()</slot>
+ </slots>
 </ui>

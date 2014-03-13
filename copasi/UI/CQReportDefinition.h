@@ -1,19 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.h,v $
-//   $Revision: 1.17 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/17 14:58:05 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #ifndef CQREPORTDEFINITION_H
@@ -68,6 +64,7 @@ private slots:
   void chkTitleClicked();
   void btnDeleteReportClicked();
   void btnNewReportClicked();
+  void btnCopyReportClicked();
   void btnRevertClicked();
   void btnCommitClicked();
 };

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -286,7 +286,11 @@ C_INT32 CReadConfig::initFileBuffer()
   mpBuffer = & mFileBuffer;
 
   // read the configuration file into the configuration buffer
+#ifdef WIN32
+  std::ifstream File(CLocaleString::fromUtf8(mFilename).c_str(), std::ios_base::binary);
+#else
   std::ifstream File(CLocaleString::fromUtf8(mFilename).c_str());
+#endif
 
   if (File.fail())
     CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 2,

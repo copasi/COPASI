@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/examples/example5.py,v $ 
-#   $Revision: 1.3 $ 
-#   $Name:  $ 
-#   $Author: gauges $ 
-#   $Date: 2009/09/01 13:34:10 $ 
-# End CVS Header 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
 # All rights reserved. 
+
+
 
 # 
 # This is an example on how to run an optimization task.
@@ -27,9 +27,9 @@ def main():
    # get the model from the datamodel
    model = dataModel.getModel()
    assert model != None
-   model.setVolumeUnit(CModel.fl)
-   model.setTimeUnit(CModel.s)
-   model.setQuantityUnit(CModel.fMol)
+   model.setVolumeUnit(CUnit.fl)
+   model.setTimeUnit(CUnit.s)
+   model.setQuantityUnit(CUnit.fMol)
    fixedModelValue=model.createModelValue("F")
    assert fixedModelValue != None
    fixedModelValue.setStatus(CModelEntity.FIXED)

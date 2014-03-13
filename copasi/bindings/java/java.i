@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -11,6 +11,9 @@
 // Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
+
+
+
 
 
 
@@ -431,6 +434,10 @@
 		{
 			return DowncastCCopasiTask(cPtr, owner);		    
 		}
+		else if (type.equals("ModelParameterSet"))
+		{
+			return new CModelParameterSet(cPtr, owner);		    
+		}		
 		else
 		{
 			if (System.getenv("COPASI_JAVA_DEBUG") != null)

@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,7 +14,7 @@
 
 CModelParameterSet::CModelParameterSet(const std::string & name,
                                        const CCopasiContainer * pParent):
-  CCopasiContainer(name, pParent),
+  CCopasiContainer(name, pParent, "ModelParameterSet"),
   CModelParameterGroup(NULL, CModelParameter::Set),
   CAnnotation(),
   mKey(CCopasiRootContainer::getKeyFactory()->add("ModelParameterSet", this)),

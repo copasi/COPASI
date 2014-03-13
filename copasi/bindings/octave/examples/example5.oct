@@ -12,9 +12,9 @@ dataModel = CCopasiRootContainer.addDatamodel();
 % get the model from the datamodel
 model = dataModel.getModel();
 %!assert( swig_this(model) != 0);
-model.setVolumeUnit(CModel_fl);
-model.setTimeUnit(CModel_s);
-model.setQuantityUnit(CModel_fMol);
+model.setVolumeUnit(CUnit_fl);
+model.setTimeUnit(CUnit_s);
+model.setQuantityUnit(CUnit_fMol);
 fixedModelValue=model.createModelValue("F");
 %!assert( swig_this(fixedModelValue) != 0);
 fixedModelValue.setStatus(CModelEntity_FIXED);

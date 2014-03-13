@@ -308,7 +308,11 @@ bool CCopasiDataModel::loadModel(const std::string & fileName,
 
   PWD = CDirEntry::dirName(FileName);
 
+#ifdef WIN32
+  std::ifstream File(CLocaleString::fromUtf8(FileName).c_str(), std::ios_base::binary);
+#else
   std::ifstream File(CLocaleString::fromUtf8(FileName).c_str());
+#endif
 
   if (File.fail())
     {

@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -746,17 +746,51 @@ void CQPlotSubwidget::deletePlot()
 
 //-----------------------------------------------------------------------------
 
+void CQPlotSubwidget::copyPlot()
+{
+  leave();
+
+  CCopasiDataModel* pDataModel = mpObject->getObjectDataModel();
+
+  if (pDataModel == NULL) return;
+
+  CPlotSpecification * pPl = new CPlotSpecification(*dynamic_cast<CPlotSpecification*>(CCopasiRootContainer::getKeyFactory()->get(mKey)));
+
+  std::string baseName = pPl->getObjectName() + "_copy";
+  std::string name = baseName;
+
+  int i = 1;
+
+  while (pDataModel->getPlotDefinitionList()->getIndex(name) != C_INVALID_INDEX)
+    {
+      i++;
+      name = baseName + TO_UTF8(QString::number(i));
+    }
+
+  pPl->setObjectName(name);
+
+  pDataModel->getPlotDefinitionList()->add(pPl, true);
+
+  std::string key = pPl->CCopasiParameter::getKey();
+  protectedNotify(ListViews::PLOT, ListViews::ADD, key);
+  enter(key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+}
+
+//-----------------------------------------------------------------------------
+
 void CQPlotSubwidget::addPlot()
 {
   leave();
+
+  CCopasiDataModel* pDataModel = mpObject->getObjectDataModel();
+
+  if (pDataModel == NULL) return;
 
   std::string name = "plot_";
   int i = 0;
   CPlotSpecification* pPl = NULL;
   name += TO_UTF8(QString::number(i));
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = (*CCopasiRootContainer::getDatamodelList())[0];
-  assert(pDataModel != NULL);
 
   while (!(pPl = pDataModel->getPlotDefinitionList()->createPlotSpec(name, CPlotItem::plot2d)))
     {

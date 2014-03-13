@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "CQReportDefinition.h"
 
@@ -392,6 +392,37 @@ void CQReportDefinition::btnNewReportClicked()
       Name = "report_";
       Name += TO_UTF8(QString::number(i));
     }
+
+  std::string key = pRep->getKey();
+  protectedNotify(ListViews::REPORT, ListViews::ADD, key);
+  enter(key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+}
+
+void CQReportDefinition::btnCopyReportClicked()
+{
+  btnCommitClicked();
+
+  CCopasiDataModel* pDataModel = mpObject->getObjectDataModel();
+
+  if (pDataModel == NULL) return;
+
+  CReportDefinition * pRep = new CReportDefinition(*dynamic_cast<CReportDefinition*>(CCopasiRootContainer::getKeyFactory()->get(mKey)));
+
+  std::string baseName = pRep->getObjectName() + "_copy";
+  std::string name = baseName;
+
+  int i = 1;
+
+  while (pDataModel->getReportDefinitionList()->getIndex(name) != C_INVALID_INDEX)
+    {
+      i++;
+      name = baseName + TO_UTF8(QString::number(i));
+    }
+
+  pRep->setObjectName(name);
+
+  pDataModel->getReportDefinitionList()->add(pRep, true);
 
   std::string key = pRep->getKey();
   protectedNotify(ListViews::REPORT, ListViews::ADD, key);
