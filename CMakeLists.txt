@@ -353,8 +353,10 @@ endif(ENABLE_COPASI_SEDML)
 
 option(ENABLE_MML "Enable the MML widget" ON)
 
+if(ENABLE_MML)
 find_package(QtMmlQt4 REQUIRED)
 add_definitions(-DHAVE_MML)
+endif(ENABLE_MML)
 
 option (BUILD_SEMANTIC_TESTSUITE "Build the program to run the SBML semantic testsuite." OFF)
 option (BUILD_STEADY_STATE_RUNNER "Build the program to run the comparisons on steady state results." OFF)
