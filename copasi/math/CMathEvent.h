@@ -49,7 +49,11 @@ public:
 
     void setTarget(CMathObject * pTarget);
 
-    void setExpression(CMathObject * pExpression);
+    const CMathObject * getTarget() const;
+
+    void setAssignment(CMathObject * pAssignment);
+
+    const CMathObject * getAssignment() const;
 
   private:
     CMathObject * mpTarget;
@@ -261,7 +265,22 @@ public:
   bool compile(CEvent * pDataEvent,
                CMathContainer & container);
 
-  bool compile(CMathContainer & container);
+  /**
+   * Create the update sequences required for event processing.
+   */
+  void createUpdateSequences();
+
+  /**
+   * Retrieve the assignment values
+   * @param CVector< C_FLOAT64 > & values
+   */
+  void getAssignmentValues(CVector< C_FLOAT64 > &values) const;
+
+  /**
+   * Set the targets to the given values
+   * @param const CVector< C_FLOAT64 > & values
+   */
+  void setTargetValues(const CVector< C_FLOAT64 > values);
 
   /**
    * Set the trigger expression
@@ -295,14 +314,72 @@ public:
 
   const CVector< CAssignment > & getAssignments() const;
 
+  const CMathObject * getPriority() const;
+
+  C_FLOAT64 getCalculationTime() const;
+
+  C_FLOAT64 getAssignmentTime() const;
+
 private:
+  /**
+   * A pointer to the math container the event queue belongs to.
+   */
+  CMathContainer * mpContainer;
+
+  /**
+   * A pointer to the current container time
+   */
+  const C_FLOAT64 * mpTime;
+
+  /**
+   * The type of the event.
+   */
   CEvent::Type mType;
+
+  /**
+   * The trigger expression.
+   */
   CTrigger mTrigger;
+
+  /**
+   * The assignments.
+   */
   CVector< CAssignment > mAssignments;
+
+  /**
+   * A pointer to the delay object.
+   */
   CMathObject * mpDelay;
+
+  /**
+   * A pointer to the priority object.
+   */
   CMathObject * mpPriority;
+
+  /**
+   * The update sequence executed prior to creating calculation actions.
+   */
+  CObjectInterface::UpdateSequence mCreateCalculationActionSequence;
+
+  /**
+   * The update sequence executed prior to creating assignment actions.
+   */
+  CObjectInterface::UpdateSequence mCreateAssignmentsActionSequence;
+
+  /**
+   * A Boolean flag indicating whether the event may fire at the initial time.
+   */
   bool mFireAtInitialTime;
+
+  /**
+   * A Boolean flag indicating whether the trigger expression must remain true between
+   * trigger phase and assignment phase (mPersitenTrigger = false).
+   */
   bool mPersistentTrigger;
+
+  /**
+   * A Boolean flag indicating whether to delay assignment phase or calculation phase.
+   */
   bool mDelayAssignment;
 };
 

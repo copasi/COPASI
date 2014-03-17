@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -146,14 +146,14 @@ public:
   {
     Default = 0x0,
     // This is used to indicate deterministic simulation
-    Deterministic = 0x1,
+    // Deterministic = 0x1,
     // This must be set when using the reduced model
     UseMoieties = 0x2,
     // This updates the total mass of a moiety and must be set
     // at the beginning of the simulation or after events
     UpdateMoieties = 0x4,
     // This is used to indicate stochastic simulation
-    Stochastic = 0x8,
+    // Stochastic = 0x8,
     // Event handling
     EventHandling = 0x10
   };

@@ -64,6 +64,7 @@ CMathContainer::CMathContainer():
   mApplyInitialValuesSequence(),
   mSimulationValuesSequence(),
   mSimulationValuesSequenceReduced(),
+  mEventSimulationValuesSequence(),
   mInitialStateValueExtensive(),
   mInitialStateValueIntensive(),
   mStateValues(),
@@ -128,6 +129,7 @@ CMathContainer::CMathContainer(CModel & model):
   mApplyInitialValuesSequence(),
   mSimulationValuesSequence(),
   mSimulationValuesSequenceReduced(),
+  mEventSimulationValuesSequence(),
   mInitialStateValueExtensive(),
   mInitialStateValueIntensive(),
   mStateValues(),
@@ -536,6 +538,11 @@ void CMathContainer::updateSimulatedValues(const bool & useMoieties)
     }
 }
 
+void CMathContainer::updateEventSimulatedValues()
+{
+  applyUpdateSequence(mEventSimulationValuesSequence);
+}
+
 void CMathContainer::applyUpdateSequence(const CObjectInterface::UpdateSequence & updateSequence)
 {
   UpdateSequence::const_iterator it = updateSequence.begin();
@@ -751,6 +758,8 @@ void CMathContainer::init()
 
   createDependencyGraphs();
 
+  updateInitialValues(CModelParameter::ParticleNumbers);
+
   mReactions.resize(mFluxes.size());
   CMathReaction * pReaction = mReactions.array();
   CCopasiVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
@@ -766,7 +775,13 @@ void CMathContainer::init()
         }
     }
 
-  updateInitialValues(CModelParameter::ParticleNumbers);
+  CMathEventN * pEvent = mEvents.array();
+  CMathEventN * pEventEnd = pEvent + mEvents.size();
+
+  for (; pEvent != pEventEnd; ++pEvent)
+    {
+      pEvent->createUpdateSequences();
+    }
 
   // TODO We may have unused event triggers and roots due to optimization
   // in the discontinuities.
@@ -833,6 +848,11 @@ CVector< CMathReaction > & CMathContainer::getReactions()
 const CVector< CMathReaction > & CMathContainer::getReactions() const
 {
   return mReactions;
+}
+
+const CVector< CMathEventN > & CMathContainer::getEvents() const
+{
+  return mEvents;
 }
 
 CMathDependencyGraph & CMathContainer::getInitialDependencies()
@@ -1348,6 +1368,7 @@ bool CMathContainer::compileEvents()
   bool success = true;
 
   CMathEventN * pItEvent = mEvents.array();
+
   CCopasiVector< CEvent >::const_iterator itEvent = mpModel->getEvents().begin();
   CCopasiVector< CEvent >::const_iterator endEvent = mpModel->getEvents().end();
 
@@ -1356,7 +1377,14 @@ bool CMathContainer::compileEvents()
       success &= pItEvent->compile(*itEvent, *this);
     }
 
-  // Events representing discontinuities are already compiled.
+  // Events representing discontinuities.
+  itEvent = mDiscontinuityEvents.begin();
+  endEvent = mDiscontinuityEvents.end();
+
+  for (; itEvent != endEvent; ++pItEvent, ++itEvent)
+    {
+      success &= pItEvent->compile(*itEvent, *this);
+    }
 
   return success;
 }
@@ -1589,6 +1617,37 @@ void CMathContainer::createUpdateSimulationValuesSequence()
   // Build the update sequence
   mTransientDependencies.getUpdateSequence(CMath::Default, mStateValues, mSimulationRequiredValues, mSimulationValuesSequence);
   mTransientDependencies.getUpdateSequence(CMath::UseMoieties, mReducedStateValues, mSimulationRequiredValues, mSimulationValuesSequenceReduced);
+}
+
+void CMathContainer::createEventSimulationValuesSequence()
+{
+  // Changed objects are all state values including the fixed event targets
+  CObjectInterface::ObjectSet Changed;
+
+  const CMathObject * pObject = getMathObject(mState.array());
+  const CMathObject * pObjectEnd = pObject + mState.size();
+
+  for (; pObject != pObjectEnd; ++pObject)
+    {
+      Changed.insert(pObject);
+    }
+
+  // Collect all objects required for simulation, which are transient rates values of simulation type:
+  //   ODE, Independent, and Dependent, EventRoots, and additionally the TotalMass of moieties
+  // In other words the simulation required values plus the total mass.
+  CObjectInterface::ObjectSet Requested = mSimulationRequiredValues;
+
+  pObject = getMathObject(mTotalMasses.array());
+  pObjectEnd = pObject + mTotalMasses.size();
+
+  for (; pObject != pObjectEnd; ++pObject)
+    {
+      Requested.insert(pObject);
+    }
+
+  mTransientDependencies.getUpdateSequence(CMath::UpdateMoieties, Changed, Requested, mEventSimulationValuesSequence);
+
+  return;
 }
 
 void CMathContainer::analyzeRoots()

@@ -187,6 +187,11 @@ public:
   void updateSimulatedValues(const bool & useMoieties);
 
   /**
+   * Calculate all values required for simulation based on the current state
+   */
+  void updateEventSimulatedValues();
+
+  /**
    * Apply the given update sequence to the mathematical objects in the container
    * @param const CObjectInterface::UpdateSequence & updateSequence
    */
@@ -342,6 +347,12 @@ public:
    * @return const CVector< CMathReaction > & reactions
    */
   const CVector< CMathReaction > & getReactions() const;
+
+  /**
+   * Retrieve the events
+   * @return const CVector< CMathEventN > & events
+   */
+  const CVector< CMathEventN > & getEvents() const;
 
   /**
    * Retrieve the initial dependencies
@@ -508,6 +519,12 @@ private:
    * Create the update sequences used to calculate all values required for simulation
    */
   void createUpdateSimulationValuesSequence();
+
+  /**
+   * Create the update sequences used to calculate all values required for simulation
+   * after an discrete event
+   */
+  void createEventSimulationValuesSequence();
 
   /**
    * Determine the entity type of an entity
@@ -706,6 +723,13 @@ private:
    * on the assumption that all state values may have changed
    */
   CObjectInterface::UpdateSequence mSimulationValuesSequenceReduced;
+
+  /**
+   * The sequence of updates needed to calculate all simulation required values based
+   * on the assumption that all state values may have changed and the total moieties
+   * may have changed
+   */
+  CObjectInterface::UpdateSequence mEventSimulationValuesSequence;
 
   /**
    * The set of objects which determine the initial state of the model based on extensive

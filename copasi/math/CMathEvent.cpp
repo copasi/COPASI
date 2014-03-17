@@ -75,9 +75,19 @@ void CMathEventN::CAssignment::setTarget(CMathObject * pTarget)
   mpTarget = pTarget;
 }
 
-void CMathEventN::CAssignment::setExpression(CMathObject * pExpression)
+const CMathObject * CMathEventN::CAssignment::getTarget() const
+{
+  return mpTarget;
+}
+
+void CMathEventN::CAssignment::setAssignment(CMathObject * pExpression)
 {
   mpAssignment = pExpression;
+}
+
+const CMathObject * CMathEventN::CAssignment::getAssignment() const
+{
+  return mpAssignment;
 }
 
 CMathEventN::CTrigger::CRootProcessor::CRootProcessor():
@@ -923,11 +933,15 @@ void CMathEventN::allocate(CMathEventN * pEvent,
 }
 
 CMathEventN::CMathEventN():
+  mpContainer(NULL),
+  mpTime(NULL),
   mType(CEvent::Assignment),
   mTrigger(),
   mAssignments(),
   mpDelay(NULL),
   mpPriority(NULL),
+  mCreateCalculationActionSequence(),
+  mCreateAssignmentsActionSequence(),
   mFireAtInitialTime(false),
   mPersistentTrigger(false),
   mDelayAssignment(true)
@@ -997,6 +1011,10 @@ bool CMathEventN::compile(CEvent * pDataEvent,
 {
   bool success = true;
 
+  mpContainer = &container;
+  mpTime = container.getState().array() + container.getTimeIndex();
+
+  mType = pDataEvent->getType();
   mFireAtInitialTime = pDataEvent->getFireAtInitialTime();
   mPersistentTrigger = pDataEvent->getPersistentTrigger();
   mDelayAssignment = pDataEvent->getDelayAssignment();
@@ -1015,7 +1033,6 @@ bool CMathEventN::compile(CEvent * pDataEvent,
     }
 
   std::vector< CCopasiContainer * > ListOfContainer;
-  // ListOfContainer.push_back(const_cast< CMathContainer * >(&container));
 
   // Compile the delay object.
   CExpression DelayExpression("DelayExpression", &container);
@@ -1032,20 +1049,64 @@ bool CMathEventN::compile(CEvent * pDataEvent,
   return success;
 }
 
-bool CMathEventN::compile(CMathContainer & container)
+void CMathEventN::createUpdateSequences()
 {
-  bool success = true;
+  const CObjectInterface::ObjectSet & Changed = mpContainer->getSimulationUpToDateObjects();
 
-  // Compile Trigger
-  success &= mTrigger.compile(NULL, container);
+  if (mDelayAssignment)
+    {
+      mCreateCalculationActionSequence.clear();
+    }
+  else
+    {
+      CObjectInterface::ObjectSet Requested;
+      Requested.insert(mpDelay);
+      mpContainer->getTransientDependencies().getUpdateSequence(CMath::Default, Changed, Requested, mCreateCalculationActionSequence);
+    }
 
-  // Compile assignments.
-  // Nothing to do since the target and expression objects are already compiled
+  CObjectInterface::ObjectSet Requested;
 
-  // The delay object is already compiled.
-  // The priority object is already compiled.
+  if (mDelayAssignment)
+    {
+      Requested.insert(mpDelay);
+    }
 
-  return success;
+  const CAssignment * pAssignment = mAssignments.array();
+
+  const CAssignment * pAssignmentEnd = pAssignment + mAssignments.size();
+
+  for (; pAssignment != pAssignmentEnd; ++pAssignment)
+    {
+      Requested.insert(pAssignment->getAssignment());
+    }
+
+  mpContainer->getTransientDependencies().getUpdateSequence(CMath::Default, Changed, Requested, mCreateAssignmentsActionSequence);
+}
+
+void CMathEventN::getAssignmentValues(CVector< C_FLOAT64 > &values) const
+{
+  values.resize(mAssignments.size());
+
+  const CMathEventN::CAssignment * pAssignment = mAssignments.array();
+  C_FLOAT64 * pValue = values.array();
+  C_FLOAT64 * pValueEnd = pValue + values.size();
+
+  for (; pValue != pValueEnd; ++pValue, ++pAssignment)
+    {
+      *pValue = * (C_FLOAT64 *) pAssignment->getAssignment()->getValuePointer();
+    }
+}
+
+void CMathEventN::setTargetValues(const CVector< C_FLOAT64 > values)
+{
+  CMathEventN::CAssignment * pAssignment = mAssignments.array();
+  const C_FLOAT64 * pValue = values.array();
+  const C_FLOAT64 * pValueEnd = pValue + values.size();
+
+  for (; pValue != pValueEnd; ++pValue, ++pAssignment)
+    {
+      * (C_FLOAT64 *) pAssignment->getTarget()->getValuePointer() = * pValue;
+    }
 }
 
 void CMathEventN::setTriggerExpression(const std::string & infix, CMathContainer & container)
@@ -1074,12 +1135,37 @@ void CMathEventN::addAssignment(CMathObject * pTarget, CMathObject * pExpression
 
   CAssignment & Assignment = mAssignments[OldSize];
   Assignment.setTarget(pTarget);
-  Assignment.setExpression(pExpression);
+  Assignment.setAssignment(pExpression);
 }
 
 const CVector< CMathEventN::CAssignment > & CMathEventN::getAssignments() const
 {
   return mAssignments;
+}
+
+const CMathObject * CMathEventN::getPriority() const
+{
+  return mpPriority;
+}
+
+C_FLOAT64 CMathEventN::getCalculationTime() const
+{
+  if (mDelayAssignment)
+    {
+      return *mpTime;
+    }
+
+  return *mpTime + * (C_FLOAT64 *) mpDelay->getValuePointer();
+}
+
+C_FLOAT64 CMathEventN::getAssignmentTime() const
+{
+  if (mDelayAssignment)
+    {
+      return *mpTime + * (C_FLOAT64 *) mpDelay->getValuePointer();
+    }
+
+  return *mpTime;
 }
 
 CMathEvent::CAssignment::CAssignment(const CCopasiContainer * pParent) :
