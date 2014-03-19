@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-//   $Revision: 1.70 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:12:08 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -32,12 +24,12 @@
 
 CLsodaMethod::CLsodaMethod(const CCopasiMethod::SubType & subType,
                            const CCopasiContainer * pParent):
-    CTrajectoryMethod(subType, pParent),
-    mMethodState(),
-    mY(NULL),
-    mRootMask(),
-    mTargetTime(0.0),
-    mRootCounter(0)
+  CTrajectoryMethod(subType, pParent),
+  mMethodState(),
+  mY(NULL),
+  mRootMask(),
+  mTargetTime(0.0),
+  mRootCounter(0)
 {
   assert((void *) &mData == (void *) &mData.dim);
 
@@ -47,10 +39,10 @@ CLsodaMethod::CLsodaMethod(const CCopasiMethod::SubType & subType,
 
 CLsodaMethod::CLsodaMethod(const CLsodaMethod & src,
                            const CCopasiContainer * pParent):
-    CTrajectoryMethod(src, pParent),
-    mMethodState(),
-    mY(NULL),
-    mRootMask(src.mRootMask)
+  CTrajectoryMethod(src, pParent),
+  mMethodState(),
+  mY(NULL),
+  mRootMask(src.mRootMask)
 {
   assert((void *) &mData == (void *) &mData.dim);
 
@@ -330,6 +322,10 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
                 Status = ROOT;
               }
 
+            // To detect simultaneous roots we have to peek ahead, i.e., continue
+            // integration until the state changes are larger that the relative
+            peekAhead();
+
             // The break statement is intentionally missing since we
             // have to continue to check the root masking state.
           default:
@@ -561,7 +557,6 @@ void CLsodaMethod::EvalJ(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 *
                          const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
 {static_cast<Data *>((void *) n)->pMethod->evalJ(t, y, ml, mu, pd, nRowPD);}
 
-
 // virtual
 void CLsodaMethod::evalJ(const C_FLOAT64 * t, const C_FLOAT64 * y,
                          const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
@@ -621,4 +616,63 @@ void CLsodaMethod::destroyRootMask()
 {
   mRootMask.resize(0);
   mRootMasking = NONE;
+}
+
+void CLsodaMethod::peekAhead()
+{
+  // Save the current state
+  mMethodState.setTime(mTime);
+  CState SavedState = mMethodState;
+  mLSODAR.saveState();
+
+  CVector< C_INT > CombinedRoots = mRoots;
+
+  C_FLOAT64 DeltaT = mTime * *mpRelativeTolerance;
+
+  if (step(DeltaT) == ROOT)
+    {
+
+      // Check whether the new state is within the tolerances
+      C_FLOAT64 * pOld = SavedState.beginIndependent();
+      C_FLOAT64 * pOldEnd = pOld + mData.dim;
+      C_FLOAT64 * pNew = mMethodState.beginIndependent();
+      C_FLOAT64 * pAtol = mAtol.array();
+
+      for (; pOld != pOldEnd; ++pOld, ++pNew, ++pAtol)
+        {
+          if ((2.0 * fabs(*pNew - *pOld) / fabs(*pNew + *pOld) > *mpRelativeTolerance) &&
+              fabs(*pNew) > *pAtol &&
+              fabs(*pOld) > *pAtol)
+            {
+              break;
+            }
+        }
+
+      if (pOld == pOldEnd)
+        {
+          // Save the state
+          SavedState = mMethodState;
+          mLSODAR.saveState();
+
+          // Combine all the roots
+          C_INT * pRoot = mRoots.array();
+          C_INT * pRootEnd = pRoot + mRoots.size();
+          C_INT * pCombinedRoot = CombinedRoots.array();
+
+          for (; pRoot != pRootEnd; ++pRoot, ++pCombinedRoot)
+            {
+              if (pRoot > 0)
+                {
+                  *pCombinedRoot = 1;
+                }
+            }
+        }
+    }
+
+  // Reset the integrator to the saved state
+  mMethodState = SavedState;
+  mTime = mMethodState.getTime();
+  mLSODAR.resetState();
+
+  mRoots = CombinedRoots;
 }

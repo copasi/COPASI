@@ -45,14 +45,10 @@ private:
      * Specific constructor
      * @param const C_FLOAT64 & executionTime
      * @param const bool & equality
-     * @param const size_t & order
-     * @param const size_t & eventId
      * @param const size_t & cascadingLevel
      */
     CKey(const C_FLOAT64 & executionTime,
          const bool & equality,
-         const size_t & order,
-         const size_t & eventId,
          const size_t & cascadingLevel);
 
     /**
@@ -66,12 +62,6 @@ private:
      * @return bool lessThan
      */
     bool operator < (const CKey & rhs) const;
-
-    /**
-     * Retrieve the event id
-     * @return const size_t & eventId
-     */
-    inline const size_t & getEventId() const {return mEventId;}
 
     /**
      * Retrieve the execution time.
@@ -98,22 +88,20 @@ private:
      * Equalities have to be handled prior to inequalities
      */
     bool mEquality;
-
-    /**
-     * The order in which simultaneous event assignments are processed.
-     */
-    size_t mOrder;
-
-    /**
-     * The event Id is used for creating atomic sets of assignments.
-     */
-    size_t mEventId;
   };
 
   friend std::ostream &operator<<(std::ostream &os, const CKey & o);
 
   class CAction
   {
+  public:
+    enum Type
+    {
+      Calculation = 0,
+      Assignment,
+      Callback
+    };
+
     // Operations
   private:
     /**
@@ -130,24 +118,19 @@ private:
 
     /**
      * Specific constructor
-     * @param C_FLOAT64 * pTarget
-     * @param CExpression * pExpression
      * @param CMathEvent * pEvent
+     * @param CProcessQueue * pProcessQueue
      */
-    CAction(C_FLOAT64 * pTarget,
-            const C_FLOAT64 & value,
-            CMathEvent * pEvent,
+    CAction(CMathEvent * pEvent,
             CProcessQueue * pProcessQueue);
 
     /**
      * Specific constructor
-     * @param C_FLOAT64 * pTarget
-     * @param CExpression * pExpression
+     * @param const CVector< C_FLOAT64 > & values
      * @param CMathEvent * pEvent
-     * @param CProcessQueue & processQueue
+     * @param CProcessQueue * pProcessQueue
      */
-    CAction(C_FLOAT64 * pTarget,
-            CExpression * pExpression,
+    CAction(const CVector< C_FLOAT64 > & values,
             CMathEvent * pEvent,
             CProcessQueue * pProcessQueue);
 
@@ -157,10 +140,10 @@ private:
     ~CAction();
 
     /**
-     * Process the entry
-     * @param const size_t & eventId
+     * Process the action
+     * @return bool stateChanged
      */
-    void process(const size_t & eventId);
+    bool process();
 
     /**
      * Retrieve the event id
@@ -168,24 +151,25 @@ private:
      */
     inline CMathEvent * getEvent() const {return mpEvent;}
 
+    /**
+     * Retrieve the type of action
+     * @return const Type & type
+     */
+    const Type & getType() const;
+
     friend std::ostream &operator<<(std::ostream &os, const CAction & o);
 
     // Attributes
   public:
     /**
-     * The target of the execution.
+     * The type of the actions
      */
-    C_FLOAT64 * mpTarget;
+    Type mType;
 
     /**
      * The new value if the entry is an assignment.
      */
-    C_FLOAT64 mValue;
-
-    /**
-     * The expression to be evaluates if the entry is a calculation.
-     */
-    CExpression * mpExpression;
+    CVector< C_FLOAT64 > mValues;
 
     /**
      * The event associated with this action
@@ -205,10 +189,9 @@ private:
 public:
   typedef std::multimap< CKey, CAction >::iterator iterator;
 
-  typedef std::pair < std::multimap< CKey, CAction >::iterator,
-          std::multimap< CKey, CAction >::iterator > range;
+  typedef std::pair < std::multimap< CKey, CAction >::iterator, std::multimap< CKey, CAction >::iterator > range;
 
-  typedef range(*resolveSimultaneousAssignments)(const std::multimap< CKey, CAction > & /* assignments */,
+  typedef iterator(*resolveSimultaneousAssignments)(const std::multimap< CKey, CAction > & /* assignments */,
       const C_FLOAT64 & /* time */,
       const bool & /* equality */,
       const size_t & /* cascadingLevel */);
@@ -239,38 +222,24 @@ public:
    * Add an assignment to the process queue.
    * @param const C_FLOAT64 & executionTime
    * @param const bool & equality
-   * @param const size_t & order
-   * @param const size_t & eventId
-   * @param C_FLOAT64 * pTarget
-   * @param const C_FLOAT64 & value
+   * @param const CVector< C_FLOAT64 > & values
    * @param CMathEvent * pEvent
    * @return bool success
    */
   bool addAssignment(const C_FLOAT64 & executionTime,
                      const bool & equality,
-                     const size_t & order,
-                     const size_t & eventId,
-                     C_FLOAT64 * pTarget,
-                     const C_FLOAT64 & value,
+                     const CVector< C_FLOAT64 > & values,
                      CMathEvent * pEvent);
 
   /**
    * Add a calculation to the process queue.
    * @param const C_FLOAT64 & executionTime
    * @param const bool & equality
-   * @param const size_t & order
-   * @param const size_t & eventId
-   * @param C_FLOAT64 * pTarget
-   * @param CExpression * pExpression
    * @param CMathEvent * pEvent
    * @return bool success
    */
   bool addCalculation(const C_FLOAT64 & executionTime,
                       const bool & equality,
-                      const size_t & order,
-                      const size_t & eventId,
-                      C_FLOAT64 * pTarget,
-                      CExpression * pExpression,
                       CMathEvent * pEvent);
 
   /**
@@ -291,22 +260,10 @@ public:
                resolveSimultaneousAssignments pResolveSimultaneousAssignments);
 
   /**
-   * Create a unique eventId
-   * @return const size_t & eventId;
-   */
-  const size_t & createEventId();
-
-  /**
    * Retrieve the next execution time scheduled in the process queue
    * @return const C_FLOAT64 & processQueueExecutionTime
    */
   const C_FLOAT64 & getProcessQueueExecutionTime() const;
-
-  /**
-   * Checks whether the process queue is empty
-   * @return bool isEmpty
-   */
-  bool isEmpty() const;
 
   /**
    * Set whether to continue on simultaneous events
@@ -347,30 +304,17 @@ private:
   void destroyEventId(const size_t & eventId);
 
   /**
-   * Retrieve the currently pending calculations
-   * @return range calculations
+   * Retrieve the currently pending actions
+   * @return CProcessQueue::iterator itAction
    */
-  range getCalculations();
+  iterator getAction();
 
   /**
-   * Retrieve the currently pending assignments
-   * @return range assignments
+   * Execute the actions
+   * @param CProcessQueue::iterator itAction
+   * @return bool stateChanged
    */
-  range getAssignments();
-
-  /**
-   * Execute the calculations
-   * @param range & calculations
-   * @return bool success
-   */
-  bool executeCalculations(range & calculations);
-
-  /**
-   * Execute the assignments
-   * @param range & assignments
-   * @return bool success
-   */
-  bool executeAssignments(range & assignments);
+  bool executeAction(CProcessQueue::iterator itAction);
 
   /**
    * Check whether the executions of assignment lead to newly found roots
@@ -390,12 +334,7 @@ private:
   /**
    * An ordered list of calculations in the queue.
    */
-  std::multimap< CKey, CAction > mCalculations;
-
-  /**
-   * An ordered list of assignments in the queue.
-   */
-  std::multimap< CKey, CAction > mAssignments;
+  std::multimap< CKey, CAction > mActions;
 
   /**
    * The limit of execution steps allowed for call to process
@@ -425,7 +364,7 @@ private:
   /**
    * A flag indicating that simultaneous assignments have been found.
    */
-  bool mSimultaneousAssignments;
+  bool mSimultaneousAssignmentsFound;
 
   /**
    * A set of currently active event ids

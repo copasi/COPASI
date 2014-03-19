@@ -373,7 +373,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
   while (proceed)
     {
       // TODO Provide a call back method for resolving simultaneous assignments.
-      StateChanged |= pModel->processQueue(*mpCurrentTime, false, NULL);
+      StateChanged = pModel->processQueue(*mpCurrentTime, false, NULL);
 
       if (StateChanged)
         {
@@ -405,10 +405,8 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
               }
 
             // TODO Provide a call back method for resolving simultaneous assignments.
-            StateChanged |= pModel->processQueue(*mpCurrentTime, true, NULL);
+            StateChanged = pModel->processQueue(*mpCurrentTime, true, NULL);
 
-            // If the state change happens to coincide with end of the step we have to return and
-            // inform the integrator of eventual state changes.
             if (fabs(*mpCurrentTime - endTime) < Tolerance)
               {
                 if (StateChanged)
@@ -421,11 +419,17 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
                 return true;
               }
 
-            if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime) &&
-                StateChanged &&
-                mpTrajectoryProblem->getOutputEvent())
+            if (StateChanged)
               {
-                output(COutputInterface::DURING);
+                if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime) &&
+                    mpTrajectoryProblem->getOutputEvent())
+                  {
+                    output(COutputInterface::DURING);
+                  }
+
+                *mpCurrentState = pModel->getState();
+                mpTrajectoryMethod->stateChanged();
+                StateChanged = false;
               }
 
             break;
@@ -444,12 +448,11 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
               }
 
             // TODO Provide a call back method for resolving simultaneous assignments.
-            StateChanged |= pModel->processQueue(*mpCurrentTime, true, NULL);
+            StateChanged = pModel->processQueue(*mpCurrentTime, true, NULL);
 
             pModel->processRoots(*mpCurrentTime, false, true, mpTrajectoryMethod->getRoots());
 
-            // If the root happens to coincide with end of the step we have to return and
-            // inform the integrator of eventual state changes.
+            // If the root happens to coincide with end of the step we have to return
             if (fabs(*mpCurrentTime - endTime) < Tolerance)
               {
                 if (StateChanged)
@@ -463,11 +466,17 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
               }
 
             if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentTime) &&
-                mpTrajectoryProblem->getOutputEvent() &&
-                (StateChanged ||
-                 *mpCurrentTime == pModel->getProcessQueueExecutionTime()))
+                (StateChanged || *mpCurrentTime == pModel->getProcessQueueExecutionTime()) &&
+                mpTrajectoryProblem->getOutputEvent())
               {
                 output(COutputInterface::DURING);
+              }
+
+            if (StateChanged)
+              {
+                *mpCurrentState = pModel->getState();
+                mpTrajectoryMethod->stateChanged();
+                StateChanged = false;
               }
 
             break;
