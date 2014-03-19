@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -366,22 +366,29 @@ public:
             CProcessQueue & processQueue);
 
   /**
+   * Calculate and retrieve the new target values
+   * @return CVector< C_FLOAT64 > targetValues
+   */
+  CVector< C_FLOAT64 > getTargetValues();
+
+  /**
+   * Set the target values
+   * @param const CVector< C_FLOAT64 > & targetValues
+   * @return bool stateChanged
+   */
+  bool setTargetValues(const CVector< C_FLOAT64 > & targetValues);
+
+  /**
+   * Calculate and assign the new target values
+   * @return bool stateChanged
+   */
+  bool executeAssignment();
+
+  /**
    * Apply all needed refreshes so that the delay expression are
    * correctly calculated.
    */
   void applyDelayRefreshes();
-
-  /**
-   * Apply all needed refreshes so that the assignment expressions are
-   * correctly calculated.
-   */
-  void applyValueRefreshes();
-
-  /**
-   * Apply all needed refreshes to update all values depending on the
-   * assignment targets.
-   */
-  void applyDependentRefreshes();
 
   /**
    * Retrieve the trigger for this event.
@@ -394,6 +401,12 @@ public:
    * @return const size_t & order
    */
   const size_t & getOrder() const;
+
+  /**
+   * Check whether to delay the assignment
+   * @return const bool & delayAssignment
+   */
+  const bool & delayAssignment() const;
 
   /**
    * Retrieve the time for calculating the assignment expression
@@ -416,6 +429,18 @@ public:
   const CEvent::Type & getType() const;
 
 private:
+  /**
+   * Apply all needed refreshes so that the assignment expressions are
+   * correctly calculated.
+   */
+  void applyValueRefreshes();
+
+  /**
+   * Apply all needed refreshes to update all values depending on the
+   * assignment targets.
+   */
+  void applyDependentRefreshes();
+
   /**
    * Calculate the time for delays. This accounts for small errors relative
    * to the current time.

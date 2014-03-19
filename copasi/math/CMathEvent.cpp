@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -558,42 +558,42 @@ CEvaluationNode * CMathEventN::CTrigger::compile(const CEvaluationNode * pTrigge
             // already processed
             switch ((int) itNode->getType())
               {
-                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::AND):
-                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::OR):
-                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::XOR):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::AND):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::OR):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::XOR):
                   pNode = compileAND(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::EQ):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::EQ):
                   pNode = compileEQ(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::NE):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::NE):
                   pNode = compileNE(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::LE):
-                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::LT):
-                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::GE):
-                case (CEvaluationNode::LOGICAL | CEvaluationNodeLogical::GT):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::LE):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::LT):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::GE):
+                case(CEvaluationNode::LOGICAL | CEvaluationNodeLogical::GT):
                   pNode = compileLE(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::NOT):
+                case(CEvaluationNode::FUNCTION | CEvaluationNodeFunction::NOT):
                   pNode = compileNOT(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
-                case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+                case(CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
+                case(CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
                   pNode = compileFUNCTION(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case (CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
+                case(CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
                   pNode = compileVARIABLE(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case (CEvaluationNode::CONSTANT | CEvaluationNodeConstant::TRUE):
-                case (CEvaluationNode::CONSTANT | CEvaluationNodeConstant::FALSE):
+                case(CEvaluationNode::CONSTANT | CEvaluationNodeConstant::TRUE):
+                case(CEvaluationNode::CONSTANT | CEvaluationNodeConstant::FALSE):
                 default:
                   pNode = itNode->copyNode(itNode.context());
                   break;
@@ -1138,37 +1138,61 @@ void CMathEvent::fire(const C_FLOAT64 & time,
                       const bool & equality,
                       CProcessQueue & processQueue)
 {
-  size_t EventId = processQueue.createEventId();
+  if (mDelayAssignment)
+    {
+      processQueue.addAssignment(getAssignmentTime(time), equality, getTargetValues(), this);
+    }
+  else
+    {
+      processQueue.addCalculation(getCalculationTime(time), equality, this);
+    }
+}
 
-  // Add each assignment to the calculation queue
+CVector< C_FLOAT64 > CMathEvent::getTargetValues()
+{
+  applyValueRefreshes();
+
+  CVector< C_FLOAT64 > Values(mAssignments.size());
+  C_FLOAT64 * pValue = Values.array();
   CCopasiVector< CAssignment >::iterator itAssignment = mAssignments.begin();
   CCopasiVector< CAssignment >::iterator endAssignment = mAssignments.end();
 
-  // Determine the execution time of the calculation of the event.
-  C_FLOAT64 CalculationTime = getCalculationTime(time);
-
-  switch (mType)
+  for (; itAssignment != endAssignment; ++itAssignment, ++pValue)
     {
-      case CEvent::Assignment:
-        for (; itAssignment != endAssignment; ++itAssignment)
-          {
-            // We must delay the calculation of the new target value
-            processQueue.addCalculation(CalculationTime,
-                                        equality,
-                                        mOrder,
-                                        EventId,
-                                        (*itAssignment)->mpTarget,
-                                        &(*itAssignment)->mExpression,
-                                        this);
-          }
-
-        break;
-
-      case CEvent::CutPlane:
-        processQueue.addCalculation(CalculationTime, equality, mOrder, EventId,
-                                    NULL, NULL, this);
-        break;
+      *pValue = (*itAssignment)->mExpression.calcValue();
     }
+
+  return Values;
+}
+
+bool CMathEvent::setTargetValues(const CVector< C_FLOAT64 > & values)
+{
+  bool StateChanged = false;
+
+  const C_FLOAT64 * pValue = values.array();
+  CCopasiVector< CAssignment >::iterator itAssignment = mAssignments.begin();
+  CCopasiVector< CAssignment >::iterator endAssignment = mAssignments.end();
+
+  for (; itAssignment != endAssignment; ++itAssignment, ++pValue)
+    {
+      if (*(*itAssignment)->mpTarget != *pValue)
+        {
+          StateChanged = true;
+          *(*itAssignment)->mpTarget = *pValue;
+        }
+    }
+
+  if (StateChanged)
+    {
+      applyDependentRefreshes();
+    }
+
+  return StateChanged;
+}
+
+bool CMathEvent::executeAssignment()
+{
+  return setTargetValues(getTargetValues());
 }
 
 void CMathEvent::applyDelayRefreshes()
@@ -1212,6 +1236,11 @@ CMathTrigger & CMathEvent::getMathTrigger()
 const size_t & CMathEvent::getOrder() const
 {
   return mOrder;
+}
+
+const bool & CMathEvent::delayAssignment() const
+{
+  return mDelayAssignment;
 }
 
 C_FLOAT64 CMathEvent::getCalculationTime(const C_FLOAT64 & currentTime)

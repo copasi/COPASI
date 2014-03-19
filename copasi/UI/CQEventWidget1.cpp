@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "CQEventWidget1.h"
 
@@ -280,24 +280,50 @@ void CQEventWidget1::saveToEvent()
       mChanged = true;
     }
 
-  if (mpComboBoxDelay->currentIndex() != 0)
+  switch (mpComboBoxDelay->currentIndex())
     {
-      if (mpEvent->getDelayExpression() != mpExpressionDelay->mpExpressionWidget->getExpression())
-        {
-          mpEvent->setDelayExpression(mpExpressionDelay->mpExpressionWidget->getExpression());
-          mChanged = true;
-        }
+      case 0:
+        mpEvent->setDelayExpression("");
 
-      if (mpComboBoxDelay->currentIndex() == 2)  // Assignment only
-        {
-          mpEvent->setDelayAssignment(true);
-          mChanged = true;
-        }
-    }
-  else if (mpEvent->getDelayExpression() != "")
-    {
-      mpEvent->setDelayExpression("");
-      mChanged = true;
+        if (mpEvent->getDelayAssignment() != false)
+          {
+            mpEvent->setDelayAssignment(false);
+            mChanged = true;
+          }
+
+        break;
+
+      case 1:
+
+        if (mpEvent->getDelayExpression() != mpExpressionDelay->mpExpressionWidget->getExpression())
+          {
+            mpEvent->setDelayExpression(mpExpressionDelay->mpExpressionWidget->getExpression());
+            mChanged = true;
+          }
+
+        if (mpEvent->getDelayAssignment() != false)
+          {
+            mpEvent->setDelayAssignment(false);
+            mChanged = true;
+          }
+
+        break;
+
+      case 2:
+
+        if (mpEvent->getDelayExpression() != mpExpressionDelay->mpExpressionWidget->getExpression())
+          {
+            mpEvent->setDelayExpression(mpExpressionDelay->mpExpressionWidget->getExpression());
+            mChanged = true;
+          }
+
+        if (mpEvent->getDelayAssignment() != true)
+          {
+            mpEvent->setDelayAssignment(true);
+            mChanged = true;
+          }
+
+        break;
     }
 
   // Save the event assignments
