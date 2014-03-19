@@ -258,6 +258,10 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
                 Status = ROOT;
               }
 
+            // To detect simultaneous roots we have to peek ahead, i.e., continue
+            // integration until the state changes are larger that the relative
+            peekAhead();
+
             // The break statement is intentionally missing since we
             // have to continue to check the root masking state.
           default:
@@ -493,4 +497,63 @@ void CLsodaMethod::destroyRootMask()
 {
   mRootMask.resize(0);
   mRootMasking = NONE;
+}
+
+void CLsodaMethod::peekAhead()
+{
+  // Save the current state
+  mMethodState.setTime(mTime);
+  CState SavedState = mMethodState;
+  mLSODAR.saveState();
+
+  CVector< C_INT > CombinedRoots = mRoots;
+
+  C_FLOAT64 DeltaT = mTime * *mpRelativeTolerance;
+
+  if (step(DeltaT) == ROOT)
+    {
+
+      // Check whether the new state is within the tolerances
+      C_FLOAT64 * pOld = SavedState.beginIndependent();
+      C_FLOAT64 * pOldEnd = pOld + mData.dim;
+      C_FLOAT64 * pNew = mMethodState.beginIndependent();
+      C_FLOAT64 * pAtol = mAtol.array();
+
+      for (; pOld != pOldEnd; ++pOld, ++pNew, ++pAtol)
+        {
+          if ((2.0 * fabs(*pNew - *pOld) / fabs(*pNew + *pOld) > *mpRelativeTolerance) &&
+              fabs(*pNew) > *pAtol &&
+              fabs(*pOld) > *pAtol)
+            {
+              break;
+            }
+        }
+
+      if (pOld == pOldEnd)
+        {
+          // Save the state
+          SavedState = mMethodState;
+          mLSODAR.saveState();
+
+          // Combine all the roots
+          C_INT * pRoot = mRoots.array();
+          C_INT * pRootEnd = pRoot + mRoots.size();
+          C_INT * pCombinedRoot = CombinedRoots.array();
+
+          for (; pRoot != pRootEnd; ++pRoot, ++pCombinedRoot)
+            {
+              if (pRoot > 0)
+                {
+                  *pCombinedRoot = 1;
+                }
+            }
+        }
+    }
+
+  // Reset the integrator to the saved state
+  mMethodState = SavedState;
+  mTime = mMethodState.getTime();
+  mLSODAR.resetState();
+
+  mRoots = CombinedRoots;
 }

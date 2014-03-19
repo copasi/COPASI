@@ -1303,38 +1303,61 @@ void CMathEvent::fire(const C_FLOAT64 & time,
                       const bool & equality,
                       CProcessQueue & processQueue)
 {
-  size_t EventId = processQueue.createEventId();
+  if (mDelayAssignment)
+    {
+      processQueue.addAssignment(getAssignmentTime(time), equality, getTargetValues(), this);
+    }
+  else
+    {
+      processQueue.addCalculation(getCalculationTime(time), equality, this);
+    }
+}
 
-  // Add each assignment to the calculation queue
+CVector< C_FLOAT64 > CMathEvent::getTargetValues()
+{
+  applyValueRefreshes();
+
+  CVector< C_FLOAT64 > Values(mAssignments.size());
+  C_FLOAT64 * pValue = Values.array();
   CCopasiVector< CAssignment >::iterator itAssignment = mAssignments.begin();
   CCopasiVector< CAssignment >::iterator endAssignment = mAssignments.end();
 
-  // Determine the execution time of the calculation of the event.
-  C_FLOAT64 CalculationTime = getCalculationTime(time);
-
-  switch (mType)
+  for (; itAssignment != endAssignment; ++itAssignment, ++pValue)
     {
-      case CEvent::Assignment:
-
-        for (; itAssignment != endAssignment; ++itAssignment)
-          {
-            // We must delay the calculation of the new target value
-            processQueue.addCalculation(CalculationTime,
-                                        equality,
-                                        mOrder,
-                                        EventId,
-                                        (*itAssignment)->mpTarget,
-                                        &(*itAssignment)->mExpression,
-                                        this);
-          }
-
-        break;
-
-      case CEvent::CutPlane:
-        processQueue.addCalculation(CalculationTime, equality, mOrder, EventId,
-                                    NULL, NULL, this);
-        break;
+      *pValue = (*itAssignment)->mExpression.calcValue();
     }
+
+  return Values;
+}
+
+bool CMathEvent::setTargetValues(const CVector< C_FLOAT64 > & values)
+{
+  bool StateChanged = false;
+
+  const C_FLOAT64 * pValue = values.array();
+  CCopasiVector< CAssignment >::iterator itAssignment = mAssignments.begin();
+  CCopasiVector< CAssignment >::iterator endAssignment = mAssignments.end();
+
+  for (; itAssignment != endAssignment; ++itAssignment, ++pValue)
+    {
+      if (*(*itAssignment)->mpTarget != *pValue)
+        {
+          StateChanged = true;
+          *(*itAssignment)->mpTarget = *pValue;
+        }
+    }
+
+  if (StateChanged)
+    {
+      applyDependentRefreshes();
+    }
+
+  return StateChanged;
+}
+
+bool CMathEvent::executeAssignment()
+{
+  return setTargetValues(getTargetValues());
 }
 
 void CMathEvent::applyDelayRefreshes()
@@ -1378,6 +1401,11 @@ CMathTrigger & CMathEvent::getMathTrigger()
 const size_t & CMathEvent::getOrder() const
 {
   return mOrder;
+}
+
+const bool & CMathEvent::delayAssignment() const
+{
+  return mDelayAssignment;
 }
 
 C_FLOAT64 CMathEvent::getCalculationTime(const C_FLOAT64 & currentTime)

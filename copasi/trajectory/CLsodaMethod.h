@@ -283,6 +283,11 @@ private:
    */
   void createRootMask();
 
+  /**
+   * Peek ahead to detect simultaneous roots.
+   */
+  void peekAhead();
+
 protected:
   /**
    * Destroy the mask which hides all roots being constant and zero.

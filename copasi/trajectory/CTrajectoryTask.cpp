@@ -413,7 +413,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
   while (mProceed)
     {
       // TODO Provide a call back method for resolving simultaneous assignments.
-      StateChanged |= mpContainer->processQueue(false);
+      StateChanged = mpContainer->processQueue(false);
 
       if (StateChanged)
         {
@@ -445,10 +445,8 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
               }
 
             // TODO Provide a call back method for resolving simultaneous assignments.
-            StateChanged |= mpContainer->processQueue(true);
+            StateChanged = mpContainer->processQueue(true);
 
-            // If the state change happens to coincide with end of the step we have to return and
-            // inform the integrator of eventual state changes.
             if (fabs(*mpCurrentStateTime - endTime) < Tolerance)
               {
                 if (StateChanged)
@@ -461,11 +459,17 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
                 return true;
               }
 
-            if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentStateTime) &&
-                StateChanged &&
-                mpTrajectoryProblem->getOutputEvent())
+            if (StateChanged)
               {
-                output(COutputInterface::DURING);
+                if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentStateTime) &&
+                    mpTrajectoryProblem->getOutputEvent())
+                  {
+                    output(COutputInterface::DURING);
+                  }
+
+                mCurrentState = mpContainer->getState(mUpdateMoieties);
+                mpTrajectoryMethod->stateChanged();
+                StateChanged = false;
               }
 
             break;
@@ -484,7 +488,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
               }
 
             // TODO Provide a call back method for resolving simultaneous assignments.
-            StateChanged |= mpContainer->processQueue(true);
+            StateChanged = mpContainer->processQueue(true);
 
             mpContainer->processRoots(false, mpTrajectoryMethod->getRoots());
 
@@ -504,10 +508,16 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
 
             if ((*mpLessOrEqual)(mOutputStartTime, *mpCurrentStateTime) &&
                 mpTrajectoryProblem->getOutputEvent() &&
-                (StateChanged ||
-                 *mpCurrentStateTime == mpContainer->getProcessQueueExecutionTime()))
+                (StateChanged || *mpCurrentStateTime == mpContainer->getProcessQueueExecutionTime()))
               {
                 output(COutputInterface::DURING);
+              }
+
+            if (StateChanged)
+              {
+                mCurrentState = mpContainer->getState(mUpdateMoieties);
+                mpTrajectoryMethod->stateChanged();
+                StateChanged = false;
               }
 
             break;

@@ -49,9 +49,6 @@ CMathModel::CMathModel(const CMathModel & src,
   // The problem is that the pointers to events in the process queue point
   // to events in the source model. We can construct a mapping of source event pointers
   // to event pointers and update each process queue entry.
-
-  // For the moment we enforce that the process queue is empty.
-  assert(mProcessQueue.isEmpty());
 }
 
 // virtual
