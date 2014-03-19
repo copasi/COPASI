@@ -348,11 +348,11 @@ CProcessQueue::iterator CProcessQueue::getAction()
       if (!mContinueSimultaneousEvents)
         {
 
-              return (*mpResolveSimultaneousAssignments)(mAssignments, mTime, mEquality, mCascadingLevel);
-            }
-          else
+          // The resolution of simultaneous events is algorithm dependent.
+          // The simulation routine should provide a call back function.
+          if (mpResolveSimultaneousAssignments == NULL)
             {
-              CCopasiMessage(CCopasiMessage::WARNING_FILTERED, "CMathModel (1): Simultaneous event assignments encountered.");
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathModel + 1);
             }
 
           return (*mpResolveSimultaneousAssignments)(mActions, mTime, mEquality, mCascadingLevel);
