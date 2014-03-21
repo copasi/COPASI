@@ -305,9 +305,6 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
 {
   assert(mpModel);
 
-  // TODO CRITICAL We must not use the reduced stoichiometry matrix
-  // Instead use N * mLinkZero
-
   // Calculate RedStoi * mUnscaledElasticities;
   // Note the columns of mUnscaledElasticities must be reordered
   mLinkZero.doColumnPivot(mUnscaledElasticities);

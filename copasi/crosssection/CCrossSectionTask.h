@@ -16,7 +16,6 @@
 #ifndef COPASI_CCrossSectionTask
 #define COPASI_CCrossSectionTask
 
-//#include "crosssection/CCrosssectionMethod.h"
 #include "copasi/model/CEvent.h"
 #include "copasi/trajectory/CTrajectoryTask.h"
 #include "copasi/utilities/CCopasiTask.h"
@@ -24,9 +23,9 @@
 #include "copasi/trajectory/CTimeSeries.h"
 
 class CCrossSectionProblem;
-//class CCrossSectionMethod;
 class CState;
-class CEvent;
+class CMathEventN;
+class CCallbackInterface;
 
 class CCrossSectionTask : public CTrajectoryTask
 {
@@ -98,17 +97,17 @@ private:
   void initObjects();
 
   /**
-   * this is the static call back function that is called by the
-   * process queue when an event is executed-
+   * Set or unset the event callback
+   * @param const bool & set
    */
-  static void EventCallBack(void* pCSTask, CEvent::Type type);
+  void setEventCallback(const bool & set);
 
   /**
    * This is the member function that is called by the static call back function
    * It checks if an event describes the cut plane and does all
    * the necessary analysis and output in this case
    */
-  void eventCallBack(CEvent::Type type);
+  void eventCallBack(void * pData, void * pCaller);
 
   /**
    * should be called by all code paths that finish the task.
@@ -162,9 +161,14 @@ private:
   C_FLOAT64 mProgressFactor;
 
   /**
-   * temporary event
+   * Pointer to the event representing the cut plane
    */
-  CEvent* mpEvent;
+  CMathEventN * mpEvent;
+
+  /**
+   * A pointer to the callback register with the event.
+   */
+  CCallbackInterface *mpEventCallback;
 
   /**
    * describes the internal state of the calculation

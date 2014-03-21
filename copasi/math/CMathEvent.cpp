@@ -10,6 +10,7 @@
 #include "CMathEvent.h"
 #include "CMathContainer.h"
 #include "CMathExpression.h"
+#include "CMathEventQueue.h"
 
 #include "model/CMathModel.h"
 #include "model/CEvent.h"
@@ -17,6 +18,7 @@
 #include "function/CFunction.h"
 #include "report/CCopasiRootContainer.h"
 #include "utilities/CNodeIterator.h"
+#include "utilities/CCallback.h"
 
 CMathEventN::CAssignment::CAssignment():
   mpTarget(NULL),
@@ -152,6 +154,16 @@ void CMathEventN::CTrigger::CRootProcessor::toggle(const C_FLOAT64 & time)
   return;
 }
 
+const bool & CMathEventN::CTrigger::CRootProcessor::isEquality() const
+{
+  return mEquality;
+}
+
+bool CMathEventN::CTrigger::CRootProcessor::isTrue() const
+{
+  return *mpRootStateValue > 0.5 ? true : false;
+}
+
 void CMathEventN::CTrigger::CRootProcessor::applyInitialValues()
 {
   calculateTrueValue();
@@ -284,6 +296,11 @@ void CMathEventN::CTrigger::allocateDiscontinuous(const size_t & nRoots,
     const CMathContainer & /* container */)
 {
   mRoots.resize(nRoots);
+}
+
+bool CMathEventN::CTrigger::isTrue() const
+{
+  return * (C_FLOAT64 *) mpTrigger->getValuePointer() > 0.5 ? true : false;
 }
 
 void CMathEventN::CTrigger::initialize(CMath::sPointers & pointers)
@@ -940,18 +957,24 @@ CMathEventN::CMathEventN():
   mAssignments(),
   mpDelay(NULL),
   mpPriority(NULL),
+  mpCallback(NULL),
+  mTargetValues(),
+  mTargetPointers(),
   mCreateCalculationActionSequence(),
-  mCreateAssignmentsActionSequence(),
+  mTargetValuesSequence(),
   mFireAtInitialTime(false),
   mPersistentTrigger(false),
-  mDelayAssignment(true)
+  mDelayAssignment(true),
+  mpPendingAction(NULL)
 {}
 
 /**
  * Destructor
  */
 CMathEventN::~CMathEventN()
-{}
+{
+  pdelete(mpPendingAction);
+}
 
 const CMathEventN::CTrigger & CMathEventN::getTrigger() const
 {
@@ -1026,10 +1049,16 @@ bool CMathEventN::compile(CEvent * pDataEvent,
   CAssignment * pAssignmentEnd = pAssignment + mAssignments.size();
   CCopasiVector< CEventAssignment >::const_iterator itAssignment = pDataEvent->getAssignments().begin();
 
+  mTargetValues.initialize(mAssignments.size(),
+                           (C_FLOAT64 *) pAssignment->getAssignment()->getValuePointer());
+  mTargetPointers.resize(mAssignments.size());
+  C_FLOAT64 ** ppTarget = mTargetPointers.array();
+
   // Compile assignments.
-  for (; pAssignment != pAssignmentEnd; ++pAssignment, ++itAssignment)
+  for (; pAssignment != pAssignmentEnd; ++pAssignment, ++itAssignment, ++ppTarget)
     {
       success &= pAssignment->compile(*itAssignment, container);
+      *ppTarget = (C_FLOAT64 *) pAssignment->getTarget()->getValuePointer();
     }
 
   std::vector< CCopasiContainer * > ListOfContainer;
@@ -1080,33 +1109,81 @@ void CMathEventN::createUpdateSequences()
       Requested.insert(pAssignment->getAssignment());
     }
 
-  mpContainer->getTransientDependencies().getUpdateSequence(CMath::Default, Changed, Requested, mCreateAssignmentsActionSequence);
+  mpContainer->getTransientDependencies().getUpdateSequence(CMath::Default, Changed, Requested, mTargetValuesSequence);
 }
 
-void CMathEventN::getAssignmentValues(CVector< C_FLOAT64 > &values) const
+void CMathEventN::fire(const bool & equality)
 {
-  values.resize(mAssignments.size());
-
-  const CMathEventN::CAssignment * pAssignment = mAssignments.array();
-  C_FLOAT64 * pValue = values.array();
-  C_FLOAT64 * pValueEnd = pValue + values.size();
-
-  for (; pValue != pValueEnd; ++pValue, ++pAssignment)
+  if (mTrigger.isTrue())
     {
-      *pValue = * (C_FLOAT64 *) pAssignment->getAssignment()->getValuePointer();
+      if (mDelayAssignment)
+        {
+          mpContainer->getProcessQueue().addAssignment(getExecutionTime(), equality, getTargetValues(), this);
+        }
+      else
+        {
+          mpContainer->getProcessQueue().addCalculation(getCalculationTime(), equality, this);
+        }
+    }
+  else if (mPersistentTrigger && mpPendingAction)
+    {
+      mpContainer->getProcessQueue().removeAction(*mpPendingAction);
+      pdelete(mpPendingAction);
     }
 }
 
-void CMathEventN::setTargetValues(const CVector< C_FLOAT64 > values)
+void CMathEventN::addPendingAction(const CMathEventQueue::iterator & pendingAction)
 {
-  CMathEventN::CAssignment * pAssignment = mAssignments.array();
+  assert(mpPendingAction == NULL);
+
+  mpPendingAction = new std::pair< CMathEventQueue::CKey, CMathEventQueue::CAction >(pendingAction->first, pendingAction->second);
+}
+
+void CMathEventN::removePendingAction()
+{
+  pdelete(mpPendingAction);
+}
+
+const CVectorCore< C_FLOAT64 > & CMathEventN::getTargetValues()
+{
+  mpContainer->applyUpdateSequence(mTargetValuesSequence);
+
+  return mTargetValues;
+}
+
+bool CMathEventN::setTargetValues(const CVectorCore< C_FLOAT64 > & values)
+{
+  bool StateChanged = false;
+
   const C_FLOAT64 * pValue = values.array();
   const C_FLOAT64 * pValueEnd = pValue + values.size();
+  C_FLOAT64 ** ppTarget = mTargetPointers.array();
 
-  for (; pValue != pValueEnd; ++pValue, ++pAssignment)
+  for (; pValue != pValueEnd; ++pValue, ++ppTarget)
     {
-      * (C_FLOAT64 *) pAssignment->getTarget()->getValuePointer() = * pValue;
+      if (**ppTarget != *pValue)
+        {
+          StateChanged = true;
+          **ppTarget = *pValue;
+        }
     }
+
+  if (StateChanged)
+    {
+      mpContainer->updateEventSimulatedValues();
+    }
+
+  return StateChanged;
+}
+
+bool CMathEventN::executeAssignment()
+{
+  return setTargetValues(getTargetValues());
+}
+
+const bool & CMathEventN::delayAssignment() const
+{
+  return mDelayAssignment;
 }
 
 void CMathEventN::setTriggerExpression(const std::string & infix, CMathContainer & container)
@@ -1158,7 +1235,7 @@ C_FLOAT64 CMathEventN::getCalculationTime() const
   return *mpTime + * (C_FLOAT64 *) mpDelay->getValuePointer();
 }
 
-C_FLOAT64 CMathEventN::getAssignmentTime() const
+C_FLOAT64 CMathEventN::getExecutionTime() const
 {
   if (mDelayAssignment)
     {
@@ -1166,6 +1243,24 @@ C_FLOAT64 CMathEventN::getAssignmentTime() const
     }
 
   return *mpTime;
+}
+
+const CEvent::Type & CMathEventN::getType() const
+{
+  return mType;
+}
+
+void CMathEventN::setCallback(CCallbackInterface * pCallback)
+{
+  mpCallback = pCallback;
+}
+
+void CMathEventN::executeCallback(void * pCaller)
+{
+  if (mpCallback != NULL)
+    {
+      (*mpCallback)(this, pCaller);
+    }
 }
 
 CMathEvent::CAssignment::CAssignment(const CCopasiContainer * pParent) :

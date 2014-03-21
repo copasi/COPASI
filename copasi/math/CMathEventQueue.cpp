@@ -11,9 +11,10 @@
 #include "CMathContainer.h"
 #include "CMathEvent.h"
 #include "function/CExpression.h"
+#include "randomGenerator/CRandom.h"
 
-#include <copasi/report/CCopasiRootContainer.h>
-#include <copasi/commandline/CConfigurationFile.h>
+#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/commandline/CConfigurationFile.h"
 
 CMathEventQueue::CKey::CKey() :
   mExecutionTime(0.0),
@@ -52,28 +53,12 @@ bool CMathEventQueue::CKey::operator < (const CMathEventQueue::CKey & rhs) const
 //*********************************************************
 
 CMathEventQueue::CAction::CAction():
-  mType(CMathEventQueue::CAction::Calculation),
+  mType(),
   mValues(),
   mpPriority(NULL),
   mpEvent(NULL),
   mpProcessQueue(NULL)
 {}
-
-CMathEventQueue::CAction::CAction(const CMathEventQueue::CAction::Type & type,
-                                  CMathEventN * pEvent,
-                                  CMathEventQueue * pProcessQueue):
-  mType(type),
-  mValues(),
-  mpPriority(NULL),
-  mpEvent(pEvent),
-  mpProcessQueue(pProcessQueue)
-{
-  if (mType == Assignment)
-    {
-      mpPriority = (const C_FLOAT64 *) pEvent->getPriority()->getValuePointer();
-      mpEvent->getAssignmentValues(mValues);
-    }
-}
 
 CMathEventQueue::CAction::CAction(const CAction & src):
   mType(src.mType),
@@ -83,67 +68,115 @@ CMathEventQueue::CAction::CAction(const CAction & src):
   mpProcessQueue(src.mpProcessQueue)
 {}
 
+CMathEventQueue::CAction::CAction(CMathEventN * pEvent,
+                                  CMathEventQueue * pProcessQueue):
+  mType(),
+  mValues(),
+  mpPriority(NULL),
+  mpEvent(pEvent),
+  mpProcessQueue(pProcessQueue)
+{
+  switch (pEvent->getType())
+    {
+      case CEvent::Assignment:
+        mpPriority = (const C_FLOAT64 *) pEvent->getPriority()->getValuePointer();
+        mType = Calculation;
+        break;
+
+      case CEvent::Callback:
+        mType = Callback;
+        break;
+    }
+}
+
+CMathEventQueue::CAction::CAction(const CVector< C_FLOAT64 > & values,
+                                  CMathEventN * pEvent,
+                                  CMathEventQueue * pProcessQueue) :
+  mType(CMathEventQueue::CAction::Assignment),
+  mpPriority(NULL),
+  mValues(values),
+  mpEvent(pEvent),
+  mpProcessQueue(pProcessQueue)
+{
+  mpPriority = (const C_FLOAT64 *) pEvent->getPriority()->getValuePointer();
+}
+
 CMathEventQueue::CAction::~CAction()
 {}
 
-void CMathEventQueue::CAction::process(const size_t & eventId)
+bool CMathEventQueue::CAction::process()
 {
-  if (mType == Assignment)
+  // Assume that nothing is changed
+  bool StateChanged = false;
+
+  switch (mType)
     {
-      mpEvent->setTargetValues(mValues);
+      case Calculation:
+
+        if (mpEvent->delayAssignment())
+          {
+            mpProcessQueue->addAssignment(mpEvent->getExecutionTime(),
+                                          mpProcessQueue->mEquality,
+                                          mpEvent->getTargetValues(),
+                                          mpEvent);
+          }
+        else
+          {
+            StateChanged = mpEvent->executeAssignment();
+          }
+
+        break;
+
+      case Assignment:
+        StateChanged = mpEvent->setTargetValues(mValues);
+        break;
+
+      case Callback:
+        mpEvent->executeCallback(mpProcessQueue);
+        break;
     }
-  else
-    {
-      mpProcessQueue->addAssignment(mpEvent->getAssignmentTime(), mpProcessQueue->mEquality, mpEvent);
-    }
+
+  return StateChanged;
 }
+
+CMathEventN * CMathEventQueue::CAction::getEvent() const {return mpEvent;}
+
+const CMathEventQueue::CAction::Type & CMathEventQueue::CAction::getType() const {return mType;}
+
+const C_FLOAT64 & CMathEventQueue::CAction::getPriority() const {return *mpPriority;}
 
 //*********************************************************
 
 CMathEventQueue::CMathEventQueue() :
   mpContainer(NULL),
   mpTime(NULL),
-  mCalculations(),
-  mAssignments(),
+  mActions(),
   mUpdateSequence(),
   mExecutionLimit(10000),
   mExecutionCounter(0),
   mEquality(true),
   mCascadingLevel(0),
-  mSimultaneousAssignments(false),
-  mEventIdSet(),
   mRootsFound(0),
   mRootValues1(0),
   mRootValues2(0),
   mpRootValuesBefore(&mRootValues1),
-  mpRootValuesAfter(&mRootValues2),
-  mpResolveSimultaneousAssignments(NULL),
-  mContinueSimultaneousEvents(false),
-  mpCallbackTask(NULL),
-  mpEventCallBack(NULL)
+  mpRootValuesAfter(&mRootValues2)
 {}
 
 CMathEventQueue::CMathEventQueue(CMathContainer & container):
   mpContainer(& container),
-  mpTime(container.getState().array() + container.getTimeIndex()),
-  mCalculations(),
-  mAssignments(),
+  mpTime(NULL),
+  mActions(),
   mUpdateSequence(),
   mExecutionLimit(10000),
   mExecutionCounter(0),
   mEquality(true),
   mCascadingLevel(0),
-  mSimultaneousAssignments(false),
-  mEventIdSet(),
   mRootsFound(0),
   mRootValues1(0),
   mRootValues2(0),
   mpRootValuesBefore(&mRootValues1),
-  mpRootValuesAfter(&mRootValues2),
-  mpResolveSimultaneousAssignments(NULL),
-  mContinueSimultaneousEvents(false),
-  mpCallbackTask(NULL),
-  mpEventCallBack(NULL)
+  mpRootValuesAfter(&mRootValues2)
 {}
 
 CMathEventQueue::~CMathEventQueue()
@@ -151,6 +184,7 @@ CMathEventQueue::~CMathEventQueue()
 
 bool CMathEventQueue::addAssignment(const C_FLOAT64 & executionTime,
                                     const bool & equality,
+                                    const CVectorCore< C_FLOAT64 > & values,
                                     CMathEventN * pEvent)
 {
   // It is not possible to proceed backwards in time.
@@ -158,11 +192,14 @@ bool CMathEventQueue::addAssignment(const C_FLOAT64 & executionTime,
 
   size_t CascadingLevel = mCascadingLevel;
 
-  if (executionTime > *mpTime)
+  // If the assignment is in the future or it has a priority the
+  // cascading level must be zero.
+  if (executionTime > *mpTime ||
+      !isnan(* (C_FLOAT64 *) pEvent->getPriority()->getValuePointer()))
     CascadingLevel = 0;
 
-  mAssignments.insert(std::make_pair(CKey(executionTime, equality, CascadingLevel),
-                                     CAction(CAction::Assignment, pEvent, this)));
+  pEvent->addPendingAction(mActions.insert(std::make_pair(CKey(executionTime, equality, CascadingLevel),
+                           CAction(values, pEvent, this))));
 
   return true;
 }
@@ -176,21 +213,39 @@ bool CMathEventQueue::addCalculation(const C_FLOAT64 & executionTime,
 
   size_t CascadingLevel = mCascadingLevel;
 
-  if (executionTime > *mpTime)
+  // If the assignment is in the future or it has a priority the
+  // cascading level must be zero.
+  if (executionTime > *mpTime ||
+      !isnan(* (C_FLOAT64 *) pEvent->getPriority()->getValuePointer()))
     CascadingLevel = 0;
 
-  mCalculations.insert(std::make_pair(CKey(executionTime, equality, CascadingLevel),
-                                      CAction(CAction::Calculation, pEvent, this)));
+  pEvent->addPendingAction(mActions.insert(std::make_pair(CKey(executionTime, equality, CascadingLevel),
+                           CAction(pEvent, this))));
 
   return true;
 }
 
+void CMathEventQueue::removeAction(const std::pair< CMathEventQueue::CKey, CMathEventQueue::CAction > & action)
+{
+  range PendingActions = mActions.equal_range(action.first);
+
+  iterator itAction = PendingActions.first;
+
+  for (; itAction != PendingActions.second; ++itAction)
+    {
+      if (itAction->second.getEvent() == action.second.getEvent())
+        {
+          mActions.erase(itAction);
+          break;
+        }
+    }
+}
+
 void CMathEventQueue::start()
 {
-  mCalculations.clear();
-  mAssignments.clear();
-  mEventIdSet.clear();
-  mSimultaneousAssignments = false;
+  mActions.clear();
+
+  mpTime = mpContainer->getState().array() + mpContainer->getTimeIndex();
 
   size_t NumRoots = mpContainer->getRoots().size();
   mRootsFound.resize(NumRoots);
@@ -203,49 +258,38 @@ void CMathEventQueue::start()
   return;
 }
 
-bool CMathEventQueue::process(const bool & priorToOutput,
-                              resolveSimultaneousAssignments pResolveSimultaneousAssignments)
+bool CMathEventQueue::process(const bool & priorToOutput)
 {
   if (getProcessQueueExecutionTime() > *mpTime)
     return false;
 
   mEquality = priorToOutput;
-  mpResolveSimultaneousAssignments = pResolveSimultaneousAssignments;
   mExecutionCounter = 0;
   mCascadingLevel = 0;
 
   bool success = true;
   bool stateChanged = false;
 
-  range Calculations = getCalculations();
-
-  if (notEmpty(Calculations))
-    {
-      // Execute and remove all current calculations.
-      success = executeCalculations(Calculations);
-    }
-
-  range Assignments = getAssignments();
-
-  if (success &&
-      notEmpty(Assignments))
-    {
-      *mpRootValuesBefore = mpContainer->getRoots();
-      stateChanged = true;
-    }
+  *mpRootValuesBefore = mpContainer->getRoots();
+  iterator itAction = getAction();
 
   // The algorithm below will work properly for user ordered events
   // as the queue enforces the proper ordering.
   while (success &&
-         notEmpty(Assignments) &&
+         itAction != mActions.end() &&
          mCascadingLevel != std::numeric_limits<size_t>::max())
     {
+      if (!executeAction(itAction))
+        {
+          itAction = getAction();
+          continue;
+        }
+
+      stateChanged = true;
+
       // We switch to the next cascading level so that events triggered by the
       // execution of assignments are properly scheduled.
       mCascadingLevel++;
-
-      // Execute and remove all current assignments.
-      success = executeAssignments(Assignments);
 
       // We need to compare the roots before the execution and after
       // to determine which roots need to be charged.
@@ -263,214 +307,107 @@ bool CMathEventQueue::process(const bool & priorToOutput,
       mEquality = true;
 
       // Retrieve the pending calculations.
-      Calculations = getCalculations();
+      itAction = getAction();
 
-      if (notEmpty(Calculations))
-        {
-          // Execute and remove all current calculations.
-          success = executeCalculations(Calculations);
-        }
-
-      // Retrieve the pending assignments.
-      Assignments = getAssignments();
-
-      if (notEmpty(Assignments))
-        continue;
-
-      // If we are here there are no more calculations and assignments for equality
-      // for this level.
-      mEquality = false;
-
-      // Retrieve the pending calculations.
-      Calculations = getCalculations();
-
-      if (notEmpty(Calculations))
-        {
-          // Execute and remove all current calculations.
-          success = executeCalculations(Calculations);
-        }
-
-      // Retrieve the pending assignments.
-      Assignments = getAssignments();
-
-      while (!notEmpty(Assignments) &&
+      while (itAction == mActions.end() &&
              mCascadingLevel > 0)
         {
-          // If we are here we have no more calculations and assignment for this level.
+          // If we are here we have no more actions for this level.
           mCascadingLevel--;
 
-          // This will only return assignments when we have resolution algorithms for
-          // them.
-          Assignments = getAssignments();
-        }
-    }
+          if (mCascadingLevel == 0)
+            {
+              mEquality = priorToOutput;
+            }
 
-  if (mSimultaneousAssignments)
-    {
-      if (!mContinueSimultaneousEvents)
-        {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathModel + 1);
-          success = false;
-        }
-      else
-        {
-          CCopasiMessage(CCopasiMessage::WARNING_FILTERED, "CMathModel (1): Simultaneous event assignments encountered.");
+          itAction = getAction();
         }
     }
 
   return stateChanged;
 }
 
-CMathEventQueue::range CMathEventQueue::getCalculations()
+CMathEventQueue::iterator CMathEventQueue::getAction()
 {
-  range Calculations;
+  CKey Pending(*mpTime, mEquality, mCascadingLevel);
+  range PendingActions = mActions.equal_range(Pending);
 
-  CKey UpperBound(*mpTime, mEquality, mCascadingLevel);
-
-  Calculations.first = mCalculations.begin();
-
-  if (Calculations.first != mCalculations.end() &&
-      Calculations.first->first < UpperBound)
+  if (PendingActions.first == PendingActions.second)
     {
-      Calculations.second = mCalculations.upper_bound(Calculations.first->first);
+      return mActions.end();
+    }
 
-      // Check whether we have a second set of assignments with a different ID.
-      if (Calculations.second != mCalculations.end() &&
-          Calculations.second->first < UpperBound)
+  iterator itAction = PendingActions.first;
+
+  std::vector< iterator > PriorityActions;
+  C_FLOAT64 HighestPriority = - std::numeric_limits< C_FLOAT64 >::infinity();
+
+  for (; itAction != PendingActions.second; ++itAction)
+    {
+      // Events without priority are ignored
+      if (itAction->second.getPriority() < HighestPriority)
         {
-          if (!mContinueSimultaneousEvents)
-            {
-              mSimultaneousAssignments = true;
-
-              // The resolution of simultaneous events is algorithm dependent.
-              // The simulation routine should provide a call back function.
-              if (mpResolveSimultaneousAssignments == NULL)
-                {
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathModel + 1);
-                }
-
-              return (*mpResolveSimultaneousAssignments)(mCalculations, *mpTime, mEquality, mCascadingLevel);
-            }
-          else
-            {
-              CCopasiMessage(CCopasiMessage::WARNING_FILTERED, "CMathModel (1): Simultaneous event assignments encountered.");
-            }
-        }
-    }
-  else
-    {
-      Calculations.first = Calculations.second = mCalculations.end();
-    }
-
-  return Calculations;
-}
-
-CMathEventQueue::range CMathEventQueue::getAssignments()
-{
-  range Assignments;
-  CKey UpperBound(*mpTime, mEquality, mCascadingLevel);
-
-  Assignments = mAssignments.equal_range(UpperBound);
-
-  // Find the assignments with the highest priority
-
-  Assignments.first = mAssignments.begin();
-
-  if (Assignments.first != mAssignments.end() &&
-      Assignments.first->first == UpperBound)
-    {
-      Assignments.second = mAssignments.upper_bound(Assignments.first->first);
-
-      // Check whether we have a second set of assignments with a different ID.
-      if (Assignments.second != mAssignments.end() &&
-          Assignments.second->first < UpperBound)
-        {
-          if (!mContinueSimultaneousEvents)
-            {
-              mSimultaneousAssignments = true;
-
-              // The resolution of simultaneous events is algorithm dependent.
-              // The simulation routine should provide a call back function.
-              if (mpResolveSimultaneousAssignments == NULL)
-                {
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathModel + 1);
-                }
-
-              return (*mpResolveSimultaneousAssignments)(mAssignments, *mpTime, mEquality, mCascadingLevel);
-            }
-          else
-            {
-              CCopasiMessage(CCopasiMessage::WARNING_FILTERED, "CMathModel (1): Simultaneous event assignments encountered.");
-            }
-        }
-    }
-  else
-    {
-      Assignments.first = Assignments.second = mAssignments.end();
-    }
-
-  return Assignments;
-}
-
-bool CMathEventQueue::executeCalculations(CMathEventQueue::range & calculations)
-{
-  bool success = true;
-
-  iterator it = calculations.first;
-  assert(it != mCalculations.end());
-
-  size_t EventIdOld = it->first.getEventId();
-  size_t EventIdNew = createEventId();
-
-  CMathEventN * pEvent = it->second.mpEvent;
-
-  // Assure that all values are up to date.
-  pEvent->applyValueRefreshes();
-
-  for (; it != calculations.second; ++it)
-    {
-      if (it->first.getEventId() != EventIdOld)
-        {
-          destroyEventId(EventIdOld);
-          EventIdOld = it->first.getEventId();
-          EventIdNew = createEventId();
+          continue;
         }
 
-      it->second.process(EventIdNew);
+      // The priority is lower than the highest
+      if (itAction->second.getPriority() < HighestPriority)
+        {
+          continue;
+        }
+
+      // New highest priority
+      if (HighestPriority < itAction->second.getPriority())
+        {
+          HighestPriority = itAction->second.getPriority();
+          PriorityActions.clear();
+          PriorityActions.push_back(itAction);
+
+          continue;
+        }
+
+      // Equal highest priority
+      PriorityActions.push_back(itAction);
     }
 
-  destroyEventId(EventIdOld);
-  mCalculations.erase(calculations.first, calculations.second);
+  switch (PriorityActions.size())
+    {
+        // No prioritized actions
+      case 0:
+        // We arbitrarily pick the first
+        return PendingActions.first;
+        break;
 
-  return success;
+        // One action has the highest priority
+      case 1:
+        return PriorityActions[0];
+        break;
+
+        // Pick one randomly
+      default:
+        return PriorityActions[mpContainer->getRandomGenerator().getRandomU(PriorityActions.size() - 1)];
+        break;
+    }
+
+  // We should never get here
+  return mActions.end();
 }
 
-bool CMathEventQueue::executeAssignments(CMathEventQueue::range & assignments)
+bool CMathEventQueue::executeAction(CMathEventQueue::iterator itAction)
 {
-  bool success = (mExecutionCounter < mExecutionLimit);
+  // Notify the event that the pending action is executed.
+  itAction->second.getEvent()->removePendingAction();
 
-  iterator it = assignments.first;
-  assert(it != mAssignments.end());
+  bool StateChanged = itAction->second.process();
 
-  size_t EventIdOld = it->first.getEventId();
-  size_t EventIdNew = 0;
+  if (StateChanged)
+    {
+      mExecutionCounter++;
+    }
 
-  CMathEventN * pEvent = it->second.mpEvent;
+  mActions.erase(itAction);
 
-  EventIdNew = createEventId();
-
-  for (; it != assignments.second; ++it)
-    it->second.process(EventIdNew);
-
-  destroyEventId(EventIdOld);
-  mAssignments.erase(assignments.first, assignments.second);
-
-  // Update all dependent values.
-  mpContainer->updateEventSimulatedValues();
-
-  mExecutionCounter++;
-
-  return success;
+  return StateChanged;
 }
 
 bool CMathEventQueue::rootsFound()
@@ -478,17 +415,16 @@ bool CMathEventQueue::rootsFound()
   bool rootsFound = false;
 
   // Calculate the current root values
-
-  mpMathModel->evaluateRoots(*mpRootValuesAfter, false);
+  *mpRootValuesAfter = mpContainer->getRoots();
 
   // Compare the root values before and after;
   C_INT * pRootFound = mRootsFound.array();
   C_INT * pRootEnd = pRootFound + mRootsFound.size();
   C_FLOAT64 * pValueBefore = mpRootValuesBefore->array();
   C_FLOAT64 * pValueAfter = mpRootValuesAfter->array();
-  CMathTrigger::CRootFinder *const* ppRootFinder = mpMathModel->getRootFinders().array();
+  CMathEventN::CTrigger::CRootProcessor ** ppRootProcessor = mpContainer->getRootProcessors().array();
 
-  for (; pRootFound != pRootEnd; ++pRootFound, ++pValueBefore, ++pValueAfter, ++ppRootFinder)
+  for (; pRootFound != pRootEnd; ++pRootFound, ++pValueBefore, ++pValueAfter, ++ppRootProcessor)
     {
       // Root values which did not change are not found
       if (*pValueBefore == *pValueAfter)
@@ -498,9 +434,9 @@ bool CMathEventQueue::rootsFound()
         }
 
       // Handle equality
-      if ((*ppRootFinder)->isEquality())
+      if ((*ppRootProcessor)->isEquality())
         {
-          if ((*ppRootFinder)->isTrue())
+          if ((*ppRootProcessor)->isTrue())
             {
               if (*pValueAfter >= 0.0 || *pValueAfter > *pValueBefore)
                 {
@@ -527,7 +463,7 @@ bool CMathEventQueue::rootsFound()
         }
       else
         {
-          if ((*ppRootFinder)->isTrue())
+          if ((*ppRootProcessor)->isTrue())
             {
               if (*pValueAfter > 0.0 || *pValueAfter > *pValueBefore)
                 {
@@ -562,105 +498,61 @@ bool CMathEventQueue::rootsFound()
   return rootsFound;
 }
 
-// static
-bool CMathEventQueue::notEmpty(const CMathEventQueue::range & range)
-{
-  return range.first != range.second;
-}
-
-const size_t & CMathEventQueue::createEventId()
-{
-  size_t EventId = 0;
-
-  if (mEventIdSet.size() > 0)
-    {
-      EventId = * mEventIdSet.rbegin();
-    }
-
-  return * mEventIdSet.insert(++EventId).first;
-}
-
-void CMathEventQueue::destroyEventId(const size_t & eventId)
-{
-  mEventIdSet.erase(eventId);
-}
-
 const C_FLOAT64 & CMathEventQueue::getProcessQueueExecutionTime() const
 {
   static C_FLOAT64 Infinity =
     std::numeric_limits< C_FLOAT64 >::infinity();
 
-  const C_FLOAT64 * CalculationTime =
-    mCalculations.size() > 0 ? &mCalculations.begin()->first.getExecutionTime() : &Infinity;
+  if (mActions.empty())
+    {
+      return Infinity;
+    }
 
-  const C_FLOAT64 * AssignmentTime =
-    mAssignments.size() > 0 ? &mAssignments.begin()->first.getExecutionTime() : &Infinity;
-
-  return std::min(*CalculationTime, *AssignmentTime);
-}
-
-bool CMathEventQueue::isEmpty() const
-{
-  return (mAssignments.size() == 0) && (mCalculations.size() == 0);
-}
-
-void CMathEventQueue::setContinueSimultaneousEvents(const bool & continueSimultaneousEvents)
-{
-  mContinueSimultaneousEvents = continueSimultaneousEvents;
-}
-
-const bool & CMathEventQueue::getContinueSimultaneousEvents() const
-{
-  return mContinueSimultaneousEvents;
-}
-
-void CMathEventQueue::setEventCallBack(void* pTask, EventCallBack ecb)
-{
-  mpCallbackTask = pTask;
-  mpEventCallBack = ecb;
+  return mActions.begin()->first.getExecutionTime();
 }
 
 std::ostream &operator<<(std::ostream &os, const CMathEventQueue & o)
 {
   os << "Process Queue" << std::endl;
-  std::multimap< CMathEventQueue::CKey, CMathEventQueue::CAction >::const_iterator it;
+  CMathEventQueue::const_iterator it;
 
-  if (o.mCalculations.size()) os << " Calculations:" << std::endl;
+  if (o.mActions.size()) os << " Actions:" << std::endl;
 
-  for (it = o.mCalculations.begin(); it != o.mCalculations.end(); ++it)
+  for (it = o.mActions.begin(); it != o.mActions.end(); ++it)
     {
-      os << "exec time " << it->first.mExecutionTime << ", cascading lvl "
-         << it->first.mCascadingLevel << ", "
-         << (it->first.mEquality ? "equality, " : "inequality, ")
-         << "order " << it->first.mOrder << ", event ID "
-         << it->first.mEventId;
+      os << "exec time " << it->first.mExecutionTime
+         << ", cascading lvl " << it->first.mCascadingLevel
+         << ", " << (it->first.mEquality ? "equality, " : "inequality");
 
       os << std::endl;
 
-      os << "target (" << it->second.mpTarget << "->" << (it->second.mpTarget ? *it->second.mpTarget : -999.999) << ")"
-         << ", value " << it->second.mValue
-         << ", expr " << it->second.mpExpression
-         << ", event (" << it->second.mpEvent << (it->second.mpEvent->getType() == CEvent::CutPlane ? " cut plane)" : ")");
+      CMathEventN * pEvent = it->second.getEvent();
 
-      os << std::endl << std::endl;
-    }
+      os << "pEvent: 0x" << pEvent << ", Action: ";
 
-  if (o.mAssignments.size()) os << " Assignments:" << std::endl;
+      switch (it->second.getType())
+        {
+          case CMathEventQueue::CAction::Calculation:
 
-  for (it = o.mAssignments.begin(); it != o.mAssignments.end(); ++it)
-    {
-      os << "exec time " << it->first.mExecutionTime << ", cascading lvl "
-         << it->first.mCascadingLevel << ", "
-         << (it->first.mEquality ? "equality, " : "inequality, ")
-         << "order " << it->first.mOrder << ", event ID "
-         << it->first.mEventId;
+            if (pEvent->delayAssignment())
+              {
+                os << "Calculation";
+              }
+            else
+              {
+                os << "Calculation & Assignment";
+              }
 
-      os << std::endl;
+            break;
 
-      os << "target " << it->second.mpTarget
-         << ", value " << it->second.mValue
-         << ", expr " << it->second.mpExpression
-         << ", event " << it->second.mpEvent;
+          case CMathEventQueue::CAction::Assignment:
+            os << "Assignment";
+            break;
+
+          case CMathEventQueue::CAction::Callback:
+            os << "Callback";
+            break;
+        }
 
       os << std::endl << std::endl;
     }

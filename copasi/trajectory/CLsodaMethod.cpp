@@ -502,8 +502,8 @@ void CLsodaMethod::destroyRootMask()
 void CLsodaMethod::peekAhead()
 {
   // Save the current state
-  mMethodState.setTime(mTime);
-  CState SavedState = mMethodState;
+  *mpContainerStateTime = mTime;
+  CVector< C_FLOAT64 > SavedState = mContainerState;
   mLSODAR.saveState();
 
   CVector< C_INT > CombinedRoots = mRoots;
@@ -514,9 +514,9 @@ void CLsodaMethod::peekAhead()
     {
 
       // Check whether the new state is within the tolerances
-      C_FLOAT64 * pOld = SavedState.beginIndependent();
+      C_FLOAT64 * pOld = SavedState.array();
       C_FLOAT64 * pOldEnd = pOld + mData.dim;
-      C_FLOAT64 * pNew = mMethodState.beginIndependent();
+      C_FLOAT64 * pNew = mContainerState.array();
       C_FLOAT64 * pAtol = mAtol.array();
 
       for (; pOld != pOldEnd; ++pOld, ++pNew, ++pAtol)
@@ -532,7 +532,7 @@ void CLsodaMethod::peekAhead()
       if (pOld == pOldEnd)
         {
           // Save the state
-          SavedState = mMethodState;
+          SavedState = mContainerState;
           mLSODAR.saveState();
 
           // Combine all the roots
@@ -551,8 +551,8 @@ void CLsodaMethod::peekAhead()
     }
 
   // Reset the integrator to the saved state
-  mMethodState = SavedState;
-  mTime = mMethodState.getTime();
+  mContainerState = SavedState;
+  mTime = *mpContainerStateTime;
   mLSODAR.resetState();
 
   mRoots = CombinedRoots;

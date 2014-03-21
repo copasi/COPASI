@@ -220,7 +220,6 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
   else
     mUpdateMoieties = false;
 
-  // pdelete(mpContainer);
   mpContainer = mpTrajectoryProblem->getModel()->getMathContainer();
 
   mCurrentState.initialize(mpContainer->getState(mUpdateMoieties));

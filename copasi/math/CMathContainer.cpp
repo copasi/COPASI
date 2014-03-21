@@ -5,6 +5,7 @@
 
 #include "CMathContainer.h"
 #include "CMathExpression.h"
+#include "CMathEventQueue.h"
 
 #include "model/CModel.h"
 #include "model/CCompartment.h"
@@ -13,7 +14,7 @@
 #include "model/CObjectLists.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CNodeIterator.h"
-
+#include "randomGenerator/CRandom.h"
 #include "lapack/blaswrap.h"
 
 CMathContainer::CMathContainer():
@@ -21,6 +22,8 @@ CMathContainer::CMathContainer():
   mpModel(NULL),
   mpAvogadro(NULL),
   mpQuantity2NumberFactor(NULL),
+  mpProcessQueue(new CMathEventQueue(*this)),
+  mpRandomGenerator(CRandom::createGenerator()),
   mValues(),
   mInitialExtensiveValues(),
   mInitialIntensiveValues(),
@@ -86,6 +89,8 @@ CMathContainer::CMathContainer(CModel & model):
   mpModel(&model),
   mpAvogadro(NULL),
   mpQuantity2NumberFactor(NULL),
+  mpProcessQueue(new CMathEventQueue(*this)),
+  mpRandomGenerator(CRandom::createGenerator()),
   mValues(),
   mInitialExtensiveValues(),
   mInitialIntensiveValues(),
@@ -160,6 +165,8 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mpModel(src.mpModel),
   mpAvogadro(src.mpAvogadro),
   mpQuantity2NumberFactor(src.mpQuantity2NumberFactor),
+  mpProcessQueue(new CMathEventQueue(*this)),
+  mpRandomGenerator(CRandom::createGenerator()),
   mValues(src.mValues),
   mInitialExtensiveValues(),
   mInitialIntensiveValues(),
@@ -335,6 +342,9 @@ CMathContainer::CMathContainer(const CMathContainer & src):
     }
 
   createDependencyGraphs();
+
+  // TODO CRITICAL Fix me!
+  // See init() after createDependencyGraph() what needs to be done.
 }
 
 CMathContainer::~CMathContainer()
@@ -488,6 +498,11 @@ const CVectorCore< bool > & CMathContainer::getRootIsDiscrete() const
   return mRootIsDiscrete;
 }
 
+CVector< CMathEventN::CTrigger::CRootProcessor * > & CMathContainer::getRootProcessors()
+{
+  return mRootProcessors;
+}
+
 void CMathContainer::updateInitialValues(const CModelParameter::Framework & framework)
 {
   switch (framework)
@@ -513,13 +528,18 @@ void CMathContainer::applyInitialValues()
 
   // The root states are not automatically evaluated by the above sequence. We
   // do it manually.
-  CMathEventN::CTrigger::CRootProcessor ** pRoot = mRootProcessor.array();
-  CMathEventN::CTrigger::CRootProcessor ** pRootEnd = pRoot + mRootProcessor.size();
+  CMathEventN::CTrigger::CRootProcessor ** pRoot = mRootProcessors.array();
+  CMathEventN::CTrigger::CRootProcessor ** pRootEnd = pRoot + mRootProcessors.size();
 
   for (; pRoot != pRootEnd; ++pRoot)
     {
       (*pRoot)->calculateTrueValue();
     }
+
+  // TODO CRITICAL The above does not suffice for roots which initial value is zero
+
+  // TODO CRITICAL We need to decide when to call this.
+  mpProcessQueue->start();
 
   return;
 }
@@ -1685,12 +1705,12 @@ void CMathContainer::analyzeRoots()
   mEventRootStates.initialize(RootCount, mEventRootStates.array());
   mRootIsDiscrete.resize(RootCount, true);
 
-  mRootProcessor.resize(RootCount);
+  mRootProcessors.resize(RootCount);
 
   CMathEventN * pEvent = mEvents.array();
   CMathEventN * pEventEnd = pEvent + mEvents.size();
   pRoot = getMathObject(mEventRoots.array());
-  CMathEventN::CTrigger::CRootProcessor ** pRootProcessorPtr = mRootProcessor.array();
+  CMathEventN::CTrigger::CRootProcessor ** pRootProcessorPtr = mRootProcessors.array();
 
   for (; pEvent != pEventEnd; ++pEvent)
     {
@@ -1815,16 +1835,25 @@ void CMathContainer::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian)
 
 bool CMathContainer::processQueue(const bool & equality)
 {
-  bool StateChange = false;
-
-  // TODO CRITICAL Implement me
-
-  return false;
+  return mpProcessQueue->process(equality);
 }
 
 void CMathContainer::processRoots(const bool & equality,
                                   const CVector< C_INT > & rootsFound)
 {
+  // Reevaluate all non found roots.
+  CMathEventN::CTrigger::CRootProcessor ** pRoot = mRootProcessors.array();
+  CMathEventN::CTrigger::CRootProcessor ** pRootEnd = pRoot + mRootProcessors.size();
+  const C_INT * pRootFound = rootsFound.array();
+
+  for (; pRoot != pRootEnd; ++pRoot, ++pRootFound)
+    {
+      if (!pRootFound)
+        {
+          (*pRoot)->calculateTrueValue();
+        }
+    }
+
   // Calculate the trigger values and store them before the root processors
   // are changing the state
   CMathObject * pTrigger = getMathObject(mEventTriggers.array());
@@ -1837,10 +1866,9 @@ void CMathContainer::processRoots(const bool & equality,
 
   CVector< C_FLOAT64 > Before = mEventTriggers;
 
-  // Toggle or reevaluate all roots.
-  CMathEventN::CTrigger::CRootProcessor ** pRoot = mRootProcessor.array();
-  CMathEventN::CTrigger::CRootProcessor ** pRootEnd = pRoot + mRootProcessor.size();
-  const C_INT * pRootFound = rootsFound.array();
+  // Toggle all found roots.
+  pRoot = mRootProcessors.array();
+  pRootFound = rootsFound.array();
   C_FLOAT64 & Time = mState[mEventTargetCount];
 
   for (; pRoot != pRootEnd; ++pRoot, ++pRootFound)
@@ -1848,11 +1876,6 @@ void CMathContainer::processRoots(const bool & equality,
       if (pRootFound)
         {
           (*pRoot)->toggle(Time, equality);
-        }
-      // We reevaluate the state of the non found roots, which should be save.
-      else
-        {
-          (*pRoot)->calculateTrueValue();
         }
     }
 
@@ -1877,9 +1900,7 @@ void CMathContainer::processRoots(const bool & equality,
         {
           // We fire on any change. It is the responsibility of the event to add or remove
           // actions to the process queue.
-
-          // TODO CRITICAL Implement me!
-          // pEvent->fire();
+          pEvent->fire(equality);
         }
     }
 
@@ -1901,8 +1922,8 @@ void CMathContainer::processRoots(const CVector< C_INT > & rootsFound)
   CVector< C_FLOAT64 > Before = mEventTriggers;
 
   // Toggle all found roots.
-  CMathEventN::CTrigger::CRootProcessor ** pRoot = mRootProcessor.array();
-  CMathEventN::CTrigger::CRootProcessor ** pRootEnd = pRoot + mRootProcessor.size();
+  CMathEventN::CTrigger::CRootProcessor ** pRoot = mRootProcessors.array();
+  CMathEventN::CTrigger::CRootProcessor ** pRootEnd = pRoot + mRootProcessors.size();
   const C_INT * pRootFound = rootsFound.array();
   C_FLOAT64 & Time = mState[mEventTargetCount];
 
@@ -1938,18 +1959,21 @@ void CMathContainer::processRoots(const CVector< C_INT > & rootsFound)
           // We fire on any change. It is the responsibility of the event to add or remove
           // actions to the process queue.
 
-          // TODO CRITICAL Implement me!
-          // pEvent->fire();
+          pEvent->fire(true);
         }
     }
 
   return;
 }
+
+CMathEventQueue & CMathContainer::getProcessQueue()
+{
+  return *mpProcessQueue;
+}
+
 C_FLOAT64 CMathContainer::getProcessQueueExecutionTime() const
 {
-  // TODO CRITICAL Implement me
-
-  return std::numeric_limits< C_FLOAT64 >::infinity();
+  return mpProcessQueue->getProcessQueueExecutionTime();
 }
 
 void CMathContainer::initializePointers(CMath::sPointers & p)
@@ -2371,6 +2395,24 @@ C_FLOAT64 * CMathContainer::getInitialValuePointer(const C_FLOAT64 * pValue) con
     }
 
   return const_cast< C_FLOAT64 * >(pInitialValue);
+}
+
+CMathEventN * CMathContainer::addEvent(const CEvent & dataEvent)
+{
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return NULL;
+}
+
+void CMathContainer::removeEvent(CMathEventN * pMathEvent)
+{
+  // TODO CRITICAL Implement me!
+  fatalError();
+}
+CRandom & CMathContainer::getRandomGenerator()
+{
+  return * mpRandomGenerator;
 }
 
 void CMathContainer::createDiscontinuityEvents()

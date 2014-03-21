@@ -97,7 +97,11 @@ bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag 
           continue;
         }
 
-      success = false;
+      // We may have data objects which are ignored as they are always up to date
+      if ((*it)->getDataObject() != *it)
+        {
+          success = false;
+        }
     }
 
   if (!success) goto finish;
@@ -117,7 +121,11 @@ bool CMathDependencyGraph::getUpdateSequence(const CMath::SimulationContextFlag 
           continue;
         }
 
-      success = false;
+      // We may have data objects which are ignored as they are always up to date
+      if ((*it)->getDataObject() != *it)
+        {
+          success = false;
+        }
     }
 
 #ifdef COPASI_DEBUG_TRACE

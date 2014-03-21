@@ -83,7 +83,7 @@ CProcessQueue::CAction::CAction(CMathEvent * pEvent,
         mType = Calculation;
         break;
 
-      case CEvent::CutPlane:
+      case CEvent::Callback:
         mType = Callback;
         break;
     }

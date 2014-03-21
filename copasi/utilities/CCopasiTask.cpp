@@ -250,9 +250,7 @@ bool CCopasiTask::initialize(const OutputFlag & of,
   std::vector< CCopasiContainer * > ListOfContainer;
   ListOfContainer.push_back(this);
 
-#ifdef USE_MATH_CONTAINER
   ListOfContainer.push_back(mpProblem->getModel()->getMathContainer());
-#endif // USE_MATH_CONTAINER
 
   CCopasiDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);

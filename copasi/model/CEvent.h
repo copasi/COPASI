@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,6 +28,7 @@
 
 class CExpression;
 class CModel;
+class CCallbackInterface;
 
 class CEventAssignment : public CCopasiContainer
 {
@@ -156,7 +157,8 @@ public:
   {
     Assignment,
     Discontinuity,
-    CutPlane
+    Callback,
+    Stop
   };
 
   /**
@@ -448,6 +450,12 @@ private:
    * Pointer to the Priority Expression of the event
    */
   CExpression * mpPriorityExpression;
+
+  /**
+   * A pointer to an optional callback function to be executed when the event is
+   * triggered.
+   */
+  CCallbackInterface * mpCallback;
 
   /**
    * The type of the event

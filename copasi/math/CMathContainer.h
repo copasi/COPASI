@@ -23,6 +23,8 @@
 class CModelEntity;
 class CReaction;
 class CMoiety;
+class CRandom;
+class CMathEventQueue;
 
 template < class CType > class CCopasiVector;
 
@@ -167,6 +169,11 @@ public:
   const CVectorCore< bool > & getRootIsDiscrete() const;
 
   /**
+   * Retrieve a vector of pointers to root processors
+   */
+  CVector< CMathEventN::CTrigger::CRootProcessor * > & getRootProcessors();
+
+  /**
    * Calculate all dependent initial values based on initial extensive
    * or intensive values
    * @param const CModelParameter::Framework & framework
@@ -226,6 +233,12 @@ public:
    * @param const CVector< C_INT > & rootsFound
    */
   void processRoots(const CVector< C_INT > & rootsFound);
+
+  /**
+   * Retrieve the event processing queue.
+   * @return CMathEventQueue & eventQueue
+   */
+  CMathEventQueue & getProcessQueue();
 
   /**
    * Retrieve the next execution time scheduled in the process queue
@@ -414,6 +427,24 @@ public:
    * @return C_FLOAT64 * pInitialvalue
    */
   C_FLOAT64 * getInitialValuePointer(const C_FLOAT64 * pValue) const;
+
+  /**
+   * Add an event to the container
+   * @param const CEvent & dataEvent
+   * @return CMathEventN * pMathEvent
+   */
+  CMathEventN * addEvent(const CEvent & dataEvent);
+
+  /**
+   * Remove the event from the container
+   * @param CMathEventN * pMathEvent
+   */
+  void removeEvent(CMathEventN * pMathEvent);
+
+  /**
+   * Retrieve the random number generator.
+   */
+  CRandom & getRandomGenerator();
 
 private:
   /**
@@ -624,6 +655,9 @@ private:
   const CObjectInterface * mpAvogadro;
   const CObjectInterface * mpQuantity2NumberFactor;
 
+  CMathEventQueue * mpProcessQueue;
+  CRandom * mpRandomGenerator;
+
   CVector< C_FLOAT64 > mValues;
 
   CVectorCore< C_FLOAT64 > mInitialExtensiveValues;
@@ -784,7 +818,7 @@ private:
   /**
    * A vector of pointers to all objects values CMathEventN::CTrigger::CRootProcessor
    */
-  CVector< CMathEventN::CTrigger::CRootProcessor * > mRootProcessor;
+  CVector< CMathEventN::CTrigger::CRootProcessor * > mRootProcessors;
 
   /**
    * Structure of pointers used for creating discontinuities.

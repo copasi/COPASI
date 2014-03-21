@@ -27,6 +27,7 @@
 #include "report/CReport.h"
 #include "utilities/CProcessReport.h"
 #include "utilities/CCopasiException.h"
+#include "utilities/CCallback.h"
 #include  "CopasiDataModel/CCopasiDataModel.h"
 
 const unsigned int CCrossSectionTask::ValidMethods[] =
@@ -47,6 +48,7 @@ CCrossSectionTask::CCrossSectionTask(const CCopasiContainer * pParent):
   mProgressValue(0),
   mProgressFactor(1),
   mpEvent(NULL),
+  mpEventCallback(NULL),
   mState(CCrossSectionTask::TRANSIENT),
   mStatesRing(),
   mStatesRingCounter(0),
@@ -78,6 +80,7 @@ CCrossSectionTask::CCrossSectionTask(const CCrossSectionTask & src,
   mProgressValue(0),
   mProgressFactor(1),
   mpEvent(NULL),
+  mpEventCallback(NULL),
   mState(CCrossSectionTask::TRANSIENT),
   mStatesRing(),
   mStatesRingCounter(0),
@@ -103,7 +106,9 @@ CCrossSectionTask::CCrossSectionTask(const CCrossSectionTask & src,
 }
 
 CCrossSectionTask::~CCrossSectionTask()
-{}
+{
+  pdelete(mpEventCallback);
+}
 
 void CCrossSectionTask::initObjects()
 {
@@ -143,41 +148,34 @@ void CCrossSectionTask::createEvent()
 {
   if (mpEvent != NULL) return;
 
-  CModel* pModel = mpCrossSectionProblem->getModel();
-
   if (!mpCrossSectionProblem->getSingleObjectCN().empty())
     {
-      int count = 0;
-      std::string name = "__cutplane";
-
-      while (pModel->getEvents().getIndex(name) != C_INVALID_INDEX)
-        {
-          std::stringstream str;
-          str << "__cutplane" << ++count;
-          name = str.str();
-        }
-
-      mpEvent = pModel->createEvent(name);
-      mpEvent->setType(CEvent::CutPlane);
+      CEvent Event("__cutplane", &mpContainer->getModel());
+      Event.setType(CEvent::Callback);
 
       std::stringstream expression;
       expression << "<" << mpCrossSectionProblem->getSingleObjectCN() << "> "
                  << (mpCrossSectionProblem->isPositiveDirection() ? std::string(" > ") : std::string(" < "))
                  << mpCrossSectionProblem->getThreshold();
 
-      mpEvent ->setTriggerExpression(expression.str());
+      Event.setTriggerExpression(expression.str());
+
+      Event.compile(std::vector< CCopasiContainer * >());
+
+      mpEvent = mpContainer->addEvent(Event);
     }
 
-  pModel->setCompileFlag();
-  pModel->compileIfNecessary(NULL);
+  setEventCallback(true);
 }
 
 void CCrossSectionTask::removeEvent()
 {
-  // TODO: remove event
+  // reset call back of the cut plane event
+  setEventCallback(false);
+
   if (mpEvent != NULL)
     {
-      mpCrossSectionProblem->getModel()->removeEvent(mpEvent);
+      mpContainer->removeEvent(mpEvent);
       mpEvent = NULL;
     }
 }
@@ -187,11 +185,6 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
   createEvent();
 
   processStart(useInitialValues);
-
-  //this instructs the process queue to call back whenever an event is
-  //executed
-  // TODO CRITICAL Implement me!
-  // mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(this, &EventCallBack);
 
   mPreviousCrossingTime = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
   mPeriod = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
@@ -288,10 +281,6 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
 
 void CCrossSectionTask::finish()
 {
-  //reset call back
-  // TODO CRITICAL Implement me!
-  // mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
-
   if (mpCallBack != NULL) mpCallBack->finishItem(mhProgress);
 
   output(COutputInterface::AFTER);
@@ -302,9 +291,6 @@ bool CCrossSectionTask::restore()
   bool success = CTrajectoryTask::restore();
 
   removeEvent();
-  //reset call back
-  // TODO CRITICAL Implement me!
-  // mpCrossSectionProblem->getModel()->getMathModel()->getProcessQueue().setEventCallBack(NULL, NULL);
 
   return success;
 }
@@ -318,11 +304,27 @@ const CState * CCrossSectionTask::getState()
   return & mpContainer->getModel().getState();
 }
 
-//static
-void CCrossSectionTask::EventCallBack(void* pCSTask, CEvent::Type type)
-{static_cast<CCrossSectionTask *>(pCSTask)->eventCallBack(type);}
+void CCrossSectionTask::setEventCallback(const bool & set)
+{
+  if (set && mpEventCallback == NULL)
+    {
+      mpEventCallback = new CCallback< CCrossSectionTask >(this, &CCrossSectionTask::eventCallBack);
+    }
 
-void CCrossSectionTask::eventCallBack(CEvent::Type type)
+  if (mpEvent != NULL)
+    {
+      if (set)
+        {
+          mpEvent->setCallback(mpEventCallback);
+        }
+      else
+        {
+          mpEvent->setCallback(NULL);
+        }
+    }
+}
+
+void CCrossSectionTask::eventCallBack(void * /* pData */, void * /* pCaller */)
 {
   //  std::cout << "event call back: " << type << std::endl;
 
@@ -337,10 +339,6 @@ void CCrossSectionTask::eventCallBack(CEvent::Type type)
           mProceed = false;
         }
     }
-
-  //do nothing else if the event is not representing a cut plane
-  if (type != CEvent::CutPlane)
-    return;
 
   mpContainer->setState(mCurrentState);
   mpContainer->updateSimulatedValues(mUpdateMoieties);
