@@ -333,7 +333,9 @@ CProcessQueue::iterator CProcessQueue::getAction()
       return mActions.end();
     }
 
+#ifdef COPASI_DEBUG_TRACE
   std::cout << * this << std::endl;
+#endif
 
   iterator nextAction = PendingActions.first;
   ++nextAction;

@@ -581,6 +581,11 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
 
   commonAfterLoad(pImportHandler, deleteOldData);
 
+  // when importing from SBML, allow continuation on simultaneous events.
+  static_cast<CTrajectoryProblem *>(
+    static_cast<CTrajectoryTask *>((*mData.pTaskList)["Time-Course"])->getProblem()
+  )->setContinueSimultaneousEvents(true);
+
   mRenameHandler.setEnabled(true);
   return true;
 }
@@ -666,6 +671,11 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
   mData.mFileType = SBML;
 
   commonAfterLoad(pImportHandler, deleteOldData);
+
+  // when importing from SBML, allow continuation on simultaneous events.
+  static_cast<CTrajectoryProblem *>(
+    static_cast<CTrajectoryTask *>((*mData.pTaskList)["Time-Course"])->getProblem()
+  )->setContinueSimultaneousEvents(true);
 
   mData.mSaveFileName = CDirEntry::dirName(FileName)
                         + CDirEntry::Separator
