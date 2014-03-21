@@ -76,11 +76,6 @@ COptMethodSS::COptMethodSS(const COptMethodSS & src,
   mpLocalMinimizer(NULL)
 {
   // remove eventual existing parameters from the release version.
-#ifndef COPASI_DEBUG
-  removeParameter("Random Number Generator");
-  removeParameter("Seed");
-#endif
-
   initObjects();
 }
 
