@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/sbml-testsuite/wrapper.cpp,v $
-//   $Revision: 1.9 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/30 17:18:42 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -379,7 +371,7 @@ int main(int argc, char** argv)
         }
 
       // create a trajectory task
-      pTrajectoryTask = new CTrajectoryTask();
+      pTrajectoryTask =  new CTrajectoryTask();
       pTrajectoryTask->getProblem()->setModel(pDataModel->getModel());
 
       pTrajectoryTask->setScheduled(true);
@@ -393,6 +385,7 @@ int main(int argc, char** argv)
       pProblem->setStepNumber((const unsigned C_INT32)steps);
       pProblem->setDuration((const C_FLOAT64)end_time);
       pProblem->setTimeSeriesRequested(true);
+      pProblem->setContinueSimultaneousEvents(true);
 
       CTrajectoryMethod* pMethod = dynamic_cast<CTrajectoryMethod*>(pTrajectoryTask->getMethod());
 
