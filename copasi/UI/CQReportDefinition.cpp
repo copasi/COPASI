@@ -44,8 +44,14 @@ CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
 
   unsigned C_INT32 i;
 
+  QStringList TaskNames;
+
   for (i = 0; CCopasiTask::TypeName[i] != ""; i++)
-    mpTaskBox->insertItem(0, FROM_UTF8(CCopasiTask::TypeName[i]));
+    {
+      TaskNames.append(FROM_UTF8(CCopasiTask::TypeName[i]));
+    }
+
+  mpTaskBox->addItems(TaskNames);
 }
 
 /*

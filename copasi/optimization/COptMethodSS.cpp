@@ -1,4 +1,4 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -52,6 +52,7 @@ COptMethodSS::COptMethodSS(const CCopasiContainer * pParent):
   addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 #endif
+
   initObjects();
 }
 
@@ -73,10 +74,22 @@ COptMethodSS::COptMethodSS(const COptMethodSS & src,
   mpRandom(NULL),
   mpOptProblemLocal(NULL),
   mpLocalMinimizer(NULL)
-{initObjects();}
+{
+  // remove eventual existing parameters from the release version.
+  initObjects();
+}
 
 COptMethodSS::~COptMethodSS()
 {cleanup();}
+
+// virtual
+bool COptMethodSS::elevateChildren()
+{
+#ifndef COPASI_DEBUG
+  removeParameter("Random Number Generator");
+  removeParameter("Seed");
+#endif
+}
 
 void COptMethodSS::initObjects()
 {
@@ -115,7 +128,8 @@ bool COptMethodSS::initialize()
     CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
                              * getValue("Seed").pUINT);
 #else
-  CRandom::createGenerator(* (CRandom::Type *) CRandom::mt19937, 0);
+  // Use the default random number generator which is the Mersenne Twister
+  mpRandom = CRandom::createGenerator();
 #endif
 
   mCloseValue = 0.001;
